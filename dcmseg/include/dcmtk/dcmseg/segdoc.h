@@ -26,6 +26,7 @@
 #include "dcmtk/ofstd/ofvector.h"               // for OFVector
 #include "dcmtk/dcmiod/iodimage.h"              // common image IOD attribute access
 #include "dcmtk/dcmiod/iodmacro.h"
+#include "dcmtk/dcmiod/modimagepixel.h"
 #include "dcmtk/dcmiod/modsegmentationseries.h" // for segmentation series module
 #include "dcmtk/dcmiod/modenhequipment.h"       // for enhanced general equipment module
 
@@ -48,7 +49,7 @@ class FGDerivationImage;
 /** Class representing an object of the "Segmentation SOP Class".
  */
 class DCMTK_DCMSEG_EXPORT DcmSegmentation
-: public DcmIODImage
+: public DcmIODImage<IODImagePixelModule<Uint8> >
 {
 
 public:
@@ -61,7 +62,7 @@ public:
 
   // -------------------- loading and saving ---------------------
 
-  /** Load Segmentation object from item file
+  /** Load Segmentation object from file
    *  @param  filename The file to read from
    *  @param  segmentation  The resulting segmentation object. NULL if dataset
    *          could not be read successfully.
@@ -70,7 +71,7 @@ public:
   static OFCondition loadFile(const OFString& filename,
                               DcmSegmentation*& segmentation);
 
-  /** Load Segmentation object from item object.
+  /** Load Segmentation object from dataset object.
    *  @param  dataset The dataset to read from
    *  @param  segmentation  The resulting segmentation object. NULL if dataset
    *          could not be read successfully.
@@ -257,7 +258,7 @@ public:
                                  Uint16& segmentNumber);
 
   /** Add a functional group for all frames
-   *  @param  group The group to be added as shared functional group
+   *  @param  group The group to be added as shared functional group. The
    *  @return EC_Normal if adding was successful, error otherwise
    */
   virtual OFCondition addForAllFrames(const FGBase& group);
@@ -271,7 +272,9 @@ public:
    *  @param  segmentNumber The logical segment number (>=1) this frame refers to.
    *          The segment identified by the segmentNumber must already exist.
    *  @param  perFrameInformation The functional groups that identify this frame (i.e.
-   *           which are planned to be not common for all other frames)
+   *          which are planned to be not common for all other frames). The
+   *          functional groups are copied, so ownership of each group stays
+   *          with the caller no matter what the method returns.
    *  @return EC_Normal if adding was successful, error otherwise
    */
   virtual OFCondition addFrame(Uint8* pixData,
@@ -357,7 +360,7 @@ protected:
   *  the image pixel module manually.
   *  @return The Image Pixel Module
   */
-  virtual IODImagePixelModule& getImagePixel();
+  virtual IODImagePixelModule<Uint8>& getImagePixel();
 
   /** Initialize IOD rules
    */

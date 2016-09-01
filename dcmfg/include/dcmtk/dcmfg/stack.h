@@ -76,8 +76,6 @@ public:
    */
   virtual ~FGStack();
 
-  // TODO add sorted iterators using views, for example
-
   /** Return const iterator to first frame (not sorted after stack position)
    *  @return Const iterator to first frame
    */
@@ -137,8 +135,6 @@ private:
   /// More than one frame can have the same in-stack position
   OFMap<Uint32, Uint32> m_FrameNumbers;
 
-  // TODO Maybe add a redundant data structures mapping in-stack positions
-  // to frame numbers in order to enable fast access?
 };
 
 #endif // STACKREADER_H

@@ -23,7 +23,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmioddir)/libsrc -L$(dcmdatadir)/libsrc \
 LOCALLIBS = -ldcmiod -ldcmdata -loflog -lofstd \
 	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(ICONVLIBS)
 
-test_objs = tests.o tcielabutil.o
+test_objs = tests.o tcielabutil.o timagepixel.o
 objs = tests.o $(test_objs)
 progs = tests
 

@@ -230,8 +230,8 @@ public:
    *          (Defined CID 7202)
    *  @param  resultSourceImageItems The created derivation image items (one per
    *          file) if successful, NULL otherwise
-   *  @param  skipErrors If OFTrue, then files that could not be added will not
-   *          lead to error.
+   *  @param  skipErrors If OFTrue, then files that could not be added will
+   *          not lead to error.
    *  @return EC_Normal if adding works, error code otherwise
    */
   virtual OFCondition addSourceImageItems(const OFVector<DcmDataset*>& datasets,

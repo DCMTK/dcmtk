@@ -64,7 +64,7 @@ void FGPixelMeasures::clearData()
 
 OFCondition FGPixelMeasures::check() const
 {
-  // TODO
+  // Checks in read() and write() are sufficient for now
   return EC_Normal;
 }
 

@@ -134,7 +134,7 @@ public:
 
   /** Add functional group that should be shared for all frames. This will
    *  delete all per-frame groups of the same type if existing.
-   *  @param  group   The group to be added (copy is performed)
+   *  @param  group   The group to be added. The group is copied.
    *  @return EC_Normal, if adding was successful, error otherwise
    */
   virtual OFCondition addShared(const FGBase& group);
@@ -148,7 +148,9 @@ public:
    *  overwritten.
    *  @param  frameNo The frame number this group should be added for (starts
    *          from 0)
-   *  @param  group The group to be added
+   *  @param  group The group to be added. The group is copied when adding,
+   *          so the ownership stays with the caller, no matter what the
+   *          method returns.
    *  @return EC_Normal, if adding was successful, error otherwise
    */
   virtual OFCondition addPerFrame(const Uint32 frameNo,
@@ -162,7 +164,8 @@ public:
   virtual OFBool deleteShared(const DcmFGTypes::E_FGType fgType);
 
   /** Deletes per-frame functional group of the given type for a specific frame
-   *  @param frameNo The frame number for the functional group of interest
+   *  @param frameNo The frame number for the functional group of interest.
+   *         First frame is frame 0.
    *  @param fgType The type of functional group to delete
    *  @return OFTrue if group existed and could be deleted, OFFalse (group did
    *          not exist) otherwise
@@ -173,9 +176,16 @@ public:
   /** Deletes per-frame functional group for all frames
    *  @param  fgType The type of functional group to delete
    *  @return Number of per-frame groups deleted (usually equal to number of
-   *          images)
+   *          frames)
    */
   size_t deletePerFrame(const DcmFGTypes::E_FGType fgType);
+
+  /** Deletes all functional groups for a specific frame
+   *  @param frameNo The frame number whose functional groups should be deleted.
+   *         First frame is frame 0.
+   *  @return Number of per-frame groups deleted for this frame
+   */
+  size_t deleteFrame(const Uint32 frameNo);
 
 protected:
 

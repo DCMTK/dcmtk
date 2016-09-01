@@ -1,9 +1,9 @@
 # create library from source files
 DCMTK_ADD_LIBRARY(dcmiod
   cielabutil
+  iodcontentitemmacro
   iodcommn
   iodmacro
-  iodimage
   iodrules
   iodreferences
   iodutil
@@ -15,12 +15,14 @@ DCMTK_ADD_LIBRARY(dcmiod
   modenhusimage
   modenhusseries
   modequipment
+  modfloatingpointimagepixel
   modfor
   modgeneralimage
   modgeneralseries
   modgeneralstudy
   modhelp
   modimagepixel
+  modimagepixelbase
   modmultiframefg
   modmultiframedimension
   modpatient

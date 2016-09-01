@@ -20,7 +20,7 @@ LOCALTRASH = *.out testfile.\$$\$$\$$
 test_objs = tests.o tatof.o tmap.o tvec.o tftoa.o tthread.o tbase64.o \
             tstring.o tlist.o tstack.o tofdatim.o tofstd.o tmarkup.o \
             tchrenc.o txml.o tuuid.o toffile.o tmem.o toption.o ttuple.o \
-            tlimits.o
+            tlimits.o tvariant.o
 objs = $(test_objs)
 progs = tests
 

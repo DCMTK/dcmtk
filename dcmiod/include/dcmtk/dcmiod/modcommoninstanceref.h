@@ -122,6 +122,8 @@ protected:
 
 private:
 
+  void freeMemory();
+
   /// Vector with all items of the Referenced Series Sequence
   OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*> m_ReferenceSeriesItems;
 

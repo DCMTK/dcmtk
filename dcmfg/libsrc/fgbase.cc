@@ -162,7 +162,6 @@ OFCondition FGUnknown::write(DcmItem& item)
 
 OFCondition FGUnknown::check() const
 {
-  // TODO
   return EC_Normal;
 }
 

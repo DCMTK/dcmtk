@@ -27,6 +27,7 @@
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/dcmiod/iodmacro.h"
+#include "dcmtk/dcmiod/iodcontentitemmacro.h"
 
 /** Class representing the Real World Value Mapping Functional Group that
  *  specifies the mapping of stored values to associated Real World values
@@ -131,7 +132,7 @@ private:
  * LUT Explanation (LO, 1, 1)
  * LUT Label (SH, 1, 1)
  * Measurement Units Code Sequence (SQ, 1, 1)
- * Not yet supported: Quantity Definition Sequence (SQ, 1, 3)
+ * Quantity Definition Sequence (SQ, 1, 3)
  */
 class DCMTK_DCMFG_EXPORT FGRealWorldValueMapping::RWVMItem : public IODComponent
 {
@@ -152,6 +153,11 @@ public:
    *  @param  parent The parent of the IOD component (NULL if none or unknown)
    */
   RWVMItem(IODComponent* parent = NULL);
+
+  /** Copy Constructor
+   *  @param  rhs The item to copy from
+   */
+  RWVMItem(const RWVMItem& rhs);
 
   /** Clone this class (perform deep copy)
    *  @return Clone of this class or NULL (e.g.\ if memory exhausted)
@@ -229,6 +235,22 @@ public:
   virtual OFCondition getRealWorldValueLastValueMapped(Sint32 &value,
                                                        const unsigned long pos = 0) const;
 
+  /** Get Double Float Real World Value First Value Mapped
+   *  @param  value Reference to variable in which the value should be stored
+   *  @param  pos Index of the value to get (0..vm-1)
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition getDoubleFloatRealWorldValueFirstValueMapped(Float64& value,
+                                                                   const unsigned long pos = 0) const;
+
+  /** Get Double Float Real World Value Last Value Mapped
+   *  @param  value Reference to variable in which the value should be stored
+   *  @param  pos Index of the value to get (0..vm-1)
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition getDoubleFloatRealWorldValueLastValueMapped(Float64& value,
+                                                                   const unsigned long pos = 0) const;
+
   /** Get Real World Value LUT Data
    *  @param  value Reference to variable in which the value should be stored
    *  @param  pos Index of the value to get (0..vm-1)
@@ -264,6 +286,12 @@ public:
    */
   virtual CodeSequenceMacro& getMeasurementUnitsCode();
 
+  /** Get a reference to the entire ConceptNameCodeSequence, including items
+   *  exceeding the value multiplicity restriction of "1"
+   *  @return a reference to the entire ConceptNameCodeSequence
+   */
+  virtual OFVector<ContentItemMacro*>& getEntireQuantityDefinitionSequence();
+
   // --- set() functionality ---
 
   /** Set Real World Value First Value Mapped
@@ -274,7 +302,7 @@ public:
    *          if enabled
    *  @return EC_Normal if successful, an error code otherwise
    */
-  virtual OFCondition setRealWorldValueFirstValueMappedUnsigned(const Uint16 &value,
+  virtual OFCondition setRealWorldValueFirstValueMappedUnsigned(const Uint16 value,
                                                                 const OFBool checkValue = OFTrue);
 
   /** Set Real World Value First Value Mapped
@@ -296,7 +324,7 @@ public:
    *          if enabled
    *  @return EC_Normal if successful, an error code otherwise
    */
-  virtual OFCondition setRealWorldValueLastValueMappedUnsigned(const Uint16 &value,
+  virtual OFCondition setRealWorldValueLastValueMappedUnsigned(const Uint16 value,
                                                                const OFBool checkValue = OFTrue);
 
   /** Set Real World Value Last Value Mapped
@@ -308,7 +336,25 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setRealWorldValueLastValueMappedSigned(const Sint16 &value,
-                                                        const OFBool checkValue = OFTrue);
+                                                             const OFBool checkValue = OFTrue);
+
+  /** Set Double Float Real World Value First Value Mapped
+   *  @param  value Value to be set
+   *  @param  checkValue Check 'value'. Does nothing, only for consistency with
+   *          other set() functions.
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition setDoubleFloatRealWorldValueFirstValueMapped(const Float64 value,
+                                                                  const OFBool checkValue = OFTrue);
+
+  /** Set Double Float Real World Value Last Value Mapped
+   *  @param  value Value to be set
+   *  @param  checkValue Check 'value'. Does nothing, only for consistency with
+   *          other set() functions.
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition setDoubleFloatRealWorldValueLastValueMapped(const Float64 value,
+                                                                  const OFBool checkValue = OFTrue);
 
   /** Set Real World Value Intercept
    *  @param  value Value to be set
@@ -316,7 +362,7 @@ public:
    *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
-  virtual OFCondition setRealWorldValueIntercept(const Float64& value,
+  virtual OFCondition setRealWorldValueIntercept(const Float64 value,
                                                  const OFBool checkValue = OFTrue);
 
   /** Set Real World Value Slope
@@ -325,7 +371,7 @@ public:
    *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
-  virtual OFCondition setRealWorldValueSlope(const Float64& value,
+  virtual OFCondition setRealWorldValueSlope(const Float64 value,
                                              const OFBool checkValue = OFTrue);
 
   /** Set Real World Value LUT Data
@@ -367,7 +413,8 @@ private:
   /// Measurement Units Code Sequence
   CodeSequenceMacro m_MeasurementUnitsCode;
 
-  /// TODO Content Item Macro for Quantity Definition Sequence
+  /// Quantity Definition Sequence
+  OFVector<ContentItemMacro*> m_QuantityDefinitionSequence;
 };
 
 #endif // FGREALWORLDVALUEMAPPING_H

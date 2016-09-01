@@ -29,6 +29,8 @@
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcdatutl.h"
+#include "dcmtk/ofstd/ofdate.h"
+#include "dcmtk/ofstd/oftime.h"
 #include "dcmtk/dcmiod/ioddef.h"
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/dcmiod/iodtypes.h"
@@ -755,11 +757,15 @@ public:
       /* If we do not have data, insert empty for type 2 */
       else if (type == "2")
       {
-          destination.insertEmptyElement(seqKey);
+        destination.insertEmptyElement(seqKey);
       }
       else if (type == "1C")
       {
         DCMIOD_TRACE("Skipping type 1C sequence " << seqKey << ": No data or incomplete data available");
+      }
+      else if (type  == "3")
+      {
+        DCMIOD_TRACE("Skipping type 3 sequence " << seqKey << ": No data or incomplete data available");
       }
       /* Check outcome */
       checkSubSequence(result, destination, seqKey, "1", type, module);
@@ -863,6 +869,26 @@ public:
       it++;
     }
   }
+
+
+  template <typename ModuleType>
+  static OFCondition setContentDateAndTimeNow(ModuleType& module)
+  {
+    OFDate date;
+    date.setCurrentDate();
+    OFString tempstr;
+    date.getISOFormattedDate(tempstr, OFFalse /* no delimiters */);
+    OFCondition result = module.setContentDate(tempstr);
+    if (result.good())
+    {
+      OFTime time;
+      time.setCurrentTime();
+      time.getISOFormattedTime(tempstr, OFTrue /* include seconds */, OFFalse, OFFalse, OFFalse);
+      result = module.setContentTime(tempstr);
+    }
+    return result;
+  }
+
 
   /** Function that takes a string representation of a tag key and
    *  converts it to a tag key instance if possible

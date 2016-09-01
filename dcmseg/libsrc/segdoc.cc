@@ -33,7 +33,7 @@
 
 // default constructor (protected, instance creation via create() function)
 DcmSegmentation::DcmSegmentation()
-: DcmIODImage(),
+: DcmIODImage(OFin_place<IODImagePixelModule<Uint8> >),
   m_SegmentationSeries(DcmIODImage::getData(), DcmIODImage::getRules()),
   m_EnhancedGeneralEquipmentModule(DcmIODImage::getData(), DcmIODImage::getRules()),
   m_FG(DcmIODImage::getData(), DcmIODImage::getRules()),
@@ -182,15 +182,8 @@ OFCondition DcmSegmentation::createCommon(DcmSegmentation*& segmentation,
       segmentation = NULL;
       return EC_InvalidValue;
     }
-    OFDate date;
-    date.setCurrentDate();
-    date.getISOFormattedDate(tempstr, OFFalse /* no delimiters */);
-    segmentation->getGeneralImage().setContentDate(tempstr);
-    OFTime time;
-    time.setCurrentTime();
-    time.getISOFormattedTime(tempstr, OFTrue /* include seconds */, OFFalse, OFFalse, OFFalse);
-    segmentation->getGeneralImage().setContentTime(tempstr);
 
+    DcmIODUtil::setContentDateAndTimeNow(segmentation->getGeneralImage());
     result = segmentation->setEquipmentInfo(equipmentInfo, OFTrue /* check */);
   }
 
@@ -1155,9 +1148,9 @@ OFCondition DcmSegmentation::readSegmentationType(DcmItem& item)
 
 
 // protected override of public base class function
-IODImagePixelModule& DcmSegmentation::getImagePixel()
+IODImagePixelModule<Uint8>& DcmSegmentation::getImagePixel()
 {
-  return DcmIODImage::getImagePixel();
+  return *OFget<IODImagePixelModule<Uint8> >( &DcmIODImage::getImagePixel() );
 }
 
 
@@ -1228,7 +1221,7 @@ OFCondition DcmSegmentation::decompress(DcmDataset& dset)
     }
     else // We do not accept any transfer syntax that could be lossy compressed
     {
-      DCMSEG_ERROR("No conversion from RLE original to uncompressed transfer syntax possible!");
+      DCMSEG_ERROR("Transfer syntax " << DcmXfer(xfer).getXferName() << " uses lossy compression, not supported for Segmentation objects!");
       result = IOD_EC_CannotDecompress;
     }
   }

@@ -1,0 +1,526 @@
+/*!
+
+\page mod_dcmpmap dcmpmap: a library for working with Paramatric Map objects
+
+The class library dcmpmap supports creation, loading, accessing and storing
+DICOM Parametric Map objects which have originally been introduced into DICOM
+with <a href="ftp://medical.nema.org/medical/dicom/final/sup172_ft2.pdf">Supplement 172</a>
+in 2014.
+
+In the standard, the data inside each Parametric Map object must rely on one
+of these data types:
+
+\li 16 bit unsigned integer
+\li 16 bit signed integer
+\li 32 bit floating point
+\li 64 bit floating point
+
+All of them are supported by the dcmpmap library.
+
+The main class of this module is:
+\li \b DPMParametricMapIOD
+
+This module makes heavy use of the \ref mod_dcmiod "dcmiod" module for managing
+common IOD attributes and the \ref mod_dcmfg "dcmfg" module for functional group support.
+Read the example sections for more explanations.
+
+\section Examples_dcmpmap
+
+The following two examples show:
+\li How to access and dump information (including the binary data values) from a
+Parametric Map object
+\li and how to use the API to create such an object yourself.
+
+\subsection ExampleDumpParametricMap Dumping information from Parametric Map
+
+The Parametric Map class uses a template in order to instantiate the correct pixel
+data type internally, and to offer a dedicated API for that type. Allowed types are
+Uint16, Sint16, Float32 and Float64.
+
+Since internally the data types are handled in a C++ Variant, the usual concept to
+"switch" between these types in code is to use a Visitor which overloads the operator
+"()" for each data type that can occur in the Variant. This concept is also
+demonstrated below where the type of pixel data is printed.
+
+The rest of the code uses the API of the \ref mod_dcmiod "dcmiod" and
+\ref mod_dcmfg "dcmfg" module in order to do get basic information about patient, study,
+series and instance, as well as functional group information, especially the Real World
+Value Mapping defined in the file.
+
+
+\code
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpmap/dpmparametricmapiod.h"
+
+static void dumpRWVM(const unsigned long frameNumber,
+                     FGInterface& fg)
+{
+  FGRealWorldValueMapping* rw = OFstatic_cast(FGRealWorldValueMapping*, fg.get(frameNumber, DcmFGTypes::EFG_REALWORLDVALUEMAPPING));
+  if (rw)
+  {
+    size_t numMappings = rw->getRealWorldValueMapping().size();
+    COUT << "  Number of Real World Value Mappings defined: " << numMappings << OFendl;
+    for (size_t m = 0; m < numMappings; m++)
+    {
+      FGRealWorldValueMapping::RWVMItem* item = rw->getRealWorldValueMapping()[m];
+      OFString label, expl;
+      item->getLUTLabel(label);
+      item->getLUTExplanation(expl);
+      COUT << "    RWVM Mapping #" << m << ":" << OFendl;
+      COUT << "      LUT Label: << " << label << OFendl;
+      COUT << "      LUT Explanation: " << expl << OFendl;
+      COUT << "      Measurement Units Code: " << item->getMeasurementUnitsCode().toString() << OFendl;
+      size_t numQuant = item->getEntireQuantityDefinitionSequence().size();
+      if (numQuant > 0)
+      {
+        COUT << "    Number of Quantities defined: " << numQuant << OFendl;
+        for (size_t q = 0; q < numQuant; q++)
+        {
+          ContentItemMacro* macro = item->getEntireQuantityDefinitionSequence()[q];
+          COUT << "      Quantity #" << q << ": " << macro->toString() << OFendl;
+        }
+      }
+    }
+  }
+  else
+  {
+    CERR << "  Error: No Real World Value Mappings defined for frame #" << frameNumber << OFendl;
+  }
+}
+
+class DumpFramesVisitor
+{
+public:
+
+  DumpFramesVisitor(DPMParametricMapIOD* map,
+                    const unsigned long numPerFrame)
+  : m_Map(map)
+  , m_numPerFrame(numPerFrame)
+  {
+  }
+
+  template<typename T>
+  OFBool operator()(DPMParametricMapIOD::Frames<T>& frames)
+  {
+    dumpDataType(frames);
+    for (unsigned long f = 0; f < m_Map->getNumberOfFrames(); f++)
+    {
+      COUT << "Dumping info of frame #" << f << ":" << OFendl;
+      FGInterface& fg = m_Map->getFunctionalGroups();
+      dumpRWVM(f, fg);
+      COUT << "Dumping data for frame #" << f << ": " << OFendl;
+      T* frame = frames.getFrame(f);
+      for (unsigned long p = 0; p < m_numPerFrame; p++)
+      {
+        COUT << frame[p] << " ";
+      }
+      COUT << OFendl << OFendl;
+    }
+    return 0;
+  }
+
+  OFBool operator()(OFCondition& cond)
+  {
+    // Avoid compiler warning
+    (void)cond;
+    CERR << "Type of data samples not supported" << OFendl;
+    return OFFalse;
+  }
+
+  OFBool dumpHeader(DPMParametricMapIOD::Frames<Float32>& frames)
+  {
+    // Avoid compiler warning
+    (void)frames;
+    COUT << "File has 32 Bit float data" << OFendl;
+    return OFFalse;
+  }
+
+  OFBool dumpHeader(DPMParametricMapIOD::Frames<Uint16>& frames)
+  {
+    // Avoid compiler warning
+    (void)frames;
+    COUT << "File has 16 Bit unsigned integer data" << OFendl;
+    return OFFalse;
+  }
+
+  OFBool dumpHeader(DPMParametricMapIOD::Frames<Sint16>& frames)
+  {
+    // Avoid compiler warning
+    (void)frames;
+    COUT << "File has 16 Bit signed integer data" << OFendl;
+    return OFFalse;
+  }
+
+  OFBool dumpHeader(DPMParametricMapIOD::Frames<Float64>& frames)
+  {
+    // Avoid compiler warning
+    (void)frames;
+    COUT << "File has 64 Bit float data" << OFendl;
+    return OFTrue;
+  }
+
+  template<typename T>
+  OFBool dumpDataType(DPMParametricMapIOD::Frames<T>& frames)
+  {
+    // Avoid compiler warning
+    (void)frames;
+    CERR << "Type of data samples not supported" << OFendl;
+    return OFFalse;
+  }
+
+  DPMParametricMapIOD* m_Map;
+  unsigned long m_numPerFrame;
+
+};
+
+
+static void dumpGeneral(DPMParametricMapIOD& map)
+{
+  OFString patName, patID, studyUID, studyDate, seriesUID, modality, sopUID;
+  map.getPatient().getPatientName(patName);
+  map.getPatient().getPatientID(patID);
+  map.getStudy().getStudyInstanceUID(studyUID);
+  map.getStudy().getStudyDate(studyDate);
+  map.getSeries().getSeriesInstanceUID(seriesUID);
+  map.getSeries().getModality(modality);
+  map.getSOPCommon().getSOPInstanceUID(sopUID);
+  COUT << "Patient Name       : " << patName << OFendl;
+  COUT << "Patient ID         : " << patID << OFendl;
+  COUT << "Study Instance UID : " << studyUID << OFendl;
+  COUT << "Study Date         : " << studyDate << OFendl;
+  COUT << "Series Instance UID: " << seriesUID << OFendl;
+  COUT << "SOP Instance UID   : " << sopUID << OFendl;
+  COUT << "---------------------------------------------------------------" << OFendl;
+  OFBool isPerFrame;
+  map.getFunctionalGroups().get(0, DcmFGTypes::EFG_REALWORLDVALUEMAPPING, isPerFrame);
+  if (isPerFrame)
+  {
+    COUT << "Real World Value Mapping: Defined per-frame" << OFendl;
+  }
+  else
+  {
+    COUT << "Real World Value Mapping: Defined shared (i.e. single definition for all frames):" << OFendl;
+  }
+  COUT << "---------------------------------------------------------------" << OFendl;
+}
+
+
+int main (int argc, char* argv[])
+{
+  // OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
+  OFString inputFile;
+  if (argc < 2)
+  {
+    CERR << "Usage: dump_pmp <input-file>" << std::endl;
+    return 1;
+  }
+  else
+  {
+    inputFile = argv[1];
+    if (!OFStandard::fileExists(inputFile))
+    {
+      CERR << "Input file " << inputFile << " does not exist " << OFendl;
+      return 1;
+    }
+  }
+
+  OFvariant<OFCondition,DPMParametricMapIOD*> result = DPMParametricMapIOD::loadFile(inputFile);
+  if (OFget<DPMParametricMapIOD*>(&result))
+  {
+    DPMParametricMapIOD* map = *OFget<DPMParametricMapIOD*>(&result);
+    dumpGeneral(*map);
+    COUT << "Dumping #" << map->getNumberOfFrames() << " frames of file " << inputFile << OFendl;
+    Uint16 rows, cols = 0;
+    map->getRows(rows);
+    map->getColumns(cols);
+    unsigned long numPerFrame = rows * cols;
+    DPMParametricMapIOD::FramesType frames = map->getFrames();
+    OFvisit<OFBool>(DumpFramesVisitor(map, numPerFrame), frames);
+  }
+  else
+  {
+    CERR << "Could not load parametric map: " << (*OFget<OFCondition>(&result)).text() << OFendl;
+    exit(1);
+  }
+  exit(0);
+}
+
+\endcode
+
+
+\subsection ExampleCreateParametricMap Creation of Parametric Maps
+
+The Parametric Map class uses a template in order to instantiate the correct pixel
+data type internally, and to offer a dedicated API for that type. Allowed types are
+Uint16, Sint16, Float32 and Float64. The example below demonstrates that the API
+use is the same for all types.
+
+The procedure in the demo (and most of it applies for the general case) is as follows:
+
+\li The main() routine calls test_pmap() four times, each time using a different
+Image Pixel Module as template parameter which makes sure later that the right pixel
+data type is used within the created Parametric Map.
+\li test_pmap() demonstrates well the overall steps to create the map:
+\li Create a new Parametric Map by calling DPMParametricMapIOD::create()
+(via create_pmap()), and then
+\li add shared functional groups,
+\li add dimensions,
+\li and add frames with the related per-frame functional groups to the object.
+\li Finally, general data regarding Patient and Study is set.
+\li Note that the order of these steps in test_pmap() does not matter.
+
+
+Per default, DPMParametricMapIOD::create() creates a new DICOM instance, within
+a brand-new DICOM Series that belongs to a brand-new DICOM Study. All minimal
+information for Patient, Study and Series will be set (e.g. Study, Series and
+SOP Instance UID as well as other information that is handed over to the create()
+call (like Series Number). Patient Name and ID are left empty per default.
+
+Of course, often you might instead want to put the new instance into an existing
+Series, or place the brand-new Series into an existing Study or at least assign
+it to an existing Patient. The easiest way to to do that is to use the call
+import() that imports Patient or even Study, Series and
+Frame of Reference information from an existing file, i.e. place it under an
+existing Patient, Study and/or Series.
+
+When adding information to the Parametric Map using the public API, some basic
+checks are usually performed on the data. Finally, when calling saveFile(), some further
+checks take place, e.g. validating the structure of the functional groups or
+making sure that all required element values are set.
+
+\code
+
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/dcmiod/iodutil.h"
+#include "dcmtk/dcmpmap/dpmparametricmapiod.h"
+#include "dcmtk/dcmfg/fgpixmsr.h"
+#include "dcmtk/dcmfg/fgplanpo.h"
+#include "dcmtk/dcmfg/fgplanor.h"
+#include "dcmtk/dcmfg/fgfracon.h"
+#include "dcmtk/dcmfg/fgframeanatomy.h"
+#include "dcmtk/dcmfg/fgidentpixeltransform.h"
+#include "dcmtk/dcmfg/fgframevoilut.h"
+#include "dcmtk/dcmfg/fgrealworldvaluemapping.h"
+#include "dcmtk/dcmfg/fgparametricmapframetype.h"
+
+const size_t NUM_FRAMES = 10;
+const Uint16 ROWS = 10;
+const Uint16 COLS = 10;
+const unsigned long NUM_VALUES_PER_FRAME = ROWS * COLS;
+
+
+// Set Patient and Study example data
+static void setGenericData(DPMParametricMapIOD& map)
+{
+  map.getPatient().setPatientName("Onken^Michael");
+  map.getPatient().setPatientID("007");
+  map.getStudy().setStudyDate("20160721");
+  map.getStudy().setStudyTime("111200");
+  map.getStudy().setStudyID("4711");
+}
+
+
+// Create Parametric Map
+template<typename ImagePixel>
+static OFvariant<OFCondition,DPMParametricMapIOD> create_pmap()
+{
+  return DPMParametricMapIOD::create<ImagePixel>
+  (
+    "MR",                 // Modality
+    "1",                  // Series Number
+    "1",                  // Instance Number
+    ROWS,
+    COLS,
+    IODEnhGeneralEquipmentModule::EquipmentInfo("Open Connections GmbH", "make_pmp", "SN_0815", "0.1"),
+    ContentIdentificationMacro("1", "PARAMAP_LABEL", "Example description from test program", "Onken^Michael"),
+    "VOLUME",             // Image Flavor
+    "MTT",                // Derived Pixel Contrast
+    DPMTypes::CQ_RESEARCH // Content Qualification
+  );
+}
+
+
+// Add those functional groups that are common for all frames
+static OFCondition addSharedFunctionalGroups(DPMParametricMapIOD& map)
+{
+  FGPixelMeasures pixelMeasures;
+  pixelMeasures.setPixelSpacing("1\\1");
+  pixelMeasures.setSliceThickness("0.1");
+  pixelMeasures.setSpacingBetweenSlices("0.1");
+  FGPlaneOrientationPatient planeOrientPatientFG;
+  planeOrientPatientFG.setImageOrientationPatient("1", "0", "0", "0", "1", "0");
+  FGFrameAnatomy frameAnaFG;
+  frameAnaFG.setLaterality(FGFrameAnatomy::LATERALITY_UNPAIRED);
+  frameAnaFG.getAnatomy().getAnatomicRegion().set("T-A0100", "SRT", "Brain");
+  FGIdentityPixelValueTransformation idTransFG;
+  FGParametricMapFrameType frameTypeFG;
+  frameTypeFG.setFrameType("DERIVED\\PRIMARY\\VOLUME\\MTT");
+
+  // Add groups to Parametric Map
+  OFCondition result;
+  if ((result = map.addForAllFrames(pixelMeasures)).good())
+  if ((result = map.addForAllFrames(planeOrientPatientFG)).good())
+  if ((result = map.addForAllFrames(frameAnaFG)).good())
+  if ((result = map.addForAllFrames(idTransFG)).good())
+    result = map.addForAllFrames(frameTypeFG);
+
+  return result;
+}
+
+
+// Add a single dimension for demonstration purposes based on "Image Position Patient"
+static OFCondition addDimensions(DPMParametricMapIOD& map)
+{
+  IODMultiframeDimensionModule& mod = map.getIODMultiframeDimensionModule();
+  OFString dimUID = DcmIODUtil::createUID(0);
+  OFCondition result = mod.addDimensionIndex(DCM_ImagePositionPatient, dimUID, DCM_RealWorldValueMappingSequence, "Frame position");
+  return result;
+}
+
+
+// Add one frame to parametric map. Frame number is used to compute some
+// varying example data values differing from frame to frame
+template <typename PixelType>
+static OFCondition addFrame(DPMParametricMapIOD& map,
+                            const unsigned long frameNo)
+{
+  // Create example data
+
+  OFVector<PixelType> data(NUM_VALUES_PER_FRAME);
+  for (size_t n=0; n < data.size(); ++n)
+  {
+    data[n] = (n*frameNo+n) + (0.1 * (frameNo % 10));
+  }
+
+  Uint16 rows, cols;
+  OFCondition cond = map.getImagePixel().getRows(rows);
+  cond = map.getImagePixel().getColumns(cols);
+
+  // Create functional groups
+  OFVector<FGBase*> groups;
+  OFunique_ptr<FGPlanePosPatient> fgPlanePos(new FGPlanePosPatient);
+  OFunique_ptr<FGFrameContent > fgFracon(new FGFrameContent);
+  OFunique_ptr<FGRealWorldValueMapping> fgRVWM(new FGRealWorldValueMapping());
+  FGRealWorldValueMapping::RWVMItem* rvwmItemSimple = new FGRealWorldValueMapping::RWVMItem();
+  if (!fgPlanePos  || !fgFracon || !fgRVWM || !rvwmItemSimple )
+    return EC_MemoryExhausted;
+
+  // Fill in functional group values
+
+  // Real World Value Mapping
+  rvwmItemSimple->setRealWorldValueSlope(10);
+  rvwmItemSimple->setRealWorldValueIntercept(0);
+  rvwmItemSimple->setDoubleFloatRealWorldValueFirstValueMapped(0.12345);
+  rvwmItemSimple->setDoubleFloatRealWorldValueLastValueMapped(98.7654);
+  rvwmItemSimple->getMeasurementUnitsCode().set("{counts}/s", "UCUM", "Counts per second");
+  rvwmItemSimple->setLUTExplanation("We are mapping trash to junk.");
+  rvwmItemSimple->setLUTLabel("Just testing");
+  CodeSequenceMacro* qCodeName = new CodeSequenceMacro("G-C1C6", "SRT", "Quantity");
+  CodeSequenceMacro* qSpec = new CodeSequenceMacro("110805", "SRT", "T2 Weighted MR Signal Intensity");
+  ContentItemMacro* quantity = new ContentItemMacro;
+  if (!quantity || !qSpec || !quantity)
+    return EC_MemoryExhausted;
+  quantity->getEntireConceptNameCodeSequence().push_back(qCodeName);
+  quantity->getEntireConceptCodeSequence().push_back(qSpec);
+  rvwmItemSimple->getEntireQuantityDefinitionSequence().push_back(quantity);
+  quantity->setValueType(ContentItemMacro::VT_CODE);
+  fgRVWM->getRealWorldValueMapping().push_back(rvwmItemSimple);
+
+  // Plane Position
+  OFStringStream ss;
+  ss << frameNo;
+  OFSTRINGSTREAM_GETOFSTRING(ss, framestr) // convert number to string
+  fgPlanePos->setImagePositionPatient("0", "0", framestr);
+
+  // Frame Content
+  OFCondition result = fgFracon->setDimensionIndexValues(frameNo+1 /* value within dimension */, 0 /* first dimension */);
+
+  // Add frame wit related groups
+  if (result.good())
+  {
+    // Add frame
+    groups.push_back(fgPlanePos.get());
+    groups.push_back(fgFracon.get());
+    groups.push_back(fgRVWM.get());
+    groups.push_back(fgPlanePos.get());
+    DPMParametricMapIOD::FramesType frames = map.getFrames();
+    result = OFget<DPMParametricMapIOD::Frames<PixelType> >(&frames)->addFrame(&*data.begin(), NUM_VALUES_PER_FRAME, groups);
+  }
+
+  return result;
+}
+
+
+// Main routine that creates Parametric Maps
+template<typename ImagePixel>
+static OFCondition test_pmap(const OFString& saveDestination)
+{
+  OFvariant<OFCondition,DPMParametricMapIOD> obj = create_pmap<ImagePixel>();
+  if (OFCondition* pCondition = OFget<OFCondition>(&obj))
+    return *pCondition;
+
+  DPMParametricMapIOD& map = *OFget<DPMParametricMapIOD>(&obj);
+
+  OFCondition result;
+  if ((result = addSharedFunctionalGroups(map)).good())
+  if ((result = addDimensions(map)).good())
+  {
+    // Add frames (parametric map data), and per-frame functional groups
+    for (unsigned long f = 0; result.good() && (f < NUM_FRAMES); f++)
+      result = addFrame<OFTypename ImagePixel::value_type>(map, f);
+  }
+
+  // Set some generic data (keep dciodvfy happy on DICOMDIR warnings)
+  if (result.good())
+  {
+    setGenericData(map);
+  }
+
+  // Save
+  if (result.good())
+  {
+    return map.saveFile(saveDestination.c_str());
+  }
+  else
+  {
+    return result;
+  }
+}
+
+
+int main (int argc, char* argv[])
+{
+  OFString outputDir;
+  if (argc < 2)
+  {
+    CERR << "Usage: make_pmp <output-dir>" << std::endl;
+    return 1;
+  }
+  else
+  {
+    outputDir = argv[1];
+    if (!OFStandard::dirExists(outputDir))
+    {
+      CERR << "Output directory " << outputDir << " does not exist " << OFendl;
+      return 1;
+    }
+  }
+
+  //OFLog::configure(OFLogger::DEBUG_LOG_LEVEL);
+
+  // Test all possible parametric map types (signed and unsigned integer, floating point
+  // and double floating point)
+
+  test_pmap<IODImagePixelModule<Uint16> >(outputDir + "/uint_paramap.dcm");
+  test_pmap<IODImagePixelModule<Sint16> >(outputDir + "/sint_paramap.dcm");
+  test_pmap<IODFloatingPointImagePixelModule>(outputDir + "/float_paramap.dcm");
+  test_pmap<IODDoubleFloatingPointImagePixelModule>(outputDir + "/double_paramap.dcm");
+
+  return 0;
+}
+
+\endcode
+
+*/

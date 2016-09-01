@@ -70,8 +70,7 @@ OFString IODUSFoRModule::getName() const
 
 IODUSFoRModule::~IODUSFoRModule()
 {
-  // clear rules from rule set
-  clearData();
+  // Nothing to do
 }
 
 

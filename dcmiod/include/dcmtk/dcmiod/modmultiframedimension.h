@@ -261,7 +261,8 @@ public:
   /** Convenience method to add Dimension Index.
    *  @param  dimensionIndexPointer The Dimension Index Pointer attribute
    *  @param  dimensionOrganizationUID The Dimension Organization UID of the dimension organization
-   *          the pointer refers to
+   *          the pointer refers to. If UID does not exist yet (in the Dimension
+   *          Organization Sequence, it is created there automatically).
    *  @param  functionalGroupPointer The functional group where the pointer attribute can be found
    *  @param  dimensionDescriptionLabel The description label of this dimension (optional)
    *  @param  dimensionIndexPrivateCreator The private creator of the Dimension Index Pointer

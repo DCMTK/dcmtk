@@ -20,14 +20,13 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
 
 LOCALDEFS =
 
-objs =  cielabutil.o iodcommn.o  iodmacro.o iodimage.o iodrules.o iodutil.o \
-	iodtypes.o modacquisitioncontext.o modbase.o modcommoninstanceref.o \
+objs =  cielabutil.o iodcommn.o  iodcontentitemmacro.o iodmacro.o iodreferences.o iodrules.o \
+	iodtypes.o iodutil.o modacquisitioncontext.o modbase.o modcommoninstanceref.o \
 	modenhequipment.o modenhusimage.o modenhusseries.o modequipment.o \
-	modfor.o modgeneralimage.o modgeneralseries.o modgeneralstudy.o \
-	modhelp.o  modimagepixel.o  modmultiframefg.o  \
-	modmultiframedimension.o  modpatient.o  modpatientstudy.o \
-	modsegmentationseries.o  modsopcommon.o  modsynchronization.o \
-	modusfor.o
+	modfloatingpointimagepixel.o modfor.o modgeneralimage.o modgeneralseries.o \
+	modgeneralstudy.o modhelp.o  modimagepixelbase.o modimagepixel.o modmultiframedimension.o \
+	modmultiframefg.o modpatient.o  modpatientstudy.o modsegmentationseries.o modsopcommon.o \
+	modsynchronization.o modusfor.o
 
 
 library = libdcmiod.$(LIBEXT)

@@ -67,7 +67,7 @@ void IODEnhGeneralEquipmentModule::resetRules()
 
 IODEnhGeneralEquipmentModule::~IODEnhGeneralEquipmentModule()
 {
-  clearData();
+  // Nothing to do
 }
 
 

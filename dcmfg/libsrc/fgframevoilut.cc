@@ -67,7 +67,7 @@ void FGFrameVOILUT::clearData()
 
 OFCondition FGFrameVOILUT::check() const
 {
-  // TODO
+  // For now attribute-based checks in read() and write() are sufficient
   return EC_Normal;
 }
 

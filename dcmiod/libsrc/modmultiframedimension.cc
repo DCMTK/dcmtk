@@ -70,23 +70,48 @@ OFCondition IODMultiframeDimensionModule::addDimensionIndex(const DcmTagKey& dim
     return IOD_EC_MissingAttribute;
   }
 
+  // Add Dimension Organization by its UID if such organization does not exist yet
+  OFVector<DimensionOrganizationItem*>::iterator it = m_DimensionOrganizationSequence.begin();
+  while (it != m_DimensionOrganizationSequence.end())
+  {
+    OFString val;
+    (*it)->getDimensionOrganizationUID(val);
+    if (val == dimensionOrganizationUID)
+    {
+      break;
+    }
+    it++;
+  }
+  OFCondition result;
+  if (it == m_DimensionOrganizationSequence.end())
+  {
+    DimensionOrganizationItem* item = new DimensionOrganizationItem;
+    if (item == NULL)
+    {
+      return EC_MemoryExhausted;
+    }
+    result = item->setDimensionOrganizationUID(dimensionOrganizationUID);
+    if (result.bad())
+      return result;
+    m_DimensionOrganizationSequence.push_back(item);
+  }
+
+  // Create dimension and add it to this object
   DimensionIndexItem* dim = new DimensionIndexItem();
   if (!dim)
     return EC_MemoryExhausted;
 
-  OFCondition result = dim->setDimensionOrganizationUID(dimensionOrganizationUID);
+  result = dim->setDimensionOrganizationUID(dimensionOrganizationUID);
   if (result.good()) result = dim->setFunctionalGroupPointer(functionalGroupPointer);
   if (result.good()) result = dim->setDimensionIndexPointer(dimensionIndexPointer);
   if (result.good() && !dimensionIndexPrivateCreator.empty()) dim->setDimensionIndexPrivateCreator(dimensionIndexPrivateCreator);
   if (result.good() && !functionalGroupPrivateCreator.empty()) dim->setFunctionalGroupPrivateCreator(functionalGroupPrivateCreator);
   if (result.good() && !dimensionDescriptionLabel.empty()) dim->setDimensionDescriptionLabel(dimensionDescriptionLabel);
-
   if (result.bad())
   {
     DCMIOD_ERROR("Could not add Dimension Index: Invalid data values");
     delete dim;
   }
-
   m_DimensionIndexSequence.push_back(dim);
 
   return result;

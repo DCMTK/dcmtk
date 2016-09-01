@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,9 +23,10 @@
 #define MODIMAGEPIXEL_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmiod/modbase.h"
+#include "dcmtk/dcmiod/modimagepixelbase.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
-/** Class representing the General Image Module:
+/** Class representing the Image Pixel Module:
  *
  *  Samples Per Pixel: (US, 1, 1)
  *  Photometric Interpretation (CS, 1, 1)
@@ -40,10 +41,16 @@
  *  Pixel Aspect Ratio: (IS,  2, 1C)
  *  ICC Profile: (OB, 1, 3)
  */
-class DCMTK_DCMIOD_EXPORT IODImagePixelModule : public IODModule
+template<typename T>
+class DCMTK_DCMIOD_EXPORT IODImagePixelModule : public IODImagePixelBase
 {
 
 public:
+
+  /// Data type of pixels
+  typedef T value_type;
+
+  static const DcmTagKey pixel_data_tag;
 
   /** Constructor
    *  @param  item The item to be used for data storage. If NULL, the
@@ -62,6 +69,21 @@ public:
    */
   virtual ~IODImagePixelModule();
 
+  /** Read attributes from given item into this class
+   *  @param source  The source to read from
+   *  @param clearOldData If OFTrue, old data is cleared before reading. Otherwise
+   *         old data is overwritten (or amended)
+   *  @result EC_Normal if reading was successful, error otherwise
+   */
+  virtual OFCondition read(DcmItem& source,
+                           const OFBool clearOldData = OFTrue);
+
+  /** Write attributes from this class into given item
+   *  @param  destination The item to write to
+   *  @result EC_Normal if writing was successful, error otherwise
+   */
+  virtual OFCondition write(DcmItem& destination);
+
   /** Resets rules to their original values
    */
   virtual void resetRules();
@@ -71,44 +93,10 @@ public:
    */
   virtual OFString getName() const;
 
-  /** Get Samples per Pixel
-   *  @param  value Reference to variable in which the value should be stored
-   *  @param  pos Index of the value to get (0..vm-1)
-   *  @return EC_Normal if successful, an error code otherwise
+  /** Get pixel data type, always returns DataType::INTEGER for this class.
+   *  @return The data type of the pixel data
    */
-  virtual OFCondition getSamplesPerPixel(Uint16 &value,
-                                         const signed long pos = 0);
-
-  /** Get Photometric Interpretation
-   *  @param  value Reference to variable in which the value should be stored
-   *  @param  pos Index of the value to get (0..vm-1)
-   *  @return EC_Normal if successful, an error code otherwise
-  */
-  virtual OFCondition getPhotometricInterpretation(OFString&value,
-                                                  const signed long pos = 0);
-
-  /** Get Rows
-   *  @param  value Reference to variable in which the value should be stored
-   *  @param  pos Index of the value to get (0..vm-1)
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition getRows(Uint16& value,
-                              const signed long pos = 0);
-
-  /** Get Columns
-   *  @param  value Reference to variable in which the value should be stored
-   *  @param  pos Index of the value to get (0..vm-1)
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition getColumns(Uint16& value,
-                                  const signed long pos = 0);
-   /** Get Bits Allocated
-    *  @param  value Reference to variable in which the value should be stored
-    *  @param  pos Index of the value to get (0..vm-1)
-    *  @return EC_Normal if successful, an error code otherwise
-    */
-  virtual OFCondition getBitsAllocated(Uint16& value,
-                                        const signed long pos = 0);
+  virtual DataType getDataType() const;
 
    /** Get Bits Stored
     *  @param  value Reference to variable in which the value should be stored
@@ -142,21 +130,13 @@ public:
   virtual OFCondition getPlanarConfiguration(Uint16& value,
                                              const signed long pos = 0);
 
-  /** Get Pixel Aspect Ratio
-   *  @param  value Reference to variable in which the value should be stored
-   *  @param  pos Index of the value to get (0..vm-1)
-   *  @return EC_Normal if successful, an error code otherwise
-  */
-  virtual OFCondition getPixelAspectRatio(Uint16& value,
-                                          const signed long pos = 0);
-
   /** Get ICC Profile
    *  @param  values Reference to variable in which the values should be stored
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition getICCProfile(OFVector<Uint8>& values);
 
-  /** set Samples per Pixel
+  /** Set Samples per Pixel
    *  @param  value Reference to variable in which the value should be stored
    *  @param  checkValue Check 'value' for conformance with VR (US) and VM (1) if enabled
    *  @return EC_Normal if successful, an error code otherwise
@@ -172,23 +152,6 @@ public:
   virtual OFCondition setPhotometricInterpretation(const OFString& value,
                                                    const OFBool checkValue = OFTrue);
 
-  /** Set Rows
-   *  @param  value Reference to variable in which the value should be stored
-   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
-   *          with other setter functions).
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition setRows(const Uint16 value,
-                              const OFBool checkValue = OFTrue);
-
-  /** Set Columns
-   *  @param  value Reference to variable in which the value should be stored
-   *  @param  checkValue Check 'value'. Not evaluated (here for consistency
-   *          with other setter functions).
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition setColumns(const Uint16 value,
-                                 const OFBool checkValue = OFTrue);
   /** Set Bits Allocated
    *  @param  value Reference to variable in which the value should be stored
    *  @param  checkValue Check 'value'. Not evaluated (here for consistency
@@ -234,16 +197,6 @@ public:
   virtual OFCondition setPlanarConfiguration(const Uint16 value,
                                              const OFBool checkValue = OFTrue);
 
-  /** Set Pixel Aspect Ratio
-   *  @param  verticalPixelSize The vertical pixel size (no unit)
-   *  @param  horizontalPixelSize The horizontal pixel size (no unit)
-   *  @param  checkValue Check 'value' for conformance with VR (IS)
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition setPixelAspectRatio(const OFString& verticalPixelSize,
-                                          const OFString& horizontalPixelSize,
-                                          const OFBool checkValue = OFTrue);
-
   /** Set ICC Profile
    *  @param  values Reference to variable in which the values should be stored
    *  @param  length Length of array provided in values parameter
@@ -251,6 +204,7 @@ public:
    */
   virtual OFCondition setICCProfile(const Uint8* values,
                                     const size_t length);
+
 private:
 
   /// This module's name ("ImagePixelModule")

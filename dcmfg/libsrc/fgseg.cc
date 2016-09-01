@@ -57,7 +57,7 @@ void FGSegmentation::clearData()
 
 OFCondition FGSegmentation::check() const
 {
-  // TODO
+  // Checks in read() and write() are sufficient for now
   return EC_Normal;
 }
 

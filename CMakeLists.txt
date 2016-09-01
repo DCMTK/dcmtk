@@ -15,7 +15,7 @@ INCLUDE(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
 
 SET(DCMTK_MODULES ofstd oflog dcmdata dcmimgle
   dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr
-  dcmsign dcmwlm dcmqrdb dcmpstat dcmrt dcmiod dcmfg dcmseg dcmtract
+  dcmsign dcmwlm dcmqrdb dcmpstat dcmrt dcmiod dcmfg dcmseg dcmtract dcmpmap
   CACHE STRING "List of modules that should be built.")
 
 #-----------------------------------------------------------------------------

@@ -45,7 +45,7 @@ IODCommonInstanceReferenceModule::IODCommonInstanceReferenceModule()
 
 IODCommonInstanceReferenceModule::~IODCommonInstanceReferenceModule()
 {
-  clearData();
+  freeMemory();
 }
 
 
@@ -69,10 +69,8 @@ OFVector<IODCommonInstanceReferenceModule::StudiesOtherInstancesItem *> & IODCom
 
 void IODCommonInstanceReferenceModule::clearData()
 {
-  DcmIODUtil::freeContainer(m_StudiesContainingOtherReferencedInstancesSequence);
-  DcmIODUtil::freeContainer(m_ReferenceSeriesItems);
+  freeMemory();
 }
-
 
 
 OFCondition IODCommonInstanceReferenceModule::read(DcmItem& source,
@@ -202,7 +200,6 @@ void IODCommonInstanceReferenceModule::resetRules()
   m_Rules->addRule(new IODRule(DCM_ReferencedSeriesSequence, "1-n", "1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_StudiesContainingOtherReferencedInstancesSequence, "1-n", "1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
-
 
 
 OFCondition IODCommonInstanceReferenceModule::addSeriesReference(
@@ -347,4 +344,11 @@ OFCondition IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::setStud
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_StudyInstanceUID, value);
   return result;
+}
+
+
+void IODCommonInstanceReferenceModule::freeMemory()
+{
+  DcmIODUtil::freeContainer(m_StudiesContainingOtherReferencedInstancesSequence);
+  DcmIODUtil::freeContainer(m_ReferenceSeriesItems);
 }

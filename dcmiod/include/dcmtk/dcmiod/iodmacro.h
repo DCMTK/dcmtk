@@ -57,7 +57,6 @@ public:
    */
   CodeSequenceMacro(const CodeSequenceMacro& rhs);
 
-
   /** Convenience constructor to set initial values
    *  @param  item The item to be used for data storage. If NULL, the
    *          class creates an empty data container.
@@ -136,6 +135,14 @@ public:
     */
   virtual OFCondition getCodeMeaning(OFString &value,
                                      const signed long pos = 0);
+
+  /** Returns whether code is empty, i.e. no component of the Code Sequence Macro
+   *  is set. This can be used in order to find out whether someone actually
+   *  wanted to fill in a valid code as opposed of leaving it unset.
+   *  @return OFTrue if no component of this class is set, OFFalse otherwise.
+   */
+  virtual OFBool empty();
+
   /** Set Code Value
    *  @param  value The value to set
    *  @param  checkValue If OFTrue, VM and VR of value are checked
@@ -182,6 +189,8 @@ public:
                           const OFString &meaning,
                           const OFString &schemeVersion = "",
                           const OFBool checkValue = OFTrue);
+
+  virtual OFString toString();
 
 };
 
@@ -302,6 +311,9 @@ public:
 
 private:
 
+  /// Private undefined default constructor
+  CodeWithModifiers();
+
   /// Items of Modifier Code Sequence
   OFVector<CodeSequenceMacro*> m_Modifiers;
 
@@ -314,6 +326,7 @@ private:
   /// The sequence tag key that contains the modifier codes
   DcmTagKey m_CodeModifierSeq;
 };
+
 
 
 /** Class implementing the SOP Instance Reference Macro
@@ -555,8 +568,6 @@ private:
 
 
 /** Class representing the Image SOP Instance Reference Macro
- *  TODO: Change implementation to use IODComponent class inherited anyway
- *  from SOPInstanceReferenceMacro
  */
 class DCMTK_DCMIOD_EXPORT ImageSOPInstanceReferenceMacro : public SOPInstanceReferenceMacro
 {
@@ -690,146 +701,9 @@ private:
 };
 
 
-/** Class representing an item within the the Primary Anatomic Structure Macro
- */
-class DCMTK_DCMIOD_EXPORT PrimaryAnatomicStructureMacroItem
-{
-
-public:
-
-  /** Constructor
-   */
-  PrimaryAnatomicStructureMacroItem();
-
-  /** Copy constructor
-   *  @param  rhs The item to copy from
-   */
-  PrimaryAnatomicStructureMacroItem(const PrimaryAnatomicStructureMacroItem& rhs);
-
-  /** Virtual destructor
-   */
-  virtual ~PrimaryAnatomicStructureMacroItem();
-
-  /** Clear (removes) all attributes handled by the modules of this component.
-   */
-  virtual void clearData();
-
-  /** Check whether this component's data satisfies the underlying
-   *  rules
-   *  @param  quiet If OFTrue, not error / warning messages will be produced.
-   *          Only the returned error code will indicate error or OK. Per
-   *          default, logging output is produced.
-   *  @result EC_Normal if rules are satisfied, error otherwise
-   */
-  virtual OFCondition check(const OFBool quiet = OFFalse);
-
-  /** Return the Anatomic Structure Code
-   *  @return Reference to the anatomic structure code
-   */
-  virtual CodeSequenceMacro& getAnatomicStructure();
-
-  /** Return the Anatomic Structure Modifier Codes
-   *  @return The Anatomic Structure Modifier Codes
-   */
-  virtual OFVector<CodeSequenceMacro*>& getAnatomicStructureModifier();
-
-  /** Reads Primary Anatomic Region Sequence Item from given item
-   *  @param  source The item to read from
-   *  @param  clearOldData If OFTrue, old data is cleared first, otherwise it is
-   *          kept where not overwritten
-   *  @return EC_Normal if successful, error otherwise
-   */
-  virtual OFCondition read(DcmItem& source,
-                           const OFBool clearOldData = OFTrue);
-
-  /** Write Anatomic Region Sequence Item to given item
-   * @param  item The item to write to
-   * @return EC_Normal if successful, error otherwise
-   */
-  virtual OFCondition write(DcmItem& item);
-
-  /** Assignment operator (performs deep copy)
-   *  @param  rhs The item to copy from
-   *  @return result
-   */
-  PrimaryAnatomicStructureMacroItem& operator=(const PrimaryAnatomicStructureMacroItem &rhs);
-
-private:
-
-  /// Primary Anatomic Structure Sequence Item
-  CodeSequenceMacro m_AnatomicStructure;
-
-  /// Primary Anatomic Structure Structure Modifier Sequence (SQ, 1-n, 3)
-  OFVector<CodeSequenceMacro*> m_AnatomicStructureModifier;
-
-};
-
-
 /** Class representing the Primary Anatomic Structure Macro
  */
-class DCMTK_DCMIOD_EXPORT PrimaryAnatomicStructureMacro
-{
-
-public:
-
-  /** Constructor
-   */
-  PrimaryAnatomicStructureMacro();
-
-  /** Copy constructor
-   *  @param  rhs The macro to copy from
-   */
-  PrimaryAnatomicStructureMacro(const PrimaryAnatomicStructureMacro& rhs);
-
-  /** Virtual destructor
-   */
-  virtual ~PrimaryAnatomicStructureMacro();
-
-  /** Clear (removes) all attributes handled by the modules of this component.
-   */
-  virtual void clearData();
-
-  /** Check whether this component's data satisfies the underlying
-   *  rules
-   *  @param  quiet If OFTrue, not error / warning messages will be produced.
-   *          Only the returned error code will indicate error or OK. Per
-   *          default, logging output is produced.
-   *  @result EC_Normal if rules are satisfied, error otherwise
-   */
-  virtual OFCondition check(const OFBool quiet = OFFalse);
-
-  /** Return Primary Anatomic Structure items
-   *  @return Reference to items of this macro
-   */
-  virtual OFVector<PrimaryAnatomicStructureMacroItem*>& getPrimaryAnatomicStructure();
-
-  /** Reads Primary Anatomic Region Sequence (i.e.\ this macro) from given item
-   *  @param  source The item to read from
-   *  @param  clearOldData If OFTrue, old data is cleared first, otherwise it is
-   *          kept where not overwritten
-   *  @return EC_Normal if reading was fine, error otherwise
-   */
-  virtual OFCondition read(DcmItem& source,
-                           const OFBool clearOldData = OFTrue);
-
-  /** Write Anatomic Region Sequence (i.e.\ this macro) to given item
-   *  @param  item The item to write to
-   *  @return EC_Normal if writing was fine, error otherwise
-   */
-  virtual OFCondition write(DcmItem& item);
-
-  /** Assignment operator
-   *  @param  rhs The macro to copy from
-   *  @result Reference to "this" object
-   */
-  PrimaryAnatomicStructureMacro& operator=(const PrimaryAnatomicStructureMacro &rhs);
-
-private:
-
-  /// Primary Anatomic Structure Sequence (SQ, 0-1, 3)
-  OFVector<PrimaryAnatomicStructureMacroItem*> m_PrimaryAnatomicStructure;
-};
-
+typedef CodeWithModifiers PrimaryAnatomicStructureMacro;
 
 /** Class representing the General Anatomy Mandatory or Optional Macro
  */
@@ -847,7 +721,7 @@ public:
    */
   GeneralAnatomyMacro(const OFString& type);
 
-  /** Copy constructor
+  /** Copy constructor, creates deep copy.
    *  @param  rhs The macro to copy from
    */
   GeneralAnatomyMacro(const GeneralAnatomyMacro& rhs);
@@ -907,10 +781,24 @@ public:
    */
   GeneralAnatomyMacro& operator=(const GeneralAnatomyMacro &rhs);
 
+  /** Comparison operator that compares the normalized value of this object
+   *  with a given object of the same type, i.e.\ the elements within both
+   *  objects (this and rhs parameter) are compared by value.
+   *  @param  rhs the right hand side of the comparison
+   *  @return 0 if the object values are equal.
+   *          -1 if either the value of the first component that does not match
+   *          is lower in the rhs object, or all compared components match
+   *          but the rhs component is shorter.
+   *          1 if either the value of the first component that does not match
+   *          is greater in the rhs object, or all compared components match
+   *          but the rhs component is longer.
+   */
+  virtual int compare(const GeneralAnatomyMacro& rhs) const;
+
 private:
 
   /// Type (1,2,3) of Anatomic Region Sequence.
-  OFString m_Type; // TODO: Make enum?
+  OFString m_Type;
 
   /// Anatomic Region Sequence (SQ, 1, 1) (Code Sequence Macro within item of
   /// Anatomic Region Sequence))
@@ -1321,7 +1209,7 @@ private:
 
 /** Class representing the HL7 V2 Hierarchic Designator Macro
  */
-class HL7HierarchicDesignatorMacro : public IODComponent
+class DCMTK_DCMIOD_EXPORT HL7HierarchicDesignatorMacro : public IODComponent
 {
 
 public:
@@ -1405,7 +1293,7 @@ public:
 /** Class representing the Mandatory View and Slice Progression Direction Macro
  */
 
-class MandatoryViewAndSliceProgressionDirectionMacro : public IODComponent
+class DCMTK_DCMIOD_EXPORT MandatoryViewAndSliceProgressionDirectionMacro : public IODComponent
 {
 
 public:

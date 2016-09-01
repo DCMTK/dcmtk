@@ -74,7 +74,7 @@ void FGImageDataType::clearData()
 
 OFCondition FGImageDataType::check() const
 {
-  // TODO
+   // For now, checks in read() and write() are sufficient
   return EC_Normal;
 }
 
@@ -227,6 +227,19 @@ OFCondition FGImageDataType::write(DcmItem& item)
   } else if (!m_ZeroVelocityPixelValueUS.isEmpty())
   {
     DcmIODUtil::copyElementToDataset(result, *seqItem, m_ZeroVelocityPixelValueUS, "1", "1C", "ImageDataTypeMacro");
+  }
+  // Zero Velocity Pixel Value is required in case Data Type is TISSUE_VELOCITY,
+  // FLOW_VELOCITY or DIRECTION_POWER.
+  else
+  {
+    OFString val;
+    m_DataType.getOFStringArray(val);
+    if ( (val == "TISSUE_VELOCITY") || (val == "FLOW_VELOCITY") ||  (val == "DIRECTION_POWER") )
+    {
+      DCMFG_ERROR("Missing value for Zero Velocity Pixel Value (required if Data Type has" <<
+                  "the value TISSUE_VELOCITY, FLOW_VELOCITY or DIRECTION_POWER");
+      return FG_EC_InvalidData;
+    }
   }
 
   return result;

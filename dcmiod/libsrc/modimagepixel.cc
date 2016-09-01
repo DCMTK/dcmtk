@@ -27,38 +27,46 @@
 #include "dcmtk/dcmdata/dcvris.h"
 #include "dcmtk/dcmiod/iodutil.h"
 
-const OFString IODImagePixelModule::m_ModuleName = "ImagePixelModule";
+template<typename T>
+const OFString IODImagePixelModule<T>::m_ModuleName = "ImagePixelModule";
+template<typename T>
+const DcmTagKey IODImagePixelModule<T>::pixel_data_tag = DCM_PixelData;
 
-
-IODImagePixelModule::IODImagePixelModule(OFshared_ptr<DcmItem> item,
-                                         OFshared_ptr<IODRules> rules)
-: IODModule(item, rules)
+template<typename T>
+IODImagePixelModule<T>::IODImagePixelModule(OFshared_ptr<DcmItem> item,
+                                            OFshared_ptr<IODRules> rules)
+: IODImagePixelBase(item, rules)
 {
   // reset element rules
   resetRules();
 }
 
-
-OFString IODImagePixelModule::getName() const
+template<typename T>
+OFString IODImagePixelModule<T>::getName() const
 {
   return m_ModuleName;
 }
 
-
-IODImagePixelModule::IODImagePixelModule()
-: IODModule()
+template<typename T>
+IODImagePixelModule<T>::IODImagePixelModule()
+: IODImagePixelBase()
 {
   resetRules();
 }
 
+template<typename T>
+IODImagePixelModule<T>::~IODImagePixelModule()
+{
+}
 
-void IODImagePixelModule::resetRules()
+template<typename T>
+void IODImagePixelModule<T>::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
   m_Rules->addRule(new IODRule(DCM_SamplesPerPixel, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_PhotometricInterpretation, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_Rows, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_Columns, "1", "1n", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Columns, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_BitsAllocated, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_BitsStored, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_HighBit, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
@@ -68,83 +76,66 @@ void IODImagePixelModule::resetRules()
   m_Rules->addRule(new IODRule(DCM_ICCProfile, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
 }
 
-
-IODImagePixelModule::~IODImagePixelModule()
+template<typename T>
+OFCondition IODImagePixelModule<T>::read(DcmItem& source,
+                                         const OFBool clearOldData)
 {
+  // Read common attributes
+  IODImagePixelBase::read(source, clearOldData);
+  // Read extra attributes of Image Pixel Module
+  IODModule::read(source, clearOldData);
+  return EC_Normal;
 }
 
-
-OFCondition IODImagePixelModule::getSamplesPerPixel(Uint16 &value,
-                                         const signed long pos)
+template<typename T>
+OFCondition IODImagePixelModule<T>::write(DcmItem& destination)
 {
-  return m_Item->findAndGetUint16(DCM_SamplesPerPixel, value, pos);
+  // Write common attributes
+  OFCondition result = IODImagePixelBase::write(destination);
+  // Write extra attributes of Image Pixel Module
+  if (result.good())
+  {
+    IODModule::write(destination);
+  }
+  return result;
 }
 
-
-OFCondition IODImagePixelModule::getPhotometricInterpretation(OFString&value,
-                                                      const signed long pos)
+template<typename T>
+IODImagePixelBase::DataType IODImagePixelModule<T>::getDataType() const
 {
-  return DcmIODUtil::getStringValueFromItem(DCM_PhotometricInterpretation, *m_Item, value, pos);
+  return IODImagePixelBase::DATA_TYPE_INTEGER;
 }
 
-
-OFCondition IODImagePixelModule::getRows(Uint16& value,
-                                 const signed long pos)
-{
-  return m_Item->findAndGetUint16(DCM_Rows, value, pos);
-}
-
-
-OFCondition IODImagePixelModule::getColumns(Uint16& value,
-                                    const signed long pos)
-{
-  return m_Item->findAndGetUint16(DCM_Columns, value, pos);
-}
-
-
-OFCondition IODImagePixelModule::getBitsAllocated(Uint16& value,
-                                          const signed long pos)
-{
-  return m_Item->findAndGetUint16(DCM_BitsAllocated, value, pos);
-}
-
-
-OFCondition IODImagePixelModule::getBitsStored(Uint16& value,
-                                       const signed long pos)
+template<typename T>
+OFCondition IODImagePixelModule<T>::getBitsStored(Uint16& value,
+                                                  const signed long pos)
 {
   return m_Item->findAndGetUint16(DCM_BitsStored, value, pos);
 }
 
-
-OFCondition IODImagePixelModule::getHighBit(Uint16& value,
-                                    const signed long pos)
+template<typename T>
+OFCondition IODImagePixelModule<T>::getHighBit(Uint16& value,
+                                            const signed long pos)
 {
   return m_Item->findAndGetUint16(DCM_HighBit, value, pos);
 }
 
-
-OFCondition IODImagePixelModule::getPixelRepresentation(Uint16& value,
-                                                  const signed long pos)
+template<typename T>
+OFCondition IODImagePixelModule<T>::getPixelRepresentation(Uint16& value,
+                                                        const signed long pos)
 {
   return m_Item->findAndGetUint16(DCM_PixelRepresentation, value, pos);
 }
 
-
-OFCondition IODImagePixelModule::getPlanarConfiguration(Uint16& value,
-                                                const signed long pos)
+template<typename T>
+OFCondition IODImagePixelModule<T>::getPlanarConfiguration(Uint16& value,
+                                                         const signed long pos)
 {
   return m_Item->findAndGetUint16(DCM_PlanarConfiguration, value, pos);
 }
 
-
-OFCondition IODImagePixelModule::getPixelAspectRatio(Uint16& value,
-                                            const signed long pos)
-{
-  return m_Item->findAndGetUint16(DCM_PixelAspectRatio, value, pos);
-}
-
-
-OFCondition IODImagePixelModule::getICCProfile(OFVector<Uint8>& values)
+template<typename T>
+OFCondition IODImagePixelModule<T>::getICCProfile(OFVector<Uint8>& values)
 {
   DcmElement* elem = NULL;
   OFCondition result = m_Item->findAndGetElement(DCM_ICCProfile, elem);
@@ -160,8 +151,8 @@ OFCondition IODImagePixelModule::getICCProfile(OFVector<Uint8>& values)
     return EC_TagNotFound;
 }
 
-
-OFCondition IODImagePixelModule::setSamplesPerPixel(const Uint16 value,
+template<typename T>
+OFCondition IODImagePixelModule<T>::setSamplesPerPixel(const Uint16 value,
                                                     const OFBool checkValue)
 {
   OFCondition result = EC_Normal;
@@ -183,12 +174,11 @@ OFCondition IODImagePixelModule::setSamplesPerPixel(const Uint16 value,
   if (result.good() )
     result = m_Item->putAndInsertUint16(DCM_SamplesPerPixel, value);
 
-  // TODO: Check consistency with photometric interpretation
   return result;
 }
 
-
-OFCondition IODImagePixelModule::setPhotometricInterpretation(const OFString& value,
+template<typename T>
+OFCondition IODImagePixelModule<T>::setPhotometricInterpretation(const OFString& value,
                                                               const OFBool checkValue)
 {
   OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
@@ -197,48 +187,32 @@ OFCondition IODImagePixelModule::setPhotometricInterpretation(const OFString& va
   return result;
 }
 
-
-OFCondition IODImagePixelModule::setRows(const Uint16 value,
-                                         const OFBool checkValue)
-{
-  (void)checkValue;
-  return m_Item->putAndInsertUint16(DCM_Rows, value);
-}
-
-
-OFCondition IODImagePixelModule::setColumns(const Uint16 value,
-                                            const OFBool checkValue)
-{
-  (void)checkValue;
-  return m_Item->putAndInsertUint16(DCM_Columns, value);
-}
-
-
-OFCondition IODImagePixelModule::setBitsAllocated(const Uint16 value,
+template<typename T>
+OFCondition IODImagePixelModule<T>::setBitsAllocated(const Uint16 value,
                                                   const OFBool checkValue)
 {
   (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_BitsAllocated, value);
 }
 
-
-OFCondition IODImagePixelModule::setBitsStored(const Uint16 value,
+template<typename T>
+OFCondition IODImagePixelModule<T>::setBitsStored(const Uint16 value,
                                                const OFBool checkValue)
 {
   (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_BitsStored, value);
 }
 
-
-OFCondition IODImagePixelModule::setHighBit(const Uint16 value,
+template<typename T>
+OFCondition IODImagePixelModule<T>::setHighBit(const Uint16 value,
                                             const OFBool checkValue)
 {
   (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_HighBit, value);
 }
 
-
-OFCondition IODImagePixelModule::setPixelRepresentation(const Uint16 value,
+template<typename T>
+OFCondition IODImagePixelModule<T>::setPixelRepresentation(const Uint16 value,
                                                         const OFBool checkValue)
 {
   OFCondition result = EC_Normal;
@@ -257,8 +231,8 @@ OFCondition IODImagePixelModule::setPixelRepresentation(const Uint16 value,
   return result;
 }
 
-
-OFCondition IODImagePixelModule::setPlanarConfiguration(const Uint16 value,
+template<typename T>
+OFCondition IODImagePixelModule<T>::setPlanarConfiguration(const Uint16 value,
                                                         const OFBool checkValue)
 {
   OFCondition result = EC_Normal;
@@ -277,26 +251,14 @@ OFCondition IODImagePixelModule::setPlanarConfiguration(const Uint16 value,
   return result;
 }
 
-
-OFCondition IODImagePixelModule::setPixelAspectRatio(const OFString& verticalPixelSize,
-                                                     const OFString& horizontalPixelSize,
-                                                     const OFBool checkValue)
-{
-  OFString concat = verticalPixelSize;
-  concat += "\\"; concat += horizontalPixelSize;
-  OFCondition cond;
-  if (checkValue)
-  {
-    cond = DcmIntegerString::checkStringValue(concat, "2");
-    // check for unsignedness, too?
-  }
-  if (cond.good()) m_Item->putAndInsertOFStringArray(DCM_PixelAspectRatio, concat);
-  return cond;
-}
-
-
-OFCondition IODImagePixelModule::setICCProfile(const Uint8* values,
+template<typename T>
+OFCondition IODImagePixelModule<T>::setICCProfile(const Uint8* values,
                                                const size_t length)
 {
   return m_Item->putAndInsertUint8Array(DCM_ICCProfile, values, length);
 }
+
+template class IODImagePixelModule<Uint8>;
+template class IODImagePixelModule<Sint8>;
+template class IODImagePixelModule<Uint16>;
+template class IODImagePixelModule<Sint16>;

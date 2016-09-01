@@ -91,7 +91,7 @@ void FGFrameContent::clearData()
 
 OFCondition FGFrameContent::check() const
 {
-  // TODO
+  // Maybe add checks later
   return EC_Normal;
 }
 
@@ -315,7 +315,7 @@ OFCondition FGFrameContent::setRespiratoryCyclePosition(const OFString& value,
 }
 
 OFCondition FGFrameContent::setDimensionIndexValues(const Uint32& value,
-                                                    const unsigned int pos,
+                                                    const unsigned int dim,
                                                     const OFBool checkValue)
 {
   // no other meaningful checks possible in this context
@@ -325,7 +325,7 @@ OFCondition FGFrameContent::setDimensionIndexValues(const Uint32& value,
     DCMFG_ERROR("Cannot set dimension index value 0, must be >= 1)");
     return EC_InvalidValue;
   }
-  return m_DimensionIndexValues.putUint32(value, pos);
+  return m_DimensionIndexValues.putUint32(value, dim);
 }
 
 OFCondition FGFrameContent::setTemporalPositionIndex(const Uint32& value,

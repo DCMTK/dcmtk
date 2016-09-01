@@ -71,7 +71,7 @@ void FGPlanePosPatient::clearData()
 
 OFCondition FGPlanePosPatient::check() const
 {
-  // TODO
+  // Checks in read() and write() are sufficient for now
   return EC_Normal;
 }
 

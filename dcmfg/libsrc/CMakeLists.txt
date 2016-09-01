@@ -5,10 +5,13 @@ DCMTK_ADD_LIBRARY(dcmfg
   fgderimg
   fgfact
   fgfracon
+  fgframeanatomy
   fgframevoilut
+  fgidentpixeltransform
   fgimagedatatype
   fginterface
   fgpixmsr
+  fgparametricmapframetype
   fgplanor
   fgplanorvol
   fgplanpo

@@ -64,7 +64,7 @@ void FGUSImageDescription::clearData()
 
 OFCondition FGUSImageDescription::check() const
 {
-  // TODO
+  // Checks in read() and write() are sufficient for now
   return EC_Normal;
 }
 

@@ -64,7 +64,7 @@ void FGRealWorldValueMapping::clearData()
 
 OFCondition FGRealWorldValueMapping::check() const
 {
-  // TODO
+  // More checks checks for 1C conditions could be added
   return EC_Normal;
 }
 
@@ -122,7 +122,8 @@ OFVector< FGRealWorldValueMapping::RWVMItem* >& FGRealWorldValueMapping::getReal
 
 FGRealWorldValueMapping::RWVMItem::RWVMItem(IODComponent* parent)
 : IODComponent(parent),
-  m_MeasurementUnitsCode()
+  m_MeasurementUnitsCode(),
+  m_QuantityDefinitionSequence()
 {
   resetRules();
 }
@@ -132,33 +133,43 @@ FGRealWorldValueMapping::RWVMItem::RWVMItem(OFshared_ptr< DcmItem > item,
                                             OFshared_ptr< IODRules > rules,
                                             IODComponent* parent)
 : IODComponent(item, rules, parent),
-  m_MeasurementUnitsCode()
+  m_MeasurementUnitsCode(),
+  m_QuantityDefinitionSequence()
 {
   resetRules();
 }
 
 
+FGRealWorldValueMapping::RWVMItem::RWVMItem(const FGRealWorldValueMapping::RWVMItem& rhs)
+: IODComponent(rhs)
+{
+  m_MeasurementUnitsCode = rhs.m_MeasurementUnitsCode;
+  OFVector<ContentItemMacro*>::const_iterator it = rhs.m_QuantityDefinitionSequence.begin();
+  while (it != rhs.m_QuantityDefinitionSequence.end())
+  {
+    ContentItemMacro* macro = new ContentItemMacro(**it);
+    if (macro == NULL)
+    {
+      DCMFG_ERROR("Out of memory in copy constructor of FGRealWorldValueMapping::RWVMItem::RWVMItem");
+      return;
+    }
+    m_QuantityDefinitionSequence.push_back(macro);
+    it++;
+  }
+}
+
+
+
 FGRealWorldValueMapping::RWVMItem* FGRealWorldValueMapping::RWVMItem::clone()
 {
-  FGRealWorldValueMapping::RWVMItem* mapping = new FGRealWorldValueMapping::RWVMItem(*this);
-  if (mapping)
-  {
-    // We do not have a copy constructor or clone function on IODComponent
-    OFString code, meaning, scheme, version;
-    m_MeasurementUnitsCode.getCodeValue(code);
-    m_MeasurementUnitsCode.getCodeMeaning(meaning);
-    m_MeasurementUnitsCode.getCodingSchemeDesignator(scheme);
-    m_MeasurementUnitsCode.getCodingSchemeVersion(version);
-    mapping->m_MeasurementUnitsCode.set(code, scheme, meaning, version, OFFalse /* do not check */);
-  }
-  return mapping;
+  return new FGRealWorldValueMapping::RWVMItem(*this);
 }
 
 
 
 FGRealWorldValueMapping::RWVMItem::~RWVMItem()
 {
-  // nothing to do
+  DcmIODUtil::freeContainer(m_QuantityDefinitionSequence);
 }
 
 
@@ -173,24 +184,29 @@ int FGRealWorldValueMapping::RWVMItem::compare(const IODComponent& rhs) const
   return IODComponent::compare(rhs);
 }
 
+
 void FGRealWorldValueMapping::RWVMItem::resetRules()
 {
   // parameters are tag, VM, type. Overwrite old rules if any.
-  m_Rules->addRule(new IODRule(DCM_RealWorldValueFirstValueMapped, "1","1",getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_RealWorldValueLastValueMapped, "1","1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_RealWorldValueFirstValueMapped, "1","1C",getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_RealWorldValueLastValueMapped, "1","1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_DoubleFloatRealWorldValueFirstValueMapped, "1","1C",getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_DoubleFloatRealWorldValueLastValueMapped, "1","1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_RealWorldValueIntercept, "1","1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_RealWorldValueSlope, "1","1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_RealWorldValueLUTData, "1-n","1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_LUTExplanation, "1","1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_LUTLabel, "1","1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_MeasurementUnitsCodeSequence, "1","1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
-  //m_Rules->addRule(new IODRule(DCM_QuantityDefinitionSequence, "1","3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_QuantityDefinitionSequence, "1-n","3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
+
 
 OFCondition FGRealWorldValueMapping::RWVMItem::read(DcmItem& source,
                                                     const OFBool clearOldData)
 {
   DcmIODUtil::readSingleItem(source, DCM_MeasurementUnitsCodeSequence, m_MeasurementUnitsCode, "1", m_ModuleName);
+  DcmIODUtil::readSubSequence(source, DCM_QuantityDefinitionSequence, m_QuantityDefinitionSequence, m_Rules->getByTag(DCM_QuantityDefinitionSequence));
   return IODComponent::read(source, clearOldData);
 }
 
@@ -199,6 +215,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::write(DcmItem& destination)
 {
   OFCondition result;
   DcmIODUtil::writeSingleItem(result, DCM_MeasurementUnitsCodeSequence, m_MeasurementUnitsCode, *m_Item, "1", m_ModuleName);
+  DcmIODUtil::writeSubSequence(result, DCM_QuantityDefinitionSequence, m_QuantityDefinitionSequence, *m_Item, m_Rules->getByTag(DCM_QuantityDefinitionSequence));
   if (result.good()) result = IODComponent::write(destination);
   return result;
 }
@@ -212,9 +229,23 @@ OFCondition FGRealWorldValueMapping::RWVMItem::getRealWorldValueFirstValueMapped
 
 
 OFCondition FGRealWorldValueMapping::RWVMItem::getRealWorldValueLastValueMapped(Sint32& value,
-                                                                                 const unsigned long pos) const
+                                                                                const unsigned long pos) const
 {
   return getUSorSS(*m_Item, DCM_RealWorldValueLastValueMapped, pos, value);
+}
+
+
+OFCondition FGRealWorldValueMapping::RWVMItem::getDoubleFloatRealWorldValueFirstValueMapped(Float64& value,
+                                                                                            const unsigned long pos) const
+{
+  return (*m_Item).findAndGetFloat64(DCM_DoubleFloatRealWorldValueFirstValueMapped, value, pos);
+}
+
+
+OFCondition FGRealWorldValueMapping::RWVMItem::getDoubleFloatRealWorldValueLastValueMapped(Float64& value,
+                                                                                           const unsigned long pos) const
+{
+  return (*m_Item).findAndGetFloat64(DCM_DoubleFloatRealWorldValueFirstValueMapped, value, pos);
 }
 
 
@@ -263,7 +294,13 @@ CodeSequenceMacro& FGRealWorldValueMapping::RWVMItem::getMeasurementUnitsCode()
 }
 
 
-OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMappedUnsigned(const Uint16& value,
+OFVector<ContentItemMacro*> & FGRealWorldValueMapping::RWVMItem::getEntireQuantityDefinitionSequence()
+{
+  return m_QuantityDefinitionSequence;
+}
+
+
+OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMappedUnsigned(const Uint16 value,
                                                                                          const OFBool checkValue)
 {
   (void)checkValue;
@@ -299,7 +336,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedS
 }
 
 
-OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedUnsigned(const Uint16& value,
+OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedUnsigned(const Uint16 value,
                                                                                         const OFBool checkValue)
 {
   (void)checkValue;
@@ -311,7 +348,23 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedU
 }
 
 
-OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueIntercept(const Float64& value,
+OFCondition FGRealWorldValueMapping::RWVMItem::setDoubleFloatRealWorldValueFirstValueMapped(const Float64 value,
+                                                                                            const OFBool checkValue)
+{
+  (void)checkValue;
+  return (*m_Item).putAndInsertFloat64(DCM_DoubleFloatRealWorldValueFirstValueMapped, value);
+}
+
+
+OFCondition FGRealWorldValueMapping::RWVMItem::setDoubleFloatRealWorldValueLastValueMapped(const Float64 value,
+                                                                                           const OFBool checkValue)
+{
+  (void)checkValue;
+  return (*m_Item).putAndInsertFloat64(DCM_DoubleFloatRealWorldValueLastValueMapped, value);
+}
+
+
+OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueIntercept(const Float64 value,
                                                                           const OFBool checkValue)
 {
   (void)checkValue;
@@ -319,7 +372,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueIntercept(const 
 }
 
 
-OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueSlope(const Float64& value,
+OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueSlope(const Float64 value,
                                                                       const OFBool checkValue)
 {
   (void)checkValue;

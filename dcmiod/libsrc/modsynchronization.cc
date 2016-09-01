@@ -72,8 +72,6 @@ OFString IODSynchronizationModule::getName() const
 
 IODSynchronizationModule::~IODSynchronizationModule()
 {
-  // clear rules from rule set
-  clearData();
 }
 
 
@@ -152,11 +150,12 @@ OFCondition IODSynchronizationModule::setSynchronizationFrameofReferenceUID(cons
 OFCondition IODSynchronizationModule::setSynchronizationTrigger(const OFString &value,
                                                                 const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_Item->putAndInsertOFStringArray(DCM_SynchronizationTrigger, value);
-  // TODO: Further checks since this field has enumerated values
-  return result;
+  if (checkValue && !isValidSynchronizationTrigger(value))
+  {
+    DCMIOD_ERROR("Synchronization Trigger does not allow value " << value << " (enumerated values)");
+    return IOD_EC_InvalidElementValue;
+  }
+  return m_Item->putAndInsertOFStringArray(DCM_SynchronizationTrigger, value);
 }
 
 
@@ -186,11 +185,12 @@ OFCondition IODSynchronizationModule::setSynchronizationChannel(const OFPair<Uin
 OFCondition IODSynchronizationModule::setAcquisitionTimeSynchronized(const OFString &value,
                                                                      const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_Item->putAndInsertOFStringArray(DCM_AcquisitionTimeSynchronized, value);
-  // TODO: Further checks since this field has enumerated values
-  return result;
+  if (checkValue && !isValidAcquisitionTimeSynchronized(value))
+  {
+    DCMIOD_ERROR("Acquisition Time Synchronized must only allows values 'Y' and 'N' (enumerated values)");
+    return IOD_EC_InvalidElementValue;
+  }
+  return m_Item->putAndInsertOFStringArray(DCM_AcquisitionTimeSynchronized, value);
 }
 
 
@@ -207,12 +207,14 @@ OFCondition IODSynchronizationModule::setTimeSource(const OFString &value,
 OFCondition IODSynchronizationModule::setTimeDistributionProtocol(const OFString &value,
                                                                   const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
-  if (result.good())
-    result = m_Item->putAndInsertOFStringArray(DCM_TimeDistributionProtocol, value);
-  // TODO: Further checks since this field has enumerated values
-  return result;
+  if (checkValue && !isValidTimeDistributionProtocol(value))
+  {
+    DCMIOD_ERROR("Time Distribution Protocol does not allow value " << value << " (enumerated values)");
+    return IOD_EC_InvalidElementValue;
+  }
+  return m_Item->putAndInsertOFStringArray(DCM_TimeDistributionProtocol, value);
 }
+
 
 
 OFCondition IODSynchronizationModule::setNTPSourceAddress(const OFString &value,
@@ -223,3 +225,24 @@ OFCondition IODSynchronizationModule::setNTPSourceAddress(const OFString &value,
     result = m_Item->putAndInsertOFStringArray(DCM_NTPSourceAddress, value);
   return result;
 }
+
+
+
+OFBool IODSynchronizationModule::isValidAcquisitionTimeSynchronized(const OFString& value)
+{
+  return ( (value == "Y") || (value == "N") );
+
+}
+
+
+OFBool IODSynchronizationModule::isValidTimeDistributionProtocol(const OFString& value)
+{
+  return ( (value == "NTP") || (value == "IRIG") || (value == "GPS") || (value == "SNTP") || (value == "PTP") );
+}
+
+
+OFBool IODSynchronizationModule::isValidSynchronizationTrigger(const OFString& value)
+{
+  return ( (value == "SOURCE") || (value == "EXTERNAL") || (value == "PASSTHRU") || (value == "NO TRIGGER") );
+}
+

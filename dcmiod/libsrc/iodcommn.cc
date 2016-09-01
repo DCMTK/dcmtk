@@ -51,6 +51,32 @@ DcmIODCommon::DcmIODCommon()
 }
 
 
+DcmIODCommon::DcmIODCommon(const DcmIODCommon& rhs)
+: m_Item(rhs.m_Item),
+  m_Rules(rhs.m_Rules),
+  m_Patient(m_Item, m_Rules),
+  m_PatientStudy(m_Item, m_Rules),
+  m_Study(m_Item, m_Rules),
+  m_Equipment(m_Item, m_Rules),
+  m_Series(m_Item, m_Rules),
+  m_FrameOfReference(m_Item, m_Rules),
+  m_SOPCommon(m_Item, m_Rules),
+  m_CommonInstanceReferenceModule(m_Item, m_Rules),
+  m_Modules()
+{
+  // Set initial values for a new SOP instance
+  ensureInstanceUIDs(OFFalse);
+  m_Modules.push_back(&m_Patient);
+  m_Modules.push_back(&m_PatientStudy);
+  m_Modules.push_back(&m_Study);
+  m_Modules.push_back(&m_Equipment);
+  m_Modules.push_back(&m_Series);
+  m_Modules.push_back(&m_FrameOfReference);
+  m_Modules.push_back(&m_SOPCommon);
+  m_Modules.push_back(&m_CommonInstanceReferenceModule);
+}
+
+
 DcmIODCommon::~DcmIODCommon()
 {
 }
@@ -58,12 +84,13 @@ DcmIODCommon::~DcmIODCommon()
 
 void DcmIODCommon::clearData()
 {
-  OFVector<IODModule*>::iterator it = m_Modules.begin();
-  while (it != m_Modules.end())
-  {
-    (*it)->clearData();
-    it++;
-  }
+  // TODO
+//   OFVector<IODModule*>::iterator it = m_Modules.begin();
+//   while (it != m_Modules.end())
+//   {
+//     (*it)->clearData();
+//     it++;
+//   }
 }
 
 

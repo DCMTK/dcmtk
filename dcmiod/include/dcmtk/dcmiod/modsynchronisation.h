@@ -198,6 +198,29 @@ public:
     virtual OFCondition setNTPSourceAddress(const OFString &value,
                                             const OFBool checkValue = OFTrue);
 
+protected:
+
+  /** Check whether given string is a valid value for attribute
+   *  Acquisition Time Synchronized
+   *  @param  value The value to check
+   *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
+   */
+  virtual OFBool isValidAcquisitionTimeSynchronized(const OFString& value);
+
+  /** Check whether given string is a valid value for attribute
+   *  Time Distribution Protocol
+   *  @param  value The value to check
+   *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
+   */
+  virtual OFBool isValidTimeDistributionProtocol(const OFString& value);
+
+  /** Check whether given string is a valid value for attribute
+   *  Synchronization Trigger
+   *  @param  value The value to check
+   *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
+   */
+  virtual OFBool isValidSynchronizationTrigger(const OFString& value);
+
 private:
 
     /// Module name "SynchronizationModule"

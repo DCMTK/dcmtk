@@ -93,6 +93,8 @@ OFString DcmFGTypes::FGType2OFString(const DcmFGTypes::E_FGType fgType)
     case EFG_IRRADIATIONEVENTIDENT: return "Irradiation Event Identification Functional Group Macro"; break;
     /// Radiopharmaceutical Usage
     case EFG_RADIOPHARAMAUSAGE: return "Radiopharmaceutical Usage Functional Group Macro"; break;
+    /// Parametric Map Frame Type
+    case EFG_PARAMETRICMAPFRAMETYPE: return "Parametric Map Frame Type Functional Group Macro"; break;
     /// Patient Physiological State
     case EFG_PATIENTPHYSIOSTATE: return "Patient Physiological State Functional Group Macro"; break;
     /// Plane Position (Volume)
@@ -101,6 +103,8 @@ OFString DcmFGTypes::FGType2OFString(const DcmFGTypes::E_FGType fgType)
     case EFG_PLANEORIENTVOLUME: return "Plane Orientation (Volume) Functional Group Macro"; break;
     /// Temporal Position Macro
     case EFG_TEMPORALPOSITION: return "Temporal Position Functional Group Macro"; break;
+    /// Identity Pixel Value Transformation
+    case EFG_IDENTITYPIXELVALUETRANSFORMATION: return "Identity Pixel Value Transformation"; break;
     /// Image Data Type
     case EFG_IMAGEDATATYPE: return "Image Data Type Functional Group Macro"; break;
     /// Unassigned Shared Converted Attributes Macro
@@ -116,7 +120,7 @@ OFString DcmFGTypes::FGType2OFString(const DcmFGTypes::E_FGType fgType)
 
 DcmFGTypes::E_FGType DcmFGTypes::tagKey2FGType(const DcmTagKey& key)
 {
-  // TODO: Use neat value to enum trick from Alexandrescu in order to have switch statement instead?
+  // Note: Use neat value to enum trick from Alexandrescu in order to have switch statement instead?
   if (key == DCM_PixelMeasuresSequence)
     return EFG_PIXELMEASURES;
   else if (key == DCM_FrameContentSequence)
@@ -155,12 +159,16 @@ DcmFGTypes::E_FGType DcmFGTypes::tagKey2FGType(const DcmTagKey& key)
     return EFG_RADIOPHARAMAUSAGE;
   else if (key == DCM_PatientPhysiologicalStateSequence)
     return EFG_PATIENTPHYSIOSTATE;
+  else if (key == DCM_ParametricMapFrameTypeSequence)
+    return EFG_PARAMETRICMAPFRAMETYPE;
   else if (key == DCM_PlanePositionVolumeSequence)
     return EFG_PLANEPOSITIONVOLUME;
   else if (key == DCM_PlaneOrientationVolumeSequence)
     return EFG_PLANEORIENTVOLUME;
   else if (key == DCM_TemporalPositionSequence)
     return EFG_TEMPORALPOSITION;
+  else if (key == DCM_PixelValueTransformationSequence)
+    return EFG_IDENTITYPIXELVALUETRANSFORMATION;
   else if (key == DCM_ImageDataTypeSequence)
     return EFG_IMAGEDATATYPE;
   else if (key == DCM_UnassignedSharedConvertedAttributesSequence)

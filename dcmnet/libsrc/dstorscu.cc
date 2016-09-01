@@ -929,6 +929,8 @@ OFCondition DcmStorageSCU::sendSOPInstances()
 
 void DcmStorageSCU::notifySOPInstanceToBeSent(const TransferEntry &transferEntry)
 {
+    // avoid compiler warning
+    (void)transferEntry;
     // do nothing in the default implementation
 }
 

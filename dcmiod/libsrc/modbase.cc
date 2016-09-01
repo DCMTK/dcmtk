@@ -27,6 +27,15 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 
 
+IODComponent::IODComponent(const IODComponent& rhs)
+: m_Item(OFstatic_cast(DcmItem*, rhs.m_Item->clone()))
+, m_Rules(rhs.m_Rules->clone())
+, m_Parent(OFnullptr)
+{
+
+}
+
+
 IODComponent::IODComponent(OFshared_ptr<DcmItem> item,
                            OFshared_ptr<IODRules> rules,
                            IODComponent* parent)
@@ -62,21 +71,11 @@ IODComponent& IODComponent::operator=(const IODComponent& rhs)
 {
   if (&rhs != this)
   {
-    m_Rules.reset( rhs.m_Rules->clone() );
-    m_Item.reset( OFstatic_cast(DcmItem*, rhs.m_Item->clone()) );
-    m_Parent = NULL;
+    m_Item.reset(OFstatic_cast(DcmItem*, rhs.m_Item->clone()));
+    m_Rules.reset(rhs.m_Rules->clone());
+    m_Parent = OFnullptr;
   }
   return *this;
-}
-
-
-IODComponent::IODComponent(const IODComponent& rhs)
-{
-
-  if (this == &rhs)
-    return;
-
-  *this = rhs;
 }
 
 
@@ -212,8 +211,8 @@ OFCondition IODComponent::read(DcmItem& source,
     if (isSequence)
     {
       DcmElement *elem = NULL;
-      source.findAndGetElement( (*rule)->getTagKey(), elem);
-      DcmIODUtil::checkElementValue(elem, (*rule)->getTagKey(), (*rule)->getVM(), (*rule)->getType(), EC_Normal, (*rule)->getModule().c_str());
+      OFCondition cond = source.findAndGetElement( (*rule)->getTagKey(), elem);
+      DcmIODUtil::checkElementValue(elem, (*rule)->getTagKey(), (*rule)->getVM(), (*rule)->getType(), cond, (*rule)->getModule().c_str());
     }
     else // Normal attributes are checked and copied over into this IOD component
     {
@@ -265,9 +264,28 @@ IODModule::IODModule(): IODComponent()
 }
 
 
+IODModule::IODModule(const IODModule& rhs)
+: IODComponent(rhs.m_Item, rhs.m_Rules, rhs.m_Parent)
+{
+
+}
+
+
 IODModule::IODModule(OFshared_ptr< DcmItem > item,
   OFshared_ptr< IODRules > rules)
 : IODComponent(item, rules, NULL /* No parent for modules */)
 {
   // nothing to do, IODComponent does the work
+}
+
+
+IODModule& IODModule::operator=(const IODModule& rhs)
+{
+  if (this != &rhs)
+  {
+    m_Item = rhs.m_Item;
+    m_Rules = rhs.m_Rules;
+    m_Parent = rhs.m_Parent;
+  }
+  return *this;
 }

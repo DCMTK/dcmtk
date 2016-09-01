@@ -22,6 +22,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmiod/iodutil.h" // for static IOD helpers
+#include "dcmtk/ofstd/ofstream.h"
 
 
 // --------------------------- Code Sequence Macro ---------------------------
@@ -144,6 +145,30 @@ OFCondition CodeSequenceMacro::getCodeMeaning(OFString &value,
 }
 
 
+OFBool CodeSequenceMacro::empty()
+{
+  OFString val;
+  getCodeValue(val);
+  if (val.empty())
+  {
+    getCodingSchemeDesignator(val);
+    if (val.empty())
+    {
+      getCodingSchemeVersion(val);
+      if (val.empty())
+      {
+        getCodingSchemeDesignator(val);
+        if (val.empty())
+        {
+          return OFTrue;
+        }
+      }
+    }
+  }
+  return OFFalse;
+}
+
+
 // -- set dicom attributes --
 
 OFCondition CodeSequenceMacro::setCodeValue(const OFString &value,
@@ -203,6 +228,7 @@ OFCondition CodeSequenceMacro::set(const OFString& value,
   if (result.good() && !schemeVersion.empty()) result = setCodingSchemeVersion(schemeVersion, checkValue);
   return result;
 }
+
 
 // ---------------------- CodeWithModifiers----------------------
 
@@ -265,7 +291,10 @@ OFCondition CodeWithModifiers::check(const OFBool quiet)
   }
   if (result.bad())
   {
-    DCMIOD_ERROR("Invalid code in Code Sequence Macro or its modifiers");
+    if (!quiet)
+    {
+      DCMIOD_ERROR("Invalid code in Code Sequence Macro or its modifiers");
+    }
   }
   return result;
 }
@@ -365,6 +394,20 @@ OFCondition CodeWithModifiers::write(DcmItem& destination)
 CodeWithModifiers::~CodeWithModifiers()
 {
   DcmIODUtil::freeContainer(m_Modifiers);
+}
+
+
+OFString CodeSequenceMacro::toString()
+{
+  OFString d,m,v;
+  getCodeValue(v);
+  getCodeMeaning(m);
+  getCodingSchemeDesignator(d);
+  OFStringStream oss;
+  oss << "(" << d << "," << v << "," << m << ")";
+  OFSTRINGSTREAM_GETOFSTRING(oss, msg);
+  return msg;
+
 }
 
 
@@ -689,8 +732,7 @@ OFCondition ImageSOPInstanceReferenceMacro::create(const OFString& sopClassUID,
 OFCondition ImageSOPInstanceReferenceMacro::create(const OFString& sopClassUID,
                                                    const OFString& sopInstanceUID,
                                                    const OFVector< Uint16 >& refFramesOrSegments,
-                                                   ImageSOPInstanceReferenceMacro*& result
-                                                   )
+                                                   ImageSOPInstanceReferenceMacro*& result)
 {
   OFCondition cond = create(sopClassUID, sopInstanceUID, result);
   if (cond.good())
@@ -828,7 +870,7 @@ GeneralAnatomyMacro::GeneralAnatomyMacro(const OFString& type) :
   m_Type(type),
   m_AnatomicRegion(),
   m_AnatomicRegionModifier(),
-  m_PrimaryAnatomicStructure()
+  m_PrimaryAnatomicStructure("3" /* Modifier in Primary Anatomic Structure is always optional */, "1", DCM_PrimaryAnatomicStructureModifierSequence)
 {
   m_Type = type;
 }
@@ -838,12 +880,19 @@ GeneralAnatomyMacro::GeneralAnatomyMacro(const GeneralAnatomyMacro& rhs)
 :  m_Type(rhs.m_Type),
    m_AnatomicRegion(),
    m_AnatomicRegionModifier(),
-   m_PrimaryAnatomicStructure()
+   m_PrimaryAnatomicStructure("3" /* Modifier in Primary Anatomic Structure is always optional */, "1", DCM_PrimaryAnatomicStructureModifierSequence)
+{
+  *this = rhs;
+}
+
+
+GeneralAnatomyMacro& GeneralAnatomyMacro::operator=(const GeneralAnatomyMacro& rhs)
 {
   if (this != &rhs)
   {
+    clearData();
     m_Type = rhs.m_Type;
-    m_AnatomicRegion = m_AnatomicRegion;
+    m_AnatomicRegion = rhs.m_AnatomicRegion;
     m_PrimaryAnatomicStructure = rhs.m_PrimaryAnatomicStructure;
 
     OFVector<CodeSequenceMacro*>::const_iterator it = rhs.m_AnatomicRegionModifier.begin();
@@ -853,6 +902,7 @@ GeneralAnatomyMacro::GeneralAnatomyMacro(const GeneralAnatomyMacro& rhs)
       it++;
     }
   }
+  return *this;
 }
 
 
@@ -884,7 +934,12 @@ OFCondition GeneralAnatomyMacro::check(const OFBool quiet)
     if (result.bad()) return result;
     it++;
   }
-  result = m_PrimaryAnatomicStructure.check(quiet);
+  // Primary Anatomic Structure is optional (type 3), so only check if
+  // user intended to fill in something.
+  if (!m_PrimaryAnatomicStructure.empty())
+  {
+    result = m_PrimaryAnatomicStructure.check(quiet);
+  }
   return result;
 }
 
@@ -920,7 +975,10 @@ OFCondition GeneralAnatomyMacro::read(DcmItem& source,
   /* read Anatomic Region Sequence item into Code Sequence Macro */
   DcmIODUtil::readSingleItem<CodeSequenceMacro>(source, DCM_AnatomicRegionSequence, m_AnatomicRegion, m_Type, "GeneralAnatomyMacro");
 
-  /* Get the single item from Anatomic Region Sequence */
+  /* read Primary Anatomic Structure Macro (main level, i.e.\ original item) */
+  DcmIODUtil::readSingleItem(source, DCM_PrimaryAnatomicStructureSequence, m_PrimaryAnatomicStructure, "3", "GeneralAnatomyMacro");
+
+  /* Get the single item from Anatomic Region Sequence and read modifier if found */
   DcmItem* localItem = NULL;
   if ( source.findAndGetSequenceItem(DCM_AnatomicRegionSequence, localItem).bad() )
   {
@@ -936,9 +994,6 @@ OFCondition GeneralAnatomyMacro::read(DcmItem& source,
     "3",
     "GeneralAnatomyMacro" );
 
-  /* read Primary Anatomic Structure Macro (main level, i.e.\ original item) */
-  m_PrimaryAnatomicStructure.read(source);
-
   return result;
 }
 
@@ -950,292 +1005,57 @@ OFCondition GeneralAnatomyMacro::write(DcmItem& item)
 
   /* delete old data */
   item.findAndDeleteElement(DCM_AnatomicRegionSequence);
+  item.findAndDeleteElement(DCM_PrimaryAnatomicStructureSequence);
 
   /* Write sub structures */
   DcmIODUtil::writeSingleItem<CodeSequenceMacro>(result, DCM_AnatomicRegionSequence, m_AnatomicRegion, item, m_Type, "GeneralAnatomyMacro");
-  DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*> >
-  ( result,
-    DCM_AnatomicRegionModifierSequence,
-    m_AnatomicRegionModifier,
-    item,
-    "1-n",
-    "3",
-    "GeneralAnatomyMacro");
-  return result;
-}
-
-
-GeneralAnatomyMacro& GeneralAnatomyMacro::operator=(const GeneralAnatomyMacro& rhs)
-{
-  if (this != &rhs)
+  if (result.good())
   {
-    clearData();
-    m_Type = rhs.m_Type;
-    m_AnatomicRegion = rhs.m_AnatomicRegion;
-    m_PrimaryAnatomicStructure = rhs.m_PrimaryAnatomicStructure;
-
-    OFVector<CodeSequenceMacro*>::const_iterator it = rhs.m_AnatomicRegionModifier.begin();
-    while ( it != rhs.m_AnatomicRegionModifier.end() )
+    DcmItem* seqItem = NULL;
+    result = item.findAndGetSequenceItem(DCM_AnatomicRegionSequence, seqItem, 0);
+    if (result.good())
     {
-      m_AnatomicRegionModifier.push_back( new CodeSequenceMacro(**it) );
-      it++;
+      DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*> >
+      ( result,
+        DCM_AnatomicRegionModifierSequence,
+        m_AnatomicRegionModifier,
+        *seqItem,
+        "1-n",
+        "3",
+        "GeneralAnatomyMacro");
     }
   }
-  return *this;
+  DcmIODUtil::writeSingleItem(result, DCM_PrimaryAnatomicStructureSequence, m_PrimaryAnatomicStructure, item, "3", "GeneralAnatomyMacro");
+  return result;
 }
 
 
-// ---------------------- PrimaryAnatomicStructureMacroItem ------------------
-
-PrimaryAnatomicStructureMacroItem::PrimaryAnatomicStructureMacroItem() :
-  m_AnatomicStructure(),
-  m_AnatomicStructureModifier()
+int GeneralAnatomyMacro::compare(const GeneralAnatomyMacro& rhs) const
 {
-}
-
-
-PrimaryAnatomicStructureMacroItem::PrimaryAnatomicStructureMacroItem(const PrimaryAnatomicStructureMacroItem& rhs) :
-  m_AnatomicStructure(),
-  m_AnatomicStructureModifier()
-{
-  if (this != &rhs)
+  int result = m_AnatomicRegion.compare(rhs.m_AnatomicRegion);
+  if (result == 0)
   {
-    m_AnatomicStructure = rhs.m_AnatomicStructure;
-    OFVector<CodeSequenceMacro*>::const_iterator it = rhs.m_AnatomicStructureModifier.begin();
-    while ( it != rhs.m_AnatomicStructureModifier.begin() )
+    if (m_AnatomicRegionModifier.size() > rhs.m_AnatomicRegionModifier.size())
     {
-      m_AnatomicStructureModifier.push_back(new CodeSequenceMacro(**it));
-      it++;
+      return 1;
     }
-  }
-}
-
-
-PrimaryAnatomicStructureMacroItem& PrimaryAnatomicStructureMacroItem::operator=(const PrimaryAnatomicStructureMacroItem& rhs)
-{
-  if (this != &rhs)
-  {
-    clearData();
-    m_AnatomicStructure = rhs.m_AnatomicStructure;
-    OFVector<CodeSequenceMacro*>::const_iterator it = rhs.m_AnatomicStructureModifier.begin();
-    while ( it != rhs.m_AnatomicStructureModifier.begin() )
+    else if (m_AnatomicRegionModifier.size() < rhs.m_AnatomicRegionModifier.size())
     {
-      m_AnatomicStructureModifier.push_back(new CodeSequenceMacro(**it));
-      it++;
+      return -1;
     }
-  }
-  return *this;
-}
 
-
-PrimaryAnatomicStructureMacroItem::~PrimaryAnatomicStructureMacroItem()
-{
-  clearData();
-}
-
-
-void PrimaryAnatomicStructureMacroItem::clearData()
-{
-  m_AnatomicStructure.clearData();
-  m_AnatomicStructureModifier.clear();
-  DcmIODUtil::freeContainer(m_AnatomicStructureModifier);
-}
-
-
-OFCondition PrimaryAnatomicStructureMacroItem::check(const OFBool quiet)
-{
-  OFCondition result = m_AnatomicStructure.check();
-  if (result.bad()) return result;
-
-  OFVector<CodeSequenceMacro*>::iterator it = m_AnatomicStructureModifier.begin();
-  while (it != m_AnatomicStructureModifier.end())
-  {
-    result = (*it)->check(quiet);
-    if (result.bad())
-      return result;
-    it++;
-  }
-  return result;
-}
-
-
-
-CodeSequenceMacro& PrimaryAnatomicStructureMacroItem::getAnatomicStructure()
-{
-  return m_AnatomicStructure;
-}
-
-
-OFVector<CodeSequenceMacro*>& PrimaryAnatomicStructureMacroItem::getAnatomicStructureModifier()
-{
-  return m_AnatomicStructureModifier;
-}
-
-
-OFCondition PrimaryAnatomicStructureMacroItem::read(DcmItem& source,
-                                                    const OFBool clearOldData)
-{
-  OFCondition result = EC_Normal;
-
-  /* re-initialize object */
-  if (clearOldData)
-    clearData();
-
-  m_AnatomicStructure.read(source);
-
-  /* check whether cardinality of Primary Anatomic Structure Modifier Sequence and type is ok (produces warnings if not) */
-  DcmIODUtil::checkSubSequence(result, source, DCM_PrimaryAnatomicStructureModifierSequence, "1-n", "3", "PrimaryAnatomicStructureMacro");
-
-  /* read Primary Anatomic Structure Modifier Sequence */
-  DcmIODUtil::readSubSequence<OFVector<CodeSequenceMacro*> >
-  ( source, /* item of Primary Anatomic Structure Sequence */
-    DCM_PrimaryAnatomicStructureModifierSequence,
-    m_AnatomicStructureModifier,
-    "1-n",
-    "3",
-    "GeneralAnatomyMacro" );
-
-  return result;
-}
-
-
-/// Write Primary Anatomic Structure Sequence Item to given item
-OFCondition PrimaryAnatomicStructureMacroItem::write(DcmItem& source)
-{
-  OFCondition result;
-  m_AnatomicStructure.write(source);
-  DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*> >
-  (
-   result,
-   DCM_PrimaryAnatomicStructureModifierSequence,
-   m_AnatomicStructureModifier,
-   source,
-   "1-n",
-   "3",
-   "PrimaryAnatomicStructureMacro"
-  );
-  return result;
-}
-
-
-// ---------------------- PrimaryAnatomicStructureMacro ----------------------
-
-
-PrimaryAnatomicStructureMacro::PrimaryAnatomicStructureMacro() :
-  m_PrimaryAnatomicStructure()
-{
-
-}
-
-
-PrimaryAnatomicStructureMacro::PrimaryAnatomicStructureMacro(const PrimaryAnatomicStructureMacro& rhs)
-{
-  if (this != &rhs)
-  {
-    OFVector<PrimaryAnatomicStructureMacroItem*>::const_iterator it = rhs.m_PrimaryAnatomicStructure.begin();
-    while ( it != rhs.m_PrimaryAnatomicStructure.begin() )
+    for (size_t m = 0; m < m_AnatomicRegionModifier.size(); m++)
     {
-      m_PrimaryAnatomicStructure.push_back(new PrimaryAnatomicStructureMacroItem(**it));
-      it++;
+      rhs.m_AnatomicRegionModifier[m];
+      result = m_AnatomicRegionModifier[m]->compare(  *(rhs.m_AnatomicRegionModifier[m]) );
+      if (result != 0)
+      {
+        return result;
+      }
     }
-  }
-}
-
-
-PrimaryAnatomicStructureMacro::~PrimaryAnatomicStructureMacro()
-{
-  clearData();
-}
-
-
-void PrimaryAnatomicStructureMacro::clearData()
-{
-  m_PrimaryAnatomicStructure.clear();
-}
-
-
-OFCondition PrimaryAnatomicStructureMacro::check(const OFBool quiet)
-{
-  OFCondition result;
-  OFVector<PrimaryAnatomicStructureMacroItem*>::iterator it = m_PrimaryAnatomicStructure.begin();
-  while (it != m_PrimaryAnatomicStructure.end())
-  {
-    result = (*it)->check(quiet);
-    if (result.bad()) return result;
-    it++;
+    result = m_PrimaryAnatomicStructure.compare(rhs.m_PrimaryAnatomicStructure);
   }
   return result;
-}
-
-
-OFVector<PrimaryAnatomicStructureMacroItem*>& PrimaryAnatomicStructureMacro::getPrimaryAnatomicStructure()
-{
-  return m_PrimaryAnatomicStructure;
-}
-
-
-/// Reads Primary Anatomic Region Sequence from given item
-OFCondition PrimaryAnatomicStructureMacro::read(DcmItem& source,
-                                                const OFBool clearOldData)
-{
-  OFCondition result;
-
-  if (clearOldData)
-    clearData();
-
-  // check for sequence and report warnings if not ok */
-  DcmIODUtil::checkSubSequence(result, source, DCM_PrimaryAnatomicStructureSequence, "1-n", "3", "PrimaryAnantomicStructureMacro");
-
-  // read sequence into member
-  DcmIODUtil::readSubSequence<OFVector<PrimaryAnatomicStructureMacroItem*> >
-  ( source,
-    DCM_PrimaryAnatomicStructureSequence,
-    m_PrimaryAnatomicStructure,
-    "1-n",
-    "3",
-    "PrimaryAnatomicStructureMacro"
-  );
-  return result;
-}
-
-
-/// Write Anatomic Region Sequence from given item
-OFCondition PrimaryAnatomicStructureMacro::write(DcmItem& item)
-{
-  OFCondition result = EC_Normal;
-
-  /* delete old data */
-  item.findAndDeleteElement(DCM_PrimaryAnatomicStructureSequence);
-  item.insertEmptyElement(DCM_PrimaryAnatomicStructureSequence);
-
-  DcmIODUtil::writeSubSequence<OFVector<PrimaryAnatomicStructureMacroItem*> >
-  (
-    result,
-    DCM_PrimaryAnatomicStructureSequence,
-    m_PrimaryAnatomicStructure,
-    item,
-    "1-n",
-    "3",
-    "PrimaryAnatomicStructureMacro"
-  );
-
-  return result;
-}
-
-
-PrimaryAnatomicStructureMacro& PrimaryAnatomicStructureMacro::operator=(const PrimaryAnatomicStructureMacro& rhs)
-{
-  if (this != &rhs)
-  {
-    clearData();
-    OFVector<PrimaryAnatomicStructureMacroItem*>::const_iterator it = rhs.m_PrimaryAnatomicStructure.begin();
-    while ( it != rhs.m_PrimaryAnatomicStructure.begin() )
-    {
-      m_PrimaryAnatomicStructure.push_back(new PrimaryAnatomicStructureMacroItem(**it));
-      it++;
-    }
-  }
-  return *this;
 }
 
 

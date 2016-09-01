@@ -10,13 +10,17 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmseg/segdoc.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodimage.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
+ ../../ofstd/include/dcmtk/ofstd/ofalign.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodcommn.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -123,7 +127,6 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatientstudy.h \
  ../../ofstd/include/dcmtk/ofstd/ofoption.h \
- ../../ofstd/include/dcmtk/ofstd/ofalign.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralstudy.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmiod/include/dcmtk/dcmiod/modequipment.h \
@@ -133,6 +136,8 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodreferences.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralimage.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modimagepixelbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsegmentationseries.h \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
@@ -212,6 +217,8 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
@@ -244,11 +251,9 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
- ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
@@ -279,11 +284,14 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmseg/segtypes.h ../include/dcmtk/dcmseg/segdef.h \
  ../include/dcmtk/dcmseg/segdoc.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodimage.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
+ ../../ofstd/include/dcmtk/ofstd/ofalign.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodcommn.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatientstudy.h \
  ../../ofstd/include/dcmtk/ofstd/ofoption.h \
- ../../ofstd/include/dcmtk/ofstd/ofalign.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralstudy.h \
  ../../dcmiod/include/dcmtk/dcmiod/modequipment.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralseries.h \
@@ -292,6 +300,8 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodreferences.h \
  ../../dcmiod/include/dcmtk/dcmiod/modgeneralimage.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modimagepixelbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsegmentationseries.h \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
@@ -362,6 +372,8 @@ segtypes.o: segtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
@@ -392,11 +404,9 @@ segtypes.o: segtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
- ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \

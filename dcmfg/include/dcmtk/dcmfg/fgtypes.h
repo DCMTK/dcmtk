@@ -48,7 +48,7 @@ extern DCMTK_DCMFG_EXPORT OFLogger DCM_dcmfgLogger;
  *  constant definitions  *
  *-----------------------*/
 
-/* Specific error conditions for module dcmfg.(TODO)
+/* Specific error conditions for module dcmfg.
  * These error codes can be used in addition to the general purpose
  * codes defined in module dcmdata.
  */
@@ -120,10 +120,14 @@ public:
     EFG_FRAMEPIXELSHIFT,
     /// "Frame VOI LUT" or "Frame VOI LUT with LUT" Macro (share same starting sequence)
     EFG_FRAMEVOILUTMETA,
+    /// Identity Pixel Value Transformation
+    EFG_IDENTITYPIXELVALUETRANSFORMATION,
     /// Image Data Type
     EFG_IMAGEDATATYPE,
     /// Irradiation Event Identification
     EFG_IRRADIATIONEVENTIDENT,
+    /// Parametric Map Frame Type
+    EFG_PARAMETRICMAPFRAMETYPE,
     /// Patient Orientation in Frame
     EFG_PATIENTORIENTINFRAME,
     /// Patient Physiological State

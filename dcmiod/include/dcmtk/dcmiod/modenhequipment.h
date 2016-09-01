@@ -42,7 +42,7 @@ public:
     /** Convenient struct containing all information required for setting
      *  equipment information for use by external code)
      */
-    struct EquipmentInfo
+    struct DCMTK_DCMIOD_EXPORT EquipmentInfo
     {
 
       /** Default Constructor
@@ -51,7 +51,7 @@ public:
         m_Manufacturer(),
         m_ManufacturerModelName(),
         m_DeviceSerialNumber(),
-        m_SoftwareVersions() {};
+        m_SoftwareVersions() {}
 
       /** Convenience Constructor setting all values
        *  @param manufacturer Manufacturer
@@ -66,7 +66,20 @@ public:
         m_Manufacturer(manufacturer),
         m_ManufacturerModelName(modelName),
         m_DeviceSerialNumber(deviceSerialNumber),
-        m_SoftwareVersions(softwareVersions) {};
+        m_SoftwareVersions(softwareVersions) {}
+
+      /** Perform simple check whether all equipment data is filled in. Does not
+       *  check VR or VM (will be checked in write() routine, though)
+       *  @return OFTrue if data is complete, OFFalse otherwise
+       */
+      OFBool isDataComplete() const
+      {
+        if (m_Manufacturer.empty() || m_ManufacturerModelName.empty() || m_DeviceSerialNumber.empty() || m_SoftwareVersions.empty())
+        {
+          return OFFalse;
+        }
+        return OFTrue;
+      }
 
       // Manufacturer (VM 1)
       OFString m_Manufacturer;

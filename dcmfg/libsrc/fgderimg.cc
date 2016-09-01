@@ -157,8 +157,15 @@ void FGDerivationImage::clearData()
 
 OFCondition FGDerivationImage::check() const
 {
-  // TODO
-  return EC_Normal;
+  OFCondition result;
+  OFVector<DerivationImageItem*>::const_iterator it = m_DerivationImageItems.begin();
+  while ( (it != m_DerivationImageItems.end()) && result.good() )
+  {
+    result = (*it)->check();
+    it++;
+  }
+
+  return result;
 }
 
 DerivationImageItem& DerivationImageItem::operator=(const DerivationImageItem& rhs)
@@ -243,7 +250,7 @@ OFCondition FGDerivationImage::read(DcmItem& item)
 
 OFCondition FGDerivationImage::write(DcmItem& item)
 {
-  OFCondition result = EC_Normal;
+  OFCondition result = check();
   DcmIODUtil::writeSubSequence<OFVector<DerivationImageItem*> >
   ( result,
     DCM_DerivationImageSequence,
@@ -288,8 +295,13 @@ void SourceImageItem::clearData()
 
 OFCondition SourceImageItem::check() const
 {
-  // TODO
-  return EC_Normal;
+  OFCondition result = OFconst_cast(ImageSOPInstanceReferenceMacro*, &m_ImageSOPInstanceReference)->check();
+  if (result.bad())
+  {
+    return result;
+  }
+
+  return OFconst_cast(CodeSequenceMacro*, &m_PurposeOfReferenceCode)->check();
 }
 
 
@@ -351,7 +363,7 @@ OFCondition SourceImageItem::write(DcmItem& itemOfSourceImageSequence)
 }
 
 
-/* -- Class DerivationImages Implementation -- */
+/* -- Class DerivationImageItem Implementation -- */
 
 DerivationImageItem::DerivationImageItem()
   : m_DerivationDescription(DCM_DerivationDescription),
@@ -459,8 +471,27 @@ int DerivationImageItem::compare(const DerivationImageItem& rhs) const
 
 OFCondition DerivationImageItem::check() const
 {
-  // TODO
-  return EC_Normal;
+  if (m_DerivationCodeItems.size() == 0)
+  {
+    DCMFG_ERROR("Derivation Code Sequence in Derivation Image Functional Group Macro must have one or more items");
+    return FG_EC_InvalidData;
+  }
+
+  OFCondition result;
+  OFVector<CodeSequenceMacro*>::const_iterator it = m_DerivationCodeItems.begin();
+  while (it != m_DerivationCodeItems.end() && result.good())
+  {
+    result = (*it)->check();
+    it++;
+  }
+
+  OFVector<SourceImageItem*>::const_iterator ref = m_SourceImageItems.begin();
+  while ((ref != m_SourceImageItems.end()) && result.good())
+  {
+    result = (*ref)->check();
+    ref++;
+  }
+  return result;
 }
 
 
@@ -497,8 +528,15 @@ OFCondition DerivationImageItem::addSourceImageItem(DcmDataset *dataset,
   {
     return EC_MemoryExhausted;
   }
+
+  // check code validity
+  if ( OFconst_cast(CodeSequenceMacro*, &purposeOfReference)->check().bad() )
+  {
+    DCMFG_ERROR("Purpose of Reference code within item of Derivation Image Sequence is invalid");
+    return FG_EC_InvalidData;
+  }
+
   item->getPurposeOfReferenceCode() = purposeOfReference;
-  // TODO: Check code for completeness, and context group?
   resultSourceImageItem = NULL;
   OFString sopClass, sopInstance, ts;
   OFCondition result = DcmDataUtil::getSOPInstanceFromDataset(dataset, EXS_Unknown, sopClass, sopInstance, ts /*ignored*/);

@@ -1,0 +1,227 @@
+/*
+ *
+ *  Copyright (C) 2016, Open Connections GmbH
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation are maintained by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *
+ *  Module: dcmpmap
+ *
+ *  Author: Jan Schlamelcher
+ *
+ *  Purpose: Generated base class representing the Parametric Map IOD
+ *
+ */
+
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmiod/iodutil.h"
+#include "dcmtk/dcmpmap/dpmtypes.h"
+#include "dcmtk/dcmpmap/dpmparametricmapbase.h"
+
+
+DPMParametricMapBase::DPMParametricMapBase()
+: DPMParametricMapBase::DcmIODImage()
+, m_DPMParametricMapSeriesModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODEnhGeneralEquipmentModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_DPMParametricMapImageModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODMultiFrameFGModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODMultiframeDimensionModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODAcquisitionContextModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODCommonInstanceReferenceModule(DcmIODImage::getData(), DcmIODImage::getRules())
+{
+}
+
+
+template<typename ImagePixel>
+DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(ImagePixel))
+: DPMParametricMapBase::DcmIODImage(OFin_place<ImagePixel>)
+, m_DPMParametricMapSeriesModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODEnhGeneralEquipmentModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_DPMParametricMapImageModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODMultiFrameFGModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODMultiframeDimensionModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODAcquisitionContextModule(DcmIODImage::getData(), DcmIODImage::getRules())
+, m_IODCommonInstanceReferenceModule(DcmIODImage::getData(), DcmIODImage::getRules())
+{
+}
+
+
+DPMParametricMapBase::~DPMParametricMapBase()
+{
+}
+
+
+void DPMParametricMapBase::clearData()
+{
+  DcmIODImage::clearData();
+}
+
+
+OFCondition DPMParametricMapBase::read(DcmItem& dataset)
+{
+  OFString sopClass;
+  if(DcmIODUtil::checkSOPClass(&dataset, UID_ParametricMapStorage, sopClass).bad())
+  {
+    DCMPMAP_ERROR("Given file does not seem to be a Parametric Map storage object since SOP class is: " << sopClass);
+    return IOD_EC_WrongSOPClass;
+  }
+
+  DcmIODImage::read(dataset);
+  m_DPMParametricMapSeriesModule.read(dataset);
+  m_IODEnhGeneralEquipmentModule.read(dataset);
+  m_DPMParametricMapImageModule.read(dataset);
+  m_IODMultiFrameFGModule.read(dataset);
+  m_FGInterface.read(dataset);
+  m_IODMultiframeDimensionModule.read(dataset);
+  m_IODAcquisitionContextModule.read(dataset);
+  m_IODCommonInstanceReferenceModule.read(dataset);
+
+  return EC_Normal;
+}
+
+
+OFCondition DPMParametricMapBase::saveFile(const OFString& filename,
+                                           const E_TransferSyntax writeXfer)
+{
+  DcmFileFormat dcmff;
+  OFCondition result;
+  if((result = write(*dcmff.getDataset())).good())
+    result = dcmff.saveFile(filename.c_str(), writeXfer);
+  if(result.bad())
+    DCMPMAP_ERROR("Cannot save Parametric Map object to file " << filename << ": " << result.text());
+  return result;
+}
+
+
+OFCondition DPMParametricMapBase::writeDataset(DcmItem& dataset)
+{
+  return write(dataset);
+}
+
+
+OFCondition DPMParametricMapBase::write(DcmItem& dataset)
+{
+  if(!check())
+    return IOD_EC_InvalidObject;
+
+  OFCondition result;
+  if((result = m_DPMParametricMapSeriesModule.write(dataset)).good())
+  if((result = m_IODEnhGeneralEquipmentModule.write(dataset)).good())
+  if((result = m_DPMParametricMapImageModule.write(dataset)).good())
+  if((result = m_IODMultiFrameFGModule.write(dataset)).good())
+  if((result = m_FGInterface.write(dataset)).good())
+  if((result = m_IODMultiframeDimensionModule.write(dataset)).good())
+  if((result = m_IODAcquisitionContextModule.write(dataset)).good())
+  if((result = m_IODCommonInstanceReferenceModule.write(dataset)).good())
+    return DcmIODImage::write(dataset);
+
+  return result;
+}
+
+
+OFBool DPMParametricMapBase::check()
+{
+  return m_FGInterface.check();
+}
+
+
+FGInterface& DPMParametricMapBase::getFunctionalGroups()
+{
+  return m_FGInterface;
+}
+
+
+IODPatientModule& DPMParametricMapBase::getIODPatientModule()
+{
+  return DcmIODImage::getPatient();
+}
+
+
+IODGeneralStudyModule& DPMParametricMapBase::getIODGeneralStudyModule()
+{
+  return DcmIODImage::getStudy();
+}
+
+
+IODPatientStudyModule& DPMParametricMapBase::getIODPatientStudyModule()
+{
+  return DcmIODImage::getPatientStudy();
+}
+
+
+IODGeneralSeriesModule& DPMParametricMapBase::getIODGeneralSeriesModule()
+{
+  return DcmIODImage::getSeries();
+}
+
+
+DPMParametricMapSeriesModule& DPMParametricMapBase::getDPMParametricMapSeriesModule()
+{
+  return m_DPMParametricMapSeriesModule;
+}
+
+
+IODGeneralEquipmentModule& DPMParametricMapBase::getIODGeneralEquipmentModule()
+{
+  return DcmIODImage::getEquipment();
+}
+
+
+IODEnhGeneralEquipmentModule& DPMParametricMapBase::getIODEnhGeneralEquipmentModule()
+{
+  return m_IODEnhGeneralEquipmentModule;
+}
+
+
+IODGeneralImageModule& DPMParametricMapBase::getIODGeneralImageModule()
+{
+  return DcmIODImage::getGeneralImage();
+}
+
+
+DPMParametricMapImageModule& DPMParametricMapBase::getDPMParametricMapImageModule()
+{
+  return m_DPMParametricMapImageModule;
+}
+
+
+IODMultiFrameFGModule& DPMParametricMapBase::getIODMultiFrameFGModule()
+{
+  return m_IODMultiFrameFGModule;
+}
+
+
+IODMultiframeDimensionModule& DPMParametricMapBase::getIODMultiframeDimensionModule()
+{
+  return m_IODMultiframeDimensionModule;
+}
+
+
+IODAcquisitionContextModule& DPMParametricMapBase::getIODAcquisitionContextModule()
+{
+  return m_IODAcquisitionContextModule;
+}
+
+
+IODCommonInstanceReferenceModule& DPMParametricMapBase::getIODCommonInstanceReferenceModule()
+{
+  return m_IODCommonInstanceReferenceModule;
+}
+
+
+IODSOPCommonModule& DPMParametricMapBase::getIODSOPCommonModule()
+{
+  return DcmIODImage::getSOPCommon();;
+}
+
+
+template DCMTK_DCMPMAP_EXPORT DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODImagePixelModule<Uint16>));
+template DCMTK_DCMPMAP_EXPORT DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODImagePixelModule<Sint16>));
+template DCMTK_DCMPMAP_EXPORT DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODFloatingPointImagePixelModule));
+template DCMTK_DCMPMAP_EXPORT DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODDoubleFloatingPointImagePixelModule));

@@ -61,8 +61,7 @@ OFString IODFoRModule::getName() const
 
 IODFoRModule::~IODFoRModule()
 {
-  // clear rules from rule set
-  clearData();
+  // Nothing to do
 }
 
 
@@ -78,7 +77,6 @@ OFCondition IODFoRModule::getPositionReferenceIndicator(OFString& value,
 {
   return DcmIODUtil::getStringValueFromItem(DCM_PositionReferenceIndicator, *m_Item, value, pos);
 }
-
 
 
 OFCondition IODFoRModule::setFrameOfReferenceUID(const OFString &value,
@@ -98,5 +96,24 @@ OFCondition IODFoRModule::setPositionReferenceIndicator(const OFString &value,
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_PositionReferenceIndicator, value);
   return result;
+}
+
+
+void IODFoRModule::ensureFrameOfReferenceUID(const OFBool correctInvalid)
+{
+  OFString uidstr;
+
+  // Create new Frame of Reference instance UID if required
+  if (getFrameOfReferenceUID(uidstr).bad() || uidstr.empty() )
+  {
+    setFrameOfReferenceUID(DcmIODUtil::createUID(1 /* Series Level */));
+  }
+  else if (!uidstr.empty() && correctInvalid)
+  {
+    if (DcmUniqueIdentifier::checkStringValue(uidstr, "1").bad())
+    {
+      setFrameOfReferenceUID(DcmIODUtil::createUID(1 /* Series Level */));
+    }
+  }
 }
 

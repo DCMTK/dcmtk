@@ -60,7 +60,7 @@ void FGPlaneOrientationVolume::clearData()
 
 OFCondition FGPlaneOrientationVolume::check() const
 {
-  // TODO
+  // Checks in read() and write() are sufficient for now
   return EC_Normal;
 }
 

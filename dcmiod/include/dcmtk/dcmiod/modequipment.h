@@ -46,8 +46,19 @@ public:
     /** Convenient struct containing all information required for setting
      *  equipment information for use by external code)
      */
-    struct EquipmentInfo
+    struct DCMTK_DCMIOD_EXPORT EquipmentInfo
     {
+
+      EquipmentInfo(const OFString& manufacturer,
+                    const OFString& manufacturerModelName,
+                    const OFString& deviceSerialNumber,
+                    const OFString& softwareVersions) :
+        m_Manufacturer(manufacturer), m_ManufacturerModelName(manufacturerModelName),
+        m_DeviceSerialNumber(deviceSerialNumber), m_SoftwareVersions(softwareVersions)
+      {}
+
+      EquipmentInfo() {}
+
       // Manufacturer (VM 1)
       OFString m_Manufacturer;
 

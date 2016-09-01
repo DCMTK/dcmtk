@@ -100,7 +100,7 @@ template<typename T,typename F>
 struct OFconditional<OFFalse,T,F> { typedef F type; };
 
 template<typename T,T Value>
-struct OFintegral_constant { static const T value = Value; };
+struct OFintegral_constant { typedef OFintegral_constant type; static const T value = Value; };
 
 template<typename T,T Value>
 const T OFintegral_constant<T,Value>::value;

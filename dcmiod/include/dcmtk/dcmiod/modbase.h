@@ -66,8 +66,8 @@ public:
   IODComponent(IODComponent* parent = NULL);
 
   /** Assignment operator, copies contained item and rule set from rhs to
-   *  "this" attribute set. Produces clone copy, i.e.\ the contained item
-   *  and the rule set is copied. The parent component is set to NULL.
+   *  "this" attribute set. Performs deep copy, i.e.\ the contained item
+   *  and the rule set are copied. The parent component is set to NULL.
    *  @param  rhs The IODComponent to be assigned
    *  @return Reference to this module
    */
@@ -192,22 +192,28 @@ public:
                            IODRules& rules,
                            DcmItem& destination,
                            const OFString& componentName);
+
 protected:
 
-    /// Shared pointer to the data handled by this class. The item may contain
-    /// more attributes than this class is actually responsible for
-    OFshared_ptr<DcmItem> m_Item;
+  /// Shared pointer to the data handled by this class. The item may contain
+  /// more attributes than this class is actually responsible for
+  OFshared_ptr<DcmItem> m_Item;
 
-    /// Rules describing the attributes governed by this class
-    OFshared_ptr<IODRules> m_Rules;
+  /// Rules describing the attributes governed by this class
+  OFshared_ptr<IODRules> m_Rules;
 
-    /// The parent component (may be NULL) of this class
-    IODComponent* m_Parent;
+  /// The parent component (may be NULL) of this class
+  IODComponent* m_Parent;
+
 };
 
 
 /** The class IODModule is an IODComponent without parent component since
  *  a module does always belong to the top level dataset.
+ *  Also, different from IODComponents, modules usually share data and
+ *  rules. This is taken into account in the assignment operator and
+ *  copy constructor which only create a shallow copy, i.e. modules
+ *  share the same data and rules afterwards.
  */
 class DCMTK_DCMIOD_EXPORT IODModule : public IODComponent
 {
@@ -229,6 +235,19 @@ public:
    */
   IODModule();
 
+  /** Copy constructor, creates shallow copy
+   *  @param  rhs The module to copy from
+   */
+  IODModule(const IODModule& rhs);
+
+  /** Assignment operator, creates shallow copy
+   *  @param  rhs The module to copy from
+   *  @return Returns reference to this object
+   */
+  IODModule& operator=(const IODModule& rhs);
+
+  /** Desctructor
+   */
   ~IODModule() {};
 };
 

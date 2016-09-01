@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -96,6 +96,13 @@ public:
    */
   virtual OFCondition setPositionReferenceIndicator(const OFString &value,
                                                     const OFBool checkValue = OFTrue);
+
+  /** Make sure that the module contains a Frame of Reference Instance UID, i.e.\
+   *  a new one is created if empty. An invalid UID is corrected if desired.
+   *  @param  correctInvalid Correct invalid UID if OFTrue, otherwise do nothing
+   *
+   */
+  void ensureFrameOfReferenceUID(const OFBool correctInvalid = OFFalse);
 
 
 private:

@@ -279,14 +279,14 @@ public:
 
   /** Set one of the Dimension Index Values
    *  @param  value Value that should be set (lowest index starts with 1)
-   *  @param  pos The position of the value that should be set (lowest index
+   *  @param  dim The position of the value that should be set (lowest index
    *          starts with 0), i.e.\ select the 1st, 2nd, ..nth dimension
    *  @param  checkValue Check 'value'. Not evaluated (here for consistency
    *          with other setter functions).
    *  @return EC_Normal, if value was set, error otherwise
    */
   virtual OFCondition setDimensionIndexValues(const Uint32& value,
-                                              const unsigned int pos,
+                                              const unsigned int dim,
                                               const OFBool checkValue = OFTrue);
 
   /** Set Temporal Position Index

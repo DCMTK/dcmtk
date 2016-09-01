@@ -24,8 +24,11 @@
 #include "dcmtk/dcmfg/fgfact.h"
 #include "dcmtk/dcmfg/fgderimg.h"
 #include "dcmtk/dcmfg/fgfracon.h"
+#include "dcmtk/dcmfg/fgframeanatomy.h"
 #include "dcmtk/dcmfg/fgframevoilut.h"
+#include "dcmtk/dcmfg/fgidentpixeltransform.h"
 #include "dcmtk/dcmfg/fgimagedatatype.h"
+#include "dcmtk/dcmfg/fgparametricmapframetype.h"
 #include "dcmtk/dcmfg/fgpixmsr.h"
 #include "dcmtk/dcmfg/fgplanor.h"
 #include "dcmtk/dcmfg/fgplanorvol.h"
@@ -62,11 +65,18 @@ FGBase* FGFactory::create(const DcmFGTypes::E_FGType fgtype)
     case DcmFGTypes::EFG_PIXELMEASURES:
       return new FGPixelMeasures();
       break;
+    case DcmFGTypes::EFG_FRAMEANATOMY:
+      return new FGFrameAnatomy();
+      break;
     case DcmFGTypes::EFG_FRAMECONTENT:
       return new FGFrameContent();
       break;
     case DcmFGTypes::EFG_FRAMEVOILUTMETA:      // Frame VOI LUT and Frame VOI LUT with LUT
       return new FGFrameVOILUT();
+      break;
+    case DcmFGTypes::EFG_PARAMETRICMAPFRAMETYPE:
+      return new FGParametricMapFrameType;
+      break;
     case DcmFGTypes::EFG_PLANEPOSPATIENT:
       return new FGPlanePosPatient();
       break;
@@ -79,6 +89,9 @@ FGBase* FGFactory::create(const DcmFGTypes::E_FGType fgtype)
       return new FGPlaneOrientationVolume();
     case DcmFGTypes::EFG_DERIVATIONIMAGE:
       return new FGDerivationImage();
+      break;
+    case DcmFGTypes::EFG_IDENTITYPIXELVALUETRANSFORMATION:
+      return new FGIdentityPixelValueTransformation();
       break;
     case DcmFGTypes::EFG_IMAGEDATATYPE:
       return new FGImageDataType();
@@ -93,7 +106,6 @@ FGBase* FGFactory::create(const DcmFGTypes::E_FGType fgtype)
       return new FGUSImageDescription();
       break;
     case DcmFGTypes::EFG_CARDIACSYNC:
-    case DcmFGTypes::EFG_FRAMEANATOMY:
     case DcmFGTypes::EFG_PIXELVALUETRANSMETA:  // Pixel Value Transformation Macro or Identity Pixel Value Transformation Macro
     case DcmFGTypes::EFG_CONTRASTBOLUSUSAGE:
     case DcmFGTypes::EFG_PIXELINTENSITYRELLUT:

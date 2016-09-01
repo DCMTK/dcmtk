@@ -115,7 +115,6 @@ OFCondition IODMultiFrameFGModule::getRepresentativeFrameNumber(Uint16& value,
 
 OFCondition IODMultiFrameFGModule::setConcatenationInfo(const IODMultiFrameFGModule::ConcatenationInfo& concatenationInfo)
 {
-  // TODO: Checks?
   m_ConcatenationInfo = concatenationInfo;
   return EC_Normal;
 }
@@ -129,7 +128,6 @@ OFCondition IODMultiFrameFGModule::setInstanceNumber(const OFString& value,
     result = m_Item->putAndInsertOFStringArray(DCM_InstanceNumber, value);
   return result;
 }
-
 
 
 OFCondition IODMultiFrameFGModule::setContentDate(const OFString& value,

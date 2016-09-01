@@ -525,4 +525,34 @@ const typename OFtuple_element<Index,Tuple>::type& OFget( const Tuple& tuple );
 
 #endif // NOT C++11
 
+/** TODO
+ */
+class OFin_place_tag { OFin_place_tag(); };
+
+/** TODO
+ */
+typedef OFin_place_tag(&OFin_place_t)();
+
+/** TODO
+ */
+#define OFin_place_type_t(T) OFin_place_tag(&)(T&)
+
+/** TODO
+ */
+#define OFin_place_index_t(I) OFin_place_tag(&)(OFintegral_constant<size_t,I>&)
+
+/** TODO
+ */
+OFin_place_tag DCMTK_OFSTD_EXPORT OFin_place();
+
+/** TODO
+ */
+template<typename T>
+OFin_place_tag DCMTK_OFSTD_EXPORT OFin_place(T&) { return OFin_place(); }
+
+/** TODO
+ */
+template<size_t I>
+OFin_place_tag DCMTK_OFSTD_EXPORT OFin_place(OFintegral_constant<size_t,I>&) { return OFin_place(); }
+
 #endif // OFUTIL_H

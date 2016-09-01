@@ -2880,3 +2880,5 @@ OFString OFStandard::getHostName()
     return "localhost";
 #endif
 }
+
+OFin_place_tag DCMTK_OFSTD_EXPORT OFin_place() { return *static_cast<OFin_place_tag*>(OFnullptr); }

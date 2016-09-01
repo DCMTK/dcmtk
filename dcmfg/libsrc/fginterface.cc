@@ -355,7 +355,6 @@ OFCondition FGInterface::write(DcmItem& dataset)
 }
 
 
-// TODO: overload (templates?) to return correct derived class type?
 FGBase* FGInterface::getShared(const DcmFGTypes::E_FGType fgType)
 {
   return m_shared.find(fgType);
@@ -433,6 +432,25 @@ size_t FGInterface::deletePerFrame(const DcmFGTypes::E_FGType fgType)
   return numDeleted;
 }
 
+
+size_t FGInterface::deleteFrame(const Uint32 frameNo)
+{
+  OFMap<Uint32, FunctionalGroups*>::iterator it = m_perFrame.find(frameNo);
+  if (it != m_perFrame.end())
+  {
+    if ( (*it).second )
+    {
+      FunctionalGroups::iterator fg = (*it).second->begin();
+      while (fg != (*it).second->end())
+      {
+        delete (*fg).second;
+        fg++;
+      }
+    }
+    m_perFrame.erase(it);
+  }
+  return OFFalse;
+}
 
 
 FunctionalGroups* FGInterface::getOrCreatePerFrameGroups(const Uint32 frameNo)

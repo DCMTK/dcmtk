@@ -61,7 +61,6 @@ void IODGeneralEquipmentModule::resetRules()
 
 IODGeneralEquipmentModule::~IODGeneralEquipmentModule()
 {
-  clearData();
 }
 
 

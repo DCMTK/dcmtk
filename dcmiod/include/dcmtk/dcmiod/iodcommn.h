@@ -48,6 +48,11 @@ public:
    */
   DcmIODCommon();
 
+  /** Copy Constructor
+   *  @param  rhs The object to copy from
+   */
+  DcmIODCommon(const DcmIODCommon& rhs);
+
   /** Get rules handled by this IOD
    *  @return The rules
    */
@@ -227,6 +232,10 @@ public:
 
 
 private:
+
+  /** Copy assignment disabled
+   */
+  DcmIODCommon& operator=(const DcmIODCommon&);
 
   /// The data hold by this class (shared with modules below)
   OFshared_ptr<DcmItem> m_Item;
