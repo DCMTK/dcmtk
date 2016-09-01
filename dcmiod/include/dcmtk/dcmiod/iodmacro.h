@@ -220,13 +220,13 @@ public:
 
   /** Constructor
    *  @param  modifierType Denotes type of Modifier Code Sequence (i.e. 1, 1C,
-   *          2, 2C or 3), default is 3
+   *          2, 2C or 3)
    *  @param  modifierVM Denotes how many items are allowed in the Modifier Code
    *          Sequence
    *  @param  modifierSeq Tag of the sequence that holds the modifier codes.
    *          The default is the Modifier Code Sequence.
    */
-  CodeWithModifiers(const OFString& modifierType = "3",
+  CodeWithModifiers(const OFString& modifierType,
                     const OFString& modifierVM = "1-n",
                     const DcmTagKey& modifierSeq = DCM_ModifierCodeSequence);
 
