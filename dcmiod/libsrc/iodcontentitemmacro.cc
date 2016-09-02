@@ -459,32 +459,32 @@ OFCondition ContentItemMacro::setValueType(const ContentItemMacro::ValueType val
   {
     case VT_DATE:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "DATE");
       break;
     }
     case VT_TIME:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "TIME");
       break;
     }
     case VT_DATETIME:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "DATETIME");
       break;
     }
     case VT_PNAME:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "PNAME");
       break;
     }
     case VT_UIDREF:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "UIDREF");
       break;
     }
     case VT_TEXT:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "TEXT");
       break;
     }
     case VT_CODE:
@@ -494,17 +494,17 @@ OFCondition ContentItemMacro::setValueType(const ContentItemMacro::ValueType val
     }
     case VT_NUMERIC:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "NUMERIC");
       break;
     }
     case VT_COMPOSITE:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "COMPOSITE");
       break;
     }
     case VT_IMAGE:
     {
-      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "CODE");
+      result = m_Item->putAndInsertOFStringArray(DCM_ValueType, "IMAGE");
       break;
     }
     default:
