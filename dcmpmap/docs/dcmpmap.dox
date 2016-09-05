@@ -1,6 +1,6 @@
 /*!
 
-\page mod_dcmpmap dcmpmap: a library for working with Paramatric Map objects
+\page mod_dcmpmap dcmpmap: a library for working with Parametric Map objects
 
 The class library dcmpmap supports creation, loading, accessing and storing
 DICOM Parametric Map objects which have originally been introduced into DICOM
@@ -43,8 +43,8 @@ Since internally the data types are handled in a C++ Variant, the usual concept 
 demonstrated below where the type of pixel data is printed.
 
 The rest of the code uses the API of the \ref mod_dcmiod "dcmiod" and
-\ref mod_dcmfg "dcmfg" module in order to do get basic information about patient, study,
-series and instance, as well as functional group information, especially the Real World
+\ref mod_dcmfg "dcmfg" module in order to get basic information about Patient, Study,
+Series and Instance, as well as functional group information, especially the Real World
 Value Mapping defined in the file.
 
 
@@ -253,14 +253,14 @@ int main (int argc, char* argv[])
 The Parametric Map class uses a template in order to instantiate the correct pixel
 data type internally, and to offer a dedicated API for that type. Allowed types are
 Uint16, Sint16, Float32 and Float64. The example below demonstrates that the API
-use is the same for all types.
+use is generally the same for all types.
 
-The procedure in the demo (and most of it applies for the general case) is as follows:
+The procedure in the example (and most of it applies for the general case) is as follows:
 
 \li The main() routine calls test_pmap() four times, each time using a different
-Image Pixel Module as template parameter which makes sure later that the right pixel
+Image Pixel Module as template parameter which makes sure that the right pixel
 data type is used within the created Parametric Map.
-\li test_pmap() demonstrates well the overall steps to create the map:
+\li test_pmap() demonstrates the overall steps to create the map:
 \li Create a new Parametric Map by calling DPMParametricMapIOD::create()
 (via create_pmap()), and then
 \li add shared functional groups,
@@ -274,10 +274,10 @@ Per default, DPMParametricMapIOD::create() creates a new DICOM instance, within
 a brand-new DICOM Series that belongs to a brand-new DICOM Study. All minimal
 information for Patient, Study and Series will be set (e.g. Study, Series and
 SOP Instance UID as well as other information that is handed over to the create()
-call (like Series Number). Patient Name and ID are left empty per default.
+call, like Series Number). Patient Name and ID are left empty per default.
 
-Of course, often you might instead want to put the new instance into an existing
-Series, or place the brand-new Series into an existing Study or at least assign
+Of course, often you might want to put the new instance into an existing
+Series instead, or place the brand-new Series into an existing Study or at least assign
 it to an existing Patient. The easiest way to to do that is to use the call
 import() that imports Patient or even Study, Series and
 Frame of Reference information from an existing file, i.e. place it under an
