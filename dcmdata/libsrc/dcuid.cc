@@ -158,7 +158,9 @@ static const UIDNameMap uidNameMap[] = {
     { UID_ComputedRadiographyImageStorage,                     "ComputedRadiographyImageStorage" },
     { UID_ContentAssessmentResultsStorage,                     "ContentAssessmentResultsStorage" },
     { UID_CornealTopographyMapStorage,                         "CornealTopographyMapStorage" },
+    { UID_CTDefinedProcedureProtocolStorage,                   "CTDefinedProcedureProtocolStorage" },
     { UID_CTImageStorage,                                      "CTImageStorage" },
+    { UID_CTPerformedProcedureProtocolStorage,                 "CTPerformedProcedureProtocolStorage" },
     { UID_DeformableSpatialRegistrationStorage,                "DeformableSpatialRegistrationStorage" },
     { UID_DigitalIntraOralXRayImageStorageForPresentation,     "DigitalIntraOralXRayImageStorageForPresentation" },
     { UID_DigitalIntraOralXRayImageStorageForProcessing,       "DigitalIntraOralXRayImageStorageForProcessing" },
@@ -362,6 +364,11 @@ static const UIDNameMap uidNameMap[] = {
     { UID_MOVEImplantTemplateGroupInformationModel,            "MOVEImplantTemplateGroupInformationModel" },
     { UID_GETImplantTemplateGroupInformationModel,             "GETImplantTemplateGroupInformationModel" },
 
+    // Defined Procedure Protocol Query/Retrieve
+    { UID_FINDDefinedProcedureProtocolInformationModel,        "FINDDefinedProcedureProtocolInformationModel" },
+    { UID_MOVEDefinedProcedureProtocolInformationModel,        "MOVEDefinedProcedureProtocolInformationModel" },
+    { UID_GETDefinedProcedureProtocolInformationModel,         "GETDefinedProcedureProtocolInformationModel" },
+
     // Print
     { UID_BasicAnnotationBoxSOPClass,                          "BasicAnnotationBoxSOPClass" },
     { UID_BasicColorImageBoxSOPClass,                          "BasicColorImageBoxSOPClass" },
@@ -561,7 +568,9 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_ComputedRadiographyImageStorage,
     UID_ContentAssessmentResultsStorage,
     UID_CornealTopographyMapStorage,
+    UID_CTDefinedProcedureProtocolStorage,
     UID_CTImageStorage,
+    UID_CTPerformedProcedureProtocolStorage,
     UID_DeformableSpatialRegistrationStorage,
     UID_DigitalIntraOralXRayImageStorageForPresentation,
     UID_DigitalIntraOralXRayImageStorageForProcessing,
@@ -823,6 +832,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_CompositingPlanarMPRVolumetricPresentationStateStorage,
 //  UID_ContentAssessmentResultsStorage,
 //  UID_CornealTopographyMapStorage,
+//  UID_CTDefinedProcedureProtocolStorage,
+//  UID_CTPerformedProcedureProtocolStorage,
 //  UID_ExtensibleSRStorage,
 //  UID_GrayscalePlanarMPRVolumetricPresentationStateStorage
 //  UID_LegacyConvertedEnhancedCTImageStorage,
@@ -1085,7 +1096,9 @@ static const DcmModalityTable modalities[] = {
     { UID_ComputedRadiographyImageStorage,                         "CR",  2048 * 2048 * 2 },
     { UID_ContentAssessmentResultsStorage,                         "AS",  4096 },
     { UID_CornealTopographyMapStorage,                             "CM",  512 * 512 },
+    { UID_CTDefinedProcedureProtocolStorage,                       "PPd", 4096 },
     { UID_CTImageStorage,                                          "CT",  512 * 512 * 2 },
+    { UID_CTPerformedProcedureProtocolStorage,                     "PPp", 4096 },
     { UID_DeformableSpatialRegistrationStorage,                    "RGd", 4096 },
     { UID_DigitalIntraOralXRayImageStorageForPresentation,         "DXo", 1024 * 1024 * 2 },
     { UID_DigitalIntraOralXRayImageStorageForProcessing,           "DPo", 1024 * 1024 * 2 },
