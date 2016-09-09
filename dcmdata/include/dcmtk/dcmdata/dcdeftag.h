@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-06-13 09:57:12
+**   Date: 2016-09-09 17:06:52
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-06-13 09:57:12"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-09-09 17:06:52"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4085
+** Number of entries: 4162
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -181,6 +181,9 @@
 #define DCM_ContextGroupIdentificationSequence   DcmTagKey(0x0008, 0x0123)
 #define DCM_MappingResourceIdentificationSequence DcmTagKey(0x0008, 0x0124)
 #define DCM_TimezoneOffsetFromUTC                DcmTagKey(0x0008, 0x0201)
+#define DCM_ResponsibleGroupCodeSequence         DcmTagKey(0x0008, 0x0220)
+#define DCM_EquipmentModality                    DcmTagKey(0x0008, 0x0221)
+#define DCM_ManufacturerRelatedModelGroup        DcmTagKey(0x0008, 0x0222)
 #define DCM_PrivateDataElementCharacteristicsSequence DcmTagKey(0x0008, 0x0300)
 #define DCM_PrivateGroupReference                DcmTagKey(0x0008, 0x0301)
 #define DCM_PrivateCreatorReference              DcmTagKey(0x0008, 0x0302)
@@ -189,6 +192,15 @@
 #define DCM_DeidentificationActionSequence       DcmTagKey(0x0008, 0x0305)
 #define DCM_IdentifyingPrivateElements           DcmTagKey(0x0008, 0x0306)
 #define DCM_DeidentificationAction               DcmTagKey(0x0008, 0x0307)
+#define DCM_PrivateDataElement                   DcmTagKey(0x0008, 0x0308)
+#define DCM_PrivateDataElementValueMultiplicity  DcmTagKey(0x0008, 0x0309)
+#define DCM_PrivateDataElementValueRepresentation DcmTagKey(0x0008, 0x030a)
+#define DCM_PrivateDataElementNumberOfItems      DcmTagKey(0x0008, 0x030b)
+#define DCM_PrivateDataElementName               DcmTagKey(0x0008, 0x030c)
+#define DCM_PrivateDataElementKeyword            DcmTagKey(0x0008, 0x030d)
+#define DCM_PrivateDataElementDescription        DcmTagKey(0x0008, 0x030e)
+#define DCM_PrivateDataElementEncoding           DcmTagKey(0x0008, 0x030f)
+#define DCM_PrivateDataElementDefinitionSequence DcmTagKey(0x0008, 0x0310)
 #define DCM_RETIRED_NetworkID                    DcmTagKey(0x0008, 0x1000)
 #define DCM_StationName                          DcmTagKey(0x0008, 0x1010)
 #define DCM_StudyDescription                     DcmTagKey(0x0008, 0x1030)
@@ -333,6 +345,9 @@
 #define DCM_PatientAge                           DcmTagKey(0x0010, 0x1010)
 #define DCM_PatientSize                          DcmTagKey(0x0010, 0x1020)
 #define DCM_PatientSizeCodeSequence              DcmTagKey(0x0010, 0x1021)
+#define DCM_PatientBodyMassIndex                 DcmTagKey(0x0010, 0x1022)
+#define DCM_MeasuredAPDimension                  DcmTagKey(0x0010, 0x1023)
+#define DCM_MeasuredLateralDimension             DcmTagKey(0x0010, 0x1024)
 #define DCM_PatientWeight                        DcmTagKey(0x0010, 0x1030)
 #define DCM_PatientAddress                       DcmTagKey(0x0010, 0x1040)
 #define DCM_RETIRED_InsurancePlanIdentification  DcmTagKey(0x0010, 0x1050)
@@ -388,6 +403,8 @@
 #define DCM_ConsentForClinicalTrialUseSequence   DcmTagKey(0x0012, 0x0083)
 #define DCM_DistributionType                     DcmTagKey(0x0012, 0x0084)
 #define DCM_ConsentForDistributionFlag           DcmTagKey(0x0012, 0x0085)
+#define DCM_EthicsCommitteeApprovalEffectivenessStartDate DcmTagKey(0x0012, 0x0086)
+#define DCM_EthicsCommitteeApprovalEffectivenessEndDate DcmTagKey(0x0012, 0x0087)
 #define DCM_RETIRED_CADFileFormat                DcmTagKey(0x0014, 0x0023)
 #define DCM_RETIRED_ComponentReferenceSystem     DcmTagKey(0x0014, 0x0024)
 #define DCM_ComponentManufacturingProcedure      DcmTagKey(0x0014, 0x0025)
@@ -1319,6 +1336,65 @@
 #define DCM_TransducerBeamSteeringCodeSequence   DcmTagKey(0x0018, 0x980e)
 #define DCM_TransducerApplicationCodeSequence    DcmTagKey(0x0018, 0x980f)
 #define DCM_ZeroVelocityPixelValue               DcmTagKey(0x0018, 0x9810)
+#define DCM_ReferenceLocationLabel               DcmTagKey(0x0018, 0x9900)
+#define DCM_ReferenceLocationDescription         DcmTagKey(0x0018, 0x9901)
+#define DCM_ReferenceBasisCodeSequence           DcmTagKey(0x0018, 0x9902)
+#define DCM_ReferenceGeometryCodeSequence        DcmTagKey(0x0018, 0x9903)
+#define DCM_OffsetDistance                       DcmTagKey(0x0018, 0x9904)
+#define DCM_OffsetDirection                      DcmTagKey(0x0018, 0x9905)
+#define DCM_PotentialScheduledProtocolCodeSequence DcmTagKey(0x0018, 0x9906)
+#define DCM_PotentialRequestedProcedureCodeSequence DcmTagKey(0x0018, 0x9907)
+#define DCM_PotentialReasonsForProcedure         DcmTagKey(0x0018, 0x9908)
+#define DCM_PotentialReasonsForProcedureCodeSequence DcmTagKey(0x0018, 0x9909)
+#define DCM_PotentialDiagnosticTasks             DcmTagKey(0x0018, 0x990a)
+#define DCM_ContraindicationsCodeSequence        DcmTagKey(0x0018, 0x990b)
+#define DCM_ReferencedDefinedProtocolSequence    DcmTagKey(0x0018, 0x990c)
+#define DCM_ReferencedPerformedProtocolSequence  DcmTagKey(0x0018, 0x990d)
+#define DCM_PredecessorProtocolSequence          DcmTagKey(0x0018, 0x990e)
+#define DCM_ProtocolPlanningInformation          DcmTagKey(0x0018, 0x990f)
+#define DCM_ProtocolDesignRationale              DcmTagKey(0x0018, 0x9910)
+#define DCM_PatientSpecificationSequence         DcmTagKey(0x0018, 0x9911)
+#define DCM_ModelSpecificationSequence           DcmTagKey(0x0018, 0x9912)
+#define DCM_ParametersSpecificationSequence      DcmTagKey(0x0018, 0x9913)
+#define DCM_InstructionSequence                  DcmTagKey(0x0018, 0x9914)
+#define DCM_InstructionIndex                     DcmTagKey(0x0018, 0x9915)
+#define DCM_InstructionText                      DcmTagKey(0x0018, 0x9916)
+#define DCM_InstructionDescription               DcmTagKey(0x0018, 0x9917)
+#define DCM_InstructionPerformedFlag             DcmTagKey(0x0018, 0x9918)
+#define DCM_InstructionPerformedDateTime         DcmTagKey(0x0018, 0x9919)
+#define DCM_InstructionPerformanceComment        DcmTagKey(0x0018, 0x991a)
+#define DCM_PatientPositioningInstructionSequence DcmTagKey(0x0018, 0x991b)
+#define DCM_PositioningMethodCodeSequence        DcmTagKey(0x0018, 0x991c)
+#define DCM_PositioningLandmarkSequence          DcmTagKey(0x0018, 0x991d)
+#define DCM_TargetFrameOfReferenceUID            DcmTagKey(0x0018, 0x991e)
+#define DCM_AcquisitionProtocolElementSpecificationSequence DcmTagKey(0x0018, 0x991f)
+#define DCM_AcquisitionProtocolElementSequence   DcmTagKey(0x0018, 0x9920)
+#define DCM_ProtocolElementNumber                DcmTagKey(0x0018, 0x9921)
+#define DCM_ProtocolElementName                  DcmTagKey(0x0018, 0x9922)
+#define DCM_ProtocolElementCharacteristicsSummary DcmTagKey(0x0018, 0x9923)
+#define DCM_ProtocolElementPurpose               DcmTagKey(0x0018, 0x9924)
+#define DCM_AcquisitionMotion                    DcmTagKey(0x0018, 0x9930)
+#define DCM_AcquisitionStartLocationSequence     DcmTagKey(0x0018, 0x9931)
+#define DCM_AcquisitionEndLocationSequence       DcmTagKey(0x0018, 0x9932)
+#define DCM_ReconstructionProtocolElementSpecificationSequence DcmTagKey(0x0018, 0x9933)
+#define DCM_ReconstructionProtocolElementSequence DcmTagKey(0x0018, 0x9934)
+#define DCM_StorageProtocolElementSpecificationSequence DcmTagKey(0x0018, 0x9935)
+#define DCM_StorageProtocolElementSequence       DcmTagKey(0x0018, 0x9936)
+#define DCM_RequestedSeriesDescription           DcmTagKey(0x0018, 0x9937)
+#define DCM_SourceAcquisitionProtocolElementNumber DcmTagKey(0x0018, 0x9938)
+#define DCM_SourceAcquisitionBeamNumber          DcmTagKey(0x0018, 0x9939)
+#define DCM_SourceReconstructionProtocolElementNumber DcmTagKey(0x0018, 0x993a)
+#define DCM_ReconstructionStartLocationSequence  DcmTagKey(0x0018, 0x993b)
+#define DCM_ReconstructionEndLocationSequence    DcmTagKey(0x0018, 0x993c)
+#define DCM_ReconstructionAlgorithmSequence      DcmTagKey(0x0018, 0x993d)
+#define DCM_ReconstructionTargetCenterLocationSequence DcmTagKey(0x0018, 0x993e)
+#define DCM_ImageFilterDescription               DcmTagKey(0x0018, 0x9941)
+#define DCM_CTDIvolNotificationTrigger           DcmTagKey(0x0018, 0x9942)
+#define DCM_DLPNotificationTrigger               DcmTagKey(0x0018, 0x9943)
+#define DCM_AutoKVPSelectionType                 DcmTagKey(0x0018, 0x9944)
+#define DCM_AutoKVPUpperBound                    DcmTagKey(0x0018, 0x9945)
+#define DCM_AutoKVPLowerBound                    DcmTagKey(0x0018, 0x9946)
+#define DCM_ProtocolDefinedPatientPosition       DcmTagKey(0x0018, 0x9947)
 #define DCM_ContributingEquipmentSequence        DcmTagKey(0x0018, 0xa001)
 #define DCM_ContributionDateTime                 DcmTagKey(0x0018, 0xa002)
 #define DCM_ContributionDescription              DcmTagKey(0x0018, 0xa003)
@@ -3188,6 +3264,7 @@
 #define DCM_RecommendedDefaultValueSequence      DcmTagKey(0x0082, 0x0035)
 #define DCM_ConstraintViolationSignificance      DcmTagKey(0x0082, 0x0036)
 #define DCM_ConstraintViolationCondition         DcmTagKey(0x0082, 0x0037)
+#define DCM_ModifiableConstraintFlag             DcmTagKey(0x0082, 0x0038)
 #define DCM_StorageMediaFileSetID                DcmTagKey(0x0088, 0x0130)
 #define DCM_StorageMediaFileSetUID               DcmTagKey(0x0088, 0x0140)
 #define DCM_IconImageSequence                    DcmTagKey(0x0088, 0x0200)
