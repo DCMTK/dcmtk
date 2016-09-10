@@ -77,8 +77,9 @@ void ContentItemMacro::ReferencedSOPSequenceItem::resetRules()
 }
 
 
-OFCondition ContentItemMacro::ReferencedSOPSequenceItem::read(DcmItem& source,
-                                            const OFBool clearOldData)
+OFCondition ContentItemMacro::ReferencedSOPSequenceItem::read(
+  DcmItem& source,
+  const OFBool clearOldData)
 {
   if (clearOldData)
     clearData();
@@ -104,32 +105,36 @@ SOPInstanceReferenceMacro& ContentItemMacro::ReferencedSOPSequenceItem::getSOPIn
 }
 
 
-OFCondition ContentItemMacro::ReferencedSOPSequenceItem::getReferencedFrameNumber(OFString &value,
-                                                                const signed long pos) const
+OFCondition ContentItemMacro::ReferencedSOPSequenceItem::getReferencedFrameNumber(
+  OFString &value,
+  const signed long pos) const
 {
   return DcmIODUtil::getStringValueFromItem(DCM_ReferencedFrameNumber, *m_Item, value, pos);
 }
 
 
-OFCondition ContentItemMacro::ReferencedSOPSequenceItem::getReferencedSegmentNumber(Uint16 &value,
-                                                                  const signed long pos) const
+OFCondition ContentItemMacro::ReferencedSOPSequenceItem::getReferencedSegmentNumber(
+  Uint16 &value,
+  const signed long pos) const
 {
   return m_Item->findAndGetUint16(DCM_ReferencedSegmentNumber, value, pos);
 }
 
 
-OFCondition ContentItemMacro::ReferencedSOPSequenceItem::setReferencedFrameNumber(const OFString &value,
-                                                                const OFBool checkValue)
+OFCondition ContentItemMacro::ReferencedSOPSequenceItem::setReferencedFrameNumber(
+  const OFString &value,
+  const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmIntegerString::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmIntegerString::checkStringValue(value, "1-n") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_ReferencedFrameNumber, value);
   return result;
 }
 
 
-OFCondition ContentItemMacro::ReferencedSOPSequenceItem::setReferencedSegmentNumber(const Uint16 value,
-                                                                  const OFBool checkValue)
+OFCondition ContentItemMacro::ReferencedSOPSequenceItem::setReferencedSegmentNumber(
+  const Uint16 value,
+  const OFBool checkValue)
 {
   (void)checkValue;
   return m_Item->putAndInsertUint16(DCM_ReferencedSegmentNumber, value);
@@ -520,7 +525,7 @@ OFCondition ContentItemMacro::setValueType(const ContentItemMacro::ValueType val
 OFCondition ContentItemMacro::setDateTime(const OFString &value,
                                           const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmDateTime::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_DateTime, value);
   return result;
@@ -530,7 +535,7 @@ OFCondition ContentItemMacro::setDateTime(const OFString &value,
 OFCondition ContentItemMacro::setDate(const OFString &value,
                                       const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmDate::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmDate::checkStringValue(value, "1") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_Date, value);
   return result;
@@ -540,7 +545,7 @@ OFCondition ContentItemMacro::setDate(const OFString &value,
 OFCondition ContentItemMacro::setTime(const OFString &value,
                                       const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmTime::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmTime::checkStringValue(value, "1") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_Time, value);
   return result;
@@ -550,7 +555,7 @@ OFCondition ContentItemMacro::setTime(const OFString &value,
 OFCondition ContentItemMacro::setPersonName(const OFString &value,
                                             const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmPersonName::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmPersonName::checkStringValue(value, "1") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_PersonName, value);
   return result;
@@ -568,7 +573,7 @@ OFCondition ContentItemMacro::setUID(const OFString &value,
 OFCondition ContentItemMacro::setTextValue(const OFString &value,
                                            const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmUnlimitedText::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmUnlimitedText::checkStringValue(value) : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_TextValue, value);
   return result;
@@ -578,7 +583,7 @@ OFCondition ContentItemMacro::setTextValue(const OFString &value,
 OFCondition ContentItemMacro::setNumericValue(const OFString &value,
                                               const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1-n") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_NumericValue, value);
   return result;
@@ -586,26 +591,29 @@ OFCondition ContentItemMacro::setNumericValue(const OFString &value,
 
 
 OFCondition ContentItemMacro::setFloatingPointValue(const Float64 value,
+                                                    const unsigned long pos,
                                                     const OFBool checkValue)
 {
   (void)checkValue;
-  return m_Item->putAndInsertFloat64(DCM_FloatingPointValue, value);
+  return m_Item->putAndInsertFloat64(DCM_FloatingPointValue, value, pos);
 }
 
 
 OFCondition ContentItemMacro::setRationalNumeratorValue(const Sint32 value,
+                                                        const unsigned long pos,
                                                         const OFBool checkValue)
 {
   (void)checkValue;
-  return m_Item->putAndInsertSint32(DCM_RationalNumeratorValue, value);
+  return m_Item->putAndInsertSint32(DCM_RationalNumeratorValue, value, pos);
 }
 
 
 OFCondition ContentItemMacro::setRationalDenominatorValue(const Uint32 value,
+                                                          const unsigned long pos,
                                                           const OFBool checkValue)
 {
   (void)checkValue;
-  return m_Item->putAndInsertUint32(DCM_RationalDenominatorValue, value);
+  return m_Item->putAndInsertUint32(DCM_RationalDenominatorValue, value, pos);
 }
 
 

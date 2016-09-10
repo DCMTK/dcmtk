@@ -427,26 +427,32 @@ public:
 
   /** Set FloatingPointValue
    *  @param  value Value to be set (single value only) or "" for no value
+   *  @param  pos Index of the value to be set (starting from 0)
    *  @param  checkValue Check 'value' for conformance with VR (FD) and VM (1-n) if enabled
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setFloatingPointValue(const Float64 value,
+                                            const unsigned long pos = 0,
                                             const OFBool checkValue = OFTrue);
 
   /** Set RationalNumeratorValue
    *  @param  value Value to be set (single value only) or "" for no value
+   *  @param  pos Index of the value to be set (starting from 0)
    *  @param  checkValue Check 'value' for conformance with VR (SL) and VM (1-n) if enabled
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setRationalNumeratorValue(const Sint32 value,
+                                                const unsigned long pos = 0,
                                                 const OFBool checkValue = OFTrue);
 
   /** Set RationalDenominatorValue
    *  @param  value Value to be set (single value only) or "" for no value
+   *  @param  pos Index of the value to be set (starting from 0)
    *  @param  checkValue Check 'value' for conformance with VR (UL) and VM (1-n) if enabled
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setRationalDenominatorValue(const Uint32 value,
+                                                  const unsigned long pos = 0,
                                                   const OFBool checkValue = OFTrue);
 
   virtual OFString toString();
