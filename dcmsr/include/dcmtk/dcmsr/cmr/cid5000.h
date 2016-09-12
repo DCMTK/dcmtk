@@ -40,29 +40,29 @@ class DCMTK_CMR_EXPORT CID5000_Languages
      */
     enum EnumType
     {
-        /// (eng,IETF4646,"English")
+        /// (eng,RFC5646,"English")
         English,
-        /// (en-CA,IETF4646","English (CA)")
+        /// (en-CA,RFC5646,"English (CA)")
         English_CA,
-        /// (en-GB,IETF4646","English (GB)")
+        /// (en-GB,RFC5646,"English (GB)")
         English_GB,
-        /// (en-US,IETF4646","English (US)")
+        /// (en-US,RFC5646,"English (US)")
         English_US,
-        /// (fra,IETF4646","French")
+        /// (fra,RFC5646,"French")
         French,
-        /// (fr-CA,IETF4646","French (CA)")
+        /// (fr-CA,RFC5646,"French (CA)")
         French_CA,
-        /// (fr-CH,IETF4646","French (CH)")
+        /// (fr-CH,RFC5646,"French (CH)")
         French_CH,
-        /// (fr-FR,IETF4646","French (FR)")
+        /// (fr-FR,RFC5646,"French (FR)")
         French_FR,
-        /// (deu,IETF4646","German")
+        /// (deu,RFC5646,"German")
         German,
-        /// (de-AT,IETF4646","German (AT)")
+        /// (de-AT,RFC5646,"German (AT)")
         German_AT,
-        /// (de-CH,IETF4646","German (CH)")
+        /// (de-CH,RFC5646,"German (CH)")
         German_CH,
-        /// (de-DE,IETF4646","German (DE)")
+        /// (de-DE,RFC5646,"German (DE)")
         German_DE
     };
 

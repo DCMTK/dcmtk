@@ -148,18 +148,18 @@ CID5000_Languages::CodeList &CID5000_Languages::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(English, DSRBasicCodedEntry("eng", "IETF4646", "English")));
-        Codes->insert(OFMake_pair(English_CA, DSRBasicCodedEntry("en-CA", "IETF4646", "English (CA)")));
-        Codes->insert(OFMake_pair(English_GB, DSRBasicCodedEntry("en-GB", "IETF4646", "English (GB)")));
-        Codes->insert(OFMake_pair(English_US, DSRBasicCodedEntry("en-US", "IETF4646", "English (US)")));
-        Codes->insert(OFMake_pair(French, DSRBasicCodedEntry("fra", "IETF4646", "French")));
-        Codes->insert(OFMake_pair(French_CA, DSRBasicCodedEntry("fr-CA", "IETF4646", "French (CA)")));
-        Codes->insert(OFMake_pair(French_CH, DSRBasicCodedEntry("fr-CH", "IETF4646", "French (CH)")));
-        Codes->insert(OFMake_pair(French_FR, DSRBasicCodedEntry("fr-FR", "IETF4646", "French (FR)")));
-        Codes->insert(OFMake_pair(German, DSRBasicCodedEntry("deu", "IETF4646", "German")));
-        Codes->insert(OFMake_pair(German_AT, DSRBasicCodedEntry("de-AT", "IETF4646", "German (AT)")));
-        Codes->insert(OFMake_pair(German_CH, DSRBasicCodedEntry("de-CH", "IETF4646", "German (CH)")));
-        Codes->insert(OFMake_pair(German_DE, DSRBasicCodedEntry("de-DE", "IETF4646", "German (DE)")));
+        Codes->insert(OFMake_pair(English, DSRBasicCodedEntry("eng", "RFC5646", "English")));
+        Codes->insert(OFMake_pair(English_CA, DSRBasicCodedEntry("en-CA", "RFC5646", "English (CA)")));
+        Codes->insert(OFMake_pair(English_GB, DSRBasicCodedEntry("en-GB", "RFC5646", "English (GB)")));
+        Codes->insert(OFMake_pair(English_US, DSRBasicCodedEntry("en-US", "RFC5646", "English (US)")));
+        Codes->insert(OFMake_pair(French, DSRBasicCodedEntry("fra", "RFC5646", "French")));
+        Codes->insert(OFMake_pair(French_CA, DSRBasicCodedEntry("fr-CA", "RFC5646", "French (CA)")));
+        Codes->insert(OFMake_pair(French_CH, DSRBasicCodedEntry("fr-CH", "RFC5646", "French (CH)")));
+        Codes->insert(OFMake_pair(French_FR, DSRBasicCodedEntry("fr-FR", "RFC5646", "French (FR)")));
+        Codes->insert(OFMake_pair(German, DSRBasicCodedEntry("deu", "RFC5646", "German")));
+        Codes->insert(OFMake_pair(German_AT, DSRBasicCodedEntry("de-AT", "RFC5646", "German (AT)")));
+        Codes->insert(OFMake_pair(German_CH, DSRBasicCodedEntry("de-CH", "RFC5646", "German (CH)")));
+        Codes->insert(OFMake_pair(German_DE, DSRBasicCodedEntry("de-DE", "RFC5646", "German (DE)")));
     }
     /* should never be NULL */
     return *Codes;
