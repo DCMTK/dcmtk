@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-09-09 17:06:52
+**   Date: 2016-09-12 13:03:02
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-09-09 17:06:52"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-09-12 13:03:02"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4162
+** Number of entries: 4164
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -657,6 +657,8 @@
 #define DCM_GridID                               DcmTagKey(0x0018, 0x1006)
 #define DCM_CassetteID                           DcmTagKey(0x0018, 0x1007)
 #define DCM_GantryID                             DcmTagKey(0x0018, 0x1008)
+#define DCM_UniqueDeviceIdentifier               DcmTagKey(0x0018, 0x1009)
+#define DCM_UDISequence                          DcmTagKey(0x0018, 0x100a)
 #define DCM_SecondaryCaptureDeviceID             DcmTagKey(0x0018, 0x1010)
 #define DCM_RETIRED_HardcopyCreationDeviceID     DcmTagKey(0x0018, 0x1011)
 #define DCM_DateOfSecondaryCapture               DcmTagKey(0x0018, 0x1012)
@@ -3518,7 +3520,7 @@
 #define DCM_ROIElementalCompositionSequence      DcmTagKey(0x3006, 0x00b6)
 #define DCM_ROIElementalCompositionAtomicNumber  DcmTagKey(0x3006, 0x00b7)
 #define DCM_ROIElementalCompositionAtomicMassFraction DcmTagKey(0x3006, 0x00b8)
-#define DCM_AdditionalRTROIIdentificationCodeSequence DcmTagKey(0x3006, 0x00b9)
+#define DCM_RETIRED_AdditionalRTROIIdentificationCodeSequence DcmTagKey(0x3006, 0x00b9)
 #define DCM_RETIRED_FrameOfReferenceRelationshipSequence DcmTagKey(0x3006, 0x00c0)
 #define DCM_RETIRED_RelatedFrameOfReferenceUID   DcmTagKey(0x3006, 0x00c2)
 #define DCM_RETIRED_FrameOfReferenceTransformationType DcmTagKey(0x3006, 0x00c4)

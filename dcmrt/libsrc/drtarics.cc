@@ -1,13 +1,14 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTAdditionalRTROIIdentificationCodeSequence
  *
  *  Generated automatically from DICOM PS 3.3-2015c
  *  File created on 2015-12-07 16:29:33
+ *  File updated manually on 2016-09-12
  *
  */
 
@@ -831,7 +832,7 @@ OFCondition DRTAdditionalRTROIIdentificationCodeSequence::read(DcmItem &dataset,
         clear();
         /* retrieve sequence element from dataset */
         DcmSequenceOfItems *sequence;
-        result = dataset.findAndGetSequence(DCM_AdditionalRTROIIdentificationCodeSequence, sequence);
+        result = dataset.findAndGetSequence(DCM_RETIRED_AdditionalRTROIIdentificationCodeSequence, sequence);
         if (sequence != NULL)
         {
             if (checkElementValue(*sequence, card, type, result, moduleName))
@@ -861,7 +862,7 @@ OFCondition DRTAdditionalRTROIIdentificationCodeSequence::read(DcmItem &dataset,
                 }
             }
         } else {
-            DcmSequenceOfItems element(DCM_AdditionalRTROIIdentificationCodeSequence);
+            DcmSequenceOfItems element(DCM_RETIRED_AdditionalRTROIIdentificationCodeSequence);
             checkElementValue(element, card, type, result, moduleName);
         }
     }
@@ -878,7 +879,7 @@ OFCondition DRTAdditionalRTROIIdentificationCodeSequence::write(DcmItem &dataset
     if (!EmptyDefaultSequence)
     {
         result = EC_MemoryExhausted;
-        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_AdditionalRTROIIdentificationCodeSequence);
+        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_RETIRED_AdditionalRTROIIdentificationCodeSequence);
         if (sequence != NULL)
         {
             result = EC_Normal;
