@@ -2881,4 +2881,4 @@ OFString OFStandard::getHostName()
 #endif
 }
 
-OFin_place_tag DCMTK_OFSTD_EXPORT OFin_place() { return *static_cast<OFin_place_tag*>(OFnullptr); }
+DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place() { return *static_cast<OFin_place_tag*>(OFnullptr); }

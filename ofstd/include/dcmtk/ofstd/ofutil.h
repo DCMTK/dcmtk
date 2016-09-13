@@ -527,7 +527,7 @@ const typename OFtuple_element<Index,Tuple>::type& OFget( const Tuple& tuple );
 
 /** TODO
  */
-class OFin_place_tag { OFin_place_tag(); };
+class DCMTK_OFSTD_EXPORT OFin_place_tag { OFin_place_tag(); };
 
 /** TODO
  */
@@ -543,16 +543,16 @@ typedef OFin_place_tag(&OFin_place_t)();
 
 /** TODO
  */
-OFin_place_tag DCMTK_OFSTD_EXPORT OFin_place();
+DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place();
 
 /** TODO
  */
 template<typename T>
-OFin_place_tag DCMTK_OFSTD_EXPORT OFin_place(T&) { return OFin_place(); }
+OFin_place_tag OFin_place(T&) { return OFin_place(); }
 
 /** TODO
  */
 template<size_t I>
-OFin_place_tag DCMTK_OFSTD_EXPORT OFin_place(OFintegral_constant<size_t,I>&) { return OFin_place(); }
+OFin_place_tag OFin_place(OFintegral_constant<size_t,I>&) { return OFin_place(); }
 
 #endif // OFUTIL_H
