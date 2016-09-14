@@ -239,9 +239,12 @@ struct OFvariant_const_visit_invoker
 // The actual variant implementation. Don't mess with this, look
 // at the doxygen API description instead.
 template<typename T0=OFvariadic_nil,typename T1=OFvariadic_nil,typename T2=OFvariadic_nil,typename T3=OFvariadic_nil,typename T4=OFvariadic_nil,typename T5=OFvariadic_nil,typename T6=OFvariadic_nil,typename T7=OFvariadic_nil,typename T8=OFvariadic_nil,typename T9=OFvariadic_nil,typename T10=OFvariadic_nil,typename T11=OFvariadic_nil,typename T12=OFvariadic_nil,typename T13=OFvariadic_nil,typename T14=OFvariadic_nil,typename T15=OFvariadic_nil,typename T16=OFvariadic_nil,typename T17=OFvariadic_nil,typename T18=OFvariadic_nil,typename T19=OFvariadic_nil,typename T20=OFvariadic_nil,typename T21=OFvariadic_nil,typename T22=OFvariadic_nil,typename T23=OFvariadic_nil,typename T24=OFvariadic_nil,typename T25=OFvariadic_nil,typename T26=OFvariadic_nil,typename T27=OFvariadic_nil,typename T28=OFvariadic_nil,typename T29=OFvariadic_nil,typename T30=OFvariadic_nil,typename T31=OFvariadic_nil,typename T32=OFvariadic_nil,typename T33=OFvariadic_nil,typename T34=OFvariadic_nil,typename T35=OFvariadic_nil,typename T36=OFvariadic_nil,typename T37=OFvariadic_nil,typename T38=OFvariadic_nil,typename T39=OFvariadic_nil,typename T40=OFvariadic_nil,typename T41=OFvariadic_nil,typename T42=OFvariadic_nil,typename T43=OFvariadic_nil,typename T44=OFvariadic_nil,typename T45=OFvariadic_nil,typename T46=OFvariadic_nil,typename T47=OFvariadic_nil,typename T48=OFvariadic_nil,typename T49=OFvariadic_nil>
-class DCMTK_OFSTD_EXPORT OFvariant
+class OFvariant
 {
 public:
+    // typedef for old compilers that do not define the type 'OFvariant' in derived classes
+    typedef OFvariant variant;
+
     OFvariant()
 #ifdef OFalign
     : m_Content()

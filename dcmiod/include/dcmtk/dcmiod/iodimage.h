@@ -44,10 +44,15 @@ class IODImagePixelModule;
  *  Image Pixel Module.
  */
 template<OFVARIADIC_DECLARE_TEMPLATE_PARAMETER_PACK_WITH_DEFAULTS(T)>
-class DCMTK_DCMIOD_EXPORT DcmIODImage : public DcmIODCommon
+class DcmIODImage : public DcmIODCommon
 {
 
 public:
+
+  /** typedef for old compilers that do not define the type 'DcmIODImage' in
+   *  derived classes.
+   */
+  typedef DcmIODImage IODImage;
 
   /** A good comment would be nice, but I have nothing in mind
    */

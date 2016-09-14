@@ -26,28 +26,28 @@
 
 
 DPMParametricMapBase::DPMParametricMapBase()
-: DPMParametricMapBase::DcmIODImage()
-, m_DPMParametricMapSeriesModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODEnhGeneralEquipmentModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_DPMParametricMapImageModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODMultiFrameFGModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODMultiframeDimensionModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODAcquisitionContextModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODCommonInstanceReferenceModule(DcmIODImage::getData(), DcmIODImage::getRules())
+: DPMParametricMapBase::IODImage()
+, m_DPMParametricMapSeriesModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODEnhGeneralEquipmentModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_DPMParametricMapImageModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODMultiFrameFGModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODMultiframeDimensionModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODAcquisitionContextModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODCommonInstanceReferenceModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
 {
 }
 
 
 template<typename ImagePixel>
 DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(ImagePixel))
-: DPMParametricMapBase::DcmIODImage(OFin_place<ImagePixel>)
-, m_DPMParametricMapSeriesModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODEnhGeneralEquipmentModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_DPMParametricMapImageModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODMultiFrameFGModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODMultiframeDimensionModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODAcquisitionContextModule(DcmIODImage::getData(), DcmIODImage::getRules())
-, m_IODCommonInstanceReferenceModule(DcmIODImage::getData(), DcmIODImage::getRules())
+: DPMParametricMapBase::IODImage(OFin_place<ImagePixel>)
+, m_DPMParametricMapSeriesModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODEnhGeneralEquipmentModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_DPMParametricMapImageModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODMultiFrameFGModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODMultiframeDimensionModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODAcquisitionContextModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
+, m_IODCommonInstanceReferenceModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
 {
 }
 
@@ -59,7 +59,7 @@ DPMParametricMapBase::~DPMParametricMapBase()
 
 void DPMParametricMapBase::clearData()
 {
-  DcmIODImage::clearData();
+  DPMParametricMapBase::IODImage::clearData();
 }
 
 
@@ -72,7 +72,7 @@ OFCondition DPMParametricMapBase::read(DcmItem& dataset)
     return IOD_EC_WrongSOPClass;
   }
 
-  DcmIODImage::read(dataset);
+  DPMParametricMapBase::IODImage::read(dataset);
   m_DPMParametricMapSeriesModule.read(dataset);
   m_IODEnhGeneralEquipmentModule.read(dataset);
   m_DPMParametricMapImageModule.read(dataset);
@@ -119,7 +119,7 @@ OFCondition DPMParametricMapBase::write(DcmItem& dataset)
   if((result = m_IODMultiframeDimensionModule.write(dataset)).good())
   if((result = m_IODAcquisitionContextModule.write(dataset)).good())
   if((result = m_IODCommonInstanceReferenceModule.write(dataset)).good())
-    return DcmIODImage::write(dataset);
+    return DPMParametricMapBase::IODImage::write(dataset);
 
   return result;
 }
@@ -139,25 +139,25 @@ FGInterface& DPMParametricMapBase::getFunctionalGroups()
 
 IODPatientModule& DPMParametricMapBase::getIODPatientModule()
 {
-  return DcmIODImage::getPatient();
+  return DPMParametricMapBase::IODImage::getPatient();
 }
 
 
 IODGeneralStudyModule& DPMParametricMapBase::getIODGeneralStudyModule()
 {
-  return DcmIODImage::getStudy();
+  return DPMParametricMapBase::IODImage::getStudy();
 }
 
 
 IODPatientStudyModule& DPMParametricMapBase::getIODPatientStudyModule()
 {
-  return DcmIODImage::getPatientStudy();
+  return DPMParametricMapBase::IODImage::getPatientStudy();
 }
 
 
 IODGeneralSeriesModule& DPMParametricMapBase::getIODGeneralSeriesModule()
 {
-  return DcmIODImage::getSeries();
+  return DPMParametricMapBase::IODImage::getSeries();
 }
 
 
@@ -169,7 +169,7 @@ DPMParametricMapSeriesModule& DPMParametricMapBase::getDPMParametricMapSeriesMod
 
 IODGeneralEquipmentModule& DPMParametricMapBase::getIODGeneralEquipmentModule()
 {
-  return DcmIODImage::getEquipment();
+  return DPMParametricMapBase::IODImage::getEquipment();
 }
 
 
@@ -181,7 +181,7 @@ IODEnhGeneralEquipmentModule& DPMParametricMapBase::getIODEnhGeneralEquipmentMod
 
 IODGeneralImageModule& DPMParametricMapBase::getIODGeneralImageModule()
 {
-  return DcmIODImage::getGeneralImage();
+  return DPMParametricMapBase::IODImage::getGeneralImage();
 }
 
 
@@ -217,7 +217,7 @@ IODCommonInstanceReferenceModule& DPMParametricMapBase::getIODCommonInstanceRefe
 
 IODSOPCommonModule& DPMParametricMapBase::getIODSOPCommonModule()
 {
-  return DcmIODImage::getSOPCommon();;
+  return DPMParametricMapBase::IODImage::getSOPCommon();
 }
 
 

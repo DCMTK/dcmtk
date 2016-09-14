@@ -56,7 +56,7 @@ struct IODImagePixelVariantBaseVisitor
  *  and the Double Floating Point Image Pixel module
  */
 template<OFVARIADIC_DECLARE_TEMPLATE_PARAMETER_PACK_WITH_DEFAULTS(T)>
-class DCMTK_DCMIOD_EXPORT IODImagePixelVariant
+class IODImagePixelVariant
 : public OFvariant<OFmonostate,OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)>
 {
 
@@ -65,7 +65,7 @@ public:
   /** Constructor
    */
   IODImagePixelVariant()
-  : IODImagePixelVariant::OFvariant()
+  : IODImagePixelVariant::variant()
   {
 
   }
@@ -74,7 +74,7 @@ public:
    */
   template<typename T>
   IODImagePixelVariant(const T& t)
-  : IODImagePixelVariant::OFvariant(t)
+  : IODImagePixelVariant::variant(t)
   {
 
   }
