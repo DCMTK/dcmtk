@@ -1,6 +1,6 @@
 /*!
 
-\page mod_dcmtract dcmtract: a library for working with Tractography Results
+\page mod_dcmtract dcmtract: a library for working with tractography results
 
 This module contains classes to deal with DICOM Tractography Results objects.
 It is able to create, load and access the contained fiber tracks and the related
@@ -21,7 +21,6 @@ Module.
 
 The main class of this module is:
 \li \b TrcTractographyResults
-
 
 \section Examples
 

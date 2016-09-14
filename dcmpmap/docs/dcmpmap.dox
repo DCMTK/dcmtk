@@ -1,14 +1,14 @@
 /*!
 
-\page mod_dcmpmap dcmpmap: a library for working with Parametric Map objects
+\page mod_dcmpmap dcmpmap: a library for working with parametric map objects
 
-The class library dcmpmap supports creation, loading, accessing and storing
-DICOM Parametric Map objects which have originally been introduced into DICOM
-with <a href="ftp://medical.nema.org/medical/dicom/final/sup172_ft2.pdf">Supplement 172</a>
-in 2014.
+This module contains classes to create, load, access and store DICOM Parametric
+Map objects, which have originally been introduced to the DICOM standard with
+<a href="ftp://medical.nema.org/medical/dicom/final/sup172_ft2.pdf">Supplement
+172</a> in 2014.
 
-In the standard, the data inside each Parametric Map object must rely on one
-of these data types:
+In the standard, the data inside each Parametric Map object must rely on one of
+these data types:
 
 \li 16 bit unsigned integer
 \li 16 bit signed integer
@@ -21,32 +21,31 @@ The main class of this module is:
 \li \b DPMParametricMapIOD
 
 This module makes heavy use of the \ref mod_dcmiod "dcmiod" module for managing
-common IOD attributes and the \ref mod_dcmfg "dcmfg" module for functional group support.
-Read the example sections for more explanations.
+common IOD attributes and the \ref mod_dcmfg "dcmfg" module for functional group
+support. Read the "Examples" sections for more explanations.
 
-\section Examples_dcmpmap
+\section Examples
 
 The following two examples show:
 \li How to access and dump information (including the binary data values) from a
 Parametric Map object
 \li and how to use the API to create such an object yourself.
 
-\subsection ExampleDumpParametricMap Dumping information from Parametric Map
+\subsection example_dump Dumping information from Parametric Map
 
-The Parametric Map class uses a template in order to instantiate the correct pixel
-data type internally, and to offer a dedicated API for that type. Allowed types are
-Uint16, Sint16, Float32 and Float64.
+The Parametric Map class uses a template in order to instantiate the correct
+pixel data type internally, and to offer a dedicated API for that type. Allowed
+types are Uint16, Sint16, Float32 and Float64.
 
-Since internally the data types are handled in a C++ Variant, the usual concept to
-"switch" between these types in code is to use a Visitor which overloads the operator
-"()" for each data type that can occur in the Variant. This concept is also
-demonstrated below where the type of pixel data is printed.
+Since internally the data types are handled in a C++ Variant, the usual concept
+to "switch" between these types in code is to use a Visitor which overloads the
+operator "()" for each data type that can occur in the Variant. This concept is
+also demonstrated below where the type of pixel data is printed.
 
 The rest of the code uses the API of the \ref mod_dcmiod "dcmiod" and
-\ref mod_dcmfg "dcmfg" module in order to get basic information about Patient, Study,
-Series and Instance, as well as functional group information, especially the Real World
-Value Mapping defined in the file.
-
+\ref mod_dcmfg "dcmfg" module in order to get basic information about Patient,
+Study, Series and Instance, as well as functional group information, especially
+the Real World Value Mapping defined in the file.
 
 \code
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -248,14 +247,15 @@ int main (int argc, char* argv[])
 \endcode
 
 
-\subsection ExampleCreateParametricMap Creation of Parametric Maps
+\subsection example_create Creation of Parametric Maps
 
-The Parametric Map class uses a template in order to instantiate the correct pixel
-data type internally, and to offer a dedicated API for that type. Allowed types are
-Uint16, Sint16, Float32 and Float64. The example below demonstrates that the API
-use is generally the same for all types.
+The Parametric Map class uses a template in order to instantiate the correct
+pixel data type internally, and to offer a dedicated API for that type. Allowed
+types are Uint16, Sint16, Float32 and Float64. The example below demonstrates
+that the API use is generally the same for all types.
 
-The procedure in the example (and most of it applies for the general case) is as follows:
+The procedure in the example (and most of it applies for the general case) is as
+follows:
 
 \li The main() routine calls test_pmap() four times, each time using a different
 Image Pixel Module as template parameter which makes sure that the right pixel
@@ -273,20 +273,21 @@ data type is used within the created Parametric Map.
 Per default, DPMParametricMapIOD::create() creates a new DICOM instance, within
 a brand-new DICOM Series that belongs to a brand-new DICOM Study. All minimal
 information for Patient, Study and Series will be set (e.g. Study, Series and
-SOP Instance UID as well as other information that is handed over to the create()
-call, like Series Number). Patient Name and ID are left empty per default.
+SOP Instance UID as well as other information that is handed over to the
+create() call, like Series Number). Patient Name and ID are left empty per
+default.
 
-Of course, often you might want to put the new instance into an existing
-Series instead, or place the brand-new Series into an existing Study or at least assign
+Of course, often you might want to put the new instance into an existing Series
+instead, or place the brand-new Series into an existing Study or at least assign
 it to an existing Patient. The easiest way to to do that is to use the call
-import() that imports Patient or even Study, Series and
-Frame of Reference information from an existing file, i.e. place it under an
-existing Patient, Study and/or Series.
+import() that imports Patient or even Study, Series and Frame of Reference
+information from an existing file, i.e. place it under an existing Patient,
+Study and/or Series.
 
 When adding information to the Parametric Map using the public API, some basic
-checks are usually performed on the data. Finally, when calling saveFile(), some further
-checks take place, e.g. validating the structure of the functional groups or
-making sure that all required element values are set.
+checks are usually performed on the data. Finally, when calling saveFile(), some
+further checks take place, e.g. validating the structure of the functional
+groups or making sure that all required element values are set.
 
 \code
 
