@@ -32,6 +32,8 @@ struct OFvariant_overload
     // Let the inherited methods take part in overload resolution
     using OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::constructor;
     using OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::assignment;
+    static Uint16 test_accepts( T0 );
+    static Uint8 test_accepts( ... );
 #ifdef OFalign
     static size_t constructor( void* content, const T0& t0 )
     {
@@ -53,6 +55,9 @@ struct OFvariant_overload
         }
         return false;
     }
+
+    template<typename T>
+    struct accepts : OFintegral_constant<OFBool,sizeof(test_accepts(*OFstatic_cast(T*,OFnullptr)))==2 || OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::template accepts<T>::value> {};
 };
 
 // Template recursion end, declares both functions with incompatible
@@ -63,6 +68,8 @@ struct OFvariant_overload<Index>
 {
     static void constructor();
     static void assignment();
+    template<typename T>
+    struct accepts : OFfalse_type {};
 };
 
 // Creates a function pointer lookup table to select a function for the
@@ -249,7 +256,7 @@ public:
 #ifdef OFalign
     : m_Content()
 #else
-    : m_Content( new T0 )
+    : m_pContent( new T0 )
 #endif
     , m_Index( 0 )
     {
@@ -259,7 +266,7 @@ public:
     }
 
     template<typename T>
-    OFvariant( const T& t )
+    OFvariant( const T& t, OFTypename OFenable_if<OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::template accepts<T>::value,int>::type = 0 )
 #ifdef OFalign
     : m_Content()
 #else
@@ -282,7 +289,7 @@ public:
     }
 
     template<typename T>
-    OFvariant& operator=( const T& t )
+    OFTypename OFenable_if<OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::template accepts<T>::value,OFvariant>::type& operator=( const T& t )
     {
         // Either assign 't' if the contained alternative fits.
         if( !OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::assignment( index(), content(), t ) )
@@ -370,7 +377,7 @@ private:
     mutable OFalign_typename(Uint8[max_sizeof_type::value],max_alignof_type::value) m_Content;
 #else
     // Allocate content on the heap.
-    void*& content() const { return m_pContent; }
+    void*& content() const { return OFconst_cast(void*&,m_pContent); }
     void* m_pContent;
 #endif
     size_t m_Index;
