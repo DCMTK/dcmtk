@@ -29,6 +29,7 @@
 #include "dcmtk/dcmdata/dcerror.h"
 
 #include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofvector.h"
 
 
 /*---------------------*
@@ -148,6 +149,32 @@ template<class T> class DSRListOfItems
         return result;
     }
 
+    /** get copy of all items (as a vector)
+     ** @param  items  reference to a variable where the result should be stored.
+     *                 (always cleared before items are added)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getItems(OFVector<T> &items) const
+    {
+        items.clear();
+        if (!ItemList.empty())
+        {
+            /* avoid re-allocations */
+            items.reserve(ItemList.size());
+            /* iterate over all list items */
+            const OFLIST_TYPENAME OFListConstIterator(T) endPos = ItemList.end();
+            OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
+            while (iterator != endPos)
+            {
+                /* and copy them to the passed vector */
+                items.push_back(*iterator);
+                iterator++;
+            }
+        }
+        /* always return OK */
+        return EC_Normal;
+    }
+
     /** add item to the list
      ** @param  item  item to be added
      */
@@ -163,6 +190,20 @@ template<class T> class DSRListOfItems
     {
         if (!isElement(item))
             ItemList.push_back(item);
+    }
+
+    /** add items to the list
+     ** @param  items  items to be added (stored as a vector)
+     */
+    inline void addItems(const OFVector<T> &items)
+    {
+        const OFTypename OFVector<T>::const_iterator endPos = items.end();
+        OFTypename OFVector<T>::const_iterator iterator = items.begin();
+        while (iterator != endPos)
+        {
+            ItemList.push_back(*iterator);
+            iterator++;
+        }
     }
 
     /** insert item at specified position to the list
