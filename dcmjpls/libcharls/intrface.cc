@@ -114,7 +114,7 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsEncode(BYTE **buf, size_t *buf_size, size_t* pc
 	{
 		stream.Write(buf, buf_size, 0);
 	}
-	catch (const alloc_fail& e)
+	catch (const alloc_fail&)
 	{
 		return MemoryAllocationFailure;
 	}
@@ -211,7 +211,7 @@ CHARLS_IMEXPORT(JLS_ERROR) JpegLsVerifyEncode(const void* uncompressedData, size
 	{
 		stream.Write(&buf, &buf_size, 0);
 	}
-	catch (const alloc_fail& e)
+	catch (const alloc_fail&)
 	{
 		return MemoryAllocationFailure;
 	}
