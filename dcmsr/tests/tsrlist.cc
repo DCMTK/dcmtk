@@ -31,15 +31,15 @@
 OFTEST(dcmsr_addItems)
 {
     /* prepare test data */
-    OFVector<int> vec;
-    for (int i = 0; i < 10; ++i)
+    OFVector<Uint16> vec;
+    for (Uint16 i = 0; i < 10; ++i)
         vec.push_back(i);
     /* add data to list */
-    DSRListOfItems<int> lst;
+    DSRListOfItems<Uint16> lst;
     lst.addItems(vec);
     /* and check result */
     OFCHECK_EQUAL(lst.getNumberOfItems(), 10);
-    for (int j = 0; j < 10; ++j)
+    for (Uint16 j = 0; j < 10; ++j)
         OFCHECK_EQUAL(lst.getItem(j + 1), j);
     OFCHECK(lst.isElement(7));
     OFCHECK(!lst.isElement(10));
@@ -48,19 +48,15 @@ OFTEST(dcmsr_addItems)
 
 OFTEST(dcmsr_getItems)
 {
-    /* prepare test data */
-    OFVector<int> vec;
-    for (int i = 0; i < 10; ++i)
-        vec.push_back(i);
+    DSRListOfItems<Uint16> lst;
     /* add data to list */
-    DSRListOfItems<int> lst;
-    lst.addItems(vec);
+    for (Uint16 i = 0; i < 10; ++i)
+        lst.addItem(i);
     /* and check result */
     OFCHECK_EQUAL(lst.getNumberOfItems(), 10);
-    vec.clear();
-    OFCHECK_EQUAL(vec.size(), 0);
+    OFVector<Uint16> vec;
     OFCHECK(lst.getItems(vec).good());
     OFCHECK_EQUAL(vec.size(), 10);
-    for (int j = 0; j < 10; ++j)
+    for (Uint16 j = 0; j < 10; ++j)
         OFCHECK_EQUAL(vec.at(j), j);
 }
