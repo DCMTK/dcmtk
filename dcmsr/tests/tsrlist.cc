@@ -30,6 +30,8 @@
 
 OFTEST(dcmsr_addItems)
 {
+    // disable test case when building shared libraries because of linker errors
+#ifndef DCMTK_SHARED
     /* prepare test data */
     OFVector<Uint16> vec;
     for (Uint16 i = 0; i < 10; ++i)
@@ -43,11 +45,14 @@ OFTEST(dcmsr_addItems)
         OFCHECK_EQUAL(lst.getItem(j + 1), j);
     OFCHECK(lst.isElement(7));
     OFCHECK(!lst.isElement(10));
+#endif
 }
 
 
 OFTEST(dcmsr_getItems)
 {
+    // disable test case when building shared libraries because of linker errors
+#ifndef DCMTK_SHARED
     DSRListOfItems<Uint16> lst;
     /* add data to list */
     for (Uint16 i = 0; i < 10; ++i)
@@ -59,4 +64,5 @@ OFTEST(dcmsr_getItems)
     OFCHECK_EQUAL(vec.size(), 10);
     for (Uint16 j = 0; j < 10; ++j)
         OFCHECK_EQUAL(vec.at(j), j);
+#endif
 }
