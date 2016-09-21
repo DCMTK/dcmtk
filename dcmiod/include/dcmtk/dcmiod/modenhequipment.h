@@ -40,7 +40,7 @@ class DCMTK_DCMIOD_EXPORT IODEnhGeneralEquipmentModule : public IODModule
 public:
 
     /** Convenient struct containing all information required for setting
-     *  equipment information for use by external code)
+     *  enhanced equipment information (for use by external code)
      */
     struct DCMTK_DCMIOD_EXPORT EquipmentInfo
     {
@@ -55,16 +55,16 @@ public:
 
       /** Convenience Constructor setting all values
        *  @param manufacturer Manufacturer
-       *  @param modelName Model name
+       *  @param manufacturerModelName Manufacturer's model name
        *  @param deviceSerialNumber Serial number
-       * *@param softwareVersions Software versions
+       *  @param softwareVersions Software versions
        */
       EquipmentInfo(const OFString& manufacturer,
-                    const OFString& modelName,
+                    const OFString& manufacturerModelName,
                     const OFString& deviceSerialNumber,
                     const OFString& softwareVersions) :
         m_Manufacturer(manufacturer),
-        m_ManufacturerModelName(modelName),
+        m_ManufacturerModelName(manufacturerModelName),
         m_DeviceSerialNumber(deviceSerialNumber),
         m_SoftwareVersions(softwareVersions) {}
 
@@ -81,22 +81,22 @@ public:
         return OFTrue;
       }
 
-      // Manufacturer (VM 1)
+      /// Manufacturer (VM 1)
       OFString m_Manufacturer;
 
-      // Manufacturer's Model Name (VM 1)
+      /// Manufacturer's Model Name (VM 1)
       OFString m_ManufacturerModelName;
 
-      // Device Serial Number (VM 1)
+      /// Device Serial Number (VM 1)
       OFString m_DeviceSerialNumber;
 
-      // Software Version(s) (VM 1-n)
+      /// Software Version(s) (VM 1-n)
       OFString m_SoftwareVersions;
     };
 
     /** Constructor
-     *  @param  item The item to be used for data storage. If NULL, the
-     *          class creates an empty data container.
+     *  @param  item The item to be used for data storage. If NULL, the class
+     *          creates an empty data container.
      *  @param  rules The rule set for this class. If NULL, the class creates
      *          one from scratch and adds its values.
      */
@@ -114,9 +114,9 @@ public:
     static OFCondition create(const EquipmentInfo& info,
                               IODEnhGeneralEquipmentModule* equipment);
 
-   /** Resets rules to their original values.
-    */
-   virtual void resetRules();
+    /** Resets rules to their original values.
+     */
+    virtual void resetRules();
 
     /** Get name of module
      *  @return Name of the module ("EnhancedEquipmentModule")
@@ -187,6 +187,10 @@ public:
     virtual OFCondition setSoftwareVersions(const OFString &value,
                                             const OFBool checkValue = OFTrue);
 
+    /** Set all equipment information at once
+     *  @param  info The equipment information to be set.
+     *  @return EC_Normal if values could be set, error otherwise
+     */
     virtual OFCondition set(const EquipmentInfo& info);
 
 private:

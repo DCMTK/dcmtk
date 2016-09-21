@@ -58,10 +58,10 @@ OFCondition IODEnhGeneralEquipmentModule::create(const IODEnhGeneralEquipmentMod
 
 void IODEnhGeneralEquipmentModule::resetRules()
 {
-  m_Rules->addRule(new IODRule(DCM_Manufacturer, "1","1", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ManufacturerModelName, "1","1", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_DeviceSerialNumber, "1","1", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_SoftwareVersions, "1-n","1", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_Manufacturer, "1", "1", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ManufacturerModelName, "1", "1", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_DeviceSerialNumber, "1", "1", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_SoftwareVersions, "1-n", "1", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
 }
 
 

@@ -43,41 +43,50 @@ class DCMTK_DCMIOD_EXPORT IODGeneralEquipmentModule : public IODModule
 
 public:
 
-    /** Convenient struct containing all information required for setting
-     *  equipment information for use by external code)
+    /** Convenient struct containing commonly used equipment information
+     *  (for use by external code)
      */
     struct DCMTK_DCMIOD_EXPORT EquipmentInfo
     {
 
+      /** Default Constructor
+       */
+      EquipmentInfo() {}
+
+      /** Convenience Constructor setting commonly used values
+       *  @param manufacturer Manufacturer
+       *  @param manufacturerModelName Manufacturer's model name
+       *  @param deviceSerialNumber Serial number
+       *  @param softwareVersions Software versions
+       */
       EquipmentInfo(const OFString& manufacturer,
                     const OFString& manufacturerModelName,
                     const OFString& deviceSerialNumber,
                     const OFString& softwareVersions) :
-        m_Manufacturer(manufacturer), m_ManufacturerModelName(manufacturerModelName),
-        m_DeviceSerialNumber(deviceSerialNumber), m_SoftwareVersions(softwareVersions)
-      {}
+        m_Manufacturer(manufacturer),
+        m_ManufacturerModelName(manufacturerModelName),
+        m_DeviceSerialNumber(deviceSerialNumber),
+        m_SoftwareVersions(softwareVersions) {}
 
-      EquipmentInfo() {}
-
-      // Manufacturer (VM 1)
+      /// Manufacturer (VM 1)
       OFString m_Manufacturer;
 
-      // Manufacturer's Model Name (VM 1)
+      /// Manufacturer's Model Name (VM 1)
       OFString m_ManufacturerModelName;
 
-      // Device Serial Number (VM 1)
+      /// Device Serial Number (VM 1)
       OFString m_DeviceSerialNumber;
 
-      // Software Version(s) (VM 1-n)
+      /// Software Version(s) (VM 1-n)
       OFString m_SoftwareVersions;
     };
 
     /** Constructor
-    *  @param  item The item to be used for data storage. If NULL, the
-    *          class creates an empty data container.
-    *  @param  rules The rule set for this class. If NULL, the class creates
-    *          one from scratch and adds its values.
-    */
+     *  @param  item The item to be used for data storage. If NULL, the class
+     *          creates an empty data container.
+     *  @param  rules The rule set for this class. If NULL, the class creates
+     *          one from scratch and adds its values.
+     */
     IODGeneralEquipmentModule(OFshared_ptr<DcmItem> item,
                               OFshared_ptr<IODRules> rules);
 
@@ -95,7 +104,6 @@ public:
 
     /** Get name of module
      *  @return Name of the module ("GeneralEquipmentModule")
-     *          depending on configuration)
      */
     virtual OFString getName() const;
 
@@ -236,7 +244,7 @@ public:
 
 private:
 
-    /// Name of the modue ("GeneralEquipmentModule")
+    /// Name of the module ("GeneralEquipmentModule")
     OFString m_ModuleName;
 };
 
