@@ -16,13 +16,15 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
     dcmjpeg  - a compression/decompression library and utility apps
     dcmjpls  - a compression/decompression library and utility apps
     dcmnet   - a networking library and utility apps
+    dcmpmap  - a library for working with parametric map objects
     dcmpstat - a presentation state library and utility apps
     dcmqrdb  - an image database server
     dcmrt    - a radiation therapy library and utility apps
     dcmseg   - a library for working with segmentation objects
     dcmsign  - a digital signature library and utility apps
-    dcmsr    - a structured report library and utility apps
+    dcmsr    - a structured reporting library and utility apps
     dcmtls   - security extensions for the network library
+    dcmtract - a library for working with tractography results
     dcmwlm   - a modality worklist database server
     oflog    - a logging library based on log4cplus
     ofstd    - a library of general purpose classes
