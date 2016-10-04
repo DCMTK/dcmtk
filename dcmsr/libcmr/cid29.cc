@@ -5,8 +5,8 @@
  *
  *  Source file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2016b
- *  File created on 2016-04-06 16:26:33 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016d
+ *  File created on 2016-10-04 12:38:42 by J. Riesmeier
  *
  */
 
