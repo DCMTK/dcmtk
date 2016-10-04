@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2016c
- *  File created on 2016-06-13 09:53:55 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016d
+ *  File created on 2016-10-04 11:50:13 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3400
+// total number of codes: 3471
 // - retired: 143
 // - no name: 27
 // - not unique: 14
@@ -3447,5 +3447,76 @@
 #define CODE_DCM_VascularImagingSpecialty                                  DSRBasicCodedEntry("128017", "DCM", "Vascular Imaging Specialty")
 #define CODE_DCM_FWPByGA_Campbell_1991                                     DSRBasicCodedEntry("128040", "DCM", "FWP by GA, Campbell, 1991")
 #define CODE_DCM_FWPByGA_Hadlock_1991                                      DSRBasicCodedEntry("128041", "DCM", "FWP by GA, Hadlock, 1991")
+#define CODE_DCM_PlaneThroughSuperiorExtent                                DSRBasicCodedEntry("128120", "DCM", "Plane through Superior Extent")
+#define CODE_DCM_PlaneThroughInferiorExtent                                DSRBasicCodedEntry("128121", "DCM", "Plane through Inferior Extent")
+#define CODE_DCM_PlaneThroughProximalExtent                                DSRBasicCodedEntry("128122", "DCM", "Plane through Proximal Extent")
+#define CODE_DCM_PlaneThroughDistalExtent                                  DSRBasicCodedEntry("128123", "DCM", "Plane through Distal Extent")
+#define CODE_DCM_PlaneThroughMedialExtent                                  DSRBasicCodedEntry("128124", "DCM", "Plane through Medial Extent")
+#define CODE_DCM_PlaneThroughLateralExtent                                 DSRBasicCodedEntry("128125", "DCM", "Plane through Lateral Extent")
+#define CODE_DCM_PlaneThroughLeftmostExtent                                DSRBasicCodedEntry("128126", "DCM", "Plane through Leftmost Extent")
+#define CODE_DCM_PlaneThroughRightmostExtent                               DSRBasicCodedEntry("128127", "DCM", "Plane through Rightmost Extent")
+#define CODE_DCM_PlaneThroughAnteriorExtent                                DSRBasicCodedEntry("128128", "DCM", "Plane through Anterior Extent")
+#define CODE_DCM_PlaneThroughPosteriorExtent                               DSRBasicCodedEntry("128129", "DCM", "Plane through Posterior Extent")
+#define CODE_DCM_PlaneThroughCenter                                        DSRBasicCodedEntry("128130", "DCM", "Plane through Center")
+#define CODE_DCM_GeometricCenterpoint                                      DSRBasicCodedEntry("128137", "DCM", "Geometric Centerpoint")
+#define CODE_DCM_CenterOfMass                                              DSRBasicCodedEntry("128138", "DCM", "Center of Mass")
+#define CODE_DCM_ImpairedRenalFunction                                     DSRBasicCodedEntry("128144", "DCM", "Impaired Renal Function")
+#define CODE_DCM_LaserCrossHairs                                           DSRBasicCodedEntry("128151", "DCM", "Laser Cross-hairs")
+#define CODE_DCM_AcquiredVolume                                            DSRBasicCodedEntry("128160", "DCM", "Acquired Volume")
+#define CODE_DCM_AbdominalRadiology                                        DSRBasicCodedEntry("128170", "DCM", "Abdominal Radiology")
+#define CODE_DCM_BiomedicalEngineering                                     DSRBasicCodedEntry("128171", "DCM", "Biomedical Engineering")
+#define CODE_DCM_CardiovascularRadiology                                   DSRBasicCodedEntry("128172", "DCM", "Cardiovascular Radiology")
+#define CODE_DCM_InformationTechnology                                     DSRBasicCodedEntry("128173", "DCM", "Information Technology")
+#define CODE_DCM_MedicalPhysics                                            DSRBasicCodedEntry("128174", "DCM", "Medical Physics")
+#define CODE_DCM_MusculoskeletalRadiology                                  DSRBasicCodedEntry("128175", "DCM", "Musculoskeletal Radiology")
+#define CODE_DCM_PediatricRadiology                                        DSRBasicCodedEntry("128177", "DCM", "Pediatric Radiology")
+#define CODE_DCM_ThoracicRadiology                                         DSRBasicCodedEntry("128179", "DCM", "Thoracic Radiology")
+#define CODE_DCM_ForRTWorkflow                                             DSRBasicCodedEntry("128180", "DCM", "For RT Workflow")
+#define CODE_DCM_DiagnosticSourceImages                                    DSRBasicCodedEntry("128181", "DCM", "Diagnostic Source Images")
+#define CODE_DCM_SegmentationResult                                        DSRBasicCodedEntry("128182", "DCM", "Segmentation Result")
+#define CODE_DCM_RegistrationResult                                        DSRBasicCodedEntry("128183", "DCM", "Registration Result")
+#define CODE_DCM_PrePlanningResult                                         DSRBasicCodedEntry("128184", "DCM", "Pre-Planning Result")
+#define CODE_DCM_RTPrescriptionResult                                      DSRBasicCodedEntry("128185", "DCM", "RT Prescription Result")
+#define CODE_DCM_DoseCalculationImageSeries                                DSRBasicCodedEntry("128186", "DCM", "Dose Calculation Image Series")
+#define CODE_DCM_CoordinateAlignmentImageSeries                            DSRBasicCodedEntry("128187", "DCM", "Coordinate Alignment Image Series")
+#define CODE_DCM_RTTreatmentSimulationResult                               DSRBasicCodedEntry("128188", "DCM", "RT Treatment Simulation Result")
+#define CODE_DCM_RTPlanningResult                                          DSRBasicCodedEntry("128189", "DCM", "RT Planning Result")
+#define CODE_DCM_DosimetricResult                                          DSRBasicCodedEntry("128190", "DCM", "Dosimetric Result")
+#define CODE_DCM_PatientSetupVerificationResult                            DSRBasicCodedEntry("128191", "DCM", "Patient Setup Verification Result")
+#define CODE_DCM_RTTreatmentSessionResult                                  DSRBasicCodedEntry("128192", "DCM", "RT Treatment Session Result")
+#define CODE_DCM_RTTreatmentCourseSummary                                  DSRBasicCodedEntry("128193", "DCM", "RT Treatment Course Summary")
+#define CODE_DCM_RTTreatmentQAResult                                       DSRBasicCodedEntry("128194", "DCM", "RT Treatment QA Result")
+#define CODE_DCM_ForDiagnosis                                              DSRBasicCodedEntry("128195", "DCM", "For Diagnosis")
+#define CODE_DCM_ForSegmentation                                           DSRBasicCodedEntry("128196", "DCM", "For Segmentation")
+#define CODE_DCM_ForRTPrescription                                         DSRBasicCodedEntry("128197", "DCM", "For RT Prescription")
+#define CODE_DCM_ForRTTreatmentPlanning                                    DSRBasicCodedEntry("128198", "DCM", "For RT Treatment Planning")
+#define CODE_DCM_ForPlanComparison                                         DSRBasicCodedEntry("128199", "DCM", "For Plan Comparison")
+#define CODE_DCM_ForRTPlanSummation                                        DSRBasicCodedEntry("128200", "DCM", "For RT Plan Summation")
+#define CODE_DCM_ForPhysicianReview                                        DSRBasicCodedEntry("128201", "DCM", "For Physician Review")
+#define CODE_DCM_ForPhysicistReview                                        DSRBasicCodedEntry("128202", "DCM", "For Physicist Review")
+#define CODE_DCM_ForTumorBoard                                             DSRBasicCodedEntry("128203", "DCM", "For Tumor Board")
+#define CODE_DCM_ForPlanQualityAssurance                                   DSRBasicCodedEntry("128204", "DCM", "For Plan Quality Assurance")
+#define CODE_DCM_ForMachineQualityAssurance                                DSRBasicCodedEntry("128205", "DCM", "For Machine Quality Assurance")
+#define CODE_DCM_ForPatientSetupVerification                               DSRBasicCodedEntry("128206", "DCM", "For Patient Setup Verification")
+#define CODE_DCM_ForClinicalTrialSubmission                                DSRBasicCodedEntry("128207", "DCM", "For Clinical Trial Submission")
+#define CODE_DCM_ForTumorRegistry                                          DSRBasicCodedEntry("128208", "DCM", "For Tumor Registry")
+#define CODE_DCM_RTWorkflowInputUsed                                       DSRBasicCodedEntry("128209", "DCM", "RT Workflow Input Used")
+#define CODE_DCM_RTPrescriptionInputUsed                                   DSRBasicCodedEntry("128210", "DCM", "RT Prescription Input Used")
+#define CODE_DCM_RTTreatmentPlanningInputUsed                              DSRBasicCodedEntry("128211", "DCM", "RT Treatment Planning Input Used")
+#define CODE_DCM_RTPlanSummationInputUsed                                  DSRBasicCodedEntry("128212", "DCM", "RT Plan Summation Input Used")
+#define CODE_DCM_PhysicianReviewInputUsed                                  DSRBasicCodedEntry("128213", "DCM", "Physician Review Input Used")
+#define CODE_DCM_PhysicistReviewInputUsed                                  DSRBasicCodedEntry("128214", "DCM", "Physicist Review Input Used")
+#define CODE_DCM_PlanQualityAssuranceInputUsed                             DSRBasicCodedEntry("128215", "DCM", "Plan Quality Assurance Input Used")
+#define CODE_DCM_MachineQualityAssuranceInputUsed                          DSRBasicCodedEntry("128216", "DCM", "Machine Quality Assurance Input Used")
+#define CODE_DCM_PatientSetupVerificationInputUsed                         DSRBasicCodedEntry("128217", "DCM", "Patient Setup Verification Input Used")
+#define CODE_DCM_DiagnosisInputUsed                                        DSRBasicCodedEntry("128218", "DCM", "Diagnosis Input Used")
+#define CODE_DCM_ContouringInputUsed                                       DSRBasicCodedEntry("128219", "DCM", "Contouring Input Used")
+#define CODE_DCM_PlanComparisonInputUsed                                   DSRBasicCodedEntry("128220", "DCM", "Plan Comparison Input Used")
+#define CODE_DCM_TumorBoardInputUsed                                       DSRBasicCodedEntry("128221", "DCM", "Tumor Board Input Used")
+#define CODE_DCM_TumorRegistryInputUsed                                    DSRBasicCodedEntry("128222", "DCM", "Tumor Registry Input Used")
+#define CODE_DCM_ClinicalTrialSubmissionInputUsed                          DSRBasicCodedEntry("128223", "DCM", "Clinical Trial Submission Input Used")
+#define CODE_DCM_SourceMeasurement                                         DSRBasicCodedEntry("128224", "DCM", "Source measurement")
+#define CODE_DCM_SourceReport                                              DSRBasicCodedEntry("128225", "DCM", "Source report")
+#define CODE_DCM_SourceRawData                                             DSRBasicCodedEntry("128226", "DCM", "Source raw data")
 
 #endif

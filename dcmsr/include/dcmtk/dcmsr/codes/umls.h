@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2016b
- *  File created on 2016-04-06 16:08:00 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016d
+ *  File created on 2016-10-04 11:50:20 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 39
+// total number of codes: 40
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -77,6 +77,7 @@
 #define CODE_UMLS_Tyrosine3Octreotate_Ga68                                 DSRBasicCodedEntry("C1742831", "UMLS", "tyrosine-3-octreotate Ga^68^")
 #define CODE_UMLS_Fluoroestradiol_FES_F18                                  DSRBasicCodedEntry("C1831937", "UMLS", "Fluoroestradiol (FES) F^18^")
 #define CODE_UMLS_Sonographer                                              DSRBasicCodedEntry("C1954848", "UMLS", "Sonographer")
+#define CODE_UMLS_Neuroradiology                                           DSRBasicCodedEntry("C2183225", "UMLS", "Neuroradiology")
 #define CODE_UMLS_InverseRatioVentilation                                  DSRBasicCodedEntry("C2223982", "UMLS", "Inverse ratio ventilation")
 #define CODE_UMLS_RootMeanSquare                                           DSRBasicCodedEntry("C2347976", "UMLS", "Root Mean Square")
 #define CODE_UMLS_TimePoint                                                DSRBasicCodedEntry("C2348792", "UMLS", "Time Point")
