@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-09-12 13:03:02
+**   Date: 2016-10-04 12:15:57
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-09-12 13:03:02"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-10-04 12:15:57"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4164
+** Number of entries: 4166
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1439,6 +1439,7 @@
 #define DCM_RETIRED_AcquisitionsInStudy          DcmTagKey(0x0020, 0x1004)
 #define DCM_RETIRED_ImagesInStudy                DcmTagKey(0x0020, 0x1005)
 #define DCM_RETIRED_Reference                    DcmTagKey(0x0020, 0x1020)
+#define DCM_TargetPositionReferenceIndicator     DcmTagKey(0x0020, 0x103f)
 #define DCM_PositionReferenceIndicator           DcmTagKey(0x0020, 0x1040)
 #define DCM_SliceLocation                        DcmTagKey(0x0020, 0x1041)
 #define DCM_RETIRED_OtherStudyNumbers            DcmTagKey(0x0020, 0x1070)
@@ -2944,6 +2945,7 @@
 #define DCM_FiducialUID                          DcmTagKey(0x0070, 0x031a)
 #define DCM_FiducialSetSequence                  DcmTagKey(0x0070, 0x031c)
 #define DCM_FiducialSequence                     DcmTagKey(0x0070, 0x031e)
+#define DCM_FiducialsPropertyCategoryCodeSequence DcmTagKey(0x0070, 0x031f)
 #define DCM_GraphicLayerRecommendedDisplayCIELabValue DcmTagKey(0x0070, 0x0401)
 #define DCM_BlendingSequence                     DcmTagKey(0x0070, 0x0402)
 #define DCM_RelativeOpacity                      DcmTagKey(0x0070, 0x0403)

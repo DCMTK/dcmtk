@@ -21,14 +21,12 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2016c and PS 3.7-2016c
-# File created on 2016-06-13 09:52:04 by J. Riesmeier on thinkpad.
-# File updated manually on 2016-09-12 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2016d and PS 3.7-2016d
+# File created on 2016-10-04 11:49:44 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - Supplement 121
-# - CP 1418, 1586
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -170,6 +168,9 @@
 (0008,0123)	SQ	ContextGroupIdentificationSequence	1	DICOM
 (0008,0124)	SQ	MappingResourceIdentificationSequence	1	DICOM
 (0008,0201)	SH	TimezoneOffsetFromUTC	1	DICOM
+(0008,0220)	SQ	ResponsibleGroupCodeSequence	1	DICOM
+(0008,0221)	CS	EquipmentModality	1	DICOM
+(0008,0222)	LO	ManufacturerRelatedModelGroup	1	DICOM
 (0008,0300)	SQ	PrivateDataElementCharacteristicsSequence	1	DICOM
 (0008,0301)	US	PrivateGroupReference	1	DICOM
 (0008,0302)	LO	PrivateCreatorReference	1	DICOM
@@ -178,6 +179,15 @@
 (0008,0305)	SQ	DeidentificationActionSequence	1	DICOM
 (0008,0306)	US	IdentifyingPrivateElements	1-n	DICOM
 (0008,0307)	CS	DeidentificationAction	1	DICOM
+(0008,0308)	US	PrivateDataElement	1	DICOM
+(0008,0309)	UL	PrivateDataElementValueMultiplicity	1-3	DICOM
+(0008,030A)	CS	PrivateDataElementValueRepresentation	1	DICOM
+(0008,030B)	UL	PrivateDataElementNumberOfItems	1-2	DICOM
+(0008,030C)	UC	PrivateDataElementName	1	DICOM
+(0008,030D)	UC	PrivateDataElementKeyword	1	DICOM
+(0008,030E)	UT	PrivateDataElementDescription	1	DICOM
+(0008,030F)	UT	PrivateDataElementEncoding	1	DICOM
+(0008,0310)	SQ	PrivateDataElementDefinitionSequence	1	DICOM
 (0008,1010)	SH	StationName	1	DICOM
 (0008,1030)	LO	StudyDescription	1	DICOM
 (0008,1032)	SQ	ProcedureCodeSequence	1	DICOM
@@ -300,6 +310,9 @@
 (0010,1010)	AS	PatientAge	1	DICOM
 (0010,1020)	DS	PatientSize	1	DICOM
 (0010,1021)	SQ	PatientSizeCodeSequence	1	DICOM
+(0010,1022)	DS	PatientBodyMassIndex	1	DICOM
+(0010,1023)	DS	MeasuredAPDimension	1	DICOM
+(0010,1024)	DS	MeasuredLateralDimension	1	DICOM
 (0010,1030)	DS	PatientWeight	1	DICOM
 (0010,1040)	LO	PatientAddress	1	DICOM
 (0010,1060)	PN	PatientMotherBirthName	1	DICOM
@@ -354,6 +367,8 @@
 (0012,0083)	SQ	ConsentForClinicalTrialUseSequence	1	DICOM
 (0012,0084)	CS	DistributionType	1	DICOM
 (0012,0085)	CS	ConsentForDistributionFlag	1	DICOM
+(0012,0086)	DA	EthicsCommitteeApprovalEffectivenessStartDate	1	DICOM
+(0012,0087)	DA	EthicsCommitteeApprovalEffectivenessEndDate	1	DICOM
 (0014,0025)	ST	ComponentManufacturingProcedure	1	DICOM/DICONDE
 (0014,0028)	ST	ComponentManufacturer	1	DICOM/DICONDE
 (0014,0030)	DS	MaterialThickness	1-n	DICOM/DICONDE
@@ -598,6 +613,8 @@
 (0018,1006)	LO	GridID	1	DICOM
 (0018,1007)	LO	CassetteID	1	DICOM
 (0018,1008)	LO	GantryID	1	DICOM
+(0018,1009)	UT	UniqueDeviceIdentifier	1	DICOM
+(0018,100A)	SQ	UDISequence	1	DICOM
 (0018,1010)	LO	SecondaryCaptureDeviceID	1	DICOM
 (0018,1012)	DA	DateOfSecondaryCapture	1	DICOM
 (0018,1014)	TM	TimeOfSecondaryCapture	1	DICOM
@@ -1068,7 +1085,7 @@
 (0018,9320)	SH	ImageFilter	1	DICOM
 (0018,9321)	SQ	CTExposureSequence	1	DICOM
 (0018,9322)	FD	ReconstructionPixelSpacing	2	DICOM
-(0018,9323)	CS	ExposureModulationType	1	DICOM
+(0018,9323)	CS	ExposureModulationType	1-n	DICOM
 (0018,9324)	FD	EstimatedDoseSaving	1	DICOM
 (0018,9325)	SQ	CTXRayDetailsSequence	1	DICOM
 (0018,9326)	SQ	CTPositionSequence	1	DICOM
@@ -1254,6 +1271,65 @@
 (0018,980E)	SQ	TransducerBeamSteeringCodeSequence	1	DICOM
 (0018,980F)	SQ	TransducerApplicationCodeSequence	1	DICOM
 (0018,9810)	xs	ZeroVelocityPixelValue	1	DICOM
+(0018,9900)	LO	ReferenceLocationLabel	1	DICOM
+(0018,9901)	UT	ReferenceLocationDescription	1	DICOM
+(0018,9902)	SQ	ReferenceBasisCodeSequence	1	DICOM
+(0018,9903)	SQ	ReferenceGeometryCodeSequence	1	DICOM
+(0018,9904)	DS	OffsetDistance	1	DICOM
+(0018,9905)	CS	OffsetDirection	1	DICOM
+(0018,9906)	SQ	PotentialScheduledProtocolCodeSequence	1	DICOM
+(0018,9907)	SQ	PotentialRequestedProcedureCodeSequence	1	DICOM
+(0018,9908)	UC	PotentialReasonsForProcedure	1-n	DICOM
+(0018,9909)	SQ	PotentialReasonsForProcedureCodeSequence	1	DICOM
+(0018,990A)	UC	PotentialDiagnosticTasks	1-n	DICOM
+(0018,990B)	SQ	ContraindicationsCodeSequence	1	DICOM
+(0018,990C)	SQ	ReferencedDefinedProtocolSequence	1	DICOM
+(0018,990D)	SQ	ReferencedPerformedProtocolSequence	1	DICOM
+(0018,990E)	SQ	PredecessorProtocolSequence	1	DICOM
+(0018,990F)	UT	ProtocolPlanningInformation	1	DICOM
+(0018,9910)	UT	ProtocolDesignRationale	1	DICOM
+(0018,9911)	SQ	PatientSpecificationSequence	1	DICOM
+(0018,9912)	SQ	ModelSpecificationSequence	1	DICOM
+(0018,9913)	SQ	ParametersSpecificationSequence	1	DICOM
+(0018,9914)	SQ	InstructionSequence	1	DICOM
+(0018,9915)	US	InstructionIndex	1	DICOM
+(0018,9916)	LO	InstructionText	1	DICOM
+(0018,9917)	UT	InstructionDescription	1	DICOM
+(0018,9918)	CS	InstructionPerformedFlag	1	DICOM
+(0018,9919)	DT	InstructionPerformedDateTime	1	DICOM
+(0018,991A)	UT	InstructionPerformanceComment	1	DICOM
+(0018,991B)	SQ	PatientPositioningInstructionSequence	1	DICOM
+(0018,991C)	SQ	PositioningMethodCodeSequence	1	DICOM
+(0018,991D)	SQ	PositioningLandmarkSequence	1	DICOM
+(0018,991E)	UI	TargetFrameOfReferenceUID	1	DICOM
+(0018,991F)	SQ	AcquisitionProtocolElementSpecificationSequence	1	DICOM
+(0018,9920)	SQ	AcquisitionProtocolElementSequence	1	DICOM
+(0018,9921)	US	ProtocolElementNumber	1	DICOM
+(0018,9922)	LO	ProtocolElementName	1	DICOM
+(0018,9923)	UT	ProtocolElementCharacteristicsSummary	1	DICOM
+(0018,9924)	UT	ProtocolElementPurpose	1	DICOM
+(0018,9930)	CS	AcquisitionMotion	1	DICOM
+(0018,9931)	SQ	AcquisitionStartLocationSequence	1	DICOM
+(0018,9932)	SQ	AcquisitionEndLocationSequence	1	DICOM
+(0018,9933)	SQ	ReconstructionProtocolElementSpecificationSequence	1	DICOM
+(0018,9934)	SQ	ReconstructionProtocolElementSequence	1	DICOM
+(0018,9935)	SQ	StorageProtocolElementSpecificationSequence	1	DICOM
+(0018,9936)	SQ	StorageProtocolElementSequence	1	DICOM
+(0018,9937)	LO	RequestedSeriesDescription	1	DICOM
+(0018,9938)	US	SourceAcquisitionProtocolElementNumber	1-n	DICOM
+(0018,9939)	US	SourceAcquisitionBeamNumber	1-n	DICOM
+(0018,993A)	US	SourceReconstructionProtocolElementNumber	1-n	DICOM
+(0018,993B)	SQ	ReconstructionStartLocationSequence	1	DICOM
+(0018,993C)	SQ	ReconstructionEndLocationSequence	1	DICOM
+(0018,993D)	SQ	ReconstructionAlgorithmSequence	1	DICOM
+(0018,993E)	SQ	ReconstructionTargetCenterLocationSequence	1	DICOM
+(0018,9941)	UT	ImageFilterDescription	1	DICOM
+(0018,9942)	FD	CTDIvolNotificationTrigger	1	DICOM
+(0018,9943)	FD	DLPNotificationTrigger	1	DICOM
+(0018,9944)	CS	AutoKVPSelectionType	1	DICOM
+(0018,9945)	FD	AutoKVPUpperBound	1	DICOM
+(0018,9946)	FD	AutoKVPLowerBound	1	DICOM
+(0018,9947)	CS	ProtocolDefinedPatientPosition	1	DICOM
 (0018,A001)	SQ	ContributingEquipmentSequence	1	DICOM
 (0018,A002)	DT	ContributionDateTime	1	DICOM
 (0018,A003)	ST	ContributionDescription	1	DICOM
@@ -1276,6 +1352,7 @@
 (0020,0200)	UI	SynchronizationFrameOfReferenceUID	1	DICOM
 (0020,0242)	UI	SOPInstanceUIDOfConcatenationSource	1	DICOM
 (0020,1002)	IS	ImagesInAcquisition	1	DICOM
+(0020,103F)	LO	TargetPositionReferenceIndicator	1	DICOM
 (0020,1040)	LO	PositionReferenceIndicator	1	DICOM
 (0020,1041)	DS	SliceLocation	1	DICOM
 (0020,1200)	IS	NumberOfPatientRelatedStudies	1	DICOM
@@ -2575,6 +2652,7 @@
 (0070,031A)	UI	FiducialUID	1	DICOM
 (0070,031C)	SQ	FiducialSetSequence	1	DICOM
 (0070,031E)	SQ	FiducialSequence	1	DICOM
+(0070,031F)	SQ	FiducialsPropertyCategoryCodeSequence	1	DICOM
 (0070,0401)	US	GraphicLayerRecommendedDisplayCIELabValue	3	DICOM
 (0070,0402)	SQ	BlendingSequence	1	DICOM
 (0070,0403)	FL	RelativeOpacity	1	DICOM
@@ -2892,6 +2970,7 @@
 (0082,0035)	SQ	RecommendedDefaultValueSequence	1	DICOM
 (0082,0036)	CS	ConstraintViolationSignificance	1	DICOM
 (0082,0037)	UT	ConstraintViolationCondition	1	DICOM
+(0082,0038)	CS	ModifiableConstraintFlag	1	DICOM
 (0088,0130)	SH	StorageMediaFileSetID	1	DICOM
 (0088,0140)	UI	StorageMediaFileSetUID	1	DICOM
 (0088,0200)	SQ	IconImageSequence	1	DICOM
@@ -3098,7 +3177,6 @@
 (3006,00B6)	SQ	ROIElementalCompositionSequence	1	DICOM
 (3006,00B7)	US	ROIElementalCompositionAtomicNumber	1	DICOM
 (3006,00B8)	FL	ROIElementalCompositionAtomicMassFraction	1	DICOM
-(3006,00B9)	SQ	AdditionalRTROIIdentificationCodeSequence	1	DICOM
 (3006,00C6)	DS	FrameOfReferenceTransformationMatrix	16	DICOM
 (3006,00C8)	LO	FrameOfReferenceTransformationComment	1	DICOM
 (3008,0010)	SQ	MeasuredDoseReferenceSequence	1	DICOM
@@ -4113,6 +4191,7 @@
 (2130,0080)	SQ	RETIRED_PresentationLUTContentSequence	1	DICOM/retired
 (2130,00A0)	SQ	RETIRED_ProposedStudySequence	1	DICOM/retired
 (2130,00C0)	SQ	RETIRED_OriginalImageSequence	1	DICOM/retired
+(3006,00B9)	SQ	RETIRED_AdditionalRTROIIdentificationCodeSequence	1	DICOM/retired
 (3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	DICOM/retired
 (3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	DICOM/retired
 (3006,00C4)	CS	RETIRED_FrameOfReferenceTransformationType	1	DICOM/retired
@@ -4207,97 +4286,6 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 121 (CT Protocol Storage)
-#
-(0008,0220)	SQ	ResponsibleGroupCodeSequence	1	Supplement_121
-(0008,0221)	CS	EquipmentModality	1	Supplement_121
-(0008,0222)	LO	ManufacturerRelatedModelGroup	1	Supplement_121
-(0008,0308)	US	PrivateDataElement	1	Supplement_121
-(0008,0309)	UL	PrivateDataElementValueMultiplicity	1-3	Supplement_121
-(0008,030A)	CS	PrivateDataElementValueRepresentation	1	Supplement_121
-(0008,030B)	UL	PrivateDataElementNumberOfItems	1-2	Supplement_121
-(0008,030C)	UC	PrivateDataElementName	1	Supplement_121
-(0008,030D)	UC	PrivateDataElementKeyword	1	Supplement_121
-(0008,030E)	UT	PrivateDataElementDescription	1	Supplement_121
-(0008,030F)	UT	PrivateDataElementEncoding	1	Supplement_121
-(0008,0310)	SQ	PrivateDataElementDefinitionSequence	1	Supplement_121
-(0010,1022)	DS	PatientBodyMassIndex	1	Supplement_121
-(0010,1023)	DS	MeasuredAPDimension	1	Supplement_121
-(0010,1024)	DS	MeasuredLateralDimension	1	Supplement_121
-(0012,0086)	DA	EthicsCommitteeApprovalEffectivenessStartDate	1	Supplement_121
-(0012,0087)	DA	EthicsCommitteeApprovalEffectivenessEndDate	1	Supplement_121
-(0018,9900)	LO	ReferenceLocationLabel	1	Supplement_121
-(0018,9901)	UT	ReferenceLocationDescription	1	Supplement_121
-(0018,9902)	SQ	ReferenceBasisCodeSequence	1	Supplement_121
-(0018,9903)	SQ	ReferenceGeometryCodeSequence	1	Supplement_121
-(0018,9904)	DS	OffsetDistance	1	Supplement_121
-(0018,9905)	CS	OffsetDirection	1	Supplement_121
-(0018,9906)	SQ	PotentialScheduledProtocolCodeSequence	1	Supplement_121
-(0018,9907)	SQ	PotentialRequestedProcedureCodeSequence	1	Supplement_121
-(0018,9908)	UC	PotentialReasonsForProcedure	1-n	Supplement_121
-(0018,9909)	SQ	PotentialReasonsForProcedureCodeSequence	1	Supplement_121
-(0018,990A)	UC	PotentialDiagnosticTasks	1-n	Supplement_121
-(0018,990B)	SQ	ContraindicationsCodeSequence	1	Supplement_121
-(0018,990C)	SQ	ReferencedDefinedProtocolSequence	1	Supplement_121
-(0018,990D)	SQ	ReferencedPerformedProtocolSequence	1	Supplement_121
-(0018,990E)	SQ	PredecessorProtocolSequence	1	Supplement_121
-(0018,990F)	UT	ProtocolPlanningInformation	1	Supplement_121
-(0018,9910)	UT	ProtocolDesignRationale	1	Supplement_121
-(0018,9911)	SQ	PatientSpecificationSequence	1	Supplement_121
-(0018,9912)	SQ	ModelSpecificationSequence	1	Supplement_121
-(0018,9913)	SQ	ParametersSpecificationSequence	1	Supplement_121
-(0018,9914)	SQ	InstructionSequence	1	Supplement_121
-(0018,9915)	US	InstructionIndex	1	Supplement_121
-(0018,9916)	LO	InstructionText	1	Supplement_121
-(0018,9917)	UT	InstructionDescription	1	Supplement_121
-(0018,9918)	CS	InstructionPerformedFlag	1	Supplement_121
-(0018,9919)	DT	InstructionPerformedDateTime	1	Supplement_121
-(0018,991A)	UT	InstructionPerformanceComment	1	Supplement_121
-(0018,991B)	SQ	PatientPositioningInstructionSequence	1	Supplement_121
-(0018,991C)	SQ	PositioningMethodCodeSequence	1	Supplement_121
-(0018,991D)	SQ	PositioningLandmarkSequence	1	Supplement_121
-(0018,991E)	UI	TargetFrameOfReferenceUID	1	Supplement_121
-(0018,991F)	SQ	AcquisitionProtocolElementSpecificationSequence	1	Supplement_121
-(0018,9920)	SQ	AcquisitionProtocolElementSequence	1	Supplement_121
-(0018,9921)	US	ProtocolElementNumber	1	Supplement_121
-(0018,9922)	LO	ProtocolElementName	1	Supplement_121
-(0018,9923)	UI	ProtocolElementCharacteristicsSummary	1	Supplement_121
-(0018,9924)	UT	ProtocolElementPurpose	1	Supplement_121
-(0018,9930)	CS	AcquisitionMotion	1	Supplement_121
-(0018,9931)	SQ	AcquisitionStartLocationSequence	1	Supplement_121
-(0018,9932)	SQ	AcquisitionEndLocationSequence	1	Supplement_121
-(0018,9933)	SQ	ReconstructionProtocolElementSpecificationSequence	1	Supplement_121
-(0018,9934)	SQ	ReconstructionProtocolElementSequence	1	Supplement_121
-(0018,9935)	SQ	StorageProtocolElementSpecificationSequence	1	Supplement_121
-(0018,9936)	SQ	StorageProtocolElementSequence	1	Supplement_121
-(0018,9937)	LO	RequestedSeriesDescription	1	Supplement_121
-(0018,9938)	US	SourceAcquisitionProtocolElementNumber	1-n	Supplement_121
-(0018,9939)	US	SourceAcquisitionBeamNumber	1-n	Supplement_121
-(0018,993A)	US	SourceReconstructionProtocolElementNumber	1-n	Supplement_121
-(0018,993B)	SQ	ReconstructionStartLocationSequence	1	Supplement_121
-(0018,993C)	SQ	ReconstructionEndLocationSequence	1	Supplement_121
-(0018,993D)	SQ	ReconstructionAlgorithmSequence	1	Supplement_121
-(0018,993E)	SQ	ReconstructionTargetCenterLocationSequence	1	Supplement_121
-(0018,9941)	UT	ImageFilterDescription	1	Supplement_121
-(0018,9942)	FD	CTDIvolNotificationTrigger	1	Supplement_121
-(0018,9943)	FD	DLPNotificationTrigger	1	Supplement_121
-(0018,9944)	CS	AutoKVPSelectionType	1	Supplement_121
-(0018,9945)	FD	AutoKVPUpperBound	1	Supplement_121
-(0018,9946)	FD	AutoKVPLowerBound	1	Supplement_121
-(0018,9947)	CS	ProtocolDefinedPatientPosition	1	Supplement_121
-(0082,0038)	CS	ModifiableConstraintFlag	1	Supplement_121
-(0018,9323)	CS	ExposureModulationType	1-n	Supplement_121
-#
-#---------------------------------------------------------------------------
-#
-# Correction Items 1418, 1586
-#
-(0018,1009)	UT	UniqueDeviceIdentifier	1	CP_1418
-(0018,100A)	SQ	UDISequence	1	CP_1418
-(3006,00B9)	SQ	RETIRED_AdditionalRTROIIdentificationCodeSequence	1	CP_1586/retired
 #
 #---------------------------------------------------------------------------
 #
