@@ -297,8 +297,7 @@ template<>
 struct OFtuple_content<>
 {
     OFtuple_content() {}
-    template<typename X>
-    OFtuple_content(const X&) {}
+    OFtuple_content(va_list*) {}
     template<typename X>
     void assign(const X&) {}
     template<typename X>
