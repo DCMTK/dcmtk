@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIconImageSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -117,6 +117,13 @@ class DCMTK_DCMRT_EXPORT DRTIconImageSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getBluePaletteColorLookupTableDescriptor(Uint16 &value, const unsigned long pos = 0) const;
+
+        /** get ColorSpace (0028,2002)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getColorSpace(OFString &value, const signed long pos = 0) const;
 
         /** get Columns (0028,0011)
          *  @param  value  reference to variable in which the value should be stored
@@ -274,6 +281,13 @@ class DCMTK_DCMRT_EXPORT DRTIconImageSequence
          */
         OFCondition setBluePaletteColorLookupTableDescriptor(const Uint16 value, const unsigned long pos = 0);
 
+        /** set ColorSpace (0028,2002)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setColorSpace(const OFString &value, const OFBool check = OFTrue);
+
         /** set Columns (0028,0011)
          *  @param  value  value to be set (should be valid for this VR)
          *  @param  pos    index of the value to be set (0..vm-1), vm=1
@@ -392,6 +406,8 @@ class DCMTK_DCMRT_EXPORT DRTIconImageSequence
         DcmOtherByteOtherWord BluePaletteColorLookupTableData;
         /// BluePaletteColorLookupTableDescriptor (0028,1103) vr=US/SS, vm=3, type=1C
         DcmUnsignedShort BluePaletteColorLookupTableDescriptor;
+        /// ColorSpace (0028,2002) vr=CS, vm=1, type=3
+        DcmCodeString ColorSpace;
         /// Columns (0028,0011) vr=US, vm=1, type=1
         DcmUnsignedShort Columns;
         /// GreenPaletteColorLookupTableData (0028,1202) vr=OW, vm=1, type=1C
@@ -408,7 +424,7 @@ class DCMTK_DCMRT_EXPORT DRTIconImageSequence
         DcmCodeString PhotometricInterpretation;
         /// PixelAspectRatio (0028,0034) vr=IS, vm=2, type=1C
         DcmIntegerString PixelAspectRatio;
-        /// PixelData (7fe0,0010) vr=OB/OW, vm=1, type=1C
+        /// PixelData (7fe0,0010) vr=OB/OW, vm=1, type=1
         DcmPixelData PixelData;
         /// PixelRepresentation (0028,0103) vr=US, vm=1, type=1
         DcmUnsignedShort PixelRepresentation;

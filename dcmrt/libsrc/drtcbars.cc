@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTContrastBolusAdministrationRouteSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -35,6 +35,7 @@ DRTContrastBolusAdministrationRouteSequence::Item::Item(const OFBool emptyDefaul
     EquivalentCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     LongCodeValue(DCM_LongCodeValue),
     MappingResource(DCM_MappingResource),
+    MappingResourceName(DCM_MappingResourceName),
     MappingResourceUID(DCM_MappingResourceUID),
     URNCodeValue(DCM_URNCodeValue)
 {
@@ -57,6 +58,7 @@ DRTContrastBolusAdministrationRouteSequence::Item::Item(const Item &copy)
     EquivalentCodeSequence(copy.EquivalentCodeSequence),
     LongCodeValue(copy.LongCodeValue),
     MappingResource(copy.MappingResource),
+    MappingResourceName(copy.MappingResourceName),
     MappingResourceUID(copy.MappingResourceUID),
     URNCodeValue(copy.URNCodeValue)
 {
@@ -87,6 +89,7 @@ DRTContrastBolusAdministrationRouteSequence::Item &DRTContrastBolusAdministratio
         EquivalentCodeSequence = copy.EquivalentCodeSequence;
         LongCodeValue = copy.LongCodeValue;
         MappingResource = copy.MappingResource;
+        MappingResourceName = copy.MappingResourceName;
         MappingResourceUID = copy.MappingResourceUID;
         URNCodeValue = copy.URNCodeValue;
     }
@@ -110,6 +113,7 @@ void DRTContrastBolusAdministrationRouteSequence::Item::clear()
         ContextUID.clear();
         MappingResource.clear();
         MappingResourceUID.clear();
+        MappingResourceName.clear();
         ContextGroupVersion.clear();
         ContextGroupExtensionFlag.clear();
         ContextGroupLocalVersion.clear();
@@ -132,6 +136,7 @@ OFBool DRTContrastBolusAdministrationRouteSequence::Item::isEmpty()
            ContextUID.isEmpty() &&
            MappingResource.isEmpty() &&
            MappingResourceUID.isEmpty() &&
+           MappingResourceName.isEmpty() &&
            ContextGroupVersion.isEmpty() &&
            ContextGroupExtensionFlag.isEmpty() &&
            ContextGroupLocalVersion.isEmpty() &&
@@ -164,6 +169,7 @@ OFCondition DRTContrastBolusAdministrationRouteSequence::Item::read(DcmItem &ite
         getAndCheckElementFromDataset(item, ContextUID, "1", "3", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, MappingResourceUID, "1", "3", "ContrastBolusAdministrationRouteSequence");
+        getAndCheckElementFromDataset(item, MappingResourceName, "1", "3", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "ContrastBolusAdministrationRouteSequence");
         getAndCheckElementFromDataset(item, ContextGroupLocalVersion, "1", "1C", "ContrastBolusAdministrationRouteSequence");
@@ -192,6 +198,7 @@ OFCondition DRTContrastBolusAdministrationRouteSequence::Item::write(DcmItem &it
         addElementToDataset(result, item, new DcmUniqueIdentifier(ContextUID), "1", "3", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(MappingResourceUID), "1", "3", "ContrastBolusAdministrationRouteSequence");
+        addElementToDataset(result, item, new DcmLongString(MappingResourceName), "1", "3", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "ContrastBolusAdministrationRouteSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupLocalVersion), "1", "1C", "ContrastBolusAdministrationRouteSequence");
@@ -307,6 +314,15 @@ OFCondition DRTContrastBolusAdministrationRouteSequence::Item::getMappingResourc
         return EC_IllegalCall;
     else
         return getStringValueFromElement(MappingResource, value, pos);
+}
+
+
+OFCondition DRTContrastBolusAdministrationRouteSequence::Item::getMappingResourceName(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(MappingResourceName, value, pos);
 }
 
 
@@ -479,6 +495,19 @@ OFCondition DRTContrastBolusAdministrationRouteSequence::Item::setMappingResourc
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = MappingResource.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTContrastBolusAdministrationRouteSequence::Item::setMappingResourceName(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = MappingResourceName.putOFStringArray(value);
     }
     return result;
 }

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTRTROIObservationsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -19,7 +19,6 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtarics.h"  // for AdditionalRTROIIdentificationCodeSequence
 #include "dcmtk/dcmrt/seq/drtrpps.h"   // for ROIPhysicalPropertiesSequence
 #include "dcmtk/dcmrt/seq/drtrics.h"   // for RTROIIdentificationCodeSequence
 #include "dcmtk/dcmrt/seq/drtrrs.h"    // for RTRelatedROISequence
@@ -161,18 +160,6 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
 
       // --- get DICOM sequence attributes ---
 
-        /** get AdditionalRTROIIdentificationCodeSequence (3006,00b9)
-         *  @return reference to sequence element
-         */
-        DRTAdditionalRTROIIdentificationCodeSequence &getAdditionalRTROIIdentificationCodeSequence()
-            { return AdditionalRTROIIdentificationCodeSequence; }
-
-        /** get AdditionalRTROIIdentificationCodeSequence (3006,00b9)
-         *  @return const reference to sequence element
-         */
-        const DRTAdditionalRTROIIdentificationCodeSequence &getAdditionalRTROIIdentificationCodeSequence() const
-            { return AdditionalRTROIIdentificationCodeSequence; }
-
         /** get ROIPhysicalPropertiesSequence (3006,00b0)
          *  @return reference to sequence element
          */
@@ -289,8 +276,6 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// AdditionalRTROIIdentificationCodeSequence (3006,00b9) vr=SQ, vm=1, type=3
-        DRTAdditionalRTROIIdentificationCodeSequence AdditionalRTROIIdentificationCodeSequence;
         /// MaterialID (300a,00e1) vr=SH, vm=1, type=3
         DcmShortString MaterialID;
         /// ObservationNumber (3006,0082) vr=IS, vm=1, type=1

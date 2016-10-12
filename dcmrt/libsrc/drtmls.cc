@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTModalityLUTSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -93,10 +93,10 @@ OFCondition DRTModalityLUTSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        getAndCheckElementFromDataset(item, LUTDescriptor, "3", "1C", "ModalityLUTSequence");
+        getAndCheckElementFromDataset(item, LUTDescriptor, "3", "1", "ModalityLUTSequence");
         getAndCheckElementFromDataset(item, LUTExplanation, "1", "3", "ModalityLUTSequence");
-        getAndCheckElementFromDataset(item, ModalityLUTType, "1", "1C", "ModalityLUTSequence");
-        getAndCheckElementFromDataset(item, LUTData, "1-n", "1C", "ModalityLUTSequence");
+        getAndCheckElementFromDataset(item, ModalityLUTType, "1", "1", "ModalityLUTSequence");
+        getAndCheckElementFromDataset(item, LUTData, "1-n", "1", "ModalityLUTSequence");
         result = EC_Normal;
     }
     return result;
@@ -109,10 +109,10 @@ OFCondition DRTModalityLUTSequence::Item::write(DcmItem &item)
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
-        addElementToDataset(result, item, new DcmUnsignedShort(LUTDescriptor), "3", "1C", "ModalityLUTSequence");
+        addElementToDataset(result, item, new DcmUnsignedShort(LUTDescriptor), "3", "1", "ModalityLUTSequence");
         addElementToDataset(result, item, new DcmLongString(LUTExplanation), "1", "3", "ModalityLUTSequence");
-        addElementToDataset(result, item, new DcmLongString(ModalityLUTType), "1", "1C", "ModalityLUTSequence");
-        addElementToDataset(result, item, new DcmOtherByteOtherWord(LUTData), "1-n", "1C", "ModalityLUTSequence");
+        addElementToDataset(result, item, new DcmLongString(ModalityLUTType), "1", "1", "ModalityLUTSequence");
+        addElementToDataset(result, item, new DcmOtherByteOtherWord(LUTData), "1-n", "1", "ModalityLUTSequence");
     }
     return result;
 }

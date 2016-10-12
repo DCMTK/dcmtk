@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTOverrideSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -21,6 +21,7 @@
 
 DRTOverrideSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    OperatorIdentificationSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     OperatorsName(DCM_OperatorsName),
     OverrideParameterPointer(DCM_OverrideParameterPointer),
     OverrideReason(DCM_OverrideReason),
@@ -32,6 +33,7 @@ DRTOverrideSequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTOverrideSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    OperatorIdentificationSequence(copy.OperatorIdentificationSequence),
     OperatorsName(copy.OperatorsName),
     OverrideParameterPointer(copy.OverrideParameterPointer),
     OverrideReason(copy.OverrideReason),
@@ -51,6 +53,7 @@ DRTOverrideSequence::Item &DRTOverrideSequence::Item::operator=(const Item &copy
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        OperatorIdentificationSequence = copy.OperatorIdentificationSequence;
         OperatorsName = copy.OperatorsName;
         OverrideParameterPointer = copy.OverrideParameterPointer;
         OverrideReason = copy.OverrideReason;
@@ -70,6 +73,7 @@ void DRTOverrideSequence::Item::clear()
         OverrideParameterPointer.clear();
         ParameterItemIndex.clear();
         OperatorsName.clear();
+        OperatorIdentificationSequence.clear();
         OverrideReason.clear();
     }
 }
@@ -81,6 +85,7 @@ OFBool DRTOverrideSequence::Item::isEmpty()
            OverrideParameterPointer.isEmpty() &&
            ParameterItemIndex.isEmpty() &&
            OperatorsName.isEmpty() &&
+           OperatorIdentificationSequence.isEmpty() &&
            OverrideReason.isEmpty();
 }
 
@@ -102,6 +107,7 @@ OFCondition DRTOverrideSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, OverrideParameterPointer, "1", "1", "OverrideSequence");
         getAndCheckElementFromDataset(item, ParameterItemIndex, "1", "1", "OverrideSequence");
         getAndCheckElementFromDataset(item, OperatorsName, "1-n", "2", "OverrideSequence");
+        OperatorIdentificationSequence.read(item, "1-n", "3", "OverrideSequence");
         getAndCheckElementFromDataset(item, OverrideReason, "1", "3", "OverrideSequence");
         result = EC_Normal;
     }
@@ -119,6 +125,7 @@ OFCondition DRTOverrideSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmAttributeTag(OverrideParameterPointer), "1", "1", "OverrideSequence");
         addElementToDataset(result, item, new DcmIntegerString(ParameterItemIndex), "1", "1", "OverrideSequence");
         addElementToDataset(result, item, new DcmPersonName(OperatorsName), "1-n", "2", "OverrideSequence");
+        if (result.good()) result = OperatorIdentificationSequence.write(item, "1-n", "3", "OverrideSequence");
         addElementToDataset(result, item, new DcmShortText(OverrideReason), "1", "3", "OverrideSequence");
     }
     return result;

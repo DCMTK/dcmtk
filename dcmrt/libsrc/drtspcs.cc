@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTScheduledProtocolCodeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -34,6 +34,7 @@ DRTScheduledProtocolCodeSequence::Item::Item(const OFBool emptyDefaultItem)
     EquivalentCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     LongCodeValue(DCM_LongCodeValue),
     MappingResource(DCM_MappingResource),
+    MappingResourceName(DCM_MappingResourceName),
     MappingResourceUID(DCM_MappingResourceUID),
     ProtocolContextSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     URNCodeValue(DCM_URNCodeValue)
@@ -56,6 +57,7 @@ DRTScheduledProtocolCodeSequence::Item::Item(const Item &copy)
     EquivalentCodeSequence(copy.EquivalentCodeSequence),
     LongCodeValue(copy.LongCodeValue),
     MappingResource(copy.MappingResource),
+    MappingResourceName(copy.MappingResourceName),
     MappingResourceUID(copy.MappingResourceUID),
     ProtocolContextSequence(copy.ProtocolContextSequence),
     URNCodeValue(copy.URNCodeValue)
@@ -86,6 +88,7 @@ DRTScheduledProtocolCodeSequence::Item &DRTScheduledProtocolCodeSequence::Item::
         EquivalentCodeSequence = copy.EquivalentCodeSequence;
         LongCodeValue = copy.LongCodeValue;
         MappingResource = copy.MappingResource;
+        MappingResourceName = copy.MappingResourceName;
         MappingResourceUID = copy.MappingResourceUID;
         ProtocolContextSequence = copy.ProtocolContextSequence;
         URNCodeValue = copy.URNCodeValue;
@@ -110,6 +113,7 @@ void DRTScheduledProtocolCodeSequence::Item::clear()
         ContextUID.clear();
         MappingResource.clear();
         MappingResourceUID.clear();
+        MappingResourceName.clear();
         ContextGroupVersion.clear();
         ContextGroupExtensionFlag.clear();
         ContextGroupLocalVersion.clear();
@@ -132,6 +136,7 @@ OFBool DRTScheduledProtocolCodeSequence::Item::isEmpty()
            ContextUID.isEmpty() &&
            MappingResource.isEmpty() &&
            MappingResourceUID.isEmpty() &&
+           MappingResourceName.isEmpty() &&
            ContextGroupVersion.isEmpty() &&
            ContextGroupExtensionFlag.isEmpty() &&
            ContextGroupLocalVersion.isEmpty() &&
@@ -164,6 +169,7 @@ OFCondition DRTScheduledProtocolCodeSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ContextUID, "1", "3", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, MappingResourceUID, "1", "3", "ScheduledProtocolCodeSequence");
+        getAndCheckElementFromDataset(item, MappingResourceName, "1", "3", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "ScheduledProtocolCodeSequence");
         getAndCheckElementFromDataset(item, ContextGroupLocalVersion, "1", "1C", "ScheduledProtocolCodeSequence");
@@ -192,6 +198,7 @@ OFCondition DRTScheduledProtocolCodeSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmUniqueIdentifier(ContextUID), "1", "3", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(MappingResourceUID), "1", "3", "ScheduledProtocolCodeSequence");
+        addElementToDataset(result, item, new DcmLongString(MappingResourceName), "1", "3", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "ScheduledProtocolCodeSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupLocalVersion), "1", "1C", "ScheduledProtocolCodeSequence");
@@ -307,6 +314,15 @@ OFCondition DRTScheduledProtocolCodeSequence::Item::getMappingResource(OFString 
         return EC_IllegalCall;
     else
         return getStringValueFromElement(MappingResource, value, pos);
+}
+
+
+OFCondition DRTScheduledProtocolCodeSequence::Item::getMappingResourceName(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(MappingResourceName, value, pos);
 }
 
 
@@ -479,6 +495,19 @@ OFCondition DRTScheduledProtocolCodeSequence::Item::setMappingResource(const OFS
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = MappingResource.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTScheduledProtocolCodeSequence::Item::setMappingResourceName(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = MappingResourceName.putOFStringArray(value);
     }
     return result;
 }

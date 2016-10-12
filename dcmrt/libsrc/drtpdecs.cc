@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTPrivateDataElementCharacteristicsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -25,6 +25,7 @@ DRTPrivateDataElementCharacteristicsSequence::Item::Item(const OFBool emptyDefau
     DeidentificationActionSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     NonidentifyingPrivateElements(DCM_NonidentifyingPrivateElements),
     PrivateCreatorReference(DCM_PrivateCreatorReference),
+    PrivateDataElementDefinitionSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     PrivateGroupReference(DCM_PrivateGroupReference)
 {
 }
@@ -36,6 +37,7 @@ DRTPrivateDataElementCharacteristicsSequence::Item::Item(const Item &copy)
     DeidentificationActionSequence(copy.DeidentificationActionSequence),
     NonidentifyingPrivateElements(copy.NonidentifyingPrivateElements),
     PrivateCreatorReference(copy.PrivateCreatorReference),
+    PrivateDataElementDefinitionSequence(copy.PrivateDataElementDefinitionSequence),
     PrivateGroupReference(copy.PrivateGroupReference)
 {
 }
@@ -55,6 +57,7 @@ DRTPrivateDataElementCharacteristicsSequence::Item &DRTPrivateDataElementCharact
         DeidentificationActionSequence = copy.DeidentificationActionSequence;
         NonidentifyingPrivateElements = copy.NonidentifyingPrivateElements;
         PrivateCreatorReference = copy.PrivateCreatorReference;
+        PrivateDataElementDefinitionSequence = copy.PrivateDataElementDefinitionSequence;
         PrivateGroupReference = copy.PrivateGroupReference;
     }
     return *this;
@@ -68,6 +71,7 @@ void DRTPrivateDataElementCharacteristicsSequence::Item::clear()
         /* clear all DICOM attributes */
         PrivateGroupReference.clear();
         PrivateCreatorReference.clear();
+        PrivateDataElementDefinitionSequence.clear();
         BlockIdentifyingInformationStatus.clear();
         NonidentifyingPrivateElements.clear();
         DeidentificationActionSequence.clear();
@@ -79,6 +83,7 @@ OFBool DRTPrivateDataElementCharacteristicsSequence::Item::isEmpty()
 {
     return PrivateGroupReference.isEmpty() &&
            PrivateCreatorReference.isEmpty() &&
+           PrivateDataElementDefinitionSequence.isEmpty() &&
            BlockIdentifyingInformationStatus.isEmpty() &&
            NonidentifyingPrivateElements.isEmpty() &&
            DeidentificationActionSequence.isEmpty();
@@ -100,6 +105,7 @@ OFCondition DRTPrivateDataElementCharacteristicsSequence::Item::read(DcmItem &it
         clear();
         getAndCheckElementFromDataset(item, PrivateGroupReference, "1", "1", "PrivateDataElementCharacteristicsSequence");
         getAndCheckElementFromDataset(item, PrivateCreatorReference, "1", "1", "PrivateDataElementCharacteristicsSequence");
+        PrivateDataElementDefinitionSequence.read(item, "1-n", "3", "PrivateDataElementCharacteristicsSequence");
         getAndCheckElementFromDataset(item, BlockIdentifyingInformationStatus, "1", "1", "PrivateDataElementCharacteristicsSequence");
         getAndCheckElementFromDataset(item, NonidentifyingPrivateElements, "1-n", "1C", "PrivateDataElementCharacteristicsSequence");
         DeidentificationActionSequence.read(item, "1-n", "3", "PrivateDataElementCharacteristicsSequence");
@@ -117,6 +123,7 @@ OFCondition DRTPrivateDataElementCharacteristicsSequence::Item::write(DcmItem &i
         result = EC_Normal;
         addElementToDataset(result, item, new DcmUnsignedShort(PrivateGroupReference), "1", "1", "PrivateDataElementCharacteristicsSequence");
         addElementToDataset(result, item, new DcmLongString(PrivateCreatorReference), "1", "1", "PrivateDataElementCharacteristicsSequence");
+        if (result.good()) result = PrivateDataElementDefinitionSequence.write(item, "1-n", "3", "PrivateDataElementCharacteristicsSequence");
         addElementToDataset(result, item, new DcmCodeString(BlockIdentifyingInformationStatus), "1", "1", "PrivateDataElementCharacteristicsSequence");
         addElementToDataset(result, item, new DcmUnsignedShort(NonidentifyingPrivateElements), "1-n", "1C", "PrivateDataElementCharacteristicsSequence");
         if (result.good()) result = DeidentificationActionSequence.write(item, "1-n", "3", "PrivateDataElementCharacteristicsSequence");

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -20,6 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtas6.h"    // for ApplicatorSequence
+#include "dcmtk/dcmrt/seq/drtddps.h"   // for DepthDoseParametersSequence
 #include "dcmtk/dcmrt/seq/drtgas.h"    // for GeneralAccessorySequence
 #include "dcmtk/dcmrt/seq/drtiblds.h"  // for IonBeamLimitingDeviceSequence
 #include "dcmtk/dcmrt/seq/drtibls.h"   // for IonBlockSequence
@@ -160,6 +161,13 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
          */
         OFCondition getFinalCumulativeMetersetWeight(Float64 &value, const unsigned long pos = 0) const;
 
+        /** get FixationEye (300a,0150)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getFixationEye(OFString &value, const signed long pos = 0) const;
+
         /** get FixationLightAzimuthalAngle (300a,0356)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1)
@@ -208,6 +216,13 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getManufacturerModelName(OFString &value, const signed long pos = 0) const;
+
+        /** get ModulatedScanModeType (300a,0309)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getModulatedScanModeType(OFString &value, const signed long pos = 0) const;
 
         /** get NumberOfBlocks (300a,00f0)
          *  @param  value  reference to variable in which the value should be stored
@@ -482,6 +497,18 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
         const DRTApplicatorSequenceInRTIonBeamsModule &getApplicatorSequence() const
             { return ApplicatorSequence; }
 
+        /** get DepthDoseParametersSequence (300a,0505)
+         *  @return reference to sequence element
+         */
+        DRTDepthDoseParametersSequence &getDepthDoseParametersSequence()
+            { return DepthDoseParametersSequence; }
+
+        /** get DepthDoseParametersSequence (300a,0505)
+         *  @return const reference to sequence element
+         */
+        const DRTDepthDoseParametersSequence &getDepthDoseParametersSequence() const
+            { return DepthDoseParametersSequence; }
+
         /** get GeneralAccessorySequence (300a,0420)
          *  @return reference to sequence element
          */
@@ -682,6 +709,13 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
          */
         OFCondition setFinalCumulativeMetersetWeight(const OFString &value, const OFBool check = OFTrue);
 
+        /** set FixationEye (300a,0150)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setFixationEye(const OFString &value, const OFBool check = OFTrue);
+
         /** set FixationLightAzimuthalAngle (300a,0356)
          *  @param  value  value to be set (should be valid for this VR)
          *  @param  pos    index of the value to be set (0..vm-1), vm=1
@@ -730,6 +764,13 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setManufacturerModelName(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ModulatedScanModeType (300a,0309)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setModulatedScanModeType(const OFString &value, const OFBool check = OFTrue);
 
         /** set NumberOfBlocks (300a,00f0)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -921,10 +962,14 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
         DcmIntegerString BeamNumber;
         /// BeamType (300a,00c4) vr=CS, vm=1, type=1
         DcmCodeString BeamType;
+        /// DepthDoseParametersSequence (300a,0505) vr=SQ, vm=1, type=3
+        DRTDepthDoseParametersSequence DepthDoseParametersSequence;
         /// DeviceSerialNumber (0018,1000) vr=LO, vm=1, type=3
         DcmLongString DeviceSerialNumber;
         /// FinalCumulativeMetersetWeight (300a,010e) vr=DS, vm=1, type=1C
         DcmDecimalString FinalCumulativeMetersetWeight;
+        /// FixationEye (300a,0150) vr=CS, vm=1, type=3
+        DcmCodeString FixationEye;
         /// FixationLightAzimuthalAngle (300a,0356) vr=FL, vm=1, type=3
         DcmFloatingPointSingle FixationLightAzimuthalAngle;
         /// FixationLightPolarAngle (300a,0358) vr=FL, vm=1, type=3
@@ -953,6 +998,8 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
         DcmLongString Manufacturer;
         /// ManufacturerModelName (0008,1090) vr=LO, vm=1, type=3
         DcmLongString ManufacturerModelName;
+        /// ModulatedScanModeType (300a,0309) vr=CS, vm=1, type=1C
+        DcmCodeString ModulatedScanModeType;
         /// NumberOfBlocks (300a,00f0) vr=IS, vm=1, type=1
         DcmIntegerString NumberOfBlocks;
         /// NumberOfBoli (300a,00ed) vr=IS, vm=1, type=1

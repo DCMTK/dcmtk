@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIonControlPointDeliverySequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -117,6 +117,20 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getBeamLimitingDeviceRotationDirection(OFString &value, const signed long pos = 0) const;
+
+        /** get ChairHeadFramePosition (300a,0151)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChairHeadFramePosition(OFString &value, const signed long pos = 0) const;
+
+        /** get ChairHeadFramePosition (300a,0151)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChairHeadFramePosition(Float64 &value, const unsigned long pos = 0) const;
 
         /** get DeliveredMeterset (3008,0044)
          *  @param  value  reference to variable in which the value should be stored
@@ -292,6 +306,27 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getScanSpotPositionMap(Float32 &value, const unsigned long pos = 0) const;
+
+        /** get ScanSpotPrescribedIndices (300a,0391)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getScanSpotPrescribedIndices(OFString &value, const signed long pos = 0) const;
+
+        /** get ScanSpotPrescribedIndices (300a,0391)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getScanSpotPrescribedIndices(Sint32 &value, const unsigned long pos = 0) const;
+
+        /** get ScanSpotReordered (300a,0393)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getScanSpotReordered(OFString &value, const signed long pos = 0) const;
 
         /** get ScanSpotTuneID (300a,0390)
          *  @param  value  reference to variable in which the value should be stored
@@ -514,6 +549,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
          */
         OFCondition setBeamLimitingDeviceRotationDirection(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ChairHeadFramePosition (300a,0151)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setChairHeadFramePosition(const OFString &value, const OFBool check = OFTrue);
+
         /** set DeliveredMeterset (3008,0044)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -633,6 +675,20 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
          */
         OFCondition setScanSpotPositionMap(const Float32 value, const unsigned long pos = 0);
 
+        /** set ScanSpotPrescribedIndices (300a,0391)
+         *  @param  value  value to be set (possibly multi-valued) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (IS) and VM (1-n) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setScanSpotPrescribedIndices(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ScanSpotReordered (300a,0393)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setScanSpotReordered(const OFString &value, const OFBool check = OFTrue);
+
         /** set ScanSpotTuneID (300a,0390)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
@@ -735,6 +791,8 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
         DRTBeamLimitingDevicePositionSequence BeamLimitingDevicePositionSequence;
         /// BeamLimitingDeviceRotationDirection (300a,0121) vr=CS, vm=1, type=1C
         DcmCodeString BeamLimitingDeviceRotationDirection;
+        /// ChairHeadFramePosition (300a,0151) vr=DS, vm=1, type=3
+        DcmDecimalString ChairHeadFramePosition;
         /// CorrectedParameterSequence (3008,0068) vr=SQ, vm=1, type=3
         DRTCorrectedParameterSequence CorrectedParameterSequence;
         /// DeliveredMeterset (3008,0044) vr=DS, vm=1, type=1
@@ -781,6 +839,10 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
         DcmFloatingPointSingle ScanSpotMetersetsDelivered;
         /// ScanSpotPositionMap (300a,0394) vr=FL, vm=1-n, type=1C
         DcmFloatingPointSingle ScanSpotPositionMap;
+        /// ScanSpotPrescribedIndices (300a,0391) vr=IS, vm=1-n, type=1C
+        DcmIntegerString ScanSpotPrescribedIndices;
+        /// ScanSpotReordered (300a,0393) vr=CS, vm=1, type=3
+        DcmCodeString ScanSpotReordered;
         /// ScanSpotTuneID (300a,0390) vr=SH, vm=1, type=1C
         DcmShortString ScanSpotTuneID;
         /// ScanningSpotSize (300a,0398) vr=FL, vm=2, type=3

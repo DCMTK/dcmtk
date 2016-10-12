@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTRealWorldValueMappingSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -92,6 +92,20 @@ class DCMTK_DCMRT_EXPORT DRTRealWorldValueMappingSequence
 
       // --- get DICOM attribute values ---
 
+        /** get DoubleFloatRealWorldValueFirstValueMapped (0040,9214)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getDoubleFloatRealWorldValueFirstValueMapped(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get DoubleFloatRealWorldValueLastValueMapped (0040,9213)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getDoubleFloatRealWorldValueLastValueMapped(Float64 &value, const unsigned long pos = 0) const;
+
         /** get LUTExplanation (0028,3003)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -169,6 +183,20 @@ class DCMTK_DCMRT_EXPORT DRTRealWorldValueMappingSequence
 
       // --- set DICOM attribute values ---
 
+        /** set DoubleFloatRealWorldValueFirstValueMapped (0040,9214)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setDoubleFloatRealWorldValueFirstValueMapped(const Float64 value, const unsigned long pos = 0);
+
+        /** set DoubleFloatRealWorldValueLastValueMapped (0040,9213)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setDoubleFloatRealWorldValueLastValueMapped(const Float64 value, const unsigned long pos = 0);
+
         /** set LUTExplanation (0028,3003)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
@@ -223,6 +251,10 @@ class DCMTK_DCMRT_EXPORT DRTRealWorldValueMappingSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// DoubleFloatRealWorldValueFirstValueMapped (0040,9214) vr=FD, vm=1, type=1C
+        DcmFloatingPointDouble DoubleFloatRealWorldValueFirstValueMapped;
+        /// DoubleFloatRealWorldValueLastValueMapped (0040,9213) vr=FD, vm=1, type=1C
+        DcmFloatingPointDouble DoubleFloatRealWorldValueLastValueMapped;
         /// LUTExplanation (0028,3003) vr=LO, vm=1, type=1
         DcmLongString LUTExplanation;
         /// LUTLabel (0040,9210) vr=SH, vm=1, type=1
@@ -231,13 +263,13 @@ class DCMTK_DCMRT_EXPORT DRTRealWorldValueMappingSequence
         DRTMeasurementUnitsCodeSequence MeasurementUnitsCodeSequence;
         /// QuantityDefinitionSequence (0040,9220) vr=SQ, vm=1, type=3
         DRTQuantityDefinitionSequence QuantityDefinitionSequence;
-        /// RealWorldValueFirstValueMapped (0040,9216) vr=US/SS, vm=1, type=1
+        /// RealWorldValueFirstValueMapped (0040,9216) vr=US/SS, vm=1, type=1C
         DcmUnsignedShort RealWorldValueFirstValueMapped;
         /// RealWorldValueIntercept (0040,9224) vr=FD, vm=1, type=1C
         DcmFloatingPointDouble RealWorldValueIntercept;
         /// RealWorldValueLUTData (0040,9212) vr=FD, vm=1-n, type=1C
         DcmFloatingPointDouble RealWorldValueLUTData;
-        /// RealWorldValueLastValueMapped (0040,9211) vr=US/SS, vm=1, type=1
+        /// RealWorldValueLastValueMapped (0040,9211) vr=US/SS, vm=1, type=1C
         DcmUnsignedShort RealWorldValueLastValueMapped;
         /// RealWorldValueSlope (0040,9225) vr=FD, vm=1, type=1C
         DcmFloatingPointDouble RealWorldValueSlope;

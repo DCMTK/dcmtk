@@ -23,35 +23,38 @@ LOCALDEFS =
 
 objs = drtdose.o drtimage.o drtplan.o drtstrct.o drttreat.o drtionpl.o drtiontr.o \
 	drmdose.o drmimage.o drmplan.o drmstrct.o drttypes.o \
-	drtaadcs.o drtadcs.o drtads.o drtafs.o drtags.o drtajcs.o drtarics.o \
-	drtas1.o drtas5.o drtas6.o drtas7.o drtass.o drtbads.o drtbas.o \
-	drtbcps.o drtbl2.o drtbl5.o drtbldls.o drtbldps.o drtblds1.o drtblds5.o \
-	drtblds6.o drtbldts.o drtbrcss.o drtbrdrs.o drtbrs.o drtbs.o drtbss.o \
-	drtbvcps.o drtcbars.o drtccs.o drtcctus.o drtcdrs.o drtces.o drtchs.o \
+	drtaadcs.o drtadcs.o drtads.o drtafs.o drtags.o drtajcs.o drtas1.o \
+	drtas5.o drtas6.o drtas7.o drtass.o drtbads.o drtbas.o drtbcps.o \
+	drtbl2.o drtbl5.o drtbldls.o drtbldps.o drtblds1.o drtblds5.o drtblds6.o \
+	drtbldts.o drtbrcss.o drtbrdrs.o drtbrs.o drtbs.o drtbss.o drtbvcps.o \
+	drtcbars.o drtccs.o drtcctus.o drtcdrs.o drtces.o drtcgis.o drtchs.o \
 	drtcims.o drtcis.o drtcncs.o drtcos.o drtcpas.o drtcpis.o drtcps.o \
-	drtcsas.o drtcs.o drtcshs.o drtcsis.o drtcss.o drtdcs.o drtdias.o \
-	drtdimcs.o drtdimrs.o drtdirs.o drtdrs.o drtds.o drtdspcs.o drtdss.o \
-	drtdvhs.o drtdvrrs.o drteas.o drtecs.o drtes.o drtfds.o drtfes.o drtfgs.o \
-	drtfgss.o drtfms.o drtfsss.o drtgas.o drthsdrs.o drtiais.o drtians.o \
-	drtiblds.o drtibls.o drtibs.o drticpds.o drticps.o drtics.o drtiis.o \
-	drtipiqs.o drtircs.o drtiseis.o drtitts.o drtiwps.o drtiws.o drtlsds6.o \
-	drtlsds7.o drtlsds.o drtmacds.o drtmas.o drtmdrs.o drtmls.o drtmps.o \
-	drtmss.o drtmucs.o drtoas.o drtois.o drtopis.o drtos.o drtpbcs.o drtpcs.o \
-	drtpcxs.o drtpdecs.o drtpfms.o drtpics.o drtporcs.o drtporis.o drtppcs.o \
-	drtprsis.o drtpscs.o drtpsics.o drtpss.o drtpsss.o drtpvis.o drtqds.o \
-	drtras.o drtrbas2.o drtrbas8.o drtrbls.o drtrbos1.o drtrbos6.o drtrbos7.o \
-	drtrbs2.o drtrbs4.o drtrbs8.o drtrcdrs.o drtrcos.o drtrcps.o drtrcs.o \
-	drtrdros.o drtrdrs1.o drtrdrs6.o drtrdrs8.o drtrds.o drtrecs.o drtrfgs.o \
-	drtrfors.o drtrics.o drtrims.o drtris.o drtrlsds.o drtrmdrs.o drtrms.o \
-	drtrmss6.o drtrmss7.o drtrpcs.o drtrpis.o drtrppcs.o drtrpphs.o drtrpps.o \
-	drtrppss.o drtrps.o drtrris1.o drtrris6.o drtrris9.o drtrrms.o drtrros.o \
-	drtrrpcs.o drtrrros.o drtrrs.o drtrrshs.o drtrrtps3.o drtrrtps4.o \
-	drtrrtps5.o drtrrtps.o drtrscs.o drtrsers.o drtrses.o drtrshs6.o \
-	drtrshs7.o drtrshs.o drtrsis.o drtrsns.o drtrsos.o drtrsrs.o drtrss.o \
-	drtrsss.o drtrsts.o drtrtrs2.o drtrtrs4.o drtrvis.o drtrws.o drtrwvms.o \
-	drtscris.o drtsdcs.o drtsds.o drtshds.o drtsis.o drtsns.o drtspccs.o \
-	drtspcs.o drtss.o drtssrs.o drttms0.o drttms9.o drttscds.o drttsibs.o \
-	drttsmds.o drttts.o drtvls.o drtwps.o drtwrs.o drtwrsrs.o drtws.o drtxrs.o
+	drtcsas.o drtcs.o drtcshs.o drtcsis.o drtcss.o drtdcs.o drtdddps.o \
+	drtddps.o drtdias.o drtdimcs.o drtdimrs.o drtdirs.o drtdrs.o drtds.o \
+	drtdspcs.o drtdss.o  drtdvhs.o drtdvrrs.o drteas.o drtecs.o drtes.o \
+	drtfds.o drtfes.o drtfgs.o  drtfgss.o drtfms.o drtfsss.o drtgas.o \
+	drtgpis.o drthsdrs.o drtiais.o drtians.o  drtiblds.o drtibls.o drtibs.o \
+	drticpds.o drticps.o drtics.o drtiis.o  drtipiqs.o drtircs.o drtiseis.o \
+	drtitts.o drtiwps.o drtiws.o drtlsds6.o  drtlsds7.o drtlsds.o drtmacds.o \
+	drtmas.o drtmdrs.o drtmls.o drtmps.o drtmris.o  drtmss.o drtmucs.o \
+	drtoas.o drtois.o drtopis.o drtos.o drtpbcs.o drtpcs.o  drtpcxs.o \
+	drtpdecs.o drtpdeds.o drtpfms.o drtpics.o drtporcs.o drtporis.o \
+	drtppcs.o drtprsis.o drtpscs.o drtpsics.o drtpss.o drtpsss.o drtpvis.o \
+	drtqds.o drtras.o drtrbas2.o drtrbas8.o drtrbls.o drtrbos1.o drtrbos6.o \
+	drtrbos7.o drtrbs2.o drtrbs4.o drtrbs8.o drtrcdrs.o drtrcos.o drtrcps.o \
+	drtrcs.o  drtrdros.o drtrdrs1.o drtrdrs6.o drtrdrs8.o drtrds.o drtrecs.o \
+	drtrfgs.o drtrfors.o drtrics.o drtrims.o drtris.o drtrlsds.o drtrmdrs.o \
+	drtrms.o drtrmss6.o drtrmss7.o drtrpcs.o drtrpis.o drtrppcs.o drtrpphs.o \
+	drtrpps.o drtrppss.o drtrps.o drtrris1.o drtrris6.o drtrris9.o drtrrms.o \
+	drtrros.o drtrrpcs.o drtrrros.o drtrrs.o drtrrshs.o drtrrtps3.o \
+	drtrrtps4.o drtrrtps5.o drtrrtps.o drtrscs.o drtrsers.o drtrses.o \
+	drtrshs6.o drtrshs7.o drtrshs.o drtrsis.o drtrsns.o drtrsos.o drtrsrs.o \
+	drtrss.o drtrsss.o drtrsts.o drtrtrs2.o drtrtrs4.o drtrvis.o drtrws.o \
+	drtrwvms.o drtscris.o drtscs.o drtsdcs.o drtsds.o drtshds.o drtsins.o \
+	drtsis.o drtsns.o drtspccs.o drtspcs.o drtspgis.o drtsptcs.o drtss.o \
+	drtssrcs.o drtssrs.o drtsss.o drttms0.o drttms9.o drttscds.o drttsibs.o \
+	drttsmds.o drttts.o drtudis.o drtvls.o drtwps.o drtwrs.o drtwrsrs.o \
+	drtws.o drtxrs.o
 
 library = libdcmrt.$(LIBEXT)
 

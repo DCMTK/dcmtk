@@ -118,7 +118,8 @@ drttest.o: drttest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
  ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
- ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcgis.h ../include/dcmtk/dcmrt/seq/drtces.h \
  ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
@@ -128,16 +129,17 @@ drttest.o: drttest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtdcs.h ../include/dcmtk/dcmrt/seq/drtdss.h \
  ../include/dcmtk/dcmrt/seq/drtdspcs.h \
  ../include/dcmtk/dcmrt/seq/drteas.h ../include/dcmtk/dcmrt/seq/drtfes.h \
- ../include/dcmtk/dcmrt/seq/drthsdrs.h \
- ../include/dcmtk/dcmrt/seq/drtiis.h ../include/dcmtk/dcmrt/seq/drtians.h \
- ../include/dcmtk/dcmrt/seq/drtiais.h \
+ ../include/dcmtk/dcmrt/seq/drtgpis.h \
  ../include/dcmtk/dcmrt/seq/drtipiqs.h \
  ../include/dcmtk/dcmrt/seq/drtaadcs.h \
  ../include/dcmtk/dcmrt/seq/drtafs.h ../include/dcmtk/dcmrt/seq/drtajcs.h \
+ ../include/dcmtk/dcmrt/seq/drthsdrs.h \
+ ../include/dcmtk/dcmrt/seq/drtiis.h ../include/dcmtk/dcmrt/seq/drtians.h \
+ ../include/dcmtk/dcmrt/seq/drtiais.h \
  ../include/dcmtk/dcmrt/seq/drtiseis.h \
- ../include/dcmtk/dcmrt/seq/drtmps.h ../include/dcmtk/dcmrt/seq/drtmls.h \
- ../include/dcmtk/dcmrt/seq/drtoas.h ../include/dcmtk/dcmrt/seq/drtmas.h \
- ../include/dcmtk/dcmrt/seq/drtopis.h \
+ ../include/dcmtk/dcmrt/seq/drtmps.h ../include/dcmtk/dcmrt/seq/drtmris.h \
+ ../include/dcmtk/dcmrt/seq/drtmls.h ../include/dcmtk/dcmrt/seq/drtoas.h \
+ ../include/dcmtk/dcmrt/seq/drtmas.h ../include/dcmtk/dcmrt/seq/drtopis.h \
  ../include/dcmtk/dcmrt/seq/drtpbcs.h \
  ../include/dcmtk/dcmrt/seq/drtpsics.h \
  ../include/dcmtk/dcmrt/seq/drtpscs.h \
@@ -151,17 +153,17 @@ drttest.o: drttest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
  ../include/dcmtk/dcmrt/seq/drtpsss.h \
  ../include/dcmtk/dcmrt/seq/drtpdecs.h \
- ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
- ../include/dcmtk/dcmrt/seq/drtrcs.h ../include/dcmtk/dcmrt/seq/drtcs.h \
- ../include/dcmtk/dcmrt/seq/drtcis.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h \
+ ../include/dcmtk/dcmrt/seq/drtpdeds.h \
+ ../include/dcmtk/dcmrt/seq/drtpcs.h ../include/dcmtk/dcmrt/seq/drtrcs.h \
+ ../include/dcmtk/dcmrt/seq/drtcs.h ../include/dcmtk/dcmrt/seq/drtcis.h \
  ../include/dcmtk/dcmrt/seq/drtrdros.h \
  ../include/dcmtk/dcmrt/seq/drtrwvms.h \
  ../include/dcmtk/dcmrt/seq/drtqds.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
  ../include/dcmtk/dcmrt/seq/drtrfors.h \
  ../include/dcmtk/dcmrt/seq/drtrsts.h \
- ../include/dcmtk/dcmrt/seq/drtrses.h \
- ../include/dcmtk/dcmrt/seq/drtrims.h ../include/dcmtk/dcmrt/seq/drtris.h \
+ ../include/dcmtk/dcmrt/seq/drtrses.h ../include/dcmtk/dcmrt/seq/drtris.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
  ../include/dcmtk/dcmrt/seq/drtdirs.h \
@@ -183,9 +185,13 @@ drttest.o: drttest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrpcs.h \
  ../include/dcmtk/dcmrt/seq/drtspcs.h \
  ../include/dcmtk/dcmrt/seq/drtrscs.h \
- ../include/dcmtk/dcmrt/seq/drtsdcs.h ../include/dcmtk/dcmrt/seq/drtsis.h \
+ ../include/dcmtk/dcmrt/seq/drtsdcs.h \
+ ../include/dcmtk/dcmrt/seq/drtspgis.h \
+ ../include/dcmtk/dcmrt/seq/drtscs.h ../include/dcmtk/dcmrt/seq/drtsss.h \
+ ../include/dcmtk/dcmrt/seq/drtssrcs.h \
  ../include/dcmtk/dcmrt/seq/drtssrs.h \
- ../include/dcmtk/dcmrt/seq/drtscris.h ../include/dcmtk/dcmrt/drtimage.h \
+ ../include/dcmtk/dcmrt/seq/drtscris.h \
+ ../include/dcmtk/dcmrt/seq/drtudis.h ../include/dcmtk/dcmrt/drtimage.h \
  ../include/dcmtk/dcmrt/seq/drtcbars.h \
  ../include/dcmtk/dcmrt/seq/drtads.h ../include/dcmtk/dcmrt/seq/drtbas.h \
  ../include/dcmtk/dcmrt/seq/drtds.h ../include/dcmtk/dcmrt/seq/drtes.h \
@@ -194,8 +200,9 @@ drttest.o: drttest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtbl5.h ../include/dcmtk/dcmrt/seq/drtgas.h \
  ../include/dcmtk/dcmrt/seq/drtpfms.h ../include/dcmtk/dcmrt/seq/drtfms.h \
  ../include/dcmtk/dcmrt/seq/drtmacds.h \
- ../include/dcmtk/dcmrt/seq/drtcss.h \
+ ../include/dcmtk/dcmrt/seq/drtcss.h ../include/dcmtk/dcmrt/seq/drtrims.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps5.h \
+ ../include/dcmtk/dcmrt/seq/drtsis.h ../include/dcmtk/dcmrt/seq/drtsins.h \
  ../include/dcmtk/dcmrt/seq/drtvls.h ../include/dcmtk/dcmrt/drtplan.h \
  ../include/dcmtk/dcmrt/seq/drtass.h ../include/dcmtk/dcmrt/seq/drtbads.h \
  ../include/dcmtk/dcmrt/seq/drtchs.h ../include/dcmtk/dcmrt/seq/drtbcps.h \
@@ -225,10 +232,11 @@ drttest.o: drttest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtbldts.h \
  ../include/dcmtk/dcmrt/seq/drttms9.h ../include/dcmtk/dcmrt/drtstrct.h \
  ../include/dcmtk/dcmrt/seq/drtrros.h \
- ../include/dcmtk/dcmrt/seq/drtarics.h \
  ../include/dcmtk/dcmrt/seq/drtrpps.h \
  ../include/dcmtk/dcmrt/seq/drtrecs.h \
- ../include/dcmtk/dcmrt/seq/drtrics.h ../include/dcmtk/dcmrt/seq/drtrrs.h \
+ ../include/dcmtk/dcmrt/seq/drtrics.h \
+ ../include/dcmtk/dcmrt/seq/drtsptcs.h \
+ ../include/dcmtk/dcmrt/seq/drtrrs.h \
  ../include/dcmtk/dcmrt/seq/drtrrros.h \
  ../include/dcmtk/dcmrt/seq/drtspccs.h ../include/dcmtk/dcmrt/drttreat.h \
  ../include/dcmtk/dcmrt/seq/drtfgss.h \
@@ -419,27 +427,30 @@ tsearch.o: tsearch.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtcsis.h \
  ../include/dcmtk/dcmrt/seq/drtcctus.h \
  ../include/dcmtk/dcmrt/seq/drtcpis.h ../include/dcmtk/dcmrt/seq/drtics.h \
- ../include/dcmtk/dcmrt/seq/drtpics.h ../include/dcmtk/dcmrt/seq/drtces.h \
+ ../include/dcmtk/dcmrt/seq/drtpics.h \
+ ../include/dcmtk/dcmrt/seq/drtcgis.h ../include/dcmtk/dcmrt/seq/drtces.h \
  ../include/dcmtk/dcmrt/seq/drtois.h \
  ../include/dcmtk/dcmrt/seq/drtporcs.h \
  ../include/dcmtk/dcmrt/seq/drtcsas.h \
  ../include/dcmtk/dcmrt/seq/drtdimcs.h \
- ../include/dcmtk/dcmrt/seq/drtdss.h \
+ ../include/dcmtk/dcmrt/seq/drtdcs.h ../include/dcmtk/dcmrt/seq/drtdss.h \
  ../include/dcmtk/dcmrt/seq/drtdspcs.h \
  ../include/dcmtk/dcmrt/seq/drtdrs.h ../include/dcmtk/dcmrt/seq/drteas.h \
  ../include/dcmtk/dcmrt/seq/drtfgs.h ../include/dcmtk/dcmrt/seq/drtrbs8.h \
  ../include/dcmtk/dcmrt/seq/drtbvcps.h \
  ../include/dcmtk/dcmrt/seq/drtrbas8.h \
  ../include/dcmtk/dcmrt/seq/drtrdrs8.h \
- ../include/dcmtk/dcmrt/seq/drthsdrs.h \
- ../include/dcmtk/dcmrt/seq/drtians.h \
- ../include/dcmtk/dcmrt/seq/drtiais.h \
+ ../include/dcmtk/dcmrt/seq/drtgpis.h \
  ../include/dcmtk/dcmrt/seq/drtipiqs.h \
  ../include/dcmtk/dcmrt/seq/drtaadcs.h \
  ../include/dcmtk/dcmrt/seq/drtafs.h ../include/dcmtk/dcmrt/seq/drtajcs.h \
+ ../include/dcmtk/dcmrt/seq/drthsdrs.h \
+ ../include/dcmtk/dcmrt/seq/drtians.h \
+ ../include/dcmtk/dcmrt/seq/drtiais.h \
  ../include/dcmtk/dcmrt/seq/drtiseis.h \
- ../include/dcmtk/dcmrt/seq/drtmps.h ../include/dcmtk/dcmrt/seq/drtoas.h \
- ../include/dcmtk/dcmrt/seq/drtmas.h ../include/dcmtk/dcmrt/seq/drtopis.h \
+ ../include/dcmtk/dcmrt/seq/drtmps.h ../include/dcmtk/dcmrt/seq/drtmris.h \
+ ../include/dcmtk/dcmrt/seq/drtoas.h ../include/dcmtk/dcmrt/seq/drtmas.h \
+ ../include/dcmtk/dcmrt/seq/drtopis.h \
  ../include/dcmtk/dcmrt/seq/drtpbcs.h ../include/dcmtk/dcmrt/seq/drtpss.h \
  ../include/dcmtk/dcmrt/seq/drtfds.h ../include/dcmtk/dcmrt/seq/drtmss.h \
  ../include/dcmtk/dcmrt/seq/drtrsis.h ../include/dcmtk/dcmrt/seq/drtsds.h \
@@ -455,8 +466,11 @@ tsearch.o: tsearch.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtporis.h \
  ../include/dcmtk/dcmrt/seq/drtprsis.h \
  ../include/dcmtk/dcmrt/seq/drtpdecs.h \
- ../include/dcmtk/dcmrt/seq/drtdias.h ../include/dcmtk/dcmrt/seq/drtpcs.h \
+ ../include/dcmtk/dcmrt/seq/drtdias.h \
+ ../include/dcmtk/dcmrt/seq/drtpdeds.h \
+ ../include/dcmtk/dcmrt/seq/drtpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrppcs.h \
+ ../include/dcmtk/dcmrt/seq/drtrims.h ../include/dcmtk/dcmrt/seq/drtris.h \
  ../include/dcmtk/dcmrt/seq/drtrpphs.h \
  ../include/dcmtk/dcmrt/seq/drtdimrs.h \
  ../include/dcmtk/dcmrt/seq/drtdirs.h \
@@ -466,15 +480,19 @@ tsearch.o: tsearch.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrppss.h \
  ../include/dcmtk/dcmrt/seq/drtrrtps3.h \
  ../include/dcmtk/dcmrt/seq/drtrsers.h \
- ../include/dcmtk/dcmrt/seq/drtris.h ../include/dcmtk/dcmrt/seq/drtrsss.h \
- ../include/dcmtk/dcmrt/seq/drtrss.h ../include/dcmtk/dcmrt/seq/drtrpis.h \
- ../include/dcmtk/dcmrt/seq/drtras.h \
+ ../include/dcmtk/dcmrt/seq/drtrsss.h ../include/dcmtk/dcmrt/seq/drtrss.h \
+ ../include/dcmtk/dcmrt/seq/drtrpis.h ../include/dcmtk/dcmrt/seq/drtras.h \
  ../include/dcmtk/dcmrt/seq/drtrrpcs.h \
  ../include/dcmtk/dcmrt/seq/drtrpcs.h \
  ../include/dcmtk/dcmrt/seq/drtspcs.h \
  ../include/dcmtk/dcmrt/seq/drtrscs.h \
- ../include/dcmtk/dcmrt/seq/drtsdcs.h ../include/dcmtk/dcmrt/seq/drtss.h \
+ ../include/dcmtk/dcmrt/seq/drtsdcs.h ../include/dcmtk/dcmrt/seq/drtsis.h \
+ ../include/dcmtk/dcmrt/seq/drtsins.h \
+ ../include/dcmtk/dcmrt/seq/drtspgis.h ../include/dcmtk/dcmrt/seq/drtss.h \
+ ../include/dcmtk/dcmrt/seq/drtscs.h ../include/dcmtk/dcmrt/seq/drtsss.h \
+ ../include/dcmtk/dcmrt/seq/drtssrcs.h \
  ../include/dcmtk/dcmrt/seq/drtscris.h \
  ../include/dcmtk/dcmrt/seq/drttts.h \
  ../include/dcmtk/dcmrt/seq/drtbldts.h \
- ../include/dcmtk/dcmrt/seq/drttms9.h
+ ../include/dcmtk/dcmrt/seq/drttms9.h \
+ ../include/dcmtk/dcmrt/seq/drtudis.h

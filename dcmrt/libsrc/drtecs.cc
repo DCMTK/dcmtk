@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTEquivalentCodeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -25,7 +25,16 @@ DRTEquivalentCodeSequence::Item::Item(const OFBool emptyDefaultItem)
     CodeValue(DCM_CodeValue),
     CodingSchemeDesignator(DCM_CodingSchemeDesignator),
     CodingSchemeVersion(DCM_CodingSchemeVersion),
+    ContextGroupExtensionCreatorUID(DCM_ContextGroupExtensionCreatorUID),
+    ContextGroupExtensionFlag(DCM_ContextGroupExtensionFlag),
+    ContextGroupLocalVersion(DCM_ContextGroupLocalVersion),
+    ContextGroupVersion(DCM_ContextGroupVersion),
+    ContextIdentifier(DCM_ContextIdentifier),
+    ContextUID(DCM_ContextUID),
     LongCodeValue(DCM_LongCodeValue),
+    MappingResource(DCM_MappingResource),
+    MappingResourceName(DCM_MappingResourceName),
+    MappingResourceUID(DCM_MappingResourceUID),
     URNCodeValue(DCM_URNCodeValue)
 {
 }
@@ -37,7 +46,16 @@ DRTEquivalentCodeSequence::Item::Item(const Item &copy)
     CodeValue(copy.CodeValue),
     CodingSchemeDesignator(copy.CodingSchemeDesignator),
     CodingSchemeVersion(copy.CodingSchemeVersion),
+    ContextGroupExtensionCreatorUID(copy.ContextGroupExtensionCreatorUID),
+    ContextGroupExtensionFlag(copy.ContextGroupExtensionFlag),
+    ContextGroupLocalVersion(copy.ContextGroupLocalVersion),
+    ContextGroupVersion(copy.ContextGroupVersion),
+    ContextIdentifier(copy.ContextIdentifier),
+    ContextUID(copy.ContextUID),
     LongCodeValue(copy.LongCodeValue),
+    MappingResource(copy.MappingResource),
+    MappingResourceName(copy.MappingResourceName),
+    MappingResourceUID(copy.MappingResourceUID),
     URNCodeValue(copy.URNCodeValue)
 {
 }
@@ -57,7 +75,16 @@ DRTEquivalentCodeSequence::Item &DRTEquivalentCodeSequence::Item::operator=(cons
         CodeValue = copy.CodeValue;
         CodingSchemeDesignator = copy.CodingSchemeDesignator;
         CodingSchemeVersion = copy.CodingSchemeVersion;
+        ContextGroupExtensionCreatorUID = copy.ContextGroupExtensionCreatorUID;
+        ContextGroupExtensionFlag = copy.ContextGroupExtensionFlag;
+        ContextGroupLocalVersion = copy.ContextGroupLocalVersion;
+        ContextGroupVersion = copy.ContextGroupVersion;
+        ContextIdentifier = copy.ContextIdentifier;
+        ContextUID = copy.ContextUID;
         LongCodeValue = copy.LongCodeValue;
+        MappingResource = copy.MappingResource;
+        MappingResourceName = copy.MappingResourceName;
+        MappingResourceUID = copy.MappingResourceUID;
         URNCodeValue = copy.URNCodeValue;
     }
     return *this;
@@ -75,6 +102,15 @@ void DRTEquivalentCodeSequence::Item::clear()
         CodeMeaning.clear();
         LongCodeValue.clear();
         URNCodeValue.clear();
+        ContextIdentifier.clear();
+        ContextUID.clear();
+        MappingResource.clear();
+        MappingResourceUID.clear();
+        MappingResourceName.clear();
+        ContextGroupVersion.clear();
+        ContextGroupExtensionFlag.clear();
+        ContextGroupLocalVersion.clear();
+        ContextGroupExtensionCreatorUID.clear();
     }
 }
 
@@ -86,7 +122,16 @@ OFBool DRTEquivalentCodeSequence::Item::isEmpty()
            CodingSchemeVersion.isEmpty() &&
            CodeMeaning.isEmpty() &&
            LongCodeValue.isEmpty() &&
-           URNCodeValue.isEmpty();
+           URNCodeValue.isEmpty() &&
+           ContextIdentifier.isEmpty() &&
+           ContextUID.isEmpty() &&
+           MappingResource.isEmpty() &&
+           MappingResourceUID.isEmpty() &&
+           MappingResourceName.isEmpty() &&
+           ContextGroupVersion.isEmpty() &&
+           ContextGroupExtensionFlag.isEmpty() &&
+           ContextGroupLocalVersion.isEmpty() &&
+           ContextGroupExtensionCreatorUID.isEmpty();
 }
 
 
@@ -109,6 +154,15 @@ OFCondition DRTEquivalentCodeSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, CodeMeaning, "1", "1", "EquivalentCodeSequence");
         getAndCheckElementFromDataset(item, LongCodeValue, "1", "1C", "EquivalentCodeSequence");
         getAndCheckElementFromDataset(item, URNCodeValue, "1", "1C", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, ContextIdentifier, "1", "3", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, ContextUID, "1", "3", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, MappingResourceUID, "1", "3", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, MappingResourceName, "1", "3", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, ContextGroupLocalVersion, "1", "1C", "EquivalentCodeSequence");
+        getAndCheckElementFromDataset(item, ContextGroupExtensionCreatorUID, "1", "1C", "EquivalentCodeSequence");
         result = EC_Normal;
     }
     return result;
@@ -127,6 +181,15 @@ OFCondition DRTEquivalentCodeSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmLongString(CodeMeaning), "1", "1", "EquivalentCodeSequence");
         addElementToDataset(result, item, new DcmUnlimitedCharacters(LongCodeValue), "1", "1C", "EquivalentCodeSequence");
         addElementToDataset(result, item, new DcmUniversalResourceIdentifierOrLocator(URNCodeValue), "1", "1C", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmCodeString(ContextIdentifier), "1", "3", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ContextUID), "1", "3", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(MappingResourceUID), "1", "3", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmLongString(MappingResourceName), "1", "3", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmDateTime(ContextGroupLocalVersion), "1", "1C", "EquivalentCodeSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ContextGroupExtensionCreatorUID), "1", "1C", "EquivalentCodeSequence");
     }
     return result;
 }
@@ -168,12 +231,93 @@ OFCondition DRTEquivalentCodeSequence::Item::getCodingSchemeVersion(OFString &va
 }
 
 
+OFCondition DRTEquivalentCodeSequence::Item::getContextGroupExtensionCreatorUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextGroupExtensionCreatorUID, value, pos);
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::getContextGroupExtensionFlag(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextGroupExtensionFlag, value, pos);
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::getContextGroupLocalVersion(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextGroupLocalVersion, value, pos);
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::getContextGroupVersion(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextGroupVersion, value, pos);
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::getContextIdentifier(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextIdentifier, value, pos);
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::getContextUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ContextUID, value, pos);
+}
+
+
 OFCondition DRTEquivalentCodeSequence::Item::getLongCodeValue(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
         return getStringValueFromElement(LongCodeValue, value, pos);
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::getMappingResource(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(MappingResource, value, pos);
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::getMappingResourceName(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(MappingResourceName, value, pos);
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::getMappingResourceUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(MappingResourceUID, value, pos);
 }
 
 
@@ -238,6 +382,84 @@ OFCondition DRTEquivalentCodeSequence::Item::setCodingSchemeVersion(const OFStri
 }
 
 
+OFCondition DRTEquivalentCodeSequence::Item::setContextGroupExtensionCreatorUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextGroupExtensionCreatorUID.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::setContextGroupExtensionFlag(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextGroupExtensionFlag.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::setContextGroupLocalVersion(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextGroupLocalVersion.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::setContextGroupVersion(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextGroupVersion.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::setContextIdentifier(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextIdentifier.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::setContextUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ContextUID.putOFStringArray(value);
+    }
+    return result;
+}
+
+
 OFCondition DRTEquivalentCodeSequence::Item::setLongCodeValue(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -246,6 +468,45 @@ OFCondition DRTEquivalentCodeSequence::Item::setLongCodeValue(const OFString &va
         result = (check) ? DcmUnlimitedCharacters::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = LongCodeValue.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::setMappingResource(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = MappingResource.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::setMappingResourceName(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = MappingResourceName.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTEquivalentCodeSequence::Item::setMappingResourceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = MappingResourceUID.putOFStringArray(value);
     }
     return result;
 }

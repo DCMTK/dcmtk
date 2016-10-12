@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTRTROIObservationsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -21,7 +21,6 @@
 
 DRTRTROIObservationsSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    AdditionalRTROIIdentificationCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     MaterialID(DCM_MaterialID),
     ObservationNumber(DCM_ObservationNumber),
     ROIInterpreter(DCM_ROIInterpreter),
@@ -40,7 +39,6 @@ DRTRTROIObservationsSequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTRTROIObservationsSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    AdditionalRTROIIdentificationCodeSequence(copy.AdditionalRTROIIdentificationCodeSequence),
     MaterialID(copy.MaterialID),
     ObservationNumber(copy.ObservationNumber),
     ROIInterpreter(copy.ROIInterpreter),
@@ -67,7 +65,6 @@ DRTRTROIObservationsSequence::Item &DRTRTROIObservationsSequence::Item::operator
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        AdditionalRTROIIdentificationCodeSequence = copy.AdditionalRTROIIdentificationCodeSequence;
         MaterialID = copy.MaterialID;
         ObservationNumber = copy.ObservationNumber;
         ROIInterpreter = copy.ROIInterpreter;
@@ -97,7 +94,6 @@ void DRTRTROIObservationsSequence::Item::clear()
         RTRelatedROISequence.clear();
         SegmentedPropertyCategoryCodeSequence.clear();
         RTROIIdentificationCodeSequence.clear();
-        AdditionalRTROIIdentificationCodeSequence.clear();
         RelatedRTROIObservationsSequence.clear();
         RTROIInterpretedType.clear();
         ROIInterpreter.clear();
@@ -116,7 +112,6 @@ OFBool DRTRTROIObservationsSequence::Item::isEmpty()
            RTRelatedROISequence.isEmpty() &&
            SegmentedPropertyCategoryCodeSequence.isEmpty() &&
            RTROIIdentificationCodeSequence.isEmpty() &&
-           AdditionalRTROIIdentificationCodeSequence.isEmpty() &&
            RelatedRTROIObservationsSequence.isEmpty() &&
            RTROIInterpretedType.isEmpty() &&
            ROIInterpreter.isEmpty() &&
@@ -145,7 +140,6 @@ OFCondition DRTRTROIObservationsSequence::Item::read(DcmItem &item)
         RTRelatedROISequence.read(item, "1-n", "3", "RTROIObservationsSequence");
         SegmentedPropertyCategoryCodeSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
         RTROIIdentificationCodeSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
-        AdditionalRTROIIdentificationCodeSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
         RelatedRTROIObservationsSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
         getAndCheckElementFromDataset(item, RTROIInterpretedType, "1", "2", "RTROIObservationsSequence");
         getAndCheckElementFromDataset(item, ROIInterpreter, "1", "2", "RTROIObservationsSequence");
@@ -170,7 +164,6 @@ OFCondition DRTRTROIObservationsSequence::Item::write(DcmItem &item)
         if (result.good()) result = RTRelatedROISequence.write(item, "1-n", "3", "RTROIObservationsSequence");
         if (result.good()) result = SegmentedPropertyCategoryCodeSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
         if (result.good()) result = RTROIIdentificationCodeSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
-        if (result.good()) result = AdditionalRTROIIdentificationCodeSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
         if (result.good()) result = RelatedRTROIObservationsSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
         addElementToDataset(result, item, new DcmCodeString(RTROIInterpretedType), "1", "2", "RTROIObservationsSequence");
         addElementToDataset(result, item, new DcmPersonName(ROIInterpreter), "1", "2", "RTROIObservationsSequence");

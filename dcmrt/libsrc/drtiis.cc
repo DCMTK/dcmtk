@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTIconImageSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -25,6 +25,7 @@ DRTIconImageSequence::Item::Item(const OFBool emptyDefaultItem)
     BitsStored(DCM_BitsStored),
     BluePaletteColorLookupTableData(DCM_BluePaletteColorLookupTableData),
     BluePaletteColorLookupTableDescriptor(DCM_BluePaletteColorLookupTableDescriptor),
+    ColorSpace(DCM_ColorSpace),
     Columns(DCM_Columns),
     GreenPaletteColorLookupTableData(DCM_GreenPaletteColorLookupTableData),
     GreenPaletteColorLookupTableDescriptor(DCM_GreenPaletteColorLookupTableDescriptor),
@@ -51,6 +52,7 @@ DRTIconImageSequence::Item::Item(const Item &copy)
     BitsStored(copy.BitsStored),
     BluePaletteColorLookupTableData(copy.BluePaletteColorLookupTableData),
     BluePaletteColorLookupTableDescriptor(copy.BluePaletteColorLookupTableDescriptor),
+    ColorSpace(copy.ColorSpace),
     Columns(copy.Columns),
     GreenPaletteColorLookupTableData(copy.GreenPaletteColorLookupTableData),
     GreenPaletteColorLookupTableDescriptor(copy.GreenPaletteColorLookupTableDescriptor),
@@ -85,6 +87,7 @@ DRTIconImageSequence::Item &DRTIconImageSequence::Item::operator=(const Item &co
         BitsStored = copy.BitsStored;
         BluePaletteColorLookupTableData = copy.BluePaletteColorLookupTableData;
         BluePaletteColorLookupTableDescriptor = copy.BluePaletteColorLookupTableDescriptor;
+        ColorSpace = copy.ColorSpace;
         Columns = copy.Columns;
         GreenPaletteColorLookupTableData = copy.GreenPaletteColorLookupTableData;
         GreenPaletteColorLookupTableDescriptor = copy.GreenPaletteColorLookupTableDescriptor;
@@ -119,7 +122,6 @@ void DRTIconImageSequence::Item::clear()
         BitsStored.clear();
         HighBit.clear();
         PixelRepresentation.clear();
-        PixelData.clear();
         PlanarConfiguration.clear();
         PixelAspectRatio.clear();
         SmallestImagePixelValue.clear();
@@ -131,6 +133,8 @@ void DRTIconImageSequence::Item::clear()
         GreenPaletteColorLookupTableData.clear();
         BluePaletteColorLookupTableData.clear();
         ICCProfile.clear();
+        ColorSpace.clear();
+        PixelData.clear();
     }
 }
 
@@ -145,7 +149,6 @@ OFBool DRTIconImageSequence::Item::isEmpty()
            BitsStored.isEmpty() &&
            HighBit.isEmpty() &&
            PixelRepresentation.isEmpty() &&
-           PixelData.isEmpty() &&
            PlanarConfiguration.isEmpty() &&
            PixelAspectRatio.isEmpty() &&
            SmallestImagePixelValue.isEmpty() &&
@@ -156,7 +159,9 @@ OFBool DRTIconImageSequence::Item::isEmpty()
            RedPaletteColorLookupTableData.isEmpty() &&
            GreenPaletteColorLookupTableData.isEmpty() &&
            BluePaletteColorLookupTableData.isEmpty() &&
-           ICCProfile.isEmpty();
+           ICCProfile.isEmpty() &&
+           ColorSpace.isEmpty() &&
+           PixelData.isEmpty();
 }
 
 
@@ -181,7 +186,6 @@ OFCondition DRTIconImageSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, BitsStored, "1", "1", "IconImageSequence");
         getAndCheckElementFromDataset(item, HighBit, "1", "1", "IconImageSequence");
         getAndCheckElementFromDataset(item, PixelRepresentation, "1", "1", "IconImageSequence");
-        getAndCheckElementFromDataset(item, PixelData, "1", "1C", "IconImageSequence");
         getAndCheckElementFromDataset(item, PlanarConfiguration, "1", "1C", "IconImageSequence");
         getAndCheckElementFromDataset(item, PixelAspectRatio, "2", "1C", "IconImageSequence");
         getAndCheckElementFromDataset(item, SmallestImagePixelValue, "1", "3", "IconImageSequence");
@@ -193,6 +197,8 @@ OFCondition DRTIconImageSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, GreenPaletteColorLookupTableData, "1", "1C", "IconImageSequence");
         getAndCheckElementFromDataset(item, BluePaletteColorLookupTableData, "1", "1C", "IconImageSequence");
         getAndCheckElementFromDataset(item, ICCProfile, "1", "3", "IconImageSequence");
+        getAndCheckElementFromDataset(item, ColorSpace, "1", "3", "IconImageSequence");
+        getAndCheckElementFromDataset(item, PixelData, "1", "1", "IconImageSequence");
         result = EC_Normal;
     }
     return result;
@@ -213,7 +219,6 @@ OFCondition DRTIconImageSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmUnsignedShort(BitsStored), "1", "1", "IconImageSequence");
         addElementToDataset(result, item, new DcmUnsignedShort(HighBit), "1", "1", "IconImageSequence");
         addElementToDataset(result, item, new DcmUnsignedShort(PixelRepresentation), "1", "1", "IconImageSequence");
-        addElementToDataset(result, item, new DcmPixelData(PixelData), "1", "1C", "IconImageSequence");
         addElementToDataset(result, item, new DcmUnsignedShort(PlanarConfiguration), "1", "1C", "IconImageSequence");
         addElementToDataset(result, item, new DcmIntegerString(PixelAspectRatio), "2", "1C", "IconImageSequence");
         addElementToDataset(result, item, new DcmUnsignedShort(SmallestImagePixelValue), "1", "3", "IconImageSequence");
@@ -225,6 +230,8 @@ OFCondition DRTIconImageSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmOtherByteOtherWord(GreenPaletteColorLookupTableData), "1", "1C", "IconImageSequence");
         addElementToDataset(result, item, new DcmOtherByteOtherWord(BluePaletteColorLookupTableData), "1", "1C", "IconImageSequence");
         addElementToDataset(result, item, new DcmOtherByteOtherWord(ICCProfile), "1", "3", "IconImageSequence");
+        addElementToDataset(result, item, new DcmCodeString(ColorSpace), "1", "3", "IconImageSequence");
+        addElementToDataset(result, item, new DcmPixelData(PixelData), "1", "1", "IconImageSequence");
     }
     return result;
 }
@@ -273,6 +280,15 @@ OFCondition DRTIconImageSequence::Item::getBluePaletteColorLookupTableDescriptor
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmUnsignedShort &, BluePaletteColorLookupTableDescriptor).getUint16(value, pos);
+}
+
+
+OFCondition DRTIconImageSequence::Item::getColorSpace(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ColorSpace, value, pos);
 }
 
 
@@ -483,6 +499,19 @@ OFCondition DRTIconImageSequence::Item::setBluePaletteColorLookupTableDescriptor
         return EC_IllegalCall;
     else
         return BluePaletteColorLookupTableDescriptor.putUint16(value, pos);
+}
+
+
+OFCondition DRTIconImageSequence::Item::setColorSpace(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ColorSpace.putOFStringArray(value);
+    }
+    return result;
 }
 
 

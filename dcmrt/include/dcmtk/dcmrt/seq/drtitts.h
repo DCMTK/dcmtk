@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIonToleranceTableSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -105,6 +105,48 @@ class DCMTK_DCMRT_EXPORT DRTIonToleranceTableSequence
          */
         OFCondition getBeamLimitingDeviceAngleTolerance(Float64 &value, const unsigned long pos = 0) const;
 
+        /** get ChairHeadFramePositionTolerance (300a,0153)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChairHeadFramePositionTolerance(OFString &value, const signed long pos = 0) const;
+
+        /** get ChairHeadFramePositionTolerance (300a,0153)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChairHeadFramePositionTolerance(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get FixationLightAzimuthalAngleTolerance (300a,0154)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getFixationLightAzimuthalAngleTolerance(OFString &value, const signed long pos = 0) const;
+
+        /** get FixationLightAzimuthalAngleTolerance (300a,0154)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getFixationLightAzimuthalAngleTolerance(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get FixationLightPolarAngleTolerance (300a,0155)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getFixationLightPolarAngleTolerance(OFString &value, const signed long pos = 0) const;
+
+        /** get FixationLightPolarAngleTolerance (300a,0155)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getFixationLightPolarAngleTolerance(Float64 &value, const unsigned long pos = 0) const;
+
         /** get GantryAngleTolerance (300a,0044)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -118,6 +160,20 @@ class DCMTK_DCMRT_EXPORT DRTIonToleranceTableSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getGantryAngleTolerance(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get HeadFixationAngleTolerance (300a,0152)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getHeadFixationAngleTolerance(OFString &value, const signed long pos = 0) const;
+
+        /** get HeadFixationAngleTolerance (300a,0152)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getHeadFixationAngleTolerance(Float64 &value, const unsigned long pos = 0) const;
 
         /** get PatientSupportAngleTolerance (300a,004c)
          *  @param  value  reference to variable in which the value should be stored
@@ -240,12 +296,40 @@ class DCMTK_DCMRT_EXPORT DRTIonToleranceTableSequence
          */
         OFCondition setBeamLimitingDeviceAngleTolerance(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ChairHeadFramePositionTolerance (300a,0153)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setChairHeadFramePositionTolerance(const OFString &value, const OFBool check = OFTrue);
+
+        /** set FixationLightAzimuthalAngleTolerance (300a,0154)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setFixationLightAzimuthalAngleTolerance(const OFString &value, const OFBool check = OFTrue);
+
+        /** set FixationLightPolarAngleTolerance (300a,0155)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setFixationLightPolarAngleTolerance(const OFString &value, const OFBool check = OFTrue);
+
         /** set GantryAngleTolerance (300a,0044)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setGantryAngleTolerance(const OFString &value, const OFBool check = OFTrue);
+
+        /** set HeadFixationAngleTolerance (300a,0152)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setHeadFixationAngleTolerance(const OFString &value, const OFBool check = OFTrue);
 
         /** set PatientSupportAngleTolerance (300a,004c)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -319,8 +403,16 @@ class DCMTK_DCMRT_EXPORT DRTIonToleranceTableSequence
         DcmDecimalString BeamLimitingDeviceAngleTolerance;
         /// BeamLimitingDeviceToleranceSequence (300a,0048) vr=SQ, vm=1, type=3
         DRTBeamLimitingDeviceToleranceSequence BeamLimitingDeviceToleranceSequence;
+        /// ChairHeadFramePositionTolerance (300a,0153) vr=DS, vm=1, type=3
+        DcmDecimalString ChairHeadFramePositionTolerance;
+        /// FixationLightAzimuthalAngleTolerance (300a,0154) vr=DS, vm=1, type=3
+        DcmDecimalString FixationLightAzimuthalAngleTolerance;
+        /// FixationLightPolarAngleTolerance (300a,0155) vr=DS, vm=1, type=3
+        DcmDecimalString FixationLightPolarAngleTolerance;
         /// GantryAngleTolerance (300a,0044) vr=DS, vm=1, type=3
         DcmDecimalString GantryAngleTolerance;
+        /// HeadFixationAngleTolerance (300a,0152) vr=DS, vm=1, type=3
+        DcmDecimalString HeadFixationAngleTolerance;
         /// PatientSupportAngleTolerance (300a,004c) vr=DS, vm=1, type=3
         DcmDecimalString PatientSupportAngleTolerance;
         /// SnoutPositionTolerance (300a,004b) vr=FL, vm=1, type=3

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTIonControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -24,6 +24,7 @@ DRTIonControlPointSequence::Item::Item(const OFBool emptyDefaultItem)
     BeamLimitingDeviceAngle(DCM_BeamLimitingDeviceAngle),
     BeamLimitingDevicePositionSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     BeamLimitingDeviceRotationDirection(DCM_BeamLimitingDeviceRotationDirection),
+    ChairHeadFramePosition(DCM_ChairHeadFramePosition),
     ControlPointIndex(DCM_ControlPointIndex),
     CumulativeMetersetWeight(DCM_CumulativeMetersetWeight),
     ExternalContourEntryPoint(DCM_ExternalContourEntryPoint),
@@ -47,6 +48,7 @@ DRTIonControlPointSequence::Item::Item(const OFBool emptyDefaultItem)
     ReferencedDoseReferenceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ScanSpotMetersetWeights(DCM_ScanSpotMetersetWeights),
     ScanSpotPositionMap(DCM_ScanSpotPositionMap),
+    ScanSpotReorderingAllowed(DCM_ScanSpotReorderingAllowed),
     ScanSpotTuneID(DCM_ScanSpotTuneID),
     ScanningSpotSize(DCM_ScanningSpotSize),
     SnoutPosition(DCM_SnoutPosition),
@@ -67,6 +69,7 @@ DRTIonControlPointSequence::Item::Item(const Item &copy)
     BeamLimitingDeviceAngle(copy.BeamLimitingDeviceAngle),
     BeamLimitingDevicePositionSequence(copy.BeamLimitingDevicePositionSequence),
     BeamLimitingDeviceRotationDirection(copy.BeamLimitingDeviceRotationDirection),
+    ChairHeadFramePosition(copy.ChairHeadFramePosition),
     ControlPointIndex(copy.ControlPointIndex),
     CumulativeMetersetWeight(copy.CumulativeMetersetWeight),
     ExternalContourEntryPoint(copy.ExternalContourEntryPoint),
@@ -90,6 +93,7 @@ DRTIonControlPointSequence::Item::Item(const Item &copy)
     ReferencedDoseReferenceSequence(copy.ReferencedDoseReferenceSequence),
     ScanSpotMetersetWeights(copy.ScanSpotMetersetWeights),
     ScanSpotPositionMap(copy.ScanSpotPositionMap),
+    ScanSpotReorderingAllowed(copy.ScanSpotReorderingAllowed),
     ScanSpotTuneID(copy.ScanSpotTuneID),
     ScanningSpotSize(copy.ScanningSpotSize),
     SnoutPosition(copy.SnoutPosition),
@@ -118,6 +122,7 @@ DRTIonControlPointSequence::Item &DRTIonControlPointSequence::Item::operator=(co
         BeamLimitingDeviceAngle = copy.BeamLimitingDeviceAngle;
         BeamLimitingDevicePositionSequence = copy.BeamLimitingDevicePositionSequence;
         BeamLimitingDeviceRotationDirection = copy.BeamLimitingDeviceRotationDirection;
+        ChairHeadFramePosition = copy.ChairHeadFramePosition;
         ControlPointIndex = copy.ControlPointIndex;
         CumulativeMetersetWeight = copy.CumulativeMetersetWeight;
         ExternalContourEntryPoint = copy.ExternalContourEntryPoint;
@@ -141,6 +146,7 @@ DRTIonControlPointSequence::Item &DRTIonControlPointSequence::Item::operator=(co
         ReferencedDoseReferenceSequence = copy.ReferencedDoseReferenceSequence;
         ScanSpotMetersetWeights = copy.ScanSpotMetersetWeights;
         ScanSpotPositionMap = copy.ScanSpotPositionMap;
+        ScanSpotReorderingAllowed = copy.ScanSpotReorderingAllowed;
         ScanSpotTuneID = copy.ScanSpotTuneID;
         ScanningSpotSize = copy.ScanningSpotSize;
         SnoutPosition = copy.SnoutPosition;
@@ -180,6 +186,7 @@ void DRTIonControlPointSequence::Item::clear()
         BeamLimitingDeviceAngle.clear();
         BeamLimitingDeviceRotationDirection.clear();
         ScanSpotTuneID.clear();
+        ScanSpotReorderingAllowed.clear();
         NumberOfScanSpotPositions.clear();
         ScanSpotPositionMap.clear();
         ScanSpotMetersetWeights.clear();
@@ -192,6 +199,7 @@ void DRTIonControlPointSequence::Item::clear()
         TableTopRollAngle.clear();
         TableTopRollRotationDirection.clear();
         HeadFixationAngle.clear();
+        ChairHeadFramePosition.clear();
         TableTopVerticalPosition.clear();
         TableTopLongitudinalPosition.clear();
         TableTopLateralPosition.clear();
@@ -223,6 +231,7 @@ OFBool DRTIonControlPointSequence::Item::isEmpty()
            BeamLimitingDeviceAngle.isEmpty() &&
            BeamLimitingDeviceRotationDirection.isEmpty() &&
            ScanSpotTuneID.isEmpty() &&
+           ScanSpotReorderingAllowed.isEmpty() &&
            NumberOfScanSpotPositions.isEmpty() &&
            ScanSpotPositionMap.isEmpty() &&
            ScanSpotMetersetWeights.isEmpty() &&
@@ -235,6 +244,7 @@ OFBool DRTIonControlPointSequence::Item::isEmpty()
            TableTopRollAngle.isEmpty() &&
            TableTopRollRotationDirection.isEmpty() &&
            HeadFixationAngle.isEmpty() &&
+           ChairHeadFramePosition.isEmpty() &&
            TableTopVerticalPosition.isEmpty() &&
            TableTopLongitudinalPosition.isEmpty() &&
            TableTopLateralPosition.isEmpty() &&
@@ -276,6 +286,7 @@ OFCondition DRTIonControlPointSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, BeamLimitingDeviceAngle, "1", "1C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, BeamLimitingDeviceRotationDirection, "1", "1C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, ScanSpotTuneID, "1", "1C", "IonControlPointSequence");
+        getAndCheckElementFromDataset(item, ScanSpotReorderingAllowed, "1", "3", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, NumberOfScanSpotPositions, "1", "1C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, ScanSpotPositionMap, "1-n", "1C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, ScanSpotMetersetWeights, "1-n", "1C", "IonControlPointSequence");
@@ -288,6 +299,7 @@ OFCondition DRTIonControlPointSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, TableTopRollAngle, "1", "2C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopRollRotationDirection, "1", "2C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, HeadFixationAngle, "1", "3", "IonControlPointSequence");
+        getAndCheckElementFromDataset(item, ChairHeadFramePosition, "1", "3", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopVerticalPosition, "1", "2C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopLongitudinalPosition, "1", "2C", "IonControlPointSequence");
         getAndCheckElementFromDataset(item, TableTopLateralPosition, "1", "2C", "IonControlPointSequence");
@@ -325,6 +337,7 @@ OFCondition DRTIonControlPointSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmDecimalString(BeamLimitingDeviceAngle), "1", "1C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmCodeString(BeamLimitingDeviceRotationDirection), "1", "1C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmShortString(ScanSpotTuneID), "1", "1C", "IonControlPointSequence");
+        addElementToDataset(result, item, new DcmCodeString(ScanSpotReorderingAllowed), "1", "3", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfScanSpotPositions), "1", "1C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(ScanSpotPositionMap), "1-n", "1C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(ScanSpotMetersetWeights), "1-n", "1C", "IonControlPointSequence");
@@ -337,6 +350,7 @@ OFCondition DRTIonControlPointSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmFloatingPointSingle(TableTopRollAngle), "1", "2C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmCodeString(TableTopRollRotationDirection), "1", "2C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(HeadFixationAngle), "1", "3", "IonControlPointSequence");
+        addElementToDataset(result, item, new DcmDecimalString(ChairHeadFramePosition), "1", "3", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(TableTopVerticalPosition), "1", "2C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(TableTopLongitudinalPosition), "1", "2C", "IonControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(TableTopLateralPosition), "1", "2C", "IonControlPointSequence");
@@ -373,6 +387,24 @@ OFCondition DRTIonControlPointSequence::Item::getBeamLimitingDeviceRotationDirec
         return EC_IllegalCall;
     else
         return getStringValueFromElement(BeamLimitingDeviceRotationDirection, value, pos);
+}
+
+
+OFCondition DRTIonControlPointSequence::Item::getChairHeadFramePosition(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ChairHeadFramePosition, value, pos);
+}
+
+
+OFCondition DRTIonControlPointSequence::Item::getChairHeadFramePosition(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmDecimalString &, ChairHeadFramePosition).getFloat64(value, pos);
 }
 
 
@@ -628,6 +660,15 @@ OFCondition DRTIonControlPointSequence::Item::getScanSpotPositionMap(Float32 &va
 }
 
 
+OFCondition DRTIonControlPointSequence::Item::getScanSpotReorderingAllowed(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ScanSpotReorderingAllowed, value, pos);
+}
+
+
 OFCondition DRTIonControlPointSequence::Item::getScanSpotTuneID(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
@@ -793,6 +834,19 @@ OFCondition DRTIonControlPointSequence::Item::setBeamLimitingDeviceRotationDirec
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = BeamLimitingDeviceRotationDirection.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTIonControlPointSequence::Item::setChairHeadFramePosition(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ChairHeadFramePosition.putOFStringArray(value);
     }
     return result;
 }
@@ -1005,6 +1059,19 @@ OFCondition DRTIonControlPointSequence::Item::setScanSpotPositionMap(const Float
         return EC_IllegalCall;
     else
         return ScanSpotPositionMap.putFloat32(value, pos);
+}
+
+
+OFCondition DRTIonControlPointSequence::Item::setScanSpotReorderingAllowed(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ScanSpotReorderingAllowed.putOFStringArray(value);
+    }
+    return result;
 }
 
 

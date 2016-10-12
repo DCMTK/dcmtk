@@ -1,31 +1,29 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class DRTAdditionalRTROIIdentificationCodeSequence
+ *  Header file for class DRTPrivateDataElementDefinitionSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
 
-#ifndef DRTARICS_H
-#define DRTARICS_H
+#ifndef DRTPDEDS_H
+#define DRTPDEDS_H
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtecs.h"    // for EquivalentCodeSequence
-#include "dcmtk/dcmrt/seq/drtporcs.h"  // for PurposeOfReferenceCodeSequence
 
 
-/** Interface class for AdditionalRTROIIdentificationCodeSequence (3006,00b9)
+/** Interface class for PrivateDataElementDefinitionSequence (0008,0310)
  */
-class DCMTK_DCMRT_EXPORT DRTAdditionalRTROIIdentificationCodeSequence
+class DCMTK_DCMRT_EXPORT DRTPrivateDataElementDefinitionSequence
   : protected DRTTypes
 {
 
@@ -92,267 +90,157 @@ class DCMTK_DCMRT_EXPORT DRTAdditionalRTROIIdentificationCodeSequence
 
       // --- get DICOM attribute values ---
 
-        /** get CodeMeaning (0008,0104)
+        /** get PrivateDataElement (0008,0308)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getPrivateDataElement(Uint16 &value, const unsigned long pos = 0) const;
+
+        /** get PrivateDataElementDescription (0008,030e)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getCodeMeaning(OFString &value, const signed long pos = 0) const;
+        OFCondition getPrivateDataElementDescription(OFString &value, const signed long pos = 0) const;
 
-        /** get CodeValue (0008,0100)
+        /** get PrivateDataElementEncoding (0008,030f)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getCodeValue(OFString &value, const signed long pos = 0) const;
+        OFCondition getPrivateDataElementEncoding(OFString &value, const signed long pos = 0) const;
 
-        /** get CodingSchemeDesignator (0008,0102)
+        /** get PrivateDataElementKeyword (0008,030d)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getCodingSchemeDesignator(OFString &value, const signed long pos = 0) const;
+        OFCondition getPrivateDataElementKeyword(OFString &value, const signed long pos = 0) const;
 
-        /** get CodingSchemeVersion (0008,0103)
+        /** get PrivateDataElementName (0008,030c)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getCodingSchemeVersion(OFString &value, const signed long pos = 0) const;
+        OFCondition getPrivateDataElementName(OFString &value, const signed long pos = 0) const;
 
-        /** get ContextGroupExtensionCreatorUID (0008,010d)
+        /** get PrivateDataElementNumberOfItems (0008,030b)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getPrivateDataElementNumberOfItems(Uint32 &value, const unsigned long pos = 0) const;
+
+        /** get PrivateDataElementValueMultiplicity (0008,0309)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getPrivateDataElementValueMultiplicity(Uint32 &value, const unsigned long pos = 0) const;
+
+        /** get PrivateDataElementValueRepresentation (0008,030a)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getContextGroupExtensionCreatorUID(OFString &value, const signed long pos = 0) const;
+        OFCondition getPrivateDataElementValueRepresentation(OFString &value, const signed long pos = 0) const;
 
-        /** get ContextGroupExtensionFlag (0008,010b)
+        /** get RetrieveURI (0040,e010)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getContextGroupExtensionFlag(OFString &value, const signed long pos = 0) const;
-
-        /** get ContextGroupLocalVersion (0008,0107)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContextGroupLocalVersion(OFString &value, const signed long pos = 0) const;
-
-        /** get ContextGroupVersion (0008,0106)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContextGroupVersion(OFString &value, const signed long pos = 0) const;
-
-        /** get ContextIdentifier (0008,010f)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContextIdentifier(OFString &value, const signed long pos = 0) const;
-
-        /** get ContextUID (0008,0117)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContextUID(OFString &value, const signed long pos = 0) const;
-
-        /** get LongCodeValue (0008,0119)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getLongCodeValue(OFString &value, const signed long pos = 0) const;
-
-        /** get MappingResource (0008,0105)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getMappingResource(OFString &value, const signed long pos = 0) const;
-
-        /** get MappingResourceUID (0008,0118)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getMappingResourceUID(OFString &value, const signed long pos = 0) const;
-
-        /** get URNCodeValue (0008,0120)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getURNCodeValue(OFString &value, const signed long pos = 0) const;
-
-      // --- get DICOM sequence attributes ---
-
-        /** get EquivalentCodeSequence (0008,0121)
-         *  @return reference to sequence element
-         */
-        DRTEquivalentCodeSequence &getEquivalentCodeSequence()
-            { return EquivalentCodeSequence; }
-
-        /** get EquivalentCodeSequence (0008,0121)
-         *  @return const reference to sequence element
-         */
-        const DRTEquivalentCodeSequence &getEquivalentCodeSequence() const
-            { return EquivalentCodeSequence; }
-
-        /** get PurposeOfReferenceCodeSequence (0040,a170)
-         *  @return reference to sequence element
-         */
-        DRTPurposeOfReferenceCodeSequence &getPurposeOfReferenceCodeSequence()
-            { return PurposeOfReferenceCodeSequence; }
-
-        /** get PurposeOfReferenceCodeSequence (0040,a170)
-         *  @return const reference to sequence element
-         */
-        const DRTPurposeOfReferenceCodeSequence &getPurposeOfReferenceCodeSequence() const
-            { return PurposeOfReferenceCodeSequence; }
+        OFCondition getRetrieveURI(OFString &value, const signed long pos = 0) const;
 
       // --- set DICOM attribute values ---
 
-        /** set CodeMeaning (0008,0104)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+        /** set PrivateDataElement (0008,0308)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setCodeMeaning(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setPrivateDataElement(const Uint16 value, const unsigned long pos = 0);
 
-        /** set CodeValue (0008,0100)
+        /** set PrivateDataElementDescription (0008,030e)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (UT) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setCodeValue(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setPrivateDataElementDescription(const OFString &value, const OFBool check = OFTrue);
 
-        /** set CodingSchemeDesignator (0008,0102)
+        /** set PrivateDataElementEncoding (0008,030f)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (UT) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setCodingSchemeDesignator(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setPrivateDataElementEncoding(const OFString &value, const OFBool check = OFTrue);
 
-        /** set CodingSchemeVersion (0008,0103)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setCodingSchemeVersion(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ContextGroupExtensionCreatorUID (0008,010d)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setContextGroupExtensionCreatorUID(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ContextGroupExtensionFlag (0008,010b)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setContextGroupExtensionFlag(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ContextGroupLocalVersion (0008,0107)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DT) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setContextGroupLocalVersion(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ContextGroupVersion (0008,0106)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DT) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setContextGroupVersion(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ContextIdentifier (0008,010f)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setContextIdentifier(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ContextUID (0008,0117)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setContextUID(const OFString &value, const OFBool check = OFTrue);
-
-        /** set LongCodeValue (0008,0119)
+        /** set PrivateDataElementKeyword (0008,030d)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (UC) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setLongCodeValue(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setPrivateDataElementKeyword(const OFString &value, const OFBool check = OFTrue);
 
-        /** set MappingResource (0008,0105)
+        /** set PrivateDataElementName (0008,030c)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UC) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setPrivateDataElementName(const OFString &value, const OFBool check = OFTrue);
+
+        /** set PrivateDataElementNumberOfItems (0008,030b)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1-2
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setPrivateDataElementNumberOfItems(const Uint32 value, const unsigned long pos = 0);
+
+        /** set PrivateDataElementValueMultiplicity (0008,0309)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1-3
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setPrivateDataElementValueMultiplicity(const Uint32 value, const unsigned long pos = 0);
+
+        /** set PrivateDataElementValueRepresentation (0008,030a)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setMappingResource(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setPrivateDataElementValueRepresentation(const OFString &value, const OFBool check = OFTrue);
 
-        /** set MappingResourceUID (0008,0118)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setMappingResourceUID(const OFString &value, const OFBool check = OFTrue);
-
-        /** set URNCodeValue (0008,0120)
+        /** set RetrieveURI (0040,e010)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (UR) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setURNCodeValue(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setRetrieveURI(const OFString &value, const OFBool check = OFTrue);
 
       private:
 
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// CodeMeaning (0008,0104) vr=LO, vm=1, type=1
-        DcmLongString CodeMeaning;
-        /// CodeValue (0008,0100) vr=SH, vm=1, type=1C
-        DcmShortString CodeValue;
-        /// CodingSchemeDesignator (0008,0102) vr=SH, vm=1, type=1C
-        DcmShortString CodingSchemeDesignator;
-        /// CodingSchemeVersion (0008,0103) vr=SH, vm=1, type=1C
-        DcmShortString CodingSchemeVersion;
-        /// ContextGroupExtensionCreatorUID (0008,010d) vr=UI, vm=1, type=1C
-        DcmUniqueIdentifier ContextGroupExtensionCreatorUID;
-        /// ContextGroupExtensionFlag (0008,010b) vr=CS, vm=1, type=3
-        DcmCodeString ContextGroupExtensionFlag;
-        /// ContextGroupLocalVersion (0008,0107) vr=DT, vm=1, type=1C
-        DcmDateTime ContextGroupLocalVersion;
-        /// ContextGroupVersion (0008,0106) vr=DT, vm=1, type=1C
-        DcmDateTime ContextGroupVersion;
-        /// ContextIdentifier (0008,010f) vr=CS, vm=1, type=3
-        DcmCodeString ContextIdentifier;
-        /// ContextUID (0008,0117) vr=UI, vm=1, type=3
-        DcmUniqueIdentifier ContextUID;
-        /// EquivalentCodeSequence (0008,0121) vr=SQ, vm=1, type=3
-        DRTEquivalentCodeSequence EquivalentCodeSequence;
-        /// LongCodeValue (0008,0119) vr=UC, vm=1, type=1C
-        DcmUnlimitedCharacters LongCodeValue;
-        /// MappingResource (0008,0105) vr=CS, vm=1, type=1C
-        DcmCodeString MappingResource;
-        /// MappingResourceUID (0008,0118) vr=UI, vm=1, type=3
-        DcmUniqueIdentifier MappingResourceUID;
-        /// PurposeOfReferenceCodeSequence (0040,a170) vr=SQ, vm=1, type=1
-        DRTPurposeOfReferenceCodeSequence PurposeOfReferenceCodeSequence;
-        /// URNCodeValue (0008,0120) vr=UR, vm=1, type=1C
-        DcmUniversalResourceIdentifierOrLocator URNCodeValue;
+        /// PrivateDataElement (0008,0308) vr=US, vm=1, type=1
+        DcmUnsignedShort PrivateDataElement;
+        /// PrivateDataElementDescription (0008,030e) vr=UT, vm=1, type=3
+        DcmUnlimitedText PrivateDataElementDescription;
+        /// PrivateDataElementEncoding (0008,030f) vr=UT, vm=1, type=3
+        DcmUnlimitedText PrivateDataElementEncoding;
+        /// PrivateDataElementKeyword (0008,030d) vr=UC, vm=1, type=1
+        DcmUnlimitedCharacters PrivateDataElementKeyword;
+        /// PrivateDataElementName (0008,030c) vr=UC, vm=1, type=1
+        DcmUnlimitedCharacters PrivateDataElementName;
+        /// PrivateDataElementNumberOfItems (0008,030b) vr=UL, vm=1-2, type=1C
+        DcmUnsignedLong PrivateDataElementNumberOfItems;
+        /// PrivateDataElementValueMultiplicity (0008,0309) vr=UL, vm=1-3, type=1
+        DcmUnsignedLong PrivateDataElementValueMultiplicity;
+        /// PrivateDataElementValueRepresentation (0008,030a) vr=CS, vm=1, type=1
+        DcmCodeString PrivateDataElementValueRepresentation;
+        /// RetrieveURI (0040,e010) vr=UR, vm=1, type=3
+        DcmUniversalResourceIdentifierOrLocator RetrieveURI;
 
     };
 
@@ -361,21 +249,21 @@ class DCMTK_DCMRT_EXPORT DRTAdditionalRTROIIdentificationCodeSequence
     /** (default) constructor
      *  @param emptyDefaultSequence internal flag used to mark the empty default sequence
      */
-    DRTAdditionalRTROIIdentificationCodeSequence(const OFBool emptyDefaultSequence = OFFalse);
+    DRTPrivateDataElementDefinitionSequence(const OFBool emptyDefaultSequence = OFFalse);
 
     /** copy constructor
      *  @param copy sequence object to be copied
      */
-    DRTAdditionalRTROIIdentificationCodeSequence(const DRTAdditionalRTROIIdentificationCodeSequence &copy);
+    DRTPrivateDataElementDefinitionSequence(const DRTPrivateDataElementDefinitionSequence &copy);
 
     /** destructor
      */
-    virtual ~DRTAdditionalRTROIIdentificationCodeSequence();
+    virtual ~DRTPrivateDataElementDefinitionSequence();
 
     /** assigment operator
      *  @param copy sequence object to be copied
      */
-    DRTAdditionalRTROIIdentificationCodeSequence &operator=(const DRTAdditionalRTROIIdentificationCodeSequence &copy);
+    DRTPrivateDataElementDefinitionSequence &operator=(const DRTPrivateDataElementDefinitionSequence &copy);
 
   // --- general methods ---
 

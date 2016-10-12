@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTBlockSequenceInRTBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -33,7 +33,8 @@ DRTBlockSequenceInRTBeamsModule::Item::Item(const OFBool emptyDefaultItem)
     BlockTrayID(DCM_BlockTrayID),
     BlockType(DCM_BlockType),
     MaterialID(DCM_MaterialID),
-    SourceToBlockTrayDistance(DCM_SourceToBlockTrayDistance)
+    SourceToBlockTrayDistance(DCM_SourceToBlockTrayDistance),
+    TrayAccessoryCode(DCM_TrayAccessoryCode)
 {
 }
 
@@ -52,7 +53,8 @@ DRTBlockSequenceInRTBeamsModule::Item::Item(const Item &copy)
     BlockTrayID(copy.BlockTrayID),
     BlockType(copy.BlockType),
     MaterialID(copy.MaterialID),
-    SourceToBlockTrayDistance(copy.SourceToBlockTrayDistance)
+    SourceToBlockTrayDistance(copy.SourceToBlockTrayDistance),
+    TrayAccessoryCode(copy.TrayAccessoryCode)
 {
 }
 
@@ -80,6 +82,7 @@ DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::Item::op
         BlockType = copy.BlockType;
         MaterialID = copy.MaterialID;
         SourceToBlockTrayDistance = copy.SourceToBlockTrayDistance;
+        TrayAccessoryCode = copy.TrayAccessoryCode;
     }
     return *this;
 }
@@ -91,6 +94,7 @@ void DRTBlockSequenceInRTBeamsModule::Item::clear()
     {
         /* clear all DICOM attributes */
         BlockTrayID.clear();
+        TrayAccessoryCode.clear();
         AccessoryCode.clear();
         SourceToBlockTrayDistance.clear();
         BlockType.clear();
@@ -110,6 +114,7 @@ void DRTBlockSequenceInRTBeamsModule::Item::clear()
 OFBool DRTBlockSequenceInRTBeamsModule::Item::isEmpty()
 {
     return BlockTrayID.isEmpty() &&
+           TrayAccessoryCode.isEmpty() &&
            AccessoryCode.isEmpty() &&
            SourceToBlockTrayDistance.isEmpty() &&
            BlockType.isEmpty() &&
@@ -139,6 +144,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, BlockTrayID, "1", "3", "BlockSequence");
+        getAndCheckElementFromDataset(item, TrayAccessoryCode, "1", "3", "BlockSequence");
         getAndCheckElementFromDataset(item, AccessoryCode, "1", "3", "BlockSequence");
         getAndCheckElementFromDataset(item, SourceToBlockTrayDistance, "1", "2", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockType, "1", "1", "BlockSequence");
@@ -164,6 +170,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::write(DcmItem &item)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmShortString(BlockTrayID), "1", "3", "BlockSequence");
+        addElementToDataset(result, item, new DcmLongString(TrayAccessoryCode), "1", "3", "BlockSequence");
         addElementToDataset(result, item, new DcmLongString(AccessoryCode), "1", "3", "BlockSequence");
         addElementToDataset(result, item, new DcmDecimalString(SourceToBlockTrayDistance), "1", "2", "BlockSequence");
         addElementToDataset(result, item, new DcmCodeString(BlockType), "1", "1", "BlockSequence");
@@ -361,6 +368,15 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getSourceToBlockTrayDistance(
 }
 
 
+OFCondition DRTBlockSequenceInRTBeamsModule::Item::getTrayAccessoryCode(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(TrayAccessoryCode, value, pos);
+}
+
+
 OFCondition DRTBlockSequenceInRTBeamsModule::Item::setAccessoryCode(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -525,6 +541,19 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setSourceToBlockTrayDistance(
         result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = SourceToBlockTrayDistance.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTBlockSequenceInRTBeamsModule::Item::setTrayAccessoryCode(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = TrayAccessoryCode.putOFStringArray(value);
     }
     return result;
 }

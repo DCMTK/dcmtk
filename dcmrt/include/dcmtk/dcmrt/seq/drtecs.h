@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTEquivalentCodeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -118,12 +118,75 @@ class DCMTK_DCMRT_EXPORT DRTEquivalentCodeSequence
          */
         OFCondition getCodingSchemeVersion(OFString &value, const signed long pos = 0) const;
 
+        /** get ContextGroupExtensionCreatorUID (0008,010d)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getContextGroupExtensionCreatorUID(OFString &value, const signed long pos = 0) const;
+
+        /** get ContextGroupExtensionFlag (0008,010b)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getContextGroupExtensionFlag(OFString &value, const signed long pos = 0) const;
+
+        /** get ContextGroupLocalVersion (0008,0107)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getContextGroupLocalVersion(OFString &value, const signed long pos = 0) const;
+
+        /** get ContextGroupVersion (0008,0106)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getContextGroupVersion(OFString &value, const signed long pos = 0) const;
+
+        /** get ContextIdentifier (0008,010f)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getContextIdentifier(OFString &value, const signed long pos = 0) const;
+
+        /** get ContextUID (0008,0117)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getContextUID(OFString &value, const signed long pos = 0) const;
+
         /** get LongCodeValue (0008,0119)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getLongCodeValue(OFString &value, const signed long pos = 0) const;
+
+        /** get MappingResource (0008,0105)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getMappingResource(OFString &value, const signed long pos = 0) const;
+
+        /** get MappingResourceName (0008,0122)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getMappingResourceName(OFString &value, const signed long pos = 0) const;
+
+        /** get MappingResourceUID (0008,0118)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getMappingResourceUID(OFString &value, const signed long pos = 0) const;
 
         /** get URNCodeValue (0008,0120)
          *  @param  value  reference to variable in which the value should be stored
@@ -162,12 +225,75 @@ class DCMTK_DCMRT_EXPORT DRTEquivalentCodeSequence
          */
         OFCondition setCodingSchemeVersion(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ContextGroupExtensionCreatorUID (0008,010d)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setContextGroupExtensionCreatorUID(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ContextGroupExtensionFlag (0008,010b)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setContextGroupExtensionFlag(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ContextGroupLocalVersion (0008,0107)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DT) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setContextGroupLocalVersion(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ContextGroupVersion (0008,0106)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DT) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setContextGroupVersion(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ContextIdentifier (0008,010f)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setContextIdentifier(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ContextUID (0008,0117)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setContextUID(const OFString &value, const OFBool check = OFTrue);
+
         /** set LongCodeValue (0008,0119)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (UC) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setLongCodeValue(const OFString &value, const OFBool check = OFTrue);
+
+        /** set MappingResource (0008,0105)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setMappingResource(const OFString &value, const OFBool check = OFTrue);
+
+        /** set MappingResourceName (0008,0122)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setMappingResourceName(const OFString &value, const OFBool check = OFTrue);
+
+        /** set MappingResourceUID (0008,0118)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setMappingResourceUID(const OFString &value, const OFBool check = OFTrue);
 
         /** set URNCodeValue (0008,0120)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -189,8 +315,26 @@ class DCMTK_DCMRT_EXPORT DRTEquivalentCodeSequence
         DcmShortString CodingSchemeDesignator;
         /// CodingSchemeVersion (0008,0103) vr=SH, vm=1, type=1C
         DcmShortString CodingSchemeVersion;
+        /// ContextGroupExtensionCreatorUID (0008,010d) vr=UI, vm=1, type=1C
+        DcmUniqueIdentifier ContextGroupExtensionCreatorUID;
+        /// ContextGroupExtensionFlag (0008,010b) vr=CS, vm=1, type=3
+        DcmCodeString ContextGroupExtensionFlag;
+        /// ContextGroupLocalVersion (0008,0107) vr=DT, vm=1, type=1C
+        DcmDateTime ContextGroupLocalVersion;
+        /// ContextGroupVersion (0008,0106) vr=DT, vm=1, type=1C
+        DcmDateTime ContextGroupVersion;
+        /// ContextIdentifier (0008,010f) vr=CS, vm=1, type=3
+        DcmCodeString ContextIdentifier;
+        /// ContextUID (0008,0117) vr=UI, vm=1, type=3
+        DcmUniqueIdentifier ContextUID;
         /// LongCodeValue (0008,0119) vr=UC, vm=1, type=1C
         DcmUnlimitedCharacters LongCodeValue;
+        /// MappingResource (0008,0105) vr=CS, vm=1, type=1C
+        DcmCodeString MappingResource;
+        /// MappingResourceName (0008,0122) vr=LO, vm=1, type=3
+        DcmLongString MappingResourceName;
+        /// MappingResourceUID (0008,0118) vr=UI, vm=1, type=3
+        DcmUniqueIdentifier MappingResourceUID;
         /// URNCodeValue (0008,0120) vr=UR, vm=1, type=1C
         DcmUniversalResourceIdentifierOrLocator URNCodeValue;
 

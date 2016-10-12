@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTOverrideSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtois.h"    // for OperatorIdentificationSequence
 
 
 /** Interface class for OverrideSequence (3008,0060)
@@ -132,6 +133,20 @@ class DCMTK_DCMRT_EXPORT DRTOverrideSequence
          */
         OFCondition getParameterSequencePointer(OFString &value, const signed long pos = 0) const;
 
+      // --- get DICOM sequence attributes ---
+
+        /** get OperatorIdentificationSequence (0008,1072)
+         *  @return reference to sequence element
+         */
+        DRTOperatorIdentificationSequence &getOperatorIdentificationSequence()
+            { return OperatorIdentificationSequence; }
+
+        /** get OperatorIdentificationSequence (0008,1072)
+         *  @return const reference to sequence element
+         */
+        const DRTOperatorIdentificationSequence &getOperatorIdentificationSequence() const
+            { return OperatorIdentificationSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set OperatorsName (0008,1070)
@@ -174,6 +189,8 @@ class DCMTK_DCMRT_EXPORT DRTOverrideSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// OperatorIdentificationSequence (0008,1072) vr=SQ, vm=1, type=3
+        DRTOperatorIdentificationSequence OperatorIdentificationSequence;
         /// OperatorsName (0008,1070) vr=PN, vm=1-n, type=2
         DcmPersonName OperatorsName;
         /// OverrideParameterPointer (3008,0062) vr=AT, vm=1, type=1

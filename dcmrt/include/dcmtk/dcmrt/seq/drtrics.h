@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTRTROIIdentificationCodeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -20,6 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtecs.h"    // for EquivalentCodeSequence
+#include "dcmtk/dcmrt/seq/drtsptcs.h"  // for SegmentedPropertyTypeModifierCodeSequence
 
 
 /** Interface class for RTROIIdentificationCodeSequence (3006,0086)
@@ -175,6 +176,13 @@ class DCMTK_DCMRT_EXPORT DRTRTROIIdentificationCodeSequence
          */
         OFCondition getMappingResource(OFString &value, const signed long pos = 0) const;
 
+        /** get MappingResourceName (0008,0122)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getMappingResourceName(OFString &value, const signed long pos = 0) const;
+
         /** get MappingResourceUID (0008,0118)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -202,6 +210,18 @@ class DCMTK_DCMRT_EXPORT DRTRTROIIdentificationCodeSequence
          */
         const DRTEquivalentCodeSequence &getEquivalentCodeSequence() const
             { return EquivalentCodeSequence; }
+
+        /** get SegmentedPropertyTypeModifierCodeSequence (0062,0011)
+         *  @return reference to sequence element
+         */
+        DRTSegmentedPropertyTypeModifierCodeSequence &getSegmentedPropertyTypeModifierCodeSequence()
+            { return SegmentedPropertyTypeModifierCodeSequence; }
+
+        /** get SegmentedPropertyTypeModifierCodeSequence (0062,0011)
+         *  @return const reference to sequence element
+         */
+        const DRTSegmentedPropertyTypeModifierCodeSequence &getSegmentedPropertyTypeModifierCodeSequence() const
+            { return SegmentedPropertyTypeModifierCodeSequence; }
 
       // --- set DICOM attribute values ---
 
@@ -289,6 +309,13 @@ class DCMTK_DCMRT_EXPORT DRTRTROIIdentificationCodeSequence
          */
         OFCondition setMappingResource(const OFString &value, const OFBool check = OFTrue);
 
+        /** set MappingResourceName (0008,0122)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setMappingResourceName(const OFString &value, const OFBool check = OFTrue);
+
         /** set MappingResourceUID (0008,0118)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
@@ -334,8 +361,12 @@ class DCMTK_DCMRT_EXPORT DRTRTROIIdentificationCodeSequence
         DcmUnlimitedCharacters LongCodeValue;
         /// MappingResource (0008,0105) vr=CS, vm=1, type=1C
         DcmCodeString MappingResource;
+        /// MappingResourceName (0008,0122) vr=LO, vm=1, type=3
+        DcmLongString MappingResourceName;
         /// MappingResourceUID (0008,0118) vr=UI, vm=1, type=3
         DcmUniqueIdentifier MappingResourceUID;
+        /// SegmentedPropertyTypeModifierCodeSequence (0062,0011) vr=SQ, vm=1, type=3
+        DRTSegmentedPropertyTypeModifierCodeSequence SegmentedPropertyTypeModifierCodeSequence;
         /// URNCodeValue (0008,0120) vr=UR, vm=1, type=1C
         DcmUniversalResourceIdentifierOrLocator URNCodeValue;
 

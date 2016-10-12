@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTPrivateDataElementCharacteristicsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -20,6 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtdias.h"   // for DeidentificationActionSequence
+#include "dcmtk/dcmrt/seq/drtpdeds.h"  // for PrivateDataElementDefinitionSequence
 
 
 /** Interface class for PrivateDataElementCharacteristicsSequence (0008,0300)
@@ -133,6 +134,18 @@ class DCMTK_DCMRT_EXPORT DRTPrivateDataElementCharacteristicsSequence
         const DRTDeidentificationActionSequence &getDeidentificationActionSequence() const
             { return DeidentificationActionSequence; }
 
+        /** get PrivateDataElementDefinitionSequence (0008,0310)
+         *  @return reference to sequence element
+         */
+        DRTPrivateDataElementDefinitionSequence &getPrivateDataElementDefinitionSequence()
+            { return PrivateDataElementDefinitionSequence; }
+
+        /** get PrivateDataElementDefinitionSequence (0008,0310)
+         *  @return const reference to sequence element
+         */
+        const DRTPrivateDataElementDefinitionSequence &getPrivateDataElementDefinitionSequence() const
+            { return PrivateDataElementDefinitionSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set BlockIdentifyingInformationStatus (0008,0303)
@@ -176,6 +189,8 @@ class DCMTK_DCMRT_EXPORT DRTPrivateDataElementCharacteristicsSequence
         DcmUnsignedShort NonidentifyingPrivateElements;
         /// PrivateCreatorReference (0008,0302) vr=LO, vm=1, type=1
         DcmLongString PrivateCreatorReference;
+        /// PrivateDataElementDefinitionSequence (0008,0310) vr=SQ, vm=1, type=3
+        DRTPrivateDataElementDefinitionSequence PrivateDataElementDefinitionSequence;
         /// PrivateGroupReference (0008,0301) vr=US, vm=1, type=1
         DcmUnsignedShort PrivateGroupReference;
 

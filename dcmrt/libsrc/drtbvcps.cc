@@ -6,9 +6,8 @@
  *
  *  Source file for class DRTBeamDoseVerificationControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
- *  Last modified on 2016-02-20 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -25,7 +24,7 @@ DRTBeamDoseVerificationControlPointSequence::Item::Item(const OFBool emptyDefaul
     AverageBeamDosePointDepth(DCM_AverageBeamDosePointDepth),
     AverageBeamDosePointEquivalentDepth(DCM_AverageBeamDosePointEquivalentDepth),
     AverageBeamDosePointSSD(DCM_AverageBeamDosePointSSD),
-    AverageBeamDosePointSourceToExternalContourSurfaceDistance(DCM_AverageBeamDosePointSourceToExternalContourDistance),
+    AverageBeamDosePointSourceToExternalContourDistance(DCM_AverageBeamDosePointSourceToExternalContourDistance),
     CumulativeMetersetWeight(DCM_CumulativeMetersetWeight),
     ReferencedControlPointIndex(DCM_ReferencedControlPointIndex)
 {
@@ -37,7 +36,7 @@ DRTBeamDoseVerificationControlPointSequence::Item::Item(const Item &copy)
     AverageBeamDosePointDepth(copy.AverageBeamDosePointDepth),
     AverageBeamDosePointEquivalentDepth(copy.AverageBeamDosePointEquivalentDepth),
     AverageBeamDosePointSSD(copy.AverageBeamDosePointSSD),
-    AverageBeamDosePointSourceToExternalContourSurfaceDistance(copy.AverageBeamDosePointSourceToExternalContourSurfaceDistance),
+    AverageBeamDosePointSourceToExternalContourDistance(copy.AverageBeamDosePointSourceToExternalContourDistance),
     CumulativeMetersetWeight(copy.CumulativeMetersetWeight),
     ReferencedControlPointIndex(copy.ReferencedControlPointIndex)
 {
@@ -57,7 +56,7 @@ DRTBeamDoseVerificationControlPointSequence::Item &DRTBeamDoseVerificationContro
         AverageBeamDosePointDepth = copy.AverageBeamDosePointDepth;
         AverageBeamDosePointEquivalentDepth = copy.AverageBeamDosePointEquivalentDepth;
         AverageBeamDosePointSSD = copy.AverageBeamDosePointSSD;
-        AverageBeamDosePointSourceToExternalContourSurfaceDistance = copy.AverageBeamDosePointSourceToExternalContourSurfaceDistance;
+        AverageBeamDosePointSourceToExternalContourDistance = copy.AverageBeamDosePointSourceToExternalContourDistance;
         CumulativeMetersetWeight = copy.CumulativeMetersetWeight;
         ReferencedControlPointIndex = copy.ReferencedControlPointIndex;
     }
@@ -75,7 +74,7 @@ void DRTBeamDoseVerificationControlPointSequence::Item::clear()
         AverageBeamDosePointDepth.clear();
         AverageBeamDosePointEquivalentDepth.clear();
         AverageBeamDosePointSSD.clear();
-        AverageBeamDosePointSourceToExternalContourSurfaceDistance.clear();
+        AverageBeamDosePointSourceToExternalContourDistance.clear();
     }
 }
 
@@ -87,7 +86,7 @@ OFBool DRTBeamDoseVerificationControlPointSequence::Item::isEmpty()
            AverageBeamDosePointDepth.isEmpty() &&
            AverageBeamDosePointEquivalentDepth.isEmpty() &&
            AverageBeamDosePointSSD.isEmpty() &&
-           AverageBeamDosePointSourceToExternalContourSurfaceDistance.isEmpty();
+           AverageBeamDosePointSourceToExternalContourDistance.isEmpty();
 }
 
 
@@ -109,7 +108,7 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::Item::read(DcmItem &ite
         getAndCheckElementFromDataset(item, AverageBeamDosePointDepth, "1", "2C", "BeamDoseVerificationControlPointSequence");
         getAndCheckElementFromDataset(item, AverageBeamDosePointEquivalentDepth, "1", "2C", "BeamDoseVerificationControlPointSequence");
         getAndCheckElementFromDataset(item, AverageBeamDosePointSSD, "1", "2C", "BeamDoseVerificationControlPointSequence");
-        getAndCheckElementFromDataset(item, AverageBeamDosePointSourceToExternalContourSurfaceDistance, "1", "3", "BeamDoseVerificationControlPointSequence");
+        getAndCheckElementFromDataset(item, AverageBeamDosePointSourceToExternalContourDistance, "1", "3", "BeamDoseVerificationControlPointSequence");
         result = EC_Normal;
     }
     return result;
@@ -127,7 +126,7 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::Item::write(DcmItem &it
         addElementToDataset(result, item, new DcmFloatingPointSingle(AverageBeamDosePointDepth), "1", "2C", "BeamDoseVerificationControlPointSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(AverageBeamDosePointEquivalentDepth), "1", "2C", "BeamDoseVerificationControlPointSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(AverageBeamDosePointSSD), "1", "2C", "BeamDoseVerificationControlPointSequence");
-        addElementToDataset(result, item, new DcmFloatingPointSingle(AverageBeamDosePointSourceToExternalContourSurfaceDistance), "1", "3", "BeamDoseVerificationControlPointSequence");
+        addElementToDataset(result, item, new DcmFloatingPointSingle(AverageBeamDosePointSourceToExternalContourDistance), "1", "3", "BeamDoseVerificationControlPointSequence");
     }
     return result;
 }
@@ -160,12 +159,12 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::Item::getAverageBeamDos
 }
 
 
-OFCondition DRTBeamDoseVerificationControlPointSequence::Item::getAverageBeamDosePointSourceToExternalContourSurfaceDistance(Float32 &value, const unsigned long pos) const
+OFCondition DRTBeamDoseVerificationControlPointSequence::Item::getAverageBeamDosePointSourceToExternalContourDistance(Float32 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return OFconst_cast(DcmFloatingPointSingle &, AverageBeamDosePointSourceToExternalContourSurfaceDistance).getFloat32(value, pos);
+        return OFconst_cast(DcmFloatingPointSingle &, AverageBeamDosePointSourceToExternalContourDistance).getFloat32(value, pos);
 }
 
 
@@ -232,12 +231,12 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::Item::setAverageBeamDos
 }
 
 
-OFCondition DRTBeamDoseVerificationControlPointSequence::Item::setAverageBeamDosePointSourceToExternalContourSurfaceDistance(const Float32 value, const unsigned long pos)
+OFCondition DRTBeamDoseVerificationControlPointSequence::Item::setAverageBeamDosePointSourceToExternalContourDistance(const Float32 value, const unsigned long pos)
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return AverageBeamDosePointSourceToExternalContourSurfaceDistance.putFloat32(value, pos);
+        return AverageBeamDosePointSourceToExternalContourDistance.putFloat32(value, pos);
 }
 
 

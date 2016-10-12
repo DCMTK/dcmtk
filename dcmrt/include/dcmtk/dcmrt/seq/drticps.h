@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIonControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -116,6 +116,20 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getBeamLimitingDeviceRotationDirection(OFString &value, const signed long pos = 0) const;
+
+        /** get ChairHeadFramePosition (300a,0151)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChairHeadFramePosition(OFString &value, const signed long pos = 0) const;
+
+        /** get ChairHeadFramePosition (300a,0151)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChairHeadFramePosition(Float64 &value, const unsigned long pos = 0) const;
 
         /** get ControlPointIndex (300a,0112)
          *  @param  value  reference to variable in which the value should be stored
@@ -311,6 +325,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getScanSpotPositionMap(Float32 &value, const unsigned long pos = 0) const;
+
+        /** get ScanSpotReorderingAllowed (300a,0395)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getScanSpotReorderingAllowed(OFString &value, const signed long pos = 0) const;
 
         /** get ScanSpotTuneID (300a,0390)
          *  @param  value  reference to variable in which the value should be stored
@@ -513,6 +534,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
          */
         OFCondition setBeamLimitingDeviceRotationDirection(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ChairHeadFramePosition (300a,0151)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setChairHeadFramePosition(const OFString &value, const OFBool check = OFTrue);
+
         /** set ControlPointIndex (300a,0112)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
@@ -639,6 +667,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
          */
         OFCondition setScanSpotPositionMap(const Float32 value, const unsigned long pos = 0);
 
+        /** set ScanSpotReorderingAllowed (300a,0395)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setScanSpotReorderingAllowed(const OFString &value, const OFBool check = OFTrue);
+
         /** set ScanSpotTuneID (300a,0390)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
@@ -727,6 +762,8 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
         DRTBeamLimitingDevicePositionSequence BeamLimitingDevicePositionSequence;
         /// BeamLimitingDeviceRotationDirection (300a,0121) vr=CS, vm=1, type=1C
         DcmCodeString BeamLimitingDeviceRotationDirection;
+        /// ChairHeadFramePosition (300a,0151) vr=DS, vm=1, type=3
+        DcmDecimalString ChairHeadFramePosition;
         /// ControlPointIndex (300a,0112) vr=IS, vm=1, type=1
         DcmIntegerString ControlPointIndex;
         /// CumulativeMetersetWeight (300a,0134) vr=DS, vm=1, type=2
@@ -773,6 +810,8 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointSequence
         DcmFloatingPointSingle ScanSpotMetersetWeights;
         /// ScanSpotPositionMap (300a,0394) vr=FL, vm=1-n, type=1C
         DcmFloatingPointSingle ScanSpotPositionMap;
+        /// ScanSpotReorderingAllowed (300a,0395) vr=CS, vm=1, type=3
+        DcmCodeString ScanSpotReorderingAllowed;
         /// ScanSpotTuneID (300a,0390) vr=SH, vm=1, type=1C
         DcmShortString ScanSpotTuneID;
         /// ScanningSpotSize (300a,0398) vr=FL, vm=2, type=3

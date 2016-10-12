@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTSegmentedPropertyCategoryCodeSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -175,6 +175,13 @@ class DCMTK_DCMRT_EXPORT DRTSegmentedPropertyCategoryCodeSequence
          */
         OFCondition getMappingResource(OFString &value, const signed long pos = 0) const;
 
+        /** get MappingResourceName (0008,0122)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getMappingResourceName(OFString &value, const signed long pos = 0) const;
+
         /** get MappingResourceUID (0008,0118)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -289,6 +296,13 @@ class DCMTK_DCMRT_EXPORT DRTSegmentedPropertyCategoryCodeSequence
          */
         OFCondition setMappingResource(const OFString &value, const OFBool check = OFTrue);
 
+        /** set MappingResourceName (0008,0122)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setMappingResourceName(const OFString &value, const OFBool check = OFTrue);
+
         /** set MappingResourceUID (0008,0118)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
@@ -334,6 +348,8 @@ class DCMTK_DCMRT_EXPORT DRTSegmentedPropertyCategoryCodeSequence
         DcmUnlimitedCharacters LongCodeValue;
         /// MappingResource (0008,0105) vr=CS, vm=1, type=1C
         DcmCodeString MappingResource;
+        /// MappingResourceName (0008,0122) vr=LO, vm=1, type=3
+        DcmLongString MappingResourceName;
         /// MappingResourceUID (0008,0118) vr=UI, vm=1, type=3
         DcmUniqueIdentifier MappingResourceUID;
         /// URNCodeValue (0008,0120) vr=UR, vm=1, type=1C

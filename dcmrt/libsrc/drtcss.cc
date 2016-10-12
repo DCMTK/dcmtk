@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTChannelSourceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2015c
- *  File created on 2015-12-07 16:29:33
+ *  Generated automatically from DICOM PS 3.3-2016d
+ *  File created on 2016-10-12 13:44:31
  *
  */
 
@@ -34,6 +34,7 @@ DRTChannelSourceSequence::Item::Item(const OFBool emptyDefaultItem)
     EquivalentCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     LongCodeValue(DCM_LongCodeValue),
     MappingResource(DCM_MappingResource),
+    MappingResourceName(DCM_MappingResourceName),
     MappingResourceUID(DCM_MappingResourceUID),
     URNCodeValue(DCM_URNCodeValue)
 {
@@ -55,6 +56,7 @@ DRTChannelSourceSequence::Item::Item(const Item &copy)
     EquivalentCodeSequence(copy.EquivalentCodeSequence),
     LongCodeValue(copy.LongCodeValue),
     MappingResource(copy.MappingResource),
+    MappingResourceName(copy.MappingResourceName),
     MappingResourceUID(copy.MappingResourceUID),
     URNCodeValue(copy.URNCodeValue)
 {
@@ -84,6 +86,7 @@ DRTChannelSourceSequence::Item &DRTChannelSourceSequence::Item::operator=(const 
         EquivalentCodeSequence = copy.EquivalentCodeSequence;
         LongCodeValue = copy.LongCodeValue;
         MappingResource = copy.MappingResource;
+        MappingResourceName = copy.MappingResourceName;
         MappingResourceUID = copy.MappingResourceUID;
         URNCodeValue = copy.URNCodeValue;
     }
@@ -107,6 +110,7 @@ void DRTChannelSourceSequence::Item::clear()
         ContextUID.clear();
         MappingResource.clear();
         MappingResourceUID.clear();
+        MappingResourceName.clear();
         ContextGroupVersion.clear();
         ContextGroupExtensionFlag.clear();
         ContextGroupLocalVersion.clear();
@@ -128,6 +132,7 @@ OFBool DRTChannelSourceSequence::Item::isEmpty()
            ContextUID.isEmpty() &&
            MappingResource.isEmpty() &&
            MappingResourceUID.isEmpty() &&
+           MappingResourceName.isEmpty() &&
            ContextGroupVersion.isEmpty() &&
            ContextGroupExtensionFlag.isEmpty() &&
            ContextGroupLocalVersion.isEmpty() &&
@@ -159,6 +164,7 @@ OFCondition DRTChannelSourceSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ContextUID, "1", "3", "ChannelSourceSequence");
         getAndCheckElementFromDataset(item, MappingResource, "1", "1C", "ChannelSourceSequence");
         getAndCheckElementFromDataset(item, MappingResourceUID, "1", "3", "ChannelSourceSequence");
+        getAndCheckElementFromDataset(item, MappingResourceName, "1", "3", "ChannelSourceSequence");
         getAndCheckElementFromDataset(item, ContextGroupVersion, "1", "1C", "ChannelSourceSequence");
         getAndCheckElementFromDataset(item, ContextGroupExtensionFlag, "1", "3", "ChannelSourceSequence");
         getAndCheckElementFromDataset(item, ContextGroupLocalVersion, "1", "1C", "ChannelSourceSequence");
@@ -186,6 +192,7 @@ OFCondition DRTChannelSourceSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmUniqueIdentifier(ContextUID), "1", "3", "ChannelSourceSequence");
         addElementToDataset(result, item, new DcmCodeString(MappingResource), "1", "1C", "ChannelSourceSequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(MappingResourceUID), "1", "3", "ChannelSourceSequence");
+        addElementToDataset(result, item, new DcmLongString(MappingResourceName), "1", "3", "ChannelSourceSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupVersion), "1", "1C", "ChannelSourceSequence");
         addElementToDataset(result, item, new DcmCodeString(ContextGroupExtensionFlag), "1", "3", "ChannelSourceSequence");
         addElementToDataset(result, item, new DcmDateTime(ContextGroupLocalVersion), "1", "1C", "ChannelSourceSequence");
@@ -300,6 +307,15 @@ OFCondition DRTChannelSourceSequence::Item::getMappingResource(OFString &value, 
         return EC_IllegalCall;
     else
         return getStringValueFromElement(MappingResource, value, pos);
+}
+
+
+OFCondition DRTChannelSourceSequence::Item::getMappingResourceName(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(MappingResourceName, value, pos);
 }
 
 
@@ -472,6 +488,19 @@ OFCondition DRTChannelSourceSequence::Item::setMappingResource(const OFString &v
         result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = MappingResource.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTChannelSourceSequence::Item::setMappingResourceName(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = MappingResourceName.putOFStringArray(value);
     }
     return result;
 }
