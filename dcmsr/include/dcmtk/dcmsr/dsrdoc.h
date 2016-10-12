@@ -1230,6 +1230,10 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmUniqueIdentifier InstanceCreatorUID;
     /// Coding Scheme Identification Sequence: (SQ, 1-n, 3)
     DSRCodingSchemeIdentificationList CodingSchemeIdentification;
+    /// Context Group Identification Sequence: (SQ, 1-n, 3)
+     // - tbd: optional attribute not yet supported
+    /// Mapping Resource Identification Sequence: (SQ, 1-n, 3)
+     // - tbd: optional attribute not yet supported
 
     // --- General Study Module (M) ---
 

@@ -726,6 +726,10 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     OFString ContextUID;
     /// Mapping Resource (VR=CS, type 1C)
     OFString MappingResource;
+    /// Mapping Resource UID (VR=UI, type 3)
+     // - tbd: optional attribute not yet supported
+    /// Mapping Resource Name (VR=LO, type 3)
+     // - tbd: optional attribute not yet supported
     /// Context Group Version (VR=DT, type 1C)
     OFString ContextGroupVersion;
     /// Context Group Local Version (VR=DT, type 1C)
