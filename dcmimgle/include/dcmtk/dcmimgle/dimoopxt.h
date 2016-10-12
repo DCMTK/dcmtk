@@ -348,7 +348,7 @@ class DiMonoOutputPixelTemplate
                         if (dlut != NULL)                                               // perform display transformation
                         {
                             DCMIMGLE_TRACE("monochrome rendering: VOI LUT #1 - UNTESTED");
-                            if (low > high)                                             // invers
+                            if (low > high)                                             // inverse
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, plut->getAbsMaxRange() - plut->getValue(value2) - 1)));
                             else                                                        // normal
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, plut->getValue(value2))));
@@ -361,7 +361,7 @@ class DiMonoOutputPixelTemplate
                         if (dlut != NULL)                                               // perform display transformation
                         {
                             DCMIMGLE_TRACE("monochrome rendering: VOI LUT #3 - UNTESTED");
-                            if (low > high)                                             // invers
+                            if (low > high)                                             // inverse
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, vlut->getAbsMaxRange() - minvalue - 1)));
                             else                                                        // normal
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, minvalue)));
