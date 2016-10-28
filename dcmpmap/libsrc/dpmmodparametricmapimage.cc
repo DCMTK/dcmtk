@@ -171,7 +171,7 @@ OFCondition DPMParametricMapImageModule::getContentQualification(OFString &value
 OFCondition DPMParametricMapImageModule::setImageType(const OFString &value,
                                                       const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "2-n") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_ImageType, value);
   return result;
@@ -246,7 +246,7 @@ OFCondition DPMParametricMapImageModule::setLossyImageCompression(const OFString
 OFCondition DPMParametricMapImageModule::setLossyImageCompressionRatio(const OFString &value,
                                                                        const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1-n") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_LossyImageCompressionRatio, value);
   return result;
@@ -255,7 +255,7 @@ OFCondition DPMParametricMapImageModule::setLossyImageCompressionRatio(const OFS
 OFCondition DPMParametricMapImageModule::setLossyImageCompressionMethod(const OFString &value,
                                                                         const OFBool checkValue)
 {
-  OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1C") : EC_Normal;
+  OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1-n") : EC_Normal;
   if (result.good())
     result = m_Item->putAndInsertOFStringArray(DCM_LossyImageCompressionMethod, value);
   return result;
