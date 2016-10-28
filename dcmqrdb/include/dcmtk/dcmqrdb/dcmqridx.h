@@ -123,6 +123,28 @@ enum DB_KEY_CLASS
 #define SIZEOF_IDXRECORD        (sizeof (IdxRecord))
 #define SIZEOF_STUDYDESC        (sizeof (StudyDescRecord) * MAX_MAX_STUDIES)
 
+struct DCMTK_DCMQRDB_EXPORT DB_SerializedTagKey
+{
+    inline DB_SerializedTagKey() {}
+    inline DB_SerializedTagKey(const DcmTagKey& rhs) { *this = rhs; }
+    inline DB_SerializedTagKey& operator=(const DcmTagKey& tk) { key[0] = tk.getGroup(); key[1] = tk.getElement(); return *this; }
+    inline operator DcmTagKey() const { return DcmTagKey( key[0], key[1] ); }
+    inline bool operator==(const DB_SerializedTagKey& rhs) const { return key[0] == rhs.key[0] && key[1] == rhs.key[1]; }
+    Uint16 key[2];
+};
+
+struct DCMTK_DCMQRDB_EXPORT DB_SerializedCharPtr
+{
+    inline DB_SerializedCharPtr(char* p) { ptr.p = p; }
+    inline DB_SerializedCharPtr& operator=(char* p) { ptr.p = p; return *this; }
+    inline operator char*() const { return ptr.p; }
+    union
+    {
+        char* p;
+        Uint64 placeholder;
+    } ptr ;
+};
+
 /** this class provides a primitive interface for handling a flat DICOM element,
  *  similar to DcmElement, but only for use within the database module
  */
@@ -133,13 +155,13 @@ public:
     DB_SmallDcmElmt();
 
     /// pointer to the value field
-    char* PValueField ;
+    DB_SerializedCharPtr PValueField ;
 
     /// value length in bytes
     Uint32 ValueLength ;
 
     /// attribute tag
-    DcmTagKey XTag ;
+    DB_SerializedTagKey XTag ;
 
 private:
     /// private undefined copy constructor
@@ -240,20 +262,20 @@ struct DCMTK_DCMQRDB_EXPORT StudyDescRecord
     char StudyInstanceUID [UI_MAX_LENGTH+1] ;
 
     /// combined size (in bytes) of all images of this study in the database
-    long StudySize ;
+    Uint32 StudySize ;
 
     /// timestamp for last update of this study. Format: output of time(2) converted to double.
     double LastRecordedDate ;
 
     /// number of images of this study in the database
-    int NumberofRegistratedImages ;
+    Uint32 NumberofRegistratedImages ;
 };
 
 struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 {
-    int idxCounter ;
+    Uint32 idxCounter ;
     double RecordedDate ;
-    long ImageSize ;
+    Uint32 ImageSize ;
 };
 
 
@@ -375,7 +397,7 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
     char    PerformingPhysicianName         [PN_MAX_LENGTH+1] ;
     char    PresentationLabel               [CS_LABEL_MAX_LENGTH+1] ;
 
-    DVIFhierarchyStatus hstat;
+    char    hstat;
 
     // Not related to any particular DICOM attribute !
     char    InstanceDescription             [DESCRIPTION_MAX_LENGTH+1] ;
