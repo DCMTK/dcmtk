@@ -1,4 +1,4 @@
-IF(WIN32)
+IF(WIN32 AND NOT MINGW)
 
   # For Windows, we don't used FIND_PACKAGE because DCMTK usually is used with its
   # own set of 3rd-party support libraries that can be downloaded from DCMTK's
@@ -139,7 +139,7 @@ IF(WIN32)
     ENDIF(WITH_LIBICONVINC)
   ENDIF(DCMTK_WITH_ICONV)
 
-ELSE(WIN32)
+ELSE(WIN32 AND NOT MINGW)
 
   # Find TIFF
   IF(DCMTK_WITH_TIFF)
