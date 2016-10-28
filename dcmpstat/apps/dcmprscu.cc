@@ -564,9 +564,13 @@ static OFCondition updateJobList(
     {
       currentName = dp->d_name;
 #endif
-      if ((prefix == currentName.substr(0, prefixSize)) &&
-          (currentName.size() > postfixSize) &&
-          (postfix == currentName.substr(currentName.size()-postfixSize)))
+      if
+      (
+        currentName.size() > (prefixSize + postfixSize) &&
+        prefix == currentName.substr(0, prefixSize) &&
+        postfix == currentName.substr(currentName.size()-postfixSize) &&
+        currentName.find_first_not_of("1234567890",prefixSize) == (currentName.size() - postfixSize)
+      )
       {
         // name matches pattern
         jobName = spoolFolder;

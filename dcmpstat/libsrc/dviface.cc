@@ -1359,16 +1359,18 @@ OFBool DVInterface::createIndexCache()
                             DVPSInstanceType type = DVPSI_image;
                             if (record.Modality != NULL)
                             {
-                                if (strcmp(record.Modality, "PR") == 0)
+                                if (DSRTypes::sopClassUIDToDocumentType(record.SOPClassUID) != DSRTypes::DT_invalid)
+                                    type = DVPSI_structuredReport;
+                                else if (strcmp(record.Modality, "PR") == 0)
                                     type = DVPSI_presentationState;
-                                if (strcmp(record.Modality, "SR") == 0)
+                                else if (strcmp(record.Modality, "SR") == 0)
                                     type = DVPSI_structuredReport;
                                 else if (strcmp(record.Modality, "HC") == 0)
                                     type =DVPSI_hardcopyGrayscale;
                                 else if (strcmp(record.Modality, "STORED_PRINT") == 0)
                                     type = DVPSI_storedPrint;
                             }
-                            series->List.addItem(record.SOPInstanceUID, counter, record.hstat, type, record.ImageSize, record.filename);
+                            series->List.addItem(record.SOPInstanceUID, counter, OFstatic_cast(DVIFhierarchyStatus, record.hstat), type, record.ImageSize, r
                             if (series->Type == DVPSI_image)
                                 series->Type = type;                // series contains only one type of instances
                         }
@@ -1953,7 +1955,9 @@ OFCondition DVInterface::instanceReviewed(int pos)
     lockDatabase();
     OFBool wasNew = newInstancesReceived();
     if (pHandle == NULL) return EC_IllegalCall;
+    pHandle->DB_unlock();
     OFCondition result = pHandle->instanceReviewed(pos);
+    pHandle->DB_lock(OFFalse);
     if (!wasNew) resetDatabaseReferenceTime();
     releaseDatabase();
     return result;

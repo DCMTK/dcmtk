@@ -60,7 +60,7 @@ OFCondition DVPSHelper::loadFileFormat(const char *filename,
                                        DcmFileFormat *&fileformat)
 {
     fileformat = new DcmFileFormat;
-    OFCondition result =  fileformat->loadFile(filename);
+    OFCondition result =  fileformat->loadFile(OFFilename(filename,OFTrue));
 
     if (result.bad())
     {
