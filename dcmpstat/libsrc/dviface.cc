@@ -1370,7 +1370,12 @@ OFBool DVInterface::createIndexCache()
                                 else if (strcmp(record.Modality, "STORED_PRINT") == 0)
                                     type = DVPSI_storedPrint;
                             }
-                            series->List.addItem(record.SOPInstanceUID, counter, OFstatic_cast(DVIFhierarchyStatus, record.hstat), type, record.ImageSize, r
+                            series->List.addItem(record.SOPInstanceUID,
+                                                 counter,
+                                                 OFstatic_cast(DVIFhierarchyStatus, record.hstat),
+                                                 type,
+                                                 record.ImageSize,
+                                                 record.filename);
                             if (series->Type == DVPSI_image)
                                 series->Type = type;                // series contains only one type of instances
                         }
