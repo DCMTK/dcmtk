@@ -55,9 +55,15 @@ struct IODImagePixelVariantBaseVisitor
  *  The class Image Pixel Module, the Floating Point Image Pixel module
  *  and the Double Floating Point Image Pixel module
  */
+#ifdef DCMTK_USE_CXX11_STL
+template<typename... Types>
+class IODImagePixelVariant
+: public OFvariant<OFmonostate,Types...>
+#else
 template<OFVARIADIC_DECLARE_TEMPLATE_PARAMETER_PACK_WITH_DEFAULTS(T)>
 class IODImagePixelVariant
 : public OFvariant<OFmonostate,OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)>
+#endif
 {
 
 public:

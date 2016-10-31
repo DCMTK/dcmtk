@@ -36,10 +36,22 @@
 
 #ifdef DCMTK_USE_CXX11_STL
 #include <utility>
+#include <tuple>
 #define OFmove std::move
 #define OFswap std::swap
-#define OFget std::get
 #define OFMake_pair std::make_pair
+
+template<std::size_t Index,typename T>
+constexpr auto OFget( T&& t ) -> decltype( std::get<Index>( std::forward<T>( t ) ) )
+{
+    return std::get<Index>( std::forward<T>( t ) );
+}
+
+template<typename X,typename T>
+constexpr auto OFget( T&& t ) -> decltype( std::get<X>( std::forward<T>( t ) ) )
+{
+    return std::get<X>( std::forward<T>( t ) );
+}
 
 template<typename K,typename V>
 using OFPair = std::pair<K,V>;

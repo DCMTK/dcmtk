@@ -43,7 +43,23 @@ class IODImagePixelModule;
  *  Modules supported on top of DcmIODCommon: General Image Module and
  *  Image Pixel Module.
  */
+#ifdef DCMTK_USE_CXX11_STL
+template<typename T,typename... Types>
+struct DcmIODImageHasType
+: std::false_type {};
+
+template<typename T,typename... Types>
+struct DcmIODImageHasType<T,T,Types...>
+: std::true_type {};
+
+template<typename T,typename T0,typename... Types>
+struct DcmIODImageHasType<T,T0,Types...>
+: DcmIODImageHasType<T,Types...>::type {};
+
+template<typename... Types>
+#else
 template<OFVARIADIC_DECLARE_TEMPLATE_PARAMETER_PACK_WITH_DEFAULTS(T)>
+#endif
 class DcmIODImage : public DcmIODCommon
 {
 
@@ -56,7 +72,11 @@ public:
 
   /** A good comment would be nice, but I have nothing in mind
    */
+#ifdef DCMTK_USE_CXX11_STL
+  using IODImagePixelModuleType = IODImagePixelVariant<Types...>;
+#else
   typedef IODImagePixelVariant<OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)> IODImagePixelModuleType;
+#endif
 
   /** Constructor, creates new DcmIODImage instance with integer-based pixel data.
    */
@@ -162,11 +182,15 @@ public:
 private:
 
   template<typename T>
+#ifdef DCMTK_USE_CXX11_STL
+  typename std::enable_if<DcmIODImageHasType<T,Types...>::value,OFCondition>::type
+#else
   OFTypename OFenable_if
   <
     (OFvariadic_find_type<T,OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)>::value != -1),
     OFCondition
   >::type
+#endif
   readFloatingPointDoubleImagePixel(DcmItem& dataset)
   {
     if (dataset.tagExists(DCM_DoubleFloatPixelData))
@@ -175,22 +199,30 @@ private:
   }
 
   template<typename T>
+#ifdef DCMTK_USE_CXX11_STL
+  typename std::enable_if<!DcmIODImageHasType<T,Types...>::value,OFCondition>::type
+#else
   OFTypename OFenable_if
   <
     (OFvariadic_find_type<T,OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)>::value == -1),
     OFCondition
   >::type
+#endif
   readFloatingPointDoubleImagePixel(DcmItem& dataset)
   {
     return readFloatingPointImagePixel<IODFloatingPointImagePixelModule>(dataset);
   }
 
   template<typename T>
+#ifdef DCMTK_USE_CXX11_STL
+  typename std::enable_if<DcmIODImageHasType<T,Types...>::value,OFCondition>::type
+#else
   OFTypename OFenable_if
   <
     (OFvariadic_find_type<T,OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)>::value != -1),
     OFCondition
   >::type
+#endif
   readFloatingPointImagePixel(DcmItem& dataset)
   {
     if (dataset.tagExists(DCM_FloatPixelData))
@@ -199,11 +231,15 @@ private:
   }
 
   template<typename T>
+#ifdef DCMTK_USE_CXX11_STL
+  typename std::enable_if<!DcmIODImageHasType<T,Types...>::value,OFCondition>::type
+#else
   OFTypename OFenable_if
   <
     (OFvariadic_find_type<T,OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)>::value == -1),
     OFCondition
   >::type
+#endif
   readFloatingPointImagePixel(DcmItem& dataset)
   {
     return readIntegerImagePixel(dataset);
@@ -235,26 +271,34 @@ private:
   }
 
   template<typename T>
+#ifdef DCMTK_USE_CXX11_STL
+  typename std::enable_if<DcmIODImageHasType<T,Types...>::value,OFCondition>::type
+#else
   OFTypename OFenable_if
   <
     (OFvariadic_find_type<IODImagePixelModule<T>,OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)>::value != -1),
     OFCondition
   >::type
+#endif
   readImagePixel(DcmItem& dataset)
   {
     return OFget<IODImagePixelModule<T> >(&(m_ImagePixel = IODImagePixelModule<T>(getData(),getRules())))->read(dataset);
   }
 
   template<typename T>
+#ifdef DCMTK_USE_CXX11_STL
+  typename std::enable_if<!DcmIODImageHasType<T,Types...>::value,OFCondition>::type
+#else
   OFTypename OFenable_if
   <
     (OFvariadic_find_type<IODImagePixelModule<T>,OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)>::value == -1),
     OFCondition
   >::type
+#endif
   readImagePixel(DcmItem& dataset)
   {
     // Avoid compiler warning about unused parameter
-    (void)dataset;
+    OFstatic_cast(void, dataset);
     return IOD_EC_InvalidPixelData;
   }
 
