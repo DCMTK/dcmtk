@@ -396,6 +396,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// write: add comments with details at beginning/end of included template (might be useful for debugging purposes)
     static const size_t XF_addCommentsForIncludedTemplate;
 
+    /// read: accept empty Study/Series/SOP Instance UID attribute values (must be filled later)
+    static const size_t XF_acceptEmptyStudySeriesInstanceUID;
+
     /// shortcut: combines all XF_xxxAsAttribute write flags (see above)
     static const size_t XF_encodeEverythingAsAttribute;
     //@}

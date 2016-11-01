@@ -74,96 +74,97 @@
  *---------------------------------*/
 
 /* read flags */
-const size_t DSRTypes::RF_readDigitalSignatures          = 1 <<  0;
-const size_t DSRTypes::RF_acceptUnknownRelationshipType  = 1 <<  1;
-const size_t DSRTypes::RF_acceptInvalidContentItemValue  = 1 <<  2;
-const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  3;
-const size_t DSRTypes::RF_ignoreContentItemErrors        = 1 <<  4;
-const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  5;
-const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  6;
+const size_t DSRTypes::RF_readDigitalSignatures             = 1 <<  0;
+const size_t DSRTypes::RF_acceptUnknownRelationshipType     = 1 <<  1;
+const size_t DSRTypes::RF_acceptInvalidContentItemValue     = 1 <<  2;
+const size_t DSRTypes::RF_ignoreRelationshipConstraints     = 1 <<  3;
+const size_t DSRTypes::RF_ignoreContentItemErrors           = 1 <<  4;
+const size_t DSRTypes::RF_skipInvalidContentItems           = 1 <<  5;
+const size_t DSRTypes::RF_showCurrentlyProcessedItem        = 1 <<  6;
 
 /* renderHTML flags */
-const size_t DSRTypes::HF_neverExpandChildrenInline      = 1 <<  0;
-const size_t DSRTypes::HF_alwaysExpandChildrenInline     = 1 <<  1;
-const size_t DSRTypes::HF_renderInlineCodes              = 1 <<  2;
-const size_t DSRTypes::HF_useCodeDetailsTooltip          = 1 <<  3;
-const size_t DSRTypes::HF_renderConceptNameCodes         = 1 <<  4;
-const size_t DSRTypes::HF_renderNumericUnitCodes         = 1 <<  5;
-const size_t DSRTypes::HF_useCodeMeaningAsUnit           = 1 <<  6;
-const size_t DSRTypes::HF_renderPatientTitle             = 1 <<  7;
-const size_t DSRTypes::HF_renderNoDocumentHeader         = 1 <<  8;
-const size_t DSRTypes::HF_renderDcmtkFootnote            = 1 <<  9;
-const size_t DSRTypes::HF_renderFullData                 = 1 << 10;
-const size_t DSRTypes::HF_renderSectionTitlesInline      = 1 << 11;
-const size_t DSRTypes::HF_copyStyleSheetContent          = 1 << 12;
-const size_t DSRTypes::HF_HTML32Compatibility            = 1 << 13;
-const size_t DSRTypes::HF_XHTML11Compatibility           = 1 << 14;
-const size_t DSRTypes::HF_addDocumentTypeReference       = 1 << 15;
-const size_t DSRTypes::HF_omitGeneratorMetaElement       = 1 << 16;
+const size_t DSRTypes::HF_neverExpandChildrenInline         = 1 <<  0;
+const size_t DSRTypes::HF_alwaysExpandChildrenInline        = 1 <<  1;
+const size_t DSRTypes::HF_renderInlineCodes                 = 1 <<  2;
+const size_t DSRTypes::HF_useCodeDetailsTooltip             = 1 <<  3;
+const size_t DSRTypes::HF_renderConceptNameCodes            = 1 <<  4;
+const size_t DSRTypes::HF_renderNumericUnitCodes            = 1 <<  5;
+const size_t DSRTypes::HF_useCodeMeaningAsUnit              = 1 <<  6;
+const size_t DSRTypes::HF_renderPatientTitle                = 1 <<  7;
+const size_t DSRTypes::HF_renderNoDocumentHeader            = 1 <<  8;
+const size_t DSRTypes::HF_renderDcmtkFootnote               = 1 <<  9;
+const size_t DSRTypes::HF_renderFullData                    = 1 << 10;
+const size_t DSRTypes::HF_renderSectionTitlesInline         = 1 << 11;
+const size_t DSRTypes::HF_copyStyleSheetContent             = 1 << 12;
+const size_t DSRTypes::HF_HTML32Compatibility               = 1 << 13;
+const size_t DSRTypes::HF_XHTML11Compatibility              = 1 << 14;
+const size_t DSRTypes::HF_addDocumentTypeReference          = 1 << 15;
+const size_t DSRTypes::HF_omitGeneratorMetaElement          = 1 << 16;
 /* internal */
-const size_t DSRTypes::HF_renderItemsSeparately          = 1 << 17;
-const size_t DSRTypes::HF_renderItemInline               = 1 << 18;
-const size_t DSRTypes::HF_currentlyInsideAnnex           = 1 << 19;
-const size_t DSRTypes::HF_createFootnoteReferences       = 1 << 20;
-const size_t DSRTypes::HF_convertNonASCIICharacters      = 1 << 21;
+const size_t DSRTypes::HF_renderItemsSeparately             = 1 << 17;
+const size_t DSRTypes::HF_renderItemInline                  = 1 << 18;
+const size_t DSRTypes::HF_currentlyInsideAnnex              = 1 << 19;
+const size_t DSRTypes::HF_createFootnoteReferences          = 1 << 20;
+const size_t DSRTypes::HF_convertNonASCIICharacters         = 1 << 21;
 /* shortcuts */
-const size_t DSRTypes::HF_renderAllCodes                 = DSRTypes::HF_renderInlineCodes |
-                                                           DSRTypes::HF_renderConceptNameCodes |
-                                                           DSRTypes::HF_renderNumericUnitCodes;
-const size_t DSRTypes::HF_internalUseOnly                = DSRTypes::HF_renderItemsSeparately |
-                                                           DSRTypes::HF_renderItemInline |
-                                                           DSRTypes::HF_currentlyInsideAnnex |
-                                                           DSRTypes::HF_createFootnoteReferences |
-                                                           DSRTypes::HF_convertNonASCIICharacters;
+const size_t DSRTypes::HF_renderAllCodes                    = DSRTypes::HF_renderInlineCodes |
+                                                              DSRTypes::HF_renderConceptNameCodes |
+                                                              DSRTypes::HF_renderNumericUnitCodes;
+const size_t DSRTypes::HF_internalUseOnly                   = DSRTypes::HF_renderItemsSeparately |
+                                                              DSRTypes::HF_renderItemInline |
+                                                              DSRTypes::HF_currentlyInsideAnnex |
+                                                              DSRTypes::HF_createFootnoteReferences |
+                                                              DSRTypes::HF_convertNonASCIICharacters;
 
 /* read/writeXML flags */
-const size_t DSRTypes::XF_writeEmptyTags                 = 1 << 0;
-const size_t DSRTypes::XF_writeTemplateIdentification    = 1 << 1;
-const size_t DSRTypes::XF_alwaysWriteItemIdentifier      = 1 << 2;
-const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 3;
-const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 4;
-const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 5;
-const size_t DSRTypes::XF_templateIdentifierAsAttribute  = 1 << 6;
-const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 7;
-const size_t DSRTypes::XF_addSchemaReference             = 1 << 8;
-const size_t DSRTypes::XF_validateSchema                 = 1 << 9;
-const size_t DSRTypes::XF_templateElementEnclosesItems   = 1 << 10;
-const size_t DSRTypes::XF_addCommentsForIncludedTemplate = 1 << 11;
+const size_t DSRTypes::XF_writeEmptyTags                    = 1 << 0;
+const size_t DSRTypes::XF_writeTemplateIdentification       = 1 << 1;
+const size_t DSRTypes::XF_alwaysWriteItemIdentifier         = 1 << 2;
+const size_t DSRTypes::XF_codeComponentsAsAttribute         = 1 << 3;
+const size_t DSRTypes::XF_relationshipTypeAsAttribute       = 1 << 4;
+const size_t DSRTypes::XF_valueTypeAsAttribute              = 1 << 5;
+const size_t DSRTypes::XF_templateIdentifierAsAttribute     = 1 << 6;
+const size_t DSRTypes::XF_useDcmsrNamespace                 = 1 << 7;
+const size_t DSRTypes::XF_addSchemaReference                = 1 << 8;
+const size_t DSRTypes::XF_validateSchema                    = 1 << 9;
+const size_t DSRTypes::XF_templateElementEnclosesItems      = 1 << 10;
+const size_t DSRTypes::XF_addCommentsForIncludedTemplate    = 1 << 11;
+const size_t DSRTypes::XF_acceptEmptyStudySeriesInstanceUID = 1 << 12;
 /* shortcuts */
-const size_t DSRTypes::XF_encodeEverythingAsAttribute    = DSRTypes::XF_codeComponentsAsAttribute |
-                                                           DSRTypes::XF_relationshipTypeAsAttribute |
-                                                           DSRTypes::XF_valueTypeAsAttribute |
-                                                           DSRTypes::XF_templateIdentifierAsAttribute;
+const size_t DSRTypes::XF_encodeEverythingAsAttribute       = DSRTypes::XF_codeComponentsAsAttribute |
+                                                              DSRTypes::XF_relationshipTypeAsAttribute |
+                                                              DSRTypes::XF_valueTypeAsAttribute |
+                                                              DSRTypes::XF_templateIdentifierAsAttribute;
 
 /* print flags */
-const size_t DSRTypes::PF_printItemPosition              = 1 << 0;
-const size_t DSRTypes::PF_shortenLongItemValues          = 1 << 1;
-const size_t DSRTypes::PF_printSOPInstanceUID            = 1 << 2;
-const size_t DSRTypes::PF_printConceptNameCodes          = 1 << 3;
-const size_t DSRTypes::PF_printNoDocumentHeader          = 1 << 4;
-const size_t DSRTypes::PF_printTemplateIdentification    = 1 << 5;
-const size_t DSRTypes::PF_useANSIEscapeCodes             = 1 << 6;
-const size_t DSRTypes::PF_printLongSOPClassName          = 1 << 7;
-const size_t DSRTypes::PF_printSOPClassUID               = 1 << 8;
-const size_t DSRTypes::PF_printInvalidCodes              = 1 << 9;
-const size_t DSRTypes::PF_printNodeID                    = 1 << 10;
-const size_t DSRTypes::PF_indicateEnhancedEncodingMode   = 1 << 11;
-const size_t DSRTypes::PF_printAnnotation                = 1 << 12;
-const size_t DSRTypes::PF_hideIncludedTemplateNodes      = 1 << 13;
-const size_t DSRTypes::PF_dontCountIncludedTemplateNodes = 1 << 14;
+const size_t DSRTypes::PF_printItemPosition                 = 1 << 0;
+const size_t DSRTypes::PF_shortenLongItemValues             = 1 << 1;
+const size_t DSRTypes::PF_printSOPInstanceUID               = 1 << 2;
+const size_t DSRTypes::PF_printConceptNameCodes             = 1 << 3;
+const size_t DSRTypes::PF_printNoDocumentHeader             = 1 << 4;
+const size_t DSRTypes::PF_printTemplateIdentification       = 1 << 5;
+const size_t DSRTypes::PF_useANSIEscapeCodes                = 1 << 6;
+const size_t DSRTypes::PF_printLongSOPClassName             = 1 << 7;
+const size_t DSRTypes::PF_printSOPClassUID                  = 1 << 8;
+const size_t DSRTypes::PF_printInvalidCodes                 = 1 << 9;
+const size_t DSRTypes::PF_printNodeID                       = 1 << 10;
+const size_t DSRTypes::PF_indicateEnhancedEncodingMode      = 1 << 11;
+const size_t DSRTypes::PF_printAnnotation                   = 1 << 12;
+const size_t DSRTypes::PF_hideIncludedTemplateNodes         = 1 << 13;
+const size_t DSRTypes::PF_dontCountIncludedTemplateNodes    = 1 << 14;
 /* shortcuts */
-const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
+const size_t DSRTypes::PF_printAllCodes                     = DSRTypes::PF_printConceptNameCodes;
 
 /* checkByReferenceRelationships modes */
-const size_t DSRTypes::CM_updatePositionString           = 1 << 0;
-const size_t DSRTypes::CM_updateNodeID                   = 1 << 1;
-const size_t DSRTypes::CM_resetReferenceTargetFlag       = 1 << 2;
+const size_t DSRTypes::CM_updatePositionString              = 1 << 0;
+const size_t DSRTypes::CM_updateNodeID                      = 1 << 1;
+const size_t DSRTypes::CM_resetReferenceTargetFlag          = 1 << 2;
 
 /* checkByReferenceRelationships bit masks (avoid conflicts!) */
-const size_t DSRTypes::CB_maskPrintFlags                 = DSRTypes::PF_dontCountIncludedTemplateNodes;
-const size_t DSRTypes::CB_maskReadFlags                  = DSRTypes::RF_acceptUnknownRelationshipType |
-                                                           DSRTypes::RF_ignoreRelationshipConstraints |
-                                                           DSRTypes::RF_showCurrentlyProcessedItem;
+const size_t DSRTypes::CB_maskPrintFlags                    = DSRTypes::PF_dontCountIncludedTemplateNodes;
+const size_t DSRTypes::CB_maskReadFlags                     = DSRTypes::RF_acceptUnknownRelationshipType |
+                                                              DSRTypes::RF_ignoreRelationshipConstraints |
+                                                              DSRTypes::RF_showCurrentlyProcessedItem;
 
 
 /*---------------------*

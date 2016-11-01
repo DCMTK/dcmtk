@@ -175,7 +175,10 @@ int main(int argc, char *argv[])
             opt_readFlags |= DSRTypes::XF_useDcmsrNamespace;
 
         if (cmd.findOption("--generate-new-uids"))
+        {
             opt_generateUIDs = OFTrue;
+            opt_readFlags |= DSRTypes::XF_acceptEmptyStudySeriesInstanceUID;
+        }
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--dont-overwrite-uids"))

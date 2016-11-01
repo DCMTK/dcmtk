@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -684,8 +684,21 @@ DSRTypes::E_RelationshipType DSRXMLDocument::getRelationshipTypeFromNode(const D
 
 void DSRXMLDocument::printUnexpectedNodeWarning(const DSRXMLCursor &cursor) const
 {
+    /* report warning message */
     OFString tmpString;
     DCMSR_WARN("Unexpected node '" << getFullNodePath(cursor, tmpString) << "', skipping");
+}
+
+
+void DSRXMLDocument::printMissingAttributeWarning(const DSRXMLCursor &cursor,
+                                                  const char *name) const
+{
+    /* report warning message */
+    if (name != NULL)
+    {
+        OFString tmpString;
+        DCMSR_WARN("XML attribute '" << name << "' missing/empty in " << getFullNodePath(cursor, tmpString));
+    }
 }
 
 

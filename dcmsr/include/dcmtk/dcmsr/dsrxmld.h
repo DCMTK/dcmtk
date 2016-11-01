@@ -242,6 +242,13 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
      */
     void printUnexpectedNodeWarning(const DSRXMLCursor &cursor) const;
 
+    /** print warning message for missing attribute
+     ** @param  cursor  cursor pointing to the relevant node
+     *  @param  name    name of the XML attribute
+     */
+    void printMissingAttributeWarning(const DSRXMLCursor &cursor,
+                                      const char *name) const;
+
     /** print general node error message
      ** @param  cursor  cursor pointing to the unexpected node
      *  @param  result  status used to print details on the error (no message if EC_Normal)

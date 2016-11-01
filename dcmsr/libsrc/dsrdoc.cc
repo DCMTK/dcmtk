@@ -910,14 +910,20 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
 
 OFCondition DSRDocument::readXMLStudyData(const DSRXMLDocument &doc,
                                           DSRXMLCursor cursor,
-                                          const size_t /*flags*/)
+                                          const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
     {
         OFString tmpString;
         /* get Study Instance UID from XML attribute */
-        result = doc.getElementFromAttribute(cursor, StudyInstanceUID, "uid");
+        if (flags & XF_acceptEmptyStudySeriesInstanceUID)
+        {
+            if (doc.getElementFromAttribute(cursor, StudyInstanceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/).bad())
+                doc.printMissingAttributeWarning(cursor, "uid");
+            result = EC_Normal;
+        } else
+            result = doc.getElementFromAttribute(cursor, StudyInstanceUID, "uid");
         /* goto first sub-element */
         cursor.gotoChild();
         /* iterate over all nodes */
@@ -956,14 +962,20 @@ OFCondition DSRDocument::readXMLStudyData(const DSRXMLDocument &doc,
 
 OFCondition DSRDocument::readXMLSeriesData(const DSRXMLDocument &doc,
                                            DSRXMLCursor cursor,
-                                           const size_t /*flags*/)
+                                           const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
     {
         OFString tmpString;
         /* get Series Instance UID from XML attribute */
-        result = doc.getElementFromAttribute(cursor, SeriesInstanceUID, "uid");
+        if (flags & XF_acceptEmptyStudySeriesInstanceUID)
+        {
+            if (doc.getElementFromAttribute(cursor, SeriesInstanceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/).bad())
+                doc.printMissingAttributeWarning(cursor, "uid");
+            result = EC_Normal;
+        } else
+            result = doc.getElementFromAttribute(cursor, SeriesInstanceUID, "uid");
         /* goto first sub-element */
         cursor.gotoChild();
         /* iterate over all nodes */
@@ -999,14 +1011,20 @@ OFCondition DSRDocument::readXMLSeriesData(const DSRXMLDocument &doc,
 
 OFCondition DSRDocument::readXMLInstanceData(const DSRXMLDocument &doc,
                                              DSRXMLCursor cursor,
-                                             const size_t /*flags*/)
+                                             const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
     if (cursor.valid())
     {
         OFString tmpString;
         /* get SOP Instance UID from XML attribute */
-        result = doc.getElementFromAttribute(cursor, SOPInstanceUID, "uid");
+        if (flags & XF_acceptEmptyStudySeriesInstanceUID)
+        {
+            if (doc.getElementFromAttribute(cursor, SOPInstanceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/).bad())
+                doc.printMissingAttributeWarning(cursor, "uid");
+            result = EC_Normal;
+        } else
+            result = doc.getElementFromAttribute(cursor, SOPInstanceUID, "uid");
         /* goto first sub-element */
         cursor.gotoChild();
         /* iterate over all nodes */
