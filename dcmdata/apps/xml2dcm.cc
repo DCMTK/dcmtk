@@ -787,9 +787,15 @@ int main(int argc, char *argv[])
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--dont-overwrite-uids"))
+        {
+            app.checkDependence("--dont-overwrite-uids", "--generate-new-uids", opt_generateUIDs);
             opt_overwriteUIDs = OFFalse;
+        }
         if (cmd.findOption("--overwrite-uids"))
+        {
+            app.checkDependence("--overwrite-uids", "--generate-new-uids", opt_generateUIDs);
             opt_overwriteUIDs = OFTrue;
+        }
         cmd.endOptionBlock();
 
         /* output options */
