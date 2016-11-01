@@ -1539,7 +1539,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
         /* used for HTML tmpString conversion */
         OFString htmlString;
         /* update only some DICOM attributes */
-        updateAttributes(OFFalse /* updateAll */);
+        updateAttributes(OFFalse /*updateAll*/);
 
         // --- HTML/XHTML document structure (start) ---
 
@@ -2831,6 +2831,7 @@ OFCondition DSRDocument::finalizeDocument()
 
 void DSRDocument::updateAttributes(const OFBool updateAll)
 {
+    DCMSR_DEBUG("Updating " << (updateAll ? "all " : "") << "DICOM header attributes");
     const E_DocumentType documentType = getDocumentType();
     /* retrieve SOP class UID from internal document type */
     SOPClassUID.putString(documentTypeToSOPClassUID(documentType));
@@ -2849,6 +2850,7 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         /* create new SOP instance UID if required */
         if (SOPInstanceUID.isEmpty())
         {
+            DCMSR_DEBUG("  Generating new value for SOP Instance UID");
             OFString tmpString;
             SOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
             /* set instance creation date to current date (YYYYMMDD) */
@@ -2860,10 +2862,16 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         }
         /* create new study instance UID if required */
         if (StudyInstanceUID.isEmpty())
+        {
+            DCMSR_DEBUG("  Generating new value for Study Instance UID");
             StudyInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
+        }
         /* create new series instance UID if required */
         if (SeriesInstanceUID.isEmpty())
+        {
+            DCMSR_DEBUG("  Generating new value for Series Instance UID");
             SeriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
+        }
 
         /* check and set content date if required */
         if (ContentDate.isEmpty())
