@@ -1,6 +1,1073 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2016.11.02 (schlamelcher)
+
+- Updated CHANGES.361 for new development snapshot.
+  Affects: docs/CHANGES.361
+
+- Updated DCMTK_ABI_VERSION for new development snapshot.
+  Affects: CMake/dcmtkPrepare.cmake
+
+- Updated man pages for new development snapshot.
+  Affects: doxygen/manpages/man1/dcm2pdf.1
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcjpeg.1
+           doxygen/manpages/man1/dcmcjpls.1
+           doxygen/manpages/man1/dcmconv.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dcmdjpeg.1
+           doxygen/manpages/man1/dcmdjpls.1
+           doxygen/manpages/man1/dcmdrle.1
+           doxygen/manpages/man1/dcmdspfn.1
+           doxygen/manpages/man1/dcmdump.1
+           doxygen/manpages/man1/dcmftest.1
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmj2pnm.1
+           doxygen/manpages/man1/dcml2pnm.1
+           doxygen/manpages/man1/dcmmkcrv.1
+           doxygen/manpages/man1/dcmmkdir.1
+           doxygen/manpages/man1/dcmmklut.1
+           doxygen/manpages/man1/dcmodify.1
+           doxygen/manpages/man1/dcmp2pgm.1
+           doxygen/manpages/man1/dcmprscp.1
+           doxygen/manpages/man1/dcmprscu.1
+           doxygen/manpages/man1/dcmpschk.1
+           doxygen/manpages/man1/dcmpsmk.1
+           doxygen/manpages/man1/dcmpsprt.1
+           doxygen/manpages/man1/dcmpsrcv.1
+           doxygen/manpages/man1/dcmpssnd.1
+           doxygen/manpages/man1/dcmqridx.1
+           doxygen/manpages/man1/dcmqrscp.1
+           doxygen/manpages/man1/dcmqrti.1
+           doxygen/manpages/man1/dcmquant.1
+           doxygen/manpages/man1/dcmrecv.1
+           doxygen/manpages/man1/dcmscale.1
+           doxygen/manpages/man1/dcmsend.1
+           doxygen/manpages/man1/dcmsign.1
+           doxygen/manpages/man1/dcod2lum.1
+           doxygen/manpages/man1/dconvlum.1
+           doxygen/manpages/man1/drtdump.1
+           doxygen/manpages/man1/dsr2html.1
+           doxygen/manpages/man1/dsr2xml.1
+           doxygen/manpages/man1/dsrdump.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/echoscu.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/getscu.1
+           doxygen/manpages/man1/img2dcm.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/pdf2dcm.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           doxygen/manpages/man1/termscu.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+- Updated Makefile dependencies.
+  Affects: ofstd/libsrc/Makefile.dep
+
+- Added API documentation for OFvariant etc.
+  Affects: ofstd/include/dcmtk/ofstd/ofutil.h
+           ofstd/include/dcmtk/ofstd/ofvriant.h
+
+**** Changes from 2016.11.01 (riesmeier)
+
+- Added readXML mode that accepts empty/missing UID:
+  Added new mode to readXML() that accepts empty or missing Study/Series/
+  SOP Instance UID values in the input document. This is required if only
+  some of these three UID values should be re-generated (replaced). Now,
+  option --generate-new-uids (with --dont-overwrite-uids) works as expected.
+  Thanks to Martin Wenger <Martin.Wenger@klinikum-hef.de> for the original
+  report that resulted in this improvement/fix.
+  Affects: dcmsr/apps/xml2dsr.cc
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/include/dcmtk/dcmsr/dsrxmld.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrxmld.cc
+
+- Output debug messages when updating attributes:
+  Output messages to the debug logger when updating DICOM header attributes,
+  especially when generating new Study / Series / SOP Instance UIDs.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+- Made clear that options +/-Uo require +Ug:
+  Now it is checked whether option --generate-new-uids (+Ug) is used when
+  --overwrite-uids (+Uo) or --dont-overwrite-uids (-Uo) is also specified
+  on the command line. This should avoid possible confusions.
+  Affects: dcmdata/apps/xml2dcm.cc
+           dcmsr/apps/xml2dsr.cc
+
+**** Changes from 2016.10.31 (schlamelcher)
+
+- Added OFvariant implementation for C++11:
+  Closes DCMTK bug #693.
+  Affects: dcmiod/include/dcmtk/dcmiod/iodimage.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h
+           ofstd/include/dcmtk/ofstd/ofutil.h
+           ofstd/include/dcmtk/ofstd/ofvriant.h
+
+**** Changes from 2016.10.30 (schlamelcher)
+
+- Fixed a problem with a previous commit:
+  A line in a previous commit was truncated, leading to compiler errors.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 2016.10.28 (schlamelcher)
+
+- Fixed using third party libraries with MinGW:
+  Modified 3rdparty.cmake such that MinGW is handled the same as Unix like
+  systems regarding the integration of third party libraries.
+  Affects: CMake/3rdparty.cmake
+
+- Fixed 32 vs. 64 bit problem in dcmqrdb:
+  Fixed incompatibility of dcmqrdb databases between 32 bit and 64 bit code on
+  the same platform. Don't forget to re-create your databases using dcmqridx.
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h
+
+- Several fixes for dcmpstat:
+  Fixed detecting structured reporting objects based on the SOP class.
+  Fixed print job execution and cleanup. Print job executing was bugged when
+  the name of one print job was a prefix to the name of another print job.
+  Fixed deadlock in instanceReviewed() regarding database access.
+  Fixed opening files named using non ASCII characters (only relevant on
+  Windows).
+  Affects: dcmpstat/apps/dcmprscu.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpshlp.cc
+
+- Fixed wrong usage of checkStringValue() in dcmpmap:
+  Fixed passing the attribute type to checkStringValue() where the value multi-
+  plicity is expected.
+  Affects: dcmpmap/libsrc/dpmmodparametricmapimage.cc
+
+**** Changes from 2016.10.12 (riesmeier)
+
+- Added comment on recently added DICOM attributes:
+  Added comment on DICOM attributes that were recently added to the DICOM
+  standard but which are not (yet) supported by the "dcmsr" module.
+  As usual, these "things to be done" can be found by searching for "tbd:"
+  in the source code of this module.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrcodvl.h
+           dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
+- Updated "dcmrt" classes based on DICOM 2016d:
+  Updated automatically generated IOD and sequence C++ classes for the various
+  RT objects based on the current edition of the DICOM standard (2016d).
+  Added:   dcmrt/include/dcmtk/dcmrt/seq/drtcgis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdddps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtddps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtgpis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtmris.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpdeds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtscs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtsins.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtspgis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtsptcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtssrcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtsss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtudis.h
+           dcmrt/libsrc/drtcgis.cc
+           dcmrt/libsrc/drtdddps.cc
+           dcmrt/libsrc/drtddps.cc
+           dcmrt/libsrc/drtgpis.cc
+           dcmrt/libsrc/drtmris.cc
+           dcmrt/libsrc/drtpdeds.cc
+           dcmrt/libsrc/drtscs.cc
+           dcmrt/libsrc/drtsins.cc
+           dcmrt/libsrc/drtspgis.cc
+           dcmrt/libsrc/drtsptcs.cc
+           dcmrt/libsrc/drtssrcs.cc
+           dcmrt/libsrc/drtsss.cc
+           dcmrt/libsrc/drtudis.cc
+  Removed: dcmrt/include/dcmtk/dcmrt/seq/drtarics.h
+           dcmrt/libsrc/drtarics.cc
+  Affects: dcmrt/apps/Makefile.dep
+           dcmrt/include/dcmtk/dcmrt/drtdose.h
+           dcmrt/include/dcmtk/dcmrt/drtimage.h
+           dcmrt/include/dcmtk/dcmrt/drtionpl.h
+           dcmrt/include/dcmtk/dcmrt/drtiontr.h
+           dcmrt/include/dcmtk/dcmrt/drtplan.h
+           dcmrt/include/dcmtk/dcmrt/drtstrct.h
+           dcmrt/include/dcmtk/dcmrt/drttreat.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtaadcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtadcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtads.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtafs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtags.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtajcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtas1.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtas5.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtas6.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtas7.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtass.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbads.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbcps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbl2.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbl5.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbldls.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbldps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtblds1.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtblds5.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtblds6.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbldts.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbrcss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbrdrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtbvcps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcbars.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtccs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcctus.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcdrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtces.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtchs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcims.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcncs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcos.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcpas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcpis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcsas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcshs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcsis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtcss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdias.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdimcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdimrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdirs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdspcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdvhs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtdvrrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drteas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtecs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtes.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtfds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtfes.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtfgs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtfgss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtfms.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtfsss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtgas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drthsdrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiais.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtians.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiblds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtibls.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtibs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drticpds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drticps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtics.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtipiqs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtircs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiseis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtitts.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiwps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtiws.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtlsds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtlsds6.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtlsds7.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtmacds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtmas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtmdrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtmls.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtmps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtmss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtmucs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtoas.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtois.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtopis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtos.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpbcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpcxs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpdecs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpfms.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpics.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtporcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtporis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtppcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtprsis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpscs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpsics.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpsss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtpvis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtqds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtras.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbas2.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbas8.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbls.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbos1.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbos6.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbos7.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbs2.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbs4.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrbs8.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrcdrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrcos.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrcps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrdros.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrdrs1.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrdrs6.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrdrs8.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrecs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrfgs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrfors.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrics.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrims.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtris.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrlsds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrmdrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrms.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrmss6.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrmss7.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrpcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrpis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrppcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrpphs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrpps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrppss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrris1.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrris6.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrris9.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrms.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrros.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrpcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrros.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrshs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrtps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrtps3.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrtps4.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrrtps5.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrscs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsers.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrses.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrshs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrshs6.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrshs7.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsns.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsos.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrsts.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrtrs2.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrtrs4.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrvis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrws.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtrwvms.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtscris.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtsdcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtsds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtshds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtsis.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtsns.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtspccs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtspcs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtss.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtssrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drttms0.h
+           dcmrt/include/dcmtk/dcmrt/seq/drttms9.h
+           dcmrt/include/dcmtk/dcmrt/seq/drttscds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drttsibs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drttsmds.h
+           dcmrt/include/dcmtk/dcmrt/seq/drttts.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtvls.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtwps.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtwrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtwrsrs.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtws.h
+           dcmrt/include/dcmtk/dcmrt/seq/drtxrs.h
+           dcmrt/libsrc/CMakeLists.txt
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/libsrc/Makefile.in
+           dcmrt/libsrc/drtaadcs.cc
+           dcmrt/libsrc/drtadcs.cc
+           dcmrt/libsrc/drtads.cc
+           dcmrt/libsrc/drtafs.cc
+           dcmrt/libsrc/drtags.cc
+           dcmrt/libsrc/drtajcs.cc
+           dcmrt/libsrc/drtas1.cc
+           dcmrt/libsrc/drtas5.cc
+           dcmrt/libsrc/drtas6.cc
+           dcmrt/libsrc/drtas7.cc
+           dcmrt/libsrc/drtass.cc
+           dcmrt/libsrc/drtbads.cc
+           dcmrt/libsrc/drtbas.cc
+           dcmrt/libsrc/drtbcps.cc
+           dcmrt/libsrc/drtbl2.cc
+           dcmrt/libsrc/drtbl5.cc
+           dcmrt/libsrc/drtbldls.cc
+           dcmrt/libsrc/drtbldps.cc
+           dcmrt/libsrc/drtblds1.cc
+           dcmrt/libsrc/drtblds5.cc
+           dcmrt/libsrc/drtblds6.cc
+           dcmrt/libsrc/drtbldts.cc
+           dcmrt/libsrc/drtbrcss.cc
+           dcmrt/libsrc/drtbrdrs.cc
+           dcmrt/libsrc/drtbrs.cc
+           dcmrt/libsrc/drtbs.cc
+           dcmrt/libsrc/drtbss.cc
+           dcmrt/libsrc/drtbvcps.cc
+           dcmrt/libsrc/drtcbars.cc
+           dcmrt/libsrc/drtccs.cc
+           dcmrt/libsrc/drtcctus.cc
+           dcmrt/libsrc/drtcdrs.cc
+           dcmrt/libsrc/drtces.cc
+           dcmrt/libsrc/drtchs.cc
+           dcmrt/libsrc/drtcims.cc
+           dcmrt/libsrc/drtcis.cc
+           dcmrt/libsrc/drtcncs.cc
+           dcmrt/libsrc/drtcos.cc
+           dcmrt/libsrc/drtcpas.cc
+           dcmrt/libsrc/drtcpis.cc
+           dcmrt/libsrc/drtcps.cc
+           dcmrt/libsrc/drtcs.cc
+           dcmrt/libsrc/drtcsas.cc
+           dcmrt/libsrc/drtcshs.cc
+           dcmrt/libsrc/drtcsis.cc
+           dcmrt/libsrc/drtcss.cc
+           dcmrt/libsrc/drtdcs.cc
+           dcmrt/libsrc/drtdias.cc
+           dcmrt/libsrc/drtdimcs.cc
+           dcmrt/libsrc/drtdimrs.cc
+           dcmrt/libsrc/drtdirs.cc
+           dcmrt/libsrc/drtdose.cc
+           dcmrt/libsrc/drtdrs.cc
+           dcmrt/libsrc/drtds.cc
+           dcmrt/libsrc/drtdspcs.cc
+           dcmrt/libsrc/drtdss.cc
+           dcmrt/libsrc/drtdvhs.cc
+           dcmrt/libsrc/drtdvrrs.cc
+           dcmrt/libsrc/drteas.cc
+           dcmrt/libsrc/drtecs.cc
+           dcmrt/libsrc/drtes.cc
+           dcmrt/libsrc/drtfds.cc
+           dcmrt/libsrc/drtfes.cc
+           dcmrt/libsrc/drtfgs.cc
+           dcmrt/libsrc/drtfgss.cc
+           dcmrt/libsrc/drtfms.cc
+           dcmrt/libsrc/drtfsss.cc
+           dcmrt/libsrc/drtgas.cc
+           dcmrt/libsrc/drthsdrs.cc
+           dcmrt/libsrc/drtiais.cc
+           dcmrt/libsrc/drtians.cc
+           dcmrt/libsrc/drtiblds.cc
+           dcmrt/libsrc/drtibls.cc
+           dcmrt/libsrc/drtibs.cc
+           dcmrt/libsrc/drticpds.cc
+           dcmrt/libsrc/drticps.cc
+           dcmrt/libsrc/drtics.cc
+           dcmrt/libsrc/drtiis.cc
+           dcmrt/libsrc/drtimage.cc
+           dcmrt/libsrc/drtionpl.cc
+           dcmrt/libsrc/drtiontr.cc
+           dcmrt/libsrc/drtipiqs.cc
+           dcmrt/libsrc/drtircs.cc
+           dcmrt/libsrc/drtiseis.cc
+           dcmrt/libsrc/drtitts.cc
+           dcmrt/libsrc/drtiwps.cc
+           dcmrt/libsrc/drtiws.cc
+           dcmrt/libsrc/drtlsds.cc
+           dcmrt/libsrc/drtlsds6.cc
+           dcmrt/libsrc/drtlsds7.cc
+           dcmrt/libsrc/drtmacds.cc
+           dcmrt/libsrc/drtmas.cc
+           dcmrt/libsrc/drtmdrs.cc
+           dcmrt/libsrc/drtmls.cc
+           dcmrt/libsrc/drtmps.cc
+           dcmrt/libsrc/drtmss.cc
+           dcmrt/libsrc/drtmucs.cc
+           dcmrt/libsrc/drtoas.cc
+           dcmrt/libsrc/drtois.cc
+           dcmrt/libsrc/drtopis.cc
+           dcmrt/libsrc/drtos.cc
+           dcmrt/libsrc/drtpbcs.cc
+           dcmrt/libsrc/drtpcs.cc
+           dcmrt/libsrc/drtpcxs.cc
+           dcmrt/libsrc/drtpdecs.cc
+           dcmrt/libsrc/drtpfms.cc
+           dcmrt/libsrc/drtpics.cc
+           dcmrt/libsrc/drtplan.cc
+           dcmrt/libsrc/drtporcs.cc
+           dcmrt/libsrc/drtporis.cc
+           dcmrt/libsrc/drtppcs.cc
+           dcmrt/libsrc/drtprsis.cc
+           dcmrt/libsrc/drtpscs.cc
+           dcmrt/libsrc/drtpsics.cc
+           dcmrt/libsrc/drtpss.cc
+           dcmrt/libsrc/drtpsss.cc
+           dcmrt/libsrc/drtpvis.cc
+           dcmrt/libsrc/drtqds.cc
+           dcmrt/libsrc/drtras.cc
+           dcmrt/libsrc/drtrbas2.cc
+           dcmrt/libsrc/drtrbas8.cc
+           dcmrt/libsrc/drtrbls.cc
+           dcmrt/libsrc/drtrbos1.cc
+           dcmrt/libsrc/drtrbos6.cc
+           dcmrt/libsrc/drtrbos7.cc
+           dcmrt/libsrc/drtrbs2.cc
+           dcmrt/libsrc/drtrbs4.cc
+           dcmrt/libsrc/drtrbs8.cc
+           dcmrt/libsrc/drtrcdrs.cc
+           dcmrt/libsrc/drtrcos.cc
+           dcmrt/libsrc/drtrcps.cc
+           dcmrt/libsrc/drtrcs.cc
+           dcmrt/libsrc/drtrdros.cc
+           dcmrt/libsrc/drtrdrs1.cc
+           dcmrt/libsrc/drtrdrs6.cc
+           dcmrt/libsrc/drtrdrs8.cc
+           dcmrt/libsrc/drtrds.cc
+           dcmrt/libsrc/drtrecs.cc
+           dcmrt/libsrc/drtrfgs.cc
+           dcmrt/libsrc/drtrfors.cc
+           dcmrt/libsrc/drtrics.cc
+           dcmrt/libsrc/drtrims.cc
+           dcmrt/libsrc/drtris.cc
+           dcmrt/libsrc/drtrlsds.cc
+           dcmrt/libsrc/drtrmdrs.cc
+           dcmrt/libsrc/drtrms.cc
+           dcmrt/libsrc/drtrmss6.cc
+           dcmrt/libsrc/drtrmss7.cc
+           dcmrt/libsrc/drtrpcs.cc
+           dcmrt/libsrc/drtrpis.cc
+           dcmrt/libsrc/drtrppcs.cc
+           dcmrt/libsrc/drtrpphs.cc
+           dcmrt/libsrc/drtrpps.cc
+           dcmrt/libsrc/drtrppss.cc
+           dcmrt/libsrc/drtrps.cc
+           dcmrt/libsrc/drtrris1.cc
+           dcmrt/libsrc/drtrris6.cc
+           dcmrt/libsrc/drtrris9.cc
+           dcmrt/libsrc/drtrrms.cc
+           dcmrt/libsrc/drtrros.cc
+           dcmrt/libsrc/drtrrpcs.cc
+           dcmrt/libsrc/drtrrros.cc
+           dcmrt/libsrc/drtrrs.cc
+           dcmrt/libsrc/drtrrshs.cc
+           dcmrt/libsrc/drtrrtps.cc
+           dcmrt/libsrc/drtrrtps3.cc
+           dcmrt/libsrc/drtrrtps4.cc
+           dcmrt/libsrc/drtrrtps5.cc
+           dcmrt/libsrc/drtrscs.cc
+           dcmrt/libsrc/drtrsers.cc
+           dcmrt/libsrc/drtrses.cc
+           dcmrt/libsrc/drtrshs.cc
+           dcmrt/libsrc/drtrshs6.cc
+           dcmrt/libsrc/drtrshs7.cc
+           dcmrt/libsrc/drtrsis.cc
+           dcmrt/libsrc/drtrsns.cc
+           dcmrt/libsrc/drtrsos.cc
+           dcmrt/libsrc/drtrsrs.cc
+           dcmrt/libsrc/drtrss.cc
+           dcmrt/libsrc/drtrsss.cc
+           dcmrt/libsrc/drtrsts.cc
+           dcmrt/libsrc/drtrtrs2.cc
+           dcmrt/libsrc/drtrtrs4.cc
+           dcmrt/libsrc/drtrvis.cc
+           dcmrt/libsrc/drtrws.cc
+           dcmrt/libsrc/drtrwvms.cc
+           dcmrt/libsrc/drtscris.cc
+           dcmrt/libsrc/drtsdcs.cc
+           dcmrt/libsrc/drtsds.cc
+           dcmrt/libsrc/drtshds.cc
+           dcmrt/libsrc/drtsis.cc
+           dcmrt/libsrc/drtsns.cc
+           dcmrt/libsrc/drtspccs.cc
+           dcmrt/libsrc/drtspcs.cc
+           dcmrt/libsrc/drtss.cc
+           dcmrt/libsrc/drtssrs.cc
+           dcmrt/libsrc/drtstrct.cc
+           dcmrt/libsrc/drttms0.cc
+           dcmrt/libsrc/drttms9.cc
+           dcmrt/libsrc/drttreat.cc
+           dcmrt/libsrc/drttscds.cc
+           dcmrt/libsrc/drttsibs.cc
+           dcmrt/libsrc/drttsmds.cc
+           dcmrt/libsrc/drttts.cc
+           dcmrt/libsrc/drtvls.cc
+           dcmrt/libsrc/drtwps.cc
+           dcmrt/libsrc/drtwrs.cc
+           dcmrt/libsrc/drtwrsrs.cc
+           dcmrt/libsrc/drtws.cc
+           dcmrt/libsrc/drtxrs.cc
+           dcmrt/tests/Makefile.dep
+
+- Fixed typo in comments.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+
+**** Changes from 2016.10.04 (riesmeier)
+
+- Updated Context Group classes for DICOM 2016d:
+  Updated automatically generated Context Group classes for the 2016d
+  edition of the DICOM standard. There were no changes to the supported
+  Context Groups.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated code definitions for DICOM 2016d:
+  Updated automatically generated code definitions for coding scheme "DCM",
+  "NCIt" and "UMLS" for the 2016d edition of the DICOM standard.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+           dcmsr/include/dcmtk/dcmsr/codes/umls.h
+
+- Update data dictionary for DICOM 2016d.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2016.10.04 (schlamelcher)
+
+- Fixed a problem in OFtuple's constructor:
+  GCC 6.2.1 wasn't able to compile OFtuple's constructor, which is fixed in
+  this commit.
+  Affects: ofstd/include/dcmtk/ofstd/oftuple.h
+
+**** Changes from 2016.09.22 (riesmeier)
+
+- Added new DCMTK modules "dcmtract" and "dcmpmap":
+  These two (still pretty new) modules were missing in the README file.
+  Also updated description of "dcmsr" module in order to be consistent
+  with the Doxygen file.
+  Affects: README
+
+**** Changes from 2016.09.21 (onken)
+
+- Make Manufacturer type 2, consistency fixes:
+  Thanks to Jörg Riesmeier for the hint and proposed patch.
+  Affects: dcmiod/include/dcmtk/dcmiod/modenhequipment.h
+           dcmiod/include/dcmtk/dcmiod/modequipment.h
+           dcmiod/libsrc/modenhequipment.cc
+           dcmiod/libsrc/modequipment.cc
+
+**** Changes from 2016.09.20 (riesmeier)
+
+- Disable two test cases when building shared libs:
+  Temporarily disable two new test cases when building shared libraries
+  because of unresolvable linker errors (static member "EmptyItem" not
+  found).
+  See DCMTK Bug #694.
+  Affects: dcmsr/tests/Makefile.dep
+           dcmsr/tests/tsrlist.cc
+
+**** Changes from 2016.09.19 (riesmeier)
+
+- Fixed compiler warnings on unused variables:
+  Fixed compiler warnings on unused variables reported by Visual Studio 2010.
+  Affects: dcmjpls/libcharls/intrface.cc
+
+- Fixed linker errors on non-gcc platforms:
+  Fixed linker errors on non-gcc platforms that occurred after adding new
+  "dcmsr" test cases (which make use of the class DSRListOfItems).
+  Affects: dcmsr/tests/tsrlist.cc
+
+**** Changes from 2016.09.17 (riesmeier)
+
+- Added missing source file (new test cases):
+  Added new source file that was missing for the previous commit.
+  Added:   dcmsr/tests/tsrlist.cc
+
+**** Changes from 2016.09.16 (hasenpusch)
+
+- Fixed include paths in DCMTK's package config file:
+  Fixed exporting wrong module include paths inside generated DCMTKConfig.cmake.
+  The specified module include paths went two levels too deep into the folder
+  hierarchy, leading to system include shadowing under certain circumstances.
+  This fixes DCMTK bug #692.
+  Thanks to forum user jakecobb for reporting this bug.
+  Affects: CMake/DCMTKConfig.cmake.in
+
+**** Changes from 2016.09.16 (riesmeier)
+
+- Enhanced template class DSRListOfItems:
+  Added new methods addItems() and getItems() to the template class
+  DSRListOfItems. These new methods expect a vector as a parameter
+  and thus allow for adding/getting multiple items with a single call.
+  Closes DCMTK Feature #572.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtlist.h
+           dcmsr/tests/CMakeLists.txt
+           dcmsr/tests/Makefile.in
+           dcmsr/tests/tests.cc
+
+**** Changes from 2016.09.15 (schlamelcher)
+
+- Further fixes for OFvariant:
+  OFvariant's copy constructor and assignment operator are now disabled for
+  types that can not be converted to one of the variant's alternatives (using
+  OFenable_if).
+  Fixed OFvariant's fallback implementation for systems that do not provide
+  memory alignment facilities.
+  Affects: ofstd/include/dcmtk/ofstd/variadic/variant.h
+
+**** Changes from 2016.09.14 (riesmeier)
+
+- Fixed minor issues in modules' documentation:
+  Fixed minor issues in modules' documentation of "dcmpmap" und "dcmtract".
+  Some of these are related to Doxygen (the tool that is used for generating
+  the rendered output) and some have been fixed for reasons of consistency
+  with other DCMTK modules.
+  Affects: dcmpmap/docs/dcmpmap.dox
+           dcmtract/docs/dcmtract.dox
+
+**** Changes from 2016.09.14 (schlamelcher)
+
+- Fixes for OFvariant, dcmiod, dcmseg and dcmpmap:
+  Removed DLL export macros from several template classes as this does not seem
+  to work for templates.
+  Introduced a workaround for older C++ compilers regarding base class
+  definitions in derived classes, e.g. OFvariant<int,char> will not be available
+  as OFvariant (without the template parameters) in derived classes on these
+  compilers. OFvariant and DcmIODImage now define the types 'variant' and
+  'IODImage' resp. instead, which may be used in derived classes for referring
+  to the resp. base class or one of its methods etc.
+  Affects: dcmiod/include/dcmtk/dcmiod/iodimage.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h
+           dcmpmap/libsrc/dpmparametricmapbase.cc
+           dcmseg/libsrc/segdoc.cc
+           ofstd/include/dcmtk/ofstd/variadic/variant.h
+
+**** Changes from 2016.09.13 (schlamelcher)
+
+- Trying possible fix for OFvariant vs DLLs.
+  Affects: ofstd/include/dcmtk/ofstd/ofutil.h
+           ofstd/libsrc/ofstd.cc
+
+**** Changes from 2016.09.12 (riesmeier)
+
+- Updated coding scheme designator (CP-1567):
+  Updated coding scheme designator for CID 5000 (Languages) based on recently
+  approved CP-1567: The designator changed from "IETF4646" to "RFC5646".
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid5000.h
+           dcmsr/libcmr/cid5000.cc
+
+- Added support for recently approved CPs:
+  Added support for CP-1418 and CP-1586 to the data dictionary.
+  These CPs were approved during last week's DICOM WG-06 t-con.
+  Also fixed an attribute name change in "dcmrt" due to retirement.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+           dcmrt/libsrc/drtarics.cc
+
+- Added support for new UIDs from Supplement 121:
+  Added support for new Storage and Query/Retrieve SOP Class UIDs from
+  Supplement 121 (CT Protocol Storage).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
+- Added support for Supplement 121 to dictionary:
+  Added support for the final text version of Supplement 121 (CT Protocol
+  Storage) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2016.09.10 (onken)
+
+- Corrected value checking and setters for VM > 1:
+  Some value checks have been filling the VM parameter incorrectly by providing
+  the value type (like "1C") instead, leading to an error if value checking is
+  not disabled.
+  Thanks to Andrey Fedorov <andrey.fedorov@gmail.com> for the bug report.
+  Also, some type of values (e.g. Floating Point Value) allow more than one
+  value which is now possible using an optional parameter in the related setter()
+  method.
+  Affects: dcmiod/include/dcmtk/dcmiod/iodcontentitemmacro.h
+           dcmiod/libsrc/iodcontentitemmacro.cc
+
+**** Changes from 2016.09.05 (onken)
+
+- Fixed typos and other enhancements.
+  Affects: dcmpmap/docs/dcmpmap.dox
+
+**** Changes from 2016.09.02 (onken)
+
+- Make sure setValueType() sets correct string value:
+  Due to a copy/paste error setValueType() has constantly set the value "CODE"
+  instead of the value provided by the user.
+  Affects: dcmiod/libsrc/iodcontentitemmacro.cc
+
+**** Changes from 2016.09.01 (onken)
+
+- Remove default value for first parameter:
+  Remove default value for first method parameter in constructor
+  since otherwise Visual Studio moans that it overlaps with the
+  default constructor (which is undefined and private, though).
+  Affects: dcmiod/include/dcmtk/dcmiod/iodmacro.h
+
+- Introduced new module dcmpmap for Parametric Maps:
+  The new dcmpmap module offers an API for creation, loading, accessing and
+  saving DICOM Parametric Map objects as introduced in DICOM Supplement 172.
+  All binary data types supported by the standard (16 bit signed and unsigned
+  integer as well as 32 bit and 64 bit floating point data) are handled by the
+  library.
+  Acknowledgement: This work has been supported in part by the "QIICR" project.
+  QIICR is supported by NIH National Cancer Institute, award U24 CA180918.
+  Added:   dcmfg/include/dcmtk/dcmfg/fgframeanatomy.h
+           dcmfg/include/dcmtk/dcmfg/fgidentpixeltransform.h
+           dcmfg/include/dcmtk/dcmfg/fgparametricmapframetype.h
+           dcmfg/libsrc/fgframeanatomy.cc
+           dcmfg/libsrc/fgidentpixeltransform.cc
+           dcmfg/libsrc/fgparametricmapframetype.cc
+           dcmiod/include/dcmtk/dcmiod/iodcontentitemmacro.h
+           dcmiod/include/dcmtk/dcmiod/modfloatingpointimagepixel.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixelbase.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h
+           dcmiod/libsrc/iodcontentitemmacro.cc
+           dcmiod/libsrc/modfloatingpointimagepixel.cc
+           dcmiod/libsrc/modimagepixelbase.cc
+           dcmiod/tests/timagepixel.cc
+           dcmpmap/CMakeLists.txt
+           dcmpmap/Makefile.in
+           dcmpmap/configure
+           dcmpmap/data/Makefile.in
+           dcmpmap/docs/Makefile.in
+           dcmpmap/docs/dcmpmap.dox
+           dcmpmap/etc/Makefile.in
+           dcmpmap/include/CMakeLists.txt
+           dcmpmap/include/Makefile.in
+           dcmpmap/include/dcmtk/dcmpmap/dpmdef.h
+           dcmpmap/include/dcmtk/dcmpmap/dpmmodparametricmapimage.h
+           dcmpmap/include/dcmtk/dcmpmap/dpmmodparametricmapseries.h
+           dcmpmap/include/dcmtk/dcmpmap/dpmparametricmapbase.h
+           dcmpmap/include/dcmtk/dcmpmap/dpmparametricmapiod.h
+           dcmpmap/include/dcmtk/dcmpmap/dpmtypes.h
+           dcmpmap/libsrc/CMakeLists.txt
+           dcmpmap/libsrc/Makefile.dep
+           dcmpmap/libsrc/Makefile.in
+           dcmpmap/libsrc/dpmmodparametricmapimage.cc
+           dcmpmap/libsrc/dpmmodparametricmapseries.cc
+           dcmpmap/libsrc/dpmparametricmapbase.cc
+           dcmpmap/libsrc/dpmparametricmapiod.cc
+           dcmpmap/libsrc/dpmtypes.cc
+           dcmpmap/tests/Makefile.dep
+           dcmpmap/tests/Makefile.in
+           ofstd/include/dcmtk/ofstd/ofvriant.h
+           ofstd/include/dcmtk/ofstd/variadic/helpers.h
+           ofstd/include/dcmtk/ofstd/variadic/variant.h
+           ofstd/tests/tvariant.cc
+  Removed: dcmiod/libsrc/iodimage.cc
+  Affects: CMakeLists.txt
+           Makefile
+           config/modules
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmfg/include/dcmtk/dcmfg/fgderimg.h
+           dcmfg/include/dcmtk/dcmfg/fgfracon.h
+           dcmfg/include/dcmtk/dcmfg/fginterface.h
+           dcmfg/include/dcmtk/dcmfg/fgrealworldvaluemapping.h
+           dcmfg/include/dcmtk/dcmfg/fgtypes.h
+           dcmfg/include/dcmtk/dcmfg/stack.h
+           dcmfg/libsrc/CMakeLists.txt
+           dcmfg/libsrc/Makefile.dep
+           dcmfg/libsrc/fgbase.cc
+           dcmfg/libsrc/fgderimg.cc
+           dcmfg/libsrc/fgfact.cc
+           dcmfg/libsrc/fgfracon.cc
+           dcmfg/libsrc/fgframevoilut.cc
+           dcmfg/libsrc/fgimagedatatype.cc
+           dcmfg/libsrc/fginterface.cc
+           dcmfg/libsrc/fgpixmsr.cc
+           dcmfg/libsrc/fgplanor.cc
+           dcmfg/libsrc/fgplanorvol.cc
+           dcmfg/libsrc/fgplanpo.cc
+           dcmfg/libsrc/fgplanposvol.cc
+           dcmfg/libsrc/fgrealworldvaluemapping.cc
+           dcmfg/libsrc/fgseg.cc
+           dcmfg/libsrc/fgtypes.cc
+           dcmfg/libsrc/fgusimagedescription.cc
+           dcmiod/include/dcmtk/dcmiod/iodcommn.h
+           dcmiod/include/dcmtk/dcmiod/iodimage.h
+           dcmiod/include/dcmtk/dcmiod/iodmacro.h
+           dcmiod/include/dcmtk/dcmiod/iodutil.h
+           dcmiod/include/dcmtk/dcmiod/modbase.h
+           dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h
+           dcmiod/include/dcmtk/dcmiod/modenhequipment.h
+           dcmiod/include/dcmtk/dcmiod/modequipment.h
+           dcmiod/include/dcmtk/dcmiod/modfor.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixel.h
+           dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h
+           dcmiod/include/dcmtk/dcmiod/modsynchronisation.h
+           dcmiod/libsrc/CMakeLists.txt
+           dcmiod/libsrc/Makefile.dep
+           dcmiod/libsrc/Makefile.in
+           dcmiod/libsrc/iodcommn.cc
+           dcmiod/libsrc/iodmacro.cc
+           dcmiod/libsrc/modbase.cc
+           dcmiod/libsrc/modcommoninstanceref.cc
+           dcmiod/libsrc/modenhequipment.cc
+           dcmiod/libsrc/modequipment.cc
+           dcmiod/libsrc/modfor.cc
+           dcmiod/libsrc/modimagepixel.cc
+           dcmiod/libsrc/modmultiframedimension.cc
+           dcmiod/libsrc/modmultiframefg.cc
+           dcmiod/libsrc/modsynchronization.cc
+           dcmiod/libsrc/modusfor.cc
+           dcmiod/tests/CMakeLists.txt
+           dcmiod/tests/Makefile.dep
+           dcmiod/tests/Makefile.in
+           dcmiod/tests/tests.cc
+           dcmnet/libsrc/dstorscu.cc
+           dcmseg/include/dcmtk/dcmseg/segdoc.h
+           dcmseg/libsrc/Makefile.dep
+           dcmseg/libsrc/segdoc.cc
+           dcmtract/libsrc/Makefile.dep
+           doxygen/htmldocs.dox
+           ofstd/include/dcmtk/ofstd/oftraits.h
+           ofstd/include/dcmtk/ofstd/ofutil.h
+           ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/ofstd.cc
+           ofstd/tests/CMakeLists.txt
+           ofstd/tests/Makefile.dep
+           ofstd/tests/Makefile.in
+           ofstd/tests/tests.cc
+
+**** Changes from 2016.08.23 (riesmeier)
+
+- Fixed typos in comments and log output.
+  Affects: config/Makefile.def.in
+           dcmnet/libsrc/dulparse.cc
+
+**** Changes from 2016.08.22 (onken)
+
+- Optimized iterator usage to speed up execution.
+  Affects: dcmfg/libsrc/fg.cc
+           dcmfg/libsrc/fginterface.cc
+
+**** Changes from 2016.08.06 (onken)
+
+- Updated copyright.
+  Affects: dcmiod/include/dcmtk/dcmiod/iodcommn.h
+           dcmiod/libsrc/iodcommn.cc
+
+- Create SourceImageItem from DcmDataset as input:
+  Thanks to Christian Herz <cherz@bwh.harvard.edu> for the suggested patch.
+  Affects: dcmfg/include/dcmtk/dcmfg/fgderimg.h
+           dcmfg/libsrc/fgderimg.cc
+
+- Moved import..() functionality into IODCommon:
+  Moved import...() into base class of IOD classes in order to make it usable
+  from all derived IOD implementations, e.g. Segmentation IOD in dcmseg, which
+  directly offered this function before, and Parametric Maps IOD in dcmpmap.
+  Affects: dcmiod/include/dcmtk/dcmiod/iodcommn.h
+           dcmiod/libsrc/iodcommn.cc
+           dcmseg/include/dcmtk/dcmseg/segdoc.h
+           dcmseg/libsrc/segdoc.cc
+
+**** Changes from 2016.08.03 (onken)
+
+- Switched VR and VM in comment.
+  Affects: dcmiod/include/dcmtk/dcmiod/modgeneralstudy.h
+
+**** Changes from 2016.07.27 (riesmeier)
+
+- Fixed warnings with Clang -Wparentheses-equality:
+  Fixed warnings reported by Clang compiler, which uses -Wparentheses-equality
+  by default, i.e. removed extraneous parentheses around equality comparison.
+  Also fixed various typos in comments.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
+**** Changes from 2016.07.25 (riesmeier)
+
+- Added explicit type cast to avoid warning:
+  Added explicit typecast to a parameter value in order to avoid a warning
+  reported by MSVC++ on Windows 64-bit systems.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+- Changed type of local variable to avoid warning:
+  Changed type of local variable from size_t to unsigned long in order to
+  avoid a warning reported by MSVC++ on Windows 64-bit systems.
+  Affects: dcmjpeg/libsrc/ddpiimpl.cc
+
+**** Changes from 2016.07.19 (hasenpusch)
+
+- Fixed and refactored mutex & rwlock tests:
+  Made sure thread 2 starts after thread 1 claims the first lock.
+  Closes DCMTK bug #689.
+  Affects: ofstd/tests/tthread.cc
+
+**** Changes from 2016.07.18 (riesmeier)
+
+- Fixed typos in comments.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrsoprf.h
+           dcmsr/libcmr/cid5000.cc
+           oflog/include/dcmtk/oflog/oflog.h
+           oflog/libsrc/oflog.cc
+
+**** Changes from 2016.07.08 (hasenpusch)
+
+- Fixed potential buffer overflow in libcharls:
+  Libcharls' encoding facility now reallocates the given target buffer if
+  the initial capacity happens to be too small.
+  Closes DCMTK bug #688.
+  Affects: dcmjpls/libcharls/decodstr.h
+           dcmjpls/libcharls/encodstr.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/intrface.cc
+           dcmjpls/libcharls/intrface.h
+           dcmjpls/libcharls/pubtypes.h
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/streams.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/djcodece.cc
+
 **** Changes from 2016.06.30 (schlamelcher)
 
 - Updated CHANGES.361 for new development snapshot.
