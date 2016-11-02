@@ -42,7 +42,7 @@ SET(DCMTK_MINOR_VERSION 6)
 SET(DCMTK_BUILD_VERSION 1)
 # The ABI is not guaranteed to be stable between different snapshots/releases,
 # so this particular version number is increased for each snapshot or release.
-SET(DCMTK_ABI_VERSION 9)
+SET(DCMTK_ABI_VERSION 10)
 
 # Package "release" settings (some are currently unused and, therefore, disabled)
 SET(DCMTK_PACKAGE_NAME "dcmtk")
