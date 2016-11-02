@@ -24,6 +24,16 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+/** @file
+ *  Declares OFvariant and related functionality.
+ *  @defgroup ofvisit_variant OFvisit &ndash; OFvariant
+ *  Apply a visitor to an OFvariant object.
+ *  @see @ref ofget_variant "OFget" &ndash; @copybrief ofget_variant
+ *  @defgroup ofget_variant OFget &ndash; OFvariant
+ *  Get a pointer to the value stored in an OFvariant holding the selected alternative.
+ *  @see @ref ofvisit_variant "OFvisit" &ndash; @copybrief ofvisit_variant
+ */
+
 #ifdef DCMTK_USE_CXX11_STL
 #include <type_traits>
 #include <cassert>
@@ -366,11 +376,361 @@ ReturnType OFvisit( FN&& fn, const OFvariant<Alternatives...>& v )
 
 #else // NOT C++11 && NOT DOXYGEN
 
-// TODO
+/** A class template that represents a type-safe union.
+ *  <b><em>#include</em> "dcmtk/ofstd/ofvriant.h"</b> for using this class<br>
+ *  @headerfile ofvriant.h "dcmtk/ofstd/ofvriant.h"
+ *  @tparam Alternatives a set of types that may be stored in this variant. All types must be (possibly
+ *    cv-qualified) object types.
+ *  @details
+ *  OFvariant is a custom implementation of a subset of C++17's std::variant,
+ *  see http://en.cppreference.com/w/cpp/utility/variant for a description of std::variant.
+ *  An instance of OFvariant at any given time holds a value of one of its alternative types.
+ *  As with unions, if a variant holds a value of some object type T, the object representation of T is
+ *  allocated directly within the object representation of the variant itself if possible.
+ *  @note If no suitable alignment specifiers were available for the target platform, OFvariant will
+ *    use a fallback implementation that stores the alternative on the heap &ndash; as opposite to std::variant.
+ *  @details
+ *  The preferred way to access an OFvariant object is visitation utilizing @ref ofvisit_variant "OFvisit".
+ *  If a certain alternative is expected to be held by the variant, @ref ofget_variant "OFget" may be used to
+ *  access it directly.
+ *  @see @ref ofvisit_variant "OFvisit" &ndash; @copybrief ofvisit_variant
+ *  @see @ref ofget_variant "OFget" &ndash; @copybrief ofget_variant
+ *  @see OFmonostate &ndash; @copybrief OFmonostate
+ *  @see @ref OFin_place_helpers "OFin_place" &ndash; @copydoc OFin_place_helpers_brief
+ */
+template<typename... Alternatives>
+class OFvariant
+{
+public:
+
+    /** Constructs a variant holding a default constructed value of the first alternative.
+     *  @pre The first alternative must be default constructible.
+     *  @see OFmonostate &ndash; @copybrief OFmonostate
+     */
+    OFvariant();
+
+    /** Copy constructs a variant holding a copy of the value rhs holds.
+     *  @param rhs a const reference to another object of equal type.
+     *  @pre All alternatives must be copy constructible.
+     */
+    OFvariant( const OFvariant& rhs );
+
+    /** Move constructs a variant by moving the value rhs holds.
+     *  @param rhs an rvalue reference to another object of equal type.
+     *  @pre All alternatives must be move constructible.
+     *  @note This constructor is currently only available if C++11 support was enabled.
+     */
+    OFvariant( OFvariant&& rhs );
+
+    /** Constructs a variant holding the alternative that most closely matches the given
+     *  argument.
+     *  @tparam T the type of the argument, will be deduced automatically.
+     *  @param t an object of type `T` that will be converted to one of the alternatives.
+     *  @precondition There must be at least one alternative that can be constructed from
+     *    the given parameter `t` and there must be exactly one such alternative that
+     *    takes precedence over the others.
+     *  @attention t will be perfectly forwarded if C++11 support is available, i.e. the
+     *    alternative may be move constructed from `t` if possible. Support for perfect
+     *    forwarding is NOT available without C++11 support, therefore the alternative
+     *    will be copy constructed in this case, this means: <b>the selected alternative
+     *    must be copy constructible if pre C++11 compilers shall be supported</b>.
+     *  @details
+     *  <h3>Usage Example:</h3>
+     *  @code{.cpp}
+     *  OFvariant<int,float,long>( 3 );      // OK
+     *  OFvariant<int,int>( 3 );             // ill formed, both alternatives take equal precedence
+     *  OFvariant<OFString,OFBool>( "abc" ); // OK, but chooses OFBool!
+     *  @endcode
+     */
+    template<typename T>
+    OFvariant( T t );
+
+    /** Destroys the value that the variant currently holds.
+     */
+    ~OFvariant();
+
+    /** Copy assigns the value rhs holds to *this.
+     *  @param rhs a const reference to another object of equal type.
+     *  @pre all alternatives must be copy constructible and copy assignable.
+     *  @return `*this`
+     *  @post
+     *  @li if `*this` and `rhs` hold the same alternative, the value contained in `rhs`
+     *    is copy assigned to the value contained in `*this`.
+     *  @li if `*this` and `rhs` hold different alternatives, the value contained in `*this`
+     *    is destroyed and a new one is copy constructed from the value contained in `rhs`.
+     */
+    OFvariant& operator=( const OFvariant& rhs );
+
+    /** Move assigns the value rhs holds to *this.
+     *  @param rhs an rvalue reference to another object of equal type.
+     *  @pre all alternatives must be move constructible and move assignable.
+     *  @return `*this`
+     *  @post
+     *  @li if `*this` and `rhs` hold the same alternative, the value contained in `rhs`
+     *    is move assigned to the value contained in `*this`.
+     *  @li if `*this` and `rhs` hold different alternatives, the value contained in `*this`
+     *    is destroyed and a new one is move constructed from the value contained in `rhs`.
+     *  @note This constructor is currently only available if C++11 support was enabled.
+     */
+    OFvariant& operator=( OFvariant&& rhs );
+
+    /** Converts the given argument to one of the alternatives and assigns it to *this.
+     *  @tparam T the type of the argument, will be deduced automatically.
+     *  @param t an object of type `T` that will be converted to one of the alternatives
+     *    for assignment.
+     *  @return `*this`
+     *  @pre There must be at least one alternative that can be constructed from
+     *    the given parameter `t` and there must be exactly one such alternative that
+     *    takes precedence over the others.
+     *  @attention `t` will be perfectly forwarded if C++11 support is available, i.e. the
+     *    alternative may be move constructed from t if possible. Support for perfect
+     *    forwarding is NOT available without C++11 support, therefore the alternative
+     *    will be copy constructed in this case, this means: <b>the selected alternative
+     *    must be copy constructible if pre C++11 compilers shall be supported</b>.
+     *  @details
+     *  <h3>Usage Example:</h3>
+     *  @code{.cpp}
+     *  OFvariant<int,float,long> v1;
+     *  v1 = 3                         // OK
+     *  OFvariant<int,int> v2;
+     *  v2 = 3                         // ill formed, both alternatives take equal precedence
+     *  OFvariant<OFString,OFBool> v3;
+     *  v3 = "abc";                    // OK, but chooses OFBool!
+     *  @endcode
+     */
+    template<typename T>
+    OFvariant& operator=( T t );
+
+    /** Get the index of alternative that is currently being held.
+     *  @return the zero based index of that alternative that is currently being held by
+     *    `*this`, i.e. `0` for the first alternative, `1` for the second, etc.
+     */
+    size_t index() const;
+};
+
+/** Try to get a pointer to the given alternative from an OFvariant object.
+ *  @ingroup ofget_variant
+ *  @relates OFvariant
+ *  @tparam Alternative the chosen alternative that shall be accessed.
+ *  @tparam Alternatives the alternatives the given variant could hold, will be deduced
+ *    automatically.
+ *  @param v a reference to an OFvariant object potentially holding `Alternative`.
+ *  @return the address of the contained value of type `Alternative` if such a value is
+ *    contained. `OFnullptr` otherwise.
+ *  @details
+ *  <h3>Usage Example:</h3>
+ *  @code{.cpp}
+ *  OFvariant<int,OFString> v;
+ *  // ... some value is assigned to v ...
+ *  if( int* pI = OFget<int>( v ) )
+ *  {
+ *    COUT << "Yes, it really is an int with the value " << *pI << '!' << OFendl;
+ *    *pI = "27"; // now, let's directly assign something else
+ *  }
+ *  @endcode
+ */
+template<typename Alternative,typename... Alternatives>
+Alternative* OFget( OFvariant<Alternatives...>* v );
+
+/** Try to get a pointer to the given alternative from an OFvariant object.
+ *  @ingroup ofget_variant
+ *  @relates OFvariant
+ *  @tparam Alternative the chosen alternative that shall be accessed.
+ *  @tparam Alternatives the alternatives the given variant could hold, will be deduced
+ *    automatically.
+ *  @param v a const reference to an OFvariant object potentially holding `Alternative`.
+ *  @return the address of the contained value of type `const Alternative` if such a value is
+ *    contained. `OFnullptr` otherwise.
+ *  @details
+ *  <h3>Usage Example:</h3>
+ *  @code{.cpp}
+ *  const OFvariant<int,OFString> v( ... some value is assigned to v ... );
+ *  if( int* pI = OFget<int>( v ) )        // error, the result is const!
+ *  if( const int* pI = OFget<int>( v ) )  // OK
+ *  {
+ *    COUT << "Yes, it really is an int with the value " << *pI << '!' << OFendl;
+ *    *pI = "27"; // Error, *pI is const!
+ *  }
+ *  @endcode
+ */
+template<typename Alternative,typename... Alternatives>
+const Alternative* OFget( const OFvariant<Alternatives...>* v );
+
+/** Applies the given visitor to the given OFvariant object.
+ *  @ingroup ofvisit_variant
+ *  @relates OFvariant
+ *  @details@anchor ofget_alternative_const_variant
+ *  @tparam Result the type of the returned value. Pre C++11 compiles do not allow determining the
+ *    result type automatically in a portable way, therefore, it must be explicitly given by
+ *    the caller.
+ *  @tparam Visitor the type of the visitor, will be deduced automatically.
+ *  @tparam Alternatives the alternatives the given variant could hold, will be deduced
+ *    automatically.
+ *  @param visitor the visitor that will be invoked with the alternative currently being
+ *    held by the given OFvariant object.
+ *  @param v a reference to an OFvariant object that is going to be visited.
+ *  @return Let `CurrentAlternative` be the alternative that v currently holds: the result
+ *    of `visitor( *OFget<CurrentAlternative>( &v ) )` will be converted to `Result` and then
+ *    returned.
+ *  @pre all possible results must be convertible to `Result`.
+ *  @pre `visitor` must be able to take all possible alternatives.
+ *  @note If C++11 support is available, the visitor will be forwarded using perfect forwarding.
+ *    If not, the visitor may be copy constructed at least once, therefore, the visitor needs
+ *    to be copy constructible when pre C++11 compilers are targeted.
+ *  @details
+ *  <h3>Usage Example:</h3>
+ *  @code{.cpp}
+ *  struct PowerVisitor
+ *  {
+ *      template<typename Number>
+ *      Number operator()( Number number )
+ *      {
+ *          return number * number;
+ *      }
+ *  };
+ *  struct PrintVisitor
+ *  {
+ *      template<typename Number>
+ *      void operator()( Number number )
+ *      {
+ *          COUT << number << OFendl;
+ *      }
+ *  };
+ *  struct AssignVisitor
+ *  {
+ *      template<typename Number>
+ *      void operator()( Number& number )
+ *      {
+ *          number *= number;
+ *      }
+ *  };
+ *  // ...
+ *  OFvariant<int,float,double> v( 3.14 );
+ *  OFvariant<int,float,double> result = OFvisit<OFvariant<int,float,double> >( PowerVisitor(), v );
+ *  switch( result.index() )
+ *  {
+ *  case 0: COUT << "int "; break;
+ *  case 1: COUT << "float "; break;
+ *  case 2: COUT << "double "; break;
+ *  }
+ *  OFvisit<void>( PrintVisitor(), result );
+ *  COUT << "double " << OFvisit<double>( PowerVisitor(), v ) << OFendl;   // OK, every alternative fits inside double
+ *  COUT << "int " << OFvisit<int>( PowerVisitor(), v ) << OFendl;         // OK, value will be truncated!
+ *  COUT << "string " << OFvisit<OFString>( PowerVisitor(), v ) << OFendl; // ERROR!
+ *  OFvisit<void>( AssignVisitor(), v );
+ *  OFvisit<void>( PrintVisitor(), v );
+ *  @endcode
+ *  <b>Output (if the error was removed):</b>
+ *  @verbatim
+    double 9.8596
+    double 9.8596
+    int 9
+    9.8596
+    @endverbatim
+ */
+template<typename Result,typename Visitor,typename... Alternatives>
+Result OFvisit( Visitor visitor, OFvariant<Alternatives...>& v );
+
+/** Applies the given visitor to the given OFvariant object.
+ *  @ingroup ofvisit_variant
+ *  @relates OFvariant
+ *  @tparam Result the type of the returned value. Pre C++11 compiles do not allow determining the
+ *    result type automatically in a portable way, therefore, it must be explicitly given by
+ *    the caller.
+ *  @tparam Visitor the type of the visitor, will be deduced automatically.
+ *  @tparam Alternatives the alternatives the given variant could hold, will be deduced
+ *    automatically.
+ *  @param visitor the visitor that will be invoked with the alternative currently being
+ *    held by the given OFvariant object.
+ *  @param v a const reference to an OFvariant object that is going to be visited.
+ *  @return Let `CurrentAlternative` be the alternative that v currently holds: the result
+ *    of `visitor( *OFget<CurrentAlternative>( &v ) )` will be converted to `Result` and then
+ *    returned.
+ *  @pre all possible results must be convertible to `Result`.
+ *  @pre `visitor` must be able to take all possible alternatives.
+ *  @note If C++11 support is available, the visitor will be forwarded using perfect forwarding.
+ *    If not, the visitor may be copy constructed at least once, therefore, the visitor needs
+ *    to be copy constructible when pre C++11 compilers are targeted.
+ *  @details
+ *  <h3>Usage Example:</h3>
+ *  @code{.cpp}
+ *  struct PowerVisitor
+ *  {
+ *      template<typename Number>
+ *      Number operator()( Number number )
+ *      {
+ *          return number * number;
+ *      }
+ *  };
+ *  struct PrintVisitor
+ *  {
+ *      template<typename Number>
+ *      void operator()( Number number )
+ *      {
+ *          COUT << number << OFendl;
+ *      }
+ *  };
+ *  struct AssignVisitor
+ *  {
+ *      template<typename Number>
+ *      void operator()( Number& number )
+ *      {
+ *          number *= number;
+ *      }
+ *  };
+ *  // ...
+ *  const OFvariant<int,float,double> v( 3.14 );
+ *  OFvariant<int,float,double> result = OFvisit<OFvariant<int,float,double> >( PowerVisitor(), v );
+ *  switch( result.index() )
+ *  {
+ *  case 0: COUT << "int "; break;
+ *  case 1: COUT << "float "; break;
+ *  case 2: COUT << "double "; break;
+ *  }
+ *  OFvisit<void>( PrintVisitor(), result );
+ *  COUT << "double " << OFvisit<double>( PowerVisitor(), v ) << OFendl;   // OK, every alternative fits inside double
+ *  COUT << "int " << OFvisit<int>( PowerVisitor(), v ) << OFendl;         // OK, value will be truncated!
+ *  COUT << "string " << OFvisit<OFString>( PowerVisitor(), v ) << OFendl; // ERROR!
+ *  OFvisit<void>( AssignVisitor(), v );                                   // ERROR, v is const!
+ *  OFvisit<void>( PrintVisitor(), v );
+ *  @endcode
+ *  <b>Output (if the errors were removed):</b>
+ *  @verbatim
+    double 9.8596
+    double 9.8596
+    int 9
+    3.14
+    @endverbatim
+ */
+template<typename Result,typename Visitor,typename... Alternatives>
+Result OFvisit( Visitor visitor, const OFvariant<Alternatives...>& v );
 
 #endif // DOXYGEN
 
-/// TODO
+/** A helper type for making OFvariant default constructible.
+ *  @relates OFvariant
+ *  @details
+ *  Use OFmonostate as the first alternative of an OFvariant otherwise holding a non default constructible type as
+ *  the first alternative for making the variant itself default constructible.
+ *  @note Be aware that any visitor applied to such an OFvariant object must also accept OFmonostate as an argument.
+ *  @details
+ *  <h3>Example</h3>
+ *  @code{.cpp}
+ *  template<typename T>
+ *  struct NonDefaultConstructible
+ *  {
+ *      NonDefaultConstructible( T t ) : value( t ) {}
+ *      T value;
+ *  };
+ *  typedef NonDefaultConstructible<int>   nint;
+ *  typedef NonDefaultConstructible<float> nfloat;
+ *  // ...
+ *  OFvariant<nint,nfloat> v( 3 );        // OK, but what if we don't know the value yet?
+ *  OFvariant<nint,nfloat> v;             // ERROR!
+ *  OFvariant<OFmonostate,nint,nfloat> v; // OK
+ *  v = 3;                                // assign the value when it's known
+ *  @endcode
+ */
 struct OFmonostate {};
 
 #endif // OFVARIANT_H

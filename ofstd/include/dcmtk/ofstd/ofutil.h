@@ -537,34 +537,343 @@ const typename OFtuple_element<Index,Tuple>::type& OFget( const Tuple& tuple );
 
 #endif // NOT C++11
 
-/** TODO
- */
+#ifndef DOXYGEN
+
+// OFin_place hacks, look at the doxygen documentation instead if
+// you know what's good for you!
 class DCMTK_OFSTD_EXPORT OFin_place_tag { OFin_place_tag(); };
-
-/** TODO
- */
 typedef OFin_place_tag(&OFin_place_t)();
-
-/** TODO
- */
 #define OFin_place_type_t(T) OFin_place_tag(&)(T&)
-
-/** TODO
- */
 #define OFin_place_index_t(I) OFin_place_tag(&)(OFintegral_constant<size_t,I>&)
-
-/** TODO
- */
 DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place();
-
-/** TODO
- */
 template<typename T>
 OFin_place_tag OFin_place(T&) { return OFin_place(); }
-
-/** TODO
- */
 template<size_t I>
 OFin_place_tag OFin_place(OFintegral_constant<size_t,I>&) { return OFin_place(); }
+
+#else // NOT DOXYGEN
+
+/** @defgroup OFin_place_helpers_brief
+ *  @details Tools for in-place construction of objects, e.g. certain OFvariant alternatives.
+ *  @defgroup OFin_place_helpers Tools for in-place construction
+ *  @details
+ *  <b><em style="color:#7f0000">#include</em> <span class="keyword">"dcmtk/ofstd/ofutil.h"</span></b><br><br>
+ *  @copydoc OFin_place_helpers_brief
+ *  <table class="memberdecls">
+ *    <tr class="heading">
+ *      <td colspan="2"><div><h2 class="groupheader">Type Definitions</h2></div></td>
+ *    </tr>
+ *    <tr>
+ *      <td class="memItemLeft" align="right" valign="top"><span class="keyword">typedef</span> <em style="color:#7f0000;opacity:.7">unspecified</em></td>
+ *      <td class="memItemRight" valign="bottom"><a href="#OFin_place_t">OFin_place_t</a></td>
+ *    </tr>
+ *    <tr>
+ *      <td class="mdescLeft"></td>
+ *      <td class="mdescRight">A type for tagging an in-place constructor as such. <a href="#OFin_place_t">More...</a></td>
+ *    </tr>
+ *    <tr><td class="memSeparator" colspan="2"></td></tr>
+ *    <tr><td class="memTemplParams" colspan="2">template&lt;typename T&gt;</td></tr>
+ *    <tr>
+ *      <td class="memItemLeft" align="right" valign="top"><span class="keyword">typedef</span> <em style="color:#7f0000;opacity:.7">unspecified</em></td>
+ *      <td class="memItemRight" valign="bottom"><a href="#OFin_place_type_t">OFin_place_type_t(T)</a></td>
+ *    </tr>
+ *    <tr>
+ *      <td class="mdescLeft"></td>
+ *      <td class="mdescRight">A type for tagging an in-place constructor for a certain type as such. <a href="#OFin_place_type_t">More...</a></td>
+ *    </tr>
+ *    <tr><td class="memSeparator" colspan="2"></td></tr>
+ *    <tr><td class="memTemplParams" colspan="2">template&lt;size_t I&gt;</td></tr>
+ *    <tr>
+ *      <td class="memItemLeft" align="right" valign="top"><span class="keyword">typedef</span> <em style="color:#7f0000;opacity:.7">unspecified</em></td>
+ *      <td class="memItemRight" valign="bottom"><a href="#OFin_place_index_t">OFin_place_index_t(I)</a></td>
+ *    </tr>
+ *    <tr>
+ *      <td class="mdescLeft"></td>
+ *      <td class="mdescRight">A type for tagging an in-place constructor based on a certain index  as such. <a href="#OFin_place_index_t">More...</a></td>
+ *    </tr>
+ *    <tr><td class="memSeparator" colspan="2"></td></tr>
+ *  </table>
+ *  <table class="memberdecls">
+ *    <tr class="heading">
+ *      <td colspan="2"><div><h2 class="groupheader">Global Constants</h2></div></td>
+ *    </tr>
+ *    <tr>
+ *      <td class="memItemLeft" align="right" valign="top"><a href="#OFin_place_t">OFin_place_t</a></td>
+ *      <td class="memItemRight" valign="bottom"><a href="#OFin_place_generic">OFin_place</a></td>
+ *    </tr>
+ *    <tr>
+ *      <td class="mdescLeft"></td>
+ *      <td class="mdescRight">
+ *        A constant of type <a href="#OFin_place_t">OFin_place_t</a> that may be used for in-place construction.
+ *        <a href="#OFin_place_generic">More...</a>
+ *      </td>
+ *    </tr>
+ *    <tr><td class="memSeparator" colspan="2"></td></tr>
+ *    <tr><td class="memTemplParams" colspan="2">template&lt;typename T&gt;</td></tr>
+ *    <tr>
+ *      <td class="memItemLeft" align="right" valign="top"><a href="#OFin_place_type_t">OFin_place_type_t(T)</a></td>
+ *      <td class="memItemRight" valign="bottom"><a href="#OFin_place_type">OFin_place&lt;T&gt;</a></td>
+ *    </tr>
+ *    <tr>
+ *      <td class="mdescLeft"></td>
+ *      <td class="mdescRight">
+ *        A constant of type <a href="#OFin_place_type_t">OFin_place_type_t(T)</a> that may be used for in-place construction.
+ *        <a href="#OFin_place_type">More...</a>
+ *      </td>
+ *    </tr>
+ *    <tr><td class="memSeparator" colspan="2"></td></tr>
+ *    <tr><td class="memTemplParams" colspan="2">template&lt;size_t I&gt;</td></tr>
+ *    <tr>
+ *      <td class="memItemLeft" align="right" valign="top"><a href="#OFin_place_index_t">OFin_place_index_t(I)</a></td>
+ *      <td class="memItemRight" valign="bottom"><a href="#OFin_place_index">OFin_place&lt;I&gt;</a></td>
+ *    </tr>
+ *    <tr>
+ *      <td class="mdescLeft"></td>
+ *      <td class="mdescRight">
+ *        A constant of type <a href="#OFin_place_index_t">OFin_place_index_t(I)</a> that may be used for in-place construction.
+ *        <a href="#OFin_place_index">More...</a>
+ *      </td>
+ *    </tr>
+ *    <tr><td class="memSeparator" colspan="2"></td></tr>
+ *  </table>
+ *  <h2 class="groupheader">Type Definition Documentation</h2>
+ *  @anchor OFin_place_t
+ *  <div class="memitem">
+ *    <div class="memproto">
+ *      <div class="memname">
+ *        <span class="keyword">typedef</span> <em style="color:#7f0000;opacity:.7">unspecified</em> OFin_place_t
+ *      </div>
+ *    </div>
+ *    <div class="memdoc">
+ *      <br>A type for tagging an in-place constructor as such.<br>
+ *      <dl></dl>
+ *      <b>Usage Example:</b><br>
+ *      @code{.cpp}
+ *      template<typename T>
+ *      class Wrapper
+ *      {
+ *      public:
+ *        // Will copy construct the wrapped value from a T.
+ *        Wrapper( const T& t );
+ *
+ *        // Will in-place construct the value from the given arguments,
+ *        // calling T( arguments... ) internally, without unnecessary
+ *        // copies.
+ *        template<typename... Arguments>
+ *        Wrapper( OFin_place_t, Arguments... arguments );
+ *
+ *      private:
+ *        // ... wrapper implementation ...
+ *      };
+ *      @endcode
+ *    </div>
+ *  </div>
+ *  @anchor OFin_place_type_t
+ *  <div class="memitem">
+ *    <div class="memproto">
+ *      <div class="memtemplate">template<typename T></div>
+ *      <div class="memname">
+ *        <span class="keyword">typedef</span> <em style="color:#7f0000;opacity:.7">unspecified</em> OFin_place_type_t(T)
+ *      </div>
+ *    </div>
+ *    <div class="memdoc">
+ *      <br>A type for tagging an in-place constructor for a certain type as such.
+ *      <br>
+ *      <dl class="tparams">
+ *        <dt>Template Parameters<dt>
+ *        <dd><span class="paramname">T</span> the type this in-pace constructor handles, i.e. the type that will be constructed.</dd>
+ *      </dl>
+ *      @note Pre C++11 compilers do not support alias templates, therefore, OFin_place_type_t is implemented
+ *        using preprocessor macros internally. This is why you need to use curved brackets instead of angled ones.
+ *
+ *      <b>Usage Example:</b><br>
+ *      @code{.cpp}
+ *      template<typename A,typename B>
+ *      class Union
+ *      {
+ *      public:
+ *        // Will copy construct the wrapped value as an A from a.
+ *        Union( const A& a );
+ *
+ *        // Will copy construct the wrapped value as a B from b.
+ *        Union( const B& b );
+ *
+ *        // Will in-place construct the value as an A from the given
+ *        // arguments, calling A( arguments... ) internally, without
+ *        // unnecessary copies.
+ *        template<typename... Arguments>
+ *        Union( OFin_place_type_t(A), Arguments... arguments );
+ *
+ *        // Will in-place construct the value as a B from the given
+ *        // arguments, calling B( arguments... ) internally, without
+ *        // unnecessary copies.
+ *        template<typename... Arguments>
+ *        Union( OFin_place_type_t(B), Arguments... arguments );
+ *
+ *      private:
+ *        // ... union implementation ...
+ *      };
+ *      @endcode
+ *    </div>
+ *  </div>
+ *  @anchor OFin_place_index_t
+ *  <div class="memitem">
+ *    <div class="memproto">
+ *      <div class="memtemplate">template<size_t I></div>
+ *      <div class="memname">
+ *        <span class="keyword">typedef</span> <em style="color:#7f0000;opacity:.7">unspecified</em> OFin_place_index_t(I)
+ *      </div>
+ *    </div>
+ *    <div class="memdoc">
+ *      <br>A type for tagging an in-place constructor for a certain index as such.<br>
+ *      <dl class="tparams">
+ *        <dt>Template Parameters<dt>
+ *        <dd>
+ *          <span class="paramname">I</span> the index this in-pace constructor handles, i.e. the zero
+ *          based index of the type that will be constructed.
+ *        </dd>
+ *      </dl>
+ *      @note Pre C++11 compilers do not support alias templates, therefore, OFin_place_index_t is implemented
+ *        using preprocessor macros internally. This is why you need to use curved brackets instead of angled ones.
+ *
+ *      <b>Usage Example:</b><br>
+ *      @code{.cpp}
+ *      template<typename A,typename B>
+ *      class Union
+ *      {
+ *      public:
+ *        // Will copy construct the wrapped value as an A from a.
+ *        Union( const A& a );
+ *
+ *        // Will copy construct the wrapped value as a B from b.
+ *        Union( const B& b );
+ *
+ *        // Will in-place construct the value as an A from the given
+ *        // arguments, calling A( arguments... ) internally, without
+ *        // unnecessary copies.
+ *        // This will even work if A and B refer to the same type.
+ *        template<typename... Arguments>
+ *        Union( OFin_place_index_t(0), Arguments... arguments );
+ *
+ *        // Will in-place construct the value as a B from the given
+ *        // arguments, calling B( arguments... ) internally, without
+ *        // unnecessary copies.
+ *        // This will even work if A and B refer to the same type.
+ *        template<typename... Arguments>
+ *        Union( OFin_place_index_t(1), Arguments... arguments );
+ *
+ *      private:
+ *        // ... union implementation ...
+ *      };
+ *      @endcode
+ *    </div>
+ *  </div>
+ *  <h2 class="groupheader">Global Constant Documentation</h2>
+ *  @anchor OFin_place_generic
+ *  <div class="memitem">
+ *    <div class="memproto">
+ *      <div class="memname">
+ *        <a href="#OFin_place_t">OFin_place_t</a> OFin_place
+ *      </div>
+ *    </div>
+ *    <div class="memdoc">
+ *      <br>A constant of type <a href="#OFin_place_t">OFin_place_t</a> that may be used for in-place construction.<br>
+ *      @remarks OFin_place is actually an overloaded function, but instead of calling it
+ *        (which one should never do), its address is used as a tag, since the type of
+ *        its address differs depending on which overload and template parameters are used.
+ *        See http://en.cppreference.com/w/cpp/utility/in_place for more information.
+ *
+ *      <b>Usage Example:</b><br>
+ *      @code{.cpp}
+ *      template<typename T>
+ *      class Wrapper; // see OFin_place_t example
+ *      // ...
+ *      // will construct an OFString and then copy construct the value in the wrapper
+ *      Wrapper<OFString>( "Hello World" );
+ *      // will in-place construct the value in the wrapper
+ *      Wrapper<OFString>( OFin_place, "Hello World" );
+ *      // this also works with multiple arguments:
+ *      // will take only the fist five characters of the const char*
+ *      Wrapper<OFString>( OFin_place, "Hello World", 5 );
+ *      @endcode
+ *    </div>
+ *  </div>
+ *  @anchor OFin_place_type
+ *  <div class="memitem">
+ *    <div class="memproto">
+ *      <div class="memtemplate">template<typename T></div>
+ *      <div class="memname">
+ *        <a href="#OFin_place_type_t">OFin_place_type_t(T)</a> OFin_place<T>
+ *      </div>
+ *    </div>
+ *    <div class="memdoc">
+ *      <br>A constant of type <a href="#OFin_place_type_t">OFin_place_type_t(T)</a> that may be used for in-place construction.<br>
+ *      <dl class="tparams">
+ *        <dt>Template Parameters<dt>
+ *        <dd><span class="paramname">T</span> the type for selecting an in-pace constructor, i.e. the type that will be constructed.</dd>
+ *      </dl>
+ *      @remarks OFin_place is actually an overloaded function, but instead of calling it
+ *        (which one should never do), its address is used as a tag, since the type of
+ *        its address differs depending on which overload and template parameters are used.
+ *        See http://en.cppreference.com/w/cpp/utility/in_place for more information.
+ *
+ *      <b>Usage Example:</b><br>
+ *      @code{.cpp}
+ *      template<typename A,typename B>
+ *      class Union; // see OFin_place_type_t example
+ *      // ...
+ *      // will construct an OFString and then copy construct the value inside the union
+ *      Union<int,OFString>( OFString( "Hello World" ) );
+ *      // will in-place construct an OFString value inside the union
+ *      // with only the fist five characters
+ *      Union<int,OFString>( OFin_place<OFString>, "Hello World", 5 );
+ *      // will construct an integer value inside the union by casting
+ *      // the address of the character array constant to int
+ *      Union<int,OFString>( OFin_place<int>, "Hello World" );
+ *      @endcode
+ *    </div>
+ *  </div>
+ *  @anchor OFin_place_index
+ *  <div class="memitem">
+ *    <div class="memproto">
+ *      <div class="memtemplate">template<size_t I></div>
+ *      <div class="memname">
+ *        <a href="#OFin_place_index_t">OFin_place_index_t(I)</a> OFin_place&lt;I&gt;
+ *      </div>
+ *    </div>
+ *    <div class="memdoc">
+ *      <br>A constant of type <a href="#OFin_place_index_t">OFin_place_index_t(I)</a> that may be used for in-place construction.<br>
+ *      <dl class="tparams">
+ *        <dt>Template Parameters<dt>
+ *        <dd>
+ *          <span class="paramname">I</span> the index for selecting an in-pace constructor, i.e. the
+ *          zero based index of the type that will be constructed.
+ *        </dd>
+ *      </dl>
+ *      @remarks OFin_place is actually an overloaded function, but instead of calling it
+ *        (which one should never do), its address is used as a tag, since the type of
+ *        its address differs depending on which overload and template parameters are used.
+ *        See http://en.cppreference.com/w/cpp/utility/in_place for more information.
+ *
+ *      <b>Usage Example:</b><br>
+ *      @code{.cpp}
+ *      template<typename A,typename B>
+ *      class Union; // see OFin_place_index_t example
+ *      // ...
+ *      // error, cannot determine which constructor shall be used,
+ *      // since both take an int
+ *      Union<int,int>( 3 );
+ *      // will in-place construct an int value inside the union
+ *      // tagging it as an A
+ *      Union<int,int>( OFin_place<0>, 3 );
+ *      // will in-place construct an int value inside the union
+ *      // tagging it as a B
+ *      Union<int,int>( OFin_place<1>, 3 );
+ *      @endcode
+ *    </div>
+ *  </div>
+ */
+
+#endif // DOXYGEN
 
 #endif // OFUTIL_H
