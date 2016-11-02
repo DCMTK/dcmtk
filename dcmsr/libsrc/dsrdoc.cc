@@ -1033,6 +1033,8 @@ OFCondition DSRDocument::readXMLInstanceData(const DSRXMLDocument &doc,
             /* check for known element tags */
             if (doc.matchNode(cursor, "creation"))
             {
+                /* Instance Creator UID */
+                doc.getElementFromAttribute(cursor, InstanceCreatorUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
                 /* Instance Creation Date */
                 DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "date"), tmpString);
                 InstanceCreationDate.putOFStringArray(tmpString);
