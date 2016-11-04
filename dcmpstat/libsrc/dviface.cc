@@ -1357,19 +1357,16 @@ OFBool DVInterface::createIndexCache()
                         if (!series->List.isElem(record.SOPInstanceUID))
                         {
                             DVPSInstanceType type = DVPSI_image;
-                            if (record.Modality != NULL)
-                            {
-                                if (DSRTypes::sopClassUIDToDocumentType(record.SOPClassUID) != DSRTypes::DT_invalid)
-                                    type = DVPSI_structuredReport;
-                                else if (strcmp(record.Modality, "PR") == 0)
-                                    type = DVPSI_presentationState;
-                                else if (strcmp(record.Modality, "SR") == 0)
-                                    type = DVPSI_structuredReport;
-                                else if (strcmp(record.Modality, "HC") == 0)
-                                    type =DVPSI_hardcopyGrayscale;
-                                else if (strcmp(record.Modality, "STORED_PRINT") == 0)
-                                    type = DVPSI_storedPrint;
-                            }
+                            if (DSRTypes::sopClassUIDToDocumentType(record.SOPClassUID) != DSRTypes::DT_invalid)
+                                type = DVPSI_structuredReport;
+                            else if (strcmp(record.Modality, "PR") == 0)
+                                type = DVPSI_presentationState;
+                            else if (strcmp(record.Modality, "SR") == 0)
+                                type = DVPSI_structuredReport;
+                            else if (strcmp(record.Modality, "HC") == 0)
+                                type =DVPSI_hardcopyGrayscale;
+                            else if (strcmp(record.Modality, "STORED_PRINT") == 0)
+                                type = DVPSI_storedPrint;
                             series->List.addItem(record.SOPInstanceUID,
                                                  counter,
                                                  OFstatic_cast(DVIFhierarchyStatus, record.hstat),
@@ -1684,7 +1681,7 @@ OFCondition DVInterface::selectInstance(const char *instanceUID, const char *sop
                             {
                                 if (sopClassUID == NULL)
                                     return EC_Normal;
-                                else if ((idxRec.SOPClassUID != NULL) && (strcmp(sopClassUID, idxRec.SOPClassUID) == 0))
+                                else if (strcmp(sopClassUID, idxRec.SOPClassUID) == 0)
                                     return EC_Normal;
                             }
                         }
@@ -1994,11 +1991,8 @@ int DVInterface::findStudyIdx(StudyDescRecord *study,
         int i = 0;
         for (i = 0; i < PSTAT_MAXSTUDYCOUNT; i++)
         {
-            if ((study[i].StudyInstanceUID != NULL) &&
-                (strcmp(uid, study[i].StudyInstanceUID) == 0))
-            {
+            if (strcmp(uid, study[i].StudyInstanceUID) == 0)
                 return i;
-            }
         }
     }
     return -1;
@@ -2145,8 +2139,7 @@ OFCondition DVInterface::deleteInstance(const char *studyUID,
                     int i = 0;
                     for (i = 0; i < PSTAT_MAXSTUDYCOUNT; i++)
                     {
-                        if ((study_desc[i].StudyInstanceUID != NULL) &&
-                            (strcmp(studyUID, study_desc[i].StudyInstanceUID) != 0))
+                        if (strcmp(studyUID, study_desc[i].StudyInstanceUID) != 0)
                         {
                             if (study_desc[i].NumberofRegistratedImages > 0)
                             {
