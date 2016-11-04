@@ -40,7 +40,7 @@
       <xsd:element name="reference" type="dsr:Reference" minOccurs="0"/>
       <xsd:element name="document" type="dsr:Document"/>
     </xsd:sequence>
-    <xsd:attribute name="type" type="dsr:ReportType" use="required"/>
+    <xsd:attribute name="type" type="dsr:ReportType"/>
   </xsd:complexType>
 
   <!-- Complex Types (2nd level) -->
@@ -714,7 +714,7 @@
       <xsd:enumeration value="Chest CAD SR"/>
       <xsd:enumeration value="Colon CAD SR"/>
       <xsd:enumeration value="Procedure Log"/>
-      <xsd:enumeration value="X-Ray Radiation Dose SR Document"/>
+      <xsd:enumeration value="X-Ray Radiation Dose SR"/>
       <xsd:enumeration value="Spectacle Prescription Report"/>
       <xsd:enumeration value="Macular Grid Thickness and Volume Report"/>
       <xsd:enumeration value="Implantation Plan SR Document"/>
