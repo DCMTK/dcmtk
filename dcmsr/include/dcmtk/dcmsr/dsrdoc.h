@@ -289,6 +289,12 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     virtual E_VerificationFlag getVerificationFlag() const;
 
+    /** check whether there are one or more verifying observers.
+     *  @note Not applicable to Key Object Selection Documents.
+     ** @return OFTrue if there is at least one verifying observer, OFFalse otherwise
+     */
+    virtual OFBool hasVerifyingObservers() const;
+
     /** get number of verifying observers.
      *  A document can be verified more than once.  The verification flag should be VERIFIED
      *  if any verifying observer is specified.  The details on the observer can be retrieved

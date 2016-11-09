@@ -2001,6 +2001,12 @@ DSRTypes::E_VerificationFlag DSRDocument::getVerificationFlag() const
 }
 
 
+OFBool DSRDocument::hasVerifyingObservers() const
+{
+    return (VerifyingObserver.card() > 0);
+}
+
+
 size_t DSRDocument::getNumberOfVerifyingObservers() const
 {
     return OFstatic_cast(size_t, VerifyingObserver.card());
