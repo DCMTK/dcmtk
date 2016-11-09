@@ -7,7 +7,7 @@
  *  Header file for class DRTExposureSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016d
- *  File created on 2016-10-12 13:44:31
+ *  File created on 2016-11-09 18:52:20
  *
  */
 
@@ -60,6 +60,7 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
 
         /** assigment operator
          *  @param copy item object to be copied
+         *  @return reference to this object
          */
         Item &operator=(const Item &copy);
 
@@ -580,6 +581,7 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
 
     /** assigment operator
      *  @param copy sequence object to be copied
+     *  @return reference to this object
      */
     DRTExposureSequence &operator=(const DRTExposureSequence &copy);
 

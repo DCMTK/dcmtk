@@ -7,7 +7,7 @@
  *  Header file for class DRTImageIOD
  *
  *  Generated automatically from DICOM PS 3.3-2016d
- *  File created on 2016-10-12 13:44:31
+ *  File created on 2016-11-09 18:52:20
  *
  */
 
@@ -107,6 +107,7 @@ class DCMTK_DCMRT_EXPORT DRTImageIOD
 
     /** assigment operator
      *  @param copy IOD object to be copied
+     *  @return reference to this object
      */
     DRTImageIOD &operator=(const DRTImageIOD &copy);
 

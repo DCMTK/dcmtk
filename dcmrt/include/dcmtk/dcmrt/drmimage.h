@@ -63,7 +63,7 @@ public:
      *  instance assumes ownership of the dataset pointer and will delete it
      *  when done with it. You must not delete it yourself. This applies even
      *  when the function returns an error.
-     *  @param  dataset DICOM dataset from which the RT Image should be read
+     *  @param dataset DICOM dataset from which the RT Image should be read
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(DcmItem *dataset);
@@ -235,19 +235,18 @@ private:
     /// Reset this class image and DICOM object members
     virtual void reset();
 
-    /**
-     * Hide DRTImageIOD::read(). DicomImage() doesn't allow the dataset that was
-     * used for loading the image to be deleted. Thus, read() cannot work.
+    /** hide DRTImageIOD::read(). DicomImage() doesn't allow the dataset that was
+     *  used for loading the image to be deleted. Thus, read() cannot work.
+     *  @return always returns EC_IllegalCall since this method should not be called
      */
     virtual OFCondition read(DcmItem & /*dataset*/)
     {
         return EC_IllegalCall;
     }
 
-    /**
-     * Turn a status code from DicomImage into an OFCondition object.
-     * @param status status code
-     * @return OFCondition instance for the given status
+    /** turn a status code from DicomImage into an OFCondition object.
+     *  @param status status code
+     *  @return OFCondition instance for the given status
      */
     OFCondition statusToCondition(int status)
     {
