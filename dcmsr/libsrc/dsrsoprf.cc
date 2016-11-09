@@ -805,7 +805,7 @@ void DSRSOPInstanceReferenceList::clear()
 }
 
 
-OFBool DSRSOPInstanceReferenceList::empty() const
+OFBool DSRSOPInstanceReferenceList::isEmpty() const
 {
     return StudyList.empty();
 }

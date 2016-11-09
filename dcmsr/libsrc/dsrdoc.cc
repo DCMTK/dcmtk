@@ -305,7 +305,7 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                     DCMSR_PRINT_HEADER_FIELD_END
                 }
                 /* predecessor documents */
-                if (!PredecessorDocuments.empty())
+                if (!PredecessorDocuments.isEmpty())
                 {
                     DCMSR_PRINT_HEADER_FIELD_START("Predecessor Docs   ", " : ")
                     stream << PredecessorDocuments.getNumberOfInstances();
@@ -313,14 +313,14 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                 }
             }
             /* identical documents */
-            if (!IdenticalDocuments.empty())
+            if (!IdenticalDocuments.isEmpty())
             {
                 DCMSR_PRINT_HEADER_FIELD_START("Identical Docs     ", " : ")
                 stream << IdenticalDocuments.getNumberOfInstances();
                 DCMSR_PRINT_HEADER_FIELD_END
             }
             /* referenced instances */
-            if (!ReferencedInstances.empty())
+            if (!ReferencedInstances.isEmpty())
             {
                 DCMSR_PRINT_HEADER_FIELD_START("References Objects ", " : ")
                 stream << ReferencedInstances.getNumberOfItems();
@@ -1319,13 +1319,13 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         }
         stream << "</instance>" << OFendl;
 
-        if ((flags & XF_writeEmptyTags) || !CodingSchemeIdentification.empty())
+        if ((flags & XF_writeEmptyTags) || !CodingSchemeIdentification.isEmpty())
         {
             stream << "<coding>" << OFendl;
             CodingSchemeIdentification.writeXML(stream, flags);
             stream << "</coding>" << OFendl;
         }
-        if ((flags & XF_writeEmptyTags) || !CurrentRequestedProcedureEvidence.empty())
+        if ((flags & XF_writeEmptyTags) || !CurrentRequestedProcedureEvidence.isEmpty())
         {
             stream << "<evidence type=\"Current Requested Procedure\">" << OFendl;
             CurrentRequestedProcedureEvidence.writeXML(stream, flags);
@@ -1333,13 +1333,13 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         }
         if (getDocumentType() != DT_KeyObjectSelectionDocument)
         {
-            if ((flags & XF_writeEmptyTags) || !PertinentOtherEvidence.empty())
+            if ((flags & XF_writeEmptyTags) || !PertinentOtherEvidence.isEmpty())
             {
                 stream << "<evidence type=\"Pertinent Other\">" << OFendl;
                 PertinentOtherEvidence.writeXML(stream, flags);
                 stream << "</evidence>" << OFendl;
             }
-            if ((flags & XF_writeEmptyTags) || !ReferencedInstances.empty())
+            if ((flags & XF_writeEmptyTags) || !ReferencedInstances.isEmpty())
             {
                 stream << "<reference>" << OFendl;
                 ReferencedInstances.writeXML(stream, flags);
@@ -1386,14 +1386,14 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
             }
             stream << "</verification>" << OFendl;
 
-            if ((flags & XF_writeEmptyTags) || !PredecessorDocuments.empty())
+            if ((flags & XF_writeEmptyTags) || !PredecessorDocuments.isEmpty())
             {
                 stream << "<predecessor>" << OFendl;
                 PredecessorDocuments.writeXML(stream, flags);
                 stream << "</predecessor>" << OFendl;
             }
         }
-        if ((flags & XF_writeEmptyTags) || !IdenticalDocuments.empty())
+        if ((flags & XF_writeEmptyTags) || !IdenticalDocuments.isEmpty())
         {
             stream << "<identical>" << OFendl;
             IdenticalDocuments.writeXML(stream, flags);
@@ -1762,7 +1762,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                     stream << "</tr>" << OFendl;
                 }
                 /* predecessor documents */
-                if (!PredecessorDocuments.empty())
+                if (!PredecessorDocuments.isEmpty())
                 {
                     stream << "<tr>" << OFendl;
                     stream << "<td><b>Predecessor Docs:</b></td>" << OFendl;
@@ -1771,7 +1771,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 }
             }
             /* identical documents */
-            if (!IdenticalDocuments.empty())
+            if (!IdenticalDocuments.isEmpty())
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Identical Docs:</b></td>" << OFendl;
@@ -1779,7 +1779,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 stream << "</tr>" << OFendl;
             }
             /* referenced instances */
-            if (!ReferencedInstances.empty())
+            if (!ReferencedInstances.isEmpty())
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Referenced Objects:</b></td>" << OFendl;

@@ -59,7 +59,7 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
     /** check whether list of references is empty
      ** @return OFTrue if list is empty, OFFalse otherwise
      */
-    OFBool empty() const;
+    OFBool isEmpty() const;
 
     /** get number of instance stored in the list of references
      ** @return number of instances

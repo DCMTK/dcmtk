@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2015, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,7 +60,7 @@ class DCMTK_DCMSR_EXPORT DSRReferencedInstanceList
     /** check whether list is empty
      ** @return OFTrue if list is empty, OFFalse otherwise
      */
-    OFBool empty() const;
+    OFBool isEmpty() const;
 
     /** get number of items stored in the list
      ** @return number of items

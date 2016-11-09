@@ -63,7 +63,7 @@ void DSRReferencedInstanceList::clear()
 }
 
 
-OFBool DSRReferencedInstanceList::empty() const
+OFBool DSRReferencedInstanceList::isEmpty() const
 {
     return ItemList.empty();
 }

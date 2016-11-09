@@ -60,7 +60,7 @@ class DCMTK_DCMSR_EXPORT DSRCodingSchemeIdentificationList
     /** check whether list is empty
      ** @return OFTrue if list is empty, OFFalse otherwise
      */
-    OFBool empty() const;
+    OFBool isEmpty() const;
 
     /** get number of items stored in the list
      ** @return number of items

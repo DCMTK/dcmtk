@@ -70,7 +70,7 @@ void DSRCodingSchemeIdentificationList::clear()
 }
 
 
-OFBool DSRCodingSchemeIdentificationList::empty() const
+OFBool DSRCodingSchemeIdentificationList::isEmpty() const
 {
     return ItemList.empty();
 }
