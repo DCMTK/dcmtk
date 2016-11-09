@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -605,6 +605,8 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
 
     /** detach pixel data.
      *  removes storage area used for the pixel data from memory
+     *
+     ** @return status, true if successful, false otherwise
      */
     int detachPixelData();
 

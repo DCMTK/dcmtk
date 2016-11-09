@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -219,6 +219,8 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoModality
      *
      ** @param  docu   pointer to dataset (encapsulated)
      *  @param  pixel  pointer to input pixel data
+     *
+     ** @return status, true if successful, false otherwise
      */
     int Init(const DiDocument *docu,
              DiInputPixel *pixel);

@@ -942,6 +942,8 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
     /** check intermediate pixel representation for consistency
      *
      ** @param  mode  check number of pixels stored in the dataset if true
+     *
+     ** @return status, true if successful, false otherwise
      */
     int checkInterData(const int mode = 1);
 

@@ -505,6 +505,8 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
 
     /** check whether image has given SOP class UID.
      *
+     ** @param  uid  SOP class UID to be checked
+     *
      ** @return true if image has given SOP class UID, false otherwise
      */
     int hasSOPclassUID(const char *uid) const;

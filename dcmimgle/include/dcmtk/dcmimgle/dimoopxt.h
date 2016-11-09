@@ -278,6 +278,8 @@ class DiMonoOutputPixelTemplate
      *
      ** @param  lut   reference to storage area where the optimization LUT should be stored
      *  @param  ocnt  number of entries for the optimization LUT
+     *
+     ** @return status, true if successful, false otherwise
      */
     inline int initOptimizationLUT(T3 *&lut,
                                    const unsigned long ocnt)

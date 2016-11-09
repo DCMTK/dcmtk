@@ -397,6 +397,8 @@ class DCMTK_DCMIMAGE_EXPORT DiColorImage
     /** check intermediate pixel representation for consistency
      *
      ** @param  mode  check number of pixels stored in the dataset if true
+     *
+     ** @return status, true if successful, false otherwise
      */
     int checkInterData(const int mode = 1);
 
