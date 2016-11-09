@@ -83,8 +83,8 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
   // --- input and output ---
 
     /** read XML document from file.
-     *  In order to enable the optional Schema validation the flag XF_validateSchema has
-     *  to be set.
+     *  In order to enable the optional Schema validation the flag DSRTypes::XF_validateSchema
+     *  has to be set.
      ** @param  filename  name of the file from which the XML document is read
      *                    ("-" for stdin)
      *  @param  flags     optional flag used to customize the reading process
@@ -222,7 +222,7 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
      *  Additionally, by-reference relationships are also supported (either by attribute
      *  "ref" being present or element named "reference").
      ** @param  cursor  cursor pointing to the particular node
-     ** @return value type (incl. by-reference) if successful, VT_invalid/unknown otherwise
+     ** @return value type (incl. by-reference) if successful, DSRTypes::VT_invalid otherwise
      */
     E_ValueType getValueTypeFromNode(const DSRXMLCursor &cursor) const;
 
@@ -230,7 +230,8 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
      *  The relationship type is either stored in the element "relationship" or in the
      *  attribute "relType".
      ** @param  cursor  cursor pointing to the particular node
-     ** @return relationship type if successful, RT_invalid/unknown otherwise
+     ** @return relationship type if successful, DSRTypes::RT_invalid or DSRTypes::RT_unknown
+     *          otherwise
      */
     E_RelationshipType getRelationshipTypeFromNode(const DSRXMLCursor &cursor) const;
 
@@ -275,11 +276,11 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
 
   // --- static function ---
 
-    /** get the full path (incl. all predecessors) to the current node.
-     *  Returns "<invalid>" in case of an invalid 'cursor'.
+    /** get the full path (incl.\ all predecessors) to the current node
      ** @param  cursor       cursor pointing to the relevant node
      *  @param  stringValue  reference to string object in which the result should be stored
      *  @param  omitCurrent  flag indicating whether to omit the current node or not
+     ** @return resulting character string, set to "<invalid>" in case of an invalid 'cursor'
      */
     static OFString &getFullNodePath(const DSRXMLCursor &cursor,
                                      OFString &stringValue,

@@ -73,6 +73,7 @@ class DCMTK_DCMSR_EXPORT DSRPositionCounter
 
     /** pre-increment operator.  Increases the position on the current level by 1.
      *  Also makes the position counter valid if it was invalid before.
+     ** @return reference to modified cursor (this object)
      */
     inline DSRPositionCounter &operator++()
     {
@@ -82,6 +83,7 @@ class DCMTK_DCMSR_EXPORT DSRPositionCounter
 
     /** pre-decrement operator.  Decreases the position on the current level by 1.
      *  This makes the position counter invalid if the position was 1 before.
+     ** @return reference to modified cursor (this object)
      */
     inline DSRPositionCounter &operator--()
     {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,14 +71,14 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
     DSRTemporalCoordinatesValue &operator=(const DSRTemporalCoordinatesValue &coordinatesValue);
 
     /** clear all internal variables.
-     *  Temporal range type is set to TRT_invalid.  Since an empty list of graphic data is
-     *  invalid the temporal coordinates value becomes invalid afterwards.
+     *  Temporal range type is set to DSRTypes::TRT_invalid.  Since an empty list of graphic data
+     *  is invalid the temporal coordinates value becomes invalid afterwards.
      */
     virtual void clear();
 
     /** check whether the current temporal coordinates value is valid.
-     *  The value is valid if the temporal range type is not TRT_invalid and the other data
-     *  is valid.  See checkData() method for details.
+     *  The value is valid if the temporal range type is not DSRTypes::TRT_invalid and the other
+     *  data is valid.  See checkData() method for details.
      ** @return OFTrue if reference value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -161,7 +161,7 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 
     /** get current temporal range type.
      *  This value represents the type of temporal extent of the region of interest.
-     ** @return region type (might be TRT_invalid)
+     ** @return region type (might be DSRTypes::TRT_invalid)
      */
     inline DSRTypes::E_TemporalRangeType getTemporalRangeType() const
     {
@@ -170,7 +170,8 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
 
     /** set current temporal range type.
      *  This value represents the type of temporal extent of the region of interest.
-     ** @param  temporalRangeType  temporal range type to be set (TRT_invalid is not allowed)
+     ** @param  temporalRangeType  temporal range type to be set (DSRTypes::TRT_invalid is not
+     *                             allowed)
      *  @param  check              dummy parameter (currently not used)
      ** @return status, EC_Normal if successful, an error code otherwise
      */

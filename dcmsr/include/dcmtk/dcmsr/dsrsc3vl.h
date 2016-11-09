@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2015, OFFIS e.V.
+ *  Copyright (C) 2010-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -69,14 +69,14 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
     DSRSpatialCoordinates3DValue &operator=(const DSRSpatialCoordinates3DValue &coordinatesValue);
 
     /** clear all internal variables.
-     *  Graphic type is set to GT3_invalid.  Since an empty list of graphic data is invalid
-     *  the spatial coordinates value becomes invalid afterwards.
+     *  Graphic type is set to DSRTypes::GT3_invalid.  Since an empty list of graphic data is
+     *  invalid the spatial coordinates value becomes invalid afterwards.
      */
     virtual void clear();
 
     /** check whether the current spatial coordinates value is valid.
-     *  The value is valid if the graphic type is not GT3_invalid and the graphic data as well
-     *  as the referenced frame of reference UID are valid.  See checkXXX() methods for
+     *  The value is valid if the graphic type is not DSRTypes::GT3_invalid and the graphic data
+     *  as well as the referenced frame of reference UID are valid.  See checkXXX() methods for
      *  details.
      ** @return OFTrue if reference value is valid, OFFalse otherwise
      */
@@ -162,7 +162,7 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
     /** get current graphic type.
      *  The graphic type specifies the geometry of the coordinates stored in the graphic data
      *  list.
-     ** @return graphic type (might be GT3_invalid)
+     ** @return graphic type (might be DSRTypes::GT3_invalid)
      */
     inline DSRTypes::E_GraphicType3D getGraphicType() const
     {
@@ -214,7 +214,7 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
     /** set current graphic type.
      *  The graphic type specifies the geometry of the coordinates stored in the graphic data
      *  list.
-     ** @param  graphicType  graphic type to be set (GT3_invalid is not allowed)
+     ** @param  graphicType  graphic type to be set (DSRTypes::GT3_invalid is not allowed)
      *  @param  check        dummy parameter (currently not used)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
