@@ -296,7 +296,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  @note Not applicable to Key Object Selection Documents.
      ** @return number of verifying observers (if any), 0 otherwise
      */
-    virtual size_t getNumberOfVerifyingObservers();
+    virtual size_t getNumberOfVerifyingObservers() const;
 
     /** get information about a verifying observer.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
