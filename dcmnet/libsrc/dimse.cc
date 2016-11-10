@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -354,6 +354,8 @@ getTransferSyntax(
         case EXS_JPEGLSLossy:
         case EXS_JPEG2000LosslessOnly:
         case EXS_JPEG2000:
+        case EXS_JPEG2000MulticomponentLosslessOnly:
+        case EXS_JPEG2000Multicomponent:
         case EXS_MPEG2MainProfileAtMainLevel:
         case EXS_MPEG2MainProfileAtHighLevel:
         case EXS_MPEG4HighProfileLevel4_1:
@@ -361,8 +363,8 @@ getTransferSyntax(
         case EXS_MPEG4HighProfileLevel4_2_For2DVideo:
         case EXS_MPEG4HighProfileLevel4_2_For3DVideo:
         case EXS_MPEG4StereoHighProfileLevel4_2:
-        case EXS_JPEG2000MulticomponentLosslessOnly:
-        case EXS_JPEG2000Multicomponent:
+        case EXS_HEVCMainProfileLevel5_1:
+        case EXS_HEVCMain10ProfileLevel5_1:
 #ifdef WITH_ZLIB
         case EXS_DeflatedLittleEndianExplicit:
 #endif

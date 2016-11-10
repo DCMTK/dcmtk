@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,6 +48,7 @@ typedef struct
 
 const S_XferNames XferNames[] =
 {
+    // entry #0
     { UID_LittleEndianImplicitTransferSyntax,
       "Little Endian Implicit",
       EXS_LittleEndianImplicit,
@@ -58,6 +59,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
+    // entry #1
     { "",  // illegal type
       "Virtual Big Endian Implicit",
       EXS_BigEndianImplicit,
@@ -68,6 +70,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
+    // entry #2
     { UID_LittleEndianExplicitTransferSyntax,
       "Little Endian Explicit",
       EXS_LittleEndianExplicit,
@@ -78,6 +81,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
+    // entry #3
     { UID_BigEndianExplicitTransferSyntax,
       "Big Endian Explicit",
       EXS_BigEndianExplicit,
@@ -88,6 +92,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFTrue, // retired with Supplement 98
       ESC_none },
+    // entry #4
     { UID_JPEGProcess1TransferSyntax,
       "JPEG Baseline",
       EXS_JPEGProcess1,
@@ -98,6 +103,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none },
+    // entry #5
     { UID_JPEGProcess2_4TransferSyntax,
       "JPEG Extended, Process 2+4",
       EXS_JPEGProcess2_4,
@@ -108,6 +114,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none },
+    // entry #6
     { UID_JPEGProcess3_5TransferSyntax,
       "JPEG Extended, Process 3+5",
       EXS_JPEGProcess3_5,
@@ -118,6 +125,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #7
     { UID_JPEGProcess6_8TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 6+8",
       EXS_JPEGProcess6_8,
@@ -128,6 +136,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #8
     { UID_JPEGProcess7_9TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 7+9",
       EXS_JPEGProcess7_9,
@@ -138,6 +147,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #9
     { UID_JPEGProcess10_12TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 10+12",
       EXS_JPEGProcess10_12,
@@ -148,6 +158,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #10
     { UID_JPEGProcess11_13TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 11+13",
       EXS_JPEGProcess11_13,
@@ -158,6 +169,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #11
     { UID_JPEGProcess14TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 14",
       EXS_JPEGProcess14,
@@ -168,6 +180,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
+    // entry #12
     { UID_JPEGProcess15TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 15",
       EXS_JPEGProcess15,
@@ -178,6 +191,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #13
     { UID_JPEGProcess16_18TransferSyntax,
       "JPEG Extended, Hierarchical, Process 16+18",
       EXS_JPEGProcess16_18,
@@ -188,6 +202,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #14
     { UID_JPEGProcess17_19TransferSyntax,
       "JPEG Extended, Hierarchical, Process 17+19",
       EXS_JPEGProcess17_19,
@@ -198,6 +213,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #15
     { UID_JPEGProcess20_22TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 20+22",
       EXS_JPEGProcess20_22,
@@ -208,6 +224,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #16
     { UID_JPEGProcess21_23TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 21+23",
       EXS_JPEGProcess21_23,
@@ -218,6 +235,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #17
     { UID_JPEGProcess24_26TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 24+26",
       EXS_JPEGProcess24_26,
@@ -228,6 +246,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #18
     { UID_JPEGProcess25_27TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 25+27",
       EXS_JPEGProcess25_27,
@@ -238,6 +257,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #19
     { UID_JPEGProcess28TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 28",
       EXS_JPEGProcess28,
@@ -248,6 +268,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #20
     { UID_JPEGProcess29TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 29",
       EXS_JPEGProcess29,
@@ -258,6 +279,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none },
+    // entry #21
     { UID_JPEGProcess14SV1TransferSyntax,
       "JPEG Lossless, Non-hierarchical, 1st Order Prediction",
       EXS_JPEGProcess14SV1,
@@ -268,6 +290,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
+    // entry #22
     { UID_RLELosslessTransferSyntax,
       "RLE Lossless",
       EXS_RLELossless,
@@ -278,26 +301,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
-    { UID_JPEGLSLosslessTransferSyntax,
-      "JPEG-LS Lossless",
-      EXS_JPEGLSLossless,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFFalse,
-      OFFalse,
-      ESC_none },
-    { UID_JPEGLSLossyTransferSyntax,
-      "JPEG-LS Lossy (Near-lossless)",
-      EXS_JPEGLSLossy,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFTrue,
-      OFFalse,
-      ESC_none },
+    // entry #23
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,
       "Deflated Explicit VR Little Endian",
       EXS_DeflatedLittleEndianExplicit,
@@ -313,6 +317,29 @@ const S_XferNames XferNames[] =
       ESC_unsupported
 #endif
     },
+    // entry #24
+    { UID_JPEGLSLosslessTransferSyntax,
+      "JPEG-LS Lossless",
+      EXS_JPEGLSLossless,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFFalse,
+      OFFalse,
+      ESC_none },
+    // entry #25
+    { UID_JPEGLSLossyTransferSyntax,
+      "JPEG-LS Lossy (Near-lossless)",
+      EXS_JPEGLSLossy,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #26
     { UID_JPEG2000LosslessOnlyTransferSyntax,
       "JPEG 2000 (Lossless only)",
       EXS_JPEG2000LosslessOnly,
@@ -323,6 +350,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
+    // entry #27
     { UID_JPEG2000TransferSyntax,
       "JPEG 2000 (Lossless or Lossy)",
       EXS_JPEG2000,
@@ -333,76 +361,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none },
-    { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
-      "MPEG2 Main Profile @ Main Level",
-      EXS_MPEG2MainProfileAtMainLevel,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFTrue,
-      OFFalse,
-      ESC_none },
-    { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
-      "MPEG2 Main Profile @ High Level",
-      EXS_MPEG2MainProfileAtHighLevel,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFTrue,
-      OFFalse,
-      ESC_none },
-    { UID_MPEG4HighProfileLevel4_1TransferSyntax,
-      "MPEG-4 AVC/H.264 High Profile / Level 4.1",
-      EXS_MPEG4HighProfileLevel4_1,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFTrue,
-      OFFalse,
-      ESC_none },
-    { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
-      "MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
-      EXS_MPEG4BDcompatibleHighProfileLevel4_1,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFTrue,
-      OFFalse,
-      ESC_none },
-    { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
-      "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video",
-      EXS_MPEG4HighProfileLevel4_2_For2DVideo,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFTrue,
-      OFFalse,
-      ESC_none },
-    { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
-      "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video",
-      EXS_MPEG4HighProfileLevel4_2_For3DVideo,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFTrue,
-      OFFalse,
-      ESC_none },
-    { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
-      "MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2",
-      EXS_MPEG4StereoHighProfileLevel4_2,
-      EBO_LittleEndian,
-      EVT_Explicit,
-      EJE_Encapsulated,
-      0L, 0L,
-      OFTrue,
-      OFFalse,
-      ESC_none },
+    // entry #28
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless only)",
       EXS_JPEG2000MulticomponentLosslessOnly,
@@ -413,6 +372,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none },
+    // entry #29
    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless or Lossy)",
       EXS_JPEG2000Multicomponent,
@@ -423,6 +383,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none },
+    // entry #30
    { UID_JPIPReferencedTransferSyntax,
       "JPIP Referenced",
       EXS_JPIPReferenced,
@@ -433,6 +394,7 @@ const S_XferNames XferNames[] =
       OFTrue,               // really lossy?
       OFFalse,
       ESC_none },
+    // entry #31
    { UID_JPIPReferencedDeflateTransferSyntax,
       "JPIP Referenced Deflate",
       EXS_JPIPReferencedDeflate,
@@ -447,9 +409,106 @@ const S_XferNames XferNames[] =
 #else
       ESC_unsupported
 #endif
-    }
-
-    // enter further transfer syntaxes here ...
+    },
+    // entry #32
+    { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
+      "MPEG2 Main Profile @ Main Level",
+      EXS_MPEG2MainProfileAtMainLevel,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #33
+    { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
+      "MPEG2 Main Profile @ High Level",
+      EXS_MPEG2MainProfileAtHighLevel,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #34
+    { UID_MPEG4HighProfileLevel4_1TransferSyntax,
+      "MPEG-4 AVC/H.264 High Profile / Level 4.1",
+      EXS_MPEG4HighProfileLevel4_1,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #35
+    { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
+      "MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
+      EXS_MPEG4BDcompatibleHighProfileLevel4_1,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #36
+    { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
+      "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video",
+      EXS_MPEG4HighProfileLevel4_2_For2DVideo,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #37
+    { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
+      "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video",
+      EXS_MPEG4HighProfileLevel4_2_For3DVideo,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #38
+    { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
+      "MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2",
+      EXS_MPEG4StereoHighProfileLevel4_2,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #39
+    { UID_HEVCMainProfileLevel5_1TransferSyntax,
+      "HEVC/H.265 Main Profile / Level 5.1",
+      EXS_HEVCMainProfileLevel5_1,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none },
+    // entry #40
+    { UID_HEVCMain10ProfileLevel5_1TransferSyntax,
+      "HEVC/H.265 Main 10 Profile / Level 5.1",
+      EXS_HEVCMain10ProfileLevel5_1,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none }
 };
 
 const int DIM_OF_XferNames = OFstatic_cast(int, sizeof(XferNames) / sizeof(S_XferNames));
@@ -583,6 +642,8 @@ DcmXfer::~DcmXfer()
 
 DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
 {
+    // tbc: if the enum value is consistent with the index of the array,
+    //      why do we need to iterate over the array entries?
     int i = 0;
     while ((i < DIM_OF_XferNames) && (XferNames[i].xfer != xfer))
         i++;

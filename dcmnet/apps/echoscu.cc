@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -89,20 +89,22 @@ static const char* transferSyntaxes[] = {
       UID_JPEGProcess29TransferSyntax,
       UID_JPEGProcess14SV1TransferSyntax,
       UID_RLELosslessTransferSyntax,
+      UID_DeflatedExplicitVRLittleEndianTransferSyntax,
       UID_JPEGLSLosslessTransferSyntax,
       UID_JPEGLSLossyTransferSyntax,
-      UID_DeflatedExplicitVRLittleEndianTransferSyntax,
       UID_JPEG2000LosslessOnlyTransferSyntax,
       UID_JPEG2000TransferSyntax,
-      UID_MPEG2MainProfileAtMainLevelTransferSyntax,
-      UID_MPEG2MainProfileAtHighLevelTransferSyntax,
       UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
       UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
+      UID_MPEG2MainProfileAtMainLevelTransferSyntax,
+      UID_MPEG2MainProfileAtHighLevelTransferSyntax,
       UID_MPEG4HighProfileLevel4_1TransferSyntax,
       UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
       UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
       UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
-      UID_MPEG4StereoHighProfileLevel4_2TransferSyntax
+      UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
+      UID_HEVCMainProfileLevel5_1TransferSyntax,
+      UID_HEVCMain10ProfileLevel5_1TransferSyntax
 };
 
 // ********************************************

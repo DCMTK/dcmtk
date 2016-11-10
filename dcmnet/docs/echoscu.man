@@ -15,9 +15,9 @@ echoscu [options] peer port
 \section description DESCRIPTION
 
 The \b echoscu application implements a Service Class User (SCU) for the
-Verification SOP Class.  It sends a DICOM C-ECHO message to a Service
-Class Provider (SCP) and waits for a response.  The application can be
-used to verify basic DICOM connectivity.
+Verification SOP Class.  It sends a DICOM C-ECHO message to a Service Class
+Provider (SCP) and waits for a response.  The application can be used to verify
+basic DICOM connectivity.
 
 \section parameters PARAMETERS
 
@@ -69,7 +69,7 @@ application entity titles:
 
 association negotiation debugging:
 
-  -pts  --propose-ts  [n]umber: integer (1..33)
+  -pts  --propose-ts  [n]umber: integer (1..38)
           propose n transfer syntaxes
 
   -ppc  --propose-pc  [n]umber: integer (1..128)
@@ -129,6 +129,7 @@ key and certificate file format:
           read keys and certificates as DER file
 
 certification authority:
+
   +cf   --add-cert-file  [c]ertificate filename: string
           add certificate file to list of certificates
 
@@ -242,6 +243,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

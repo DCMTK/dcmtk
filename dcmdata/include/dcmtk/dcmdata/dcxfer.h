@@ -83,38 +83,42 @@ typedef enum {
     EXS_JPEGProcess14SV1 = 21,
     /// Run Length Encoding (lossless)
     EXS_RLELossless = 22,
-    /// JPEG-LS (lossless)
-    EXS_JPEGLSLossless = 23,
-    /// JPEG-LS (lossless or near-lossless mode)
-    EXS_JPEGLSLossy = 24,
     /// Deflated Explicit VR Little Endian
-    EXS_DeflatedLittleEndianExplicit = 25,
+    EXS_DeflatedLittleEndianExplicit = 23,
+    /// JPEG-LS (lossless)
+    EXS_JPEGLSLossless = 24,
+    /// JPEG-LS (lossless or near-lossless mode)
+    EXS_JPEGLSLossy = 25,
     /// JPEG 2000 (lossless)
     EXS_JPEG2000LosslessOnly = 26,
     /// JPEG 2000 (lossless or lossy)
     EXS_JPEG2000 = 27,
-    /// MPEG2 Main Profile at Main Level
-    EXS_MPEG2MainProfileAtMainLevel = 28,
-    /// MPEG2 Main Profile at High Level
-    EXS_MPEG2MainProfileAtHighLevel = 29,
-    /// MPEG4 High Profile / Level 4.1
-    EXS_MPEG4HighProfileLevel4_1 = 30,
-    /// MPEG4 BD-compatible High Profile / Level 4.1
-    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 31,
-    /// MPEG4 High Profile / Level 4.2 For 2D Video
-    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 32,
-    /// MPEG4 High Profile / Level 4.2 For 3D Video
-    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 33,
-    /// MPEG4 Stereo High Profile / Level 4.2
-    EXS_MPEG4StereoHighProfileLevel4_2 = 34,
     /// JPEG 2000 part 2 multi-component extensions (lossless)
-    EXS_JPEG2000MulticomponentLosslessOnly = 35,
+    EXS_JPEG2000MulticomponentLosslessOnly = 28,
     /// JPEG 2000 part 2 multi-component extensions (lossless or lossy)
-    EXS_JPEG2000Multicomponent = 36,
+    EXS_JPEG2000Multicomponent = 29,
     /// JPIP Referenced
-    EXS_JPIPReferenced = 37,
+    EXS_JPIPReferenced = 30,
     /// JPIP Referenced Deflate
-    EXS_JPIPReferencedDeflate = 38
+    EXS_JPIPReferencedDeflate = 31,
+    /// MPEG2 Main Profile at Main Level
+    EXS_MPEG2MainProfileAtMainLevel = 32,
+    /// MPEG2 Main Profile at High Level
+    EXS_MPEG2MainProfileAtHighLevel = 33,
+    /// MPEG4 High Profile / Level 4.1
+    EXS_MPEG4HighProfileLevel4_1 = 34,
+    /// MPEG4 BD-compatible High Profile / Level 4.1
+    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 35,
+    /// MPEG4 High Profile / Level 4.2 For 2D Video
+    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 36,
+    /// MPEG4 High Profile / Level 4.2 For 3D Video
+    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 37,
+    /// MPEG4 Stereo High Profile / Level 4.2
+    EXS_MPEG4StereoHighProfileLevel4_2 = 38,
+    /// HEVC/H.265 Main Profile / Level 5.1
+    EXS_HEVCMainProfileLevel5_1 = 39,
+    /// HEVC/H.265 Main 10 Profile / Level 5.1
+    EXS_HEVCMain10ProfileLevel5_1 = 40
 } E_TransferSyntax;
 
 /** enumeration of byte orders
