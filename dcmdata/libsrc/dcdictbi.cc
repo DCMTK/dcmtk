@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-11-10 11:38:16
+**   Date: 2016-11-10 13:56:09
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15230,6 +15230,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0028, 0x1224, 0x0028, 0x1224,
       EVR_OW, "SegmentedAlphaPaletteColorLookupTableData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1230, 0x0028, 0x1230,
+      EVR_SQ, "StoredValueColorRangeSequence", 1, 1, "DICOM/CP_1584",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1231, 0x0028, 0x1231,
+      EVR_FD, "MinimumStoredValueMapped", 1, 1, "DICOM/CP_1584",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1232, 0x0028, 0x1232,
+      EVR_FD, "MaximumStoredValueMapped", 1, 1, "DICOM/CP_1584",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x1300, 0x0028, 0x1300,

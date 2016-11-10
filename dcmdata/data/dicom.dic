@@ -27,7 +27,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - CP 1597, 1609, 1611
+# - CP 1584, 1597, 1609, 1611
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4290,8 +4290,11 @@
 #
 #---------------------------------------------------------------------------
 #
-# Correction Items 1597, 1609, 1611
+# Correction Items 1584, 1597, 1609, 1611
 #
+(0028,1230)	SQ	StoredValueColorRangeSequence	1	DICOM/CP_1584
+(0028,1231)	FD	MinimumStoredValueMapped	1	DICOM/CP_1584
+(0028,1232)	FD	MaximumStoredValueMapped	1	DICOM/CP_1584
 (0062,0007)	SQ	SegmentationAlgorithmIdentificationSequence	1	DICOM/CP_1597
 (300A,038F)	FL	ScanSpotTimeOffset	1-n	DICOM/CP_1609
 (3008,0067)	US	ParameterValueNumber	1	DICOM/CP_1611

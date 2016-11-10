@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-11-10 11:38:16
+**   Date: 2016-11-10 13:56:09
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-11-10 11:38:16"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2016-11-10 13:56:09"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4169
+** Number of entries: 4172
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1886,6 +1886,9 @@
 #define DCM_SegmentedGreenPaletteColorLookupTableData DcmTagKey(0x0028, 0x1222)
 #define DCM_SegmentedBluePaletteColorLookupTableData DcmTagKey(0x0028, 0x1223)
 #define DCM_SegmentedAlphaPaletteColorLookupTableData DcmTagKey(0x0028, 0x1224)
+#define DCM_StoredValueColorRangeSequence        DcmTagKey(0x0028, 0x1230)
+#define DCM_MinimumStoredValueMapped             DcmTagKey(0x0028, 0x1231)
+#define DCM_MaximumStoredValueMapped             DcmTagKey(0x0028, 0x1232)
 #define DCM_BreastImplantPresent                 DcmTagKey(0x0028, 0x1300)
 #define DCM_PartialView                          DcmTagKey(0x0028, 0x1350)
 #define DCM_PartialViewDescription               DcmTagKey(0x0028, 0x1351)
