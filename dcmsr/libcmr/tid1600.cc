@@ -647,7 +647,7 @@ OFCondition TID1600_ImageLibrary::addMagneticResonanceDescriptors(DSRDocumentSub
     if ((getStringValueFromDataset(dataset, DCM_PulseSequenceName, sequenceName).good() && !sequenceName.empty()) ||
         (getStringValueFromDataset(dataset, DCM_SequenceName, sequenceName).good() && !sequenceName.empty()))
     {
-        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Text, DSRCodedEntryValue("110909", "DCM", "Pulse Sequence Name") /* wrong definition: will be fixed with CP-1578 */, check));
+        CHECK_RESULT(tree.addContentItem(RT_hasAcqContext, VT_Text, DSRCodedEntryValue("128230", "DCM", "Pulse Sequence Name") /* fixed with CP-1578 */, check));
         CHECK_RESULT(tree.getCurrentContentItem().setStringValue(sequenceName, check));
         CHECK_RESULT(tree.getCurrentContentItem().setAnnotationText("TID 1606 - Row 1"));
     }
