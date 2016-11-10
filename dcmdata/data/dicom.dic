@@ -23,10 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2016d and PS 3.7-2016d
 # File created on 2016-10-04 11:49:44 by J. Riesmeier on thinkpad.
+# File updated manually on 2016-11-10 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - CP 1597, 1609, 1611
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4286,6 +4287,14 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
+#
+#---------------------------------------------------------------------------
+#
+# Correction Items 1597, 1609, 1611
+#
+(0062,0007)	SQ	SegmentationAlgorithmIdentificationSequence	1	DICOM/CP_1597
+(300A,038F)	FL	ScanSpotTimeOffset	1-n	DICOM/CP_1609
+(3008,0067)	US	ParameterValueNumber	1	DICOM/CP_1611
 #
 #---------------------------------------------------------------------------
 #

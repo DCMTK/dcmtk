@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-10-04 12:15:57
+**   Date: 2016-11-10 11:38:16
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -21062,6 +21062,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_ST, "SegmentDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0062, 0x0007, 0x0062, 0x0007,
+      EVR_SQ, "SegmentationAlgorithmIdentificationSequence", 1, 1, "DICOM/CP_1597",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0062, 0x0008, 0x0062, 0x0008,
       EVR_CS, "SegmentAlgorithmType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -25260,6 +25264,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_ST, "OverrideReason", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x3008, 0x0067, 0x3008, 0x0067,
+      EVR_US, "ParameterValueNumber", 1, 1, "DICOM/CP_1611",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x3008, 0x0068, 0x3008, 0x0068,
       EVR_SQ, "CorrectedParameterSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -26838,6 +26846,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x038a, 0x300a, 0x038a,
       EVR_FL, "IsocenterToRangeModulatorDistance", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x038f, 0x300a, 0x038f,
+      EVR_FL, "ScanSpotTimeOffset", 1, -1, "DICOM/CP_1609",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0390, 0x300a, 0x0390,
