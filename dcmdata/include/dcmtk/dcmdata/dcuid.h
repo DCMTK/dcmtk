@@ -748,6 +748,10 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_PETColorPaletteSOPInstance                             "1.2.840.10008.1.5.2"
 #define UID_HotMetalBlueColorPaletteSOPInstance                    "1.2.840.10008.1.5.3"
 #define UID_PET20StepColorPaletteSOPInstance                       "1.2.840.10008.1.5.4"
+#define UID_SpringColorPaletteSOPInstance                          "1.2.840.10008.1.5.5"
+#define UID_SummerColorPaletteSOPInstance                          "1.2.840.10008.1.5.6"
+#define UID_FallColorPaletteSOPInstance                            "1.2.840.10008.1.5.7"
+#define UID_WinterColorPaletteSOPInstance                          "1.2.840.10008.1.5.8"
 
 /*
 ** Private DCMTK UIDs

@@ -514,6 +514,10 @@ static const UIDNameMap uidNameMap[] = {
     { UID_HotMetalBlueColorPaletteSOPInstance,                 "HotMetalBlueColorPaletteSOPInstance" },
     { UID_PET20StepColorPaletteSOPInstance,                    "PET20StepColorPaletteSOPInstance" },
     { UID_PETColorPaletteSOPInstance,                          "PETColorPaletteSOPInstance" },
+    { UID_SpringColorPaletteSOPInstance,                       "SpringColorPaletteSOPInstance" },
+    { UID_SummerColorPaletteSOPInstance,                       "SummerColorPaletteSOPInstance" },
+    { UID_FallColorPaletteSOPInstance,                         "FallColorPaletteSOPInstance" },
+    { UID_WinterColorPaletteSOPInstance,                       "WinterColorPaletteSOPInstance" },
 
     // Draft Supplements
     { UID_DRAFT_RTBeamsDeliveryInstructionStorage,             "DRAFT_RTBeamsDeliveryInstructionStorage" },
