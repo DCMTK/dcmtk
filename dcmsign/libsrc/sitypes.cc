@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,7 +39,7 @@ makeOFConditionConst(SI_EC_TransferSyntaxDoesNotMatchProfile,          OFM_dcmsi
 makeOFConditionConst(SI_EC_VerificationFailed_NoCertificate,           OFM_dcmsign, 10, OF_error, "signature verification failed: certificate is missing or unreadable");
 makeOFConditionConst(SI_EC_VerificationFailed_NoMAC,                   OFM_dcmsign, 11, OF_error, "signature verification failed: MAC parameters not be found or incomplete");
 makeOFConditionConst(SI_EC_VerificationFailed_NoSignature,             OFM_dcmsign, 12, OF_error, "signature verification failed: signature item incomplete");
-makeOFConditionConst(SI_EC_VerificationFailed_UnsupportedMACAlgorithm, OFM_dcmsign, 13, OF_error, "signature verification failed: the MAC algorithm not supported");
+makeOFConditionConst(SI_EC_VerificationFailed_UnsupportedMACAlgorithm, OFM_dcmsign, 13, OF_error, "signature verification failed: MAC algorithm not supported");
 makeOFConditionConst(SI_EC_VerificationFailed_Corrupted,               OFM_dcmsign, 14, OF_error, "signature verification failed: signature is invalid (document corrupted)");
 makeOFConditionConst(SI_EC_VerificationFailed_NoTrust,                 OFM_dcmsign, 16, OF_error, "signature verification failed: certificate issued by unknown CA");
 

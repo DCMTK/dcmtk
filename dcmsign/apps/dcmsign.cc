@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,6 +60,9 @@ static OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APP
 #include "dcmtk/dcmsign/simac.h"
 #include "dcmtk/dcmsign/simd5.h"
 #include "dcmtk/dcmsign/sisha1.h"
+#include "dcmtk/dcmsign/sisha256.h"
+#include "dcmtk/dcmsign/sisha384.h"
+#include "dcmtk/dcmsign/sisha512.h"
 #include "dcmtk/dcmsign/siripemd.h"
 #include "dcmtk/dcmsign/siprivat.h"
 #include "dcmtk/dcmsign/sicert.h"
@@ -777,6 +780,10 @@ int main(int argc, char *argv[])
       cmd.addOption("--mac-ripemd160",            "+mr",        "use RIPEMD 160 (default)");
       cmd.addOption("--mac-sha1",                 "+ms",        "use SHA-1");
       cmd.addOption("--mac-md5",                  "+mm",        "use MD 5");
+      cmd.addOption("--mac-sha256",               "+m2",        "use SHA-256");
+      cmd.addOption("--mac-sha384",               "+m3",        "use SHA-384");
+      cmd.addOption("--mac-sha512",               "+m5",        "use SHA-512");
+
     cmd.addSubGroup("tag selection:");
       cmd.addOption("--tag",                      "-t",      1, "[t]ag: \"gggg,eeee\" or dictionary name", "sign only specified tag\n(this option can be specified multiple times)");
       cmd.addOption("--tag-file",                 "-tf",     1, "[f]ilename: string", "read list of tags from text file");
@@ -956,6 +963,22 @@ int main(int argc, char *argv[])
       app.checkDependence("--mac-md5", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_mac = new SiMD5();
     }
+    if (cmd.findOption("--mac-sha256"))
+    {
+      app.checkDependence("--mac-sha256", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
+      opt_mac = new SiSHA256();
+    }
+    if (cmd.findOption("--mac-sha384"))
+    {
+      app.checkDependence("--mac-sha384", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
+      opt_mac = new SiSHA384();
+    }
+    if (cmd.findOption("--mac-sha512"))
+    {
+      app.checkDependence("--mac-sha512", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
+      opt_mac = new SiSHA512();
+    }
+
     cmd.endOptionBlock();
     if (opt_mac == NULL) opt_mac = new SiRIPEMD160();
 

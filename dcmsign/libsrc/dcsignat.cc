@@ -45,6 +45,9 @@
 #include "dcmtk/dcmsign/siprivat.h"
 #include "dcmtk/dcmsign/siripemd.h"
 #include "dcmtk/dcmsign/sisha1.h"
+#include "dcmtk/dcmsign/sisha256.h"
+#include "dcmtk/dcmsign/sisha384.h"
+#include "dcmtk/dcmsign/sisha512.h"
 #include "dcmtk/dcmsign/sisprof.h"
 #include "dcmtk/dcmsign/sitstamp.h"
 
@@ -615,6 +618,9 @@ OFCondition DcmSignature::verifyCurrent()
         if (macidentifier == SI_DEFTERMS_RIPEMD160) mac = new SiRIPEMD160();
         else if (macidentifier == SI_DEFTERMS_SHA1) mac = new SiSHA1();
         else if (macidentifier == SI_DEFTERMS_MD5)  mac = new SiMD5();
+        else if (macidentifier == SI_DEFTERMS_SHA256) mac = new SiSHA256();
+        else if (macidentifier == SI_DEFTERMS_SHA384) mac = new SiSHA384();
+        else if (macidentifier == SI_DEFTERMS_SHA512) mac = new SiSHA512();
         if (mac == NULL) result = SI_EC_VerificationFailed_UnsupportedMACAlgorithm;
       } else result = SI_EC_VerificationFailed_NoMAC;
     } else result = SI_EC_VerificationFailed_NoMAC;

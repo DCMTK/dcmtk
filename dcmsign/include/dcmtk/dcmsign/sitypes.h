@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,6 +38,9 @@
 #define SI_DEFTERMS_MD5       "MD5"
 #define SI_DEFTERMS_X509CERT  "X509_1993_SIG"
 #define SI_DEFTERMS_CMS_TS    "CMS_TS"
+#define SI_DEFTERMS_SHA256    "SHA256"
+#define SI_DEFTERMS_SHA384    "SHA384"
+#define SI_DEFTERMS_SHA512    "SHA512"
 
 
 /** type of key for public key cryptosystem
@@ -69,9 +72,17 @@ enum E_MACType
   EMT_RIPEMD160,
   
   /// MD5
-  EMT_MD5
-};
+  EMT_MD5,
 
+  /// SHA-256
+  EMT_SHA256,
+
+  /// SHA-384
+  EMT_SHA384,
+
+  /// SHA-512
+  EMT_SHA512
+};
 
 /*
  * specific error conditions for module dcmsign

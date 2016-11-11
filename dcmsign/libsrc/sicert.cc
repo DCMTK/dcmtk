@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,6 +39,10 @@ BEGIN_EXTERN_C
 #include <openssl/pem.h>
 END_EXTERN_C
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define EVP_PKEY_id(key) key->type
+#endif
+
 SiCertificate::SiCertificate()
 : x509(NULL)
 {
@@ -57,7 +61,7 @@ E_KeyType SiCertificate::getKeyType()
     EVP_PKEY *pkey = X509_extract_key(x509);
     if (pkey)
     {
-      switch(pkey->type)
+      switch(EVP_PKEY_id(pkey))
       {
         case EVP_PKEY_RSA:
           result = EKT_RSA;
@@ -85,7 +89,7 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
     EVP_PKEY *pkey = X509_extract_key(x509);
     if (pkey)
     {
-      switch(pkey->type)
+      switch(EVP_PKEY_id(pkey))
       {
         case EVP_PKEY_RSA:
           return new SiRSA(EVP_PKEY_get1_RSA(pkey));
@@ -111,7 +115,7 @@ OFCondition SiCertificate::loadCertificate(const char *filename, int filetype)
   x509 = NULL;
   if (filename)
   {
-    BIO *in = BIO_new(BIO_s_file_internal());
+    BIO *in = BIO_new(BIO_s_file());
     if (in)
     {
       if (BIO_read_filename(in, filename) > 0)
