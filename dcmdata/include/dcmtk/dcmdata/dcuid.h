@@ -483,6 +483,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_ColonCADSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.69"
 #define UID_ImplantationPlanSRDocumentStorage                      "1.2.840.10008.5.1.4.1.1.88.70"
 #define UID_AcquisitionContextSRStorage                            "1.2.840.10008.5.1.4.1.1.88.71"
+#define UID_SimplifiedAdultEchoSRStorage                           "1.2.840.10008.5.1.4.1.1.88.72"
 #define UID_ContentAssessmentResultsStorage                        "1.2.840.10008.5.1.4.1.1.90.1"
 #define UID_EncapsulatedPDFStorage                                 "1.2.840.10008.5.1.4.1.1.104.1"
 #define UID_EncapsulatedCDAStorage                                 "1.2.840.10008.5.1.4.1.1.104.2"

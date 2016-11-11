@@ -2951,7 +2951,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
                    (strcmp(SOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_ImplantationPlanSRDocumentStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_RadiopharmaceuticalRadiationDoseSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_AcquisitionContextSRStorage) == 0))
+                   (strcmp(SOPClassUID, UID_AcquisitionContextSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_SimplifiedAdultEchoSRStorage) == 0))
         {
             OFString string;
             OFString description = "unknown SR";
