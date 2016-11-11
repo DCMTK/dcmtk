@@ -532,6 +532,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_ExtensibleSR,
         /// DICOM IOD: Acquisition Context SR
         DT_AcquisitionContextSR,
+        /// DICOM IOD: Simplified Adult Echo SR (not yet implemented)
+        DT_SimplifiedAdultEchoSR,
         /// internal type used to mark the last entry
         DT_last = DT_AcquisitionContextSR
     };

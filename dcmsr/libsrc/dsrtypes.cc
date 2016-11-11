@@ -330,7 +330,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_Comprehensive3DSR,                   UID_Comprehensive3DSRStorage,                   OFFalse, "SR", "Comprehensive 3D SR"},
     {DSRTypes::DT_RadiopharmaceuticalRadiationDoseSR,  UID_RadiopharmaceuticalRadiationDoseSRStorage,  OFTrue,  "SR", "Radiopharmaceutical Radiation Dose SR"},
     {DSRTypes::DT_ExtensibleSR,                        UID_ExtensibleSRStorage,                        OFTrue,  "SR", "Extensible SR"},
-    {DSRTypes::DT_AcquisitionContextSR,                UID_AcquisitionContextSRStorage,                OFTrue,  "SR", "Acquisition Context SR"}
+    {DSRTypes::DT_AcquisitionContextSR,                UID_AcquisitionContextSRStorage,                OFTrue,  "SR", "Acquisition Context SR"},
+    {DSRTypes::DT_SimplifiedAdultEchoSR,               UID_SimplifiedAdultEchoSRStorage,               OFTrue,  "SR", "Simplified Adult Echo SR"}
 };
 
 
@@ -888,7 +889,7 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR);
+    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) && (documentType != DT_SimplifiedAdultEchoSR);
 }
 
 
@@ -1462,6 +1463,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             break;
         case DT_AcquisitionContextSR:
             checker = new DSRAcquisitionContextConstraintChecker();
+            break;
+        case DT_SimplifiedAdultEchoSR:
+            /* not yet supported */
             break;
         case DT_invalid:
             /* nothing to do */
