@@ -4082,7 +4082,7 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
 
     /* attempt to load the private key with the given password*/
     EVP_PKEY *pkey = NULL;
-    BIO *in = BIO_new(BIO_s_file_internal());
+    BIO *in = BIO_new(BIO_s_file());
     if (in)
     {
       if (BIO_read_filename(in, filename.c_str()) > 0)

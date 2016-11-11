@@ -1,6 +1,6 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 #
-#  Copyright (C) 1998-2010, OFFIS e.V.
+#  Copyright (C) 1998-2016, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -75,15 +75,15 @@ usage: dcmtk_ca.pl command [options] arguments
     newca [options] directory
       generate a new Certification Authority; directory must not yet exist.
       -type rsa|dsa                      type of CA certificate (default:rsa)
-      -days days                         validity of CA certificate (365)
-      -bits bits                         bits in CA key (default: 2048)
+      -days days                         validity of CA certificate (730)
+      -bits bits                         bits in CA key (default: 4096)
     mkcert [options] ca_dir certfile keyfile
       generate a new key pair and use the Certification Authority in ca_dir
       to certify the public key; write certificate to certfile and the private
       key to keyfile.
       -type rsa|dsa                      type of certificate (default:rsa)
-      -days days                         validity of certificate (365)
-      -bits bits                         bits in private key (default: 1024)
+      -days days                         validity of certificate (730)
+      -bits bits                         bits in private key (default: 2048)
       -des yes|no                        encrypt private key (default: yes)
       -pkcs12 filename                   export certificate to PKCS#12
       -pkcs12name name                   PKCS#12 symbolic name
@@ -102,7 +102,7 @@ sub createNewCA
   local($days) = $options{'-days'};
   if ($days ne '') { $days = "-days $days"; }
   local($bits) = $options{'-bits'};
-  if ($bits == 0) { $bits = 2048; }
+  if ($bits == 0) { $bits = 4096; }
   local($type) = $options{'-type'};
   local($keytype);
   if ($type eq 'dsa')
@@ -154,7 +154,7 @@ sub createNewCertificate
   if ($days ne '') { $days = "-days $days"; }
   local($ca_certificate) = $options{'-cacert'};
   local($bits) = $options{'-bits'};
-  if ($bits == 0) { $bits = 1024; }
+  if ($bits == 0) { $bits = 2048; }
   local($type) = $options{'-type'};
   local($encryption);
   local($des) = $options{'-des'};
@@ -269,10 +269,10 @@ x509_extensions	= usr_cert		# The extentions to add to the cert
 # so this is commented out by default to leave a V1 CRL.
 # crl_extensions	= crl_ext
 
-default_days	= 365			# how long to certify for
-default_crl_days= 30			# how long before next CRL
-default_md	= md5			# which md to use.
-preserve	= no			# keep passed DN ordering
+default_days	= 730			# how long to certify for
+default_crl_days= 30	  # how long before next CRL
+default_md	= sha256	  # which md to use.
+preserve	= no			    # keep passed DN ordering
 
 # A few difference way of specifying how similar the request should look
 # For type CA, the listed attributes must be the same, and the optional
@@ -303,7 +303,7 @@ emailAddress		= optional
 ####################################################################
 [ req ]
 
-default_bits		= 1024
+default_bits		= 2048
 default_keyfile 	= privkey.pem
 distinguished_name	= req_distinguished_name
 attributes		= req_attributes

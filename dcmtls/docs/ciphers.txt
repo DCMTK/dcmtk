@@ -92,17 +92,8 @@ policy there is a number of aspects users should be aware of.
   regulations. These ciphersuites can be identified by the term "EXPORT" or
   "EXPORT1024" in their name.
 
-  Users should be aware that the security offered by these ciphersuites is
-  in general lower than the security offered by unrestricted ciphersuites.
-  Whether or not a ciphersuite is considered "safe" for a particular
-  application is a matter of the local security policy, though.
-
-  Users in Europe should be aware of the European Prestandard ENV 13608-3
-  "Health informatics - Security for healthcare communication - Part 3:
-  Secure data channels" which requires that no TLS ciphersuite providing
-  less than 80 bits of symmetric effective key space or less than 768 bits
-  of RSA or DH asymmetric key strength may be negotiated if conformance to
-  ENV 13608-3 is claimed by an application.
+  These ciphersuites must be considered insecure. Support for these
+  ciphersuites has been removed from DCMTK starting in version 3.6.1.
 
 4. Forward Secrecy Ciphersuites
 
@@ -139,10 +130,8 @@ policy there is a number of aspects users should be aware of.
   The unsupported ciphersuites are documented in OpenSSL's ciphers(1)
   manual page and currently include:
 
-  - TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA
   - TLS_DH_DSS_WITH_DES_CBC_SHA
   - TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA
-  - TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA
   - TLS_DH_RSA_WITH_DES_CBC_SHA
   - TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA
   - TLS_DH_DSS_WITH_AES_128_CBC_SHA
@@ -168,12 +157,6 @@ TLS_RSA_WITH_NULL_SHA
   Secure Hash  : SHA-1
   Note         : UNENCRYPTED, NO CONFIDENTIALITY
 
-TLS_RSA_EXPORT_WITH_RC4_40_MD5
-
-  Key exchange : RSA (max. 512 bit)
-  Encryption   : RC4 with 40 bit key
-  Secure Hash  : MD5
-
 TLS_RSA_WITH_RC4_128_MD5
 
   Key exchange : RSA
@@ -186,22 +169,10 @@ TLS_RSA_WITH_RC4_128_SHA
   Encryption   : RC4 with 128 bit key
   Secure Hash  : SHA-1
 
-TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5
-
-  Key exchange : RSA (max. 512 bit)
-  Encryption   : RC2 (CBC mode) with 40 bit key
-  Secure Hash  : MD5
-
 TLS_RSA_WITH_IDEA_CBC_SHA
 
   Key exchange : RSA
   Encryption   : IDEA (CBC mode, 128 bit key)
-  Secure Hash  : SHA-1
-
-TLS_RSA_EXPORT_WITH_DES40_CBC_SHA
-
-  Key exchange : RSA (max. 512 bit)
-  Encryption   : DES (CBC mode) with 40 bit key
   Secure Hash  : SHA-1
 
 TLS_RSA_WITH_DES_CBC_SHA
@@ -216,13 +187,6 @@ TLS_RSA_WITH_3DES_EDE_CBC_SHA
   Encryption   : 3DES (EDE CBC mode) with 168 bit key
   Secure Hash  : SHA-1
 
-TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA
-
-  Key exchange : Diffie-Hellman (max. 512 bit) with DSS certificate signature
-  Encryption   : DES (CBC mode) with 40 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
 TLS_DH_DSS_WITH_DES_CBC_SHA
 
   Key exchange : Diffie-Hellman with DSS certificate signature
@@ -234,13 +198,6 @@ TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA
 
   Key exchange : Diffie-Hellman with DSS certificate signature
   Encryption   : 3DES (EDE CBC mode) with 168 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA
-
-  Key exchange : Diffie-Hellman (max. 512 bit) with RSA certificate signature
-  Encryption   : DES (CBC mode) with 40 bit key
   Secure Hash  : SHA-1
   Note         : not supported by OpenSSL
 
@@ -258,13 +215,6 @@ TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA
   Secure Hash  : SHA-1
   Note         : not supported by OpenSSL
 
-TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman (max. 512 bit) with DSS certificate signature
-  Encryption   : DES (CBC mode) with 40 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
 TLS_DHE_DSS_WITH_DES_CBC_SHA
 
   Key exchange : Ephemeral Diffie-Hellman with DSS certificate signature
@@ -276,13 +226,6 @@ TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA
 
   Key exchange : Ephemeral Diffie-Hellman with DSS certificate signature
   Encryption   : 3DES (EDE CBC mode) with 168 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman (max. 512 bit) with RSA certificate signature
-  Encryption   : DES (CBC mode) with 40 bit key
   Secure Hash  : SHA-1
   Note         : provides forward secrecy
 
@@ -300,25 +243,11 @@ TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA
   Secure Hash  : SHA-1
   Note         : provides forward secrecy
 
-TLS_DH_anon_EXPORT_WITH_RC4_40_MD5
-
-  Key exchange : Anonymous Diffie-Hellman (max. 512 bit), no signatures
-  Encryption   : RC4 with 40 bit key
-  Secure Hash  : MD5
-  Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks
-
 TLS_DH_anon_WITH_RC4_128_MD5
 
   Key exchange : Anonymous Diffie-Hellman, no signatures
   Encryption   : RC4 with 128 bit key
   Secure Hash  : MD5
-  Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks
-
-TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA
-
-  Key exchange : Anonymous Diffie-Hellman (max. 512 bit), no signatures
-  Encryption   : DES (CBC mode) with 40 bit key
-  Secure Hash  : SHA-1
   Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks
 
 TLS_DH_anon_WITH_DES_CBC_SHA
@@ -335,36 +264,9 @@ TLS_DH_anon_WITH_3DES_EDE_CBC_SHA
   Secure Hash  : SHA-1
   Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks
 
-
 ===============================================================
 TLS Ciphersuites from draft-ietf-tls-56-bit-ciphersuites-00.txt
 ===============================================================
-
-TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA
-
-  Key exchange : RSA (max. 1024 bit)
-  Encryption   : DES (CBC mode) with 56 bit key
-  Secure Hash  : SHA-1
-
-TLS_RSA_EXPORT1024_WITH_RC4_56_SHA
-
-  Key exchange : RSA (max. 1024 bit)
-  Encryption   : RC4 with 56 bit key
-  Secure Hash  : SHA-1
-
-TLS_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman (max. 1024 bit) with DSS certificate signature
-  Encryption   : DES (CBC mode) with 56 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman (max. 1024 bit) with DSS certificate signature
-  Encryption   : RC4 with 56 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
 
 TLS_DHE_DSS_WITH_RC4_128_SHA
 
@@ -372,24 +274,6 @@ TLS_DHE_DSS_WITH_RC4_128_SHA
   Encryption   : RC4 with 128 bit key
   Secure Hash  : SHA-1
   Note         : provides forward secrecy
-
-
-===================================================================
-Additional Ciphersuites only available with OpenSSL 0.9.7 or newer.
-===================================================================
-
-TLS_RSA_EXPORT_WITH_RC4_56_MD5
-
-  Key exchange : RSA (max. 512 bit)
-  Encryption   : RC4 with 56 bit key
-  Secure Hash  : MD5
-
-TLS_RSA_EXPORT_WITH_RC2_CBC_56_MD5
-
-  Key exchange : RSA (max. 512 bit)
-  Encryption   : RC2 (CBC mode) with 56 bit key
-  Secure Hash  : MD5
-
 
 ==========================================================================
 AES Ciphersuites from RFC3268. Only available with OpenSSL 0.9.7 or newer.
