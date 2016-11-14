@@ -244,7 +244,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
   // --- constant declarations ---
 
-    /** @name read() flags.
+    /** @name read() flags
      *  These flags can be combined and passed to the read() methods.
      *  The 'shortcut' flags can be used for common combinations.
      */
@@ -273,7 +273,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     //@}
 
 
-    /** @name renderHTML() flags.
+    /** @name renderHTML() flags
      *  These flags can be combined and passed to the renderHMTL() methods.
      *  Please note that only the 'external' flags can be used from outside
      *  this library.  The 'shortcut' flags can be used for common combinations.
@@ -354,7 +354,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     //@}
 
 
-    /** @name read/writeXML() flags.
+    /** @name read/writeXML() flags
      *  These flags can be combined and passed to the read/writeXML() methods.
      *  The 'shortcut' flags can be used for common combinations.
      */
@@ -532,7 +532,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_ExtensibleSR,
         /// DICOM IOD: Acquisition Context SR
         DT_AcquisitionContextSR,
-        /// DICOM IOD: Simplified Adult Echo SR (not yet implemented)
+        /// DICOM IOD: Simplified Adult Echo SR
         DT_SimplifiedAdultEchoSR,
         /// internal type used to mark the last entry
         DT_last = DT_AcquisitionContextSR
@@ -882,6 +882,12 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      */
     static OFBool requiresEnhancedEquipmentModule(const E_DocumentType documentType);
 
+    /** check whether SR document type requires Timezone Module
+     ** @param  documentType  SR document type to be checked
+     ** @return OFTrue if Timezone Module is required, OFFalse otherwise
+     */
+    static OFBool requiresTimezoneModule(const E_DocumentType documentType);
+
     /** convert relationship type to DICOM defined term
      ** @param  relationshipType  relationship type to be converted
      ** @return defined term if type is valid, empty string otherwise (never NULL)
@@ -1100,7 +1106,6 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     static const OFString &currentDate(OFString &dateString);
 
     /** get current time in DICOM 'TM' format. (HHMMSS)
-     *  The optional UTC notation (e.g. +0100) is currently not supported.
      ** @param  timeString  string used to store the current time
      *                      ('000000' if current time could not be retrieved)
      ** @return resulting character string (see 'timeString')
@@ -1116,6 +1121,13 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      ** @return resulting character string (see 'dateTimeString')
      */
     static const OFString &currentDateTime(OFString &dateTimeString);
+
+    /** get local timezone in DICOM format. (&ZZXX)
+     ** @param  timezoneString  string used to store the local timezone
+     *                          ('+0000' if timezone could not be retrieved)
+     ** @return resulting character string (see 'timezoneString')
+     */
+    static const OFString &localTimezone(OFString &timezoneString);
 
     /** convert DICOM date string to readable format.
      *  The ISO format "YYYY-MM-DD" is used for the readable format.

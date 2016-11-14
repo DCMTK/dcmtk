@@ -25,6 +25,7 @@
     <xsd:sequence>
       <xsd:element name="sopclass" type="dsr:SOPClass"/>
       <xsd:element name="charset" type="dsr:Charset" minOccurs="0"/>
+      <xsd:element name="timezone" type="dsr:Timezone" minOccurs="0"/>
       <xsd:element name="modality" type="dsr:Modality" minOccurs="0"/>
       <xsd:choice>
         <xsd:element name="manufacturer" type="xsd:string" minOccurs="0"/>
@@ -950,6 +951,12 @@
   </xsd:complexType>
 
   <!-- Other Data Types -->
+
+  <xsd:simpleType name="Timezone">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[\-+][0-9]{4}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
 
   <xsd:simpleType name="IntegerList">
     <xsd:restriction base="xsd:string">

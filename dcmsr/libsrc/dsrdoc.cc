@@ -69,6 +69,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     InstanceCreationTime(DCM_InstanceCreationTime),
     InstanceCreatorUID(DCM_InstanceCreatorUID),
     CodingSchemeIdentification(),
+    TimezoneOffsetFromUTC(DCM_TimezoneOffsetFromUTC),
     StudyInstanceUID(DCM_StudyInstanceUID),
     StudyDate(DCM_StudyDate),
     StudyTime(DCM_StudyTime),
@@ -135,6 +136,7 @@ void DSRDocument::clear()
     InstanceCreationTime.clear();
     InstanceCreatorUID.clear();
     CodingSchemeIdentification.clear();
+    TimezoneOffsetFromUTC.clear();
     StudyInstanceUID.clear();
     StudyDate.clear();
     StudyTime.clear();
@@ -452,6 +454,14 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", "SOPCommonModule");
         CodingSchemeIdentification.read(dataset, flags);
+        if (requiresTimezoneModule(documentType))
+        {
+            // --- Timezone Module ---
+            getAndCheckElementFromDataset(dataset, TimezoneOffsetFromUTC, "1", "1", "TimezoneModule");
+        } else {
+            // --- SOP Common Module ---
+            getAndCheckElementFromDataset(dataset, TimezoneOffsetFromUTC, "1", "3", "SOPCommonModule");
+        }
 
         // --- General Study and Patient Module ---
         readStudyData(dataset, flags);
@@ -623,6 +633,14 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime), "1", "3", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID), "1", "3", "SOPCommonModule");
         CodingSchemeIdentification.write(dataset);
+        if (requiresTimezoneModule(getDocumentType()))
+        {
+            // --- Timezone Module ---
+            addElementToDataset(result, dataset, new DcmShortString(TimezoneOffsetFromUTC), "1", "1", "TimezoneModule");
+        } else {
+            // --- SOP Common Module ---
+            addElementToDataset(result, dataset, new DcmShortString(TimezoneOffsetFromUTC), "1", "3", "SOPCommonModule");
+        }
 
         // --- General Study Module ---
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(StudyInstanceUID), "1", "1", "GeneralStudyModule");
@@ -794,6 +812,10 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     /* only one "charset" node allowed */
                     doc.printUnexpectedNodeWarning(cursor);
                 }
+            }
+            else if (doc.matchNode(cursor, "timezone"))
+            {
+                doc.getElementFromNodeContent(cursor, TimezoneOffsetFromUTC, NULL, OFTrue /*encoding*/);
             }
             else if (doc.matchNode(cursor, "modality"))
             {
@@ -1244,6 +1266,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         stream << dcmFindNameOfUID(tmpString.c_str(), "" /* empty value as default */);
         stream << "</sopclass>" << OFendl;
         writeStringFromElementToXML(stream, SpecificCharacterSet, "charset", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, TimezoneOffsetFromUTC, "timezone", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, Modality, "modality", (flags & XF_writeEmptyTags) > 0);
         /* check for additional device information */
         if (!ManufacturerModelName.isEmpty())
@@ -2166,6 +2189,13 @@ OFCondition DSRDocument::getInstanceCreatorUID(OFString &value,
 }
 
 
+OFCondition DSRDocument::getTimezoneOffsetFromUTC(OFString &value,
+                                                  const signed long pos) const
+{
+    return getStringValueFromElement(TimezoneOffsetFromUTC, value, pos);
+}
+
+
 OFCondition DSRDocument::getPatientName(OFString &value,
                                         const signed long pos) const
 {
@@ -2365,6 +2395,16 @@ OFCondition DSRDocument::setCompletionFlagDescription(const OFString &value,
         if (result.good())
             result = CompletionFlagDescription.putOFStringArray(value);
     }
+    return result;
+}
+
+
+OFCondition DSRDocument::setTimezoneOffsetFromUTC(const OFString &value,
+                                                  const OFBool check)
+{
+    OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
+    if (result.good())
+        result = TimezoneOffsetFromUTC.putOFStringArray(value);
     return result;
 }
 
@@ -2865,6 +2905,14 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
     Modality.putString(documentTypeToModality(documentType));
     if (updateAll)
     {
+        OFString tmpString;
+        /* determine local timezone (if required) */
+        if (requiresTimezoneModule(documentType) && TimezoneOffsetFromUTC.isEmpty())
+        {
+            DCMSR_DEBUG("  Determining local timezone for Timezone Offset From UTC");
+            TimezoneOffsetFromUTC.putOFStringArray(localTimezone(tmpString));
+        }
+
         /* create new instance number if required (type 1) */
         if (InstanceNumber.isEmpty())
             InstanceNumber.putString("1");
@@ -2877,7 +2925,6 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         if (SOPInstanceUID.isEmpty())
         {
             DCMSR_DEBUG("  Generating new value for SOP Instance UID");
-            OFString tmpString;
             SOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
             /* set instance creation date to current date (YYYYMMDD) */
             InstanceCreationDate.putOFStringArray(currentDate(tmpString));

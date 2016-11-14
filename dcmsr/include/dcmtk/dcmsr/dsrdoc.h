@@ -489,6 +489,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition getInstanceCreatorUID(OFString &value,
                                               const signed long pos = 0) const;
 
+    /** get timezone offset from UTC
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getTimezoneOffsetFromUTC(OFString &value,
+                                                 const signed long pos = 0) const;
+
     /** get patient's name
      ** @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -706,6 +714,16 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     virtual OFCondition setCompletionFlagDescription(const OFString &value,
                                                      const OFBool check = OFTrue);
+
+    /** set timezone offset from UTC
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled.
+     *                 Please note that it is not checked whether the 'value' conforms
+     *                 to the requirements of a valid timezone offset (see DICOM PS3.3).
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setTimezoneOffsetFromUTC(const OFString &value,
+                                                 const OFBool check = OFTrue);
 
     /** set patient's name
      ** @param  value  value to be set (single value only) or "" for no value
@@ -1243,6 +1261,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      // - tbd: optional attribute not yet supported
     /// Mapping Resource Identification Sequence: (SQ, 1-n, 3)
      // - tbd: optional attribute not yet supported
+    /// Timezone Offset from UTC: (SH, 1, 3)
+    DcmShortString      TimezoneOffsetFromUTC;
 
     // --- General Study Module (M) ---
 
@@ -1357,6 +1377,11 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DSRSOPInstanceReferenceList PertinentOtherEvidence;
     /// Referenced Instance Sequence: (SQ, 1-n, 1C)
     DSRReferencedInstanceList ReferencedInstances;
+
+    // --- Timezone Module (M - for some IODs) ---
+
+    // Timezone Offset from UTC: (SH, 1, 1)
+    // - see 'SOP Common Module'
 
  // --- declaration of copy constructor and assignment operator ---
 
