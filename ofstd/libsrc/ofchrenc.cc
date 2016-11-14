@@ -492,7 +492,7 @@ OFString OFCharacterEncoding::getLibraryVersionString()
     OFString versionStr = "LIBICONV, Version ";
     char buf[10];
     // extract major and minor version number
-    sprintf(buf, "%i.%i", (_libiconv_version >> 8), (_libiconv_version & 0xff));
+    sprintf(buf, "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
     versionStr.append(buf);
     return versionStr;
 #else
