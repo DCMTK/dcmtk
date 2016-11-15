@@ -2,6 +2,7 @@
 
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include "dcmtk/ofstd/oflimits.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/oftraits.h"
@@ -10,6 +11,8 @@
 template<typename T>
 static void checkMinMax()
 {
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_OVERFLOW
     const T max_plus_one( OFnumeric_limits<T>::max() + 1 );
     const T lowest_minus_one( OFnumeric_limits<T>::lowest() - 1 );
     OFCHECK
@@ -23,6 +26,7 @@ static void checkMinMax()
         ( OFnumeric_limits<T>::has_infinity && OFMath::isinf( lowest_minus_one ) )
     );
     OFCHECK( ( OFnumeric_limits<T>::lowest() == OFnumeric_limits<T>::min() ) || !OFnumeric_limits<T>::is_integer );
+#include DCMTK_DIAGNOSTIC_POP
 }
 
 template<typename T>
@@ -57,8 +61,11 @@ static void checkLimits()
     checkInfinity<T>();
     // Only test overflow property if 'is_modulo' expands to OFTrue, since OFFalse may
     // also mean 'undefined'.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_OVERFLOW
     if( OFnumeric_limits<T>::is_modulo )
         OFCHECK( OFstatic_cast( T, OFnumeric_limits<T>::max() + 1 ) == OFnumeric_limits<T>::min() );
+#include DCMTK_DIAGNOSTIC_POP
 }
 
 OFTEST(ofstd_limits)

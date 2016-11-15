@@ -41,6 +41,9 @@ using OFtuple = std::tuple<Args...>;
 #elif !defined(DOXYGEN) // fallback implementations
 
 #include <cstdarg>
+#include "dcmtk/ofstd/ofdiag.h"
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_MISMATCHED_TAGS
 
 // Implementation of OFignore: struct OFignore_t
 // that can be constructed and assigned to anything
@@ -368,6 +371,7 @@ OFtuple<> OFtie();
 // implementation / overload for the maximum number
 // of elements currently supported.
 #include "dcmtk/ofstd/variadic/tuple.h"
+#include DCMTK_DIAGNOSTIC_POP
 
 #else // NOT C++11 && NOT DOXYGEN
 /** A class template that implements generic tuples.
