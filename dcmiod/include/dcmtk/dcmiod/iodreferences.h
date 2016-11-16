@@ -197,6 +197,10 @@ class DCMTK_DCMIOD_EXPORT IODImageReference : public IODReference
      */
     virtual TYPE getType() const {return IMAGE; }
 
+    // Avoid overridden virtual function warning, i.e. tell the compiler that
+    // we want to have both functions to be polymorph and available to the user.
+    using IODReference::readFromFile;
+
     /** Initialize reference from given file
      *  @param  filename The file to read from
      *  @param  frameNumbers The frame numbers to reference. It is not checked
@@ -245,6 +249,10 @@ class DCMTK_DCMIOD_EXPORT IODSegmentationReference : public IODReference
      *  @return Returns SEGMENT type
      */
     virtual TYPE getType() const {return SEGMENT; }
+
+    // Avoid overridden virtual function warning, i.e. tell the compiler that
+    // we want to have both functions to be polymorph and available to the user.
+    using IODReference::readFromFile;
 
     /** Initialize reference from given file
      *  @param  filename The file to read from
