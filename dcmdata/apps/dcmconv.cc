@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -160,6 +160,12 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("handling of wrong delimitation items:");
       cmd.addOption("--use-delim-items",     "-rd",    "use delimitation items from dataset (default)");
       cmd.addOption("--replace-wrong-delim", "+rd",    "replace wrong sequence/item delimitation items");
+    cmd.addSubGroup("handling of illegal undefined length OB/OW elements:");
+      cmd.addOption("--illegal-obow-reject", "-oi",    "reject dataset (default)");
+      cmd.addOption("--illegal-obow-convert","+oi",    "convert to SQ");
+    cmd.addSubGroup("handling of VOI LUT with OW and explicit length:");
+      cmd.addOption("--illegal-voi-reject",  "-vi",    "reject dataset (default)");
+      cmd.addOption("--illegal-voi-convert", "+vi",    "convert to SQ");
     cmd.addSubGroup("general handling of parser errors: ");
       cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
       cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
@@ -371,6 +377,28 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--replace-wrong-delim"))
       {
         dcmReplaceWrongDelimitationItem.set(OFTrue);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--illegal-obow-reject"))
+      {
+        dcmConvertUndefinedLengthOBOWtoSQ.set(OFFalse);
+      }
+      if (cmd.findOption("--illegal-obow-convert"))
+      {
+        dcmConvertUndefinedLengthOBOWtoSQ.set(OFTrue);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--illegal-voi-reject"))
+      {
+        dcmConvertVOILUTSequenceOWtoSQ.set(OFFalse);
+      }
+      if (cmd.findOption("--illegal-voi-convert"))
+      {
+        dcmConvertVOILUTSequenceOWtoSQ.set(OFTrue);
       }
       cmd.endOptionBlock();
 

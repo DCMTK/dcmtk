@@ -149,6 +149,20 @@ handling of wrong delimitation items:
   +rd  --replace-wrong-delim
          replace wrong sequence/item delimitation items
 
+handling of illegal undefined length OB/OW elements:
+
+  -oi  --illegal-obow-reject
+         reject dataset (default)
+  +oi  --illegal-obow-convert
+         convert to SQ
+
+handling of VOI LUT with OW and explicit length:
+
+  -vi  --illegal-voi-reject
+         reject dataset (default)
+  +vi  --illegal-voi-convert
+         convert to SQ
+
 general handling of parser errors:
 
   +Ep  --ignore-parse-errors
