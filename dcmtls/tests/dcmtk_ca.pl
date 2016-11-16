@@ -11,7 +11,7 @@
 #   D-26121 Oldenburg, Germany
 #
 #
-#  Module: dcmpstat
+#  Module: dcmtls
 #
 #  Author: Marco Eichelberg
 #
@@ -253,9 +253,9 @@ default_ca	= CA_default		# The default ca section
 
 dir		= ${ca_directory}	# Where everything is kept
 certs		= \$dir/certs		# Where the issued certs are kept
-crl_dir		= \$dir/crl		# Where the issued crl are kept
+crl_dir 	= \$dir/crl		# Where the issued crl are kept
 database	= \$dir/index.txt	# database index file.
-new_certs_dir	= \$dir/newcerts		# default place for new certs.
+new_certs_dir	= \$dir/newcerts	# default place for new certs.
 
 certificate	= \$dir/cacert.pem 	# The CA certificate
 serial		= \$dir/serial 		# The current serial number
@@ -270,9 +270,9 @@ x509_extensions	= usr_cert		# The extentions to add to the cert
 # crl_extensions	= crl_ext
 
 default_days	= 730			# how long to certify for
-default_crl_days= 30	  # how long before next CRL
-default_md	= sha256	  # which md to use.
-preserve	= no			    # keep passed DN ordering
+default_crl_days= 30	  		# how long before next CRL
+default_md	= sha256	  	# which md to use.
+preserve	= no			# keep passed DN ordering
 
 # A few difference way of specifying how similar the request should look
 # For type CA, the listed attributes must be the same, and the optional
@@ -307,7 +307,7 @@ default_bits		= 2048
 default_keyfile 	= privkey.pem
 distinguished_name	= req_distinguished_name
 attributes		= req_attributes
-x509_extensions	= v3_ca	# The extentions to add to the self signed cert
+x509_extensions 	= v3_ca	# The extentions to add to the self signed cert
 
 # Passwords for private keys if not present they will be prompted for
 # input_password = secret
