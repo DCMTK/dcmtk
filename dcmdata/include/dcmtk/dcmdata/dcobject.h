@@ -199,6 +199,17 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLe
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmReplaceWrongDelimitationItem; /* default OFFalse */
 
+/** This flag enables the "silent" conversion of illegal OB/OW elements
+ *  with undefined length (other than PixelData) to SQ elements while reading.
+ *  The default behaviour is to reject such elements with an error message. 
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmConvertUndefinedLengthOBOWtoSQ; /* default OFFalse */
+
+/** This flag enables the "silent" conversion of incorrectly encoded
+ *  VOI LUT Sequence elements with VR=OW and explicit length into a sequence.
+ *  This incorrect encoding was detected "in the wild" in 2016.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmConvertVOILUTSequenceOWtoSQ; /* default OFFalse */
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
  *  everything that is either a dataset or that can be identified with a DICOM

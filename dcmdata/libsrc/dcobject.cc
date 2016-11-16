@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,7 +55,8 @@ OFGlobal<DcmTagKey> dcmStopParsingAfterElement(DCM_UndefinedTagKey); // (0xffff,
 OFGlobal<OFBool>    dcmWriteOversizedSeqsAndItemsUndefined(OFTrue);
 OFGlobal<OFBool>    dcmIgnoreFileMetaInformationGroupLength(OFFalse);
 OFGlobal<OFBool>    dcmReplaceWrongDelimitationItem(OFFalse);
-
+OFGlobal<OFBool>    dcmConvertUndefinedLengthOBOWtoSQ(OFFalse);
+OFGlobal<OFBool>    dcmConvertVOILUTSequenceOWtoSQ(OFFalse);
 
 // ****** public methods **********************************
 

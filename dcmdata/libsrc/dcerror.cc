@@ -73,6 +73,8 @@ makeOFConditionConst(EC_MissingAttribute,                OFM_dcmdata, 47, OF_err
 makeOFConditionConst(EC_InternalError,                   OFM_dcmdata, 48, OF_error, "Internal error");
 makeOFConditionConst(EC_InvalidCharacter,                OFM_dcmdata, 49, OF_error, "Invalid character");
 // error code 50 is reserved for determine start fragment error messages (see below)
+makeOFConditionConst(EC_UndefinedLengthOBOW,             OFM_dcmdata, 51, OF_error, "Illegal element with OB or OW Value Representation and undefined length encountered");
+makeOFConditionConst(EC_VOI_LUT_OBOW,                    OFM_dcmdata, 52, OF_error, "Illegal VOI LUT Sequence element with OB or OW Value Representation and explicit length encountered");
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;
