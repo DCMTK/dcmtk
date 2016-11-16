@@ -188,7 +188,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
 #else
    // starting with OpenSSL 1.1.0, a new TLS_method() is offered
    // that automatically selects the highest version of the TLS
-   // protocol supported by client and server. 
+   // protocol supported by client and server.
    // The previous TLSv1_methods are now deprecated and generate
    // a warning.
    if (networkRole == DICOM_APPLICATION_ACCEPTOR)
@@ -284,11 +284,11 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCipherSuites(const char *suites
 {
   if (transportLayerContext && suites)
   {
-    if (!SSL_CTX_set_cipher_list(transportLayerContext, suites)) 
-    { 
-    	const char *err = ERR_reason_error_string(ERR_peek_error());
+    if (!SSL_CTX_set_cipher_list(transportLayerContext, suites))
+    {
+      const char *err = ERR_reason_error_string(ERR_peek_error());
       if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-   	  return TCS_tlsError;
+      return TCS_tlsError;
     }
   } else return TCS_illegalCall;
   return TCS_ok;
@@ -305,10 +305,10 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setPrivateKeyFile(const char *file
   if (transportLayerContext)
   {
     if (0 >= SSL_CTX_use_PrivateKey_file(transportLayerContext, fileName, fileType))
-    { 
-    	const char *err = ERR_reason_error_string(ERR_peek_error());
+    {
+      const char *err = ERR_reason_error_string(ERR_peek_error());
       if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-   	  return TCS_tlsError;
+      return TCS_tlsError;
     }
   } else return TCS_illegalCall;
   return TCS_ok;
@@ -319,11 +319,11 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCertificateFile(const char *fil
   /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
   if (transportLayerContext)
   {
-    if (0 >= SSL_CTX_use_certificate_file(transportLayerContext, fileName, fileType)) 
-    { 
-    	const char *err = ERR_reason_error_string(ERR_peek_error());
+    if (0 >= SSL_CTX_use_certificate_file(transportLayerContext, fileName, fileType))
+    {
+      const char *err = ERR_reason_error_string(ERR_peek_error());
       if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-   	  return TCS_tlsError;
+      return TCS_tlsError;
     }
   } else return TCS_illegalCall;
   return TCS_ok;
@@ -350,17 +350,17 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateFile(const ch
   if (transportLayerContext)
   {
     X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(SSL_CTX_get_cert_store(transportLayerContext), X509_LOOKUP_file());
-    if (x509_lookup == NULL) 
-    { 
-    	const char *err = ERR_reason_error_string(ERR_peek_error());
+    if (x509_lookup == NULL)
+    {
+      const char *err = ERR_reason_error_string(ERR_peek_error());
       if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-   	  return TCS_tlsError;
+      return TCS_tlsError;
     }
     if (! X509_LOOKUP_load_file(x509_lookup, fileName, fileType))
-    { 
-    	const char *err = ERR_reason_error_string(ERR_peek_error());
+    {
+      const char *err = ERR_reason_error_string(ERR_peek_error());
       if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-   	  return TCS_tlsError;
+      return TCS_tlsError;
     }
   } else return TCS_illegalCall;
   return TCS_ok;
@@ -373,16 +373,16 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const cha
   {
     X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(SSL_CTX_get_cert_store(transportLayerContext), X509_LOOKUP_hash_dir());
     if (x509_lookup == NULL)
-    { 
-    	const char *err = ERR_reason_error_string(ERR_peek_error());
+    {
+      const char *err = ERR_reason_error_string(ERR_peek_error());
       if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-   	  return TCS_tlsError;
+      return TCS_tlsError;
     }
     if (! X509_LOOKUP_add_dir(x509_lookup, pathName, fileType))
-    { 
-    	const char *err = ERR_reason_error_string(ERR_peek_error());
+    {
+      const char *err = ERR_reason_error_string(ERR_peek_error());
       if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-   	  return TCS_tlsError;
+      return TCS_tlsError;
     }
   } else return TCS_illegalCall;
   return TCS_ok;
