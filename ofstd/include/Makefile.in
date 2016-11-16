@@ -23,6 +23,10 @@ install:
 	for file in dcmtk/ofstd/variadic/*.h ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/ofstd/variadic ;\
 	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/ofstd/diag
+	for file in dcmtk/ofstd/diag/*.def ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/ofstd/diag ;\
+	done
 
 clean:
 	rm -f $(TRASH)

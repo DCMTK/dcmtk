@@ -67,6 +67,8 @@ INSTALL(FILES ${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h
 INSTALL(FILES ANNOUNCE CHANGES COPYRIGHT CREDITS FAQ HISTORY VERSION
         DESTINATION ${DCMTK_INSTALL_DOCDIR}
         COMPONENT doc)
+INSTALL(DIRECTORY docs/ DESTINATION ${DCMTK_INSTALL_DOCDIR}
+        COMPONENT doc FILES_MATCHING PATTERN "CHANGES.???")
 
 #-----------------------------------------------------------------------------
 # Create an install configuration files for external projects
