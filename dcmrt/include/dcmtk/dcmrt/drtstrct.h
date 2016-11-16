@@ -8,6 +8,7 @@
  *
  *  Generated automatically from DICOM PS 3.3-2016d
  *  File created on 2016-11-09 18:52:20
+ *  File modified on 2016-11-16 by J. Riesmeier
  *
  */
 
@@ -76,6 +77,9 @@
 
 
 /** Interface class for RTStructureSetIOD
+ *  @note Because of its many member variables, an instance of this class requires quite
+ *    some memory. So be careful when creating automatic variables from this class (the
+ *    stack size might be exceeded); it is probably better to use the heap space.
  */
 class DCMTK_DCMRT_EXPORT DRTStructureSetIOD
   : protected DRTTypes
