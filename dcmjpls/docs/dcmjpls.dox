@@ -27,7 +27,7 @@ This module contains the following command line tools:
 The following example shows how to compress a DICOM image file with lossless JPEG-LS:
 
 \code
-DJLSEncoderRegistration::registerCodecs(); // register JPEG codecs
+DJLSEncoderRegistration::registerCodecs(); // register JPEG-LS codecs
 DcmFileFormat fileformat;
 if (fileformat.loadFile("test.dcm").good())
 {
@@ -46,7 +46,7 @@ if (fileformat.loadFile("test.dcm").good())
     delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
     delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 
-    // store in lossless JPEG format
+    // store in lossless JPEG-LS format
     fileformat.saveFile("test_jpls.dcm", EXS_JPEGLSLossless);
   }
 }
