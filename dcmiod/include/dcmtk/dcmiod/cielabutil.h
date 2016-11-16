@@ -195,7 +195,7 @@ protected:
    *  @param  b Second number
    *  @return The minimum of a, b. a if a and b are equal.
    */
-  static double min(double a, double b);
+  static double min2(double a, double b);
 
   /** Get the minimum of three numbers
    *  @param  a First number

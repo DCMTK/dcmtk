@@ -191,7 +191,7 @@ double IODCIELabUtil::labfInv(double n)
 }
 
 
-double IODCIELabUtil::min(double a, double b)
+double IODCIELabUtil::min2(double a, double b)
 {
   if (a <= b)
     return a;
@@ -203,7 +203,7 @@ double IODCIELabUtil::min(double a, double b)
 double IODCIELabUtil::min3(double a, double b, double c)
 {
   if (a <= b)
-    return min(a,c);
+    return min2(a,c);
   else
-    return min (b,c);
+    return min2(b,c);
 }
