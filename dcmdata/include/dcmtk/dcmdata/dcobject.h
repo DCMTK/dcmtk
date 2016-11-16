@@ -201,7 +201,7 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmReplaceWrongDelimitationItem; /*
 
 /** This flag enables the "silent" conversion of illegal OB/OW elements
  *  with undefined length (other than PixelData) to SQ elements while reading.
- *  The default behaviour is to reject such elements with an error message. 
+ *  The default behaviour is to reject such elements with an error message.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmConvertUndefinedLengthOBOWtoSQ; /* default OFFalse */
 

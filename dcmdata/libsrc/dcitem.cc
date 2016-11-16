@@ -1208,7 +1208,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
 
-        // dump some information if required        
+        // dump some information if required
         if (dcmIgnoreParsingErrors.get() || (dcmReplaceWrongDelimitationItem.get() && (l_error == EC_SequEnd)))
         {
             DCMDATA_WARN("DcmItem: Parse error in sequence item, found " << newTag
@@ -2374,7 +2374,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 newElement = new DcmOverlayData(tag, length);
             else if ((tag.getBaseTag() == DCM_VOILUTSequence) && (length != DCM_UndefinedLength))
             {
-                // this is an incorrectly encoded VOI LUT Sequence. 
+                // this is an incorrectly encoded VOI LUT Sequence.
                 // Real-world examples of this issue have been reported in 2016.
                 if (dcmConvertVOILUTSequenceOWtoSQ.get())
                 {
@@ -2384,18 +2384,18 @@ OFCondition newDicomElement(DcmElement *&newElement,
                   newElement = new DcmSequenceOfItems(newTag, length);
                 } else {
 
-                	  if (dcmIgnoreParsingErrors.get())
-                	  {
+                    if (dcmIgnoreParsingErrors.get())
+                    {
                         // ignore parse error, keep VR unchanged
                         DCMDATA_WARN("DcmItem: VOI LUT Sequence with VR=OW and explicit length encountered.");
                         newElement = new DcmOtherByteOtherWord(tag, length);
-                	  }
-                	  else
-                	  {
-                	  	  // bail out with an error
+                    }
+                    else
+                    {
+                        // bail out with an error
                         DCMDATA_ERROR("DcmItem: VOI LUT Sequence with VR=OW and explicit length encountered.");
-                    	  l_error = EC_VOI_LUT_OBOW;
-                	  }
+                        l_error = EC_VOI_LUT_OBOW;
+                    }
                 }
             }
             else
@@ -2404,26 +2404,26 @@ OFCondition newDicomElement(DcmElement *&newElement,
                     // The attribute is OB or OW but is encoded with undefined
                     // length, and it is not Pixel Data. This is illegal.
                     if (dcmConvertUndefinedLengthOBOWtoSQ.get())
-                    {                   
-                        // Assume that this is in fact a sequence so that we can 
+                    {
+                        // Assume that this is in fact a sequence so that we can
                         // catch the sequence delimitation item.
                         DcmTag newTag(tag);
                         newTag.setVR(DcmVR(EVR_SQ)); // on writing we will handle this element as SQ, not OB/OW
                         newElement = new DcmSequenceOfItems(newTag, length);
                     } else {
-                    	  if (dcmIgnoreParsingErrors.get())
-                    	  {
+                        if (dcmIgnoreParsingErrors.get())
+                        {
                             // ignore parse error, keep VR unchanged
                             OFCondition tempcond = EC_UndefinedLengthOBOW;
                             DCMDATA_WARN("DcmItem: Parse error in " << tag << ": " << tempcond.text());
-                    	  	  newElement = new DcmSequenceOfItems(tag, length);
-                    	  }
-                    	  else
-                    	  {
-                    	  	  // bail out with an error
-                    	      l_error = EC_UndefinedLengthOBOW;
+                            newElement = new DcmSequenceOfItems(tag, length);
+                        }
+                        else
+                        {
+                            // bail out with an error
+                            l_error = EC_UndefinedLengthOBOW;
                             DCMDATA_ERROR("DcmItem: Parse error in " << tag << ": " << l_error.text());
-                    	  }
+                        }
                     }
                 } else {
                     newElement = new DcmOtherByteOtherWord(tag, length);

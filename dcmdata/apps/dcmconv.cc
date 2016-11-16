@@ -160,12 +160,12 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("handling of wrong delimitation items:");
       cmd.addOption("--use-delim-items",     "-rd",    "use delimitation items from dataset (default)");
       cmd.addOption("--replace-wrong-delim", "+rd",    "replace wrong sequence/item delimitation items");
-    cmd.addSubGroup("handling of illegal undefined length OB/OW elements:");
-      cmd.addOption("--illegal-obow-reject", "-oi",    "reject dataset (default)");
-      cmd.addOption("--illegal-obow-convert","+oi",    "convert to SQ");
-    cmd.addSubGroup("handling of VOI LUT with OW and explicit length:");
-      cmd.addOption("--illegal-voi-reject",  "-vi",    "reject dataset (default)");
-      cmd.addOption("--illegal-voi-convert", "+vi",    "convert to SQ");
+      cmd.addSubGroup("handling of illegal undefined length OB/OW elements:");
+      cmd.addOption("--illegal-obow-rej",    "-oi",    "reject dataset with illegal element (default)");
+      cmd.addOption("--illegal-obow-conv",   "+oi",    "convert undefined length OB/OW element to SQ");
+    cmd.addSubGroup("handling of VOI LUT Sequence with OW VR and explicit length:");
+      cmd.addOption("--illegal-voi-rej",     "-vi",    "reject dataset with illegal VOI LUT (default)");
+      cmd.addOption("--illegal-voi-conv",    "+vi",    "convert illegal VOI LUT to SQ");
     cmd.addSubGroup("general handling of parser errors: ");
       cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
       cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");

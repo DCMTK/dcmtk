@@ -151,17 +151,19 @@ handling of wrong delimitation items:
 
 handling of illegal undefined length OB/OW elements:
 
-  -oi  --illegal-obow-reject
-         reject dataset (default)
-  +oi  --illegal-obow-convert
-         convert to SQ
+  -oi  --illegal-obow-rej
+         reject dataset with illegal element (default)
 
-handling of VOI LUT with OW and explicit length:
+  +oi  --illegal-obow-conv
+         convert undefined length OB/OW element to SQ
 
-  -vi  --illegal-voi-reject
-         reject dataset (default)
-  +vi  --illegal-voi-convert
-         convert to SQ
+handling of VOI LUT Sequence with OW VR and explicit length:
+
+  -vi  --illegal-voi-rej
+         reject dataset with illegal VOI LUT (default)
+
+  +vi  --illegal-voi-conv
+         convert illegal VOI LUT to SQ
 
 general handling of parser errors:
 
@@ -372,6 +374,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
