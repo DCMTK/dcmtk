@@ -395,6 +395,7 @@ OFCondition DJCompressIJG8Bit::encode(
       break;
     case EJM_sequential:
       jpeg_set_quality(&cinfo, quality, 0);
+      cinfo.force_extended_sequential_marker = TRUE;
       break;
     case EJM_spectralSelection:
       jpeg_set_quality(&cinfo, quality, 0);

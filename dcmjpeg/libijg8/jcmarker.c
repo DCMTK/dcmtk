@@ -546,7 +546,7 @@ write_frame_header (j_compress_ptr cinfo)
       emit_sof(cinfo, M_SOF2);	/* SOF code for progressive Huffman */
     else if (cinfo->process == JPROC_LOSSLESS)
       emit_sof(cinfo, M_SOF3);	/* SOF code for lossless Huffman */
-    else if (is_baseline)
+    else if (is_baseline && (!cinfo->force_extended_sequential_marker))
       emit_sof(cinfo, M_SOF0);	/* SOF code for baseline implementation */
     else
       emit_sof(cinfo, M_SOF1);	/* SOF code for non-baseline Huffman file */

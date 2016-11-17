@@ -75,6 +75,8 @@ jpeg_CreateCompress (j_compress_ptr cinfo, int version, size_t structsize)
 
   cinfo->input_gamma = 1.0;	/* in case application forgets */
 
+  cinfo->force_extended_sequential_marker = FALSE;
+
   /* OK, I'm ready */
   cinfo->global_state = CSTATE_START;
 }
