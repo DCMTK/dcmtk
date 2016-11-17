@@ -234,6 +234,21 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      */
     void swap(DSRDocumentTree &tree);
 
+    /** print current SR document tree to specified output stream.
+     *  This method is only needed to avoid compiler warnings regarding an "overloaded
+     *  virtual function" hiding DSRDocumentSubTree::print() from the base class, which
+     *  has different parameters than the public print() method of this class.
+     ** @param  stream      output stream
+     *  @param  flags       flag used to customize the output (see DSRTypes::PF_xxx)
+     *  @param  posCounter  pointer to position counter that should be used to initialize
+     *                      the counter for line indentation or numbering of nested
+     *                      content items
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition print(STD_NAMESPACE ostream &stream,
+                              const size_t flags,
+                              const DSRPositionCounter *posCounter);
+
 
   private:
 

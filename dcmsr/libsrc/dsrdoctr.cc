@@ -444,3 +444,12 @@ void DSRDocumentTree::swap(DSRDocumentTree &tree)
     /* swap other members */
     OFswap(DocumentType, tree.DocumentType);
 }
+
+
+OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream &stream,
+                                   const size_t flags,
+                                   const DSRPositionCounter *posCounter)
+{
+    /* call inherited method */
+    return DSRDocumentSubTree::print(stream, flags, posCounter);
+}
