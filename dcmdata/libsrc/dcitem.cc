@@ -2372,7 +2372,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 newElement = new DcmPixelData(tag, length);
             else if (tag.getBaseTag() == DCM_OverlayData)
                 newElement = new DcmOverlayData(tag, length);
-            else if ((tag.getBaseTag() == DCM_VOILUTSequence) && (length != DCM_UndefinedLength))
+            else if ((tag == DCM_VOILUTSequence) && (length != DCM_UndefinedLength))
             {
                 // this is an incorrectly encoded VOI LUT Sequence.
                 // Real-world examples of this issue have been reported in 2016.
