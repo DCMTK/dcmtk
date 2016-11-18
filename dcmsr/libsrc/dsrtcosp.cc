@@ -30,10 +30,16 @@
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
+// This is not about specialization but static member initialization, the
+// Visual Studio warning is therefore inappropriate and suppressed.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_NO_SUITABLE_DEFINITION_FOR_TEMPLATE_INSTANTIATION
 /* declared in class DSRListOfItems<T> */
 DCMTK_EXPLICIT_SPECIALIZATION
 const Uint32 DSRListOfItems<Uint32>::EmptyItem = 0;
+#include DCMTK_DIAGNOSTIC_POP
 
 
 DSRReferencedSamplePositionList::DSRReferencedSamplePositionList()

@@ -27,10 +27,16 @@
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcvrdt.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
+// This is not about specialization but static member initialization, the
+// Visual Studio warning is therefore inappropriate and suppressed.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_NO_SUITABLE_DEFINITION_FOR_TEMPLATE_INSTANTIATION
 /* declared in class DSRListOfItems<T> */
 DCMTK_EXPLICIT_SPECIALIZATION
 const OFString DSRListOfItems<OFString>::EmptyItem;
+#include DCMTK_DIAGNOSTIC_POP
 
 
 DSRReferencedDateTimeList::DSRReferencedDateTimeList()
