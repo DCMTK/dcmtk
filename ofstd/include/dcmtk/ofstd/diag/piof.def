@@ -1,7 +1,9 @@
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wpredefined-identifier-outside-function"
-#elif defined(__GNUC__) || defined(__MINGW32__)
+// GCC and Visual Studio don't seem to have such a warning yet,
+// uncomment and replace ? when they do:
+//#elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(?,?,?)
 //#pragma GCC diagnostic ignored "????"
-#elif defined(_MSC_VER)
+//#elif DCMTK_DIAGNOSTIC_MIN_MSC_VER(????)
 //#pragma warning(disable: ????)
 #endif

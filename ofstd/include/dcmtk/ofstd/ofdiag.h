@@ -100,6 +100,30 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_MISMATCHED_TAGS "dcmtk/ofstd/diag/mmtag.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_PREDEFINED_IDENTIFIER_OUTSIDE_FUNCTION "dcmtk/ofstd/diag/piof.def"
 
+// readable shorthands for compiler version checks
+#define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\
+(\
+    defined(__GNUC__) &&\
+    (\
+        __GNUC__ > MAJOR ||\
+        (\
+            __GNUC__ == MAJOR &&\
+            (\
+                __GNUC_MINOR__ > MINOR ||\
+                (\
+                    __GNUC_MINOR == MINOR &&\
+                    __GNUC_PATCHLEVEL__ >= PATCH\
+                )\
+            )\
+        )\
+    )\
+)
+
+#define DCMTK_DIAGNOSTIC_MIN_MSC_VER(VERSION)\
+(\
+    defined(_MSC_VER) && _MSC_VER >= VERSION\
+)
+
 #endif // NOT DOXYGEN
 
 #endif // OFDIAG_H

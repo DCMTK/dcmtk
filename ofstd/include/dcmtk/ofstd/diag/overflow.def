@@ -1,7 +1,9 @@
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Woverflow"
-#elif defined(__GNUC__) || defined(__MINGW32__)
+#elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(4,6,0)
 #pragma GCC diagnostic ignored "-Woverflow"
-#elif defined(_MSC_VER)
+// Visual Studio doesn't seem to have such a warning yet, uncomment
+// and replace ???? when it does
+//#elif DCMTK_DIAGNOSTIC_MIN_MSC_VER(????)
 //#pragma warning(disable: ????)
 #endif
