@@ -949,12 +949,17 @@ OFCondition DcmPixelData::write(
   if (getTransferState() == ERW_notInitialized) errorFlag = EC_IllegalCall;
   else
   {
+    // check if the output transfer syntax is encapsulated
+    // and we are not requested to write an uncompressed dataset
+    // for example because this is within an Icon Image Sequence
     DcmXfer xferSyn(oxfer);
     if (xferSyn.isEncapsulated() && (! writeUnencapsulated(oxfer)))
     {
+      // write encapsulated representation (i.e., compressed image)
       if (getTransferState() == ERW_init)
       {
         DcmRepresentationListIterator found;
+        // find a compressed image matching the output transfer syntax
         errorFlag = findConformingEncapsulatedRepresentation(xferSyn, NULL, found);
         if (errorFlag == EC_Normal)
         {
@@ -964,17 +969,21 @@ OFCondition DcmPixelData::write(
           setTransferState(ERW_inWork);
         }
       }
+      // write compressed image
       if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->write(outStream, oxfer, enctype, wcache);
       if (errorFlag == EC_Normal) setTransferState(ERW_ready);
     }
     else if (existUnencapsulated)
     {
+      // we're supposed to write an uncompressed image, and we happen to have one available.
       current = repListEnd;
       recalcVR();
+      // write uncompressed image
       errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype, wcache);
     }
-    else if (getValue() == NULL)
+    else if ((getValue() == NULL) && (current == repListEnd))
     {
+      // the PixelData is empty. Write an empty element.
       errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype, wcache);
     } else errorFlag = EC_RepresentationNotFound;
   }
