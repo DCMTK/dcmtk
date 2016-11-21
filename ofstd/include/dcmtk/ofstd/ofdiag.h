@@ -37,8 +37,8 @@
  *  disabled selectively.
  *  The macro will have no effect if the compiler does not support
  *  diagnostic scopes.
- *  @remarks Currently supported compilers are GCC and derivates like
- *    MinGW, Clang and Visual Studio
+ *  @remarks Currently supported compilers are GCC (version 4.6 and later, including
+ *    derivates like MinGW), Clang and Visual Studio.
  *  @details
  *  <h3>Example</h3>
  *  @code{.cpp}
@@ -91,11 +91,37 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_PREDEFINED_IDENTIFIER_OUTSIDE_FUNCTION <unspecified>
 
+/*! @brief A macro to disable warnings about implicit type conversions that may alter the value.
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_IMPLICIT_CONVERSION <unspecified>
+
+/*! @brief A macro to disable warnings about variable/type name shadowing.
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @remarks This warning is typically helpful to prevent unintended behavior, however, small
+ *    structs often have members with matching names as constructor arguments (for consistent
+ *    use/assignment). It makes sense to suppress this warning in that case.
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_SHADOW <unspecified>
+
 /*! @brief A macro to disable a Visual Studio specific warning about explicit template instantiation.
  *  @note The macro may only be used in conjunction with <i>#include</i>!
  *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_NO_SUITABLE_DEFINITION_FOR_TEMPLATE_INSTANTIATION <unspecified>
+
+/*! @brief A macro to disable the Visual Studio specific "performance warning" about implicit conversion
+ *    to a boolean value.
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @remarks The warning was meant to indicate that a non boolean value should probably be stored
+ *    as a boolean value in the first place, instead of using an integer (i.e. when C programmers do C++).
+ *    However, that is hardly ever the case and it is mostly and annoyingly emitted in perfectly fine code
+ *    that checks if a value is not equal to zero etc., therefore, suppressing it is usually appropriate.
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_PERFORMANCE_WARNING <unspecified>
 
 #else // DOXYGEN
 
@@ -105,7 +131,10 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_OVERFLOW "dcmtk/ofstd/diag/overflow.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_MISMATCHED_TAGS "dcmtk/ofstd/diag/mmtag.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_PREDEFINED_IDENTIFIER_OUTSIDE_FUNCTION "dcmtk/ofstd/diag/piof.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_IMPLICIT_CONVERSION "dcmtk/ofstd/diag/cnvrsn.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_SHADOW "dcmtk/ofstd/diag/shadow.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_NO_SUITABLE_DEFINITION_FOR_TEMPLATE_INSTANTIATION "dcmtk/ofstd/diag/nsdfti.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_PERFORMANCE_WARNING "dcmtk/ofstd/diag/vsprfw.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

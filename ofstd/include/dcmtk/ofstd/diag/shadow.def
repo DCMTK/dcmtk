@@ -1,0 +1,9 @@
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wshadow"
+#elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(4,6,0)
+#pragma GCC diagnostic ignored "-Wshadow"
+// Visual Studio doesn't seem to have such a warning yet, uncomment
+// and replace ???? when it does
+//#elif DCMTK_DIAGNOSTIC_MIN_MSC_VER(????)
+//#pragma warning(disable: ????)
+#endif
