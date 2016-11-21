@@ -17,6 +17,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/variadic/helpers.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 // We hide all this from doxygen, because it would only scare sane people
 // (and it is not needed for understanding how to use OFvariant).
@@ -56,8 +57,17 @@ struct OFvariant_overload
         return false;
     }
 
+// This code is executed at compile-time, the warnings therefore make
+// absolutely no sense (only Visual Studio emits them ;-).
+// Converting an integer to a boolean value at compile-time won't have any
+// performance ramifications and type conversion will be checked elsewhere,
+// not when checking if an overload *potentially exists*.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_IMPLICIT_CONVERSION
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_PERFORMANCE_WARNING
     template<typename T>
     struct accepts : OFintegral_constant<OFBool,sizeof(test_accepts(*OFstatic_cast(T*,OFnullptr)))==2 || OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::template accepts<T>::value> {};
+#include DCMTK_DIAGNOSTIC_POP
 };
 
 // Template recursion end, declares both functions with incompatible
