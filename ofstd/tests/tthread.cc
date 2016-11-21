@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 #define BAILOUT(msg) do { \
     OFCHECK_FAIL(msg); \
@@ -253,7 +254,10 @@ class RWLockT1: public OFThread
 private:
   RWLockT2 &t2;
 public:
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
   RWLockT1(RWLockT2 &t2) : OFThread(), t2(t2) {}
+#include DCMTK_DIAGNOSTIC_POP
   ~RWLockT1() {}
 
   virtual void run()
@@ -360,7 +364,10 @@ class RWLockerT1: public OFThread
 private:
   RWLockerT2 &t2;
 public:
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
   RWLockerT1(RWLockerT2 &t2): OFThread(), t2(t2) {}
+#include DCMTK_DIAGNOSTIC_POP
   ~RWLockerT1() {}
 
   virtual void run()
