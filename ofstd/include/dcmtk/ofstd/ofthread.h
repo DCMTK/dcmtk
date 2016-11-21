@@ -251,14 +251,6 @@ private:
   OFThreadSpecificData& operator=(const OFThreadSpecificData& arg);
 };
 
-
-/* Mac OS X only permits named Semaphores. The code below compiles on Mac OS X
-   but does not work. This will be corrected in the next snapshot. For now, the
-   semaphore code is completely disabled for that OS (it is not used in other
-   parts of the toolkit so far.
- */
-#ifndef _DARWIN_C_SOURCE
-
 /** provides an operating system independent abstraction for semaphores.
  *  A semaphore is a non-negative integer counter that is used
  *  to coordinate access to resources. The initial and maximum value of the counter
@@ -330,9 +322,6 @@ private:
   /** unimplemented private assignment operator */
   OFSemaphore& operator=(const OFSemaphore& arg);
 };
-
-
-#endif // _DARWIN_C_SOURCE
 
 /** provides an operating system independent abstraction for mutexes
  *  (mutual exclusion locks).

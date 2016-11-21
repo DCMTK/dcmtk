@@ -122,11 +122,6 @@ static void mutex_test()
   delete mutex;
 }
 
-/* Currently OFSemaphore is not working and disabled on Mac OS X. Thus,
- * it is not tested on Mac OS X.
- */
-#ifndef _DARWIN_C_SOURCE
-
 static OFSemaphore *semaphore=NULL;
 static int sem_cond1=0;
 static int sem_cond2=0;
@@ -216,8 +211,6 @@ static void semaphore_test()
   delete mutex;
   delete semaphore;
 }
-
-#endif //_DARWIN_C_SOURCE
 
 static OFReadWriteLock *rwlock=NULL;
 static OFMutex *mutex2=NULL;
@@ -583,9 +576,7 @@ OFTEST(ofstd_thread)
 {
   // This makes sure tests are executed in the expected order
   mutex_test();
-#ifndef _DARWIN_C_SOURCE
   semaphore_test(); // may assume that mutexes work correctly
-#endif
   rwlock_test();    // may assume that mutexes and semaphores work correctly
   rwlocker_test();  // may assume that mutexes, semaphores and read/write locks work correctly
   tsdata_test();

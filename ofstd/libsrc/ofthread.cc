@@ -35,6 +35,13 @@
 
 #include "dcmtk/ofstd/ofstd.h"
 
+#ifdef _DARWIN_C_SOURCE
+#define DARWIN_INTERFACE
+extern "C" {
+#include <dispatch/dispatch.h>
+}
+#endif /* _DARWIN_C_SOURCE */
+
 #ifdef HAVE_WINDOWS_H
 #define WINDOWS_INTERFACE
 
@@ -395,15 +402,10 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
 
 /* ------------------------------------------------------------------------- */
 
-/* Mac OS X only permits named Semaphores. The code below compiles on Mac OS X
-   but does not work. This will be corrected in the next snapshot. For now, the
-   semaphore code is completely disabled for that OS (it is not used in other
-   parts of the toolkit so far.
- */
-#ifndef _DARWIN_C_SOURCE
-
 #ifdef WINDOWS_INTERFACE
   const int OFSemaphore::busy = -1;
+#elif defined(DARWIN_INTERFACE)
+  const int OFSemaphore::busy = EAGAIN;
 #elif defined(POSIX_INTERFACE)
   const int OFSemaphore::busy = EAGAIN;  // Posix returns EAGAIN instead of EBUSY in trywait.
 #elif defined(SOLARIS_INTERFACE)
@@ -413,7 +415,7 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
 #endif
 
 
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE) || defined(DARWIN_INTERFACE)
 OFSemaphore::OFSemaphore(unsigned int numResources)
 #else
 OFSemaphore::OFSemaphore(unsigned int /* numResources */ )
@@ -422,6 +424,14 @@ OFSemaphore::OFSemaphore(unsigned int /* numResources */ )
 {
 #ifdef WINDOWS_INTERFACE
   theSemaphore = OFstatic_cast(void *, CreateSemaphore(NULL, numResources, numResources, NULL));
+#elif defined(DARWIN_INTERFACE)
+  dispatch_semaphore_t *sem = new dispatch_semaphore_t;
+  if (sem)
+  {
+    *sem = dispatch_semaphore_create(numResources);
+    if (*sem == NULL) delete sem;
+    else theSemaphore = sem;
+  }
 #elif defined(POSIX_INTERFACE)
   sem_t *sem = new sem_t;
   if (sem)
@@ -444,6 +454,8 @@ OFSemaphore::~OFSemaphore()
 {
 #ifdef WINDOWS_INTERFACE
   CloseHandle(OFthread_cast(HANDLE, theSemaphore));
+#elif defined(DARWIN_INTERFACE)
+  delete OFthread_cast(dispatch_semaphore_t *, theSemaphore);
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore) sem_destroy(OFthread_cast(sem_t *, theSemaphore));
   delete OFthread_cast(sem_t *, theSemaphore);
@@ -469,6 +481,12 @@ int OFSemaphore::wait()
 #ifdef WINDOWS_INTERFACE
   if (WaitForSingleObject(OFthread_cast(HANDLE, theSemaphore), INFINITE) == WAIT_OBJECT_0) return 0;
   else return OFstatic_cast(int, GetLastError());
+#elif defined(DARWIN_INTERFACE)
+  if (theSemaphore)
+  {
+    // Always succeeds (returns zero) if the timeout is DISPATCH_TIME_FOREVER.
+    return dispatch_semaphore_wait(*OFthread_cast(dispatch_semaphore_t *, theSemaphore), DISPATCH_TIME_FOREVER);
+  } else return EINVAL;
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
@@ -488,6 +506,14 @@ int OFSemaphore::trywait()
   if (result == WAIT_OBJECT_0) return 0;
   else if (result == WAIT_TIMEOUT) return OFSemaphore::busy;
   else return OFstatic_cast(int, GetLastError());
+#elif defined(DARWIN_INTERFACE)
+  if (theSemaphore)
+  {
+    if (dispatch_semaphore_wait(*OFthread_cast(dispatch_semaphore_t *, theSemaphore), DISPATCH_TIME_NOW) != 0)
+      return EAGAIN;
+    else
+      return 0;
+  } else return EINVAL;
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
@@ -504,6 +530,13 @@ int OFSemaphore::post()
 {
 #ifdef WINDOWS_INTERFACE
   if (ReleaseSemaphore(OFthread_cast(HANDLE, theSemaphore), 1, NULL)) return 0; else return OFstatic_cast(int, GetLastError());
+#elif defined(DARWIN_INTERFACE)
+  if (theSemaphore)
+  {
+    // Always succeeds.
+    dispatch_semaphore_signal(*OFthread_cast(dispatch_semaphore_t *, theSemaphore));
+    return 0;
+  } else return EINVAL;
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
@@ -516,7 +549,7 @@ int OFSemaphore::post()
 #endif
 }
 
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE) || defined(DARWIN_INTERFACE)
 void OFSemaphore::errorstr(OFString& description, int code)
 #else
 void OFSemaphore::errorstr(OFString& description, int /* code */ )
@@ -533,7 +566,7 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
     if (buf) description = OFreinterpret_cast(const char *, buf);
     LocalFree(buf);
   }
-#elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE) || defined(DARWIN_INTERFACE)
   char buf[256];
   const char *str = OFStandard::strerror(code, buf, sizeof(buf));
   if (str) description = str; else description.clear();
@@ -542,8 +575,6 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
 #endif
   return;
 }
-
-#endif // _DARWIN_C_SOURCE
 
 /* ------------------------------------------------------------------------- */
 
