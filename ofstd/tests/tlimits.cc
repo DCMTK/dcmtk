@@ -10,6 +10,7 @@
 
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_OVERFLOW
+#include DCMTK_DIAGNOSTIC_IGNORE_IMPLICIT_CONVERSION
 template<typename T>
 static void checkMinMax()
 {
