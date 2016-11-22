@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -327,9 +327,9 @@ int main(int argc, char *argv[])
                                                        "ambient light value (cd/m^2, default: file f)");
       cmd.addOption("--illumination",       "+Di",  1, "[i]llumination: float",
                                                        "illumination value (cd/m^2, default: file f)");
-      cmd.addOption("--min-density",        "+Dn", 1,  "[m]inimum optical density: float",
+      cmd.addOption("--min-density",        "+Dn",  1, "[m]inimum optical density: float",
                                                        "Dmin value (default: off, only with +Dp)");
-      cmd.addOption("--max-density",        "+Dx", 1,  "[m]aximum optical density: float",
+      cmd.addOption("--max-density",        "+Dx",  1, "[m]aximum optical density: float",
                                                        "Dmax value (default: off, only with +Dp)");
       cmd.addOption("--gsd-function",       "+Dg",     "use GSDF for calibration (default for +Dm/+Dp)");
       cmd.addOption("--cielab-function",    "+Dc",     "use CIELAB function for calibration ");
@@ -736,14 +736,14 @@ int main(int argc, char *argv[])
         {
             do {
                 unsigned long l;
-                app.checkValue(cmd.getValueAndCheckMinMax(l, 1, 16));
+                app.checkValue(cmd.getValueAndCheckMinMax(l, 0, 16));
                 if (!opt_O_used)
                 {
                     for (i = 0; i < 16; i++) opt_Overlay[i] = 0;
                     opt_O_used = 1;
                 }
                 if (l > 0)
-                    opt_Overlay[l - 1]=1;
+                    opt_Overlay[l - 1] = 1;
                 else
                 {
                     for (i = 0; i < 16; i++)
