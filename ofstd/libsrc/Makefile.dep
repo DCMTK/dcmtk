@@ -80,6 +80,12 @@ offname.o: offname.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftraits.h ../include/dcmtk/ofstd/ofcond.h \
  ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h
+oflimits.o: oflimits.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
+ ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofexport.h \
+ ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstream.h
 oflist.o: oflist.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
@@ -102,8 +108,11 @@ ofstd.o: ofstd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/offile.h ../include/dcmtk/ofstd/oftuple.h \
  ../include/dcmtk/ofstd/ofutil.h \
  ../include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/diag/mmtag.def \
  ../include/dcmtk/ofstd/variadic/tuplefrd.h \
- ../include/dcmtk/ofstd/variadic/tuple.h ../include/dcmtk/ofstd/ofmath.h \
+ ../include/dcmtk/ofstd/variadic/tuple.h \
+ ../include/dcmtk/ofstd/diag/pop.def ../include/dcmtk/ofstd/ofmath.h \
  ../include/dcmtk/ofstd/ofnetdb.h ../include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/ofstd/ofgrp.h ../include/dcmtk/ofstd/ofpwd.h \
  ../include/dcmtk/ofstd/ofoption.h ../include/dcmtk/ofstd/ofalign.h

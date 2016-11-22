@@ -65,7 +65,11 @@ tlimits.o: tlimits.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oftraits.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/ofmath.h
+ ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/ofmath.h \
+ ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/diag/overflow.def \
+ ../include/dcmtk/ofstd/diag/cnvrsn.def \
+ ../include/dcmtk/ofstd/diag/pop.def
 tlist.o: tlist.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
@@ -198,7 +202,10 @@ tthread.o: tthread.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/offile.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oftraits.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h
+ ../../config/include/dcmtk/config/arith.h \
+ ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/diag/shadow.def \
+ ../include/dcmtk/ofstd/diag/pop.def
 ttuple.o: ttuple.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
@@ -212,8 +219,11 @@ ttuple.o: ttuple.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../include/dcmtk/ofstd/oftuple.h ../include/dcmtk/ofstd/ofutil.h \
  ../include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/diag/mmtag.def \
  ../include/dcmtk/ofstd/variadic/tuplefrd.h \
- ../include/dcmtk/ofstd/variadic/tuple.h
+ ../include/dcmtk/ofstd/variadic/tuple.h \
+ ../include/dcmtk/ofstd/diag/pop.def
 tuuid.o: tuuid.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
@@ -240,7 +250,11 @@ tvariant.o: tvariant.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofvriant.h \
  ../include/dcmtk/ofstd/variadic/variant.h \
  ../include/dcmtk/ofstd/variadic/helpers.h \
- ../include/dcmtk/ofstd/ofalign.h
+ ../include/dcmtk/ofstd/ofalign.h ../include/dcmtk/ofstd/ofdiag.h \
+ ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/diag/cnvrsn.def \
+ ../include/dcmtk/ofstd/diag/vsprfw.def \
+ ../include/dcmtk/ofstd/diag/pop.def
 tvec.o: tvec.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
