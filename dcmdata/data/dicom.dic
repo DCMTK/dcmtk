@@ -21,13 +21,12 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2016d and PS 3.7-2016d
-# File created on 2016-10-04 11:49:44 by J. Riesmeier on thinkpad.
-# File updated manually on 2016-11-10 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2016e and PS 3.7-2016e
+# File created on 2016-11-23 13:16:19 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - CP 1584, 1597, 1609, 1611
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -1726,6 +1725,9 @@
 (0028,1222)	OW	SegmentedGreenPaletteColorLookupTableData	1	DICOM
 (0028,1223)	OW	SegmentedBluePaletteColorLookupTableData	1	DICOM
 (0028,1224)	OW	SegmentedAlphaPaletteColorLookupTableData	1	DICOM
+(0028,1230)	SQ	StoredValueColorRangeSequence	1	DICOM
+(0028,1231)	FD	MinimumStoredValueMapped	1	DICOM
+(0028,1232)	FD	MaximumStoredValueMapped	1	DICOM
 (0028,1300)	CS	BreastImplantPresent	1	DICOM
 (0028,1350)	CS	PartialView	1	DICOM
 (0028,1351)	ST	PartialViewDescription	1	DICOM
@@ -2401,6 +2403,7 @@
 (0062,0004)	US	SegmentNumber	1	DICOM
 (0062,0005)	LO	SegmentLabel	1	DICOM
 (0062,0006)	ST	SegmentDescription	1	DICOM
+(0062,0007)	SQ	SegmentationAlgorithmIdentificationSequence	1	DICOM
 (0062,0008)	CS	SegmentAlgorithmType	1	DICOM
 (0062,0009)	LO	SegmentAlgorithmName	1	DICOM
 (0062,000A)	SQ	SegmentIdentificationSequence	1	DICOM
@@ -3219,6 +3222,7 @@
 (3008,0064)	IS	MeasuredDoseReferenceNumber	1	DICOM
 (3008,0065)	AT	ParameterPointer	1	DICOM
 (3008,0066)	ST	OverrideReason	1	DICOM
+(3008,0067)	US	ParameterValueNumber	1	DICOM
 (3008,0068)	SQ	CorrectedParameterSequence	1	DICOM
 (3008,006A)	FL	CorrectionValue	1	DICOM
 (3008,0070)	SQ	CalculatedDoseReferenceSequence	1	DICOM
@@ -3611,6 +3615,7 @@
 (300A,0386)	FL	RangeModulatorGatingStartWaterEquivalentThickness	1	DICOM
 (300A,0388)	FL	RangeModulatorGatingStopWaterEquivalentThickness	1	DICOM
 (300A,038A)	FL	IsocenterToRangeModulatorDistance	1	DICOM
+(300A,038F)	FL	ScanSpotTimeOffset	1-n	DICOM
 (300A,0390)	SH	ScanSpotTuneID	1	DICOM
 (300A,0391)	IS	ScanSpotPrescribedIndices	1-n	DICOM
 (300A,0392)	IS	NumberOfScanSpotPositions	1	DICOM
@@ -4287,17 +4292,6 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
-#
-#---------------------------------------------------------------------------
-#
-# Correction Items 1584, 1597, 1609, 1611
-#
-(0028,1230)	SQ	StoredValueColorRangeSequence	1	DICOM/CP_1584
-(0028,1231)	FD	MinimumStoredValueMapped	1	DICOM/CP_1584
-(0028,1232)	FD	MaximumStoredValueMapped	1	DICOM/CP_1584
-(0062,0007)	SQ	SegmentationAlgorithmIdentificationSequence	1	DICOM/CP_1597
-(300A,038F)	FL	ScanSpotTimeOffset	1-n	DICOM/CP_1609
-(3008,0067)	US	ParameterValueNumber	1	DICOM/CP_1611
 #
 #---------------------------------------------------------------------------
 #

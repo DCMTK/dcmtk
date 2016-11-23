@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-11-10 13:56:09
+**   Date: 2016-11-23 13:25:46
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15233,15 +15233,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x1230, 0x0028, 0x1230,
-      EVR_SQ, "StoredValueColorRangeSequence", 1, 1, "DICOM/CP_1584",
+      EVR_SQ, "StoredValueColorRangeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x1231, 0x0028, 0x1231,
-      EVR_FD, "MinimumStoredValueMapped", 1, 1, "DICOM/CP_1584",
+      EVR_FD, "MinimumStoredValueMapped", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x1232, 0x0028, 0x1232,
-      EVR_FD, "MaximumStoredValueMapped", 1, 1, "DICOM/CP_1584",
+      EVR_FD, "MaximumStoredValueMapped", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x1300, 0x0028, 0x1300,
@@ -21075,7 +21075,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0062, 0x0007, 0x0062, 0x0007,
-      EVR_SQ, "SegmentationAlgorithmIdentificationSequence", 1, 1, "DICOM/CP_1597",
+      EVR_SQ, "SegmentationAlgorithmIdentificationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0062, 0x0008, 0x0062, 0x0008,
@@ -25277,7 +25277,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3008, 0x0067, 0x3008, 0x0067,
-      EVR_US, "ParameterValueNumber", 1, 1, "DICOM/CP_1611",
+      EVR_US, "ParameterValueNumber", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3008, 0x0068, 0x3008, 0x0068,
@@ -26861,7 +26861,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x038f, 0x300a, 0x038f,
-      EVR_FL, "ScanSpotTimeOffset", 1, -1, "DICOM/CP_1609",
+      EVR_FL, "ScanSpotTimeOffset", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0390, 0x300a, 0x0390,
