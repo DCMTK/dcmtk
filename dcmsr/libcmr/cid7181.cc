@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2016d
- *  File created on 2016-10-04 12:38:58 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016e
+ *  File created on 2016-11-23 13:58:54 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 7181 (Abstract Multi-dimensional Image Model Component Units)
 #define CONTEXT_GROUP_NUMBER  "7181"
-#define CONTEXT_GROUP_VERSION "20141110"
+#define CONTEXT_GROUP_VERSION "20161106"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.918"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -169,6 +169,7 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_Abst
         Codes->insert(OFMake_pair(CubicMicrometer, DSRBasicCodedEntry("um3", "UCUM", "cubic micrometer")));
         Codes->insert(OFMake_pair(StandardizedUptakeValueBodyWeight, DSRBasicCodedEntry("g/ml{SUVbw}", "UCUM", "Standardized Uptake Value body weight")));
         Codes->insert(OFMake_pair(StandardizedUptakeValueLeanBodyMassJames, DSRBasicCodedEntry("g/ml{SUVlbm}", "UCUM", "Standardized Uptake Value lean body mass (James)")));
+        Codes->insert(OFMake_pair(StandardizedUptakeValueLeanBodyMassJames128Multiplier, DSRBasicCodedEntry("g/ml{SUVlbm(James128)}", "UCUM", "Standardized Uptake Value lean body mass (James 128 multiplier)")));
         Codes->insert(OFMake_pair(StandardizedUptakeValueLeanBodyMassJanma, DSRBasicCodedEntry("g/ml{SUVlbm(Janma)}", "UCUM", "Standardized Uptake Value lean body mass (Janma)")));
         Codes->insert(OFMake_pair(StandardizedUptakeValueBodySurfaceArea, DSRBasicCodedEntry("cm2/ml{SUVbsa}", "UCUM", "Standardized Uptake Value body surface area")));
         Codes->insert(OFMake_pair(StandardizedUptakeValueIdealBodyWeight, DSRBasicCodedEntry("g/ml{SUVibw}", "UCUM", "Standardized Uptake Value ideal body weight")));
@@ -188,6 +189,7 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_Abst
         Codes->insert(OFMake_pair(Ratio, DSRBasicCodedEntry("{ratio}", "UCUM", "ratio")));
         Codes->insert(OFMake_pair(HounsfieldUnit, DSRBasicCodedEntry("[hnsf'U]", "UCUM", "Hounsfield Unit")));
         Codes->insert(OFMake_pair(ArbitraryUnit, DSRBasicCodedEntry("[arb'U]", "UCUM", "arbitrary unit")));
+        Codes->insert(OFMake_pair(Ppm, DSRBasicCodedEntry("ppm", "UCUM", "ppm")));
         Codes->insert(OFMake_pair(CentimeterPerSecond, DSRBasicCodedEntry("cm/s", "UCUM", "centimeter/second")));
         Codes->insert(OFMake_pair(MillimeterPerSecond, DSRBasicCodedEntry("mm/s", "UCUM", "millimeter/second")));
         Codes->insert(OFMake_pair(Decibel, DSRBasicCodedEntry("dB", "UCUM", "decibel")));

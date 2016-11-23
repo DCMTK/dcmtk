@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2016d
- *  File created on 2016-10-04 12:38:58 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016e
+ *  File created on 2016-11-23 13:58:54 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 7181 - Abstract Multi-dimensional Image Model Component Units.
- *  (type: extensible, version: 20141110)
+ *  (type: extensible, version: 20161106)
  */
 class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
   : public DSRContextGroup
@@ -80,6 +80,8 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
         StandardizedUptakeValueBodyWeight,
         /// (g/ml{SUVlbm},UCUM,"Standardized Uptake Value lean body mass (James)"), included from CID 85
         StandardizedUptakeValueLeanBodyMassJames,
+        /// (g/ml{SUVlbm(James128)},UCUM,"Standardized Uptake Value lean body mass (James 128 multiplier)"), included from CID 85
+        StandardizedUptakeValueLeanBodyMassJames128Multiplier,
         /// (g/ml{SUVlbm(Janma)},UCUM,"Standardized Uptake Value lean body mass (Janma)"), included from CID 85
         StandardizedUptakeValueLeanBodyMassJanma,
         /// (cm2/ml{SUVbsa},UCUM,"Standardized Uptake Value body surface area"), included from CID 85
@@ -118,6 +120,8 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
         HounsfieldUnit,
         /// ([arb'U],UCUM,"arbitrary unit")
         ArbitraryUnit,
+        /// (ppm,UCUM,"ppm")
+        Ppm,
         /// (cm/s,UCUM,"centimeter/second")
         CentimeterPerSecond,
         /// (mm/s,UCUM,"millimeter/second")

@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2016d
- *  File created on 2016-10-04 12:39:07 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016e
+ *  File created on 2016-11-23 13:59:03 by J. Riesmeier
  *
  */
 
@@ -214,8 +214,12 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         R1,
         /// (126394,DCM,"R2"), included from CID 7180
         R2,
+        /// (126395,DCM,"R2*"), included from CID 7180
+        R2Star,
         /// (113098,DCM,"Magnetization Transfer Ratio"), included from CID 7180
         MagnetizationTransferRatio,
+        /// (126396,DCM,"Magnetic Susceptibility"), included from CID 7180
+        MagneticSusceptibility,
         /// (126312,DCM,"Ktrans"), included from CID 4107
         Ktrans,
         /// (126313,DCM,"kep"), included from CID 4107
@@ -240,6 +244,8 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         TimeToPeak,
         /// (126392,DCM,"Oxygen Extraction Fraction"), included from CID 4108
         OxygenExtractionFraction,
+        /// (113084,DCM,"Tmax"), included from CID 4108
+        Tmax,
         /// (126320,DCM,"IAUC"), included from CID 4109
         IAUC,
         /// (126321,DCM,"IAUC60"), included from CID 4109
@@ -276,6 +282,8 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         SUVbw,
         /// (126402,DCM,"SUVlbm"), included from CID 7180
         SUVlbm,
+        /// (126406,DCM,"SUVlbm(James128)"), included from CID 7180
+        SUVlbmJames128,
         /// (126405,DCM,"SUVlbm(Janma)"), included from CID 7180
         SUVlbmJanma,
         /// (126403,DCM,"SUVbsa"), included from CID 7180

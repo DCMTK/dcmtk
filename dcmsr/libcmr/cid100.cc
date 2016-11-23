@@ -5,8 +5,8 @@
  *
  *  Source file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
- *  Generated automatically from DICOM PS 3.16-2016d
- *  File created on 2016-10-04 12:38:46 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016e
+ *  File created on 2016-11-23 13:58:40 by J. Riesmeier
  *
  */
 

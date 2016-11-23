@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2016d
- *  File created on 2016-10-04 12:39:07 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016e
+ *  File created on 2016-11-23 13:59:03 by J. Riesmeier
  *
  */
 
@@ -236,7 +236,9 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(FractionalOccupancySegmentation, DSRBasicCodedEntry("110855", "DCM", "Fractional Occupancy Segmentation")));
         Codes->insert(OFMake_pair(R1, DSRBasicCodedEntry("126393", "DCM", "R1")));
         Codes->insert(OFMake_pair(R2, DSRBasicCodedEntry("126394", "DCM", "R2")));
+        Codes->insert(OFMake_pair(R2Star, DSRBasicCodedEntry("126395", "DCM", "R2*")));
         Codes->insert(OFMake_pair(MagnetizationTransferRatio, DSRBasicCodedEntry("113098", "DCM", "Magnetization Transfer Ratio")));
+        Codes->insert(OFMake_pair(MagneticSusceptibility, DSRBasicCodedEntry("126396", "DCM", "Magnetic Susceptibility")));
         Codes->insert(OFMake_pair(Ktrans, DSRBasicCodedEntry("126312", "DCM", "Ktrans")));
         Codes->insert(OFMake_pair(Kep, DSRBasicCodedEntry("126313", "DCM", "kep")));
         Codes->insert(OFMake_pair(Ve, DSRBasicCodedEntry("126314", "DCM", "ve")));
@@ -249,6 +251,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(MeanTransitTime, DSRBasicCodedEntry("113052", "DCM", "Mean Transit Time")));
         Codes->insert(OFMake_pair(TimeToPeak, DSRBasicCodedEntry("113069", "DCM", "Time To Peak")));
         Codes->insert(OFMake_pair(OxygenExtractionFraction, DSRBasicCodedEntry("126392", "DCM", "Oxygen Extraction Fraction")));
+        Codes->insert(OFMake_pair(Tmax, DSRBasicCodedEntry("113084", "DCM", "Tmax")));
         Codes->insert(OFMake_pair(IAUC, DSRBasicCodedEntry("126320", "DCM", "IAUC")));
         Codes->insert(OFMake_pair(IAUC60, DSRBasicCodedEntry("126321", "DCM", "IAUC60")));
         Codes->insert(OFMake_pair(IAUC90, DSRBasicCodedEntry("126322", "DCM", "IAUC90")));
@@ -267,6 +270,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(StandardizedUptakeValue, DSRBasicCodedEntry("126400", "DCM", "Standardized Uptake Value")));
         Codes->insert(OFMake_pair(SUVbw, DSRBasicCodedEntry("126401", "DCM", "SUVbw")));
         Codes->insert(OFMake_pair(SUVlbm, DSRBasicCodedEntry("126402", "DCM", "SUVlbm")));
+        Codes->insert(OFMake_pair(SUVlbmJames128, DSRBasicCodedEntry("126406", "DCM", "SUVlbm(James128)")));
         Codes->insert(OFMake_pair(SUVlbmJanma, DSRBasicCodedEntry("126405", "DCM", "SUVlbm(Janma)")));
         Codes->insert(OFMake_pair(SUVbsa, DSRBasicCodedEntry("126403", "DCM", "SUVbsa")));
         Codes->insert(OFMake_pair(SUVibw, DSRBasicCodedEntry("126404", "DCM", "SUVibw")));
