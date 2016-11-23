@@ -2,6 +2,7 @@ The libcharls library containing the JPEG-LS encoder and decoder in this
 DCMTK module is based on the CharLS library (see http://charls.codeplex.com/).
 
 The CharLS library is available under the following license:
+
 -------------------------------------------------------------------------------
 Copyright (c) 2007-2010, Jan de Vaan
 All rights reserved.
@@ -31,3 +32,13 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+
+LEGAL REMARK:
+
+Please note that Hewlett Packard claims to own patents that apply to 
+JPEG-LS. Hewlett Packard grants free licenses for conformant 
+implementations of JPEG-LS. OFFIS as the author of the DCMTK toolkit 
+has obtained such a license, but depending on your national 
+legislations companies that use DCMTK's JPEG-LS codec may need to 
+also acquire a license. Read more at http://www.hpl.hp.com/loco/ if 
+you intend to use this module for commercial purposes.

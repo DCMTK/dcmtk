@@ -74,4 +74,14 @@ if (fileformat.loadFile("test_jpls.dcm").good())
 DJLSDecoderRegistration::cleanup(); // deregister JPEG-LS codecs
 \endcode
 
+\section Legal Legal Remark
+
+Please note that Hewlett Packard claims to own patents that apply to 
+JPEG-LS. Hewlett Packard grants free licenses for conformant 
+implementations of JPEG-LS. OFFIS as the author of the DCMTK toolkit 
+has obtained such a license, but depending on your national 
+legislations companies that use DCMTK's JPEG-LS codec may need to 
+also acquire a license. Read more at http://www.hpl.hp.com/loco/ if 
+you intend to use this module for commercial purposes.
+
 */
