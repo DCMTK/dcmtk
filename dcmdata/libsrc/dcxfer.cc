@@ -412,7 +412,7 @@ const S_XferNames XferNames[] =
     },
     // entry #32
     { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
-      "MPEG2 Main Profile @ Main Level",
+      "MPEG2 Main Profile @ Main Level",  // changed with DICOM 2016e to: MPEG2 Main Profile / Main Level
       EXS_MPEG2MainProfileAtMainLevel,
       EBO_LittleEndian,
       EVT_Explicit,
@@ -423,7 +423,7 @@ const S_XferNames XferNames[] =
       ESC_none },
     // entry #33
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
-      "MPEG2 Main Profile @ High Level",
+      "MPEG2 Main Profile @ High Level",  // changed with DICOM 2016e to: MPEG2 Main Profile / High Level
       EXS_MPEG2MainProfileAtHighLevel,
       EBO_LittleEndian,
       EVT_Explicit,

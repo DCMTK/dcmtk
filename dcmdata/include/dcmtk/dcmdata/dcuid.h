@@ -329,9 +329,9 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_JPIPReferencedTransferSyntax        "1.2.840.10008.1.2.4.94"
 /// JPIP Referenced Deflate
 #define UID_JPIPReferencedDeflateTransferSyntax "1.2.840.10008.1.2.4.95"
-/// MPEG2 Main Profile @ Main Level
+/// MPEG2 Main Profile @ Main Level (changed with DICOM 2016e to: MPEG2 Main Profile / Main Level)
 #define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
-/// MPEG2 Main Profile @ High Level
+/// MPEG2 Main Profile @ High Level (changed with DICOM 2016e to: MPEG2 Main Profile / High Level)
 #define UID_MPEG2MainProfileAtHighLevelTransferSyntax "1.2.840.10008.1.2.4.101"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.1
 #define UID_MPEG4HighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.102"
