@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTOverrideSequence
  *
- *  Generated automatically from DICOM PS 3.3-2016d
- *  File created on 2016-10-12 13:44:31
+ *  Generated automatically from DICOM PS 3.3-2016e
+ *  File created on 2016-11-23 14:23:36
  *
  */
 
@@ -26,7 +26,8 @@ DRTOverrideSequence::Item::Item(const OFBool emptyDefaultItem)
     OverrideParameterPointer(DCM_OverrideParameterPointer),
     OverrideReason(DCM_OverrideReason),
     ParameterItemIndex(DCM_ParameterItemIndex),
-    ParameterSequencePointer(DCM_ParameterSequencePointer)
+    ParameterSequencePointer(DCM_ParameterSequencePointer),
+    ParameterValueNumber(DCM_ParameterValueNumber)
 {
 }
 
@@ -38,7 +39,8 @@ DRTOverrideSequence::Item::Item(const Item &copy)
     OverrideParameterPointer(copy.OverrideParameterPointer),
     OverrideReason(copy.OverrideReason),
     ParameterItemIndex(copy.ParameterItemIndex),
-    ParameterSequencePointer(copy.ParameterSequencePointer)
+    ParameterSequencePointer(copy.ParameterSequencePointer),
+    ParameterValueNumber(copy.ParameterValueNumber)
 {
 }
 
@@ -59,6 +61,7 @@ DRTOverrideSequence::Item &DRTOverrideSequence::Item::operator=(const Item &copy
         OverrideReason = copy.OverrideReason;
         ParameterItemIndex = copy.ParameterItemIndex;
         ParameterSequencePointer = copy.ParameterSequencePointer;
+        ParameterValueNumber = copy.ParameterValueNumber;
     }
     return *this;
 }
@@ -72,6 +75,7 @@ void DRTOverrideSequence::Item::clear()
         ParameterSequencePointer.clear();
         OverrideParameterPointer.clear();
         ParameterItemIndex.clear();
+        ParameterValueNumber.clear();
         OperatorsName.clear();
         OperatorIdentificationSequence.clear();
         OverrideReason.clear();
@@ -84,6 +88,7 @@ OFBool DRTOverrideSequence::Item::isEmpty()
     return ParameterSequencePointer.isEmpty() &&
            OverrideParameterPointer.isEmpty() &&
            ParameterItemIndex.isEmpty() &&
+           ParameterValueNumber.isEmpty() &&
            OperatorsName.isEmpty() &&
            OperatorIdentificationSequence.isEmpty() &&
            OverrideReason.isEmpty();
@@ -106,6 +111,7 @@ OFCondition DRTOverrideSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ParameterSequencePointer, "1", "1", "OverrideSequence");
         getAndCheckElementFromDataset(item, OverrideParameterPointer, "1", "1", "OverrideSequence");
         getAndCheckElementFromDataset(item, ParameterItemIndex, "1", "1", "OverrideSequence");
+        getAndCheckElementFromDataset(item, ParameterValueNumber, "1", "3", "OverrideSequence");
         getAndCheckElementFromDataset(item, OperatorsName, "1-n", "2", "OverrideSequence");
         OperatorIdentificationSequence.read(item, "1-n", "3", "OverrideSequence");
         getAndCheckElementFromDataset(item, OverrideReason, "1", "3", "OverrideSequence");
@@ -124,6 +130,7 @@ OFCondition DRTOverrideSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmAttributeTag(ParameterSequencePointer), "1", "1", "OverrideSequence");
         addElementToDataset(result, item, new DcmAttributeTag(OverrideParameterPointer), "1", "1", "OverrideSequence");
         addElementToDataset(result, item, new DcmIntegerString(ParameterItemIndex), "1", "1", "OverrideSequence");
+        addElementToDataset(result, item, new DcmUnsignedShort(ParameterValueNumber), "1", "3", "OverrideSequence");
         addElementToDataset(result, item, new DcmPersonName(OperatorsName), "1-n", "2", "OverrideSequence");
         if (result.good()) result = OperatorIdentificationSequence.write(item, "1-n", "3", "OverrideSequence");
         addElementToDataset(result, item, new DcmShortText(OverrideReason), "1", "3", "OverrideSequence");
@@ -183,6 +190,15 @@ OFCondition DRTOverrideSequence::Item::getParameterSequencePointer(OFString &val
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ParameterSequencePointer, value, pos);
+}
+
+
+OFCondition DRTOverrideSequence::Item::getParameterValueNumber(Uint16 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmUnsignedShort &, ParameterValueNumber).getUint16(value, pos);
 }
 
 
@@ -248,6 +264,15 @@ OFCondition DRTOverrideSequence::Item::setParameterSequencePointer(const OFStrin
             result = ParameterSequencePointer.putOFStringArray(value);
     }
     return result;
+}
+
+
+OFCondition DRTOverrideSequence::Item::setParameterValueNumber(const Uint16 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return ParameterValueNumber.putUint16(value, pos);
 }
 
 

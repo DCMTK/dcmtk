@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTIonControlPointDeliverySequence
  *
- *  Generated automatically from DICOM PS 3.3-2016d
- *  File created on 2016-10-12 13:44:31
+ *  Generated automatically from DICOM PS 3.3-2016e
+ *  File created on 2016-11-23 14:23:36
  *
  */
 
@@ -50,6 +50,7 @@ DRTIonControlPointDeliverySequence::Item::Item(const OFBool emptyDefaultItem)
     ScanSpotPositionMap(DCM_ScanSpotPositionMap),
     ScanSpotPrescribedIndices(DCM_ScanSpotPrescribedIndices),
     ScanSpotReordered(DCM_ScanSpotReordered),
+    ScanSpotTimeOffset(DCM_ScanSpotTimeOffset),
     ScanSpotTuneID(DCM_ScanSpotTuneID),
     ScanningSpotSize(DCM_ScanningSpotSize),
     SnoutPosition(DCM_SnoutPosition),
@@ -98,6 +99,7 @@ DRTIonControlPointDeliverySequence::Item::Item(const Item &copy)
     ScanSpotPositionMap(copy.ScanSpotPositionMap),
     ScanSpotPrescribedIndices(copy.ScanSpotPrescribedIndices),
     ScanSpotReordered(copy.ScanSpotReordered),
+    ScanSpotTimeOffset(copy.ScanSpotTimeOffset),
     ScanSpotTuneID(copy.ScanSpotTuneID),
     ScanningSpotSize(copy.ScanningSpotSize),
     SnoutPosition(copy.SnoutPosition),
@@ -154,6 +156,7 @@ DRTIonControlPointDeliverySequence::Item &DRTIonControlPointDeliverySequence::It
         ScanSpotPositionMap = copy.ScanSpotPositionMap;
         ScanSpotPrescribedIndices = copy.ScanSpotPrescribedIndices;
         ScanSpotReordered = copy.ScanSpotReordered;
+        ScanSpotTimeOffset = copy.ScanSpotTimeOffset;
         ScanSpotTuneID = copy.ScanSpotTuneID;
         ScanningSpotSize = copy.ScanningSpotSize;
         SnoutPosition = copy.SnoutPosition;
@@ -201,6 +204,7 @@ void DRTIonControlPointDeliverySequence::Item::clear()
         NumberOfScanSpotPositions.clear();
         ScanSpotPositionMap.clear();
         ScanSpotMetersetsDelivered.clear();
+        ScanSpotTimeOffset.clear();
         ScanningSpotSize.clear();
         NumberOfPaintings.clear();
         ScanSpotReordered.clear();
@@ -249,6 +253,7 @@ OFBool DRTIonControlPointDeliverySequence::Item::isEmpty()
            NumberOfScanSpotPositions.isEmpty() &&
            ScanSpotPositionMap.isEmpty() &&
            ScanSpotMetersetsDelivered.isEmpty() &&
+           ScanSpotTimeOffset.isEmpty() &&
            ScanningSpotSize.isEmpty() &&
            NumberOfPaintings.isEmpty() &&
            ScanSpotReordered.isEmpty() &&
@@ -307,6 +312,7 @@ OFCondition DRTIonControlPointDeliverySequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, NumberOfScanSpotPositions, "1", "1C", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, ScanSpotPositionMap, "1-n", "1C", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, ScanSpotMetersetsDelivered, "1-n", "1C", "IonControlPointDeliverySequence");
+        getAndCheckElementFromDataset(item, ScanSpotTimeOffset, "1-n", "3", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, ScanningSpotSize, "2", "3", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, NumberOfPaintings, "1", "1C", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, ScanSpotReordered, "1", "3", "IonControlPointDeliverySequence");
@@ -361,6 +367,7 @@ OFCondition DRTIonControlPointDeliverySequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmIntegerString(NumberOfScanSpotPositions), "1", "1C", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(ScanSpotPositionMap), "1-n", "1C", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(ScanSpotMetersetsDelivered), "1-n", "1C", "IonControlPointDeliverySequence");
+        addElementToDataset(result, item, new DcmFloatingPointSingle(ScanSpotTimeOffset), "1-n", "3", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(ScanningSpotSize), "2", "3", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfPaintings), "1", "1C", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmCodeString(ScanSpotReordered), "1", "3", "IonControlPointDeliverySequence");
@@ -678,6 +685,15 @@ OFCondition DRTIonControlPointDeliverySequence::Item::getScanSpotReordered(OFStr
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ScanSpotReordered, value, pos);
+}
+
+
+OFCondition DRTIonControlPointDeliverySequence::Item::getScanSpotTimeOffset(Float32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointSingle &, ScanSpotTimeOffset).getFloat32(value, pos);
 }
 
 
@@ -1093,6 +1109,15 @@ OFCondition DRTIonControlPointDeliverySequence::Item::setScanSpotReordered(const
             result = ScanSpotReordered.putOFStringArray(value);
     }
     return result;
+}
+
+
+OFCondition DRTIonControlPointDeliverySequence::Item::setScanSpotTimeOffset(const Float32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return ScanSpotTimeOffset.putFloat32(value, pos);
 }
 
 

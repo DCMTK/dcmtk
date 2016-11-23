@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTGeneralAccessorySequence
  *
- *  Generated automatically from DICOM PS 3.3-2016d
- *  File created on 2016-10-12 13:44:31
+ *  Generated automatically from DICOM PS 3.3-2016e
+ *  File created on 2016-11-23 14:23:36
  *
  */
 

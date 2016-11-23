@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTOverrideSequence
  *
- *  Generated automatically from DICOM PS 3.3-2016d
- *  File created on 2016-11-09 18:52:20
+ *  Generated automatically from DICOM PS 3.3-2016e
+ *  File created on 2016-11-23 14:23:36
  *
  */
 
@@ -134,6 +134,13 @@ class DCMTK_DCMRT_EXPORT DRTOverrideSequence
          */
         OFCondition getParameterSequencePointer(OFString &value, const signed long pos = 0) const;
 
+        /** get ParameterValueNumber (3008,0067)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getParameterValueNumber(Uint16 &value, const unsigned long pos = 0) const;
+
       // --- get DICOM sequence attributes ---
 
         /** get OperatorIdentificationSequence (0008,1072)
@@ -185,6 +192,13 @@ class DCMTK_DCMRT_EXPORT DRTOverrideSequence
          */
         OFCondition setParameterSequencePointer(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ParameterValueNumber (3008,0067)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setParameterValueNumber(const Uint16 value, const unsigned long pos = 0);
+
       private:
 
         /// internal flag used to mark the empty default item
@@ -202,6 +216,8 @@ class DCMTK_DCMRT_EXPORT DRTOverrideSequence
         DcmIntegerString ParameterItemIndex;
         /// ParameterSequencePointer (3008,0061) vr=AT, vm=1, type=1
         DcmAttributeTag ParameterSequencePointer;
+        /// ParameterValueNumber (3008,0067) vr=US, vm=1, type=3
+        DcmUnsignedShort ParameterValueNumber;
 
     };
 

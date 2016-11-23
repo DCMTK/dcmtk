@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTIonControlPointDeliverySequence
  *
- *  Generated automatically from DICOM PS 3.3-2016d
- *  File created on 2016-11-09 18:52:20
+ *  Generated automatically from DICOM PS 3.3-2016e
+ *  File created on 2016-11-23 14:23:36
  *
  */
 
@@ -328,6 +328,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getScanSpotReordered(OFString &value, const signed long pos = 0) const;
+
+        /** get ScanSpotTimeOffset (300a,038f)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getScanSpotTimeOffset(Float32 &value, const unsigned long pos = 0) const;
 
         /** get ScanSpotTuneID (300a,0390)
          *  @param  value  reference to variable in which the value should be stored
@@ -690,6 +697,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
          */
         OFCondition setScanSpotReordered(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ScanSpotTimeOffset (300a,038f)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=1-n
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setScanSpotTimeOffset(const Float32 value, const unsigned long pos = 0);
+
         /** set ScanSpotTuneID (300a,0390)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
@@ -844,6 +858,8 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
         DcmIntegerString ScanSpotPrescribedIndices;
         /// ScanSpotReordered (300a,0393) vr=CS, vm=1, type=3
         DcmCodeString ScanSpotReordered;
+        /// ScanSpotTimeOffset (300a,038f) vr=FL, vm=1-n, type=3
+        DcmFloatingPointSingle ScanSpotTimeOffset;
         /// ScanSpotTuneID (300a,0390) vr=SH, vm=1, type=1C
         DcmShortString ScanSpotTuneID;
         /// ScanningSpotSize (300a,0398) vr=FL, vm=2, type=3
