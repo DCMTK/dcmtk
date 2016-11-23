@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2016d
- *  File created on 2016-10-04 11:50:13 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016e
+ *  File created on 2016-11-23 13:33:01 by J. Riesmeier
  *
  */
 
@@ -33,10 +33,10 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3471
+// total number of codes: 3511
 // - retired: 143
 // - no name: 27
-// - not unique: 14
+// - not unique: 15
 
 // The basic scheme for creating the names is as follows:
 //   'CODE_' + <coding-scheme-designator> + ['_RETIRED'] + '_' + <code-name>
@@ -1721,6 +1721,7 @@
 #define CODE_DCM_CholineCreatineRatio                                      DSRBasicCodedEntry("113081", "DCM", "Choline/Creatine Ratio")
 #define CODE_DCM_NAcetylaspartateCreatineRatio                             DSRBasicCodedEntry("113082", "DCM", "N-acetylaspartate /Creatine Ratio")
 #define CODE_DCM_NAcetylaspartateCholineRatio                              DSRBasicCodedEntry("113083", "DCM", "N-acetylaspartate /Choline Ratio")
+#define CODE_DCM_Tmax                                                      DSRBasicCodedEntry("113084", "DCM", "Tmax")
 #define CODE_DCM_SpatialResampling                                         DSRBasicCodedEntry("113085", "DCM", "Spatial resampling")
 #define CODE_DCM_EdgeEnhancement                                           DSRBasicCodedEntry("113086", "DCM", "Edge enhancement")
 #define CODE_DCM_Smoothing                                                 DSRBasicCodedEntry("113087", "DCM", "Smoothing")
@@ -3103,6 +3104,40 @@
 #define CODE_DCM_LeftVentricleMassByMMode_adjustedByHeight                 DSRBasicCodedEntry("125271", "DCM", "Left Ventricle Mass by M-mode - adjusted by Height")
 #define CODE_DCM_LeftVentricleMassByTruncatedEllipse_adjustedByHeight      DSRBasicCodedEntry("125272", "DCM", "Left Ventricle Mass by Truncated Ellipse - adjusted by Height")
 #define CODE_DCM_LeftVentricleMassByAreaLength_adjustedByHeight            DSRBasicCodedEntry("125273", "DCM", "Left Ventricle Mass by Area Length - adjusted by Height")
+#define CODE_DCM_PreCoordinatedMeasurements                                DSRBasicCodedEntry("125301", "DCM", "Pre-coordinated Measurements")
+#define CODE_DCM_PostCoordinatedMeasurements                               DSRBasicCodedEntry("125302", "DCM", "Post-coordinated Measurements")
+#define CODE_DCM_AdhocMeasurements                                         DSRBasicCodedEntry("125303", "DCM", "Adhoc Measurements")
+#define CODE_DCM_UntrackableMeasurement                                    DSRBasicCodedEntry("125304", "DCM", "Untrackable Measurement")
+#define CODE_DCM_FindingObservationType                                    DSRBasicCodedEntry("125305", "DCM", "Finding Observation Type")
+#define CODE_DCM_MeasurementType                                           DSRBasicCodedEntry("125306", "DCM", "Measurement Type")
+#define CODE_DCM_MeasuredProperty                                          DSRBasicCodedEntry("125307", "DCM", "Measured Property")
+#define CODE_DCM_MeasurementDivisor                                        DSRBasicCodedEntry("125308", "DCM", "Measurement Divisor")
+#define CODE_DCM_ShortLabel                                                DSRBasicCodedEntry("125309", "DCM", "Short Label")
+#define CODE_DCM_StagedMeasurements                                        DSRBasicCodedEntry("125310", "DCM", "Staged Measurements")
+#define CODE_DCM_StructureOfTheFindingSite                                 DSRBasicCodedEntry("125311", "DCM", "Structure of the Finding Site")
+#define CODE_DCM_BehaviorOfTheFindingSite                                  DSRBasicCodedEntry("125312", "DCM", "Behavior of the Finding Site")
+#define CODE_DCM_Indexed                                                   DSRBasicCodedEntry("125313", "DCM", "Indexed")
+#define CODE_DCM_FractionalChange                                          DSRBasicCodedEntry("125314", "DCM", "Fractional Change")
+#define CODE_DCM_Calculated                                                DSRBasicCodedEntry("125315", "DCM", "Calculated")
+#define CODE_DCM_DirectlyMeasured                                          DSRBasicCodedEntry("125316", "DCM", "Directly measured")
+#define CODE_DCM_RightVentricleOutflowTract_Distal                         DSRBasicCodedEntry("125317", "DCM", "Right Ventricle Outflow Tract, Distal")
+#define CODE_DCM_RightVentricleOutflowTract_Proximal                       DSRBasicCodedEntry("125318", "DCM", "Right Ventricle Outflow Tract, Proximal")
+#define CODE_DCM_RightVentricleAnteriorWall                                DSRBasicCodedEntry("125319", "DCM", "Right Ventricle Anterior Wall")
+#define CODE_DCM_ElectromechanicalDelay                                    DSRBasicCodedEntry("125320", "DCM", "Electromechanical Delay")
+#define CODE_DCM_PreEjectionPeriod                                         DSRBasicCodedEntry("125321", "DCM", "Pre-ejection Period")
+#define CODE_DCM_AtrialDiastolicFilling_DWave                              DSRBasicCodedEntry("125322", "DCM", "Atrial Diastolic Filling (D-wave)")
+#define CODE_DCM_ARWave                                                    DSRBasicCodedEntry("125323", "DCM", "AR-wave")
+#define CODE_DCM_FullCardiacCycle                                          DSRBasicCodedEntry("125324", "DCM", "Full Cardiac Cycle")
+#define CODE_DCM_DyssynchronyIndex                                         DSRBasicCodedEntry("125325", "DCM", "Dyssynchrony Index")
+#define CODE_DCM_EffectiveOrificeArea                                      DSRBasicCodedEntry("125326", "DCM", "Effective Orifice Area")
+#define CODE_DCM_ExcursionDistance                                         DSRBasicCodedEntry("125327", "DCM", "Excursion Distance")
+#define CODE_DCM_MaximumOrificeArea                                        DSRBasicCodedEntry("125328", "DCM", "Maximum Orifice Area")
+#define CODE_DCM_PeakBloodPressure                                         DSRBasicCodedEntry("125329", "DCM", "Peak Blood Pressure")
+#define CODE_DCM_PeakTissueVelocity                                        DSRBasicCodedEntry("125330", "DCM", "Peak Tissue Velocity")
+#define CODE_DCM_PISARadius                                                DSRBasicCodedEntry("125331", "DCM", "PISA Radius")
+#define CODE_DCM_RegurgitationJetArea                                      DSRBasicCodedEntry("125332", "DCM", "Regurgitation Jet Area")
+#define CODE_DCM_RegurgitationJetWidth                                     DSRBasicCodedEntry("125333", "DCM", "Regurgitation Jet Width")
+#define CODE_DCM_VenaContractaWidth                                        DSRBasicCodedEntry("125334", "DCM", "Vena Contracta Width")
 #define CODE_DCM_CARDIOsphere                                              DSRBasicCodedEntry("125901", "DCM", "CARDIOsphere")
 #define CODE_DCM_Echovist                                                  DSRBasicCodedEntry("125902", "DCM", "Echovist")
 #define CODE_DCM_Imagify                                                   DSRBasicCodedEntry("125903", "DCM", "Imagify")
@@ -3206,17 +3241,21 @@
 #define CODE_DCM_OxygenExtractionFraction                                  DSRBasicCodedEntry("126392", "DCM", "Oxygen Extraction Fraction")
 #define CODE_DCM_R1                                                        DSRBasicCodedEntry("126393", "DCM", "R1")
 #define CODE_DCM_R2                                                        DSRBasicCodedEntry("126394", "DCM", "R2")
+#define CODE_DCM_R2Star                                                    DSRBasicCodedEntry("126395", "DCM", "R2*")
+#define CODE_DCM_MagneticSusceptibility                                    DSRBasicCodedEntry("126396", "DCM", "Magnetic Susceptibility")
 #define CODE_DCM_StandardizedUptakeValue                                   DSRBasicCodedEntry("126400", "DCM", "Standardized Uptake Value")
 #define CODE_DCM_SUVbw                                                     DSRBasicCodedEntry("126401", "DCM", "SUVbw")
 #define CODE_DCM_SUVlbm                                                    DSRBasicCodedEntry("126402", "DCM", "SUVlbm")
 #define CODE_DCM_SUVbsa                                                    DSRBasicCodedEntry("126403", "DCM", "SUVbsa")
 #define CODE_DCM_SUVibw                                                    DSRBasicCodedEntry("126404", "DCM", "SUVibw")
 #define CODE_DCM_SUVlbmJanma                                               DSRBasicCodedEntry("126405", "DCM", "SUVlbm(Janma)")
+#define CODE_DCM_SUVlbmJames128                                            DSRBasicCodedEntry("126406", "DCM", "SUVlbm(James128)")
 #define CODE_DCM_SUVBodyWeightCalculationMethod                            DSRBasicCodedEntry("126410", "DCM", "SUV body weight calculation method")
 #define CODE_DCM_SUVLeanBodyMassCalculationMethod                          DSRBasicCodedEntry("126411", "DCM", "SUV lean body mass calculation method")
 #define CODE_DCM_SUVBodySurfaceAreaCalculationMethod                       DSRBasicCodedEntry("126412", "DCM", "SUV body surface area calculation method")
 #define CODE_DCM_SUVIdealBodyWeightCalculationMethod                       DSRBasicCodedEntry("126413", "DCM", "SUV ideal body weight calculation method")
 #define CODE_DCM_SUVLeanBodyMassCalculationJanmahasatianMethod             DSRBasicCodedEntry("126414", "DCM", "SUV lean body mass calculation Janmahasatian method")
+#define CODE_DCM_SUVLeanBodyMassCalculationMethodUsing128Multiplier        DSRBasicCodedEntry("126415", "DCM", "SUV lean body mass calculation method using 128 multiplier")
 #define CODE_DCM_PittsburghCompoundB_C11                                   DSRBasicCodedEntry("126500", "DCM", "Pittsburgh compound B C^11^")
 #define CODE_DCM_Florbetaben_F18                                           DSRBasicCodedEntry("126501", "DCM", "Florbetaben F^18^")
 #define CODE_DCM_T807_F18                                                  DSRBasicCodedEntry("126502", "DCM", "T807 F^18^")
@@ -3518,5 +3557,6 @@
 #define CODE_DCM_SourceMeasurement                                         DSRBasicCodedEntry("128224", "DCM", "Source measurement")
 #define CODE_DCM_SourceReport                                              DSRBasicCodedEntry("128225", "DCM", "Source report")
 #define CODE_DCM_SourceRawData                                             DSRBasicCodedEntry("128226", "DCM", "Source raw data")
+#define CODE_DCM_PulseSequenceName                                         DSRBasicCodedEntry("128230", "DCM", "Pulse Sequence Name")
 
 #endif

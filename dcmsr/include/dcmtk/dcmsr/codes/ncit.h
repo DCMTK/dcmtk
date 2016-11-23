@@ -5,8 +5,8 @@
  *
  *  Header file with NCIt Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2016d
- *  File created on 2016-10-04 11:50:21 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2016e
+ *  File created on 2016-11-23 13:29:26 by J. Riesmeier
  *
  */
 
