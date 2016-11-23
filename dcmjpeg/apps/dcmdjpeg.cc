@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
   E_UIDCreation opt_uidcreation = EUC_default;
   E_PlanarConfiguration opt_planarconfig = EPC_default;
   OFBool opt_predictor6WorkaroundEnable = OFFalse;
+  OFBool opt_forceSingleFragmentPerFrame = OFFalse;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Decode JPEG-compressed DICOM file", rcsid);
   OFCommandLine cmd;
@@ -120,6 +121,7 @@ int main(int argc, char *argv[])
 
     cmd.addSubGroup("workaround options for incorrect JPEG encodings:");
       cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6");
+      cmd.addOption("--workaround-incpl",    "+wi",    "enable workaround for incomplete JPEG data");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -194,6 +196,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       if (cmd.findOption("--workaround-pred6")) opt_predictor6WorkaroundEnable = OFTrue;
+      if (cmd.findOption("--workaround-incpl")) opt_forceSingleFragmentPerFrame = OFTrue;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file"))
@@ -272,7 +275,8 @@ int main(int argc, char *argv[])
       opt_decompCSconversion,
       opt_uidcreation,
       opt_planarconfig,
-      opt_predictor6WorkaroundEnable);
+      opt_predictor6WorkaroundEnable,
+      opt_forceSingleFragmentPerFrame);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())

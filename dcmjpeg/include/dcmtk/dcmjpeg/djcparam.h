@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,6 +40,8 @@ public:
    *    decompressed color images should be handled
    *  @param predictor6WorkaroundEnable enable workaround for buggy lossless compressed images with
    *    overflow in predictor 6 for images with 16 bits/pixel
+   *  @param pForceSingleFragmentPerFrame while decompressing a multiframe image,
+   *    assume one fragment per frame even if the JPEG data for some frame is incomplete
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
    *  @param pSmoothingFactor smoothing factor for image compression, 0..100
    *  @param pForcedBitDepth forced bit depth for image compression, 0 (auto) or 8/12/16
@@ -71,6 +73,7 @@ public:
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
     OFBool predictor6WorkaroundEnable = OFFalse,
+    OFBool pForceSingleFragmentPerFrame = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,
     int pSmoothingFactor = 0,
     int pForcedBitDepth = 0,
@@ -301,6 +304,14 @@ public:
     return predictor6WorkaroundEnabled_;
   }
 
+  /** returns flag indicating whether one fragment per frame should be enforced while decoding
+   *  @return flag indicating whether one fragment per frame should be enforced while decoding
+   */
+  OFBool getForceSingleFragmentPerFrame() const
+  {
+    return forceSingleFragmentPerFrame;
+  }
+
 private:
 
   /// private undefined copy assignment operator
@@ -396,6 +407,11 @@ private:
 
   /// flag indicating that the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
   OFBool predictor6WorkaroundEnabled_;
+
+  /** flag indicating that while decompressing a multiframe image one fragment per frame
+   *  should be assumed even if the JPEG data for some frame is incomplete
+   */
+  OFBool forceSingleFragmentPerFrame;
 
 };
 

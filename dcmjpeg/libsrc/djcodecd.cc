@@ -163,6 +163,7 @@ OFCondition DJCodecDecoder::decode(
                 if (result.good())
                 {
                   Uint8 *imageData8 = OFreinterpret_cast(Uint8*, imageData16);
+                  OFBool forceSingleFragmentPerFrame = djcp->getForceSingleFragmentPerFrame();
 
                   while ((currentFrame < imageFrames)&&(result.good()))
                   {
@@ -180,6 +181,15 @@ OFCondition DJCodecDecoder::decode(
                           if (result.good())
                           {
                             result = jpeg->decode(jpegData, fragmentLength, imageData8, OFstatic_cast(Uint32, frameSize), isSigned);
+
+                            // check if we should enforce "one fragment per frame" while
+                            // decompressing a multi-frame image even if stream suspension occurs
+                            if ((EJ_Suspension == result) && forceSingleFragmentPerFrame)
+                            {
+                              // frame is incomplete. Nevertheless skip to next frame.
+                              // This permits decompression of faulty multi-frame images.
+                              result = EC_Normal;
+                            }
                           }
                         }
                       }

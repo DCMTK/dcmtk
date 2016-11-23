@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -73,6 +73,7 @@ void DJEncoderRegistration::registerCodecs(
       EDC_photometricInterpretation,  // not relevant, used for decompression only
       pCreateSOPInstanceUID,
       EPC_default, // not relevant, used for decompression only
+      OFFalse, // not relevant, used for decompression only
       OFFalse, // not relevant, used for decompression only
       pOptimizeHuffman,
       pSmoothingFactor,

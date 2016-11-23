@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,7 +23,7 @@
 #include "dcmtk/dcmjpeg/djdecode.h"
 
 #include "dcmtk/dcmdata/dccodec.h"  /* for DcmCodecStruct */
-#include "dcmtk/dcmjpeg/djdecbas.h" 
+#include "dcmtk/dcmjpeg/djdecbas.h"
 #include "dcmtk/dcmjpeg/djdecext.h"
 #include "dcmtk/dcmjpeg/djdecsps.h"
 #include "dcmtk/dcmjpeg/djdecpro.h"
@@ -45,16 +45,21 @@ void DJDecoderRegistration::registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion,
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
-    OFBool predictor6WorkaroundEnable)
+    OFBool predictor6WorkaroundEnable,
+    OFBool pIgnoreDecoderErrors,
+    OFBool pForceSingleFragmentPerFrame)
 {
   if (! registered)
   {
     cp = new DJCodecParameter(
       ECC_lossyYCbCr, // ignored, compression only
-      pDecompressionCSConversion, 
-      pCreateSOPInstanceUID, 
+      pDecompressionCSConversion,
+      pCreateSOPInstanceUID,
       pPlanarConfiguration,
-      predictor6WorkaroundEnable);
+      predictor6WorkaroundEnable,
+      pIgnoreDecoderErrors,
+      pForceSingleFragmentPerFrame);
+
     if (cp)
     {
       // baseline JPEG

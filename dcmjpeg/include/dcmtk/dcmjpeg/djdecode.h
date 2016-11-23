@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,12 +48,17 @@ public:
    *    of color images should be encoded upon decompression.
    *  @param predictor6WorkaroundEnable enable workaround for buggy lossless compressed images with
    *           overflow in predictor 6 for images with 16 bits/pixel
+   *  @param pIgnoreDecoderErrors ignore JPEG decoder errors while decompressing
+   *  @param pForceSingleFragmentPerFrame while decompressing a multiframe image,
+   *    assume one fragment per frame even if the JPEG data for some frame is incomplete
    */
   static void registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion = EDC_photometricInterpretation,
     E_UIDCreation pCreateSOPInstanceUID = EUC_default,
     E_PlanarConfiguration pPlanarConfiguration = EPC_default,
-    OFBool predictor6WorkaroundEnable = OFFalse);
+    OFBool predictor6WorkaroundEnable = OFFalse,
+    OFBool pIgnoreDecoderErrors = OFFalse,
+    OFBool pForceSingleFragmentPerFrame = OFFalse);
 
   /** deregisters decoders.
    *  Attention: Must not be called while other threads might still use

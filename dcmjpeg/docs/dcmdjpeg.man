@@ -167,6 +167,15 @@ workaround options for incorrect JPEG encodings:
   # This flag enables a correct decompression of such faulty images, but
   # at the same time will cause an incorrect decompression of correctly
   # compressed images. Use with care.
+
+  +wi   --workaround-incpl
+          enable workaround for incomplete JPEG data
+
+  # This option causes dcmjpeg to ignore incomplete JPEG data
+  # at the end of a compressed fragment and to start decompressing
+  # the next frame from the next fragment (if any). This permits
+  # images with incomplete JPEG data to be decoded.
+
 \endverbatim
 
 \subsection output_options output options
@@ -323,6 +332,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@ DJCodecParameter::DJCodecParameter(
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
     OFBool predictor6WorkaroundEnable,
+    OFBool pForceSingleFragmentPerFrame,
     OFBool pOptimizeHuffman,
     int pSmoothingFactor,
     int pForcedBitDepth,
@@ -76,6 +77,7 @@ DJCodecParameter::DJCodecParameter(
 , acrNemaCompatibility(pAcrNemaCompatibility)
 , trueLosslessMode(pTrueLosslessMode)
 , predictor6WorkaroundEnabled_(predictor6WorkaroundEnable)
+, forceSingleFragmentPerFrame(pForceSingleFragmentPerFrame)
 {
 }
 
@@ -108,6 +110,7 @@ DJCodecParameter::DJCodecParameter(const DJCodecParameter& arg)
 , acrNemaCompatibility(arg.acrNemaCompatibility)
 , trueLosslessMode(arg.trueLosslessMode)
 , predictor6WorkaroundEnabled_(arg.predictor6WorkaroundEnabled_)
+, forceSingleFragmentPerFrame(arg.forceSingleFragmentPerFrame)
 {
 }
 
