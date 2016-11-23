@@ -20,6 +20,9 @@
  */
 
 #include "dcmtk/config/osconfig.h"
+
+// only provide the implementation if C++11's std::numeric_limits is unavailable
+#if __cplusplus < 201103L
 #include "dcmtk/ofstd/oflimits.h"
 
 const int OFnumeric_limits<char>::digits10 = OFstatic_cast( int, OFnumeric_limits<char>::digits * .30102999566398119521373889472449 );
@@ -33,3 +36,4 @@ const int OFnumeric_limits<signed long>::digits10 = OFstatic_cast( int, OFnumeri
 const int OFnumeric_limits<unsigned long>::digits10 = OFstatic_cast( int, OFnumeric_limits<unsigned long>::digits * .30102999566398119521373889472449 );
 const int OFnumeric_limits<float>::max_digits10 = OFstatic_cast( int, OFnumeric_limits<float>::digits * .30102999566398119521373889472449 + 2 );
 const int OFnumeric_limits<double>::max_digits10 = OFstatic_cast( int, OFnumeric_limits<double>::digits * .30102999566398119521373889472449 + 2 );
+#endif // NOT C++11
