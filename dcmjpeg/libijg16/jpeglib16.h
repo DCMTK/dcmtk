@@ -422,6 +422,11 @@ struct jpeg_compress_struct {
   struct jpeg_downsampler * downsample;
   jpeg_scan_info * script_space; /* workspace for jpeg_simple_progression */
   int script_space_size;
+
+  /* force the use of an extended sequential SOF1 marker even when a
+   * SOF0 marker could be used, to comply with DICOM CP 1447.
+   * This is only needed for 8 bits/sample. */
+  boolean force_extended_sequential_marker;
 };
 
 
