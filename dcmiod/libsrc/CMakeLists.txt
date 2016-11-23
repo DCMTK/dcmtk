@@ -33,5 +33,4 @@ DCMTK_ADD_LIBRARY(dcmiod
   modusfor)
 
 DCMTK_TARGET_LINK_MODULES(dcmiod dcmdata ofstd oflog)
-DCMTK_TARGET_LINK_LIBRARIES(dcmiod ${ZLIB_LIBS})
 
