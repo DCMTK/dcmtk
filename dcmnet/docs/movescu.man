@@ -682,6 +682,36 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
+\section exit_codes EXIT CODES
+
+The \b movescu utility uses the following exit codes when terminating. This
+enables the user to check for the reason why the application terminated.
+
+\subsection exit_codes_general general
+\verbatim
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+EXITCODE_INSUFFICIENT_PRIVILEGES          2
+EXITCODE_SETUID_FAILED                    3
+\endverbatim
+
+\subsection exit_codes_output_file_errors output file errors
+\verbatim
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+EXITCODE_INVALID_OUTPUT_DIRECTORY        45
+\endverbatim
+
+\subsection exit_codes_network_errors network errors
+\verbatim
+EXITCODE_CANNOT_INITIALIZE_NETWORK       60
+EXITCODE_CANNOT_NEGOTIATE_ASSOCIATION    61
+EXITCODE_CANNOT_CREATE_ASSOC_PARAMETERS  65
+EXITCODE_NO_PRESENTATION_CONTEXT         66
+EXITCODE_CANNOT_CLOSE_ASSOCIATION        67
+EXITCODE_CMOVE_WARNING                   68
+EXITCODE_CMOVE_ERROR                     69
+\endverbatim
+
 \section environment ENVIRONMENT
 
 The \b movescu utility will attempt to load DICOM data dictionaries specified
