@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,6 +62,26 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE        "MOVESCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
+// general
+#define EXITCODE_NO_ERROR                        0
+#define EXITCODE_COMMANDLINE_SYNTAX_ERROR        1      // this code is the default for printError()
+#define EXITCODE_INSUFFICIENT_PRIVILEGES         2
+#define EXITCODE_SETUID_FAILED                   3
+
+// output file errors
+#define EXITCODE_CANNOT_WRITE_OUTPUT_FILE       40
+#define EXITCODE_INVALID_OUTPUT_DIRECTORY       45
+
+// network errors
+#define EXITCODE_CANNOT_INITIALIZE_NETWORK      60
+#define EXITCODE_CANNOT_NEGOTIATE_ASSOCIATION   61
+#define EXITCODE_CANNOT_CREATE_ASSOC_PARAMETERS 65
+#define EXITCODE_NO_PRESENTATION_CONTEXT        66
+#define EXITCODE_CANNOT_CLOSE_ASSOCIATION       67
+#define EXITCODE_CMOVE_WARNING                  68
+#define EXITCODE_CMOVE_ERROR                    69
+
+
 typedef enum {
      QMPatientRoot = 0,
      QMStudyRoot = 1,
@@ -107,6 +127,7 @@ int               opt_dimse_timeout = 0;
 int               opt_acse_timeout = 30;
 OFBool            opt_ignorePendingDatasets = OFTrue;
 OFString          opt_outputDirectory = ".";
+int               cmove_status_code = EXITCODE_NO_ERROR;
 
 #ifdef WITH_ZLIB
 OFCmdUnsignedInt  opt_compressionLevel = 0;
@@ -397,7 +418,7 @@ main(int argc, char *argv[])
 #ifdef WITH_TCPWRAPPER
           COUT << "- LIBWRAP" << OFendl;
 #endif
-          return 0;
+          return EXITCODE_NO_ERROR;
         }
       }
 
@@ -715,12 +736,12 @@ main(int argc, char *argv[])
         if (!OFStandard::dirExists(opt_outputDirectory))
         {
           OFLOG_FATAL(movescuLogger, "specified output directory does not exist");
-          return 1;
+          return EXITCODE_INVALID_OUTPUT_DIRECTORY;
         }
         else if (!OFStandard::isWriteable(opt_outputDirectory))
         {
           OFLOG_FATAL(movescuLogger, "specified output directory is not writeable");
-          return 1;
+          return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
         }
     }
 
@@ -731,7 +752,7 @@ main(int argc, char *argv[])
         if (geteuid() != 0)
         {
           OFLOG_FATAL(movescuLogger, "cannot listen on port " << opt_retrievePort << ", insufficient privileges");
-          return 1;
+          return EXITCODE_INSUFFICIENT_PRIVILEGES;
         }
     }
 #endif
@@ -743,21 +764,21 @@ main(int argc, char *argv[])
     if (cond.bad())
     {
         OFLOG_FATAL(movescuLogger, "cannot create network: " << DimseCondition::dump(temp_str, cond));
-        return 1;
+        return EXITCODE_CANNOT_INITIALIZE_NETWORK;
     }
 
     /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
     if (OFStandard::dropPrivileges().bad())
     {
         OFLOG_FATAL(movescuLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
-        return 1;
+        return EXITCODE_SETUID_FAILED;
     }
 
     /* set up main association */
     cond = ASC_createAssociationParameters(&params, opt_maxPDU);
     if (cond.bad()) {
         OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
-        exit(1);
+        exit(EXITCODE_CANNOT_CREATE_ASSOC_PARAMETERS);
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
@@ -776,7 +797,7 @@ main(int argc, char *argv[])
         querySyntax[opt_queryModel].moveSyntax);
     if (cond.bad()) {
         OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
-        exit(1);
+        exit(EXITCODE_CANNOT_CREATE_ASSOC_PARAMETERS);
     }
 
     OFLOG_DEBUG(movescuLogger, "Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
@@ -791,11 +812,11 @@ main(int argc, char *argv[])
             ASC_getRejectParameters(params, &rej);
             OFLOG_FATAL(movescuLogger, "Association Rejected:");
             OFLOG_FATAL(movescuLogger, ASC_printRejectParameters(temp_str, &rej));
-            exit(1);
+            exit(EXITCODE_CANNOT_NEGOTIATE_ASSOCIATION);
         } else {
             OFLOG_FATAL(movescuLogger, "Association Request Failed:");
             OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
-            exit(1);
+            exit(EXITCODE_CANNOT_NEGOTIATE_ASSOCIATION);
         }
     }
     /* what has been accepted/refused ? */
@@ -803,7 +824,7 @@ main(int argc, char *argv[])
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
         OFLOG_FATAL(movescuLogger, "No Acceptable Presentation Contexts");
-        exit(1);
+        exit(EXITCODE_NO_PRESENTATION_CONTEXT);
     }
 
     OFLOG_INFO(movescuLogger, "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
@@ -832,7 +853,7 @@ main(int argc, char *argv[])
             cond = ASC_abortAssociation(assoc);
             if (cond.bad()) {
                 OFLOG_FATAL(movescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
-                exit(1);
+                exit(EXITCODE_CANNOT_CLOSE_ASSOCIATION);
             }
         } else {
             /* release association */
@@ -842,7 +863,7 @@ main(int argc, char *argv[])
             {
                 OFLOG_FATAL(movescuLogger, "Association Release Failed:");
                 OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
-                exit(1);
+                exit(EXITCODE_CANNOT_CLOSE_ASSOCIATION);
             }
         }
     }
@@ -853,7 +874,7 @@ main(int argc, char *argv[])
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             OFLOG_FATAL(movescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
-            exit(1);
+            exit(EXITCODE_CANNOT_CLOSE_ASSOCIATION);
         }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
@@ -867,26 +888,26 @@ main(int argc, char *argv[])
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             OFLOG_FATAL(movescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
-            exit(1);
+            exit(EXITCODE_CANNOT_CLOSE_ASSOCIATION);
         }
     }
 
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
         OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
-        exit(1);
+        exit(EXITCODE_CANNOT_CLOSE_ASSOCIATION);
     }
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
         OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
-        exit(1);
+        exit(EXITCODE_CANNOT_CLOSE_ASSOCIATION);
     }
 
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
 #endif
 
-    return 0;
+    return cmove_status_code;
 }
 
 
@@ -1596,6 +1617,26 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
         NULL, &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
 
     if (cond == EC_Normal) {
+
+        // check if the C-MOVE-RSP message indicated an error
+        if ((rsp.DimseStatus == STATUS_Success) ||
+            (rsp.DimseStatus == STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication))
+        {
+          // status is "success" or "cancel", nothing to do.
+        }
+        else if (rsp.DimseStatus == STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures)
+        {
+          // status is "warn". Make sure the application ends with a non-zero return code.
+          if (EXITCODE_NO_ERROR == cmove_status_code) cmove_status_code = EXITCODE_CMOVE_WARNING;
+          OFLOG_WARN(movescuLogger, "Move response with warning status ("  << DU_cmoveStatusString(rsp.DimseStatus) << ")");
+        }
+        else
+        {
+          // status is "failed" or "refused"
+          cmove_status_code = EXITCODE_CMOVE_ERROR;
+          OFLOG_WARN(movescuLogger, "Move response with error status ("  << DU_cmoveStatusString(rsp.DimseStatus) << ")");
+        }
+
         if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL)) {
             OFLOG_INFO(movescuLogger, "Received Final Move Response");
             OFLOG_DEBUG(movescuLogger, DIMSE_dumpMessage(temp_str, rsp, DIMSE_INCOMING));
