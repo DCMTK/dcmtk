@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -285,8 +285,8 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
    int  lineno = 0,       /* line counter */
         error = 0;        /* error flag */
    char rcline[512],      /* line in configuration file */
-        mnemonic[64],     /* mnemonic in line */
-        value[256],       /* parameter value */
+        mnemonic[512],    /* mnemonic in line */
+        value[512],       /* parameter value */
         *valueptr;        /* pointer to value list */
    char *c;
 
@@ -407,8 +407,8 @@ int DcmQueryRetrieveConfig::readHostTable(FILE *cnffp, int *lineno)
         end = 0,          /* end flag */
         noOfPeers;        /* number of peers for entry */
    char rcline[512],      /* line in configuration file */
-        mnemonic[64],     /* mnemonic in line */
-        value[256],       /* parameter value */
+        mnemonic[512],    /* mnemonic in line */
+        value[512],       /* parameter value */
         *lineptr;         /* pointer to line */
    DcmQueryRetrieveConfigHostEntry *helpentry;
 
@@ -463,8 +463,8 @@ int DcmQueryRetrieveConfig::readVendorTable(FILE *cnffp, int *lineno)
         end = 0,          /* end flag */
         noOfPeers;        /* number of peers for entry */
    char rcline[512],      /* line in configuration file */
-        mnemonic[64],     /* mnemonic in line */
-        value[256],       /* parameter value */
+        mnemonic[512],     /* mnemonic in line */
+        value[512],       /* parameter value */
         *lineptr;         /* pointer to line */
    DcmQueryRetrieveConfigHostEntry *helpentry;
 
@@ -519,8 +519,8 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
         end = 0,            /* end flag */
         noOfAEEntries = 0;  /* number of AE entries */
    char rcline[512],        /* line in configuration file */
-        mnemonic[64],       /* mnemonic in line */
-        value[256],         /* parameter value */
+        mnemonic[512],      /* mnemonic in line */
+        value[512],         /* parameter value */
         *lineptr;           /* pointer to line */
    DcmQueryRetrieveConfigAEEntry *helpentry;
 
@@ -576,7 +576,7 @@ DcmQueryRetrieveConfigQuota *DcmQueryRetrieveConfig::parseQuota(char **valuehand
 {
    int  studies;
    char *helpvalue,
-        helpval[20];
+        helpval[512];
    DcmQueryRetrieveConfigQuota *helpquota;
 
    if ((helpquota = (DcmQueryRetrieveConfigQuota *)malloc(sizeof(DcmQueryRetrieveConfigQuota))) == NULL)
