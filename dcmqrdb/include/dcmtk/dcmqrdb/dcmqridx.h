@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -346,7 +346,7 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
     char    filename                        [DBC_MAXSTRING+1] ;
     char    SOPClassUID                     [UI_MAX_LENGTH+1] ;
     double  RecordedDate ;
-    int     ImageSize ;
+    Uint32  ImageSize ;
 
     DB_SmallDcmElmt param                   [NBPARAMETERS] ;
 
