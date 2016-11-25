@@ -290,10 +290,9 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
         *valueptr;        /* pointer to value list */
    char *c;
 
-   while (!feof(cnffp)) {
-      fgets(rcline, sizeof(rcline), cnffp); /* read line in configuration file */
+   // read all lines from configuration file
+   while (fgets(rcline, sizeof(rcline), cnffp)) {
       lineno++;
-      if (feof(cnffp)) continue;
       if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
          continue;        /* comment or blank line */
 
@@ -357,7 +356,7 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
             error = 1;
          }
          else {
-            panic("Unknown HostTable status \"%s\" in configuartion file, line %d", value, lineno);
+            panic("Unknown HostTable status \"%s\" in configuration file, line %d", value, lineno);
             error = 1;
          }
       }
@@ -372,7 +371,7 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
             error = 1;
          }
          else {
-            panic("Unknown VendorTable status \"%s\" in configuartion file, line %d", value, lineno);
+            panic("Unknown VendorTable status \"%s\" in configuration file, line %d", value, lineno);
             error = 1;
          }
       }
@@ -387,7 +386,7 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
             error = 1;
          }
          else {
-            panic("Unknown AETable status \"%s\" in configuartion file, line %d", value, lineno);
+            panic("Unknown AETable status \"%s\" in configuration file, line %d", value, lineno);
             error = 1;
          }
       }
@@ -412,10 +411,9 @@ int DcmQueryRetrieveConfig::readHostTable(FILE *cnffp, int *lineno)
         *lineptr;         /* pointer to line */
    DcmQueryRetrieveConfigHostEntry *helpentry;
 
-   while (!feof(cnffp)) {
-      fgets(rcline, sizeof(rcline), cnffp); /* read line in configuration file */
+   // read certain lines from configuration file
+   while (fgets(rcline, sizeof(rcline), cnffp)) {
       (*lineno)++;
-      if (feof(cnffp)) continue;
       if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
          continue;        /* comment or blank line */
 
@@ -468,10 +466,9 @@ int DcmQueryRetrieveConfig::readVendorTable(FILE *cnffp, int *lineno)
         *lineptr;         /* pointer to line */
    DcmQueryRetrieveConfigHostEntry *helpentry;
 
-   while (!feof(cnffp)) {
-      fgets(rcline, sizeof(rcline), cnffp); /* read line in configuration file */
+   // read certain lines from configuration file
+   while (fgets(rcline, sizeof(rcline), cnffp)) {
       (*lineno)++;
-      if (feof(cnffp)) continue;
       if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
          continue;        /* comment or blank line */
 
@@ -524,10 +521,9 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
         *lineptr;           /* pointer to line */
    DcmQueryRetrieveConfigAEEntry *helpentry;
 
-   while (!feof(cnffp)) {
-      fgets(rcline, sizeof(rcline), cnffp); /* read line in configuration file */
+   // read certain lines from configuration file
+   while (fgets(rcline, sizeof(rcline), cnffp)) {
       (*lineno)++;
-      if (feof(cnffp)) continue;
       if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
          continue;        /* comment or blank line */
 
@@ -597,7 +593,7 @@ DcmQueryRetrieveConfigPeer *DcmQueryRetrieveConfig::parsePeers(char **valuehandl
    char *valueptr = *valuehandle;
 
    helpvalue = parsevalues(valuehandle);
-   if (!strcmp("ANY", helpvalue)) {     /* keywork ANY used */
+   if (!strcmp("ANY", helpvalue)) {     /* keyword ANY used */
       free(helpvalue);
       *peers = -1;
       return((DcmQueryRetrieveConfigPeer *) 0);
