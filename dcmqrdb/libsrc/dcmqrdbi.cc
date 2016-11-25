@@ -2560,7 +2560,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
       return QR_EC_IndexDatabaseError;
     }
     if (dcmtk_flock(lockfd, LOCK_EX) < 0) { /* exclusive lock (blocking) */
-      DCMQRDB_WARN("DB ERROR: cannot lock image file  for deleting: " << imgFile);
+      DCMQRDB_WARN("DB ERROR: cannot lock image file for deleting: " << imgFile);
       dcmtk_plockerr("DB ERROR");
     }
 #endif
@@ -2574,7 +2574,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 
 #ifdef LOCK_IMAGE_FILES
     if (dcmtk_flock(lockfd, LOCK_UN) < 0) { /* unlock */
-        DCMQRDB_WARN("DB ERROR: cannot unlock image file  for deleting: " << imgFile);
+        DCMQRDB_WARN("DB ERROR: cannot unlock image file for deleting: " << imgFile);
         dcmtk_plockerr("DB ERROR");
      }
     close(lockfd);              /* release file descriptor */
@@ -3421,7 +3421,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::instanceReviewed(int idx)
 
       record.hstat = DVIF_objectIsNotNew;
       DB_lseek(handle_->pidx, OFstatic_cast(long, SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET);
-      write(handle_->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD);
+      if (write(handle_->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
+          result = QR_EC_IndexDatabaseError;
       DB_lseek(handle_->pidx, 0L, SEEK_SET);
       DB_unlock();
     }
