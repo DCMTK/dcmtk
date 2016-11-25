@@ -554,7 +554,17 @@ public:
    *  the beginning of the file. This is equivalent to fseek(0, SEEK_SET)
    *  except that the error indicator for the stream is also cleared.
    */
-  void rewind() { STDIO_NAMESPACE rewind(file_); }
+  void rewind()
+  {
+#if defined(_WIN32) || defined(__CYGWIN__)
+    /* On these platforms rewind() fails after reading to the end of file
+     * if the file is read-only. Using fseek() instead.
+     */
+    (void) this->fseek(0L, SEEK_SET);
+#else
+    STDIO_NAMESPACE rewind(file_);
+#endif
+  }
 
   /** clears the end-of-file and error indicators for the stream
    */
