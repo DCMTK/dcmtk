@@ -2843,7 +2843,7 @@ OFString OFStandard::getUserName()
         OFnullptr
     );
     return &*buf.begin();
-#elif defined(HAVE_CUSERID)
+#elif defined(HAVE_CUSERID) && !defined(__CYGWIN__)
     char buf[L_cuserid];
     return cuserid( buf );
 #elif defined(HAVE_GETLOGIN)
