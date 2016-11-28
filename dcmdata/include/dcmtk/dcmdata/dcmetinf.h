@@ -60,6 +60,7 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
 
     /** assignment operator.
      *  @param obj the metainfo to be copied
+     *  @return reference to this object
      */
     DcmMetaInfo &operator=(const DcmMetaInfo &obj);
 
@@ -99,7 +100,8 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
     virtual void removeInvalidGroups();
 
     /** return the transfer syntax in which this dataset was originally read.
-     *  @return transfer syntax in which this dataset was originally read, EXS_Unknown if the dataset was created in memory
+     *  @return transfer syntax in which this dataset was originally read, EXS_Unknown
+     *    if the dataset was created in memory
      */
     E_TransferSyntax getOriginalXfer() const;
 
@@ -213,6 +215,7 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
 
     /** peeks into the input stream and checks whether the next element
      *  is group 0002, i.e. belongs to the meta-header
+     *  @param inStream input stream
      *  @return true if next element is part of meta-header, false otherwise
      */
     OFBool nextTagIsMeta(DcmInputStream &inStream);
@@ -225,7 +228,8 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
      *  @param xtag attribute tag for group length
      *  @param glenc handling of group length encoding element in dataset
      *  @param headerLen output parameter; length of meta-header as encoded in group length element
-     *  @param bytesRead output parameter; number of bytes read when reading group length (for counting the remaining number of meta-header bytes)
+     *  @param bytesRead output parameter; number of bytes read when reading group length
+     *    (for counting the remaining number of meta-header bytes)
      *  @param maxReadLength max read length for elements
      *  @return EC_Normal if successful, an error code otherwise
      */

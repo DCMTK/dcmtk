@@ -55,6 +55,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnlimitedCharacters
 
     /** copy assignment operator
      *  @param obj element to be copied
+     *  @return reference to this object
      */
     DcmUnlimitedCharacters &operator=(const DcmUnlimitedCharacters &obj);
 

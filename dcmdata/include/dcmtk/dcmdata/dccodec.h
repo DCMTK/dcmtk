@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,7 +52,7 @@ public:
     virtual ~DcmCodecParameter() {}
 
     /** this methods creates a copy of type DcmCodecParameter *
-     *  it must be overweritten in every subclass.
+     *  it must be overwritten in every subclass.
      *  @return copy of this object
      */
     virtual DcmCodecParameter *clone() const = 0;

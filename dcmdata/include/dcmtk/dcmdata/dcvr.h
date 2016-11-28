@@ -95,11 +95,10 @@ DCMTK_DCMDATA_EXPORT void dcmEnableGenerationOfNewVRs();
 DCMTK_DCMDATA_EXPORT void dcmDisableGenerationOfNewVRs();
 
 
-/*
-** VR Enumerations.
-** NB: The order of entries has to conform to the order in DcmVRDict (see dcmvr.cc)!
-**     If not an error message is reported and the program aborts (only in DEBUG mode).
-*/
+/** VR Enumerations.
+ *  NB: The order of entries has to conform to the order in DcmVRDict (see dcmvr.cc)!
+ *      If not an error message is reported and the program aborts (only in DEBUG mode).
+ */
 enum DcmEVR
 {
     /// application entity title
@@ -304,6 +303,7 @@ public:
 
     /** copy assignment operator
      *  @param arg vr to assign from
+     *  @return reference to this object
      */
     DcmVR& operator=(const DcmVR& arg)
     {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -826,6 +826,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
     /** This function creates a byte array of Length bytes and returns this
      *  array. In case Length is odd, an array of Length+1 bytes will be
      *  created and Length will be increased by 1.
+     *  @return pointer to created byte array
      */
     virtual Uint8 *newValueField();
 

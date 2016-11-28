@@ -169,6 +169,7 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      *  @param oxfer transfer syntax used to write the data
      *  @param enctype flag, specifying the encoding with undefined or explicit length
      *  @param wcache pointer to write cache object, may be NULL
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
@@ -180,6 +181,7 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      *  @param oxfer transfer syntax used to write the data
      *  @param enctype flag, specifying the encoding with undefined or explicit length
      *  @param wcache pointer to write cache object, may be NULL
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
                                              const E_TransferSyntax oxfer,

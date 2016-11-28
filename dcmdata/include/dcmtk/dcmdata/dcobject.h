@@ -361,6 +361,7 @@ class DCMTK_DCMDATA_EXPORT DcmObject
 
     /** set parent of this object. NULL means no parent.
      *  NB: This method is used by derived classes for internal purposes only.
+     *  @param parent pointer to the parent of this object
      */
     inline void setParent(DcmObject *parent) { Parent = parent; }
 

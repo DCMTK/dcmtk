@@ -55,6 +55,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedLongOffset
 
     /** assignment operator.
      *  @param obj the offset to be copied
+     *  @return reference to this object
      */
     DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &obj);
 

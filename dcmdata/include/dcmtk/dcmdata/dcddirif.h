@@ -1182,6 +1182,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      *  @param dataset DICOM dataset containing data of the new record
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
+     *  @return OFTrue if the data is consistent, OFFalse otherwise
      */
     OFBool checkReferencedSOPInstance(DcmDirectoryRecord *record,
                                       DcmItem *dataset,

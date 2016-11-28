@@ -128,6 +128,7 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  in metainfo and contain correct values.
      *  @param oxfer the transfer syntax which shall be used
      *  @param writeMode flag indicating whether to update the file meta information or not
+     *  @return EC_Normal if valid, an error code otherwise
      */
     virtual OFCondition validateMetaInfo(const E_TransferSyntax oxfer,
                                          const E_FileWriteMode writeMode = EWM_fileformat);
