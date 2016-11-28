@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -374,17 +374,12 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param fromCharset name of the source character set(s) used for the conversion
      *  @param toCharset name of the destination character set used for the conversion.
      *    Only a single value is permitted (i.e. no code extensions).
-     *  @param transliterate mode specifying whether a character that cannot be
-     *    represented in the destination character encoding is approximated through one
-     *    or more characters that look similar to the original one
-     *  @param discardIllegal mode specifying whether characters that cannot be represented
-     *    in the destination character encoding will be silently discarded
+     *  @param flags optional flag used to customize the conversion (see DCMTypes::CF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition convertCharacterSet(const OFString &fromCharset,
                                             const OFString &toCharset,
-                                            const OFBool transliterate = OFFalse,
-                                            const OFBool discardIllegal = OFFalse);
+                                            const size_t flags = 0);
 
     /** convert all element values that are contained in the dataset and that are affected
      *  by SpecificCharacterSet to the given destination character set. The source
@@ -397,16 +392,11 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *      checked nor updated, since the Basic Directory IOD has no SOP Common Module.
      *  @param toCharset name of the destination character set used for the conversion.
      *    Only a single value is permitted (i.e. no code extensions).
-     *  @param transliterate mode specifying whether a character that cannot be
-     *    represented in the destination character encoding is approximated through one
-     *    or more characters that look similar to the original one
-     *  @param discardIllegal mode specifying whether characters that cannot be represented
-     *    in the destination character encoding will be silently discarded
+     *  @param flags optional flag used to customize the conversion (see DCMTypes::CF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition convertCharacterSet(const OFString &toCharset,
-                                            const OFBool transliterate = OFFalse,
-                                            const OFBool discardIllegal = OFFalse);
+                                            const size_t flags = 0);
 
     /** convert all element values that are contained in the dataset and that are affected
      *  by SpecificCharacterSet from the currently selected source character set to the
@@ -419,7 +409,8 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
     /** convert all element values that are contained in the dataset and that are
      *  affected by SpecificCharacterSet to UTF-8 (Unicode). The value of the
      *  SpecificCharacterSet (0008,0005) element is updated, set or deleted automatically
-     *  if needed. The transliteration mode is disabled - see convertCharacterSet().
+     *  if needed. The transliteration mode is disabled, i.e. the conversion flags are
+     *  explicitly set to 0 - see convertCharacterSet().
      *  NB: In case of a DICOMDIR, the SpecificCharacterSet in the main dataset is neither
      *      checked nor updated, since the Basic Directory IOD has no SOP Common Module.
      *  @return status, EC_Normal if successful, an error code otherwise

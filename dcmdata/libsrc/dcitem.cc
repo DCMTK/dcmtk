@@ -4373,9 +4373,8 @@ void DcmItem::updateSpecificCharacterSet(OFCondition &status,
 
 OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
                                          const OFString &toCharset,
-                                         const OFBool transliterate,
-                                         const OFBool updateCharset,
-                                         const OFBool discardIllegal)
+                                         const size_t flags,
+                                         const OFBool updateCharset)
 {
     OFCondition status = EC_Normal;
     // if the item is empty, there is nothing to do
@@ -4387,7 +4386,7 @@ OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
             << fromCharset << "'" << (fromCharset.empty() ? " (ASCII)" : "") << " to '"
             << toCharset << "'" << (toCharset.empty() ? " (ASCII)" : ""));
         // select source and destination character set
-        status = converter.selectCharacterSet(fromCharset, toCharset, transliterate, discardIllegal);
+        status = converter.selectCharacterSet(fromCharset, toCharset, (flags & DCMTypes::CF_transliterate) > 0, (flags & DCMTypes::CF_discardIllegal) > 0);
         if (status.good())
         {
             // convert all affected element values in the item
@@ -4404,9 +4403,8 @@ OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
 
 
 OFCondition DcmItem::convertCharacterSet(const OFString &toCharset,
-                                         const OFBool transliterate,
-                                         const OFBool ignoreCharset,
-                                         const OFBool discardIllegal)
+                                         const size_t flags,
+                                         const OFBool ignoreCharset)
 {
     OFString fromCharset;
     // check whether this item can contain the attribute SpecificCharacterSet (0008,0005)
@@ -4416,7 +4414,7 @@ OFCondition DcmItem::convertCharacterSet(const OFString &toCharset,
         findAndGetOFStringArray(DCM_SpecificCharacterSet, fromCharset, OFFalse /*searchIntoSub*/);
     }
     // do the real work, if Specific Character Set is missing or empty use the default (ASCII)
-    return convertCharacterSet(fromCharset, toCharset, transliterate, !ignoreCharset /*updateCharset*/, discardIllegal);
+    return convertCharacterSet(fromCharset, toCharset, flags, !ignoreCharset /*updateCharset*/);
 }
 
 
@@ -4439,5 +4437,5 @@ OFCondition DcmItem::convertCharacterSet(DcmSpecificCharacterSet &converter)
 OFCondition DcmItem::convertToUTF8()
 {
     // the DICOM defined term "ISO_IR 192" is used for "UTF-8"
-    return convertCharacterSet("ISO_IR 192", OFFalse /*transliterate*/);
+    return convertCharacterSet("ISO_IR 192", 0 /*flags*/);
 }

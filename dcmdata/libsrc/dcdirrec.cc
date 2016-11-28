@@ -1124,22 +1124,20 @@ DcmEVR DcmDirectoryRecord::ident() const
 
 OFCondition DcmDirectoryRecord::convertCharacterSet(const OFString &fromCharset,
                                                     const OFString &toCharset,
-                                                    const OFBool transliterate,
-                                                    const OFBool updateCharset,
-                                                    const OFBool discardIllegal)
+                                                    const size_t flags,
+                                                    const OFBool updateCharset)
 {
     // call the method of the base class; this method is only needed to avoid a compiler warning
-    return DcmItem::convertCharacterSet(fromCharset, toCharset, transliterate, updateCharset, discardIllegal);
+    return DcmItem::convertCharacterSet(fromCharset, toCharset, flags, updateCharset);
 }
 
 
 OFCondition DcmDirectoryRecord::convertCharacterSet(const OFString &toCharset,
-                                                    const OFBool transliterate,
-                                                    const OFBool ignoreCharset,
-                                                    const OFBool discardIllegal)
+                                                    const size_t flags,
+                                                    const OFBool ignoreCharset)
 {
     // call the method of the base class; this method is only needed to avoid a compiler warning
-    return DcmItem::convertCharacterSet(toCharset, transliterate, ignoreCharset, discardIllegal);
+    return DcmItem::convertCharacterSet(toCharset, flags, ignoreCharset);
 }
 
 

@@ -69,7 +69,7 @@ static DcmTagKey parseTagKey(const char *tagName)
     const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
     if (dicent == NULL)
     {
-      OFLOG_ERROR(dcmconvLogger, "unrecognised tag name: '" << tagName << "'");
+      OFLOG_ERROR(dcmconvLogger, "unrecognized tag name: '" << tagName << "'");
       tagKey = DCM_UndefinedTagKey;
     } else {
       tagKey = dicent->getKey();
@@ -107,8 +107,7 @@ int main(int argc, char *argv[])
 #endif
 #ifdef WITH_LIBICONV
   const char *opt_convertToCharset = NULL;
-  OFBool opt_transliterate = OFFalse;
-  OFBool opt_discardIllegal = OFFalse;
+  size_t opt_conversionFlags = 0;
 #endif
   OFBool opt_noInvalidGroups = OFFalse;
 
@@ -459,12 +458,12 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--transliterate"))
       {
         app.checkDependence("--transliterate", "one of the --convert-to-xxx options", opt_convertToCharset != NULL);
-        opt_transliterate = OFTrue;
+        opt_conversionFlags |= DCMTypes::CF_transliterate;
       }
       if (cmd.findOption("--discard-illegal"))
       {
         app.checkDependence("--discard-illegal", "one of the --convert-to-xxx options", opt_convertToCharset != NULL);
-        opt_discardIllegal = OFTrue;
+        opt_conversionFlags |= DCMTypes::CF_discardIllegal;
       }
 #endif
       if (cmd.findOption("--no-invalid-groups")) opt_noInvalidGroups = OFTrue;
@@ -586,7 +585,7 @@ int main(int argc, char *argv[])
         OFLOG_INFO(dcmconvLogger, "converting all element values that are affected by "
             << "Specific Character Set (0008,0005) to '" << opt_convertToCharset << "'"
             << (toCharset.empty() ? " (ASCII)" : ""));
-        error = fileformat.convertCharacterSet(toCharset, opt_transliterate, opt_discardIllegal);
+        error = fileformat.convertCharacterSet(toCharset, opt_conversionFlags);
         if (error.bad())
         {
             OFLOG_FATAL(dcmconvLogger, error.text() << ": processing file: " << opt_ifname);

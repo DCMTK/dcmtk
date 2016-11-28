@@ -1013,17 +1013,15 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 
 OFCondition DcmFileFormat::convertCharacterSet(const OFString &fromCharset,
                                                const OFString &toCharset,
-                                               const OFBool transliterate,
-                                               const OFBool discardIllegal)
+                                               const size_t flags)
 {
     // convert the dataset associated with this object
-    return getDataset()->convertCharacterSet(fromCharset, toCharset, transliterate, discardIllegal);
+    return getDataset()->convertCharacterSet(fromCharset, toCharset, flags);
 }
 
 
 OFCondition DcmFileFormat::convertCharacterSet(const OFString &toCharset,
-                                               const OFBool transliterate,
-                                               const OFBool discardIllegal)
+                                               const size_t flags)
 {
     OFString sopClass;
     OFBool ignoreCharset = OFFalse;
@@ -1037,7 +1035,7 @@ OFCondition DcmFileFormat::convertCharacterSet(const OFString &toCharset,
         ignoreCharset = OFTrue;
     }
     // usually, we check for Specific Character Set (0008,0005) element in the dataset
-    return getDataset()->convertCharacterSet(toCharset, transliterate, ignoreCharset, discardIllegal);
+    return getDataset()->convertCharacterSet(toCharset, flags, ignoreCharset);
 }
 
 
@@ -1051,5 +1049,5 @@ OFCondition DcmFileFormat::convertCharacterSet(DcmSpecificCharacterSet &converte
 OFCondition DcmFileFormat::convertToUTF8()
 {
     // the DICOM defined term "ISO_IR 192" is used for "UTF-8"
-    return convertCharacterSet("ISO_IR 192", OFFalse /*transliterate*/);
+    return convertCharacterSet("ISO_IR 192", 0 /*flags*/);
 }
