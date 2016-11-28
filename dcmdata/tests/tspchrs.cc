@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,6 +48,7 @@ OFTEST(dcmdata_specificCharacterSet_1)
         OFCHECK(converter.selectCharacterSet("ISO_IR 166").good());
         OFCHECK(converter.selectCharacterSet("ISO_IR 192").good());
         OFCHECK(converter.selectCharacterSet("  GB18030 ").good());
+        OFCHECK(converter.selectCharacterSet("    GBK   ").good());
         // try to select all DICOM character sets with code extensions
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 6  ").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 100").good());
@@ -61,9 +62,10 @@ OFTEST(dcmdata_specificCharacterSet_1)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 148").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13 ").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 166").good());
-        OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87" ).good());
+        OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87 ").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 159").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 149").good());
+        OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 58 ").good());
         // the following should fail
         OFCHECK(converter.selectCharacterSet("DCMTK").bad());
         OFCHECK(converter.selectCharacterSet(" \\ ").bad());
