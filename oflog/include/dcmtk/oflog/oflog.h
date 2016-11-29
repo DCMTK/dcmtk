@@ -95,8 +95,10 @@ class DCMTK_LOG4CPLUS_EXPORT OFLog
 
  public:
 
-    /** create a new Logger object
+    /** create a new logger object.
+     *  Logger objects have a reference counting copy-constructor, so returning by-value is cheap.
      *  @param name the name of the logger
+     *  @return requested logger object
      */
     static OFLogger getLogger(const char *name);
 
@@ -108,6 +110,7 @@ class DCMTK_LOG4CPLUS_EXPORT OFLog
     /** handle the command line options used for logging
      *  @param cmd the command line whose options are handled
      *  @param app the console application which is used for console output and error checking
+     *  @param defaultLevel default log level that is used if not specified on the command line
      */
     static void configureFromCommandLine(OFCommandLine &cmd,
                                          OFConsoleApplication &app,
