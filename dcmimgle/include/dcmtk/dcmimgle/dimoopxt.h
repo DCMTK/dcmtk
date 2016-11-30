@@ -248,6 +248,19 @@ class DiMonoOutputPixelTemplate
         }
     }
 
+    /** determine number of entries for the optimization LUT
+     *
+     ** @param  count  number of entries intended to be used for the optimization LUT
+     *                 (floating point value)
+     *
+     ** @return number of entries for the optimization LUT (unsigned integer value)
+     *          or 0 if the size would exceed a certain limit (10,000,000 entries)
+     */
+    inline unsigned long determineOptimizationCount(const double count)
+    {
+        return (count <= 10000000.0) ? OFstatic_cast(unsigned long, count) : 0 /* no LUT */;
+    }
+
 
  private:
 
@@ -277,7 +290,7 @@ class DiMonoOutputPixelTemplate
     /** initialize an optimization LUT if the optimization criteria is fulfilled
      *
      ** @param  lut   reference to storage area where the optimization LUT should be stored
-     *  @param  ocnt  number of entries for the optimization LUT
+     *  @param  ocnt  number of entries for the optimization LUT (0 = never create one)
      *
      ** @return status, true if successful, false otherwise
      */
@@ -285,7 +298,7 @@ class DiMonoOutputPixelTemplate
                                    const unsigned long ocnt)
     {
         int result = 0;
-        if ((sizeof(T1) <= 2) && (Count > 3 * ocnt))                          // optimization criteria
+        if ((sizeof(T1) <= 2) && (ocnt > 0) && (Count > 3 * ocnt))            // optimization criteria
         {                                                                     // use LUT for optimization
             lut = new T3[ocnt];
             if (lut != NULL)
@@ -378,7 +391,7 @@ class DiMonoOutputPixelTemplate
                     const T2 absmin = OFstatic_cast(T2, inter->getAbsMinimum());
                     const T2 firstentry = vlut->getFirstEntry(value);                   // choose signed/unsigned method
                     const T2 lastentry = vlut->getLastEntry(value);
-                    const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                    const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());  // number of LUT entries
                     const T1 *p = pixel + start;
                     T3 *q = Data;
                     T3 *lut = NULL;
@@ -624,7 +637,7 @@ class DiMonoOutputPixelTemplate
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
-                const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());
                 DCMIMGLE_TRACE("intermediate pixel data - absmin: " << absmin << ", absmax: " << absmax);
                 const T1 *p = pixel + start;
                 T3 *q = Data;
@@ -786,7 +799,7 @@ class DiMonoOutputPixelTemplate
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low);  // output range
-                const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());    // number of LUT entries
                 const T1 *p = pixel + start;
                 T3 *q = Data;
                 unsigned long i;
@@ -948,7 +961,7 @@ class DiMonoOutputPixelTemplate
                 const double leftBorder = center - 0.5 - width_1 / 2;                 // window borders, according to supplement 33
                 const double rightBorder = center - 0.5 + width_1 / 2;
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low);  // output range
-                const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());    // number of LUT entries
                 const T1 *p = pixel + start;
                 T3 *q = Data;
                 unsigned long i;

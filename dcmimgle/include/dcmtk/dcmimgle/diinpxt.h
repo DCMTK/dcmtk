@@ -184,9 +184,10 @@ class DiInputPixelTemplate
             DCMIMGLE_DEBUG("determining minimum and maximum pixel values for input data");
             T2 *p = Data;
             unsigned long i;
-            const unsigned long ocnt = OFstatic_cast(unsigned long, getAbsMaxRange());
+            const double absrange = getAbsMaxRange();
+            const unsigned long ocnt = (absrange <= 10000000.0) ? OFstatic_cast(unsigned long, absrange) : 0 /* no LUT */;
             Uint8 *lut = NULL;
-            if ((sizeof(T2) <= 2) && (Count > 3 * ocnt))               // optimization criteria
+            if ((sizeof(T2) <= 2) && (ocnt > 0) && (Count > 3 * ocnt)) // optimization criteria
             {
                 lut = new Uint8[ocnt];
                 if (lut != NULL)
