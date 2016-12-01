@@ -636,8 +636,8 @@ class DiMonoOutputPixelTemplate
                 DCMIMGLE_DEBUG("applying no VOI transformation (linear scaling)");
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
-                const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
-                const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());
+                const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;  // output range
+                const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());        // number of LUT entries
                 DCMIMGLE_TRACE("intermediate pixel data - absmin: " << absmin << ", absmax: " << absmax);
                 const T1 *p = pixel + start;
                 T3 *q = Data;
