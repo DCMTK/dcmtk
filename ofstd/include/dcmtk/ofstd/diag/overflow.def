@@ -1,5 +1,5 @@
 #if defined(__clang__)
-#pragma clang diagnostic ignored "-Woverflow"
+#pragma clang diagnostic ignored "-Winteger-overflow"
 #elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(4,6,0)
 #pragma GCC diagnostic ignored "-Woverflow"
 // Visual Studio doesn't seem to have such a warning yet, uncomment
