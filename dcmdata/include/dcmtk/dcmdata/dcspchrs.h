@@ -36,7 +36,8 @@ class DcmItem;
 
 /** A class for managing and converting between different DICOM character sets.
  *  The conversion relies on the OFCharacterEncoding class, which again relies
- *  on the libiconv toolkit (if available).
+ *  on an underlying implementation (e.g. the libiconv toolkit or ICU if
+ *  available).
  *  @note Please note that a current limitation is that only a single value is
  *    allowed for the destination character set (i.e. no code extensions).  Of
  *    course, for the source character set, also multiple values are supported.
@@ -87,21 +88,13 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      */
     const OFString &getDestinationEncoding() const;
 
-    /** get mode specifying whether a character that cannot be represented in
-     *  the destination character encoding is approximated through one or more
-     *  characters that look similar to the original one.  See
-     *  selectCharacterSet().
-     *  @return current value of the mode.  OFTrue means that the mode is
-     *    enabled, OFFalse means disabled.
+    /** @copydoc OFCharacterEncoding::getConversionFlags()
      */
-    OFBool getTransliterationMode() const;
+    unsigned getConversionFlags() const;
 
-    /** get mode specifying whether characters that cannot be represented in
-     *  the destination character encoding will be silently discarded
-     *  @return current value of the mode.  OFTrue means that the mode is
-     *    enabled, OFFalse means disabled.
+    /** @copydoc OFCharacterEncoding::setConversionFlags()
      */
-    OFBool getDiscardIllegalSequenceMode() const;
+    OFCondition setConversionFlags(const unsigned flags);
 
     /** select DICOM character sets for the input and output string, between
      *  which subsequent calls of convertString() convert.  The defined terms
@@ -123,21 +116,10 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                          trailing spaces are removed automatically (if
      *                          present).  The default value is "ISO_IR 192"
      *                          (Unicode in UTF-8).
-     *  @param  transliterate   mode specifying whether a character that cannot
-     *                          be represented in the destination character
-     *                          encoding is approximated through one or more
-     *                          characters that look similar to the original
-     *                          one.  By default, this mode is disabled.
-     *  @param  discardIllegal  mode specifying whether characters that cannot
-     *                          be represented in the destination character
-     *                          encoding will be silently discarded.  By
-     *                          default, this mode is disabled.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition selectCharacterSet(const OFString &fromCharset,
-                                   const OFString &toCharset = "ISO_IR 192",
-                                   const OFBool transliterate = OFFalse,
-                                   const OFBool discardIllegal = OFFalse);
+                                   const OFString &toCharset = "ISO_IR 192");
 
     /** select DICOM character sets for the input and output string, between
      *  which subsequent calls of convertString() convert.  The source
@@ -162,21 +144,10 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                          trailing spaces are removed automatically (if
      *                          present).  The default value is "ISO_IR 192"
      *                          (Unicode in UTF-8).
-     *  @param  transliterate   mode specifying whether a character that cannot
-     *                          be represented in the destination character
-     *                          encoding is approximated through one or more
-     *                          characters that look similar to the original
-     *                          one.  By default, this mode is disabled.
-     *  @param  discardIllegal  mode specifying whether characters that cannot
-     *                          be represented in the destination character
-     *                          encoding will be silently discarded.  By
-     *                          default, this mode is disabled.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition selectCharacterSet(DcmItem &dataset,
-                                   const OFString &toCharset = "ISO_IR 192",
-                                   const OFBool transliterate = OFFalse,
-                                   const OFBool discardIllegal = OFFalse);
+                                   const OFString &toCharset = "ISO_IR 192");
 
     /** convert the given string from the selected source character set(s) to
      *  the selected destination character set.  That means selectCharacterSet()
@@ -221,13 +192,13 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 
     // --- static helper functions ---
 
-    /** check whether the underlying character set conversion library is
-     *  available.  If the library is not available, no conversion between
-     *  different character sets will be possible.
-     *  @return OFTrue if the character set conversion library is available,
-     *    OFFalse otherwise
+    /** check whether the underlying character set conversion implementation
+     *  is available.  If not, no conversion between different character sets
+     *  will be possible.
+     *  @return OFTrue if the character set conversion is available, OFFalse
+     *    otherwise
      */
-    static OFBool isConversionLibraryAvailable();
+    static OFBool isConversionAvailable();
 
     /** count characters in given UTF-8 string and return the resulting number
      *  of so-called "code points".  Please note that invalid UTF-8 encodings
@@ -240,10 +211,6 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 
 
   protected:
-
-    /// type definition of a map storing the identifier (key) of a character
-    /// set and the associated conversion descriptor
-    typedef OFMap<OFString, OFCharacterEncoding::T_Descriptor> T_DescriptorMap;
 
     /** determine the destination character encoding (as used by libiconv) from
      *  the given DICOM defined term (specific character set), and set the
@@ -273,11 +240,6 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      */
     OFCondition selectCharacterSetWithCodeExtensions(const unsigned long sourceVM);
 
-    /** close any currently open character set conversion descriptor(s).
-     *  Afterwards, no conversion descriptor is selected, pretty much like
-     *  after the initialization with the constructor.
-     */
-    void closeConversionDescriptors();
 
     /** check whether the given string contains at least one escape character
      *  (ESC), because it is used for code extension techniques like ISO 2022
@@ -303,6 +265,10 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 
   private:
 
+    /// type definition of a map storing the identifier (key) of a character
+    /// set and the associated character set converter
+    typedef OFMap<OFString,OFCharacterEncoding> T_EncodingConvertersMap;
+
     // private undefined copy constructor
     DcmSpecificCharacterSet(const DcmSpecificCharacterSet &);
 
@@ -319,11 +285,11 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
     OFString DestinationEncoding;
 
     /// character encoding converter
-    OFCharacterEncoding EncodingConverter;
+    OFCharacterEncoding DefaultEncodingConverter;
 
     /// map of character set conversion descriptors
     /// (only used if multiple character sets are needed)
-    T_DescriptorMap ConversionDescriptors;
+    T_EncodingConvertersMap EncodingConverters;
 };
 
 

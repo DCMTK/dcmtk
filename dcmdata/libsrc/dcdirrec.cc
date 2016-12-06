@@ -1160,9 +1160,14 @@ OFCondition DcmDirectoryRecord::convertCharacterSet(DcmSpecificCharacterSet &con
             << fromCharset << "'" << (fromCharset.empty() ? " (ASCII)" : "") << " to '"
             << toCharset << "'" << (toCharset.empty() ? " (ASCII)" : ""));
         // select source and destination character set, use same transliteration mode
-        status = newConverter.selectCharacterSet(fromCharset, toCharset, converter.getTransliterationMode(), converter.getDiscardIllegalSequenceMode());
+        status = newConverter.selectCharacterSet(fromCharset, toCharset);
         if (status.good())
         {
+            if (unsigned flags = converter.getConversionFlags()) {
+                status = newConverter.setConversionFlags(flags);
+                if (status.bad())
+                    return status;
+            }
             // convert all affected element values in the item with the new converter
             status = DcmItem::convertCharacterSet(newConverter);
             // update the Specific Character Set (0008,0005) element

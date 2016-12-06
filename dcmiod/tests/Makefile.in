@@ -21,7 +21,7 @@ LOCALINCLUDES = -I$(dcmioddir)/include -I$(dcmdatadir)/include -I$(oflogdir)/inc
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmioddir)/libsrc -L$(dcmdatadir)/libsrc \
 	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc
 LOCALLIBS = -ldcmiod -ldcmdata -loflog -lofstd \
-	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(ICONVLIBS)
+	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS)
 
 test_objs = tests.o tcielabutil.o timagepixel.o
 objs = tests.o $(test_objs)
@@ -34,7 +34,7 @@ tclabutil: tclabutil.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 tests: $(test_objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(ICONVLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
 install: all
 

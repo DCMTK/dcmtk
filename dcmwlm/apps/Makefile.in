@@ -36,7 +36,7 @@ LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofloginc) $(ofstdinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) \
 	$(ofloglibdir) $(ofstdlibdir)
 LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
-	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(ICONVLIBS)
+	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS)
 
 objs = wlcefs.o wlmscpfs.o
 progs = wlmscpfs

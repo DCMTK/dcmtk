@@ -1247,7 +1247,8 @@ dnl Check for libiconv support
 dnl -------------------------------------------------------
 
 AC_MY_LIB_PATH([libiconv])
-
+AH_TEMPLATE(WITH_LIBICONV, [Define if we are compiling with libiconv support.])
+WITH_LIBICONV=no
 ICONVLIBS=""
 AC_MSG_CHECKING(whether to include libiconv support)
 AC_ARG_WITH(libiconv,
@@ -1255,22 +1256,21 @@ AC_ARG_WITH(libiconv,
 AS_HELP_STRING([--without-libiconv], [don't include libiconv support])],
 [ case "$withval" in
   yes)
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_LIBICONV, , [Define if we are compiling with libiconv support.])
+    WITH_LIBICONV=yes
+    AC_DEFINE(WITH_LIBICONV)
     ICONVLIBS="-liconv -lcharset"
     ;;
   *)
-    AC_MSG_RESULT(no)
     ;;
   esac ],
 [ SAVELIBS="$LIBS"
   LIBS="$LIBS -liconv -lcharset"
   AC_TRY_LINK([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); iconv(cd, NULL, NULL, NULL, NULL); iconv_close(cd);],
-    [ AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_LIBICONV, , [Define if we are compiling with libiconv support.])
-      ICONVLIBS="-liconv -lcharset" ],
-    [AC_MSG_RESULT(no)])
+    [ WITH_LIBICONV=yes
+      AC_DEFINE(WITH_LIBICONV)
+      ICONVLIBS="-liconv -lcharset" ])
   LIBS="$SAVELIBS"] )
+AC_MSG_RESULT($WITH_LIBICONV)
 
 AC_MSG_CHECKING(whether the second argument to iconv() is const)
 SAVELIBS="$LIBS"
@@ -1280,6 +1280,141 @@ AC_TRY_COMPILE([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); const cha
     AC_DEFINE(LIBICONV_SECOND_ARGUMENT_CONST, , [Define if the second argument to iconv() is const.]) ],
   [AC_MSG_RESULT(no)])
 LIBS="$SAVELIBS"
+
+dnl -------------------------------------------------------
+dnl Check for iconv inside GNU C library
+dnl -------------------------------------------------------
+
+AH_TEMPLATE([WITH_GLIBC_ICONV], [Define if the GNU C library has ICONV builtin.])dnl
+WITH_GLIBC_ICONV=no
+AC_MSG_CHECKING([whether the GNU C library provides ICONV functionality])
+SAVELIBS="$LIBS"
+LIBS=""
+AC_TRY_LINK([#include <iconv.h>], [iconv_t cd=iconv_open("","");iconv(cd,0,0,0,0);iconv_close(cd);],
+    [WITH_GLIBC_ICONV=yes
+     AC_DEFINE(WITH_GLIBC_ICONV)])
+AC_MSG_RESULT($WITH_GLIBC_ICONV)
+LIBS="$SAVELIBS"
+
+dnl -------------------------------------------------------
+dnl Check for libicu support
+dnl -------------------------------------------------------
+
+AC_MY_LIB_PATH([libicu])
+AH_TEMPLATE([WITH_LIBICU], [Define if we are compiling with ICU support.])
+WITH_LIBICU=no
+AC_ARG_WITH(libicu,
+[AS_HELP_STRING([--with-libicu], [include libicu support (default: auto)])
+AS_HELP_STRING([--without-libicu], [don't include libicu support])],
+[ AC_MSG_CHECKING(whether to include ICU support)
+  case "$withval" in
+  yes)
+    WITH_LIBICU=yes
+    AC_DEFINE(WITH_LIBICU)
+    ICULIBS="-licui18n -licuuc -licudata"
+    ;;
+  *)
+    ;;
+  esac ],
+[
+  if test -z "$ICU_CONFIG"; then
+    AC_PATH_PROG(ICU_CONFIG, icu-config, no)
+    AC_MSG_CHECKING(whether to include ICU support)
+  fi
+  if [[ ! "$ICU_CONFIG" = "no" ]]; then
+    ICU_VERSION=`$ICU_CONFIG --version`
+        VERSION_CHECK=`expr $ICU_VERSION \>\= 3.4.1`
+        if test VERSION_CHECK=1; then
+            WITH_LIBICU=yes
+            AC_DEFINE(WITH_LIBICU)
+            ICUINCLUDES=`$ICU_CONFIG --cppflags`
+            ICULIBS=`$ICU_CONFIG --ldflags`
+        fi
+  fi
+])
+AC_MSG_RESULT($WITH_LIBICU)
+
+dnl -------------------------------------------------------
+dnl character set conversion support
+dnl -------------------------------------------------------
+
+AH_VERBATIM([DCMTK_CHARSET_CONVERSION_CONSTANTS], [/* character set conversion constants. */
+#define DCMTK_CHARSET_CONVERSION_ICU 1
+#define DCMTK_CHARSET_CONVERSION_ICONV 2
+#define DCMTK_CHARSET_CONVERSION_GLIBC_ICONV 3])
+
+CHARCONVINCLUDES=""
+CHARCONVLIBS=""
+
+AC_DEFUN([AC_CHOOSE_CHARSET_LIBICONV],
+[
+    AC_MSG_RESULT([yes, type=libiconv])
+    CHARCONVLIBS="$ICONVLIBS"
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICONV"
+])
+
+AC_DEFUN([AC_CHOOSE_CHARSET_LIBICU],
+[
+    AC_MSG_RESULT([yes, type=libicu])
+    CHARCONVINCLUDES="$ICUINCLUDES"
+    CHARCONVLIBS="$ICULIBS"
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
+])
+
+AC_DEFUN([AC_CHOOSE_CHARSET_GLIBC_ICONV],
+[
+    AC_MSG_RESULT([yes, type=gnuc])
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_GLIBC_ICONV"
+])
+
+AC_DEFUN([AC_CHOOSE_CHARSET_IMPL],
+[
+if test "$WITH_LIBICONV" = "yes"; then
+    AC_CHOOSE_CHARSET_LIBICONV()
+elif test "$WITH_LIBICU" = "yes"; then
+    AC_CHOOSE_CHARSET_LIBICU()
+elif test "$WITH_GLIBC_ICONV" = "yes"; then
+    AC_CHOOSE_CHARSET_GLIBC_ICONV()
+else
+    AC_MSG_RESULT(no)
+fi
+])
+
+AC_MSG_CHECKING(whether to enable character set conversion support)
+AC_ARG_ENABLE(charconv,
+[  --enable-charconv=TYPE  enable character set conversion support (libiconv/libicu/gnuc/auto=default)
+  --disable-charconv      disable character set conversion support],
+[ case "$enableval" in
+  yes|auto)
+    AC_CHOOSE_CHARSET_IMPL()
+    ;;
+  libiconv)
+    AC_CHOOSE_CHARSET_LIBICONV()
+    ;;
+  libicu)
+    AC_CHOOSE_CHARSET_LIBICU()
+    ;;
+  gnuc)
+    AC_CHOOSE_CHARSET_GLIBC_ICONV()
+    ;;
+  no)
+    AC_MSG_RESULT(no)
+    ;;
+  *)
+    AC_CHOOSE_CHARSET_IMPL()
+    ;;
+  esac ],
+  [AC_CHOOSE_CHARSET_IMPL()]
+)
+
+AC_SUBST(CHARCONVINCLUDES)
+AC_SUBST(CHARCONVLIBS)
+
+if [[ ! -z "$DCMTK_ENABLE_CHARSET_CONVERSION" ]]; then
+  AC_DEFINE_UNQUOTED(DCMTK_ENABLE_CHARSET_CONVERSION,
+    [$DCMTK_ENABLE_CHARSET_CONVERSION],
+    [Define to select character set conversion implementation.])
+fi
 
 dnl -------------------------------------------------------
 dnl C++11 support

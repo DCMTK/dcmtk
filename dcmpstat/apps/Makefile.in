@@ -75,10 +75,10 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibd
 LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmsrlib) $(dcmimagelib) $(dcmimglelib) \
 	$(dcmqrdblib) $(dcmnetlib) $(dcmtlslib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
 	$(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS) \
-	$(ICONVLIBS)
+	$(CHARCONVLIBS)
 DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) \
-	$(ICONVLIBS)
-DCMMKCRV_LIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
+	$(CHARCONVLIBS)
+DCMMKCRV_LIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS)
 
 objs = dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o dcmpsprt.o dcmprscu.o \
 	dcmprscp.o dcmpschk.o

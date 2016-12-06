@@ -4386,9 +4386,19 @@ OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
             << fromCharset << "'" << (fromCharset.empty() ? " (ASCII)" : "") << " to '"
             << toCharset << "'" << (toCharset.empty() ? " (ASCII)" : ""));
         // select source and destination character set
-        status = converter.selectCharacterSet(fromCharset, toCharset, (flags & DCMTypes::CF_transliterate) > 0, (flags & DCMTypes::CF_discardIllegal) > 0);
+        status = converter.selectCharacterSet(fromCharset, toCharset);
         if (status.good())
         {
+            unsigned cflags = 0;
+            if (flags & DCMTypes::CF_discardIllegal)
+                cflags |= OFCharacterEncoding::DiscardIllegalSequences;
+            if (flags & DCMTypes::CF_transliterate)
+                cflags |= OFCharacterEncoding::TransliterateIllegalSequences;
+            if (cflags) {
+                status = converter.setConversionFlags(cflags);
+                if (status.bad())
+                    return status;
+            }
             // convert all affected element values in the item
             status = convertCharacterSet(converter);
             if (updateCharset)

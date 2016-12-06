@@ -17,7 +17,7 @@ oflogdir = $(top_srcdir)/../oflog
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include
 LIBDIRS = -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc
-LOCALLIBS = -loflog -lofstd $(ICONVLIBS)
+LOCALLIBS = -loflog -lofstd $(CHARCONVLIBS)
 LOCALDEFS =
 
 # clear environment variable in the scope of this makefile

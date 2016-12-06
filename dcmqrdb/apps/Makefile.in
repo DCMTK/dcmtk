@@ -36,7 +36,7 @@ LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofstdinc) $(ofloginc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) \
 	$(ofstdlibdir) $(ofloglibdir)
 LOCALLIBS = -ldcmqrdb $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(ofloglib) \
-	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(ICONVLIBS)
+	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS)
 
 objs = dcmqrscp.o dcmqrti.o dcmqridx.o
 progs = dcmqrscp dcmqrti dcmqridx

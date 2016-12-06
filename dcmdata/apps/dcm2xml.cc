@@ -31,7 +31,7 @@
 #ifdef WITH_ZLIB
 #include <zlib.h>                       /* for zlibVersion() */
 #endif
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #include "dcmtk/ofstd/ofchrenc.h"       /* for OFCharacterEncoding */
 #endif
 
@@ -95,7 +95,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 {
                     OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
                         << "value '" << csetString << "' not supported ... quoting non-ASCII characters");
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
                     OFLOG_DEBUG(dcm2xmlLogger, "using option --convert-to-utf8 to convert the DICOM file to "
                         "UTF-8 encoding might also help to solve this problem more appropriately");
 #endif
@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
     size_t opt_writeFlags = 0;
     OFBool opt_loadIntoMemory = OFFalse;
     OFBool opt_checkAllStrings = OFFalse;
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     OFBool opt_convertToUTF8 = OFFalse;
 #endif
     const char *opt_defaultCharset = NULL;
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--charset-assume",     "+Ca", 1, "[c]harset: string",
                                                         "assume charset c if no extended charset declared");
         cmd.addOption("--charset-check-all",  "+Cc",    "check all data elements with string values\n(default: only PN, LO, LT, SH, ST, UC and UT)");
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
         cmd.addOption("--convert-to-utf8",    "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
 #endif
     cmd.addGroup("output options:");
@@ -303,7 +303,7 @@ int main(int argc, char *argv[])
             {
                 app.printHeader(OFTrue /*print host identifier*/);
                 COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_LIBICONV)
+#if !defined(WITH_ZLIB) && !defined(DCMTK_ENABLE_CHARSET_CONVERSION)
                 COUT << " none" << OFendl;
 #else
                 COUT << OFendl;
@@ -311,8 +311,8 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
                 COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-#ifdef WITH_LIBICONV
-                COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+                COUT << "- " << OFCharacterEncoding::getVersionString() << OFendl;
 #endif
                 return 0;
             }
@@ -371,7 +371,7 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
         if (cmd.findOption("--charset-check-all"))
             opt_checkAllStrings = OFTrue;
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
         if (cmd.findOption("--convert-to-utf8"))
             opt_convertToUTF8 = OFTrue;
 #endif
@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
                 else if (charset == "hebrew")
                     opt_defaultCharset = "ISO_IR 138";
             }
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
             DcmDataset *dset = dfile.getDataset();
             /* convert all DICOM strings to UTF-8 (if requested) */
             if (opt_convertToUTF8)

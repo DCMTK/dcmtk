@@ -18,7 +18,7 @@ dcmdatadir = $(top_srcdir)/../dcmdata
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc
-LOCALLIBS = -ldcmdsig -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(OPENSSLLIBS) $(ICONVLIBS)
+LOCALLIBS = -ldcmdsig -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(OPENSSLLIBS) $(CHARCONVLIBS)
 
 objs = dcmsign.o
 progs = dcmsign

@@ -13,7 +13,7 @@
  *
  *  Module:  ofstd
  *
- *  Author:  Joerg Riesmeier
+ *  Author:  Joerg Riesmeier, Jan Schlamelcher
  *
  *  Purpose: Class for character encoding conversion (Source)
  *
@@ -24,11 +24,8 @@
 
 #include "dcmtk/ofstd/ofchrenc.h"
 #include "dcmtk/ofstd/ofstd.h"
-
-#ifdef WITH_LIBICONV
-#include <iconv.h>
-#include <localcharset.h>
-#endif
+#include "dcmtk/ofstd/ofdiag.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_ERRNO_H
@@ -39,19 +36,11 @@ END_EXTERN_C
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#endif
-
-
-#define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(OFCharacterEncoding::T_Descriptor, -1)
-#define CONVERSION_ERROR       OFstatic_cast(size_t, -1)
-#define CONVERSION_BUFFER_SIZE 1024
-
 
 /*-------------*
  *  constants  *
  *-------------*/
 
-#ifdef HAVE_WINDOWS_H
 // Windows-specific code page identifiers
 const unsigned int OFCharacterEncoding::CPC_ANSI   = CP_ACP;
 const unsigned int OFCharacterEncoding::CPC_OEM    = CP_OEMCP;
@@ -60,167 +49,372 @@ const unsigned int OFCharacterEncoding::CPC_Latin1 = 28591;
 const unsigned int OFCharacterEncoding::CPC_UTF8   = CP_UTF8;
 #endif
 
-
 /*------------------*
  *  implementation  *
  *------------------*/
 
-OFCharacterEncoding::OFCharacterEncoding()
-  : LocaleEncoding(),
-    ConversionDescriptor(ILLEGAL_DESCRIPTOR),
-    TransliterationMode(OFFalse),
-    DiscardIllegalSequenceMode(OFFalse)
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
+#include <unicode/ucnv.h>
+#include <unicode/ucnv_err.h>
+
+#define CONVERSION_BUFFER_SIZE 1024
+
+class OFCharacterEncoding::Implementation
 {
-    updateLocaleEncoding();
-}
-
-
-OFCharacterEncoding::~OFCharacterEncoding()
-{
-    clear();
-}
-
-
-void OFCharacterEncoding::clear()
-{
-    // close conversion descriptor (if needed)
-    closeDescriptor(ConversionDescriptor);
-    // reset conversion modes
-    TransliterationMode = OFFalse;
-    DiscardIllegalSequenceMode = OFFalse;
-}
-
-
-OFBool OFCharacterEncoding::getTransliterationMode() const
-{
-    return TransliterationMode;
-}
-
-
-OFBool OFCharacterEncoding::getDiscardIllegalSequenceMode() const
-{
-    return DiscardIllegalSequenceMode;
-}
-
-
-OFCondition OFCharacterEncoding::setTransliterationMode(const OFBool mode)
-{
-#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
-    TransliterationMode = mode;
-    return EC_Normal;
-#else
-    // avoid compiler warning on unused variable
-    (void)mode;
-    // return with an error because iconvctl() is not supported
-    return makeOFCondition(0, EC_CODE_CannotControlConverter, OF_error,
-        "Cannot control character encoding converter: iconvctl() not supported");
-#endif
-}
-
-
-OFCondition OFCharacterEncoding::setDiscardIllegalSequenceMode(const OFBool mode)
-{
-#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
-    DiscardIllegalSequenceMode = mode;
-    return EC_Normal;
-#else
-    // avoid compiler warning on unused variable
-    (void)mode;
-    // return with an error because iconvctl() is not supported
-    return makeOFCondition(0, EC_CODE_CannotControlConverter, OF_error,
-        "Cannot control character encoding converter: iconvctl() not supported");
-#endif
-}
-
-
-const OFString &OFCharacterEncoding::getLocaleEncoding() const
-{
-    return LocaleEncoding;
-}
-
-
-OFCondition OFCharacterEncoding::updateLocaleEncoding()
-{
-#ifdef WITH_LIBICONV
-    // determine current locale's character encoding
-    LocaleEncoding = OFSTRING_GUARD(::locale_charset());
-    // basically, the above function should always return a non-empty string
-    // but older versions of libiconv might return NULL is certain cases
-    return EC_Normal;
-#else
-    return EC_NoEncodingLibrary;
-#endif
-}
-
-
-OFCondition OFCharacterEncoding::selectEncoding(const OFString &fromEncoding,
-                                                const OFString &toEncoding)
-{
-#ifdef WITH_LIBICONV
-    // first, close the current conversion descriptor (if needed)
-    closeDescriptor(ConversionDescriptor);
-    // then, try to open a new descriptor for the specified character encodings
-    return openDescriptor(ConversionDescriptor, fromEncoding.c_str(), toEncoding.c_str());
-#else
-    // avoid compiler warning on unused variables
-    (void)fromEncoding;
-    (void)toEncoding;
-    return EC_NoEncodingLibrary;
-#endif
-}
-
-
-OFCondition OFCharacterEncoding::convertString(const OFString &fromString,
-                                               OFString &toString,
-                                               const OFBool clearMode)
-{
-    // call the real method converting the given string
-    return convertString(ConversionDescriptor, fromString.c_str(), fromString.length(), toString, clearMode);
-}
-
-
-OFCondition OFCharacterEncoding::convertString(const char *fromString,
-                                               const size_t fromLength,
-                                               OFString &toString,
-                                               const OFBool clearMode)
-{
-    // call the real method converting the given string
-    return convertString(ConversionDescriptor, fromString, fromLength, toString, clearMode);
-}
-
-
-OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
-                                               const char *fromString,
-                                               const size_t fromLength,
-                                               OFString &toString,
-                                               const OFBool clearMode)
-{
-    // first, clear result variable if requested
-    if (clearMode)
-        toString.clear();
-#ifdef WITH_LIBICONV
-    OFCondition status = EC_Normal;
-    // check whether the given conversion descriptor has been allocated
-    if (isDescriptorValid(descriptor))
+public:
+    static Implementation* create(const OFString& fromEncoding, const OFString& toEncoding, OFCondition& result)
     {
-#if _LIBICONV_VERSION >= 0x0108
-        // enable/disable transliteration (use of similar characters) in the conversion
-        int translit = (TransliterationMode) ? 1 : 0;
-        if (::iconvctl(descriptor, ICONV_SET_TRANSLITERATE, &translit) < 0)
+        UErrorCode icuResult = U_ZERO_ERROR;
+        UConverter* sourceConverter = ucnv_open(fromEncoding != "" ? fromEncoding.c_str() : OFnullptr, &icuResult);
+        if (!U_FAILURE(icuResult))
         {
-            // if this didn't work, return with an appropriate error message
-            createErrnoCondition(status, "Cannot control character encoding feature TRANSLITERATE: ",
-                EC_CODE_CannotControlConverter);
+            // set default behavior to AbortTranscodingOnIllegalSequence
+            ucnv_setToUCallBack(sourceConverter,
+                UCNV_TO_U_CALLBACK_STOP,
+                OFnullptr,
+                OFnullptr,
+                OFnullptr,
+                &icuResult);
+            if (!U_FAILURE(icuResult))
+            {
+                UConverter* targetConverter = ucnv_open(toEncoding != "" ? toEncoding.c_str() : OFnullptr, &icuResult);
+                if (!U_FAILURE(icuResult))
+                {
+                    // set default behavior to AbortTranscodingOnIllegalSequence
+                    ucnv_setFromUCallBack(targetConverter,
+                        UCNV_FROM_U_CALLBACK_STOP,
+                        OFnullptr,
+                        OFnullptr,
+                        OFnullptr,
+                        &icuResult);
+                    if (!U_FAILURE(icuResult))
+                    {
+                        if (Implementation* pImplementation = new Implementation(sourceConverter, targetConverter))
+                        {
+                            result = EC_Normal;
+                            return pImplementation;
+                        }
+                        else
+                        {
+                            ucnv_close(targetConverter);
+                            ucnv_close(sourceConverter);
+                            result = EC_MemoryExhausted;
+                            return OFnullptr;
+                        }
+                    }
+                    ucnv_close(targetConverter);
+                }
+            }
+            ucnv_close(sourceConverter);
         }
-        // enable/disable discarding of illegal sequences in the conversion
-        int discard = (DiscardIllegalSequenceMode) ? 1 : 0;
-        if (::iconvctl(descriptor, ICONV_SET_DISCARD_ILSEQ, &discard) < 0)
+        result = makeOFCondition(0, EC_CODE_CannotOpenEncoding, OF_error,
+            (OFString("Cannot open character encoding, ICU error name: ") + u_errorName(icuResult)).c_str());
+        return OFnullptr;
+    }
+
+    static OFString getVersionString()
+    {
+        OFString versionStr = "ICU, Version ";
+        char buf[15];
+        // extract major and minor version number
+        sprintf(buf, "%i.%i.%i", U_ICU_VERSION_MAJOR_NUM, U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
+        versionStr.append(buf);
+        return versionStr;
+    }
+
+    static OFString getLocaleEncoding()
+    {
+        // open default encoder and retrieve its name
+        UErrorCode result = U_ZERO_ERROR;
+        UConverter* conv = ucnv_open(OFnullptr, &result);
+        if (U_FAILURE(result))
+            return OFString();
+        OFString name = ucnv_getName(conv, &result);
+        ucnv_close(conv);
+        if (U_FAILURE(result))
+            return OFString();
+        return name;
+    }
+
+    static OFBool supportsConversionFlags(const unsigned flags)
+    {
+        return flags == AbortTranscodingOnIllegalSequence
+            || flags == DiscardIllegalSequences;
+    }
+
+    unsigned getConversionFlags() const
+    {
+        UConverterFromUCallback flags;
+        const void* ctx;
+        ucnv_getFromUCallBack(targetConverter, &flags, &ctx);
+        if (flags == UCNV_FROM_U_CALLBACK_STOP)
+            return AbortTranscodingOnIllegalSequence;
+        if (flags == UCNV_FROM_U_CALLBACK_SKIP)
+            return DiscardIllegalSequences;
+        return 0;
+    }
+
+    OFBool setConversionFlags(const unsigned flags)
+    {
+        UErrorCode result = U_ZERO_ERROR;
+        switch(flags)
         {
-            // if this didn't work, return with an appropriate error message
-            createErrnoCondition(status, "Cannot control character encoding feature DISCARD_ILSEQ: ",
-                EC_CODE_CannotControlConverter);
+        case AbortTranscodingOnIllegalSequence:
+            ucnv_setFromUCallBack(targetConverter,
+                UCNV_FROM_U_CALLBACK_STOP,
+                OFnullptr,
+                OFnullptr,
+                OFnullptr,
+                &result);
+            if (U_FAILURE(result))
+                return OFFalse;
+            ucnv_setToUCallBack(sourceConverter,
+                UCNV_TO_U_CALLBACK_STOP,
+                OFnullptr,
+                OFnullptr,
+                OFnullptr,
+                &result);
+            return !U_FAILURE(result);
+        case DiscardIllegalSequences:
+            ucnv_setFromUCallBack(targetConverter,
+                UCNV_FROM_U_CALLBACK_SKIP,
+                OFnullptr,
+                OFnullptr,
+                OFnullptr,
+                &result);
+            if (U_FAILURE(result))
+                return OFFalse;
+            ucnv_setToUCallBack(sourceConverter,
+                UCNV_TO_U_CALLBACK_SKIP,
+                OFnullptr,
+                OFnullptr,
+                OFnullptr,
+                &result);
+            return !U_FAILURE(result);
+        default:
+            return OFFalse;
         }
+    }
+
+    OFCondition convert(OFString& target, const char* from, const size_t length)
+    {
+        // if the input string is empty or NULL, we are done
+        if (!from || !length)
+            return EC_Normal;
+        UErrorCode result = U_ZERO_ERROR;
+        char targetBuffer[CONVERSION_BUFFER_SIZE];
+        UChar pivotBuffer[CONVERSION_BUFFER_SIZE];
+        char* pTargetBuffer = targetBuffer;
+        UChar* pivotSource = pivotBuffer;
+        UChar* pivotTarget = pivotBuffer;
+        const char* const end = from + length;
+        // initialize conversion and convert the first number of chars
+        ucnv_convertEx(
+            targetConverter,
+            sourceConverter,
+            &pTargetBuffer,
+            targetBuffer + CONVERSION_BUFFER_SIZE,
+            &from,
+            end,
+            pivotBuffer,
+            &pivotSource,
+            &pivotTarget,
+            pivotBuffer + CONVERSION_BUFFER_SIZE,
+            OFTrue,  // initialize conversion = yes
+            OFTrue,
+            &result
+        );
+        // resume conversion as long as chars are left
+        while (result == U_BUFFER_OVERFLOW_ERROR)
+        {
+            target.append(targetBuffer, pTargetBuffer - targetBuffer);
+            pTargetBuffer = targetBuffer;
+            result = U_ZERO_ERROR;
+            ucnv_convertEx(
+                targetConverter,
+                sourceConverter,
+                &pTargetBuffer,
+                targetBuffer + CONVERSION_BUFFER_SIZE,
+                &from,
+                end,
+                pivotBuffer,
+                &pivotSource,
+                &pivotTarget,
+                pivotBuffer + CONVERSION_BUFFER_SIZE,
+                OFFalse,  // initialize conversion = no
+                OFTrue,
+                &result
+            );
+        }
+        if (U_FAILURE(result))
+            return makeOFCondition(0, EC_CODE_CannotConvertEncoding, OF_error,
+                (OFString("Cannot convert character encoding, ICU error name: ") + u_errorName(result)).c_str());
+        target.append(targetBuffer, pTargetBuffer - targetBuffer);
+        return EC_Normal;
+    }
+
+    ~Implementation()
+    {
+        ucnv_close(sourceConverter);
+        ucnv_close(targetConverter);
+    }
+
+private:
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
+    Implementation(UConverter* sourceConverter, UConverter* targetConverter)
+    : sourceConverter(sourceConverter)
+    , targetConverter(targetConverter)
+    {
+
+    }
+#include DCMTK_DIAGNOSTIC_POP
+
+    UConverter* sourceConverter;
+    UConverter* targetConverter;
+};
+
+#elif DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV ||\
+ DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_GLIBC_ICONV
+
+#include <iconv.h>
+#ifdef WITH_LIBICONV
+#include <localcharset.h>
 #endif
+
+#define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(iconv_t, -1)
+#define CONVERSION_ERROR       OFstatic_cast(size_t, -1)
+#define CONVERSION_BUFFER_SIZE 1024
+
+class OFCharacterEncoding::Implementation
+{
+public:
+    static Implementation* create( const OFString& fromEncoding, const OFString& toEncoding, OFCondition& result )
+    {
+        iconv_t descriptor = ::iconv_open(toEncoding.c_str(), fromEncoding.c_str());
+        if (descriptor == ILLEGAL_DESCRIPTOR)
+        {
+            // return an appropriate error message
+            createErrnoCondition(result, "Cannot open character encoding: ", EC_CODE_CannotOpenEncoding);
+            return OFnullptr;
+        }
+        if (Implementation* pImplementation = new Implementation(descriptor))
+        {
+            result = EC_Normal;
+            return pImplementation;
+        }
+        result = EC_MemoryExhausted;
+        return OFnullptr;
+    }
+
+    static OFString getVersionString()
+    {
+#ifdef WITH_LIBICONV
+        OFString versionStr = "LIBICONV, Version ";
+        char buf[10];
+        // extract major and minor version number
+        sprintf(buf, "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
+        versionStr.append(buf);
+        return versionStr;
+#else
+        OFOStringStream oss;
+        oss << "GNU C library (iconv), version "
+            << __GLIBC__ << '.'
+            << __GLIBC_MINOR__;
+        OFSTRINGSTREAM_GETOFSTRING(oss, version);
+        return version;
+#endif
+    }
+
+    static OFString getLocaleEncoding()
+    {
+#ifdef WITH_LIBICONV
+        // basically, the function below should always return a non-empty string
+        // but older versions of libiconv might return OFnullptr in certain cases
+        return OFSTRING_GUARD(::locale_charset());
+#else
+        return OFString();
+#endif
+    }
+
+    static OFBool supportsConversionFlags(const unsigned flags)
+    {
+#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
+        return flags == AbortTranscodingOnIllegalSequence
+            || flags == DiscardIllegalSequences
+            || flags == TransliterateIllegalSequences
+            || flags == (DiscardIllegalSequences | TransliterateIllegalSequences)
+        ;
+#else
+        return flags == AbortTranscodingOnIllegalSequence;
+#endif
+    }
+
+    unsigned getConversionFlags() const
+    {
+#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
+        unsigned result = 0;
+        int flag;
+        if (::iconvctl(ConversionDescriptor, ICONV_GET_TRANSLITERATE, &flag))
+            return 0;
+        if (flag)
+            result |= TransliterateIllegalSequences;
+        if (::iconvctl(ConversionDescriptor, ICONV_GET_DISCARD_ILSEQ, &flag))
+            return 0;
+        if (flag)
+            result |= DiscardIllegalSequences;
+        if (result)
+            return result;
+#endif
+        return AbortTranscodingOnIllegalSequence;
+    }
+
+    OFBool setConversionFlags(const unsigned flags)
+    {
+#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
+        int flag = 0;
+        switch(flags)
+        {
+        case AbortTranscodingOnIllegalSequence:
+            if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                return OFFalse;
+            if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                return OFFalse;
+            return OFTrue;
+        case DiscardIllegalSequences:
+            if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                return OFFalse;
+            flag = 1;
+            if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                return OFFalse;
+            return OFTrue;
+        case TransliterateIllegalSequences:
+            if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                return OFFalse;
+            flag = 1;
+            if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                return OFFalse;
+            return OFTrue;
+        case (TransliterateIllegalSequences | DiscardIllegalSequences):
+            flag = 1;
+            if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                return OFFalse;
+            if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                return OFFalse;
+            return OFTrue;
+        default:
+            return OFFalse;
+        }
+#else
+        return flags == AbortTranscodingOnIllegalSequence;
+#endif
+    }
+
+
+    OFCondition convert(OFString& toString, const char* fromString, const size_t fromLength)
+    {
+        OFCondition status = EC_Normal;
         // if the input string is empty or NULL, we are done
         if (status.good() && (fromString != NULL) && (fromLength > 0))
         {
@@ -231,7 +425,7 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
 #endif
             size_t inputLeft = fromLength;
             // set the conversion descriptor to the initial state
-            ::iconv(descriptor, NULL, NULL, NULL, NULL);
+            ::iconv(ConversionDescriptor, NULL, NULL, NULL, NULL);
             // iterate as long as there are characters to be converted
             while (inputLeft > 0)
             {
@@ -240,7 +434,7 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
                 const size_t bufferLength = sizeof(buffer);
                 size_t bufferLeft = bufferLength;
                 // convert the current block of the given string to the selected character encoding
-                if (::iconv(descriptor, &inputPos, &inputLeft, &bufferPos, &bufferLeft) == CONVERSION_ERROR)
+                if (::iconv(ConversionDescriptor, &inputPos, &inputLeft, &bufferPos, &bufferLeft) == CONVERSION_ERROR)
                 {
                     // check whether the output buffer was too small for the next converted character
                     // (also make sure that the output buffer has been filled to avoid an endless loop)
@@ -256,16 +450,230 @@ OFCondition OFCharacterEncoding::convertString(T_Descriptor descriptor,
                 toString.append(buffer, bufferLength - bufferLeft);
             }
         }
-    } else
-        status = EC_NoEncodingSelected;
-    return status;
+        return status;
+    }
+
+    ~Implementation()
+    {
+        // try to close given descriptor and check whether it worked
+        if (::iconv_close(ConversionDescriptor) == -1)
+        {
+            char errBuf[256];
+            CERR << "Cannot close character encoding: "
+                 << OFStandard::strerror(errno, errBuf, sizeof(errBuf))
+                 << OFendl;
+        }
+    }
+
+private:
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
+    Implementation(iconv_t ConversionDescriptor)
+    : ConversionDescriptor(ConversionDescriptor)
+    {
+
+    }
+#include DCMTK_DIAGNOSTIC_POP
+
+    static void createErrnoCondition(OFCondition &status,
+                                     OFString message,
+                                     const unsigned short code)
+    {
+        char errBuf[256];
+        message.append(OFStandard::strerror(errno, errBuf, sizeof(errBuf)));
+        status = makeOFCondition(0, code, OF_error, message.c_str());
+    }
+
+    iconv_t ConversionDescriptor;
+};
+
+#else // ICONV
+
+// for suppressing unnecessary warnings
+class OFCharacterEncoding::Implementation {};
+
+#endif // Implementation
+
+#endif // DCMTK_ENABLE_CHARSET_CONVERSION
+
+
+OFBool OFCharacterEncoding::isAvailable()
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    return OFTrue;
 #else
-    // avoid compiler warning on unused variables
-    (void)descriptor;
-    (void)fromString;
-    (void)fromLength;
-    (void)toString;
-    (void)clearMode;
+    return OFFalse;
+#endif
+}
+
+
+OFString OFCharacterEncoding::getVersionString()
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    return Implementation::getVersionString();
+#else
+    return "<no character encoding library available>";
+#endif
+}
+
+
+size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8String)
+{
+    const size_t length = utf8String.length();
+    size_t count = 0;
+    // iterate over all bytes and count start of UTF-8 characters
+    for (size_t i = 0; i < length; i++)
+    {
+        if ((utf8String.at(i) & 0xc0) != 0x80)
+            count++;
+    }
+    return count;
+}
+
+OFString OFCharacterEncoding::getLocaleEncoding()
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    return Implementation::getLocaleEncoding();
+#else
+    return OFString();
+#endif
+}
+
+
+OFBool OFCharacterEncoding::supportsConversionFlags(const unsigned flags)
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    return Implementation::supportsConversionFlags(flags);
+#else
+    return OFFalse;
+#endif
+}
+
+
+OFCharacterEncoding::OFCharacterEncoding()
+: TheImplementation()
+{
+
+}
+
+
+OFCharacterEncoding::OFCharacterEncoding(const OFCharacterEncoding& rhs)
+: TheImplementation(rhs.TheImplementation)
+{
+
+}
+
+
+OFCharacterEncoding::~OFCharacterEncoding()
+{
+
+}
+
+
+OFCharacterEncoding& OFCharacterEncoding::operator=(const OFCharacterEncoding& rhs)
+{
+    TheImplementation = rhs.TheImplementation;
+    return *this;
+}
+
+
+OFCharacterEncoding::operator OFBool() const
+{
+    return TheImplementation;
+}
+
+
+OFBool OFCharacterEncoding::operator!() const
+{
+    return !TheImplementation;
+}
+
+
+OFBool OFCharacterEncoding::operator==(const OFCharacterEncoding& rhs) const
+{
+    return TheImplementation == rhs.TheImplementation;
+}
+
+OFBool OFCharacterEncoding::operator!=(const OFCharacterEncoding& rhs) const
+{
+    return TheImplementation != rhs.TheImplementation;
+}
+
+
+void OFCharacterEncoding::clear()
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    TheImplementation.reset();
+#endif
+}
+
+
+unsigned OFCharacterEncoding::getConversionFlags() const
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    if (TheImplementation)
+        return TheImplementation->getConversionFlags();
+#endif
+    return 0;
+}
+
+
+OFCondition OFCharacterEncoding::setConversionFlags(const unsigned flags)
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    if (TheImplementation) {
+        if (TheImplementation->setConversionFlags(flags))
+            return EC_Normal;
+        return makeOFCondition(0, EC_CODE_CannotControlConverter, OF_error,
+            "Conversion flags not supported by the underlying implementation");
+    }
+    return EC_NoEncodingSelected;
+#endif
+    return EC_NoEncodingLibrary;
+}
+
+
+OFCondition OFCharacterEncoding::selectEncoding(const OFString &fromEncoding,
+                                                const OFString &toEncoding)
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    OFCondition result;
+    TheImplementation.reset(Implementation::create(fromEncoding, toEncoding, result));
+    return result;
+#else
+    return EC_NoEncodingLibrary;
+#endif
+}
+
+
+OFCondition OFCharacterEncoding::convertString(const OFString &fromString,
+                                               OFString &toString,
+                                               const OFBool clearMode)
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    return convertString(fromString.c_str(), fromString.length(), toString, clearMode);
+#else
+    return EC_NoEncodingLibrary;
+#endif
+}
+
+
+OFCondition OFCharacterEncoding::convertString(const char *fromString,
+                                               const size_t fromLength,
+                                               OFString &toString,
+                                               const OFBool clearMode)
+{
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+    if (TheImplementation)
+    {
+        // first, clear result variable if requested
+        if (clearMode)
+            toString.clear();
+        return TheImplementation->convert(toString, fromString, fromLength);
+
+    }
+    return EC_NoEncodingSelected;
+#else
     return EC_NoEncodingLibrary;
 #endif
 }
@@ -366,96 +774,6 @@ OFCondition OFCharacterEncoding::convertToWideCharString(const char *fromString,
     return status;
 }
 
-#endif  // HAVE_WINDOWS_H
-
-
-OFCondition OFCharacterEncoding::openDescriptor(T_Descriptor &descriptor,
-                                                const OFString &fromEncoding,
-                                                const OFString &toEncoding)
-{
-#ifdef WITH_LIBICONV
-    OFCondition status = EC_Normal;
-    // try to open a new descriptor for the specified character encodings
-    descriptor = ::iconv_open(toEncoding.c_str(), fromEncoding.c_str());
-    // check whether the conversion descriptor could be allocated
-    if (!isDescriptorValid(descriptor))
-    {
-        // if not, return with an appropriate error message
-        createErrnoCondition(status, "Cannot open character encoding: ",
-            EC_CODE_CannotOpenEncoding);
-    }
-    return status;
-#else
-    descriptor = ILLEGAL_DESCRIPTOR;
-    // avoid compiler warning on unused variables
-    (void)fromEncoding;
-    (void)toEncoding;
-    return EC_NoEncodingLibrary;
-#endif
-}
-
-
-OFCondition OFCharacterEncoding::closeDescriptor(T_Descriptor &descriptor)
-{
-#ifdef WITH_LIBICONV
-    OFCondition status = EC_Normal;
-    // check whether the conversion descriptor is valid
-    if (isDescriptorValid(descriptor))
-    {
-        // try to close given descriptor and check whether it worked
-        if (::iconv_close(descriptor) == -1)
-        {
-            // if not, return with an appropriate error message
-            createErrnoCondition(status, "Cannot close character encoding: ",
-                EC_CODE_CannotCloseEncoding);
-        }
-    }
-    // in any case, make the descriptor invalid
-    descriptor = ILLEGAL_DESCRIPTOR;
-    return status;
-#else
-    OFCondition status = EC_Normal;
-    // we cannot use isDescriptorValid() because it always returns OFFalse
-    if (descriptor != ILLEGAL_DESCRIPTOR)
-    {
-        descriptor = ILLEGAL_DESCRIPTOR;
-        status = EC_NoEncodingLibrary;
-    }
-    return status;
-#endif
-}
-
-
-OFBool OFCharacterEncoding::isDescriptorValid(const T_Descriptor descriptor)
-{
-#ifdef WITH_LIBICONV
-    return (descriptor != ILLEGAL_DESCRIPTOR);
-#else
-    // avoid compiler warning on unused variable
-    (void)descriptor;
-    return OFFalse;
-#endif
-}
-
-
-void OFCharacterEncoding::createErrnoCondition(OFCondition &status,
-                                               OFString message,
-                                               const unsigned short code)
-{
-#ifdef WITH_LIBICONV
-    char errBuf[256];
-    message.append(OFStandard::strerror(errno, errBuf, sizeof(errBuf)));
-    status = makeOFCondition(0, code, OF_error, message.c_str());
-#else
-    // avoid compiler warning on unused variables
-    (void)status;
-    (void)message;
-    (void)code;
-#endif
-}
-
-
-#ifdef HAVE_WINDOWS_H  // Windows-specific function
 
 void OFCharacterEncoding::createGetLastErrorCondition(OFCondition &status,
                                                       OFString message,
@@ -474,42 +792,3 @@ void OFCharacterEncoding::createGetLastErrorCondition(OFCondition &status,
 }
 
 #endif  // HAVE_WINDOWS_H
-
-
-OFBool OFCharacterEncoding::isLibraryAvailable()
-{
-#ifdef WITH_LIBICONV
-    return OFTrue;
-#else
-    return OFFalse;
-#endif
-}
-
-
-OFString OFCharacterEncoding::getLibraryVersionString()
-{
-#ifdef WITH_LIBICONV
-    OFString versionStr = "LIBICONV, Version ";
-    char buf[10];
-    // extract major and minor version number
-    sprintf(buf, "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
-    versionStr.append(buf);
-    return versionStr;
-#else
-    return "<no character encoding library available>";
-#endif
-}
-
-
-size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8String)
-{
-    const size_t length = utf8String.length();
-    size_t count = 0;
-    // iterate over all bytes and count start of UTF-8 characters
-    for (size_t i = 0; i < length; i++)
-    {
-        if ((utf8String.at(i) & 0xc0) != 0x80)
-            count++;
-    }
-    return count;
-}

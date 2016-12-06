@@ -13,7 +13,7 @@
  *
  *  Module:  ofstd
  *
- *  Author:  Joerg Riesmeier
+ *  Author:  Joerg Riesmeier, Jan Schlamelcher
  *
  *  Purpose: Class for character encoding conversion (Header)
  *
@@ -27,89 +27,178 @@
 
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/ofstring.h"
-
+#include "dcmtk/ofstd/ofmem.h"
 
 /*---------------------*
  *  class declaration  *
  *---------------------*/
 
 /** A class for managing and converting between different character encodings.
- *  The implementation relies on the libiconv toolkit (if available).
+ *  The implementation relies on the ICONV toolkit or the ICU (if available).
+ *  @remarks An encoder might be shared by copy constructing an
+ *    OFCharacterEncoding object from an existing one. Both objects will
+ *    refer to the same encoder once this is done, which will only be
+ *    destroyed after both objects are, using OFshared_ptr internally.
  */
 class DCMTK_OFSTD_EXPORT OFCharacterEncoding
 {
+public:
 
-  // allow the DICOM-specific character set class to access protected methods
-  friend class DcmSpecificCharacterSet;
+    /*! Constants to control encoder behavior, e.g. regarding illegal character
+     *  sequences.
+     *  @details
+     *  Currently defined constants may be used to control the implementation's
+     *  behavior regarding illegal character sequences.
+     *  An illegal character sequence is a sequence of characters in the
+     *  source string that is only valid in the context of the source string's
+     *  character set and has no valid representation in the character set of
+     *  the destination string.
+     *  Use these constants to control the transcoding behavior in case an
+     *  illegal sequence is encountered.
+     *  @note You may set a single one of the constants as the encoder
+     *    behavior or even a combination (bitwise OR), however, it depends
+     *    on the underlying implementation with flags/combinations are
+     *    supported. Use supportsConversionFlags() to query this
+     *    information at runtime.
+     */
+    enum ConversionFlags
+    {
+        /** Abort transcoding (returning an error condition) if an illegal
+         *  sequence is encountered.
+         */
+        AbortTranscodingOnIllegalSequence = 1,
 
-  public:
+        /** Skip over any illegal character sequences that are encountered.
+         */
+        DiscardIllegalSequences           = 2,
 
-    /** constructor. Initializes the member variables, which includes the
-     *  current locale's character encoding.
+        /** Replace illegal character sequences with an available
+         *  representation in the destination character set that somewhat
+         *  resembles the meaning (i.e.\ &ouml; -> "o). The actual results may
+         *  vary depending on the underlying implementation.
+         */
+        TransliterateIllegalSequences     = 4
+    };
+
+    /** get the character encoding of the currently set global locale.
+     *  @remarks calling this function might be rather exhaustive depending on
+     *    employed character set conversion library. Caching the result might
+     *    therefore be recommended.
+     *  @note the result may be an empty string, if the name of the current
+     *    encoding cannot be determined.
+     *  @return the current locale's character encoding
+     */
+    static OFString getLocaleEncoding();
+
+    /** determine whether the underlying implementation supports the given
+     *  conversion flags.
+     *  @param flags the flags to query, a combination of ConversionFlags
+     *    contants, e.g.
+     *    TransliterateIllegalSequences | DiscardIllegalSequences.
+     *  @return OFTrue if the given flags are supported, OFFalse if not
+     *    or support is unknown.
+     */
+    static OFBool supportsConversionFlags(const unsigned flags);
+
+    /** constructor.
+     *  Will create an OFCharacterEncoding instance that does not refer
+     *  to an encoder.
      */
     OFCharacterEncoding();
+
+    /** copy constructor.
+     *  Will share the encoder of another OFCharacterEncoding instance.
+     *  @param rhs another OFCharacterEncoding instance.
+     */
+    OFCharacterEncoding(const OFCharacterEncoding& rhs);
 
     /** destructor
      */
     ~OFCharacterEncoding();
 
-    /** clear the internal state.  This also closes the conversion descriptor
-     *  if it was allocated before, so selectEncoding() has to be called again
-     *  before a string can be converted to a new character encoding.
+    /** copy assignment.
+     *  Effectively calls clear() and then shares the encoder of another
+     *  OFCharacterEncoding instance.
+     *  @param rhs another OFCharacterEncoding instance.
+     *  @return *this
+     */
+    OFCharacterEncoding& operator=(const OFCharacterEncoding& rhs);
+
+    /** check whether this object refers to a valid encoder.
+     *  @result OFTrue if this refers to a valid encoder, OFFalse otherwise.
+     */
+#ifdef DCMTK_USE_CXX11_STL
+    explicit
+#endif
+    operator OFBool() const;
+
+    /** check whether this object does not refer to a valid encoder.
+     *  @result OFFalse if this refers to a valid encoder, OFTrue otherwise.
+     */
+    OFBool operator!() const;
+
+    /** check whether two OFCharacterEncoding instances refer to the same
+     *  encoder.
+     *  @param rhs another OFCharacterEncoding instance.
+     *  @return OFTrue if both instances refer to the same encoder, OFFalse
+     *  otherwise.
+     *  @note This only tests if both objects refer to the exactly same
+     *    encoder, originating from one and the same call to selectEncoding().
+     *    The result will be OFFalse if both encoders were constructed
+     *    independently of each other, even if exactly the same parameters
+     *    were used.
+     */
+    OFBool operator==(const OFCharacterEncoding& rhs) const;
+
+    /** check whether two OFCharacterEncoding instances do not refer to the
+     *  same encoder.
+     *  @param rhs another OFCharacterEncoding instance.
+     *  @return OFFalse if both instances refer to the same encoder, OFTrue
+     *  otherwise.
+     *  @note This only tests if both objects refer to the exactly same
+     *    encoder, originating from one and the same call to selectEncoding().
+     *    The result will be OFTrue if both encoders were constructed
+     *    independently of each other, even if exactly the same parameters
+     *    were used.
+     */
+    OFBool operator!=(const OFCharacterEncoding& rhs) const;
+
+    /** clear the internal state.
+     *  This resets the converter and potentially frees all used resources
+     *  (if this is the last OFCharacterEncoding instance referring
+     *  to the encoder).
      */
     void clear();
 
-    /** get mode specifying whether a character that cannot be represented in
-     *  the destination character encoding is approximated through one or more
-     *  characters that look similar to the original one
-     *  @return current value of the mode.  OFTrue means that the mode is
-     *    enabled, OFFalse means disabled.
+    /*! get flags controlling converter behavior, e.g. specifying how illegal
+     *  character sequences should be handled during conversion.
+     *  @return a combination the IllegalSequenceMode constants (bitwise or)
+     *    that is currently set or 0 if the current mode cannot be determined.
+     *  @note this method will always return 0 if no encoder was selected
+     *    using selectEncoding() before calling it.
      */
-    OFBool getTransliterationMode() const;
+    unsigned getConversionFlags() const;
 
-    /** get mode specifying whether characters that cannot be represented in
-     *  the destination character encoding will be silently discarded
-     *  @return current value of the mode.  OFTrue means that the mode is
-     *    enabled, OFFalse means disabled.
+    /*! set flags controlling converter behavior, e.g. illegal character
+     *  sequences should be handled during conversion.
+     *  @pre An encoding has been selected by successfully calling
+     *    OFCharacterEncoding::selectEncoding(), i.e.
+     *    OFCharacterEncoding::isAvailable() and *this evaluate to OFTrue.
+     *  @param flags the ConversionFlags that shall be used, a combination of
+     *    the ConversionFlags contants, e.g.
+     *    TransliterateIllegalSequences | DiscardIllegalSequences.
+     *  @return EC_Normal if the flags were set, an error code otherwise, i.e.
+     *    if the flags are not supported by the underlying implementation.
+     *  @see OFCharacterEncoding::supportsConversionFlags()
      */
-    OFBool getDiscardIllegalSequenceMode() const;
-
-    /** set mode specifying whether a character that cannot be represented in
-     *  the destination character encoding is approximated through one or more
-     *  characters that look similar to the original one.  By default, this
-     *  mode is disabled.
-     *  @param  mode  enable mode by OFTrue or disable it by OFFalse
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition setTransliterationMode(const OFBool mode);
-
-    /** set mode specifying whether characters that cannot be represented in
-     *  the destination character encoding will be silently discarded.  By
-     *  default, this mode is disabled.
-     *  @param  mode  enable mode by OFTrue or disable it by OFFalse
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition setDiscardIllegalSequenceMode(const OFBool mode);
-
-    /** get the current locale's character encoding
-     *  @return the current locale's character encoding
-     */
-    const OFString &getLocaleEncoding() const;
-
-    /** updates the current locale's character encoding.  This is only needed
-     *  if the locale setting changed during the lifetime of this object,
-     *  because the current locale's character encoding is always determined
-     *  in the constructor.  If possible the canonical encoding names listed
-     *  in "config.charset" (see libiconv toolkit) are used.
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition updateLocaleEncoding();
+    OFCondition setConversionFlags(const unsigned flags);
 
     /** select source and destination character encoding for subsequent
      *  conversion(s).  The encoding names can be found in the documentation
-     *  of the libiconv toolkit.  Typical names are "ASCII", "ISO-8859-1" and
-     *  "UTF-8".  An empty string denotes the locale dependent character
-     *  encoding (see getLocaleEncoding()).
+     *  of the underlying implementation (e.g. libiconv).  Typical names
+     *  are "ASCII", "ISO-8859-1" and "UTF-8".  OFnullptr and an empty
+     *  string both denote the encoding of the current locale,
+     *  (see getLocaleEncoding()).
      *  @param  fromEncoding  name of the source character encoding
      *  @param  toEncoding    name of the destination character encoding
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -137,8 +226,8 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      *  Since the length of the input string has to be specified explicitly,
      *  the string can contain more than one NULL byte.
      *  @param  fromString  input string to be converted (using the source
-     *                      character encoding).  A NULL pointer is regarded
-     *                      as an empty string.
+     *                      character encoding). OFnullptr is regarded as an
+     *                      empty string.
      *  @param  fromLength  length of the input string (number of bytes without
      *                      the trailing NULL byte)
      *  @param  toString    reference to variable where the converted string
@@ -267,21 +356,23 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
 
     // --- static helper functions ---
 
-    /** check whether the underlying character encoding library is available.
-     *  If the library is not available, no conversion between different
-     *  character encodings will be possible (apart from the Windows-specific
-     *  wide character conversion functions).
-     *  @return OFTrue if the character encoding library is available, OFFalse
+    /*! check whether character set conversion is available, e.g. the
+     *  underlying encoding library is available.
+     *  @details
+     *  If not, no conversion between different character encodings will be
+     *  possible (apart from the Windows-specific wide character conversion
+     *  functions).
+     *  @return OFTrue if character set conversion is possible, OFFalse
      *    otherwise
      */
-    static OFBool isLibraryAvailable();
+    static OFBool isAvailable();
 
-    /** get version information of the underlying character encoding library.
-     *  Typical output format: "LIBICONV, Version 1.14".  If the library is not
-     *  available the output is: "<no character encoding library available>"
-     *  @return name and version number of the character encoding library
+    /** get version information of the underlying character encoding implementation.
+     *  Typical output format: "LIBICONV, Version 1.14".  If character encoding
+     *  is not available the output is: "<no character encoding library available>"
+     *  @return name and version number of the character encoding implementation
      */
-    static OFString getLibraryVersionString();
+    static OFString getVersionString();
 
     /** count characters in given UTF-8 string and return the resulting number
      *  of so-called "code points".  Please note that invalid UTF-8 encodings
@@ -292,87 +383,11 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
      */
     static size_t countCharactersInUTF8String(const OFString &utf8String);
 
-
-  protected:
-
-    /// type of the conversion descriptor (used by libiconv)
-    typedef void* T_Descriptor;
-
-    /** allocate conversion descriptor for the given source and destination
-     *  character encoding.  Please make sure that the descriptor is
-     *  deallocated with closeDescriptor() when not needed any longer.
-     *  @param  descriptor    reference to variable where the newly allocated
-     *                        conversion descriptor is stored
-     *  @param  fromEncoding  name of the source character encoding
-     *  @param  toEncoding    name of the destination character encoding
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition openDescriptor(T_Descriptor &descriptor,
-                               const OFString &fromEncoding,
-                               const OFString &toEncoding);
-
-    /** deallocate the given conversion descriptor that was previously
-     *  allocated with openDescriptor().  Please do not pass arbitrary values
-     *  to this method, since this will result in a segmentation fault.
-     *  @param  descriptor  conversion descriptor to be closed.  After the
-     *                      descriptor has been deallocated, 'descriptor' is
-     *                      set to an invalid value - see isDescriptorValid().
-     *  @return status, EC_Normal if successful, an error code otherwise.  In
-     *    case an invalid descriptor is passed, it is not regarded as an error.
-     */
-    OFCondition closeDescriptor(T_Descriptor &descriptor);
-
-    /** check whether the given conversion descriptor is valid, i.e.\ has been
-     *  allocated by a previous call to openDescriptor()
-     *  @param  descriptor  conversion descriptor to be checked
-     *  @return OFTrue if the conversion descriptor is valid, OFFalse otherwise
-     */
-    OFBool isDescriptorValid(const T_Descriptor descriptor);
-
-    /** convert the given string between the specified character encodings.
-     *  Since the length of the input string has to be specified explicitly,
-     *  the string can contain more than one NULL byte.
-     *  @param  descriptor  previously allocated conversion descriptor to be
-     *                      used for the conversion of the character encodings
-     *  @param  fromString  input string to be converted (using the source
-     *                      character encoding).  A NULL pointer is regarded
-     *                      as an empty string.
-     *  @param  fromLength  length of the input string (number of bytes without
-     *                      the trailing NULL byte)
-     *  @param  toString    reference to variable where the converted string
-     *                      (using the destination character encoding) is
-     *                      stored (or appended, see parameter 'clearMode')
-     *  @param  clearMode   flag indicating whether to clear the variable
-     *                      'toString' before appending the converted string
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition convertString(T_Descriptor descriptor,
-                              const char *fromString,
-                              const size_t fromLength,
-                              OFString &toString,
-                              const OFBool clearMode = OFTrue);
-
-
   private:
 
-    // private undefined copy constructor
-    OFCharacterEncoding(const OFCharacterEncoding &);
-
-    // private undefined assignment operator
-    OFCharacterEncoding &operator=(const OFCharacterEncoding &);
+    class Implementation;
 
     // --- static helper functions ---
-
-    /** create an error condition based on the current value of "errno" and the
-     *  given parameters.  The function OFStandard::strerror() is used to map
-     *  the numerical value of the error to a textual description.
-     *  @param  status   reference to variable where the condition is stored
-     *  @param  message  message text that is used as a prefix to strerror()
-     *  @param  code     unique status code of the error condition
-     */
-    static void createErrnoCondition(OFCondition &status,
-                                     OFString message,
-                                     const unsigned short code);
 
 #ifdef HAVE_WINDOWS_H
 
@@ -389,17 +404,7 @@ class DCMTK_OFSTD_EXPORT OFCharacterEncoding
 
 #endif  // HAVE_WINDOWS_H
 
-    /// current locale's character encoding
-    OFString LocaleEncoding;
-
-    /// conversion descriptor used by libiconv
-    T_Descriptor ConversionDescriptor;
-
-    /// transliteration mode (default: disabled)
-    OFBool TransliterationMode;
-
-    /// discard illegal sequence mode (default: disabled)
-    OFBool DiscardIllegalSequenceMode;
+    OFshared_ptr<Implementation> TheImplementation;
 };
 
 

@@ -23,7 +23,7 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmimagedir)/libsrc
 LOCALLIBS = -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
-	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
+	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS)
 
 objs = dsrdump.o dsr2html.o dsr2xml.o xml2dsr.o
 progs = dsrdump dsr2html dsr2xml xml2dsr

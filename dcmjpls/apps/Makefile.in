@@ -50,7 +50,7 @@ LOCALINCLUDES = $(dcmjplsinc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimagein
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjplslibdir) $(libcharlslibdir) $(dcmimagelibdir) \
 	$(dcmimglelibdir) $(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
 LOCALLIBS = $(dcmjplslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
-	$(libcharlslib) $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(ICONVLIBS)
+	$(libcharlslib) $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS)
 
 objs = dcmdjpls.o dcmcjpls.o dcml2pnm.o
 progs = dcmdjpls dcmcjpls dcml2pnm

@@ -33,7 +33,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(dcmimagedir)/libsrc -L$(dcmsrdir)/libsrc
 LOCALLIBS = -ldcmpstat -ldcmdsig -ldcmsr -ldcmimage -ldcmimgle -ldcmqrdb -ldcmnet \
 	-ldcmtls -ldcmdata -loflog -lofstd $(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) \
-	$(TCPWRAPPERLIBS) $(OPENSSLLIBS) $(ICONVLIBS)
+	$(TCPWRAPPERLIBS) $(OPENSSLLIBS) $(CHARCONVLIBS)
 
 objs = msgserv.o
 progs = msgserv

@@ -24,7 +24,7 @@ LIBDIRS = -L$(top_srcdir)/libcmr -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc \
 	-L$(dcmimagedir)/libsrc
 LOCALLIBS = -lcmr -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
-	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(ICONVLIBS)
+	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS)
 
 tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o tsrcodvl.o tsrnumvl.o tsrtpl.o tsrcmr.o \
 	tsrlist.o

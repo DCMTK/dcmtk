@@ -22,7 +22,7 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc
 LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) $(PNGLIBS) \
-	$(ZLIBLIBS) $(ICONVLIBS)
+	$(ZLIBLIBS) $(CHARCONVLIBS)
 
 objs = dcm2pnm.o dcmquant.o dcmscale.o
 progs = dcm2pnm dcmquant dcmscale

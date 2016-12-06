@@ -21,7 +21,7 @@ include $(configdir)/@common_makefile@
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmioddir)/libsrc -L$(dcmfgdir)/libsrc
-LOCALLIBS = -ldcmseg -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(ICONVLIBS)
+LOCALLIBS = -ldcmseg -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(CHARCONVLIBS)
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include \
 
@@ -34,7 +34,7 @@ progs = tests
 all: $(progs)
 
 tests: $(test_objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(ICONVLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
 
 check: tests

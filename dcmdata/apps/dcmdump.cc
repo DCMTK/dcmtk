@@ -36,7 +36,7 @@
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */
 #endif
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
 #endif
 
@@ -256,7 +256,7 @@ DCMTK_MAIN_FUNCTION
         cmd.addOption("--bitstream-zlib",      "+bz",    "expect deflated zlib bitstream");
 #endif
 
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     cmd.addGroup("processing options:");
       cmd.addSubGroup("specific character set:");
         cmd.addOption("--convert-to-utf8",     "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
@@ -310,7 +310,7 @@ DCMTK_MAIN_FUNCTION
         {
           app.printHeader(OFTrue /*print host identifier*/);
           COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_LIBICONV)
+#if !defined(WITH_ZLIB) && !defined(DCMTK_ENABLE_CHARSET_CONVERSION)
           COUT << " none" << OFendl;
 #else
           COUT << OFendl;
@@ -318,8 +318,8 @@ DCMTK_MAIN_FUNCTION
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-#ifdef WITH_LIBICONV
-          COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+          COUT << "- " << OFCharacterEncoding::getVersionString() << OFendl;
 #endif
           return 0;
         }
@@ -529,7 +529,7 @@ DCMTK_MAIN_FUNCTION
 #endif
 
       /* processing options */
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
       if (cmd.findOption("--convert-to-utf8")) convertToUTF8 = OFTrue;
 #endif
 
@@ -775,7 +775,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
     if (loadIntoMemory) dfile.loadAllDataIntoMemory();
 
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     if (convertToUTF8)
     {
         OFLOG_INFO(dcmdumpLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");

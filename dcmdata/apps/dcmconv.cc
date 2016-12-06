@@ -40,7 +40,7 @@
 #ifdef WITH_ZLIB
 #include <zlib.h>                      /* for zlibVersion() */
 #endif
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #include "dcmtk/ofstd/ofchrenc.h"      /* for OFCharacterEncoding */
 #endif
 
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
   OFCmdUnsignedInt opt_compressionLevel = 0;
 #endif
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
   const char *opt_convertToCharset = NULL;
   size_t opt_conversionFlags = 0;
 #endif
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 #endif
 
   cmd.addGroup("processing options:");
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     cmd.addSubGroup("specific character set:");
       cmd.addOption("--convert-to-utf8",     "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
       cmd.addOption("--convert-to-latin1",   "+L1",    "convert affected element values to ISO 8859-1");
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
           {
               app.printHeader(OFTrue /*print host identifier*/);
               COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_LIBICONV)
+#if !defined(WITH_ZLIB) && !defined(DCMTK_ENABLE_CHARSET_CONVERSION)
               COUT << " none" << OFendl;
 #else
               COUT << OFendl;
@@ -249,8 +249,8 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
               COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-#ifdef WITH_LIBICONV
-              COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+              COUT << "- " << OFCharacterEncoding::getVersionString() << OFendl;
 #endif
               return 0;
           }
@@ -448,7 +448,7 @@ int main(int argc, char *argv[])
 #endif
 
       /* processing options */
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
       cmd.beginOptionBlock();
       if (cmd.findOption("--convert-to-utf8")) opt_convertToCharset = "ISO_IR 192";
       if (cmd.findOption("--convert-to-latin1")) opt_convertToCharset = "ISO_IR 100";
@@ -577,7 +577,7 @@ int main(int argc, char *argv[])
         OFLOG_INFO(dcmconvLogger, "remove all elements with an invalid group number");
         fileformat.removeInvalidGroups();
     }
-#ifdef WITH_LIBICONV
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     if (opt_convertToCharset != NULL)
     {
         OFString toCharset(opt_convertToCharset);

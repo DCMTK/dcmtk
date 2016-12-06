@@ -28,7 +28,7 @@ progs = tests
 all: $(progs)
 
 tests: $(test_objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(ICONVLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(CHARCONVLIBS) $(LIBS)
 
 
 check: tests
