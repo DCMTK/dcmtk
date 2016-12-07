@@ -34,19 +34,19 @@
  *---------------------*/
 
 /** A class for managing and converting between different character encodings.
- *  The implementation relies on the ICONV toolkit or the ICU (if available).
+ *  The implementation relies on ICONV (native implementation or libiconv) or
+ *  ICU, depending on the configuration.
  *  @remarks An encoder might be shared by copy constructing an
- *    OFCharacterEncoding object from an existing one. Both objects will
- *    refer to the same encoder once this is done, which will only be
- *    destroyed after both objects are, using OFshared_ptr internally.
+ *    OFCharacterEncoding object from an existing one.  Both objects will refer
+ *    to the same encoder once this is done, which will only be destroyed after
+ *    both objects are, using OFshared_ptr internally.
  */
 class DCMTK_OFSTD_EXPORT OFCharacterEncoding
 {
 public:
 
-    /*! Constants to control encoder behavior, e.g. regarding illegal character
+    /** Constants to control encoder behavior, e.g.\ regarding illegal character
      *  sequences.
-     *  @details
      *  Currently defined constants may be used to control the implementation's
      *  behavior regarding illegal character sequences.
      *  An illegal character sequence is a sequence of characters in the
@@ -55,11 +55,10 @@ public:
      *  the destination string.
      *  Use these constants to control the transcoding behavior in case an
      *  illegal sequence is encountered.
-     *  @note You may set a single one of the constants as the encoder
-     *    behavior or even a combination (bitwise OR), however, it depends
-     *    on the underlying implementation with flags/combinations are
-     *    supported. Use supportsConversionFlags() to query this
-     *    information at runtime.
+     *  @note You may set a single one of the constants as the encoder behavior
+     *    or even a combination (bitwise OR), however, it depends on the
+     *    underlying implementation which flags/combinations are supported.
+     *    Use supportsConversionFlags() to query this information at runtime.
      */
     enum ConversionFlags
     {
@@ -70,21 +69,21 @@ public:
 
         /** Skip over any illegal character sequences that are encountered.
          */
-        DiscardIllegalSequences           = 2,
+        DiscardIllegalSequences = 2,
 
-        /** Replace illegal character sequences with an available
-         *  representation in the destination character set that somewhat
-         *  resembles the meaning (i.e.\ &ouml; -> "o). The actual results may
-         *  vary depending on the underlying implementation.
+        /** Replace illegal character sequences with an available representation
+         *  in the destination character set that somewhat resembles the meaning
+         *  (i.e.\ &ouml; -> "o).  The actual results may vary depending on the
+         *  underlying implementation.
          */
-        TransliterateIllegalSequences     = 4
+        TransliterateIllegalSequences = 4
     };
 
     /** get the character encoding of the currently set global locale.
-     *  @remarks calling this function might be rather exhaustive depending on
-     *    employed character set conversion library. Caching the result might
+     *  @remarks Calling this function might be rather exhaustive depending on
+     *    employed character set conversion library.  Caching the result might
      *    therefore be recommended.
-     *  @note the result may be an empty string, if the name of the current
+     *  @note The result may be an empty string, if the name of the current
      *    encoding cannot be determined.
      *  @return the current locale's character encoding
      */
@@ -92,8 +91,8 @@ public:
 
     /** determine whether the underlying implementation supports the given
      *  conversion flags.
-     *  @param flags the flags to query, a combination of ConversionFlags
-     *    contants, e.g.
+     *  @param flags the flags to query, a combination of
+     *    OFCharacterEncoding::ConversionFlags constants, e.g.
      *    TransliterateIllegalSequences | DiscardIllegalSequences.
      *  @return OFTrue if the given flags are supported, OFFalse if not
      *    or support is unknown.
@@ -101,8 +100,8 @@ public:
     static OFBool supportsConversionFlags(const unsigned flags);
 
     /** constructor.
-     *  Will create an OFCharacterEncoding instance that does not refer
-     *  to an encoder.
+     *  Will create an OFCharacterEncoding instance that does not refer to an
+     *  encoder.
      */
     OFCharacterEncoding();
 
@@ -120,7 +119,7 @@ public:
      *  Effectively calls clear() and then shares the encoder of another
      *  OFCharacterEncoding instance.
      *  @param rhs another OFCharacterEncoding instance.
-     *  @return *this
+     *  @return reference to this object
      */
     OFCharacterEncoding& operator=(const OFCharacterEncoding& rhs);
 
@@ -139,53 +138,53 @@ public:
 
     /** check whether two OFCharacterEncoding instances refer to the same
      *  encoder.
-     *  @param rhs another OFCharacterEncoding instance.
-     *  @return OFTrue if both instances refer to the same encoder, OFFalse
-     *  otherwise.
      *  @note This only tests if both objects refer to the exactly same
      *    encoder, originating from one and the same call to selectEncoding().
      *    The result will be OFFalse if both encoders were constructed
      *    independently of each other, even if exactly the same parameters
      *    were used.
+     *  @param rhs another OFCharacterEncoding instance.
+     *  @return OFTrue if both instances refer to the same encoder, OFFalse
+     *    otherwise.
      */
     OFBool operator==(const OFCharacterEncoding& rhs) const;
 
     /** check whether two OFCharacterEncoding instances do not refer to the
      *  same encoder.
-     *  @param rhs another OFCharacterEncoding instance.
-     *  @return OFFalse if both instances refer to the same encoder, OFTrue
-     *  otherwise.
      *  @note This only tests if both objects refer to the exactly same
      *    encoder, originating from one and the same call to selectEncoding().
      *    The result will be OFTrue if both encoders were constructed
      *    independently of each other, even if exactly the same parameters
      *    were used.
+     *  @param rhs another OFCharacterEncoding instance.
+     *  @return OFFalse if both instances refer to the same encoder, OFTrue
+     *    otherwise.
      */
     OFBool operator!=(const OFCharacterEncoding& rhs) const;
 
     /** clear the internal state.
      *  This resets the converter and potentially frees all used resources
-     *  (if this is the last OFCharacterEncoding instance referring
-     *  to the encoder).
+     *  (if this is the last OFCharacterEncoding instance referring to the
+     *  encoder).
      */
     void clear();
 
-    /*! get flags controlling converter behavior, e.g. specifying how illegal
+    /** get flags controlling converter behavior, e.g.\ specifying how illegal
      *  character sequences should be handled during conversion.
+     *  @note This method will always return 0 if no encoder was selected
+     *    using selectEncoding() before calling it.
      *  @return a combination the IllegalSequenceMode constants (bitwise or)
      *    that is currently set or 0 if the current mode cannot be determined.
-     *  @note this method will always return 0 if no encoder was selected
-     *    using selectEncoding() before calling it.
      */
     unsigned getConversionFlags() const;
 
-    /*! set flags controlling converter behavior, e.g. illegal character
+    /** set flags controlling converter behavior, e.g.\ illegal character
      *  sequences should be handled during conversion.
      *  @pre An encoding has been selected by successfully calling
      *    OFCharacterEncoding::selectEncoding(), i.e.
      *    OFCharacterEncoding::isAvailable() and *this evaluate to OFTrue.
-     *  @param flags the ConversionFlags that shall be used, a combination of
-     *    the ConversionFlags contants, e.g.
+     *  @param flags the conversion flags that shall be used, a combination of
+     *    the OFCharacterEncoding::ConversionFlags constants, e.g.
      *    TransliterateIllegalSequences | DiscardIllegalSequences.
      *  @return EC_Normal if the flags were set, an error code otherwise, i.e.
      *    if the flags are not supported by the underlying implementation.
@@ -196,9 +195,8 @@ public:
     /** select source and destination character encoding for subsequent
      *  conversion(s).  The encoding names can be found in the documentation
      *  of the underlying implementation (e.g. libiconv).  Typical names
-     *  are "ASCII", "ISO-8859-1" and "UTF-8".  OFnullptr and an empty
-     *  string both denote the encoding of the current locale,
-     *  (see getLocaleEncoding()).
+     *  are "ASCII", "ISO-8859-1" and "UTF-8".  An empty string denotes the
+     *  encoding of the current locale (see getLocaleEncoding()).
      *  @param  fromEncoding  name of the source character encoding
      *  @param  toEncoding    name of the destination character encoding
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -226,8 +224,8 @@ public:
      *  Since the length of the input string has to be specified explicitly,
      *  the string can contain more than one NULL byte.
      *  @param  fromString  input string to be converted (using the source
-     *                      character encoding). OFnullptr is regarded as an
-     *                      empty string.
+     *                      character encoding).  A NULL pointer is regarded as
+     *                      an empty string.
      *  @param  fromLength  length of the input string (number of bytes without
      *                      the trailing NULL byte)
      *  @param  toString    reference to variable where the converted string
@@ -356,9 +354,8 @@ public:
 
     // --- static helper functions ---
 
-    /*! check whether character set conversion is available, e.g. the
+    /** check whether character set conversion is available, e.g.\ the
      *  underlying encoding library is available.
-     *  @details
      *  If not, no conversion between different character encodings will be
      *  possible (apart from the Windows-specific wide character conversion
      *  functions).
@@ -367,10 +364,11 @@ public:
      */
     static OFBool isAvailable();
 
-    /** get version information of the underlying character encoding implementation.
+    /** get version information of the underlying character encoding library.
      *  Typical output format: "LIBICONV, Version 1.14".  If character encoding
-     *  is not available the output is: "<no character encoding library available>"
-     *  @return name and version number of the character encoding implementation
+     *  is not available the output is:
+     *    "<no character encoding library available>"
+     *  @return name and version number of the character encoding library
      */
     static OFString getVersionString();
 
@@ -404,6 +402,8 @@ public:
 
 #endif  // HAVE_WINDOWS_H
 
+    /// shared pointer to internal implementation (interface to character
+    /// encoding library)
     OFshared_ptr<Implementation> TheImplementation;
 };
 
