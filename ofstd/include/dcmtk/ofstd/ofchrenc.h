@@ -182,7 +182,8 @@ public:
      *  sequences should be handled during conversion.
      *  @pre An encoding has been selected by successfully calling
      *    OFCharacterEncoding::selectEncoding(), i.e.
-     *    OFCharacterEncoding::isAvailable() and *this evaluate to OFTrue.
+     *    OFCharacterEncoding::isLibraryAvailable() and *this evaluate to
+     *    OFTrue.
      *  @param flags the conversion flags that shall be used, a combination of
      *    the OFCharacterEncoding::ConversionFlags constants, e.g.
      *    TransliterateIllegalSequences | DiscardIllegalSequences.
@@ -362,7 +363,7 @@ public:
      *  @return OFTrue if character set conversion is possible, OFFalse
      *    otherwise
      */
-    static OFBool isAvailable();
+    static OFBool isLibraryAvailable();
 
     /** get version information of the underlying character encoding library.
      *  Typical output format: "LIBICONV, Version 1.14".  If character encoding
@@ -370,7 +371,7 @@ public:
      *    "<no character encoding library available>"
      *  @return name and version number of the character encoding library
      */
-    static OFString getVersionString();
+    static OFString getLibraryVersionString();
 
     /** count characters in given UTF-8 string and return the resulting number
      *  of so-called "code points".  Please note that invalid UTF-8 encodings

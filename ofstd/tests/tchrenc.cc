@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,9 +41,9 @@ static void checkConversionFlags(OFCharacterEncoding& charEnc,
 OFTEST(ofstd_OFCharacterEncoding_1)
 {
     // the returned string should never be empty
-    OFCHECK(!OFCharacterEncoding::getVersionString().empty());
-    // check whether libiconv support is available
-    if (OFCharacterEncoding::isAvailable())
+    OFCHECK(!OFCharacterEncoding::getLibraryVersionString().empty());
+    // check whether character set conversion support is available
+    if (OFCharacterEncoding::isLibraryAvailable())
     {
         OFCharacterEncoding charEnc;
         OFString resultStr;
@@ -80,7 +80,7 @@ OFTEST(ofstd_OFCharacterEncoding_1)
 
 OFTEST(ofstd_OFCharacterEncoding_2)
 {
-    if (OFCharacterEncoding::isAvailable())
+    if (OFCharacterEncoding::isLibraryAvailable())
     {
         OFCharacterEncoding charEnc;
         OFString resultStr1, resultStr2;
@@ -105,7 +105,7 @@ OFTEST(ofstd_OFCharacterEncoding_2)
 
 OFTEST(ofstd_OFCharacterEncoding_3)
 {
-    if (OFCharacterEncoding::isAvailable())
+    if (OFCharacterEncoding::isLibraryAvailable())
     {
         // create a huge string with valid ISO 8859-1 characters (code #32 to #255)
         char hugeStr[4096];
@@ -123,7 +123,7 @@ OFTEST(ofstd_OFCharacterEncoding_3)
 
 OFTEST(ofstd_OFCharacterEncoding_4)
 {
-    if (OFCharacterEncoding::isAvailable())
+    if (OFCharacterEncoding::isLibraryAvailable())
     {
         OFCharacterEncoding charEnc;
         OFCHECK(charEnc.selectEncoding("ISO-8859-1", "ASCII").good());
@@ -151,7 +151,7 @@ OFTEST(ofstd_OFCharacterEncoding_4)
 
 OFTEST(ofstd_OFCharacterEncoding_5)
 {
-    if (OFCharacterEncoding::isAvailable())
+    if (OFCharacterEncoding::isLibraryAvailable())
     {
         OFCharacterEncoding charEnc;
         OFCHECK(charEnc.selectEncoding("ISO-8859-1", "ASCII").good());
@@ -179,7 +179,7 @@ OFTEST(ofstd_OFCharacterEncoding_5)
 
 OFTEST(ofstd_OFCharacterEncoding_6)
 {
-    if (OFCharacterEncoding::isAvailable())
+    if (OFCharacterEncoding::isLibraryAvailable())
     {
         OFCharacterEncoding charEnc;
         OFString resultStr1, resultStr2;

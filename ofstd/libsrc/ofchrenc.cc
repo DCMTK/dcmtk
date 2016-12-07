@@ -512,7 +512,7 @@ class OFCharacterEncoding::Implementation {};
 #endif // NOT DCMTK_ENABLE_CHARSET_CONVERSION
 
 
-OFBool OFCharacterEncoding::isAvailable()
+OFBool OFCharacterEncoding::isLibraryAvailable()
 {
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     return OFTrue;
@@ -522,7 +522,7 @@ OFBool OFCharacterEncoding::isAvailable()
 }
 
 
-OFString OFCharacterEncoding::getVersionString()
+OFString OFCharacterEncoding::getLibraryVersionString()
 {
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     return Implementation::getVersionString();

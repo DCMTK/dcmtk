@@ -431,11 +431,10 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
                         DCMDATA_TRACE("DcmSpecificCharacterSet: Also selected this character set "
                             << "(i.e. '" << definedTerm << "') as the default one");
                     }
-                }
-                else {
+                } else {
                     DCMDATA_ERROR("DcmSpecificCharacterSet: '" << definedTerm <<
                         "' is not supported by the utilized character set conversion library '"
-                        << OFCharacterEncoding::getVersionString() << '\'');
+                        << OFCharacterEncoding::getLibraryVersionString() << '\'');
                     EncodingConverters.erase(conv.first);
                 }
             } else {
@@ -462,7 +461,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
             } else {
                 DCMDATA_ERROR("DcmSpecificCharacterSet: 'ISO 2022 IR 6' is not supported by"
                     << " the utilized character set conversion library '"
-                    << OFCharacterEncoding::getVersionString() << '\'');
+                    << OFCharacterEncoding::getLibraryVersionString() << '\'');
                 EncodingConverters.erase(conv.first);
             }
         }
@@ -722,7 +721,7 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
 OFBool DcmSpecificCharacterSet::isConversionAvailable()
 {
     // just call the appropriate function from the underlying class
-    return OFCharacterEncoding::isAvailable();
+    return OFCharacterEncoding::isLibraryAvailable();
 }
 
 

@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
                 COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-                COUT << "- " << OFCharacterEncoding::getVersionString() << OFendl;
+                COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
                 return 0;
             }
