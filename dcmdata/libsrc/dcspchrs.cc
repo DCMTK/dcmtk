@@ -188,7 +188,7 @@ OFCondition DcmSpecificCharacterSet::determineDestinationEncoding(const OFString
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
         DestinationEncoding = "JIS_X0201";              // - "ISO-IR-13" is not supported by libiconv
 #else
-        DestinationEncoding = "Shift_JIS";              // - ICU and GLIBC ICONV only know Shift_JIS
+        DestinationEncoding = "Shift_JIS";              // - ICU and stdlibc iconv only know Shift_JIS
 #endif
     else if (DestinationCharacterSet == "ISO_IR 166")   // Thai
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
@@ -249,7 +249,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
         fromEncoding = "JIS_X0201";                 // - "ISO-IR-13" is not supported by ICU
 #else
-        fromEncoding = "Shift_JIS";                 // - ICU and GLIBC ICONV only know Shift_JIS
+        fromEncoding = "Shift_JIS";                 // - ICU and stdlibc iconv only know Shift_JIS
 #endif
     else if (SourceCharacterSet == "ISO_IR 166")    // Thai
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
@@ -358,7 +358,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
             encodingName = "JIS_X0201";                 // - "ISO-IR-13" is not supported by ICU
 #else
-            encodingName = "Shift_JIS";                 // - ICU and GLIBC ICONV only know Shift_JIS
+            encodingName = "Shift_JIS";                 // - ICU and stdlibc iconv only know Shift_JIS
 #endif
         }
         else if (definedTerm == "ISO 2022 IR 166")      // Thai

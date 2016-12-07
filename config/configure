@@ -1387,7 +1387,8 @@ Optional Features:
   --enable-builtin-dict   enable loading of built-in dictionary
   --disable-builtin-dict  don't load built-in dictionary (default)
   --disable-rpath         do not hardcode runtime library paths
-  --enable-charconv=TYPE  enable character set conversion support (libiconv/libicu/gnuc/auto=default)
+  --enable-charconv=TYPE  enable character set conversion support
+                          (libiconv/libicu/stdlibc/auto=default)
   --disable-charconv      disable character set conversion support
 
 Optional Packages:
@@ -12656,7 +12657,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12659 "configure"
+#line 12660 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13128,7 +13129,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13131 "configure"
+#line 13132 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13200,7 +13201,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13203 "configure"
+#line 13204 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13272,7 +13273,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13275 "configure"
+#line 13276 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -14698,9 +14699,9 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 LIBS="$SAVELIBS"
 
 
-WITH_GLIBC_ICONV=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the GNU C library provides ICONV functionality" >&5
-$as_echo_n "checking whether the GNU C library provides ICONV functionality... " >&6; }
+WITH_STDLIBC_ICONV=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the C standard library provides iconv functionality" >&5
+$as_echo_n "checking whether the C standard library provides iconv functionality... " >&6; }
 SAVELIBS="$LIBS"
 LIBS=""
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -14715,14 +14716,14 @@ iconv_t cd=iconv_open("","");iconv(cd,0,0,0,0);iconv_close(cd);
 }
 _ACEOF
 if ac_fn_cxx_try_link "$LINENO"; then :
-  WITH_GLIBC_ICONV=yes
-     $as_echo "#define WITH_GLIBC_ICONV 1" >>confdefs.h
+  WITH_STDLIBC_ICONV=yes
+     $as_echo "#define WITH_STDLIBC_ICONV 1" >>confdefs.h
 
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $WITH_GLIBC_ICONV" >&5
-$as_echo "$WITH_GLIBC_ICONV" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $WITH_STDLIBC_ICONV" >&5
+$as_echo "$WITH_STDLIBC_ICONV" >&6; }
 LIBS="$SAVELIBS"
 
 
@@ -14869,11 +14870,11 @@ $as_echo "yes, type=libicu" >&6; }
     CHARCONVLIBS="$ICULIBS"
     DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
 
-elif test "$WITH_GLIBC_ICONV" = "yes"; then
+elif test "$WITH_STDLIBC_ICONV" = "yes"; then
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=gnuc" >&5
-$as_echo "yes, type=gnuc" >&6; }
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_GLIBC_ICONV"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=stdlibc" >&5
+$as_echo "yes, type=stdlibc" >&6; }
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV"
 
 else
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -14898,11 +14899,11 @@ $as_echo "yes, type=libicu" >&6; }
     DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
 
     ;;
-  gnuc)
+  stdlibc)
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=gnuc" >&5
-$as_echo "yes, type=gnuc" >&6; }
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_GLIBC_ICONV"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=stdlibc" >&5
+$as_echo "yes, type=stdlibc" >&6; }
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV"
 
     ;;
   no)
@@ -14926,11 +14927,11 @@ $as_echo "yes, type=libicu" >&6; }
     CHARCONVLIBS="$ICULIBS"
     DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
 
-elif test "$WITH_GLIBC_ICONV" = "yes"; then
+elif test "$WITH_STDLIBC_ICONV" = "yes"; then
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=gnuc" >&5
-$as_echo "yes, type=gnuc" >&6; }
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_GLIBC_ICONV"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=stdlibc" >&5
+$as_echo "yes, type=stdlibc" >&6; }
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV"
 
 else
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -14956,11 +14957,11 @@ $as_echo "yes, type=libicu" >&6; }
     CHARCONVLIBS="$ICULIBS"
     DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
 
-elif test "$WITH_GLIBC_ICONV" = "yes"; then
+elif test "$WITH_STDLIBC_ICONV" = "yes"; then
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=gnuc" >&5
-$as_echo "yes, type=gnuc" >&6; }
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_GLIBC_ICONV"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=stdlibc" >&5
+$as_echo "yes, type=stdlibc" >&6; }
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV"
 
 else
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5

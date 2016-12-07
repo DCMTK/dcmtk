@@ -887,8 +887,8 @@
 /* Define if we are compiling with libiconv support. */
 #cmakedefine WITH_LIBICONV
 
-/* Define if the GNU C library has ICONV builtin. */
-#cmakedefine WITH_GLIBC_ICONV
+/* Define if the C standard library has iconv builtin. */
+#cmakedefine WITH_STDLIBC_ICONV
 
 /* Define if we are compiling with ICU support. */
 #cmakedefine WITH_ICU
@@ -896,7 +896,7 @@
 /* character set conversion constants. */
 #define DCMTK_CHARSET_CONVERSION_ICU 1
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
-#define DCMTK_CHARSET_CONVERSION_GLIBC_ICONV 3
+#define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
 
 /* Define to select character set conversion implementation. */
 #cmakedefine DCMTK_ENABLE_CHARSET_CONVERSION @DCMTK_ENABLE_CHARSET_CONVERSION@

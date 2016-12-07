@@ -46,16 +46,16 @@
 /* character set conversion constants. */
 #define DCMTK_CHARSET_CONVERSION_ICU 1
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
-#define DCMTK_CHARSET_CONVERSION_GLIBC_ICONV 3
+#define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
+
+/* Define to select character set conversion implementation. */
+#undef DCMTK_ENABLE_CHARSET_CONVERSION
 
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 
 /* Enable or disable C++11 while building DCMTK. */
 #undef DCMTK_USE_CXX11_STL
-
-/* Define to select character set conversion implementation. */
-#undef DCMTK_ENABLE_CHARSET_CONVERSION
 
 /* Empty default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
@@ -1039,9 +1039,6 @@ typedef unsigned short ushort;
 #endif
 
 
-/* Define if the GNU C library has ICONV builtin. */
-#undef WITH_GLIBC_ICONV
-
 /* Define if we are compiling with libiconv support. */
 #undef WITH_LIBICONV
 
@@ -1062,6 +1059,9 @@ typedef unsigned short ushort;
 
 /* Define if we are compiling with libsndfile support. */
 #undef WITH_SNDFILE
+
+/* Define if the C standard library has iconv builtin. */
+#undef WITH_STDLIBC_ICONV
 
 /* Define if we are compiling with libwrap (TCP wrapper) support. */
 #undef WITH_TCPWRAPPER

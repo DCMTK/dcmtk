@@ -276,7 +276,7 @@ private:
 };
 
 #elif DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV ||\
- DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_GLIBC_ICONV
+ DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV
 
 #include <iconv.h>
 #ifdef WITH_LIBICONV
@@ -317,13 +317,15 @@ public:
         sprintf(buf, "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
         versionStr.append(buf);
         return versionStr;
-#else
+#elif defined(__GLIBC_)
         OFOStringStream oss;
         oss << "GNU C library (iconv), version "
             << __GLIBC__ << '.'
             << __GLIBC_MINOR__;
         OFSTRINGSTREAM_GETOFSTRING(oss, version);
         return version;
+#else
+        return "Unknown C library (iconv)";
 #endif
     }
 
@@ -487,14 +489,14 @@ private:
     iconv_t ConversionDescriptor;
 };
 
-#else // ICONV
+#endif // ICONV
+
+#else // DCMTK_ENABLE_CHARSET_CONVERSION
 
 // for suppressing unnecessary warnings
 class OFCharacterEncoding::Implementation {};
 
-#endif // Implementation
-
-#endif // DCMTK_ENABLE_CHARSET_CONVERSION
+#endif // NOT DCMTK_ENABLE_CHARSET_CONVERSION
 
 
 OFBool OFCharacterEncoding::isAvailable()
@@ -579,7 +581,7 @@ OFCharacterEncoding& OFCharacterEncoding::operator=(const OFCharacterEncoding& r
 
 OFCharacterEncoding::operator OFBool() const
 {
-    return TheImplementation;
+    return OFstatic_cast(OFBool, TheImplementation);
 }
 
 
