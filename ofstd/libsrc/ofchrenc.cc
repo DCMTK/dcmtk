@@ -62,8 +62,12 @@ const unsigned int OFCharacterEncoding::CPC_UTF8   = CP_UTF8;
 
 class OFCharacterEncoding::Implementation
 {
-public:
-    static Implementation* create(const OFString& fromEncoding, const OFString& toEncoding, OFCondition& result)
+
+  public:
+
+    static Implementation* create(const OFString& fromEncoding,
+                                  const OFString& toEncoding,
+                                  OFCondition& result)
     {
         UErrorCode icuResult = U_ZERO_ERROR;
         UConverter* sourceConverter = ucnv_open(fromEncoding != "" ? fromEncoding.c_str() : OFnullptr, &icuResult);
@@ -158,46 +162,48 @@ public:
     OFBool setConversionFlags(const unsigned flags)
     {
         UErrorCode result = U_ZERO_ERROR;
-        switch(flags)
+        switch (flags)
         {
-        case AbortTranscodingOnIllegalSequence:
-            ucnv_setFromUCallBack(targetConverter,
-                UCNV_FROM_U_CALLBACK_STOP,
-                OFnullptr,
-                OFnullptr,
-                OFnullptr,
-                &result);
-            if (U_FAILURE(result))
+            case AbortTranscodingOnIllegalSequence:
+                ucnv_setFromUCallBack(targetConverter,
+                    UCNV_FROM_U_CALLBACK_STOP,
+                    OFnullptr,
+                    OFnullptr,
+                    OFnullptr,
+                    &result);
+                if (U_FAILURE(result))
+                    return OFFalse;
+                ucnv_setToUCallBack(sourceConverter,
+                    UCNV_TO_U_CALLBACK_STOP,
+                    OFnullptr,
+                    OFnullptr,
+                    OFnullptr,
+                    &result);
+                return !U_FAILURE(result);
+            case DiscardIllegalSequences:
+                ucnv_setFromUCallBack(targetConverter,
+                    UCNV_FROM_U_CALLBACK_SKIP,
+                    OFnullptr,
+                    OFnullptr,
+                    OFnullptr,
+                    &result);
+                if (U_FAILURE(result))
+                    return OFFalse;
+                ucnv_setToUCallBack(sourceConverter,
+                    UCNV_TO_U_CALLBACK_SKIP,
+                    OFnullptr,
+                    OFnullptr,
+                    OFnullptr,
+                    &result);
+                return !U_FAILURE(result);
+            default:
                 return OFFalse;
-            ucnv_setToUCallBack(sourceConverter,
-                UCNV_TO_U_CALLBACK_STOP,
-                OFnullptr,
-                OFnullptr,
-                OFnullptr,
-                &result);
-            return !U_FAILURE(result);
-        case DiscardIllegalSequences:
-            ucnv_setFromUCallBack(targetConverter,
-                UCNV_FROM_U_CALLBACK_SKIP,
-                OFnullptr,
-                OFnullptr,
-                OFnullptr,
-                &result);
-            if (U_FAILURE(result))
-                return OFFalse;
-            ucnv_setToUCallBack(sourceConverter,
-                UCNV_TO_U_CALLBACK_SKIP,
-                OFnullptr,
-                OFnullptr,
-                OFnullptr,
-                &result);
-            return !U_FAILURE(result);
-        default:
-            return OFFalse;
         }
     }
 
-    OFCondition convert(OFString& target, const char* from, const size_t length)
+    OFCondition convert(OFString& target,
+                        const char* from,
+                        const size_t length)
     {
         // if the input string is empty or NULL, we are done
         if (!from || !length)
@@ -263,9 +269,10 @@ public:
 private:
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
-    Implementation(UConverter* sourceConverter, UConverter* targetConverter)
-    : sourceConverter(sourceConverter)
-    , targetConverter(targetConverter)
+    Implementation(UConverter* sourceConverter,
+                   UConverter* targetConverter)
+      : sourceConverter(sourceConverter),
+        targetConverter(targetConverter)
     {
 
     }
@@ -289,8 +296,12 @@ private:
 
 class OFCharacterEncoding::Implementation
 {
-public:
-    static Implementation* create( const OFString& fromEncoding, const OFString& toEncoding, OFCondition& result )
+
+  public:
+
+    static Implementation* create(const OFString& fromEncoding,
+                                  const OFString& toEncoding,
+                                  OFCondition& result)
     {
         iconv_t descriptor = ::iconv_open(toEncoding.c_str(), fromEncoding.c_str());
         if (descriptor == ILLEGAL_DESCRIPTOR)
@@ -376,37 +387,37 @@ public:
     {
 #if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
         int flag = 0;
-        switch(flags)
+        switch (flags)
         {
-        case AbortTranscodingOnIllegalSequence:
-            if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+            case AbortTranscodingOnIllegalSequence:
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                    return OFFalse;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                    return OFFalse;
+                return OFTrue;
+            case DiscardIllegalSequences:
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                    return OFFalse;
+                flag = 1;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                    return OFFalse;
+                return OFTrue;
+            case TransliterateIllegalSequences:
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                    return OFFalse;
+                flag = 1;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                    return OFFalse;
+                return OFTrue;
+            case (TransliterateIllegalSequences | DiscardIllegalSequences):
+                flag = 1;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                    return OFFalse;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                    return OFFalse;
+                return OFTrue;
+            default:
                 return OFFalse;
-            if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
-                return OFFalse;
-            return OFTrue;
-        case DiscardIllegalSequences:
-            if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
-                return OFFalse;
-            flag = 1;
-            if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
-                return OFFalse;
-            return OFTrue;
-        case TransliterateIllegalSequences:
-            if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
-                return OFFalse;
-            flag = 1;
-            if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
-                return OFFalse;
-            return OFTrue;
-        case (TransliterateIllegalSequences | DiscardIllegalSequences):
-            flag = 1;
-            if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
-                return OFFalse;
-            if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
-                return OFFalse;
-            return OFTrue;
-        default:
-            return OFFalse;
         }
 #else
         return flags == AbortTranscodingOnIllegalSequence;
@@ -414,7 +425,9 @@ public:
     }
 
 
-    OFCondition convert(OFString& toString, const char* fromString, const size_t fromLength)
+    OFCondition convert(OFString& toString,
+                        const char* fromString,
+                        const size_t fromLength)
     {
         OFCondition status = EC_Normal;
         // if the input string is empty or NULL, we are done
@@ -553,14 +566,14 @@ OFBool OFCharacterEncoding::supportsConversionFlags(const unsigned flags)
 
 
 OFCharacterEncoding::OFCharacterEncoding()
-: TheImplementation()
+  : TheImplementation()
 {
 
 }
 
 
 OFCharacterEncoding::OFCharacterEncoding(const OFCharacterEncoding& rhs)
-: TheImplementation(rhs.TheImplementation)
+  : TheImplementation(rhs.TheImplementation)
 {
 
 }
@@ -623,7 +636,8 @@ unsigned OFCharacterEncoding::getConversionFlags() const
 OFCondition OFCharacterEncoding::setConversionFlags(const unsigned flags)
 {
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-    if (TheImplementation) {
+    if (TheImplementation)
+    {
         if (TheImplementation->setConversionFlags(flags))
             return EC_Normal;
         return makeOFCondition(0, EC_CODE_CannotControlConverter, OF_error,

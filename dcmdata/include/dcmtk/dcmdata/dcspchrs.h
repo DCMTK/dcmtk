@@ -264,7 +264,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 
     /// type definition of a map storing the identifier (key) of a character
     /// set and the associated character set converter
-    typedef OFMap<OFString,OFCharacterEncoding> T_EncodingConvertersMap;
+    typedef OFMap<OFString, OFCharacterEncoding> T_EncodingConvertersMap;
 
     // private undefined copy constructor
     DcmSpecificCharacterSet(const DcmSpecificCharacterSet &);

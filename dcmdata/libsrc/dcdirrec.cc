@@ -1163,15 +1163,16 @@ OFCondition DcmDirectoryRecord::convertCharacterSet(DcmSpecificCharacterSet &con
         status = newConverter.selectCharacterSet(fromCharset, toCharset);
         if (status.good())
         {
-            if (unsigned flags = converter.getConversionFlags()) {
-                status = newConverter.setConversionFlags(flags);
-                if (status.bad())
-                    return status;
+            const unsigned cflags = converter.getConversionFlags();
+            if (cflags > 0)
+                status = newConverter.setConversionFlags(cflags);
+            if (status.good())
+            {
+                // convert all affected element values in the item with the new converter
+                status = DcmItem::convertCharacterSet(newConverter);
+                // update the Specific Character Set (0008,0005) element
+                updateSpecificCharacterSet(status, newConverter);
             }
-            // convert all affected element values in the item with the new converter
-            status = DcmItem::convertCharacterSet(newConverter);
-            // update the Specific Character Set (0008,0005) element
-            updateSpecificCharacterSet(status, newConverter);
         }
     } else {
         // no Specific Character Set attribute or the same character set,

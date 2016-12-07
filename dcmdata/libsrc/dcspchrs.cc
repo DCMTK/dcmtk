@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2015, OFFIS e.V.
+ *  Copyright (C) 2011-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -89,9 +89,12 @@ unsigned DcmSpecificCharacterSet::getConversionFlags() const
 
 OFCondition DcmSpecificCharacterSet::setConversionFlags(const unsigned flags)
 {
-    if (!EncodingConverters.empty()) {
+    if (!EncodingConverters.empty())
+    {
+        /* pass conversion flags to all "encoding converters" */
         for (T_EncodingConvertersMap::iterator it = EncodingConverters.begin();
-            it != EncodingConverters.end(); ++it) {
+            it != EncodingConverters.end(); ++it)
+        {
             OFCondition status = it->second.setConversionFlags(flags);
             if (status.bad())
                 return status;
@@ -456,9 +459,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
                 DCMDATA_DEBUG("DcmSpecificCharacterSet: Added character set 'ISO 2022 IR 6' (ASCII) "
                     << "for the conversion to " << DestinationEncoding
                     << " (because it is needed for one or more of the previously added character sets)");
-            }
-            else
-            {
+            } else {
                 DCMDATA_ERROR("DcmSpecificCharacterSet: 'ISO 2022 IR 6' is not supported by"
                     << " the utilized character set conversion library '"
                     << OFCharacterEncoding::getVersionString() << '\'');

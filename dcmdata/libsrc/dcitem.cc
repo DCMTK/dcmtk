@@ -4390,21 +4390,22 @@ OFCondition DcmItem::convertCharacterSet(const OFString &fromCharset,
         if (status.good())
         {
             unsigned cflags = 0;
+            /* pass flags to underlying implementation */
             if (flags & DCMTypes::CF_discardIllegal)
                 cflags |= OFCharacterEncoding::DiscardIllegalSequences;
             if (flags & DCMTypes::CF_transliterate)
                 cflags |= OFCharacterEncoding::TransliterateIllegalSequences;
-            if (cflags) {
+            if (cflags > 0)
                 status = converter.setConversionFlags(cflags);
-                if (status.bad())
-                    return status;
-            }
-            // convert all affected element values in the item
-            status = convertCharacterSet(converter);
-            if (updateCharset)
+            if (status.good())
             {
-                // update the Specific Character Set (0008,0005) element
-                updateSpecificCharacterSet(status, converter);
+                // convert all affected element values in the item
+                status = convertCharacterSet(converter);
+                if (updateCharset)
+                {
+                    // update the Specific Character Set (0008,0005) element
+                    updateSpecificCharacterSet(status, converter);
+                }
             }
         }
     }
