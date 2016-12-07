@@ -199,7 +199,8 @@ bitstream format of deflated input:
 \verbatim
 specific character set:
 
-  # the following options require support from the libiconv toolkit
+  # the following options require support from an underlying character
+  # encoding library (see output of --version on which one is available)
 
   +U8  --convert-to-utf8
          convert all element values that are affected

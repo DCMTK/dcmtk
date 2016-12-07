@@ -145,7 +145,8 @@ specific character set:
          convert all element values that are affected
          by Specific Character Set (0008,0005) to UTF-8
 
-         # requires support from the libiconv toolkit
+         # requires support from an underlying character encoding library
+         # (see output of --version on which one is available)
 \endverbatim
 
 \subsection output_options output options

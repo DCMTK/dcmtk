@@ -130,7 +130,8 @@ specific character set:
           convert all element values that are affected
           by Specific Character Set (0008,0005) to UTF-8
 
-          # requires support from the libiconv toolkit
+          # requires support from an underlying character encoding library
+          # (see output of --version on which one is available)
 \endverbatim
 
 \subsection output_options output options
@@ -385,6 +386,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2015 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
