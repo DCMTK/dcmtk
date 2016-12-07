@@ -94,11 +94,11 @@ OPTION(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char ma
 # configured the the opposite way since most users won't be interested in using
 # the external default dictionary if it is already compiled in.
 IF(WIN32 OR MINGW)
-  OPTION(DCMTK_ENABLE_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary" ON)
-  OPTION(DCMTK_ENABLE_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup" OFF)
+  OPTION(DCMTK_ENABLE_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary." ON)
+  OPTION(DCMTK_ENABLE_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup." OFF)
 ELSE(WIN32 or MINGW) # built-in dictionary turned off on Unix per default
-  OPTION(DCMTK_ENABLE_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary" OFF)
-  OPTION(DCMTK_ENABLE_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup" ON)
+  OPTION(DCMTK_ENABLE_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary." OFF)
+  OPTION(DCMTK_ENABLE_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup." ON)
 ENDIF(WIN32 OR MINGW)
 if (NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND NOT DCMTK_ENABLE_BUILTIN_DICTIONARY)
   MESSAGE(WARNING "Either external or built-in dictionary should be enabled, otherwise dictionary must be loaded manually on startup!")

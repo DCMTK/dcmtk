@@ -56,7 +56,7 @@ ELSE(DCMTK_WIDE_CHAR_MAIN_FUNCTION)
 ENDIF(DCMTK_WIDE_CHAR_MAIN_FUNCTION)
 
 IF(NOT DCMTK_ENABLE_CHARSET_CONVERSION)
-  SET(DCMTK_ENABLE_CHARSET_CONVERSION_DOCSTRING "Select character set conversion implementation")
+  SET(DCMTK_ENABLE_CHARSET_CONVERSION_DOCSTRING "Select character set conversion implementation.")
   IF(DCMTK_WITH_ICONV)
     IF(DCMTK_WITH_ICU)
       MESSAGE(WARNING "Warning: Both ICU and the libiconv are available, using libiconv. Modify DCMTK_ENABLE_CHARSET_CONVERSION for switching to ICU")
