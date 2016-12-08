@@ -328,7 +328,7 @@ class OFCharacterEncoding::Implementation
         sprintf(buf, "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
         versionStr.append(buf);
         return versionStr;
-#elif defined(__GLIBC_)
+#elif defined(__GLIBC__)
         OFOStringStream oss;
         oss << "GNU C library (iconv), version "
             << __GLIBC__ << '.'
