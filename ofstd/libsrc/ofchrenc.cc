@@ -266,7 +266,8 @@ class OFCharacterEncoding::Implementation
         ucnv_close(targetConverter);
     }
 
-private:
+  private:
+
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
     Implementation(UConverter* sourceConverter,
@@ -344,7 +345,7 @@ class OFCharacterEncoding::Implementation
     {
 #ifdef WITH_LIBICONV
         // basically, the function below should always return a non-empty string
-        // but older versions of libiconv might return OFnullptr in certain cases
+        // but older versions of libiconv might return NULL in certain cases
         return OFSTRING_GUARD(::locale_charset());
 #else
         return OFString();
@@ -360,6 +361,8 @@ class OFCharacterEncoding::Implementation
             || flags == (DiscardIllegalSequences | TransliterateIllegalSequences)
         ;
 #else
+        // in fact, ICU also supports other "conversion flags" but this implementation
+        // is currently limited to the very basics (might be enhanced in the future)
         return flags == AbortTranscodingOnIllegalSequence;
 #endif
     }
@@ -420,6 +423,8 @@ class OFCharacterEncoding::Implementation
                 return OFFalse;
         }
 #else
+        // in fact, ICU also supports other "conversion flags" but this implementation
+        // is currently limited to the very basics (might be enhanced in the future)
         return flags == AbortTranscodingOnIllegalSequence;
 #endif
     }
@@ -480,7 +485,8 @@ class OFCharacterEncoding::Implementation
         }
     }
 
-private:
+  private:
+
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
     Implementation(iconv_t ConversionDescriptor)
@@ -686,7 +692,6 @@ OFCondition OFCharacterEncoding::convertString(const char *fromString,
         if (clearMode)
             toString.clear();
         return TheImplementation->convert(toString, fromString, fromLength);
-
     }
     return EC_NoEncodingSelected;
 #else
@@ -726,8 +731,7 @@ OFCondition OFCharacterEncoding::convertFromWideCharString(const wchar_t *fromSt
                     toString.append(toBuffer, charsConverted);
                 } else {
                     // if conversion failed, create appropriate condition text
-                    createGetLastErrorCondition(status, "Cannot convert character encoding: ",
-                        EC_CODE_CannotConvertEncoding);
+                    createGetLastErrorCondition(status, "Cannot convert character encoding: ", EC_CODE_CannotConvertEncoding);
                 }
                 delete[] toBuffer;
             } else {
@@ -774,8 +778,7 @@ OFCondition OFCharacterEncoding::convertToWideCharString(const char *fromString,
             if (toLength == 0)
             {
                 // if conversion failed, create appropriate condition text
-                createGetLastErrorCondition(status, "Cannot convert character encoding: ",
-                    EC_CODE_CannotConvertEncoding);
+                createGetLastErrorCondition(status, "Cannot convert character encoding: ", EC_CODE_CannotConvertEncoding);
             }
         } else {
             // output buffer could not be allocated
