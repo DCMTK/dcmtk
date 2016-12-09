@@ -7,7 +7,7 @@
  *  Source file for class DRTModifiedAttributesSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2016-12-09 16:57:45
  *
  */
 
@@ -74,7 +74,9 @@ OFCondition DRTModifiedAttributesSequence::Item::read(DcmItem &item)
     {
         /* re-initialize object */
         clear();
-        result = EC_Normal;
+        /* avoid compiler warning on unused parameter */
+        (void)item;
+        result = EC_NotYetImplemented;
     }
     return result;
 }
@@ -85,7 +87,9 @@ OFCondition DRTModifiedAttributesSequence::Item::write(DcmItem &item)
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
-        result = EC_Normal;
+        /* avoid compiler warning on unused parameter */
+        (void)item;
+        result = EC_NotYetImplemented;
     }
     return result;
 }
