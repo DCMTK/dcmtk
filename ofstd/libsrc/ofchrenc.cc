@@ -361,8 +361,9 @@ class OFCharacterEncoding::Implementation
             || flags == (DiscardIllegalSequences | TransliterateIllegalSequences)
         ;
 #else
-        // in fact, ICU also supports other "conversion flags" but this implementation
-        // is currently limited to the very basics (might be enhanced in the future)
+        // the iconvctl function is implemented only in GNU libiconv and not in other
+        // iconv implementations. The iconv implementation in the C standard library
+        // therefore does not support different encoding flags.
         return flags == AbortTranscodingOnIllegalSequence;
 #endif
     }
@@ -423,8 +424,9 @@ class OFCharacterEncoding::Implementation
                 return OFFalse;
         }
 #else
-        // in fact, ICU also supports other "conversion flags" but this implementation
-        // is currently limited to the very basics (might be enhanced in the future)
+        // the iconvctl function is implemented only in GNU libiconv and not in other
+        // iconv implementations. The iconv implementation in the C standard library
+        // therefore does not support different encoding flags.
         return flags == AbortTranscodingOnIllegalSequence;
 #endif
     }
