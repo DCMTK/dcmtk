@@ -30,6 +30,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofcast.h"
 
+#include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcdirrec.h"
@@ -373,6 +374,33 @@ OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream&out,
         }
     }
     return l_error;
+}
+
+
+// ********************************
+
+
+OFCondition DcmSequenceOfItems::writeJson(STD_NAMESPACE ostream& out,
+                                          DcmJsonFormat &format)
+{
+    // use common method from DcmElement to write opener
+    DcmElement::writeJsonOpener(out, format);
+    OFCondition status = EC_Normal;
+    // write sequence content
+    if (!itemList->empty())
+    {
+        format.printValuePrefix(out);
+        itemList->seek(ELP_first);
+        status = itemList->get()->writeJson(out, format);
+        while (status.good() && itemList->seek(ELP_next))
+        {
+            format.printNextArrayElementPrefix(out);
+            status = itemList->get()->writeJson(out, format);
+        }
+        format.printValueSuffix(out);
+    }
+    DcmElement::writeJsonCloser(out, format);
+    return status;
 }
 
 

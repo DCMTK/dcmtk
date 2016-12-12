@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,6 +22,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcvris.h"
+#include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/ofstd/ofstring.h"
 
 #define INCLUDE_CSTDIO
@@ -139,4 +140,56 @@ OFCondition DcmIntegerString::checkStringValue(const OFString &value,
                                                 const OFString &vm)
 {
     return DcmByteString::checkStringValue(value, vm, "is", 8, MAX_IS_LENGTH);
+}
+
+
+// ********************************
+
+
+OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
+                                        DcmJsonFormat &format)
+{
+    /* always write JSON Opener */
+    writeJsonOpener(out, format);
+    /* write element value (if loaded) */
+    if (valueLoaded())
+    {
+        OFString bulkDataValue;
+        if (format.asBulkDataURI(getTag(), bulkDataValue))
+        {
+            format.printBulkDataURIPrefix(out);
+            DcmJsonFormat::printString(out, bulkDataValue);
+        }
+        else
+        {
+            /* get string data (without normalization) */
+            char *value_ = NULL;
+            Uint32 length = 0;
+            getString(value_, length);
+            if ((value_ != NULL) && (length > 0))
+            {
+                /* explicitly convert to OFString because of possible NULL bytes */
+                OFString value(value_, length);
+                OFCondition status = getOFString(value, 0L);
+                if (status.bad())
+                    return status;
+                format.printValuePrefix(out);
+                DcmJsonFormat::printNumberInteger(out, value);
+                const unsigned long vm = getVM();
+                for (unsigned long valNo = 1; valNo < vm; ++valNo)
+                {
+                    status = getOFString(value, valNo);
+                    if (status.bad())
+                        return status;
+                    format.printNextArrayElementPrefix(out);
+                    DcmJsonFormat::printNumberInteger(out, value);
+                }
+                format.printValueSuffix(out);
+            }
+        }
+    }
+    /* write JSON Closer  */
+    writeJsonCloser(out, format);
+    /* always report success */
+    return EC_Normal;
 }

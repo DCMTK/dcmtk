@@ -25,6 +25,7 @@
 #include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
 #include "dcmtk/dcmdata/dcitem.h"     /* for class DcmItem */
 #include "dcmtk/dcmdata/dcdeftag.h"   /* for tag definitions */
+#include "dcmtk/dcmdata/dcjson.h"     /* json helper classes */
 
 //
 // This implementation does not support 16 bit character sets. Since 8 bit
@@ -221,4 +222,47 @@ OFCondition DcmCharString::getSpecificCharacterSet(OFString &charset)
             << " " << getTag() << " uses character set \"" << charset << "\"");
     }
     return status;
+}
+
+
+// ********************************
+
+
+OFCondition DcmCharString::writeJson(STD_NAMESPACE ostream &out,
+    DcmJsonFormat &format)
+{
+    /* always write JSON Opener */
+    DcmElement::writeJsonOpener(out, format);
+    /* write element value (if non-empty) */
+    if (!isEmpty())
+    {
+        OFString value;
+        if (format.asBulkDataURI(getTag(), value))
+        {
+            format.printBulkDataURIPrefix(out);
+            DcmJsonFormat::printString(out, value);
+        }
+        else
+        {
+            OFCondition status = getOFString(value, 0L);
+            if (status.bad())
+                return status;
+            format.printValuePrefix(out);
+            DcmJsonFormat::printValueString(out, value);
+            const unsigned long vm = getVM();
+            for (unsigned long valNo = 1; valNo < vm; ++valNo)
+            {
+                status = getOFString(value, valNo);
+                if (status.bad())
+                    return status;
+                format.printNextArrayElementPrefix(out);
+                DcmJsonFormat::printValueString(out, value);
+            }
+            format.printValueSuffix(out);
+        }
+    }
+    /* write JSON Closer  */
+    DcmElement::writeJsonCloser(out, format);
+    /* always report success */
+    return EC_Normal;
 }

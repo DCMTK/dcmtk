@@ -31,6 +31,9 @@
 #include "dcmtk/dcmdata/dclist.h"
 #include "dcmtk/dcmdata/dcstack.h"
 
+// forward declarations
+class DcmJsonFormat;
+
 /** class representing a DICOM Sequence of Items (SQ).
  *  This class is derived from class DcmElement (and not from DcmObject) despite the fact
  *  that sequences have no value field as such, they maintain a list of items. However,
@@ -280,6 +283,14 @@ public:
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream&out,
+                                  DcmJsonFormat &format);
 
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream

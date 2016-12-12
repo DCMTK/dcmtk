@@ -28,6 +28,10 @@
 #include "dcmtk/dcmdata/dcchrstr.h"
 
 
+// forward declarations
+class DcmJsonFormat;
+
+
 /** a class representing the DICOM value representation 'Short String' (SH)
  */
 class DCMTK_DCMDATA_EXPORT DcmShortString
@@ -104,6 +108,14 @@ class DCMTK_DCMDATA_EXPORT DcmShortString
     virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format);
 
     /* --- static helper functions --- */
 

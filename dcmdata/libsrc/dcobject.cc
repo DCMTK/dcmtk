@@ -26,6 +26,7 @@
 
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcvr.h"
@@ -242,6 +243,17 @@ OFCondition DcmObject::writeXML(STD_NAMESPACE ostream& /*out*/,
 {
     return EC_IllegalCall;
 }
+
+
+// ********************************
+
+
+OFCondition DcmObject::writeJson(STD_NAMESPACE ostream& /*out*/,
+                                 DcmJsonFormat& /*format*/)
+{
+    return EC_IllegalCall;
+}
+
 
 // ***********************************************************
 // ****** protected methods **********************************

@@ -24,6 +24,7 @@
 
 #include "dcmtk/ofstd/ofuuid.h"
 
+#include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcvrof.h"
 #include "dcmtk/dcmdata/dcswap.h"
 
@@ -147,6 +148,41 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
     }
     /* always write XML end tag */
     writeXMLEndTag(out, flags);
+    /* always report success */
+    return EC_Normal;
+}
+
+
+// ********************************
+
+
+OFCondition DcmOtherFloat::writeJson(STD_NAMESPACE ostream &out,
+                                     DcmJsonFormat &format)
+{
+    /* always write JSON Opener */
+    writeJsonOpener(out, format);
+    /* for an empty value field, we do not need to do anything */
+    if (getLengthField() > 0)
+    {
+        OFString value;
+        if (format.asBulkDataURI(getTag(), value))
+        {
+            /* return defined BulkDataURI */
+            format.printBulkDataURIPrefix(out);
+            DcmJsonFormat::printString(out, value);
+        }
+        else
+        {
+            /* encode binary data as Base64 */
+            format.printInlineBinaryPrefix(out);
+            out << "\"";
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
+            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
+            out << "\"";
+        }
+    }
+    /* always write JSON Closer */
+    writeJsonCloser(out, format);
     /* always report success */
     return EC_Normal;
 }

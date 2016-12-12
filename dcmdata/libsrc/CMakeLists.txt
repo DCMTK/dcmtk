@@ -3,9 +3,9 @@
 DCMTK_ADD_LIBRARY(dcmdata
   cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcdatutl dcddirif dcdicdir dcdicent
   dcdict dcdictbi dcdirrec dcelem dcerror dcfilefo dcfilter dchashdi dcistrma
-  dcistrmb dcistrmf dcistrmz dcitem dclist dcmetinf dcobject dcostrma dcostrmb
-  dcostrmf dcostrmz dcpath dcpcache dcpixel dcpixseq dcpxitem dcrleccd dcrlecce
-  dcrlecp dcrledrg dcrleerg dcrlerp dcsequen dcspchrs dcstack dcswap dctag
+  dcistrmb dcistrmf dcistrmz dcitem dcjson dclist dcmetinf dcobject dcostrma
+  dcostrmb dcostrmf dcostrmz dcpath dcpcache dcpixel dcpixseq dcpxitem dcrleccd
+  dcrlecce dcrlecp dcrledrg dcrleerg dcrlerp dcsequen dcspchrs dcstack dcswap dctag
   dctagkey dctypes dcuid dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt
   dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrod dcvrof dcvrol dcvrpn dcvrpobw
   dcvrsh dcvrsl dcvrss dcvrst dcvrtm dcvruc dcvrui dcvrul dcvrulup dcvrur dcvrus

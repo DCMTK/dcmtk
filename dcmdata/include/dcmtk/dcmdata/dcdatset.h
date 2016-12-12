@@ -29,6 +29,7 @@
 
 
 // forward declarations
+class DcmJsonFormat;
 class DcmInputStream;
 class DcmOutputStream;
 class DcmRepresentationParameter;
@@ -255,6 +256,28 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
+
+    /** write object in JSON format.
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format);
+
+    /** write object in JSON format.
+     *  @tparam Format the formatter class, e.g. DcmJsonFormatPretty.
+     *    Will be deduced automatically.
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    template<typename Format>
+    OFCondition writeJson(STD_NAMESPACE ostream &out,
+                          Format format)
+    {
+        return writeJson(out, OFstatic_cast(DcmJsonFormat&, format));
+    }
 
     /** load object from a DICOM file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcelem.h"
+
+// forward declarations
+class DcmJsonFormat;
 
 
 /** a class representing the DICOM value representation 'Attribute Tag' (AT)
@@ -141,6 +144,14 @@ class DCMTK_DCMDATA_EXPORT DcmAttributeTag
      */
     OFCondition writeXML(STD_NAMESPACE ostream &out,
                          const size_t flags = 0);
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition writeJson(STD_NAMESPACE ostream &out,
+                          DcmJsonFormat &format);
 
     /** get particular tag value
      *  @param tagVal reference to result variable (cleared in case of error)

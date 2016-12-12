@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,9 @@
 
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/dcmdata/dcbytstr.h"
+
+// forward declarations
+class DcmJsonFormat;
 
 
 /** a class representing the DICOM value representation 'Decimal String' (DS)
@@ -132,6 +135,14 @@ class DCMTK_DCMDATA_EXPORT DcmDecimalString
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format);
 
     /* --- static helper functions --- */
 

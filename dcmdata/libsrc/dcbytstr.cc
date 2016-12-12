@@ -24,6 +24,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcbytstr.h"
 #include "dcmtk/dcmdata/dcvr.h"
 
@@ -897,4 +898,39 @@ OFCondition DcmByteString::checkStringValue(const OFString &value,
         }
     }
     return result;
+}
+
+
+// ********************************
+
+
+OFCondition DcmByteString::writeJson(STD_NAMESPACE ostream &out,
+                                     DcmJsonFormat &format)
+{
+    /* always write JSON Opener */
+    DcmElement::writeJsonOpener(out, format);
+    /* write element value (if non-empty) */
+    if (!isEmpty())
+    {
+        OFString value;
+        OFCondition status = getOFString(value, 0L);
+        if (status.bad())
+            return status;
+        format.printValuePrefix(out);
+        DcmJsonFormat::printValueString(out, value);
+        const unsigned long vm = getVM();
+        for (unsigned long valNo = 1; valNo < vm; ++valNo)
+        {
+            status = getOFString(value, valNo);
+            if (status.bad())
+                return status;
+            format.printNextArrayElementPrefix(out);
+            DcmJsonFormat::printValueString(out, value);
+        }
+        format.printValueSuffix(out);
+    }
+    /* write JSON Closer  */
+    DcmElement::writeJsonCloser(out, format);
+    /* always report success */
+    return EC_Normal;
 }

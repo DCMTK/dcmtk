@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2015, OFFIS e.V.
+ *  Copyright (C) 2002-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,10 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcvrfl.h"
+
+
+// forward declarations
+class DcmJsonFormat;
 
 
 /** a class representing the DICOM value representation 'Other Float' (OF)
@@ -106,6 +110,14 @@ class DCMTK_DCMDATA_EXPORT DcmOtherFloat
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
+
+    /** write object in JSON format to a stream
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream&out,
+                                  DcmJsonFormat &format);
 };
 
 

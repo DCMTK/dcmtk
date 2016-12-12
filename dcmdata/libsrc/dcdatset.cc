@@ -31,6 +31,7 @@
 #include "dcmtk/ofstd/ofstack.h"
 #include "dcmtk/ofstd/ofstd.h"
 
+#include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcvrus.h"
@@ -333,6 +334,30 @@ OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream &out,
         }
     }
     return l_error;
+}
+
+
+// ********************************
+
+
+OFCondition DcmDataset::writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format)
+{
+    // write dataset content
+    if (!elementList->empty())
+    {
+        elementList->seek(ELP_first);
+        OFCondition status = EC_Normal;
+        // write content of all children
+        status = elementList->get()->writeJson(out, format);
+        while (status.good() && elementList->seek(ELP_next))
+        {
+            out << "," << format.newline();
+            status = elementList->get()->writeJson(out, format);
+        }
+        return status;
+    }
+    return EC_Normal;
 }
 
 

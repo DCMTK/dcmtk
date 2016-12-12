@@ -38,6 +38,7 @@
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcjson.h"
 
 
 const Uint32 DCM_GroupLengthElementLength = 12;
@@ -209,6 +210,30 @@ OFCondition DcmMetaInfo::writeXML(STD_NAMESPACE ostream &out,
 
 // ********************************
 
+
+OFCondition DcmMetaInfo::writeJson(STD_NAMESPACE ostream &out,
+                                   DcmJsonFormat &format)
+{
+    if (format.printMetaheaderInformation)
+    {
+        // write content of file meta information
+        if (!elementList->empty())
+        {
+            elementList->seek(ELP_first);
+            OFCondition status = EC_Normal;
+            status = elementList->get()->writeJson(out, format);
+            while (status.good() && elementList->seek(ELP_next))
+            {
+                out << "," << format.newline();
+                status = elementList->get()->writeJson(out, format);
+            }
+            return status;
+        }
+    }
+    return EC_Normal;
+}
+
+// ********************************
 
 void DcmMetaInfo::setPreamble()
 {

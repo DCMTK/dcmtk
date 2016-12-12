@@ -23,10 +23,10 @@ LIBI2D = -li2d
 
 objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
 	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o \
-	pdf2dcm.o dcm2pdf.o img2dcm.o
+	pdf2dcm.o dcm2pdf.o img2dcm.o dcm2json.o
 
 progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
-	dcmdrle dcmodify pdf2dcm dcm2pdf img2dcm
+	dcmdrle dcmodify pdf2dcm dcm2pdf img2dcm dcm2json
 
 
 all: $(progs)
@@ -71,6 +71,8 @@ dcm2pdf: dcm2pdf.o
 img2dcm: img2dcm.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LIBI2D) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
+dcm2json: dcm2json.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: install-bin
 

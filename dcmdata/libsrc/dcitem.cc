@@ -70,12 +70,12 @@
 #include "dcmtk/dcmdata/dcvrut.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
+#include "dcmtk/dcmdata/dcjson.h"
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofstd.h"
-
 
 // ********************************
 
@@ -529,6 +529,34 @@ OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
     return l_error;
 }
 
+
+// ********************************
+
+
+OFCondition DcmItem::writeJson(STD_NAMESPACE ostream &out,
+                               DcmJsonFormat &format)
+{
+    if (!elementList->empty())
+    {
+        // write content of all children
+        out << "{" << format.newline();
+        elementList->seek(ELP_first);
+        OFCondition status = EC_Normal;
+        status = elementList->get()->writeJson(out, format);
+        while (status.good() && elementList->seek(ELP_next))
+        {
+            out << "," << format.newline();
+            status = elementList->get()->writeJson(out, format);
+        }
+        out << format.newline() << format.indent() << "}";
+        return status;
+    }
+    else
+    {
+        out << "{}" << format.newline();
+    }
+    return EC_Normal;
+}
 
 // ********************************
 

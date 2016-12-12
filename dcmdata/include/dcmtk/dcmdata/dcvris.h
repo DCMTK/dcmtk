@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,10 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcbytstr.h"
+
+
+// forward declarations
+class DcmJsonFormat;
 
 
 /** a class representing the DICOM value representation 'Integer String' (IS)
@@ -123,6 +127,14 @@ class DCMTK_DCMDATA_EXPORT DcmIntegerString
      */
     static OFCondition checkStringValue(const OFString &value,
                                         const OFString &vm = "1-n");
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition writeJson(STD_NAMESPACE ostream &out,
+                          DcmJsonFormat &format);
 };
 
 

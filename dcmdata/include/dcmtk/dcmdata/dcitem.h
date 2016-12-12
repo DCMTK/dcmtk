@@ -33,8 +33,9 @@
 
 
 // forward declarations
-class DcmSequenceOfItems;
 class DcmElement;
+class DcmJsonFormat;
+class DcmSequenceOfItems;
 class DcmSpecificCharacterSet;
 
 
@@ -261,6 +262,14 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream&out,
+                                  DcmJsonFormat &format);
 
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream

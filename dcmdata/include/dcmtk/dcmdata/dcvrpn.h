@@ -27,6 +27,9 @@
 
 #include "dcmtk/dcmdata/dcchrstr.h"
 
+// forward declarations
+class DcmJsonFormat;
+
 
 /** a class representing the DICOM value representation 'Person Name' (PN)
  */
@@ -173,6 +176,14 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
     OFCondition writeXML(STD_NAMESPACE ostream &out,
                          const size_t flags = 0);
 
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition writeJson(STD_NAMESPACE ostream &out,
+                          DcmJsonFormat &format);
+
     /* --- static helper functions --- */
 
     /** get name components from specified DICOM person name.
@@ -289,6 +300,12 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
     static OFCondition checkStringValue(const OFString &value,
                                         const OFString &vm = "1-n",
                                         const OFString &charset = "");
+
+private:
+
+    /** an array containing the component group names, for XML and JSON output.
+     */
+    static const char* const componentGroupNames[3];
 };
 
 

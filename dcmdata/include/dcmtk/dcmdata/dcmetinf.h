@@ -27,6 +27,9 @@
 
 #include "dcmtk/dcmdata/dcitem.h"
 
+// forward declarations
+class DcmJsonFormat;
+
 
 /// magic string identifying DICOM files
 #define DCM_Magic "DICM"
@@ -177,6 +180,14 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format);
 
     /** load object from a DICOM file.  If the file preamble is missing, an error is returned.
      *  @param fileName name of the file to load (may contain wide chars if support enabled).

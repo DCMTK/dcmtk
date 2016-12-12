@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofuuid.h"
 
+#include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcswap.h"
@@ -477,7 +478,7 @@ OFCondition DcmOtherByteOtherWord::getUint8(Uint8 &byteVal,
     }
     /* clear value in case of error */
     if (errorFlag.bad())
-	    byteVal = 0;
+        byteVal = 0;
     return errorFlag;
 }
 
@@ -513,7 +514,7 @@ OFCondition DcmOtherByteOtherWord::getUint16(Uint16 &wordVal,
     }
     /* clear value in case of error */
     if (errorFlag.bad())
-	    wordVal = 0;
+        wordVal = 0;
     return errorFlag;
 }
 
@@ -810,6 +811,41 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
         /* XML end tag: </element> */
         writeXMLEndTag(out, flags);
     }
+    /* always report success */
+    return EC_Normal;
+}
+
+
+// ********************************
+
+
+OFCondition DcmOtherByteOtherWord::writeJson(STD_NAMESPACE ostream &out,
+                                             DcmJsonFormat &format)
+{
+    /* write JSON Opener */
+    writeJsonOpener(out, format);
+    /* for an empty value field, we do not need to do anything */
+    if (getLengthField() > 0)
+    {
+        OFString value;
+        if (format.asBulkDataURI(getTag(), value))
+        {
+            /* return defined BulkDataURI */
+            format.printBulkDataURIPrefix(out);
+            DcmJsonFormat::printString(out, value);
+        }
+        else
+        {
+            /* encode binary data as Base64 */
+            format.printInlineBinaryPrefix(out);
+            out << "\"";
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
+            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
+            out << "\"";
+        }
+    }
+    /* write JSON Closer */
+    writeJsonCloser(out, format);
     /* always report success */
     return EC_Normal;
 }

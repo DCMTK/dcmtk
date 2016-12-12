@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,6 +40,8 @@
 
 #include "dcmtk/dcmdata/dcbytstr.h"
 
+// forward declarations
+class DcmJsonFormat;
 
 /** base class for DICOM elements with value representation LO, LT, PN, SH, ST, UC and UT
  */
@@ -127,6 +129,14 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      *  @return always returns EC_Normal, since nothing to do in this base class
      */
     virtual OFCondition convertCharacterSet(DcmSpecificCharacterSet &converter);
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format);
 
   protected:
 

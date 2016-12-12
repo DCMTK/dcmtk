@@ -178,5 +178,4 @@ extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotConvertToXML;
 /// error, cannot determine start fragment (of compressed pixel data)
 extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotDetermineStartFragment;
 
-
 #endif /* !DCERROR_H */
