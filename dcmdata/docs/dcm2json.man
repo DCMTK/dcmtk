@@ -15,8 +15,8 @@ dcm2json [options] dcmfile-in [jsonfile-out]
 \section description DESCRIPTION
 
 The \b dcm2json utility converts the contents of a DICOM file (file format or
-raw data set) to JSON (JavaScript Object Notation).  The output refers
-to the "DICOM JSON Model" which is found in DICOM part 18 F (2016c).
+raw data set) to JSON (JavaScript Object Notation).  The output refers to the
+"DICOM JSON Model", which is found in DICOM Part 18 Section F.
 
 If \b dcm2json reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining the
@@ -29,9 +29,9 @@ with a particular transfer syntax.
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in    DICOM input filename to be converted
 
-JSONfile-out  JSON output filename (default: stdout)
+jsonfile-out  JSON output filename (default: stdout)
 \endverbatim
 
 \section options OPTIONS
@@ -124,7 +124,7 @@ output format:
 \section json_format JSON Format
 
 The basic structure of the JSON output created from a DICOM file looks like
-the following:
+the following (see DICOM Part 18 Section F for details):
 
 \verbatim
 {
@@ -282,19 +282,14 @@ the following:
 }
 \endverbatim
 
-\subsection JSON_encoding JSON Encoding
+\subsection json_encoding JSON Encoding
 
 Attributes with very large value fields (e.g. pixel data) are not loaded by
-default.  The command line option \e --load-all
-forces to load all value fields including the very long ones.
+default.  The command line option \e --load-all forces to load all value fields
+including the very long ones.
 
-Multiple values (i.e. where the DICOM value multiplicity is greater than 1)
-are separated by a "," (except for Base64 encoded data).
-
-\section json_model_format DICOM JSON Model Format
-
-The description of the DICOM JSON Model format can be found in the DICOM
-standard, part 18 ("F DICOM JSON Model").
+Multiple values (i.e. where the DICOM value multiplicity is greater than 1) are
+separated by a "," (except for Base64 encoded data).
 
 \subsection bulk_data Bulk Data
 
@@ -304,9 +299,6 @@ output because of their size.  Instead, for each element, a new Universally
 Unique Identifier (UUID) is being generated and written as an value of a
 BulkDataURI JSON element.  So far, there is no possibility to write an
 additional file to hold the binary data for each of the binary data chunks.
-This is not required by the standard, however, it might be useful for
-implementing an Application Hosting interface; thus this feature may be
-available in future versions of \b dcm2json.
 
 \section notes NOTES
 
