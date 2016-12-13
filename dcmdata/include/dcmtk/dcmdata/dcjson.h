@@ -69,7 +69,7 @@
  *  }
  *  @endcode
  */
-class DcmJsonFormat
+class DCMTK_DCMDATA_EXPORT DcmJsonFormat
 {
 public:
     /** Class for handling indention in a JSON file.
@@ -326,7 +326,7 @@ protected:
 /** Subclass for handling JSON formatted output.
  *  Standard class for formatted output.
  */
-class DcmJsonFormatPretty : public DcmJsonFormat
+class DCMTK_DCMDATA_EXPORT DcmJsonFormatPretty : public DcmJsonFormat
 {
 private:
     /** Variable for the indentenlevel of DcmJsonFormat
@@ -366,7 +366,7 @@ public:
 /** Subclass for handling JSON formatted output.
  *  Standard class for non-formatted output.
  */
-class DcmJsonFormatCompact : public DcmJsonFormat
+class DCMTK_DCMDATA_EXPORT DcmJsonFormatCompact : public DcmJsonFormat
 {
 public:
     /** DcmJsonFormatCompact constructor
