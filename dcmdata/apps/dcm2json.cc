@@ -110,31 +110,31 @@ int main(int argc, char *argv[])
     cmd.addParam("jsonfile-out", "JSON output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption("--help",               "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-    cmd.addOption("--version",                      "print version information and exit", OFCommandLine::AF_Exclusive);
-    OFLog::addOptions(cmd);
+      cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
-    cmd.addSubGroup("input file format:");
-    cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
-    cmd.addOption("--read-file-only",     "+fo",    "read file format only");
-    cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax:");
-    cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
-    cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
-    cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
-    cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
-    cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
-    cmd.addSubGroup("long tag values:") ;
-    cmd.addOption("--load-all",           "+M",     "load very long tag values (e.g. pixel data)");
-    cmd.addOption("--load-short",         "-M",     "do not load very long values (default)");
-    cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes: integer (4..4194302, default: 4)",
-                                                    "set threshold for long values to k kbytes");
+      cmd.addSubGroup("input file format:");
+        cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
+        cmd.addOption("--read-file-only",     "+fo",    "read file format only");
+        cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
+      cmd.addSubGroup("input transfer syntax:");
+        cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
+      cmd.addSubGroup("long tag values:") ;
+        cmd.addOption("--load-all",           "+M",     "load very long tag values (e.g. pixel data)");
+        cmd.addOption("--load-short",         "-M",     "do not load very long values (default)");
+        cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes: integer (4..4194302, default: 4)",
+                                                        "set threshold for long values to k kbytes");
     cmd.addGroup("output options:");
-    cmd.addSubGroup("output format:");
-    cmd.addOption("--formatted-code",     "+fc",    "output file with human readable formatting (def.)");
-    cmd.addOption("--compact-code",       "-fc",    "output without formatting (single line of code)");
-    cmd.addOption("--write-meta",         "+m",     "write data set with meta information");
+      cmd.addSubGroup("output format:");
+        cmd.addOption("--formatted-code",     "+fc",    "output file with human readable formatting (def.)");
+        cmd.addOption("--compact-code",       "-fc",    "output without formatting (single line of code)");
+        cmd.addOption("--write-meta",         "+m",     "write data set with meta information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -247,7 +247,8 @@ int main(int argc, char *argv[])
             OFString csetString;
             if (dset->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
             {
-                if (csetString.compare("ISO_IR 192") != 0 && csetString.compare("ISO_IR 6") != 0) {
+                if (csetString.compare("ISO_IR 192") != 0 && csetString.compare("ISO_IR 6") != 0)
+                {
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
                     /* convert all DICOM strings to UTF-8 */
                     OFLOG_INFO(dcm2jsonLogger, "converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
@@ -258,7 +259,7 @@ int main(int argc, char *argv[])
                         result = 4;
                     }
 #else
-                    OFLOG_FATAL(dcm2jsonLogger, "character set conversion not available.");
+                    OFLOG_FATAL(dcm2jsonLogger, "character set conversion not available");
                     return 4;
 #endif
                 }
