@@ -36,7 +36,16 @@ struct IdxRecord;
 struct DB_ElementList;
 class DcmQueryRetrieveConfig;
 
-#define DBINDEXFILE "index.dat"
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THE INDEX FILE STRUCTS IS MODIFIED */
+
+#define DBINDEXFILE  "index.dat"
+#define DBMAGIC      "QRDB"
+#define DBVERSION    1
+#define DBHEADERSIZE 6
+
+#if DBVERSION > 0xFF
+#error maximum database version reached, you have to invent a new mechanism
+#endif
 
 #ifndef _WIN32
 /* we lock image files on all platforms except Win32 where it does not work

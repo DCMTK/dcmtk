@@ -424,9 +424,9 @@ static long DB_lseek(int fildes, long offset, int whence)
     }
 
     /* print an alert if we are seeking beyond the end of file.
-     * ignore when file is empty
+     * ignore when file is empty or contains only the version information.
      */
-    if ((endpos > 0) && (pos > endpos)) {
+    if ((endpos > DBHEADERSIZE) && (pos > endpos)) {
         DCMQRDB_ERROR("*** DB ALERT: attempt to seek beyond end of file" << OFendl
             << "              offset=" << offset << " filesize=" << endpos);
     }
@@ -444,7 +444,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
     /*** Goto the right index in file
     **/
 
-    DB_lseek (handle_ -> pidx, (long) (SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET) ;
 
     /*** Read the record
     **/
@@ -452,7 +452,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
     if (read (handle_ -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
         return (QR_EC_IndexDatabaseError) ;
 
-    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
 
     /*** Initialize record links
     **/
@@ -478,7 +478,7 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
 
     *idx = 0 ;
 
-    DB_lseek (phandle -> pidx, (long) SIZEOF_STUDYDESC, SEEK_SET) ;
+    DB_lseek (phandle -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC), SEEK_SET) ;
     while (read (phandle -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
         if (rec. filename [0] == '\0')
             break ;
@@ -488,14 +488,14 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
     /*** We have either found a free place or we are at the end of file. **/
 
 
-    DB_lseek (phandle -> pidx, (long) (SIZEOF_STUDYDESC + (*idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
+    DB_lseek (phandle -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + (*idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
 
     if (write (phandle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
         cond = QR_EC_IndexDatabaseError ;
     else
         cond = EC_Normal ;
 
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (phandle -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
 
     return cond ;
 }
@@ -508,10 +508,10 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_StudyDescChange(StudyDescRecord *pStudyDesc)
 {
     OFCondition cond = EC_Normal;
-    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
     if (write (handle_ -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) != SIZEOF_STUDYDESC)
         cond = QR_EC_IndexDatabaseError;
-    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
     return cond ;
 }
 
@@ -521,7 +521,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_StudyDescChange(StudyDescRec
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxInitLoop(int *idx)
 {
-    DB_lseek (handle_ -> pidx, SIZEOF_STUDYDESC, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC), SEEK_SET) ;
     *idx = -1 ;
     return EC_Normal ;
 }
@@ -535,7 +535,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxReco
 {
 
     (*idx)++ ;
-    DB_lseek (handle_ -> pidx, SIZEOF_STUDYDESC + (long)(*idx) * SIZEOF_IDXRECORD, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + OFstatic_cast(long, *idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
     while (read (handle_ -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
         if (idxRec -> filename [0] != '\0') {
             DB_IdxInitRecord (idxRec, 1) ;
@@ -545,7 +545,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxReco
         (*idx)++ ;
     }
 
-    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
 
     return QR_EC_IndexDatabaseError ;
 }
@@ -559,11 +559,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxReco
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_GetStudyDesc (StudyDescRecord *pStudyDesc)
 {
 
-    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
     if ( read (handle_ -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) == SIZEOF_STUDYDESC )
         return EC_Normal ;
 
-    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
 
     return QR_EC_IndexDatabaseError ;
 }
@@ -579,7 +579,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
     IdxRecord   rec ;
     OFCondition cond = EC_Normal;
 
-    DB_lseek (handle_ -> pidx, SIZEOF_STUDYDESC + (long)idx * SIZEOF_IDXRECORD, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + OFstatic_cast(long, idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
     DB_IdxInitRecord (&rec, 0) ;
 
     rec. filename [0] = '\0' ;
@@ -588,7 +588,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
     else
         cond = QR_EC_IndexDatabaseError ;
 
-    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
 
     return cond ;
 }
@@ -3332,7 +3332,56 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
            result = QR_EC_IndexDatabaseError;
            return;
         }
-        else {
+        else
+        {
+            result = DB_lock(OFTrue);
+            if ( result.bad() )
+                return;
+
+            // test whether the file contains more than zero bytes
+            if ( DB_lseek( handle_ -> pidx, 0L, SEEK_END ) > 0 )
+            {
+                DB_lseek( handle_ -> pidx, 0L, SEEK_SET );
+                // allocate HEADERSIZE + 1 bytes and fill it with zeros,
+                // ensuring whatever is read is terminated with a NUL byte
+                char header[DBHEADERSIZE+1] = {};
+                // 0 is an invalid version, no matter what
+                unsigned int version = 0;
+                if
+                (
+                    read( handle_ -> pidx, header, DBHEADERSIZE ) != DBHEADERSIZE ||
+                    strncmp( header, DBMAGIC, strlen(DBMAGIC) ) != 0              ||
+                    sscanf( header + strlen(DBMAGIC), "%x", &version ) != 1       ||
+                    version != DBVERSION
+                )
+                {
+                    DB_unlock();
+                    if ( version )
+                        DCMQRDB_ERROR(handle_->indexFilename << ": invalid/unsupported QRDB database version " << version);
+                    else
+                        DCMQRDB_ERROR(handle_->indexFilename << ": unknown/legacy QRDB database file format");
+                    result = QR_EC_IndexDatabaseError;
+                    return;
+                }
+            }
+            else
+            {
+                // write magic word and version number to the buffer
+                // then write it to the file
+                char header[DBHEADERSIZE];
+                sprintf( header, DBMAGIC "%.2X", DBVERSION );
+                if ( write( handle_ -> pidx, header, DBHEADERSIZE ) != DBHEADERSIZE )
+                {
+                    char buf[256];
+                    DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
+                    DB_unlock();
+                    result = QR_EC_IndexDatabaseError;
+                    return;
+                }
+            }
+
+            DB_unlock();
+
             handle_ -> idxCounter = -1;
             handle_ -> findRequestList = NULL;
             handle_ -> findResponseList = NULL;
@@ -3420,10 +3469,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::instanceReviewed(int idx)
       if (result.bad()) return result;
 
       record.hstat = DVIF_objectIsNotNew;
-      DB_lseek(handle_->pidx, OFstatic_cast(long, SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET);
+      DB_lseek(handle_->pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET);
       if (write(handle_->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
           result = QR_EC_IndexDatabaseError;
-      DB_lseek(handle_->pidx, 0L, SEEK_SET);
+      DB_lseek(handle_->pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET);
       DB_unlock();
     }
 

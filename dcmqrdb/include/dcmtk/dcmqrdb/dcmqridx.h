@@ -123,6 +123,8 @@ enum DB_KEY_CLASS
 #define SIZEOF_IDXRECORD        (sizeof (IdxRecord))
 #define SIZEOF_STUDYDESC        (sizeof (StudyDescRecord) * MAX_MAX_STUDIES)
 
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
+
 struct DCMTK_DCMQRDB_EXPORT DB_SerializedTagKey
 {
     inline DB_SerializedTagKey() {}
@@ -132,6 +134,8 @@ struct DCMTK_DCMQRDB_EXPORT DB_SerializedTagKey
     inline bool operator==(const DB_SerializedTagKey& rhs) const { return key[0] == rhs.key[0] && key[1] == rhs.key[1]; }
     Uint16 key[2];
 };
+
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 struct DCMTK_DCMQRDB_EXPORT DB_SerializedCharPtr
 {
@@ -144,6 +148,8 @@ struct DCMTK_DCMQRDB_EXPORT DB_SerializedCharPtr
         Uint64 placeholder;
     } ptr ;
 };
+
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 /** this class provides a primitive interface for handling a flat DICOM element,
  *  similar to DcmElement, but only for use within the database module
@@ -170,6 +176,8 @@ private:
     DB_SmallDcmElmt& operator=(const DB_SmallDcmElmt& copy);
 };
 
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
+
 /** this class provides a primitive interface for handling a list of flat DICOM elements,
  *  similar to DcmItem, but only for use within the database module
  */
@@ -191,6 +199,8 @@ private:
     DB_ElementList& operator=(const DB_ElementList& copy);
 };
 
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
+
 struct DCMTK_DCMQRDB_EXPORT DB_UidList
 {
     char *patient ;
@@ -200,11 +210,15 @@ struct DCMTK_DCMQRDB_EXPORT DB_UidList
     struct DB_UidList *next ;
 };
 
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
+
 struct DCMTK_DCMQRDB_EXPORT DB_CounterList
 {
     int idxCounter ;
     struct DB_CounterList *next ;
 };
+
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 struct DCMTK_DCMQRDB_EXPORT DB_FindAttr
 {
@@ -217,6 +231,8 @@ struct DCMTK_DCMQRDB_EXPORT DB_FindAttr
     DB_FindAttr(const DcmTagKey& t, DB_LEVEL l, DB_KEY_TYPE kt, DB_KEY_CLASS kc)
         : tag(t), level(l), keyAttr(kt), keyClass(kc) { }
 };
+
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 struct DCMTK_DCMQRDB_EXPORT DB_Private_Handle
 {
@@ -252,6 +268,8 @@ struct DCMTK_DCMQRDB_EXPORT DB_Private_Handle
     }
 };
 
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
+
 /** this struct defines the structure of each "Study Record" in the index.dat
  *  file maintained by this module. A Study Record is a direct binary copy
  *  of an instance of this struct.
@@ -270,6 +288,8 @@ struct DCMTK_DCMQRDB_EXPORT StudyDescRecord
     /// number of images of this study in the database
     Uint32 NumberofRegistratedImages ;
 };
+
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 {
@@ -333,6 +353,7 @@ struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 
 #define NBPARAMETERS                             41
 
+/* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 /** this class manages an instance entry of the index file.
  *  Each instance/image record within the index.dat file is
