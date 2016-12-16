@@ -162,9 +162,11 @@ DcmObject* DcmStack::elem(const unsigned long number) const
     unsigned long num = number;
     DcmObject *obj;
     DcmStackNode *node = topNode_;
-    while ( num-- > 0 && node != NULL )
+    while ( num > 0 && node != NULL )
+    {
          node = node->link;
-
+         --num;
+    }
     if ( node != NULL )
         obj = node->value();
     else
