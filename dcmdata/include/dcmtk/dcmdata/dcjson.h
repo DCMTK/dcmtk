@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2016, OFFIS e.V.
+*  Copyright (C) 2017, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -31,53 +31,57 @@
 
 /** Class for handling JSON format options.
  *  Base class to implement custom formatting.
- *  This feature allows the output to be formatted individually.
- *  helps to normalize DecimalString and IntegerString
- *  remove leading zero or add leading zero if no number given before the decimal dot
- *  escapes special JSON control characters
- *  helps print the correct indention and symbols for "Value" or "BulkDataURI", etc.
+ *  Purpose:
+ *    - individual output formatting
+ *    - normalization of DecimalString and IntegerString e.g.\ normalization of leading zeros
+ *    - escaping of special JSON control characters
+ *    - outputting the correct indention and symbols for "Value", "BulkDataURI", etc.
+ *
  *  <h3>Usage Example:</h3>
  *  @code{.cpp}
- *  #include "dcmtk/dcmdata/dcjson.h"
- *  // ...
- *  DcmFileFormat fileformat;
- *  if(fileformat.loadFile("test.dcm").good())
- *  {
- *      // print the dcm file in json format
- *      // using the pretty (human readable) format
- *      fileformat.writeJson(COUT, DcmJsonFormatPretty(OFTrue));
- *
- *      // using the compact (single line, without unneeded whitespaces) format
- *      fileformat.writeJson(COUT, DcmJsonFormatCompact(OFTrue));
- *  }
- *  @endcode
+    #include "dcmtk/dcmdata/dcjson.h"
+    // ...
+    DcmFileFormat fileformat;
+    if(fileformat.loadFile("test.dcm").good())
+    {
+        // print the DICOM file in JSON format
+        // using the pretty format (muti-line with indention and other whitespace)
+        fileformat.writeJson(COUT, DcmJsonFormatPretty(OFTrue));
+
+        // using the compact (single line, without unneeded whitespace) format
+        fileformat.writeJson(COUT, DcmJsonFormatCompact(OFTrue));
+    }
+    @endcode
  *  <h3>Implementing a custom formatter:</h3>
  *  @code{.cpp}
- *  struct CustomJsonFormat : DcmJsonFormatPretty
- *  {
- *    CustomJsonFormat(const OFBool printMetaheaderInformation = OFTrue)
- *    : DcmJsonFormatPretty(printMetaheaderInformation)
- *    {
- *
- *    }
- *
- *    OFString OFJsonFormatExample::space()
- *    {
- *      // use tabstops instead of spaces for indention
- *      return "\t";
- *    }
- *  }
- *  @endcode
+    struct CustomJsonFormat : DcmJsonFormatPretty
+    {
+      CustomJsonFormat(const OFBool printMetaheaderInformation = OFTrue)
+      : DcmJsonFormatPretty(printMetaheaderInformation)
+      {
+
+      }
+
+      OFString OFJsonFormatExample::space()
+      {
+        // use tabstops instead of spaces for indention
+        return "\t";
+      }
+    }
+    @endcode
  */
 class DCMTK_DCMDATA_EXPORT DcmJsonFormat
 {
 public:
-    /** Class for handling indention in a JSON file.
+    /** A class to create small proxy objects that ease indention handling.
+     *  Each Indention object only contains a reference to the DcmJsonFormat object
+     *  that created it and its only purpose is to call the respective methods
+     *  of that object when one of its overloaded operators is used.
      */
     class Indention
     {
     public:
-        /** overload ostream << operator
+        /** output current indention to an output stream.
          *  @param out the output stream to use
          *  @param indention the indention to print
          *  @return out
@@ -88,7 +92,8 @@ public:
             return out;
         }
 
-        /** overload ++ operator for increasing the Indention
+        /** increases current indention.
+         *  @return *this
          */
         inline Indention& operator++()
         {
@@ -96,7 +101,8 @@ public:
             return *this;
         }
 
-        /** overload -- operator for decreasing the Indention
+        /** decreases current indention
+         *  @return *this
          */
         inline Indention& operator--()
         {
@@ -105,7 +111,7 @@ public:
         }
 
     private:
-        /// allow DcmJsonFormat to use this class private members
+        /// allow DcmJsonFormat to use this class' private members
         friend class DcmJsonFormat;
 
         /// private constructor, used by DcmJsonFormat
@@ -114,13 +120,13 @@ public:
 
         }
 
-        /// prints the current indention using the parent formater
+        /// prints the current indention using the parent formatter
         inline void printIndention(STD_NAMESPACE ostream& out) const
         {
             m_Format.printIndention(out);
         }
 
-        /// reference to the parent formater object
+        /// reference to the parent formatter object
         DcmJsonFormat& m_Format;
     };
 
@@ -134,13 +140,13 @@ public:
      *  remove leading zeros, except before dot.
      *  @b Example:
      *  @code{.txt}
-     *  00.123 --> 0.123
-     *  023.12 --> 23.12
-     *  -01.00 --> -1.00
-     *    0200 --> 200
-     *     .12 --> 0.12
-     *   000.1 --> 0.1
-     *  @endcode
+        00.123 --> 0.123
+        023.12 --> 23.12
+        -01.00 --> -1.00
+          0200 --> 200
+           .12 --> 0.12
+         000.1 --> 0.1
+        @endcode
      *  @param value String that should be normalize
      */
     static void normalizeDecimalString(OFString &value);
@@ -149,11 +155,11 @@ public:
      *  remove leading zeros, except before dot.
      *  @b Example:
      *  @code{.txt}
-     *   000 --> 0
-     *   023 --> 23
-     *   -01 --> -1
-     *  0200 --> 200
-     *  @endcode
+         000 --> 0
+         023 --> 23
+         -01 --> -1
+        0200 --> 200
+        @endcode
      *  @param value String that should be normalize
      */
     static void normalizeIntegerString(OFString &value);
@@ -225,30 +231,30 @@ public:
      *  @details
      *  <h3>Usage Example:</h3>
      *  @code{.cpp}
-     *  struct BulkDataURIJsonFormat : DcmJsonFormatPretty
-     *  {
-     *    CustomJsonFormat(const OFBool printMetaheaderInformation = OFTrue,
-     *                     ... bulkDataURIDatabase)
-     *    : DcmJsonFormatPretty(printMetaheaderInformation)
-     *    , TheDatabase(bulkDataURIDatabase)
-     *    {
-     *
-     *    }
-     *
-     *    virtual OFBool asBulkDataURI(const DcmTagKey& tag, OFString& uri)
-     *    {
-     *      ... result = TheDatabase.findBulkDataFor(tag);
-     *      if (result.found())
-     *      {
-     *        uri = result.uri();
-     *        return OFTrue;
-     *      }
-     *      return OFFalse;
-     *    }
-     *
-     *    ... TheDatabase;
-     *  }
-     *  @endcode
+        struct BulkDataURIJsonFormat : DcmJsonFormatPretty
+        {
+          CustomJsonFormat(const OFBool printMetaheaderInformation = OFTrue,
+                           ... bulkDataURIDatabase)
+          : DcmJsonFormatPretty(printMetaheaderInformation)
+          , TheDatabase(bulkDataURIDatabase)
+          {
+
+          }
+
+          virtual OFBool asBulkDataURI(const DcmTagKey& tag, OFString& uri)
+          {
+            ... result = TheDatabase.findBulkDataFor(tag);
+            if (result.found())
+            {
+              uri = result.uri();
+              return OFTrue;
+            }
+            return OFFalse;
+          }
+
+          ... TheDatabase;
+        }
+        @endcode
      */
     virtual OFBool asBulkDataURI(const DcmTagKey& tag, OFString& uri);
 
@@ -256,8 +262,8 @@ public:
      *  with indention and newlines as in the format Variable given.
      *  @b Example:
      *  @code{.txt}
-     *  ,"Value":[
-     *  @endcode
+        ,"Value":[
+        @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printValuePrefix(STD_NAMESPACE ostream &out);
@@ -266,8 +272,8 @@ public:
      *  with indention and newlines as in the format Variable given.
      *  @b Example:
      *  @code{.txt}
-     *  ]\n
-     *  @endcode
+        ]\n
+        @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printValueSuffix(STD_NAMESPACE ostream &out);
@@ -276,8 +282,8 @@ public:
      *  with indention and newlines as in the format Variable given.
      *  @b Example:
      *  @code{.txt}
-     *  ,"BulkDataURI":
-     *  @endcode
+        ,"BulkDataURI":
+        @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printBulkDataURIPrefix(STD_NAMESPACE ostream &out);
@@ -286,8 +292,8 @@ public:
      *  with indention and newlines as the format specifies.
      *  @b Example:
      *  @code{.txt}
-     *  ,"InlineBinary":
-     *  @endcode
+        ,"InlineBinary":
+        @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printInlineBinaryPrefix(STD_NAMESPACE ostream &out);
@@ -296,9 +302,9 @@ public:
      *  indention and newlines as the format specifies.
      *  @b Example:
      *  @code{.txt}
-     *      Example,\n
-     *      Example...
-     *  @endcode
+            Example,\n
+            Example...
+        @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printNextArrayElementPrefix(STD_NAMESPACE ostream &out);
