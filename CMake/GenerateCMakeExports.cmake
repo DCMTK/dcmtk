@@ -2,7 +2,7 @@
 # and 'DCMTKConfig.cmake'. These files are created within the build tree
 # but also are installed with DCMTK.
 # The files can be utilized (no matter whether they are installed or just
-# located within the build tree) by external  projects in order to use
+# located within the build tree) by external projects in order to use
 # the related DCMTK build.
 # In order to accomplish that, the files provide hints to the external project
 # which libraries and executables are available, and which build options have
@@ -13,11 +13,11 @@
 # DCMTKTargets.cmake will contain list of available DCMTK executables and libs
 # DCMTKConfigVersion.cmake provides checking of DCMTK version compatibility
 # DCMTKConfig.cmake will contain options used to build this DCMTK package
-#
-#
+
 # Get and store all executable targets to DCMTKTargets.cmake within build's main dir
 GET_PROPERTY(DCMTK_EXECUTABLE_TARGETS GLOBAL PROPERTY DCMTK_EXECUTABLE_TARGETS)
 EXPORT(TARGETS ${DCMTK_EXECUTABLE_TARGETS} APPEND FILE ${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake)
+
 # Get and store libraries to DCMTKTargets.cmake within the build's main dir
 GET_PROPERTY(DCMTK_LIBRARY_TARGETS GLOBAL PROPERTY DCMTK_LIBRARY_TARGETS)
 EXPORT(TARGETS ${DCMTK_LIBRARY_TARGETS} APPEND FILE ${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake)
@@ -71,11 +71,11 @@ ENDFOREACH(module)
 SET(DCMTK_CONFIG_CODE "####### Expanded from \@DCMTK_CONFIG_CODE\@ #######\n")
 SET(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}list(APPEND DCMTK_INCLUDE_DIRS \"\${PACKAGE_PREFIX_DIR}/include\")\n")
 SET(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}##################################################")
-SET(dcmtk_install_config ${CMAKE_BINARY_DIR}/CMakeFiles/DCMTKConfig.cmake)
+SET(DCMTK_INSTALL_CONFIG ${CMAKE_BINARY_DIR}/CMakeFiles/DCMTKConfig.cmake)
 # Actually configure file and set rule to install it to installation subdir
 CONFIGURE_PACKAGE_CONFIG_FILE(
     CMake/DCMTKConfig.cmake.in
-    ${dcmtk_install_config}
+    ${DCMTK_INSTALL_CONFIG}
     INSTALL_DESTINATION ${CMAKE_INSTALL_PREFIX}/${DCMTK_INSTALL_CMKDIR}
     PATH_VARS DCMTK_CMKDIR_CONFIG DCMTK_INCLUDE_DIR_CONFIGS
     NO_CHECK_REQUIRED_COMPONENTS_MACRO)

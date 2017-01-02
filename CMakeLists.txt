@@ -93,14 +93,14 @@ IF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
   # Create and configure CMake export files
   INCLUDE(CMake/GenerateCMakeExports.cmake)
 
-  # ${dcmtk_install_config} and ${dcmtk_config_version} are
+  # ${DCMTK_INSTALL_CONFIG} and ${DCMTK_CONFIG_VERSION} are
   # defined within CMake/GenerateCMakeExports.cmake.
   # Install DCMTKTargets.cmake to install tree
   INSTALL(EXPORT DCMTKTargets FILE DCMTKTargets.cmake
           DESTINATION ${DCMTK_INSTALL_CMKDIR} COMPONENT cmake)
 
-  # Install DCMTKConfigVersion.cmake
-  INSTALL(FILES ${dcmtk_install_config} ${dcmtk_config_version}
+  # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
+  INSTALL(FILES ${DCMTK_INSTALL_CONFIG} ${DCMTK_CONFIG_VERSION}
           DESTINATION ${DCMTK_INSTALL_CMKDIR} COMPONENT cmake)
 
 ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
@@ -112,8 +112,8 @@ ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FIL
   CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake26.in
                  ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake @ONLY)
 
-  # Install DCMTK's CMake configuration file
-  INSTALL(FILES ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake
+  # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
+  INSTALL(FILES ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake ${DCMTK_BINARY_DIR}/DCMTKConfigVersion.cmake
           DESTINATION ${DCMTK_INSTALL_CMKDIR}
           COMPONENT cmake)
 
