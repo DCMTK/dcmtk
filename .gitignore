@@ -95,7 +95,3 @@ dcmsr/apps/xml2dsr
 dcmsr/tests/mkreport
 dcmwlm/apps/wlmscpfs
 dcmwlm/tests/wltest
-dcmwlm/wwwapps/preplock
-dcmwlm/wwwapps/readoviw
-dcmwlm/wwwapps/readwlst
-dcmwlm/wwwapps/writwlst
