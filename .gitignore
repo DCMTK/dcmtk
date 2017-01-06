@@ -33,6 +33,7 @@ doxygen/dcmtk.tag
 */tests/tests
 config/arith
 config/lzwtest.tif
+dcmdata/apps/dcm2json
 dcmdata/apps/dcm2pdf
 dcmdata/apps/dcm2xml
 dcmdata/apps/dcmconv
