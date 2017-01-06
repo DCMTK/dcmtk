@@ -624,7 +624,6 @@ ac_includes_default="\
 #endif"
 
 ac_subst_vars='LTLIBOBJS
-DCMTK_ENABLE_BUILTIN_DICTIONARY
 DEBUG
 ICONVLIBS
 SNDFILELIBS
@@ -12657,7 +12656,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12660 "configure"
+#line 12659 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13129,7 +13128,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13132 "configure"
+#line 13131 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13201,7 +13200,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13204 "configure"
+#line 13203 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13273,7 +13272,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13276 "configure"
+#line 13275 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13631,7 +13630,6 @@ if test "${enable_builtin_dict+set}" = set; then :
   yes)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-                DCMTK_ENABLE_BUILTIN_DICTIONARY=true
 
 $as_echo "#define ENABLE_BUILTIN_DICTIONARY /**/" >>confdefs.h
 
@@ -15297,7 +15295,6 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
-
 
 
 
