@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -472,22 +472,22 @@ DCMTK_MAIN_FUNCTION
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--illegal-obow-reject"))
+      if (cmd.findOption("--illegal-obow-rej"))
       {
         dcmConvertUndefinedLengthOBOWtoSQ.set(OFFalse);
       }
-      if (cmd.findOption("--illegal-obow-convert"))
+      if (cmd.findOption("--illegal-obow-conv"))
       {
         dcmConvertUndefinedLengthOBOWtoSQ.set(OFTrue);
       }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--illegal-voi-reject"))
+      if (cmd.findOption("--illegal-voi-rej"))
       {
         dcmConvertVOILUTSequenceOWtoSQ.set(OFFalse);
       }
-      if (cmd.findOption("--illegal-voi-convert"))
+      if (cmd.findOption("--illegal-voi-conv"))
       {
         dcmConvertVOILUTSequenceOWtoSQ.set(OFTrue);
       }
