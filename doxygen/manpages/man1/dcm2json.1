@@ -1,0 +1,320 @@
+.TH "dcm2json" 1 "Fri Jan 6 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.nh
+.SH NAME
+dcm2json \- Convert DICOM file and data set to JSON
+
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+dcm2json [options] dcmfile-in [jsonfile-out]
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcm2json\fP utility converts the contents of a DICOM file (file format or raw data set) to JSON (JavaScript Object Notation)\&. The output refers to the 'DICOM JSON Model', which is found in DICOM Part 18 Section F\&.
+.PP
+If \fBdcm2json\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file\&. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility)\&. It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcm2json\fP to read a data set with a particular transfer syntax\&.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+dcmfile-in    DICOM input filename to be converted
+
+jsonfile-out  JSON output filename (default: stdout)
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input transfer syntax:
+
+  -t=   --read-xfer-auto
+          use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
+
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
+
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
+
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
+
+long tag values:
+
+  +M    --load-all
+          load very long tag values (e.g. pixel data)
+
+  -M    --load-short
+          do not load very long values (default)
+
+  +R    --max-read-length  [k]bytes: integer (4..4194302, default: 4)
+          set threshold for long values to k kbytes
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+output format:
+
+  +fc   --formatted-code
+          output file with human readable formatting (default)
+
+  -fc   --compact-code
+          output without formatting (single line of code)
+
+  +m    --write-meta
+          write data set with meta information
+.fi
+.PP
+.SH "JSON Format"
+.PP
+The basic structure of the JSON output created from a DICOM file looks like the following (see DICOM Part 18 Section F for details):
+.PP
+.PP
+.nf
+{
+    "00080005": {
+        "vr": "CS",
+        "Value": [
+            "ISO_IR192"
+        ]
+    },
+    "00080020": {
+        "vr": "DT",
+        "Value": [
+            "20130409"
+        ]
+    },
+    "00080030": {
+        "vr": "TM",
+        "Value": [
+            "131600.0000"
+        ]
+    },
+    "00080050": {
+        "vr": "SH",
+        "Value": [
+            "11235813"
+        ]
+    },
+    "00080056": {
+        "vr": "CS",
+        "Value": [
+            "ONLINE"
+        ]
+    },
+    "00080061": {
+        "vr": "CS",
+        "Value": [
+            "CT",
+            "PET"
+        ]
+    },
+    "00080090": {
+        "vr": "PN",
+        "Value": [
+          {
+            "Alphabetic": "^Bob^^Dr."
+          }
+        ]
+    },
+    "00081190": {
+        "vr": "UR",
+        "Value": [
+            "http://wado.nema.org/studies/
+            1.2.392.200036.9116.2.2.2.1762893313.1029997326.945873"
+        ]
+    },
+    "00090010": {
+        "vr": "LO",
+        "Value": [
+            "Vendor A"
+        ]
+    },
+    "00091002": {
+        "vr": "UN",
+        "InlineBinary": "z0x9c8v7"
+    },
+    "00100010": {
+        "vr": "PN",
+        "Value": [
+          {
+            "Alphabetic": "Wang^XiaoDong"
+          }
+        ]
+    },
+    "00100020": {
+        "vr": "LO",
+        "Value": [
+            "12345"
+        ]
+    },
+    "00100021": {
+        "vr": "LO",
+        "Value": [
+            "Hospital A"
+        ]
+    },
+    "00100030": {
+        "vr": "DT",
+        "Value": [
+            "19670701"
+        ]
+    },
+    "00100040": {
+        "vr": "CS",
+        "Value": [
+            "M"
+        ]
+    },
+    "00101002": {
+        "vr": "SQ",
+        "Value": [
+            {
+                "00100020": {
+                    "vr": "LO",
+                    "Value": [
+                        "54321"
+                    ]
+                },
+                "00100021": {
+                    "vr": "LO",
+                    "Value": [
+                        "Hospital B"
+                    ]
+                }
+            },
+            {
+                "00100020": {
+                    "vr": "LO",
+                    "Value": [
+                        "24680"
+                    ]
+                },
+                "00100021": {
+                    "vr": "LO",
+                    "Value": [
+                        "Hospital C"
+                    ]
+                }
+            }
+        ]
+    },
+    "0020000D": {
+        "vr": "UI",
+        "Value": [
+            "1.2.392.200036.9116.2.2.2.1762893313.1029997326.945873"
+        ]
+    },
+    "00200010": {
+        "vr": "SH",
+        "Value": [
+            "11235813"
+        ]
+    },
+    "00201206": {
+        "vr": "IS",
+        "Value": [
+            4
+        ]
+    },
+    "00201208": {
+        "vr": "IS",
+        "Value": [
+            942
+        ]
+    }
+}
+.fi
+.PP
+.SS "JSON Encoding"
+Attributes with very large value fields (e\&.g\&. pixel data) are not loaded by default\&. The command line option \fI--load-all\fP forces to load all value fields including the very long ones\&.
+.PP
+Multiple values (i\&.e\&. where the DICOM value multiplicity is greater than 1) are separated by a ',' (except for Base64 encoded data)\&.
+.SS "Bulk Data"
+Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB or OW, as well as OD, OF and UN values are by default not written to the JSON output because of their size\&. Instead, for each element, a new Universally Unique Identifier (UUID) is being generated and written as an value of a BulkDataURI JSON element\&. So far, there is no possibility to write an additional file to hold the binary data for each of the binary data chunks\&.
+.SH "NOTES"
+.PP
+.SS "Character Encoding"
+The JSON encoding is determined automatically from the DICOM attribute (0008,0005) 'Specific Character Set' using the following mapping:
+.PP
+.PP
+.nf
+ISO Latin 1   "ISO_IR 100"  =>  "UTF-8"
+ISO Latin 2   "ISO_IR 101"  =>  "UTF-8"
+ISO Latin 3   "ISO_IR 109"  =>  "UTF-8"
+ISO Latin 4   "ISO_IR 110"  =>  "UTF-8"
+ISO Latin 5   "ISO_IR 148"  =>  "UTF-8"
+Cyrillic      "ISO_IR 144"  =>  "UTF-8"
+Arabic        "ISO_IR 127"  =>  "UTF-8"
+Greek         "ISO_IR 126"  =>  "UTF-8"
+Hebrew        "ISO_IR 138"  =>  "UTF-8"
+.fi
+.PP
+.SH "LOGGING"
+.PP
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
+.PP
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+.SH "ENVIRONMENT"
+.PP
+The \fBdcm2json\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
+.PP
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
