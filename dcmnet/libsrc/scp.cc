@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2016, OFFIS e.V.
+ *  Copyright (C) 2009-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -73,7 +73,7 @@ OFCondition DcmSCP::setConfig(const DcmSCPConfig& config)
 {
   if (isConnected())
   {
-    return EC_IllegalCall; // TODO: need to find better error code
+    return NET_EC_AlreadyConnected;
   }
   m_cfg = DcmSharedSCPConfig( config );
   return EC_Normal;
@@ -123,16 +123,39 @@ OFCondition DcmSCP::listen()
   // successfully. Now, we want to start handling all incoming requests. Since
   // this activity is supposed to represent a server process, we do not want to
   // terminate this activity (unless indicated by the stopAfterCurrentAssociation()
-  // method). Hence, create an infinite while-loop.
-  while( cond.good() && !stopAfterCurrentAssociation() )
+  // or stopAfterConnectionTimeout() methods).
+  while( cond.good() )
   {
     // Wait for an association and handle the requests of
     // the calling applications correspondingly.
     cond = waitForAssociationRQ(network);
+
+    // Check whether we have a timeout
+    if (cond == DUL_NOASSOCIATIONREQUEST)
+    {
+      // If a stop is requested, stop
+      if (stopAfterConnectionTimeout())
+      {
+        cond = NET_EC_StopAfterConnectionTimeout;
+        break;
+      }
+      else
+      {
+        // stay in loop
+        cond = EC_Normal;
+      }
+    }
+    // Stop if SCP is told to stop after association was handled
+    else if (stopAfterCurrentAssociation())
+    {
+      cond = NET_EC_StopAfterAssociation;
+      break;
+    }
   }
+
   // Drop the network, i.e. free memory of T_ASC_Network* structure. This call
   // is the counterpart of ASC_initializeNetwork(...) which was called above.
-  cond = ASC_dropNetwork( &network );
+  ASC_dropNetwork( &network );
   network = NULL;
 
   // return ok
@@ -294,9 +317,6 @@ void DcmSCP::refuseAssociation(const DcmRefuseReasonType reason)
 
   // Reject the association request.
   ASC_rejectAssociation( m_assoc, &rej );
-
-  // Drop and destroy the association.
-  dropAndDestroyAssociation();
 }
 
 // ----------------------------------------------------------------------------
@@ -314,20 +334,37 @@ OFCondition DcmSCP::waitForAssociationRQ(T_ASC_Network *network)
   OFCondition cond = ASC_receiveAssociation( network, &m_assoc, m_cfg->getMaxReceivePDULength(), NULL, NULL, OFFalse,
                                              m_cfg->getConnectionBlockingMode(), OFstatic_cast(int, timeout) );
 
-  // just return, if timeout occurred (DUL_NOASSOCIATIONREQUEST)
+  // In case of a timeout in non-blocking mode, call notifier (and return
+  // to main event loop later)
   if ( cond == DUL_NOASSOCIATIONREQUEST )
   {
-    return EC_Normal;
+    notifyConnectionTimeout();
   }
-
-  // if error occurs close association and return
-  if( cond.bad() )
+  else
   {
-    dropAndDestroyAssociation();
-    return EC_Normal;
+    // If association could be received, handle it
+    if( cond.good() )
+    {
+      cond = processAssociationRQ();
+      // There was an association which has ended now:
+      // Call notifier and output separator line.
+      notifyAssociationTermination();
+      DCMNET_DEBUG( "+++++++++++++++++++++++++++++" );
+    }
+    // Else, if we could not receive an association request since there was
+    // some error, just ignore it (and continue in main event loop later)
+    else
+    {
+      DCMNET_ERROR("Could not receive association request: " << cond.text());
+      cond = EC_Normal;
+    }
   }
 
-  return processAssociationRQ();
+  // We are done with this association, free it and set to NULL.
+  // ASC_receiveAssociation will always create a related structure, even
+  // if no association was received at all.
+  dropAndDestroyAssociation();
+  return cond;
 }
 
 
@@ -344,7 +381,6 @@ OFCondition DcmSCP::processAssociationRQ()
     if (desiredAction == DCMSCP_ACTION_REFUSE_ASSOCIATION)
     {
       refuseAssociation( DCMSCP_INTERNAL_ERROR );
-      dropAndDestroyAssociation();
       return EC_Normal;
     }
     else desiredAction = DCMSCP_ACTION_UNDEFINED; // reset for later use
@@ -357,7 +393,6 @@ OFCondition DcmSCP::processAssociationRQ()
   if( m_cfg->getRefuseAssociation() )
   {
     refuseAssociation( DCMSCP_FORCED );
-    dropAndDestroyAssociation();
     return EC_Normal;
   }
 
@@ -368,7 +403,6 @@ OFCondition DcmSCP::processAssociationRQ()
   if( cond.bad() || strcmp( buf, DICOM_STDAPPLICATIONCONTEXT ) != 0 )
   {
     refuseAssociation( DCMSCP_BAD_APPLICATION_CONTEXT_NAME );
-    dropAndDestroyAssociation();
     return EC_Normal;
   }
 
@@ -377,14 +411,12 @@ OFCondition DcmSCP::processAssociationRQ()
   if (!checkCalledAETitleAccepted(m_assoc->params->DULparams.calledAPTitle))
   {
     refuseAssociation( DCMSCP_CALLED_AE_TITLE_NOT_RECOGNIZED );
-    dropAndDestroyAssociation();
     return EC_Normal;
   }
 
   if (!checkCallingAETitleAccepted(m_assoc->params->DULparams.callingAPTitle))
   {
     refuseAssociation( DCMSCP_CALLING_AE_TITLE_NOT_RECOGNIZED );
-    dropAndDestroyAssociation();
     return EC_Normal;
   }
 
@@ -402,7 +434,6 @@ OFCondition DcmSCP::processAssociationRQ()
   cond = negotiateAssociation();
   if( cond.bad() )
   {
-    dropAndDestroyAssociation();
     return EC_Normal;
   }
 
@@ -417,7 +448,6 @@ OFCondition DcmSCP::processAssociationRQ()
     else
       DCMNET_DEBUG(ASC_dumpParameters(tempStr, m_assoc->params, ASC_ASSOC_RJ));
     refuseAssociation( DCMSCP_NO_PRESENTATION_CONTEXTS );
-    dropAndDestroyAssociation();
     return EC_Normal;
   }
 
@@ -425,7 +455,6 @@ OFCondition DcmSCP::processAssociationRQ()
   cond = ASC_acknowledgeAssociation( m_assoc );
   if( cond.bad() )
   {
-    dropAndDestroyAssociation();
     return EC_Normal;
   }
   notifyAssociationAcknowledge();
@@ -438,9 +467,10 @@ OFCondition DcmSCP::processAssociationRQ()
   else
     DCMNET_DEBUG(ASC_dumpParameters(tempStr, m_assoc->params, ASC_ASSOC_AC));
 
-   // Go ahead and handle the association (i.e. handle the callers requests) in this process
-   handleAssociation();
-   return EC_Normal;
+  // Go ahead and handle the association (i.e. handle the caller's requests) in this process
+  handleAssociation();
+
+  return EC_Normal;
 }
 
 // ----------------------------------------------------------------------------
@@ -533,12 +563,6 @@ void DcmSCP::handleAssociation()
     notifyDIMSEError(cond);
     ASC_abortAssociation( m_assoc );
   }
-
-  // Drop and destroy the association.
-  dropAndDestroyAssociation();
-
-  // Output separator line.
-  DCMNET_DEBUG( "+++++++++++++++++++++++++++++" );
 }
 
 // ----------------------------------------------------------------------------
@@ -1862,9 +1886,9 @@ OFString DcmSCP::getPeerIP() const
 
 void DcmSCP::dropAndDestroyAssociation()
 {
+
   if (m_assoc)
   {
-    notifyAssociationTermination();
     ASC_dropSCPAssociation( m_assoc );
     ASC_destroyAssociation( &m_assoc );
   }
@@ -1927,6 +1951,7 @@ void DcmSCP::notifyReleaseRequest()
   DCMNET_INFO("Received Association Release Request");
 }
 
+
 // ----------------------------------------------------------------------------
 
 void DcmSCP::notifyAbortRequest()
@@ -1943,6 +1968,13 @@ void DcmSCP::notifyAssociationTermination()
 
 // ----------------------------------------------------------------------------
 
+void DcmSCP::notifyConnectionTimeout()
+{
+  DCMNET_TRACE("Connection timeout encountered in non-blocking mode");
+}
+
+// ----------------------------------------------------------------------------
+
 void DcmSCP::notifyDIMSEError(const OFCondition &cond)
 {
   OFString tempStr;
@@ -1952,6 +1984,13 @@ void DcmSCP::notifyDIMSEError(const OFCondition &cond)
 // ----------------------------------------------------------------------------
 
 OFBool DcmSCP::stopAfterCurrentAssociation()
+{
+  return OFFalse;
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool DcmSCP::stopAfterConnectionTimeout()
 {
   return OFFalse;
 }

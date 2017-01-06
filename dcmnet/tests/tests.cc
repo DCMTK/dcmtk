@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2013, OFFIS e.V.
+ *  Copyright (C) 2012-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,11 @@ OFTEST_REGISTER(dcmnet_dimseDump_nullByte);
 
 #ifdef WITH_THREADS
 OFTEST_REGISTER(dcmnet_scp_pool);
+OFTEST_REGISTER(dcmnet_scp_stop_after_current_association);
+OFTEST_REGISTER(dcmnet_scp_stop_after_timeout);
+OFTEST_REGISTER(dcmnet_scp_no_stop_wo_request_noblock);
+OFTEST_REGISTER(dcmnet_scp_no_stop_wo_request_block);
+OFTEST_REGISTER(dcmnet_scp_no_term_notify_without_association);
 #endif // WITH_THREADS
 
 OFTEST_MAIN("dcmnet")

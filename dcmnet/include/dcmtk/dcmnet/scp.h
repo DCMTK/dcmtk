@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2015, OFFIS e.V.
+ *  Copyright (C) 2009-2016, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -149,7 +149,16 @@ public:
 
   /** Starts providing the implemented services to SCUs.
    *  After calling this method the SCP is listening for connection requests.
-   *  @return The result. Function usually only returns in case of errors.
+   *  @return The result. Per default, the method only returns in case of fatal errors.
+   *          However, there are ways to stop listening in a controlled way:
+   *          <ul>
+   *          <li>In non-blocking mode, use stopAfterConnectionTimeout() in order
+   *          shut down after the TCP timeout set with setConnectionTimeout() has
+   *          occurred. In that case, the method returns with NET_EC_StopAfterConnectionTimeout.</li>
+   *          <li>In non-blocking and blocking mode, stopAfterCurrentAssociation() can
+   *          be used to return after an association has been handled and ended.
+   *          In that case, NET_EC_StopAfterAssociation is returned.</li>
+   *          </ul>
    */
   virtual OFCondition listen();
 
@@ -365,8 +374,11 @@ public:
 
   /** Set the DcmSCPConfig object to use for configuring this DcmSCP object.
    *  A deep copy is performed.
-   *  @param config The configuration to use.
-   *  @return EC_Normal if configuration can be used, error code otherwise.
+   *  @param  config The configuration to use.
+   *  @return EC_Normal if configuration can be used. The configuration can
+   *          only be changed if the SCP is not yet connected, otherwise
+   *          NET_EC_AlreadyConnected is returned.
+   *
    */
   virtual OFCondition setConfig(const DcmSCPConfig& config);
 
@@ -513,6 +525,13 @@ protected:
    */
   virtual void notifyAssociationTermination();
 
+  /** Overwrite this function to be notified about a connection timeout in
+   *  non-blocking mode (see setConnectionBlockingMode() and setConnectionTimeout()
+   *  methods). In blocking mode, this method has no effect since it's never called.
+   *  The standard handler only outputs some information to the TRACE logger.
+   */
+  virtual void notifyConnectionTimeout();
+
   /** Overwrite this function to be notified when a DIMSE error occurs.
    *  The standard handler only outputs error information to the logger.
    *  @param cond [in] The DIMSE error occurred.
@@ -537,12 +556,25 @@ protected:
    */
   virtual void notifyRECEIVEProgress(const unsigned long byteCount);
 
-  /** Overwrite this function to change the behavior of the listen() method. As long as no
+  /** This method can be used to return from the listen() loop in a controlled way.
+   *  In order to use it, it must be overwritten in a derived class. As long as no
    *  severe error occurs and this method returns OFFalse, the listen() method will wait
    *  for incoming associations in an infinite loop.
    *  @return The standard handler always returns OFFalse
    */
   virtual OFBool stopAfterCurrentAssociation();
+
+  /** This method can be used to return from the listen() loop in a controlled way.
+   *  In order to use it, it must be overwritten in a derived class. As long as no
+   *  severe error occurs and this method returns OFFalse, the listen() method will wait
+   *  for incoming associations in an infinite loop. If this method returns OFTrue, the
+   *  SCP will return from the listen() loop after a connection timeout occurs (see
+   *  setConnectionTimeout() method). In blocking mode (see setConnectionBlockingMode()
+   *  method), this method has no effect (it's never called) since the underlying
+   *  routines will wait forever for an incoming TCP connection.
+   *  @return The standard handler always returns OFFalse
+   */
+  virtual OFBool stopAfterConnectionTimeout();
 
   // -- C-ECHO --
 
@@ -911,12 +943,15 @@ protected:
    *  something goes wrong. Therefore, refusing an association because of wrong application
    *  context name or no common presentation contexts with the SCU does NOT lead to an error.
    *  @param network [in] Contains network parameters
-   *  @return EC_Normal, if everything went fine, an error code otherwise
+   *  @return EC_Normal, if everything went fine, DUL_NOASSOCIATIONREQUEST if a timeout
+   *          occurs in non-blocking mode, DIMSE_ILLEGALASSOCIATION or ASC_NULLKEY if
+   *          severe internal errors occured (should not happen)
    */
   virtual OFCondition waitForAssociationRQ(T_ASC_Network *network);
 
   /** Actually process association request.
-   *  @return EC_Normal if association could be processed, error otherwise.
+   *  @return EC_Normal if association could be processed, ASC_NULLKEY otherwise
+   *          (only if internal association structure is invalid, should never happen)
    */
   virtual OFCondition processAssociationRQ();
 

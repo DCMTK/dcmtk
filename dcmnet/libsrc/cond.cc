@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -87,6 +87,8 @@ makeOFConditionConst(NET_EC_InsufficientPortPrivileges,      OFM_dcmnet, 1023, O
 // codes 1024 to 1073 are used for the association negotiation profile classes
 makeOFConditionConst(NET_EC_SCPBusy,                         OFM_dcmnet, 1074, OF_error, "SCP is busy");
 makeOFConditionConst(NET_EC_CannotStartSCPThread,            OFM_dcmnet, 1075, OF_error, "Cannot start SCP Thread");
+makeOFConditionConst(NET_EC_StopAfterAssociation,            OFM_dcmnet, 1076, OF_ok, "Stop after current association (as requested)");
+makeOFConditionConst(NET_EC_StopAfterConnectionTimeout,      OFM_dcmnet, 1077, OF_ok, "Stop after TCP connection timeout (as requested)");
 
 
 OFString& DimseCondition::dump(OFString& str, OFCondition cond)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -193,6 +193,9 @@ extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_InsufficientPortPrivile
 // codes 1024 to 1073 are used for the association negotiation profile classes
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_SCPBusy;                          /* SCP is busy */
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_CannotStartSCPThread;             /* Cannot start SCP thread */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_StopAfterAssociation;             /* Stop after current association (as requested) */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_StopAfterConnectionTimeout;       /* Stop after TCP connection timeout (as requested) */
+
 
 // This macro creates a condition with given code, severity and text.
 // Making this a macro instead of a function saves the creation of a temporary.
