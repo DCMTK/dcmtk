@@ -91,6 +91,22 @@ bitmap-out   output DICOM image or PGM bitmap
          save presentation state to file
 \endverbatim
 
+\section notes NOTES
+
+\subsection limitations Limitations
+
+Please note that the \b dcmp2pgm tool does not render all aspects that are
+defined by the Grayscale Softcopy Presentation State (GSPS) object but only
+those that are supported by the underlying DCMTK classes.  In particular,
+textual and graphical annotations will not be visible in the output image.
+The reason is that these aspects of a GSPS object are typically rendered by
+DICOMscope, the graphical user interface that is put on top of the related
+DCMTK classes and written in Java.
+
+Also concepts that were introduced after the initial definition of the GSPS
+IOD (see Supplement 33) are ignored.  This includes Supplement 120 with its
+extended features like e.g. Compound Graphics.
+
 \section logging LOGGING
 
 The level of logging output of the various command line tools and underlying
@@ -154,6 +170,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
