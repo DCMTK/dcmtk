@@ -6,13 +6,13 @@
 \page getscu getscu: DICOM retrieve (C-GET) SCU
 \endif
 
-\section synopsis SYNOPSIS
+\section getscu_synopsis SYNOPSIS
 
 \verbatim
 getscu [options] peer port [dcmfile-in...]
 \endverbatim
 
-\section description DESCRIPTION
+\section getscu_description DESCRIPTION
 
 The \b getscu application implements an SCU for the Query/Retrieve Service
 Class.  \b getscu supports retrieve functionality using the C-GET message.
@@ -22,7 +22,7 @@ accompanying C-STORE messages are handled on the same association.  Therefore,
 objects can only be received by \b getscu itself and cannot be sent to a third
 party (\b movescu would be the right tool for this task).
 
-\section parameters PARAMETERS
+\section getscu_parameters PARAMETERS
 
 \verbatim
 peer        hostname of DICOM peer
@@ -32,9 +32,9 @@ port        tcp/ip port number of peer
 dcmfile-in  DICOM query file(s)
 \endverbatim
 
-\section options OPTIONS
+\section getscu_options OPTIONS
 
-\subsection general_options general options
+\subsection getscu_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -65,7 +65,7 @@ dcmfile-in  DICOM query file(s)
           show presentation contexts in verbose mode
 \endverbatim
 
-\subsection network_options network options
+\subsection getscu_network_options network options
 \verbatim
 override matching keys:
 
@@ -184,7 +184,7 @@ other network options:
           abort association instead of releasing it
 \endverbatim
 
-\subsection output_options output options
+\subsection getscu_output_options output options
 \verbatim
 general:
 
@@ -203,7 +203,7 @@ storage mode:
           ignore store data, receive but do not store
 \endverbatim
 
-\section notes NOTES
+\section getscu_notes NOTES
 
 Each file supplied on the command line will be sent to the SCP as part of a
 C-GET request.  The query file must be a valid DICOM data set containing the
@@ -238,7 +238,7 @@ If no file is specified on the command line, the query must be specified
 completely with one or more \e -k options.  If multiple query files are
 provided, \b getscu will send multiple C-GET requests to the SCP.
 
-\subsection known_problems Known Problems
+\subsection getscu_known_problems Known Problems
 
 \b getscu is intended to be used as a testing tool for DICOM software
 developers.  The query keys file must be created by hand based upon the
@@ -253,7 +253,7 @@ QueryRetrieveLevel attribute and one or more of the so-called "unique key
 attributes" (PatientID, StudyInstanceUID, SeriesInstanceUID and
 SOPInstanceUID).
 
-\subsection dicom_conformance DICOM Conformance
+\subsection getscu_dicom_conformance DICOM Conformance
 
 \subsubsection scu_conformance SCU Conformance
 
@@ -452,7 +452,7 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 
 The \b getscu application does not support extended negotiation.
 
-\section examples EXAMPLES
+\section getscu_examples EXAMPLES
 
 \verbatim
 getscu --patient --call ARCHIVE caesar 104 q.dcm
@@ -468,7 +468,7 @@ the same connection, i.e. \b getscu will receive the objects itself.  Thus, it
 is not possible to tell the SCP to transmit the objects to a third party.
 This is a limitation of the DICOM protocol and not of the \b getscu tool.
 
-\section logging LOGGING
+\section getscu_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -487,7 +487,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section getscu_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -509,7 +509,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section getscu_environment ENVIRONMENT
 
 The \b getscu utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -525,12 +525,12 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section getscu_see_also SEE ALSO
 
 <b>findscu</b>(1), <b>movescu</b>(1), <b>dump2dcm</b>(1), <b>dcmodify</b>(1)
 
-\section copyright COPYRIGHT
+\section getscu_copyright COPYRIGHT
 
-Copyright (C) 2011-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2011-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

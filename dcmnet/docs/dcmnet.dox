@@ -19,7 +19,7 @@ provide a particular DICOM Service:
 \li \b DcmStorageSCU
 \li \b DcmStorageSCP
 
-\section Tools
+\section dcmnet_tools Tools
 
 This module contains the following command line tools:
 \li \ref dcmrecv
@@ -32,13 +32,13 @@ This module contains the following command line tools:
 \li \ref storescu
 \li \ref termscu
 
-\section Files
+\section dcmnet_files Files
 
 The following files provide further documentation:
 \li \ref file_asconfig
 \li \ref file_testing
 
-\section Examples
+\section dcmnet_examples Examples
 
 The following example shows a very simple Echo SCU (Verification Service Class
 SCU). Most error handling code has been omitted for brevity, also OS specific

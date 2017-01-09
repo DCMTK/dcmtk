@@ -6,13 +6,13 @@
 \page storescu storescu: DICOM storage (C-STORE) SCU
 \endif
 
-\section synopsis SYNOPSIS
+\section storescu_synopsis SYNOPSIS
 
 \verbatim
 storescu [options] peer port dcmfile-in...
 \endverbatim
 
-\section description DESCRIPTION
+\section storescu_description DESCRIPTION
 
 The \b storescu application implements a Service Class User (SCU) for the
 Storage Service Class.  For each DICOM file on the command line it sends
@@ -20,7 +20,7 @@ a C-STORE message to a Storage Service Class Provider (SCP) and waits for a
 response.  The application can be used to transmit DICOM images and other
 DICOM composite objects.
 
-\section parameters PARAMETERS
+\section storescu_parameters PARAMETERS
 
 \verbatim
 peer        hostname of DICOM peer
@@ -30,9 +30,9 @@ port        tcp/ip port number of peer
 dcmfile-in  DICOM file or directory to be transmitted
 \endverbatim
 
-\section options OPTIONS
+\section storescu_options OPTIONS
 
-\subsection general_options general options
+\subsection storescu_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -63,7 +63,7 @@ dcmfile-in  DICOM file or directory to be transmitted
           show presentation contexts in verbose mode
 \endverbatim
 
-\subsection input_options input options
+\subsection storescu_input_options input options
 \verbatim
 input file format:
 
@@ -93,7 +93,7 @@ input files:
           recurse within specified directories
 \endverbatim
 
-\subsection network_options network options
+\subsection storescu_network_options network options
 \verbatim
 application entity titles:
 
@@ -258,7 +258,7 @@ other network options:
           (default: 25)
 \endverbatim
 
-\subsection tls_options transport layer security (TLS) options
+\subsection storescu_tls_options transport layer security (TLS) options
 \verbatim
 transport protocol stack:
 
@@ -329,9 +329,9 @@ peer authentication:
           don't verify peer certificate
 \endverbatim
 
-\section notes NOTES
+\section storescu_notes NOTES
 
-\subsection scanning_directories Scanning Directories
+\subsection storescu_scanning_directories Scanning Directories
 
 Adding directories as a parameter to the command line only makes sense if
 option \e --scan-directories is also given.  If the files in the provided
@@ -342,7 +342,7 @@ directories, and, if any other patterns are specified on the command line
 outside the \e --scan-pattern option (e.g. in order to select further
 files), these do not apply to the specified directories.
 
-\subsection dicom_conformance DICOM Conformance
+\subsection storescu_dicom_conformance DICOM Conformance
 
 The \b storescu application supports the following Storage SOP Classes as an
 SCU:
@@ -450,7 +450,7 @@ However, using an appropriate association negotiation profile (see below)
 the optional support for extended negotiation can be added to particular SOP
 classes.
 
-\subsection profiles Association Negotiation Profiles and Configuration Files
+\subsection storescu_profiles Association Negotiation Profiles and Configuration Files
 
 \b storescu supports a flexible mechanism for specifying the DICOM network
 association negotiation behavior, based on so-called "association
@@ -458,7 +458,7 @@ negotiation profiles" which may be read from a configuration file.
 The format and semantics of this configuration file are documented in
 \e asconfig.txt.
 
-\section logging LOGGING
+\section storescu_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -477,7 +477,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section storescu_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -499,7 +499,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section storescu_environment ENVIRONMENT
 
 The \b storescu utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -515,17 +515,17 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section storescu_files FILES
 
 <em>\<docdir\>/asconfig.txt</em> - configuration file documentation
 \n<em>\<etcdir\>/storescu.cfg</em> - example association negotiation profile
 
-\section see_also SEE ALSO
+\section storescu_see_also SEE ALSO
 
 <b>storescp</b>(1)
 
-\section copyright COPYRIGHT
+\section storescu_copyright COPYRIGHT
 
-Copyright (C) 1996-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

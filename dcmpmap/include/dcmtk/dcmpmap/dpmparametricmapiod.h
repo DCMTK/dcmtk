@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -57,6 +57,7 @@ public:
 
       /** Type-specific getFrame() method that returns Float32, Uint16, or whatever
        *  is used in this Parametric Map.
+       *  @param  frameNumber The frame number to get, starting from 0
        *  @return Pointer to typed pixel data
        */
       PixelType* getFrame(const size_t frameNumber);

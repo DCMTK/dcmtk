@@ -24,7 +24,7 @@ This module makes heavy use of the \ref mod_dcmiod "dcmiod" module for managing
 common IOD attributes and the \ref mod_dcmfg "dcmfg" module for functional group
 support. Read the "Examples" sections for more explanations.
 
-\section Examples
+\section dcmpmap_examples Examples
 
 The following two examples show:
 \li How to access and dump information (including the binary data values) from a

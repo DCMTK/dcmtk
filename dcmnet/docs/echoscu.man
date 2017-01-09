@@ -6,20 +6,20 @@
 \page echoscu echoscu: DICOM verification (C-ECHO) SCU
 \endif
 
-\section synopsis SYNOPSIS
+\section echoscu_synopsis SYNOPSIS
 
 \verbatim
 echoscu [options] peer port
 \endverbatim
 
-\section description DESCRIPTION
+\section echoscu_description DESCRIPTION
 
 The \b echoscu application implements a Service Class User (SCU) for the
 Verification SOP Class.  It sends a DICOM C-ECHO message to a Service Class
 Provider (SCP) and waits for a response.  The application can be used to verify
 basic DICOM connectivity.
 
-\section parameters PARAMETERS
+\section echoscu_parameters PARAMETERS
 
 \verbatim
 peer  hostname of DICOM peer
@@ -27,9 +27,9 @@ peer  hostname of DICOM peer
 port  tcp/ip port number of peer
 \endverbatim
 
-\section options OPTIONS
+\section echoscu_options OPTIONS
 
-\subsection general_options general options
+\subsection echoscu_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -57,7 +57,7 @@ port  tcp/ip port number of peer
           use config file f for the logger
 \endverbatim
 
-\subsection network_options network options
+\subsection echoscu_network_options network options
 \verbatim
 application entity titles:
 
@@ -96,7 +96,7 @@ other network options:
           abort association instead of releasing it
 \endverbatim
 
-\subsection tls_options transport layer security (TLS) options
+\subsection echoscu_tls_options transport layer security (TLS) options
 \verbatim
 transport protocol stack:
 
@@ -167,9 +167,9 @@ peer authentication:
           don't verify peer certificate
 \endverbatim
 
-\section notes NOTES
+\section echoscu_notes NOTES
 
-\subsection dicom_conformance DICOM Conformance
+\subsection echoscu_dicom_conformance DICOM Conformance
 
 The \b echoscu application supports the following SOP Classes as an SCU:
 
@@ -184,7 +184,7 @@ propose the transfer syntax
 LittleEndianImplicitTransferSyntax  1.2.840.10008.1.2
 \endverbatim
 
-\section logging LOGGING
+\section echoscu_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -203,7 +203,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section echoscu_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -225,7 +225,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section echoscu_environment ENVIRONMENT
 
 The \b echoscu utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -241,8 +241,8 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section echoscu_copyright COPYRIGHT
 
-Copyright (C) 1994-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

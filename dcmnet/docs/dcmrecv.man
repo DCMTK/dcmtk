@@ -6,13 +6,13 @@
 \page dcmrecv dcmrecv: Simple DICOM storage SCP (receiver)
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmrecv_synopsis SYNOPSIS
 
 \verbatim
 dcmrecv [options] port
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmrecv_description DESCRIPTION
 
 The \b dcmrecv application implements a Service Class Provider (SCP) for the
 Storage Service Class.  In contrast to the well-known \b storescp utility,
@@ -21,15 +21,15 @@ explains the term "simple" in the title.  The main purpose of this application
 is to receive a whole bunch of DICOM datasets from a Storage Service Class User
 (SCU) and store them to a configurable directory and file structure.
 
-\section parameters PARAMETERS
+\section dcmrecv_parameters PARAMETERS
 
 \verbatim
 port  tcp/ip port number to listen on
 \endverbatim
 
-\section options OPTIONS
+\section dcmrecv_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmrecv_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -61,7 +61,7 @@ port  tcp/ip port number to listen on
 \endverbatim
 
 
-\subsection network_options network options
+\subsection dcmrecv_network_options network options
 \verbatim
 association negotiation profile from configuration file:
 
@@ -90,7 +90,7 @@ other network options:
   -dhl  --disable-host-lookup  disable hostname lookup
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmrecv_output_options output options
 \verbatim
 general:
 
@@ -134,9 +134,9 @@ storage mode:
           ignore dataset, receive but do not store it
 \endverbatim
 
-\section notes NOTES
+\section dcmrecv_notes NOTES
 
-\subsection typical_usage Typical Usage
+\subsection dcmrecv_typical_usage Typical Usage
 
 A typical use case of \b dcmrecv is to receive SOP instances that are sent from
 a storage SCU and save them as DICOM files.  The following command does exactly
@@ -166,7 +166,7 @@ dcmrecv -v -xf storescp.cfg default <port> --bit-preserving
 The received datasets are always stored as DICOM files with the same Transfer
 Syntax as used for the network transmission.
 
-\subsection dicom_conformance DICOM Conformance
+\subsection dcmrecv_dicom_conformance DICOM Conformance
 
 Basically, the \b dcmrecv application supports all Storage SOP Classes as an
 SCP, including private ones.  This requires, however, that a corresponding
@@ -181,7 +181,7 @@ In the future, there might be additional options that allow for specifying the
 list of supported Presentation Contexts (i.e. combination of SOP Class and
 Transfer Syntaxes) directly, i.e. without loading a configuration file.
 
-\subsection subdirectory_generation Subdirectory Generation
+\subsection dcmrecv_subdirectory_generation Subdirectory Generation
 
 The option \e --series-date-subdir allows for generating subdirectories (below
 the specified output directory) based on the value of the data element Series
@@ -203,7 +203,7 @@ system date is used for the following subdirectory structure:
 In both cases, \<year\> consists of 4 decimal digits and \<month\> as well as
 \<day\> of 2 decimal digits.
 
-\subsection filename_generation Filename Generation
+\subsection dcmrecv_filename_generation Filename Generation
 
 By default, the filenames for storing the received DICOM datasets are generated
 according to the following scheme:
@@ -248,14 +248,14 @@ With \<date\> consisting of "<year><month><day>" and \<time\> of
 could result in naming conflicts if the resolution of the system time is not
 sufficiently high (i.e. does not support microseconds).
 
-\subsection limitations Limitations
+\subsection dcmrecv_limitations Limitations
 
 Please note that option \e --bit-preserving cannot be used together with
 option \e --series-date-subdir since the received dataset is stored directly
 to file and the value of the Series Date (0008,0021) is, therefore, not
 available before the file has been created.
 
-\section logging LOGGING
+\section dcmrecv_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -274,7 +274,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmrecv_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -296,29 +296,29 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section exit_codes EXIT CODES
+\section dcmrecv_exit_codes EXIT CODES
 
 The \b dcmrecv utility uses the following exit codes when terminating.  This
 enables the user to check for the reason why the application terminated.
 
-\subsection exit_codes_general general
+\subsection dcmrecv_exit_codes_general general
 \verbatim
 EXITCODE_NO_ERROR                         0
 EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 \endverbatim
 
-\subsection exit_codes_input_file_errors input file errors
+\subsection dcmrecv_exit_codes_input_file_errors input file errors
 \verbatim
 EXITCODE_CANNOT_READ_INPUT_FILE          20 (*)
 \endverbatim
 
-\subsection exit_codes_output_file_errors output file errors
+\subsection dcmrecv_exit_codes_output_file_errors output file errors
 \verbatim
 EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40 (*)
 EXITCODE_INVALID_OUTPUT_DIRECTORY        45
 \endverbatim
 
-\subsection exit_codes_network_errors network errors
+\subsection dcmrecv_exit_codes_network_errors network errors
 \verbatim
 EXITCODE_CANNOT_INITIALIZE_NETWORK       60 (*)
 EXITCODE_CANNOT_START_SCP_AND_LISTEN     64
@@ -328,7 +328,7 @@ EXITCODE_INVALID_ASSOCIATION_CONFIG      66
 (*) Actually, these codes are currently not used by \b dcmrecv but serve as a
 placeholder for the corresponding group of exit codes.
 
-\section environment ENVIRONMENT
+\section dcmrecv_environment ENVIRONMENT
 
 The \b dcmrecv utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -344,17 +344,17 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmrecv_files FILES
 
 <em>\<docdir\>/asconfig.txt</em> - configuration file documentation
 \n<em>\<etcdir\>/storescp.cfg</em> - example association negotiation profile
 
-\section see_also SEE ALSO
+\section dcmrecv_see_also SEE ALSO
 
 <b>dcmsend</b>(1), <b>storescu</b>(1), <b>storescp</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmrecv_copyright COPYRIGHT
 
-Copyright (C) 2013-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2013-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -146,6 +146,8 @@ public:
   /** Make sure that the IOD contains a SOP Instance, Series Instance and Study
    *  Instance UID. They are created if empty. Invalid UIDs are corrected if
    *  desired.
+   *  @param  correctInvalid If OFTrue, invalid instance UIDs will be replaced
+   *          by new ones
    */
   virtual void ensureInstanceUIDs(const OFBool correctInvalid = OFFalse);
 

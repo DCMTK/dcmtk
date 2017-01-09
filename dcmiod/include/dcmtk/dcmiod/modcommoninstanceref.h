@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -73,12 +73,14 @@ public:
   virtual ~IODCommonInstanceReferenceModule();
 
   /** Add references
+   *  @param  references The references to be added
+   *  @param  studyInstanceUID The Study Instance UID the references belong to
+   *  @param  clearOldData Delete any old referneces if OFTrue, otherwise keep them
    *  @result EC_Normal if successful, error otherwise
    */
   virtual size_t addReferences(const IODReferences& references,
                                const OFString& studyInstanceUID,
                                const OFBool clearOldData = OFTrue);
-
 
   /** Read data of this module from given source item
    *  @param  source The item to read from

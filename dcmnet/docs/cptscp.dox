@@ -26,6 +26,7 @@ OFBool isConnected();
  *  TCP/IP connection is already accepted, while the ACSE negotiation
  *  is not already done but must be implemented by this method.
  *  @param assoc The association to run.
+    @param EC_Normal if association could be handled, error otherwise
  */
 OFCondition run( T_ASC_Association* assoc );
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2015, OFFIS e.V.
+ *  Copyright (C) 2012-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,7 +53,8 @@ public:
   DcmSCPConfig(const DcmSCPConfig &old);
 
   /** assignment operator, performs deep copy.
-   *  @param obj the config to copy from
+   *  @param  obj the config to copy from
+   *  @return Reference to "this" object
    */
   DcmSCPConfig &operator=(const DcmSCPConfig &obj);
 

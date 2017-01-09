@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2011, OFFIS e.V.
+ *  Copyright (C) 2008-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,8 +55,8 @@ public:
   /** Copy constructor. Needed to keep some compilers quiet.
    *  @param src item that should be copied from.
    */
-  UserIdentityNegotiationSubItem(const UserIdentityNegotiationSubItem& src) : 
-    m_itemType(src.m_itemType), 
+  UserIdentityNegotiationSubItem(const UserIdentityNegotiationSubItem& src) :
+    m_itemType(src.m_itemType),
     m_reserved(src.m_reserved)
   {
   }
@@ -120,9 +120,10 @@ public:
 private:
 
   /** Undefined private assignment operator. Needed to keep some compilers quiet.
+   *  @return Reference to "this" object
    */
   UserIdentityNegotiationSubItem& operator= (const UserIdentityNegotiationSubItem&);
-  
+
   /// Item type of this user item. For User Identity Negotiation
   /// this is always 0x58
   const unsigned char m_itemType;
@@ -245,7 +246,8 @@ public:
   void dump(STD_NAMESPACE ostream& outstream) const;
 
   /** Assignment operator, does a deep copy of a class instance
-   * @param rhs - [in] Right hand side of assignment
+   *  @param rhs - [in] Right hand side of assignment
+   *  @return  Reference to "this" object
    */
   UserIdentityNegotiationSubItemRQ& operator= (const UserIdentityNegotiationSubItemRQ& rhs);
 
@@ -341,7 +343,8 @@ public:
   void dump(STD_NAMESPACE ostream& outstream) const;
 
   /** Assignment operator, does a deep copy of a class instance
-   * @param rhs - [in] Right hand side of assignment
+   * @param  rhs - [in] Right hand side of assignment
+   * @return Reference to "this" object
    */
   UserIdentityNegotiationSubItemAC& operator= (const UserIdentityNegotiationSubItemAC& rhs);
 

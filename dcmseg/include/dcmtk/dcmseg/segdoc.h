@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -301,6 +301,7 @@ public:
    *          lossy compression steps. Only one value (and no backslash) if only
    *          one step was performed.
    *  @param  checkValues If OFTrue, the data provided is checked for validity
+   *  @return EC_Normal if lossy compression info could be set, error code otherwise
    */
   virtual OFCondition setLossyImageCompressionFlag(const OFString& ratios,
                                                    const OFString& methods,
@@ -310,6 +311,7 @@ public:
    *  @param  equipmentInfo  The description of the equipment used to create
    *          this segmentation
    *  @param  checkValue If OFTrue, the data provided is checked for validity
+   *  @return EC_Normal if equipment information could be set successfully, error otherwise
    */
   virtual OFCondition setEquipmentInfo(const IODGeneralEquipmentModule::EquipmentInfo& equipmentInfo,
                                        const OFBool checkValue = OFTrue);
@@ -318,6 +320,7 @@ public:
    *  @param  contentIdentification  The content identification of this segmentation
    *  @param  checkValue If OFTrue, the data provided is checked for validity
    *          (as possible)
+   *  @return EC_Normal if content identification could be set correctly, OFFalse otherwise
    */
   virtual OFCondition setContentIdentification(const ContentIdentificationMacro& contentIdentification,
                                                const OFBool checkValue = OFTrue);
@@ -578,6 +581,8 @@ private:
   /** Returns the number of bits per frame, taking into account binary versus
    *  fractional segmentation (member variables) and the dimensions of the
    *  image (parameters)
+   *  @param  rows The number of rows returned
+   *  @param  cols The number of columns returned
    *  @return Bits used by a single frame of the segmentation
    */
   size_t getBitsPerFrame(const Uint16& rows,

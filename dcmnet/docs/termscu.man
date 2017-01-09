@@ -6,13 +6,13 @@
 \page termscu termscu: DICOM termination SCU
 \endif
 
-\section synopsis SYNOPSIS
+\section termscu_synopsis SYNOPSIS
 
 \verbatim
 termscu [options] peer port
 \endverbatim
 
-\section description DESCRIPTION
+\section termscu_description DESCRIPTION
 
 The \b termscu application implements a Service Class User (SCU) for DCMTK's
 private Shutdown SOP Class.  It tries to negotiate this private Shutdown SOP
@@ -20,7 +20,7 @@ Class with a Service Class Provider (SCP) which (if this feature is
 implemented) will immediately shutdown after refusing the association.
 The application can be used to shutdown some of DCMTK's server applications.
 
-\section parameters PARAMETERS
+\section termscu_parameters PARAMETERS
 
 \verbatim
 peer  hostname of DICOM peer
@@ -28,9 +28,9 @@ peer  hostname of DICOM peer
 port  tcp/ip port number of peer
 \endverbatim
 
-\section options OPTIONS
+\section termscu_options OPTIONS
 
-\subsection general_options general options
+\subsection termscu_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -58,7 +58,7 @@ port  tcp/ip port number of peer
           use config file f for the logger
 \endverbatim
 
-\subsection network_options network options
+\subsection termscu_network_options network options
 \verbatim
 application entity titles:
 
@@ -74,9 +74,9 @@ other network options:
           set max receive pdu to n bytes (default: 16384)
 \endverbatim
 
-\section notes NOTES
+\section termscu_notes NOTES
 
-\subsection dicom_conformance DICOM Conformance
+\subsection termscu_dicom_conformance DICOM Conformance
 
 The \b termscu application supports the following SOP Classes as an SCU:
 
@@ -84,7 +84,7 @@ The \b termscu application supports the following SOP Classes as an SCU:
 PrivateShutdownSOPClass  1.2.276.0.7230010.3.4.1915765545.18030.917282194.0
 \endverbatim
 
-\section logging LOGGING
+\section termscu_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -103,7 +103,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section termscu_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -125,7 +125,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section termscu_environment ENVIRONMENT
 
 The \b termscu utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -141,8 +141,8 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section termscu_copyright COPYRIGHT
 
-Copyright (C) 2005-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2005-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

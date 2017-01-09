@@ -6,13 +6,13 @@
 \page dcmsend dcmsend: Simple DICOM storage SCU (sender)
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmsend_dcmsend_synopsis SYNOPSIS
 
 \verbatim
 dcmsend [options] peer port dcmfile-in...
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmsend_description DESCRIPTION
 
 The \b dcmsend application implements a Service Class User (SCU) for the
 Storage Service Class.  In contrast to the well-known \b storescu utility,
@@ -22,7 +22,7 @@ is to send a whole bunch of DICOM files to a Storage Service Class Provider
 (SCP).  \b dcmsend supports both multiple associations (one after the other)
 and decompression of DICOM SOP instances if needed to transfer them.
 
-\section parameters PARAMETERS
+\section dcmsend_parameters PARAMETERS
 
 \verbatim
 peer        hostname of DICOM peer
@@ -32,9 +32,9 @@ port        tcp/ip port number of peer
 dcmfile-in  DICOM file or directory to be transmitted
 \endverbatim
 
-\section options OPTIONS
+\section dcmsend_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmsend_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -68,7 +68,7 @@ dcmfile-in  DICOM file or directory to be transmitted
           show presentation contexts in verbose mode
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmsend_input_options input options
 \verbatim
 input file format:
 
@@ -101,7 +101,7 @@ input files:
           recurse within specified directories
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmsend_processing_options processing options
 \verbatim
 transfer syntax conversion:
 
@@ -133,7 +133,7 @@ other processing options:
           do not check UID values of input files
 \endverbatim
 
-\subsection network_options network options
+\subsection dcmsend_network_options network options
 \verbatim
 application entity titles:
 
@@ -170,7 +170,7 @@ other network options:
           restrict max send pdu to n bytes
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmsend_output_options output options
 \verbatim
 general:
 
@@ -179,9 +179,9 @@ general:
           (if successful) and write it to text file f
 \endverbatim
 
-\section notes NOTES
+\section dcmsend_notes NOTES
 
-\subsection typical_usage Typical Usage
+\subsection dcmsend_typical_usage Typical Usage
 
 A typical use case of \b dcmsend is to send arbitrary SOP instances that are
 stored as DICOM files to a storage SCP.  The following command does exactly
@@ -241,7 +241,7 @@ the DICOM SOP instances, option \e --create-report-file can be used to create
 a corresponding text file.  However, this file is only created as a final step
 if the application did not terminate before (with an error).
 
-\subsection scanning_directories Scanning Directories
+\subsection dcmsend_scanning_directories Scanning Directories
 
 Adding directories as a parameter to the command line only makes sense if
 option \e --scan-directories is also given.  If the files in the provided
@@ -259,7 +259,7 @@ their subfolders (due to option \e +r).  Additionally, \b dcmsend will transfer
 Note that providing directory names without enabling option \e +sd does
 not make sense.
 
-\subsection dicom_conformance DICOM Conformance
+\subsection dcmsend_dicom_conformance DICOM Conformance
 
 Basically, the \b dcmsend application supports all Storage SOP Classes as an
 SCU, including private ones.  By default, the application checks the SOP Class
@@ -308,7 +308,7 @@ Compression", "Lossy JPEG Compression" and so on are not always proposed as
 also required by the DICOM standard.  The same limitation applies to other
 compression schemes.  See DICOM PS 3.5 section 10 for details.
 
-\section logging LOGGING
+\section dcmsend_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -327,7 +327,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmsend_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -349,18 +349,18 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section exit_codes EXIT CODES
+\section dcmsend_exit_codes EXIT CODES
 
 The \b dcmsend utility uses the following exit codes when terminating.  This
 enables the user to check for the reason why the application terminated.
 
-\subsection exit_codes_general general
+\subsection dcmsend_exit_codes_general general
 \verbatim
 EXITCODE_NO_ERROR                         0
 EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 \endverbatim
 
-\subsection exit_codes_input_file_errors input file errors
+\subsection dcmsend_exit_codes_input_file_errors input file errors
 \verbatim
 EXITCODE_CANNOT_READ_INPUT_FILE          20 (*)
 EXITCODE_NO_INPUT_FILES                  21
@@ -368,13 +368,13 @@ EXITCODE_INVALID_INPUT_FILE              22
 EXITCODE_NO_VALID_INPUT_FILES            23
 \endverbatim
 
-\subsection exit_codes_output_file_errors output file errors
+\subsection dcmsend_exit_codes_output_file_errors output file errors
 \verbatim
 EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40 (*)
 EXITCODE_CANNOT_WRITE_REPORT_FILE        43
 \endverbatim
 
-\subsection exit_codes_network_errors network errors
+\subsection dcmsend_exit_codes_network_errors network errors
 \verbatim
 EXITCODE_CANNOT_INITIALIZE_NETWORK       60
 EXITCODE_CANNOT_NEGOTIATE_ASSOCIATION    61
@@ -385,7 +385,7 @@ EXITCODE_CANNOT_ADD_PRESENTATION_CONTEXT 65
 (*) Actually, these codes are currently not used by \b dcmsend but serve as a
 placeholder for the corresponding group of exit codes.
 
-\section environment ENVIRONMENT
+\section dcmsend_environment ENVIRONMENT
 
 The \b dcmsend utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -401,12 +401,12 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dcmsend_see_also SEE ALSO
 
 <b>dcmrecv</b>(1), <b>storescu</b>(1), <b>storescp</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmsend_copyright COPYRIGHT
 
-Copyright (C) 2011-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2011-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
