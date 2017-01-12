@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,7 +63,7 @@ OFTEST(dcmdata_specificCharacterSet_1)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13 ").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 166").good());
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
-        // Only the ICONV library supports these
+        // (only the ICONV library supports these character sets)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87 ").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 159").good());
 #endif
@@ -130,7 +130,7 @@ OFTEST(dcmdata_specificCharacterSet_3)
         const OFString delimiters("\\^=");
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
         // check whether string conversion from Japanese language to UTF-8 works
-        // only the ICONV library supports these
+        // (only the ICONV library supports these character sets)
         // example taken from DICOM PS 3.5 Annex H.3.1
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87").good());
         OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).good());
@@ -146,10 +146,15 @@ OFTEST(dcmdata_specificCharacterSet_3)
         OFCHECK(converter.convertString("Hong^Gildong=\033$)C\373\363^\033$)C\321\316\324\327=\033$)C\310\253^\033$)C\261\346\265\277", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Hong^Gildong=\346\264\252^\345\220\211\346\264\236=\355\231\215^\352\270\270\353\217\231");
         // check whether string conversion from Chinese language to UTF-8 works
-        // example taken from DICOM PS 3.5 Annex J.2
+        // example taken from DICOM PS 3.5 Annex J.3
         OFCHECK(converter.selectCharacterSet("GB18030").good());
         OFCHECK(converter.convertString("Wang^XiaoDong=\315\365^\320\241\266\253=", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Wang^XiaoDong=\347\216\213^\345\260\217\344\270\234=");
+        // check whether string conversion from Chinese language to UTF-8 works
+        // example taken from DICOM PS 3.5 Annex K.2
+        OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 58").good());
+        OFCHECK(converter.convertString("Zhang^XiaoDong=\033\044\051\101\325\305\136\033\044\051\101\320\241\266\253=", resultStr, delimiters).good());
+        OFCHECK_EQUAL(resultStr, "Zhang^XiaoDong=\345\274\240\136\345\260\217\344\270\234=");
         // check whether CR and LF are detected correctly
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13").good());
         OFCHECK(converter.convertString("Japanese\r\033(J\324\317\300\336\nText", resultStr).good());
@@ -181,7 +186,7 @@ OFTEST(dcmdata_specificCharacterSet_4)
         OFCHECK(converter.convertString("J\303\251r\303\264me", resultStr).good());
         OFCHECK_EQUAL(resultStr, "J\351r\364me");
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
-        // only the ICONV library supports this
+        // (only the ICONV library supports this character set)
         // the following should fail
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87", "ISO_IR 100").good());
         OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr).bad());
