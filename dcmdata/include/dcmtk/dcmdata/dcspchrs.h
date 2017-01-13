@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -156,7 +156,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                      set) is stored
      *  @param  delimiters  optional string of characters that are regarded as
      *                      delimiters, i.e.\ when found the character set is
-     *                      switched back to the default.  CR, LF and FF are
+     *                      switched back to the default.  CR, LF, FF and HT are
      *                      always regarded as delimiters (see DICOM PS 3.5).
      *  @return status, EC_Normal if successful, an error code otherwise
      */
@@ -178,7 +178,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                      set) is stored
      *  @param  delimiters  optional string of characters that are regarded as
      *                      delimiters, i.e.\ when found the character set is
-     *                      switched back to the default.  CR, LF and FF are
+     *                      switched back to the default.  CR, LF, FF and HT are
      *                      always regarded as delimiters (see DICOM PS 3.5).
      *  @return status, EC_Normal if successful, an error code otherwise
      */
