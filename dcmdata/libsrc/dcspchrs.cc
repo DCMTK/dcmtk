@@ -507,11 +507,14 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
         // particular escape sequences in order to switch between character sets
         toString.clear();
         size_t pos = 0;
+        // some (extended) character sets use more than 1 byte per character
+        // (however, the default character set always uses a single byte)
+        unsigned char bytesPerChar = 1;
         // check whether '=' is a delimiter, as it is used in PN values
         OFBool isFirstGroup = (delimiters.find('=') != OFString_npos);
-        // by default, we expect that '^' and '=' (i.e. their ASCII codes) are valid PN delimiters
+        // by default, we expect that delimiters can be checked by their corresponding ASCII codes
         // (this implies that the default character set is not "ISO 2022 IR 87" or "ISO 2022 IR 159")
-        OFBool checkPNDelimiters = OFTrue;
+        OFBool checkDelimiters = OFTrue;
         const char *firstChar = fromString;
         const char *currentChar = fromString;
         // initially, use the default descriptor
@@ -522,10 +525,9 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
         {
             const char c0 = *currentChar++;
             // check for characters ESC, HT, LF, FF, CR or any other specified delimiter
-            // (the PN delimiters '^' and '=' require the default character set or ASCII)
             const OFBool isEscape = (c0 == '\033');
-            const OFBool isDelimiter = (c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') ||
-                ((delimiters.find(c0) != OFString_npos) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
+            const OFBool isDelimiter = checkDelimiters &&
+                ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (delimiters.find(c0) != OFString_npos));
             if (isEscape || isDelimiter)
             {
                 // convert the sub-string (before the delimiter) with the current character set
@@ -606,7 +608,7 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
                         if (pos + escLength < fromLength)
                         {
                             c3 = *currentChar++;
-                            if (c3 == 0x43)                // Korean (multi-byte)
+                            if (c3 == 0x43)                // Korean (single- and multi-byte)
                                 key = "ISO 2022 IR 149";
                             else if (c3 == 0x41)           // Simplified Chinese (multi-byte)
                                 key = "ISO 2022 IR 58";
@@ -640,8 +642,22 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
                         {
                             converter = it->second;
                             // special case: these Japanese character sets replace the ASCII part (G0 code area),
-                            // so according to DICOM PS 3.5 Section 6.2.1 an explicit switch to the default is required
-                            checkPNDelimiters = (key != "ISO 2022 IR 87") && (key != "ISO 2022 IR 159");
+                            // so according to DICOM PS 3.5 Section 6.2.1.2 an explicit switch to the default is required
+                            checkDelimiters = (key != "ISO 2022 IR 87") && (key != "ISO 2022 IR 159");
+                            // determine number of bytes per character (used by the selected character set)
+                            if ((key == "ISO 2022 IR 87") || (key == "ISO 2022 IR 159") || (key == "ISO 2022 IR 58"))
+                            {
+                                DCMDATA_TRACE("    Now using 2 bytes per character");
+                                bytesPerChar = 2;
+                            }
+                            else if (key == "ISO 2022 IR 149")
+                            {
+                                DCMDATA_TRACE("    Now using 1 or 2 bytes per character");
+                                bytesPerChar = 0;      // special handling for single- and multi-byte
+                            } else {
+                                DCMDATA_TRACE("    Now using 1 byte per character");
+                                bytesPerChar = 1;
+                            }
                         } else {
                             OFOStringStream stream;
                             stream << "Cannot convert character set: Escape sequence refers to character set '" << key << "' that "
@@ -678,10 +694,18 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
                 {
                     DCMDATA_TRACE("  Switching back to the default character set (because a delimiter was found)");
                     converter = DefaultEncodingConverter;
-                    checkPNDelimiters = OFTrue;
+                    checkDelimiters = OFTrue;
                 }
                 // start new sub-string after delimiter
                 firstChar = currentChar;
+            }
+            // skip remaining bytes of current character (if any)
+            else if (bytesPerChar != 1)
+            {
+                const size_t skipBytes = (bytesPerChar > 0) ? (bytesPerChar - 1) : ((c0 & 0x80) ? 1 : 0);
+                if (pos + skipBytes < fromLength)
+                    currentChar += skipBytes;
+                pos += skipBytes;
             }
             ++pos;
         }
