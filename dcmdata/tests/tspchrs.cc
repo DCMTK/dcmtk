@@ -145,6 +145,9 @@ OFTEST(dcmdata_specificCharacterSet_3)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 149").good());
         OFCHECK(converter.convertString("Hong^Gildong=\033$)C\373\363^\033$)C\321\316\324\327=\033$)C\310\253^\033$)C\261\346\265\277", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Hong^Gildong=\346\264\252^\345\220\211\346\264\236=\355\231\215^\352\270\270\353\217\231");
+        // modified example: check for 8-bit mode (using ASCII characters)
+        OFCHECK(converter.convertString("Hong^Gildong=\033$)C\373\363^\033$)C\321\316ASCII\324\327=\033$)C\310\253^\033$)C\261\346\265\277", resultStr, delimiters).good());
+        OFCHECK_EQUAL(resultStr, "Hong^Gildong=\346\264\252^\345\220\211ASCII\346\264\236=\355\231\215^\352\270\270\353\217\231");
         // check whether string conversion from Chinese language to UTF-8 works
         // example taken from DICOM PS 3.5 Annex J.3
         OFCHECK(converter.selectCharacterSet("GB18030").good());
