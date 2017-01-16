@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -373,10 +373,6 @@ DCMTK_DCMNET_EXPORT int access(const char* path, int amode);
 
 #ifndef HAVE_STRERROR
 DCMTK_DCMNET_EXPORT char *strerror(int e);
-#endif
-
-#ifndef HAVE_TEMPNAM
-DCMTK_DCMNET_EXPORT char *tempnam(char *dir, char *pfx);
 #endif
 
 #ifdef _WIN32

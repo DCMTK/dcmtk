@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -412,63 +412,3 @@ char *strerror(int errornum)
 
 #endif /* ! HAVE_STRERROR */
 #endif
-
-#ifndef HAVE_TEMPNAM
-/*
- * These functions are not present on NeXTs but are used by the
- * DB module.
- */
-
-char *
-tempnam(char *dir, char *pfx)
-{
-#define TMPDIR_1	"/usr/tmp"
-#define TMPDIR_2	"/tmp"
-#define AMODES		(R_OK | W_OK | X_OK)
-    char *tmpdir = NULL;
-    char *env = NULL;
-    char prefix[6];
-    char *name = NULL;
-    static unsigned short mix = 0;
-
-    /* check environment variable first */
-    if (((env = getenv("TMPDIR")) != NULL) && access(env, AMODES) == 0) {
-	tmpdir = env;
-    } else if (dir != NULL && access(dir, AMODES) == 0) {
-	tmpdir = dir;
-    } else if (access(TMPDIR_1, AMODES) == 0) {
-	tmpdir = TMPDIR_1;
-    } else if (access(TMPDIR_2, AMODES) == 0) {
-	 tmpdir = TMPDIR_2;
-    }
-
-    if (tmpdir == NULL) {
-	return NULL; 	/* no suitable directory found */
-    }
-
-
-    name = (char*)malloc(strlen(tmpdir) + 1 + MIN(strlen(pfx), 5) + 15);
-    if (name == NULL) {
-	return NULL;	/* malloc failure */
-    }
-
-    /* SUNOS Compatability: take the first 5 characters of prefix (pfx) */
-    bzero(prefix, sizeof(prefix));
-    strncpy(prefix, pfx, 5);
-    /*
-     * Find a suitable name.
-     * Use at most 14 characters for filename component of
-     * path.  The last 5 characters use the process id, the middle
-     * 4 some hex number.
-     * note will recycle after about 65536 times
-     */
-
-    mix++;	/* will recycle */
-
-    sprintf(name, "%s%c%s%04x%05d", tmpdir, PATH_SEPARATOR, prefix,
-	(unsigned int)mix, (int)OFStandard::getProcessID());
-
-    return name;
-}
-
-#endif /* ! HAVE_TEMPNAM */

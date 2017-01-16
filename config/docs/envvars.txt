@@ -45,9 +45,3 @@ TCP_NODELAY
     connections. Also see documentation for macro
     DONT_DISABLE_NAGLE_ALGORITHM in config/docs/macros.txt or
     /usr/local/share/doc/dcmtk/macros.txt.
-
-TMPDIR
-  Affected: dcmnet
-  Explanation: Affects the implementation of the tempnam() emulation on
-    platforms where tempnam() is not defined. See tempnam(3S) man page
-    for a description.
