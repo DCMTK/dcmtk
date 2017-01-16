@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -2268,29 +2268,31 @@ setTCPBufferLength(int sock)
     char *TCPBufferLength;
     int bufLen;
 
-    /*
-     * Use a 64K default socket buffer length, fitting the MTU size of the loopback device implementation
-     * in recent Linux kernel versions.
-     * Different environments, particularly slower networks may require different values for optimal
-     * performance.
-     */
 #ifdef HAVE_GUSI_H
     /* GUSI always returns an error for setsockopt(...) */
 #else
-    bufLen = 65536; // a socket buffer size of 64K gives best throughput for image transmission
+    /*
+     * check whether environment variable TCP_BUFFER_LENGTH is set.
+     * If not, the the operating system is responsible for selecting
+     * appropriate values for the TCP send and receive buffer lengths.
+     */
+    DCMNET_TRACE("checking whether environment variable TCP_BUFFER_LENGTH is set");
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
-        if (sscanf(TCPBufferLength, "%d", &bufLen) != 1) {
-            DCMNET_WARN("DUL: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength);
-        }
-    }
+        if (sscanf(TCPBufferLength, "%d", &bufLen) == 1) {
 #if defined(SO_SNDBUF) && defined(SO_RCVBUF)
-    (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
-    (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
+            if (bufLen == 0)
+                bufLen = 65536; // a socket buffer size of 64K gives good throughput for image transmission
+            DCMNET_DEBUG("DULFSM: setting TCP buffer length to " << bufLen << " bytes");
+            (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
+            (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else
-    DCMNET_WARN("DULFSM: setTCPBufferLength: "
-        "cannot set TCP buffer length socket option: "
-        "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown");
+            DCMNET_WARN("DUL: setTCPBufferLength: cannot set TCP buffer length socket option: "
+                << "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown");
 #endif // SO_SNDBUF and SO_RCVBUF
+        } else
+            DCMNET_WARN("DUL: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength);
+    } else
+        DCMNET_TRACE("  environment variable TCP_BUFFER_LENGTH not set, using the system defaults");
 #endif // HAVE_GUSI_H
 }
 

@@ -33,10 +33,12 @@ DCMDICTPATH
 
 TCP_BUFFER_LENGTH
   Affected: dcmnet
-  Explanation: By default, DCMTK uses a TCP send and receive buffer
-    length of 64K. If the environment variable TCP_BUFFER_LENGTH is set,
-    it specifies an override for the TCP buffer length. The value is
-    specified in bytes, not in Kbytes.
+  Explanation: By default, DCMTK does not modify the TCP send and receive
+    buffer length, i.e. the operating system is responsible for selecting
+    appropriate values. If the environment variable TCP_BUFFER_LENGTH is
+    set, it specifies an override for the TCP buffer length. The value is
+    specified in bytes, not in Kbytes. If set to 0, a buffer length of 64K,
+    which was the default value for previous versions of the DCMTK, is used.
 
 TCP_NODELAY
   Affected: dcmnet
