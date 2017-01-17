@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -880,7 +880,7 @@ void DU_logSelectResult(int selectReturnValue)
   }
   else if (selectReturnValue == 0)
   {
-    DCMNET_DEBUG("Timeout while waiting for incoming network data");
+    DCMNET_TRACE("Timeout while waiting for incoming network data");
   }
   else
   {
