@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -351,9 +351,9 @@ public:
 
   PixelType* getData(const size_t count);
 
-  OFCondition put(DcmItem& item)
+  OFCondition put(DcmItem& itemPara)
   {
-    OFCondition result = item.insert(m_pElement.get(), OFTrue);
+    OFCondition result = itemPara.insert(m_pElement.get(), OFTrue);
     if (result.good())
       m_pElement.release();
     return result;
@@ -448,9 +448,9 @@ public:
     return OFnullptr;
   }
 
-  OFCondition put(DcmItem& item)
+  OFCondition put(DcmItem& itemPara)
   {
-    OFCondition result = item.insert(m_pElement.get(), OFTrue);
+    OFCondition result = itemPara.insert(m_pElement.get(), OFTrue);
     if (result.good())
       m_pElement.release();
     return result;
@@ -506,9 +506,9 @@ public:
     return OFnullptr;
   }
 
-  OFCondition put(DcmItem& item)
+  OFCondition put(DcmItem& itemPara)
   {
-    OFCondition result = item.insert(m_pElement.get(), OFTrue);
+    OFCondition result = itemPara.insert(m_pElement.get(), OFTrue);
     if (result.good())
       m_pElement.release();
     return result;
