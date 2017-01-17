@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -53,8 +53,8 @@ FGBase* FunctionalGroups::find(const DcmFGTypes::E_FGType fgType)
 {
   FGBase* group = NULL;
   FunctionalGroups::iterator it = m_groups.find(fgType);
-  FunctionalGroups::iterator end = m_groups.end();
-  if ( it != end )
+  FunctionalGroups::iterator done = m_groups.end();
+  if ( it != done)
   {
     group = (*it).second;
   }

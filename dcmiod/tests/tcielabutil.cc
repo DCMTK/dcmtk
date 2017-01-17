@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, OFFIS e.V.
+ *  Copyright (C) 2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,7 +82,7 @@ OFTEST(dcmiod_tcielabutil)
   srand (OFstatic_cast(unsigned int, time (NULL)));
 
   // We do 1000 runs
-  for (size_t run = 0; run < 1000; run++)
+  for (size_t numRun = 0; numRun< 1000; numRun++)
   {
     // i1, i2, i3: Input for conversion
     // r1, r2, r3: Results of conversion
