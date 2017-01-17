@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -75,20 +75,6 @@ public:
    */
   virtual OFCondition write(DcmItem& destination);
 
-  /** Set descriptive information of statistic
-   *  @param  typeCode The type of statistic, DICOM prescribes codes from
-   *          CID 7263 "Diffusion Tractography Measurement Types"
-   *  @param  typeModifierCode Defines the region of interest, DICOM prescribes
-   *          code from CID 7464 "General Region of Interest Measurement
-   *          Modifiers"
-   *  @param  unitsCode The physical units of the statistic value, DICOM
-   *          prescribes code from CID 82 "Units of Measurement" (UCUM).
-   *  @return EC_Normal if setting was successful, error otherwise.
-   */
-  virtual OFCondition set(const CodeSequenceMacro& typeCode,
-                          const CodeSequenceMacro& typeModifierCode,
-                          const CodeSequenceMacro& unitsCode);
-
   /** Get descriptive information of statistic
    *  @param  typeCode Returns type of statistic
    *  @param  typeModifierCode Returns region of interest
@@ -104,6 +90,20 @@ public:
   virtual void resetRules();
 
 protected:
+
+  /** Set descriptive information of statistic
+   *  @param  typeCode The type of statistic, DICOM prescribes codes from
+   *          CID 7263 "Diffusion Tractography Measurement Types"
+   *  @param  typeModifierCode Defines the region of interest, DICOM prescribes
+   *          code from CID 7464 "General Region of Interest Measurement
+   *          Modifiers"
+   *  @param  unitsCode The physical units of the statistic value, DICOM
+   *          prescribes code from CID 82 "Units of Measurement" (UCUM).
+   *  @return EC_Normal if setting was successful, error otherwise.
+   */
+  virtual OFCondition setCommon(const CodeSequenceMacro& typeCode,
+                                const CodeSequenceMacro& typeModifierCode,
+                                const CodeSequenceMacro& unitsCode);
 
   /// Single item from Concept Name Code Sequence
   CodeSequenceMacro m_Type;
@@ -220,6 +220,10 @@ public:
                           CodeSequenceMacro& unitsCode,
                           const Float32*& statisticValues,
                           unsigned long& numValues);
+
+  // Make sure the original virtual get() function from TrcStatistic
+  // stays visible
+  using TrcStatistic::get;
 };
 
 /** Class representing a Track Set statistic, i.e. a single statistic value that
@@ -311,6 +315,10 @@ public:
                           CodeSequenceMacro& typeModifierCode,
                           CodeSequenceMacro& unitsCode,
                           Float64& statisticValue);
+
+    // Make sure the original virtual get() function from TrcStatistic
+  // stays visible
+  using TrcStatistic::get;
 
 };
 

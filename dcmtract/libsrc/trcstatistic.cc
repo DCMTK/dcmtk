@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -92,9 +92,9 @@ OFCondition TrcStatistic::get(CodeSequenceMacro& typeCode,
 }
 
 
-OFCondition TrcStatistic::set(const CodeSequenceMacro& typeCode,
-                              const CodeSequenceMacro& typeModifierCode,
-                              const CodeSequenceMacro& unitsCode)
+OFCondition TrcStatistic::setCommon(const CodeSequenceMacro& typeCode,
+                                    const CodeSequenceMacro& typeModifierCode,
+                                    const CodeSequenceMacro& unitsCode)
 {
   OFCondition result;
   result = OFconst_cast(CodeSequenceMacro*, &typeCode)->check(OFTrue /* quiet */);
@@ -155,7 +155,7 @@ OFCondition TrcTracksStatistic::create(const CodeSequenceMacro& typeCode,
     return EC_MemoryExhausted;
 
   //OFCondition result = OFstatic_cast(TrcStatistic*,statistic)->set(typeCode, typeModifierCode, unitsCode);
-  OFCondition result = statistic->TrcStatistic::set(typeCode, typeModifierCode, unitsCode);
+  OFCondition result = statistic->TrcStatistic::setCommon(typeCode, typeModifierCode, unitsCode);
   if (result.good())
   {
     result = statistic->getData().putAndInsertFloat32Array(DCM_FloatingPointValues, statisticValues, numValues);
@@ -231,7 +231,7 @@ OFCondition TrcTracksStatistic::set(const CodeSequenceMacro& typeCode,
   {
     return TRC_EC_InvalidStatisticData;
   }
-  OFCondition result = TrcStatistic::set(typeCode, typeModifierCode, unitsCode);
+  OFCondition result = TrcStatistic::setCommon(typeCode, typeModifierCode, unitsCode);
   if (result.good())
   {
     result = m_Item->putAndInsertFloat32Array(DCM_FloatingPointValues, statisticValues, numValues);
@@ -336,7 +336,7 @@ OFCondition TrcTrackSetStatistic::set(const CodeSequenceMacro& typeCode,
                                       const CodeSequenceMacro& unitsCode,
                                       const Float64 statisticValue)
 {
-  OFCondition result = TrcStatistic::set(typeCode, typeModifierCode, unitsCode);
+  OFCondition result = TrcStatistic::setCommon(typeCode, typeModifierCode, unitsCode);
   if (result.good())
   {
     result = m_Item->putAndInsertFloat64(DCM_FloatingPointValue, statisticValue, 0);
