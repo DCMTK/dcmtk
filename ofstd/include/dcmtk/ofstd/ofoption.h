@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2014-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -592,6 +592,7 @@ public:
     friend typename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
     operator>( OFnullopt_t, const O& rhs )
     {
+        (void)rhs;
         return OFFalse;
     }
 
@@ -606,6 +607,7 @@ public:
     friend typename OFenable_if<OFis_same<O,OFoptional>::value,bool>::type
     operator<=( OFnullopt_t, const O& rhs )
     {
+        (void)rhs;
         return OFTrue;
     }
 
