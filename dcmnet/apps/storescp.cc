@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1031,7 +1031,7 @@ int main(int argc, char *argv[])
 
     // read socket handle number from stdin, i.e. the anonymous pipe
     // to which our parent process has written the handle number.
-    if (ReadFile(hStdIn, buf, sizeof(buf), &bytesRead, NULL))
+    if (ReadFile(hStdIn, buf, sizeof(buf) - 1, &bytesRead, NULL))
     {
       // make sure buffer is zero terminated
       buf[bytesRead] = '\0';

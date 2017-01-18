@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,7 +55,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 //                search mask that was passed. In certain circumstances, the selected information
 //                will be dumped to stdout.
 // Parameters   : callbackData        - [in] data for this callback function
-//                cancelled           - [in] Specifies if we encounteres a C-CANCEL-RQ. In such a case
+//                cancelled           - [in] Specifies if we encountered a C-CANCEL-RQ. In such a case
 //                                      the search shall be cancelled.
 //                request             - [in] The original C-FIND-RQ message.
 //                requestIdentifiers  - [in] Contains the search mask.
@@ -217,11 +217,11 @@ OFCondition WlmActivityManager::StartProvidingService()
 
     // read socket handle number from stdin, i.e. the anonymous pipe
     // to which our parent process has written the handle number.
-    if (ReadFile(hStdIn, buf, sizeof(buf), &bytesRead, NULL))
+    if (ReadFile(hStdIn, buf, sizeof(buf) - 1, &bytesRead, NULL))
     {
       // make sure buffer is zero terminated
       buf[bytesRead] = '\0';
-        dcmExternalSocketHandle.set(atoi(buf));
+      dcmExternalSocketHandle.set(atoi(buf));
     }
     else
     {
@@ -285,7 +285,7 @@ OFCondition WlmActivityManager::StartProvidingService()
 void WlmActivityManager::RefuseAssociation( T_ASC_Association **assoc, WlmRefuseReasonType reason )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
-// Task         : This function takes care of refusing an assocation request.
+// Task         : This function takes care of refusing an association request.
 // Parameters   : assoc  - [in] The association (network connection to another DICOM application).
 //                reason - [in] The reason why the association request will be refused.
 // Return Value : none.
@@ -353,7 +353,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 // Author       : Thomas Wilkens
 // Task         : This function takes care of receiving, negotiating and accepting/refusing an
 //                association request. Additionally, it handles the request the association
-//                requesting application transmits after a connection isd established.
+//                requesting application transmits after a connection is established.
 // Parameters   : net - [in] Contains network parameters.
 // Return Value : Indicator which shows if function was executed successfully.
 {
@@ -377,7 +377,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   // Listen to a socket for timeout seconds and wait for an association request.
   OFCondition cond = ASC_receiveAssociation( net, &assoc, opt_maxPDU, NULL, NULL, OFFalse, DUL_NOBLOCK, timeout );
 
-  // just return, if timeout occured (DUL_NOASSOCIATIONREQUEST)
+  // just return, if timeout occurred (DUL_NOASSOCIATIONREQUEST)
   // or (WIN32) if dcmnet has started a child for us, to handle this
   // association (signaled by "DULC_FORKEDCHILD") -> return to "event loop"
   if ( ( cond.code() == DULC_FORKEDCHILD ) || ( cond == DUL_NOASSOCIATIONREQUEST ) )
@@ -456,7 +456,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   }
 
   // Condition 5: if the called application entity title is not supported
-  // whithin the data source we want to refuse the association request
+  // within the data source we want to refuse the association request
   dataSource->SetCalledApplicationEntityTitle( assoc->params->DULparams.calledAPTitle );
   if( !dataSource->IsCalledApplicationEntityTitleSupported() )
   {
@@ -538,7 +538,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
     else if( pid > 0 )
     {
       // Fork returns a positive process id if this is the parent process.
-      // If this is the case, remeber the process in a table and go ahead.
+      // If this is the case, remember the process in a table and go ahead.
       AddProcessToTable( pid, assoc );
 
       // the child will handle the association, we can drop it
@@ -566,7 +566,7 @@ OFCondition WlmActivityManager::NegotiateAssociation( T_ASC_Association *assoc )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function negotiates a presentation context which will be used by this application
-//                and the other DICOM appliation that requests an association.
+//                and the other DICOM application that requests an association.
 // Parameters   : assoc - [in] The association (network connection to another DICOM application).
 // Return Value : OFCondition value denoting success or error.
 {
@@ -779,7 +779,7 @@ struct WlmFindContextType
 OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE_C_FindRQ *request, T_ASC_PresentationContextID presID )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
-// Task         : This function processes a DIMSE C-FIND-RQ commmand that was
+// Task         : This function processes a DIMSE C-FIND-RQ command that was
 //                received over the network connection.
 // Parameters   : assoc    - [in] The association (network connection to another DICOM application).
 //                request  - [in] The DIMSE C-FIND-RQ message that was received.
@@ -800,7 +800,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
 
   // Handle a C-FIND-Request on the provider side: receive the data set that represents the search mask
   // over the network, try to select corresponding records that match the search mask from some data source
-  // (this is done whithin the callback function FindCallback() that will be passed) and send corresponding
+  // (this is done within the callback function FindCallback() that will be passed) and send corresponding
   // C-FIND-RSP messages to the other DICOM application this application is connected with. In the end,
   // also send the C-FIND-RSP message that indicates that there are no more search results.
   OFCondition cond = DIMSE_findProvider( assoc, presID, request, FindCallback, &context, opt_blockMode, opt_dimse_timeout );
@@ -1038,7 +1038,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 //                search mask that was passed. In certain circumstances, the selected information
 //                will be dumped to stdout.
 // Parameters   : callbackData        - [in] data for this callback function
-//                cancelled           - [in] Specifies if we encounteres a C-CANCEL-RQ. In such a case
+//                cancelled           - [in] Specifies if we encountered a C-CANCEL-RQ. In such a case
 //                                      the search shall be cancelled.
 //                request             - [in] The original C-FIND-RQ message.
 //                requestIdentifiers  - [in] Contains the search mask.
