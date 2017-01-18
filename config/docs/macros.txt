@@ -65,7 +65,7 @@ DCMTK_USE_CXX11_STL
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
   Type of modification: Disables feature
-  Explanation: By default DCMTK creates a backup of an existing DICOMDIR
+  Explanation: By default, DCMTK creates a backup of an existing DICOMDIR
     (using the name DICOMDIR.$$$) when a DcmDicomDir object is written
     to file.  The creation of the backup can be disabled with this macro.
 
@@ -74,6 +74,19 @@ DISABLE_COMPRESSION_EXTENSION
   Type of modification: Disables feature
   Explanation: Disables the support of compression (various transfer
     syntaxes) in dcmqrdb, a feature which is still experimental.
+
+DISABLE_NAGLE_ALGORITHM
+  Affected: dcmnet
+  Type of modification: Disables feature
+  Explanation: By default, DCMTK does not disable the so-called Nagle
+    algorithm, which allows for improving the efficiency of TCP/IP networks
+    by reducing the number of packets that need to be sent over the network.
+    When compiled with this macro, the Nagle algorithm is disabled for each
+    DICOM transport connection. This was the default in earlier versions of
+    the DCMTK but does not seem to be appropriate anymore for most modern
+    operating systems. The default behavior can be changed by setting the
+    environment variable TCP_NODELAY accordingly (see config/docs/envvars.txt
+    or /usr/local/share/doc/dcmtk/envvars.txt).
 
 DISABLE_OFSTD_ATOF
   Affected: all modules
@@ -126,16 +139,6 @@ DISABLE_SEND_TIMEOUT
     the network cable is pulled (e.g. for a mobile device).  This flag
     disables the call to the setsockopt() function so that no timeout is
     specified.
-
-DONT_DISABLE_NAGLE_ALGORITHM
-  Affected: dcmnet
-  Type of modification: Disables feature
-  Explanation: By default, DCMTK disables the so-called Nagle algorithm
-    for each DICOM transport connection.  This provides a 2-4 times
-    performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).  Effects on
-    other environments are unknown.  When compiled with this macro, the
-    code affecting the Nagle algorithm is disabled.  See documentation
-    for environment variable TCP_NODELAY in config/docs/envvars.txt.
 
 DONT_LOAD_EXTERNAL_DICTIONARIES
   Affected: dcmdata

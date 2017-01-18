@@ -1791,31 +1791,45 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #endif
     setTCPBufferLength(sock);
 
-#ifndef DONT_DISABLE_NAGLE_ALGORITHM
     /*
-     * Disable the Nagle algorithm.
-     * This provides a 2-4 times performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).
-     * Effects on other environments are unknown.
-     * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment
-     * variable to have value 0.
+     * Disable the so-called Nagle algorithm (if requested).
+     * This might provide a better network performance on some systems/environments.
+     * By default, the algorithm is not disabled unless DISABLE_NAGLE_ALGORITHM is defined.
+     * The default behavior can be changed by setting the environment variable TCP_NODELAY.
      */
+#ifdef DISABLE_NAGLE_ALGORITHM
     int tcpNoDelay = 1; // disable
+#else
+    int tcpNoDelay = 0; // don't disable
+#endif
     char* tcpNoDelayString = NULL;
-    if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL) {
-        if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
-            DCMNET_WARN("DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString);
-        }
-    }
+    DCMNET_TRACE("checking whether environment variable TCP_NODELAY is set");
+    if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL)
+    {
+      if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1)
+      {
+        DCMNET_WARN("DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString);
+      }
+    } else
+      DCMNET_TRACE("  environment variable TCP_NODELAY not set, using the default value (" << tcpNoDelay << ")");
     if (tcpNoDelay) {
-        if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
-        {
-            char buf[256];
-            OFString msg = "TCP Initialization Error: ";
-            msg += OFStandard::strerror(errno, buf, sizeof(buf));
-            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-        }
+#ifdef DISABLE_NAGLE_ALGORITHM
+      DCMNET_DEBUG("DUL: disabling Nagle algorithm as defined at compilation time (DISABLE_NAGLE_ALGORITHM)");
+#else
+      DCMNET_DEBUG("DUL: disabling Nagle algorithm as requested at runtime (TCP_NODELAY=" << tcpNoDelayString << ")");
+#endif
+      if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
+      {
+        char buf[256];
+        OFString msg = "TCP Initialization Error: ";
+        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+      }
+#ifdef DISABLE_NAGLE_ALGORITHM
+    } else {
+      DCMNET_DEBUG("DUL: do not disable Nagle algorithm as requested at runtime (TCP_NODELAY=" << tcpNoDelayString << ")");
+#endif
     }
-#endif // DONT_DISABLE_NAGLE_ALGORITHM
 
     // create string containing numerical IP address.
     OFString client_dns_name;
@@ -2282,7 +2296,7 @@ setTCPBufferLength(int sock)
 #if defined(SO_SNDBUF) && defined(SO_RCVBUF)
             if (bufLen == 0)
                 bufLen = 65536; // a socket buffer size of 64K gives good throughput for image transmission
-            DCMNET_DEBUG("DULFSM: setting TCP buffer length to " << bufLen << " bytes");
+            DCMNET_DEBUG("DUL: setting TCP buffer length to " << bufLen << " bytes");
             (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
             (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else

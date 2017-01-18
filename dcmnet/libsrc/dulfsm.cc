@@ -2433,33 +2433,45 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif
         setTCPBufferLength(s);
 
-#ifndef DONT_DISABLE_NAGLE_ALGORITHM
         /*
-         * Disable the Nagle algorithm.
-         * This provides a 2-4 times performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).
-         * Effects on other environments are unknown.
-         * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment
-         * variable to have value 0.
+         * Disable the so-called Nagle algorithm (if requested).
+         * This might provide a better network performance on some systems/environments.
+         * By default, the algorithm is not disabled unless DISABLE_NAGLE_ALGORITHM is defined.
+         * The default behavior can be changed by setting the environment variable TCP_NODELAY.
          */
+#ifdef DISABLE_NAGLE_ALGORITHM
         int tcpNoDelay = 1; // disable
+#else
+        int tcpNoDelay = 0; // don't disable
+#endif
         char* tcpNoDelayString = NULL;
+        DCMNET_TRACE("checking whether environment variable TCP_NODELAY is set");
         if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL)
         {
-            if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1)
-            {
-              DCMNET_WARN("DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString);
-            }
-        }
+          if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1)
+          {
+            DCMNET_WARN("DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString);
+          }
+        } else
+          DCMNET_TRACE("  environment variable TCP_NODELAY not set, using the default value (" << tcpNoDelay << ")");
         if (tcpNoDelay) {
-            if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
-            {
-              char buf[256];
-              OFString msg = "TCP Initialization Error: ";
-              msg += OFStandard::strerror(errno, buf, sizeof(buf));
-              return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-            }
+#ifdef DISABLE_NAGLE_ALGORITHM
+          DCMNET_DEBUG("DULFSM: disabling Nagle algorithm as defined at compilation time (DISABLE_NAGLE_ALGORITHM)");
+#else
+          DCMNET_DEBUG("DULFSM: disabling Nagle algorithm as requested at runtime (TCP_NODELAY=" << tcpNoDelayString << ")");
+#endif
+          if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
+          {
+            char buf[256];
+            OFString msg = "TCP Initialization Error: ";
+            msg += OFStandard::strerror(errno, buf, sizeof(buf));
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+          }
+#ifdef DISABLE_NAGLE_ALGORITHM
+        } else {
+          DCMNET_DEBUG("DULFSM: do not disable Nagle algorithm as requested at runtime (TCP_NODELAY=" << tcpNoDelayString << ")");
+#endif
         }
-#endif // DONT_DISABLE_NAGLE_ALGORITHM
 
        DcmTransportLayerStatus tcsStatus;
        if (TCS_ok != (tcsStatus = (*association)->connection->clientSideHandshake()))

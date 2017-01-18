@@ -42,8 +42,11 @@ TCP_BUFFER_LENGTH
 
 TCP_NODELAY
   Affected: dcmnet
-  Explanation: If this environment variable contains a non-zero number,
-    the Nagle algorithm will not be disabled for TCP transport
-    connections. Also see documentation for macro
-    DONT_DISABLE_NAGLE_ALGORITHM in config/docs/macros.txt or
-    /usr/local/share/doc/dcmtk/macros.txt.
+  Explanation: If this environment variable is set and contains a non-zero
+    number (e.g. "1"), the Nagle algorithm will be disabled for TCP transport
+    connections, which might result in better network performance on some
+    systems/environments, especially when many small network packets are to
+    be sent. If it is set and contains the number "0", the Nagle algorithm
+    will not be disabled. If the environment variable TCP_NODELAY is not set,
+    the default behavior applies (see compiler macro DISABLE_NAGLE_ALGORITHM
+    in config/docs/macros.txt or /usr/local/share/doc/dcmtk/macros.txt).
