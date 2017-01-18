@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -5355,7 +5355,7 @@ OFBool DicomDirInterface::warnAboutInconsistentAttributes(DcmDirectoryRecord *re
             first = OFFalse;
         }
     }
-    if (!result & abortCheck)
+    if (!result && abortCheck)
         DCMDATA_ERROR("aborting on first inconsistent file: " << sourceFilename);
     /* return OFTrue in case of any inconsistency */
     return !result;
