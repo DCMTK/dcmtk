@@ -170,14 +170,14 @@ public:
    *  @param length - [in] Length of buffer
    */
   void setPrimField(const char *buffer,
-                    const Uint16& length);
+                    const Uint16 length);
 
   /** Sets content of secondary field.
    *  @param buffer - [in] Content of secondary field.
    *  @param length - [in ] Length of buffer
    */
   void setSecField(const char *buffer,
-                   const Uint16& length);
+                   const Uint16 length);
 
   /** Returns content of primary field. Memory is allocated by this function
    *  and must be freed by the caller.

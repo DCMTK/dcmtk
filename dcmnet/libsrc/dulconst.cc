@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1093,7 +1093,7 @@ constructExtNeg(unsigned char type,
             SOPClassExtendedNegotiationSubItem* extNeg = *i;
             extNeg->itemType = 0x56;
             // recompute the length fields
-            extNeg->sopClassUIDLength = extNeg->sopClassUID.length();
+            extNeg->sopClassUIDLength = OFstatic_cast(unsigned short, extNeg->sopClassUID.length());
             extNeg->itemLength = 2 + extNeg->sopClassUIDLength + extNeg->serviceClassAppInfoLength;
             length = 4 + extNeg->itemLength;
             *rtnLength += length;
@@ -1457,7 +1457,7 @@ streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
     COPY_SHORT_BIG(length, b);
     b += 2;
 
-    length = strlen(scuscpRole->SOPClassUID);
+    length = OFstatic_cast(unsigned short, strlen(scuscpRole->SOPClassUID));
     COPY_SHORT_BIG(length, b);
     b += 2;
 
@@ -1503,7 +1503,7 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 
     extNeg->itemType = 0x56;
     // recompute the length fields
-    extNeg->sopClassUIDLength = extNeg->sopClassUID.length();
+    extNeg->sopClassUIDLength = OFstatic_cast(unsigned short, extNeg->sopClassUID.length());
     extNeg->itemLength = 2 + extNeg->sopClassUIDLength + extNeg->serviceClassAppInfoLength;
 
     *b++ = extNeg->itemType;

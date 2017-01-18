@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1305,8 +1305,8 @@ OFCondition ASC_setIdentRQUserPassword(
   else
     rq->clear();
   rq->setIdentityType(ASC_USER_IDENTITY_USER_PASSWORD);
-  rq->setPrimField(userName.c_str(), userName.length());
-  rq->setSecField(password.c_str(), password.length());
+  rq->setPrimField(userName.c_str(), OFstatic_cast(Uint16, userName.length()));
+  rq->setSecField(password.c_str(), OFstatic_cast(Uint16, password.length()));
   rq->setReqPosResponse(requestRsp);
   params->DULparams.reqUserIdentNeg = rq;
   return EC_Normal;
@@ -1329,7 +1329,7 @@ OFCondition ASC_setIdentRQUserOnly(
   else
     rq->clear();
   rq->setIdentityType(ASC_USER_IDENTITY_USER);
-  rq->setPrimField(userName.c_str(), userName.length());
+  rq->setPrimField(userName.c_str(), OFstatic_cast(Uint16, userName.length()));
   rq->setReqPosResponse(requestRsp);
   params->DULparams.reqUserIdentNeg = rq;
   return EC_Normal;

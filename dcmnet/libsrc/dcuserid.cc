@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -96,7 +96,7 @@ UserIdentityNegotiationSubItemRQ::getIdentityType()
 // Sets primary field (copied from parameter)
 void
 UserIdentityNegotiationSubItemRQ::setPrimField(const char *buffer,
-                                               const Uint16& length)
+                                               const Uint16 length)
 {
   if (m_primField != NULL)
   {
@@ -115,7 +115,7 @@ UserIdentityNegotiationSubItemRQ::setPrimField(const char *buffer,
 // Sets secondary field (copied form parameter)
 void
 UserIdentityNegotiationSubItemRQ::setSecField(const char *buffer,
-                                              const Uint16& length)
+                                              const Uint16 length)
 {
   if (m_secField != NULL)
   {

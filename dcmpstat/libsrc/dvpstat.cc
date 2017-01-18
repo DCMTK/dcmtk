@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1346,9 +1346,9 @@ Uint16 DVPresentationState::findOverlayGroup(Uint16 currentGroup)
     if (allocated[(Uint16)(group - 0x6000) >> 1] == 2) return currentGroup;
   }
   // find a free group
-  for (i=0; i<16; i++) if (allocated[i]==0) return 0x6000+(i<<1);
+  for (i=0; i<16; i++) if (allocated[i]==0) return OFstatic_cast(Uint16, 0x6000+(i<<1));
   // find a group not used in the presentation state
-  for (i=0; i<16; i++) if (allocated[i]<2) return 0x6000+(i<<1);
+  for (i=0; i<16; i++) if (allocated[i]<2) return OFstatic_cast(Uint16, 0x6000+(i<<1));
   // not found.
   return 0;
 }
