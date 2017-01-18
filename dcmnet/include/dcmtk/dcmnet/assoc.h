@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -440,7 +440,7 @@ ASC_setIdentRQUserPassword(
     T_ASC_Parameters * params,
     const OFString& userName,
     const OFString& password,
-    const OFBool& requestRsp = OFTrue);
+    const OFBool requestRsp = OFTrue);
 
 /** Sets User authentication (no password) for User Identity Negotiation
  *  request.
@@ -452,7 +452,7 @@ DCMTK_DCMNET_EXPORT OFCondition
 ASC_setIdentRQUserOnly(
     T_ASC_Parameters * params,
     const OFString& userName,
-    const OFBool& requestRsp = OFTrue);
+    const OFBool requestRsp = OFTrue);
 
 /** Sets Kerberos authentication for User Identity Negotiation request.
  *  @param params     - [in/out] The association parameters to be filled
@@ -464,8 +464,8 @@ DCMTK_DCMNET_EXPORT OFCondition
 ASC_setIdentRQKerberos(
     T_ASC_Parameters * params,
     const char* kerbTicket,
-    const Uint16& length,
-    const OFBool& requestRsp = OFTrue);
+    const Uint16 length,
+    const OFBool requestRsp = OFTrue);
 
 /** Sets SAML authentication for User Identity Negotiation request.
  *  @param params - [in/out] The association parameters to be filled
@@ -477,8 +477,8 @@ DCMTK_DCMNET_EXPORT OFCondition
 ASC_setIdentRQSaml(
     T_ASC_Parameters * params,
     const char* saml,
-    const Uint16& length,
-    const OFBool& requestRsp = OFTrue);
+    const Uint16 length,
+    const OFBool requestRsp = OFTrue);
 
 
 /** Acknowledges a User Identity Negotiation request.
@@ -490,7 +490,7 @@ ASC_setIdentRQSaml(
 DCMTK_DCMNET_EXPORT OFCondition ASC_setIdentAC(
     T_ASC_Parameters * params,
     const char* response,
-    const Uint16& length );
+    const Uint16 length);
 
 /** Returns a copy of the User Identity Negotiation response value.
  *  CAUTION: The returned buffer (copy of original data) must be freed by the

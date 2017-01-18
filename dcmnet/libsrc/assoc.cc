@@ -1292,7 +1292,7 @@ OFCondition ASC_setIdentRQUserPassword(
     T_ASC_Parameters * params,
     const OFString& userName,
     const OFString& password,
-    const OFBool& requestRsp)
+    const OFBool requestRsp)
 {
   if (params == NULL)
     return ASC_NULLKEY;
@@ -1316,7 +1316,7 @@ OFCondition ASC_setIdentRQUserPassword(
 OFCondition ASC_setIdentRQUserOnly(
     T_ASC_Parameters * params,
     const OFString& userName,
-    const OFBool& requestRsp)
+    const OFBool requestRsp)
 {
   if (params == NULL)
     return ASC_NULLKEY;
@@ -1339,8 +1339,8 @@ OFCondition ASC_setIdentRQUserOnly(
 OFCondition ASC_setIdentRQKerberos(
     T_ASC_Parameters * params,
     const char* kerbTicket,
-    const Uint16& length,
-    const OFBool& requestRsp)
+    const Uint16 length,
+    const OFBool requestRsp)
 {
   if (params == NULL)
     return ASC_NULLKEY;
@@ -1360,8 +1360,8 @@ OFCondition ASC_setIdentRQKerberos(
 OFCondition ASC_setIdentRQSaml(
     T_ASC_Parameters * params,
     const char* saml,
-    const Uint16& length,
-    const OFBool& requestRsp)
+    const Uint16 length,
+    const OFBool requestRsp)
 {
   if (params == NULL)
     return ASC_NULLKEY;
