@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -115,7 +115,7 @@ OFCondition FGFrameAnatomy::write(DcmItem& item)
   if (result.good())
   {
     DcmItem* seqItem = NULL;
-    OFCondition result = createNewFGSequence(item, DCM_FrameAnatomySequence, 0, seqItem);
+    result = createNewFGSequence(item, DCM_FrameAnatomySequence, 0, seqItem);
     if (result.good())
     {
       OFString lat = laterality2Str(m_FrameLaterality);
