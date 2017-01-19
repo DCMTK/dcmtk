@@ -24,12 +24,33 @@
 #define DCMTRANS_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/oftypes.h"     /* for OFBool */
+#include "dcmtk/ofstd/ofglobal.h"     /* for OFGlobal */
+#include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
+#include "dcmtk/ofstd/ofstream.h"     /* for ostream */
 #include "dcmtk/dcmnet/dcmlayer.h"    /* for DcmTransportLayerStatus */
-#include "dcmtk/ofstd/ofstream.h"    /* for ostream */
 
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
+
+/** Global timeout in seconds for sending data on a socket to a remote host.
+ *  The default value is 60, which is useful in cases where the sender (e.g.
+ *  storescu) looses the connection to the receiver because the network cable
+ *  is pulled (e.g. for a mobile device).
+ *  A value of 0 means that the send() will never timeout, and a value of -1
+ *  disables the call of the corresponding setsockopt() function, so that the
+ *  system's default behavior remains unchanged.
+ */
+extern DCMTK_DCMNET_EXPORT OFGlobal<Sint32> dcmSocketSendTimeout;   /* default: 60 */
+
+/** Global timeout in seconds for receiving data on a socket from a remote host.
+ *  The default value is 60, which is useful in cases where the receiver (e.g.
+ *  storescp) looses the connection to the sender because the network cable is
+ *  pulled (e.g. for a mobile device).
+ *  A value of 0 means that the recv() will never timeout, and a value of -1
+ *  disables the call of the corresponding setsockopt() function, so that the
+ *  system's default behavior remains unchanged.
+ */
+extern DCMTK_DCMNET_EXPORT OFGlobal<Sint32> dcmSocketReceiveTimeout;   /* default: 60 */
 
 /** this class represents a TCP/IP based transport connection
  *  which can be a transparent TCP/IP socket communication or a

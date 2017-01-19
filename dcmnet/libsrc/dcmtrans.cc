@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,17 +53,26 @@ END_EXTERN_C
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
+OFGlobal<Sint32> dcmSocketSendTimeout(60);
+OFGlobal<Sint32> dcmSocketReceiveTimeout(60);
+
 DcmTransportConnection::DcmTransportConnection(int openSocket)
 : theSocket(openSocket)
 {
 #ifndef HAVE_GUSI_H
   if (theSocket >= 0)
   {
-#ifndef DISABLE_SEND_TIMEOUT
+#ifdef DISABLE_SEND_TIMEOUT
+#warning The macro DISABLE_SEND_TIMEOUT is not supported anymore. See "macros.txt" for details.
+#endif
+    /* get global timeout for the send() function */
+    const Sint32 sendTimeout = dcmSocketSendTimeout.get();
+    if (sendTimeout >= 0)
     {
-      /* use a timeout of 60 seconds for the send() function */
-      const int sendTimeout = 60;
-      DCMNET_DEBUG("setting network send timeout to " << sendTimeout << " seconds");
+      if (sendTimeout == 0)
+        DCMNET_DEBUG("setting network send timeout to 0 (infinite)");
+      else
+        DCMNET_DEBUG("setting network send timeout to " << sendTimeout << " seconds");
 #ifdef HAVE_WINSOCK_H
       // for Windows, specify send timeout in milliseconds
       int timeoutVal = sendTimeout * 1000;
@@ -82,12 +91,17 @@ DcmTransportConnection::DcmTransportConnection(int openSocket)
         DCMNET_WARN("cannot set network send timeout to " << sendTimeout << " seconds");
       }
     }
+#ifdef DISABLE_RECV_TIMEOUT
+#warning The macro DISABLE_RECV_TIMEOUT is not supported anymore. See "macros.txt" for details.
 #endif
-#ifndef DISABLE_RECV_TIMEOUT
+    /* get global timeout for the recv() function */
+    const Sint32 recvTimeout = dcmSocketReceiveTimeout.get();
+    if (recvTimeout >= 0)
     {
-      /* use a timeout of 60 seconds for the recv() function */
-      const int recvTimeout = 60;
-      DCMNET_DEBUG("setting network receive timeout to " << recvTimeout << " seconds");
+      if (recvTimeout == 0)
+        DCMNET_DEBUG("setting network receive timeout to 0 (infinite)");
+      else
+        DCMNET_DEBUG("setting network receive timeout to " << recvTimeout << " seconds");
 #ifdef HAVE_WINSOCK_H
       // for Windows, specify receive timeout in milliseconds
       int timeoutVal = recvTimeout * 1000;
@@ -106,7 +120,6 @@ DcmTransportConnection::DcmTransportConnection(int openSocket)
         DCMNET_WARN("cannot set network receive timeout to " << recvTimeout << " seconds");
       }
     }
-#endif
   }
 #endif
 }
