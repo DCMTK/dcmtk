@@ -179,6 +179,7 @@ static const char *opt_profileName = NULL;
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 int                opt_dimse_timeout = 0;
 int                opt_acse_timeout = 30;
+OFCmdSignedInt     opt_socket_timeout = 60;
 
 #if defined(HAVE_FORK) || defined(_WIN32)
 OFBool             opt_forkMode = OFFalse;
@@ -311,13 +312,15 @@ int main(int argc, char *argv[])
       // this option is only offered on Posix platforms
       cmd.addOption("--inetd",                  "-id",     "run from inetd super server (not with --fork)");
 #endif
-      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString1);
-      cmd.addOption("--acse-timeout",           "-ta",  1, optString1.c_str(), "timeout for ACSE messages");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_socket_timeout << ")", optString1);
+      cmd.addOption("--socket-timeout",         "-ts",  1, optString1.c_str(), "timeout for network socket (0 for none)");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString2);
+      cmd.addOption("--acse-timeout",           "-ta",  1, optString2.c_str(), "timeout for ACSE messages");
       cmd.addOption("--dimse-timeout",          "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
       cmd.addOption("--aetitle",                "-aet", 1, "[a]etitle: string", "set my AE title (default: " APPLICATIONTITLE ")");
-      CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString2);
-      CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDU << ")", optString3);
-      cmd.addOption("--max-pdu",                "-pdu", 1, optString2.c_str(), optString3.c_str());
+      CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
+      CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDU << ")", optString4);
+      cmd.addOption("--max-pdu",                "-pdu", 1, optString3.c_str(), optString4.c_str());
 
       cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
       cmd.addOption("--refuse",                            "refuse association");
@@ -561,6 +564,12 @@ int main(int argc, char *argv[])
     }
     cmd.endOptionBlock();
     if (opt_networkTransferSyntax != EXS_Unknown) opt_acceptAllXfers = OFFalse;
+
+    if (cmd.findOption("--socket-timeout"))
+      app.checkValue(cmd.getValueAndCheckMin(opt_socket_timeout, -1));
+    // always set the timeout values since the global default might be different
+    dcmSocketSendTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
+    dcmSocketReceiveTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
 
     if (cmd.findOption("--acse-timeout"))
     {

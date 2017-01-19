@@ -147,6 +147,9 @@ other network options:
 
           # not available on all systems (e.g. not on Windows)
 
+  -ts   --socket-timeout  [s]econds: integer (default: 60)
+          timeout for network socket (0 for none)
+
   -ta   --acse-timeout  [s]econds: integer (default: 30)
           timeout for ACSE messages
 

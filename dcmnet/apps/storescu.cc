@@ -124,6 +124,7 @@ static const char *opt_profileName = NULL;
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 int opt_dimse_timeout = 0;
 int opt_acse_timeout = 30;
+OFCmdSignedInt opt_socket_timeout = 60;
 
 #ifdef WITH_ZLIB
 static OFCmdUnsignedInt opt_compressionLevel = 0;
@@ -289,25 +290,27 @@ int main(int argc, char *argv[])
       cmd.addOption("--pos-response",         "-rsp",    "expect positive response");
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",              "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString1);
-      cmd.addOption("--acse-timeout",         "-ta",  1, optString1.c_str(), "timeout for ACSE messages");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_socket_timeout << ")", optString1);
+      cmd.addOption("--socket-timeout",       "-ts",  1, optString1.c_str(), "timeout for network socket (0 for none)");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString2);
+      cmd.addOption("--acse-timeout",         "-ta",  1, optString2.c_str(), "timeout for ACSE messages");
       cmd.addOption("--dimse-timeout",        "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
-      CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString2);
-      CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxReceivePDULength << ")", optString3);
-      cmd.addOption("--max-pdu",              "-pdu", 1, optString2.c_str(), optString3.c_str());
-      cmd.addOption("--max-send-pdu",                 1, optString2.c_str(), "restrict max send pdu to n bytes");
+      CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
+      CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxReceivePDULength << ")", optString4);
+      cmd.addOption("--max-pdu",              "-pdu", 1, optString3.c_str(), optString4.c_str());
+      cmd.addOption("--max-send-pdu",                 1, optString3.c_str(), "restrict max send pdu to n bytes");
       cmd.addOption("--repeat",                       1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                           "abort association instead of releasing it");
       cmd.addOption("--no-halt",              "-nh",     "do not halt if unsuccessful store encountered\n(default: do halt)");
       cmd.addOption("--uid-padding",          "-up",     "silently correct space-padded UIDs");
 
       cmd.addOption("--invent-instance",      "+II",     "invent a new SOP instance UID for every image\nsent");
-      CONVERT_TO_STRING("invent a new series UID after n images" << OFendl << "have been sent (default: " << opt_inventSeriesCount << ")", optString4);
-      cmd.addOption("--invent-series",        "+IR",  1, "[n]umber: integer (implies --invent-instance)", optString4.c_str());
-      CONVERT_TO_STRING("invent a new study UID after n series" << OFendl << "have been sent (default: " << opt_inventStudyCount << ")", optString5);
-      cmd.addOption("--invent-study",         "+IS",  1, "[n]umber: integer (implies --invent-instance)", optString5.c_str());
-      CONVERT_TO_STRING("invent a new patient ID and name after n studies" << OFendl << "have been sent (default: " << opt_inventPatientCount << ")", optString6);
-      cmd.addOption("--invent-patient",       "+IP",  1, "[n]umber: integer (implies --invent-instance)", optString6.c_str());
+      CONVERT_TO_STRING("invent a new series UID after n images" << OFendl << "have been sent (default: " << opt_inventSeriesCount << ")", optString5);
+      cmd.addOption("--invent-series",        "+IR",  1, "[n]umber: integer (implies --invent-instance)", optString5.c_str());
+      CONVERT_TO_STRING("invent a new study UID after n series" << OFendl << "have been sent (default: " << opt_inventStudyCount << ")", optString6);
+      cmd.addOption("--invent-study",         "+IS",  1, "[n]umber: integer (implies --invent-instance)", optString6.c_str());
+      CONVERT_TO_STRING("invent a new patient ID and name after n studies" << OFendl << "have been sent (default: " << opt_inventPatientCount << ")", optString7);
+      cmd.addOption("--invent-patient",       "+IP",  1, "[n]umber: integer (implies --invent-instance)", optString7.c_str());
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
@@ -496,6 +499,12 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
         dcmConnectionTimeout.set(OFstatic_cast(Sint32, opt_timeout));
       }
+
+      if (cmd.findOption("--socket-timeout"))
+        app.checkValue(cmd.getValueAndCheckMin(opt_socket_timeout, -1));
+      // always set the timeout values since the global default might be different
+      dcmSocketSendTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
+      dcmSocketReceiveTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
 
       if (cmd.findOption("--acse-timeout"))
       {
