@@ -221,6 +221,13 @@ extern "C" void sigChildHandler(int)
 #endif
 
 
+/* helper macro for converting stream output to a string */
+#define CONVERT_TO_STRING(output, string) \
+    optStream.str(""); \
+    optStream.clear(); \
+    optStream << output << OFStringStream_ends; \
+    OFSTRINGSTREAM_GETOFSTRING(optStream, string)
+
 #define SHORTCOL 4
 #define LONGCOL 21
 
@@ -242,8 +249,9 @@ int main(int argc, char *argv[])
   WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-  char tempstr[20];
   OFString temp_str;
+  OFOStringStream optStream;
+
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
   OFCommandLine cmd;
 
@@ -303,26 +311,14 @@ int main(int argc, char *argv[])
       // this option is only offered on Posix platforms
       cmd.addOption("--inetd",                  "-id",     "run from inetd super server (not with --fork)");
 #endif
-
-      cmd.addOption("--acse-timeout",           "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString1);
+      cmd.addOption("--acse-timeout",           "-ta",  1, optString1.c_str(), "timeout for ACSE messages");
       cmd.addOption("--dimse-timeout",          "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd.addOption("--aetitle",                "-aet", 1, "[a]etitle: string", "set my AE title (default: " APPLICATIONTITLE ")");
+      CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString2);
+      CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDU << ")", optString3);
+      cmd.addOption("--max-pdu",                "-pdu", 1, optString2.c_str(), optString3.c_str());
 
-      OFString opt1 = "set my AE title (default: ";
-      opt1 += APPLICATIONTITLE;
-      opt1 += ")";
-      cmd.addOption("--aetitle",                "-aet", 1, "[a]etitle: string", opt1.c_str());
-      OFString opt3 = "set max receive pdu to n bytes (def.: ";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
-      opt3 += tempstr;
-      opt3 += ")";
-      OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
-      opt4 += tempstr;
-      opt4 += "..";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
-      opt4 += tempstr;
-      opt4 += ")";
-      cmd.addOption("--max-pdu",                "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
       cmd.addOption("--refuse",                            "refuse association");
       cmd.addOption("--reject",                            "reject association if no implement. class UID");
