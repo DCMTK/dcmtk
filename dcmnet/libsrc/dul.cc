@@ -1797,6 +1797,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
      * By default, the algorithm is not disabled unless DISABLE_NAGLE_ALGORITHM is defined.
      * The default behavior can be changed by setting the environment variable TCP_NODELAY.
      */
+
+#ifdef DONT_DISABLE_NAGLE_ALGORITHM
+#warning The macro DONT_DISABLE_NAGLE_ALGORITHM is not supported anymore. See "macros.txt" for details.
+#endif
+
 #ifdef DISABLE_NAGLE_ALGORITHM
     int tcpNoDelay = 1; // disable
 #else

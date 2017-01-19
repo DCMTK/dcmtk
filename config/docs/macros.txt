@@ -140,6 +140,10 @@ DISABLE_SEND_TIMEOUT
     disables the call to the setsockopt() function so that no timeout is
     specified.
 
+DONT_DISABLE_NAGLE_ALGORITHM
+  This macro is not supported anymore since the Nagle algorithm is no longer
+  disabled by default.  See DISABLE_NAGLE_ALGORITHM for details.
+
 DONT_LOAD_EXTERNAL_DICTIONARIES
   Affected: dcmdata
   Type of modification: Disables feature
