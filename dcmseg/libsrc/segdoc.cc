@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -346,12 +346,13 @@ OFCondition DcmSegmentation::addSegment(DcmSegment* seg,
   if (seg == NULL)
     return EC_IllegalParameter;
 
-  if (m_Segments.size() == DCM_SEG_MAX_SEGMENTS)
+  if (m_Segments.size() >= DCM_SEG_MAX_SEGMENTS)
   {
     return SG_EC_MaxSegmentsReached;
   }
 
-  segmentNumber = m_Segments.size() + 1;
+  // Casting is safe since we made sure number of segments fits into 16 bit
+  segmentNumber = OFstatic_cast(Uint16, m_Segments.size() + 1);
   m_Segments.push_back(seg);
   return EC_Normal;
 }
@@ -846,7 +847,8 @@ OFCondition DcmSegmentation::writeDataset(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeMultiFrameFunctionalGroupsModule(DcmItem& dataset)
 {
-  m_FG.setNumberOfFrames(m_Frames.size());
+  Uint16 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 65535 frames provided, limiting Number of Frames to 65535");
+  m_FG.setNumberOfFrames(numFrames);
   OFCondition result = m_FG.write(dataset);
   if (result.good())
     m_FGInterface.write(dataset);
@@ -867,12 +869,13 @@ OFCondition DcmSegmentation::writeMultiFrameDimensionModule(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
 {
+  Uint16 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 65535 fractional frames provided, will only write 65535");
   OFCondition result;
   Uint16 rows,cols;
   rows = cols = 0;
   getImagePixel().getRows(rows);
   getImagePixel().getColumns(cols);
-  size_t numBytes = getTotalBytesRequired(rows, cols, m_Frames.size());
+  size_t numBytes = getTotalBytesRequired(rows, cols, numFrames);
   Uint8* pixdata = new Uint8[numBytes];
   OFVector<DcmIODTypes::Frame*>::iterator it = m_Frames.begin();
   // Just copy bytes for each frame as is
@@ -889,12 +892,13 @@ OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
 {
-  OFCondition result;
-  Uint16 rows,cols;
+  Uint16 numFrames, rows, cols;
   rows = cols = 0;
+  numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 65535 binary frames provided, will only write 65535");
+  OFCondition result;
   getImagePixel().getRows(rows);
   getImagePixel().getColumns(cols);
-  size_t numBytes = getTotalBytesRequired(rows, cols, m_Frames.size());
+  size_t numBytes = getTotalBytesRequired(rows, cols, numFrames);
   // Holds the pixels for all frames. Each bit represents a pixel which is either
   // 1 (part of segment) or 0 (not part of segment. All frames are directly
   // concatenated, i.e. there are no unused bits between the frames.

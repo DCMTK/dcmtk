@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -493,7 +493,7 @@ OFCondition DcmIODUtil::checkSOPClass(DcmItem* item,
                                       OFString& valueFound)
 {
   valueFound.clear();
-  if ( (item == NULL) && (item->card() == 0) )
+  if ( (item == NULL) || (item->card() == 0) )
   {
     DCMIOD_TRACE("Cannot check SOP Class UID: Dataset not present or empty");
     return EC_IllegalParameter;
@@ -510,7 +510,6 @@ OFCondition DcmIODUtil::checkSOPClass(DcmItem* item,
     return EC_InvalidValue;
   }
   return EC_Normal;
-
 }
 
 
@@ -574,4 +573,16 @@ OFString DcmIODUtil::createUID(const Uint8 level)
     default: dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT);
   }
   return uid;
+}
+
+
+Uint16 DcmIODUtil::limitMaxFrames(const size_t numFramesPresent,
+                                  const OFString& warning)
+{
+  if (numFramesPresent > 65535)
+  {
+    DCMIOD_WARN(warning);
+    return 65535;
+  }
+  return OFstatic_cast(Uint16, numFramesPresent);
 }

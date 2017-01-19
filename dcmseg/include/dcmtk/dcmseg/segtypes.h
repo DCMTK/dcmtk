@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -46,10 +46,10 @@ extern DCMTK_DCMSEG_EXPORT OFLogger DCM_dcmsegLogger;
  *-----------------------*/
 
 /** DICOM assigns unique number to each Segment within the Segmentation object
- *  using an unsigned 16 Bit Integer within "Segment Number". Thus a maximum number
- *  of 65536 segments can be stored.
+ *  using an unsigned 16 Bit Integer within "Segment Number" starting with 1.
+ *  Thus maximally 65535 segments can be stored.
  */
-const Uint32 DCM_SEG_MAX_SEGMENTS = 65536;
+const Uint32 DCM_SEG_MAX_SEGMENTS = 65535;
 
 /** @name Specific error conditions for module dcmseg
  *  These error codes can be used in addition to the general purpose

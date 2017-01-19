@@ -110,12 +110,13 @@ struct DPMParametricMapIOD::ReadVisitor
     OFCondition result = map.readGeneric(item);
     if (result.good())
     {
-      Uint16 rows, cols;
-      size_t numFrames, numBytesFrame;
-      rows = cols = numFrames = numBytesFrame = 0;
+      Uint16 rows, cols, numFrames;
+      size_t numBytesFrame = 0;
+      rows = cols = numFrames = 0;
       map.getRows(rows);
       map.getColumns(cols);
-      numFrames = map.getFunctionalGroups().getNumberOfFrames();
+      numFrames = DcmIODUtil::limitMaxFrames(map.getFunctionalGroups().getNumberOfFrames(),
+                                             "Functional groups implicate more than 65535 frames, only 65535 will be used");
       if (!rows || !cols || !numFrames)
       {
         DCMPMAP_ERROR("Rows (" << rows << "), Columns (" << cols << ") and Number of Frames (" << numFrames << ") must not be 0");
@@ -975,7 +976,7 @@ OFCondition DPMParametricMapIOD::readGeneric(DcmItem& dataset)
 OFCondition DPMParametricMapIOD::writeGeneric(DcmItem& dataset)
 {
   getFrameOfReference().ensureFrameOfReferenceUID();
-  m_IODMultiFrameFGModule.setNumberOfFrames(m_Frames.size());
+  m_IODMultiFrameFGModule.setNumberOfFrames(DcmIODUtil::limitMaxFrames(m_Frames.size(), "Maximum number of frames exceeded, will write 65535"));
   OFCondition result = m_ContentIdentification.write(dataset);
   if (result.good())
   {

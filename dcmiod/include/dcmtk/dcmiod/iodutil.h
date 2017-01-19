@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -799,7 +799,10 @@ public:
         DCMIOD_ERROR("Cannot write sequence " << seqKey << " (no rule supplied)");
         result = EC_CannotCheck;
       }
-      writeSingleItem(result, seqKey, source, destination, rule->getType(), rule->getModule());
+      else
+      {
+        writeSingleItem(result, seqKey, source, destination, rule->getType(), rule->getModule());
+      }
     }
   }
 
@@ -912,6 +915,19 @@ public:
     *  @return The UID created.
     */
   static OFString createUID(const Uint8 level = 0);
+
+  /** Print warning if more than 65535 frames are present. This is the maximum
+   *  number since the Number of Frames attribute is only 16 bit thus not
+   *  permitting larger values.
+   *  The method returns the number of frames that can be used, i.e. either
+   *  65535 if the maximum is exceeded, otherwise the actual number of frames.
+   *  @param  numFramesPresent The number of frames actually present
+   *  @param  warning The message to be printed if Number of Frames is larger
+   *          than 65535.
+   *  @return Number of frames that can be safely used.
+   */
+  static Uint16 limitMaxFrames(const size_t numFramesPresent,
+                               const OFString& warning);
 
 private:
 

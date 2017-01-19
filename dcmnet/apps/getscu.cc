@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -420,7 +420,7 @@ main(int argc, char *argv[])
   /* do the real work, i.e. send C-GET requests and receive objects */
   for (Uint16 repeat = 0; repeat < opt_repeatCount; repeat++)
   {
-    Uint16 numRuns = 1;
+    size_t numRuns = 1;
     DcmFileFormat dcmff;
     DcmDataset *dset = dcmff.getDataset();
     OFListConstIterator(OFString) it;

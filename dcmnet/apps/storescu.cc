@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2013, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1699,10 +1699,12 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
         delete[] buf;
         return EC_IllegalCall;
       }
+      // Casting to Uint16 should be safe since it is checked above that file
+      // size does not exceed 65535 bytes.
       if (opt_identMode == ASC_USER_IDENTITY_KERBEROS)
-        cond = ASC_setIdentRQKerberos(params, buf, bytesRead, opt_identResponse);
+        cond = ASC_setIdentRQKerberos(params, buf, OFstatic_cast(Uint16,bytesRead), opt_identResponse);
       else
-        cond = ASC_setIdentRQSaml(params, buf, bytesRead, opt_identResponse);
+        cond = ASC_setIdentRQSaml(params, buf, OFstatic_cast(Uint16,bytesRead), opt_identResponse);
       delete[] buf;
       break;
     }
