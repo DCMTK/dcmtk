@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -82,25 +82,25 @@ class LST_HEAD;
  *  structure.  Most DICOM applications (except imagectn) don't need the symbolic
  *  hostname anyway, and the reverse DNS lookup can cause a long timeout.
  */
-extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmDisableGethostbyaddr;   /* default OFFalse */
+extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmDisableGethostbyaddr;   /* default: OFFalse */
 
 /** Global flag specifying whether to reject presentation contexts in case of an
  *  unsuccessful SCP/SCU role selection (strict) or to return the corresponding
  *  user data item with appropriate values (default). This applies to association
  *  acceptors only.
  */
-extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmStrictRoleSelection;   /* default OFFalse */
+extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmStrictRoleSelection;   /* default: OFFalse */
 
-/**  Global timeout (seconds) for connecting to remote hosts.
- *   Default value is -1 which selects infinite timeout, i.e. blocking connect().
+/** Global timeout in seconds for connecting to remote hosts.
+ *  Default value is -1, which selects infinite timeout, i.e. blocking connect().
  */
-extern DCMTK_DCMNET_EXPORT OFGlobal<Sint32> dcmConnectionTimeout;   /* default -1 */
+extern DCMTK_DCMNET_EXPORT OFGlobal<Sint32> dcmConnectionTimeout;   /* default: -1 */
 
 /** This global flag allows to set an already opened socket file descriptor which
  *  will be used by dcmnet the next time receiveTransportConnectionTCP() is called.
  *  Useful for use with proxy applications, but inherently thread unsafe!
  */
-extern DCMTK_DCMNET_EXPORT OFGlobal<int> dcmExternalSocketHandle;   /* default -1 */
+extern DCMTK_DCMNET_EXPORT OFGlobal<int> dcmExternalSocketHandle;   /* default: -1 */
 
 /** When compiled with WITH_TCPWRAPPER, DCMTK server processes may use the TCP
  *  wrapper library to enforce access control - see hosts_access(5).  If this
@@ -108,7 +108,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<int> dcmExternalSocketHandle;   /* default -
  *  to is used as the daemon name.  If the flag is NULL, no access control is
  *  performed.
  */
-extern DCMTK_DCMNET_EXPORT OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* default NULL */
+extern DCMTK_DCMNET_EXPORT OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* default: NULL */
 
 /* Global option flag for compatibility with DCMTK releases prior to version 3.0.
  * Default (0) is automatic handling, which should work in most cases.
