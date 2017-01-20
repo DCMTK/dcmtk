@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1573,7 +1573,6 @@ void DcmElement::writeJsonOpener(STD_NAMESPACE ostream &out,
 {
     DcmVR vr(getTag().getVR());
     DcmTag tag = getTag();
-    const OFBool isPrivate = tag.isPrivate();
     /* increase indention level */
     /* write attribute tag */
     out << ++format.indent() << "\""
