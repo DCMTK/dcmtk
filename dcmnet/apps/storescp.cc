@@ -55,6 +55,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmnet/dcmtrans.h"      /* for dcmSocketSend/ReceiveTimeout */
 #include "dcmtk/dcmnet/dcasccfg.h"      /* for class DcmAssociationConfiguration */
 #include "dcmtk/dcmnet/dcasccff.h"      /* for class DcmAssociationConfigurationFile */
 #include "dcmtk/dcmdata/dcfilefo.h"
