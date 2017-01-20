@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,7 +62,7 @@ public:
 
   /** constructor.
    *  @param openSocket TCP/IP socket to be used for the transport connection.
-   *    the connection must already be establised on socket level. This object
+   *    the connection must already be established on socket level. This object
    *    takes over control of the socket.
    */
   DcmTransportConnection(int openSocket);
@@ -247,7 +247,7 @@ public:
 
   /** constructor.
    *  @param openSocket TCP/IP socket to be used for the transport connection.
-   *    the connection must already be establised on socket level. This object
+   *    the connection must already be established on socket level. This object
    *    takes over control of the socket.
    */
   DcmTCPConnection(int openSocket);
