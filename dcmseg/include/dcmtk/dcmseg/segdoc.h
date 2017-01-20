@@ -62,7 +62,9 @@ public:
 
   // -------------------- loading and saving ---------------------
 
-  /** Load Segmentation object from file
+  /** Static method to load a Segmentation object from a file.
+   *  The memory of the resulting Segmentation object has to be freed by the
+   *  caller.
    *  @param  filename The file to read from
    *  @param  segmentation  The resulting segmentation object. NULL if dataset
    *          could not be read successfully.
@@ -71,7 +73,9 @@ public:
   static OFCondition loadFile(const OFString& filename,
                               DcmSegmentation*& segmentation);
 
-  /** Load Segmentation object from dataset object.
+  /** Static method to load a Segmentation object from a dataset object.
+   *  The memory of the resulting Segmentation object has to be freed by the
+   *  caller.
    *  @param  dataset The dataset to read from
    *  @param  segmentation  The resulting segmentation object. NULL if dataset
    *          could not be read successfully.
@@ -99,6 +103,8 @@ public:
   /** Factory method to create a binary segmentation object from the minimal
    *  set of information required. The actual segments and the frame data is
    *  added separately.
+   *  The memory of the resulting Segmentation object has to be freed by the
+   *  caller.
    *  @param  segmentation The resulting segmentation object if provided data is
    *          valid. Otherwise NULL is returned.
    *  @param  rows Number of rows of segmentation frame data
@@ -117,6 +123,8 @@ public:
   /** Factory method to create a fractional segmentation object from the minimal
    *  set of information required. The actual segments and the frame data is
    *  added separately.
+   *  The memory of the resulting Segmentation object has to be freed by the
+   *  caller.
    *  @param  segmentation The resulting segmentation object if provided data is
    *          valid. Otherwise NULL is returned.
    *  @param  rows Number of rows of segmentation frame data
@@ -139,6 +147,8 @@ public:
                                                   const ContentIdentificationMacro& contentIdentification);
 
   /** Helps to create a valid Derivation Image Functional Group Macro
+   *  The memory of the resulting functional group object has to be freed by the
+   *  caller.
    *  @param derivationImages to image SOP instances
    *  @param derivationDescription Free text describing how the derivation was
    *         achieved.

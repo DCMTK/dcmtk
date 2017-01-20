@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -47,6 +47,8 @@ public:
 
   /** Create new Tractography Results object. The resulting object then can
    *  be filled by using addTrackSet().
+   *  The memory of the resulting Tractography Results object has to be freed by the
+   *  caller.
    *  @param  contentIdentification Content identification for this object
    *  @param  contentDate The date the content creation started
    *  @param  contentTime The time the content creation started
@@ -122,7 +124,9 @@ public:
 
   // -------------------- loading and saving ---------------------
 
-  /** Load Tractography Results object from item file
+  /** Load Tractography Results object from a file.
+   *  The memory of the resulting Tractography Results object has to be freed by the
+   *  caller.
    *  @param  filename The file to read from
    *  @param  tractography  The resulting Tractography Results object. NULL if
    *          dataset could not be read successfully.
@@ -131,7 +135,9 @@ public:
   static OFCondition loadFile(const OFString& filename,
                               TrcTractographyResults*& tractography);
 
-  /** Load Tractography Results object from item object.
+  /** Load Tractography Results object from dataset object.
+   *  The memory of the resulting Tractography Results object has to be freed
+   *  by the caller.
    *  @param  dataset The dataset to read from
    *  @param  tractography  The resulting Tractography Results object. NULL if
    *          dataset could not be read successfully.
