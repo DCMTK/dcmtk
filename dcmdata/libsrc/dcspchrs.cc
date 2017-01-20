@@ -189,13 +189,13 @@ OFCondition DcmSpecificCharacterSet::determineDestinationEncoding(const OFString
         DestinationEncoding = "ISO-8859-9";
     else if (DestinationCharacterSet == "ISO_IR 13")    // Japanese
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
-        DestinationEncoding = "JIS_X0201";              // - "ISO-IR-13" is not supported by libiconv
+        DestinationEncoding = "JIS_X0201";              // - the name "ISO-IR-13" is not supported by libiconv
 #else
-        DestinationEncoding = "Shift_JIS";              // - ICU and stdlibc iconv only know Shift_JIS
+        DestinationEncoding = "Shift_JIS";              // - ICU and stdlibc iconv only know "Shift_JIS" (is this mapping correct?)
 #endif
     else if (DestinationCharacterSet == "ISO_IR 166")   // Thai
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
-        DestinationEncoding = "TIS-620";                // - "ISO-IR-166" is not supported by ICU
+        DestinationEncoding = "TIS-620";                // - the name "ISO-IR-166" is not supported by ICU
 #else
         DestinationEncoding = "ISO-IR-166";
 #endif
@@ -203,7 +203,7 @@ OFCondition DcmSpecificCharacterSet::determineDestinationEncoding(const OFString
         DestinationEncoding = "UTF-8";
     else if (DestinationCharacterSet == "GB18030")      // Chinese (multi-byte)
         DestinationEncoding = "GB18030";
-    else if (DestinationCharacterSet == "GBK")          // Chinese (multi-byte, subset of GB18030)
+    else if (DestinationCharacterSet == "GBK")          // Chinese (multi-byte, subset of "GB 18030")
         DestinationEncoding = "GBK";
     else {
         DestinationEncoding.clear();
@@ -250,13 +250,13 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
         fromEncoding = "ISO-8859-9";
     else if (SourceCharacterSet == "ISO_IR 13")     // Japanese
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
-        fromEncoding = "JIS_X0201";                 // - "ISO-IR-13" is not supported by ICU
+        fromEncoding = "JIS_X0201";                 // - the name "ISO-IR-13" is not supported by libiconv
 #else
-        fromEncoding = "Shift_JIS";                 // - ICU and stdlibc iconv only know Shift_JIS
+        fromEncoding = "Shift_JIS";                 // - ICU and stdlibc iconv only know "Shift_JIS" (is this mapping correct?)
 #endif
     else if (SourceCharacterSet == "ISO_IR 166")    // Thai
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
-        fromEncoding = "TIS-620";                   // - "ISO-IR-166" is not supported by ICU
+        fromEncoding = "TIS-620";                   // - the name "ISO-IR-166" is not supported by ICU
 #else
         fromEncoding = "ISO-IR-166";
 #endif
@@ -264,7 +264,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
         fromEncoding = "UTF-8";
     else if (SourceCharacterSet == "GB18030")       // Chinese (multi-byte)
         fromEncoding = "GB18030";
-    else if (SourceCharacterSet == "GBK")           // Chinese (multi-byte, subset of GB18030)
+    else if (SourceCharacterSet == "GBK")           // Chinese (multi-byte, subset of "GB 18030")
         fromEncoding = "GBK";
     else {
         // create an appropriate error code
@@ -359,9 +359,9 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         else if (definedTerm == "ISO 2022 IR 13")       // Japanese
         {
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
-            encodingName = "JIS_X0201";                 // - "ISO-IR-13" is not supported by ICU
+            encodingName = "JIS_X0201";                 // - the name "ISO-IR-13" is not supported by libiconv
 #else
-            encodingName = "Shift_JIS";                 // - ICU and stdlibc iconv only know Shift_JIS
+            encodingName = "Shift_JIS";                 // - ICU and stdlibc iconv only know "Shift_JIS" (is this mapping correct?)
 #endif
         }
         else if (definedTerm == "ISO 2022 IR 166")      // Thai
@@ -375,12 +375,12 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         }
         else if (definedTerm == "ISO 2022 IR 87")       // Japanese (multi-byte)
         {
-            encodingName = "ISO-IR-87";
+            encodingName = "ISO-IR-87";                 // - this might generate an error since "ISO-IR-87" is not supported by ICU and stdlibc iconv
             notFirstValue = OFTrue;
         }
         else if (definedTerm == "ISO 2022 IR 159")      // Japanese (multi-byte)
         {
-            encodingName = "ISO-IR-159";
+            encodingName = "ISO-IR-159";                // - this might generate an error since "ISO-IR-159" is not supported by ICU and stdlibc iconv
             notFirstValue = OFTrue;
         }
         else if (definedTerm == "ISO 2022 IR 149")      // Korean (multi-byte)
