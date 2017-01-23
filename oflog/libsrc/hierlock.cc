@@ -61,7 +61,7 @@ HierarchyLocker::HierarchyLocker(Hierarchy& _h)
         throw;
     }
 }
- 
+
 
 HierarchyLocker::~HierarchyLocker()
 {
@@ -72,11 +72,12 @@ HierarchyLocker::~HierarchyLocker()
     }
     catch(...) {
         helpers::getLogLog().error(DCMTK_LOG4CPLUS_TEXT("HierarchyLocker::dtor()- An error occurred while unlocking"));
-        throw;
+        // Disabled the following line: Don't throw an exception from a destructor!
+        // throw;
     }
 }
 
-void 
+void
 HierarchyLocker::resetConfiguration()
 {
     Logger root = h.getRoot();
@@ -92,31 +93,31 @@ HierarchyLocker::resetConfiguration()
     for(LoggerList::iterator it=loggerList.begin(); it!=loggerList.end(); ++it)
     {
         Logger & logger = *it;
-        
+
         logger.closeNestedAppenders();
         logger.removeAllAppenders();
-        
+
         logger.setLogLevel(NOT_SET_LOG_LEVEL);
         logger.setAdditivity(true);
     }
 }
 
 
-Logger 
+Logger
 HierarchyLocker::getInstance(const tstring& name)
 {
     return h.getInstanceImpl(name, *h.getLoggerFactory());
 }
 
 
-Logger 
+Logger
 HierarchyLocker::getInstance(const tstring& name, spi::LoggerFactory& factory)
 {
     return h.getInstanceImpl(name, factory);
 }
 
 
-void 
+void
 HierarchyLocker::addAppender(Logger& logger, SharedAppenderPtr& appender)
 {
     for(LoggerList::iterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
@@ -127,7 +128,7 @@ HierarchyLocker::addAppender(Logger& logger, SharedAppenderPtr& appender)
             return;
         }
     }
-    
+
     // I don't have this Logger locked
     logger.addAppender(appender);
 }
