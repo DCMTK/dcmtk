@@ -149,12 +149,12 @@ OFBool DcmTransportConnection::safeSelectReadableAssociation(DcmTransportConnect
     {
       if (connections[i])
       {
-      	if (connections[i]->networkDataAvailable(timeToWait))
-      	{
-      	  i = connCount; /* break out of for loop */
-      	  found = OFTrue; /* break out of while loop */
-      	}
-      	timeToWait = 0;
+        if (connections[i]->networkDataAvailable(timeToWait))
+        {
+          i = connCount; /* break out of for loop */
+          found = OFTrue; /* break out of while loop */
+        }
+        timeToWait = 0;
       }
     } /* for */
     if (timeToWait == 1) return OFFalse; /* all entries NULL */
