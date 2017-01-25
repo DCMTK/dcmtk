@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -102,5 +102,5 @@ OFCondition DRTImage::getOutputData(OFVector<Uint8>& result, const unsigned long
     const unsigned long size = image_->getOutputDataSize(bits);
     result.resize(size);
 
-    return statusToCondition(image_->getOutputData(&result[0], result.size(), bits, frame));
+    return statusToCondition(image_->getOutputData(&result[0], size, bits, frame));
 }
