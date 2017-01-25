@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -343,7 +343,7 @@ OFTEST_FLAGS(ofstd_OFFile, EF_Slow)
   if (sizeof(offile_off_t) > 4) COUT << " - OK\n"; else COUT << " - too small, no LFS support\n";
   COUT << "- size of offile_fpos_t: " << sizeof(offile_fpos_t);
   if (sizeof(offile_fpos_t) > 4) COUT << " - OK\n"; else COUT << " - too small, no LFS support\n";
-  if ((sizeof(offile_off_t) <= 4 || sizeof(offile_fpos_t) <= 4))
+  if ((sizeof(offile_off_t) <= 4) || (sizeof(offile_fpos_t) <= 4))
   {
     OFCHECK_FAIL("No LFS support available. LFS test failed.");
     return;
