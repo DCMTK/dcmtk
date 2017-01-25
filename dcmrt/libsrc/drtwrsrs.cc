@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTWADORSRetrievalSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -222,7 +222,7 @@ OFBool DRTWADORSRetrievalSequence::isValid() const
 }
 
 
-unsigned long DRTWADORSRetrievalSequence::getNumberOfItems() const
+size_t DRTWADORSRetrievalSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -252,12 +252,12 @@ OFCondition DRTWADORSRetrievalSequence::gotoNextItem()
 }
 
 
-OFCondition DRTWADORSRetrievalSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTWADORSRetrievalSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -272,12 +272,12 @@ OFCondition DRTWADORSRetrievalSequence::gotoItem(const unsigned long num, OFList
 }
 
 
-OFCondition DRTWADORSRetrievalSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTWADORSRetrievalSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -292,7 +292,7 @@ OFCondition DRTWADORSRetrievalSequence::gotoItem(const unsigned long num, OFList
 }
 
 
-OFCondition DRTWADORSRetrievalSequence::gotoItem(const unsigned long num)
+OFCondition DRTWADORSRetrievalSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -328,7 +328,7 @@ const DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::getCurrentIt
 }
 
 
-OFCondition DRTWADORSRetrievalSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTWADORSRetrievalSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -338,7 +338,7 @@ OFCondition DRTWADORSRetrievalSequence::getItem(const unsigned long num, Item *&
 }
 
 
-DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::getItem(const unsigned long num)
+DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -348,7 +348,7 @@ DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::getItem(const unsi
 }
 
 
-const DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::getItem(const unsigned long num) const
+const DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -358,13 +358,13 @@ const DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::getItem(cons
 }
 
 
-DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::operator[](const unsigned long num)
+DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::operator[](const unsigned long num) const
+const DRTWADORSRetrievalSequence::Item &DRTWADORSRetrievalSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -387,7 +387,7 @@ OFCondition DRTWADORSRetrievalSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTWADORSRetrievalSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTWADORSRetrievalSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -410,7 +410,7 @@ OFCondition DRTWADORSRetrievalSequence::insertItem(const unsigned long pos, Item
 }
 
 
-OFCondition DRTWADORSRetrievalSequence::removeItem(const unsigned long pos)
+OFCondition DRTWADORSRetrievalSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

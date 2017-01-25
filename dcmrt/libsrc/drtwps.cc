@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTWedgePositionSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -260,7 +260,7 @@ OFBool DRTWedgePositionSequence::isValid() const
 }
 
 
-unsigned long DRTWedgePositionSequence::getNumberOfItems() const
+size_t DRTWedgePositionSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -290,12 +290,12 @@ OFCondition DRTWedgePositionSequence::gotoNextItem()
 }
 
 
-OFCondition DRTWedgePositionSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTWedgePositionSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -310,12 +310,12 @@ OFCondition DRTWedgePositionSequence::gotoItem(const unsigned long num, OFListIt
 }
 
 
-OFCondition DRTWedgePositionSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTWedgePositionSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -330,7 +330,7 @@ OFCondition DRTWedgePositionSequence::gotoItem(const unsigned long num, OFListCo
 }
 
 
-OFCondition DRTWedgePositionSequence::gotoItem(const unsigned long num)
+OFCondition DRTWedgePositionSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -366,7 +366,7 @@ const DRTWedgePositionSequence::Item &DRTWedgePositionSequence::getCurrentItem()
 }
 
 
-OFCondition DRTWedgePositionSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTWedgePositionSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -376,7 +376,7 @@ OFCondition DRTWedgePositionSequence::getItem(const unsigned long num, Item *&it
 }
 
 
-DRTWedgePositionSequence::Item &DRTWedgePositionSequence::getItem(const unsigned long num)
+DRTWedgePositionSequence::Item &DRTWedgePositionSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -386,7 +386,7 @@ DRTWedgePositionSequence::Item &DRTWedgePositionSequence::getItem(const unsigned
 }
 
 
-const DRTWedgePositionSequence::Item &DRTWedgePositionSequence::getItem(const unsigned long num) const
+const DRTWedgePositionSequence::Item &DRTWedgePositionSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -396,13 +396,13 @@ const DRTWedgePositionSequence::Item &DRTWedgePositionSequence::getItem(const un
 }
 
 
-DRTWedgePositionSequence::Item &DRTWedgePositionSequence::operator[](const unsigned long num)
+DRTWedgePositionSequence::Item &DRTWedgePositionSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTWedgePositionSequence::Item &DRTWedgePositionSequence::operator[](const unsigned long num) const
+const DRTWedgePositionSequence::Item &DRTWedgePositionSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -425,7 +425,7 @@ OFCondition DRTWedgePositionSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTWedgePositionSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTWedgePositionSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -448,7 +448,7 @@ OFCondition DRTWedgePositionSequence::insertItem(const unsigned long pos, Item *
 }
 
 
-OFCondition DRTWedgePositionSequence::removeItem(const unsigned long pos)
+OFCondition DRTWedgePositionSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

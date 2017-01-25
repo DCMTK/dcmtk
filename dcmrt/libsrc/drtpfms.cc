@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTPrimaryFluenceModeSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -251,7 +251,7 @@ OFBool DRTPrimaryFluenceModeSequence::isValid() const
 }
 
 
-unsigned long DRTPrimaryFluenceModeSequence::getNumberOfItems() const
+size_t DRTPrimaryFluenceModeSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -281,12 +281,12 @@ OFCondition DRTPrimaryFluenceModeSequence::gotoNextItem()
 }
 
 
-OFCondition DRTPrimaryFluenceModeSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTPrimaryFluenceModeSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -301,12 +301,12 @@ OFCondition DRTPrimaryFluenceModeSequence::gotoItem(const unsigned long num, OFL
 }
 
 
-OFCondition DRTPrimaryFluenceModeSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTPrimaryFluenceModeSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -321,7 +321,7 @@ OFCondition DRTPrimaryFluenceModeSequence::gotoItem(const unsigned long num, OFL
 }
 
 
-OFCondition DRTPrimaryFluenceModeSequence::gotoItem(const unsigned long num)
+OFCondition DRTPrimaryFluenceModeSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -357,7 +357,7 @@ const DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::getCur
 }
 
 
-OFCondition DRTPrimaryFluenceModeSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTPrimaryFluenceModeSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -367,7 +367,7 @@ OFCondition DRTPrimaryFluenceModeSequence::getItem(const unsigned long num, Item
 }
 
 
-DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::getItem(const unsigned long num)
+DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -377,7 +377,7 @@ DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::getItem(cons
 }
 
 
-const DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::getItem(const unsigned long num) const
+const DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -387,13 +387,13 @@ const DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::getIte
 }
 
 
-DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::operator[](const unsigned long num)
+DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::operator[](const unsigned long num) const
+const DRTPrimaryFluenceModeSequence::Item &DRTPrimaryFluenceModeSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -416,7 +416,7 @@ OFCondition DRTPrimaryFluenceModeSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTPrimaryFluenceModeSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTPrimaryFluenceModeSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -439,7 +439,7 @@ OFCondition DRTPrimaryFluenceModeSequence::insertItem(const unsigned long pos, I
 }
 
 
-OFCondition DRTPrimaryFluenceModeSequence::removeItem(const unsigned long pos)
+OFCondition DRTPrimaryFluenceModeSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -310,7 +310,7 @@ OFBool DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::isValid() co
 }
 
 
-unsigned long DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getNumberOfItems() const
+size_t DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -340,12 +340,12 @@ OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoNex
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -360,12 +360,12 @@ OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoIte
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -380,7 +380,7 @@ OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoIte
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoItem(const unsigned long num)
+OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -416,7 +416,7 @@ const DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLate
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getItem(const unsigned long num, Item *&item)
+OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -426,7 +426,7 @@ OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getItem
 }
 
 
-DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getItem(const unsigned long num)
+DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -436,7 +436,7 @@ DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpr
 }
 
 
-const DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getItem(const unsigned long num) const
+const DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -446,13 +446,13 @@ const DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLate
 }
 
 
-DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::operator[](const unsigned long num)
+DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::operator[](const unsigned long num) const
+const DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::Item &DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -475,7 +475,7 @@ OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::addItem
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -498,7 +498,7 @@ OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::insertI
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::removeItem(const unsigned long pos)
+OFCondition DRTLateralSpreadingDeviceSettingsSequenceInRTIonBeamsModule::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

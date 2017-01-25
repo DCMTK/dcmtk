@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTTreatmentSummaryCalculatedDoseReferenceSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -298,7 +298,7 @@ OFBool DRTTreatmentSummaryCalculatedDoseReferenceSequence::isValid() const
 }
 
 
-unsigned long DRTTreatmentSummaryCalculatedDoseReferenceSequence::getNumberOfItems() const
+size_t DRTTreatmentSummaryCalculatedDoseReferenceSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -328,12 +328,12 @@ OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoNextItem()
 }
 
 
-OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -348,12 +348,12 @@ OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoItem(const u
 }
 
 
-OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -368,7 +368,7 @@ OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoItem(const u
 }
 
 
-OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoItem(const unsigned long num)
+OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -404,7 +404,7 @@ const DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSumm
 }
 
 
-OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -414,7 +414,7 @@ OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::getItem(const un
 }
 
 
-DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCalculatedDoseReferenceSequence::getItem(const unsigned long num)
+DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCalculatedDoseReferenceSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -424,7 +424,7 @@ DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCal
 }
 
 
-const DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCalculatedDoseReferenceSequence::getItem(const unsigned long num) const
+const DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCalculatedDoseReferenceSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -434,13 +434,13 @@ const DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSumm
 }
 
 
-DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCalculatedDoseReferenceSequence::operator[](const unsigned long num)
+DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCalculatedDoseReferenceSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCalculatedDoseReferenceSequence::operator[](const unsigned long num) const
+const DRTTreatmentSummaryCalculatedDoseReferenceSequence::Item &DRTTreatmentSummaryCalculatedDoseReferenceSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -463,7 +463,7 @@ OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::addItem(Item *&i
 }
 
 
-OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -486,7 +486,7 @@ OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::insertItem(const
 }
 
 
-OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::removeItem(const unsigned long pos)
+OFCondition DRTTreatmentSummaryCalculatedDoseReferenceSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

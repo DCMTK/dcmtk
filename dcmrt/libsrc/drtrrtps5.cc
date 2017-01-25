@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTReferencedRTPlanSequenceInRTImageModule
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -251,7 +251,7 @@ OFBool DRTReferencedRTPlanSequenceInRTImageModule::isValid() const
 }
 
 
-unsigned long DRTReferencedRTPlanSequenceInRTImageModule::getNumberOfItems() const
+size_t DRTReferencedRTPlanSequenceInRTImageModule::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -281,12 +281,12 @@ OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoNextItem()
 }
 
 
-OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -301,12 +301,12 @@ OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoItem(const unsigned 
 }
 
 
-OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -321,7 +321,7 @@ OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoItem(const unsigned 
 }
 
 
-OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoItem(const unsigned long num)
+OFCondition DRTReferencedRTPlanSequenceInRTImageModule::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -357,7 +357,7 @@ const DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSeque
 }
 
 
-OFCondition DRTReferencedRTPlanSequenceInRTImageModule::getItem(const unsigned long num, Item *&item)
+OFCondition DRTReferencedRTPlanSequenceInRTImageModule::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -367,7 +367,7 @@ OFCondition DRTReferencedRTPlanSequenceInRTImageModule::getItem(const unsigned l
 }
 
 
-DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInRTImageModule::getItem(const unsigned long num)
+DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInRTImageModule::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -377,7 +377,7 @@ DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInR
 }
 
 
-const DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInRTImageModule::getItem(const unsigned long num) const
+const DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInRTImageModule::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -387,13 +387,13 @@ const DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSeque
 }
 
 
-DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInRTImageModule::operator[](const unsigned long num)
+DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInRTImageModule::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInRTImageModule::operator[](const unsigned long num) const
+const DRTReferencedRTPlanSequenceInRTImageModule::Item &DRTReferencedRTPlanSequenceInRTImageModule::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -416,7 +416,7 @@ OFCondition DRTReferencedRTPlanSequenceInRTImageModule::addItem(Item *&item)
 }
 
 
-OFCondition DRTReferencedRTPlanSequenceInRTImageModule::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTReferencedRTPlanSequenceInRTImageModule::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -439,7 +439,7 @@ OFCondition DRTReferencedRTPlanSequenceInRTImageModule::insertItem(const unsigne
 }
 
 
-OFCondition DRTReferencedRTPlanSequenceInRTImageModule::removeItem(const unsigned long pos)
+OFCondition DRTReferencedRTPlanSequenceInRTImageModule::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

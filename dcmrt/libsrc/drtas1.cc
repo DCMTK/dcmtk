@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTApplicatorSequenceInRTBeamsModule
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -341,7 +341,7 @@ OFBool DRTApplicatorSequenceInRTBeamsModule::isValid() const
 }
 
 
-unsigned long DRTApplicatorSequenceInRTBeamsModule::getNumberOfItems() const
+size_t DRTApplicatorSequenceInRTBeamsModule::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -371,12 +371,12 @@ OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoNextItem()
 }
 
 
-OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -391,12 +391,12 @@ OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoItem(const unsigned long n
 }
 
 
-OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -411,7 +411,7 @@ OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoItem(const unsigned long n
 }
 
 
-OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoItem(const unsigned long num)
+OFCondition DRTApplicatorSequenceInRTBeamsModule::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -447,7 +447,7 @@ const DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeams
 }
 
 
-OFCondition DRTApplicatorSequenceInRTBeamsModule::getItem(const unsigned long num, Item *&item)
+OFCondition DRTApplicatorSequenceInRTBeamsModule::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -457,7 +457,7 @@ OFCondition DRTApplicatorSequenceInRTBeamsModule::getItem(const unsigned long nu
 }
 
 
-DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule::getItem(const unsigned long num)
+DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -467,7 +467,7 @@ DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule
 }
 
 
-const DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule::getItem(const unsigned long num) const
+const DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -477,13 +477,13 @@ const DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeams
 }
 
 
-DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule::operator[](const unsigned long num)
+DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule::operator[](const unsigned long num) const
+const DRTApplicatorSequenceInRTBeamsModule::Item &DRTApplicatorSequenceInRTBeamsModule::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -506,7 +506,7 @@ OFCondition DRTApplicatorSequenceInRTBeamsModule::addItem(Item *&item)
 }
 
 
-OFCondition DRTApplicatorSequenceInRTBeamsModule::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTApplicatorSequenceInRTBeamsModule::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -529,7 +529,7 @@ OFCondition DRTApplicatorSequenceInRTBeamsModule::insertItem(const unsigned long
 }
 
 
-OFCondition DRTApplicatorSequenceInRTBeamsModule::removeItem(const unsigned long pos)
+OFCondition DRTApplicatorSequenceInRTBeamsModule::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTBrachyReferencedDoseReferenceSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -269,7 +269,7 @@ OFBool DRTBrachyReferencedDoseReferenceSequence::isValid() const
 }
 
 
-unsigned long DRTBrachyReferencedDoseReferenceSequence::getNumberOfItems() const
+size_t DRTBrachyReferencedDoseReferenceSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -299,12 +299,12 @@ OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoNextItem()
 }
 
 
-OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -319,12 +319,12 @@ OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoItem(const unsigned lo
 }
 
 
-OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -339,7 +339,7 @@ OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoItem(const unsigned lo
 }
 
 
-OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoItem(const unsigned long num)
+OFCondition DRTBrachyReferencedDoseReferenceSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -375,7 +375,7 @@ const DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseRef
 }
 
 
-OFCondition DRTBrachyReferencedDoseReferenceSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTBrachyReferencedDoseReferenceSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -385,7 +385,7 @@ OFCondition DRTBrachyReferencedDoseReferenceSequence::getItem(const unsigned lon
 }
 
 
-DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReferenceSequence::getItem(const unsigned long num)
+DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReferenceSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -395,7 +395,7 @@ DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReference
 }
 
 
-const DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReferenceSequence::getItem(const unsigned long num) const
+const DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReferenceSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -405,13 +405,13 @@ const DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseRef
 }
 
 
-DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReferenceSequence::operator[](const unsigned long num)
+DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReferenceSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReferenceSequence::operator[](const unsigned long num) const
+const DRTBrachyReferencedDoseReferenceSequence::Item &DRTBrachyReferencedDoseReferenceSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -434,7 +434,7 @@ OFCondition DRTBrachyReferencedDoseReferenceSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTBrachyReferencedDoseReferenceSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTBrachyReferencedDoseReferenceSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -457,7 +457,7 @@ OFCondition DRTBrachyReferencedDoseReferenceSequence::insertItem(const unsigned 
 }
 
 
-OFCondition DRTBrachyReferencedDoseReferenceSequence::removeItem(const unsigned long pos)
+OFCondition DRTBrachyReferencedDoseReferenceSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

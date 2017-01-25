@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTIonWedgePositionSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -285,7 +285,7 @@ OFBool DRTIonWedgePositionSequence::isValid() const
 }
 
 
-unsigned long DRTIonWedgePositionSequence::getNumberOfItems() const
+size_t DRTIonWedgePositionSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -315,12 +315,12 @@ OFCondition DRTIonWedgePositionSequence::gotoNextItem()
 }
 
 
-OFCondition DRTIonWedgePositionSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTIonWedgePositionSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -335,12 +335,12 @@ OFCondition DRTIonWedgePositionSequence::gotoItem(const unsigned long num, OFLis
 }
 
 
-OFCondition DRTIonWedgePositionSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTIonWedgePositionSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -355,7 +355,7 @@ OFCondition DRTIonWedgePositionSequence::gotoItem(const unsigned long num, OFLis
 }
 
 
-OFCondition DRTIonWedgePositionSequence::gotoItem(const unsigned long num)
+OFCondition DRTIonWedgePositionSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -391,7 +391,7 @@ const DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::getCurrent
 }
 
 
-OFCondition DRTIonWedgePositionSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTIonWedgePositionSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -401,7 +401,7 @@ OFCondition DRTIonWedgePositionSequence::getItem(const unsigned long num, Item *
 }
 
 
-DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::getItem(const unsigned long num)
+DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -411,7 +411,7 @@ DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::getItem(const un
 }
 
 
-const DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::getItem(const unsigned long num) const
+const DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -421,13 +421,13 @@ const DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::getItem(co
 }
 
 
-DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::operator[](const unsigned long num)
+DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::operator[](const unsigned long num) const
+const DRTIonWedgePositionSequence::Item &DRTIonWedgePositionSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -450,7 +450,7 @@ OFCondition DRTIonWedgePositionSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTIonWedgePositionSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTIonWedgePositionSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -473,7 +473,7 @@ OFCondition DRTIonWedgePositionSequence::insertItem(const unsigned long pos, Ite
 }
 
 
-OFCondition DRTIonWedgePositionSequence::removeItem(const unsigned long pos)
+OFCondition DRTIonWedgePositionSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTHL7StructuredDocumentReferenceSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -309,7 +309,7 @@ OFBool DRTHL7StructuredDocumentReferenceSequence::isValid() const
 }
 
 
-unsigned long DRTHL7StructuredDocumentReferenceSequence::getNumberOfItems() const
+size_t DRTHL7StructuredDocumentReferenceSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -339,12 +339,12 @@ OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoNextItem()
 }
 
 
-OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -359,12 +359,12 @@ OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoItem(const unsigned l
 }
 
 
-OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -379,7 +379,7 @@ OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoItem(const unsigned l
 }
 
 
-OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoItem(const unsigned long num)
+OFCondition DRTHL7StructuredDocumentReferenceSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -415,7 +415,7 @@ const DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentR
 }
 
 
-OFCondition DRTHL7StructuredDocumentReferenceSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTHL7StructuredDocumentReferenceSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -425,7 +425,7 @@ OFCondition DRTHL7StructuredDocumentReferenceSequence::getItem(const unsigned lo
 }
 
 
-DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferenceSequence::getItem(const unsigned long num)
+DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferenceSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -435,7 +435,7 @@ DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferen
 }
 
 
-const DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferenceSequence::getItem(const unsigned long num) const
+const DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferenceSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -445,13 +445,13 @@ const DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentR
 }
 
 
-DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferenceSequence::operator[](const unsigned long num)
+DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferenceSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferenceSequence::operator[](const unsigned long num) const
+const DRTHL7StructuredDocumentReferenceSequence::Item &DRTHL7StructuredDocumentReferenceSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -474,7 +474,7 @@ OFCondition DRTHL7StructuredDocumentReferenceSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTHL7StructuredDocumentReferenceSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTHL7StructuredDocumentReferenceSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -497,7 +497,7 @@ OFCondition DRTHL7StructuredDocumentReferenceSequence::insertItem(const unsigned
 }
 
 
-OFCondition DRTHL7StructuredDocumentReferenceSequence::removeItem(const unsigned long pos)
+OFCondition DRTHL7StructuredDocumentReferenceSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

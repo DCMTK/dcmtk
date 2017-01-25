@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTLateralSpreadingDeviceSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -347,7 +347,7 @@ OFBool DRTLateralSpreadingDeviceSequence::isValid() const
 }
 
 
-unsigned long DRTLateralSpreadingDeviceSequence::getNumberOfItems() const
+size_t DRTLateralSpreadingDeviceSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -377,12 +377,12 @@ OFCondition DRTLateralSpreadingDeviceSequence::gotoNextItem()
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTLateralSpreadingDeviceSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -397,12 +397,12 @@ OFCondition DRTLateralSpreadingDeviceSequence::gotoItem(const unsigned long num,
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTLateralSpreadingDeviceSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -417,7 +417,7 @@ OFCondition DRTLateralSpreadingDeviceSequence::gotoItem(const unsigned long num,
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSequence::gotoItem(const unsigned long num)
+OFCondition DRTLateralSpreadingDeviceSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -453,7 +453,7 @@ const DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTLateralSpreadingDeviceSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -463,7 +463,7 @@ OFCondition DRTLateralSpreadingDeviceSequence::getItem(const unsigned long num, 
 }
 
 
-DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::getItem(const unsigned long num)
+DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -473,7 +473,7 @@ DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::getI
 }
 
 
-const DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::getItem(const unsigned long num) const
+const DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -483,13 +483,13 @@ const DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence
 }
 
 
-DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::operator[](const unsigned long num)
+DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::operator[](const unsigned long num) const
+const DRTLateralSpreadingDeviceSequence::Item &DRTLateralSpreadingDeviceSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -512,7 +512,7 @@ OFCondition DRTLateralSpreadingDeviceSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTLateralSpreadingDeviceSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -535,7 +535,7 @@ OFCondition DRTLateralSpreadingDeviceSequence::insertItem(const unsigned long po
 }
 
 
-OFCondition DRTLateralSpreadingDeviceSequence::removeItem(const unsigned long pos)
+OFCondition DRTLateralSpreadingDeviceSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTPhysiciansOfRecordIdentificationSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -352,7 +352,7 @@ OFBool DRTPhysiciansOfRecordIdentificationSequence::isValid() const
 }
 
 
-unsigned long DRTPhysiciansOfRecordIdentificationSequence::getNumberOfItems() const
+size_t DRTPhysiciansOfRecordIdentificationSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -382,12 +382,12 @@ OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoNextItem()
 }
 
 
-OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -402,12 +402,12 @@ OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoItem(const unsigned
 }
 
 
-OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -422,7 +422,7 @@ OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoItem(const unsigned
 }
 
 
-OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoItem(const unsigned long num)
+OFCondition DRTPhysiciansOfRecordIdentificationSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -458,7 +458,7 @@ const DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordId
 }
 
 
-OFCondition DRTPhysiciansOfRecordIdentificationSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTPhysiciansOfRecordIdentificationSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -468,7 +468,7 @@ OFCondition DRTPhysiciansOfRecordIdentificationSequence::getItem(const unsigned 
 }
 
 
-DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentificationSequence::getItem(const unsigned long num)
+DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentificationSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -478,7 +478,7 @@ DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentifi
 }
 
 
-const DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentificationSequence::getItem(const unsigned long num) const
+const DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentificationSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -488,13 +488,13 @@ const DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordId
 }
 
 
-DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentificationSequence::operator[](const unsigned long num)
+DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentificationSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentificationSequence::operator[](const unsigned long num) const
+const DRTPhysiciansOfRecordIdentificationSequence::Item &DRTPhysiciansOfRecordIdentificationSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -517,7 +517,7 @@ OFCondition DRTPhysiciansOfRecordIdentificationSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTPhysiciansOfRecordIdentificationSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTPhysiciansOfRecordIdentificationSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -540,7 +540,7 @@ OFCondition DRTPhysiciansOfRecordIdentificationSequence::insertItem(const unsign
 }
 
 
-OFCondition DRTPhysiciansOfRecordIdentificationSequence::removeItem(const unsigned long pos)
+OFCondition DRTPhysiciansOfRecordIdentificationSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

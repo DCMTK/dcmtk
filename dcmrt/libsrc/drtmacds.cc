@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTMultiplexedAudioChannelsDescriptionCodeSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -267,7 +267,7 @@ OFBool DRTMultiplexedAudioChannelsDescriptionCodeSequence::isValid() const
 }
 
 
-unsigned long DRTMultiplexedAudioChannelsDescriptionCodeSequence::getNumberOfItems() const
+size_t DRTMultiplexedAudioChannelsDescriptionCodeSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -297,12 +297,12 @@ OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoNextItem()
 }
 
 
-OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -317,12 +317,12 @@ OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoItem(const u
 }
 
 
-OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -337,7 +337,7 @@ OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoItem(const u
 }
 
 
-OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoItem(const unsigned long num)
+OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -373,7 +373,7 @@ const DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAu
 }
 
 
-OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -383,7 +383,7 @@ OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::getItem(const un
 }
 
 
-DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioChannelsDescriptionCodeSequence::getItem(const unsigned long num)
+DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioChannelsDescriptionCodeSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -393,7 +393,7 @@ DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioCha
 }
 
 
-const DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioChannelsDescriptionCodeSequence::getItem(const unsigned long num) const
+const DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioChannelsDescriptionCodeSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -403,13 +403,13 @@ const DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAu
 }
 
 
-DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioChannelsDescriptionCodeSequence::operator[](const unsigned long num)
+DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioChannelsDescriptionCodeSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioChannelsDescriptionCodeSequence::operator[](const unsigned long num) const
+const DRTMultiplexedAudioChannelsDescriptionCodeSequence::Item &DRTMultiplexedAudioChannelsDescriptionCodeSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -432,7 +432,7 @@ OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::addItem(Item *&i
 }
 
 
-OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -455,7 +455,7 @@ OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::insertItem(const
 }
 
 
-OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::removeItem(const unsigned long pos)
+OFCondition DRTMultiplexedAudioChannelsDescriptionCodeSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

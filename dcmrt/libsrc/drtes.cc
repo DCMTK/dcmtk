@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTExposureSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -856,7 +856,7 @@ OFBool DRTExposureSequence::isValid() const
 }
 
 
-unsigned long DRTExposureSequence::getNumberOfItems() const
+size_t DRTExposureSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -886,12 +886,12 @@ OFCondition DRTExposureSequence::gotoNextItem()
 }
 
 
-OFCondition DRTExposureSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTExposureSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -906,12 +906,12 @@ OFCondition DRTExposureSequence::gotoItem(const unsigned long num, OFListIterato
 }
 
 
-OFCondition DRTExposureSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTExposureSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -926,7 +926,7 @@ OFCondition DRTExposureSequence::gotoItem(const unsigned long num, OFListConstIt
 }
 
 
-OFCondition DRTExposureSequence::gotoItem(const unsigned long num)
+OFCondition DRTExposureSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -962,7 +962,7 @@ const DRTExposureSequence::Item &DRTExposureSequence::getCurrentItem() const
 }
 
 
-OFCondition DRTExposureSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTExposureSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -972,7 +972,7 @@ OFCondition DRTExposureSequence::getItem(const unsigned long num, Item *&item)
 }
 
 
-DRTExposureSequence::Item &DRTExposureSequence::getItem(const unsigned long num)
+DRTExposureSequence::Item &DRTExposureSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -982,7 +982,7 @@ DRTExposureSequence::Item &DRTExposureSequence::getItem(const unsigned long num)
 }
 
 
-const DRTExposureSequence::Item &DRTExposureSequence::getItem(const unsigned long num) const
+const DRTExposureSequence::Item &DRTExposureSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -992,13 +992,13 @@ const DRTExposureSequence::Item &DRTExposureSequence::getItem(const unsigned lon
 }
 
 
-DRTExposureSequence::Item &DRTExposureSequence::operator[](const unsigned long num)
+DRTExposureSequence::Item &DRTExposureSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTExposureSequence::Item &DRTExposureSequence::operator[](const unsigned long num) const
+const DRTExposureSequence::Item &DRTExposureSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -1021,7 +1021,7 @@ OFCondition DRTExposureSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTExposureSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTExposureSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -1044,7 +1044,7 @@ OFCondition DRTExposureSequence::insertItem(const unsigned long pos, Item *&item
 }
 
 
-OFCondition DRTExposureSequence::removeItem(const unsigned long pos)
+OFCondition DRTExposureSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

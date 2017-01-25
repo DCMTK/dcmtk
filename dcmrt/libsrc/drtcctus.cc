@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTConsentForClinicalTrialUseSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -280,7 +280,7 @@ OFBool DRTConsentForClinicalTrialUseSequence::isValid() const
 }
 
 
-unsigned long DRTConsentForClinicalTrialUseSequence::getNumberOfItems() const
+size_t DRTConsentForClinicalTrialUseSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -310,12 +310,12 @@ OFCondition DRTConsentForClinicalTrialUseSequence::gotoNextItem()
 }
 
 
-OFCondition DRTConsentForClinicalTrialUseSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTConsentForClinicalTrialUseSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -330,12 +330,12 @@ OFCondition DRTConsentForClinicalTrialUseSequence::gotoItem(const unsigned long 
 }
 
 
-OFCondition DRTConsentForClinicalTrialUseSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTConsentForClinicalTrialUseSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -350,7 +350,7 @@ OFCondition DRTConsentForClinicalTrialUseSequence::gotoItem(const unsigned long 
 }
 
 
-OFCondition DRTConsentForClinicalTrialUseSequence::gotoItem(const unsigned long num)
+OFCondition DRTConsentForClinicalTrialUseSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -386,7 +386,7 @@ const DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUse
 }
 
 
-OFCondition DRTConsentForClinicalTrialUseSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTConsentForClinicalTrialUseSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -396,7 +396,7 @@ OFCondition DRTConsentForClinicalTrialUseSequence::getItem(const unsigned long n
 }
 
 
-DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequence::getItem(const unsigned long num)
+DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -406,7 +406,7 @@ DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequen
 }
 
 
-const DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequence::getItem(const unsigned long num) const
+const DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -416,13 +416,13 @@ const DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUse
 }
 
 
-DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequence::operator[](const unsigned long num)
+DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequence::operator[](const unsigned long num) const
+const DRTConsentForClinicalTrialUseSequence::Item &DRTConsentForClinicalTrialUseSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -445,7 +445,7 @@ OFCondition DRTConsentForClinicalTrialUseSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTConsentForClinicalTrialUseSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTConsentForClinicalTrialUseSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -468,7 +468,7 @@ OFCondition DRTConsentForClinicalTrialUseSequence::insertItem(const unsigned lon
 }
 
 
-OFCondition DRTConsentForClinicalTrialUseSequence::removeItem(const unsigned long pos)
+OFCondition DRTConsentForClinicalTrialUseSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

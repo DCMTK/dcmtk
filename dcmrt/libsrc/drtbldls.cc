@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTBeamLimitingDeviceLeafPairsSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -260,7 +260,7 @@ OFBool DRTBeamLimitingDeviceLeafPairsSequence::isValid() const
 }
 
 
-unsigned long DRTBeamLimitingDeviceLeafPairsSequence::getNumberOfItems() const
+size_t DRTBeamLimitingDeviceLeafPairsSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -290,12 +290,12 @@ OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoNextItem()
 }
 
 
-OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -310,12 +310,12 @@ OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoItem(const unsigned long
 }
 
 
-OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -330,7 +330,7 @@ OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoItem(const unsigned long
 }
 
 
-OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoItem(const unsigned long num)
+OFCondition DRTBeamLimitingDeviceLeafPairsSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -366,7 +366,7 @@ const DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPai
 }
 
 
-OFCondition DRTBeamLimitingDeviceLeafPairsSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTBeamLimitingDeviceLeafPairsSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -376,7 +376,7 @@ OFCondition DRTBeamLimitingDeviceLeafPairsSequence::getItem(const unsigned long 
 }
 
 
-DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequence::getItem(const unsigned long num)
+DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -386,7 +386,7 @@ DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequ
 }
 
 
-const DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequence::getItem(const unsigned long num) const
+const DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -396,13 +396,13 @@ const DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPai
 }
 
 
-DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequence::operator[](const unsigned long num)
+DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequence::operator[](const unsigned long num) const
+const DRTBeamLimitingDeviceLeafPairsSequence::Item &DRTBeamLimitingDeviceLeafPairsSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -425,7 +425,7 @@ OFCondition DRTBeamLimitingDeviceLeafPairsSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTBeamLimitingDeviceLeafPairsSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTBeamLimitingDeviceLeafPairsSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -448,7 +448,7 @@ OFCondition DRTBeamLimitingDeviceLeafPairsSequence::insertItem(const unsigned lo
 }
 
 
-OFCondition DRTBeamLimitingDeviceLeafPairsSequence::removeItem(const unsigned long pos)
+OFCondition DRTBeamLimitingDeviceLeafPairsSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

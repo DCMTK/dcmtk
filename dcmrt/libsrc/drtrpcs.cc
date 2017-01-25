@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTRequestedProcedureCodeSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -635,7 +635,7 @@ OFBool DRTRequestedProcedureCodeSequence::isValid() const
 }
 
 
-unsigned long DRTRequestedProcedureCodeSequence::getNumberOfItems() const
+size_t DRTRequestedProcedureCodeSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -665,12 +665,12 @@ OFCondition DRTRequestedProcedureCodeSequence::gotoNextItem()
 }
 
 
-OFCondition DRTRequestedProcedureCodeSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTRequestedProcedureCodeSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -685,12 +685,12 @@ OFCondition DRTRequestedProcedureCodeSequence::gotoItem(const unsigned long num,
 }
 
 
-OFCondition DRTRequestedProcedureCodeSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTRequestedProcedureCodeSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -705,7 +705,7 @@ OFCondition DRTRequestedProcedureCodeSequence::gotoItem(const unsigned long num,
 }
 
 
-OFCondition DRTRequestedProcedureCodeSequence::gotoItem(const unsigned long num)
+OFCondition DRTRequestedProcedureCodeSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -741,7 +741,7 @@ const DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence
 }
 
 
-OFCondition DRTRequestedProcedureCodeSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTRequestedProcedureCodeSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -751,7 +751,7 @@ OFCondition DRTRequestedProcedureCodeSequence::getItem(const unsigned long num, 
 }
 
 
-DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::getItem(const unsigned long num)
+DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -761,7 +761,7 @@ DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::getI
 }
 
 
-const DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::getItem(const unsigned long num) const
+const DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -771,13 +771,13 @@ const DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence
 }
 
 
-DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::operator[](const unsigned long num)
+DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::operator[](const unsigned long num) const
+const DRTRequestedProcedureCodeSequence::Item &DRTRequestedProcedureCodeSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -800,7 +800,7 @@ OFCondition DRTRequestedProcedureCodeSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTRequestedProcedureCodeSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTRequestedProcedureCodeSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -823,7 +823,7 @@ OFCondition DRTRequestedProcedureCodeSequence::insertItem(const unsigned long po
 }
 
 
-OFCondition DRTRequestedProcedureCodeSequence::removeItem(const unsigned long pos)
+OFCondition DRTRequestedProcedureCodeSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

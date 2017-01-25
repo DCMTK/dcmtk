@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTDeliveredDepthDoseParametersSequence
  *
  *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  File created on 2017-01-25 17:55:32
  *
  */
 
@@ -322,7 +322,7 @@ OFBool DRTDeliveredDepthDoseParametersSequence::isValid() const
 }
 
 
-unsigned long DRTDeliveredDepthDoseParametersSequence::getNumberOfItems() const
+size_t DRTDeliveredDepthDoseParametersSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
@@ -352,12 +352,12 @@ OFCondition DRTDeliveredDepthDoseParametersSequence::gotoNextItem()
 }
 
 
-OFCondition DRTDeliveredDepthDoseParametersSequence::gotoItem(const unsigned long num, OFListIterator(Item *) &iterator)
+OFCondition DRTDeliveredDepthDoseParametersSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -372,12 +372,12 @@ OFCondition DRTDeliveredDepthDoseParametersSequence::gotoItem(const unsigned lon
 }
 
 
-OFCondition DRTDeliveredDepthDoseParametersSequence::gotoItem(const unsigned long num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTDeliveredDepthDoseParametersSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
     {
-        unsigned long idx = num + 1;
+        size_t idx = num + 1;
         iterator = SequenceOfItems.begin();
         const OFListConstIterator(Item *) last = SequenceOfItems.end();
         while ((--idx > 0) && (iterator != last))
@@ -392,7 +392,7 @@ OFCondition DRTDeliveredDepthDoseParametersSequence::gotoItem(const unsigned lon
 }
 
 
-OFCondition DRTDeliveredDepthDoseParametersSequence::gotoItem(const unsigned long num)
+OFCondition DRTDeliveredDepthDoseParametersSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
@@ -428,7 +428,7 @@ const DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParame
 }
 
 
-OFCondition DRTDeliveredDepthDoseParametersSequence::getItem(const unsigned long num, Item *&item)
+OFCondition DRTDeliveredDepthDoseParametersSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -438,7 +438,7 @@ OFCondition DRTDeliveredDepthDoseParametersSequence::getItem(const unsigned long
 }
 
 
-DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSequence::getItem(const unsigned long num)
+DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -448,7 +448,7 @@ DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSe
 }
 
 
-const DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSequence::getItem(const unsigned long num) const
+const DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -458,13 +458,13 @@ const DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParame
 }
 
 
-DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSequence::operator[](const unsigned long num)
+DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSequence::operator[](const unsigned long num) const
+const DRTDeliveredDepthDoseParametersSequence::Item &DRTDeliveredDepthDoseParametersSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
@@ -487,7 +487,7 @@ OFCondition DRTDeliveredDepthDoseParametersSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTDeliveredDepthDoseParametersSequence::insertItem(const unsigned long pos, Item *&item)
+OFCondition DRTDeliveredDepthDoseParametersSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -510,7 +510,7 @@ OFCondition DRTDeliveredDepthDoseParametersSequence::insertItem(const unsigned l
 }
 
 
-OFCondition DRTDeliveredDepthDoseParametersSequence::removeItem(const unsigned long pos)
+OFCondition DRTDeliveredDepthDoseParametersSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
