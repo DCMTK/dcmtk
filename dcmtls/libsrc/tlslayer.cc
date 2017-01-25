@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -523,11 +523,11 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     }
     OFOStringStream out;
     out << "X.509v" << certVersion << " Certificate" << OFendl
-         << "  Subject      : " << certSubjectName << OFendl
-         << "  Issued by    : " << certIssuerName << OFendl
-         << "  Serial no.   : " << certSerialNumber << OFendl
-         << "  Validity     : not before " << certValidNotBefore << ", not after " << certValidNotAfter << OFendl
-         << "  Public key   : " << certPubKeyType << ", " << certPubKeyBits << " bits" << OFendl << OFStringStream_ends;
+        << "  Subject     : " << certSubjectName << OFendl
+        << "  Issued by   : " << certIssuerName << OFendl
+        << "  Serial no.  : " << certSerialNumber << OFendl
+        << "  Validity    : not before " << certValidNotBefore << ", not after " << certValidNotAfter << OFendl
+        << "  Public key  : " << certPubKeyType << ", " << certPubKeyBits << " bits" << OFStringStream_ends;
     OFSTRINGSTREAM_GETOFSTRING(out, ret)
     return ret;
   } else {

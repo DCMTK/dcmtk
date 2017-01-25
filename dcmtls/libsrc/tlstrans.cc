@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -296,19 +296,19 @@ OFString& DcmTLSConnection::dumpConnectionParameters(OFString& str)
   if (tlsConnection == NULL)
   {
     // This should never happen (famous last words)
-    str = "Transport connection: TLS/SSL over TCP/IP\n  Error: No Connection\n";
+    str = "Transport connection: TLS/SSL over TCP/IP\n  Error: No Connection";
     return str;
   }
 
   X509 *peerCert = SSL_get_peer_certificate(tlsConnection);
   OFOStringStream stream;
   stream << "Transport connection: TLS/SSL over TCP/IP" << OFendl
-         << "  Protocol: " << SSL_get_version(tlsConnection) << OFendl
-         << "  Ciphersuite: " << SSL_CIPHER_get_name(SSL_get_current_cipher(tlsConnection))
+         << "  Protocol    : " << SSL_get_version(tlsConnection) << OFendl
+         << "  Ciphersuite : " << SSL_CIPHER_get_name(SSL_get_current_cipher(tlsConnection))
          << ", version: " << SSL_CIPHER_get_version(SSL_get_current_cipher(tlsConnection))
          << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << OFendl
-         << DcmTLSTransportLayer::dumpX509Certificate(peerCert) << OFendl;
-  // out << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection)) << OFendl;
+         << DcmTLSTransportLayer::dumpX509Certificate(peerCert);
+  // stream << OFendl << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection));
   X509_free(peerCert);
   stream << OFStringStream_ends;
   OFSTRINGSTREAM_GETSTR(stream, res)
