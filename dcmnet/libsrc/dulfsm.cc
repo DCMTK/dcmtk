@@ -2203,21 +2203,10 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     }
     server.sin_family = AF_INET;
 
-#ifdef NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
-    hp = OFStandard::getHostByName(node);
-    if (!hp)
-    {
-        char buf2[4095]; // node could be a long string
-        sprintf(buf2, "Attempt to connect to unknown host: %s", node);
-        return makeDcmnetCondition(DULC_UNKNOWNHOST, OF_error, buf2);
-    }
-    (void) memcpy(&server.sin_addr, hp.h_addr.c_str(), (size_t) hp.h_length);
-#else
     /*
-     * Under Win95 gethostbyname will not accept an IP address e.g.
-     * "134.106.1.1".  This appears to work without problems under WindowsNT
-     * and several Unix variants.
-     * Workaround is to explicitly handle the IP address case.
+     * At least officially, gethostbyname will not accept an IP address on many
+     * operating systems (e.g. Windows or FreeBSD), so we need to explicitly
+     * handle the IP address case.
      */
     unsigned long addr = inet_addr(node);
     if (addr != INADDR_NONE) {
@@ -2234,7 +2223,6 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         }
         (void) memcpy(&server.sin_addr, hp.h_addr.c_str(), (size_t) hp.h_length);
     }
-#endif
 
     server.sin_port = (unsigned short) htons(port);
 

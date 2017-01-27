@@ -258,15 +258,6 @@ NO_PATIENTSTUDYONLY_SUPPORT
   Explanation: Disables support for the Patient/Study Only Query/Retrieve
     Model in dcmqrdb.
 
-NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
-  Affected: dcmnet
-  Type of modification: Disables feature
-  Explanation: Under Windows 95 gethostbyname() will not accept an IP
-    address e.g. "134.106.1.1".  This appears to work without problems
-    with other Windows versions and several Unix variants.  As a
-    workaround, DCMTK explicitly handles the IP address case.  The
-    workaround can be disabled with this macro.
-
 OFCONDITION_IMPLICIT_BOOL_CONVERSION
   Affected: ofstd
   Type of modification: Activates experimental or rarely used feature
