@@ -214,17 +214,6 @@ DCMTK_DCMNET_EXPORT int gethostname(char* name, int namelen);
 #endif
 #endif
 
-#ifndef HAVE_PROTOTYPE_GETHOSTBYNAME
-#ifdef HAVE_GETHOSTBYNAME
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-struct hostent *gethostbyname(const char* name);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
 #ifndef HAVE_PROTOTYPE_GETSOCKOPT
 #ifdef HAVE_GETSOCKOPT
 /* it is in the libraries but we have no prototype */
@@ -364,8 +353,8 @@ DCMTK_DCMNET_EXPORT int access(const char* path, int amode);
 #ifndef R_OK
 #define W_OK 02 /* Write permission */
 #define R_OK 04 /* Read permission */
-#define F_OK 00 /* Existance only */
-#define X_OK 00 /* execute permission has no meaning under windows, treat as existance */
+#define F_OK 00 /* Existence only */
+#define X_OK 00 /* Execute permission has no meaning under Windows, treat as existence */
 #endif /* R_OK */
 #endif /* _WIN32 */
 
