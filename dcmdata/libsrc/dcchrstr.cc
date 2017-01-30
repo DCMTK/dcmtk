@@ -46,14 +46,12 @@
 
 
 DcmCharString::DcmCharString(const DcmTag &tag, const Uint32 len)
-  : DcmByteString(tag, len),
-    delimiterChars()
+  : DcmByteString(tag, len)
 {
 }
 
 DcmCharString::DcmCharString(const DcmCharString &old)
-  : DcmByteString(old),
-    delimiterChars(old.delimiterChars)
+  : DcmByteString(old)
 {
 }
 
@@ -64,13 +62,7 @@ DcmCharString::~DcmCharString(void)
 
 DcmCharString &DcmCharString::operator=(const DcmCharString &obj)
 {
-    if (this != &obj)
-    {
-        DcmByteString::operator=(obj);
-
-        /* copy member variables */
-        delimiterChars = obj.delimiterChars;
-    }
+    DcmByteString::operator=(obj);
     return *this;
 }
 
@@ -174,7 +166,7 @@ OFCondition DcmCharString::convertCharacterSet(DcmSpecificCharacterSet &converte
     {
         OFString resultStr;
         // convert string to selected character string and replace the element value
-        status = converter.convertString(str, len, resultStr, delimiterChars);
+        status = converter.convertString(str, len, resultStr, getDelimiterChars());
         if (status.good())
         {
             // check whether the value has changed during the conversion (slows down the process?)
@@ -265,4 +257,13 @@ OFCondition DcmCharString::writeJson(STD_NAMESPACE ostream &out,
     DcmElement::writeJsonCloser(out, format);
     /* always report success */
     return EC_Normal;
+}
+
+
+// ********************************
+
+
+const OFString& DcmCharString::getDelimiterChars() const
+{
+    return DcmVR(EVR_UN).getDelimiterChars();
 }

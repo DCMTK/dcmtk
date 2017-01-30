@@ -133,6 +133,12 @@ class DCMTK_DCMDATA_EXPORT DcmShortString
     static OFCondition checkStringValue(const OFString &value,
                                         const OFString &vm = "1-n",
                                         const OFString &charset = "");
+
+protected:
+
+    /** @copydoc DcmCharString::getDelimiterChars()
+     */
+    virtual const OFString& getDelimiterChars() const;
 };
 
 

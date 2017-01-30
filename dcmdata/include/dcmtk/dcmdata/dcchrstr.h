@@ -140,12 +140,6 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
 
   protected:
 
-    /** delimiter characters specifying when to switch back to the default character set
-     *  (in case code extension techniques like ISO 2022 are used)
-     *  @param characters delimiter characters to be used for character set conversion
-     */
-    void setDelimiterChars(const OFString &characters) { delimiterChars = characters; }
-
     /** get value of the SpecificCharacterSet element of the surrounding dataset/item
      *  @param charset reference to variable that will store the result value. The
      *    variable is not cleared in case of error!
@@ -156,11 +150,13 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      */
     OFCondition getSpecificCharacterSet(OFString &charset);
 
-  private:
+    /** get delimiter characters specifying when to switch back to the default character
+     *  set (in case code extension techniques like ISO 2022 are used).
+     *  @return the delimiter characters for this VR, if any, a reference to an empty
+     *    OFString if no delimiter characters are defined for this VR.
+     */
+    virtual const OFString& getDelimiterChars() const;
 
-    /// delimiter characters specifying when to switch back to the default character set
-    /// (in case code extension techniques like ISO 2022 are used)
-    OFString delimiterChars;
 };
 
 

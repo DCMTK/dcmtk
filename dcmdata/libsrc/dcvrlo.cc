@@ -35,7 +35,6 @@ DcmLongString::DcmLongString(const DcmTag &tag,
 {
     setMaxLength(64);
     setNonSignificantChars(" \\");
-    setDelimiterChars("\\");
 }
 
 
@@ -151,4 +150,13 @@ OFCondition DcmLongString::writeJson(STD_NAMESPACE ostream &out,
     DcmElement::writeJsonCloser(out, format);
     /* always report success */
     return EC_Normal;
+}
+
+
+// ********************************
+
+
+const OFString& DcmLongString::getDelimiterChars() const
+{
+    return DcmVR(EVR_LO).getDelimiterChars();
 }

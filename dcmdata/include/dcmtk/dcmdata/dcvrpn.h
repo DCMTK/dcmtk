@@ -301,6 +301,12 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
                                         const OFString &vm = "1-n",
                                         const OFString &charset = "");
 
+protected:
+
+    /** @copydoc DcmCharString::getDelimiterChars()
+     */
+    virtual const OFString& getDelimiterChars() const;
+
 private:
 
     /** an array containing the component group names, for XML and JSON output.

@@ -38,7 +38,6 @@ DcmPersonName::DcmPersonName(const DcmTag &tag,
 {
     setMaxLength(64);     // not correct: max length of PN is 3*64+2 = 194 characters (not bytes!)
     setNonSignificantChars(" \\^=");
-    setDelimiterChars("\\^=");
 }
 
 
@@ -729,4 +728,13 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
         }
     }
     return result;
+}
+
+
+// ********************************
+
+
+const OFString& DcmPersonName::getDelimiterChars() const
+{
+    return DcmVR(EVR_PN).getDelimiterChars();
 }
