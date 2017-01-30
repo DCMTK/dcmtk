@@ -63,6 +63,18 @@ void DcmSpecificCharacterSet::clear()
 }
 
 
+DcmSpecificCharacterSet::operator OFBool() const
+{
+    return OFstatic_cast(OFBool, DefaultEncodingConverter);
+}
+
+
+OFBool DcmSpecificCharacterSet::operator!() const
+{
+    return !DefaultEncodingConverter;
+}
+
+
 const OFString &DcmSpecificCharacterSet::getSourceCharacterSet() const
 {
     return SourceCharacterSet;

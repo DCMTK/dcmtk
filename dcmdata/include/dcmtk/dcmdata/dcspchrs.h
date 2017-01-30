@@ -60,6 +60,23 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      */
     void clear();
 
+    /** query whether selectCharacterSet() has successfully been called for this
+     *  object, i.e.\ whether convertString() may be called.
+     *  @return OFTrue if selectCharacterSet() was successfully called before,
+     *    OFFalse if not (or clear() has been called in the meantime).
+     */
+#ifdef DCMTK_USE_CXX11_STL
+    explicit
+#endif
+    operator OFBool() const;
+
+    /** query whether selectCharacterSet() has <b>not</b> been called before,
+     *  i.e.\ convertString() would fail.
+     *  @return OFTrue if selectCharacterSet() must be called before using
+     *    convertString(), OFFalse if it has already been called.
+     */
+    OFBool operator!() const;
+
     /** get currently selected source DICOM character set(s).  Please note that
      *  the returned string can contain multiple values (defined terms separated
      *  by a backslash) if code extension techniques are used.  Furthermore,
