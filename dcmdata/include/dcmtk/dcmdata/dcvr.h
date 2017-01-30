@@ -395,6 +395,20 @@ public:
      */
     Uint32 getMaxValueLength() const;
 
+    /** return whether elements of this VR are affected by SpecificCharacterSet
+     *  @return OFTrue for the following VRs: PN, LO, LT, SH, ST, UC and UT,
+     *    OFFalse for all others.
+     */
+    OFBool isAffectedBySpecificCharacterSet() const;
+
+    /** retrieve delimiter characters to be used for character set conversion
+     *  (to switch back to the default character set in case code extension techniques like
+     *  ISO 2022 are used).
+     *  @return a reference to an OFString containing the delimiter characters for this VR
+     *    or a reference to an empty OFString.
+     */
+    const OFString& getDelimiterChars() const;
+
 private:
     /// the enumerated VR value
     DcmEVR vr;

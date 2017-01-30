@@ -76,87 +76,92 @@ void dcmDisableGenerationOfNewVRs()
 #define DCMVR_PROP_INTERNAL     0x02
 #define DCMVR_PROP_EXTENDEDLENGTHENCODING 0x04
 #define DCMVR_PROP_ISASTRING 0x08
+#define DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET 0x10
 
 struct DcmVREntry {
-    DcmEVR vr;                  // Enumeration Value of Value representation
-    const char* vrName;         // Name of Value representation
-    size_t fValWidth;           // Length of minimal unit, used for swapping
-    int propertyFlags;          // Normal, internal, non-standard vr
-    Uint32 minValueLength;      // Minimum length of a single value (bytes)
-    Uint32 maxValueLength;      // Maximum length of a single value (bytes)
+    DcmEVR vr;                      // Enumeration Value of Value representation
+    const char* vrName;             // Name of Value representation
+    const OFString* delimiterChars; // Delimiter characters -> default charset
+    size_t fValWidth;               // Length of minimal unit, used for swapping
+    int propertyFlags;              // Normal, internal, non-standard vr
+    Uint32 minValueLength;          // Minimum length of a single value (bytes)
+    Uint32 maxValueLength;          // Maximum length of a single value (bytes)
 };
 
+static const OFString noDelimiters;
+static const OFString bsDelimiter("\\");
+static const OFString pnDelimiters("\\^=");
 
 static const DcmVREntry DcmVRDict[] = {
 
-    { EVR_AE, "AE", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
-    { EVR_AS, "AS", sizeof(char), DCMVR_PROP_ISASTRING, 4, 4 },
-    { EVR_AT, "AT", sizeof(Uint16), DCMVR_PROP_NONE, 4, 4 },
-    { EVR_CS, "CS", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
-    { EVR_DA, "DA", sizeof(char), DCMVR_PROP_ISASTRING, 8, 10 },
-    { EVR_DS, "DS", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
-    { EVR_DT, "DT", sizeof(char), DCMVR_PROP_ISASTRING, 0, 26},
-    { EVR_FL, "FL", sizeof(Float32), DCMVR_PROP_NONE, 4, 4 },
-    { EVR_FD, "FD", sizeof(Float64), DCMVR_PROP_NONE, 8, 8 },
-    { EVR_IS, "IS", sizeof(char), DCMVR_PROP_ISASTRING, 0, 12 },
-    { EVR_LO, "LO", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
-    { EVR_LT, "LT", sizeof(char), DCMVR_PROP_ISASTRING, 0, 10240 },
-    { EVR_OB, "OB", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_OD, "OD", sizeof(Float64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_OF, "OF", sizeof(Float32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_OL, "OL", sizeof(Uint32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_OW, "OW", sizeof(Uint16), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_PN, "PN", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
-    { EVR_SH, "SH", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
-    { EVR_SL, "SL", sizeof(Sint32), DCMVR_PROP_NONE, 4, 4 },
-    { EVR_SQ, "SQ", 0, DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_SS, "SS", sizeof(Sint16), DCMVR_PROP_NONE, 2, 2 },
-    { EVR_ST, "ST", sizeof(char), DCMVR_PROP_ISASTRING, 0, 1024 },
-    { EVR_TM, "TM", sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
-    { EVR_UC, "UC", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_UI, "UI", sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
-    { EVR_UL, "UL", sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
-    { EVR_UR, "UR", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_US, "US", sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
-    { EVR_UT, "UT", sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_xs, "xs", sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
-    { EVR_lt, "lt", sizeof(Uint16), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_na, "na", 0, DCMVR_PROP_NONSTANDARD, 0, 0 },
-    { EVR_up, "up", sizeof(Uint32), DCMVR_PROP_NONSTANDARD, 4, 4 },
+    { EVR_AE, "AE", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
+    { EVR_AS, "AS", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 4, 4 },
+    { EVR_AT, "AT", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_CS, "CS", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
+    { EVR_DA, "DA", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 8, 10 },
+    { EVR_DS, "DS", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
+    { EVR_DT, "DT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 26},
+    { EVR_FL, "FL", &noDelimiters, sizeof(Float32), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_FD, "FD", &noDelimiters, sizeof(Float64), DCMVR_PROP_NONE, 8, 8 },
+    { EVR_IS, "IS", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 12 },
+    { EVR_LO, "LO", &bsDelimiter, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET, 0, 64 },
+    { EVR_LT, "LT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET, 0, 10240 },
+    { EVR_OB, "OB", &noDelimiters, sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_OD, "OD", &noDelimiters, sizeof(Float64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_OF, "OF", &noDelimiters, sizeof(Float32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_OL, "OL", &noDelimiters, sizeof(Uint32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_OW, "OW", &noDelimiters, sizeof(Uint16), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_PN, "PN", &pnDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET, 0, 64 },
+    { EVR_SH, "SH", &bsDelimiter, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET, 0, 16 },
+    { EVR_SL, "SL", &noDelimiters, sizeof(Sint32), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_SQ, "SQ", &noDelimiters, 0, DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_SS, "SS", &noDelimiters, sizeof(Sint16), DCMVR_PROP_NONE, 2, 2 },
+    { EVR_ST, "ST", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 1024 },
+    { EVR_TM, "TM", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
+    { EVR_UC, "UC", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING|DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET, 0, DCM_UndefinedLength },
+    { EVR_UI, "UI", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
+    { EVR_UL, "UL", &noDelimiters, sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_UR, "UR", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_US, "US", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
+    { EVR_UT, "UT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING|DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET, 0, DCM_UndefinedLength },
+    { EVR_ox, "ox", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_xs, "xs", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
+    { EVR_lt, "lt", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_na, "na", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD, 0, 0 },
+    { EVR_up, "up", &noDelimiters, sizeof(Uint32), DCMVR_PROP_NONSTANDARD, 4, 4 },
 
     /* unique prefixes have been "invented" for the following internal VRs */
-    { EVR_item, "it_EVR_item", 0,
+    { EVR_item, "it_EVR_item", &noDelimiters, 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_metainfo, "mi_EVR_metainfo", 0,
+    { EVR_metainfo, "mi_EVR_metainfo", &noDelimiters, 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_dataset, "ds_EVR_dataset", 0,
+    { EVR_dataset, "ds_EVR_dataset", &noDelimiters, 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_fileFormat, "ff_EVR_fileFormat", 0,
+    { EVR_fileFormat, "ff_EVR_fileFormat", &noDelimiters, 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_dicomDir, "dd_EVR_dicomDir", 0,
+    { EVR_dicomDir, "dd_EVR_dicomDir", &noDelimiters, 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_dirRecord, "dr_EVR_dirRecord", 0,
+    { EVR_dirRecord, "dr_EVR_dirRecord", &noDelimiters, 0,
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
 
-    { EVR_pixelSQ, "ps_EVR_pixelSQ", sizeof(Uint8),
+    { EVR_pixelSQ, "ps_EVR_pixelSQ", &noDelimiters, sizeof(Uint8),
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
     /* Moved from internal use to non standard only: necessary to distinguish from "normal" OB */
-    { EVR_pixelItem, "pi", sizeof(Uint8),
+    { EVR_pixelItem, "pi", &noDelimiters, sizeof(Uint8),
       DCMVR_PROP_NONSTANDARD, 0, DCM_UndefinedLength },
 
-    { EVR_UNKNOWN, "??", sizeof(Uint8), /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
+    { EVR_UNKNOWN, "??", &noDelimiters, sizeof(Uint8), /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
 
     /* Unknown Value Representation */
-    { EVR_UN, "UN", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_UN, "UN", &noDelimiters, sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
 
     /* Pixel Data - only used in ident() */
-    { EVR_PixelData, "PixelData", 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+    { EVR_PixelData, "PixelData", &noDelimiters, 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
     /* Overlay Data - only used in ident() */
-    { EVR_OverlayData, "OverlayData", 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+    { EVR_OverlayData, "OverlayData", &noDelimiters, 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
-    { EVR_UNKNOWN2B, "??", sizeof(Uint8), /* illegal VRs, we assume no extended length coding */
+    { EVR_UNKNOWN2B, "??", &noDelimiters, sizeof(Uint8), /* illegal VRs, we assume no extended length coding */
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
 };
@@ -448,4 +453,14 @@ DcmVR::isEquivalent(const DcmVR& avr) const
           break;
     }
     return result;
+}
+
+OFBool DcmVR::isAffectedBySpecificCharacterSet() const
+{
+    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET) != 0;
+}
+
+const OFString& DcmVR::getDelimiterChars() const
+{
+    return *DcmVRDict[vr].delimiterChars;
 }
