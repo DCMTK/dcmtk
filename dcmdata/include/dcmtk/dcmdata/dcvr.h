@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -346,36 +346,39 @@ public:
     const char* getValidVRName() const;
 
     /** compute the size for non-empty values of this VR.
-     *  For fixed size VRs such as OW, US, SL, the method returns the size
-     *  of each value, in bytes.  For variable length VRs (strings), it returns 1.
+     *  For fixed size VRs such as OW, US, SL, the method returns the size of
+     *  each value, in bytes.  For variable length VRs (strings), it returns 1.
      *  For internal VRs it returns 0.
      *  @return size of values of this VR
      */
     size_t getValueWidth() const;
 
     /** returns true if VR is a standard DICOM VR
-     *  @return true if VR is a standard DICOM VR
+     *  @return true if VR is a standard DICOM VR, false otherwise
      */
     OFBool isStandard() const;
 
     /** returns true if VR is for internal use only
-     *  @return true if VR is for internal use only
+     *  @return true if VR is for internal use only, false otherwise
      */
     OFBool isForInternalUseOnly() const;
 
     /** returns true if VR represents a string
-     *  @return true if VR represents a string
+     *  @return true if VR represents a string, false otherwise
      */
     OFBool isaString() const;
 
-    /** returns true if VR uses an extended length encoding for explicit transfer syntaxes
-     *  @return true if VR uses an extended length encoding for explicit transfer syntaxes
+    /** returns true if VR uses an extended length encoding for explicit
+     *  transfer syntaxes
+     *  @return true if VR uses an extended length encoding for explicit
+     *    transfer syntaxes, false otherwise
      */
     OFBool usesExtendedLengthEncoding() const;
 
     /** check if VRs are equivalent
-     *  VRs are considered equivalent if equal or if one of them is an internal VR
-     *  and the other one is a possible standard VR to which the internal one maps.
+     *  VRs are considered equivalent if equal or if one of them is an internal
+     *  VR and the other one is a possible standard VR to which the internal one
+     *  maps.
      *  @param avr VR to compare with
      *  @return true if VRs are equivalent, false otherwise
      */
@@ -385,27 +388,29 @@ public:
     ** (in bytes assuming single byte characters)
     */
 
-    /** return minimum length of a value with this VR (in bytes), assuming single byte characters
+    /** return minimum length of a value with this VR (in bytes), assuming
+     *  single byte characters
      *  @return minimum length of a value
      */
     Uint32 getMinValueLength() const;
 
-    /** return maximum length of a value with this VR (in bytes), assuming single byte characters
+    /** return maximum length of a value with this VR (in bytes), assuming
+     *  single byte characters
      *  @return maximum length of a value
      */
     Uint32 getMaxValueLength() const;
 
     /** return whether elements of this VR are affected by SpecificCharacterSet
-     *  @return OFTrue for the following VRs: PN, LO, LT, SH, ST, UC and UT,
-     *    OFFalse for all others.
+     *  @return true for the following VRs: PN, LO, LT, SH, ST, UC and UT,
+     *    false for all others.
      */
     OFBool isAffectedBySpecificCharacterSet() const;
 
     /** retrieve delimiter characters to be used for character set conversion
-     *  (to switch back to the default character set in case code extension techniques like
-     *  ISO 2022 are used).
-     *  @return a reference to an OFString containing the delimiter characters for this VR
-     *    or a reference to an empty OFString.
+     *  (to switch back to the default character set in case code extension
+     *  techniques like ISO 2022 are used).
+     *  @return a reference to an OFString containing the delimiter characters
+     *    for this VR or a reference to an empty OFString.
      */
     const OFString& getDelimiterChars() const;
 
