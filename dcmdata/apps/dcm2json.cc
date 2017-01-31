@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2016, OFFIS e.V.
+*  Copyright (C) 2016-2017, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -105,27 +105,27 @@ int main(int argc, char *argv[])
     cmd.addParam("jsonfile-out", "JSON output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--help",                 "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                     "print version information and exit", OFCommandLine::AF_Exclusive);
       OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
-        cmd.addOption("--read-file-only",     "+fo",    "read file format only");
-        cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
+        cmd.addOption("--read-file",          "+f",  "read file format or data set (default)");
+        cmd.addOption("--read-file-only",     "+fo", "read file format only");
+        cmd.addOption("--read-dataset",       "-f",  "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:");
-        cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
-        cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
-        cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",     "-t=", "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",   "-td", "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",   "-te", "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",      "-tb", "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit", "-ti", "read with implicit VR little endian TS");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output format:");
-        cmd.addOption("--formatted-code",     "+fc",    "output file with human readable formatting (def.)");
-        cmd.addOption("--compact-code",       "-fc",    "output without formatting (single line of code)");
-        cmd.addOption("--write-meta",         "+m",     "write data set with meta information");
+        cmd.addOption("--formatted-code",     "+fc", "output file with human readable formatting (def.)");
+        cmd.addOption("--compact-code",       "-fc", "output without formatting (single line of code)");
+        cmd.addOption("--write-meta",         "+m",  "write data set with meta information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
     {
         /* read DICOM file or data set */
         DcmFileFormat dfile;
-        OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, 4096, opt_readMode);
+        OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
         if (status.good())
         {
             DcmDataset *dset = dfile.getDataset();
