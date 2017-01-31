@@ -194,10 +194,8 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         /* meta option */
-        cmd.beginOptionBlock();
         if (cmd.findOption("--write-meta"))
             opt_addMetaInformation = OFTrue;
-        cmd.endOptionBlock();
     }
 
     /* print resource identifier */
