@@ -846,12 +846,18 @@ OFCondition DcmElement::changeValue(const void *value,
             }
         }
     } else {
-        // swap to local byte order
-        swapIfNecessary(gLocalByteOrder, fByteOrder, fValue,
-                        getLengthField(), getTag().getVR().getValueWidth());
-        // copy value at given position
-        memcpy(&fValue[position], OFstatic_cast(const Uint8 *, value), size_t(num));
-        fByteOrder = gLocalByteOrder;
+        // load value (if not loaded yet)
+        if (!fValue)
+            errorFlag = loadValue();
+        if (errorFlag.good())
+        {
+            // swap to local byte order
+            swapIfNecessary(gLocalByteOrder, fByteOrder, fValue,
+                            getLengthField(), getTag().getVR().getValueWidth());
+            // copy value at given position
+            memcpy(&fValue[position], OFstatic_cast(const Uint8 *, value), size_t(num));
+            fByteOrder = gLocalByteOrder;
+        }
     }
     return errorFlag;
 }
