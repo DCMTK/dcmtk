@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2016, OFFIS e.V.
+#  Copyright (C) 1994-2017, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -23,10 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2016e and PS 3.7-2016e
 # File created on 2016-11-23 13:16:19 by J. Riesmeier on thinkpad.
+# File updated manually on 2017-01-31 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - CP 1619
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4292,6 +4293,15 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
+#
+#---------------------------------------------------------------------------
+#
+# Correction Item 1619
+#
+(0010,0221)	SQ	GeneticModificationsSequence	1	DICOM/CP_1619
+(0010,0222)	UC	GeneticModificationsDescription	1	DICOM/CP_1619
+(0010,0223)	LO	GeneticModificationsNomenclature	1	DICOM/CP_1619
+(0010,0229)	SQ	GeneticModificationsCodeSequence	1	DICOM/CP_1619
 #
 #---------------------------------------------------------------------------
 #

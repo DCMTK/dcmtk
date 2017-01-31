@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2016-11-23 13:25:46
+**   Date: 2017-01-31 14:11:01
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2016-11-23 13:25:46"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2017-01-31 14:11:01"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4172
+** Number of entries: 4176
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -338,6 +338,10 @@
 #define DCM_StrainSource                         DcmTagKey(0x0010, 0x0217)
 #define DCM_StrainAdditionalInformation          DcmTagKey(0x0010, 0x0218)
 #define DCM_StrainCodeSequence                   DcmTagKey(0x0010, 0x0219)
+#define DCM_GeneticModificationsSequence         DcmTagKey(0x0010, 0x0221)
+#define DCM_GeneticModificationsDescription      DcmTagKey(0x0010, 0x0222)
+#define DCM_GeneticModificationsNomenclature     DcmTagKey(0x0010, 0x0223)
+#define DCM_GeneticModificationsCodeSequence     DcmTagKey(0x0010, 0x0229)
 #define DCM_OtherPatientIDs                      DcmTagKey(0x0010, 0x1000)
 #define DCM_OtherPatientNames                    DcmTagKey(0x0010, 0x1001)
 #define DCM_OtherPatientIDsSequence              DcmTagKey(0x0010, 0x1002)
