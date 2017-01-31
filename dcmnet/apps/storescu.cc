@@ -264,6 +264,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--propose-mpeg2-high",   "-xh",     "propose MPEG2 Main Profile @ High Level TS only");
       cmd.addOption("--propose-mpeg4",        "-xn",     "propose MPEG4 AVC/H.264 HP / Level 4.1 TS only");
       cmd.addOption("--propose-mpeg4-bd",     "-xl",     "propose MPEG4 AVC/H.264 BD-compatible TS only");
+      cmd.addOption("--propose-mpeg4-2-2d",   "-x2",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos only");
+      cmd.addOption("--propose-mpeg4-2-3d",   "-x3",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos only");
+      cmd.addOption("--propose-mpeg4-2-st",   "-xo",     "propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only");
       cmd.addOption("--propose-rle",          "-xr",     "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",     "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -434,6 +437,9 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--propose-mpeg2-high")) opt_networkTransferSyntax = EXS_MPEG2MainProfileAtHighLevel;
       if (cmd.findOption("--propose-mpeg4")) opt_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_1;
       if (cmd.findOption("--propose-mpeg4-bd")) opt_networkTransferSyntax = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
+      if (cmd.findOption("--propose-mpeg4-2-2d")) opt_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
+      if (cmd.findOption("--propose-mpeg4-2-3d")) opt_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
+      if (cmd.findOption("--propose-mpeg4-2-st")) opt_networkTransferSyntax = EXS_MPEG4StereoHighProfileLevel4_2;
       if (cmd.findOption("--propose-rle")) opt_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
       if (cmd.findOption("--propose-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
@@ -460,6 +466,9 @@ int main(int argc, char *argv[])
         app.checkConflict("--config-file", "--propose-mpeg2-high", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtHighLevel);
         app.checkConflict("--config-file", "--propose-mpeg4", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_1);
         app.checkConflict("--config-file", "--propose-mpeg4-bd", opt_networkTransferSyntax == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
+        app.checkConflict("--config-file", "--propose-mpeg4-2-2d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
+        app.checkConflict("--config-file", "--propose-mpeg4-2-3d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
+        app.checkConflict("--config-file", "--propose-mpeg4-2-st", opt_networkTransferSyntax == EXS_MPEG4StereoHighProfileLevel4_2);
         app.checkConflict("--config-file", "--propose-rle", opt_networkTransferSyntax == EXS_RLELossless);
 #ifdef WITH_ZLIB
         app.checkConflict("--config-file", "--propose-deflated", opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit);
@@ -1226,7 +1235,10 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
       (opt_networkTransferSyntax != EXS_MPEG2MainProfileAtMainLevel) &&
       (opt_networkTransferSyntax != EXS_MPEG2MainProfileAtHighLevel) &&
       (opt_networkTransferSyntax != EXS_MPEG4HighProfileLevel4_1) &&
-      (opt_networkTransferSyntax != EXS_MPEG4BDcompatibleHighProfileLevel4_1))
+      (opt_networkTransferSyntax != EXS_MPEG4BDcompatibleHighProfileLevel4_1) &&
+      (opt_networkTransferSyntax != EXS_MPEG4HighProfileLevel4_2_For2DVideo) &&
+      (opt_networkTransferSyntax != EXS_MPEG4HighProfileLevel4_2_For3DVideo) &&
+      (opt_networkTransferSyntax != EXS_MPEG4StereoHighProfileLevel4_2))
   {
     fallbackSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
     fallbackSyntaxes.push_back(UID_BigEndianExplicitTransferSyntax);

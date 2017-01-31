@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2012, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -672,6 +672,30 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
       case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
         /* we prefer MPEG4 BD HP/L4.1 */
         transferSyntaxes[0] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_MPEG4HighProfileLevel4_2_For2DVideo:
+        /* we prefer MPEG4 HP/L4.2 for 2D Videos */
+        transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_MPEG4HighProfileLevel4_2_For3DVideo:
+        /* we prefer MPEG4 HP/L4.2 for 3D Videos */
+        transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_MPEG4StereoHighProfileLevel4_2:
+        /* we prefer MPEG4 Stereo HP/L4.2 */
+        transferSyntaxes[0] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;

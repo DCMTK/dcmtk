@@ -120,6 +120,15 @@ preferred network transfer syntaxes (not with --config-file):
   +xl   --prefer-mpeg4-bd
           prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
 
+  +x2   --prefer-mpeg4-2-2d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos
+
+  +x3   --prefer-mpeg4-2-3d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos
+
+  +xo   --prefer-mpeg4-2-st
+          prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 

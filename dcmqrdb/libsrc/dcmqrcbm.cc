@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -628,6 +628,21 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
       case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
         /* we only propose MPEG4 BD HP/L4.1 since we don't want to decompress */
         transferSyntaxes[0] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
+      case EXS_MPEG4HighProfileLevel4_2_For2DVideo:
+        /* we only propose MPEG4 HP/L4.2 for 2D Videos since we don't want to decompress */
+        transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
+      case EXS_MPEG4HighProfileLevel4_2_For3DVideo:
+        /* we only propose MPEG4 HP/L4.2 for 3D Videos since we don't want to decompress */
+        transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
+      case EXS_MPEG4StereoHighProfileLevel4_2:
+        /* we only propose MPEG4 Stereo HP/L4.2 since we don't want to decompress */
+        transferSyntaxes[0] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
         numTransferSyntaxes = 1;
         break;
       case EXS_RLELossless:

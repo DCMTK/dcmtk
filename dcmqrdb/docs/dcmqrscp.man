@@ -228,6 +228,15 @@ preferred network transfer syntaxes (incoming associations):
   +xl   --prefer-mpeg4-bd
           prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
 
+  +x2   --prefer-mpeg4-2-2d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos
+
+  +x3   --prefer-mpeg4-2-3d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos
+
+  +xo   --prefer-mpeg4-2-st
+          prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -291,6 +300,15 @@ proposed transmission transfer syntaxes (outgoing associations):
 
   -xl   --propose-mpeg4-bd
           propose MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS only
+
+  -x2   --propose-mpeg4-2-2d
+          propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos only
+
+  -x3   --propose-mpeg4-2-3d
+          propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos only
+
+  -xo   --propose-mpeg4-2-st
+          propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -617,6 +635,9 @@ MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
 MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 
@@ -830,6 +851,9 @@ MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
 MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 

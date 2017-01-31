@@ -295,6 +295,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--prefer-mpeg2-high",      "+xh",     "prefer MPEG2 Main Profile @ High Level TS");
       cmd.addOption("--prefer-mpeg4",           "+xn",     "prefer MPEG4 AVC/H.264 HP / Level 4.1 TS");
       cmd.addOption("--prefer-mpeg4-bd",        "+xl",     "prefer MPEG4 AVC/H.264 BD-compatible TS");
+      cmd.addOption("--prefer-mpeg4-2-2d",      "+x2",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos");
+      cmd.addOption("--prefer-mpeg4-2-3d",      "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos");
+      cmd.addOption("--prefer-mpeg4-2-st",      "+xo",     "prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS");
       cmd.addOption("--prefer-rle",             "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",        "+xd",     "prefer deflated expl. VR little endian TS");
@@ -553,6 +556,9 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--prefer-mpeg2-high")) opt_networkTransferSyntax = EXS_MPEG2MainProfileAtHighLevel;
     if (cmd.findOption("--prefer-mpeg4")) opt_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_1;
     if (cmd.findOption("--prefer-mpeg4-bd")) opt_networkTransferSyntax = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
+    if (cmd.findOption("--prefer-mpeg4-2-2d")) opt_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
+    if (cmd.findOption("--prefer-mpeg4-2-3d")) opt_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
+    if (cmd.findOption("--prefer-mpeg4-2-st")) opt_networkTransferSyntax = EXS_MPEG4StereoHighProfileLevel4_2;
     if (cmd.findOption("--prefer-rle")) opt_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
     if (cmd.findOption("--prefer-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
@@ -615,6 +621,9 @@ int main(int argc, char *argv[])
       app.checkConflict("--config-file", "--prefer-mpeg2-high", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtHighLevel);
       app.checkConflict("--config-file", "--prefer-mpeg4", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_1);
       app.checkConflict("--config-file", "--prefer-mpeg4-bd", opt_networkTransferSyntax == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
+      app.checkConflict("--config-file", "--prefer-mpeg4-2-2d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
+      app.checkConflict("--config-file", "--prefer-mpeg4-2-3d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
+      app.checkConflict("--config-file", "--prefer-mpeg4-2-st", opt_networkTransferSyntax == EXS_MPEG4StereoHighProfileLevel4_2);
       app.checkConflict("--config-file", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
 #ifdef WITH_ZLIB
       app.checkConflict("--config-file", "--prefer-deflated", opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit);
@@ -693,6 +702,9 @@ int main(int argc, char *argv[])
       app.checkConflict("--write-xfer-little", "--prefer-mpeg2-high", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtHighLevel);
       app.checkConflict("--write-xfer-little", "--prefer-mpeg4", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_1);
       app.checkConflict("--write-xfer-little", "--prefer-mpeg4-bd", opt_networkTransferSyntax == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
+      app.checkConflict("--write-xfer-little", "--prefer-mpeg4-2-2d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
+      app.checkConflict("--write-xfer-little", "--prefer-mpeg4-2-3d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
+      app.checkConflict("--write-xfer-little", "--prefer-mpeg4-2-st", opt_networkTransferSyntax == EXS_MPEG4StereoHighProfileLevel4_2);
       app.checkConflict("--write-xfer-little", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
       // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
       opt_writeTransferSyntax = EXS_LittleEndianExplicit;
@@ -712,6 +724,9 @@ int main(int argc, char *argv[])
       app.checkConflict("--write-xfer-big", "--prefer-mpeg2-high", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtHighLevel);
       app.checkConflict("--write-xfer-big", "--prefer-mpeg4", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_1);
       app.checkConflict("--write-xfer-big", "--prefer-mpeg4-bd", opt_networkTransferSyntax == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
+      app.checkConflict("--write-xfer-big", "--prefer-mpeg4-2-2d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
+      app.checkConflict("--write-xfer-big", "--prefer-mpeg4-2-3d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
+      app.checkConflict("--write-xfer-big", "--prefer-mpeg4-2-st", opt_networkTransferSyntax == EXS_MPEG4StereoHighProfileLevel4_2);
       app.checkConflict("--write-xfer-big", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
       // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
       opt_writeTransferSyntax = EXS_BigEndianExplicit;
@@ -731,6 +746,9 @@ int main(int argc, char *argv[])
       app.checkConflict("--write-xfer-implicit", "--prefer-mpeg2-high", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtHighLevel);
       app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_1);
       app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4-bd", opt_networkTransferSyntax == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
+      app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4-2-2d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
+      app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4-2-3d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
+      app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4-2-st", opt_networkTransferSyntax == EXS_MPEG4StereoHighProfileLevel4_2);
       app.checkConflict("--write-xfer-implicit", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
       // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
       opt_writeTransferSyntax = EXS_LittleEndianImplicit;
@@ -751,6 +769,9 @@ int main(int argc, char *argv[])
       app.checkConflict("--write-xfer-deflated", "--prefer-mpeg2-high", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtHighLevel);
       app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_1);
       app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4-bd", opt_networkTransferSyntax == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
+      app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4-2-2d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
+      app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4-2-3d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
+      app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4-2-st", opt_networkTransferSyntax == EXS_MPEG4StereoHighProfileLevel4_2);
       app.checkConflict("--write-xfer-deflated", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
       opt_writeTransferSyntax = EXS_DeflatedLittleEndianExplicit;
     }
@@ -1423,6 +1444,30 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
       /* we prefer MPEG4 BD HP/L4.1 */
       transferSyntaxes[0] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_MPEG4HighProfileLevel4_2_For2DVideo:
+      /* we prefer MPEG4 HP/L4.2 for 2d Videos */
+      transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_MPEG4HighProfileLevel4_2_For3DVideo:
+      /* we prefer MPEG4 HP/L4.2 for 3d Videos */
+      transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_MPEG4StereoHighProfileLevel4_2:
+      /* we prefer MPEG4 Stereo HP/L4.2 */
+      transferSyntaxes[0] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
       transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
       transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
       transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
