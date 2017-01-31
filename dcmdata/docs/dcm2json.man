@@ -94,17 +94,6 @@ input transfer syntax:
 
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
-
-long tag values:
-
-  +M    --load-all
-          load very long tag values (e.g. pixel data)
-
-  -M    --load-short
-          do not load very long values (default)
-
-  +R    --max-read-length  [k]bytes: integer (4..4194302, default: 4)
-          set threshold for long values to k kbytes
 \endverbatim
 
 \subsection output_options output options
@@ -282,15 +271,6 @@ the following (see DICOM Part 18 Section F for details):
 }
 \endverbatim
 
-\subsection json_encoding JSON Encoding
-
-Attributes with very large value fields (e.g. pixel data) are not loaded by
-default.  The command line option \e --load-all forces to load all value fields
-including the very long ones.
-
-Multiple values (i.e. where the DICOM value multiplicity is greater than 1) are
-separated by a "," (except for Base64 encoded data).
-
 \subsection bulk_data Bulk Data
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
@@ -378,6 +358,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
