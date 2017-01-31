@@ -350,8 +350,9 @@ struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 #define RECORDIDX_OperatorsName                  38
 #define RECORDIDX_PerformingPhysicianName        39
 #define RECORDIDX_PresentationLabel              40
+#define RECORDIDX_SpecificCharacterSet           41
 
-#define NBPARAMETERS                             41
+#define NBPARAMETERS                             42
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
@@ -422,6 +423,9 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
 
     // Not related to any particular DICOM attribute !
     char    InstanceDescription             [DESCRIPTION_MAX_LENGTH+1] ;
+
+    // Specific Character Set, support for VM<=8
+    char    SpecificCharacterSet            [CS_MAX_LENGTH*8+1] ;
 
 private:
     /* undefined */ IdxRecord(const IdxRecord& copy);

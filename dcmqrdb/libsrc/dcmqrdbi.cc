@@ -318,6 +318,9 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
         idx -> param[RECORDIDX_PresentationLabel]. XTag = DCM_ContentLabel ;
         idx -> param[RECORDIDX_PresentationLabel]. ValueLength = CS_LABEL_MAX_LENGTH ;
         idx -> PresentationLabel[0] = '\0' ;
+        idx -> param[RECORDIDX_SpecificCharacterSet]. XTag = DCM_SpecificCharacterSet ;
+        idx -> param[RECORDIDX_SpecificCharacterSet]. ValueLength = CS_MAX_LENGTH*8 ;
+        idx -> SpecificCharacterSet[0] = '\0' ;
     }
     idx -> param[RECORDIDX_PatientBirthDate]. PValueField = (char *)idx -> PatientBirthDate ;
     idx -> param[RECORDIDX_PatientSex]. PValueField = (char *)idx -> PatientSex ;
@@ -360,6 +363,7 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
     idx -> param[RECORDIDX_OperatorsName ]. PValueField = (char *) idx -> OperatorsName ;
     idx -> param[RECORDIDX_PerformingPhysicianName]. PValueField = (char *) idx -> PerformingPhysicianName ;
     idx -> param[RECORDIDX_PresentationLabel]. PValueField = (char *) idx -> PresentationLabel ;
+    idx -> param[RECORDIDX_SpecificCharacterSet]. PValueField = (char *) idx -> SpecificCharacterSet ;
 }
 
 /******************************
@@ -1335,6 +1339,27 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
             last = plist ;
         }
 
+    }
+
+    /** Specific Character Set stuff
+    **/
+
+    if (idxRec->param[RECORDIDX_SpecificCharacterSet].ValueLength) {
+        plist = new DB_ElementList ;
+        if (plist == NULL) {
+            DCMQRDB_ERROR("makeResponseList: out of memory");
+            return;
+        }
+
+        DB_DuplicateElement(&idxRec->param[RECORDIDX_SpecificCharacterSet], &plist->elem);
+
+        if (phandle->findResponseList == NULL) {
+            phandle->findResponseList = last = plist ;
+        }
+        else {
+            last->next = plist ;
+            last = plist ;
+        }
     }
 }
 

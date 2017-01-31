@@ -40,7 +40,7 @@ class DcmQueryRetrieveConfig;
 
 #define DBINDEXFILE  "index.dat"
 #define DBMAGIC      "QRDB"
-#define DBVERSION    1
+#define DBVERSION    2
 #define DBHEADERSIZE 6
 
 #if DBVERSION > 0xFF
