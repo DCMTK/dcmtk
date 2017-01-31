@@ -50,7 +50,6 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
     const char *ifname,
     DcmFileFormat *dfile,
     const E_FileReadMode readMode,
-    const OFBool loadIntoMemory,
     const OFBool format,
     const OFBool printMetaheaderInformation,
     const OFBool checkAllStrings)
@@ -59,8 +58,6 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
     if ((ifname != NULL) && (dfile != NULL))
     {
         DcmDataset *dset = dfile->getDataset();
-        if (loadIntoMemory)
-            dset->loadAllDataIntoMemory();
 
         /* write JSON document content */
 
@@ -91,14 +88,12 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
 
 int main(int argc, char *argv[])
 {
-    OFBool opt_loadIntoMemory = OFFalse;
     OFBool opt_checkAllStrings = OFFalse;
     OFBool opt_format = OFTrue;
     OFBool opt_addMetaInformation = OFFalse;
 
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
-    OFCmdUnsignedInt opt_maxReadLength = 4096; // default is 4 KB
     OFString optStr;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
@@ -125,11 +120,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
-      cmd.addSubGroup("long tag values:") ;
-        cmd.addOption("--load-all",           "+M",     "load very long tag values (e.g. pixel data)");
-        cmd.addOption("--load-short",         "-M",     "do not load very long values (default)");
-        cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes: integer (4..4194302, default: 4)",
-                                                        "set threshold for long values to k kbytes");
+
     cmd.addGroup("output options:");
       cmd.addSubGroup("output format:");
         cmd.addOption("--formatted-code",     "+fc",    "output file with human readable formatting (def.)");
@@ -194,18 +185,6 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
-        if (cmd.findOption("--max-read-length"))
-        {
-            app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReadLength, 4, 4194302));
-            opt_maxReadLength *= 1024; // convert kbytes to bytes
-        }
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--load-all"))
-            opt_loadIntoMemory = OFTrue;
-        if (cmd.findOption("--load-short"))
-            opt_loadIntoMemory = OFFalse;
-        cmd.endOptionBlock();
-
         /* format options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--formatted-code"))
@@ -240,7 +219,7 @@ int main(int argc, char *argv[])
     {
         /* read DICOM file or data set */
         DcmFileFormat dfile;
-        OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, OFstatic_cast(Uint32, opt_maxReadLength), opt_readMode);
+        OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, 4096, opt_readMode);
         if (status.good())
         {
             DcmDataset *dset = dfile.getDataset();
@@ -275,8 +254,8 @@ int main(int argc, char *argv[])
                     if (stream.good())
                     {
                         /* write content in JSON format to file */
-                        if (writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory,
-                            opt_format, opt_addMetaInformation, opt_checkAllStrings).bad())
+                        if (writeFile(stream, ifname, &dfile, opt_readMode, opt_format,
+                            opt_addMetaInformation, opt_checkAllStrings).bad())
                             result = 2;
                     }
                     else
@@ -285,8 +264,8 @@ int main(int argc, char *argv[])
                 else
                 {
                     /* write content in JSON format to standard output */
-                    if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory,
-                        opt_format, opt_addMetaInformation, opt_checkAllStrings).bad())
+                    if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_format,
+                        opt_addMetaInformation, opt_checkAllStrings).bad())
                         result = 3;
                 }
             }
