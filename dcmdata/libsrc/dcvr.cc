@@ -116,7 +116,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_SL, "SL", &noDelimiters, sizeof(Sint32), DCMVR_PROP_NONE, 4, 4 },
     { EVR_SQ, "SQ", &noDelimiters, 0, DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_SS, "SS", &noDelimiters, sizeof(Sint16), DCMVR_PROP_NONE, 2, 2 },
-    { EVR_ST, "ST", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 1024 },
+    { EVR_ST, "ST", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET, 0, 1024 },
     { EVR_TM, "TM", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
     { EVR_UC, "UC", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING|DCMVR_PROP_AFFECTED_BY_SPECIFIC_CHARSET, 0, DCM_UndefinedLength },
     { EVR_UI, "UI", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
