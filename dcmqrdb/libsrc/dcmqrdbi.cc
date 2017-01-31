@@ -653,7 +653,7 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
     if (lst->elem.PValueField != NULL) {
         free ((char *) lst -> elem. PValueField);
     }
-    free (lst);
+    delete lst;
     return (cond);
 }
 
@@ -1319,12 +1319,11 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
         /*** Append index record element to response list
         **/
 
-        plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
+        plist = new DB_ElementList ;
         if (plist == NULL) {
             DCMQRDB_ERROR("makeResponseList: out of memory");
             return;
         }
-        plist->next = NULL ;
 
         DB_DuplicateElement(&idxRec->param[i], &plist->elem);
 
@@ -1712,12 +1711,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                 */
                 if (DB_TagSupported (elem. XTag)) {
 
-                    plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
+                    plist = new DB_ElementList ;
                     if (plist == NULL) {
                         status->setStatus(STATUS_FIND_Refused_OutOfResources);
                         return (QR_EC_IndexDatabaseError) ;
                     }
-                    plist->next = NULL ;
                     DB_DuplicateElement (&elem, &(plist->elem)) ;
                     if (handle_->findRequestList == NULL) {
                         handle_->findRequestList = last = plist ;
@@ -2308,12 +2306,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                 if (! DB_TagSupported (elem. XTag))
                     continue ;
 
-                plist = (DB_ElementList *) malloc (sizeof( DB_ElementList ) ) ;
+                plist = new DB_ElementList ;
                 if (plist == NULL) {
                     status->setStatus(STATUS_FIND_Refused_OutOfResources);
                     return (QR_EC_IndexDatabaseError) ;
                 }
-                plist->next = NULL ;
                 DB_DuplicateElement (&elem, & (plist->elem)) ;
                 if (handle_->findRequestList == NULL) {
                     handle_->findRequestList = last = plist ;
