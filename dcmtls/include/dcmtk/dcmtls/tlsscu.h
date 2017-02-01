@@ -59,7 +59,7 @@ public:
     */
   virtual ~DcmTLSSCU();
 
-  /** Initialize network, i.e. prepare for association negotiation
+  /** Initialize network, i.e.\ prepare for association negotiation
    *  @return EC_Normal if initialization was successful, otherwise error code
    */
   virtual OFCondition initNetwork();
@@ -240,7 +240,7 @@ private:
   /// Generator back to a file
   OFString m_writeSeedFile;
 
-  /// Denotes how certificates are handled, i.e. whether they are required, validated or
+  /// Denotes how certificates are handled, i.e.\ whether they are required, validated or
   /// only validated if present
   DcmCertificateVerification m_certVerification;
 
