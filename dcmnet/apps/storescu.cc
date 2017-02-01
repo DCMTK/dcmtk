@@ -260,13 +260,13 @@ int main(int argc, char *argv[])
       cmd.addOption("--propose-j2k-lossy",    "-xw",     "propose JPEG 2000 lossy TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-jls-lossless", "-xt",     "propose JPEG-LS lossless TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-jls-lossy",    "-xu",     "propose JPEG-LS lossy TS\nand all uncompressed transfer syntaxes");
-      cmd.addOption("--propose-mpeg2",        "-xm",     "propose MPEG2 Main Profile @ Main Level TS only");
-      cmd.addOption("--propose-mpeg2-high",   "-xh",     "propose MPEG2 Main Profile @ High Level TS only");
-      cmd.addOption("--propose-mpeg4",        "-xn",     "propose MPEG4 AVC/H.264 HP / Level 4.1 TS only");
-      cmd.addOption("--propose-mpeg4-bd",     "-xl",     "propose MPEG4 AVC/H.264 BD-compatible TS only");
-      cmd.addOption("--propose-mpeg4-2-2d",   "-x2",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos only");
-      cmd.addOption("--propose-mpeg4-2-3d",   "-x3",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos only");
-      cmd.addOption("--propose-mpeg4-2-st",   "-xo",     "propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only");
+      cmd.addOption("--propose-mpeg2",        "-xm",     "propose MPEG2 Main Profile @ Main Level TS");
+      cmd.addOption("--propose-mpeg2-high",   "-xh",     "propose MPEG2 Main Profile @ High Level TS");
+      cmd.addOption("--propose-mpeg4",        "-xn",     "propose MPEG4 AVC/H.264 HP / Level 4.1 TS");
+      cmd.addOption("--propose-mpeg4-bd",     "-xl",     "propose MPEG4 AVC/H.264 BD-compatible TS");
+      cmd.addOption("--propose-mpeg4-2-2d",   "-x2",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (2D)");
+      cmd.addOption("--propose-mpeg4-2-3d",   "-x3",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
+      cmd.addOption("--propose-mpeg4-2-st",   "-xo",     "propose MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
       cmd.addOption("--propose-rle",          "-xr",     "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",     "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");

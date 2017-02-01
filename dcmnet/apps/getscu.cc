@@ -145,8 +145,8 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-mpeg2-high",   "+xh",     "prefer MPEG2 Main Profile @ High Level TS");
       cmd.addOption("--prefer-mpeg4",        "+xn",     "prefer MPEG4 AVC/H.264 HP / Level 4.1 TS");
       cmd.addOption("--prefer-mpeg4-bd",     "+xl",     "prefer MPEG4 AVC/H.264 BD-compatible TS");
-      cmd.addOption("--prefer-mpeg4-2-2d",   "+x2",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos");
-      cmd.addOption("--prefer-mpeg4-2-3d",   "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos");
+      cmd.addOption("--prefer-mpeg4-2-2d",   "+x2",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (2D)");
+      cmd.addOption("--prefer-mpeg4-2-3d",   "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--prefer-mpeg4-2-st",   "+xo",     "prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS");
       cmd.addOption("--prefer-rle",          "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
