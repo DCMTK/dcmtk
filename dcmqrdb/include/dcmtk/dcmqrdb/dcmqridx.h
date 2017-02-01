@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2016, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -424,7 +424,8 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
     // Not related to any particular DICOM attribute !
     char    InstanceDescription             [DESCRIPTION_MAX_LENGTH+1] ;
 
-    // Specific Character Set, support for VM<=8
+    // Specific Character Set, support for VM ~ 8 (depending on the
+    // actual length of the used DTs)
     char    SpecificCharacterSet            [CS_MAX_LENGTH*8+1] ;
 
 private:
