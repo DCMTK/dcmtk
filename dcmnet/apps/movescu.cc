@@ -1010,7 +1010,8 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
     const char *knownAbstractSyntaxes[] = {
         UID_VerificationSOPClass
     };
-    const char *transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
+                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };      // +9
     int numTransferSyntaxes;
     OFString temp_str;
 
