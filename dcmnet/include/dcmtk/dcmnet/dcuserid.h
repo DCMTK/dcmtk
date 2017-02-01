@@ -158,13 +158,13 @@ public:
    */
   virtual void clear();
 
-  /** Sets identity type to be used
+  /** Sets identity type to be used.
    *  At this time, user, user/password, Kerberos and SAML are known.
    *  @param mode Identification mode
    */
   void setIdentityType(const T_ASC_UserIdentityNegotiationMode& mode);
 
-  /** Returns identity type that will be used
+  /** Returns identity type that will be used.
    *  At this time, user, user/password, Kerberos and SAML are known.
    *  @return Identification mode
    */
