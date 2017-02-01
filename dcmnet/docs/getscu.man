@@ -133,7 +133,7 @@ preferred storage transfer syntaxes (incoming associations):
           prefer MPEG4 AVC/H.264 HP / Level 4.1 TS
 
   +xl   --prefer-mpeg4-bd
-          prefer MPEG4 AVC/H.264 BD-compatible TS
+          prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
 
   +x2   --prefer-mpeg4-2-2d
           prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos
