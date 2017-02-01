@@ -1011,7 +1011,8 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
         UID_VerificationSOPClass
     };
     const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
-                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };      // +9
+                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 20
+                                       NULL };                                                      // +1
     int numTransferSyntaxes;
     OFString temp_str;
 
@@ -1193,17 +1194,19 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
             transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
             transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
             transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
-            transferSyntaxes[15] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+            transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
+            transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
+            transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
             if (gLocalByteOrder == EBO_LittleEndian)
             {
-              transferSyntaxes[16] = UID_LittleEndianExplicitTransferSyntax;
-              transferSyntaxes[17] = UID_BigEndianExplicitTransferSyntax;
+              transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
+              transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
             } else {
-              transferSyntaxes[16] = UID_BigEndianExplicitTransferSyntax;
-              transferSyntaxes[17] = UID_LittleEndianExplicitTransferSyntax;
+              transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
+              transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
             }
-            transferSyntaxes[18] = UID_LittleEndianImplicitTransferSyntax;
-            numTransferSyntaxes = 19;
+            transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
+            numTransferSyntaxes = 21;
           } else {
             /* We prefer explicit transfer syntaxes.
              * If we are running on a Little Endian machine we prefer
