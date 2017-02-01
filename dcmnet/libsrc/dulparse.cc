@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -546,7 +546,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
             userLength -= (unsigned short) length;
             break;
 
-        case DUL_TYPENEGOTIATIONOFUSERIDENTITY:
+        case DUL_TYPENEGOTIATIONOFUSERIDENTITY_REQ:
+        case DUL_TYPENEGOTIATIONOFUSERIDENTITY_ACK:
           if (typeRQorAC == DUL_TYPEASSOCIATERQ)
             usrIdent = new UserIdentityNegotiationSubItemRQ();
           else // assume DUL_TYPEASSOCIATEAC

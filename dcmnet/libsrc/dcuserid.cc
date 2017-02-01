@@ -30,8 +30,8 @@
 /* ************************************************************************* */
 
 // Constructor, sets constants
-UserIdentityNegotiationSubItem::UserIdentityNegotiationSubItem() :
-  m_itemType (DUL_TYPENEGOTIATIONOFUSERIDENTITY),
+UserIdentityNegotiationSubItem::UserIdentityNegotiationSubItem(const unsigned char itemType) :
+  m_itemType (itemType),
   m_reserved(0)
 {
 }
@@ -42,6 +42,7 @@ UserIdentityNegotiationSubItem::UserIdentityNegotiationSubItem() :
 
 // Constructor, constructs empty Identity Negotiation structure
 UserIdentityNegotiationSubItemRQ::UserIdentityNegotiationSubItemRQ() :
+    UserIdentityNegotiationSubItem(DUL_TYPENEGOTIATIONOFUSERIDENTITY_REQ),
     m_userIdentityType(ASC_USER_IDENTITY_NONE)
   , m_posRspRequested(0)
   , m_primField(NULL)
@@ -78,8 +79,7 @@ void UserIdentityNegotiationSubItemRQ::clear()
 
 
 // Sets identification mode
-void
-UserIdentityNegotiationSubItemRQ::setIdentityType(const T_ASC_UserIdentityNegotiationMode& mode)
+void UserIdentityNegotiationSubItemRQ::setIdentityType(const T_ASC_UserIdentityNegotiationMode& mode)
 {
   m_userIdentityType = mode;
 }
@@ -94,9 +94,8 @@ UserIdentityNegotiationSubItemRQ::getIdentityType()
 
 
 // Sets primary field (copied from parameter)
-void
-UserIdentityNegotiationSubItemRQ::setPrimField(const char *buffer,
-                                               const Uint16 length)
+void UserIdentityNegotiationSubItemRQ::setPrimField(const char *buffer,
+                                                    const Uint16 length)
 {
   if (m_primField != NULL)
   {
@@ -113,9 +112,8 @@ UserIdentityNegotiationSubItemRQ::setPrimField(const char *buffer,
 
 
 // Sets secondary field (copied form parameter)
-void
-UserIdentityNegotiationSubItemRQ::setSecField(const char *buffer,
-                                              const Uint16 length)
+void UserIdentityNegotiationSubItemRQ::setSecField(const char *buffer,
+                                                   const Uint16 length)
 {
   if (m_secField != NULL)
   {
@@ -132,9 +130,8 @@ UserIdentityNegotiationSubItemRQ::setSecField(const char *buffer,
 
 
 // Returns primary field. Memory must be freed by caller.
-Uint16
-UserIdentityNegotiationSubItemRQ::getPrimField(char*& resultBuf,
-                                               Uint16& resultLen) const
+Uint16 UserIdentityNegotiationSubItemRQ::getPrimField(char*& resultBuf,
+                                                      Uint16& resultLen) const
 {
   if ((m_primFieldLength == 0) || (m_primField == NULL))
   {
@@ -150,9 +147,8 @@ UserIdentityNegotiationSubItemRQ::getPrimField(char*& resultBuf,
 
 
 // Returns secondary field. Memory must be freed by caller.
-unsigned short
-UserIdentityNegotiationSubItemRQ::getSecField(char*& resultBuf,
-                                              Uint16& resultLen) const
+unsigned short UserIdentityNegotiationSubItemRQ::getSecField(char*& resultBuf,
+                                                             Uint16& resultLen) const
 {
   if ((m_secFieldLength == 0) || (m_secField == NULL))
   {
@@ -451,8 +447,10 @@ UserIdentityNegotiationSubItemRQ::~UserIdentityNegotiationSubItemRQ()
 /* ************************************************************************* */
 
 // Constructor
-UserIdentityNegotiationSubItemAC::UserIdentityNegotiationSubItemAC()
-: m_serverRsp(NULL), m_rspLength(0)
+UserIdentityNegotiationSubItemAC::UserIdentityNegotiationSubItemAC() :
+  UserIdentityNegotiationSubItem(DUL_TYPENEGOTIATIONOFUSERIDENTITY_ACK),
+  m_serverRsp(NULL),
+  m_rspLength(0)
 {
 }
 
