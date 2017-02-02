@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -271,6 +271,12 @@ parseVR(char *&s, DcmEVR &vr)
         ((*s == 'u') && (*(s + 1) == 'p')))
     {
         // swallow internal VRs
+        vr = EVR_UNKNOWN;
+        s += 2;
+    }
+    // dcmdump uses "??" in case of "Unknown Tag & Data" and implicit VR
+    else if ((*s == '?') && (*(s + 1) == '?'))
+    {
         vr = EVR_UNKNOWN;
         s += 2;
     }
