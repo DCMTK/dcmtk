@@ -604,7 +604,12 @@ int main(int argc, char *argv[])
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
-    dataset->chooseRepresentation(opt_oxfer, NULL);
+    error = dataset->chooseRepresentation(opt_oxfer, NULL);
+    if (error.bad())
+    {
+        OFLOG_ERROR(dcmconvLogger, error.text());
+        /* reporting a fatal error and returning with an error code follows next */
+    }
 
     if (dataset->canWriteXfer(opt_oxfer))
     {
