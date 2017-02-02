@@ -253,7 +253,7 @@ main(int argc, char *argv[])
     if (cmd.findOption("--prefer-mpeg4-bd")) opt_store_networkTransferSyntax = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
     if (cmd.findOption("--prefer-mpeg4-2-2d")) opt_store_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
     if (cmd.findOption("--prefer-mpeg4-2-3d")) opt_store_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
-    if (cmd.findOption("--prefer_mpeg4-2-st")) opt_store_networkTransferSyntax = EXS_MPEG4StereoHighProfileLevel4_2;
+    if (cmd.findOption("--prefer-mpeg4-2-st")) opt_store_networkTransferSyntax = EXS_MPEG4StereoHighProfileLevel4_2;
     if (cmd.findOption("--prefer-rle")) opt_store_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
     if (cmd.findOption("--prefer-deflated")) opt_store_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
