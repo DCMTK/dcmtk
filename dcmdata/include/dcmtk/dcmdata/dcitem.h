@@ -1320,10 +1320,11 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *                   the post read checks. If an error occurs, an error
      *                   status will be returned. Otherwise, errorFlag
      *                   is returned with the old status.
+     *  @param xfer      the transfer of the item
      *  @return If errors are found, an error code is returned. Otherwise the
      *          method returns errorFlag as handed in by the caller.
      */
-    OFCondition doPostReadChecks(const OFCondition errorFlag,
+    OFCondition doPostReadChecks(const OFCondition& errorFlag,
                                  const E_TransferSyntax xfer);
 
 
