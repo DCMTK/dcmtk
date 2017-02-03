@@ -165,6 +165,9 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("handling of VOI LUT Sequence with OW VR and explicit length:");
       cmd.addOption("--illegal-voi-rej",     "-vi",    "reject dataset with illegal VOI LUT (default)");
       cmd.addOption("--illegal-voi-conv",    "+vi",    "convert illegal VOI LUT to SQ");
+    cmd.addSubGroup("handling of explicit length pixel data for encaps. transfer syntaxes:");
+      cmd.addOption("--abort-expl-pixdata",  "-pe",    "abort on explicit length pixel data (default)");
+      cmd.addOption("--use-expl-pixdata",    "+pe",    "use explicit length pixel data");
     cmd.addSubGroup("general handling of parser errors: ");
       cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
       cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
@@ -398,6 +401,16 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--illegal-voi-conv"))
       {
         dcmConvertVOILUTSequenceOWtoSQ.set(OFTrue);
+      }
+      cmd.endOptionBlock();
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--abort-expl-pixdata"))
+      {
+        dcmUseExplLengthPixDataForEncTS.set(OFFalse);
+      }
+      if (cmd.findOption("--use-expl-pixdata"))
+      {
+        dcmUseExplLengthPixDataForEncTS.set(OFTrue);
       }
       cmd.endOptionBlock();
 

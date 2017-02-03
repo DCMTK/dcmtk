@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1122,6 +1122,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         DCMDATA_WARN("DcmItem: Length of element " << newTag << " is odd");
     }
 
+
     /* if desired, handle private attributes with maximum length as VR SQ */
     if (isPrivate && dcmReadImplPrivAttribMaxLengthAsSQ.get() && (valueLength == DCM_UndefinedLength))
     {
@@ -1422,6 +1423,12 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
             errorFlag = EC_Normal;
         } else
             errorFlag = EC_ItemDelimitationItemMissing;
+    }
+
+    if (errorFlag.good())
+    {
+      /* perform additional checks */
+      errorFlag = doPostReadChecks(errorFlag, xfer);
     }
 
     /* if at this point the error flag indicates success, the item has */
@@ -4477,4 +4484,51 @@ OFCondition DcmItem::convertToUTF8()
 {
     // the DICOM defined term "ISO_IR 192" is used for "UTF-8"
     return convertCharacterSet("ISO_IR 192", 0 /*flags*/);
+}
+
+
+OFCondition DcmItem::doPostReadChecks(const OFCondition& errorFlag,
+                                      const E_TransferSyntax xfer)
+{
+  DcmElement* pixData = NULL;
+  DcmXfer xf(xfer);
+  OFCondition result = errorFlag;
+  if (findAndGetElement(DCM_PixelData, pixData).good())
+  {
+      Uint32 valueLength = pixData->getLengthField();
+      if (xf.isEncapsulated())
+      {
+          if (valueLength != DCM_UndefinedLength)
+          {
+              // Ensure that this is the top level dataset
+              if (getRootItem() == this)
+              {
+                  if (dcmUseExplLengthPixDataForEncTS.get() == OFFalse /* default case */)
+                  {
+                      /* Length of top level dataset is explicitly defined but
+                      * we have a transfer syntax requiring encapsulated pixel
+                      * data (always encoded with undefined length). Print a
+                      * warning.
+                      */
+                      DCMDATA_ERROR("Found explicit length Pixel Data in top level "
+                      << "dataset with transfer syntax " << xf.getXferName()
+                      << ": Only undefined length permitted");
+                      result = EC_PixelDataExplLengthIllegal;
+                  }
+                  else
+                  {
+                      /* Only print warning if requested by related OFGlobal,
+                        * and behave like as we have the same case as for an
+                        * icon image, which is always uncompressed (see above).
+                        */
+                      DCMDATA_WARN("Found explicit length Pixel Data in top level "
+                      << "dataset with transfer syntax " << xf.getXferName()
+                      << ": Only undefined length permitted (ignored on explicit request)");
+                  }
+              }
+          }
+      }
+  }
+
+  return result;
 }

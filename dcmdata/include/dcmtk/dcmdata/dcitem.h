@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1307,6 +1307,24 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     void updateSpecificCharacterSet(OFCondition &status,
                                     const DcmSpecificCharacterSet &converter);
+
+    /** perform checks after reading of the item is considered complete. The idea
+     *  is that some checks cannot be performed when reading a specific element,
+     *  for different reasons, e.g. the context of the element is not known
+     *  (parent relationship, etc.) or the value of other elements within the
+     *  same item (or its sub structures) must be taken into account. Another
+     *  reason could be that it would be very inefficient to perform the
+     *  check in the regular reading loop, i.e. for each element being parsed,
+     *  when it actually only affects a specific tag.
+     *  @param errorFlag error flag from read process before performing
+     *                   the post read checks. If an error occurs, an error
+     *                   status will be returned. Otherwise, errorFlag
+     *                   is returned with the old status.
+     *  @return If errors are found, an error code is returned. Otherwise the
+     *          method returns errorFlag as handed in by the caller.
+     */
+    OFCondition doPostReadChecks(const OFCondition errorFlag,
+                                 const E_TransferSyntax xfer);
 
 
   private:
