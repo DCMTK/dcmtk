@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -356,6 +356,17 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      *  @return always returns OFTrue, i.e.\ SpecificCharacterSet should be checked
      */
     virtual OFBool checkForSpecificCharacterSet() const { return OFTrue; }
+
+  protected:
+
+    /** perform checks after reading of the dataset is considered complete. The
+     *  idea is that some checks cannot be performed when reading a specific
+     *  element, for different reasons, e.g. the values of other elements have
+     *  to be taken into account.
+     *  @return status, EC_Normal if no problems are found, an error code otherwise
+     */
+    OFCondition doPostReadChecks();
+
 
   private:
 
