@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -260,7 +260,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_VLSlideCoordinatesMicroscopicImageStorage,           "VLSlideCoordinatesMicroscopicImageStorage" },
     { UID_VLWholeSlideMicroscopyImageStorage,                  "VLWholeSlideMicroscopyImageStorage" },
     { UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage, "WideFieldOphthalmicPhotographyStereographicProjectionImageStorage" },
-    { UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage, "OphthalmicPhotography3DCoordinatesImageStorage" },
+    { UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage, "WideFieldOphthalmicPhotography3DCoordinatesImageStorage" },
     { UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,      "XAXRFGrayscaleSoftcopyPresentationStateStorage" },
     { UID_XRay3DAngiographicImageStorage,                      "XRay3DAngiographicImageStorage" },
     { UID_XRay3DCraniofacialImageStorage,                      "XRay3DCraniofacialImageStorage" },
