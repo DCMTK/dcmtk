@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: 
+ *  Purpose:
  *    class DcmPresentationContextItem
  *    class DcmPresentationContextMap
  *
@@ -48,7 +48,7 @@ public:
 
   /// copy constructor
   DcmPresentationContextItem(const DcmPresentationContextItem& arg);
- 
+
   /// destructor
   ~DcmPresentationContextItem();
 
@@ -88,7 +88,7 @@ public:
    */
   OFBool operator==(const DcmPresentationContextItem& arg) const
   {
-    return (uid_ == arg.uid_) && (xferSyntaxGroup_ == arg.xferSyntaxGroup_); 
+    return (uid_ == arg.uid_) && (xferSyntaxGroup_ == arg.xferSyntaxGroup_);
   }
 
 private:
@@ -154,9 +154,9 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition add(
-    const char *key,
-    const char *abstractSyntaxUID,
-    const char *transferSyntaxKey);
+    const OFString& key,
+    const OFString& abstractSyntaxUID,
+    const OFString& transferSyntaxKey);
 
   /** checks if the key is known
    *  @param key key name, must not be NULL

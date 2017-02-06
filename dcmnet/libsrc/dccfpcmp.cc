@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -128,11 +128,11 @@ const DcmPresentationContextList* DcmPresentationContextMap::getPresentationCont
 }
 
 OFCondition DcmPresentationContextMap::add(
-  const char *key,
-  const char *abstractSyntaxUID,
-  const char *transferSyntaxKey)
+  const OFString& key,
+  const OFString& abstractSyntaxUID,
+  const OFString& transferSyntaxKey)
 {
-  if ((!key)||(!abstractSyntaxUID)||(!transferSyntaxKey)) return EC_IllegalCall;
+  if ((key.empty())||(abstractSyntaxUID.empty())||(transferSyntaxKey.empty())) return EC_IllegalCall;
 
 
   // perform syntax check of UID
@@ -144,22 +144,22 @@ OFCondition DcmPresentationContextMap::add(
     return makeOFCondition(OFM_dcmnet, 1025, OF_error, s.c_str());
   }
 
-  DcmPresentationContextList * const *value = NULL;
+  DcmPresentationContextList* value = NULL;
   OFString skey(key);
   OFMap<OFString, DcmPresentationContextList*>::iterator it = map_.find(skey);
 
   // create new value if not existing yet
   if (it == map_.end())
   {
-    DcmPresentationContextList *newentry = new DcmPresentationContextList();
+    DcmPresentationContextList *newentry = new DcmPresentationContextList;
     map_.insert(OFPair<OFString, DcmPresentationContextList*>(skey, newentry));
-    value = &newentry;
+    value = newentry;
   }
   else // use existing value
-    value = & ((*it).second);
+    value = ((*it).second);
 
   // make sure list does not get longer than 128 entries
-  if (((*value)->size()) > 127)
+  if (((value)->size()) > 127)
   {
     OFString s("presentation context list too long (> 128 entries): ");
     s += key;
@@ -167,7 +167,7 @@ OFCondition DcmPresentationContextMap::add(
   }
 
   // insert values into list.
-  (*value)->push_back(DcmPresentationContextItem(uid, OFString(transferSyntaxKey)));
+  (value)->push_back(DcmPresentationContextItem(uid, transferSyntaxKey));
   return EC_Normal;
 }
 
