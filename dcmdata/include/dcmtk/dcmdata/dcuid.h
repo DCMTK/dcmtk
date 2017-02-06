@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -57,7 +57,7 @@ DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char* name);
 /** an array of const strings containing all known Storage SOP Classes
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
  *  model, i.e. everything a Storage SCP might want to store in a PACS.
- *  Special cases such as hanging protocol storage or the Storage SOP Class
+ *  Special cases such as Hanging Protocol or Color Palette Storage SOP Class
  *  are not included in this list.
  *  WARNING: This list contains more than 64 entries, i.e. it is not possible
  *  to use this list to configure the association negotiation behavior of
@@ -93,6 +93,9 @@ extern DCMTK_DCMDATA_EXPORT const int numberOfDcmShortSCUStorageSOPClassUIDs;
 
 /** returns true if the uid is one of the Storage SOP Classes.
  *  Performs a table lookup in the dcmAllStorageSOPClassUIDs table.
+ *  Please note that this function only covers those Storage SOP Classes
+ *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
+ *  model, i.e. non-patient DICOM objects are missing.
  *  @param uid UID string
  *  @return true if UID is a known Storage SOP Class, false otherwise
  */

@@ -153,6 +153,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_CardiacElectrophysiologyWaveformStorage,             "CardiacElectrophysiologyWaveformStorage" },
     { UID_ChestCADSRStorage,                                   "ChestCADSRStorage" },
     { UID_ColonCADSRStorage,                                   "ColonCADSRStorage" },
+    { UID_ColorPaletteStorage,                                 "ColorPaletteStorage" },
     { UID_ColorSoftcopyPresentationStateStorage,               "ColorSoftcopyPresentationStateStorage" },
     { UID_CompositingPlanarMPRVolumetricPresentationStateStorage, "CompositingPlanarMPRVolumetricPresentationStateStorage" },
     { UID_Comprehensive3DSRStorage,                            "Comprehensive3DSRStorage" },
@@ -350,8 +351,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_CardiacRelevantPatientInformationQuery,              "CardiacRelevantPatientInformationQuery" },
     { UID_GeneralRelevantPatientInformationQuery,              "GeneralRelevantPatientInformationQuery" },
 
-    // Color Palette Storage and Query/Retrieve
-    { UID_ColorPaletteStorage,                                 "ColorPaletteStorage" },
+    // Color Palette Query/Retrieve
     { UID_FINDColorPaletteInformationModel,                    "FINDColorPaletteInformationModel" },
     { UID_MOVEColorPaletteInformationModel,                    "MOVEColorPaletteInformationModel" },
     { UID_GETColorPaletteInformationModel,                     "GETColorPaletteInformationModel" },
@@ -546,8 +546,8 @@ static const int uidNameMap_size = OFstatic_cast(int, sizeof(uidNameMap) / sizeo
 /** an array of const strings containing all known Storage SOP Classes
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
  *  model, i.e. everything a Storage SCP might want to store in a PACS.
- *  Special cases such as hanging protocol storage or the Storage SOP Class
- *  are not included in this list.
+ *  Special cases such as the Hanging Protocol or Color Palette Storage SOP
+ *  Class are not included in this list.
  *
  *  THIS LIST CONTAINS ALL STORAGE SOP CLASSES INCLUDING RETIRED ONES
  *  AND IS (MUCH) LARGER THAN 64 ENTRIES.
@@ -575,7 +575,6 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_ComputedRadiographyImageStorage,
     UID_ContentAssessmentResultsStorage,
     UID_CornealTopographyMapStorage,
-    UID_CTDefinedProcedureProtocolStorage,
     UID_CTImageStorage,
     UID_CTPerformedProcedureProtocolStorage,
     UID_DeformableSpatialRegistrationStorage,
@@ -598,13 +597,10 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_ExtensibleSRStorage,
     UID_GeneralAudioWaveformStorage,
     UID_GeneralECGWaveformStorage,
-    UID_GenericImplantTemplateStorage,
     UID_GrayscalePlanarMPRVolumetricPresentationStateStorage,
     UID_GrayscaleSoftcopyPresentationStateStorage,
     UID_HemodynamicWaveformStorage,
-    UID_ImplantAssemblyTemplateStorage,
     UID_ImplantationPlanSRDocumentStorage,
-    UID_ImplantTemplateGroupStorage,
     UID_IntraocularLensCalculationsStorage,
     UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,
     UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,
@@ -680,6 +676,13 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_XRayAngiographicImageStorage,
     UID_XRayRadiationDoseSRStorage,
     UID_XRayRadiofluoroscopicImageStorage,
+    // non-patient DICOM objects (do not fit into this list, see above):
+    // - UID_ColorPaletteStorage
+    // - UID_CTDefinedProcedureProtocolStorage
+    // - UID_GenericImplantTemplateStorage
+    // - UID_HangingProtocolStorage
+    // - UID_ImplantAssemblyTemplateStorage
+    // - UID_ImplantTemplateGroupStorage
     // retired
     UID_RETIRED_HardcopyColorImageStorage,
     UID_RETIRED_HardcopyGrayscaleImageStorage,
@@ -762,7 +765,6 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
     UID_EnhancedXRFImageStorage,
     UID_GeneralAudioWaveformStorage,
     UID_GeneralECGWaveformStorage,
-    UID_GenericImplantTemplateStorage,
     UID_GrayscaleSoftcopyPresentationStateStorage,
     UID_HemodynamicWaveformStorage,
     UID_ImplantAssemblyTemplateStorage,
