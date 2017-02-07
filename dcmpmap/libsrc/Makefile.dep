@@ -347,6 +347,11 @@ dpmparametricmapbase.o: dpmparametricmapbase.cc \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
  ../../ofstd/include/dcmtk/ofstd/ofalign.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmiod/include/dcmtk/dcmiod/iodcommn.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatientstudy.h \
@@ -514,6 +519,11 @@ dpmparametricmapiod.o: dpmparametricmapiod.cc \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
  ../../ofstd/include/dcmtk/ofstd/ofalign.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmiod/include/dcmtk/dcmiod/iodcommn.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatientstudy.h \

@@ -31,7 +31,9 @@ tchrenc.o: tchrenc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oftraits.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/ofchrenc.h
+ ../include/dcmtk/ofstd/ofchrenc.h ../include/dcmtk/ofstd/ofmem.h \
+ ../include/dcmtk/ofstd/ofutil.h \
+ ../include/dcmtk/ofstd/variadic/tuplefwd.h
 tests.o: tests.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
