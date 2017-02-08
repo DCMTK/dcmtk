@@ -1129,7 +1129,7 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
         if (status.good())
         {
             // in addition, check whether it is a known storage SOP class
-            if (!dcmIsaStorageSOPClassUID(sopClassUID.c_str()))
+            if (!dcmIsaStorageSOPClassUID(sopClassUID.c_str(), ESSC_All))
             {
                 // check whether the DICOM standard prefix for storage UIDs is used
                 if (sopClassUID.compare(0, 23, "1.2.840.10008.5.1.4.1.1") == 0)

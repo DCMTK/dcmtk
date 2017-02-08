@@ -763,7 +763,7 @@ int main(int argc, char *argv[])
             else
               OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
           }
-          else if (!dcmIsaStorageSOPClassUID(sopClassUID))
+          else if (!dcmIsaStorageSOPClassUID(sopClassUID, ESSC_All))
           {
             ignoreName = OFTrue;
             errormsg = "unknown storage SOP class in file: ";
