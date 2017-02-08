@@ -39,6 +39,20 @@
  *  @brief global definitions and functions for UID handling
  */
 
+
+/// type of Storage SOP Class
+typedef enum {
+    /// patient objects
+    ESSC_Patient    = 0x01,
+    /// non-patient objects
+    ESSC_NonPatient = 0x02,
+    /// image objects (subset of patient objects)
+    ESSC_Image      = 0x04,
+    /// all types (patient and non-patient objects)
+    ESSC_All        = 0x03
+} E_StorageSOPClassType;
+
+
 /** return the name of a UID.
  *  Performs a table lookup and returns a pointer to a read-only string.
  *  @param uid UID string for which the name is to be looked up
@@ -92,20 +106,23 @@ extern DCMTK_DCMDATA_EXPORT const char* dcmShortSCUStorageSOPClassUIDs[];
 extern DCMTK_DCMDATA_EXPORT const int numberOfDcmShortSCUStorageSOPClassUIDs;
 
 /** returns true if the uid is one of the Storage SOP Classes.
- *  Performs a table lookup in the dcmAllStorageSOPClassUIDs table.
- *  Please note that this function only covers those Storage SOP Classes
- *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
- *  model, i.e. non-patient DICOM objects are missing.
+ *  Performs a table lookup in the dcmAllStorageSOPClassUIDs, dcmImageSOPClassUIDs
+ *  and/or other tables depending on the requested type of Storage SOP Class.
+ *  Please note that, by default, this function only covers those Storage SOP
+ *  Classes that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE
+ *  information model, i.e. non-patient DICOM objects are missing. This can
+ *  be changed by setting the optional type parameter to ESSC_NonPatient.
  *  @param uid UID string
+ *  @param type type of Storage SOP Class (default: patient objects only)
  *  @return true if UID is a known Storage SOP Class, false otherwise
  */
-DCMTK_DCMDATA_EXPORT OFBool dcmIsaStorageSOPClassUID(const char* uid);
+DCMTK_DCMDATA_EXPORT OFBool dcmIsaStorageSOPClassUID(const char* uid, const E_StorageSOPClassType type = ESSC_Patient);
 
 /** a global constant array of
  *  string pointers containing the UIDs of all known Image SOP
  *  Classes.  The global variable numberOfDcmImageSOPClassUIDs
  *  defines the size of the array.
- *  NOTE: this list represents a subset of the dcmStorageSOPClassUIDs list
+ *  NOTE: this list represents a subset of the dcmAllStorageSOPClassUIDs list
  */
 extern DCMTK_DCMDATA_EXPORT const char* dcmImageSOPClassUIDs[];
 
@@ -113,7 +130,7 @@ extern DCMTK_DCMDATA_EXPORT const char* dcmImageSOPClassUIDs[];
 extern DCMTK_DCMDATA_EXPORT const int numberOfDcmImageSOPClassUIDs;
 
 /** returns true if the uid is one of the Image Storage SOP Classes.
- *  Performs a table lookup in the dcmImageSOPClassUIDs table.
+ *  This is just a shortcut for dcmIsaStorageSOPClassUID(uid, ESSC_Image).
  *  @param uid UID string
  *  @return true if UID is a known Image Storage SOP Class, false otherwise
  */

@@ -547,7 +547,7 @@ static const int uidNameMap_size = OFstatic_cast(int, sizeof(uidNameMap) / sizeo
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
  *  model, i.e. everything a Storage SCP might want to store in a PACS.
  *  Special cases such as the Hanging Protocol or Color Palette Storage SOP
- *  Class are not included in this list.
+ *  Class are not included in this list but in dcmNonPatientStorageSOPClassUIDs.
  *
  *  THIS LIST CONTAINS ALL STORAGE SOP CLASSES INCLUDING RETIRED ONES
  *  AND IS (MUCH) LARGER THAN 64 ENTRIES.
@@ -676,13 +676,8 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_XRayAngiographicImageStorage,
     UID_XRayRadiationDoseSRStorage,
     UID_XRayRadiofluoroscopicImageStorage,
-    // non-patient DICOM objects (do not fit into this list, see above):
-    // - UID_ColorPaletteStorage
-    // - UID_CTDefinedProcedureProtocolStorage
-    // - UID_GenericImplantTemplateStorage
-    // - UID_HangingProtocolStorage
-    // - UID_ImplantAssemblyTemplateStorage
-    // - UID_ImplantTemplateGroupStorage
+    // non-patient DICOM objects:
+    // - do not add them here but in dcmNonPatientStorageSOPClassUIDs
     // retired
     UID_RETIRED_HardcopyColorImageStorage,
     UID_RETIRED_HardcopyGrayscaleImageStorage,
@@ -720,6 +715,23 @@ const char* dcmAllStorageSOPClassUIDs[] = {
 };
 
 const int numberOfAllDcmStorageSOPClassUIDs = OFstatic_cast(int, sizeof(dcmAllStorageSOPClassUIDs) / sizeof(const char*) - 1);
+
+
+/** an array of const strings containing all known Storage SOP Classes
+ *  that do not fit into the conventional PATIENT-STUDY-SERIES-INSTANCE
+ *  information model. See function dcmIsaStorageSOPClassUID().
+ */
+
+const char* dcmNonPatientStorageSOPClassUIDs[] = {
+    UID_ColorPaletteStorage,
+    UID_CTDefinedProcedureProtocolStorage,
+    UID_GenericImplantTemplateStorage,
+    UID_HangingProtocolStorage,
+    UID_ImplantAssemblyTemplateStorage,
+    UID_ImplantTemplateGroupStorage,
+    // end marker (important!)
+    NULL
+};
 
 
 /*  an array of const strings containing all storage SOP classes that
@@ -1331,15 +1343,35 @@ dcmFindUIDFromName(const char* name)
 /*
 ** dcmIsaStorageSOPClassUID(const char* uid)
 ** Returns true if the uid is one of the Storage SOP Classes.
-** Performs a table lookup in the dcmAllStorageSOPClassUIDs table.
+** Performs a table lookup in the dcmAllStorageSOPClassUIDs,
+** dcmNonPatientStorageSOPClassUIDs and/or dcmImageSOPClassUIDs table.
 */
 OFBool
-dcmIsaStorageSOPClassUID(const char* uid)
+dcmIsaStorageSOPClassUID(const char* uid, const E_StorageSOPClassType type)
 {
     if (uid == NULL) return OFFalse;
-    for (int i = 0; i < numberOfAllDcmStorageSOPClassUIDs; i++) {
-      if (dcmAllStorageSOPClassUIDs[i] != NULL && strcmp(uid, dcmAllStorageSOPClassUIDs[i]) == 0) {
-        return OFTrue;
+    /* check for patient object */
+    if (type & ESSC_Patient) {
+      for (int i = 0; i < numberOfAllDcmStorageSOPClassUIDs; i++) {
+        if (dcmAllStorageSOPClassUIDs[i] != NULL && strcmp(uid, dcmAllStorageSOPClassUIDs[i]) == 0) {
+          return OFTrue;
+        }
+      }
+    }
+    /* check for non-patient object */
+    if (type & ESSC_NonPatient) {
+      for (int i = 0; dcmNonPatientStorageSOPClassUIDs[i] != NULL; i++) {
+        if (strcmp(uid, dcmNonPatientStorageSOPClassUIDs[i]) == 0) {
+          return OFTrue;
+        }
+      }
+    }
+    /* check for image object */
+    if (type & ESSC_Image) {
+      for (int i = 0; i < numberOfDcmImageSOPClassUIDs; i++) {
+        if (dcmImageSOPClassUIDs[i] != NULL && strcmp(uid, dcmImageSOPClassUIDs[i]) == 0) {
+          return OFTrue;
+        }
       }
     }
     return OFFalse;
@@ -1349,18 +1381,11 @@ dcmIsaStorageSOPClassUID(const char* uid)
 /*
 ** dcmIsImageStorageSOPClassUID(const char* uid)
 ** Returns true if the uid is one of the Image Storage SOP Classes.
-** Performs a table lookup in the dcmImageSOPClassUIDs table.
 */
 OFBool
 dcmIsImageStorageSOPClassUID(const char* uid)
 {
-    if (uid == NULL) return OFFalse;
-    for (int i = 0; i < numberOfDcmImageSOPClassUIDs; i++) {
-      if (dcmImageSOPClassUIDs[i] != NULL && strcmp(uid, dcmImageSOPClassUIDs[i]) == 0) {
-        return OFTrue;
-      }
-    }
-    return OFFalse;
+    return dcmIsaStorageSOPClassUID(uid, ESSC_Image);
 }
 
 // ********************************
