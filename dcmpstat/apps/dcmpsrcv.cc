@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2014, OFFIS e.V.
+ *  Copyright (C) 1999-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -300,7 +300,7 @@ static associationType negotiateAssociation(
         /*  accept any of the storage syntaxes */
         cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
           (*assoc)->params,
-          dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs,
+          dcmAllStorageSOPClassUIDs, numberOfDcmAllStorageSOPClassUIDs,
           (const char**)transferSyntaxes, numTransferSyntaxes);
         errorCond(cond, "Cannot accept presentation contexts:");
       }

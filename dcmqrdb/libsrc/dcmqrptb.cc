@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2012, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -131,7 +131,7 @@ void DcmQueryRetrieveProcessTable::addProcessToTable(int pid, T_ASC_Association 
     ASC_getPresentationAddresses(assoc->params, peerName, NULL);
     ASC_getAPTitles(assoc->params, callingAETitle, calledAETitle, NULL);
 
-    for (int i=0; i<numberOfAllDcmStorageSOPClassUIDs; i++)
+    for (int i=0; i<numberOfDcmAllStorageSOPClassUIDs; i++)
     {
       if (ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]))
       {

@@ -1575,7 +1575,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     }
 
     /* the array of Storage SOP Class UIDs comes from dcuid.h */
-    cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
+    cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, dcmAllStorageSOPClassUIDs, numberOfDcmAllStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
     if (cond.bad())
     {
       OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));

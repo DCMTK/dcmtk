@@ -81,7 +81,7 @@ DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char* name);
 extern DCMTK_DCMDATA_EXPORT const char* dcmAllStorageSOPClassUIDs[];
 
 /// number of entries in dcmAllStorageSOPClassUIDs.
-extern DCMTK_DCMDATA_EXPORT const int numberOfAllDcmStorageSOPClassUIDs;
+extern DCMTK_DCMDATA_EXPORT const int numberOfDcmAllStorageSOPClassUIDs;
 
 /** an array of const strings containing all storage SOP classes that
  *  are proposed by default by those Storage SCU components in DCMTK

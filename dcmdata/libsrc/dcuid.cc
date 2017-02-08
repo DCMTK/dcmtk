@@ -714,7 +714,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     NULL
 };
 
-const int numberOfAllDcmStorageSOPClassUIDs = OFstatic_cast(int, sizeof(dcmAllStorageSOPClassUIDs) / sizeof(const char*) - 1);
+const int numberOfDcmAllStorageSOPClassUIDs = OFstatic_cast(int, sizeof(dcmAllStorageSOPClassUIDs) / sizeof(const char*) - 1);
 
 
 /** an array of const strings containing all known Storage SOP Classes
@@ -1352,7 +1352,7 @@ dcmIsaStorageSOPClassUID(const char* uid, const E_StorageSOPClassType type)
     if (uid == NULL) return OFFalse;
     /* check for patient object */
     if (type & ESSC_Patient) {
-      for (int i = 0; i < numberOfAllDcmStorageSOPClassUIDs; i++) {
+      for (int i = 0; i < numberOfDcmAllStorageSOPClassUIDs; i++) {
         if (dcmAllStorageSOPClassUIDs[i] != NULL && strcmp(uid, dcmAllStorageSOPClassUIDs[i]) == 0) {
           return OFTrue;
         }
