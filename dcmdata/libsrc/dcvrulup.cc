@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,13 @@
 
 
 // ********************************
+
+
+DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmTag &tag)
+  : DcmUnsignedLong(tag, 0),
+    nextRecord(NULL)
+{
+}
 
 
 DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmTag &tag,

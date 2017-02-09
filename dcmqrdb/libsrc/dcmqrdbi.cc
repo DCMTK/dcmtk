@@ -1924,7 +1924,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 
         for ( plist = handle_->findResponseList ; plist != NULL ; plist = plist->next ) {
             DcmTag t(plist->elem.XTag);
-            DcmElement *dce = newDicomElement(t);
+            DcmElement *dce = DcmItem::newDicomElement(t);
             if (dce == NULL) {
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
                 return QR_EC_IndexDatabaseError;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -637,7 +637,7 @@ OFCondition IODEnhUSImageModule::setDepthsOfFocus(const OFVector< Float64 >& val
                                                   const bool checkValue)
 {
   (void)checkValue;
-  DcmElement* elem = newDicomElement(DCM_DepthsOfFocus);
+  DcmElement* elem = DcmItem::newDicomElement(DCM_DepthsOfFocus);
   if (!elem)
     return EC_MemoryExhausted;
 

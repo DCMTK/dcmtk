@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -526,7 +526,7 @@ OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setFunctionalGroup
   if (value == DCM_UndefinedTagKey)
     return EC_IllegalParameter;
 
-  DcmAttributeTag *elem = OFstatic_cast(DcmAttributeTag*, newDicomElement(DCM_FunctionalGroupPointer));
+  DcmAttributeTag *elem = OFstatic_cast(DcmAttributeTag*, DcmItem::newDicomElement(DCM_FunctionalGroupPointer));
   if (elem == NULL)
     return EC_InternalError;
 
@@ -558,7 +558,7 @@ OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setDimensionIndexP
   if (value == DCM_UndefinedTagKey)
     return EC_IllegalParameter;
 
-  DcmAttributeTag *elem = OFstatic_cast(DcmAttributeTag*, newDicomElement(DCM_DimensionIndexPointer));
+  DcmAttributeTag *elem = OFstatic_cast(DcmAttributeTag*, DcmItem::newDicomElement(DCM_DimensionIndexPointer));
   if (elem == NULL)
     return EC_InternalError;
 

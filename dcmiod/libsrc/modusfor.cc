@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -174,7 +174,7 @@ OFCondition IODUSFoRModule::setApexPosition(const Float64& xValue,
                                             const OFBool)
 {
 
-  DcmElement *elem = newDicomElement(DCM_ApexPosition);
+  DcmElement *elem = DcmItem::newDicomElement(DCM_ApexPosition);
 
 
   OFCondition result = elem->putFloat64(xValue, 0);
@@ -208,7 +208,7 @@ OFCondition IODUSFoRModule::setVolumetoTransducerMappingMatrix(const OFVector< F
   OFCondition result;
 
   DcmElement* elem = NULL;
-  result = newDicomElement(elem, DCM_VolumeToTransducerMappingMatrix);
+  result = DcmItem::newDicomElement(elem, DCM_VolumeToTransducerMappingMatrix);
   if (result.good())
   {
     for (size_t n = 0; result.good() && n < vm; n++)
@@ -257,7 +257,7 @@ OFCondition IODUSFoRModule::setVolumeToTableMappingMatrix(const OFVector< Float6
   OFCondition result;
 
   DcmElement* elem = NULL;
-  result = newDicomElement(elem, DCM_VolumeToTableMappingMatrix);
+  result = DcmItem::newDicomElement(elem, DCM_VolumeToTableMappingMatrix);
   if (result.good())
   {
     for (size_t n = 0; result.good() && (n < vm); n++)

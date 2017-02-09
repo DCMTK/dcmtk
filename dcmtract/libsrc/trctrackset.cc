@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -511,7 +511,7 @@ OFCondition TrcTrackSet::setRecommendedDisplayCIELabValue(const Uint16 L,
                                                           const Uint16 a,
                                                           const Uint16 b)
 {
-  DcmElement* elem = newDicomElement(DCM_RecommendedDisplayCIELabValue);
+  DcmElement* elem = DcmItem::newDicomElement(DCM_RecommendedDisplayCIELabValue);
   if (elem)
   {
     if (elem->putUint16(L, 0).good())

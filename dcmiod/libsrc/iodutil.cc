@@ -163,7 +163,7 @@ OFCondition DcmIODUtil::addElementToDataset(OFCondition &result,
       {
         if (type == "2")
         {
-          delem = newDicomElement(rule->getTagKey());
+          delem = DcmItem::newDicomElement(rule->getTagKey());
           if (delem == NULL)
           {
             result = EC_MemoryExhausted;

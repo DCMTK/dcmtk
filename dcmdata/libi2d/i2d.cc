@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2015, OFFIS e.V.
+ *  Copyright (C) 2007-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -683,7 +683,7 @@ OFString Image2Dcm::checkAndInventType1Attrib(const DcmTagKey& key,
     elem = NULL;
     DcmTag tag(key); OFBool wasError = OFFalse;
     // if DICOM element could be created, insert in to item and modify to value
-    if ( newDicomElement(elem, tag).good())
+    if ( DcmItem::newDicomElement(elem, tag).good())
     {
         if (targetDset->insert(elem, OFTrue).good())
         {

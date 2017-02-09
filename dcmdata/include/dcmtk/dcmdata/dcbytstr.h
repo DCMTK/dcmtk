@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,13 +56,16 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
 
  public:
 
+    // Make friend with DcmItem which requires access to protected
+    // constructor allowing construction using an explicit value length.
+    friend class DcmItem;
+
     /** constructor.
-     *  Create new element from given tag and length.
+     *  Create new element from given tag.
      *  @param tag DICOM tag for the new element
      *  @param len value length for the new element
      */
-    DcmByteString(const DcmTag &tag,
-                  const Uint32 len = 0);
+    DcmByteString(const DcmTag &tag);
 
     /** copy constructor
      *  @param old element to be copied
@@ -289,6 +292,19 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
                                   DcmJsonFormat &format);
 
  protected:
+
+    /** constructor. Create new element from given tag and length.
+     *  Only reachable from friend classes since construction with
+     *  length different from 0 leads to a state with length being set but
+     *  the element's value still being uninitialized. This can lead to crashes
+     *  when the value is read or written. Thus the method calling this
+     *  constructor with length > 0 must ensure that the element's value is
+     *  explicitly initialized, too.
+     *  @param tag DICOM tag for the new element
+     *  @param len value length for the new element
+     */
+    DcmByteString(const DcmTag &tag,
+                  const Uint32 len);
 
     /// internal type used to specify the current string representation
     enum E_StringMode

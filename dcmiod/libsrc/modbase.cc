@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -94,7 +94,7 @@ void IODComponent::inventMissing()
       DcmElement *elem = NULL;
       if ( getData().findAndGetElement( (*rule)->getTagKey(), elem ).bad() )
       {
-        elem = newDicomElement((*rule)->getTagKey());
+        elem = DcmItem::newDicomElement((*rule)->getTagKey());
         if (elem == NULL)
         {
           DCMIOD_ERROR("Could not allocate element " << (*rule)->getTagKey());

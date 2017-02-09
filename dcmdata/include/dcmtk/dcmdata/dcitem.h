@@ -1211,6 +1211,23 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    DcmItem *item,
                                    const signed long itemNum = -2);
 
+    /** creates new DICOM element from given attribute tag.
+     *  @param tag attribute tag of the element to be created.
+     *  @return pointer to newly created element returned in this parameter upon success,
+     *    NULL pointer otherwise
+     */
+     static DcmElement *newDicomElement(const DcmTagKey &tag);
+
+    /** creates new anew DICOM element from given attribute tag.
+     *  @param newElement Pointer to newly created element returned in this parameter upon success,
+     *    NULL pointer otherwise
+     *  @param tag attribute tag of the element to be created.
+     *  @param length attribute value length of the element to be created
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition newDicomElement(DcmElement *&newElement,
+                                       const DcmTagKey &tag);
+
   protected:
 
     /// the list of elements maintained by this object
@@ -1227,8 +1244,6 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  bytes available for a fixed-length item).
      */
     offile_off_t fStartPosition;
-
-  protected:
 
     /** This function reads tag and length information from inStream and
      *  returns this information to the caller. When reading information,
@@ -1307,6 +1322,30 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     void updateSpecificCharacterSet(OFCondition &status,
                                     const DcmSpecificCharacterSet &converter);
+
+    /** creates new DICOM element from given attribute tag.
+     *  Helper function used by DICOM parser (friend of this class) and thus
+     *  hidden from the public interface. DcmItem's readSubElement() uses
+     *  this function when reading new elements from input data. This method
+     *  internally sets the length of the new element, but does not allocate
+     *  any memory for the element's value. Thus subsequent access to an element
+     *  created by this method can lead to crashes. DcmItem instead initializes
+     *  the value itself a bit later during the read process.
+     *  @param newElement pointer to newly created element returned in this parameter upon success,
+     *    NULL pointer otherwise
+     *  @param tag attribute tag of the element to be created. VR of tag
+     *    may be updated within the method.
+     *  @param length attribute value length of the element to be created
+     *  @param privateCreatorCache cache object for private creator strings in the current dataset
+     *  @param readAsUN flag indicating whether parser is currently handling a UN element that
+     *    must be read in implicit VR little endian; updated upon return
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition newDicomElement(DcmElement *&newElement,
+                                       DcmTag &tag,
+                                       const Uint32 length,
+                                       DcmPrivateTagCache *privateCreatorCache,
+                                       OFBool& readAsUN);
 
   private:
 
@@ -1389,41 +1428,6 @@ inline OFBool operator>=(const DcmItem& lhs, const DcmItem& rhs)
 // SUPPORT FUNCTIONS
 //
 
-/** helper function for DICOM parser. Creates new DICOM element from given attribute tag
- *  @param newElement pointer to newly created element returned in this parameter upon success,
- *    NULL pointer otherwise
- *  @param tag attribute tag of the element to be created
- *  @param length attribute value length of the element to be created
- *  @param privateCreatorCache cache object for private creator strings in the current dataset
- *  @param readAsUN flag indicating whether parser is currently handling a UN element that
- *    must be read in implicit VR little endian; updated upon return
- *  @return EC_Normal upon success, an error code otherwise
- */
-DCMTK_DCMDATA_EXPORT OFCondition newDicomElement(DcmElement *&newElement,
-                            DcmTag &tag,
-                            const Uint32 length,
-                            DcmPrivateTagCache *privateCreatorCache,
-                            OFBool& readAsUN);
-
-/** helper function for DICOM parser. Creates new DICOM element from given attribute tag
- *  @param newElement pointer to newly created element returned in this parameter upon success,
- *    NULL pointer otherwise
- *  @param tag attribute tag of the element to be created
- *  @param length attribute value length of the element to be created
- *  @return EC_Normal upon success, an error code otherwise
- */
-DCMTK_DCMDATA_EXPORT OFCondition newDicomElement(DcmElement *&newElement,
-                            const DcmTag &tag,
-                            const Uint32 length = 0);
-
-/** helper function for DICOM parser. Creates new DICOM element from given attribute tag
- *  @param tag attribute tag of the element to be created
- *  @param length attribute value length of the element to be created
- *  @return pointer to newly created element returned in this parameter upon success,
- *    NULL pointer otherwise
- */
-DCMTK_DCMDATA_EXPORT DcmElement *newDicomElement(const DcmTag &tag,
-                            const Uint32 length = 0);
 
 /** helper function for DcmElement::nextObject.
  *  hierarchically traverses all datasets/items after the position indicated by the call stack

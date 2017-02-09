@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,6 +32,11 @@
 
 
 // ********************************
+
+DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmTag &tag)
+  : DcmElement(tag, 0)
+{
+}
 
 
 DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmTag &tag,

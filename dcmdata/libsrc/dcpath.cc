@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2011, OFFIS e.V.
+ *  Copyright (C) 2008-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -638,7 +638,7 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
         status = checkPrivateTagReservation(item, tag);
         if (status.bad()) return status;
       }
-      elem = newDicomElement(tag);
+      elem = DcmItem::newDicomElement(tag);
       if (elem == NULL)
         return EC_IllegalCall;
       status = item->insert(elem, OFTrue);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -182,7 +182,7 @@ addString(DcmDataset *obj, DcmTagKey t, char *s, OFBool keepPadding)
 
     if (! keepPadding) DU_stripLeadingAndTrailingSpaces(s);
 
-    ec = newDicomElement(e, tag);
+    ec = DcmItem::newDicomElement(e, tag);
     if (ec == EC_Normal && s != NULL) {
         ec = e->putString(s);
     }
@@ -255,7 +255,7 @@ addUS(DcmDataset *obj, DcmTagKey t, Uint16 us)
     DcmElement *e = NULL;
     DcmTag tag(t);
 
-    ec = newDicomElement(e, tag);
+    ec = DcmItem::newDicomElement(e, tag);
     if (ec == EC_Normal) {
         ec = e->putUint16(us);
     }
@@ -306,7 +306,7 @@ addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
     DcmElement *e = NULL;
     DcmTag tag(t);
 
-    ec = newDicomElement(e, tag);
+    ec = DcmItem::newDicomElement(e, tag);
     if (ec == EC_Normal) {
         ec = e->putUint32(ul);
     }
@@ -367,7 +367,7 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *lst, int listCount)
         return buildErrorWithMsg("dimcmd:addAttributeList: Error: Uneven listCount", t);
     }
 
-    ec = newDicomElement(e, tag);
+    ec = DcmItem::newDicomElement(e, tag);
     if (ec == EC_Normal) {
         ec = e->putUint16Array(lst, (listCount / 2));
     }

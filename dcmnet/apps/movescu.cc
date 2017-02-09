@@ -197,7 +197,7 @@ addOverrideKey(OFConsoleApplication& app, const char *s)
         sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
         app.printError(msg2);
     }
-    DcmElement *elem = newDicomElement(tag);
+    DcmElement *elem = DcmItem::newDicomElement(tag);
     if (elem == NULL) {
         sprintf(msg2, "cannot create element for tag: (%04x,%04x)", g, e);
         app.printError(msg2);

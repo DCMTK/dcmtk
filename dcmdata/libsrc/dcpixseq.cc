@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,6 +38,15 @@
 
 
 // ********************************
+
+
+DcmPixelSequence::DcmPixelSequence(const DcmTag &tag)
+  : DcmSequenceOfItems(tag, 0),
+    Xfer(EXS_Unknown)
+{
+    setTagVR(EVR_OB);
+    setLengthField(DCM_UndefinedLength); // pixel sequences always use undefined length
+}
 
 
 DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,

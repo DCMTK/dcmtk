@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,15 +44,14 @@ class DCMTK_DCMDATA_EXPORT DcmSequenceOfItems : public DcmElement
 {
 public:
 
+    // Make friend with DcmItem which requires access to protected
+    // constructor allowing construction using an explicit value length.
+    friend class DcmItem;
+
     /** constructor
      *  @param tag attribute tag
-     *  @param len length of the attribute value
-     *  @param readAsUN flag indicating whether the sequence should be
-     *  read (interpreted) as a UN element with Implicit VR Little Endian encoding
      */
-    DcmSequenceOfItems(const DcmTag &tag,
-                       const Uint32 len = 0,
-                       OFBool readAsUN = OFFalse);
+    DcmSequenceOfItems(const DcmTag &tag);
 
     /** copy constructor
      *  @param oldSeq element to be copied
@@ -512,6 +511,22 @@ public:
                                         E_ByteOrder byteOrder = gLocalByteOrder);
 
 protected:
+
+    /** constructor. Create new element from given tag and length.
+     *  Only reachable from friend classes since construction with
+     *  length different from 0 leads to a state with length being set but
+     *  the element's value still being uninitialized. This can lead to crashes
+     *  when the value is read or written. Thus the method calling this
+     *  constructor with length > 0 must ensure that the element's value is
+     *  explicitly initialized, too.
+     *  @param tag attribute tag
+     *  @param len length of the attribute value
+     *  @param readAsUN flag indicating whether the sequence should be
+     *  read (interpreted) as a UN element with Implicit VR Little Endian encoding
+     */
+    DcmSequenceOfItems(const DcmTag &tag,
+                       const Uint32 len,
+                       OFBool readAsUN = OFFalse);
 
     /** This function reads tag and length information from inStream and
      *  returns this information to the caller. When reading information,

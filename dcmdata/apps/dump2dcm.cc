@@ -532,7 +532,7 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
         else if (newTagVR == EVR_pixelItem)
             newElement = new DcmPixelItem(DCM_PixelItemTag);
         else
-            newElementError = newDicomElement(newElement, tag);
+            newElementError = DcmItem::newDicomElement(newElement, tag);
 
         if (newElementError == EC_Normal)
         {

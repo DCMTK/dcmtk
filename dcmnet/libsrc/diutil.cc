@@ -190,7 +190,7 @@ DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s)
     DcmElement *e = NULL;
     DcmTag tag(t);
 
-    ec = newDicomElement(e, tag);
+    ec = DcmItem::newDicomElement(e, tag);
     if (ec == EC_Normal && s != NULL) {
         ec = e->putString(s);
     }
@@ -224,7 +224,7 @@ DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
     DcmElement *e = NULL;
     DcmTag tag(t);
 
-    ec = newDicomElement(e, tag);
+    ec = DcmItem::newDicomElement(e, tag);
     if (ec == EC_Normal) {
         ec = e->putUint16(us);
     }

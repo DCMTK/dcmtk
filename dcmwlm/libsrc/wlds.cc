@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,9 +67,9 @@ WlmDataSource::WlmDataSource()
 
   // Initialize member variables.
   identifiers = new DcmDataset();
-  offendingElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
-  errorElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
-  errorComment = new DcmLongString( DCM_ErrorComment, 0 );
+  offendingElements = new DcmAttributeTag( DCM_OffendingElement);
+  errorElements = new DcmAttributeTag( DCM_OffendingElement);
+  errorComment = new DcmLongString( DCM_ErrorComment);
 }
 
 // ----------------------------------------------------------------------------

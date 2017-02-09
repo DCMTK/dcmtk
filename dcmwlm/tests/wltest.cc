@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -109,7 +109,7 @@ addOverrideKey(DcmDataset& overrideKeys, char* s)
         errmsg("unknown tag: (%04x,%04x)", g, e);
         usage();
     }
-    DcmElement *elem = newDicomElement(tag);
+    DcmElement *elem = DcmItem::newDicomElement(tag);
     if (elem == NULL) {
         errmsg("cannot create element for tag: (%04x,%04x)", g, e);
         usage();

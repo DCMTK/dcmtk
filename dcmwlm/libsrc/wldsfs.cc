@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2013, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -262,9 +262,9 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
   delete offendingElements;
   delete errorElements;
   delete errorComment;
-  offendingElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
-  errorElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
-  errorComment = new DcmLongString( DCM_ErrorComment, 0 );
+  offendingElements = new DcmAttributeTag( DCM_OffendingElement);
+  errorElements = new DcmAttributeTag( DCM_OffendingElement);
+  errorComment = new DcmLongString( DCM_ErrorComment);
 
   // Initialize member variable identifiers; this variable will contain the search mask.
   ClearDataset( identifiers );

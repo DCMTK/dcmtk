@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,9 +23,9 @@
 #define I2DOUTPL_H
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/oflog/oflog.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcelem.h"
-#include "dcmtk/oflog/oflog.h"
 #include "dcmtk/dcmdata/libi2d/i2define.h"
 
 
@@ -135,7 +135,7 @@ protected:
       elem = NULL;
       DcmTag tag(key); OFBool wasError = OFFalse;
       //if dicom element could be created, insert in to item and modify to value
-      if ( newDicomElement(elem, tag).good())
+      if ( DcmItem::newDicomElement(elem, tag).good())
       {
           if (targetDset->insert(elem, OFTrue).good())
           {
@@ -176,7 +176,7 @@ protected:
         DcmElement *elem = NULL;
         DcmTag tag(key); OFBool wasError = OFFalse;
         //if dicom element could be created, insert in to item and modify to value
-        if ( newDicomElement(elem, tag).good())
+        if ( DcmItem::newDicomElement(elem, tag).good())
         {
           if (targetDset->insert(elem, OFTrue).good())
           {
@@ -194,7 +194,7 @@ protected:
         if (wasError)
         {
           err += "Unable to insert type 2 attribute "; err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
-        }        
+        }
       }
       else
       {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2016, OFFIS e.V.
+ *  Copyright (C) 2003-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -198,7 +198,7 @@ static OFCondition createNewElement(xmlNodePtr current,
             if (dcmEVR != EVR_UNKNOWN)
                 dcmTag.setVR(dcmVR);
             /* create DICOM element */
-            result = newDicomElement(newElem, dcmTag);
+            result = DcmItem::newDicomElement(newElem, dcmTag);
         } else {
             OFLOG_WARN(xml2dcmLogger, "invalid 'tag' attribute (" << elemTag << "), ignoring node");
             result = EC_InvalidTag;
