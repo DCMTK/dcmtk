@@ -4195,23 +4195,23 @@ DcmElement* DcmItem::newDicomElement(const DcmTagKey& tag)
   DcmElement* elem = NULL;
       OFBool readAsUN = OFFalse;
       newDicomElement(
-        elem,
-        temp,
-        0,          // Length
-        NULL,       // Private creator
-        readAsUN);  // read as VR UN (result ignored)
+          elem,
+          temp,
+          0,          // Length
+          NULL,       // Private creator
+          readAsUN);  // read as VR UN (result ignored)
   return elem;
 }
 
 
 OFCondition DcmItem::newDicomElement(DcmElement*& newElement,
-                                               const DcmTagKey& tag)
+                                     const DcmTagKey& tag)
 {
     DcmTag temp(tag);
-    DcmElement* elem = NULL;
+    newElement = NULL;
     OFBool readAsUN = OFFalse;
     return newDicomElement(
-        elem,
+        newElement,
         temp,
         0,          // Length
         NULL,       // Private creator
@@ -4220,10 +4220,10 @@ OFCondition DcmItem::newDicomElement(DcmElement*& newElement,
 
 
 OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
-                                               DcmTag &tag,
-                                               const Uint32 length,
-                                               DcmPrivateTagCache *privateCreatorCache,
-                                               OFBool& readAsUN)
+                                     DcmTag &tag,
+                                     const Uint32 length,
+                                     DcmPrivateTagCache *privateCreatorCache,
+                                     OFBool& readAsUN)
 {
     /* initialize variables */
     OFCondition l_error = EC_Normal;
