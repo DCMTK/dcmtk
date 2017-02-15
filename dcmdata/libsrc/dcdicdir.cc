@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -395,10 +395,20 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
         l_error = EC_IllegalCall;
     else
     {
-        while ( startRec != NULL )
+        while ( (startRec != NULL) && l_error.good() )
         {
             DcmDirectoryRecord *lowerRec = NULL;
             DcmDirectoryRecord *nextRec = NULL;
+
+            // check whether directory record is really part of the given sequence:
+            if (&fromDirSQ != startRec->getParent())
+            {
+                DCMDATA_ERROR("DcmDicomDir: Record with offset=" << startRec->getFileOffset()
+                    << " is referenced more than once, ignoring later reference");
+                l_error = EC_InvalidDICOMDIR;
+                // exit the while loop
+                break;
+            }
 
             DcmUnsignedLongOffset *offElem;
             offElem = lookForOffsetElem( startRec, DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
@@ -408,8 +418,8 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
             if ( offElem != NULL )
                 nextRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
 
-            DCMDATA_TRACE("DcmDicomDir::moveRecordToTree() Record "
-                << startRec->getTag()
+            DCMDATA_TRACE("DcmDicomDir::moveRecordToTree() Record with"
+                << " offset=" << startRec->getFileOffset()
                 << " p=" << OFstatic_cast(void *, startRec)
                 << " has lower=" << OFstatic_cast(void *, lowerRec)
                 << " and next=" << OFstatic_cast(void *, nextRec) << " Record");
@@ -423,14 +433,17 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
                 DcmItem *dit = fromDirSQ.remove( startRec );
                 if ( dit == NULL )
                 {
-                    DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence");
+                    DCMDATA_ERROR("DcmDicomDir: Record with offset=" << startRec->getFileOffset()
+                        << " is part of unknown Sequence");
                 }
             }
             else
             {
                 DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() Cannot insert DirRecord (=NULL?)");
             }
-            moveRecordToTree( lowerRec, fromDirSQ, startRec );
+
+            // recursively call this method for next lower level:
+            l_error = moveRecordToTree( lowerRec, fromDirSQ, startRec );
 
             // We handled this record, now move on to the next one on this level.
             // The next while-loop iteration does the equivalent of the following:
@@ -475,6 +488,7 @@ OFCondition DcmDicomDir::convertLinearToTree()
 {
     DcmDataset &dset = getDataset();    // guaranteed to exist
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
+    // currently, always returns EC_Normal
     OFCondition l_error = resolveAllOffsets( dset );
 
     // search for first directory record:
@@ -484,15 +498,17 @@ OFCondition DcmDicomDir::convertLinearToTree()
         firstRootRecord = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
 
     // create tree structure from flat record list:
-    moveRecordToTree( firstRootRecord, localDirRecSeq, &getRootRecord() );
+    l_error = moveRecordToTree( firstRootRecord, localDirRecSeq, &getRootRecord() );
 
-    // move MRDRs from localDirRecSeq to global MRDRSeq:
-    moveMRDRbetweenSQs( localDirRecSeq, getMRDRSequence() );
+    if (l_error.good())
+    {
+        // move MRDRs from localDirRecSeq to global MRDRSeq:
+        moveMRDRbetweenSQs( localDirRecSeq, getMRDRSequence() );
 
-    // dissolve MRDR references for all remaining items
-    for (unsigned long i = localDirRecSeq.card(); i > 0; i-- )
-        linkMRDRtoRecord( OFstatic_cast(DcmDirectoryRecord *, localDirRecSeq.getItem(i-1)) );
-
+        // dissolve MRDR references for all remaining items
+        for (unsigned long i = localDirRecSeq.card(); i > 0; i-- )
+            linkMRDRtoRecord( OFstatic_cast(DcmDirectoryRecord *, localDirRecSeq.getItem(i-1)) );
+    }
     return l_error;
 }
 
