@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -509,7 +509,7 @@ DCMTK_MAIN_FUNCTION
     {
         if (!OFStandard::dirExists(opt_directory))
         {
-            OFLOG_FATAL(dcmgpdirLogger, "specified input directory does not exist");
+            OFLOG_FATAL(dcmgpdirLogger, OFFIS_CONSOLE_APPLICATION << ": specified input directory does not exist");
             return 1;
         }
     }
@@ -560,13 +560,21 @@ DCMTK_MAIN_FUNCTION
 #endif
 
     OFCondition result;
+    const char *action = "";
     /* create new general purpose DICOMDIR, append to or update existing one */
     if (opt_append)
+    {
+        action = "appending";
         result = ddir.appendToDicomDir(opt_profile, opt_output);
+    }
     else if (opt_update)
+    {
+        action = "updating";
         result = ddir.updateDicomDir(opt_profile, opt_output);
-    else
+    } else {
+        action = "creating";
         result = ddir.createNewDicomDir(opt_profile, opt_output, opt_fileset);
+    }
     if (result.good())
     {
         /* set fileset descriptor and character set */
@@ -619,8 +627,18 @@ DCMTK_MAIN_FUNCTION
             }
             /* write DICOMDIR file */
             if (result.good() && opt_write)
+            {
+                action = "writing";
                 result = ddir.writeDicomDir(opt_enctype, opt_glenc);
+            }
         }
+    }
+
+    /* some final error reporting */
+    if (result.bad() && (result != EC_IllegalCall))
+    {
+        OFLOG_FATAL(dcmgpdirLogger, OFFIS_CONSOLE_APPLICATION << ": error ("
+            << result.text() << ") " << action << " file: " << opt_output);
     }
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
