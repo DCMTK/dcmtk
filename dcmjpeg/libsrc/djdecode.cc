@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2016, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,7 +46,6 @@ void DJDecoderRegistration::registerCodecs(
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
     OFBool predictor6WorkaroundEnable,
-    OFBool pIgnoreDecoderErrors,
     OFBool pForceSingleFragmentPerFrame)
 {
   if (! registered)
@@ -57,7 +56,6 @@ void DJDecoderRegistration::registerCodecs(
       pCreateSOPInstanceUID,
       pPlanarConfiguration,
       predictor6WorkaroundEnable,
-      pIgnoreDecoderErrors,
       pForceSingleFragmentPerFrame);
 
     if (cp)
