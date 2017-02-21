@@ -1211,18 +1211,16 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    DcmItem *item,
                                    const signed long itemNum = -2);
 
-    /** creates new DICOM element from given attribute tag.
-     *  @param tag attribute tag of the element to be created.
-     *  @return pointer to newly created element returned in this parameter upon success,
-     *    NULL pointer otherwise
+    /** creates new DICOM element from given attribute tag
+     *  @param tag attribute tag of the element to be created
+     *  @return pointer to newly created element upon success, NULL pointer otherwise
      */
      static DcmElement *newDicomElement(const DcmTagKey &tag);
 
-    /** creates new anew DICOM element from given attribute tag.
-     *  @param newElement Pointer to newly created element returned in this parameter upon success,
-     *    NULL pointer otherwise
-     *  @param tag attribute tag of the element to be created.
-     *  @param length attribute value length of the element to be created
+    /** creates new DICOM element from given attribute tag
+     *  @param newElement pointer to newly created element returned in this parameter
+     *    upon success, NULL pointer otherwise
+     *  @param tag attribute tag of the element to be created
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition newDicomElement(DcmElement *&newElement,
@@ -1331,14 +1329,16 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  any memory for the element's value. Thus subsequent access to an element
      *  created by this method can lead to crashes. DcmItem instead initializes
      *  the value itself a bit later during the read process.
-     *  @param newElement pointer to newly created element returned in this parameter upon success,
-     *    NULL pointer otherwise
-     *  @param tag attribute tag of the element to be created. VR of tag
-     *    may be updated within the method.
+     *  @param newElement pointer to newly created element returned in this
+     *    parameter upon success, NULL pointer otherwise
+     *  @param tag attribute tag of the element to be created. VR of tag may be
+     *    updated within the method.
      *  @param length attribute value length of the element to be created
-     *  @param privateCreatorCache cache object for private creator strings in the current dataset
-     *  @param readAsUN flag indicating whether parser is currently handling a UN element that
-     *    must be read in implicit VR little endian; updated upon return
+     *  @param privateCreatorCache cache object for private creator strings in
+     *    the current dataset
+     *  @param readAsUN flag indicating whether parser is currently handling
+     *    UN element that must be read in implicit VR little endian; updated
+     *    upon return
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition newDicomElement(DcmElement *&newElement,
