@@ -638,6 +638,7 @@ public:
               if ( result.bad() )
               {
                   destination.findAndDeleteSequenceItem(seqKey, -1 /* last */);
+                  DCMIOD_ERROR("Could not write item #" << count << " in " << DcmTag(seqKey).getTagName() << ": " << result.text());
               }
             }
             else
