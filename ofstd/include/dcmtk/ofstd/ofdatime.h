@@ -263,6 +263,8 @@ class DCMTK_OFSTD_EXPORT OFDateTime
 
     /// let DcmDateTime access the members directly
     friend class DcmDateTime;
+    /// let DcmAttributeMatching access the members directly
+    friend class DcmAttributeMatching;
 
     /// currently stored date value
     OFDate Date;
