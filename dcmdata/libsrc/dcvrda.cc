@@ -193,37 +193,74 @@ OFCondition DcmDate::getDicomDateFromOFDate(const OFDate &dateValue,
     return l_error;
 }
 
+OFCondition DcmDate::getOFDateFromString(const OFString &dicomDate,
+                                         OFDate &dateValue)
+{
+    return getOFDateFromString(dicomDate.c_str(), dicomDate.size(), dateValue, OFTrue);
+}
 
 OFCondition DcmDate::getOFDateFromString(const OFString &dicomDate,
                                          OFDate &dateValue,
                                          const OFBool supportOldFormat)
 {
-    OFCondition l_error = EC_IllegalParameter;
-    /* clear result variable */
+    return getOFDateFromString(dicomDate.c_str(), dicomDate.size(), dateValue, supportOldFormat);
+}
+
+OFCondition DcmDate::getOFDateFromString(const char* dicomDate,
+                                         const size_t dicomDateSize,
+                                         OFDate &dateValue)
+{
+    return getOFDateFromString(dicomDate, dicomDateSize, dateValue, OFTrue);
+}
+
+OFCondition DcmDate::getOFDateFromString(const char* dicomDate,
+                                         const size_t dicomDateSize,
+                                         OFDate &dateValue,
+                                         const OFBool supportOldFormat)
+{
+    // clear result variable
     dateValue.clear();
-    /* fixed length (8 or 10 bytes) required by DICOM part 5 */
-    if ((dicomDate.length() == 8) && (dicomDate.find('.') == OFString_npos))
+    // fixed length 8 bytes required by DICOM part 5: YYYYMMDD
+    if (dicomDateSize == 8 && OFStandard::checkDigits<8>(dicomDate))
     {
-        unsigned int year, month, day;
-        /* extract components from date string */
-        if (sscanf(dicomDate.c_str(), "%04u%02u%02u", &year, &month, &day) == 3)
+        // extract components from date string
+        if
+        (
+            dateValue.setDate
+            (
+                OFStandard::extractDigits<unsigned int,4>(dicomDate),
+                OFStandard::extractDigits<unsigned int,2>(dicomDate + 4),
+                OFStandard::extractDigits<unsigned int,2>(dicomDate + 6)
+            )
+        )
         {
-            if (dateValue.setDate(year, month, day))
-                l_error = EC_Normal;
+            return EC_Normal;
         }
     }
-    /* old prior V3.0 version of VR=DA: YYYY.MM.DD */
-    else if (supportOldFormat && (dicomDate.length() == 10) && (dicomDate[4] == '.') && (dicomDate[7] == '.'))
+    // old prior V3.0 version of VR=DA with fixed length 10 bytes: YYYY.MM.DD
+    else if
+    (
+        supportOldFormat && dicomDateSize == 10 && dicomDate[4] == '.' && dicomDate[7] == '.' &&
+        OFStandard::checkDigits<4>(dicomDate) &&
+        OFStandard::checkDigits<2>(dicomDate + 5) &&
+        OFStandard::checkDigits<2>(dicomDate + 8)
+    )
     {
-        unsigned int year, month, day;
-        /* extract components from date string */
-        if (sscanf(dicomDate.c_str(), "%04u.%02u.%02u", &year, &month, &day) == 3)
+        // extract components from date string
+        if
+        (
+            dateValue.setDate
+            (
+                OFStandard::extractDigits<unsigned int,4>(dicomDate),
+                OFStandard::extractDigits<unsigned int,2>(dicomDate + 5),
+                OFStandard::extractDigits<unsigned int,2>(dicomDate + 8)
+            )
+        )
         {
-            if (dateValue.setDate(year, month, day))
-                l_error = EC_Normal;
+            return EC_Normal;
         }
     }
-    return l_error;
+    return EC_IllegalParameter;
 }
 
 

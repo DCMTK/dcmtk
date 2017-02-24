@@ -218,41 +218,109 @@ OFCondition DcmTime::getDicomTimeFromOFTime(const OFTime &timeValue,
     return l_error;
 }
 
+OFCondition DcmTime::getOFTimeFromString(const OFString &dicomTime,
+                                         OFTime &timeValue)
+{
+    return getOFTimeFromString(dicomTime.c_str(), dicomTime.size(), timeValue, OFTrue);
+}
 
 OFCondition DcmTime::getOFTimeFromString(const OFString &dicomTime,
                                          OFTime &timeValue,
                                          const OFBool supportOldFormat)
 {
-    OFCondition l_error = EC_IllegalParameter;
-    /* clear result variable */
+    return getOFTimeFromString(dicomTime.c_str(), dicomTime.size(), timeValue, supportOldFormat);
+}
+
+OFCondition DcmTime::getOFTimeFromString(const OFString &dicomTime,
+                                         OFTime &timeValue,
+                                         const OFBool supportOldFormat,
+                                         const double timeZone)
+{
+    return getOFTimeFromString(dicomTime.c_str(), dicomTime.size(), timeValue, supportOldFormat, timeZone);
+}
+
+OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
+                                         const size_t dicomTimeSize,
+                                         OFTime &timeValue)
+{
+    return getOFTimeFromString(dicomTime, dicomTimeSize, timeValue, OFTrue);
+}
+
+OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
+                                         const size_t dicomTimeSize,
+                                         OFTime &timeValue,
+                                         const OFBool supportOldFormat)
+{
+    return getOFTimeFromString(dicomTime, dicomTimeSize, timeValue, supportOldFormat, OFTime::getLocalTimeZone());
+}
+
+OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
+                                         const size_t dicomTimeSize,
+                                         OFTime &timeValue,
+                                         const OFBool supportOldFormat,
+                                         const double timeZone)
+{
+    // clear result variable
     timeValue.clear();
-    /* minimal check for valid format */
-    if (supportOldFormat || (dicomTime.find(":") == OFString_npos))
+    // do checks for any valid DICOM time format, before performing any extraction
+    if (dicomTimeSize < 2 || !OFStandard::checkDigits<2>(dicomTime))
+        return EC_IllegalParameter;
+    unsigned int minutes = 0;
+    double seconds = 0;
+    // test for HH[MM[SS[.FFFFFF]]] format
+    switch (dicomTimeSize)
     {
-        unsigned int hour, minute = 0;
-        double second = 0.0;
-        /* normalize time format (remove ":" chars) */
-        OFString string = dicomTime;
-        if ((string.length() > 5) && (string[5] == ':'))
-            string.erase(5, 1);
-        if ((string.length() > 2) && (string[2] == ':'))
-            string.erase(2, 1);
-        /* extract components from time string: HH[MM[SS[.FFFFFF]]] */
-       	/* scan seconds using OFStandard::atof to avoid locale issues */
-        if (sscanf(string.c_str(), "%02u%02u", &hour, &minute) >= 1)
+    default:
+        if (dicomTimeSize < 7 || dicomTime[6] != '.' || !parseFragment(dicomTime + 7, dicomTimeSize - 7, seconds))
+            break;
+    case 6:
+        if (OFStandard::checkDigits<2>(dicomTime + 4))
+            seconds += OFStandard::extractDigits<unsigned int,2>(dicomTime + 4);
+        else
+            break;
+    case 4:
+        if (OFStandard::checkDigits<2>(dicomTime + 2))
+            minutes = OFStandard::extractDigits<unsigned int,2>(dicomTime + 2);
+        else
+            break;
+    case 2:
+        if (timeValue.setTime(OFStandard::extractDigits<unsigned int,2>(dicomTime), minutes, seconds, timeZone))
+            return EC_Normal;
+        else
+            return EC_IllegalParameter;
+    }
+    // test for legacy time format HH[:MM[:SS[.FFFFFF]]], if enabled
+    if (supportOldFormat && dicomTimeSize >= 5 && dicomTime[2] == ':' && OFStandard::checkDigits<2>(dicomTime + 3))
+    {
+        seconds = 0;
+        switch (dicomTimeSize)
         {
-            if (string.length() > 4)
+        default:
+            if (dicomTimeSize < 9 || dicomTime[8] != '.' || !parseFragment(dicomTime + 9, dicomTimeSize - 9, seconds))
+                break;
+        case 8:
+            if (dicomTime[5] == ':' && OFStandard::checkDigits<2>(dicomTime + 6))
+                seconds += OFStandard::extractDigits<unsigned int,2>(dicomTime + 6);
+            else
+                break;
+        case 5:
+            if
+            (
+                timeValue.setTime
+                (
+                    OFStandard::extractDigits<unsigned int,2>(dicomTime),
+                    OFStandard::extractDigits<unsigned int,2>(dicomTime + 3),
+                    seconds,
+                    timeZone
+                )
+            )
             {
-                /* get optional seconds part */
-            	string.erase(0, 4);
-            	second = OFStandard::atof(string.c_str());
+                return EC_Normal;
             }
-            /* always use the local time zone */
-            if (timeValue.setTime(hour, minute, second, OFTime::getLocalTimeZone()))
-                l_error = EC_Normal;
+            break;
         }
     }
-    return l_error;
+    return EC_IllegalParameter;
 }
 
 
@@ -332,40 +400,28 @@ OFCondition DcmTime::getISOFormattedTimeFromString(const OFString &dicomTime,
     return result;
 }
 
-
 OFCondition DcmTime::getTimeZoneFromString(const OFString &dicomTimeZone,
                                            double &timeZone)
 {
-    OFCondition result = EC_IllegalParameter;
+    return getTimeZoneFromString(dicomTimeZone.c_str(), dicomTimeZone.size(), timeZone);
+}
+
+OFCondition DcmTime::getTimeZoneFromString(const char *dicomTimeZone,
+                                           const size_t dicomTimeZoneSize,
+                                           double &timeZone)
+{
     /* init return value */
     timeZone = 0;
     /* minimal check for valid format */
-    if (dicomTimeZone.length() == 5)
+    if (dicomTimeZoneSize == 5 && (dicomTimeZone[0] == '+' || dicomTimeZone[0] == '-') && OFStandard::checkDigits<4>(dicomTimeZone + 1))
     {
-        unsigned int hour;
-        unsigned int minute;
-        /* positive sign */
-        if (dicomTimeZone[0] == '+')
-        {
-            /* extract components from time zone string */
-            if (sscanf(dicomTimeZone.c_str() + 1, "%02u%02u", &hour, &minute) == 2)
-            {
-                timeZone = OFstatic_cast(double, hour) + OFstatic_cast(double, minute) / 60;
-                result = EC_Normal;
-            }
-        }
-        /* negative sign */
-        else if (dicomTimeZone[0] == '-')
-        {
-            /* extract components from time zone string */
-            if (sscanf(dicomTimeZone.c_str() + 1, "%02u%02u", &hour, &minute) == 2)
-            {
-                timeZone = -OFstatic_cast(double, hour) - OFstatic_cast(double, minute) / 60;
-                result = EC_Normal;
-            }
-        }
+        timeZone = OFstatic_cast(double, (OFStandard::extractDigits<unsigned,2>(dicomTimeZone + 1)))
+            + OFstatic_cast(double, (OFStandard::extractDigits<unsigned,2>(dicomTimeZone + 3))) / 60;
+        if (dicomTimeZone[0] == '-')
+            timeZone = -timeZone;
+        return EC_Normal;
     }
-    return result;
+    return EC_IllegalParameter;
 }
 
 
@@ -414,4 +470,17 @@ OFCondition DcmTime::checkStringValue(const OFString &value,
         }
     }
     return result;
+}
+
+OFBool DcmTime::parseFragment(const char* const string, const size_t size, double& result)
+{
+    const char* p = string + size - 1;
+    if (p >= string && OFStandard::checkDigits<1>( p ))
+    {
+        result = OFStandard::extractDigits<int,1>( p ) / 10.0;
+        while (--p >= string && OFStandard::checkDigits<1>( p ))
+            result = ( result + OFStandard::extractDigits<int,1>( p ) ) / 10.0;
+        return p < string;
+    }
+    return OFFalse;
 }

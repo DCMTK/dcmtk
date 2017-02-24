@@ -210,12 +210,102 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
      *  @param timeValue reference to OFTime variable where the result is stored
-     *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFTimeFromString(const OFString &dicomTime,
+                                           OFTime &timeValue);
+
+    /** get the specified DICOM time value in OFTime format.
+     *  Please note that the element value is expected to be in valid DICOM TM format
+     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  of backward compatibility). Since there is no time zone for the DICOM TM format
+     *  local time is assumed (the time zone of 'timeValue' is set automatically).
+     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the time would be unknown.
+     *  @param timeValue reference to OFTime variable where the result is stored
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
+     *    format (see above).
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getOFTimeFromString(const OFString &dicomTime,
                                            OFTime &timeValue,
-                                           const OFBool supportOldFormat = OFTrue);
+                                           const OFBool supportOldFormat);
+
+    /** get the specified DICOM time value in OFTime format.
+     *  Please note that the element value is expected to be in valid DICOM TM format
+     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  of backward compatibility). This overload of the function will set the time zone of
+     *  'timeValue' to the value given via the 'timeZone' parameter.
+     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the time would be unknown.
+     *  @param timeValue reference to OFTime variable where the result is stored
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
+     *    format (see above).
+     *  @param timeZone the time zone to set for 'timeValue'.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFTimeFromString(const OFString &dicomTime,
+                                           OFTime &timeValue,
+                                           const OFBool supportOldFormat,
+                                           const double timeZone);
+
+    /** get the specified DICOM time value in OFTime format.
+     *  Please note that the element value is expected to be in valid DICOM TM format
+     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  of backward compatibility). Since there is no time zone for the DICOM TM format
+     *  local time is assumed (the time zone of 'timeValue' is set automatically).
+     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the time would be unknown.
+     *  @param dicomTimeSize the size (in bytes) of the string dicomTime refers to.
+     *  @param timeValue reference to OFTime variable where the result is stored
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFTimeFromString(const char *dicomTime,
+                                           const size_t dicomTimeSize,
+                                           OFTime &timeValue);
+
+    /** get the specified DICOM time value in OFTime format.
+     *  Please note that the element value is expected to be in valid DICOM TM format
+     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  of backward compatibility). Since there is no time zone for the DICOM TM format
+     *  local time is assumed (the time zone of 'timeValue' is set automatically).
+     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the time would be unknown.
+     *  @param dicomTimeSize the size (in bytes) of the string dicomTime refers to.
+     *  @param timeValue reference to OFTime variable where the result is stored
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
+     *    format (see above).
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFTimeFromString(const char *dicomTime,
+                                           const size_t dicomTimeSize,
+                                           OFTime &timeValue,
+                                           const OFBool supportOldFormat);
+
+    /** get the specified DICOM time value in OFTime format.
+     *  Please note that the element value is expected to be in valid DICOM TM format
+     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  of backward compatibility). This overload of the function will set the time zone of
+     *  'timeValue' to the value given via the 'timeZone' parameter.
+     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the time would be unknown.
+     *  @param dicomTimeSize the size (in bytes) of the string dicomTime refers to.
+     *  @param timeValue reference to OFTime variable where the result is stored
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
+     *    format (see above).
+     *  @param timeZone the time zone to set for 'timeValue'.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFTimeFromString(const char *dicomTime,
+                                           const size_t dicomTimeSize,
+                                           OFTime &timeValue,
+                                           const OFBool supportOldFormat,
+                                           const double timeZone);
 
     /** get the specified DICOM time value in ISO format.
      *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]" where the
@@ -231,7 +321,8 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *   (requires parameter 'seconds' to be also OFTrue)
      *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
      *   part of a seconds) if absent in the DICOM TM value
-     *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
+     *    format (see above).
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getISOFormattedTimeFromString(const OFString &dicomTime,
@@ -256,6 +347,23 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     static OFCondition getTimeZoneFromString(const OFString &dicomTimeZone,
                                              double &timeZone);
 
+    /** get the specified DICOM time zone in number of hours format
+     *  DICOM standard states that if the "Timezone Offset From UTC" attribute (0008,0201) is
+     *  present it applies to all TM attributes in the object. This functions allows to convert
+     *  the DICOM format ("&ZZZZ" where "&" is "+" or "-" and "ZZZZ" hours and minutes) to a
+     *  floating point value, e.g. "+1.0" means plus one hour and "-2.5" minus two and a half
+     *  hour, i.e. 2 hours and 30 minutes.
+     *  The resulting 'timeZone' value can be used in conjuction with a OFTime object to convert
+     *  the time to different time zones (e.g. to local time or UTC).
+     *  @param dicomTimeZone string value in DICOM format ("&ZZZZ") to be converted
+     *  @param timeZone reference to floating point variable where the resulting UTC offset is stored
+     *  @param dicomTimeZoneSize the size (in bytes) of the string dicomTimeZone refers to.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getTimeZoneFromString(const char *dicomTimeZone,
+                                             const size_t dicomTimeZoneSize,
+                                             double &timeZone);
+
     /** check whether given string value conforms to the VR "TM" (Time)
      *  and to the specified VM.
      *  @param value string value to be checked (possibly multi-valued)
@@ -267,6 +375,16 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     static OFCondition checkStringValue(const OFString &value,
                                         const OFString &vm = "1-n",
                                         const OFBool oldFormat = OFFalse);
+
+private:
+
+    /** parse the fragment part of a DICOM time string.
+     *  @param string a pointer to the beginning of the fragment portion of a DICOM time string.
+     *  @param size the size (in bytes) of the given string value.
+     *  @param result a reference to a double value that will receive the result.
+     *  @return OFTrue if the fragment was parsed successfully, OFFalse otherwise.
+     */
+    static OFBool parseFragment(const char* string, const size_t size, double& result);
 };
 
 

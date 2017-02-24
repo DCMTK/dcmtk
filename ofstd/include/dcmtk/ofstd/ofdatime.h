@@ -261,6 +261,9 @@ class DCMTK_OFSTD_EXPORT OFDateTime
 
  private:
 
+    /// let DcmDateTime access the members directly
+    friend class DcmDateTime;
+
     /// currently stored date value
     OFDate Date;
 

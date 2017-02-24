@@ -175,12 +175,56 @@ class DCMTK_DCMDATA_EXPORT DcmDate
      *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
      *    An empty string is not regarded as valid input, since the date would be unknown.
      *  @param dateValue reference to OFDate variable where the result is stored
-     *  @param supportOldFormat if OFTrue support old (prior V3.0) date format (see above)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFDateFromString(const OFString &dicomDate,
+                                           OFDate &dateValue);
+
+    /** get the specified DICOM date value in OFDate format.
+     *  Please note that the specified value is expected to be in valid DICOM DA format
+     *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
+     *  If this function fails, the result variable 'dateValue' is cleared automatically.
+     *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the date would be unknown.
+     *  @param dateValue reference to OFDate variable where the result is stored
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) date
+     *    format (see above).
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getOFDateFromString(const OFString &dicomDate,
                                            OFDate &dateValue,
-                                           const OFBool supportOldFormat = OFTrue);
+                                           const OFBool supportOldFormat);
+
+    /** get the specified DICOM date value in OFDate format.
+     *  Please note that the specified value is expected to be in valid DICOM DA format
+     *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
+     *  If this function fails, the result variable 'dateValue' is cleared automatically.
+     *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the date would be unknown.
+     *  @param dicomDateSize the size (in bytes) of the string dicomDate refers to.
+     *  @param dateValue reference to OFDate variable where the result is stored
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFDateFromString(const char *dicomDate,
+                                           const size_t dicomDateSize,
+                                           OFDate &dateValue);
+
+    /** get the specified DICOM date value in OFDate format.
+     *  Please note that the specified value is expected to be in valid DICOM DA format
+     *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
+     *  If this function fails, the result variable 'dateValue' is cleared automatically.
+     *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
+     *    An empty string is not regarded as valid input, since the date would be unknown.
+     *  @param dicomDateSize the size (in bytes) of the string dicomDate refers to.
+     *  @param dateValue reference to OFDate variable where the result is stored
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) date
+     *    format (see above).
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFDateFromString(const char *dicomDate,
+                                           const size_t dicomDateSize,
+                                           OFDate &dateValue,
+                                           const OFBool supportOldFormat);
 
     /** get the specified DICOM date value in ISO format.
      *  The ISO date format supported by this function is "YYYY-MM-DD". Please note

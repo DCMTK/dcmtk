@@ -225,45 +225,61 @@ OFCondition DcmDateTime::getDicomDateTimeFromOFDateTime(const OFDateTime &dateTi
     return l_error;
 }
 
-
 OFCondition DcmDateTime::getOFDateTimeFromString(const OFString &dicomDateTime,
                                                  OFDateTime &dateTimeValue)
 {
-    OFCondition l_error = EC_IllegalParameter;
-    /* clear result variable */
+    return getOFDateTimeFromString(dicomDateTime.c_str(), dicomDateTime.size(), dateTimeValue);
+}
+
+OFCondition DcmDateTime::getOFDateTimeFromString(const char *dicomDateTime,
+                                                 const size_t dicomDateTimeSize,
+                                                 OFDateTime &dateTimeValue)
+{
+    // clear result variable
     dateTimeValue.clear();
-    /* minimal check for valid format: YYYYMMDD */
-    if (dicomDateTime.length() >= 8)
+    /* minimal check for valid format: YYYY */
+    if (dicomDateTimeSize < 4 || !OFStandard::checkDigits<4>(dicomDateTime))
+        return EC_IllegalParameter;
+    unsigned int month = 1;
+    unsigned int day = 1;
+    switch(dicomDateTimeSize)
     {
-        OFString string;
-        unsigned int year, month, day;
-        unsigned int hour = 0;
-        unsigned int minute = 0;
-        double second = 0;
-        double timeZone = 0;
-        /* check whether optional time zone is present and extract the value if so */
-        if (DcmTime::getTimeZoneFromString(dicomDateTime.substr(dicomDateTime.length() - 5), timeZone).good())
-            string = dicomDateTime.substr(0, dicomDateTime.length() - 5);
+    default:
+        // check whether a time value is contained or it is simply an error
+        if (dicomDateTimeSize >= 10)
+        {
+            double timeZone;
+            OFCondition status;
+            if (DcmTime::getTimeZoneFromString(dicomDateTime + dicomDateTimeSize - 5, 5, timeZone).good())
+                status = DcmTime::getOFTimeFromString(dicomDateTime + 8, dicomDateTimeSize - 13, dateTimeValue.Time, OFFalse, timeZone);
+            else
+                status = DcmTime::getOFTimeFromString(dicomDateTime + 8, dicomDateTimeSize - 8, dateTimeValue.Time, OFFalse);
+            if (status.bad())
+                return status;
+        }
+        else break;
+
+    case 8:
+        if (OFStandard::checkDigits<2>(dicomDateTime + 6))
+            day = OFStandard::extractDigits<unsigned int,2>(dicomDateTime + 6);
         else
+            break;
+    case 6:
+        if (OFStandard::checkDigits<2>(dicomDateTime + 4))
+            month = OFStandard::extractDigits<unsigned int,2>(dicomDateTime + 4);
+        else
+            break;
+    case 4:
+        if (dateTimeValue.Date.setDate(OFStandard::extractDigits<unsigned int,4>(dicomDateTime), month, day))
         {
-            string = dicomDateTime;
-            /* no time zone specified, therefore, use the local one */
-            timeZone = OFTime::getLocalTimeZone();
+            // set timezone if it hasn't been set
+            if (dicomDateTimeSize <= 8)
+                dateTimeValue.Time.setTimeZone(OFTime::getLocalTimeZone());
+            return EC_Normal;
         }
-        /* extract remaining components from date/time string: YYYYMMDDHHMM[SS[.FFFFFF]] */
-        /* scan seconds using OFStandard::atof to avoid locale issues */
-        if (sscanf(string.c_str(), "%04u%02u%02u%02u%02u", &year, &month, &day, &hour, &minute) >= 3)
-        {
-            if (string.length() > 12)
-            {
-                string.erase(0, 12);
-                second = OFStandard::atof(string.c_str());
-            }
-            if (dateTimeValue.setDateTime(year, month, day, hour, minute, second, timeZone))
-                l_error = EC_Normal;
-        }
+        break;
     }
-    return l_error;
+    return EC_IllegalParameter;
 }
 
 
