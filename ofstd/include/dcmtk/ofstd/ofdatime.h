@@ -94,7 +94,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      */
     virtual OFBool operator==(const OFDateTime &dateTime) const;
 
-    /** comparison operator (unequal)
+    /** comparison operator (unequal).
      *  Please note that the time values are first transformed to the Coordinated Universal
      *  Time (UTC) before they are compared. However, the special case that there is an
      *  "overflow" from one day to another is currently not handled.
@@ -103,7 +103,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      */
     virtual OFBool operator!=(const OFDateTime &dateTime) const;
 
-    /** comparison operator (less than)
+    /** comparison operator (less than).
      *  Please note that the time values are first transformed to the Coordinated Universal
      *  Time (UTC) before they are compared. However, the special case that there is an
      *  "overflow" from one day to another is currently not handled.
@@ -113,7 +113,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      */
     virtual OFBool operator<(const OFDateTime &dateTime) const;
 
-    /** comparison operator (less than or equal)
+    /** comparison operator (less than or equal).
      *  Please note that the time values are first transformed to the Coordinated Universal
      *  Time (UTC) before they are compared. However, the special case that there is an
      *  "overflow" from one day to another is currently not handled.
@@ -123,7 +123,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      */
     virtual OFBool operator<=(const OFDateTime &dateTime) const;
 
-    /** comparison operator (greater than or equal)
+    /** comparison operator (greater than or equal).
      *  Please note that the time values are first transformed to the Coordinated Universal
      *  Time (UTC) before they are compared. However, the special case that there is an
      *  "overflow" from one day to another is currently not handled.
@@ -133,7 +133,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      */
     virtual OFBool operator>=(const OFDateTime &dateTime) const;
 
-    /** comparison operator (greater than)
+    /** comparison operator (greater than).
      *  Please note that the time values are first transformed to the Coordinated Universal
      *  Time (UTC) before they are compared. However, the special case that there is an
      *  "overflow" from one day to another is currently not handled.
