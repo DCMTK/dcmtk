@@ -102,6 +102,32 @@ OFBool OFDateTime::operator!=(const OFDateTime &dateTime) const
 }
 
 
+OFBool OFDateTime::operator<(const OFDateTime &dateTime) const
+{
+    /* note that the "overflow" from one day to another is currently not handled */
+    return Date < dateTime.Date || (Date == dateTime.Date && Time < dateTime.Time);
+}
+
+
+OFBool OFDateTime::operator<=(const OFDateTime &dateTime) const
+{
+    /* note that the "overflow" from one day to another is currently not handled */
+    return Date < dateTime.Date || (Date == dateTime.Date && Time <= dateTime.Time);
+}
+
+
+OFBool OFDateTime::operator>(const OFDateTime &dateTime) const
+{
+    return dateTime < *this;
+}
+
+
+OFBool OFDateTime::operator>=(const OFDateTime &dateTime) const
+{
+    return dateTime <= *this;
+}
+
+
 void OFDateTime::clear()
 {
     Date.clear();

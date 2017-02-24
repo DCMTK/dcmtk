@@ -43,7 +43,7 @@ END_EXTERN_C
  */
 class DCMTK_OFSTD_EXPORT OFDate
 {
-    // allow class OFDateTime to access protected class members
+    /// allow class OFDateTime to access protected class members
     friend class OFDateTime;
 
 

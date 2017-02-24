@@ -126,6 +126,11 @@ OFTEST(ofstd_OFDateTime)
     OFCHECK_EQUAL(dateTime1, dateTime2);
     /* "overflow" from one day to another is currently not handled by OFDateTime */
     OFCHECK(dateTime1 != OFDateTime(2001, 1, 1, 0, 15, 30, 12) /* should be equal */);
+    OFCHECK(dateTime1 < OFDateTime(2001, 1, 1, 0, 15, 30, 2) /* should be less */);
+    OFCHECK(dateTime1 <= OFDateTime(2001, 1, 1, 0, 15, 30, 12) /* should be less or equal */);
+    OFCHECK(OFDateTime(2000, 12, 31, 12, 15, 30, -.5) > dateTime1 /* should be greater */);
+    OFCHECK(OFDateTime(2000, 12, 31, 12, 15, 30, -.5) >= dateTime1 /* should be greater or equal */);
+    OFCHECK(dateTime1 >= dateTime1 /* should be greater or equal */);
     OFCHECK(dateTime1.getISOFormattedDateTime(tmpString));
     OFCHECK_EQUAL(tmpString, "2000-12-31 12:15:30");
     OFCHECK(dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/,
