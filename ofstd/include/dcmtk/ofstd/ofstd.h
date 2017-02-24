@@ -884,6 +884,76 @@ class DCMTK_OFSTD_EXPORT OFStandard
       }
     }
 
+#ifdef DOXYGEN
+    /** checks if a string only contains valid decimal digits, i.e.\ 0-9.
+     *  @tparam Count the number of characters (bytes) to check.
+     *  @param string a pointer to a character array to check.
+     *  @return OFTrue if all characters are valid decimal digits, OFFalse
+     *    if at least one non-digit character is encountered.
+     */
+    template<size_t Count>
+    static OFBool checkDigits(const char* string);
+
+    /** extracts digits from a string and converts them to the given integer
+     *  number type.
+     *  The result is similar to calling atoi, but extractDigits does not
+     *  verify all characters are digits and does not require zero terminated
+     *  strings. It is meant to be used in conjunction with
+     *  OFStandard::checkDigits(). extractDigits does not handle sign
+     *  characters ('+' and '-').
+     *  @tparam T the type of the resulting value, e.g.\ unsigned int. Must
+     *    be a valid integer type, i.e.\ OFnumeric_limits<T>::is_integer must
+     *    be OFTrue.
+     *  @tparam Count the number of digits to extract. Must be greater zero
+     *    and less or equal to OFnumeric_limits<T>::digits
+     *  @param string a pointer to a character array to extract digits from.
+     *  @return a value of type T that is equivalent to the number represented
+     *    by the digits.
+     *  @details
+     *  @warning The results are unspecified if the given string contains
+     *    non-digit characters.
+     */
+    template<typename T,size_t Count>
+    static T extractDigits(const char*);
+#else
+    template<size_t Count>
+    static OFTypename OFenable_if<!Count,OFBool>::type
+    checkDigits(const char* string)
+    {
+        return OFTrue;
+    }
+
+    template<size_t Count>
+    static OFTypename OFenable_if<Count,OFBool>::type
+    checkDigits(const char* string)
+    {
+        return *string >= '0' && *string <= '9' &&
+            checkDigits<Count-1>( string + 1 );
+    }
+
+    template<typename T,size_t Count>
+    static OFTypename OFenable_if
+    <
+        OFnumeric_limits<T>::is_integer && Count == 1,
+        T
+    >::type extractDigits(const char* string)
+    {
+        return *string - '0';
+    }
+
+    template<typename T,size_t Count>
+    static OFTypename OFenable_if
+    <
+        OFnumeric_limits<T>::is_integer && ( Count > 1 ) &&
+             OFnumeric_limits<T>::digits >= Count,
+        T
+    >::type extractDigits(const char* string)
+    {
+        return extractDigits<T,Count-1>( string ) * 10
+            + extractDigits<T,1>( string + Count - 1 );
+    }
+#endif
+
     /** Thread-safe version of gethostbyname.
      *  @param name the host name.
      *  @return a OFStandard::OFHostent object.
