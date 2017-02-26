@@ -89,7 +89,7 @@ END_EXTERN_C
 // OFListLinkBase, OFListLink and OFListBase are classes for internal
 // use only and shall not be used.
 
-/* non-template double linked list. Base class fo OFListLink.
+/* non-template double linked list. Base class of OFListLink.
  * Implicitly used by OFList, should not be called by users.
  */
 struct OFListLinkBase
@@ -406,10 +406,10 @@ public:
      */
     void insert(OFIterator<T> position, size_t n, const T& x)
     {
-      while(n) 
+      while(n)
       {
         --n;
-      	OFListBase::base_insert(position.node, new OFListLink<T>(x));
+        OFListBase::base_insert(position.node, new OFListLink<T>(x));
       }
     }
 
