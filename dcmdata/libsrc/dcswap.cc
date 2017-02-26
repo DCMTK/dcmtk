@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -87,8 +87,9 @@ void swapBytes(void * value, const Uint32 byteLength,
         Uint8 *first = &OFstatic_cast(Uint8*, value)[0];
         Uint8 *second = &OFstatic_cast(Uint8*, value)[1];
         Uint32 times = byteLength / 2;
-        while(times--)
+        while(times)
         {
+            --times;
             save = *first;
             *first = *second;
             *second = save;
@@ -108,13 +109,15 @@ void swapBytes(void * value, const Uint32 byteLength,
         Uint32 times = OFstatic_cast(Uint32, byteLength / valWidth);
         Uint8  *base = OFstatic_cast(Uint8 *, value);
 
-        while (times--)
+        while (times)
         {
+            --times;
             i = halfWidth;
             start = base;
             end = base+offset;
-            while (i--)
+            while (i)
             {
+                --i;
                 save = *start;
                 *start++ = *end;
                 *end-- = save;

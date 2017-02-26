@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,7 +82,9 @@ OFBool OFFilenameCreator::makeFilename(unsigned int &seed, const char *dir, cons
     }
     if (prefix) filename += prefix;
     addLongToString(creation_time, filename);
-    addLongToString(((OFrand_r(seed) << 16) | OFrand_r(seed)), filename);
+    // on some systems OFrand_r may produce only 16-bit random numbers.
+    // To be on the safe side, we use two random numbers for the upper and the lower 16 bits.
+    addLongToString((((OFrand_r(seed) & 0xFFFF) << 16) | (OFrand_r(seed) & 0xFFFF)), filename);
     if (postfix) filename += postfix;
 
     // check if filename exists

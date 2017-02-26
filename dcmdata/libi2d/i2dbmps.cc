@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2013, OFFIS e.V.
+ *  Copyright (C) 2009-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -326,7 +326,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
   const Uint32 row_length = ((width * bpp + 31) / 32) * 4;
   Uint8 *row_data;
   Uint32 y;
-  Sint32 direction;
+  OFBool positive_direction;
   Uint32 max;
 
   // "palette" may only be NULL if colors is 0 and vice versa
@@ -341,14 +341,14 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
   {
     /* This is a top-down BMP, we start at the first row and work our way down */
     y = 1;
-    direction = 1;
+    positive_direction = OFTrue;
     max = height + 1;
   }
   else
   {
     /* Bottom-up BMP, we start with the last row and work our way up */
     y = height;
-    direction = -1;
+    positive_direction = OFFalse;
     max = 0;
   }
 
@@ -367,7 +367,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
   }
 
   /* Go through each row of the image */
-  for (; y != max; y += direction)
+  for (; y != max; (positive_direction ? ++y : --y))
   {
     /* Calculate posData for this line, it is the index of the first byte for
      * this line. ( -1 because we start at index 1, but C at index 0)

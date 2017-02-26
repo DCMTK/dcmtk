@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -406,7 +406,11 @@ public:
      */
     void insert(OFIterator<T> position, size_t n, const T& x)
     {
-      while(n--) OFListBase::base_insert(position.node, new OFListLink<T>(x));
+      while(n) 
+      {
+        --n;
+      	OFListBase::base_insert(position.node, new OFListLink<T>(x));
+      }
     }
 
     /** removes the element at the given position from the list.
