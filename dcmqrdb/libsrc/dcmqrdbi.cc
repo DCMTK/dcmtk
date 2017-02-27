@@ -797,6 +797,15 @@ DcmQueryRetrieveDatabaseHandle::~DcmQueryRetrieveDatabaseHandle()
 
 /* ========================= FIND ========================= */
 
+// helper function to print 'ASCII' instead of an empty string for the value of
+// Specific Character Set
+static const char* characterSetName( const OFString& charset )
+{
+    if (charset.empty())
+        return "ASCII";
+    return charset.c_str();
+}
+
 class DcmQueryRetrieveIndexDatabaseHandle::CharsetConsideringMatcher
 {
 public:
@@ -865,6 +874,7 @@ public:
 
         DcmVR vr = DcmTag(query->elem.XTag).getVR();
         if (isConversionNecessary && vr.isAffectedBySpecificCharacterSet()) {
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
             // convert query, if it isn't UTF-8 or ASCII already
             if (isFindRequestConversionNecessary) {
                 // does a value already exist in the cache?
@@ -873,16 +883,27 @@ public:
                     query->utf8Value = OFString();
                     // initialize the converter, if this is the first
                     // time we need it
+                    OFCondition cond = EC_Normal;
                     if (!findRequestConverter)
-                        findRequestConverter.selectCharacterSet(findRequestCharacterSet);
-                    // covert the string and cache the result, using the
-                    // specific delimitation characters for this VR
-                    findRequestConverter.convertString(
-                        query->elem.PValueField,
-                        query->elem.ValueLength,
-                        *query->utf8Value,
-                        vr.getDelimiterChars()
-                    );
+                        cond = findRequestConverter.selectCharacterSet(findRequestCharacterSet);
+                    if (cond.good()) {
+                        // covert the string and cache the result, using the
+                        // specific delimitation characters for this VR
+                        cond = findRequestConverter.convertString(
+                            query->elem.PValueField,
+                            query->elem.ValueLength,
+                            *query->utf8Value,
+                            vr.getDelimiterChars()
+                        );
+                    }
+                    if (cond.bad()) {
+                        DCMQRDB_WARN("Character set conversion of the query key failed with the following error: '" << cond.text()
+                            << "', will compare values that use different (incompatible) character sets: \""
+                            << characterSetName(findRequestCharacterSet) << "\" and \"" << characterSetName(candidateCharacterSet) << '"');
+                        // put the original value in the cache, since retrying the conversion on the next encounter does not make sense
+                        // (it would only fail again).
+                        query->utf8Value = OFString(query->elem.PValueField, query->elem.ValueLength);
+                    }
                 }
                 // use the value from the cache for the following match
                 // operations
@@ -893,21 +914,34 @@ public:
             if (isCandidateConversionNecessary) {
                 // initialize the converter, if this is the first time
                 // we need it for this entry
+                OFCondition cond = EC_Normal;
                 if (!candidateConverter)
-                    candidateConverter.selectCharacterSet(candidateCharacterSet);
-                // convert the string using the local buffer and the
-                // specific delimitation characters for this VR
-                candidateConverter.convertString(
-                    candidate->PValueField,
-                    candidate->ValueLength,
-                    buffer,
-                    vr.getDelimiterChars()
-                );
-                // assign the buffer contents to the value being used
-                // in the following match operations
-                pCandidate = buffer.c_str();
-                pCandidateEnd = pCandidate + buffer.size();
+                    cond = candidateConverter.selectCharacterSet(candidateCharacterSet);
+                if (cond.good()) {
+                    // convert the string using the local buffer and the
+                    // specific delimitation characters for this VR
+                    cond = candidateConverter.convertString(
+                        candidate->PValueField,
+                        candidate->ValueLength,
+                        buffer,
+                        vr.getDelimiterChars()
+                    );
+                }
+                if (cond.good()) {
+                    // assign the buffer contents to the value being used
+                    // in the following match operations
+                    pCandidate = buffer.c_str();
+                    pCandidateEnd = pCandidate + buffer.size();
+                } else {
+                    DCMQRDB_WARN("Character set conversion of the candidate failed with the following error: '" << cond.text()
+                        << "', will compare values that use different (incompatible) character sets: \""
+                        << characterSetName(findRequestCharacterSet) << "\" and \"" << characterSetName(candidateCharacterSet) << '"');
+                }
             }
+#else
+            DCMQRDB_WARN("Character set conversion is not available, comparing values that use different (incompatible) character sets: \""
+                << characterSetName(findRequestCharacterSet) << "\" and \"" << characterSetName(candidateCharacterSet) << '"');
+#endif
         }
 
         // remove leading and trailing spaces before matching
@@ -1561,15 +1595,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         return (EC_Normal) ;
     }
 
-}
-
-// helper function to print 'ASCII' instead of an empty string for the value of
-// Specific Character Set
-static const char* characterSetName( const OFString& charset )
-{
-    if (charset.empty())
-        return "ASCII";
-    return charset.c_str();
 }
 
 /********************
