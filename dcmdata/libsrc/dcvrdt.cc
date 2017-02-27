@@ -232,7 +232,7 @@ OFCondition DcmDateTime::getOFDateTimeFromString(const OFString &dicomDateTime,
 }
 
 OFCondition DcmDateTime::getOFDateTimeFromString(const char *dicomDateTime,
-                                                 const size_t dicomDateTimeSize,
+                                                 size_t dicomDateTimeSize,
                                                  OFDateTime &dateTimeValue)
 {
     // clear result variable
@@ -242,18 +242,23 @@ OFCondition DcmDateTime::getOFDateTimeFromString(const char *dicomDateTime,
         return EC_IllegalParameter;
     unsigned int month = 1;
     unsigned int day = 1;
+    double timeZone;
+    // check for/extract time zone
+    if (dicomDateTimeSize >= 9 && DcmTime::getTimeZoneFromString(dicomDateTime + dicomDateTimeSize - 5, 5, timeZone).good())
+        dicomDateTimeSize -= 5;
+    else
+        timeZone = OFTime::getLocalTimeZone();
     switch(dicomDateTimeSize)
     {
     default:
         // check whether a time value is contained or it is simply an error
         if (dicomDateTimeSize >= 10)
         {
-            double timeZone;
-            OFCondition status;
-            if (DcmTime::getTimeZoneFromString(dicomDateTime + dicomDateTimeSize - 5, 5, timeZone).good())
-                status = DcmTime::getOFTimeFromString(dicomDateTime + 8, dicomDateTimeSize - 13, dateTimeValue.Time, OFFalse, timeZone);
-            else
-                status = DcmTime::getOFTimeFromString(dicomDateTime + 8, dicomDateTimeSize - 8, dateTimeValue.Time, OFFalse);
+            OFCondition status = DcmTime::getOFTimeFromString(dicomDateTime + 8,
+                                                              dicomDateTimeSize - 8,
+                                                              dateTimeValue.Time,
+                                                              OFFalse, // no support for HH:MM:SS in VR=DT
+                                                              timeZone);
             if (status.bad())
                 return status;
         }
@@ -274,7 +279,7 @@ OFCondition DcmDateTime::getOFDateTimeFromString(const char *dicomDateTime,
         {
             // set timezone if it hasn't been set
             if (dicomDateTimeSize <= 8)
-                dateTimeValue.Time.setTimeZone(OFTime::getLocalTimeZone());
+                dateTimeValue.Time.setTimeZone(timeZone);
             return EC_Normal;
         }
         break;
