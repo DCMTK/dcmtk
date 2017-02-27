@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2016, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,6 +31,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/ofstd/ofmap.h"
+#include "dcmtk/ofstd/ofchrenc.h"
 
 OFLogger DCM_dcmqrdbLogger = OFLog::getLogger("dcmtk.dcmqrdb");
 
@@ -60,6 +61,48 @@ static void freeConfigHostEntry(OFMap<const void *, OFBool> &pointersToFree, str
     }
     free(OFconst_cast(char *, entry->SymbolicName));
     free(entry->Peers);
+}
+
+DcmQueryRetrieveCharacterSetOptions::DcmQueryRetrieveCharacterSetOptions()
+: characterSet()
+, flags(0)
+, conversionFlags(0)
+{
+
+}
+
+OFBool DcmQueryRetrieveCharacterSetOptions::parseOptions(const char* mnemonic, char* valueptr)
+{
+    struct RAIIFree
+    {
+        RAIIFree(char* ptr) : ptr(ptr) {}
+        ~RAIIFree() {free(ptr);}
+        char* ptr;
+    };
+    if (strcmp(mnemonic,"SpecificCharacterSet") != 0)
+        return OFFalse;
+    characterSet.clear();
+    flags = Configured;
+    conversionFlags = 0;
+    for (char* c = DcmQueryRetrieveConfig::parsevalues(&valueptr); c;
+         c = DcmQueryRetrieveConfig::parsevalues(&valueptr)) {
+        // ensure free is called when this scope is left
+        RAIIFree cleanup(c);
+        if (!strcmp(c, "override")) {
+            flags |= Override;
+        } else if(!strcmp(c, "fallback")) {
+            flags |= Fallback;
+        } else if(!strcmp(c, "abort")) {
+            conversionFlags |= OFCharacterEncoding::AbortTranscodingOnIllegalSequence;
+        } else if(!strcmp(c, "discard")) {
+            conversionFlags |= OFCharacterEncoding::DiscardIllegalSequences;
+        } else if(!strcmp(c, "transliterate")) {
+            conversionFlags |= OFCharacterEncoding::TransliterateIllegalSequences;
+        } else {
+            characterSet = c;
+        }
+    }
+    return OFTrue;
 }
 
 DcmQueryRetrieveConfig::~DcmQueryRetrieveConfig()
@@ -344,6 +387,10 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
       else if (!strcmp("DisplayPort", mnemonic))
       {
         // ignore this entry which was needed for ctndisp
+      }
+      else if (characterSetOptions_.parseOptions(mnemonic, valueptr))
+      {
+        // already handled by parseOptions(), nothing else to do
       }
       else if (!strcmp("HostTable", mnemonic)) {
          sscanf(valueptr, "%s", value);
@@ -1051,4 +1098,14 @@ const char *DcmQueryRetrieveConfig::getUserName() const
 const char *DcmQueryRetrieveConfig::getGroupName() const
 {
    return GroupName_.c_str();
+}
+
+const DcmQueryRetrieveCharacterSetOptions& DcmQueryRetrieveConfig::getCharacterSetOptions() const
+{
+   return characterSetOptions_;
+}
+
+DcmQueryRetrieveCharacterSetOptions& DcmQueryRetrieveConfig::getCharacterSetOptions()
+{
+   return characterSetOptions_;
 }

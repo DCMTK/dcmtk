@@ -267,7 +267,7 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
 
 {
     OFCondition cond = EC_Normal;
-    DcmQueryRetrieveFindContext context(dbHandle, options_, STATUS_Pending);
+    DcmQueryRetrieveFindContext context(dbHandle, options_, STATUS_Pending, config_->getCharacterSetOptions());
 
     DIC_AE aeTitle;
     aeTitle[0] = '\0';

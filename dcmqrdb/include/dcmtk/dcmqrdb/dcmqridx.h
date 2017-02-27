@@ -24,10 +24,12 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/ofoption.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcspchrs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
 
 BEGIN_EXTERN_C
@@ -62,23 +64,6 @@ enum DB_QUERY_CLASS
     PATIENT_STUDY
 };
 
-/** types of database keys
- */
-enum DB_KEY_CLASS
-{
-    /// a date entry
-    DATE_CLASS,
-    /// a time entry
-    TIME_CLASS,
-    /// a UID entry
-    UID_CLASS,
-    /// a string entry
-    STRING_CLASS,
-    /// an entry not belonging to any other class
-    OTHER_CLASS
-};
-
-
 /** Level Strings
  */
 
@@ -102,13 +87,13 @@ enum DB_KEY_CLASS
 #define FL_MAX_LENGTH   32      /* FLoating point single */
 #define FD_MAX_LENGTH   64      /* Floating point Double */
 #define IS_MAX_LENGTH   96      /* Integer String        */
-#define LO_MAX_LENGTH   64      /* Long String           */
-#define LT_MAX_LENGTH   10240   /* Long Text             */
-#define PN_MAX_LENGTH   64      /* Person Name           */
-#define SH_MAX_LENGTH   16      /* Short String          */
+#define LO_MAX_LENGTH   256     /* Long String           */
+#define LT_MAX_LENGTH   40960   /* Long Text             */
+#define PN_MAX_LENGTH   256     /* Person Name           */
+#define SH_MAX_LENGTH   64      /* Short String          */
 #define SL_MAX_LENGTH   32      /* Signed Long           */
 #define SS_MAX_LENGTH   16      /* Signed Short          */
-#define ST_MAX_LENGTH   1024    /* Short Text            */
+#define ST_MAX_LENGTH   4096    /* Short Text            */
 #define TM_MAX_LENGTH   128     /* Time                  */
 #define UI_MAX_LENGTH   64      /* Unique Identifier     */
 #define UL_MAX_LENGTH   32      /* Unsigned Long         */
@@ -184,13 +169,16 @@ private:
 struct DCMTK_DCMQRDB_EXPORT DB_ElementList
 {
     /// default constructor
-    DB_ElementList(): elem(), next(NULL) {}
+    DB_ElementList(): elem(), next(NULL), utf8Value() {}
 
     /// current list element
     DB_SmallDcmElmt elem ;
 
     /// pointer to next in list
     struct DB_ElementList *next ;
+
+    /// UTF-8 cache
+    OFoptional<OFString> utf8Value ;
 
 private:
     /// private undefined copy constructor
@@ -225,11 +213,10 @@ struct DCMTK_DCMQRDB_EXPORT DB_FindAttr
     DcmTagKey tag ;
     DB_LEVEL level ;
     DB_KEY_TYPE keyAttr ;
-    DB_KEY_CLASS keyClass ;
 
     /* to passify some C++ compilers */
-    DB_FindAttr(const DcmTagKey& t, DB_LEVEL l, DB_KEY_TYPE kt, DB_KEY_CLASS kc)
-        : tag(t), level(l), keyAttr(kt), keyClass(kc) { }
+    DB_FindAttr(const DcmTagKey& t, DB_LEVEL l, DB_KEY_TYPE kt)
+        : tag(t), level(l), keyAttr(kt) { }
 };
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
@@ -237,6 +224,8 @@ struct DCMTK_DCMQRDB_EXPORT DB_FindAttr
 struct DCMTK_DCMQRDB_EXPORT DB_Private_Handle
 {
     int pidx ;
+    OFString findRequestCharacterSet ;
+    DcmSpecificCharacterSet findRequestConverter ;
     DB_ElementList *findRequestList ;
     DB_ElementList *findResponseList ;
     DB_LEVEL queryLevel ;
@@ -252,6 +241,8 @@ struct DCMTK_DCMQRDB_EXPORT DB_Private_Handle
 
     DB_Private_Handle()
     : pidx(0)
+    , findRequestCharacterSet()
+    , findRequestConverter()
     , findRequestList(NULL)
     , findResponseList(NULL)
     , queryLevel(STUDY_LEVEL)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,7 +40,7 @@ class DcmQueryRetrieveConfig;
 
 #define DBINDEXFILE  "index.dat"
 #define DBMAGIC      "QRDB"
-#define DBVERSION    2
+#define DBVERSION    3
 #define DBHEADERSIZE 6
 
 #if DBVERSION > 0xFF
@@ -166,40 +166,21 @@ public:
       const char *imageFileName,
       DcmQueryRetrieveDatabaseStatus  *status,
       OFBool     isNew = OFTrue );
-  
-  /** initiate FIND operation using the given SOP class UID (which identifies
-   *  the query model) and DICOM dataset containing find request identifiers. 
-   *  @param SOPClassUID SOP class UID of query service, identifies Q/R model
-   *  @param findRequestIdentifiers dataset containing request identifiers (i.e., the query)
-   *    The caller retains responsibility for destroying the 
-   *    findRequestIdentifiers when no longer needed.
-   *  @param status pointer to DB status object in which a DIMSE status code 
-   *    suitable for use with the C-FIND-RSP message is set. Status will be
-   *    PENDING if any FIND responses will be generated or SUCCESS if no FIND responses will
-   *    be generated (SUCCESS indicates the completion of a operation), or
-   *    another status code upon failure. 
-   *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
+
+  /** @copydoc DcmQueryRetrieveDatabaseHandle::startFindRequest()
    */
   OFCondition startFindRequest(
       const char *SOPClassUID,
       DcmDataset *findRequestIdentifiers,
       DcmQueryRetrieveDatabaseStatus *status);     
-                
-  /** return the next available FIND response as a new DICOM dataset.
-   *  @param findResponseIdentifiers DICOM dataset returned in this parameter.
-   *    The caller is responsible for destroying the findResponseIdentifiers
-   *    when no longer needed.
-   *  @param status pointer to DB status object in which a DIMSE status code 
-   *    suitable for use with the C-FIND-RSP message is set. Status will be
-   *    PENDING if more FIND responses will be generated or SUCCESS if no more 
-   *    FIND responses will be generated (SUCCESS indicates the completion of 
-   *    a operation), or another status code upon failure. 
-   *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
+
+  /** @copydoc DcmQueryRetrieveDatabaseHandle::nextFindResponse()
    */
   OFCondition nextFindResponse(
       DcmDataset **findResponseIdentifiers,
-      DcmQueryRetrieveDatabaseStatus *status);
-   
+      DcmQueryRetrieveDatabaseStatus *status,
+      const DcmQueryRetrieveCharacterSetOptions& characterSetOptions);
+
   /** cancel the ongoing FIND request, stop and reset every running operation
    *  associated with this request, delete existing temporary files.
    *  @param status pointer to DB status object in which a DIMSE status code 
@@ -355,17 +336,35 @@ public:
       
 private:
 
+  /** a private helper class that performs character set conversions on the fly
+   *  (if necessary) before matching.
+   */
+  class CharsetConsideringMatcher;
+
+  /** Determine if a character set is not compatible to UTF-8, i.e.\ if it is
+   *  not UTF-8 or ASCII.
+   *  @param characterSet the character set to inspect.
+   *  @return OFTrue if the character set is neither ASCII nor UTF-8, OFFalse
+   *    otherwise.
+   */
+  static OFBool isConversionToUTF8Necessary(const OFString& characterSet);
+
+  /** Determine if data in the source character set must be converted to
+   *  be compatible to the given destination character set.
+   *  @param sourceCharacterSet the character set the data is encoded in.
+   *  @param destinationCharacterSet the character set that is requested,
+   *    e.g. the character set that the SCU understands.
+   *  @return OFTrue if the source character set is not equal to and not a
+   *    subset of the destination character set, OFFalse otherwise.
+   */
+  static OFBool isConversionNecessary(const OFString& sourceCharacterSet,
+                                      const OFString& destinationCharacterSet);
+
   OFCondition removeDuplicateImage(
       const char *SOPInstanceUID, const char *StudyInstanceUID,
       StudyDescRecord *pStudyDesc, const char *newImageFileName);
   int deleteOldestStudy(StudyDescRecord *pStudyDesc);
   OFCondition deleteOldestImages(StudyDescRecord *pStudyDesc, int StudyNum, char *StudyUID, long RequiredSize);
-  int matchDate (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
-  int matchTime (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
-  int matchUID (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
-  int matchStrings (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
-  int matchOther (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
-  int dbmatch (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
   void makeResponseList(DB_Private_Handle *phandle, IdxRecord *idxRec);
   int matchStudyUIDInStudyDesc (StudyDescRecord *pStudyDesc, char *StudyUID, int maxStudiesAllowed);
   OFCondition checkupinStudyDesc(StudyDescRecord *pStudyDesc, char *StudyUID, long imageSize);
@@ -375,7 +374,8 @@ private:
       IdxRecord         *idxRec,
       DB_LEVEL          level,
       DB_LEVEL          infLevel,
-      int               *match);
+      int               *match,
+      CharsetConsideringMatcher& dbmatch);
 
   OFCondition testFindRequestList (
       DB_ElementList  *findRequestList,

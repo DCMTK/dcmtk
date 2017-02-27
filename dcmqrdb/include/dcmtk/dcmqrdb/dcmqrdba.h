@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,6 +33,7 @@
 
 class DcmDataset;
 class DcmQueryRetrieveDatabaseStatus;
+class DcmQueryRetrieveCharacterSetOptions;
 
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 1024
@@ -114,11 +115,13 @@ public:
    *    PENDING if more FIND responses will be generated or SUCCESS if no more
    *    FIND responses will be generated (SUCCESS indicates the completion of
    *    a operation), or another status code upon failure.
+   *  @param characterSetOptions the character set options for response conversion etc.
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
    */
   virtual OFCondition nextFindResponse(
       DcmDataset **findResponseIdentifiers,
-      DcmQueryRetrieveDatabaseStatus *status) = 0;
+      DcmQueryRetrieveDatabaseStatus *status,
+      const DcmQueryRetrieveCharacterSetOptions& characterSetOptions) = 0;
 
   /** cancel the ongoing FIND request, stop and reset every running operation
    *  associated with this request, delete existing temporary files.

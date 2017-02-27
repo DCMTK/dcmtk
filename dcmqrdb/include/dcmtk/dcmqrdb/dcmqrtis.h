@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -238,6 +238,7 @@ private:
     OFBool TI_dbReadable(const char *dbTitle);
     time_t TI_dbModifyTime(const char *dbTitle);
     OFCondition addPresentationContexts(T_ASC_Parameters *params);
+    void selectDestinationCharacterSet(OFString& destinationCharacterSet);
 
     OFBool findDBPeerTitles(
       const char *configFileName,

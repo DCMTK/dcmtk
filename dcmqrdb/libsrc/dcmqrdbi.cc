@@ -37,6 +37,7 @@ END_EXTERN_C
 #define INCLUDE_CCTYPE
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
@@ -46,7 +47,7 @@ END_EXTERN_C
 #include "dcmtk/dcmqrdb/dcmqridx.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcmatch.h"
 
 /* ========================= static data ========================= */
 
@@ -68,40 +69,40 @@ END_EXTERN_C
  ***/
 
 static const DB_FindAttr TbFindAttr [] = {
-        DB_FindAttr( DCM_PatientBirthDate,                      PATIENT_LEVEL,  OPTIONAL_KEY,   DATE_CLASS      ),
-        DB_FindAttr( DCM_PatientSex,                            PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientName,                           PATIENT_LEVEL,  REQUIRED_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientID,                             PATIENT_LEVEL,  UNIQUE_KEY,     STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientBirthTime,                      PATIENT_LEVEL,  OPTIONAL_KEY,   TIME_CLASS      ),
-        DB_FindAttr( DCM_OtherPatientIDs,                       PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_OtherPatientNames,                     PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_EthnicGroup,                           PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientComments,                       PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_NumberOfPatientRelatedStudies,         PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_NumberOfPatientRelatedSeries,          PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_NumberOfPatientRelatedInstances,       PATIENT_LEVEL,  OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_StudyDate,                             STUDY_LEVEL,    REQUIRED_KEY,   DATE_CLASS      ),
-        DB_FindAttr( DCM_StudyTime,                             STUDY_LEVEL,    REQUIRED_KEY,   TIME_CLASS      ),
-        DB_FindAttr( DCM_StudyID,                               STUDY_LEVEL,    REQUIRED_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_AccessionNumber,                       STUDY_LEVEL,    REQUIRED_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_ReferringPhysicianName,                STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_StudyDescription,                      STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_NameOfPhysiciansReadingStudy,          STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_StudyInstanceUID,                      STUDY_LEVEL,    UNIQUE_KEY,     UID_CLASS       ),
-        DB_FindAttr( DCM_RETIRED_OtherStudyNumbers,             STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
-        DB_FindAttr( DCM_AdmittingDiagnosesDescription,         STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientAge,                            STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_PatientSize,                           STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
-        DB_FindAttr( DCM_PatientWeight,                         STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
-        DB_FindAttr( DCM_Occupation,                            STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_AdditionalPatientHistory,              STUDY_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_NumberOfStudyRelatedSeries,            STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
-        DB_FindAttr( DCM_NumberOfStudyRelatedInstances,         STUDY_LEVEL,    OPTIONAL_KEY,   OTHER_CLASS     ),
-        DB_FindAttr( DCM_SeriesNumber,                          SERIE_LEVEL,    REQUIRED_KEY,   OTHER_CLASS     ),
-        DB_FindAttr( DCM_SeriesInstanceUID,                     SERIE_LEVEL,    UNIQUE_KEY,     UID_CLASS       ),
-        DB_FindAttr( DCM_Modality,                              SERIE_LEVEL,    OPTIONAL_KEY,   STRING_CLASS    ),
-        DB_FindAttr( DCM_InstanceNumber,                        IMAGE_LEVEL,    REQUIRED_KEY,   OTHER_CLASS     ),
-        DB_FindAttr( DCM_SOPInstanceUID,                        IMAGE_LEVEL,    UNIQUE_KEY,     UID_CLASS       )
+        DB_FindAttr( DCM_PatientBirthDate,                      PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_PatientSex,                            PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_PatientName,                           PATIENT_LEVEL,  REQUIRED_KEY ),
+        DB_FindAttr( DCM_PatientID,                             PATIENT_LEVEL,  UNIQUE_KEY   ),
+        DB_FindAttr( DCM_PatientBirthTime,                      PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_OtherPatientIDs,                       PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_OtherPatientNames,                     PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_EthnicGroup,                           PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_PatientComments,                       PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_NumberOfPatientRelatedStudies,         PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_NumberOfPatientRelatedSeries,          PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_NumberOfPatientRelatedInstances,       PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_StudyDate,                             STUDY_LEVEL,    REQUIRED_KEY ),
+        DB_FindAttr( DCM_StudyTime,                             STUDY_LEVEL,    REQUIRED_KEY ),
+        DB_FindAttr( DCM_StudyID,                               STUDY_LEVEL,    REQUIRED_KEY ),
+        DB_FindAttr( DCM_AccessionNumber,                       STUDY_LEVEL,    REQUIRED_KEY ),
+        DB_FindAttr( DCM_ReferringPhysicianName,                STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_StudyDescription,                      STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_NameOfPhysiciansReadingStudy,          STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_StudyInstanceUID,                      STUDY_LEVEL,    UNIQUE_KEY   ),
+        DB_FindAttr( DCM_RETIRED_OtherStudyNumbers,             STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_AdmittingDiagnosesDescription,         STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_PatientAge,                            STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_PatientSize,                           STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_PatientWeight,                         STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_Occupation,                            STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_AdditionalPatientHistory,              STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_NumberOfStudyRelatedSeries,            STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_NumberOfStudyRelatedInstances,         STUDY_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_SeriesNumber,                          SERIE_LEVEL,    REQUIRED_KEY ),
+        DB_FindAttr( DCM_SeriesInstanceUID,                     SERIE_LEVEL,    UNIQUE_KEY   ),
+        DB_FindAttr( DCM_Modality,                              SERIE_LEVEL,    OPTIONAL_KEY ),
+        DB_FindAttr( DCM_InstanceNumber,                        IMAGE_LEVEL,    REQUIRED_KEY ),
+        DB_FindAttr( DCM_SOPInstanceUID,                        IMAGE_LEVEL,    UNIQUE_KEY   )
   };
 
 /**** The NbFindAttr variable contains the length of the TbFindAttr table
@@ -661,37 +662,6 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
     return (cond);
 }
 
-
-/*******************
- *    Matches two strings
- */
-
-static int DB_StringUnify  (char *pmod, char *pstr)
-{
-    int uni;
-
-    if (*pmod == '\0')
-    return (*pstr == '\0');
-
-    if (  *pmod == *pstr
-      || (*pmod == '?' && *pstr != '\0')
-    )
-    return (DB_StringUnify (pmod + 1, pstr + 1));
-
-    if (*pmod == '*') {
-    if ( *(pmod + 1) == '\0' )
-        return (OFTrue);
-    while (  ( (uni = DB_StringUnify (pmod + 1, pstr)) == OFFalse )
-         && (*pstr != '\0')
-        )
-        pstr++;
-    return (uni);
-    }
-    else if (*pmod != *pstr)
-    return (OFFalse);
-    return OFFalse;
-}
-
 /*******************
  *    Is the specified tag supported
  */
@@ -707,7 +677,6 @@ static int DB_TagSupported (DcmTagKey tag)
     return (OFFalse);
 
 }
-
 
 /*******************
  *    Get UID tag of a specified level
@@ -770,153 +739,6 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
     return (QR_EC_IndexDatabaseError);
 }
 
-/*******************
- *    Get tag key attribute of a specified tag
- */
-
-static OFCondition DB_GetTagKeyClass (DcmTagKey tag, DB_KEY_CLASS *keyAttr)
-{
-    int i;
-
-    for (i = 0; i < NbFindAttr; i++)
-        if (TbFindAttr[i]. tag == tag)
-            break;
-
-    if (i < NbFindAttr) {
-        *keyAttr = TbFindAttr[i]. keyClass;
-        return (EC_Normal);
-    }
-    else
-    return (QR_EC_IndexDatabaseError);
-}
-
-
-/*******************
- *    Remove spaces in a string
- */
-
-static void DB_RemoveSpaces (char *string)
-{
-    char *pc1, *pc2;
-
-    for (pc1 = pc2 = string; *pc2; pc2++) {
-        if (*pc2 != ' ') {
-            *pc1 = *pc2;
-            pc1++;
-        }
-    }
-    *pc1 = '\0';
-}
-
-/*******************
- *    Remove leading and trailing spaces in a string
- */
-
-static void DB_RemoveEnclosingSpaces (char *string)
-{
-    char *pc1, *pc2;
-
-    /** Find in pc2 the first non space character
-    ** If not found, string is empty
-    */
-
-    for (pc2 = string; (*pc2 != '\0') && (*pc2 == ' '); pc2++)  /* loop with empty body */;
-    if (*pc2 == '\0') {
-        string [0] = '\0';
-        return;
-    }
-
-    /** Shift the string if necessary
-     */
-
-    if (pc2 != string) {
-        for (pc1 = string; *pc2; pc1++, pc2++)
-            *pc1 = *pc2;
-        *pc1 = '\0';
-    }
-
-    /** Skip trailing spaces
-     */
-
-    for (pc2 = string + strlen (string) - 1; *pc2 == ' '; pc2--)  /* loop with empty body */;
-    pc2++;
-    *pc2 = '\0';
-}
-
-
-/*******************
- *    Convert a date YYYYMMDD in a long
- */
-
-static long DB_DateToLong (char *date)
-{
-    char year [5];
-    char month[3];
-    char day  [3];
-
-    strncpy (year, date, 4);
-    year [4] = '\0';
-    strncpy (month, date + 4, 2);
-    month [2] = '\0';
-    strncpy (day, date + 6, 2);
-    day [2] = '\0';
-
-    return ((atol(year) * 10000) + (atol(month) * 100) + atol(day));
-}
-
-
-/*******************
- *    Convert a time in a double
- */
-
-static double DB_TimeToDouble (char *thetime)
-{
-    char t [20];
-    char tmp [4];
-
-    double result = 0.;
-    char *pc;
-
-    /*** Get fractional part if exists
-    **/
-
-    strcpy (t, thetime);
-    if ((pc = strchr (t, '.')) != NULL) {
-        double f;
-
-        *pc = '\0';
-        for (pc++, f = 1.; (*pc) && (isdigit (OFstatic_cast(unsigned char, *pc))); pc++) {
-            f /= 10.;
-            result += (*pc - '0') * f;
-        }
-    }
-
-    /*** Add default values (mm ss) if necessary
-    **/
-
-    strcat (t, "0000");
-    t [6] = '\0';
-
-    /*** Get Hours, Minutes and Seconds
-    **/
-
-    strncpy (tmp, t, 2);
-    tmp [3] = '\0';
-    result += 3600. * OFStandard::atof(tmp);
-
-    strncpy (tmp, t + 2, 2);
-    tmp [3] = '\0';
-    result += 60. * OFStandard::atof(tmp);
-
-    strncpy (tmp, t + 4, 2);
-    tmp [3] = '\0';
-    result += OFStandard::atof(tmp);
-
-    return result;
-}
-
-
-
 /***********************
  *    Duplicate a DICOM element
  *    dst space is supposed provided by the caller
@@ -970,318 +792,174 @@ DcmQueryRetrieveDatabaseHandle::~DcmQueryRetrieveDatabaseHandle()
 
 /* ========================= FIND ========================= */
 
-/************
-**      Try to match Two Dates
-**      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is OK, else returns OFFalse
- */
-
-int DcmQueryRetrieveIndexDatabaseHandle::matchDate (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
+class DcmQueryRetrieveIndexDatabaseHandle::CharsetConsideringMatcher
 {
-    char date [DBC_MAXSTRING] ;
-    char modl [DBC_MAXSTRING] ;
+public:
 
-    /*** Get elt and model data in strings
-    **/
-
-    memcpy (date, elt->PValueField, (size_t)(elt->ValueLength)) ;
-    date [elt->ValueLength] = '\0' ;
-    DB_RemoveSpaces (date) ;
-
-    memcpy (modl, mod->PValueField, (size_t)(mod->ValueLength)) ;
-    modl [mod->ValueLength] = '\0' ;
-    DB_RemoveSpaces (modl) ;
-
-    /*** If no '-' in date
-    *** return strict comparison result
-    **/
-
-    if (strchr (modl, '-') == NULL)
-        return (strcmp (modl, date) == 0) ;
-
-    /*** If first char is -
-    **/
-
-    if (modl [0] == '-') {
-        return DB_DateToLong (date) <= DB_DateToLong (modl+1) ;
-    }
-
-    /*** If last char is -
-    **/
-
-    else if (modl [strlen (modl) - 1] == '-') {
-        modl [strlen (modl) - 1] = '\0' ;
-        return DB_DateToLong (date) >= DB_DateToLong (modl) ;
-    }
-    else {
-        char *pc ;
-        long d ;
-
-        d = DB_DateToLong (date) ;
-        pc = strchr (modl, '-') ;
-        *pc = '\0' ;
-
-        return (d >= DB_DateToLong (modl)) && (d <= DB_DateToLong (pc+1)) ;
-
-    }
-}
-
-/************
-**      Try to match Two Times
-**      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is OK, else returns OFFalse
- */
-
-int DcmQueryRetrieveIndexDatabaseHandle::matchTime (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
-{
-    char aTime [DBC_MAXSTRING] ;
-    char modl [DBC_MAXSTRING] ;
-
-    /*** Get elt and model data in strings
-    **/
-
-    memcpy (aTime, elt->PValueField, (size_t)(elt->ValueLength)) ;
-    aTime [elt->ValueLength] = '\0' ;
-    DB_RemoveSpaces (aTime) ;
-
-    memcpy (modl, mod->PValueField, (size_t)(mod->ValueLength)) ;
-    modl [mod->ValueLength] = '\0' ;
-    DB_RemoveSpaces (modl) ;
-
-    /*** If no '-' in time
-    *** return strict comparison result
-    **/
-
-    if (strchr (modl, '-') == NULL)
-        return (strcmp (modl, aTime) == 0) ;
-
-    /*** If first char is -
-    **/
-
-    if (modl [0] == '-') {
-        return DB_TimeToDouble (aTime) <= DB_TimeToDouble (modl+1) ;
-    }
-
-    /*** If last char is -
-    **/
-
-    else if (modl [strlen (modl) - 1] == '-') {
-        modl [strlen (modl) - 1] = '\0' ;
-        return DB_TimeToDouble (aTime) >= DB_TimeToDouble (modl) ;
-    }
-    else {
-        char *pc ;
-        double t ;
-
-        t = DB_TimeToDouble (aTime) ;
-        pc = strchr (modl, '-') ;
-        *pc = '\0' ;
-
-        return (t >= DB_TimeToDouble (modl)) && (t <= DB_TimeToDouble (pc+1)) ;
-
-    }
-}
-
-/************
-**      Try to match Two UID
-**      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is OK, else returns OFFalse
- */
-
-int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
-{
-    int match ;
-    char *uid ;
-    char *modl ;
-    char *pc ;
-    unsigned int length ;
-
-    /*** Get elt and model data in strings
-    **/
-
-    uid = (char *) malloc ((size_t)(elt->ValueLength + 1)) ;
-    if (uid == NULL) {
-        return 0 ;
-    }
-    memcpy (uid, elt->PValueField, (size_t)(elt->ValueLength)) ;
-    uid [elt->ValueLength] = '\0' ;
-
-    modl = (char *) malloc ((size_t)(mod->ValueLength + 1)) ;
-    if (modl == NULL) {
-        free (uid) ;
-        return 0 ;
-    }
-    memcpy (modl, mod->PValueField, (size_t)(mod->ValueLength)) ;
-    modl [mod->ValueLength] = '\0' ;
-
-    /*** If no '\' in model
-    *** return strict comparison result
-    **/
-
-#ifdef STRICT_COMPARE
-#else
-    /*** Suppress Leading and Trailing spaces in
-    *** model and string
-    **/
-
-    DB_RemoveEnclosingSpaces (uid) ;
-    DB_RemoveEnclosingSpaces (modl) ;
-#endif
-
-    if (strchr (modl, '\\') == NULL) {
-        match = (strcmp (modl, uid) == 0) ;
-        free (uid) ;
-        free (modl) ;
-        return (match) ;
-    }
-
-    /*** UID List comparison.
-    *** Match is successful if uid is found in model
-    **/
-
-    match = OFFalse ;
-    for (pc = modl ; *pc ; ) {
-
-        /*** Calculate the length to the next '\' sign (if any).
-        *** Otherwise the length of pc is returned.
-        **/
-        length = strcspn(pc, "\\") ;
-
-        if ((length == strlen(uid)) && (strncmp (pc, uid, length) == 0)) {
-            match = OFTrue ;
-            break ;
-        }
-        else {
-            pc = strchr (pc, '\\') ;
-            if (pc == NULL)
-                break ;
-            else
-                pc++ ;
-        }
-    }
-
-    free (uid) ;
-    free (modl) ;
-    return (match) ;
-
-}
-
-/************
-**      Try to match Two Strings
-**      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is OK, else returns OFFalse
- */
-
-int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
-{
-    int match ;
-    char *string ;
-    char *modl ;
-
-    /*** Get elt and model data in strings
-    **/
-
-    string = (char *) malloc ((size_t)(elt->ValueLength + 1)) ;
-    if (string == NULL) {
-        return 0 ;
-    }
-    memcpy (string, elt->PValueField, (size_t)(elt->ValueLength)) ;
-    string [elt->ValueLength] = '\0' ;
-
-    modl = (char *) malloc ((size_t)(mod->ValueLength + 1)) ;
-    if (modl == NULL) {
-        free (string) ;
-        return 0 ;
-    }
-    memcpy (modl, mod->PValueField, (size_t)(mod->ValueLength)) ;
-    modl [mod->ValueLength] = '\0' ;
-
-#ifdef STRICT_COMPARE
-#else
-    /*** Suppress Leading and Trailing spaces in
-    *** model and string
-    **/
-
-    DB_RemoveEnclosingSpaces (string) ;
-    DB_RemoveEnclosingSpaces (modl) ;
-#endif
-
-    /*** If no '*' and no '?' in model
-    *** return strict comparison result
-    **/
-
-    if ((strchr (modl, '*') == NULL) && (strchr (modl, '?') == NULL))
+    // Constructor, remember references to the find request character set and converter
+    CharsetConsideringMatcher(DB_Private_Handle& handle)
+    : findRequestCharacterSet(handle.findRequestCharacterSet)
+    , findRequestConverter(handle.findRequestConverter)
+    , candidateCharacterSet()
+    , candidateConverter()
+    , isFindRequestConversionNecessary(isConversionToUTF8Necessary(findRequestCharacterSet))
+    , isCandidateConversionNecessary()
+    , isConversionNecessary()
     {
-        int res = strcmp (modl, string);
-        free(string);
-        free(modl);
-        return res == 0;
-    }
-
-    match = DB_StringUnify (modl, string) ;
-
-    free (string) ;
-    free (modl) ;
-    return (match) ;
-
-}
-
-/************
-**      Try to match Two Unknown elements
-**      Strict comparison is applied
-**      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is OK, else returns OFFalse
- */
-
-int DcmQueryRetrieveIndexDatabaseHandle::matchOther (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
-{
-    if (mod->ValueLength != elt->ValueLength)
-        return OFFalse ;
-
-    return (memcmp (mod->PValueField, elt->PValueField, (size_t)(elt->ValueLength)) == 0) ;
-}
-
-/************
-**      Try to match Two DB_SmallDcmElmts
-**      The first one is the "model", the second one an element
-**      Returns OFTrue if matching is OK, else returns OFFalse
- */
-
-int DcmQueryRetrieveIndexDatabaseHandle::dbmatch (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
-{
-    DB_KEY_CLASS keyClass = OTHER_CLASS;
-
-    /*** If model length is 0
-    *** Universal matching is applied : return always OFTrue
-    **/
-
-    if (mod->ValueLength == 0)
-        return (OFTrue) ;
-
-    /*** Get the key class of the element
-    **/
-
-    DB_GetTagKeyClass (elt->XTag, &keyClass) ;
-
-    switch (keyClass) {
-
-    case DATE_CLASS :
-        return matchDate (mod, elt) ;
-
-    case TIME_CLASS :
-        return matchTime (mod, elt) ;
-
-    case UID_CLASS :
-        return matchUID  (mod, elt) ;
-
-    case STRING_CLASS :
-        return matchStrings (mod, elt) ;
-
-    case OTHER_CLASS :
-        return matchOther (mod, elt) ;
 
     }
-    return OFFalse;
+
+    // read access to the candidate's character set value
+    const OFString& getCandidateCharacterSet() const
+    {
+        return candidateCharacterSet;
+    }
+
+    // prepare character set conversion for specific index record
+    void setRecord(IdxRecord& idxRec)
+    {
+        // copy value of specific character set of the entry, since the converter
+        // would need it as an OFString anyway.
+        candidateCharacterSet.assign(idxRec.param[RECORDIDX_SpecificCharacterSet].PValueField,
+                                     idxRec.param[RECORDIDX_SpecificCharacterSet].ValueLength);
+        // test if conversion is potentially necessary since the character sets differ
+        if (findRequestCharacterSet != candidateCharacterSet) {
+            // determine if the candidate is compatible to UTF-8 or must be converted
+            isCandidateConversionNecessary = isConversionToUTF8Necessary(candidateCharacterSet);
+            // if it must be converted, clear the converter if it was previously initialized,
+            // but for a different character set
+            if (isCandidateConversionNecessary && candidateConverter &&
+                candidateConverter.getSourceCharacterSet() != candidateCharacterSet) {
+                candidateConverter.clear();
+            }
+            // even if the character sets differ, they may both be compatible to UTF-8,
+            // in which case conversion is still not necessary
+            isConversionNecessary = isCandidateConversionNecessary || isFindRequestConversionNecessary;
+        } else {
+            // conversion is not necessary
+            isConversionNecessary = OFFalse;
+        }
+    }
+
+    // Try to match Two DB_ElementList elements
+    // The first one is the query key, the second one the candidate
+    // from the database entry.
+    // Returns OFTrue if both values match, OFFalse otherwise
+    OFBool operator()(DB_ElementList* query, DB_SmallDcmElmt* candidate)
+    {
+        // Universal matching is applied if the query value is empty:
+        // always return OFTrue
+        if (!query->elem.ValueLength)
+            return OFTrue;
+
+        OFString buffer;
+        const char* pQuery = query->elem.PValueField;
+        const char* pQueryEnd = pQuery + query->elem.ValueLength;
+        const char* pCandidate = candidate->PValueField;
+        const char* pCandidateEnd = pCandidate + candidate->ValueLength;
+
+        DcmVR vr = DcmTag(query->elem.XTag).getVR();
+        if (isConversionNecessary && vr.isAffectedBySpecificCharacterSet()) {
+            // convert query, if it isn't UTF-8 or ASCII already
+            if (isFindRequestConversionNecessary) {
+                // does a value already exist in the cache?
+                if (!query->utf8Value) {
+                    // fill the cache if it doesn't
+                    query->utf8Value = OFString();
+                    // initialize the converter, if this is the first
+                    // time we need it
+                    if (!findRequestConverter)
+                        findRequestConverter.selectCharacterSet(findRequestCharacterSet);
+                    // covert the string and cache the result, using the
+                    // specific delimitation characters for this VR
+                    findRequestConverter.convertString(
+                        query->elem.PValueField,
+                        query->elem.ValueLength,
+                        *query->utf8Value,
+                        vr.getDelimiterChars()
+                    );
+                }
+                // use the value from the cache for the following match
+                // operations
+                pQuery = query->utf8Value->c_str();
+                pQueryEnd = pQuery + query->utf8Value->size();
+            }
+            // convert the candidate, if it isn't already UTF-8 or ASCII
+            if (isCandidateConversionNecessary) {
+                // initialize the converter, if this is the first time
+                // we need it for this entry
+                if (!candidateConverter)
+                    candidateConverter.selectCharacterSet(candidateCharacterSet);
+                // convert the string using the local buffer and the
+                // specific delimitation characters for this VR
+                candidateConverter.convertString(
+                    candidate->PValueField,
+                    candidate->ValueLength,
+                    buffer,
+                    vr.getDelimiterChars()
+                );
+                // assign the buffer contents to the value being used
+                // in the following match operations
+                pCandidate = buffer.c_str();
+                pCandidateEnd = pCandidate + buffer.size();
+            }
+        }
+
+        // remove leading and trailing spaces before matching
+        if (vr.isaString()) {
+            trimString(pQuery, pQueryEnd);
+            trimString(pCandidate, pCandidateEnd);
+        }
+
+        // use DcmAttributeMatching to perform the appropriate matching function
+        // for the given VR
+        return DcmAttributeMatching( vr )( pQuery, pQueryEnd - pQuery,
+                                           pCandidate, pCandidateEnd - pCandidate );
+    }
+
+private:
+
+    // increments begin and decrements end to ignore leading and trailing
+    // space characters
+    static void trimString(const char*& pBegin, const char*& pEnd)
+    {
+        while(pBegin != pEnd && (*pBegin == ' ' || !*pBegin))
+            ++pBegin;
+        while(pBegin != pEnd && (*(pEnd-1) == ' ' || !*(pEnd-1)))
+            --pEnd;
+    }
+
+    const OFString& findRequestCharacterSet;
+    DcmSpecificCharacterSet& findRequestConverter;
+    OFString candidateCharacterSet;
+    DcmSpecificCharacterSet candidateConverter;
+    const OFBool isFindRequestConversionNecessary;
+    OFBool isCandidateConversionNecessary;
+    OFBool isConversionNecessary;
+};
+
+OFBool DcmQueryRetrieveIndexDatabaseHandle::isConversionToUTF8Necessary(const OFString& characterSet)
+{
+    // empty      -> ASCII, subset of UTF-8
+    // ISO_IR 6   -> ASCII, subset of UTF-8
+    // ISO_IR 192 -> UTF-8
+    return !characterSet.empty() &&
+           characterSet != "ISO_IR 192" &&
+           characterSet != "ISO_IR 6"
+    ;
+}
+
+OFBool DcmQueryRetrieveIndexDatabaseHandle::isConversionNecessary(const OFString& sourceCharacterSet,
+                                                                  const OFString& destinationCharacterSet)
+{
+    // conversion is unnecessary if both are the same character set or if
+    // the destination is UTF-8 and the source is compatible to UTF-8
+    // (i.e. ASCII).
+    return sourceCharacterSet != destinationCharacterSet &&
+    (
+        destinationCharacterSet != "ISO_IR 192" ||
+        isConversionToUTF8Necessary(sourceCharacterSet)
+    );
 }
 
 /************
@@ -1513,7 +1191,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
                 IdxRecord               *idxRec,
                 DB_LEVEL                level,
                 DB_LEVEL                infLevel,
-                int                     *match)
+                int                     *match,
+                CharsetConsideringMatcher& dbmatch)
 {
     int                 i ;
     DcmTagKey   XTag ;
@@ -1557,7 +1236,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
         ** If Match fails, return OFFalse
         */
 
-        if (! dbmatch (&(plist->elem), &idxRec->param[i])) {
+        if (!dbmatch(plist, &idxRec->param[i])) {
             *match = OFFalse ;
             return EC_Normal ;
         }
@@ -1566,7 +1245,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
         ** Try at next level
         */
 
-        return hierarchicalCompare (phandle, idxRec, (DB_LEVEL)(level + 1), infLevel, match) ;
+        return hierarchicalCompare (phandle, idxRec, (DB_LEVEL)(level + 1), infLevel, match, dbmatch) ;
     }
 
     /**** If current level is the QueryLevel
@@ -1612,7 +1291,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
             */
 
 
-            if (! dbmatch (&(plist->elem), &idxRec->param[i])) {
+            if (!dbmatch(plist, &idxRec->param[i])) {
                 *match = OFFalse ;
                 return EC_Normal ;
             }
@@ -1665,15 +1344,19 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         return (QR_EC_IndexDatabaseError) ;
     }
 
-
     /**** Parse Identifiers in the Dicom Object
     **** Find Query Level and construct a list
     **** of query identifiers
     ***/
 
+    if (findRequestIdentifiers->findAndGetOFStringArray(DCM_SpecificCharacterSet, handle_->findRequestCharacterSet).bad())
+        handle_->findRequestCharacterSet.clear();
+    if (handle_->findRequestConverter && handle_->findRequestConverter.getSourceCharacterSet() != handle_->findRequestCharacterSet)
+        handle_->findRequestConverter.clear();
+
     handle_->findRequestList = NULL ;
 
-    int elemCount = (int)(findRequestIdentifiers->card());
+    int elemCount = OFstatic_cast(int, findRequestIdentifiers->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
 
         DcmElement* dcelem = findRequestIdentifiers->getElement(elemIndex);
@@ -1683,7 +1366,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
             elem.ValueLength = dcelem->getLength();
             if (elem.ValueLength == 0) {
                 elem.PValueField = NULL ;
-            } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
+            } else if ((elem.PValueField = OFstatic_cast(char*, malloc(OFstatic_cast(size_t, elem.ValueLength+1)))) == NULL) {
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
                 return (QR_EC_IndexDatabaseError) ;
             } else {
@@ -1810,6 +1493,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     MatchFound = OFFalse ;
     cond = EC_Normal ;
 
+    CharsetConsideringMatcher dbmatch(*handle_);
     while (1) {
 
         /*** Exit loop if read error (or end of file)
@@ -1821,7 +1505,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         /*** Exit loop if error or matching OK
         **/
 
-        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound) ;
+        dbmatch.setRecord(idxRec);
+        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
         if (cond != EC_Normal)
             break ;
         if (MatchFound)
@@ -1884,13 +1569,23 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 
 }
 
+// helper function to print 'ASCII' instead of an empty string for the value of
+// Specific Character Set
+static const char* characterSetName( const OFString& charset )
+{
+    if (charset.empty())
+        return "ASCII";
+    return charset.c_str();
+}
+
 /********************
 **      Get next find response in Database
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                 DcmDataset      **findResponseIdentifiers,
-                DcmQueryRetrieveDatabaseStatus  *status)
+                DcmQueryRetrieveDatabaseStatus  *status,
+                const DcmQueryRetrieveCharacterSetOptions& characterSetOptions)
 {
 
     DB_ElementList      *plist = NULL;
@@ -1965,12 +1660,79 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         }
         DU_putStringDOElement(*findResponseIdentifiers,
                               DCM_QueryRetrieveLevel, queryLevelString);
+
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+        OFString specificCharacterSet;
+        if ((*findResponseIdentifiers)->findAndGetOFStringArray(DCM_SpecificCharacterSet, specificCharacterSet).bad())
+            specificCharacterSet.clear();
+
+        const OFString* destinationCharacterSet = NULL;
+        const OFString* fallbackCharacterSet = NULL;
+
+        if (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Override) {
+            destinationCharacterSet = &characterSetOptions.characterSet;
+            if (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Fallback)
+                fallbackCharacterSet = &handle_->findRequestCharacterSet;
+        } else {
+            destinationCharacterSet = &handle_->findRequestCharacterSet;
+            if (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Fallback)
+                fallbackCharacterSet = &characterSetOptions.characterSet;
+        }
+
+        if (isConversionNecessary(specificCharacterSet, *destinationCharacterSet)) {
+            OFCondition status = (*findResponseIdentifiers)->convertCharacterSet(
+                specificCharacterSet,
+                *destinationCharacterSet,
+                characterSetOptions.conversionFlags,
+                OFTrue);
+            if (status.bad()) {
+                DCMQRDB_WARN("Converting response from character set \""
+                    << characterSetName(specificCharacterSet)
+                    << "\" to character set \""
+                    << characterSetName(*destinationCharacterSet)
+                    << "\" failed, (error message: " << status.text() << ')');
+                if (fallbackCharacterSet && isConversionNecessary(specificCharacterSet, *fallbackCharacterSet)) {
+                    DCMQRDB_INFO("Trying to convert response from character set \""
+                        << characterSetName(specificCharacterSet)
+                        << "\" to fall-back character set \""
+                        << characterSetName(*fallbackCharacterSet) << "\" instead");
+                    status = (*findResponseIdentifiers)->convertCharacterSet(
+                        specificCharacterSet,
+                        *fallbackCharacterSet,
+                        characterSetOptions.conversionFlags,
+                        OFTrue);
+                    if (status.bad()) {
+                        DCMQRDB_WARN("Converting response from character set \""
+                            << characterSetName(specificCharacterSet)
+                            << "\" to character set \""
+                            << characterSetName(*fallbackCharacterSet)
+                            << "\" failed, (error message: " << status.text() << ')');
+                    } else {
+                        DCMQRDB_INFO("Successfully converted response from character set \""
+                            << characterSetName(specificCharacterSet)
+                            << "\" to character set \""
+                            << characterSetName(*fallbackCharacterSet) << "\"");
+                    }
+                } else if (fallbackCharacterSet) {
+                    DCMQRDB_INFO("Conversion to fall-back character set \""
+                        << characterSetName(*fallbackCharacterSet)
+                        << "\" is not necessary, since the original character set is compatible");
+                }
+            } else {
+                DCMQRDB_INFO("Successfully converted response from character set \""
+                    << characterSetName(specificCharacterSet)
+                    << "\" to character set \""
+                    << characterSetName(*destinationCharacterSet)
+                    << "\"");
+            }
+        }
+#endif
+
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB: findResponseIdentifiers:" << OFendl
             << DcmObject::PrintHelper(**findResponseIdentifiers));
 #endif
-    }
-    else {
+    } else {
 
         DB_unlock();
 
@@ -1995,6 +1757,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     MatchFound = OFFalse ;
     cond = EC_Normal ;
 
+    CharsetConsideringMatcher dbmatch(*handle_);
     while (1) {
 
         /*** Exit loop if read error (or end of file)
@@ -2012,7 +1775,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         /*** Exit loop if error or matching OK
         **/
 
-        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound) ;
+        dbmatch.setRecord(idxRec);
+        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
         if (cond != EC_Normal)
             break ;
         if (MatchFound)
@@ -2408,6 +2172,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
     DB_lock(OFFalse);
 
+    CharsetConsideringMatcher dbmatch(*handle_);
     DB_IdxInitLoop (&(handle_->idxCounter)) ;
     while (1) {
 
@@ -2420,7 +2185,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         /*** If matching found
         **/
 
-        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound) ;
+        dbmatch.setRecord(idxRec);
+        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
         if (MatchFound) {
             pidxlist = (DB_CounterList *) malloc (sizeof( DB_CounterList ) ) ;
             if (pidxlist == NULL) {
@@ -2924,8 +2690,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
     DcmDataset *dset = dcmff.getDataset();
 
+    assert(dset);
+
+    OFCondition ec;
+
     for (i = 0 ; i < NBPARAMETERS ; i++ ) {
-        OFCondition ec = EC_Normal;
         DB_SmallDcmElmt *se = idxRec.param + i;
 
         const char *strPtr = NULL;

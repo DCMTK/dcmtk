@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2016, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1814,7 +1814,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildStudies(TI_DBEntry *db)
     dbStatus.deleteStatusDetail();
 
     while (dbStatus.status() == STATUS_Pending) {
-        dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus);
+        dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus, config.getCharacterSetOptions());
         if (dbcond.bad()) {
             DCMQRDB_ERROR("TI_buildStudies: database error");
             return OFFalse;
@@ -1893,7 +1893,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildSeries(TI_DBEntry *db, TI_StudyE
     dbStatus.deleteStatusDetail();
 
     while (dbStatus.status() == STATUS_Pending) {
-        dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus);
+        dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus, config.getCharacterSetOptions());
         if (dbcond.bad()) {
             DCMQRDB_ERROR("TI_buildSeries: database error");
             return OFFalse;
@@ -1982,7 +1982,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildImages(TI_DBEntry *db, TI_StudyE
     }
 
     while (dbStatus.status() == STATUS_Pending) {
-        dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus);
+        dbcond = db->dbHandle->nextFindResponse(&reply, &dbStatus, config.getCharacterSetOptions());
         if (dbcond.bad()) {
             DCMQRDB_ERROR("TI_buildImages: database error");
             return OFFalse;

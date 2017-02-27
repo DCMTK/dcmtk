@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 
 class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
+class DcmQueryRetrieveCharacterSetOptions;
 
 /** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_findProvider.
@@ -43,11 +44,13 @@ public:
     DcmQueryRetrieveFindContext(
       DcmQueryRetrieveDatabaseHandle& handle,
       const DcmQueryRetrieveOptions& options,
-      DIC_US priorStat)
+      DIC_US priorStat,
+      const DcmQueryRetrieveCharacterSetOptions& characterSetOptions)
     : dbHandle(handle)
     , options_(options)
     , priorStatus(priorStat)
     , ourAETitle()
+    , characterSetOptions(characterSetOptions)
     {
     }
 
@@ -88,6 +91,9 @@ private:
 
     /// our current title
     OFString ourAETitle;
+
+    /// Specific Character Set related options
+    const DcmQueryRetrieveCharacterSetOptions& characterSetOptions;
 
 };
 
