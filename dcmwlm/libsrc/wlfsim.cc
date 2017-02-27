@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2013, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,6 +49,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/dcmdata/dcmatch.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
 #include "dcmtk/dcmwlm/wlds.h"
 #include "dcmtk/dcmdata/dctk.h"
@@ -783,6 +784,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
 //                OFFalse - The dataset does not match the search mask in the matching key attribute values.
 {
   OFBool dateTimeMatchHasBeenPerformed = OFFalse;
+  OFBool studyDateTimeMatchHasBeenPerformed = OFFalse;
 
   // initialize result variable
   OFBool matchFound = OFTrue;
@@ -891,6 +893,22 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
           matchFound = PatientsBirthDatesMatch( mkaValuesDataset[16], mkaValuesSearchMask[16] );
           break;
 
+        case 17:
+          // matching key attribute is DCM_IssuerOfPatientID (LO, 1)
+          matchFound = IssuerOfPatientIDsMatch( mkaValuesDataset[17], mkaValuesSearchMask[17] );
+          break;
+
+        case 18:
+        case 19:
+          // matching key attributes are  DCM_StudyDate (DA, 1) and DCM_StudyTime (TM, 1)
+          // only do something if a date time match has not yet been performed
+          if( !studyDateTimeMatchHasBeenPerformed )
+          {
+            matchFound = StudyDateTimesMatch( mkaValuesDataset[18], mkaValuesDataset[19], mkaValuesSearchMask[18], mkaValuesSearchMask[19] );
+            studyDateTimeMatchHasBeenPerformed = OFTrue;
+          }
+          break;
+
         default:
           break;
       }
@@ -947,6 +965,9 @@ void WlmFileSystemInteractionManager::DetermineMatchingKeyAttributeValues( DcmDa
       case 14 : tag = DCM_AdmissionID                      ; break;
       case 15 : tag = DCM_RequestedProcedurePriority       ; break;
       case 16 : tag = DCM_PatientBirthDate                 ; break;
+      case 17 : tag = DCM_IssuerOfPatientID                ; break;
+      case 18 : tag = DCM_StudyDate                        ; break;
+      case 19 : tag = DCM_StudyTime                        ; break;
       default:                                               break;
     }
 
@@ -1049,6 +1070,51 @@ OFBool WlmFileSystemInteractionManager::WildcardStripSpacesMatch( const char *da
 
 
 // ----------------------------------------------------------------------------
+
+OFBool WlmFileSystemInteractionManager::IssuerOfPatientIDsMatch( const char *datasetValue, const char *searchMaskValue )
+// Date         : January 23, 2017
+// Author       : Thorben Hasenpusch
+// Task         : This function returns OFTrue if the dataset's and the search mask's values in
+//                attribute issuer of patient id match; otherwise OFFalse will be returned.
+// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
+//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
+// Return Value : OFTrue if the values match, OFFalse otherwise.
+{
+  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
+}
+
+OFBool WlmFileSystemInteractionManager::StudyDateTimesMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue )
+// Date         : Februar 27, 2017
+// Author       : Jan Schlamelcher
+// Task         : This function returns OFTrue if the dataset's and the search mask's values in
+//                attribute study date and study time match; otherwise OFFalse will be returned.
+// Parameters   : datasetDateValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
+//                datasetTimeValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
+//                searchMaskDateValue - [in] Value for the corresponding attribute in the search mask; might be NULL.
+//                searchMaskTimeValue - [in] Value for the corresponding attribute in the search mask; might be NULL.
+// Return Value : OFTrue if the values match, OFFalse otherwise.
+{
+  if( !datasetDateValue )
+    datasetDateValue = "";
+  if( !datasetTimeValue )
+    datasetTimeValue = "";
+  if( !searchMaskDateValue )
+    searchMaskDateValue = "";
+  if( !searchMaskTimeValue )
+    searchMaskTimeValue = "";
+  const char* datasetDateValueEnd = datasetDateValue + strlen( datasetDateValue );
+  const char* datasetTimeValueEnd = datasetTimeValue + strlen( datasetTimeValue );
+  const char* searchMaskDateValueEnd = searchMaskDateValue + strlen( searchMaskDateValue );
+  const char* searchMaskTimeValueEnd = searchMaskTimeValue + strlen( searchMaskTimeValue );
+  OFStandard::trimString( datasetDateValue, datasetDateValueEnd );
+  OFStandard::trimString( datasetTimeValue, datasetTimeValueEnd );
+  OFStandard::trimString( searchMaskDateValue, searchMaskDateValueEnd );
+  OFStandard::trimString( searchMaskTimeValue, searchMaskTimeValueEnd );
+  return DcmAttributeMatching::rangeMatchingDateTime( datasetDateValue, datasetDateValueEnd - datasetDateValue,
+                                                      datasetTimeValue, datasetTimeValueEnd - datasetTimeValue,
+                                                      searchMaskDateValue, searchMaskDateValueEnd - searchMaskDateValue,
+                                                      searchMaskTimeValue, searchMaskTimeValueEnd - searchMaskTimeValue );
+}
 
 OFBool WlmFileSystemInteractionManager::ScheduledStationAETitlesMatch( const char *datasetValue, const char *searchMaskValue )
 // Date         : July 12, 2002

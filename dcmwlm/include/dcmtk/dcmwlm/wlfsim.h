@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -152,6 +152,24 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *         attributes in the search mask. Is an array of pointers.
        */
     void DetermineMatchingKeyAttributeValues( DcmDataset *dataset, const char **&matchingKeyAttrValues );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute issuer of patient id match; otherwise OFFalse will be returned.
+       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool IssuerOfPatientIDsMatch( const char *datasetValue, const char *searchMaskValue );
+
+      /** This function returns OFTrue if the dataset's and the search mask's values in
+       *  attribute study date and study time match; otherwise OFFalse will be returned.
+       *  @param datasetDateValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; might be NULL.
+       *  @param searchMaskDateValue Value for the corresponding attribute in the search mask; might be NULL.
+       *  @param searchMaskTimeValue Value for the corresponding attribute in the search mask; might be NULL.
+       *  @return OFTrue if the values match, OFFalse otherwise.
+       */
+    OFBool StudyDateTimesMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue  );
 
       /** This function returns OFTrue if the dataset's and the search mask's values in
        *  attribute scheduled station AE title match; otherwise OFFalse will be returned.

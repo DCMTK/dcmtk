@@ -630,6 +630,9 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
 //                   DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
+//                   DCM_IssuerOfPatientID                                 (0010,0021)  LO  O  3
+//                   DCM_StudyDate                                         (0008,0020)  DA  O  3
+//                   DCM_StudyTime                                         (0008,0030)  TM  O  3
 //                As a result, the following data types have to be supported in this function:
 //                AE, DA, TM, CS, PN, LO and SH. For the correct specification of these datatypes
 //                2003 DICOM standard, part 5, section 6.2, table 6.2-1.
@@ -1181,6 +1184,9 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
 //                   DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
+//                   DCM_IssuerOfPatientID                                 (0010,0021)  LO  O  3
+//                   DCM_StudyDate                                         (0008,0020)  DA  O  3
+//                   DCM_StudyTime                                         (0008,0030)  TM  O  3
 // Parameters   : element            - [in] Pointer to the element which shall be checked.
 //                supSequenceElement - [in] Pointer to the superordinate sequence element of which
 //                                     the currently processed element is an attribute, or NULL if
@@ -1218,6 +1224,9 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
         elementKey == DCM_ResponsiblePerson              ||
         elementKey == DCM_ResponsiblePersonRole          ||
         elementKey == DCM_PatientID                      ||
+        elementKey == DCM_IssuerOfPatientID              ||
+        elementKey == DCM_StudyDate                      ||
+        elementKey == DCM_StudyTime                      ||
         elementKey == DCM_AccessionNumber                ||
         elementKey == DCM_RequestedProcedureID           ||
         elementKey == DCM_ReferringPhysicianName         ||

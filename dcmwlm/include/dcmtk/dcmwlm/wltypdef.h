@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,7 +108,7 @@ makeOFConditionConst(WLM_EC_DatabaseStatementConfigFilesNotExistent, OFM_dcmwlm,
 makeOFConditionConst(WLM_EC_CannotConnectToDataSource,               OFM_dcmwlm,  5, OF_error, "Cannot connect to data source.");
 
 /// number of currently supported matching key attributes
-#define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 17
+#define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 20
 
 /// structure for handling arbitrary types of superior sequences in query result datasets
 struct DCMTK_DCMWLM_EXPORT WlmSuperiorSequenceInfoType
