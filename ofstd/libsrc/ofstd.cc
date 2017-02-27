@@ -2583,6 +2583,15 @@ int OFrand_r(unsigned int &seed)
   return OFstatic_cast(int, seed);
 }
 
+void OFStandard::trimString(const char*& pBegin, const char*& pEnd)
+{
+  assert(pBegin <= pEnd);
+  while(pBegin != pEnd && (*pBegin == ' ' || !*pBegin))
+    ++pBegin;
+  while(pBegin != pEnd && (*(pEnd-1) == ' ' || !*(pEnd-1)))
+    --pEnd;
+}
+
 #define MAX_NAME 65536
 
 OFStandard::OFHostent OFStandard::getHostByName( const char* name )

@@ -907,8 +907,8 @@ public:
 
         // remove leading and trailing spaces before matching
         if (vr.isaString()) {
-            trimString(pQuery, pQueryEnd);
-            trimString(pCandidate, pCandidateEnd);
+            OFStandard::trimString(pQuery, pQueryEnd);
+            OFStandard::trimString(pCandidate, pCandidateEnd);
         }
 
         // use DcmAttributeMatching to perform the appropriate matching function
@@ -918,17 +918,6 @@ public:
     }
 
 private:
-
-    // increments begin and decrements end to ignore leading and trailing
-    // space characters
-    static void trimString(const char*& pBegin, const char*& pEnd)
-    {
-        while(pBegin != pEnd && (*pBegin == ' ' || !*pBegin))
-            ++pBegin;
-        while(pBegin != pEnd && (*(pEnd-1) == ' ' || !*(pEnd-1)))
-            --pEnd;
-    }
-
     const OFString& findRequestCharacterSet;
     DcmSpecificCharacterSet& findRequestConverter;
     OFString candidateCharacterSet;

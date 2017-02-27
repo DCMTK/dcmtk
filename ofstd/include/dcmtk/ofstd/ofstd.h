@@ -954,6 +954,22 @@ class DCMTK_OFSTD_EXPORT OFStandard
     }
 #endif
 
+    /** An utility function that finds a substring within a string that does
+     *  not contain leading and trailing spaces and null bytes, effectively
+     *  trimming the string without unnecessary copies.
+     *  @param pBegin a reference to a pointer to the beginning of the string.
+     *  @param pEnd a reference to a pointer to the end of the string (the
+     *    first byte behind the string).
+     *  @details
+     *  @pre pBegin <= pEnd
+     *  @details
+     *  trimString() increments pBegin and decrements pEnd until either both
+     *  point to a non-null and non-space character (the position after it in
+     *  case of pEnd) or both become equal (in case the string only contains
+     *  spaces and null bytes).
+     */
+    static void trimString( const char*& pBegin, const char*& pEnd );
+
     /** Thread-safe version of gethostbyname.
      *  @param name the host name.
      *  @return a OFStandard::OFHostent object.
