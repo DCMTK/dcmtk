@@ -81,6 +81,7 @@ static const DB_FindAttr TbFindAttr [] = {
         DB_FindAttr( DCM_NumberOfPatientRelatedStudies,         PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_NumberOfPatientRelatedSeries,          PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_NumberOfPatientRelatedInstances,       PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_IssuerOfPatientID,                     PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_StudyDate,                             STUDY_LEVEL,    REQUIRED_KEY ),
         DB_FindAttr( DCM_StudyTime,                             STUDY_LEVEL,    REQUIRED_KEY ),
         DB_FindAttr( DCM_StudyID,                               STUDY_LEVEL,    REQUIRED_KEY ),
@@ -319,6 +320,9 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
         idx -> param[RECORDIDX_PresentationLabel]. XTag = DCM_ContentLabel ;
         idx -> param[RECORDIDX_PresentationLabel]. ValueLength = CS_LABEL_MAX_LENGTH ;
         idx -> PresentationLabel[0] = '\0' ;
+        idx -> param[RECORDIDX_IssuerOfPatientID]. XTag = DCM_IssuerOfPatientID ;
+        idx -> param[RECORDIDX_IssuerOfPatientID]. ValueLength =  LO_MAX_LENGTH ;
+        idx -> IssuerOfPatientID[0] = '\0' ;
         idx -> param[RECORDIDX_SpecificCharacterSet]. XTag = DCM_SpecificCharacterSet ;
         idx -> param[RECORDIDX_SpecificCharacterSet]. ValueLength = CS_MAX_LENGTH*8 ;
         idx -> SpecificCharacterSet[0] = '\0' ;
@@ -364,6 +368,7 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
     idx -> param[RECORDIDX_OperatorsName ]. PValueField = (char *) idx -> OperatorsName ;
     idx -> param[RECORDIDX_PerformingPhysicianName]. PValueField = (char *) idx -> PerformingPhysicianName ;
     idx -> param[RECORDIDX_PresentationLabel]. PValueField = (char *) idx -> PresentationLabel ;
+    idx -> param[RECORDIDX_IssuerOfPatientID]. PValueField = (char *) idx -> IssuerOfPatientID ;
     idx -> param[RECORDIDX_SpecificCharacterSet]. PValueField = (char *) idx -> SpecificCharacterSet ;
 }
 

@@ -341,9 +341,10 @@ struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 #define RECORDIDX_OperatorsName                  38
 #define RECORDIDX_PerformingPhysicianName        39
 #define RECORDIDX_PresentationLabel              40
-#define RECORDIDX_SpecificCharacterSet           41
+#define RECORDIDX_IssuerOfPatientID              41
+#define RECORDIDX_SpecificCharacterSet           42
 
-#define NBPARAMETERS                             42
+#define NBPARAMETERS                             43
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
@@ -409,6 +410,7 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
     char    OperatorsName                   [PN_MAX_LENGTH+1] ;
     char    PerformingPhysicianName         [PN_MAX_LENGTH+1] ;
     char    PresentationLabel               [CS_LABEL_MAX_LENGTH+1] ;
+    char    IssuerOfPatientID               [LO_MAX_LENGTH+1] ;
 
     char    hstat;
 
