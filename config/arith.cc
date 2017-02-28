@@ -518,6 +518,18 @@ int main( int argc, char** argv )
     out << "#define CONFIG_ARITH_H" << '\n';
     out << '\n';
 
+    // workaround to let digits10 be a compile time constant
+    out << "#define DCMTK_SIGNED_CHAR_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT - 1 ) * .30102999566398119521373889472449 ) << OFendl;
+    out << "#define DCMTK_UNSIGNED_CHAR_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * .30102999566398119521373889472449 ) << OFendl;
+    out << "#define DCMTK_SIGNED_SHORT_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed short ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
+    out << "#define DCMTK_UNSIGNED_SHORT_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned short ) * .30102999566398119521373889472449 ) << OFendl;
+    out << "#define DCMTK_SIGNED_INT_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed int ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
+    out << "#define DCMTK_UNSIGNED_INT_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned int ) * .30102999566398119521373889472449 ) << OFendl;
+    out << "#define DCMTK_SIGNED_LONG_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed long ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
+    out << "#define DCMTK_UNSIGNED_LONG_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned long ) * .30102999566398119521373889472449 ) << OFendl;
+    out << "#define DCMTK_FLOAT_MAX_DIGITS10 " << OFstatic_cast( int, FLT_MANT_DIG * .30102999566398119521373889472449 + 2 ) << OFendl;
+    out << "#define DCMTK_DOUBLE_MAX_DIGITS10 " << OFstatic_cast( int, DBL_MANT_DIG * .30102999566398119521373889472449 + 2 ) << OFendl;
+
     COUT << "--" << OFendl;
 
     COUT << "-- " << STD_NAMESPACE setfill( ' ' ) << STD_NAMESPACE setw(17) << ' '

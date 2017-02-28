@@ -1019,7 +1019,11 @@ struct OFnumeric_limits<char>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_CHAR_MODULO;
     static const int digits                         = OFnumeric_limits<char>::is_signed ? CHAR_BIT - 1 : CHAR_BIT;
-    static const int digits10;
+#ifndef C_CHAR_UNSIGNED
+    static const int digits10                       = DCMTK_SIGNED_CHAR_DIGITS10;
+#else
+    static const int digits10                       = DCMTK_UNSIGNED_CHAR_DIGITS10;
+#endif
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1056,7 +1060,7 @@ struct OFnumeric_limits<signed char>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_SIGNED_CHAR_MODULO;
     static const int digits                         = CHAR_BIT - 1;
-    static const int digits10;
+    static const int digits10                       = DCMTK_SIGNED_CHAR_DIGITS10;
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1093,7 +1097,7 @@ struct OFnumeric_limits<unsigned char>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_UNSIGNED_CHAR_MODULO;
     static const int digits                         = CHAR_BIT;
-    static const int digits10;
+    static const int digits10                       = DCMTK_UNSIGNED_CHAR_DIGITS10;
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1130,7 +1134,7 @@ struct OFnumeric_limits<signed short>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_SIGNED_SHORT_MODULO;
     static const int digits                         = OFstatic_cast( int, CHAR_BIT * sizeof( signed short ) - 1 );
-    static const int digits10;
+    static const int digits10                       = DCMTK_SIGNED_SHORT_DIGITS10;
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1167,7 +1171,7 @@ struct OFnumeric_limits<unsigned short>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_UNSIGNED_SHORT_MODULO;
     static const int digits                         = OFstatic_cast( int, CHAR_BIT * sizeof( unsigned short ) );
-    static const int digits10;
+    static const int digits10                       = DCMTK_UNSIGNED_SHORT_DIGITS10;
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1204,7 +1208,7 @@ struct OFnumeric_limits<signed int>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_SIGNED_INT_MODULO;
     static const int digits                         = OFstatic_cast( int, CHAR_BIT * sizeof( signed int ) - 1 );
-    static const int digits10;
+    static const int digits10                       = DCMTK_SIGNED_INT_DIGITS10;
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1241,7 +1245,7 @@ struct OFnumeric_limits<unsigned int>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_UNSIGNED_INT_MODULO;
     static const int digits                         = OFstatic_cast( int, CHAR_BIT * sizeof( unsigned int ) );
-    static const int digits10;
+    static const int digits10                       = DCMTK_UNSIGNED_INT_DIGITS10;
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1278,7 +1282,7 @@ struct OFnumeric_limits<signed long>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_SIGNED_LONG_MODULO;
     static const int digits                         = OFstatic_cast( int, CHAR_BIT * sizeof( signed long ) - 1 );
-    static const int digits10;
+    static const int digits10                       = DCMTK_SIGNED_LONG_DIGITS10;
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1315,7 +1319,7 @@ struct OFnumeric_limits<unsigned long>
     static const OFBool is_bounded                  = OFTrue;
     static const OFBool is_modulo                   = DCMTK_UNSIGNED_LONG_MODULO;
     static const int digits                         = OFstatic_cast( int, CHAR_BIT * sizeof( unsigned long ) );
-    static const int digits10;
+    static const int digits10                       = DCMTK_UNSIGNED_LONG_DIGITS10;
     static const int max_digits10                   = 0;
     static const int radix                          = 2;
     static const int min_exponent                   = 0;
@@ -1353,7 +1357,7 @@ struct OFnumeric_limits<float>
     static const OFBool is_modulo                   = OFFalse;
     static const int digits                         = OFstatic_cast( int, FLT_MANT_DIG );
     static const int digits10                       = OFstatic_cast( int, FLT_DIG );
-    static const int max_digits10;
+    static const int max_digits10                   = DCMTK_FLOAT_MAX_DIGITS10;
     static const int radix                          = FLT_RADIX;
     static const int min_exponent                   = FLT_MIN_EXP;
     static const int min_exponent10                 = FLT_MIN_10_EXP;
@@ -1390,7 +1394,7 @@ struct OFnumeric_limits<double>
     static const OFBool is_modulo                   = OFFalse;
     static const int digits                         = OFstatic_cast( int, DBL_MANT_DIG );
     static const int digits10                       = OFstatic_cast( int, DBL_DIG );
-    static const int max_digits10;
+    static const int max_digits10                   = DCMTK_DOUBLE_MAX_DIGITS10;
     static const int radix                          = FLT_RADIX;
     static const int min_exponent                   = DBL_MIN_EXP;
     static const int min_exponent10                 = DBL_MIN_10_EXP;
