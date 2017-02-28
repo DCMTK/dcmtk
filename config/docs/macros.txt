@@ -352,13 +352,6 @@ STARVIEW
   Explanation: Enables support for old StarView 2 GUI class library from
     Star Division.
 
-STRICT_COMPARE
-  Affected: dcmqrdb
-  Type of modification: Activates experimental or rarely used feature
-  Explanation: By default, dcmqrdb ignores illegal leading and trailing
-    space characters when comparing UIDs.  This behavior can be modified
-    by defining this macro.
-
 SUPPRESS_CREATE_STAMP
   Affected: dcmdata
   Type of modification: Activates experimental or rarely used feature
