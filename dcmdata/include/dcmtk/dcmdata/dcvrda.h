@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -172,7 +172,7 @@ class DCMTK_DCMDATA_EXPORT DcmDate
      *  Please note that the specified value is expected to be in valid DICOM DA format
      *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
      *  If this function fails, the result variable 'dateValue' is cleared automatically.
-     *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
+     *  @param dicomDate string value in DICOM DA format to be converted to OFDate format.
      *    An empty string is not regarded as valid input, since the date would be unknown.
      *  @param dateValue reference to OFDate variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
@@ -184,7 +184,7 @@ class DCMTK_DCMDATA_EXPORT DcmDate
      *  Please note that the specified value is expected to be in valid DICOM DA format
      *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
      *  If this function fails, the result variable 'dateValue' is cleared automatically.
-     *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
+     *  @param dicomDate string value in DICOM DA format to be converted to OFDate format.
      *    An empty string is not regarded as valid input, since the date would be unknown.
      *  @param dateValue reference to OFDate variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) date
@@ -199,9 +199,9 @@ class DCMTK_DCMDATA_EXPORT DcmDate
      *  Please note that the specified value is expected to be in valid DICOM DA format
      *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
      *  If this function fails, the result variable 'dateValue' is cleared automatically.
-     *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
+     *  @param dicomDate string value in DICOM DA format to be converted to OFDate format.
      *    An empty string is not regarded as valid input, since the date would be unknown.
-     *  @param dicomDateSize the size (in bytes) of the string dicomDate refers to.
+     *  @param dicomDateSize the size (in bytes) of the string 'dicomDate' refers to
      *  @param dateValue reference to OFDate variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -213,9 +213,9 @@ class DCMTK_DCMDATA_EXPORT DcmDate
      *  Please note that the specified value is expected to be in valid DICOM DA format
      *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
      *  If this function fails, the result variable 'dateValue' is cleared automatically.
-     *  @param dicomDate string value in DICOM DA format to be converted to ISO format.
+     *  @param dicomDate string value in DICOM DA format to be converted to OFDate format.
      *    An empty string is not regarded as valid input, since the date would be unknown.
-     *  @param dicomDateSize the size (in bytes) of the string dicomDate refers to.
+     *  @param dicomDateSize the size (in bytes) of the string 'dicomDate' refers to
      *  @param dateValue reference to OFDate variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) date
      *    format (see above).

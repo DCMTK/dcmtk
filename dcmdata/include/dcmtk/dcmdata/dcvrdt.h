@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -219,7 +219,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  and/or "SS" component of the time part is missing, a value of "0" is used for each of
      *  them. If the optional time zone ("&ZZZZ") is missing, the local time zone is used.
      *  If this function fails, the result variable 'dateTimeValue' is cleared automatically.
-     *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format.
+     *  @param dicomDateTime string value in DICOM DT format to be converted to OFDateTime.
      *    An empty string is not regarded as valid input, since the date/time would be unknown.
      *  @param dateTimeValue reference to OFDateTime variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
@@ -234,9 +234,9 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  and/or "SS" component of the time part is missing, a value of "0" is used for each of
      *  them. If the optional time zone ("&ZZZZ") is missing, the local time zone is used.
      *  If this function fails, the result variable 'dateTimeValue' is cleared automatically.
-     *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format.
+     *  @param dicomDateTime string value in DICOM DT format to be converted to OFDateTime.
      *    An empty string is not regarded as valid input, since the date/time would be unknown.
-     *  @param dicomDateTimeSize the size (in bytes) of the string dicomDateTime refers to.
+     *  @param dicomDateTimeSize the size (in bytes) of the string 'dicomDateTime' refers to
      *  @param dateTimeValue reference to OFDateTime variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
      */

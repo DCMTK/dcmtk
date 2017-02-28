@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -207,7 +207,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
@@ -221,7 +221,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
@@ -238,7 +238,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  backward compatibility). This overload of the function will set the time zone of
      *  'timeValue' to the value given via the 'timeZone' parameter.
      *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
@@ -257,9 +257,9 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
-     *  @param dicomTimeSize the size (in bytes) of the string dicomTime refers to.
+     *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -273,9 +273,9 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
-     *  @param dicomTimeSize the size (in bytes) of the string dicomTime refers to.
+     *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
      *    format (see above).
@@ -292,9 +292,9 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  backward compatibility). This overload of the function will set the time zone of
      *  'timeValue' to the value given via the 'timeZone' parameter.
      *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
+     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
-     *  @param dicomTimeSize the size (in bytes) of the string dicomTime refers to.
+     *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
      *    format (see above).
@@ -357,7 +357,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  the time to different time zones (e.g. to local time or UTC).
      *  @param dicomTimeZone string value in DICOM format ("&ZZZZ") to be converted
      *  @param timeZone reference to floating point variable where the resulting UTC offset is stored
-     *  @param dicomTimeZoneSize the size (in bytes) of the string dicomTimeZone refers to.
+     *  @param dicomTimeZoneSize the size (in bytes) of the string 'dicomTimeZone' refers to
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getTimeZoneFromString(const char *dicomTimeZone,
