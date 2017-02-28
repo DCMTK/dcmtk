@@ -905,7 +905,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *    be a valid integer type, i.e.\ OFnumeric_limits<T>::is_integer must
      *    be OFTrue.
      *  @tparam Count the number of digits to extract. Must be greater zero
-     *    and less or equal to OFnumeric_limits<T>::digits
+     *    and less or equal to OFnumeric_limits<T>::digits10
      *  @param string a pointer to a character array to extract digits from.
      *  @return a value of type T that is equivalent to the number represented
      *    by the digits.
@@ -945,7 +945,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
     static OFTypename OFenable_if
     <
         OFnumeric_limits<T>::is_integer && ( Count > 1 ) &&
-             OFnumeric_limits<T>::digits >= Count,
+             OFnumeric_limits<T>::digits10 >= Count,
         T
     >::type extractDigits(const char* string)
     {
