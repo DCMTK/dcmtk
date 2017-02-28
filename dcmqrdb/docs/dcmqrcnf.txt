@@ -30,22 +30,34 @@ value list.
 
 The Global Parameter part knows of the following keywords:
 
-NetworkTCPPort  - integer value
-MaxPDUSize      - integer value
-MaxAssociations - integer value
-UserName        - string value
-GroupName       - string value
+NetworkTCPPort       - integer value
+MaxPDUSize           - integer value
+MaxAssociations      - integer value
+SpecificCharacterSet - comma separated list of string options
+UserName             - string value
+GroupName            - string value
 
 There are default values for all these keywords hardcoded in the configuration 
 module.
 
 Example:
 
-NetworkTCPPort  = 104
-MaxPDUSize      = 8192
-MaxAssociations = 20
-UserName        = (do not change user)
-GroupName       = (do not change group)
+NetworkTCPPort       = 104
+MaxPDUSize           = 8192
+MaxAssociations      = 20
+SpecificCharacterSet = fallback
+UserName             = (do not change user)
+GroupName            = (do not change group)
+
+Available options for specific character sets are:
+
+  "<character set>" - a character set, e.g. "ISO_IR 192" for UTF-8
+  fallback          - retry with another character set if conversion failed
+  override          - override the response character set with the given one
+                      (otherwise the given character set will act as fall back
+                      if enabled)
+  transliterate     - enable transliteration of unsupported characters
+  discard           - discard unsupported characters
 
 NOTE: You must have root privileges to bind port 104 for DICOM association 
 requests on Unix/Linux/Posix platforms as this is a privileged port number 
