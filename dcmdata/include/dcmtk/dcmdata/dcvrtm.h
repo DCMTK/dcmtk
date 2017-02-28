@@ -203,7 +203,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
 
     /** get the specified DICOM time value in OFTime format.
      *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
@@ -217,7 +217,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
 
     /** get the specified DICOM time value in OFTime format.
      *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
@@ -234,8 +234,8 @@ class DCMTK_DCMDATA_EXPORT DcmTime
 
     /** get the specified DICOM time value in OFTime format.
      *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
-     *  of backward compatibility). This overload of the function will set the time zone of
+     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons of
+     *  backward compatibility). This overload of the function will set the time zone of
      *  'timeValue' to the value given via the 'timeZone' parameter.
      *  If this function fails the result variable 'timeValue' is cleared automatically.
      *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
@@ -253,7 +253,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
 
     /** get the specified DICOM time value in OFTime format.
      *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
@@ -269,7 +269,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
 
     /** get the specified DICOM time value in OFTime format.
      *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
      *  If this function fails the result variable 'timeValue' is cleared automatically.
@@ -288,8 +288,8 @@ class DCMTK_DCMDATA_EXPORT DcmTime
 
     /** get the specified DICOM time value in OFTime format.
      *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
-     *  of backward compatibility). This overload of the function will set the time zone of
+     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons of
+     *  backward compatibility). This overload of the function will set the time zone of
      *  'timeValue' to the value given via the 'timeZone' parameter.
      *  If this function fails the result variable 'timeValue' is cleared automatically.
      *  @param dicomTime string value in DICOM TM format to be converted to ISO format.
