@@ -228,6 +228,7 @@ wlfsim.o: wlfsim.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcmatch.h \
  ../include/dcmtk/dcmwlm/wltypdef.h ../include/dcmtk/dcmwlm/wldefine.h \
  ../include/dcmtk/dcmwlm/wlds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \

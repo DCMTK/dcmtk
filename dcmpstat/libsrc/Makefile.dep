@@ -252,11 +252,16 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsdal.h ../include/dcmtk/dcmpstat/dvpssvl.h \
  ../include/dcmtk/dcmpstat/dvpspl.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h \
+ ../../ofstd/include/dcmtk/ofstd/ofoption.h \
+ ../../ofstd/include/dcmtk/ofstd/ofalign.h \
  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
  ../../dcmnet/include/dcmtk/dcmnet/dndefine.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcspchrs.h \
+ ../../ofstd/include/dcmtk/ofstd/ofchrenc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/qrdefine.h \
@@ -329,7 +334,6 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrimgse.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrwavvl.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrwavch.h \
- ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrrtpl.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrctpl.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrsoprf.h \
@@ -3146,6 +3150,11 @@ dvpsprt.o: dvpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsdal.h ../include/dcmtk/dcmpstat/dvpssvl.h \
  ../include/dcmtk/dcmpstat/dvpspl.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h \
+ ../../ofstd/include/dcmtk/ofstd/ofoption.h \
+ ../../ofstd/include/dcmtk/ofstd/ofalign.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcspchrs.h \
+ ../../ofstd/include/dcmtk/ofstd/ofchrenc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/qrdefine.h \
@@ -3728,6 +3737,11 @@ dvpsspl.o: dvpsspl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsib.h ../include/dcmtk/dcmpstat/dviface.h \
  ../include/dcmtk/dcmpstat/dvpscf.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h \
+ ../../ofstd/include/dcmtk/ofstd/ofoption.h \
+ ../../ofstd/include/dcmtk/ofstd/ofalign.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcspchrs.h \
+ ../../ofstd/include/dcmtk/ofstd/ofchrenc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/qrdefine.h \
