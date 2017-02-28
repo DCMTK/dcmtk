@@ -924,7 +924,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
     }
 
     template<size_t Count>
-    static OFTypename OFenable_if<Count,OFBool>::type
+    static OFTypename OFenable_if<!!Count,OFBool>::type
     checkDigits(const char* string)
     {
         return *string >= '0' && *string <= '9' &&
