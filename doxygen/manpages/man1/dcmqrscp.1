@@ -1,4 +1,4 @@
-.TH "dcmqrscp" 1 "Wed Nov 2 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrscp" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrscp \- DICOM image archive (central test node)
@@ -217,6 +217,15 @@ preferred network transfer syntaxes (incoming associations):
   +xl   --prefer-mpeg4-bd
           prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
 
+  +x2   --prefer-mpeg4-2-2d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos
+
+  +x3   --prefer-mpeg4-2-3d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos
+
+  +xo   --prefer-mpeg4-2-st
+          prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -280,6 +289,15 @@ proposed transmission transfer syntaxes (outgoing associations):
 
   -xl   --propose-mpeg4-bd
           propose MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS only
+
+  -x2   --propose-mpeg4-2-2d
+          propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos only
+
+  -x3   --propose-mpeg4-2-3d
+          propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos only
+
+  -xo   --propose-mpeg4-2-st
+          propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -420,6 +438,42 @@ deflate compression level (only with --propose-deflated or
 
   +cl   --compression-level  [l]evel: integer (default: 6)
           0=uncompressed, 1=fastest, 9=best compression
+
+specific character set:
+  +Cr   --use-request-charset
+          try to convert all element values that are
+          affected by Specific Character Set (0008,0005)
+          to the one specified in the request data set,
+          fall back to the one specified via
+          --convert-to-xxx if that is not possible
+          (default, unless overridden by config file)
+
+  -Cr   --override-charset
+          convert affected element values to the character
+          set specified via --convert-to-xxx, ignoring
+          the one specified in the request
+
+  +A7   --convert-to-ascii
+          convert affected element values to 7-bit ASCII
+          (default, unless overridden by config file)
+
+  +U8   --convert-to-utf8
+          convert affected element values to UTF-8
+
+  +L1   --convert-to-latin1
+          convert affected element values to ISO 8859-1
+
+  +C    --convert-to-charset  [c]harset: string
+          convert affected element values to the character
+          set specified by the DICOM defined term c
+
+  -Ct   --transliterate
+          try to approximate characters that cannot be
+          represented through similar looking characters
+
+  -Cd   --discard-illegal
+          discard characters that cannot be represented
+          in destination character set
 .fi
 .PP
 .SH "NOTES"
@@ -450,12 +504,14 @@ DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
 DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
 CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
 EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+LegacyConvertedEnhancedCTImageStorage                1.2.840.10008.5.1.4.1.1.2.2
 RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
 UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
 MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
 EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
 MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
 EnhancedMRColorImageStorage                          1.2.840.10008.5.1.4.1.1.4.3
+LegacyConvertedEnhancedMRImageStorage                1.2.840.10008.5.1.4.1.1.4.4
 RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
@@ -542,6 +598,7 @@ ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
+LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
 EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
 BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
@@ -555,9 +612,6 @@ RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
 RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
-GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
-ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
-ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
 .fi
 .PP
 .PP
@@ -590,6 +644,9 @@ MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
 MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
@@ -732,6 +789,7 @@ RadiopharmaceuticalRadiationDoseSRStorage            1.2.840.10008.5.1.4.1.1.88.
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
 ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
 AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
+SimplifiedAdultEchoSRStorage                         1.2.840.10008.5.1.4.1.1.88.72
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
@@ -763,9 +821,6 @@ DICONDE_EddyCurrentMultiframeImageStorage            1.2.840.10008.5.1.4.1.1.601
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
 RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
 RTBrachyApplicationSetupDeliveryInstructionStorage   1.2.840.10008.5.1.4.34.10
-GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
-ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
-ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
 
 PrivateShutdownSOPClass                              1.2.276.0.7230010.3.4.1915765545.18030.917282194.0
 .fi
@@ -800,6 +855,9 @@ MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
 MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
@@ -902,4 +960,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmqridx\fP(1), \fBdcmqrti\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1993-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

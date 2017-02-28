@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "Wed Nov 2 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding
@@ -148,6 +148,30 @@ handling of wrong delimitation items:
   +rd  --replace-wrong-delim
          replace wrong sequence/item delimitation items
 
+handling of illegal undefined length OB/OW elements:
+
+  -oi  --illegal-obow-rej
+         reject dataset with illegal element (default)
+
+  +oi  --illegal-obow-conv
+         convert undefined length OB/OW element to SQ
+
+handling of VOI LUT Sequence with OW VR and explicit length:
+
+  -vi  --illegal-voi-rej
+         reject dataset with illegal VOI LUT (default)
+
+  +vi  --illegal-voi-conv
+         convert illegal VOI LUT to SQ
+
+handling of explicit length pixel data for encaps. transfer syntaxes:
+
+  -pe  --abort-expl-pixdata
+         abort on explicit length pixel data (default)
+
+  +pe  --use-expl-pixdata
+         use explicit length pixel data
+
 general handling of parser errors:
 
   +Ep  --ignore-parse-errors
@@ -183,7 +207,8 @@ bitstream format of deflated input:
 .nf
 specific character set:
 
-  # the following options require support from the libiconv toolkit
+  # the following options require support from an underlying character
+  # encoding library (see output of --version on which one is available)
 
   +U8  --convert-to-utf8
          convert all element values that are affected
@@ -318,4 +343,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

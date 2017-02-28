@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "Wed Nov 2 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -220,10 +220,13 @@ Currently, the \fBwlmscpfs\fP application supports the following attributes as m
 .PP
 .PP
 .nf
+(0008,0020) StudyDate
+(0008,0030) StudyTime
 (0008,0050) AccessionNumber
 (0008,0090) ReferringPhysicianName
 (0010,0010) PatientName
 (0010,0020) PatientID
+(0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
 (0010,0040) PatientSex
 (0010,2297) Responsible Person

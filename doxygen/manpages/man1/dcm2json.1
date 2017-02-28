@@ -1,4 +1,4 @@
-.TH "dcm2json" 1 "Fri Jan 6 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2json" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2json \- Convert DICOM file and data set to JSON
@@ -85,17 +85,6 @@ input transfer syntax:
 
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
-
-long tag values:
-
-  +M    --load-all
-          load very long tag values (e.g. pixel data)
-
-  -M    --load-short
-          do not load very long values (default)
-
-  +R    --max-read-length  [k]bytes: integer (4..4194302, default: 4)
-          set threshold for long values to k kbytes
 .fi
 .PP
 .SS "output options"
@@ -274,10 +263,6 @@ The basic structure of the JSON output created from a DICOM file looks like the 
 }
 .fi
 .PP
-.SS "JSON Encoding"
-Attributes with very large value fields (e\&.g\&. pixel data) are not loaded by default\&. The command line option \fI--load-all\fP forces to load all value fields including the very long ones\&.
-.PP
-Multiple values (i\&.e\&. where the DICOM value multiplicity is greater than 1) are separated by a ',' (except for Base64 encoded data)\&.
 .SS "Bulk Data"
 Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB or OW, as well as OD, OF and UN values are by default not written to the JSON output because of their size\&. Instead, for each element, a new Universally Unique Identifier (UUID) is being generated and written as an value of a BulkDataURI JSON element\&. So far, there is no possibility to write an additional file to hold the binary data for each of the binary data chunks\&.
 .SH "NOTES"
@@ -317,4 +302,4 @@ The \fBdcm2json\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2016-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

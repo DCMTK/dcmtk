@@ -1,4 +1,4 @@
-.TH "storescp" 1 "Wed Nov 2 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -117,6 +117,15 @@ preferred network transfer syntaxes (not with --config-file):
   +xl   --prefer-mpeg4-bd
           prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
 
+  +x2   --prefer-mpeg4-2-2d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos
+
+  +x3   --prefer-mpeg4-2-3d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos
+
+  +xo   --prefer-mpeg4-2-st
+          prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -143,6 +152,9 @@ other network options:
           run from inetd super server (not with --fork)
 
           # not available on all systems (e.g. not on Windows)
+
+  -ts   --socket-timeout  [s]econds: integer (default: 60)
+          timeout for network socket (0 for none)
 
   -ta   --acse-timeout  [s]econds: integer (default: 30)
           timeout for ACSE messages
@@ -594,6 +606,7 @@ RadiopharmaceuticalRadiationDoseSRStorage            1.2.840.10008.5.1.4.1.1.88.
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
 ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
 AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
+SimplifiedAdultEchoSRStorage                         1.2.840.10008.5.1.4.1.1.88.72
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
@@ -625,9 +638,6 @@ DICONDE_EddyCurrentMultiframeImageStorage            1.2.840.10008.5.1.4.1.1.601
 DRAFT_RTBeamsDeliveryInstructionStorage              1.2.840.10008.5.1.4.34.1
 RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
 RTBrachyApplicationSetupDeliveryInstructionStorage   1.2.840.10008.5.1.4.34.10
-GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
-ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
-ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
 .fi
 .PP
 .PP
@@ -663,6 +673,8 @@ MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
 MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
 MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
+HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
+HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
@@ -714,4 +726,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBstorescu\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

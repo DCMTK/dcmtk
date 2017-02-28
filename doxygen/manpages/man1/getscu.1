@@ -1,4 +1,4 @@
-.TH "getscu" 1 "Wed Nov 2 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "getscu" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 getscu \- DICOM retrieve (C-GET) SCU
@@ -127,7 +127,16 @@ preferred storage transfer syntaxes (incoming associations):
           prefer MPEG4 AVC/H.264 HP / Level 4.1 TS
 
   +xl   --prefer-mpeg4-bd
-          prefer MPEG4 AVC/H.264 BD-compatible TS
+          prefer MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS
+
+  +x2   --prefer-mpeg4-2-2d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos
+
+  +x3   --prefer-mpeg4-2-3d
+          prefer MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos
+
+  +xo   --prefer-mpeg4-2-st
+          prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -273,12 +282,14 @@ DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
 DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
 CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
 EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+LegacyConvertedEnhancedCTImageStorage                1.2.840.10008.5.1.4.1.1.2.2
 RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
 UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
 MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
 EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
 MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
 EnhancedMRColorImageStorage                          1.2.840.10008.5.1.4.1.1.4.3
+LegacyConvertedEnhancedMRImageStorage                1.2.840.10008.5.1.4.1.1.4.4
 RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
@@ -365,6 +376,7 @@ ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
+LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
 EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
 BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
@@ -378,9 +390,6 @@ RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
 RTBeamsDeliveryInstructionStorage                    1.2.840.10008.5.1.4.34.7
-GenericImplantTemplateStorage                        1.2.840.10008.5.1.4.43.1
-ImplantAssemblyTemplateStorage                       1.2.840.10008.5.1.4.44.1
-ImplantTemplateGroupStorage                          1.2.840.10008.5.1.4.45.1
 .fi
 .PP
 .PP
@@ -413,6 +422,9 @@ MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
 MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
@@ -453,4 +465,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBfindscu\fP(1), \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2011-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2011-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

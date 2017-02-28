@@ -1,4 +1,4 @@
-.TH "storescu" 1 "Wed Nov 2 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescu \- DICOM storage (C-STORE) SCU
@@ -160,6 +160,15 @@ proposed transmission transfer syntaxes (not with --config-file):
   -xl   --propose-mpeg4-bd
           propose MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS only
 
+  -x2   --propose-mpeg4-2-2d
+          propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos only
+
+  -x3   --propose-mpeg4-2-3d
+          propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos only
+
+  -xo   --propose-mpeg4-2-st
+          propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only
+
   -xr   --propose-rle
           propose RLE lossless TS
           and all uncompressed transfer syntaxes
@@ -213,6 +222,9 @@ other network options:
 
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
+
+  -ts   --socket-timeout  [s]econds: integer (default: 60)
+          timeout for network socket (0 for none)
 
   -ta   --acse-timeout  [s]econds: integer (default: 30)
           timeout for ACSE messages
@@ -422,6 +434,9 @@ MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
 MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
@@ -459,4 +474,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

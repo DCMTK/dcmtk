@@ -1,4 +1,4 @@
-.TH "dcm2xml" 1 "Wed Nov 2 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2xml" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2xml \- Convert DICOM file and data set to XML
@@ -120,7 +120,8 @@ specific character set:
           convert all element values that are affected
           by Specific Character Set (0008,0005) to UTF-8
 
-          # requires support from the libiconv toolkit
+          # requires support from an underlying character encoding library
+          # (see output of --version on which one is available)
 .fi
 .PP
 .SS "output options"
@@ -283,4 +284,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBxml2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2015 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2002-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "dcmp2pgm" 1 "Wed Nov 2 2016" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmp2pgm" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmp2pgm \- Read DICOM image and presentation state and render bitmap
@@ -83,6 +83,12 @@ bitmap-out   output DICOM image or PGM bitmap
          save presentation state to file
 .fi
 .PP
+.SH "NOTES"
+.PP
+.SS "Limitations"
+Please note that the \fBdcmp2pgm\fP tool does not render all aspects that are defined by the Grayscale Softcopy Presentation State (GSPS) object but only those that are supported by the underlying DCMTK classes\&. In particular, textual and graphical annotations will not be visible in the output image\&. The reason is that these aspects of a GSPS object are typically rendered by DICOMscope, the graphical user interface that is put on top of the related DCMTK classes and written in Java\&.
+.PP
+Also concepts that were introduced after the initial definition of the GSPS IOD (see Supplement 33) are ignored\&. This includes Supplement 120 with its extended features like e\&.g\&. Compound Graphics\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -105,4 +111,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fI<etcdir>/dcmpstat\&.cfg\fP - sample configuration file
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1998-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
