@@ -290,10 +290,15 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
             OFFIS_DTK_IMPLEMENTATION_VERSION_NAME,
             sizeof((*params)->ourImplementationVersionName)-1);
 
-    strcpy((*params)->DULparams.callingImplementationClassUID,
-        (*params)->ourImplementationClassUID);
-    strcpy((*params)->DULparams.callingImplementationVersionName,
-        (*params)->ourImplementationVersionName);
+    if (strlen(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME) > 16)
+    {
+      DCMNET_WARN("DICOM implementation version name too long: " << OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+    }
+
+    OFStandard::strlcpy((*params)->DULparams.callingImplementationClassUID,
+        (*params)->ourImplementationClassUID, DICOM_UI_LENGTH + 1);
+    OFStandard::strlcpy((*params)->DULparams.callingImplementationVersionName,
+        (*params)->ourImplementationVersionName, 16+1);
 
     strncpy((*params)->DULparams.applicationContextName,
             UID_StandardApplicationContext,
@@ -1904,10 +1909,10 @@ ASC_requestAssociation(T_ASC_Network * network,
     (*assoc)->sendPDVBuffer = NULL;
 
     params->DULparams.maxPDU = params->ourMaxPDUReceiveSize;
-    strcpy(params->DULparams.callingImplementationClassUID,
-        params->ourImplementationClassUID);
-    strcpy(params->DULparams.callingImplementationVersionName,
-        params->ourImplementationVersionName);
+    OFStandard::strlcpy(params->DULparams.callingImplementationClassUID,
+        params->ourImplementationClassUID, DICOM_UI_LENGTH + 1);
+    OFStandard::strlcpy(params->DULparams.callingImplementationVersionName,
+        params->ourImplementationVersionName, 16+1);
 
     cond = DUL_RequestAssociation(&network->network, block, timeout,
                                   &(*assoc)->params->DULparams,

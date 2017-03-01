@@ -1397,6 +1397,11 @@ OFCondition DIMSE_createFilestream(
       metainfo->insert(elem, OFTrue);
       const char *version = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2;
       ((DcmShortString*)elem)->putString(version);
+
+      if (strlen(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2) > 16)
+      {
+        DCMNET_WARN("DICOM implementation version name too long: " << OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2);
+      }
     } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmApplicationEntity(sourceApplicationEntityTitle)))
     {

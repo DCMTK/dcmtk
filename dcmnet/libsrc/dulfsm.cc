@@ -994,10 +994,10 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
         (*association)->maxPDVAcceptor =
             assoc.userInfo.maxLength.maxLength;
-        strcpy(service->calledImplementationClassUID,
-               assoc.userInfo.implementationClassUID.data);
-        strcpy(service->calledImplementationVersionName,
-               assoc.userInfo.implementationVersionName.data);
+        OFStandard::strlcpy(service->calledImplementationClassUID,
+               assoc.userInfo.implementationClassUID.data, DICOM_UI_LENGTH + 1);
+        OFStandard::strlcpy(service->calledImplementationVersionName,
+               assoc.userInfo.implementationVersionName.data, 16 + 1);
 
         (*association)->associationState = DUL_ASSOC_ESTABLISHED;
         (*association)->protocolState = nextState;
@@ -1199,10 +1199,10 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
         (*association)->maxPDVRequestor =
             assoc.userInfo.maxLength.maxLength;
-        strcpy(service->callingImplementationClassUID,
-               assoc.userInfo.implementationClassUID.data);
-        strcpy(service->callingImplementationVersionName,
-               assoc.userInfo.implementationVersionName.data);
+        OFStandard::strlcpy(service->callingImplementationClassUID,
+               assoc.userInfo.implementationClassUID.data, DICOM_UI_LENGTH + 1);
+        OFStandard::strlcpy(service->callingImplementationVersionName,
+               assoc.userInfo.implementationVersionName.data, 16 + 1);
         (*association)->associationState = DUL_ASSOC_ESTABLISHED;
 
         destroyPresentationContextList(&assoc.presentationContextList);
@@ -2969,8 +2969,9 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
 
     /* start a loop iterate over all PDVs in the given */
     /* list and send every PDVs data over the network */
-    while (cond.good() && count-- > 0)
+    while (cond.good() && count > 0)
     {
+        --count;
         /* determine length of PDV */
         length = pdv->fragmentLength;
         /* determine data to be set */
