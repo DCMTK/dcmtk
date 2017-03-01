@@ -60,9 +60,6 @@ END_EXTERN_C
  ****           The tag value
  ****           The level of this tag (from patient to image)
  ****           The Key Type (only UNIQUE_KEY values is used)
- ****           The key matching type, specifying which type of
- ****                   matching should be performed. The OTHER_CLASS
- ****                   value specifies that only strict comparison is applied.
  ****
  **** This table and the IndexRecord structure should contain at least
  **** all Unique and Required keys.
