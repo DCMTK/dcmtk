@@ -19,6 +19,7 @@ Here are some further classes that are of interest:
 \section Tools
 
 This module contains the following command line tools:
+\li \ref dcm2json
 \li \ref dcm2pdf
 \li \ref dcm2xml
 \li \ref dcmconv
@@ -32,7 +33,6 @@ This module contains the following command line tools:
 \li \ref img2dcm
 \li \ref pdf2dcm
 \li \ref xml2dcm
-\li \ref dcm2json
 
 \section Files
 
