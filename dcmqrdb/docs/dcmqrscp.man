@@ -449,12 +449,12 @@ deflate compression level (only with --propose-deflated or
           0=uncompressed, 1=fastest, 9=best compression
 
 specific character set:
+
   +Cr   --use-request-charset
-          try to convert all element values that are
-          affected by Specific Character Set (0008,0005)
-          to the one specified in the request data set,
-          fall back to the one specified via
-          --convert-to-xxx if that is not possible
+          try to convert all element values that are affected by
+          Specific Character Set (0008,0005) to the one specified
+          in the request data set, fall back to the one specified
+          via --convert-to-xxx if that is not possible
           (default, unless overridden by config file)
 
   -Cr   --override-charset
@@ -473,8 +473,8 @@ specific character set:
           convert affected element values to ISO 8859-1
 
   +C    --convert-to-charset  [c]harset: string
-          convert affected element values to the character
-          set specified by the DICOM defined term c
+          convert affected element values to the character set
+          specified by the DICOM defined term c
 
   -Ct   --transliterate
           try to approximate characters that cannot be
@@ -901,6 +901,7 @@ Query/Retrieve Level: PATIENT (or STUDY for the Study Root Q/R model)
 \verbatim
 (0010,0010) PatientName
 (0010,0020) PatientID
+(0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
 (0010,0032) PatientBirthTime
 (0010,0040) PatientSex
