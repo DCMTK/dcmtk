@@ -1687,12 +1687,20 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 
         if (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Override) {
             destinationCharacterSet = &characterSetOptions.characterSet;
-            if (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Fallback)
+            if (
+                (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Fallback) &&
+                characterSetOptions.characterSet != handle_->findRequestCharacterSet
+            ) {
                 fallbackCharacterSet = &handle_->findRequestCharacterSet;
+            }
         } else {
             destinationCharacterSet = &handle_->findRequestCharacterSet;
-            if (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Fallback)
+            if (
+                (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Fallback) &&
+                characterSetOptions.characterSet != handle_->findRequestCharacterSet
+            ) {
                 fallbackCharacterSet = &characterSetOptions.characterSet;
+            }
         }
 
         if (isConversionNecessary(specificCharacterSet, *destinationCharacterSet)) {
@@ -1707,11 +1715,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                     << "\" to character set \""
                     << characterSetName(*destinationCharacterSet)
                     << "\" failed, (error message: " << status.text() << ')');
-                if (
-                    fallbackCharacterSet &&
-                    *fallbackCharacterSet != *destinationCharacterSet &&
-                    isConversionNecessary(specificCharacterSet, *fallbackCharacterSet)
-                ) {
+                if (fallbackCharacterSet && isConversionNecessary(specificCharacterSet, *fallbackCharacterSet)) {
                     DCMQRDB_INFO("Trying to convert response from character set \""
                         << characterSetName(specificCharacterSet)
                         << "\" to fall-back character set \""
