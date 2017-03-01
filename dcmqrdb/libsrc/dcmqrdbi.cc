@@ -1715,7 +1715,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                     << "\" to character set \""
                     << characterSetName(*destinationCharacterSet)
                     << "\" failed, (error message: " << status.text() << ')');
-                if (fallbackCharacterSet && isConversionNecessary(specificCharacterSet, *fallbackCharacterSet)) {
+                if (
+                    fallbackCharacterSet &&
+                    *fallbackCharacterSet != *destinationCharacterSet &&
+                    isConversionNecessary(specificCharacterSet, *fallbackCharacterSet)
+                ) {
                     DCMQRDB_INFO("Trying to convert response from character set \""
                         << characterSetName(specificCharacterSet)
                         << "\" to fall-back character set \""
