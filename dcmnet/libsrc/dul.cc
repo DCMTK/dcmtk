@@ -2339,8 +2339,8 @@ DUL_DumpParams(OFString& ret_str, DUL_ASSOCIATESERVICEPARAMETERS * params)
     OFOStringStream str;
     OFString temp_str;
 
-    str << "APP CTX NAME:" << params->applicationContextName << OFendl;
-    str << dump_uid(params->applicationContextName, "%13s");
+    str << "APP CTX NAME: " << params->applicationContextName << OFendl;
+    str << dump_uid(params->applicationContextName, "%14s") << OFendl;
     str << "AP TITLE:     " << params->callingAPTitle << OFendl
         << "AP TITLE:     " << params->calledAPTitle << OFendl
         << "AP TITLE:     " << params->respondingAPTitle << OFendl
@@ -2349,10 +2349,10 @@ DUL_DumpParams(OFString& ret_str, DUL_ASSOCIATESERVICEPARAMETERS * params)
         << "PRES ADDR:    " << params->callingPresentationAddress << OFendl
         << "PRES ADDR:    " << params->calledPresentationAddress << OFendl
         << "REQ IMP UID:  " << params->callingImplementationClassUID << OFendl;
-    str << dump_uid(params->callingImplementationClassUID, "%13s");
+    str << dump_uid(params->callingImplementationClassUID, "%14s") << OFendl;
     str << "REQ VERSION:  " << params->callingImplementationVersionName << OFendl
         << "ACC IMP UID:  " << params->calledImplementationClassUID << OFendl;
-    str << dump_uid(params->calledImplementationClassUID, "%13s");
+    str << dump_uid(params->calledImplementationClassUID, "%14s") << OFendl;
     str << "ACC VERSION:  " << params->calledImplementationVersionName << OFendl
         << "Requested Presentation Ctx" << OFendl;
     str << dump_presentation_ctx(&params->requestedPresentationContext);
@@ -2427,17 +2427,17 @@ dump_presentation_ctx(LST_HEAD ** l)
     (void) LST_Position(l, (LST_NODE*)ctx);
 
     while (ctx != NULL) {
-        str << "  Context ID:           " << ctx->presentationContextID << OFendl
-            << "  Abstract Syntax:      " << ctx->abstractSyntax << OFendl;
-        str << dump_uid(ctx->abstractSyntax, "%24s");
-        str << "  Result field:         " << (int) ctx->result << OFendl;
+        str << "  Context ID:            " << (int)ctx->presentationContextID << OFendl
+            << "  Abstract Syntax:       " << ctx->abstractSyntax << OFendl;
+        str << dump_uid(ctx->abstractSyntax, "%25s") << OFendl;
+        str << "  Result field:          " << (int) ctx->result << OFendl;
         for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
             if (ctx->proposedSCRole == scMap[l_index].role)
-                str << "  Proposed SCU/SCP Role:  " << scMap[l_index].text << OFendl;
+                str << "  Proposed SCU/SCP Role: " << scMap[l_index].text << OFendl;
         }
         for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
             if (ctx->acceptedSCRole == scMap[l_index].role)
-                str << "  Accepted SCU/SCP Role:  " << scMap[l_index].text << OFendl;
+                str << "  Accepted SCU/SCP Role: " << scMap[l_index].text << OFendl;
         }
         str << "  Proposed Xfer Syntax(es)" << OFendl;
         if (ctx->proposedTransferSyntax != NULL) {
@@ -2446,13 +2446,13 @@ dump_presentation_ctx(LST_HEAD ** l)
                 (void) LST_Position(&ctx->proposedTransferSyntax, (LST_NODE*)transfer);
 
             while (transfer != NULL) {
-                str << "                  " << transfer->transferSyntax << OFendl;
-                str << dump_uid(transfer->transferSyntax, "%18s");
+                str << "                         " << transfer->transferSyntax << OFendl;
+                str << dump_uid(transfer->transferSyntax, "%25s") << OFendl;
                 transfer = (DUL_TRANSFERSYNTAX*)LST_Next(&ctx->proposedTransferSyntax);
             }
         }
-        str << "  Accepted Xfer Syntax: " << ctx->acceptedTransferSyntax << OFendl;
-        str << dump_uid(ctx->acceptedTransferSyntax, "%24s");
+        str << "  Accepted Xfer Syntax:  " << ctx->acceptedTransferSyntax << OFendl;
+        str << dump_uid(ctx->acceptedTransferSyntax, "%25s") << OFendl;
         ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(l);
     }
 

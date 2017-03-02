@@ -1614,8 +1614,9 @@ ASC_dumpParameters(OFString& str, T_ASC_Parameters * params, ASC_associateType d
     }
 
 #if 0
+    // the following output could be useful for debugging purposes
     outstream << "DUL Params --- BEGIN" << OFendl;
-    DUL_DumpParams(&params->DULparams);
+    outstream << DUL_DumpParams(temp_str, &params->DULparams);
     outstream << "DUL Params --- END" << OFendl;
 #endif
 
