@@ -1538,18 +1538,32 @@ ASC_dumpParameters(OFString& str, T_ASC_Parameters * params, ASC_associateType d
         << "Their Implementation Class UID:    "
         << params->theirImplementationClassUID << OFendl
         << "Their Implementation Version Name: "
-        << params->theirImplementationVersionName << OFendl;
-
-    outstream << "Application Context Name:    "
+        << params->theirImplementationVersionName << OFendl
+        << "Application Context Name:    "
         << params->DULparams.applicationContextName << OFendl
         << "Calling Application Name:    "
         << params->DULparams.callingAPTitle << OFendl
         << "Called Application Name:     "
         << params->DULparams.calledAPTitle << OFendl
-        << "Responding Application Name: "
-        << params->DULparams.respondingAPTitle << OFendl;
+        << "Responding Application Name: ";
 
-    outstream << "Our Max PDU Receive Size:    "
+    // the field "respondingAPTitle" in DULparams exists,
+    // but is never used for network communication because DICOM
+    // requires the responding AE title to be identical to the
+    // called AE title. This rule is enforced on the DUL layer
+    // but not visible here.
+    // To avoid confusion of the user we thus print the called
+    // AE title here (but only if respondingAPTitle is non-empty,
+    // which happens when an incoming association request is
+    // being responded to.
+    if (params->DULparams.respondingAPTitle[0] != '\0')
+    {
+      outstream << params->DULparams.calledAPTitle ;
+    }
+
+    outstream
+        << OFendl
+        << "Our Max PDU Receive Size:    "
         << params->ourMaxPDUReceiveSize << OFendl
         << "Their Max PDU Receive Size:  "
         << params->theirMaxPDUReceiveSize << OFendl;
