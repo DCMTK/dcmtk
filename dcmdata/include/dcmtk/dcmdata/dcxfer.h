@@ -120,7 +120,7 @@ typedef enum {
     /// HEVC/H.265 Main 10 Profile / Level 5.1
     EXS_HEVCMain10ProfileLevel5_1 = 40,
     /// Private GE Little Endian Implicit with big endian pixel data
-    EXS_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax = 41
+    EXS_PrivateGE_LEI_WithBigEndianPixelData = 41
 } E_TransferSyntax;
 
 /** enumeration of byte orders

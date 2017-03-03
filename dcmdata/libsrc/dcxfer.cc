@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -554,7 +554,7 @@ const S_XferNames XferNames[] =
     // entry #41
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
       "Private GE Little Endian Implicit with big endian pixel data",
-      EXS_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
+      EXS_PrivateGE_LEI_WithBigEndianPixelData,
       EBO_LittleEndian,
       EBO_BigEndian,
       EVT_Implicit,
