@@ -384,7 +384,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_XMLEncodingTransferSyntax "1.2.840.10008.1.2.6.2"
 
 /** Private transfer syntax defined by GE. This transfer syntax is identical to
- *  Explicit VR Little Endian, except that Pixel Data are encoded in big endian.
+ *  Implicit VR Little Endian, except that Pixel Data are encoded in big endian.
  */
 #define UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax "1.2.840.113619.5.2"
 
