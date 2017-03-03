@@ -1376,7 +1376,7 @@ storeSCPCallback(
            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
 
            // delete incomplete file
-           unlink(ofname.c_str());
+           OFStandard::deleteFile(ofname);
          }
 
         /* should really check the image to make sure it is consistent,
@@ -1468,11 +1468,11 @@ static OFCondition storeSCP(
       /* remove file */
       if (!opt_ignore)
       {
-        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(imageFileName);
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
-        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName); // delete the temporary file
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(imageFileName); // delete the temporary file
 #endif
     }
 

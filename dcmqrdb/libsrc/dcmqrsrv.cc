@@ -421,7 +421,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
       if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) // don't try to delete /dev/null
       {
         DCMQRDB_INFO("Store SCP: Deleting Image File: %s" << imageFileName);
-        unlink(imageFileName);
+        OFStandard::deleteFile(imageFileName);
       }
       dbHandle.pruneInvalidRecords();
     }

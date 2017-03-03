@@ -111,7 +111,7 @@ void DcmQueryRetrieveStoreContext::writeToFile(
       rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
 
       // delete incomplete file
-      unlink(fname);
+      OFStandard::deleteFile(fname);
     }
 }
 

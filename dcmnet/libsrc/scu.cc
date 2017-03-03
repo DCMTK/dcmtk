@@ -1390,7 +1390,7 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
     cStoreReturnStatus = STATUS_STORE_Refused_OutOfResources;
 
     // delete incomplete file
-    unlink(filename.c_str());
+    OFStandard::deleteFile(filename);
   }
 
   return result;

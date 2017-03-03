@@ -459,7 +459,7 @@ storeProgressCallback(
           rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
 
           // delete incomplete file
-          unlink(context->fileName);
+          OFStandard::deleteFile(context->fileName);
         }
       }
       saveImageToDB(context, req, context->fileName, rsp, statusDetail);
@@ -571,7 +571,7 @@ static OFCondition storeSCP(
         if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0)
         {
           OFLOG_INFO(dcmpsrcvLogger, "Store SCP: Deleting Image File: " << imageFileName);
-          unlink(imageFileName);
+          OFStandard::deleteFile(imageFileName);
         }
         if (dbhandle) dbhandle->pruneInvalidRecords();
     }

@@ -287,7 +287,7 @@ Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reqMe
                     statusCode = STATUS_STORE_Refused_OutOfResources;
 
                     // delete incomplete file
-                    unlink(filename.c_str());
+                    OFStandard::deleteFile(filename);
                 }
             } else {
                 DCMNET_ERROR("cannot create directory for received object: " << directoryName << ": " << status.text());

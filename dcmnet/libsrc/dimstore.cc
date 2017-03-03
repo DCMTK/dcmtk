@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -471,7 +471,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
           delete filestream;
           if (cond != EC_Normal)
           {
-            if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
+            if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(imageFileName);
           }
         }
     }

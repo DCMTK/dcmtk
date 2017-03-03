@@ -2142,7 +2142,7 @@ storeSCPCallback(
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
 
         // delete incomplete file
-        unlink(fileName.c_str());
+        OFStandard::deleteFile(fileName);
       }
 
       // check the image to make sure it is consistent, i.e. that its sopClass and sopInstance correspond
