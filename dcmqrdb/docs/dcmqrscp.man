@@ -450,6 +450,9 @@ deflate compression level (only with --propose-deflated or
 
 specific character set:
 
+  # the following options require support from an underlying character
+  # encoding library (see output of --version on which one is available)
+
   +Cr   --use-request-charset
           try to convert all element values that are affected by
           Specific Character Set (0008,0005) to the one specified
