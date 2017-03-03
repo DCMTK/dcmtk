@@ -23,7 +23,7 @@
 #
 # Generated automatically from DICOM PS 3.6-2016e and PS 3.7-2016e
 # File created on 2016-11-23 13:16:19 by J. Riesmeier on thinkpad.
-# File updated manually on 2017-01-31 by J. Riesmeier.
+# File updated manually on 2017-03-03 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -4302,6 +4302,13 @@
 (0010,0222)	UC	GeneticModificationsDescription	1	DICOM/CP_1619
 (0010,0223)	LO	GeneticModificationsNomenclature	1	DICOM/CP_1619
 (0010,0229)	SQ	GeneticModificationsCodeSequence	1	DICOM/CP_1619
+#
+#---------------------------------------------------------------------------
+#
+# Manual fixes (according to draft release DICOM 2017a)
+#
+(0068,62F0)	SQ	ViewOrientationModifierCodeSequence	1	DICOM/2017a_draft
+(0076,0034)	SQ	ComponentTypeCodeSequence	1	DICOM/2017a_draft
 #
 #---------------------------------------------------------------------------
 #

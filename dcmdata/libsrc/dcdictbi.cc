@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-01-31 14:11:02
+**   Date: 2017-03-03 10:47:01
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -21519,7 +21519,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0068, 0x62f0, 0x0068, 0x62f0,
-      EVR_FD, "ViewOrientationModifier", 9, 9, "DICOM",
+      EVR_SQ, "ViewOrientationModifierCodeSequence", 1, 1, "DICOM/2017a_draft",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0068, 0x62f2, 0x0068, 0x62f2,
@@ -23163,7 +23163,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0076, 0x0034, 0x0076, 0x0034,
-      EVR_CS, "ComponentTypeCodeSequence", 1, 1, "DICOM",
+      EVR_SQ, "ComponentTypeCodeSequence", 1, 1, "DICOM/2017a_draft",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0076, 0x0036, 0x0076, 0x0036,

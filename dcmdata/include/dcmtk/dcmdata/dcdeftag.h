@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-01-31 14:11:01
+**   Date: 2017-03-03 10:46:44
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2017-01-31 14:11:01"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2017-03-03 10:46:44"
 
 
 /*
@@ -2799,7 +2799,7 @@
 #define DCM_HPGLDocumentID                       DcmTagKey(0x0068, 0x62d0)
 #define DCM_HPGLDocumentLabel                    DcmTagKey(0x0068, 0x62d5)
 #define DCM_ViewOrientationCodeSequence          DcmTagKey(0x0068, 0x62e0)
-#define DCM_ViewOrientationModifier              DcmTagKey(0x0068, 0x62f0)
+#define DCM_ViewOrientationModifierCodeSequence  DcmTagKey(0x0068, 0x62f0)
 #define DCM_HPGLDocumentScaling                  DcmTagKey(0x0068, 0x62f2)
 #define DCM_HPGLDocument                         DcmTagKey(0x0068, 0x6300)
 #define DCM_HPGLContourPenNumber                 DcmTagKey(0x0068, 0x6310)
