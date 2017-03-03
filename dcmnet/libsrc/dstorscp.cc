@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2014, OFFIS e.V.
+ *  Copyright (C) 2013-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -285,6 +285,9 @@ Uint16 DcmStorageSCP::checkAndProcessSTORERequest(const T_DIMSE_C_StoreRQ &reqMe
                 } else {
                     DCMNET_ERROR("cannot store received object: " << filename << ": " << status.text());
                     statusCode = STATUS_STORE_Refused_OutOfResources;
+
+                    // delete incomplete file
+                    unlink(filename.c_str());
                 }
             } else {
                 DCMNET_ERROR("cannot create directory for received object: " << directoryName << ": " << status.text());

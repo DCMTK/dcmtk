@@ -2140,6 +2140,9 @@ storeSCPCallback(
       {
         OFLOG_ERROR(storescpLogger, "cannot write DICOM file: " << fileName << ": " << cond.text());
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+
+        // delete incomplete file
+        unlink(fileName.c_str());
       }
 
       // check the image to make sure it is consistent, i.e. that its sopClass and sopInstance correspond

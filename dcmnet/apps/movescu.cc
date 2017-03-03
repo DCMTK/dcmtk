@@ -1374,6 +1374,9 @@ storeSCPCallback(
          {
            OFLOG_ERROR(movescuLogger, "cannot write DICOM file: " << ofname);
            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+
+           // delete incomplete file
+           unlink(ofname.c_str());
          }
 
         /* should really check the image to make sure it is consistent,

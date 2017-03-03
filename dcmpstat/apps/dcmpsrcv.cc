@@ -457,6 +457,9 @@ storeProgressCallback(
         {
           OFLOG_ERROR(dcmpsrcvLogger, "Cannot write image file: " << context->fileName);
           rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+
+          // delete incomplete file
+          unlink(context->fileName);
         }
       }
       saveImageToDB(context, req, context->fileName, rsp, statusDetail);

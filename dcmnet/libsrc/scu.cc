@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2015, OFFIS e.V.
+ *  Copyright (C) 2008-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1386,7 +1386,11 @@ OFCondition DcmSCU::handleSTORERequest(const T_ASC_PresentationContextID /* pres
   }
   else
   {
+    DCMNET_ERROR("cannot write DICOM file: " << filename);
     cStoreReturnStatus = STATUS_STORE_Refused_OutOfResources;
+
+    // delete incomplete file
+    unlink(filename.c_str());
   }
 
   return result;
