@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -118,7 +118,9 @@ typedef enum {
     /// HEVC/H.265 Main Profile / Level 5.1
     EXS_HEVCMainProfileLevel5_1 = 39,
     /// HEVC/H.265 Main 10 Profile / Level 5.1
-    EXS_HEVCMain10ProfileLevel5_1 = 40
+    EXS_HEVCMain10ProfileLevel5_1 = 40,
+    /// Private GE Little Endian Implicit with big endian pixel data
+    EXS_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax = 41
 } E_TransferSyntax;
 
 /** enumeration of byte orders
@@ -201,6 +203,9 @@ public:
 
     /// return byte order for this transfer syntax
     inline E_ByteOrder getByteOrder() const { return byteOrder; }
+
+    /// return byte order for this transfer syntax
+    inline E_ByteOrder getPixelDataByteOrder() const { return pixelDataByteOrder; }
 
     /// return name string for this transfer syntax
     inline const char* getXferName() const { return xferName; }
@@ -302,6 +307,9 @@ private:
 
     /// transfer syntax byte order
     E_ByteOrder         byteOrder;
+
+    /// transfer syntax byte order for pixel data
+    E_ByteOrder         pixelDataByteOrder;
 
     /// transfer syntax VR encoding (implicit/explicit)
     E_VRType            vrType;

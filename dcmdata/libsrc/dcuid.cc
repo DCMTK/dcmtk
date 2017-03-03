@@ -137,6 +137,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_HEVCMain10ProfileLevel5_1TransferSyntax,             "HEVCMain10Profile/Level5.1" },
     { UID_RFC2557MIMEEncapsulationTransferSyntax,              "RFC2557MIMEEncapsulation" },
     { UID_XMLEncodingTransferSyntax,                           "XMLEncoding" },
+    { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,  "PrivateGELittleEndianImplicitWithBigEndianPixelData" },
 
     // Storage (DICOM)
     { UID_AcquisitionContextSRStorage,                         "AcquisitionContextSRStorage" },
