@@ -1,13 +1,13 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with UCUM Code Definitions (Coding Scheme "UCUM")
  *
  *  Generated semi-automatically from DICOM PS 3.16-2015c
  *  File created on 2015-08-24 by J. Riesmeier
- *  Last modified on 2016-02-22 by Riesmeier
+ *  Last modified on 2017-03-08 by Riesmeier
  *
  *  NB: This file does not yet contain all codes defined in PS 3.16 since the
  *      mapping of the code meaning to a compiler-friendly representation is
@@ -59,6 +59,6 @@
 #define CODE_UCUM_Bq                DSRBasicCodedEntry("Bq", "UCUM", "Bq")
 #define CODE_UCUM_BqPerMol          DSRBasicCodedEntry("Bq/mol", "UCUM", "Bq/mol")
 #define CODE_UCUM_mmolPerL          DSRBasicCodedEntry("mmol/l", "UCUM", "mmol/l")
-#define CODE_UCUM_CountsPerSecond   DSRBasicCodedEntry("{counts}/s", "UCUM", "Counts per second")
+#define CODE_UCUM_CountsPerSecond   DSRBasicCodedEntry("{counts}/s", "UCUM", "counts/s")
 
 #endif
