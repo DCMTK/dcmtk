@@ -3183,7 +3183,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
             {
                 // write magic word and version number to the buffer
                 // then write it to the file
-                char header[DBHEADERSIZE];
+                char header[DBHEADERSIZE + 1];
                 sprintf( header, DBMAGIC "%.2X", DBVERSION );
                 if ( write( handle_ -> pidx, header, DBHEADERSIZE ) != DBHEADERSIZE )
                 {
