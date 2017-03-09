@@ -4189,9 +4189,10 @@ OFCondition DcmItem::convertToUTF8()
 // ********************************
 
 
-DcmElement* DcmItem::newDicomElement(const DcmTagKey& tag)
+DcmElement* DcmItem::newDicomElement(const DcmTagKey& tag,
+                                     const char *privateCreator)
 {
-  DcmTag temp(tag);
+  DcmTag temp(tag, privateCreator);
   DcmElement* elem = NULL;
       OFBool readAsUN = OFFalse;
       newDicomElement(
@@ -4205,9 +4206,10 @@ DcmElement* DcmItem::newDicomElement(const DcmTagKey& tag)
 
 
 OFCondition DcmItem::newDicomElement(DcmElement*& newElement,
-                                     const DcmTagKey& tag)
+                                     const DcmTagKey& tag,
+                                     const char *privateCreator)
 {
-    DcmTag temp(tag);
+    DcmTag temp(tag, privateCreator);
     newElement = NULL;
     OFBool readAsUN = OFFalse;
     return newDicomElement(

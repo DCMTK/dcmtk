@@ -104,4 +104,5 @@ OFTEST_REGISTER(dcmdata_specificCharacterSet_3);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_4);
 OFTEST_REGISTER(dcmdata_attribute_filter);
 OFTEST_REGISTER(dcmdata_attribute_matching);
+OFTEST_REGISTER(dcmdata_newDicomElementPrivate);
 OFTEST_MAIN("dcmdata")
