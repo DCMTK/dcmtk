@@ -1119,8 +1119,12 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
         /* if this is not an illegal call, go ahead and create a DcmXfer */
         /* object based on the transfer syntax which was passed */
         DcmXfer inXfer(ixfer);
+
         /* determine the transfer syntax's byte ordering */
-        fByteOrder = inXfer.getByteOrder();
+        if (getTag() == DCM_PixelData)
+          fByteOrder = inXfer.getPixelDataByteOrder();
+          else fByteOrder = inXfer.getByteOrder();
+
         /* check if the stream reported an error */
         errorFlag = inStream.status();
         /* if we encountered the end of the stream, set the error flag correspondingly */
@@ -1259,6 +1263,12 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
         {
             /* create an object that represents the transfer syntax */
             DcmXfer outXfer(oxfer);
+            E_ByteOrder outByteOrder;
+
+            /* determine the transfer syntax's byte ordering for this element */
+            if (getTag() == DCM_PixelData)
+              outByteOrder = outXfer.getPixelDataByteOrder();
+              else outByteOrder = outXfer.getByteOrder();
 
             /* pointer to element value if value resides in memory or old-style
              * write behaviour is active (i.e. everything loaded into memory upon write)
@@ -1277,7 +1287,7 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
               {
                 /* get this element's value. Mind the byte ordering (little */
                 /* or big endian) of the transfer syntax which shall be used */
-                value = OFstatic_cast(Uint8 *, getValue(outXfer.getByteOrder()));
+                value = OFstatic_cast(Uint8 *, getValue(outByteOrder));
                 if (value) accessPossible = OFTrue;
               }
               else
@@ -1290,7 +1300,7 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
                 if (!wcache) wcache = &wcache2;
 
                 /* initialize cache object. This is safe even if the object was already initialized */
-                wcache->init(this, getLengthField(), getTransferredBytes(), outXfer.getByteOrder());
+                wcache->init(this, getLengthField(), getTransferredBytes(), outByteOrder);
 
                 /* access first block of element content */
                 errorFlag = wcache->fillBuffer(*this);

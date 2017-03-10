@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -251,16 +251,32 @@ OFCondition DcmPolymorphOBOW::write(
     DcmXfer oXferSyn(oxfer);
     if (getTransferState() == ERW_init)
     {
-        if (getTag().getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  getByteOrder() == EBO_BigEndian)
+        if (getTag().getEVR() == EVR_OB && oXferSyn.isImplicitVR())
         {
-            // VR is OB and it will be written as OW in LittleEndianImplicit.
-            setTagVR(EVR_OW);
-            if (currentVR == EVR_OB) setByteOrder(EBO_LittleEndian);
-            currentVR = EVR_OB;
-            changeVR = OFTrue;
+          // This element was read or created as OB, but we are writing in
+          // implicit VR transfer syntax (which always uses OW). Therefore,
+          // change the VR associated with the tag to OW.
+          setTagVR(EVR_OW);
+
+          // If the data is currently in OB representation in memory,
+          // adjust the VR to OW and update the current byte order.
+          // OB data is equivalent to OW data in little endian byte order.
+          if (currentVR == EVR_OB)
+          {
+            setByteOrder(EBO_LittleEndian);
+            currentVR = EVR_OW;
+          }
+
+          // remember that we have changed the VR associated with the tag
+          changeVR = OFTrue;
         }
+
         else if (getTag().getEVR() == EVR_OW && currentVR == EVR_OB)
         {
+            // the element was originally read/created as OW
+            // but is currently in OB format. Change back to OW.
+
+            // OB data is equivalent to OW data in little endian byte order.
             setByteOrder(EBO_LittleEndian);
             currentVR = EVR_OW;
         }
@@ -268,9 +284,8 @@ OFCondition DcmPolymorphOBOW::write(
     errorFlag = DcmOtherByteOtherWord::write(outStream, oxfer, enctype, wcache);
     if (getTransferState() == ERW_ready && changeVR)
     {
-        // VR must be OB again. No Swapping is needed since the written
-        // transfer syntax was LittleEndianImplicit and so no swapping
-        // took place.
+        // Change the VR associated with the tag
+        // (not the current VR!) back from OW to OB
         setTagVR(EVR_OB);
     }
     return errorFlag;
@@ -285,16 +300,32 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
     DcmXfer oXferSyn(oxfer);
     if (getTransferState() == ERW_init)
     {
-        if (getTag().getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  getByteOrder() == EBO_BigEndian)
+        if (getTag().getEVR() == EVR_OB && oXferSyn.isImplicitVR())
         {
-            // VR is OB and it will be written as OW in LittleEndianImplicit.
-            setTagVR(EVR_OW);
-            if (currentVR == EVR_OB) setByteOrder(EBO_LittleEndian);
-            currentVR = EVR_OB;
-            changeVR = OFTrue;
+          // This element was read or created as OB, but we are writing in
+          // implicit VR transfer syntax (which always uses OW). Therefore,
+          // change the VR associated with the tag to OW.
+          setTagVR(EVR_OW);
+
+          // If the data is currently in OB representation in memory,
+          // adjust the VR to OW and update the current byte order.
+          // OB data is equivalent to OW data in little endian byte order.
+          if (currentVR == EVR_OB)
+          {
+            setByteOrder(EBO_LittleEndian);
+            currentVR = EVR_OW;
+          }
+
+          // remember that we have changed the VR associated with the tag
+          changeVR = OFTrue;
         }
+
         else if (getTag().getEVR() == EVR_OW && currentVR == EVR_OB)
         {
+            // the element was originally read/created as OW
+            // but is currently in OB format. Change back to OW.
+
+            // OB data is equivalent to OW data in little endian byte order.
             setByteOrder(EBO_LittleEndian);
             currentVR = EVR_OW;
         }
@@ -302,9 +333,8 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
     errorFlag = DcmOtherByteOtherWord::writeSignatureFormat(outStream, oxfer, enctype, wcache);
     if (getTransferState() == ERW_ready && changeVR)
     {
-        // VR must be OB again. No Swapping is needed since the written
-        // transfer syntax was LittleEndianImplicit and so no swapping
-        // took place.
+        // Change the VR associated with the tag
+        // (not the current VR!) back from OW to OB
         setTagVR(EVR_OB);
     }
     return errorFlag;
