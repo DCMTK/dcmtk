@@ -498,6 +498,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--write-xfer-deflated")) opt_oxfer = EXS_DeflatedLittleEndianExplicit;
 #endif
       if (cmd.findOption("--write-xfer-ge")) opt_oxfer = EXS_PrivateGE_LEI_WithBigEndianPixelData;
+      cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr"))
