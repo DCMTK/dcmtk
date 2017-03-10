@@ -268,7 +268,7 @@ output transfer syntax:
   +td  --write-xfer-deflated
          write with deflated explicit VR little endian TS
 
-  +tg  --write-xfer-ge        
+  +tg  --write-xfer-ge
          write private GE implicit VR little endian
          with big endian pixel data TS (non-standard)
 
