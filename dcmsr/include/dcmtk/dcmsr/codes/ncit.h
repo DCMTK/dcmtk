@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with NCIt Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:29:26 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017a
+ *  File created on 2017-03-10 17:34:49 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 16
+// total number of codes: 17
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -48,6 +48,7 @@
 // description of the code meaning to a compiler-friendly but still human-readable representation.
 
 #define CODE_NCIt_RANO                                                     DSRBasicCodedEntry("C114879", "NCIt", "RANO")
+#define CODE_NCIt_MouseMammaryFatPad                                       DSRBasicCodedEntry("C22550", "NCIt", "Mouse mammary fat pad")
 #define CODE_NCIt_BronchioloalveolarAdenocarcinoma                         DSRBasicCodedEntry("C2923", "NCIt", "Bronchioloalveolar adenocarcinoma")
 #define CODE_NCIt_ExtraluminalRoute                                        DSRBasicCodedEntry("C38213", "NCIt", "Extraluminal route")
 #define CODE_NCIt_IntraepithelialRoute                                     DSRBasicCodedEntry("C38244", "NCIt", "Intraepithelial route")

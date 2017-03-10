@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:33:01 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017a
+ *  File created on 2017-03-10 17:34:41 by J. Riesmeier
  *
  */
 
@@ -33,7 +33,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3511
+// total number of codes: 3516
 // - retired: 143
 // - no name: 27
 // - not unique: 15
@@ -3453,6 +3453,11 @@
 #define CODE_DCM_ExogenousSubstance                                        DSRBasicCodedEntry("127400", "DCM", "Exogenous substance")
 #define CODE_DCM_TissueOfOrigin                                            DSRBasicCodedEntry("127401", "DCM", "Tissue of origin")
 #define CODE_DCM_TaxonomicRankOfOrigin                                     DSRBasicCodedEntry("127402", "DCM", "Taxonomic rank of origin")
+#define CODE_DCM_Strain                                                    DSRBasicCodedEntry("127411", "DCM", "Strain")
+#define CODE_DCM_StrainDescription                                         DSRBasicCodedEntry("127412", "DCM", "Strain description")
+#define CODE_DCM_Nomenclature                                              DSRBasicCodedEntry("127413", "DCM", "Nomenclature")
+#define CODE_DCM_GeneticModifications                                      DSRBasicCodedEntry("127414", "DCM", "Genetic modifications")
+#define CODE_DCM_GeneticModificationsDescription                           DSRBasicCodedEntry("127415", "DCM", "Genetic modifications description")
 #define CODE_DCM_StereotacticCoordinates                                   DSRBasicCodedEntry("127450", "DCM", "Stereotactic coordinates")
 #define CODE_DCM_PositionReferenceIndicator                                DSRBasicCodedEntry("127451", "DCM", "Position reference indicator")
 #define CODE_DCM_TumorGraft                                                DSRBasicCodedEntry("127460", "DCM", "Tumor graft")
