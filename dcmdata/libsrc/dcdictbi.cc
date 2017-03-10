@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-03-03 10:47:01
+**   Date: 2017-03-10 17:31:48
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -2123,19 +2123,19 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x0221, 0x0010, 0x0221,
-      EVR_SQ, "GeneticModificationsSequence", 1, 1, "DICOM/CP_1619",
+      EVR_SQ, "GeneticModificationsSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x0222, 0x0010, 0x0222,
-      EVR_UC, "GeneticModificationsDescription", 1, 1, "DICOM/CP_1619",
+      EVR_UC, "GeneticModificationsDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x0223, 0x0010, 0x0223,
-      EVR_LO, "GeneticModificationsNomenclature", 1, 1, "DICOM/CP_1619",
+      EVR_LO, "GeneticModificationsNomenclature", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x0229, 0x0010, 0x0229,
-      EVR_SQ, "GeneticModificationsCodeSequence", 1, 1, "DICOM/CP_1619",
+      EVR_SQ, "GeneticModificationsCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x1000, 0x0010, 0x1000,
@@ -21519,7 +21519,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0068, 0x62f0, 0x0068, 0x62f0,
-      EVR_SQ, "ViewOrientationModifierCodeSequence", 1, 1, "DICOM/2017a_draft",
+      EVR_SQ, "ViewOrientationModifierCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0068, 0x62f2, 0x0068, 0x62f2,
@@ -23163,7 +23163,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0076, 0x0034, 0x0076, 0x0034,
-      EVR_SQ, "ComponentTypeCodeSequence", 1, 1, "DICOM/2017a_draft",
+      EVR_SQ, "ComponentTypeCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0076, 0x0036, 0x0076, 0x0036,

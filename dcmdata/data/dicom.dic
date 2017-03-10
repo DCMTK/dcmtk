@@ -21,13 +21,12 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2016e and PS 3.7-2016e
-# File created on 2016-11-23 13:16:19 by J. Riesmeier on thinkpad.
-# File updated manually on 2017-03-03 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2017a and PS 3.7-2017a
+# File created on 2017-03-10 17:30:38 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - CP 1619
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -304,6 +303,10 @@
 (0010,0217)	LO	StrainSource	1	DICOM
 (0010,0218)	UT	StrainAdditionalInformation	1	DICOM
 (0010,0219)	SQ	StrainCodeSequence	1	DICOM
+(0010,0221)	SQ	GeneticModificationsSequence	1	DICOM
+(0010,0222)	UC	GeneticModificationsDescription	1	DICOM
+(0010,0223)	LO	GeneticModificationsNomenclature	1	DICOM
+(0010,0229)	SQ	GeneticModificationsCodeSequence	1	DICOM
 (0010,1000)	LO	OtherPatientIDs	1-n	DICOM
 (0010,1001)	PN	OtherPatientNames	1-n	DICOM
 (0010,1002)	SQ	OtherPatientIDsSequence	1	DICOM
@@ -2507,7 +2510,7 @@
 (0068,62D0)	US	HPGLDocumentID	1	DICOM
 (0068,62D5)	LO	HPGLDocumentLabel	1	DICOM
 (0068,62E0)	SQ	ViewOrientationCodeSequence	1	DICOM
-(0068,62F0)	FD	ViewOrientationModifier	9	DICOM
+(0068,62F0)	SQ	ViewOrientationModifierCodeSequence	1	DICOM
 (0068,62F2)	FD	HPGLDocumentScaling	1	DICOM
 (0068,6300)	OB	HPGLDocument	1	DICOM
 (0068,6310)	US	HPGLContourPenNumber	1	DICOM
@@ -2909,7 +2912,7 @@
 (0076,0020)	SQ	ProcedureTypeCodeSequence	1	DICOM
 (0076,0030)	LO	SurgicalTechnique	1	DICOM
 (0076,0032)	SQ	ComponentTypesSequence	1	DICOM
-(0076,0034)	CS	ComponentTypeCodeSequence	1	DICOM
+(0076,0034)	SQ	ComponentTypeCodeSequence	1	DICOM
 (0076,0036)	CS	ExclusiveComponentType	1	DICOM
 (0076,0038)	CS	MandatoryComponentType	1	DICOM
 (0076,0040)	SQ	ComponentSequence	1	DICOM
@@ -4293,22 +4296,6 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
-#
-#---------------------------------------------------------------------------
-#
-# Correction Item 1619
-#
-(0010,0221)	SQ	GeneticModificationsSequence	1	DICOM/CP_1619
-(0010,0222)	UC	GeneticModificationsDescription	1	DICOM/CP_1619
-(0010,0223)	LO	GeneticModificationsNomenclature	1	DICOM/CP_1619
-(0010,0229)	SQ	GeneticModificationsCodeSequence	1	DICOM/CP_1619
-#
-#---------------------------------------------------------------------------
-#
-# Manual fixes (according to draft release DICOM 2017a)
-#
-(0068,62F0)	SQ	ViewOrientationModifierCodeSequence	1	DICOM/2017a_draft
-(0076,0034)	SQ	ComponentTypeCodeSequence	1	DICOM/2017a_draft
 #
 #---------------------------------------------------------------------------
 #
