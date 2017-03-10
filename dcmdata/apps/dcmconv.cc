@@ -210,6 +210,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
       cmd.addOption("--write-xfer-deflated", "+td",    "write with deflated explicit VR little endian TS");
 #endif
+      cmd.addOption("--write-xfer-ge",       "+tg",    "write private GE LEI with big endian pixel TS\n(non-standard)");
     cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
@@ -496,7 +497,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
       if (cmd.findOption("--write-xfer-deflated")) opt_oxfer = EXS_DeflatedLittleEndianExplicit;
 #endif
-      cmd.endOptionBlock();
+      if (cmd.findOption("--write-xfer-ge")) opt_oxfer = EXS_PrivateGE_LEI_WithBigEndianPixelData;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr"))
