@@ -2575,8 +2575,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
 #ifdef DEBUG
     DCMQRDB_DEBUG("checkupinStudyDesc: study already exists : " << s) ;
 #endif
-    if ( ( pStudyDesc[s]. StudySize + imageSize )
-         > handle_ -> maxBytesPerStudy ) {
+    if ( OFstatic_cast(size_t, pStudyDesc[s]. StudySize) + imageSize  >
+         OFstatic_cast(size_t, handle_ -> maxBytesPerStudy) )
+    {
         if ( imageSize > handle_ -> maxBytesPerStudy ) {
 #ifdef DEBUG
             DCMQRDB_DEBUG("checkupinStudyDesc: imageSize = " << imageSize << " too large");
