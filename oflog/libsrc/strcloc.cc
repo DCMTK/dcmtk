@@ -148,9 +148,15 @@ towstring (char const * src)
     return ret;
 }
 
+#else
+
+int strcloc_cc_dummy_to_keep_linker_from_moaning = 0;
+
 #endif // DCMTK_LOG4CPLUS_WORKING_C_LOCALE
 
 } // namespace helpers
 
 } // namespace log4cplus
+
 } // end namespace dcmtk
+

@@ -263,6 +263,12 @@ towstring (char const * src)
 } // namespace helpers
 
 } // namespace log4cplus
+
+
 } // end namespace dcmtk
+
+#else
+
+int striconv_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif // DCMTK_LOG4CPLUS_WITH_ICONV
