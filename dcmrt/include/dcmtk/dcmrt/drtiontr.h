@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIonBeamsTreatmentRecordIOD
  *
- *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2016-11-23 14:23:36
+ *  Generated automatically from DICOM PS 3.3-2017a
+ *  File created on 2017-03-13 11:22:36
  *
  */
 
@@ -32,6 +32,7 @@
 #include "dcmtk/dcmrt/seq/drtdss.h"    // for DigitalSignaturesSequence
 #include "dcmtk/dcmrt/seq/drteas.h"    // for EncryptedAttributesSequence
 #include "dcmtk/dcmrt/seq/drtfgss.h"   // for FractionGroupSummarySequence
+#include "dcmtk/dcmrt/seq/drtgms.h"    // for GeneticModificationsSequence
 #include "dcmtk/dcmrt/seq/drtgpis.h"   // for GroupOfPatientsIdentificationSequence
 #include "dcmtk/dcmrt/seq/drthsdrs.h"  // for HL7StructuredDocumentReferenceSequence
 #include "dcmtk/dcmrt/seq/drtians.h"   // for IssuerOfAccessionNumberSequence
@@ -1332,6 +1333,18 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamsTreatmentRecordIOD
      */
     const DRTFractionGroupSummarySequence &getFractionGroupSummarySequence() const
         { return FractionGroupSummarySequence; }
+
+    /** get GeneticModificationsSequence (0010,0221)
+     *  @return reference to sequence element
+     */
+    DRTGeneticModificationsSequence &getGeneticModificationsSequence()
+        { return GeneticModificationsSequence; }
+
+    /** get GeneticModificationsSequence (0010,0221)
+     *  @return const reference to sequence element
+     */
+    const DRTGeneticModificationsSequence &getGeneticModificationsSequence() const
+        { return GeneticModificationsSequence; }
 
     /** get GroupOfPatientsIdentificationSequence (0010,0027)
      *  @return reference to sequence element
@@ -2819,6 +2832,8 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamsTreatmentRecordIOD
     DcmUnlimitedText StrainAdditionalInformation;
     /// StrainStockSequence (0010,0216) vr=SQ, vm=1, type=3
     DRTStrainStockSequence StrainStockSequence;
+    /// GeneticModificationsSequence (0010,0221) vr=SQ, vm=1, type=3
+    DRTGeneticModificationsSequence GeneticModificationsSequence;
     /// ResponsiblePerson (0010,2297) vr=PN, vm=1, type=2C
     DcmPersonName ResponsiblePerson;
     /// ResponsiblePersonRole (0010,2298) vr=CS, vm=1, type=1C

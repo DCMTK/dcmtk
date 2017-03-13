@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTStructureSetIOD
  *
- *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2017-01-25 17:55:32
+ *  Generated automatically from DICOM PS 3.3-2017a
+ *  File created on 2017-03-13 11:22:36
  *
  */
 
@@ -46,6 +46,7 @@ DRTStructureSetIOD::DRTStructureSetIOD()
     StrainCodeSequence(),
     StrainAdditionalInformation(DCM_StrainAdditionalInformation),
     StrainStockSequence(),
+    GeneticModificationsSequence(),
     ResponsiblePerson(DCM_ResponsiblePerson),
     ResponsiblePersonRole(DCM_ResponsiblePersonRole),
     ResponsibleOrganization(DCM_ResponsibleOrganization),
@@ -232,6 +233,7 @@ DRTStructureSetIOD::DRTStructureSetIOD(const DRTStructureSetIOD &copy)
     StrainCodeSequence(copy.StrainCodeSequence),
     StrainAdditionalInformation(copy.StrainAdditionalInformation),
     StrainStockSequence(copy.StrainStockSequence),
+    GeneticModificationsSequence(copy.GeneticModificationsSequence),
     ResponsiblePerson(copy.ResponsiblePerson),
     ResponsiblePersonRole(copy.ResponsiblePersonRole),
     ResponsibleOrganization(copy.ResponsibleOrganization),
@@ -424,6 +426,7 @@ DRTStructureSetIOD &DRTStructureSetIOD::operator=(const DRTStructureSetIOD &copy
         StrainCodeSequence = copy.StrainCodeSequence;
         StrainAdditionalInformation = copy.StrainAdditionalInformation;
         StrainStockSequence = copy.StrainStockSequence;
+        GeneticModificationsSequence = copy.GeneticModificationsSequence;
         ResponsiblePerson = copy.ResponsiblePerson;
         ResponsiblePersonRole = copy.ResponsiblePersonRole;
         ResponsibleOrganization = copy.ResponsibleOrganization;
@@ -611,6 +614,7 @@ void DRTStructureSetIOD::clear()
     StrainCodeSequence.clear();
     StrainAdditionalInformation.clear();
     StrainStockSequence.clear();
+    GeneticModificationsSequence.clear();
     ResponsiblePerson.clear();
     ResponsiblePersonRole.clear();
     ResponsibleOrganization.clear();
@@ -939,6 +943,7 @@ OFCondition DRTStructureSetIOD::readPatientData(DcmItem &dataset)
     StrainCodeSequence.read(dataset, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, StrainAdditionalInformation, "1", "3", "PatientModule");
     StrainStockSequence.read(dataset, "1-n", "3", "PatientModule");
+    GeneticModificationsSequence.read(dataset, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, ResponsiblePerson, "1", "2C", "PatientModule");
     getAndCheckElementFromDataset(dataset, ResponsiblePersonRole, "1", "1C", "PatientModule");
     getAndCheckElementFromDataset(dataset, ResponsibleOrganization, "1", "2C", "PatientModule");
@@ -1110,6 +1115,7 @@ OFCondition DRTStructureSetIOD::write(DcmItem &dataset)
         if (result.good()) result = StrainCodeSequence.write(dataset, "1-n" ,"3", "PatientModule");
         addElementToDataset(result, dataset, new DcmUnlimitedText(StrainAdditionalInformation), "1", "3", "PatientModule");
         if (result.good()) result = StrainStockSequence.write(dataset, "1-n" ,"3", "PatientModule");
+        if (result.good()) result = GeneticModificationsSequence.write(dataset, "1-n" ,"3", "PatientModule");
         addElementToDataset(result, dataset, new DcmPersonName(ResponsiblePerson), "1", "2C", "PatientModule");
         addElementToDataset(result, dataset, new DcmCodeString(ResponsiblePersonRole), "1", "1C", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(ResponsibleOrganization), "1", "2C", "PatientModule");

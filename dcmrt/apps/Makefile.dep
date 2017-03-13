@@ -129,6 +129,7 @@ drtdump.o: drtdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtdcs.h ../include/dcmtk/dcmrt/seq/drtdss.h \
  ../include/dcmtk/dcmrt/seq/drtdspcs.h \
  ../include/dcmtk/dcmrt/seq/drteas.h ../include/dcmtk/dcmrt/seq/drtfes.h \
+ ../include/dcmtk/dcmrt/seq/drtgms.h ../include/dcmtk/dcmrt/seq/drtgmcs.h \
  ../include/dcmtk/dcmrt/seq/drtgpis.h \
  ../include/dcmtk/dcmrt/seq/drtipiqs.h \
  ../include/dcmtk/dcmrt/seq/drtaadcs.h \

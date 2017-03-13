@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedPatientSequence
  *
- *  Generated automatically from DICOM PS 3.3-2016e
- *  File created on 2017-01-25 17:55:32
+ *  Generated automatically from DICOM PS 3.3-2017a
+ *  File created on 2017-03-13 11:22:36
  *
  */
 
