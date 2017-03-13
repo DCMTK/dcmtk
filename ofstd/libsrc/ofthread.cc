@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -591,7 +591,13 @@ OFMutex::OFMutex()
 : theMutex(NULL)
 {
 #ifdef WINDOWS_INTERFACE
+#ifdef USE_WIN32_CREATE_MUTEX
   theMutex = OFstatic_cast(void *, CreateMutex(NULL, FALSE, NULL));
+#else
+  CRITICAL_SECTION *critSec = new CRITICAL_SECTION;
+  InitializeCriticalSection(critSec);
+  theMutex = OFstatic_cast(void *, critSec);
+#endif
 #elif defined(POSIX_INTERFACE)
   pthread_mutex_t *mtx = new pthread_mutex_t;
   if (mtx)
@@ -614,7 +620,13 @@ OFMutex::OFMutex()
 OFMutex::~OFMutex()
 {
 #ifdef WINDOWS_INTERFACE
+#ifdef USE_WIN32_CREATE_MUTEX
   CloseHandle(OFthread_cast(HANDLE, theMutex));
+#else
+  CRITICAL_SECTION *critSec = OFthread_cast(CRITICAL_SECTION *, theMutex);
+  DeleteCriticalSection(critSec);
+  delete critSec;
+#endif
 #elif defined(POSIX_INTERFACE)
   if (theMutex) pthread_mutex_destroy(OFthread_cast(pthread_mutex_t *, theMutex));
   delete OFthread_cast(pthread_mutex_t *, theMutex);
@@ -640,8 +652,13 @@ OFBool OFMutex::initialized() const
 int OFMutex::lock()
 {
 #ifdef WINDOWS_INTERFACE
+#ifdef USE_WIN32_CREATE_MUTEX
   if (WaitForSingleObject(OFthread_cast(HANDLE, theMutex), INFINITE) == WAIT_OBJECT_0) return 0;
   else return OFstatic_cast(int, GetLastError());
+#else
+  EnterCriticalSection(OFthread_cast(CRITICAL_SECTION *, theMutex));
+  return 0;
+#endif
 #elif defined(POSIX_INTERFACE)
   if (theMutex) return pthread_mutex_lock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
@@ -654,10 +671,15 @@ int OFMutex::lock()
 int OFMutex::trylock()
 {
 #ifdef WINDOWS_INTERFACE
+#ifdef USE_WIN32_CREATE_MUTEX
   DWORD result = WaitForSingleObject(OFthread_cast(HANDLE, theMutex), 0);
   if (result == WAIT_OBJECT_0) return 0;
   else if (result == WAIT_TIMEOUT) return OFMutex::busy;
   else return OFstatic_cast(int, GetLastError());
+#else
+  if (TryEnterCriticalSection(OFthread_cast(CRITICAL_SECTION *, theMutex))) return 0;
+  else return OFMutex::busy;
+#endif
 #elif defined(POSIX_INTERFACE)
   if (theMutex) return pthread_mutex_trylock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL; // may return EBUSY.
 #elif defined(SOLARIS_INTERFACE)
@@ -670,7 +692,12 @@ int OFMutex::trylock()
 int OFMutex::unlock()
 {
 #ifdef WINDOWS_INTERFACE
+#ifdef USE_WIN32_CREATE_MUTEX
   if (ReleaseMutex(OFthread_cast(HANDLE, theMutex))) return 0; else return OFstatic_cast(int, GetLastError());
+#else
+  LeaveCriticalSection(OFthread_cast(CRITICAL_SECTION *, theMutex));
+  return 0;
+#endif
 #elif defined(POSIX_INTERFACE)
   if (theMutex) return pthread_mutex_unlock(OFthread_cast(pthread_mutex_t *, theMutex)); else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
@@ -687,7 +714,7 @@ void OFMutex::errorstr(OFString& description, int /* code */ )
 #endif
 {
 #ifdef WINDOWS_INTERFACE
-  if (code == OFSemaphore::busy) description = "mutex is already locked"; else
+  if (code == OFMutex::busy) description = "mutex is already locked"; else
   {
     LPVOID buf;
     FormatMessage(
