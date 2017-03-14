@@ -1815,6 +1815,16 @@ double OFStandard::atof(const char *s, OFBool *success)
         if (*p == '+') ++p;
     }
 
+    //Check for special cases like NaN
+    if ((p[0] == 'n' || p[0] == 'N') && (p[1] == 'a' || p[1] == 'A') && (p[2] == 'n' || p[2] == 'N')) {
+        if (success) *success = OFTrue;
+        return OFnumeric_limits<double>::quiet_NaN();
+    }
+
+    if ((p[0] == 'i' || p[0] == 'I') && (p[1] == 'n' || p[1] == 'N') && (p[2] == 'f' || p[2] == 'F')) {
+        if (success) *success = OFTrue;
+        return sign ? -OFnumeric_limits<double>::infinity() : OFnumeric_limits<double>::infinity();
+    }
     // Count the number of digits in the mantissa (including the decimal
     // point), and also locate the decimal point.
 

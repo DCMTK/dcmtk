@@ -74,8 +74,10 @@ const ValuePair vp[] =
   {"2.2250738585072014E-1000", 0.0, OFTrue},
 #endif
 
+  {"NaN", OFnumeric_limits<double>::quiet_NaN(), OFTrue},
+  {"INF", OFnumeric_limits<double>::infinity(), OFTrue},
+  {"-INF", -OFnumeric_limits<double>::infinity(), OFTrue},
   // conversions that should fail
-  // {"NaN", 0.0, OFFalse}, // this test will fail if DISABLE_OFSTD_ATOF is defined
   {"BIGNUM", 0.0, OFFalse},
   {"_1.0", 0.0, OFFalse},
   {"", 0.0, OFFalse}
