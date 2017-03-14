@@ -1278,6 +1278,15 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                           const E_GrpLenEncoding glenc,
                           const Uint32 maxReadLength)
 {
+	return DcmItem::readUntilTag(inStream, xfer, glenc, maxReadLength, DCM_UndefinedTagKey);
+}
+
+OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
+                                  const E_TransferSyntax xfer,
+                                  const E_GrpLenEncoding glenc,
+                                  const Uint32 maxReadLength,
+                                  const DcmTagKey &stopParsingAtElement)
+{
     /* check if this is an illegal call; if so set the error flag and do nothing, else go ahead */
     if (getTransferState() == ERW_notInitialized)
     {
@@ -1354,17 +1363,30 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* in case of implicit VR, check whether the "default VR" is really appropriate */
                     if (DcmXfer(xfer).isImplicitVR())
                         checkAndUpdateVR(*this, newTag);
-                    /* read the actual data value which belongs to this element */
-                    /* (attribute) and insert this information into the elementList */
-                    errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
-                    /* if reading was successful, we read the entire data value information */
-                    /* for this element; hence lastElementComplete is true again */
-                    if (errorFlag.good())
+
+                    /* check if we want to stop parsing at this point, in the main dataset only */
+                    if( (stopParsingAtElement != DCM_UndefinedTagKey) && (newTag.getXTag()>=stopParsingAtElement) && ident() == EVR_dataset)
+                    {
+                      lastElementComplete = OFTrue;
+                      readStopElem = OFTrue;
+                      DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
+                        << " encountered, skipping rest of dataset");
+                    }
+                    else
+                    {
+                      /* read the actual data value which belongs to this element */
+                      /* (attribute) and insert this information into the elementList */
+                      errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
+                      /* if reading was successful, we read the entire data value information */
+                      /* for this element; hence lastElementComplete is true again */
+                      if (errorFlag.good())
                         lastElementComplete = OFTrue;
-                    /* in data or command sets, group 0x0001 to 0x0003, 0x0005, 0x0007 and 0xFFFF are not allowed. */
-                    /* (we cannot check for group 0x0000 since we do not know whether we read a data or command set.)*/
-                    if (!newTag.hasValidGroup() || (newTag.getGroup() == 0x0002))
-                        DCMDATA_WARN("DcmItem: Invalid Element " << newTag << " found in data set");
+
+                      /* in data or command sets, group 0x0001 to 0x0003, 0x0005, 0x0007 and 0xFFFF are not allowed. */
+                      /* (we cannot check for group 0x0000 since we do not know whether we read a data or command set.)*/
+                      if (!newTag.hasValidGroup() || (newTag.getGroup() == 0x0002))
+                          DCMDATA_WARN("DcmItem: Invalid Element " << newTag << " found in data set");
+                    }
                 }
             } else {
                 /* if lastElementComplete is false, we have only read the current element's */

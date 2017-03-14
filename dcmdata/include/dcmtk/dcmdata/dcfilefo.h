@@ -185,6 +185,23 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
+    /** read object from a stream, up to the attribute tag stopParsingAtElement.
+     *  @param inStream DICOM input stream
+     *  @param xfer transfer syntax to use when parsing
+     *  @param glenc handling of group length parameters
+     *  @param maxReadLength attribute values larger than this value are skipped
+     *    while parsing and read later upon first access if the stream type supports
+     *    this.
+     *  @param stopParsingAtElement parsing of the input stream is stopped when
+     *                       this tag key or any higher tag is encountered.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readUntilTag(DcmInputStream &inStream,
+                                     const E_TransferSyntax xfer = EXS_Unknown,
+                                     const E_GrpLenEncoding glenc = EGL_noChange,
+                                     const Uint32 maxReadLength = DCM_MaxReadLength,
+                                     const DcmTagKey &stopParsingAtElement = DCM_UndefinedTagKey);
+
     /** write fileformat to a stream
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
@@ -277,6 +294,31 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
                                  const Uint32 maxReadLength = DCM_MaxReadLength,
                                  const E_FileReadMode readMode = ERM_autoDetect);
+
+    /** load object from a DICOM file, up to the attribute tag stopParsingAtElement.
+     *  This method supports DICOM objects stored as a file (with meta header) or as a
+     *  dataset (without meta header).  By default, the presence of a meta header is
+     *  detected automatically.
+     *  @param fileName name of the file to load (may contain wide chars if support enabled).
+     *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
+     *    or "wchar_t *" can also be passed directly to this parameter.
+     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
+     *  @param groupLength flag, specifying how to handle the group length tags
+     *  @param maxReadLength maximum number of bytes to be read for an element value.
+     *    Element values with a larger size are not loaded until their value is retrieved
+     *    (with getXXX()) or loadAllDataIntoMemory() is called.
+     *  @param readMode read file with or without meta header, i.e. as a fileformat or a
+     *    dataset.  Use ERM_fileOnly in order to force the presence of a meta header.
+     *  @param stopParsingAtElement parsing of the input stream is stopped when
+     *                       this tag key or any higher tag is encountered.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition loadFileUntilTag(const OFFilename &fileName,
+                                 const E_TransferSyntax readXfer = EXS_Unknown,
+                                 const E_GrpLenEncoding groupLength = EGL_noChange,
+                                 const Uint32 maxReadLength = DCM_MaxReadLength,
+                                 const E_FileReadMode readMode = ERM_autoDetect,
+                                 const DcmTagKey &stopParsingAtElement = DCM_UndefinedTagKey);
 
     /** save object to a DICOM file.
      *  @param fileName name of the file to save (may contain wide chars if support enabled).

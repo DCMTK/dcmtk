@@ -369,6 +369,15 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                              const E_GrpLenEncoding glenc,
                              const Uint32 maxReadLength)
 {
+  return readUntilTag(inStream, xfer, glenc, maxReadLength, DCM_UndefinedTagKey);
+}
+
+OFCondition DcmDataset::readUntilTag(DcmInputStream &inStream,
+                                     const E_TransferSyntax xfer,
+                                     const E_GrpLenEncoding glenc,
+                                     const Uint32 maxReadLength,
+                                     const DcmTagKey &stopParsingAtElement)
+{
     /* check if the stream variable reported an error */
     errorFlag = inStream.status();
     /* if the stream did not report an error but the stream */
@@ -442,7 +451,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
         }
         /* pass processing the task to class DcmItem */
         if (errorFlag.good())
-            errorFlag = DcmItem::read(inStream, OriginalXfer, glenc, maxReadLength);
+            errorFlag = DcmItem::readUntilTag(inStream, xfer, glenc, maxReadLength, stopParsingAtElement);
 
     }
 
@@ -639,6 +648,15 @@ OFCondition DcmDataset::loadFile(const OFFilename &fileName,
                                  const E_GrpLenEncoding groupLength,
                                  const Uint32 maxReadLength)
 {
+  return loadFileUntilTag(fileName, readXfer, groupLength, maxReadLength, DCM_UndefinedTagKey);
+}
+
+OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
+                                 const E_TransferSyntax readXfer,
+                                 const E_GrpLenEncoding groupLength,
+                                 const Uint32 maxReadLength,
+                                 const DcmTagKey &stopParsingAtElement)
+{
     OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
     if (!fileName.isEmpty())
@@ -657,7 +675,7 @@ OFCondition DcmDataset::loadFile(const OFFilename &fileName,
             {
                 /* read data from file */
                 transferInit();
-                l_error = read(fileStream, readXfer, groupLength, maxReadLength);
+                l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
                 transferEnd();
             }
         }

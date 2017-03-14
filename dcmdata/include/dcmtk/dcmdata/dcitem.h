@@ -243,6 +243,28 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
+    /** This function reads the information of all attributes which
+     *  are captured in the input stream and captures this information
+     *  in elementList, up to the attribute tag stopParsingAtElement.
+     *  Each attribute is represented as an element
+     *  in this list. If not all information for an attribute could be
+     *  read from the stream, the function returns EC_StreamNotifyClient.
+     *  @param inStream      The stream which contains the information.
+     *  @param ixfer         The transfer syntax which was used to encode
+     *                       the information in inStream.
+     *  @param glenc         Encoding type for group length; specifies
+     *                       what will be done with group length tags.
+     *  @param maxReadLength Maximum read length for reading an attribute value.
+     *  @param stopParsingAtElement parsing of the input stream is stopped when
+     *                       this tag key or any higher tag is encountered.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readUntilTag(DcmInputStream &inStream,
+                                     const E_TransferSyntax ixfer,
+                                     const E_GrpLenEncoding glenc = EGL_noChange,
+                                     const Uint32 maxReadLength = DCM_MaxReadLength,
+                                     const DcmTagKey &stopParsingAtElement = DCM_UndefinedTagKey);
+
     /** write object to a stream
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax

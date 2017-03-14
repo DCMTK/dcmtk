@@ -185,6 +185,30 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
+    /** This function reads the information of all attributes which
+     *  are captured in the input stream and captures this information
+     *  in this->elementList, up to the attribute tag stopParsingAtElement.
+     *  Each attribute is represented as an
+     *  element in this list. Having read all information for this
+     *  particular data set or command, this function will also take
+     *  care of group length (according to what is specified in glenc)
+     *  and padding elements (don't change anything).
+     *  @param inStream      The stream which contains the information.
+     *  @param xfer          The transfer syntax which was used to encode
+     *                       the information in inStream.
+     *  @param glenc         Encoding type for group length; specifies what
+     *                       will be done with group length tags.
+     *  @param maxReadLength Maximum read length for reading an attribute value.
+     *  @param stopParsingAtElement parsing of the input stream is stopped when
+     *                       this tag key or any higher tag is encountered.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readUntilTag(DcmInputStream &inStream,
+                                     const E_TransferSyntax xfer = EXS_Unknown,
+                                     const E_GrpLenEncoding glenc = EGL_noChange,
+                                     const Uint32 maxReadLength = DCM_MaxReadLength,
+                                     const DcmTagKey &stopParsingAtElement = DCM_UndefinedTagKey);
+
     /** write dataset to a stream
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax (EXS_Unknown means use original)
@@ -296,6 +320,27 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
                                  const E_TransferSyntax readXfer = EXS_Unknown,
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
                                  const Uint32 maxReadLength = DCM_MaxReadLength);
+
+    /** load object from a DICOM file, up to the attribute tag stopParsingAtElement.
+     *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
+     *  Use DcmFileFormat::loadFile() to load files with meta header.
+     *  @param fileName name of the file to load (may contain wide chars if support enabled).
+     *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
+     *    or "wchar_t *" can also be passed directly to this parameter.
+     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
+     *  @param groupLength flag, specifying how to handle the group length tags
+     *  @param maxReadLength maximum number of bytes to be read for an element value.
+     *    Element values with a larger size are not loaded until their value is retrieved
+     *    (with getXXX()) or loadAllDataIntoMemory() is called.
+     *  @param stopParsingAtElement parsing of the input stream is stopped when
+     *                       this tag key or any higher tag is encountered.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition loadFileUntilTag(const OFFilename &fileName,
+                                 const E_TransferSyntax readXfer = EXS_Unknown,
+                                 const E_GrpLenEncoding groupLength = EGL_noChange,
+                                 const Uint32 maxReadLength = DCM_MaxReadLength,
+                                 const DcmTagKey &stopParsingAtElement = DCM_UndefinedTagKey);
 
     /** save object to a DICOM file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.

@@ -69,6 +69,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
                     const OFBool loadIntoMemory,
                     const OFBool stopOnErrors,
                     const OFBool convertToUTF8,
+                    const DcmTagKey &stopParsingAtElement,
                     const char *pixelDirectory);
 
 // ********************************************
@@ -162,6 +163,7 @@ DCMTK_MAIN_FUNCTION
     const char *scanPattern = "";
     const char *pixelDirectory = NULL;
     OFBool convertToUTF8 = OFFalse;
+    DcmTagKey stopParsingBeforeElement = DCM_UndefinedTagKey;
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -250,6 +252,8 @@ DCMTK_MAIN_FUNCTION
       cmd.addSubGroup("other parsing options:");
         cmd.addOption("--stop-after-elem",     "+st", 1, "[t]ag: \"gggg,eeee\" or dictionary name",
                                                          "stop parsing after element specified by t");
+        cmd.addOption("--stop-before-elem",    "+sb", 1, "[t]ag: \"gggg,eeee\" or dictionary name",
+                                                         "stop parsing before element specified by t");
       cmd.addSubGroup("automatic data correction:");
         cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
         cmd.addOption("--disable-correction",  "-dc",    "disable automatic data correction");
@@ -597,6 +601,7 @@ DCMTK_MAIN_FUNCTION
       if (cmd.findOption("--ignore-errors")) stopOnErrors = OFFalse;
       cmd.endOptionBlock();
 
+      cmd.beginOptionBlock();
       if (cmd.findOption("--stop-after-elem"))
       {
         const char *tagName = NULL;
@@ -607,6 +612,17 @@ DCMTK_MAIN_FUNCTION
         else
           app.printError("no valid key given for option --stop-after-elem");
       }
+      if (cmd.findOption("--stop-before-elem"))
+      {
+        const char *tagName = NULL;
+        app.checkValue(cmd.getValue(tagName));
+        DcmTagKey key = parseTagKey(tagName);
+        if (key != DCM_UndefinedTagKey)
+          stopParsingBeforeElement = key;
+        else
+          app.printError("no valid key given for option --stop-before-elem");
+      }
+      cmd.endOptionBlock();
 
       if (cmd.findOption("--search", 0, OFCommandLine::FOM_FirstFromLeft))
       {
@@ -720,7 +736,7 @@ DCMTK_MAIN_FUNCTION
         /* print header with filename */
         COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << fileCounter << "/" << count << "): " << current << OFendl;
       }
-      errorCount += dumpFile(COUT, current, readMode, xfer, printFlags, loadIntoMemory, stopOnErrors, convertToUTF8, pixelDirectory);
+      errorCount += dumpFile(COUT, current, readMode, xfer, printFlags, loadIntoMemory, stopOnErrors, convertToUTF8, stopParsingBeforeElement, pixelDirectory);
     }
 
     return errorCount;
@@ -765,6 +781,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
                     const OFBool loadIntoMemory,
                     const OFBool stopOnErrors,
                     const OFBool convertToUTF8,
+                    const DcmTagKey &stopParsingAtElement,
                     const char *pixelDirectory)
 {
     int result = 0;
@@ -778,7 +795,17 @@ static int dumpFile(STD_NAMESPACE ostream &out,
     DcmFileFormat dfile;
     DcmObject *dset = &dfile;
     if (readMode == ERM_dataset) dset = dfile.getDataset();
-    OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, OFstatic_cast(Uint32, maxReadLength), readMode);
+    OFCondition cond;
+
+    if (stopParsingAtElement == DCM_UndefinedTagKey)
+    {
+        cond = dfile.loadFile(ifname, xfer, EGL_noChange, OFstatic_cast(Uint32, maxReadLength), readMode);
+    }
+    else
+    {
+        // instead of using loadFile(), we call loadFileUntilTag().
+        cond = dfile.loadFileUntilTag(ifname, xfer, EGL_noChange, OFstatic_cast(Uint32, maxReadLength), readMode, stopParsingAtElement);
+    }
     if (cond.bad())
     {
         OFLOG_ERROR(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": " << cond.text()

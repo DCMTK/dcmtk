@@ -693,7 +693,15 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                                 const E_TransferSyntax xfer,
                                 const E_GrpLenEncoding glenc,
                                 const Uint32 maxReadLength)
+{
+  return readUntilTag(inStream,xfer,glenc,maxReadLength,DCM_UndefinedTagKey);
+}
 
+OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
+                                        const E_TransferSyntax xfer,
+                                        const E_GrpLenEncoding glenc,
+                                        const Uint32 maxReadLength,
+                                        const DcmTagKey &stopParsingAtElement)
 {
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -749,7 +757,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                 {
                     if (dataset && dataset->transferState() != ERW_ready)
                     {
-                        errorFlag = dataset->read(inStream, newxfer, glenc, maxReadLength);
+                        errorFlag = dataset->readUntilTag(inStream, newxfer, glenc, maxReadLength,stopParsingAtElement);
                     }
                 }
             }
@@ -761,7 +769,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
             setTransferState(ERW_ready);
     }
     return errorFlag;
-}  // DcmFileFormat::read()
+}  // DcmFileFormat::readUntilTag()
 
 
 // ********************************
@@ -873,15 +881,26 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
 
 // ********************************
 
-
 OFCondition DcmFileFormat::loadFile(const OFFilename &fileName,
                                     const E_TransferSyntax readXfer,
                                     const E_GrpLenEncoding groupLength,
                                     const Uint32 maxReadLength,
                                     const E_FileReadMode readMode)
 {
+  return loadFileUntilTag(fileName, readXfer, groupLength, maxReadLength, readMode, DCM_UndefinedTagKey);
+}
+
+
+OFCondition DcmFileFormat::loadFileUntilTag(
+                                    const OFFilename &fileName,
+                                    const E_TransferSyntax readXfer,
+                                    const E_GrpLenEncoding groupLength,
+                                    const Uint32 maxReadLength,
+                                    const E_FileReadMode readMode,
+                                    const DcmTagKey &stopParsingAtElement)
+{
     if (readMode == ERM_dataset)
-        return getDataset()->loadFile(fileName, readXfer, groupLength, maxReadLength);
+        return getDataset()->loadFileUntilTag(fileName, readXfer, groupLength, maxReadLength, stopParsingAtElement);
 
     OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
@@ -902,7 +921,7 @@ OFCondition DcmFileFormat::loadFile(const OFFilename &fileName,
                 FileReadMode = readMode;
                 /* read data from file */
                 transferInit();
-                l_error = read(fileStream, readXfer, groupLength, maxReadLength);
+                l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
                 transferEnd();
                 /* restore old value */
                 FileReadMode = oldMode;
