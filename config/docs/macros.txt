@@ -387,7 +387,7 @@ USE_NULL_SAFE_OFSTRING
 
 USE_WIN32_CREATE_MUTEX
   Affected: ofstd
-  Type of modification: Toolkit customization
+  Type of modification: Activates alternative implementation
   Explanation: Starting with DCMTK 3.6.2, the Win32 version of the
     OFMutex class uses critical sections instead of Win32 mutexes, because
     critical sections are much faster. Their only drawback is that they
