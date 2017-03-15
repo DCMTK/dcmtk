@@ -213,7 +213,14 @@ IF(COMMAND CMAKE_POLICY)
 ENDIF(COMMAND CMAKE_POLICY)
 
 # pass optional build date to compiler
-#ADD_DEFINITIONS(-DDCMTK_BUILD_DATE=\\\"YYYY-MM-DD\\\")
+#SET(DCMTK_BUILD_DATE "\\\"YYYY-MM-DD\\\"")
+IF(DCMTK_BUILD_DATE)
+    # Xcode needs one escaping layer more than (as far as we know) everyone else - we gotta go deeper!
+    IF(CMAKE_GENERATOR MATCHES Xcode)
+        STRING(REPLACE "\\" "\\\\" DCMTK_BUILD_DATE "${DCMTK_BUILD_DATE}")
+    ENDIF()
+    ADD_DEFINITIONS(-DDCMTK_BUILD_DATE=${DCMTK_BUILD_DATE})
+ENDIF(DCMTK_BUILD_DATE)
 
 # make OFString(NULL) safe by default
 ADD_DEFINITIONS(-DUSE_NULL_SAFE_OFSTRING)
