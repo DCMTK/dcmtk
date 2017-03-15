@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Marco Eichelberg, Norbert Olges
  *
- *  Purpose: compression routines of the IJG JPEG library configured for 8 bits/sample. 
+ *  Purpose: compression routines of the IJG JPEG library configured for 8 bits/sample.
  *
  */
 
@@ -183,7 +183,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
     scanptr[0].Se = 0;
     scanptr[0].Ah = 0;
     scanptr[0].Al = 0;
-    
+
     // AC scans
     // First two Y AC coefficients
     scanptr[1].component_index[0] = 0;
@@ -192,7 +192,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
     scanptr[1].Se = 2;
     scanptr[1].Ah = 0;
     scanptr[1].Al = 0;
-    
+
     // Three more
     scanptr[2].component_index[0] = 0;
     scanptr[2].comps_in_scan = 1;
@@ -200,7 +200,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
     scanptr[2].Se = 5;
     scanptr[2].Ah = 0;
     scanptr[2].Al = 0;
-    
+
     // All AC coefficients for Cb
     scanptr[3].component_index[0] = 1;
     scanptr[3].comps_in_scan = 1;
@@ -208,7 +208,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
     scanptr[3].Se = 63;
     scanptr[3].Ah = 0;
     scanptr[3].Al = 0;
-    
+
     // All AC coefficients for Cr
     scanptr[4].component_index[0] = 2;
     scanptr[4].comps_in_scan = 1;
@@ -216,7 +216,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
     scanptr[4].Se = 63;
     scanptr[4].Ah = 0;
     scanptr[4].Al = 0;
-    
+
     // More Y coefficients
     scanptr[5].component_index[0] = 0;
     scanptr[5].comps_in_scan = 1;
@@ -224,7 +224,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
     scanptr[5].Se = 9;
     scanptr[5].Ah = 0;
     scanptr[5].Al = 0;
-    
+
     // Remaining Y coefficients
     scanptr[6].component_index[0] = 0;
     scanptr[6].comps_in_scan = 1;
@@ -237,7 +237,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
   {
     /* All-purpose script for other color spaces. */
     int j=0;
-    
+
     // Interleaved DC scan for all components
     for (j=0; j<ncomps; j++) scanptr[0].component_index[j] = j;
     scanptr[0].comps_in_scan = ncomps;
@@ -247,7 +247,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
     scanptr[0].Al = 0;
 
     // first AC scan for each component
-    for (j=0; j<ncomps; j++) 
+    for (j=0; j<ncomps; j++)
     {
       scanptr[j+1].component_index[0] = j;
       scanptr[j+1].comps_in_scan = 1;
@@ -258,7 +258,7 @@ static void jpeg_simple_spectral_selection(j_compress_ptr cinfo)
     }
 
     // second AC scan for each component
-    for (j=0; j<ncomps; j++) 
+    for (j=0; j<ncomps; j++)
     {
       scanptr[j+ncomps+1].component_index[0] = j;
       scanptr[j+ncomps+1].comps_in_scan = 1;
@@ -337,7 +337,7 @@ OFCondition DJCompressIJG8Bit::encode(
   return EC_IllegalCall;
 }
 
-OFCondition DJCompressIJG8Bit::encode( 
+OFCondition DJCompressIJG8Bit::encode(
   Uint16 columns,
   Uint16 rows,
   EP_Interpretation colorSpace,
@@ -356,7 +356,7 @@ OFCondition DJCompressIJG8Bit::encode(
   if (setjmp(jerr.setjmp_buffer))
   {
     // the IJG error handler will cause the following code to be executed
-    char buffer[JMSG_LENGTH_MAX];    
+    char buffer[JMSG_LENGTH_MAX];
     (*cinfo.err->format_message)(OFreinterpret_cast(jpeg_common_struct*, &cinfo), buffer); /* Create the message */
     jpeg_destroy_compress(&cinfo);
     return makeOFCondition(OFM_dcmjpeg, EJCode_IJG8_Compression, OF_error, buffer);
@@ -410,7 +410,7 @@ OFCondition DJCompressIJG8Bit::encode(
      jpeg_simple_lossless(&cinfo,psv,pt);
      break;
   }
-  
+
   cinfo.smoothing_factor = cparam->getSmoothingFactor();
 
   // initialize sampling factors
@@ -449,7 +449,7 @@ OFCondition DJCompressIJG8Bit::encode(
   JSAMPROW row_pointer[1];
   jpeg_start_compress(&cinfo,TRUE);
   int row_stride = columns * samplesPerPixel;
-  while (cinfo.next_scanline < cinfo.image_height) 
+  while (cinfo.next_scanline < cinfo.image_height)
   {
     row_pointer[0] = & image_buffer[cinfo.next_scanline * row_stride];
     jpeg_write_scanlines(&cinfo, row_pointer, 1);
@@ -459,11 +459,11 @@ OFCondition DJCompressIJG8Bit::encode(
 
   length = OFstatic_cast(Uint32, bytesInLastBlock);
   if (pixelDataList.size() > 1) length += OFstatic_cast(Uint32, (pixelDataList.size() - 1)*IJGE8_BLOCKSIZE);
-  if (length % 2) length++; // ensure even length    
+  OFBool length_is_odd = (length % 2) > 0;
+  if (length_is_odd) length++; // ensure even length
 
   to = new Uint8[length];
   if (to == NULL) return EC_MemoryExhausted;
-  if (length > 0) to[length-1] = 0;    
 
   size_t offset=0;
   OFListIterator(unsigned char *) first = pixelDataList.begin();
@@ -484,6 +484,7 @@ OFCondition DJCompressIJG8Bit::encode(
     }
     ++first;
   }
+  if (length_is_odd) DcmJpegHelper::fixPadding(to, length);
   cleanup();
   return EC_Normal;
 }
@@ -497,12 +498,12 @@ void DJCompressIJG8Bit::initDestination(jpeg_compress_struct *cinfo)
   {
     pixelDataList.push_back(newBlock);
     cinfo->dest->next_output_byte = newBlock;
-    cinfo->dest->free_in_buffer = IJGE8_BLOCKSIZE;    
+    cinfo->dest->free_in_buffer = IJGE8_BLOCKSIZE;
   }
   else
   {
     cinfo->dest->next_output_byte = NULL;
-    cinfo->dest->free_in_buffer = 0;    
+    cinfo->dest->free_in_buffer = 0;
   }
 }
 
@@ -514,7 +515,7 @@ int DJCompressIJG8Bit::emptyOutputBuffer(jpeg_compress_struct *cinfo)
   {
     pixelDataList.push_back(newBlock);
     cinfo->dest->next_output_byte = newBlock;
-    cinfo->dest->free_in_buffer = IJGE8_BLOCKSIZE;    
+    cinfo->dest->free_in_buffer = IJGE8_BLOCKSIZE;
   }
   else
   {

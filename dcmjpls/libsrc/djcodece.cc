@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2015, OFFIS e.V.
+ *  Copyright (C) 2007-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -670,6 +670,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
     if (result.good())
     {
       compressedSize = bytesWritten;
+      fixPadding(OFstatic_cast(Uint8 *, buffer), size, compressedSize);
       result = pixelSequence->storeCompressedFrame(offsetList, buffer, compressedSize, fragmentSize);
     }
 
@@ -1061,6 +1062,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   {
     // 'compressed_buffer_size' now contains the size of the compressed data in buffer
     compressedSize = bytesWritten;
+    fixPadding(OFstatic_cast(Uint8 *, buffer), compressed_buffer_size, compressedSize);
     result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, compressedSize, fragmentSize);
   }
 
@@ -1120,4 +1122,33 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
     }
   }
   return EC_Normal;
+}
+
+void DJLSEncoderBase::fixPaddingIfNecessary(
+    Uint8 *buffer,
+    size_t bufSize,
+    unsigned long &bytesWritten)
+{
+  // check if an odd number of bytes was written and the buffer
+  // has space for the needed pad byte (which should in practice
+  // always be the case because the buffer always has even length).
+  if (buffer && ((bytesWritten % 2 )> 0) && (bufSize > bytesWritten))
+  {
+    // first write a zero pad byte after the end of the JPEG-LS bitstream
+    buffer[bytesWritten++] = 0;
+
+#ifndef DISABLE_FF_JPEG_BITSTREAM_PADDING
+    // look for the EOI marker
+    if ((bytesWritten > 2) && (buffer[bytesWritten-3] == 0xFF) && (buffer[bytesWritten-2] == 0xD9))
+    {
+      // we now have ff/d9/00 at the end of the JPEG bitstream,
+      // i.e. an end of image (EOI) marker followed by a pad byte.
+      // Replace this with ff/ff/d9, which is an "extended" EOI marker
+      // ending on an even byte boundary.
+      buffer[bytesWritten-2] = 0xFF;
+      buffer[bytesWritten-1] = 0xD9;
+    }
+  }
+#endif
+  return;
 }

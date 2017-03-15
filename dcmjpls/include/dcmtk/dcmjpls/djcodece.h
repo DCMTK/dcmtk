@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2011, OFFIS e.V.
+ *  Copyright (C) 2007-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -343,6 +343,18 @@ private:
     Uint32 width,
     Uint32 height,
     Uint16 bitsAllocated) const;
+
+  /** Adjust the padding of the JPEG-LS bitstream in the buffer if it has odd length,
+   *  such that the End of Image (EOI) marker ends on an even byte boundary.
+   *  @param buffer pointer to buffer containing compressed JPEG-LS bitstream
+   *  @param bufSize size of the buffer in bytes
+   *  @param bytesWritten number of bytes written to buffer; value is increased
+   *   if this method adds a pad byte.
+   */
+  static void fixPaddingIfNecessary(
+    Uint8 *buffer,
+    size_t bufSize,
+    unsigned long &bytesWritten);
 };
 
 

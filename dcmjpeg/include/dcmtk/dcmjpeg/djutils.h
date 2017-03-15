@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -218,6 +218,16 @@ public:
    *  @return photometric interpretation enum, EPI_Unknown if unknown string or attribute missing
    */
   static EP_Interpretation getPhotometricInterpretation(DcmItem *item);
+
+  /** adjusts the padding of a JPEG bitstream in the buffer that has odd length,
+   *  such that the End of Image (EOI) marker ends on an even byte boundary.
+   *  @param buffer pointer to buffer containing compressed JPEG bitstream
+   *  @param bufSize number of bytes used for the JPEG bitstream (including pad byte)
+   */
+  static void fixPadding(
+    Uint8 *buffer,
+    Uint32 bufSize);
+
 };
 
 #endif

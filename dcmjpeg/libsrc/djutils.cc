@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,4 +67,30 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
     }
   }
   return EPI_Unknown;
+}
+
+void DcmJpegHelper::fixPadding(
+    Uint8 *buffer,
+    Uint32 bufSize)
+{
+  if (buffer && (bufSize > 0))
+  {
+    // first write a zero pad byte after the end of the JPEG bitstream
+    buffer[bufSize - 1] = 0;
+
+#ifndef DISABLE_FF_JPEG_BITSTREAM_PADDING
+    // look for the EOI marker
+    if ((bufSize > 2) && (buffer[bufSize-3] == 0xFF) && (buffer[bufSize-2] == 0xD9))
+    {
+      // we now have ff/d9/00 at the end of the JPEG bitstream,
+      // i.e. an end of image (EOI) marker followed by a pad byte.
+      // Replace this with ff/ff/d9, which is an "extended" EOI marker
+      // ending on an even byte boundary.
+      buffer[bufSize-2] = 0xFF;
+      buffer[bufSize-1] = 0xD9;
+    }
+  }
+#endif
+
+  return;
 }

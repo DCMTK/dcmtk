@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Marco Eichelberg, Norbert Olges
  *
- *  Purpose: compression routines of the IJG JPEG library configured for 16 bits/sample. 
+ *  Purpose: compression routines of the IJG JPEG library configured for 16 bits/sample.
  *
  */
 
@@ -181,7 +181,7 @@ OFCondition DJCompressIJG16Bit::encode(
   return EC_IllegalCall;
 }
 
-OFCondition DJCompressIJG16Bit::encode( 
+OFCondition DJCompressIJG16Bit::encode(
   Uint16 columns,
   Uint16 rows,
   EP_Interpretation colorSpace,
@@ -200,7 +200,7 @@ OFCondition DJCompressIJG16Bit::encode(
   if (setjmp(jerr.setjmp_buffer))
   {
     // the IJG error handler will cause the following code to be executed
-    char buffer[JMSG_LENGTH_MAX];    
+    char buffer[JMSG_LENGTH_MAX];
     (*cinfo.err->format_message)(OFreinterpret_cast(jpeg_common_struct*, &cinfo), buffer); /* Create the message */
     jpeg_destroy_compress(&cinfo);
     return makeOFCondition(OFM_dcmjpeg, EJCode_IJG16_Compression, OF_error, buffer);
@@ -242,7 +242,7 @@ OFCondition DJCompressIJG16Bit::encode(
      return makeOFCondition(OFM_dcmjpeg, EJCode_IJG16_Compression, OF_error, "JPEG with 16 bits/sample only allowed with lossless compression");
      /* break; */
   }
-  
+
   cinfo.smoothing_factor = cparam->getSmoothingFactor();
 
   // initialize sampling factors
@@ -281,7 +281,7 @@ OFCondition DJCompressIJG16Bit::encode(
   JSAMPROW row_pointer[1];
   jpeg_start_compress(&cinfo,TRUE);
   int row_stride = columns * samplesPerPixel;
-  while (cinfo.next_scanline < cinfo.image_height) 
+  while (cinfo.next_scanline < cinfo.image_height)
   {
     // JSAMPLE might be signed, typecast to avoid a warning
     row_pointer[0] = OFreinterpret_cast(JSAMPLE*, image_buffer + (cinfo.next_scanline * row_stride));
@@ -292,11 +292,11 @@ OFCondition DJCompressIJG16Bit::encode(
 
   length = OFstatic_cast(Uint32, bytesInLastBlock);
   if (pixelDataList.size() > 1) length += OFstatic_cast(Uint32, (pixelDataList.size() - 1)*IJGE16_BLOCKSIZE);
-  if (length % 2) length++; // ensure even length    
+  OFBool length_is_odd = (length % 2) > 0;
+  if (length_is_odd) length++; // ensure even length
 
   to = new Uint8[length];
   if (to == NULL) return EC_MemoryExhausted;
-  if (length > 0) to[length-1] = 0;    
 
   size_t offset=0;
   OFListIterator(unsigned char *) first = pixelDataList.begin();
@@ -317,6 +317,7 @@ OFCondition DJCompressIJG16Bit::encode(
     }
     ++first;
   }
+  if (length_is_odd) DcmJpegHelper::fixPadding(to, length);
   cleanup();
 
   return EC_Normal;
@@ -331,12 +332,12 @@ void DJCompressIJG16Bit::initDestination(jpeg_compress_struct *cinfo)
   {
     pixelDataList.push_back(newBlock);
     cinfo->dest->next_output_byte = newBlock;
-    cinfo->dest->free_in_buffer = IJGE16_BLOCKSIZE;    
+    cinfo->dest->free_in_buffer = IJGE16_BLOCKSIZE;
   }
   else
   {
     cinfo->dest->next_output_byte = NULL;
-    cinfo->dest->free_in_buffer = 0;    
+    cinfo->dest->free_in_buffer = 0;
   }
 }
 
@@ -348,12 +349,12 @@ int DJCompressIJG16Bit::emptyOutputBuffer(jpeg_compress_struct *cinfo)
   {
     pixelDataList.push_back(newBlock);
     cinfo->dest->next_output_byte = newBlock;
-    cinfo->dest->free_in_buffer = IJGE16_BLOCKSIZE;    
+    cinfo->dest->free_in_buffer = IJGE16_BLOCKSIZE;
   }
   else
   {
     cinfo->dest->next_output_byte = NULL;
-    cinfo->dest->free_in_buffer = 0;    
+    cinfo->dest->free_in_buffer = 0;
     OF_ERREXIT1(cinfo, JERR_OUT_OF_MEMORY, 0xFF);
   }
   return TRUE;
