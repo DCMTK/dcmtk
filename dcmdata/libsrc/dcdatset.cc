@@ -369,7 +369,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                              const E_GrpLenEncoding glenc,
                              const Uint32 maxReadLength)
 {
-  return readUntilTag(inStream, xfer, glenc, maxReadLength, DCM_UndefinedTagKey);
+  return DcmDataset::readUntilTag(inStream, xfer, glenc, maxReadLength, DCM_UndefinedTagKey);
 }
 
 OFCondition DcmDataset::readUntilTag(DcmInputStream &inStream,
@@ -451,7 +451,7 @@ OFCondition DcmDataset::readUntilTag(DcmInputStream &inStream,
         }
         /* pass processing the task to class DcmItem */
         if (errorFlag.good())
-            errorFlag = DcmItem::readUntilTag(inStream, xfer, glenc, maxReadLength, stopParsingAtElement);
+            errorFlag = DcmItem::readUntilTag(inStream, OriginalXfer, glenc, maxReadLength, stopParsingAtElement);
 
     }
 
@@ -648,7 +648,7 @@ OFCondition DcmDataset::loadFile(const OFFilename &fileName,
                                  const E_GrpLenEncoding groupLength,
                                  const Uint32 maxReadLength)
 {
-  return loadFileUntilTag(fileName, readXfer, groupLength, maxReadLength, DCM_UndefinedTagKey);
+  return DcmDataset::loadFileUntilTag(fileName, readXfer, groupLength, maxReadLength, DCM_UndefinedTagKey);
 }
 
 OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,

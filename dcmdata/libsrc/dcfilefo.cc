@@ -694,7 +694,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                                 const E_GrpLenEncoding glenc,
                                 const Uint32 maxReadLength)
 {
-  return readUntilTag(inStream,xfer,glenc,maxReadLength,DCM_UndefinedTagKey);
+  return DcmFileFormat::readUntilTag(inStream,xfer,glenc,maxReadLength,DCM_UndefinedTagKey);
 }
 
 OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
@@ -887,7 +887,7 @@ OFCondition DcmFileFormat::loadFile(const OFFilename &fileName,
                                     const Uint32 maxReadLength,
                                     const E_FileReadMode readMode)
 {
-  return loadFileUntilTag(fileName, readXfer, groupLength, maxReadLength, readMode, DCM_UndefinedTagKey);
+  return DcmFileFormat::loadFileUntilTag(fileName, readXfer, groupLength, maxReadLength, readMode, DCM_UndefinedTagKey);
 }
 
 
