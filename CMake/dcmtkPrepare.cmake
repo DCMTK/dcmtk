@@ -64,7 +64,15 @@ OPTION(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
 OPTION(BUILD_SINGLE_SHARED_LIBRARY "Build a single DCMTK library." OFF)
 MARK_AS_ADVANCED(BUILD_SINGLE_SHARED_LIBRARY)
 SET(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Library postfix for debug builds. Usually left blank.")
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/${DCMTK_CMAKE_INCLUDE}/CMake/")
+# add our CMake modules to the module path, but prefer the ones from CMake.
+LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_ROOT}/Modules" "${CMAKE_CURRENT_SOURCE_DIR}/${DCMTK_CMAKE_INCLUDE}/CMake/")
+# newer CMake versions will warn if a module exists in its and the project's module paths, which is now always
+# the case since above line adds CMake's module path to the project's one. It, therefore, doesn't matter whether
+# we set the policy to OLD or NEW, since in both cases CMake's own module will be preferred. We just set
+# the policy to silence the warning.
+IF(POLICY CMP0017)
+    CMAKE_POLICY(SET CMP0017 NEW)
+ENDIF()
 IF(BUILD_SINGLE_SHARED_LIBRARY)
   # When we are building a single shared lib, we are building shared libs :-)
   SET(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
