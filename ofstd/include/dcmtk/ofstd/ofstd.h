@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -715,8 +715,9 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  is not affected by a locale setting, the radix character is always
      *  assumed to be '.'
      *  This implementation does not set errno if the input cannot be parsed
-     *  and it does not implement special handling for overflow/underflow
-     *  or NaN values.  However, a return code indicates whether or not
+     *  and it does not implement special handling for overflow/underflow.
+     *  It does handle "NaN" and "Inf" (case insensitive; following
+     *  characters are ignore). A return code indicates whether or not
      *  a successful conversion could be performed.
      *  The precision of this implementation is limited to approx. 9
      *  decimal digits.
