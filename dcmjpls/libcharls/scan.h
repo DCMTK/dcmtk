@@ -790,11 +790,11 @@ ProcessLine* JlsCodec<TRAITS,STRATEGY>::CreateProcess(void* pvoidOut)
 template<class TRAITS, class STRATEGY>
 size_t JlsCodec<TRAITS,STRATEGY>::EncodeScan(const void* rawData, BYTE **ptr, size_t *size, size_t offset, bool compare)
 {
-	STRATEGY::_processLine = OFauto_ptr<ProcessLine>(CreateProcess(const_cast<void*>(rawData)));
+	STRATEGY::_processLine.reset(CreateProcess(const_cast<void*>(rawData)));
 
 	if (compare)
 	{
-		STRATEGY::_qdecoder = OFauto_ptr<DecoderStrategy>(new JlsCodec<TRAITS,DecoderStrategy>(traits, Info()));
+		STRATEGY::_qdecoder.reset(new JlsCodec<TRAITS,DecoderStrategy>(traits, Info()));
 		STRATEGY::_qdecoder->Init(ptr, size, offset);
 	}
 
@@ -809,7 +809,7 @@ size_t JlsCodec<TRAITS,STRATEGY>::EncodeScan(const void* rawData, BYTE **ptr, si
 template<class TRAITS, class STRATEGY>
 size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* rawData, const JlsRect& rect, BYTE **ptr, size_t *size, size_t offset, bool bCompare)
 {
-	STRATEGY::_processLine = OFauto_ptr<ProcessLine>(CreateProcess(rawData));
+	STRATEGY::_processLine.reset(CreateProcess(rawData));
 
 	_bCompare = bCompare;
 

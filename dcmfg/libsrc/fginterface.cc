@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -254,7 +254,7 @@ OFCondition FGInterface::readPerFrameFG(DcmItem& dataset)
   Uint32 count = 0;
   while (oneFrameItem != NULL)
   {
-    OFauto_ptr<FunctionalGroups> perFrameGroups(new FunctionalGroups());
+    OFunique_ptr<FunctionalGroups> perFrameGroups(new FunctionalGroups());
     if (!oneFrameItem)
     {
       DCMFG_ERROR("Could not get functional group item for frame #" << count << " (internal error)");

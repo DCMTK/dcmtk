@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -224,13 +224,13 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 
             // This will badly interact with oflog config files :(
             const char *pattern = "%D, Level %p, Module DCMPSTAT%n%m%n";
-            OFauto_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+            OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
             dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(filepath, STD_NAMESPACE ios::app));
             // We can't use OFLog::getLogger() here because that doesn't let us
             // configure the object
             dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getInstance("dcmtk.dcmpstat.logfile");
 
-            logfile->setLayout(layout);
+            logfile->setLayout(OFmove(layout));
             log.addAppender(logfile);
             log.setLogLevel(getLogLevel());
 

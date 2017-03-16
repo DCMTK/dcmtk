@@ -529,7 +529,7 @@ int JLSInputStream::ReadWord()
 
 void JLSInputStream::ReadScan(void* pvout) 
 {
-	OFauto_ptr<DecoderStrategy> qcodec = JlsCodecFactory<DecoderStrategy>().GetCodec(_info, _info.custom);
+	OFunique_ptr<DecoderStrategy> qcodec = JlsCodecFactory<DecoderStrategy>().GetCodec(_info, _info.custom);
 	
 	BYTE **ptr = (BYTE **)&_pdata;
 	size_t *size = &_cbyteLength;
@@ -552,7 +552,7 @@ public:
 	{		
 		JlsParameters info = _info;
 		info.components = _ccompScan;	
-		OFauto_ptr<EncoderStrategy> qcodec =JlsCodecFactory<EncoderStrategy>().GetCodec(info, _info.custom);
+		OFunique_ptr<EncoderStrategy> qcodec =JlsCodecFactory<EncoderStrategy>().GetCodec(info, _info.custom);
 		size_t cbyteWritten = qcodec->EncodeScan((BYTE*)_pvoidRaw, pstream->get_pos(), pstream->get_size(), pstream->get_offset(), pstream->_bCompare);
 		pstream->seek(cbyteWritten);
 	}

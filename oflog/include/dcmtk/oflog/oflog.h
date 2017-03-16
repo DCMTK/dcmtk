@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2016, OFFIS e.V.
+ *  Copyright (C) 2009-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,7 +28,7 @@
 #include "dcmtk/oflog/logger.h"
 #include "dcmtk/oflog/logmacro.h"
 #include "dcmtk/ofstd/oftypes.h"
-#include "dcmtk/ofstd/ofaptr.h"
+#include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/ofconapp.h"
 
 #define OFLOG_TRACE(logger, msg) DCMTK_LOG4CPLUS_TRACE(logger, msg)
@@ -131,7 +131,7 @@ class DCMTK_LOG4CPLUS_EXPORT OFLog
  private:
 
     /// If we loaded a config file in configureFromCommandLine(), this is it
-    static OFauto_ptr<dcmtk::log4cplus::helpers::Properties> configProperties_;
+    static OFunique_ptr<dcmtk::log4cplus::helpers::Properties> configProperties_;
 };
 
 #endif

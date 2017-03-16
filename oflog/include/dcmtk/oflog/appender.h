@@ -30,7 +30,7 @@
 #pragma once
 #endif
 
-#include "dcmtk/ofstd/ofaptr.h"
+#include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/oflog/layout.h"
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/tstring.h"
@@ -153,7 +153,7 @@ namespace log4cplus {
         /**
          * Set the {@link ErrorHandler} for this Appender.
          */
-        virtual void setErrorHandler(OFauto_ptr<ErrorHandler> eh);
+        virtual void setErrorHandler(OFunique_ptr<ErrorHandler> eh);
 
         /**
          * Return the currently set {@link ErrorHandler} for this
@@ -166,7 +166,7 @@ namespace log4cplus {
          * their own (fixed) layouts or do not use one. For example, the
          * SocketAppender ignores the layout set here.
          */
-        virtual void setLayout(OFauto_ptr<Layout> layout);
+        virtual void setLayout(OFunique_ptr<Layout> layout);
 
         /**
          * Returns the layout of this appender. The value may be NULL.
@@ -224,7 +224,7 @@ namespace log4cplus {
       // Data
         /** The layout variable does not need to be set if the appender
          *  implementation has its own layout. */
-        OFauto_ptr<Layout> layout;
+        OFunique_ptr<Layout> layout;
 
         /** Appenders are named. */
         log4cplus::tstring name;
@@ -237,10 +237,10 @@ namespace log4cplus {
         log4cplus::spi::FilterPtr filter;
 
         /** It is assumed and enforced that errorHandler is never null. */
-        OFauto_ptr<ErrorHandler> errorHandler;
+        OFunique_ptr<ErrorHandler> errorHandler;
 
         //! Optional system wide synchronization lock.
-        OFauto_ptr<helpers::LockFile> lockFile;
+        OFunique_ptr<helpers::LockFile> lockFile;
 
         //! Use lock file for inter-process synchronization of access
         //! to log file.

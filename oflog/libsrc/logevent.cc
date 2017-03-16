@@ -201,11 +201,10 @@ InternalLoggingEvent::getType() const
 
 
 
-OFauto_ptr<InternalLoggingEvent>
+OFrvalue<OFunique_ptr<InternalLoggingEvent> >
 InternalLoggingEvent::clone() const
 {
-    OFauto_ptr<InternalLoggingEvent> tmp(new InternalLoggingEvent(*this));
-    return tmp;
+    return OFrvalue<OFunique_ptr<InternalLoggingEvent> >(new InternalLoggingEvent(*this));
 }
 
 

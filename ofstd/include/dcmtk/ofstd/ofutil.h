@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2014-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -170,6 +170,13 @@ struct OFrvalue : OFrvalue_base<T>::type
     inline OFrvalue(const T& t) : OFrvalue_base<T>::type( *OFreinterpret_cast( const OFrvalue*,  &t ) ) {}
     // copy-construct from an rvalue reference
     inline OFrvalue(const OFrvalue& rv) : OFrvalue_base<T>::type( rv ) {}
+    // poor man's in-place construction
+    template<typename X>
+    inline explicit OFrvalue( X x ) : OFrvalue_base<T>::type( x ) {}
+    template<typename X0,typename X1>
+    inline explicit OFrvalue( X0 x0, X1 x1 ) : OFrvalue_base<T>::type( x0, x1 ) {}
+    template<typename X0,typename X1,typename X2>
+    inline explicit OFrvalue( X0 x0, X1 x1, X2 x2 ) : OFrvalue_base<T>::type( x0, x1, x2 ) {}
 #endif // NOT DOXYGEN
 };
 

@@ -31,7 +31,7 @@
 #endif
 
 #include <memory>
-#include "dcmtk/ofstd/ofaptr.h"
+#include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/oflog/loglevel.h"
 #include "dcmtk/oflog/ndc.h"
 #include "dcmtk/oflog/mdc.h"
@@ -104,7 +104,7 @@ namespace log4cplus {
            /** Returns a copy of this object.  Derived classes
              *  should override this method.
              */
-            virtual OFauto_ptr<InternalLoggingEvent> clone() const;
+            virtual OFrvalue<OFunique_ptr<InternalLoggingEvent> > clone() const;
 
 
 

@@ -8,7 +8,7 @@
 #define INCLUDE_NEW
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dcmtk/ofstd/ofaptr.h"
+#include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "procline.h"
 #include "decodstr.h"
@@ -20,9 +20,9 @@ class EncoderStrategy
 
 public:
   explicit EncoderStrategy(const JlsParameters& info) :
-     _qdecoder(0),
+     _qdecoder(OFnullptr),
      _info(info),
-     _processLine(0),
+     _processLine(OFnullptr),
      valcurrent(0),
      bitpos(0),
      _isFFWritten(false),
@@ -148,11 +148,11 @@ protected:
   }
 
 
-  OFauto_ptr<DecoderStrategy> _qdecoder; 
+  OFunique_ptr<DecoderStrategy> _qdecoder; 
 
 protected:
   JlsParameters _info;
-  OFauto_ptr<ProcessLine> _processLine;
+  OFunique_ptr<ProcessLine> _processLine;
 private:
   static BYTE *re_alloc(BYTE *old_ptr, size_t *old_size)
   {

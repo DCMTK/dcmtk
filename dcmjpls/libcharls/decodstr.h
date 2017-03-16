@@ -19,7 +19,7 @@ class DecoderStrategy
 public:
 	DecoderStrategy(const JlsParameters& info) :
 		  _info(info),
-		  _processLine(0),
+		  _processLine(OFnullptr),
 		  _readCache(0),
 		  _validBits(0),
 		  _position(0),
@@ -274,7 +274,7 @@ public:
 
 protected:
 	JlsParameters _info;
-	OFauto_ptr<ProcessLine> _processLine;
+	OFunique_ptr<ProcessLine> _processLine;
 
 private:
 	BYTE current_value() const

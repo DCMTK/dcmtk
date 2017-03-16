@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2016, OFFIS e.V.
+ *  Copyright (C) 2009-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,7 +33,7 @@
 #include "dcmtk/oflog/helpers/strhelp.h"
 #include "dcmtk/oflog/internal/internal.h"
 
-OFauto_ptr<dcmtk::log4cplus::helpers::Properties> OFLog::configProperties_;
+OFunique_ptr<dcmtk::log4cplus::helpers::Properties> OFLog::configProperties_;
 
 OFLogger::OFLogger(const dcmtk::log4cplus::Logger &base)
     : dcmtk::log4cplus::Logger(base)
@@ -59,11 +59,11 @@ static void OFLog_init()
 
     // we default to a really simple pattern: loglevel_prefix: message\n
     const char *pattern = "%P: %m%n";
-    OFauto_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+    OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
     dcmtk::log4cplus::SharedAppenderPtr console(new dcmtk::log4cplus::ConsoleAppender(OFTrue /* logToStdErr */, OFTrue /* immediateFlush */));
     dcmtk::log4cplus::Logger rootLogger = dcmtk::log4cplus::Logger::getRoot();
 
-    console->setLayout(layout);
+    console->setLayout(OFmove(layout));
     rootLogger.addAppender(console);
     rootLogger.setLogLevel(dcmtk::log4cplus::INFO_LOG_LEVEL);
 }

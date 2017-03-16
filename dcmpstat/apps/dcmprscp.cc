@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2014, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -246,11 +246,11 @@ int main(int argc, char *argv[])
       OFString logfilename = logfileprefix;
       logfilename += ".log";
 
-      OFauto_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+      OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
       dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename));
       dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getRoot();
 
-      logfile->setLayout(layout);
+      logfile->setLayout(OFmove(layout));
       log.removeAllAppenders();
       log.addAppender(logfile);
     }

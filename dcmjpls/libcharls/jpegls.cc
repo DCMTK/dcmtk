@@ -79,7 +79,7 @@ OFVector<signed char> rgquant16Ll = CreateQLutLossless(16);
 
 
 template<class STRATEGY>
-OFauto_ptr<STRATEGY> JlsCodecFactory<STRATEGY>::GetCodec(const JlsParameters& info, const JlsCustomParameters& presets)
+OFrvalue<OFunique_ptr<STRATEGY> > JlsCodecFactory<STRATEGY>::GetCodec(const JlsParameters& info, const JlsCustomParameters& presets)
 {
 	STRATEGY* pstrategy = NULL;
 	if (presets.RESET != 0 && presets.RESET != BASIC_RESET)
@@ -98,7 +98,7 @@ OFauto_ptr<STRATEGY> JlsCodecFactory<STRATEGY>::GetCodec(const JlsParameters& in
 	{
 		pstrategy->SetPresets(presets);
 	}
-	return OFauto_ptr<STRATEGY>(pstrategy);
+	return OFrvalue<OFunique_ptr<STRATEGY> >(pstrategy);
 }
 
 

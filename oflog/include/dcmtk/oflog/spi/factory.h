@@ -85,7 +85,7 @@ namespace log4cplus {
         class DCMTK_LOG4CPLUS_EXPORT LayoutFactory : public BaseFactory {
         public:
             typedef Layout ProductType;
-            typedef OFauto_ptr<Layout> ProductPtr;
+            typedef OFrvalue<OFunique_ptr<Layout> > ProductPtr;
 
             LayoutFactory();
             virtual ~LayoutFactory() = 0;
@@ -93,7 +93,7 @@ namespace log4cplus {
             /**
              * Create a "Layout" object.
              */
-            virtual OFauto_ptr<Layout> createObject(const log4cplus::helpers::Properties& props) = 0;
+            virtual ProductPtr createObject(const log4cplus::helpers::Properties& props) = 0;
         };
 
 
@@ -160,7 +160,7 @@ namespace log4cplus {
              * Used to enter an object into the registry.  (The registry now
              *  owns <code>object</code>.)
              */
-            bool put(OFauto_ptr<T> object) {
+            bool put(OFunique_ptr<T> object) {
                  bool putValResult = putVal(object->getTypeName(), object.get());
                  object.release();
                  return putValResult; 
@@ -247,7 +247,7 @@ namespace log4cplus {
 
         #define DCMTK_LOG4CPLUS_REG_PRODUCT(reg, productprefix, productname, productns, productfact) \
         reg.put (																               \
-            OFauto_ptr<productfact> (                                                       \
+            OFrvalue<OFunique_ptr<productfact> > (                                                       \
                     new log4cplus::spi::FactoryTempl<productns productname, productfact> (     \
                     DCMTK_LOG4CPLUS_TEXT(productprefix)                                              \
                     DCMTK_LOG4CPLUS_TEXT(#productname))))
@@ -265,7 +265,7 @@ namespace log4cplus {
             log4cplus::spi::FilterFactory)
 
         #define DCMTK_LOG4CPLUS_REG_LOCALE(reg, name, factory)            \
-            reg.put (OFauto_ptr<log4cplus::spi::LocaleFactory> ( \
+            reg.put (OFrvalue<OFunique_ptr<log4cplus::spi::LocaleFactory> > ( \
                     new factory (name)))
     } // namespace spi
 }
