@@ -7,11 +7,14 @@ apndimpl.o: apndimpl.cc ../include/dcmtk/oflog/appender.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -24,9 +27,6 @@ apndimpl.o: apndimpl.cc ../include/dcmtk/oflog/appender.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -40,11 +40,14 @@ appender.o: appender.cc ../include/dcmtk/oflog/appender.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -61,9 +64,6 @@ appender.o: appender.cc ../include/dcmtk/oflog/appender.h \
  ../include/dcmtk/oflog/helpers/strhelp.h \
  ../include/dcmtk/oflog/helpers/property.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/factory.h ../include/dcmtk/oflog/spi/objreg.h \
  ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/ndc.h \
@@ -82,18 +82,18 @@ asyncap.o: asyncap.cc ../include/dcmtk/oflog/config.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/asyncap.h ../include/dcmtk/oflog/helpers/queue.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -130,7 +130,7 @@ clfsap.o: clfsap.cc ../include/dcmtk/oflog/config.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/clfsap.h ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/oflog/layout.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/spi/filter.h \
@@ -154,8 +154,11 @@ clogger.o: clogger.cc ../include/dcmtk/oflog/logger.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/spi/apndatch.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/streams.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/spi/filter.h \
@@ -163,9 +166,6 @@ clogger.o: clogger.cc ../include/dcmtk/oflog/logger.h \
  ../include/dcmtk/oflog/spi/logfact.h ../include/dcmtk/oflog/clogger.h \
  ../include/dcmtk/oflog/hierarchy.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/spi/logimpl.h \
@@ -183,11 +183,14 @@ config.o: config.cc ../include/dcmtk/oflog/configrt.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -199,9 +202,6 @@ config.o: config.cc ../include/dcmtk/oflog/configrt.h \
  ../include/dcmtk/oflog/spi/logfact.h \
  ../include/dcmtk/oflog/helpers/property.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/hierlock.h ../include/dcmtk/oflog/hierarchy.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
@@ -232,7 +232,10 @@ consap.o: consap.cc ../include/dcmtk/oflog/layout.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/consap.h ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/spi/filter.h \
@@ -241,9 +244,6 @@ consap.o: consap.cc ../include/dcmtk/oflog/layout.h \
  ../include/dcmtk/oflog/helpers/strhelp.h \
  ../include/dcmtk/oflog/helpers/property.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -276,11 +276,14 @@ factory.o: factory.cc ../include/dcmtk/oflog/spi/factory.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -290,9 +293,6 @@ factory.o: factory.cc ../include/dcmtk/oflog/spi/factory.h \
  ../include/dcmtk/oflog/helpers/lockfile.h \
  ../include/dcmtk/oflog/spi/objreg.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logfact.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
@@ -320,11 +320,14 @@ fileap.o: fileap.cc ../include/dcmtk/oflog/fileap.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -338,9 +341,6 @@ fileap.o: fileap.cc ../include/dcmtk/oflog/fileap.h \
  ../include/dcmtk/oflog/helpers/strhelp.h \
  ../include/dcmtk/oflog/helpers/property.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/fileinfo.h \
  ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/ndc.h \
@@ -392,7 +392,7 @@ filter.o: filter.cc ../include/dcmtk/oflog/spi/filter.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/ndc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
  ../include/dcmtk/oflog/thread/syncpub.h
@@ -413,17 +413,17 @@ globinit.o: globinit.cc ../include/dcmtk/oflog/config.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/spi/apndatch.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/streams.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/spi/filter.h \
  ../include/dcmtk/oflog/helpers/lockfile.h \
  ../include/dcmtk/oflog/spi/logfact.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/internal/internal.h \
@@ -454,17 +454,17 @@ hierarchy.o: hierarchy.cc ../include/dcmtk/oflog/hierarchy.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/spi/apndatch.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/streams.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/spi/filter.h \
  ../include/dcmtk/oflog/helpers/lockfile.h \
  ../include/dcmtk/oflog/spi/logfact.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/spi/logimpl.h \
@@ -485,8 +485,11 @@ hierlock.o: hierlock.cc ../include/dcmtk/oflog/hierlock.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
@@ -496,9 +499,6 @@ hierlock.o: hierlock.cc ../include/dcmtk/oflog/hierlock.h \
  ../include/dcmtk/oflog/logger.h ../include/dcmtk/oflog/spi/apndatch.h \
  ../include/dcmtk/oflog/spi/logfact.h ../include/dcmtk/oflog/hierarchy.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/spi/logimpl.h \
@@ -523,11 +523,12 @@ layout.o: layout.cc ../include/dcmtk/oflog/layout.h \
  ../include/dcmtk/oflog/helpers/strhelp.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/ndc.h \
- ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/ndc.h ../include/dcmtk/oflog/mdc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/thread/threads.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
@@ -579,11 +580,14 @@ log4judp.o: log4judp.cc ../include/dcmtk/oflog/log4judp.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -601,9 +605,6 @@ log4judp.o: log4judp.cc ../include/dcmtk/oflog/log4judp.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/helpers/property.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -620,18 +621,18 @@ logevent.o: logevent.cc ../include/dcmtk/oflog/spi/logevent.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -658,17 +659,17 @@ logger.o: logger.cc ../include/dcmtk/oflog/logger.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/spi/apndatch.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/streams.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/spi/filter.h \
  ../include/dcmtk/oflog/helpers/lockfile.h \
  ../include/dcmtk/oflog/spi/logfact.h ../include/dcmtk/oflog/hierarchy.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/spi/logimpl.h \
@@ -695,7 +696,7 @@ logimpl.o: logimpl.cc ../include/dcmtk/oflog/internal/internal.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -737,7 +738,7 @@ loglevel.o: loglevel.cc ../include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
@@ -762,8 +763,11 @@ loglog.o: loglog.cc ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/internal/env.h ../include/dcmtk/oflog/consap.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/spi/filter.h \
  ../include/dcmtk/oflog/helpers/lockfile.h
@@ -789,7 +793,7 @@ logmacro.o: logmacro.cc ../include/dcmtk/oflog/internal/internal.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -824,7 +828,7 @@ mdc.o: mdc.cc ../include/dcmtk/oflog/mdc.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -855,7 +859,7 @@ ndc.o: ndc.cc ../include/dcmtk/oflog/ndc.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -881,11 +885,14 @@ nullap.o: nullap.cc ../include/dcmtk/oflog/nullap.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -940,8 +947,10 @@ oflog.o: oflog.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h ../include/dcmtk/oflog/tchar.h \
  ../include/dcmtk/oflog/spi/apndatch.h ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/streams.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/spi/filter.h \
@@ -956,10 +965,8 @@ oflog.o: oflog.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../include/dcmtk/oflog/configrt.h \
  ../include/dcmtk/oflog/helpers/property.h \
- ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../include/dcmtk/oflog/consap.h ../include/dcmtk/oflog/helpers/loglog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h ../include/dcmtk/oflog/consap.h \
+ ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/helpers/socket.h \
  ../include/dcmtk/oflog/helpers/sockbuff.h \
  ../include/dcmtk/oflog/helpers/strhelp.h \
@@ -986,7 +993,10 @@ patlay.o: patlay.cc ../include/dcmtk/oflog/layout.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
  ../include/dcmtk/oflog/logmacro.h ../include/dcmtk/oflog/logger.h \
  ../include/dcmtk/oflog/spi/apndatch.h ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/spi/filter.h \
@@ -1001,9 +1011,6 @@ patlay.o: patlay.cc ../include/dcmtk/oflog/layout.h \
  ../include/dcmtk/oflog/helpers/sockbuff.h \
  ../include/dcmtk/oflog/helpers/property.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../include/dcmtk/oflog/thread/threads.h \
@@ -1053,7 +1060,7 @@ property.o: property.cc ../include/dcmtk/oflog/config.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/internal/internal.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -1073,18 +1080,18 @@ queue.o: queue.cc ../include/dcmtk/oflog/config.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/helpers/queue.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -1109,8 +1116,11 @@ rootlog.o: rootlog.cc ../include/dcmtk/oflog/spi/rootlog.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/spi/apndatch.h ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/spi/filter.h \
  ../include/dcmtk/oflog/helpers/lockfile.h \
@@ -1155,7 +1165,7 @@ snprintf.o: snprintf.cc ../include/dcmtk/oflog/helpers/snprintf.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -1205,11 +1215,14 @@ socketap.o: socketap.cc ../include/dcmtk/oflog/socketap.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -1222,9 +1235,6 @@ socketap.o: socketap.cc ../include/dcmtk/oflog/socketap.h \
  ../include/dcmtk/oflog/thread/threads.h \
  ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
@@ -1290,7 +1300,7 @@ strhelp.o: strhelp.cc ../include/dcmtk/oflog/helpers/strhelp.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
@@ -1343,11 +1353,14 @@ syslogap.o: syslogap.cc ../include/dcmtk/oflog/syslogap.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
  ../include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h ../include/dcmtk/oflog/layout.h \
- ../include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/layout.h ../include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/oflog/tchar.h ../include/dcmtk/oflog/streams.h \
@@ -1365,9 +1378,6 @@ syslogap.o: syslogap.cc ../include/dcmtk/oflog/syslogap.h \
  ../include/dcmtk/oflog/helpers/loglog.h \
  ../include/dcmtk/oflog/helpers/property.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/strhelp.h \
  ../include/dcmtk/oflog/spi/logevent.h ../include/dcmtk/oflog/ndc.h \
@@ -1408,7 +1418,7 @@ threads.o: threads.cc ../include/dcmtk/oflog/config.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/helpers/snprintf.h
 timehelp.o: timehelp.cc ../include/dcmtk/oflog/helpers/timehelp.h \
@@ -1436,7 +1446,7 @@ timehelp.o: timehelp.cc ../include/dcmtk/oflog/helpers/timehelp.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/oflog/loglevel.h \
  ../include/dcmtk/oflog/thread/threads.h \
  ../include/dcmtk/oflog/helpers/pointer.h \
@@ -1470,12 +1480,12 @@ unixsock.o: unixsock.cc ../include/dcmtk/oflog/config.h \
  ../include/dcmtk/oflog/thread/syncprim.h \
  ../include/dcmtk/oflog/thread/syncpub.h \
  ../include/dcmtk/oflog/spi/logevent.h \
- ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
- ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
- ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/oflog/loglevel.h ../include/dcmtk/oflog/ndc.h \
+ ../include/dcmtk/oflog/mdc.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/helpers/timehelp.h \
  ../include/dcmtk/oflog/thread/threads.h \
