@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,6 +21,13 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#ifdef HAVE_WINDOWS_H
+// this must be undefined for some Winsock functions to be available
+#undef WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"
 #include "dcmtk/dcmpstat/dvpspr.h"

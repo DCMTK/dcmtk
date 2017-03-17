@@ -7,6 +7,7 @@
 #define CHARLS_HEADER
 
 #include "dcmtk/ofstd/ofmem.h"
+#undef NEAR
 #include "streams.h"
 
 #define JPEG_SOI  0xD8

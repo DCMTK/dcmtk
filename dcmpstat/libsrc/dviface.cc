@@ -21,6 +21,13 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#ifdef HAVE_WINDOWS_H
+// this must be undefined for some Winsock functions to be available
+#undef WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include "dcmtk/dcmpstat/dviface.h"
 
 #include "dcmtk/dcmpstat/dvpsdef.h"   /* for constants */

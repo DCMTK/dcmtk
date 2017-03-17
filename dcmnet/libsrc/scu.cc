@@ -21,6 +21,12 @@
 
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_WINDOWS_H
+// dcmnet needs some features that are not available if this was defined
+#undef WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDName() */
