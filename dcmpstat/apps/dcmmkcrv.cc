@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
         OFLOG_WARN(dcmmkcrvLogger, "too many curve points, can only handle " << MAX_POINTS << ".");
         done = OFTrue;
       } else {
-      	if (curvefile.good()) array[idx++] = d;
+        if (curvefile.good()) array[idx++] = d;
       }
     }
 
@@ -325,31 +325,31 @@ int main(int argc, char *argv[])
             OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=US");
             element = new DcmUnsignedShort(DcmTag(DCM_RETIRED_CurveData, EVR_US));
             if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
-            element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
+            element->putUint16Array(OFstatic_cast(Uint16 *,rawData), OFstatic_cast(Uint32, byteLength/sizeof(Uint16)));
             break;
           case 1: // SS
             OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=SS");
             element = new DcmSignedShort(DcmTag(DCM_RETIRED_CurveData, EVR_SS));
             if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
-            element->putSint16Array(OFstatic_cast(Sint16 *,rawData), byteLength/sizeof(Sint16));
+            element->putSint16Array(OFstatic_cast(Sint16 *,rawData), OFstatic_cast(Uint32, byteLength/sizeof(Sint16)));
             break;
           case 2: // FL
             OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=FL");
             element = new DcmFloatingPointSingle(DcmTag(DCM_RETIRED_CurveData, EVR_FL));
             if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
-            element->putFloat32Array(OFstatic_cast(Float32 *,rawData), byteLength/sizeof(Float32));
+            element->putFloat32Array(OFstatic_cast(Float32 *,rawData), OFstatic_cast(Uint32, byteLength/sizeof(Float32)));
             break;
           case 3: // FD
             OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=FD");
             element = new DcmFloatingPointDouble(DcmTag(DCM_RETIRED_CurveData, EVR_FD));
             if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
-            element->putFloat64Array(OFstatic_cast(Float64 *,rawData), byteLength/sizeof(Float64));
+            element->putFloat64Array(OFstatic_cast(Float64 *,rawData), OFstatic_cast(Uint32, byteLength/sizeof(Float64)));
             break;
           case 4: // SL
             OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=SL");
             element = new DcmSignedLong(DcmTag(DCM_RETIRED_CurveData, EVR_SL));
             if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
-            element->putSint32Array(OFstatic_cast(Sint32 *,rawData), byteLength/sizeof(Sint32));
+            element->putSint32Array(OFstatic_cast(Sint32 *,rawData), OFstatic_cast(Uint32, byteLength/sizeof(Sint32)));
             break;
           default:
             OFLOG_FATAL(dcmmkcrvLogger, "unknown data VR, bailing out");
@@ -361,12 +361,12 @@ int main(int argc, char *argv[])
       case 1: // OB
         // create little endian byte order
         OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=OB");
-        swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
+        swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, OFstatic_cast(Uint32, byteLength), align);
         element = new DcmOtherByteOtherWord(DCM_RETIRED_CurveData);
         if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OB);
-        element->putUint8Array(OFstatic_cast(Uint8 *,rawData), byteLength);
+        element->putUint8Array(OFstatic_cast(Uint8 *,rawData), OFstatic_cast(Uint32, byteLength));
         dataset->insert(element, OFTrue);
         break;
       case 2: // OW
@@ -374,14 +374,14 @@ int main(int argc, char *argv[])
         OFLOG_INFO(dcmmkcrvLogger, "encoding curve data element as VR=OW");
         if (align != sizeof(Uint16))
         {
-          swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
-          swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawData, byteLength, sizeof(Uint16));
+          swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, OFstatic_cast(Uint32, byteLength), align);
+          swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawData, OFstatic_cast(Uint32, byteLength), sizeof(Uint16));
         }
         element = new DcmOtherByteOtherWord(DCM_RETIRED_CurveData);
         if (element==NULL) { OFLOG_FATAL(dcmmkcrvLogger, "out of memory"); return 1; }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OW);
-        element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
+        element->putUint16Array(OFstatic_cast(Uint16 *,rawData), OFstatic_cast(Uint32, byteLength/sizeof(Uint16)));
         dataset->insert(element, OFTrue);
         break;
       default:
