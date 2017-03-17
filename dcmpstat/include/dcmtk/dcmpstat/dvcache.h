@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -167,7 +167,7 @@ class DCMTK_DCMPSTAT_EXPORT DVInstanceCache
      */
     inline Uint32 getCount() const
     {
-        return List.size();
+        return OFstatic_cast(Uint32, List.size());
     }
 
     /** sets internal cursor to specified position in cache list
@@ -318,7 +318,7 @@ class DCMTK_DCMPSTAT_EXPORT DVInstanceCache
      */
     inline ItemStruct *getItem() const
     {
-		OFListConstIterator(ItemStruct *) it = Iterator;
+        OFListConstIterator(ItemStruct *) it = Iterator;
         return (it != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
@@ -482,7 +482,7 @@ class DCMTK_DCMPSTAT_EXPORT DVSeriesCache
      */
     inline Uint32 getCount() const
     {
-        return List.size();
+        return OFstatic_cast(Uint32, List.size());
     }
 
     /** sets internal cursor to specified position in cache list
@@ -603,7 +603,7 @@ class DCMTK_DCMPSTAT_EXPORT DVSeriesCache
      */
     inline ItemStruct *getItem() const
     {
-		OFListConstIterator(ItemStruct *) it = Iterator;
+        OFListConstIterator(ItemStruct *) it = Iterator;
         return (it != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
@@ -756,7 +756,7 @@ class DCMTK_DCMPSTAT_EXPORT DVStudyCache
      */
     inline Uint32 getCount() const
     {
-        return List.size();
+        return OFstatic_cast(Uint32, List.size());
     }
 
     /** sets internal cursor to specified position in cache list
@@ -849,7 +849,7 @@ class DCMTK_DCMPSTAT_EXPORT DVStudyCache
      */
     inline ItemStruct *getItem() const
     {
-		OFListConstIterator(ItemStruct *) it = Iterator;
+        OFListConstIterator(ItemStruct *) it = Iterator;
         return (it != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1232,14 +1232,14 @@ OFCondition DVPSStoredPrint::deleteSpooledImages()
 {
   OFCondition result = EC_IllegalCall;
   char *c = NULL;
-  unsigned long deleteImageBoxes=0;
+  size_t deleteImageBoxes=0;
 
   updateCache();
   if (currentValuesValid)
   {
         deleteImageBoxes = currentNumCols * currentNumRows;
     if (deleteImageBoxes > imageBoxContentList.size()) deleteImageBoxes = imageBoxContentList.size();
-    result = imageBoxContentList.deleteMultipleImages((size_t)deleteImageBoxes);
+    result = imageBoxContentList.deleteMultipleImages(deleteImageBoxes);
   }
   if (EC_Normal != configurationInformation.getString(c)) c = NULL;
   presentationLUTList.cleanup(c, imageBoxContentList);
@@ -1528,7 +1528,7 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
         if (numItems > imageBoxContentList.size()) numItems = imageBoxContentList.size();
         for (i=0; i<numItems; i++)
         {
-           item = seq->getItem(i);
+           item = seq->getItem(OFstatic_cast(Uint32, i));
            stack.clear();
            READ_FROM_DATASET2(DcmUniqueIdentifier, refsopclassuid)
            READ_FROM_DATASET2(DcmUniqueIdentifier, refsopinstanceuid)
@@ -1551,7 +1551,7 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
         if (numItems > annotationContentList.size()) numItems = annotationContentList.size();
         for (i=0; i<numItems; i++)
         {
-           item = seq->getItem(i);
+           item = seq->getItem(OFstatic_cast(Uint32, i));
            stack.clear();
            READ_FROM_DATASET2(DcmUniqueIdentifier, refsopclassuid)
            READ_FROM_DATASET2(DcmUniqueIdentifier, refsopinstanceuid)

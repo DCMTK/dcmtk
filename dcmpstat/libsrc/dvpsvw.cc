@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2013, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,13 +60,13 @@ OFCondition DVPSVOIWindow::read(size_t idx, DcmDecimalString &wcenter, DcmDecima
   if (wcenter.getVM() <= idx) return EC_IllegalCall;
   if (wwidth.getVM() <= idx) return EC_IllegalCall;
   Float64 wc=0.0, ww=0.0;
-  OFCondition result = wcenter.getFloat64(wc, idx);
-  if (EC_Normal==result) result= wwidth.getFloat64(ww, idx);
+  OFCondition result = wcenter.getFloat64(wc, OFstatic_cast(Uint32, idx));
+  if (EC_Normal==result) result= wwidth.getFloat64(ww, OFstatic_cast(Uint32, idx));
   if (EC_Normal==result)
   {
     windowCenter = wc;
     windowWidth = ww;
-    if (expl && (expl->getVM() > idx)) expl->getOFString(windowCenterWidthExplanation, idx);
+    if (expl && (expl->getVM() > idx)) expl->getOFString(windowCenterWidthExplanation, OFstatic_cast(Uint32, idx));
     else
     {
       // create default description for VOI Window

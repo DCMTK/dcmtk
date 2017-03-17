@@ -1263,7 +1263,7 @@ Uint16 DVPresentationState::getOverlayInImageGroup(size_t idx)
   Uint16 group;
   do
   {
-    group = (Uint16) (currentImage->getOverlayGroupNumber(currentIndex++));
+    group = (Uint16) (currentImage->getOverlayGroupNumber(OFstatic_cast(Uint32, currentIndex++)));
     if (!overlayList.haveOverlayGroup(group))
     {
       // group is not shadowed by the presentation state

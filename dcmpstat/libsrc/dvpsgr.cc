@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,7 +53,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
   DcmStack stack;
-  DcmUnsignedShort graphicDimensions(DCM_GraphicDimensions); // VR=US, VM=1, Type 1 
+  DcmUnsignedShort graphicDimensions(DCM_GraphicDimensions); // VR=US, VM=1, Type 1
 
   READ_FROM_DATASET(DcmCodeString, graphicAnnotationUnits)
   READ_FROM_DATASET(DcmUnsignedShort, graphicDimensions)
@@ -61,9 +61,9 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
   READ_FROM_DATASET(DcmFloatingPointSingle, graphicData)
   READ_FROM_DATASET(DcmCodeString, graphicType)
   READ_FROM_DATASET(DcmCodeString, graphicFilled)
-  
+
   /* Now perform basic sanity checks */
-  
+
   if (graphicAnnotationUnits.getLength() == 0)
   {
     result=EC_IllegalCall;
@@ -87,7 +87,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
       DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicDimensions != 2");
     }
   }
-  
+
   if (numberOfGraphicPoints.getLength() == 0)
   {
     result=EC_IllegalCall;
@@ -98,7 +98,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     DCMPSTAT_WARN("presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1");
   }
-  
+
   if (graphicData.getLength() == 0)
   {
     result=EC_IllegalCall;
@@ -109,7 +109,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicData VM < 2");
   }
-  
+
   if (graphicType.getLength() == 0)
   {
     result=EC_IllegalCall;
@@ -120,13 +120,13 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicType VM != 1");
   }
-  
+
   if ((graphicFilled.getLength() > 0)&&(graphicFilled.getVM() != 1))
   {
     result=EC_IllegalCall;
     DCMPSTAT_WARN("presentation state contains a graphic object SQ item with graphicFilled present but VM != 1");
   }
-  
+
   return result;
 }
 
@@ -134,16 +134,16 @@ OFCondition DVPSGraphicObject::write(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
-  DcmUnsignedShort graphicDimensions(DCM_GraphicDimensions); // VR=US, VM=1, Type 1 
+  DcmUnsignedShort graphicDimensions(DCM_GraphicDimensions); // VR=US, VM=1, Type 1
   Uint16 dimensions=2;
   graphicDimensions.putUint16(dimensions,0);
-  
+
   ADD_TO_DATASET(DcmCodeString, graphicAnnotationUnits)
   ADD_TO_DATASET(DcmUnsignedShort, graphicDimensions)
   ADD_TO_DATASET(DcmUnsignedShort, numberOfGraphicPoints)
   ADD_TO_DATASET(DcmFloatingPointSingle, graphicData)
   ADD_TO_DATASET(DcmCodeString, graphicType)
-  
+
   // strictly speaking we are not allowed to include graphicFilled
   // when the graphicType is "POLYLINE" or "INTERPOLATED" and the
   // first point of graphicData is not equal the last point.
@@ -180,8 +180,8 @@ OFCondition DVPSGraphicObject::getPoint(size_t idx, Float32& x, Float32& y)
   OFCondition result = EC_IllegalCall;
   if ((idx*2+1)<graphicData.getVM())
   {
-    result = graphicData.getFloat32(x, 2*idx);
-    if (result==EC_Normal) result = graphicData.getFloat32(y, 2*idx+1);
+    result = graphicData.getFloat32(x, OFstatic_cast(Uint32, 2*idx));
+    if (result==EC_Normal) result = graphicData.getFloat32(y, OFstatic_cast(Uint32, 2*idx+1));
   }
   return result;
 }
@@ -205,8 +205,8 @@ OFBool DVPSGraphicObject::isFilled()
   OFString aString;
   graphicFilled.getOFString(aString,0);
   if (aString == "Y") return OFTrue; else return OFFalse;
-} 
-  
+}
+
 
 OFCondition DVPSGraphicObject::setData(size_t number, const Float32 *data, DVPSannotationUnit unit)
 {
@@ -215,13 +215,13 @@ OFCondition DVPSGraphicObject::setData(size_t number, const Float32 *data, DVPSa
   numberOfGraphicPoints.clear();
   graphicData.clear();
   graphicAnnotationUnits.clear();
-  
-  OFCondition result = graphicData.putFloat32Array(data, 2*number);
+
+  OFCondition result = graphicData.putFloat32Array(data, OFstatic_cast(Uint32, 2*number));
   if (EC_Normal==result) result = numberOfGraphicPoints.putUint16(npoints,0);
   if (EC_Normal==result)
   {
-    if (unit==DVPSA_display) result=graphicAnnotationUnits.putString("DISPLAY"); 
-    else result=graphicAnnotationUnits.putString("PIXEL");     
+    if (unit==DVPSA_display) result=graphicAnnotationUnits.putString("DISPLAY");
+    else result=graphicAnnotationUnits.putString("PIXEL");
   }
   return result;
 }
@@ -232,20 +232,20 @@ OFCondition DVPSGraphicObject::setGraphicType(DVPSGraphicType gtype)
   switch (gtype)
   {
     case DVPST_interpolated:
-      cname = "INTERPOLATED"; 
-      break;    
+      cname = "INTERPOLATED";
+      break;
     case DVPST_circle:
-      cname = "CIRCLE"; 
-      break;    
+      cname = "CIRCLE";
+      break;
     case DVPST_ellipse:
-      cname = "ELLIPSE"; 
-      break;    
+      cname = "ELLIPSE";
+      break;
     case DVPST_polyline:
-      cname = "POLYLINE"; 
-      break;    
+      cname = "POLYLINE";
+      break;
     case DVPST_point:
-      cname = "POINT"; 
-      break;    
+      cname = "POINT";
+      break;
   }
   return graphicType.putString(cname);
 }
@@ -253,7 +253,7 @@ OFCondition DVPSGraphicObject::setGraphicType(DVPSGraphicType gtype)
 OFCondition DVPSGraphicObject::setFilled(OFBool filled)
 {
   OFCondition result = EC_Normal;
-  if (filled) result=graphicFilled.putString("Y"); 
+  if (filled) result=graphicFilled.putString("Y");
   else result=graphicFilled.putString("N");
   return result;
 }

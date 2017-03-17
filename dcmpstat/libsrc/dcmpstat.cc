@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2013, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1576,8 +1576,8 @@ OFCondition DcmPresentationState::getPolyShutterVertex(size_t idx, Sint32& x, Si
 {
   x=0;
   y=0;
-  OFCondition result = verticesOfThePolygonalShutter.getSint32(y,2*idx);
-  if (EC_Normal==result) result = verticesOfThePolygonalShutter.getSint32(x,2*idx+1);
+  OFCondition result = verticesOfThePolygonalShutter.getSint32(y,OFstatic_cast(Uint32, 2*idx));
+  if (EC_Normal==result) result = verticesOfThePolygonalShutter.getSint32(x,OFstatic_cast(Uint32, 2*idx+1));
   return result;
 }
 

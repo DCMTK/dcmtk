@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -174,7 +174,7 @@ OFCondition DVPSGraphicLayer_PList::addGraphicLayer(
      const char *gLayerDescription)
 {
   sortGraphicLayers(1);
-  Sint32 layerOrder = size()+1;
+  Sint32 layerOrder = OFstatic_cast(Sint32, size()+1);
   return addGraphicLayer(gLayer, layerOrder, gLayerDescription);
 }
 
@@ -200,8 +200,8 @@ void DVPSGraphicLayer_PList::sortGraphicLayers(Sint32 lowestLayer)
     {
       if ((*first)->getGLOrder() < currentSize)
       {
-      	current = first;
-      	currentSize = (*first)->getGLOrder();
+        current = first;
+        currentSize = (*first)->getGLOrder();
       }
       ++first;
     }
@@ -342,7 +342,7 @@ OFCondition DVPSGraphicLayer_PList::toFrontGraphicLayer(size_t idx)
     DVPSGraphicLayer *layer = *first;
     list_.erase(first);
     sortGraphicLayers(1);
-    Sint32 layerOrder = size()+1;
+    Sint32 layerOrder = OFstatic_cast(Sint32, size()+1);
     layer->setGLOrder(layerOrder);
     list_.push_back(layer);
   } else return EC_IllegalCall;
