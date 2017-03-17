@@ -99,7 +99,6 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
-#include <windows.h>
 #include <winbase.h>     /* for CreateProcess */
 #endif
 

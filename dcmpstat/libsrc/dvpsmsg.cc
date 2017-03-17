@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,15 +22,16 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmnet/dcompat.h"
-
 BEGIN_EXTERN_C
 #ifdef HAVE_WINDOWS_H
+// this must be undefined for some Winsock functions to be available
+#undef WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <winbase.h>
 #endif
 END_EXTERN_C
 
+#include "dcmtk/dcmnet/dcompat.h"
 #include "dcmtk/dcmpstat/dvpsmsg.h"
 #include "dcmtk/ofstd/ofstring.h"    /* for class OFString */
 #include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate<> */

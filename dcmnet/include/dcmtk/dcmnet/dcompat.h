@@ -97,6 +97,7 @@
 #endif
 
 #ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>  /* this includes either winsock.h or winsock2.h */
 #else
 #ifdef HAVE_WINSOCK_H

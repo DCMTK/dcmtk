@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2014, OFFIS e.V.
+ *  Copyright (C) 1999-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,6 +19,13 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#ifdef HAVE_WINDOWS_H
+// this must be undefined for some Winsock functions to be available
+#undef WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include "dcmtk/dcmnet/dcompat.h"     /* compatibility code, needs to be included before dirent.h */
 
 #ifdef HAVE_GUSI_H

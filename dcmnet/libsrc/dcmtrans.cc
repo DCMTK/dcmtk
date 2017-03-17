@@ -21,6 +21,13 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#ifdef HAVE_WINDOWS_H
+// this must be undefined for some Winsock functions to be available
+#undef WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include "dcmtk/dcmnet/dcmtrans.h"
 #include "dcmtk/dcmnet/dcompat.h"     /* compatibility code for certain Unix dialects such as SunOS */
 #include "dcmtk/dcmnet/diutil.h"
@@ -44,10 +51,6 @@ BEGIN_EXTERN_C
 #include <sys/select.h>
 #endif
 END_EXTERN_C
-
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#endif
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */

@@ -44,6 +44,7 @@ extern "C" {
 
 #ifdef HAVE_WINDOWS_H
 #define WINDOWS_INTERFACE
+#define WIN32_LEAN_AND_MEAN
 
 extern "C" {
 #include <windows.h>

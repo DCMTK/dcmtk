@@ -24,6 +24,12 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#ifdef HAVE_WINDOWS_H
+// this must be undefined for some Winsock functions to be available
+#undef WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
