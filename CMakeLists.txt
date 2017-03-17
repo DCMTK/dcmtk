@@ -4,6 +4,18 @@ PROJECT(DCMTK)
 # Minimum CMake version required
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
+# newer CMake versions will warn if a module exists in its and the project's module paths, which is now always
+# the case since above line adds CMake's module path to the project's one. It, therefore, doesn't matter whether
+# we set the policy to OLD or NEW, since in both cases CMake's own module will be preferred. We just set
+# the policy to silence the warning.
+#
+# The same setting is performed again in CMake/dcmtkPrepare.cmake.
+# This should not be necessary, but it is. Perhaps a bug in CMake?
+
+IF(POLICY CMP0017)
+    CMAKE_POLICY(SET CMP0017 NEW)
+ENDIF()
+
 # Check the build system
 INCLUDE(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
 
