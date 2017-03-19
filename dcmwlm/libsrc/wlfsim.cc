@@ -453,7 +453,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
   int ret = 0;
 
   // start a loop; in each iteration another directory entry is determined
-  long hFile = _findfirst( (char*)searchname.c_str(), &fileData );
+  long hFile = OFstatic_cast(long, _findfirst( (char*)searchname.c_str(), &fileData ));
   while( hFile != -1L && ret == 0 )
   {
     // if the current entry refers to a worklist file, do something
@@ -2088,7 +2088,7 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 {
   // get lower value
   const char *tmp = strchr( range, '-' );
-  int res = tmp - range;
+  long res = OFstatic_cast(long, tmp - range);
   if( res == 0 )
     lower = NULL;
   else
@@ -2099,7 +2099,7 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
   }
 
   // get upper value
-  int len = strlen( range );
+  size_t len = strlen( range );
   if( res == len - 1 )
     upper = NULL;
   else

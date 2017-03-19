@@ -2406,7 +2406,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
     int oldestStudy ;
     double OldestDate ;
     int s ;
-    int n ;
+    size_t n ;
     int idx = 0 ;
     IdxRecord idxRec ;
 
@@ -2456,7 +2456,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
 
     ImagesofStudyArray *StudyArray ;
     IdxRecord idxRec ;
-    int nbimages = 0 , s = 0 , n ;
+    int nbimages = 0 , s = 0;
+    size_t n ;
     long DeletedSize ;
 
 #ifdef DEBUG
@@ -2732,7 +2733,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
             /* found and non-empty */
             strncpy(se->PValueField, strPtr, (size_t)(se->ValueLength));
             /* important: do not change the ValueLength field before the string is copied! */
-            se->ValueLength = strlen(se->PValueField);
+            se->ValueLength = OFstatic_cast(int, strlen(se->PValueField));
         }
     }
 

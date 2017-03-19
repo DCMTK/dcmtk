@@ -1584,7 +1584,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   cond = DIMSE_storeUser(assoc, presID, &req,
     NULL, dcmff.getDataset(), progressCallback, NULL,
     opt_blockMode, opt_dimse_timeout,
-    &rsp, &statusDetail, NULL, OFStandard::getFileSize(fname));
+    &rsp, &statusDetail, NULL, OFstatic_cast(long, OFStandard::getFileSize(fname)));
 
   /*
    * If store command completed normally, with a status

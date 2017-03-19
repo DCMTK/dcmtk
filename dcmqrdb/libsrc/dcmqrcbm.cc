@@ -171,7 +171,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 
 void DcmQueryRetrieveMoveContext::addFailedUIDInstance(const char *sopInstance)
 {
-    int len;
+    size_t len;
 
     if (failedUIDs == NULL) {
         if ((failedUIDs = (char*)malloc(DIC_UI_LEN+1)) == NULL) {

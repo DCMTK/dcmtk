@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -270,7 +270,7 @@ TrcTypes::E_TrackColorMode TrcTrack::getRecommendedDisplayCIELabMode()
 OFCondition TrcTrack::setTrackData(const Float32* trackDataPoints,
                                    const size_t numPoints)
 {
-  return m_Item->putAndInsertFloat32Array(DCM_PointCoordinatesData, trackDataPoints, numPoints*3);
+  return m_Item->putAndInsertFloat32Array(DCM_PointCoordinatesData, trackDataPoints, OFstatic_cast(unsigned long, numPoints*3));
 }
 
 
@@ -290,11 +290,11 @@ OFCondition TrcTrack::setRecommendedDisplayCIELabValues(const Uint16* colors,
   }
   if (numColors == 1)
   {
-    return m_Item->putAndInsertUint16Array(DCM_RecommendedDisplayCIELabValue, colors, numColors * 3);
+    return m_Item->putAndInsertUint16Array(DCM_RecommendedDisplayCIELabValue, colors, OFstatic_cast(unsigned long, numColors * 3));
   }
   else
   {
-    return m_Item->putAndInsertUint16Array(DCM_RecommendedDisplayCIELabValueList, colors, numColors * 3);
+    return m_Item->putAndInsertUint16Array(DCM_RecommendedDisplayCIELabValueList, colors, OFstatic_cast(unsigned long, numColors * 3));
   }
   // should never get here
   return TRC_EC_InvalidColorInformation;

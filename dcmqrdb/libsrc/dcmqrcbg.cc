@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -140,7 +140,7 @@ void DcmQueryRetrieveGetContext::callbackHandler(
 
 void DcmQueryRetrieveGetContext::addFailedUIDInstance(const char *sopInstance)
 {
-    int len;
+    size_t len;
 
     if (failedUIDs == NULL) {
         if ((failedUIDs = (char*)malloc(DIC_UI_LEN+1)) == NULL) {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -259,7 +259,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::getRealWorldValueLUTData(OFVector
     for (size_t n = 0; n < numValues; n++)
     {
       Float64 value;
-      result = elem->getFloat64(value, n);
+      result = elem->getFloat64(value, OFstatic_cast(unsigned long, n));
       if (result.good()) values.push_back(value);
     }
   }
@@ -391,7 +391,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLUTData(const OF
     size_t count = value.size();
     for (size_t n = 0; n < count; n++)
     {
-      if (result.good()) result = elem->putFloat64(value[n], n);
+      if (result.good()) result = elem->putFloat64(value[n], OFstatic_cast(unsigned long, n));
     }
   }
   return result;

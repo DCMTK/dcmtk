@@ -75,7 +75,7 @@ OFCondition FGInterface::addShared(const FGBase& group)
   // Delete all per frame groups of this type
   for (size_t count = 0; count < m_perFrame.size(); count++)
   {
-    deletePerFrame(count, group.getType());
+    deletePerFrame(OFstatic_cast(Uint32, count), group.getType());
   }
 
   // Create copy for insertion
@@ -294,7 +294,7 @@ OFCondition FGInterface::readSingleFG(DcmItem& fgItem,
   OFString fgname;
   for (size_t count = 0; count < card; count++)
   {
-    DcmElement *elem = fgItem.getElement(count);
+    DcmElement *elem = fgItem.getElement(OFstatic_cast(unsigned long, count));
     // TODO: non-sequence elements are not explicitly forbidden here(?), we could store them and re-store them later
     if (elem->getVR() != EVR_SQ)
     {
@@ -424,7 +424,7 @@ size_t FGInterface::deletePerFrame(const DcmFGTypes::E_FGType fgType)
   const size_t numFrames = m_perFrame.size();
   for (size_t frameNo = 0; frameNo < numFrames; frameNo++)
   {
-    if (deletePerFrame(frameNo, fgType))
+    if (deletePerFrame(OFstatic_cast(Uint32, frameNo), fgType))
     {
       numDeleted++;
     }
@@ -494,7 +494,7 @@ OFCondition FGInterface::writePerFrameFG(DcmItem& dataset)
   for ( size_t count = 0; (count < numFrames)  && result.good(); count++)
   {
     DcmItem* perFrameItem = NULL;
-    result = dataset.findOrCreateSequenceItem(DCM_PerFrameFunctionalGroupsSequence, perFrameItem, count);
+    result = dataset.findOrCreateSequenceItem(DCM_PerFrameFunctionalGroupsSequence, perFrameItem, OFstatic_cast(long, count));
     if (result.good())
     {
       /* Iterate over groups for each frame */
@@ -603,7 +603,7 @@ OFCondition FGInterface::convertSharedToPerFrame(const DcmFGTypes::E_FGType fgTy
     }
     else
     {
-      result = insertPerFrame(count, clone, OFTrue /* replace existing */);
+      result = insertPerFrame(OFstatic_cast(Uint32, count), clone, OFTrue /* replace existing */);
       if (result.bad())
       {
         delete clone;

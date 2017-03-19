@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -255,7 +255,7 @@ template<typename T>
 OFCondition IODImagePixelModule<T>::setICCProfile(const Uint8* values,
                                                const size_t length)
 {
-  return m_Item->putAndInsertUint8Array(DCM_ICCProfile, values, length);
+  return m_Item->putAndInsertUint8Array(DCM_ICCProfile, values, OFstatic_cast(unsigned long, length));
 }
 
 template class IODImagePixelModule<Uint8>;

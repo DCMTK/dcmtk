@@ -267,7 +267,7 @@ DcmElement* IODMultiframeDimensionModule::getIndexElement(DcmSequenceOfItems *pe
   DcmElement *returnValue = NULL;
   for (size_t count = 0; count < numFrames; count++)
   {
-    DcmItem* item = perFrameFG->getItem(count);
+    DcmItem* item = perFrameFG->getItem(OFstatic_cast(unsigned long, count));
     if (item != NULL)
     {
       // Check for the functional group mentioned in dimension

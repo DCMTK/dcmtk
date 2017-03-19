@@ -669,7 +669,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
 
     if (result.good())
     {
-      compressedSize = bytesWritten;
+      compressedSize = OFstatic_cast(unsigned long, bytesWritten);
       fixPaddingIfNecessary(OFstatic_cast(Uint8 *, buffer), size, compressedSize);
       result = pixelSequence->storeCompressedFrame(offsetList, buffer, compressedSize, fragmentSize);
     }
@@ -1061,7 +1061,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   if (result.good())
   {
     // 'compressed_buffer_size' now contains the size of the compressed data in buffer
-    compressedSize = bytesWritten;
+    compressedSize = OFstatic_cast(unsigned long, bytesWritten);
     fixPaddingIfNecessary(OFstatic_cast(Uint8 *, buffer), compressed_buffer_size, compressedSize);
     result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, compressedSize, fragmentSize);
   }

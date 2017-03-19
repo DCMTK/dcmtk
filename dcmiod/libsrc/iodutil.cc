@@ -401,7 +401,7 @@ OFCondition DcmIODUtil::setUint16ValuesOnElement(DcmElement &delem,
     }
     else if (check)
     {
-      result = DcmElement::checkVM(values.size(), vm);
+      result = DcmElement::checkVM(OFstatic_cast(unsigned long, values.size()), vm);
     }
     it++;
   }
@@ -418,7 +418,7 @@ OFCondition DcmIODUtil::getUint16ValuesFromElement(DcmElement &delem,
   for (size_t i = 0;  i < count; i++)
   {
     Uint16 val;
-    result = delem.getUint16(val, i);
+    result = delem.getUint16(val, OFstatic_cast(unsigned long, i));
     if (result.bad())
     {
       DCMIOD_WARN(delem.getTag().getXTag() << ": Getting value " << " #" << i << " not possible");

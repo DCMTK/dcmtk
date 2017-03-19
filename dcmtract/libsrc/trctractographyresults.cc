@@ -1,6 +1,6 @@
   /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -144,7 +144,7 @@ OFCondition TrcTractographyResults::addTrackSet(const OFString& trackSetLabel,
   OFCondition result = TrcTrackSet::create(trackSetLabel, trackSetDescription, anatomyCode, diffusionModelCode, algoIdentCode, trackSet);
   if (result.good())
   {
-    result = trackSet->getData().putAndInsertUint32(DCM_TrackSetNumber, m_TractographyResultsModule.getTrackSets().size() + 1);
+    result = trackSet->getData().putAndInsertUint32(DCM_TrackSetNumber, OFstatic_cast(Uint32, m_TractographyResultsModule.getTrackSets().size() + 1));
     if (result.good())
     {
       m_TractographyResultsModule.getTrackSets().push_back(trackSet);

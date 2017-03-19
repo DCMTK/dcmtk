@@ -354,7 +354,7 @@ public:
     for (size_t count = 0; (count < vm) && result.good(); count ++)
     {
       Uint8 value;
-      result = elem->getUint8(value, count);
+      result = elem->getUint8(value, OFstatic_cast(unsigned long, count));
       if ( result.good() )
       {
         destination.push_back(value);

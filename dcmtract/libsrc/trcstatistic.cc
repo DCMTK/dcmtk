@@ -158,7 +158,7 @@ OFCondition TrcTracksStatistic::create(const CodeSequenceMacro& typeCode,
   OFCondition result = statistic->TrcStatistic::setCommon(typeCode, typeModifierCode, unitsCode);
   if (result.good())
   {
-    result = statistic->getData().putAndInsertFloat32Array(DCM_FloatingPointValues, statisticValues, numValues);
+    result = statistic->getData().putAndInsertFloat32Array(DCM_FloatingPointValues, statisticValues, OFstatic_cast(unsigned long, numValues));
     if (result.bad())
     {
       result = TRC_EC_InvalidStatisticData;
@@ -234,7 +234,7 @@ OFCondition TrcTracksStatistic::set(const CodeSequenceMacro& typeCode,
   OFCondition result = TrcStatistic::setCommon(typeCode, typeModifierCode, unitsCode);
   if (result.good())
   {
-    result = m_Item->putAndInsertFloat32Array(DCM_FloatingPointValues, statisticValues, numValues);
+    result = m_Item->putAndInsertFloat32Array(DCM_FloatingPointValues, statisticValues, OFstatic_cast(unsigned long, numValues));
   }
   return result;
 }

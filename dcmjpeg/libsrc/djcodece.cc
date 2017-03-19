@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2016, OFFIS e.V.
+ *  Copyright (C) 2001-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -248,7 +248,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
 
   // initialize settings with defaults for RGB mode
   OFBool monochromeMode = OFFalse;
-  size_t flags = 0; // flags for initialization of DicomImage
+  unsigned long flags = 0; // flags for initialization of DicomImage
   EP_Interpretation interpr = EPI_RGB;
   Uint16 samplesPerPixel = 3;
   const char *photometricInterpretation = "RGB";
@@ -346,7 +346,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
 
       // compute original image size in bytes, ignoring any padding bits.
       uncompressedSize = OFstatic_cast(double, columns * rows * dimage->getDepth() * frameCount * samplesPerPixel) / 8.0;
-      for (size_t i=0; (i<frameCount) && (result.good()); i++)
+      for (unsigned long i=0; (i<frameCount) && (result.good()); i++)
       {
         frame = dimage->getOutputData(bitsPerSample, i, 0);
         if (frame == NULL) result = EC_MemoryExhausted;
@@ -884,7 +884,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   compressionRatio = 0.0; // initialize if something goes wrong
   size_t compressedSize = 0;
   double uncompressedSize = 0.0;
-  size_t flags = 0; // flags for initialization of DicomImage
+  unsigned long flags = 0; // flags for initialization of DicomImage
 
   // variables needed if VOI mode is 0
   double minRange = 0.0;
@@ -999,14 +999,14 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         {
           size_t windowParameter = cp->getWindowParameter();
           if ((windowParameter < 1) || (windowParameter > dimage.getWindowCount())) result = EC_IllegalCall;
-          if (!dimage.setWindow(windowParameter - 1)) result = EC_IllegalCall;
+          if (!dimage.setWindow(OFstatic_cast(unsigned long, windowParameter - 1))) result = EC_IllegalCall;
         }
         break;
       case 2: // use the n-th VOI look up table from the image file
         {
           size_t windowParameter = cp->getWindowParameter();
           if ((windowParameter < 1) || (windowParameter > dimage.getVoiLutCount())) result = EC_IllegalCall;
-          if (!dimage.setVoiLut(windowParameter - 1)) result = EC_IllegalCall;
+          if (!dimage.setVoiLut(OFstatic_cast(unsigned long, windowParameter - 1))) result = EC_IllegalCall;
         }
         break;
       case 3: // Compute VOI window using min-max algorithm
@@ -1032,7 +1032,8 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         {
          size_t left_pos=0, top_pos=0, width=0, height=0;
          cp->getROI(left_pos, top_pos, width, height);
-          if (!dimage.setRoiWindow(left_pos, top_pos, width, height)) result = EC_IllegalCall;
+          if (!dimage.setRoiWindow(OFstatic_cast(unsigned long, left_pos), OFstatic_cast(unsigned long, top_pos),
+             OFstatic_cast(unsigned long, width), OFstatic_cast(unsigned long, height))) result = EC_IllegalCall;
         }
         break;
       default: // includes case 0, which must not occur here
@@ -1141,7 +1142,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
       uncompressedSize = OFstatic_cast(double, columns * rows * pixelDepth * frameCount * samplesPerPixel) / 8.0;
       for (size_t i=0; (i<frameCount) && (result.good()); i++)
       {
-        frame = dimage.getOutputData(bitsPerSample, i, 0);
+        frame = dimage.getOutputData(bitsPerSample, OFstatic_cast(unsigned long, i), 0);
         if (frame == NULL) result = EC_MemoryExhausted;
         else
         {

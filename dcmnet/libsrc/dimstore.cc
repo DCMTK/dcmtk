@@ -206,7 +206,7 @@ DIMSE_storeUser(
 	if (imageFileTotalBytes > 0) progress.totalBytes = imageFileTotalBytes;
 	else
 	{
-          if (imageFileName != NULL) progress.totalBytes = OFStandard::getFileSize(imageFileName);
+          if (imageFileName != NULL) progress.totalBytes = OFstatic_cast(long, OFStandard::getFileSize(imageFileName));
           else progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
         }
 	callbackCtx.progress = &progress;

@@ -1035,12 +1035,12 @@ OFBool WlmDataSource::ContainsOnlyValidCharacters( const char *s, const char *ch
   }
 
   // return OFTrue if all the characters of s can be found in the string charset.
-  int s_len = strlen( s );
-  int charset_len = strlen( charset );
-  for( int i=0 ; i<s_len && result ; i++ )
+  size_t s_len = strlen( s );
+  size_t charset_len = strlen( charset );
+  for( size_t i=0 ; i<s_len && result ; i++ )
   {
     OFBool isSetMember = OFFalse;
-    for( int j=0 ; !isSetMember && j<charset_len ; j++ )
+    for( size_t j=0 ; !isSetMember && j<charset_len ; j++ )
     {
       if( s[i] == charset[j] )
         isSetMember = OFTrue;

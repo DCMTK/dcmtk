@@ -423,7 +423,7 @@ void DcmSegmentation::getFramesForSegment(const size_t& segmentNumber,
   size_t numFrames = getNumberOfFrames();
   for (size_t count = 0; count < numFrames; count++)
   {
-    FGSegmentation* fg = OFstatic_cast(FGSegmentation*, m_FGInterface.get(count, DcmFGTypes::EFG_SEGMENTATION));
+    FGSegmentation* fg = OFstatic_cast(FGSegmentation*, m_FGInterface.get(OFstatic_cast(Uint32, count), DcmFGTypes::EFG_SEGMENTATION));
     if (fg == NULL)
     {
       DCMSEG_ERROR("Cannot get segmentation functional group for frame " << count);
@@ -451,7 +451,7 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData,
                                       const Uint16 segmentNumber,
                                       const OFVector<FGBase*>& perFrameInformation)
 {
-  Uint32 frameNo = m_Frames.size(); // will be the index of the frame (counted from 0)
+  Uint32 frameNo = OFstatic_cast(Uint32, m_Frames.size()); // will be the index of the frame (counted from 0)
   OFCondition result;
 
   // Check input parameters
@@ -648,7 +648,7 @@ OFBool DcmSegmentation::getSegmentNumber(const DcmSegment* segment,
     if (m_Segments.at(count) == segment)
     {
       // logical segment numbering starts with 1 but vector index with 0
-      segmentNumber = count + 1;
+      segmentNumber = OFstatic_cast(unsigned int, count + 1);
       return OFTrue;
     }
   }
@@ -884,7 +884,7 @@ OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
     memcpy(pixdata + count*(*it)->length, (*it)->pixData, (*it)->length);
     it++;
   }
-  dataset.putAndInsertUint8Array(DCM_PixelData, pixdata, numBytes, OFTrue);
+  dataset.putAndInsertUint8Array(DCM_PixelData, pixdata, OFstatic_cast(unsigned long, numBytes), OFTrue);
   delete[] pixdata;
   return result;
 }
@@ -907,7 +907,7 @@ OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
 
   // Fill Pixel Data Element
   concatFrames(m_Frames, pixdata, rows*cols);
-  result = dataset.putAndInsertUint8Array(DCM_PixelData, pixdata, numBytes, OFTrue);
+  result = dataset.putAndInsertUint8Array(DCM_PixelData, pixdata, OFstatic_cast(unsigned long, numBytes), OFTrue);
   delete [] pixdata;
   return result;
 }
@@ -1185,7 +1185,7 @@ OFBool DcmSegmentation::check()
   for (size_t count = 0; count < m_Frames.size(); count++)
   {
     OFBool isPerFrame;
-    FGBase* group = m_FGInterface.get(count, DcmFGTypes::EFG_FRAMECONTENT, isPerFrame);
+    FGBase* group = m_FGInterface.get(OFstatic_cast(Uint32, count), DcmFGTypes::EFG_FRAMECONTENT, isPerFrame);
     if (group == NULL)
     {
       DCMSEG_ERROR("Frame Content Functional Group not present for frame " << count);

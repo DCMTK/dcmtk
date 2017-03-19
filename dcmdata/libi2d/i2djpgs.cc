@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2016, OFFIS e.V.
+ *  Copyright (C) 2007-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -396,7 +396,7 @@ OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
   // Only pixel data up to 2^32 bytes is supported (DICOM) and maximum size for "new" operator = size_t
 
   if ( ( OFstatic_cast(unsigned long, filesize) > OFstatic_cast(unsigned long, 4294967294UL) ) ||
-       ( OFstatic_cast(unsigned long, filesize) > OFstatic_cast(unsigned long, OFstatic_cast(size_t, -1) ) ) )
+       ( OFstatic_cast(unsigned long, filesize) > OFstatic_cast(unsigned long, -1) ) )
   {
     DCMDATA_LIBI2D_ERROR("I2DJpegSource: JPEG file length longer than 2^32 bytes (or larger than size_t capacity), aborting");
     return EC_MemoryExhausted;
@@ -518,7 +518,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
   // Allocate buffer for raw JPEG data
   // Only pixel data up to 2^32 bytes is supported (DICOM)
   if ( ( OFstatic_cast(unsigned long, rawStreamSize) > OFstatic_cast(unsigned long, 4294967294UL) ) ||
-       ( OFstatic_cast(unsigned long, rawStreamSize) > OFstatic_cast(unsigned long, OFstatic_cast(size_t, -1) ) ) )
+       ( OFstatic_cast(unsigned long, rawStreamSize) > OFstatic_cast(unsigned long, -1) ) )
   {
     DCMDATA_LIBI2D_ERROR("I2DJpegSource: Raw JPEG stream length longer than 2^32 bytes (or larger than size_t capacity), aborting");
     return EC_MemoryExhausted;

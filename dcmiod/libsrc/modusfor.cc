@@ -213,7 +213,7 @@ OFCondition IODUSFoRModule::setVolumetoTransducerMappingMatrix(const OFVector< F
   {
     for (size_t n = 0; result.good() && n < vm; n++)
     {
-      result = elem->putFloat64(value[n], n);
+      result = elem->putFloat64(value[n], OFstatic_cast(unsigned long, n));
     }
   }
   if (result.good())
@@ -262,7 +262,7 @@ OFCondition IODUSFoRModule::setVolumeToTableMappingMatrix(const OFVector< Float6
   {
     for (size_t n = 0; result.good() && (n < vm); n++)
     {
-      result = elem->putFloat64(value[n], n);
+      result = elem->putFloat64(value[n], OFstatic_cast(unsigned long, n));
     }
   }
   if (result.good())

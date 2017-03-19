@@ -53,7 +53,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
-#include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
+#include <GUSI.h>   /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
 OFGlobal<Sint32> dcmSocketSendTimeout(60);
@@ -274,7 +274,7 @@ DcmTransportLayerStatus DcmTCPConnection::renegotiate(const char * /* newSuite *
 ssize_t DcmTCPConnection::read(void *buf, size_t nbyte)
 {
 #ifdef HAVE_WINSOCK_H
-  return recv(getSocket(), (char *)buf, nbyte, 0);
+  return recv(getSocket(), (char *)buf, OFstatic_cast(int, nbyte), 0);
 #else
   return ::read(getSocket(), (char *)buf, nbyte);
 #endif
@@ -283,7 +283,7 @@ ssize_t DcmTCPConnection::read(void *buf, size_t nbyte)
 ssize_t DcmTCPConnection::write(void *buf, size_t nbyte)
 {
 #ifdef HAVE_WINSOCK_H
-  return send(getSocket(), (char *)buf, nbyte, 0);
+  return send(getSocket(), (char *)buf, OFstatic_cast(int, nbyte), 0);
 #else
   return ::write(getSocket(), (char *)buf, nbyte);
 #endif

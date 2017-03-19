@@ -221,7 +221,7 @@ static int splitFields(
 {
     char* p;
     Uint32 foundFields = 0;
-    int len;
+    size_t len;
 
     do {
         p = strchr(line, splitChar);
@@ -347,7 +347,7 @@ static int checkelem(
                }
                for (i=0; (Uint32)i<vm; i++) {
                    char* s = fields[i];
-                   int slen = strlen(s);
+                   size_t slen = strlen(s);
                    if ((Uint32)slen > vr.getMaxValueLength()) {
                        OFLOG_WARN(dcmpschkLogger, MSG_lengthtoolarge << OFendl
                            << "   Affected length   : " << slen << " bytes, should be "

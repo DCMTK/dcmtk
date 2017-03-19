@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -62,7 +62,7 @@ OFCondition FGStackInterface::read(FGInterface& fgSource)
   for (size_t count = 0; count < numFrames; count++)
   {
     // Get frame content FG if existing
-    FGFrameContent* fracon = OFstatic_cast(FGFrameContent*, fgSource.get(count, DcmFGTypes::EFG_FRAMECONTENT));
+    FGFrameContent* fracon = OFstatic_cast(FGFrameContent*, fgSource.get(OFstatic_cast(Uint32, count), DcmFGTypes::EFG_FRAMECONTENT));
     if (fracon != NULL)
     {
       OFString stackID;
@@ -78,9 +78,9 @@ OFCondition FGStackInterface::read(FGInterface& fgSource)
           if ( (*it).second->getStackID() == stackID)
           {
             // Add frame to stack if it is not in yet
-            if ( (*it).second->getInStackPos(count) == 0)
+            if ( (*it).second->getInStackPos(OFstatic_cast(Uint32, count)) == 0)
             {
-              (*it).second->addFrame(count, inStackPos);
+              (*it).second->addFrame(OFstatic_cast(Uint32, count), inStackPos);
             }
           }
           it++;
@@ -93,7 +93,7 @@ OFCondition FGStackInterface::read(FGInterface& fgSource)
           {
             return EC_MemoryExhausted;
           }
-          stack->addFrame(count, inStackPos);
+          stack->addFrame(OFstatic_cast(Uint32, count), inStackPos);
           if ( !m_Stacks.insert(OFMake_pair(stack->getStackID(), stack)).second )
           {
             delete stack;

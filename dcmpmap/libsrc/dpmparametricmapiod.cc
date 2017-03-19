@@ -373,7 +373,7 @@ Uint8* DPMParametricMapIOD::WriteVisitor::DcmElementOf<IODImagePixelModule<Uint8
   if (m_pElement->setVR(EVR_OB).good())
   {
     Uint8* result;
-    if (m_pElement->createUint8Array(size, result).good())
+    if (m_pElement->createUint8Array(OFstatic_cast(Uint32, size), result).good())
       return result;
   }
   return OFnullptr;
@@ -387,7 +387,7 @@ Sint8* DPMParametricMapIOD::WriteVisitor::DcmElementOf<IODImagePixelModule<Sint8
   if (m_pElement->setVR(EVR_OB).good())
   {
     Uint8* result;
-    if (m_pElement->createUint8Array(size, result).good())
+    if (m_pElement->createUint8Array(OFstatic_cast(Uint32, size), result).good())
       return OFreinterpret_cast(Sint8*, result);
   }
   return OFnullptr;
@@ -401,7 +401,7 @@ Uint16* DPMParametricMapIOD::WriteVisitor::DcmElementOf<IODImagePixelModule<Uint
   if (m_pElement->setVR(EVR_OW).good())
   {
     Uint16* result;
-    if (m_pElement->createUint16Array(size / 2, result).good())
+    if (m_pElement->createUint16Array(OFstatic_cast(Uint32, size/2), result).good())
       return result;
   }
   return OFnullptr;
@@ -415,7 +415,7 @@ Sint16* DPMParametricMapIOD::WriteVisitor::DcmElementOf<IODImagePixelModule<Sint
   if (m_pElement->setVR(EVR_OW).good())
   {
     Uint16* result;
-    if (m_pElement->createUint16Array(size / 2, result).good())
+    if (m_pElement->createUint16Array(OFstatic_cast(Uint32, size/2), result).good())
       return OFreinterpret_cast(Sint16*, result);
   }
   return OFnullptr;
@@ -470,7 +470,7 @@ private:
     OFCondition createFloat32Array(const size_t size,
                                    Float32*& result)
     {
-       OFCondition status = createEmptyValue(size);
+       OFCondition status = createEmptyValue(OFstatic_cast(Uint32, size));
        result = OFreinterpret_cast(Float32*, getValue());
        return status;
     }
@@ -527,7 +527,7 @@ private:
 
     OFCondition createFloat64Array(const size_t size, Float64*& result)
     {
-       OFCondition status = createEmptyValue(size);
+       OFCondition status = createEmptyValue(OFstatic_cast(Uint32, size));
        result = OFreinterpret_cast(Float64*, getValue());
        return status;
     }
@@ -623,7 +623,7 @@ OFCondition DPMParametricMapIOD::Frames<PixelType>::addFrame(PixelType* data,
         OFVector<FGBase*>::const_iterator fg = perFrameInformation.begin();
         while ( result.good() && (fg != perFrameInformation.end()) )
         {
-          result = m_Map.m_FGInterface.addPerFrame(m_Map.m_Frames.size(), **fg);
+          result = m_Map.m_FGInterface.addPerFrame(OFstatic_cast(Uint32, m_Map.m_Frames.size()), **fg);
           if (result.bad())
           {
             DCMPMAP_ERROR("Could not add functional group: " << DcmFGTypes::FGType2OFString((*fg)->getType()));
@@ -636,7 +636,7 @@ OFCondition DPMParametricMapIOD::Frames<PixelType>::addFrame(PixelType* data,
   }
   // Clean up if necessary
   if (result.bad())
-    m_Map.m_FGInterface.deleteFrame(m_Map.m_Frames.size());
+    m_Map.m_FGInterface.deleteFrame(OFstatic_cast(Uint32, m_Map.m_Frames.size()));
   return result;
 }
 

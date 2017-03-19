@@ -1749,7 +1749,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 DWORD bytesWritten;
                 char buf[20];
                 sprintf(buf, "%i", OFstatic_cast(int, OFreinterpret_cast(size_t, childSocketHandle)));
-                if (!WriteFile(hChildStdInWriteDup, buf, strlen(buf) + 1, &bytesWritten, NULL))
+                if (!WriteFile(hChildStdInWriteDup, buf, OFstatic_cast(DWORD, strlen(buf) + 1), &bytesWritten, NULL))
                 {
                     CloseHandle(hChildStdInWriteDup);
                     return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Multi-Process Error: Writing to anonymous pipe failed");
