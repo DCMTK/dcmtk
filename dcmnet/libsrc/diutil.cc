@@ -123,7 +123,7 @@ DU_stripTrailingSpaces(char *s)
 
     if (s)
     {
-        n = strlen(s);
+        n = OFstatic_cast(int, strlen(s));
         for (i = n - 1; i >= 0 && isspace(TO_UCHAR(s[i])); i--)
             s[i] = '\0';
     }
@@ -135,7 +135,7 @@ DU_stripLeadingSpaces(char *s)
     int i, j, n;
 
     if (s == NULL) return;
-    n = strlen(s);
+    n = OFstatic_cast(int, strlen(s));
     if (n == 0) return;
     if (!isspace(TO_UCHAR(s[0]))) return; /* no leading space */
 
@@ -249,9 +249,9 @@ DU_findSOPClassAndInstanceInDataSet(
         /* gracefully correct space-padded UID strings */
         int slength;
 
-        if ((0 < (slength=strlen(sopClass)))&&(sopClass[slength-1]==' '))
+        if ((0 < (slength=OFstatic_cast(int, strlen(sopClass))))&&(sopClass[slength-1]==' '))
             sopClass[slength-1]=0;
-        if ((0 < (slength=strlen(sopInstance)))&&(sopInstance[slength-1]==' '))
+        if ((0 < (slength=OFstatic_cast(int, strlen(sopInstance))))&&(sopInstance[slength-1]==' '))
             sopInstance[slength-1]=0;
     }
     return result;

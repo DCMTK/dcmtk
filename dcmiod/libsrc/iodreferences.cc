@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -190,7 +190,7 @@ OFCondition IODReferences::writeTractographyReferencedInstanceSequence(DcmItem& 
   {
     if (result.good())
     {
-      result = item.findOrCreateSequenceItem(DCM_ReferencedInstanceSequence, seqItem, numItem);
+      result = item.findOrCreateSequenceItem(DCM_ReferencedInstanceSequence, seqItem, OFstatic_cast(long, numItem));
       numItem++;
     }
     if (result.good())
