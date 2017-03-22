@@ -56,8 +56,8 @@
  *  @code{.cpp}
     struct CustomJsonFormat : DcmJsonFormatPretty
     {
-      CustomJsonFormat(const OFBool printMetaheaderInformation = OFTrue)
-      : DcmJsonFormatPretty(printMetaheaderInformation)
+      CustomJsonFormat(const OFBool printMetaInfo = OFTrue)
+      : DcmJsonFormatPretty(printMetaInfo)
       {
 
       }
@@ -196,10 +196,10 @@ public:
                                    OFString &value);
 
     /** Constructor
-     *  @param printMetaheaderInformation parameter that defines if meta information should be written
+     *  @param printMetaInfo parameter that defines if meta information should be written
      */
-    inline DcmJsonFormat(const OFBool printMetaheaderInformation)
-    : printMetaheaderInformation(printMetaheaderInformation)
+    inline DcmJsonFormat(const OFBool printMetaInfo)
+    : printMetaheaderInformation(printMetaInfo)
     {
 
     }
@@ -233,9 +233,9 @@ public:
      *  @code{.cpp}
         struct BulkDataURIJsonFormat : DcmJsonFormatPretty
         {
-          CustomJsonFormat(const OFBool printMetaheaderInformation = OFTrue,
+          CustomJsonFormat(const OFBool printMetaInfo = OFTrue,
                            ... bulkDataURIDatabase)
-          : DcmJsonFormatPretty(printMetaheaderInformation)
+          : DcmJsonFormatPretty(printMetaInfo)
           , TheDatabase(bulkDataURIDatabase)
           {
 
@@ -341,9 +341,9 @@ private:
 
 public:
     /** DcmJsonFormatPretty constructor
-     *  @param printMetaheaderInformation Enable/Disable including Metaheader in the output
+     *  @param printMetaInfo Enable/Disable including Metaheader in the output
      */
-    explicit DcmJsonFormatPretty(const OFBool printMetaheaderInformation = OFTrue);
+    explicit DcmJsonFormatPretty(const OFBool printMetaInfo = OFTrue);
 
     /** Indent to the specific level.
      *  @param out output stream to which the indention is written.
@@ -376,9 +376,9 @@ class DCMTK_DCMDATA_EXPORT DcmJsonFormatCompact : public DcmJsonFormat
 {
 public:
     /** DcmJsonFormatCompact constructor
-     *  @param printMetaheaderInformation Enable/Disable including Metaheader in the output
+     *  @param printMetaInfo Enable/Disable including Metaheader in the output
      */
-    explicit DcmJsonFormatCompact(const OFBool printMetaheaderInformation = OFTrue);
+    explicit DcmJsonFormatCompact(const OFBool printMetaInfo = OFTrue);
 
     /** Does nothing.
      *  @param out output stream to which the indention is written.

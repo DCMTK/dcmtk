@@ -219,8 +219,8 @@ OFBool DcmJsonFormat::asBulkDataURI(const DcmTagKey& tag, OFString& uri)
 }
 
 //Class for formatted output
-DcmJsonFormatPretty::DcmJsonFormatPretty(const OFBool printMetaheaderInformation)
-: DcmJsonFormat(printMetaheaderInformation)
+DcmJsonFormatPretty::DcmJsonFormatPretty(const OFBool printMetaInfo)
+: DcmJsonFormat(printMetaInfo)
 , m_IndentionLevel(0)
 {
 
@@ -255,8 +255,8 @@ OFString DcmJsonFormatPretty::space()
 
 
 //Class for unformatted output
-DcmJsonFormatCompact::DcmJsonFormatCompact(const OFBool printMetaheaderInformation)
-: DcmJsonFormat(printMetaheaderInformation)
+DcmJsonFormatCompact::DcmJsonFormatCompact(const OFBool printMetaInfo)
+: DcmJsonFormat(printMetaInfo)
 {
 
 }
