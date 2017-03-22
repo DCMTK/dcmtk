@@ -213,7 +213,7 @@ void DcmJsonFormat::printNextArrayElementPrefix(STD_NAMESPACE ostream &out)
 
 // Method for holding and determine if BulkDataURI should be printed.
 // This also manipulate uri String, if BulkDataURI should be printed.
-OFBool DcmJsonFormat::asBulkDataURI(const DcmTagKey& tag, OFString& uri)
+OFBool DcmJsonFormat::asBulkDataURI(const DcmTagKey& /*tag*/, OFString& /*uri*/)
 {
     return false;
 }
@@ -261,7 +261,7 @@ DcmJsonFormatCompact::DcmJsonFormatCompact(const OFBool printMetaInfo)
 
 }
 
-void DcmJsonFormatCompact::printIndention(STD_NAMESPACE ostream& out)
+void DcmJsonFormatCompact::printIndention(STD_NAMESPACE ostream& /*out*/)
 {}
 
 void DcmJsonFormatCompact::increaseIndention()

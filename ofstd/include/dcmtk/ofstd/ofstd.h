@@ -919,7 +919,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
 #else
     template<size_t Count>
     static OFTypename OFenable_if<!Count,OFBool>::type
-    checkDigits(const char* string)
+    checkDigits(const char* /*string*/)
     {
         return OFTrue;
     }
