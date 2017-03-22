@@ -51,8 +51,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
     DcmFileFormat *dfile,
     const E_FileReadMode readMode,
     const OFBool format,
-    const OFBool printMetaheaderInformation,
-    const OFBool checkAllStrings)
+    const OFBool printMetaInfo)
 {
     OFCondition result = EC_IllegalParameter;
     if ((ifname != NULL) && (dfile != NULL))
@@ -65,18 +64,18 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
         {
             result = format
             ?
-                dset->writeJson(out, DcmJsonFormatPretty(printMetaheaderInformation))
+                dset->writeJson(out, DcmJsonFormatPretty(printMetaInfo))
             :
-                dset->writeJson(out, DcmJsonFormatCompact(printMetaheaderInformation))
+                dset->writeJson(out, DcmJsonFormatCompact(printMetaInfo))
             ;
         }
         else
         {
             result = format
             ?
-                dfile->writeJson(out, DcmJsonFormatPretty(printMetaheaderInformation))
+                dfile->writeJson(out, DcmJsonFormatPretty(printMetaInfo))
             :
-                dfile->writeJson(out, DcmJsonFormatCompact(printMetaheaderInformation))
+                dfile->writeJson(out, DcmJsonFormatCompact(printMetaInfo))
             ;
         }
     }
@@ -88,7 +87,6 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
 
 int main(int argc, char *argv[])
 {
-    OFBool opt_checkAllStrings = OFFalse;
     OFBool opt_format = OFTrue;
     OFBool opt_addMetaInformation = OFFalse;
 
@@ -252,8 +250,7 @@ int main(int argc, char *argv[])
                     if (stream.good())
                     {
                         /* write content in JSON format to file */
-                        if (writeFile(stream, ifname, &dfile, opt_readMode, opt_format,
-                            opt_addMetaInformation, opt_checkAllStrings).bad())
+                        if (writeFile(stream, ifname, &dfile, opt_readMode, opt_format, opt_addMetaInformation).bad())
                             result = 2;
                     }
                     else
@@ -262,8 +259,7 @@ int main(int argc, char *argv[])
                 else
                 {
                     /* write content in JSON format to standard output */
-                    if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_format,
-                        opt_addMetaInformation, opt_checkAllStrings).bad())
+                    if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_format, opt_addMetaInformation).bad())
                         result = 3;
                 }
             }
