@@ -2088,7 +2088,7 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 {
   // get lower value
   const char *tmp = strchr( range, '-' );
-  long res = OFstatic_cast(long, tmp - range);
+  const size_t res = tmp - range;
   if( res == 0 )
     lower = NULL;
   else
@@ -2099,13 +2099,13 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
   }
 
   // get upper value
-  size_t len = strlen( range );
+  const size_t len = strlen( range );
   if( res == len - 1 )
     upper = NULL;
   else
   {
     upper = new char[ len - 1 - res + 1 ];
     strncpy( upper, tmp + 1, len - 1 - res );
-    upper[len-1-res] = '\0';
+    upper[len - 1 - res] = '\0';
   }
 }
