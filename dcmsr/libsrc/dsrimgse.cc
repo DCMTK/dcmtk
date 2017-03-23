@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -30,16 +30,15 @@
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
-#include "dcmtk/ofstd/ofdiag.h"
 
-// This is not about specialization but static member initialization, the
-// Visual Studio warning is therefore inappropriate and suppressed.
-#include DCMTK_DIAGNOSTIC_PUSH
-#include DCMTK_DIAGNOSTIC_IGNORE_NO_SUITABLE_DEFINITION_FOR_TEMPLATE_INSTANTIATION
-/* declared in class DSRListOfItems<T> */
-DCMTK_EXPLICIT_SPECIALIZATION
-const Uint16 DSRListOfItems<Uint16>::EmptyItem = 0;
-#include DCMTK_DIAGNOSTIC_POP
+
+template<>
+const Uint16& DSRgetEmptyItem<Uint16>()
+{
+    // no need to be thread-safe, since it is only an int
+    static const Uint16 t = 0;
+    return t;
+}
 
 
 DSRImageSegmentList::DSRImageSegmentList()

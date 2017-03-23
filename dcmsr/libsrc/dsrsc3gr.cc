@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2016, OFFIS e.V.
+ *  Copyright (C) 2010-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,16 +29,16 @@
 #include "dcmtk/dcmdata/dcvrfl.h"
 
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofdiag.h"
 
-// This is not about specialization but static member initialization, the
-// Visual Studio warning is therefore inappropriate and suppressed.
-#include DCMTK_DIAGNOSTIC_PUSH
-#include DCMTK_DIAGNOSTIC_IGNORE_NO_SUITABLE_DEFINITION_FOR_TEMPLATE_INSTANTIATION
-/* declared in class DSRListOfItems<T> */
-DCMTK_EXPLICIT_SPECIALIZATION
-const DSRGraphicData3DItem DSRListOfItems<DSRGraphicData3DItem>::EmptyItem(0, 0, 0);
-#include DCMTK_DIAGNOSTIC_POP
+
+// global empty item object so it gets initialized and cleaned up by the linker
+const DSRGraphicData3DItem DSRGraphicData3DEmptyItem(0, 0, 0);
+
+template<>
+const DSRGraphicData3DItem& DSRgetEmptyItem<DSRGraphicData3DItem>()
+{
+    return DSRGraphicData3DEmptyItem;
+}
 
 
 DSRGraphicData3DList::DSRGraphicData3DList()

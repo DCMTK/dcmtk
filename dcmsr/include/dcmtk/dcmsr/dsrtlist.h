@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,15 @@
 
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofvector.h"
+
+
+/** get the default item which is returned in DSRListOfItems::getItem() if the index is invalid.
+ *  This function needs to be specialized and instantiated for each different use of DSRListOfItems.
+ *  @tparam T the type of the object that will be returned.
+ *  @return a reference to an object of type T.
+ */
+template<typename T>
+const T& DSRgetEmptyItem();
 
 
 /*---------------------*
@@ -127,7 +136,7 @@ template<class T> class DSRListOfItems
         if (gotoItemPos(idx, iterator))
             return *iterator;
         else
-            return EmptyItem;
+            return DSRgetEmptyItem<T>();
     }
 
     /** get copy of the specified item
@@ -246,11 +255,6 @@ template<class T> class DSRListOfItems
         }
         return result;
     }
-
-    /// default item which is returned in getItem() if the index is invalid.
-    /// This static member variable needs to be defined (not only declared)
-    /// in each derived class.
-    static const T EmptyItem;
 
 
   protected:

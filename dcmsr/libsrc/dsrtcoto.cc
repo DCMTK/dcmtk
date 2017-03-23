@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,15 +31,16 @@
 #include "dcmtk/ofstd/ofstd.h"
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
-#include "dcmtk/ofstd/ofdiag.h"
 
-// This is not about specialization but static member initialization, the
-// Visual Studio warning is therefore inappropriate and suppressed.
-#include DCMTK_DIAGNOSTIC_PUSH
-#include DCMTK_DIAGNOSTIC_IGNORE_NO_SUITABLE_DEFINITION_FOR_TEMPLATE_INSTANTIATION
-/* declared in class DSRListOfItems<T> */
-DCMTK_EXPLICIT_SPECIALIZATION const Float64 DSRListOfItems<Float64>::EmptyItem = 0;
-#include DCMTK_DIAGNOSTIC_POP
+
+template<>
+const Float64& DSRgetEmptyItem<Float64>()
+{
+    // no need to be thread-safe, since it is only a float
+    static const Float64 t = 0;
+    return t;
+}
+
 
 DSRReferencedTimeOffsetList::DSRReferencedTimeOffsetList()
   : DSRListOfItems<Float64>()
