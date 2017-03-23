@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -116,7 +116,7 @@ public:
   virtual OFCondition getSegmentDescription(OFString& value,
                                             const signed long pos = 0);
 
-  /** Get the Segment Algorithm Type
+  /** Get the Segment Algorithm Type.
    *  @return The Algorithm Type
    */
   virtual DcmSegTypes::E_SegmentAlgoType getSegmentAlgorithmType();
@@ -150,11 +150,15 @@ public:
    */
   virtual OFVector<CodeSequenceMacro*>& getSegmentedPropertyTypeModifierCode();
 
-  /** Get Segment Surface Generation Algorithm Identification
-   *  @return Reference to the Segment Surface Generation Algorithm
+  /** Get Segmentation Algorithm Identification
+   *  @warning This method has earlier been named getSegmentSurfaceGenerationAlgorithmIdentification()
+   *           which has changed due to DICOM CP-1597. The code value returned is now
+   *           taken from the "Segmentation Algorithm Identification Sequence" instead of the
+   *           "Segment Surface Generation Algorithm Identification Sequence".
+   *  @return Reference to the Segmentation Algorithm Identification
    *  Identification, may be unset
    */
-  virtual AlgorithmIdentificationMacro& getSegmentSurfaceGenerationAlgorithmIdentification();
+  virtual AlgorithmIdentificationMacro& getSegmentationAlgorithmIdentification();
 
   /** Get Recommended Display Grayscale Value
    *  @param  value Reference to variable in which the value should be stored
@@ -219,13 +223,17 @@ public:
                                           const OFString& algoName,
                                           const OFBool checkValue = OFTrue);
 
-  /** Set Segment Surface Generation Algorithm Identification
+  /** Set Segmentation Algorithm Identification
+   *  @warning This method has earlier been named setSegmentSurfaceGenerationAlgorithmIdentification()
+   *           which has changed due to DICOM CP-1597. The resulting code value is now
+   *           written to the "Segmentation Algorithm Identification Sequence" instead of the
+   *           "Segment Surface Generation Algorithm Identification Sequence".
    *  @param  value The algorithm identification
    *  @param  checkValue If OFTrue, value undergoes some validity checks
    *  @return EC_Normal if setting was successful, error otherwise
    */
-  virtual OFCondition setSegmentSurfaceGenerationAlgorithmIdentification(const AlgorithmIdentificationMacro& value,
-                                                                         const OFBool checkValue = OFTrue);
+  virtual OFCondition setSegmentationAlgorithmIdentification(const AlgorithmIdentificationMacro& value,
+                                                             const OFBool checkValue = OFTrue);
 
   /** Set Recommended Display Grayscale Value
    *  @param  value Value to be set (single value only) or "" for no value
@@ -296,9 +304,11 @@ private:
   /// Segment Algorithm Name: (LO, 1, 1C)
   DcmLongString m_SegmentAlgorithmName;
 
-  /// Segment Surface Generation Algorithm Identification (SQ, 1, 3),
-  /// Baseline Context ID is 7162 (Surface Processing Algorithm Families)
-  AlgorithmIdentificationMacro m_SegmentSurfaceGenerationAlgorithmIdentification;
+  /// Segmentation Algorithm Identification (SQ, 1, 3).
+  /// This attribute has earlier been named m_SegmentationSurfaceGenerationAlgorithmIdentification
+  /// representing the related sequence. This has been changed in favor of the
+  /// Segmentation Algorithm Identification Sequence due to DICOM CP-1597.
+  AlgorithmIdentificationMacro m_SegmentationAlgorithmIdentification;
 
   /// Recommended Display Grayscale Value (US, 1, 3)
   DcmUnsignedShort m_RecommendedDisplayGrayscaleValue;

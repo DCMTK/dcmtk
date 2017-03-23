@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -79,8 +79,8 @@ OFCondition DcmSegment::read(DcmItem& item,
 
   DcmIODUtil::readSingleItem<AlgorithmIdentificationMacro>(
     item,
-    DCM_SegmentSurfaceGenerationAlgorithmIdentificationSequence,
-    m_SegmentSurfaceGenerationAlgorithmIdentification,
+    DCM_SegmentationAlgorithmIdentificationSequence,
+    m_SegmentationAlgorithmIdentification,
     "3",
     "Segmentation Image Module");
 
@@ -99,12 +99,12 @@ OFCondition DcmSegment::write(DcmItem& item)
   result = m_SegmentDescription.write(item);
   DcmIODUtil::copyElementToDataset(result, item, m_SegmentAlgorithmName, m_Rules.getByTag(DCM_SegmentAlgorithmName));
 
-  if (result.good() && m_SegmentSurfaceGenerationAlgorithmIdentification.check(OFTrue /* quiet */).good())
+  if (result.good() && m_SegmentationAlgorithmIdentification.check(OFTrue /* quiet */).good())
   {
     DcmIODUtil::writeSingleItem<AlgorithmIdentificationMacro>(
     result,
-    DCM_SegmentSurfaceGenerationAlgorithmIdentificationSequence,
-    m_SegmentSurfaceGenerationAlgorithmIdentification,
+    DCM_SegmentationAlgorithmIdentificationSequence,
+    m_SegmentationAlgorithmIdentification,
     item,
     "3",
     "Segmentation Image Module");
@@ -124,7 +124,7 @@ void DcmSegment::clearData()
 {
   m_SegmentDescription.clearData();
   m_SegmentAlgorithmName.clear();
-  m_SegmentSurfaceGenerationAlgorithmIdentification.clearData();
+  m_SegmentationAlgorithmIdentification.clearData();
   m_RecommendedDisplayGrayscaleValue.clear();
   m_RecommendedDisplayCIELabValue.clear();
   m_TrackingID.clear();
@@ -144,7 +144,7 @@ DcmSegment::DcmSegment() :
   m_SegmentationDoc(NULL),
   m_SegmentDescription(),
   m_SegmentAlgorithmName(DCM_SegmentAlgorithmName),
-  m_SegmentSurfaceGenerationAlgorithmIdentification(),
+  m_SegmentationAlgorithmIdentification(),
   m_RecommendedDisplayGrayscaleValue(DCM_RecommendedDisplayGrayscaleValue),
   m_RecommendedDisplayCIELabValue(DCM_RecommendedDisplayCIELabValue),
   m_TrackingID(DCM_TrackingID),
@@ -210,9 +210,9 @@ GeneralAnatomyMacro& DcmSegment::getGeneralAnatomyCode()
 }
 
 
-AlgorithmIdentificationMacro& DcmSegment::getSegmentSurfaceGenerationAlgorithmIdentification()
+AlgorithmIdentificationMacro& DcmSegment::getSegmentationAlgorithmIdentification()
 {
-  return m_SegmentSurfaceGenerationAlgorithmIdentification;
+  return m_SegmentationAlgorithmIdentification;
 }
 
 
@@ -325,19 +325,19 @@ OFCondition DcmSegment::setSegmentAlgorithm(const DcmSegTypes::E_SegmentAlgoType
 }
 
 
-OFCondition DcmSegment::setSegmentSurfaceGenerationAlgorithmIdentification(const AlgorithmIdentificationMacro& value,
-                                                                           const OFBool checkValue)
+OFCondition DcmSegment::setSegmentationAlgorithmIdentification(const AlgorithmIdentificationMacro& value,
+                                                               const OFBool checkValue)
 {
-  m_SegmentSurfaceGenerationAlgorithmIdentification = value;
+  m_SegmentationAlgorithmIdentification = value;
   OFCondition result;
   if (checkValue)
   {
-    result = m_SegmentSurfaceGenerationAlgorithmIdentification.check();
+    result = m_SegmentationAlgorithmIdentification.check();
   }
 
   if (result.bad())
   {
-    m_SegmentSurfaceGenerationAlgorithmIdentification.clearData();
+    m_SegmentationAlgorithmIdentification.clearData();
   }
 
   return result;
