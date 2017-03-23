@@ -22,6 +22,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/ofmem.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include "dcmtk/dcmdata/dcmatch.h"
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcvrda.h"
@@ -311,7 +312,10 @@ DcmAttributeMatching::DcmAttributeMatching( const DcmVR vr )
 
 DcmAttributeMatching::operator OFBool() const
 {
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_PERFORMANCE_WARNING
     return m_pMatch;
+#include DCMTK_DIAGNOSTIC_POP
 }
 
 OFBool DcmAttributeMatching::operator!() const
