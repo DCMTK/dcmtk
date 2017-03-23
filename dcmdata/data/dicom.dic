@@ -43,7 +43,7 @@
 #
 # Comments have a '#' at the beginning of the line.
 #
-# Tag       VR  Name            VM  Version
+# Tag		VR	Name			VM	Version
 #
 (0000,0000)	UL	CommandGroupLength	1	DICOM
 (0000,0002)	UI	AffectedSOPClassUID	1	DICOM
