@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,8 +108,9 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     PertinentOtherEvidence(DCM_PertinentOtherEvidenceSequence),
     ReferencedInstances()
 {
+    DCMSR_DEBUG("Initializing all DICOM header attributes");
     /* set initial values for a new SOP instance */
-    updateAttributes();
+    updateAttributes(OFTrue /*updateAll*/, OFFalse /*verboseMode*/);
 }
 
 
@@ -429,6 +430,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
 {
     OFCondition result = EC_Normal;
     E_DocumentType documentType = DT_invalid;
+    DCMSR_DEBUG("Reading SR document from DICOM dataset");
     /* re-initialize SR document */
     clear();
     /* check SOP class UID and modality first */
@@ -614,6 +616,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
     /* only write valid documents */
     if (isValid())
     {
+        DCMSR_DEBUG("Writing SR document to DICOM dataset");
         /* update all DICOM attributes */
         updateAttributes();
 
@@ -743,6 +746,7 @@ OFCondition DSRDocument::readXML(const OFString &filename,
                                  const size_t flags)
 {
     DSRXMLDocument doc;
+    DCMSR_DEBUG("Reading SR document from XML format");
     /* read, parse and validate XML document */
     OFCondition result = doc.read(filename, flags);
     if (result.good())
@@ -1229,6 +1233,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
     /* only write valid documents */
     if (isValid())
     {
+        DCMSR_DEBUG("Writing SR document to XML format");
         /* used for multiple purposes */
         OFString tmpString;
         /* update all DICOM attributes */
@@ -2895,9 +2900,11 @@ OFCondition DSRDocument::finalizeDocument()
 }
 
 
-void DSRDocument::updateAttributes(const OFBool updateAll)
+void DSRDocument::updateAttributes(const OFBool updateAll,
+                                   const OFBool verboseMode)
 {
-    DCMSR_DEBUG("Updating " << (updateAll ? "all " : "") << "DICOM header attributes");
+    if (verboseMode)
+        DCMSR_DEBUG("Updating " << (updateAll ? "all " : "") << "DICOM header attributes");
     const E_DocumentType documentType = getDocumentType();
     /* retrieve SOP class UID from internal document type */
     SOPClassUID.putString(documentTypeToSOPClassUID(documentType));
@@ -2924,7 +2931,8 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         /* create new SOP instance UID if required */
         if (SOPInstanceUID.isEmpty())
         {
-            DCMSR_DEBUG("  Generating new value for SOP Instance UID");
+            if (verboseMode)
+                DCMSR_DEBUG("  Generating new value for SOP Instance UID");
             SOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
             /* set instance creation date to current date (YYYYMMDD) */
             InstanceCreationDate.putOFStringArray(currentDate(tmpString));
@@ -2936,13 +2944,15 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         /* create new study instance UID if required */
         if (StudyInstanceUID.isEmpty())
         {
-            DCMSR_DEBUG("  Generating new value for Study Instance UID");
+            if (verboseMode)
+                DCMSR_DEBUG("  Generating new value for Study Instance UID");
             StudyInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
         }
         /* create new series instance UID if required */
         if (SeriesInstanceUID.isEmpty())
         {
-            DCMSR_DEBUG("  Generating new value for Series Instance UID");
+            if (verboseMode)
+                DCMSR_DEBUG("  Generating new value for Series Instance UID");
             SeriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
         }
 

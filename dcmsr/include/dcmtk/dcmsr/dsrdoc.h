@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1213,10 +1213,12 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** update various DICOM attributes.
      *  (e.g. set the modality and SOP class UID, generate a new Study, Series and SOP instance UID
      *  if required, set date/time values, etc.)
-     ** @param  updateAll  flag indicating whether all DICOM attributes should be updated or only
-     *                     the IOD-specific ones. (e.g. set DICOM defined terms from enum values)
+     ** @param  updateAll   flag indicating whether all DICOM attributes should be updated or only
+     *                      the IOD-specific ones. (e.g. set DICOM defined terms from enum values)
+     *  @param  verboseMode report (more) processing details to the logger if enabled (default)
      */
-    void updateAttributes(const OFBool updateAll = OFTrue);
+    void updateAttributes(const OFBool updateAll = OFTrue,
+                          const OFBool verboseMode = OFTrue);
 
 
   private:
