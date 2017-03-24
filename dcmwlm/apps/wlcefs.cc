@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,7 +81,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   sprintf( rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
 
   // Initialize starting values for variables pertaining to program options.
-  opt_dfPath = "/home/www/wlist";
+  opt_dfPath = ".";
 
   // default: spawn new process for each incoming connection (fork()-OS or WIN32)
 #if defined(HAVE_FORK) || defined(_WIN32)
