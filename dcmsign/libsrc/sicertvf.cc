@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,7 +42,7 @@ SiCertificateVerifier::SiCertificateVerifier()
 
 SiCertificateVerifier::~SiCertificateVerifier()
 {
-  if (x509store) X509_STORE_free(x509store);	
+  if (x509store) X509_STORE_free(x509store);
 }
 
 
@@ -68,7 +68,7 @@ OFCondition SiCertificateVerifier::addTrustedCertificateDir(const char *pathName
 
 OFCondition SiCertificateVerifier::addCertificateRevocationList(const char *fileName, int fileType)
 {
-  OFCondition result = SI_EC_CannotRead;  
+  OFCondition result = SI_EC_CannotRead;
   X509_CRL *x509crl = NULL;
   if (fileName)
   {
@@ -80,14 +80,14 @@ OFCondition SiCertificateVerifier::addCertificateRevocationList(const char *file
         if (fileType == X509_FILETYPE_ASN1)
         {
           x509crl = d2i_X509_CRL_bio(in, NULL);
-          if (x509crl) 
+          if (x509crl)
           {
             X509_STORE_add_crl(x509store, x509crl);
             result = EC_Normal;
           }
         } else {
           x509crl = PEM_read_bio_X509_CRL(in, NULL, NULL, NULL);
-          if (x509crl) 
+          if (x509crl)
           {
             X509_STORE_add_crl(x509store, x509crl);
             result = EC_Normal;
@@ -109,12 +109,16 @@ OFCondition SiCertificateVerifier::verifyCertificate(SiCertificate& certificate)
 
   X509_STORE_CTX *ctx = X509_STORE_CTX_new();
   X509_STORE_CTX_init(ctx, x509store, rawcert, NULL);
-  int ok = X509_verify_cert(ctx); /* returns nonzero if successful */
+
+  // If a complete chain can be built and validated X509_verify_cert() returns 1, 
+  // otherwise it returns zero, in exceptional circumstances it can also return a negative code. 
+  int ok = X509_verify_cert(ctx); 
+
   errorCode = X509_STORE_CTX_get_error(ctx);
   X509_STORE_CTX_cleanup(ctx);
   X509_STORE_CTX_free(ctx);
 
-  if (ok) return EC_Normal; else return SI_EC_VerificationFailed_NoTrust;
+  if (ok == 1) return EC_Normal; else return SI_EC_VerificationFailed_NoTrust;
 }
 
 
