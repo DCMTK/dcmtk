@@ -110,9 +110,9 @@ OFCondition SiCertificateVerifier::verifyCertificate(SiCertificate& certificate)
   X509_STORE_CTX *ctx = X509_STORE_CTX_new();
   X509_STORE_CTX_init(ctx, x509store, rawcert, NULL);
 
-  // If a complete chain can be built and validated X509_verify_cert() returns 1, 
-  // otherwise it returns zero, in exceptional circumstances it can also return a negative code. 
-  int ok = X509_verify_cert(ctx); 
+  // If a complete chain can be built and validated X509_verify_cert() returns 1,
+  // otherwise it returns zero, in exceptional circumstances it can also return a negative code.
+  int ok = X509_verify_cert(ctx);
 
   errorCode = X509_STORE_CTX_get_error(ctx);
   X509_STORE_CTX_cleanup(ctx);
