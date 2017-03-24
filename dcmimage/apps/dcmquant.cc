@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--mc-color-center",     "+Cc",    "select center of box");
 
      cmd.addSubGroup("color palette value representation:");
-      cmd.addOption("--write-ow",            "+pw",    "write Palette LUT as OW");
+      cmd.addOption("--write-ow",            "+pw",    "write Palette LUT as OW (default)");
       cmd.addOption("--write-us",            "+pu",    "write Palette LUT as US (retired)");
 
      cmd.addSubGroup("color palette creation:");
