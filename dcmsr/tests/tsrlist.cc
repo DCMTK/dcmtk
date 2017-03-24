@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,45 +24,63 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 #include "dcmtk/dcmsr/dsrtlist.h"
 
 
+// small dummy struct to use as list element, ensuring no other instance
+// of DSRListOfItems with this element type exists as a workaround for
+// Visual Studio not understanding C++ templates (again)
+struct Elem
+{
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
+    Elem(int i = 0) : i(i) {}
+#include DCMTK_DIAGNOSTIC_POP
+    OFBool operator==(const Elem& rhs) const {return i == rhs.i;}
+    int i;
+};
+
+
+// provide EmptyItem for instantiation
+template<>
+const Elem& DSRgetEmptyItem<Elem>()
+{
+    static const Elem e;
+    return e;
+}
+
+
 OFTEST(dcmsr_addItems)
 {
-    // disable test case when building shared libraries because of linker errors
-#ifndef DCMTK_SHARED
     /* prepare test data */
-    OFVector<Uint16> vec;
-    for (Uint16 i = 0; i < 10; ++i)
+    OFVector<Elem> vec;
+    for (int i = 0; i < 10; ++i)
         vec.push_back(i);
     /* add data to list */
-    DSRListOfItems<Uint16> lst;
+    DSRListOfItems<Elem> lst;
     lst.addItems(vec);
     /* and check result */
     OFCHECK_EQUAL(lst.getNumberOfItems(), 10);
-    for (Uint16 j = 0; j < 10; ++j)
-        OFCHECK_EQUAL(lst.getItem(j + 1), j);
+    for (int j = 0; j < 10; ++j)
+        OFCHECK_EQUAL(lst.getItem(j + 1).i, j);
     OFCHECK(lst.isElement(7));
     OFCHECK(!lst.isElement(10));
-#endif
 }
 
 
 OFTEST(dcmsr_getItems)
 {
-    // disable test case when building shared libraries because of linker errors
-#ifndef DCMTK_SHARED
-    DSRListOfItems<Uint16> lst;
+    DSRListOfItems<Elem> lst;
     /* add data to list */
-    for (Uint16 i = 0; i < 10; ++i)
+    for (int i = 0; i < 10; ++i)
         lst.addItem(i);
     /* and check result */
     OFCHECK_EQUAL(lst.getNumberOfItems(), 10);
-    OFVector<Uint16> vec;
+    OFVector<Elem> vec;
     OFCHECK(lst.getItems(vec).good());
     OFCHECK_EQUAL(vec.size(), 10);
-    for (Uint16 j = 0; j < 10; ++j)
-        OFCHECK_EQUAL(vec.at(j), j);
-#endif
+    for (int j = 0; j < 10; ++j)
+        OFCHECK_EQUAL(vec.at(j).i, j);
 }
