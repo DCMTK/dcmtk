@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt    opt_frame = 1;                    /* default: first frame */
     OFCmdUnsignedInt    opt_frameCount = 0;               /* default: all frames */
 
-    OFBool              opt_palette_ow = OFFalse;
+    OFBool              opt_palette_ow = OFTrue;
     OFBool              opt_entries_word = OFFalse;
     OFBool              opt_palette_fs = OFFalse;
     OFCmdUnsignedInt    opt_palette_col = 256;
@@ -166,8 +166,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--mc-color-avgpixel",   "+Cp",    "average pixels in box");
       cmd.addOption("--mc-color-center",     "+Cc",    "select center of box");
 
+     cmd.addSubGroup("color palette value representation:");
+      cmd.addOption("--write-ow",            "+pw",    "write Palette LUT as OW");
+      cmd.addOption("--write-us",            "+pu",    "write Palette LUT as US (retired)");
+
      cmd.addSubGroup("color palette creation:");
-      cmd.addOption("--write-ow",            "+pw",    "write Palette LUT as OW instead of US");
       cmd.addOption("--lut-entries-word",    "+pe",    "write Palette LUT with 16-bit entries");
       cmd.addOption("--floyd-steinberg",     "+pf",    "use Floyd-Steinberg error diffusion");
       cmd.addOption("--colors",              "+pc", 1, "number of colors: 2..65536 (default 256)",
@@ -298,7 +301,11 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 #endif
 
+      cmd.beginOptionBlock();
       if (cmd.findOption("--write-ow")) opt_palette_ow = OFTrue;
+      if (cmd.findOption("--write-us")) opt_palette_ow = OFFalse;
+      cmd.endOptionBlock();
+
       if (cmd.findOption("--lut-entries-word")) opt_entries_word = OFTrue;
       if (cmd.findOption("--floyd-steinberg")) opt_palette_fs = OFTrue;
       if (cmd.findOption("--colors")) cmd.getValueAndCheckMinMax(opt_palette_col, 2, 65536);
