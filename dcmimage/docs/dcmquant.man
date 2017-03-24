@@ -123,10 +123,15 @@ median cut representative color selection:
   +Cc  --mc-color-center
          select center of box
 
-color palette creation:
+color palette value representation:
 
   +pw  --write-ow
-         write Palette LUT as OW instead of US
+         write Palette LUT as OW (default)
+
+  +pu  --write-us
+         write Palette LUT as US (retired)
+
+color palette creation:
 
   +pe  --lut-entries-word
          write Palette LUT with 16-bit entries
@@ -157,7 +162,6 @@ SOP Instance UID:
 
 \subsection output_options output options
 \verbatim
-
 output file format:
 
   +F   --write-file
@@ -280,6 +284,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
