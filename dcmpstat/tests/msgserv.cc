@@ -26,8 +26,7 @@
 #endif
 
 #ifdef HAVE_WINDOWS_H
-// this must be undefined for some Winsock functions to be available
-#undef WIN32_LEAN_AND_MEAN
+#include <winsock2.h>  /* for SO_EXCLUSIVEADDRUSE */
 #include <windows.h>
 #endif
 
@@ -172,7 +171,12 @@ int main(int argc, char *argv[])
     /* GUSI always returns an error for setsockopt(...) */
 #else
     int reuse = 1;
+
+#ifdef _WIN32
+    if (setsockopt(s, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char *) &reuse, sizeof(reuse)) < 0)
+#else
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
+#endif
     {
       OFLOG_FATAL(msgservLogger, "failed to set socket options");
       return 10;
@@ -247,7 +251,12 @@ int main(int argc, char *argv[])
         /* GUSI always returns an error for setsockopt(...) */
 #else
         reuse = 1;
+
+#ifdef _WIN32
+        if (setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char *) &reuse, sizeof(reuse)) < 0)
+#else
         if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
+#endif
         {
           OFLOG_FATAL(msgservLogger, "failed to set socket options");
           return 10;

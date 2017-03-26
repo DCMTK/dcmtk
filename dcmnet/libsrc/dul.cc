@@ -73,8 +73,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
-// this must be undefined for some Winsock functions to be available
-#undef WIN32_LEAN_AND_MEAN
+#include <winsock2.h>  /* for SO_EXCLUSIVEADDRUSE */
 #include <windows.h>
 #endif
 
@@ -1788,7 +1787,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
     reuse = 1;
+
+#ifdef _WIN32
+    if (setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char *) &reuse, sizeof(reuse)) < 0)
+#else
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
+#endif
     {
         char buf[256];
         OFString msg = "TCP Initialization Error: ";
@@ -2069,7 +2073,11 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 #ifdef HAVE_GUSI_H
       /* GUSI always returns an error for setsockopt(...) */
 #else
+#ifdef _WIN32
+      if (setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char *) &reuse, sizeof(reuse)) < 0)
+#else
       if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
+#endif
       {
         char buf[256];
         OFString msg = "TCP Initialization Error: ";
