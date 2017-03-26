@@ -23,8 +23,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
-// this must be undefined for some Winsock functions to be available
-#undef WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
 #include <windows.h>
 #endif
 
@@ -59,7 +58,11 @@ END_EXTERN_C
 OFGlobal<Sint32> dcmSocketSendTimeout(60);
 OFGlobal<Sint32> dcmSocketReceiveTimeout(60);
 
+#ifdef _WIN32
+DcmTransportConnection::DcmTransportConnection(SOCKET openSocket)
+#else
 DcmTransportConnection::DcmTransportConnection(int openSocket)
+#endif
 : theSocket(openSocket)
 {
 #ifndef HAVE_GUSI_H
@@ -178,8 +181,15 @@ OFBool DcmTransportConnection::safeSelectReadableAssociation(DcmTransportConnect
 
 OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnection *connections[], int connCount, int timeout)
 {
+
+#ifdef _WIN32
+  SOCKET socketfd = INVALID_SOCKET;
+  SOCKET maxsocketfd = INVALID_SOCKET;
+#else
   int socketfd = -1;
   int maxsocketfd = -1;
+#endif
+
   int i=0;
   struct timeval t;
   fd_set fdset;
@@ -205,9 +215,10 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
   }
 
 #ifdef HAVE_INTP_SELECT
-  int nfound = select(maxsocketfd + 1, (int *)(&fdset), NULL, NULL, &t);
+  int nfound = select(OFstatic_cast(int, maxsocketfd + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
-  int nfound = select(maxsocketfd + 1, &fdset, NULL, NULL, &t);
+  // This is safe because on Win32 the first parameter of select() is ignored anyway
+  int nfound = select(OFstatic_cast(int, maxsocketfd + 1), &fdset, NULL, NULL, &t);
 #endif
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
   {
@@ -246,7 +257,11 @@ void DcmTransportConnection::dumpConnectionParameters(STD_NAMESPACE ostream& out
 
 /* ================================================ */
 
+#ifdef _WIN32
+DcmTCPConnection::DcmTCPConnection(SOCKET openSocket)
+#else
 DcmTCPConnection::DcmTCPConnection(int openSocket)
+#endif
 : DcmTransportConnection(openSocket)
 {
 }
@@ -333,9 +348,10 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   t.tv_usec = 0;
 
 #ifdef HAVE_INTP_SELECT
-  nfound = select(getSocket() + 1, (int *)(&fdset), NULL, NULL, &t);
+  nfound = select(OFstatic_cast(int, getSocket() + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
-  nfound = select(getSocket() + 1, &fdset, NULL, NULL, &t);
+  // This is safe because on Win32 the first parameter of select() is ignored anyway
+  nfound = select(OFstatic_cast(int, getSocket() + 1), &fdset, NULL, NULL, &t);
 #endif
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
   {

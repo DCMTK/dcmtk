@@ -61,7 +61,11 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 
 
+#ifdef _WIN32
+DcmTLSConnection::DcmTLSConnection(SOCKET openSocket, SSL *newTLSConnection)
+#else
 DcmTLSConnection::DcmTLSConnection(int openSocket, SSL *newTLSConnection)
+#endif
 : DcmTransportConnection(openSocket)
 , tlsConnection(newTLSConnection)
 , lastError(0)
@@ -271,9 +275,10 @@ OFBool DcmTLSConnection::networkDataAvailable(int timeout)
   t.tv_usec = 0;
 
 #ifdef HAVE_INTP_SELECT
-  nfound = select(getSocket() + 1, (int *)(&fdset), NULL, NULL, &t);
+  nfound = select(OFstatic_cast(int, getSocket() + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
-  nfound = select(getSocket() + 1, &fdset, NULL, NULL, &t);
+  // This is safe because on Windows the first select() parameter is ignored anyway
+  nfound = select(OFstatic_cast(int, getSocket() + 1), &fdset, NULL, NULL, &t);
 #endif
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
   {

@@ -24,8 +24,7 @@
 
 BEGIN_EXTERN_C
 #ifdef HAVE_WINDOWS_H
-// this must be undefined for some Winsock functions to be available
-#undef WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
 #include <windows.h>
 #include <winbase.h>
 #endif
@@ -281,8 +280,13 @@ void DVPSIPCClient::requestConnection()
 {
   if (connection) return; // connection already open
 
+#ifdef _WIN32
+  SOCKET s = socket(AF_INET, SOCK_STREAM, 0);
+  if (s == INVALID_SOCKET) return;
+#else
   int s = socket(AF_INET, SOCK_STREAM, 0);
   if (s < 0) return;
+#endif
 
   OFStandard::OFHostent hp = OFStandard::getHostByName("localhost");
   if (!hp) return;

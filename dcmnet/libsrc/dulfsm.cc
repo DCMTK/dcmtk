@@ -65,8 +65,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
-// this must be undefined for some Winsock functions to be available
-#undef WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
 #include <windows.h>
 #endif
 
@@ -284,7 +283,12 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
 
 static OFString dump_pdu(const char *type, void *buffer, unsigned long length);
 
+#ifdef _WIN32
+static void setTCPBufferLength(SOCKET sock);
+#else
 static void setTCPBufferLength(int sock);
+#endif
+
 OFCondition
 translatePresentationContextList(LST_HEAD ** internalList,
                                  LST_HEAD ** SCUSCPRoleList,
@@ -2189,7 +2193,11 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     int  port;
     struct sockaddr_in server;
     OFStandard::OFHostent hp;
+#ifdef _WIN32
+    SOCKET s;
+#else
     int s;
+#endif
     struct linger sockarg;
 
     if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2)
@@ -2200,7 +2208,11 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     }
 
     s = socket(AF_INET, SOCK_STREAM, 0);
+#ifdef _WIN32
+    if (s == INVALID_SOCKET)
+#else
     if (s < 0)
+#endif
     {
       char buf[256];
       OFString msg = "TCP Initialization Error: ";
@@ -2279,7 +2291,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         timeout.tv_usec = 0;
 
         do {
-            rc = select(s + 1, NULL, &fdSet, NULL, &timeout);
+            // the typecast is safe because Windows ignores the first select() parameter anyway
+            rc = select(OFstatic_cast(int, s + 1), NULL, &fdSet, NULL, &timeout);
         } while (rc == -1 && errno == EINTR);
 
         if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -3744,8 +3757,13 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-static void
-setTCPBufferLength(int sock)
+
+#ifdef _WIN32
+static void setTCPBufferLength(SOCKET sock)
+#else
+static void setTCPBufferLength(int sock)
+#endif
+
 {
     char *TCPBufferLength;
     int bufLen;

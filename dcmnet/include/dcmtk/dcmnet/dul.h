@@ -65,6 +65,11 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_WINDOWS_H
+#include <winsock2.h> /* for SOCKET type */
+#include <windows.h>
+#endif
+
 #include "dcmtk/ofstd/ofglobal.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
@@ -100,7 +105,11 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Sint32> dcmConnectionTimeout;   /* default: 
  *  will be used by dcmnet the next time receiveTransportConnectionTCP() is called.
  *  Useful for use with proxy applications, but inherently thread unsafe!
  */
+#ifdef _WIN32
+extern DCMTK_DCMNET_EXPORT OFGlobal<SOCKET> dcmExternalSocketHandle;   /* default: -1 */
+#else
 extern DCMTK_DCMNET_EXPORT OFGlobal<int> dcmExternalSocketHandle;   /* default: -1 */
+#endif
 
 /** When compiled with WITH_TCPWRAPPER, DCMTK server processes may use the TCP
  *  wrapper library to enforce access control - see hosts_access(5).  If this
@@ -439,8 +448,13 @@ DCMTK_DCMNET_EXPORT OFString& dumpExtNegList(OFString& str, SOPClassExtendedNego
 
 DCMTK_DCMNET_EXPORT OFBool
 DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout);
-DCMTK_DCMNET_EXPORT int
-DUL_networkSocket(DUL_NETWORKKEY * callerNet);
+
+#ifdef _WIN32
+DCMTK_DCMNET_EXPORT SOCKET DUL_networkSocket(DUL_NETWORKKEY * callerNet);
+#else
+DCMTK_DCMNET_EXPORT int DUL_networkSocket(DUL_NETWORKKEY * callerNet);
+#endif
+
 DCMTK_DCMNET_EXPORT OFBool
 DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
 

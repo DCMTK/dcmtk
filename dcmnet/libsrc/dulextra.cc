@@ -75,8 +75,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
-// this must be undefined for some Winsock functions to be available
-#undef WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
 #include <windows.h>
 #endif
 
@@ -119,10 +118,17 @@ DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAs
   else return ((PRIVATE_ASSOCIATIONKEY *)callerAssociation)->connection;
 }
 
-int
-DUL_networkSocket(DUL_NETWORKKEY * callerNet)
+#ifdef _WIN32
+SOCKET DUL_networkSocket(DUL_NETWORKKEY * callerNet)
+#else
+int DUL_networkSocket(DUL_NETWORKKEY * callerNet)
+#endif
 {
+#ifdef _WIN32
+    if (callerNet == NULL) return INVALID_SOCKET;
+#else
     if (callerNet == NULL) return -1;
+#endif
     PRIVATE_NETWORKKEY *net = (PRIVATE_NETWORKKEY*)callerNet;
     return net->networkSpecific.TCP.listenSocket;
 }
@@ -131,7 +137,11 @@ OFBool
 DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 {
     PRIVATE_NETWORKKEY *net;
+#ifdef _WIN32
+    SOCKET              s;
+#else
     int                 s;
+#endif
     OFBool             assocWaiting = OFFalse;
     struct timeval      t;
     fd_set              fdset;
@@ -155,9 +165,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
     t.tv_sec = timeout;
     t.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
-    nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
+    nfound = select(OFstatic_cast(int, s + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
-    nfound = select(s + 1, &fdset, NULL, NULL, &t);
+    // This is safe because on Windows the first select() parameter is ignored anyway
+    nfound = select(OFstatic_cast(int, s + 1), &fdset, NULL, NULL, &t);
 #endif
     if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {

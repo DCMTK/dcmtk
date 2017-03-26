@@ -155,7 +155,13 @@ END_EXTERN_C
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<OFBool> dcmStrictRoleSelection(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
+
+#ifdef _WIN32
+OFGlobal<SOCKET>    dcmExternalSocketHandle(INVALID_SOCKET);
+#else
 OFGlobal<int>    dcmExternalSocketHandle(-1);
+#endif
+
 OFGlobal<const char *> dcmTCPWrapperDaemonName((const char *)NULL);
 OFGlobal<unsigned long> dcmEnableBackwardCompatibility(0);
 
@@ -192,7 +198,13 @@ static OFCondition
 get_association_parameter(void *paramAddress,
   DUL_DATA_TYPE paramType, size_t paramLength,
   DUL_DATA_TYPE outputType, void *outputAddress, size_t outputLength);
+
+#ifdef _WIN32
+static void setTCPBufferLength(SOCKET sock);
+#else
 static void setTCPBufferLength(int sock);
+#endif
+
 static OFCondition checkNetwork(PRIVATE_NETWORKKEY ** networkKey);
 static OFCondition checkAssociation(PRIVATE_ASSOCIATIONKEY ** association);
 static OFString dump_presentation_ctx(LST_HEAD ** l);
@@ -1505,8 +1517,13 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
     int reuse = 1;
 
+#ifdef _WIN32
+    SOCKET sock = dcmExternalSocketHandle.get();
+    if (sock != INVALID_SOCKET)
+#else
     int sock = dcmExternalSocketHandle.get();
     if (sock > 0)
+#endif
     {
       // use the socket file descriptor provided to us externally
       // instead of calling accept().
@@ -1539,11 +1556,15 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             timeout_val.tv_sec = timeout;
             timeout_val.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
-            nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-                            (int *)(&fdset), NULL, NULL, &timeout_val);
+            nfound = select(
+              OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
+                           (int *)(&fdset), NULL, NULL, &timeout_val);
 #else
-            nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-                            &fdset, NULL, NULL, &timeout_val);
+            // On Win32, it is safe to cast the first parameter to int
+            // because Windows ignores this parameter anyway.
+            nfound = select(
+              OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
+                           &fdset, NULL, NULL, &timeout_val);
 #endif
             if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
             {
@@ -1570,10 +1591,14 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 timeout_val.tv_sec = 5;
                 timeout_val.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
-                nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+                nfound = select(
+                  OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
                                 (int *)(&fdset), NULL, NULL, &timeout_val);
 #else
-                nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+                // On Win32, it is safe to cast the first parameter to int
+                // because Windows ignores this parameter anyway.
+                nfound = select(
+                  OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
                                 &fdset, NULL, NULL, &timeout_val);
 #endif
                 if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -1592,9 +1617,13 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         do
         {
             sock = accept((*network)->networkSpecific.TCP.listenSocket, &from, &len);
+#ifdef _WIN32
+        } while (sock == INVALID_SOCKET && WSAGetLastError() == WSAEINTR);
+        if (sock == INVALID_SOCKET)
+#else
         } while (sock == -1 && errno == EINTR);
-
         if (sock < 0)
+#endif
         {
             char buf[256];
             OFOStringStream stream;
@@ -2037,13 +2066,21 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     (*key)->networkSpecific.TCP.tLayer = NULL;
     (*key)->networkSpecific.TCP.tLayerOwned = 0;
     (*key)->networkSpecific.TCP.port = -1;
+#ifdef _WIN32
+    (*key)->networkSpecific.TCP.listenSocket = INVALID_SOCKET;
+#else
     (*key)->networkSpecific.TCP.listenSocket = -1;
+#endif
 
     // Create listen socket if we're an application acceptor,
     // unless the socket handle has already been passed to us or
     // we are a forked child of an application acceptor, in which
     // case the socket also already exists.
+#ifdef _WIN32
+    if ((dcmExternalSocketHandle.get() == INVALID_SOCKET) &&
+#else
     if ((dcmExternalSocketHandle.get() < 0) &&
+#endif
         ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) &&
         (! processIsForkedChild))
     {
@@ -2055,14 +2092,24 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 #else
       size_t length;
 #endif
+
+#ifdef _WIN32
+      SOCKET sock;
+#else
       int sock;
+#endif
       struct sockaddr_in server;
 
       /* Create socket for Internet type communication */
       (*key)->networkSpecific.TCP.port = *(int *) parameter;
       (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
       sock = (*key)->networkSpecific.TCP.listenSocket;
+
+#ifdef _WIN32
+      if (sock == INVALID_SOCKET)
+#else
       if (sock < 0)
+#endif
       {
         char buf[256];
         OFString msg = "TCP Initialization Error: ";
@@ -2296,8 +2343,11 @@ get_association_parameter(void *paramAddress,
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
-static void
-setTCPBufferLength(int sock)
+#ifdef _WIN32
+static void setTCPBufferLength(SOCKET sock)
+#else
+static void setTCPBufferLength(int sock)
+#endif
 {
     char *TCPBufferLength;
     int bufLen;

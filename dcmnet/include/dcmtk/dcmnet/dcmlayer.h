@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,12 @@
 #define DCMLAYER_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#ifdef HAVE_WINDOWS_H
+#include <winsock2.h>  /* for SOCKET type */
+#include <windows.h>
+#endif
+
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofstring.h"
 
@@ -90,7 +96,11 @@ public:
    *    transparent layer is used.
    *  @return pointer to new connection object if successful, NULL otherwise.
    */
+#ifdef _WIN32
+  virtual DcmTransportConnection *createConnection(SOCKET openSocket, OFBool useSecureLayer);
+#else
   virtual DcmTransportConnection *createConnection(int openSocket, OFBool useSecureLayer);
+#endif
 
 private:
 

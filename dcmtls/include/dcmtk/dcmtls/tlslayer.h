@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2015, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -104,7 +104,11 @@ public:
    *    transparent layer is used.
    *  @return pointer to new connection object if successful, NULL otherwise.
    */
+#ifdef _WIN32
+  virtual DcmTransportConnection *createConnection(SOCKET openSocket, OFBool useSecureLayer);
+#else
   virtual DcmTransportConnection *createConnection(int openSocket, OFBool useSecureLayer);
+#endif
 
   /** loads the private key used for authentication of this application from a file.
    *  @param fileName path to the private key file

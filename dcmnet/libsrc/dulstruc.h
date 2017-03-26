@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -100,9 +100,13 @@ typedef struct {
     union {
   struct {
       int port;
+#ifdef _WIN32
+      SOCKET listenSocket;
+#else
       int listenSocket;
-            DcmTransportLayer *tLayer;
-            int tLayerOwned;
+#endif
+      DcmTransportLayer *tLayer;
+      int tLayerOwned;
   }   TCP;
     }   networkSpecific;
 }   PRIVATE_NETWORKKEY;

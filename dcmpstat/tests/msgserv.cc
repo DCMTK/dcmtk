@@ -160,8 +160,13 @@ int main(int argc, char *argv[])
 #endif
 
     /* open listen socket */
+#ifdef _WIN32
+    SOCKET s = socket(AF_INET, SOCK_STREAM, 0);
+    if (s == INVALID_SOCKET)
+#else
     int s = socket(AF_INET, SOCK_STREAM, 0);
     if (s < 0)
+#endif
     {
       OFLOG_FATAL(msgservLogger, "failed to create socket");
       return 10;
@@ -214,9 +219,10 @@ int main(int argc, char *argv[])
       t.tv_usec = 0;
 
 #ifdef HAVE_INTP_SELECT
-      nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
+      nfound = select(OFstatic_cast(int, s + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
-      nfound = select(s + 1, &fdset, NULL, NULL, &t);
+      // the typecast is safe because Windows ignores the first select() parameter anyway
+      nfound = select(OFstatic_cast(int, s + 1), &fdset, NULL, NULL, &t);
 #endif
 
       if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -227,7 +233,11 @@ int main(int argc, char *argv[])
       if (nfound > 0)
       {
         // incoming connection detected
+#ifdef _WIN32
+        SOCKET sock=0;
+#else
         int sock=0;
+#endif
         struct sockaddr from;
 #ifdef HAVE_DECLARATION_SOCKLEN_T
         socklen_t len = sizeof(from);
@@ -239,9 +249,13 @@ int main(int argc, char *argv[])
         do
         {
           sock = accept(s, &from, &len);
+#ifdef _WIN32
+        } while ((sock == INVALID_SOCKET)&&(errno == WSAEINTR));
+        if (sock == INVALID_SOCKET)
+#else
         } while ((sock == -1)&&(errno == EINTR));
-
         if (sock < 0)
+#endif
         {
           OFLOG_FATAL(msgservLogger, "unable to accept incoming connection");
           return 10;
