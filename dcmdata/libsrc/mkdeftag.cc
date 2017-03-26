@@ -22,8 +22,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
-// this must be undefined for some Winsock functions to be available
-#undef WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
 #include <windows.h>  /* this includes either winsock.h or winsock2.h */
 #elif defined(HAVE_WINSOCK_H)
 #include <winsock.h>  /* include winsock.h directly i.e. on MacOS */

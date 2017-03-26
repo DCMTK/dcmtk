@@ -143,8 +143,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
-// this must be undefined for some Winsock functions to be available
-#undef WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
 #include <windows.h>     /* for GetFileAttributes() */
 #include <direct.h>      /* for _mkdir() */
 #include <lm.h>          /* for NetWkstaUserGetInfo */
