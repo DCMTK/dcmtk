@@ -213,6 +213,9 @@
 /* Define to 1 if you have the `getlogin' function. */
 #cmakedefine HAVE_GETLOGIN @HAVE_GETLOGIN@
 
+/* Define to 1 if you have the `getlogin_r' function. */
+#cmakedefine HAVE_GETLOGIN_R @HAVE_GETLOGIN_R@
+
 /* Define to 1 if you have the `getpid' function. */
 #cmakedefine HAVE_GETPID @HAVE_GETPID@
 
@@ -388,6 +391,9 @@
 
 /* Define to 1 if you have the <sys/systeminfo.h> header file. */
 #cmakedefine HAVE_SYS_SYSTEMINFO_H @HAVE_SYS_SYSTEMINFO_H@
+
+/* Define to 1 if you have readdir_r */
+#cmakedefine HAVE_READDIR_R @HAVE_READDIR_R@
 
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3

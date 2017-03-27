@@ -5936,7 +5936,7 @@ _ACEOF
 fi
 done
 
-for ac_func in uname cuserid getlogin
+for ac_func in uname cuserid getlogin getlogin_r
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -6107,6 +6107,17 @@ ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
 #define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
+for ac_func in readdir_r
+do :
+  ac_fn_c_check_func "$LINENO" "readdir_r" "ac_cv_func_readdir_r"
+if test "x$ac_cv_func_readdir_r" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_READDIR_R 1
 _ACEOF
 
 fi
@@ -12656,7 +12667,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12659 "configure"
+#line 12670 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13128,7 +13139,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13131 "configure"
+#line 13142 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13200,7 +13211,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13203 "configure"
+#line 13214 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13272,7 +13283,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13275 "configure"
+#line 13286 "configure"
 #include "confdefs.h"
 
 template <class T>

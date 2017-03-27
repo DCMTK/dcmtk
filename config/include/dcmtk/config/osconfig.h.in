@@ -271,6 +271,9 @@
 /* Define to 1 if you have the `getlogin' function. */
 #undef HAVE_GETLOGIN
 
+/* Define to 1 if you have the `getlogin_r' function. */
+#undef HAVE_GETLOGIN_R
+
 /* Define to 1 if you have the `getpid' function. */
 #undef HAVE_GETPID
 
@@ -676,6 +679,9 @@ typedef unsigned short ushort;
 
 /* Define if OpenSSL provides the RAND_egd function. */
 #undef HAVE_RAND_EGD
+
+/* Define to 1 if you have the `readdir_r' function. */
+#undef HAVE_READDIR_R
 
 /* define if the compiler supports reinterpret_cast<> */
 #undef HAVE_REINTERPRET_CAST

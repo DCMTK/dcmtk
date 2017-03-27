@@ -2863,23 +2863,21 @@ OFString OFStandard::getUserName()
         OFnullptr
     );
     return &*buf.begin();
-#elif defined(HAVE_CUSERID) && !defined(__CYGWIN__)
-    char buf[L_cuserid];
-    return cuserid( buf );
-#elif defined(HAVE_GETLOGIN)
-#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+#elif defined(HAVE_GETLOGIN_R)
     // use getlogin_r instead of getlogin
     char buf[513];
     if( getlogin_r( buf, 512 ) != 0 )
         return "<no-utmp-entry>";
     buf[512] = 0;
     return buf;
-#else
+#elif defined(HAVE_GETLOGIN)
     // thread unsafe
     if( const char* s = getlogin() )
         return s;
     return "<no-utmp-entry>";
-#endif
+#elif defined(HAVE_CUSERID)
+    char buf[L_cuserid];
+    return cuserid( buf );
 #else
     return "<unknown-user>";
 #endif

@@ -478,14 +478,14 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
   if( dirp != NULL )
   {
     // start a loop; in each iteration another directory entry is determined.
-#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+#ifdef HAVE_READDIR_R
     unsigned char entryBuffer[sizeof(struct dirent) + _POSIX_PATH_MAX + 1];
 #ifdef HAVE_OLD_READDIR_R
     for( dp = readdir_r( dirp, (struct dirent *)entryBuffer ) ; dp != NULL ; dp = readdir_r( dirp, (struct dirent *)entryBuffer ) )
 #else
     for( int readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) ; readResult == 0 && dp ; readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) )
 #endif
-#else
+#else // HAVE_READDIR_R
     for( dp = readdir( dirp ) ; dp != NULL ; dp = readdir( dirp ) )
 #endif
     {
