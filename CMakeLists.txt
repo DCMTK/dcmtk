@@ -52,6 +52,16 @@ CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
 
 INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES()
 
+# ----------------------------------------------------------------------------
+# Add a target to run the unit tests in exhaustive mode
+# ----------------------------------------------------------------------------
+
+ADD_CUSTOM_TARGET("test-exhaustive"
+    COMMAND "${CMAKE_COMMAND}" "-P"
+        "${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunExhaustive.cmake"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+
 #-----------------------------------------------------------------------------
 # Start actual compilation tasks
 #-----------------------------------------------------------------------------

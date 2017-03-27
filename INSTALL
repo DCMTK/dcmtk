@@ -765,17 +765,20 @@ RUNNING THE TEST SUITE
 ======================
 
 DCMTK comes with a test suite that verifies that the toolkit works as expected.
-The tests are contained in a module's "tests" subdirectory.
+The tests are contained in a module's "tests" subdirectory.  Some tests are
+marked as exhaustive and are only run if explicitly enabled, see below.
 
 When using configure for building DCMTK, all tests can be run via "make check".
 If a test fails, make will stop and the failure reason of the test which failed
-should be visible.
+should be visible.  Additionally, you may run the exhaustive unit tests by
+typing "make check-exhaustive".
 
 You can also run the test suite with CMake.  However, the steps needed for
 running the test suite depend on the generator used.  The Visual Studio
 generators will create a "RUN_TESTS" subproject.  Building this project will
 call CTest and run all tests.  When using the Makefile generator, "make test"
-runs the test suite.  Other generators should use a similar approach.
+runs the test suite.  Additionally, you may run the exhaustive unit tests by
+typing "make test-exhaustive".  Other generators should use a similar approach.
 
 For closer inspection, individual tests can be run directly.  The Makefiles
 will build the test runner for each module as "<module>/tests/tests".  CMake
