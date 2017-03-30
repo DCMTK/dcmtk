@@ -22,13 +22,10 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-BEGIN_EXTERN_C
 #ifdef HAVE_WINDOWS_H
+// on Windows, we need Winsock2 for network functions
 #include <winsock2.h>
-#include <windows.h>
-#include <winbase.h>
 #endif
-END_EXTERN_C
 
 #include "dcmtk/dcmnet/dcompat.h"
 #include "dcmtk/dcmpstat/dvpsmsg.h"

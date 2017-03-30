@@ -24,11 +24,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
@@ -147,19 +142,7 @@ WlmActivityManager::WlmActivityManager(
   if (!opt_forkedChild)
     DCMWLM_WARN("(notice: dcmdata auto correction disabled.)");
 
-#ifdef HAVE_GUSI_H
-  // needed for Macintosh.
-  GUSISetup( GUSIwithSIOUXSockets );
-  GUSISetup( GUSIwithInternetSockets );
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  // we need at least version 1.1.
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
-
+  OFStandard::initializeNetwork();
 }
 
 // ----------------------------------------------------------------------------
@@ -176,9 +159,7 @@ WlmActivityManager::~WlmActivityManager()
   delete[] supportedAbstractSyntaxes[1];
   delete[] supportedAbstractSyntaxes;
 
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
 }
 
 // ----------------------------------------------------------------------------

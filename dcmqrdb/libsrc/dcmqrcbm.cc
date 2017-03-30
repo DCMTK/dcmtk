@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/dcmqrdb/dcmqrcbm.h"
 
 #include "dcmtk/dcmqrdb/dcmqrcnf.h"
@@ -293,7 +288,6 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     DIC_NODENAME dstHostName;
     DIC_NODENAME dstHostNamePlusPort;
     int dstPortNumber;
-    DIC_NODENAME localHostName;
     T_ASC_Parameters *params;
     OFString temp_str;
 
@@ -323,9 +317,8 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
         }
     }
     if (cond.good()) {
-        gethostname(localHostName, sizeof(localHostName) - 1);
         sprintf(dstHostNamePlusPort, "%s:%d", dstHostName, dstPortNumber);
-        ASC_setPresentationAddresses(params, localHostName,
+        ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(),
             dstHostNamePlusPort);
         ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle,NULL);
 

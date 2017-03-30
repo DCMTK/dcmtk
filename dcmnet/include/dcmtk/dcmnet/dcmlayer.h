@@ -25,11 +25,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>  /* for SOCKET type */
-#include <windows.h>
-#endif
-
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofstring.h"
 
@@ -37,6 +32,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/dcmnet/dndefine.h"
+#include "dcmtk/dcmnet/dntypes.h"
 
 /** this enum represents the result of a transport layer operation
  *  which may be a transparent TCP/IP or a secure TLS operation.
@@ -96,11 +92,7 @@ public:
    *    transparent layer is used.
    *  @return pointer to new connection object if successful, NULL otherwise.
    */
-#ifdef _WIN32
-  virtual DcmTransportConnection *createConnection(SOCKET openSocket, OFBool useSecureLayer);
-#else
-  virtual DcmTransportConnection *createConnection(int openSocket, OFBool useSecureLayer);
-#endif
+  virtual DcmTransportConnection *createConnection(DcmNativeSocketType openSocket, OFBool useSecureLayer);
 
 private:
 

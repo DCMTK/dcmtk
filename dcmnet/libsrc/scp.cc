@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmdata/dcostrmf.h" /* for class DcmOutputFileStream */
@@ -36,18 +31,7 @@ DcmSCP::DcmSCP() :
   m_assoc(NULL),
   m_cfg()
 {
-#ifdef HAVE_GUSI_H
-  // needed for Macintosh.
-  GUSISetup( GUSIwithSIOUXSockets );
-  GUSISetup( GUSIwithInternetSockets );
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  // we need at least version 1.1.
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 }
 
 // ----------------------------------------------------------------------------
@@ -60,9 +44,7 @@ DcmSCP::~DcmSCP()
     dropAndDestroyAssociation();
   }
 
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
 }
 
 // ----------------------------------------------------------------------------

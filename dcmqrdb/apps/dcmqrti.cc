@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -99,18 +94,7 @@ int main( int argc, char *argv[] )
   char tempstr[20];
   OFString temp_str;
 
-#ifdef HAVE_GUSI_H
-  // needed for Macintosh
-  GUSISetup( GUSIwithSIOUXSockets );
-  GUSISetup( GUSIwithInternetSockets );
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  // we need at least version 1.1
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup( winSockVersionNeeded, &winSockData );
-#endif
+  OFStandard::initializeNetwork();
 
   // initialize conf structure
   conf.setAETitle(APPLICATIONTITLE);
@@ -395,9 +379,7 @@ int main( int argc, char *argv[] )
     returnValue = 1;
   }
 
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
 
   // return result
   return( returnValue );

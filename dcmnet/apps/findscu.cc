@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/dcmnet/dfindscu.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
@@ -105,17 +100,7 @@ int main(int argc, char *argv[])
     */
     OFBool                opt_automaticDataCorrection = OFFalse;
 
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 
   char tempstr[20];
   OFString temp_str;
@@ -641,9 +626,7 @@ int main(int argc, char *argv[])
     cond = findscu.dropNetwork();
     if (cond.bad()) OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+    OFStandard::shutdownNetwork();
 
 #ifdef WITH_OPENSSL
     if (tLayer && opt_writeSeedFile)

@@ -128,11 +128,6 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#include <winbase.h>
-#endif
-
 /*
  * On DEC alpha the linker moans if a library is empty.
  * So define a dummy variable.

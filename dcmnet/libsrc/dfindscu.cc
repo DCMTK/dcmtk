@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/dcmnet/dfindscu.h"
 
 #define INCLUDE_CSTDLIB
@@ -186,7 +181,6 @@ OFCondition DcmFindSCU::performQuery(
 {
     T_ASC_Association *assoc = NULL;
     T_ASC_Parameters *params = NULL;
-    DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
     OFString temp_str;
 
@@ -206,9 +200,8 @@ OFCondition DcmFindSCU::performQuery(
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
-    gethostname(localHost, sizeof(localHost) - 1);
     sprintf(peerHost, "%s:%d", peer, OFstatic_cast(int, port));
-    ASC_setPresentationAddresses(params, localHost, peerHost);
+    ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     /* Set the presentation contexts which will be negotiated */
     /* when the network connection will be established */

@@ -25,16 +25,6 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>                   /* this includes either winsock.h or winsock2.h */
-#endif
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>                      /* needed for Macintosh */
-#include <SIOUX.h>
-#endif
-
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"      /* for class OFString */
 #include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
@@ -931,24 +921,13 @@ static int checkfile(const char *filename)
 
 int main(int argc, char *argv[])
 {
-
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
+    OFStandard::initializeNetwork();
 
 #ifdef WITH_TCPWRAPPER
     // this code makes sure that the linker cannot optimize away
     // the DUL part of the network module where the external flags
     // for libwrap are defined. Needed on OpenBSD.
     dcmTCPWrapperDaemonName.set(NULL);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Checking tool for presentation states", rcsid);

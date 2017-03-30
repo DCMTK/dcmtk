@@ -23,8 +23,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
+// on Windows, we need Winsock2 for network functions
 #include <winsock2.h>
-#include <windows.h>
 #endif
 
 #include "dcmtk/dcmnet/dcmtrans.h"
@@ -58,11 +58,7 @@ END_EXTERN_C
 OFGlobal<Sint32> dcmSocketSendTimeout(60);
 OFGlobal<Sint32> dcmSocketReceiveTimeout(60);
 
-#ifdef _WIN32
-DcmTransportConnection::DcmTransportConnection(SOCKET openSocket)
-#else
-DcmTransportConnection::DcmTransportConnection(int openSocket)
-#endif
+DcmTransportConnection::DcmTransportConnection(DcmNativeSocketType openSocket)
 : theSocket(openSocket)
 {
 #ifndef HAVE_GUSI_H
@@ -257,11 +253,7 @@ void DcmTransportConnection::dumpConnectionParameters(STD_NAMESPACE ostream& out
 
 /* ================================================ */
 
-#ifdef _WIN32
-DcmTCPConnection::DcmTCPConnection(SOCKET openSocket)
-#else
-DcmTCPConnection::DcmTCPConnection(int openSocket)
-#endif
+DcmTCPConnection::DcmTCPConnection(DcmNativeSocketType openSocket)
 : DcmTransportConnection(openSocket)
 {
 }

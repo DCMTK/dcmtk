@@ -20,18 +20,6 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>  /* this includes either winsock.h or winsock2.h */
-#elif defined(HAVE_WINSOCK_H)
-#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
-#endif
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofstring.h"
@@ -127,17 +115,7 @@ int main(int argc, char* argv[])
     int i = 0;
     FILE* fout = NULL;
 
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+    OFStandard::initializeNetwork();
 
     prepareCmdLineArgs(argc, argv, "mkdeftag");
 

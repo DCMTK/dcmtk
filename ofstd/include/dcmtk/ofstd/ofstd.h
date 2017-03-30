@@ -1027,6 +1027,25 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static OFString getHostName();
 
+    /** Initialize the network API (if necessary), e.g.\ Winsock or GUSI.
+     *  Calls the appropriate network initialization routines for the current
+     *  platform, e.g.\ WSAStartup() or GUSISetup().
+     *  @note This function must be called by an application before any
+     *    network related functions are used, be it listening on a socket or
+     *    just retrieving the current host name. Not all platforms require
+     *    calling a network initialization routine, therefore testing if it
+     *    works to determine if this method must be called is not an option
+     *    -- just always ensure to call it at program startup if the
+     *    application does something network related!
+     */
+    static void initializeNetwork();
+
+    /** Shutdown the network API (if necessary), e.g.\ Winsock.
+     *  Calls the appropriate network shutdown routines to free used resources
+     *  (e.g.\ WSACleanup()).
+     */
+    static void shutdownNetwork();
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy

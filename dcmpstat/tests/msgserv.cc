@@ -21,13 +21,14 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
+#ifdef HAVE_WINDOWS_H
+#include <winsock2.h>
+#elif defined(HAVE_WINSOCK_H)
+#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
 #endif
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>  /* for SO_EXCLUSIVEADDRUSE */
-#include <windows.h>
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
 #endif
 
 BEGIN_EXTERN_C
@@ -97,24 +98,13 @@ static const char *applicationType(Uint32 i)
 
 int main(int argc, char *argv[])
 {
-
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
+    OFStandard::initializeNetwork();
 
 #ifdef WITH_TCPWRAPPER
     // this code makes sure that the linker cannot optimize away
     // the DUL part of the network module where the external flags
     // for libwrap are defined. Needed on OpenBSD.
     dcmTCPWrapperDaemonName.set(NULL);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
     OFCmdUnsignedInt opt_port = 0;                   /* listen port */
@@ -379,9 +369,7 @@ int main(int argc, char *argv[])
       }
     }
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+    OFStandard::shutdownNetwork();
 
     return 0;
 }

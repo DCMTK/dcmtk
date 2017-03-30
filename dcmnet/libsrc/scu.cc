@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDName() */
@@ -60,18 +55,7 @@ DcmSCU::DcmSCU() :
   m_datasetConversionMode(OFFalse),
   m_progressNotificationMode(OFTrue)
 {
-
-#ifdef HAVE_GUSI_H
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  /* we need at least version 1.1 */
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 }
 
 void DcmSCU::freeNetwork()
@@ -112,9 +96,7 @@ DcmSCU::~DcmSCU()
     freeNetwork();
   }
 
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
 }
 
 
@@ -151,9 +133,8 @@ OFCondition DcmSCU::initNetwork()
 
   /* Figure out the presentation addresses and copy the */
   /* corresponding values into the association parameters.*/
-  DIC_NODENAME localHost;
   DIC_NODENAME peerHost;
-  gethostname(localHost, sizeof(localHost) - 1);
+  const OFString localHost = OFStandard::getHostName();
   /* Since the underlying dcmnet structures reserve only 64 bytes for peer
      as well as local host name, we check here for buffer overflow.
    */
@@ -162,13 +143,13 @@ OFCondition DcmSCU::initNetwork()
     DCMNET_ERROR("Maximum length of peer host name '" << m_peer << "' is longer than maximum of 57 characters");
     return EC_IllegalCall; // TODO: need to find better error code
   }
-  if (strlen(localHost) + 1 > 63)
+  if (localHost.size() + 1 > 63)
   {
     DCMNET_ERROR("Maximum length of local host name '" << localHost << "' is longer than maximum of 62 characters");
     return EC_IllegalCall; // TODO: need to find better error code
   }
   sprintf(peerHost, "%s:%d", m_peer.c_str(), OFstatic_cast(int, m_peerPort));
-  ASC_setPresentationAddresses(m_params, localHost, peerHost);
+  ASC_setPresentationAddresses(m_params, localHost.c_str(), peerHost);
 
   /* Add presentation contexts */
 

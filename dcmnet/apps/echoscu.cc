@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -152,23 +147,11 @@ main(int argc, char *argv[])
 
     T_ASC_Network *net;
     T_ASC_Parameters *params;
-    DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc;
     OFString temp_str;
 
-#ifdef HAVE_GUSI_H
-    /* needed for Macintosh */
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 
   char tempstr[20];
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM verification (C-ECHO) SCU", rcsid);
@@ -545,9 +528,8 @@ main(int argc, char *argv[])
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
-    gethostname(localHost, sizeof(localHost) - 1);
     sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
-    ASC_setPresentationAddresses(params, localHost, peerHost);
+    ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     /* Set the presentation contexts which will be negotiated */
     /* when the network connection will be established */
@@ -665,9 +647,7 @@ main(int argc, char *argv[])
         exit(1);
     }
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+    OFStandard::shutdownNetwork();
 
 #ifdef WITH_OPENSSL
     if (tLayer && opt_writeSeedFile)

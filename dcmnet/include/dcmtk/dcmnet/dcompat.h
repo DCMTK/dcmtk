@@ -98,19 +98,9 @@
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>  /* this includes either winsock.h or winsock2.h */
-#else
-#ifdef HAVE_WINSOCK_H
+#include <windows.h>  /* for Windows defines */
+#elif defined(HAVE_WINSOCK_H)
 #include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
-#ifdef macintosh
-/*
-** The WinSock header on Macintosh does not declare the WORD type nor the MAKEWORD
-** macro need to initialize the WinSock library.
-*/
-typedef u_short WORD;
-#define MAKEWORD(a,b) ((WORD) (((a)&0xff)<<8) | ((b)&0xff) )
-#endif
-#endif
 #endif
 
 BEGIN_EXTERN_C
@@ -370,6 +360,5 @@ DCMTK_DCMNET_EXPORT char *strerror(int e);
 #else
 #define NULL_DEVICE_NAME "/dev/null"
 #endif
-
 
 #endif /* DCOMPAT_H */

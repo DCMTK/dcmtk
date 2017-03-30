@@ -75,8 +75,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
+// on Windows, we need Winsock2 for network functions
 #include <winsock2.h>
-#include <windows.h>
 #endif
 
 #define INCLUDE_CSTDLIB
@@ -118,17 +118,9 @@ DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAs
   else return ((PRIVATE_ASSOCIATIONKEY *)callerAssociation)->connection;
 }
 
-#ifdef _WIN32
-SOCKET DUL_networkSocket(DUL_NETWORKKEY * callerNet)
-#else
-int DUL_networkSocket(DUL_NETWORKKEY * callerNet)
-#endif
+DcmNativeSocketType DUL_networkSocket(DUL_NETWORKKEY * callerNet)
 {
-#ifdef _WIN32
-    if (callerNet == NULL) return INVALID_SOCKET;
-#else
-    if (callerNet == NULL) return -1;
-#endif
+    if (callerNet == NULL) return DCMNET_INVALID_SOCKET;
     PRIVATE_NETWORKKEY *net = (PRIVATE_NETWORKKEY*)callerNet;
     return net->networkSpecific.TCP.listenSocket;
 }
@@ -137,12 +129,8 @@ OFBool
 DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 {
     PRIVATE_NETWORKKEY *net;
-#ifdef _WIN32
-    SOCKET              s;
-#else
-    int                 s;
-#endif
-    OFBool             assocWaiting = OFFalse;
+    DcmNativeSocketType s;
+    OFBool              assocWaiting = OFFalse;
     struct timeval      t;
     fd_set              fdset;
     int                 nfound;
@@ -155,12 +143,7 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
     s = net->networkSpecific.TCP.listenSocket;
 
     FD_ZERO(&fdset);
-#ifdef __MINGW32__
-    // on MinGW, FD_SET expects an unsigned first argument
-    FD_SET((unsigned int) s, &fdset);
-#else
     FD_SET(s, &fdset);
-#endif
 
     t.tv_sec = timeout;
     t.tv_usec = 0;

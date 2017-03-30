@@ -25,11 +25,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h> /* for SOCKET type */
-#include <windows.h>
-#endif
-
 #include "dcmtk/ofstd/ofglobal.h"     /* for OFGlobal */
 #include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
 #include "dcmtk/ofstd/ofstream.h"     /* for ostream */
@@ -71,11 +66,7 @@ public:
    *    the connection must already be established on socket level. This object
    *    takes over control of the socket.
    */
-#ifdef _WIN32
-  DcmTransportConnection(SOCKET openSocket);
-#else
-  DcmTransportConnection(int openSocket);
-#endif
+  DcmTransportConnection(DcmNativeSocketType openSocket);
 
   /** destructor
    */
@@ -193,20 +184,12 @@ protected:
   /** returns the socket file descriptor managed by this object.
    *  @return socket file descriptor
    */
-#ifdef _WIN32
-  SOCKET getSocket() { return theSocket; }
-#else
-  int getSocket() { return theSocket; }
-#endif
+  DcmNativeSocketType getSocket() { return theSocket; }
 
   /** set the socket file descriptor managed by this object.
    *  @param socket file descriptor
    */
-#ifdef _WIN32
-  void setSocket(SOCKET socket) { theSocket = socket; }
-#else
-  void setSocket(int socket) { theSocket = socket; }
-#endif
+  void setSocket(DcmNativeSocketType socket) { theSocket = socket; }
 
 private:
 
@@ -252,13 +235,8 @@ private:
    */
   static OFBool fastSelectReadableAssociation(DcmTransportConnection *connections[], int connCount, int timeout);
 
-#ifdef _WIN32
-  /// the socket file descriptor used by the transport connection.
-  SOCKET theSocket;
-#else
-  /// the socket file descriptor used by the transport connection.
-  int theSocket;
-#endif
+  /// the socket file descriptor/handle used by the transport connection.
+  DcmNativeSocketType theSocket;
 };
 
 
@@ -273,11 +251,7 @@ public:
    *    the connection must already be established on socket level. This object
    *    takes over control of the socket.
    */
-#ifdef _WIN32
-  DcmTCPConnection(SOCKET openSocket);
-#else
-  DcmTCPConnection(int openSocket);
-#endif
+  DcmTCPConnection(DcmNativeSocketType openSocket);
 
   /** destructor
    */

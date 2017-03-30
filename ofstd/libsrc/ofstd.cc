@@ -144,6 +144,7 @@ END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
 #include <winsock2.h>
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>     /* for GetFileAttributes() */
 #include <direct.h>      /* for _mkdir() */
 #include <lm.h>          /* for NetWkstaUserGetInfo */
@@ -154,7 +155,23 @@ END_EXTERN_C
 #define F_OK 00 /* Existence only */
 #endif /* !R_OK */
 
+#elif defined(HAVE_WINSOCK_H)
+
+#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
+#ifdef macintosh
+/*
+** The WinSock header on Macintosh does not declare the WORD type nor the MAKEWORD
+** macro need to initialize the WinSock library.
+*/
+typedef u_short WORD;
+#define MAKEWORD(a,b) ((WORD) (((a)&0xff)<<8) | ((b)&0xff) )
+#endif /* macintosh */
+
 #endif /* HAVE_WINDOWS_H */
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
 
 #ifdef _WIN32
 #include <process.h>     /* needed for declaration of getpid() */
@@ -2896,6 +2913,28 @@ OFString OFStandard::getHostName()
     return buf;
 #else
     return "localhost";
+#endif
+}
+
+void OFStandard::initializeNetwork()
+{
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef HAVE_WINSOCK_H
+    WSAData winSockData;
+    /* we need at least version 1.1 */
+    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
+    WSAStartup(winSockVersionNeeded, &winSockData);
+#endif
+}
+
+void OFStandard::shutdownNetwork()
+{
+#ifdef HAVE_WINSOCK_H
+    WSACleanup();
 #endif
 }
 

@@ -20,16 +20,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/dcmnet/dcompat.h"     /* compatibility code, needs to be included before dirent.h */
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
 
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -625,18 +616,7 @@ static OFCondition updateJobList(
 
 int main(int argc, char *argv[])
 {
-
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+    OFStandard::initializeNetwork();
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Print spooler for presentation state viewer", rcsid);
     OFCommandLine cmd;
@@ -1145,9 +1125,7 @@ int main(int argc, char *argv[])
   delete tLayer;
 #endif
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
 
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */

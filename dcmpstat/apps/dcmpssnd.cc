@@ -21,15 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* for O_RDONLY */
@@ -329,18 +320,9 @@ static OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params, i
 
 int main(int argc, char *argv[])
 {
-    OFString temp_str;
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
+    OFStandard::initializeNetwork();
 
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+    OFString temp_str;
 
     const char *opt_cfgName     = NULL;                /* config file name */
     const char *opt_target      = NULL;                /* send target name */
@@ -695,7 +677,6 @@ int main(int argc, char *argv[])
     /* open network connection */
     T_ASC_Network *net=NULL;
     T_ASC_Parameters *params=NULL;
-    DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc=NULL;
 
@@ -734,9 +715,8 @@ int main(int argc, char *argv[])
 
     ASC_setAPTitles(params, dvi.getNetworkAETitle(), targetAETitle, NULL);
 
-    gethostname(localHost, sizeof(localHost) - 1);
     sprintf(peerHost, "%s:%d", targetHostname, (int)targetPort);
-    ASC_setPresentationAddresses(params, localHost, peerHost);
+    ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     cond = addAllStoragePresentationContexts(params, targetImplicitOnly);
     if (cond.bad())
@@ -953,9 +933,7 @@ int main(int argc, char *argv[])
       delete messageClient;
     }
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+    OFStandard::shutdownNetwork();
 
 #ifdef WITH_OPENSSL
     if (tLayer)

@@ -21,22 +21,12 @@
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #define INCLUDE_CERRNO
 #include "dcmtk/ofstd/ofstdinc.h"
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmnet/dicom.h"
@@ -238,28 +228,16 @@ addPresentationContext(T_ASC_Parameters *params,
 int
 main(int argc, char *argv[])
 {
-    T_ASC_Parameters *params = NULL;
-    const char *opt_peer;
-    OFCmdUnsignedInt opt_port = 104;
-    DIC_NODENAME localHost;
-    DIC_NODENAME peerHost;
-    T_ASC_Association *assoc = NULL;
-    const char *opt_peerTitle = PEERAPPLICATIONTITLE;
-    const char *opt_ourTitle = APPLICATIONTITLE;
-    OFList<OFString> fileNameList;
+  T_ASC_Parameters *params = NULL;
+  const char *opt_peer;
+  OFCmdUnsignedInt opt_port = 104;
+  DIC_NODENAME peerHost;
+  T_ASC_Association *assoc = NULL;
+  const char *opt_peerTitle = PEERAPPLICATIONTITLE;
+  const char *opt_ourTitle = APPLICATIONTITLE;
+  OFList<OFString> fileNameList;
 
-#ifdef HAVE_GUSI_H
-    /* needed for Macintosh */
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 
   char tempstr[20];
   OFString temp_str;
@@ -805,9 +783,8 @@ main(int argc, char *argv[])
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
-    gethostname(localHost, sizeof(localHost) - 1);
     sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
-    ASC_setPresentationAddresses(params, localHost, peerHost);
+    ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     /*
      * We also add a presentation context for the corresponding
@@ -926,9 +903,7 @@ main(int argc, char *argv[])
         exit(EXITCODE_CANNOT_CLOSE_ASSOCIATION);
     }
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+    OFStandard::shutdownNetwork();
 
     return cmove_status_code;
 }

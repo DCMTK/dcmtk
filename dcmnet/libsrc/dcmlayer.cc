@@ -28,11 +28,7 @@ DcmTransportLayer::~DcmTransportLayer()
 {
 }
 
-#ifdef _WIN32
-DcmTransportConnection * DcmTransportLayer::createConnection(SOCKET openSocket, OFBool useSecureLayer)
-#else
-DcmTransportConnection * DcmTransportLayer::createConnection(int openSocket, OFBool useSecureLayer)
-#endif
+DcmTransportConnection * DcmTransportLayer::createConnection(DcmNativeSocketType openSocket, OFBool useSecureLayer)
 {
   if (useSecureLayer) return NULL;  /* secure layer connections not supported */
   else return new DcmTCPConnection(openSocket);

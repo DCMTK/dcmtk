@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
@@ -45,10 +40,6 @@ BEGIN_EXTERN_C
 #include <signal.h>
 #endif
 END_EXTERN_C
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
 
 #ifdef HAVE_WINDOWS_H
 #include <direct.h>      /* for _mkdir() */
@@ -243,18 +234,7 @@ int main(int argc, char *argv[])
   T_ASC_Network *net;
   DcmAssociationConfiguration asccfg;
 
-#ifdef HAVE_GUSI_H
-  /* needed for Macintosh */
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  /* we need at least version 1.1 */
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 
   OFString temp_str;
   OFOStringStream optStream;
@@ -1219,9 +1199,7 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
 
 #ifdef WITH_OPENSSL
   delete tLayer;

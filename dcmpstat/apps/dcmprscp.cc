@@ -21,15 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* for O_RDONLY */
@@ -113,18 +104,7 @@ static void cleanChildren()
 
 int main(int argc, char *argv[])
 {
-
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+    OFStandard::initializeNetwork();
 
     dcmDisableGethostbyaddr.set(OFTrue);  // disable hostname lookup
 
@@ -520,9 +500,7 @@ int main(int argc, char *argv[])
     } // finished
     cleanChildren();
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+    OFStandard::shutdownNetwork();
 
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */

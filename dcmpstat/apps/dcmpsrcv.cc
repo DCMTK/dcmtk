@@ -21,15 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* for O_RDONLY */
@@ -730,7 +721,6 @@ static void terminateAllReceivers(DVConfiguration& dvi)
   OFBool recUseTLS=OFFalse;
   T_ASC_Network *net=NULL;
   T_ASC_Parameters *params=NULL;
-  DIC_NODENAME localHost;
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc=NULL;
   OFBool prepared = OFTrue;
@@ -846,9 +836,8 @@ static void terminateAllReceivers(DVConfiguration& dvi)
       {
         ASC_setTransportLayerType(params, recUseTLS);
         ASC_setAPTitles(params, dvi.getNetworkAETitle(), recAETitle, NULL);
-        gethostname(localHost, sizeof(localHost) - 1);
         sprintf(peerHost, "%s:%d", "localhost", (int)recPort);
-        ASC_setPresentationAddresses(params, localHost, peerHost);
+        ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
         // we propose only the "shutdown" SOP class in implicit VR
         ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, &xfer, 1);
         // request shutdown association, abort if some strange peer accepts it
@@ -860,9 +849,7 @@ static void terminateAllReceivers(DVConfiguration& dvi)
   } /* for loop */
 
   ASC_dropNetwork(&net);
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
   return;
 }
 
@@ -874,18 +861,7 @@ static void terminateAllReceivers(DVConfiguration& dvi)
 
 int main(int argc, char *argv[])
 {
-
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+    OFStandard::initializeNetwork();
 
     int         opt_terminate = 0;         /* default: no terminate mode */
     const char *opt_cfgName   = NULL;      /* config file name */
@@ -1446,9 +1422,7 @@ int main(int argc, char *argv[])
       delete messageClient;
     }
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+    OFStandard::shutdownNetwork();
 
 #ifdef WITH_OPENSSL
     if (tLayer)

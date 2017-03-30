@@ -92,8 +92,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
+// on Windows, we need Winsock2 for network functions
 #include <winsock2.h>
-#include <windows.h>
 #endif
 
 #include "dcmtk/dcmnet/assoc.h"       /* always include the module header */

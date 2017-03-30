@@ -74,7 +74,6 @@
 
 #ifdef HAVE_WINDOWS_H
 #include <winsock2.h>  /* for SO_EXCLUSIVEADDRUSE */
-#include <windows.h>
 #endif
 
 #include "dcmtk/dcmnet/diutil.h"
@@ -155,13 +154,7 @@ END_EXTERN_C
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<OFBool> dcmStrictRoleSelection(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
-
-#ifdef _WIN32
-OFGlobal<SOCKET>    dcmExternalSocketHandle(INVALID_SOCKET);
-#else
-OFGlobal<int>    dcmExternalSocketHandle(-1);
-#endif
-
+OFGlobal<DcmNativeSocketType> dcmExternalSocketHandle(DCMNET_INVALID_SOCKET);
 OFGlobal<const char *> dcmTCPWrapperDaemonName((const char *)NULL);
 OFGlobal<unsigned long> dcmEnableBackwardCompatibility(0);
 

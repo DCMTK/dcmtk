@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/dcmqrdb/dcmqrtis.h"
 
 #include "dcmtk/dcmnet/diutil.h"
@@ -614,7 +609,6 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     const char *peer;
     DIC_NODENAME presentationAddress;
     T_ASC_Parameters *params;
-    DIC_NODENAME localHost;
     DIC_AE currentAETitle;
     OFString temp_str;
 
@@ -635,14 +629,13 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     }
     ASC_setAPTitles(params, currentAETitle, currentPeerTitle, NULL);
 
-    gethostname(localHost, sizeof(localHost) - 1);
     if (!config.peerForAETitle(currentPeerTitle, &peer, &port)) {
         DCMQRDB_ERROR("Help, AE title (" << currentPeerTitle << ") no longer in config");
         ASC_destroyAssociationParameters(&params);
         return OFFalse;
     }
     sprintf(presentationAddress, "%s:%d", peer, port);
-    ASC_setPresentationAddresses(params, localHost, presentationAddress);
+    ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), presentationAddress);
 
     cond = addPresentationContexts(params);
     if (cond.bad()) {

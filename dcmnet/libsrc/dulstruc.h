@@ -100,11 +100,7 @@ typedef struct {
     union {
   struct {
       int port;
-#ifdef _WIN32
-      SOCKET listenSocket;
-#else
-      int listenSocket;
-#endif
+      DcmNativeSocketType listenSocket;
       DcmTransportLayer *tLayer;
       int tLayerOwned;
   }   TCP;

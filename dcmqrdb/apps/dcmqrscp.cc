@@ -21,11 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -115,18 +110,7 @@ main(int argc, char *argv[])
   OFCmdUnsignedInt overrideMaxPDU = 0;
   DcmQueryRetrieveOptions options;
 
-#ifdef HAVE_GUSI_H
-  /* needed for Macintosh */
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  /* we need at least version 1.1 */
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 
   char tempstr[20];
   OFString temp_str;
@@ -818,9 +802,7 @@ main(int argc, char *argv[])
       return 10;
     }
 
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+    OFStandard::shutdownNetwork();
 
     return 0;
 }

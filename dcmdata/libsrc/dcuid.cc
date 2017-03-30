@@ -24,12 +24,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
+// on Windows, we need Winsock2 for getting network adapter information
 #include <winsock2.h>
-#include <windows.h>     /* this includes either winsock.h or winsock2.h */
-#else
-#ifdef HAVE_WINSOCK_H
-#include <winsock.h>     /* include winsock.h directly i.e. on MacOS */
-#endif
 #endif
 
 #define INCLUDE_CSTDLIB
@@ -1629,12 +1625,9 @@ static long gethostid(void)
     char name[1024];
     char **p = NULL;
     struct in_addr in;
-#ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD(1, 1);
-    WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+
+    OFStandard::initializeNetwork();
+
     /*
     ** Define the hostid to be the system's main TCP/IP address.
     ** This is not perfect but it is better than nothing (i.e. using zero)
@@ -1650,9 +1643,8 @@ static long gethostid(void)
             }
         }
     }
-#ifdef HAVE_WINSOCK_H
-    WSACleanup();
-#endif
+
+    OFStandard::shutdownNetwork();
 #endif /* defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME) */
 /* on Windows systems determine some system specific information (e.g. MAC address) */
 #ifdef HAVE_WINDOWS_H

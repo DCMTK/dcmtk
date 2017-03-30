@@ -22,11 +22,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <windows.h>
-#endif
-
 #include "dcmtk/dcmpstat/dviface.h"
 
 #include "dcmtk/dcmpstat/dvpsdef.h"   /* for constants */
@@ -2464,22 +2459,11 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
   if (getQueryRetrieveServerName()==NULL) return EC_IllegalCall;
   if (configPath.empty()) return EC_IllegalCall;
 
-#ifdef HAVE_GUSI_H
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  /* we need at least version 1.1 */
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 
   OFCondition result = EC_Normal;
   T_ASC_Network *net=NULL;
   T_ASC_Parameters *params=NULL;
-  DIC_NODENAME localHost;
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc=NULL;
 
@@ -2492,9 +2476,8 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
     if (cond.good())
     {
       ASC_setAPTitles(params, getNetworkAETitle(), getQueryRetrieveAETitle(), NULL);
-      gethostname(localHost, sizeof(localHost) - 1);
       sprintf(peerHost, "localhost:%d", OFstatic_cast(int, getQueryRetrievePort()));
-      ASC_setPresentationAddresses(params, localHost, peerHost);
+      ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
       const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
       cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
@@ -2509,9 +2492,7 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
     ASC_dropNetwork(&net);
   } else result = EC_IllegalCall;
 
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
 
   return result;
 }
@@ -3614,22 +3595,11 @@ OFCondition DVInterface::terminatePrintServer()
   if (getPrintServerName()==NULL) return EC_IllegalCall;
   if (configPath.empty()) return EC_IllegalCall;
 
-#ifdef HAVE_GUSI_H
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
-
-#ifdef HAVE_WINSOCK_H
-  WSAData winSockData;
-  /* we need at least version 1.1 */
-  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-  WSAStartup(winSockVersionNeeded, &winSockData);
-#endif
+  OFStandard::initializeNetwork();
 
   OFCondition result = EC_Normal;
   T_ASC_Network *net=NULL;
   T_ASC_Parameters *params=NULL;
-  DIC_NODENAME localHost;
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc=NULL;
   const char *target = NULL;
@@ -3740,9 +3710,8 @@ OFCondition DVInterface::terminatePrintServer()
         }
 
         ASC_setAPTitles(params, getNetworkAETitle(), getTargetAETitle(target), NULL);
-        gethostname(localHost, sizeof(localHost) - 1);
         sprintf(peerHost, "%s:%d", getTargetHostname(target), OFstatic_cast(int, getTargetPort(target)));
-        ASC_setPresentationAddresses(params, localHost, peerHost);
+        ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
         if (cond.good()) cond = ASC_setTransportLayerType(params, useTLS);
 
@@ -3760,9 +3729,7 @@ OFCondition DVInterface::terminatePrintServer()
     } else result = EC_IllegalCall;
   }
 
-#ifdef HAVE_WINSOCK_H
-  WSACleanup();
-#endif
+  OFStandard::shutdownNetwork();
 
   return result;    // result of last process only
 }
