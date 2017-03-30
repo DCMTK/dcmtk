@@ -252,6 +252,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--propose-mpeg4-2-2d",   "-x2",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (2D)");
       cmd.addOption("--propose-mpeg4-2-3d",   "-x3",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--propose-mpeg4-2-st",   "-xo",     "propose MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
+      cmd.addOption("--propose-hevc",         "-x4",     "propose HEVC/H.265 Main Profile / Level 5.1 TS");
+      cmd.addOption("--propose-hevc10",       "-x5",     "propose HEVC/H.265 Main 10 Profile / Level 5.1 TS");
       cmd.addOption("--propose-rle",          "-xr",     "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",     "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -425,6 +427,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--propose-mpeg4-2-2d")) opt_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
       if (cmd.findOption("--propose-mpeg4-2-3d")) opt_networkTransferSyntax = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
       if (cmd.findOption("--propose-mpeg4-2-st")) opt_networkTransferSyntax = EXS_MPEG4StereoHighProfileLevel4_2;
+      if (cmd.findOption("--propose-hevc")) opt_networkTransferSyntax = EXS_HEVCMainProfileLevel5_1;
+      if (cmd.findOption("--propose-hevc10")) opt_networkTransferSyntax = EXS_HEVCMain10ProfileLevel5_1;
       if (cmd.findOption("--propose-rle")) opt_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
       if (cmd.findOption("--propose-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
@@ -454,6 +458,8 @@ int main(int argc, char *argv[])
         app.checkConflict("--config-file", "--propose-mpeg4-2-2d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
         app.checkConflict("--config-file", "--propose-mpeg4-2-3d", opt_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
         app.checkConflict("--config-file", "--propose-mpeg4-2-st", opt_networkTransferSyntax == EXS_MPEG4StereoHighProfileLevel4_2);
+        app.checkConflict("--config-file", "--propose-hevc", opt_networkTransferSyntax == EXS_HEVCMainProfileLevel5_1);
+        app.checkConflict("--config-file", "--propose-hevc10", opt_networkTransferSyntax == EXS_HEVCMain10ProfileLevel5_1);
         app.checkConflict("--config-file", "--propose-rle", opt_networkTransferSyntax == EXS_RLELossless);
 #ifdef WITH_ZLIB
         app.checkConflict("--config-file", "--propose-deflated", opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit);
@@ -1211,7 +1217,7 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
   OFList<OFString> fallbackSyntaxes;
   // - If little endian implicit is preferred, we don't need any fallback syntaxes
   //   because it is the default transfer syntax and all applications must support it.
-  // - If MPEG2 or MPEG4 is preferred, we don't want to propose any fallback solution
+  // - If MPEG2, MPEG4 or HEVC is preferred, we don't want to propose any fallback solution
   //   because this is not required and we cannot decompress the movie anyway.
   if ((opt_networkTransferSyntax != EXS_LittleEndianImplicit) &&
       (opt_networkTransferSyntax != EXS_MPEG2MainProfileAtMainLevel) &&
@@ -1220,7 +1226,9 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
       (opt_networkTransferSyntax != EXS_MPEG4BDcompatibleHighProfileLevel4_1) &&
       (opt_networkTransferSyntax != EXS_MPEG4HighProfileLevel4_2_For2DVideo) &&
       (opt_networkTransferSyntax != EXS_MPEG4HighProfileLevel4_2_For3DVideo) &&
-      (opt_networkTransferSyntax != EXS_MPEG4StereoHighProfileLevel4_2))
+      (opt_networkTransferSyntax != EXS_MPEG4StereoHighProfileLevel4_2) &&
+      (opt_networkTransferSyntax != EXS_HEVCMainProfileLevel5_1) &&
+      (opt_networkTransferSyntax != EXS_HEVCMain10ProfileLevel5_1))
   {
     fallbackSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
     fallbackSyntaxes.push_back(UID_BigEndianExplicitTransferSyntax);

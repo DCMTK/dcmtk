@@ -147,6 +147,12 @@ preferred network transfer syntaxes (incoming associations):
   +xo   --prefer-mpeg4-2-st
           prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
 
+  +x4   --prefer-hevc
+          prefer HEVC H.265 Main Profile / Level 5.1 TS
+
+  +x5   --prefer-hevc10
+          prefer HEVC H.265 Main 10 Profile / Level 5.1 TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 

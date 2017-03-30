@@ -172,6 +172,12 @@ proposed transmission transfer syntaxes (not with --config-file):
   -xo   --propose-mpeg4-2-st
           propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only
 
+  -x4   --propose-hevc
+          propose HEVC H.265 Main Profile / Level 5.1 TS only
+
+  -x5   --propose-hevc10
+          propose HEVC H.265 Main 10 Profile / Level 5.1 TS only
+
   -xr   --propose-rle
           propose RLE lossless TS
           and all uncompressed transfer syntaxes
@@ -454,6 +460,8 @@ MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
 MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
 MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
+HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
+HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 

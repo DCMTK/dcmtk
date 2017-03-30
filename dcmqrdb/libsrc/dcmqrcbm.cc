@@ -644,6 +644,16 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         transferSyntaxes[0] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
         numTransferSyntaxes = 1;
         break;
+      case EXS_HEVCMainProfileLevel5_1:
+        /* we only propose HEVC/H.265 Main Profile/L5.1 since we don't want to decompress */
+        transferSyntaxes[0] = UID_HEVCMainProfileLevel5_1TransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
+      case EXS_HEVCMain10ProfileLevel5_1:
+        /* we only propose HEVC/H.265 Main 10 Profile/L5.1 since we don't want to decompress */
+        transferSyntaxes[0] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
       case EXS_RLELossless:
         /* we prefer RLE Lossless */
         transferSyntaxes[0] = UID_RLELosslessTransferSyntax;

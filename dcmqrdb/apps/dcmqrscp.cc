@@ -192,6 +192,8 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-mpeg4-2-2d",      "+x2",       "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (2D)");
       cmd.addOption("--prefer-mpeg4-2-3d",      "+x3",       "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--prefer-mpeg4-2-st",      "+xo",       "prefer MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
+      cmd.addOption("--prefer-hevc",            "+x4",       "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
+      cmd.addOption("--prefer-hevc10",          "+x5",       "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
       cmd.addOption("--prefer-rle",             "+xr",       "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",        "+xd",       "prefer deflated expl. VR little endian TS");
@@ -219,6 +221,8 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-mpeg4-2-2d",     "-x2",       "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (2D)");
       cmd.addOption("--propose-mpeg4-2-3d",     "-x3",       "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--propose-mpeg4-2-st",     "-xo",       "propose MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
+      cmd.addOption("--propose-hevc",           "-x4",       "propose HEVC/H.265 Main Profile / Level 5.1 TS");
+      cmd.addOption("--propose-hevc10",         "-x5",       "propose HEVC/H.265 Main 10 Profile / Level 5.1 TS");
       cmd.addOption("--propose-rle",            "-xr",       "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",       "-xd",       "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -406,6 +410,8 @@ main(int argc, char *argv[])
       if (cmd.findOption("--prefer-mpeg4-2-2d")) options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
       if (cmd.findOption("--prefer-mpeg4-2-3d")) options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
       if (cmd.findOption("--prefer-mpeg4-2-st")) options.networkTransferSyntax_ = EXS_MPEG4StereoHighProfileLevel4_2;
+      if (cmd.findOption("--prefer-hevc")) options.networkTransferSyntax_ = EXS_HEVCMainProfileLevel5_1;
+      if (cmd.findOption("--prefer-hevc10")) options.networkTransferSyntax_ = EXS_HEVCMain10ProfileLevel5_1;
       if (cmd.findOption("--prefer-rle")) options.networkTransferSyntax_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
       if (cmd.findOption("--prefer-deflated")) options.networkTransferSyntax_ = EXS_DeflatedLittleEndianExplicit;
@@ -434,6 +440,8 @@ main(int argc, char *argv[])
       if (cmd.findOption("--propose-mpeg4-2-2d")) options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
       if (cmd.findOption("--propose-mpeg4-2-3d")) options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
       if (cmd.findOption("--propose-mpeg4-2-st")) options.networkTransferSyntaxOut_ = EXS_MPEG4StereoHighProfileLevel4_2;
+      if (cmd.findOption("--propose-hevc")) options.networkTransferSyntaxOut_ = EXS_HEVCMainProfileLevel5_1;
+      if (cmd.findOption("--propose-hevc10")) options.networkTransferSyntaxOut_ = EXS_HEVCMain10ProfileLevel5_1;
       if (cmd.findOption("--propose-rle")) options.networkTransferSyntaxOut_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
       if (cmd.findOption("--propose-deflated")) options.networkTransferSyntaxOut_ = EXS_DeflatedLittleEndianExplicit;
@@ -512,6 +520,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-little", "--prefer-mpeg4-2-2d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
         app.checkConflict("--write-xfer-little", "--prefer-mpeg4-2-3d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
         app.checkConflict("--write-xfer-little", "--prefer-mpeg4-2-st", options.networkTransferSyntax_ == EXS_MPEG4StereoHighProfileLevel4_2);
+        app.checkConflict("--write-xfer-little", "--prefer-hevc", options.networkTransferSyntax_ == EXS_HEVCMainProfileLevel5_1);
+        app.checkConflict("--write-xfer-little", "--prefer-hevc10", options.networkTransferSyntax_ == EXS_HEVCMain10ProfileLevel5_1);
         app.checkConflict("--write-xfer-little", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
@@ -535,6 +545,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-big", "--prefer-mpeg4-2-2d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
         app.checkConflict("--write-xfer-big", "--prefer-mpeg4-2-3d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
         app.checkConflict("--write-xfer-big", "--prefer-mpeg4-2-st", options.networkTransferSyntax_ == EXS_MPEG4StereoHighProfileLevel4_2);
+        app.checkConflict("--write-xfer-big", "--prefer-hevc", options.networkTransferSyntax_ == EXS_HEVCMainProfileLevel5_1);
+        app.checkConflict("--write-xfer-big", "--prefer-hevc10", options.networkTransferSyntax_ == EXS_HEVCMain10ProfileLevel5_1);
         app.checkConflict("--write-xfer-big", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
@@ -558,6 +570,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4-2-2d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
         app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4-2-3d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
         app.checkConflict("--write-xfer-implicit", "--prefer-mpeg4-2-st", options.networkTransferSyntax_ == EXS_MPEG4StereoHighProfileLevel4_2);
+        app.checkConflict("--write-xfer-implicit", "--prefer-hevc", options.networkTransferSyntax_ == EXS_HEVCMainProfileLevel5_1);
+        app.checkConflict("--write-xfer-implicit", "--prefer-hevc10", options.networkTransferSyntax_ == EXS_HEVCMain10ProfileLevel5_1);
         app.checkConflict("--write-xfer-implicit", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
@@ -582,6 +596,8 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4-2-2d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
         app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4-2-3d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
         app.checkConflict("--write-xfer-deflated", "--prefer-mpeg4-2-st", options.networkTransferSyntax_ == EXS_MPEG4StereoHighProfileLevel4_2);
+        app.checkConflict("--write-xfer-deflated", "--prefer-hevc", options.networkTransferSyntax_ == EXS_HEVCMainProfileLevel5_1);
+        app.checkConflict("--write-xfer-deflated", "--prefer-hevc10", options.networkTransferSyntax_ == EXS_HEVCMain10ProfileLevel5_1);
         app.checkConflict("--write-xfer-deflated", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
 #endif
         options.writeTransferSyntax_ = EXS_DeflatedLittleEndianExplicit;

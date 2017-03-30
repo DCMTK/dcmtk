@@ -701,6 +701,22 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
+      case EXS_HEVCMainProfileLevel5_1:
+        /* we prefer HEVC/H.265 Main Profile/L5.1 */
+        transferSyntaxes[0] = UID_HEVCMainProfileLevel5_1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+    case EXS_HEVCMain10ProfileLevel5_1:
+        /* we prefer HEVC/H.265 Main 10 Profile/L5.1 */
+        transferSyntaxes[0] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
       case EXS_RLELossless:
         /* we prefer RLE Lossless */
         transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
