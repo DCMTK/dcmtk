@@ -586,7 +586,7 @@ main(int argc, char *argv[])
         app.checkConflict("--write-xfer-big", "--prefer-mpeg4-2-3d", opt_in_networkTransferSyntax == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
         app.checkConflict("--write-xfer-big", "--prefer-mpeg4-2-st", opt_in_networkTransferSyntax == EXS_MPEG4StereoHighProfileLevel4_2);
         app.checkConflict("--write-xfer-big", "--prefer-hevc", opt_in_networkTransferSyntax == EXS_HEVCMainProfileLevel5_1);
-        app.checkConflict("--wirte-xfer-big", "--prefer-hevc10", opt_in_networkTransferSyntax == EXS_HEVCMain10ProfileLevel5_1);
+        app.checkConflict("--write-xfer-big", "--prefer-hevc10", opt_in_networkTransferSyntax == EXS_HEVCMain10ProfileLevel5_1);
         app.checkConflict("--write-xfer-big", "--prefer-rle", opt_in_networkTransferSyntax == EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
         opt_writeTransferSyntax = EXS_BigEndianExplicit;
@@ -1154,6 +1154,7 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
           transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 4;
+          break;
         case EXS_HEVCMain10ProfileLevel5_1:
           /* we prefer HEVC/H.265 Main 10 Profile/L5.1 */
           transferSyntaxes[0] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
@@ -1161,6 +1162,7 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
           transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 4;
+          break;
         case EXS_RLELossless:
           /* we prefer RLE Lossless */
           transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
