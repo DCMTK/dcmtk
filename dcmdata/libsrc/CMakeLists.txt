@@ -32,7 +32,7 @@ DCMTK_TARGET_LINK_MODULES(mkdictbi ofstd oflog)
 DCMTK_TARGET_LINK_MODULES(mkdeftag ofstd oflog)
 
 ADD_CUSTOM_TARGET(updatedeftag
-        COMMAND mkdeftag -o ${dcmdata_SOURCE_DIR}/include/dcmtk/dcmdata/dcdeftag.h ${DICTIONARIES}
+        COMMAND mkdeftag -o "${dcmdata_SOURCE_DIR}/include/dcmtk/dcmdata/dcdeftag.h" ${DICTIONARIES}
         DEPENDS mkdeftag
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
         COMMENT "Generate a new include file of defined tags")

@@ -21,21 +21,21 @@ MACRO(DCMTK_TRY_COMPILE VAR MESSAGE SOURCE)
             DCMTK_UNSET(DCMTK_TRY_COMPILE_CMAKE_FLAGS)
         ENDIF()
         TRY_COMPILE(${VAR}
-                    ${CMAKE_BINARY_DIR}
-                    ${DCMTK_TRY_COMPILE_FILE}
+                    "${CMAKE_BINARY_DIR}"
+                    "${DCMTK_TRY_COMPILE_FILE}"
                     ${DCMTK_TRY_COMPILE_CMAKE_FLAGS}
                     OUTPUT_VARIABLE OUTPUT
                     ${ARGN})
         IF(${VAR})
             MESSAGE(STATUS "Checking whether ${MESSAGE} -- yes")
             SET(${VAR} 1 CACHE INTERNAL "${MESSAGE}")
-            FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+            FILE(APPEND "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log"
                  "${MESSAGE} passed with the following output:\n"
                  "${OUTPUT}\n")
         ELSE(${VAR})
             MESSAGE(STATUS "Checking whether ${MESSAGE} -- no")
             SET(${VAR} 0 CACHE INTERNAL "${MESSAGE}")
-            FILE(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+            FILE(APPEND "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log"
                  "${MESSAGE} failed with the following output:\n"
                  "${OUTPUT}\n")
         ENDIF(${VAR})

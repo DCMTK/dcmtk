@@ -31,9 +31,9 @@ SET(DCMTK_MODULES ofstd oflog dcmdata dcmimgle
 # Include directories
 #-----------------------------------------------------------------------------
 
-SET(DCMTK_INCLUDE_DIR ${DCMTK_BINARY_DIR}/config/include)
+SET(DCMTK_INCLUDE_DIR "${DCMTK_BINARY_DIR}/config/include")
 FOREACH(inc ${DCMTK_MODULES})
-  LIST(APPEND DCMTK_INCLUDE_DIR ${DCMTK_SOURCE_DIR}/${inc}/include)
+  LIST(APPEND DCMTK_INCLUDE_DIR "${DCMTK_SOURCE_DIR}/${inc}/include")
 ENDFOREACH(inc)
 
 INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
@@ -43,8 +43,8 @@ INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
 #-----------------------------------------------------------------------------
 
 # add the osconfig.h.in file
-CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in
-               ${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h)
+CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in"
+               "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h")
 
 #-----------------------------------------------------------------------------
 # Prepare arith.h
@@ -77,16 +77,16 @@ INCLUDE(CMake/dcmtkAfterModules.cmake NO_POLICY_SCOPE)
 #-----------------------------------------------------------------------------
 
 # Install global headers
-INSTALL(FILES ${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h
-              ${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h
-        DESTINATION ${DCMTK_INSTALL_INCDIR}/dcmtk/config
+INSTALL(FILES "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h"
+              "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h"
+        DESTINATION "${DCMTK_INSTALL_INCDIR}/dcmtk/config"
         COMPONENT include)
 
 # Install DCMTK's general documentation files
 INSTALL(FILES ANNOUNCE CHANGES COPYRIGHT CREDITS FAQ HISTORY VERSION
-        DESTINATION ${DCMTK_INSTALL_DOCDIR}
+        DESTINATION "${DCMTK_INSTALL_DOCDIR}"
         COMPONENT doc)
-INSTALL(DIRECTORY docs/ DESTINATION ${DCMTK_INSTALL_DOCDIR}
+INSTALL(DIRECTORY docs/ DESTINATION "${DCMTK_INSTALL_DOCDIR}"
         COMPONENT doc FILES_MATCHING PATTERN "CHANGES.???")
 
 #-----------------------------------------------------------------------------
@@ -116,11 +116,11 @@ IF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
   # defined within CMake/GenerateCMakeExports.cmake.
   # Install DCMTKTargets.cmake to install tree
   INSTALL(EXPORT DCMTKTargets FILE DCMTKTargets.cmake
-          DESTINATION ${DCMTK_INSTALL_CMKDIR} COMPONENT cmake)
+          DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
 
   # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
-  INSTALL(FILES ${DCMTK_INSTALL_CONFIG} ${DCMTK_CONFIG_VERSION}
-          DESTINATION ${DCMTK_INSTALL_CMKDIR} COMPONENT cmake)
+  INSTALL(FILES "${DCMTK_INSTALL_CONFIG}" "${DCMTK_CONFIG_VERSION}"
+          DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
 
 ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
 
@@ -128,12 +128,12 @@ ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FIL
   MESSAGE(STATUS "Warning: Using old CONFIGURE_FILE() mechanism to produce DCMTKConfig.cmake")
 
   # Actually configure file
-  CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake26.in
-                 ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake @ONLY)
+  CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake26.in"
+                 "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" @ONLY)
 
   # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
-  INSTALL(FILES ${DCMTK_BINARY_DIR}/DCMTKConfig.cmake ${DCMTK_BINARY_DIR}/DCMTKConfigVersion.cmake
-          DESTINATION ${DCMTK_INSTALL_CMKDIR}
+  INSTALL(FILES "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" "${DCMTK_BINARY_DIR}/DCMTKConfigVersion.cmake"
+          DESTINATION "${DCMTK_INSTALL_CMKDIR}"
           COMPONENT cmake)
 
 ENDIF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
@@ -145,12 +145,12 @@ ENDIF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FI
 IF(CMAKE_CROSSCOMPILING)
   IF(ANDROID)
     # setup the CTestCustom.cmake file as appropriate for android
-    FILE(COPY ${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustom.cmake
-        DESTINATION ${CMAKE_BINARY_DIR}
+    FILE(COPY "${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustom.cmake"
+        DESTINATION "${CMAKE_BINARY_DIR}"
     )
     # prepare the configuration for unit testing
-    CONFIGURE_FILE(${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestConfig.cmake.in
-        ${CMAKE_BINARY_DIR}/dcmtkCTestConfig.cmake @ONLY
+    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestConfig.cmake.in"
+        "${CMAKE_BINARY_DIR}/dcmtkCTestConfig.cmake" @ONLY
     )
   ENDIF()
 ENDIF(CMAKE_CROSSCOMPILING)

@@ -1,5 +1,5 @@
 # declare additional include directories
-INCLUDE_DIRECTORIES(${dcmtls_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES("${dcmtls_SOURCE_DIR}/include")
 
 # declare executables
 DCMTK_ADD_EXECUTABLE(wlmscpfs wlmscpfs wlcefs)

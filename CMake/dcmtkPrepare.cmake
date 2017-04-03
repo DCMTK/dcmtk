@@ -132,11 +132,11 @@ ENABLE_TESTING()
 
 IF(CMAKE_CROSSCOMPILING)
   IF(WIN32)
-    INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkUseWine.cmake)
+    INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkUseWine.cmake")
     DCMTK_SETUP_WINE()
   ELSEIF(ANDROID)
     SET(DCMTK_TRY_COMPILE_REQUIRED_CMAKE_FLAGS "-DANDROID_TOOLCHAIN_CONFIG_FILE:INTERNAL=${ANDROID_TOOLCHAIN_CONFIG_FILE}")
-    INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkUseAndroidSDK.cmake)
+    INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkUseAndroidSDK.cmake")
     IF(NOT DCMTK_ANDROID_TOOLCHAIN_VERIFIED)
       # Ensure the configuration variables for the Android device emulator exist in the cache.
       DCMTK_SETUP_ANDROID_EMULATOR()
@@ -155,7 +155,7 @@ ENDIF(CMAKE_CROSSCOMPILING)
 # Generic utilities used for configuring DCMTK
 #-----------------------------------------------------------------------------
 
-INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkMacros.cmake)
+INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkMacros.cmake")
 
 #-----------------------------------------------------------------------------
 # Prepare external dependencies for cross compiling
@@ -198,12 +198,12 @@ MARK_AS_ADVANCED(DCMTK_INSTALL_BINDIR DCMTK_INSTALL_INCDIR DCMTK_INSTALL_LIBDIR 
 #-----------------------------------------------------------------------------
 # Build directories
 #-----------------------------------------------------------------------------
-SET(DCMTK_BUILD_CMKDIR ${CMAKE_BINARY_DIR})
+SET(DCMTK_BUILD_CMKDIR "${CMAKE_BINARY_DIR}")
 
 #-----------------------------------------------------------------------------
 # Start with clean DCMTKTargets.cmake, filled in GenerateCMakeExports.cmake
 #-----------------------------------------------------------------------------
-FILE(WRITE ${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake "")
+FILE(WRITE "${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake" "")
 
 #-----------------------------------------------------------------------------
 # Platform-independent settings

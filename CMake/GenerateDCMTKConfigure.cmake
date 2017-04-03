@@ -172,12 +172,12 @@ CHECK_TYPE_SIZE("short" SIZEOF_SHORT)
 CHECK_TYPE_SIZE("void*" SIZEOF_VOID_P)
 
 # Check for include files, libraries, and functions
-INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
-INCLUDE(${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
-INCLUDE(${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
-INCLUDE(${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
-INCLUDE(${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
-INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/CheckFunctionWithHeaderExists.cmake)
+INCLUDE("${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake")
+INCLUDE("${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake")
+INCLUDE("${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake")
+INCLUDE("${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake")
+INCLUDE("${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake")
+INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/CheckFunctionWithHeaderExists.cmake")
 
 CHECK_SYMBOL_EXISTS(__FUNCTION__        "" HAVE___FUNCTION___MACRO)
 CHECK_SYMBOL_EXISTS(__PRETTY_FUNCTION__ "" HAVE___PRETTY_FUNCTION___MACRO)
@@ -591,13 +591,13 @@ IF(DCMTK_WITH_OPENSSL)
 ENDIF(DCMTK_WITH_OPENSSL)
 
 # Tests that require a try-compile
-INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryCompile.cmake)
-INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryRun.cmake)
+INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryCompile.cmake")
+INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryRun.cmake")
 
 IF(NOT DEFINED C_CHAR_UNSIGNED)
   MESSAGE(STATUS "Checking signedness of char")
-  DCMTK_TRY_RUN(C_CHAR_SIGNED C_CHAR_SIGNED_COMPILED ${CMAKE_BINARY_DIR}/CMakeTmp/Char
-          ${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cc
+  DCMTK_TRY_RUN(C_CHAR_SIGNED C_CHAR_SIGNED_COMPILED "${CMAKE_BINARY_DIR}/CMakeTmp/Char"
+          "${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cc"
           COMPILE_OUTPUT_VARIABLE C_CHAR_SIGNED_COMPILE_OUTPUT)
   IF(C_CHAR_SIGNED_COMPILED)
     IF(C_CHAR_SIGNED)
@@ -865,32 +865,32 @@ int main()
 
 # Compile config/arith.cc and generate config/arith.h
 FUNCTION(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
-  SET(ARITH_H_FILE ${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h)
+  SET(ARITH_H_FILE "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h")
   IF("${DCMTK_SOURCE_DIR}/config/arith.cc" IS_NEWER_THAN "${ARITH_H_FILE}")
     IF(CMAKE_CROSSCOMPILING)
       IF(WIN32)
-        UNIX_TO_WINE_PATH(ARITH_H_FILE ${ARITH_H_FILE})
-        STRING(REPLACE "\\" "\\\\" ARITH_H_FILE ${ARITH_H_FILE})
+        UNIX_TO_WINE_PATH(ARITH_H_FILE "${ARITH_H_FILE}")
+        STRING(REPLACE "\\" "\\\\" ARITH_H_FILE "${ARITH_H_FILE}")
       ELSEIF(ANDROID)
-        SET(ARITH_H_DESTINATION ${ARITH_H_FILE})
+        SET(ARITH_H_DESTINATION "${ARITH_H_FILE}")
         SET(ARITH_H_FILE "${ANDROID_TEMPORARY_FILES_LOCATION}/arith.h")
       ENDIF()
     ENDIF(CMAKE_CROSSCOMPILING)
     DCMTK_TRY_RUN(
       RESULT COMPILED
-      ${DCMTK_BINARY_DIR}/CMakeTmp/Arith
-      ${DCMTK_SOURCE_DIR}/config/arith.cc
+      "${DCMTK_BINARY_DIR}/CMakeTmp/Arith"
+      "${DCMTK_SOURCE_DIR}/config/arith.cc"
       COMPILE_DEFINITIONS -I"${DCMTK_BINARY_DIR}/config/include" -I"${DCMTK_SOURCE_DIR}/ofstd/include" -I"${DCMTK_SOURCE_DIR}/ofstd/libsrc"
       RUN_OUTPUT_VARIABLE OUTPUT
       COMPILE_OUTPUT_VARIABLE CERR
-      ARGS \"${ARITH_H_FILE}\"
+      ARGS "\\\"${ARITH_H_FILE}\\\""
     )
     IF(COMPILED)
       IF(NOT RESULT)
         MESSAGE(STATUS "${OUTPUT}")
         IF(CMAKE_CROSSCOMPILING)
           IF(ANDROID)
-            DCMTK_ANDROID_PULL(DCMTK_ANDROID_EMULATOR_INSTANCE ${ARITH_H_FILE} DESTINATION ${ARITH_H_DESTINATION})
+            DCMTK_ANDROID_PULL(DCMTK_ANDROID_EMULATOR_INSTANCE "${ARITH_H_FILE}" DESTINATION "${ARITH_H_DESTINATION}")
           ENDIF()
         ENDIF(CMAKE_CROSSCOMPILING)
       ELSE(NOT RESULT)
