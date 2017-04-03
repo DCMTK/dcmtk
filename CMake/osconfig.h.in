@@ -998,6 +998,9 @@ typedef unsigned long ulong;
 #cmakedefine HAVE_LONGLONG
 #cmakedefine HAVE_ULONGLONG
 
+#cmakedefine HAVE_INT64_T @HAVE_INT64_T@
+#cmakedefine HAVE_UINT64_T @HAVE_UINT64_T@
+
  /* Additional settings for Borland C++ Builder */
 #ifdef __BORLANDC__
 #define _stricmp stricmp    /* _stricmp in MSVC is stricmp in Borland C++ */

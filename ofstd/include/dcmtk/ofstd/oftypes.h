@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -120,7 +120,7 @@ typedef OFlonglong    Sint64;
 #define OF_NO_SINT64 1
 #endif
 
-#ifdef HAVE_INT64_T
+#ifdef HAVE_UINT64_T
 /* many platforms define uint64_t in <cstdint> */
 typedef uint64_t      Uint64;
 #elif SIZEOF_LONG == 8
