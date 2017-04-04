@@ -118,7 +118,7 @@ SET(CANONICAL_HOST_TYPE "${SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
 DCMTK_UNSET(SYSTEM_PROCESSOR)
 
 # Configure dictionary path and install prefix
-IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
+IF(WIN32 AND NOT CYGWIN)
   # Set DCMTK_PREFIX needed within some code. Be sure that all / are replaced by \\.
   SET(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
   STRING(REGEX REPLACE "/" "\\\\\\\\" DCMTK_PREFIX "${DCMTK_PREFIX}")
@@ -140,7 +140,7 @@ IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
   # Set default directory for configuration and support data.
   SET(DCMTK_DEFAULT_CONFIGURATION_DIR "")
   SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "")
-ELSE(WIN32 AND NOT CYGWIN AND NOT MINGW)
+ELSE(WIN32 AND NOT CYGWIN)
   # Set DCMTK_PREFIX needed within some code.
   SET(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
   # Set path and multiple path separator being used in dictionary code etc.
@@ -159,7 +159,7 @@ ELSE(WIN32 AND NOT CYGWIN AND NOT MINGW)
   # Set default directory for configuration and support data.
   SET(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${DCMTK_INSTALL_ETCDIR}/")
   SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/")
-ENDIF(WIN32 AND NOT CYGWIN AND NOT MINGW)
+ENDIF(WIN32 AND NOT CYGWIN)
 
 # Check the sizes of various types
 INCLUDE (CheckTypeSize)
