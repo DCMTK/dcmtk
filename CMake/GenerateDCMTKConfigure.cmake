@@ -596,6 +596,46 @@ ENDIF(DCMTK_WITH_OPENSSL)
 INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryCompile.cmake")
 INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryRun.cmake")
 
+IF(HAVE_MATH_H)
+  IF(HAVE_LIBC_H)
+    # checks if <libc.h> and <math.h> cause a problem if libc.h is included extern "C"
+    # and math.h is not. This is the case on QNX 6.2.x
+    DCMTK_TRY_COMPILE(INCLUDE_LIBC_H_AS_EXTERN_C "<libc.h> can be included as extern \"C\""
+    "#include <math.h
+extern \"C\" {
+#include <libc.h>
+}
+int main()
+{
+    int i = 0;
+    return 0;
+}")
+    IF(INCLUDE_LIBC_H_AS_EXTERN_C)
+      SET(INCLUDE_LIBC_H_AS_CXX 0 CACHE INTERNAL "libc.h should be treated as a C++ header")
+    ELSE()
+      SET(INCLUDE_LIBC_H_AS_CXX 1 CACHE INTERNAL "libc.h should be treated as a C++ header")
+    ENDIF()
+  ENDIF(HAVE_LIBC_H)
+
+  # checks if <math.h> must be included as a C++ include file (i.e. without extern "C").
+  # Some sytems (Win32, HP/UX 10) use C++ language features in <math.h>
+  DCMTK_TRY_COMPILE(INCLUDE_MATH_H_AS_EXTERN_C "<math.h> can be included as extern \"C\""
+  "extern \"C\" {
+#include <math.h>
+}
+int main()
+{
+    int i = 0;
+    return 0;
+}")
+  IF(INCLUDE_MATH_H_AS_EXTERN_C)
+    SET(INCLUDE_MATH_H_AS_CXX 0 CACHE INTERNAL "math.h should be treated as a C++ header")
+  ELSE()
+    SET(INCLUDE_MATH_H_AS_CXX 1 CACHE INTERNAL "math.h should be treated as a C++ header")
+  ENDIF()
+ENDIF(HAVE_MATH_H)
+
+
 IF(NOT DEFINED C_CHAR_UNSIGNED)
   MESSAGE(STATUS "Checking signedness of char")
   DCMTK_TRY_RUN(C_CHAR_SIGNED C_CHAR_SIGNED_COMPILED "${CMAKE_BINARY_DIR}/CMakeTmp/Char"

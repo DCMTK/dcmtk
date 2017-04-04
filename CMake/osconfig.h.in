@@ -804,8 +804,11 @@
 /* Define to 1 if you have the `nanosleep' function. */
 #cmakedefine HAVE_NANOSLEEP @HAVE_NANOSLEEP@
 
+/* Define if libc.h should be treated as a C++ header */
+#cmakedefine INCLUDE_LIBC_H_AS_CXX @INCLUDE_LIBC_H_AS_CXX@
+
 /* Define if <math.h> fails if included extern "C" */
-#define INCLUDE_MATH_H_AS_CXX 1
+#cmakedefine INCLUDE_MATH_H_AS_CXX @INCLUDE_MATH_H_AS_CXX@
 
 /* Define to 1 if you have variable length arrays. */
 #cmakedefine HAVE_VLA @HAVE_VLA@
