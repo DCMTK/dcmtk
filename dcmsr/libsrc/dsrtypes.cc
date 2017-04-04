@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -356,24 +356,24 @@ static const S_RelationshipTypeNameMap RelationshipTypeNameMap[] =
 
 static const S_ValueTypeNameMap ValueTypeNameMap[] =
 {
-    {DSRTypes::VT_invalid,          "",                "item",      "invalid/unknown value type"},
-    {DSRTypes::VT_Text,             "TEXT",            "text",      "Text"},
-    {DSRTypes::VT_Code,             "CODE",            "code",      "Code"},
-    {DSRTypes::VT_Num,              "NUM",             "num",       "Number"},
-    {DSRTypes::VT_DateTime,         "DATETIME",        "datetime",  "Date/Time"},
-    {DSRTypes::VT_Date,             "DATE",            "date",      "Date"},
-    {DSRTypes::VT_Time,             "TIME",            "time",      "Time"},
-    {DSRTypes::VT_UIDRef,           "UIDREF",          "uidref",    "UID Reference"},
-    {DSRTypes::VT_PName,            "PNAME",           "pname",     "Person Name"},
-    {DSRTypes::VT_SCoord,           "SCOORD",          "scoord",    "Spatial Coordinates"},
-    {DSRTypes::VT_SCoord3D,         "SCOORD3D",        "scoord3d",  "Spatial Coordinates (3D)"},
-    {DSRTypes::VT_TCoord,           "TCOORD",          "tcoord",    "Temporal Coordinates"},
-    {DSRTypes::VT_Composite,        "COMPOSITE",       "composite", "Composite Object"},
-    {DSRTypes::VT_Image,            "IMAGE",           "image",     "Image"},
-    {DSRTypes::VT_Waveform,         "WAVEFORM",        "waveform",  "Waveform"},
-    {DSRTypes::VT_Container,        "CONTAINER",       "container", "Container"},
-    {DSRTypes::VT_byReference,      "(by-reference)",  "reference", "(by-reference)"},
-    {DSRTypes::VT_includedTemplate, "(incl-template)", "template",  "(included template)"}
+    {DSRTypes::VT_invalid,          "",                "item",       "invalid/unknown value type"},
+    {DSRTypes::VT_Text,             "TEXT",            "text",       "Text"},
+    {DSRTypes::VT_Code,             "CODE",            "code",       "Code"},
+    {DSRTypes::VT_Num,              "NUM",             "num",        "Number"},
+    {DSRTypes::VT_DateTime,         "DATETIME",        "datetime",   "Date/Time"},
+    {DSRTypes::VT_Date,             "DATE",            "date",       "Date"},
+    {DSRTypes::VT_Time,             "TIME",            "time",       "Time"},
+    {DSRTypes::VT_UIDRef,           "UIDREF",          "uidref",     "UID Reference"},
+    {DSRTypes::VT_PName,            "PNAME",           "pname",      "Person Name"},
+    {DSRTypes::VT_SCoord,           "SCOORD",          "scoord",     "Spatial Coordinates"},
+    {DSRTypes::VT_SCoord3D,         "SCOORD3D",        "scoord3d",   "Spatial Coordinates (3D)"},
+    {DSRTypes::VT_TCoord,           "TCOORD",          "tcoord",     "Temporal Coordinates"},
+    {DSRTypes::VT_Composite,        "COMPOSITE",       "composite",  "Composite Object"},
+    {DSRTypes::VT_Image,            "IMAGE",           "image",      "Image"},
+    {DSRTypes::VT_Waveform,         "WAVEFORM",        "waveform",   "Waveform"},
+    {DSRTypes::VT_Container,        "CONTAINER",       "container",  "Container"},
+    {DSRTypes::VT_byReference,      "(by-reference)",  "reference",  "(by-reference)"},
+    {DSRTypes::VT_includedTemplate, "(incl-template)", "INCL-TEMPL", "(included template)"}     // the XML name should never be used!
 };
 
 
