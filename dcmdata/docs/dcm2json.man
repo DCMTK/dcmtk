@@ -38,7 +38,6 @@ jsonfile-out  JSON output filename (default: stdout)
 
 \subsection dcm2json_general_options general options
 \verbatim
-
   -h    --help
           print this help text and exit
 
@@ -120,7 +119,7 @@ the following (see DICOM Part 18 Section F for details):
     "00080005": {
         "vr": "CS",
         "Value": [
-            "ISO_IR192"
+            "ISO_IR 192"
         ]
     },
     "00080020": {
@@ -284,8 +283,9 @@ additional file to hold the binary data for each of the binary data chunks.
 
 \subsection dcm2json_character_encoding Character Encoding
 
-\b dcm2json tries always to print in UTF-8 encoding. If this is not possible
-\b dcm2json print the result in ASCII codec, as ASCII is a subset of UTF-8.
+\b dcm2json always tries to output in UTF-8 encoding.  If this is not possible,
+e.g. because there is no support for character set conversion, ASCII is used
+instead (which is a subset of UTF-8).
 
 \section dcm2json_logging LOGGING
 
