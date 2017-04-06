@@ -6,26 +6,26 @@
 \page dcmqridx dcmqridx: Register a DICOM image file in an image database index file
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmqridx_synopsis SYNOPSIS
 
 \verbatim
 dcmqridx [options] index-out [dcmfile-in...]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmqridx_description DESCRIPTION
 
 The \b dcmqridx utility registers DICOM image files in the database index file
 used by the \b dcmqrscp and \b dcmqrti applications.  No image files are copied.
 \b dcmqridx can also list the contents of the database index file.
 
-\section parameters PARAMETERS
+\section dcmqridx_parameters PARAMETERS
 \verbatim
 index-out   storage area for the index file (directory)
 
 dcmfile-in  DICOM image file to be registered in the index file
 \endverbatim
 
-\section options OPTIONS
+\section dcmqridx_options OPTIONS
 
 \verbatim
   -h   --help
@@ -60,7 +60,7 @@ dcmfile-in  DICOM image file to be registered in the index file
          set instance reviewed status to 'not new'
 \endverbatim
 
-\section notes NOTES
+\section dcmqridx_notes NOTES
 
 \b dcmqridx attempts to add a reference to the database index file for each
 image-file provided on the command line.
@@ -68,7 +68,7 @@ image-file provided on the command line.
 \b dcmqridx disables the database back-end quota system so that no image files
 will be deleted.
 
-\section logging LOGGING
+\section dcmqridx_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -87,7 +87,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmqridx_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -109,7 +109,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmqridx_environment ENVIRONMENT
 
 The \b dcmqridx utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -125,11 +125,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dcmqridx_see_also SEE ALSO
 
 <b>dcmqrscp</b>(1), <b>dcmqrti</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmqridx_copyright COPYRIGHT
 
 Copyright (C) 1993-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

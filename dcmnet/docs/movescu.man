@@ -424,7 +424,7 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 Which transfer syntaxes are actually proposed in what order, can be specified
 with the \e --propose options.
 
-\subsubsection scp_conformance SCP Conformance
+\subsubsection movescu_scp_conformance SCP Conformance
 
 The \b movescu application supports the following SOP Classes as an SCP:
 

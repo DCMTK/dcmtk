@@ -6,13 +6,13 @@
 \page dcmpssnd dcmpssnd: Network send for presentation state viewer
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmpssnd_synopsis SYNOPSIS
 
 \verbatim
 dcmpssnd [options] config-file target study [series] [instance]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmpssnd_description DESCRIPTION
 
 The \b dcmpssnd application is invoked by the Grayscale Softcopy Presentation
 State Viewer and is not intended to be invoked manually.  The application
@@ -27,7 +27,7 @@ but does not support encapsulated transfer syntaxes.  See the full
 conformance statement for further details.
 
 
-\section parameters PARAMETERS
+\section dcmpssnd_parameters PARAMETERS
 
 \verbatim
 config-file  configuration file to be read
@@ -41,9 +41,9 @@ series       series instance UID (default: send complete study)
 instance     SOP instance UID (default: send complete series)
 \endverbatim
 
-\section options OPTIONS
+\section dcmpssnd_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmpssnd_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -71,7 +71,7 @@ instance     SOP instance UID (default: send complete series)
          use config file f for the logger
 \endverbatim
 
-\section logging LOGGING
+\section dcmpssnd_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -90,7 +90,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmpssnd_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -112,7 +112,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmpssnd_environment ENVIRONMENT
 
 The \b dcmpssnd utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -128,15 +128,15 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmpssnd_files FILES
 
 <em>\<etcdir\>/dcmpstat.cfg</em> - sample configuration file
 
-\section see_also SEE ALSO
+\section dcmpssnd_see_also SEE ALSO
 
 <b>dcmpsrcv</b>(1), <b>storescu</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmpssnd_copyright COPYRIGHT
 
 Copyright (C) 1998-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

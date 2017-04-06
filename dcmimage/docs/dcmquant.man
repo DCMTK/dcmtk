@@ -6,20 +6,20 @@
 \page dcmquant dcmquant: Convert DICOM color images to palette color
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmquant_synopsis SYNOPSIS
 
 \verbatim
 dcmquant [options] dcmfile-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmquant_description DESCRIPTION
 
 The \b dcmquant utility reads a DICOM color image, computes a palette color
 look-up table of the desired size for this image (based on the median cut
 algorithm published by Paul Heckbert) and converts the color image into a
 DICOM palette color image.
 
-\section parameters PARAMETERS
+\section dcmquant_parameters PARAMETERS
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
@@ -27,9 +27,9 @@ dcmfile-in   DICOM input filename to be converted
 dcmfile-out  DICOM output filename to be written
 \endverbatim
 
-\section options OPTIONS
+\section dcmquant_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmquant_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -57,7 +57,7 @@ dcmfile-out  DICOM output filename to be written
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmquant_input_options input options
 \verbatim
 input file format:
 
@@ -88,7 +88,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection processing_options image processing and encoding options
+\subsection dcmquant_processing_options image processing and encoding options
 \verbatim
 frame selection:
 
@@ -160,7 +160,7 @@ SOP Instance UID:
          never assign new UID
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmquant_output_options output options
 \verbatim
 output file format:
 
@@ -225,7 +225,7 @@ data set trailing padding (not with --write-dataset):
          multiple of i bytes
 \endverbatim
 
-\section logging LOGGING
+\section dcmquant_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -244,7 +244,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmquant_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -266,7 +266,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmquant_environment ENVIRONMENT
 
 The \b dcmquant utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -282,7 +282,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section dcmquant_copyright COPYRIGHT
 
 Copyright (C) 2001-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

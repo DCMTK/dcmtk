@@ -6,13 +6,13 @@
 \page dcmmkcrv dcmmkcrv: Add 2D curve data to image
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmmkcrv_synopsis SYNOPSIS
 
 \verbatim
 dcmmkcrv [options] dcmfile-in curvedata-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmmkcrv_description DESCRIPTION
 
 The \b dcmmkcrv utility allows one to create DICOM images containing curve data.
 Since curve data is hardly used by vendors today, this is intended as a
@@ -24,7 +24,7 @@ written back to file.  The output file is encoded with the same transfer
 syntax used for the input file.  This utility only supports the creation of
 two-dimensional curves.
 
-\section parameters PARAMETERS
+\section dcmmkcrv_parameters PARAMETERS
 
 \verbatim
 dcmfile-in    DICOM input image file
@@ -34,9 +34,9 @@ curvedata-in  curve data input file (text)
 dcmfile-out   DICOM output filename
 \endverbatim
 
-\section options OPTIONS
+\section dcmmkcrv_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmmkcrv_general_options general options
 
 \verbatim
   -h   --help
@@ -65,7 +65,7 @@ dcmfile-out   DICOM output filename
          use config file f for the logger
 \endverbatim
 
-\subsection curve_creation_options curve creation options
+\subsection dcmmkcrv_curve_creation_options curve creation options
 
 \verbatim
 curve type:
@@ -102,9 +102,9 @@ curve description:
         set Axis Units to x\y (default: absent)
 \endverbatim
 
-\section notes NOTES
+\section dcmmkcrv_notes NOTES
 
-\subsection syntax_data_file Syntax of the Curve Data File
+\subsection dcmmkcrv_syntax_data_file Syntax of the Curve Data File
 
 The curve data file is expected to be a plain ASCII text file containing
 numbers (integer or floating point) comprising the values of the point
@@ -119,7 +119,7 @@ value range or value range conversion is performed.  Example:
  256.451947    1.000000
 \endverbatim
 
-\section logging LOGGING
+\section dcmmkcrv_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -138,7 +138,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmmkcrv_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -160,7 +160,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmmkcrv_environment ENVIRONMENT
 
 The \b dcmmkcrv utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -176,7 +176,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section dcmmkcrv_copyright COPYRIGHT
 
 Copyright (C) 1998-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

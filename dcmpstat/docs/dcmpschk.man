@@ -6,13 +6,13 @@
 \page dcmpschk dcmpschk: Checking tool for presentation states
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmpschk_synopsis SYNOPSIS
 
 \verbatim
 dcmpschk [options] [dcmfile-in...]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmpschk_description DESCRIPTION
 
 The \b dcmpschk utility checks DICOM Grayscale Softcopy Presentation State
 objects for conformance with the standard.  The test is performed in three
@@ -37,15 +37,15 @@ phases:
     which contain the Mask Module.  These will be rejected with a message
     that the Mask Module is not supported.
 
-\section parameters PARAMETERS
+\section dcmpschk_parameters PARAMETERS
 
 \verbatim
 dcmfile-in  presentation state file(s) to be checked
 \endverbatim
 
-\section options OPTIONS
+\section dcmpschk_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmpschk_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -73,7 +73,7 @@ dcmfile-in  presentation state file(s) to be checked
          use config file f for the logger
 \endverbatim
 
-\section logging LOGGING
+\section dcmpschk_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -92,7 +92,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmpschk_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -114,7 +114,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmpschk_environment ENVIRONMENT
 
 The \b dcmpschk utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -130,7 +130,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section dcmpschk_copyright COPYRIGHT
 
 Copyright (C) 2000-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

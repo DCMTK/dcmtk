@@ -6,13 +6,13 @@
 \page xml2dcm xml2dcm: Convert XML document to DICOM file or data set
 \endif
 
-\section synopsis SYNOPSIS
+\section xml2dcm_synopsis SYNOPSIS
 
 \verbatim
 xml2dcm [options] xmlfile-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section xml2dcm_description DESCRIPTION
 
 The \b xml2dcm utility converts the contents of an XML (Extensible Markup
 Language) document to DICOM file or data set.  The XML document is expected to
@@ -20,7 +20,7 @@ validate against the DTD (Document Type Definition) which is described in file
 <em>dcm2xml.dtd</em>.  An appropriate XML file can be created using the
 \b dcm2xml tool (option \e +Wb recommended to include binary data).
 
-\section parameters PARAMETERS
+\section xml2dcm_parameters PARAMETERS
 
 \verbatim
 xmlfile-in   XML input filename to be converted (stdin: "-")
@@ -28,9 +28,9 @@ xmlfile-in   XML input filename to be converted (stdin: "-")
 dcmfile-out  DICOM output filename
 \endverbatim
 
-\section options OPTIONS
+\section xml2dcm_options OPTIONS
 
-\subsection general_options general options
+\subsection xml2dcm_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -58,7 +58,7 @@ dcmfile-out  DICOM output filename
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection xml2dcm_input_options input options
 \verbatim
 input file format:
 
@@ -69,7 +69,7 @@ input file format:
          ignore file meta information
 \endverbatim
 
-\subsection processing_options processing options
+\subsection xml2dcm_processing_options processing options
 \verbatim
 validation:
 
@@ -91,7 +91,7 @@ unique identifiers:
          overwrite existing UIDs
 \endverbatim
 
-\subsection output_options output options
+\subsection xml2dcm_output_options output options
 \verbatim
 output file format:
 
@@ -166,7 +166,7 @@ deflate compression level (only with --write-xfer-deflated):
          0=uncompressed, 1=fastest, 9=best compression
 \endverbatim
 
-\section notes NOTES
+\section xml2dcm_notes NOTES
 
 The basic structure of the XML input expected looks like the following:
 
@@ -211,7 +211,7 @@ The basic structure of the XML input expected looks like the following:
 
 The "file-format" and "meta-header" tags may be absent for DICOM data sets.
 
-\subsection character_encoding Character Encoding
+\subsection xml2dcm_character_encoding Character Encoding
 
 The DICOM character encoding is determined automatically from the element with
 tag "0008,0005" (Specific Character Set) - if present.  The following
@@ -238,7 +238,7 @@ multiplicity).
 
 See \b dcm2xml documentation for more details on the XML structure.
 
-\subsection binary_data Binary Data
+\subsection xml2dcm_binary_data Binary Data
 
 Binary data can be encoded either as a sequence of hex numbers separated by a
 backslash "\" or in Base64 format (binary="base64").  In addition, binary data
@@ -254,14 +254,14 @@ expected to be little endian ordered and will be swapped if necessary.  No
 checks will be made to ensure that the amount of data is reasonable in terms
 of other attributes such as Rows or Columns.
 
-\subsection compression Compression
+\subsection xml2dcm_compression Compression
 
 If libxml is compiled with zlib support, the input file (\e xmlfile-in) can
 also be compressed with ZIP, which usually results in much smaller files.  See
 output of option \e --version in order to check whether zlib support is
 available.
 
-\subsection limitations Limitations
+\subsection xml2dcm_limitations Limitations
 
 Different versions of libxml might have different limits for the maximum
 length of an XML element value.  Therefore, it should be avoided to use very
@@ -271,7 +271,7 @@ Please note that \b xml2dcm currently does not fully support DICOMDIR files.
 Specifically, the value of the various offset data elements is not updated
 automatically by this tool.
 
-\section logging LOGGING
+\section xml2dcm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -290,7 +290,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section xml2dcm_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -312,7 +312,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section xml2dcm_environment ENVIRONMENT
 
 The \b xml2dcm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -328,15 +328,15 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section xml2dcm_files FILES
 
 <em>\<datadir\>/dcm2xml.dtd</em> - Document Type Definition (DTD) file
 
-\section see_also SEE ALSO
+\section xml2dcm_see_also SEE ALSO
 
 <b>dcm2xml</b>(1)
 
-\section copyright COPYRIGHT
+\section xml2dcm_copyright COPYRIGHT
 
 Copyright (C) 2003-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

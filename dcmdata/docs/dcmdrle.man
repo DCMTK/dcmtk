@@ -6,19 +6,19 @@
 \page dcmdrle dcmdrle: Decode RLE-compressed DICOM file
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmdrle_synopsis SYNOPSIS
 
 \verbatim
 dcmdrle [options] dcmfile-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmdrle_description DESCRIPTION
 
 The \b dcmdrle utility reads a RLE-compressed DICOM image (\e dcmfile-in),
 decompresses the image data (i.e. conversion to a native DICOM transfer syntax)
 and writes the converted image to an output file (\e dcmfile-out).
 
-\section parameters PARAMETERS
+\section dcmdrle_parameters PARAMETERS
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
@@ -26,9 +26,9 @@ dcmfile-in   DICOM input filename to be converted
 dcmfile-out  DICOM output filename
 \endverbatim
 
-\section options OPTIONS
+\section dcmdrle_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmdrle_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -56,7 +56,7 @@ dcmfile-out  DICOM output filename
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmdrle_input_options input options
 
 \verbatim
 input file format:
@@ -76,7 +76,7 @@ input file format:
   # but unfortunately it does.
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmdrle_processing_options processing options
 \verbatim
 SOP Instance UID:
 
@@ -99,7 +99,7 @@ RLE byte segment order:
   # images with more than one byte per sample.
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmdrle_output_options output options
 \verbatim
 output file format:
 
@@ -160,7 +160,7 @@ data set trailing padding (not with --write-dataset):
          and items on multiple of i bytes
 \endverbatim
 
-\section transfer_syntaxes TRANSFER SYNTAXES
+\section dcmdrle_transfer_syntaxes TRANSFER SYNTAXES
 
 \b dcmdrle supports the following transfer syntaxes for input
 (\e dcmfile-in):
@@ -184,7 +184,7 @@ LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
 \endverbatim
 
-\section logging LOGGING
+\section dcmdrle_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -203,7 +203,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmdrle_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -225,7 +225,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmdrle_environment ENVIRONMENT
 
 The \b dcmdrle utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -241,11 +241,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dcmdrle_see_also SEE ALSO
 
 <b>dcmcrle</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmdrle_copyright COPYRIGHT
 
 Copyright (C) 2002-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany
 

@@ -6,13 +6,13 @@
 \page dcmqrti dcmqrti: The Terminal Initiator Telnet Client Program
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmqrti_synopsis SYNOPSIS
 
 \verbatim
 dcmqrti [options] peer...
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmqrti_description DESCRIPTION
 
 The \b dcmqrti program (telnet initiator) is an interactive character based
 program intended to be used for examining the dcmqrscp image databases and
@@ -30,15 +30,15 @@ titles.  Thus only the accessible databases and peer applications discovered
 in the configuration file are available as choices within the \b dcmqrti user
 interface.
 
-\section parameters PARAMETERS
+\section dcmqrti_parameters PARAMETERS
 
 \verbatim
 peer  peer host name or symbolic name from cfg file
 \endverbatim
 
-\section options OPTIONS
+\section dcmqrti_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmqrti_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -70,7 +70,7 @@ peer  peer host name or symbolic name from cfg file
           (default: /usr/local/etc/dcmqrscp.cfg)
 \endverbatim
 
-\subsection network_options network options
+\subsection dcmqrti_network_options network options
 \verbatim
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
@@ -92,7 +92,7 @@ peer  peer host name or symbolic name from cfg file
           (default: use value from configuration file)
 \endverbatim
 
-\subsection other_options other options
+\subsection dcmqrti_other_options other options
 \verbatim
   -u    --disable-new-vr
           disable support for new VRs, convert to OB
@@ -101,14 +101,14 @@ peer  peer host name or symbolic name from cfg file
           connect to remote database defined in cfg file
 \endverbatim
 
-\section NOTES
+\section dcmqrti_NOTES
 
-\subsection commands Commands
+\subsection dcmqrti_commands Commands
 
 All commands can be abbreviated.  An abbreviation is allowed if it does not
 conflict with another command.
 
-\subsubsection help_command "help" Command
+\subsubsection dcmqrti_help_command "help" Command
 
 The "help" command gives a summary of all available commands. Its output is
 shown underneath.  In order to separate the examples from surrounding text,
@@ -135,7 +135,7 @@ exit                synonym for quit
 ------------------------------------------------------------
 \endverbatim
 
-\subsubsection title_command "title" Command
+\subsubsection dcmqrti_title_command "title" Command
 
 The "title" command without an argument allows the user to list the known
 remote Application Entities (AE).  An example output might look like:
@@ -161,7 +161,7 @@ When invoked with an argument index, the "title" command will set the current
 peer AE.  The \b dcmqrti program will attempt to initiate an association to the
 current peer AE when asked to send a study/series/image or to send an echo.
 
-\subsubsection database_command "database" Command
+\subsubsection dcmqrti_database_command "database" Command
 
 The "database" command without an argument allows the user to list the know
 local databases (these correspond to dcmqrscp's Application Entity Titles).
@@ -188,7 +188,7 @@ When invoked with an argument index, the "database" command will set the
 current database.  The current database is used as the basis for further
 database specific actions.
 
-\subsubsection study_command "study" Command
+\subsubsection dcmqrti_study_command "study" Command
 
 The "study" command with no argument lists the studies in the current
 database.  An example output might look like:
@@ -215,7 +215,7 @@ When invoked with an argument index, the "study" command will set the current
 study.  The current study is used as the basis for further study specific
 actions.
 
-\subsubsection series_command "series" Command
+\subsubsection dcmqrti_series_command "series" Command
 
 The "series" command with no argument lists the series in the current study.
 An example output might look like:
@@ -244,7 +244,7 @@ When invoked with an argument index, the "series" command will set the current
 series.  The current series is used as the basis for further series specific
 actions.
 
-\subsubsection image_command "image" Command
+\subsubsection dcmqrti_image_command "image" Command
 
 The "image" command with no argument lists the images in the current series.
 An example output might look like:
@@ -280,12 +280,12 @@ When invoked with an argument index, the "image" command will set the current
 image.  The current image is used as the basis for further image specific
 actions.
 
-\subsubsection display_command "display" Command
+\subsubsection dcmqrti_display_command "display" Command
 
 The display command serves no purpose in the current version of DCMTK. It was
 used in prior releases to request the CTN Display Program to display an image.
 
-\subsubsection send_command "send" Command
+\subsubsection dcmqrti_send_command "send" Command
 
 The "send" command allows a complete study/series or individual image to be
 stored on a remote AE.  When this command is invoked, the \b dcmqrti program
@@ -328,7 +328,7 @@ Released Association (swallow:2001,ACME1)
 ------------------------------------------------------------
 \endverbatim
 
-\subsubsection echo_command "echo" Command
+\subsubsection dcmqrti_echo_command "echo" Command
 
 The "echo" command allows the user to verify connectivity with the current
 peer AE (defined via the "title" command).  When invoked, the \b dcmqrti
@@ -346,12 +346,12 @@ Released Association (localhost:2001,CMOVE)
 ------------------------------------------------------------
 \endverbatim
 
-\subsubsection quit_exit_commands "quit", "exit" Commands
+\subsubsection dcmqrti_quit_exit_commands "quit", "exit" Commands
 
 The "quit" and "exit" commands have the same effect.  They terminate the
 \b dcmqrti program.
 
-\subsection dicom_conformance DICOM Conformance
+\subsection dcmqrti_dicom_conformance DICOM Conformance
 
 The \b dcmqrti application supports the same set of SOP Classes as an SCU as
 the \b dcmqrscp application - see dcmqrscp documentation.
@@ -367,14 +367,14 @@ BigEndianExplicitTransferSyntax     1.2.840.10008.1.2.2
 
 The \b dcmqrti application does not support extended negotiation.
 
-\subsection configuration Configuration
+\subsection dcmqrti_configuration Configuration
 
 The \b dcmqrti program uses the same configuration file as the \b dcmqrscp
 program.  See the documentation on configuration for more information
 (<em>dcmqrcnf.txt</em> and the example configuration file
 <em>dcmqrscp.cfg</em>).
 
-\section logging LOGGING
+\section dcmqrti_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -393,7 +393,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmqrti_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -415,7 +415,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmqrti_environment ENVIRONMENT
 
 The \b dcmqrti utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -431,17 +431,17 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmqrti_files FILES
 
 <em>\<docdir\>/dcmqrcnf.txt</em> - configuration information
 \n<em>\<docdir\>/dcmqrset.txt</em> - setup information
 \n<em>\<etcdir\>/dcmqrscp.cfg</em> - example configuration file
 
-\section see_also SEE ALSO
+\section dcmqrti_see_also SEE ALSO
 
 <b>dcmqrscp</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmqrti_copyright COPYRIGHT
 
 Copyright (C) 1993-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

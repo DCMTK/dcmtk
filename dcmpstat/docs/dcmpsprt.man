@@ -6,13 +6,13 @@
 \page dcmpsprt dcmpsprt: Read DICOM images and presentation states and render print job
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmpsprt_synopsis SYNOPSIS
 
 \verbatim
 dcmpsprt [options] dcmfile-in...
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmpsprt_description DESCRIPTION
 
 The \b dcmpsprt utility reads one or more DICOM images and presentation states
 and creates a print job.  The print job consists of one Stored Print object
@@ -21,15 +21,15 @@ specified in the configuration file.  The print job can optionally be spooled
 to the printer.  In this case, \b dcmpsprt calls the \b dcmprscu application
 which performs communication with the printer.
 
-\section parameters PARAMETERS
+\section dcmpsprt_parameters PARAMETERS
 
 \verbatim
 dcmfile-in  DICOM image file(s) to be printed
 \endverbatim
 
-\section options OPTIONS
+\section dcmpsprt_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmpsprt_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -57,7 +57,7 @@ dcmfile-in  DICOM image file(s) to be printed
          use config file f for the logger
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmpsprt_processing_options processing options
 \verbatim
   +p   --pstate  [p]state file: string
          render the following image with presentation state p
@@ -70,7 +70,7 @@ dcmfile-in  DICOM image file(s) to be printed
          select printer with identifier n from cfg file
 \endverbatim
 
-\subsection spooling_options spooling options
+\subsection dcmpsprt_spooling_options spooling options
 \verbatim
   -s   --spool
          spool print job to DICOM printer
@@ -79,7 +79,7 @@ dcmfile-in  DICOM image file(s) to be printed
          do not spool print job to DICOM printer (default)
 \endverbatim
 
-\subsection film_orientation_options film orientation options
+\subsection dcmpsprt_film_orientation_options film orientation options
 \verbatim
        --portrait
          set portrait orientation
@@ -91,7 +91,7 @@ dcmfile-in  DICOM image file(s) to be printed
          use printer default (default)
 \endverbatim
 
-\subsection trim_border_options trim (border) options
+\subsection dcmpsprt_trim_border_options trim (border) options
 \verbatim
        --trim
          set trim on
@@ -103,7 +103,7 @@ dcmfile-in  DICOM image file(s) to be printed
          use printer default (default)
 \endverbatim
 
-\subsection behavior_options requested decimate/crop behavior options
+\subsection dcmpsprt_behavior_options requested decimate/crop behavior options
 \verbatim
        --request-decimate
          request decimate
@@ -118,7 +118,7 @@ dcmfile-in  DICOM image file(s) to be printed
          use printer default (default)
 \endverbatim
 
-\subsection print_presentation_LUT_options print presentation LUT options
+\subsection dcmpsprt_print_presentation_LUT_options print presentation LUT options
 \verbatim
        --default-plut
          do not create presentation LUT (default)
@@ -140,7 +140,7 @@ dcmfile-in  DICOM image file(s) to be printed
          set reflected ambient light to v (in cd/m^2)
 \endverbatim
 
-\subsection film_options basic film session options (only with --spool)
+\subsection dcmpsprt_film_options basic film session options (only with --spool)
 \verbatim
        --copies  [v]alue: integer (1..100, default: 1)
          set number of copies to v
@@ -161,7 +161,7 @@ dcmfile-in  DICOM image file(s) to be printed
          set film session owner ID to v
 \endverbatim
 
-\subsection annotation_options annotation options
+\subsection dcmpsprt_annotation_options annotation options
 \verbatim
        --no-annotation
          do not create annotation (default)
@@ -188,7 +188,7 @@ dcmfile-in  DICOM image file(s) to be printed
          do not prepend illumination to annotation
 \endverbatim
 
-\subsection overlay_options overlay options
+\subsection dcmpsprt_overlay_options overlay options
 \verbatim
   +O   --overlay  [f]ilename: string, [x] [y]: integer
          load overlay data from PBM file f and display at position (x,y)
@@ -197,7 +197,7 @@ dcmfile-in  DICOM image file(s) to be printed
          use overlay gray level v (default: 4095 = white)
 \endverbatim
 
-\subsection other_print_options other print options
+\subsection dcmpsprt_other_print_options other print options
 \verbatim
   -l   --layout  [c]olumns [r]ows: integer (default: 1 1)
          use 'STANDARD\c,r' image display format
@@ -245,7 +245,7 @@ dcmfile-in  DICOM image file(s) to be printed
          set image box configuration information to v
 \endverbatim
 
-\section logging LOGGING
+\section dcmpsprt_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -264,7 +264,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmpsprt_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -286,7 +286,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmpsprt_environment ENVIRONMENT
 
 The \b dcmpsprt utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -302,15 +302,15 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmpsprt_files FILES
 
 <em>\<etcdir\>/dcmpstat.cfg</em>, <em>\<etcdir\>/printers.cfg</em> - sample configuration files
 
-\section see_also SEE ALSO
+\section dcmpsprt_see_also SEE ALSO
 
 <b>dcmprscu</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmpsprt_copyright COPYRIGHT
 
 Copyright (C) 1999-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

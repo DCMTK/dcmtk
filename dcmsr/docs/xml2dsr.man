@@ -6,13 +6,13 @@
 \page xml2dsr xml2dsr: Convert DICOM SR file and data set to XML
 \endif
 
-\section synopsis SYNOPSIS
+\section xml2dsr_synopsis SYNOPSIS
 
 \verbatim
 xml2dsr [options] xmlfile-in dsrfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section xml2dsr_description DESCRIPTION
 
 The \b xml2dsr utility converts the contents of an XML (Extensible Markup
 Language) document to DICOM Structured Reporting (SR) format (file format
@@ -24,7 +24,7 @@ Document Architecture).
 An appropriate XML file can be created using the \b dsr2xml tool (option
 \e +Xn recommended to add XML namespace declaration to the root element).
 
-\section parameters PARAMETERS
+\section xml2dsr_parameters PARAMETERS
 
 \verbatim
 xmlfile-in   XML input filename to be converted (stdin: "-")
@@ -32,9 +32,9 @@ xmlfile-in   XML input filename to be converted (stdin: "-")
 dsrfile-out  DICOM SR output filename
 \endverbatim
 
-\section options OPTIONS
+\section xml2dsr_options OPTIONS
 
-\subsection general_options general options
+\subsection xml2dsr_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -62,7 +62,7 @@ dsrfile-out  DICOM SR output filename
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection xml2dsr_input_options input options
 \verbatim
 encoding:
 
@@ -70,7 +70,7 @@ encoding:
          template element encloses content items
 \endverbatim
 
-\subsection processing_options processing options
+\subsection xml2dsr_processing_options processing options
 \verbatim
 validation:
 
@@ -95,7 +95,7 @@ unique identifiers:
          overwrite existing UIDs
 \endverbatim
 
-\subsection output_options output options
+\subsection xml2dsr_output_options output options
 \verbatim
 output file format:
 
@@ -167,9 +167,9 @@ deflate compression level (only with --write-xfer-deflated):
          0=uncompressed, 1=fastest, 9=best compression
 \endverbatim
 
-\section notes NOTES
+\section xml2dsr_notes NOTES
 
-\subsection dicom_conformance DICOM Conformance
+\subsection xml2dsr_dicom_conformance DICOM Conformance
 
 The \b xml2dsr utility supports the following SOP Classes:
 
@@ -195,7 +195,7 @@ SimplifiedAdultEchoSRStorage                1.2.840.10008.5.1.4.1.1.88.72
 Please note that currently only mandatory and some optional attributes are
 supported.
 
-\subsection character_encoding Character Encoding
+\subsection xml2dsr_character_encoding Character Encoding
 
 The DICOM character encoding is determined automatically from the element with
 tag "0008,0005" (Specific Character Set) - if present.  The following
@@ -222,14 +222,14 @@ Chinese       "GB18030"     (GB18030)
 Chinese       "GBK"         (GBK)
 \endverbatim
 
-\subsection compression Compression
+\subsection xml2dsr_compression Compression
 
 If libxml is compiled with zlib support, the input file (\e xmlfile-in) can
 also be compressed with ZIP, which usually results in much smaller files.  See
 output of option \e --version in order to check whether zlib support is
 available.
 
-\subsection limitations Limitations
+\subsection xml2dsr_limitations Limitations
 
 The XML Schema <em>dsr2xml.xsd</em> does not support all variations of the
 \b dsr2xml output format.  However, the default output format (plus option
@@ -240,7 +240,7 @@ length of an XML element value.  Therefore, it should be avoided to use very
 long element values.  A typical limit for libxml version 2.7.3 (and above) is
 10 MB for a single element value.
 
-\section logging LOGGING
+\section xml2dsr_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -259,7 +259,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section xml2dsr_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -281,7 +281,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section xml2dsr_environment ENVIRONMENT
 
 The \b xml2dsr utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -297,15 +297,15 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section xml2dsr_files FILES
 
 <em>\<datadir\>/dsr2xml.xsd</em> - XML Schema file
 
-\section see_also SEE ALSO
+\section xml2dsr_see_also SEE ALSO
 
 <b>dsr2xml</b>(1)
 
-\section copyright COPYRIGHT
+\section xml2dsr_copyright COPYRIGHT
 
 Copyright (C) 2003-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

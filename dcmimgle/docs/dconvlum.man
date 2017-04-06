@@ -6,20 +6,20 @@
 \page dconvlum dconvlum: Convert VeriLUM files to DCMTK display files
 \endif
 
-\section synopsis SYNOPSIS
+\section dconvlum_synopsis SYNOPSIS
 
 \verbatim
 dconvlum in-file out-file [ambient]
 \endverbatim
 
-\section description DESCRIPTION
+\section dconvlum_description DESCRIPTION
 
 Command line program that converts VeriLUM file with characteristic curve data
 (\e CCx_xx.dat) to a format used for the Barten transformation in this toolkit.
 VeriLUM is a calibration package from ImageSmiths consisting of a photometer
 (with serial RS232 connector) and a Windows NT software.
 
-\section parameters PARAMETERS
+\section dconvlum_parameters PARAMETERS
 
 \verbatim
 in-file   VeriLUM characteristic curve file to be converted
@@ -29,7 +29,7 @@ out-file  DCMTK display file to be written
 ambient   ambient light (cd/m^2, floating point value)
 \endverbatim
 
-\section notes NOTES
+\section dconvlum_notes NOTES
 
 The output file describing the characteristic curve of a display system
 (monitor) is a simple text file.  Lines starting with a '#' are treated as
@@ -48,11 +48,11 @@ values are calculated by cubic spline interpolation.
 See DICOM standard part 14 for more details on display calibration and
 Barten's model (including GSDF).
 
-\section see_also SEE ALSO
+\section dconvlum_see_also SEE ALSO
 
 <b>dcmdspfn</b>(1), <b>dcm2pnm</b>(1)
 
-\section copyright COPYRIGHT
+\section dconvlum_copyright COPYRIGHT
 
 Copyright (C) 1999-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

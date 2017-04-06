@@ -6,13 +6,13 @@
 \page dcmqrscp dcmqrscp: DICOM image archive (central test node)
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmqrscp_synopsis SYNOPSIS
 
 \verbatim
 dcmqrscp [options] [port]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmqrscp_description DESCRIPTION
 
 The Image Central Test Node (\b dcmqrscp) Application implements a simple image
 archive.  It manages a number of storage areas and allows images to be stored
@@ -33,15 +33,15 @@ that date but must be re-created.  Use \b dcmqridx for that task or re-send all
 images to the server after deleting all old files (and creating a new empty
 \e index.dat file).
 
-\section parameters PARAMETERS
+\section dcmqrscp_parameters PARAMETERS
 
 \verbatim
 port  tcp/ip port number to listen on (default: in config file)
 \endverbatim
 
-\section options OPTIONS
+\section dcmqrscp_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmqrscp_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -82,7 +82,7 @@ port  tcp/ip port number to listen on (default: in config file)
   # example configuration file dcmqrscp.cfg).
 \endverbatim
 
-\subsection multiprocess_options multi-process options
+\subsection dcmqrscp_multiprocess_options multi-process options
 \verbatim
   -s    --single-process
           single process mode
@@ -100,7 +100,7 @@ port  tcp/ip port number to listen on (default: in config file)
   # on systems that support the fork() call, i.e. not on Windows.
 \endverbatim
 
-\subsection database_options database options
+\subsection dcmqrscp_database_options database options
 \verbatim
 association negotiation:
 
@@ -182,7 +182,7 @@ restriction of query/retrieve models:
           do not support Patient/Study Only Q/R models
 \endverbatim
 
-\subsection network_options network options
+\subsection dcmqrscp_network_options network options
 \verbatim
 preferred network transfer syntaxes (incoming associations):
 
@@ -374,7 +374,7 @@ other network options:
           silently correct space-padded UIDs
 \endverbatim
 
-\subsection encoding_options encoding options
+\subsection dcmqrscp_encoding_options encoding options
 \verbatim
 post-1993 value representations:
 
@@ -390,7 +390,7 @@ post-1993 value representations:
   # these value representations.
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmqrscp_output_options output options
 \verbatim
 bit preserving mode:
 
@@ -500,9 +500,9 @@ specific character set:
           in destination character set
 \endverbatim
 
-\section notes NOTES
+\section dcmqrscp_notes NOTES
 
-\subsection operation Operation
+\subsection dcmqrscp_operation Operation
 
 \b dcmqrscp waits for another application to connect at the presentation
 address (port number) specified in its configuration file (or overridden by a
@@ -527,9 +527,9 @@ C-CANCEL messages to interrupt query/retrieve operations.
 Under normal operations \b dcmqrscp will never exit, it keeps on waiting for
 new associations until killed.
 
-\subsection dicom_conformance DICOM Conformance
+\subsection dcmqrscp_dicom_conformance DICOM Conformance
 
-\subsubsection scu_conformance SCU Conformance
+\subsubsection dcmqrscp_scu_conformance SCU Conformance
 
 The \b dcmqrscp application supports the following SOP Classes as an SCU:
 
@@ -696,7 +696,7 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 
 The \b dcmqrscp application does not support extended negotiation.
 
-\subsubsection scp_conformance SCP Conformance
+\subsubsection dcmqrscp_scp_conformance SCP Conformance
 
 The \b dcmqrscp application supports the following SOP Classes as an SCP:
 
@@ -911,7 +911,7 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 
 The \b dcmqrscp application does not support extended negotiation.
 
-\subsubsection query_keys Query Keys
+\subsubsection dcmqrscp_query_keys Query Keys
 
 The \b dcmqrscp application supports the following attributes as query keys.
 
@@ -970,12 +970,12 @@ Query/Retrieve Level: IMAGE
 (0020,0013) InstanceNumber
 \endverbatim
 
-\subsection configuration Configuration
+\subsection dcmqrscp_configuration Configuration
 
 The \b dcmqrscp program uses the same configuration file as the \b dcmqrti
 program.  See the documentation on configuration for more information.
 
-\subsection access_control Access Control
+\subsection dcmqrscp_access_control Access Control
 
 When compiled on Unix platforms with TCP wrapper support, host-based access
 control can be enabled with the \e --access-control command line option.  In
@@ -984,7 +984,7 @@ tables for \b dcmqrscp are enforced.  The default locations of the host access
 control tables are <em>/etc/hosts.allow</em> and <em>/etc/hosts.deny</em>.
 Further details are described in <b>hosts_access</b>(5).
 
-\section logging LOGGING
+\section dcmqrscp_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -1003,7 +1003,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmqrscp_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -1025,7 +1025,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmqrscp_environment ENVIRONMENT
 
 The \b dcmqrscp utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -1041,17 +1041,17 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmqrscp_files FILES
 
 <em>\<docdir\>/dcmqrcnf.txt</em> - configuration information
 \n<em>\<docdir\>/dcmqrset.txt</em> - setup information
 \n<em>\<etcdir\>/dcmqrscp.cfg</em> - example configuration file
 
-\section see_also SEE ALSO
+\section dcmqrscp_see_also SEE ALSO
 
 <b>dcmqridx</b>(1), <b>dcmqrti</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmqrscp_copyright COPYRIGHT
 
 Copyright (C) 1993-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

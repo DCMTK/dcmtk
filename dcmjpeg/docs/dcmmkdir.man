@@ -6,13 +6,13 @@
 \page dcmmkdir dcmmkdir: Create a DICOMDIR file
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmmkdir_synopsis SYNOPSIS
 
 \verbatim
 dcmmkdir [options] [dcmfile-in...]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmmkdir_description DESCRIPTION
 
 The \b dcmmkdir utility creates a \e DICOMDIR file from the specified
 referenced DICOM files according to the DICOM Part 11 Media Storage Application
@@ -64,14 +64,14 @@ This tool extends \b dcmgpdir which can only create General Purpose \e DICOMDIR
 files.  The default behavior of \b dcmmkdir (with \e --general-purpose) is
 equivalent to that of \b dcmgpdir.
 
-\section parameters PARAMETERS
+\section dcmmkdir_parameters PARAMETERS
 
 \verbatim
 dcmfile-in  referenced DICOM file (or directory to be scanned)
 \endverbatim
 
-\section options OPTIONS
-\subsection general_options general options
+\section dcmmkdir_options OPTIONS
+\subsection dcmmkdir_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -99,7 +99,7 @@ dcmfile-in  referenced DICOM file (or directory to be scanned)
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmmkdir_input_options input options
 \verbatim
 DICOMDIR identifiers:
 
@@ -140,7 +140,7 @@ reading:
           # possibly not available on all systems
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmmkdir_processing_options processing options
 \verbatim
 consistency check:
 
@@ -203,7 +203,7 @@ icon images:
           created automatically (default: black image)
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmmkdir_output_options output options
 \verbatim
 DICOMDIR file:
 
@@ -373,7 +373,7 @@ length encoding in sequences and items:
           write with undefined lengths
 \endverbatim
 
-\section notes NOTES
+\section dcmmkdir_notes NOTES
 
 All files specified on the command line (or discovered by recursively examining
 the contents of directories with the \e +r option) are first evaluated for
@@ -400,7 +400,7 @@ This might change in the future.  Till then, color images are automatically
 converted to grayscale mode.  The icon size is 128*128 pixels for the cardiac
 profiles (as required by the DICOM standard) and 64*64 for all others.
 
-\subsection scanning_directories Scanning Directories
+\subsection dcmmkdir_scanning_directories Scanning Directories
 
 Adding files from directories is possible by using option \e --recurse.  If no
 further command line parameters are given, the directory specified by option
@@ -414,7 +414,7 @@ other patterns are specified on the command line outside the
 \e --input-directory option (e.g. in order to select further files), these do
 not apply to the specified directories.
 
-\section logging LOGGING
+\section dcmmkdir_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -433,7 +433,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmmkdir_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -455,7 +455,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmmkdir_environment ENVIRONMENT
 
 The \b dcmmkdir utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -471,11 +471,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dcmmkdir_see_also SEE ALSO
 
 <b>dcmgpdir</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmmkdir_copyright COPYRIGHT
 
 Copyright (C) 2001-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

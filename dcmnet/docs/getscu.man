@@ -270,7 +270,7 @@ SOPInstanceUID).
 
 \subsection getscu_dicom_conformance DICOM Conformance
 
-\subsubsection scu_conformance SCU Conformance
+\subsubsection getscu_scu_conformance SCU Conformance
 
 The \b getscu application supports the following SOP Classes as an SCU:
 
@@ -297,7 +297,7 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 Which transfer syntaxes are actually proposed in what order, can be specified
 with the \e --propose options.
 
-\subsubsection storage_conformance Storage Conformance
+\subsubsection getscu_storage_conformance Storage Conformance
 
 The \b getscu application supports the following SOP Classes as an SCP:
 

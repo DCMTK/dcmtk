@@ -6,13 +6,13 @@
 \page wlmscpfs wlmscpfs: DICOM Basic Worklist Management SCP (based on data files)
 \endif
 
-\section synopsis SYNOPSIS
+\section wlmscpfs_synopsis SYNOPSIS
 
 \verbatim
 wlmscpfs [options] port
 \endverbatim
 
-\section description DESCRIPTION
+\section wlmscpfs_description DESCRIPTION
 
 The \b wlmscpfs application implements a Service Class Provider (SCP) for the
 Basic Worklist Management Service.  The application will listen on a specified
@@ -25,15 +25,15 @@ information back to the calling Worklist Management SCU.  Aside from dealing
 with Worklist Management queries, the \b wlmscpfs application also supports
 the Verification Service Class as an SCP.
 
-\section parameters PARAMETERS
+\section wlmscpfs_parameters PARAMETERS
 
 \verbatim
 port  tcp/ip port number to listen on
 \endverbatim
 
-\section options OPTIONS
+\section wlmscpfs_options OPTIONS
 
-\subsection general_options general options
+\subsection wlmscpfs_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -61,7 +61,7 @@ port  tcp/ip port number to listen on
           use config file f for the logger
 \endverbatim
 
-\subsection multiprocess_options multi-process options
+\subsection wlmscpfs_multiprocess_options multi-process options
 \verbatim
   -s    --single-process
           single process mode
@@ -70,7 +70,7 @@ port  tcp/ip port number to listen on
           fork child process for each association (default)
 \endverbatim
 
-\subsection input_options input options
+\subsection wlmscpfs_input_options input options
 \verbatim
 general:
 
@@ -86,7 +86,7 @@ handling of worklist files:
           disable rejection of incomplete worklist files
 \endverbatim
 
-\subsection processing_options processing options
+\subsection wlmscpfs_processing_options processing options
 \verbatim
 returned character set:
 
@@ -106,7 +106,7 @@ other processing options:
           request messages
 \endverbatim
 
-\subsection network_options network options
+\subsection wlmscpfs_network_options network options
 \verbatim
 preferred network transfer syntaxes:
 
@@ -179,7 +179,7 @@ other network options:
           disable hostname lookup
 \endverbatim
 
-\section notes NOTES
+\section wlmscpfs_notes NOTES
 
 The semantic impacts of the above mentioned options is clear for the majority
 of options.  Some particular options, however, are so specific that they need
@@ -217,7 +217,7 @@ which the SCP might have to return to an SCU in a C-FIND response message.
 Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding
 type 1 attributes (see column "Return Key Type").
 
-\subsection dicom_conformance DICOM Conformance
+\subsection wlmscpfs_dicom_conformance DICOM Conformance
 
 The \b wlmscpfs application supports the following SOP Classes as an SCP:
 
@@ -374,7 +374,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 The attribute (0008,0005) SpecificCharacterSet is a special case and its
 support by \b wlmscpfs is discussed in the NOTES section above.
 
-\subsection access_control Access Control
+\subsection wlmscpfs_access_control Access Control
 
 When compiled on Unix platforms with TCP wrapper support, host-based access
 control can be enabled with the \e --access-control command line option.  In
@@ -383,7 +383,7 @@ tables for \b wlmscpfs are enforced.  The default locations of the host access
 control tables are <em>/etc/hosts.allow</em> and <em>/etc/hosts.deny</em>.
 Further details are described in <b>hosts_access</b>(5).
 
-\section logging LOGGING
+\section wlmscpfs_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -402,7 +402,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section wlmscpfs_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -424,7 +424,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section wlmscpfs_environment ENVIRONMENT
 
 The \b wlmscpfs utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -440,7 +440,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section wlmscpfs_copyright COPYRIGHT
 
 Copyright (C) 1996-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

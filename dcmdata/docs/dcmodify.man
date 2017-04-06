@@ -6,13 +6,13 @@
 \page dcmodify dcmodify: Modify DICOM files
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmodify_synopsis SYNOPSIS
 
 \verbatim
 dcmodify [options] dcmfile-in...
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmodify_description DESCRIPTION
 
 \b dcmodify is a tool that allows one to modify, insert and delete tags and
 items in DICOM files.  Sequences and tags with a value multiplicity > 1 are
@@ -63,15 +63,15 @@ would exist, the rest (4) would be inserted.
 Please note that there are some issues concerning the modification of private
 tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
 
-\section parameters PARAMETERS
+\section dcmodify_parameters PARAMETERS
 
 \verbatim
 dcmfile-in  DICOM input filename(s) to be modified
 \endverbatim
 
-\section options OPTIONS
+\section dcmodify_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmodify_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -99,7 +99,7 @@ dcmfile-in  DICOM input filename(s) to be modified
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmodify_input_options input options
 \verbatim
 input file format:
 
@@ -157,7 +157,7 @@ bitstream format of deflated input:
           expect deflated zlib bitstream
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmodify_processing_options processing options
 \verbatim
 backup input files:
 
@@ -229,7 +229,7 @@ error handling:
           having a VR of UN
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmodify_output_options output options
 \verbatim
 output file format:
 
@@ -293,13 +293,13 @@ data set trailing padding (not with --write-dataset):
           multiple of i bytes
 \endverbatim
 
-\section private_tags PRIVATE TAGS
+\section dcmodify_private_tags PRIVATE TAGS
 
 There are some issues you have to consider when working with private tags.
 However, the insertion or modification of a reservation tag (gggg,00xx) should
 always work.
 
-\subsection private_insertions Insertions
+\subsection dcmodify_private_insertions Insertions
 
 If you wish to insert a private tag (not a reservation with gggg,00xx), be
 sure, that you've listed it in your dictionary (see
@@ -319,7 +319,7 @@ the tag then cannot be found in the dictionary.
 See description above how inserting values into elements with unknown VR
 are handled.
 
-\subsection private_modifications Modifications
+\subsection dcmodify_private_modifications Modifications
 
 If you modify a private tags value, \b dcmodify won't check its VR against the
 dictionary.  So please be careful to enter only values that match the tag's VR.
@@ -332,7 +332,7 @@ it.  Then \b dcmodify uses your dictionary entry to determine the right VR
 Also, see description above how inserting values into elements with unknown VR
 are handled.
 
-\subsection private_deletions Deletions
+\subsection dcmodify_private_deletions Deletions
 
 When you use \b dcmodify to delete a private reservation tag, please note that
 \b dcmodify won't touch the private tags that are under this reservation.  The
@@ -341,7 +341,7 @@ associated private tags.
 
 For the deletion of private non-reservation tags there are no special issues.
 
-\section changing_uids CHANGING UIDS
+\section dcmodify_changing_uids CHANGING UIDS
 
 \b dcmodify will automatically correct 'Media Storage SOP Class UID' and
 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the
@@ -362,7 +362,7 @@ When choosing the \e -gin option, the related metaheader tag ('Media Storage
 SOP Instance UID') is updated automatically.  This behavior cannot be
 disabled.
 
-\section creating_new_files CREATING NEW FILES
+\section dcmodify_creating_new_files CREATING NEW FILES
 
 Option \e --create-file lets \b dcmodify create a file if it does not already
 exist on disk. This can be used in order to create files from scratch by
@@ -375,7 +375,7 @@ is not permitted together with \e --create. This way, at least the metaheader
 is written and no file with zero byte length is created in a case where no
 insertions are performed in the \b dcmodify call.
 
-\section element_values_from_file ELEMENT VALUES FROM FILE
+\section dcmodify_element_values_from_file ELEMENT VALUES FROM FILE
 
 In order to read the element value from a file instead of specifying it on the
 command line, option \e -mf and \e -if can be used.  Please note that for OW
@@ -383,7 +383,7 @@ elements, the data is expected to be little endian ordered and will be swapped
 if necessary.  The file size should always be an even number of bytes, i.e. no
 automatic padding is performed.
 
-\section wildcards WILDCARDS
+\section dcmodify_wildcards WILDCARDS
 
 \b dcmodify also permits the usage of a wildcard character "*" for item numbers
 in path expressions, e.g. "ContentSequence[*].CodeValue" selects all "Code
@@ -397,7 +397,7 @@ The options \e -ma and \e -ea for modifying or deleting all occurrences of a
 DICOM element based on its tag do not accept any wildcards but only work on
 single elements (i.e. a single dictionary name or tag key).
 
-\section examples EXAMPLES
+\section dcmodify_examples EXAMPLES
 
 \verbatim
 -i   --insert:
@@ -507,7 +507,7 @@ single elements (i.e. a single dictionary name or tag key).
 
 \endverbatim
 
-\section error_handling ERROR HANDLING
+\section dcmodify_error_handling ERROR HANDLING
 
 \b dcmodify tries executing each modify operation given on command line: If
 one returns an error, the others are being performed anyway.  However in case
@@ -522,7 +522,7 @@ treated as being successful.  That does make sense if someone wants to be sure
 that specific tags are not present in the file or that - if they exist - that
 they are set to a specific value.
 
-\section logging LOGGING
+\section dcmodify_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -541,7 +541,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmodify_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -563,7 +563,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmodify_environment ENVIRONMENT
 
 The \b dcmodify utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -579,7 +579,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section dcmodify_copyright COPYRIGHT
 
 Copyright (C) 2003-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

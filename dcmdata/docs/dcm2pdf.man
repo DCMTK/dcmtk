@@ -6,20 +6,20 @@
 \page dcm2pdf dcm2pdf: Extract PDF file from DICOM encapsulated PDF
 \endif
 
-\section synopsis SYNOPSIS
+\section dcm2pdf_synopsis SYNOPSIS
 
 \verbatim
 dcm2pdf [options] dcmfile-in pdffile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section dcm2pdf_description DESCRIPTION
 
 The \b dcm2pdf utility reads a DICOM file of the Encapsulated PDF Storage SOP
 Class (\e dcmfile-in), extracts the embedded PDF document and writes it to an
 output file (\e pdffile-out).  Optionally a command can be executed after the
 creation of the PDF file.
 
-\section parameters PARAMETERS
+\section dcm2pdf_parameters PARAMETERS
 
 \verbatim
 dcmfile-in   DICOM input filename
@@ -27,9 +27,9 @@ dcmfile-in   DICOM input filename
 pdffile-out  PDF output filename
 \endverbatim
 
-\section options OPTIONS
+\section dcm2pdf_options OPTIONS
 
-\subsection general_options general options
+\subsection dcm2pdf_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -57,7 +57,7 @@ pdffile-out  PDF output filename
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcm2pdf_input_options input options
 \verbatim
 input file format:
 
@@ -128,13 +128,13 @@ bitstream format of deflated input:
          expect deflated zlib bitstream
 \endverbatim
 
-\subsection execution_options execution options
+\subsection dcm2pdf_execution_options execution options
 \verbatim
   -x   --exec  [c]ommand: string
          execute command c after PDF extraction
 \endverbatim
 
-\section notes NOTES
+\section dcm2pdf_notes NOTES
 
 Option \e --exec allows for the execution of a certain command line after the
 creation of the PDF document.  The command line to be executed is passed to
@@ -143,7 +143,7 @@ placeholder '\#f', which will be replaced by the PDF filename at run time.
 The specified command line is executed in the foreground, i.e. \b pdf2dcm will
 be blocked until the command terminates.
 
-\section logging LOGGING
+\section dcm2pdf_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -162,7 +162,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcm2pdf_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -184,7 +184,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcm2pdf_environment ENVIRONMENT
 
 The \b dcm2pdf utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -200,11 +200,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dcm2pdf_see_also SEE ALSO
 
 <b>pdf2dcm</b>(1)
 
-\section copyright COPYRIGHT
+\section dcm2pdf_copyright COPYRIGHT
 
 Copyright (C) 2007-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

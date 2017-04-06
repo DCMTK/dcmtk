@@ -6,13 +6,13 @@
 \page dcmsign dcmsign: Sign and Verify DICOM Files
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmsign_synopsis SYNOPSIS
 
 \verbatim
 dcmsign [options] dcmfile-in [dcmfile-out]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmsign_description DESCRIPTION
 
 The \b dcmsign utility reads a DICOM file (\e dcmfile-in), performs a digital
 signature operation and, if any modification has taken place, writes the DICOM
@@ -27,7 +27,7 @@ Five digital signature operations are supported:
 \li removal of a single digital signature from the DICOM file, and
 \li removal of all digital signatures from the DICOM file.
 
-\section parameters PARAMETERS
+\section dcmsign_parameters PARAMETERS
 
 \verbatim
 dcmfile-in   DICOM input filename to be processed
@@ -35,9 +35,9 @@ dcmfile-in   DICOM input filename to be processed
 dcmfile-out  DICOM output filename
 \endverbatim
 
-\section options OPTIONS
+\section dcmsign_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmsign_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -65,7 +65,7 @@ dcmfile-out  DICOM output filename
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmsign_input_options input options
 \verbatim
 input file format:
 
@@ -96,7 +96,7 @@ input transfer syntax:
           read with implicit VR little endian TS
 \endverbatim
 
-\subsection signature_commands signature commands
+\subsection dcmsign_signature_commands signature commands
 \verbatim
         --verify
           verify all signatures (default)
@@ -114,7 +114,7 @@ input transfer syntax:
           remove all signatures from data set
 \endverbatim
 
-\subsection signature_creation_options signature creation options (only with --sign or --sign-item):
+\subsection dcmsign_signature_creation_options signature creation options (only with --sign or --sign-item):
 \verbatim
 private key password:
 
@@ -180,7 +180,7 @@ signature format:
           if signature includes compressed pixel data
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmsign_output_options output options
 \verbatim
 output transfer syntax:
 
@@ -211,9 +211,9 @@ other output options:
           (only with --sign or --sign-item)
 \endverbatim
 
-\section notes NOTES
+\section dcmsign_notes NOTES
 
-\subsection files_and_parameters Files and Parameters
+\subsection dcmsign_files_and_parameters Files and Parameters
 
 The \b dcmsign utility reads and writes a number of files and file formats
 which are described in this section.
@@ -269,7 +269,7 @@ ReferencedImageSequence (0008,1140) which is located in the first item of the
 ReferencedSeriesSequence (0008,1115) which is located in the main DICOM
 dataset.
 
-\section logging LOGGING
+\section dcmsign_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -288,7 +288,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmsign_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -310,7 +310,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmsign_environment ENVIRONMENT
 
 The \b dcmsign utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -326,7 +326,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section dcmsign_copyright COPYRIGHT
 
 Copyright (C) 2000-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

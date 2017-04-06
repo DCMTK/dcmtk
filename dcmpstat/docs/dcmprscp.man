@@ -6,13 +6,13 @@
 \page dcmprscp dcmprscp: DICOM basic grayscale print management SCP
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmprscp_synopsis SYNOPSIS
 
 \verbatim
 dcmprscp [options]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmprscp_description DESCRIPTION
 
 The \b dcmprscp utility implements the DICOM Basic Grayscale Print Management
 Service Class as SCP. It also supports the optional Presentation LUT SOP
@@ -26,9 +26,9 @@ to load a Stored Print object created by \b dcmprscp and to render a screen
 preview of the hardcopy.  The \b dcmprscp utility reads the characteristics of
 the printer to be emulated from the configuration file.
 
-\section options OPTIONS
+\section dcmprscp_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmprscp_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -62,7 +62,7 @@ the printer to be emulated from the configuration file.
          # compatibility only
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmprscp_processing_options processing options
 \verbatim
   -c  --config  [f]ilename: string
         process using settings from configuration file
@@ -74,7 +74,7 @@ the printer to be emulated from the configuration file.
         dump all DIMSE messages
 \endverbatim
 
-\section logging LOGGING
+\section dcmprscp_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -93,7 +93,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmprscp_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -115,7 +115,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmprscp_environment ENVIRONMENT
 
 The \b dcmprscp utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -131,15 +131,15 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmprscp_files FILES
 
 <em>\<etcdir\>/dcmpstat.cfg</em>, <em>\<etcdir\>/printers.cfg</em> - sample configuration files
 
-\section see_also SEE ALSO
+\section dcmprscp_see_also SEE ALSO
 
 <b>dcmprscu</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmprscp_copyright COPYRIGHT
 
 Copyright (C) 1999-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

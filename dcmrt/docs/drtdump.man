@@ -6,13 +6,13 @@
 \page drtdump drtdump: Dump DICOM RT file and data set
 \endif
 
-\section synopsis SYNOPSIS
+\section drtdump_synopsis SYNOPSIS
 
 \verbatim
 drtdump [options] drtfile-in...
 \endverbatim
 
-\section description DESCRIPTION
+\section drtdump_description DESCRIPTION
 
 The \b drtdump utility dumps the contents of a DICOM Radiation Therapy (RT)
 object (file format or raw data set) to stdout in textual form.  The output
@@ -27,15 +27,15 @@ whenever possible (using the \b dcmconv utility).  It is also possible to use
 the \e -f and <em>-t[ieb]</em> options to force \b drtdump to read a dataset
 with a particular transfer syntax.
 
-\section parameters PARAMETERS
+\section drtdump_parameters PARAMETERS
 
 \verbatim
 drtfile-in  DICOM RT input filename to be dumped
 \endverbatim
 
-\section options OPTIONS
+\section drtdump_options OPTIONS
 
-\subsection general_options general options
+\subsection drtdump_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -63,7 +63,7 @@ drtfile-in  DICOM RT input filename to be dumped
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection drtdump_input_options input options
 \verbatim
 input file format:
 
@@ -94,7 +94,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection output_options output options
+\subsection drtdump_output_options output options
 \verbatim
 printing:
 
@@ -102,9 +102,9 @@ printing:
          print header with filename for each input file
 \endverbatim
 
-\section notes NOTES
+\section drtdump_notes NOTES
 
-\subsection dicom_conformance DICOM Conformance
+\subsection drtdump_dicom_conformance DICOM Conformance
 
 The \b drtdump utility supports the following SOP Classes:
 
@@ -118,7 +118,7 @@ RTIonPlanStorage                 1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage 1.2.840.10008.5.1.4.1.1.481.9
 \endverbatim
 
-\section logging LOGGING
+\section drtdump_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -137,7 +137,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section drtdump_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -159,7 +159,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section drtdump_environment ENVIRONMENT
 
 The \b drtdump utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -175,11 +175,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section drtdump_see_also SEE ALSO
 
 <b>dcmconv</b>(1), <b>dcmdump</b>(1)
 
-\section copyright COPYRIGHT
+\section drtdump_copyright COPYRIGHT
 
 Copyright (C) 2010-2014 by OFFIS e.V. and ICSMED AG, Escherweg 2, 26121
 Oldenburg, Germany.

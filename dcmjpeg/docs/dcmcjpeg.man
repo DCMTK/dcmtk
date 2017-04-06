@@ -6,19 +6,19 @@
 \page dcmcjpeg dcmcjpeg: Encode DICOM file to JPEG transfer syntax
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmcjpeg_synopsis SYNOPSIS
 
 \verbatim
 dcmcjpeg [options] dcmfile-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmcjpeg_description DESCRIPTION
 
 The \b dcmcjpeg utility reads an uncompressed DICOM image (\e dcmfile-in),
 performs a JPEG compression (i. e. conversion to an encapsulated DICOM transfer
 syntax) and writes the converted image to an output file (\e dcmfile-out).
 
-\section parameters PARAMETERS
+\section dcmcjpeg_parameters PARAMETERS
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
@@ -26,9 +26,9 @@ dcmfile-in   DICOM input filename to be converted
 dcmfile-out  DICOM output filename
 \endverbatim
 
-\section options OPTIONS
+\section dcmcjpeg_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmcjpeg_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -56,7 +56,7 @@ dcmfile-out  DICOM output filename
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmcjpeg_input_options input options
 \verbatim
 input file format:
 
@@ -102,7 +102,7 @@ compatibility (ignored by +tl):
   # (only pseudo lossless encoder)
 \endverbatim
 
-\subsection JPEG_encoding_options JPEG encoding options
+\subsection dcmcjpeg_JPEG_encoding_options JPEG encoding options
 \verbatim
 JPEG process:
 
@@ -321,7 +321,7 @@ non-standard YCbCr component subsampling (not with +tl):
   # interpretation is encoded as YBR_FULL_422 which violates DICOM rules.
 \endverbatim
 
-\subsection enc_pix_data_encoding_opt encapsulated pixel data encoding options:
+\subsection dcmcjpeg_enc_pix_data_encoding_opt encapsulated pixel data encoding options:
 \verbatim
 encapsulated pixel data fragmentation:
 
@@ -484,7 +484,7 @@ SOP Instance UID:
   # Never assigns a new SOP instance UID.
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmcjpeg_output_options output options
 \verbatim
 post-1993 value representations:
 
@@ -526,7 +526,7 @@ data set trailing padding:
           and items on multiple of i bytes
 \endverbatim
 
-\section notes NOTES
+\section dcmcjpeg_notes NOTES
 
 The \b dcmcjpeg utility compresses DICOM images of all SOP classes.  Special
 handling has been implemented for CT images (where the modality transformation
@@ -573,7 +573,7 @@ also be distinguished by the Derivation Description in the resulting DICOM
 image, which contains the term "Lossless JPEG compression" for the new and
 "Pseudo-Lossless JPEG compression" for the old encoder.
 
-\section transfer_syntaxes TRANSFER SYNTAXES
+\section dcmcjpeg_transfer_syntaxes TRANSFER SYNTAXES
 
 \b dcmcjpeg supports the following transfer syntaxes for input
 (\e dcmfile-in):
@@ -605,7 +605,7 @@ JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
 JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
 \endverbatim
 
-\section logging LOGGING
+\section dcmcjpeg_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -624,7 +624,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmcjpeg_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -646,7 +646,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmcjpeg_environment ENVIRONMENT
 
 The \b dcmcjpeg utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -662,11 +662,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dcmcjpeg_see_also SEE ALSO
 
 <b>dcmdjpeg</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmcjpeg_copyright COPYRIGHT
 
 Copyright (C) 2001-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

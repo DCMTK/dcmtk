@@ -6,13 +6,13 @@
 \page dsrdump dsrdump: Dump DICOM SR file and data set
 \endif
 
-\section synopsis SYNOPSIS
+\section dsrdump_synopsis SYNOPSIS
 
 \verbatim
 dsrdump [options] dsrfile-in...
 \endverbatim
 
-\section description DESCRIPTION
+\section dsrdump_description DESCRIPTION
 
 The \b dsrdump utility dumps the contents of a DICOM Structured Reporting (SR)
 document (file format or raw data set) to stdout in textual form.  The output
@@ -27,15 +27,15 @@ whenever possible (using the \b dcmconv utility).  It is also possible to use
 the \e -f and <em>-t[ieb]</em> options to force \b dsrdump to read a dataset
 with a particular transfer syntax.
 
-\section parameters PARAMETERS
+\section dsrdump_parameters PARAMETERS
 
 \verbatim
 dsrfile-in  DICOM SR input filename to be dumped
 \endverbatim
 
-\section options OPTIONS
+\section dsrdump_options OPTIONS
 
-\subsection general_options general options
+\subsection dsrdump_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -63,7 +63,7 @@ dsrfile-in  DICOM SR input filename to be dumped
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dsrdump_input_options input options
 \verbatim
 input file format:
 
@@ -94,7 +94,7 @@ input transfer syntax:
           read with implicit VR little endian TS
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dsrdump_processing_options processing options
 \verbatim
 additional information:
 
@@ -133,7 +133,7 @@ specific character set:
           # (see output of --version on which one is available)
 \endverbatim
 
-\subsection output_options output options
+\subsection dsrdump_output_options output options
 \verbatim
 general printing:
 
@@ -203,9 +203,9 @@ color:
           # not available on Windows systems
 \endverbatim
 
-\section notes NOTES
+\section dsrdump_notes NOTES
 
-\subsection dicom_conformance DICOM Conformance
+\subsection dsrdump_dicom_conformance DICOM Conformance
 
 The \b dsrdump utility supports the following SOP Classes:
 
@@ -228,7 +228,7 @@ AcquisitionContextSRStorage                 1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                1.2.840.10008.5.1.4.1.1.88.72
 \endverbatim
 
-\section logging LOGGING
+\section dsrdump_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -247,7 +247,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dsrdump_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -269,7 +269,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dsrdump_environment ENVIRONMENT
 
 The \b dsrdump utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -285,11 +285,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dsrdump_see_also SEE ALSO
 
 <b>dcmconv</b>(1)
 
-\section copyright COPYRIGHT
+\section dsrdump_copyright COPYRIGHT
 
 Copyright (C) 2000-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

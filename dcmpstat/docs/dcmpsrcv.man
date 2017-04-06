@@ -6,13 +6,13 @@
 \page dcmpsrcv dcmpsrcv: Network receive for presentation state viewer
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmpsrcv_synopsis SYNOPSIS
 
 \verbatim
 dcmpsrcv [options] config-file
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmpsrcv_description DESCRIPTION
 
 The \b dcmpsrcv application is invoked by the Grayscale Softcopy Presentation
 State Viewer and is not intended to be invoked manually.  The application
@@ -24,15 +24,15 @@ as the \b storescp utility as SCP, but does not support encapsulated transfer
 syntaxes.  Incoming images are stored in the common viewer database.  See the
 full conformance statement for further details.
 
-\section parameters PARAMETERS
+\section dcmpsrcv_parameters PARAMETERS
 
 \verbatim
 config-file  configuration file to be read
 \endverbatim
 
-\section options OPTIONS
+\section dcmpsrcv_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmpsrcv_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -63,7 +63,7 @@ config-file  configuration file to be read
          terminate all running receivers
 \endverbatim
 
-\section logging LOGGING
+\section dcmpsrcv_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -82,7 +82,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmpsrcv_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -104,7 +104,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmpsrcv_environment ENVIRONMENT
 
 The \b dcmpsrcv utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -120,15 +120,15 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmpsrcv_files FILES
 
 <em>\<etcdir\>/dcmpstat.cfg</em> - sample configuration file
 
-\section see_also SEE ALSO
+\section dcmpsrcv_see_also SEE ALSO
 
 <b>dcmpssnd</b>(1), <b>storescp</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmpsrcv_copyright COPYRIGHT
 
 Copyright (C) 1998-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

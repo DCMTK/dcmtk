@@ -6,19 +6,19 @@
 \page dcmcrle dcmcrle: Encode DICOM file to RLE transfer syntax
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmcrle_synopsis SYNOPSIS
 
 \verbatim
 dcmcrle [options] dcmfile-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmcrle_description DESCRIPTION
 
 The \b dcmcrle utility reads an uncompressed DICOM image (\e dcmfile-in),
 performs RLE compression (i.e. conversion to an encapsulated DICOM transfer
 syntax) and writes the converted image to an output file (\e dcmfile-out).
 
-\section parameters PARAMETERS
+\section dcmcrle_parameters PARAMETERS
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
@@ -26,9 +26,9 @@ dcmfile-in   DICOM input filename to be converted
 dcmfile-out  DICOM output filename
 \endverbatim
 
-\section options OPTIONS
+\section dcmcrle_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmcrle_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -56,7 +56,7 @@ dcmfile-out  DICOM output filename
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmcrle_input_options input options
 \verbatim
 input file format:
 
@@ -87,7 +87,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection enc_pix_data_encoding_opt encapsulated pixel data encoding options
+\subsection dcmcrle_enc_pix_data_encoding_opt encapsulated pixel data encoding options
 \verbatim
 pixel data fragmentation:
 
@@ -121,7 +121,7 @@ SOP Instance UID:
          always assign new UID
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmcrle_output_options output options
 \verbatim
 post-1993 value representations:
 
@@ -163,14 +163,14 @@ data set trailing padding:
          and items on multiple of i bytes
 \endverbatim
 
-\section notes NOTES
+\section dcmcrle_notes NOTES
 
 Please note that the DICOM standard does not allow for storing the pixel data
 with multiple fragments per frame (when RLE compression is used).  So limiting
 the fragment size with option \e --fragment-size (or \e +fs) may result in a
 non-standard conformant DICOM image.
 
-\section transfer_syntaxes TRANSFER SYNTAXES
+\section dcmcrle_transfer_syntaxes TRANSFER SYNTAXES
 
 \b dcmcrle supports the following transfer syntaxes for input
 (\e dcmfile-in):
@@ -191,7 +191,7 @@ BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
 RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
 \endverbatim
 
-\section logging LOGGING
+\section dcmcrle_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -210,7 +210,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmcrle_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -232,7 +232,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmcrle_environment ENVIRONMENT
 
 The \b dcmcrle utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -248,11 +248,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dcmcrle_see_also SEE ALSO
 
 <b>dcmdrle</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmcrle_copyright COPYRIGHT
 
 Copyright (C) 2002-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

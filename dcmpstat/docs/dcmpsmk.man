@@ -6,13 +6,13 @@
 \page dcmpsmk dcmpsmk: Create DICOM grayscale softcopy presentation state
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmpsmk_synopsis SYNOPSIS
 
 \verbatim
 dcmpsmk [options] dcmfile-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmpsmk_description DESCRIPTION
 
 The \b dcmpsmk utility reads a DICOM image file and creates a grayscale
 softcopy presentation state object according to Supplement 33.  The
@@ -23,7 +23,7 @@ The newly created presentation state references the source image and
 contains values that should allow for a "reasonable" display of the image
 when rendered under control of the presentation state.
 
-\section parameters PARAMETERS
+\section dcmpsmk_parameters PARAMETERS
 
 \verbatim
 dcmfile-in   DICOM image file(s) to be read
@@ -31,9 +31,9 @@ dcmfile-in   DICOM image file(s) to be read
 dcmfile-out  DICOM presentation state file to be created
 \endverbatim
 
-\section options OPTIONS
+\section dcmpsmk_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmpsmk_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -61,7 +61,7 @@ dcmfile-out  DICOM presentation state file to be created
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input optons
+\subsection dcmpsmk_input_options input optons
 \verbatim
 input file format:
 
@@ -92,7 +92,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmpsmk_processing_options processing options
 \verbatim
 VOI transform handling:
 
@@ -163,7 +163,7 @@ location of referenced image:
          image located on storage medium
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmpsmk_output_options output options
 \verbatim
 output transfer syntax:
 
@@ -180,13 +180,13 @@ output transfer syntax:
           write with implicit VR little endian TS
 \endverbatim
 
-\section notes NOTES
+\section dcmpsmk_notes NOTES
 
 If more than one input file (\e dcmfile-in) is specified, the additional image
 files are only referenced from the created presentation state file, but no
 further (e.g. display-related) information is taken over.
 
-\section logging LOGGING
+\section dcmpsmk_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -205,7 +205,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmpsmk_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -227,7 +227,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmpsmk_environment ENVIRONMENT
 
 The \b dcmpsmk utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -243,7 +243,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section dcmpsmk_copyright COPYRIGHT
 
 Copyright (C) 1998-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

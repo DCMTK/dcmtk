@@ -6,13 +6,13 @@
 \page dsr2html dsr2html: Render DICOM SR file and data set to HTML/XHTML
 \endif
 
-\section synopsis SYNOPSIS
+\section dsr2html_synopsis SYNOPSIS
 
 \verbatim
 dsr2html [options] dsrfile-in [htmlfile-out]
 \endverbatim
 
-\section description DESCRIPTION
+\section dsr2html_description DESCRIPTION
 
 The \b dsr2html utility renders the contents of a DICOM Structured Reporting
 (SR) document (file format or raw data set) to HTML (Hyper Text Markup
@@ -27,7 +27,7 @@ whenever possible (using the \b dcmconv utility).  It is also possible to use
 the \e -f and <em>-t[ieb]</em> options to force \b dsr2html to read a dataset
 with a particular transfer syntax.
 
-\section parameters PARAMETERS
+\section dsr2html_parameters PARAMETERS
 
 \verbatim
 dsrfile-in    DICOM SR input filename to be rendered
@@ -35,9 +35,9 @@ dsrfile-in    DICOM SR input filename to be rendered
 htmlfile-out  HTML/XHTML output filename (default: stdout)
 \endverbatim
 
-\section options OPTIONS
+\section dsr2html_options OPTIONS
 
-\subsection general_options general options
+\subsection dsr2html_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -65,7 +65,7 @@ htmlfile-out  HTML/XHTML output filename (default: stdout)
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dsr2html_input_options input options
 \verbatim
 input file format:
 
@@ -96,7 +96,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dsr2html_processing_options processing options
 \verbatim
 additional information:
 
@@ -149,7 +149,7 @@ specific character set:
          # (see output of --version on which one is available)
 \endverbatim
 
-\subsection output_options output options
+\subsection dsr2html_output_options output options
 \verbatim
 HTML/XHTML compatibility:
 
@@ -225,9 +225,9 @@ code rendering:
          render code details as a tooltip (implies +Cc)
 \endverbatim
 
-\section notes NOTES
+\section dsr2html_notes NOTES
 
-\subsection dicom_conformance DICOM Conformance
+\subsection dsr2html_dicom_conformance DICOM Conformance
 
 The \b dsr2html utility supports the following SOP Classes:
 
@@ -250,7 +250,7 @@ AcquisitionContextSRStorage                 1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                1.2.840.10008.5.1.4.1.1.88.72
 \endverbatim
 
-\subsection character_encoding Character Encoding
+\subsection dsr2html_character_encoding Character Encoding
 
 The HTML/XHTML encoding is determined automatically from the DICOM attribute
 (0008,0005) "Specific Character Set" using the following mapping:
@@ -285,7 +285,7 @@ latin-1, latin-2, latin-3, latin-4, latin-5, cyrillic, arabic, greek, hebrew.
 Option \e --convert-to-utf8 can be used to convert the DICOM file or data set
 to UTF-8 encoding prior to the rendering to HTML/XHTML format.
 
-\section logging LOGGING
+\section dsr2html_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -304,7 +304,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dsr2html_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -326,7 +326,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dsr2html_environment ENVIRONMENT
 
 The \b dsr2html utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -342,16 +342,16 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dsr2html_files FILES
 
 <em>\<datadir\>/report.css</em> - Sample Cascading Stylesheet file for HTML
 <em>\<datadir\>/reportx.css</em> - Sample Cascading Stylesheet file for XHTML
 
-\section see_also SEE ALSO
+\section dsr2html_see_also SEE ALSO
 
 <b>dcmconv</b>(1)
 
-\section copyright COPYRIGHT
+\section dsr2html_copyright COPYRIGHT
 
 Copyright (C) 2000-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

@@ -6,19 +6,19 @@
 \page pdf2dcm pdf2dcm: Convert PDF file to DICOM
 \endif
 
-\section synopsis SYNOPSIS
+\section pdf2dcm_synopsis SYNOPSIS
 
 \verbatim
 pdf2dcm [options] pdffile-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section pdf2dcm_description DESCRIPTION
 
 The \b pdf2dcm utility reads a PDF file (\e pdffile-in), converts it to a
 DICOM Encapsulated PDF Storage SOP instance and stores the converted data
 to an output file (\e dcmfile-out).
 
-\section parameters PARAMETERS
+\section pdf2dcm_parameters PARAMETERS
 
 \verbatim
 pdffile-in   PDF input filename to be converted
@@ -26,9 +26,9 @@ pdffile-in   PDF input filename to be converted
 dcmfile-out  DICOM output filename
 \endverbatim
 
-\section options OPTIONS
+\section pdf2dcm_options OPTIONS
 
-\subsection general_options general options
+\subsection pdf2dcm_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -56,7 +56,7 @@ dcmfile-out  DICOM output filename
          use config file f for the logger
 \endverbatim
 
-\subsection dicom_document_options DICOM document options
+\subsection pdf2dcm_dicom_document_options DICOM document options
 \verbatim
 burned-in annotation:
 
@@ -112,7 +112,7 @@ instance number:
          use instance number i
 \endverbatim
 
-\section logging LOGGING
+\section pdf2dcm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -131,7 +131,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section pdf2dcm_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -153,7 +153,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section pdf2dcm_environment ENVIRONMENT
 
 The \b pdf2dcm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -169,11 +169,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section pdf2dcm_see_also SEE ALSO
 
 <b>dcm2pdf</b>(1)
 
-\section copyright COPYRIGHT
+\section pdf2dcm_copyright COPYRIGHT
 
 Copyright (C) 2005-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

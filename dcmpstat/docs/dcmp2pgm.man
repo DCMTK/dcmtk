@@ -6,13 +6,13 @@
 \page dcmp2pgm dcmp2pgm: Read DICOM image and presentation state and render bitmap
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmp2pgm_synopsis SYNOPSIS
 
 \verbatim
 dcmp2pgm [options] dcmimage-in [bitmap-out]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmp2pgm_description DESCRIPTION
 
 The \b dcmp2pgm utility renders a monochrome DICOM image under the control of
 a grayscale softcopy presentation state object into a monochrome bitmap
@@ -26,7 +26,7 @@ gray scale range according to Barten's model (DICOM part 14) can be
 performed if the characteristic curve of the display system is available
 and defined in the configuration file.
 
-\section parameters PARAMETERS
+\section dcmp2pgm_parameters PARAMETERS
 
 \verbatim
 dcmimage-in  input DICOM image
@@ -34,9 +34,9 @@ dcmimage-in  input DICOM image
 bitmap-out   output DICOM image or PGM bitmap
 \endverbatim
 
-\section options OPTIONS
+\section dcmp2pgm_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmp2pgm_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -64,7 +64,7 @@ bitmap-out   output DICOM image or PGM bitmap
          use config file f for the logger
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmp2pgm_processing_options processing options
 \verbatim
   -p   --pstate  [f]ilename: string
          process using presentation state file
@@ -76,7 +76,7 @@ bitmap-out   output DICOM image or PGM bitmap
          process using image frame f (default: 1)
 \endverbatim
 
-\subsection output_format output format
+\subsection dcmp2pgm_output_format output format
 \verbatim
   -D   --pgm
          save image as PGM (default)
@@ -85,15 +85,15 @@ bitmap-out   output DICOM image or PGM bitmap
          save image as DICOM secondary capture
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmp2pgm_output_options output options
 \verbatim
   +S   --save-pstate  [f]ilename: string
          save presentation state to file
 \endverbatim
 
-\section notes NOTES
+\section dcmp2pgm_notes NOTES
 
-\subsection limitations Limitations
+\subsection dcmp2pgm_limitations Limitations
 
 Please note that the \b dcmp2pgm tool does not render all aspects that are
 defined by the Grayscale Softcopy Presentation State (GSPS) object but only
@@ -107,7 +107,7 @@ Also concepts that were introduced after the initial definition of the GSPS
 IOD (see Supplement 33) are ignored.  This includes Supplement 120 with its
 extended features like e.g. Compound Graphics.
 
-\section logging LOGGING
+\section dcmp2pgm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -126,7 +126,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmp2pgm_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -148,7 +148,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmp2pgm_environment ENVIRONMENT
 
 The \b dcmp2pgm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -164,11 +164,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmp2pgm_files FILES
 
 <em>\<etcdir\>/dcmpstat.cfg</em> - sample configuration file
 
-\section copyright COPYRIGHT
+\section dcmp2pgm_copyright COPYRIGHT
 
 Copyright (C) 1998-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

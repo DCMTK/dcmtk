@@ -6,13 +6,13 @@
 \page dcm2pnm dcm2pnm: Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
 \endif
 
-\section synopsis SYNOPSIS
+\section dcm2pnm_synopsis SYNOPSIS
 
 \verbatim
 dcm2pnm [options] dcmfile-in [bitmap-out]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcm2pnm_description DESCRIPTION
 
 The \b dcm2pnm utility reads a DICOM image, converts the pixel data according
 to the selected image processing options and writes back an image in the
@@ -21,7 +21,7 @@ Windows BMP format.  This utility only supports uncompressed and RLE
 compressed DICOM images.  The command line tool \b dcmj2pnm also supports a
 number of JPEG compression schemes.
 
-\section parameters PARAMETERS
+\section dcm2pnm_parameters PARAMETERS
 
 \verbatim
 dcmfile-in  DICOM input filename to be converted
@@ -29,9 +29,9 @@ dcmfile-in  DICOM input filename to be converted
 bitmap-out  output filename to be written (default: stdout)
 \endverbatim
 
-\section options OPTIONS
+\section dcm2pnm_options OPTIONS
 
-\subsection general_options general options
+\subsection dcm2pnm_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -59,7 +59,7 @@ bitmap-out  output filename to be written (default: stdout)
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcm2pnm_input_options input options
 \verbatim
 input file format:
 
@@ -90,7 +90,7 @@ input transfer syntax:
           read with implicit VR little endian TS
 \endverbatim
 
-\subsection image_processing_options image processing options
+\subsection dcm2pnm_image_processing_options image processing options
 \verbatim
 frame selection:
 
@@ -338,7 +338,7 @@ other transformations:
           clip image region (l, t, w, h)
 \endverbatim
 
-\subsection output_options output options
+\subsection dcm2pnm_output_options output options
 \verbatim
 general:
 
@@ -392,7 +392,7 @@ image format:
           write 16-bit (monochrome) or 48-bit (color) PNG
 \endverbatim
 
-\section notes NOTES
+\section dcm2pnm_notes NOTES
 
 The following preferred interpolation algorithms can be selected using the
 \e --interpolate option:
@@ -413,7 +413,7 @@ and compiled with support for the external \b libpng PNG library.  Option
 \e --interlace enables progressive image view while loading the PNG file.
 Only a few applications take care of the meta info (TEXT) in a PNG file.
 
-\section transfer_syntaxes TRANSFER SYNTAXES
+\section dcm2pnm_transfer_syntaxes TRANSFER SYNTAXES
 
 \b dcm2pnm supports the following transfer syntaxes for input (\e dcmfile-in):
 
@@ -427,7 +427,7 @@ RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
 
 (*) if compiled with zlib support enabled
 
-\section logging LOGGING
+\section dcm2pnm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -446,7 +446,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcm2pnm_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -468,7 +468,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcm2pnm_environment ENVIRONMENT
 
 The \b dcm2pnm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -484,18 +484,18 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcm2pnm_files FILES
 
 <em>\<datadir\>/camera.lut</em> - sample characteristics file of a camera
 \n<em>\<datadir\>/monitor.lut</em> - sample characteristics file of a monitor
 \n<em>\<datadir\>/printer.lut</em> - sample characteristics file of a printer
 \n<em>\<datadir\>/scanner.lut</em> - sample characteristics file of a scanner
 
-\section see_also SEE ALSO
+\section dcm2pnm_see_also SEE ALSO
 
 <b>dcmj2pnm</b>(1), <b>img2dcm</b>(1)
 
-\section copyright COPYRIGHT
+\section dcm2pnm_copyright COPYRIGHT
 
 Copyright (C) 1998-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

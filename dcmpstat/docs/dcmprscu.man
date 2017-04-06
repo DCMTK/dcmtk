@@ -6,13 +6,13 @@
 \page dcmprscu dcmprscu: Print spooler for presentation state viewer
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmprscu_synopsis SYNOPSIS
 
 \verbatim
 dcmprscu [options] [dcmfile-in...]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmprscu_description DESCRIPTION
 
 The \b dcmprscu utility implements the DICOM Basic Grayscale Print Management
 Service Class as SCU.  It also supports the optional Basic Annotation Box
@@ -38,15 +38,15 @@ The \b dcmprscu utility can be run either in "printer mode", in which case
 the file name of a Stored Print object must be passed, or in "spool mode",
 in which case commands are read periodically from a spool directory.
 
-\section parameters PARAMETERS
+\section dcmprscu_parameters PARAMETERS
 
 \verbatim
 dcmfile-in  stored print file(s) to be spooled
 \endverbatim
 
-\section options OPTIONS
+\section dcmprscu_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmprscu_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -74,7 +74,7 @@ dcmfile-in  stored print file(s) to be spooled
          use config file f for the logger
 \endverbatim
 
-\subsection print_options print options
+\subsection dcmprscu_print_options print options
 \verbatim
        --noprint
          do not create print-out (no n-action-rq)
@@ -86,7 +86,7 @@ dcmfile-in  stored print file(s) to be spooled
          transmit basic grayscale images in MONOCHROME1
 \endverbatim
 
-\subsection mode_options mode options
+\subsection dcmprscu_mode_options mode options
 \verbatim
   +p   --print
          printer mode, print file(s) and terminate (default)
@@ -95,7 +95,7 @@ dcmfile-in  stored print file(s) to be spooled
          spooler mode, use job prefix n
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmprscu_processing_options processing options
 \verbatim
   -c   --config  [f]ilename: string
          process using settings from configuration file
@@ -107,13 +107,13 @@ dcmfile-in  stored print file(s) to be spooled
          dump all DIMSE messages
 \endverbatim
 
-\subsection spooler_options spooler options (only with --spool)
+\subsection dcmprscu_spooler_options spooler options (only with --spool)
 \verbatim
        --sleep  [d]elay: integer (default: 1)
          sleep d seconds between spooler checks
 \endverbatim
 
-\subsection film_session_options basic film session options (not with --spool):
+\subsection dcmprscu_film_session_options basic film session options (not with --spool):
 \verbatim
        --copies  [v]alue: integer (1..100, default: 1)
          set number of copies to v
@@ -134,7 +134,7 @@ dcmfile-in  stored print file(s) to be spooled
          set film session owner ID to v
 \endverbatim
 
-\section logging LOGGING
+\section dcmprscu_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -153,7 +153,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmprscu_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -175,7 +175,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmprscu_environment ENVIRONMENT
 
 The \b dcmprscu utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -191,15 +191,15 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcmprscu_files FILES
 
 <em>\<etcdir\>/dcmpstat.cfg</em>, <em>\<etcdir\>/printers.cfg</em> - sample configuration files
 
-\section see_also SEE ALSO
+\section dcmprscu_see_also SEE ALSO
 
 <b>dcmprscp</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmprscu_copyright COPYRIGHT
 
 Copyright (C) 1999-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

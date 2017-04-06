@@ -6,20 +6,20 @@
 \page dump2dcm dump2dcm: Convert ASCII dump to DICOM file
 \endif
 
-\section synopsis SYNOPSIS
+\section dump2dcm_synopsis SYNOPSIS
 
 \verbatim
 dump2dcm [options] dumpfile-in dcmfile-out
 \endverbatim
 
-\section description DESCRIPTION
+\section dump2dcm_description DESCRIPTION
 
 The \b dump2dcm utility converts an ASCII dump file to a DICOM file.  The
 dump file has the same format as the output of \b dcmdump.  Thus it is possible
 to capture the output of \b dcmdump into a file, modify some attributes and
 create a new DICOM file.
 
-\section parameters PARAMETERS
+\section dump2dcm_parameters PARAMETERS
 
 \verbatim
 dumpfile-in  dump input filename
@@ -27,9 +27,9 @@ dumpfile-in  dump input filename
 dcmfile-out  DICOM output filename
 \endverbatim
 
-\section options OPTIONS
+\section dump2dcm_options OPTIONS
 
-\subsection general_options general options
+\subsection dump2dcm_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -57,7 +57,7 @@ dcmfile-out  DICOM output filename
          use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dump2dcm_input_options input options
 \verbatim
 input file format:
 
@@ -81,7 +81,7 @@ other input options:
          maximum line length m (default: 4096)
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dump2dcm_processing_options processing options
 \verbatim
 unique identifiers:
 
@@ -95,7 +95,7 @@ unique identifiers:
          overwrite existing UIDs
 \endverbatim
 
-\subsection output_options output options
+\subsection dump2dcm_output_options output options
 \verbatim
 output file format:
 
@@ -178,9 +178,9 @@ deflate compression level (only with --write-xfer-deflated):
          0=uncompressed, 1=fastest, 9=best compression
 \endverbatim
 
-\section notes NOTES
+\section dump2dcm_notes NOTES
 
-\subsection notes_description Dump File Description
+\subsection dump2dcm_notes_description Dump File Description
 
 The input file can be an output of \b dcmdump (default indented format only).
 One element (tag, VR, value) must be written into one line separated by
@@ -231,7 +231,7 @@ Value: There are several rules for writing values:
           not detected.
 \endverbatim
 
-\subsection notes_example Example
+\subsection dump2dcm_notes_example Example
 
 \verbatim
  (0008,0020) DA [19921012]            #  8, 1 StudyDate
@@ -243,13 +243,13 @@ Value: There are several rules for writing values:
  (0002,0001) OB 01\\00
 \endverbatim
 
-\subsection limitations Limitations
+\subsection dump2dcm_limitations Limitations
 
 Please note that \b dump2dcm currently does not fully support DICOMDIR files.
 Specifically, the value of the various offset data elements is not updated
 automatically by this tool.
 
-\section logging LOGGING
+\section dump2dcm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -268,7 +268,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dump2dcm_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -290,7 +290,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dump2dcm_environment ENVIRONMENT
 
 The \b dump2dcm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -306,11 +306,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dump2dcm_see_also SEE ALSO
 
 <b>dcmdump</b>(1)
 
-\section copyright COPYRIGHT
+\section dump2dcm_copyright COPYRIGHT
 
 Copyright (C) 1996-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

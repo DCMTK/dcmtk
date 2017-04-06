@@ -6,13 +6,13 @@
 \page dcmgpdir dcmgpdir: Create a general purpose DICOMDIR
 \endif
 
-\section synopsis SYNOPSIS
+\section dcmgpdir_synopsis SYNOPSIS
 
 \verbatim
 dcmgpdir [options] [dcmfile-in...]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcmgpdir_description DESCRIPTION
 
 The \b dcmgpdir utility creates a \e DICOMDIR file from the specified
 referenced DICOM files according to the DICOM Part 11 Media Storage
@@ -27,15 +27,15 @@ Currently, the following profiles are supported:
 Media Storage Application Profiles than the general purpose one (e.g. the
 cardio profiles require the use of icon images).
 
-\section parameters PARAMETERS
+\section dcmgpdir_parameters PARAMETERS
 
 \verbatim
 dcmfile-in  referenced DICOM file (or directory to be scanned)
 \endverbatim
 
-\section options OPTIONS
+\section dcmgpdir_options OPTIONS
 
-\subsection general_options general options
+\subsection dcmgpdir_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -63,7 +63,7 @@ dcmfile-in  referenced DICOM file (or directory to be scanned)
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcmgpdir_input_options input options
 \verbatim
 DICOMDIR identifiers:
 
@@ -104,7 +104,7 @@ reading:
           # possibly not available on all systems
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcmgpdir_processing_options processing options
 \verbatim
 consistency check:
 
@@ -141,7 +141,7 @@ other checks:
           (just warn)
 \endverbatim
 
-\subsection output_options output options
+\subsection dcmgpdir_output_options output options
 \verbatim
 DICOMDIR file:
 
@@ -196,7 +196,7 @@ length encoding in sequences and items:
           write with undefined lengths
 \endverbatim
 
-\section notes NOTES
+\section dcmgpdir_notes NOTES
 
 All files specified on the command line (or discovered by recursively examining
 the contents of directories with the \e +r option) are first evaluated for
@@ -219,7 +219,7 @@ Please note that this update process might be slower than just appending new
 entries.  However, it makes sure that additional information that is required
 for the selected application profile is also added to existing records.
 
-\subsection scanning_directories Scanning Directories
+\subsection dcmgpdir_scanning_directories Scanning Directories
 
 Adding files from directories is possible by using option \e --recurse.  If no
 further command line parameters are given, the directory specified by option
@@ -233,7 +233,7 @@ other patterns are specified on the command line outside the
 \e --input-directory option (e.g. in order to select further files), these do
 not apply to the specified directories.
 
-\section logging LOGGING
+\section dcmgpdir_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -252,7 +252,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcmgpdir_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -274,7 +274,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcmgpdir_environment ENVIRONMENT
 
 The \b dcmgpdir utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -290,11 +290,11 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section see_also SEE ALSO
+\section dcmgpdir_see_also SEE ALSO
 
 <b>dcmmkdir</b>(1)
 
-\section copyright COPYRIGHT
+\section dcmgpdir_copyright COPYRIGHT
 
 Copyright (C) 1996-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

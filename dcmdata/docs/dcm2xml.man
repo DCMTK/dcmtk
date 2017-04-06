@@ -6,13 +6,13 @@
 \page dcm2xml dcm2xml: Convert DICOM file and data set to XML
 \endif
 
-\section synopsis SYNOPSIS
+\section dcm2xml_synopsis SYNOPSIS
 
 \verbatim
 dcm2xml [options] dcmfile-in [xmlfile-out]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcm2xml_description DESCRIPTION
 
 The \b dcm2xml utility converts the contents of a DICOM file (file format or
 raw data set) to XML (Extensible Markup Language).  There are two output
@@ -29,7 +29,7 @@ whenever possible (using the \b dcmconv utility).  It is also possible to use
 the \e -f and <em>-t[ieb]</em> options to force \b dcm2xml to read a data set
 with a particular transfer syntax.
 
-\section parameters PARAMETERS
+\section dcm2xml_parameters PARAMETERS
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
@@ -37,9 +37,9 @@ dcmfile-in   DICOM input filename to be converted
 xmlfile-out  XML output filename (default: stdout)
 \endverbatim
 
-\section options OPTIONS
+\section dcm2xml_options OPTIONS
 
-\subsection general_options general options
+\subsection dcm2xml_general_options general options
 \verbatim
   -h    --help
           print this help text and exit
@@ -67,7 +67,7 @@ xmlfile-out  XML output filename (default: stdout)
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcm2xml_input_options input options
 \verbatim
 input file format:
 
@@ -109,7 +109,7 @@ long tag values:
           set threshold for long values to k kbytes
 \endverbatim
 
-\subsection processing_options processing options
+\subsection dcm2xml_processing_options processing options
 \verbatim
 specific character set:
 
@@ -134,7 +134,7 @@ specific character set:
           # (see output of --version on which one is available)
 \endverbatim
 
-\subsection output_options output options
+\subsection dcm2xml_output_options output options
 \verbatim
 general XML format:
 
@@ -183,7 +183,7 @@ encoding of binary data:
           encode binary data as Base64 (RFC 2045, MIME)
 \endverbatim
 
-\section dcmtk_format DCMTK Format
+\section dcm2xml_dcmtk_format DCMTK Format
 
 The basic structure of the DCMTK-specific XML output created from a DICOM file
 looks like the following:
@@ -229,7 +229,7 @@ looks like the following:
 
 The "file-format" and "meta-header" tags are absent for DICOM data sets.
 
-\subsection xml_encoding XML Encoding
+\subsection dcm2xml_xml_encoding XML Encoding
 
 Attributes with very large value fields (e.g. pixel data) are not loaded by
 default.  They can be identified by the additional attribute "loaded" with a
@@ -253,12 +253,12 @@ length e.g. because of non-significant padding that has been removed.  If this
 attribute is missing in "sequence" or "item" start tags, the corresponding
 DICOM element has been stored with undefined length.
 
-\section native_format Native DICOM Model Format
+\section dcm2xml_native_format Native DICOM Model Format
 
 The description of the Native DICOM Model format can be found in the DICOM
 standard, part 19 ("Application Hosting").
 
-\subsection bulk_data Bulk Data
+\subsection dcm2xml_bulk_data Bulk Data
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
 or OW, as well as OD, OF and UN values are by default not written to the XML
@@ -276,7 +276,7 @@ for encoding binary data as Base64.  Currently, the command line option
 \e --encode-base64 enables this encoding for the following VRs: OB, OD, OF, OW,
 and UN.
 
-\subsection known_issues Known Issues
+\subsection dcm2xml_known_issues Known Issues
 
 In addition to what is written in the above section on "Bulk Data", there are
 further known issues with the current implementation of the Native DICOM Model
@@ -285,9 +285,9 @@ or UN are currently never written as bulk data, although it might be useful,
 e.g. for very long text elements (especially UT) or very long numeric fields
 (of various VRs).
 
-\section notes NOTES
+\section dcm2xml_notes NOTES
 
-\subsection character_encoding Character Encoding
+\subsection dcm2xml_character_encoding Character Encoding
 
 The XML encoding is determined automatically from the DICOM attribute
 (0008,0005) "Specific Character Set" using the following mapping:
@@ -319,7 +319,7 @@ data set to UTF-8 encoding prior to the conversion to XML format.  This is also
 useful for DICOMDIR files where each directory record can have a different
 character set.
 
-\section logging LOGGING
+\section dcm2xml_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -338,7 +338,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcm2xml_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -360,7 +360,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcm2xml_environment ENVIRONMENT
 
 The \b dcm2xml utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -376,15 +376,15 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section files FILES
+\section dcm2xml_files FILES
 
 <em>\<datadir\>/dcm2xml.dtd</em> - Document Type Definition (DTD) file
 
-\section see_also SEE ALSO
+\section dcm2xml_see_also SEE ALSO
 
 <b>xml2dcm</b>(1), <b>dcmconv</b>(1)
 
-\section copyright COPYRIGHT
+\section dcm2xml_copyright COPYRIGHT
 
 Copyright (C) 2002-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 

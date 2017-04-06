@@ -6,13 +6,13 @@
 \page dcm2json dcm2json: Convert DICOM file and data set to JSON
 \endif
 
-\section synopsis SYNOPSIS
+\section dcm2json_synopsis SYNOPSIS
 
 \verbatim
 dcm2json [options] dcmfile-in [jsonfile-out]
 \endverbatim
 
-\section description DESCRIPTION
+\section dcm2json_description DESCRIPTION
 
 The \b dcm2json utility converts the contents of a DICOM file (file format or
 raw data set) to JSON (JavaScript Object Notation).  The output refers to the
@@ -26,7 +26,7 @@ whenever possible (using the \b dcmconv utility).  It is also possible to use
 the \e -f and <em>-t[ieb]</em> options to force \b dcm2json to read a data set
 with a particular transfer syntax.
 
-\section parameters PARAMETERS
+\section dcm2json_parameters PARAMETERS
 
 \verbatim
 dcmfile-in    DICOM input filename to be converted
@@ -34,9 +34,9 @@ dcmfile-in    DICOM input filename to be converted
 jsonfile-out  JSON output filename (default: stdout)
 \endverbatim
 
-\section options OPTIONS
+\section dcm2json_options OPTIONS
 
-\subsection general_options general options
+\subsection dcm2json_general_options general options
 \verbatim
 
   -h    --help
@@ -65,7 +65,7 @@ jsonfile-out  JSON output filename (default: stdout)
           use config file f for the logger
 \endverbatim
 
-\subsection input_options input options
+\subsection dcm2json_input_options input options
 \verbatim
 input file format:
 
@@ -96,7 +96,7 @@ input transfer syntax:
           read with implicit VR little endian TS
 \endverbatim
 
-\subsection output_options output options
+\subsection dcm2json_output_options output options
 \verbatim
 output format:
 
@@ -110,7 +110,7 @@ output format:
           write data set with meta information
 \endverbatim
 
-\section json_format JSON Format
+\section dcm2json_json_format JSON Format
 
 The basic structure of the JSON output created from a DICOM file looks like
 the following (see DICOM Part 18 Section F for details):
@@ -271,7 +271,7 @@ the following (see DICOM Part 18 Section F for details):
 }
 \endverbatim
 
-\subsection bulk_data Bulk Data
+\subsection dcm2json_bulk_data Bulk Data
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
 or OW, as well as OD, OF and UN values are by default not written to the JSON
@@ -280,9 +280,9 @@ Unique Identifier (UUID) is being generated and written as an value of a
 BulkDataURI JSON element.  So far, there is no possibility to write an
 additional file to hold the binary data for each of the binary data chunks.
 
-\section notes NOTES
+\section dcm2json_notes NOTES
 
-\subsection character_encoding Character Encoding
+\subsection dcm2json_character_encoding Character Encoding
 
 The JSON encoding is determined automatically from the DICOM attribute
 (0008,0005) "Specific Character Set" using the following mapping:
@@ -299,7 +299,7 @@ Greek         "ISO_IR 126"  =>  "UTF-8"
 Hebrew        "ISO_IR 138"  =>  "UTF-8"
 \endverbatim
 
-\section logging LOGGING
+\section dcm2json_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -318,7 +318,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section command_line COMMAND LINE
+\section dcm2json_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -340,7 +340,7 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section environment ENVIRONMENT
+\section dcm2json_environment ENVIRONMENT
 
 The \b dcm2json utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
@@ -356,7 +356,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section copyright COPYRIGHT
+\section dcm2json_copyright COPYRIGHT
 
 Copyright (C) 2016-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
