@@ -33,7 +33,66 @@ FUNCTION(DCMTK_SETUP_WINE)
             "Please set WINE_WINE_PROGRAM and WINE_WINEPATH_PROGRAM appropriately."
         )
     ENDIF()
+    # prepare wine prefix for configure and unit tests
+    IF(NOT DCMTK_WINEPREFIX)
+        SET(DCMTK_WINEPREFIX "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/wineprefix" CACHE INTERNALE "the path of the wineprefix to use for configuration and unit tests")
+        MESSAGE(STATUS "Info: Preparing wine prefix for configuration and unit tests: ${DCMTK_WINEPREFIX}")
+        STRING(REPLACE "\\" "\\\\" WINE_CPP_RUNTIME "${WINE_CPP_RUNTIME}")
+        SET(WINE_PATH_REG "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkWinePath.reg")
+        CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/dcmtkWinePath.reg.in" "${WINE_PATH_REG}" ESCAPE_QUOTES @ONLY)
+        SET(ENV{WINEPREFIX} "${DCMTK_WINEPREFIX}")
+        EXECUTE_PROCESS(COMMAND "${WINE_WINE_PROGRAM}" "regedit" "${WINE_PATH_REG}"
+            OUTPUT_FILE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/wineprefix.log"
+            ERROR_FILE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/wineprefix.log"
+            OUTPUT_VARIABLE RESULT
+        )
+        IF(RESULT)
+            SET(DCMTK_WINEPREFIX CACHE INTERNAL "error, see ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/wineprefix.log")
+            MESSAGE(FATAL_ERROR "Failed to setup the wineprefix, see \"${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/wineprefix.log\"")
+        ENDIF()
+    ELSE()
+        SET(ENV{WINEPREFIX} "${DCMTK_WINEPREFIX}")
+    ENDIF()
 ENDFUNCTION(DCMTK_SETUP_WINE)
+
+#
+# Helper function to detach the output and error streams from a wine process, so
+# that CMake doesn't wait for the wineserver to quit before continuing execution.
+# VAR - the variable that will hold the exit code of the launched process.
+# OUTPUT_VAR - the variable that will hold the standard output of the launched process.
+# ERROR_VAR - the variable that will hold the error output of the launched process.
+# ARGN - the command to execute.
+#
+FUNCTION(WINE_DETACHED VAR OUTPUT_VAR ERROR_VAR)
+    # Prefix to prevent collision of output capturing files
+    IF(CMAKE_VERSION VERSION_LESS 2.8.7)
+        STRING(RANDOM LENGTH 20 ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" PREFIX)
+    ELSE()
+        STRING(MD5 PREFIX "${ARGN}")
+    ENDIF()
+    SET(OUTPUT_FILE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_output")
+    IF(OUTPUT_VAR STREQUAL ERROR_VAR)
+        SET(ERROR_FILE "${OUTPUT_FILE}")
+    ELSE()
+        SET(ERROR_FILE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_error")
+    ENDIF()
+    EXECUTE_PROCESS(
+        COMMAND ${ARGN}
+        OUTPUT_FILE "${OUTPUT_FILE}"
+        ERROR_FILE "${ERROR_FILE}"
+        RESULT_VARIABLE RESULT
+    )
+    FILE(READ "${OUTPUT_FILE}" OUTPUT)
+    SET("${OUTPUT_VAR}" ${OUTPUT} PARENT_SCOPE)
+    IF(OUTPUT_VAR STREQUAL ERROR_VAR)
+        FILE(REMOVE "${OUTPUT_FILE}")
+    ELSE()
+        FILE(READ "${ERROR_FILE}" ERROR)
+        SET("${ERROR_VAR}" ${ERROR} PARENT_SCOPE)
+        FILE(REMOVE "${OUTPUT_FILE}" "${ERROR_FILE}")
+    ENDIF()
+    SET("${VAR}" ${RESULT} PARENT_SCOPE)
+ENDFUNCTION(WINE_DETACHED)
 
 #
 # Uses 'winepath' to translate a host path or filename to the location it can be
@@ -44,12 +103,7 @@ ENDFUNCTION(DCMTK_SETUP_WINE)
 # Additional arguments will be ignored.
 #
 FUNCTION(UNIX_TO_WINE_PATH VAR PATH)
-    EXECUTE_PROCESS(
-        COMMAND ${WINE_WINEPATH_PROGRAM} -w ${PATH}
-        RESULT_VARIABLE ERROR
-        OUTPUT_VARIABLE RESULT
-        ERROR_VARIABLE STDERR
-    )
+    WINE_DETACHED(ERROR RESULT STDERR "${WINE_WINEPATH_PROGRAM}" "-w" "${PATH}")
     IF(NOT ERROR)
         STRING(REPLACE "\n" "" RESULT ${RESULT})
         SET(${VAR} ${RESULT} PARENT_SCOPE)
@@ -69,5 +123,5 @@ ENDFUNCTION()
 FUNCTION(WINE_COMMAND VAR COMMAND)
     UNIX_TO_WINE_PATH(CMD ${COMMAND})
     SEPARATE_ARGUMENTS(ARGS WINDOWS_COMMAND "${ARGN}")
-    SET(${VAR} ${WINE_WINE_PROGRAM} cmd /c "PATH=${WINE_CPP_RUNTIME}\;%PATH%" \\& ${CMD} ${ARGS} PARENT_SCOPE)
+    SET(${VAR} "${CMD}" ${ARGS} PARENT_SCOPE)
 ENDFUNCTION()
