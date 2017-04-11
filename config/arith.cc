@@ -383,13 +383,6 @@ static void test_iec559( STD_NAMESPACE ostream& out, const char* name, int reqs 
     );
 }
 
-#ifndef _WIN32
-template<typename T>
-static int is_subnormal( T t )
-{
-    return !STD_NAMESPACE isnormal( t );
-}
-#else
 static int is_subnormal( float f )
 {
 // Wine does not implement _fpclassf, so don't use it when cross compiling for Windows
@@ -397,15 +390,18 @@ static int is_subnormal( float f )
 #if defined(HAVE_PROTOTYPE__FPCLASSF) && !( defined(DCMTK_CROSS_COMPILING) && defined(_WIN32) )
     return ( _fpclassf( f ) & ( _FPCLASS_ND | _FPCLASS_PD ) ) != 0;
 #else
-    return (((unsigned char*)&f)[(FLT_MANT_DIG - 1) / 8] & (1u << ((FLT_MANT_DIG - 1) % 8))) == 0;
+    return f != 0.0f && ( f < 0.0f ? -f < FLT_MIN : f < FLT_MIN );
 #endif
 }
 
 static int is_subnormal( double d )
 {
+#ifdef _WIN32
     return ( _fpclass( d ) & ( _FPCLASS_ND | _FPCLASS_PD ) ) != 0;
-}
+#else
+    return d != 0.0 && ( d < 0.0 ? -d < DBL_MIN : d < DBL_MIN );
 #endif
+}
 
 template<typename T>
 static void test_subnormal( STD_NAMESPACE ostream& out, const char* name )
