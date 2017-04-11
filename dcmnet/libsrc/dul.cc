@@ -1683,6 +1683,17 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
              */
             cmdLine += " \"";
             cmdLine += command_argv[i];
+            /* if last character in argument value is a backslash, escape it
+             * since otherwise it would escape the quote appended in the following
+             * step, i.e. make sure that something like '\my\dir\' does not become
+             * '"\my\dir\"' but instead ends up as '"\my\dir\\"' (single quotes for
+             *  demonstration purposes). Make sure nobody passes a zero length string.
+             */
+            size_t len = strlen(command_argv[i]);
+            if ((len > 0) && (command_argv[i][len - 1] == '\\'))
+            {
+	            cmdLine += "\\";
+            }
             cmdLine += "\"";
         }
 
