@@ -139,11 +139,12 @@ ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FIL
 ENDIF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
 
 #-----------------------------------------------------------------------------
-# Configure files needed for cross compiling (if any)
+# Configure files needed for cross compiling (if any) and cleanup
 #-----------------------------------------------------------------------------
 
 IF(CMAKE_CROSSCOMPILING)
   IF(ANDROID)
+    DCMTK_ANDROID_STOP_EMULATOR(DCMTK_ANDROID_EMULATOR_INSTANCE)
     # setup the CTestCustom.cmake file as appropriate for android
     FILE(COPY "${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustom.cmake"
         DESTINATION "${CMAKE_BINARY_DIR}"

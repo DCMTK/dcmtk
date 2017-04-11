@@ -592,6 +592,15 @@ IF(DCMTK_WITH_OPENSSL)
   CHECK_FUNCTIONWITHHEADER_EXISTS("RAND_egd" "openssl/rand.h" HAVE_RAND_EGD ${OPENSSL_LIBS})
 ENDIF(DCMTK_WITH_OPENSSL)
 
+IF(HAVE_LOCKF AND ANDROID)
+  # When Android introduced lockf, they forgot to put the constants like F_LOCK in the
+  # appropriate headers, this tests if they are defined and disables lockf if they are not
+  CHECK_FUNCTIONWITHHEADER_EXISTS("lockf(0, F_LOCK, 0)" "${HEADERS}" HAVE_LOCKF_CONSTANTS)
+  IF(NOT HAVE_LOCKF_CONSTANTS)
+    SET(HAVE_LOCKF FALSE CACHE INTERNAL "lockf implementation is broken")
+  ENDIF()
+ENDIF(HAVE_LOCKF AND ANDROID)
+
 # Tests that require a try-compile
 INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryCompile.cmake")
 INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryRun.cmake")

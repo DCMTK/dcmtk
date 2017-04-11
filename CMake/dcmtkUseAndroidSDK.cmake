@@ -84,7 +84,7 @@ ENDMACRO(DCMTK_ANDROID_SET_OBJECT_PROPERTIES)
 # All additional arguments will be ignored.
 #
 MACRO(DCMTK_ANDROID_DESTROY_OBJECT VAR)
-    UNSET(${VAR} CACHE)
+    UNSET("${VAR}" CACHE)
 ENDMACRO(DCMTK_ANDROID_DESTROY_OBJECT)
 
 #
@@ -224,16 +224,16 @@ ENDIF(CMAKE_VERSION VERSION_LESS 2.8.11)
 #
 FUNCTION(DCMTK_ANDROID_GET_EMULATOR_UUID EMULATOR_NAME VAR)
     EXECUTE_PROCESS(
-        COMMAND ${ANDROID_ADB_PROGRAM} -s ${EMULATOR_NAME} shell getprop
+        COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" shell getprop "ro.emu.uuid"
         RESULT_VARIABLE RESULT
         OUTPUT_VARIABLE OUTPUT
         ERROR_QUIET
     )
     DCMTK_UNSET_PARENT_SCOPE(${VAR})
     IF(NOT RESULT)
-        STRING(REGEX REPLACE ".*\\[emu\\.uuid\\]: \\[([^]]+)\\].*" "\\1" "${VAR}" "${OUTPUT}")
-        IF("${VAR}")
-            SET("${VAR}" ${${VAR}} PARENT_SCOPE)
+        STRING(STRIP "${OUTPUT}" UUID)
+        IF(UUID)
+            SET("${VAR}" ${UUID} PARENT_SCOPE)
         ENDIF()
     ENDIF()
 ENDFUNCTION(DCMTK_ANDROID_GET_EMULATOR_UUID)
@@ -324,9 +324,9 @@ FUNCTION(DCMTK_ANDROID_START_EMULATOR VAR)
         ENDIF()
         MESSAGE(STATUS "Starting the Android device emulator...")
         IF(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
-            SET(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-boot-anim -noaudio -prop emu.uuid=${EMULATOR_UUID} >/dev/null 2>&1 < /dev/null &")
+            SET(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-boot-anim -prop ro.emu.uuid=${EMULATOR_UUID} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
         ELSE()
-            SET(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-window -no-boot-anim -noaudio -prop emu.uuid=${EMULATOR_UUID} >/dev/null 2>&1 < /dev/null &")
+            SET(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-window -no-boot-anim -prop ro.emu.uuid=${EMULATOR_UUID} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
         ENDIF()
         EXECUTE_PROCESS(
             COMMAND ${COMMAND}
@@ -342,6 +342,34 @@ FUNCTION(DCMTK_ANDROID_START_EMULATOR VAR)
         ENDIF()
     ENDIF()
 ENDFUNCTION(DCMTK_ANDROID_START_EMULATOR)
+
+#
+# Restart adb/the emulated device in root mode so that we gain write access to
+# the device.
+# Newer versions of the SDK seem to require this for doing anything meaningful
+# with it.
+# EMULATOR_NAME - the name of the emulated device that shall be rooted.
+# Will ignore all additional arguments.
+#
+FUNCTION(DCMTK_ANDROID_ADB_ROOT EMULATOR_NAME)
+    EXECUTE_PROCESS(
+        COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" root
+        OUTPUT_QUIET
+        ERROR_QUIET
+    )
+    # the SDK was seemingly designed by a five year old, the device will
+    # become invisible while it is being rooted, therefore, wait until
+    # it is ready again
+    SET(STATUS 1)
+    WHILE(STATUS)
+        EXECUTE_PROCESS(
+            COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" wait-for-device
+            RESULT_VARIABLE STATUS
+            OUTPUT_QUIET
+            ERROR_QUIET
+        )
+    ENDWHILE()
+ENDFUNCTION(DCMTK_ANDROID_ADB_ROOT)
 
 #
 # Waits until the given emulator instance becomes online (RUNNING).
@@ -367,6 +395,7 @@ FUNCTION(DCMTK_ANDROID_WAIT_FOR_EMULATOR VAR)
         WHILE(NOT EMULATOR_NAME)
             DCMTK_ANDROID_GET_EMULATOR_NAME(EMULATOR_NAME "${EMULATOR_UUID}")
         ENDWHILE()
+        DCMTK_ANDROID_ADB_ROOT("${EMULATOR_NAME}")
         DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" RUNNING "${EMULATOR_UUID}" "${EMULATOR_NAME}")
     ENDIF()
 ENDFUNCTION(DCMTK_ANDROID_WAIT_FOR_EMULATOR)
