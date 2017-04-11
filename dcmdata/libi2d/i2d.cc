@@ -53,6 +53,8 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
     return EC_IllegalParameter;
 
   OFCondition cond;
+  resultDset = NULL;
+  OFunique_ptr<DcmDataset> tempDataset;
   DCMDATA_LIBI2D_DEBUG("Image2Dcm: Starting conversion of file: " << inputPlug->getImageFile());
 
   // If specified, copy DICOM template file to export file
@@ -65,20 +67,19 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
     // remove problematic attributes from dataset
     cleanupTemplate(dcmff.getDataset());
     // copy from input file
-    resultDset = new DcmDataset(*(dcmff.getDataset()));
+    tempDataset.reset(new DcmDataset(*(dcmff.getDataset())));
   }
   else // otherwise, start with an empty DICOM file
-    resultDset = new DcmDataset();
-  if (!resultDset)
+    tempDataset.reset(new DcmDataset());
+  if (!tempDataset.get())
     return EC_MemoryExhausted;
 
   // Read patient and study or series information if desired and write to export file
   if (m_readStudyLevel || m_readSeriesLevel)
   {
-    cond = applyStudyOrSeriesFromFile(resultDset);
+    cond = applyStudyOrSeriesFromFile(tempDataset.get());
     if (cond.bad())
     {
-      delete resultDset; resultDset = NULL;
       return cond;
     }
   }
@@ -86,28 +87,26 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
   // Increment instance number
   if (m_incInstNoFromFile)
   {
-    cond = incrementInstanceNumber(resultDset);
+    cond = incrementInstanceNumber(tempDataset.get());
     if (cond.bad())
     {
-      delete resultDset; resultDset = NULL;
       return cond;
     }
   }
 
   // Insert Latin 1 as standard character set if desired
   if (m_insertLatin1)
-    cond = insertLatin1(resultDset);
+    cond = insertLatin1(tempDataset.get());
   if (cond.bad())
     return cond;
 
   // Generate and insert UIDs as necessary
-  generateUIDs(resultDset);
+  generateUIDs(tempDataset.get());
 
   // Read and insert pixel data
-  cond = readAndInsertPixelData(inputPlug, resultDset, proposedTS);
+  cond = readAndInsertPixelData(inputPlug, tempDataset.get(), proposedTS);
   if (cond.bad())
   {
-    delete resultDset; resultDset = NULL;
     return cond;
   }
 
@@ -117,9 +116,9 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
   {
     if (srcIsLossy)
     {
-      cond = resultDset->putAndInsertOFStringArray(DCM_LossyImageCompression, "01");
+      cond = tempDataset->putAndInsertOFStringArray(DCM_LossyImageCompression, "01");
       if (cond.good() && !comprMethod.empty())
-        cond = resultDset->putAndInsertOFStringArray(DCM_LossyImageCompressionMethod, comprMethod);
+        cond = tempDataset->putAndInsertOFStringArray(DCM_LossyImageCompressionMethod, comprMethod);
       if (cond.bad()) return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write attribute Lossy Image Compression and/or Lossy Image Compression Method to result dataset");
     }
   }
@@ -127,29 +126,32 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
     DCMDATA_LIBI2D_DEBUG("Image2Dcm: No information regarding lossy compression available");
 
   // Insert SOP Class specific attributes (and values)
-  cond = outPlug->convert(*resultDset);
+  cond = outPlug->convert(*tempDataset);
   if (cond.bad())
   {
-    delete resultDset; resultDset = NULL;
     return cond;
   }
 
   // At last, apply override keys on dataset
-  applyOverrideKeys(resultDset);
+  cond = applyOverrideKeys(tempDataset.get());
+  if (cond.bad())
+  {
+    return cond;
+  }
 
   // Do some very basic attribute checking (e. g. existence (type 2) and values (type 1))
   if (!m_disableAttribChecks)
   {
     OFString err;
-    err = isValid(*resultDset);
-    err += outPlug->isValid(*resultDset);
+    err = isValid(*tempDataset);
+    err += outPlug->isValid(*tempDataset);
     if (!err.empty())
     {
-      delete resultDset; resultDset = NULL;
       return makeOFCondition(OFM_dcmdata, 18, OF_error, err.c_str());
     }
   }
 
+  resultDset = tempDataset.release();
   return EC_Normal;
 }
 
