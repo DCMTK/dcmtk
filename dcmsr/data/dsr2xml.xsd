@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2016, OFFIS e.V.
+      Copyright (C) 2003-2017, OFFIS e.V.
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -872,8 +872,9 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="DecimalString">
-    <xsd:restriction base="xsd:decimal">
-      <xsd:totalDigits value="16"/>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"/>
+      <xsd:maxLength value="16"/>
     </xsd:restriction>
   </xsd:simpleType>
 
