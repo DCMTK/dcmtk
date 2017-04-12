@@ -453,10 +453,21 @@ and for option \e --sort-on-patientname
 \endverbatim
 
 where 'PatientName' is replaced by "ANONYMOUS" if the data element is empty or
-absent in the data set.  Please note, however, that for option
-\e --sort-on-study-uid the same subdirectory will be used for all DICOM objects
-that belong to the same study, i.e. in contrast to the other \e --sort-xxx
-options there is no guarantee that a study directory is ever completed.
+absent in the data set.  Any existing patient name is transformed in order to
+use only ASCII characters.  Please note that in this context only the DICOM
+default character set (ASCII, i.e. no entry in attribute Specific Character
+Set) and Latin-1 (Specific Character Set valued "ISO_IR 100") are supported.
+If another character set is found and the patient name contains non-ASCII
+characters, a warning is printed and the transformation is performed as if
+Latin-1 character set would be set in the file.  This may lead to unreadable
+or unexpected patient name directories and behaviour.  Thus, it is advisable
+to use \e --sort-on-patientname only if Latin-1 or ASCII patient names are
+expected to be received.
+
+For option \e --sort-on-study-uid the same subdirectory will be used for all
+DICOM objects that belong to the same study, i.e. in contrast to the other
+\e --sort-xxx options there is no guarantee that a study directory is ever
+completed.
 
 Option \e --timenames creates filenames from timestamps corresponding to the
 time, \b storescp writes a file to disk.  The format is

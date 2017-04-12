@@ -2028,6 +2028,17 @@ storeSCPCallback(
             OFLOG_WARN(storescpLogger, "element PatientName " << DCM_PatientName << " absent or empty in data set, using '"
                  << tmpName << "' instead");
           }
+          else
+          {
+              DcmElement *patElem = NULL;
+              OFString charset;
+              (*imageDataSet)->findAndGetElement(DCM_PatientName, patElem); // patElem cannot be NULL, see above
+              (*imageDataSet)->findAndGetOFStringArray(DCM_SpecificCharacterSet, charset);
+              if (!charset.empty() && !(charset == "ISO_IR 100") && (patElem->containsExtendedCharacters()))
+              {
+                  OFLOG_WARN(storescpLogger, "Patient name not in Latin-1 (charset: " << charset << "), ASCII dir name may be broken");
+              }
+          }
 
           /* substitute non-ASCII characters in patient name to ASCII "equivalent" */
           const size_t length = tmpName.length();
