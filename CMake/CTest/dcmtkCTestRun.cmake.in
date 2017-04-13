@@ -1,10 +1,13 @@
 #
 # This file is used to executed given unit test commands locally, handling
-# additional arguments like 'exhaustive'
+# additional arguments like 'exhaustive' and setting the DCMDICTPATH
+# environment variable appropriately.
 #
 
+SET(ENV{DCMDICTPATH} "@DCMDICTPATH@")
+
 EXECUTE_PROCESS(COMMAND
-    ${DCMTK_CTEST_TESTCASE_COMMAND} ${DCMTK_CTEST_EXTRA_ARGUMENTS} ${DCMTK_CTEST_TEST_NAME}
+    "${DCMTK_CTEST_TESTCASE_COMMAND}" ${DCMTK_CTEST_EXTRA_ARGUMENTS} "${DCMTK_CTEST_TEST_NAME}"
     RESULT_VARIABLE RESULT
 )
 

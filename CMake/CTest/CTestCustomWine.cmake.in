@@ -1,0 +1,17 @@
+#
+# This file ensures that the wineserver is spawned before running the unit
+# tests, such that CTest will not attach itself to it. This is an ugly hack
+# workaround, but what can you do?
+#
+
+SET(ENV{WINEPREFIX} "@DCMTK_WINEPREFIX@")
+SET(ENV{DCMDICTPATH} "@DCMDICTPATH@")
+SET(WINE_WINE_PROGRAM "@WINE_WINE_PROGRAM@")
+
+# spawn the winserver using 'cmd /C call' -> effectively NOP
+# spawn it using 'sh', such that this script does not attach itself to it.
+EXECUTE_PROCESS(COMMAND
+    sh -c "\"${WINE_WINE_PROGRAM}\" cmd /C call"
+    OUTPUT_FILE "/dev/null"
+    ERROR_FILE "/dev/null"
+)

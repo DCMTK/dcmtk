@@ -1,0 +1,23 @@
+#
+# This file is used to executed given unit test commands using wine, handling
+# additional arguments like 'exhaustive' and setting the DCMDICTPATH
+# environment variable appropriately. It uses the prepared wineprefix to
+# load the MinGW C++ runtime (stdc++.dll etc.) and helps to detach the
+# wineserver process from CTest such that it does not hang waiting for it to
+# shutdown.
+#
+
+SET(ENV{WINEPREFIX} "@DCMTK_WINEPREFIX@")
+SET(ENV{DCMDICTPATH} "@DCMDICTPATH@")
+SET(WINE_WINE_PROGRAM "@WINE_WINE_PROGRAM@")
+
+EXECUTE_PROCESS(COMMAND
+    "${WINE_WINE_PROGRAM}" "${DCMTK_CTEST_TESTCASE_COMMAND}" ${DCMTK_CTEST_EXTRA_ARGUMENTS} "${DCMTK_CTEST_TEST_NAME}"
+    RESULT_VARIABLE RESULT
+)
+
+# We cannot forward the result value to CMake, so print it instead and let CMake
+# return with code '1' or whatever it deems appropriate to notify about an error.
+IF(RESULT)
+    MESSAGE(FATAL_ERROR "Test command returned: ${RESULT}")
+ENDIF()

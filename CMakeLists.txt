@@ -53,9 +53,21 @@ CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in"
 INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES()
 
 # ----------------------------------------------------------------------------
-# Add a target to run the unit tests in exhaustive mode
+# Unit test related configuration/setup
 # ----------------------------------------------------------------------------
 
+IF(CMAKE_CROSSCOMPILING)
+  IF(WIN32)
+    SET(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRunWine.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test as a detached Wine process in the prepared wineprefix")
+  ELSEIF(ANDROID)
+    SET(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRunAndroid.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test via the android emulator")
+  ELSE()
+    MESSAGE(WARNING "Emulation for your target platform is not available, CTest will not be able to execute the unit tests!")
+  ENDIF()
+ELSE(CMAKE_CROSSCOMPILING)
+  SET(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRun.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test")
+ENDIF(CMAKE_CROSSCOMPILING)
+# Add a target to run the unit tests in exhaustive mode
 ADD_CUSTOM_TARGET("test-exhaustive"
     COMMAND "${CMAKE_COMMAND}" "-P"
         "${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunExhaustive.cmake"
@@ -139,19 +151,42 @@ ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FIL
 ENDIF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
 
 #-----------------------------------------------------------------------------
-# Configure files needed for cross compiling (if any) and cleanup
+# Configure files needed for running the unit tests and cleanup
 #-----------------------------------------------------------------------------
 
 IF(CMAKE_CROSSCOMPILING)
-  IF(ANDROID)
+  IF(WIN32)
+    STRING(REPLACE ";" "${ENVIRONMENT_PATH_SEPARATOR}" DCMDICTPATH "${DCMTK_DICOM_DICTIONARIES}")
+    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustomWine.cmake.in"
+      "${DCMTK_BINARY_DIR}/CTestCustom.cmake" ESCAPE_QUOTES @ONLY
+    )
+    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunWine.cmake.in"
+      "${DCMTK_RUN_CTEST_SCRIPT}" ESCAPE_QUOTES @ONLY
+    )
+  ELSEIF(ANDROID)
     DCMTK_ANDROID_STOP_EMULATOR(DCMTK_ANDROID_EMULATOR_INSTANCE)
-    # setup the CTestCustom.cmake file as appropriate for android
-    FILE(COPY "${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustom.cmake"
-        DESTINATION "${CMAKE_BINARY_DIR}"
+    # Prepare setting environment variable DCMDICTPATH
+    SET(DICTIONARIES ${DCMTK_DICOM_DICTIONARIES})
+    LIST(GET DICTIONARIES 0 DCMDICTPATH)
+    LIST(REMOVE_AT DICTIONARIES 0)
+    GET_FILENAME_COMPONENT(DCMDICTPATH "${DCMDICTPATH}" NAME)
+    SET(DCMDICTPATH "${ANDROID_TEMPORARY_FILES_LOCATION}/${DCMDICTPATH}")
+    FOREACH(DICTIONARY ${DICTIONARIES})
+        GET_FILENAME_COMPONENT(FILE "${DICTIONARY}" NAME)
+        SET(DCMDICTPATH "${DCMDICTPATH}:${ANDROID_TEMPORARY_FILES_LOCATION}/${FILE}")
+    ENDFOREACH()
+    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustomAndroid.cmake.in"
+      "${DCMTK_BINARY_DIR}/CTestCustom.cmake" ESCAPE_QUOTES @ONLY
     )
-    # prepare the configuration for unit testing
-    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestConfig.cmake.in"
-        "${CMAKE_BINARY_DIR}/dcmtkCTestConfig.cmake" @ONLY
+    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunAndroid.cmake.in"
+      "${DCMTK_RUN_CTEST_SCRIPT}" ESCAPE_QUOTES @ONLY
     )
+  ELSE()
+    # nothing to do
   ENDIF()
+ELSE(CMAKE_CROSSCOMPILING)
+  STRING(REPLACE ";" "${ENVIRONMENT_PATH_SEPARATOR}" DCMDICTPATH "${DCMTK_DICOM_DICTIONARIES}")
+  CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRun.cmake.in"
+    "${DCMTK_RUN_CTEST_SCRIPT}" ESCAPE_QUOTES @ONLY
+  )
 ENDIF(CMAKE_CROSSCOMPILING)
