@@ -123,11 +123,15 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        */
     OFBool ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DcmTagKey sequenceTagKey, DcmItem *dset );
 
-      /** This function checks if the specified description and code sequence attribute are both incomplete in the given dataset.
+      /** This method ensures that either code or description is set to a non-empty value,
+       *  and at the same time none of the attributes is present with a zero-length value.
+       *  If one of these requirements are not met, then OFTrue is returned, otherwise OFFalse.
        *  @param descriptionTagKey The description attribute which shall be checked.
        *  @param codeSequenceTagKey The codeSequence attribute which shall be checked.
        *  @param dset The dataset in which the attributes are contained.
-       *  @return OFTrue in case both attributes are incomplete, OFFalse otherwise.
+       *  @return OFFalse (i.e. no error regarding the standard) in case at least
+       *          one of both attributes has a non-empty, valid value, and none
+       *          is set to an empty value. OFTrue otherwise.
        */
     OFBool DescriptionAndCodeSequenceAttributesAreIncomplete( DcmTagKey descriptionTagKey, DcmTagKey codeSequenceTagKey, DcmItem *dset );
 
