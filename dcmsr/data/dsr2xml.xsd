@@ -920,9 +920,8 @@
 
   <xsd:simpleType name="UniqueIdentifier">
     <xsd:restriction base="xsd:string">
-      <xsd:minLength value="1"/>
       <xsd:maxLength value="64"/>
-      <xsd:pattern value="\d+(\.\d+)*"/>
+      <xsd:pattern value="(([1-9][0-9]*)|0)(\.([1-9][0-9]*|0))+"/>
     </xsd:restriction>
   </xsd:simpleType>
 
