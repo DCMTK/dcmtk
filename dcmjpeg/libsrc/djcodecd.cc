@@ -337,9 +337,14 @@ OFCondition DJCodecDecoder::decode(
     // which should always identify itself as dataset, not as item.
     if (dataset->ident() == EVR_dataset)
     {
+        DcmItem *ditem = OFreinterpret_cast(DcmItem*, dataset);
+
         // create new SOP instance UID if codec parameters require so
         if (result.good() && (djcp->getUIDCreation() == EUC_always))
-          result = DcmCodec::newInstance(OFreinterpret_cast(DcmItem*, dataset), NULL, NULL, NULL);
+          result = DcmCodec::newInstance(ditem, NULL, NULL, NULL);
+
+        // set Lossy Image Compression to "01" (see DICOM part 3, C.7.6.1.1.5)
+        if (result.good() && (! isLosslessProcess())) result = ditem->putAndInsertString(DCM_LossyImageCompression, "01");
     }
 
   }

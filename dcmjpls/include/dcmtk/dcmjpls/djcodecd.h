@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2011, OFFIS e.V.
+ *  Copyright (C) 2007-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -176,6 +176,12 @@ public:
     OFString &decompressedColorModel) const;
 
 private:
+
+  /** returns the transfer syntax that this particular codec
+   *  is able to Decode
+   *  @return supported transfer syntax
+   */
+  virtual E_TransferSyntax supportedTransferSyntax() const = 0;
 
   // static private helper methods
 

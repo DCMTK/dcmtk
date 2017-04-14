@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -187,6 +187,12 @@ public:
    *  @return supported transfer syntax
    */
   virtual E_TransferSyntax supportedTransferSyntax() const = 0;
+
+  /** returns true if the transfer syntax supported by this
+   *  codec is lossless.
+   *  @return lossless flag
+   */
+  virtual OFBool isLosslessProcess() const = 0;
 
 private:
 

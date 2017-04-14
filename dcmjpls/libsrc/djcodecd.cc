@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2016, OFFIS e.V.
+ *  Copyright (C) 2007-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -69,8 +69,7 @@ OFBool DJLSDecoderBase::canChangeCoding(
   // this codec only handles conversion from JPEG-LS to uncompressed.
 
   DcmXfer newRep(newRepType);
-  if (newRep.isNotEncapsulated() &&
-     ((oldRepType == EXS_JPEGLSLossless)||(oldRepType == EXS_JPEGLSLossy)))
+  if (newRep.isNotEncapsulated() && (oldRepType == supportedTransferSyntax()))
      return OFTrue;
 
   return OFFalse;
@@ -181,17 +180,23 @@ OFCondition DJLSDecoderBase::decode(
     result = ((DcmItem *)dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
   }
 
-  if (result.good())
+  if (result.good() && (dataset->ident() == EVR_dataset))
   {
+    DcmItem *ditem = OFreinterpret_cast(DcmItem*, dataset);
+
     // the following operations do not affect the Image Pixel Module
     // but other modules such as SOP Common.  We only perform these
     // changes if we're on the main level of the dataset,
     // which should always identify itself as dataset, not as item.
-    if ((dataset->ident() == EVR_dataset) && (djcp->getUIDCreation() == EJLSUC_always))
+    if (djcp->getUIDCreation() == EJLSUC_always)
     {
         // create new SOP instance UID
-        result = DcmCodec::newInstance((DcmItem *)dataset, NULL, NULL, NULL);
+        result = DcmCodec::newInstance(ditem, NULL, NULL, NULL);
     }
+
+    // set Lossy Image Compression to "01" (see DICOM part 3, C.7.6.1.1.5)
+    if (result.good() && (supportedTransferSyntax() == EXS_JPEGLSLossy)) result = ditem->putAndInsertString(DCM_LossyImageCompression, "01");
+
   }
 
   return result;
