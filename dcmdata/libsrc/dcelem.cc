@@ -1250,6 +1250,12 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
 {
     DcmWriteCache wcache2;
 
+    /* Create an object that represents this object's data type */
+    DcmVR myvr(getVR());
+
+    /* getValidEVR() will convert post 1993 VRs to "OB" if these are disabled */
+    DcmEVR vr = myvr.getValidEVR();
+
     /* In case the transfer state is not initialized, this is an illegal call */
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -1269,6 +1275,11 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
             if (getTag() == DCM_PixelData)
               outByteOrder = outXfer.getPixelDataByteOrder();
               else outByteOrder = outXfer.getByteOrder();
+
+            /* UN and OB element content always needs to be written in little endian.
+               We need to set this manually for the case that we are converting
+               elements to UN or OB while writing because some post-1993 VRs are disabled */
+            if ((vr == EVR_OB) || (vr == EVR_UN)) outByteOrder = EBO_LittleEndian;
 
             /* pointer to element value if value resides in memory or old-style
              * write behaviour is active (i.e. everything loaded into memory upon write)
