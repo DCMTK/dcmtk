@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -308,13 +308,13 @@ public:
   /** Set Real World Value First Value Mapped
    *  @param  value Value to be set. If Pixel Representation is -1 (signed
    *          pixel data) value  must be -2^15  < value < 2^15-1. Otherwise use
-   *          setRealWorldValueFirstValueMappedUnSigned().
+   *          setRealWorldValueFirstValueMappedUnsigned().
    *  @param  checkValue Check 'value'. Not evaluated (here for consistency
    *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise
    */
-  virtual OFCondition setRealWorldValueFirstValueMappeSigned(const Sint16 &value,
-                                                             const OFBool checkValue = OFTrue);
+  virtual OFCondition setRealWorldValueFirstValueMappedSigned(const Sint16 &value,
+                                                              const OFBool checkValue = OFTrue);
 
   /** Set Real World Value Last Value Mapped
    *  @param  value Value to be set. If Pixel Representation is 0 (unsigned
@@ -330,7 +330,7 @@ public:
   /** Set Real World Value Last Value Mapped
    *  @param  value Value to be set. If Pixel Representation is -1 (signed
    *          pixel data) value  must be -2^15  < value < 2^15-1. Otherwise use
-   *          setRealWorldValueLastValueMappedUnSigned().
+   *          setRealWorldValueLastValueMappedUnsigned().
    *  @param  checkValue Check 'value'. Not evaluated (here for consistency
    *          with other setter functions).
    *  @return EC_Normal if successful, an error code otherwise

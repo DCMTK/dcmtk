@@ -312,8 +312,8 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMapped
 }
 
 
-OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMappeSigned(const Sint16& value,
-                                                                                      const OFBool checkValue)
+OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMappedSigned(const Sint16& value,
+                                                                                       const OFBool checkValue)
 {
   (void)checkValue;
   DcmSignedShort* ss = new DcmSignedShort(DCM_RealWorldValueFirstValueMapped);
