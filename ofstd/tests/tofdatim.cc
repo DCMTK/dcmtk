@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2015, OFFIS e.V.
+ *  Copyright (C) 2002-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -93,6 +93,10 @@ OFTEST(ofstd_OFTime)
     OFCHECK_EQUAL(time1.getTimeZone(), 1.0);
     OFCHECK(time1.setISOFormattedTime("12:15:30 -02:30"));
     OFCHECK_EQUAL(time1.getTimeZone(), -2.5);
+    OFCHECK(time1.setISOFormattedTime("12:15:30 -09:45"));
+    OFCHECK_EQUAL(time1.getTimeZone(), -9.75);
+    OFCHECK(time1.setISOFormattedTime("12:15:30 +09:15"));
+    OFCHECK_EQUAL(time1.getTimeZone(), +9.25);
     /* the "seconds" part is mandatory if time zone is present */
     OFCHECK(!time2.setISOFormattedTime("10:15 -02:30"));
     OFCHECK(!time2.setISOFormattedTime("1015+0100"));
