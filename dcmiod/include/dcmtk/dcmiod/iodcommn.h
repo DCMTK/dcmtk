@@ -176,13 +176,18 @@ public:
    *  @param  readSeries  Read Series-level information if OFTrue, always
    *                      includes Frame of Reference, i.e.\ readFoR is
    *                      considered to be OFTrue
+   *  @param  takeOverCharset If OFTrue (default), Specific Character Set is
+   *                          taken over from imported dataset. If it's not
+   *                          present or empty (invalid), the attribute will
+   *                          not be present in this class either.
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition import(DcmItem& dataset,
-                             OFBool readPatient,
-                             OFBool readStudy,
-                             OFBool readFoR = OFFalse,
-                             OFBool readSeries = OFFalse);
+                             const OFBool readPatient,
+                             const OFBool readStudy,
+                             const OFBool readFoR = OFFalse,
+                             const OFBool readSeries = OFFalse,
+                             const OFBool takeOverCharset = OFTrue);
 
   /** Import common module attributes from DICOM file but only read Patient, Study,
    *  Series and/or Frame of Reference level portions. The current content
@@ -196,6 +201,11 @@ public:
    *  @param  useStudy If OFTrue, Study level information is imported
    *  @param  useSeries If OFTrue, Series level information is imported
    *  @param  useFoR If OFTrue, Frame of Reference information is imported
+   *  @param  takeOverCharset If OFTrue (default), Specific Character Set is
+   *                          taken over from imported dataset. If it's not
+   *                          present or empty (invalid), the attribute will
+   *                          not be present in this class either.
+
    *  @return EC_Normal if reading was successful (i.e.\ if any information could
    *          be read), otherwise an error is returned
    */
@@ -203,7 +213,8 @@ public:
                                     const OFBool usePatient,
                                     const OFBool useStudy,
                                     const OFBool useSeries,
-                                    const OFBool useFoR = OFFalse);
+                                    const OFBool useFoR = OFFalse,
+                                    OFBool takeOverCharset = OFTrue);
 
   /** Import common module attributes from DICOM file but only read Patient, Study,
    *  Series and/or Frame of Reference level portions. The current content
@@ -214,6 +225,10 @@ public:
    *  @param  useStudy If OFTrue, Study level information is imported
    *  @param  useSeries If OFTrue, Series level information is imported
    *  @param  useFoR If OFTrue, Frame of Reference information is imported
+   *  @param  takeOverCharset If OFTrue (default), Specific Character Set is
+   *                          taken over from imported dataset. If it's not
+   *                          present or empty (invalid), the attribute will
+   *                          not be present in this class either.
    *  @return EC_Normal if reading was successful (i.e.\ if any information could
    *          be read), otherwise an error is returned
    */
@@ -221,7 +236,8 @@ public:
                              const OFBool usePatient,
                              const OFBool useStudy,
                              const OFBool useSeries,
-                             const OFBool useFoR = OFFalse);
+                             const OFBool useFoR = OFFalse,
+                             OFBool takeOverCharset = OFTrue);
 
 
   /** Write the attributes managed by this class to DICOM dataset.

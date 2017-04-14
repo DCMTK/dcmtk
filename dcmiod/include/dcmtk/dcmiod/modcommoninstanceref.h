@@ -42,6 +42,9 @@
  * > Study Instance UID (UI, 1, 1)
  * > Series and Instance Reference Macro
  *
+ * Thus the Common Instance Reference Module lists references to other SOP
+ * instances and divides them between those instances that are in the same
+ * study, and those that are inside another study.
  */
 class DCMTK_DCMIOD_EXPORT IODCommonInstanceReferenceModule : public IODModule
 {
@@ -74,12 +77,19 @@ public:
 
   /** Add references
    *  @param  references The references to be added
-   *  @param  studyInstanceUID The Study Instance UID the references belong to
-   *  @param  clearOldData Delete any old referneces if OFTrue, otherwise keep them
+   *  @param  studyInstanceUID The Study Instance UID of "this" object instance.
+   *          It's used to decide whether the provided instances (with their
+   *          own Study Instance UIDs) will go into the Referenced Series Sequence
+   *          or into the Studies Containing Other Referenced Instances Sequence.
+   *          If it is left empty, then the method tries to find "this" instances
+   *          Study Instance UID in the internal item container which may be shared
+   *          with other modules and thus may already provide the Study Instance
+   *          UID (e.g. via General Study Module).
+   *  @param  clearOldData Delete any old references if OFTrue, otherwise keep them
    *  @result EC_Normal if successful, error otherwise
    */
   virtual size_t addReferences(const IODReferences& references,
-                               const OFString& studyInstanceUID,
+                               const OFString& studyInstanceUID = "",
                                const OFBool clearOldData = OFTrue);
 
   /** Read data of this module from given source item

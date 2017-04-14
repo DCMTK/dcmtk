@@ -186,12 +186,22 @@ OFCondition DcmIODUtil::addElementToDataset(OFCondition &result,
       // At this point, we certainly have an element. Check its value (empty ok for type 2)
       if ((type == "2") || !delem->isEmpty())
       {
-        result = checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str());
-        // Insert non-empty element or empty "type 2" element
+        // Insert non-empty element or empty "type 2" element. First, perform the insertion, and then
+        // check the value. This is (at least) required for checking the character set of string values which
+        // relies on the element context, i.e. the surrounding item or dataset.
+        result = dataset.insert(delem, OFTrue /*replaceOld*/);
         if (result.good())
         {
-          result = dataset.insert(delem, OFTrue /*replaceOld*/);
-          if (result.good()) insertionOK = OFTrue;
+          result = checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str());
+        }
+        if (result.good())
+        {
+          insertionOK = OFTrue;
+        }
+        // remove element if value is invalid
+        else
+        {
+          dataset.remove(delem);
         }
       }
       else if (type == "1")

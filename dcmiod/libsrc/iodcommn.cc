@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -40,13 +40,14 @@ DcmIODCommon::DcmIODCommon()
 {
   // Set initial values for a new SOP instance
   ensureInstanceUIDs(OFFalse);
+  // push this first so Specific Character Set will be written in the beginning
+  m_Modules.push_back(&m_SOPCommon);
   m_Modules.push_back(&m_Patient);
   m_Modules.push_back(&m_PatientStudy);
   m_Modules.push_back(&m_Study);
   m_Modules.push_back(&m_Equipment);
   m_Modules.push_back(&m_Series);
   m_Modules.push_back(&m_FrameOfReference);
-  m_Modules.push_back(&m_SOPCommon);
   m_Modules.push_back(&m_CommonInstanceReferenceModule);
 }
 
@@ -66,13 +67,14 @@ DcmIODCommon::DcmIODCommon(const DcmIODCommon& rhs)
 {
   // Set initial values for a new SOP instance
   ensureInstanceUIDs(OFFalse);
+  // push this first so Specific Character Set will be written in the beginning
+  m_Modules.push_back(&m_SOPCommon);
   m_Modules.push_back(&m_Patient);
   m_Modules.push_back(&m_PatientStudy);
   m_Modules.push_back(&m_Study);
   m_Modules.push_back(&m_Equipment);
   m_Modules.push_back(&m_Series);
   m_Modules.push_back(&m_FrameOfReference);
-  m_Modules.push_back(&m_SOPCommon);
   m_Modules.push_back(&m_CommonInstanceReferenceModule);
 }
 
@@ -173,10 +175,11 @@ OFCondition DcmIODCommon::read(DcmItem &dataset)
 
 
 OFCondition DcmIODCommon::import(DcmItem& dataset,
-                                 OFBool readPatient,
-                                 OFBool readStudy,
-                                 OFBool readSeries,
-                                 OFBool readFoR)
+                                 const OFBool readPatient,
+                                 const OFBool readStudy,
+                                 const OFBool readSeries,
+                                 const OFBool readFoR,
+                                 const OFBool takeOverCharset)
 {
   if (readPatient)
   {
@@ -201,6 +204,27 @@ OFCondition DcmIODCommon::import(DcmItem& dataset,
     m_FrameOfReference.read(dataset, OFFalse /* do not clear old data */);
   }
 
+  // Take over character set from the dataset imported, if desired
+  if (takeOverCharset)
+  {
+    OFString charset;
+    dataset.findAndGetOFStringArray(DCM_SpecificCharacterSet, charset);
+    if (!charset.empty())
+    {
+      DCMIOD_DEBUG("Taking over Specific Character Set " << charset << " on import");
+      OFCondition result = m_SOPCommon.setSpecificCharacterSet(charset);
+      if (result.bad())
+      {
+        DCMIOD_ERROR("Could not set Specific Character Set " << charset << " on import: " << result.text());
+      }
+    }
+    else
+    {
+        DCMIOD_DEBUG("Taking over Default Specific Character Set (ASCII) on import");
+        m_SOPCommon.getData().findAndDeleteElement(DCM_SpecificCharacterSet);
+    }
+  }
+
   return EC_Normal;
 }
 
@@ -209,10 +233,11 @@ OFCondition DcmIODCommon::importPatientStudyFoR(const OFString& filename,
                                                 const OFBool usePatient,
                                                 const OFBool useStudy,
                                                 const OFBool useSeries,
-                                                const OFBool useFoR)
+                                                const OFBool useFoR,
+                                                const OFBool takeOverCharset)
 {
   DCMIOD_WARN("This function is deprecated and will be removed in later versions of DCMTK, please use import()");
-  return import(filename, usePatient, useStudy, useSeries, useFoR);
+  return import(filename, usePatient, useStudy, useSeries, useFoR, takeOverCharset);
 }
 
 
@@ -220,7 +245,8 @@ OFCondition DcmIODCommon::import(const OFString& filename,
                                  const OFBool usePatient,
                                  const OFBool useStudy,
                                  const OFBool useSeries,
-                                 const OFBool useFoR)
+                                 const OFBool useFoR,
+                                 const OFBool takeOverCharset)
 {
   DcmFileFormat dcmff;
   OFCondition result = dcmff.loadFile(filename.c_str());
@@ -229,7 +255,7 @@ OFCondition DcmIODCommon::import(const OFString& filename,
     DcmDataset *dset = dcmff.getDataset();
     if (dset != NULL)
     {
-      result = import(*dset, usePatient, useStudy, useSeries, useFoR);
+      result = import(*dset, usePatient, useStudy, useSeries, useFoR, takeOverCharset);
     }
     else
     {
