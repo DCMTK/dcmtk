@@ -1013,6 +1013,7 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
     DUL_ABORTITEMS abortItems = { 0, DUL_SCU_INITIATED_ABORT, 0 };
     int event = 0;
     unsigned char pduType = 0;
+    OFCondition tcpError = makeDcmnetCondition(DULC_TCPIOERROR, OF_error, "");
 
     PRIVATE_ASSOCIATIONKEY ** association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
     OFCondition cond = checkAssociation(association);
@@ -1067,7 +1068,9 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
           else event = INVALID_PDU;
           cond = PRV_StateMachine(NULL, association, event, (*association)->protocolState, NULL);
         }
-        if (cond.good()) done = OFTrue;
+        // the comparison with tcpError prevents a potential infinite loop if
+        // we are receiving garbage over the network connection.
+        if (cond.good() || (cond == tcpError)) done = OFTrue;
     }
     return EC_Normal;
 }
