@@ -194,26 +194,8 @@ OFCondition WlmActivityManager::StartProvidingService()
   /* if this process was started by CreateProcess, opt_forkedChild is set */
   if (opt_forkedChild)
   {
-    /* tell dcmnet DUL about child process status, too */
-    DUL_markProcessAsForkedChild();
-
-    char buf[256];
-    DWORD bytesRead = 0;
-    HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
-
-    // read socket handle number from stdin, i.e. the anonymous pipe
-    // to which our parent process has written the handle number.
-    if (ReadFile(hStdIn, buf, sizeof(buf) - 1, &bytesRead, NULL))
-    {
-      // make sure buffer is zero terminated
-      buf[bytesRead] = '\0';
-      dcmExternalSocketHandle.set(atoi(buf));
-    }
-    else
-    {
-      DCMWLM_ERROR("cannot read socket handle: " << GetLastError());
-      exit(0);
-    }
+    // we are a child process in multi-process mode
+    if (DUL_readSocketHandleAsForkedChild().bad()) exit(10);
   }
   else
   {

@@ -485,6 +485,15 @@ DCMTK_DCMNET_EXPORT OFBool DUL_processIsForkedChild();
  */
 DCMTK_DCMNET_EXPORT void DUL_markProcessAsForkedChild();
 
+/** this helper function calls DUL_markProcessAsForkedChild(), then reads
+ *  the socket handle from the pipe opened by the parent process and
+ *  stores it in the global variable dcmExternalSocketHandle. This is
+ *  in most cases everything needed to prepare the network layer to act
+ *  as a forked child on Win32. On other operating system, the function does nothing.
+ * @return EC_Normal if successful, an error code otherwise.
+ */
+DCMTK_DCMNET_EXPORT OFCondition DUL_readSocketHandleAsForkedChild();
+
 /** this function marks the current process as a multi-process server and enables
  *  the creation of child processes for each incoming TCP transport connection
  *  in receiveTransportConnectionTCP().

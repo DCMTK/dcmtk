@@ -71,6 +71,7 @@ makeOFConditionConst(DUL_REQUESTASSOCIATIONFAILED, OFM_dcmnet, DULC_REQUESTASSOC
 makeOFConditionConst(DUL_UNEXPECTEDPDU,            OFM_dcmnet, DULC_UNEXPECTEDPDU           , OF_error, "Received unexpected PDU");
 makeOFConditionConst(DUL_UNSUPPORTEDPEERPROTOCOL,  OFM_dcmnet, DULC_UNSUPPORTEDPEERPROTOCOL , OF_error, "DUL Unsupported peer protocol");
 makeOFConditionConst(DUL_WRONGDATATYPE,            OFM_dcmnet, DULC_WRONGDATATYPE           , OF_error, "DUL Wrong Data Type Specified for Request");
+makeOFConditionConst(DUL_CANNOTREADSOCKETHANDLE,   OFM_dcmnet, DULC_CANNOTREADSOCKETHANDLE  , OF_error, "DUL Cannot Read Socket Handle from Pipe");
 
 makeOFConditionConst(NET_EC_InvalidSOPClassUID,              OFM_dcmnet, 1000, OF_error, "Invalid SOP Class UID");
 makeOFConditionConst(NET_EC_UnknownStorageSOPClass,          OFM_dcmnet, 1001, OF_error, "Unknown Storage SOP Class");

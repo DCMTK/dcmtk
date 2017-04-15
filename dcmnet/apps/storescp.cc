@@ -1048,32 +1048,13 @@ int main(int argc, char *argv[])
 #elif defined(_WIN32)
   if (opt_forkedChild)
   {
-    // child process
-    DUL_markProcessAsForkedChild();
-
-    char buf[256];
-    DWORD bytesRead = 0;
-    HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
-
-    // read socket handle number from stdin, i.e. the anonymous pipe
-    // to which our parent process has written the handle number.
-    if (ReadFile(hStdIn, buf, sizeof(buf) - 1, &bytesRead, NULL))
-    {
-      // make sure buffer is zero terminated
-      buf[bytesRead] = '\0';
-      dcmExternalSocketHandle.set(atoi(buf));
-    }
-    else
-    {
-      OFLOG_ERROR(storescpLogger, "cannot read socket handle: " << GetLastError());
-      return 1;
-    }
+    // we are a child process in multi-process mode
+    if (DUL_readSocketHandleAsForkedChild().bad()) return 1;
   }
   else
   {
     // parent process
-    if (opt_forkMode)
-      DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+    if (opt_forkMode) DUL_requestForkOnTransportConnectionReceipt(argc, argv);
   }
 #endif
 

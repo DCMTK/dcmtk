@@ -226,6 +226,44 @@ void DUL_markProcessAsForkedChild()
   processIsForkedChild = OFTrue;
 }
 
+OFCondition DUL_readSocketHandleAsForkedChild()
+{
+  OFCondition result = EC_Normal;
+
+#ifdef _WIN32
+  // we are a child process
+  DUL_markProcessAsForkedChild();
+
+  char buf[256];
+  DWORD bytesRead = 0;
+  HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
+
+  // read socket handle number from stdin, i.e. the anonymous pipe
+  // to which our parent process has written the handle number.
+  if (ReadFile(hStdIn, buf, sizeof(buf) - 1, &bytesRead, NULL))
+  {
+    // make sure buffer is zero terminated
+    buf[bytesRead] = '\0';
+    unsigned __int64 socketHandle = 0;
+    sscanf(buf, "%llu", &socketHandle);
+    // socketHandle is always 64-bit because we always use this type to
+    // pass the handle between parent and chile. Type DcmNativeSocketType
+    // can be 32-bit on a 32-bit Windows, however. We, therefore, cast to the
+    // appropriate type. This is safe because the handle in the parent
+    // also had type DcmNativeSocketType.
+    dcmExternalSocketHandle.set(OFstatic_cast(DcmNativeSocketType, socketHandle));
+  }
+  else
+  {
+    DCMNET_ERROR("cannot read socket handle: " << GetLastError());
+    result = DUL_CANNOTREADSOCKETHANDLE;
+  }
+#endif
+
+  return result;
+}
+
+
 void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[])
 {
   shouldFork = OFTrue;
@@ -1782,8 +1820,9 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
                 // send number of socket handle in child process over anonymous pipe
                 DWORD bytesWritten;
-                char buf[20];
-                sprintf(buf, "%i", OFstatic_cast(int, OFreinterpret_cast(size_t, childSocketHandle)));
+                char buf[30];
+                // we pass the socket handle as a 64-bit unsigned integer, which should work for 32 and 64 bit Windows
+                sprintf(buf, "%llu", OFreinterpret_cast(unsigned __int64, childSocketHandle));
                 if (!WriteFile(hChildStdInWriteDup, buf, OFstatic_cast(DWORD, strlen(buf) + 1), &bytesWritten, NULL))
                 {
                     CloseHandle(hChildStdInWriteDup);

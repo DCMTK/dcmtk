@@ -152,6 +152,7 @@ const unsigned short DULC_TCPWRAPPER                       = 0x324;
 const unsigned short DULC_FORKEDCHILD                      = 0x325;
 const unsigned short DULC_CANNOTFORK                       = 0x326;
 const unsigned short DULC_ILLEGALREJECTSOURCE              = 0x327;
+const unsigned short DULC_CANNOTREADSOCKETHANDLE         = 0x328;
 
 // condition constants used in the DUL module
 extern DCMTK_DCMNET_EXPORT const OFConditionConst DUL_ASSOCIATIONREJECTED;       /* DUL Association Rejected */
@@ -176,6 +177,7 @@ extern DCMTK_DCMNET_EXPORT const OFConditionConst DUL_REQUESTASSOCIATIONFAILED; 
 extern DCMTK_DCMNET_EXPORT const OFConditionConst DUL_UNEXPECTEDPDU;             /* Received unexpected PDU */
 extern DCMTK_DCMNET_EXPORT const OFConditionConst DUL_UNSUPPORTEDPEERPROTOCOL;   /* DUL Unsupported peer protocol */
 extern DCMTK_DCMNET_EXPORT const OFConditionConst DUL_WRONGDATATYPE;             /* DUL Wrong Data Type Specified for Request */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst DUL_CANNOTREADSOCKETHANDLE;    /* Cannot read socket handle from pipe */
 
 // other condition constants used in the network module (codes 1000 to 1023)
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_InvalidSOPClassUID;               /* Invalid SOP Class UID */
