@@ -4226,6 +4226,7 @@ DcmElement* DcmItem::newDicomElement(const DcmTagKey& tag,
   return elem;
 }
 
+
 OFCondition DcmItem::newDicomElementWithVR(DcmElement*& newElement, const DcmTag& tag)
 {
   DcmTag temp(tag);

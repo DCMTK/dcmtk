@@ -1233,43 +1233,45 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    DcmItem *item,
                                    const signed long itemNum = -2);
 
-    /** creates new DICOM element from given attribute tag
+    /** creates new DICOM element from given attribute tag.
+     *  Creation of unknown attributes (e.g. private tag not being registered
+     *  in the dictionary) will result in a DcmElement instance of derived type
+     *  DcmOtherByteOtherWord.
      *  @param tag attribute tag of the element to be created
      *  @param privateCreator private creator of the element, if element tag
      *    is private (default: NULL, i.e. non-private DICOM standard tag)
-     *  @return pointer to newly created element upon success, NULL pointer otherwise.
-     *    Creation of unknown attributes (e.g. private tag not being registered
-     *    in the dictionary) will result in a DcmElement instance of derived type
-     *    DcmOtherByteOtherWord.
+     *  @return pointer to newly created element upon success, NULL pointer otherwise
+     *
      */
      static DcmElement *newDicomElement(const DcmTagKey &tag,
                                         const char *privateCreator = NULL);
 
-    /** creates new DICOM element from given attribute tag
+    /** creates new DICOM element from given attribute tag.
+     *  Creation of unknown attributes (e.g. private tag not being registered
+     *  in the dictionary) will result in a DcmElement instance of derived type
+     *  DcmOtherByteOtherWord.
      *  @param newElement pointer to newly created element returned in this parameter
      *    upon success, NULL pointer otherwise
      *  @param tag attribute tag of the element to be created
      *  @param privateCreator private creator of the element, if element tag
      *    is private (default: NULL, i.e. non-private DICOM standard tag)
-     *  @return EC_Normal upon success, an error code otherwise.
-     *    Creation of unknown attributes (e.g. private tag not being registered
-     *    in the dictionary) will result in a DcmElement instance of derived type
-     *    DcmOtherByteOtherWord.
+     *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition newDicomElement(DcmElement *&newElement,
                                        const DcmTagKey &tag,
                                        const char *privateCreator = NULL);
 
-    /** creates new DICOM element from given attribute tag and VR
+    /** creates new DICOM element from given attribute tag and VR.
+     *  Creation of unknown attributes (e.g. private tag not being registered
+     *  in the dictionary) will result in a DcmElement instance of derived type
+     *  DcmOtherByteOtherWord.
      *  @param newElement pointer to newly created element returned in this parameter
      *    upon success, NULL pointer otherwise
      *  @param tag attribute tag and VR of the element to be created
-     *  @return pointer to newly created element upon success, NULL pointer otherwise.
-     *    Creation of unknown attributes (e.g. private tag not being registered
-     *    in the dictionary) will result in a DcmElement instance of derived type
-     *    DcmOtherByteOtherWord.
+     *  @return EC_Normal upon success, an error code otherwise
      */
-     static OFCondition newDicomElementWithVR(DcmElement *&newElement, const DcmTag &tag);
+     static OFCondition newDicomElementWithVR(DcmElement *&newElement,
+                                              const DcmTag &tag);
 
   protected:
 
