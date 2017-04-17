@@ -198,7 +198,7 @@ static OFCondition createNewElement(xmlNodePtr current,
             if (dcmEVR != EVR_UNKNOWN)
                 dcmTag.setVR(dcmVR);
             /* create DICOM element */
-            result = DcmItem::newDicomElement(newElem, dcmTag);
+            result = DcmItem::newDicomElementWithVR(newElem, dcmTag);
         } else {
             OFLOG_WARN(xml2dcmLogger, "invalid 'tag' attribute (" << elemTag << "), ignoring node");
             result = EC_InvalidTag;

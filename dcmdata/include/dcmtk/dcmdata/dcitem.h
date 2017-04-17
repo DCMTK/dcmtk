@@ -1260,6 +1260,17 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                        const DcmTagKey &tag,
                                        const char *privateCreator = NULL);
 
+    /** creates new DICOM element from given attribute tag and VR
+     *  @param newElement pointer to newly created element returned in this parameter
+     *    upon success, NULL pointer otherwise
+     *  @param tag attribute tag and VR of the element to be created
+     *  @return pointer to newly created element upon success, NULL pointer otherwise.
+     *    Creation of unknown attributes (e.g. private tag not being registered
+     *    in the dictionary) will result in a DcmElement instance of derived type
+     *    DcmOtherByteOtherWord.
+     */
+     static OFCondition newDicomElementWithVR(DcmElement *&newElement, const DcmTag &tag);
+
   protected:
 
     /// the list of elements maintained by this object

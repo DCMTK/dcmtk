@@ -4216,14 +4216,26 @@ DcmElement* DcmItem::newDicomElement(const DcmTagKey& tag,
 {
   DcmTag temp(tag, privateCreator);
   DcmElement* elem = NULL;
-      OFBool readAsUN = OFFalse;
-      newDicomElement(
-          elem,
-          temp,
-          0,          // Length
-          NULL,       // Private creator
-          readAsUN);  // read as VR UN (result ignored)
+  OFBool readAsUN = OFFalse;
+  newDicomElement(
+      elem,
+      temp,
+      0,          // Length
+      NULL,       // Private creator
+      readAsUN);  // read as VR UN (result ignored)
   return elem;
+}
+
+OFCondition DcmItem::newDicomElementWithVR(DcmElement*& newElement, const DcmTag& tag)
+{
+  DcmTag temp(tag);
+  OFBool readAsUN = OFFalse;
+  return newDicomElement(
+      newElement,
+      temp,
+      0,          // Length
+      NULL,       // Private creator
+      readAsUN);  // read as VR UN (result ignored)
 }
 
 
