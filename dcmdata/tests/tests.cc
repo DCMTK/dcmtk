@@ -38,6 +38,7 @@ OFTEST_REGISTER(dcmdata_floatingPointDouble);
 OFTEST_REGISTER(dcmdata_personName);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_1);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_2);
+OFTEST_REGISTER(dcmdata_uniqueIdentifier_3);
 OFTEST_REGISTER(dcmdata_otherLong);
 OFTEST_REGISTER(dcmdata_VRCompare);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AE);

@@ -480,7 +480,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
 
   IF(HAVE_WINSOCK_H)
     SET(HEADERS ${HEADERS} winsock.h)
-    SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ws2_32 netapi32 wsock32)
+    SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} iphlpapi ws2_32 netapi32 wsock32)
   ENDIF(HAVE_WINSOCK_H)
 
   # std::vsnprintf and std::vsnprintf need the C++ version of the headers.

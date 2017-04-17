@@ -374,7 +374,7 @@ ENDIF(WIN32)
 
 # define libraries and object files that must be linked to most Windows applications
 IF(WIN32)
-  SET(WIN32_STD_LIBRARIES ws2_32 netapi32 wsock32)
+  SET(WIN32_STD_LIBRARIES iphlpapi ws2_32 netapi32 wsock32)
   IF(NOT DEFINED MINGW)
     # additional object file needed for wildcard expansion; for wchar_t* support, use 'wsetargv'
     SET(WIN32_STD_OBJECTS setargv)

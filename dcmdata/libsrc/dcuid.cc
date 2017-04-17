@@ -26,6 +26,7 @@
 #ifdef HAVE_WINDOWS_H
 // on Windows, we need Winsock2 for getting network adapter information
 #include <winsock2.h>
+#include <iphlpapi.h>
 #endif
 
 #define INCLUDE_CSTDLIB
@@ -1393,6 +1394,9 @@ dcmIsImageStorageSOPClassUID(const char* uid)
 #ifndef HAVE_GETHOSTID
 #if defined(HAVE_SYSINFO) && defined(HAVE_SYS_SYSTEMINFO_H)
 
+/* Implementation of gethostid() based on sysinfo().
+ * This implementation is used, for example, on Solaris.
+ */
 #include <sys/systeminfo.h>
 static long gethostid(void)
 {
@@ -1418,198 +1422,48 @@ static long gethostid(void)
 */
 #if (defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)) || defined(HAVE_WINDOWS_H)
 
-// 16K should be large enough to handle everything pointed to by a struct hostent
-#define GETHOSTBYNAME_R_BUFSIZE 16384
+#ifdef _WIN32
 
-/* On Windows systems specify a routine to determine the MAC address of the Ethernet adapter */
-/* Special handling for MinGW which does not yet (as of MinGW 2.0) support snmp.h */
-#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
-
-#include <snmp.h>
-
-// Visual C++ prior to version 6 declared different type names
-// in <snmp.h>, so we need to define a mapping
-#if _MSC_VER < 1200
-typedef RFC1157VarBind     SnmpVarBind;
-typedef RFC1157VarBindList SnmpVarBindList;
-typedef AsnInteger         AsnInteger32;
-#define SNMP_PDU_GETNEXT   ASN_RFC1157_GETNEXTREQUEST
-#endif
-
-
-typedef int(WINAPI *pSnmpUtilOidCpy) (
-        OUT AsnObjectIdentifier *pOidDst,
-        IN AsnObjectIdentifier *pOidSrc);
-
-typedef int(WINAPI *pSnmpUtilOidNCmp) (
-        IN AsnObjectIdentifier *pOid1,
-        IN AsnObjectIdentifier *pOid2,
-        IN UINT nSubIds);
-
-typedef void(WINAPI *pSnmpUtilVarBindFree) (
-        IN OUT SnmpVarBind *pVb);
-
-typedef bool(WINAPI *pSnmpExtensionInit) (
-        IN DWORD dwTimeZeroReference,
-        OUT HANDLE *hPollForTrapEvent,
-        OUT AsnObjectIdentifier *supportedView);
-
-typedef bool(WINAPI *pSnmpExtensionQuery) (
-        IN BYTE requestType,
-        IN OUT SnmpVarBindList *variableBindings,
-        OUT AsnInteger32 *errorStatus,
-        OUT AsnInteger32 *errorIndex);
-
-typedef struct _ASTAT_
-{
-    ADAPTER_STATUS adapt;
-    NAME_BUFFER    NameBuff[30];
-} ASTAT, *PASTAT;
-
-/* get the MAC address of the (first) Ethernet adapter (6 bytes) */
+/* On Windows systems specify a routine to determine the MAC address of the Ethernet adapter.
+ * This implementation uses Win32 system calls available on Windows 2000 and newer.
+ * A different implementation supporting Windows 95 was used in DCMTK releases up to 3.6.0,
+ * but that implementation does not work reliably anymore on Windows 10.
+ */
 static unsigned char *getMACAddress(unsigned char buffer[6])
 {
-    OFBool success = OFFalse;
-    /* init return variable */
-    memzero(buffer, 6 * sizeof(unsigned char));
-    NCB ncb;
-    memzero(&ncb, sizeof(ncb));
-    /* reset the LAN adapter */
-    ncb.ncb_command = NCBRESET;
-    /* it is considered bad practice to hardcode the LANA number (should enumerate
-       adapters first), but at least this approach also works on Windows 9x */
-    ncb.ncb_lana_num = 0;
-    if (Netbios(&ncb) == NRC_GOODRET)
-    {
-        ASTAT Adapter;
-        /* prepare to get the adapter status block */
-        memzero(&ncb, sizeof(ncb));
-        ncb.ncb_command = NCBASTAT;
-        /* it is considered bad practice to hardcode the LANA number (should enumerate
-           adapters first), but at least this approach also works on Windows 9x */
-        ncb.ncb_lana_num = 0;
-        strcpy((char *)ncb.ncb_callname, "*");
-        ncb.ncb_buffer = (unsigned char *)&Adapter;
-        ncb.ncb_length = sizeof(Adapter);
-        /* get the adapter's info */
-        if (Netbios(&ncb) == 0)
-        {
-            /* store the MAC address */
-            buffer[0] = Adapter.adapt.adapter_address[0];
-            buffer[1] = Adapter.adapt.adapter_address[1];
-            buffer[2] = Adapter.adapt.adapter_address[2];
-            buffer[3] = Adapter.adapt.adapter_address[3];
-            buffer[4] = Adapter.adapt.adapter_address[4];
-            buffer[5] = Adapter.adapt.adapter_address[5];
-            success = OFTrue;
-        }
-    }
-    /* check whether NetBIOS routines succeeded, if not try the SNMP approach */
-    if (!success)
-    {
-        HINSTANCE m_hInst1, m_hInst2;
-        /* load the "SNMP Utility Library" dll and get the addresses of the functions necessary */
-        m_hInst1 = LoadLibrary("snmpapi.dll");
-        if (m_hInst1 >= (HINSTANCE)HINSTANCE_ERROR)
-        {
-            pSnmpUtilOidCpy m_Copy = (pSnmpUtilOidCpy)GetProcAddress(m_hInst1, "SnmpUtilOidCpy");
-            pSnmpUtilOidNCmp m_Compare = (pSnmpUtilOidNCmp)GetProcAddress(m_hInst1, "SnmpUtilOidNCmp");
-            pSnmpUtilVarBindFree m_BindFree = (pSnmpUtilVarBindFree)GetProcAddress(m_hInst1, "SnmpUtilVarBindFree");
-            /* load the "SNMP Internet MIB" dll and get the addresses of the functions necessary */
-            m_hInst2 = LoadLibrary("inetmib1.dll");
-            if (m_hInst2 >= (HINSTANCE)HINSTANCE_ERROR)
-            {
-                HANDLE PollForTrapEvent;
-                AsnObjectIdentifier SupportedView;
-                UINT OID_ifEntryType[] = {1, 3, 6, 1, 2, 1, 2, 2, 1, 3};
-                UINT OID_ifEntryNum[] = {1, 3, 6, 1, 2, 1, 2, 1};
-                UINT OID_ipMACEntAddr[] = {1, 3, 6, 1, 2, 1, 2, 2, 1, 6};
-                AsnObjectIdentifier MIB_ifMACEntAddr = {sizeof(OID_ipMACEntAddr) / sizeof(UINT), OID_ipMACEntAddr};
-                AsnObjectIdentifier MIB_ifEntryType = {sizeof(OID_ifEntryType) / sizeof(UINT), OID_ifEntryType};
-                SnmpVarBindList varBindList;
-                SnmpVarBind varBind[2];
-                AsnInteger32 errorStatus;
-                AsnInteger32 errorIndex;
-                AsnObjectIdentifier MIB_NULL = {0, 0};
-                int ret;
-                int dtmp;
-                int j = 0;
-                pSnmpExtensionInit m_Init = (pSnmpExtensionInit)GetProcAddress(m_hInst2, "SnmpExtensionInit");
-                pSnmpExtensionQuery m_Query = (pSnmpExtensionQuery)GetProcAddress(m_hInst2, "SnmpExtensionQuery");
-                m_Init(GetTickCount(), &PollForTrapEvent, &SupportedView);
-                /* initialize the variable list to be retrieved by m_Query */
-                varBindList.list = varBind;
-                varBind[0].name = MIB_NULL;
-                varBind[1].name = MIB_NULL;
-                varBindList.len = 2;
-                /* copy in the OID of ifType, the type of interface */
-                m_Copy(&varBind[0].name, &MIB_ifEntryType);
-                /* copy in the OID of ifPhysAddress, the address */
-                m_Copy(&varBind[1].name, &MIB_ifMACEntAddr);
-                do {
-                    /* Submit the query.  Responses will be loaded into varBindList.
-                       We can expect this call to succeed a # of times corresponding
-                       to the # of adapters reported to be in the system */
-                    ret = m_Query(SNMP_PDU_GETNEXT, &varBindList, &errorStatus, &errorIndex);
-                    if (!ret)
-                        ret = 1;
-                    else
-                    {
-                        /* confirm that the proper type has been returned */
-                        ret = m_Compare(&varBind[0].name, &MIB_ifEntryType, MIB_ifEntryType.idLength);
-                    }
-                    if (!ret)
-                    {
-                        j++;
-                        dtmp = varBind[0].value.asnValue.number;
-                        /* type 6 describes ethernet interfaces */
-                        if (dtmp == 6)
-                        {
-                            /* confirm that we have an address here */
-                            ret = m_Compare(&varBind[1].name, &MIB_ifMACEntAddr,MIB_ifMACEntAddr.idLength);
-                            if ((!ret) && (varBind[1].value.asnValue.address.stream != NULL))
-                            {
-                                if ((varBind[1].value.asnValue.address.stream[0] == 0x44) &&
-                                    (varBind[1].value.asnValue.address.stream[1] == 0x45) &&
-                                    (varBind[1].value.asnValue.address.stream[2] == 0x53) &&
-                                    (varBind[1].value.asnValue.address.stream[3] == 0x54) &&
-                                    (varBind[1].value.asnValue.address.stream[4] == 0x00))
-                                {
-                                    /* ignore all dial-up networking adapters */
-                                    continue;
-                                }
-                                if ((varBind[1].value.asnValue.address.stream[0] == 0x00) &&
-                                    (varBind[1].value.asnValue.address.stream[1] == 0x00) &&
-                                    (varBind[1].value.asnValue.address.stream[2] == 0x00) &&
-                                    (varBind[1].value.asnValue.address.stream[3] == 0x00) &&
-                                    (varBind[1].value.asnValue.address.stream[4] == 0x00) &&
-                                    (varBind[1].value.asnValue.address.stream[5] == 0x00))
-                                {
-                                    /* ignore NULL addresses returned by other network interfaces */
-                                    continue;
-                                }
-                                /* store the MAC address */
-                                buffer[0] = varBind[1].value.asnValue.address.stream[0];
-                                buffer[1] = varBind[1].value.asnValue.address.stream[1];
-                                buffer[2] = varBind[1].value.asnValue.address.stream[2];
-                                buffer[3] = varBind[1].value.asnValue.address.stream[3];
-                                buffer[4] = varBind[1].value.asnValue.address.stream[4];
-                                buffer[5] = varBind[1].value.asnValue.address.stream[5];
-                                ret = 1;    // we found an address -> exit
-                            }
-                        }
-                    }
-                } while (!ret);  /* Stop only on an error. An error will occur when we
-                                    go exhaust the list of interfaces to be examined */
-                FreeLibrary(m_hInst2);
-                /* free the bindings */
-                m_BindFree(&varBind[0]);
-                m_BindFree(&varBind[1]);
-            }
-            FreeLibrary(m_hInst1);
-        }
-    }
-    return buffer;
+  // init return variable
+  memzero(buffer, 6 * sizeof(unsigned char));
+
+  // get network adapters info. In most cases, a buffer for 16 adapters
+  // should be sufficient.
+  size_t numAdapters = 16;
+  PIP_ADAPTER_INFO adapterInfo = new IP_ADAPTER_INFO[numAdapters];
+  DWORD bufLen = OFstatic_cast(DWORD, numAdapters * sizeof(IP_ADAPTER_INFO));
+  DWORD status = 0;
+
+  status = GetAdaptersInfo(adapterInfo, &bufLen);
+  if (status == ERROR_BUFFER_OVERFLOW)
+  {
+    // we have more than 16 network adapters.
+    // Allocate sufficient memory and call GetAdaptersInfo again.
+    delete adapterInfo;
+    numAdapters = (bufLen / sizeof(IP_ADAPTER_INFO)) + 1;
+    adapterInfo = new IP_ADAPTER_INFO[numAdapters];
+    bufLen = OFstatic_cast(DWORD, numAdapters * sizeof(IP_ADAPTER_INFO));
+    status = GetAdaptersInfo(adapterInfo, &bufLen);
+  }
+
+  // get length of MAC address of first adapter
+  UINT len = adapterInfo->AddressLength;
+
+  // limit to the 6 bytes we return as result
+  if (len > 6) len = 6;
+
+  // copy to result buffer
+  memcpy(buffer, adapterInfo->Address, len);
+
+  delete adapterInfo;
+  return buffer;
 }
 #endif
 
@@ -1668,11 +1522,8 @@ static long gethostid(void)
     }
     /* concatenate the host specific elements and compute a 32-bit checksum */
     crc.addBlock(&result /*ip address*/, OFstatic_cast(unsigned long, sizeof(result)));
-#ifndef __MINGW32__
-    /* on MinGW, getMacAddress() is not yet available. */
     unsigned char buffer[6];
     crc.addBlock(getMACAddress(buffer), sizeof(buffer));
-#endif
     crc.addBlock(&serialNumber, OFstatic_cast(unsigned long, sizeof(serialNumber)));
     crc.addBlock(&systemInfo.wProcessorLevel, OFstatic_cast(unsigned long, sizeof(systemInfo.wProcessorLevel)));
     crc.addBlock(&systemInfo.wProcessorRevision, OFstatic_cast(unsigned long, sizeof(systemInfo.wProcessorRevision)));
