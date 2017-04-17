@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -89,7 +89,9 @@ class DCMTK_DCMDATA_EXPORT DcmLongString
      */
     virtual DcmEVR ident() const;
 
-    /** check whether stored value conforms to the VR and to the specified VM
+    /** check whether stored value conforms to the VR and to the specified VM.
+     *  Currently, the VR checker only supports ASCII (ISO_IR 6) and Latin-1 (ISO_IR 100).
+     *  All other specific character sets disable the check of the value representation.
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (See DcmElement::checkVM() for a list of valid values.)
      *  @param oldFormat parameter not used for this VR (only for DA, TM)

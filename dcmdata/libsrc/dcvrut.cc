@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2014, OFFIS e.V.
+ *  Copyright (C) 1998-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,7 +84,8 @@ OFCondition DcmUnlimitedText::checkValue(const OFString & /*vm*/,
     {
         OFString charset;
         /* try to determine the value of the SpecificCharacterSet element */
-        getSpecificCharacterSet(charset);
+        if (getSpecificCharacterSet(charset) == EC_CorruptedData)
+            charset = "UNKNOWN";
         l_error = DcmUnlimitedText::checkStringValue(strVal, charset);
     }
     return l_error;
