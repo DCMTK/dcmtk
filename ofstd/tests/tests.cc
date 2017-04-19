@@ -79,4 +79,5 @@ OFTEST_REGISTER(ofstd_tuple);
 OFTEST_REGISTER(ofstd_limits);
 OFTEST_REGISTER(ofstd_safeSubtractAndAdd);
 OFTEST_REGISTER(ofstd_variant);
+OFTEST_REGISTER(ofstd_error);
 OFTEST_MAIN("ofstd")

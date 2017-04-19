@@ -31,6 +31,7 @@
 #include "dcmtk/ofstd/oftraits.h"   /* for OFenable_if, ... */
 #include "dcmtk/ofstd/ofcond.h"     /* for OFCondition */
 #include "dcmtk/ofstd/oflimits.h"   /* for OFnumeric_limits<T>::max() */
+#include "dcmtk/ofstd/oferror.h"
 
 #define INCLUDE_CASSERT
 #define INCLUDE_CSTDLIB
@@ -1045,6 +1046,22 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  (e.g.\ WSACleanup()).
      */
     static void shutdownNetwork();
+
+    /** Retrieve the last operating system error code that was emitted in the
+     *  calling thread.
+     *  The current implementation uses errno on POSIX-like platforms and
+     *  GetLastError() on Windows.
+     *  @return the last error code as OFerror_code object.
+     */
+    static OFerror_code getLastSystemErrorCode();
+
+    /** Retrieve the last network specific error code that was emitted in the
+     *  calling thread.
+     *  The current implementation uses errno on POSIX-like platforms and
+     *  WSAGetLastError() on Windows.
+     *  @return the last error code as OFerror_code object.
+     */
+    static OFerror_code getLastNetworkErrorCode();
 
  private:
 

@@ -2938,4 +2938,22 @@ void OFStandard::shutdownNetwork()
 #endif
 }
 
+OFerror_code OFStandard::getLastSystemErrorCode()
+{
+#ifdef _WIN32
+    return OFerror_code( GetLastError(), OFsystem_category() );
+#else
+    return OFerror_code( errno, OFsystem_category() );
+#endif
+}
+
+OFerror_code OFStandard::getLastNetworkErrorCode()
+{
+#ifdef HAVE_WINSOCK_H
+    return OFerror_code( WSAGetLastError(), OFsystem_category() );
+#else
+    return OFerror_code( errno, OFsystem_category() );
+#endif
+}
+
 DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place() { return *static_cast<OFin_place_tag*>(OFnullptr); }
