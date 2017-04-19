@@ -77,6 +77,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofcrc32.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofnetdb.h"
 
 struct UIDNameMap {
@@ -1429,41 +1430,40 @@ static long gethostid(void)
  * A different implementation supporting Windows 95 was used in DCMTK releases up to 3.6.0,
  * but that implementation does not work reliably anymore on Windows 10.
  */
-static unsigned char *getMACAddress(unsigned char buffer[6])
+static IP_ADAPTER_INFO* getMACAddresses(OFVector<Uint8>& buffer)
 {
-  // init return variable
-  memzero(buffer, 6 * sizeof(unsigned char));
-
-  // get network adapters info. In most cases, a buffer for 16 adapters
-  // should be sufficient.
-  size_t numAdapters = 16;
-  PIP_ADAPTER_INFO adapterInfo = new IP_ADAPTER_INFO[numAdapters];
-  DWORD bufLen = OFstatic_cast(DWORD, numAdapters * sizeof(IP_ADAPTER_INFO));
-  DWORD status = 0;
-
-  status = GetAdaptersInfo(adapterInfo, &bufLen);
+  // get adapter info using OFVector to allocate memory
+  DWORD bufferSize = 0;
+  DWORD status = GetAdaptersInfo(OFnullptr, &bufferSize);
   if (status == ERROR_BUFFER_OVERFLOW)
   {
-    // we have more than 16 network adapters.
-    // Allocate sufficient memory and call GetAdaptersInfo again.
-    delete adapterInfo;
-    numAdapters = (bufLen / sizeof(IP_ADAPTER_INFO)) + 1;
-    adapterInfo = new IP_ADAPTER_INFO[numAdapters];
-    bufLen = OFstatic_cast(DWORD, numAdapters * sizeof(IP_ADAPTER_INFO));
-    status = GetAdaptersInfo(adapterInfo, &bufLen);
+    buffer.resize(bufferSize);
+    status = GetAdaptersInfo(OFreinterpret_cast(IP_ADAPTER_INFO*, &*buffer.begin()), &bufferSize);
   }
-
-  // get length of MAC address of first adapter
-  UINT len = adapterInfo->AddressLength;
-
-  // limit to the 6 bytes we return as result
-  if (len > 6) len = 6;
-
-  // copy to result buffer
-  memcpy(buffer, adapterInfo->Address, len);
-
-  delete adapterInfo;
-  return buffer;
+  if (status == ERROR_SUCCESS)
+    return OFreinterpret_cast(IP_ADAPTER_INFO*, &*buffer.begin());
+  // print out the error message for debugging
+  OFString message;
+  LPVOID errBuf = OFnullptr;
+  if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+      OFnullptr, status, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), OFreinterpret_cast(LPTSTR, &errBuf), 0, OFnullptr) > 0)
+  {
+    message = OFstatic_cast(const char*, errBuf);
+    // remove "\r\n"
+    if (message.size() >= 2 && message.substr(message.length() - 2) == "\r\n")
+      message = message.substr(0, message.length() - 2);
+  }
+  LocalFree(errBuf);
+  if (!message.empty())
+  {
+    DCMDATA_WARN("GetAdaptersInfo() failed with the error: '" << message << '\'');
+  }
+  else
+  {
+    DCMDATA_WARN("GetAdaptersInfo() failed with an unknown error");
+  }
+  // a null pointer indicates that no adapter is available
+  return OFnullptr;
 }
 #endif
 
@@ -1522,8 +1522,12 @@ static long gethostid(void)
     }
     /* concatenate the host specific elements and compute a 32-bit checksum */
     crc.addBlock(&result /*ip address*/, OFstatic_cast(unsigned long, sizeof(result)));
-    unsigned char buffer[6];
-    crc.addBlock(getMACAddress(buffer), sizeof(buffer));
+    // add the MAC addresses of all adapters
+    {
+      OFVector<Uint8> buffer;
+      for (IP_ADAPTER_INFO* adapterInfo = getMACAddresses(buffer); adapterInfo; adapterInfo = adapterInfo->Next)
+        crc.addBlock(adapterInfo->Address, adapterInfo->AddressLength);
+    }
     crc.addBlock(&serialNumber, OFstatic_cast(unsigned long, sizeof(serialNumber)));
     crc.addBlock(&systemInfo.wProcessorLevel, OFstatic_cast(unsigned long, sizeof(systemInfo.wProcessorLevel)));
     crc.addBlock(&systemInfo.wProcessorRevision, OFstatic_cast(unsigned long, sizeof(systemInfo.wProcessorRevision)));
