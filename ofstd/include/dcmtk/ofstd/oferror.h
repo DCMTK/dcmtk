@@ -230,14 +230,14 @@ private:
  *  to return a pointer to the string "system".
  *  @return a reference to the system error category.
  */
-const OFerror_category& DCMTK_OFSTD_EXPORT OFsystem_category();
+DCMTK_OFSTD_EXPORT const OFerror_category& OFsystem_category();
 
 /** Retrieves a reference to an OFerror_category object used for generic error codes.
  *  The object is required to override the virtual function OFerror_category::name()
  *  to return a pointer to the string "generic".
  *  @return a reference to the generic error category.
  */
-const OFerror_category& DCMTK_OFSTD_EXPORT OFgeneric_category();
+DCMTK_OFSTD_EXPORT const OFerror_category& OFgeneric_category();
 
 #endif // NOT C++11
 

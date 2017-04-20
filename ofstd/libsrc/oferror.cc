@@ -169,13 +169,13 @@ OFerror_code::operator OFBool() const
 #include DCMTK_DIAGNOSTIC_POP
 }
 
-const OFerror_category& DCMTK_OFSTD_EXPORT OFsystem_category()
+DCMTK_OFSTD_EXPORT const OFerror_category& OFsystem_category()
 {
     static const OFsystem_error_category system_category_const;
     return system_category_const;
 }
 
-const OFerror_category& DCMTK_OFSTD_EXPORT OFgeneric_category()
+DCMTK_OFSTD_EXPORT const OFerror_category& OFgeneric_category()
 {
     static const OFgeneric_error_category generic_category_const;
     return generic_category_const;
