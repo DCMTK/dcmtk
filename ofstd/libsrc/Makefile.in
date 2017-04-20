@@ -17,7 +17,8 @@ LOCALDEFS =
 
 objs = oflist.o ofstring.o ofcmdln.o ofconapp.o offname.o ofconsol.o ofthread.o \
 	ofcond.o ofstd.o ofcrc32.o ofdate.o oftime.o ofdatime.o oftimer.o \
-	ofconfig.o ofchrenc.o oftempf.o ofxml.o ofuuid.o offile.o ofmath.o
+	ofconfig.o ofchrenc.o oftempf.o ofxml.o ofuuid.o offile.o ofmath.o \
+	oferror.o
 
 library = libofstd.$(LIBEXT)
 
