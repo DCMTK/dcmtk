@@ -5,6 +5,9 @@ We would like to thank the following individuals, companies and organizations
 (in alphabetical order) for supporting the development and maintenance of the
 Open Source DICOM Toolkit DCMTK:
 
+Carl Zeiss Meditec: The preparation and publication of the DCMTK 3.6.2 release 
+  as well as several extensions in wlmscpfs and dcmqrscp were supported
+  by funding from Carl Zeiss Meditec AG (München, Germany).
 
 DKFZ: The work on the DCMTK module "dcmrt" was supported in part by funding
   from the Deutsches Krebsforschungszentrum (Heidelberg, Germany).
@@ -55,4 +58,4 @@ YXLON: The work on the initial version of the DICONDE data dictionary was
 Please note that this list does not claim to be exhaustive.  Just send us an
 email if you think that you or your company/organization should also be listed.
 
-DCMTK Team, 2017-01-31
+DCMTK Team, 2017-04-20
