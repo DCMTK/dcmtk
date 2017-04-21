@@ -45,6 +45,9 @@ struct OFgeneric_error_category : OFerror_category
         return "Unknown error.";
     }
 
+    // default constructor, since older versions of clang insist
+    inline OFgeneric_error_category() {}
+
     const char* name() const
     {
         return "generic";
@@ -60,6 +63,9 @@ struct OFgeneric_error_category : OFerror_category
 
 struct OFsystem_error_category : OFgeneric_error_category
 {
+    // default constructor, since older versions of clang insist
+    inline OFsystem_error_category() {}
+
     const char* name() const
     {
         return "system";
