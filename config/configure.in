@@ -98,7 +98,6 @@ AH_TOP([#ifndef OSCONFIG_H
 #ifdef __MINGW32__
 #define HAVE_WINDOWS_H 1
 #define HAVE_WINSOCK_H 1
-#define NO_IOS_BASE_ASSIGN 1
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif])
 

@@ -914,6 +914,32 @@ int main()
     return sizeof(sfinae<test>(0)) == sizeof(yes_type);
 }")
 
+DCMTK_TRY_COMPILE(HAVE_STD_NAMESPACE "ANSI standard C++ includes use std namespace"
+    "#include <iostream>
+int main()
+{
+    using namespace std;
+    std::cout << endl;
+    return 0;
+}")
+
+DCMTK_TRY_COMPILE(HAVE_STD__NOTHROW "the compiler supports std::nothrow"
+    "#include <new>
+int main()
+{
+    int* i = new (std::nothrow) int;
+    return 0;
+}")
+
+DCMTK_TRY_COMPILE(HAVE_NOTHROW_DELETE "the compiler supports operator delete (std::nothrow)"
+    "#include <new>
+int main()
+{
+    int* i = 0;
+    operator delete (i,std::nothrow);
+    return 0;
+}")
+
 # Compile config/arith.cc and generate config/arith.h
 FUNCTION(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
   SET(ARITH_H_FILE "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h")

@@ -1017,7 +1017,6 @@ typedef unsigned long ulong;
 #endif
 #define HAVE_PROTOTYPE_MKTEMP 1
 #undef HAVE_SYS_UTIME_H
-#define NO_IOS_BASE_ASSIGN 1
 #define _MSC_VER 1200       /* Treat Borland C++ 5.5 as MSVC6. */
 #endif /* __BORLANDC__ */
 
@@ -1055,48 +1054,17 @@ typedef unsigned long ulong;
 /* Define if your system defines ios::nocreate in iostream.h */
 #cmakedefine HAVE_IOS_NOCREATE @HAVE_IOS_NOCREATE@
 
-#ifdef USE_STD_CXX_INCLUDES
-
 /* Define if ANSI standard C++ includes use std namespace */
-#define HAVE_STD_NAMESPACE 1
-
-/* Define if it is not possible to assign stream objects */
-#define NO_IOS_BASE_ASSIGN 1
+#cmakedefine HAVE_STD_NAMESPACE @HAVE_STD_NAMESPACE@
 
 /* Define if the compiler supports std::nothrow */
-#define HAVE_STD__NOTHROW 1
-
-/* Define if the compiler supports operator delete (std::nothrow).
- * Microsoft Visual C++ 6.0 does NOT have it, newer versions do.
- * For other compilers, by default assume that it exists.
- */
-#if defined(_MSC_VER) && (_MSC_VER <= 1200)
-/* #undef HAVE_NOTHROW_DELETE */
-#else
-#define HAVE_NOTHROW_DELETE 1
-#endif
-
-/* Define if your system has a prototype for std::vfprintf in stdarg.h */
-/* #undef HAVE_PROTOTYPE_STD__VFPRINTF */
-
-#else
-
-/* Define if ANSI standard C++ includes use std namespace */
-/* #undef HAVE_STD_NAMESPACE */
-
-/* Define if it is not possible to assign stream objects */
-/* #undef NO_IOS_BASE_ASSIGN */
-
-/* Define if the compiler supports std::nothrow */
-/* #undef HAVE_STD__NOTHROW */
+#cmakedefine HAVE_STD__NOTHROW @HAVE_STD__NOTHROW@
 
 /* Define if the compiler supports operator delete (std::nothrow) */
-/* #undef HAVE_NOTHROW_DELETE */
+#cmakedefine HAVE_NOTHROW_DELETE @HAVE_NOTHROW_DELETE@
 
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #cmakedefine HAVE_PROTOTYPE_STD__VFPRINTF @HAVE_PROTOTYPE_STD__VFPRINTF@
-
-#endif /* USE_STD_CXX_INCLUDES */
 
 /* Define if your system has off64_t */
 #cmakedefine HAVE_OFF64_T @HAVE_OFF64_T@

@@ -119,11 +119,6 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
         }
     }
 
-#ifndef NO_IOS_BASE_ASSIGN
-    /* make cout refer to cerr. This does not work with all iostream implementations :-( */
-    cout = cerr;
-#endif
-
     /* make stdout the same as stderr */
     *stdout = *stderr;
 

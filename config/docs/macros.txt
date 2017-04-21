@@ -246,14 +246,6 @@ NO_GET_SUPPORT
   Type of modification: Disables feature
   Explanation: Disables the experimental C-GET support in dcmqrdb.
 
-NO_IOS_BASE_ASSIGN
-  Affected: all command line tools
-  Type of modification: Disables feature
-  Explanation: On Win32 platforms, the prepareCmdLineArgs() function
-    maps cout to cerr by assignment.  This does not work with all
-    iostream implementations and can, therefore, be disabled with this
-    macro.
-
 NO_PATIENTSTUDYONLY_SUPPORT
   Affected: dcmqrdb
   Type of modification: Disables feature
