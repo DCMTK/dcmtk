@@ -297,10 +297,8 @@
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #cmakedefine HAVE_LIBNSL @HAVE_LIBNSL@
 
-/* Define to 1 if you have the <libpng/png.h> header file. */
-/* Comment this out so inside dipipng.cxx we can include <png.h> */
-/* instead of <libpng/png.h> KW 20060622 */
-/* #cmakedefine HAVE_LIBPNG_PNG_H @HAVE_LIBPNG_PNG_H@ */
+/* Define to 1 if the <libpng/png.h> header shall be used instead of <png.h>. */
+#cmakedefine HAVE_LIBPNG_PNG_H @HAVE_LIBPNG_PNG_H@
 
 /* Define to 1 if you have the `socket' library (-lsocket). */
 #cmakedefine HAVE_LIBSOCKET @HAVE_LIBSOCKET@
