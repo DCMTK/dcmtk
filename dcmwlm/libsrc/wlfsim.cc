@@ -722,8 +722,6 @@ OFBool WlmFileSystemInteractionManager::DescriptionAndCodeSequenceAttributesAreI
 //                one of both attributes has a non-empty, valid value, and none
 //                is set to an empty value. OFTrue otherwise.
 {
-  DcmElement *codeSequence = NULL;
-
   // check if the code sequence attribute is complete,
   // i.e. if complete information can be retrieved from this attribute
 
