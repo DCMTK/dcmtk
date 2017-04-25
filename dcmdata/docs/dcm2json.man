@@ -101,7 +101,9 @@ output format:
 
   +fc   --formatted-code
           enable whitespace formatting (default)
-          prints additional spaces and newlines for increased readability
+
+          # prints additional spaces and newlines for increased
+          # readability
 
   -fc   --compact-code
           print only required characters
