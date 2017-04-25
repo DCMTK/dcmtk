@@ -121,9 +121,9 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output format:");
-        cmd.addOption("--formatted-code",     "+fc", "output file with human readable formatting (def.)");
-        cmd.addOption("--compact-code",       "-fc", "output without formatting (single line of code)");
-        cmd.addOption("--write-meta",         "+m",  "write data set with meta information");
+        cmd.addOption("--formatted-code",     "+fc", "enable whitespace formatting (default)");
+        cmd.addOption("--compact-code",       "-fc", "print only required characters");
+        cmd.addOption("--write-meta",         "+m",  "write data set with meta information\n(warning: not conforming to the DICOM standard)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);

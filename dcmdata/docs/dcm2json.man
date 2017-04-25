@@ -100,13 +100,15 @@ input transfer syntax:
 output format:
 
   +fc   --formatted-code
-          output file with human readable formatting (default)
+          enable whitespace formatting (default)
+          prints additional spaces and newlines for increased readability
 
   -fc   --compact-code
-          output without formatting (single line of code)
+          print only required characters
 
   +m    --write-meta
           write data set with meta information
+          (warning: not conforming to the DICOM standard)
 \endverbatim
 
 \section dcm2json_json_format JSON Format
