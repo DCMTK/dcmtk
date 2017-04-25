@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,7 +25,6 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#define INCLUDE_CERRNO
 #define INCLUDE_CCTYPE
 #define INCLUDE_LIBC
 #define INCLUDE_UNISTD
@@ -1092,10 +1091,8 @@ OFCondition DcmDirectoryRecord::purgeReferencedFile()
         {                                 // filename exists
             if (unlink(localFileName) != 0)
             {
-                char buf[256];
-                const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-                if (text == NULL) text = "(unknown error code)";
-                errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+                OFString buffer = OFStandard::getLastSystemErrorCode().message();
+                errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, buffer.c_str());
             }
             delete[] localFileName;
         } else {                          // no referenced file exists

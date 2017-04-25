@@ -1401,9 +1401,8 @@ dcmIsImageStorageSOPClassUID(const char* uid)
 #include <sys/systeminfo.h>
 static long gethostid(void)
 {
-    char buf[256];
     if (sysinfo(SI_HW_SERIAL, buf, 128) == -1) {
-      DCMDATA_FATAL("sysinfo: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+      DCMDATA_FATAL("sysinfo: " << OFStandard::getLastSystemErrorCode().message());
       exit(1);
     }
 #ifdef HAVE_STRTOUL

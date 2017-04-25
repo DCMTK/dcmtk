@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,7 +25,6 @@
 #include "dcmtk/dcmdata/dcerror.h"
 
 #define INCLUDE_CSTDIO
-#define INCLUDE_CERRNO
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -36,10 +35,8 @@ DcmFileConsumer::DcmFileConsumer(const OFFilename &filename)
 {
   if (!file_.fopen(filename, "wb"))
   {
-    char buf[256];
-    const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-    if (text == NULL) text = "(unknown error code)";
-    status_ = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+    OFString buffer = OFStandard::getLastSystemErrorCode().message();
+    status_ = makeOFCondition(OFM_dcmdata, 19, OF_error, buffer.c_str());
   }
 }
 

@@ -24,7 +24,6 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
-#define INCLUDE_CERRNO
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
@@ -208,8 +207,8 @@ int main(int argc, char* argv[])
 
     for (j=i; j<argc; j++) {
         if (!OFStandard::pathExists(argv[j])) {
-            char buf[256];
-            errmsg("cannot access %s: %s", argv[j], OFStandard::strerror(errno, buf, sizeof(buf)));
+            OFString buffer = OFStandard::getLastSystemErrorCode().message();
+            errmsg("cannot access %s: %s", argv[j], buffer.c_str());
             usage();
         }
     }

@@ -461,9 +461,8 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         /* read binary file into the buffer */
         if (fread(buf, 1, len, f) != len)
         {
-            char errBuf[256];
             OFLOG_ERROR(dump2dcmLogger, "error reading binary data file: " << filename
-                << ": " << OFStandard::strerror(errno, errBuf, sizeof(errBuf)));
+                << ": " << OFStandard::getLastSystemErrorCode().message());
             ec = EC_CorruptedData;
         }
         else if (evr == EVR_OW)

@@ -24,7 +24,6 @@
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
-#define INCLUDE_CERRNO
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/dcmdata/dcddirif.h"
@@ -5308,9 +5307,8 @@ OFBool DicomDirInterface::copyFile(const OFFilename &fromFilename,
     if (!result)
     {
         /* create error message from error code */
-        char buffer[255];
         DCMDATA_ERROR("copying files: " << fromFilename << " to " << toFilename
-            << ": " << OFStandard::strerror(errno, buffer, 255));
+            << ": " << OFStandard::getLastSystemErrorCode().message());
     }
     return result;
 }

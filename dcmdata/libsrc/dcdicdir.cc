@@ -24,7 +24,6 @@
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
-#define INCLUDE_CERRNO
 #define INCLUDE_LIBC
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -1069,29 +1068,23 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
         {
             if (!OFStandard::renameFile(dicomDirFileName, backupFilename))
             {
-                char buf[256];
-                const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-                if (text == NULL) text = "(unknown error code)";
-                errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+                OFString buffer = OFStandard::getLastSystemErrorCode().message();
+                errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, buffer.c_str());
             }
         }
 #else
         if (!OFStandard::deleteFile(dicomDirFileName))
         {
-            char buf[256];
-            const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-            if (text == NULL) text = "(unknown error code)";
-            errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+            OFString buffer = OFStandard::getLastSystemErrorCode().message();
+            errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, buffer.c_str());
         }
 #endif
     }
 
     if (errorFlag == EC_Normal && !OFStandard::renameFile(tempFilename, dicomDirFileName))
     {
-        char buf[256];
-        const char *text = OFStandard::strerror(errno, buf, sizeof(buf));
-        if (text == NULL) text = "(unknown error code)";
-        errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+        OFString buffer = OFStandard::getLastSystemErrorCode().message();
+        errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, buffer.c_str());
     }
 
     modified = OFFalse;

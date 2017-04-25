@@ -25,7 +25,6 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
-#define INCLUDE_CERRNO
 #define INCLUDE_CTIME
 #define INCLUDE_LIBC
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -48,9 +47,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
-#endif
-#ifdef HAVE_SYS_ERRNO_H
-#include <sys/errno.h>
 #endif
 #ifdef HAVE_IO_H
 #include <io.h>
@@ -673,9 +669,8 @@ main(int argc, char *argv[])
 
     /* read config file */
     if (access(opt_configFileName, R_OK) < 0) {
-      char buf[256];
       OFLOG_FATAL(dcmqrscpLogger, "cannot access " << opt_configFileName << ": "
-        << OFStandard::strerror(errno, buf, sizeof(buf)));
+        << OFStandard::getLastSystemErrorCode().message());
       return 10;
     }
 

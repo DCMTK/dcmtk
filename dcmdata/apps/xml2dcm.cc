@@ -278,10 +278,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                         /* read binary file into the buffer */
                         if (fread(buf, 1, OFstatic_cast(size_t, fileSize), f) != fileSize)
                         {
-                            char errBuf[256];
-                            const char *text = OFStandard::strerror(errno, errBuf, sizeof(errBuf));
-                            if (text == NULL) text = "(unknown error code)";
-                            OFLOG_ERROR(xml2dcmLogger, "error reading binary data file: " << filename << ": " << text);
+                            OFLOG_ERROR(xml2dcmLogger, "error reading binary data file: " << filename << ": " << OFStandard::getLastSystemErrorCode().message());
                             result = EC_CorruptedData;
                         }
                         else if (dcmEVR == EVR_OW)

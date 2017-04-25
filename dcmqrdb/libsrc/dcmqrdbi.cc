@@ -384,7 +384,6 @@ static long DB_lseek(int fildes, long offset, int whence)
     long pos;
     long curpos;
     long endpos;
-    char buf[256];
 
     /*
     ** we should not be seeking to an offset < 0
@@ -396,27 +395,27 @@ static long DB_lseek(int fildes, long offset, int whence)
     /* get the current position */
     curpos = lseek(fildes, 0, SEEK_CUR);
     if (curpos < 0) {
-        DCMQRDB_ERROR("DB_lseek: cannot get current position: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+        DCMQRDB_ERROR("DB_lseek: cannot get current position: " << OFStandard::getLastSystemErrorCode().message());
         return curpos;
     }
     /* get the end of file position */
     endpos = lseek(fildes, 0, SEEK_END);
     if (endpos < 0) {
-        DCMQRDB_ERROR("DB_lseek: cannot get end of file position: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+        DCMQRDB_ERROR("DB_lseek: cannot get end of file position: " << OFStandard::getLastSystemErrorCode().message());
         return endpos;
     }
 
     /* return to current position */
     curpos = lseek(fildes, curpos, SEEK_SET);
     if (curpos < 0) {
-        DCMQRDB_ERROR("DB_lseek: cannot reset current position: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+        DCMQRDB_ERROR("DB_lseek: cannot reset current position: " << OFStandard::getLastSystemErrorCode().message());
         return curpos;
     }
 
     /* do the requested seek */
     pos = lseek(fildes, offset, whence);
     if (pos < 0) {
-        DCMQRDB_ERROR("DB_lseek: cannot seek to " << offset << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
+        DCMQRDB_ERROR("DB_lseek: cannot seek to " << offset << ": " << OFStandard::getLastSystemErrorCode().message());
         return pos;
     }
 
@@ -2378,10 +2377,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 #endif
 
     if (unlink(imgFile) < 0) {
-        char buf[256];
         /* delete file */
         DCMQRDB_ERROR("DB ERROR: cannot delete image file: " << imgFile << OFendl
-            << "QR_EC_IndexDatabaseError: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+            << "QR_EC_IndexDatabaseError: " << OFStandard::getLastSystemErrorCode().message());
     }
 
 #ifdef LOCK_IMAGE_FILES
@@ -2707,9 +2705,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     DcmFileFormat dcmff;
     if (dcmff.loadFile(imageFileName).bad())
     {
-      char buf[256];
       DCMQRDB_WARN("DB: Cannot open file: " << imageFileName << ": "
-          << OFStandard::strerror(errno, buf, sizeof(buf)));
+          << OFStandard::getLastSystemErrorCode().message());
       status->setStatus(STATUS_STORE_Error_CannotUnderstand);
       return (QR_EC_IndexDatabaseError) ;
     }
@@ -3131,8 +3128,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
         /* create index file if it does not already exist */
         FILE* f = fopen(handle_->indexFilename, "ab");
         if (f == NULL) {
-            char buf[256];
-            DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
+            DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::getLastSystemErrorCode().message());
             result = QR_EC_IndexDatabaseError;
             return;
         }
@@ -3189,8 +3185,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
                 sprintf( header, DBMAGIC "%.2X", DBVERSION );
                 if ( write( handle_ -> pidx, header, DBHEADERSIZE ) != DBHEADERSIZE )
                 {
-                    char buf[256];
-                    DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
+                    DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::getLastSystemErrorCode().message());
                     DB_unlock();
                     result = QR_EC_IndexDatabaseError;
                     return;

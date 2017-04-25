@@ -2226,9 +2226,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     if (s < 0)
 #endif
     {
-      char buf[256];
       OFString msg = "TCP Initialization Error: ";
-      msg += OFStandard::strerror(errno, buf, sizeof(buf));
+      msg += OFStandard::getLastNetworkErrorCode().message();
       return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
     server.sin_family = AF_INET;
@@ -2332,9 +2331,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             if ((*association)->connection) delete (*association)->connection;
             (*association)->connection = NULL;
 
-            char buf[256];
             OFString msg = "TCP Initialization Error: ";
-            msg += OFStandard::strerror(errno, buf, sizeof(buf));
+            msg += OFStandard::getLastNetworkErrorCode().message();
             msg += " (Timeout)";
             return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
   }
@@ -2405,9 +2403,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         if ((*association)->connection) delete (*association)->connection;
         (*association)->connection = NULL;
 
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     } else {
         // success - we've opened a TCP transport connection
@@ -2431,9 +2428,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif
           (*association)->networkState = NETWORK_DISCONNECTED;
 
-          char buf[256];
           OFString msg = "TCP Initialization Error: ";
-          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          msg += OFStandard::getLastNetworkErrorCode().message();
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
         sockarg.l_onoff = 0;
@@ -2444,9 +2440,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #else
         if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *) &sockarg, (int) sizeof(sockarg)) < 0)
         {
-          char buf[256];
           OFString msg = "TCP Initialization Error: ";
-          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          msg += OFStandard::getLastNetworkErrorCode().message();
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
 #endif
@@ -2486,9 +2481,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif
           if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
           {
-            char buf[256];
             OFString msg = "TCP Initialization Error: ";
-            msg += OFStandard::strerror(errno, buf, sizeof(buf));
+            msg += OFStandard::getLastNetworkErrorCode().message();
             return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
           }
 #ifdef DISABLE_NAGLE_ALGORITHM
@@ -2584,9 +2578,8 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     } while (nbytes == -1 && errno == EINTR);
     if ((unsigned long) nbytes != associateRequest.length + 6)
     {
-      char buf[256];
       OFString msg = "TCP I/O Error (";
-      msg += OFStandard::strerror(errno, buf, sizeof(buf));
+      msg += OFStandard::getLastNetworkErrorCode().message();
       msg += ") occurred in routine: sendAssociationRQTCP";
       return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, msg.c_str());
     }
@@ -2668,9 +2661,8 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     } while (nbytes == -1 && errno == EINTR);
     if ((unsigned long) nbytes != associateReply.length + 6)
     {
-      char buf[256];
       OFString msg = "TCP I/O Error (";
-      msg += OFStandard::strerror(errno, buf, sizeof(buf));
+      msg += OFStandard::getLastNetworkErrorCode().message();
       msg += ") occurred in routine: sendAssociationACTCP";
       return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, msg.c_str());
     }
@@ -2744,9 +2736,8 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
         } while (nbytes == -1 && errno == EINTR);
         if ((unsigned long) nbytes != pdu.length + 6)
         {
-          char buf[256];
           OFString msg = "TCP I/O Error (";
-          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          msg += OFStandard::getLastNetworkErrorCode().message();
           msg += ") occurred in routine: sendAssociationRJTCP";
           return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, msg.c_str());
         }
@@ -2805,9 +2796,8 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
         } while (nbytes == -1 && errno == EINTR);
         if ((unsigned long) nbytes != pdu.length + 6)
         {
-          char buf[256];
           OFString msg = "TCP I/O Error (";
-          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          msg += OFStandard::getLastNetworkErrorCode().message();
           msg += ") occurred in routine: sendAbortTCP";
           return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, msg.c_str());
         }
@@ -2866,9 +2856,8 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
         } while (nbytes == -1 && errno == EINTR);
         if ((unsigned long) nbytes != pdu.length + 6)
         {
-          char buf[256];
           OFString msg = "TCP I/O Error (";
-          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          msg += OFStandard::getLastNetworkErrorCode().message();
           msg += ") occurred in routine: sendReleaseRQTCP";
           return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, msg.c_str());
         }
@@ -2928,9 +2917,8 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
         } while (nbytes == -1 && errno == EINTR);
         if ((unsigned long) nbytes != pdu.length + 6)
         {
-          char buf[256];
           OFString msg = "TCP I/O Error (";
-          msg += OFStandard::strerror(errno, buf, sizeof(buf));
+          msg += OFStandard::getLastNetworkErrorCode().message();
           msg += ") occurred in routine: sendReleaseRPTCP";
           return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, msg.c_str());
         }
@@ -3084,9 +3072,8 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
     /* if not all head information was sent, return an error */
     if ((unsigned long) nbytes != length)
     {
-        char buf[256];
         OFString msg = "TCP I/O Error (";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         msg += ") occurred in routine: writeDataPDU";
         return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, msg.c_str());
     }
@@ -3101,9 +3088,8 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
         /* if not all head information was sent, return an error */
     if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
     {
-        char buf[256];
         OFString msg = "TCP I/O Error (";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         msg += ") occurred in routine: writeDataPDU";
         return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, msg.c_str());
     }

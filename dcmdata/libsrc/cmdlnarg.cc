@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -113,9 +113,8 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
         int fderr = dup(fileno(stdout));
         if (fderr != fileno(stderr))
         {
-            char buf[256];
             DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: "
-                << OFStandard::strerror(errno, buf, sizeof(buf)));
+                << OFStandard::getLastSystemErrorCode().message());
         }
     }
 
@@ -133,13 +132,13 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     {
         char buf[256];
         DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stdout: "
-            << OFStandard::strerror(errno, buf, sizeof(buf)));
+            << OFStandard::getLastSystemErrorCode().message());
     }
     if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
     {
         char buf[256];
         DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stderr: "
-            << OFStandard::strerror(errno, buf, sizeof(buf)));
+            << OFStandard::getLastSystemErrorCode().message());
     }
 #endif /* __BORLANDC__ */
 #endif

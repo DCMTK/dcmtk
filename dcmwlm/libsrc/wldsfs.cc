@@ -676,10 +676,9 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   handleToReadLockFile = open( lockname.c_str(), O_RDWR );
   if( handleToReadLockFile == -1 )
   {
-    char buf[256];
     handleToReadLockFile = 0;
     DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Cannot open file " << lockname
-      << " (return code: " << OFStandard::strerror(errno, buf, sizeof(buf)) << ")");
+      << " (return code: " << OFStandard::getLastSystemErrorCode().message() << ")");
     return OFFalse;
   }
 

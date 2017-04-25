@@ -204,10 +204,9 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     lockfd = open(fname, O_RDONLY , 0666);
 #endif
     if (lockfd < 0) {
-        char buf[256];
         /* due to quota system the file could have been deleted */
         DCMQRDB_ERROR("Move SCP: storeSCU: [file: " << fname << "]: "
-            << OFStandard::strerror(errno, buf, sizeof(buf)));
+            << OFStandard::getLastSystemErrorCode().message());
         nFailed++;
         addFailedUIDInstance(sopInstance);
         return EC_Normal;

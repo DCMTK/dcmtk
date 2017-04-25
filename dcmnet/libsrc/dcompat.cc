@@ -91,7 +91,6 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#define INCLUDE_CERRNO
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
@@ -145,11 +144,6 @@ int dcmtk_flock(int fd, int operation)
   DCMNET_WARN("Unsupported flock(fd[" << fd << "],operation[0x"
     << hex << operation << "])");
   return 0;
-}
-
-void dcmtk_plockerr(const char *s)
-{
-  DCMNET_WARN(s << ": flock not implemented");
 }
 
 #else /* macintosh */
@@ -213,22 +207,6 @@ int dcmtk_flock(int fd, int operation)
   else return -1; /* unknown lock operation */
 }
 
-void dcmtk_plockerr(const char *s)
-{
-  LPVOID lpMsgBuf=NULL;
-
-  FormatMessage(
-    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-    NULL,
-    GetLastError(),
-    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-    (LPTSTR) &lpMsgBuf, 0, NULL);
-
-  if (lpMsgBuf && s)
-      DCMNET_ERROR(s << ": " << (const char*)lpMsgBuf);
-  LocalFree(lpMsgBuf);
-}
-
 #else /* USE__LOCKING */
 
 /* Note: this alternative emulation of flock() for Win32 uses _locking().
@@ -259,12 +237,6 @@ int dcmtk_flock(int fd, int operation)
     pos = lseek(fd, originalPosition, SEEK_SET);
     if (pos < 0) return pos;
     return status;
-}
-
-void dcmtk_plockerr(const char *s)
-{
-  char buf[256];
-  DCMNET_ERROR(s << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
 }
 
 #endif /* USE__LOCKING */
@@ -318,12 +290,6 @@ int dcmtk_flock(int fd, int operation)
 #endif
 
     return result;
-}
-
-void dcmtk_plockerr(const char *s)
-{
-  char buf[256];
-  DCMNET_ERROR(s << ": " << OFStandard::strerror(errno, buf, sizeof(buf)));
 }
 
 #endif /* _WIN32 */
@@ -407,3 +373,12 @@ char *strerror(int errornum)
 
 #endif /* ! HAVE_STRERROR */
 #endif
+
+DCMTK_DCMNET_EXPORT void dcmtk_plockerr(const char *s)
+{
+#if !defined(HAVE_FLOCK) && defined(macintosh)
+  DCMNET_ERROR(s << ": flock not implemented");
+#else
+  DCMNET_ERROR(s << ": " << OFStandard::getLastSystemErrorCode().message());
+#endif
+}

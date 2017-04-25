@@ -160,7 +160,6 @@ END_EXTERN_C
 
 #ifdef HAVE_PROTOTYPE_FLOCK
 #define dcmtk_flock flock
-#define dcmtk_plockerr perror
 #endif
 
 #ifndef HAVE_PROTOTYPE_FLOCK
@@ -169,7 +168,6 @@ BEGIN_EXTERN_C
 DCMTK_DCMNET_EXPORT int flock(int fd, int operation);
 END_EXTERN_C
 #define dcmtk_flock flock
-#define dcmtk_plockerr perror
 #else
 /*
  * Simulate the flock function calls
@@ -182,7 +180,6 @@ END_EXTERN_C
 #define   LOCK_UN   8    /* unlock */
 
 DCMTK_DCMNET_EXPORT int dcmtk_flock(int fd, int operation);
-DCMTK_DCMNET_EXPORT void dcmtk_plockerr(const char *s);
 
 #endif /* !HAVE_FLOCK */
 #endif
@@ -351,14 +348,12 @@ DCMTK_DCMNET_EXPORT int access(const char* path, int amode);
 
 #endif /* HAVE_ACCESS */
 
-#ifndef HAVE_STRERROR
-DCMTK_DCMNET_EXPORT char *strerror(int e);
-#endif
-
 #ifdef _WIN32
 #define NULL_DEVICE_NAME "nul"
 #else
 #define NULL_DEVICE_NAME "/dev/null"
 #endif
+
+DCMTK_DCMNET_EXPORT void dcmtk_plockerr(const char *s);
 
 #endif /* DCOMPAT_H */

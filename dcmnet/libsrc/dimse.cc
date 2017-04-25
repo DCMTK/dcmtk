@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -84,7 +84,6 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
-#define INCLUDE_CERRNO
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
@@ -919,9 +918,8 @@ DIMSE_sendMessage(
       {
         if (! dcmff.loadFile(dataFileName, EXS_Unknown).good())
         {
-          char buf[256];
           DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: cannot open DICOM file ("
-            << dataFileName << "): " << OFStandard::strerror(errno, buf, sizeof(buf)));
+            << dataFileName << "): " << OFStandard::getLastSystemErrorCode().message());
           cond = DIMSE_SENDFAILED;
         } else {
           dataObject = dcmff.getDataset();

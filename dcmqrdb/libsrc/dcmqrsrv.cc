@@ -1081,9 +1081,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             pid = (int)(fork());
             if (pid < 0)
             {
-                char errBuf[256];
                 DCMQRDB_ERROR("Cannot create association sub-process: "
-                   << OFStandard::strerror(errno, errBuf, sizeof(errBuf)));
+                   << OFStandard::getLastSystemErrorCode().message());
                 cond = refuseAssociation(&assoc, CTN_CannotFork);
                 go_cleanup = OFTrue;
             }

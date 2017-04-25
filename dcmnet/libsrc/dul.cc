@@ -1566,9 +1566,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
       len = sizeof(from);
       if (getpeername(sock, &from, &len))
       {
-          char buf[256];
           OFOStringStream stream;
-          stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, sizeof(buf))
+          stream << "TCP Initialization Error: " << OFStandard::getLastNetworkErrorCode().message()
                  << ", getpeername failed on socket " << sock << OFStringStream_ends;
           OFSTRINGSTREAM_GETOFSTRING(stream, msg)
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
@@ -1659,9 +1658,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         if (sock < 0)
 #endif
         {
-            char buf[256];
             OFOStringStream stream;
-            stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, sizeof(buf))
+            stream << "TCP Initialization Error: " << OFStandard::getLastNetworkErrorCode().message()
                    << ", accept failed on socket " << sock << OFStringStream_ends;
             OFSTRINGSTREAM_GETOFSTRING(stream, msg)
             return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
@@ -1688,9 +1686,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             // fork failed, return error code
             close(sock);
 
-            char buf[256];
             OFString msg = "Multi-Process Error: ";
-            msg += OFStandard::strerror(errno, buf, sizeof(buf));
+            msg += OFStandard::getLastSystemErrorCode().message();
             msg += ", fork failed";
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, msg.c_str());
         }
@@ -1854,9 +1851,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     sockarg.l_onoff = 0;
     if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
     {
-        char buf[256];
         OFOStringStream stream;
-        stream << "TCP Initialization Error: " << OFStandard::strerror(errno, buf, sizeof(buf))
+        stream << "TCP Initialization Error: " << OFStandard::getLastNetworkErrorCode().message()
                << ", setsockopt failed on socket " << sock << OFStringStream_ends;
         OFSTRINGSTREAM_GETOFSTRING(stream, msg)
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
@@ -1869,9 +1865,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
 #endif
     {
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
 #endif
@@ -1911,9 +1906,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #endif
       if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
       {
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
 #ifdef DISABLE_NAGLE_ALGORITHM
@@ -2004,9 +1998,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #else
       (void) close(sock);
 #endif
-      char buf[256];
       OFString msg = "TCP Initialization Error: ";
-      msg += OFStandard::strerror(errno, buf, sizeof(buf));
+      msg += OFStandard::getLastNetworkErrorCode().message();
       return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
 
@@ -2157,9 +2150,8 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
       if (sock < 0)
 #endif
       {
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
       reuse = 1;
@@ -2172,9 +2164,8 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
       if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
 #endif
       {
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
 #endif
@@ -2184,18 +2175,16 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
       server.sin_port = (unsigned short) htons((*key)->networkSpecific.TCP.port);
       if (bind(sock, (struct sockaddr *) & server, sizeof(server)))
       {
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
       /* Find out assigned port number and print it out */
       length = sizeof(server);
       if (getsockname(sock, (struct sockaddr *) &server, &length))
       {
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
 #ifdef HAVE_GUSI_H
@@ -2204,18 +2193,16 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
       sockarg.l_onoff = 0;
       if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
       {
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
 #endif
       /* Listen on the socket */
       if (listen(sock, PRV_LISTENBACKLOG) < 0)
       {
-        char buf[256];
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::strerror(errno, buf, sizeof(buf));
+        msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
     }

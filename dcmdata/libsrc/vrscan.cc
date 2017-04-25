@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,9 +61,8 @@ int vrscan::scan(const OFString& vr, const OFString& value)
 
     if (yylex_init(&scanner))
     {
-        char buf[256];
         DCMDATA_WARN("Error while setting up lexer: "
-                << OFStandard::strerror(errno, buf, sizeof(buf)));
+                << OFStandard::getLastSystemErrorCode().message());
         return 16;
     }
 
