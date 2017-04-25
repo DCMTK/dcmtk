@@ -193,7 +193,10 @@ int main(int argc, char *argv[])
 
         /* meta option */
         if (cmd.findOption("--write-meta"))
+        {
+            app.checkConflict("--write-meta", "--read-dataset", opt_readMode == ERM_dataset);
             opt_addMetaInformation = OFTrue;
+        }
     }
 
     /* print resource identifier */
