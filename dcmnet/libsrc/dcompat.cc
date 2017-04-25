@@ -340,39 +340,7 @@ int access(const char* path, int /* amode */)
 }
 #endif
 
-#endif
-
-#if 0 // never called, replaced by OFStandard::strerror()
-#ifndef HAVE_STRERROR
-
-#warning Your system does not seem to have the strerror() function
-
-/*
- * strerror does not appear to be available on SunOs 4.1.3
- */
-char *strerror(int errornum)
-{
-    static char string[256];
-    char *s = NULL;
-    /*
-     * These are not in the system include files,
-     * declare them here.
-     */
-    extern int sys_nerr;
-    extern char *sys_errlist[];
-
-    string[0] = '\0';
-    if (errornum < 0 || errornum >= sys_nerr) {
-        sprintf(string, "Error number: %d", errornum);
-	s = string;
-    } else {
-        s = sys_errlist[errornum];
-    }
-    return s;
-}
-
-#endif /* ! HAVE_STRERROR */
-#endif
+#endif /* HAVE_ACCESS */
 
 DCMTK_DCMNET_EXPORT void dcmtk_plockerr(const char *s)
 {
