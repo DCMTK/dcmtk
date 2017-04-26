@@ -77,6 +77,7 @@ void dcmDisableGenerationOfNewVRs()
 #define DCMVR_PROP_EXTENDEDLENGTHENCODING 0x04
 #define DCMVR_PROP_ISASTRING              0x08
 #define DCMVR_PROP_ISAFFECTEDBYCHARSET    0x10
+#define DCMVR_PROP_ISLENGTHINCHAR         0x20
 
 struct DcmVREntry {
     DcmEVR vr;                      // Enumeration Value of Value representation
@@ -104,26 +105,26 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_FL, "FL", &noDelimiters, sizeof(Float32), DCMVR_PROP_NONE, 4, 4 },
     { EVR_FD, "FD", &noDelimiters, sizeof(Float64), DCMVR_PROP_NONE, 8, 8 },
     { EVR_IS, "IS", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 12 },
-    { EVR_LO, "LO", &bsDelimiter, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 64 },
-    { EVR_LT, "LT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 10240 },
+    { EVR_LO, "LO", &bsDelimiter, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 64 },
+    { EVR_LT, "LT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 10240 },
     { EVR_OB, "OB", &noDelimiters, sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_OD, "OD", &noDelimiters, sizeof(Float64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_OF, "OF", &noDelimiters, sizeof(Float32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_OD, "OD", &noDelimiters, sizeof(Float64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967288 },
+    { EVR_OF, "OF", &noDelimiters, sizeof(Float32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967292 },
     { EVR_OL, "OL", &noDelimiters, sizeof(Uint32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_OW, "OW", &noDelimiters, sizeof(Uint16), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
-    { EVR_PN, "PN", &pnDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 64 },
-    { EVR_SH, "SH", &bsDelimiter, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 16 },
+    { EVR_PN, "PN", &pnDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 64 },
+    { EVR_SH, "SH", &bsDelimiter, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 16 },
     { EVR_SL, "SL", &noDelimiters, sizeof(Sint32), DCMVR_PROP_NONE, 4, 4 },
     { EVR_SQ, "SQ", &noDelimiters, 0, DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_SS, "SS", &noDelimiters, sizeof(Sint16), DCMVR_PROP_NONE, 2, 2 },
-    { EVR_ST, "ST", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 1024 },
+    { EVR_ST, "ST", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 1024 },
     { EVR_TM, "TM", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
-    { EVR_UC, "UC", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, DCM_UndefinedLength },
+    { EVR_UC, "UC", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 4294967294 },
     { EVR_UI, "UI", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_UL, "UL", &noDelimiters, sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
-    { EVR_UR, "UR", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_UR, "UR", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294 },
     { EVR_US, "US", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
-    { EVR_UT, "UT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, DCM_UndefinedLength },
+    { EVR_UT, "UT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 4294967294 },
     { EVR_ox, "ox", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_xs, "xs", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
     { EVR_lt, "lt", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
@@ -465,4 +466,11 @@ const OFString&
 DcmVR::getDelimiterChars() const
 {
     return *DcmVRDict[vr].delimiterChars;
+}
+
+/* returns true if VR length is in char */
+OFBool
+DcmVR::isLengthInChar() const
+{
+    return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_ISLENGTHINCHAR) ? OFTrue : OFFalse;
 }

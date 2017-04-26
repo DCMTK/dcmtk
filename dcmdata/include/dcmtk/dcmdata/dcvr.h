@@ -414,6 +414,12 @@ public:
      */
     const OFString& getDelimiterChars() const;
 
+    /** query whether the maximum or minimum length of a value with this VR
+     *  are in bytes or charachters
+     *  @return true if length is stated in chars, false if in bytes
+     */
+    OFBool isLengthInChar() const;
+
 private:
     /// the enumerated VR value
     DcmEVR vr;
