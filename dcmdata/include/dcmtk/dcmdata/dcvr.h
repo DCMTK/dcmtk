@@ -337,7 +337,7 @@ public:
      */
     const char* getVRName() const ;
 
-    /** get symbolic standard VR name for this object
+    /** get symbolic standard VR name for this object.
      *  If this object manages a non-standard, internal VR such as EVR_ox,
      *  this method returns the name of the VR to which the internal VR will
      *  be mapped when writing the DICOM object.
@@ -375,7 +375,7 @@ public:
      */
     OFBool usesExtendedLengthEncoding() const;
 
-    /** check if VRs are equivalent
+    /** check if VRs are equivalent.
      *  VRs are considered equivalent if equal or if one of them is an internal
      *  VR and the other one is a possible standard VR to which the internal one
      *  maps.
@@ -388,14 +388,16 @@ public:
     ** (in bytes assuming single byte characters)
     */
 
-    /** return minimum length of a value with this VR (in bytes), assuming
-     *  single byte characters
+    /** return minimum length of a single value with this VR.
+     *  Whether the returned length is in bytes or characters can be determined
+     *  by isLengthInChar().
      *  @return minimum length of a value
      */
     Uint32 getMinValueLength() const;
 
-    /** return maximum length of a value with this VR (in bytes), assuming
-     *  single byte characters
+    /** return maximum length of a single value with this VR.
+     *  Whether the returned length is in bytes or characters can be determined
+     *  by isLengthInChar().
      *  @return maximum length of a value
      */
     Uint32 getMaxValueLength() const;
@@ -414,9 +416,9 @@ public:
      */
     const OFString& getDelimiterChars() const;
 
-    /** query whether the maximum or minimum length of a value with this VR
-     *  are in bytes or charachters
-     *  @return true if length is stated in chars, false if in bytes
+    /** check whether the maximum or minimum length of a value with this VR is
+     *  in bytes or characters. See getMinValueLength() and getMaxValueLength().
+     *  @return true if length is stated in characters, false if in bytes
      */
     OFBool isLengthInChar() const;
 

@@ -84,9 +84,9 @@ struct DcmVREntry {
     const char* vrName;             // Name of Value representation
     const OFString* delimiterChars; // Delimiter characters, switch to default charset
     size_t fValWidth;               // Length of minimal unit, used for swapping
-    int propertyFlags;              // Normal, internal, non-standard vr
-    Uint32 minValueLength;          // Minimum length of a single value (bytes)
-    Uint32 maxValueLength;          // Maximum length of a single value (bytes)
+    int propertyFlags;              // Normal, internal, non-standard VR, etc.
+    Uint32 minValueLength;          // Minimum length of a single value (bytes or characters)
+    Uint32 maxValueLength;          // Maximum length of a single value (bytes or characters)
 };
 
 static const OFString noDelimiters;             // none
