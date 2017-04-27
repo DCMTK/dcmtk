@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -535,7 +535,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         /// DICOM IOD: Simplified Adult Echo SR
         DT_SimplifiedAdultEchoSR,
         /// internal type used to mark the last entry
-        DT_last = DT_AcquisitionContextSR
+        DT_last = DT_SimplifiedAdultEchoSR
     };
 
     /** SR relationship types
