@@ -552,19 +552,31 @@ OFCondition DcmSegmentation::setLossyImageCompressionFlag(const OFString& ratios
 OFCondition DcmSegmentation::saveFile(const OFString& filename,
                                       const E_TransferSyntax writeXfer)
 {
-  if ( (writeXfer != EXS_LittleEndianExplicit) &&
-       (writeXfer != EXS_BigEndianExplicit) &&
-       (writeXfer != EXS_LittleEndianImplicit))
+  if ( (writeXfer != EXS_LittleEndianExplicit)
+    && (writeXfer != EXS_BigEndianExplicit)
+    && (writeXfer != EXS_LittleEndianImplicit)
+#ifdef WITH_ZLIB
+    && (writeXfer != EXS_DeflatedLittleEndianExplicit)
+#endif
+  )
   {
     DcmXfer ts(writeXfer);
-    DCMSEG_ERROR("Cannot write transfer syntax: " << ts.getXferName() << " (can only write uncompressed)");
+#ifdef WITH_ZLIB
+    DCMSEG_ERROR("Cannot write transfer syntax: " << ts.getXferName() << ": Can only write uncompressed or Deflated)");
+#else
+    if (writeXfer == EXS_DeflatedLittleEndianExplicit)
+    {
+      DCMSEG_ERROR("Cannot write transfer syntax: " << ts.getXferName() << ": Deflate (ZLIB) support disabled, can only write uncompressed");
+    }
+#endif
     return EC_CannotChangeRepresentation;
   }
+
   DcmFileFormat dcmff;
   OFCondition result = write( *(dcmff.getDataset()) );
   if (result.good())
   {
-    result = dcmff.saveFile(filename.c_str(), EXS_LittleEndianExplicit);
+    result = dcmff.saveFile(filename.c_str(), writeXfer);
   }
   if (result.bad())
   {
