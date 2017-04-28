@@ -1123,6 +1123,11 @@ OFCondition DcmSegmentation::loadFile(DcmFileFormat& dcmff,
 
 OFCondition DcmSegmentation::readSegmentationFractionalType(DcmItem& item)
 {
+  m_SegmentationFractionalType = DcmSegTypes::SFT_UNKNOWN;
+  if (!item.tagExists(DCM_SegmentationFractionalType))
+  {
+    return EC_TagNotFound;
+  }
   DcmCodeString element(DCM_SegmentationFractionalType);
   OFCondition result = DcmIODUtil::getAndCheckElementFromDataset(item, element, getRules()->getByTag(DCM_SegmentationFractionalType));
   OFString str;
@@ -1144,6 +1149,12 @@ OFCondition DcmSegmentation::readSegmentationFractionalType(DcmItem& item)
 
 OFCondition DcmSegmentation::readSegmentationType(DcmItem& item)
 {
+  m_SegmentationType = DcmSegTypes::ST_UNKNOWN;
+  if (!item.tagExists(DCM_SegmentationType))
+  {
+    return EC_TagNotFound;
+  }
+
   DcmCodeString element(DCM_SegmentationType);
   OFCondition result = DcmIODUtil::getAndCheckElementFromDataset(item, element, getRules()->getByTag(DCM_SegmentationType));
   OFString str;

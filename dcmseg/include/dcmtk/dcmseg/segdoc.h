@@ -610,15 +610,17 @@ private:
                                const Uint16& cols,
                                const Uint16& numberOfFrames);
 
-  /** Read Fractional Type of segmentation
+  /** Read Fractional Type of segmentation.
    *  @param  item The item to read from
-   *  @return EC_Normal if type could be read, error otherwise
+   *  @return EC_Normal if type could be read, EC_TagNotFound if tag is not present,
+   *  error otherwise
    */
   OFCondition readSegmentationFractionalType(DcmItem& item);
 
   /** Read Segmentation Type of segmentation object
    *  @param  item The item to read from
-   *  @return EC_Normal if type could be read, error otherwise
+   *  @return EC_Normal if type could be read, EC_TagNotFound if tag is not present,
+   *  error otherwise
    */
   OFCondition readSegmentationType(DcmItem& item);
 
