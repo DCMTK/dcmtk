@@ -306,13 +306,35 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
 {
     DcmXfer xferSyn(xfer);
     DcmEVR vr = getVR();
-    /* These don't use extended length encoding, but when writing, they are
-     * converted to EVR_UN which does use extended length encoding.
-     * (EVR_na should never happen here, it's just handled for completeness) */
+
+    /* These VRs don't use extended length encoding, but when writing, they are
+     * converted to EVR_UN, which DOES use extended length encoding.
+     * (EVR_na should never happen here, it's just handled for completeness)
+     */
     if (vr == EVR_UNKNOWN2B || vr == EVR_na)
         vr = EVR_UN;
-    const Uint32 headerLength = xferSyn.sizeofTagHeader(vr);
+
+    /* compute length of element value */
     const Uint32 elemLength = getLength(xfer, enctype);
+
+    /* Create an object that represents this object's "valid" data type */
+    DcmVR myvalidvr(vr);
+
+    if ((elemLength) > 0xffff && (! myvalidvr.usesExtendedLengthEncoding()) && xferSyn.isExplicitVR())
+    {
+      /* special case: we are writing in explicit VR, the VR of this
+       * element uses a 2-byte length encoding, but the element length is
+       * too large for a 2-byte length field. We need to write this element
+       * as VR=UN (or VR=OB) and adjust the length calculation accordingly.
+       * Since UN and OB always have the same header length, we can simply
+       * assume that we are using UN.
+       */
+       vr = EVR_UN;
+    }
+
+    /* now compute length of header */
+    const Uint32 headerLength = xferSyn.sizeofTagHeader(vr);
+
     if (OFStandard::check32BitAddOverflow(headerLength, elemLength))
       return DCM_UndefinedLength;
     else
@@ -323,22 +345,7 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
 OFBool DcmElement::canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax /*oldXfer*/)
 {
-    OFBool canWrite = (newXfer != EXS_Unknown);
-    if (canWrite)
-    {
-        /* check whether element value exceeds length field (in case of 16 bit) */
-        if (DcmXfer(newXfer).isExplicitVR() && !DcmVR(getVR()).usesExtendedLengthEncoding())
-        {
-            const Uint32 length = getLength(newXfer);
-            if (length > 0xffff)
-            {
-                DCMDATA_DEBUG("DcmElement::canWriteXfer() Length of element " << getTagName() << " " << getTag()
-                    << " exceeds maximum of 16-bit length field (" << length << " > 65535 bytes)");
-                canWrite = OFFalse;
-            }
-        }
-    }
-    return canWrite;
+    return (newXfer != EXS_Unknown);
 }
 
 
@@ -1245,7 +1252,7 @@ void DcmElement::transferInit()
 
 OFCondition DcmElement::write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
-                              const E_EncodingType /*enctype*/,
+                              const E_EncodingType enctype,
                               DcmWriteCache *wcache)
 {
     DcmWriteCache wcache2;
@@ -1253,8 +1260,30 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
     /* Create an object that represents this object's data type */
     DcmVR myvr(getVR());
 
+    /* create an object that represents the transfer syntax */
+    DcmXfer outXfer(oxfer);
+
     /* getValidEVR() will convert post 1993 VRs to "OB" if these are disabled */
     DcmEVR vr = myvr.getValidEVR();
+
+    /* compute length of element value */
+    const Uint32 elemLength = getLength(oxfer, enctype);
+
+    /* Create an object that represents this object's "valid" data type */
+    DcmVR myvalidvr(vr);
+
+    if ((elemLength) > 0xffff && (! myvalidvr.usesExtendedLengthEncoding()) && outXfer.isExplicitVR())
+    {
+      /* special case: we are writing in explicit VR, the VR of this
+       * element uses a 2-byte length encoding, but the element length is
+       * too large for a 2-byte length field. We need to write this element
+       * as VR=UN (or VR=OB if the generation of UN is disabled).
+       * In this method, the variable "vr" is only used to determine the
+       * output byte order, which is always the same for OB and UN.
+       * Therefore, we do not need to distinguish between these two.
+       */
+       vr = EVR_UN;
+    }
 
     /* In case the transfer state is not initialized, this is an illegal call */
     if (getTransferState() == ERW_notInitialized)
@@ -1267,8 +1296,6 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
         errorFlag = outStream.status();
         if (errorFlag.good())
         {
-            /* create an object that represents the transfer syntax */
-            DcmXfer outXfer(oxfer);
             E_ByteOrder outByteOrder;
 
             /* determine the transfer syntax's byte ordering for this element */

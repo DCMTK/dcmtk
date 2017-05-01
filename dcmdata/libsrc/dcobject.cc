@@ -467,9 +467,14 @@ Uint32 DcmObject::getTagAndLengthSize(const E_TransferSyntax oxfer) const
        /* map "UN" to "OB" if generation of "UN" is disabled */
        DcmVR outvr(getTag().getVR().getValidEVR());
 
-       if (outvr.usesExtendedLengthEncoding())
+       if (Length > 0xffff || outvr.usesExtendedLengthEncoding())
        {
-           return 12;
+         // we are either using extended length encoding or the
+         // element length is > 64k (i.e. we have to convert to OB/UN).
+         // In any case we need a 12-byte header field.
+         // This is also the case for any object with undefined length,
+         // so we don't need to check that as a special case.
+          return 12;
        }
     }
     return 8;
@@ -526,6 +531,15 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
 
             /* getValidEVR() will convert datatype "UN" to "OB" if generation of "UN" is disabled */
             DcmEVR vr = myvr.getValidEVR();
+            myvr.setVR(vr);
+
+            if (Length > 0xffff && (!myvr.usesExtendedLengthEncoding()))
+            {
+              // Attribute length is larger than 64 kBytes.
+              // We need to encode this as UN (or OB, if generation of UN is disabled
+              if (dcmEnableUnknownVRGeneration.get()) vr = EVR_UN; else vr = EVR_OB;
+              myvr.setVR(vr);
+            }
 
             /* get name of data type */
             const char *vrname = myvr.getValidVRName();
@@ -563,7 +577,10 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
                 outStream.write(&valueLength, 2);                                   // write length, 2 bytes wide
                 writtenBytes += 2;                                                  // remember that 2 bytes were written in total
             }
-            /* ... if not, report an error message and return an error code. */
+            /* ... if not, report an error message and return an error code.
+             * This should never happen because we automatically convert such
+             * elements to UN/OB, but just in case, we leave the check in here.
+             */
             else {
                 DcmTag tag(Tag);
                 DCMDATA_ERROR("DcmObject: Length of element " << tag.getTagName() << " " << tag
