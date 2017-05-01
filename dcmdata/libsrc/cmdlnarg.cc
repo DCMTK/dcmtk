@@ -130,13 +130,11 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* make sure the buffering is removed */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
     {
-        char buf[256];
         DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stdout: "
             << OFStandard::getLastSystemErrorCode().message());
     }
     if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
     {
-        char buf[256];
         DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stderr: "
             << OFStandard::getLastSystemErrorCode().message());
     }
