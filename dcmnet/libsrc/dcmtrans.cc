@@ -38,6 +38,7 @@
 #define INCLUDE_CERRNO
 #define INCLUDE_CSIGNAL
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/oftimer.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
@@ -50,6 +51,16 @@ BEGIN_EXTERN_C
 #include <sys/select.h>
 #endif
 END_EXTERN_C
+
+/* platform independent definition of EINTR */
+enum
+{
+#ifdef HAVE_WINSOCK_H
+    DCMNET_EINTR = WSAEINTR
+#else
+    DCMNET_EINTR = EINTR
+#endif
+};
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>   /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
@@ -189,10 +200,9 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
   int i=0;
   struct timeval t;
   fd_set fdset;
-
   FD_ZERO(&fdset);
-  t.tv_sec = timeout;
-  t.tv_usec = 0;
+  OFTimer timer;
+  int lTimeout = timeout;
 
   for (i=0; i<connCount; i++)
   {
@@ -210,17 +220,42 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     }
   }
 
-#ifdef HAVE_INTP_SELECT
-  int nfound = select(OFstatic_cast(int, maxsocketfd + 1), (int *)(&fdset), NULL, NULL, &t);
-#else
-  // This is safe because on Win32 the first parameter of select() is ignored anyway
-  int nfound = select(OFstatic_cast(int, maxsocketfd + 1), &fdset, NULL, NULL, &t);
-#endif
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  OFBool done = OFFalse;
+  while (!done)
   {
-    DU_logSelectResult(nfound);
+    // timeval can be undefined after the call to select, see
+    // http://man7.org/linux/man-pages/man2/select.2.html
+    t.tv_sec = lTimeout;
+    t.tv_usec = 0;
+
+#ifdef HAVE_INTP_SELECT
+    int nfound = select(OFstatic_cast(int, maxsocketfd + 1), (int *)(&fdset), NULL, NULL, &t);
+#else
+    // This is safe because on Win32 the first parameter of select() is ignored anyway
+    int nfound = select(OFstatic_cast(int, maxsocketfd + 1), &fdset, NULL, NULL, &t);
+#endif
+
+    if (nfound == 0) return OFFalse; // a regular timeout
+    else if (nfound > 0) done = OFTrue; // data available for reading
+    else
+    {
+        // check for interrupt call
+        if (OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR)
+        {
+            int diff = OFstatic_cast(int, timer.getDiff());
+            if (diff < timeout)
+            {
+                lTimeout = timeout - diff;
+                continue; // retry
+            }
+        }
+        else
+        {
+            DCMNET_ERROR("socket select returned with error: " << OFStandard::getLastNetworkErrorCode().message());
+            return OFFalse;
+        }
+    }
   }
-  if (nfound<=0) return OFFalse;      /* none available for reading */
 
   for (i=0; i<connCount; i++)
   {
@@ -326,6 +361,8 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   struct timeval t;
   fd_set fdset;
   int nfound;
+  OFTimer timer;
+  int lTimeout = timeout;
 
   FD_ZERO(&fdset);
 
@@ -336,28 +373,49 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   FD_SET(getSocket(), &fdset);
 #endif
 
-  t.tv_sec = timeout;
-  t.tv_usec = 0;
+  while (1)
+  {
+      // timeval can be undefined after the call to select, see
+      // http://man7.org/linux/man-pages/man2/select.2.html
+      t.tv_sec = lTimeout;
+      t.tv_usec = 0;
 
 #ifdef HAVE_INTP_SELECT
-  nfound = select(OFstatic_cast(int, getSocket() + 1), (int *)(&fdset), NULL, NULL, &t);
+      nfound = select(OFstatic_cast(int, getSocket() + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
-  // This is safe because on Win32 the first parameter of select() is ignored anyway
-  nfound = select(OFstatic_cast(int, getSocket() + 1), &fdset, NULL, NULL, &t);
+      // This is safe because on Win32 the first parameter of select() is ignored anyway
+      nfound = select(OFstatic_cast(int, getSocket() + 1), &fdset, NULL, NULL, &t);
 #endif
-  if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-  {
-    DU_logSelectResult(nfound);
+
+      if (nfound < 0)
+      {
+        // check for interrupt call
+        if (OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR)
+        {
+            int diff = OFstatic_cast(int, timer.getDiff());
+            if (diff < timeout)
+            {
+                lTimeout = timeout - diff;
+                continue; // retry
+            }
+        }
+        else
+        {
+            DCMNET_ERROR("socket select returned with error: " << OFStandard::getLastNetworkErrorCode().message());
+            return OFFalse;
+        }
+      }
+      if (nfound == 0)
+      {
+        return OFFalse; // a regular timeout
+      }
+      else
+      {
+        if (FD_ISSET(getSocket(), &fdset)) return OFTrue;
+        else return OFFalse;  /* This should not really happen */
+      }
   }
-  if (nfound <= 0)
-  {
-    return OFFalse;
-  }
-  else
-  {
-    if (FD_ISSET(getSocket(), &fdset)) return OFTrue;
-    else return OFFalse;  /* This should not really happen */
-  }
+  return OFFalse;
 }
 
 OFBool DcmTCPConnection::isTransparentConnection()
