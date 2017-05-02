@@ -41,6 +41,8 @@ IF(WIN32 AND NOT MINGW)
       SET(LIBXML_LIBS debug "${LIBXML_LIBDIR}/libxml2_d.lib" optimized "${LIBXML_LIBDIR}/libxml2_o.lib" debug "${LIBXML_LIBDIR}/iconv_d.lib" optimized "${LIBXML_LIBDIR}/iconv_o.lib")
       MESSAGE(STATUS "Info: DCMTK XML support will be enabled")
       SET(WITH_LIBXML 1)
+      # this hides some warnings that are emitted when linking against libxmlXXX.lib instead of linking the DLL directly
+      ADD_DEFINITIONS("-DLIBXML_STATIC")
     ELSE(WITH_LIBXMLINC) # turn off library if library path not set
       MESSAGE(STATUS "Warning: XML support will be disabled because libxml2 directory is not specified. Correct path and re-enable DCMTK_WITH_XML.")
       SET(DCMTK_WITH_XML OFF CACHE BOOL "" FORCE)
