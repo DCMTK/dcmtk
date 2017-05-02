@@ -361,7 +361,8 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
                                DcmTag &tag)
 {
     /* handle special cases where the VR can be determined by some other element values */
-    if (((tag == DCM_WaveformData) || (tag == DCM_WaveformPaddingValue)) && (tag.getEVR() == EVR_ox))
+    if (((tag == DCM_WaveformData) || (tag == DCM_WaveformPaddingValue) ||
+        (tag == DCM_ChannelMinimumValue) || (tag == DCM_ChannelMaximumValue)) && (tag.getEVR() == EVR_ox))
     {
         /* case 1 (WaveformData and others): see section 8.3 in PS 3.5 */
         Uint16 bitsAlloc;
@@ -383,7 +384,11 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
     }
     else if (((tag == DCM_PixelPaddingValue) || (tag == DCM_PixelPaddingRangeLimit) ||
         (tag == DCM_HistogramFirstBinValue) || (tag == DCM_HistogramLastBinValue) ||
-        (tag == DCM_ZeroVelocityPixelValue)) && (tag.getEVR() == EVR_xs))
+        (tag == DCM_ZeroVelocityPixelValue) || (tag == DCM_SmallestImagePixelValue) ||
+        (tag == DCM_LargestImagePixelValue) || (tag == DCM_SmallestPixelValueInSeries) ||
+        (tag == DCM_LargestPixelValueInSeries) || (tag == DCM_LUTDescriptor) ||
+        (tag == DCM_RealWorldValueLastValueMapped) || (tag == DCM_RealWorldValueFirstValueMapped)) &&
+        (tag.getEVR() == EVR_xs))
     {
         /* case 2 (PixelPaddingValue and others): see section C.7.5.1, C.7.6.16.x and C.11.5 in PS 3.3 */
         Uint16 pixelRep;
