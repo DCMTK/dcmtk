@@ -48,6 +48,7 @@ class DcmPixelItem;
  *  the pixel data tag (7FE0,0010) and OB value representation with undefined length,
  *  and the "items" contained within the sequence are in fact pixel items (class DcmPixelItem)
  *  that contain no list of DICOM elements but raw compressed pixel data.
+ *  The first item in this pixel sequence must always be the offset table.
  */
 class DCMTK_DCMDATA_EXPORT DcmPixelSequence : public DcmSequenceOfItems
 {
@@ -234,7 +235,8 @@ public:
      *  @param offsetList list containing offset table entries.
      *    Upon success, an entry is appended to the list. The offset values are always even,
      *    so it is expected that odd length pixel items are padded later during writing.
-     *  @param compressedData pointer to compressed image data, must not be NULL
+     *    The offsets are not stored internally.
+     *  @param compressedData pointer to compressed image data (copied), must not be NULL
      *  @param compressedLen number of bytes of compressed image data
      *  @param fragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
      *  @return EC_Normal if successful, an error code otherwise

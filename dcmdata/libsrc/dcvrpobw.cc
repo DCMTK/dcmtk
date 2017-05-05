@@ -58,6 +58,45 @@ DcmPolymorphOBOW &DcmPolymorphOBOW::operator=(const DcmPolymorphOBOW & obj)
   return *this;
 }
 
+int DcmPolymorphOBOW::compare(const DcmElement& rhs) const
+{
+  /* check tag and VR */
+  int result = DcmElement::compare(rhs);
+  if (result != 0)
+  {
+    return result;
+  }
+
+  /* cast away constness (dcmdata is not const correct...) */
+  DcmPolymorphOBOW* myThis = NULL;
+  DcmPolymorphOBOW* myRhs = NULL;
+  myThis = OFconst_cast(DcmPolymorphOBOW*, this);
+  myRhs =  OFstatic_cast(DcmPolymorphOBOW*, OFconst_cast(DcmElement*, &rhs));
+
+  /* check whether length is the same */
+  Uint32 myLength = myThis->getLength();
+  Uint32 rhsLength = myRhs->getLength();
+  if (myLength < rhsLength)
+    return -1;
+  else if (myLength > rhsLength)
+    return 1;
+  /* finally check whether values are the same */
+  else
+  {
+    // Get values, always compare in Little Endian byte order (only relevant for OW)
+    void* myValue = myThis->getValue(EBO_LittleEndian);
+    void* rhsValue = myRhs->getValue(EBO_LittleEndian);
+    int result = memcmp(myValue, rhsValue, myLength);
+    if (result < 0)
+      return -1;
+    else if (result > 0)
+      return 1;
+    else
+      return 0;
+  }
+  /* we never get here */
+}
+
 OFCondition DcmPolymorphOBOW::copyFrom(const DcmObject& rhs)
 {
   if (this != &rhs)

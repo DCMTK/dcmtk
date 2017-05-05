@@ -90,37 +90,22 @@ int DcmOtherByteOtherWord::compare(const DcmElement& rhs) const
     myThis = OFconst_cast(DcmOtherByteOtherWord*, this);
     myRhs =  OFstatic_cast(DcmOtherByteOtherWord*, OFconst_cast(DcmElement*, &rhs));
 
+    /* check equality of length */
     unsigned long thisLength = myThis->getLength();
     unsigned long rhsLength= myRhs->getLength();
-    Uint8* thisData = OFstatic_cast(Uint8*, myThis->getValue());
-    Uint8* rhsData = OFstatic_cast(Uint8*, myRhs->getValue());
-    unsigned long maxLength = (thisLength > rhsLength) ? rhsLength : thisLength;
-    /* iterate over all components and test equality */
-    for (unsigned long count = 0; count < maxLength; count++)
-    {
-        if (thisData[count] > rhsData[count])
-        {
-            return 1;
-        }
-        else if (thisData[count] < rhsData[count])
-        {
-            return -1;
-        }
-        /* otherwise they are equal, continue comparison */
-    }
-
-    /* we get here if all values are equal. Now look at the number of components. */
     if (thisLength < rhsLength)
     {
-        return -1;
+      return -1;
     }
     else if (thisLength > rhsLength)
     {
-        return 1;
+      return 1;
     }
-
-    /* all values as well as VM equal: objects are equal */
-    return 0;
+    /* finally, check equality of values. getValue() makes sure byte
+     * swapping is applied as necessary. */
+    void* thisData = myThis->getValue();
+    void* rhsData = myRhs->getValue();
+    return memcmp(thisData, rhsData, thisLength);
 }
 
 

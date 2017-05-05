@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,6 +63,27 @@ public:
     {
       return new DcmPolymorphOBOW(*this);
     }
+
+    /** Comparison operator that compares the normalized value of this element
+     *  with a given element of the same type (e.g. an DcmPolymorphOBOW with a
+     *  DcmPolymorphOBOW). The tag of the element is also considered as the first
+     *  component that is compared, followed by the object types (VR, i.e. DCMTK'S EVR).
+     *  The DcmPolymorphOBOW implementation checks then whether the length of both
+     *  elements are equal  and if so continues comparing the values serialized to
+     *  Little Endian using memcpy.
+     *  @param  rhs the right hand side of the comparison
+     *  @return 0 if the object values are equal.
+     *          -1 if this element has fewer components than the rhs element.
+     *          Also -1 if the value of the first component that does not match
+     *          is lower in this object than in rhs. Also returned if rhs
+     *          cannot be casted to this object type or both objects are of
+     *          different VR (i.e. the DcmEVR returned by the element's ident()
+     *          call are different).
+     *          1 if either this element has more components than the rhs element, or
+     *          if the first component that does not match is greater in this object than
+     *          in rhs object.
+     */
+    virtual int compare(const DcmElement& rhs) const;
 
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
