@@ -76,8 +76,19 @@ int DcmSignedLong::compare(const DcmElement& rhs) const
     myThis = OFconst_cast(DcmSignedLong*, this);
     myRhs =  OFstatic_cast(DcmSignedLong*, OFconst_cast(DcmElement*, &rhs));
 
-    /* iterate over all components and test equality */
+    /* check whether VMs are equal */
     unsigned long thisVM = myThis->getVM();
+    unsigned long rhsVM = myRhs->getVM();
+    if (thisVM < rhsVM)
+    {
+        return -1;
+    }
+    else if (thisVM > rhsVM)
+    {
+        return 1;
+    }
+
+    /* iterate over all components and test equality */
     for (unsigned long count = 0; count < thisVM; count++)
     {
         Sint32 val = 0;
@@ -96,22 +107,7 @@ int DcmSignedLong::compare(const DcmElement& rhs) const
                 }
                 /* otherwise they are equal, continue comparison */
             }
-            else
-            {
-                break; // values equal until this point (rhs shorter)
-            }
         }
-    }
-
-    /* we get here if all values are equal. Now look at the number of components. */
-    unsigned long rhsVM = myRhs->getVM();
-    if (thisVM < rhsVM)
-    {
-        return -1;
-    }
-    else if (thisVM > rhsVM)
-    {
-        return 1;
     }
 
     /* all values as well as VM equal: objects are equal */

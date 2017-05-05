@@ -79,7 +79,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     DcmItem &operator=(const DcmItem &obj);
 
-    /** comparison operator that compares the normalized value of this object
+    /** comparison operator that compares the value of this object
      *  with a given object of the same type. The tag of the element is also
      *  considered as the first component that is compared, followed by the
      *  object types (VR, i.e. DCMTK'S EVR) and the comparison of all value
@@ -89,13 +89,15 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  This may be an expensive operation.
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.
-     *          -1 if either the value of the  first component that does not match
-     *          is lower in this object than in rhs, or all compared components match
-     *          but this object has fewer components than rhs. Also returned if rhs
-     *          cannot be casted to this object type.
-     *          1 if either the value of the first component that does not match
-     *          is greater in this object than in rhs object, or all compared
-     *          components match but the this component is longer.
+     *          -1 if this element has fewer components than the rhs element.
+     *          Also -1 if the value of the first component that does not match
+     *          is lower in this object than in rhs. Also returned if rhs
+     *          cannot be casted to this object type or both objects are of
+     *          different VR (i.e. the DcmEVR returned by the element's ident()
+     *          call are different).
+     *          1 if either this element has more components than the rhs element, or
+     *          if the first component that does not match is greater in this object than
+     *          in rhs object.
      */
     virtual int compare(const DcmItem& rhs) const;
 

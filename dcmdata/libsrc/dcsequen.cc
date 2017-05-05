@@ -204,8 +204,19 @@ int DcmSequenceOfItems::compare(const DcmElement& rhs) const
     myThis = OFconst_cast(DcmSequenceOfItems*, this);
     myRhs = OFstatic_cast(DcmSequenceOfItems*, OFconst_cast(DcmElement*, &rhs));
 
-    /* iterate over all items and test equality */
+    /* check number of items */
+    unsigned long rhsVM = myRhs->card();
     unsigned long thisVM = myThis->card();
+    if (thisVM < rhsVM)
+    {
+        return -1;
+    }
+    else if (thisVM > rhsVM)
+    {
+        return 1;
+    }
+
+    /* iterate over all items and test equality */
     for (unsigned long count = 0; count < thisVM; count++)
     {
         DcmItem* val = myThis->getItem(count);
@@ -220,22 +231,7 @@ int DcmSequenceOfItems::compare(const DcmElement& rhs) const
                     return result;
                 }
             }
-            else
-            {
-                break; // values equal until this point (rhs shorter)
-            }
         }
-    }
-
-    /* we get here if all values are equal. Now look at the number of components. */
-    unsigned long rhsVM = myRhs->card();
-    if (thisVM < rhsVM)
-    {
-        return -1;
-    }
-    else if (thisVM > rhsVM)
-    {
-        return 1;
     }
 
     /* all values as well as VM equal: objects are equal */

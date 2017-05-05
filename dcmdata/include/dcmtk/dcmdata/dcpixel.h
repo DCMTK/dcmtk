@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -151,7 +151,7 @@ private:
     /// List of representations of pixel data
     DcmRepresentationList repList;
 
-    /// Iterator to the last dummy element in representation lis
+    /// Iterator to the last dummy element in representation list
     DcmRepresentationListIterator repListEnd;
 
     /// Iterator to the original representation. if an uncompressed
@@ -276,7 +276,21 @@ public:
       return new DcmPixelData(*this);
     }
 
-    /** Virtual object copying. This method can be used for DcmObject
+    /** comparison operator that compares the value of this element
+     *  with a given element of the same type (e.g. an DcmPixelData with a
+     *  DcmPixelData). The tag of the element is also considered as the first
+     *  component that is compared, followed by the object types (VR, i.e. DCMTK'S EVR).
+     *  The DcmPixelData implementation checks whether the uncompressed data of
+     *  both objects are identical, and if not provided, if the compressed data
+     *  of both objects is the same, by comparing the pixel items bytewise.
+     *  @param  rhs the right hand side of the comparison
+     *  @return 0 if the object values are equal.
+     *          -1 is returned if rhs is considered greater than this object.
+     *          1 is returned if rhs is considered smaller than this object.
+     */
+    virtual int compare(const DcmElement& rhs) const;
+
+    /** virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
      *  is of the same type as "this" object instance. If not, an error

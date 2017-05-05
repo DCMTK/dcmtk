@@ -152,8 +152,19 @@ int DcmByteString::compare(const DcmElement& rhs) const
     myThis = OFconst_cast(DcmByteString*, this);
     myRhs = OFstatic_cast(DcmByteString*, OFconst_cast(DcmElement*, &rhs));
 
-    /* iterate over all components and test equality */
+    /* check number of components. */
+    unsigned long rhsVM = myRhs->getVM();
     unsigned long thisVM = myThis->getVM();
+    if (thisVM < rhsVM)
+    {
+        return -1;
+    }
+    else if (thisVM > rhsVM)
+    {
+        return 1;
+    }
+
+    /* iterate over all components and test equality */
     for (unsigned long count = 0; count < thisVM; count++)
     {
         OFString val;
@@ -168,25 +179,9 @@ int DcmByteString::compare(const DcmElement& rhs) const
                     return result;
                 }
             }
-            else
-            {
-                break; // values equal until this point (rhs shorter)
-            }
         }
     }
-
-    /* we get here if all values are equal. Now look at the number of components. */
-    unsigned long rhsVM = myRhs->getVM();
-    if (thisVM < rhsVM)
-    {
-        return -1;
-    }
-    else if (thisVM > rhsVM)
-    {
-        return 1;
-    }
-
-    /* all values as well as VM equal: objects are equal */
+    /* all values equal */
     return 0;
 }
 
