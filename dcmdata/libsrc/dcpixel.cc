@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2010, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -222,6 +222,10 @@ DcmPixelData::canChooseRepresentation(
 
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator resultIt(repListEnd);
+    // find out whether we have the desired target representation available. Three possibilities:
+    // 1. we have uncompressed data, and target is uncompressed (conversion betweeen uncompressed always possible)
+    // 2. we have uncompressed and want compressed, but we are forced to write uncompressed anyway
+    // 3. we want to go to compressed, and already have the desired representation available
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
         (toType.isEncapsulated() && writeUnencapsulated(repType) && existUnencapsulated) ||
         (toType.isEncapsulated() && findRepresentationEntry(findEntry, resultIt) == EC_Normal))
@@ -229,18 +233,20 @@ DcmPixelData::canChooseRepresentation(
         // representation found
         result = OFTrue;
     }
+    // otherwise let's see whether we know how to convert to the target representation
     else
     {
         // representation not found, check if we have a codec that can create the
         // desired representation.
         if (original == repListEnd)
         {
+          // we have uncompressed data, check whether we know how to go from uncompressed to desired compression
           result = DcmCodecList::canChangeCoding(EXS_LittleEndianExplicit, toType.getXfer());
         }
         else if (toType.isEncapsulated())
         {
-          result = DcmCodecList::canChangeCoding(EXS_LittleEndianExplicit, toType.getXfer());
-
+          // we have already compressed data, check whether we know how to transcode
+          result = DcmCodecList::canChangeCoding((*original)->repType, toType.getXfer());
           if (!result)
           {
             // direct transcoding is not possible. Check if we can decode and then encode.
@@ -250,6 +256,7 @@ DcmPixelData::canChooseRepresentation(
         }
         else
         {
+          // target transfer syntax is uncompressed, look whether decompression is possible
           result = DcmCodecList::canChangeCoding((*original)->repType, EXS_LittleEndianExplicit);
         }
     }
