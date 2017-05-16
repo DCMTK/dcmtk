@@ -55,13 +55,6 @@ DCMTK_GUI
     either present them to the user or store them in a log file.  See
     comments in ofstd/include/dcmtk/ofstd/ofconsol.h.
 
-DCMTK_USE_CXX11_STL
-  Affected: ofstd
-  Type of modification: Activates feature
-  Explanation: DCMTK_USE_CXX11_STL is defined when the appropriate options are
-    passed to the configuration system.  DCMTK will then use the native C++11
-    STL classes and functions instead of it's own (legacy) implementations.
-
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
   Type of modification: Disables feature
@@ -180,53 +173,83 @@ EXPERIMENTAL_READ_FROM_FILE
   Explanation: When this macro is defined, the relatively new function
     createValueFromTempFile() is used for reading large binary data files.
 
-HAVE_STD_STRING
-  Affected: ofstd
+HAVE_CXX11
+  Affected: all modules
   Type of modification: Activates feature
-  Explanation: When this macro is defined, the ANSI C++ standard string
-    class is used instead of DCMTK's own implementation.
+  Explanation: HAVE_CXX11 is defined when the appropriate options are
+    passed to the configuration system.  DCMTK will then use the native C++11
+    STL classes, functions and compiler features instead of it's own (legacy)
+    implementations and workarounds.
 
-HAVE_STL
-  Affected: ofstd
-  Type of modification: Activates feature
-  Explanation: When this macro is defined, the STL (standard template
-    library) list, map, stack and vector classes as well as the STL algorithms
-    are used instead of DCMTK's own implementations.
-
-HAVE_STL_ALGORITHMS
+HAVE_STL_ALGORITHM
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
     library) algorithms are used instead of DCMTK's own implementation.
-    Also see HAVE_STL.
+
+HAVE_STL_LIMITS
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) numeric_limits traits are used instead of DCMTK's own
+    implementation.
 
 HAVE_STL_LIST
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
     library) list class is used instead of DCMTK's own implementation.
-    Also see HAVE_STL.
 
 HAVE_STL_MAP
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
     library) map class is used instead of DCMTK's own implementation.
-    Also see HAVE_STL.
+
+HAVE_STL_MEMORY
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) memory features are used instead of DCMTK's own implementation,
+    e.g. shared_ptr and unique_ptr.
 
 HAVE_STL_STACK
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
     library) stack class is used instead of DCMTK's own implementation.
-    Also see HAVE_STL.
+
+HAVE_STL_STRING
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the ANSI C++ standard string
+    class is used instead of DCMTK's own implementation.
+
+HAVE_STL_SYSTEM_ERROR
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) error codes and related classes are used instead of DCMTK's own
+    implementation, e.g. error_code and error_category.
+
+HAVE_STL_TUPLE
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) tuple class and related functions are used instead of DCMTK's own
+    implementation.
 
 HAVE_STL_VECTOR
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
     library) vector class is used instead of DCMTK's own implementation.
-    Also see HAVE_STL.
+
+HAVE_TYPE_TRAITS
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, compiler provided type traits are
+    used instead of DCMTK's own implementation.
 
 LOCK_IMAGE_FILES
   Affected: dcmpstat, dcmqrdb

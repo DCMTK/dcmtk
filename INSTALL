@@ -334,9 +334,9 @@ on CMake below.
 
 C++11 SUPPORT
 =============
-DCMTK can be enabled to use the C++11 STL.  This is controlled by the macro
-"DCMTK_USE_CXX11_STL", described in "config/docs/macros.txt" (or
-"/usr/local/share/doc/dcmtk/macros.txt").
+DCMTK can be enabled to use C++11 features (e.g. the C++11 STL classes like
+std::tuple).  This is controlled by the macro "HAVE_CXX11", described in
+"config/docs/macros.txt" (or "/usr/local/share/doc/dcmtk/macros.txt").
 
 
 BUILDING (Unix with autoconf)

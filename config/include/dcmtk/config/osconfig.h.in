@@ -53,9 +53,6 @@
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 
-/* Enable or disable C++11 while building DCMTK. */
-#undef DCMTK_USE_CXX11_STL
-
 /* Empty default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
 
@@ -147,6 +144,9 @@
 
 /* Define to 1 if you have the `cuserid' function. */
 #undef HAVE_CUSERID
+
+/* define if the compiler supports basic C++11 syntax */
+#undef HAVE_CXX11
 
 /* Define if bool is a built-in type */
 #undef HAVE_CXX_BOOL
@@ -761,6 +761,39 @@ typedef unsigned short ushort;
 /* Define if the compiler supports std::nothrow */
 #undef HAVE_STD__NOTHROW
 
+/* Define if STL's algorithm should be used. */
+#undef HAVE_STL_ALGORITHM
+
+/* Define if STL's limits should be used. */
+#undef HAVE_STL_LIMITS
+
+/* Define if STL's list should be used. */
+#undef HAVE_STL_LIST
+
+/* Define if STL's map should be used. */
+#undef HAVE_STL_MAP
+
+/* Define if STL's memory should be used. */
+#undef HAVE_STL_MEMORY
+
+/* Define if STL's stack should be used. */
+#undef HAVE_STL_STACK
+
+/* Define if STL's string should be used. */
+#undef HAVE_STL_STRING
+
+/* Define if STL's system_error should be used. */
+#undef HAVE_STL_SYSTEM_ERROR
+
+/* Define if STL's tuple should be used. */
+#undef HAVE_STL_TUPLE
+
+/* Define if STL's type traits should be used. */
+#undef HAVE_STL_TYPE_TRAITS
+
+/* Define if STL's vector should be used. */
+#undef HAVE_STL_VECTOR
+
 /* Define to 1 if you have the `strchr' function. */
 #undef HAVE_STRCHR
 
@@ -1107,7 +1140,7 @@ typedef unsigned short ushort;
 /* Define to int if undefined. */
 #undef socklen_t
 
-#if defined(DCMTK_USE_CXX11_STL) && defined(__cplusplus) && __cplusplus < 201103L
+#if defined(HAVE_CXX11) && defined(__cplusplus) && __cplusplus < 201103L
 #error\
  DCMTK was configured to use the C++11 STL, but your compiler is not configured\
  for building with C++11 features.

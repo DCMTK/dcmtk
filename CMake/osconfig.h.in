@@ -1088,13 +1088,12 @@ typedef unsigned long ulong;
 /* Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't. */
 #define STDIO_NAMESPACE ::
 
-/* Enable or disable C++11 while building DCMTK */
-#cmakedefine DCMTK_USE_CXX11_STL @DCMTK_USE_CXX11_STL@
+/* Define if we can use C++11 */
+#cmakedefine HAVE_CXX11 @HAVE_CXX11@
 
-#if defined(DCMTK_USE_CXX11_STL) && defined(__cplusplus) && __cplusplus < 201103L
+#if defined(HAVE_CXX11) && defined(__cplusplus) && __cplusplus < 201103L
 #error\
- DCMTK was configured to use the C++11 STL, but your compiler is not configured\
- for building with C++11 features.
+DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
 #endif
 
 /* Define if the compiler supports __alignof__ */
@@ -1123,5 +1122,38 @@ typedef unsigned long ulong;
 
 /* The path on the Android device that should be used for temporary files */
 #cmakedefine ANDROID_TEMPORARY_FILES_LOCATION "@ANDROID_TEMPORARY_FILES_LOCATION@"
+
+/* Define if we are supposed to use STL's vector */
+#cmakedefine HAVE_STL_VECTOR @HAVE_STL_VECTOR@
+
+/* Define if we are supposed to use STL's algorithms */
+#cmakedefine HAVE_STL_ALGORITHM @HAVE_STL_ALGORITHM@
+
+/* Define if we are supposed to use STL's limit */
+#cmakedefine HAVE_STL_LIMITS @HAVE_STL_LIMITS@
+
+/* Define if we are supposed to use STL's list */
+#cmakedefine HAVE_STL_LIST @HAVE_STL_LIST@
+
+/* Define if we are supposed to use STL's list */
+#cmakedefine HAVE_STL_MAP @HAVE_STL_MAP@
+
+/* Define if we are supposed to use STL's memory */
+#cmakedefine HAVE_STL_MEMORY @HAVE_STL_MEMORY@
+
+/* Define if we are supposed to use STL's stack */
+#cmakedefine HAVE_STL_STACK @HAVE_STL_STACK@
+
+/* Define if we are supposed to use STL's string */
+#cmakedefine HAVE_STL_STRING @HAVE_STL_STRING@
+
+/* Define if we are supposed to use STL's type_traits */
+#cmakedefine HAVE_STL_TYPE_TRAITS @HAVE_STL_TYPE_TRAITS@
+
+/* Define if we are supposed to use STL's tuple */
+#cmakedefine HAVE_STL_TUPLE @HAVE_STL_TUPLE@
+
+/* Define if we are supposed to use STL's system_error */
+#cmakedefine HAVE_STL_SYSTEM_ERROR @HAVE_STL_SYSTEM_ERROR@
 
 #endif /* !OSCONFIG_H*/

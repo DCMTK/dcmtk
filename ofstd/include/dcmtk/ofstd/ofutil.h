@@ -34,33 +34,14 @@
  *  for older compilers.
  */
 
+// -------------------- misc C++11 / non C++11 utils --------------------
+
 #ifdef HAVE_CXX11
+
 #include <utility>
 #include <tuple>
 #define OFmove std::move
 #define OFswap std::swap
-#define OFMake_pair std::make_pair
-
-template<std::size_t Index,typename T>
-constexpr auto OFget( T&& t ) -> decltype( std::get<Index>( std::forward<T>( t ) ) )
-{
-    return std::get<Index>( std::forward<T>( t ) );
-}
-
-template<typename X,typename T>
-constexpr auto OFget( T&& t ) -> decltype( std::get<X>( std::forward<T>( t ) ) )
-{
-    return std::get<X>( std::forward<T>( t ) );
-}
-
-template<typename K,typename V>
-using OFPair = std::pair<K,V>;
-
-template<typename Tuple>
-using OFtuple_size = std::tuple_size<Tuple>;
-
-template<std::size_t Index,typename Tuple>
-using OFtuple_element = std::tuple_element<Index,Tuple>;
 
 // OFrvalue simply equals 'identity', as C++11 natively handles
 // rvalues / prvalues and so on.
@@ -127,6 +108,7 @@ public:
         sizeof(sfinae<T>(OFnullptr)) == sizeof(yes_type)
     >::type type;
 };
+
 #endif // NOT DOXYGEN
 
 /** A helper class to 'tag' objects as <i>rvalues</i> to help
@@ -304,11 +286,18 @@ void OFswap( T& t0, T& t1 )
 ;
 #endif // DOXYGEN
 
-#if defined(HAVE_STL) || defined(HAVE_STL_MAP)
+#endif // NOT C++11
+
+// -------------------- STL pair --------------------
+
+#ifdef HAVE_STL_MAP
+
 // Use native pair class, to be compatible to std::map
 #define OFPair std::pair
 #define OFMake_pair std::make_pair
+
 #else // fallback implementation of std::pair
+
 /** a pair - this implements parts of std::pair's interface.
  */
 template<typename K, typename V> class OFPair
@@ -361,67 +350,38 @@ OFPair<K, V> OFMake_pair(const K& first, const V& second)
 {
     return OFPair<K, V>(first, second);
 }
-#endif // fallback implementation of OFPair
 
-/** A metafunction to determine the size of a tuple.
- *  @tparam Tuple a tuple type, e.g. an instance of OFtuple.
- *  @pre Tuple is a tuple type, see @ref tuple_types "Tuple Types"
- *    for definition.
- *  @return OFtuple_size is derived from an appropriate instance of
- *    OFintegral_constant if the preconditions are met. This means
- *    OFtuple_size declares a static member constant <i>value</i>
- *    set to the tuple's size.
- *  @relates OFPair
- *  @relates OFtuple
- *  @details
- *  <h3>Usage Example:</h3>
- *  @code{.cpp}
- *  typedef OFtuple<OFString,size_t,OFVector<int> > MyTuple;
- *  typedef OFPair<OFString,MyTuple> MyPair;
- *  COUT << "OFtuple_size<MyTuple>::value: " << OFtuple_size<MyTuple>::value << OFendl;
- *  COUT << "OFtuple_size<MyPair>::value: " << OFtuple_size<MyPair>::value << OFendl;
- *  @endcode
- *  <b>Output:</b>
- *  @verbatim
-    OFtuple_size<MyTuple>::value: 3
-    OFtuple_size<MyPair>::value: 2
-    @endverbatim
- *
- */
+#endif // HAVE_STL_MAP - fallback implementation of OFPair
+
+// -------------------- STL tuple --------------------
+
+#ifdef HAVE_STL_TUPLE
+
+template<std::size_t Index,typename T>
+constexpr auto OFget( T&& t ) -> decltype( std::get<Index>( std::forward<T>( t ) ) )
+{
+    return std::get<Index>( std::forward<T>( t ) );
+}
+
+template<typename X,typename T>
+constexpr auto OFget( T&& t ) -> decltype( std::get<X>( std::forward<T>( t ) ) )
+{
+    return std::get<X>( std::forward<T>( t ) );
+}
+
 template<typename Tuple>
-#ifndef DOXYGEN
+using OFtuple_size = std::tuple_size<Tuple>;
+
+template<std::size_t Index,typename Tuple>
+using OFtuple_element = std::tuple_element<Index,Tuple>;
+
+#else // HAVE_STL_TUPLE
+
+template<typename Tuple>
 struct OFtuple_size;
-#else // NOT DOXYGEN
-<metafunction> OFtuple_size;
-#endif // DOXYGEN
-
-/** A metafunction to determine the type of one element of a tuple.
- *  @tparam Index the index of the element its type should be determined.
- *  @tparam Tuple a tuple type, e.g. an instance of OFtuple.
- *  @pre Tuple is a tuple type, see @ref tuple_types "Tuple Types"
- *    for definition.
- *  @pre Index is a valid index , essentially: <kbd>Index < OFtuple_size<Tuple>::value</kbd>.
- *  @return if the preconditions are met, OFtuple_element declares a member
- *    type alias <i>type</i> that yields the type of the element at the given index.
- *  @relates OFtuple
- *  @details
- *  <h3>Usage Example:</h3>
- *  @code{.cpp}
- *  typedef OFPair<OFString,size_t> MyPair;
- *  typedef OFtuple<OFtuple_element<0,MyPair>::type,OFtuple_element<1,MyPair>::type> MyTuple;
- *  MyPair pair( "Hello World", 42 );
- *  MyTuple tuple( pair ); // Works, since both elements' types are the same as within MyPair.
- *  @endcode
- *
- */
 template<size_t Index,typename Tuple>
-#ifndef DOXYGEN
 struct OFtuple_element;
-#else // NOT DOXYGEN
-<metafunction> OFtuple_element;
-#endif // DOXYGEN
 
-#ifndef DOXYGEN
 // specialization of OFtuple_size for OFPair -> 2
 template<typename K,typename V>
 struct OFtuple_size<OFPair<K,V> >
@@ -487,7 +447,61 @@ struct OFtuple_nil;
 
 // include generated forward declaration for OFtuple.
 #include "dcmtk/ofstd/variadic/tuplefwd.h"
-#else // DOXYGEN
+
+#endif // HAVE_STL_TUPLE
+
+#ifdef DOXYGEN // doxygen documentation of OFtuple utils
+
+/** A metafunction to determine the size of a tuple.
+ *  @tparam Tuple a tuple type, e.g. an instance of OFtuple.
+ *  @pre Tuple is a tuple type, see @ref tuple_types "Tuple Types"
+ *    for definition.
+ *  @return OFtuple_size is derived from an appropriate instance of
+ *    OFintegral_constant if the preconditions are met. This means
+ *    OFtuple_size declares a static member constant <i>value</i>
+ *    set to the tuple's size.
+ *  @relates OFPair
+ *  @relates OFtuple
+ *  @details
+ *  <h3>Usage Example:</h3>
+ *  @code{.cpp}
+ *  typedef OFtuple<OFString,size_t,OFVector<int> > MyTuple;
+ *  typedef OFPair<OFString,MyTuple> MyPair;
+ *  COUT << "OFtuple_size<MyTuple>::value: " << OFtuple_size<MyTuple>::value << OFendl;
+ *  COUT << "OFtuple_size<MyPair>::value: " << OFtuple_size<MyPair>::value << OFendl;
+ *  @endcode
+ *  <b>Output:</b>
+ *  @verbatim
+    OFtuple_size<MyTuple>::value: 3
+    OFtuple_size<MyPair>::value: 2
+    @endverbatim
+ *
+ */
+template<typename Tuple>
+<metafunction> OFtuple_size;
+
+/** A metafunction to determine the type of one element of a tuple.
+ *  @tparam Index the index of the element its type should be determined.
+ *  @tparam Tuple a tuple type, e.g. an instance of OFtuple.
+ *  @pre Tuple is a tuple type, see @ref tuple_types "Tuple Types"
+ *    for definition.
+ *  @pre Index is a valid index , essentially: <kbd>Index < OFtuple_size<Tuple>::value</kbd>.
+ *  @return if the preconditions are met, OFtuple_element declares a member
+ *    type alias <i>type</i> that yields the type of the element at the given index.
+ *  @relates OFtuple
+ *  @details
+ *  <h3>Usage Example:</h3>
+ *  @code{.cpp}
+ *  typedef OFPair<OFString,size_t> MyPair;
+ *  typedef OFtuple<OFtuple_element<0,MyPair>::type,OFtuple_element<1,MyPair>::type> MyTuple;
+ *  MyPair pair( "Hello World", 42 );
+ *  MyTuple tuple( pair ); // Works, since both elements' types are the same as within MyPair.
+ *  @endcode
+ *
+ */
+template<size_t Index,typename Tuple>
+<metafunction> OFtuple_element;
+
 /** A function template to access an element of a tuple.
  *  @tparam Index the index of the element that should be accessed.
  *  @tparam Tuple a tuple type, e.g. an instance of OFtuple. This parameter
@@ -542,7 +556,7 @@ template<size_t Index,typename Tuple>
 const typename OFtuple_element<Index,Tuple>::type& OFget( const Tuple& tuple );
 #endif // DOXYGEN
 
-#endif // NOT C++11
+// -------------------- misc utils (OFinplace etc.) --------------------
 
 #ifndef DOXYGEN
 

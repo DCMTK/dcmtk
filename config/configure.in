@@ -4,6 +4,8 @@ AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADER(include/dcmtk/config/osconfig.h)
 
+m4_include([stdcxx.m4])
+
 dnl -------------------------------------------------------
 dnl Additional Package Information
 dnl -------------------------------------------------------
@@ -101,10 +103,9 @@ AH_TOP([#ifndef OSCONFIG_H
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif])
 
-AH_BOTTOM([#if defined(DCMTK_USE_CXX11_STL) && defined(__cplusplus) && __cplusplus < 201103L
+AH_BOTTOM([#if defined(HAVE_CXX11) && defined(__cplusplus) && __cplusplus < 201103L
 #error\
- DCMTK was configured to use the C++11 STL, but your compiler is not configured\
- for building with C++11 features.
+DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
 #endif
 
 #endif /* OSCONFIG_H */])
@@ -826,6 +827,7 @@ if test $ac_cv_header_math_h = yes ; then
 AC_INCLUDE_MATH_H_AS_CXX
 fi
 
+
 dnl -------------------------------------------------------
 dnl Checks for the usage of standard C++ headers.
 dnl -------------------------------------------------------
@@ -1413,25 +1415,313 @@ if [[ ! -z "$DCMTK_ENABLE_CHARSET_CONVERSION" ]]; then
     [Define to select character set conversion implementation.])
 fi
 
+
 dnl -------------------------------------------------------
-dnl C++11 support
+dnl include config test code from config/tests
 dnl -------------------------------------------------------
 
-AC_MSG_CHECKING(if the C++11 STL should be used)
-AC_ARG_WITH(cxx11-stl,
-[  --with-cxx11-stl        enable C++11 STL
-  --without-cxx11-stl     disable C++11 STL (default)],
-[ case "$withval" in
+ac_enable_cxx11="no"
+AC_MSG_CHECKING(whether to enable C++11 support)
+AC_ARG_ENABLE(cxx11,
+[  --enable-cxx11          use C++11
+  --disable-cxx11         do not use C++11 (default)],
+[ case "$enableval" in
   yes)
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(DCMTK_USE_CXX11_STL, , [Enable or disable C++11 while building DCMTK.])
-    ;;
+   AC_MSG_RESULT()
+   AX_CXX_COMPILE_STDCXX([11], [noext], [optional])
+   if test "$HAVE_CXX11 == 1"; then
+     ac_enable_cxx11="yes"
+   fi
+   AC_MSG_CHECKING(whether to enable C++11 support)
+   ;;
+
   *)
-    AC_MSG_RESULT(no)
-    ;;
-  esac ],
-  AC_MSG_RESULT(no)
+   ac_enable_cxx11="no"
+   ;;
+  esac ]
 )
+AC_MSG_RESULT($ac_enable_cxx11)
+
+
+dnl -------------------------------------------------------
+dnl Enable/disable STL support.
+dnl -------------------------------------------------------
+
+ac_enable_stl="no"
+AC_MSG_CHECKING(whether to enable STL support)
+AC_ARG_ENABLE(stl,
+[  --enable-stl            use C++ STL
+  --disable-stl           do not use C++ STL (default)],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl="yes"
+   ;;
+
+  *)
+    ac_enable_stl="no"
+    ;;
+  esac ]
+)
+AC_MSG_RESULT($ac_enable_stl)
+
+
+ac_enable_stl_vector="auto"
+AC_MSG_CHECKING(whether to enable STL vector support)
+AC_ARG_ENABLE(stl-vector,
+[  --enable-stl-vector     use C++ STL vector
+  --disable-stl-vector    do not use C++ STL vector],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_vector="yes"
+   ;;
+
+  *)
+    ac_enable_stl_vector="no"
+    ;;
+  esac]
+)
+if test "$ac_enable_stl_vector" = "auto"; then
+  ac_enable_stl_vector="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_vector" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/vector.cc"]])], [AC_DEFINE(HAVE_STL_VECTOR, , [Define if STL's vector should be used.])], [ac_enable_stl_vector="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_vector)
+
+ac_enable_stl_algorithm="auto"
+AC_MSG_CHECKING(whether to enable STL algorithm support)
+AC_ARG_ENABLE(stl-algorithm,
+[  --enable-stl-algorithm  use C++ STL algorithm
+  --disable-stl-algorithm do not use C++ STL algorithm],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_algorithm="yes"
+   ;;
+
+  *)
+    ac_enable_stl_algorithm="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_algorithm" = "auto"; then
+  ac_enable_stl_algorithm="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_algorithm" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/algo.cc"]])], [AC_DEFINE(HAVE_STL_ALGORITHM, , [Define if STL's algorithm should be used.])], [ac_enable_stl_algorithm="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_algorithm)
+
+ac_enable_stl_limits="auto"
+AC_MSG_CHECKING(whether to enable STL limits support)
+AC_ARG_ENABLE(stl-limits,
+[  --enable-stl-limits     use C++ STL limits
+  --disable-stl-limits    do not use C++ STL limits],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_limits="yes"
+   ;;
+
+  *)
+    ac_enable_stl_limits="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_limits" = "auto"; then
+  ac_enable_stl_limits="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_limits" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/limits.cc"]])], [AC_DEFINE(HAVE_STL_LIMITS, , [Define if STL's limits should be used.])], [ac_enable_stl_limits="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_limits)
+
+ac_enable_stl_list="auto"
+AC_MSG_CHECKING(whether to enable STL list support)
+AC_ARG_ENABLE(stl-list,
+[  --enable-stl-list       use C++ STL list
+  --disable-stl-list      do not use C++ STL list],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_list="yes"
+   ;;
+
+  *)
+    ac_enable_stl_list="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_list" = "auto"; then
+  ac_enable_stl_list="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_list" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/list.cc"]])], [AC_DEFINE(HAVE_STL_LIST, , [Define if STL's list should be used.])], [ac_enable_stl_list="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_list)
+
+ac_enable_stl_map="auto"
+AC_MSG_CHECKING(whether to enable STL map support)
+AC_ARG_ENABLE(stl-map,
+[  --enable-stl-map        use C++ STL map
+  --disable-stl-map       do not use C++ STL map],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_map="yes"
+   ;;
+
+  *)
+    ac_enable_stl_map="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_map" = "auto"; then
+  ac_enable_stl_map="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_map" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/map.cc"]])], [AC_DEFINE(HAVE_STL_MAP, , [Define if STL's map should be used.])], [ac_enable_stl_map="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_map)
+
+ac_enable_stl_memory="auto"
+AC_MSG_CHECKING(whether to enable STL memory support)
+AC_ARG_ENABLE(stl-memory,
+[  --enable-stl-memory     use C++ STL memory
+  --disable-stl-memory    do not use C++ STL memory],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_memory="yes"
+   ;;
+
+  *)
+    ac_enable_stl_memory="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_memory" = "auto"; then
+  ac_enable_stl_memory="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_memory" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/memory.cc"]])], [AC_DEFINE(HAVE_STL_MEMORY, , [Define if STL's memory should be used.])], [ac_enable_stl_memory="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_memory)
+
+ac_enable_stl_stack="auto"
+AC_MSG_CHECKING(whether to enable STL stack support)
+AC_ARG_ENABLE(stl-stack,
+[  --enable-stl-stack      use C++ STL stack
+  --disable-stl-stack     do not use C++ STL stack],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_stack="yes"
+   ;;
+
+  *)
+    ac_enable_stl_stack="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_stack" = "auto"; then
+  ac_enable_stl_stack="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_stack" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/stack.cc"]])], [AC_DEFINE(HAVE_STL_STACK, , [Define if STL's stack should be used.])], []ac_enable_stl_stack="unsupported -> no")
+fi
+AC_MSG_RESULT($ac_enable_stl_stack)
+
+ac_enable_stl_string="auto"
+AC_MSG_CHECKING(whether to enable STL string support)
+AC_ARG_ENABLE(stl-string,
+[  --enable-stl-string     use C++ STL string
+  --disable-stl-string    do not use C++ STL string],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_string="yes"
+   ;;
+
+  *)
+    ac_enable_stl_string="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_string" = "auto"; then
+  ac_enable_stl_string="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_string" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/string.cc"]])], [AC_DEFINE(HAVE_STL_STRING, , [Define if STL's string should be used.])], [ac_enable_stl_string="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_string)
+
+ac_enable_stl_type_traits="auto"
+AC_MSG_CHECKING(whether to enable STL type-traits support)
+AC_ARG_ENABLE(stl-type-traits,
+[  --enable-stl-type-traits
+                          use C++ STL type-traits
+  --disable-stl-type-traits
+                          do not use C++ STL type-traits],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_type_traits="yes"
+   ;;
+
+  *)
+    ac_enable_stl_type_traits="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_type_traits" = "auto"; then
+  ac_enable_stl_type_traits="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_type_traits" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/ttraits.cc"]])], [AC_DEFINE(HAVE_STL_TYPE_TRAITS, , [Define if STL's type traits should be used.])], [ac_enable_stl_type_traits="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_type_traits)
+
+ac_enable_stl_tuple="auto"
+AC_MSG_CHECKING(whether to enable STL tuple support)
+AC_ARG_ENABLE(stl-tuple,
+[  --enable-stl-tuple      use C++ STL tuple
+  --disable-stl-tuple     do not use C++ STL tuple],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_tuple="yes"
+   ;;
+
+  *)
+    ac_enable_stl_tuple="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_tuple" = "auto"; then
+  ac_enable_stl_tuple="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_tuple" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/tuple.cc"]])], [AC_DEFINE(HAVE_STL_TUPLE, , [Define if STL's tuple should be used.])], [ac_enable_stl_tuple="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_tuple)
+
+ac_enable_stl_system_error="auto"
+AC_MSG_CHECKING(whether to enable STL system_error support)
+AC_ARG_ENABLE(stl-system-error,
+[  --enable-stl-system-error
+                          use C++ STL system_error
+  --disable-stl-system_error
+                          do not use C++ STL system_error],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_system_error="yes"
+   ;;
+
+  *)
+    ac_enable_stl_system_error="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_system_error" = "auto"; then
+  ac_enable_stl_system_error="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_system_error" = "yes"; then
+  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/syserr.cc"]])], [AC_DEFINE(HAVE_STL_SYSTEM_ERROR, , [Define if STL's system_error should be used.])], [ac_enable_stl_system_error="unsupported -> no"])
+fi
+AC_MSG_RESULT($ac_enable_stl_system_error)
+
 
 dnl -------------------------------------------------------
 dnl Test for some additional functions and keywords

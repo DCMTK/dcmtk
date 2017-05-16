@@ -96,6 +96,27 @@ OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with DOXYGEN." ON)
 OPTION(DCMTK_GENERATE_DOXYGEN_TAGFILE "Generate a tag file with DOXYGEN." OFF)
 OPTION(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS "Build with wide char file I/O functions." OFF)
 OPTION(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char main function." OFF)
+OPTION(DCMTK_ENABLE_STL "Enable use of native STL classes and algorithms instead of DCMTK's own implementations." OFF)
+OPTION(DCMTK_ENABLE_CXX11 "Enable use of native C++11 features (eg. move semantics)." OFF)
+
+MACRO(DCMTK_INFERABLE_OPTION OPTION DESCRIPTION)
+  SET("${OPTION}" INFERRED CACHE STRING "${DESCRIPTION}")
+  SET_PROPERTY(CACHE "${OPTION}" PROPERTY STRINGS "INFERRED" "ON" "OFF")
+  # currently, all inferable options are advanced options
+  MARK_AS_ADVANCED("${OPTION}")
+ENDMACRO(DCMTK_INFERABLE_OPTION)
+
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_VECTOR "Enable use of STL vector.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_ALGORITHM "Enable use of STL algorithm.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_LIMITS "Enable use of STL limit.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_LIST "Enable use of STL list.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_MAP "Enable use of STL map.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_MEMORY "Enable use of STL memory.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_STACK "Enable use of STL stack.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_STRING "Enable use of STL string.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TYPE_TRAITS "Enable use of STL type traits.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TUPLE "Enable use of STL tuple.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_SYSTEM_ERROR "Enable use of STL system_error.")
 
 # Built-in (compiled-in) dictionary enabled on Windows per default, otherwise
 # disabled. Loading of external dictionary via run-time is, per default,
@@ -390,65 +411,28 @@ ENDIF(WIN32)
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
+# determine which flags are required to enable C++11 features (if any)
+IF(NOT DEFINED DCMTK_CXX11_FLAGS)
+  IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    SET(DCMTK_CXX11_FLAGS "-std=c++11")
+  ELSEIF(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+    IF(CMAKE_HOST_WIN32)
+      SET(DCMTK_CXX11_FLAGS "/Qstd=c++11")
+    ELSE()
+      SET(DCMTK_CXX11_FLAGS "-std=c++11")
+    ENDIF()
+  ELSE()
+    SET(DCMTK_CXX11_FLAGS "")
+  ENDIF()
+  SET(DCMTK_CXX11_FLAGS "${DCMTK_CXX11_FLAGS}" CACHE STRING "The flags to add to CMAKE_CXX_FLAGS for enabling C++11 (if any).")
+  MARK_AS_ADVANCED(DCMTK_CXX11_FLAGS)
+ENDIF(NOT DEFINED DCMTK_CXX11_FLAGS)
+
 #-----------------------------------------------------------------------------
 # Third party libraries
 #-----------------------------------------------------------------------------
 
 INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/3rdparty.cmake)
-
-#-----------------------------------------------------------------------------
-# C++11 support
-#-----------------------------------------------------------------------------
-
-MACRO(GET_CXX_VERSION VERSION)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} --version OUTPUT_VARIABLE ${VERSION})
-  STRING(REGEX REPLACE "^.*[ ]([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" ${VERSION} "${${VERSION}}")
-ENDMACRO(GET_CXX_VERSION VERSION)
-
-MACRO(ALLOW_CXX11_SUPPORT FLAGS)
-  IF(NOT DCMTK_CXX11_FLAGS)
-    SET(DCMTK_CXX11_FLAGS ${FLAGS} CACHE STRING "Flags used to enable C++11 support.")
-  ENDIF()
-  IF(DCMTK_USE_CXX11_STL)
-    MESSAGE(STATUS "Info: Configured DCMTK to use native C++11 features.")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DCMTK_CXX11_FLAGS}")
-    SET(DCMTK_TRY_COMPILE_REQUIRED_CMAKE_FLAGS ${DCMTK_TRY_COMPILE_REQUIRED_CMAKE_FLAGS} "-DCMAKE_CXX_FLAGS:STRING=${DCMTK_CXX11_FLAGS}")
-  ELSE()
-    MESSAGE(STATUS "Info: Your compiler supports C++11. You may enable C++11 features via \"DCMTK_USE_CXX11_STL\" to create a C++11 build of DCMTK.")
-    SET(DCMTK_USE_CXX11_STL OFF CACHE BOOL "Enable or disable C++11 while building DCMTK.")
-  ENDIF()
-ENDMACRO(ALLOW_CXX11_SUPPORT)
-
-MACRO(DENY_CXX11_SUPPORT)
-  IF(DCMTK_USE_CXX11_STL)
-    IF(DCMTK_CXX11_FLAGS AND NOT DCMTK_CXX11_FLAGS STREQUAL "unknown")
-      MESSAGE(STATUS "Info: Enabling C++11 support with custom flags \"${DCMTK_CXX11_FLAGS}\" for a potentially unsupported compiler.")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DCMTK_CXX11_FLAGS}")
-      SET(DCMTK_TRY_COMPILE_REQUIRED_CMAKE_FLAGS ${DCMTK_TRY_COMPILE_REQUIRED_CMAKE_FLAGS} "-DCMAKE_CXX_FLAGS:STRING=${DCMTK_CXX11_FLAGS}")
-    ELSE()
-      MESSAGE(WARNING "DCMTK has been configured to use the C++11 STL, but the compiler does not seem to support C++11. Override this warning by setting DCMTK_CXX11_FLAGS to tell DCMTK how to enable C++11 support for your compiler.")
-      SET(DCMTK_CXX11_FLAGS "unknown" CACHE STRING "Flags used to enable C++11 support.")
-    ENDIF()
-  ENDIF()
-ENDMACRO(DENY_CXX11_SUPPORT)
-
-IF(CMAKE_COMPILER_IS_GNUCXX)
-  GET_CXX_VERSION(GXX_VERSION)
-  IF(GXX_VERSION VERSION_GREATER 4.8.1 OR GXX_VERSION VERSION_EQUAL 4.8.1)
-    ALLOW_CXX11_SUPPORT("-std=c++11")
-  ELSE()
-    DENY_CXX11_SUPPORT()
-  ENDIF()
-ELSEIF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  GET_CXX_VERSION(CLANG_VERSION)
-  IF(CLANG_VERSION VERSION_GREATER 3.3 OR CLANG_VERSION VERSION_EQUAL 3.3)
-    ALLOW_CXX11_SUPPORT("-std=c++11")
-  ELSE()
-    DENY_CXX11_SUPPORT()
-  ENDIF()
-ELSE()
-  DENY_CXX11_SUPPORT()
-ENDIF()
 
 #-----------------------------------------------------------------------------
 # DCMTK libraries

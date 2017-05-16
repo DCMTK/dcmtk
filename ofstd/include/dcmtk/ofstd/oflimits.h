@@ -37,8 +37,7 @@
 #ifdef HAVE_STL_LIMITS
 
 #include <limits>
-using OFfloat_round_style = std::float_round_style;
-enum
+enum OFfloat_round_style
 {
     OFround_indeterminate       = std::round_indeterminate,
     OFround_toward_zero         = std::round_toward_zero,
@@ -46,17 +45,42 @@ enum
     OFround_toward_infinity     = std::round_toward_infinity,
     OFround_toward_neg_infinity = std::round_toward_neg_infinity
 };
-using OFfloat_denorm_style = std::float_denorm_style;
-enum
+enum OFfloat_denorm_style
 {
     OFdenorm_indeterminate = std::denorm_indeterminate,
     OFdenorm_absent        = std::denorm_absent,
     OFdenorm_present       = std::denorm_present
 };
+
+#ifdef HAVE_CXX11
+
 template<typename T>
 using OFnumeric_limits = std::numeric_limits<T>;
 
-#else // fallback implementations
+#else // fallback implementation of C++11 features
+
+template<typename T>
+struct OFnumeric_limits : std::numeric_limits<T>
+{
+    static const int max_digits10 = 0;
+    static inline T lowest() { return std::numeric_limits<T>::min(); }
+};
+template<>
+struct OFnumeric_limits<float> : std::numeric_limits<float>
+{
+    static const int max_digits10 = DCMTK_FLOAT_MAX_DIGITS10;
+    static inline float lowest() { return -std::numeric_limits<float>::max(); }
+};
+template<>
+struct OFnumeric_limits<double> : std::numeric_limits<double>
+{
+    static const int max_digits10 = DCMTK_DOUBLE_MAX_DIGITS10;
+    static inline double lowest() { return -std::numeric_limits<double>::max(); }
+};
+
+#endif // fallback implementation of C++11 features based on std::numeric_limits
+
+#else // fallback implementations entirely without using the native STL
 
 #define INCLUDE_CLIMITS
 #define INCLUDE_CFLOAT
