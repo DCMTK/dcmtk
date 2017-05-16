@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2014, OFFIS e.V.
+ *  Copyright (C) 2012-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,7 +27,7 @@
 #include "dcmtk/ofstd/ofutil.h"
 
 // use native classes when c++11 is supported
-#ifdef DCMTK_USE_CXX11_STL
+#if defined(HAVE_STL_MEMORY) && defined(HAVE_CXX11)
 
 #include <memory>
 template<typename... ARGS>

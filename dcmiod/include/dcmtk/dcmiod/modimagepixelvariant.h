@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -55,7 +55,7 @@ struct IODImagePixelVariantBaseVisitor
  *  The class Image Pixel Module, the Floating Point Image Pixel module
  *  and the Double Floating Point Image Pixel module
  */
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 template<typename... Types>
 class IODImagePixelVariant
 : public OFvariant<OFmonostate,Types...>

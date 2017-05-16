@@ -65,7 +65,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  @return OFTrue if selectCharacterSet() was successfully called before,
      *    OFFalse if not (or clear() has been called in the meantime).
      */
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     explicit
 #endif
     operator OFBool() const;

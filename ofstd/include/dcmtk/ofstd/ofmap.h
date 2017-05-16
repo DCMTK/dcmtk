@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2015, OFFIS e.V.
+ *  Copyright (C) 2009-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,7 +27,7 @@
 
 #include "dcmtk/ofstd/ofutil.h" // for OFPair
 
-#if defined(HAVE_STL) || defined(HAVE_STL_MAP)
+#ifdef HAVE_STL_MAP
 // it is possible to use the standard template library map class since the
 // interface is nearly identical.
 #include <map>

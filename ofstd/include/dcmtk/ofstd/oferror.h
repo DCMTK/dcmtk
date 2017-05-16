@@ -25,7 +25,8 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef DCMTK_USE_CXX11_STL
+// also require STL string, since otherwise OFsystem_error would become incompatible with OFString
+#if defined(HAVE_STL_SYSTEM_ERROR) && defined(HAVE_STL_STRING)
 
 #include <system_error>
 using OFerror_category = std::error_category;
@@ -34,7 +35,7 @@ using OFerror_code = std::error_code;
 inline const OFerror_category& OFsystem_category() { return std::system_category(); }
 inline const OFerror_category& OFgeneric_category() { return std::generic_category(); }
 
-#else //fallback implementations
+#else // fallback implementations
 
 #define INCLUDE_CERRNO
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -206,7 +207,7 @@ public:
 
     // declare overloaded operators, see above table for documentation
 #ifndef DOXYGEN
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     explicit
 #endif
     operator OFBool() const;
@@ -239,6 +240,6 @@ DCMTK_OFSTD_EXPORT const OFerror_category& OFsystem_category();
  */
 DCMTK_OFSTD_EXPORT const OFerror_category& OFgeneric_category();
 
-#endif // NOT C++11
+#endif // NOT HAVE_STL_SYSTEM_ERROR && HAVE_STL_STRING
 
 #endif // OFERROR_H

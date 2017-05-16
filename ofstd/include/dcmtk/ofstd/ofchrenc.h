@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -126,7 +126,7 @@ public:
     /** check whether this object refers to a valid encoder.
      *  @result OFTrue if this refers to a valid encoder, OFFalse otherwise.
      */
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     explicit
 #endif
     operator OFBool() const;

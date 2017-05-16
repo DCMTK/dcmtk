@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2014-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,7 +27,7 @@
 #include "dcmtk/ofstd/oftypes.h"
 
 // use native functionality if C++11 is supported
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 
 #define OFalignof alignof
 // these helper templates automatically resolve the alignment
@@ -131,7 +131,7 @@ OFalignas_size_helper<Size> OFalignof_or_identity_template() {}
 #endif // C++11
 
 // alignas
-#if defined(DCMTK_USE_CXX11_STL) && defined(ALIGNAS_SUPPORTS_TYPEDEFS)
+#if defined(HAVE_CXX11) && defined(ALIGNAS_SUPPORTS_TYPEDEFS)
 
 #define OFalignas alignas
 

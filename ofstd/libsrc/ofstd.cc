@@ -2849,7 +2849,7 @@ OFCondition OFStandard::dropPrivileges()
 }
 
 
-#ifndef DCMTK_USE_CXX11_STL
+#ifndef HAVE_CXX11
 DCMTK_OFSTD_EXPORT OFnullptr_t OFnullptr;
 DCMTK_OFSTD_EXPORT OFnullopt_t OFnullopt;
 static const OFignore_t OFignore_value;

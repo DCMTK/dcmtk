@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2014-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,8 +33,8 @@
  *  @brief Provides an interface to query properties of all fundamental numeric types.
  */
 
-// use native classes if C++11 is supported
-#if __cplusplus >= 201103L
+// use native classes if available
+#ifdef HAVE_STL_LIMITS
 
 #include <limits>
 using OFfloat_round_style = std::float_round_style;

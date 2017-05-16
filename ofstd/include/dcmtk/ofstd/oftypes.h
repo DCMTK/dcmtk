@@ -34,7 +34,7 @@
  */
 
 // use native types if C++11 is supported
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 #include <cstdint>
 #include <cstddef>
 #include <ostream>

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, OFFIS e.V.
+ *  Copyright (C) 2016-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,7 +34,7 @@
  *  @see @ref ofvisit_variant "OFvisit" &ndash; @copybrief ofvisit_variant
  */
 
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 #include <type_traits>
 #include <cassert>
 #include <limits>

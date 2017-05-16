@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2016, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,7 +29,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofdefine.h"
 
-#if defined(HAVE_STL) || defined(HAVE_STL_STACK)
+#ifdef HAVE_STL_STACK
 // It is possible to use the standard template library list class since the
 // interface is nearly identical.
 // Important: If you want to use the standard template library, no variable

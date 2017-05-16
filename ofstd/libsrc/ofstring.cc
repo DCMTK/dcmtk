@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,7 +30,7 @@
 
 #include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
 
-#ifndef HAVE_STD_STRING
+#ifndef HAVE_STL_STRING
 
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofcast.h"
@@ -1049,7 +1049,7 @@ OFBool operator>= (const OFString& lhs, char rhs)
     return (!(lhs < rhs));
 }
 
-#else /* HAVE_STD_STRING */
+#else /* HAVE_STL_STRING */
 
 int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 

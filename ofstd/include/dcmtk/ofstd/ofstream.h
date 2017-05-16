@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -95,7 +95,7 @@ typedef STD_NAMESPACE istringstream OFIStringStream;
 
 #define OFStringStream_ends ""
 
-#ifdef HAVE_STD_STRING
+#ifdef HAVE_STL_STRING
 #define OFSTRINGSTREAM_GETOFSTRING(oss, strng) \
     OFString strng((oss).str());
 #else

@@ -39,7 +39,7 @@
 
 #ifndef DOXYGEN
 struct OFnullopt_t {};
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 // declare constexpr nullopt if supported.
 constexpr OFnullopt_t OFnullopt{};
 #else // C++11
@@ -164,7 +164,7 @@ public:
     struct is_default_constructible
     : OFintegral_constant<OFBool,sizeof(sfinae<T>(OFnullptr)) == sizeof(yes_type)> {};
 
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 
     template<typename... Args>
     void construct( Args&&... args )
@@ -745,7 +745,7 @@ public:
     // False friend of the copy constructor, to prevent incorrect behavior
     // (internally calls the real copy constructor).
     OFoptional( OFoptional& rhs )
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     // delegate constructor if possible
     : OFoptional( const_cast<const OFoptional&>( rhs ) )
     {
@@ -767,7 +767,7 @@ public:
             OFoptional_traits<T>::construct( *rhs );
     }
 
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     // Move constructor, kills rhs if it was engaged before.
     OFoptional( OFoptional&& rhs )
     : OFoptional_traits<T>()
@@ -877,7 +877,7 @@ public:
     // State and content accessing functions, see respective expression for details
 
 // declare cast operator as explicit, if possible
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     explicit
 #endif // C++11
     operator OFBool() const
@@ -990,7 +990,7 @@ public:
     }
 
     // Move semantics if C++11 is supported
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     OFoptional( OFoptional&& rhs )
     : m_pT( rhs.m_pT )
     {
@@ -1026,7 +1026,7 @@ public:
     // State and content accessing functions, see respective expression for details
 
 // declare cast operator as explicit, if possible
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     explicit
 #endif // C++11
     operator bool() const
@@ -1061,7 +1061,7 @@ private:
 };
 
 // Move semantics and std::swap overload if C++11 is supported
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 template<typename T>
 OFoptional<typename OFdecay<T>::type> OFmake_optional( T&& t )
 {

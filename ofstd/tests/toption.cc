@@ -85,7 +85,7 @@ OFTEST(ofstd_optional)
     OFCHECK( o1 && *o1 == 23 );
 #endif
 
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     OFoptional<test> o3( 2, OFFalse );
 #else // C++11
     OFoptional<test> o3( test( 2, OFFalse ) );
@@ -106,7 +106,7 @@ OFTEST(ofstd_optional)
     OFCHECK( !o3 );
 #endif
 
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     o3.emplace( 0, OFFalse );
 #else // C++11
     o3 = test( 0, OFFalse );

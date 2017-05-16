@@ -177,7 +177,7 @@ public:
     /** Test whether this object may be used for matching, i.e.\ whether it is not empty.
      *  @return OFTrue if this object may be used for matching, OFFalse otherwise.
      */
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
     explicit
 #endif
     operator OFBool() const;

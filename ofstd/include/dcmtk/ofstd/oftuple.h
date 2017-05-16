@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2015, OFFIS e.V.
+ *  Copyright (C) 2014-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,7 +28,7 @@
 #include "dcmtk/ofstd/ofdefine.h"
 
 // use native classes if C++11 is supported
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_STL_TUPLE
 #include <tuple>
 
 #define OFignore std::ignore

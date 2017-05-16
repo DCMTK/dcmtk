@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -43,7 +43,7 @@ class IODImagePixelModule;
  *  Modules supported on top of DcmIODCommon: General Image Module and
  *  Image Pixel Module.
  */
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 template<typename T,typename... Types>
 struct DcmIODImageHasType
 : std::false_type {};
@@ -72,7 +72,7 @@ public:
 
   /** A good comment would be nice, but I have nothing in mind
    */
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
   using IODImagePixelModuleType = IODImagePixelVariant<Types...>;
 #else
   typedef IODImagePixelVariant<OFVARIADIC_TEMPLATE_PARAMETER_PACK(T)> IODImagePixelModuleType;
@@ -182,7 +182,7 @@ public:
 private:
 
   template<typename T>
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
   typename std::enable_if<DcmIODImageHasType<T,Types...>::value,OFCondition>::type
 #else
   OFTypename OFenable_if
@@ -199,7 +199,7 @@ private:
   }
 
   template<typename T>
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
   typename std::enable_if<!DcmIODImageHasType<T,Types...>::value,OFCondition>::type
 #else
   OFTypename OFenable_if
@@ -214,7 +214,7 @@ private:
   }
 
   template<typename T>
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
   typename std::enable_if<DcmIODImageHasType<T,Types...>::value,OFCondition>::type
 #else
   OFTypename OFenable_if
@@ -231,7 +231,7 @@ private:
   }
 
   template<typename T>
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
   typename std::enable_if<!DcmIODImageHasType<T,Types...>::value,OFCondition>::type
 #else
   OFTypename OFenable_if
@@ -271,7 +271,7 @@ private:
   }
 
   template<typename T>
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
   typename std::enable_if<DcmIODImageHasType<T,Types...>::value,OFCondition>::type
 #else
   OFTypename OFenable_if
@@ -286,7 +286,7 @@ private:
   }
 
   template<typename T>
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
   typename std::enable_if<!DcmIODImageHasType<T,Types...>::value,OFCondition>::type
 #else
   OFTypename OFenable_if

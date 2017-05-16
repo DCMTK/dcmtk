@@ -47,7 +47,7 @@
 #error Your C++ compiler cannot handle class templates:
 #endif
 
-#if defined(HAVE_STL) || defined(HAVE_STL_LIST)
+#ifdef HAVE_STL_LIST
 // It is possible to use the standard template library list class since the
 // interface is nearly identical.
 // Important: If you want to use the standard template library (STL), no

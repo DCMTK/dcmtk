@@ -23,8 +23,8 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-// nothing to do if the implementation is provided by the C++11 STL
-#ifndef DCMTK_USE_CXX11_STL
+// Only provide the implementation if the STL one is not used
+#if !defined(HAVE_STL_SYSTEM_ERROR) || !defined(HAVE_STL_STRING)
 
 #define INCLUDE_CERRNO
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -202,4 +202,4 @@ struct InitErrorCategories
 
 InitErrorCategories InitErrorCategories::Init;
 
-#endif //DCMTK_USE_CXX11_STL
+#endif // !HAVE_STL_SYSTEM_ERROR OR !HAVE_STL_STRING

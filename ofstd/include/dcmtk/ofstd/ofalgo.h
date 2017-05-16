@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2012, OFFIS e.V.
+ *  Copyright (C) 1997-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,7 +67,7 @@
 //   the parameter function to the correct type (e.g. NeXT gcc 2.5.8)
 
 
-#if defined(HAVE_STL) || defined(HAVE_STL_ALGORITHMS)
+#ifdef HAVE_STL_ALGORITHM
 // It is possible to use the standard template library list class since the
 // interface is nearly identical.
 // Important: If you want to use the standard template library (STL), no

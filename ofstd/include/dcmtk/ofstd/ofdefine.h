@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -100,7 +100,7 @@ END_EXTERN_C
 #endif
 
 /* define OFconstexpr to 'constexpr' or '' if not supported */
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 #define OFconstexpr constexpr
 #else // C++11
 #define OFconstexpr

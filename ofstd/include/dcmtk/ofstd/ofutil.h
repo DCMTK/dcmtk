@@ -34,7 +34,7 @@
  *  for older compilers.
  */
 
-#ifdef DCMTK_USE_CXX11_STL
+#ifdef HAVE_CXX11
 #include <utility>
 #include <tuple>
 #define OFmove std::move
