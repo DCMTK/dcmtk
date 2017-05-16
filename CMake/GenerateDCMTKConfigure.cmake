@@ -966,10 +966,10 @@ int main()
     return 0;
 }")
 
-# Compile config/arith.cc and generate config/arith.h
+# Compile config/tests/arith.cc and generate config/arith.h
 FUNCTION(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
   SET(ARITH_H_FILE "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h")
-  IF("${DCMTK_SOURCE_DIR}/config/arith.cc" IS_NEWER_THAN "${ARITH_H_FILE}")
+  IF("${DCMTK_SOURCE_DIR}/config/tests/arith.cc" IS_NEWER_THAN "${ARITH_H_FILE}")
     IF(CMAKE_CROSSCOMPILING)
       IF(WIN32)
         UNIX_TO_WINE_PATH(ARITH_H_FILE "${ARITH_H_FILE}")
@@ -982,7 +982,7 @@ FUNCTION(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
     DCMTK_TRY_RUN(
       RESULT COMPILED
       "${DCMTK_BINARY_DIR}/CMakeTmp/Arith"
-      "${DCMTK_SOURCE_DIR}/config/arith.cc"
+      "${DCMTK_SOURCE_DIR}/config/tests/arith.cc"
       COMPILE_DEFINITIONS -I"${DCMTK_BINARY_DIR}/config/include" -I"${DCMTK_SOURCE_DIR}/ofstd/include" -I"${DCMTK_SOURCE_DIR}/ofstd/libsrc"
       RUN_OUTPUT_VARIABLE OUTPUT
       COMPILE_OUTPUT_VARIABLE CERR

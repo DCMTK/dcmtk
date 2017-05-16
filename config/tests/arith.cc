@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014, OFFIS e.V.
+ *  Copyright (C) 2014-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,7 +27,7 @@
 #define INCLUDE_CMATH
 #define INCLUDE_CSETJMP
 #define INCLUDE_CSIGNAL
-#include "math.cc"
+#include "../math.cc"
 
 #ifdef HAVE_FENV_H
 // For controlling floating point exceptions on Unix like systems.
