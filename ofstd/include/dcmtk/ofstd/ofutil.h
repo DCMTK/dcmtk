@@ -357,6 +357,8 @@ OFPair<K, V> OFMake_pair(const K& first, const V& second)
 
 #ifdef HAVE_STL_TUPLE
 
+#ifdef HAVE_CXX11
+
 template<std::size_t Index,typename T>
 constexpr auto OFget( T&& t ) -> decltype( std::get<Index>( std::forward<T>( t ) ) )
 {
@@ -374,6 +376,22 @@ using OFtuple_size = std::tuple_size<Tuple>;
 
 template<std::size_t Index,typename Tuple>
 using OFtuple_element = std::tuple_element<Index,Tuple>;
+
+#else // HAVE_CXX11
+
+template<typename Tuple>
+struct OFtuple_size : STD_NAMESPACE tuple_size<Tuple> {};
+
+template<size_t Index,typename Tuple>
+struct OFtuple_element : STD_NAMESPACE tuple_element<Index,Tuple> {};
+
+template<size_t Index,typename T>
+OFTypename OFtuple_element<Index,T>::type OFget( T& t ) { return STD_NAMESPACE get<Index>( t ); }
+
+template<size_t Index,typename T>
+OFTypename OFtuple_element<Index,T>::type OFget( const T& t ) { return STD_NAMESPACE get<Index>( t ); }
+
+#endif // NOT HAVE_CXX11
 
 #else // HAVE_STL_TUPLE
 

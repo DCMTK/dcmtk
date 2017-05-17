@@ -29,11 +29,11 @@
 #if defined(HAVE_STL_SYSTEM_ERROR) && defined(HAVE_STL_STRING)
 
 #include <system_error>
-using OFerror_category = std::error_category;
-using OFerror_code = std::error_code;
+typedef STD_NAMESPACE error_category OFerror_category;
+typedef STD_NAMESPACE error_code OFerror_code;
 
-inline const OFerror_category& OFsystem_category() { return std::system_category(); }
-inline const OFerror_category& OFgeneric_category() { return std::generic_category(); }
+inline const OFerror_category& OFsystem_category() { return STD_NAMESPACE system_category(); }
+inline const OFerror_category& OFgeneric_category() { return STD_NAMESPACE generic_category(); }
 
 #else // fallback implementations
 
