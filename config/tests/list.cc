@@ -50,5 +50,14 @@ int main()
         return -1;
     }
 
+    // ensure iterators are NOT invalidated by swap()
+    std::list<int>::iterator it = l.begin();
+    std::list<int> m;
+    m.push_back(23);
+    l.swap(m);
+    if (it != m.begin()) {
+        return -1;
+    }
+
     return 0;
 }

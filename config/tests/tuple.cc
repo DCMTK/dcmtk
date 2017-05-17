@@ -39,5 +39,9 @@ int main()
         return -1;
     }
 
+    // ensure std::tuple can take at least 50 template arguments, otherwise
+    // our own implementation is superior
+    std::tuple<int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int> t;
+
     return 0;
 }

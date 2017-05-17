@@ -66,5 +66,14 @@ int main()
         return -1;
     }
 
+    // ensure iterators are NOT invalidated by swap()
+    std::vector<int>::iterator it = v.begin();
+    std::vector<int> w;
+    w.push_back(23);
+    v.swap(w);
+    if (it != w.begin()) {
+        return -1;
+    }
+
     return 0;
 }
