@@ -211,6 +211,7 @@ public:
    *  @param  type Value type (valid value: "1", "1C", "2", something else)
    *  @param  searchCond Optional flag indicating the status of a previous 'search' function call
    *  @param  moduleName Optional module name to be printed (default: "IOD" if NULL)
+   *  @param  logLevel The log level to log errors to
    *  @return EC_Normal if element value is correct, error otherwise
    */
   static OFCondition checkElementValue(const DcmElement *delem,
@@ -218,7 +219,8 @@ public:
                                        const OFString &vm,
                                        const OFString &type,
                                        const OFCondition &searchCond = EC_Normal,
-                                       const char *moduleName = NULL);
+                                       const char *moduleName = NULL,
+                                       const dcmtk::log4cplus::LogLevel logLevel = dcmtk::log4cplus::WARN_LOG_LEVEL);
 
   /** Check element value for correct value multiplicity and type.
    *  @param  delem DICOM element to be checked
@@ -228,13 +230,15 @@ public:
    *  @param  type Value type (valid value: "1", "1C", "2", something else)
    *  @param  searchCond Optional flag indicating the status of a previous 'search' function call
    *  @param  moduleName Optional module name to be printed (default: "IOD" if NULL)
+   *  @param  logLevel The log level to log errors to
    *  @return EC_Normal if element value is correct, error otherwise
    */
   static OFCondition checkElementValue(const DcmElement &delem,
                                        const OFString &vm,
                                        const OFString &type,
                                        const OFCondition &searchCond = EC_Normal,
-                                       const char *moduleName = NULL);
+                                       const char *moduleName = NULL,
+                                       const dcmtk::log4cplus::LogLevel logLevel = dcmtk::log4cplus::WARN_LOG_LEVEL);
 
   /** Get string value from element
    *  @param  delem DICOM element from which the string value should be retrieved
@@ -544,7 +548,7 @@ public:
   {
     OFCondition result;
     /* Check sequence, reports cardinality and type errors as warnings */
-    checkSubSequence(result, source, seqKey, "1", type, module);
+    checkSubSequence(result, source, seqKey, "1", type, module, dcmtk::log4cplus::WARN_LOG_LEVEL);
 
     /* Try to read sequence into internal data (ignore errors as much as possible) */
     DcmItem* item = NULL;
@@ -602,7 +606,6 @@ public:
    *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Name of the module/macro this sequence is contained in. Used
    *                 for error messages and can also be left empty.
-   *  @return EC_Normal if successful, an error code otherwise
    */
   template <class Container>
   static void writeSubSequence(OFCondition& result,
@@ -661,7 +664,7 @@ public:
       }
 
       // Check result
-      checkSubSequence(result, destination, seqKey, cardinality, type, module);
+      checkSubSequence(result, destination, seqKey, cardinality, type, module, dcmtk::log4cplus::ERROR_LOG_LEVEL);
 
       // Clean up if we did not have success */
       if (result.bad())
@@ -683,7 +686,6 @@ public:
    *  @param  rule Rule describing the requirements for this sequence. If NULL
    *          an error is returned (IOD_EC_NoSuchRule), but no error error is reported
    *          to the logger.
-   *  @return EC_Normal if successful, an error code otherwise
    */
   template <class Container>
   static void writeSubSequence(OFCondition& result,
@@ -720,7 +722,6 @@ public:
    *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Name of the module/macro this sequence is contained in.
    *          Used for error messages and can also be left empty.
-   *  @return EC_Normal if successful, an error code otherwise
    */
   template <class Container>
   static void writeSingleItem(OFCondition& result,
@@ -769,7 +770,7 @@ public:
         DCMIOD_TRACE("Skipping type 3 sequence " << seqKey << ": No data or incomplete data available");
       }
       /* Check outcome */
-      checkSubSequence(result, destination, seqKey, "1", type, module);
+      checkSubSequence(result, destination, seqKey, "1", type, module, dcmtk::log4cplus::ERROR_LOG_LEVEL);
     }
   }
 
@@ -784,7 +785,6 @@ public:
    *  @param  destination The DICOM item that should hold the sequence
    *          (with a single item) in the end.
    *  @param  rule The rule for writing the given sequence
-   *  @return EC_Normal if successful, an error code otherwise
    */
   template <class Container>
   static void writeSingleItem(OFCondition& result,
@@ -821,14 +821,15 @@ public:
    *          i.e.\ "1,1C,2,2C or 3".
    *  @param  module Name of the module/macro this sequence is contained in.
    *          Used for error messages and can also be left empty.
-   *  @return EC_Normal if successful, an error code otherwise
+   *  @param  logLevel The log level to write errors to
    */
   static void checkSubSequence(OFCondition& result,
                                DcmItem& surroundingItem,
                                const DcmTagKey& seqKey,
                                const OFString& cardinality,
                                const OFString& type,
-                               const OFString& module);
+                               const OFString& module,
+                               const dcmtk::log4cplus::LogLevel logLevel);
 
   /** Deletes all elements from given container and calls "delete" on each
    *  of them to clear memory.

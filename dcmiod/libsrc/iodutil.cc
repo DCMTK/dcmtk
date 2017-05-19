@@ -52,12 +52,12 @@ OFCondition DcmIODUtil::getAndCheckElementFromDataset(DcmItem &dataset,
     /* copy object from search stack */
     result = delem.copyFrom(*stack.top());
     /* we need a reference to the original element in order to determine the SpecificCharacterSet */
-    checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName);
+    checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName, dcmtk::log4cplus::WARN_LOG_LEVEL);
   }
   /* the element could not be found in the dataset */
   else
   {
-    checkElementValue(delem, vm, type, result, moduleName);
+    checkElementValue(delem, vm, type, result, moduleName, dcmtk::log4cplus::WARN_LOG_LEVEL);
   }
   return result;
 }
@@ -80,11 +80,11 @@ OFCondition DcmIODUtil::getAndCheckElementFromDataset(DcmItem &dataset,
     /* copy object from search stack */
     delem = OFstatic_cast ( DcmElement*, stack.top()->clone() );
     /* we need a reference to the original element in order to determine the SpecificCharacterSet */
-    checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName);
+    checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName, dcmtk::log4cplus::WARN_LOG_LEVEL);
   }
   /* the element could not be found in the dataset */
   else
-    checkElementValue(delem, tagKey, vm, type, result, moduleName);
+    checkElementValue(delem, tagKey, vm, type, result, moduleName, dcmtk::log4cplus::WARN_LOG_LEVEL);
 
   return result;
 }
@@ -192,7 +192,7 @@ OFCondition DcmIODUtil::addElementToDataset(OFCondition &result,
         result = dataset.insert(delem, OFTrue /*replaceOld*/);
         if (result.good())
         {
-          result = checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str());
+          result = checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str(), dcmtk::log4cplus::ERROR_LOG_LEVEL);
         }
         if (result.good())
         {
@@ -208,7 +208,7 @@ OFCondition DcmIODUtil::addElementToDataset(OFCondition &result,
       {
         // Empty element value not allowed for "type 1"
         result = EC_InvalidValue;
-        checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str());
+        checkElementValue(*delem, rule->getVM(), type, result, rule->getModule().c_str(), dcmtk::log4cplus::ERROR_LOG_LEVEL);
       }
     }
     else
@@ -252,15 +252,17 @@ OFCondition DcmIODUtil::checkElementValue(const DcmElement *delem,
                                           const OFString &vm,
                                           const OFString &type,
                                           const OFCondition &searchCond,
-                                          const char *moduleName)
+                                          const char *moduleName,
+                                          const dcmtk::log4cplus::LogLevel logLevel)
 {
   OFCondition result = EC_Normal;
   const OFString tagName = DcmTag(tagKey).getTagName();
   const OFString module = (moduleName == NULL) ? "IOD" : moduleName;
+  OFOStringStream error;
   /* NB: type 1C and 2C cannot be checked, assuming to be optional */
   if (((type == "1") || (type == "2")) && searchCond.bad())
   {
-    DCMIOD_WARN(tagName << " " << tagKey << " absent in " << module << " (type " << type << ")");
+    error << tagName << " " << tagKey << " absent in " << module << " (type " << type << ")";
     result = IOD_EC_MissingAttribute;
   }
   else if ((delem == NULL) || OFconst_cast(DcmElement*, delem)->isEmpty(OFTrue /*normalize*/))   // cast away constness of delem; value modification can happen (eg. to remove padding)
@@ -268,34 +270,49 @@ OFCondition DcmIODUtil::checkElementValue(const DcmElement *delem,
     /* however, type 1C should never be present with empty value */
     if (((type == "1") || (type == "1C")) && searchCond.good())
     {
-      DCMIOD_WARN(tagName << " " << tagKey << " empty in " << module << " (type " << type << ")");
+      error << tagName << " " << tagKey << " empty in " << module << " (type " << type << ")";
       result = EC_MissingValue;
     }
   } else {
     result = OFconst_cast(DcmElement*, delem)->checkValue(vm, OFTrue /*oldFormat*/);   // cast away constness of delem; value modification can happen (eg. to remove padding)
     if (result == EC_InvalidCharacter)
     {
-      DCMIOD_WARN(tagName << " " << tagKey << " contains invalid character(s) in " << module);
+      error << tagName << " " << tagKey << " contains invalid character(s) in " << module;
     }
     else if (result == EC_ValueRepresentationViolated)
     {
-      DCMIOD_WARN(tagName << " " << tagKey << " violates VR definition in " << module);
+      error << tagName << " " << tagKey << " violates VR definition in " << module;
     }
     else if (result == EC_ValueMultiplicityViolated)
     {
       const OFString vmText = (delem->getVR() == EVR_SQ) ? " #items" : " VM";
-      DCMIOD_WARN(tagName << " " << tagKey << vmText << " != " << vm << " in " << module);
+      error << tagName << " " << tagKey << vmText << " != " << vm << " in " << module;
     }
     else if (result == EC_MaximumLengthViolated)
     {
-      DCMIOD_WARN(tagName << " " << tagKey << " violates maximum VR length in " << module);
+      error << tagName << " " << tagKey << " violates maximum VR length in " << module;
     }
     else if (result.bad())
     {
-      DCMIOD_WARN("INTERNAL ERROR while checking value of " << tagName << " " << tagKey << " in " << module);
+      error << "INTERNAL ERROR while checking value of " << tagName << " " << tagKey << " in " << module;
       result = EC_Normal;
     }
   }
+  OFSTRINGSTREAM_GETSTR(error, tmpString)
+  if (strlen(tmpString) > 0)
+  {
+    switch (logLevel)
+    {
+      case dcmtk::log4cplus::TRACE_LOG_LEVEL: DCMIOD_TRACE(tmpString); break;
+      case dcmtk::log4cplus::DEBUG_LOG_LEVEL: DCMIOD_DEBUG(tmpString); break;
+      case dcmtk::log4cplus::WARN_LOG_LEVEL : DCMIOD_WARN(tmpString); break;
+      case dcmtk::log4cplus::INFO_LOG_LEVEL : DCMIOD_INFO(tmpString); break;
+      case dcmtk::log4cplus::ERROR_LOG_LEVEL : DCMIOD_ERROR(tmpString); break;
+      case dcmtk::log4cplus::FATAL_LOG_LEVEL: DCMIOD_FATAL(tmpString); break;
+      default: DCMIOD_WARN(tmpString);;
+    }
+  }
+  OFSTRINGSTREAM_FREESTR(tmpString)
   return result;
 }
 
@@ -304,10 +321,11 @@ OFCondition DcmIODUtil::checkElementValue(const DcmElement &delem,
                                           const OFString &vm,
                                           const OFString &type,
                                           const OFCondition &searchCond,
-                                          const char *moduleName)
+                                          const char *moduleName,
+                                          const dcmtk::log4cplus::LogLevel logLevel)
 {
   /* call the real function */
-  return checkElementValue(&delem, delem.getTag(), vm, type, searchCond, moduleName);
+  return checkElementValue(&delem, delem.getTag(), vm, type, searchCond, moduleName, logLevel);
 }
 
 
@@ -445,7 +463,8 @@ void DcmIODUtil::checkSubSequence(OFCondition& result,
                                   const DcmTagKey& seqKey,
                                   const OFString& cardinality,
                                   const OFString& type,
-                                  const OFString& module)
+                                  const OFString& module,
+                                  const dcmtk::log4cplus::LogLevel logLevel)
 {
   OFCondition exists = EC_Normal;
   /* check result */
@@ -453,7 +472,7 @@ void DcmIODUtil::checkSubSequence(OFCondition& result,
   {
     DcmSequenceOfItems *seq = NULL;
     exists = surroundingItem.findAndGetSequence(seqKey, seq);
-    result = DcmIODUtil::checkElementValue(seq, seqKey, cardinality, type, exists, module.c_str());
+    result = DcmIODUtil::checkElementValue(seq, seqKey, cardinality, type, exists, module.c_str(), logLevel);
   }
 }
 
@@ -474,7 +493,7 @@ OFCondition DcmIODUtil::getAndCheckSingleItem(DcmSequenceOfItems& seq,
   }
 
   // get actual tag name and cardinality
-  const Uint32 card = seq.card();
+  const unsigned long card = seq.card();
   if (card != 1)
   {
     if (card > 1)

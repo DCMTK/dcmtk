@@ -212,7 +212,7 @@ OFCondition IODComponent::read(DcmItem& source,
     {
       DcmElement *elem = NULL;
       OFCondition cond = source.findAndGetElement( (*rule)->getTagKey(), elem);
-      DcmIODUtil::checkElementValue(elem, (*rule)->getTagKey(), (*rule)->getVM(), (*rule)->getType(), cond, (*rule)->getModule().c_str());
+      DcmIODUtil::checkElementValue(elem, (*rule)->getTagKey(), (*rule)->getVM(), (*rule)->getType(), cond, (*rule)->getModule().c_str(), dcmtk::log4cplus::WARN_LOG_LEVEL);
     }
     else // Normal attributes are checked and copied over into this IOD component
     {
