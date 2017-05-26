@@ -91,11 +91,6 @@
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#ifdef HAVE_GUSI_H
-/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
-#include <GUSI.h>
-#endif
-
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>  /* for Windows defines */

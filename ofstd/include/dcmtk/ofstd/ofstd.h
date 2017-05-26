@@ -1028,9 +1028,9 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static OFString getHostName();
 
-    /** Initialize the network API (if necessary), e.g.\ Winsock or GUSI.
+    /** Initialize the network API (if necessary), e.g.\ Winsock.
      *  Calls the appropriate network initialization routines for the current
-     *  platform, e.g.\ WSAStartup() or GUSISetup().
+     *  platform, e.g.\ WSAStartup().
      *  @note This function must be called by an application before any
      *    network related functions are used, be it listening on a socket or
      *    just retrieving the current host name. Not all platforms require

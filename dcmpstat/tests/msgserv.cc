@@ -27,10 +27,6 @@
 #include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
 #endif
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* we have to include this before sys/time.h on Solaris */
@@ -162,9 +158,6 @@ int main(int argc, char *argv[])
       return 10;
     }
 
-#ifdef HAVE_GUSI_H
-    /* GUSI always returns an error for setsockopt(...) */
-#else
     int reuse = 1;
 
 #ifdef _WIN32
@@ -176,7 +169,6 @@ int main(int argc, char *argv[])
       OFLOG_FATAL(msgservLogger, "failed to set socket options");
       return 10;
     }
-#endif
 
     /* Name socket using wildcards */
     struct sockaddr_in server;
@@ -251,9 +243,6 @@ int main(int argc, char *argv[])
           return 10;
         }
 
-#ifdef HAVE_GUSI_H
-        /* GUSI always returns an error for setsockopt(...) */
-#else
         reuse = 1;
 
 #ifdef _WIN32
@@ -265,7 +254,6 @@ int main(int argc, char *argv[])
           OFLOG_FATAL(msgservLogger, "failed to set socket options");
           return 10;
         }
-#endif
 
         // now we can handle the incoming connection
         DcmTCPConnection connection(sock);

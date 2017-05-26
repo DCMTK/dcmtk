@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,10 +26,6 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
 
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/oflog/oflog.h"
@@ -696,12 +692,6 @@ static int do_remove(
 
 int main(int argc, char *argv[])
 {
-
-#ifdef HAVE_GUSI_H
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
-
   DcmSignature::initializeLibrary(); // initialize dcmsign
 
   const char *                  opt_certfile = NULL;

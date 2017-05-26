@@ -21,10 +21,6 @@
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/dcmnet/scu.h"
@@ -89,12 +85,6 @@ main(int argc, char *argv[])
   const char *opt_peerTitle = PEERAPPLICATIONTITLE;
   const char *opt_ourTitle = APPLICATIONTITLE;
   OFList<OFString> fileNameList;
-
-#ifdef HAVE_GUSI_H
-  /* needed for Macintosh */
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
 
   char tempstr[20];
   OFString temp_str;

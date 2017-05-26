@@ -169,10 +169,6 @@ typedef u_short WORD;
 
 #endif /* HAVE_WINDOWS_H */
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 #ifdef _WIN32
 #include <process.h>     /* needed for declaration of getpid() */
 #endif
@@ -2922,11 +2918,6 @@ OFString OFStandard::getHostName()
 
 void OFStandard::initializeNetwork()
 {
-#ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
 #ifdef HAVE_WINSOCK_H
     WSAData winSockData;
     /* we need at least version 1.1 */

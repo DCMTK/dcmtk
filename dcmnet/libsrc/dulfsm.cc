@@ -103,10 +103,6 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>       /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
-#endif
-
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/lst.h"
@@ -2445,16 +2441,12 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         sockarg.l_onoff = 0;
         sockarg.l_linger = 0;
 
-#ifdef HAVE_GUSI_H
-        /* GUSI always returns an error for setsockopt(...) */
-#else
         if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *) &sockarg, (int) sizeof(sockarg)) < 0)
         {
           OFString msg = "TCP Initialization Error: ";
           msg += OFStandard::getLastNetworkErrorCode().message();
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
-#endif
         setTCPBufferLength(s);
 
         /*
@@ -3771,14 +3763,10 @@ static void setTCPBufferLength(SOCKET sock)
 #else
 static void setTCPBufferLength(int sock)
 #endif
-
 {
     char *TCPBufferLength;
     int bufLen;
 
-#ifdef HAVE_GUSI_H
-    /* GUSI always returns an error for setsockopt(...) */
-#else
     /*
      * check whether environment variable TCP_BUFFER_LENGTH is set.
      * If not, the the operating system is responsible for selecting
@@ -3801,7 +3789,6 @@ static void setTCPBufferLength(int sock)
             DCMNET_WARN("DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength);
     } else
         DCMNET_TRACE("  environment variable TCP_BUFFER_LENGTH not set, using the system defaults");
-#endif // HAVE_GUSI_H
 }
 
 /* translatePresentationContextList

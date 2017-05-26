@@ -50,10 +50,6 @@ BEGIN_EXTERN_C
 #include <openssl/err.h>
 END_EXTERN_C
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
-#endif
-
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmtls/tlslayer.h"

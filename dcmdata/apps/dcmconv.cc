@@ -26,10 +26,6 @@
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
@@ -84,12 +80,6 @@ static DcmTagKey parseTagKey(const char *tagName)
 
 int main(int argc, char *argv[])
 {
-
-#ifdef HAVE_GUSI_H
-  GUSISetup(GUSIwithSIOUXSockets);
-  GUSISetup(GUSIwithInternetSockets);
-#endif
-
   const char *opt_ifname = NULL;
   const char *opt_ofname = NULL;
 

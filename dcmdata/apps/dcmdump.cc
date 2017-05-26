@@ -55,12 +55,6 @@ static OFLogger dcmdumpLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APP
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-#ifdef HAVE_GUSI_H
-/* needed for Macintosh */
-#include <GUSI.h>
-#include <SIOUX.h>
-#endif
-
 static int dumpFile(STD_NAMESPACE ostream &out,
                     const OFFilename &ifname,
                     const E_FileReadMode readMode,
@@ -164,18 +158,6 @@ DCMTK_MAIN_FUNCTION
     const char *pixelDirectory = NULL;
     OFBool convertToUTF8 = OFFalse;
     DcmTagKey stopParsingBeforeElement = DCM_UndefinedTagKey;
-
-#ifdef HAVE_GUSI_H
-    /* needed for Macintosh */
-    /* set options for the Metrowerks CodeWarrior SIOUX console */
-    SIOUXSettings.autocloseonquit = OFFalse;
-    SIOUXSettings.asktosaveonclose = OFFalse;
-    SIOUXSettings.showstatusline = OFTrue;
-    SIOUXSettings.setupmenus = OFTrue;
-    /* set options for the GUSI sockets library */
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Dump DICOM file and data set", rcsid);
     OFCommandLine cmd;

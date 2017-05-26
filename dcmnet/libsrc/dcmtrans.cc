@@ -62,17 +62,12 @@ enum
 #endif
 };
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>   /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
-#endif
-
 OFGlobal<Sint32> dcmSocketSendTimeout(60);
 OFGlobal<Sint32> dcmSocketReceiveTimeout(60);
 
 DcmTransportConnection::DcmTransportConnection(DcmNativeSocketType openSocket)
 : theSocket(openSocket)
 {
-#ifndef HAVE_GUSI_H
   if (theSocket >= 0)
   {
 #ifdef DISABLE_SEND_TIMEOUT
@@ -134,7 +129,6 @@ DcmTransportConnection::DcmTransportConnection(DcmNativeSocketType openSocket)
       }
     }
   }
-#endif
 }
 
 DcmTransportConnection::~DcmTransportConnection()

@@ -131,10 +131,6 @@ typedef void (*mySIG_TYP)(int);
 #endif
 END_EXTERN_C
 
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>       /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
-#endif
-
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmnet/dcompat.h"
 #include "dcmtk/dcmnet/dicom.h"
@@ -1846,8 +1842,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     }
 #endif
 
-#ifndef HAVE_GUSI_H
-    /* GUSI always returns an error for setsockopt() */
     sockarg.l_onoff = 0;
     if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
     {
@@ -1869,7 +1863,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
-#endif
     setTCPBufferLength(sock);
 
     /*
@@ -2155,9 +2148,6 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
       reuse = 1;
-#ifdef HAVE_GUSI_H
-      /* GUSI always returns an error for setsockopt(...) */
-#else
 #ifdef _WIN32
       if (setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char *) &reuse, sizeof(reuse)) < 0)
 #else
@@ -2168,7 +2158,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         msg += OFStandard::getLastNetworkErrorCode().message();
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
-#endif
+
       /* Name socket using wildcards */
       server.sin_family = AF_INET;
       server.sin_addr.s_addr = INADDR_ANY;
@@ -2187,9 +2177,6 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
-#ifdef HAVE_GUSI_H
-      /* GUSI always returns an error for setsockopt(...) */
-#else
       sockarg.l_onoff = 0;
       if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
       {
@@ -2197,7 +2184,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
-#endif
+
       /* Listen on the socket */
       if (listen(sock, PRV_LISTENBACKLOG) < 0)
       {
@@ -2385,9 +2372,6 @@ static void setTCPBufferLength(int sock)
     char *TCPBufferLength;
     int bufLen;
 
-#ifdef HAVE_GUSI_H
-    /* GUSI always returns an error for setsockopt(...) */
-#else
     /*
      * check whether environment variable TCP_BUFFER_LENGTH is set.
      * If not, the the operating system is responsible for selecting
@@ -2410,7 +2394,6 @@ static void setTCPBufferLength(int sock)
             DCMNET_WARN("DUL: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength);
     } else
         DCMNET_TRACE("  environment variable TCP_BUFFER_LENGTH not set, using the system defaults");
-#endif // HAVE_GUSI_H
 }
 
 

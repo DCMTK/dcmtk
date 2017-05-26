@@ -138,12 +138,6 @@ int main(int argc, char* argv[])
     int i = 0;
     int j = 0;
 
-#ifdef HAVE_GUSI_H
-    /* needed for Macintosh */
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
-#endif
-
 #ifdef WITH_TCPWRAPPER
     // this code makes sure that the linker cannot optimize away
     // the DUL part of the network module where the external flags
