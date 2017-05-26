@@ -34,6 +34,12 @@
 #include <fenv.h>
 #endif
 
+#ifdef HAVE_IEEEFP_H
+// For controlling floating point exceptions on Unix like systems
+// that don't have feenableexcept and fedisableexcept.
+#include <ieeefp.h>
+#endif
+
 #ifdef __APPLE__
 // For controlling floating point exceptions on OS X.
 #include <xmmintrin.h>
@@ -319,8 +325,11 @@ static void provoke_snan()
     _controlfp( _controlfp(0,0) & ~_EM_INVALID, _MCW_EM );
 #elif defined(__APPLE__)
     _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() & ~_MM_MASK_INVALID );
-#elif defined(HAVE_FENV_H)
+#elif defined(HAVE_FENV_H) && defined(HAVE_PROTOTYPE_FEENABLEEXCEPT)
     feenableexcept( FE_INVALID );
+#elif defined(HAVE_IEEEFP_H)
+    fp_except cw = fpgetmask();
+    fpsetmask(cw | FP_X_INV | FP_X_DZ | FP_X_OFL);
 #endif
     // Visual Studio will emit an exception the moment
     // we assign a signaling NaN to another float variable
@@ -346,8 +355,11 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
     feclearexcept( FE_INVALID );
 #ifdef __APPLE__
     _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() | _MM_MASK_INVALID );
-#else
+#elif defined(HAVE_FENV_H) && defined(HAVE_PROTOTYPE_FEENABLEEXCEPT)
     fedisableexcept( FE_INVALID );
+#elif defined(HAVE_IEEEFP_H)
+    fp_except cw = fpgetmask();
+    fpsetmask(cw & ~(FP_X_INV | FP_X_DZ | FP_X_OFL));
 #endif
 #endif
     // Print and return the result

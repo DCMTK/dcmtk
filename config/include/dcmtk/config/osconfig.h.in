@@ -559,6 +559,9 @@ typedef unsigned short ushort;
    sys/socket.h */
 #undef HAVE_PROTOTYPE_CONNECT
 
+/* Define if your system has a prototype for feenableexcept in fenv.h */
+#undef HAVE_PROTOTYPE_FEENABLEEXCEPT
+
 /* Define if your system has a prototype for finite in math.h */
 #undef HAVE_PROTOTYPE_FINITE
 
@@ -1142,8 +1145,7 @@ typedef unsigned short ushort;
 
 #if defined(HAVE_CXX11) && defined(__cplusplus) && __cplusplus < 201103L
 #error\
- DCMTK was configured to use the C++11 STL, but your compiler is not configured\
- for building with C++11 features.
+DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
 #endif
 
 #endif /* OSCONFIG_H */

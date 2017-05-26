@@ -775,6 +775,7 @@ dnl The following AC_CHECK_* macros _must_ have corresponding entries in
 dnl the acconfig.h file.  This is because the macros are specific to the
 dnl DCMTK project and are not supported by GNU autoheader.
 
+AC_CHECK_PROTOTYPE(feenableexcept, fenv.h)
 AC_CHECK_PROTOTYPE(_stricmp, string.h)
 AC_CHECK_PROTOTYPE(accept, sys/types.h sys/socket.h)
 if test $ac_cv_prototype_accept = yes ; then

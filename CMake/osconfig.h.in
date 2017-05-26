@@ -398,6 +398,9 @@
    arguments. */
 /* #undef HAVE_OLD_READDIR_R */
 
+/* Define if your system has a prototype for feenableexcept in fenv.h */
+#cmakedefine HAVE_PROTOTYPE_FEENABLEEXCEPT @HAVE_PROTOTYPE_FEENABLEEXCEPT@
+
 /* Define if your system has a prototype for accept in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_ACCEPT @HAVE_PROTOTYPE_ACCEPT@
