@@ -147,15 +147,15 @@ ELSE(WIN32 AND NOT CYGWIN)
   SET(PATH_SEPARATOR "/")
   SET(ENVIRONMENT_PATH_SEPARATOR ":")
   # Set dictionary path to the data dir inside install main dir (prefix).
-  if (DCMTK_ENABLE_EXTERNAL_DICTIONARY)
+  IF(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
     SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/dicom.dic")
     # If private dictionary should be utilized, add it to default dictionary path.
     IF(ENABLE_PRIVATE_TAGS)
       SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/private.dic")
     ENDIF(ENABLE_PRIVATE_TAGS)
-  ELSE (DCMTK_ENABLE_EXTERNAL_DICTIONARY)
+  ELSE(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
     SET(DCM_DICT_DEFAULT_PATH "")
-  ENDIF (DCMTK_ENABLE_EXTERNAL_DICTIONARY)
+  ENDIF(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
   # Set default directory for configuration and support data.
   SET(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${DCMTK_INSTALL_ETCDIR}/")
   SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/")
@@ -509,7 +509,7 @@ ENDIF(WIN32 AND NOT CYGWIN)
     SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} iphlpapi ws2_32 netapi32 wsock32)
   ENDIF(HAVE_WINSOCK_H)
 
-  if(HAVE_FENV_H)
+  IF(HAVE_FENV_H)
     SET(HEADERS ${HEADERS} fenv.h)
   ENDIF(HAVE_FENV_H)
 
@@ -704,10 +704,10 @@ int main()
 }")
 
 # Check for thread type
-IF (HAVE_WINDOWS_H)
-    SET(HAVE_INT_TYPE_PTHREAD_T 1)
-ELSE (HAVE_WINDOWS_H)
-    DCMTK_TRY_COMPILE(HAVE_INT_TYPE_PTHREAD_T "pthread_t is an integer type"
+IF(HAVE_WINDOWS_H)
+  SET(HAVE_INT_TYPE_PTHREAD_T 1)
+ELSE(HAVE_WINDOWS_H)
+  DCMTK_TRY_COMPILE(HAVE_INT_TYPE_PTHREAD_T "pthread_t is an integer type"
         "// test to see if pthread_t is a pointer type or not
 
 #include <pthread.h>
@@ -718,11 +718,11 @@ int main ()
   unsigned long l = p;
   return 0;
 }")
-    IF (NOT HAVE_INT_TYPE_PTHREAD_T)
-        SET(HAVE_POINTER_TYPE_PTHREAD_T 1 CACHE INTERNAL "Set if pthread_t is a pointer type")
-    ELSE (NOT HAVE_INT_TYPE_PTHREAD_T)
-        SET(HAVE_POINTER_TYPE_PTHREAD_T 0 CACHE INTERNAL "Set if pthread_t is a pointer type")
-    ENDIF (NOT HAVE_INT_TYPE_PTHREAD_T)
+  IF(NOT HAVE_INT_TYPE_PTHREAD_T)
+    SET(HAVE_POINTER_TYPE_PTHREAD_T 1 CACHE INTERNAL "Set if pthread_t is a pointer type")
+  ELSE(NOT HAVE_INT_TYPE_PTHREAD_T)
+    SET(HAVE_POINTER_TYPE_PTHREAD_T 0 CACHE INTERNAL "Set if pthread_t is a pointer type")
+  ENDIF(NOT HAVE_INT_TYPE_PTHREAD_T)
 ENDIF(HAVE_WINDOWS_H)
 
 # Check if typename works properly. Only MSC6 really fails here.
