@@ -589,8 +589,6 @@ ENDIF(WIN32 AND NOT CYGWIN)
 
   # TODO: Uncommented because it seems not to make sense. Remove if there are no complaints.
   #CHECK_LIBRARY_EXISTS(iostream "" "" HAVE_LIBIOSTREAM)
-  #CHECK_LIBRARY_EXISTS(nsl "" "" HAVE_LIBNSL)
-  #CHECK_LIBRARY_EXISTS(socket "" "" HAVE_LIBSOCKET)
 
   # Check for some type definitions needed by JasPer and defines them if necessary
   # Even if not functions but types are looked for, the script works fine.

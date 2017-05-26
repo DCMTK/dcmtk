@@ -122,6 +122,7 @@ static int test_modulo()
 template<typename FN>
 static int test_trap( const FN& fn )
 {
+    register_signals();
 #ifndef _WIN32
     // On Unix like systems, we use the
     // longjmp-module specifically designed for
@@ -544,7 +545,6 @@ int main( int argc, char** argv )
               << STD_NAMESPACE setw(7) << STD_NAMESPACE internal << "TRAPS"
               << STD_NAMESPACE setw(7) << STD_NAMESPACE internal << "MODULO" << OFendl;
 
-    register_signals();
     inspect<char>( out, "char" );
     inspect<signed char>( out, "signed char" );
     inspect<unsigned char>( out, "unsigned char" );
