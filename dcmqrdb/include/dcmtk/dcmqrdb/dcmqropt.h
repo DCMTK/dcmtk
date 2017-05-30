@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2012, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -160,6 +160,14 @@ public:
   /// timeout for ACSE operations
   int acse_timeout_;
 
+  // association configuration file name
+  OFString associationConfigFile;
+
+  /// profile name for incoming association configuration
+  OFString incomingProfile;
+
+  /// profile name for outgoing association configuration
+  OFString outgoingProfile;
 };
 
 

@@ -56,6 +56,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmnet/dcasccff.h"
 #include "dcmtk/dcmqrdb/dcmqropt.h"
 #include "dcmtk/dcmqrdb/dcmqrcnf.h"
 #include "dcmtk/dcmqrdb/dcmqrsrv.h"
@@ -98,6 +99,19 @@ OFCmdUnsignedInt opt_port = 0;
 #define SHORTCOL 4
 #define LONGCOL 22
 
+static void mangleAssociationProfileKey(OFString& key)
+{
+  for (size_t ui = 0; ui < key.size();)
+  {
+    if (!isspace(key[ui]))
+    {
+      key[ui] = toupper(key[ui]);
+      ++ui;
+    }
+    else key.erase(ui, 1);
+  }
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -105,6 +119,7 @@ main(int argc, char *argv[])
   OFCmdUnsignedInt overridePort = 0;
   OFCmdUnsignedInt overrideMaxPDU = 0;
   DcmQueryRetrieveOptions options;
+  DcmAssociationConfiguration asccfg;
 
   OFStandard::initializeNetwork();
 
@@ -169,6 +184,10 @@ main(int argc, char *argv[])
 #endif
 
   cmd.addGroup("network options:");
+    cmd.addSubGroup("association negotiation profiles from configuration file:");
+      cmd.addOption("--assoc-config-file",      "-xf",  3,   "[f]ilename, [i]n-profile, [o]ut-profile: string",
+                                                             "use profile i from f for incoming associations\n"
+                                                             "use profile o from f for outgoing associations");
     cmd.addSubGroup("preferred network transfer syntaxes (incoming associations):");
       cmd.addOption("--prefer-uncompr",         "+x=",       "prefer explicit VR local byte order (default)");
       cmd.addOption("--prefer-little",          "+xe",       "prefer explicit VR little endian TS");
@@ -480,6 +499,95 @@ main(int argc, char *argv[])
       if (cmd.findOption("--reject")) options.rejectWhenNoImplementationClassUID_ = OFTrue;
       if (cmd.findOption("--ignore")) options.ignoreStoreData_ = OFTrue;
       if (cmd.findOption("--uid-padding")) options.correctUIDPadding_ = OFTrue;
+
+      if (cmd.findOption("--assoc-config-file"))
+      {
+        // check conflicts with other command line options
+        app.checkConflict("--assoc-config-file", "--prefer-little", options.networkTransferSyntax_ == EXS_LittleEndianExplicit);
+        app.checkConflict("--assoc-config-file", "--prefer-big", options.networkTransferSyntax_ == EXS_BigEndianExplicit);
+        app.checkConflict("--assoc-config-file", "--prefer-lossless", options.networkTransferSyntax_ == EXS_JPEGProcess14SV1);
+        app.checkConflict("--assoc-config-file", "--prefer-jpeg8", options.networkTransferSyntax_ == EXS_JPEGProcess1);
+        app.checkConflict("--assoc-config-file", "--prefer-jpeg12", options.networkTransferSyntax_ == EXS_JPEGProcess2_4);
+        app.checkConflict("--assoc-config-file", "--prefer-j2k-lossless", options.networkTransferSyntax_ == EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--assoc-config-file", "--prefer-j2k-lossy", options.networkTransferSyntax_ == EXS_JPEG2000);
+        app.checkConflict("--assoc-config-file", "--prefer-jls-lossless", options.networkTransferSyntax_ == EXS_JPEGLSLossless);
+        app.checkConflict("--assoc-config-file", "--prefer-jls-lossy", options.networkTransferSyntax_ == EXS_JPEGLSLossy);
+        app.checkConflict("--assoc-config-file", "--prefer-mpeg2", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtMainLevel);
+        app.checkConflict("--assoc-config-file", "--prefer-mpeg2-high", options.networkTransferSyntax_ == EXS_MPEG2MainProfileAtHighLevel);
+        app.checkConflict("--assoc-config-file", "--prefer-mpeg4", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_1);
+        app.checkConflict("--assoc-config-file", "--prefer-mpeg4-bd", options.networkTransferSyntax_ == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
+        app.checkConflict("--assoc-config-file", "--prefer-mpeg4-2-2d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
+        app.checkConflict("--assoc-config-file", "--prefer-mpeg4-2-3d", options.networkTransferSyntax_ == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
+        app.checkConflict("--assoc-config-file", "--prefer-mpeg4-2-st", options.networkTransferSyntax_ == EXS_MPEG4StereoHighProfileLevel4_2);
+        app.checkConflict("--assoc-config-file", "--prefer-hevc", options.networkTransferSyntax_ == EXS_HEVCMainProfileLevel5_1);
+        app.checkConflict("--assoc-config-file", "--prefer-hevc10", options.networkTransferSyntax_ == EXS_HEVCMain10ProfileLevel5_1);
+        app.checkConflict("--assoc-config-file", "--prefer-rle", options.networkTransferSyntax_ == EXS_RLELossless);
+#ifdef WITH_ZLIB
+        app.checkConflict("--assoc-config-file", "--prefer-deflated", options.networkTransferSyntax_ == EXS_DeflatedLittleEndianExplicit);
+#endif
+        app.checkConflict("--assoc-config-file", "--implicit", options.networkTransferSyntax_ == EXS_LittleEndianImplicit);
+
+        app.checkConflict("--assoc-config-file", "--propose-little", options.networkTransferSyntaxOut_ == EXS_LittleEndianExplicit);
+        app.checkConflict("--assoc-config-file", "--propose-big", options.networkTransferSyntaxOut_ == EXS_BigEndianExplicit);
+        app.checkConflict("--assoc-config-file", "--propose-implicit", options.networkTransferSyntaxOut_ == EXS_LittleEndianImplicit);
+        app.checkConflict("--assoc-config-file", "--propose-lossless", options.networkTransferSyntaxOut_ == EXS_JPEGProcess14SV1);
+        app.checkConflict("--assoc-config-file", "--propose-jpeg8", options.networkTransferSyntaxOut_ == EXS_JPEGProcess1);
+        app.checkConflict("--assoc-config-file", "--propose-jpeg12", options.networkTransferSyntaxOut_ == EXS_JPEGProcess2_4);
+        app.checkConflict("--assoc-config-file", "--propose-j2k-lossless", options.networkTransferSyntaxOut_ == EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--assoc-config-file", "--propose-j2k-lossy", options.networkTransferSyntaxOut_ == EXS_JPEG2000);
+        app.checkConflict("--assoc-config-file", "--propose-jls-lossless", options.networkTransferSyntaxOut_ == EXS_JPEGLSLossless);
+        app.checkConflict("--assoc-config-file", "--propose-jls-lossy", options.networkTransferSyntaxOut_ == EXS_JPEGLSLossy);
+        app.checkConflict("--assoc-config-file", "--propose-mpeg2", options.networkTransferSyntaxOut_ == EXS_MPEG2MainProfileAtMainLevel);
+        app.checkConflict("--assoc-config-file", "--propose-mpeg2-high", options.networkTransferSyntaxOut_ == EXS_MPEG2MainProfileAtHighLevel);
+        app.checkConflict("--assoc-config-file", "--propose-mpeg4", options.networkTransferSyntaxOut_ == EXS_MPEG4HighProfileLevel4_1);
+        app.checkConflict("--assoc-config-file", "--propose-mpeg4-bd", options.networkTransferSyntaxOut_ == EXS_MPEG4BDcompatibleHighProfileLevel4_1);
+        app.checkConflict("--assoc-config-file", "--propose-mpeg4-2-2d", options.networkTransferSyntaxOut_ == EXS_MPEG4HighProfileLevel4_2_For2DVideo);
+        app.checkConflict("--assoc-config-file", "--propose-mpeg4-2-3d", options.networkTransferSyntaxOut_ == EXS_MPEG4HighProfileLevel4_2_For3DVideo);
+        app.checkConflict("--assoc-config-file", "--propose-mpeg4-2-st", options.networkTransferSyntaxOut_ == EXS_MPEG4StereoHighProfileLevel4_2);
+        app.checkConflict("--assoc-config-file", "--propose-hevc", options.networkTransferSyntaxOut_ == EXS_HEVCMainProfileLevel5_1);
+        app.checkConflict("--assoc-config-file", "--propose-hevc10", options.networkTransferSyntaxOut_ == EXS_HEVCMain10ProfileLevel5_1);
+        app.checkConflict("--assoc-config-file", "--propose-rle", options.networkTransferSyntaxOut_ == EXS_RLELossless);
+#ifdef WITH_ZLIB
+        app.checkConflict("--assoc-config-file", "--propose-deflated", options.networkTransferSyntaxOut_ == EXS_DeflatedLittleEndianExplicit);
+#endif
+
+        app.checkValue(cmd.getValue(options.associationConfigFile));
+        app.checkValue(cmd.getValue(options.incomingProfile));
+        app.checkValue(cmd.getValue(options.outgoingProfile));
+
+        // read configuration file
+        OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, options.associationConfigFile.c_str());
+        if (cond.bad())
+        {
+          OFLOG_FATAL(dcmqrscpLogger, "cannot read association config file: " << cond.text());
+          return 1;
+        }
+
+        const OFString unmangledInProfile = options.incomingProfile;
+        const OFString unmangledOutProfile = options.outgoingProfile;
+
+        /* perform name mangling for config file keys */
+        mangleAssociationProfileKey(options.incomingProfile);
+        mangleAssociationProfileKey(options.outgoingProfile);
+
+        if (!asccfg.isKnownProfile(options.incomingProfile.c_str()))
+        {
+          OFLOG_FATAL(dcmqrscpLogger, "unknown configuration profile name: " << unmangledInProfile);
+          return 1;
+        }
+
+        if (!asccfg.isKnownProfile(options.outgoingProfile.c_str()))
+        {
+          OFLOG_FATAL(dcmqrscpLogger, "unknown configuration profile name: " << unmangledOutProfile);
+          return 1;
+        }
+
+        if (!asccfg.isValidSCPProfile(options.incomingProfile.c_str()))
+        {
+          OFLOG_FATAL(dcmqrscpLogger, "profile '" << unmangledInProfile << "' is not valid for incoming use, duplicate abstract syntaxes found");
+          return 1;
+        }
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr")) dcmEnableGenerationOfNewVRs();
@@ -797,7 +905,7 @@ main(int argc, char *argv[])
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
 #endif
 
-    DcmQueryRetrieveSCP scp(config, options, factory);
+    DcmQueryRetrieveSCP scp(config, options, factory, asccfg);
     scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
 
     /* loop waiting for associations */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmnet/dcasccfg.h"
 #include "dcmtk/dcmqrdb/qrdefine.h"
 
 class DcmQueryRetrieveDatabaseHandle;
@@ -49,6 +50,7 @@ public:
     DcmQueryRetrieveMoveContext(
       DcmQueryRetrieveDatabaseHandle& handle,
       const DcmQueryRetrieveOptions& options,
+      const DcmAssociationConfiguration& associationConfiguration,
       const DcmQueryRetrieveConfig *cfg,
       DIC_US priorstatus,
       T_ASC_Association *assoc,
@@ -56,6 +58,7 @@ public:
       T_DIMSE_Priority pr)
     : dbHandle(handle)
     , options_(options)
+    , associationConfiguration_(associationConfiguration)
     , priorStatus(priorstatus)
     , origAssoc(assoc)
     , subAssoc(NULL)
@@ -128,6 +131,9 @@ private:
 
     /// reference to Q/R service options
     const DcmQueryRetrieveOptions& options_;
+
+    /// reference to association configuration
+    const DcmAssociationConfiguration& associationConfiguration_;
 
     /// prior DIMSE status
     DIC_US  priorStatus;

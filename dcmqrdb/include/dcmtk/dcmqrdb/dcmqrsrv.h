@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmnet/dcasccfg.h"
 #include "dcmtk/dcmqrdb/dcmqrptb.h"
 
 class DcmQueryRetrieveConfig;
@@ -64,7 +65,8 @@ public:
   DcmQueryRetrieveSCP(
     const DcmQueryRetrieveConfig& config,
     const DcmQueryRetrieveOptions& options,
-    const DcmQueryRetrieveDatabaseHandleFactory& factory);
+    const DcmQueryRetrieveDatabaseHandleFactory& factory,
+    const DcmAssociationConfiguration& associationConfiguration);
 
   /// destructor
   virtual ~DcmQueryRetrieveSCP() { }
@@ -164,6 +166,9 @@ private:
 
   /// SCP configuration options
   const DcmQueryRetrieveOptions& options_;
+
+  /// Association configuration profiles read from configuration file
+  const DcmAssociationConfiguration& associationConfiguration_;
 };
 
 #endif

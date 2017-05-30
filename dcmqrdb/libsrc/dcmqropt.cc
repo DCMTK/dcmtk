@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2012, OFFIS e.V.
+ *  Copyright (C) 1993-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,6 +71,9 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 , blockMode_(DIMSE_BLOCKING)
 , dimse_timeout_(0)
 , acse_timeout_(30)
+, associationConfigFile()
+, incomingProfile()
+, outgoingProfile()
 {
 }
 

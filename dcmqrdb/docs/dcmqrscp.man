@@ -184,6 +184,13 @@ restriction of query/retrieve models:
 
 \subsection dcmqrscp_network_options network options
 \verbatim
+association negotiation profiles from configuration file:
+
+  -xf   --assoc-config-file
+          [f]ilename, [i]n-profile, [o]ut-profile: string
+          use profile i from f for incoming associations
+          use profile o from f for outgoing associations
+
 preferred network transfer syntaxes (incoming associations):
 
   +x=   --prefer-uncompr
@@ -696,6 +703,10 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 
 The \b dcmqrscp application does not support extended negotiation.
 
+Presentation contexts for other SOP Classes may be configured via the \e --assoc-config-file
+option by selecting an appropriate profile for outgoing associations.
+The selected profile will completely override the above mentioned default configuration.
+
 \subsubsection dcmqrscp_scp_conformance SCP Conformance
 
 The \b dcmqrscp application supports the following SOP Classes as an SCP:
@@ -911,6 +922,14 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 
 The \b dcmqrscp application does not support extended negotiation.
 
+Presentation contexts for other SOP Classes may be configured via the \e --assoc-config-file
+option by selecting an appropriate profile for incoming associations.
+The selected profile will override only the above mentioned storage SOP classes, \b dcmqrscp
+will accept contexts with the above mentioned FIND, GET, MOVE and private shutdown SOP Classes
+additionally to the ones defined in the selected profile.
+Please note that an appropriate profile for \b role \b negotiation muss be defined and used
+for enabling GET support.
+
 \subsubsection dcmqrscp_query_keys Query Keys
 
 The \b dcmqrscp application supports the following attributes as query keys.
@@ -1046,6 +1065,7 @@ It is an error if no data dictionary can be loaded.
 <em>\<docdir\>/dcmqrcnf.txt</em> - configuration information
 \n<em>\<docdir\>/dcmqrset.txt</em> - setup information
 \n<em>\<etcdir\>/dcmqrscp.cfg</em> - example configuration file
+\n<em>\<etcdir\>/dcmqrprf.cfg</em> - example configuration file for association profiles
 
 \section dcmqrscp_see_also SEE ALSO
 

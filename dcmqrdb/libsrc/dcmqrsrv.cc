@@ -99,13 +99,15 @@ static void storeCallback(
 DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
   const DcmQueryRetrieveConfig& config,
   const DcmQueryRetrieveOptions& options,
-  const DcmQueryRetrieveDatabaseHandleFactory& factory)
+  const DcmQueryRetrieveDatabaseHandleFactory& factory,
+  const DcmAssociationConfiguration& associationConfiguration)
 : config_(&config)
 , processtable_()
 , dbCheckFindIdentifier_(OFFalse)
 , dbCheckMoveIdentifier_(OFFalse)
 , factory_(factory)
 , options_(options)
+, associationConfiguration_(associationConfiguration)
 {
 }
 
@@ -313,7 +315,7 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
         T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
     OFCondition cond = EC_Normal;
-    DcmQueryRetrieveMoveContext context(dbHandle, options_, config_, STATUS_Pending, assoc, request->MessageID, request->Priority);
+    DcmQueryRetrieveMoveContext context(dbHandle, options_, associationConfiguration_, config_, STATUS_Pending, assoc, request->MessageID, request->Priority);
 
     DIC_AE aeTitle;
     aeTitle[0] = '\0';
@@ -820,6 +822,66 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         }
     }
 
+    if (options_.incomingProfile.empty())
+    {
+      /*  accept any of the storage syntaxes */
+      if (options_.disableGetSupport_)
+      {
+        /* accept storage syntaxes with default role only */
+        cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+          assoc->params,
+          dcmAllStorageSOPClassUIDs, numberOfDcmAllStorageSOPClassUIDs,
+          (const char**)transferSyntaxes, numTransferSyntaxes);
+        if (cond.bad()) {
+          DCMQRDB_ERROR("Cannot accept presentation contexts: " << DimseCondition::dump(temp_str, cond));
+        }
+      } else {
+        /* accept storage syntaxes with proposed role */
+        T_ASC_PresentationContext pc;
+        T_ASC_SC_ROLE role;
+        int npc = ASC_countPresentationContexts(assoc->params);
+        for (i = 0; i < npc; i++)
+        {
+          ASC_getPresentationContext(assoc->params, i, &pc);
+          if (dcmIsaStorageSOPClassUID(pc.abstractSyntax))
+          {
+            /*
+            ** We are prepared to accept whatever role he proposes.
+            ** Normally we can be the SCP of the Storage Service Class.
+            ** When processing the C-GET operation we can be the SCU of the Storage Service Class.
+            */
+            role = pc.proposedRole;
+
+            /*
+            ** Accept in the order "least wanted" to "most wanted" transfer
+            ** syntax.  Accepting a transfer syntax will override previously
+            ** accepted transfer syntaxes.
+            */
+            for (int k = numTransferSyntaxes - 1; k >= 0; k--)
+            {
+              for (int j = 0; j < (int)pc.transferSyntaxCount; j++)
+              {
+                /* if the transfer syntax was proposed then we can accept it
+                 * appears in our supported list of transfer syntaxes
+                 */
+                if (strcmp(pc.proposedTransferSyntaxes[j], transferSyntaxes[k]) == 0)
+                {
+                  cond = ASC_acceptPresentationContext(
+                      assoc->params, pc.presentationContextID, transferSyntaxes[k], role);
+                  if (cond.bad()) return cond;
+                }
+              }
+            }
+          }
+        } /* for */
+      } /* else */
+    }
+    else
+    {
+      cond = associationConfiguration_.evaluateAssociationParameters(options_.incomingProfile.c_str(), *assoc);
+      if (cond.bad()) return cond;
+    }
+
     /*  accept any of the non-storage syntaxes */
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
     assoc->params,
@@ -828,58 +890,6 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     if (cond.bad()) {
         DCMQRDB_ERROR("Cannot accept presentation contexts: " << DimseCondition::dump(temp_str, cond));
     }
-
-    /*  accept any of the storage syntaxes */
-    if (options_.disableGetSupport_)
-    {
-      /* accept storage syntaxes with default role only */
-      cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-        assoc->params,
-        dcmAllStorageSOPClassUIDs, numberOfDcmAllStorageSOPClassUIDs,
-        (const char**)transferSyntaxes, numTransferSyntaxes);
-      if (cond.bad()) {
-        DCMQRDB_ERROR("Cannot accept presentation contexts: " << DimseCondition::dump(temp_str, cond));
-      }
-    } else {
-      /* accept storage syntaxes with proposed role */
-      T_ASC_PresentationContext pc;
-      T_ASC_SC_ROLE role;
-      int npc = ASC_countPresentationContexts(assoc->params);
-      for (i = 0; i < npc; i++)
-      {
-        ASC_getPresentationContext(assoc->params, i, &pc);
-        if (dcmIsaStorageSOPClassUID(pc.abstractSyntax))
-        {
-          /*
-          ** We are prepared to accept whatever role he proposes.
-          ** Normally we can be the SCP of the Storage Service Class.
-          ** When processing the C-GET operation we can be the SCU of the Storage Service Class.
-          */
-          role = pc.proposedRole;
-
-          /*
-          ** Accept in the order "least wanted" to "most wanted" transfer
-          ** syntax.  Accepting a transfer syntax will override previously
-          ** accepted transfer syntaxes.
-          */
-          for (int k = numTransferSyntaxes - 1; k >= 0; k--)
-          {
-            for (int j = 0; j < (int)pc.transferSyntaxCount; j++)
-            {
-              /* if the transfer syntax was proposed then we can accept it
-               * appears in our supported list of transfer syntaxes
-               */
-              if (strcmp(pc.proposedTransferSyntaxes[j], transferSyntaxes[k]) == 0)
-              {
-                cond = ASC_acceptPresentationContext(
-                    assoc->params, pc.presentationContextID, transferSyntaxes[k], role);
-                if (cond.bad()) return cond;
-              }
-            }
-          }
-        }
-      } /* for */
-    } /* else */
 
     /*
      * check if we have negotiated the private "shutdown" SOP Class

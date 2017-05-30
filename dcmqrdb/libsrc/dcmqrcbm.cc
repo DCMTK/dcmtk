@@ -321,7 +321,11 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
             dstHostNamePlusPort);
         ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle,NULL);
 
-        cond = addAllStoragePresentationContexts(params);
+        if (options_.outgoingProfile.empty()) {
+            cond = addAllStoragePresentationContexts(params);
+        } else {
+            cond = associationConfiguration_.setAssociationParameters(options_.outgoingProfile.c_str(), *params);
+        }
         if (cond.bad()) {
             DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
         }
