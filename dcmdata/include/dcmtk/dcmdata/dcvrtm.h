@@ -167,6 +167,11 @@ class DCMTK_DCMDATA_EXPORT DcmTime
                                     const OFBool createMissingPart = OFFalse,
                                     const OFBool supportOldFormat = OFTrue);
 
+    /// @copydoc DcmByteString::matches(OFString,OFString,OFBool)
+    virtual OFBool matches(const OFString& key,
+                           const OFString& candidate,
+                           const OFBool enableWildCardMatching = OFTrue) const;
+
     /* --- static helper functions --- */
 
     /** get the current system time.
@@ -377,6 +382,9 @@ class DCMTK_DCMDATA_EXPORT DcmTime
                                         const OFBool oldFormat = OFFalse);
 
 private:
+
+    /// give DcmDate access to our private parts, for combined date time range matching.
+    friend class DcmDate;
 
     /** parse the fragment part of a DICOM time string.
      *  @param string a pointer to the beginning of the fragment portion of a DICOM time string.

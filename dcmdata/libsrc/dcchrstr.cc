@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/dcmdata/dcitem.h"     /* for class DcmItem */
 #include "dcmtk/dcmdata/dcdeftag.h"   /* for tag definitions */
 #include "dcmtk/dcmdata/dcjson.h"     /* json helper classes */
+#include "dcmtk/dcmdata/dcmatch.h"
 
 //
 // This implementation does not support 16 bit character sets. Since 8 bit
@@ -266,4 +267,15 @@ OFCondition DcmCharString::writeJson(STD_NAMESPACE ostream &out,
 const OFString& DcmCharString::getDelimiterChars() const
 {
     return DcmVR(EVR_UN).getDelimiterChars();
+}
+
+
+OFBool DcmCharString::matches(const OFString& key,
+                              const OFString& candidate,
+                              const OFBool enableWildCardMatching) const
+{
+  if (enableWildCardMatching)
+    return DcmAttributeMatching::wildCardMatching(key.c_str(), key.length(), candidate.c_str(), candidate.length());
+  else
+    return DcmByteString::matches(key, candidate, OFFalse);
 }

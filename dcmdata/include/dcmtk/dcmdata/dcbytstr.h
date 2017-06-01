@@ -293,6 +293,28 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
+    /// @copydoc DcmElement::matches()
+    virtual OFBool matches(const DcmElement& candidate,
+                           const OFBool enableWildCardMatching = OFTrue) const;
+
+    /** perform attribute matching on a single pair of string values.
+     *  Compare two single string values using the attribute matching function appropriate for
+     *  this element's VR (Universal Matching, Single Value Matching, Wild Card Matching or
+     *  Range Matching).
+     *  @note This method is called by the other overload of matches() for each combination of
+     *    values in the key and candidate element (implementing multi value matching for
+     *    elements with VM>1).
+     *  @param key the key value to match against the candidate.
+     *  @param candidate the candidate value to match the key against.
+     *  @param enableWildCardMatching enable or disable wild card matching. Defaults to OFTrue,
+     *    which means wild card matching is performed if the element's VR supports it. Set to
+     *    OFFalse to force single value matching instead.
+     *  @return OFTrue if the candidate string matches the key string, OFFalse otherwise.
+     */
+    virtual OFBool matches(const OFString& key,
+                           const OFString& candidate,
+                           const OFBool enableWildCardMatching = OFTrue) const;
+
  protected:
 
     /** constructor. Create new element from given tag and length.

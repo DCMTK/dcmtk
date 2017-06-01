@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -137,6 +137,11 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      */
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
+
+    /// @copydoc DcmByteString::matches(OFString,OFString,OFBool)
+    virtual OFBool matches(const OFString& key,
+                           const OFString& candidate,
+                           const OFBool enableWildCardMatching = OFTrue) const;
 
   protected:
 

@@ -23,6 +23,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcvrur.h"
+#include "dcmtk/dcmdata/dcmatch.h"
 
 
 // ********************************
@@ -122,4 +123,15 @@ OFCondition DcmUniversalResourceIdentifierOrLocator::getOFStringArray(OFString &
 OFCondition DcmUniversalResourceIdentifierOrLocator::checkStringValue(const OFString &value)
 {
     return DcmByteString::checkStringValue(value, "" /* vm */, "ur", 19, 0 /* maxLen: no check */);
+}
+
+
+OFBool DcmUniversalResourceIdentifierOrLocator::matches(const OFString& key,
+                                                        const OFString& candidate,
+                                                        const OFBool enableWildCardMatching) const
+{
+  if (enableWildCardMatching)
+    return DcmAttributeMatching::wildCardMatching(key.c_str(), key.length(), candidate.c_str(), candidate.length());
+  else
+    return DcmByteString::matches(key, candidate, OFFalse);
 }

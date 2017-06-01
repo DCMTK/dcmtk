@@ -170,6 +170,11 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
                                         const OFString &dateTimeSeparator = " ",
                                         const OFString &timeZoneSeparator = " ");
 
+    /// @copydoc DcmByteString::matches(OFString,OFString,OFBool)
+    virtual OFBool matches(const OFString& key,
+                           const OFString& candidate,
+                           const OFBool enableWildCardMatching = OFTrue) const;
+
     /* --- static helper functions --- */
 
     /** get the current system date and time.

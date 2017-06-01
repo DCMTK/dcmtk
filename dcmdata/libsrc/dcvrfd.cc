@@ -361,3 +361,23 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect)
         errorFlag = EC_Normal;
     return errorFlag;
 }
+
+
+OFBool DcmFloatingPointDouble::matches(const DcmElement& candidate,
+                                       const OFBool enableWildCardMatching) const
+{
+  OFstatic_cast(void,enableWildCardMatching);
+  if (ident() == candidate.ident())
+  {
+    // some const casts to call the getter functions, I do not modify the values, I promise!
+    DcmFloatingPointDouble& key = OFconst_cast(DcmFloatingPointDouble&,*this);
+    DcmElement& can = OFconst_cast(DcmElement&,candidate);
+    Float64 a, b;
+    for( unsigned long ui = 0; ui < key.getVM(); ++ui )
+      for( unsigned long uj = 0; uj < can.getVM(); ++uj )
+        if( key.getFloat64( a, ui ).good() && can.getFloat64( b, uj ).good() && a == b )
+          return OFTrue;
+    return key.getVM() == 0;
+  }
+  return OFFalse;
+}

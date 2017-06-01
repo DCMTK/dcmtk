@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/dcmdata/dcvrdt.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/dcmdata/dcmatch.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -398,4 +399,13 @@ OFCondition DcmDateTime::checkStringValue(const OFString &value,
         }
     }
     return result;
+}
+
+
+OFBool DcmDateTime::matches(const OFString& key,
+                            const OFString& candidate,
+                            const OFBool enableWildCardMatching) const
+{
+  OFstatic_cast(void,enableWildCardMatching);
+  return DcmAttributeMatching::rangeMatchingDateTime(key.c_str(), key.length(), candidate.c_str(), candidate.length());
 }

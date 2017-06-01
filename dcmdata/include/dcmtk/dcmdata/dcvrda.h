@@ -147,6 +147,16 @@ class DCMTK_DCMDATA_EXPORT DcmDate
                                     const unsigned long pos = 0,
                                     const OFBool supportOldFormat = OFTrue);
 
+    /// @copydoc DcmByteString::matches(OFString,OFString,OFBool)
+    virtual OFBool matches(const OFString& key,
+                           const OFString& candidate,
+                           const OFBool enableWildCardMatching = OFTrue) const;
+
+    /// @copydoc DcmElement::combinationMatches()
+    virtual OFBool combinationMatches(const DcmElement& keySecond,
+                                      const DcmElement& candidateFirst,
+                                      const DcmElement& candidateSecond) const;
+
     /* --- static helper functions --- */
 
     /** get the current system date.

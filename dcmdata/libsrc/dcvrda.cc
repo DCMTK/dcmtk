@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,9 +22,11 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/dcmdata/dcmatch.h"
 
 
 // ********************************
@@ -330,4 +332,35 @@ OFCondition DcmDate::checkStringValue(const OFString &value,
         }
     }
     return result;
+}
+
+OFBool DcmDate::matches(const OFString& key,
+                        const OFString& candidate,
+                        const OFBool enableWildCardMatching) const
+{
+  OFstatic_cast(void,enableWildCardMatching);
+  return DcmAttributeMatching::rangeMatchingDate(key.c_str(), key.length(), candidate.c_str(), candidate.length());
+}
+
+OFBool DcmDate::combinationMatches(const DcmElement& keySecond,
+                                   const DcmElement& candidateFirst,
+                                   const DcmElement& candidateSecond) const
+{
+  if (keySecond.ident() == EVR_TM && candidateFirst.ident() == EVR_DA && candidateSecond.ident() == EVR_TM)
+  {
+    // do many const casts, but we do not modify the value, I promise...
+    DcmDate& queryDate = OFconst_cast(DcmDate&, *this);
+    DcmDate& candidateDate = OFconst_cast(DcmDate&, OFstatic_cast(const DcmDate&, candidateFirst));
+    DcmTime& queryTime = OFconst_cast(DcmTime&, OFstatic_cast(const DcmTime&, keySecond));
+    DcmTime& candidateTime = OFconst_cast(DcmTime&, OFstatic_cast(const DcmTime&, candidateSecond));
+    OFString a0, a1, b0, b1;
+    // no support for VM>1 so far!
+    return queryDate.getOFString( a0, 0, OFTrue ).good() && queryTime.getOFString( a1, 0, OFTrue ).good() &&
+        candidateDate.getOFString( b0, 0, OFTrue ).good() && candidateTime.getOFString( b1, 0, OFTrue ).good() &&
+        DcmAttributeMatching::rangeMatchingDateTime
+    (
+      a0.c_str(), a0.length(), a1.c_str(), a1.length(), b0.c_str(), b0.length(), b1.c_str(), b1.length()
+    );
+  }
+  return OFFalse;
 }

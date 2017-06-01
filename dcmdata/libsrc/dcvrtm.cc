@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/dcmdata/dcmatch.h"
 
 
 #define MAX_TM_LENGTH 16
@@ -483,4 +484,13 @@ OFBool DcmTime::parseFragment(const char* const string, const size_t size, doubl
         return p < string;
     }
     return OFFalse;
+}
+
+
+OFBool DcmTime::matches(const OFString& key,
+                        const OFString& candidate,
+                        const OFBool enableWildCardMatching) const
+{
+  OFstatic_cast(void,enableWildCardMatching);
+  return DcmAttributeMatching::rangeMatchingTime(key.c_str(), key.length(), candidate.c_str(), candidate.length());
 }

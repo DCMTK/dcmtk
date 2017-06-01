@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,6 +22,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcvrae.h"
+#include "dcmtk/dcmdata/dcmatch.h"
 
 
 #define MAX_AE_LENGTH 16
@@ -112,4 +113,15 @@ OFCondition DcmApplicationEntity::checkStringValue(const OFString &value,
                                                    const OFString &vm)
 {
     return DcmByteString::checkStringValue(value, vm, "ae", 13, MAX_AE_LENGTH);
+}
+
+
+OFBool DcmApplicationEntity::matches(const OFString& key,
+                                     const OFString& candidate,
+                                     const OFBool enableWildCardMatching) const
+{
+  if (enableWildCardMatching)
+    return DcmAttributeMatching::wildCardMatching(key.c_str(), key.length(), candidate.c_str(), candidate.length());
+  else
+    return DcmByteString::matches(key, candidate, OFFalse);
 }

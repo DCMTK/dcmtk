@@ -2176,3 +2176,21 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
   }
   return result;
 }
+
+OFBool DcmElement::matches(const DcmElement& candidate,
+                           const OFBool enableWildCardMatching) const
+{
+  OFstatic_cast(void,candidate);
+  OFstatic_cast(void,enableWildCardMatching);
+  return OFFalse;
+}
+
+OFBool DcmElement::combinationMatches(const DcmElement& keySecond,
+                                      const DcmElement& candidateFirst,
+                                      const DcmElement& candidateSecond) const
+{
+  OFstatic_cast(void,keySecond);
+  OFstatic_cast(void,candidateFirst);
+  OFstatic_cast(void,candidateSecond);
+  return OFFalse;
+}
