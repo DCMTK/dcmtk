@@ -60,6 +60,43 @@ END_EXTERN_C
 
 // ----------------------------------------------------------------------------
 
+class WlmFileSystemInteractionManager::MatchingKeys
+{
+  MatchingKeys(int)
+  {
+    keys.push_back(OFMake_pair(DCM_PatientName,OFTrue));
+    keys.push_back(OFMake_pair(DCM_ResponsiblePerson,OFTrue));
+    keys.push_back(OFMake_pair(DCM_ResponsiblePersonRole,OFTrue));
+    keys.push_back(OFMake_pair(DCM_PatientID,OFFalse));
+    keys.push_back(OFMake_pair(DCM_AccessionNumber,OFTrue));
+    keys.push_back(OFMake_pair(DCM_RequestedProcedureID,OFTrue));
+    keys.push_back(OFMake_pair(DCM_ReferringPhysicianName,OFTrue));
+    keys.push_back(OFMake_pair(DCM_PatientSex,OFTrue));
+    keys.push_back(OFMake_pair(DCM_RequestingPhysician,OFTrue));
+    keys.push_back(OFMake_pair(DCM_AdmissionID,OFTrue));
+    keys.push_back(OFMake_pair(DCM_RequestedProcedurePriority,OFTrue));
+    keys.push_back(OFMake_pair(DCM_PatientBirthDate,OFTrue));
+    keys.push_back(OFMake_pair(DCM_IssuerOfPatientID,OFTrue));
+    combinedKeys.push_back(OFMake_pair(DCM_StudyDate,DCM_StudyTime));
+    sequenceKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepSequence,MatchingKeys()));
+    sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_ScheduledStationAETitle,OFFalse));
+    sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_Modality,OFFalse));
+    sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_ScheduledPerformingPhysicianName,OFTrue));
+    sequenceKeys.back().second.combinedKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepStartDate,DCM_ScheduledProcedureStepStartTime));
+  }
+
+public:
+  static const MatchingKeys root;
+  MatchingKeys() {}
+  OFVector<OFPair<DcmTagKey,OFBool> >       keys;
+  OFVector<OFPair<DcmTagKey,DcmTagKey> >    combinedKeys;
+  OFVector<OFPair<DcmTagKey,MatchingKeys> > sequenceKeys;
+};
+
+const WlmFileSystemInteractionManager::MatchingKeys WlmFileSystemInteractionManager::MatchingKeys::root(0);
+
+// ----------------------------------------------------------------------------
+
 WlmFileSystemInteractionManager::WlmFileSystemInteractionManager()
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
@@ -216,7 +253,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
         else
         {
           // check if the current dataset matches the matching key attribute values
-          if( !DatasetMatchesSearchMask( dataset, searchMask ) )
+          if( !DatasetMatchesSearchMask( dataset, searchMask, MatchingKeys::root ) )
           {
             DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " does not match query");
           }
@@ -791,9 +828,21 @@ OFBool WlmFileSystemInteractionManager::AttributeIsAbsentOrEmpty( DcmTagKey elem
     return( OFFalse );
 }
 
+OFBool WlmFileSystemInteractionManager::MatchSequences( DcmSequenceOfItems& candidate,
+                                                        DcmSequenceOfItems& query,
+                                                        const MatchingKeys& matchingKeys )
+{
+  for( DcmObject* pQueryItem = query.nextInContainer( OFnullptr); pQueryItem; pQueryItem = query.nextInContainer( pQueryItem ) )
+    for( DcmObject* pCandidateItem = candidate.nextInContainer( OFnullptr); pCandidateItem; pCandidateItem = candidate.nextInContainer( pCandidateItem ) )
+      if( DatasetMatchesSearchMask( OFstatic_cast( DcmItem*, pCandidateItem ), OFstatic_cast( DcmItem*, pQueryItem ), matchingKeys ) )
+        return OFTrue;
+  return OFFalse;
+}
+
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *dataset, DcmDataset *searchMask )
+OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *dataset, DcmItem *searchMask,
+                                                                  const MatchingKeys& matchingKeys )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function returns OFTrue, if the matching key attribute values in the
@@ -803,1329 +852,80 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
 // Return Value : OFTrue  - The dataset matches the search mask in the matching key attribute values.
 //                OFFalse - The dataset does not match the search mask in the matching key attribute values.
 {
-  OFBool dateTimeMatchHasBeenPerformed = OFFalse;
-  OFBool studyDateTimeMatchHasBeenPerformed = OFFalse;
+  assert( dataset );
+  assert( searchMask );
 
-  // initialize result variable
-  OFBool matchFound = OFTrue;
-
-  // determine matching key attribute values in the dataset
-  const char **mkaValuesDataset = NULL;
-  DetermineMatchingKeyAttributeValues( dataset, mkaValuesDataset );
-
-  // determine matching key attribute values in the search mask
-  const char **mkaValuesSearchMask = NULL;
-  DetermineMatchingKeyAttributeValues( searchMask, mkaValuesSearchMask );
-
-  // go through the arrays of matching key attribute values
-  for( unsigned long i=0 ; i<NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES && matchFound ; i++ )
+#ifdef HAVE_CXX11
+  for( auto& key : matchingKeys.keys )
   {
-    // check if the current matching key attribute actually had a value in the search mask
-    if( mkaValuesSearchMask[i] != NULL  )
+#else
+  // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+  for( OFVector<OFPair<DcmTagKey,OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it )
+  {
+    const OFPair<DcmTagKey,OFBool>& key = *it;
+#endif
+    DcmElement* query = OFnullptr;
+    if( searchMask->findAndGetElement( key.first, query, OFFalse ).good() && query )
     {
-      // if it did, check if the values from search mask and dataset match
-      switch( i )
+      DcmElement* candidate = OFnullptr;
+      if( dataset->findAndGetElement( key.first, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate, key.second ) )
+        return OFFalse;
+    }
+  }
+
+#ifdef HAVE_CXX11
+  for( auto& combinedKey : matchingKeys.combinedKeys )
+  {
+#else
+  // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+  for( OFVector<OFPair<DcmTagKey,DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it )
+  {
+    const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
+#endif
+    DcmElement* query = OFnullptr;
+    if( searchMask->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query )
+    {
+      DcmElement* candidate = OFnullptr;
+      if( dataset->findAndGetElement( combinedKey.first, candidate, OFFalse ).bad() || !candidate )
+        return OFFalse;
+      DcmElement* secondQuery = OFnullptr;
+      if( searchMask->findAndGetElement( combinedKey.second, secondQuery, OFFalse ).good() && secondQuery )
       {
-        case 0:
-          // matching key attribute is DCM_ScheduledStationAETitle (AE, 1-n)
-          matchFound = ScheduledStationAETitlesMatch( mkaValuesDataset[0], mkaValuesSearchMask[0] );
-          break;
-
-        case 1:
-        case 2:
-          // matching key attributes are DCM_ScheduledProcedureStepStartDate (DA, 1)
-          // and DCM_ScheduledProcedureStepStartTime (TM, 1)
-          // only do something if a date time match has not yet been performed
-          if( !dateTimeMatchHasBeenPerformed )
-          {
-            matchFound = ScheduledProcedureStepStartDateTimesMatch( mkaValuesDataset[1], mkaValuesDataset[2], mkaValuesSearchMask[1], mkaValuesSearchMask[2] );
-            dateTimeMatchHasBeenPerformed = OFTrue;
-          }
-          break;
-
-        case 3:
-          // matching key attribute is DCM_Modality (CS, 1)
-          matchFound = ModalitiesMatch( mkaValuesDataset[3], mkaValuesSearchMask[3] );
-          break;
-
-        case 4:
-          // matching key attribute is DCM_ScheduledPerformingPhysicianName (PN, 1)
-          matchFound = ScheduledPerformingPhysicianNamesMatch( mkaValuesDataset[4], mkaValuesSearchMask[4] );
-          break;
-
-        case 5:
-          // matching key attribute is DCM_PatientName (PN, 1)
-          matchFound = PatientsNamesMatch( mkaValuesDataset[5], mkaValuesSearchMask[5] );
-          break;
-
-        case 6:
-          // matching key attribute is DCM_ResponsiblePerson (PN, 3)
-          matchFound = CaseSensitiveSingleValueOrWildcardStripSpacesMatch( mkaValuesDataset[6], mkaValuesSearchMask[6] );
-          break;
-
-        case 7:
-          // matching key attribute is DCM_ResponsiblePersonRole (CS, 3)
-          matchFound = CaseSensitiveSingleValueOrWildcardMatch( mkaValuesDataset[7], mkaValuesSearchMask[7] );
-          break;
-
-        case 8:
-          // matching key attribute is DCM_PatientID (LO, 1)
-          matchFound = PatientsIDsMatch( mkaValuesDataset[8], mkaValuesSearchMask[8] );
-          break;
-
-        case 9:
-          // matching key attribute is DCM_AccessionNumber (SH, 2)
-          matchFound = AccessionNumbersMatch( mkaValuesDataset[9], mkaValuesSearchMask[9] );
-          break;
-
-        case 10:
-          // matching key attribute is DCM_RequestedProcedureID (SH, 1)
-          matchFound = RequestedProcedureIdsMatch( mkaValuesDataset[10], mkaValuesSearchMask[10] );
-          break;
-
-        case 11:
-          // matching key attribute is DCM_ReferringPhysicianName (PN, 2)
-          matchFound = ReferringPhysicianNamesMatch( mkaValuesDataset[11], mkaValuesSearchMask[11] );
-          break;
-
-        case 12:
-          // matching key attribute is DCM_PatientSex (CS, 2)
-          matchFound = PatientsSexesMatch( mkaValuesDataset[12], mkaValuesSearchMask[12] );
-          break;
-
-        case 13:
-          // matching key attribute is DCM_RequestingPhysician (PN, 2)
-          matchFound = RequestingPhysiciansMatch( mkaValuesDataset[13], mkaValuesSearchMask[13] );
-          break;
-
-        case 14:
-          // matching key attribute is DCM_AdmissionID (LO, 2)
-          matchFound = AdmissionIdsMatch( mkaValuesDataset[14], mkaValuesSearchMask[14] );
-          break;
-
-        case 15:
-          // matching key attribute is DCM_RequestedProcedurePriority (SH, 2)
-          matchFound = RequestedProcedurePrioritiesMatch( mkaValuesDataset[15], mkaValuesSearchMask[15] );
-          break;
-
-        case 16:
-          // matching key attribute is DCM_PatientBirthDate (DA, 2)
-          matchFound = PatientsBirthDatesMatch( mkaValuesDataset[16], mkaValuesSearchMask[16] );
-          break;
-
-        case 17:
-          // matching key attribute is DCM_IssuerOfPatientID (LO, 1)
-          matchFound = IssuerOfPatientIDsMatch( mkaValuesDataset[17], mkaValuesSearchMask[17] );
-          break;
-
-        case 18:
-        case 19:
-          // matching key attributes are  DCM_StudyDate (DA, 1) and DCM_StudyTime (TM, 1)
-          // only do something if a date time match has not yet been performed
-          if( !studyDateTimeMatchHasBeenPerformed )
-          {
-            matchFound = StudyDateTimesMatch( mkaValuesDataset[18], mkaValuesDataset[19], mkaValuesSearchMask[18], mkaValuesSearchMask[19] );
-            studyDateTimeMatchHasBeenPerformed = OFTrue;
-          }
-          break;
-
-        default:
-          break;
+        DcmElement* secondCandidate = OFnullptr;
+        if( dataset->findAndGetElement( combinedKey.second, secondCandidate, OFFalse ).bad() || !secondCandidate || !query->combinationMatches( *secondQuery, *candidate, *secondCandidate ) )
+            return OFFalse;
+      }
+      else if( !query->matches( *candidate ) )
+      {
+        return OFFalse;
       }
     }
-  }
-
-  // free locally allocated memory
-  delete[] mkaValuesDataset;
-  delete[] mkaValuesSearchMask;
-
-  // return result
-  return( matchFound );
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmFileSystemInteractionManager::DetermineMatchingKeyAttributeValues( DcmDataset *dataset, const char **&matchingKeyAttrValues )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function determines the values of the matching key attributes in the given dataset.
-// Parameters   : dataset               - [in] Dataset from which the values shall be extracted.
-//                matchingKeyAttrValues - [out] Contains in the end the values of the matching key
-//                                        attributes in the search mask. Is an array of pointers.
-// Return Value : none.
-{
-  // Initialize array of strings because all currently
-  // supported matching key attributes are strings
-  matchingKeyAttrValues = new const char*[ NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES ];
-
-  // find matching key attributes in the dataset and remember their values.
-  for( unsigned long i=0 ; i<NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES ; i++ )
-  {
-    // initialize array field
-    matchingKeyAttrValues[i] = NULL;
-
-    // determine which matching key attribute we want to find
-    DcmTagKey tag;
-    switch( i )
+    else if( searchMask->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query )
     {
-      case 0 : tag = DCM_ScheduledStationAETitle           ; break;
-      case 1 : tag = DCM_ScheduledProcedureStepStartDate   ; break;
-      case 2 : tag = DCM_ScheduledProcedureStepStartTime   ; break;
-      case 3 : tag = DCM_Modality                          ; break;
-      case 4 : tag = DCM_ScheduledPerformingPhysicianName  ; break;
-      case 5 : tag = DCM_PatientName                       ; break;
-      case 6 : tag = DCM_ResponsiblePerson                 ; break;
-      case 7 : tag = DCM_ResponsiblePersonRole             ; break;
-      case 8 : tag = DCM_PatientID                         ; break;
-      case 9 : tag = DCM_AccessionNumber                   ; break;
-      case 10 : tag = DCM_RequestedProcedureID             ; break;
-      case 11 : tag = DCM_ReferringPhysicianName           ; break;
-      case 12 : tag = DCM_PatientSex                       ; break;
-      case 13 : tag = DCM_RequestingPhysician              ; break;
-      case 14 : tag = DCM_AdmissionID                      ; break;
-      case 15 : tag = DCM_RequestedProcedurePriority       ; break;
-      case 16 : tag = DCM_PatientBirthDate                 ; break;
-      case 17 : tag = DCM_IssuerOfPatientID                ; break;
-      case 18 : tag = DCM_StudyDate                        ; break;
-      case 19 : tag = DCM_StudyTime                        ; break;
-      default:                                               break;
-    }
-
-    // try to find matching key attribute in the dataset
-    dataset->findAndGetString( tag, matchingKeyAttrValues[i], OFTrue );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::CaseSensitiveSingleValueOrWildcardMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 04, 2012
-// Author       : Uli Schlachter
-// Task         : Make this file shorter
-// Docs         : Can be found in wilfsim.h
-{
-  // if there is a value in the dataset, perform case sensitive single value matching
-  if( datasetValue != NULL )
-    return( CaseSensitiveSingleValueMatch( datasetValue, searchMaskValue ) );
-  else
-  {
-    // if datasetValue is not existent, the search mask's value has to be empty to have
-    // a match (universal matching); in all other cases, we do not have a match
-    if( strcmp( searchMaskValue, "" ) == 0 )
-      return( OFTrue );
-    else
-      return( OFFalse );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::CaseSensitiveSingleValueOrWildcardStripSpacesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 04, 2012
-// Author       : Uli Schlachter
-// Task         : Make this file shorter
-// Docs         : Can be found in wilfsim.h
-{
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-  {
-    delete[] sv;
-    return( OFTrue );
-  }
-  else
-  {
-    delete[] sv;
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-    {
-      return( OFFalse );
-    }
-    // ...and the dataset value is existent, we have to perform case sensitive single value matching or wildcard matching
-    OFBool result = CaseSensitiveSingleValueMatch( datasetValue, searchMaskValue ) || WildcardMatch( datasetValue, searchMaskValue );
-    return result;
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::WildcardStripSpacesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 04, 2012
-// Author       : Uli Schlachter
-// Task         : Make this file shorter
-// Docs         : Can be found in wilfsim.h
-{
-  // copy search mask value
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( sv );
-
-  // if we are dealing with universal matching, there is always a match
-  if( strcmp( sv, "" ) == 0 || strcmp( sv, "*" ) == 0 )
-  {
-    delete[] sv;
-    return( OFTrue );
-  }
-  else
-  {
-    delete[] sv;
-    // if we are not dealing with universal matching...
-    // ...and the dataset value is not existent, there is no match
-    if( datasetValue == NULL )
-      return( OFFalse );
-    // ...and the dataset value is existent, we want to perform wildcard matching
-    else
-      return( WildcardMatch( datasetValue, searchMaskValue ) );
-  }
-}
-
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::IssuerOfPatientIDsMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : January 23, 2017
-// Author       : Thorben Hasenpusch
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute issuer of patient id match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-OFBool WlmFileSystemInteractionManager::StudyDateTimesMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue )
-// Date         : Februar 27, 2017
-// Author       : Jan Schlamelcher
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute study date and study time match; otherwise OFFalse will be returned.
-// Parameters   : datasetDateValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                datasetTimeValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskDateValue - [in] Value for the corresponding attribute in the search mask; might be NULL.
-//                searchMaskTimeValue - [in] Value for the corresponding attribute in the search mask; might be NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  if( !datasetDateValue )
-    datasetDateValue = "";
-  if( !datasetTimeValue )
-    datasetTimeValue = "";
-  if( !searchMaskDateValue )
-    searchMaskDateValue = "";
-  if( !searchMaskTimeValue )
-    searchMaskTimeValue = "";
-  const char* datasetDateValueEnd = datasetDateValue + strlen( datasetDateValue );
-  const char* datasetTimeValueEnd = datasetTimeValue + strlen( datasetTimeValue );
-  const char* searchMaskDateValueEnd = searchMaskDateValue + strlen( searchMaskDateValue );
-  const char* searchMaskTimeValueEnd = searchMaskTimeValue + strlen( searchMaskTimeValue );
-  OFStandard::trimString( datasetDateValue, datasetDateValueEnd );
-  OFStandard::trimString( datasetTimeValue, datasetTimeValueEnd );
-  OFStandard::trimString( searchMaskDateValue, searchMaskDateValueEnd );
-  OFStandard::trimString( searchMaskTimeValue, searchMaskTimeValueEnd );
-  return DcmAttributeMatching::rangeMatchingDateTime( datasetDateValue, datasetDateValueEnd - datasetDateValue,
-                                                      datasetTimeValue, datasetTimeValueEnd - datasetTimeValue,
-                                                      searchMaskDateValue, searchMaskDateValueEnd - searchMaskDateValue,
-                                                      searchMaskTimeValue, searchMaskTimeValueEnd - searchMaskTimeValue );
-}
-
-OFBool WlmFileSystemInteractionManager::ScheduledStationAETitlesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute scheduled station AE title match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return CaseSensitiveSingleValueOrWildcardMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::ScheduledProcedureStepStartDateTimesMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue )
-// Date         : July 15, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attributes scheduled procedure step start date and scheduled procedure step
-//                start time match; otherwise OFFalse will be returned.
-// Parameters   : datasetDateValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                datasetTimeValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskDateValue - [in] Value for the corresponding attribute in the search mask; might be NULL.
-//                searchMaskTimeValue - [in] Value for the corresponding attribute in the search mask; might be NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  OFBool isMatch = OFFalse;
-
-  // four things are of interest before matching
-  OFBool dateGiven = ( searchMaskDateValue != NULL ) ? OFTrue : OFFalse;
-  OFBool timeGiven = ( searchMaskTimeValue != NULL ) ? OFTrue : OFFalse;
-  OFBool dateIsDateRange = ( dateGiven && strchr( searchMaskDateValue, '-' ) != NULL ) ? OFTrue : OFFalse;
-  OFBool timeIsTimeRange = ( timeGiven && strchr( searchMaskTimeValue, '-' ) != NULL ) ? OFTrue : OFFalse;
-
-  // depending on these four things perform different kinds of matching
-  if( dateIsDateRange && timeIsTimeRange )
-  {
-    // perform range matching taking into account date and time
-    isMatch = DateTimeRangeMatch( datasetDateValue, datasetTimeValue, searchMaskDateValue, searchMaskTimeValue );
-  }
-  else if( dateIsDateRange && !timeIsTimeRange )
-  {
-    // perform range matching taking into account date only
-    isMatch = DateRangeMatch( datasetDateValue, searchMaskDateValue );
-  }
-  else if( dateGiven && !dateIsDateRange && timeIsTimeRange )
-  {
-    // perform a date single value match and a time range match
-    isMatch = DateSingleValueMatch( datasetDateValue, searchMaskDateValue ) && TimeRangeMatch( datasetTimeValue, searchMaskTimeValue );
-  }
-  else if( !dateGiven && !dateIsDateRange && timeIsTimeRange )
-  {
-    // perform range matching taking into account time only
-    isMatch = TimeRangeMatch( datasetTimeValue, searchMaskTimeValue );
-  }
-  else if( dateGiven && !dateIsDateRange && timeGiven && !timeIsTimeRange )
-  {
-    // perform single value matching taking into account date and time
-    isMatch = DateTimeSingleValueMatch( datasetDateValue, datasetTimeValue, searchMaskDateValue, searchMaskTimeValue );
-  }
-  else if( dateGiven && !dateIsDateRange && !timeGiven && !timeIsTimeRange )
-  {
-    // perform single value matching taking into account date only
-    isMatch = DateSingleValueMatch( datasetDateValue, searchMaskDateValue );
-  }
-  else if( !dateGiven && timeGiven && !timeIsTimeRange && !dateIsDateRange )
-  {
-    // perform single value matching taking into account time only
-    isMatch = TimeSingleValueMatch( datasetTimeValue, searchMaskTimeValue );
-  }
-  else // if( !dateGiven && !timeGiven && !dateIsDateRange && !timeIsTimeRange ) // this case can actually never happen, because either time or date will always be given in this function
-  {
-    // return OFTrue
-    isMatch = OFTrue;
-  }
-
-  // return result
-  return( isMatch );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::ModalitiesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute modality match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return CaseSensitiveSingleValueOrWildcardMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::ScheduledPerformingPhysicianNamesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute scheduled performing physician's names match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return CaseSensitiveSingleValueOrWildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::PatientsNamesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute patient's names match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return CaseSensitiveSingleValueOrWildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::PatientsIDsMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute patient id match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return CaseSensitiveSingleValueOrWildcardMatch( datasetValue, searchMaskValue);
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::AccessionNumbersMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 22, 2003
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute accession number match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::RequestedProcedureIdsMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 22, 2003
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute requested procedure id match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::ReferringPhysicianNamesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 22, 2003
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute referring physician's name match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::PatientsSexesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 22, 2003
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute patient sex match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::RequestingPhysiciansMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 22, 2003
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute requesting physician match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::AdmissionIdsMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 22, 2003
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute admission id match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::RequestedProcedurePrioritiesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : December 22, 2003
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute requested procedure priorities match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  return WildcardStripSpacesMatch( datasetValue, searchMaskValue );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::PatientsBirthDatesMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : September 23, 2005
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values in
-//                attribute patient's birth date match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  OFBool isMatch = OFFalse;
-
-  // before matching, determine if the date value is a date range value
-  OFBool dateIsDateRange = ( strchr( searchMaskValue, '-' ) != NULL ) ? OFTrue : OFFalse;
-
-  // depending upon this information, perform different kinds of matching
-  if( dateIsDateRange )
-  {
-    // perform range matching
-    isMatch = DateRangeMatch( datasetValue, searchMaskValue );
-  }
-  else
-  {
-    // perform single value matching
-    isMatch = DateSingleValueMatch( datasetValue, searchMaskValue );
-  }
-
-  // return result
-  return( isMatch );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::DateTimeRangeMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue )
-// Date         : July 15, 2002
-// Author       : Thomas Wilkens
-// Task         : This function performs a date time range match and returns OFTrue if the dataset's
-//                and the search mask's values in the corresponding attributes match; otherwise OFFalse
-//                will be returned
-// Parameters   : datasetDateValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                datasetTimeValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskDateValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-//                searchMaskTimeValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  char *sdvv1 = NULL, *sdvv2 = NULL, *stvv1 = NULL, *stvv2 = NULL;
-  OFDate datasetDateVal, searchMaskDateVal1, searchMaskDateVal2;
-  OFTime datasetTimeVal, searchMaskTimeVal1, searchMaskTimeVal2;
-  OFCondition cond;
-
-  // if values in dataset are both given, perform date time range match
-  if( datasetDateValue != NULL && datasetTimeValue != NULL )
-  {
-    // initialize result
-    OFBool isMatch = OFFalse;
-
-    // copy values
-    char *ddv = new char[ strlen( datasetDateValue ) + 1 ];     strcpy( ddv, datasetDateValue );
-    char *dtv = new char[ strlen( datasetTimeValue ) + 1 ];     strcpy( dtv, datasetTimeValue );
-    char *sdv = new char[ strlen( searchMaskDateValue ) + 1 ];  strcpy( sdv, searchMaskDateValue );
-    char *stv = new char[ strlen( searchMaskTimeValue ) + 1 ];  strcpy( stv, searchMaskTimeValue );
-
-    // strip trailing spaces
-    DU_stripTrailingSpaces( ddv );
-    DU_stripTrailingSpaces( dtv );
-    DU_stripTrailingSpaces( sdv );
-    DU_stripTrailingSpaces( stv );
-
-    // get actual date/time boundary values
-    ExtractValuesFromRange( sdv, sdvv1, sdvv2 );
-    ExtractValuesFromRange( stv, stvv1, stvv2 );
-
-    // generate OFDate and OFTime objects from strings
-    cond = DcmDate::getOFDateFromString( OFString( ddv ), datasetDateVal );
-    if( cond.good() )
-    {
-      cond = DcmTime::getOFTimeFromString( OFString( dtv ), datasetTimeVal );
-      if( cond.good() )
-      {
-        cond = DcmDate::getOFDateFromString( (( sdvv1 != NULL ) ? OFString( sdvv1 ) : OFString("19000101")), searchMaskDateVal1 );
-        if( cond.good() )
-        {
-          cond = DcmDate::getOFDateFromString( (( sdvv2 != NULL ) ? OFString( sdvv2 ) : OFString("39991231")), searchMaskDateVal2 );
-          if( cond.good() )
-          {
-            cond = DcmTime::getOFTimeFromString( (( stvv1 != NULL ) ? OFString( stvv1 ) : OFString("000000")), searchMaskTimeVal1 );
-            if( cond.good() )
-            {
-              cond = DcmTime::getOFTimeFromString( (( stvv2 != NULL ) ? OFString( stvv2 ) : OFString("235959")), searchMaskTimeVal2 );
-              if( cond.good() )
-              {
-                // now that we have the date and time objects we can actually
-                // compare the date and time values and determine if it's a match
-
-                // check if the lower value in the search mask is earlier
-                // than or equal to the lower value in the dataset
-                if( searchMaskDateVal1 < datasetDateVal ||
-                    ( searchMaskDateVal1 == datasetDateVal && searchMaskTimeVal1 <= datasetTimeVal ) )
-                {
-                  // now check if the upper value in the search mask is later
-                  // than or equal to the upper value in the dataset
-                  if( searchMaskDateVal2 > datasetDateVal ||
-                      ( searchMaskDateVal2 == datasetDateVal && searchMaskTimeVal2 >= datasetTimeVal ) )
-                  {
-                    // if all these conditions are met, then this is considered to be a match
-                    isMatch = OFTrue;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // free memory
-    delete[] ddv;
-    delete[] dtv;
-    delete[] sdv;
-    delete[] stv;
-    if( sdvv1 != NULL ) delete[] sdvv1;
-    if( sdvv2 != NULL ) delete[] sdvv2;
-    if( stvv1 != NULL ) delete[] stvv1;
-    if( stvv2 != NULL ) delete[] stvv2;
-
-    // return result
-    return( isMatch );
-  }
-  else
-  {
-    // so at least one of the two values (date or time) or not given in
-    // the dataset; in this case, since the date and time values in the
-    // search mask are both non-universal, we do not have a match
-    return( OFFalse );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::DateRangeMatch( const char *datasetDateValue, const char *searchMaskDateValue )
-// Date         : July 15, 2002
-// Author       : Thomas Wilkens
-// Task         : This function performs a date range match and returns OFTrue if the dataset's and
-//                the search mask's values in the corresponding attributes match; otherwise OFFalse
-//                will be returned
-// Parameters   : datasetDateValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskDateValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  char *sdvv1 = NULL, *sdvv2 = NULL;
-  OFDate datasetDateVal, searchMaskDateVal1, searchMaskDateVal2;
-  OFCondition cond;
-
-  // if date value in dataset is given, perform date range match
-  if( datasetDateValue != NULL )
-  {
-    // initialize result
-    OFBool isMatch = OFFalse;
-
-    // copy values
-    char *ddv = new char[ strlen( datasetDateValue ) + 1 ];     strcpy( ddv, datasetDateValue );
-    char *sdv = new char[ strlen( searchMaskDateValue ) + 1 ];  strcpy( sdv, searchMaskDateValue );
-
-    // strip trailing spaces
-    DU_stripTrailingSpaces( ddv );
-    DU_stripTrailingSpaces( sdv );
-
-    // get actual date boundary values
-    ExtractValuesFromRange( sdv, sdvv1, sdvv2 );
-
-    // generate OFDate objects from strings
-    cond = DcmDate::getOFDateFromString( OFString( ddv ), datasetDateVal );
-    if( cond.good() )
-    {
-      cond = DcmDate::getOFDateFromString( (( sdvv1 != NULL ) ? OFString( sdvv1 ) : OFString("19000101")), searchMaskDateVal1 );
-      if( cond.good() )
-      {
-        cond = DcmDate::getOFDateFromString( (( sdvv2 != NULL ) ? OFString( sdvv2 ) : OFString("39991231")), searchMaskDateVal2 );
-        if( cond.good() )
-        {
-          // now that we have the date objects we can actually
-          // compare the date values and determine if it's a match
-
-          // check if the lower value in the search mask is earlier
-          // than or equal to the lower value in the dataset
-          if( searchMaskDateVal1 <= datasetDateVal )
-          {
-            // now check if the upper value in the search mask is later
-            // than or equal to the upper value in the dataset
-            if( searchMaskDateVal2 >= datasetDateVal )
-            {
-              // if these conditions are met, then this is considered to be a match
-              isMatch = OFTrue;
-            }
-          }
-        }
-      }
-    }
-
-    // free memory
-    delete[] ddv;
-    delete[] sdv;
-    if( sdvv1 != NULL ) delete[] sdvv1;
-    if( sdvv2 != NULL ) delete[] sdvv2;
-
-    // return result
-    return( isMatch );
-  }
-  else
-  {
-    // so dataset date value is not given; in this case, since the date
-    // value in the search mask is non-universal, we do not have a match
-    return( OFFalse );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::TimeRangeMatch( const char *datasetTimeValue, const char *searchMaskTimeValue )
-// Date         : July 15, 2002
-// Author       : Thomas Wilkens
-// Task         : This function performs a time range match and returns OFTrue if the dataset's and
-//                the search mask's values in the corresponding attributes match; otherwise OFFalse
-//                will be returned
-// Parameters   : datasetTimeValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskTimeValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  char *stvv1 = NULL, *stvv2 = NULL;
-  OFTime datasetTimeVal, searchMaskTimeVal1, searchMaskTimeVal2;
-  OFCondition cond;
-
-  // if time value in dataset is given, perform date range match
-  if( datasetTimeValue != NULL )
-  {
-    // initialize result
-    OFBool isMatch = OFFalse;
-
-    // copy values
-    char *dtv = new char[ strlen( datasetTimeValue ) + 1 ];     strcpy( dtv, datasetTimeValue );
-    char *stv = new char[ strlen( searchMaskTimeValue ) + 1 ];  strcpy( stv, searchMaskTimeValue );
-
-    // strip trailing spaces
-    DU_stripTrailingSpaces( dtv );
-    DU_stripTrailingSpaces( stv );
-
-    // get actual time boundary values
-    ExtractValuesFromRange( stv, stvv1, stvv2 );
-
-    // generate OFTime objects from strings
-    cond = DcmTime::getOFTimeFromString( OFString( dtv ), datasetTimeVal );
-    if( cond.good() )
-    {
-      cond = DcmTime::getOFTimeFromString( (( stvv1 != NULL ) ? OFString( stvv1 ) : OFString("000000")), searchMaskTimeVal1 );
-      if( cond.good() )
-      {
-        cond = DcmTime::getOFTimeFromString( (( stvv2 != NULL ) ? OFString( stvv2 ) : OFString("235959")), searchMaskTimeVal2 );
-        if( cond.good() )
-        {
-          // now that we have the time objects we can actually
-          // compare the time values and determine if it's a match
-
-          // check if the lower value in the search mask is earlier
-          // than or equal to the lower value in the dataset
-          if( searchMaskTimeVal1 <= datasetTimeVal )
-          {
-            // now check if the upper value in the search mask is later
-            // than or equal to the upper value in the dataset
-            if( searchMaskTimeVal2 >= datasetTimeVal )
-            {
-              // if these conditions are met, then this is considered to be a match
-              isMatch = OFTrue;
-            }
-          }
-        }
-      }
-    }
-
-    // free memory
-    delete[] dtv;
-    delete[] stv;
-    if( stvv1 != NULL ) delete[] stvv1;
-    if( stvv2 != NULL ) delete[] stvv2;
-
-    // return result
-    return( isMatch );
-  }
-  else
-  {
-    // so dataset time value is not given; in this case, since the time
-    // value in the search mask is non-universal, we do not have a match
-    return( OFFalse );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::DateTimeSingleValueMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue )
-// Date         : July 15, 2002
-// Author       : Thomas Wilkens
-// Task         : This function performs a date time single value match and returns OFTrue if the dataset's
-//                and the search mask's values in the corresponding attributes match; otherwise OFFalse
-//                will be returned
-// Parameters   : datasetDateValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                datasetTimeValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskDateValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-//                searchMaskTimeValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  OFDate datasetDateVal, searchMaskDateVal;
-  OFTime datasetTimeVal, searchMaskTimeVal;
-  OFCondition cond;
-
-  // if we are dealing with universal matching in date and time, there is a match
-  if( strcmp( searchMaskDateValue, "" ) == 0 && strcmp( searchMaskTimeValue, "" ) == 0 )
-  {
-    return( OFTrue );
-  }
-  else
-  {
-    // so we are not dealing with universal matching in date and time, we have to check both values individually
-    OFBool dateValuesMatch = OFFalse;
-    OFBool timeValuesMatch = OFFalse;
-
-    // check date values
-    if( strcmp( searchMaskDateValue, "" ) == 0 )
-    {
-      // a universal date always matches
-      dateValuesMatch = OFTrue;
-    }
-    else
-    {
-      // so we do not have a universal date
-      if( datasetDateValue == NULL )
-      {
-        // if there is no date value in the dataset, the non-universal date is not matched
-        dateValuesMatch = OFFalse;
-      }
-      else
-      {
-        // in this case that we are dealing with a non-universal date and a
-        // date value in the dataset, perform the date match
-
-        // copy values
-        char *ddv = new char[ strlen( datasetDateValue ) + 1 ];     strcpy( ddv, datasetDateValue );
-        char *sdv = new char[ strlen( searchMaskDateValue ) + 1 ];  strcpy( sdv, searchMaskDateValue );
-
-        // strip trailing spaces
-        DU_stripTrailingSpaces( ddv );
-        DU_stripTrailingSpaces( sdv );
-
-        // generate OFDate objects from strings
-        cond = DcmDate::getOFDateFromString( OFString( ddv ), datasetDateVal );
-        if( cond.good() )
-        {
-          cond = DcmDate::getOFDateFromString( OFString( sdv ), searchMaskDateVal );
-          if( cond.good() )
-          {
-            // now that we have the date objects we can actually
-            // compare the date values and determine if it's a match
-
-            // check if the date value in the search mask equals the date value in the dataset
-            if( searchMaskDateVal == datasetDateVal )
-            {
-              // if these conditions are met, then this is considered to be a match
-              dateValuesMatch = OFTrue;
-            }
-          }
-        }
-
-        // free memory
-        delete[] ddv;
-        delete[] sdv;
-      }
-    }
-
-    // check time values
-    if( strcmp( searchMaskTimeValue, "" ) == 0 )
-    {
-      // a universal time always matches
-      timeValuesMatch = OFTrue;
-    }
-    else
-    {
-      // so we do not have a universal time
-      if( datasetTimeValue == NULL )
-      {
-        // if there is no time value in the dataset, the non-universal time is not matched
-        timeValuesMatch = OFFalse;
-      }
-      else
-      {
-        // in this case that we are dealing with a non-universal time and a
-        // time value in the dataset, perform the time match
-
-        // copy values
-        char *dtv = new char[ strlen( datasetTimeValue ) + 1 ];     strcpy( dtv, datasetTimeValue );
-        char *stv = new char[ strlen( searchMaskTimeValue ) + 1 ];  strcpy( stv, searchMaskTimeValue );
-
-        // strip trailing spaces
-        DU_stripTrailingSpaces( dtv );
-        DU_stripTrailingSpaces( stv );
-
-        // generate OFTime objects from strings
-        cond = DcmTime::getOFTimeFromString( OFString( dtv ), datasetTimeVal );
-        if( cond.good() )
-        {
-          cond = DcmTime::getOFTimeFromString( OFString( stv ), searchMaskTimeVal );
-          if( cond.good() )
-          {
-            // now that we have the time objects we can actually
-            // compare the time values and determine if it's a match
-
-            // check if the time value in the search mask equals the time value in the dataset
-            if( searchMaskTimeVal == datasetTimeVal )
-            {
-              // if these conditions are met, then this is considered to be a match
-              timeValuesMatch = OFTrue;
-            }
-          }
-        }
-
-        // free memory
-        delete[] dtv;
-        delete[] stv;
-      }
-    }
-
-    // in case date and time values match, we have a match
-    if( dateValuesMatch && timeValuesMatch )
-      return( OFTrue );
-    else
-      return( OFFalse );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::DateSingleValueMatch( const char *datasetDateValue, const char *searchMaskDateValue )
-// Date         : July 15, 2002
-// Author       : Thomas Wilkens
-// Task         : This function performs a date single value match and returns OFTrue if the dataset's
-//                and the search mask's values in the corresponding attributes match; otherwise OFFalse
-//                will be returned
-// Parameters   : datasetDateValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskDateValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  OFDate datasetDateVal, searchMaskDateVal;
-  OFCondition cond;
-
-  // if we are dealing with universal matching, there is a match
-  if( strcmp( searchMaskDateValue, "" ) == 0 )
-    return( OFTrue );
-  else
-  {
-    // if we are not dealing with universal matching and there is a
-    // date value in the dataset, compare the two date values
-    if( datasetDateValue != NULL )
-    {
-      // initialize result
-      OFBool isMatch = OFFalse;
-
-      // copy values
-      char *ddv = new char[ strlen( datasetDateValue ) + 1 ];     strcpy( ddv, datasetDateValue );
-      char *sdv = new char[ strlen( searchMaskDateValue ) + 1 ];  strcpy( sdv, searchMaskDateValue );
-
-      // strip trailing spaces
-      DU_stripTrailingSpaces( ddv );
-      DU_stripTrailingSpaces( sdv );
-
-      // generate OFDate objects from strings
-      cond = DcmDate::getOFDateFromString( OFString( ddv ), datasetDateVal );
-      if( cond.good() )
-      {
-        cond = DcmDate::getOFDateFromString( OFString( sdv ), searchMaskDateVal );
-        if( cond.good() )
-        {
-          // now that we have the date objects we can actually
-          // compare the date values and determine if it's a match
-
-          // check if the date value in the search mask equals the date value in the dataset
-          if( searchMaskDateVal == datasetDateVal )
-          {
-            // if this condition is met, then this is considered to be a match
-            isMatch = OFTrue;
-          }
-        }
-      }
-
-      // free memory
-      delete[] ddv;
-      delete[] sdv;
-
-      // return result
-      return( isMatch );
-    }
-    else
-    {
-      // if we are not dealing with universal matching and there
-      // is no date value in the dataset, there is no match
-      return( OFFalse );
+      DcmElement* candidate = OFnullptr;
+      if( dataset->findAndGetElement( combinedKey.second, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate ) )
+        return OFFalse;
     }
   }
-}
 
-// ----------------------------------------------------------------------------
+  // sequence matching
 
-OFBool WlmFileSystemInteractionManager::TimeSingleValueMatch( const char *datasetTimeValue, const char *searchMaskTimeValue )
-// Date         : July 15, 2002
-// Author       : Thomas Wilkens
-// Task         : This function performs a time single value match and returns OFTrue if the dataset's
-//                and the search mask's values in the corresponding attributes match; otherwise OFFalse
-//                will be returned
-// Parameters   : datasetTimeValue    - [in] Value for the corresponding attribute in the dataset; might be NULL.
-//                searchMaskTimeValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  OFTime datasetTimeVal, searchMaskTimeVal;
-  OFCondition cond;
-
-  // if we are dealing with universal matching, there is a match
-  if( strcmp( searchMaskTimeValue, "" ) == 0 )
-    return( OFTrue );
-  else
+#ifdef HAVE_CXX11
+  for( auto& sequenceKey : matchingKeys.sequenceKeys )
   {
-    // if we are not dealing with universal matching and there is a
-    // time value in the dataset, compare the two date values
-    if( datasetTimeValue != NULL )
+#else
+  // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+  for( OFVector<OFPair<DcmTagKey,MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it )
+  {
+    const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
+#endif
+    DcmElement* query = OFnullptr;
+    if( searchMask->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !OFstatic_cast( DcmSequenceOfItems*, query )->isEmpty() )
     {
-      // initialize result
-      OFBool isMatch = OFFalse;
-
-      // copy values
-      char *dtv = new char[ strlen( datasetTimeValue ) + 1 ];     strcpy( dtv, datasetTimeValue );
-      char *stv = new char[ strlen( searchMaskTimeValue ) + 1 ];  strcpy( stv, searchMaskTimeValue );
-
-      // strip trailing spaces
-      DU_stripTrailingSpaces( dtv );
-      DU_stripTrailingSpaces( stv );
-
-      // generate OFTime objects from strings
-      cond = DcmTime::getOFTimeFromString( OFString( dtv ), datasetTimeVal );
-      if( cond.good() )
-      {
-        cond = DcmTime::getOFTimeFromString( OFString( stv ), searchMaskTimeVal );
-        if( cond.good() )
-        {
-          // now that we have the time objects we can actually
-          // compare the time values and determine if it's a match
-
-          // check if the time value in the search mask equals the time value in the dataset
-          if( searchMaskTimeVal == datasetTimeVal )
-          {
-            // if this condition is met, then this is considered to be a match
-            isMatch = OFTrue;
-          }
-        }
-      }
-
-      // free memory
-      delete[] dtv;
-      delete[] stv;
-
-      // return result
-      return( isMatch );
-    }
-    else
-    {
-      // if we are not dealing with universal matching and there
-      // is no time value in the dataset, there is no match
-      return( OFFalse );
+      DcmElement* candidate = OFnullptr;
+      if( dataset->findAndGetElement( sequenceKey.first, candidate, OFFalse ).bad() || !candidate || candidate->ident() != EVR_SQ || !MatchSequences( OFstatic_cast( DcmSequenceOfItems&, *candidate ), OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
+        return OFFalse;
     }
   }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::CaseSensitiveSingleValueMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values
-//                match while performing a case sensitive single value match; otherwise OFFalse
-//                will be returned
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; never NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  // initialize result variable
-  OFBool matchFound = OFTrue;
-
-  // copy values
-  char *dv = new char[ strlen( datasetValue ) + 1 ];
-  strcpy( dv, datasetValue );
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( dv );
-  DU_stripTrailingSpaces( sv );
-
-  // perform match
-  if( strcmp( dv, sv ) != 0 )
-    matchFound = OFFalse;
-
-  // free memory
-  delete[] dv;
-  delete[] sv;
-
-  // return result
-  return( matchFound );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::WildcardMatch( const char *datasetValue, const char *searchMaskValue )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the dataset's and the search mask's values
-//                match while performing a wildcard match; otherwise OFFalse will be returned.
-// Parameters   : datasetValue    - [in] Value for the corresponding attribute in the dataset; never NULL.
-//                searchMaskValue - [in] Value for the corresponding attribute in the search mask; never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  // initialize return value
-  OFBool ok = OFFalse;
-
-  // copy values
-  char *dv = new char[ strlen( datasetValue ) + 1 ];
-  strcpy( dv, datasetValue );
-  char *sv = new char[ strlen( searchMaskValue ) + 1 ];
-  strcpy( sv, searchMaskValue );
-
-  // remember the pointers for delete
-  char *dvanchor = dv;
-  char *svanchor = sv;
-
-  // strip trailing spaces
-  DU_stripTrailingSpaces( dv );
-  DU_stripTrailingSpaces( sv );
-
-  // go through both strings character by character as long as
-  // a) we do not see an EOS in sv AND
-  // b) we do not see a '*' in sv AND
-  // c) the current character in dv is equal to the
-  //    current character in the sv, or sv contains
-  //    a '?' and sv does not yet show an EOS.
-  while( *sv != '\0' &&
-         *sv != '*'  &&
-         ( *sv == *dv || ( *sv == '?' && *dv != '\0' ) ) )
-  {
-    sv++;
-    dv++;
-  }
-
-  // if the current pattern character equals the star symbol (wild card symbol) we need
-  // to call another function. If this is not the case, ok will be set to OFTrue or
-  // OFFalse, depending on if we got to the end of both strings in the above loop.
-  if( *sv == '*' )
-    ok = MatchStarSymbol( dv, sv+1 );
-  else
-  {
-    if( *sv == '\0' && *dv == '\0' )
-      ok = OFTrue;
-    else
-      ok = OFFalse;
-  }
-
-  // free memory
-  delete[] dvanchor;
-  delete[] svanchor;
-
-  // return result
-  return( ok );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::MatchStarSymbol( const char *dv, const char *sv )
-// Date         : July 12, 2002
-// Author       : Thomas Wilkens
-// Task         : This function is called, if the search pattern contains a star symbol. It determines
-//                if dv (the dataset's value) still matches sv (the search mask's value). This function
-//                takes the star symbol in sv into account. (Note that the pattern value might contain
-//                more wild card symbols.) The function will return OFTrue if there is a match; if there
-//                is not a match it will return OFFalse.
-// Parameters   : dv - [in] Dataset's value; never NULL.
-//                sv - [in] Search mask's value (may contain wild card symbols); never NULL.
-// Return Value : OFTrue if the values match, OFFalse otherwise.
-{
-  // initialize result value
-  OFBool ok = OFFalse;
-
-  // move pointer one char to the right as long as it points to a star symbol
-  while( *sv == '*' )
-    sv++;
-
-  // if we got to the end of sv, return OFTrue
-  if( *sv == '\0' )
-    return OFTrue;
-
-  // if there is something else at the end of sv,
-  // we need to go ahead and compare the rest of the two strings
-
-  // as long as ok equals OFFalse and we did not get to the end of the string
-  while( !ok && *dv != '\0' )
-  {
-    // if sv reveals a '?' or if both pointers refer to the same
-    // character, we need to call WildcardMatch again, to determine a result
-    if( *sv == '?' || *dv == *sv )
-      ok = WildcardMatch( dv+1, sv+1 );
-
-    // if ok still equals OFFalse, set pointer one character to the right
-    if( !ok )
-      dv++;
-  }
-
-  // return result
-  return( ok );
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range, char *&lower, char *&upper )
-// Date         : July 15, 2002
-// Author       : Thomas Wilkens
-// Task         : This function extracts the actual lower and upper date or time values from a given
-//                date or time range.
-// Parameters   : range - [in] Date or time range from which lower and upper values shall be extracted.
-//                lower - [out] Newly created string specifying the lower value from the date/time range;
-//                        NULL if value is not specified in range.
-//                upper - [out] Newly created string specifying the upper value from the date/time range;
-//                        NULL if value is not specified in range.
-// Return Value : none.
-{
-  // get lower value
-  const char *tmp = strchr( range, '-' );
-  const size_t res = tmp - range;
-  if( res == 0 )
-    lower = NULL;
-  else
-  {
-    lower = new char[ res + 1 ];
-    strncpy( lower, range, res );
-    lower[res] = '\0';
-  }
-
-  // get upper value
-  const size_t len = strlen( range );
-  if( res == len - 1 )
-    upper = NULL;
-  else
-  {
-    upper = new char[ len - 1 - res + 1 ];
-    strncpy( upper, tmp + 1, len - 1 - res );
-    upper[len - 1 - res] = '\0';
-  }
+  return OFTrue;
 }

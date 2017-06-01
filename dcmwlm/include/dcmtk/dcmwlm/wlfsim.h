@@ -42,6 +42,10 @@ class DcmItem;
 class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
 {
   private:
+
+      /** Matching keys configuration. */
+    class MatchingKeys;
+
       /** Privately defined copy constructor.
        *  @param old Object which shall be copied.
        */
@@ -142,277 +146,23 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        */
     OFBool AttributeIsAbsentOrEmpty( DcmTagKey elemTagKey, DcmItem *dset );
 
+      /** This function returns OFTrue, if the matching key attribute values in the one of the items of the candidate sequence
+       *  match the matching key attribute values in at least one of the items of the query sequence.
+       *  @param candidate  The candidate sequence.
+       *  @param query The query sequence.
+       *  @param matchingKeys The matching keys to regard.
+       *  @return OFTrue in case at least one item matches, OFFalse otherwise.
+       */
+    OFBool MatchSequences( DcmSequenceOfItems& candidate, DcmSequenceOfItems& query, const MatchingKeys& matchingKeys );
+
       /** This function returns OFTrue, if the matching key attribute values in the
        *  dataset match the matching key attribute values in the search mask.
        *  @param dataset    The dataset which shall be checked.
        *  @param searchMask The search mask.
+       *  @param matchingKeys The matching keys to regard.
        *  @return OFTrue in case the dataset matches the search mask in the matching key attribute values, OFFalse otherwise.
        */
-    OFBool DatasetMatchesSearchMask( DcmDataset *dataset, DcmDataset *searchMask );
-
-      /** This function determines the values of the matching key attributes in the given dataset.
-       *  @param dataset Dataset from which the values shall be extracted.
-       *  @param matchingKeyAttrValues Contains in the end the values of the matching key
-       *         attributes in the search mask. Is an array of pointers.
-       */
-    void DetermineMatchingKeyAttributeValues( DcmDataset *dataset, const char **&matchingKeyAttrValues );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute issuer of patient id match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool IssuerOfPatientIDsMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute study date and study time match; otherwise OFFalse will be returned.
-       *  @param datasetDateValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskDateValue Value for the corresponding attribute in the search mask; might be NULL.
-       *  @param searchMaskTimeValue Value for the corresponding attribute in the search mask; might be NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool StudyDateTimesMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue  );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute scheduled station AE title match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool ScheduledStationAETitlesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attributes scheduled procedure step start date and scheduled procedure step
-       *  start time match; otherwise OFFalse will be returned.
-       *  @param datasetDateValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskDateValue Value for the corresponding attribute in the search mask; might be NULL.
-       *  @param searchMaskTimeValue Value for the corresponding attribute in the search mask; might be NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool ScheduledProcedureStepStartDateTimesMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute modality match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool ModalitiesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute scheduled performing physician's names match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool ScheduledPerformingPhysicianNamesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute patient's names match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool PatientsNamesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute patient id match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool PatientsIDsMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute accession number match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool AccessionNumbersMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute requested procedure id match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool RequestedProcedureIdsMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute referring physician's name match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool ReferringPhysicianNamesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute patient sex match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool PatientsSexesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute requesting physician match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool RequestingPhysiciansMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute admission id match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool AdmissionIdsMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute requested procedure priorities match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool RequestedProcedurePrioritiesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values in
-       *  attribute patient's birth date match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool PatientsBirthDatesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function performs a date time range match and returns OFTrue if the dataset's
-       *  and the search mask's values in the corresponding attributes match; otherwise OFFalse
-       *  will be returned.
-       *  @param datasetDateValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskDateValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @param searchMaskTimeValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool DateTimeRangeMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue );
-
-      /** This function performs a date range match and returns OFTrue if the dataset's and
-       *  the search mask's values in the corresponding attributes match; otherwise OFFalse
-       *  will be returned.
-       *  @param datasetDateValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskDateValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool DateRangeMatch( const char *datasetDateValue, const char *searchMaskDateValue );
-
-      /** This function performs a time range match and returns OFTrue if the dataset's and
-       *  the search mask's values in the corresponding attributes match; otherwise OFFalse
-       *  will be returned.
-       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskTimeValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool TimeRangeMatch( const char *datasetTimeValue, const char *searchMaskTimeValue );
-
-      /** This function performs a date time single value match and returns OFTrue if the dataset's
-       *  and the search mask's values in the corresponding attributes match; otherwise OFFalse
-       *  will be returned.
-       *  @param datasetDateValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskDateValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @param searchMaskTimeValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool DateTimeSingleValueMatch( const char *datasetDateValue, const char *datasetTimeValue, const char *searchMaskDateValue, const char *searchMaskTimeValue );
-
-      /** This function performs a date single value match and returns OFTrue if the dataset's
-       *  and the search mask's values in the corresponding attributes match; otherwise OFFalse
-       *  will be returned.
-       *  @param datasetDateValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskDateValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool DateSingleValueMatch( const char *datasetDateValue, const char *searchMaskDateValue );
-
-      /** This function performs a time single value match and returns OFTrue if the dataset's
-       *  and the search mask's values in the corresponding attributes match; otherwise OFFalse
-       *  will be returned.
-       *  @param datasetTimeValue    Value for the corresponding attribute in the dataset; might be NULL.
-       *  @param searchMaskTimeValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool TimeSingleValueMatch( const char *datasetTimeValue, const char *searchMaskTimeValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values
-       *  match while performing a case sensitive single value match; otherwise OFFalse
-       *  will be returned. If the dataset's value is NULL, only a "*" matches.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; may be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool CaseSensitiveSingleValueOrWildcardMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values
-       *  match while performing a case sensitive single value match; otherwise OFFalse
-       *  will be returned. If the dataset's value is NULL, only a "*" matches.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; may be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the
-       *         search mask; trailing spaces are ignored; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool CaseSensitiveSingleValueOrWildcardStripSpacesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values
-       *  match while performing a case sensitive single value match; otherwise OFFalse
-       *  will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; never NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool CaseSensitiveSingleValueMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values
-       *  match while performing a wildcard match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; never NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the search mask; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool WildcardMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function returns OFTrue if the dataset's and the search mask's values
-       *  match while performing a wildcard match; otherwise OFFalse will be returned.
-       *  @param datasetValue    Value for the corresponding attribute in the dataset; may be NULL.
-       *  @param searchMaskValue Value for the corresponding attribute in the
-       *         search mask; trailing spaces are ignored; never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool WildcardStripSpacesMatch( const char *datasetValue, const char *searchMaskValue );
-
-      /** This function is called, if the search pattern contains a star symbol. It determines
-       *  if dv (the dataset's value) still matches sv (the search mask's value). This function
-       *  takes the star symbol in sv into account. (Note that the pattern value might contain
-       *  more wild card symbols.) The function will return OFTrue if there is a match; if there
-       *  is not a match it will return OFFalse.
-       *  @param dv Dataset's value; never NULL.
-       *  @param sv Search mask's value (may contain wild card symbols); never NULL.
-       *  @return OFTrue if the values match, OFFalse otherwise.
-       */
-    OFBool MatchStarSymbol( const char *dv, const char *sv );
-
-      /** This function extracts the actual lower and upper date or time values from a given
-       *  date or time range.
-       *  @param range Date or time range from which lower and upper values shall be extracted.
-       *  @param lower Newly created string specifying the lower value from the date/time range;
-       *               NULL if value is not specified in range.
-       *  @param upper Newly created string specifying the upper value from the date/time range;
-       *               NULL if value is not specified in range.
-       */
-    void ExtractValuesFromRange( const char *range, char *&lower, char *&upper );
+    OFBool DatasetMatchesSearchMask( DcmItem *dataset, DcmItem *searchMask, const MatchingKeys& matchingKeys );
 
   public:
       /** default constructor.
