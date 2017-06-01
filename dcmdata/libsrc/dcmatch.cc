@@ -189,6 +189,8 @@ OFBool DcmAttributeMatching::rangeMatchingDateTime( const void* dateQueryData, c
 {
     if( !dateQuerySize )
         return rangeMatchingTime( timeQueryData, timeQuerySize, timeCandidateData, timeCandidateSize );
+    if( !timeQuerySize )
+        return rangeMatchingDate( dateQueryData, dateQuerySize, dateCandidateData, dateCandidateSize );
     OFDateTime candidate;
     if( DcmDate::getOFDateFromString( OFreinterpret_cast( const char*, dateCandidateData ), dateCandidateSize, candidate.Date ).bad() )
         return OFFalse;
@@ -197,7 +199,7 @@ OFBool DcmAttributeMatching::rangeMatchingDateTime( const void* dateQueryData, c
     const DashSeparated dateQuery( dateQueryData, dateQuerySize );
     const DashSeparated timeQuery( timeQueryData, timeQuerySize );
     // check that both date/time ranges have the same structure
-    if( ( dateQuery.first == dateQuery.second ) != ( timeQuery.first != timeQuery.second ) )
+    if( ( dateQuery.first != dateQuery.second ) != ( timeQuery.first != timeQuery.second ) )
         return OFFalse;
     if( ( !dateQuery.firstSize && timeQuery.firstSize ) || ( !dateQuery.secondSize && timeQuery.secondSize ) )
         return OFFalse;
