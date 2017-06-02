@@ -703,9 +703,10 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 
 The \b dcmqrscp application does not support extended negotiation.
 
-Presentation contexts for other SOP Classes may be configured via the \e --assoc-config-file
-option by selecting an appropriate profile for outgoing associations.
-The selected profile will completely override the above mentioned default configuration.
+Presentation contexts for other SOP Classes may be configured via the
+\e --assoc-config-file option by selecting an appropriate profile for outgoing
+associations.  The selected profile will completely override the above mentioned
+default configuration.
 
 \subsubsection dcmqrscp_scp_conformance SCP Conformance
 
@@ -922,13 +923,13 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 
 The \b dcmqrscp application does not support extended negotiation.
 
-Presentation contexts for other SOP Classes may be configured via the \e --assoc-config-file
-option by selecting an appropriate profile for incoming associations.
-The selected profile will override only the above mentioned storage SOP classes, \b dcmqrscp
-will accept contexts with the above mentioned FIND, GET, MOVE and private shutdown SOP Classes
-additionally to the ones defined in the selected profile.
-Please note that an appropriate profile for \b role \b negotiation muss be defined and used
-for enabling GET support.
+Presentation contexts for other SOP Classes may be configured via the
+\e --assoc-config-file option by selecting an appropriate profile for incoming
+associations.  The selected profile will override only the above mentioned
+storage SOP classes, \b dcmqrscp will accept contexts with the above mentioned
+FIND, GET, MOVE and private shutdown SOP Classes additionally to the ones
+defined in the selected profile.  Please note that an appropriate profile for
+<b>role negotiation</b> must be defined and used for enabling GET support.
 
 \subsubsection dcmqrscp_query_keys Query Keys
 
