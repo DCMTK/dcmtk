@@ -83,6 +83,9 @@ OFTEST(ofstd_error)
 #ifdef _WIN32
     ec_error.assign(WSA_IO_INCOMPLETE, OFsystem_category());
     WSASetLastError(WSA_IO_INCOMPLETE);
+#elif __OpenBSD__
+    ec_error.assign(EPROTOTYPE, OFsystem_category());
+    errno = EPROTOTYPE;
 #else
     ec_error.assign(EPROTO, OFsystem_category());
     errno = EPROTO;
