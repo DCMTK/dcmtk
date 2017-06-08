@@ -32,6 +32,7 @@ OFTEST_REGISTER(dcmnet_scp_stop_after_timeout);
 OFTEST_REGISTER(dcmnet_scp_no_stop_wo_request_noblock);
 OFTEST_REGISTER(dcmnet_scp_no_stop_wo_request_block);
 OFTEST_REGISTER(dcmnet_scp_no_term_notify_without_association);
+OFTEST_REGISTER(dcmnet_scp_role_selection);
 #endif // WITH_THREADS
 
 OFTEST_MAIN("dcmnet")
