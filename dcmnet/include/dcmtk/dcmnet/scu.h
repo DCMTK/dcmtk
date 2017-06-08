@@ -245,6 +245,7 @@ public:
    *  - Else then tries to find an explicit VR uncompressed TS presentation context
    *  - Else then tries to find an implicit VR uncompressed TS presentation context
    *  - Else finally accepts each matching presentation ctx independent of TS.
+   *  @warning This method does not support filtering for a specific role, yet.
    *  @param abstractSyntax [in] The abstract syntax (UID) to look for
    *  @param transferSyntax [in] The transfer syntax (UID) to look for. If empty, the transfer
    *                             syntax is not checked.

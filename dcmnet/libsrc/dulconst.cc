@@ -1012,6 +1012,9 @@ constructSCUSCPRoles(unsigned char type,
           presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext);
       }
   } else {  // type != DUL_TYPEASSOCIATERQ
+     /* The implemented behaviour is documented in dul.h (see DUL_SC_ROLE enum definition).
+      * The error case is already handled in ASC_acceptPresentationContext() in assoc.cc.
+      */
       presentationCtx = params->acceptedPresentationContext != NULL ?
           (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext) :
           (DUL_PRESENTATIONCONTEXT*)NULL;

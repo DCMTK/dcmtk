@@ -183,6 +183,39 @@ typedef struct {
     OFBool useSecureLayer;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
+/** Enum describing the possible role settings for role negotiation sub items.
+ *  DCMTK implements the following role negotiation behaviour for association
+ *  acceptors:
+ *  @verbatim
+ *   +--------------------+------------------+---------
+ *  | Requestor Proposal | Acceptor Setting | Result  |
+ *  +--------------------+------------------+---------+
+ *  | SCU                | SCP              | NONE  |
+ *  | SCU                | SCU              | SCU     |
+ *  | SCU                | SCU/SCP          | SCU     |
+ *  | SCU                | DEFAULT          | DEFAULT |
+ *  | SCP                | SCP              | SCP     |
+ *  | SCP                | SCU              | NONE  |
+ *  | SCP                | SCU/SCP          | SCP     |
+ *  | SCP                | DEFAULT          | DEFAULT |
+ *  | SCU/SCP            | SCP              | SCP     |
+ *  | SCU/SCP            | SCU              | SCU     |
+ *  | SCU/SCP            | SCU/SCP          | SCU/SCP |
+ *  | SCU/SCP            | DEFAULT          | DEFAULT |
+ *  | DEFAULT            | SCP              | Reject  |
+ *  | DEFAULT            | SCU              | DEFAULT |
+ *  | DEFAULT            | SCU/SCP          | DEFAULT |
+ *  | DEFAULT            | DEFAULT          | DEFAULT |
+ *  +--------------------+------------------+---------+
+ *  @endverbatim
+ *  NONE, SCU, SCP as well as SCU/SCP denote the related flags in the
+ *  association role selection user items. The "Reject" case denotes that
+ *  such a presentation context will be rejected by the association acceptor:
+ *  If the requestor connects with default role but the acceptor explicitly
+ *  requires the SCP role (only) then the presentation context
+ *  will be rejected. All other cases do not lead to rejection but to actual
+ *  "negotiation".
+ */
 typedef enum {
     DUL_SC_ROLE_NONE,
     DUL_SC_ROLE_DEFAULT,
