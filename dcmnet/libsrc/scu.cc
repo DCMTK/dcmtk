@@ -347,7 +347,8 @@ void DcmSCU::clearPresentationContexts()
 // Returns usable presentation context ID for a given abstract syntax UID and
 // transfer syntax UID. 0 if none matches.
 T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &abstractSyntax,
-                                                              const OFString &transferSyntax)
+                                                              const OFString &transferSyntax,
+                                                              const T_ASC_SC_ROLE requestorRole)
 {
   if (!isConnected())
     return 0;
@@ -370,6 +371,7 @@ T_ASC_PresentationContextID DcmSCU::findPresentationContextID(const OFString &ab
     found &= (pc->result == ASC_P_ACCEPTANCE);
     if (!transferSyntax.empty())  // ignore transfer syntax if not specified
       found &= (strcmp(pc->acceptedTransferSyntax, transferSyntax.c_str()) == 0);
+    if (found) found &= pc->acceptedSCRole == ascRole2dulRole(requestorRole);
     if (!found) pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
   }
   if (found)

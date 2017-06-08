@@ -233,10 +233,13 @@ public:
    *  @param abstractSyntax [in] The abstract syntax (UID) to look for
    *  @param transferSyntax [in] The transfer syntax (UID) to look for. If empty, the transfer
    *                             syntax is not checked.
+   *  @param requestorRole  [in] The role to look for (denoting the role the association
+   *                             requestor plays)
    *  @return Adequate Presentation context ID that can be used. 0 if none found.
    */
   T_ASC_PresentationContextID findPresentationContextID(const OFString &abstractSyntax,
-                                                        const OFString &transferSyntax);
+                                                        const OFString &transferSyntax,
+                                                        const T_ASC_SC_ROLE requestorRole = ASC_SC_ROLE_DEFAULT);
 
   /** After a successful association negotiation, this function is called to return the
    *  presentation context ID that best matches the desired abstract syntax and transfer
