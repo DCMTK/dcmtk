@@ -1636,10 +1636,10 @@ void DcmSCP::setMaxReceivePDULength(const Uint32 maxRecPDU)
 
 OFCondition DcmSCP::addPresentationContext(const OFString &abstractSyntax,
                                            const OFList<OFString> &xferSyntaxes,
-                                           const T_ASC_SC_ROLE role,
+                                           const T_ASC_SC_ROLE requestorRole,
                                            const OFString &profile)
 {
-  return m_cfg->addPresentationContext(abstractSyntax, xferSyntaxes, role, profile);
+  return m_cfg->addPresentationContext(abstractSyntax, xferSyntaxes, requestorRole, profile);
 }
 
 // ----------------------------------------------------------------------------
