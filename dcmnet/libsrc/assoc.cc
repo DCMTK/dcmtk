@@ -874,22 +874,21 @@ ASC_acceptPresentationContext(
     proposedContext->result = ASC_P_ACCEPTANCE;
     proposedContext->acceptedSCRole = ascRole2dulRole(acceptedRole);
 
-    /* check whether the SCP/SCU role selection is successful */
-    if (dcmStrictRoleSelection.get())
+    /* Here we check the only role selection case which leads to clear rejection of the
+     * proposed presentation context: If the requestor connects with default role but the
+     * acceptor explicitly requires the SCP role (only) then the presentation context
+     * will be rejected. All other cases do not lead to rejection but to actual "negotiation".
+     * DCMTK's behaviour can be seen in the delaration of enum DUL_SC_ROLE (see dul.h).
+     * The logic of the role negotiation is implemented in constructSCUSCPRoles() (see dulconst.cc).
+     */
+    if ( (proposedContext->proposedSCRole == DUL_SC_ROLE_DEFAULT)
+      && (proposedContext->acceptedSCRole == DUL_SC_ROLE_SCP) )
     {
-        if (proposedContext->proposedSCRole != proposedContext->acceptedSCRole)
-        {
-            if (((proposedContext->proposedSCRole == DUL_SC_ROLE_DEFAULT) && (proposedContext->acceptedSCRole != DUL_SC_ROLE_SCU)) ||
-                ((proposedContext->proposedSCRole == DUL_SC_ROLE_SCU) && (proposedContext->acceptedSCRole != DUL_SC_ROLE_DEFAULT)) ||
-                ((proposedContext->proposedSCRole != DUL_SC_ROLE_SCUSCP) && (proposedContext->acceptedSCRole != DUL_SC_ROLE_SCUSCP)))
-            {
-                proposedContext->result = ASC_P_NOREASON;
-                DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, proposed ("
-                    << ASC_role2String(dulRole2ascRole(proposedContext->proposedSCRole))
-                    << ") and accepted role (" << ASC_role2String(acceptedRole) << ") are incompatible");
-                return ASC_SCPSCUROLESELECTIONFAILED;
-            }
-        }
+        proposedContext->result = ASC_P_NOREASON;
+        DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, Default role (i.e. SCU) proposed "
+            << " but only only SCP role configured for acceptance.");
+        return ASC_SCPSCUROLESELECTIONFAILED;
+
     }
 
     acceptedContext = findPresentationContextID(

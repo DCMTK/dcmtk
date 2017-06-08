@@ -85,13 +85,6 @@ class LST_HEAD;
  */
 extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmDisableGethostbyaddr;   /* default: OFFalse */
 
-/** Global flag specifying whether to reject presentation contexts in case of an
- *  unsuccessful SCP/SCU role selection (strict) or to return the corresponding
- *  user data item with appropriate values (default). This applies to association
- *  acceptors only.
- */
-extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmStrictRoleSelection;   /* default: OFFalse */
-
 /** Global timeout in seconds for connecting to remote hosts.
  *  Default value is -1, which selects infinite timeout, i.e. blocking connect().
  */
