@@ -710,11 +710,13 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
     if (role->length - 4 < UIDLength)
         return makeLengthError("SCU-SCP role list UID", role->length, 0, UIDLength);
 
-    OFStandard::strlcpy(role->SOPClassUID, (char*)buf, sizeof(role->SOPClassUID));
-    if (UIDLength > sizeof(role->SOPClassUID))
+    if (UIDLength > DICOM_UI_LENGTH)
     {
-      DCMNET_WARN("Provided role SOP Class UID " << role->SOPClassUID << " is shorter than its announced length " << UIDLength << " (ignored)");
+      DCMNET_WARN("Provided role SOP Class UID length " << UIDLength
+      << " is larger than maximum allowed UID length " << DICOM_UI_LENGTH << " (will use 64 bytes max)");
+      UIDLength = DICOM_UI_LENGTH;
     }
+    OFStandard::strlcpy(role->SOPClassUID, (char*)buf, UIDLength+1 /* +1 for 0-byte */);
     buf += UIDLength;
     role->SCURole = *buf++;
     role->SCPRole = *buf++;
@@ -724,7 +726,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
     DCMNET_TRACE("Subitem parse: Type "
             << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)role->type
             << STD_NAMESPACE dec << ", Length " << STD_NAMESPACE setw(4) << (int)role->length
-            << ", Content: " << role->SOPClassUID << " " << (int)role->SCURole << " " << (int)role->SCPRole);
+            << ", Content: SOP Class: " << role->SOPClassUID << " SCU: " << (int)role->SCURole << " SCP: " << (int)role->SCPRole);
     return EC_Normal;
 }
 
