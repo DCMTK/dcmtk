@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -127,6 +127,14 @@ public:
     const char *key,
     const char *abstractSyntaxUID,
     T_ASC_SC_ROLE role);
+
+  /** adds empty role list, also returns ok if list is already existing.
+   *  If key is not yet known, a new list is created under this key.
+   *  @param key role list key, must not be NULL
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  OFCondition createEmptyRoleList(
+    const char *key);
 
   /** adds the given abstract syntax UID and extended negotiation data to
    *  the list of extended negotiation items maintained under the given key.

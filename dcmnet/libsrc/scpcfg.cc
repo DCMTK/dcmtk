@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2015, OFFIS e.V.
+ *  Copyright (C) 2012-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -372,12 +372,16 @@ OFCondition DcmSCPConfig::addPresentationContext(const OFString &abstractSyntax,
 
   // create role key and amend configuration (if required)
   OFString DCMSCP_RO_KEY;
-  if ( role != ASC_SC_ROLE_DEFAULT )
+  DCMSCP_RO_KEY = profileName;
+  DCMSCP_RO_KEY += "_ROLEKEY";
+  result = m_assocConfig.createEmptyRoleList(DCMSCP_RO_KEY.c_str());
+  if (result.good() && (role != ASC_SC_ROLE_DEFAULT))
   {
-    DCMSCP_RO_KEY = profileName;
-    DCMSCP_RO_KEY += "_ROLEKEY";
     result = m_assocConfig.addRole(DCMSCP_RO_KEY.c_str(), abstractSyntax.c_str(), role);
   }
+  if (result.bad())
+    return result;
+
 
   // create new profile if required and add presentation context as just defined.
   // we always use the same presentation context list.
@@ -390,7 +394,7 @@ OFCondition DcmSCPConfig::addPresentationContext(const OFString &abstractSyntax,
     {
       // finally add new presentation context to list and profile to configuration
       if ( result.good() ) result = m_assocConfig.addPresentationContext(DCMSCP_PC_KEY.c_str(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str());
-      if ( result.good() ) result = m_assocConfig.addProfile(profileName.c_str(), DCMSCP_PC_KEY.c_str(), DCMSCP_RO_KEY.empty() ? NULL : DCMSCP_RO_KEY.c_str());
+      if ( result.good() ) result = m_assocConfig.addProfile(profileName.c_str(), DCMSCP_PC_KEY.c_str(), DCMSCP_RO_KEY.c_str());
     }
     else
     {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -140,6 +140,15 @@ public:
     const char *key,
     const char *abstractSyntaxUID,
     T_ASC_SC_ROLE role);
+
+  /** add empty list within map.
+   *  If key is new, new list is created. Otherwise the request
+   *  is ignored (no error).
+   *  @param key map key
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  OFCondition addEmpty(
+    const char *key);
 
   /** checks if the key is known
    *  @param key key name, must not be NULL

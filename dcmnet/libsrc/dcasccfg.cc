@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -103,6 +103,12 @@ OFCondition DcmAssociationConfiguration::addRole(
   T_ASC_SC_ROLE role)
 {
   return roleselection_.add(key, abstractSyntaxUID, role);
+}
+
+OFCondition DcmAssociationConfiguration::createEmptyRoleList(
+  const char* key)
+{
+  return roleselection_.addEmpty(key);
 }
 
 OFCondition DcmAssociationConfiguration::addExtendedNegotiation(
