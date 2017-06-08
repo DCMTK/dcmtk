@@ -578,8 +578,8 @@ dulRole2ascRole(DUL_SC_ROLE role)
     return ar;
 }
 
-static DUL_SC_ROLE
-ascRole2dulRole(T_ASC_SC_ROLE role)
+DUL_SC_ROLE
+ascRole2dulRole(const T_ASC_SC_ROLE role)
 {
     DUL_SC_ROLE dr = DUL_SC_ROLE_DEFAULT;
     switch (role) {
@@ -594,7 +594,7 @@ ascRole2dulRole(T_ASC_SC_ROLE role)
 }
 
 const char*
-ASC_role2String(T_ASC_SC_ROLE role)
+ASC_role2String(const T_ASC_SC_ROLE role)
 {
     const char* s = NULL;
     switch (role) {

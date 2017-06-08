@@ -640,7 +640,14 @@ ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostre
     @return The role as a string
  */
 DCMTK_DCMNET_EXPORT const char*
-ASC_role2String(T_ASC_SC_ROLE role);
+ASC_role2String(const T_ASC_SC_ROLE role);
+
+/** Converts given ASC role to DUL role
+ *  @param  role The role to convert
+    @return The role as DUL role
+ */
+DCMTK_DCMNET_EXPORT DUL_SC_ROLE
+ascRole2dulRole(const T_ASC_SC_ROLE role);
 
 
 #endif
