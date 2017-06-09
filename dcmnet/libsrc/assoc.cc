@@ -889,13 +889,13 @@ ASC_acceptPresentationContext(
       if (alwaysAcceptDefaultRole)
       {
         DCMNET_WARN("ASSOC: Deliberately accepting Default role proposed by association requestor, "
-            << "while originally being configured for role SCP only.");
+            << "while originally being configured for role SCP only");
       }
       else
       {
         proposedContext->result = ASC_P_NOREASON;
           DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, Default role (i.e. SCU) proposed "
-              << "but only SCP role configured for acceptance.");
+              << "but only SCP role configured for acceptance");
           return ASC_SCPSCUROLESELECTIONFAILED;
       }
     }

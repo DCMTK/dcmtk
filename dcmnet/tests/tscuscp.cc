@@ -393,7 +393,7 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
       OFCHECK(scu.negotiateAssociation() == DUL_ASSOCIATIONREJECTED);
     }
     // Loop over roles and check for each role whether has been negotiated or not.
-    // Only a single role (the expected_result) should be succesfully negotiated.
+    // Only a single role (the expected_result) should be successfully negotiated.
     OFVector<T_ASC_SC_ROLE>::iterator it = roles.begin();
     OFCondition result;
     while (it != roles.end())
@@ -431,7 +431,7 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
 // Test case that checks whether server returns after association if enabled
 OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
 {
-    // TThe ollowing role selection behaviour should be implemented and
+    // The ollowing role selection behaviour should be implemented and
     // is exercised in this test (copied from dul.h):
     //  *  +--------------------+------------------+---------+
     //  *  | Requestor Proposal | Acceptor Setting | Result  |

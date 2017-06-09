@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -373,12 +373,12 @@ class DCMTK_DCMWLM_EXPORT WlmDataSource
     virtual ~WlmDataSource();
 
       /** Connects to the data source.
-       * @return Indicates if the connection was established succesfully.
+       * @return Indicates if the connection was established successfully.
        */
     virtual OFCondition ConnectToDataSource() = 0;
 
       /** Disconnects from the data source.
-       * @return Indicates if the disconnection was completed succesfully.
+       * @return Indicates if the disconnection was completed successfully.
        */
     virtual OFCondition DisconnectFromDataSource() = 0;
 

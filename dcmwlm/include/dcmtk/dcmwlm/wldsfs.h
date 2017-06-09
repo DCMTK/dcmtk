@@ -103,12 +103,12 @@ class DCMTK_DCMWLM_EXPORT WlmDataSourceFileSystem : public WlmDataSource
     ~WlmDataSourceFileSystem();
 
       /** Connects to the data source.
-       * @return Indicates if the connection was established succesfully.
+       * @return Indicates if the connection was established successfully.
        */
     OFCondition ConnectToDataSource();
 
       /** Disconnects from the data source.
-       * @return Indicates if the disconnection was completed succesfully.
+       * @return Indicates if the disconnection was completed successfully.
        */
     OFCondition DisconnectFromDataSource();
 

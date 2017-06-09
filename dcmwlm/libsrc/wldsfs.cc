@@ -76,7 +76,7 @@ OFCondition WlmDataSourceFileSystem::ConnectToDataSource()
 // Author       : Thomas Wilkens
 // Task         : Connects to the data source.
 // Parameters   : none.
-// Return Value : Indicates if the connection was established succesfully.
+// Return Value : Indicates if the connection was established successfully.
 {
   // set variables in fileSystemInteractionManager object
   fileSystemInteractionManager.SetEnableRejectionOfIncompleteWlFiles( enableRejectionOfIncompleteWlFiles );
@@ -95,7 +95,7 @@ OFCondition WlmDataSourceFileSystem::DisconnectFromDataSource()
 // Author       : Thomas Wilkens
 // Task         : Disconnects from the data source.
 // Parameters   : none.
-// Return Value : Indicates if the disconnection was completed succesfully.
+// Return Value : Indicates if the disconnection was completed successfully.
 {
   // disconnect from file system
   OFCondition cond = fileSystemInteractionManager.DisconnectFromFileSystem();
