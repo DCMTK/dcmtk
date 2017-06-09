@@ -431,7 +431,7 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
 {
     // TThe ollowing role selection behaviour should be implemented and
     // is exercised in this test (copied from dul.h):
-    //  *   +--------------------+------------------+---------
+    //  *  +--------------------+------------------+---------+
     //  *  | Requestor Proposal | Acceptor Setting | Result  |
     //  *  +--------------------+------------------+---------+
     //  *  | SCU                | SCP              | NONE    |

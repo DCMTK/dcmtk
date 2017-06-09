@@ -187,15 +187,15 @@ typedef struct {
  *  DCMTK implements the following role negotiation behaviour for association
  *  acceptors:
  *  @verbatim
- *   +--------------------+------------------+---------
+ *  +--------------------+------------------+---------+
  *  | Requestor Proposal | Acceptor Setting | Result  |
  *  +--------------------+------------------+---------+
- *  | SCU                | SCP              | NONE  |
+ *  | SCU                | SCP              | NONE    |
  *  | SCU                | SCU              | SCU     |
  *  | SCU                | SCU/SCP          | SCU     |
  *  | SCU                | DEFAULT          | DEFAULT |
  *  | SCP                | SCP              | SCP     |
- *  | SCP                | SCU              | NONE  |
+ *  | SCP                | SCU              | NONE    |
  *  | SCP                | SCU/SCP          | SCP     |
  *  | SCP                | DEFAULT          | DEFAULT |
  *  | SCU/SCP            | SCP              | SCP     |
