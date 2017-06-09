@@ -886,9 +886,8 @@ ASC_acceptPresentationContext(
     {
         proposedContext->result = ASC_P_NOREASON;
         DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, Default role (i.e. SCU) proposed "
-            << " but only only SCP role configured for acceptance.");
+            << "but only only SCP role configured for acceptance.");
         return ASC_SCPSCUROLESELECTIONFAILED;
-
     }
 
     acceptedContext = findPresentationContextID(
