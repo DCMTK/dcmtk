@@ -148,7 +148,6 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofnetdb.h"
 
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
-OFGlobal<OFBool> dcmStrictRoleSelection(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
 OFGlobal<DcmNativeSocketType> dcmExternalSocketHandle(DCMNET_INVALID_SOCKET);
 OFGlobal<const char *> dcmTCPWrapperDaemonName((const char *)NULL);
