@@ -888,7 +888,7 @@ ASC_acceptPresentationContext(
       // If user wants to override rejection (e.g. for faulty clients), skip the check but print warning
       if (alwaysAcceptDefaultRole)
       {
-        DCMNET_WARN("ASSOC: Deliberately accepting Default role proposed by association requestor,"
+        DCMNET_WARN("ASSOC: Deliberately accepting Default role proposed by association requestor, "
             << "while originally being configured for role SCP only.");
       }
       else
