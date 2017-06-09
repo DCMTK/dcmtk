@@ -85,7 +85,7 @@ public:
     /** default constructor. This creates an empty OFVector. */
     OFVector() : values_(NULL), allocated_(0), size_(0)
     {
-        reserve(0);
+
     }
 
     /** copy constructor.

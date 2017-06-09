@@ -19,6 +19,11 @@
 
 #include <vector>
 
+struct Recursive : std::vector<Recursive>
+{
+    int i;
+};
+
 int main()
 {
     std::vector<int> v;
@@ -72,6 +77,12 @@ int main()
     w.push_back(23);
     v.swap(w);
     if (it != w.begin()) {
+        return -1;
+    }
+
+    // test if recursive vector structures can be constructed without causing
+    // a stack overflow
+    if (std::vector<Recursive>().size() != 0) {
         return -1;
     }
 

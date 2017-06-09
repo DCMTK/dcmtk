@@ -25,6 +25,10 @@
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofvector.h"
 
+struct Recursive : OFVector<Recursive>
+{
+    int i;
+};
 
 OFTEST(ofstd_OFVector)
 {
@@ -115,4 +119,8 @@ OFTEST(ofstd_OFVector)
         else
             OFCHECK_EQUAL(*it, 6);
     }
+
+    // test if recursive vector structures can be constructed without causing
+    // a stack overflow
+    OFCHECK(OFVector<Recursive>().size() == 0);
 }
