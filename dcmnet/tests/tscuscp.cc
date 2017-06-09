@@ -351,7 +351,8 @@ OFTEST_FLAGS(dcmnet_scp_no_term_notify_without_association, EF_Slow)
 void test_role_selection(const T_ASC_SC_ROLE r_req,
                          const T_ASC_SC_ROLE r_acc,
                          const T_ASC_SC_ROLE expected_result,
-                         const OFBool expect_assoc_reject = OFFalse)
+                         const OFBool expect_assoc_reject = OFFalse,
+                         const OFBool acceptDefaultInsteadOfSCP = OFFalse)
 {
     // Make it possible to loop over roles, used for checking the
     // negotiated presentation contexts.
@@ -372,6 +373,7 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
     config.setAETitle("ACCEPTOR");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     config.setConnectionTimeout(3);
+    config.setAlwaysAcceptDefaultRole(acceptDefaultInsteadOfSCP);
 
     scp.start();
     OFStandard::sleep(1);
@@ -446,11 +448,14 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
     //  *  | SCU/SCP            | SCU              | SCU     |
     //  *  | SCU/SCP            | SCU/SCP          | SCU/SCP |
     //  *  | SCU/SCP            | DEFAULT          | DEFAULT |
-    //  *  | DEFAULT            | SCP              | Reject  |
+    //  *  | DEFAULT            | SCP              | Reject |
     //  *  | DEFAULT            | SCU              | DEFAULT |
     //  *  | DEFAULT            | SCU/SCP          | DEFAULT |
     //  *  | DEFAULT            | DEFAULT          | DEFAULT |
     //  *  +--------------------+------------------+---------+
+    //
+    //  The Reject case can be turned into returning DEFAULT role when
+    //  setting a specific option also being tested below.
 
     test_role_selection(ASC_SC_ROLE_SCU, ASC_SC_ROLE_SCP,     ASC_SC_ROLE_NONE);
     test_role_selection(ASC_SC_ROLE_SCU, ASC_SC_ROLE_SCU,     ASC_SC_ROLE_SCU);
@@ -467,9 +472,13 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
     test_role_selection(ASC_SC_ROLE_SCUSCP, ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_DEFAULT);
 
     test_role_selection(ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_SCP,     ASC_SC_ROLE_NONE /* not evaluated */, OFTrue /* expect rejection */);
+    // Repeat the test but this time work around faulty clients by also accepting Default role
+    // instead of the originally configured SCP role.
+    test_role_selection(ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_SCP,     ASC_SC_ROLE_DEFAULT, OFFalse, OFTrue);
     test_role_selection(ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_SCU,     ASC_SC_ROLE_DEFAULT);
     test_role_selection(ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_SCUSCP,  ASC_SC_ROLE_DEFAULT);
     test_role_selection(ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_DEFAULT);
+
 }
 
 #endif // WITH_THREADS
