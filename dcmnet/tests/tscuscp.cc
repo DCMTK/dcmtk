@@ -448,7 +448,7 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
     //  *  | SCU/SCP            | SCU              | SCU     |
     //  *  | SCU/SCP            | SCU/SCP          | SCU/SCP |
     //  *  | SCU/SCP            | DEFAULT          | DEFAULT |
-    //  *  | DEFAULT            | SCP              | Reject |
+    //  *  | DEFAULT            | SCP              | Reject  |
     //  *  | DEFAULT            | SCU              | DEFAULT |
     //  *  | DEFAULT            | SCU/SCP          | DEFAULT |
     //  *  | DEFAULT            | DEFAULT          | DEFAULT |
