@@ -215,6 +215,15 @@ typedef struct {
  *  requires the SCP role (only) then the presentation context
  *  will be rejected. All other cases do not lead to rejection but to actual
  *  "negotiation".
+ *
+ *  The Reject case can be avoided by setting a related option available in
+ *  association acceptance code like ASC_acceptPresentationContext() or DcmSCP.
+ *  to OFTrue (reading something like "alwaysAcceptDefaultRole" since when enabled,
+ *  with the Reject being disabled all Default role proposals will be accepted).
+ *  This can make sense for faulty Requestors, e.g. faulty Storage Commitment Servers
+ *  connecting on a second connection for delivering an N-EVENT-REPORT, or broken
+ *  Retrieve requestors proposing GET-based SOP Classes for retrieval using the Default
+ *  role instead of the required SCP role.
  */
 typedef enum {
     DUL_SC_ROLE_NONE,

@@ -365,7 +365,8 @@ ASC_acceptPresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
     const char* transferSyntax,
-    T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
+    T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT,
+    const OFBool alwaysAcceptDefaultRole = OFFalse);
 
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_acceptContextsWithPreferredTransferSyntaxes(

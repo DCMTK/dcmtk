@@ -30,6 +30,7 @@ DcmAssociationConfiguration::DcmAssociationConfiguration()
 , roleselection_()
 , extneg_()
 , profiles_()
+, alwaysAcceptDefaultRole_(OFFalse)
 {
 }
 
@@ -70,6 +71,7 @@ void DcmAssociationConfiguration::clear()
   roleselection_.clear();
   extneg_.clear();
   profiles_.clear();
+  alwaysAcceptDefaultRole_ = OFFalse;
 }
 
 OFCondition DcmAssociationConfiguration::addTransferSyntax(
@@ -537,7 +539,7 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
             found = OFTrue;
             result = ASC_acceptPresentationContext(
                 assoc.params, pc.presentationContextID,
-                pc.proposedTransferSyntaxes[j], acceptedRole);
+                pc.proposedTransferSyntaxes[j], acceptedRole, alwaysAcceptDefaultRole_);
             // SCP/SCU role selection failed, reject presentation context
             if (result == ASC_SCPSCUROLESELECTIONFAILED)
             {
@@ -594,6 +596,12 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
 
   return result;
 }
+
+void DcmAssociationConfiguration::setAlwaysAcceptDefaultRole(const OFBool enabled)
+{
+  alwaysAcceptDefaultRole_ = enabled;
+}
+
 
 
 void DcmAssociationConfiguration::dumpProfiles(

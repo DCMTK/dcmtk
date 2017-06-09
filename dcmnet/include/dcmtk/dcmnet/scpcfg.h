@@ -194,6 +194,19 @@ public:
    */
   void setProgressNotificationMode(const OFBool mode);
 
+  /** Option to always accept a default role as association acceptor.
+   *  If OFFalse (default) the acceptor will reject a presentation context proposed
+   *  with Default role (no role selection at all) when it is configured for role
+   *  SCP only. If this option is set to OFTrue then such presentation contexts will
+   *  be accepted in Default role (i.e. acceptor does not return role selection for
+   *  this presentation context at all). Overall, if set to OFTrue, there are no
+   *  requestor proposals possible that lead to a complete rejection of a presentation
+   *  context. See also role documentation in dul.h.
+   *  @param  enabled If OFTrue, do not reject Default role proposals when configured
+   *          for SCP role. OFFalse (default behaviour): Reject such proposals.
+   */
+  void setAlwaysAcceptDefaultRole(const OFBool enabled);
+
   /* Get methods for SCP settings */
 
   /** Returns TCP/IP port number SCP listens for new connection requests

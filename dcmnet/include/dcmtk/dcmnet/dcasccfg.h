@@ -201,6 +201,19 @@ public:
    */
   OFString findTSKey(const OFList<OFString>& tslist);
 
+  /** Option to always accept a default role as association acceptor.
+   *  If OFFalse (default) the acceptor will reject a presentation context proposed
+   *  with Default role (no role selection at all) when it is configured for role
+   *  SCP only. If this option is set to OFTrue then such presentation contexts will
+   *  be accepted in Default role (i.e. acceptor does not return role selection for
+   *  this presentation context at all). Overall, if set to OFTrue, there are no
+   *  requestor proposals possible that lead to a complete rejection of a presentation
+   *  context. See also role documentation in dul.h.
+   *  @param  enabled If OFTrue, do not reject Default role proposals when configured
+   *          for SCP role. OFFalse (default behaviour): Reject such proposals.
+   */
+  void setAlwaysAcceptDefaultRole(const OFBool enabled);
+
   /** dumps all profiles or a selected profile to the given output stream.
    *  Mainly useful for debugging.
    *  @param out output stream to be used
@@ -238,6 +251,16 @@ private:
 
   /// map of profiles
   DcmProfileMap profiles_;
+
+  /// Option to always accept a default role as association acceptor.
+  /// If OFFalse (default) the acceptor will reject a presentation context proposed
+  /// with Default role (no role selection at all) when it is configured for role
+  /// SCP only. If this option is set to OFTrue then such presentation contexts will
+  /// be accepted in Default role (i.e. acceptor does not return role selection for
+  /// this presentation context at all). Overall, if set to OFTrue, there are no
+  /// requestor proposals possible that lead to a complete rejection of a presentation
+  /// context. See also role documentation in dul.h.
+  OFBool alwaysAcceptDefaultRole_;
 };
 
 #endif

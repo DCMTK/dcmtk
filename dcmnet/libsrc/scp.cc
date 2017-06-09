@@ -1735,6 +1735,13 @@ void DcmSCP::setProgressNotificationMode(const OFBool mode)
 
 // ----------------------------------------------------------------------------
 
+void DcmSCP::setAlwaysAcceptDefaultRole(const OFBool enabled)
+{
+  m_cfg->setAlwaysAcceptDefaultRole(enabled);
+}
+
+// ----------------------------------------------------------------------------
+
 /* Get methods for SCP settings and current association information */
 
 OFBool DcmSCP::getRefuseAssociation() const

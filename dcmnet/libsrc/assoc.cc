@@ -854,7 +854,8 @@ ASC_acceptPresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
     const char* transferSyntax,
-    T_ASC_SC_ROLE acceptedRole)
+    T_ASC_SC_ROLE acceptedRole,
+    const OFBool alwaysAcceptDefaultRole)
  /*
   * The presentation context will be marked as accepted and the provided
   * transfer syntax name chosen.
@@ -884,10 +885,19 @@ ASC_acceptPresentationContext(
     if ( (proposedContext->proposedSCRole == DUL_SC_ROLE_DEFAULT)
       && (proposedContext->acceptedSCRole == DUL_SC_ROLE_SCP) )
     {
+      // If user wants to override rejection (e.g. for faulty clients), skip the check but print warning
+      if (alwaysAcceptDefaultRole)
+      {
+        DCMNET_WARN("ASSOC: Deliberately accepting Default role proposed by association requestor,"
+            << "while originally being configured for role SCP only.");
+      }
+      else
+      {
         proposedContext->result = ASC_P_NOREASON;
-        DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, Default role (i.e. SCU) proposed "
-            << "but only SCP role configured for acceptance.");
-        return ASC_SCPSCUROLESELECTIONFAILED;
+          DCMNET_ERROR("ASSOC: SCP/SCU role selection failed, Default role (i.e. SCU) proposed "
+              << "but only SCP role configured for acceptance.");
+          return ASC_SCPSCUROLESELECTIONFAILED;
+      }
     }
 
     acceptedContext = findPresentationContextID(
