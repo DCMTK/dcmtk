@@ -963,7 +963,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     /* check if either 4 (for implicit transfer syntaxes) or 6 (for explicit transfer */
     /* syntaxes) bytes are available in (i.e. can be read from) inStream. if an error */
     /* occurred while performing this check return this error */
-    if (inStream.avail() < (xferSyn.isExplicitVR() ? 6u:4u))
+    if (inStream.avail() < OFstatic_cast(offile_off_t, xferSyn.isExplicitVR() ? 6 : 4))
         return EC_StreamNotifyClient;
 
     /* determine the byte ordering of the transfer syntax which was passed; */
@@ -1083,7 +1083,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     /* the next thing we want to do is read the value in the length field from inStream. */
     /* determine if there is a corresponding amount of bytes (for the length field) still */
     /* available in inStream. If not, return an error. */
-    if (inStream.avail() < xferSyn.sizeofTagHeader(newEVR) - bytesRead)
+    if (inStream.avail() < OFstatic_cast(offile_off_t, xferSyn.sizeofTagHeader(newEVR) - bytesRead))
     {
         inStream.putback();    // the UnsetPutbackMark is in readSubElement
         bytesRead = 0;
@@ -1152,7 +1152,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
                 inStream.putback();
             }
         }
-        else if (valueLength > remainingItemBytes)
+        else if (OFstatic_cast(offile_off_t, valueLength) > remainingItemBytes)
         {
             DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
                 << " larger (" << valueLength << ") than remaining bytes ("
