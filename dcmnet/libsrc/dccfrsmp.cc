@@ -158,7 +158,6 @@ OFCondition DcmRoleSelectionMap::addEmpty(
   const char *key)
 {
   if (!key) return EC_IllegalCall;
-  DcmRoleSelectionList * const *value = NULL;
   OFString skey(key);
   OFMap<OFString, DcmRoleSelectionList*>::iterator it = map_.find(skey);
 
@@ -166,7 +165,6 @@ OFCondition DcmRoleSelectionMap::addEmpty(
   {
     DcmRoleSelectionList *newentry = new DcmRoleSelectionList();
     map_.insert(OFPair<OFString, DcmRoleSelectionList*>(skey, newentry));
-    value = &newentry;
   }
   return EC_Normal;
 }
