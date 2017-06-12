@@ -14551,6 +14551,7 @@ if test "${LIBXMLCFLAGS+set}" = set; then
   CXXFLAGS="$LIBXMLCFLAGS $CXXFLAGS"
   CFLAGS="$LIBXMLCFLAGS $CFLAGS"
 fi
+LIBXMLLIBS=`xml2-config --libs 2>/dev/null`
 
 XMLLIBS=""
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include libxml support" >&5
@@ -14565,7 +14566,7 @@ $as_echo "yes" >&6; }
 
 $as_echo "#define WITH_LIBXML /**/" >>confdefs.h
 
-    XMLLIBS="-lxml2"
+    XMLLIBS=$LIBXMLLIBS
     ;;
   *)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -14574,7 +14575,7 @@ $as_echo "no" >&6; }
   esac
 else
    SAVELIBS="$LIBS"
-  LIBS="$LIBS -lxml2 $ZLIBLIBS"
+  LIBS="$LIBS $LIBXMLLIBS"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <libxml/parser.h>
@@ -14592,7 +14593,7 @@ $as_echo "yes" >&6; }
 
 $as_echo "#define WITH_LIBXML /**/" >>confdefs.h
 
-      XMLLIBS="-lxml2"
+      XMLLIBS=$LIBXMLLIBS
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }

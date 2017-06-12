@@ -1137,6 +1137,7 @@ if test "${LIBXMLCFLAGS+set}" = set; then
   CXXFLAGS="$LIBXMLCFLAGS $CXXFLAGS"
   CFLAGS="$LIBXMLCFLAGS $CFLAGS"
 fi
+LIBXMLLIBS=`xml2-config --libs 2>/dev/null`
 
 XMLLIBS=""
 AC_MSG_CHECKING(whether to include libxml support)
@@ -1147,18 +1148,18 @@ AS_HELP_STRING([--without-libxml], [don't include libxml support])],
   yes)
     AC_MSG_RESULT(yes)
     AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support.])
-    XMLLIBS="-lxml2"
+    XMLLIBS=$LIBXMLLIBS
     ;;
   *)
     AC_MSG_RESULT(no)
     ;;
   esac ],
 [ SAVELIBS="$LIBS"
-  LIBS="$LIBS -lxml2 $ZLIBLIBS"
+  LIBS="$LIBS $LIBXMLLIBS"
   AC_TRY_LINK([#include <libxml/parser.h>], [(void) xmlInitParser()],
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support.])
-      XMLLIBS="-lxml2" ],
+      XMLLIBS=$LIBXMLLIBS ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
