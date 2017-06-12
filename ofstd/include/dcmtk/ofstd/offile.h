@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2016, OFFIS e.V.
+ *  Copyright (C) 2006-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,6 +43,10 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#ifdef HAVE_UNIX_H
+#include <unix.h>           /* needed for setlinebuf() on QNX */
+#endif
+
 /* HP-UX has clearerr both as macro and as a function definition. We have to
  * undef the macro so that we can define a function called "clearerr".
  */
@@ -64,8 +68,9 @@ END_EXTERN_C
  */
 #ifdef _LARGEFILE64_SOURCE
   // Mac OS X defines _LARGEFILE64_SOURCE but anyhow expects implicit 64 bit calls.
-  // The same is true for current Cygwin versions (tested with version 1.7.7-1).
-  #if !(defined(__MACH__) && defined(__APPLE__)) && !defined(__CYGWIN__)
+  // The same is true for current Cygwin versions (tested with version 1.7.7-1)
+  // and for QNX (tested with version 6.5).
+  #if !(defined(__MACH__) && defined(__APPLE__)) && !defined(__CYGWIN__) && !defined(__QNX__)
     #define EXPLICIT_LFS_64
   #endif
 #endif
