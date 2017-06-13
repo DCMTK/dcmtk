@@ -9,8 +9,9 @@ ofchrenc.o: ofchrenc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/ofconsol.h \
- ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofdiag.h \
+ ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
+ ../include/dcmtk/ofstd/diag/push.def \
  ../include/dcmtk/ofstd/diag/shadow.def \
  ../include/dcmtk/ofstd/diag/pop.def
 ofcmdln.o: ofcmdln.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -23,8 +24,8 @@ ofcmdln.o: ofcmdln.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oftraits.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/ofchrenc.h ../include/dcmtk/ofstd/ofmem.h \
- ../include/dcmtk/ofstd/ofutil.h \
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofchrenc.h \
+ ../include/dcmtk/ofstd/ofmem.h ../include/dcmtk/ofstd/ofutil.h \
  ../include/dcmtk/ofstd/variadic/tuplefwd.h
 ofconapp.o: ofconapp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/oftypes.h \
@@ -37,8 +38,8 @@ ofconapp.o: ofconapp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftraits.h ../include/dcmtk/ofstd/ofcond.h \
  ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/ofchrenc.h ../include/dcmtk/ofstd/ofmem.h \
- ../include/dcmtk/ofstd/ofutil.h \
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofchrenc.h \
+ ../include/dcmtk/ofstd/ofmem.h ../include/dcmtk/ofstd/ofutil.h \
  ../include/dcmtk/ofstd/variadic/tuplefwd.h
 ofcond.o: ofcond.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oftypes.h \
@@ -72,6 +73,18 @@ ofdatime.o: ofdatime.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
  ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstream.h \
  ../include/dcmtk/ofstd/ofdate.h ../include/dcmtk/ofstd/oftime.h
+oferror.o: oferror.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstd.h \
+ ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
+ ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
+ ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftraits.h \
+ ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofdiag.h \
+ ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/diag/vsprfw.def \
+ ../include/dcmtk/ofstd/diag/pop.def
 offile.o: offile.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/offile.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
@@ -80,7 +93,8 @@ offile.o: offile.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/ofstd/oftraits.h ../include/dcmtk/ofstd/ofcond.h \
  ../include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h
+ ../../config/include/dcmtk/config/arith.h \
+ ../include/dcmtk/ofstd/oferror.h
 offname.o: offname.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/offname.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
@@ -89,12 +103,9 @@ offname.o: offname.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/ofstd/oftraits.h ../include/dcmtk/ofstd/ofcond.h \
  ../include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h
-oflist.o: oflist.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
- ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
- ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstdinc.h \
- ../include/dcmtk/ofstd/ofstream.h
+ ../../config/include/dcmtk/config/arith.h \
+ ../include/dcmtk/ofstd/oferror.h
+oflist.o: oflist.cc ../../config/include/dcmtk/config/osconfig.h
 ofmath.o: ofmath.cc ../../config/math.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstream.h \
@@ -109,8 +120,8 @@ ofstd.o: ofstd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftraits.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/offile.h ../include/dcmtk/ofstd/oftuple.h \
- ../include/dcmtk/ofstd/ofutil.h \
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/offile.h \
+ ../include/dcmtk/ofstd/oftuple.h ../include/dcmtk/ofstd/ofutil.h \
  ../include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/push.def \
  ../include/dcmtk/ofstd/diag/mmtag.def \
@@ -120,11 +131,7 @@ ofstd.o: ofstd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofnetdb.h ../include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/ofstd/ofgrp.h ../include/dcmtk/ofstd/ofpwd.h \
  ../include/dcmtk/ofstd/ofoption.h ../include/dcmtk/ofstd/ofalign.h
-ofstring.o: ofstring.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftypes.h \
- ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
- ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstdinc.h \
- ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofbmanip.h
+ofstring.o: ofstring.cc ../../config/include/dcmtk/config/osconfig.h
 oftempf.o: oftempf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftempf.h ../include/dcmtk/ofstd/ofcond.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
@@ -133,7 +140,8 @@ oftempf.o: oftempf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/offname.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/ofstd/oftraits.h ../include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h
+ ../../config/include/dcmtk/config/arith.h \
+ ../include/dcmtk/ofstd/oferror.h
 ofthread.o: ofthread.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstd.h \
  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
@@ -142,7 +150,8 @@ ofthread.o: ofthread.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftraits.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofconsol.h
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofthread.h \
+ ../include/dcmtk/ofstd/ofconsol.h
 oftime.o: oftime.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/oftime.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftypes.h \
@@ -151,7 +160,8 @@ oftime.o: oftime.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/ofstd/oftraits.h ../include/dcmtk/ofstd/ofcond.h \
  ../include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h
+ ../../config/include/dcmtk/config/arith.h \
+ ../include/dcmtk/ofstd/oferror.h
 oftimer.o: oftimer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftimer.h ../include/dcmtk/ofstd/ofstream.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
@@ -164,7 +174,8 @@ ofuuid.o: ofuuid.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstd.h \
  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftraits.h \
  ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h
+ ../../config/include/dcmtk/config/arith.h \
+ ../include/dcmtk/ofstd/oferror.h
 ofxml.o: ofxml.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofxml.h ../include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
