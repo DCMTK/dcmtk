@@ -1116,7 +1116,7 @@ fi
 
 dnl AC_INCLUDE_MATH_H_AS_CXX checks if <math.h> must be included as a C++
 dnl   include file (i.e. without extern "C"). Some sytems (Win32, HP/UX 10)
-dnl   use C++ language features in <math.h>
+dnl   use C++ language features in <math.h>.
 
 dnl AC_INCLUDE_MATH_H_AS_CXX(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_INCLUDE_MATH_H_AS_CXX,
@@ -1411,7 +1411,8 @@ fi
 
 
 dnl AC_CXX_LIBC_H_EXTERN_C checks if <libc.h> and <math.h> cause a problem if
-dnl   libc.h is included extern "C" and math.h is not. This is the case on QNX 6.2.x
+dnl   libc.h is included extern "C" and math.h is not. This is the case on QNX
+dnl   6.2.x and 6.5.x.
 
 AC_DEFUN([AC_CXX_LIBC_H_EXTERN_C],
 [AH_TEMPLATE([INCLUDE_LIBC_H_AS_CXX], [Define if libc.h should be treated as a C++ header])
@@ -1419,10 +1420,10 @@ AC_CACHE_CHECK(whether libc.h should be treated as a C++ header,
 ac_cv_cxx_libc_h_is_cxx,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#include <math.h>
-extern "C" {
+ AC_TRY_COMPILE([extern "C" {
 #include <libc.h>
-}],[int i = 0],
+}
+#include <math.h>],[int i = 0],
  ac_cv_cxx_libc_h_is_cxx=no, ac_cv_cxx_libc_h_is_cxx=yes)
  AC_LANG_RESTORE
 ])

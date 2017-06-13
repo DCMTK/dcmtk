@@ -637,12 +637,12 @@ INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryRun.cmake")
 IF(HAVE_MATH_H)
   IF(HAVE_LIBC_H)
     # checks if <libc.h> and <math.h> cause a problem if libc.h is included extern "C"
-    # and math.h is not. This is the case on QNX 6.2.x
+    # and math.h is not. This is the case on QNX 6.2.x and 6.5.x.
     DCMTK_TRY_COMPILE(INCLUDE_LIBC_H_AS_EXTERN_C "<libc.h> can be included as extern \"C\""
-    "#include <math.h
-extern \"C\" {
+    "extern \"C\" {
 #include <libc.h>
 }
+#include <math.h>
 int main()
 {
     int i = 0;
@@ -656,7 +656,7 @@ int main()
   ENDIF(HAVE_LIBC_H)
 
   # checks if <math.h> must be included as a C++ include file (i.e. without extern "C").
-  # Some sytems (Win32, HP/UX 10) use C++ language features in <math.h>
+  # Some sytems (Win32, HP/UX 10) use C++ language features in <math.h>.
   DCMTK_TRY_COMPILE(INCLUDE_MATH_H_AS_EXTERN_C "<math.h> can be included as extern \"C\""
   "extern \"C\" {
 #include <math.h>

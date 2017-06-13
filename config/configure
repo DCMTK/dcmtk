@@ -8707,10 +8707,10 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-#include <math.h>
 extern "C" {
 #include <libc.h>
 }
+#include <math.h>
 int
 main ()
 {
