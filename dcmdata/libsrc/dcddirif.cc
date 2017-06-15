@@ -667,7 +667,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_MacularGridThicknessAndVolumeReportStorage) ||
              compare(sopClass, UID_ImplantationPlanSRDocumentStorage) ||
              compare(sopClass, UID_AcquisitionContextSRStorage) ||
-             compare(sopClass, UID_SimplifiedAdultEchoSRStorage))
+             compare(sopClass, UID_SimplifiedAdultEchoSRStorage) ||
+             compare(sopClass, UID_PatientRadiationDoseSRStorage))
     {
         result = ERT_SRDocument;
     }
@@ -678,6 +679,10 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage) ||
              compare(sopClass, UID_GrayscalePlanarMPRVolumetricPresentationStateStorage) ||
              compare(sopClass, UID_CompositingPlanarMPRVolumetricPresentationStateStorage) ||
+             compare(sopClass, UID_AdvancedBlendingPresentationStateStorage) ||
+             compare(sopClass, UID_VolumeRenderingVolumetricPresentationStateStorage) ||
+             compare(sopClass, UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage) ||
+             compare(sopClass, UID_MultipleVolumeRenderingVolumetricPresentationStateStorage) ||
              compare(sopClass, UID_BasicStructuredDisplayStorage))
     {
         result = ERT_Presentation;
@@ -1048,6 +1053,7 @@ static OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
            compare(sopClassUID, UID_MultiframeSingleBitSecondaryCaptureImageStorage) ||
            compare(sopClassUID, UID_MultiframeTrueColorSecondaryCaptureImageStorage) ||
            compare(sopClassUID, UID_NuclearMedicineImageStorage) ||
+           compare(sopClassUID, UID_OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage) ||
            compare(sopClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
            compare(sopClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
            compare(sopClassUID, UID_OphthalmicTomographyImageStorage) ||
@@ -1568,7 +1574,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) ||
                                 compare(mediaSOPClassUID, UID_ImplantationPlanSRDocumentStorage) ||
                                 compare(mediaSOPClassUID, UID_AcquisitionContextSRStorage) ||
-                                compare(mediaSOPClassUID, UID_SimplifiedAdultEchoSRStorage);
+                                compare(mediaSOPClassUID, UID_SimplifiedAdultEchoSRStorage) ||
+                                compare(mediaSOPClassUID, UID_PatientRadiationDoseSRStorage);
                      }
                     /* is it one of the waveform SOP Classes? */
                     if (!found)
@@ -1593,6 +1600,10 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_GrayscalePlanarMPRVolumetricPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_CompositingPlanarMPRVolumetricPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_AdvancedBlendingPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_VolumeRenderingVolumetricPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_MultipleVolumeRenderingVolumetricPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_BasicStructuredDisplayStorage);
                     }
                     /* is it one of the encapsulated document SOP Classes? */
