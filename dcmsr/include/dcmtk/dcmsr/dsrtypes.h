@@ -630,12 +630,20 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         PT_Blending,
         /// XA/XRF Grayscale Softcopy Presentation State (XGSPS)
         PT_XAXRFGrayscale,
-        /// Grayscale Planar MPR Volumetric Presentation State (GPVPS)
+        /// Grayscale Planar MPR Volumetric Presentation State (GP-VPS)
         PT_GrayscalePlanarMPR,
-        /// Compositing Planar MPR Volumetric Presentation State (CPVPS)
+        /// Compositing Planar MPR Volumetric Presentation State (CP-VPS)
         PT_CompositingPlanarMPR,
+        /// Advanced Blending Presentation State (ABPS)
+        PT_AdvancedBlending,
+        /// Volume Rendering Volumetric Presentation State (VR-VPS)
+        PT_VolumeRendering,
+        /// Segmented Volume Rendering Volumetric Presentation State (SVR-VPS)
+        PT_SegmentedVolumeRendering,
+        /// Multiple Volume Rendering Volumetric Presentation State (MVR-VPS)
+        PT_MultipleVolumeRendering,
         /// internal type used to mark the last entry
-        PT_last = PT_CompositingPlanarMPR
+        PT_last = PT_MultipleVolumeRendering
     };
 
     /** SR graphic types.  Used for content item SCOORD.
