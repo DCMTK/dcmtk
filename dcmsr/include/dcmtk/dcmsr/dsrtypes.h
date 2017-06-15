@@ -534,8 +534,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_AcquisitionContextSR,
         /// DICOM IOD: Simplified Adult Echo SR
         DT_SimplifiedAdultEchoSR,
+        /// DICOM IOD: Patient Radiation Dose SR
+        DT_PatientRadiationDoseSR,
         /// internal type used to mark the last entry
-        DT_last = DT_SimplifiedAdultEchoSR
+        DT_last = DT_PatientRadiationDoseSR
     };
 
     /** SR relationship types

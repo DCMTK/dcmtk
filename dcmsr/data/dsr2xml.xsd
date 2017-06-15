@@ -724,6 +724,7 @@
       <xsd:enumeration value="Extensible SR"/>
       <xsd:enumeration value="Acquisition Context SR"/>
       <xsd:enumeration value="Simplified Adult Echo SR"/>
+      <xsd:enumeration value="Patient Radiation Dose SR"/>
     </xsd:restriction>
   </xsd:simpleType>
 
