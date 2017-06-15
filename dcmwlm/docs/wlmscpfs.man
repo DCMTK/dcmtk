@@ -299,7 +299,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
 (0010,0040) PatientSex
-(0010,1000) OtherPatientIDs
+(0010,1000) OtherPatientIDs (retired)
 (0010,1001) OtherPatientNames
 (0010,1020) PatientSize
 (0010,1030) PatientWeight
@@ -312,8 +312,8 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0010,21b0) AdditionalPatientHistory
 (0010,21c0) PregnancyStatus
 (0010,21d0) LastMenstrualDate
-(0010,2297) Responsible Person
-(0010,2298) Responsible Person Role
+(0010,2297) ResponsiblePerson
+(0010,2298) ResponsiblePersonRole
 (0010,4000) PatientComments
 (0020,000d) StudyInstanceUID
 (0032,1032) RequestingPhysician

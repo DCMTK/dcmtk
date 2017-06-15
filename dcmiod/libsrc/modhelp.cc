@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -39,7 +39,7 @@ const DcmTagKey DcmModuleHelpers::patientModuleTags[] =
   DCM_QualityControlSubject,
   DCM_ReferencedPatientSequence,
   DCM_PatientBirthTime,
-  DCM_OtherPatientIDs,
+  DCM_RETIRED_OtherPatientIDs,
   DCM_OtherPatientIDsSequence,
   DCM_OtherPatientNames,
   DCM_EthnicGroup,

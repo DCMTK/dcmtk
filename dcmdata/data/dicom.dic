@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2017a and PS 3.7-2017a
-# File created on 2017-03-10 17:30:38 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2017b and PS 3.7-2017b
+# File created on 2017-06-15 10:31:09 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -307,7 +307,6 @@
 (0010,0222)	UC	GeneticModificationsDescription	1	DICOM
 (0010,0223)	LO	GeneticModificationsNomenclature	1	DICOM
 (0010,0229)	SQ	GeneticModificationsCodeSequence	1	DICOM
-(0010,1000)	LO	OtherPatientIDs	1-n	DICOM
 (0010,1001)	PN	OtherPatientNames	1-n	DICOM
 (0010,1002)	SQ	OtherPatientIDsSequence	1	DICOM
 (0010,1005)	PN	PatientBirthName	1	DICOM
@@ -322,7 +321,6 @@
 (0010,1060)	PN	PatientMotherBirthName	1	DICOM
 (0010,1080)	LO	MilitaryRank	1	DICOM
 (0010,1081)	LO	BranchOfService	1	DICOM
-(0010,1090)	LO	MedicalRecordLocator	1	DICOM
 (0010,1100)	SQ	ReferencedPatientPhotoSequence	1	DICOM
 (0010,2000)	LO	MedicalAlerts	1-n	DICOM
 (0010,2110)	LO	Allergies	1-n	DICOM
@@ -1569,6 +1567,25 @@
 (0022,1529)	FL	YCoordinatesCenterPixelViewAngle	1	DICOM
 (0022,1530)	UL	NumberOfMapPoints	1	DICOM
 (0022,1531)	OF	TwoDimensionalToThreeDimensionalMapData	1	DICOM
+(0022,1612)	SQ	DerivationAlgorithmSequence	1	DICOM
+(0022,1615)	SQ	OphthalmicImageTypeCodeSequence	1	DICOM
+(0022,1616)	LO	OphthalmicImageTypeDescription	1	DICOM
+(0022,1618)	SQ	ScanPatternTypeCodeSequence	1	DICOM
+(0022,1620)	SQ	ReferencedSurfaceMeshIdentificationSequence	1	DICOM
+(0022,1622)	CS	OphthalmicVolumetricPropertiesFlag	1	DICOM
+(0022,1624)	FL	OphthalmicAnatomicReferencePointXCoordinate	1	DICOM
+(0022,1626)	FL	OphthalmicAnatomicReferencePointYCoordinate	1	DICOM
+(0022,1628)	SQ	OphthalmicEnFaceImageQualityRatingSequence	1	DICOM
+(0022,1630)	DS	QualityThreshold	1	DICOM
+(0022,1640)	SQ	OCTBscanAnalysisAcquisitionParametersSequence	1	DICOM
+(0022,1642)	UL	NumberofBscansPerFrame	1	DICOM
+(0022,1643)	FL	BscanSlabThickness	1	DICOM
+(0022,1644)	FL	DistanceBetweenBscanSlabs	1	DICOM
+(0022,1645)	FL	BscanCycleTime	1	DICOM
+(0022,1646)	FL	BscanCycleTimeVector	1-n	DICOM
+(0022,1649)	FL	AscanRate	1	DICOM
+(0022,1650)	FL	BscanRate	1	DICOM
+(0022,1658)	UL	SurfaceMeshZPixelOffset	1	DICOM
 (0024,0010)	FL	VisualFieldHorizontalExtent	1	DICOM
 (0024,0011)	FL	VisualFieldVerticalExtent	1	DICOM
 (0024,0012)	CS	VisualFieldShape	1	DICOM
@@ -2061,6 +2078,7 @@
 (0040,4073)	UR	StorageURL	1	DICOM
 (0040,4074)	SQ	XDSStorageSequence	1	DICOM
 (0040,8302)	DS	EntranceDoseInmGy	1	DICOM
+(0040,8303)	CS	EntranceDoseDerivation	1	DICOM
 (0040,9092)	SQ	ParametricMapFrameTypeSequence	1	DICOM
 (0040,9094)	SQ	ReferencedImageRealWorldValueMappingSequence	1	DICOM
 (0040,9096)	SQ	RealWorldValueMappingSequence	1	DICOM
@@ -2675,9 +2693,13 @@
 (0070,1203)	US	InputSequencePositionIndex	1	DICOM
 (0070,1204)	CS	Crop	1	DICOM
 (0070,1205)	US	CroppingSpecificationIndex	1-n	DICOM
-(0070,1206)	CS	CompositingMethod	1	DICOM
 (0070,1207)	US	VolumetricPresentationInputNumber	1	DICOM
 (0070,1208)	CS	ImageVolumeGeometry	1	DICOM
+(0070,1209)	UI	VolumetricPresentationInputSetUID	1	DICOM
+(0070,120A)	SQ	VolumetricPresentationInputSetSequence	1	DICOM
+(0070,120B)	CS	GlobalCrop	1	DICOM
+(0070,120C)	US	GlobalCroppingSpecificationIndex	1-n	DICOM
+(0070,120D)	CS	RenderingMethod	1	DICOM
 (0070,1301)	SQ	VolumeCroppingSequence	1	DICOM
 (0070,1302)	CS	VolumeCroppingMethod	1	DICOM
 (0070,1303)	FD	BoundingBoxCrop	6	DICOM
@@ -2695,6 +2717,18 @@
 (0070,150D)	OD	VolumetricCurvePoints	1	DICOM
 (0070,1511)	FD	MPRViewHeightDirection	3	DICOM
 (0070,1512)	FD	MPRViewHeight	1	DICOM
+(0070,1602)	CS	RenderProjection	1	DICOM
+(0070,1603)	FD	ViewpointPosition	3	DICOM
+(0070,1604)	FD	ViewpointLookAtPoint	3	DICOM
+(0070,1605)	FD	ViewpointUpDirection	3	DICOM
+(0070,1606)	FD	RenderFieldOfView	6	DICOM
+(0070,1607)	FD	SamplingStepSize	1	DICOM
+(0070,1701)	CS	ShadingStyle	1	DICOM
+(0070,1702)	FD	AmbientReflectionIntensity	1	DICOM
+(0070,1703)	FD	LightDirection	3	DICOM
+(0070,1704)	FD	DiffuseReflectionIntensity	1	DICOM
+(0070,1705)	FD	SpecularReflectionIntensity	1	DICOM
+(0070,1706)	FD	Shininess	1	DICOM
 (0070,1801)	SQ	PresentationStateClassificationComponentSequence	1	DICOM
 (0070,1802)	CS	ComponentType	1	DICOM
 (0070,1803)	SQ	ComponentInputSequence	1	DICOM
@@ -2712,6 +2746,21 @@
 (0070,1A03)	FD	RecommendedAnimationRate	1	DICOM
 (0070,1A04)	SQ	AnimationCurveSequence	1	DICOM
 (0070,1A05)	FD	AnimationStepSize	1	DICOM
+(0070,1A06)	FD	SwivelRange	1	DICOM
+(0070,1A07)	OD	VolumetricCurveUpDirections	1	DICOM
+(0070,1A08)	SQ	VolumeStreamSequence	1	DICOM
+(0070,1A09)	LO	RGBATransferFunctionDescription	1	DICOM
+(0070,1B01)	SQ	AdvancedBlendingSequence	1	DICOM
+(0070,1B02)	US	BlendingInputNumber	1	DICOM
+(0070,1B03)	SQ	BlendingDisplayInputSequence	1	DICOM
+(0070,1B04)	SQ	BlendingDisplaySequence	1	DICOM
+(0070,1B06)	CS	BlendingMode	1	DICOM
+(0070,1B07)	CS	TimeSeriesBlending	1	DICOM
+(0070,1B08)	CS	GeometryForDisplay	1	DICOM
+(0070,1B11)	SQ	ThresholdSequence	1	DICOM
+(0070,1B12)	SQ	ThresholdValueSequence	1	DICOM
+(0070,1B13)	CS	ThresholdType	1	DICOM
+(0070,1B14)	FD	ThresholdValue	1	DICOM
 (0072,0002)	SH	HangingProtocolName	1	DICOM
 (0072,0004)	LO	HangingProtocolDescription	1	DICOM
 (0072,0006)	CS	HangingProtocolLevel	1	DICOM
@@ -3337,6 +3386,7 @@
 (300A,007B)	LT	FractionPattern	1	DICOM
 (300A,0080)	IS	NumberOfBeams	1	DICOM
 (300A,0082)	DS	BeamDoseSpecificationPoint	3	DICOM
+(300A,0083)	UI	ReferencedDoseReferenceUID	1	DICOM
 (300A,0084)	DS	BeamDose	1	DICOM
 (300A,0086)	DS	BeamMeterset	1	DICOM
 (300A,008B)	CS	BeamDoseMeaning	1	DICOM
@@ -3890,7 +3940,9 @@
 (0008,225A)	SQ	RETIRED_AnatomicStructureSpaceOrRegionModifierCodeSequenceTrial	1	DICOM/retired
 (0008,225C)	SQ	RETIRED_OnAxisBackgroundAnatomicStructureCodeSequenceTrial	1	DICOM/retired
 (0008,4000)	LT	RETIRED_IdentifyingComments	1	DICOM/retired
+(0010,1000)	LO	RETIRED_OtherPatientIDs	1-n	DICOM/retired
 (0010,1050)	LO	RETIRED_InsurancePlanIdentification	1-n	DICOM/retired
+(0010,1090)	LO	RETIRED_MedicalRecordLocator	1	DICOM/retired
 (0014,0023)	ST	RETIRED_CADFileFormat	1	DICOM/retired
 (0014,0024)	ST	RETIRED_ComponentReferenceSystem	1	DICOM/retired
 (0014,0045)	ST	RETIRED_MaterialPropertiesFileFormatRetired	1	DICOM/retired
@@ -4149,6 +4201,7 @@
 (0070,0050)	US	RETIRED_DisplayedAreaTopLeftHandCornerTrial	2	DICOM/retired
 (0070,0051)	US	RETIRED_DisplayedAreaBottomRightHandCornerTrial	2	DICOM/retired
 (0070,0067)	US	RETIRED_GraphicLayerRecommendedDisplayRGBValue	3	DICOM/retired
+(0070,1206)	CS	RETIRED_CompositingMethod	1	DICOM/retired
 (0074,1024)	IS	RETIRED_BeamOrderIndexTrial	1	DICOM/retired
 (0074,1038)	DS	RETIRED_DoubleExposureMetersetTrial	1	DICOM/retired
 (0074,103A)	DS	RETIRED_DoubleExposureFieldDeltaTrial	4	DICOM/retired

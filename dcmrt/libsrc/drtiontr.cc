@@ -8,6 +8,7 @@
  *
  *  Generated automatically from DICOM PS 3.3-2017a
  *  File created on 2017-03-13 11:22:36
+ *  Last modified on 2017-06-15 by Riesmeier
  *
  */
 
@@ -31,7 +32,7 @@ DRTIonBeamsTreatmentRecordIOD::DRTIonBeamsTreatmentRecordIOD()
     QualityControlSubject(DCM_QualityControlSubject),
     ReferencedPatientSequence(),
     PatientBirthTime(DCM_PatientBirthTime),
-    OtherPatientIDs(DCM_OtherPatientIDs),
+    OtherPatientIDs(DCM_RETIRED_OtherPatientIDs),
     OtherPatientIDsSequence(),
     OtherPatientNames(DCM_OtherPatientNames),
     EthnicGroup(DCM_EthnicGroup),

@@ -1306,7 +1306,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_NamesOfIntendedRecipientsOfResults                (0040,1010)  PN  O  3  (from the Requested Procedure Module)
 //                   DCM_InstitutionName                                   (0008,0080)  LO  O  3  (from the Visit Identification Module)
 //                   DCM_AdmittingDiagnosesDescription                     (0008,1080)  LO  O  3  (from the Visit Admission Module)
-//                   DCM_OtherPatientIDs                                   (0010,1000)  LO  O  3  (from the Patient Identification Module)
+//                   DCM_RETIRED_OtherPatientIDs                           (0010,1000)  LO  O  3  (from the Patient Identification Module)
 //                   DCM_PatientSize                                       (0010,1020)  DS  O  3  (from the Patient Demographic Module)
 //                   DCM_EthnicGroup                                       (0010,2160)  SH  O  3  (from the Patient Demographic Module)
 //                   DCM_PatientComments                                   (0010,4000)  LT  O  3  (from the Patient Demographic Module)
@@ -1429,7 +1429,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_NamesOfIntendedRecipientsOfResults                ||
         elementKey == DCM_InstitutionName                                   ||
         elementKey == DCM_AdmittingDiagnosesDescription                     ||
-        elementKey == DCM_OtherPatientIDs                                   ||
+        elementKey == DCM_RETIRED_OtherPatientIDs                           ||
         elementKey == DCM_PatientSize                                       ||
         elementKey == DCM_EthnicGroup                                       ||
         elementKey == DCM_PatientComments                                   ||

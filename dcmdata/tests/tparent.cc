@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -143,7 +143,7 @@ OFTEST(dcmdata_elementParent)
     OFCHECK(item->getParent() == seq);
     testParents(ff);
 
-    elem = new DcmLongString(DCM_OtherPatientIDs);
+    elem = new DcmLongString(DCM_RETIRED_OtherPatientIDs);
     OFCHECK(elem->getParent() == NULL);
     cond = item->insert(elem);
     OFCHECK(cond.good());
@@ -157,7 +157,7 @@ OFTEST(dcmdata_elementParent)
     OFCHECK(item->getParent() == seq);
     testParents(ff);
 
-    elem = new DcmLongString(DCM_OtherPatientIDs);
+    elem = new DcmLongString(DCM_RETIRED_OtherPatientIDs);
     OFCHECK(elem->getParent() == NULL);
     cond = item->insert(elem);
     OFCHECK(cond.good());
@@ -172,7 +172,7 @@ OFTEST(dcmdata_elementParent)
     testParents(ff);
 
     elem = item->remove(1);
-    OFCHECK_EQUAL(elem->getTag(), DCM_OtherPatientIDs);
+    OFCHECK_EQUAL(elem->getTag(), DCM_RETIRED_OtherPatientIDs);
     OFCHECK(elem->getParent() == NULL);
     delete elem;
     testParents(ff);
