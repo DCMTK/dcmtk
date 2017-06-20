@@ -9,9 +9,9 @@ SET(DCMTK_CONFIGURATION_DONE true)
 
 # Minimum CMake version required
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.8.0)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 3.8.0 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.8.0)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.8.2)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 3.8.2 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.8.2)
 
 # CMAKE_BUILD_TYPE is set to value "Release" if none is specified by the
 # selected build file generator. For those generators that support multiple
