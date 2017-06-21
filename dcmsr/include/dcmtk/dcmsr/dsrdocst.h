@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -238,8 +238,9 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                  const OFBool startFromRoot = OFTrue,
                                  const OFBool searchIntoSub = OFTrue);
 
-    /** set internal cursor to a named node (starting from the first children of the
+    /** set internal cursor to a named node (starting from the first child of the
      *  current node).
+     *  This is just a shortcut for calling gotoChild() followed by gotoNamedNode().
      *  If more than one node exists with the given concept name, the first one will
      *  be selected.  Use gotoNextNamedNode() in order to go to the next matching node.
      ** @param  conceptName    concept name of the node to be searched for
@@ -251,7 +252,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                       const OFBool searchIntoSub = OFTrue);
 
     /** set internal cursor to the next named node.
-     *  Starts from "next" node, i.e. either the first children of the current node
+     *  Starts from "next" node, i.e. either the first child of the current node
      *  or the first sibling following the current node.
      ** @param  conceptName    concept name of the node to be searched for
      *  @param  searchIntoSub  flag indicating whether to search into sub-trees
@@ -274,7 +275,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                      const OFBool startFromRoot = OFTrue);
 
     /** set internal cursor to the next annotated node.
-     *  Starts from "next" node, i.e. either the first children of the current node
+     *  Starts from "next" node, i.e. either the first child of the current node
      *  or the first sibling following the current node.
      ** @param  annotationText  annotation text of the node to be searched for
      ** @return ID of the new current node if successful, 0 otherwise
