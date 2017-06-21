@@ -140,6 +140,9 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
@@ -2618,6 +2621,14 @@ void OFStandard::trimString(const char*& pBegin, const char*& pEnd)
 
 #define MAX_NAME 65536
 
+#ifdef HAVE_GETHOSTBYNAME_R
+#ifndef HAVE_PROTOTYPE_GETHOSTBYNAME_R
+extern "C" {
+    int gethostbyname_r(const char *name, struct hostent *ret, char *buf, size_t buflen, struct hostent **result, int *h_errnop);
+}
+#endif
+#endif
+
 OFStandard::OFHostent OFStandard::getHostByName( const char* name )
 {
 #ifdef HAVE_GETHOSTBYNAME_R
@@ -2640,6 +2651,14 @@ OFStandard::OFHostent OFStandard::getHostByName( const char* name )
     return OFHostent( gethostbyname( name ) );
 #endif
 }
+
+#ifdef HAVE_GETHOSTBYADDR_R
+#ifndef HAVE_PROTOTYPE_GETHOSTBYADDR_R
+extern "C" {
+    int gethostbyaddr_r(const void *addr, socklen_t len, int type, struct hostent *ret, char *buf, size_t buflen, struct hostent **result, int *h_errnop);
+}
+#endif
+#endif
 
 OFStandard::OFHostent OFStandard::getHostByAddr( const char* addr,
                                      int len,

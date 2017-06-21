@@ -568,6 +568,10 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for flock in sys/file.h */
 #undef HAVE_PROTOTYPE_FLOCK
 
+/* Define if your system has a prototype for gethostbyaddr_r in libc.h
+   unistd.h stdlib.h netdb.h */
+#undef HAVE_PROTOTYPE_GETHOSTBYADDR_R
+
 /* Define if your system has a prototype for gethostbyname in libc.h unistd.h
    stdlib.h netdb.h */
 #undef HAVE_PROTOTYPE_GETHOSTBYNAME

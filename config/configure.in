@@ -649,6 +649,10 @@ if test $THREADSUPPORT = posix ; then
 	  ;;
 	*-*-netbsdelf2*)
 	  ;;
+	*-*-netbsd*)
+	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_NETBSD_SOURCE -D_BSD_COMPAT $CXXFLAGS"
+	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_NETBSD_SOURCE -D_BSD_COMPAT $CFLAGS"
+	  ;;
 	*-*-darwin*)
 	  dnl On Mac OS X we need to have _DARWIN_C_SOURCE defined to enable UNIX standard API for system headers
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
@@ -793,6 +797,7 @@ AC_CHECK_PROTOTYPE(std::isnan, cmath)
 AC_CHECK_PROTOTYPE(flock, sys/file.h)
 AC_CHECK_PROTOTYPE(gethostbyname, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostbyname_r, libc.h unistd.h stdlib.h netdb.h)
+AC_CHECK_PROTOTYPE(gethostbyaddr_r, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostname, unistd.h libc.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(getsockname, sys/types.h sys/socket.h)
@@ -1265,7 +1270,7 @@ AS_HELP_STRING([--without-libiconv], [don't include libiconv support])],
   esac ],
 [ SAVELIBS="$LIBS"
   LIBS="$LIBS -liconv -lcharset"
-  AC_TRY_LINK([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); iconv(cd, NULL, NULL, NULL, NULL); iconv_close(cd);],
+  AC_TRY_LINK([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); iconv(cd, 0, 0, 0, 0); iconv_close(cd);],
     [ WITH_LIBICONV=yes
       AC_DEFINE(WITH_LIBICONV)
       ICONVLIBS="-liconv -lcharset" ])
@@ -1275,7 +1280,7 @@ AC_MSG_RESULT($WITH_LIBICONV)
 AC_MSG_CHECKING(whether the second argument to iconv() is const)
 SAVELIBS="$LIBS"
 LIBS="$LIBS $ICONVLIBS"
-AC_TRY_COMPILE([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); const char *in = 0; iconv(cd, &in, NULL, NULL, NULL); iconv_close(cd);],
+AC_TRY_COMPILE([#include <iconv.h>], [iconv_t cd = iconv_open("", ""); const char *in = 0; iconv(cd, &in, 0, 0, 0); iconv_close(cd);],
   [ AC_MSG_RESULT(yes)
     AC_DEFINE(LIBICONV_SECOND_ARGUMENT_CONST, , [Define if the second argument to iconv() is const.]) ],
   [AC_MSG_RESULT(no)])
