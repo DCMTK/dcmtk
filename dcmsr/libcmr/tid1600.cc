@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1600_ImageLibrary
@@ -259,7 +259,7 @@ OFCondition TID1600_ImageLibrary::getImageEntryModality(DSRCodedEntryValue &moda
     if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_ENTRY) > 0)
     {
         /* get value of TID 1602 (Image Library Entry Descriptors) Row 1 */
-        if ((gotoNamedChildNode(CODE_DCM_Modality, OFFalse /*searchIntoSub*/) > 0))
+        if ((gotoNamedChildNode(CODE_DCM_Modality) > 0))
         {
             modalityCode = getCurrentContentItem().getCodeValue();
             result = EC_Normal;
@@ -709,11 +709,9 @@ OFCondition TID1600_ImageLibrary::goAndCheckImageLibraryEntry(const DSRCodedEntr
     if (gotoEntryFromNodeList(this, LAST_IMAGE_LIBRARY_ENTRY) > 0)
     {
         /* check whether TID 1602 (Image Library Entry Descriptors) Row 1 has correct value */
-        if ((gotoNamedChildNode(CODE_DCM_Modality, OFFalse /*searchIntoSub*/) > 0) &&
-            (getCurrentContentItem().getCodeValue() == modalityCode))
-        {
+        if ((gotoNamedChildNode(CODE_DCM_Modality) > 0) && (getCurrentContentItem().getCodeValue() == modalityCode))
             result = EC_Normal;
-        } else
+        else
             result = CMR_EC_WrongImageLibraryEntryDescriptorModality;
     }
     return result;

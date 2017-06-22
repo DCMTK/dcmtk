@@ -356,13 +356,12 @@ size_t DSRDocumentSubTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
 }
 
 
-size_t DSRDocumentSubTree::gotoNamedChildNode(const DSRCodedEntryValue &conceptName,
-                                              const OFBool searchIntoSub)
+size_t DSRDocumentSubTree::gotoNamedChildNode(const DSRCodedEntryValue &conceptName)
 {
     /* first, goto child node */
     size_t nodeID = gotoChild();
     if (nodeID > 0)
-        nodeID = gotoNamedNode(conceptName, OFFalse /*startFromRoot*/, searchIntoSub);
+        nodeID = gotoNamedNode(conceptName, OFFalse /*startFromRoot*/, OFFalse /*searchIntoSub*/);
     return nodeID;
 }
 

@@ -165,15 +165,21 @@ OFTEST(dcmsr_gotoNamedChildNode)
     OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
     const size_t nodeID2 = tree.getNodeID();
     OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121207", "DCM", "Height")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("111221", "DCM", "Unknown failure")).good());
     /* and check the "search by name" function */
     OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-1", "99_PRV", "NUM #1")) > 0);
     OFCHECK_EQUAL(tree.gotoNamedChildNode(DSRCodedEntryValue("121206", "DCM", "Distance")), nodeID1);
     OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-1", "99_PRV", "NUM #1")) > 0);
+    OFCHECK(tree.gotoNamedChildNode(DSRCodedEntryValue("121207", "DCM", "Height")) == 0);
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-1", "99_PRV", "NUM #1")) > 0);
+    OFCHECK(tree.gotoNamedChildNode(DSRCodedEntryValue("111221", "DCM", "Unknown failure")) == 0);
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-2", "99_PRV", "NUM #2")) > 0);
+    OFCHECK(tree.gotoNamedChildNode(DSRCodedEntryValue("121206", "DCM", "Distance")) == 0);
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-2", "99_PRV", "NUM #2")) > 0);
     OFCHECK_EQUAL(tree.gotoNamedChildNode(DSRCodedEntryValue("121207", "DCM", "Height")), nodeID2);
     OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-2", "99_PRV", "NUM #2")) > 0);
-    OFCHECK_EQUAL(tree.gotoNamedChildNode(DSRCodedEntryValue("121206", "DCM", "Distance")), 0);
-    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-2", "99_PRV", "NUM #2")) > 0);
-    OFCHECK_EQUAL(tree.gotoNamedChildNode(DSRCodedEntryValue("121207", "DCM", "Height")), nodeID2);
+    OFCHECK(tree.gotoNamedChildNode(DSRCodedEntryValue("111221", "DCM", "Unknown failure")) == 0);
 }
 
 
@@ -198,15 +204,22 @@ OFTEST(dcmsr_gotoNamedNodeInSubTree)
     OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
     const size_t nodeID2 = tree.getNodeID();
     OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121207", "DCM", "Height")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    const size_t nodeID3 = tree.getNodeID();
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("111221", "DCM", "Unknown failure")).good());
     /* and check the "search by name" function */
     OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-1", "99_PRV", "NUM #1")) > 0);
     OFCHECK_EQUAL(tree.gotoNamedNodeInSubTree(DSRCodedEntryValue("121206", "DCM", "Distance")), nodeID1);
     OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-1", "99_PRV", "NUM #1")) > 0);
-    OFCHECK_EQUAL(tree.gotoNamedNodeInSubTree(DSRCodedEntryValue("121207", "DCM", "Height")), 0);
+    OFCHECK(tree.gotoNamedNodeInSubTree(DSRCodedEntryValue("121207", "DCM", "Height")) == 0);
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-1", "99_PRV", "NUM #1")) > 0);
+    OFCHECK(tree.gotoNamedChildNode(DSRCodedEntryValue("111221", "DCM", "Unknown failure")) == 0);
     OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-2", "99_PRV", "NUM #2")) > 0);
-    OFCHECK_EQUAL(tree.gotoNamedNodeInSubTree(DSRCodedEntryValue("121206", "DCM", "Distance")), 0);
+    OFCHECK(tree.gotoNamedNodeInSubTree(DSRCodedEntryValue("121206", "DCM", "Distance")) == 0);
     OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-2", "99_PRV", "NUM #2")) > 0);
     OFCHECK_EQUAL(tree.gotoNamedNodeInSubTree(DSRCodedEntryValue("121207", "DCM", "Height")), nodeID2);
+    OFCHECK(tree.gotoNamedNode(DSRCodedEntryValue("N-2", "99_PRV", "NUM #2")) > 0);
+    OFCHECK_EQUAL(tree.gotoNamedNodeInSubTree(DSRCodedEntryValue("111221", "DCM", "Unknown failure")), nodeID3);
 }
 
 
