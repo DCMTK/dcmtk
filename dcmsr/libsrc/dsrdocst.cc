@@ -347,6 +347,7 @@ size_t DSRDocumentSubTree::gotoNamedNode(const DSRCodedEntryValue &conceptName,
         /* iterate over all nodes */
         do {
             node = getNode();
+            /* and check for the desired concept name */
             if ((node != NULL) && (node->getConceptName() == conceptName))
                 nodeID = node->getNodeID();
         } while ((nodeID == 0) && iterate(searchIntoSub));
@@ -362,6 +363,33 @@ size_t DSRDocumentSubTree::gotoNamedChildNode(const DSRCodedEntryValue &conceptN
     size_t nodeID = gotoChild();
     if (nodeID > 0)
         nodeID = gotoNamedNode(conceptName, OFFalse /*startFromRoot*/, searchIntoSub);
+    return nodeID;
+}
+
+
+size_t DSRDocumentSubTree::gotoNamedNodeInSubTree(const DSRCodedEntryValue &conceptName,
+                                                  const OFBool searchIntoSub)
+{
+    size_t nodeID = 0;
+    if (hasChildNodes())
+    {
+        /* start from first child node */
+        DSRDocumentTreeNodeCursor cursor(getChild());
+        if (cursor.isValid())
+        {
+            const DSRDocumentTreeNode *node;
+            /* iterate over all nodes in the subtree */
+            do {
+                node = cursor.getNode();
+                /* and check for the desired concept name */
+                if ((node != NULL) && (node->getConceptName() == conceptName))
+                    nodeID = node->getNodeID();
+            } while ((nodeID == 0) && cursor.iterate(searchIntoSub));
+            /* if found, set internal cursor to this node */
+            if (nodeID > 0)
+                nodeID = gotoNode(nodeID, OFFalse /*startFromRoot*/);
+        }
+    }
     return nodeID;
 }
 

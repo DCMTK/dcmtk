@@ -291,6 +291,11 @@ class DSRTreeNodeCursor
      */
     size_t setCursor(T *node);
 
+    /** get pointer to first child node
+     ** @return pointer to first child node (if any), NULL otherwise
+     */
+    T *getChild() const;
+
     /// pointer to current node
     T *NodeCursor;
     /// stack of node pointers. Used to store the cursor position of upper levels.
@@ -516,6 +521,16 @@ size_t DSRTreeNodeCursor<T, B>::setCursor(T *node)
     clearNodeCursorStack();
     Position.initialize(NodeCursor != NULL);
     return nodeID;
+}
+
+
+template<typename T, OFBool B>
+T *DSRTreeNodeCursor<T, B>::getChild() const
+{
+    T *node = NULL;
+    if (NodeCursor != NULL)
+        node = NodeCursor->getDown();
+    return node;
 }
 
 

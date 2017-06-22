@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2016, OFFIS e.V.
+ *  Copyright (C) 2012-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,6 +46,8 @@ OFTEST_REGISTER(dcmsr_addContentItem_2);
 OFTEST_REGISTER(dcmsr_copyContentItem);
 OFTEST_REGISTER(dcmsr_getCurrentNode);
 OFTEST_REGISTER(dcmsr_gotoNamedNode);
+OFTEST_REGISTER(dcmsr_gotoNamedChildNode);
+OFTEST_REGISTER(dcmsr_gotoNamedNodeInSubTree);
 OFTEST_REGISTER(dcmsr_gotoAnnotatedNode);
 OFTEST_REGISTER(dcmsr_createDocSubTree);
 OFTEST_REGISTER(dcmsr_copyDocSubTree);
