@@ -100,37 +100,73 @@ OFTime &OFTime::operator=(const OFTime &timeVal)
 
 OFBool OFTime::operator==(const OFTime &timeVal) const
 {
+#ifndef __i386__
     return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) == timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
+#else
+    volatile double lhs = getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    volatile double rhs = timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    return lhs == rhs;
+#endif
 }
 
 
 OFBool OFTime::operator!=(const OFTime &timeVal) const
 {
+#ifndef __i386__
     return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) != timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
+#else
+    volatile double lhs = getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    volatile double rhs = timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    return lhs != rhs;
+#endif
 }
 
 
 OFBool OFTime::operator<(const OFTime &timeVal) const
 {
+#ifndef __i386__
     return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) < timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
+#else
+    volatile double lhs = getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    volatile double rhs = timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    return lhs < rhs;
+#endif
 }
 
 
 OFBool OFTime::operator<=(const OFTime &timeVal) const
 {
+#ifndef __i386__
     return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) <= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
+#else
+    volatile double lhs = getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    volatile double rhs = timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    return lhs <= rhs;
+#endif
 }
 
 
 OFBool OFTime::operator>=(const OFTime &timeVal) const
 {
+#ifndef __i386__
     return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) >= timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
+#else
+    volatile double lhs = getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    volatile double rhs = timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    return lhs >= rhs;
+#endif
 }
 
 
 OFBool OFTime::operator>(const OFTime &timeVal) const
 {
+#ifndef __i386__
     return (getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/) > timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/));
+#else
+    volatile double lhs = getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    volatile double rhs = timeVal.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/);
+    return lhs > rhs;
+#endif
 }
 
 
