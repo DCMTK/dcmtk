@@ -308,43 +308,38 @@ struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 #define RECORDIDX_OtherPatientIDs                 5
 #define RECORDIDX_OtherPatientNames               6
 #define RECORDIDX_EthnicGroup                     7
-#define RECORDIDX_NumberofPatientRelatedStudies   8
-#define RECORDIDX_NumberofPatientRelatedSeries    9
-#define RECORDIDX_NumberofPatientRelatedInstances 10
-#define RECORDIDX_StudyDate                      11
-#define RECORDIDX_StudyTime                      12
-#define RECORDIDX_StudyID                        13
-#define RECORDIDX_StudyDescription               14
-#define RECORDIDX_NameOfPhysiciansReadingStudy   15
-#define RECORDIDX_AccessionNumber                16
-#define RECORDIDX_ReferringPhysicianName         17
-#define RECORDIDX_ProcedureDescription           18
-#define RECORDIDX_AttendingPhysiciansName        19
-#define RECORDIDX_StudyInstanceUID               20
-#define RECORDIDX_OtherStudyNumbers              21
-#define RECORDIDX_AdmittingDiagnosesDescription  22
-#define RECORDIDX_PatientAge                     23
-#define RECORDIDX_PatientSize                    24
-#define RECORDIDX_PatientWeight                  25
-#define RECORDIDX_Occupation                     26
-#define RECORDIDX_NumberofStudyRelatedSeries     27
-#define RECORDIDX_NumberofStudyRelatedInstances  28
-#define RECORDIDX_SeriesNumber                   29
-#define RECORDIDX_SeriesInstanceUID              30
-#define RECORDIDX_Modality                       31
-#define RECORDIDX_ImageNumber                    32
-#define RECORDIDX_SOPInstanceUID                 33
-#define RECORDIDX_SeriesDate                     34
-#define RECORDIDX_SeriesTime                     35
-#define RECORDIDX_SeriesDescription              36
-#define RECORDIDX_ProtocolName                   37
-#define RECORDIDX_OperatorsName                  38
-#define RECORDIDX_PerformingPhysicianName        39
-#define RECORDIDX_PresentationLabel              40
-#define RECORDIDX_IssuerOfPatientID              41
-#define RECORDIDX_SpecificCharacterSet           42
+#define RECORDIDX_StudyDate                       8
+#define RECORDIDX_StudyTime                       9
+#define RECORDIDX_StudyID                        10
+#define RECORDIDX_StudyDescription               11
+#define RECORDIDX_NameOfPhysiciansReadingStudy   12
+#define RECORDIDX_AccessionNumber                13
+#define RECORDIDX_ReferringPhysicianName         14
+#define RECORDIDX_ProcedureDescription           15
+#define RECORDIDX_AttendingPhysiciansName        16
+#define RECORDIDX_StudyInstanceUID               17
+#define RECORDIDX_OtherStudyNumbers              18
+#define RECORDIDX_AdmittingDiagnosesDescription  19
+#define RECORDIDX_PatientAge                     20
+#define RECORDIDX_PatientSize                    21
+#define RECORDIDX_PatientWeight                  22
+#define RECORDIDX_Occupation                     23
+#define RECORDIDX_SeriesNumber                   24
+#define RECORDIDX_SeriesInstanceUID              25
+#define RECORDIDX_Modality                       26
+#define RECORDIDX_ImageNumber                    27
+#define RECORDIDX_SOPInstanceUID                 28
+#define RECORDIDX_SeriesDate                     29
+#define RECORDIDX_SeriesTime                     30
+#define RECORDIDX_SeriesDescription              31
+#define RECORDIDX_ProtocolName                   32
+#define RECORDIDX_OperatorsName                  33
+#define RECORDIDX_PerformingPhysicianName        34
+#define RECORDIDX_PresentationLabel              35
+#define RECORDIDX_IssuerOfPatientID              36
+#define RECORDIDX_SpecificCharacterSet           37
 
-#define NBPARAMETERS                             43
+#define NBPARAMETERS                             38
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
@@ -372,9 +367,6 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
     char    OtherPatientIDs                 [LO_MAX_LENGTH+1] ;
     char    OtherPatientNames               [PN_MAX_LENGTH+1] ;
     char    EthnicGroup                     [SH_MAX_LENGTH+1] ;
-    char    NumberofPatientRelatedStudies   [IS_MAX_LENGTH+1] ;
-    char    NumberofPatientRelatedSeries    [IS_MAX_LENGTH+1] ;
-    char    NumberofPatientRelatedInstances [IS_MAX_LENGTH+1] ;
 
     char    StudyDate                       [DA_MAX_LENGTH+1] ;
     char    StudyTime                       [TM_MAX_LENGTH+1] ;
@@ -393,8 +385,6 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
     char    PatientSize                     [DS_MAX_LENGTH+1] ;
     char    PatientWeight                   [DS_MAX_LENGTH+1] ;
     char    Occupation                      [SH_MAX_LENGTH+1] ;
-    char    NumberofStudyRelatedSeries      [IS_MAX_LENGTH+1] ;
-    char    NumberofStudyRelatedInstances   [IS_MAX_LENGTH+1] ;
 
     char    SeriesNumber                    [IS_MAX_LENGTH+1] ;
     char    SeriesInstanceUID               [UI_MAX_LENGTH+1] ;

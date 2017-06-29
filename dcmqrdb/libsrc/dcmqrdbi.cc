@@ -75,9 +75,6 @@ static const DB_FindAttr TbFindAttr [] = {
         DB_FindAttr( DCM_OtherPatientNames,                     PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_EthnicGroup,                           PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_PatientComments,                       PATIENT_LEVEL,  OPTIONAL_KEY ),
-        DB_FindAttr( DCM_NumberOfPatientRelatedStudies,         PATIENT_LEVEL,  OPTIONAL_KEY ),
-        DB_FindAttr( DCM_NumberOfPatientRelatedSeries,          PATIENT_LEVEL,  OPTIONAL_KEY ),
-        DB_FindAttr( DCM_NumberOfPatientRelatedInstances,       PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_IssuerOfPatientID,                     PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_StudyDate,                             STUDY_LEVEL,    REQUIRED_KEY ),
         DB_FindAttr( DCM_StudyTime,                             STUDY_LEVEL,    REQUIRED_KEY ),
@@ -94,8 +91,6 @@ static const DB_FindAttr TbFindAttr [] = {
         DB_FindAttr( DCM_PatientWeight,                         STUDY_LEVEL,    OPTIONAL_KEY ),
         DB_FindAttr( DCM_Occupation,                            STUDY_LEVEL,    OPTIONAL_KEY ),
         DB_FindAttr( DCM_AdditionalPatientHistory,              STUDY_LEVEL,    OPTIONAL_KEY ),
-        DB_FindAttr( DCM_NumberOfStudyRelatedSeries,            STUDY_LEVEL,    OPTIONAL_KEY ),
-        DB_FindAttr( DCM_NumberOfStudyRelatedInstances,         STUDY_LEVEL,    OPTIONAL_KEY ),
         DB_FindAttr( DCM_SeriesNumber,                          SERIE_LEVEL,    REQUIRED_KEY ),
         DB_FindAttr( DCM_SeriesInstanceUID,                     SERIE_LEVEL,    UNIQUE_KEY   ),
         DB_FindAttr( DCM_Modality,                              SERIE_LEVEL,    OPTIONAL_KEY ),
@@ -218,15 +213,6 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
         idx -> param[RECORDIDX_EthnicGroup]. XTag = DCM_EthnicGroup ;
         idx -> param[RECORDIDX_EthnicGroup]. ValueLength = SH_MAX_LENGTH ;
         idx -> EthnicGroup[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. XTag = DCM_NumberOfPatientRelatedStudies ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. ValueLength = IS_MAX_LENGTH ;
-        idx -> NumberofPatientRelatedStudies[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. XTag = DCM_NumberOfPatientRelatedSeries ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. ValueLength = IS_MAX_LENGTH ;
-        idx -> NumberofPatientRelatedSeries[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. XTag = DCM_NumberOfPatientRelatedInstances ;
-        idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. ValueLength = IS_MAX_LENGTH ;
-        idx -> NumberofPatientRelatedInstances[0] = '\0' ;
         idx -> param[RECORDIDX_StudyDate]. XTag = DCM_StudyDate ;
         idx -> param[RECORDIDX_StudyDate]. ValueLength = DA_MAX_LENGTH ;
         idx -> StudyDate[0] = '\0' ;
@@ -275,12 +261,6 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
         idx -> param[RECORDIDX_Occupation]. XTag = DCM_Occupation ;
         idx -> param[RECORDIDX_Occupation]. ValueLength = SH_MAX_LENGTH ;
         idx -> Occupation[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. XTag = DCM_NumberOfStudyRelatedSeries ;
-        idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. ValueLength = IS_MAX_LENGTH ;
-        idx -> NumberofStudyRelatedSeries[0] = '\0' ;
-        idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. XTag = DCM_NumberOfStudyRelatedInstances ;
-        idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. ValueLength = IS_MAX_LENGTH ;
-        idx -> NumberofStudyRelatedInstances[0] = '\0' ;
         idx -> param[RECORDIDX_SeriesNumber]. XTag = DCM_SeriesNumber ;
         idx -> param[RECORDIDX_SeriesNumber]. ValueLength = IS_MAX_LENGTH ;
         idx -> SeriesNumber[0] = '\0' ;
@@ -332,9 +312,6 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
     idx -> param[RECORDIDX_OtherPatientIDs]. PValueField = (char *)idx -> OtherPatientIDs ;
     idx -> param[RECORDIDX_OtherPatientNames]. PValueField = (char *)idx -> OtherPatientNames ;
     idx -> param[RECORDIDX_EthnicGroup]. PValueField = (char *)idx -> EthnicGroup ;
-    idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. PValueField = (char *)idx -> NumberofPatientRelatedStudies ;
-    idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. PValueField = (char *) idx -> NumberofPatientRelatedSeries ;
-    idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. PValueField = (char *) idx -> NumberofPatientRelatedInstances ;
     idx -> param[RECORDIDX_StudyDate]. PValueField = (char *) idx -> StudyDate ;
     idx -> param[RECORDIDX_StudyTime]. PValueField = (char *) idx -> StudyTime ;
     idx -> param[RECORDIDX_StudyID]. PValueField = (char *) idx -> StudyID ;
@@ -351,8 +328,6 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
     idx -> param[RECORDIDX_PatientSize]. PValueField = (char *) idx -> PatientSize ;
     idx -> param[RECORDIDX_PatientWeight]. PValueField = (char *) idx -> PatientWeight ;
     idx -> param[RECORDIDX_Occupation]. PValueField = (char *) idx -> Occupation ;
-    idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. PValueField = (char *) idx -> NumberofStudyRelatedSeries ;
-    idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. PValueField = (char *) idx -> NumberofStudyRelatedInstances ;
     idx -> param[RECORDIDX_SeriesNumber]. PValueField = (char *) idx -> SeriesNumber ;
     idx -> param[RECORDIDX_SeriesInstanceUID]. PValueField = (char *) idx -> SeriesInstanceUID ;
     idx -> param[RECORDIDX_Modality]. PValueField = (char *) idx -> Modality ;

@@ -954,9 +954,6 @@ Query/Retrieve Level: PATIENT (or STUDY for the Study Root Q/R model)
 (0010,1001) OtherPatientNames
 (0010,2160) EthnicGroup
 (0010,4000) PatientComments
-(0020,1200) NumberOfPatientRelatedStudies
-(0020,1202) NumberOfPatientRelatedSeries
-(0020,1204) NumberOfPatientRelatedInstances
 \endverbatim
 
 Query/Retrieve Level: STUDY
@@ -977,8 +974,6 @@ Query/Retrieve Level: STUDY
 (0020,000D) StudyInstanceUID
 (0020,0010) StudyID
 (0020,1070) RETIRED_OtherStudyNumbers
-(0020,1206) NumberOfStudyRelatedSeries
-(0020,1208) NumberOfStudyRelatedInstances
 \endverbatim
 
 Query/Retrieve Level: SERIES
