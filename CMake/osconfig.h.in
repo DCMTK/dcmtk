@@ -433,6 +433,10 @@
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTBYNAME_R @HAVE_PROTOTYPE_GETHOSTBYNAME_R@
 
+/* Define if your system has a prototype for gethostbyaddr_r in libc.h unistd.h
+   stdlib.h netdb.h */
+#cmakedefine HAVE_PROTOTYPE_GETHOSTBYADDR_R @HAVE_PROTOTYPE_GETHOSTBYADDR_R@
+
 /* Define if your system has a prototype for gethostid in libc.h unistd.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTID @HAVE_PROTOTYPE_GETHOSTID@
