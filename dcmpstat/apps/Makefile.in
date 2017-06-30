@@ -75,10 +75,11 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibd
 LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmsrlib) $(dcmimagelib) $(dcmimglelib) \
 	$(dcmqrdblib) $(dcmnetlib) $(dcmtlslib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
 	$(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS) \
-	$(CHARCONVLIBS)
-DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) \
-	$(CHARCONVLIBS)
-DCMMKCRV_LIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS)
+	$(CHARCONVLIBS) $(MATHLIBS)
+DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) \
+	$(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
+DCMMKCRV_LIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) \
+	$(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o dcmpsprt.o dcmprscu.o \
 	dcmprscp.o dcmpschk.o
@@ -88,34 +89,34 @@ progs = dcmpsmk dcmp2pgm dcmmklut dcmmkcrv dcmpssnd dcmpsrcv dcmpsprt dcmprscu d
 all: $(progs)
 
 dcmpsmk: dcmpsmk.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpsmk.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpsmk.o $(LOCALLIBS) $(LIBS)
 
 dcmp2pgm: dcmp2pgm.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmp2pgm.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmp2pgm.o $(LOCALLIBS) $(LIBS)
 
 dcmmklut: dcmmklut.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmmklut.o $(DCMMKLUT_LIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmmklut.o $(DCMMKLUT_LIBS) $(LIBS)
 
 dcmmkcrv: dcmmkcrv.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmmkcrv.o $(DCMMKCRV_LIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmmkcrv.o $(DCMMKCRV_LIBS) $(LIBS)
 
 dcmpssnd: dcmpssnd.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpssnd.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpssnd.o $(LOCALLIBS) $(LIBS)
 
 dcmpsrcv: dcmpsrcv.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpsrcv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpsrcv.o $(LOCALLIBS) $(LIBS)
 
 dcmpsprt: dcmpsprt.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpsprt.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpsprt.o $(LOCALLIBS) $(LIBS)
 
 dcmprscu: dcmprscu.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmprscu.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmprscu.o $(LOCALLIBS) $(LIBS)
 
 dcmprscp: dcmprscp.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmprscp.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmprscp.o $(LOCALLIBS) $(LIBS)
 
 dcmpschk: dcmpschk.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpschk.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmpschk.o $(LOCALLIBS) $(LIBS)
 
 
 install: all

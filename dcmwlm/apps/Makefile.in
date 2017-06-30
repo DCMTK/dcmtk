@@ -36,7 +36,7 @@ LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofloginc) $(ofstdinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) \
 	$(ofloglibdir) $(ofstdlibdir)
 LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
-	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS)
+	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = wlcefs.o wlmscpfs.o
 progs = wlmscpfs
@@ -45,7 +45,7 @@ progs = wlmscpfs
 all: $(progs)
 
 wlmscpfs: $(objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(LOCALLIBS) $(LIBS)
 
 
 install: all

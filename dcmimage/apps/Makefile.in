@@ -22,7 +22,7 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc
 LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) $(PNGLIBS) \
-	$(ZLIBLIBS) $(CHARCONVLIBS)
+	$(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcm2pnm.o dcmquant.o dcmscale.o
 progs = dcm2pnm dcmquant dcmscale
@@ -31,13 +31,13 @@ progs = dcm2pnm dcmquant dcmscale
 all: $(progs)
 
 dcm2pnm: dcm2pnm.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcmquant: dcmquant.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcmscale: dcmscale.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 
 install: all

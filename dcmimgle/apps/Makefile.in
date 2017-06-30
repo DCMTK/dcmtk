@@ -18,7 +18,7 @@ dcmdatadir = $(top_srcdir)/../dcmdata
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc
-LOCALLIBS = -ldcmimgle -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(CHARCONVLIBS)
+LOCALLIBS = -ldcmimgle -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dconvlum.o dcmdspfn.o dcod2lum.o
 progs = dconvlum dcmdspfn dcod2lum
@@ -27,13 +27,13 @@ progs = dconvlum dcmdspfn dcod2lum
 all: $(progs)
 
 dconvlum: dconvlum.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcmdspfn: dcmdspfn.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcod2lum: dcod2lum.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 
 install: all

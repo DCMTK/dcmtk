@@ -30,7 +30,7 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc $(compr_libdirs)
 LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
-	$(CHARCONVLIBS)
+	$(CHARCONVLIBS) $(MATHLIBS)
 DCMTLSLIBS = -ldcmtls
 COMPR_LIBS = -ldcmjpls -lcharls -ldcmjpeg -lijg8 -lijg12 -lijg16 -ldcmimage -ldcmimgle
 
@@ -42,33 +42,33 @@ progs = echoscu storescu storescp findscu movescu termscu getscu dcmsend dcmrecv
 all: $(progs)
 
 echoscu: echoscu.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(LIBS)
 
 # add $(COMPR_LIBS) to the linking instructions if "storescu" is compiled
 # with ON_THE_FLY_COMPRESSION defined (see "config/docs/macros.txt")
 storescu: storescu.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(LIBS)
 
 storescp: storescp.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(LIBS)
 
 findscu: findscu.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(LIBS)
 
 movescu: movescu.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 termscu: termscu.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 getscu: getscu.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcmsend: dcmsend.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(COMPR_LIBS) $(LOCALLIBS) $(TIFFLIBS) $(PNGLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(COMPR_LIBS) $(LOCALLIBS) $(TIFFLIBS) $(PNGLIBS) $(LIBS)
 
 dcmrecv: dcmrecv.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
