@@ -24,7 +24,7 @@ LIBDIRS = -L$(top_srcdir)/libcmr -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc \
 	-L$(dcmimagedir)/libsrc
 LOCALLIBS = -lcmr -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) \
-	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS)
+	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o tsrcodvl.o tsrnumvl.o tsrtpl.o tsrcmr.o \
 	tsrlist.o
@@ -35,10 +35,10 @@ progs = mkreport tests
 all: $(progs)
 
 mkreport: mkreport.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ mkreport.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ mkreport.o $(LOCALLIBS) $(LIBS)
 
 tests: $(tstobjs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(tstobjs) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(tstobjs) $(LOCALLIBS) $(LIBS)
 
 
 check: tests

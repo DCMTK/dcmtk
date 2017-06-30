@@ -21,7 +21,8 @@ include $(configdir)/@common_makefile@
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmioddir)/libsrc -L$(dcmfgdir)/libsrc
-LOCALLIBS = -ldcmseg -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(CHARCONVLIBS)
+LOCALLIBS = -ldcmseg -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd $(ZLIBLIBS) \
+	$(CHARCONVLIBS) $(MATHLIBS)
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include \
 

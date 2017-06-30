@@ -14,7 +14,7 @@ include $(configdir)/@common_makefile@
 
 LOCALINCLUDES = -I$(top_srcdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc
-LOCALLIBS = -lofstd
+LOCALLIBS = -lofstd $(CHARCONVLIBS) $(MATHLIBS)
 LOCALTRASH = *.out testfile.\$$\$$\$$
 
 test_objs = tests.o tatof.o tmap.o tvec.o tftoa.o tthread.o tbase64.o \
@@ -28,7 +28,7 @@ progs = tests
 all: $(progs)
 
 tests: $(test_objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(CHARCONVLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
 
 check: tests

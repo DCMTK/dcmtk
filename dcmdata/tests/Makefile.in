@@ -18,7 +18,7 @@ oflogdir = $(top_srcdir)/../oflog
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(top_srcdir)/libi2d -L$(ofstddir)/libsrc \
 	-L$(oflogdir)/libsrc
-LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(CHARCONVLIBS)
+LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 I2DLIBS = -li2d
 
 objs = tests.o tpread.o ti2dbmp.o tchval.o tpath.o tvrdatim.o telemlen.o tparser.o \

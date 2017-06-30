@@ -17,11 +17,12 @@ oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmioddir = $(top_srcdir)/../dcmiod
 
-LOCALINCLUDES = -I$(dcmioddir)/include -I$(dcmdatadir)/include -I$(oflogdir)/include -I$(ofstddir)/include
+LOCALINCLUDES = -I$(dcmioddir)/include -I$(dcmdatadir)/include -I$(oflogdir)/include \
+	-I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmioddir)/libsrc -L$(dcmdatadir)/libsrc \
 	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc
 LOCALLIBS = -ldcmiod -ldcmdata -loflog -lofstd \
-	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS)
+	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 test_objs = tests.o tcielabutil.o timagepixel.o
 objs = tests.o $(test_objs)
@@ -31,7 +32,7 @@ progs = tests
 all: $(progs)
 
 tclabutil: tclabutil.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 tests: $(test_objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
