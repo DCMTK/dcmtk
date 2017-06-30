@@ -31,9 +31,6 @@ progs = tests
 
 all: $(progs)
 
-tclabutil: tclabutil.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
-
 tests: $(test_objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
