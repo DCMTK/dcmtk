@@ -698,6 +698,10 @@ if test $THREADSUPPORT = posix ; then
 	  ;;
 	*-*-netbsdelf2*)
 	  ;;
+	*-*-netbsd*)
+	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_NETBSD_SOURCE -D_BSD_COMPAT $CXXFLAGS"
+	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_NETBSD_SOURCE -D_BSD_COMPAT $CFLAGS"
+	  ;;
 	*-*-darwin*)
 	  dnl On Mac OS X we need to have _DARWIN_C_SOURCE source defined to enable UNIX standard API for system headers
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE $CXXFLAGS"
