@@ -55,6 +55,7 @@ LOCALLIBS = $(dcmjplslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib
 objs = dcmdjpls.o dcmcjpls.o dcml2pnm.o
 progs = dcmdjpls dcmcjpls dcml2pnm
 
+
 all: $(progs)
 
 dcmdjpls: dcmdjpls.o

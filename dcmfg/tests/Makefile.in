@@ -5,7 +5,6 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
