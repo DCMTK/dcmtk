@@ -179,6 +179,8 @@ CHECK_TYPE_SIZE("short" SIZEOF_SHORT)
 CHECK_TYPE_SIZE("void*" SIZEOF_VOID_P)
 
 # Check for include files, libraries, and functions
+INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryCompile.cmake")
+INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryRun.cmake")
 INCLUDE("${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake")
 INCLUDE("${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake")
 INCLUDE("${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake")
@@ -658,8 +660,6 @@ IF(HAVE_LOCKF AND ANDROID)
 ENDIF(HAVE_LOCKF AND ANDROID)
 
 # Tests that require a try-compile
-INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryCompile.cmake")
-INCLUDE("${DCMTK_CMAKE_INCLUDE}CMake/dcmtkTryRun.cmake")
 
 IF(HAVE_MATH_H)
   IF(HAVE_LIBC_H)
