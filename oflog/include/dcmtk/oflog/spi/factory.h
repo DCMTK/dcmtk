@@ -160,7 +160,13 @@ namespace log4cplus {
              * Used to enter an object into the registry.  (The registry now
              *  owns <code>object</code>.)
              */
+#ifdef __sun
+            // workaround for SunPro not understanding that by value does not always imply copy
+            bool put(OFrvalue_ref(OFunique_ptr<T>) objectrvr) {
+                OFunique_ptr<T>& object = OFrvalue_access(objectrvr);
+#else
             bool put(OFunique_ptr<T> object) {
+#endif
                  bool putValResult = putVal(object->getTypeName(), object.get());
                  object.release();
                  return putValResult; 

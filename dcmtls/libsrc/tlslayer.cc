@@ -389,6 +389,14 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const cha
   return TCS_ok;
 }
 
+BEGIN_EXTERN_C
+// workaround for C type problems within C++ (SunPro)
+void my_sk_X509_NAME_pop_free(STACK_OF(X509_NAME)* caNames, void(*fn)(X509_name_st*))
+{
+  sk_X509_NAME_pop_free(caNames, fn);
+}
+END_EXTERN_C
+
 DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedClientCertificateFile(const char *fileName)
 {
   if (transportLayerContext)
@@ -403,7 +411,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedClientCertificateFile(co
       if (sk_X509_NAME_find(caNames,newCaName) == -1)
         sk_X509_NAME_push(caNames,X509_NAME_dup(newCaName));
     }
-    sk_X509_NAME_pop_free(newCaNames,X509_NAME_free);
+    my_sk_X509_NAME_pop_free(newCaNames,X509_NAME_free);
     SSL_CTX_set_client_CA_list(transportLayerContext,caNames);
   } else return TCS_illegalCall;
   return TCS_ok;

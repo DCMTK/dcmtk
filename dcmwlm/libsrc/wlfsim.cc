@@ -78,11 +78,15 @@ class WlmFileSystemInteractionManager::MatchingKeys
     keys.push_back(OFMake_pair(DCM_PatientBirthDate,OFTrue));
     keys.push_back(OFMake_pair(DCM_IssuerOfPatientID,OFTrue));
     combinedKeys.push_back(OFMake_pair(DCM_StudyDate,DCM_StudyTime));
+#ifdef __sun
+    initSequenceKeys();
+#else
     sequenceKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepSequence,MatchingKeys()));
     sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_ScheduledStationAETitle,OFFalse));
     sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_Modality,OFFalse));
     sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_ScheduledPerformingPhysicianName,OFTrue));
     sequenceKeys.back().second.combinedKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepStartDate,DCM_ScheduledProcedureStepStartTime));
+#endif
   }
 
 public:
@@ -90,8 +94,34 @@ public:
   MatchingKeys() {}
   OFVector<OFPair<DcmTagKey,OFBool> >       keys;
   OFVector<OFPair<DcmTagKey,DcmTagKey> >    combinedKeys;
+#ifdef __sun
+  // SunPro is the retarded child of a Java compiler and an actual C++ compiler
+  struct PairAdapter
+  {
+      inline PairAdapter(const DcmTagKey& f, const MatchingKeys& s)
+      : first(f), second(s) {}
+      const DcmTagKey& first;
+      const MatchingKeys& second;
+  };
+  void initSequenceKeys();
+  OFVector<DcmTagKey> sequenceKeysFirst;
+  OFVector<MatchingKeys> sequenceKeysSecond;
+#else
   OFVector<OFPair<DcmTagKey,MatchingKeys> > sequenceKeys;
+#endif
 };
+
+#ifdef __sun
+void WlmFileSystemInteractionManager::MatchingKeys::initSequenceKeys()
+{
+  sequenceKeysFirst.push_back(DCM_ScheduledProcedureStepSequence);
+  sequenceKeysSecond.push_back(MatchingKeys());
+  sequenceKeysSecond.back().keys.push_back(OFMake_pair(DCM_ScheduledStationAETitle,OFFalse));
+  sequenceKeysSecond.back().keys.push_back(OFMake_pair(DCM_Modality,OFFalse));
+  sequenceKeysSecond.back().keys.push_back(OFMake_pair(DCM_ScheduledPerformingPhysicianName,OFTrue));
+  sequenceKeysSecond.back().combinedKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepStartDate,DCM_ScheduledProcedureStepStartTime));
+}
+#endif
 
 const WlmFileSystemInteractionManager::MatchingKeys WlmFileSystemInteractionManager::MatchingKeys::root(0);
 
@@ -913,6 +943,15 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
 #ifdef HAVE_CXX11
   for( auto& sequenceKey : matchingKeys.sequenceKeys )
   {
+#elif defined(__sun)
+  assert( matchingKeys.sequenceKeysFirst.size() == matchingKeys.sequenceKeysSecond.size() );
+  for( unsigned ui = 0; ui < matchingKeys.sequenceKeysFirst.size(); ++ui )
+  {
+    MatchingKeys::PairAdapter sequenceKey
+    (
+        matchingKeys.sequenceKeysFirst[ui],
+        matchingKeys.sequenceKeysSecond[ui]
+    );
 #else
   // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
   for( OFVector<OFPair<DcmTagKey,MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it )

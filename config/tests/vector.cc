@@ -86,5 +86,11 @@ int main()
         return -1;
     }
 
+    // test whether we can compare const and mutable iterators
+    std::vector<int>::const_iterator cit = w.begin();
+    if (it != cit) {
+        return -1;
+    }
+
     return 0;
 }

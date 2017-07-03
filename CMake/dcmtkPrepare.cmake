@@ -511,5 +511,4 @@ DCMTK_TEST_SOCKET_LIBRARY(socket "socket")
 
 IF(CMAKE_CXX_COMPILER_ID STREQUAL SunPro)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -features=tmplrefstatic")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -features=tmplrefstatic")
 ENDIF()

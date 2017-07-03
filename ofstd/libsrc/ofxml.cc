@@ -125,6 +125,24 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
+// workaround for SunPro not defining these C functions in the global namespace
+#ifdef __sun
+using STD_NAMESPACE free;
+using STD_NAMESPACE malloc;
+using STD_NAMESPACE realloc;
+using STD_NAMESPACE atoi;
+using STD_NAMESPACE atol;
+using STD_NAMESPACE atof;
+using STD_NAMESPACE FILE;
+using STD_NAMESPACE fopen;
+using STD_NAMESPACE fread;
+using STD_NAMESPACE fwrite;
+using STD_NAMESPACE fprintf;
+using STD_NAMESPACE fseek;
+using STD_NAMESPACE ftell;
+using STD_NAMESPACE fclose;
+#endif
+
 XMLCSTR XMLNode::getVersion() { return _CXML("v2.43"); }
 void freeXMLString(XMLSTR t){if(t)free(t);}
 

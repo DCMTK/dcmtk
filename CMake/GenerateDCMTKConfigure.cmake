@@ -376,8 +376,6 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTION_EXISTS(gethostbyname HAVE_GETHOSTBYNAME)
   CHECK_FUNCTION_EXISTS(gethostbyname_r HAVE_GETHOSTBYNAME_R)
   CHECK_FUNCTION_EXISTS(gethostbyaddr_r HAVE_GETHOSTBYADDR_R)
-  CHECK_FUNCTION_EXISTS(getgrnam_r HAVE_GETGRNAM_R)
-  CHECK_FUNCTION_EXISTS(getpwnam_r HAVE_GETPWNAM_R)
   CHECK_FUNCTION_EXISTS(gethostname HAVE_GETHOSTNAME)
   CHECK_FUNCTION_EXISTS(gethostid HAVE_GETHOSTID)
   CHECK_FUNCTION_EXISTS(getlogin HAVE_GETLOGIN)
@@ -521,6 +519,10 @@ ENDIF(WIN32 AND NOT CYGWIN)
     SET(HEADERS ${HEADERS} windows.h)
   ENDIF(HAVE_WINDOWS_H)
 
+  IF(HAVE_GRP_H)
+    SET(HEADERS ${HEADERS} grp.h)
+  ENDIF(HAVE_GRP_H)
+
   IF(HAVE_PWD_H)
     SET(HEADERS ${HEADERS} pwd.h)
   ENDIF(HAVE_PWD_H)
@@ -613,6 +615,8 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_FUNCTIONWITHHEADER_EXISTS("InterlockedIncrement((long*)0)" "${HEADERS}" HAVE_INTERLOCKED_INCREMENT)
   CHECK_FUNCTIONWITHHEADER_EXISTS("InterlockedDecrement((long*)0)" "${HEADERS}" HAVE_INTERLOCKED_DECREMENT)
   CHECK_FUNCTIONWITHHEADER_EXISTS("_fpclassf(0.0f)" "${HEADERS}" HAVE_PROTOTYPE__FPCLASSF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("getgrnam_r((char*)0,(group*)0,(char*)0,0,(group**)0)" "${HEADERS}" HAVE_GETGRNAM_R)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("getpwnam_r((char*)0,(passwd*)0,(char*)0,0,(passwd**)0)" "${HEADERS}" HAVE_GETPWNAM_R)
   CHECK_FUNCTIONWITHHEADER_EXISTS(nanosleep "${HEADERS}" HAVE_PROTOTYPE_NANOSLEEP)
   CHECK_FUNCTIONWITHHEADER_EXISTS("&passwd::pw_gecos" "${HEADERS}" HAVE_PASSWD_GECOS)
 
@@ -965,9 +969,13 @@ static yes_type sfinae(consume<sizeof *new X>*);
 template<typename X>
 static no_type sfinae(...);
 struct test { test( int ); };
+template<int I>
+struct enable {};
+template<>
+struct enable<0> { enum { result = 0 }; };
 int main()
 {
-    return sizeof(sfinae<test>(0)) == sizeof(yes_type);
+    return enable<sizeof(sfinae<test>(0)) == sizeof(yes_type)>::result;
 }")
 
 DCMTK_TRY_COMPILE(HAVE_STD_NAMESPACE "ANSI standard C++ includes use std namespace"

@@ -49,19 +49,21 @@ constexpr size_t OFalignof_or_identity_template() { return Size; }
 
 // these helper templates automatically resolve the alignment
 // if a type is given and pass-through any numeric constant
-template<size_t Size>
-struct OFalignas_size_helper { Uint8 size[Size]; };
 template<typename T>
-OFalignas_size_helper
-<
+struct OFalignas_size_helper_t
+{
 #ifdef OFalignof
-    OFalignof(T)
+    Uint8 size[OFalignof(T)];
 #else // use sizeof instead
-    sizeof(T)
+    Uint8 size[sizeof(T)];
 #endif
-> OFalignof_or_identity_template() {}
+};
+template<typename T>
+OFalignas_size_helper_t<T> OFalignof_or_identity_template() {}
 template<size_t Size>
-OFalignas_size_helper<Size> OFalignof_or_identity_template() {}
+struct OFalignas_size_helper_s { Uint8 size[Size]; };
+template<size_t Size>
+OFalignas_size_helper_s<Size> OFalignof_or_identity_template() {}
 #define OFalignof_or_identity(A) sizeof(OFalignof_or_identity_template<A>())
 
 #else // DOXYGEN

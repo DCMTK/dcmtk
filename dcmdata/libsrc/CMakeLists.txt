@@ -1,5 +1,7 @@
 # create library from source files
 
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}")
+
 DCMTK_ADD_LIBRARY(dcmdata
   cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcdatutl dcddirif dcdicdir dcdicent
   dcdict dcdictbi dcdirrec dcelem dcerror dcfilefo dcfilter dchashdi dcistrma

@@ -205,7 +205,7 @@ struct OFrvalue : OFrvalue_base<T>::type
  */
 #define OFrvalue_ref(T) unspecified
 #else // NOT DOXYGEN
-#define OFrvalue_ref(T) const OFrvalue<T>&
+#define OFrvalue_ref(T) const OFrvalue<T >&
 #endif
 
 /** Obtain an lvalue reference from an rvalue reference.

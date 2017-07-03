@@ -2872,7 +2872,7 @@ DCMTK_OFSTD_EXPORT OFnullopt_t OFnullopt;
 
 #ifndef HAVE_STL_TUPLE
 static const OFignore_t OFignore_value;
-DCMTK_OFSTD_EXPORT const OFignore_t& OFignore( OFignore_value );
+DCMTK_OFSTD_EXPORT const OFignore_t& OFignore = OFignore_value;
 OFtuple<> OFmake_tuple() { return OFtuple<>(); }
 OFtuple<> OFtie() { return OFtuple<>(); }
 #endif

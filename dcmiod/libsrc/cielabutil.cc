@@ -24,6 +24,11 @@
 #define INCLUDE_CMATH                // for pow() function
 #include "dcmtk/ofstd/ofstdinc.h"
 
+// workaround for SunPro not defining these C functions in the global namespace
+#ifdef __sun
+using STD_NAMESPACE pow;
+#endif
+
 // Initialize white points of D65 light point (CIELab standard white point)
 const double IODCIELabUtil::D65_WHITEPOINT_X = 0.950456;
 const double IODCIELabUtil::D65_WHITEPOINT_Y = 1.0;
