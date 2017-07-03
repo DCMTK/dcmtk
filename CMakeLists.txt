@@ -2,7 +2,7 @@
 PROJECT(DCMTK)
 
 # Minimum CMake version required
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.3)
 
 # Disables a warning emitted by CMake 3.7.2. The same setting is performed
 # again in CMake/dcmtkPrepare.cmake (included below), but the warning is still
@@ -140,7 +140,7 @@ ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FIL
   MESSAGE(STATUS "Warning: Using old CONFIGURE_FILE() mechanism to produce DCMTKConfig.cmake")
 
   # Actually configure file
-  CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake26.in"
+  CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.old_cmake.in"
                  "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" @ONLY)
 
   # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
