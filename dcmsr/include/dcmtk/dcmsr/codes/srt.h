@@ -7,7 +7,7 @@
  *
  *  Generated semi-automatically from DICOM PS 3.16-2015c
  *  File created on 2015-08-24 by J. Riesmeier
- *  Last modified on 2017-03-08 by Riesmeier
+ *  Last modified on 2017-07-04 by Riesmeier
  *
  *  NB: This file does not yet contain all codes defined in PS 3.16 since the
  *      mapping of the code meaning to a compiler-friendly representation is
@@ -30,7 +30,7 @@
 
 #define CODE_SRT_CodingSchemeDesignator  "SRT"
 #define CODE_SRT_CodingSchemeName        "SNOMED-RT"
-#define CODE_SRT_CodingSchemeDescription "SNOMED-CT, using the 'SNOMED-RT style' code values"
+#define CODE_SRT_CodingSchemeDescription "SNOMED, using the 'SNOMED-RT style' code values"
 #define CODE_SRT_CodingSchemeUID         "2.16.840.1.113883.6.96"
 
 
