@@ -86,7 +86,7 @@ IF(WIN32 AND NOT MINGW)
       SET(OPENSSL_BINDIR "${WITH_OPENSSLINC}/bin")
       SET(OPENSSL_INCDIR "${WITH_OPENSSLINC}/include")
       SET(OPENSSL_LIBDIR "${WITH_OPENSSLINC}/lib")
-      SET(OPENSSL_LIBS debug "${OPENSSL_LIBDIR}/dcmtkssl_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkssl_o.lib" debug "${OPENSSL_LIBDIR}/dcmtkeay_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkeay_o.lib")
+      SET(OPENSSL_LIBS debug "${OPENSSL_LIBDIR}/dcmtkssl_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkssl_o.lib" debug "${OPENSSL_LIBDIR}/dcmtkcrypto_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkcrypto_o.lib")
       MESSAGE(STATUS "Info: DCMTK OPENSSL support will be enabled")
       SET(WITH_OPENSSL 1)
     ELSE(WITH_OPENSSLINC) # turn off library if library path not set

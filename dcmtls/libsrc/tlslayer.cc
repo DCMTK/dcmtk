@@ -417,11 +417,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedClientCertificateFile(co
   return TCS_ok;
 }
 
-#ifdef _WIN32
-DcmTransportConnection *DcmTLSTransportLayer::createConnection(SOCKET openSocket, OFBool useSecureLayer)
-#else
-DcmTransportConnection *DcmTLSTransportLayer::createConnection(int openSocket, OFBool useSecureLayer)
-#endif
+DcmTransportConnection *DcmTLSTransportLayer::createConnection(DcmNativeSocketType openSocket, OFBool useSecureLayer)
 {
   if (useSecureLayer)
   {

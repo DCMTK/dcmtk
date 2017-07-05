@@ -49,11 +49,7 @@ public:
    *  @param newTLSConnection pointer to intialized OpenSSL connection object
    *    to be used for this connection.
    */
-#ifdef _WIN32
-  DcmTLSConnection(SOCKET openSocket, SSL *newTLSConnection);
-#else
-  DcmTLSConnection(int openSocket, SSL *newTLSConnection);
-#endif
+  DcmTLSConnection(DcmNativeSocketType openSocket, SSL *newTLSConnection);
 
   /** destructor
    */

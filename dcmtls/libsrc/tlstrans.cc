@@ -24,6 +24,11 @@
 
 #ifdef WITH_OPENSSL
 
+#ifdef HAVE_WINDOWS_H
+// on Windows, we need Winsock2 for network functions
+#include <winsock2.h>
+#endif
+
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -42,11 +47,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#ifdef HAVE_WINDOWS_H
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <winbase.h>
-#endif
 #include <openssl/err.h>
 END_EXTERN_C
 
@@ -57,11 +57,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 
 
-#ifdef _WIN32
-DcmTLSConnection::DcmTLSConnection(SOCKET openSocket, SSL *newTLSConnection)
-#else
-DcmTLSConnection::DcmTLSConnection(int openSocket, SSL *newTLSConnection)
-#endif
+DcmTLSConnection::DcmTLSConnection(DcmNativeSocketType openSocket, SSL *newTLSConnection)
 : DcmTransportConnection(openSocket)
 , tlsConnection(newTLSConnection)
 , lastError(0)

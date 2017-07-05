@@ -104,11 +104,7 @@ public:
    *    transparent layer is used.
    *  @return pointer to new connection object if successful, NULL otherwise.
    */
-#ifdef _WIN32
-  virtual DcmTransportConnection *createConnection(SOCKET openSocket, OFBool useSecureLayer);
-#else
-  virtual DcmTransportConnection *createConnection(int openSocket, OFBool useSecureLayer);
-#endif
+  virtual DcmTransportConnection *createConnection(DcmNativeSocketType openSocket, OFBool useSecureLayer);
 
   /** loads the private key used for authentication of this application from a file.
    *  @param fileName path to the private key file
