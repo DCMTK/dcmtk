@@ -153,12 +153,7 @@ namespace log4cplus {
         /**
          * Set the {@link ErrorHandler} for this Appender.
          */
-#ifdef __sun
-        // workaround for SunPro not understanding that by value does not always imply copy
-        virtual void setErrorHandler(OFrvalue_ref(OFunique_ptr<ErrorHandler>) eh);
-#else
         virtual void setErrorHandler(OFunique_ptr<ErrorHandler> eh);
-#endif
 
         /**
          * Return the currently set {@link ErrorHandler} for this
@@ -171,12 +166,7 @@ namespace log4cplus {
          * their own (fixed) layouts or do not use one. For example, the
          * SocketAppender ignores the layout set here.
          */
-#ifdef __sun
-        // workaround for SunPro not understanding that by value does not always imply copy
-        virtual void setLayout(OFrvalue_ref(OFunique_ptr<Layout>) layout);
-#else
         virtual void setLayout(OFunique_ptr<Layout> layout);
-#endif
 
         /**
          * Returns the layout of this appender. The value may be NULL.

@@ -237,7 +237,7 @@ public:
                              const OFBool useStudy,
                              const OFBool useSeries,
                              const OFBool useFoR = OFFalse,
-                             OFBool takeOverCharset = OFTrue);
+                             const OFBool takeOverCharset = OFTrue);
 
 
   /** Write the attributes managed by this class to DICOM dataset.

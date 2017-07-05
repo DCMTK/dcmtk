@@ -177,8 +177,8 @@ OFCondition DcmIODCommon::read(DcmItem &dataset)
 OFCondition DcmIODCommon::import(DcmItem& dataset,
                                  const OFBool readPatient,
                                  const OFBool readStudy,
-                                 const OFBool readSeries,
                                  const OFBool readFoR,
+                                 const OFBool readSeries,
                                  const OFBool takeOverCharset)
 {
   if (readPatient)

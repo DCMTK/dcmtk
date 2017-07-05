@@ -320,12 +320,7 @@ Appender::getErrorHandler()
 
 
 void
-#ifdef __sun
-// workaround for SunPro not understanding that by value does not always imply copy
-Appender::setErrorHandler(OFrvalue_ref(OFunique_ptr<ErrorHandler>) eh)
-#else
 Appender::setErrorHandler(OFunique_ptr<ErrorHandler> eh)
-#endif
 {
     if (! eh.get())
     {
@@ -344,12 +339,7 @@ Appender::setErrorHandler(OFunique_ptr<ErrorHandler> eh)
 
 
 void
-#ifdef __sun
-// workaround for SunPro not understanding that by value does not always imply copy
-Appender::setLayout(OFrvalue_ref(OFunique_ptr<Layout>) lo)
-#else
 Appender::setLayout(OFunique_ptr<Layout> lo)
-#endif
 {
     thread::MutexGuard guard (access_mutex);
 

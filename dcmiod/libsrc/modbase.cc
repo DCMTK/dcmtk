@@ -140,7 +140,7 @@ void IODComponent::makeOptional()
 
 
 OFCondition IODComponent::read(DcmItem& source,
-                               OFBool clearOldData)
+                               const OFBool clearOldData)
 {
   // Debug
   DCMIOD_DEBUG("Reading component: " << getName());

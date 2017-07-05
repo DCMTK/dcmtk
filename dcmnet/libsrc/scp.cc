@@ -747,7 +747,7 @@ OFCondition DcmSCP::receiveSTORERequest(T_DIMSE_C_StoreRQ &reqMessage,
 }
 
 
-OFCondition DcmSCP::sendSTOREResponse(T_ASC_PresentationContextID presID,
+OFCondition DcmSCP::sendSTOREResponse(const T_ASC_PresentationContextID presID,
                                       const T_DIMSE_C_StoreRQ &reqMessage,
                                       const Uint16 rspStatusCode)
 {
