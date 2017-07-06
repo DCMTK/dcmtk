@@ -364,7 +364,15 @@ class OFCharacterEncoding::Implementation
         // the iconvctl function is implemented only in GNU libiconv and not in other
         // iconv implementations. The iconv implementation in the C standard library
         // therefore does not support different encoding flags.
+#ifdef __FreeBSD__
+        // FreeBSD has a custom mode where illegal sequences are replaced by '?', so
+        // none of the normal modes are supported.
+        return OFFalse;
+#else
+        // All other implementations seem to return an error when encountering
+        // illegal sequences by default, so 'abort' is the only supported mode.
         return flags == AbortTranscodingOnIllegalSequence;
+#endif
 #endif
     }
 
@@ -384,7 +392,14 @@ class OFCharacterEncoding::Implementation
         if (result)
             return result;
 #endif
+#ifdef __FreeBSD__
+        // FreeBSD has a custom mode where illegal sequences are replaced by '?',
+        // which is none of the normal modes and can only be described as
+        // 'unknown' = 0
+        return 0;
+#else
         return AbortTranscodingOnIllegalSequence;
+#endif
     }
 
     OFBool setConversionFlags(const unsigned flags)
@@ -427,7 +442,13 @@ class OFCharacterEncoding::Implementation
         // the iconvctl function is implemented only in GNU libiconv and not in other
         // iconv implementations. The iconv implementation in the C standard library
         // therefore does not support different encoding flags.
+#ifdef __FreeBSD__
+        // FreeBSD has a custom mode where illegal sequences are replaced by '?', so
+        // none of the normal modes are supported.
+        return OFFalse;
+#else
         return flags == AbortTranscodingOnIllegalSequence;
+#endif
 #endif
     }
 
