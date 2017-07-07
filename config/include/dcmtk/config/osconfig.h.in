@@ -23,9 +23,6 @@
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif
 
-/* Define if alignas supports typedefs */
-#undef ALIGNAS_SUPPORTS_TYPEDEFS
-
 /* Define if __attribute__((aligned)) supports templates */
 #undef ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES
 

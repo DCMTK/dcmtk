@@ -92,21 +92,21 @@ OFalignas_size_helper_s<Size> OFalignof_or_identity_template() {}
  */
 #define OFalignas <unspecified>
 
-/** Determine a type with modified alignment for a given type T.
+/** Align a variable or data member.
  *  @note OFalign may not be available on your platform / compiler combination.
  *    Use <kbd>#ifdef OFalign</kbd> to query availability.
  *  @sa OFalign_typename
  *  @details
  *  OFalign can be though of as the least common denominator of the alignment capabilities
  *  available on different platform / compiler combinations. Given a type T and an integral
- *  expression I, <kbd>OFalign(T,I)</kbd> evaluates to an appropriately aligned type corresponding
- *  to T.<br>
+ *  expression I, <kbd>OFalign(T,I)</kbd> evaluates to a type with a corresponding alignment
+ *  modifier (either included in the type definition or as a modifier put next to it).<br>
  *  You may also use another type to specify the desired alignment, e.g. <kbd>OFalign(T,int)</kbd>.
  *  OFalign will then calculate the alignment using <i>OFalignof</i> (if available) or use
  *  <i>sizeof()</i> as approximation.<br>
  *  To align arrays via OFalign, simply pass the array's extents within the parameter, e.g.
  *  <kbd>OFalign(char[12],float)</kbd> to align an array containing <i>12</i> chars like a float.<br>
- *  When using OFalign inside a dependant scope (i.e. inside templates), you may need
+ *  When using OFalign inside a dependent scope (i.e. inside templates), you may need
  *  to use OFalign_typename instead, e.g.
  *  @code typedef OFalign_typename(T,16) value_type; @endcode
  *  OFalign should support alignments as any power of two <= 8192 (examine your compiler's manual
@@ -126,14 +126,14 @@ OFalignas_size_helper_s<Size> OFalignof_or_identity_template() {}
  *  @sa OFalign
  *  @details
  *  OFalign_typename is an alternate version of OFalign that internally uses keywords like
- *  <i>OFTypename</i> so it can be used inside a dependant scope. See OFalign for more information.
+ *  <i>OFTypename</i> so it can be used inside a dependent scope. See OFalign for more information.
  */
 #define OFalign_typename OFTypename <unspecified>
 
 #endif // C++11
 
 // alignas
-#if defined(HAVE_CXX11) && defined(ALIGNAS_SUPPORTS_TYPEDEFS)
+#if defined(HAVE_CXX11)
 
 #define OFalignas alignas
 
@@ -197,19 +197,17 @@ public:
 
 #if defined(OFalignas) && !defined(DOXYGEN)
 // OFalign based on OFalignas, so this is "platform-independent".
-#define OFalign(T,A) OFalignas_align<T>::as<OFalignof_or_identity(A)>::type
-#define OFalign_typename(T,A) OFTypename OFalignas_align<T>::template as<OFalignof_or_identity(A)>::type
+#define OFalign(T,A) OFalignas(A) OFalignas_type<T>::type
+#define OFalign_typename(T,A) OFalignas(A) OFTypename OFalignas_type<T>::type
 template<typename T>
-struct OFalignas_align
+struct OFalignas_type
 {
-    template<size_t A>
-    struct as { typedef T type OFalignas(A); };
+    typedef T type;
 };
 template<typename T,size_t S>
-struct OFalignas_align<T[S]>
+struct OFalignas_type<T[S]>
 {
-    template<size_t A>
-    struct as { typedef T type[S] OFalignas(A); };
+    typedef T type[S];
 };
 #endif
 

@@ -192,7 +192,7 @@ public:
     void destroy() { OFstatic_cast( T*, content() )->~T(); m_State = OFFalse; }
     OFBool state() const { return m_State; }
     void* content() const { return m_Content; }
-    mutable OFalign_typename(Uint8[sizeof(T)],T) m_Content;
+    OFalign_typename(Uint8[sizeof(T)],T) mutable m_Content;
     OFBool m_State;
 #else
     // Allocate content on the heap.

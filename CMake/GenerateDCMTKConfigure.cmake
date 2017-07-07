@@ -949,13 +949,6 @@ int main()
     return 0;
 }")
 
-DCMTK_TRY_COMPILE(ALIGNAS_SUPPORTS_TYPEDEFS "alignas supports typedefs"
-    "int main()
-{
-    typedef char type[16] alignas(4);
-    return 0;
-}")
-
 DCMTK_TRY_COMPILE(HAVE_DECLSPEC_ALIGN "__declspec(align) is supported"
     "int main()
 {

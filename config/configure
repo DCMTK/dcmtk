@@ -16617,40 +16617,6 @@ $as_echo "no" >&6; }
     fi
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether alignas supports typedefs" >&5
-$as_echo_n "checking whether alignas supports typedefs... " >&6; }
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-            int main()
-            {
-                typedef char type[16] alignas(4);
-                return 0;
-            }
-
-
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  dcmtk_alignas_supports_typedefs=yes
-else
-  dcmtk_alignas_supports_typedefs=no
-
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-    if test "$dcmtk_alignas_supports_typedefs" = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-$as_echo "#define ALIGNAS_SUPPORTS_TYPEDEFS 1" >>confdefs.h
-
-    else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
-
-
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports default constructor detection via SFINAE" >&5
 $as_echo_n "checking whether the compiler supports default constructor detection via SFINAE... " >&6; }
     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
