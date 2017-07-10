@@ -44,8 +44,15 @@
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
 #define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
 
+/* LFS mode constants. */
+#define DCMTK_LFS 1
+#define DCMTK_LFS64 2
+
 /* Define to select character set conversion implementation. */
 #undef DCMTK_ENABLE_CHARSET_CONVERSION
+
+/* Select LFS mode (defined above) that shall be used or don't define it */
+#undef DCMTK_ENABLE_LFS
 
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
@@ -356,9 +363,6 @@
 
 /* Define to 1 if you have the `itoa' function. */
 #undef HAVE_ITOA
-
-/* Define if LFS (large file support) is available */
-#undef HAVE_LFS_SUPPORT
 
 /* Define to 1 if you have the <libc.h> header file. */
 #undef HAVE_LIBC_H

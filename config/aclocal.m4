@@ -1553,7 +1553,7 @@ AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP, [1], [Define `$1'
 # when _LARGEFILE64_SOURCE is defined
 #
 AC_DEFUN([AC_LFS64],
-[ AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (large file support) is available])
+[ AH_TEMPLATE([DCMTK_ENABLE_LFS], [Select LFS mode (defined above) that shall be used or don't define it])
   AH_TEMPLATE([_LARGEFILE64_SOURCE], [Define to enable LFS64 (explicit large file support) if available])
   AC_MSG_CHECKING([for explicit large file support])
   ac_cv_lfs64_support=no
@@ -1566,7 +1566,7 @@ AC_DEFUN([AC_LFS64],
 
   if test "$ac_cv_lfs64_support" = yes; then
     AC_MSG_RESULT([yes])
-    AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (large file support) is available])
+    AC_DEFINE(DCMTK_ENABLE_LFS, DCMTK_LFS64, [Select LFS mode (defined above) that shall be used or don't define it])
     AC_DEFINE(_LARGEFILE64_SOURCE, 1, [Define to enable LFS64 (explicit large file support) if available])
   else
     AC_MSG_RESULT([no])
@@ -1649,7 +1649,7 @@ AC_DEFUN([MY_AC_SYS_LARGEFILE],
   fi
 
   ac_cv_lfs64_support=no
-  AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (large file support) is available])
+  AH_TEMPLATE([DCMTK_ENABLE_LFS], [Select LFS mode (defined above) that shall be used or don't define it])
   MY_AC_SYS_LARGEFILE_MACRO_VALUE(_FILE_OFFSET_BITS, 64,
     ac_cv_sys_file_offset_bits,
     [Number of bits in a file offset, on hosts where this is settable.],
@@ -1660,7 +1660,7 @@ AC_DEFUN([MY_AC_SYS_LARGEFILE],
     [MY_AC_SYS_LARGEFILE_TEST_INCLUDES])
 
   if test "$ac_cv_lfs_support" = yes; then
-    AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (large file support) is available])
+    AC_DEFINE(DCMTK_ENABLE_LFS, DCMTK_LFS, [Select LFS mode (defined above) that shall be used or don't define it])
   fi
 
 ])# MY_AC_SYS_LARGEFILE

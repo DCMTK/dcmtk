@@ -9272,7 +9272,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
-$as_echo "#define HAVE_LFS_SUPPORT /**/" >>confdefs.h
+$as_echo "#define DCMTK_ENABLE_LFS DCMTK_LFS64" >>confdefs.h
 
 
 $as_echo "#define _LARGEFILE64_SOURCE 1" >>confdefs.h
@@ -9492,7 +9492,7 @@ rm -f conftest*
 
   if test "$ac_cv_lfs_support" = yes; then
 
-$as_echo "#define HAVE_LFS_SUPPORT /**/" >>confdefs.h
+$as_echo "#define DCMTK_ENABLE_LFS DCMTK_LFS" >>confdefs.h
 
   fi
 

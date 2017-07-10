@@ -63,20 +63,11 @@ END_EXTERN_C
  * Yes, this is ugly.
  */
 
-/* Find out whether current operating system needs explicit function calls
- * to handle large file support
+/* Find out whether to use explicit LFS function calls to handle
+ * large file support
  */
-#ifdef _LARGEFILE64_SOURCE
-  // Mac OS X defines _LARGEFILE64_SOURCE but anyhow expects implicit 64 bit calls.
-  // The same is true for current Cygwin versions (tested with version 1.7.7-1)
-  // and for QNX (tested with version 6.5).
-  #if !(defined(__MACH__) && defined(__APPLE__)) && !defined(__CYGWIN__) && !defined(__QNX__)
-    #define EXPLICIT_LFS_64
-  #endif
-#endif
-
-// Explicit LFS (LFS64) and Windows need 64 bit types
-#if defined(EXPLICIT_LFS_64) || defined(_WIN32)
+#if defined(DCMTK_ENABLE_LFS) && DCMTK_ENABLE_LFS == DCMTK_LFS64
+#define EXPLICIT_LFS_64
 
 // Use POSIX 64 bit file position type when available
 #ifdef HAVE_FPOS64_T

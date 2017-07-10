@@ -857,16 +857,12 @@
 /* Define if signal handlers need ellipse (...) parameters */
 /* #undef SIGNAL_HANDLER_WITH_ELLIPSE */
 
-/* Define to enable LFS64 (explicit large file support) if available*/
-#cmakedefine _LARGEFILE64_SOURCE @_LARGEFILE64_SOURCE@
+/* LFS mode constants. */
+#define DCMTK_LFS 1
+#define DCMTK_LFS64 2
 
-/* Explicitly request large file support, assuming it exists if fseeko() exists */
-#if defined(HAVE_FSEEKO) && !defined(_LARGEFILE_SOURCE)
-#define _LARGEFILE_SOURCE 1
-#endif
-#if defined(_LARGEFILE_SOURCE) && !defined(_FILE_OFFSET_BITS)
-#define _FILE_OFFSET_BITS 64
-#endif
+/* Select LFS mode (defined above) that shall be used or don't define it */
+#cmakedefine DCMTK_ENABLE_LFS @DCMTK_LFS_MODE@
 
 /* The size of a `char', as computed by sizeof. */
 #cmakedefine SIZEOF_CHAR @SIZEOF_CHAR@

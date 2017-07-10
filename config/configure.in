@@ -1350,7 +1350,11 @@ dnl -------------------------------------------------------
 AH_VERBATIM([DCMTK_CHARSET_CONVERSION_CONSTANTS], [/* character set conversion constants. */
 #define DCMTK_CHARSET_CONVERSION_ICU 1
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
-#define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3])
+#define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
+
+/* LFS mode constants. */
+#define DCMTK_LFS 1
+#define DCMTK_LFS64 2])
 
 CHARCONVINCLUDES=""
 CHARCONVLIBS=""
