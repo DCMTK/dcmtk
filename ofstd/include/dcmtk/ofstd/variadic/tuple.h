@@ -30,12 +30,23 @@ const typename OFtuple_element<N,OFtuple<T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T
 {
     return OFget_tuple_element<typename OFtuple_element<N,OFtuple<T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49> >::type,N>::from( t );
 }
+#ifdef HAVE_CXX11
+namespace std
+{
+    template<typename... Ts>
+    void swap( OFtuple<Ts...>& lhs, OFtuple<Ts...>& rhs )
+    {
+        lhs.swap( rhs );
+    }
+}
+#else
 template<typename T0,typename T1,typename T2,typename T3,typename T4,typename T5,typename T6,typename T7,typename T8,typename T9,typename T10,typename T11,typename T12,typename T13,typename T14,typename T15,typename T16,typename T17,typename T18,typename T19,typename T20,typename T21,typename T22,typename T23,typename T24,typename T25,typename T26,typename T27,typename T28,typename T29,typename T30,typename T31,typename T32,typename T33,typename T34,typename T35,typename T36,typename T37,typename T38,typename T39,typename T40,typename T41,typename T42,typename T43,typename T44,typename T45,typename T46,typename T47,typename T48,typename T49>
 void OFswap( OFtuple<T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>& lhs,
              OFtuple<T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>& rhs )
 {
     lhs.swap( rhs );
 }
+#endif
 template<typename T0,typename T1,typename T2,typename T3,typename T4,typename T5,typename T6,typename T7,typename T8,typename T9,typename T10,typename T11,typename T12,typename T13,typename T14,typename T15,typename T16,typename T17,typename T18,typename T19,typename T20,typename T21,typename T22,typename T23,typename T24,typename T25,typename T26,typename T27,typename T28,typename T29,typename T30,typename T31,typename T32,typename T33,typename T34,typename T35,typename T36,typename T37,typename T38,typename T39,typename T40,typename T41,typename T42,typename T43,typename T44,typename T45,typename T46,typename T47,typename T48,typename T49,typename U0,typename U1,typename U2,typename U3,typename U4,typename U5,typename U6,typename U7,typename U8,typename U9,typename U10,typename U11,typename U12,typename U13,typename U14,typename U15,typename U16,typename U17,typename U18,typename U19,typename U20,typename U21,typename U22,typename U23,typename U24,typename U25,typename U26,typename U27,typename U28,typename U29,typename U30,typename U31,typename U32,typename U33,typename U34,typename U35,typename U36,typename U37,typename U38,typename U39,typename U40,typename U41,typename U42,typename U43,typename U44,typename U45,typename U46,typename U47,typename U48,typename U49>
 OFBool operator==( const OFtuple<T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>& lhs,
                    const OFtuple<U0,U1,U2,U3,U4,U5,U6,U7,U8,U9,U10,U11,U12,U13,U14,U15,U16,U17,U18,U19,U20,U21,U22,U23,U24,U25,U26,U27,U28,U29,U30,U31,U32,U33,U34,U35,U36,U37,U38,U39,U40,U41,U42,U43,U44,U45,U46,U47,U48,U49>& rhs )
