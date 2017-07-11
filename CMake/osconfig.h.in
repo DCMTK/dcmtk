@@ -885,6 +885,12 @@
 /* The size of a `void *', as computed by sizeof. */
 #cmakedefine SIZEOF_VOID_P @SIZEOF_VOID_P@
 
+/* The size of a `fpos_t', as computed by sizeof. */
+#cmakedefine SIZEOF_FPOS_T @SIZEOF_FPOS_T@
+
+/* The size of a `off_t', as computed by sizeof. */
+#cmakedefine SIZEOF_OFF_T @SIZEOF_OFF_T@
+
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 

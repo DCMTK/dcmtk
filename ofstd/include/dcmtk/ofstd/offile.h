@@ -88,7 +88,19 @@ typedef Sint64 offile_off_t;
 
 #else // Implicit LFS or no LFS
 
-#ifdef HAVE_FSEEKO
+#if defined(DCMTK_ENABLE_LFS) && DCMTK_ENABLE_LFS == DCMTK_LFS
+#if defined(SIZEOF_FPOS_T) && (!defined(SIZEOF_OFF_T) || SIZEOF_FPOS_T > SIZEOF_OFF_T)
+// strange Windows LFS where sizeof(fpos_t) == 8 but sizeof(off_t) == 4
+#ifndef OF_NO_SINT64 // Use a 64 bit integer
+typedef Sint64 offile_off_t;
+#else // Cry when LFS is required but no 64 bit integer exists
+#error \
+  Could not find a suitable offset-type for LFS support.
+#endif
+#else
+typedef off_t offile_off_t;
+#endif
+#elif defined(HAVE_FSEEKO)
 typedef off_t offile_off_t;
 #else
 typedef long offile_off_t;

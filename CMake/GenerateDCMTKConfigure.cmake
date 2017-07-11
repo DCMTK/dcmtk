@@ -926,6 +926,18 @@ FUNCTION(DCMTK_CHECK_ENABLE_LFS)
     SET(MESSAGE_RESULT "no")
     SET(MESSAGE "Checking whether large file support (LFS) is available")
     MESSAGE(STATUS "${MESSAGE}")
+    # determine size of fpos_t (for the strange LFS implementation on Windows)
+    SET(CMAKE_EXTRA_INCLUDE_FILES)
+    IF(HAVE_STDIO_H)
+      # prefer stdio.h so that is not in namespace std
+      SET(CMAKE_EXTRA_INCLUDE_FILES "stdio.h")
+    ELSEIF(HAVE_CSTDIO)
+      # use cstdio as the fallback
+      SET(CMAKE_EXTRA_INCLUDE_FILES "cstdio")
+    ENDIF()
+    CHECK_TYPE_SIZE("fpos_t" SIZEOF_FPOS_T)
+    # assume sizeof off_t to be correct, will be removed if below tests fail
+    SET(SIZEOF_OFF_T 8)
     # try compile different combinations of compiler flags and definitions
     DCMTK_LFS_TRY_COMPILE(RESULT "lfs.c" "" "")
     IF(NOT RESULT)
@@ -952,6 +964,17 @@ FUNCTION(DCMTK_CHECK_ENABLE_LFS)
       SET(DCMTK_LFS_DEFINITIONS "-D_LARGE_FILES=1")
       DCMTK_LFS_TRY_COMPILE(RESULT "lfs.c" "-n32" "-D_LARGE_FILES=1")
     ENDIF()
+    IF(NOT RESULT)
+      # remove flags and reset SIZEOF_OFF_T to indeterminate
+      SET(DCMTK_LFS_FLAGS)
+      SET(DCMTK_LFS_DEFINITIONS)
+      SET(SIZEOF_OFF_T)
+      # detect strange LFS implementation that (at least) Windows provides
+      # strange since sizeof(fpos_t) == 8 but sizeof(off_t) == 4!
+      IF(SIZEOF_FPOS_T EQUAL 8)
+        SET(RESULT TRUE)
+      ENDIF()
+    ENDIF()
     # format a nice result message
     IF(RESULT)
       SET(DCMTK_ENABLE_LFS "lfs")
@@ -969,6 +992,9 @@ FUNCTION(DCMTK_CHECK_ENABLE_LFS)
       ENDIF()
     ENDIF()
     SET(DCMTK_LFS_AVAILABLE "${RESULT}" CACHE INTERNAL "whether LFS is available or not" FORCE)
+    IF(DEFINED SIZEOF_OFF_T)
+      SET(SIZEOF_OFF_T "${SIZEOF_OFF_T}" CACHE INTERNAL "")
+    ENDIF()
     MESSAGE(STATUS "${MESSAGE} -- ${MESSAGE_RESULT}")
   ENDIF()
   # auto-select LFS implementation in case this is not the first run and the above tests did not select it
