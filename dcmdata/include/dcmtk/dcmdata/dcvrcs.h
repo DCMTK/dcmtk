@@ -105,6 +105,9 @@ class DCMTK_DCMDATA_EXPORT DcmCodeString
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
 
+    // ensure inherited overloads of matches take part in overload resolution
+    using DcmByteString::matches;
+
     /// @copydoc DcmByteString::matches(OFString,OFString,OFBool)
     virtual OFBool matches(const OFString& key,
                            const OFString& candidate,

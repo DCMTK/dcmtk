@@ -120,6 +120,9 @@ class DCMTK_DCMDATA_EXPORT DcmUniversalResourceIdentifierOrLocator
     virtual OFCondition getOFStringArray(OFString &stringVal,
                                          OFBool normalize = OFTrue);
 
+    // ensure inherited overloads of matches take part in overload resolution
+    using DcmByteString::matches;
+
     /// @copydoc DcmByteString::matches(OFString,OFString,OFBool)
     virtual OFBool matches(const OFString& key,
                            const OFString& candidate,

@@ -138,6 +138,9 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
+    // ensure inherited overloads of matches take part in overload resolution
+    using DcmByteString::matches;
+
     /// @copydoc DcmByteString::matches(OFString,OFString,OFBool)
     virtual OFBool matches(const OFString& key,
                            const OFString& candidate,
