@@ -842,8 +842,8 @@ public:
   int fgetpos(offile_fpos_t *pos)
   {
     int result;
-#if defined(EXPLICIT_LFS_64) && ! defined(__MINGW32__)
-    // MinGW has EXPLICIT_LFS_64 but no fgetpos64()
+#if defined(EXPLICIT_LFS_64) && ! defined(__MINGW32__) && ! defined(__QNX__)
+    // MinGW and QNX have EXPLICIT_LFS_64 but no fgetpos64()
     result = :: fgetpos64(file_, pos);
 #else
     result = STDIO_NAMESPACE fgetpos(file_, pos);
@@ -862,8 +862,8 @@ public:
   int fsetpos(offile_fpos_t *pos)
   {
     int result;
-#if defined(EXPLICIT_LFS_64) && ! defined(__MINGW32__)
-    // MinGW has EXPLICIT_LFS_64 but no fsetpos64()
+#if defined(EXPLICIT_LFS_64) && ! defined(__MINGW32__) && ! defined(__QNX__)
+    // MinGW and QNX have EXPLICIT_LFS_64 but no fsetpos64()
     result = :: fsetpos64(file_, pos);
 #else
     result = STDIO_NAMESPACE fsetpos(file_, pos);
