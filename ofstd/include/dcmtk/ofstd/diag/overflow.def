@@ -2,8 +2,6 @@
 #pragma clang diagnostic ignored "-Winteger-overflow"
 #elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(4,6,0)
 #pragma GCC diagnostic ignored "-Woverflow"
-// Visual Studio doesn't seem to have such a warning yet, uncomment
-// and replace ???? when it does
-//#elif DCMTK_DIAGNOSTIC_MIN_MSC_VER(????)
-//#pragma warning(disable: ????)
+#elif defined(_MSC_VER)
+#pragma warning(disable: 4307)
 #endif
