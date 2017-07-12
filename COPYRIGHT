@@ -478,7 +478,7 @@ The dcmrt sub-package is covered by the following copyright:
 ---------------------------------------------------------------------------
 
 Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
-Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -511,7 +511,7 @@ Parts of the dcmsr sub-package are covered by the following copyright:
 
 ---------------------------------------------------------------------------
 
-Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -1042,4 +1042,3 @@ the file ChangeLog history information documenting your changes.  Please read
 the FAQ for more information on the distribution of modified source versions.
 
 ---------------------------------------------------------------------------
-
