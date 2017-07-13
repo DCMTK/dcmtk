@@ -5,32 +5,32 @@ IF(WIN32 AND NOT MINGW)
   # website (pre-built).
 
   # libxml support: find out whether user has library
-  GET_FILENAME_COMPONENT(LIBXML_DIR "${DCMTK_SOURCE_DIR}/../libxml2-2.7.7" ABSOLUTE)
+  FILE(GLOB LIBXML_DIR "${DCMTK_SOURCE_DIR}/../libxml2*")
   FIND_PATH(WITH_LIBXMLINC "/include/libxml/parser.h" "${LIBXML_DIR}" NO_DEFAULT_PATH)
 
   # libpng support: find out whether user has library
-  GET_FILENAME_COMPONENT(LIBPNG_DIR "${DCMTK_SOURCE_DIR}/../libpng-1.4.2" ABSOLUTE)
+  FILE(GLOB LIBPNG_DIR "${DCMTK_SOURCE_DIR}/../libpng*")
   FIND_PATH(WITH_LIBPNGINC "include/png.h" "${LIBPNG_DIR}" NO_DEFAULT_PATH)
 
   # libtiff support: find out whether user has library
-  GET_FILENAME_COMPONENT(LIBTIFF_DIR "${DCMTK_SOURCE_DIR}/../tiff-3.9.2" ABSOLUTE)
+  FILE(GLOB LIBTIFF_DIR "${DCMTK_SOURCE_DIR}/../libtiff*")
   FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${LIBTIFF_DIR}" NO_DEFAULT_PATH)
 
   # OpenSSL support: find out whether user has library
-  GET_FILENAME_COMPONENT(OPENSSL_DIR "${DCMTK_SOURCE_DIR}/../openssl-1.0.0" ABSOLUTE)
+  FILE(GLOB OPENSSL_DIR "${DCMTK_SOURCE_DIR}/../openssl*")
   FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${OPENSSL_DIR}" NO_DEFAULT_PATH)
 
   # zlib support: find out whether user has library
-  GET_FILENAME_COMPONENT(ZLIB_DIR "${DCMTK_SOURCE_DIR}/../zlib-1.2.5" ABSOLUTE)
+  FILE(GLOB ZLIB_DIR "${DCMTK_SOURCE_DIR}/../zlib*")
   FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${ZLIB_DIR}" NO_DEFAULT_PATH)
 
   # sndfile support: find out whether user has library. Needed for module dcmwave (not in public DCMTK yet, marked as advanced)
-  GET_FILENAME_COMPONENT(SNDFILE_DIR "${DCMTK_SOURCE_DIR}/../libsndfile-1.0.17" ABSOLUTE)
+  FILE(GLOB SNDFILE_DIR "${DCMTK_SOURCE_DIR}/../libsndfile*")
   FIND_PATH(WITH_SNDFILEINC "sndfile.h" "${SNDFILE_DIR}" NO_DEFAULT_PATH)
   MARK_AS_ADVANCED(SNDFILE_DIR WITH_SNDFILEINC)
 
   # libiconv support: find out whether user has library
-  GET_FILENAME_COMPONENT(LIBICONV_DIR "${DCMTK_SOURCE_DIR}/../libiconv-1.14" ABSOLUTE)
+  FILE(GLOB LIBICONV_DIR "${DCMTK_SOURCE_DIR}/../libiconv*")
   FIND_PATH(WITH_LIBICONVINC "include/iconv.h" "${LIBICONV_DIR}" NO_DEFAULT_PATH)
 
   # libxml support: configure compiler
