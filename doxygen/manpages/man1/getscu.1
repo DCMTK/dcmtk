@@ -1,4 +1,4 @@
-.TH "getscu" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "getscu" 1 "Fri Jul 14 2017" "Version 3.6.2" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 getscu \- DICOM retrieve (C-GET) SCU
@@ -137,6 +137,12 @@ preferred storage transfer syntaxes (incoming associations):
 
   +xo   --prefer-mpeg4-2-st
           prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
+
+  +x4   --prefer-hevc
+          prefer HEVC H.265 Main Profile / Level 5.1 TS
+
+  +x5   --prefer-hevc10
+          prefer HEVC H.265 Main 10 Profile / Level 5.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -425,6 +431,8 @@ MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
 MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
 MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
+HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
+HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP

@@ -1,4 +1,4 @@
-.TH "dsr2xml" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2xml" 1 "Fri Jul 14 2017" "Version 3.6.2" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2xml \- Convert DICOM SR file and data set to XML
@@ -237,7 +237,7 @@ Chinese       "GBK"                            =>  "GBK"
 If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&. For reasons of backward compatibility with previous versions of this tool, the following terms are also supported and mapped automatically to the associated DICOM defined terms: latin-1, latin-2, latin-3, latin-4, latin-5, cyrillic, arabic, greek, hebrew\&.
 .PP
 Option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the conversion to XML format\&.
-.SS "ERROR HANDLING"
+.SS "Error Handling"
 Please be careful with the processing options \fI--unknown-relationship\fP, \fI--invalid-item-value\fP, \fI--ignore-constraints\fP, \fI--ignore-item-errors\fP and \fI--skip-invalid-items\fP since they disable certain validation checks on the DICOM SR input file and, therefore, might result in non-standard conformant output\&. However, there might be reasons for using one or more of these options, e\&.g\&. in order to read and process an incorrectly encoded SR document\&.
 .SS "Limitations"
 The XML Schema \fIdsr2xml\&.xsd\fP does not support all variations of the \fBdsr2xml\fP output format\&. However, the default output format (plus option \fI--use-xml-namespace\fP) should work\&.

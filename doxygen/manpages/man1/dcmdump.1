@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "Fri Jul 14 2017" "Version 3.6.2" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -211,6 +211,12 @@ other parsing options:
 
   +st  --stop-after-elem  [t]ag: "gggg,eeee" or dictionary name
          stop parsing after element specified by t
+
+  +sb  --stop-before-elem [t]ag: "gggg,eeee" or dictionary name
+         stop parsing before element specified by t
+
+         # only considers elements on main dataset level and also
+         # works if the given tag is not present in the file
 
 automatic data correction:
 

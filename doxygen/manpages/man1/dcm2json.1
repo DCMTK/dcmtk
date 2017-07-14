@@ -1,4 +1,4 @@
-.TH "dcm2json" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2json" 1 "Fri Jul 14 2017" "Version 3.6.2" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2json \- Convert DICOM file and data set to JSON
@@ -93,13 +93,17 @@ input transfer syntax:
 output format:
 
   +fc   --formatted-code
-          output file with human readable formatting (default)
+          enable whitespace formatting (default)
+
+          # prints additional spaces and newlines for increased
+          # readability
 
   -fc   --compact-code
-          output without formatting (single line of code)
+          print only required characters
 
   +m    --write-meta
           write data set with meta information
+          (warning: not conforming to the DICOM standard)
 .fi
 .PP
 .SH "JSON Format"
@@ -112,7 +116,7 @@ The basic structure of the JSON output created from a DICOM file looks like the 
     "00080005": {
         "vr": "CS",
         "Value": [
-            "ISO_IR192"
+            "ISO_IR 192"
         ]
     },
     "00080020": {
@@ -268,21 +272,7 @@ Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB
 .SH "NOTES"
 .PP
 .SS "Character Encoding"
-The JSON encoding is determined automatically from the DICOM attribute (0008,0005) 'Specific Character Set' using the following mapping:
-.PP
-.PP
-.nf
-ISO Latin 1   "ISO_IR 100"  =>  "UTF-8"
-ISO Latin 2   "ISO_IR 101"  =>  "UTF-8"
-ISO Latin 3   "ISO_IR 109"  =>  "UTF-8"
-ISO Latin 4   "ISO_IR 110"  =>  "UTF-8"
-ISO Latin 5   "ISO_IR 148"  =>  "UTF-8"
-Cyrillic      "ISO_IR 144"  =>  "UTF-8"
-Arabic        "ISO_IR 127"  =>  "UTF-8"
-Greek         "ISO_IR 126"  =>  "UTF-8"
-Hebrew        "ISO_IR 138"  =>  "UTF-8"
-.fi
-.PP
+\fBdcm2json\fP always tries to output in UTF-8 encoding\&. If this is not possible, e\&.g\&. because there is no support for character set conversion, ASCII is used instead (which is a subset of UTF-8)\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.

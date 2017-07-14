@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "Fri Jul 14 2017" "Version 3.6.2" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -66,7 +66,7 @@ port  tcp/ip port number to listen on
 .nf
 general:
 
-  -dfp  --data-files-path  [p]ath: string (default: /home/www/wlist)
+  -dfp  --data-files-path  [p]ath: string (default: .)
           path to worklist data files
 
 handling of worklist files:
@@ -266,7 +266,7 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 (0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
 (0010,0040) PatientSex
-(0010,1000) OtherPatientIDs
+(0010,1000) OtherPatientIDs (retired)
 (0010,1001) OtherPatientNames
 (0010,1020) PatientSize
 (0010,1030) PatientWeight
@@ -279,8 +279,8 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 (0010,21b0) AdditionalPatientHistory
 (0010,21c0) PregnancyStatus
 (0010,21d0) LastMenstrualDate
-(0010,2297) Responsible Person
-(0010,2298) Responsible Person Role
+(0010,2297) ResponsiblePerson
+(0010,2298) ResponsiblePersonRole
 (0010,4000) PatientComments
 (0020,000d) StudyInstanceUID
 (0032,1032) RequestingPhysician
@@ -361,4 +361,4 @@ The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

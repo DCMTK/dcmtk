@@ -1,4 +1,4 @@
-.TH "dcmqrscp" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrscp" 1 "Fri Jul 14 2017" "Version 3.6.2" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrscp \- DICOM image archive (central test node)
@@ -173,6 +173,13 @@ restriction of query/retrieve models:
 .SS "network options"
 .PP
 .nf
+association negotiation profiles from configuration file:
+
+  -xf   --assoc-config-file
+          [f]ilename, [i]n-profile, [o]ut-profile: string
+          use profile i from f for incoming associations
+          use profile o from f for outgoing associations
+
 preferred network transfer syntaxes (incoming associations):
 
   +x=   --prefer-uncompr
@@ -225,6 +232,12 @@ preferred network transfer syntaxes (incoming associations):
 
   +xo   --prefer-mpeg4-2-st
           prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
+
+  +x4   --prefer-hevc
+          prefer HEVC H.265 Main Profile / Level 5.1 TS
+
+  +x5   --prefer-hevc10
+          prefer HEVC H.265 Main 10 Profile / Level 5.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -298,6 +311,12 @@ proposed transmission transfer syntaxes (outgoing associations):
 
   -xo   --propose-mpeg4-2-st
           propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only
+
+  -x4   --propose-hevc
+          propose HEVC H.265 Main Profile / Level 5.1 TS only
+
+  -x5   --propose-hevc10
+          propose HEVC H.265 Main 10 Profile / Level 5.1 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -440,12 +459,15 @@ deflate compression level (only with --propose-deflated or
           0=uncompressed, 1=fastest, 9=best compression
 
 specific character set:
+
+  # the following options require support from an underlying character
+  # encoding library (see output of --version on which one is available)
+
   +Cr   --use-request-charset
-          try to convert all element values that are
-          affected by Specific Character Set (0008,0005)
-          to the one specified in the request data set,
-          fall back to the one specified via
-          --convert-to-xxx if that is not possible
+          try to convert all element values that are affected by
+          Specific Character Set (0008,0005) to the one specified
+          in the request data set, fall back to the one specified
+          via --convert-to-xxx if that is not possible
           (default, unless overridden by config file)
 
   -Cr   --override-charset
@@ -464,8 +486,8 @@ specific character set:
           convert affected element values to ISO 8859-1
 
   +C    --convert-to-charset  [c]harset: string
-          convert affected element values to the character
-          set specified by the DICOM defined term c
+          convert affected element values to the character set
+          specified by the DICOM defined term c
 
   -Ct   --transliterate
           try to approximate characters that cannot be
@@ -647,11 +669,15 @@ MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
 MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
 MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
+HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
+HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
 .PP
 The \fBdcmqrscp\fP application does not support extended negotiation\&.
+.PP
+Presentation contexts for other SOP Classes may be configured via the \fI--assoc-config-file\fP option by selecting an appropriate profile for outgoing associations\&. The selected profile will completely override the above mentioned default configuration\&.
 .SS "SCP Conformance"
 The \fBdcmqrscp\fP application supports the following SOP Classes as an SCP:
 .PP
@@ -718,7 +744,11 @@ PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.
 BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
 XAXRFGrayscaleSoftcopyPresentationStateStorage       1.2.840.10008.5.1.4.1.1.11.5
 GrayscalePlanarMPRVolumetricPresentationStateStorage 1.2.840.10008.5.1.4.1.1.11.6
-CompositingPlanarMPRVolumetricPresentationStateStor. 1.2.840.10008.5.1.4.1.1.11.7
+CompositingPlanarMPRVolumetricPresent.StateStorage   1.2.840.10008.5.1.4.1.1.11.7
+AdvancedBlendingPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.8
+VolumeRenderingVolumetricPresentationStateStorage    1.2.840.10008.5.1.4.1.1.11.9
+SegmentedVolumeRenderingVolumetricPres.StateStorage  1.2.840.10008.5.1.4.1.1.11.10
+MultipleVolumeRenderingVolumetricPres.StateStorage   1.2.840.10008.5.1.4.1.1.11.11
 XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
 EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
 XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2
@@ -757,6 +787,8 @@ StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.
 OphthalmicTomographyImageStorage                     1.2.840.10008.5.1.4.1.1.77.1.5.4
 WideFieldOphthalmicPhoto.Stereogr.Proj.ImageStorage  1.2.840.10008.5.1.4.1.1.77.1.5.5
 WideFieldOphthalmicPhotogr.3DCoordinatesImageStorage 1.2.840.10008.5.1.4.1.1.77.1.5.6
+OphthalmicOpticalCoherenceTomogr.EnFaceImageStorage  1.2.840.10008.5.1.4.1.1.77.1.5.7
+OphthalmicOpticalCoh.Tomogr.BscanVolumeAnalysisStor. 1.2.840.10008.5.1.4.1.1.77.1.5.8
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
 RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
@@ -790,6 +822,7 @@ ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.
 ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
 AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                         1.2.840.10008.5.1.4.1.1.88.72
+PatientRadiationDoseSRStorage                        1.2.840.10008.5.1.4.1.1.88.73
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
@@ -798,7 +831,6 @@ LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
 EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
 BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
-CTDefinedProcedureProtocolStorage                    1.2.840.10008.5.1.4.1.1.200.1
 CTPerformedProcedureProtocolStorage                  1.2.840.10008.5.1.4.1.1.200.2
 RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
 RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
@@ -858,11 +890,15 @@ MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
 MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
 MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
 MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
+HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
+HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 .fi
 .PP
 .PP
 The \fBdcmqrscp\fP application does not support extended negotiation\&.
+.PP
+Presentation contexts for other SOP Classes may be configured via the \fI--assoc-config-file\fP option by selecting an appropriate profile for incoming associations\&. The selected profile will override only the above mentioned storage SOP classes, \fBdcmqrscp\fP will accept contexts with the above mentioned FIND, GET, MOVE and private shutdown SOP Classes additionally to the ones defined in the selected profile\&. Please note that an appropriate profile for \fBrole negotiation\fP must be defined and used for enabling GET support\&.
 .SS "Query Keys"
 The \fBdcmqrscp\fP application supports the following attributes as query keys\&.
 .PP
@@ -872,16 +908,14 @@ Query/Retrieve Level: PATIENT (or STUDY for the Study Root Q/R model)
 .nf
 (0010,0010) PatientName
 (0010,0020) PatientID
+(0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
 (0010,0032) PatientBirthTime
 (0010,0040) PatientSex
-(0010,1000) OtherPatientIDs
+(0010,1000) OtherPatientIDs (retired)
 (0010,1001) OtherPatientNames
 (0010,2160) EthnicGroup
 (0010,4000) PatientComments
-(0020,1200) NumberOfPatientRelatedStudies
-(0020,1202) NumberOfPatientRelatedSeries
-(0020,1204) NumberOfPatientRelatedInstances
 .fi
 .PP
 .PP
@@ -904,8 +938,6 @@ Query/Retrieve Level: STUDY
 (0020,000D) StudyInstanceUID
 (0020,0010) StudyID
 (0020,1070) RETIRED_OtherStudyNumbers
-(0020,1206) NumberOfStudyRelatedSeries
-(0020,1208) NumberOfStudyRelatedInstances
 .fi
 .PP
 .PP
@@ -955,6 +987,8 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fI<docdir>/dcmqrset\&.txt\fP - setup information
 .br
 \fI<etcdir>/dcmqrscp\&.cfg\fP - example configuration file
+.br
+\fI<etcdir>/dcmqrprf\&.cfg\fP - example configuration file for association profiles
 .SH "SEE ALSO"
 .PP
 \fBdcmqridx\fP(1), \fBdcmqrti\fP(1)

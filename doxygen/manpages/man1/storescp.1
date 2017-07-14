@@ -1,4 +1,4 @@
-.TH "storescp" 1 "Tue Feb 28 2017" "Version 3.6.1" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "Fri Jul 14 2017" "Version 3.6.2" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -125,6 +125,12 @@ preferred network transfer syntaxes (not with --config-file):
 
   +xo   --prefer-mpeg4-2-st
           prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
+
+  +x4   --prefer-hevc
+          prefer HEVC H.265 Main Profile / Level 5.1 TS
+
+  +x5   --prefer-hevc10
+          prefer HEVC H.265 Main 10 Profile / Level 5.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -434,7 +440,9 @@ and for option \fI--sort-on-patientname\fP
 .fi
 .PP
 .PP
-where 'PatientName' is replaced by 'ANONYMOUS' if the data element is empty or absent in the data set\&. Please note, however, that for option \fI--sort-on-study-uid\fP the same subdirectory will be used for all DICOM objects that belong to the same study, i\&.e\&. in contrast to the other \fI--sort-xxx\fP options there is no guarantee that a study directory is ever completed\&.
+where 'PatientName' is replaced by 'ANONYMOUS' if the data element is empty or absent in the data set\&. Any existing patient name is transformed in order to use only ASCII characters\&. Please note that in this context only the DICOM default character set (ASCII, i\&.e\&. no entry in attribute Specific Character Set) and Latin-1 (Specific Character Set valued 'ISO_IR 100') are supported\&. If another character set is found and the patient name contains non-ASCII characters, a warning is printed and the transformation is performed as if Latin-1 character set would be set in the file\&. This may lead to unreadable or unexpected patient name directories and behaviour\&. Thus, it is advisable to use \fI--sort-on-patientname\fP only if Latin-1 or ASCII patient names are expected to be received\&.
+.PP
+For option \fI--sort-on-study-uid\fP the same subdirectory will be used for all DICOM objects that belong to the same study, i\&.e\&. in contrast to the other \fI--sort-xxx\fP options there is no guarantee that a study directory is ever completed\&.
 .PP
 Option \fI--timenames\fP creates filenames from timestamps corresponding to the time, \fBstorescp\fP writes a file to disk\&. The format is
 .PP
@@ -535,7 +543,11 @@ PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.
 BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
 XAXRFGrayscaleSoftcopyPresentationStateStorage       1.2.840.10008.5.1.4.1.1.11.5
 GrayscalePlanarMPRVolumetricPresentationStateStorage 1.2.840.10008.5.1.4.1.1.11.6
-CompositingPlanarMPRVolumetricPresentationStateStor. 1.2.840.10008.5.1.4.1.1.11.7
+CompositingPlanarMPRVolumetricPresent.StateStorage   1.2.840.10008.5.1.4.1.1.11.7
+AdvancedBlendingPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.8
+VolumeRenderingVolumetricPresentationStateStorage    1.2.840.10008.5.1.4.1.1.11.9
+SegmentedVolumeRenderingVolumetricPres.StateStorage  1.2.840.10008.5.1.4.1.1.11.10
+MultipleVolumeRenderingVolumetricPres.StateStorage   1.2.840.10008.5.1.4.1.1.11.11
 XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
 EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
 XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2
@@ -574,6 +586,8 @@ StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.
 OphthalmicTomographyImageStorage                     1.2.840.10008.5.1.4.1.1.77.1.5.4
 WideFieldOphthalmicPhoto.Stereogr.Proj.ImageStorage  1.2.840.10008.5.1.4.1.1.77.1.5.5
 WideFieldOphthalmicPhotogr.3DCoordinatesImageStorage 1.2.840.10008.5.1.4.1.1.77.1.5.6
+OphthalmicOpticalCoherenceTomogr.EnFaceImageStorage  1.2.840.10008.5.1.4.1.1.77.1.5.7
+OphthalmicOpticalCoh.Tomogr.BscanVolumeAnalysisStor. 1.2.840.10008.5.1.4.1.1.77.1.5.8
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
 RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
@@ -607,6 +621,7 @@ ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.
 ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
 AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                         1.2.840.10008.5.1.4.1.1.88.72
+PatientRadiationDoseSRStorage                        1.2.840.10008.5.1.4.1.1.88.73
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
@@ -615,7 +630,6 @@ LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
 EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
 BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
-CTDefinedProcedureProtocolStorage                    1.2.840.10008.5.1.4.1.1.200.1
 CTPerformedProcedureProtocolStorage                  1.2.840.10008.5.1.4.1.1.200.2
 RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
 RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
