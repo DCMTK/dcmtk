@@ -1,29 +1,346 @@
-
--------------------------------------------------------------------------------
-  Since this is a development snapshot of the DCMTK, there is no public
-  announcement.  This file will be updated for the next official release.
--------------------------------------------------------------------------------
-
-
 ANNOUNCEMENT
 
-Version X.Y.Z of the OFFIS DCMTK (DICOM ToolKit) software is now available for
+Version 3.6.2 of the OFFIS DCMTK (DICOM ToolKit) software is now available for
 public release.  This release includes the following main changes over the
 previous version 3.6.0:
 
-  [...]
+- DCMTK 3.6.2 builds correctly on older and up-to-date versions of GNU gcc
+  (4.2.1 to 7.1.1) Clang (3.4.1 to 4.0.1),  Microsoft Visual Studio (2005 to
+  2017) and SunPro CC (5.14 and 5.15).
+
+- Tested with the following operating systems/environments:
+
+  - Android on arm64
+  - Cygwin on x86_64
+  - FreeBSD on x86_64
+  - Linux on x86_64 and x86
+  - MacOS X on x86_64
+  - NetBSD on x86_64
+  - OpenBSD on x86_64
+  - OpenIndiana on x86
+  - QNX on x86
+  - Solaris on x86
+  - Windows (and MinGW) on x86_64 and x86
+
+  For a complete list of tested systems and compilers, see the INSTALL file.
+
+- The CMake build system is now considered as mature as our GNU Autoconf
+  setup.  There are even some features that are only available when using CMake,
+  for example exporting the build configuration in order to easily integrate
+  DCMTK into other CMake based projects.
+
+- It is now possible to build shared libraries (Linux) resp. dynamic link
+  libraries (DLLs, Windows) using CMake and the "BUILD_SHARED_LIBS" option.
+  DCMTK can even be compiled into a single shared library (e.g. "dcmtk.dll")
+  using the "BUILD_SINGLE_SHARED_LIBRARY" option.
+
+- Added character set transcoding support:
+
+  - Support for converting DICOM files, datasets and element values between
+    different character sets (incl. code extension techniques).
+  - Windows-specific support for converting between wide character encoding and
+    e.g. UTF-8 or Latin-1.
+  - Support for wide character strings (UTF-16) used for filenames by the
+    Windows operating system.
+  - Supports replacing the underlying character set conversion implementation as
+    needed using either:
+    - GNU libiconv,
+    - International Components for Unicode (ICU) or
+    - the iconv functions from the C standard library.
+  - "dcmqrdb" allows matching queries with datasets using different character
+    sets and response conversion.
+
+- Integrated a unit test framework and added several unit tests to ensure that
+  basic functionality (e.g. parsing DICOM data, network transmission) will
+  never break.
+
+- Updated CharLS to version 1.0 and log4cplus to version 1.1.0.
+
+- Added cross compiling support for Windows and Android targets.  The Android
+  emulator and Wine have been integrated into our CMake setup for running the
+  run time configuration tests as required and (optionally) the unit tests.
+
+- Refactored native STL integration:
+
+  - Added arguments resp. variables to Autoconf and CMake replacing the old
+    macros for choosing whether to use DCMTK's fallback or the native
+    implementation of various STL features.  See the INSTALL file for more
+    information about this.
+  - Added configuration tests ensuring that the enabled STL features work as
+    expected/required before actually using them.
+  - Added unit tests to ensure whichever chosen implementation actually works.
+
+- Added support for several C++11 (and newer) features and fallback
+  implementations as required:
+
+  - Added arguments resp. variables to Autoconf and CMake for enabling native
+    C++11 support or DCMTK's own fallback implementations and workarounds.  See
+    the INSTALL file for more information.
+  - Added configuration tests that ensure that the compiler actually provides
+    C++11 support before using it.
+  - Added advanced memory management primitives OFunique_ptr and OFshared_ptr
+    to support users in writing memory leak free code.
+  - Added support for move semantics, e.g. to transfer the ownership of an
+    OFunique_ptr.
+  - Added OFnumeric_limits to query information about fundamental arithmetic
+    types.
+  - Added type traits (OFenable_if etc.) to support template meta-programing.
+  - Added OFtuple as a more generic alternative to OFPair.
+  - Added OFoptional to connect the state information of optional values with
+    the actual value, e.g. for being used as function return value.
+  - Added OFvariant, a type safe tagged union to store different objects in
+    a single variable (not simultaneously) depending on runtime requirements.
+  - Added unit tests to ensure all above mentioned features really work.
+
+- Introduced platform independent defines for suppressing inappropriate compiler
+  diagnostic output (i.e. "warnings").  This mechanism is used to locally
+  suppress warnings that originate from the compiler misinterpreting the authors
+  intention, e.g. warnings when intentionally mixing "class" and "struct" for
+  template specialization to save typing "public" and "private".
+
+- Introduced several new modules:
+
+  - "dcmrt"    - implements support for the DICOM Radiation Therapy IODs
+  - "dcmiod"   - eases IOD module composition and supports constraint checking
+                 when reading and writing IODs and their modules.
+  - "dcmfg"    - allows to represent Functional Groups in the source code.
+  - "dcmseg"   - implements the segmentation IOD based on "dcmiod" and "dcmfg".
+  - "dcmtract" - offers a dedicated API to create and read DICOM Tractography
+                 Results objects (introduced in DICOM Supplement 181).
+  - "dcmpmap"  - for creating, saving and loading DICOM Parametric Maps objects
+                 (introduced with Supplement 172).
+
+- Further enhanced DICOM Structured Reporting (SR) module "dcmsr":
+
+  - Added the "dcmsr/cmr" submodule implementing support for parts of the DICOM
+    Content Mapping Resource (DCMR).
+  - Added support for SR templates by introducing two general classes for root
+    and non-root templates.
+  - Also added support for CP-1031 (Support long code values) and CP-1417
+    (Clarify use and declaration of private mapping resource).
+  - Added support for the SR Template TID 1500 (Measurement Report) and included
+    subordinated Templates (e.g. TID 1001, 1204, 1600, 1411).
+  - Also added support for all required Context Groups and Code definitions, i.e.
+    from DICOM, NCIt, SNOMED, UCUM, and UMLS coding scheme.
+  - Added support for the new Acquisition Context SR IOD, Comprehensive 3D SR
+    IOD, Implantation Plan SR Document IOD, Radiopharmaceutical Radiation Dose
+    SR IOD, Simplified Adult Echo SR IOD and Spectacle Prescription Report IOD.
+  - Further improved handling of incorrectly encoded DICOM SR documents.
+  - Many further improvements in order to stay up-to-date with development of
+    the DICOM standard and to make it easier to create, read, write, and modify
+    SR documents.
+
+- Introduced several new command line tools:
+
+  - "getscu"   - a C-GET Service Class User.
+  - "dcmsend"  - a Simple Storage Service Class User, based on new class
+                 "DcmStorageSCU".
+  - "dcmrecv"  - alternative to storescp with focus on easy use, based on new
+                 class "DcmStorageSCP".
+  - "dcm2json" - converts DICOM files to DICOM's official JSON encoding.
+
+- Added threading functionality to DcmSCP via thread pool classes.
+
+- Added new output format to dcm2xml: the Native DICOM Model according to
+  part 19 of the DICOM standard ("Application Hosting").
+
+- Added support for 16 bits per sample to PNG image export.
+
+- Significantly enhanced performance of the DICOMDIR code for reading and
+  writing such files. Also added support for all new Directory Record Types.
+
+- Added support for new Return Key Attributes to the "wlmscpfs", which are
+  required for the IHE Eye Care Workflow.
+
+- Introduced advanced parameterization methods for DCMTLS.
+
+- Improved data dictionary configuration options and handling.
+
+- Added support for new Value Representations "Other Double" (OD), "Other Long"
+  (OL), "Unlimited Characters" (UC) and "Universal Resource Identifiers/Locators
+  (URI/URL)" (UR).
+
+- Added support for three new DICOS Storage SOP Classes from the DICOM-related
+  DICOS (Digital Imaging and Communications in Security) standard.
+
+- Added additional matching keys to dcmqrdb and dcmwlm: StudyDate, StudyTime and
+  IssuerOfPatientID.
+
+- Updated data dictionary, SOP Class and Transfer Syntax UIDs for the recently
+  approved changes to the DICOM standard (i.e. Supplements and CPs), up to DICOM
+  standard release DICOM 2017b.
+
+- Added support for additional MPEG4 transfer syntaxes to several command line
+  programs.
+
+- Enhanced support for DICOM Non-Patient Objects, e.g. allow for transferring
+  them using the standard networking tools.
+
+- DCMTK now supports compiling with OpenSSL 1.1.x; support for some older,
+  insecure TLS cipher suites has been removed.
+
+- The JPEG encoder now implements DICOM CP 1447, i.e. always writes a SOF1
+  marker into the JPEG bitstream in extended sequential mode.
+
+- The socket timeout used for send() and recv() is now configurable (at
+  runtime); further fixes and enhancements to networking basics.
+
+- Revised implementation of class OFCondition in order to avoid issues with
+  static initialization order.
+
+- Fixed various issues that occurred after the official 3.6.0 release.
+
 
 Many people have contributed to this new release of DCMTK, appearing here in
 alphabetical order.  Thank you very much for your support!
 
-  [...]
+  Alexander Haderer <alexander.haderer@loescap.de>
+  Alexander Karaivanov <alexander.karaivanov@karoshealth.com>
+  Andrei Terechko <andrei@vectorfabrics.com>
+  Andrey Fedorov <andrey.fedorov@gmail.com>
+  Anne-Gaelle Berge <anne-gaelle.berge@kereval.com>
+  Bhuvan Bose <bhuvanbose86@gmail.com>
+  Bill Lorensen <bill.lorensen@gmail.com>
+  Brad Jascob <bjascob@msn.com>
+  Bruno Milutin <bmilutin@digithurst.de>
+  Carmen Avram <carmen@pixeldata.ro>
+  Christian Fremgen <Christian.Fremgen@ith-icoserve.com>
+  Christian Herz <cherz@bwh.harvard.edu>
+  Christian Wetzel <wetzel@phoenix-pacs.de>
+  Daniele Giunchi <d.giunchi@scsitaly.com>
+  David Clunie <dclunie@dclunie.com>
+  Detlev Hohmeier <detlev.hohmeier@meditec.zeiss.com>
+  Dimitri Papadopoulos <dimitri.papadopoulos@cea.fr>
+  Dr. Martin Korp <Martin.Korp@ith-icoserve.com>
+  Dr. Michael Heber <mheber.aup@t-online.de>
+  Eric A. Borisch <eborisch@macports.org>
+  David Flade <fladedavid@gmail.com>
+  Fred Stegemann <fred.stegemann@fstsoft.de>
+  Fu Peng <fupeng@gmail.com>
+  Gareth Sylvester-Bradley <garethsb@gmail.com>
+  Gary Carter <gary.carter@eigen.com>
+  Gigante <fgigante@imsitaly.com>
+  Grzegorz Chlebus <grzegorz.chlebus@mevis.fraunhofer.de>
+  Hanno Hugenberg <hanno.hugenberg@gkmedsys.de>
+  Hans J. Johnson <hans-johnson@uiowa.edu>
+  Hans Kluijtmans <hans.kluijtmans@topcon.eu>
+  Hector Marco <hecmargi@upv.es>
+  Heyo Spekker <spekker@icsmed.de>
+  Hüseyin Kozan <posta@huseyinkozan.com.tr>
+  Ing-Long Eric Kuo <draconpern@hotmail.com>
+  Jean-Christophe Fillion-Robin <jchris.fillionr@kitware.com>
+  Jeroen Eggermont <J.Eggermont@lumc.nl>
+  John Stark <jstark@therapixel.com>
+  Julien Finet <julien.finet@kitware.com>
+  Kent Williams <norman-k-williams@uiowa.edu>
+  Kornelius Sohn <k.sohn@starc-medical.de>
+  Lin Qi Ruan <rlq1969612634@gmail.com>
+  Marco Nolden <m.nolden@dkfz-heidelberg.de>
+  Mario Ceresa <mrceresa@gmail.com>
+  Markus Konrad <markus.konrad@et-innovations.org>
+  Markus Mertens <markus.mertens@evkb.de>
+  Martin Wenger <Martin.Wenger@klinikum-hef.de>
+  Mathieu Malaterre <mathieu.malaterre@gmail.com>
+  Matt McCormick <matt.mccormick@kitware.com>
+  Michael Knopke <knopkem@gmail.com>
+  Michael Schinner <Michael.Schinner@ith-icoserve.com>
+  Michal Spacek <tupinek@gmail.com>
+  Niels Dekker <C.E.Dekker@lumc.nl>
+  Paolo Marcheschi <paolo.marcheschi@ftgm.it>
+  Per Inge Mathisen <perim@sonowand.com>
+  Peter Hille <peter@das-system-networks.de>
+  Peter Klotz <Peter.Klotz@ith-icoserve.com>
+  Pietro Cerutti <gahr@FreeBSD.org>
+  Rasmus Christian Pedersen <zerhacken@yahoo.com>
+  Richard Flay <richardf@acres.com.au>
+  Robert Habrich <habrich@image-systems.biz>
+  Stacy Loesch <Stacy.Loesch@varian.com>
+  Takeo Satomi <takeo.satomi@gmail.com>
+  Tamas Nemeth <tnemeth@erad.com>
+  Thomas Puckett <puckett_thomas@hotmail.com>
+  Thomas Sondergaard <thomas.sondergaard@karoshealth.com>
+  Tiago D'Agostini <tiago.dagostini@pixeon.com>
+  Tilman Vogel <tilman@circlecvi.com>
+  Timothy Pitt <tim@vaquita.co.uk>
+  Waldir Pimenta <waldir.pimenta@gmail.com>
+  Wang Qiang <wq_net@163.com>
+  Yves Neumann <neumann@image-systems.biz>
 
-Members of the OFFIS DICOM Team who have worked on this release are:
+  Forum user "AlexanderLysenko"
+  Forum user "andreasb"
+  Forum user "angad"
+  Forum user "aprogrammer"
+  Forum user "bibble_235"
+  Forum user "budric"
+  Forum user "chaircrusher"
+  Forum user "coach4ae"
+  Forum user "dimitri"
+  Forum user "flang"
+  Forum user "Geof"
+  Forum user "gerhardh"
+  Forum user "ghleclerc"
+  Forum user "HackerNeo"
+  Forum user "henry"
+  Forum user "Hua Cong Danh"
+  Forum user "ichimura.t"
+  Forum user "ionut.vaida"
+  Forum user "jacobf"
+  Forum user "jacobscolin"
+  Forum user "jakecobb"
+  Forum user "kosborn"
+  Forum user "kron24"
+  Forum user "lars_matthaeus"
+  Forum user "Luuk"
+  Forum user "maleike"
+  Forum user "martinrame"
+  Forum user "Matterhorn"
+  Forum user "merlin"
+  Forum user "michael12345"
+  Forum user "nikkoara"
+  Forum user "nmoraes"
+  Forum user "oblivion81"
+  Forum user "oxymoron"
+  Forum user "Paul Groot"
+  Forum user "Per"
+  Forum user "poupofa"
+  Forum user "psih128"
+  Forum user "Rich in Soquel"
+  Forum user "sfzhang"
+  Forum user "Shaeto"
+  Forum user "spasmous"
+  Forum user "st80rules"
+  Forum user "Tim"
+  Forum user "tpalagyi"
+  Forum user "vlad"
+  Forum user "vsalomoni"
+  Forum user "wollet88"
+  Forum user "wrenashe"
+  Forum user "xcoder"
+  Forum user "ymartelli"
+  Forum user "yueran"
+  Forum user "Yves Neumann"
+  Forum user "zaq"
 
-  [...]
+Members of the DCMTK Team who have worked on this release are
+(in alphabetical order):
+
+  Marco Eichelberg <eichelberg@offis.de>
+  Michael Onken <onken@open-connections.de>
+  Joerg Riesmeier <dicom@jriesmeier.com>
+  Jan Schlamelcher <schlamelcher@offis.de>
+
+Student associates:
+
+  Nikolas Goldhammer <nikolasgoldhammer@gmail.com>
+  Sebastian Grallert <Grallert.Sebastian@web.de>
+  Thorben Hasenpusch <tpuschel@fastmail.com>
+  Uli Schlachter <psychon@znc.in>
+
+Also see CREDITS file for projects and companies who have been generously
+supporting DCMTK.
 
 The DCMTK software can be downloaded via:
 
   http://dicom.offis.de/dcmtk or http://www.dcmtk.org/
 
-OFFIS e.V., Oldenburg, Germany, 2011-02-01
+OFFIS e.V., Oldenburg, Germany, 2017-07-14
