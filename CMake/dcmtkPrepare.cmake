@@ -39,14 +39,14 @@ ENDIF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 #  a development snapshot and an even number indicates an official release.)
 SET(DCMTK_MAJOR_VERSION 3)
 SET(DCMTK_MINOR_VERSION 6)
-SET(DCMTK_BUILD_VERSION 1)
+SET(DCMTK_BUILD_VERSION 2)
 # The ABI is not guaranteed to be stable between different snapshots/releases,
 # so this particular version number is increased for each snapshot or release.
-SET(DCMTK_ABI_VERSION 11)
+SET(DCMTK_ABI_VERSION 12)
 
 # Package "release" settings (some are currently unused and, therefore, disabled)
 SET(DCMTK_PACKAGE_NAME "dcmtk")
-SET(DCMTK_PACKAGE_DATE "DEV")
+SET(DCMTK_PACKAGE_DATE "2017-07-14")
 SET(DCMTK_PACKAGE_VERSION "${DCMTK_MAJOR_VERSION}.${DCMTK_MINOR_VERSION}.${DCMTK_BUILD_VERSION}")
 SET(DCMTK_PACKAGE_VERSION_NUMBER ${DCMTK_MAJOR_VERSION}${DCMTK_MINOR_VERSION}${DCMTK_BUILD_VERSION})
 SET(DCMTK_PACKAGE_VERSION_SUFFIX "")
