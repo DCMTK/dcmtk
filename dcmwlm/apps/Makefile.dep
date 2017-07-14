@@ -49,6 +49,7 @@ wlcefs.o: wlcefs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../include/dcmtk/dcmwlm/wltypdef.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -61,6 +62,7 @@ wlcefs.o: wlcefs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmnet/include/dcmtk/dcmnet/dul.h \
  ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
@@ -132,6 +134,7 @@ wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../include/dcmtk/dcmwlm/wltypdef.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -144,6 +147,7 @@ wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmnet/include/dcmtk/dcmnet/dul.h \
  ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \

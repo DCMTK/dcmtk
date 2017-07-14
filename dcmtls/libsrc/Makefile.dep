@@ -10,6 +10,7 @@ tlslayer.o: tlslayer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../dcmnet/include/dcmtk/dcmnet/dndefine.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
  ../../oflog/include/dcmtk/oflog/config.h \
@@ -45,6 +46,7 @@ tlslayer.o: tlslayer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmtls/tlstrans.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
@@ -102,6 +104,7 @@ tlsscu.o: tlsscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
@@ -180,6 +183,7 @@ tlsscu.o: tlsscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmnet/include/dcmtk/dcmnet/dul.h \
  ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcasccff.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcasccfg.h \
@@ -209,6 +213,7 @@ tlstrans.o: tlstrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
  ../../dcmnet/include/dcmtk/dcmnet/dndefine.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../include/dcmtk/dcmtls/tlsdefin.h ../include/dcmtk/dcmtls/tlslayer.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -244,6 +249,7 @@ tlstrans.o: tlstrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
  ../../dcmnet/include/dcmtk/dcmnet/diutil.h \
  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \

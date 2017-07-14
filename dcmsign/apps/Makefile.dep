@@ -43,6 +43,7 @@ dcmsign.o: dcmsign.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../include/dcmtk/dcmsign/dcsignat.h ../include/dcmtk/dcmsign/sitypes.h \
  ../include/dcmtk/dcmsign/sidefine.h \
