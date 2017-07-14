@@ -3,10 +3,10 @@ In earlier versions of DCMTK, changes between releases had been documented in a
 CHANGES.XXX file inside DCMTK's main directory.
 
 Now, the CHANGES.XXX file has been moved to the dcmtk/doc folder with the latest
-one being updated every time that a new snapshot is released. Thus it always
-contains all DCMTK changes between the last DCMTK release and the latest
-snapshot.
+one being updated every time that a new DCMTK version is released.  Thus it
+always contains all DCMTK changes between the last DCMTK release and the most
+recent one.
 
 For very recent changes, i. e. those changes to DCMTK that have been applied
-after release of the latest snapshot, see the DCMTK git repository log at
+after the most recent release, see the DCMTK git repository log at
 http://git.dcmtk.org/ .
