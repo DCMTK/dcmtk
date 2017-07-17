@@ -63,19 +63,19 @@ template<typename T>
 struct OFnumeric_limits : std::numeric_limits<T>
 {
     static const int max_digits10 = 0;
-    static inline T lowest() { return std::numeric_limits<T>::min(); }
+    static inline T lowest() { return (std::numeric_limits<T>::min)(); }
 };
 template<>
 struct OFnumeric_limits<float> : std::numeric_limits<float>
 {
     static const int max_digits10 = DCMTK_FLOAT_MAX_DIGITS10;
-    static inline float lowest() { return -std::numeric_limits<float>::max(); }
+    static inline float lowest() { return -(std::numeric_limits<float>::max)(); }
 };
 template<>
 struct OFnumeric_limits<double> : std::numeric_limits<double>
 {
     static const int max_digits10 = DCMTK_DOUBLE_MAX_DIGITS10;
-    static inline double lowest() { return -std::numeric_limits<double>::max(); }
+    static inline double lowest() { return -(std::numeric_limits<double>::max)(); }
 };
 
 #endif // fallback implementation of C++11 features based on std::numeric_limits
