@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:59:03 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017c
+ *  File created on 2017-07-17 14:18:04 by J. Riesmeier
  *
  */
 
@@ -98,28 +98,52 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         T2WeightedMRSignalIntensity,
         /// (110806,DCM,"T2* Weighted MR Signal Intensity"), included from CID 7180
         T2StarWeightedMRSignalIntensity,
-        /// (113043,DCM,"Diffusion weighted"), included from CID 7180
+        /// (113043,DCM,"Diffusion weighted"), included from CID 7270
         DiffusionWeighted,
+        /// (110810,DCM,"Volumetric Diffusion Dxx Component"), included from CID 7270
+        VolumetricDiffusionDxxComponent,
+        /// (110811,DCM,"Volumetric Diffusion Dxy Component"), included from CID 7270
+        VolumetricDiffusionDxyComponent,
+        /// (110812,DCM,"Volumetric Diffusion Dxz Component"), included from CID 7270
+        VolumetricDiffusionDxzComponent,
+        /// (110813,DCM,"Volumetric Diffusion Dyy Component"), included from CID 7270
+        VolumetricDiffusionDyyComponent,
+        /// (110814,DCM,"Volumetric Diffusion Dyz Component"), included from CID 7270
+        VolumetricDiffusionDyzComponent,
+        /// (110815,DCM,"Volumetric Diffusion Dzz Component"), included from CID 7270
+        VolumetricDiffusionDzzComponent,
+        /// (110808,DCM,"Fractional Anisotropy"), included from CID 7271
+        FractionalAnisotropy,
+        /// (110809,DCM,"Relative Anisotropy"), included from CID 7271
+        RelativeAnisotropy,
+        /// (113288,DCM,"Volume Ratio"), included from CID 7271
+        VolumeRatio,
+        /// (113041,DCM,"Apparent Diffusion Coefficient"), included from CID 7272
+        ApparentDiffusionCoefficient,
+        /// (113289,DCM,"Diffusion Coefficient"), included from CID 7272
+        DiffusionCoefficient,
+        /// (113290,DCM,"Mono-exponential Apparent Diffusion Coefficient"), included from CID 7272
+        MonoExponentialApparentDiffusionCoefficient,
+        /// (113291,DCM,"Slow Diffusion Coefficient"), included from CID 7272
+        SlowDiffusionCoefficient,
+        /// (113292,DCM,"Fast Diffusion Coefficient"), included from CID 7272
+        FastDiffusionCoefficient,
+        /// (113293,DCM,"Fast Diffusion Coefficient Fraction"), included from CID 7272
+        FastDiffusionCoefficientFraction,
+        /// (113294,DCM,"Kurtosis Diffusion Coefficient"), included from CID 7272
+        KurtosisDiffusionCoefficient,
+        /// (113295,DCM,"Gamma Distribution Scale Parameter"), included from CID 7272
+        GammaDistributionScaleParameter,
+        /// (113296,DCM,"Gamma Distribution Shape Parameter"), included from CID 7272
+        GammaDistributionShapeParameter,
+        /// (113297,DCM,"Gamma Distribution Mode"), included from CID 7272
+        GammaDistributionMode,
+        /// (113298,DCM,"Distributed Diffusion Coefficient"), included from CID 7272
+        DistributedDiffusionCoefficient,
+        /// (113299,DCM,"Anomalous Exponent Parameter"), included from CID 7272
+        AnomalousExponentParameter,
         /// (110807,DCM,"Field Map MR Signal Intensity"), included from CID 7180
         FieldMapMRSignalIntensity,
-        /// (110808,DCM,"Fractional Anisotropy"), included from CID 7180
-        FractionalAnisotropy,
-        /// (110809,DCM,"Relative Anisotropy"), included from CID 7180
-        RelativeAnisotropy,
-        /// (113041,DCM,"Apparent Diffusion Coefficient"), included from CID 7180
-        ApparentDiffusionCoefficient,
-        /// (110810,DCM,"Volumetric Diffusion Dxx Component"), included from CID 7180
-        VolumetricDiffusionDxxComponent,
-        /// (110811,DCM,"Volumetric Diffusion Dxy Component"), included from CID 7180
-        VolumetricDiffusionDxyComponent,
-        /// (110812,DCM,"Volumetric Diffusion Dxz Component"), included from CID 7180
-        VolumetricDiffusionDxzComponent,
-        /// (110813,DCM,"Volumetric Diffusion Dyy Component"), included from CID 7180
-        VolumetricDiffusionDyyComponent,
-        /// (110814,DCM,"Volumetric Diffusion Dyz Component"), included from CID 7180
-        VolumetricDiffusionDyzComponent,
-        /// (110815,DCM,"Volumetric Diffusion Dzz Component"), included from CID 7180
-        VolumetricDiffusionDzzComponent,
         /// (110816,DCM,"T1 Weighted Dynamic Contrast Enhanced MR Signal Intensity"), included from CID 7180
         T1WeightedDynamicContrastEnhancedMRSignalIntensity,
         /// (110817,DCM,"T2 Weighted Dynamic Contrast Enhanced MR Signal Intensity"), included from CID 7180
@@ -290,6 +314,10 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         SUVbsa,
         /// (126404,DCM,"SUVibw"), included from CID 7180
         SUVibw,
+        /// (128513,DCM,"Absorbed Dose"), included from CID 10070
+        AbsorbedDose,
+        /// (128512,DCM,"Equivalent Dose"), included from CID 10070
+        EquivalentDose,
         /// (G-D7FE,SRT,"Length"), included from CID 7470
         Length,
         /// (121211,DCM,"Path length"), included from CID 7470

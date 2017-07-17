@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:59:03 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017c
+ *  File created on 2017-07-17 14:18:04 by J. Riesmeier
  *
  */
 
@@ -179,16 +179,28 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(T2WeightedMRSignalIntensity, DSRBasicCodedEntry("110805", "DCM", "T2 Weighted MR Signal Intensity")));
         Codes->insert(OFMake_pair(T2StarWeightedMRSignalIntensity, DSRBasicCodedEntry("110806", "DCM", "T2* Weighted MR Signal Intensity")));
         Codes->insert(OFMake_pair(DiffusionWeighted, DSRBasicCodedEntry("113043", "DCM", "Diffusion weighted")));
-        Codes->insert(OFMake_pair(FieldMapMRSignalIntensity, DSRBasicCodedEntry("110807", "DCM", "Field Map MR Signal Intensity")));
-        Codes->insert(OFMake_pair(FractionalAnisotropy, DSRBasicCodedEntry("110808", "DCM", "Fractional Anisotropy")));
-        Codes->insert(OFMake_pair(RelativeAnisotropy, DSRBasicCodedEntry("110809", "DCM", "Relative Anisotropy")));
-        Codes->insert(OFMake_pair(ApparentDiffusionCoefficient, DSRBasicCodedEntry("113041", "DCM", "Apparent Diffusion Coefficient")));
         Codes->insert(OFMake_pair(VolumetricDiffusionDxxComponent, DSRBasicCodedEntry("110810", "DCM", "Volumetric Diffusion Dxx Component")));
         Codes->insert(OFMake_pair(VolumetricDiffusionDxyComponent, DSRBasicCodedEntry("110811", "DCM", "Volumetric Diffusion Dxy Component")));
         Codes->insert(OFMake_pair(VolumetricDiffusionDxzComponent, DSRBasicCodedEntry("110812", "DCM", "Volumetric Diffusion Dxz Component")));
         Codes->insert(OFMake_pair(VolumetricDiffusionDyyComponent, DSRBasicCodedEntry("110813", "DCM", "Volumetric Diffusion Dyy Component")));
         Codes->insert(OFMake_pair(VolumetricDiffusionDyzComponent, DSRBasicCodedEntry("110814", "DCM", "Volumetric Diffusion Dyz Component")));
         Codes->insert(OFMake_pair(VolumetricDiffusionDzzComponent, DSRBasicCodedEntry("110815", "DCM", "Volumetric Diffusion Dzz Component")));
+        Codes->insert(OFMake_pair(FractionalAnisotropy, DSRBasicCodedEntry("110808", "DCM", "Fractional Anisotropy")));
+        Codes->insert(OFMake_pair(RelativeAnisotropy, DSRBasicCodedEntry("110809", "DCM", "Relative Anisotropy")));
+        Codes->insert(OFMake_pair(VolumeRatio, DSRBasicCodedEntry("113288", "DCM", "Volume Ratio")));
+        Codes->insert(OFMake_pair(ApparentDiffusionCoefficient, DSRBasicCodedEntry("113041", "DCM", "Apparent Diffusion Coefficient")));
+        Codes->insert(OFMake_pair(DiffusionCoefficient, DSRBasicCodedEntry("113289", "DCM", "Diffusion Coefficient")));
+        Codes->insert(OFMake_pair(MonoExponentialApparentDiffusionCoefficient, DSRBasicCodedEntry("113290", "DCM", "Mono-exponential Apparent Diffusion Coefficient")));
+        Codes->insert(OFMake_pair(SlowDiffusionCoefficient, DSRBasicCodedEntry("113291", "DCM", "Slow Diffusion Coefficient")));
+        Codes->insert(OFMake_pair(FastDiffusionCoefficient, DSRBasicCodedEntry("113292", "DCM", "Fast Diffusion Coefficient")));
+        Codes->insert(OFMake_pair(FastDiffusionCoefficientFraction, DSRBasicCodedEntry("113293", "DCM", "Fast Diffusion Coefficient Fraction")));
+        Codes->insert(OFMake_pair(KurtosisDiffusionCoefficient, DSRBasicCodedEntry("113294", "DCM", "Kurtosis Diffusion Coefficient")));
+        Codes->insert(OFMake_pair(GammaDistributionScaleParameter, DSRBasicCodedEntry("113295", "DCM", "Gamma Distribution Scale Parameter")));
+        Codes->insert(OFMake_pair(GammaDistributionShapeParameter, DSRBasicCodedEntry("113296", "DCM", "Gamma Distribution Shape Parameter")));
+        Codes->insert(OFMake_pair(GammaDistributionMode, DSRBasicCodedEntry("113297", "DCM", "Gamma Distribution Mode")));
+        Codes->insert(OFMake_pair(DistributedDiffusionCoefficient, DSRBasicCodedEntry("113298", "DCM", "Distributed Diffusion Coefficient")));
+        Codes->insert(OFMake_pair(AnomalousExponentParameter, DSRBasicCodedEntry("113299", "DCM", "Anomalous Exponent Parameter")));
+        Codes->insert(OFMake_pair(FieldMapMRSignalIntensity, DSRBasicCodedEntry("110807", "DCM", "Field Map MR Signal Intensity")));
         Codes->insert(OFMake_pair(T1WeightedDynamicContrastEnhancedMRSignalIntensity, DSRBasicCodedEntry("110816", "DCM", "T1 Weighted Dynamic Contrast Enhanced MR Signal Intensity")));
         Codes->insert(OFMake_pair(T2WeightedDynamicContrastEnhancedMRSignalIntensity, DSRBasicCodedEntry("110817", "DCM", "T2 Weighted Dynamic Contrast Enhanced MR Signal Intensity")));
         Codes->insert(OFMake_pair(T2StarWeightedDynamicContrastEnhancedMRSignalIntensity, DSRBasicCodedEntry("110818", "DCM", "T2* Weighted Dynamic Contrast Enhanced MR Signal Intensity")));
@@ -274,6 +286,8 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(SUVlbmJanma, DSRBasicCodedEntry("126405", "DCM", "SUVlbm(Janma)")));
         Codes->insert(OFMake_pair(SUVbsa, DSRBasicCodedEntry("126403", "DCM", "SUVbsa")));
         Codes->insert(OFMake_pair(SUVibw, DSRBasicCodedEntry("126404", "DCM", "SUVibw")));
+        Codes->insert(OFMake_pair(AbsorbedDose, DSRBasicCodedEntry("128513", "DCM", "Absorbed Dose")));
+        Codes->insert(OFMake_pair(EquivalentDose, DSRBasicCodedEntry("128512", "DCM", "Equivalent Dose")));
         Codes->insert(OFMake_pair(Length, DSRBasicCodedEntry("G-D7FE", "SRT", "Length")));
         Codes->insert(OFMake_pair(PathLength, DSRBasicCodedEntry("121211", "DCM", "Path length")));
         Codes->insert(OFMake_pair(Distance, DSRBasicCodedEntry("121206", "DCM", "Distance")));

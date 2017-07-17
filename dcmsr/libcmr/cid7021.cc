@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7021_MeasurementReportDocumentTitles
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:58:52 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017c
+ *  File created on 2017-07-17 14:17:53 by J. Riesmeier
  *
  */
 

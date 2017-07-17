@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7452_OrganizationalRoles
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:58:57 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017c
+ *  File created on 2017-07-17 14:17:58 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 7452 - Organizational Roles.
- *  (type: extensible, version: 20150602)
+ *  (type: extensible, version: 20170626)
  */
 class DCMTK_CMR_EXPORT CID7452_OrganizationalRoles
   : public DSRContextGroup
@@ -44,10 +44,26 @@ class DCMTK_CMR_EXPORT CID7452_OrganizationalRoles
         MedicalPractitioner,
         /// (J-004E8,SRT,"Physician")
         Physician,
+        /// (128670,DCM,"Head of Radiology")
+        HeadOfRadiology,
+        /// (128671,DCM,"Chair of Protocol Committee")
+        ChairOfProtocolCommittee,
+        /// (128676,DCM,"Representative of Protocol Committee")
+        RepresentativeOfProtocolCommittee,
+        /// (128677,DCM,"Representative of Ethics Committee")
+        RepresentativeOfEthicsCommittee,
+        /// (128675,DCM,"Head of Cardiology")
+        HeadOfCardiology,
+        /// (128673,DCM,"Administrator of Radiology Department")
+        AdministratorOfRadiologyDepartment,
         /// (J-07100,SRT,"Nurse")
         Nurse,
         /// (J-00187,SRT,"Radiologic Technologist")
         RadiologicTechnologist,
+        /// (128674,DCM,"Lead Radiologic Technologist")
+        LeadRadiologicTechnologist,
+        /// (J-06173,SRT,"Radiation Therapist")
+        RadiationTherapist,
         /// (J-00187,SRT,"Radiographer")
         Radiographer,
         /// (C1144859,UMLS,"Intern")

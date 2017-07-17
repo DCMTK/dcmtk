@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:58:54 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017c
+ *  File created on 2017-07-17 14:17:55 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 7181 (Abstract Multi-dimensional Image Model Component Units)
 #define CONTEXT_GROUP_NUMBER  "7181"
-#define CONTEXT_GROUP_VERSION "20161106"
+#define CONTEXT_GROUP_VERSION "20170413"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.918"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -185,6 +185,10 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_Abst
         Codes->insert(OFMake_pair(MilliliterPerGram, DSRBasicCodedEntry("ml/g", "UCUM", "Milliliter/gram")));
         Codes->insert(OFMake_pair(PerCentimeter, DSRBasicCodedEntry("/cm", "UCUM", "/Centimeter")));
         Codes->insert(OFMake_pair(MicromolePerMilliliter, DSRBasicCodedEntry("umol/ml", "UCUM", "Micromole/milliliter")));
+        Codes->insert(OFMake_pair(Mm2PerS, DSRBasicCodedEntry("mm2/s", "UCUM", "mm2/s")));
+        Codes->insert(OFMake_pair(Um2PerMs, DSRBasicCodedEntry("um2/ms", "UCUM", "um2/ms")));
+        Codes->insert(OFMake_pair(Um2PerS, DSRBasicCodedEntry("um2/s", "UCUM", "um2/s")));
+        Codes->insert(OFMake_pair(_106mm2PerS, DSRBasicCodedEntry("10-6.mm2/s", "UCUM", "10-6.mm2/s")));
         Codes->insert(OFMake_pair(NoUnits, DSRBasicCodedEntry("1", "UCUM", "no units")));
         Codes->insert(OFMake_pair(Ratio, DSRBasicCodedEntry("{ratio}", "UCUM", "ratio")));
         Codes->insert(OFMake_pair(HounsfieldUnit, DSRBasicCodedEntry("[hnsf'U]", "UCUM", "Hounsfield Unit")));
@@ -201,7 +205,6 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_Abst
         Codes->insert(OFMake_pair(Hertz, DSRBasicCodedEntry("Hz", "UCUM", "Hertz")));
         Codes->insert(OFMake_pair(MilliTesla, DSRBasicCodedEntry("mT", "UCUM", "milliTesla")));
         Codes->insert(OFMake_pair(NumberParticlesPer100GramOfTissue, DSRBasicCodedEntry("{Particles}/[100]g{Tissue}", "UCUM", "number particles per 100 gram of tissue")));
-        Codes->insert(OFMake_pair(SquareMillimeterPerSecond, DSRBasicCodedEntry("mm2/s", "UCUM", "square millimeter per second")));
         Codes->insert(OFMake_pair(SecondPerSquareMillimeter, DSRBasicCodedEntry("s/mm2", "UCUM", "second per square millimeter")));
         Codes->insert(OFMake_pair(MilliliterPer100GramPerMinute, DSRBasicCodedEntry("ml/[100]g/min", "UCUM", "milliliter per 100 gram per minute")));
         Codes->insert(OFMake_pair(MilliliterPer100Milliliter, DSRBasicCodedEntry("ml/[100]ml", "UCUM", "milliliter per 100 milliliter")));

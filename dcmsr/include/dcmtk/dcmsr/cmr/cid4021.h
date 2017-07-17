@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:58:46 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017c
+ *  File created on 2017-07-17 14:17:48 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20160119)
+ *  (type: extensible, version: 20170413)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -122,14 +122,12 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Fallypride_F18,
         /// (126706,DCM,"FLB 457 C^11^")
         FLB457_C11,
-        /// (126501,DCM,"Florbetaben F^18^")
+        /// (C-D6858,SRT,"Florbetaben F^18^")
         Florbetaben_F18,
         /// (C-E0269,SRT,"Florbetapir F^18^")
         Florbetapir_F18,
         /// (126503,DCM,"Flubatine F^18^")
-        Flubatine_F18_126503,
-        /// (126712,DCM,"Flubatine F^18^")
-        Flubatine_F18_126712,
+        Flubatine_F18,
         /// (C-E0265,SRT,"Fluciclatide F^18^")
         Fluciclatide_F18,
         /// (C-E026A,SRT,"Fluciclovine F^18^")
@@ -162,6 +160,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Fluorotriopride_F18,
         /// (C-B07E3,SRT,"Fluorouracil F^18^")
         Fluorouracil_F18,
+        /// (126718,DCM,"Flurpiridaz F^18^")
+        Flurpiridaz_F18,
         /// (C-E0267,SRT,"Flutemetamol F^18^")
         Flutemetamol_F18,
         /// (126748,DCM,"Fresolimumab ^89^Zr")
@@ -254,6 +254,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Spiperone_F18,
         /// (126502,DCM,"T807 F^18^")
         T807_F18,
+        /// (126717,DCM,"THK5351 F^18^")
+        THK5351_F18,
         /// (C-B1036,SRT,"Thymidine (FLT) F^18^")
         ThymidineFLT_F18,
         /// (126512,DCM,"Trastuzumab ^89^Zr")

@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2016e
- *  File created on 2016-11-23 13:58:46 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017c
+ *  File created on 2017-07-17 14:17:48 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4021 (PET Radiopharmaceutical)
 #define CONTEXT_GROUP_NUMBER  "4021"
-#define CONTEXT_GROUP_VERSION "20160119"
+#define CONTEXT_GROUP_VERSION "20170413"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.305"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -190,10 +190,9 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(Fallypride_C11, DSRBasicCodedEntry("126704", "DCM", "Fallypride C^11^")));
         Codes->insert(OFMake_pair(Fallypride_F18, DSRBasicCodedEntry("126705", "DCM", "Fallypride F^18^")));
         Codes->insert(OFMake_pair(FLB457_C11, DSRBasicCodedEntry("126706", "DCM", "FLB 457 C^11^")));
-        Codes->insert(OFMake_pair(Florbetaben_F18, DSRBasicCodedEntry("126501", "DCM", "Florbetaben F^18^")));
+        Codes->insert(OFMake_pair(Florbetaben_F18, DSRBasicCodedEntry("C-D6858", "SRT", "Florbetaben F^18^")));
         Codes->insert(OFMake_pair(Florbetapir_F18, DSRBasicCodedEntry("C-E0269", "SRT", "Florbetapir F^18^")));
-        Codes->insert(OFMake_pair(Flubatine_F18_126503, DSRBasicCodedEntry("126503", "DCM", "Flubatine F^18^")));
-        Codes->insert(OFMake_pair(Flubatine_F18_126712, DSRBasicCodedEntry("126712", "DCM", "Flubatine F^18^")));
+        Codes->insert(OFMake_pair(Flubatine_F18, DSRBasicCodedEntry("126503", "DCM", "Flubatine F^18^")));
         Codes->insert(OFMake_pair(Fluciclatide_F18, DSRBasicCodedEntry("C-E0265", "SRT", "Fluciclatide F^18^")));
         Codes->insert(OFMake_pair(Fluciclovine_F18, DSRBasicCodedEntry("C-E026A", "SRT", "Fluciclovine F^18^")));
         Codes->insert(OFMake_pair(Flumazenil_C11, DSRBasicCodedEntry("C-B07DE", "SRT", "Flumazenil C^11^")));
@@ -210,6 +209,7 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(FluoropropylDihydrotetrabenazineDTBZ_F18, DSRBasicCodedEntry("C2934038", "UMLS", "Fluoropropyl-dihydrotetrabenazine (DTBZ) F^18^")));
         Codes->insert(OFMake_pair(Fluorotriopride_F18, DSRBasicCodedEntry("126707", "DCM", "Fluorotriopride F^18^")));
         Codes->insert(OFMake_pair(Fluorouracil_F18, DSRBasicCodedEntry("C-B07E3", "SRT", "Fluorouracil F^18^")));
+        Codes->insert(OFMake_pair(Flurpiridaz_F18, DSRBasicCodedEntry("126718", "DCM", "Flurpiridaz F^18^")));
         Codes->insert(OFMake_pair(Flutemetamol_F18, DSRBasicCodedEntry("C-E0267", "SRT", "Flutemetamol F^18^")));
         Codes->insert(OFMake_pair(Fresolimumab_89Zr, DSRBasicCodedEntry("126748", "DCM", "Fresolimumab ^89^Zr")));
         Codes->insert(OFMake_pair(GA201_89Zr, DSRBasicCodedEntry("126731", "DCM", "GA201 ^89^Zr")));
@@ -256,6 +256,7 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(Sodium_Na22, DSRBasicCodedEntry("C-B1047", "SRT", "Sodium Na^22^")));
         Codes->insert(OFMake_pair(Spiperone_F18, DSRBasicCodedEntry("C-B1033", "SRT", "Spiperone F^18^")));
         Codes->insert(OFMake_pair(T807_F18, DSRBasicCodedEntry("126502", "DCM", "T807 F^18^")));
+        Codes->insert(OFMake_pair(THK5351_F18, DSRBasicCodedEntry("126717", "DCM", "THK5351 F^18^")));
         Codes->insert(OFMake_pair(ThymidineFLT_F18, DSRBasicCodedEntry("C-B1036", "SRT", "Thymidine (FLT) F^18^")));
         Codes->insert(OFMake_pair(Trastuzumab_89Zr, DSRBasicCodedEntry("126512", "DCM", "Trastuzumab ^89^Zr")));
         Codes->insert(OFMake_pair(TRC105_89Zr, DSRBasicCodedEntry("126749", "DCM", "TRC105 ^89^Zr")));
