@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-06-15 10:51:06
+**   Date: 2017-07-17 13:27:07
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -628,6 +628,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "ExtendedCodeMeaning", 1, 1, "DICOM/DICOS",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0008, 0x0109, 0x0008, 0x0109,
+      EVR_SQ, "CodingSchemeResourcesSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x010a, 0x0008, 0x010a,
+      EVR_CS, "CodingSchemeURLType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0008, 0x010b, 0x0008, 0x010b,
       EVR_CS, "ContextGroupExtensionFlag", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -638,6 +646,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x010d, 0x0008, 0x010d,
       EVR_UI, "ContextGroupExtensionCreatorUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x010e, 0x0008, 0x010e,
+      EVR_UR, "CodingSchemeURL", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x010f, 0x0008, 0x010f,
@@ -18391,7 +18403,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4020, 0x0040, 0x4020,
-      EVR_CS, "InputAvailabilityFlag", 1, 1, "DICOM",
+      EVR_CS, "RETIRED_InputAvailabilityFlag", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4021, 0x0040, 0x4021,
@@ -19820,6 +19832,50 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0044, 0x0019, 0x0044, 0x0019,
       EVR_SQ, "SubstanceAdministrationParameterSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0100, 0x0044, 0x0100,
+      EVR_SQ, "ApprovalSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0101, 0x0044, 0x0101,
+      EVR_SQ, "AssertionCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0102, 0x0044, 0x0102,
+      EVR_UI, "AssertionUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0103, 0x0044, 0x0103,
+      EVR_SQ, "AsserterIdentificationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0104, 0x0044, 0x0104,
+      EVR_DT, "AssertionDateTime", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0105, 0x0044, 0x0105,
+      EVR_DT, "AssertionExpirationDateTime", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0106, 0x0044, 0x0106,
+      EVR_UT, "AssertionComments", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0107, 0x0044, 0x0107,
+      EVR_SQ, "RelatedAssertionSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0108, 0x0044, 0x0108,
+      EVR_UI, "ReferencedAssertionUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x0109, 0x0044, 0x0109,
+      EVR_SQ, "ApprovalSubjectSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0044, 0x010a, 0x0044, 0x010a,
+      EVR_SQ, "OrganizationalRoleCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef ENABLE_PRIVATE_TAGS
@@ -23575,7 +23631,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0082, 0x000c, 0x0082, 0x000c,
-      EVR_SQ, "StructuredContraintObservationSequence", 1, 1, "DICOM",
+      EVR_SQ, "StructuredConstraintObservationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0082, 0x0010, 0x0082, 0x0010,

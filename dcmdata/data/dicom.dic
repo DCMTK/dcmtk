@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2017b and PS 3.7-2017b
-# File created on 2017-06-15 10:31:09 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2017c and PS 3.7-2017c
+# File created on 2017-07-10 10:25:18  by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -150,9 +150,12 @@
 (0008,0106)	DT	ContextGroupVersion	1	DICOM
 (0008,0107)	DT	ContextGroupLocalVersion	1	DICOM
 (0008,0108)	LT	ExtendedCodeMeaning	1	DICOM/DICOS
+(0008,0109)	SQ	CodingSchemeResourcesSequence	1	DICOM
+(0008,010A)	CS	CodingSchemeURLType	1	DICOM
 (0008,010B)	CS	ContextGroupExtensionFlag	1	DICOM
 (0008,010C)	UI	CodingSchemeUID	1	DICOM
 (0008,010D)	UI	ContextGroupExtensionCreatorUID	1	DICOM
+(0008,010E)	UR	CodingSchemeURL	1	DICOM
 (0008,010F)	CS	ContextIdentifier	1	DICOM
 (0008,0110)	SQ	CodingSchemeIdentificationSequence	1	DICOM
 (0008,0112)	LO	CodingSchemeRegistry	1	DICOM
@@ -2054,7 +2057,6 @@
 (0040,4011)	DT	ExpectedCompletionDateTime	1	DICOM
 (0040,4018)	SQ	ScheduledWorkitemCodeSequence	1	DICOM
 (0040,4019)	SQ	PerformedWorkitemCodeSequence	1	DICOM
-(0040,4020)	CS	InputAvailabilityFlag	1	DICOM
 (0040,4021)	SQ	InputInformationSequence	1	DICOM
 (0040,4025)	SQ	ScheduledStationNameCodeSequence	1	DICOM
 (0040,4026)	SQ	ScheduledStationClassCodeSequence	1	DICOM
@@ -2181,6 +2183,17 @@
 (0044,0012)	LO	SubstanceAdministrationDeviceID	1	DICOM
 (0044,0013)	SQ	ProductParameterSequence	1	DICOM
 (0044,0019)	SQ	SubstanceAdministrationParameterSequence	1	DICOM
+(0044,0100)	SQ	ApprovalSequence	1	DICOM
+(0044,0101)	SQ	AssertionCodeSequence	1	DICOM
+(0044,0102)	UI	AssertionUID	1	DICOM
+(0044,0103)	SQ	AsserterIdentificationSequence	1	DICOM
+(0044,0104)	DT	AssertionDateTime	1	DICOM
+(0044,0105)	DT	AssertionExpirationDateTime	1	DICOM
+(0044,0106)	UT	AssertionComments	1	DICOM
+(0044,0107)	SQ	RelatedAssertionSequence	1	DICOM
+(0044,0108)	UI	ReferencedAssertionUID	1	DICOM
+(0044,0109)	SQ	ApprovalSubjectSequence	1	DICOM
+(0044,010A)	SQ	OrganizationalRoleCodeSequence	1	DICOM
 (0046,0012)	LO	LensDescription	1	DICOM
 (0046,0014)	SQ	RightLensSequence	1	DICOM
 (0046,0015)	SQ	LeftLensSequence	1	DICOM
@@ -3012,7 +3025,7 @@
 (0082,0007)	SQ	AssessmentObservationsSequence	1	DICOM
 (0082,0008)	CS	ObservationSignificance	1	DICOM
 (0082,000A)	UT	ObservationDescription	1	DICOM
-(0082,000C)	SQ	StructuredContraintObservationSequence	1	DICOM
+(0082,000C)	SQ	StructuredConstraintObservationSequence	1	DICOM
 (0082,0010)	SQ	AssessedAttributeValueSequence	1	DICOM
 (0082,0016)	LO	AssessmentSetID	1	DICOM
 (0082,0017)	SQ	AssessmentRequesterSequence	1	DICOM
@@ -4127,6 +4140,7 @@
 (0040,4006)	CS	RETIRED_MultipleCopiesFlag	1	DICOM/retired
 (0040,4015)	SQ	RETIRED_ResultingGeneralPurposePerformedProcedureStepsSequence	1	DICOM/retired
 (0040,4016)	SQ	RETIRED_ReferencedGeneralPurposeScheduledProcedureStepSequence	1	DICOM/retired
+(0040,4020)	CS	RETIRED_InputAvailabilityFlag	1	DICOM/retired
 (0040,4022)	SQ	RETIRED_RelevantInformationSequence	1	DICOM/retired
 (0040,4023)	UI	RETIRED_ReferencedGeneralPurposeScheduledProcedureStepTransactionUID	1	DICOM/retired
 (0040,4031)	SQ	RETIRED_RequestedSubsequentWorkitemCodeSequence	1	DICOM/retired

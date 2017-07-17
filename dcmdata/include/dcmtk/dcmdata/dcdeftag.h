@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-06-15 10:51:06
+**   Date: 2017-07-17 13:27:06
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2017-06-15 10:51:06"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2017-07-17 13:27:06"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4229
+** Number of entries: 4243
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -163,9 +163,12 @@
 #define DCM_ContextGroupVersion                  DcmTagKey(0x0008, 0x0106)
 #define DCM_ContextGroupLocalVersion             DcmTagKey(0x0008, 0x0107)
 #define DCM_ExtendedCodeMeaning                  DcmTagKey(0x0008, 0x0108)
+#define DCM_CodingSchemeResourcesSequence        DcmTagKey(0x0008, 0x0109)
+#define DCM_CodingSchemeURLType                  DcmTagKey(0x0008, 0x010a)
 #define DCM_ContextGroupExtensionFlag            DcmTagKey(0x0008, 0x010b)
 #define DCM_CodingSchemeUID                      DcmTagKey(0x0008, 0x010c)
 #define DCM_ContextGroupExtensionCreatorUID      DcmTagKey(0x0008, 0x010d)
+#define DCM_CodingSchemeURL                      DcmTagKey(0x0008, 0x010e)
 #define DCM_ContextIdentifier                    DcmTagKey(0x0008, 0x010f)
 #define DCM_CodingSchemeIdentificationSequence   DcmTagKey(0x0008, 0x0110)
 #define DCM_CodingSchemeRegistry                 DcmTagKey(0x0008, 0x0112)
@@ -2275,7 +2278,7 @@
 #define DCM_RETIRED_ReferencedGeneralPurposeScheduledProcedureStepSequence DcmTagKey(0x0040, 0x4016)
 #define DCM_ScheduledWorkitemCodeSequence        DcmTagKey(0x0040, 0x4018)
 #define DCM_PerformedWorkitemCodeSequence        DcmTagKey(0x0040, 0x4019)
-#define DCM_InputAvailabilityFlag                DcmTagKey(0x0040, 0x4020)
+#define DCM_RETIRED_InputAvailabilityFlag        DcmTagKey(0x0040, 0x4020)
 #define DCM_InputInformationSequence             DcmTagKey(0x0040, 0x4021)
 #define DCM_RETIRED_RelevantInformationSequence  DcmTagKey(0x0040, 0x4022)
 #define DCM_RETIRED_ReferencedGeneralPurposeScheduledProcedureStepTransactionUID DcmTagKey(0x0040, 0x4023)
@@ -2466,6 +2469,17 @@
 #define DCM_SubstanceAdministrationDeviceID      DcmTagKey(0x0044, 0x0012)
 #define DCM_ProductParameterSequence             DcmTagKey(0x0044, 0x0013)
 #define DCM_SubstanceAdministrationParameterSequence DcmTagKey(0x0044, 0x0019)
+#define DCM_ApprovalSequence                     DcmTagKey(0x0044, 0x0100)
+#define DCM_AssertionCodeSequence                DcmTagKey(0x0044, 0x0101)
+#define DCM_AssertionUID                         DcmTagKey(0x0044, 0x0102)
+#define DCM_AsserterIdentificationSequence       DcmTagKey(0x0044, 0x0103)
+#define DCM_AssertionDateTime                    DcmTagKey(0x0044, 0x0104)
+#define DCM_AssertionExpirationDateTime          DcmTagKey(0x0044, 0x0105)
+#define DCM_AssertionComments                    DcmTagKey(0x0044, 0x0106)
+#define DCM_RelatedAssertionSequence             DcmTagKey(0x0044, 0x0107)
+#define DCM_ReferencedAssertionUID               DcmTagKey(0x0044, 0x0108)
+#define DCM_ApprovalSubjectSequence              DcmTagKey(0x0044, 0x0109)
+#define DCM_OrganizationalRoleCodeSequence       DcmTagKey(0x0044, 0x010a)
 #define DCM_LensDescription                      DcmTagKey(0x0046, 0x0012)
 #define DCM_RightLensSequence                    DcmTagKey(0x0046, 0x0014)
 #define DCM_LeftLensSequence                     DcmTagKey(0x0046, 0x0015)
@@ -3313,7 +3327,7 @@
 #define DCM_AssessmentObservationsSequence       DcmTagKey(0x0082, 0x0007)
 #define DCM_ObservationSignificance              DcmTagKey(0x0082, 0x0008)
 #define DCM_ObservationDescription               DcmTagKey(0x0082, 0x000a)
-#define DCM_StructuredContraintObservationSequence DcmTagKey(0x0082, 0x000c)
+#define DCM_StructuredConstraintObservationSequence DcmTagKey(0x0082, 0x000c)
 #define DCM_AssessedAttributeValueSequence       DcmTagKey(0x0082, 0x0010)
 #define DCM_AssessmentSetID                      DcmTagKey(0x0082, 0x0016)
 #define DCM_AssessmentRequesterSequence          DcmTagKey(0x0082, 0x0017)
