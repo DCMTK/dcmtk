@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file with NCIt Code Definitions (Coding Scheme "NCIt")
+ *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2017a
- *  File created on 2017-03-10 17:34:49 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017c
+ *  File created on 2017-07-10 10:25:31 by J. Riesmeier
  *
  */
 
@@ -23,17 +23,18 @@
  *  general information  *
  *-----------------------*/
 
-#define CODE_NCIt_CodingSchemeDesignator  "NCIt"
-#define CODE_NCIt_CodingSchemeName        "NCIt"
-#define CODE_NCIt_CodingSchemeDescription "NCI Thesaurus"
-#define CODE_NCIt_CodingSchemeUID         "2.16.840.1.113883.3.26.1.1"
+#define CODE_NCIt_CodingSchemeDesignator              "NCIt"
+#define CODE_NCIt_CodingSchemeName                    "NCI Thesaurus"
+#define CODE_NCIt_CodingSchemeDescription             "NCI Thesaurus"
+#define CODE_NCIt_CodingSchemeResponsibleOrganization "NCI"
+#define CODE_NCIt_CodingSchemeUID                     "2.16.840.1.113883.3.26.1.1"
 
 
 /*--------------------*
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 17
+// total number of codes: 18
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -56,6 +57,7 @@
 #define CODE_NCIt_TemperatureSensorDeviceComponent                         DSRBasicCodedEntry("C50304", "NCIt", "Temperature sensor device component")
 #define CODE_NCIt_AdLibitum                                                DSRBasicCodedEntry("C64636", "NCIt", "ad libitum")
 #define CODE_NCIt_ActivitySession                                          DSRBasicCodedEntry("C67447", "NCIt", "Activity Session")
+#define CODE_NCIt_UnitConversionFactor                                     DSRBasicCodedEntry("C70774", "NCIt", "Unit Conversion Factor")
 #define CODE_NCIt_Erect                                                    DSRBasicCodedEntry("C86043", "NCIt", "erect")
 #define CODE_NCIt_BeddingChange                                            DSRBasicCodedEntry("C90365", "NCIt", "Bedding change")
 #define CODE_NCIt_BeddingMaterial                                          DSRBasicCodedEntry("C90366", "NCIt", "Bedding material")
