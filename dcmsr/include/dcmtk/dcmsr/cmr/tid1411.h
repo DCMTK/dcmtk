@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1411_VolumetricROIMeasurements
@@ -261,14 +261,16 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     OFCondition setMeasurementMethod(const T_Method &method,
                                      const OFBool check = OFTrue);
 
-    /** set the value of the 'Finding Site' content item (TID 1419 - Row 2).
-     *  A measurement group is created automatically (if none is present).  If the
-     *  content item already exists, its value is overwritten.
+    /** add a 'Finding Site' content item (TID 1419 - Row 2).
+     *  A measurement group is created automatically (if none is present).
+     *  @note Originally, the associated content item had the value multiplicity "1" and
+     *    thus the method was called setFindingSite().  This changed with CP-1591.  The
+     *    value multiplicity is now "1-n".  The requirement type is still "User option".
      ** @param  site   coded entry describing the anatomic location of the measurements
      *  @param  check  if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setFindingSite(const DSRCodedEntryValue &site,
+    OFCondition addFindingSite(const DSRCodedEntryValue &site,
                                const OFBool check = OFTrue);
 
     /** add a measurement as defined in 'ROI Measurements' (TID 1419 - Row 5, 7 and 8).

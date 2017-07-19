@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -293,7 +293,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(measurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
     OFCHECK(measurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_CTImageStorage, "2.0")).bad());
     OFCHECK(measurements.setRealWorldValueMap(dataset).good());
-    OFCHECK(measurements.setFindingSite(CODE_SRT_AorticArch).good());
+    OFCHECK(measurements.addFindingSite(CODE_SRT_AorticArch).good());
     OFCHECK(measurements.setMeasurementMethod(DSRCodedEntryValue(CODE_DCM_SUVBodyWeightCalculationMethod)).good());
     OFCHECK(!measurements.isValid());
     /* add two measurement values */
@@ -306,6 +306,8 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     const DSRCodedEntryValue code("1234", "99TEST", "not bad");
     OFCHECK(report.addQualitativeEvaluation(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), code).good());
     OFCHECK(report.addQualitativeEvaluation(DSRBasicCodedEntry("4711", "99TEST", "Some other test code"), "very good").good());
+    /* and, add another finding site (introduced with CP-1591) */
+    OFCHECK(measurements.addFindingSite(DSRCodedEntryValue("0815", "99TEST", "Some test code")).good());
     /* some final checks */
     OFCHECK(report.isValid());
     OFCHECK(report.hasImagingMeasurements(OFTrue /*checkChildren*/));
@@ -314,17 +316,17 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
 
     /* check number of content items (expected) */
     OFCHECK_EQUAL(report.getTree().countNodes(), 13);
-    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 34);
-    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 28);
+    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 35);
+    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 29);
     /* create an expanded version of the tree */
     DSRDocumentSubTree *tree = NULL;
     OFCHECK(report.getTree().createExpandedSubTree(tree).good());
     /* and check whether all content items are there */
     if (tree != NULL)
     {
-        OFCHECK_EQUAL(tree->countNodes(), 28);
-        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/), 28);
-        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 28);
+        OFCHECK_EQUAL(tree->countNodes(), 29);
+        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/), 29);
+        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 29);
         delete tree;
     } else
         OFCHECK_FAIL("could create expanded tree");

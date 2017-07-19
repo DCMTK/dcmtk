@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1411_VolumetricROIMeasurements
@@ -44,7 +44,7 @@
 #define SOURCE_SERIES_FOR_SEGMENTATION  7
 #define REAL_WORLD_VALUE_MAP            8
 #define MEASUREMENT_METHOD              9
-#define FINDING_SITE                   10
+#define LAST_FINDING_SITE              10
 #define LAST_MEASUREMENT               11
 
 // general information on TID 1411 (Volumetric ROI Measurements)
@@ -429,7 +429,7 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T_Method, T4>::setMeasurem
 
 
 template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setFindingSite(const DSRCodedEntryValue &site,
+OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::addFindingSite(const DSRCodedEntryValue &site,
                                                                               const OFBool check)
 {
     OFCondition result = EC_Normal;
@@ -439,9 +439,14 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setFindingSite(co
         /* check whether measurement group already exists */
         if (!hasMeasurementGroup())
             result = createMeasurementGroup();
-        /* TID 1419 (ROI Measurements) Row 2 */
-        CHECK_RESULT(addOrReplaceContentItem(FINDING_SITE, RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, "TID 1419 - Row 2", check));
+        /* go to last finding site (if any) */
+        gotoLastEntryFromNodeList(this, LAST_FINDING_SITE);
+        /* 1419 (ROI Measurements) Row 2 */
+        CHECK_RESULT(addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
         CHECK_RESULT(getCurrentContentItem().setCodeValue(site, check));
+        CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1419 - Row 2"));
+        /* store ID of recently added node for later use */
+        GOOD_RESULT(storeEntryInNodeList(LAST_FINDING_SITE, getNodeID()));
     } else
         result = EC_IllegalParameter;
     return result;
