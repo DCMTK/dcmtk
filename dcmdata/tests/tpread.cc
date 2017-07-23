@@ -157,7 +157,7 @@ static OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dc
       }
 
       offset += bytes_to_read;
-      if (offset > 4) offset -= (rand() % 4); // let the read operations overlap by 0-3 bytes
+      if ((offset > 4) && (offset < BUFSIZE)) offset -= (rand() % 4); // let the read operations overlap by 0-3 bytes
     }
     delete[] target;
     return EC_Normal;
