@@ -229,18 +229,6 @@ OFCondition DcmIODCommon::import(DcmItem& dataset,
 }
 
 
-OFCondition DcmIODCommon::importPatientStudyFoR(const OFString& filename,
-                                                const OFBool usePatient,
-                                                const OFBool useStudy,
-                                                const OFBool useSeries,
-                                                const OFBool useFoR,
-                                                const OFBool takeOverCharset)
-{
-  DCMIOD_WARN("This function is deprecated and will be removed in later versions of DCMTK, please use import()");
-  return import(filename, usePatient, useStudy, useSeries, useFoR, takeOverCharset);
-}
-
-
 OFCondition DcmIODCommon::import(const OFString& filename,
                                  const OFBool usePatient,
                                  const OFBool useStudy,
