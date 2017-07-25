@@ -174,12 +174,12 @@ OFCondition DcmIODCommon::read(DcmItem &dataset)
 }
 
 
-OFCondition DcmIODCommon::import(DcmItem& dataset,
-                                 const OFBool readPatient,
-                                 const OFBool readStudy,
-                                 const OFBool readFoR,
-                                 const OFBool readSeries,
-                                 const OFBool takeOverCharset)
+OFCondition DcmIODCommon::importHierarchy(DcmItem& dataset,
+                                          const OFBool readPatient,
+                                          const OFBool readStudy,
+                                          const OFBool readFoR,
+                                          const OFBool readSeries,
+                                          const OFBool takeOverCharset)
 {
   if (readPatient)
   {
@@ -229,12 +229,12 @@ OFCondition DcmIODCommon::import(DcmItem& dataset,
 }
 
 
-OFCondition DcmIODCommon::import(const OFString& filename,
-                                 const OFBool usePatient,
-                                 const OFBool useStudy,
-                                 const OFBool useSeries,
-                                 const OFBool useFoR,
-                                 const OFBool takeOverCharset)
+OFCondition DcmIODCommon::importHierarchy(const OFString& filename,
+                                          const OFBool readPatient,
+                                          const OFBool readStudy,
+                                          const OFBool readFoR,
+                                          const OFBool readSeries,
+                                          const OFBool takeOverCharset)
 {
   DcmFileFormat dcmff;
   OFCondition result = dcmff.loadFile(filename.c_str());
@@ -243,7 +243,7 @@ OFCondition DcmIODCommon::import(const OFString& filename,
     DcmDataset *dset = dcmff.getDataset();
     if (dset != NULL)
     {
-      result = import(*dset, usePatient, useStudy, useSeries, useFoR, takeOverCharset);
+      result = importHierarchy(*dset, readPatient, readStudy, readFoR, readSeries, takeOverCharset);
     }
     else
     {

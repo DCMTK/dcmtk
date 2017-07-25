@@ -66,13 +66,15 @@ public:
                             const IODReferences& imageReferences,
                             TrcTractographyResults*& result);
 
-  /** Take over general information for Patient, Study, Series and/or Frame of Reference
+  /** CAUTION: Parameter order (readFoR and readSeries) changed!
+   *  Take over general information for Patient, Study, Series and/or Frame of Reference
    *  from existing file
    *  @param  filename The filename to read from
-   *  @param  usePatient If OFTrue, Patient level information is imported
-   *  @param  useStudy If OFTrue, Study level information is imported
-   *  @param  useSeries If OFTrue, Series level information is imported
-   *  @param  useFoR If OFTrue, Frame of Reference information is imported
+   *  @param  readPatient If OFTrue, Patient level information is imported
+   *  @param  readStudy If OFTrue, Study level information is imported
+   *  @param  readFoR If OFTrue, Frame of Reference information is imported
+   *  @param  readSeries If OFTrue, Series level information is imported; if OFTrue,
+   *          readFoR is also set to OFTrue.
    *  @param  updateCommonInstanceReferences If OFTrue (default), all
    *          references in the Common Instance Reference Module will be updated
    *          using the reference data provided earlier in the create() call. The
@@ -82,11 +84,11 @@ public:
    *  @return EC_Normal if reading was successful (i.e.\ if any information could
    *          be read), otherwise an error is returned
    */
-  virtual OFCondition importPatientStudyFoR(const OFString& filename,
-                                            const OFBool usePatient,
-                                            const OFBool useStudy,
-                                            const OFBool useSeries,
-                                            const OFBool useFoR = OFFalse,
+  virtual OFCondition importHierarchy(const OFString& filename,
+                                            const OFBool readPatient,
+                                            const OFBool readStudy,
+                                            const OFBool readFoR = OFFalse,
+                                            const OFBool readSeries = OFFalse,
                                             const OFBool updateCommonInstanceReferences = OFTrue);
 
   /** Add Track Set to object. If successful, the resulting Track Set can be
@@ -272,7 +274,7 @@ private:
   /// Instance Sequence. However, in the case of Common Instance Reference, the
   /// internal reference structure is distinguishes between reference within
   /// the same study as "this" object as well as other objects outside this study.
-  /// If the user calls later importPatientStudyFoR() after creation, the study
+  /// If the user calls later importHierarchy() after creation, the study
   /// is most likely to change (away from the automatically created new study when
   /// calling create() to the imported study information) which requires to
   /// re-build the Common Instance Refernence Module's references. Thus, this

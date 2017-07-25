@@ -215,12 +215,12 @@ OFCondition TrcTractographyResults::write(DcmItem &dataset)
 }
 
 
-OFCondition TrcTractographyResults::importPatientStudyFoR(
+OFCondition TrcTractographyResults::importHierarchy(
   const OFString& filename,
-  const OFBool usePatient,
-  const OFBool useStudy,
-  const OFBool useSeries,
-  const OFBool useFoR,
+  const OFBool readPatient,
+  const OFBool readStudy,
+  const OFBool readFoR,
+  const OFBool readSeries,
   const OFBool updateCommonInstanceReferences)
 {
   DcmFileFormat dcmff;
@@ -230,7 +230,7 @@ OFCondition TrcTractographyResults::importPatientStudyFoR(
     DcmDataset *dset = dcmff.getDataset();
     if (dset != NULL)
     {
-      result = import(*dset, usePatient, useStudy, useSeries, useFoR);
+      result = DcmIODCommon::importHierarchy(*dset, readPatient, readStudy, readFoR, readSeries);
       if (result.good() && updateCommonInstanceReferences)
       {
         getCommonInstanceReference().clearData();

@@ -100,7 +100,7 @@ public:
    *          A list of Defined Terms can be found in the standard. Very often
    *          "MR" is the right choice. Only if a mix of different modalities has been
    *          use for creation "OT" should be used.
-   *  @param  seriesNumber A number identifying this series. If importPatientStudyFor()
+   *  @param  seriesNumber A number identifying this series. If importHierarchy()
    *          is called later in order to put this Parametric Map into an existing Series,
    *          the Series  Number will be taken over from the existing series instead.
    *  @param  instanceNumber A number identifying this image
@@ -272,7 +272,7 @@ private:
    *          A list of Defined Terms can be found in the standard. Very often
    *          "MR" is the right choice. Only if a mix of different modalities has been
    *          use for creation "OT" should be used.
-   *  @param  seriesNumber A number identifying this series. If importPatientStudyFor()
+   *  @param  seriesNumber A number identifying this series. If importHierarchy()
    *          is called later in order to put this Parametric Map into an existing Series,
    *          the Series  Number will be taken over from the existing series instead.
    *  @param  instanceNumber A number identifying this image
