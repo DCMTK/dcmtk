@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -246,7 +246,7 @@ int DiOverlay::convertToPlaneNumber(unsigned int &plane,
             {
                 plane = (plane - FirstOverlayGroup) >> 1;                               // plane = (group - 0x6000) / 2
                 if (Data->Planes[plane] != NULL)
-                    return 2;                                                           // plane alreay exists
+                    return 2;                                                           // plane already exists
                 return 1;                                                               // ... is new
             } else {
                 unsigned int i;
