@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1500_MeasurementReport
@@ -34,7 +34,7 @@
 // include this file in doxygen documentation
 
 /** @file tid1500.h
- *  @brief Interface class and error constants for TID 1500 in module dcmsr/cmr
+ *  @brief Interface class for TID 1500 in module dcmsr/cmr
  */
 
 
@@ -42,12 +42,18 @@
  *  constant definitions  *
  *------------------------*/
 
-/** @name specific error conditions for TID 1500 in module dcmsr/cmr
+/** @name specific error conditions for TID 1500 (and included templates) in module dcmsr/cmr
  */
 //@{
 
 /// error: there is no measurement report to add content items to
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoMeasurementReport;
+/// error: there is no measurement group to add entries to
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoMeasurementGroup;
+/// error: the given segmentation object does not conform to the template constraints
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidSegmentationObject;
+/// error: the given DICOM object is not a real world value mapping object
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidRealWorldValueMappingObject;
 
 //@}
 

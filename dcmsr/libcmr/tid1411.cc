@@ -13,6 +13,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/cmr/tid1411.h"
+#include "dcmtk/dcmsr/cmr/tid15def.h"
 #include "dcmtk/dcmsr/cmr/cid6147.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
@@ -52,11 +53,6 @@
 #define MAPPING_RESOURCE     "DCMR"
 #define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
 #define TEMPLATE_TYPE        OFTrue  /* extensible */
-
-// conditions constants
-makeOFConditionConst(CMR_EC_NoMeasurementGroup,                 OFM_dcmsr, 1411, OF_error, "No Measurement Group");
-makeOFConditionConst(CMR_EC_InvalidSegmentationObject,          OFM_dcmsr, 1412, OF_error, "Invalid Segmentation Object");
-makeOFConditionConst(CMR_EC_InvalidRealWorldValueMappingObject, OFM_dcmsr, 1413, OF_error, "Invalid Real World Value Mapping Object");
 
 
 template<typename T1, typename T2, typename T3, typename T4>

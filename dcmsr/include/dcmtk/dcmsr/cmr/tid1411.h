@@ -24,26 +24,8 @@
 // include this file in doxygen documentation
 
 /** @file tid1411.h
- *  @brief Interface class and error constants for TID 1411 in module dcmsr/cmr
+ *  @brief Interface class for TID 1411 in module dcmsr/cmr
  */
-
-
-/*------------------------*
- *  constant definitions  *
- *------------------------*/
-
-/** @name specific error conditions for TID 1411 in module dcmsr/cmr
- */
-//@{
-
-/// error: there is no measurement group to add entries to
-extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoMeasurementGroup;
-/// error: the given segmentation object does not conform to the template constraints
-extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidSegmentationObject;
-/// error: the given DICOM object is not a real world value mapping object
-extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidRealWorldValueMappingObject;
-
-//@}
 
 
 /*---------------------*

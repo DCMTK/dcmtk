@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1500_MeasurementReport
@@ -13,6 +13,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/cmr/tid1500.h"
+#include "dcmtk/dcmsr/cmr/tid15def.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
 #include "dcmtk/dcmsr/codes/umls.h"
@@ -40,9 +41,6 @@
 #define MAPPING_RESOURCE     "DCMR"
 #define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
 #define TEMPLATE_TYPE        OFTrue  /* extensible */
-
-// conditions constants
-makeOFConditionConst(CMR_EC_NoMeasurementReport, OFM_dcmsr, 1500, OF_error, "No Measurement Report");
 
 
 TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitles &title)
