@@ -7,7 +7,7 @@
  *
  *  Generated semi-automatically from DICOM PS 3.16-2015c
  *  File created on 2015-08-24 by J. Riesmeier
- *  Last modified on 2017-07-04 by Riesmeier
+ *  Last modified on 2017-07-31 by Riesmeier
  *
  *  NB: This file does not yet contain all codes defined in PS 3.16 since the
  *      mapping of the code meaning to a compiler-friendly representation is
@@ -51,8 +51,10 @@
 #define CODE_SRT_18_Fluorine                    DSRBasicCodedEntry("C-111A1", "SRT", "^18^Fluorine")
 #define CODE_SRT_Fluorodeoxyglucose_F18         DSRBasicCodedEntry("C-B1031", "SRT", "Fluorodeoxyglucose F^18^")
 #define CODE_SRT_RadiopharmaceuticalAgent       DSRBasicCodedEntry("F-61FDB", "SRT", "Radiopharmaceutical agent")
+#define CODE_SRT_TopographicalModifier          DSRBasicCodedEntry("G-A1F8", "SRT", "Topographical modifier")
 #define CODE_SRT_MeasurementMethod              DSRBasicCodedEntry("G-C036", "SRT", "Measurement Method")
 #define CODE_SRT_FindingSite                    DSRBasicCodedEntry("G-C0E3", "SRT", "Finding Site")
+#define CODE_SRT_Laterality                     DSRBasicCodedEntry("G-C171", "SRT", "Laterality")
 #define CODE_SRT_RouteOfAdministration          DSRBasicCodedEntry("G-C340", "SRT", "Route of Administration")
 #define CODE_SRT_Neoplasm_Primary               DSRBasicCodedEntry("M-80003", "SRT", "Neoplasm, Primary")
 #define CODE_SRT_Neoplasm_Secondary             DSRBasicCodedEntry("M-80006", "SRT", "Neoplasm, Secondary")
