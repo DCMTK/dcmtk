@@ -19,6 +19,11 @@
 
 #include "dcmtk/dcmsr/cmr/define.h"
 #include "dcmtk/dcmsr/cmr/srnumvlu.h"
+#include "dcmtk/dcmsr/cmr/tid1419m.h"
+#include "dcmtk/dcmsr/cmr/cid6147.h"
+#include "dcmtk/dcmsr/cmr/cid7181.h"
+#include "dcmtk/dcmsr/cmr/cid7464.h"
+#include "dcmtk/dcmsr/cmr/cid7469.h"
 
 
 // include this file in doxygen documentation
@@ -39,7 +44,7 @@
  *  @tparam  T_Units        units of the numeric measurement values (context group)
  *  @tparam  T_Method       methods used for measuring the values (context group)
  *  @tparam  T_Derivation   methods of deriving or calculating the values (context group)
- ** @note Please note that currently only the mandatory (and some optional/conditional)
+ ** @note Please note that currently only the mandatory and some optional/conditional
  *        content items and included templates are supported.
  *  @note Also note that this template class requires explicit instantiation for those
  *        combinations of the template parameters that are actually used.  This is
@@ -56,15 +61,27 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     // type definition
     typedef CMR_SRNumericMeasurementValueWithUnits<T_Units> MeasurementValue;
 
+
+    typedef TID1419_ROIMeasurements_Measurement<CID7469_GenericIntensityAndSizeMeasurements,
+                                                CID7181_AbstractMultiDimensionalImageModelComponentUnits,
+                                                CID6147_ResponseCriteria,
+                                                CID7464_GeneralRegionOfInterestMeasurementModifiers>
+            TID1419_Measurement;
+
     /** (default) constructor
      ** @param  createGroup  flag indicating whether to create an empty measurement group
      *                       by calling createMeasurementGroup() during startup
      */
     TID1411_VolumetricROIMeasurements(const OFBool createGroup = OFFalse);
 
+    /** clear internal member variables.
+     *  Also see notes on the clear() method of the base class.
+     */
+    virtual void clear();
+
     /** check whether the current internal state is valid.
      *  That means, whether the base class is valid and whether all mandatory content
-     *  items and included templates are valid, i.e. hasMeasurementGroup(),
+     *  items and included templates are valid (present), i.e. hasMeasurementGroup(),
      *  hasTrackingIdentifier(), hasTrackingUniqueIdentifier(), hasReferencedSegment(),
      *  hasSourceSeriesForSegmentation() and hasROIMeasurements() return true.
      ** @return OFTrue if valid, OFFalse otherwise
@@ -72,9 +89,10 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     OFBool isValid() const;
 
     /** check whether the 'Measurement Group' content item (TID 1411 - Row 1) is present.
-     *  Initially, this mandatory content item is created by the constructor of this
-     *  class (if not disabled).  After clear() has been called, it can be created again
-     *  by calling createMeasurementGroup().
+     *  This mandatory content item can be created by the constructor of this class (if
+     *  not disabled, which is the default) or internally by createMeasurementGroup().
+     *  After clear() has been called, the content item has to be recreated, which is
+     *  done automatically when needed.
      ** @param  checkChildren  optional flag indicating whether to also check for any
      *                         children, i.e.\ whether the respective content item has
      *                         child nodes.  By default, the presence of the higher-level
@@ -109,10 +127,28 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     OFBool hasSourceSeriesForSegmentation() const;
 
     /** check whether there is an included 'ROI Measurements' template (TID 1411 -
-     *  Row 15) in this measurement template.  This included template is mandatory.
-     ** @return OFTrue if ROI measurements are present, OFFalse otherwise
+     *  Row 15) in this measurement template.  Initially, this mandatory sub-template
+     *  is created and included by the constructor of this class.  After clear() has
+     *  been called, the content item has to be recreated, which is done automatically
+     *  when needed.
+     ** @param  checkChildren  flag, which is enabled by default, indicating whether to
+     *                         check for any children, i.e.\ whether the respective
+     *                         sub-template has any content (child nodes).  If OFFalse,
+     *                         the "included template" content item is checked only.
+     ** @return OFTrue if measurements are present, OFFalse otherwise
      */
-    OFBool hasROIMeasurements() const;
+    OFBool hasMeasurements(const OFBool checkChildren = OFTrue) const;
+
+    /** get current measurement value of this measurement group as defined by TID 1419
+     *  (ROI Measurements), i.e.\ the current instance of TID 1411 - Row 15.
+     *  This included template is mandatory, i.e. should be present and not be empty.
+     *  Further instances can be added by calling addMeasurement().
+     ** @return reference to internally managed SR template (current instance)
+     */
+    inline TID1419_Measurement &getMeasurement() const
+    {
+        return *OFstatic_cast(TID1419_Measurement *, Measurement.get());
+    }
 
     /** set the value of the 'Activity Session' content item (TID 1411 - Row 1b).
      *  A measurement group is created automatically (if none is present).  If the
@@ -236,43 +272,74 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
      *  A measurement group is created automatically (if none is present).  If the
      *  content item already exists, its value is overwritten.
      ** @param  method  coded entry describing the method used for measuring the values
-     *                  (e.g.\ from the given context group 'T_Method')
+     *                  in the group (e.g.\ from the given context group 'T_Method')
      *  @param  check   if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setMeasurementMethod(const T_Method &method,
                                      const OFBool check = OFTrue);
 
-    /** add a 'Finding Site' content item (TID 1419 - Row 2).
+    /** add a 'Finding Site' content item (TID 1419 - Row 2, 3 and 4).
      *  A measurement group is created automatically (if none is present).
      *  @note Originally, the associated content item had the value multiplicity "1" and
      *    thus the method was called setFindingSite().  This changed with CP-1591.  The
      *    value multiplicity is now "1-n".  The requirement type is still "User option".
-     ** @param  site   coded entry describing the anatomic location of the measurements
+     ** @param  site          coded entry describing the anatomic location of the
+     *                        measurements in the current group
+     *  @param  laterality    laterality associated with the 'site' (optional)
+     *  @param  siteModifier  coded entry describing the topographical modifier of the
+     *                        'site' (optional)
      *  @param  check  if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addFindingSite(const DSRCodedEntryValue &site,
+                               const CID244e_Laterality &laterality = CID244e_Laterality(),
+                               const DSRCodedEntryValue &siteModifier = DSRCodedEntryValue(),
                                const OFBool check = OFTrue);
 
-    /** add a measurement as defined in 'ROI Measurements' (TID 1419 - Row 5, 7 and 8).
-     *  There should be at least a single instance of the associated template.
+    /** add a measurement as defined in 'ROI Measurements' (TID 1419 - Row 5).
+     *  A measurement group is created automatically (if none is present).  There should
+     *  be at least a single instance of the associated template.  Access to the current
+     *  instance is available through getMeasurement().
      ** @param  conceptName   coded entry specifying the concept name of the measurement
      *                        (e.g.\ from the given context group 'T_Measurement')
      *  @param  numericValue  numeric measurement value to be set.  The measurement unit
      *                        could be taken from the baseline context group 'T_Units'.
-     *  @param  method        optional method used for measuring the value
-     *                        (e.g.\ from the given context group 'T_Method')
-     *  @param  derivation    optional method of deriving or calculating the value
-     *                        (e.g.\ from the context group 'T_Derivation')
-     *  @param  check         if enabled, check value for validity before setting it
+     ** @param  checkEmpty    by default, it is checked whether the current instance of
+     *                        TID 1419 is empty, and thus no new instance is created.
+     *                        Setting this parameter to OFFalse disables this check and
+     *                        always creates and adds a new instance of this sub-template.
+     *  @param  checkValue    if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addMeasurement(const T_Measurement &conceptName,
                                const MeasurementValue &numericValue,
-                               const T_Method &method = T_Method(),
-                               const T_Derivation &derivation = T_Derivation(),
-                               const OFBool check = OFTrue);
+                               const OFBool checkEmpty = OFTrue,
+                               const OFBool checkValue = OFTrue);
+
+    /** add a qualitative evaluation related to the subject of the measurement group as a
+     *  coded entry (TID 1411 - Row 16).
+     *  A measurement group is created automatically (if none is present).
+     ** @param  conceptName  coded entry to be set as the concept name
+     *  @param  codeValue    coded entry to be set as the value of the new content item
+     *  @param  check        if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                         const DSRCodedEntryValue &codeValue,
+                                         const OFBool check = OFTrue);
+
+    /** add a qualitative evaluation related to the subject of the measurement group in
+     *  text form (TID 1411 - Row 17).
+     *  A measurement group is created automatically (if none is present).
+     ** @param  conceptName  coded entry to be set as the concept name
+     *  @param  stringValue  character string to be set as the value of the content item
+     *  @param  check        if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                         const OFString &stringValue,
+                                         const OFBool check = OFTrue);
 
 
   protected:
@@ -303,6 +370,12 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
                                         const DSRCodedEntryValue &conceptName,
                                         const OFString &annotationText,
                                         const OFBool check);
+
+
+  private:
+
+    // shared pointer to included template "ROI Measurements" (TID 1419, Row 5)
+    DSRSharedSubTemplate Measurement;
 };
 
 

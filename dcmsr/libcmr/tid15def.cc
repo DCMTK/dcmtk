@@ -19,5 +19,6 @@
 // conditions constants
 makeOFConditionConst(CMR_EC_NoMeasurementReport,                OFM_dcmsr, 1500, OF_error, "No Measurement Report");
 makeOFConditionConst(CMR_EC_NoMeasurementGroup,                 OFM_dcmsr, 1501, OF_error, "No Measurement Group");
-makeOFConditionConst(CMR_EC_InvalidSegmentationObject,          OFM_dcmsr, 1502, OF_error, "Invalid Segmentation Object");
-makeOFConditionConst(CMR_EC_InvalidRealWorldValueMappingObject, OFM_dcmsr, 1503, OF_error, "Invalid Real World Value Mapping Object");
+makeOFConditionConst(CMR_EC_NoMeasurement,                      OFM_dcmsr, 1502, OF_error, "No Measurement");
+makeOFConditionConst(CMR_EC_InvalidSegmentationObject,          OFM_dcmsr, 1503, OF_error, "Invalid Segmentation Object");
+makeOFConditionConst(CMR_EC_InvalidRealWorldValueMappingObject, OFM_dcmsr, 1504, OF_error, "Invalid Real World Value Mapping Object");

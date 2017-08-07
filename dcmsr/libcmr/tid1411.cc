@@ -14,15 +14,12 @@
 
 #include "dcmtk/dcmsr/cmr/tid1411.h"
 #include "dcmtk/dcmsr/cmr/tid15def.h"
-#include "dcmtk/dcmsr/cmr/cid6147.h"
-#include "dcmtk/dcmsr/cmr/cid7181.h"
-#include "dcmtk/dcmsr/cmr/cid7464.h"
-#include "dcmtk/dcmsr/cmr/cid7469.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
 #include "dcmtk/dcmsr/codes/ncit.h"
 #include "dcmtk/dcmsr/codes/srt.h"
 #include "dcmtk/dcmsr/codes/umls.h"
+#include "dcmtk/dcmsr/dsrtpltn.h"
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
@@ -47,6 +44,8 @@
 #define MEASUREMENT_METHOD              9
 #define LAST_FINDING_SITE              10
 #define LAST_MEASUREMENT               11
+#define LAST_QUALITATIVE_EVALUATION    12
+#define NUMBER_OF_LIST_ENTRIES         13
 
 // general information on TID 1411 (Volumetric ROI Measurements)
 #define TEMPLATE_NUMBER      "1411"
@@ -57,14 +56,23 @@
 
 template<typename T1, typename T2, typename T3, typename T4>
 TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::TID1411_VolumetricROIMeasurements(const OFBool createGroup)
-  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
+  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID),
+    Measurement(new TID1419_Measurement())
 {
     setExtensible(TEMPLATE_TYPE);
     /* need to store position of various content items */
-    reserveEntriesInNodeList(12, OFTrue /*initialize*/);
+    reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES, OFTrue /*initialize*/);
     /* TID 1411 (Volumetric ROI Measurements) Row 1 */
     if (createGroup)
         createMeasurementGroup();
+}
+
+
+template<typename T1, typename T2, typename T3, typename T4>
+void TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::clear()
+{
+    DSRSubTemplate::clear();
+    Measurement->clear();
 }
 
 
@@ -74,7 +82,7 @@ OFBool TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::isValid() const
     /* check whether base class is valid and all required content items are present */
     return DSRSubTemplate::isValid() &&
         hasMeasurementGroup() && hasTrackingIdentifier() && hasTrackingUniqueIdentifier() &&
-        hasReferencedSegment() && hasSourceSeriesForSegmentation() && hasROIMeasurements();
+        hasReferencedSegment() && hasSourceSeriesForSegmentation() && hasMeasurements(OFTrue /*checkChildren*/);
 }
 
 
@@ -130,10 +138,43 @@ OFBool TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::hasSourceSeriesForSegm
 
 
 template<typename T1, typename T2, typename T3, typename T4>
-OFBool TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::hasROIMeasurements() const
+OFBool TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::hasMeasurements(const OFBool checkChildren) const
 {
-    /* check for content item at TID 1419 (ROI Measurements) Row 5 */
-    return (getEntryFromNodeList(LAST_MEASUREMENT) > 0);
+    OFBool result = OFFalse;
+    /* need to check for child nodes? */
+    if (checkChildren)
+    {
+        DSRDocumentTreeNodeCursor cursor(getRoot());
+        /* go to content item at TID 1411 (Volumetric ROI Measurements) Row 13 */
+        if (gotoEntryFromNodeList(cursor, LAST_MEASUREMENT) > 0)
+        {
+            /* check whether any of the "included TID 1419 templates" is non-empty */
+            while (cursor.isValid() && (cursor.getNode()->getValueType() == VT_includedTemplate))
+            {
+                const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, cursor.getNode())->getValue().get();
+                if (subTempl != NULL)
+                {
+                    if (subTempl->compareTemplateIdentication("1419", "DCMR"))
+                    {
+                        result = !subTempl->isEmpty();
+                        if (result) break;
+                    } else {
+                        /* exit loop */
+                        break;
+                    }
+                }
+                if (cursor.gotoPrevious() == 0)
+                {
+                    /* invalidate cursor */
+                    cursor.clear();
+                }
+            }
+        }
+    } else {
+        /* check for content item at TID 1411 (Volumetric ROI Measurements) Row 13 */
+        result = (getEntryFromNodeList(LAST_MEASUREMENT) > 0);
+    }
+    return result;
 }
 
 
@@ -426,39 +467,13 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T_Method, T4>::setMeasurem
 
 template<typename T1, typename T2, typename T3, typename T4>
 OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::addFindingSite(const DSRCodedEntryValue &site,
+                                                                              const CID244e_Laterality &laterality,
+                                                                              const DSRCodedEntryValue &siteModifier,
                                                                               const OFBool check)
 {
     OFCondition result = EC_Normal;
-    /* basic check of parameter */
+    /* basic check of mandatory parameter */
     if (site.isComplete())
-    {
-        /* check whether measurement group already exists */
-        if (!hasMeasurementGroup())
-            result = createMeasurementGroup();
-        /* go to last finding site (if any) */
-        gotoLastEntryFromNodeList(this, LAST_FINDING_SITE);
-        /* 1419 (ROI Measurements) Row 2 */
-        CHECK_RESULT(addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
-        CHECK_RESULT(getCurrentContentItem().setCodeValue(site, check));
-        CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1419 - Row 2"));
-        /* store ID of recently added node for later use */
-        GOOD_RESULT(storeEntryInNodeList(LAST_FINDING_SITE, getNodeID()));
-    } else
-        result = EC_IllegalParameter;
-    return result;
-}
-
-
-template<typename T_Measurement, typename T_Units, typename T_Method, typename T_Derivation>
-OFCondition TID1411_VolumetricROIMeasurements<T_Measurement, T_Units, T_Method, T_Derivation>::addMeasurement(const T_Measurement &conceptName,
-                                                                                                              const MeasurementValue &numericValue,
-                                                                                                              const T_Method &method,
-                                                                                                              const T_Derivation &derivation,
-                                                                                                              const OFBool check)
-{
-    OFCondition result = EC_Normal;
-    /* basic check of mandatory parameters */
-    if (conceptName.hasSelectedValue() && numericValue.isComplete())
     {
         /* check whether measurement group already exists */
         if (!hasMeasurementGroup())
@@ -469,41 +484,41 @@ OFCondition TID1411_VolumetricROIMeasurements<T_Measurement, T_Units, T_Method, 
             DSRDocumentSubTree *subTree = new DSRDocumentSubTree;
             if (subTree != NULL)
             {
-                /* TID 1419 (ROI Measurements) Row 5 */
-                STORE_RESULT(subTree->addContentItem(RT_contains, VT_Num, conceptName, check));
-                CHECK_RESULT(subTree->getCurrentContentItem().setNumericValue(numericValue, check));
-                CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 5"));
+                /* TID 1419 (ROI Measurements) Row 2 */
+                CHECK_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
+                CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(site, check));
+                CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 2"));
                 const size_t lastNode = subTree->getNodeID();
-                /* TID 1419 (ROI Measurements) Row 7 - optional */
-                if (method.hasSelectedValue())
+                /* TID 1419 (ROI Measurements) Row 3 - optional */
+                if (laterality.hasSelectedValue())
                 {
-                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_MeasurementMethod, check));
-                    CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(method, check));
-                    CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 7"));
+                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_Laterality, check));
+                    CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(laterality, check));
+                    CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 3"));
                     GOOD_RESULT(subTree->gotoParent());
                 }
-                /* TID 1419 (ROI Measurements) Row 8 - optional */
-                if (derivation.hasSelectedValue())
+                /* TID 1419 (ROI Measurements) Row 4 - optional */
+                if (siteModifier.isComplete())
                 {
-                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_DCM_Derivation, check));
-                    CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(derivation, check));
-                    CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 8"));
+                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_TopographicalModifier, check));
+                    CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(siteModifier, check));
+                    CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 4"));
                     GOOD_RESULT(subTree->gotoParent());
                 }
                 /* if everything was OK, insert new subtree into the template */
                 if (result.good() && !subTree->isEmpty())
                 {
                     /* go to last measurement (if any) */
-                    if (gotoLastEntryFromNodeList(this, LAST_MEASUREMENT) > 0)
+                    if (gotoLastEntryFromNodeList(this, LAST_FINDING_SITE) == getEntryFromNodeList(MEASUREMENT_GROUP))
                     {
-                        /* insert subtree at current position */
+                        /* insert subtree below root */
+                        STORE_RESULT(insertSubTree(subTree, AM_belowCurrent));
+                    } else  {
+                        /* insert subtree after current position */
                         STORE_RESULT(insertSubTree(subTree, AM_afterCurrent));
-                        /* store ID of recently added node for later use */
-                        GOOD_RESULT(storeEntryInNodeList(LAST_MEASUREMENT, lastNode));
-                    } else {
-                        /* should never happen but ... */
-                        result = CMR_EC_NoMeasurementGroup;
                     }
+                    /* store ID of recently added node for later use */
+                    GOOD_RESULT(storeEntryInNodeList(LAST_FINDING_SITE, lastNode));
                     /* in case of error, make sure that memory is freed */
                     BAD_RESULT(delete subTree);
                 } else {
@@ -512,6 +527,120 @@ OFCondition TID1411_VolumetricROIMeasurements<T_Measurement, T_Units, T_Method, 
                 }
             } else
                 result = EC_MemoryExhausted;
+        } else
+            result = CMR_EC_NoMeasurement;
+    } else
+        result = EC_IllegalParameter;
+    return result;
+}
+
+
+template<typename T_Measurement, typename T_Units, typename T_Method, typename T_Derivation>
+OFCondition TID1411_VolumetricROIMeasurements<T_Measurement, T_Units, T_Method, T_Derivation>::addMeasurement(const T_Measurement &conceptName,
+                                                                                                              const MeasurementValue &numericValue,
+                                                                                                              const OFBool checkEmpty,
+                                                                                                              const OFBool checkValue)
+{
+    OFCondition result = EC_Normal;
+    /* basic check of mandatory parameters */
+    if (conceptName.hasSelectedValue() && numericValue.isComplete())
+    {
+        /* check whether measurement group already exists */
+        if (!hasMeasurementGroup())
+            result = createMeasurementGroup();
+        if (result.good())
+        {
+            /* go to content item at TID 1411 (Volumetric ROI Measurements) Row 15 */
+            if (gotoEntryFromNodeList(this, LAST_MEASUREMENT) > 0)
+            {
+                /* check whether the current instance of TID 1419 is non-empty (if needed) */
+                if (checkEmpty && Measurement->isEmpty())
+                    result = getMeasurement().createNewMeasurement(conceptName, numericValue, checkValue);
+                else {
+                    /* create new instance of TID 1419 (ROI Measurements) */
+                    TID1419_Measurement *subTempl = new TID1419_Measurement(conceptName, numericValue, checkValue);
+                    if (subTempl != NULL)
+                    {
+                        /* store (shared) reference to new instance */
+                        Measurement.reset(subTempl);
+                        /* and add it to the current template (TID 1411 - Row 15) */
+                        STORE_RESULT(includeTemplate(Measurement, AM_afterCurrent, RT_contains));
+                        CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1411 - Row 15"));
+                        GOOD_RESULT(storeEntryInNodeList(LAST_MEASUREMENT, getNodeID()));
+                        /* tbc: what if the call of includeTemplate() fails? */
+                    } else
+                        result = EC_MemoryExhausted;
+                }
+            } else
+                result = CMR_EC_NoMeasurementGroup;
+        }
+    } else
+        result = EC_IllegalParameter;
+    return result;
+}
+
+
+template<typename T1, typename T2, typename T3, typename T4>
+OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                                                                        const DSRCodedEntryValue &codeValue,
+                                                                                        const OFBool check)
+{
+    OFCondition result = EC_Normal;
+    /* make sure that the parameters are non-empty */
+    if (conceptName.isComplete() && codeValue.isComplete())
+    {
+        /* check whether measurement group already exists */
+        if (!hasMeasurementGroup())
+            result = createMeasurementGroup();
+        if (result.good())
+        {
+            /* go to last qualitative evaluation (if any) */
+            if (gotoLastEntryFromNodeList(this, LAST_QUALITATIVE_EVALUATION) == getEntryFromNodeList(MEASUREMENT_GROUP))
+            {
+                /* insert TID 1411 (Volumetric ROI Measurements) Row 16 below root */
+                STORE_RESULT(addChildContentItem(RT_contains, VT_Code, conceptName, check));
+            } else {
+               /* insert TID 1411 (Volumetric ROI Measurements) Row 16 after current position */
+                STORE_RESULT(addContentItem(RT_contains, VT_Code, conceptName, check));
+            }
+            CHECK_RESULT(getCurrentContentItem().setCodeValue(codeValue, check));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1411 - Row 16"));
+            /* store ID of recently added node for later use */
+            GOOD_RESULT(storeEntryInNodeList(LAST_QUALITATIVE_EVALUATION, getNodeID()));
+        }
+    } else
+        result = EC_IllegalParameter;
+    return result;
+}
+
+
+template<typename T1, typename T2, typename T3, typename T4>
+OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                                                                        const OFString &stringValue,
+                                                                                        const OFBool check)
+{
+    OFCondition result = EC_Normal;
+    /* make sure that the parameters are non-empty */
+    if (conceptName.isComplete() && !stringValue.empty())
+    {
+        /* check whether measurement group already exists */
+        if (!hasMeasurementGroup())
+            result = createMeasurementGroup();
+        if (result.good())
+        {
+            /* go to last qualitative evaluation (if any) */
+            if (gotoLastEntryFromNodeList(this, LAST_QUALITATIVE_EVALUATION) == getEntryFromNodeList(MEASUREMENT_GROUP))
+            {
+                /* insert TID 1411 (Volumetric ROI Measurements) Row 17 below root */
+                STORE_RESULT(addChildContentItem(RT_contains, VT_Text, conceptName, check));
+            } else {
+               /* insert TID 1411 (Volumetric ROI Measurements) Row 17 after current position */
+                STORE_RESULT(addContentItem(RT_contains, VT_Text, conceptName, check));
+            }
+            CHECK_RESULT(getCurrentContentItem().setStringValue(stringValue, check));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1411 - Row 17"));
+            /* store ID of recently added node for later use */
+            GOOD_RESULT(storeEntryInNodeList(LAST_QUALITATIVE_EVALUATION, getNodeID()));
         }
     } else
         result = EC_IllegalParameter;
@@ -530,8 +659,13 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::createMeasurement
         /* TID 1411 (Volumetric ROI Measurements) Row 1 */
         STORE_RESULT(addContentItem(RT_unknown, VT_Container, CODE_DCM_MeasurementGroup));
         CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1411 - Row 1"));
-        /* store ID of root node for later use */
         GOOD_RESULT(storeEntryInNodeList(MEASUREMENT_GROUP, getNodeID()));
+        /* TID 1411 (Volumetric ROI Measurements) Row 15 */
+        CHECK_RESULT(includeTemplate(Measurement, AM_belowCurrent, RT_contains));
+        CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1411 - Row 15"));
+        GOOD_RESULT(storeEntryInNodeList(LAST_MEASUREMENT, getNodeID()));
+        /* if anything went wrong, clear the report */
+        BAD_RESULT(clear());
     }
     return result;
 }
@@ -587,6 +721,7 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::addOrReplaceConte
             } else {
                 DCMSR_CMR_DEBUG("Replacing value of '" << conceptName.getCodeMeaning()
                     << "' content item (" << annotationText << ")");
+                /* the actual replacing of the value is done by the caller of this method */
             }
         } else
             result = SR_EC_InvalidTemplateStructure;

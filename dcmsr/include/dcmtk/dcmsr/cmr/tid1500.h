@@ -291,6 +291,7 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 // define short names for the SR template classes
 typedef TID1500_MeasurementReport CMR_TID1500;
 typedef TID1500_MeasurementReport::TID1411_Measurements CMR_TID1411_in_TID1500;
+typedef TID1500_MeasurementReport::TID1411_Measurements::TID1419_Measurement CMR_TID1419_in_TID1411_in_TID1500;
 
 
 #endif

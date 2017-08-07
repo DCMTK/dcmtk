@@ -86,6 +86,7 @@ OFTEST_REGISTER(dcmsr_CID10013e_CTAcquisitionType);
 OFTEST_REGISTER(dcmsr_CID10033e_CTReconstructionAlgorithm);
 OFTEST_REGISTER(dcmsr_TID1001_ObservationContext);
 OFTEST_REGISTER(dcmsr_TID1204_LanguageOfContentItemAndDescendants);
+OFTEST_REGISTER(dcmsr_TID1411_VolumetricROIMeasurements);
 OFTEST_REGISTER(dcmsr_TID1500_MeasurementReport);
 OFTEST_REGISTER(dcmsr_TID1600_ImageLibrary);
 OFTEST_REGISTER(dcmsr_CMR_SRNumericMeasurementValue);

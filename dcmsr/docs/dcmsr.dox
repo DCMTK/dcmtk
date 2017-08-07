@@ -24,6 +24,7 @@ Currently, the following SR templates are implemented (see notes for details):
 \li \b TID1001_ObservationContext
 \li \b TID1204_LanguageOfContentItemAndDescendants
 \li \b TID1411_VolumetricROIMeasurements
+\li \b TID1419_ROIMeasurements_Measurement
 \li \b TID1500_MeasurementReport
 \li \b TID1600_ImageLibrary
 

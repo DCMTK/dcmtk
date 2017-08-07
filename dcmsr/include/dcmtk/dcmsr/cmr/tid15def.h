@@ -38,6 +38,8 @@
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoMeasurementReport;
 /// error: there is no measurement group to add entries to
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoMeasurementGroup;
+/// error: there is no measurement to add entries to
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoMeasurement;
 /// error: the given segmentation object does not conform to the template constraints
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidSegmentationObject;
 /// error: the given DICOM object is not a real world value mapping object

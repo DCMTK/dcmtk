@@ -221,6 +221,47 @@ OFTEST(dcmsr_TID1204_LanguageOfContentItemAndDescendants)
 }
 
 
+OFTEST(dcmsr_TID1411_VolumetricROIMeasurements)
+{
+    CMR_TID1411_in_TID1500 volumetric;
+    /* create a new volumetric measurements object and set the mandatory values */
+    OFCHECK(volumetric.setTrackingIdentifier("tracking").good());
+    OFCHECK(volumetric.setTrackingUniqueIdentifier("1.2.3.4.5").good());
+    OFCHECK(volumetric.setTimePoint("1").good());
+    OFCHECK(volumetric.hasMeasurementGroup());
+    OFCHECK(volumetric.hasTrackingIdentifier());
+    OFCHECK(volumetric.hasTrackingUniqueIdentifier());
+    /* the measurement is still missing */
+    OFCHECK(!volumetric.hasMeasurements());
+    OFCHECK(!volumetric.isValid());
+    /* do more sophisticated tests */
+    CMR_TID1419_in_TID1411_in_TID1500 &measurement = volumetric.getMeasurement();
+    OFCHECK(volumetric.addFindingSite(DSRBasicCodedEntry("EFGH", "99TEST", "Finding Site"), CMR_CID244::RightAndLeft).good());
+    OFCHECK(!volumetric.hasMeasurements());
+    OFCHECK(!measurement.hasMeasurement());
+    OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Volume, CMR_TID1411_in_TID1500::MeasurementValue("15", CMR_CID7181::CubicMillimeter)).good());
+    OFCHECK(volumetric.hasMeasurements());
+    OFCHECK(measurement.hasMeasurement());
+    OFCHECK(measurement.setDerivation(CMR_CID7464::StandardDeviation).good());
+    OFCHECK(measurement.addModifier(DSRBasicCodedEntry("ABCD", "99TEST", "Concept Name Modifier"), DSRBasicCodedEntry("ABCD.1", "99TEST", "Modifier 1")).good());
+    OFCHECK(measurement.addFindingSite(DSRBasicCodedEntry("EFGH.1", "99TEST", "Finding Site 1"), CMR_CID244::Left).good());
+    OFCHECK(measurement.addModifier(DSRBasicCodedEntry("ABCD", "99TEST", "Concept Name Modifier"), DSRBasicCodedEntry("ABCD.2", "99TEST", "Modifier 2")).good());
+    OFCHECK(measurement.setMeasurementMethod(DSRCodedEntryValue("9876", "99TEST", "Some method")).good());
+    OFCHECK(measurement.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
+    OFCHECK(measurement.addFindingSite(DSRBasicCodedEntry("EFGH.2", "99TEST", "Finding Site 2"), CID244e_Laterality(), DSRBasicCodedEntry("EFGH.2-1", "99TEST", "Finding Site 2 Modifier")).good());
+    OFCHECK(measurement.setEquivalentMeaningOfConceptName("blabla").good());
+    OFCHECK(measurement.addDerivationParameter(CODE_DCM_Derivation, CMR_SRNumericMeasurementValue("1.5", CODE_UCUM_Centimeter)).good());
+    OFCHECK(volumetric.addQualitativeEvaluation(CODE_DCM_Conclusion, "it's not ok").good());
+
+    /* output content of the tree (in debug mode only) */
+    if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        volumetric.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
+                               DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printLongSOPClassName);
+    }
+}
+
+
 OFTEST(dcmsr_TID1500_MeasurementReport)
 {
     TID1500_MeasurementReport report(CMR_CID7021::ImagingMeasurementReport);
@@ -258,18 +299,21 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(report.addVolumetricROIMeasurements().good());
     OFCHECK(report.addVolumetricROIMeasurements().good());
     OFCHECK(!report.hasVolumetricROIMeasurements(OFTrue /*checkChildren*/));
+    OFCHECK(report.getVolumetricROIMeasurements().setTrackingUniqueIdentifier("1.2.3.4.5").good());
+    OFCHECK(report.hasVolumetricROIMeasurements(OFTrue /*checkChildren*/));
+    OFCHECK(report.addVolumetricROIMeasurements().good());
     /* fill volumetric ROI measurements with data */
-    TID1500_MeasurementReport::TID1411_Measurements &measurements = report.getVolumetricROIMeasurements();
-    OFCHECK(!measurements.isValid());
-    OFCHECK(measurements.compareTemplateIdentication("1411", "DCMR"));
-    OFCHECK(measurements.setTrackingIdentifier("aorta reference region").good());
-    OFCHECK(measurements.setTrackingUniqueIdentifier("1.2.3.4.5").good());
-    OFCHECK(measurements.setTrackingIdentifier("some reference region").good());
-    OFCHECK(measurements.setActivitySession("1").good());
-    OFCHECK(measurements.setTimePoint("1.1").good());
-    OFCHECK(measurements.setSourceSeriesForSegmentation("6.7.8.9.0").good());
-    OFCHECK(measurements.setFinding(DSRBasicCodedEntry("0815", "99TEST", "Some test code")).good());
-    OFCHECK(!measurements.isValid());
+    TID1500_MeasurementReport::TID1411_Measurements &volMeasurements = report.getVolumetricROIMeasurements();
+    OFCHECK(!volMeasurements.isValid());
+    OFCHECK(volMeasurements.compareTemplateIdentication("1411", "DCMR"));
+    OFCHECK(volMeasurements.setTrackingIdentifier("aorta reference region").good());
+    OFCHECK(volMeasurements.setTrackingUniqueIdentifier("1.2.3.4.5").good());
+    OFCHECK(volMeasurements.setTrackingIdentifier("some reference region").good());
+    OFCHECK(volMeasurements.setActivitySession("1").good());
+    OFCHECK(volMeasurements.setTimePoint("1.1").good());
+    OFCHECK(volMeasurements.setSourceSeriesForSegmentation("6.7.8.9.0").good());
+    OFCHECK(volMeasurements.setFinding(DSRBasicCodedEntry("0815", "99TEST", "Some test code")).good());
+    OFCHECK(!volMeasurements.isValid());
     /* test two ways of adding a referenced segment */
     DSRImageReferenceValue segment(UID_SegmentationStorage, "1.0.2.0.3.0");
     segment.getSegmentList().addItem(1);
@@ -284,30 +328,35 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
         OFCHECK(ditem->putAndInsertString(DCM_TrackingID, "blabla").good());
         OFCHECK(ditem->putAndInsertString(DCM_TrackingUID, "1.2.3").good());
     }
-    OFCHECK(measurements.setReferencedSegment(segment).good());
-    OFCHECK(measurements.setReferencedSegment(DSRImageReferenceValue(UID_SegmentationStorage, "1.0")).bad());
-    OFCHECK(measurements.setReferencedSegment(dataset, 1).good());
+    OFCHECK(volMeasurements.setReferencedSegment(segment).good());
+    OFCHECK(volMeasurements.setReferencedSegment(DSRImageReferenceValue(UID_SegmentationStorage, "1.0")).bad());
+    OFCHECK(volMeasurements.setReferencedSegment(dataset, 1).good());
     dataset.clear();
     OFCHECK(dataset.putAndInsertString(DCM_SOPClassUID, UID_RealWorldValueMappingStorage).good());
     OFCHECK(dataset.putAndInsertString(DCM_SOPInstanceUID, "99.9").good());
-    OFCHECK(measurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
-    OFCHECK(measurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_CTImageStorage, "2.0")).bad());
-    OFCHECK(measurements.setRealWorldValueMap(dataset).good());
-    OFCHECK(measurements.addFindingSite(CODE_SRT_AorticArch).good());
-    OFCHECK(measurements.setMeasurementMethod(DSRCodedEntryValue(CODE_DCM_SUVBodyWeightCalculationMethod)).good());
-    OFCHECK(!measurements.isValid());
+    OFCHECK(volMeasurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
+    OFCHECK(volMeasurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_CTImageStorage, "2.0")).bad());
+    OFCHECK(volMeasurements.setRealWorldValueMap(dataset).good());
+    OFCHECK(volMeasurements.addFindingSite(CODE_SRT_AorticArch).good());
+    OFCHECK(volMeasurements.setMeasurementMethod(DSRCodedEntryValue(CODE_DCM_SUVBodyWeightCalculationMethod)).good());
+    OFCHECK(!volMeasurements.isValid());
     /* add two measurement values */
     const CMR_TID1411_in_TID1500::MeasurementValue numVal1("99", CMR_CID7181::StandardizedUptakeValueBodyWeight);
     const CMR_TID1411_in_TID1500::MeasurementValue numVal2(CMR_CID42::MeasurementFailure);
-    OFCHECK(measurements.addMeasurement(CMR_CID7469::SUVbw, numVal1, CMR_CID6147(), CMR_CID7464::Mean).good());
-    OFCHECK(measurements.addMeasurement(CMR_CID7469::SUVbw, numVal2, DSRCodedEntryValue("0815", "99TEST", "Some test code"), CMR_CID7464::Mode).good());
-    OFCHECK(measurements.isValid());
+    OFCHECK(!volMeasurements.hasMeasurements());
+    OFCHECK(volMeasurements.addMeasurement(CMR_CID7469::SUVbw, numVal1).good());
+    OFCHECK(volMeasurements.getMeasurement().setDerivation(CMR_CID7464::Mean).good());
+    OFCHECK(volMeasurements.addMeasurement(CMR_CID7469::SUVbw, numVal2).good());
+    OFCHECK(volMeasurements.getMeasurement().setDerivation(CMR_CID7464::Mode).good());
+    OFCHECK(volMeasurements.getMeasurement().setMeasurementMethod(DSRCodedEntryValue("0815", "99TEST", "Some test code")).good());
+    OFCHECK(volMeasurements.hasMeasurements());
+    OFCHECK(volMeasurements.isValid());
     /* now, add some qualitative evaluations */
     const DSRCodedEntryValue code("1234", "99TEST", "not bad");
     OFCHECK(report.addQualitativeEvaluation(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), code).good());
     OFCHECK(report.addQualitativeEvaluation(DSRBasicCodedEntry("4711", "99TEST", "Some other test code"), "very good").good());
     /* and, add another finding site (introduced with CP-1591) */
-    OFCHECK(measurements.addFindingSite(DSRCodedEntryValue("0815", "99TEST", "Some test code")).good());
+    OFCHECK(volMeasurements.addFindingSite(DSRCodedEntryValue("0815", "99TEST", "Some test code")).good());
     /* some final checks */
     OFCHECK(report.isValid());
     OFCHECK(report.hasImagingMeasurements(OFTrue /*checkChildren*/));
@@ -315,18 +364,18 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(report.hasQualitativeEvaluations(OFTrue /*checkChildren*/));
 
     /* check number of content items (expected) */
-    OFCHECK_EQUAL(report.getTree().countNodes(), 13);
-    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 35);
-    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 29);
+    OFCHECK_EQUAL(report.getTree().countNodes(), 14);
+    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 41);
+    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 31);
     /* create an expanded version of the tree */
     DSRDocumentSubTree *tree = NULL;
     OFCHECK(report.getTree().createExpandedSubTree(tree).good());
     /* and check whether all content items are there */
     if (tree != NULL)
     {
-        OFCHECK_EQUAL(tree->countNodes(), 29);
-        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/), 29);
-        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 29);
+        OFCHECK_EQUAL(tree->countNodes(), 31);
+        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/), 31);
+        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 31);
         delete tree;
     } else
         OFCHECK_FAIL("could create expanded tree");
