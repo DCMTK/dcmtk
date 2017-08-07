@@ -21,8 +21,8 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
 	-I$(dcmsr)/include
 LOCALDEFS =
 
-objs = init.o logger.o srnumvl.o tid1001.o tid1204.o tid1411.o tid1419m.o \
-	tid1500.o tid15def.o tid1600.o \
+objs = init.o logger.o srnumvl.o tid300.o tid1001.o tid1204.o tid1411.o tid1419m.o \
+	tid1500.o tid1501.o tid15def.o tid1600.o \
 	cid11.o cid29.o cid29e.o cid42.o cid100.o cid244.o cid244e.o cid4020.o \
 	cid4021.o cid4031.o cid4031e.o cid5000.o cid5001.o cid6147.o cid7021.o \
 	cid7181.o cid7445.o cid7452.o cid7453.o cid7464.o cid7469.o cid10013.o \

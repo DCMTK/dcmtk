@@ -291,13 +291,15 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     /* some further checks */
     OFCHECK(report.hasImagingMeasurements());
     OFCHECK(report.hasVolumetricROIMeasurements());
+    OFCHECK(report.hasIndividualMeasurements());
     OFCHECK(!report.hasQualitativeEvaluations());
     OFCHECK(!report.hasImagingMeasurements(OFTrue /*checkChildren*/));
     OFCHECK(!report.hasVolumetricROIMeasurements(OFTrue /*checkChildren*/));
+    OFCHECK(!report.hasIndividualMeasurements(OFTrue /*checkChildren*/));
     OFCHECK(!report.hasQualitativeEvaluations(OFTrue /*checkChildren*/));
     /* add two further volumetric ROI measurements */
     OFCHECK(report.addVolumetricROIMeasurements().good());
-    OFCHECK(report.addVolumetricROIMeasurements().good());
+    OFCHECK(report.addVolumetricROIMeasurements(OFFalse /*checkEmpty*/).good());
     OFCHECK(!report.hasVolumetricROIMeasurements(OFTrue /*checkChildren*/));
     OFCHECK(report.getVolumetricROIMeasurements().setTrackingUniqueIdentifier("1.2.3.4.5").good());
     OFCHECK(report.hasVolumetricROIMeasurements(OFTrue /*checkChildren*/));
@@ -351,6 +353,16 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(volMeasurements.getMeasurement().setMeasurementMethod(DSRCodedEntryValue("0815", "99TEST", "Some test code")).good());
     OFCHECK(volMeasurements.hasMeasurements());
     OFCHECK(volMeasurements.isValid());
+    /* also add an individual measurement */
+    TID1500_MeasurementReport::TID1501_Measurements &linMeasurements = report.getIndividualMeasurements();
+    OFCHECK(!linMeasurements.isValid());
+    OFCHECK(linMeasurements.compareTemplateIdentication("1501", "DCMR"));
+    OFCHECK(linMeasurements.setTrackingIdentifier("aorta reference region").good());
+    OFCHECK(linMeasurements.setTrackingUniqueIdentifier("1.2.3.4.5").good());
+    const CMR_TID1501_in_TID1500::MeasurementValue numVal3("11", CMR_CID7181::Millimeter);
+    OFCHECK(linMeasurements.addMeasurement(CMR_CID7469::Distance, numVal3).good());
+    OFCHECK(linMeasurements.addMeasurement(CMR_CID7469::Diameter, numVal3).good());
+
     /* now, add some qualitative evaluations */
     const DSRCodedEntryValue code("1234", "99TEST", "not bad");
     OFCHECK(report.addQualitativeEvaluation(DSRBasicCodedEntry("0815", "99TEST", "Some test code"), code).good());
@@ -361,21 +373,22 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(report.isValid());
     OFCHECK(report.hasImagingMeasurements(OFTrue /*checkChildren*/));
     OFCHECK(report.hasVolumetricROIMeasurements(OFTrue /*checkChildren*/));
+    OFCHECK(report.hasIndividualMeasurements(OFTrue /*checkChildren*/));
     OFCHECK(report.hasQualitativeEvaluations(OFTrue /*checkChildren*/));
 
     /* check number of content items (expected) */
     OFCHECK_EQUAL(report.getTree().countNodes(), 14);
-    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 41);
-    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 31);
+    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 48);
+    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 36);
     /* create an expanded version of the tree */
     DSRDocumentSubTree *tree = NULL;
     OFCHECK(report.getTree().createExpandedSubTree(tree).good());
     /* and check whether all content items are there */
     if (tree != NULL)
     {
-        OFCHECK_EQUAL(tree->countNodes(), 31);
-        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/), 31);
-        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 31);
+        OFCHECK_EQUAL(tree->countNodes(), 36);
+        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/), 36);
+        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 36);
         delete tree;
     } else
         OFCHECK_FAIL("could create expanded tree");
@@ -397,6 +410,51 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     {
         report.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
                            DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printLongSOPClassName);
+    }
+}
+
+
+OFTEST(dcmsr_TID1501_MeasurementGroup)
+{
+    CMR_TID1501_in_TID1500 group;
+    /* create a new measurement group and set the mandatory values */
+    OFCHECK(group.setTrackingIdentifier("tracking").good());
+    OFCHECK(group.setTrackingUniqueIdentifier("1.2.3.4.5").good());
+    OFCHECK(group.setTimePoint("1").good());
+    OFCHECK(group.hasMeasurementGroup());
+    OFCHECK(group.hasTrackingIdentifier());
+    OFCHECK(group.hasTrackingUniqueIdentifier());
+    /* the measurement is still missing */
+    OFCHECK(!group.hasMeasurements());
+    OFCHECK(!group.isValid());
+    /* do more sophisticated tests, e.g. on TID 300 */
+    CMR_TID300_in_TID1501_in_TID1500 &measurement = group.getMeasurement();
+    OFCHECK(!group.hasMeasurements());
+    OFCHECK(!measurement.hasMeasurement());
+    OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Distance, CMR_TID1501_in_TID1500::MeasurementValue("5", CMR_CID7181::Centimeter)).good());
+    OFCHECK(group.hasMeasurements());
+    OFCHECK(measurement.hasMeasurement());
+    OFCHECK(group.isValid());
+    OFCHECK(measurement.setDerivation(CMR_CID7464::StandardDeviation).good());
+    OFCHECK(measurement.addModifier(DSRBasicCodedEntry("ABCD", "99TEST", "Concept Name Modifier"), DSRBasicCodedEntry("ABCD.1", "99TEST", "Modifier 1")).good());
+    OFCHECK(measurement.addFindingSite(DSRBasicCodedEntry("EFGH.1", "99TEST", "Finding Site 1"), CMR_CID244::Left).good());
+    OFCHECK(measurement.addModifier(DSRBasicCodedEntry("ABCD", "99TEST", "Concept Name Modifier"), DSRBasicCodedEntry("ABCD.2", "99TEST", "Modifier 2")).good());
+    OFCHECK(measurement.setMeasurementMethod(DSRCodedEntryValue("9876", "99TEST", "Some method")).good());
+    OFCHECK(measurement.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
+    OFCHECK(measurement.addFindingSite(DSRBasicCodedEntry("EFGH.2", "99TEST", "Finding Site 2"), CID244e_Laterality(), DSRBasicCodedEntry("EFGH.2-1", "99TEST", "Finding Site 2 Modifier")).good());
+    OFCHECK(measurement.setEquivalentMeaningOfConceptName("blabla").good());
+    OFCHECK(measurement.addDerivationParameter(CODE_DCM_Derivation, CMR_SRNumericMeasurementValue("1.5", CODE_UCUM_Centimeter)).good());
+    OFCHECK(measurement.addImage(CODE_DCM_SourceImageForImageProcessingOperation, DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4")).good());
+    DSRSpatialCoordinatesValue spatialCoord(DSRTypes::GT_Point);
+    spatialCoord.getGraphicDataList().addItem(100, 200);
+    OFCHECK(measurement.addSpatialCoordinates(CODE_DCM_SourceImageForImageProcessingOperation, spatialCoord, DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4")).good());
+    OFCHECK(group.addQualitativeEvaluation(CODE_DCM_Conclusion, "it's ok").good());
+
+    /* output content of the tree (in debug mode only) */
+    if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        group.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
+                          DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printLongSOPClassName);
     }
 }
 
