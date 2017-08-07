@@ -38,6 +38,7 @@
 #define IMAGE_LIBRARY            0
 #define LAST_IMAGE_LIBRARY_GROUP 1
 #define LAST_IMAGE_LIBRARY_ENTRY 2
+#define NUMBER_OF_LIST_ENTRIES   3
 
 // general information on TID 1600 (Image Library)
 #define TEMPLATE_NUMBER      "1600"
@@ -61,7 +62,7 @@ TID1600_ImageLibrary::TID1600_ImageLibrary(const OFBool createLibrary)
 {
     setExtensible(TEMPLATE_TYPE);
     /* need to store image library, last image library group and entry */
-    reserveEntriesInNodeList(3);
+    reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES);
     /* TID 1600 (Image Library) Row 1 */
     if (createLibrary)
         createImageLibrary();

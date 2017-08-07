@@ -35,6 +35,7 @@
 #define IMAGING_MEASUREMENTS             3
 #define LAST_VOLUMETRIC_ROI_MEASUREMENTS 4
 #define QUALITATIVE_EVALUATIONS          5
+#define NUMBER_OF_LIST_ENTRIES           6
 
 // general information on TID 1500 (Measurement Report)
 #define TEMPLATE_NUMBER      "1500"
@@ -49,11 +50,12 @@ TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementRe
     Language(new TID1204_LanguageOfContentItemAndDescendants()),
     ObservationContext(new TID1001_ObservationContext()),
     ImageLibrary(new TID1600_ImageLibrary()),
-    VolumetricROIMeasurements(new TID1411_Measurements())
+    VolumetricROIMeasurements(new TID1411_Measurements()),
+    MeasurementGroup(new TID1501_Measurements())
 {
     setExtensible(TEMPLATE_TYPE);
     /* need to store position of various content items */
-    reserveEntriesInNodeList(6, OFTrue /*initialize*/);
+    reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES, OFTrue /*initialize*/);
     /* if specified, create an initial report */
     if (title.hasSelectedValue())
         createMeasurementReport(title, check);
