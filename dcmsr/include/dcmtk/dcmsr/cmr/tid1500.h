@@ -86,8 +86,10 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
      *  createNewMeasurementReport(), but only if a non-empty 'title' is passed.
      ** @param  title  optional document title to be set (from CID 7021 - Measurement
      *                 Report Document Titles), i.e.\ the concept name of the root node
+     *  @param  check  if enabled, check value for validity before setting it
      */
-    TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitles &title = CID7021_MeasurementReportDocumentTitles());
+    TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitles &title = CID7021_MeasurementReportDocumentTitles(),
+                              const OFBool check = OFTrue);
 
     /** clear internal member variables.
      *  Also see notes on the clear() method of the base class.
@@ -194,9 +196,11 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
      *  this template, i.e.\ TID 1500 - Row 1 to 6 and 8.
      ** @param  title  document title to be set (from CID 7021 - Measurement Report
      *                 Document Titles), i.e.\ the concept name of the root node
+     *  @param  check  if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition createNewMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title);
+    OFCondition createNewMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
+                                           const OFBool check = OFTrue);
 
     /** set language of this report as defined by TID 1204 (Language of Content Item and
      *  Descendants)
@@ -260,9 +264,11 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
      *  i.e.\ TID 1500 - Row 1 to 6 and 8.  It is expected that the tree is currently
      *  empty.
      ** @param  title  coded entry that specifies the document title to be set
+     *  @param  check  if enabled, check value for validity before setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition createMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title);
+    OFCondition createMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
+                                        const OFBool check);
 
     /** create the 'Qualitative Evaluations' content item (TID 1500 - Row 12) if not
      *  existing yet

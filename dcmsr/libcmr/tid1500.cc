@@ -43,7 +43,8 @@
 #define TEMPLATE_TYPE        OFTrue  /* extensible */
 
 
-TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitles &title)
+TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
+                                                     const OFBool check)
   : DSRRootTemplate(DT_EnhancedSR, TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID),
     Language(new TID1204_LanguageOfContentItemAndDescendants()),
     ObservationContext(new TID1001_ObservationContext()),
@@ -55,7 +56,7 @@ TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementRe
     reserveEntriesInNodeList(6, OFTrue /*initialize*/);
     /* if specified, create an initial report */
     if (title.hasSelectedValue())
-        createMeasurementReport(title);
+        createMeasurementReport(title, check);
 }
 
 
@@ -196,11 +197,12 @@ OFCondition TID1500_MeasurementReport::getDocumentTitle(DSRCodedEntryValue &titl
 }
 
 
-OFCondition TID1500_MeasurementReport::createNewMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title)
+OFCondition TID1500_MeasurementReport::createNewMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
+                                                                  const OFBool check)
 {
     clear();
     /* TID 1500 (Measurement Report) Row 1 */
-    return createMeasurementReport(title);
+    return createMeasurementReport(title, check);
 }
 
 
@@ -310,7 +312,8 @@ OFCondition TID1500_MeasurementReport::addQualitativeEvaluation(const DSRCodedEn
 
 // protected methods
 
-OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title)
+OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
+                                                               const OFBool check)
 {
     OFCondition result = EC_IllegalParameter;
     /* make sure that there is a coded entry */
@@ -320,11 +323,10 @@ OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_Mea
         if (isEmpty())
         {
             /* TID 1500 (Measurement Report) Row 1 */
-            STORE_RESULT(addContentItem(RT_isRoot, VT_Container, title));
+            STORE_RESULT(addContentItem(RT_isRoot, VT_Container, title, check));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 1"));
             /* store ID of root node for later use */
-            if (result.good())
-                storeEntryInNodeList(MEASUREMENT_REPORT, getNodeID());
+            GOOD_RESULT(storeEntryInNodeList(MEASUREMENT_REPORT, getNodeID()));
             /* TID 1500 (Measurement Report) Row 2 */
             CHECK_RESULT(includeTemplate(Language, AM_belowCurrent, RT_hasConceptMod));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 2"));
