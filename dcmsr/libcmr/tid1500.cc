@@ -42,7 +42,8 @@
 #define TEMPLATE_NUMBER      "1500"
 #define MAPPING_RESOURCE     "DCMR"
 #define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
-#define TEMPLATE_TYPE        OFTrue  /* extensible */
+#define TEMPLATE_TYPE        OFTrue   /* extensible */
+#define TEMPLATE_ORDER       OFFalse  /* non-significant */
 
 
 TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
@@ -55,6 +56,7 @@ TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementRe
     MeasurementGroup(new TID1501_Measurements())
 {
     setExtensible(TEMPLATE_TYPE);
+    setOrderSignificant(TEMPLATE_ORDER);
     /* need to store position of various content items */
     reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES, OFTrue /*initialize*/);
     /* if specified, create an initial report */

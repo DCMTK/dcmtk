@@ -74,6 +74,7 @@ class SRTestTemplate1410
       : DSRSubTemplate("1410", "DCMR")
     {
         setExtensible();
+        setOrderSignificant();
         /* make sure that at least the "root" CONTAINER is there */
         OFCHECK(addContentItem(RT_unknown, VT_Container, DSRCodedEntryValue("125007", "DCM", "Measurement Group")).good());
         /* ... and two mandatory child nodes */
@@ -176,6 +177,7 @@ OFTEST(dcmsr_rootTemplate)
     OFCHECK_EQUAL(templ.getMappingResourceUID(), UID_DICOMContentMappingResource);
     OFCHECK(templ.isRootTemplate());
     OFCHECK(!templ.isExtensible());
+    OFCHECK(!templ.isOrderSignificant());
     /* replace the document tree with the content of the template */
     OFCHECK(doc.setTreeFromRootTemplate(templ, OFFalse /*expandTree*/).good());
     /* and perform some further checks */
@@ -207,6 +209,7 @@ OFTEST(dcmsr_subTemplate_1)
     OFCHECK_EQUAL(templ.getMappingResourceUID(), "");
     OFCHECK(!templ.isRootTemplate());
     OFCHECK(templ.isExtensible());
+    OFCHECK(templ.isOrderSignificant());
     /* insert TID 1410 into the tree ... */
     OFCHECK(tree.insertSubTree(templ.cloneTree(), DSRTypes::AM_belowCurrent, DSRTypes::RT_isRoot).good());
     /* and replace the tree of the SR document with the content of the template */

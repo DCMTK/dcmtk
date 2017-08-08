@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -74,6 +74,14 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
         return ExtensibleMode;
     }
 
+    /** check whether the order of content items in this template is significant
+     ** @return OFTrue if order is significant, OFFalse otherwise
+     */
+    virtual OFBool isOrderSignificant() const
+    {
+        return OrderSignificantMode;
+    }
+
     /** compare template identification with given values
      ** @param  templateIdentifier  template identifier to compare with
      *  @param  mappingResource     mapping resource that defines the template
@@ -115,6 +123,15 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
     virtual void setExtensible(const OFBool mode = OFTrue)
     {
         ExtensibleMode = mode;
+    }
+
+    /** change mode specifying whether the order of content items in this template is
+     *  significant or non-significant
+     ** @param  mode  set order of content items to significant if OFTrue (default)
+     */
+    virtual void setOrderSignificant(const OFBool mode = OFTrue)
+    {
+        OrderSignificantMode = mode;
     }
 
 
@@ -203,6 +220,9 @@ class DCMTK_DCMSR_EXPORT DSRTemplateCommon
     const OFString MappingResourceUID;
     /// mode indicating whether template is extensible (default: false)
     OFBool ExtensibleMode;
+    /// mode indicating whether the order of content items in this template is
+    /// significant (default: false)
+    OFBool OrderSignificantMode;
 
     /// list of node IDs used to remember certain positions in the template
     OFVector<size_t> NodeList;

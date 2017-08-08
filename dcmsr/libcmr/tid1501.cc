@@ -48,7 +48,8 @@
 #define TEMPLATE_NUMBER      "1501"
 #define MAPPING_RESOURCE     "DCMR"
 #define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
-#define TEMPLATE_TYPE        OFTrue  /* extensible */
+#define TEMPLATE_TYPE        OFTrue   /* extensible */
+#define TEMPLATE_ORDER       OFFalse  /* non-significant */
 
 
 template<typename T1, typename T2, typename T3, typename T4>
@@ -57,6 +58,7 @@ TID1501_MeasurementGroup<T1, T2, T3, T4>::TID1501_MeasurementGroup(const OFBool 
     Measurement(new TID300_Measurement())
 {
     setExtensible(TEMPLATE_TYPE);
+    setOrderSignificant(TEMPLATE_ORDER);
     /* need to store position of various content items */
     reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES, OFTrue /*initialize*/);
     /* TID 1501 (Measurement Group) Row 1 */

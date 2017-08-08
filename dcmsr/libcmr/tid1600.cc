@@ -44,7 +44,8 @@
 #define TEMPLATE_NUMBER      "1600"
 #define MAPPING_RESOURCE     "DCMR"
 #define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
-#define TEMPLATE_TYPE        OFTrue  /* extensible */
+#define TEMPLATE_TYPE        OFTrue   /* extensible */
+#define TEMPLATE_ORDER       OFFalse  /* non-significant */
 
 
 // conditions constants
@@ -61,7 +62,8 @@ TID1600_ImageLibrary::TID1600_ImageLibrary(const OFBool createLibrary)
   : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
     setExtensible(TEMPLATE_TYPE);
-    /* need to store image library, last image library group and entry */
+    setOrderSignificant(TEMPLATE_ORDER);
+    /* need to store position of various content items */
     reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES);
     /* TID 1600 (Image Library) Row 1 */
     if (createLibrary)

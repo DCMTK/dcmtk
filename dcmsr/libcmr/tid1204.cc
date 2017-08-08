@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1204_LanguageOfContentItemAndDescendants
@@ -29,12 +29,14 @@
 #define MAPPING_RESOURCE     "DCMR"
 #define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
 #define TEMPLATE_TYPE        OFFalse  /* non-extensible */
+#define TEMPLATE_ORDER       OFTrue   /* significant */
 
 
 TID1204_LanguageOfContentItemAndDescendants::TID1204_LanguageOfContentItemAndDescendants()
   : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
     setExtensible(TEMPLATE_TYPE);
+    setOrderSignificant(TEMPLATE_ORDER);
 }
 
 

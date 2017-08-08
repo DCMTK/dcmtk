@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -37,6 +37,7 @@ DSRTemplateCommon::DSRTemplateCommon(const OFString &templateIdentifier,
     MappingResource(mappingResource),
     MappingResourceUID(mappingResourceUID),
     ExtensibleMode(OFFalse),
+    OrderSignificantMode(OFFalse),
     NodeList()
 {
     /* by default, a template is non-extensible */

@@ -47,7 +47,8 @@
 #define TEMPLATE_NUMBER      "1419"
 #define MAPPING_RESOURCE     "DCMR"
 #define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
-#define TEMPLATE_TYPE        OFTrue  /* extensible */
+#define TEMPLATE_TYPE        OFTrue   /* extensible */
+#define TEMPLATE_ORDER       OFFalse  /* non-significant */
 
 
 template<typename T_Measurement, typename T2, typename T3, typename T4>
@@ -55,6 +56,7 @@ TID1419_ROIMeasurements_Measurement<T_Measurement, T2, T3, T4>::TID1419_ROIMeasu
   : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
     setExtensible(TEMPLATE_TYPE);
+    setOrderSignificant(TEMPLATE_ORDER);
     /* need to store position of various content items */
     reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES, OFTrue /*initialize*/);
 }
@@ -67,6 +69,7 @@ TID1419_ROIMeasurements_Measurement<T_Measurement, T2, T3, T4>::TID1419_ROIMeasu
   : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
     setExtensible(TEMPLATE_TYPE);
+    setOrderSignificant(TEMPLATE_ORDER);
     /* need to store position of various content items */
     reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES, OFTrue /*initialize*/);
     /* create the mandatory "root" content item */

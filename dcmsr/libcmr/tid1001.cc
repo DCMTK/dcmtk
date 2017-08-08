@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1001_ObservationContext
@@ -25,22 +25,25 @@
 #define BAD_RESULT(call) if (result.bad()) call
 
 // index positions in node list (makes source code more readable)
-#define LAST_PERSON_OBSERVER 0
-#define LAST_DEVICE_OBSERVER 1
+#define LAST_PERSON_OBSERVER   0
+#define LAST_DEVICE_OBSERVER   1
+#define NUMBER_OF_LIST_ENTRIES 2
 
 // general information on TID 1001 (Observation Context)
 #define TEMPLATE_NUMBER      "1001"
 #define MAPPING_RESOURCE     "DCMR"
 #define MAPPING_RESOURCE_UID UID_DICOMContentMappingResource
 #define TEMPLATE_TYPE        OFFalse  /* non-extensible, but included templates are */
+#define TEMPLATE_ORDER       OFTrue   /* significant */
 
 
 TID1001_ObservationContext::TID1001_ObservationContext()
   : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
 {
     setExtensible(TEMPLATE_TYPE);
-    /* need to store last person and device observer */
-    reserveEntriesInNodeList(2);
+    setOrderSignificant(TEMPLATE_ORDER);
+    /* need to store position of various content items */
+    reserveEntriesInNodeList(NUMBER_OF_LIST_ENTRIES);
 }
 
 
