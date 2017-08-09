@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -91,9 +91,28 @@ const DSRDocumentTree &DSRRootTemplate::getTree()
 }
 
 
-OFCondition DSRRootTemplate::insertTemplate(const DSRSubTemplate &subTemplate,
-                                            const E_AddMode addMode,
-                                            const E_RelationshipType defaultRelType)
+OFCondition DSRRootTemplate::addExtraContentItem(const E_RelationshipType relationshipType,
+                                                 const E_ValueType valueType,
+                                                 const E_AddMode addMode)
+{
+    OFCondition result = SR_EC_NonExtensibleTemplate;
+    /* check whether this template is extensible */
+    if (isExtensible())
+    {
+        /* call the function doing the real work */
+        if (addContentItem(relationshipType, valueType, addMode) > 0)
+            result = EC_Normal;
+        else
+            result = SR_EC_CannotAddContentItem;
+    }
+    return result;
+}
+
+
+
+OFCondition DSRRootTemplate::insertExtraTemplate(const DSRSubTemplate &subTemplate,
+                                                 const E_AddMode addMode,
+                                                 const E_RelationshipType defaultRelType)
 {
     OFCondition result = SR_EC_NonExtensibleTemplate;
     /* check whether this template is extensible */

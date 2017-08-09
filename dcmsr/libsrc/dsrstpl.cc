@@ -88,9 +88,27 @@ const DSRDocumentSubTree &DSRSubTemplate::getTree()
 }
 
 
-OFCondition DSRSubTemplate::insertTemplate(const DSRSubTemplate &subTemplate,
-                                           const E_AddMode addMode,
-                                           const E_RelationshipType defaultRelType)
+OFCondition DSRSubTemplate::addExtraContentItem(const E_RelationshipType relationshipType,
+                                                const E_ValueType valueType,
+                                                const E_AddMode addMode)
+{
+    OFCondition result = SR_EC_NonExtensibleTemplate;
+    /* check whether this template is extensible */
+    if (isExtensible())
+    {
+        /* call the function doing the real work */
+        if (addContentItem(relationshipType, valueType, addMode) > 0)
+            result = EC_Normal;
+        else
+            result = SR_EC_CannotAddContentItem;
+    }
+    return result;
+}
+
+
+OFCondition DSRSubTemplate::insertExtraTemplate(const DSRSubTemplate &subTemplate,
+                                                const E_AddMode addMode,
+                                                const E_RelationshipType defaultRelType)
 {
     OFCondition result = SR_EC_NonExtensibleTemplate;
     /* check whether this template is extensible */

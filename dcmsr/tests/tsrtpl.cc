@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -136,8 +136,8 @@ class SRTestTemplate1410with1501
       : DSRSubTemplate("1410", "DCMR")
     {
         setExtensible();
-        /* insert sub-template some content items */
-        OFCHECK(insertTemplate(SRTestTemplate1410(), AM_belowCurrent, RT_contains).good());
+        /* insert sub-template with some content items */
+        OFCHECK(insertExtraTemplate(SRTestTemplate1410(), AM_belowCurrent, RT_contains).good());
         /* include sub-template with by-reference relationship */
         OFCHECK(includeTemplate(DSRSharedSubTemplate(new SRTestTemplate1501()), AM_belowCurrent, RT_contains).good());
     }
@@ -238,7 +238,7 @@ OFTEST(dcmsr_subTemplate_2)
     OFCHECK_EQUAL(templ1.countNodes(), 1);
     OFCHECK_EQUAL(templ2.countNodes(), 1);
     /* insert TID 1003 into TID 2000 */
-    OFCHECK(templ1.insertTemplate(templ2, DSRTypes::AM_belowCurrent, DSRTypes::RT_hasAcqContext).good());
+    OFCHECK(templ1.insertExtraTemplate(templ2, DSRTypes::AM_belowCurrent, DSRTypes::RT_hasAcqContext).good());
     OFCHECK_EQUAL(templ1.countNodes(), 2);
     OFCHECK_EQUAL(templ2.countNodes(), 1);
     /* replace the document tree with the content of the template */
@@ -247,6 +247,28 @@ OFTEST(dcmsr_subTemplate_2)
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_BasicTextSR);
     OFCHECK_EQUAL(doc.getTree().countNodes(), 2);
     OFCHECK(doc.getTree().compareTemplateIdentification("2000", "DCMR"));
+}
+
+
+OFTEST(dcmsr_subTemplate_3)
+{
+    /* first, create an almost empty "Planar ROI Measurements" (TID 1410) */
+    SRTestTemplate1410 templ;
+    /* then, add additional content items (since the template is extensible) */
+    OFCHECK(templ.isExtensible());
+    OFCHECK(templ.addExtraContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text).good());
+    OFCHECK(templ.getCurrentContentItem().setConceptName(DSRBasicCodedEntry("121106", "DCM", "Comment")).good());
+    OFCHECK(templ.getCurrentContentItem().setStringValue("Some comment").good());
+    OFCHECK(templ.addExtraContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent).good());
+    OFCHECK(templ.getCurrentContentItem().setConceptName(DSRBasicCodedEntry("121051", "DCM", "Equivalent Meaning of Value")).good());
+    OFCHECK(templ.getCurrentContentItem().setStringValue("blabla").good());
+    OFCHECK(templ.gotoParent() > 0);
+    /* also try to add if template is non-extensible */
+    templ.setExtensible(OFFalse);
+    OFCHECK(templ.addExtraContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container) == SR_EC_NonExtensibleTemplate);
+    /* finally, perform some further checks */
+    OFCHECK_EQUAL(templ.countNodes(), 5);
+    OFCHECK_EQUAL(templ.countChildNodes(), 1);
 }
 
 
@@ -277,7 +299,8 @@ OFTEST(dcmsr_templateWithByReferenceRelationship_1)
     /* first, create an almost empty "Planar ROI Measurements" (TID 1410) */
     SRTestTemplate1410 templ;
     /* insert sub-template with by-reference relationship */
-    OFCHECK(templ.insertTemplate(SRTestTemplate1501(), DSRTypes::AM_afterCurrent, DSRTypes::RT_contains).good());
+    OFCHECK(templ.isExtensible());
+    OFCHECK(templ.insertExtraTemplate(SRTestTemplate1501(), DSRTypes::AM_afterCurrent, DSRTypes::RT_contains).good());
     /* then, go to the source content item of the by-reference relationship */
     OFCHECK(templ.gotoNamedNode(DSRCodedEntryValue("09876", "99TEST", "Some other Measurement")) > 0);
     /* check whether the correct content item has been found */
@@ -311,7 +334,8 @@ OFTEST(dcmsr_templateWithByReferenceRelationship_2)
     SRTestRootTemplate rootTempl;
     OFCHECK_EQUAL(rootTempl.countNodes(), 1);
     /* insert the sub-template into it */
-    OFCHECK(rootTempl.insertTemplate(subTempl).good());
+    OFCHECK(rootTempl.isExtensible());
+    OFCHECK(rootTempl.insertExtraTemplate(subTempl).good());
     OFCHECK_EQUAL(rootTempl.countNodes(), 5);
     OFCHECK_EQUAL(rootTempl.countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 8);
     /* check whether the by-reference relationship is still valid */

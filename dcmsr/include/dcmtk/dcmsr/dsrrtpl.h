@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -118,7 +118,20 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
      */
     virtual const DSRDocumentTree &getTree();
 
-    /** insert tree from given template to internally stored document tree.
+    /** add extra content item to the current one (if the template is extensible).
+     *  See DSRDocumentTree::addContentItem() for details.
+     ** @param  relationshipType  relationship type of node to be added with regard to
+     *                            the current one
+     *  @param  valueType         value type of node to be added
+     *  @param  addMode           flag specifying at which position to add the new node
+     *                            (e.g. after or below the current node)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition addExtraContentItem(const E_RelationshipType relationshipType,
+                                            const E_ValueType valueType,
+                                            const E_AddMode addMode = AM_afterCurrent);
+
+    /** insert tree from given extra template to internally stored document tree.
      *  If possible, this method adds a copy of the given tree to the current content item.
      *  However, in case this template is non-extensible, an error code will be returned.
      ** @param  subTemplate     template that contains the tree that should be inserted
@@ -129,9 +142,9 @@ class DCMTK_DCMSR_EXPORT DSRRootTemplate
      *                          type is used if the one of a top-level node is "unknown".
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition insertTemplate(const DSRSubTemplate &subTemplate,
-                                       const E_AddMode addMode = AM_belowCurrent,
-                                       const E_RelationshipType defaultRelType = RT_unknown);
+    virtual OFCondition insertExtraTemplate(const DSRSubTemplate &subTemplate,
+                                            const E_AddMode addMode = AM_belowCurrent,
+                                            const E_RelationshipType defaultRelType = RT_unknown);
 
 
   // --- introduce some methods from base class to public API

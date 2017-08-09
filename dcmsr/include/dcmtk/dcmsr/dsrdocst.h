@@ -360,11 +360,12 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  method is called with the third parameter being DSRTypes::AM_afterCurrent.  If
      *  successful, the given concept name is set for the new node, and the cursor is updated.
      *  @note This is a convenience function that avoids calling several other functions.
-     ** @param  relationshipType  relationship type of node to be added with regard
-     *                            to the current one
+     ** @param  relationshipType  relationship type of node to be added with regard to
+     *                            the current one
      *  @param  valueType         value type of node to be added
      *  @param  conceptName       concept name of the node to be added
-     *  @param  check             if enabled, check 'conceptName for validity before setting it
+     *  @param  check             if enabled, check 'conceptName for validity before
+     *                            setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition addContentItem(const E_RelationshipType relationshipType,
@@ -378,11 +379,12 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  is called with the third parameter being DSRTypes::AM_belowCurrent.  If successful,
      *  the given concept name is set for the new node, and the cursor is updated.
      *  @note This is a convenience function that avoids calling several other functions.
-     ** @param  relationshipType  relationship type of node to be added with regard
-     *                            to the current one
+     ** @param  relationshipType  relationship type of node to be added with regard to
+     *                            the current one
      *  @param  valueType         value type of node to be added
      *  @param  conceptName       concept name of the node to be added
-     *  @param  check             if enabled, check 'conceptName for validity before setting it
+     *  @param  check             if enabled, check 'conceptName for validity before
+     *                            setting it
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition addChildContentItem(const E_RelationshipType relationshipType,

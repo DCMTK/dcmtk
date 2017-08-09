@@ -67,6 +67,7 @@ OFTEST_REGISTER(dcmsr_setDocumentTree);
 OFTEST_REGISTER(dcmsr_rootTemplate);
 OFTEST_REGISTER(dcmsr_subTemplate_1);
 OFTEST_REGISTER(dcmsr_subTemplate_2);
+OFTEST_REGISTER(dcmsr_subTemplate_3);
 OFTEST_REGISTER(dcmsr_createExpandedTree);
 OFTEST_REGISTER(dcmsr_templateWithByReferenceRelationship_1);
 OFTEST_REGISTER(dcmsr_templateWithByReferenceRelationship_2);

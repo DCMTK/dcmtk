@@ -449,6 +449,21 @@ OFTEST(dcmsr_TID1501_MeasurementGroup)
     spatialCoord.getGraphicDataList().addItem(100, 200);
     OFCHECK(measurement.addSpatialCoordinates(CODE_DCM_SourceImageForImageProcessingOperation, spatialCoord, DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4")).good());
     OFCHECK(group.addQualitativeEvaluation(CODE_DCM_Conclusion, "it's ok").good());
+    OFCHECK_EQUAL(group.countNodes(OFTrue /*searchIntoSubTemplates*/), 21);
+    /* add extra content items (TID 1501 is extensible) */
+    OFCHECK(group.addExtraContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container).good());
+    OFCHECK(group.addExtraContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent).good());
+    OFCHECK(group.getCurrentContentItem().setConceptName(CODE_DCM_Comment).good());
+    OFCHECK(group.getCurrentContentItem().setStringValue("some extra stuff").good());
+    OFCHECK(group.gotoAnnotatedNode("TID 1501 - Row 3") > 0);
+    OFCHECK(group.addExtraContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Code).good());
+    OFCHECK(group.getCurrentContentItem().setConceptName(CODE_DCM_FindingObservationType).good());
+    OFCHECK(group.getCurrentContentItem().setCodeValue(DSRBasicCodedEntry("0815", "99TEST", "Some test code")).good());
+    OFCHECK_EQUAL(group.countNodes(OFTrue /*searchIntoSubTemplates*/), 24);
+    /* and, finally, change an existing template value and add a measurement */
+    OFCHECK(group.setTrackingIdentifier("tracking #2").good());
+    OFCHECK(group.addMeasurement(CMR_CID7469::Diameter, CMR_TID1501_in_TID1500::MeasurementValue("10", CMR_CID7181::Millimeter)).good());
+    OFCHECK_EQUAL(group.countNodes(OFTrue /*searchIntoSubTemplates*/), 26);
 
     /* output content of the tree (in debug mode only) */
     if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
