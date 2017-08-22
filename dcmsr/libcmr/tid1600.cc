@@ -52,7 +52,7 @@
 makeOFConditionConst(CMR_EC_NoImageLibrary,                                OFM_dcmsr, 1600, OF_error, "No Image Library");
 makeOFConditionConst(CMR_EC_NoImageLibraryGroup,                           OFM_dcmsr, 1601, OF_error, "No Image Library Group");
 makeOFConditionConst(CMR_EC_NoImageLibraryEntry,                           OFM_dcmsr, 1602, OF_error, "No Image Library Entry");
-makeOFConditionConst(CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors, OFM_dcmsr, 1603, OF_error, "Cannot add multiple Image Library Entry Descriptors");
+makeOFConditionConst(CMR_EC_CannotAddMultipleImageLibraryGroupDescriptors, OFM_dcmsr, 1603, OF_error, "Cannot add multiple Image Library Group Descriptors");
 makeOFConditionConst(CMR_EC_MissingImageLibraryEntryDescriptorModality,    OFM_dcmsr, 1604, OF_error, "Missing Image Library Entry Descriptor 'Modality'");
 makeOFConditionConst(CMR_EC_WrongImageLibraryEntryDescriptorModality,      OFM_dcmsr, 1605, OF_error, "Wrong Image Library Entry Descriptor 'Modality'");
 makeOFConditionConst(CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded,       OFM_dcmsr, 1606, OF_ok,    "No Image Library Entry Descriptors to be added");
@@ -209,7 +209,7 @@ OFCondition TID1600_ImageLibrary::addImageEntry(DcmItem &dataset,
 }
 
 
-OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
+OFCondition TID1600_ImageLibrary::addImageGroupDescriptors(DcmItem &dataset,
                                                            const AddImageMode mode,
                                                            const ConceptNameList &descriptors,
                                                            const OFBool check)
@@ -235,7 +235,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DcmItem &dataset,
                     if ((childNode != NULL) && (childNode->getRelationshipType() == RT_hasAcqContext))
                     {
                         /* only a single invocation of the included template allowed */
-                        result = CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors;
+                        result = CMR_EC_CannotAddMultipleImageLibraryGroupDescriptors;
                     } else {
                         /* insert subtree at current position */
                         STORE_RESULT(insertSubTree(subTree, AM_belowCurrentBeforeFirstChild));

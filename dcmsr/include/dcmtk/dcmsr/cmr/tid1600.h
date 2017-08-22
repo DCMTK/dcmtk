@@ -44,8 +44,8 @@ extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibrary;
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryGroup;
 /// error: there is no image library entry to add descriptors to
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryEntry;
-/// error: cannot add multiple image library entry descriptors (see TID 1600 Row 3)
-extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_CannotAddMultipleImageLibraryEntryDescriptors;
+/// error: cannot add multiple image library group descriptors (see TID 1600 Row 3)
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_CannotAddMultipleImageLibraryGroupDescriptors;
 /// error: the current (most recently added) image library entry has no modality descriptor
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_MissingImageLibraryEntryDescriptorModality;
 /// error: the current (most recently added) image library entry has the wrong modality descriptor
@@ -120,7 +120,9 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      */
     OFCondition createNewImageLibrary();
 
-    /** add an image group to the image library
+    /** add an image group to the image library.
+     *  Image descriptors that are common to all images in this group can be added by
+     *  calling addImageGroupDescriptors().
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addImageGroup();
@@ -143,7 +145,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
                               const ConceptNameList &descriptors = ConceptNameList(),
                               const OFBool check = OFTrue);
 
-    /** add image entry descriptors to the current image group, i.e.\ add content
+    /** add common image descriptors to the current image group, i.e.\ add content items
      *  items for TID 1602 (Image Library Entry Descriptors) and included templates.
      *  The values of the content items are copied from the data elements of the given
      *  'dataset'.  If none were added, CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded
@@ -157,7 +159,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      ** @return status, EC_Normal if successful, an error code otherwise.  If no
      *          image group exists, CMR_EC_NoImageLibraryGroup is returned.
      */
-    OFCondition addImageEntryDescriptors(DcmItem &dataset,
+    OFCondition addImageGroupDescriptors(DcmItem &dataset,
                                          const AddImageMode mode,
                                          const ConceptNameList &descriptors = ConceptNameList(),
                                          const OFBool check = OFTrue);

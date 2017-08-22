@@ -546,7 +546,7 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
     OFCHECK(library.hasImageLibrary());
     OFCHECK(library.addImageGroup().good());
     OFCHECK(library.addImageEntry(dataset1, TID1600_ImageLibrary::withoutSelectedDescriptors, descriptors).good());
-    OFCHECK(library.addImageEntryDescriptors(dataset1, TID1600_ImageLibrary::withSelectedDescriptors, descriptors).good());
+    OFCHECK(library.addImageGroupDescriptors(dataset1, TID1600_ImageLibrary::withSelectedDescriptors, descriptors).good());
     OFCHECK(library.addImageGroup().good());
     OFCHECK(library.addImageEntry(dataset2, TID1600_ImageLibrary::withAllDescriptors).good());
     OFCHECK(library.setPETImageRadionuclide(CID4020_PETRadionuclide::_18_Fluorine).good());
@@ -558,13 +558,13 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
     OFCHECK(library.setPETImageRadionuclide(CID4020_PETRadionuclide::_18_Fluorine).bad());
     OFCHECK(library.addImageEntry(dataset3, TID1600_ImageLibrary::withoutDescriptors).good());
     OFCHECK(library.addImageEntry(dataset4, TID1600_ImageLibrary::withAllDescriptors).good());
-    OFCHECK(library.addImageEntryDescriptors(dataset3, TID1600_ImageLibrary::withAllDescriptors).good());
+    OFCHECK(library.addImageGroupDescriptors(dataset3, TID1600_ImageLibrary::withAllDescriptors).good());
     /* check modality code of most recently added entry */
     DSRCodedEntryValue modality;
     OFCHECK(library.getImageEntryModality(modality).good());
     OFCHECK(modality == CODE_DCM_DigitalRadiography);
     /* try to add another invocation of TID 1602 */
-    OFCHECK(library.addImageEntryDescriptors(dataset4, TID1600_ImageLibrary::withAllDescriptors).bad());
+    OFCHECK(library.addImageGroupDescriptors(dataset4, TID1600_ImageLibrary::withAllDescriptors).bad());
     /* check number of expected content items */
     OFCHECK_EQUAL(library.countNodes(), 61);
 
