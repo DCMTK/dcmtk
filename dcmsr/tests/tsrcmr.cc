@@ -558,6 +558,9 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
     OFCHECK(library.setPETImageRadionuclide(CID4020_PETRadionuclide::_18_Fluorine).bad());
     OFCHECK(library.addImageEntry(dataset3, TID1600_ImageLibrary::withoutDescriptors).good());
     OFCHECK(library.addImageEntry(dataset4, TID1600_ImageLibrary::withAllDescriptors).good());
+    /* the following two calls should fail */
+    OFCHECK(library.addImageGroupDescriptors(dataset3, TID1600_ImageLibrary::withoutDescriptors).bad());
+    OFCHECK(library.addImageGroupDescriptors(dataset3, TID1600_ImageLibrary::withSelectedDescriptors, TID1600_ImageLibrary::ConceptNameList()).bad());
     OFCHECK(library.addImageGroupDescriptors(dataset3, TID1600_ImageLibrary::withAllDescriptors).good());
     /* check modality code of most recently added entry */
     DSRCodedEntryValue modality;

@@ -131,7 +131,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      *  TID 1601 (Image Library Entry).  The values of the content items (including
      *  the image reference) are copied from the data elements of the given 'dataset'.
      *  If no descriptors were added, CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded
-     *  is returned.
+     *  is returned, which is not regarded as an error.
      ** @param  dataset      DICOM dataset from which the values should be copied
      *  @param  mode         mode specifying which optional content items are to be added
      *  @param  descriptors  optional list with concept names of descriptors.  Its use
@@ -149,7 +149,7 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      *  items for TID 1602 (Image Library Entry Descriptors) and included templates.
      *  The values of the content items are copied from the data elements of the given
      *  'dataset'.  If none were added, CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded
-     *  is returned.
+     *  is returned, which is not regarded as an error.
      *  Please note that this method should only be called once for each image group.
      ** @param  dataset      DICOM dataset from which the values should be copied
      *  @param  mode         mode specifying which optional content items are to be added
@@ -416,9 +416,17 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
 
   // --- static helper functions ---
 
+    /** check whether there are any descriptors to be added (based on given parameters)
+     ** @param  mode         mode specifying what should be checked and how
+     *  @param  descriptors  list with concept names of descriptors (depends on 'mode')
+     *  @return OFTrue if there are any descriptors to be added, OFFalse if not
+     */
+    static OFBool anyDescriptorsToBeAdded(const AddImageMode mode,
+                                          const ConceptNameList &descriptors);
+
     /** check whether a given descriptor should be added (based on further parameters)
-     *  @param  conceptName  concept name of the descriptor to be checked
-     *  @param  mode         mode specifying what to check and how
+     ** @param  conceptName  concept name of the descriptor to be checked
+     *  @param  mode         mode specifying what should be checked and how
      *  @param  descriptors  list with concept names of descriptors to be checked
      *                       (depending on the given 'mode')
      *  @return OFTrue if given descriptor should be added, OFFalse if not
