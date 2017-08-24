@@ -552,19 +552,29 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
     }
     // read block
     offile_off_t blockSize = endOfBlock - jpegFile.ftell();
-    size_t result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, blockSize));
-    if (result != OFstatic_cast(size_t, blockSize))
-      return EC_IllegalCall;
-    // prepare for reading next block
-    if (!finished)
+    if (blockSize < 0)
     {
-      jpegFile.fseek(startOfNextBlock, SEEK_SET);
-      currBufferPos += blockSize;
+        DCMDATA_LIBI2D_ERROR("Length field in JPEG data bigger than remaining file");
+        cond = makeOFCondition(OFM_dcmdata, 18, OF_error, "Length field in JPEG data bigger than remaining file");
+    }
+    if (cond.good())
+    {
+        size_t result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, blockSize));
+        if (result != OFstatic_cast(size_t, blockSize))
+            cond = EC_IllegalCall;
+        else if (!finished)
+        {
+            jpegFile.fseek(startOfNextBlock, SEEK_SET);
+            currBufferPos += blockSize;
+        }
     }
   }
   // update result variable
   pixLength = OFstatic_cast(Uint32, rawStreamSize);
-
+  if (cond.bad())
+  {
+    delete[] pixelData;
+  }
   return cond;
 }
 
