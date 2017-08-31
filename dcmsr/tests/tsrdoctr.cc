@@ -27,6 +27,7 @@
 #include "dcmtk/ofstd/oftest.h"
 
 #include "dcmtk/dcmsr/dsrdoc.h"
+#include "dcmtk/dcmsr/dsrdncsr.h"
 #include "dcmtk/dcmsr/dsrtpltn.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/dsrtextn.h"
@@ -125,6 +126,59 @@ OFTEST(dcmsr_getCurrentNode)
         OFCHECK_EQUAL(treeNode->getConceptName().getCodeMeaning(), "Distance");
     } else
         OFCHECK_FAIL("could not get read-only access to current node");
+}
+
+
+OFTEST(dcmsr_gotoMatchingNode)
+{
+    /* first, create a new SR document */
+    DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
+    DSRDocumentTree &tree = doc.getTree();
+    /* then add some content items */
+    OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("N-1", "99_PRV", "NUM #1")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    const size_t nodeID1 = tree.getNodeID();
+    OFCHECK(tree.getCurrentContentItem().setObservationDateTime("201708080800").good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    const size_t nodeID2 = tree.getNodeID();
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121206", "DCM", "Distance")).good());
+    OFCHECK(tree.getCurrentContentItem().setObservationDateTime("201708081200").good());
+    OFCHECK(tree.goUp() > 0);
+    OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRTypes::AM_afterCurrent));
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("N-2", "99_PRV", "NUM #2")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    const size_t nodeID3 = tree.getNodeID();
+    OFCHECK(tree.getCurrentContentItem().setObservationDateTime("201708280800").good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_afterCurrent));
+    const size_t nodeID4 = tree.getNodeID();
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("121207", "DCM", "Height")).good());
+    OFCHECK(tree.getCurrentContentItem().setObservationDateTime("201708280800").good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
+    const size_t nodeID5 = tree.getNodeID();
+    OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("111221", "DCM", "Unknown failure")).good());
+    /* and check the "search by filter" function */
+    OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeConceptNameFilter(DSRCodedEntryValue("121206", "DCM", "Distance"))), nodeID2);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(DSRDocumentTreeNodeValueTypeFilter(DSRTypes::VT_Code)), nodeID3);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(DSRDocumentTreeNodeHasChildrenFilter(OFFalse /*hasChildren*/)), nodeID5);
+    DSRDocumentTreeNodeAndFilter filter1;
+    OFCHECK(filter1.addFilter(new DSRDocumentTreeNodeValueTypeFilter(DSRTypes::VT_Code)).good());
+    OFCHECK(filter1.addFilter(new DSRDocumentTreeNodeRelationshipTypeFilter(DSRTypes::RT_hasConceptMod)).good());
+    OFCHECK_EQUAL(tree.gotoMatchingNode(filter1, OFTrue /*startFromRoot*/), nodeID2);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter1), nodeID4);
+    DSRDocumentTreeNodeOrFilter filter2;
+    OFCHECK(filter2.addFilter(new DSRDocumentTreeNodeValueTypeFilter(DSRTypes::VT_Code)).good());
+    OFCHECK(filter2.addFilter(new DSRDocumentTreeNodeRelationshipTypeFilter(DSRTypes::RT_hasConceptMod)).good());
+    OFCHECK_EQUAL(tree.gotoMatchingNode(filter2, OFTrue /*startFromRoot*/), nodeID1);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter2), nodeID2);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter2), nodeID3);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter2), nodeID4);
+    OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("201708081000", "201708081400")), nodeID2);
+    OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("20170828", "" /*toDateTime*/)), nodeID3);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("" /*fromDateTime*/, "201708280800")), nodeID4);
+    OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("20170828080001", "" /*toDateTime*/)), 0 /* not found */);
 }
 
 

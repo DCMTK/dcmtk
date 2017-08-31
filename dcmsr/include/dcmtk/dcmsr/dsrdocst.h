@@ -29,6 +29,7 @@
 #include "dcmtk/dcmsr/dsrtree.h"
 #include "dcmtk/dcmsr/dsrdoctn.h"
 #include "dcmtk/dcmsr/dsrdncsr.h"
+#include "dcmtk/dcmsr/dsritcsr.h"
 #include "dcmtk/dcmsr/dsrcitem.h"
 
 #include "dcmtk/ofstd/ofmem.h"
@@ -210,6 +211,30 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFBool getCursorToRootNode(DSRIncludedTemplateNodeCursor &cursor) const;
 
+    /** get a cursor to the current node of this document tree.
+     *  This cursor can be used to iterate over the nodes of the document subtree that
+     *  starts at the current node without changing the internal cursor.  Please note
+     *  that the cursor might become invalid, e.g. by pointing to a non-existing node if
+     *  the content of the document tree is modified after the cursor has been retrieved.
+     *  Included sub-templates are not supported by this type of cursor, i.e. the subtree
+     *  that is managed by an instance of DSRIncludedTemplateTreeNode is not iterated.
+     ** @param  cursor  reference to variable where the cursor is stored
+     ** @return OFTrue is the returned 'cursor' is valid, OFFalse otherwise
+     */
+    virtual OFBool getCursorToCurrentNode(DSRDocumentTreeNodeCursor &cursor) const;
+
+    /** get a cursor to the subtree below the current node.
+     *  This cursor can be used to iterate over the nodes of the selected subtree without
+     *  changing the internal cursor.  Please note that the cursor might become invalid,
+     *  e.g. by pointing to a non-existing node if the content of the document tree is
+     *  modified after the cursor has been retrieved.
+     *  Included sub-templates are not supported by this type of cursor, i.e. the subtree
+     *  that is managed by an instance of DSRIncludedTemplateTreeNode is not iterated.
+     ** @param  cursor  reference to variable where the cursor is stored
+     ** @return OFTrue is the returned 'cursor' is valid, OFFalse otherwise
+     */
+    virtual OFBool getCursorToSubTree(DSRDocumentTreeNodeCursor &cursor) const;
+
     /** count number of content items (nodes) in the document tree.
      *  This method iterates over all nodes that are stored in the document tree.
      *  By default, included sub-templates are counted as a single node (see options).
@@ -224,12 +249,37 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     size_t countNodes(const OFBool searchIntoSubTemplates = OFFalse,
                       const OFBool countIncludedTemplateNodes = OFTrue) const;
 
+    /** set internal cursor to a matching node.
+     *  If more than one node exists matching the given filter, the first one will be
+     *  selected.  Use gotoNextMatchingNode() in order to go to the next matching node.
+     ** @param  filter         matching criterion based on a single or multiple filters
+     *  @param  startFromRoot  flag indicating whether to start from the root node or
+     *                         the current one
+     *  @param  searchIntoSub  flag indicating whether to search into sub-trees
+     *                         ("deep search") or on the current level only
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    virtual size_t gotoMatchingNode(const DSRDocumentTreeNodeFilter &filter,
+                                    const OFBool startFromRoot = OFTrue,
+                                    const OFBool searchIntoSub = OFTrue);
+
+    /** set internal cursor to the next matching node.
+     *  Starts from "next" node, i.e. either the first child of the current node or the
+     *  first sibling following the current node.
+     ** @param  filter         matching criterion based on a single or multiple filters
+     *  @param  searchIntoSub  flag indicating whether to search into sub-trees
+     *                         ("deep search") or on the current level only
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    virtual size_t gotoNextMatchingNode(const DSRDocumentTreeNodeFilter &filter,
+                                        const OFBool searchIntoSub = OFTrue);
+
     /** set internal cursor to a named node.
      *  If more than one node exists with the given concept name, the first one will
      *  be selected.  Use gotoNextNamedNode() in order to go to the next matching node.
      ** @param  conceptName    concept name of the node to be searched for
-     *  @param  startFromRoot  flag indicating whether to start from the root node
-     *                         or the current one
+     *  @param  startFromRoot  flag indicating whether to start from the root node or
+     *                         the current one
      *  @param  searchIntoSub  flag indicating whether to search into sub-trees
      *                         ("deep search") or on the current level only
      ** @return ID of the new current node if successful, 0 otherwise
@@ -244,7 +294,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  with 'searchIntoSub' being OFFalse, i.e. only the first sub-level is checked.
      *  If more than one node exists with the given concept name, the first one will
      *  be selected.
-     ** @param  conceptName    concept name of the node to be searched for
+     ** @param  conceptName  concept name of the node to be searched for
      ** @return ID of the new current node if successful, 0 otherwise
      */
     virtual size_t gotoNamedChildNode(const DSRCodedEntryValue &conceptName);
@@ -276,8 +326,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      *  be selected.  Use gotoNextAnnotatedNode() in order to go to the next matching
      *  node.  In contrast to gotoNamedNode(), a "deep search" is always performed.
      ** @param  annotationText  annotation text of the node to be searched for
-     *  @param  startFromRoot   flag indicating whether to start from the root node
-     *                          or the current one
+     *  @param  startFromRoot   flag indicating whether to start from the root node or
+     *                          the current one
      ** @return ID of the new current node if successful, 0 otherwise
      */
     virtual size_t gotoAnnotatedNode(const OFString &annotationText,

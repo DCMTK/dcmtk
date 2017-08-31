@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,8 +48,10 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
 {
     // allow direct access to protected methods
     friend class DSRTree<DSRDocumentTreeNode>;
-    friend class DSRTreeNodeCursor<DSRDocumentTreeNode, OFFalse>;
-    friend class DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>;
+    friend class DSRTreeNodeCursor<DSRDocumentTreeNode>;
+    // also for the derived cursor classes
+    friend class DSRDocumentTreeNodeCursor;
+    friend class DSRIncludedTemplateNodeCursor;
 
     // allow access to getConceptNamePtr()
     friend class DSRContentItem;

@@ -296,6 +296,20 @@ OFBool DSRDocumentSubTree::getCursorToRootNode(DSRIncludedTemplateNodeCursor &cu
 }
 
 
+OFBool DSRDocumentSubTree::getCursorToCurrentNode(DSRDocumentTreeNodeCursor &cursor) const
+{
+    cursor = DSRDocumentTreeNodeCursor(getNode());
+    return cursor.isValid();
+}
+
+
+OFBool DSRDocumentSubTree::getCursorToSubTree(DSRDocumentTreeNodeCursor &cursor) const
+{
+    cursor = DSRDocumentTreeNodeCursor(getChild());
+    return cursor.isValid();
+}
+
+
 size_t DSRDocumentSubTree::countNodes(const OFBool searchIntoSubTemplates,
                                       const OFBool countIncludedTemplateNodes) const
 {
@@ -331,6 +345,36 @@ size_t DSRDocumentSubTree::countNodes(const OFBool searchIntoSubTemplates,
         count = DSRTree<DSRDocumentTreeNode>::countNodes();
     }
     return count;
+}
+
+
+size_t DSRDocumentSubTree::gotoMatchingNode(const DSRDocumentTreeNodeFilter &filter,
+                                            const OFBool startFromRoot,
+                                            const OFBool searchIntoSub)
+{
+    size_t nodeID = 0;
+    if (startFromRoot)
+        gotoRoot();
+    const DSRDocumentTreeNode *node;
+    /* iterate over all nodes */
+    do {
+        node = getNode();
+        /* and check whether it matches */
+        if (filter.matches(node))
+            nodeID = node->getNodeID();
+    } while ((nodeID == 0) && iterate(searchIntoSub));
+    return nodeID;
+}
+
+
+size_t DSRDocumentSubTree::gotoNextMatchingNode(const DSRDocumentTreeNodeFilter &filter,
+                                                const OFBool searchIntoSub)
+{
+    /* first, goto "next" node */
+    size_t nodeID = iterate(searchIntoSub);
+    if (nodeID > 0)
+        nodeID = gotoMatchingNode(filter, OFFalse /*startFromRoot*/, searchIntoSub);
+    return nodeID;
 }
 
 

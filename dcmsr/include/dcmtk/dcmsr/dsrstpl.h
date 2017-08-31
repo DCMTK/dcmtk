@@ -46,7 +46,7 @@ class DCMTK_DCMSR_EXPORT DSRSubTemplate
     public DSRTemplateCommon
 {
     // allow direct access to inherited getRoot() method
-    friend class DSRTreeNodeCursor<DSRDocumentTreeNode, OFTrue>;
+    friend class DSRIncludedTemplateNodeCursor;
 
   public:
 
