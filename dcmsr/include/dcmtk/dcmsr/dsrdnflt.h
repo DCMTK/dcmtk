@@ -49,7 +49,7 @@ class DSRDocumentTreeNode;
 
 /** Base class for a single document tree node filter
  */
-class DSRDocumentTreeNodeFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeFilter
 {
 
   public:
@@ -68,7 +68,7 @@ class DSRDocumentTreeNodeFilter
 
 /** Base class for a list of document tree node filters
  */
-class DSRDocumentTreeNodeFilterList
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeFilterList
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -103,7 +103,7 @@ class DSRDocumentTreeNodeFilterList
 /** Class implementing a list of document tree node filters that are combined with AND
  *  (conjunction)
  */
-class DSRDocumentTreeNodeAndFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeAndFilter
   : public DSRDocumentTreeNodeFilterList
 {
 
@@ -124,7 +124,7 @@ class DSRDocumentTreeNodeAndFilter
 /** Class implementing a list of document tree node filters that are combined with OR
  *  (disjunction)
  */
-class DSRDocumentTreeNodeOrFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeOrFilter
   : public DSRDocumentTreeNodeFilterList
 {
 
@@ -145,7 +145,7 @@ class DSRDocumentTreeNodeOrFilter
 /** Class implementing a document tree node filter that checks for the presence (or
  *  absence) of child nodes
  */
-class DSRDocumentTreeNodeHasChildrenFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeHasChildrenFilter
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -179,7 +179,7 @@ class DSRDocumentTreeNodeHasChildrenFilter
 /** Class implementing a document tree node filter that checks for the presence (or
  *  absence) of sibling nodes
  */
-class DSRDocumentTreeNodeHasSiblingsFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeHasSiblingsFilter
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -212,7 +212,7 @@ class DSRDocumentTreeNodeHasSiblingsFilter
 
 /** Class implementing a document tree node filter that checks for a given concept name
  */
-class DSRDocumentTreeNodeConceptNameFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeConceptNameFilter
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -243,7 +243,7 @@ class DSRDocumentTreeNodeConceptNameFilter
 
 /** Class implementing a document tree node filter that checks for a given value type
  */
-class DSRDocumentTreeNodeValueTypeFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeValueTypeFilter
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -275,7 +275,7 @@ class DSRDocumentTreeNodeValueTypeFilter
 /** Class implementing a document tree node filter that checks for a given relationship
  *  type
  */
-class DSRDocumentTreeNodeRelationshipTypeFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeRelationshipTypeFilter
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -306,7 +306,7 @@ class DSRDocumentTreeNodeRelationshipTypeFilter
 
 /** Class implementing a document tree node filter that checks for a given annotation
  */
-class DSRDocumentTreeNodeAnnotationFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeAnnotationFilter
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -338,7 +338,7 @@ class DSRDocumentTreeNodeAnnotationFilter
 /** Class implementing a document tree node filter that checks for a given range of
  *  observation date/time values
  */
-class DSRDocumentTreeNodeObservationDateTimeFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeObservationDateTimeFilter
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -382,7 +382,7 @@ class DSRDocumentTreeNodeObservationDateTimeFilter
 /** Class implementing a document tree node filter that checks for a given observation
  *  unique identifier
  */
-class DSRDocumentTreeNodeObservationUIDFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeObservationUIDFilter
   : public DSRDocumentTreeNodeFilter
 {
 
@@ -415,7 +415,7 @@ class DSRDocumentTreeNodeObservationUIDFilter
 /** Class implementing a document tree node filter that checks for a given template
  *  identification
  */
-class DSRDocumentTreeNodeTemplateIdentificationFilter
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeTemplateIdentificationFilter
   : public DSRDocumentTreeNodeFilter
 {
 

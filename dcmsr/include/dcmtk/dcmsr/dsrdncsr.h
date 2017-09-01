@@ -46,7 +46,7 @@ class DSRDocumentTreeNode;
  *  Included sub-templates are not supported by this type of cursor, i.e. the subtree
  *  that is managed by an instance of DSRIncludedTemplateTreeNode is not iterated.
  */
-class DSRDocumentTreeNodeCursor
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeCursor
   : public DSRTreeNodeCursor<DSRDocumentTreeNode>
 {
 

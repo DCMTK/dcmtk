@@ -38,7 +38,7 @@
  *  This type of cursor also supports included sub-templates, i.e. the subtree that is
  *  managed by an instance of DSRIncludedTemplateTreeNode is also iterated.
  */
-class DSRIncludedTemplateNodeCursor
+class DCMTK_DCMSR_EXPORT DSRIncludedTemplateNodeCursor
   : public DSRTreeNodeCursor<DSRDocumentTreeNode>
 {
 
