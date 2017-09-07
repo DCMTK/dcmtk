@@ -212,7 +212,7 @@ class DSRTreeNodeCursor
      ** @param  searchID  ID of the node to set the cursor to
      ** @return ID of the new current node if successful, 0 otherwise
      */
-    virtual size_t gotoNode(const size_t searchID);
+    size_t gotoNode(const size_t searchID);
 
     /** set cursor to specified node. Starts from current position!
      ** @param  position   position string of the node to set the cursor to.
@@ -221,14 +221,14 @@ class DSRTreeNodeCursor
      *  @param  separator  character used to separate the figures (default: '.')
      ** @return ID of the new current node if successful, 0 otherwise
      */
-    virtual size_t gotoNode(const OFString &position,
-                            const char separator = '.');
+    size_t gotoNode(const OFString &position,
+                    const char separator = '.');
 
     /** set cursor to specified node. Starts from current position!
      ** @param  annotation  annotation of the node to set the cursor to
      ** @return ID of the new current node if successful, 0 otherwise
      */
-    virtual size_t gotoNode(const DSRTreeNodeAnnotation &annotation);
+    size_t gotoNode(const DSRTreeNodeAnnotation &annotation);
 
     /** get current node ID.
      *  The node ID uniquely identifies a content item in the document tree.  Most of
