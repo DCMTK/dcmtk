@@ -526,6 +526,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_BasicStructuredDisplayStorage                          "1.2.840.10008.5.1.4.1.1.131"
 #define UID_CTDefinedProcedureProtocolStorage                      "1.2.840.10008.5.1.4.1.1.200.1"
 #define UID_CTPerformedProcedureProtocolStorage                    "1.2.840.10008.5.1.4.1.1.200.2"
+#define UID_ProtocolApprovalStorage                                "1.2.840.10008.5.1.4.1.1.200.3"
 #define UID_RTImageStorage                                         "1.2.840.10008.5.1.4.1.1.481.1"
 #define UID_RTDoseStorage                                          "1.2.840.10008.5.1.4.1.1.481.2"
 #define UID_RTStructureSetStorage                                  "1.2.840.10008.5.1.4.1.1.481.3"
@@ -635,6 +636,11 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_FINDDefinedProcedureProtocolInformationModel           "1.2.840.10008.5.1.4.20.1"
 #define UID_MOVEDefinedProcedureProtocolInformationModel           "1.2.840.10008.5.1.4.20.2"
 #define UID_GETDefinedProcedureProtocolInformationModel            "1.2.840.10008.5.1.4.20.3"
+
+// Protocol Approval Query/Retrieve
+#define UID_FINDProtocolApprovalInformationModel                   "1.2.840.10008.5.1.4.1.1.200.4"
+#define UID_MOVEProtocolApprovalInformationModel                   "1.2.840.10008.5.1.4.1.1.200.5"
+#define UID_GETProtocolApprovalInformationModel                    "1.2.840.10008.5.1.4.1.1.200.6"
 
 // Print Management
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"

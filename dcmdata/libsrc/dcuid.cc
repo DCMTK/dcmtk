@@ -225,6 +225,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_PatientRadiationDoseSRStorage,                       "PatientRadiationDoseSRStorage" },
     { UID_PositronEmissionTomographyImageStorage,              "PositronEmissionTomographyImageStorage" },
     { UID_ProcedureLogStorage,                                 "ProcedureLogStorage" },
+    { UID_ProtocolApprovalStorage,                             "ProtocolApprovalStorage" },
     { UID_PseudoColorSoftcopyPresentationStateStorage,         "PseudoColorSoftcopyPresentationStateStorage" },
     { UID_RadiopharmaceuticalRadiationDoseSRStorage,           "RadiopharmaceuticalRadiationDoseSRStorage" },
     { UID_RawDataStorage,                                      "RawDataStorage" },
@@ -378,6 +379,11 @@ static const UIDNameMap uidNameMap[] = {
     { UID_FINDDefinedProcedureProtocolInformationModel,        "FINDDefinedProcedureProtocolInformationModel" },
     { UID_MOVEDefinedProcedureProtocolInformationModel,        "MOVEDefinedProcedureProtocolInformationModel" },
     { UID_GETDefinedProcedureProtocolInformationModel,         "GETDefinedProcedureProtocolInformationModel" },
+
+    // Protocol Approval Query/Retrieve
+    { UID_FINDProtocolApprovalInformationModel,                "FINDProtocolApprovalInformationModel" },
+    { UID_MOVEProtocolApprovalInformationModel,                "MOVEProtocolApprovalInformationModel" },
+    { UID_GETProtocolApprovalInformationModel,                 "GETProtocolApprovalInformationModel" },
 
     // Print
     { UID_BasicAnnotationBoxSOPClass,                          "BasicAnnotationBoxSOPClass" },
@@ -743,6 +749,7 @@ const char* dcmNonPatientStorageSOPClassUIDs[] = {
     UID_HangingProtocolStorage,
     UID_ImplantAssemblyTemplateStorage,
     UID_ImplantTemplateGroupStorage,
+    UID_ProtocolApprovalStorage,
     // end marker (important!)
     NULL
 };
@@ -893,6 +900,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_HangingProtocolStorage,
 //  UID_ImplantAssemblyTemplateStorage,
 //  UID_ImplantTemplateGroupStorage,
+//  UID_ProtocolApprovalStorage,
     // retired
     UID_RETIRED_HardcopyColorImageStorage,
     UID_RETIRED_HardcopyGrayscaleImageStorage,
@@ -1210,6 +1218,7 @@ static const DcmModalityTable modalities[] = {
     { UID_PatientRadiationDoseSRStorage,                           "SRq", 4096 },
     { UID_PositronEmissionTomographyImageStorage,                  "PI",  512 * 512 * 2 },
     { UID_ProcedureLogStorage,                                     "SRp", 4096 },
+    { UID_ProtocolApprovalStorage,                                 "PA",  4096 },
     { UID_PseudoColorSoftcopyPresentationStateStorage,             "PSp", 4096 },
     { UID_RadiopharmaceuticalRadiationDoseSRStorage,               "SRr", 4096 },
     { UID_RawDataStorage,                                          "RAW", 512 * 512 * 256 },
