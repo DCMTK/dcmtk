@@ -201,20 +201,20 @@ class DSRTreeNodeCursor
      */
     virtual size_t gotoChild();
 
-    /** iterate over all nodes. Starts from current position!
+    /** iterate over all nodes (starting from current position!)
      ** @param  searchIntoSub  flag indicating whether to search into sub-trees
      *                         ("deep search") or on the current level only
      ** @return ID of the next node if successful, 0 otherwise
      */
     virtual size_t iterate(const OFBool searchIntoSub = OFTrue);
 
-    /** set cursor to specified node. Starts from current position!
+    /** set cursor to specified node.  Starts search from current position.
      ** @param  searchID  ID of the node to set the cursor to
      ** @return ID of the new current node if successful, 0 otherwise
      */
     size_t gotoNode(const size_t searchID);
 
-    /** set cursor to specified node. Starts from current position!
+    /** set cursor to specified node.  Starts search from current position.
      ** @param  position   position string of the node to set the cursor to.
      *                     (the format is e.g. "1.2.3" for the third child of the
      *                     second child of the first node - see getPosition()).
@@ -224,11 +224,18 @@ class DSRTreeNodeCursor
     size_t gotoNode(const OFString &position,
                     const char separator = '.');
 
-    /** set cursor to specified node. Starts from current position!
+    /** set cursor to specified node.  Starts search from current position.
      ** @param  annotation  annotation of the node to set the cursor to
      ** @return ID of the new current node if successful, 0 otherwise
      */
     size_t gotoNode(const DSRTreeNodeAnnotation &annotation);
+
+    /** set cursor to specified node.  Starts search from current position.
+     *  This method requires that T implements the comparison operator "not equal".
+     ** @param  nodeValue  value of the node to set the cursor to
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    size_t gotoNode(const T &nodeValue);
 
     /** get current node ID.
      *  The node ID uniquely identifies a content item in the document tree.  Most of
@@ -719,7 +726,7 @@ size_t DSRTreeNodeCursor<T>::gotoNode(const size_t searchID)
 
 template<typename T>
 size_t DSRTreeNodeCursor<T>::gotoNode(const OFString &position,
-                                         const char separator)
+                                      const char separator)
 {
     size_t nodeID = 0;
     if (!position.empty())
@@ -776,6 +783,20 @@ size_t DSRTreeNodeCursor<T>::gotoNode(const DSRTreeNodeAnnotation &annotation)
             while ((nodeID > 0) && (NodeCursor->getAnnotation() != annotation))
                 nodeID = iterate();
         }
+    }
+    return nodeID;
+}
+
+
+template<typename T>
+size_t DSRTreeNodeCursor<T>::gotoNode(const T &nodeValue)
+{
+    size_t nodeID = 0;
+    if (NodeCursor != NULL)
+    {
+        nodeID = NodeCursor->getIdent();
+        while ((nodeID > 0) && (*NodeCursor != nodeValue))
+            nodeID = iterate();
     }
     return nodeID;
 }

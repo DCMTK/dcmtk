@@ -99,7 +99,7 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateNodeCursor
      */
     virtual size_t goDown();
 
-    /** iterate over all nodes. Starts from current position!
+    /** iterate over all nodes (starting from current position)
      ** @param  searchIntoSub  flag indicating whether to search into sub-trees
      *                         ("deep search") or on the current level only
      ** @return ID of the next node if successful, 0 otherwise

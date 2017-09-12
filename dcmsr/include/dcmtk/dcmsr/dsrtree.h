@@ -265,13 +265,23 @@ template<typename T = DSRTreeNode> class DSRTree
     size_t gotoNode(const OFString &reference,
                     const OFBool startFromRoot = OFTrue);
 
-    /** set cursor to specified node. Starts from current position!
+    /** set internal cursor to specified node
      ** @param  annotation     annotation of the node to set the cursor to
      *  @param  startFromRoot  flag indicating whether to start from the root node
      *                         or the current one
      ** @return ID of the new current node if successful, 0 otherwise
      */
     size_t gotoNode(const DSRTreeNodeAnnotation &annotation,
+                    const OFBool startFromRoot = OFTrue);
+
+    /** set internal cursor to specified node (given by its value).
+     *  This method requires that T implements the comparison operator "not equal".
+     ** @param  nodeValue      value of the node to set the cursor to
+     *  @param  startFromRoot  flag indicating whether to start from the root node
+     *                         or the current one
+     ** @return ID of the new current node if successful, 0 otherwise
+     */
+    size_t gotoNode(const T &nodeValue,
                     const OFBool startFromRoot = OFTrue);
 
     /** add new node to the current one.
@@ -658,6 +668,17 @@ size_t DSRTree<T>::gotoNode(const DSRTreeNodeAnnotation &annotation,
         nodeID = DSRTreeNodeCursor<T>::gotoNode(annotation);
     }
     return nodeID;
+}
+
+
+template<typename T>
+size_t DSRTree<T>::gotoNode(const T &nodeValue,
+                            const OFBool startFromRoot)
+{
+    if (startFromRoot)
+        gotoRoot();
+    /* call the real function */
+    return DSRTreeNodeCursor<T>::gotoNode(nodeValue);
 }
 
 

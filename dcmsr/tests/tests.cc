@@ -46,6 +46,7 @@ OFTEST_REGISTER(dcmsr_addContentItem_2);
 OFTEST_REGISTER(dcmsr_copyContentItem);
 OFTEST_REGISTER(dcmsr_getCurrentNode);
 OFTEST_REGISTER(dcmsr_compareNodes);
+OFTEST_REGISTER(dcmsr_gotoNodeByValue);
 OFTEST_REGISTER(dcmsr_gotoMatchingNode);
 OFTEST_REGISTER(dcmsr_gotoNamedNode);
 OFTEST_REGISTER(dcmsr_gotoNamedChildNode);
