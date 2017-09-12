@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -65,6 +65,22 @@ DSRSpatialCoordinatesValue &DSRSpatialCoordinatesValue::operator=(const DSRSpati
     GraphicDataList = coordinatesValue.GraphicDataList;
     FiducialUID = coordinatesValue.FiducialUID;
     return *this;
+}
+
+
+OFBool DSRSpatialCoordinatesValue::operator==(const DSRSpatialCoordinatesValue &coordinatesValue) const
+{
+    return (GraphicType == coordinatesValue.GraphicType) &&
+           (GraphicDataList == coordinatesValue.GraphicDataList) &&
+           (FiducialUID == coordinatesValue.FiducialUID);
+}
+
+
+OFBool DSRSpatialCoordinatesValue::operator!=(const DSRSpatialCoordinatesValue &coordinatesValue) const
+{
+    return (GraphicType != coordinatesValue.GraphicType) ||
+           (GraphicDataList != coordinatesValue.GraphicDataList) ||
+           (FiducialUID != coordinatesValue.FiducialUID);
 }
 
 

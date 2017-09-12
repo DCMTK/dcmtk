@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,6 +74,18 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      */
     DSRCompositeReferenceValue &operator=(const DSRCompositeReferenceValue &referenceValue);
 
+    /** comparison operator "equal"
+     ** @param  referenceValue  reference value that should be compared to the current one
+     ** @return OFTrue if both composite reference values are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRCompositeReferenceValue &referenceValue) const;
+
+    /** comparison operator "not equal"
+     ** @param  referenceValue  reference value that should be compared to the current one
+     ** @return OFTrue if both composite reference values are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRCompositeReferenceValue &referenceValue) const;
+
     /** clear all internal variables.
      *  Since an empty reference value is invalid the reference becomes invalid afterwards.
      */
@@ -133,7 +145,7 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      *  enabled, a warning message is printed if the sequence is absent or contains more than
      *  one item.
      ** @param  dataset  DICOM dataset from which the sequence should be read
-     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be read
+     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) that should be read
      *  @param  type     value type of the sequence (valid value: "1", "2", something else)
      *                   This parameter is used for checking purpose, any difference is reported.
      *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
@@ -147,7 +159,7 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
     /** write referenced SOP sequence to dataset.
      *  If the value is empty an empty sequence (without any items) is written.
      ** @param  dataset  DICOM dataset to which the sequence should be written
-     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be written
+     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) that should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeSequence(DcmItem &dataset,

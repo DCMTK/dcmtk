@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,6 +68,24 @@ DSRTemporalCoordinatesValue &DSRTemporalCoordinatesValue::operator=(const DSRTem
     TimeOffsetList = coordinatesValue.TimeOffsetList;
     DateTimeList = coordinatesValue.DateTimeList;
     return *this;
+}
+
+
+OFBool DSRTemporalCoordinatesValue::operator==(const DSRTemporalCoordinatesValue &coordinatesValue) const
+{
+    return (TemporalRangeType == coordinatesValue.TemporalRangeType) &&
+           (SamplePositionList == coordinatesValue.SamplePositionList) &&
+           (TimeOffsetList == coordinatesValue.TimeOffsetList) &&
+           (DateTimeList == coordinatesValue.DateTimeList);
+}
+
+
+OFBool DSRTemporalCoordinatesValue::operator!=(const DSRTemporalCoordinatesValue &coordinatesValue) const
+{
+    return (TemporalRangeType != coordinatesValue.TemporalRangeType) ||
+           (SamplePositionList != coordinatesValue.SamplePositionList) ||
+           (TimeOffsetList != coordinatesValue.TimeOffsetList) ||
+           (DateTimeList != coordinatesValue.DateTimeList);
 }
 
 

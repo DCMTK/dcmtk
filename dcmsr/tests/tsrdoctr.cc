@@ -29,6 +29,7 @@
 #include "dcmtk/dcmsr/dsrdoc.h"
 #include "dcmtk/dcmsr/dsrdncsr.h"
 #include "dcmtk/dcmsr/dsrtpltn.h"
+#include "dcmtk/dcmsr/dsrimgtn.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/dsrtextn.h"
 
@@ -89,6 +90,10 @@ OFTEST(dcmsr_copyContentItem)
     DSRContentItem item(tree.getCurrentContentItem());
     OFCHECK_EQUAL(item.getValueType(), DSRTypes::VT_Num);
     OFCHECK_EQUAL(item.getRelationshipType(), DSRTypes::RT_contains);
+    /* also check the comparison operator */
+    OFCHECK(item == tree.getCurrentContentItem());
+    OFCHECK(item.setNumericValue(DSRNumericMeasurementValue("1.5", DSRCodedEntryValue("cm", "UCUM", "centimeter"))).good());
+    OFCHECK(item != tree.getCurrentContentItem());
     /* clone the previous content item */
     OFCHECK(tree.gotoPrevious() > 0);
     DSRDocumentTreeNode *treeNode = tree.cloneCurrentTreeNode();
@@ -126,6 +131,35 @@ OFTEST(dcmsr_getCurrentNode)
         OFCHECK_EQUAL(treeNode->getConceptName().getCodeMeaning(), "Distance");
     } else
         OFCHECK_FAIL("could not get read-only access to current node");
+}
+
+
+OFTEST(dcmsr_compareNodes)
+{
+    /* first, create an image tree node */
+    DSRImageTreeNode node(DSRTypes::RT_contains);
+    /* then, set its contents */
+    OFCHECK(node.setValue(DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4")).good());
+    node.getFrameList().addItem(1);
+    /* create a clone of this node */
+    DSRImageTreeNode *newNode = node.clone();
+    if (newNode != NULL)
+    {
+        /* and compare these nodes */
+        OFCHECK(node == *newNode);
+        /* then add more information */
+        node.getFrameList().addItem(2);
+        /* and compare the nodes again */
+        OFCHECK(node != *newNode);
+        /* make them "equal" again */
+        newNode->getFrameList().addItem(2);
+        OFCHECK(node == *newNode);
+    }
+    /* create an "incompatible" node */
+    DSRNumTreeNode numNode(DSRTypes::RT_contains);
+    /* and compare it to the initial node */
+    OFCHECK(numNode != node);
+    delete newNode;
 }
 
 

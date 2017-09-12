@@ -578,8 +578,8 @@ tsrdoctr.o: tsrdoctr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
  ../include/dcmtk/dcmsr/dsrtpltn.h ../include/dcmtk/dcmsr/dsrstpl.h \
- ../include/dcmtk/dcmsr/dsrnumtn.h ../include/dcmtk/dcmsr/dsrtextn.h \
- ../include/dcmtk/dcmsr/dsrstrvl.h
+ ../include/dcmtk/dcmsr/dsrimgtn.h ../include/dcmtk/dcmsr/dsrnumtn.h \
+ ../include/dcmtk/dcmsr/dsrtextn.h ../include/dcmtk/dcmsr/dsrstrvl.h
 tsrlist.o: tsrlist.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \

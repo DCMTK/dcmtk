@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,6 +44,32 @@ DSRTCoordTreeNode::DSRTCoordTreeNode(const DSRTCoordTreeNode &node)
 
 DSRTCoordTreeNode::~DSRTCoordTreeNode()
 {
+}
+
+
+OFBool DSRTCoordTreeNode::operator==(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::operator==(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRTemporalCoordinatesValue::operator==(*OFstatic_cast(const DSRTemporalCoordinatesValue *, OFstatic_cast(const DSRTCoordTreeNode *, &node)));
+    }
+    return result;
+}
+
+
+OFBool DSRTCoordTreeNode::operator!=(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::operator!=(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRTemporalCoordinatesValue::operator!=(*OFstatic_cast(const DSRTemporalCoordinatesValue *, OFstatic_cast(const DSRTCoordTreeNode *, &node)));
+    }
+    return result;
 }
 
 

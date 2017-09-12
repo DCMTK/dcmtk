@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -198,9 +198,10 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     DSRCodedEntryValue &operator=(const DSRCodedEntryValue &codedEntryValue);
 
     /** comparison operator "equal".
-     *  Two codes are equal if the code value, coding scheme designator and the (optional)
-     *  coding scheme version are equal.  The code meaning is not relevant for this check.
-     ** @param  codedEntryValue  code which should be compared to the current one
+     *  Two codes are equal if the code value, the coding scheme designator and the (optional)
+     *  coding scheme version are equal.  The code meaning or attributes from the "Enhanced
+     *  Encoding Mode" are not used for this check.
+     ** @param  codedEntryValue  code that should be compared to the current one
      ** @return OFTrue if both codes are equal, OFFalse otherwise
      */
     OFBool operator==(const DSRCodedEntryValue &codedEntryValue) const;
@@ -208,16 +209,16 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     /** comparison operator "not equal".
      *  Two codes are not equal if either the code value or the coding scheme designator
      *  or the (optional) coding scheme version are not equal.  The code meaning is not
-     *  relevant for this check.
-     ** @param  codedEntryValue  code which should be compared to the current one
+     *  used for this check.
+     ** @param  codedEntryValue  code that should be compared to the current one
      ** @return OFTrue if both codes are not equal, OFFalse otherwise
      */
     OFBool operator!=(const DSRCodedEntryValue &codedEntryValue) const;
 
     /** comparison operator "equal".
-     *  Two codes are equal if the code value, coding scheme designator and the (optional)
-     *  coding scheme version are equal.  The code meaning is not relevant for this check.
-     ** @param  basicCodedEntry  code which should be compared to the current one
+     *  Two codes are equal if the code value, the coding scheme designator and the (optional)
+     *  coding scheme version are equal.  The code meaning is not used for this check.
+     ** @param  basicCodedEntry  code that should be compared to the current one
      ** @return OFTrue if both codes are equal, OFFalse otherwise
      */
     OFBool operator==(const DSRBasicCodedEntry &basicCodedEntry) const;
@@ -225,8 +226,8 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     /** comparison operator "not equal".
      *  Two codes are not equal if either the code value or the coding scheme designator
      *  or the (optional) coding scheme version are not equal.  The code meaning is not
-     *  relevant for this check.
-     ** @param  basicCodedEntry  code which should be compared to the current one
+     *  used for this check.
+     ** @param  basicCodedEntry  code that should be compared to the current one
      ** @return OFTrue if both codes are not equal, OFFalse otherwise
      */
     OFBool operator!=(const DSRBasicCodedEntry &basicCodedEntry) const;
@@ -278,7 +279,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  However, this method always reads the first item from the given sequence.  If another
      *  item should be read (e.g. a modifier), the method readSequenceItem() should be used.
      ** @param  dataset  DICOM dataset from which the code sequence should be read
-     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be read
+     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) that should be read
      *  @param  type     value type of the sequence (valid value: "1", "2", something else).
      *                   This parameter is used for checking purpose, any difference is
      *                   reported.
@@ -306,7 +307,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 
     /** write code sequence to dataset
      ** @param  dataset  DICOM dataset to which the code sequence should be written
-     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) which should be
+     *  @param  tagKey   DICOM tag specifying the attribute (= sequence) that should be
      *                   written
      ** @return status, EC_Normal if successful, an error code otherwise
      */

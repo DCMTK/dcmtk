@@ -93,6 +93,54 @@ template<class T> class DSRListOfItems
         return *this;
     }
 
+    /** comparison operator "equal"
+     ** @param  lst  list that should be compared to the current one
+     ** @return OFTrue if both lists are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRListOfItems<T> &lst) const
+    {
+        /* first check whether the size of both lists is equal */
+        OFBool result = (ItemList.size() == lst.ItemList.size());
+        /* then iterate over all list entries (if any) */
+        if (result && !ItemList.empty())
+        {
+            /* since OFList does not implement a comparison operator we need the following */
+            const OFLIST_TYPENAME OFListConstIterator(T) endPos = ItemList.end();
+            OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
+            OFLIST_TYPENAME OFListConstIterator(T) lstIter = lst.ItemList.begin();
+            do {
+                result = (*iterator == *lstIter);
+                iterator++;
+                lstIter++;
+            } while (result && (iterator != endPos));
+        }
+        return result;
+    }
+
+    /** comparison operator "not equal"
+     ** @param  lst  list that should be compared to the current one
+     ** @return OFTrue if both lists are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRListOfItems<T> &lst) const
+    {
+        /* first check whether the size of both lists is not equal */
+        OFBool result = (ItemList.size() != lst.ItemList.size());
+        /* then iterate over all list entries (if any) */
+        if (!result && !ItemList.empty())
+        {
+            /* since OFList does not implement a comparison operator we need the following */
+            const OFLIST_TYPENAME OFListConstIterator(T) endPos = ItemList.end();
+            OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
+            OFLIST_TYPENAME OFListConstIterator(T) lstIter = lst.ItemList.begin();
+            do {
+                result = (*iterator != *lstIter);
+                iterator++;
+                lstIter++;
+            } while (!result && (iterator != endPos));
+        }
+        return result;
+    }
+
     /** clear all internal variables
      */
     inline void clear()

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,6 +46,32 @@ DSRCodeTreeNode::DSRCodeTreeNode(const DSRCodeTreeNode &node)
 
 DSRCodeTreeNode::~DSRCodeTreeNode()
 {
+}
+
+
+OFBool DSRCodeTreeNode::operator==(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::operator==(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRCodedEntryValue::operator==(*OFstatic_cast(const DSRCodedEntryValue *, OFstatic_cast(const DSRCodeTreeNode *, &node)));
+    }
+    return result;
+}
+
+
+OFBool DSRCodeTreeNode::operator!=(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::operator!=(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRCodedEntryValue::operator!=(*OFstatic_cast(const DSRCodedEntryValue *, OFstatic_cast(const DSRCodeTreeNode *, &node)));
+    }
+    return result;
 }
 
 

@@ -87,6 +87,24 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      */
     virtual ~DSRDocumentTreeNode();
 
+    /** comparison operator "equal".
+     *  Two tree nodes are regarded as equal if the relationship type, the value type and the
+     *  concept name are equal.  Other information is not used unless implemented in a derived
+     *  class.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
+     */
+    virtual OFBool operator==(const DSRDocumentTreeNode &node) const;
+
+    /** comparison operator "not equal".
+     *  Two tree nodes are regarded as not equal if either the relationship type or the value
+     *  type or the concept name are not equal.  Other information is not used unless implemented
+     *  in a derived class.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
+     */
+    virtual OFBool operator!=(const DSRDocumentTreeNode &node) const;
+
     /** clone this tree node (abstract).
      *  Internally, the copy constructor is used, so the corresponding comments apply.
      ** @return copy of this tree node

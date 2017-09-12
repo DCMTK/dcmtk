@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,6 +71,23 @@ class DCMTK_DCMSR_EXPORT DSRTimeTreeNode
     /** destructor
      */
     virtual ~DSRTimeTreeNode();
+
+    /** comparison operator "equal".
+     *  Two tree nodes are equal if the comparison operator of the base class DSRDocumentTreeNode
+     *  regards them as "equal" (same types and concept names) and the stored values are equal.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
+     */
+    virtual OFBool operator==(const DSRDocumentTreeNode &node) const;
+
+    /** comparison operator "not equal".
+     *  Two tree nodes are not equal if either the comparison operator of the base class
+     *  DSRDocumentTreeNode regards them as "not equal" (different types or concept names) or
+     *  the stored values are not equal.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
+     */
+    virtual OFBool operator!=(const DSRDocumentTreeNode &node) const;
 
     /** clone this tree node.
      *  Internally, the copy constructor is used, so the corresponding comments apply.

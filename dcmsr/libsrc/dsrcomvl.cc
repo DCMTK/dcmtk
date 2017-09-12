@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -69,6 +69,20 @@ DSRCompositeReferenceValue &DSRCompositeReferenceValue::operator=(const DSRCompo
     SOPClassUID = referenceValue.SOPClassUID;
     SOPInstanceUID = referenceValue.SOPInstanceUID;
     return *this;
+}
+
+
+OFBool DSRCompositeReferenceValue::operator==(const DSRCompositeReferenceValue &referenceValue) const
+{
+    return (SOPClassUID == referenceValue.SOPClassUID) &&
+           (SOPInstanceUID == referenceValue.SOPInstanceUID);
+}
+
+
+OFBool DSRCompositeReferenceValue::operator!=(const DSRCompositeReferenceValue &referenceValue) const
+{
+    return (SOPClassUID != referenceValue.SOPClassUID) ||
+           (SOPInstanceUID != referenceValue.SOPInstanceUID);
 }
 
 

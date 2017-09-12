@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -190,7 +190,7 @@ DSRCodedEntryValue &DSRCodedEntryValue::operator=(const DSRCodedEntryValue &code
 
 OFBool DSRCodedEntryValue::operator==(const DSRCodedEntryValue &codedEntryValue) const
 {
-    /* Code Meaning is not used for comparing the two codes */
+    /* Code Meaning is not used for comparing the two codes, also the "Enhanced Encoding Mode" is not taken into account */
     return (CodeValue == codedEntryValue.CodeValue) &&
            (CodingSchemeDesignator == codedEntryValue.CodingSchemeDesignator) &&
            (CodingSchemeVersion == codedEntryValue.CodingSchemeVersion);
@@ -199,7 +199,7 @@ OFBool DSRCodedEntryValue::operator==(const DSRCodedEntryValue &codedEntryValue)
 
 OFBool DSRCodedEntryValue::operator!=(const DSRCodedEntryValue &codedEntryValue) const
 {
-    /* Code Meaning is not used for comparing the two codes */
+    /* Code Meaning is not used for comparing the two codes, also the "Enhanced Encoding Mode" is not taken into account */
     return (CodeValue != codedEntryValue.CodeValue) ||
            (CodingSchemeDesignator != codedEntryValue.CodingSchemeDesignator) ||
            (CodingSchemeVersion != codedEntryValue.CodingSchemeVersion);

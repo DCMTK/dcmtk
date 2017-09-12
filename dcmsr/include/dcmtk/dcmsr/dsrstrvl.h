@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,6 +67,22 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
      */
     DSRStringValue &operator=(const DSRStringValue &stringValue);
 
+    /** comparison operator "equal".
+     *  Please note that padding or other non-significant characters are not removed before
+     *  comparing the two values, i.e. a simple character-by-character comparison is used.
+     ** @param  stringValue  string value that should be compared to the current one
+     ** @return OFTrue if both string values are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRStringValue &stringValue) const;
+
+    /** comparison operator "not equal".
+     *  Please note that padding or other non-significant characters are not removed before
+     *  comparing the two values, i.e. a simple character-by-character comparison is used.
+     ** @param  stringValue  string value that should be compared to the current one
+     ** @return OFTrue if both string values are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRStringValue &stringValue) const;
+
     /** clear all internal variables.
      *  Please note that the string value might become invalid afterwards.
      */
@@ -95,7 +111,7 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
      *  If error/warning output is enabled, a warning message is printed if the string value
      *  does not conform with the type (1), value multiplicity (1) and/or value representation.
      ** @param  dataset  DICOM dataset from which the string value should be read
-     *  @param  tagKey   DICOM tag specifying the attribute which should be read
+     *  @param  tagKey   DICOM tag specifying the attribute that should be read
      *  @param  flags    flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -105,7 +121,7 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
 
     /** write string value to dataset
      ** @param  dataset  DICOM dataset to which the string value should be written
-     *  @param  tagKey   DICOM tag specifying the attribute which should be written
+     *  @param  tagKey   DICOM tag specifying the attribute that should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition write(DcmItem &dataset,

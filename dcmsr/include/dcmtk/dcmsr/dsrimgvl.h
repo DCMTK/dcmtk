@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -111,6 +111,20 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      ** @return reference to this image reference value after 'referenceValue' has been copied
      */
     DSRImageReferenceValue &operator=(const DSRImageReferenceValue &referenceValue);
+
+    /** comparison operator "equal".
+     *  Please note that the optional icon image is not used for comparing the two values.
+     ** @param  referenceValue  image reference value that should be compared to the current one
+     ** @return OFTrue if both image reference values are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRImageReferenceValue &referenceValue) const;
+
+    /** comparison operator "not equal".
+     *  Please note that the optional icon image is not used for comparing the two values.
+     ** @param  referenceValue  image reference value that should be compared to the current one
+     ** @return OFTrue if both image reference values are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRImageReferenceValue &referenceValue) const;
 
     /** clear all internal variables.
      *  Since an empty image reference is invalid the reference becomes invalid afterwards.

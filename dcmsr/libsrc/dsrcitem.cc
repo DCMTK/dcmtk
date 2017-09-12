@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -75,6 +75,26 @@ DSRContentItem::~DSRContentItem()
 {
     if (DeleteTreeNode)
         delete TreeNode;
+}
+
+
+OFBool DSRContentItem::operator==(const DSRContentItem &item) const
+{
+    OFBool result = (TreeNode == item.TreeNode);
+    /* call comparison operator (if referenced tree nodes are not the same) */
+    if (!result && (TreeNode != NULL) && (item.TreeNode != NULL))
+        result = TreeNode->operator==(*item.TreeNode);
+    return result;
+}
+
+
+OFBool DSRContentItem::operator!=(const DSRContentItem &item) const
+{
+    OFBool result = (TreeNode != item.TreeNode);
+    /* call comparison operator (if referenced tree nodes are not the same) */
+    if (result && (TreeNode != NULL) && (item.TreeNode != NULL))
+        result = TreeNode->operator!=(*item.TreeNode);
+    return result;
 }
 
 

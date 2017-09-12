@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,6 +76,24 @@ DSRDocumentTreeNode::DSRDocumentTreeNode(const DSRDocumentTreeNode &node)
 
 DSRDocumentTreeNode::~DSRDocumentTreeNode()
 {
+}
+
+
+OFBool DSRDocumentTreeNode::operator==(const DSRDocumentTreeNode &node) const
+{
+    /* only very basic information is used for comparing the two nodes */
+    return (RelationshipType == node.RelationshipType) &&
+           (ValueType == node.ValueType) &&
+           (ConceptName == node.ConceptName);
+}
+
+
+OFBool DSRDocumentTreeNode::operator!=(const DSRDocumentTreeNode &node) const
+{
+    /* only very basic information is used for comparing the two nodes */
+    return (RelationshipType != node.RelationshipType) ||
+           (ValueType != node.ValueType) ||
+           (ConceptName != node.ConceptName);
 }
 
 

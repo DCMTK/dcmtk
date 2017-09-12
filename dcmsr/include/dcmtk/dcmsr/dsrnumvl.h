@@ -102,6 +102,25 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      */
     DSRNumericMeasurementValue &operator=(const DSRNumericMeasurementValue &numericMeasurement);
 
+    /** comparison operator "equal".
+     *  Two numeric measurement values are equal if the numeric value, the measurement unit
+     *  and the value qualifier are equal.  Other (additional) information is not used.
+     ** @param  numericMeasurement  numeric measurement value that should be compared to the
+     *                              current one
+     ** @return OFTrue if both numeric measurement values are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRNumericMeasurementValue &numericMeasurement) const;
+
+    /** comparison operator "not equal".
+     *  Two numeric measurement values are not equal if either the numeric value or the
+     *  measurement unit or the value qualifier are not equal.  Other (additional) information
+     *  is not used for comparison.
+     ** @param  numericMeasurement  numeric measurement value that should be compared to the
+     *                              current one
+     ** @return OFTrue if both numeric measurement values are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRNumericMeasurementValue &numericMeasurement) const;
+
     /** clear all internal variables.
      *  Use this method to create an empty numeric measurement value.
      */

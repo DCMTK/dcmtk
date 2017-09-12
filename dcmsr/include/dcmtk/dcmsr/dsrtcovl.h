@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -64,11 +64,25 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
     virtual ~DSRTemporalCoordinatesValue();
 
     /** assignment operator
-     ** @param  coordinatesValue  Temporal coordinates value to be copied (not checked !)
-     ** @return reference to this Temporal coordinates value after 'coordinatesValue' has
+     ** @param  coordinatesValue  temporal coordinates value to be copied (not checked !)
+     ** @return reference to this temporal coordinates value after 'coordinatesValue' has
      *          been copied
      */
     DSRTemporalCoordinatesValue &operator=(const DSRTemporalCoordinatesValue &coordinatesValue);
+
+    /** comparison operator "equal"
+     ** @param  coordinatesValue  temporal coordinates value that should be compared to the
+     *                            current one
+     ** @return OFTrue if both temporal coordinates values are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRTemporalCoordinatesValue &coordinatesValue) const;
+
+    /** comparison operator "not equal"
+     ** @param  coordinatesValue  temporal coordinates value that should be compared to the
+     *                            current one
+     ** @return OFTrue if both temporal coordinates values are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRTemporalCoordinatesValue &coordinatesValue) const;
 
     /** clear all internal variables.
      *  Temporal range type is set to DSRTypes::TRT_invalid.  Since an empty list of graphic data

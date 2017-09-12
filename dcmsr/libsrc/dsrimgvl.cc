@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -124,6 +124,28 @@ DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenc
     /* create copy of icon image (if any), first frame only */
     IconImage = (referenceValue.IconImage != NULL) ? referenceValue.IconImage->createDicomImage(0 /*fstart*/, 1 /*fcount*/) : NULL;
     return *this;
+}
+
+
+OFBool DSRImageReferenceValue::operator==(const DSRImageReferenceValue &referenceValue) const
+{
+    /* the optional icon image is not used for comparison */
+    return DSRCompositeReferenceValue::operator==(referenceValue) &&
+           (FrameList == referenceValue.FrameList) &&
+           (SegmentList == referenceValue.SegmentList) &&
+           (PresentationState == referenceValue.PresentationState) &&
+           (RealWorldValueMapping == referenceValue.RealWorldValueMapping);
+}
+
+
+OFBool DSRImageReferenceValue::operator!=(const DSRImageReferenceValue &referenceValue) const
+{
+    /* the optional icon image is not used for comparison */
+    return DSRCompositeReferenceValue::operator!=(referenceValue) ||
+           (FrameList != referenceValue.FrameList) ||
+           (SegmentList != referenceValue.SegmentList) ||
+           (PresentationState != referenceValue.PresentationState) ||
+           (RealWorldValueMapping != referenceValue.RealWorldValueMapping);
 }
 
 

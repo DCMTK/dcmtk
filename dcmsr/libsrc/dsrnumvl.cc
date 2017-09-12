@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -114,6 +114,24 @@ DSRNumericMeasurementValue &DSRNumericMeasurementValue::operator=(const DSRNumer
     RationalNumeratorValue = numericMeasurement.RationalNumeratorValue;
     RationalDenominatorValue = numericMeasurement.RationalDenominatorValue;
     return *this;
+}
+
+
+OFBool DSRNumericMeasurementValue::operator==(const DSRNumericMeasurementValue &numericMeasurement) const
+{
+    /* only the basic information is used for comparing the two values */
+    return (NumericValue == numericMeasurement.NumericValue) &&
+           (MeasurementUnit == numericMeasurement.MeasurementUnit) &&
+           (ValueQualifier == numericMeasurement.ValueQualifier);
+}
+
+
+OFBool DSRNumericMeasurementValue::operator!=(const DSRNumericMeasurementValue &numericMeasurement) const
+{
+    /* only the basic information is used for comparing the two values */
+    return (NumericValue != numericMeasurement.NumericValue) ||
+           (MeasurementUnit != numericMeasurement.MeasurementUnit) ||
+           (ValueQualifier != numericMeasurement.ValueQualifier);
 }
 
 

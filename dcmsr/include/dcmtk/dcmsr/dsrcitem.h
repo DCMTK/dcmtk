@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -64,6 +64,22 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
     /** destructor
      */
     virtual ~DSRContentItem();
+
+    /** comparison operator "equal".
+     *  Two content items are regarded as equal if the comparison operator of the referenced
+     *  document tree nodes says so.
+     ** @param  item  content item that should be compared to the current one
+     ** @return OFTrue if both content items are equal, OFFalse otherwise
+     */
+    virtual OFBool operator==(const DSRContentItem &item) const;
+
+    /** comparison operator "not equal".
+     *  Two content items are regarded as not equal if the comparison operator of the
+     *  referenced document tree nodes says so.
+     ** @param  item  content item that should be compared to the current one
+     ** @return OFTrue if both content items are not equal, OFFalse otherwise
+     */
+    virtual OFBool operator!=(const DSRContentItem &item) const;
 
     /** check for validity/completeness.
      *  Applicable to all content items.

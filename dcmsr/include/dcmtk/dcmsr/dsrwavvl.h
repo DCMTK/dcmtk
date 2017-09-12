@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,6 +76,18 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
      ** @return reference to this waveform reference value after 'referenceValue' has been copied
      */
     DSRWaveformReferenceValue &operator=(const DSRWaveformReferenceValue &referenceValue);
+
+    /** comparison operator "equal"
+     ** @param  referenceValue  waveform reference value that should be compared to the current one
+     ** @return OFTrue if both waveform reference values are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRWaveformReferenceValue &referenceValue) const;
+
+    /** comparison operator "not equal"
+     ** @param  referenceValue  waveform reference value that should be compared to the current one
+     ** @return OFTrue if both waveform reference values are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRWaveformReferenceValue &referenceValue) const;
 
     /** clear all internal variables.
      *  Since an empty waveform reference is invalid the reference becomes invalid afterwards.

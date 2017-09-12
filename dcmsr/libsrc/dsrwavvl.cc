@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -66,6 +66,20 @@ DSRWaveformReferenceValue &DSRWaveformReferenceValue::operator=(const DSRWavefor
     /* do not check since this would be unexpected to the user */
     ChannelList = referenceValue.ChannelList;
     return *this;
+}
+
+
+OFBool DSRWaveformReferenceValue::operator==(const DSRWaveformReferenceValue &referenceValue) const
+{
+    return DSRCompositeReferenceValue::operator==(referenceValue) &&
+           (ChannelList == referenceValue.ChannelList);
+}
+
+
+OFBool DSRWaveformReferenceValue::operator!=(const DSRWaveformReferenceValue &referenceValue) const
+{
+    return DSRCompositeReferenceValue::operator!=(referenceValue) ||
+           (ChannelList != referenceValue.ChannelList);
 }
 
 
