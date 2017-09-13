@@ -152,8 +152,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeHasChildrenFilter
   public:
 
     /** constructor
-     ** @param  hasChilden  mode specifying whether the filter matches on the presence
-     *                      (default) or absence of child nodes
+     ** @param  hasChildren  mode specifying whether the filter matches on the presence
+     *                       (default) or absence of child nodes
      */
     DSRDocumentTreeNodeHasChildrenFilter(const OFBool hasChildren = OFTrue);
 
