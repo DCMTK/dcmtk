@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2017c and PS 3.7-2017c
-# File created on 2017-07-10 10:25:18  by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2017d and PS 3.7-2017d
+# File created on 2017-09-26 12:19:19 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -129,6 +129,7 @@
 (0008,0060)	CS	Modality	1	DICOM
 (0008,0061)	CS	ModalitiesInStudy	1-n	DICOM
 (0008,0062)	UI	SOPClassesInStudy	1-n	DICOM
+(0008,0063)	SQ	AnatomicRegionsInStudyCodeSequence	1	DICOM
 (0008,0064)	CS	ConversionType	1	DICOM
 (0008,0068)	CS	PresentationIntentType	1	DICOM
 (0008,0070)	LO	Manufacturer	1	DICOM
@@ -256,7 +257,6 @@
 (0008,2218)	SQ	AnatomicRegionSequence	1	DICOM
 (0008,2220)	SQ	AnatomicRegionModifierSequence	1	DICOM
 (0008,2228)	SQ	PrimaryAnatomicStructureSequence	1	DICOM
-(0008,2229)	SQ	AnatomicStructureSpaceOrRegionSequence	1	DICOM
 (0008,2230)	SQ	PrimaryAnatomicStructureModifierSequence	1	DICOM
 (0008,3001)	SQ	AlternateRepresentationSequence	1	DICOM
 (0008,3010)	UI	IrradiationEventUID	1-n	DICOM
@@ -361,6 +361,8 @@
 (0012,0042)	LO	ClinicalTrialSubjectReadingID	1	DICOM
 (0012,0050)	LO	ClinicalTrialTimePointID	1	DICOM
 (0012,0051)	ST	ClinicalTrialTimePointDescription	1	DICOM
+(0012,0052)	FD	LongitudinalTemporalOffsetFromEvent	1	DICOM
+(0012,0053)	CS	LongitudinalTemporalEventType	1	DICOM
 (0012,0060)	LO	ClinicalTrialCoordinatingCenterName	1	DICOM
 (0012,0062)	CS	PatientIdentityRemoved	1	DICOM
 (0012,0063)	LO	DeidentificationMethod	1-n	DICOM
@@ -719,7 +721,9 @@
 (0018,1191)	CS	AnodeTargetMaterial	1	DICOM
 (0018,11A0)	DS	BodyPartThickness	1	DICOM
 (0018,11A2)	DS	CompressionForce	1	DICOM
+(0018,11A3)	DS	CompressionPressure	1	DICOM
 (0018,11A4)	LO	PaddleDescription	1	DICOM
+(0018,11A5)	DS	CompressionContactArea	1	DICOM
 (0018,1200)	DA	DateOfLastCalibration	1-n	DICOM
 (0018,1201)	TM	TimeOfLastCalibration	1-n	DICOM
 (0018,1202)	DT	DateTimeOfLastCalibration	1	DICOM
@@ -1982,12 +1986,9 @@
 (0040,0294)	DS	Quantity	1	DICOM
 (0040,0295)	SQ	MeasuringUnitsSequence	1	DICOM
 (0040,0296)	SQ	BillingItemSequence	1	DICOM
-(0040,0300)	US	TotalTimeOfFluoroscopy	1	DICOM
-(0040,0301)	US	TotalNumberOfExposures	1	DICOM
 (0040,0302)	US	EntranceDose	1	DICOM
 (0040,0303)	US	ExposedArea	1-2	DICOM
 (0040,0306)	DS	DistanceSourceToEntrance	1	DICOM
-(0040,030E)	SQ	ExposureDoseSequence	1	DICOM
 (0040,0310)	ST	CommentsOnRadiationDose	1	DICOM
 (0040,0312)	DS	XRayOutput	1	DICOM
 (0040,0314)	DS	HalfValueLayer	1	DICOM
@@ -2901,6 +2902,7 @@
 (0074,1002)	SQ	ProcedureStepProgressInformationSequence	1	DICOM
 (0074,1004)	DS	ProcedureStepProgress	1	DICOM
 (0074,1006)	ST	ProcedureStepProgressDescription	1	DICOM
+(0074,1007)	SQ	ProcedureStepProgressParametersSequence	1	DICOM
 (0074,1008)	SQ	ProcedureStepCommunicationsURISequence	1	DICOM
 (0074,100A)	UR	ContactURI	1	DICOM
 (0074,100C)	LO	ContactDisplayName	1	DICOM
@@ -3402,14 +3404,15 @@
 (300A,0083)	UI	ReferencedDoseReferenceUID	1	DICOM
 (300A,0084)	DS	BeamDose	1	DICOM
 (300A,0086)	DS	BeamMeterset	1	DICOM
+(300A,0088)	FL	BeamDosePointDepth	1	DICOM
+(300A,0089)	FL	BeamDosePointEquivalentDepth	1	DICOM
+(300A,008A)	FL	BeamDosePointSSD	1	DICOM
 (300A,008B)	CS	BeamDoseMeaning	1	DICOM
 (300A,008C)	SQ	BeamDoseVerificationControlPointSequence	1	DICOM
-(300A,008D)	FL	AverageBeamDosePointDepth	1	DICOM
-(300A,008E)	FL	AverageBeamDosePointEquivalentDepth	1	DICOM
-(300A,008F)	FL	AverageBeamDosePointSSD	1	DICOM
 (300A,0090)	CS	BeamDoseType	1	DICOM
 (300A,0091)	DS	AlternateBeamDose	1	DICOM
 (300A,0092)	CS	AlternateBeamDoseType	1	DICOM
+(300A,0093)	CS	DepthValueAveragingFlag	1	DICOM
 (300A,00A0)	IS	NumberOfBrachyApplicationSetups	1	DICOM
 (300A,00A2)	DS	BrachyApplicationSetupDoseSpecificationPoint	3	DICOM
 (300A,00A4)	DS	BrachyApplicationSetupDose	1	DICOM
@@ -3593,6 +3596,10 @@
 (300A,0266)	LO	BrachyAccessoryDeviceName	1	DICOM
 (300A,026A)	DS	BrachyAccessoryDeviceNominalThickness	1	DICOM
 (300A,026C)	DS	BrachyAccessoryDeviceNominalTransmission	1	DICOM
+(300A,0271)	DS	ChannelEffectiveLength	1	DICOM
+(300A,0272)	DS	ChannelInnerLength	1	DICOM
+(300A,0273)	SH	AfterloaderChannelID	1	DICOM
+(300A,0274)	DS	SourceApplicatorTipLength	1	DICOM
 (300A,0280)	SQ	ChannelSequence	1	DICOM
 (300A,0282)	IS	ChannelNumber	1	DICOM
 (300A,0284)	DS	ChannelLength	1	DICOM
@@ -3939,6 +3946,7 @@
 (0008,2200)	CS	RETIRED_TransducerPosition	1	DICOM/retired
 (0008,2204)	CS	RETIRED_TransducerOrientation	1	DICOM/retired
 (0008,2208)	CS	RETIRED_AnatomicStructure	1	DICOM/retired
+(0008,2229)	SQ	RETIRED_AnatomicStructureSpaceOrRegionSequence	1	DICOM/retired
 (0008,2240)	SQ	RETIRED_TransducerPositionSequence	1	DICOM/retired
 (0008,2242)	SQ	RETIRED_TransducerPositionModifierSequence	1	DICOM/retired
 (0008,2244)	SQ	RETIRED_TransducerOrientationSequence	1	DICOM/retired
@@ -4117,7 +4125,10 @@
 (0038,0040)	LO	RETIRED_DischargeDiagnosisDescription	1	DICOM/retired
 (0038,0044)	SQ	RETIRED_DischargeDiagnosisCodeSequence	1	DICOM/retired
 (0038,0061)	LO	RETIRED_IssuerOfServiceEpisodeID	1	DICOM/retired
+(0040,0300)	US	RETIRED_TotalTimeOfFluoroscopy	1	DICOM/retired
+(0040,0301)	US	RETIRED_TotalNumberOfExposures	1	DICOM/retired
 (0040,0307)	DS	RETIRED_DistanceSourceToSupport	1	DICOM/retired
+(0040,030E)	SQ	RETIRED_ExposureDoseSequence	1	DICOM/retired
 (0040,0330)	SQ	RETIRED_ReferencedProcedureStepSequence	1	DICOM/retired
 (0040,050A)	LO	RETIRED_SpecimenAccessionNumber	1	DICOM/retired
 (0040,0550)	SQ	RETIRED_SpecimenSequence	1	DICOM/retired
@@ -4272,9 +4283,9 @@
 (3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	DICOM/retired
 (3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	DICOM/retired
 (3006,00C4)	CS	RETIRED_FrameOfReferenceTransformationType	1	DICOM/retired
-(300A,0088)	FL	RETIRED_BeamDosePointDepth	1	DICOM/retired
-(300A,0089)	FL	RETIRED_BeamDosePointEquivalentDepth	1	DICOM/retired
-(300A,008A)	FL	RETIRED_BeamDosePointSSD	1	DICOM/retired
+(300A,008D)	FL	RETIRED_AverageBeamDosePointDepth	1	DICOM/retired
+(300A,008E)	FL	RETIRED_AverageBeamDosePointEquivalentDepth	1	DICOM/retired
+(300A,008F)	FL	RETIRED_AverageBeamDosePointSSD	1	DICOM/retired
 (4000,0010)	LT	RETIRED_Arbitrary	1	DICOM/retired
 (4000,4000)	LT	RETIRED_TextComments	1	DICOM/retired
 (4008,0040)	SH	RETIRED_ResultsID	1	DICOM/retired

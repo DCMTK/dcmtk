@@ -8,6 +8,7 @@
  *
  *  Generated automatically from DICOM PS 3.3-2017a
  *  File created on 2017-03-13 11:22:36
+ *  Last modified on 2017-09-26 by Riesmeier
  *
  */
 
@@ -21,9 +22,9 @@
 
 DRTBeamDoseVerificationControlPointSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    AverageBeamDosePointDepth(DCM_AverageBeamDosePointDepth),
-    AverageBeamDosePointEquivalentDepth(DCM_AverageBeamDosePointEquivalentDepth),
-    AverageBeamDosePointSSD(DCM_AverageBeamDosePointSSD),
+    AverageBeamDosePointDepth(DCM_RETIRED_AverageBeamDosePointDepth),
+    AverageBeamDosePointEquivalentDepth(DCM_RETIRED_AverageBeamDosePointEquivalentDepth),
+    AverageBeamDosePointSSD(DCM_RETIRED_AverageBeamDosePointSSD),
     AverageBeamDosePointSourceToExternalContourDistance(DCM_AverageBeamDosePointSourceToExternalContourDistance),
     CumulativeMetersetWeight(DCM_CumulativeMetersetWeight),
     ReferencedControlPointIndex(DCM_ReferencedControlPointIndex)

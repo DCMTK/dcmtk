@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-07-17 13:27:06
+**   Date: 2017-09-26 12:22:21
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2017-07-17 13:27:06"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2017-09-26 12:22:21"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4243
+** Number of entries: 4254
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -142,6 +142,7 @@
 #define DCM_Modality                             DcmTagKey(0x0008, 0x0060)
 #define DCM_ModalitiesInStudy                    DcmTagKey(0x0008, 0x0061)
 #define DCM_SOPClassesInStudy                    DcmTagKey(0x0008, 0x0062)
+#define DCM_AnatomicRegionsInStudyCodeSequence   DcmTagKey(0x0008, 0x0063)
 #define DCM_ConversionType                       DcmTagKey(0x0008, 0x0064)
 #define DCM_PresentationIntentType               DcmTagKey(0x0008, 0x0068)
 #define DCM_Manufacturer                         DcmTagKey(0x0008, 0x0070)
@@ -277,7 +278,7 @@
 #define DCM_AnatomicRegionSequence               DcmTagKey(0x0008, 0x2218)
 #define DCM_AnatomicRegionModifierSequence       DcmTagKey(0x0008, 0x2220)
 #define DCM_PrimaryAnatomicStructureSequence     DcmTagKey(0x0008, 0x2228)
-#define DCM_AnatomicStructureSpaceOrRegionSequence DcmTagKey(0x0008, 0x2229)
+#define DCM_RETIRED_AnatomicStructureSpaceOrRegionSequence DcmTagKey(0x0008, 0x2229)
 #define DCM_PrimaryAnatomicStructureModifierSequence DcmTagKey(0x0008, 0x2230)
 #define DCM_RETIRED_TransducerPositionSequence   DcmTagKey(0x0008, 0x2240)
 #define DCM_RETIRED_TransducerPositionModifierSequence DcmTagKey(0x0008, 0x2242)
@@ -399,6 +400,8 @@
 #define DCM_ClinicalTrialSubjectReadingID        DcmTagKey(0x0012, 0x0042)
 #define DCM_ClinicalTrialTimePointID             DcmTagKey(0x0012, 0x0050)
 #define DCM_ClinicalTrialTimePointDescription    DcmTagKey(0x0012, 0x0051)
+#define DCM_LongitudinalTemporalOffsetFromEvent  DcmTagKey(0x0012, 0x0052)
+#define DCM_LongitudinalTemporalEventType        DcmTagKey(0x0012, 0x0053)
 #define DCM_ClinicalTrialCoordinatingCenterName  DcmTagKey(0x0012, 0x0060)
 #define DCM_PatientIdentityRemoved               DcmTagKey(0x0012, 0x0062)
 #define DCM_DeidentificationMethod               DcmTagKey(0x0012, 0x0063)
@@ -771,7 +774,9 @@
 #define DCM_AnodeTargetMaterial                  DcmTagKey(0x0018, 0x1191)
 #define DCM_BodyPartThickness                    DcmTagKey(0x0018, 0x11a0)
 #define DCM_CompressionForce                     DcmTagKey(0x0018, 0x11a2)
+#define DCM_CompressionPressure                  DcmTagKey(0x0018, 0x11a3)
 #define DCM_PaddleDescription                    DcmTagKey(0x0018, 0x11a4)
+#define DCM_CompressionContactArea               DcmTagKey(0x0018, 0x11a5)
 #define DCM_DateOfLastCalibration                DcmTagKey(0x0018, 0x1200)
 #define DCM_TimeOfLastCalibration                DcmTagKey(0x0018, 0x1201)
 #define DCM_DateTimeOfLastCalibration            DcmTagKey(0x0018, 0x1202)
@@ -2180,13 +2185,13 @@
 #define DCM_Quantity                             DcmTagKey(0x0040, 0x0294)
 #define DCM_MeasuringUnitsSequence               DcmTagKey(0x0040, 0x0295)
 #define DCM_BillingItemSequence                  DcmTagKey(0x0040, 0x0296)
-#define DCM_TotalTimeOfFluoroscopy               DcmTagKey(0x0040, 0x0300)
-#define DCM_TotalNumberOfExposures               DcmTagKey(0x0040, 0x0301)
+#define DCM_RETIRED_TotalTimeOfFluoroscopy       DcmTagKey(0x0040, 0x0300)
+#define DCM_RETIRED_TotalNumberOfExposures       DcmTagKey(0x0040, 0x0301)
 #define DCM_EntranceDose                         DcmTagKey(0x0040, 0x0302)
 #define DCM_ExposedArea                          DcmTagKey(0x0040, 0x0303)
 #define DCM_DistanceSourceToEntrance             DcmTagKey(0x0040, 0x0306)
 #define DCM_RETIRED_DistanceSourceToSupport      DcmTagKey(0x0040, 0x0307)
-#define DCM_ExposureDoseSequence                 DcmTagKey(0x0040, 0x030e)
+#define DCM_RETIRED_ExposureDoseSequence         DcmTagKey(0x0040, 0x030e)
 #define DCM_CommentsOnRadiationDose              DcmTagKey(0x0040, 0x0310)
 #define DCM_XRayOutput                           DcmTagKey(0x0040, 0x0312)
 #define DCM_HalfValueLayer                       DcmTagKey(0x0040, 0x0314)
@@ -3198,6 +3203,7 @@
 #define DCM_ProcedureStepProgressInformationSequence DcmTagKey(0x0074, 0x1002)
 #define DCM_ProcedureStepProgress                DcmTagKey(0x0074, 0x1004)
 #define DCM_ProcedureStepProgressDescription     DcmTagKey(0x0074, 0x1006)
+#define DCM_ProcedureStepProgressParametersSequence DcmTagKey(0x0074, 0x1007)
 #define DCM_ProcedureStepCommunicationsURISequence DcmTagKey(0x0074, 0x1008)
 #define DCM_ContactURI                           DcmTagKey(0x0074, 0x100a)
 #define DCM_ContactDisplayName                   DcmTagKey(0x0074, 0x100c)
@@ -3760,12 +3766,13 @@
 #define DCM_RETIRED_BeamDosePointSSD             DcmTagKey(0x300a, 0x008a)
 #define DCM_BeamDoseMeaning                      DcmTagKey(0x300a, 0x008b)
 #define DCM_BeamDoseVerificationControlPointSequence DcmTagKey(0x300a, 0x008c)
-#define DCM_AverageBeamDosePointDepth            DcmTagKey(0x300a, 0x008d)
-#define DCM_AverageBeamDosePointEquivalentDepth  DcmTagKey(0x300a, 0x008e)
-#define DCM_AverageBeamDosePointSSD              DcmTagKey(0x300a, 0x008f)
+#define DCM_RETIRED_AverageBeamDosePointDepth    DcmTagKey(0x300a, 0x008d)
+#define DCM_RETIRED_AverageBeamDosePointEquivalentDepth DcmTagKey(0x300a, 0x008e)
+#define DCM_RETIRED_AverageBeamDosePointSSD      DcmTagKey(0x300a, 0x008f)
 #define DCM_BeamDoseType                         DcmTagKey(0x300a, 0x0090)
 #define DCM_AlternateBeamDose                    DcmTagKey(0x300a, 0x0091)
 #define DCM_AlternateBeamDoseType                DcmTagKey(0x300a, 0x0092)
+#define DCM_DepthValueAveragingFlag              DcmTagKey(0x300a, 0x0093)
 #define DCM_NumberOfBrachyApplicationSetups      DcmTagKey(0x300a, 0x00a0)
 #define DCM_BrachyApplicationSetupDoseSpecificationPoint DcmTagKey(0x300a, 0x00a2)
 #define DCM_BrachyApplicationSetupDose           DcmTagKey(0x300a, 0x00a4)
@@ -3949,6 +3956,10 @@
 #define DCM_BrachyAccessoryDeviceName            DcmTagKey(0x300a, 0x0266)
 #define DCM_BrachyAccessoryDeviceNominalThickness DcmTagKey(0x300a, 0x026a)
 #define DCM_BrachyAccessoryDeviceNominalTransmission DcmTagKey(0x300a, 0x026c)
+#define DCM_ChannelEffectiveLength               DcmTagKey(0x300a, 0x0271)
+#define DCM_ChannelInnerLength                   DcmTagKey(0x300a, 0x0272)
+#define DCM_AfterloaderChannelID                 DcmTagKey(0x300a, 0x0273)
+#define DCM_SourceApplicatorTipLength            DcmTagKey(0x300a, 0x0274)
 #define DCM_ChannelSequence                      DcmTagKey(0x300a, 0x0280)
 #define DCM_ChannelNumber                        DcmTagKey(0x300a, 0x0282)
 #define DCM_ChannelLength                        DcmTagKey(0x300a, 0x0284)
