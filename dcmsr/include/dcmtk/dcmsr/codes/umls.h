@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-10 10:25:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017d
+ *  File created on 2017-09-26 12:26:51 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 41
+// total number of codes: 43
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -64,6 +64,7 @@
 #define CODE_UMLS_HeatLamp                                                 DSRBasicCodedEntry("C0181514", "UMLS", "Heat lamp")
 #define CODE_UMLS_UnknownPrimaryNeoplasiaSite                              DSRBasicCodedEntry("C0221297", "UMLS", "unknown primary neoplasia site")
 #define CODE_UMLS_RestrictedDiet                                           DSRBasicCodedEntry("C0425422", "UMLS", "Restricted diet")
+#define CODE_UMLS_InfantOfMotherWithGestationalDiabetes                    DSRBasicCodedEntry("C0456029", "UMLS", "Infant of mother with gestational diabetes")
 #define CODE_UMLS_CoefficientOfVariance                                    DSRBasicCodedEntry("C0681921", "UMLS", "Coefficient of Variance")
 #define CODE_UMLS_Intern                                                   DSRBasicCodedEntry("C1144859", "UMLS", "Intern")
 #define CODE_UMLS_ConsultingPhysician                                      DSRBasicCodedEntry("C1441532", "UMLS", "Consulting Physician")
@@ -88,6 +89,7 @@
 #define CODE_UMLS_ISO1_F18                                                 DSRBasicCodedEntry("C2981788", "UMLS", "ISO-1 F^18^")
 #define CODE_UMLS_RadiationPhysicist                                       DSRBasicCodedEntry("C2985483", "UMLS", "Radiation Physicist")
 #define CODE_UMLS_Pretreatment                                             DSRBasicCodedEntry("C3539075", "UMLS", "Pretreatment")
+#define CODE_UMLS_DistalPhalanx                                            DSRBasicCodedEntry("C3669027", "UMLS", "Distal phalanx")
 #define CODE_UMLS_RoomAir                                                  DSRBasicCodedEntry("C3846005", "UMLS", "Room air")
 
 #endif
