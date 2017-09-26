@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:18:04 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017d
+ *  File created on 2017-09-26 12:19:07 by J. Riesmeier
  *
  */
 
@@ -225,6 +225,10 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(ZScore, DSRBasicCodedEntry("113071", "DCM", "Z-score")));
         Codes->insert(OFMake_pair(RCoefficient, DSRBasicCodedEntry("113057", "DCM", "R-Coefficient")));
         Codes->insert(OFMake_pair(R2Coefficient, DSRBasicCodedEntry("126220", "DCM", "R2-Coefficient")));
+        Codes->insert(OFMake_pair(ChiSquare, DSRBasicCodedEntry("126221", "DCM", "Chi-square")));
+        Codes->insert(OFMake_pair(DW, DSRBasicCodedEntry("126222", "DCM", "D-W")));
+        Codes->insert(OFMake_pair(AIC, DSRBasicCodedEntry("126223", "DCM", "AIC")));
+        Codes->insert(OFMake_pair(BIC, DSRBasicCodedEntry("126224", "DCM", "BIC")));
         Codes->insert(OFMake_pair(RGBRComponent, DSRBasicCodedEntry("110834", "DCM", "RGB R Component")));
         Codes->insert(OFMake_pair(RGBGComponent, DSRBasicCodedEntry("110835", "DCM", "RGB G Component")));
         Codes->insert(OFMake_pair(RGBBComponent, DSRBasicCodedEntry("110836", "DCM", "RGB B Component")));

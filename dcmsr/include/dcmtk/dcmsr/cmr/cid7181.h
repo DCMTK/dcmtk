@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:17:55 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017d
+ *  File created on 2017-09-26 12:18:58 by J. Riesmeier
  *
  */
 
@@ -96,6 +96,8 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
         ProportionalToCounts,
         /// ({propcounts}/s,UCUM,"Proportional to counts per second"), included from CID 84
         ProportionalToCountsPerSecond,
+        /// (cm2/ml,UCUM,"Centimeter**2/milliliter"), included from CID 84
+        SquareCentimeterPerMilliliter,
         /// (%,UCUM,"Percent"), included from CID 84
         Percent,
         /// (Bq/ml,UCUM,"Becquerels/milliliter"), included from CID 84

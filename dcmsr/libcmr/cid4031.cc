@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:17:50 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017d
+ *  File created on 2017-09-26 12:18:52 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4031 (Common Anatomic Regions)
 #define CONTEXT_GROUP_NUMBER  "4031"
-#define CONTEXT_GROUP_VERSION "20160314"
+#define CONTEXT_GROUP_VERSION "20170914"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.308"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -223,7 +223,7 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         Codes->insert(OFMake_pair(Pelvis, DSRBasicCodedEntry("T-D6000", "SRT", "Pelvis")));
         Codes->insert(OFMake_pair(PelvisAndLowerExtremities, DSRBasicCodedEntry("R-FAB58", "SRT", "Pelvis and lower extremities")));
         Codes->insert(OFMake_pair(Phantom, DSRBasicCodedEntry("113681", "DCM", "Phantom")));
-        Codes->insert(OFMake_pair(Prostate, DSRBasicCodedEntry("T-9200B", "SRT", "Prostate")));
+        Codes->insert(OFMake_pair(Prostate, DSRBasicCodedEntry("T-92000", "SRT", "Prostate")));
         Codes->insert(OFMake_pair(Rectum, DSRBasicCodedEntry("T-59600", "SRT", "Rectum")));
         Codes->insert(OFMake_pair(Rib, DSRBasicCodedEntry("T-11300", "SRT", "Rib")));
         Codes->insert(OFMake_pair(SacroiliacJoint, DSRBasicCodedEntry("T-15680", "SRT", "Sacroiliac joint")));

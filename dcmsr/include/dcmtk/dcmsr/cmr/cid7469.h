@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:18:04 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017d
+ *  File created on 2017-09-26 12:19:07 by J. Riesmeier
  *
  */
 
@@ -192,6 +192,14 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         RCoefficient,
         /// (126220,DCM,"R2-Coefficient"), included from CID 7180
         R2Coefficient,
+        /// (126221,DCM,"Chi-square"), included from CID 7180
+        ChiSquare,
+        /// (126222,DCM,"D-W"), included from CID 7180
+        DW,
+        /// (126223,DCM,"AIC"), included from CID 7180
+        AIC,
+        /// (126224,DCM,"BIC"), included from CID 7180
+        BIC,
         /// (110834,DCM,"RGB R Component"), included from CID 7180
         RGBRComponent,
         /// (110835,DCM,"RGB G Component"), included from CID 7180

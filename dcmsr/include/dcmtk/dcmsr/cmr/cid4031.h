@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:17:50 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017d
+ *  File created on 2017-09-26 12:18:52 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4031 - Common Anatomic Regions.
- *  (type: extensible, version: 20160314)
+ *  (type: extensible, version: 20170914)
  */
 class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
   : public DSRContextGroup
@@ -188,7 +188,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         PelvisAndLowerExtremities,
         /// (113681,DCM,"Phantom")
         Phantom,
-        /// (T-9200B,SRT,"Prostate")
+        /// (T-92000,SRT,"Prostate")
         Prostate,
         /// (T-59600,SRT,"Rectum")
         Rectum,

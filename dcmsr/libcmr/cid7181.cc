@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:17:55 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017d
+ *  File created on 2017-09-26 12:18:58 by J. Riesmeier
  *
  */
 
@@ -177,6 +177,7 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_Abst
         Codes->insert(OFMake_pair(CountsPerSecond, DSRBasicCodedEntry("{counts}/s", "UCUM", "Counts per second")));
         Codes->insert(OFMake_pair(ProportionalToCounts, DSRBasicCodedEntry("{propcounts}", "UCUM", "Proportional to counts")));
         Codes->insert(OFMake_pair(ProportionalToCountsPerSecond, DSRBasicCodedEntry("{propcounts}/s", "UCUM", "Proportional to counts per second")));
+        Codes->insert(OFMake_pair(SquareCentimeterPerMilliliter, DSRBasicCodedEntry("cm2/ml", "UCUM", "Centimeter**2/milliliter")));
         Codes->insert(OFMake_pair(Percent, DSRBasicCodedEntry("%", "UCUM", "Percent")));
         Codes->insert(OFMake_pair(BecquerelsPerMilliliter, DSRBasicCodedEntry("Bq/ml", "UCUM", "Becquerels/milliliter")));
         Codes->insert(OFMake_pair(MilligramsPerMinutePerMilliliter, DSRBasicCodedEntry("mg/min/ml", "UCUM", "Milligrams/minute/milliliter")));
