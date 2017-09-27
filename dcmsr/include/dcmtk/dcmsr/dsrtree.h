@@ -328,13 +328,13 @@ template<typename T = DSRTreeNode> class DSRTree
      */
     virtual size_t removeNode();
 
-    /** extract a subtree i.e.\ a fragment from this tree.
+    /** extract a subtree, i.e.\ a fragment from this tree.
      *  The subtree is specified by the current node, which becomes the root of the subtree.
      ** @return pointer to the extracted subtree, NULL in case of error
      */
     virtual DSRTree<T> *extractSubTree();
 
-    /** clone a subtree i.e.\ a fragment of this tree.
+    /** clone a subtree, i.e.\ a fragment of this tree.
      *  The cloning starts with the current node and ends with the given node.
      ** @param  stopAfterNodeID  ID of the node after which the cloning should stop.
      *                           By default (0), the process ends after cloning the
@@ -353,7 +353,8 @@ template<typename T = DSRTreeNode> class DSRTree
     DSRTree(T *rootNode);
 
     /** special copy constructor that clones a particular subtree only
-     ** @param  startCursor      first node of the subtree to be copied
+     ** @param  startCursor      cursor pointing to first node of the subtree to be
+     *                           copied
      *  @param  stopAfterNodeID  ID of the node after which the cloning should stop
      */
     DSRTree(const DSRTreeNodeCursor<T> &startCursor,

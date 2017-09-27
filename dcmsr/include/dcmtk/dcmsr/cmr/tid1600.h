@@ -52,6 +52,8 @@ extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_MissingImageLibraryEntryDe
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_WrongImageLibraryEntryDescriptorModality;
 /// normal: there are no image library entry descriptors to be added (copied from the dataset)
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded;
+/// normal: there are no (common) image library entry descriptors to be moved (to the image group)
+extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryEntryDescriptorsToBeMoved;
 
 //@}
 
@@ -150,7 +152,9 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      *  The values of the content items are copied from the data elements of the given
      *  'dataset'.  If none were added, CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded
      *  is returned, which is not regarded as an error.
-     *  Please note that this method should only be called once for each image group.
+     *  Please note that this method should be called only once for each image group.
+     *  Alternatively, moveCommonImageDescriptorsToImageGroups() could be called to move
+     *  common image descriptors to their respective image groups automatically.
      ** @param  dataset      DICOM dataset from which the values should be copied
      *  @param  mode         mode specifying which optional content items are to be added
      *  @param  descriptors  optional list with concept names of descriptors.  Its use
@@ -171,6 +175,15 @@ class DCMTK_CMR_EXPORT TID1600_ImageLibrary
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getImageEntryModality(DSRCodedEntryValue &modalityCode);
+
+    /** move common image descriptors from all image entries in this image library to
+     *  their respective image groups.  This method should usually be called after all
+     *  image entries have been added using addImageEntry().  If no descriptors were
+     *  moved, CMR_EC_NoImageLibraryEntryDescriptorsToBeMoved is returned, which is not
+     *  regarded as an error.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition moveCommonImageDescriptorsToImageGroups();
 
   // --- set modality-specific content manually ---
 

@@ -568,8 +568,22 @@ OFTEST(dcmsr_TID1600_ImageLibrary)
     OFCHECK(modality == CODE_DCM_DigitalRadiography);
     /* try to add another invocation of TID 1602 */
     OFCHECK(library.addImageGroupDescriptors(dataset4, TID1600_ImageLibrary::withAllDescriptors).bad());
+    /* create another group for testing the "move common descriptors" method */
+    OFCHECK(library.addImageGroup().good());
+    OFCHECK(library.addImageEntry(dataset1, TID1600_ImageLibrary::withAllDescriptors).good());
+    OFCHECK(dataset1.putAndInsertString(DCM_SOPInstanceUID, "1.2.3.4.5.6.7.8.9.10").good());
+    OFCHECK(dataset1.putAndInsertString(DCM_PixelSpacing, "1.0\\1.0").good());
+    OFCHECK(library.addImageEntry(dataset1, TID1600_ImageLibrary::withAllDescriptors).good());
+
     /* check number of expected content items */
-    OFCHECK_EQUAL(library.countNodes(), 61);
+    OFCHECK_EQUAL(library.countNodes(), 100);
+
+    /* move common descriptors to group level */
+    OFCHECK(library.moveCommonImageDescriptorsToImageGroups() == EC_Normal);
+    OFCHECK(library.moveCommonImageDescriptorsToImageGroups() == CMR_EC_NoImageLibraryEntryDescriptorsToBeMoved);
+
+    /* check number of expected content items (again) */
+    OFCHECK_EQUAL(library.countNodes(), 84);
 
     /* output content of the tree (in debug mode only) */
     if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))

@@ -56,6 +56,7 @@ makeOFConditionConst(CMR_EC_CannotAddMultipleImageLibraryGroupDescriptors, OFM_d
 makeOFConditionConst(CMR_EC_MissingImageLibraryEntryDescriptorModality,    OFM_dcmsr, 1604, OF_error, "Missing Image Library Entry Descriptor 'Modality'");
 makeOFConditionConst(CMR_EC_WrongImageLibraryEntryDescriptorModality,      OFM_dcmsr, 1605, OF_error, "Wrong Image Library Entry Descriptor 'Modality'");
 makeOFConditionConst(CMR_EC_NoImageLibraryEntryDescriptorsToBeAdded,       OFM_dcmsr, 1606, OF_ok,    "No Image Library Entry Descriptors to be added");
+makeOFConditionConst(CMR_EC_NoImageLibraryEntryDescriptorsToBeMoved,       OFM_dcmsr, 1607, OF_ok,    "No Image Library Entry Descriptors to be moved");
 
 
 TID1600_ImageLibrary::TID1600_ImageLibrary(const OFBool createLibrary)
@@ -281,6 +282,125 @@ OFCondition TID1600_ImageLibrary::getImageEntryModality(DSRCodedEntryValue &moda
     }
     /* in case of error, clear the result variable */
     BAD_RESULT(modalityCode.clear());
+    return result;
+}
+
+
+OFCondition TID1600_ImageLibrary::moveCommonImageDescriptorsToImageGroups()
+{
+    OFCondition result = CMR_EC_NoImageLibrary;
+    /* go to image library (root node) */
+    DSRDocumentTreeNodeCursor groupCursor(getRoot());
+    if (groupCursor.isValid())
+    {
+        DCMSR_CMR_DEBUG("Moving common image descriptors to image library groups (TID 1600)");
+        /* counter for moved image descriptors and image groups */
+        size_t movedDescriptors = 0;
+        size_t groupCounter = 0;
+        const DSRDocumentTreeNodeConceptNameFilter groupFilter(CODE_DCM_ImageLibraryGroup);
+        /* go to the first child (if any) and check for image library group */
+        if (groupCursor.gotoChild() && groupCursor.gotoMatchingNode(groupFilter, OFFalse /*searchIntoSub*/))
+        {
+            result = EC_Normal;
+            /* iterate over all image library groups */
+            do {
+                ++groupCounter;
+                DSRDocumentTreeNodeCursor imageCursor(groupCursor);
+                const DSRDocumentTreeNodeValueTypeFilter imageFilter(VT_Image);
+                /* go to the first child (if any) and check for image library entry */
+                if (imageCursor.gotoChild() && imageCursor.gotoMatchingNode(imageFilter, OFFalse /*searchIntoSub*/))
+                {
+                    DSRDocumentSubTree *subTree = NULL;
+                    /* iterate over all image library entries */
+                    do {
+                        DSRDocumentTreeNodeCursor childCursor(imageCursor);
+                        if (childCursor.gotoChild())
+                        {
+                            if (subTree != NULL)
+                            {
+                                size_t nodeID = subTree->gotoRoot();
+                                /* check whether there are any common descriptors */
+                                if (nodeID > 0)
+                                {
+                                    while (nodeID > 0)
+                                    {
+                                        DSRDocumentTreeNodeCursor cursor(childCursor);
+                                        /* if not found, remove it from the list */
+                                        if (!cursor.gotoNode(*subTree->getCurrentNode()))
+                                            nodeID = subTree->removeCurrentContentItem();
+                                        else
+                                            nodeID = subTree->gotoNext();
+                                    }
+                                } else {
+                                    /* nothing to compare, so exit the loop */
+                                    break;
+                                }
+                            } else {
+                                /* create a copy of the subtree (starting from the first child) */
+                                subTree = DSRDocumentSubTree::cloneSubTree(childCursor, imageCursor.getNodeID());
+                            }
+                        } else {
+                            /* no image descriptors for this entry, so clear the list and exit the loop */
+                            if (subTree != NULL)
+                                subTree->clear();
+                            break;
+                        }
+                    } while (imageCursor.gotoNextMatchingNode(imageFilter, OFFalse /*searchIntoSub*/));
+                    /* if there are any common descriptors ... */
+                    if (subTree != NULL)
+                    {
+                        DCMSR_CMR_DEBUG("  Found " << subTree->countNodes() << " common image descriptors in image library group #" << groupCounter);
+                        if (!subTree->isEmpty())
+                        {
+                            const DSRDocumentTreeNodeCursor oldCursor(getCursor());
+                            /* remove them from the respective image library entries */
+                            imageCursor = groupCursor;
+                            if (imageCursor.gotoChild() && imageCursor.gotoMatchingNode(imageFilter, OFFalse /*searchIntoSub*/))
+                            {
+                                /* iterate over all image library entries */
+                                do {
+                                    if (subTree->gotoRoot())
+                                    {
+                                        do {
+                                            /* go to the matching node (if any) */
+                                            setCursor(imageCursor);
+                                            if (gotoChild())
+                                            {
+                                                if (gotoNode(*subTree->getCurrentNode(), OFFalse /*startFromRoot*/))
+                                                {
+                                                    /* and remove it from the tree */
+                                                    removeCurrentContentItem();
+                                                    ++movedDescriptors;
+                                                }
+                                            } else {
+                                                /* nothing to compare, so exit the loop */
+                                                break;
+                                            }
+                                        } while (subTree->gotoNext());
+                                    }
+                                } while (imageCursor.gotoNextMatchingNode(imageFilter, OFFalse /*searchIntoSub*/));
+                            }
+                            /* and, finally, insert common descriptors to image library group */
+                            setCursor(groupCursor);
+                            STORE_RESULT(insertSubTree(subTree, AM_belowCurrentBeforeFirstChild, RT_unknown /*defaultRelType*/, OFTrue /*deleteIfFail*/));
+                            /* reset cursor (to old position) */
+                            setCursor(oldCursor);
+                        } else {
+                            /* free memory */
+                            delete subTree;
+                        }
+                    } else
+                        DCMSR_CMR_DEBUG("  No descriptors on image level, skipping image library group #" << groupCounter);
+                }
+            } while (result.good() && groupCursor.gotoNextMatchingNode(groupFilter, OFFalse /*searchIntoSub*/));
+            /* check whether any descriptors have been moved */
+            if (movedDescriptors > 0)
+                DCMSR_CMR_DEBUG("Moved a total of " << movedDescriptors << " image descriptors to image group level");
+            else
+                result = CMR_EC_NoImageLibraryEntryDescriptorsToBeMoved;
+        } else
+            result = CMR_EC_NoImageLibraryGroup;
+    }
     return result;
 }
 
@@ -797,7 +917,7 @@ OFCondition TID1600_ImageLibrary::goAndCheckImageLibraryEntry(const DSRCodedEntr
         /* check whether TID 1602 (Image Library Entry Descriptors) Row 1 is present */
         if (gotoNamedChildNode(CODE_DCM_Modality) > 0)
         {
-            /* ...and has the expected value */
+            /* ... and has the expected value */
             if (getCurrentContentItem().getCodeValue() == modalityCode)
                 result = EC_Normal;
             else

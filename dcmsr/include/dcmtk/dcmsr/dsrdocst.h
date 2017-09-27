@@ -506,7 +506,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                       const E_RelationshipType defaultRelType = RT_unknown,
                                       const OFBool deleteIfFail = OFFalse);
 
-    /** extract a subtree i.e.\ a fragment from this tree.
+    /** extract a subtree, i.e.\ a fragment from this tree.
      *  The subtree is specified by the current node, which becomes the root of the subtree.
      *  In contrast to cloneSubTree(), this method also makes sure that the by-reference
      *  relationships are preserved (as long as both source and target node are contained
@@ -543,7 +543,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual DSRDocumentTreeNode *cloneCurrentTreeNode() const;
 
-    /** clone a subtree i.e.\ a fragment of this tree.
+    /** clone a subtree, i.e.\ a fragment of this tree.
      *  The cloning starts with the current node and ends with the given node.
      *  Please note that the returned subtree has to be deleted by the caller if it is not
      *  inserted into the document tree using insertSubTree().
@@ -632,7 +632,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     DSRDocumentSubTree(DSRDocumentTreeNode *rootNode);
 
     /** special copy constructor that clones a particular subtree only
-     ** @param  startCursor      first node of the subtree to be copied
+     ** @param  startCursor      cursor pointing to first node of the subtree to be copied
      *  @param  stopAfterNodeID  ID of the node after which the cloning should stop
      */
     DSRDocumentSubTree(const DSRDocumentTreeNodeCursor &startCursor,
@@ -768,6 +768,16 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFCondition checkSubTreeConstraints(const DSRDocumentSubTree *tree,
                                                 const DSRIODConstraintChecker *checker) const;
+
+    // --- static helper function ---
+
+    /** clone a particular subtree, i.e.\ a fragment of a tree
+     ** @param  startCursor      cursor pointing to first node of the subtree to be copied
+     *  @param  stopAfterNodeID  ID of the node after which the cloning should stop
+     ** @return pointer to a copy of the specified subtree, NULL in case of error
+     */
+    static DSRDocumentSubTree *cloneSubTree(const DSRDocumentTreeNodeCursor &startCursor,
+                                            const size_t stopAfterNodeID = 0);
 
     /// check relationship content constraints of the associated IOD
     DSRIODConstraintChecker *ConstraintChecker;

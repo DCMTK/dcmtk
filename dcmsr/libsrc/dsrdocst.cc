@@ -982,6 +982,14 @@ size_t DSRDocumentSubTree::removeNode()
 }
 
 
+DSRDocumentSubTree *DSRDocumentSubTree::cloneSubTree(const DSRDocumentTreeNodeCursor &startCursor,
+                                                     const size_t stopAfterNodeID)
+{
+    /* create a copy of the specified subtree */
+    return new DSRDocumentSubTree(startCursor, stopAfterNodeID);
+}
+
+
 OFCondition DSRDocumentSubTree::includeTemplate(const DSRSharedSubTemplate &subTemplate,
                                                 const E_AddMode addMode,
                                                 const E_RelationshipType defaultRelType)
