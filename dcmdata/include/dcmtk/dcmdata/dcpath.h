@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2012, OFFIS e.V.
+ *  Copyright (C) 2008-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -295,7 +295,7 @@ public:
    *  (in total 2 sequences, 2 items, and one leaf attribute).
    *  @param obj [in] The object to search (or create) a path in
    *  @param path [in] The path either starting with an attribute (either a
-   *              sequence or a a leaf attribute as a dicitionary name or
+   *              sequence or a a leaf attribute as a dictionary name or
    *              tag) or starting with an item
    *  @param createIfNecessary [in] If set, all missing objects found
    *                           in the path string are created. If not set,
@@ -325,7 +325,7 @@ public:
    *  deleted by the function.
    *  @param obj [in] The object to delete attribute or item from
    *  @param path [in] The path either starting with an attribute (either a
-   *              sequence or a a leaf attribute as a dicitionary name or
+   *              sequence or a a leaf attribute as a dictionary name or
    *              tag) or starting with an item
    *  @param numDeleted [out] Number of deleted attributes/items
    *  @return EC_Normal if successful, error code otherwise. If the desired
@@ -397,7 +397,7 @@ protected:
    *  (in total 2 sequences, 2 items, and one leaf attribute).
    *  @param item [in] The object to search (or create) a path in
    *  @param path [in] The path starting with an attribute (either a
-   *              sequence or a a leaf attribute) as a dicitionary name or
+   *              sequence or a a leaf attribute) as a dictionary name or
    *              tag. The parsed attribute is removed from the path string.
    *  @return EC_Normal if successful, error code otherwise.
    */
