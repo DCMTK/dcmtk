@@ -32,6 +32,9 @@
 class DcmAttributeMatching::WildCardMatcher
 {
 public:
+
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
     // constructor, remembering the end of the query and candidate strings
     WildCardMatcher( const char* queryDataEnd, const char* candidateDataEnd )
     : queryDataEnd( queryDataEnd )
@@ -39,6 +42,7 @@ public:
     {
 
     }
+#include DCMTK_DIAGNOSTIC_POP
 
     // the actual match function, taking two pointers to the beginning of
     // the query and the candidate string
