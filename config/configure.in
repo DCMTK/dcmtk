@@ -11,7 +11,7 @@ dnl Additional Package Information
 dnl -------------------------------------------------------
 
 PACKAGE_VERSION_NUMBER=362
-PACKAGE_VERSION_SUFFIX=""
+PACKAGE_VERSION_SUFFIX="+"
 PACKAGE_DATE="DEV"
 
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_NUMBER,${PACKAGE_VERSION_NUMBER},[Define to the version number of this package.])

@@ -2828,7 +2828,7 @@ ac_config_headers="$ac_config_headers include/dcmtk/config/osconfig.h"
 
 
 PACKAGE_VERSION_NUMBER=362
-PACKAGE_VERSION_SUFFIX=""
+PACKAGE_VERSION_SUFFIX="+"
 PACKAGE_DATE="DEV"
 
 
