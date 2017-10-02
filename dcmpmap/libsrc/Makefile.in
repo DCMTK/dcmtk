@@ -24,7 +24,7 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 
 LOCALDEFS =
 
-objs = dpmtypes.o dpmtypes.o dpmmodparametricmapseries.o dpmmodparametricmapimage.o dpmparametricmapbase.o dpmparametricmapiod.o
+objs = dpmtypes.o dpmmodparametricmapseries.o dpmmodparametricmapimage.o dpmparametricmapbase.o dpmparametricmapiod.o
 
 
 library = libdcmpmap.$(LIBEXT)
