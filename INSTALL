@@ -81,7 +81,7 @@ given below:
    Linux 4.9.0     / Intel x86    / GNU gcc 6.3.0     (Debian 9.0)
    Linux 4.10.0    / amd64|x86_64 / GNU gcc 6.3.0     (Ubuntu 17.04)
    Linux 4.10.0    / amd64|x86_64 / Clang 4.0.0       (Ubuntu 17.04)
-   MacOS X 14.4.0  / amd64|x86_64 / Apple Clang 6.0
+   MacOS X 10.10.4 / amd64|x86_64 / Apple Clang 6.0
    NetBSD 7.0      / amd64|x86_64 / Clang 4.0.0
    NetBSD 7.0      / amd64|x86_64 / GNU gcc 4.8.5
    OpenBSD 6.0     / amd64|x86_64 / Clang 3.8.0
@@ -885,4 +885,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2017-07-14 (Schlamelcher)
+Last revised: 2017-10-02 (Riesmeier)
