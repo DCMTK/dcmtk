@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2016, OFFIS e.V.
+ *  Copyright (C) 2003-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,7 +80,7 @@ public:
      */
     OFCondition modifyOrInsertPath(OFString tag_path,
                                    const OFString &value,
-                                   const OFBool &only_modify,
+                                   const OFBool only_modify,
                                    const OFBool update_metaheader = OFTrue,
                                    const OFBool ignore_missing_tags = OFFalse,
                                    const OFBool no_reservation_checks = OFFalse);
@@ -102,7 +102,7 @@ public:
      */
     OFCondition modifyOrInsertFromFile(OFString tag_path,
                                        const OFString &filename,
-                                       const OFBool &only_modify,
+                                       const OFBool only_modify,
                                        const OFBool update_metaheader = OFTrue,
                                        const OFBool ignore_missing_tags = OFFalse,
                                        const OFBool no_reservation_checks = OFFalse);
@@ -112,10 +112,9 @@ public:
      *  @param value denotes new value of tag
      *  @param update_metaheader if true, metaheader UIDs are updated,
      *         if related dataset UIDs are changed, (default=true)
-     *  @param count returns holds the number of tags, that were affected
+     *  @param count returns the number of tags that were affected
      *  @param ignore_missing_tags if true, tags that could not be found
-     *                             while modifying (only_modify must be true)
-     *                             are handled as non-errors
+     *                             while modifying are handled as non-errors
      *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition modifyAllTags(OFString tag_path,
@@ -129,8 +128,7 @@ public:
      *  @param all_tags if true, tag is deleted at all levels of dataset,
      *                  else only 1st level is accessed
      *  @param ignore_missing_tags if true, tags that could not be found
-     *                             while modifying (only_modify must be true)
-     *                             are handled as non-errors
+     *                             while modifying are handled as non-errors
      *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition deleteTag(OFString tag_path,
@@ -155,13 +153,13 @@ public:
      /** Saves current dataset back to a file. Caution: After saving
      *  MdfDatasetManager keeps working on old filename.
      *  @param file_name filename to save to
-     *  @param opt_xfer transfer syntax to save to (EXS_Unknown: dont change)
+     *  @param opt_xfer transfer syntax to save to (EXS_Unknown: don't change)
      *  @param opt_enctype write with explicit or implicit length encoding
      *  @param opt_glenc option to set group length calculation mode
      *  @param opt_padenc sets padding option
      *  @param opt_filepad pad file to a multiple of this options value
      *  @param opt_itempad pad item to a multiple of this options value
-     *  @param opt_dataset if true:ony write only dataset, else write fileformat
+     *  @param opt_dataset if true, write only dataset, else write fileformat
      *  @return returns EC_Normal if everything is OK, else an error
      */
     OFCondition saveFile(const char *file_name,
@@ -179,24 +177,24 @@ public:
      */
     OFCondition saveFile();
 
-    /** Returns the dataset, that this MdfDatasetManager handles.
-     *  You should use the returned object with care to avoid
-     *  sideeffects with other class methods, that modify this object, too.
+    /** Returns the dataset that this MdfDatasetManager handles.
+     *  You should use the returned object with care to avoid side effects with
+     *  other class methods that modify this object, too.
      *  @return returns the dataset, this MdfDatasetManager manages and NULL, if
      *          no dataset is loaded
      */
     DcmDataset* getDataset();
 
 
-    /** Returns the DcmFileFormat, that this MdfDatasetManager handles.
-     *  You should use the returned object with care to avoid
-     *  side-effects with other class methods, that modify this object, too.
+    /** Returns the DcmFileFormat that this MdfDatasetManager handles.
+     *  You should use the returned object with care to avoid side-effects with
+     *  other class methods that modify this object, too.
      *  @return returns the DcmFileFormat, this MdfDatasetManager manages and
      *          NULL, if no file is loaded
      */
     DcmFileFormat* getFileFormat();
 
-    /** Returns filename of the file, that's loaded currently.
+    /** Returns filename of the file that is currently loaded.
      *  @return returns filename and "" if no file is loaded.
      */
     OFString getFilename() const;
@@ -210,7 +208,7 @@ public:
 protected:
 
     /** modifies element to a specific value
-     *  @param elem element, that should be changed
+     *  @param elem element that should be changed
      *  @param value the value, the element should be changed to
      *  @return OFCondition, which returns an error code if an error occurs
      */
@@ -233,13 +231,13 @@ protected:
 
 private:
 
-    /// name of file, that is loaded currently
+    /// name of file that is currently loaded
     OFString current_file;
 
     /// will hold file to modify
     DcmFileFormat *dfile;
 
-    /// will hold the dataset, that should be modified
+    /// will hold the dataset that should be modified
     DcmDataset *dset;
 
     /// if enabled, no value modifications on attributes having VR of UN
