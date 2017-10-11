@@ -2,7 +2,7 @@
 PROJECT(DCMTK)
 
 # Minimum CMake version required
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.3)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 
 # Disables a warning emitted by CMake 3.7.2. The same setting is performed
 # again in CMake/dcmtkPrepare.cmake (included below), but the warning is still
@@ -91,14 +91,14 @@ INCLUDE(CMake/dcmtkAfterModules.cmake NO_POLICY_SCOPE)
 # Install global headers
 INSTALL(FILES "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h"
               "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h"
-        DESTINATION "${DCMTK_INSTALL_INCDIR}/dcmtk/config"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/dcmtk/config"
         COMPONENT include)
 
 # Install DCMTK's general documentation files
 INSTALL(FILES ANNOUNCE CHANGES COPYRIGHT CREDITS FAQ HISTORY VERSION
-        DESTINATION "${DCMTK_INSTALL_DOCDIR}"
+        DESTINATION "${CMAKE_INSTALL_DOCDIR}"
         COMPONENT doc)
-INSTALL(DIRECTORY docs/ DESTINATION "${DCMTK_INSTALL_DOCDIR}"
+INSTALL(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_DOCDIR}"
         COMPONENT doc FILES_MATCHING PATTERN "CHANGES.???")
 
 #-----------------------------------------------------------------------------

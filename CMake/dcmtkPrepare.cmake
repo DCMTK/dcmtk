@@ -184,25 +184,18 @@ ENDIF(CMAKE_CROSSCOMPILING)
 # Installation sub-directories
 #-----------------------------------------------------------------------------
 
-SET(DCMTK_INSTALL_BINDIR "bin" CACHE STRING "Installation sub-directory for binary executables.")
-SET(DCMTK_INSTALL_INCDIR "include" CACHE STRING "Installation sub-directory for header files.")
-SET(DCMTK_INSTALL_LIBDIR "lib" CACHE STRING "Installation sub-directory for object code libraries.")
+# Set project name variable to package name for GnuInstallDirs
+SET(PROJECT_NAME "${DCMTK_PACKAGE_NAME}")
+# Provides CMake cache variables with reasonable defaults to create a GNU style installation
+# directory structure
+INCLUDE(GNUInstallDirs)
 # CMake's files (DCMTKTarget.cmake, DCMTKConfigVersion.cmake and DCMTKConfig.cmake) are installed
 # to different installation paths under Unix- and Windows-based systems
 IF(UNIX)
-  SET(DCMTK_INSTALL_CMKDIR "lib/cmake/dcmtk" CACHE STRING "Installation sub-directory for CMake files.")
+  SET(DCMTK_INSTALL_CMKDIR "${CMAKE_INSTALL_LIBDIR}/cmake/dcmtk")
 ELSEIF(WIN32)
-  SET(DCMTK_INSTALL_CMKDIR "cmake" CACHE STRING "Installation sub-directory for CMake files.")
+  SET(DCMTK_INSTALL_CMKDIR "cmake")
 ENDIF(UNIX)
-SET(DCMTK_INSTALL_ETCDIR "etc/dcmtk" CACHE STRING "Installation sub-directory for configuration files.")
-SET(DCMTK_INSTALL_DATDIR "share/dcmtk" CACHE STRING "Installation sub-directory for sample files and the like.")
-SET(DCMTK_INSTALL_DOCDIR "share/doc/dcmtk" CACHE STRING "Installation sub-directory for general documentation.")
-SET(DCMTK_INSTALL_HTMDIR "share/doc/dcmtk/html" CACHE STRING "Installation sub-directory for HTML documentation.")
-SET(DCMTK_INSTALL_MANDIR "share/man" CACHE STRING "Installation sub-directory for man pages.")
-
-MARK_AS_ADVANCED(DCMTK_INSTALL_BINDIR DCMTK_INSTALL_INCDIR DCMTK_INSTALL_LIBDIR DCMTK_INSTALL_CMKDIR
-                 DCMTK_INSTALL_ETCDIR DCMTK_INSTALL_DATDIR DCMTK_INSTALL_DOCDIR DCMTK_INSTALL_HTMDIR
-                 DCMTK_INSTALL_MANDIR)
 
 #-----------------------------------------------------------------------------
 # Build directories

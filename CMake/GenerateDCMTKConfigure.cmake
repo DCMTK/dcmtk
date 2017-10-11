@@ -134,10 +134,10 @@ IF(WIN32 AND NOT CYGWIN)
   SET(ENVIRONMENT_PATH_SEPARATOR ";")
   # Set dictionary path to the data dir inside install main dir (prefix)
   IF(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
-    SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}\\\\${DCMTK_INSTALL_DATDIR}\\\\dicom.dic")
+    SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}\\\\${CMAKE_INSTALL_DATADIR}\\\\dcmtk\\\\dicom.dic")
     # If private dictionary should be utilized, add it to default dictionary path.
     IF(ENABLE_PRIVATE_TAGS)
-      SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH};${DCMTK_PREFIX}\\\\${DCMTK_INSTALL_DATDIR}\\\\private.dic")
+      SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH};${DCMTK_PREFIX}\\\\${CMAKE_INSTALL_DATADIR}\\\\dcmtk\\\\private.dic")
     ENDIF(ENABLE_PRIVATE_TAGS)
      # Again, for Windows strip all / from path and replace it with \\.
     STRING(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
@@ -155,17 +155,17 @@ ELSE(WIN32 AND NOT CYGWIN)
   SET(ENVIRONMENT_PATH_SEPARATOR ":")
   # Set dictionary path to the data dir inside install main dir (prefix).
   IF(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
-    SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/dicom.dic")
+    SET(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk/dicom.dic")
     # If private dictionary should be utilized, add it to default dictionary path.
     IF(ENABLE_PRIVATE_TAGS)
-      SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/private.dic")
+      SET(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk/private.dic")
     ENDIF(ENABLE_PRIVATE_TAGS)
   ELSE(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
     SET(DCM_DICT_DEFAULT_PATH "")
   ENDIF(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
   # Set default directory for configuration and support data.
-  SET(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${DCMTK_INSTALL_ETCDIR}/")
-  SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${DCMTK_INSTALL_DATDIR}/")
+  SET(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}/dcmtk/")
+  SET(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk/")
 ENDIF(WIN32 AND NOT CYGWIN)
 
 # Check the sizes of various types
