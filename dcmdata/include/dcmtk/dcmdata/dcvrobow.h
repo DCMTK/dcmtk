@@ -60,7 +60,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
      *  with a given object of the same type. The tag of the element is also
      *  considered as the first component that is compared, followed by the
      *  object types (VR, i.e. DCMTK'S EVR) and the comparison of all value
-     *  components of the object, preferrably in the order declared in the
+     *  components of the object, preferably in the order declared in the
      *  object (if applicable). The implementation for DcmOtherByteOtherWord
      *  does compare the values of two elements in local endianness.
      *  @param  rhs the right hand side of the comparison
@@ -129,9 +129,9 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
 
     /** set/change the current value representation
      *  @param vr new value representation to be set.  All VRs except for OW (Other
-     *    Word String) are treated as 8 bit data (OB).  This is particularily useful
+     *    Word String) are treated as 8 bit data (OB).  This is particularly useful
      *    for unknown (UN) or unsupported VRs.
-     *  @return status status, EC_Normal if successful, an error code otherwise
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setVR(DcmEVR vr);
 
@@ -211,7 +211,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
      *  This method is only applicable to OW data.
      *  @param wordVal reference to result variable (cleared in case of error)
      *  @param pos index of the value to be retrieved (0..vm-1)
-     *  @return status status, EC_Normal if successful, an error code otherwise
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUint16(Uint16 &wordVal,
                                   const unsigned long pos = 0);
@@ -219,14 +219,14 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
     /** get reference to stored 8 bit data.
      *  This method is only applicable to non-OW data, e.g. OB.
      *  @param byteVals reference to result variable
-     *  @return status status, EC_Normal if successful, an error code otherwise
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUint8Array(Uint8 *&byteVals);
 
     /** get reference to stored 16 bit data.
      *  This method is only applicable to OW data.
      *  @param wordVals reference to result variable
-     *  @return status status, EC_Normal if successful, an error code otherwise
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUint16Array(Uint16 *&wordVals);
 

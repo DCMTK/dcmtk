@@ -65,7 +65,7 @@ class DCMTK_DCMDATA_EXPORT DcmFloatingPointDouble
      *  with a given object of the same type. The tag of the element is also
      *  considered as the first component that is compared, followed by the
      *  object types (VR, i.e. DCMTK'S EVR) and the comparison of all value
-     *  components of the object, preferrably in the order declared in the
+     *  components of the object, preferably in the order declared in the
      *  object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.

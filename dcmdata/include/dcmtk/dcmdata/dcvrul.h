@@ -139,7 +139,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedLong
     /** get particular integer value
      *  @param uintVal reference to result variable (cleared in case of error)
      *  @param pos index of the value to be retrieved (0..vm-1)
-     *  @return status status, EC_Normal if successful, an error code otherwise
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUint32(Uint32 &uintVal,
                                   const unsigned long pos = 0);

@@ -59,7 +59,7 @@ class DCMTK_DCMDATA_EXPORT DcmSignedShort
      *  with a given object of the same type. The tag of the element is also
      *  considered as the first component that is compared, followed by the
      *  object types (VR, i.e. DCMTK'S EVR) and the comparison of all value
-     *  components of the object, preferrably in the order declared in the
+     *  components of the object, preferably in the order declared in the
      *  object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.
@@ -140,7 +140,7 @@ class DCMTK_DCMDATA_EXPORT DcmSignedShort
     /** get particular integer value
      *  @param sintVal reference to result variable (cleared in case of error)
      *  @param pos index of the value to be retrieved (0..vm-1)
-     *  @return status status, EC_Normal if successful, an error code otherwise
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getSint16(Sint16 &sintVal,
                                   const unsigned long pos = 0);

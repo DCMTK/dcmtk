@@ -53,7 +53,7 @@ public:
     virtual ~DcmRepresentationParameter() {}
 
     /** this methods creates a copy of type DcmRepresentationParameter *
-     *  it must be overweritten in every subclass.
+     *  it must be overwritten in every subclass.
      *  @return copy of this object
      */
     virtual DcmRepresentationParameter *clone() const = 0;
@@ -161,7 +161,7 @@ private:
     /// current list element for some operations
     DcmRepresentationListIterator current;
 
-    /// shows if an unecapsulated representation is stored
+    /// shows if an unencapsulated representation is stored
     OFBool existUnencapsulated;
 
     /** this flag indicates that this pixel data element will be written
@@ -306,9 +306,9 @@ public:
 
     /** set/change the current value representation of the uncompressed image representation, if any
      *  @param vr new value representation to be set.  All VRs except for OW (Other
-     *    Word String) are treated as 8 bit data (OB).  This is particularily useful
+     *    Word String) are treated as 8 bit data (OB).  This is particularly useful
      *    for unknown (UN) or unsupported VRs.
-     *  @return status status, EC_Normal if successful, an error code otherwise
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setVR(DcmEVR vr);
 
@@ -495,9 +495,9 @@ public:
       const Uint32 length,
       const E_ByteOrder byteOrder);
 
-    /** get a specific exisiting Representation, creates no representation
+    /** get a specific existing Representation, creates no representation
      *  if repParam is NULL, then the representation conforming to the default
-     *  presentationParameters (defined with the codec) is returned.
+     *  representationParameters (defined with the codec) is returned.
      */
     OFCondition getEncapsulatedRepresentation(
         const E_TransferSyntax repType,
