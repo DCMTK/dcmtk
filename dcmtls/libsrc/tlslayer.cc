@@ -178,14 +178,21 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
    }
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
+   // on versions of OpenSSL older than 1.1.0, we use the
+   // SSLv23 methods and not the TLSv1 methods because the latter
+   // only accept TLS 1.0 and prevent the negotiation of newer
+   // versions of TLS.
+   // We use SSL_CTX_set_options() to disable SSLv2 and SSLv3.
    if (networkRole == DICOM_APPLICATION_ACCEPTOR)
    {
-     transportLayerContext = SSL_CTX_new(TLSv1_server_method());
+     transportLayerContext = SSL_CTX_new(SSLv23_server_method());
    } else if (networkRole == DICOM_APPLICATION_REQUESTOR) {
-     transportLayerContext = SSL_CTX_new(TLSv1_client_method());
+     transportLayerContext = SSL_CTX_new(SSLv23_client_method());
    } else {
-     transportLayerContext = SSL_CTX_new(TLSv1_method());
+     transportLayerContext = SSL_CTX_new(SSLv23_method());
    }
+   SSL_CTX_set_options(transportLayerContext, SSL_OP_NO_SSLv2|SSL_OP_NO_SSLv3);
+
 #else
    // starting with OpenSSL 1.1.0, a new TLS_method() is offered
    // that automatically selects the highest version of the TLS
