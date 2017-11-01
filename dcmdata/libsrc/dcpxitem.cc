@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -179,17 +179,27 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
             OFListConstIterator(Uint32) first = offsetList.begin();
             OFListConstIterator(Uint32) last = offsetList.end();
             unsigned long idx = 0;
+            OFBool overflow = OFFalse;
             while ((first != last) && result.good())
             {
-                // check for odd offset values, should never happen at this point
-                if (current & 1)
+                // check for 32-bit unsigned integer overflow (during previous iteration) and report on this
+                if (overflow)
+                {
+                    DCMDATA_WARN("DcmPixelItem: offset value exceeds maximum (32-bit unsigned integer) for frame #"
+                        << (idx + 1) << ", cannot create offset table");
+                    result = EC_InvalidBasicOffsetTable;
+                }
+                // check for odd offset values, should never happen at this point (if list was filled by an encoder)
+                else if (current & 1)
                 {
                     DCMDATA_WARN("DcmPixelItem: odd frame size (" << current << ") found for frame #"
                         << (idx + 1) << ", cannot create offset table");
                     result = EC_InvalidBasicOffsetTable;
                 } else {
+                    // value "current" is proven to be valid
                     array[idx++] = current;
-                    current += *first;
+                    // check for 32-bit unsigned integer overflow (but report only during next iteration)
+                    overflow = !OFStandard::safeAdd(current, *first, current);
                     ++first;
                 }
             }
