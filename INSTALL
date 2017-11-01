@@ -840,15 +840,30 @@ In order to generate plain text files from the man pages call "make text" in
 the "doxygen" directory.  The output files are stored in "doxygen/man2text".
 
 
+DICOM DATA DICTIONARY
+=====================
+
+Almost all DCMTK tools and libraries require the so-called DICOM data dictionary
+(i.e. information from part 6 of the DICOM standard) to be available in order
+to map the attribute tags to their associated Value Representation (VR), Value
+Multiplicity (VM) and attribute name (official keyword).  The data dictionary
+can either be loaded from file (default on Unix systems) or be built into the
+respective tool / dcmdata library (default on Windows systems).  The default
+behavior can be changed using appropriate configuration options.
+
+Details can be found in the documentation file at "dcmdata/docs/datadict.txt"
+(or "/usr/local/share/doc/dcmtk/datadict.txt").
+
+
 COMPILE-TIME FLAGS AND ENVIRONMENT VARIABLES
 ============================================
 
 The behavior of several DCMTK tools and libraries can be modified by a number
-of compile-time flags (macros).  Those macros which are not automatically
+of compile-time flags (macros).  Those macros that are not automatically
 handled by the configure mechanism are documented in "config/docs/macros.txt"
 (or "/usr/local/share/doc/dcmtk/macros.txt").
 
-There is also a number of environment variables which affect DCMTK's behavior.
+There is also a number of environment variables that affect DCMTK's behavior.
 These are documented in "config/docs/envvars.txt" (or "/usr/local/share/doc/
 dcmtk/envvars.txt").
 
@@ -860,7 +875,7 @@ DCMTK comes with a test suite that verifies that the toolkit works as expected.
 The tests are contained in a module's "tests" subdirectory.  Some tests are
 marked as exhaustive and are only run if explicitly enabled, see below.
 
-When using configure for building DCMTK, all tests can be run via "make check".
+When using Autoconf for building DCMTK, all tests can be run via "make check".
 If a test fails, make will stop and the failure reason of the test which failed
 should be visible.  Additionally, you may run the exhaustive unit tests by
 typing "make check-exhaustive".
@@ -885,4 +900,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2017-10-02 (Riesmeier)
+Last revised: 2017-11-01 (Riesmeier)
