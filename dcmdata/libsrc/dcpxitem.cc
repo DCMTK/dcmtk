@@ -192,7 +192,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
                 // check for odd offset values, should never happen at this point (if list was filled by an encoder)
                 else if (current & 1)
                 {
-                    DCMDATA_WARN("DcmPixelItem: odd frame size (" << current << ") found for frame #"
+                    DCMDATA_WARN("DcmPixelItem: odd offset value (" << current << ") for frame #"
                         << (idx + 1) << ", cannot create offset table");
                     result = EC_InvalidBasicOffsetTable;
                 } else {
