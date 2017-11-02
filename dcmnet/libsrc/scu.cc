@@ -732,7 +732,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
   OFStandard::strlcpy(req->AffectedSOPClassUID, sopClassUID.c_str(), sizeof(req->AffectedSOPClassUID));
   OFStandard::strlcpy(req->AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(req->AffectedSOPInstanceUID));
   req->DataSetType = DIMSE_DATASET_PRESENT;
-  req->Priority = DIMSE_PRIORITY_LOW;
+  req->Priority = DIMSE_PRIORITY_MEDIUM;
 
   /* If desired (optional), insert MOVE originator information if this C-STORE
      was initiated through a C-MOVE request.
@@ -883,7 +883,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
   // Set target for embedded C-Store's
   OFStandard::strlcpy(req->MoveDestination, moveDestinationAETitle.c_str(), sizeof(req->MoveDestination));
   // Set priority (mandatory)
-  req->Priority = DIMSE_PRIORITY_LOW;
+  req->Priority = DIMSE_PRIORITY_MEDIUM;
 
   /* Determine SOP Class from presentation context */
   OFString abstractSyntax, transferSyntax;
@@ -1086,7 +1086,7 @@ OFCondition DcmSCU::sendCGETRequest(const T_ASC_PresentationContextID presID,
   // Announce dataset
   req->DataSetType = DIMSE_DATASET_PRESENT;
   // Specify priority
-  req->Priority = DIMSE_PRIORITY_LOW;
+  req->Priority = DIMSE_PRIORITY_MEDIUM;
 
   // Determine SOP Class from presentation context
   OFString abstractSyntax, transferSyntax;
@@ -1540,7 +1540,7 @@ OFCondition DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID,
   // Announce dataset
   req->DataSetType = DIMSE_DATASET_PRESENT;
   // Specify priority
-  req->Priority = DIMSE_PRIORITY_LOW;
+  req->Priority = DIMSE_PRIORITY_MEDIUM;
 
   // Determine SOP Class from presentation context
   OFString abstractSyntax, transferSyntax;

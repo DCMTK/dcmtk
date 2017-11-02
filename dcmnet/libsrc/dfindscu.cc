@@ -497,7 +497,7 @@ OFCondition DcmFindSCU::findSCU(
     bzero(OFreinterpret_cast(char*, &req), sizeof(req));
     strcpy(req.AffectedSOPClassUID, abstractSyntax);
     req.DataSetType = DIMSE_DATASET_PRESENT;
-    req.Priority = DIMSE_PRIORITY_LOW;
+    req.Priority = DIMSE_PRIORITY_MEDIUM;
 
     /* prepare the callback data */
     DcmFindSCUDefaultCallback defaultCallback(extractResponsesToFile, cancelAfterNResponses, outputDirectory);

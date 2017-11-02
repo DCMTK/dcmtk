@@ -890,11 +890,11 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
 
     req.MessageID = msgId;
     strcpy(req.AffectedSOPClassUID,
-     UID_FINDStudyRootQueryRetrieveInformationModel);
-    req.Priority = DIMSE_PRIORITY_LOW;
+        UID_FINDStudyRootQueryRetrieveInformationModel);
+    req.Priority = DIMSE_PRIORITY_MEDIUM;
 
     cond = DIMSE_findUser(assoc, presId, &req, query,
-      findCallback, &cbd, blockMode_, dimse_timeout_, &rsp, &stDetail);
+        findCallback, &cbd, blockMode_, dimse_timeout_, &rsp, &stDetail);
 
     if (cond.good()) {
         OFString temp_str;

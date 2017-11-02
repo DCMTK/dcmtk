@@ -1558,7 +1558,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   strcpy(req.AffectedSOPClassUID, sopClass);
   strcpy(req.AffectedSOPInstanceUID, sopInstance);
   req.DataSetType = DIMSE_DATASET_PRESENT;
-  req.Priority = DIMSE_PRIORITY_LOW;
+  req.Priority = DIMSE_PRIORITY_MEDIUM;
 
   /* if required, dump some more general information */
   OFLOG_INFO(storescuLogger, "Sending Store Request (MsgID " << msgId << ", "
