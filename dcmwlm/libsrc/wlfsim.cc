@@ -490,7 +490,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
   int ret = 0;
 
   // start a loop; in each iteration another directory entry is determined
-  long hFile = OFstatic_cast(long, _findfirst( (char*)searchname.c_str(), &fileData ));
+  intptr_t hFile = _findfirst( (char*)searchname.c_str(), &fileData );
   while( hFile != -1L && ret == 0 )
   {
     // if the current entry refers to a worklist file, do something
