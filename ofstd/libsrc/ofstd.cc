@@ -2660,30 +2660,73 @@ extern "C" {
 #endif
 #endif
 
-OFStandard::OFHostent OFStandard::getHostByAddr( const char* addr,
-                                     int len,
-                                     int type )
+OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
 {
-#ifdef HAVE_GETHOSTBYADDR_R
-    unsigned size = 32;
-    char* tmp = new char[size];
-    hostent* res = NULL;
-    hostent buf;
-    int err = 0;
-    while( gethostbyaddr_r( addr, len, type, &buf, tmp, size, &res, &err ) == ERANGE )
-    {
-        delete[] tmp;
-        if( size >= MAX_NAME )
-            return NULL;
-        tmp = new char[size*=2];
-    }
-    OFHostent h( res );
-    delete[] tmp;
-    return h;
+  OFString result;
+
+#ifdef HAVE_GETADDRINFO
+  // We have getaddrinfo(). In this case we also presume that we have
+  // getnameinfo(), since both functions were introduced together.
+  // This is the preferred implementation, being thread-safe and protocol independent.
+
+  struct sockaddr_storage sas; // this type is large enough to hold all supported protocol specific sockaddr structs
+  memzero(&sas, sizeof(sas));
+
+  // a DNS name must be shorter than 256 characters, so this should be enough
+  char hostname[512];
+  hostname[0] = '\0';
+
+  if (type == AF_INET)
+  {
+    if (len != sizeof(struct in_addr)) return result; // invalid address length
+    struct sockaddr_in *sa4 = OFreinterpret_cast(sockaddr_in *, &sas);
+    sa4->sin_family = AF_INET;
+    memcpy(&sa4->sin_addr, addr, len);
+  }
+  else if (type == AF_INET6)
+  {
+    if (len != sizeof(struct in6_addr)) return result; // invalid address length
+    struct sockaddr_in6 *sa6 = OFreinterpret_cast(sockaddr_in6 *, &sas);
+    sa6->sin6_family = AF_INET6;
+    memcpy(&sa6->sin6_addr, addr, len);
+  }
+  else return result; // unknown network type, not supported by getnameinfo()
+
+  int err = EAI_AGAIN;
+  struct sockaddr *sa = OFreinterpret_cast(struct sockaddr *, &sas);
+  while (EAI_AGAIN == err) err = getnameinfo(sa, sizeof(sas), hostname, 512, NULL, 0, 0);
+  if (hostname[0] != '\0') result = hostname;
+
+#elif defined(HAVE_GETHOSTBYADDR_R)
+  // We do not have getaddrinfo(), but we have a thread-safe gethostbyaddr_r()
+
+  unsigned size = 1024;
+  char *tmp = new char[size];
+  struct hostent *he = NULL;
+  hostent buf;
+  int err = 0;
+  while ((gethostbyaddr_r( addr, len, type, &buf, tmp, size, &he, &err ) == ERANGE) && (size < MAX_NAME))
+  {
+      // increase buffer size
+      delete[] tmp;
+      size *= 2;
+      tmp = new char[size];
+  }
+  delete[] tmp;
+  if (he && he->h_name) result = he->h_name;
+
 #else
-    return OFHostent( gethostbyaddr( addr, len, type ) );
+  // Default implementation using gethostbyaddr().
+  // This should work on all Posix systems, but is not thread safe
+  // (except on Windows, which allocates the result in thread-local storage)
+
+  struct hostent *he = gethostbyaddr( addr, len, type );
+  if (he && he->h_name) result = he->h_name;
+
 #endif
+  return result;
 }
+
 
 #ifdef HAVE_GRP_H
 OFStandard::OFGroup OFStandard::getGrNam( const char* name )

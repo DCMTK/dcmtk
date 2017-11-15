@@ -1535,7 +1535,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #endif
     int nfound, connected;
     struct sockaddr from;
-    OFStandard::OFHostent remote;
     struct linger sockarg;
 
 #ifdef HAVE_FORK
@@ -1918,28 +1917,28 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
        ((int) from.sa_data[5]) & 0xff);
 
     if (! dcmDisableGethostbyaddr.get())
-       remote = OFStandard::getHostByAddr(&from.sa_data[2], 4, 2);
-    if (!remote)
+       client_dns_name = OFStandard::getHostnameByAddress(&from.sa_data[2], sizeof(struct in_addr), AF_INET);
+
+    if (client_dns_name.length() == 0)
     {
         // reverse DNS lookup disabled or host not found, use numerical address
         OFStandard::strlcpy(params->callingPresentationAddress, client_ip_address,
           sizeof(params->callingPresentationAddress));
         OFStandard::strlcpy((*association)->remoteNode, client_ip_address, sizeof((*association)->remoteNode));
+        DCMNET_DEBUG("Association Received: " << params->callingPresentationAddress );
     }
     else
     {
-        client_dns_name = remote.h_name.c_str();
-
-        char node[128];
+        char node[260];
         if ((*network)->options & DUL_FULLDOMAINNAME)
-            OFStandard::strlcpy(node, remote.h_name.c_str(), sizeof(node));
+            OFStandard::strlcpy(node, client_dns_name.c_str(), sizeof(node));
         else {
-            if (sscanf(remote.h_name.c_str(), "%[^.]", node) != 1)
+            if (sscanf(client_dns_name.c_str(), "%[^.]", node) != 1)
                 node[0] = '\0';
         }
-
         OFStandard::strlcpy((*association)->remoteNode, node, sizeof((*association)->remoteNode));
         OFStandard::strlcpy(params->callingPresentationAddress, node, sizeof(params->callingPresentationAddress));
+        DCMNET_DEBUG("Association Received: " << params->callingPresentationAddress );
     }
 
 #ifdef WITH_TCPWRAPPER

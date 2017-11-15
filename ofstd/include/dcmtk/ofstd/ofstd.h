@@ -978,13 +978,15 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static OFHostent getHostByName( const char* name );
 
-    /** Thread-safe version of gethostbyaddr.
-     *  @param addr see manpage.
-     *  @param len see manpage.
-     *  @param type see manpage.
-     *  @return a OFStandard::OFHostent object.
+    /** This function performs a reverse DNS lookup of a hostname.
+     *  The parameters are identical to those passed to gethostbyaddr().
+     *  If the lookup fails, an empty string is returned.
+     *  @param addr IP address, actually a pointer to a struct in_addr or a struct in6_addr object
+     *  @param len length of the struct pointed to by addr
+     *  @param type address type, either AF_INET or AF_INET6
+     *  @return hostname for the IP address
      */
-    static OFHostent getHostByAddr( const char* addr, int len, int type );
+    static OFString getHostnameByAddress(const char* addr, int len, int type);
 
     /** Thread-safe version of getgrnam.
      *  @param name the group name.
