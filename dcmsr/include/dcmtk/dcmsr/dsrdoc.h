@@ -407,8 +407,10 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  The DICOM standard states: "Such referenced Instances may include equivalent documents or
      *  renderings of this document. [...] Required if the identity of a CDA Document equivalent
      *  to the current SOP Instance is known at the time of creation of this SOP instance. May be
-     *  present otherwise."  Note: An equivalent rendering of the document might be provided as an
-     *  "Encapsulated PDF" DICOM object.
+     *  present otherwise."  The Purpose of Reference Code should be taken from Defined Context
+     *  Group 7006 (SR Document Purposes of Reference).
+     *  Note: An equivalent rendering of the document might be provided as an "Encapsulated PDF"
+     *  DICOM object.
      *  @note Not applicable to Key Object Selection Documents.
      ** @return reference to list object
      */
