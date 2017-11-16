@@ -4,7 +4,7 @@
 **
 **   User: jan
 **   Host: caesar
-**   Date: 2016-07-14 14:48:02
+**   Date: 2017-11-16 12:31:32
 **   Prog: /home/jan/scripts/make_variadic.sh
 **
 ** Purpose:
@@ -17,6 +17,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/variadic/helpers.h"
+#include "dcmtk/ofstd/ofutil.h"
 #include "dcmtk/ofstd/ofdiag.h"
 
 // We hide all this from doxygen, because it would only scare sane people
@@ -31,23 +32,48 @@ struct OFvariant_overload
 : OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>
 {
     // Let the inherited methods take part in overload resolution
-    using OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::constructor;
-    using OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::assignment;
+    using OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::copy_constructor;
+    using OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::move_constructor;
+    using OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::copy_assignment;
+    using OFvariant_overload<Index+1,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::move_assignment;
     static Uint16 test_accepts( T0 );
     static Uint8 test_accepts( ... );
+
 #ifdef OFalign
-    static size_t constructor( void* content, const T0& t0 )
+    static size_t copy_constructor( void* content, const T0& t0 )
     {
         new (content) T0( t0 );
 #else
-    static size_t constructor( void*& content, const T0& t0 )
+    static size_t copy_constructor( void*& content, const T0& t0 )
     {
         content = new T0( t0 );
 #endif
         return Index;
     }
 
-    static bool assignment( size_t index, void* content, const T0& t0 )
+#ifdef OFalign
+    static size_t move_constructor( void* content, OFrvalue_ref(T0) t0 )
+    {
+        new (content) T0( t0 );
+#else
+    static size_t move_constructor( void*& content, OFrvalue_ref(T0) t0 )
+    {
+        content = new T0( t0 );
+#endif
+        return Index;
+    }
+
+    static bool copy_assignment( size_t index, void* content, const T0& t0 )
+    {
+        if( index == Index )
+        {
+            *static_cast<T0*>( content ) = t0;
+            return true;
+        }
+        return false;
+    }
+
+    static bool move_assignment( size_t index, void* content, OFrvalue_ref(T0) t0 )
     {
         if( index == Index )
         {
@@ -76,8 +102,10 @@ struct OFvariant_overload
 template<size_t Index>
 struct OFvariant_overload<Index>
 {
-    static void constructor();
-    static void assignment();
+    static void copy_constructor();
+    static void move_constructor();
+    static void copy_assignment();
+    static void move_assignment();
     template<typename T>
     struct accepts : OFfalse_type {};
 };
@@ -174,13 +202,47 @@ struct OFvariant_copy_construct_invoker
 #endif
 };
 
-// A functor that assigns the contents of another variant object
-// that contains the same alternative (regarding the type).
-struct OFvariant_assign_invoker
+// A functor that does move construction from another variant
+// object.
+struct OFvariant_move_construct_invoker
 {
     typedef void return_type;
 
-    OFvariant_assign_invoker( void* content )
+#ifdef OFalign
+    OFvariant_move_construct_invoker( void* content )
+    : m_Content( content )
+#else
+    OFvariant_move_construct_invoker( void*& content )
+    : m_pContent( content )
+#endif
+    {
+
+    }
+
+    template<typename T>
+    void invoke( void* content ) const
+    {
+#ifdef OFalign
+        new (m_Content) T( OFmove( *static_cast<T*>( content ) ) );
+#else
+        m_pContent = new T( OFmove( *static_cast<T*>( content ) ) );
+#endif
+    }
+
+#ifdef OFalign
+    void* m_Content;
+#else
+    void*& m_pContent;
+#endif
+};
+
+// A functor that copy assigns the contents of another variant
+// object that contains the same alternative (regarding the type).
+struct OFvariant_copy_assign_invoker
+{
+    typedef void return_type;
+
+    OFvariant_copy_assign_invoker( void* content )
     : m_Content( content )
     {
 
@@ -190,6 +252,27 @@ struct OFvariant_assign_invoker
     void invoke( void* rhs ) const
     {
         *static_cast<T*>( m_Content ) = *static_cast<const T*>( rhs );
+    }
+
+    void* m_Content;
+};
+
+// A functor that move assigns the contents of another variant
+// object that contains the same alternative (regarding the type).
+struct OFvariant_move_assign_invoker
+{
+    typedef void return_type;
+
+    OFvariant_move_assign_invoker( void* content )
+    : m_Content( content )
+    {
+
+    }
+
+    template<typename T>
+    void invoke( void* rhs ) const
+    {
+        *static_cast<T*>( m_Content ) = OFmove( *static_cast<T*>( rhs ) );
     }
 
     void* m_Content;
@@ -282,7 +365,19 @@ public:
 #else
     : m_pContent()
 #endif
-    , m_Index( OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::constructor( content(), t ) )
+    , m_Index( OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::copy_constructor( content(), t ) )
+    {
+
+    }
+
+    template<typename T>
+    OFvariant( OFrvalue_ref(T) t, OFTypename OFenable_if<OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::template accepts<OFrvalue<T> >::value,int>::type = 0 )
+#ifdef OFalign
+    : m_Content()
+#else
+    : m_pContent()
+#endif
+    , m_Index( OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::move_constructor( content(), t ) )
     {
 
     }
@@ -298,16 +393,41 @@ public:
         copy_construct( rhs.content() );
     }
 
+    OFvariant( OFrvalue_ref(OFvariant) rhs )
+#ifdef OFalign
+    : m_Content()
+#else
+    : m_pContent()
+#endif
+    , m_Index( rhs.index() )
+    {
+        move_construct( rhs.content() );
+    }
+
     template<typename T>
     OFTypename OFenable_if<OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::template accepts<T>::value,OFvariant>::type& operator=( const T& t )
     {
         // Either assign 't' if the contained alternative fits.
-        if( !OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::assignment( index(), content(), t ) )
+        if( !OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::copy_assignment( index(), content(), t ) )
         {
             // Or destroy the contained alternative and construct
             // a new one, based on 't'.
             destroy();
-            m_Index = OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::constructor( content(), t );
+            m_Index = OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::copy_constructor( content(), t );
+        }
+        return *this;
+    }
+
+    template<typename T>
+    OFTypename OFenable_if<OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::template accepts<OFrvalue<T> >::value,OFvariant>::type& operator=( OFrvalue_ref(T) t )
+    {
+        // Either assign 't' if the contained alternative fits.
+        if( !OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::move_assignment( index(), content(), t ) )
+        {
+            // Or destroy the contained alternative and construct
+            // a new one, based on 't'.
+            destroy();
+            m_Index = OFvariant_overload<0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>::move_constructor( content(), t );
         }
         return *this;
     }
@@ -320,11 +440,11 @@ public:
             // the same alternative
             if( m_Index == rhs.m_Index )
             {
-                OFvariant_invoke<OFvariant_assign_invoker,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>
+                OFvariant_invoke<OFvariant_copy_assign_invoker,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>
                 (
                     m_Index,
                     rhs.content(),
-                    OFvariant_assign_invoker( content() )
+                    OFvariant_copy_assign_invoker( content() )
                 );
             }
             else
@@ -334,6 +454,33 @@ public:
                 destroy();
                 m_Index = rhs.m_Index;
                 copy_construct( rhs.content() );
+            }
+        }
+        return *this;
+    }
+
+    OFvariant& operator=( OFrvalue_ref(OFvariant) rhs )
+    {
+        if( this != &rhs )
+        {
+            // Do 'native' assignment if both variants contain
+            // the same alternative
+            if( m_Index == rhs.m_Index )
+            {
+                OFvariant_invoke<OFvariant_move_assign_invoker,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>
+                (
+                    m_Index,
+                    rhs.content(),
+                    OFvariant_move_assign_invoker( content() )
+                );
+            }
+            else
+            {
+                // Destroy the contents and copy construct a new
+                // one
+                destroy();
+                m_Index = rhs.m_Index;
+                move_construct( rhs.content() );
             }
         }
         return *this;
@@ -370,6 +517,17 @@ private:
             m_Index,
             rhs,
             OFvariant_copy_construct_invoker( content() )
+        );
+    }
+
+    // Invoke move construction
+    void move_construct( void* rhs )
+    {
+        OFvariant_invoke<OFvariant_move_construct_invoker,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T19,T20,T21,T22,T23,T24,T25,T26,T27,T28,T29,T30,T31,T32,T33,T34,T35,T36,T37,T38,T39,T40,T41,T42,T43,T44,T45,T46,T47,T48,T49>
+        (
+            m_Index,
+            rhs,
+            OFvariant_move_construct_invoker( content() )
         );
     }
 

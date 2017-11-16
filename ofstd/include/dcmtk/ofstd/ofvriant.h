@@ -422,7 +422,6 @@ public:
     /** Move constructs a variant by moving the value rhs holds.
      *  @param rhs an rvalue reference to another object of equal type.
      *  @pre All alternatives must be move constructible.
-     *  @note This constructor is currently only available if C++11 support was enabled.
      */
     OFvariant( OFvariant&& rhs );
 
@@ -474,7 +473,6 @@ public:
      *    is move assigned to the value contained in `*this`.
      *  @li if `*this` and `rhs` hold different alternatives, the value contained in `*this`
      *    is destroyed and a new one is move constructed from the value contained in `rhs`.
-     *  @note This constructor is currently only available if C++11 support was enabled.
      */
     OFvariant& operator=( OFvariant&& rhs );
 
