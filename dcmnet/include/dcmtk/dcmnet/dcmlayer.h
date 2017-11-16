@@ -30,6 +30,7 @@
 
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofutil.h"
 
 #include "dcmtk/dcmnet/dndefine.h"
 #include "dcmtk/dcmnet/dntypes.h"
@@ -73,10 +74,27 @@ class DCMTK_DCMNET_EXPORT DcmTransportLayer
 public:
 
   /** constructor.
+   */
+  DcmTransportLayer() { /* empty */ }
+
+  /** constructor.
    *  #param networkRole network role to be used by the application, influences
    *    the choice of the secure transport layer code.
    */
   DcmTransportLayer(int /* networkRole */ ) { /* empty */ }
+
+  /** move constructor.
+   *  @param rhs an rvalue reference to another DcmTransportLayer object that
+   *    will be moved.
+   */
+  DcmTransportLayer(OFrvalue_ref(DcmTransportLayer) rhs) { OFstatic_cast(void, rhs); }
+
+  /** move assignment.
+   *  @param rhs an rvalue reference to another DcmTransportLayer object that will
+   *    be move assigned.
+   *  @return *this.
+   */
+  DcmTransportLayer& operator=(OFrvalue_ref(DcmTransportLayer) rhs) { OFstatic_cast(void, rhs); return *this; }
 
   /// destructor
   virtual ~DcmTransportLayer();

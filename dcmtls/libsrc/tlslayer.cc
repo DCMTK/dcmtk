@@ -161,6 +161,15 @@ const char *DcmTLSTransportLayer::findOpenSSLCipherSuiteName(const char *tlsCiph
   return NULL;
 }
 
+DcmTLSTransportLayer::DcmTLSTransportLayer()
+: DcmTransportLayer()
+, transportLayerContext(NULL)
+, canWriteRandseed(OFFalse)
+, privateKeyPasswd()
+{
+
+}
+
 DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile, OFBool initializeOpenSSL)
 : DcmTransportLayer(networkRole)
 , transportLayerContext(NULL)
@@ -219,6 +228,50 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
 #endif
 
    setCertificateVerification(DCV_requireCertificate); /* default */
+}
+
+DcmTLSTransportLayer::DcmTLSTransportLayer(OFrvalue_ref(DcmTLSTransportLayer) rhs)
+: DcmTransportLayer(OFmove<DcmTransportLayer>(rhs))
+, transportLayerContext(rhs.transportLayerContext)
+, canWriteRandseed(OFmove(OFrvalue_access(rhs).canWriteRandseed))
+, privateKeyPasswd(OFmove(OFrvalue_access(rhs).privateKeyPasswd))
+{
+  OFrvalue_access(rhs).transportLayerContext = NULL;
+}
+
+DcmTLSTransportLayer& DcmTLSTransportLayer::operator=(OFrvalue_ref(DcmTLSTransportLayer) rhs)
+{
+  if (this != &rhs)
+  {
+    clear();
+    DcmTransportLayer::operator=(OFmove<DcmTransportLayer>(rhs));
+    transportLayerContext = rhs.transportLayerContext;
+    canWriteRandseed = OFmove(OFrvalue_access(rhs).canWriteRandseed);
+    privateKeyPasswd = OFmove(OFrvalue_access(rhs).privateKeyPasswd);
+    OFrvalue_access(rhs).transportLayerContext = NULL;
+  }
+  return *this;
+}
+
+void DcmTLSTransportLayer::clear()
+{
+  if (transportLayerContext)
+  {
+    SSL_CTX_free(transportLayerContext);
+    transportLayerContext = NULL;
+    canWriteRandseed = OFFalse;
+    privateKeyPasswd.clear();
+  }
+}
+
+DcmTLSTransportLayer::operator OFBool() const
+{
+  return !!transportLayerContext;
+}
+
+OFBool DcmTLSTransportLayer::operator!() const
+{
+  return !transportLayerContext;
 }
 
 OFBool DcmTLSTransportLayer::setTempDHParameters(const char *filename)
@@ -304,7 +357,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCipherSuites(const char *suites
 
 DcmTLSTransportLayer::~DcmTLSTransportLayer()
 {
-  if (transportLayerContext) SSL_CTX_free(transportLayerContext);
+  clear();
 }
 
 DcmTransportLayerStatus DcmTLSTransportLayer::setPrivateKeyFile(const char *fileName, int fileType)
@@ -431,7 +484,7 @@ DcmTransportConnection *DcmTLSTransportLayer::createConnection(DcmNativeSocketTy
     }
     return NULL;
   }
-  else return new DcmTCPConnection(openSocket);
+  else return DcmTransportLayer::createConnection(openSocket, useSecureLayer);
 }
 
 void DcmTLSTransportLayer::seedPRNG(const char *randFile)
