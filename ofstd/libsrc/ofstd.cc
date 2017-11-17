@@ -98,6 +98,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/oftuple.h"
 #include "dcmtk/ofstd/ofmath.h"
+#include "dcmtk/ofstd/ofsockad.h"
 
 #define INCLUDE_CMATH
 #define INCLUDE_CFLOAT
@@ -142,6 +143,9 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
 #endif
 END_EXTERN_C
 
@@ -2712,8 +2716,8 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
       size *= 2;
       tmp = new char[size];
   }
-  delete[] tmp;
   if (he && he->h_name) result = he->h_name;
+  delete[] tmp;
 
 #else
   // Default implementation using gethostbyaddr().
@@ -2726,6 +2730,82 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
 #endif
   return result;
 }
+
+
+void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
+{
+  result.clear();
+  if (NULL == name) return;
+
+#ifdef HAVE_GETADDRINFO
+  struct addrinfo *result_list = NULL;
+  int err = EAI_AGAIN;
+
+  // perform DNS lookup. Repeat while we receive temporary failures.
+  while (EAI_AGAIN == err) err = getaddrinfo(name, NULL, NULL, &result_list);
+
+  if ((0 == err) && result_list && result_list->ai_addr)
+  {
+    // DNS lookup successfully completed.
+    struct sockaddr *result_sa = result.getSockaddr();
+    memcpy(result_sa, result_list->ai_addr, result_list->ai_addrlen);
+  }
+
+#else // HAVE_GETADDRINFO
+
+#ifdef HAVE_GETHOSTBYNAME_R
+  // We do not have getaddrinfo(), but we have a thread-safe gethostbyname_r()
+
+  struct hostent *he = NULL;
+  unsigned bufsize = 1024;
+  char *buf = new char[bufsize];
+  hostent ret;
+  int err = 0;
+  while ((gethostbyname_r( name, &ret, buf, bufsize, &he, &err ) == ERANGE) && (bufsize < MAX_NAME))
+  {
+      // increase buffer size
+      delete[] buf;
+      bufsize *= 2;
+      buf = new char[bufsize];
+  }
+
+#else // HAVE_GETHOSTBYNAME_R
+
+  // Default implementation using gethostbyname().
+  // This should work on all Posix systems, but is not thread safe
+  // (except on Windows, which allocates the result in thread-local storage)
+
+  struct hostent *he = gethostbyname(name);
+
+#endif // HAVE_GETHOSTBYNAME_R
+
+  if (he)
+  {
+    if (he->h_addrtype == AF_INET)
+    {
+      result.setFamily(AF_INET);
+      struct sockaddr_in *result_sa = result.getSockaddr_in();
+      // copy IP address into result struct
+      memcpy (&result_sa->sin_addr, he->h_addr, he->h_length);
+    }
+    else if (he->h_addrtype == AF_INET6)
+    {
+      result.setFamily(AF_INET6);
+      struct sockaddr_in6 *result_sa = result.getSockaddr_in6();
+      memcpy (&result_sa->sin6_addr, he->h_addr, he->h_length);
+    }
+    // else we have an unsupported protocol type
+    // and simply leave the result variable empty
+  }
+
+#ifdef HAVE_GETHOSTBYNAME_R
+  delete[] buf;
+#endif
+
+#endif // HAVE_GETADDRINFO
+
+}
+
 
 
 #ifdef HAVE_GRP_H

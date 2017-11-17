@@ -279,8 +279,9 @@ tvariant.o: tvariant.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofvriant.h \
  ../include/dcmtk/ofstd/variadic/variant.h \
  ../include/dcmtk/ofstd/variadic/helpers.h \
- ../include/dcmtk/ofstd/ofalign.h ../include/dcmtk/ofstd/ofdiag.h \
- ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/ofalign.h ../include/dcmtk/ofstd/ofutil.h \
+ ../include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/push.def \
  ../include/dcmtk/ofstd/diag/cnvrsn.def \
  ../include/dcmtk/ofstd/diag/vsprfw.def \
  ../include/dcmtk/ofstd/diag/pop.def

@@ -51,6 +51,7 @@ END_EXTERN_C
  *------------------------*/
 
 class OFFilename;
+class OFSockAddr;
 
 /*---------------------*
  *  class declaration  *
@@ -987,6 +988,13 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  @return hostname for the IP address
      */
     static OFString getHostnameByAddress(const char* addr, int len, int type);
+
+    /** This function performs a DNS lookup of an IP address based on a hostname.
+     *  If a DNS lookup yields multiple IP addresses, only the first one is returned.
+     *  @param name hostname
+     *  @param result a OFSockAddr instance in which the result is stored
+     */
+    static void getAddressByHostname(const char *name, OFSockAddr& result);
 
     /** Thread-safe version of getgrnam.
      *  @param name the group name.
