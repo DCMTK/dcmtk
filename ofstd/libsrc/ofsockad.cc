@@ -37,6 +37,7 @@ END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
 #include <winsock2.h>
+#include <ws2tcpip.h>    /* for struct sockaddr_in6 */
 #endif
 
 const size_t OFSockAddr::size() const

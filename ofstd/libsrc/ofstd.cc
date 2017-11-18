@@ -108,6 +108,7 @@
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
+
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat() */
@@ -150,12 +151,12 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
 #define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
 #include <windows.h>     /* for GetFileAttributes() */
 #include <direct.h>      /* for _mkdir() */
 #include <lm.h>          /* for NetWkstaUserGetInfo */
-
+#include <ws2tcpip.h>    /* for struct sockaddr_in6 */
 #ifndef R_OK /* Windows defines access() but not the constants */
 #define W_OK 02 /* Write permission */
 #define R_OK 04 /* Read permission */
@@ -163,17 +164,7 @@ END_EXTERN_C
 #endif /* !R_OK */
 
 #elif defined(HAVE_WINSOCK_H)
-
 #include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
-#ifdef macintosh
-/*
-** The WinSock header on Macintosh does not declare the WORD type nor the MAKEWORD
-** macro need to initialize the WinSock library.
-*/
-typedef u_short WORD;
-#define MAKEWORD(a,b) ((WORD) (((a)&0xff)<<8) | ((b)&0xff) )
-#endif /* macintosh */
-
 #endif /* HAVE_WINDOWS_H */
 
 #ifdef _WIN32
