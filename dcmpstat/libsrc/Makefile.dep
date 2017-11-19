@@ -319,6 +319,8 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrcodvl.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrdncsr.h \
+ ../../dcmsr/include/dcmtk/dcmsr/dsrdnflt.h \
+ ../../dcmsr/include/dcmtk/dcmsr/dsritcsr.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrcitem.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrnumvl.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrscovl.h \

@@ -1,3 +1,16 @@
+tlscond.o: tlscond.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmtls/tlscond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../include/dcmtk/dcmtls/tlsdefin.h
 tlslayer.o: tlslayer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmtls/tlsdefin.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
@@ -9,6 +22,9 @@ tlslayer.o: tlslayer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmnet/include/dcmtk/dcmnet/dndefine.h \
  ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -23,9 +39,6 @@ tlslayer.o: tlslayer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../oflog/include/dcmtk/oflog/layout.h \
  ../../oflog/include/dcmtk/oflog/streams.h \
  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
@@ -58,6 +71,67 @@ tlslayer.o: tlslayer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
+tlsopt.o: tlsopt.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../include/dcmtk/dcmtls/tlscond.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../include/dcmtk/dcmtls/tlsdefin.h ../include/dcmtk/dcmtls/tlsopt.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
+ ../../ofstd/include/dcmtk/ofstd/ofalign.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmtls/tlslayer.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dndefine.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h
 tlsscu.o: tlsscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmtls/tlsscu.h ../../dcmnet/include/dcmtk/dcmnet/scu.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -212,6 +286,9 @@ tlstrans.o: tlstrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../dcmnet/include/dcmtk/dcmnet/dndefine.h \
  ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../include/dcmtk/dcmtls/tlsdefin.h ../include/dcmtk/dcmtls/tlslayer.h \
@@ -227,9 +304,6 @@ tlstrans.o: tlstrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../oflog/include/dcmtk/oflog/layout.h \
  ../../oflog/include/dcmtk/oflog/streams.h \
  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \

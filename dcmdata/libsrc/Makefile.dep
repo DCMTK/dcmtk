@@ -1254,8 +1254,9 @@ dcmatch.o: dcmatch.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../include/dcmtk/dcmdata/dcvrtm.h \
  ../../ofstd/include/dcmtk/ofstd/diag/push.def \
- ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
- ../../ofstd/include/dcmtk/ofstd/diag/pop.def
+ ../../ofstd/include/dcmtk/ofstd/diag/shadow.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def
 dcmetinf.o: dcmetinf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \

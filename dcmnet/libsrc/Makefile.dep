@@ -399,6 +399,9 @@ dcmlayer.o: dcmlayer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../include/dcmtk/dcmnet/dndefine.h ../include/dcmtk/dcmnet/dntypes.h \
  ../include/dcmtk/dcmnet/dcmtrans.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
@@ -414,8 +417,12 @@ dcmtrans.o: dcmtrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../include/dcmtk/dcmnet/dcmlayer.h ../include/dcmtk/dcmnet/dndefine.h \
- ../include/dcmtk/dcmnet/dntypes.h ../include/dcmtk/dcmnet/dcompat.h \
+ ../include/dcmtk/dcmnet/dcmlayer.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/dcmnet/dndefine.h ../include/dcmtk/dcmnet/dntypes.h \
+ ../include/dcmtk/dcmnet/dcompat.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
  ../include/dcmtk/dcmnet/diutil.h ../include/dcmtk/dcmnet/dicom.h \
  ../include/dcmtk/dcmnet/cond.h \
@@ -436,9 +443,6 @@ dcmtrans.o: dcmtrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../oflog/include/dcmtk/oflog/layout.h \
  ../../oflog/include/dcmtk/oflog/streams.h \
  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
