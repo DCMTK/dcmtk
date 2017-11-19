@@ -25,7 +25,7 @@ objs = oflog.o apndimpl.o appender.o config.o consap.o \
 	syncprims.o syslogap.o threads.o timehelp.o unixsock.o clogger.o \
 	env.o fileinfo.o lockfile.o mdc.o queue.o snprintf.o tls.o version.o \
 	log4judp.o logmacro.o asyncap.o cygwin32.o striconv.o \
-	strcloc.o strccloc.o
+	strcloc.o strccloc.o winsock.o ntelogap.o winconap.o windebap.o
 
 library = liboflog.$(LIBEXT)
 

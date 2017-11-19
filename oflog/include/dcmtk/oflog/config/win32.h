@@ -31,7 +31,7 @@
 #ifdef _WIN32
 
 /* This used to be _MSC_VER >= 1400, but MSVC 2005 is broken */
-#if (defined (_MSC_VER) && _MSC_VER > 1400) || defined (__MINGW32__)
+#if (defined (_MSC_VER) && _MSC_VER > 1400)
 #  define DCMTK_LOG4CPLUS_HAVE_INTRIN_H
 #endif
 
