@@ -68,7 +68,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
     case AF_INET:
       si = s.getSockaddr_in_const();
       o << "AF_INET"
-        << "\n  IP address: " << inet_ntop(AF_INET, &si->sin_addr, buf, 512)
+        << "\n  IP address: " << inet_ntop(AF_INET, OFreinterpret_cast(const void *, &si->sin_addr), buf, 512)
         << "\n  Port: " << si->sin_port << "\n";
       break;
     case AF_INET6:
