@@ -7308,6 +7308,79 @@ LIBS="$LIBS -lnetapi32"
 fi
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -liphlpapi" >&5
+$as_echo_n "checking for main in -liphlpapi... " >&6; }
+if ${ac_cv_lib_iphlpapi_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-liphlpapi  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_iphlpapi_main=yes
+else
+  ac_cv_lib_iphlpapi_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iphlpapi_main" >&5
+$as_echo "$ac_cv_lib_iphlpapi_main" >&6; }
+if test "x$ac_cv_lib_iphlpapi_main" = xyes; then :
+
+LIBS="$LIBS -liphlpapi"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lws2_32" >&5
+$as_echo_n "checking for main in -lws2_32... " >&6; }
+if ${ac_cv_lib_ws2_32_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lws2_32  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_ws2_32_main=yes
+else
+  ac_cv_lib_ws2_32_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ws2_32_main" >&5
+$as_echo "$ac_cv_lib_ws2_32_main" >&6; }
+if test "x$ac_cv_lib_ws2_32_main" = xyes; then :
+
+LIBS="$LIBS -lws2_32"
+
+fi
+
+
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
@@ -12894,7 +12967,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12897 "configure"
+#line 12970 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13366,7 +13439,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13369 "configure"
+#line 13442 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13438,7 +13511,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13441 "configure"
+#line 13514 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13510,7 +13583,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13513 "configure"
+#line 13586 "configure"
 #include "confdefs.h"
 
 template <class T>

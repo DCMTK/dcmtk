@@ -472,6 +472,17 @@ AC_CHECK_LIB(netapi32, main,[
 LIBS="$LIBS -lnetapi32"
 ])
 
+dnl On MinGW we have to link against the iphlpapi library
+dnl
+AC_CHECK_LIB(iphlpapi, main,[
+LIBS="$LIBS -liphlpapi"
+])
+dnl On MinGW we have to link against the ws2_32 library
+dnl
+AC_CHECK_LIB(ws2_32, main,[
+LIBS="$LIBS -lws2_32"
+])
+
 dnl -------------------------------------------------------
 dnl Checks for header files.
 dnl -------------------------------------------------------
