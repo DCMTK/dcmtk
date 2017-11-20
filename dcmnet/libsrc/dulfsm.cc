@@ -117,7 +117,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcmtrans.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/ofstd/ofnetdb.h"
+#include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr */
 
 /* At least Solaris doesn't define this */
 #ifndef INADDR_NONE
@@ -2209,8 +2209,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 {
     char node[128];
     int  port;
-    struct sockaddr_in server;
-    OFStandard::OFHostent hp;
+    OFSockAddr server;
 #ifdef _WIN32
     SOCKET s;
 #else
@@ -2236,7 +2235,6 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
       msg += OFStandard::getLastNetworkErrorCode().message();
       return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
-    server.sin_family = AF_INET;
 
     /*
      * At least officially, gethostbyname will not accept an IP address on many
@@ -2244,22 +2242,25 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
      * handle the IP address case.
      */
     unsigned long addr = inet_addr(node);
-    if (addr != INADDR_NONE) {
-        // it is an IP address
-        server.sin_addr.s_addr = addr;
-    } else {
-        // must be a host name
-        hp = OFStandard::getHostByName(node);
-        if (!hp)
+    if (addr != INADDR_NONE)
+    {
+        // it is an IPv4 address
+        server.setFamily(AF_INET);
+        struct sockaddr_in *sa = server.getSockaddr_in();
+        sa->sin_addr.s_addr = addr;
+    }
+    else
+    {
+        // must be a host name or an IPv6 address
+        OFStandard::getAddressByHostname(node, server);
+        if (server.getFamily() == 0)
         {
           char buf2[4095]; // node could be a long string
           sprintf(buf2, "Attempt to connect to unknown host: %s", node);
           return makeDcmnetCondition(DULC_UNKNOWNHOST, OF_error, buf2);
         }
-        (void) memcpy(&server.sin_addr, hp.h_addr.c_str(), (size_t) hp.h_length);
     }
-
-    server.sin_port = (unsigned short) htons(port);
+    server.setPort(OFstatic_cast(unsigned short, htons(port)));
 
     // get global connection timeout
     Sint32 connectTimeout = dcmConnectionTimeout.get();
@@ -2284,7 +2285,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     // depending on the socket mode, connect will block or return immediately
     int rc;
     do {
-        rc = connect(s, (struct sockaddr *) & server, sizeof(server));
+        rc = connect(s, server.getSockaddr(), server.size());
     } while (rc == -1 && OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR);
 
 #ifdef HAVE_WINSOCK_H

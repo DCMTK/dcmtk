@@ -78,7 +78,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofvector.h"
-#include "dcmtk/ofstd/ofnetdb.h"
+#include "dcmtk/ofstd/ofsockad.h"
 
 struct UIDNameMap {
     const char* uid;
@@ -1513,31 +1513,41 @@ static long gethostid(void)
 #endif
 {
     long result = 0;
-#if (defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)) || defined(HAVE_WINDOWS_H)
+#if defined(HAVE_GETHOSTNAME) || defined(HAVE_WINDOWS_H)
     char name[1024];
-    char **p = NULL;
-    struct in_addr in;
-
-    OFStandard::initializeNetwork();
 
     /*
-    ** Define the hostid to be the system's main TCP/IP address.
+    ** Define the hostid to be the system's main IP address.
     ** This is not perfect but it is better than nothing (i.e. using zero)
     */
+    OFStandard::initializeNetwork();
     if (gethostname(name, 1024) == 0)
     {
-        if (OFStandard::OFHostent hent = OFStandard::getHostByName(name))
+        struct sockaddr_in *sin = NULL;
+        struct sockaddr_in6 *sin6 = NULL;
+        long *lp = NULL;
+        OFSockAddr sa;
+        OFStandard::getAddressByHostname(name, sa);
+        switch (sa.getFamily())
         {
-            if (!hent.h_addr_list.empty())
-            {
-                memcpy(&in.s_addr, hent.h_addr_list.front().c_str(), sizeof(in.s_addr));
-                result = OFstatic_cast(long, in.s_addr);
-            }
+          case AF_INET:
+            sin = sa. getSockaddr_in();
+            result = OFstatic_cast(long, sin->sin_addr.s_addr);
+            break;
+          case AF_INET6:
+            sin6 = sa. getSockaddr_in6();
+            // interpret the first four bytes of the IPv6 address as a long
+            lp = OFreinterpret_cast(long *, &sin6->sin6_addr);
+            result = *lp;
+            break;
+          default:
+            // unknown protocol family. Do nothing.
+            break;
         }
     }
 
     OFStandard::shutdownNetwork();
-#endif /* defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME) */
+#endif /* defined(HAVE_GETHOSTNAME) */
 /* on Windows systems determine some system specific information (e.g. MAC address) */
 #ifdef HAVE_WINDOWS_H
     OFCRC32 crc;

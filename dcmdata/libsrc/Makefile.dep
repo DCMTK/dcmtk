@@ -2451,7 +2451,7 @@ dcuid.o: dcuid.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../ofstd/include/dcmtk/ofstd/ofcrc32.h \
- ../../ofstd/include/dcmtk/ofstd/ofnetdb.h
+ ../../ofstd/include/dcmtk/ofstd/ofsockad.h
 dcvr.o: dcvr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \

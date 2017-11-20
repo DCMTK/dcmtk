@@ -81,7 +81,6 @@ class DCMTK_OFSTD_EXPORT OFStandard
         MM_XML
     };
 
-    class OFHostent;
     class OFGroup;
     class OFPasswd;
 
@@ -972,12 +971,6 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  spaces and null bytes).
      */
     static void trimString( const char*& pBegin, const char*& pEnd );
-
-    /** Thread-safe version of gethostbyname.
-     *  @param name the host name.
-     *  @return a OFStandard::OFHostent object.
-     */
-    static OFHostent getHostByName( const char* name );
 
     /** This function performs a reverse DNS lookup of a hostname.
      *  The parameters are identical to those passed to gethostbyaddr().

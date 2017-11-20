@@ -33,7 +33,7 @@
 #include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate<> */
 #include "dcmtk/dcmdata/dcswap.h"      /* for swapIfNecessary() */
 #include "dcmtk/dcmnet/dcmtrans.h"    /* for class DcmTransportConnection */
-#include "dcmtk/ofstd/ofnetdb.h"
+#include "dcmtk/ofstd/ofsockad.h"
 
 /* --------------- class DVPSIPCMessage --------------- */
 
@@ -284,16 +284,11 @@ void DVPSIPCClient::requestConnection()
   int s = socket(AF_INET, SOCK_STREAM, 0);
   if (s < 0) return;
 #endif
+  OFSockAddr server;
+  OFStandard::getAddressByHostname("localhost", server);
+  server.setPort(OFstatic_cast(unsigned short, htons(port)));
 
-  OFStandard::OFHostent hp = OFStandard::getHostByName("localhost");
-  if (!hp) return;
-
-  struct sockaddr_in server;
-  server.sin_family = AF_INET;
-  server.sin_port = (unsigned short) htons(port);
-  memcpy(&server.sin_addr, hp.h_addr.c_str(), (size_t) hp.h_length);
-
-  if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0)
+  if (connect(s, server.getSockaddr(), server.size()) < 0)
   {
 #ifdef HAVE_WINSOCK_H
     (void) shutdown(s,  1 /* SD_SEND */);

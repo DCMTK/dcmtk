@@ -148,6 +148,9 @@ BEGIN_EXTERN_C
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
+#ifdef HAVE_NETDB_H
+#include <netdb.h>
+#endif
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
@@ -171,7 +174,6 @@ END_EXTERN_C
 #include <process.h>     /* needed for declaration of getpid() */
 #endif
 
-#include "dcmtk/ofstd/ofnetdb.h"
 #include "dcmtk/ofstd/ofgrp.h"
 #include "dcmtk/ofstd/ofpwd.h"
 #include "dcmtk/ofstd/ofoption.h"
@@ -2624,29 +2626,6 @@ extern "C" {
 #endif
 #endif
 
-OFStandard::OFHostent OFStandard::getHostByName( const char* name )
-{
-#ifdef HAVE_GETHOSTBYNAME_R
-    unsigned int size = 128;
-    char* tmp = new char[size];
-    hostent* res = NULL;
-    hostent buf;
-    int err = 0;
-    while( gethostbyname_r( name, &buf, tmp, size, &res, &err ) == ERANGE )
-    {
-        delete[] tmp;
-        if( size >= MAX_NAME )
-            return NULL;
-        tmp = new char[size*=2];
-    }
-    OFHostent h( res );
-    delete[] tmp;
-    return h;
-#else
-    return OFHostent( gethostbyname( name ) );
-#endif
-}
-
 #ifdef HAVE_GETHOSTBYADDR_R
 #ifndef HAVE_PROTOTYPE_GETHOSTBYADDR_R
 extern "C" {
@@ -2850,39 +2829,6 @@ OFStandard::OFPasswd OFStandard::getPwNam( const char* name )
 #endif
 }
 #endif // HAVE_PWD_H
-
-OFStandard::OFHostent::OFHostent()
-: h_name()
-, h_aliases()
-, h_addr_list()
-, h_addrtype()
-, h_length()
-, ok( OFFalse )
-{
-}
-
-OFStandard::OFHostent::OFHostent( hostent* const h )
-: h_name()
-, h_aliases()
-, h_addr_list()
-, h_addrtype()
-, h_length()
-, ok(h != NULL)
-{
-    if( ok )
-    {
-        h_name     = h->h_name;
-        h_addrtype = h->h_addrtype;
-        h_length   = h->h_length;
-        for( char** a = h->h_aliases; *a; ++a )
-            h_aliases.push_back( *a );
-        for( char** b = h->h_addr_list; *b; ++b )
-            h_addr_list.push_back( OFString( *b, h_length ) );
-    }
-}
-
-OFBool OFStandard::OFHostent::operator!() const { return !ok; }
-OFStandard::OFHostent::operator OFBool() const { return ok; }
 
 #ifdef HAVE_GRP_H
 OFStandard::OFGroup::OFGroup()
