@@ -192,8 +192,12 @@ BEGIN_EXTERN_C
 DCMTK_DCMNET_EXPORT int gethostname(char* name, int namelen);
 END_EXTERN_C
 #else
-/* define gethostname ourselves */
+#ifndef __MINGW32__
+/* define gethostname ourselves (except on MinGW, where this is defined
+   in a Windows specific header
+*/
 DCMTK_DCMNET_EXPORT int gethostname(char* name, int namelen);
+#endif
 #endif
 #endif
 

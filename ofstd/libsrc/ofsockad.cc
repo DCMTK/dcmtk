@@ -56,7 +56,9 @@ const size_t OFSockAddr::size() const
 DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFSockAddr& s)
 {
   o << "SOCKADDR_BEGIN\n  Family: ";
-  char buf[512];
+  unsigned long bufsize = 512;
+  char buf[bufsize];
+  buf[0] = '\0';
   const struct sockaddr_in *si = NULL;
   const struct sockaddr_in6 *si6 = NULL;
 
@@ -67,15 +69,29 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
       break;
     case AF_INET:
       si = s.getSockaddr_in_const();
-      o << "AF_INET"
-        << "\n  IP address: " << inet_ntop(AF_INET, OFreinterpret_cast(const void *, &si->sin_addr), buf, 512)
-        << "\n  Port: " << si->sin_port << "\n";
+      o << "AF_INET";
+
+#ifdef __MINGW32__
+      /* MinGW dows not have inet_ntop() */
+      WSAAddressToStringA((struct sockaddr*) si, s.size(), NULL, buf, &bufsize);
+      o  << "\n  IP address: " << buf;
+#else
+      // The typecast is necessary for older MSVC compilers, which expect a non-const void * parameter.
+      o << "\n  IP address: " << inet_ntop(AF_INET,  OFconst_cast(void *, OFreinterpret_cast(const void *, &si->sin_addr)), buf, 512);
+#endif
+      o << "\n  Port: " << si->sin_port << "\n";
       break;
     case AF_INET6:
       si6 = s.getSockaddr_in6_const();
-      o << "  AF_INET6"
-        << "\n  IP address: " << inet_ntop(AF_INET6, &si6->sin6_addr, buf, 512)
-        << "\n  Port: " << si6->sin6_port
+      o << "  AF_INET6";
+#ifdef __MINGW32__
+      /* MinGW dows not have inet_ntop() */
+      WSAAddressToStringA((struct sockaddr*) si6, s.size(), NULL, buf, &bufsize);
+      o  << "\n  IP address: " << buf;
+#else
+      o << "\n  IP address: " << inet_ntop(AF_INET6, OFconst_cast(void *, OFreinterpret_cast(const void *, &si6->sin6_addr)), buf, 512);
+#endif
+      o << "\n  Port: " << si6->sin6_port
         << "\n  Flow info: " << si6->sin6_flowinfo
         << "\n  Scope: " << si6->sin6_scope_id
         << "\n";
