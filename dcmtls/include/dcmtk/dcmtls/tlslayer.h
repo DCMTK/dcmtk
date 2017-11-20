@@ -343,6 +343,16 @@ private:
 
 };
 
+#else /* WITH_OPENSSL */
+
+// trivial declaration of DcmTLSTransportLayer as a placeholder
+class DCMTK_DCMTLS_EXPORT DcmTLSTransportLayer : public DcmTransportLayer
+{
+public:
+  inline DcmTLSTransportLayer(OFrvalue_ref(DcmTLSTransportLayer) /* rhs */) {}
+  inline DcmTLSTransportLayer& operator=(OFrvalue_ref(DcmTLSTransportLayer) /* rhs */) { return *this; }
+};
+
 #endif /* WITH_OPENSSL */
 
 #endif

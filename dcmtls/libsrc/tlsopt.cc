@@ -196,6 +196,7 @@ DcmTLSOptions::createTransportLayer( int networkRole )
     // This typedef eases it a bit.
     typedef OFrvalue<OFvariant<OFCondition,DcmTLSTransportLayer> > return_type;
 
+#ifdef WITH_OPENSSL
     if( opt_secureConnection )
     {
         DcmTLSTransportLayer tlsLayer( networkRole, opt_readSeedFile );
@@ -248,12 +249,13 @@ DcmTLSOptions::createTransportLayer( int networkRole )
 
         return return_type( OFmove( tlsLayer ) );
     }
-
+#endif
     return return_type( EC_Normal );
 }
 
 OFCondition DcmTLSOptions::writeRandomSeedFileIfEnabled( DcmTLSTransportLayer& layer )
 {
+#ifdef WITH_OPENSSL
     if( opt_writeSeedFile )
     {
         if( layer.canWriteRandomSeed() )
@@ -263,5 +265,6 @@ OFCondition DcmTLSOptions::writeRandomSeedFileIfEnabled( DcmTLSTransportLayer& l
         }
         else return DCMTLS_EC_FailedToWriteRandomSeedFile;
     }
+#endif
     return EC_Normal;
 }
