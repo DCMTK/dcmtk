@@ -92,6 +92,12 @@ public:
    */
   void setFamily(short family) { sa.ss_family = family; }
 
+  /** set port number for current protocol family.
+   *  Only works if the family has been set to AF_INET or AF_INET6 prior to calling this method.
+   *  @param port port number in network byte order (e.g. output of htons()).
+   */
+  void setPort(unsigned short port);
+
 private:
 
   /** container for the socket address structure.

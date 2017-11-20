@@ -53,6 +53,26 @@ const size_t OFSockAddr::size() const
   }
 }
 
+void OFSockAddr::setPort(unsigned short port)
+{
+  struct sockaddr_in *si = NULL;
+  struct sockaddr_in6 *si6 = NULL;
+  switch (sa.ss_family)
+  {
+      case AF_INET:
+        si = getSockaddr_in();
+        si->sin_port = port;
+        break;
+      case AF_INET6:
+        si6 = getSockaddr_in6();
+        si6->sin6_port = port;
+        break;
+      default:
+        /* unknown protocol family, do nothing */
+        break;
+  }
+}
+
 DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFSockAddr& s)
 {
   o << "SOCKADDR_BEGIN\n  Family: ";
@@ -79,7 +99,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
       // The typecast is necessary for older MSVC compilers, which expect a non-const void * parameter.
       o << "\n  IP address: " << inet_ntop(AF_INET,  OFconst_cast(void *, OFreinterpret_cast(const void *, &si->sin_addr)), buf, 512);
 #endif
-      o << "\n  Port: " << si->sin_port << "\n";
+      o << "\n  Port: " << ntohs(si->sin_port) << "\n";
       break;
     case AF_INET6:
       si6 = s.getSockaddr_in6_const();
@@ -91,7 +111,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
 #else
       o << "\n  IP address: " << inet_ntop(AF_INET6, OFconst_cast(void *, OFreinterpret_cast(const void *, &si6->sin6_addr)), buf, 512);
 #endif
-      o << "\n  Port: " << si6->sin6_port
+      o << "\n  Port: " << ntohs(si6->sin6_port)
         << "\n  Flow info: " << si6->sin6_flowinfo
         << "\n  Scope: " << si6->sin6_scope_id
         << "\n";
