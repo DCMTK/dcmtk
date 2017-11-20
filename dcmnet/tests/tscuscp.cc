@@ -14,7 +14,7 @@
  *
  *  Author:  Michael Onken
  *
- *  Purpose: Test DcmSPC and DcmSCU classes (only certain aspects so far)
+ *  Purpose: Test DcmSCP and DcmSCU classes (only certain aspects so far)
  *
  */
 
@@ -45,148 +45,149 @@ static OFLogger t_scuscp_logger= OFLog::getLogger("dcmtk.test.tscuscp");
 struct TestSCP: DcmSCP, OFThread
 {
 
-  /** Constructor
-   */
-  TestSCP() :
-    DcmSCP(),
-    m_listen_result(EC_NotYetImplemented), // value indicating "not set"
-    m_set_stop_after_assoc(OFFalse),
-    m_set_stop_after_timeout(OFFalse),
-    m_stop_after_assoc_result(OFFalse),
-    m_stop_after_timeout_result(OFFalse),
-    m_notify_connection_timeout_result(OFFalse),
-    m_notify_assoc_termination_result(OFFalse)
-  {
-  }
-
-  /** Clear settings
-   */
-  void clear()
-  {
-    m_listen_result = EC_NotYetImplemented;
-    m_set_stop_after_assoc = OFFalse;
-    m_set_stop_after_timeout = OFFalse;
-    m_stop_after_assoc_result = OFFalse;
-    m_stop_after_timeout_result = OFFalse;
-    m_notify_connection_timeout_result = OFFalse;
-    m_notify_assoc_termination_result = OFFalse;
-
-  }
-
-  /** Overwrite method from DcmSCP in order to test feature to stop after current
-   *  association.
-   *  @return Returns value of m_set_stop_after_assoc
-   */
-  virtual OFBool stopAfterCurrentAssociation()
-  {
-    if (m_set_stop_after_assoc)
+    /** Constructor
+    */
+    TestSCP() :
+        DcmSCP(),
+        m_listen_result(EC_NotYetImplemented), // value indicating "not set"
+        m_set_stop_after_assoc(OFFalse),
+        m_set_stop_after_timeout(OFFalse),
+        m_stop_after_assoc_result(OFFalse),
+        m_stop_after_timeout_result(OFFalse),
+        m_notify_connection_timeout_result(OFFalse),
+        m_notify_assoc_termination_result(OFFalse)
     {
-      m_stop_after_assoc_result = OFTrue;
     }
-    return m_set_stop_after_assoc;
-  }
 
-  /** Overwrite method from DcmSCP in order to test feature to stop after
-   *  the SCP's connection timeout occurred in non-blocking mode.
-   *  @return Returns value of m_set_stop_after_timeout
-   */
-  virtual OFBool stopAfterConnectionTimeout()
-  {
-    if (m_set_stop_after_timeout)
+    /** Clear settings
+    */
+    void clear()
     {
-      m_stop_after_timeout_result = OFTrue;
+        m_listen_result = EC_NotYetImplemented;
+        m_set_stop_after_assoc = OFFalse;
+        m_set_stop_after_timeout = OFFalse;
+        m_stop_after_assoc_result = OFFalse;
+        m_stop_after_timeout_result = OFFalse;
+        m_notify_connection_timeout_result = OFFalse;
+        m_notify_assoc_termination_result = OFFalse;
     }
-    return m_set_stop_after_timeout;
-  }
 
-  /** Overwrite method from DcmSCP in order to test feature that SCP reports
-   *  connection timeout in non-blocking mode.
-   */
-  virtual void notifyConnectionTimeout()
-  {
-    m_notify_connection_timeout_result = OFTrue;
-  }
+    /** Overwrite method from DcmSCP in order to test feature to stop after current
+    *  association.
+    *  @return Returns value of m_set_stop_after_assoc
+    */
+    virtual OFBool stopAfterCurrentAssociation()
+    {
+        if (m_set_stop_after_assoc)
+        {
+            m_stop_after_assoc_result = OFTrue;
+        }
+        return m_set_stop_after_assoc;
+    }
 
-  /** Overwrite method from DcmSCP in order to test feature that SCP reports
-   *  the termination of an association.
-   */
-  virtual void notifyAssociationTermination()
-  {
-    m_notify_assoc_termination_result = OFTrue;
-  }
+    /** Overwrite method from DcmSCP in order to test feature to stop after
+    *  the SCP's connection timeout occurred in non-blocking mode.
+    *  @return Returns value of m_set_stop_after_timeout
+    */
+    virtual OFBool stopAfterConnectionTimeout()
+    {
+        if (m_set_stop_after_timeout)
+        {
+            m_stop_after_timeout_result = OFTrue;
+        }
+        return m_set_stop_after_timeout;
+    }
 
-  /// The result returned my SCP's listen() method
-  OFCondition m_listen_result;
-  /// If set, the SCP should stop after the currently running association
-  OFBool m_set_stop_after_assoc;
-  /// If set, the SCP should stop after TCP timeout occurred in non-blocking mode
-  OFBool m_set_stop_after_timeout;
-  /// Indicator whether related virtual function was called and returned accordingly
-  OFBool m_stop_after_assoc_result;
-  /// Indicator whether related virtual function was called and returned accordingly
-  OFBool m_stop_after_timeout_result;
-  /// Indicator whether related virtual notifier function was called
-  OFBool m_notify_connection_timeout_result;
-  /// Indicator whether related virtual notifier function was called
-  OFBool m_notify_assoc_termination_result;
+    /** Overwrite method from DcmSCP in order to test feature that SCP reports
+    *  connection timeout in non-blocking mode.
+    */
+    virtual void notifyConnectionTimeout()
+    {
+        m_notify_connection_timeout_result = OFTrue;
+    }
 
-  /** Method called by OFThread to start SCP operation. Starts listen() loop of DcmSCP.
-   */
-  virtual void run()
-  {
-      m_listen_result = listen();
-  }
+    /** Overwrite method from DcmSCP in order to test feature that SCP reports
+    *  the termination of an association.
+    */
+    virtual void notifyAssociationTermination()
+    {
+        m_notify_assoc_termination_result = OFTrue;
+    }
+
+    /// The result returned my SCP's listen() method
+    OFCondition m_listen_result;
+    /// If set, the SCP should stop after the currently running association
+    OFBool m_set_stop_after_assoc;
+    /// If set, the SCP should stop after TCP timeout occurred in non-blocking mode
+    OFBool m_set_stop_after_timeout;
+    /// Indicator whether related virtual function was called and returned accordingly
+    OFBool m_stop_after_assoc_result;
+    /// Indicator whether related virtual function was called and returned accordingly
+    OFBool m_stop_after_timeout_result;
+    /// Indicator whether related virtual notifier function was called
+    OFBool m_notify_connection_timeout_result;
+    /// Indicator whether related virtual notifier function was called
+    OFBool m_notify_assoc_termination_result;
+
+    /** Method called by OFThread to start SCP operation. Starts listen() loop of DcmSCP.
+    */
+    virtual void run()
+    {
+        m_listen_result = listen();
+    }
 
 };
 
-/** Configure Verification SOP class on server
+// -------------- End of class TestSCP -------------------------
+
+
+/** Manually configure Verification SOP class on server
  *  @param  cfg The SCP configuration to modify
  */
 void configure_scp_for_echo(DcmSCPConfig& cfg, T_ASC_SC_ROLE roleOfRequestor = ASC_SC_ROLE_DEFAULT)
 {
-  cfg.setPort(11112);
-  OFList<OFString> xfers;
-  xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
-  OFCHECK(cfg.addPresentationContext(UID_VerificationSOPClass, xfers, roleOfRequestor).good());
+    cfg.setPort(11112);
+    OFList<OFString> xfers;
+    xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+    OFCHECK(cfg.addPresentationContext(UID_VerificationSOPClass, xfers, roleOfRequestor).good());
 }
 
 
 /** Send ECHO to SCP
- *  @param  called_ae_title The Called AE Title to be used
- *  @param  do_release  If OFTrue, SCU should release the association (otherwise
- *          we expect the SCP to do that.
- *  @param  secs_after_echo Seconds to wait after sending echo
+ *  @param called_ae_title The Called AE Title to be used
+ *  @param do_release  If OFTrue, SCU should release the association (otherwise
+ *         we expect the SCP to do that.
+ *  @param secs_after_echo Seconds to wait after sending echo
  */
 void scu_sends_echo(
   const OFString& called_ae_title,
   const OFBool do_release = OFTrue,
   const int secs_after_echo = 0)
 {
-  // make sure server is up
-  OFStandard::sleep(2);
-  DcmSCU scu;
-  scu.setAETitle("TEST_SCU");
-  scu.setPeerAETitle(called_ae_title);
-  scu.setPeerHostName("localhost");
-  scu.setPeerPort(11112);
-  OFList<OFString> xfers;
-  xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
-  OFCondition result = scu.addPresentationContext(UID_VerificationSOPClass, xfers);
-  OFCHECK(result.good());
-  result = scu.initNetwork();
-  OFCHECK(result.good());
-  result = scu.negotiateAssociation();
-  OFCHECK(result.good());
-  result = scu.sendECHORequest(1);
-  OFCHECK(result.good());
-  OFStandard::sleep(secs_after_echo);
-  if (do_release)
-  {
-    result = scu.releaseAssociation();
+    // make sure server is up
+    OFStandard::sleep(2);
+    DcmSCU scu;
+    scu.setAETitle("TEST_SCU");
+    scu.setPeerAETitle(called_ae_title);
+    scu.setPeerHostName("localhost");
+    scu.setPeerPort(11112);
+    OFList<OFString> xfers;
+    xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+    OFCondition result = scu.addPresentationContext(UID_VerificationSOPClass, xfers);
     OFCHECK(result.good());
-  }
-
-  return;
+    result = scu.initNetwork();
+    OFCHECK(result.good());
+    result = scu.negotiateAssociation();
+    OFCHECK(result.good());
+    result = scu.sendECHORequest(1);
+    OFCHECK(result.good());
+    OFStandard::sleep(secs_after_echo);
+    if (do_release)
+    {
+        result = scu.releaseAssociation();
+        OFCHECK(result.good());
+    }
+    return;
 }
 
 
@@ -215,6 +216,36 @@ OFTEST_FLAGS(dcmnet_scp_stop_after_current_association, EF_Slow)
     scp.clear();
     scp.m_set_stop_after_assoc = OFTrue;
     scu_sends_echo("STOP_AFTER_ASSOC");
+    OFStandard::sleep(1);
+
+    // Check whether all test variables have the correct values
+    OFCHECK(scp.m_listen_result == NET_EC_StopAfterAssociation);
+    OFCHECK(scp.m_stop_after_timeout_result == OFFalse);
+    OFCHECK(scp.m_notify_connection_timeout_result == OFFalse);
+    OFCHECK(scp.m_notify_assoc_termination_result == OFTrue); // scu released association
+
+    scp.join();
+    OFCHECK(scp.m_listen_result == NET_EC_StopAfterAssociation);
+}
+
+
+// Test case that checks whether server returns after association if enabled
+OFTEST_FLAGS(dcmnet_scp_builtin_verification_support, EF_Slow)
+{
+    TestSCP scp;
+    // Enable built-in Verification SOP Class Handler
+    scp.setEnableVerification();
+    scp.getConfig().setPort(11112);
+    // Make sure server stops after the SCU connection
+    scp.m_set_stop_after_assoc = OFTrue;
+    DcmSCPConfig& config = scp.getConfig();
+    config.setAETitle("TEST_BUILTIN_VER");
+    config.setConnectionBlockingMode(DUL_BLOCK);
+    scp.start();
+
+    // Send echo and receive response
+    scu_sends_echo("TEST_BUILTIN_VER");
+    // make sure server would have time to return
     OFStandard::sleep(1);
 
     // Check whether all test variables have the correct values
@@ -359,11 +390,11 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
     static OFVector<T_ASC_SC_ROLE> roles;
     if (roles.empty())
     {
-      roles.push_back(ASC_SC_ROLE_DEFAULT);
-      roles.push_back(ASC_SC_ROLE_NONE);
-      roles.push_back(ASC_SC_ROLE_SCP);
-      roles.push_back(ASC_SC_ROLE_SCU);
-      roles.push_back(ASC_SC_ROLE_SCUSCP);
+        roles.push_back(ASC_SC_ROLE_DEFAULT);
+        roles.push_back(ASC_SC_ROLE_NONE);
+        roles.push_back(ASC_SC_ROLE_SCP);
+        roles.push_back(ASC_SC_ROLE_SCU);
+        roles.push_back(ASC_SC_ROLE_SCUSCP);
     }
 
     TestSCP scp;
@@ -387,10 +418,10 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
     OFCHECK(scu.addPresentationContext(UID_VerificationSOPClass, ts, r_req).good());
     OFCHECK(scu.initNetwork().good());
     if (!expect_assoc_reject)
-      OFCHECK(scu.negotiateAssociation().good());
+        OFCHECK(scu.negotiateAssociation().good());
     else
     {
-      OFCHECK(scu.negotiateAssociation() == DUL_ASSOCIATIONREJECTED);
+        OFCHECK(scu.negotiateAssociation() == DUL_ASSOCIATIONREJECTED);
     }
     // Loop over roles and check for each role whether has been negotiated or not.
     // Only a single role (the expected_result) should be successfully negotiated.
@@ -398,40 +429,40 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
     OFCondition result;
     while (it != roles.end())
     {
-      T_ASC_PresentationContextID id = scu.findPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax, (*it));
-      if ( ((*it) == expected_result) && !expect_assoc_reject)
-      {
-          if (id == 0)
-          {
-              OFCHECK_FAIL("Error while testing requestor role " << ASC_role2String(r_req)
-                  << " versus acceptor role " << ASC_role2String(r_acc)
-                  << ", expected result: " << ASC_role2String(expected_result) << ", but did not find related presentation context with that role");
-          }
-      }
-      else
-      {
-        if (id != 0)
+        T_ASC_PresentationContextID id = scu.findPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax, (*it));
+        if ( ((*it) == expected_result) && !expect_assoc_reject)
         {
-            OFCHECK_FAIL("Error while testing requestor role " << ASC_role2String(r_req)
-                << " versus acceptor role " << ASC_role2String(r_acc)
-                << ", expected result: " << ASC_role2String(expected_result) << ", but found unexpected presentation context for role " << ASC_role2String(*it));
+            if (id == 0)
+            {
+                OFCHECK_FAIL("Error while testing requestor role " << ASC_role2String(r_req)
+                    << " versus acceptor role " << ASC_role2String(r_acc)
+                    << ", expected result: " << ASC_role2String(expected_result) << ", but did not find related presentation context with that role");
+            }
         }
-      }
-      it++;
+        else
+        {
+            if (id != 0)
+            {
+                OFCHECK_FAIL("Error while testing requestor role " << ASC_role2String(r_req)
+                    << " versus acceptor role " << ASC_role2String(r_acc)
+                    << ", expected result: " << ASC_role2String(expected_result) << ", but found unexpected presentation context for role " << ASC_role2String(*it));
+            }
+        }
+        it++;
     }
     scp.m_set_stop_after_assoc = OFTrue;
     scp.m_set_stop_after_timeout = OFTrue; // also handles the association rejection case
     // Only release association if we're connected (could happen we're not in case
     // of test failures of if expect_assoc_reject is true)
     if (scu.isConnected())
-      OFCHECK(scu.releaseAssociation().good());
+        OFCHECK(scu.releaseAssociation().good());
     scp.join();
 }
 
 // Test case that checks whether server returns after association if enabled
 OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
 {
-    // The ollowing role selection behaviour should be implemented and
+    // The following role selection behavior should be implemented and
     // is exercised in this test (copied from dul.h):
     //  *  +--------------------+------------------+---------+
     //  *  | Requestor Proposal | Acceptor Setting | Result  |

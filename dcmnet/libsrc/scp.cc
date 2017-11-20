@@ -558,7 +558,9 @@ OFCondition DcmSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
                                           const DcmPresentationContextInfo &presInfo)
 {
   OFCondition cond;
-  if (incomingMsg->CommandField == DIMSE_C_ECHO_RQ)
+  // Handle C-ECHO for Verification SOP Class
+  if ( (incomingMsg->CommandField == DIMSE_C_ECHO_RQ)
+       && (presInfo.abstractSyntax == UID_VerificationSOPClass) )
   {
     // Process C-ECHO request
     cond = handleECHORequest(incomingMsg->msg.CEchoRQ, presInfo.presentationContextID);
@@ -1631,6 +1633,21 @@ void DcmSCP::setMaxReceivePDULength(const Uint32 maxRecPDU)
 {
   m_cfg->setMaxReceivePDULength(maxRecPDU);
 }
+
+// ----------------------------------------------------------------------------
+
+OFCondition DcmSCP::setEnableVerification(const OFString &profile)
+{
+
+  OFList<OFString> xfers;
+  xfers.push_back(UID_LittleEndianExplicitTransferSyntax);
+  xfers.push_back(UID_BigEndianExplicitTransferSyntax);
+  xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+  return m_cfg->addPresentationContext(UID_VerificationSOPClass, xfers, ASC_SC_ROLE_DEFAULT, profile);
+}
+
+// ----------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------
 

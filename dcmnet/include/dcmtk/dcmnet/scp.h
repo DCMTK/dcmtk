@@ -130,8 +130,13 @@ struct DCMTK_DCMNET_EXPORT DcmPresentationContextInfo
  *  add the presentation contexts they want to support, set further parameters (port, peer
  *  hostname, etc. as desired) and then call DcmSCP's listen() method to start the server.
  *  For incoming associations and DIMSE messages, a derived class can define the behavior
- *  of the server. The DcmSCP base class is capable of responding to C-ECHO requests
- *  (Verification SOP Class).
+ *  of the server.
+ *  The DcmSCP base class does not support any presentation contexts per default.
+ *  In particular the Verification SOP class which every SCP must support,
+ *  is not added automatically in order to give the user full control over the
+ *  supported list of presentation contexts. However, if this class should negotiate
+ *  Verification, call setEnableVerification(). In that case DcmSCP will also
+ *  respond to related C-ECHO requests. Note that this cannot be reverted.
  *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
  */
 class DCMTK_DCMNET_EXPORT DcmSCP
@@ -165,6 +170,21 @@ public:
   /* ************************************************************* */
   /*             Set methods for configuring SCP behavior          */
   /* ************************************************************* */
+
+  /** Enables negotiation of the Verification SOP Class. It adds the Verification
+   *  SOP Class to the list of supported abstract syntaxes for the given profile.
+   *  All uncompressed transfer syntaxes are supported. If Verification SOP
+   *  class is added here, DcmSCP will respond to related C-ECHO requests. Note
+   *  that this cannot be reverted.
+   *  The default behavior of DcmSCP is not to support any SOP Class at all.
+   *  @param profile [in] The profile Verification SOP Class should
+   *                 be added to. The default is to add it to the
+   *                 DcmSCP's internal standard profile called
+   *                 "DEFAULT".
+   *  @return EC_Normal if Verification SOP Class could be added,
+   *          error otherwise.
+   */
+  OFCondition setEnableVerification(const OFString& profile="DEFAULT");
 
   /** Add abstract syntax to presentation contexts the SCP is able to negotiate with SCUs.
    *  @param abstractSyntax [in] The UID of the abstract syntax (e.g.\ SOP class) to add
@@ -475,9 +495,11 @@ protected:
   /* *********************************************************************** */
 
   /** Handle incoming command set and react accordingly, e.g.\ sending response via
-   *  DIMSE_sendXXXResponse(). The standard handler only knows how to handle an Echo request
-   *  by calling handleEchoRequest(). This function is most likely to be implemented by a
-   *  derived class implementing a specific SCP behavior.
+   *  DIMSE_sendXXXResponse(). The standard handler only knows how to handle
+   *  a C-ECHO request message (by calling handleEchoRequest()) if it is sent on a
+   *  presentation context configured for the Verification SOP Class.
+   *  This function is most likely to be implemented by a derived class
+   *  implementing a specific SCP behavior.
    *  @param incomingMsg The DIMSE message received
    *  @param presInfo Additional information on the Presentation Context used
    *  @return EC_Normal if the message could be handled, error if not. Especially
