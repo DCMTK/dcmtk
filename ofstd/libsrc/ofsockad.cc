@@ -77,7 +77,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
 {
   o << "SOCKADDR_BEGIN\n  Family: ";
   unsigned long bufsize = 512;
-  char buf[bufsize];
+  char buf[512];
   buf[0] = '\0';
   const struct sockaddr_in *si = NULL;
   const struct sockaddr_in6 *si6 = NULL;

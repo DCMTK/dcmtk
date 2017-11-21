@@ -99,6 +99,7 @@
 #include "dcmtk/ofstd/oftuple.h"
 #include "dcmtk/ofstd/ofmath.h"
 #include "dcmtk/ofstd/ofsockad.h"
+#include "dcmtk/ofstd/ofvector.h"
 
 #define INCLUDE_CMATH
 #define INCLUDE_CFLOAT
