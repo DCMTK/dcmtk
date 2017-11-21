@@ -27,6 +27,7 @@
 // on Windows, we need Winsock2 for getting network adapter information
 #include <winsock2.h>
 #include <iphlpapi.h>
+#include <ws2tcpip.h>
 #endif
 
 #define INCLUDE_CSTDLIB
