@@ -52,6 +52,7 @@ struct TestSCP: DcmSCP, OFThread
         m_listen_result(EC_NotYetImplemented), // value indicating "not set"
         m_set_stop_after_assoc(OFFalse),
         m_set_stop_after_timeout(OFFalse),
+        m_set_reject_calling_host(OFFalse),
         m_stop_after_assoc_result(OFFalse),
         m_stop_after_timeout_result(OFFalse),
         m_notify_connection_timeout_result(OFFalse),
@@ -114,16 +115,36 @@ struct TestSCP: DcmSCP, OFThread
         m_notify_assoc_termination_result = OFTrue;
     }
 
+    virtual OFBool checkCallingHostAccepted(const OFString& hostOrIP)
+    {
+        // In order to test this feature, we do not need to perform actual checking
+        (void)hostOrIP;
+        if (m_set_reject_calling_host)
+        {
+            m_calling_host_accepted = OFFalse;
+            return OFFalse;
+        }
+        else
+        {
+            m_calling_host_accepted = OFTrue;
+            return OFTrue;
+        }
+    }
+
     /// The result returned my SCP's listen() method
     OFCondition m_listen_result;
     /// If set, the SCP should stop after the currently running association
     OFBool m_set_stop_after_assoc;
     /// If set, the SCP should stop after TCP timeout occurred in non-blocking mode
     OFBool m_set_stop_after_timeout;
+    /// If set, the SCP should not allow the calling host (whatever it is)
+    OFBool m_set_reject_calling_host;
     /// Indicator whether related virtual function was called and returned accordingly
     OFBool m_stop_after_assoc_result;
     /// Indicator whether related virtual function was called and returned accordingly
     OFBool m_stop_after_timeout_result;
+    /// Indicator whether the calling host was accepted
+    OFBool m_calling_host_accepted;
     /// Indicator whether related virtual notifier function was called
     OFBool m_notify_connection_timeout_result;
     /// Indicator whether related virtual notifier function was called
@@ -161,6 +182,7 @@ void configure_scp_for_echo(DcmSCPConfig& cfg, T_ASC_SC_ROLE roleOfRequestor = A
  */
 void scu_sends_echo(
   const OFString& called_ae_title,
+  const OFBool expect_assoc_reject = OFFalse,
   const OFBool do_release = OFTrue,
   const int secs_after_echo = 0)
 {
@@ -178,14 +200,21 @@ void scu_sends_echo(
     result = scu.initNetwork();
     OFCHECK(result.good());
     result = scu.negotiateAssociation();
-    OFCHECK(result.good());
-    result = scu.sendECHORequest(1);
-    OFCHECK(result.good());
-    OFStandard::sleep(secs_after_echo);
-    if (do_release)
+    if (!expect_assoc_reject)
     {
-        result = scu.releaseAssociation();
         OFCHECK(result.good());
+        result = scu.sendECHORequest(1);
+        OFCHECK(result.good());
+        OFStandard::sleep(secs_after_echo);
+        if (do_release)
+        {
+            result = scu.releaseAssociation();
+            OFCHECK(result.good());
+        }
+    }
+    else
+    {
+        OFCHECK(result == DUL_ASSOCIATIONREJECTED);
     }
     return;
 }
@@ -226,7 +255,6 @@ OFTEST_FLAGS(dcmnet_scp_stop_after_current_association, EF_Slow)
     OFCHECK(scp.m_notify_assoc_termination_result == OFTrue); // SCU released association
 
     scp.join();
-    OFCHECK(scp.m_listen_result == NET_EC_StopAfterAssociation);
 }
 
 
@@ -235,9 +263,9 @@ OFTEST_FLAGS(dcmnet_scp_stop_after_current_association, EF_Slow)
 OFTEST_FLAGS(dcmnet_scp_fail_on_invalid_association_configuration, EF_Slow)
 {
     TestSCP scp;
-    scp.getConfig().setPort(11112);;
-    // Make sure server stops after the SCU connection
     DcmSCPConfig& config = scp.getConfig();
+    config.setPort(11112);;
+    // Make sure server stops after the SCU connection
     config.setAETitle("TEST_INVALID_CFG");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     // Ensure that if the server starts listen loop (it should not), the
@@ -246,12 +274,42 @@ OFTEST_FLAGS(dcmnet_scp_fail_on_invalid_association_configuration, EF_Slow)
     scp.m_set_stop_after_timeout = OFTrue;
     // Start server and check that it returns with the expected return value.
     // In this case we did not configure any presentation contexts, so we
-    // expect the related error cod.
+    // expect the related error code.
     scp.start();
     scp.join();
     OFCHECK(scp.m_listen_result == NET_EC_InvalidSCPAssociationProfile);
 }
 
+
+// Test case that checks whether server checks for allowed/disallowed host
+// names, i.e. it refuses the association in case the connecting host name
+// is not accepted by the related virtual method.
+OFTEST_FLAGS(dcmnet_scp_fail_on_disallowed_host, EF_Slow)
+{
+    TestSCP scp;
+    DcmSCPConfig& config = scp.getConfig();
+    configure_scp_for_echo(config);
+    config.setAETitle("REJECT_HOST");
+    config.setConnectionBlockingMode(DUL_BLOCK);
+    // Make sure SCP always returns
+    scp.m_set_stop_after_assoc = OFTrue;
+    // Tell SCP to reject calling host
+    scp.m_set_reject_calling_host = OFTrue;
+    scp.start();
+
+    scu_sends_echo("REJECT_HOST", OFTrue /* expect that association is being refused */);
+    OFStandard::sleep(1);  // make sure server would have time to return
+
+    // Check whether all test variables have the correct values
+    OFCHECK(scp.m_listen_result == NET_EC_StopAfterAssociation);
+    OFCHECK(scp.m_stop_after_timeout_result == OFFalse);
+    OFCHECK(scp.m_notify_connection_timeout_result == OFFalse);
+    OFCHECK(scp.m_notify_assoc_termination_result == OFTrue);
+    // Check whether the calling host has been the reason for
+    // refusing the association
+    OFCHECK(scp.m_calling_host_accepted == OFFalse);
+    scp.join();
+}
 
 
 // Test case that checks whether server returns after association if enabled

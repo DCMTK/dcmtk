@@ -245,6 +245,9 @@ void DcmSCP::refuseAssociation(const DcmRefuseReasonType reason)
     case DCMSCP_BAD_APPLICATION_CONTEXT_NAME:
       DCMNET_INFO("Refusing Association (bad application context)");
       break;
+    case DCMSCP_CALLING_HOST_NOT_ALLOWED:
+      DCMNET_INFO("Refusing Association (connecting host not allowed)");
+      break;
     case DCMSCP_CALLED_AE_TITLE_NOT_RECOGNIZED:
       DCMNET_INFO("Refusing Association (called AE title not recognized)");
       break;
@@ -299,6 +302,7 @@ void DcmSCP::refuseAssociation(const DcmRefuseReasonType reason)
     case DCMSCP_FORCED:
     case DCMSCP_NO_IMPLEMENTATION_CLASS_UID:
     case DCMSCP_NO_PRESENTATION_CONTEXTS:
+    case DCMSCP_CALLING_HOST_NOT_ALLOWED:
     case DCMSCP_INTERNAL_ERROR:
     default:
       rej.result = ASC_RESULT_REJECTEDPERMANENT;
@@ -398,7 +402,15 @@ OFCondition DcmSCP::processAssociationRQ()
     return EC_Normal;
   }
 
-  // Condition 3: if the calling or called application entity title is not supported
+  // Condition 3: if the calling host name is not supported, we want to refuse
+  // the association request
+  if (!checkCallingHostAccepted(m_assoc->params->DULparams.calledPresentationAddress))
+  {
+    refuseAssociation( DCMSCP_CALLING_HOST_NOT_ALLOWED );
+    return EC_Normal;
+  }
+
+  // Condition 4: if the calling or called application entity title is not supported
   // we want to refuse the association request
   if (!checkCalledAETitleAccepted(m_assoc->params->DULparams.calledAPTitle))
   {

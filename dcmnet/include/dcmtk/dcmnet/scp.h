@@ -83,6 +83,8 @@ enum DcmRefuseReasonType
   DCMSCP_CANNOT_FORK,
   /// Refusing association because of bad application context name
   DCMSCP_BAD_APPLICATION_CONTEXT_NAME,
+  /// Refusing association because of disallowed connecting host name
+  DCMSCP_CALLING_HOST_NOT_ALLOWED,
   /// Refusing association because of unaccepted called AE title
   DCMSCP_CALLED_AE_TITLE_NOT_RECOGNIZED,
   /// Refusing association because of unaccepted calling AE title

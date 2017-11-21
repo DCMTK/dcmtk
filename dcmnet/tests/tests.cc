@@ -29,6 +29,7 @@ OFTEST_REGISTER(dcmnet_dimseDump_nullByte);
 OFTEST_REGISTER(dcmnet_scp_pool);
 OFTEST_REGISTER(dcmnet_scp_builtin_verification_support);
 OFTEST_REGISTER(dcmnet_scp_fail_on_invalid_association_configuration);
+OFTEST_REGISTER(dcmnet_scp_fail_on_disallowed_host);
 OFTEST_REGISTER(dcmnet_scp_stop_after_current_association);
 OFTEST_REGISTER(dcmnet_scp_stop_after_timeout);
 OFTEST_REGISTER(dcmnet_scp_no_stop_wo_request_noblock);
