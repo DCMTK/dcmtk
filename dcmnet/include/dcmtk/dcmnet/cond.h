@@ -197,7 +197,7 @@ extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_SCPBusy;               
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_CannotStartSCPThread;             /* Cannot start SCP thread */
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_StopAfterAssociation;             /* Stop after current association (as requested) */
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_StopAfterConnectionTimeout;       /* Stop after TCP connection timeout (as requested) */
-
+extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_InvalidSCPAssociationProfile;     /* Invalid or non-existing SCP Association Profile */
 
 // This macro creates a condition with given code, severity and text.
 // Making this a macro instead of a function saves the creation of a temporary.

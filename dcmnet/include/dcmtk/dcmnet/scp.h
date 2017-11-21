@@ -164,6 +164,19 @@ public:
    *          be used to return after an association has been handled and ended.
    *          In that case, NET_EC_StopAfterAssociation is returned.</li>
    *          </ul>
+   *         Other error codes include
+   *          <ul>
+   *          <li>NET_EC_InvalidSCPAssociationProfile: Returned if the SCP's presentation
+   *          context information is invalid (e.g. no presentation contexts have
+   *          been added).
+   *          </li>
+   *          <li>NET_EC_InsufficientPortPrivileges: Returned if the SCP is not
+   *          allowed to open the specified TCP port for listening. The reason
+   *          may be that you try to open a port number below 1024 on Windows
+   *          without having administrator privileges.
+   *          <li>EC_setuidFailed: Returned (on Unix-like systems) if the DcmSCP
+   *          was not able to drop root privileges.
+   *          </ul>
    */
   virtual OFCondition listen();
 
@@ -463,7 +476,7 @@ public:
    */
   Uint32 getPeerMaxPDULength() const;
 
-  // DcmThreadSCP needs access to configuration (m_cfg), at least
+  /// DcmThreadSCP needs access to configuration (m_cfg), at least
   friend class DcmThreadSCP;
 
 protected:

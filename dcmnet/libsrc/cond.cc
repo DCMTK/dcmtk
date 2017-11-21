@@ -90,6 +90,7 @@ makeOFConditionConst(NET_EC_SCPBusy,                         OFM_dcmnet, 1074, O
 makeOFConditionConst(NET_EC_CannotStartSCPThread,            OFM_dcmnet, 1075, OF_error, "Cannot start SCP Thread");
 makeOFConditionConst(NET_EC_StopAfterAssociation,            OFM_dcmnet, 1076, OF_ok, "Stop after current association (as requested)");
 makeOFConditionConst(NET_EC_StopAfterConnectionTimeout,      OFM_dcmnet, 1077, OF_ok, "Stop after TCP connection timeout (as requested)");
+makeOFConditionConst(NET_EC_InvalidSCPAssociationProfile,    OFM_dcmnet, 1078, OF_error, "Invalid or non-existing SCP Association Profile");
 
 
 OFString& DimseCondition::dump(OFString& str, OFCondition cond)

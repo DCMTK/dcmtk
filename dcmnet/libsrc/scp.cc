@@ -71,7 +71,6 @@ OFCondition DcmSCP::setConfig(const DcmSCPConfig& config)
 
 OFCondition DcmSCP::listen()
 {
-
   // make sure not to let dcmdata remove trailing blank padding or perform other
   // manipulations. We want to see the real data.
   dcmEnableAutomaticInputDataCorrection.set( OFFalse );
@@ -91,6 +90,12 @@ OFCondition DcmSCP::listen()
   }
 #endif
 #endif
+
+  // Check whether current association profile is valid
+  OFString tmp;
+  OFCondition result = m_cfg->checkAssociationProfile(m_cfg->getActiveAssociationProfile(), tmp);
+  if (result.bad())
+    return result;
 
   // Initialize network, i.e. create an instance of T_ASC_Network*.
   T_ASC_Network *network = NULL;

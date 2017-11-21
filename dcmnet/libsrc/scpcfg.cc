@@ -324,8 +324,34 @@ OFCondition DcmSCPConfig::setAndCheckAssociationProfile(const OFString &profileN
   if (profileName.empty())
     return EC_IllegalParameter;
 
-  DCMNET_TRACE("Setting and checking SCP association profile");
+  DCMNET_TRACE("Setting and checking SCP association profile " << profileName);
   OFString mangledName;
+  OFCondition result = checkAssociationProfile(profileName, mangledName);
+  if (result.good())
+  {
+    m_assocCfgProfileName = mangledName;
+    DCMNET_TRACE("Setting SCP association profile to (mangled name) " << mangledName);
+  }
+  return result;
+}
+
+// ----------------------------------------------------------------------------
+
+OFString DcmSCPConfig::getActiveAssociationProfile() const
+{
+  return m_assocCfgProfileName;
+}
+
+// ----------------------------------------------------------------------------
+
+OFCondition DcmSCPConfig::checkAssociationProfile(const OFString& profileName,
+                                                  OFString& mangledName) const
+{
+  if (profileName.empty())
+    return EC_IllegalParameter;
+
+  DCMNET_TRACE("Checking SCP association profile " << profileName);
+  mangledName.clear();
   OFCondition result;
 
   /* perform name mangling for config file key */
@@ -338,16 +364,15 @@ OFCondition DcmSCPConfig::setAndCheckAssociationProfile(const OFString &profileN
   /* check profile */
   if (result.good() && !m_assocConfig.isKnownProfile(mangledName.c_str()))
   {
-    DCMNET_ERROR("No association profile named \"" << profileName << "\" in association configuration");
-    result = EC_IllegalParameter; // TODO: need to find better error code
+    DCMNET_ERROR("No association profile named \"" << profileName << "\" in association configuration, " <<
+      "did you forget to add presentation contexts?");
+    result = NET_EC_InvalidSCPAssociationProfile;
   }
   if (result.good() && !m_assocConfig.isValidSCPProfile(mangledName.c_str()))
   {
     DCMNET_ERROR("The association profile named \"" << profileName << "\" is not a valid SCP association profile");
-    result = EC_IllegalParameter; // TODO: need to find better error code
+    result = NET_EC_InvalidSCPAssociationProfile;
   }
-  if (result.good())
-    m_assocCfgProfileName = mangledName;
 
   return result;
 }

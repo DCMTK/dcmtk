@@ -34,7 +34,8 @@
  *  the DIMSE timeout. The configuration, however, is not updated to reflect
  *  any runtime connection information, e.g. information about the current
  *  SCU connected or the like.
- *
+ *  The presentation context configuration is held in profiles. Per default, the
+ *  name of the active association configuration is DEFAULT.
  */
 class DCMTK_DCMNET_EXPORT DcmSCPConfig
 {
@@ -120,6 +121,19 @@ public:
    *  @return EC_Normal if selecting/checking was successful, an error code otherwise
    */
   OFCondition setAndCheckAssociationProfile(const OFString &profileName);
+
+  /** Returns the name of the currently active association profile
+   *  @return The name of the association profile that is currently active
+   */
+  OFString getActiveAssociationProfile() const;
+
+  /** The profile with the given name is checked for validity using this method.
+   *  @param profileName [in] The name of the association profile which should be checked
+   *  @param mangledName [out] The mangled profile name
+   *  @return EC_Normal if profile is a valid SCP profile, error otherwise
+   */
+  OFCondition checkAssociationProfile(const OFString &profileName,
+                                      OFString& mangledName) const;
 
   /** Force every association request to be refused by SCP, no matter what the SCU is
    *  offering
