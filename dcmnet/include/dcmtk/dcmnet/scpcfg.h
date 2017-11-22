@@ -196,7 +196,7 @@ public:
   /** Enables or disables looking up the host name from a connecting system.
    *  Note that this sets a GLOBAL flag in DCMTK, i.e. the behavior changes
    *  for all servers. This should be changed in the future.
-   *  @param mode [in] OFTrue, if hostname lookup should be enabled,
+   *  @param mode [in] OFTrue, if host name lookup should be enabled,
    *              OFFalse for disabling it.
    */
   void setHostLookupEnabled(const OFBool mode);
@@ -284,7 +284,7 @@ public:
   OFBool getVerbosePCMode() const;
 
   /** Returns whether a connecting system's host name is looked up.
-   *  @return OFTrue, if hostname lookup is enabled, OFFalse otherwise
+   *  @return OFTrue, if host name lookup is enabled, OFFalse otherwise
    */
   OFBool getHostLookupEnabled() const;
 

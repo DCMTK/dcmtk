@@ -402,7 +402,7 @@ OFCondition DcmSCP::processAssociationRQ()
     return EC_Normal;
   }
 
-  // Condition 3: if the calling host name is not supported, we want to refuse
+  // Condition 3: if the calling host is not supported, we want to refuse
   // the association request
   if (!checkCallingHostAccepted(m_assoc->params->DULparams.calledPresentationAddress))
   {

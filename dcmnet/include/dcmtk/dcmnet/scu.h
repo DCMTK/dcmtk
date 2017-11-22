@@ -595,7 +595,7 @@ public:
    */
   void setAETitle(const OFString &myAETtitle);
 
-  /** Set SCP's host (hostname or IP address) to talk to in association negotiation
+  /** Set SCP's host (host name or IP address) to talk to in association negotiation
    *  @param peerHostName [in] The SCP's hostname or IP address to be used
    */
   void setPeerHostName(const OFString &peerHostName);
@@ -698,8 +698,8 @@ public:
    */
   const OFString &getAETitle() const;
 
-  /** Returns the SCP's (peer's) host name configured
-   *  @return The hostname (or IP) configured to be talked to
+  /** Returns the SCP's (peer's) host configured
+   *  @return The host name (or IP) configured to be talked to
    */
   const OFString &getPeerHostName() const;
 
@@ -1031,7 +1031,7 @@ private:
   /// AE title of this application (default: ANY-SCU)
   OFString m_ourAETitle;
 
-  /// Peer hostname
+  /// Peer host (IP or host name)
   OFString m_peer;
 
   /// AE title of remote application (default: ANY-SCP)

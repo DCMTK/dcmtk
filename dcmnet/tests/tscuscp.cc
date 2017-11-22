@@ -282,7 +282,7 @@ OFTEST_FLAGS(dcmnet_scp_fail_on_invalid_association_configuration, EF_Slow)
 
 
 // Test case that checks whether server checks for allowed/disallowed host
-// names, i.e. it refuses the association in case the connecting host name
+// names, i.e. it refuses the association in case the connecting host
 // is not accepted by the related virtual method.
 OFTEST_FLAGS(dcmnet_scp_fail_on_disallowed_host, EF_Slow)
 {

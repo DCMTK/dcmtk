@@ -83,7 +83,7 @@ enum DcmRefuseReasonType
   DCMSCP_CANNOT_FORK,
   /// Refusing association because of bad application context name
   DCMSCP_BAD_APPLICATION_CONTEXT_NAME,
-  /// Refusing association because of disallowed connecting host name
+  /// Refusing association because of disallowed connecting host
   DCMSCP_CALLING_HOST_NOT_ALLOWED,
   /// Refusing association because of unaccepted called AE title
   DCMSCP_CALLED_AE_TITLE_NOT_RECOGNIZED,
@@ -130,7 +130,7 @@ struct DCMTK_DCMNET_EXPORT DcmPresentationContextInfo
 
 /** Base class for implementing a DICOM Service Class Provider (SCP). Derived classes can
  *  add the presentation contexts they want to support, set further parameters (port, peer
- *  hostname, etc. as desired) and then call DcmSCP's listen() method to start the server.
+ *  host name, etc. as desired) and then call DcmSCP's listen() method to start the server.
  *  For incoming associations and DIMSE messages, a derived class can define the behavior
  *  of the server.
  *  The DcmSCP base class does not support any presentation contexts per default.
@@ -323,7 +323,7 @@ public:
   /** Enables or disables looking up the host name from a connecting system.
    *  Note that this sets a GLOBAL flag in DCMTK, i.e. the behavior changes
    *  for all servers. This should be changed in the future.
-   *  @param mode [in] OFTrue, if hostname lookup should be enabled, OFFalse for disabling it.
+   *  @param mode [in] OFTrue, if host name lookup should be enabled, OFFalse for disabling it.
    */
   void setHostLookupEnabled(const OFBool mode);
 
@@ -410,7 +410,7 @@ public:
   OFBool getVerbosePCMode() const;
 
   /** Returns whether a connecting system's host name is looked up.
-   *  @return OFTrue, if hostname lookup is enabled, OFFalse otherwise
+   *  @return OFTrue, if host name lookup is enabled, OFFalse otherwise
    */
   OFBool getHostLookupEnabled() const;
 
@@ -554,9 +554,8 @@ protected:
    */
   virtual OFBool checkCallingAETitleAccepted(const OFString& callingAE);
 
-  /** Overwrite this function if calling IP should undergo checking. Note
-   *  that this function may also return a hostname instead. If
-   *  OFTrue is returned, the IP is accepted and processing is continued.
+  /** Overwrite this function if calling IP / host name should undergo checking.
+   *  If OFTrue is returned, the host is accepted and processing is continued.
    *  In case of OFFalse, the SCP will refuse the incoming association with
    *  an error. The standard handler always returns OFTrue.
    *  @param hostOrIP The IP of the client to check.
