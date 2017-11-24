@@ -211,14 +211,15 @@ FILE(WRITE "${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake" "")
 # Platform-independent settings
 #-----------------------------------------------------------------------------
 
-IF(COMMAND CMAKE_POLICY)
-  # Works around warnings about escaped quotes in ADD_DEFINITIONS statements
-  CMAKE_POLICY(SET CMP0005 OLD)
-ENDIF(COMMAND CMAKE_POLICY)
-
 # pass optional build date to compiler
 #SET(DCMTK_BUILD_DATE "\\\"YYYY-MM-DD\\\"")
 IF(DCMTK_BUILD_DATE)
+
+    IF(COMMAND CMAKE_POLICY)
+        # Works around warnings about escaped quotes in ADD_DEFINITIONS statements
+        CMAKE_POLICY(SET CMP0005 OLD)
+    ENDIF(COMMAND CMAKE_POLICY)
+
     # Xcode needs one escaping layer more than (as far as we know) everyone else - we gotta go deeper!
     IF(CMAKE_GENERATOR MATCHES Xcode)
         STRING(REPLACE "\\" "\\\\" DCMTK_BUILD_DATE "${DCMTK_BUILD_DATE}")
