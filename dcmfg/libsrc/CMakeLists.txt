@@ -7,7 +7,7 @@ DCMTK_ADD_LIBRARY(dcmfg
   fgfracon
   fgframeanatomy
   fgframevoilut
-  fgidentpixeltransform
+  fgpixeltransform
   fgimagedatatype
   fginterface
   fgpixmsr

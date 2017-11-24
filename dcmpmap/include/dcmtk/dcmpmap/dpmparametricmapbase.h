@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -28,7 +28,7 @@
 #include "dcmtk/dcmfg/fgfracon.h"
 #include "dcmtk/dcmfg/fgframeanatomy.h"
 #include "dcmtk/dcmfg/fgframevoilut.h"
-#include "dcmtk/dcmfg/fgidentpixeltransform.h"
+#include "dcmtk/dcmfg/fgpixeltransform.h"
 #include "dcmtk/dcmfg/fgparametricmapframetype.h"
 #include "dcmtk/dcmfg/fgpixmsr.h"
 #include "dcmtk/dcmfg/fgplanor.h"

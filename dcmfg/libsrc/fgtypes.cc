@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -103,8 +103,6 @@ OFString DcmFGTypes::FGType2OFString(const DcmFGTypes::E_FGType fgType)
     case EFG_PLANEORIENTVOLUME: return "Plane Orientation (Volume) Functional Group Macro"; break;
     /// Temporal Position Macro
     case EFG_TEMPORALPOSITION: return "Temporal Position Functional Group Macro"; break;
-    /// Identity Pixel Value Transformation
-    case EFG_IDENTITYPIXELVALUETRANSFORMATION: return "Identity Pixel Value Transformation"; break;
     /// Image Data Type
     case EFG_IMAGEDATATYPE: return "Image Data Type Functional Group Macro"; break;
     /// Unassigned Shared Converted Attributes Macro
@@ -167,8 +165,6 @@ DcmFGTypes::E_FGType DcmFGTypes::tagKey2FGType(const DcmTagKey& key)
     return EFG_PLANEORIENTVOLUME;
   else if (key == DCM_TemporalPositionSequence)
     return EFG_TEMPORALPOSITION;
-  else if (key == DCM_PixelValueTransformationSequence)
-    return EFG_IDENTITYPIXELVALUETRANSFORMATION;
   else if (key == DCM_ImageDataTypeSequence)
     return EFG_IMAGEDATATYPE;
   else if (key == DCM_UnassignedSharedConvertedAttributesSequence)

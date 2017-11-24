@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -15,20 +15,21 @@
  *
  *  Author: Jan Schlamelcher
  *
- *  Purpose: Class for managing the Identity Pixel Value Transformation
+ *  Purpose: Class for managing the (Identity) Pixel Value Transformation FG
  *
  */
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmiod/iodutil.h"
-#include "dcmtk/dcmfg/fgidentpixeltransform.h"
+#include "dcmtk/dcmfg/fgpixeltransform.h"
 
-FGIdentityPixelValueTransformation::FGIdentityPixelValueTransformation()
+FGPixelValueTransformation::FGPixelValueTransformation()
 : FGBase(DcmFGTypes::EFG_UNDEFINED)
 , m_RescaleIntercept(DCM_RescaleIntercept)
 , m_RescaleSlope(DCM_RescaleSlope)
 , m_RescaleType(DCM_RescaleType)
+, m_UseAsIdentityPixelValueTransformationFG(OFFalse)
 {
   m_RescaleIntercept.putOFStringArray("0");
   m_RescaleSlope.putOFStringArray("1");
@@ -36,71 +37,78 @@ FGIdentityPixelValueTransformation::FGIdentityPixelValueTransformation()
 }
 
 
-FGIdentityPixelValueTransformation::~FGIdentityPixelValueTransformation()
+void FGPixelValueTransformation::setUseAsIdentityPixelValueTransformation()
+{
+  m_UseAsIdentityPixelValueTransformationFG = OFTrue;
+}
+
+
+
+FGPixelValueTransformation::~FGPixelValueTransformation()
 {
 
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::check() const
+OFCondition FGPixelValueTransformation::check() const
 {
-  Float64 rs, ri;
-  rs = ri = 0;
-  OFString rt;
-  OFBool ok = OFTrue;
-  if (OFconst_cast(DcmDecimalString*, &m_RescaleIntercept)->getFloat64(ri).good())
+  if (m_UseAsIdentityPixelValueTransformationFG)
   {
-    if (ri != 0)
+    Float64 rs, ri;
+    rs = ri = 0;
+    OFString rt;
+    OFBool ok = OFTrue;
+    if (OFconst_cast(DcmDecimalString*, &m_RescaleIntercept)->getFloat64(ri).good())
     {
-      DCMFG_ERROR("Rescale Intercept in Identity Pixel Value Transformation FG must be 0 but is set to " << ri);
+      if (ri != 0)
+      {
+        DCMFG_ERROR("Rescale Intercept in Identity Pixel Value Transformation FG must be 0 but is set to " << ri);
+        ok = OFFalse;
+      }
+    }
+    else
+    {
+      DCMFG_ERROR("Invalid or no value for Rescale Intercept in Identity Pixel Value Transformation FG (0 is the only valid value");
       ok = OFFalse;
     }
-  }
-  else
-  {
-    DCMFG_ERROR("Invalid or no value for Rescale Intercept in Identity Pixel Value Transformation FG (0 is the only valid value");
-    ok = OFFalse;
-  }
 
-  if (OFconst_cast(DcmDecimalString*, &m_RescaleSlope)->getFloat64(rs).good())
-  {
-    if (rs != 1)
+    if (OFconst_cast(DcmDecimalString*, &m_RescaleSlope)->getFloat64(rs).good())
     {
-      DCMFG_ERROR("Rescale Slope in Identity Pixel Value Transformation FG must be 1 but is set to " << rs);
+      if (rs != 1)
+      {
+        DCMFG_ERROR("Rescale Slope in Identity Pixel Value Transformation FG must be 1 but is set to " << rs);
+        ok = OFFalse;
+      }
+    }
+    else
+    {
+      DCMFG_ERROR("Invalid or no value for Rescale Slope in Identity Pixel Value Transformation FG (1 is the only valid value");
       ok = OFFalse;
     }
-  }
-  else
-  {
-    DCMFG_ERROR("Invalid or no value for Rescale Slope in Identity Pixel Value Transformation FG (1 is the only valid value");
-    ok = OFFalse;
-  }
 
-  if (OFconst_cast(DcmLongString*, &m_RescaleType)->getOFStringArray(rt).good())
-  {
-    if (rt != "US")
+    if (OFconst_cast(DcmLongString*, &m_RescaleType)->getOFStringArray(rt).good())
     {
-      DCMFG_ERROR("Rescale Type in Identity Pixel Value Transformation FG must be \"US\" but is set to " << rt);
+      if (rt != "US")
+      {
+        DCMFG_ERROR("Rescale Type in Identity Pixel Value Transformation FG must be \"US\" but is set to " << rt);
+        ok = OFFalse;
+      }
+    }
+    else
+    {
+      DCMFG_ERROR("Invalid or no value for Rescale Type in Identity Pixel Value Transformation FG (\"US\" is the only valid value");
       ok = OFFalse;
     }
+    if (!ok)
+    {
+      return FG_EC_InvalidData;
+    }
   }
-  else
-  {
-    DCMFG_ERROR("Invalid or no value for Rescale Type in Identity Pixel Value Transformation FG (\"US\" is the only valid value");
-    ok = OFFalse;
-  }
-  if (ok)
-  {
-    return EC_Normal;
-  }
-  else
-  {
-    return FG_EC_InvalidData;
-  }
+  return EC_Normal;
 }
 
 
-void FGIdentityPixelValueTransformation::clearData()
+void FGPixelValueTransformation::clearData()
 {
   m_RescaleIntercept.clear();
   m_RescaleSlope.clear();
@@ -108,9 +116,9 @@ void FGIdentityPixelValueTransformation::clearData()
 }
 
 
-FGBase* FGIdentityPixelValueTransformation::clone() const
+FGBase* FGPixelValueTransformation::clone() const
 {
-  if(FGIdentityPixelValueTransformation* copy = new FGIdentityPixelValueTransformation)
+  if(FGPixelValueTransformation* copy = new FGPixelValueTransformation)
   {
     copy->m_RescaleIntercept = m_RescaleIntercept;
     copy->m_RescaleSlope = m_RescaleSlope;
@@ -121,7 +129,7 @@ FGBase* FGIdentityPixelValueTransformation::clone() const
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::read(DcmItem& item)
+OFCondition FGPixelValueTransformation::read(DcmItem& item)
 {
   clearData();
 
@@ -140,7 +148,7 @@ OFCondition FGIdentityPixelValueTransformation::read(DcmItem& item)
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::write(DcmItem& item)
+OFCondition FGPixelValueTransformation::write(DcmItem& item)
 {
   DcmItem* seqItem;
   DCMFG_DEBUG("Identity Pixel Value Transformation Macro: Fixing values for Rescale Slope, Intercept and Type to enumerated values '1', '0' and 'US'");
@@ -160,12 +168,12 @@ OFCondition FGIdentityPixelValueTransformation::write(DcmItem& item)
 }
 
 
-int FGIdentityPixelValueTransformation::compare(const FGBase& rhs) const
+int FGPixelValueTransformation::compare(const FGBase& rhs) const
 {
   int result = FGBase::compare(rhs);
   if(result == 0)
   {
-    const FGIdentityPixelValueTransformation* myRhs = OFstatic_cast(const FGIdentityPixelValueTransformation*, &rhs);
+    const FGPixelValueTransformation* myRhs = OFstatic_cast(const FGPixelValueTransformation*, &rhs);
 
     // Compare all elements
     result = m_RescaleIntercept.compare(myRhs->m_RescaleIntercept);
@@ -177,28 +185,28 @@ int FGIdentityPixelValueTransformation::compare(const FGBase& rhs) const
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::getRescaleIntercept(OFString &value,
+OFCondition FGPixelValueTransformation::getRescaleIntercept(OFString &value,
                                                                     const signed long pos) const
 {
   return DcmIODUtil::getStringValueFromElement(m_RescaleIntercept, value, pos);
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::getRescaleSlope(OFString &value,
+OFCondition FGPixelValueTransformation::getRescaleSlope(OFString &value,
                                                                 const signed long pos) const
 {
   return DcmIODUtil::getStringValueFromElement(m_RescaleSlope, value, pos);
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::getRescaleType(OFString &value,
+OFCondition FGPixelValueTransformation::getRescaleType(OFString &value,
                                                                const signed long pos) const
 {
   return DcmIODUtil::getStringValueFromElement(m_RescaleType, value, pos);
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::setRescaleIntercept(const OFString &value,
+OFCondition FGPixelValueTransformation::setRescaleIntercept(const OFString &value,
                                                                     const OFBool checkValue)
 {
   OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
@@ -208,7 +216,7 @@ OFCondition FGIdentityPixelValueTransformation::setRescaleIntercept(const OFStri
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::setRescaleSlope(const OFString &value,
+OFCondition FGPixelValueTransformation::setRescaleSlope(const OFString &value,
                                                                 const OFBool checkValue)
 {
   OFCondition result = (checkValue) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
@@ -218,7 +226,7 @@ OFCondition FGIdentityPixelValueTransformation::setRescaleSlope(const OFString &
 }
 
 
-OFCondition FGIdentityPixelValueTransformation::setRescaleType(const OFString &value,
+OFCondition FGPixelValueTransformation::setRescaleType(const OFString &value,
                                                                const OFBool checkValue)
 {
   OFCondition result = (checkValue) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;

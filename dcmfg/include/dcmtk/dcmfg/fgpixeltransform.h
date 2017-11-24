@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -15,12 +15,12 @@
  *
  *  Author:  Jan Schlamelcher
  *
- *  Purpose: Class for managing the Identity Pixel Value Transformation Functional Group
+ *  Purpose: Class for managing the (Identity) Pixel Value Transformation FG
  *
  */
 
-#ifndef FGIDENTPIXELTRANSFORM_H
-#define FGIDENTPIXELTRANSFORM_H
+#ifndef FGPIXELTRANSFORM_H
+#define FGPIXELTRANSFORM_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcitem.h"
@@ -29,22 +29,33 @@
 #include "dcmtk/dcmdata/dcvrlo.h"
 
 
-/** Class representing the Identity Pixel Value Transformation Functional Group Macro.
+/** Class representing the Identity Pixel Value Transformation as well as the
+ *  Pixel Value Transformation Functional Group Macro.
+ *  The former just differs in a way that Rescale Slope, Intercept and Type
+ *  have fixed values (1, 0 and "US" respectively).
+ *  Rescale Intercept to 0. Right now the
  */
-class DCMTK_DCMFG_EXPORT FGIdentityPixelValueTransformation : public FGBase
+class DCMTK_DCMFG_EXPORT FGPixelValueTransformation : public FGBase
 {
 public:
 
-  /** Constructor, creates Identity Pixel Value Transformation Functional Group.
-   *  All values (Rescale Slope, Intercept and Type) are set to their only valid
-   *  enumerated value listed in the standard, i.e. slope = 1, intercept = 0 and
-   *  type = "US".
+  /** Constructor, creates (Identity) Pixel Value Transformation Functional Group.
+   *  All values (Rescale Slope, Intercept and Type) are initialized as if the
+   *  class is used as the Identity Pixel Value Transformation FG, i.e. Rescale
+   *  Slope is set to 1, Intercept to 0 and Type to "US".
    */
-  FGIdentityPixelValueTransformation();
+    FGPixelValueTransformation();
 
   /** Destructor, frees memory
    */
-  virtual ~FGIdentityPixelValueTransformation();
+  virtual ~FGPixelValueTransformation();
+
+  /** Tell this class that it should behave like the Identity Pixel Value
+   *  Transformation Functional Group. This does not make a difference when
+   *  reading data, but when writing, it is assured that Rescale Slope,
+   *  Intercept and Type are forced to be set to 1, 0 and "US" respectively.
+   */
+  virtual void setUseAsIdentityPixelValueTransformation();
 
   /** Returns a deep copy of this object
    *  @return  Deep copy of this object
@@ -66,14 +77,15 @@ public:
    */
   virtual OFCondition check() const;
 
-  /** Read functional group from given item, i.e.\ read Identity Pixel Value
+  /** Read functional group from given item, i.e.\ read (Identity) Pixel Value
    *  Transformation Sequence. Clears existing data before reading.
    *  @param  item The item to read from
    *  @return EC_Normal if reading was successful, error otherwise
    */
   virtual OFCondition read(DcmItem& item);
 
-  /** Write functional group to given item, i.e.\ write Identity Pixel Value Transformation Sequence
+  /** Write functional group to given item, i.e.\ write (Identity) Pixel Value
+   *  Transformation Sequence
    *  @param  item The item to write to
    *  @return EC_Normal if writing was successful, error otherwise
    */
@@ -128,10 +140,7 @@ public:
    */
   virtual int compare(const FGBase& rhs) const;
 
-protected:
-
-  /** Set RescaleIntercept. Hidden from user since value must always be equal
-   *  to 1 (automatically set on write).
+  /** Set RescaleIntercept
    *  @param  value Value to be set (single value only) or "" for no value
    *  @param  checkValue Check 'value' for conformance with VR (DS) and VM (1) if enabled
    *  @return EC_Normal if successful, an error code otherwise
@@ -139,8 +148,7 @@ protected:
   virtual OFCondition setRescaleIntercept(const OFString &value,
                                           const OFBool checkValue = OFTrue);
 
-  /** Set RescaleSlope. Hidden from user since value must always be equal
-   *  to 1 (automatically set on write).
+  /** Set RescaleSlope
    *  @param  value Value to be set (single value only) or "" for no value
    *  @param  checkValue Check 'value' for conformance with VR (DS) and VM (1) if enabled
    *  @return EC_Normal if successful, an error code otherwise
@@ -148,8 +156,7 @@ protected:
   virtual OFCondition setRescaleSlope(const OFString &value,
                                       const OFBool checkValue = OFTrue);
 
-  /** Set RescaleType. Hidden from user since value must always be equal
-   *  to "US" for "unspecified" (automatically set on write).
+  /** Set RescaleType
    *  @param  value Value to be set (single value only) or "" for no value
    *  @param  checkValue Check 'value' for conformance with VR (LO) and VM (1) if enabled
    *  @return EC_Normal if successful, an error code otherwise
@@ -169,6 +176,12 @@ private:
 
   /// RescaleType (LO, VM 1, Required type 1)
   DcmLongString m_RescaleType;
+
+  /// If OFTrue, tells this class that it should behave like the Identity Pixel
+  /// Value Transformation Functional Group. This does not make a difference when
+  /// reading data, but when writing, it is assured that Rescale Slope,
+  /// Intercept and Type are forced to be set to 1, 0 and "US" respectively.
+  OFBool m_UseAsIdentityPixelValueTransformationFG;
 };
 
-#endif // FGIDENTPIXELTRANSFORM_H
+#endif // FGPIXELTRANSFORM_H

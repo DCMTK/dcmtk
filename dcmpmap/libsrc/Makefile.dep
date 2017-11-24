@@ -335,7 +335,7 @@ dpmparametricmapbase.o: dpmparametricmapbase.cc \
  ../../dcmfg/include/dcmtk/dcmfg/fgfracon.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgframeanatomy.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgframevoilut.h \
- ../../dcmfg/include/dcmtk/dcmfg/fgidentpixeltransform.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgpixeltransform.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgparametricmapframetype.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgpixmsr.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgplanor.h \
@@ -507,7 +507,7 @@ dpmparametricmapiod.o: dpmparametricmapiod.cc \
  ../../dcmfg/include/dcmtk/dcmfg/fgfracon.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgframeanatomy.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgframevoilut.h \
- ../../dcmfg/include/dcmtk/dcmfg/fgidentpixeltransform.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgpixeltransform.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgparametricmapframetype.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgpixmsr.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgplanor.h \

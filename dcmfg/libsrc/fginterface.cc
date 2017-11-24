@@ -135,8 +135,10 @@ OFCondition FGInterface::addPerFrame(const Uint32 frameNo,
   {
     FGBase* copy = group.clone();
     if (!copy)
+    {
       return EC_MemoryExhausted;
-      result = insertPerFrame(frameNo, copy);
+    }
+    result = insertPerFrame(frameNo, copy);
     if (result.bad())
       delete copy;
   }

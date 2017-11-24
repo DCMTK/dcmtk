@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -26,7 +26,7 @@
 #include "dcmtk/dcmfg/fgfracon.h"
 #include "dcmtk/dcmfg/fgframeanatomy.h"
 #include "dcmtk/dcmfg/fgframevoilut.h"
-#include "dcmtk/dcmfg/fgidentpixeltransform.h"
+#include "dcmtk/dcmfg/fgpixeltransform.h"
 #include "dcmtk/dcmfg/fgimagedatatype.h"
 #include "dcmtk/dcmfg/fgparametricmapframetype.h"
 #include "dcmtk/dcmfg/fgpixmsr.h"
@@ -71,7 +71,7 @@ FGBase* FGFactory::create(const DcmFGTypes::E_FGType fgtype)
     case DcmFGTypes::EFG_FRAMECONTENT:
       return new FGFrameContent();
       break;
-    case DcmFGTypes::EFG_FRAMEVOILUTMETA:      // Frame VOI LUT and Frame VOI LUT with LUT
+    case DcmFGTypes::EFG_FRAMEVOILUTMETA: // Frame VOI LUT and Frame VOI LUT with LUT
       return new FGFrameVOILUT();
       break;
     case DcmFGTypes::EFG_PARAMETRICMAPFRAMETYPE:
@@ -90,8 +90,8 @@ FGBase* FGFactory::create(const DcmFGTypes::E_FGType fgtype)
     case DcmFGTypes::EFG_DERIVATIONIMAGE:
       return new FGDerivationImage();
       break;
-    case DcmFGTypes::EFG_IDENTITYPIXELVALUETRANSFORMATION:
-      return new FGIdentityPixelValueTransformation();
+    case DcmFGTypes::EFG_PIXELVALUETRANSMETA: // Pixel Value Transformation Macro or Identity Pixel Value Transformation Macro:
+      return new FGPixelValueTransformation();
       break;
     case DcmFGTypes::EFG_IMAGEDATATYPE:
       return new FGImageDataType();
@@ -106,7 +106,6 @@ FGBase* FGFactory::create(const DcmFGTypes::E_FGType fgtype)
       return new FGUSImageDescription();
       break;
     case DcmFGTypes::EFG_CARDIACSYNC:
-    case DcmFGTypes::EFG_PIXELVALUETRANSMETA:  // Pixel Value Transformation Macro or Identity Pixel Value Transformation Macro
     case DcmFGTypes::EFG_CONTRASTBOLUSUSAGE:
     case DcmFGTypes::EFG_PIXELINTENSITYRELLUT:
     case DcmFGTypes::EFG_FRAMEPIXELSHIFT:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2017, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -120,8 +120,6 @@ public:
     EFG_FRAMEPIXELSHIFT,
     /// "Frame VOI LUT" or "Frame VOI LUT with LUT" Macro (share same starting sequence)
     EFG_FRAMEVOILUTMETA,
-    /// Identity Pixel Value Transformation
-    EFG_IDENTITYPIXELVALUETRANSFORMATION,
     /// Image Data Type
     EFG_IMAGEDATATYPE,
     /// Irradiation Event Identification
@@ -136,7 +134,8 @@ public:
     EFG_PIXELINTENSITYRELLUT,
     /// Pixel Measures
     EFG_PIXELMEASURES,
-    /// "Pixel Value Transformation" or "Identity Pixel Value Transformation" Macro (share same sequence and attributes)
+    /// "Pixel Value Transformation" or "Identity Pixel Value Transformation"
+    /// (both share the same sequence and attributes)
     EFG_PIXELVALUETRANSMETA,
     /// Plane Orientation (Volume)
     EFG_PLANEORIENTVOLUME,
