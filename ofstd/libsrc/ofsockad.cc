@@ -76,7 +76,9 @@ void OFSockAddr::setPort(unsigned short port)
 DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFSockAddr& s)
 {
   o << "SOCKADDR_BEGIN\n  Family: ";
+#ifdef __MINGW32__
   unsigned long bufsize = 512;
+#endif
   char buf[512];
   buf[0] = '\0';
   const struct sockaddr_in *si = NULL;
