@@ -57,7 +57,7 @@
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 
-/* Empty default data dictionary path for the dcmdata library package. */
+/* Define the default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
 
 /* Define the default directory where configuration files reside. */

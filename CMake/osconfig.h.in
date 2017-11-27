@@ -56,6 +56,9 @@
 /* Define if we want a populated builtin dictionary */
 #cmakedefine ENABLE_BUILTIN_DICTIONARY "@ENABLE_BUILTIN_DICTIONARY@"
 
+/* Define if we want load external dictionaries */
+#cmakedefine ENABLE_EXTERNAL_DICTIONARY "@ENABLE_EXTERNAL_DICTIONARY@"
+
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR '@ENVIRONMENT_PATH_SEPARATOR@'
 

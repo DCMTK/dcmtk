@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -805,10 +805,15 @@ void GlobalDcmDataDictionary::createDataDict()
 #ifdef WITH_THREADS
   dataDictLock.wrlock();
 #endif
+
 #ifdef DONT_LOAD_EXTERNAL_DICTIONARIES
-  const OFBool loadExternal = OFFalse;
-#else
+    #error "The macro DONT_LOAD_EXTERNAL_DICTIONARIES has been defined in older versions of DCMTK. Undefine ENABLE_EXTERNAL_DICTIONARY instead."
+#endif
+
+#ifdef ENABLE_EXTERNAL_DICTIONARY
   const OFBool loadExternal = OFTrue;
+#else
+  const OFBool loadExternal = OFFalse;
 #endif
   /* Make sure no other thread managed to create the dictionary
    * before we got our write lock. */

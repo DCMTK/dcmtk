@@ -135,17 +135,8 @@ DONT_DISABLE_NAGLE_ALGORITHM
   disabled by default.  See DISABLE_NAGLE_ALGORITHM for details.
 
 DONT_LOAD_EXTERNAL_DICTIONARIES
-  Affected: dcmdata
-  Type of modification: Disables feature
-  Explanation: By default, DCMTK loads data dictionaries from files at
-    application start (before the main function is called).  These files
-    are either specified by the DCMDICTPATH environment variable or the
-    default files are used.  This flag disables the loading of external
-    dictionaries from file at application start, which might be useful
-    when only the builtin dictionary should be used.  However, if no
-    dictionary gets loaded, this is likely to cause unexpected behavior.
-    Even if this flag is defined, the reloadDictionaries() method can be
-    used to load the external dictionaries after application start.
+  This macro is not supported anymore since it has been superseded by macro
+  ENABLE_EXTERNAL_DICTIONARY.  See ENABLE_EXTERNAL_DICTIONARY for details.
 
 DOXYGEN
   Affected: everything
@@ -164,8 +155,32 @@ ENABLE_BUILTIN_DICTIONARY
   Type of modification: Activates feature
   Explanation: If enabled, DCMTK's global builtin dictionary, that is always
     loaded on startup, is populated with known DICOM tags.  Otherwise, the
-    builtin dictionary stays empty.  For more further information about
-    dictionary configuration read dcmdata/docs/datadict.txt.
+    builtin dictionary stays empty.  For further information about dictionary
+    configuration read dcmdata/docs/datadict.txt.
+
+ENABLE_EXTERNAL_DICTIONARY
+  Affected: dcmdata
+  Type of modification: Enables feature
+  Explanation: DCMTK is able to load DICOM data dictionaries from files at
+    application start (before the main function is called).  These files
+    are either specified by the DCMDICTPATH environment variable or the
+    default files are used.  This flag enables the loading of external
+    dictionaries from file at application start.  Disabling it might be useful
+    when only the builtin dictionary should be used.  However, if no
+    dictionary gets loaded, this is likely to cause unexpected behavior.
+    Even if this flag is disabled, the reloadDictionaries() method can be
+    used to load the external dictionaries after application start.
+    However, the environment variable DCMDICTPATH has to point to one or more
+    related dictionary files in that case, since if ENABLE_EXTERNAL_DICTIONARY
+    is disabled, no default dictionary path is set within the DCMTK code.
+    On Unix-like systems this flag is enabled by default while on Windows it is
+    disabled.  For more information about dictionary configuration read
+    dcmdata/docs/datadict.txt.
+    Note that in former versions of DCMTK a macro called
+    DONT_LOAD_EXTERNAL_DICTIONARIES has been specified which now has been
+    replaced with ENABLE_EXTERNAL_DICTIONARY in order to be consistent with
+    the existing Autoconf and CMake configuration switches. See also entry for
+    DONT_LOAD_EXTERNAL_DICTIONARIES.
 
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm
