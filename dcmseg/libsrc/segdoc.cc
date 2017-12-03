@@ -1009,7 +1009,7 @@ OFCondition DcmSegmentation::writeSegmentationImageModule(DcmItem& dataset)
   if (result.good())
   {
     if (m_SegmentationType == DcmSegTypes::ST_BINARY) result = writeBinaryFrames(dataset);
-    else if (m_SegmentationType == DcmSegTypes::ST_BINARY) result = writeFractionalFrames(dataset);
+    else if (m_SegmentationType == DcmSegTypes::ST_FRACTIONAL) result = writeFractionalFrames(dataset);
     else result = SG_EC_UnknownSegmentationType;
   }
 
