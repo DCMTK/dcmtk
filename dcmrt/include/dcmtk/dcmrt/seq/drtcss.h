@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTChannelSourceSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 

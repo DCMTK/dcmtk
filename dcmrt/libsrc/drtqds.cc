@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTQuantityDefinitionSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -28,6 +28,7 @@ DRTQuantityDefinitionSequence::Item::Item(const OFBool emptyDefaultItem)
     FloatingPointValue(DCM_FloatingPointValue),
     MeasurementUnitsCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     NumericValue(DCM_NumericValue),
+    ObservationDateTime(DCM_ObservationDateTime),
     PersonName(DCM_PersonName),
     RationalDenominatorValue(DCM_RationalDenominatorValue),
     RationalNumeratorValue(DCM_RationalNumeratorValue),
@@ -49,6 +50,7 @@ DRTQuantityDefinitionSequence::Item::Item(const Item &copy)
     FloatingPointValue(copy.FloatingPointValue),
     MeasurementUnitsCodeSequence(copy.MeasurementUnitsCodeSequence),
     NumericValue(copy.NumericValue),
+    ObservationDateTime(copy.ObservationDateTime),
     PersonName(copy.PersonName),
     RationalDenominatorValue(copy.RationalDenominatorValue),
     RationalNumeratorValue(copy.RationalNumeratorValue),
@@ -78,6 +80,7 @@ DRTQuantityDefinitionSequence::Item &DRTQuantityDefinitionSequence::Item::operat
         FloatingPointValue = copy.FloatingPointValue;
         MeasurementUnitsCodeSequence = copy.MeasurementUnitsCodeSequence;
         NumericValue = copy.NumericValue;
+        ObservationDateTime = copy.ObservationDateTime;
         PersonName = copy.PersonName;
         RationalDenominatorValue = copy.RationalDenominatorValue;
         RationalNumeratorValue = copy.RationalNumeratorValue;
@@ -97,6 +100,7 @@ void DRTQuantityDefinitionSequence::Item::clear()
     {
         /* clear all DICOM attributes */
         ValueType.clear();
+        ObservationDateTime.clear();
         ConceptNameCodeSequence.clear();
         DateTime.clear();
         Date.clear();
@@ -118,6 +122,7 @@ void DRTQuantityDefinitionSequence::Item::clear()
 OFBool DRTQuantityDefinitionSequence::Item::isEmpty()
 {
     return ValueType.isEmpty() &&
+           ObservationDateTime.isEmpty() &&
            ConceptNameCodeSequence.isEmpty() &&
            DateTime.isEmpty() &&
            Date.isEmpty() &&
@@ -149,6 +154,7 @@ OFCondition DRTQuantityDefinitionSequence::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, ValueType, "1", "1", "QuantityDefinitionSequence");
+        getAndCheckElementFromDataset(item, ObservationDateTime, "1", "3", "QuantityDefinitionSequence");
         ConceptNameCodeSequence.read(item, "1-n", "1", "QuantityDefinitionSequence");
         getAndCheckElementFromDataset(item, DateTime, "1", "1C", "QuantityDefinitionSequence");
         getAndCheckElementFromDataset(item, Date, "1", "1C", "QuantityDefinitionSequence");
@@ -176,6 +182,7 @@ OFCondition DRTQuantityDefinitionSequence::Item::write(DcmItem &item)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmCodeString(ValueType), "1", "1", "QuantityDefinitionSequence");
+        addElementToDataset(result, item, new DcmDateTime(ObservationDateTime), "1", "3", "QuantityDefinitionSequence");
         if (result.good()) result = ConceptNameCodeSequence.write(item, "1-n", "1", "QuantityDefinitionSequence");
         addElementToDataset(result, item, new DcmDateTime(DateTime), "1", "1C", "QuantityDefinitionSequence");
         addElementToDataset(result, item, new DcmDate(Date), "1", "1C", "QuantityDefinitionSequence");
@@ -246,6 +253,15 @@ OFCondition DRTQuantityDefinitionSequence::Item::getNumericValue(OFVector<Float6
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmDecimalString &, NumericValue).getFloat64Vector(value);
+}
+
+
+OFCondition DRTQuantityDefinitionSequence::Item::getObservationDateTime(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ObservationDateTime, value, pos);
 }
 
 
@@ -355,6 +371,19 @@ OFCondition DRTQuantityDefinitionSequence::Item::setNumericValue(const OFString 
         result = (check) ? DcmDecimalString::checkStringValue(value, "1-n") : EC_Normal;
         if (result.good())
             result = NumericValue.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTQuantityDefinitionSequence::Item::setObservationDateTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ObservationDateTime.putOFStringArray(value);
     }
     return result;
 }

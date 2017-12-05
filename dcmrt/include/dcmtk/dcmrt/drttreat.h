@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTTreatmentSummaryRecordIOD
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -497,12 +497,26 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
      */
     virtual OFCondition getLastMenstrualDate(OFString &value, const signed long pos = 0) const;
 
+    /** get LongitudinalTemporalEventType (0012,0053)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getLongitudinalTemporalEventType(OFString &value, const signed long pos = 0) const;
+
     /** get LongitudinalTemporalInformationModified (0028,0303)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getLongitudinalTemporalInformationModified(OFString &value, const signed long pos = 0) const;
+
+    /** get LongitudinalTemporalOffsetFromEvent (0012,0052)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getLongitudinalTemporalOffsetFromEvent(Float64 &value, const unsigned long pos = 0) const;
 
     /** get Manufacturer (0008,0070)
      *  @param  value  reference to variable in which the value should be stored
@@ -594,13 +608,6 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOriginalSpecializedSOPClassUID(OFString &value, const signed long pos = 0) const;
-
-    /** get OtherPatientIDs (0010,1000)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOtherPatientIDs(OFString &value, const signed long pos = 0) const;
 
     /** get OtherPatientNames (0010,1001)
      *  @param  value  reference to variable in which the value should be stored
@@ -2055,12 +2062,26 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
      */
     virtual OFCondition setLastMenstrualDate(const OFString &value, const OFBool check = OFTrue);
 
+    /** set LongitudinalTemporalEventType (0012,0053)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setLongitudinalTemporalEventType(const OFString &value, const OFBool check = OFTrue);
+
     /** set LongitudinalTemporalInformationModified (0028,0303)
      *  @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setLongitudinalTemporalInformationModified(const OFString &value, const OFBool check = OFTrue);
+
+    /** set LongitudinalTemporalOffsetFromEvent (0012,0052)
+     *  @param  value  value to be set (should be valid for this VR)
+     *  @param  pos    index of the value to be set (0..vm-1), vm=1
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setLongitudinalTemporalOffsetFromEvent(const Float64 value, const unsigned long pos = 0);
 
     /** set Manufacturer (0008,0070)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -2138,13 +2159,6 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setOriginalSpecializedSOPClassUID(const OFString &value, const OFBool check = OFTrue);
-
-    /** set OtherPatientIDs (0010,1000)
-     *  @param  value  value to be set (possibly multi-valued) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (LO) and VM (1-n) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOtherPatientIDs(const OFString &value, const OFBool check = OFTrue);
 
     /** set OtherPatientNames (0010,1001)
      *  @param  value  value to be set (possibly multi-valued) or "" for no value
@@ -2649,8 +2663,6 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
     DRTReferencedPatientSequence ReferencedPatientSequence;
     /// PatientBirthTime (0010,0032) vr=TM, vm=1, type=3
     DcmTime PatientBirthTime;
-    /// OtherPatientIDs (0010,1000) vr=LO, vm=1-n, type=3
-    DcmLongString OtherPatientIDs;
     /// OtherPatientIDsSequence (0010,1002) vr=SQ, vm=1, type=3
     DRTOtherPatientIDsSequence OtherPatientIDsSequence;
     /// OtherPatientNames (0010,1001) vr=PN, vm=1-n, type=3
@@ -2815,6 +2827,10 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSummaryRecordIOD
     DcmLongString ClinicalTrialTimePointID;
     /// ClinicalTrialTimePointDescription (0012,0051) vr=ST, vm=1, type=3
     DcmShortText ClinicalTrialTimePointDescription;
+    /// LongitudinalTemporalOffsetFromEvent (0012,0052) vr=FD, vm=1, type=3
+    DcmFloatingPointDouble LongitudinalTemporalOffsetFromEvent;
+    /// LongitudinalTemporalEventType (0012,0053) vr=CS, vm=1, type=1C
+    DcmCodeString LongitudinalTemporalEventType;
     /// ConsentForClinicalTrialUseSequence (0012,0083) vr=SQ, vm=1, type=3
     DRTConsentForClinicalTrialUseSequence ConsentForClinicalTrialUseSequence;
 

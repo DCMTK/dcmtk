@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -28,6 +28,7 @@
 #include "dcmtk/dcmrt/seq/drtpvis.h"   // for PlannedVerificationImageSequence
 #include "dcmtk/dcmrt/seq/drtpfms.h"   // for PrimaryFluenceModeSequence
 #include "dcmtk/dcmrt/seq/drtrbos1.h"  // for ReferencedBolusSequence
+#include "dcmtk/dcmrt/seq/drtrdrs1.h"  // for ReferencedDoseReferenceSequence
 #include "dcmtk/dcmrt/seq/drtrds.h"    // for ReferencedDoseSequence
 #include "dcmtk/dcmrt/seq/drtrris1.h"  // for ReferencedReferenceImageSequence
 #include "dcmtk/dcmrt/seq/drtws.h"     // for WedgeSequence
@@ -479,6 +480,18 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
         const DRTReferencedBolusSequenceInRTBeamsModule &getReferencedBolusSequence() const
             { return ReferencedBolusSequence; }
 
+        /** get ReferencedDoseReferenceSequence (300c,0050)
+         *  @return reference to sequence element
+         */
+        DRTReferencedDoseReferenceSequenceInRTBeamsModule &getReferencedDoseReferenceSequence()
+            { return ReferencedDoseReferenceSequence; }
+
+        /** get ReferencedDoseReferenceSequence (300c,0050)
+         *  @return const reference to sequence element
+         */
+        const DRTReferencedDoseReferenceSequenceInRTBeamsModule &getReferencedDoseReferenceSequence() const
+            { return ReferencedDoseReferenceSequence; }
+
         /** get ReferencedDoseSequence (300c,0080)
          *  @return reference to sequence element
          */
@@ -760,6 +773,8 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
         DcmCodeString RadiationType;
         /// ReferencedBolusSequence (300c,00b0) vr=SQ, vm=1, type=1C
         DRTReferencedBolusSequenceInRTBeamsModule ReferencedBolusSequence;
+        /// ReferencedDoseReferenceSequence (300c,0050) vr=SQ, vm=1, type=3
+        DRTReferencedDoseReferenceSequenceInRTBeamsModule ReferencedDoseReferenceSequence;
         /// ReferencedDoseSequence (300c,0080) vr=SQ, vm=1, type=3
         DRTReferencedDoseSequence ReferencedDoseSequence;
         /// ReferencedPatientSetupNumber (300c,006a) vr=IS, vm=1, type=3

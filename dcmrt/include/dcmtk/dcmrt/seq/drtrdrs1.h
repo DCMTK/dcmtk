@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTReferencedDoseReferenceSequenceInRTBeamsModule
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtbvcps.h"  // for BeamDoseVerificationControlPointSequence
 
 
 /** Interface class for ReferencedDoseReferenceSequence (300c,0050) in RTBeamsModule
@@ -91,19 +92,12 @@ class DCMTK_DCMRT_EXPORT DRTReferencedDoseReferenceSequenceInRTBeamsModule
 
       // --- get DICOM attribute values ---
 
-        /** get CumulativeDoseReferenceCoefficient (300a,010c)
+        /** get DepthValueAveragingFlag (300a,0093)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getCumulativeDoseReferenceCoefficient(OFString &value, const signed long pos = 0) const;
-
-        /** get CumulativeDoseReferenceCoefficient (300a,010c)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getCumulativeDoseReferenceCoefficient(Float64 &value, const unsigned long pos = 0) const;
+        OFCondition getDepthValueAveragingFlag(OFString &value, const signed long pos = 0) const;
 
         /** get ReferencedDoseReferenceNumber (300c,0051)
          *  @param  value  reference to variable in which the value should be stored
@@ -119,14 +113,28 @@ class DCMTK_DCMRT_EXPORT DRTReferencedDoseReferenceSequenceInRTBeamsModule
          */
         OFCondition getReferencedDoseReferenceNumber(Sint32 &value, const unsigned long pos = 0) const;
 
+      // --- get DICOM sequence attributes ---
+
+        /** get BeamDoseVerificationControlPointSequence (300a,008c)
+         *  @return reference to sequence element
+         */
+        DRTBeamDoseVerificationControlPointSequence &getBeamDoseVerificationControlPointSequence()
+            { return BeamDoseVerificationControlPointSequence; }
+
+        /** get BeamDoseVerificationControlPointSequence (300a,008c)
+         *  @return const reference to sequence element
+         */
+        const DRTBeamDoseVerificationControlPointSequence &getBeamDoseVerificationControlPointSequence() const
+            { return BeamDoseVerificationControlPointSequence; }
+
       // --- set DICOM attribute values ---
 
-        /** set CumulativeDoseReferenceCoefficient (300a,010c)
+        /** set DepthValueAveragingFlag (300a,0093)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setCumulativeDoseReferenceCoefficient(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setDepthValueAveragingFlag(const OFString &value, const OFBool check = OFTrue);
 
         /** set ReferencedDoseReferenceNumber (300c,0051)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -140,8 +148,10 @@ class DCMTK_DCMRT_EXPORT DRTReferencedDoseReferenceSequenceInRTBeamsModule
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// CumulativeDoseReferenceCoefficient (300a,010c) vr=DS, vm=1, type=2
-        DcmDecimalString CumulativeDoseReferenceCoefficient;
+        /// BeamDoseVerificationControlPointSequence (300a,008c) vr=SQ, vm=1, type=1
+        DRTBeamDoseVerificationControlPointSequence BeamDoseVerificationControlPointSequence;
+        /// DepthValueAveragingFlag (300a,0093) vr=CS, vm=1, type=1C
+        DcmCodeString DepthValueAveragingFlag;
         /// ReferencedDoseReferenceNumber (300c,0051) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedDoseReferenceNumber;
 

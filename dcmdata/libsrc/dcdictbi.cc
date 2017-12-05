@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-09-26 12:22:21
+**   Date: 2017-12-05 12:28:58
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -26037,15 +26037,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0088, 0x300a, 0x0088,
-      EVR_FL, "RETIRED_BeamDosePointDepth", 1, 1, "DICOM/retired",
+      EVR_FL, "BeamDosePointDepth", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0089, 0x300a, 0x0089,
-      EVR_FL, "RETIRED_BeamDosePointEquivalentDepth", 1, 1, "DICOM/retired",
+      EVR_FL, "BeamDosePointEquivalentDepth", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x008a, 0x300a, 0x008a,
-      EVR_FL, "RETIRED_BeamDosePointSSD", 1, 1, "DICOM/retired",
+      EVR_FL, "BeamDosePointSSD", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x008b, 0x300a, 0x008b,

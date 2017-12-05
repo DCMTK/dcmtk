@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTCodingSchemeIdentificationSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtcsrs.h"   // for CodingSchemeResourcesSequence
 
 
 /** Interface class for CodingSchemeIdentificationSequence (0008,0110)
@@ -140,6 +141,20 @@ class DCMTK_DCMRT_EXPORT DRTCodingSchemeIdentificationSequence
          */
         OFCondition getCodingSchemeVersion(OFString &value, const signed long pos = 0) const;
 
+      // --- get DICOM sequence attributes ---
+
+        /** get CodingSchemeResourcesSequence (0008,0109)
+         *  @return reference to sequence element
+         */
+        DRTCodingSchemeResourcesSequence &getCodingSchemeResourcesSequence()
+            { return CodingSchemeResourcesSequence; }
+
+        /** get CodingSchemeResourcesSequence (0008,0109)
+         *  @return const reference to sequence element
+         */
+        const DRTCodingSchemeResourcesSequence &getCodingSchemeResourcesSequence() const
+            { return CodingSchemeResourcesSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set CodingSchemeDesignator (0008,0102)
@@ -204,6 +219,8 @@ class DCMTK_DCMRT_EXPORT DRTCodingSchemeIdentificationSequence
         DcmShortText CodingSchemeName;
         /// CodingSchemeRegistry (0008,0112) vr=LO, vm=1, type=1C
         DcmLongString CodingSchemeRegistry;
+        /// CodingSchemeResourcesSequence (0008,0109) vr=SQ, vm=1, type=3
+        DRTCodingSchemeResourcesSequence CodingSchemeResourcesSequence;
         /// CodingSchemeResponsibleOrganization (0008,0116) vr=ST, vm=1, type=3
         DcmShortText CodingSchemeResponsibleOrganization;
         /// CodingSchemeUID (0008,010c) vr=UI, vm=1, type=1C

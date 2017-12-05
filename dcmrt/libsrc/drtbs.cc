@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -49,6 +49,7 @@ DRTBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     PrimaryFluenceModeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     RadiationType(DCM_RadiationType),
     ReferencedBolusSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    ReferencedDoseReferenceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReferencedDoseSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReferencedPatientSetupNumber(DCM_ReferencedPatientSetupNumber),
     ReferencedReferenceImageSequence(emptyDefaultItem /*emptyDefaultSequence*/),
@@ -93,6 +94,7 @@ DRTBeamSequence::Item::Item(const Item &copy)
     PrimaryFluenceModeSequence(copy.PrimaryFluenceModeSequence),
     RadiationType(copy.RadiationType),
     ReferencedBolusSequence(copy.ReferencedBolusSequence),
+    ReferencedDoseReferenceSequence(copy.ReferencedDoseReferenceSequence),
     ReferencedDoseSequence(copy.ReferencedDoseSequence),
     ReferencedPatientSetupNumber(copy.ReferencedPatientSetupNumber),
     ReferencedReferenceImageSequence(copy.ReferencedReferenceImageSequence),
@@ -145,6 +147,7 @@ DRTBeamSequence::Item &DRTBeamSequence::Item::operator=(const Item &copy)
         PrimaryFluenceModeSequence = copy.PrimaryFluenceModeSequence;
         RadiationType = copy.RadiationType;
         ReferencedBolusSequence = copy.ReferencedBolusSequence;
+        ReferencedDoseReferenceSequence = copy.ReferencedDoseReferenceSequence;
         ReferencedDoseSequence = copy.ReferencedDoseSequence;
         ReferencedPatientSetupNumber = copy.ReferencedPatientSetupNumber;
         ReferencedReferenceImageSequence = copy.ReferencedReferenceImageSequence;
@@ -200,6 +203,7 @@ void DRTBeamSequence::Item::clear()
         BlockSequence.clear();
         ApplicatorSequence.clear();
         GeneralAccessorySequence.clear();
+        ReferencedDoseReferenceSequence.clear();
         FinalCumulativeMetersetWeight.clear();
         NumberOfControlPoints.clear();
         ControlPointSequence.clear();
@@ -244,6 +248,7 @@ OFBool DRTBeamSequence::Item::isEmpty()
            BlockSequence.isEmpty() &&
            ApplicatorSequence.isEmpty() &&
            GeneralAccessorySequence.isEmpty() &&
+           ReferencedDoseReferenceSequence.isEmpty() &&
            FinalCumulativeMetersetWeight.isEmpty() &&
            NumberOfControlPoints.isEmpty() &&
            ControlPointSequence.isEmpty();
@@ -298,6 +303,7 @@ OFCondition DRTBeamSequence::Item::read(DcmItem &item)
         BlockSequence.read(item, "1-n", "1C", "BeamSequence");
         ApplicatorSequence.read(item, "1-n", "3", "BeamSequence");
         GeneralAccessorySequence.read(item, "1-n", "3", "BeamSequence");
+        ReferencedDoseReferenceSequence.read(item, "1-n", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, FinalCumulativeMetersetWeight, "1", "1C", "BeamSequence");
         getAndCheckElementFromDataset(item, NumberOfControlPoints, "1", "1", "BeamSequence");
         ControlPointSequence.read(item, "1-n", "1", "BeamSequence");
@@ -348,6 +354,7 @@ OFCondition DRTBeamSequence::Item::write(DcmItem &item)
         if (result.good()) result = BlockSequence.write(item, "1-n", "1C", "BeamSequence");
         if (result.good()) result = ApplicatorSequence.write(item, "1-n", "3", "BeamSequence");
         if (result.good()) result = GeneralAccessorySequence.write(item, "1-n", "3", "BeamSequence");
+        if (result.good()) result = ReferencedDoseReferenceSequence.write(item, "1-n", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(FinalCumulativeMetersetWeight), "1", "1C", "BeamSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfControlPoints), "1", "1", "BeamSequence");
         if (result.good()) result = ControlPointSequence.write(item, "1-n", "1", "BeamSequence");

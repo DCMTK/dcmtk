@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTBeamDoseVerificationControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -91,33 +91,26 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
 
       // --- get DICOM attribute values ---
 
-        /** get AverageBeamDosePointDepth (300a,008d)
+        /** get BeamDosePointDepth (300a,0088)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1)
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getAverageBeamDosePointDepth(Float32 &value, const unsigned long pos = 0) const;
+        OFCondition getBeamDosePointDepth(Float32 &value, const unsigned long pos = 0) const;
 
-        /** get AverageBeamDosePointEquivalentDepth (300a,008e)
+        /** get BeamDosePointEquivalentDepth (300a,0089)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1)
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getAverageBeamDosePointEquivalentDepth(Float32 &value, const unsigned long pos = 0) const;
+        OFCondition getBeamDosePointEquivalentDepth(Float32 &value, const unsigned long pos = 0) const;
 
-        /** get AverageBeamDosePointSSD (300a,008f)
+        /** get BeamDosePointSSD (300a,008a)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1)
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getAverageBeamDosePointSSD(Float32 &value, const unsigned long pos = 0) const;
-
-        /** get AverageBeamDosePointSourceToExternalContourDistance (300a,0131)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getAverageBeamDosePointSourceToExternalContourDistance(Float32 &value, const unsigned long pos = 0) const;
+        OFCondition getBeamDosePointSSD(Float32 &value, const unsigned long pos = 0) const;
 
         /** get CumulativeMetersetWeight (300a,0134)
          *  @param  value  reference to variable in which the value should be stored
@@ -149,33 +142,26 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
 
       // --- set DICOM attribute values ---
 
-        /** set AverageBeamDosePointDepth (300a,008d)
+        /** set BeamDosePointDepth (300a,0088)
          *  @param  value  value to be set (should be valid for this VR)
          *  @param  pos    index of the value to be set (0..vm-1), vm=1
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setAverageBeamDosePointDepth(const Float32 value, const unsigned long pos = 0);
+        OFCondition setBeamDosePointDepth(const Float32 value, const unsigned long pos = 0);
 
-        /** set AverageBeamDosePointEquivalentDepth (300a,008e)
+        /** set BeamDosePointEquivalentDepth (300a,0089)
          *  @param  value  value to be set (should be valid for this VR)
          *  @param  pos    index of the value to be set (0..vm-1), vm=1
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setAverageBeamDosePointEquivalentDepth(const Float32 value, const unsigned long pos = 0);
+        OFCondition setBeamDosePointEquivalentDepth(const Float32 value, const unsigned long pos = 0);
 
-        /** set AverageBeamDosePointSSD (300a,008f)
+        /** set BeamDosePointSSD (300a,008a)
          *  @param  value  value to be set (should be valid for this VR)
          *  @param  pos    index of the value to be set (0..vm-1), vm=1
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setAverageBeamDosePointSSD(const Float32 value, const unsigned long pos = 0);
-
-        /** set AverageBeamDosePointSourceToExternalContourDistance (300a,0131)
-         *  @param  value  value to be set (should be valid for this VR)
-         *  @param  pos    index of the value to be set (0..vm-1), vm=1
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setAverageBeamDosePointSourceToExternalContourDistance(const Float32 value, const unsigned long pos = 0);
+        OFCondition setBeamDosePointSSD(const Float32 value, const unsigned long pos = 0);
 
         /** set CumulativeMetersetWeight (300a,0134)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -196,14 +182,12 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// AverageBeamDosePointDepth (300a,008d) vr=FL, vm=1, type=2C
-        DcmFloatingPointSingle AverageBeamDosePointDepth;
-        /// AverageBeamDosePointEquivalentDepth (300a,008e) vr=FL, vm=1, type=2C
-        DcmFloatingPointSingle AverageBeamDosePointEquivalentDepth;
-        /// AverageBeamDosePointSSD (300a,008f) vr=FL, vm=1, type=2C
-        DcmFloatingPointSingle AverageBeamDosePointSSD;
-        /// AverageBeamDosePointSourceToExternalContourDistance (300a,0131) vr=FL, vm=1, type=3
-        DcmFloatingPointSingle AverageBeamDosePointSourceToExternalContourDistance;
+        /// BeamDosePointDepth (300a,0088) vr=FL, vm=1, type=1C
+        DcmFloatingPointSingle BeamDosePointDepth;
+        /// BeamDosePointEquivalentDepth (300a,0089) vr=FL, vm=1, type=1C
+        DcmFloatingPointSingle BeamDosePointEquivalentDepth;
+        /// BeamDosePointSSD (300a,008a) vr=FL, vm=1, type=1C
+        DcmFloatingPointSingle BeamDosePointSSD;
         /// CumulativeMetersetWeight (300a,0134) vr=DS, vm=1, type=1
         DcmDecimalString CumulativeMetersetWeight;
         /// ReferencedControlPointIndex (300c,00f0) vr=IS, vm=1, type=1C

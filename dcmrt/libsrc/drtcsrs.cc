@@ -4,7 +4,7 @@
  *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class DRTModifiedAttributesSequence
+ *  Source file for class DRTCodingSchemeResourcesSequence
  *
  *  Generated automatically from DICOM PS 3.3-2017e
  *  File created on 2017-12-05 09:30:54
@@ -14,82 +14,135 @@
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
-#include "dcmtk/dcmrt/seq/drtmas.h"
+#include "dcmtk/dcmrt/seq/drtcsrs.h"
 
 
 // --- item class ---
 
-DRTModifiedAttributesSequence::Item::Item(const OFBool emptyDefaultItem)
-  : EmptyDefaultItem(emptyDefaultItem)
+DRTCodingSchemeResourcesSequence::Item::Item(const OFBool emptyDefaultItem)
+  : EmptyDefaultItem(emptyDefaultItem),
+    CodingSchemeURL(DCM_CodingSchemeURL),
+    CodingSchemeURLType(DCM_CodingSchemeURLType)
 {
 }
 
 
-DRTModifiedAttributesSequence::Item::Item(const Item &copy)
-  : EmptyDefaultItem(copy.EmptyDefaultItem)
+DRTCodingSchemeResourcesSequence::Item::Item(const Item &copy)
+  : EmptyDefaultItem(copy.EmptyDefaultItem),
+    CodingSchemeURL(copy.CodingSchemeURL),
+    CodingSchemeURLType(copy.CodingSchemeURLType)
 {
 }
 
 
-DRTModifiedAttributesSequence::Item::~Item()
+DRTCodingSchemeResourcesSequence::Item::~Item()
 {
 }
 
 
-DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::Item::operator=(const Item &copy)
+DRTCodingSchemeResourcesSequence::Item &DRTCodingSchemeResourcesSequence::Item::operator=(const Item &copy)
 {
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        CodingSchemeURL = copy.CodingSchemeURL;
+        CodingSchemeURLType = copy.CodingSchemeURLType;
     }
     return *this;
 }
 
 
-void DRTModifiedAttributesSequence::Item::clear()
+void DRTCodingSchemeResourcesSequence::Item::clear()
 {
     if (!EmptyDefaultItem)
     {
         /* clear all DICOM attributes */
+        CodingSchemeURLType.clear();
+        CodingSchemeURL.clear();
     }
 }
 
 
-OFBool DRTModifiedAttributesSequence::Item::isEmpty()
+OFBool DRTCodingSchemeResourcesSequence::Item::isEmpty()
 {
-    return OFTrue;
+    return CodingSchemeURLType.isEmpty() &&
+           CodingSchemeURL.isEmpty();
 }
 
 
-OFBool DRTModifiedAttributesSequence::Item::isValid() const
+OFBool DRTCodingSchemeResourcesSequence::Item::isValid() const
 {
     return !EmptyDefaultItem;
 }
 
 
-OFCondition DRTModifiedAttributesSequence::Item::read(DcmItem &item)
+OFCondition DRTCodingSchemeResourcesSequence::Item::read(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         /* re-initialize object */
         clear();
-        /* avoid compiler warning on unused parameter */
-        (void)item;
-        result = EC_NotYetImplemented;
+        getAndCheckElementFromDataset(item, CodingSchemeURLType, "1", "1", "CodingSchemeResourcesSequence");
+        getAndCheckElementFromDataset(item, CodingSchemeURL, "1", "1", "CodingSchemeResourcesSequence");
+        result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DRTModifiedAttributesSequence::Item::write(DcmItem &item)
+OFCondition DRTCodingSchemeResourcesSequence::Item::write(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
-        /* avoid compiler warning on unused parameter */
-        (void)item;
-        result = EC_NotYetImplemented;
+        result = EC_Normal;
+        addElementToDataset(result, item, new DcmCodeString(CodingSchemeURLType), "1", "1", "CodingSchemeResourcesSequence");
+        addElementToDataset(result, item, new DcmUniversalResourceIdentifierOrLocator(CodingSchemeURL), "1", "1", "CodingSchemeResourcesSequence");
+    }
+    return result;
+}
+
+
+OFCondition DRTCodingSchemeResourcesSequence::Item::getCodingSchemeURL(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(CodingSchemeURL, value, pos);
+}
+
+
+OFCondition DRTCodingSchemeResourcesSequence::Item::getCodingSchemeURLType(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(CodingSchemeURLType, value, pos);
+}
+
+
+OFCondition DRTCodingSchemeResourcesSequence::Item::setCodingSchemeURL(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniversalResourceIdentifierOrLocator::checkStringValue(value) : EC_Normal;
+        if (result.good())
+            result = CodingSchemeURL.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTCodingSchemeResourcesSequence::Item::setCodingSchemeURLType(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = CodingSchemeURLType.putOFStringArray(value);
     }
     return result;
 }
@@ -97,7 +150,7 @@ OFCondition DRTModifiedAttributesSequence::Item::write(DcmItem &item)
 
 // --- sequence class ---
 
-DRTModifiedAttributesSequence::DRTModifiedAttributesSequence(const OFBool emptyDefaultSequence)
+DRTCodingSchemeResourcesSequence::DRTCodingSchemeResourcesSequence(const OFBool emptyDefaultSequence)
   : EmptyDefaultSequence(emptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -107,7 +160,7 @@ DRTModifiedAttributesSequence::DRTModifiedAttributesSequence(const OFBool emptyD
 }
 
 
-DRTModifiedAttributesSequence::DRTModifiedAttributesSequence(const DRTModifiedAttributesSequence &copy)
+DRTCodingSchemeResourcesSequence::DRTCodingSchemeResourcesSequence(const DRTCodingSchemeResourcesSequence &copy)
   : EmptyDefaultSequence(copy.EmptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -133,7 +186,7 @@ DRTModifiedAttributesSequence::DRTModifiedAttributesSequence(const DRTModifiedAt
 }
 
 
-DRTModifiedAttributesSequence &DRTModifiedAttributesSequence::operator=(const DRTModifiedAttributesSequence &copy)
+DRTCodingSchemeResourcesSequence &DRTCodingSchemeResourcesSequence::operator=(const DRTCodingSchemeResourcesSequence &copy)
 {
     if (this != &copy)
     {
@@ -161,13 +214,13 @@ DRTModifiedAttributesSequence &DRTModifiedAttributesSequence::operator=(const DR
 }
 
 
-DRTModifiedAttributesSequence::~DRTModifiedAttributesSequence()
+DRTCodingSchemeResourcesSequence::~DRTCodingSchemeResourcesSequence()
 {
     clear();
 }
 
 
-void DRTModifiedAttributesSequence::clear()
+void DRTCodingSchemeResourcesSequence::clear()
 {
     if (!EmptyDefaultSequence)
     {
@@ -186,25 +239,25 @@ void DRTModifiedAttributesSequence::clear()
 }
 
 
-OFBool DRTModifiedAttributesSequence::isEmpty()
+OFBool DRTCodingSchemeResourcesSequence::isEmpty()
 {
     return SequenceOfItems.empty();
 }
 
 
-OFBool DRTModifiedAttributesSequence::isValid() const
+OFBool DRTCodingSchemeResourcesSequence::isValid() const
 {
     return !EmptyDefaultSequence;
 }
 
 
-size_t DRTModifiedAttributesSequence::getNumberOfItems() const
+size_t DRTCodingSchemeResourcesSequence::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
 
 
-OFCondition DRTModifiedAttributesSequence::gotoFirstItem()
+OFCondition DRTCodingSchemeResourcesSequence::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -216,7 +269,7 @@ OFCondition DRTModifiedAttributesSequence::gotoFirstItem()
 }
 
 
-OFCondition DRTModifiedAttributesSequence::gotoNextItem()
+OFCondition DRTCodingSchemeResourcesSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -228,7 +281,7 @@ OFCondition DRTModifiedAttributesSequence::gotoNextItem()
 }
 
 
-OFCondition DRTModifiedAttributesSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
+OFCondition DRTCodingSchemeResourcesSequence::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -248,7 +301,7 @@ OFCondition DRTModifiedAttributesSequence::gotoItem(const size_t num, OFListIter
 }
 
 
-OFCondition DRTModifiedAttributesSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTCodingSchemeResourcesSequence::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -268,13 +321,13 @@ OFCondition DRTModifiedAttributesSequence::gotoItem(const size_t num, OFListCons
 }
 
 
-OFCondition DRTModifiedAttributesSequence::gotoItem(const size_t num)
+OFCondition DRTCodingSchemeResourcesSequence::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
 
 
-OFCondition DRTModifiedAttributesSequence::getCurrentItem(Item *&item) const
+OFCondition DRTCodingSchemeResourcesSequence::getCurrentItem(Item *&item) const
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -286,7 +339,7 @@ OFCondition DRTModifiedAttributesSequence::getCurrentItem(Item *&item) const
 }
 
 
-DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::getCurrentItem()
+DRTCodingSchemeResourcesSequence::Item &DRTCodingSchemeResourcesSequence::getCurrentItem()
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -295,7 +348,7 @@ DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::getCurrentIt
 }
 
 
-const DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::getCurrentItem() const
+const DRTCodingSchemeResourcesSequence::Item &DRTCodingSchemeResourcesSequence::getCurrentItem() const
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -304,7 +357,7 @@ const DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::getCur
 }
 
 
-OFCondition DRTModifiedAttributesSequence::getItem(const size_t num, Item *&item)
+OFCondition DRTCodingSchemeResourcesSequence::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -314,7 +367,7 @@ OFCondition DRTModifiedAttributesSequence::getItem(const size_t num, Item *&item
 }
 
 
-DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::getItem(const size_t num)
+DRTCodingSchemeResourcesSequence::Item &DRTCodingSchemeResourcesSequence::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -324,7 +377,7 @@ DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::getItem(cons
 }
 
 
-const DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::getItem(const size_t num) const
+const DRTCodingSchemeResourcesSequence::Item &DRTCodingSchemeResourcesSequence::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -334,19 +387,19 @@ const DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::getIte
 }
 
 
-DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::operator[](const size_t num)
+DRTCodingSchemeResourcesSequence::Item &DRTCodingSchemeResourcesSequence::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTModifiedAttributesSequence::Item &DRTModifiedAttributesSequence::operator[](const size_t num) const
+const DRTCodingSchemeResourcesSequence::Item &DRTCodingSchemeResourcesSequence::operator[](const size_t num) const
 {
     return getItem(num);
 }
 
 
-OFCondition DRTModifiedAttributesSequence::addItem(Item *&item)
+OFCondition DRTCodingSchemeResourcesSequence::addItem(Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -363,7 +416,7 @@ OFCondition DRTModifiedAttributesSequence::addItem(Item *&item)
 }
 
 
-OFCondition DRTModifiedAttributesSequence::insertItem(const size_t pos, Item *&item)
+OFCondition DRTCodingSchemeResourcesSequence::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -386,7 +439,7 @@ OFCondition DRTModifiedAttributesSequence::insertItem(const size_t pos, Item *&i
 }
 
 
-OFCondition DRTModifiedAttributesSequence::removeItem(const size_t pos)
+OFCondition DRTCodingSchemeResourcesSequence::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -404,10 +457,10 @@ OFCondition DRTModifiedAttributesSequence::removeItem(const size_t pos)
 }
 
 
-OFCondition DRTModifiedAttributesSequence::read(DcmItem &dataset,
-                                                const OFString &card,
-                                                const OFString &type,
-                                                const char *moduleName)
+OFCondition DRTCodingSchemeResourcesSequence::read(DcmItem &dataset,
+                                                   const OFString &card,
+                                                   const OFString &type,
+                                                   const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -416,7 +469,7 @@ OFCondition DRTModifiedAttributesSequence::read(DcmItem &dataset,
         clear();
         /* retrieve sequence element from dataset */
         DcmSequenceOfItems *sequence;
-        result = dataset.findAndGetSequence(DCM_ModifiedAttributesSequence, sequence);
+        result = dataset.findAndGetSequence(DCM_CodingSchemeResourcesSequence, sequence);
         if (sequence != NULL)
         {
             if (checkElementValue(*sequence, card, type, result, moduleName))
@@ -446,7 +499,7 @@ OFCondition DRTModifiedAttributesSequence::read(DcmItem &dataset,
                 }
             }
         } else {
-            DcmSequenceOfItems element(DCM_ModifiedAttributesSequence);
+            DcmSequenceOfItems element(DCM_CodingSchemeResourcesSequence);
             checkElementValue(element, card, type, result, moduleName);
         }
     }
@@ -454,16 +507,16 @@ OFCondition DRTModifiedAttributesSequence::read(DcmItem &dataset,
 }
 
 
-OFCondition DRTModifiedAttributesSequence::write(DcmItem &dataset,
-                                                 const OFString &card,
-                                                 const OFString &type,
-                                                 const char *moduleName)
+OFCondition DRTCodingSchemeResourcesSequence::write(DcmItem &dataset,
+                                                    const OFString &card,
+                                                    const OFString &type,
+                                                    const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
     {
         result = EC_MemoryExhausted;
-        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_ModifiedAttributesSequence);
+        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_CodingSchemeResourcesSequence);
         if (sequence != NULL)
         {
             result = EC_Normal;

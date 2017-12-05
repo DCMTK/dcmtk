@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-09-26 12:22:21
+**   Date: 2017-12-05 12:28:42
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2017-09-26 12:22:21"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2017-12-05 12:28:42"
 
 
 /*
@@ -3761,9 +3761,9 @@
 #define DCM_ReferencedDoseReferenceUID           DcmTagKey(0x300a, 0x0083)
 #define DCM_BeamDose                             DcmTagKey(0x300a, 0x0084)
 #define DCM_BeamMeterset                         DcmTagKey(0x300a, 0x0086)
-#define DCM_RETIRED_BeamDosePointDepth           DcmTagKey(0x300a, 0x0088)
-#define DCM_RETIRED_BeamDosePointEquivalentDepth DcmTagKey(0x300a, 0x0089)
-#define DCM_RETIRED_BeamDosePointSSD             DcmTagKey(0x300a, 0x008a)
+#define DCM_BeamDosePointDepth                   DcmTagKey(0x300a, 0x0088)
+#define DCM_BeamDosePointEquivalentDepth         DcmTagKey(0x300a, 0x0089)
+#define DCM_BeamDosePointSSD                     DcmTagKey(0x300a, 0x008a)
 #define DCM_BeamDoseMeaning                      DcmTagKey(0x300a, 0x008b)
 #define DCM_BeamDoseVerificationControlPointSequence DcmTagKey(0x300a, 0x008c)
 #define DCM_RETIRED_AverageBeamDosePointDepth    DcmTagKey(0x300a, 0x008d)

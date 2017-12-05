@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -27,9 +27,9 @@ DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::Item(const OFBo
     BeamDose(DCM_BeamDose),
     BeamDoseSpecificationPoint(DCM_BeamDoseSpecificationPoint),
     BeamDoseType(DCM_BeamDoseType),
-    BeamDoseVerificationControlPointSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     BeamMeterset(DCM_BeamMeterset),
-    ReferencedBeamNumber(DCM_ReferencedBeamNumber)
+    ReferencedBeamNumber(DCM_ReferencedBeamNumber),
+    ReferencedDoseReferenceUID(DCM_ReferencedDoseReferenceUID)
 {
 }
 
@@ -42,9 +42,9 @@ DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::Item(const Item
     BeamDose(copy.BeamDose),
     BeamDoseSpecificationPoint(copy.BeamDoseSpecificationPoint),
     BeamDoseType(copy.BeamDoseType),
-    BeamDoseVerificationControlPointSequence(copy.BeamDoseVerificationControlPointSequence),
     BeamMeterset(copy.BeamMeterset),
-    ReferencedBeamNumber(copy.ReferencedBeamNumber)
+    ReferencedBeamNumber(copy.ReferencedBeamNumber),
+    ReferencedDoseReferenceUID(copy.ReferencedDoseReferenceUID)
 {
 }
 
@@ -65,9 +65,9 @@ DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedBe
         BeamDose = copy.BeamDose;
         BeamDoseSpecificationPoint = copy.BeamDoseSpecificationPoint;
         BeamDoseType = copy.BeamDoseType;
-        BeamDoseVerificationControlPointSequence = copy.BeamDoseVerificationControlPointSequence;
         BeamMeterset = copy.BeamMeterset;
         ReferencedBeamNumber = copy.ReferencedBeamNumber;
+        ReferencedDoseReferenceUID = copy.ReferencedDoseReferenceUID;
     }
     return *this;
 }
@@ -80,11 +80,11 @@ void DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::clear()
         /* clear all DICOM attributes */
         ReferencedBeamNumber.clear();
         BeamDoseSpecificationPoint.clear();
+        ReferencedDoseReferenceUID.clear();
         BeamDose.clear();
         BeamDoseType.clear();
         AlternateBeamDose.clear();
         AlternateBeamDoseType.clear();
-        BeamDoseVerificationControlPointSequence.clear();
         BeamMeterset.clear();
         BeamDeliveryDurationLimit.clear();
     }
@@ -95,11 +95,11 @@ OFBool DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::isEmpty(
 {
     return ReferencedBeamNumber.isEmpty() &&
            BeamDoseSpecificationPoint.isEmpty() &&
+           ReferencedDoseReferenceUID.isEmpty() &&
            BeamDose.isEmpty() &&
            BeamDoseType.isEmpty() &&
            AlternateBeamDose.isEmpty() &&
            AlternateBeamDoseType.isEmpty() &&
-           BeamDoseVerificationControlPointSequence.isEmpty() &&
            BeamMeterset.isEmpty() &&
            BeamDeliveryDurationLimit.isEmpty();
 }
@@ -120,11 +120,11 @@ OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::rea
         clear();
         getAndCheckElementFromDataset(item, ReferencedBeamNumber, "1", "1", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, BeamDoseSpecificationPoint, "3", "3", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, ReferencedDoseReferenceUID, "1", "3", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, BeamDose, "1", "3", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, BeamDoseType, "1", "1C", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, AlternateBeamDose, "1", "3", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, AlternateBeamDoseType, "1", "1C", "ReferencedBeamSequence");
-        BeamDoseVerificationControlPointSequence.read(item, "1-n", "3", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, BeamMeterset, "1", "3", "ReferencedBeamSequence");
         getAndCheckElementFromDataset(item, BeamDeliveryDurationLimit, "1", "3", "ReferencedBeamSequence");
         result = EC_Normal;
@@ -141,11 +141,11 @@ OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::wri
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ReferencedBeamNumber), "1", "1", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(BeamDoseSpecificationPoint), "3", "3", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedDoseReferenceUID), "1", "3", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(BeamDose), "1", "3", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(BeamDoseType), "1", "1C", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(AlternateBeamDose), "1", "3", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(AlternateBeamDoseType), "1", "1C", "ReferencedBeamSequence");
-        if (result.good()) result = BeamDoseVerificationControlPointSequence.write(item, "1-n", "3", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(BeamMeterset), "1", "3", "ReferencedBeamSequence");
         addElementToDataset(result, item, new DcmFloatingPointDouble(BeamDeliveryDurationLimit), "1", "3", "ReferencedBeamSequence");
     }
@@ -279,6 +279,15 @@ OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::get
 }
 
 
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getReferencedDoseReferenceUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ReferencedDoseReferenceUID, value, pos);
+}
+
+
 OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setAlternateBeamDose(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
@@ -374,6 +383,19 @@ OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::set
         result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ReferencedBeamNumber.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setReferencedDoseReferenceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ReferencedDoseReferenceUID.putOFStringArray(value);
     }
     return result;
 }

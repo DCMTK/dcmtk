@@ -6,9 +6,8 @@
  *
  *  Source file for class DRTDoseIOD
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
- *  Last modified on 2017-06-15 by Riesmeier
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -32,7 +31,6 @@ DRTDoseIOD::DRTDoseIOD()
     QualityControlSubject(DCM_QualityControlSubject),
     ReferencedPatientSequence(),
     PatientBirthTime(DCM_PatientBirthTime),
-    OtherPatientIDs(DCM_RETIRED_OtherPatientIDs),
     OtherPatientIDsSequence(),
     OtherPatientNames(DCM_OtherPatientNames),
     EthnicGroup(DCM_EthnicGroup),
@@ -109,6 +107,8 @@ DRTDoseIOD::DRTDoseIOD()
     PatientSexNeutered(DCM_PatientSexNeutered),
     ClinicalTrialTimePointID(DCM_ClinicalTrialTimePointID),
     ClinicalTrialTimePointDescription(DCM_ClinicalTrialTimePointDescription),
+    LongitudinalTemporalOffsetFromEvent(DCM_LongitudinalTemporalOffsetFromEvent),
+    LongitudinalTemporalEventType(DCM_LongitudinalTemporalEventType),
     ConsentForClinicalTrialUseSequence(),
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
@@ -149,8 +149,6 @@ DRTDoseIOD::DRTDoseIOD()
     TimeOfLastCalibration(DCM_TimeOfLastCalibration),
     PixelPaddingValue(DCM_PixelPaddingValue),
     PatientOrientation(DCM_PatientOrientation),
-    ContentDate(DCM_ContentDate),
-    ContentTime(DCM_ContentTime),
     ImageType(DCM_ImageType),
     AcquisitionNumber(DCM_AcquisitionNumber),
     AcquisitionDate(DCM_AcquisitionDate),
@@ -218,6 +216,8 @@ DRTDoseIOD::DRTDoseIOD()
     BitsStored(DCM_BitsStored),
     HighBit(DCM_HighBit),
     PixelRepresentation(DCM_PixelRepresentation),
+    ContentDate(DCM_ContentDate),
+    ContentTime(DCM_ContentTime),
     DoseUnits(DCM_DoseUnits),
     DoseType(DCM_DoseType),
     SpatialTransformOfDose(DCM_SpatialTransformOfDose),
@@ -298,7 +298,6 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     QualityControlSubject(copy.QualityControlSubject),
     ReferencedPatientSequence(copy.ReferencedPatientSequence),
     PatientBirthTime(copy.PatientBirthTime),
-    OtherPatientIDs(copy.OtherPatientIDs),
     OtherPatientIDsSequence(copy.OtherPatientIDsSequence),
     OtherPatientNames(copy.OtherPatientNames),
     EthnicGroup(copy.EthnicGroup),
@@ -375,6 +374,8 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     PatientSexNeutered(copy.PatientSexNeutered),
     ClinicalTrialTimePointID(copy.ClinicalTrialTimePointID),
     ClinicalTrialTimePointDescription(copy.ClinicalTrialTimePointDescription),
+    LongitudinalTemporalOffsetFromEvent(copy.LongitudinalTemporalOffsetFromEvent),
+    LongitudinalTemporalEventType(copy.LongitudinalTemporalEventType),
     ConsentForClinicalTrialUseSequence(copy.ConsentForClinicalTrialUseSequence),
     Modality(copy.Modality),
     SeriesInstanceUID(copy.SeriesInstanceUID),
@@ -415,8 +416,6 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     TimeOfLastCalibration(copy.TimeOfLastCalibration),
     PixelPaddingValue(copy.PixelPaddingValue),
     PatientOrientation(copy.PatientOrientation),
-    ContentDate(copy.ContentDate),
-    ContentTime(copy.ContentTime),
     ImageType(copy.ImageType),
     AcquisitionNumber(copy.AcquisitionNumber),
     AcquisitionDate(copy.AcquisitionDate),
@@ -484,6 +483,8 @@ DRTDoseIOD::DRTDoseIOD(const DRTDoseIOD &copy)
     BitsStored(copy.BitsStored),
     HighBit(copy.HighBit),
     PixelRepresentation(copy.PixelRepresentation),
+    ContentDate(copy.ContentDate),
+    ContentTime(copy.ContentTime),
     DoseUnits(copy.DoseUnits),
     DoseType(copy.DoseType),
     SpatialTransformOfDose(copy.SpatialTransformOfDose),
@@ -570,7 +571,6 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         QualityControlSubject = copy.QualityControlSubject;
         ReferencedPatientSequence = copy.ReferencedPatientSequence;
         PatientBirthTime = copy.PatientBirthTime;
-        OtherPatientIDs = copy.OtherPatientIDs;
         OtherPatientIDsSequence = copy.OtherPatientIDsSequence;
         OtherPatientNames = copy.OtherPatientNames;
         EthnicGroup = copy.EthnicGroup;
@@ -647,6 +647,8 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         PatientSexNeutered = copy.PatientSexNeutered;
         ClinicalTrialTimePointID = copy.ClinicalTrialTimePointID;
         ClinicalTrialTimePointDescription = copy.ClinicalTrialTimePointDescription;
+        LongitudinalTemporalOffsetFromEvent = copy.LongitudinalTemporalOffsetFromEvent;
+        LongitudinalTemporalEventType = copy.LongitudinalTemporalEventType;
         ConsentForClinicalTrialUseSequence = copy.ConsentForClinicalTrialUseSequence;
         Modality = copy.Modality;
         SeriesInstanceUID = copy.SeriesInstanceUID;
@@ -687,8 +689,6 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         TimeOfLastCalibration = copy.TimeOfLastCalibration;
         PixelPaddingValue = copy.PixelPaddingValue;
         PatientOrientation = copy.PatientOrientation;
-        ContentDate = copy.ContentDate;
-        ContentTime = copy.ContentTime;
         ImageType = copy.ImageType;
         AcquisitionNumber = copy.AcquisitionNumber;
         AcquisitionDate = copy.AcquisitionDate;
@@ -756,6 +756,8 @@ DRTDoseIOD &DRTDoseIOD::operator=(const DRTDoseIOD &copy)
         BitsStored = copy.BitsStored;
         HighBit = copy.HighBit;
         PixelRepresentation = copy.PixelRepresentation;
+        ContentDate = copy.ContentDate;
+        ContentTime = copy.ContentTime;
         DoseUnits = copy.DoseUnits;
         DoseType = copy.DoseType;
         SpatialTransformOfDose = copy.SpatialTransformOfDose;
@@ -837,7 +839,6 @@ void DRTDoseIOD::clear()
     QualityControlSubject.clear();
     ReferencedPatientSequence.clear();
     PatientBirthTime.clear();
-    OtherPatientIDs.clear();
     OtherPatientIDsSequence.clear();
     OtherPatientNames.clear();
     EthnicGroup.clear();
@@ -914,6 +915,8 @@ void DRTDoseIOD::clear()
     PatientSexNeutered.clear();
     ClinicalTrialTimePointID.clear();
     ClinicalTrialTimePointDescription.clear();
+    LongitudinalTemporalOffsetFromEvent.clear();
+    LongitudinalTemporalEventType.clear();
     ConsentForClinicalTrialUseSequence.clear();
     Modality.clear();
     SeriesInstanceUID.clear();
@@ -1153,8 +1156,8 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         // --- GeneralImageModule (C) ---
         // getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "2", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, PatientOrientation, "2", "2C", "GeneralImageModule");
-        getAndCheckElementFromDataset(dataset, ContentDate, "1", "2C", "GeneralImageModule");
-        getAndCheckElementFromDataset(dataset, ContentTime, "1", "2C", "GeneralImageModule");
+        // getAndCheckElementFromDataset(dataset, ContentDate, "1", "2C", "GeneralImageModule");
+        // getAndCheckElementFromDataset(dataset, ContentTime, "1", "2C", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, ImageType, "2-n", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, AcquisitionNumber, "1", "3", "GeneralImageModule");
         getAndCheckElementFromDataset(dataset, AcquisitionDate, "1", "3", "GeneralImageModule");
@@ -1268,6 +1271,8 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, BitsStored, "1", "1C", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, HighBit, "1", "1C", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, PixelRepresentation, "1", "1C", "RTDoseModule");
+        getAndCheckElementFromDataset(dataset, ContentDate, "1", "3", "RTDoseModule");
+        getAndCheckElementFromDataset(dataset, ContentTime, "1", "3", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, DoseUnits, "1", "1", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, DoseType, "1", "1", "RTDoseModule");
         getAndCheckElementFromDataset(dataset, SpatialTransformOfDose, "1", "3", "RTDoseModule");
@@ -1386,7 +1391,6 @@ OFCondition DRTDoseIOD::readPatientData(DcmItem &dataset)
     getAndCheckElementFromDataset(dataset, QualityControlSubject, "1", "3", "PatientModule");
     ReferencedPatientSequence.read(dataset, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientBirthTime, "1", "3", "PatientModule");
-    getAndCheckElementFromDataset(dataset, OtherPatientIDs, "1-n", "3", "PatientModule");
     OtherPatientIDsSequence.read(dataset, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, OtherPatientNames, "1-n", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, EthnicGroup, "1", "3", "PatientModule");
@@ -1489,6 +1493,8 @@ OFCondition DRTDoseIOD::readStudyData(DcmItem &dataset)
         {
             getAndCheckElementFromDataset(dataset, ClinicalTrialTimePointID, "1", "2", "ClinicalTrialStudyModule");
             getAndCheckElementFromDataset(dataset, ClinicalTrialTimePointDescription, "1", "3", "ClinicalTrialStudyModule");
+            getAndCheckElementFromDataset(dataset, LongitudinalTemporalOffsetFromEvent, "1", "3", "ClinicalTrialStudyModule");
+            getAndCheckElementFromDataset(dataset, LongitudinalTemporalEventType, "1", "1C", "ClinicalTrialStudyModule");
             ConsentForClinicalTrialUseSequence.read(dataset, "1-n", "3", "ClinicalTrialStudyModule");
         }
     }
@@ -1558,7 +1564,6 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmCodeString(QualityControlSubject), "1", "3", "PatientModule");
         if (result.good()) result = ReferencedPatientSequence.write(dataset, "1-n" ,"3", "PatientModule");
         addElementToDataset(result, dataset, new DcmTime(PatientBirthTime), "1", "3", "PatientModule");
-        addElementToDataset(result, dataset, new DcmLongString(OtherPatientIDs), "1-n", "3", "PatientModule");
         if (result.good()) result = OtherPatientIDsSequence.write(dataset, "1-n" ,"3", "PatientModule");
         addElementToDataset(result, dataset, new DcmPersonName(OtherPatientNames), "1-n", "3", "PatientModule");
         addElementToDataset(result, dataset, new DcmShortString(EthnicGroup), "1", "3", "PatientModule");
@@ -1651,6 +1656,8 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         {
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialTimePointID), "1", "2", "ClinicalTrialStudyModule");
             addElementToDataset(result, dataset, new DcmShortText(ClinicalTrialTimePointDescription), "1", "3", "ClinicalTrialStudyModule");
+            addElementToDataset(result, dataset, new DcmFloatingPointDouble(LongitudinalTemporalOffsetFromEvent), "1", "3", "ClinicalTrialStudyModule");
+            addElementToDataset(result, dataset, new DcmCodeString(LongitudinalTemporalEventType), "1", "1C", "ClinicalTrialStudyModule");
             if (result.good()) result = ConsentForClinicalTrialUseSequence.write(dataset, "1-n" ,"3", "ClinicalTrialStudyModule");
         }
 
@@ -1708,8 +1715,8 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         {
             // addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber), "1", "2", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmCodeString(PatientOrientation), "2", "2C", "GeneralImageModule");
-            addElementToDataset(result, dataset, new DcmDate(ContentDate), "1", "2C", "GeneralImageModule");
-            addElementToDataset(result, dataset, new DcmTime(ContentTime), "1", "2C", "GeneralImageModule");
+            // addElementToDataset(result, dataset, new DcmDate(ContentDate), "1", "2C", "GeneralImageModule");
+            // addElementToDataset(result, dataset, new DcmTime(ContentTime), "1", "2C", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmCodeString(ImageType), "2-n", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmIntegerString(AcquisitionNumber), "1", "3", "GeneralImageModule");
             addElementToDataset(result, dataset, new DcmDate(AcquisitionDate), "1", "3", "GeneralImageModule");
@@ -1816,6 +1823,8 @@ OFCondition DRTDoseIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmUnsignedShort(BitsStored), "1", "1C", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmUnsignedShort(HighBit), "1", "1C", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmUnsignedShort(PixelRepresentation), "1", "1C", "RTDoseModule");
+        addElementToDataset(result, dataset, new DcmDate(ContentDate), "1", "3", "RTDoseModule");
+        addElementToDataset(result, dataset, new DcmTime(ContentTime), "1", "3", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmCodeString(DoseUnits), "1", "1", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmCodeString(DoseType), "1", "1", "RTDoseModule");
         addElementToDataset(result, dataset, new DcmCodeString(SpatialTransformOfDose), "1", "3", "RTDoseModule");
@@ -1972,6 +1981,8 @@ OFBool DRTDoseIOD::isClinicalTrialStudyModulePresent(const OFBool /*complete*/)
     /* check whether at least one attribute is present */
     return !ClinicalTrialTimePointID.isEmpty() ||
            !ClinicalTrialTimePointDescription.isEmpty() ||
+           !LongitudinalTemporalOffsetFromEvent.isEmpty() ||
+           !LongitudinalTemporalEventType.isEmpty() ||
            !ConsentForClinicalTrialUseSequence.isEmpty();
 }
 
@@ -1989,8 +2000,6 @@ OFBool DRTDoseIOD::isGeneralImageModulePresent(const OFBool /*complete*/)
 {
     /* check whether at least one attribute is present */
     return !PatientOrientation.isEmpty() ||
-           !ContentDate.isEmpty() ||
-           !ContentTime.isEmpty() ||
            !ImageType.isEmpty() ||
            !AcquisitionNumber.isEmpty() ||
            !AcquisitionDate.isEmpty() ||
@@ -2741,9 +2750,21 @@ OFCondition DRTDoseIOD::getLastMenstrualDate(OFString &value, const signed long 
 }
 
 
+OFCondition DRTDoseIOD::getLongitudinalTemporalEventType(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(LongitudinalTemporalEventType, value, pos);
+}
+
+
 OFCondition DRTDoseIOD::getLongitudinalTemporalInformationModified(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(LongitudinalTemporalInformationModified, value, pos);
+}
+
+
+OFCondition DRTDoseIOD::getLongitudinalTemporalOffsetFromEvent(Float64 &value, const unsigned long pos) const
+{
+    return OFconst_cast(DcmFloatingPointDouble &, LongitudinalTemporalOffsetFromEvent).getFloat64(value, pos);
 }
 
 
@@ -2888,12 +2909,6 @@ OFCondition DRTDoseIOD::getOperatorsName(OFString &value, const signed long pos)
 OFCondition DRTDoseIOD::getOriginalSpecializedSOPClassUID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(OriginalSpecializedSOPClassUID, value, pos);
-}
-
-
-OFCondition DRTDoseIOD::getOtherPatientIDs(OFString &value, const signed long pos) const
-{
-    return getStringValueFromElement(OtherPatientIDs, value, pos);
 }
 
 
@@ -4244,12 +4259,27 @@ OFCondition DRTDoseIOD::setLastMenstrualDate(const OFString &value, const OFBool
 }
 
 
+OFCondition DRTDoseIOD::setLongitudinalTemporalEventType(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = LongitudinalTemporalEventType.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTDoseIOD::setLongitudinalTemporalInformationModified(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = LongitudinalTemporalInformationModified.putOFStringArray(value);
     return result;
+}
+
+
+OFCondition DRTDoseIOD::setLongitudinalTemporalOffsetFromEvent(const Float64 value, const unsigned long pos)
+{
+    return LongitudinalTemporalOffsetFromEvent.putFloat64(value, pos);
 }
 
 
@@ -4393,15 +4423,6 @@ OFCondition DRTDoseIOD::setOriginalSpecializedSOPClassUID(const OFString &value,
     OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = OriginalSpecializedSOPClassUID.putOFStringArray(value);
-    return result;
-}
-
-
-OFCondition DRTDoseIOD::setOtherPatientIDs(const OFString &value, const OFBool check)
-{
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1-n") : EC_Normal;
-    if (result.good())
-        result = OtherPatientIDs.putOFStringArray(value);
     return result;
 }
 

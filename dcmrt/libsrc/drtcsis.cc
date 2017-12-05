@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTCodingSchemeIdentificationSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -25,6 +25,7 @@ DRTCodingSchemeIdentificationSequence::Item::Item(const OFBool emptyDefaultItem)
     CodingSchemeExternalID(DCM_CodingSchemeExternalID),
     CodingSchemeName(DCM_CodingSchemeName),
     CodingSchemeRegistry(DCM_CodingSchemeRegistry),
+    CodingSchemeResourcesSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     CodingSchemeResponsibleOrganization(DCM_CodingSchemeResponsibleOrganization),
     CodingSchemeUID(DCM_CodingSchemeUID),
     CodingSchemeVersion(DCM_CodingSchemeVersion)
@@ -38,6 +39,7 @@ DRTCodingSchemeIdentificationSequence::Item::Item(const Item &copy)
     CodingSchemeExternalID(copy.CodingSchemeExternalID),
     CodingSchemeName(copy.CodingSchemeName),
     CodingSchemeRegistry(copy.CodingSchemeRegistry),
+    CodingSchemeResourcesSequence(copy.CodingSchemeResourcesSequence),
     CodingSchemeResponsibleOrganization(copy.CodingSchemeResponsibleOrganization),
     CodingSchemeUID(copy.CodingSchemeUID),
     CodingSchemeVersion(copy.CodingSchemeVersion)
@@ -59,6 +61,7 @@ DRTCodingSchemeIdentificationSequence::Item &DRTCodingSchemeIdentificationSequen
         CodingSchemeExternalID = copy.CodingSchemeExternalID;
         CodingSchemeName = copy.CodingSchemeName;
         CodingSchemeRegistry = copy.CodingSchemeRegistry;
+        CodingSchemeResourcesSequence = copy.CodingSchemeResourcesSequence;
         CodingSchemeResponsibleOrganization = copy.CodingSchemeResponsibleOrganization;
         CodingSchemeUID = copy.CodingSchemeUID;
         CodingSchemeVersion = copy.CodingSchemeVersion;
@@ -79,6 +82,7 @@ void DRTCodingSchemeIdentificationSequence::Item::clear()
         CodingSchemeName.clear();
         CodingSchemeVersion.clear();
         CodingSchemeResponsibleOrganization.clear();
+        CodingSchemeResourcesSequence.clear();
     }
 }
 
@@ -91,7 +95,8 @@ OFBool DRTCodingSchemeIdentificationSequence::Item::isEmpty()
            CodingSchemeExternalID.isEmpty() &&
            CodingSchemeName.isEmpty() &&
            CodingSchemeVersion.isEmpty() &&
-           CodingSchemeResponsibleOrganization.isEmpty();
+           CodingSchemeResponsibleOrganization.isEmpty() &&
+           CodingSchemeResourcesSequence.isEmpty();
 }
 
 
@@ -115,6 +120,7 @@ OFCondition DRTCodingSchemeIdentificationSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, CodingSchemeName, "1", "3", "CodingSchemeIdentificationSequence");
         getAndCheckElementFromDataset(item, CodingSchemeVersion, "1", "3", "CodingSchemeIdentificationSequence");
         getAndCheckElementFromDataset(item, CodingSchemeResponsibleOrganization, "1", "3", "CodingSchemeIdentificationSequence");
+        CodingSchemeResourcesSequence.read(item, "1-n", "3", "CodingSchemeIdentificationSequence");
         result = EC_Normal;
     }
     return result;
@@ -134,6 +140,7 @@ OFCondition DRTCodingSchemeIdentificationSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmShortText(CodingSchemeName), "1", "3", "CodingSchemeIdentificationSequence");
         addElementToDataset(result, item, new DcmShortString(CodingSchemeVersion), "1", "3", "CodingSchemeIdentificationSequence");
         addElementToDataset(result, item, new DcmShortText(CodingSchemeResponsibleOrganization), "1", "3", "CodingSchemeIdentificationSequence");
+        if (result.good()) result = CodingSchemeResourcesSequence.write(item, "1-n", "3", "CodingSchemeIdentificationSequence");
     }
     return result;
 }

@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -19,7 +19,6 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtbvcps.h"  // for BeamDoseVerificationControlPointSequence
 
 
 /** Interface class for ReferencedBeamSequence (300c,0004) in RTGeneralTreatmentRecordModule
@@ -189,19 +188,12 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModu
          */
         OFCondition getReferencedBeamNumber(Sint32 &value, const unsigned long pos = 0) const;
 
-      // --- get DICOM sequence attributes ---
-
-        /** get BeamDoseVerificationControlPointSequence (300a,008c)
-         *  @return reference to sequence element
+        /** get ReferencedDoseReferenceUID (300a,0083)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
          */
-        DRTBeamDoseVerificationControlPointSequence &getBeamDoseVerificationControlPointSequence()
-            { return BeamDoseVerificationControlPointSequence; }
-
-        /** get BeamDoseVerificationControlPointSequence (300a,008c)
-         *  @return const reference to sequence element
-         */
-        const DRTBeamDoseVerificationControlPointSequence &getBeamDoseVerificationControlPointSequence() const
-            { return BeamDoseVerificationControlPointSequence; }
+        OFCondition getReferencedDoseReferenceUID(OFString &value, const signed long pos = 0) const;
 
       // --- set DICOM attribute values ---
 
@@ -261,6 +253,13 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModu
          */
         OFCondition setReferencedBeamNumber(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ReferencedDoseReferenceUID (300a,0083)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setReferencedDoseReferenceUID(const OFString &value, const OFBool check = OFTrue);
+
       private:
 
         /// internal flag used to mark the empty default item
@@ -278,12 +277,12 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModu
         DcmDecimalString BeamDoseSpecificationPoint;
         /// BeamDoseType (300a,0090) vr=CS, vm=1, type=1C
         DcmCodeString BeamDoseType;
-        /// BeamDoseVerificationControlPointSequence (300a,008c) vr=SQ, vm=1, type=3
-        DRTBeamDoseVerificationControlPointSequence BeamDoseVerificationControlPointSequence;
         /// BeamMeterset (300a,0086) vr=DS, vm=1, type=3
         DcmDecimalString BeamMeterset;
         /// ReferencedBeamNumber (300c,0006) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedBeamNumber;
+        /// ReferencedDoseReferenceUID (300a,0083) vr=UI, vm=1, type=3
+        DcmUniqueIdentifier ReferencedDoseReferenceUID;
 
     };
 

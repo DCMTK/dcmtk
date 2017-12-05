@@ -29,10 +29,10 @@ objs = drtdose.o drtimage.o drtplan.o drtstrct.o drttreat.o drtionpl.o drtiontr.
 	drtbldts.o drtbrcss.o drtbrdrs.o drtbrs.o drtbs.o drtbss.o drtbvcps.o \
 	drtcbars.o drtccs.o drtcctus.o drtcdrs.o drtces.o drtcgis.o drtchs.o \
 	drtcims.o drtcis.o drtcncs.o drtcos.o drtcpas.o drtcpis.o drtcps.o \
-	drtcsas.o drtcs.o drtcshs.o drtcsis.o drtcss.o drtdcs.o drtdddps.o \
-	drtddps.o drtdias.o drtdimcs.o drtdimrs.o drtdirs.o drtdrs.o drtds.o \
-	drtdspcs.o drtdss.o drtdvhs.o drtdvrrs.o drteas.o drtecs.o drtes.o \
-	drtfds.o drtfes.o drtfgs.o drtfgss.o drtfms.o drtfsss.o drtgas.o \
+	drtcsas.o drtcs.o drtcshs.o drtcsis.o drtcsrs.o drtcss.o drtdcs.o \
+	drtdddps.o drtddps.o drtdias.o drtdimcs.o drtdimrs.o drtdirs.o drtdrs.o \
+	drtds.o drtdspcs.o drtdss.o drtdvhs.o drtdvrrs.o drteas.o drtecs.o \
+	drtes.o drtfds.o drtfes.o drtfgs.o drtfgss.o drtfms.o drtfsss.o drtgas.o \
 	drtgmcs.o drtgms.o drtgpis.o drthsdrs.o drtiais.o drtians.o drtiblds.o \
 	drtibls.o drtibs.o drticpds.o drticps.o drtics.o drtiis.o drtipiqs.o \
 	drtircs.o drtiseis.o drtitts.o drtiwps.o drtiws.o drtlsds6.o drtlsds7.o \

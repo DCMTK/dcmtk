@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTContentItemModifierSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -135,6 +135,13 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getNumericValue(OFVector<Float64> &value) const;
+
+        /** get ObservationDateTime (0040,a032)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getObservationDateTime(OFString &value, const signed long pos = 0) const;
 
         /** get PersonName (0040,a123)
          *  @param  value  reference to variable in which the value should be stored
@@ -265,6 +272,13 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
          */
         OFCondition setNumericValue(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ObservationDateTime (0040,a032)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DT) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setObservationDateTime(const OFString &value, const OFBool check = OFTrue);
+
         /** set PersonName (0040,a123)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (PN) and VM (1) if enabled
@@ -333,6 +347,8 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
         DRTMeasurementUnitsCodeSequence MeasurementUnitsCodeSequence;
         /// NumericValue (0040,a30a) vr=DS, vm=1-n, type=1C
         DcmDecimalString NumericValue;
+        /// ObservationDateTime (0040,a032) vr=DT, vm=1, type=3
+        DcmDateTime ObservationDateTime;
         /// PersonName (0040,a123) vr=PN, vm=1, type=1C
         DcmPersonName PersonName;
         /// RationalDenominatorValue (0040,a163) vr=UL, vm=1-n, type=1C

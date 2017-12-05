@@ -6,8 +6,8 @@
  *
  *  Source file for class DRTProtocolContextSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -29,6 +29,7 @@ DRTProtocolContextSequence::Item::Item(const OFBool emptyDefaultItem)
     FloatingPointValue(DCM_FloatingPointValue),
     MeasurementUnitsCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     NumericValue(DCM_NumericValue),
+    ObservationDateTime(DCM_ObservationDateTime),
     PersonName(DCM_PersonName),
     RationalDenominatorValue(DCM_RationalDenominatorValue),
     RationalNumeratorValue(DCM_RationalNumeratorValue),
@@ -51,6 +52,7 @@ DRTProtocolContextSequence::Item::Item(const Item &copy)
     FloatingPointValue(copy.FloatingPointValue),
     MeasurementUnitsCodeSequence(copy.MeasurementUnitsCodeSequence),
     NumericValue(copy.NumericValue),
+    ObservationDateTime(copy.ObservationDateTime),
     PersonName(copy.PersonName),
     RationalDenominatorValue(copy.RationalDenominatorValue),
     RationalNumeratorValue(copy.RationalNumeratorValue),
@@ -81,6 +83,7 @@ DRTProtocolContextSequence::Item &DRTProtocolContextSequence::Item::operator=(co
         FloatingPointValue = copy.FloatingPointValue;
         MeasurementUnitsCodeSequence = copy.MeasurementUnitsCodeSequence;
         NumericValue = copy.NumericValue;
+        ObservationDateTime = copy.ObservationDateTime;
         PersonName = copy.PersonName;
         RationalDenominatorValue = copy.RationalDenominatorValue;
         RationalNumeratorValue = copy.RationalNumeratorValue;
@@ -100,6 +103,7 @@ void DRTProtocolContextSequence::Item::clear()
     {
         /* clear all DICOM attributes */
         ValueType.clear();
+        ObservationDateTime.clear();
         ConceptNameCodeSequence.clear();
         DateTime.clear();
         Date.clear();
@@ -122,6 +126,7 @@ void DRTProtocolContextSequence::Item::clear()
 OFBool DRTProtocolContextSequence::Item::isEmpty()
 {
     return ValueType.isEmpty() &&
+           ObservationDateTime.isEmpty() &&
            ConceptNameCodeSequence.isEmpty() &&
            DateTime.isEmpty() &&
            Date.isEmpty() &&
@@ -154,6 +159,7 @@ OFCondition DRTProtocolContextSequence::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, ValueType, "1", "1", "ProtocolContextSequence");
+        getAndCheckElementFromDataset(item, ObservationDateTime, "1", "3", "ProtocolContextSequence");
         ConceptNameCodeSequence.read(item, "1-n", "1", "ProtocolContextSequence");
         getAndCheckElementFromDataset(item, DateTime, "1", "1C", "ProtocolContextSequence");
         getAndCheckElementFromDataset(item, Date, "1", "1C", "ProtocolContextSequence");
@@ -182,6 +188,7 @@ OFCondition DRTProtocolContextSequence::Item::write(DcmItem &item)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmCodeString(ValueType), "1", "1", "ProtocolContextSequence");
+        addElementToDataset(result, item, new DcmDateTime(ObservationDateTime), "1", "3", "ProtocolContextSequence");
         if (result.good()) result = ConceptNameCodeSequence.write(item, "1-n", "1", "ProtocolContextSequence");
         addElementToDataset(result, item, new DcmDateTime(DateTime), "1", "1C", "ProtocolContextSequence");
         addElementToDataset(result, item, new DcmDate(Date), "1", "1C", "ProtocolContextSequence");
@@ -253,6 +260,15 @@ OFCondition DRTProtocolContextSequence::Item::getNumericValue(OFVector<Float64> 
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmDecimalString &, NumericValue).getFloat64Vector(value);
+}
+
+
+OFCondition DRTProtocolContextSequence::Item::getObservationDateTime(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ObservationDateTime, value, pos);
 }
 
 
@@ -362,6 +378,19 @@ OFCondition DRTProtocolContextSequence::Item::setNumericValue(const OFString &va
         result = (check) ? DcmDecimalString::checkStringValue(value, "1-n") : EC_Normal;
         if (result.good())
             result = NumericValue.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTProtocolContextSequence::Item::setObservationDateTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ObservationDateTime.putOFStringArray(value);
     }
     return result;
 }

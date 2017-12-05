@@ -4,7 +4,7 @@
  *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class DRTBreedRegistrationSequence
+ *  Header file for class DRTCodingSchemeResourcesSequence
  *
  *  Generated automatically from DICOM PS 3.3-2017e
  *  File created on 2017-12-05 09:30:54
@@ -12,19 +12,18 @@
  */
 
 
-#ifndef DRTBRS_H
-#define DRTBRS_H
+#ifndef DRTCSRS_H
+#define DRTCSRS_H
 
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtbrcss.h"  // for BreedRegistryCodeSequence
 
 
-/** Interface class for BreedRegistrationSequence (0010,2294)
+/** Interface class for CodingSchemeResourcesSequence (0008,0109)
  */
-class DCMTK_DCMRT_EXPORT DRTBreedRegistrationSequence
+class DCMTK_DCMRT_EXPORT DRTCodingSchemeResourcesSequence
   : protected DRTTypes
 {
 
@@ -92,45 +91,45 @@ class DCMTK_DCMRT_EXPORT DRTBreedRegistrationSequence
 
       // --- get DICOM attribute values ---
 
-        /** get BreedRegistrationNumber (0010,2295)
+        /** get CodingSchemeURL (0008,010e)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getBreedRegistrationNumber(OFString &value, const signed long pos = 0) const;
+        OFCondition getCodingSchemeURL(OFString &value, const signed long pos = 0) const;
 
-      // --- get DICOM sequence attributes ---
-
-        /** get BreedRegistryCodeSequence (0010,2296)
-         *  @return reference to sequence element
+        /** get CodingSchemeURLType (0008,010a)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
          */
-        DRTBreedRegistryCodeSequence &getBreedRegistryCodeSequence()
-            { return BreedRegistryCodeSequence; }
-
-        /** get BreedRegistryCodeSequence (0010,2296)
-         *  @return const reference to sequence element
-         */
-        const DRTBreedRegistryCodeSequence &getBreedRegistryCodeSequence() const
-            { return BreedRegistryCodeSequence; }
+        OFCondition getCodingSchemeURLType(OFString &value, const signed long pos = 0) const;
 
       // --- set DICOM attribute values ---
 
-        /** set BreedRegistrationNumber (0010,2295)
+        /** set CodingSchemeURL (0008,010e)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (UR) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setBreedRegistrationNumber(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setCodingSchemeURL(const OFString &value, const OFBool check = OFTrue);
+
+        /** set CodingSchemeURLType (0008,010a)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setCodingSchemeURLType(const OFString &value, const OFBool check = OFTrue);
 
       private:
 
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// BreedRegistrationNumber (0010,2295) vr=LO, vm=1, type=1
-        DcmLongString BreedRegistrationNumber;
-        /// BreedRegistryCodeSequence (0010,2296) vr=SQ, vm=1, type=1
-        DRTBreedRegistryCodeSequence BreedRegistryCodeSequence;
+        /// CodingSchemeURL (0008,010e) vr=UR, vm=1, type=1
+        DcmUniversalResourceIdentifierOrLocator CodingSchemeURL;
+        /// CodingSchemeURLType (0008,010a) vr=CS, vm=1, type=1
+        DcmCodeString CodingSchemeURLType;
 
     };
 
@@ -139,22 +138,22 @@ class DCMTK_DCMRT_EXPORT DRTBreedRegistrationSequence
     /** (default) constructor
      *  @param emptyDefaultSequence internal flag used to mark the empty default sequence
      */
-    DRTBreedRegistrationSequence(const OFBool emptyDefaultSequence = OFFalse);
+    DRTCodingSchemeResourcesSequence(const OFBool emptyDefaultSequence = OFFalse);
 
     /** copy constructor
      *  @param copy sequence object to be copied
      */
-    DRTBreedRegistrationSequence(const DRTBreedRegistrationSequence &copy);
+    DRTCodingSchemeResourcesSequence(const DRTCodingSchemeResourcesSequence &copy);
 
     /** destructor
      */
-    virtual ~DRTBreedRegistrationSequence();
+    virtual ~DRTCodingSchemeResourcesSequence();
 
     /** assigment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */
-    DRTBreedRegistrationSequence &operator=(const DRTBreedRegistrationSequence &copy);
+    DRTCodingSchemeResourcesSequence &operator=(const DRTCodingSchemeResourcesSequence &copy);
 
   // --- general methods ---
 

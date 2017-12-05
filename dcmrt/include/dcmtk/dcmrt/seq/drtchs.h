@@ -6,8 +6,8 @@
  *
  *  Header file for class DRTChannelSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017a
- *  File created on 2017-03-13 11:22:36
+ *  Generated automatically from DICOM PS 3.3-2017e
+ *  File created on 2017-12-05 09:30:54
  *
  */
 
@@ -92,6 +92,41 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
         OFCondition write(DcmItem &item);
 
       // --- get DICOM attribute values ---
+
+        /** get AfterloaderChannelID (300a,0273)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getAfterloaderChannelID(OFString &value, const signed long pos = 0) const;
+
+        /** get ChannelEffectiveLength (300a,0271)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChannelEffectiveLength(OFString &value, const signed long pos = 0) const;
+
+        /** get ChannelEffectiveLength (300a,0271)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChannelEffectiveLength(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get ChannelInnerLength (300a,0272)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChannelInnerLength(OFString &value, const signed long pos = 0) const;
+
+        /** get ChannelInnerLength (300a,0272)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getChannelInnerLength(Float64 &value, const unsigned long pos = 0) const;
 
         /** get ChannelLength (300a,0284)
          *  @param  value  reference to variable in which the value should be stored
@@ -289,6 +324,20 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
          */
         OFCondition getSourceApplicatorStepSize(Float64 &value, const unsigned long pos = 0) const;
 
+        /** get SourceApplicatorTipLength (300a,0274)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getSourceApplicatorTipLength(OFString &value, const signed long pos = 0) const;
+
+        /** get SourceApplicatorTipLength (300a,0274)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getSourceApplicatorTipLength(Float64 &value, const unsigned long pos = 0) const;
+
         /** get SourceApplicatorType (300a,0292)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -386,6 +435,27 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
             { return ChannelShieldSequence; }
 
       // --- set DICOM attribute values ---
+
+        /** set AfterloaderChannelID (300a,0273)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setAfterloaderChannelID(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ChannelEffectiveLength (300a,0271)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setChannelEffectiveLength(const OFString &value, const OFBool check = OFTrue);
+
+        /** set ChannelInnerLength (300a,0272)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setChannelInnerLength(const OFString &value, const OFBool check = OFTrue);
 
         /** set ChannelLength (300a,0284)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -499,6 +569,13 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
          */
         OFCondition setSourceApplicatorStepSize(const OFString &value, const OFBool check = OFTrue);
 
+        /** set SourceApplicatorTipLength (300a,0274)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setSourceApplicatorTipLength(const OFString &value, const OFBool check = OFTrue);
+
         /** set SourceApplicatorType (300a,0292)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
@@ -546,8 +623,14 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// AfterloaderChannelID (300a,0273) vr=SH, vm=1, type=3
+        DcmShortString AfterloaderChannelID;
         /// BrachyControlPointSequence (300a,02d0) vr=SQ, vm=1, type=1
         DRTBrachyControlPointSequence BrachyControlPointSequence;
+        /// ChannelEffectiveLength (300a,0271) vr=DS, vm=1, type=3
+        DcmDecimalString ChannelEffectiveLength;
+        /// ChannelInnerLength (300a,0272) vr=DS, vm=1, type=2C
+        DcmDecimalString ChannelInnerLength;
         /// ChannelLength (300a,0284) vr=DS, vm=1, type=2
         DcmDecimalString ChannelLength;
         /// ChannelNumber (300a,0282) vr=IS, vm=1, type=1
@@ -582,6 +665,8 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
         DcmIntegerString SourceApplicatorNumber;
         /// SourceApplicatorStepSize (300a,02a0) vr=DS, vm=1, type=1C
         DcmDecimalString SourceApplicatorStepSize;
+        /// SourceApplicatorTipLength (300a,0274) vr=DS, vm=1, type=2C
+        DcmDecimalString SourceApplicatorTipLength;
         /// SourceApplicatorType (300a,0292) vr=CS, vm=1, type=1C
         DcmCodeString SourceApplicatorType;
         /// SourceApplicatorWallNominalThickness (300a,029c) vr=DS, vm=1, type=3

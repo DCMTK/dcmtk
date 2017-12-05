@@ -21,8 +21,9 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2017d and PS 3.7-2017d
-# File created on 2017-09-26 12:19:19 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2017e and PS 3.7-2017e
+# File created on 2017-12-05 09:13:43 by J. Riesmeier on thinkpad.
+# Last modified on 2017-12-05 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -4771,9 +4772,6 @@
 (3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	DICOM/retired
 (3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	DICOM/retired
 (3006,00C4)	CS	RETIRED_FrameOfReferenceTransformationType	1	DICOM/retired
-(300A,0088)	FL	RETIRED_BeamDosePointDepth	1	DICOM/retired
-(300A,0089)	FL	RETIRED_BeamDosePointEquivalentDepth	1	DICOM/retired
-(300A,008A)	FL	RETIRED_BeamDosePointSSD	1	DICOM/retired
 (4000,0010)	LT	RETIRED_Arbitrary	1	DICOM/retired
 (4000,4000)	LT	RETIRED_TextComments	1	DICOM/retired
 (4008,0040)	SH	RETIRED_ResultsID	1	DICOM/retired
