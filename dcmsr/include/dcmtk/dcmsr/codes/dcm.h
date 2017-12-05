@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2017d
- *  File created on 2017-09-26 12:26:44 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2017e
+ *  File created on 2017-12-05 09:12:40 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3804
+// total number of codes: 3861
 // - retired: 144
 // - no name: 27
 // - not unique: 15
@@ -510,6 +510,8 @@
 #define CODE_DCM_DiscontinuedProcedureStepRescheduled                      DSRBasicCodedEntry("110528", "DCM", "Discontinued Procedure Step rescheduled")
 #define CODE_DCM_DiscontinuedProcedureStepReschedulingRecommended          DSRBasicCodedEntry("110529", "DCM", "Discontinued Procedure Step rescheduling recommended")
 #define CODE_DCM_WorkitemAssignmentRejectedByAssignedResource              DSRBasicCodedEntry("110530", "DCM", "Workitem assignment rejected by assigned resource")
+#define CODE_DCM_InsufficientQualityForInterpretation                      DSRBasicCodedEntry("110531", "DCM", "Insufficient quality for interpretation")
+#define CODE_DCM_InterpretationRequiresSpecialistExpertise                 DSRBasicCodedEntry("110532", "DCM", "Interpretation requires specialist expertise")
 #define CODE_DCM_VentralDiencephalon                                       DSRBasicCodedEntry("110700", "DCM", "Ventral Diencephalon")
 #define CODE_DCM_WhiteMatterT1Hypointensity                                DSRBasicCodedEntry("110701", "DCM", "White Matter T1 Hypointensity")
 #define CODE_DCM_WhiteMatterT2Hyperintensity                               DSRBasicCodedEntry("110702", "DCM", "White Matter T2 Hyperintensity")
@@ -2936,7 +2938,7 @@
 #define CODE_DCM_LateContrastEnhancement                                   DSRBasicCodedEntry("122664", "DCM", "Late Contrast Enhancement")
 #define CODE_DCM_TimeIntervalSinceInjectionOfContrastMedia                 DSRBasicCodedEntry("122665", "DCM", "Time interval since injection of contrast media")
 #define CODE_DCM_TimeRelativeToRWavePeak                                   DSRBasicCodedEntry("122666", "DCM", "Time relative to R-wave peak")
-#define CODE_DCM_BloodVelocityVsdotTimeOfCardiacCycle                      DSRBasicCodedEntry("122667", "DCM", "Blood velocity vs. time of cardiac cycle")
+#define CODE_DCM_BloodVelocityVsTimeOfCardiacCycle                         DSRBasicCodedEntry("122667", "DCM", "Blood velocity vs. time of cardiac cycle")
 #define CODE_DCM_TimeIntervalSinceDetectionOfContrastBolus                 DSRBasicCodedEntry("122668", "DCM", "Time interval since detection of contrast bolus")
 #define CODE_DCM_PapillaryMuscleIncludedExcluded                           DSRBasicCodedEntry("122670", "DCM", "Papillary Muscle Included/Excluded")
 #define CODE_DCM_AnteriorPosterior                                         DSRBasicCodedEntry("122675", "DCM", "Anterior-Posterior")
@@ -3208,14 +3210,14 @@
 #define CODE_DCM_FractalDimension                                          DSRBasicCodedEntry("126050", "DCM", "Fractal Dimension")
 #define CODE_DCM_Skewness                                                  DSRBasicCodedEntry("126051", "DCM", "Skewness")
 #define CODE_DCM_Kurtosis                                                  DSRBasicCodedEntry("126052", "DCM", "Kurtosis")
-#define CODE_DCM_EntropyOfGLCM                                             DSRBasicCodedEntry("126060", "DCM", "Entropy of GLCM")
-#define CODE_DCM_EnergyOfGLCM                                              DSRBasicCodedEntry("126061", "DCM", "Energy of GLCM")
-#define CODE_DCM_HomogeneityOfGLCM                                         DSRBasicCodedEntry("126062", "DCM", "Homogeneity of GLCM")
+#define CODE_DCM_JointEntropyOfGLCM                                        DSRBasicCodedEntry("126060", "DCM", "Joint Entropy of GLCM")
+#define CODE_DCM_RootAngularSecondMomentOfGLCM                             DSRBasicCodedEntry("126061", "DCM", "Root Angular Second Moment of GLCM")
+#define CODE_DCM_InverseDifferenceMomentOfGLCM                             DSRBasicCodedEntry("126062", "DCM", "Inverse Difference Moment of GLCM")
 #define CODE_DCM_ContrastOfGLCM                                            DSRBasicCodedEntry("126063", "DCM", "Contrast of GLCM")
 #define CODE_DCM_DissimilarityOfGLCM                                       DSRBasicCodedEntry("126064", "DCM", "Dissimilarity of GLCM")
-#define CODE_DCM_ASMOfGLCM                                                 DSRBasicCodedEntry("126065", "DCM", "ASM of GLCM")
+#define CODE_DCM_AngularSecondMomentOfGLCM                                 DSRBasicCodedEntry("126065", "DCM", "Angular Second Moment of GLCM")
 #define CODE_DCM_CorrelationOfGLCM                                         DSRBasicCodedEntry("126066", "DCM", "Correlation of GLCM")
-#define CODE_DCM_GrayLevelCoOccurrenceMatrix_GLCM                          DSRBasicCodedEntry("126067", "DCM", "Gray Level Co-occurrence Matrix (GLCM)")
+#define CODE_DCM_GrayLevelCoOccurrenceMatrix                               DSRBasicCodedEntry("126067", "DCM", "Gray Level Co-occurrence Matrix")
 #define CODE_DCM_SubjectTimePointIdentifier                                DSRBasicCodedEntry("126070", "DCM", "Subject Time Point Identifier")
 #define CODE_DCM_ProtocolTimePointIdentifier                               DSRBasicCodedEntry("126071", "DCM", "Protocol Time Point Identifier")
 #define CODE_DCM_TimePointType                                             DSRBasicCodedEntry("126072", "DCM", "Time Point Type")
@@ -3852,5 +3854,60 @@
 #define CODE_DCM_TableZEndPositionToIsocenter                              DSRBasicCodedEntry("128771", "DCM", "Table Z End Position to Isocenter")
 #define CODE_DCM_ReferenceBasis                                            DSRBasicCodedEntry("128772", "DCM", "Reference Basis")
 #define CODE_DCM_ReferenceGeometry                                         DSRBasicCodedEntry("128773", "DCM", "Reference Geometry")
+#define CODE_DCM_PersonObserverLoginName                                   DSRBasicCodedEntry("128774", "DCM", "Person Observer's Login Name")
+#define CODE_DCM_IdentifierWithinPersonObserverRole                        DSRBasicCodedEntry("128775", "DCM", "Identifier within Person Observer's Role")
+#define CODE_DCM_GrayLevelRunLengthMatrix                                  DSRBasicCodedEntry("128776", "DCM", "Gray Level Run Length Matrix")
+#define CODE_DCM_GrayLevelSizeZoneMatrix                                   DSRBasicCodedEntry("128777", "DCM", "Gray Level Size Zone Matrix")
+#define CODE_DCM_JointMaximumOfGLCM                                        DSRBasicCodedEntry("128781", "DCM", "Joint Maximum of GLCM")
+#define CODE_DCM_JointAverageOfGLCM                                        DSRBasicCodedEntry("128782", "DCM", "Joint Average of GLCM")
+#define CODE_DCM_JointVarianceOfGLCM                                       DSRBasicCodedEntry("128783", "DCM", "Joint Variance of GLCM")
+#define CODE_DCM_DifferenceAverageOfGLCM                                   DSRBasicCodedEntry("128784", "DCM", "Difference Average of GLCM")
+#define CODE_DCM_DifferenceVarianceOfGLCM                                  DSRBasicCodedEntry("128785", "DCM", "Difference Variance of GLCM")
+#define CODE_DCM_DifferenceEntropyOfGLCM                                   DSRBasicCodedEntry("128786", "DCM", "Difference Entropy of GLCM")
+#define CODE_DCM_SumAverageOfGLCM                                          DSRBasicCodedEntry("128787", "DCM", "Sum Average of GLCM")
+#define CODE_DCM_SumVarianceOfGLCM                                         DSRBasicCodedEntry("128788", "DCM", "Sum Variance of GLCM")
+#define CODE_DCM_SumEntropyOfGLCM                                          DSRBasicCodedEntry("128789", "DCM", "Sum Entropy of GLCM")
+#define CODE_DCM_InverseDifferenceOfGLCM                                   DSRBasicCodedEntry("128790", "DCM", "Inverse Difference of GLCM")
+#define CODE_DCM_InverseDifferenceNormalizedOfGLCM                         DSRBasicCodedEntry("128791", "DCM", "Inverse Difference Normalized of GLCM")
+#define CODE_DCM_InverseDifferenceMomentNormalizedOfGLCM                   DSRBasicCodedEntry("128792", "DCM", "Inverse Difference Moment Normalized of GLCM")
+#define CODE_DCM_InverseVarianceOfGLCM                                     DSRBasicCodedEntry("128793", "DCM", "Inverse Variance of GLCM")
+#define CODE_DCM_AutocorrelationOfGLCM                                     DSRBasicCodedEntry("128794", "DCM", "Autocorrelation of GLCM")
+#define CODE_DCM_ClusterTendencyOfGLCM                                     DSRBasicCodedEntry("128795", "DCM", "Cluster Tendency of GLCM")
+#define CODE_DCM_ClusterShadeOfGLCM                                        DSRBasicCodedEntry("128796", "DCM", "Cluster Shade of GLCM")
+#define CODE_DCM_ClusterProminenceOfGLCM                                   DSRBasicCodedEntry("128797", "DCM", "Cluster Prominence of GLCM")
+#define CODE_DCM_FirstMeasureOfInformationCorrelationOfGLCM                DSRBasicCodedEntry("128798", "DCM", "First Measure of Information Correlation of GLCM")
+#define CODE_DCM_SecondMeasureOfInformationCorrelationOfGLCM               DSRBasicCodedEntry("128799", "DCM", "Second Measure of Information Correlation of GLCM")
+#define CODE_DCM_ShortRunsEmphasis                                         DSRBasicCodedEntry("128801", "DCM", "Short Runs Emphasis")
+#define CODE_DCM_LongRunsEmphasis                                          DSRBasicCodedEntry("128802", "DCM", "Long Runs Emphasis")
+#define CODE_DCM_LowGrayLevelRunEmphasis                                   DSRBasicCodedEntry("128803", "DCM", "Low Gray Level Run Emphasis")
+#define CODE_DCM_HighGrayLevelRunEmphasis                                  DSRBasicCodedEntry("128804", "DCM", "High Gray Level Run Emphasis")
+#define CODE_DCM_ShortRunLowGrayLevelEmphasis                              DSRBasicCodedEntry("128805", "DCM", "Short Run Low Gray Level Emphasis")
+#define CODE_DCM_ShortRunHighGrayLevelEmphasis                             DSRBasicCodedEntry("128806", "DCM", "Short Run High Gray Level Emphasis")
+#define CODE_DCM_LongRunLowGrayLevelEmphasis                               DSRBasicCodedEntry("128807", "DCM", "Long Run Low Gray Level Emphasis")
+#define CODE_DCM_LongRunHighGrayLevelEmphasis                              DSRBasicCodedEntry("128808", "DCM", "Long Run High Gray Level Emphasis")
+#define CODE_DCM_GrayLevelNonuniformityInRuns                              DSRBasicCodedEntry("128809", "DCM", "Gray Level Nonuniformity in Runs")
+#define CODE_DCM_GrayLevelNonuniformityInRunsNormalized                    DSRBasicCodedEntry("128810", "DCM", "Gray Level Nonuniformity in Runs Normalized")
+#define CODE_DCM_RunLengthNonuniformity                                    DSRBasicCodedEntry("128811", "DCM", "Run Length Nonuniformity")
+#define CODE_DCM_RunLengthNonuniformityNormalized                          DSRBasicCodedEntry("128812", "DCM", "Run Length Nonuniformity Normalized")
+#define CODE_DCM_RunPercentage                                             DSRBasicCodedEntry("128813", "DCM", "Run Percentage")
+#define CODE_DCM_GrayLevelVarianceInRuns                                   DSRBasicCodedEntry("128814", "DCM", "Gray Level Variance in Runs")
+#define CODE_DCM_RunLengthVariance                                         DSRBasicCodedEntry("128815", "DCM", "Run Length Variance")
+#define CODE_DCM_RunEntropy                                                DSRBasicCodedEntry("128816", "DCM", "Run Entropy")
+#define CODE_DCM_SmallZoneEmphasis                                         DSRBasicCodedEntry("128821", "DCM", "Small Zone Emphasis")
+#define CODE_DCM_LargeZoneEmphasis                                         DSRBasicCodedEntry("128822", "DCM", "Large Zone Emphasis")
+#define CODE_DCM_LowGrayLevelZoneEmphasis                                  DSRBasicCodedEntry("128823", "DCM", "Low Gray Level Zone Emphasis")
+#define CODE_DCM_HighGrayLevelZoneEmphasis                                 DSRBasicCodedEntry("128824", "DCM", "High Gray Level Zone Emphasis")
+#define CODE_DCM_SmallZoneLowGrayLevelEmphasis                             DSRBasicCodedEntry("128825", "DCM", "Small Zone Low Gray Level Emphasis")
+#define CODE_DCM_SmallZoneHighGrayLevelEmphasis                            DSRBasicCodedEntry("128826", "DCM", "Small Zone High Gray Level Emphasis")
+#define CODE_DCM_LargeZoneLowGrayLevelEmphasis                             DSRBasicCodedEntry("128827", "DCM", "Large Zone Low Gray Level Emphasis")
+#define CODE_DCM_LargeZoneHighGrayLevelEmphasis                            DSRBasicCodedEntry("128828", "DCM", "Large Zone High Gray Level Emphasis")
+#define CODE_DCM_GrayLevelNonuniformityOfZoneCounts                        DSRBasicCodedEntry("128829", "DCM", "Gray Level Nonuniformity of Zone Counts")
+#define CODE_DCM_GrayLevelNonuniformityOfZoneCountsNormalized              DSRBasicCodedEntry("128830", "DCM", "Gray Level Nonuniformity of Zone Counts Normalized")
+#define CODE_DCM_ZoneSizeNonuniformity                                     DSRBasicCodedEntry("128831", "DCM", "Zone Size Nonuniformity")
+#define CODE_DCM_ZoneSizeNonuniformityNormalized                           DSRBasicCodedEntry("128832", "DCM", "Zone Size Nonuniformity Normalized")
+#define CODE_DCM_ZonePercentage                                            DSRBasicCodedEntry("128833", "DCM", "Zone Percentage")
+#define CODE_DCM_GrayLevelVarianceInZones                                  DSRBasicCodedEntry("128834", "DCM", "Gray Level Variance in Zones")
+#define CODE_DCM_ZoneSizeVariance                                          DSRBasicCodedEntry("128835", "DCM", "Zone Size Variance")
+#define CODE_DCM_ZoneSizeEntropy                                           DSRBasicCodedEntry("128836", "DCM", "Zone Size Entropy")
 
 #endif
