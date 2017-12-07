@@ -50,6 +50,7 @@ using OFrvalue = T;
 
 #define OFrvalue_ref(T) T&&
 #define OFrvalue_access(RV) RV
+#define OFrvalue_ref_upcast(T, RV) RV
 
 #else // fallback implementations
 
@@ -204,8 +205,18 @@ struct OFrvalue : OFrvalue_base<T>::type
  *  @endcode
  */
 #define OFrvalue_ref(T) unspecified
+
+/** Upcast an rvalue reference to an rvalue reference of one of its bases.
+ *  This is a helper macro for being used with DCMTK's fallback implementation
+ *  of move semantics. C++11 rvalue references allow implicit upcasts,
+ *  therefore, this macro has no effect if C++11 is enabled.
+ *  @param T the base class to upcast to
+ *  @param RV the rvalue reference to upcast
+ */
+#define OFrvalue_ref_upcast(T, RV) unspecified
 #else // NOT DOXYGEN
 #define OFrvalue_ref(T) const OFrvalue<T >&
+#define OFrvalue_ref_upcast(T, RV) OFmove<T>(RV)
 #endif
 
 /** Obtain an lvalue reference from an rvalue reference.
