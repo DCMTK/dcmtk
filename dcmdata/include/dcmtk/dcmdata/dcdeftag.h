@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-12-05 12:28:42
+**   Date: 2017-12-07 15:02:11
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2017-12-05 12:28:42"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2017-12-07 15:02:11"
 
 
 /*
@@ -3472,7 +3472,7 @@
 #define DCM_CreationDate                         DcmTagKey(0x2100, 0x0040)
 #define DCM_CreationTime                         DcmTagKey(0x2100, 0x0050)
 #define DCM_Originator                           DcmTagKey(0x2100, 0x0070)
-#define DCM_RETIRED_DestinationAE                DcmTagKey(0x2100, 0x0140)
+#define DCM_DestinationAE                        DcmTagKey(0x2100, 0x0140)
 #define DCM_OwnerID                              DcmTagKey(0x2100, 0x0160)
 #define DCM_NumberOfFilms                        DcmTagKey(0x2100, 0x0170)
 #define DCM_RETIRED_ReferencedPrintJobSequencePullStoredPrint DcmTagKey(0x2100, 0x0500)

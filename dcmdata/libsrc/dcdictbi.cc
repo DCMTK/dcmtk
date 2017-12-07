@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-12-05 12:28:58
+**   Date: 2017-12-07 15:02:17
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -2987,11 +2987,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       "SIEMENS CM VA0  CMS" }
 #endif
   , { 0x0014, 0x0023, 0x0014, 0x0023,
-      EVR_ST, "RETIRED_CADFileFormat", 1, -1, "DICOM/retired",
+      EVR_ST, "RETIRED_CADFileFormat", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x0024, 0x0014, 0x0024,
-      EVR_ST, "RETIRED_ComponentReferenceSystem", 1, -1, "DICOM/retired",
+      EVR_ST, "RETIRED_ComponentReferenceSystem", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x0025, 0x0014, 0x0025,
@@ -3023,7 +3023,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x0045, 0x0014, 0x0045,
-      EVR_ST, "RETIRED_MaterialPropertiesFileFormatRetired", 1, -1, "DICOM/retired",
+      EVR_ST, "RETIRED_MaterialPropertiesFileFormatRetired", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x0046, 0x0014, 0x0046,
@@ -24881,7 +24881,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x2100, 0x0140, 0x2100, 0x0140,
-      EVR_AE, "RETIRED_DestinationAE", 1, 1, "DICOM/retired",
+      EVR_AE, "DestinationAE", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x2100, 0x0160, 0x2100, 0x0160,

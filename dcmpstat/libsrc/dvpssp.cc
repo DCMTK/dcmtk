@@ -67,7 +67,7 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection, const char *
 , seriesNumber(DCM_SeriesNumber)
 , manufacturer(DCM_Manufacturer)
 , originator(DCM_Originator)
-, destination(DCM_RETIRED_DestinationAE)
+, destination(DCM_DestinationAE)
 , printerName(DCM_PrinterName)
 , instanceNumber(DCM_InstanceNumber)
 , imageDisplayFormat(DCM_ImageDisplayFormat)
