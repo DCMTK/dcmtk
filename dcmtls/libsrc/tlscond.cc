@@ -21,6 +21,7 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmtls/tlscond.h"
 
 // instantiation of pure generic error codes
