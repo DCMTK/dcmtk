@@ -216,7 +216,7 @@ struct OFrvalue : OFrvalue_base<T>::type
 #define OFrvalue_ref_upcast(T, RV) unspecified
 #else // NOT DOXYGEN
 #define OFrvalue_ref(T) const OFrvalue<T >&
-#define OFrvalue_ref_upcast(T, RV) OFmove<T>(RV)
+#define OFrvalue_ref_upcast(T, RV) OFmove<T >(RV)
 #endif
 
 /** Obtain an lvalue reference from an rvalue reference.
