@@ -231,7 +231,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
 }
 
 DcmTLSTransportLayer::DcmTLSTransportLayer(OFrvalue_ref(DcmTLSTransportLayer) rhs)
-: DcmTransportLayer(OFrvalue_ref_upcast<DcmTransportLayer>(rhs))
+: DcmTransportLayer(OFrvalue_ref_upcast(DcmTransportLayer, rhs))
 , transportLayerContext(rhs.transportLayerContext)
 , canWriteRandseed(OFmove(OFrvalue_access(rhs).canWriteRandseed))
 , privateKeyPasswd(OFmove(OFrvalue_access(rhs).privateKeyPasswd))
@@ -244,7 +244,7 @@ DcmTLSTransportLayer& DcmTLSTransportLayer::operator=(OFrvalue_ref(DcmTLSTranspo
   if (this != &rhs)
   {
     clear();
-    DcmTransportLayer::operator=(OFrvalue_ref_upcast<DcmTransportLayer>(rhs));
+    DcmTransportLayer::operator=(OFrvalue_ref_upcast(DcmTransportLayer, rhs));
     transportLayerContext = rhs.transportLayerContext;
     canWriteRandseed = OFmove(OFrvalue_access(rhs).canWriteRandseed);
     privateKeyPasswd = OFmove(OFrvalue_access(rhs).privateKeyPasswd);
