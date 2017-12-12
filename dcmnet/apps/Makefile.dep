@@ -330,7 +330,8 @@ echoscu.o: echoscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmnet/diutil.h \
+ ../include/dcmtk/dcmnet/diutil.h ../include/dcmtk/dcmnet/dcmtrans.h \
+ ../include/dcmtk/dcmnet/dcmlayer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
@@ -338,7 +339,6 @@ echoscu.o: echoscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
- ../include/dcmtk/dcmnet/dcmtrans.h ../include/dcmtk/dcmnet/dcmlayer.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
 findscu.o: findscu.cc ../../config/include/dcmtk/config/osconfig.h \

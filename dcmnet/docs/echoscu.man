@@ -80,6 +80,9 @@ other network options:
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
 
+  -ts   --socket-timeout  [s]econds: integer (default: 60)
+          timeout for network socket (0 for none)
+
   -ta   --acse-timeout  [s]econds: integer (default: 30)
           timeout for ACSE messages
 
