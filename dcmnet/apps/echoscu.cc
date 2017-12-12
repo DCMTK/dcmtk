@@ -109,47 +109,56 @@ static const char* transferSyntaxes[] = {
 
 // ********************************************
 
+/* helper macro for converting stream output to a string */
+#define CONVERT_TO_STRING(output, string) \
+    optStream.str(""); \
+    optStream.clear(); \
+    optStream << output << OFStringStream_ends; \
+    OFSTRINGSTREAM_GETOFSTRING(optStream, string)
+
 #define SHORTCOL 4
 #define LONGCOL 19
 
 int
 main(int argc, char *argv[])
 {
-    const char *     opt_peer                = NULL;
-    OFCmdUnsignedInt opt_port                = 104;
-    const char *     opt_peerTitle           = PEERAPPLICATIONTITLE;
-    const char *     opt_ourTitle            = APPLICATIONTITLE;
-    OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
-    OFCmdUnsignedInt opt_repeatCount         = 1;
-    OFBool           opt_abortAssociation    = OFFalse;
-    OFCmdUnsignedInt opt_numXferSyntaxes     = 1;
-    OFCmdUnsignedInt opt_numPresentationCtx  = 1;
-    OFCmdUnsignedInt maxXferSyntaxes         = OFstatic_cast(OFCmdUnsignedInt, (DIM_OF(transferSyntaxes)));
-    OFBool           opt_secureConnection    = OFFalse; /* default: no secure connection */
-    int opt_acse_timeout = 30;
+  OFOStringStream optStream;
+
+  const char *     opt_peer                = NULL;
+  OFCmdUnsignedInt opt_port                = 104;
+  const char *     opt_peerTitle           = PEERAPPLICATIONTITLE;
+  const char *     opt_ourTitle            = APPLICATIONTITLE;
+  OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
+  OFCmdUnsignedInt opt_repeatCount         = 1;
+  OFBool           opt_abortAssociation    = OFFalse;
+  OFCmdUnsignedInt opt_numXferSyntaxes     = 1;
+  OFCmdUnsignedInt opt_numPresentationCtx  = 1;
+  OFCmdUnsignedInt maxXferSyntaxes         = OFstatic_cast(OFCmdUnsignedInt, (DIM_OF(transferSyntaxes)));
+  OFBool           opt_secureConnection    = OFFalse; /* default: no secure connection */
+  int              opt_acse_timeout        = 30;
 
 #ifdef WITH_OPENSSL
-    int         opt_keyFileFormat = SSL_FILETYPE_PEM;
-    OFBool      opt_doAuthenticate = OFFalse;
-    const char *opt_privateKeyFile = NULL;
-    const char *opt_certificateFile = NULL;
-    const char *opt_passwd = NULL;
+  int         opt_keyFileFormat = SSL_FILETYPE_PEM;
+  OFBool      opt_doAuthenticate = OFFalse;
+  const char *opt_privateKeyFile = NULL;
+  const char *opt_certificateFile = NULL;
+  const char *opt_passwd = NULL;
 #if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-    OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
+  OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #else
-    OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+  OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
-    const char *opt_readSeedFile = NULL;
-    const char *opt_writeSeedFile = NULL;
-    DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
-    const char *opt_dhparam = NULL;
+  const char *opt_readSeedFile = NULL;
+  const char *opt_writeSeedFile = NULL;
+  DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
+  const char *opt_dhparam = NULL;
 #endif
 
-    T_ASC_Network *net;
-    T_ASC_Parameters *params;
-    DIC_NODENAME peerHost;
-    T_ASC_Association *assoc;
-    OFString temp_str;
+  T_ASC_Network *net;
+  T_ASC_Parameters *params;
+  DIC_NODENAME peerHost;
+  T_ASC_Association *assoc;
+  OFString temp_str;
 
   OFStandard::initializeNetwork();
 
@@ -169,14 +178,8 @@ main(int argc, char *argv[])
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
-      OFString opt1 = "set my calling AE title (default: ";
-      opt1 += APPLICATIONTITLE;
-      opt1 += ")";
-      cmd.addOption("--aetitle",           "-aet", 1, "[a]etitle: string", opt1.c_str());
-      OFString opt2 = "set called AE title of peer (default: ";
-      opt2 += PEERAPPLICATIONTITLE;
-      opt2 += ")";
-      cmd.addOption("--call",              "-aec", 1, "[a]etitle: string", opt2.c_str());
+      cmd.addOption("--aetitle",           "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
+      cmd.addOption("--call",              "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
     cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
       sprintf(tempstr, "%ld", OFstatic_cast(long, maxXferSyntaxes));
@@ -187,21 +190,13 @@ main(int argc, char *argv[])
 
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",           "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      cmd.addOption("--acse-timeout",      "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString2);
+      cmd.addOption("--acse-timeout",      "-ta",  1, optString2.c_str(), "timeout for ACSE messages");
       cmd.addOption("--dimse-timeout",     "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
-      OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
-      opt3 += tempstr;
-      opt3 += ")";
-      OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
-      opt4 += tempstr;
-      opt4 += "..";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
-      opt4 += tempstr;
-      opt4 += ")";
-      cmd.addOption("--max-pdu",           "-pdu", 1, opt4.c_str(), opt3.c_str());
+      CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
+      CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxReceivePDULength << ")", optString4);
+      cmd.addOption("--max-pdu",           "-pdu", 1, optString3.c_str(), optString4.c_str());
       cmd.addOption("--repeat",                    1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                        "abort association instead of releasing it");
 
