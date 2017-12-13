@@ -76,7 +76,7 @@ void OFSockAddr::setPort(unsigned short port)
 DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFSockAddr& s)
 {
   o << "SOCKADDR_BEGIN\n  Family: ";
-#ifdef __MINGW32__
+#ifdef _WIN32
   unsigned long bufsize = 512;
 #endif
   char buf[512];
@@ -93,7 +93,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
       si = s.getSockaddr_in_const();
       o << "AF_INET";
 
-#ifdef __MINGW32__
+#ifdef _WIN32
       /* MinGW dows not have inet_ntop() */
       WSAAddressToStringA((struct sockaddr*) si, s.size(), NULL, buf, &bufsize);
       o  << "\n  IP address: " << buf;
@@ -106,7 +106,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
     case AF_INET6:
       si6 = s.getSockaddr_in6_const();
       o << "  AF_INET6";
-#ifdef __MINGW32__
+#ifdef _WIN32
       /* MinGW dows not have inet_ntop() */
       WSAAddressToStringA((struct sockaddr*) si6, s.size(), NULL, buf, &bufsize);
       o  << "\n  IP address: " << buf;
