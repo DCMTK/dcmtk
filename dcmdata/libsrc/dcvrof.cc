@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -138,7 +138,8 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
                 /* we cannot use getVM() since it always returns 1 */
                 const size_t count = getLengthField() / sizeof(Float32);
                 /* print float values with separators */
-                out << (*(floatValues++));
+				/* count can be zero if we have an invalid element with less than four bytes length */
+				if (count > 0) out << (*(floatValues++));
                 for (unsigned long i = 1; i < count; i++)
                     out << "\\" << (*(floatValues++));
                 /* reset i/o manipulators */
