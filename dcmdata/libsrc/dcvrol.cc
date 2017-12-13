@@ -141,10 +141,14 @@ OFCondition DcmOtherLong::writeXML(STD_NAMESPACE ostream &out,
             {
                 /* we cannot use getVM() since it always returns 1 */
                 const size_t count = getLengthField() / sizeof(Uint32);
-                /* print unsigned long values in hex mode */
-                out << (*(uintVals++));
-                for (unsigned long i = 1; i < count; i++)
-                    out << "\\" << (*(uintVals++));
+                /* count can be zero if we have an invalid element with less than four bytes length */
+                if (count > 0)
+                {
+                    /* print unsigned long values in hex mode */
+                    out << (*(uintVals++));
+                    for (unsigned long i = 1; i < count; i++)
+                        out << "\\" << (*(uintVals++));
+                }
             }
         }
     }

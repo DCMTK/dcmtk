@@ -775,13 +775,17 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
                     if (getUint16Array(wordValues).good() && (wordValues != NULL))
                     {
                         const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Uint16));
-                        out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
-                        /* print word values in hex mode */
-                        out << STD_NAMESPACE setw(4) << (*(wordValues++));
-                        for (unsigned long i = 1; i < count; i++)
-                            out << "\\" << STD_NAMESPACE setw(4) << (*(wordValues++));
-                        /* reset i/o manipulators */
-                        out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                        /* count can be zero if we have an invalid element with less than two bytes length */
+                        if (count > 0)
+                        {
+                            out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
+                            /* print word values in hex mode */
+                            out << STD_NAMESPACE setw(4) << (*(wordValues++));
+                            for (unsigned long i = 1; i < count; i++)
+                                out << "\\" << STD_NAMESPACE setw(4) << (*(wordValues++));
+                            /* reset i/o manipulators */
+                            out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                        }
                     }
                 } else {
                     /* get and check 8 bit data */

@@ -133,17 +133,20 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
             /* get and check 32 bit float data */
             if (getFloat32Array(floatValues).good() && (floatValues != NULL))
             {
-                /* increase default precision - see DcmFloatingPointSingle::print() */
-                const STD_NAMESPACE streamsize oldPrecision = out.precision(8);
                 /* we cannot use getVM() since it always returns 1 */
                 const size_t count = getLengthField() / sizeof(Float32);
-                /* print float values with separators */
                 /* count can be zero if we have an invalid element with less than four bytes length */
-                if (count > 0) out << (*(floatValues++));
-                for (unsigned long i = 1; i < count; i++)
-                    out << "\\" << (*(floatValues++));
-                /* reset i/o manipulators */
-                out.precision(oldPrecision);
+                if (count > 0)
+                {
+                    /* increase default precision - see DcmFloatingPointSingle::print() */
+                    const STD_NAMESPACE streamsize oldPrecision = out.precision(8);
+                    /* print float values with separators */
+                    out << (*(floatValues++));
+                    for (unsigned long i = 1; i < count; i++)
+                        out << "\\" << (*(floatValues++));
+                    /* reset i/o manipulators */
+                    out.precision(oldPrecision);
+                }
             }
         }
     }
