@@ -167,7 +167,8 @@ void DcmFloatingPointSingle::print(STD_NAMESPACE ostream&out,
         errorFlag = getFloat32Array(floatVals);
         if (floatVals != NULL)
         {
-            const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Float32)) /* do not use getVM()! */;
+            /* do not simply use getVM() because derived classes might always return 1 */
+            const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Float32));
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
                 DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
             unsigned long printedLength = 0;
@@ -225,7 +226,8 @@ OFCondition DcmFloatingPointSingle::getFloat32(Float32 &floatVal,
     {
         if (floatValues == NULL)
             errorFlag = EC_IllegalCall;
-        else if (pos >= getLengthField() / sizeof(Float32) /* do not use getVM()! */)
+        /* do not simply use getVM() because derived classes might always return 1 */
+        else if (pos >= getLengthField() / sizeof(Float32))
             errorFlag = EC_IllegalParameter;
         else
             floatVal = floatValues[pos];
