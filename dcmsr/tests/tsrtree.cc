@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2016, OFFIS e.V.
+ *  Copyright (C) 2012-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -535,6 +535,44 @@ OFTEST(dcmsr_extractSubTree)
     OFCHECK_EQUAL(tree.gotoRoot(), nodeID + 0);
     OFCHECK_EQUAL(tree.iterate(), nodeID + 1);
     OFCHECK_EQUAL(tree.iterate(), nodeID + 3);
+}
+
+
+OFTEST(dcmsr_gotoParentUntilRoot)
+{
+    DSRTree<> tree;
+    const size_t rootID = tree.getNextNodeID();
+    /* first, create a simple tree of 8 nodes and check the references */
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode()), rootID + 0);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), rootID + 1);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), rootID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), rootID + 3);
+    OFCHECK_EQUAL(tree.gotoPrevious(), rootID + 2);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), rootID + 4);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_afterCurrent), rootID + 5);
+    OFCHECK_EQUAL(tree.gotoPrevious(), rootID + 4);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), rootID + 6);
+    OFCHECK_EQUAL(tree.addNode(new DSRTreeNode(), DSRTypes::AM_belowCurrent), rootID + 7);
+    /* then, go one level up until the root node is reached */
+    size_t prevID;
+    size_t nodeID = tree.getNodeID();
+    do {
+        prevID = nodeID;
+        nodeID = tree.gotoParent();
+    } while (nodeID != 0);
+    /* check whether it is really the root node */
+    OFCHECK_EQUAL(prevID, rootID);
+    OFCHECK_EQUAL(tree.getNodeID(), rootID);
+    /* try again starting at another child node */
+    nodeID = rootID + 5;
+    OFCHECK_EQUAL(tree.gotoNode(nodeID), nodeID);
+    do {
+        prevID = nodeID;
+        nodeID = tree.gotoParent();
+    } while (nodeID != 0);
+    /* check whether it is really the root node */
+    OFCHECK_EQUAL(prevID, rootID);
+    OFCHECK_EQUAL(tree.getNodeID(), rootID);
 }
 
 

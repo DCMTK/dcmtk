@@ -40,6 +40,7 @@ OFTEST_REGISTER(dcmsr_assignTree);
 OFTEST_REGISTER(dcmsr_cloneSubTree_1);
 OFTEST_REGISTER(dcmsr_cloneSubTree_2);
 OFTEST_REGISTER(dcmsr_extractSubTree);
+OFTEST_REGISTER(dcmsr_gotoParentUntilRoot);
 OFTEST_REGISTER(dcmsr_gotoAnnotatedTreeNode);
 OFTEST_REGISTER(dcmsr_addContentItem_1);
 OFTEST_REGISTER(dcmsr_addContentItem_2);
