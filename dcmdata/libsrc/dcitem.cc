@@ -588,7 +588,7 @@ Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
     Uint32 itemlen = 0;
     DcmXfer xferSyn(xfer);
     /* Length of item's start header */
-    Uint32 headersize = xferSyn.sizeofTagHeader(getVR());
+    const Uint32 headersize = xferSyn.sizeofTagHeader(getVR());
     /* Length of item's content, i.e. contained elements */
     itemlen = getLength(xfer, enctype);
     /* Since the item's total length can exceed the maximum length of 32 bit, it is
@@ -597,7 +597,7 @@ Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
      */
     if ( (itemlen == DCM_UndefinedLength) || OFStandard::check32BitAddOverflow(itemlen, headersize) )
       return DCM_UndefinedLength;
-    itemlen += xferSyn.sizeofTagHeader(getVR());
+    itemlen += headersize;
     if (enctype == EET_UndefinedLength) // add bytes for closing item tag marker if necessary
     {
       if (OFStandard::check32BitAddOverflow(itemlen, 8))
