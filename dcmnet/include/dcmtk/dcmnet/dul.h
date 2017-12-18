@@ -542,7 +542,9 @@ DCMTK_DCMNET_EXPORT OFCondition DUL_readSocketHandleAsForkedChild();
  *     command line parameters have to be passed from parent to child.
  */
 DCMTK_DCMNET_EXPORT void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
-
+#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(DCMTK_USE_WCHAR_T)
+DCMTK_DCMNET_EXPORT void DUL_requestForkOnTransportConnectionReceipt(int argc, wchar_t *argv[]);
+#endif
 
 /// @deprecated Use OFString& DUL_DumpParams(OFString&, DUL_ASSOCIATESERVICEPARAMETERS) instead.
 DCMTK_DCMNET_EXPORT void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
