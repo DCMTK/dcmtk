@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,7 +36,7 @@ public:
   /** constructor
    *  @param buf buffer in which data is stored. Must be allocated
    *    by caller and remain valid during the lifetime of this object.
-   *  @param bufLen buffer length, must be even number > 0.
+   *  @param bufLen buffer length, must be even number (0 permitted).
    */
   DcmBufferConsumer(void *buf, offile_off_t bufLen);
 
