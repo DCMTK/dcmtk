@@ -23,6 +23,7 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmtls/tlscond.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 // instantiation of pure generic error codes
 
