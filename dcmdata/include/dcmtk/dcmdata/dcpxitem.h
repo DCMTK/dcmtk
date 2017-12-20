@@ -119,6 +119,11 @@ class DCMTK_DCMDATA_EXPORT DcmPixelItem : public DcmOtherByteOtherWord
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
+    /** @copydoc DcmObject::calcElementLength()
+     */
+    virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
+                                     const E_EncodingType enctype);
+
     /** creates in this object an offset table for a compressed pixel sequence
      *  @param offsetList list of size entries (i.e. number of bytes) for each
      *    individual frame, including item header (8 bytes) of all associated

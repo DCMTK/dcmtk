@@ -124,6 +124,24 @@ DcmItem *DcmPixelItem::getParentItem()
 // ********************************
 
 
+Uint32 DcmPixelItem::calcElementLength(const E_TransferSyntax xfer,
+                                       const E_EncodingType enctype)
+{
+    /* silence unused arguments warnings */
+    OFstatic_cast(void, xfer);
+    OFstatic_cast(void, enctype);
+    /* get length of the pixel data */
+    Uint32 valueLength = getLengthField();
+    /* make sure the value did not overflow, clamp it otherwise. */
+    if (OFStandard::check32BitAddOverflow(valueLength, 8))
+      return OFnumeric_limits<Uint32>::max();
+    return valueLength + 8;
+}
+
+
+// ********************************
+
+
 OFCondition DcmPixelItem::writeTagAndLength(DcmOutputStream &outStream,
                                             const E_TransferSyntax oxfer,
                                             Uint32 &writtenBytes) const
