@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,9 +54,6 @@ class DiMonoInputPixelTemplate
                              DiMonoModality *modality)
       : DiMonoPixelTemplate<T3>(pixel, modality)
     {
-        /* erase empty part of the buffer (= blacken the background) */
-        if ((this->Data != NULL) && (this->InputCount < this->Count))
-            OFBitmanipTemplate<T3>::zeroMem(this->Data + this->InputCount, this->Count - this->InputCount);
         if ((pixel != NULL) && (this->Count > 0))
         {
             // check whether to apply any modality transform
@@ -74,6 +71,9 @@ class DiMonoInputPixelTemplate
                 rescale(pixel);                     // "copy" or reference pixel data
                 this->determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
             }
+            /* erase empty part of the buffer (= blacken the background) */
+            if ((this->Data != NULL) && (this->InputCount < this->Count))
+                OFBitmanipTemplate<T3>::zeroMem(this->Data + this->InputCount, this->Count - this->InputCount);
         }
     }
 
@@ -131,7 +131,7 @@ class DiMonoInputPixelTemplate
                     this->Data = new T3[this->Count];
                 if (this->Data != NULL)
                 {
-                    DCMIMGLE_DEBUG("applying modality tranformation with LUT (" << mlut->getCount() << " entries)");
+                    DCMIMGLE_DEBUG("applying modality transformation with LUT (" << mlut->getCount() << " entries)");
                     T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
@@ -209,6 +209,7 @@ class DiMonoInputPixelTemplate
                 {
                     if (!useInputBuffer)
                     {
+                        DCMIMGLE_DEBUG("copying pixel data from input buffer");
                         const T1 *p = pixel + input->getPixelStart();
                         for (i = this->InputCount; i != 0; --i)   // copy pixel data: can't use copyMem because T1 isn't always equal to T3
                             *(q++) = OFstatic_cast(T3, *(p++));
