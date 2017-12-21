@@ -86,7 +86,8 @@ IF(WIN32 AND NOT MINGW)
       SET(OPENSSL_BINDIR "${WITH_OPENSSLINC}/bin")
       SET(OPENSSL_INCDIR "${WITH_OPENSSLINC}/include")
       SET(OPENSSL_LIBDIR "${WITH_OPENSSLINC}/lib")
-      SET(OPENSSL_LIBS debug "${OPENSSL_LIBDIR}/dcmtkssl_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkssl_o.lib" debug "${OPENSSL_LIBDIR}/dcmtkcrypto_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkcrypto_o.lib")
+      # starting with OpenSSL 1.1.0, the Windows crypt32 library is needed for a static link of OpenSSL.
+      SET(OPENSSL_LIBS "crypt32" debug "${OPENSSL_LIBDIR}/dcmtkssl_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkssl_o.lib" debug "${OPENSSL_LIBDIR}/dcmtkcrypto_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkcrypto_o.lib")
       MESSAGE(STATUS "Info: DCMTK OPENSSL support will be enabled")
       SET(WITH_OPENSSL 1)
     ELSE(WITH_OPENSSLINC) # turn off library if library path not set
