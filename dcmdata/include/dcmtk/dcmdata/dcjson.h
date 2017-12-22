@@ -39,36 +39,36 @@
  *
  *  <h3>Usage Example:</h3>
  *  @code{.cpp}
-    #include "dcmtk/dcmdata/dcjson.h"
-    // ...
-    DcmFileFormat fileformat;
-    if(fileformat.loadFile("test.dcm").good())
-    {
-        // print the DICOM file in JSON format
-        // using the pretty format (muti-line with indention and other whitespace)
-        fileformat.writeJson(COUT, DcmJsonFormatPretty(OFTrue));
-
-        // using the compact (single line, without unneeded whitespace) format
-        fileformat.writeJson(COUT, DcmJsonFormatCompact(OFTrue));
-    }
-    @endcode
+ *  #include "dcmtk/dcmdata/dcjson.h"
+ *  // ...
+ *  DcmFileFormat fileformat;
+ *  if(fileformat.loadFile("test.dcm").good())
+ *  {
+ *      // print the DICOM file in JSON format
+ *      // using the pretty format (muti-line with indention and other whitespace)
+ *      fileformat.writeJson(COUT, DcmJsonFormatPretty(OFTrue));
+ *
+ *      // using the compact (single line, without unneeded whitespace) format
+ *      fileformat.writeJson(COUT, DcmJsonFormatCompact(OFTrue));
+ *  }
+ *  @endcode
  *  <h3>Implementing a custom formatter:</h3>
  *  @code{.cpp}
-    struct CustomJsonFormat : DcmJsonFormatPretty
-    {
-      CustomJsonFormat(const OFBool printMetaInfo = OFTrue)
-      : DcmJsonFormatPretty(printMetaInfo)
-      {
-
-      }
-
-      OFString OFJsonFormatExample::space()
-      {
-        // use tabstops instead of spaces for indention
-        return "\t";
-      }
-    }
-    @endcode
+ *  struct CustomJsonFormat : DcmJsonFormatPretty
+ *  {
+ *    CustomJsonFormat(const OFBool printMetaInfo = OFTrue)
+ *    : DcmJsonFormatPretty(printMetaInfo)
+ *    {
+ *
+ *    }
+ *
+ *    OFString OFJsonFormatExample::space()
+ *    {
+ *      // use tabstops instead of spaces for indention
+ *      return "\t";
+ *    }
+ *  }
+ *  @endcode
  */
 class DCMTK_DCMDATA_EXPORT DcmJsonFormat
 {
@@ -140,13 +140,13 @@ public:
      *  remove leading zeros, except before dot.
      *  @b Example:
      *  @code{.txt}
-        00.123 --> 0.123
-        023.12 --> 23.12
-        -01.00 --> -1.00
-          0200 --> 200
-           .12 --> 0.12
-         000.1 --> 0.1
-        @endcode
+     *  00.123 --> 0.123
+     *  023.12 --> 23.12
+     *  -01.00 --> -1.00
+     *    0200 --> 200
+     *     .12 --> 0.12
+     *   000.1 --> 0.1
+     *  @endcode
      *  @param value String that should be normalize
      */
     static void normalizeDecimalString(OFString &value);
@@ -155,11 +155,11 @@ public:
      *  remove leading zeros, except before dot.
      *  @b Example:
      *  @code{.txt}
-         000 --> 0
-         023 --> 23
-         -01 --> -1
-        0200 --> 200
-        @endcode
+     *   000 --> 0
+     *   023 --> 23
+     *   -01 --> -1
+     *  0200 --> 200
+     *  @endcode
      *  @param value String that should be normalize
      */
     static void normalizeIntegerString(OFString &value);
@@ -231,30 +231,30 @@ public:
      *  @details
      *  <h3>Usage Example:</h3>
      *  @code{.cpp}
-        struct BulkDataURIJsonFormat : DcmJsonFormatPretty
-        {
-          CustomJsonFormat(const OFBool printMetaInfo = OFTrue,
-                           ... bulkDataURIDatabase)
-          : DcmJsonFormatPretty(printMetaInfo)
-          , TheDatabase(bulkDataURIDatabase)
-          {
-
-          }
-
-          virtual OFBool asBulkDataURI(const DcmTagKey& tag, OFString& uri)
-          {
-            ... result = TheDatabase.findBulkDataFor(tag);
-            if (result.found())
-            {
-              uri = result.uri();
-              return OFTrue;
-            }
-            return OFFalse;
-          }
-
-          ... TheDatabase;
-        }
-        @endcode
+     *  struct BulkDataURIJsonFormat : DcmJsonFormatPretty
+     *  {
+     *    CustomJsonFormat(const OFBool printMetaInfo = OFTrue,
+     *                     ... bulkDataURIDatabase)
+     *    : DcmJsonFormatPretty(printMetaInfo)
+     *    , TheDatabase(bulkDataURIDatabase)
+     *    {
+     *
+     *    }
+     *
+     *    virtual OFBool asBulkDataURI(const DcmTagKey& tag, OFString& uri)
+     *    {
+     *      ... result = TheDatabase.findBulkDataFor(tag);
+     *      if (result.found())
+     *      {
+     *        uri = result.uri();
+     *        return OFTrue;
+     *      }
+     *      return OFFalse;
+     *    }
+     *
+     *    ... TheDatabase;
+     *  }
+     *  @endcode
      */
     virtual OFBool asBulkDataURI(const DcmTagKey& tag, OFString& uri);
 
@@ -262,8 +262,8 @@ public:
      *  with indention and newlines as in the format Variable given.
      *  @b Example:
      *  @code{.txt}
-        ,"Value":[
-        @endcode
+     *  ,"Value":[
+     *  @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printValuePrefix(STD_NAMESPACE ostream &out);
@@ -272,8 +272,8 @@ public:
      *  with indention and newlines as in the format Variable given.
      *  @b Example:
      *  @code{.txt}
-        ]\n
-        @endcode
+     *  ]\n
+     *  @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printValueSuffix(STD_NAMESPACE ostream &out);
@@ -282,8 +282,8 @@ public:
      *  with indention and newlines as in the format Variable given.
      *  @b Example:
      *  @code{.txt}
-        ,"BulkDataURI":
-        @endcode
+     *  ,"BulkDataURI":
+     *  @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printBulkDataURIPrefix(STD_NAMESPACE ostream &out);
@@ -292,8 +292,8 @@ public:
      *  with indention and newlines as the format specifies.
      *  @b Example:
      *  @code{.txt}
-        ,"InlineBinary":
-        @endcode
+     *  ,"InlineBinary":
+     *  @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printInlineBinaryPrefix(STD_NAMESPACE ostream &out);
@@ -302,9 +302,9 @@ public:
      *  indention and newlines as the format specifies.
      *  @b Example:
      *  @code{.txt}
-            Example,\n
-            Example...
-        @endcode
+     *      Example,\n
+     *      Example...
+     *  @endcode
      *  @param out output stream to which the Value prefix is written
      */
     virtual void printNextArrayElementPrefix(STD_NAMESPACE ostream &out);

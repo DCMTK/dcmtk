@@ -203,12 +203,12 @@ public:
      *  @details
      *  <h3>Usage Example</h3>
      *  @code{.cpp}
-        DcmAttributeMatching match( EVR_DA );
-        match( "20160101-20181231", 17, "20170713", 8 ); // -> OFTrue
-        match = DcmAttributeMatching( EVR_TM );
-        match( "-12", 3, "11", 2 ) // -> OFTrue
-        DcmAttributeMatching( EVR_PN )( "M?ller", 6, "^Martin", 7 ) // -> OFFalse
-        @endcode
+     *  DcmAttributeMatching match( EVR_DA );
+     *  match( "20160101-20181231", 17, "20170713", 8 ); // -> OFTrue
+     *  match = DcmAttributeMatching( EVR_TM );
+     *  match( "-12", 3, "11", 2 ) // -> OFTrue
+     *  DcmAttributeMatching( EVR_PN )( "M?ller", 6, "^Martin", 7 ) // -> OFFalse
+     *  @endcode
      */
     OFBool operator()( const void* queryData, const size_t querySize,
                        const void* candidateData, const size_t candidateSize ) const;
