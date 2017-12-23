@@ -40,7 +40,7 @@ END_EXTERN_C
 #include <ws2tcpip.h>    /* for struct sockaddr_in6 */
 #endif
 
-const size_t OFSockAddr::size() const
+size_t OFSockAddr::size() const
 {
   switch (sa.ss_family)
   {
@@ -95,7 +95,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
 
 #ifdef _WIN32
       /* MinGW and some Visual Studio versions do not have inet_ntop() */
-      WSAAddressToStringA((struct sockaddr*) si, s.size(), NULL, buf, &bufsize);
+      WSAAddressToStringA((struct sockaddr*) si, OFstatic_cast(DWORD, s.size()), NULL, buf, &bufsize);
       o  << "\n  IP address: " << buf;
 #else
       // The typecast is necessary for older MSVC compilers, which expect a non-const void * parameter.
@@ -108,7 +108,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, 
       o << "  AF_INET6";
 #ifdef _WIN32
       /* MinGW and some Visual Studio versions do not have inet_ntop() */
-      WSAAddressToStringA((struct sockaddr*) si6, s.size(), NULL, buf, &bufsize);
+      WSAAddressToStringA((struct sockaddr*) si6, OFstatic_cast(DWORD, s.size()), NULL, buf, &bufsize);
       o  << "\n  IP address: " << buf;
 #else
       o << "\n  IP address: " << inet_ntop(AF_INET6, OFconst_cast(void *, OFreinterpret_cast(const void *, &si6->sin6_addr)), buf, 512);
