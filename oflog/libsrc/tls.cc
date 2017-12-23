@@ -35,6 +35,10 @@ namespace log4cplus { namespace thread { namespace impl {
 //! initialization order fiasco.
 OFVector<tls_value_type> * tls_single_threaded_values;
 
+#else
+
+int tls_cc_dummy_to_keep_linker_from_moaning = 0;
+
 #endif
 
 
