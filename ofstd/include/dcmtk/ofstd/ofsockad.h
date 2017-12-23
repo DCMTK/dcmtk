@@ -62,25 +62,38 @@ public:
   /// Destructor
   ~OFSockAddr() { }
 
+  /// initialize address storage object with memzero
   void clear() { memzero(&sa, sizeof(sa)); }
 
-  /// access socket address storage object as struct sockaddr (opaque address)
+  /** access socket address storage object as struct sockaddr (opaque address)
+   *  @return address storage object as struct sockaddr *.
+   */
   struct sockaddr *getSockaddr() { return OFreinterpret_cast(struct sockaddr *, &sa); }
 
-  /// access socket address storage object as struct sockaddr_in (IPv4 address)
+  /** access socket address storage object as struct sockaddr_in (IPv4 address)
+   *  @return address storage object as struct sockaddr_in *.
+   */
   struct sockaddr_in *getSockaddr_in() { return OFreinterpret_cast(struct sockaddr_in *, &sa); }
 
-  /// access socket address storage object as struct sockaddr_in6 (IPv6 address)
+  /** access socket address storage object as struct sockaddr_in6 (IPv6 address)
+   *  @return address storage object as struct sockaddr_in6 *.
+   */
   struct sockaddr_in6 *getSockaddr_in6() { return OFreinterpret_cast(struct sockaddr_in6 *, &sa); }
 
-  /// access socket address storage object as struct sockaddr_in (IPv4 address)
+  /** access socket address storage object as const struct sockaddr_in (IPv4 address)
+   *  @return address storage object as const struct sockaddr_in *.
+   */
   const struct sockaddr_in *getSockaddr_in_const() const { return OFreinterpret_cast(const struct sockaddr_in *, &sa); }
 
-  /// access socket address storage object as struct sockaddr_in6 (IPv6 address)
+  /** access socket address storage object as const struct sockaddr_in6 (IPv6 address)
+   *  @return address storage object as const struct sockaddr_in6 *.
+   */
   const struct sockaddr_in6 *getSockaddr_in6_const() const { return OFreinterpret_cast(const struct sockaddr_in6 *, &sa); }
 
-  /// return size of sockaddr struct depending on current protocol family
-  const size_t size() const;
+  /** return size of sockaddr struct depending on current protocol family
+   *  @return size of sockaddr struct depending on current protocol family
+   */
+  size_t size() const;
 
   /** get current protocol family. Returns 0 if uninitialized, AF_INET or AF_INET6 otherwise.
    *  @return current protocol family of the socket address.
