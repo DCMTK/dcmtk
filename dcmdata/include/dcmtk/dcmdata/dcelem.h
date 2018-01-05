@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -682,7 +682,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  to even size needed for a buffer into which a frame is to be loaded.
      *  @param dataset dataset in which this pixel data element is contained
      *  @param frameSize frame size in bytes (without padding) returned in this
-     *    parameter upon success
+     *    parameter upon success, otherwise set to 0
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUncompressedFrameSize(DcmItem *dataset,

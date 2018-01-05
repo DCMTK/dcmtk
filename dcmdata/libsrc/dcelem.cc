@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1955,38 +1955,115 @@ OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
 }
 
 
+// the following macro makes the source code more readable and easier to maintain
+
+#define GET_AND_CHECK_UINT16_VALUE(tag, variable)                                                                   \
+    result = dataset->findAndGetUint16(tag, variable);                                                              \
+    if (result == EC_TagNotFound)                                                                                   \
+    {                                                                                                               \
+        DCMDATA_WARN("DcmElement: Mandatory element " << DcmTag(tag).getTagName() << " " << tag << " is missing");  \
+        result = EC_MissingAttribute;                                                                               \
+    }                                                                                                               \
+    else if ((result == EC_IllegalCall) || (result == EC_IllegalParameter))                                         \
+    {                                                                                                               \
+        DCMDATA_WARN("DcmElement: No value for mandatory element " << DcmTag(tag).getTagName() << " " << tag);      \
+        result = EC_MissingValue;                                                                                   \
+    }                                                                                                               \
+    else if (result.bad())                                                                                          \
+        DCMDATA_WARN("DcmElement: Cannot retrieve value of element " << DcmTag(tag).getTagName() << " " << tag << ": " << result.text());
+
+
 OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
                                                  Uint32 &frameSize) const
 {
-  if (dataset == NULL) return EC_IllegalCall;
-  Uint16 rows = 0;
-  Uint16 cols = 0;
-  Uint16 samplesPerPixel = 0;
-  Uint16 bitsAllocated = 0;
-  // retrieve values from dataset
-  OFCondition result = EC_Normal;
-  if (result.good()) result = dataset->findAndGetUint16(DCM_Columns, cols);
-  if (result.good()) result = dataset->findAndGetUint16(DCM_Rows, rows);
-  if (result.good()) result = dataset->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel);
-  if (result.good()) result = dataset->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
+    OFCondition result = EC_IllegalParameter;
+    if (dataset != NULL)
+    {
+        Uint16 rows = 0;
+        Uint16 cols = 0;
+        Uint16 samplesPerPixel = 0;
+        Uint16 bitsAllocated = 0;
+        /* retrieve values from dataset (and check them for validity and plausibility) */
+        GET_AND_CHECK_UINT16_VALUE(DCM_Columns, cols)
+        else if (cols == 0)
+            DCMDATA_WARN("DcmElement: Dubious value (" << cols << ") for element Columns " << DCM_Columns);
+        if (result.good())
+        {
+            GET_AND_CHECK_UINT16_VALUE(DCM_Rows, rows)
+            else if (rows == 0)
+                DCMDATA_WARN("DcmElement: Dubious value (" << rows << ") for element Rows " << DCM_Rows);
+        }
+        if (result.good())
+        {
+            GET_AND_CHECK_UINT16_VALUE(DCM_SamplesPerPixel, samplesPerPixel)
+            else
+            {
+                /* also need to check value of PhotometricInterpretation */
+                OFString photometricInterpretation;
+                if (dataset->findAndGetOFStringArray(DCM_PhotometricInterpretation, photometricInterpretation).good())
+                {
+                    if (photometricInterpretation.empty())
+                        DCMDATA_WARN("DcmElement: No value for mandatory element PhotometricInterpretation " << DCM_PhotometricInterpretation);
+                    else {
+                        const OFBool isMono =   (photometricInterpretation == "MONOCHROME1") ||
+                                                (photometricInterpretation == "MONOCHROME2");
+                        const OFBool isColor1 = (photometricInterpretation == "PALETTE COLOR");
+                        const OFBool isColor3 = (photometricInterpretation == "RGB") ||
+                                                (photometricInterpretation == "HSV" /* retired */) ||
+                                                (photometricInterpretation == "YBR_FULL") ||
+                                                (photometricInterpretation == "YBR_FULL_422") ||
+                                                (photometricInterpretation == "YBR_PARTIAL_422" /* retired */) ||
+                                                (photometricInterpretation == "YBR_PARTIAL_420") ||
+                                                (photometricInterpretation == "YBR_ICT") ||
+                                                (photometricInterpretation == "YBR_RCT");
+                        const OFBool isColor4 = (photometricInterpretation == "ARGB" /* retired */) ||
+                                                (photometricInterpretation == "CMYK" /* retired */);
+                        if (((isMono || isColor1) && (samplesPerPixel != 1)) || (isColor3 && (samplesPerPixel != 3)) || (isColor4 && (samplesPerPixel != 4)))
 
-  // compute frame size
-  if ((bitsAllocated % 8) == 0)
-  {
-    const Uint16 bytesAllocated = bitsAllocated / 8;
-    frameSize = bytesAllocated * rows * cols * samplesPerPixel;
-  }
-  else
-  {
-    /* need to split calculation in order to avoid integer overflow for large pixel data */
-    const Uint32 v1 = rows * cols * samplesPerPixel;
-    const Uint32 v2 = (bitsAllocated / 8) * v1;
-    const Uint32 v3 = ((bitsAllocated % 8) * v1 + 7) / 8;
-//  # old code: frameSize = (bitsAllocated * rows * cols * samplesPerPixel + 7) / 8;
-    frameSize = v2 + v3;
-  }
-
-  return result;
+                        {
+                            DCMDATA_WARN("DcmElement: Invalid value (" << samplesPerPixel << ") for element SamplesPerPixel " << DCM_SamplesPerPixel
+                                << " when PhotometricInterpretation " << DCM_PhotometricInterpretation << " is " << photometricInterpretation);
+                            result = EC_InvalidValue;
+                        }
+                        else if (!isMono && !isColor1 && !isColor3 && !isColor4)
+                            DCMDATA_WARN("DcmElement: Unsupported value (" << photometricInterpretation << ") for element PhotometricInterpretation " << DCM_PhotometricInterpretation);
+                    }
+                }
+                if (result.good() && (samplesPerPixel != 1) && (samplesPerPixel != 3))
+                    DCMDATA_WARN("DcmElement: Dubious value (" << samplesPerPixel << ") for element SamplesPerPixel " << DCM_SamplesPerPixel);
+            }
+        }
+        if (result.good())
+        {
+            GET_AND_CHECK_UINT16_VALUE(DCM_BitsAllocated, bitsAllocated)
+            /* see PS3.3 Table C.7-11c: "Bits Allocated (0028,0100) shall be either 1, or a multiple of 8." */
+            else if ((bitsAllocated == 0) || ((bitsAllocated > 1) && (bitsAllocated % 8 != 0)))
+                DCMDATA_WARN("DcmElement: Dubious value (" << bitsAllocated << ") for element BitsAllocated " << DCM_BitsAllocated);
+        }
+        /* if all checks were passed... */
+        if (result.good())
+        {
+            /* compute frame size */
+            if ((bitsAllocated % 8) == 0)
+            {
+                const Uint16 bytesAllocated = bitsAllocated / 8;
+                frameSize = bytesAllocated * rows * cols * samplesPerPixel;
+            }
+            else
+            {
+                /* need to split calculation in order to avoid integer overflow for large pixel data */
+                const Uint32 v1 = rows * cols * samplesPerPixel;
+                const Uint32 v2 = (bitsAllocated / 8) * v1;
+                const Uint32 v3 = ((bitsAllocated % 8) * v1 + 7) / 8;
+            //  # old code: frameSize = (bitsAllocated * rows * cols * samplesPerPixel + 7) / 8;
+                frameSize = v2 + v3;
+            }
+        } else {
+            /* in case of error, return a frame size of 0 */
+            frameSize = 0;
+        }
+    }
+    return result;
 }
 
 
