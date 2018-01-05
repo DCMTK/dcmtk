@@ -1114,13 +1114,19 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
             bytesRead += 2;
             valueLength = tmpValueLength;
         }
+        /* check whether value in length field is appropriate for this VR */
+        const size_t vrSize = vr.getValueWidth();
+        if ((vrSize > 1) && (valueLength % vrSize != 0))
+        {
+            /* warning is only reported for standard, fixed-size VRs that require more than 1 byte per value */
+            DCMDATA_WARN("DcmItem: Length of element " << newTag << " is not a multiple of " << vrSize << " (VR=" << vr.getVRName() << ")");
+        }
     }
-    /* if the value in length is odd, print an error message */
-    if ( (valueLength & 1) && (valueLength != DCM_UndefinedLength) )
+    /* if the value in the length field is odd, print an error message */
+    if ((valueLength & 1) && (valueLength != DCM_UndefinedLength))
     {
         DCMDATA_WARN("DcmItem: Length of element " << newTag << " is odd");
     }
-
 
     /* if desired, handle private attributes with maximum length as VR SQ */
     if (isPrivate && dcmReadImplPrivAttribMaxLengthAsSQ.get() && (valueLength == DCM_UndefinedLength))
