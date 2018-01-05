@@ -893,6 +893,9 @@ int main(int argc, char *argv[])
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
+    if (opt_suppressOutput && opt_ofname)
+        OFLOG_WARN(dcm2pnmLogger, "ignoring parameter bitmap-out because of option --no-output");
+
     OFLOG_INFO(dcm2pnmLogger, "reading DICOM file: " << opt_ifname);
 
     // register RLE decompression codec
