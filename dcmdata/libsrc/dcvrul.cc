@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -167,45 +167,52 @@ void DcmUnsignedLong::print(STD_NAMESPACE ostream&out,
         {
             /* do not simply use getVM() because derived classes might always return 1 */
             const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Uint32));
-            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
-            unsigned long printedLength = 0;
-            unsigned long newLength = 0;
-            char buffer[32];
-            /* print line start with tag and VR */
-            printInfoLineStart(out, flags, level);
-            /* print multiple values */
-            for (unsigned int i = 0; i < count; i++, uintVals++)
+            /* double-check length field for valid value */
+            if (count > 0)
             {
-                /* check whether first value is printed (omit delimiter) */
-                if (i == 0)
-#if SIZEOF_LONG == 8
-                    sprintf(buffer, "%u", *uintVals);
-                else
-                    sprintf(buffer, "\\%u", *uintVals);
-#else
-                    sprintf(buffer, "%lu", *uintVals);
-                else
-                    sprintf(buffer, "\\%lu", *uintVals);
-#endif
-                /* check whether current value sticks to the length limit */
-                newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
-                if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
+                const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                    DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
+                unsigned long printedLength = 0;
+                unsigned long newLength = 0;
+                char buffer[32];
+                /* print line start with tag and VR */
+                printInfoLineStart(out, flags, level);
+                /* print multiple values */
+                for (unsigned int i = 0; i < count; i++, uintVals++)
                 {
-                    out << buffer;
-                    printedLength = newLength;
-                } else {
-                    /* check whether output has been truncated */
-                    if (i + 1 < count)
+                    /* check whether first value is printed (omit delimiter) */
+                    if (i == 0)
+#if SIZEOF_LONG == 8
+                        sprintf(buffer, "%u", *uintVals);
+                    else
+                        sprintf(buffer, "\\%u", *uintVals);
+#else
+                        sprintf(buffer, "%lu", *uintVals);
+                    else
+                        sprintf(buffer, "\\%lu", *uintVals);
+#endif
+                    /* check whether current value sticks to the length limit */
+                    newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
+                    if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
                     {
-                        out << "...";
-                        printedLength += 3;
+                        out << buffer;
+                        printedLength = newLength;
+                    } else {
+                        /* check whether output has been truncated */
+                        if (i + 1 < count)
+                        {
+                            out << "...";
+                            printedLength += 3;
+                        }
+                        break;
                     }
-                    break;
                 }
+                /* print line end with length, VM and tag name */
+                printInfoLineEnd(out, flags, printedLength);
+            } else {
+                /* count can be zero if we have an invalid element with less than four bytes length */
+                printInfoLine(out, flags, level, "(invalid value)");
             }
-            /* print line end with length, VM and tag name */
-            printInfoLineEnd(out, flags, printedLength);
         } else
             printInfoLine(out, flags, level, "(no value available)");
     } else
