@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1145,7 +1145,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
             /* if the next tag is the sequence delimiter item, we can adapt to the situation */
             if (newTag.getXTag() == DCM_SequenceDelimitationItem)
             {
-                DCMDATA_WARN("DcmItem: Sequence delimitation occured before all bytes announced by explicit item length could be read");
+                DCMDATA_WARN("DcmItem: Sequence delimitation occurred before all bytes announced by explicit item length could be read");
                 l_error = EC_PrematureSequDelimitationItem;
                 /* rewind to start of sequence delimiter which is read in a regular way */
                 /* by DcmSequenceOfItems later (if error is ignored in DcmItem::read()) */

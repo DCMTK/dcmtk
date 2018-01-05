@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Michael Onken
  *
- *  Purpose: Class for modifying DICOM files from comandline
+ *  Purpose: Class for modifying DICOM files from commandline
  *
  */
 
@@ -59,7 +59,7 @@ public :
 
 
 /** This class encapsulates data structures and operations for modifying
- *  Dicom files from the commandline
+ *  DICOM files from the commandline
  */
 class MdfConsoleEngine
 {
@@ -82,7 +82,7 @@ public:
     /** This function looks at commandline options and decides what to do.
      *  It evaluates option values from commandline and prepares them for
      *  starting the corresponding private functions.
-     *  @return Returns 0 if successful, another value if errors occurreds
+     *  @return Returns 0 if successful, another value if errors occurred
      */
     int startProvidingService();
 
@@ -109,7 +109,7 @@ protected:
     /** This function splits a modify option (inclusive value) as
      *  found on commandline into to parts (path and value)
      *  e.g. "(0010,0010)=value" into path "(0010,0010)" and "value"
-     *  @param whole string to be splitted
+     *  @param whole string to be split
      *  @param path returns part containing the path
      *  @param value returns part containing the value(if theres one)
      */
@@ -120,7 +120,7 @@ protected:
     /** Executes given modify job
      *  @param job job to be executed
      *  @param filename name of the file to be processed (optional)
-     *  @return returns 0 if no error occured, else the number of errors
+     *  @return returns 0 if no error occurred, else the number of errors
      */
     int executeJob(const MdfJob &job,
                    const char *filename = NULL);
@@ -167,7 +167,7 @@ private:
     /// read file with or without metaheader
     E_FileReadMode read_mode_option;
 
-    /// denotes the expected transfersyntax
+    /// denotes the expected transfer syntax
     E_TransferSyntax input_xfer_option;
 
     /// decides whether to with/without metaheader
@@ -176,7 +176,7 @@ private:
     /// denotes the transfer syntax that should be written
     E_TransferSyntax output_xfer_option;
 
-    /// option for group length recalcing
+    /// option for group length recalculation
     E_GrpLenEncoding glenc_option;
 
     /// write explicit or implicit length encoding

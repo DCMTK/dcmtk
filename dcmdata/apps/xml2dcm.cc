@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2017, OFFIS e.V.
+ *  Copyright (C) 2003-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -205,7 +205,7 @@ static OFCondition createNewElement(xmlNodePtr current,
         }
         if (result.bad())
         {
-            /* delete new element if an error occured */
+            /* delete new element if an error occurred */
             delete newElem;
             newElem = NULL;
         }

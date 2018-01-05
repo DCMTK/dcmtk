@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2017-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -196,7 +196,7 @@ public:
      *  @param candidateSize the size (in bytes) of the data candidateData refers to.
      *  @return compares the query data with the candidate data using the appropriate
      *    matching function for the given VR, returns OFTrue if they match, OFFalse
-     *    if not or if an error occured.
+     *    if not or if an error occurred.
      *  @details
      *  @pre (*this) must have been constructed for a specific VR that matches the one
      *    of the query and candidate data, i.e.\ !(*this) must evaluate to OFFalse.

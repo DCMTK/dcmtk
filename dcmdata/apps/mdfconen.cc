@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Michael Onken
  *
- *  Purpose: Class for modifying DICOM files from comandline
+ *  Purpose: Class for modifying DICOM files from commandline
  *
  */
 
@@ -551,7 +551,7 @@ int MdfConsoleEngine::startProvidingService()
                     }
                 }
             }
-            // errors occured and user doesn't want to ignore them:
+            // errors occurred and user doesn't want to ignore them:
             else if (!no_backup_option && !was_created)
             {
                 result = restoreFile(filename);

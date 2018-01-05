@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -240,7 +240,7 @@ OFTEST(dcmdata_parser_explicitItemLengthTooLarge)
     cond = readDataset(dset, data, sizeof(data), EXS_LittleEndianImplicit);
     if (cond != EC_PrematureSequDelimitationItem)
     {
-        OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item occured before Item was completely read', but got: " << cond.text());
+        OFCHECK_FAIL("Parsing should have failed with 'Sequence Delimitation Item occurred before Item was completely read', but got: " << cond.text());
     }
 
     // This should ignore the error during parsing
