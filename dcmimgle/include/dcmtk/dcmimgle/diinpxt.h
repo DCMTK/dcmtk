@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -157,7 +157,7 @@ class DiInputPixelTemplate
         if ((PixelCount == 0) || (PixelStart + PixelCount > Count))         // check for corrupt pixel length
         {
             PixelCount = Count - PixelStart;
-            DCMIMGLE_DEBUG("setting number of pixels to be processed (PixelCount) to: " << PixelCount);
+            DCMIMGLE_DEBUG("setting number of pixels to be processed (PixelCount) to " << PixelCount);
         }
     }
 
