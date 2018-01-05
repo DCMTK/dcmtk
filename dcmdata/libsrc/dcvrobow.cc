@@ -173,43 +173,50 @@ void DcmOtherByteOtherWord::print(STD_NAMESPACE ostream&out,
         /* check data */
         if ((wordValues != NULL) || (byteValues != NULL))
         {
-            /* determine number of values to be printed */
-            const unsigned int vrSize = (evr == EVR_OW || evr == EVR_lt) ? 4 : 2;
             const unsigned long count = (evr == EVR_OW || evr == EVR_lt) ? (getLengthField() / 2) : getLengthField();
-            unsigned long expectedLength = count * (vrSize + 1) - 1;
-            const unsigned long printCount =
-                ((expectedLength > DCM_OptPrintLineLength) && (flags & DCMTypes::PF_shortenLongTagValues)) ?
-                (DCM_OptPrintLineLength - 3 /* for "..." */ + 1 /* for last "\" */) / (vrSize + 1) : count;
-            unsigned long printedLength = printCount * (vrSize + 1) - 1;
-            /* print line start with tag and VR */
-            printInfoLineStart(out, flags, level);
-            /* print multiple values */
-            if (printCount > 0)
+            /* double-check length field for valid value */
+            if (count > 0)
             {
-                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
-                if (evr == EVR_OW || evr == EVR_lt)
+                /* determine number of values to be printed */
+                const unsigned int vrSize = (evr == EVR_OW || evr == EVR_lt) ? 4 : 2;
+                unsigned long expectedLength = count * (vrSize + 1) - 1;
+                const unsigned long printCount =
+                    ((expectedLength > DCM_OptPrintLineLength) && (flags & DCMTypes::PF_shortenLongTagValues)) ?
+                    (DCM_OptPrintLineLength - 3 /* for "..." */ + 1 /* for last "\" */) / (vrSize + 1) : count;
+                unsigned long printedLength = printCount * (vrSize + 1) - 1;
+                /* print line start with tag and VR */
+                printInfoLineStart(out, flags, level);
+                /* print multiple values */
+                if (printCount > 0)
                 {
-                    /* print word values in hex mode */
-                    out << STD_NAMESPACE setw(vrSize) << (*(wordValues++));
-                    for (unsigned long i = 1; i < printCount; i++)
-                        out << "\\" << STD_NAMESPACE setw(vrSize) << (*(wordValues++));
-                } else {
-                    /* print byte values in hex mode */
-                    out << STD_NAMESPACE setw(vrSize) << OFstatic_cast(int, *(byteValues++));
-                    for (unsigned long i = 1; i < printCount; i++)
-                        out << "\\" << STD_NAMESPACE setw(vrSize) << OFstatic_cast(int, *(byteValues++));
+                    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
+                    if (evr == EVR_OW || evr == EVR_lt)
+                    {
+                        /* print word values in hex mode */
+                        out << STD_NAMESPACE setw(vrSize) << (*(wordValues++));
+                        for (unsigned long i = 1; i < printCount; i++)
+                            out << "\\" << STD_NAMESPACE setw(vrSize) << (*(wordValues++));
+                    } else {
+                        /* print byte values in hex mode */
+                        out << STD_NAMESPACE setw(vrSize) << OFstatic_cast(int, *(byteValues++));
+                        for (unsigned long i = 1; i < printCount; i++)
+                            out << "\\" << STD_NAMESPACE setw(vrSize) << OFstatic_cast(int, *(byteValues++));
+                    }
+                    /* reset i/o manipulators */
+                    out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
                 }
-                /* reset i/o manipulators */
-                out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                /* print trailing "..." if data has been truncated */
+                if (printCount < count)
+                {
+                    out << "...";
+                    printedLength += 3;
+                }
+                /* print line end with length, VM and tag name */
+                printInfoLineEnd(out, flags, printedLength);
+            } else {
+                /* count can be zero if we have an invalid OW element with less than two bytes length */
+                printInfoLine(out, flags, level, "(invalid value)");
             }
-            /* print trailing "..." if data has been truncated */
-            if (printCount < count)
-            {
-                out << "...";
-                printedLength += 3;
-            }
-            /* print line end with length, VM and tag name */
-            printInfoLineEnd(out, flags, printedLength);
         } else
             printInfoLine(out, flags, level, "(no value available)");
     } else
