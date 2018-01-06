@@ -49,7 +49,7 @@ static void force_sleep(Uint32 sleep)
     while (elapsed < (double)sleep)
     {
         // Use ceiling since otherwise we could wait too short
-        OFStandard::sleep(ceil(sleep-elapsed));
+        OFStandard::sleep(OFstatic_cast(unsigned int, ceil(sleep-elapsed)));
         elapsed = timer.getDiff();
     }
 }
