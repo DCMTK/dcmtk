@@ -243,7 +243,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                     /* Base64 decoder produces big endian output data, convert to local byte order */
                     swapIfNecessary(gLocalByteOrder, EBO_BigEndian, data, OFstatic_cast(Uint32, length), sizeof(Uint16));
                 }
-                result = element->putUint8Array(data, length);
+                result = element->putUint8Array(data, OFstatic_cast(Uint32, length));
                 /* delete buffer since data is copied into the element */
                 delete[] data;
             }
@@ -260,7 +260,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                 {
                     /* determine filesize */
                     const size_t fileSize = OFStandard::getFileSize(filename);
-                    unsigned long buflen = fileSize;
+                    size_t buflen = fileSize;
                     /* if odd then make even (DICOM requires even length values) */
                     if (buflen & 1)
                         buflen++;
