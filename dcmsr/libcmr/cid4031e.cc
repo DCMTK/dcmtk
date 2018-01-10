@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4031e_CommonAnatomicRegions
@@ -30,13 +30,15 @@ struct DefinedTermTypeMapStruct
  *  constant definitions  *
  *------------------------*/
 
-// mapping extracted from DICOM PS 3.16 Table L-1
+// mapping extracted from DICOM PS 3.16-2017e Table L-1
 
 static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
 {
     {"ABDOMEN",          CID4031_CommonAnatomicRegions::Abdomen},
     {"ABDOMENPELVIS",    CID4031_CommonAnatomicRegions::AbdomenAndPelvis},
+    {"ACJOINT",          CID4031_CommonAnatomicRegions::AcromioclavicularJoint},
     {"ANKLE",            CID4031_CommonAnatomicRegions::AnkleJoint},
+    {"BILEDUCT",         CID4031_CommonAnatomicRegions::BileDuct},
     {"BLADDER",          CID4031_CommonAnatomicRegions::Bladder},
     {"BREAST",           CID4031_CommonAnatomicRegions::Breast},
     {"BRONCHUS",         CID4031_CommonAnatomicRegions::Bronchus},
@@ -58,6 +60,7 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"FEMUR",            CID4031_CommonAnatomicRegions::Femur},
     {"FINGER",           CID4031_CommonAnatomicRegions::Finger},
     {"FOOT",             CID4031_CommonAnatomicRegions::Foot},
+    {"FOREARM",          CID4031_CommonAnatomicRegions::Forearm},
     {"GALLBLADDER",      CID4031_CommonAnatomicRegions::Gallbladder},
     {"HAND",             CID4031_CommonAnatomicRegions::Hand},
     {"HEAD",             CID4031_CommonAnatomicRegions::Head},
@@ -71,16 +74,20 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"JAW",              CID4031_CommonAnatomicRegions::JawRegion},
     {"JEJUNUM",          CID4031_CommonAnatomicRegions::Jejunum},
     {"KNEE",             CID4031_CommonAnatomicRegions::Knee},
+    {"LARGEINTESTINE",   CID4031_CommonAnatomicRegions::LargeIntestine},
     {"LARYNX",           CID4031_CommonAnatomicRegions::Larynx},
     {"LEG",              CID4031_CommonAnatomicRegions::LowerLeg},
     {"LSPINE",           CID4031_CommonAnatomicRegions::LumbarSpine},
     {"LSSPINE",          CID4031_CommonAnatomicRegions::LumboSacralSpine},
+    {"JAW",              CID4031_CommonAnatomicRegions::Mandible},
+    {"MASTOID",          CID4031_CommonAnatomicRegions::MastoidBone},
     {"MAXILLA",          CID4031_CommonAnatomicRegions::Maxilla},
     {"MEDIASTINUM",      CID4031_CommonAnatomicRegions::Mediastinum},
     {"NECK",             CID4031_CommonAnatomicRegions::Neck},
     {"NECKCHEST",        CID4031_CommonAnatomicRegions::NeckAndChest},
     {"NECKCHESTABDOMEN", CID4031_CommonAnatomicRegions::NeckChestAndAbdomen},
     {"NECKCHESTABDPELV", CID4031_CommonAnatomicRegions::NeckChestAbdomenAndPelvis},
+    {"OPTICCANAL",       CID4031_CommonAnatomicRegions::OpticCanal},
     {"ORBIT",            CID4031_CommonAnatomicRegions::OrbitalStructure},
     {"PAROTID",          CID4031_CommonAnatomicRegions::ParotidGland},
     {"PATELLA",          CID4031_CommonAnatomicRegions::Patella},
@@ -88,11 +95,16 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"PROSTATE",         CID4031_CommonAnatomicRegions::Prostate},
     {"RECTUM",           CID4031_CommonAnatomicRegions::Rectum},
     {"RIB",              CID4031_CommonAnatomicRegions::Rib},
+    {"SIJOINT",          CID4031_CommonAnatomicRegions::SacroiliacJoint},
     {"SSPINE",           CID4031_CommonAnatomicRegions::Sacrum},
     {"SCAPULA",          CID4031_CommonAnatomicRegions::Scapula},
+    {"SELLA",            CID4031_CommonAnatomicRegions::SellaTurcica},
+    {"SESAMOID",         CID4031_CommonAnatomicRegions::SesamoidBonesOfFoot},
     {"SHOULDER",         CID4031_CommonAnatomicRegions::Shoulder},
     {"SKULL",            CID4031_CommonAnatomicRegions::Skull},
+    {"SMALLINTESTINE",   CID4031_CommonAnatomicRegions::SmallIntestine},
     {"SPINE",            CID4031_CommonAnatomicRegions::Spine},
+    {"SCJOINT",          CID4031_CommonAnatomicRegions::SternoclavicularJoint},
     {"STERNUM",          CID4031_CommonAnatomicRegions::Sternum},
     {"STOMACH",          CID4031_CommonAnatomicRegions::Stomach},
     {"SUBMANDIBULAR",    CID4031_CommonAnatomicRegions::SubmandibularGland},
@@ -104,6 +116,7 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"TOE",              CID4031_CommonAnatomicRegions::Toe},
     {"TRACHEA",          CID4031_CommonAnatomicRegions::Trachea},
     {"ARM",              CID4031_CommonAnatomicRegions::UpperArm},
+    {"UPRURINARYTRACT",  CID4031_CommonAnatomicRegions::UpperUrinaryTract},
     {"URETER",           CID4031_CommonAnatomicRegions::Ureter},
     {"URETHRA",          CID4031_CommonAnatomicRegions::Urethra},
     {"WRIST",            CID4031_CommonAnatomicRegions::WristJoint},
