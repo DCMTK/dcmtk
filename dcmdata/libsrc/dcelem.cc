@@ -1996,7 +1996,7 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
         if (result.good())
         {
             GET_AND_CHECK_UINT16_VALUE(DCM_SamplesPerPixel, samplesPerPixel)
-            else
+            else /* result.good() */
             {
                 /* also need to check value of PhotometricInterpretation */
                 OFString photometricInterpretation;
@@ -2043,7 +2043,7 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
         /* if all checks were passed... */
         if (result.good())
         {
-            /* compute frame size */
+            /* compute frame size (TODO: check for 32-bit integer overflow?) */
             if ((bitsAllocated % 8) == 0)
             {
                 const Uint16 bytesAllocated = bitsAllocated / 8;
@@ -2245,7 +2245,7 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 256) result = EC_ValueMultiplicityViolated;
     }
-    else if ( (vmStr != "1-n") && (vmStr != "0-n") )
+    else if ((vmStr != "1-n") && (vmStr != "0-n"))
     {
       // given value of 'vmStr' not (yet) supported
       result = EC_IllegalParameter;
@@ -2254,6 +2254,7 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
   return result;
 }
 
+
 OFBool DcmElement::matches(const DcmElement& candidate,
                            const OFBool enableWildCardMatching) const
 {
@@ -2261,6 +2262,7 @@ OFBool DcmElement::matches(const DcmElement& candidate,
   OFstatic_cast(void,enableWildCardMatching);
   return OFFalse;
 }
+
 
 OFBool DcmElement::combinationMatches(const DcmElement& keySecond,
                                       const DcmElement& candidateFirst,
