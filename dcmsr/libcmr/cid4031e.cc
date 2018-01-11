@@ -79,7 +79,7 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"LEG",              CID4031_CommonAnatomicRegions::LowerLeg},
     {"LSPINE",           CID4031_CommonAnatomicRegions::LumbarSpine},
     {"LSSPINE",          CID4031_CommonAnatomicRegions::LumboSacralSpine},
-    {"JAW",              CID4031_CommonAnatomicRegions::Mandible},
+    {"JAW",              CID4031_CommonAnatomicRegions::Mandible},              // same Defined Term as for (T-D1213,SRT,"Jaw region")
     {"MASTOID",          CID4031_CommonAnatomicRegions::MastoidBone},
     {"MAXILLA",          CID4031_CommonAnatomicRegions::Maxilla},
     {"MEDIASTINUM",      CID4031_CommonAnatomicRegions::Mediastinum},
@@ -144,7 +144,7 @@ CID4031e_CommonAnatomicRegions::CID4031e_CommonAnatomicRegions(const EnumType se
 
 
 CID4031e_CommonAnatomicRegions::CID4031e_CommonAnatomicRegions(const OFString &selectedValue,
-                                                                               const OFBool enhancedEncodingMode)
+                                                               const OFBool enhancedEncodingMode)
   : CID4031_CommonAnatomicRegions(mapBodyPartExamined(selectedValue, enhancedEncodingMode))
 {
 }
@@ -186,6 +186,7 @@ OFCondition CID4031e_CommonAnatomicRegions::mapBodyPartExamined(const OFString &
     /* determine region code from CID 4031 (based on the mapping in PS 3.16 Annex L) */
     for (size_t i = 0; i < NumberOfDefinedTerms; ++i)
     {
+        /* use first match */
         if (definedTerm == DefinedTermTypeMap[i].DefinedTerm)
         {
             codedEntryValue = getCodedEntry(DefinedTermTypeMap[i].Type);
