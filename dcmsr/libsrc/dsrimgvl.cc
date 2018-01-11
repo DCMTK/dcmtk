@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -684,7 +684,7 @@ OFBool DSRImageReferenceValue::appliesToSegment(const Uint16 segmentNumber) cons
 
 OFBool DSRImageReferenceValue::isSegmentationObject(const OFString &sopClassUID) const
 {
-    /* check for all segmentation SOP classes (according to DICOM PS 3.6-2015c) */
+    /* check for all segmentation SOP classes (according to DICOM PS 3.6-2017e) */
     return (sopClassUID == UID_SegmentationStorage) || (sopClassUID == UID_SurfaceSegmentationStorage);
 }
 
@@ -694,7 +694,7 @@ OFCondition DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID
     OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
     if (result.good())
     {
-        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2015c) */
+        /* check for all valid/known SOP classes (according to DICOM PS 3.6) */
         if (!dcmIsImageStorageSOPClassUID(sopClassUID.c_str()) && !isSegmentationObject(sopClassUID))
         {
             result = SR_EC_InvalidValue;

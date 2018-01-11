@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -69,7 +69,7 @@ OFBool DSRAcquisitionContextConstraintChecker::checkContentRelationship(const E_
                                                                         const E_ValueType targetValueType,
                                                                         const OFBool byReference) const
 {
-    /* the following code implements the constraints of table A.35.x-2 in DICOM PS3.3 (Supplement 187) */
+    /* the following code implements the constraints of table A.35.16-2 in DICOM PS3.3 */
     OFBool result = OFFalse;
     /* by-reference relationships not allowed at all */
     if (!byReference)
