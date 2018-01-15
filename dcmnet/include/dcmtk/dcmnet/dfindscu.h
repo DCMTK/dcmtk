@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,6 +35,21 @@ struct T_ASC_Association;
 struct T_ASC_Parameters;
 struct T_DIMSE_C_FindRQ;
 struct T_DIMSE_C_FindRSP;
+
+
+/** mode specifying whether and how to extract C-FIND responses
+ */
+enum DcmFindSCUExtractMode
+{
+  /// do not extract C-FIND responses to file
+  FEM_none,
+  /// extract each C-FIND-RSP dataset to a DICOM file
+  FEM_dicomFile,
+  /// extract each C-FIND-RSP dataset to an XML file.
+  /// See "dcm2xml.dtd" for XML format (starts with top-level element "data-set").
+  FEM_xmlFile
+};
+
 
 /** Abstract base class for Find SCU callbacks. During a C-FIND operation, the
  *  callback() method of a callback handler object derived from this class is
@@ -110,14 +125,14 @@ class DCMTK_DCMNET_EXPORT DcmFindSCUDefaultCallback: public DcmFindSCUCallback
 {
 public:
   /** constructor
-   *  @param extractResponsesToFile if true, C-FIND-RSP datasets will be stored as DICOM files
+   *  @param extractResponses mode specifying whether and how to extract C-FIND responses
    *  @param cancelAfterNResponses if non-negative, a C-FIND-CANCEL will be issued after the
    *    given number of incoming C-FIND-RSP messages
    *  @param outputDirectory directory used to store the output files (e.g. response messages).
    *    If NULL, the current directory is used.
    */
   DcmFindSCUDefaultCallback(
-    OFBool extractResponsesToFile,
+    DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
     const char *outputDirectory = NULL);
 
@@ -138,8 +153,8 @@ public:
 
 private:
 
-   /// if true, C-FIND-RSP datasets will be stored as DICOM files
-   OFBool extractResponsesToFile_;
+   /// mode specifying whether and how to extract C-FIND responses
+   DcmFindSCUExtractMode extractResponses_;
 
    /// if non-negative, a C-FIND-CANCEL will be issued after the given number of incoming C-FIND-RSP messages
    int cancelAfterNResponses_;
@@ -213,7 +228,7 @@ public:
    *  @param abortAssociation abort association instead of releasing it (for debugging purposes)
    *  @param repeatCount number of times this query should be repeated
    *    (for debugging purposes, works only with default callback)
-   *  @param extractResponsesToFile if true, extract incoming response messages to file
+   *  @param extractResponses mode specifying whether and how to extract C-FIND responses
    *    (works only with default callback)
    *  @param cancelAfterNResponses issue C-FIND-CANCEL after given number of responses
    *    (works only with default callback)
@@ -242,7 +257,7 @@ public:
     OFBool secureConnection,
     OFBool abortAssociation,
     unsigned int repeatCount,
-    OFBool extractResponsesToFile,
+    DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback = NULL,
@@ -258,6 +273,15 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFBool writeToFile(const char* ofname, DcmDataset *dataset);
+
+  /** static helper function that writes the content of the given dataset into
+   *  an XML file (see "dcm2xml.dtd", starts with top-level element "data-set").
+   *  This method also tries to determine the character encoding of the dataset.
+   *  @param ofname filename to write
+   *  @param dataset dataset to store in file
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  static OFBool writeToXMLFile(const char* ofname, DcmDataset *dataset);
 
 private:
 
@@ -285,7 +309,7 @@ private:
    *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service
    *  @param blockMode DIMSE blocking mode
    *  @param dimse_timeout timeout for DIMSE operations (in seconds)
-   *  @param extractResponsesToFile if true, extract incoming response messages to file
+   *  @param extractResponses mode specifying whether and how to extract C-FIND responses
    *    (works only with default callback)
    *  @param cancelAfterNResponses issue C-FIND-CANCEL after given number of responses
    *    (works only with default callback)
@@ -305,7 +329,7 @@ private:
     const char *abstractSyntax,
     T_DIMSE_BlockingMode blockMode,
     int dimse_timeout,
-    OFBool extractResponsesToFile,
+    DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback = NULL,

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,7 +34,9 @@
 #include "dcmtk/dcmdata/dcdicent.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcpath.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 /* ---------------- static functions ---------------- */
 
@@ -72,11 +74,11 @@ void DcmFindSCUCallback::setPresentationContextID(T_ASC_PresentationContextID pr
 /* ---------------- class DcmFindSCUCallback ---------------- */
 
 DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
-    OFBool extractResponsesToFile,
+    DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
     const char *outputDirectory)
 : DcmFindSCUCallback()
-, extractResponsesToFile_(extractResponsesToFile)
+, extractResponses_(extractResponses)
 , cancelAfterNResponses_(cancelAfterNResponses)
 , outputDirectory_(OFSTRING_GUARD(outputDirectory))
 {
@@ -107,14 +109,23 @@ void DcmFindSCUDefaultCallback::callback(
         DCMNET_INFO("Received Find Response " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
     }
 
-    /* in case extractResponsesToFile is set the responses shall be extracted to a certain file */
-    if (extractResponsesToFile_) {
+    /* should we extract the response dataset to a DICOM file? */
+    if (extractResponses_ == FEM_dicomFile) {
         OFString outputFilename;
-        char rspIdsFileName[1024];
+        char rspIdsFileName[16];
         sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
         OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
         DCMNET_INFO("Writing response message to file: " << outputFilename);
         DcmFindSCU::writeToFile(outputFilename.c_str(), responseIdentifiers);
+    }
+    /* ... or to an XML file? */
+    else if (extractResponses_ == FEM_xmlFile) {
+        OFString outputFilename;
+        char rspIdsFileName[16];
+        sprintf(rspIdsFileName, "rsp%04d.xml", responseCount);
+        OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
+        DCMNET_INFO("Writing response message to file: " << outputFilename);
+        DcmFindSCU::writeToXMLFile(outputFilename.c_str(), responseIdentifiers);
     }
 
     /* should we send a cancel back ?? */
@@ -172,7 +183,7 @@ OFCondition DcmFindSCU::performQuery(
     OFBool secureConnection,
     OFBool abortAssociation,
     unsigned int repeatCount,
-    OFBool extractResponsesToFile,
+    DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback,
@@ -250,13 +261,13 @@ OFCondition DcmFindSCU::performQuery(
     if ((fileNameList == NULL) || fileNameList->empty())
     {
         /* no files provided on command line */
-        cond = findSCU(assoc, NULL, repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponsesToFile, cancelAfterNResponses, overrideKeys, callback, outputDirectory);
+        cond = findSCU(assoc, NULL, repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponses, cancelAfterNResponses, overrideKeys, callback, outputDirectory);
     } else {
       OFListIterator(OFString) iter = fileNameList->begin();
       OFListIterator(OFString) enditer = fileNameList->end();
       while ((iter != enditer) && cond.good())
       {
-          cond = findSCU(assoc, (*iter).c_str(), repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponsesToFile, cancelAfterNResponses, overrideKeys, callback, outputDirectory);
+          cond = findSCU(assoc, (*iter).c_str(), repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponses, cancelAfterNResponses, overrideKeys, callback, outputDirectory);
           ++iter;
       }
     }
@@ -393,7 +404,7 @@ OFCondition DcmFindSCU::addPresentationContext(
 
 OFBool DcmFindSCU::writeToFile(const char* ofname, DcmDataset *dataset)
 {
-    /* write out as a file format */
+    /* write out as a DICOM file format */
 
     DcmFileFormat fileformat(dataset); // copies dataset
     OFCondition ec = fileformat.error();
@@ -412,6 +423,77 @@ OFBool DcmFindSCU::writeToFile(const char* ofname, DcmDataset *dataset)
 }
 
 
+OFBool DcmFindSCU::writeToXMLFile(const char* ofname, DcmDataset *dataset)
+{
+    if (dataset == NULL) return OFFalse;
+
+    /* write out as an XML file (dataset only) */
+
+    STD_NAMESPACE ofstream stream(ofname);
+    if (stream.good())
+    {
+        size_t writeFlags = 0;
+
+        /* try to determine character set of the dataset */
+        OFString encString;
+        OFString csetString;
+        if (dataset->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
+        {
+            if (csetString == "ISO_IR 6")   // should never be present in a dataset, but ...
+                encString = "UTF-8";
+            else if (csetString == "ISO_IR 192")
+                encString = "UTF-8";
+            else if (csetString == "ISO_IR 100")
+                encString = "ISO-8859-1";
+            else if (csetString == "ISO_IR 101")
+                encString = "ISO-8859-2";
+            else if (csetString == "ISO_IR 109")
+                encString = "ISO-8859-3";
+            else if (csetString == "ISO_IR 110")
+                encString = "ISO-8859-4";
+            else if (csetString == "ISO_IR 148")
+                encString = "ISO-8859-9";
+            else if (csetString == "ISO_IR 144")
+                encString = "ISO-8859-5";
+            else if (csetString == "ISO_IR 127")
+                encString = "ISO-8859-6";
+            else if (csetString == "ISO_IR 126")
+                encString = "ISO-8859-7";
+            else if (csetString == "ISO_IR 138")
+                encString = "ISO-8859-8";
+            else {
+                if (!csetString.empty())
+                {
+                    DCMNET_WARN("SpecificCharacterSet (0008,0005) value '" << csetString
+                        << "' not supported ... quoting non-ASCII characters");
+                }
+                /* make sure that non-ASCII characters are quoted appropriately */
+                writeFlags |= DCMTypes::XF_convertNonASCII;
+            }
+        }
+        /* we expect that the DICOM encoding is correct, so there is no "else" block */
+
+        /* write XML document header */
+        stream << "<?xml version=\"1.0\"";
+        /* optional character encoding */
+        if (!encString.empty())
+            stream << " encoding=\"" << encString << "\"";
+        stream << "?>" << OFendl;
+
+        OFCondition ec = dataset->writeXML(stream, writeFlags);
+        if (ec.bad()) {
+            DCMNET_ERROR("Writing file: " << ofname << ": " << ec.text());
+            return OFFalse;
+        }
+    } else {
+        DCMNET_ERROR("Writing file: " << ofname << ": " << OFStandard::getLastSystemErrorCode().message());
+        return OFFalse;
+    }
+
+    return OFTrue;
+}
+
+
 OFCondition DcmFindSCU::findSCU(
     T_ASC_Association * assoc,
     const char *fname,
@@ -419,7 +501,7 @@ OFCondition DcmFindSCU::findSCU(
     const char *abstractSyntax,
     T_DIMSE_BlockingMode blockMode,
     int dimse_timeout,
-    OFBool extractResponsesToFile,
+    DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback,
@@ -500,7 +582,7 @@ OFCondition DcmFindSCU::findSCU(
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 
     /* prepare the callback data */
-    DcmFindSCUDefaultCallback defaultCallback(extractResponsesToFile, cancelAfterNResponses, outputDirectory);
+    DcmFindSCUDefaultCallback defaultCallback(extractResponses, cancelAfterNResponses, outputDirectory);
     if (callback == NULL) callback = &defaultCallback;
     callback->setAssociation(assoc);
     callback->setPresentationContextID(presId);

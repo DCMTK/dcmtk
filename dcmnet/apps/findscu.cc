@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     OFCmdSignedInt        opt_cancelAfterNResponses = -1;
     int                   opt_dimse_timeout = 0;
     int                   opt_outputResponsesToLogger = 0;
-    OFBool                opt_extractResponsesToFile = OFFalse;
+    DcmFindSCUExtractMode opt_extractResponses = FEM_none;
     OFString              opt_outputDirectory = ".";
     OFCmdUnsignedInt      opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
     E_TransferSyntax      opt_networkTransferSyntax = EXS_Unknown;
@@ -212,14 +212,16 @@ int main(int argc, char *argv[])
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("general:");
-      cmd.addOption("--output-directory",   "-od",  1, "[d]irectory: string (default: \".\")", "write output files to existing directory d");
+      cmd.addOption("--output-directory",   "-od",  1, "[d]irectory: string (default: \".\")",
+                                                       "write output files to existing directory d");
     cmd.addSubGroup("automatic data correction:");
       cmd.addOption("--enable-correction",  "+dc",     "enable automatic data correction");
       cmd.addOption("--disable-correction", "-dc",     "disable automatic data correction (default)");
     cmd.addSubGroup("C-FIND responses:");
       cmd.addOption("--show-responses",     "+sr",     "always output responses to the logger");
       cmd.addOption("--hide-responses",     "-sr",     "do not output responses to the logger");
-      cmd.addOption("--extract",            "-X",      "extract responses to file (rsp0001.dcm, ...)");
+      cmd.addOption("--extract",            "-X",      "extract responses to DICOM file (rsp0001.dcm...)");
+      cmd.addOption("--extract-xml",        "-Xx",     "extract responses to XML file (rsp0001.xml...)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -336,7 +338,11 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--hide-responses")) opt_outputResponsesToLogger = 2;
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--extract")) opt_extractResponsesToFile = OFTrue;
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--extract")) opt_extractResponses = FEM_dicomFile;
+      if (cmd.findOption("--extract-xml")) opt_extractResponses = FEM_xmlFile;
+      cmd.endOptionBlock();
+
       /* finally parse filenames */
       int paramCount = cmd.getParamCount();
       const char *currentFilename = NULL;
@@ -461,7 +467,7 @@ int main(int argc, char *argv[])
       // default configuration for the C-FIND response logger
       if (!cmd.findOption("--log-config"))
       {
-        if (cmd.findOption("--extract"))
+        if (cmd.findOption("--extract") || cmd.findOption("--extract-xml"))
         {
           OFLog::getLogger(DCMNET_LOGGER_NAME ".responses").setLogLevel(OFLogger::OFF_LOG_LEVEL);
         }
@@ -493,7 +499,7 @@ int main(int argc, char *argv[])
     }
 
     /* make sure that output directory can be used (if needed) */
-    if (opt_extractResponsesToFile)
+    if (opt_extractResponses != FEM_none)
     {
       if (!OFStandard::dirExists(opt_outputDirectory))
       {
@@ -615,7 +621,7 @@ int main(int argc, char *argv[])
       opt_secureConnection,
       opt_abortAssociation,
       opt_repeatCount,
-      opt_extractResponsesToFile,
+      opt_extractResponses,
       opt_cancelAfterNResponses,
       &overrideKeys,
       NULL, /* we want to use the default callback */

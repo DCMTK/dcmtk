@@ -242,7 +242,10 @@ C-FIND responses:
           do not output responses to the logger
 
   -X    --extract
-          extract responses to file (rsp0001.dcm, ...)
+          extract responses to DICOM file (rsp0001.dcm...)
+
+  -Xx   --extract-xml
+          extract responses to XML file (rsp0001.xml...)
 \endverbatim
 
 \section findscu_notes NOTES
@@ -304,9 +307,13 @@ completely with one or more \e -k options.  If multiple query files are
 provided, \b findscu will send multiple C-FIND requests to the SCP.
 
 Each set of response identifiers received will be output to the logger unless
-option \e --hide-responses, \e --extract, \e --quiet or an appropriate logger
-configuration is used.  Option \e --show-responses can be used to force the
-output to the logger.
+option \e --hide-responses, \e --extract, \e --extract-xml, \e --quiet or an
+appropriate logger configuration is used.  With option \e --show-responses the
+output to the logger can be enforced.
+
+In addition, the response datasets can also be extracted as individual DICOM
+files (using option \e --extract) or XML files (using option \e --extract-xml).
+The output format of the latter is described by the file <em>dcm2xml.dtd</em>.
 
 \subsection findscu_dicom_conformance DICOM Conformance
 
@@ -394,6 +401,10 @@ variable only used when alternative data dictionaries are required.  The
 a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
+
+\section findscu_files FILES
+
+<em>\<datadir\>/dcm2xml.dtd</em> - Document Type Definition (DTD) file
 
 \section findscu_see_also SEE ALSO
 
