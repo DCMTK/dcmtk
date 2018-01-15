@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,6 +49,10 @@ BEGIN_EXTERN_C
 #endif
 #include <openssl/err.h>
 END_EXTERN_C
+
+#ifdef DCMTK_HAVE_POLL
+#include <poll.h>
+#endif
 
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -258,20 +262,31 @@ OFBool DcmTLSConnection::networkDataAvailable(int timeout)
   if (SSL_pending(tlsConnection)) return OFTrue;
 
   struct timeval t;
-  fd_set fdset;
   int nfound;
 
+#ifndef DCMTK_HAVE_POLL
+  fd_set fdset;
   FD_ZERO(&fdset);
   FD_SET(getSocket(), &fdset);
+#endif
   t.tv_sec = timeout;
   t.tv_usec = 0;
 
+#ifdef DCMTK_HAVE_POLL
+  struct pollfd pfd[] = 
+  {
+   { getSocket(), POLLIN, 0 }
+  };
+  nfound = poll(pfd, 1, t.tv_sec*1000+(t.tv_usec/1000));
+#else
 #ifdef HAVE_INTP_SELECT
   nfound = select(OFstatic_cast(int, getSocket() + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
   // This is safe because on Windows the first select() parameter is ignored anyway
   nfound = select(OFstatic_cast(int, getSocket() + 1), &fdset, NULL, NULL, &t);
-#endif
+#endif /* HAVE_INTP_SELECT */
+#endif /* DCMTK_HAVE_POLL */
+
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
   {
     DU_logSelectResult(nfound);
@@ -279,8 +294,13 @@ OFBool DcmTLSConnection::networkDataAvailable(int timeout)
   if (nfound <= 0) return OFFalse;
   else
   {
+#ifdef DCMTK_HAVE_POLL
+    if (pfd[0].revents & POLLIN) return OFTrue;
+    else return OFFalse;  /* This should not really happen */
+#else
     if (FD_ISSET(getSocket(), &fdset)) return OFTrue;
     else return OFFalse;  /* This should not really happen */
+#endif
   }
 }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -51,6 +51,10 @@ BEGIN_EXTERN_C
 #include <sys/select.h>
 #endif
 END_EXTERN_C
+
+#ifdef DCMTK_HAVE_POLL
+#include <poll.h>
+#endif
 
 /* platform independent definition of EINTR */
 enum
@@ -193,8 +197,10 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
 
   int i=0;
   struct timeval t;
+#ifndef DCMTK_HAVE_POLL
   fd_set fdset;
   FD_ZERO(&fdset);
+#endif
   OFTimer timer;
   int lTimeout = timeout;
 
@@ -203,16 +209,23 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     if (connections[i])
     {
       socketfd = connections[i]->getSocket();
+#ifndef DCMTK_HAVE_POLL
 #ifdef __MINGW32__
       /* on MinGW, FD_SET expects an unsigned first argument */
       FD_SET((unsigned int)socketfd, &fdset);
 #else
       FD_SET(socketfd, &fdset);
-#endif
-
+#endif /* __MINGW32__ */
+#endif /* DCMTK_HAVE_POLL */
       if (socketfd > maxsocketfd) maxsocketfd = socketfd;
     }
   }
+
+#ifdef DCMTK_HAVE_POLL
+  struct pollfd pfd[] = {
+    { maxsocketfd, POLLIN, 0 }
+  };
+#endif
 
   OFBool done = OFFalse;
   while (!done)
@@ -222,12 +235,16 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     t.tv_sec = lTimeout;
     t.tv_usec = 0;
 
+#ifdef DCMTK_HAVE_POLL
+    int nfound = poll(pfd, 1, t.tv_sec*1000+(t.tv_usec/1000));
+#else /* DCMTK_HAVE_POLL */
 #ifdef HAVE_INTP_SELECT
     int nfound = select(OFstatic_cast(int, maxsocketfd + 1), (int *)(&fdset), NULL, NULL, &t);
-#else
+#else /* HAVE_INTP_SELECT */
     // This is safe because on Win32 the first parameter of select() is ignored anyway
     int nfound = select(OFstatic_cast(int, maxsocketfd + 1), &fdset, NULL, NULL, &t);
-#endif
+#endif /* HAVE_INTP_SELECT */
+#endif /* DCMTK_HAVE_POLL */
 
     if (nfound == 0) return OFFalse; // a regular timeout
     else if (nfound > 0) done = OFTrue; // data available for reading
@@ -256,8 +273,16 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     if (connections[i])
     {
       socketfd = connections[i]->getSocket();
+#ifdef DCMTK_HAVE_POLL
+      pfd[0].fd = socketfd;
+      pfd[0].events = POLLIN;
+      pfd[0].revents = 0;
+      poll(pfd, 1, 0);
+      if(!(pfd[0].revents & POLLIN)) connections[i] = NULL;
+#else
       /* if not available, set entry in array to NULL */
       if (!FD_ISSET(socketfd, &fdset)) connections[i] = NULL;
+#endif
     }
   }
   return OFTrue;
@@ -353,11 +378,12 @@ unsigned long DcmTCPConnection::getPeerCertificate(void * /* buf */ , unsigned l
 OFBool DcmTCPConnection::networkDataAvailable(int timeout)
 {
   struct timeval t;
-  fd_set fdset;
   int nfound;
   OFTimer timer;
   int lTimeout = timeout;
 
+#ifndef DCMTK_HAVE_POLL
+  fd_set fdset;
   FD_ZERO(&fdset);
 
 #ifdef __MINGW32__
@@ -365,7 +391,8 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   FD_SET((unsigned int) getSocket(), &fdset);
 #else
   FD_SET(getSocket(), &fdset);
-#endif
+#endif /* __MINGW32__ */
+#endif /* DCMTK_HAVE_POLL */
 
   while (1)
   {
@@ -374,12 +401,20 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
       t.tv_sec = lTimeout;
       t.tv_usec = 0;
 
+#ifdef DCMTK_HAVE_POLL
+  struct pollfd pfd[] = 
+  {
+    { getSocket(), POLLIN, 0 }
+  };
+  nfound = poll(pfd, 1, t.tv_sec*1000+(t.tv_usec/1000));
+#else
 #ifdef HAVE_INTP_SELECT
       nfound = select(OFstatic_cast(int, getSocket() + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
       // This is safe because on Win32 the first parameter of select() is ignored anyway
       nfound = select(OFstatic_cast(int, getSocket() + 1), &fdset, NULL, NULL, &t);
-#endif
+#endif /* HAVE_INTP_SELECT */
+#endif /* DCMTK_HAVE_POLL */
 
       if (nfound < 0)
       {
@@ -405,7 +440,11 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
       }
       else
       {
+#ifdef DCMTK_HAVE_POLL
+        if (pfd[0].revents & POLLIN) return OFTrue;
+#else
         if (FD_ISSET(getSocket(), &fdset)) return OFTrue;
+#endif
         else return OFFalse;  /* This should not really happen */
       }
   }

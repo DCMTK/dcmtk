@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -130,6 +130,10 @@ typedef void (*mySIG_TYP)(...);
 typedef void (*mySIG_TYP)(int);
 #endif
 END_EXTERN_C
+
+#ifdef DCMTK_HAVE_POLL
+#include <poll.h>
+#endif
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmnet/dcompat.h"
@@ -1571,13 +1575,20 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         if (block == DUL_NOBLOCK)
         {
             connected = 0;
-            FD_ZERO(&fdset);
+#ifdef DCMTK_HAVE_POLL
+            struct pollfd pfd[] =
+            {
+                { (*network)->networkSpecific.TCP.listenSocket, POLLIN, 0 }
+            };
+#else
+             FD_ZERO(&fdset);
 #ifdef __MINGW32__
             // on MinGW, FD_SET expects an unsigned first argument
             FD_SET((unsigned int)((*network)->networkSpecific.TCP.listenSocket), &fdset);
 #else
             FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
-#endif
+#endif /* __MINGW32__ */
+#endif /* DCMTK_HAVE_POLL */
 
             timeout_val.tv_sec = timeout;
             timeout_val.tv_usec = 0;
@@ -1597,8 +1608,13 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 DU_logSelectResult(nfound);
             }
             if (nfound > 0) {
+#ifdef DCMTK_HAVE_POLL
+                if (pfd[0].revents & POLLIN)
+                    connected++;
+#else
                 if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
                     connected++;
+#endif
             }
             if (!connected) return DUL_NOASSOCIATIONREQUEST;
         }
@@ -1606,16 +1622,25 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         {
             connected = 0;
             do {
+#ifdef DCMTK_HAVE_POLL
+                struct pollfd pfd[]=
+                {
+                    { (*network)->networkSpecific.TCP.listenSocket, POLLIN, 0 }
+                };
+#else
                 FD_ZERO(&fdset);
 #ifdef __MINGW32__
                 // on MinGW, FD_SET expects an unsigned first argument
                 FD_SET((unsigned int)((*network)->networkSpecific.TCP.listenSocket), &fdset);
 #else
                 FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
-#endif
-
+#endif /* __MINGW32__ */
+#endif /* DCMTK_HAVE_POLL */
                 timeout_val.tv_sec = 5;
                 timeout_val.tv_usec = 0;
+#ifdef DCMTK_HAVE_POLL
+                nfound = poll(pfd, 1, timeout_val.tv_sec*1000+(timeout_val.tv_usec/1000));
+#else
 #ifdef HAVE_INTP_SELECT
                 nfound = select(
                   OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
@@ -1626,15 +1651,20 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 nfound = select(
                   OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
                                 &fdset, NULL, NULL, &timeout_val);
-#endif
+#endif /* HAVE_INTP_SELECT */
+#endif /* DCMTK_HAVE_POLL */
                 if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
                 {
                     DU_logSelectResult(nfound);
                 }
                 if (nfound > 0) {
-                    if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
-                                 &fdset))
+#ifdef DCMTK_HAVE_POLL
+                    if (pfd[0].revents & POLLIN)
                         connected++;
+#else
+                    if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
+                        connected++;
+#endif
                 }
             } while (!connected);
         }

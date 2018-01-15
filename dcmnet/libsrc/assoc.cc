@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -114,6 +114,9 @@
 #endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
+#endif
+#ifdef DCMTK_HAVE_POLL
+#include <poll.h>
 #endif
 
 #include "dcmtk/dcmnet/dicom.h"
@@ -1700,7 +1703,6 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
     int s;
 #endif
     struct timeval t;
-    fd_set fdset;
     int nfound;
 
     if (network == NULL) return OFFalse;
@@ -1714,21 +1716,33 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
         return OFFalse;
 #endif
 
+#ifndef DCMTK_HAVE_POLL
+    fd_set fdset;
     FD_ZERO(&fdset);
 #ifdef __MINGW32__
     // on MinGW, FD_SET expects an unsigned first argument
     FD_SET((unsigned int) s, &fdset);
 #else
     FD_SET(s, &fdset);
-#endif
+#endif /* __MINGW32__ */
+#endif /* DCMTK_HAVE_POLL */
     t.tv_sec = timeout;
     t.tv_usec = 0;
+
+#ifdef DCMTK_HAVE_POLL
+    struct pollfd pfd[] = 
+    {
+        { s, POLLIN, 0 }
+    };
+    nfound = poll(pfd, 1, t.tv_sec*1000+(t.tv_usec/1000));
+#else
 #ifdef HAVE_INTP_SELECT
     nfound = select(OFstatic_cast(int, s + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
     // the typecast is safe because Windows ignores the first select() parameter anyway
     nfound = select(OFstatic_cast(int, s + 1), &fdset, NULL, NULL, &t);
-#endif
+#endif /* HAVE_INTP_SELECT */
+#endif /* DCMTK_HAVE_POLL */
     if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
       DU_logSelectResult(nfound);

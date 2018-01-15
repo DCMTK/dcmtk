@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -94,6 +94,9 @@
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
+#ifdef DCMTK_HAVE_POLL
+#include <poll.h>
+#endif
 
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/lst.h"
@@ -132,7 +135,6 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
     DcmNativeSocketType s;
     OFBool              assocWaiting = OFFalse;
     struct timeval      t;
-    fd_set              fdset;
     int                 nfound;
 
     if (callerNet == NULL)
@@ -142,17 +144,28 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 
     s = net->networkSpecific.TCP.listenSocket;
 
-    FD_ZERO(&fdset);
-    FD_SET(s, &fdset);
+#ifndef DCMTK_HAVE_POLL
+     fd_set fdset;
+     FD_ZERO(&fdset);
+     FD_SET(s, &fdset);
+#endif
 
     t.tv_sec = timeout;
     t.tv_usec = 0;
+#ifdef DCMTK_HAVE_POLL
+    struct pollfd pfd[] = 
+    {
+       { s, POLLIN, 0 }
+    };
+    nfound = poll(pfd, 1,  t.tv_sec*1000+(t.tv_usec/1000));
+#else
 #ifdef HAVE_INTP_SELECT
     nfound = select(OFstatic_cast(int, s + 1), (int *)(&fdset), NULL, NULL, &t);
 #else
     // This is safe because on Windows the first select() parameter is ignored anyway
     nfound = select(OFstatic_cast(int, s + 1), &fdset, NULL, NULL, &t);
-#endif
+#endif /* HAVE_INTP_SELECT */
+#endif /* DCMTK_HAVE_POLL */
     if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
         DU_logSelectResult(nfound);
@@ -160,10 +173,17 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
     if (nfound <= 0) assocWaiting = OFFalse;
     else
     {
+#ifdef DCMTK_HAVE_POLL
+        if (pfd[0].revents & POLLIN)
+            assocWaiting = OFTrue;
+        else                /* This one should not really happen */
+            assocWaiting = OFFalse;
+#else
         if (FD_ISSET(s, &fdset))
             assocWaiting = OFTrue;
         else                /* This one should not really happen */
             assocWaiting = OFFalse;
+#endif
     }
 
     return assocWaiting;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -102,6 +102,9 @@ BEGIN_EXTERN_C
 #include <netinet/tcp.h>        /* for TCP_NODELAY */
 #endif
 END_EXTERN_C
+#ifdef DCMTK_HAVE_POLL
+#include <poll.h>
+#endif
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmnet/dicom.h"
@@ -2294,6 +2297,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     if (rc < 0 && errno == EINPROGRESS)
 #endif
     {
+#ifndef DCMTK_HAVE_POLL
         // we're in non-blocking mode. Prepare to wait for timeout.
         fd_set fdSet;
         FD_ZERO(&fdSet);
@@ -2302,15 +2306,24 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         FD_SET((unsigned int) s, &fdSet);
 #else
         FD_SET(s, &fdSet);
-#endif
+#endif /* __MINGW32__ */
+#endif /* DCMTK_HAVE_POLL */
 
         struct timeval timeout;
         timeout.tv_sec = connectTimeout;
         timeout.tv_usec = 0;
 
         do {
+#ifdef DCMTK_HAVE_POLL
+            struct pollfd pfd[] = 
+            {
+                { s, POLLIN, 0 }
+            };
+            rc = poll(pfd, 1, timeout.tv_sec*1000+(timeout.tv_usec/1000));
+#else
             // the typecast is safe because Windows ignores the first select() parameter anyway
             rc = select(OFstatic_cast(int, s + 1), NULL, &fdSet, NULL, &timeout);
+#endif
         } while (rc == -1 && OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR);
 
         if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
