@@ -54,6 +54,9 @@
 /* Select LFS mode (defined above) that shall be used or don't define it */
 #undef DCMTK_ENABLE_LFS
 
+/* Define if your system has a usable <poll.h> */
+#undef DCMTK_HAVE_POLL
+
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 

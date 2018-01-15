@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(dcmtk, 3.6.2, [bugs@dcmtk.org], [dcmtk-3.6.2], [http://www.dcmtk.org/])
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
-AC_CONFIG_HEADER(include/dcmtk/config/osconfig.h)
+AC_CONFIG_HEADERS(include/dcmtk/config/osconfig.h)
 
 m4_include([stdcxx.m4])
 
@@ -545,6 +545,7 @@ AC_CHECK_HEADERS(utime.h)
 AC_CHECK_HEADERS(wchar.h)
 AC_CHECK_HEADERS(wctype.h)
 AC_CHECK_HEADERS(fenv.h)
+AC_CHECK_POLL_H
 
 if test $ac_cv_header_libc_h = yes ; then
   if test $ac_cv_header_math_h = yes ; then

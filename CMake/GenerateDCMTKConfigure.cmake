@@ -321,6 +321,15 @@ ENDIF(WIN32 AND NOT CYGWIN)
   CHECK_INCLUDE_FILE_CXX("signal.h" HAVE_SIGNAL_H)
   CHECK_INCLUDE_FILE_CXX("fenv.h" HAVE_FENV_H)
 
+IF(NOT APPLE)
+  # poll on macOS is unreliable, it first did not exist, then was broken until
+  # fixed in 10.9 only to break again in 10.12.
+  CHECK_INCLUDE_FILE_CXX("poll.h" DCMTK_HAVE_POLL)
+  IF(DCMTK_HAVE_POLL)
+    ADD_DEFINITIONS(-DDCMTK_HAVE_POLL=1)
+  ENDIF(DCMTK_HAVE_POLL)
+ENDIF()
+
   # This mimics the autoconf test. There are systems out there
   # (e.g. FreeBSD and NeXT) where tcp.h can't be compiled on its own.
   SET(TCP_H_DEPS "")

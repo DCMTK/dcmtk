@@ -567,6 +567,37 @@ done
 ])
 
 
+dnl AC_CHECK_POLL_H checks if we have a usable <poll.h>.
+dnl poll on macOS is unreliable, it first did not exist, then was broken until
+dnl fixed in 10.9 only to break again in 10.12.
+dnl
+dnl AC_CHECK_POLL_H([ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
+AC_DEFUN(AC_CHECK_POLL_H,
+[
+AC_MSG_CHECKING([for usable poll.h])
+AH_TEMPLATE(AS_TR_CPP(DCMTK_HAVE_POLL), [Define if your system has a usable <poll.h>])
+AC_CACHE_VAL(ac_cv_header_poll_h,
+[
+case "${host}" in
+    *-*-darwin*)
+      eval "ac_cv_header_poll_h=no"
+      ;;
+    *)
+      AC_TRY_CPP([#include <poll.h>], eval "ac_cv_header_poll_h=yes", eval "ac_cv_header_poll_h=no")dnl
+      ;;
+esac
+])
+if eval "test \"`echo '$ac_cv_header_poll_h'`\" = yes"; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE_UNQUOTED(DCMTK_HAVE_POLL)
+  ifelse([$1], , :, [$1])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$2], , , [$2])
+fi
+])
+
+
 dnl AC_CHECK_TCP_H
 dnl checks for the presence of three system include files:
 dnl    <netinet/in_systm.h>
