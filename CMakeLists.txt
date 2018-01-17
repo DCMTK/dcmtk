@@ -69,7 +69,7 @@ ELSE(CMAKE_CROSSCOMPILING)
 ENDIF(CMAKE_CROSSCOMPILING)
 # Add a target to run the unit tests in exhaustive mode
 ADD_CUSTOM_TARGET("test-exhaustive"
-    COMMAND "${CMAKE_COMMAND}" "-P"
+    COMMAND "${CMAKE_COMMAND}" "-DCONFIG=$<CONFIG>" "-P"
         "${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunExhaustive.cmake"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
