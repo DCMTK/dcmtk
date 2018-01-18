@@ -499,3 +499,13 @@ DCMTK_TEST_SOCKET_LIBRARY(socket "socket")
 IF(CMAKE_CXX_COMPILER_ID STREQUAL SunPro)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -features=tmplrefstatic")
 ENDIF()
+
+#-----------------------------------------------------------------------------
+# workaround for using the deprecated generator expression $<CONFIGURATION>
+# with old CMake versions that do not understand $<CONFIG>
+#-----------------------------------------------------------------------------
+IF(CMAKE_VERSION VERSION_LESS 3.0.0)
+  SET(DCMTK_CONFIG_GENERATOR_EXPRESSION "$<CONFIGURATION>" CACHE INTERNAL "the generator expression to use for retriving the current config")
+ELSE()
+  SET(DCMTK_CONFIG_GENERATOR_EXPRESSION "$<CONFIG>" CACHE INTERNAL "the generator expression to use for retriving the current config")
+ENDIF()
