@@ -19,17 +19,20 @@
  *
  */
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"      /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmnet/dfindscu.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcdict.h"
-#include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
+#include "dcmtk/dcmdata/dcostrmz.h"     /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>     /* for zlibVersion() */
+#include <zlib.h>                       /* for zlibVersion() */
+#endif
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+#include "dcmtk/ofstd/ofchrenc.h"       /* for OFCharacterEncoding */
 #endif
 
 #ifdef WITH_OPENSSL
@@ -62,6 +65,7 @@ int main(int argc, char *argv[])
     int                   opt_dimse_timeout = 0;
     int                   opt_outputResponsesToLogger = 0;
     DcmFindSCUExtractMode opt_extractResponses = FEM_none;
+    OFString              opt_extractXMLFilename;
     OFString              opt_outputDirectory = ".";
     OFCmdUnsignedInt      opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
     E_TransferSyntax      opt_networkTransferSyntax = EXS_Unknown;
@@ -222,6 +226,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--hide-responses",     "-sr",     "do not output responses to the logger");
       cmd.addOption("--extract",            "-X",      "extract responses to DICOM file (rsp0001.dcm...)");
       cmd.addOption("--extract-xml",        "-Xx",     "extract responses to XML file (rsp0001.xml...)");
+      cmd.addOption("--extract-xml-single", "-Xs",  1, "[f]ilename: string",
+                                                       "extract all responses to given XML file f");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -234,7 +240,7 @@ int main(int argc, char *argv[])
         {
           app.printHeader(OFTrue /*print host identifier*/);
           COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
+#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL) && !defined(DCMTK_ENABLE_CHARSET_CONVERSION)
           COUT << " none" << OFendl;
 #else
           COUT << OFendl;
@@ -244,6 +250,9 @@ int main(int argc, char *argv[])
 #endif
 #ifdef WITH_OPENSSL
           COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
+#endif
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+          COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
           return 0;
         }
@@ -341,6 +350,11 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--extract")) opt_extractResponses = FEM_dicomFile;
       if (cmd.findOption("--extract-xml")) opt_extractResponses = FEM_xmlFile;
+      if (cmd.findOption("--extract-xml-single"))
+      {
+          opt_extractResponses = FEM_singleXMLFile;
+          app.checkValue(cmd.getValue(opt_extractXMLFilename));
+      }
       cmd.endOptionBlock();
 
       /* finally parse filenames */
@@ -467,7 +481,7 @@ int main(int argc, char *argv[])
       // default configuration for the C-FIND response logger
       if (!cmd.findOption("--log-config"))
       {
-        if (cmd.findOption("--extract") || cmd.findOption("--extract-xml"))
+        if (cmd.findOption("--extract") || cmd.findOption("--extract-xml") || cmd.findOption("--extract-xml-single"))
         {
           OFLog::getLogger(DCMNET_LOGGER_NAME ".responses").setLogLevel(OFLogger::OFF_LOG_LEVEL);
         }
@@ -626,7 +640,8 @@ int main(int argc, char *argv[])
       &overrideKeys,
       NULL, /* we want to use the default callback */
       &fileNameList,
-      opt_outputDirectory.c_str());
+      opt_outputDirectory.c_str(),
+      opt_extractXMLFilename.c_str());
 
     // destroy network structure
     cond = findscu.dropNetwork();

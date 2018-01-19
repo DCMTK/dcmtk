@@ -37,6 +37,13 @@ struct T_DIMSE_C_FindRQ;
 struct T_DIMSE_C_FindRSP;
 
 
+// include this file in doxygen documentation
+
+/** @file dfindscu.h
+ *  @brief Service Class User (SCU) for C-FIND
+ */
+
+
 /** mode specifying whether and how to extract C-FIND responses
  */
 enum DcmFindSCUExtractMode
@@ -47,7 +54,14 @@ enum DcmFindSCUExtractMode
   FEM_dicomFile,
   /// extract each C-FIND-RSP dataset to an XML file.
   /// See "dcm2xml.dtd" for XML format (starts with top-level element "data-set").
-  FEM_xmlFile
+  /// The DICOM specific character set is mapped to an appropriate XML encoding
+  /// (if possible), i.e. no character set conversion takes place.
+  FEM_xmlFile,
+  /// extract all C-FIND-RSP datasets to a single XML file.
+  /// The top-level element of the XML document is "responses". If support for
+  /// character set conversion is enabled, UTF-8 encoding is used, i.e. all
+  /// datasets are converted to UTF-8 encoding (which is strongly recommended).
+  FEM_singleXMLFile
 };
 
 
@@ -124,17 +138,21 @@ private:
 class DCMTK_DCMNET_EXPORT DcmFindSCUDefaultCallback: public DcmFindSCUCallback
 {
 public:
+
   /** constructor
    *  @param extractResponses mode specifying whether and how to extract C-FIND responses
    *  @param cancelAfterNResponses if non-negative, a C-FIND-CANCEL will be issued after the
    *    given number of incoming C-FIND-RSP messages
-   *  @param outputDirectory directory used to store the output files (e.g. response messages).
+   *  @param outputDirectory directory used to store the output files (e.g. response datasets).
    *    If NULL, the current directory is used.
+   *  @param outputStream pointer to output stream that is used when extractResponses is set
+   *    to FEM_singleXMLFile
    */
   DcmFindSCUDefaultCallback(
     DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
-    const char *outputDirectory = NULL);
+    const char *outputDirectory = NULL,
+    STD_NAMESPACE ofstream *outputStream = NULL);
 
   /// destructor
   virtual ~DcmFindSCUDefaultCallback() {}
@@ -159,15 +177,18 @@ private:
    /// if non-negative, a C-FIND-CANCEL will be issued after the given number of incoming C-FIND-RSP messages
    int cancelAfterNResponses_;
 
-   /// directory used to store the output files (e.g. response messages)
+   /// directory used to store the output files (e.g. response datasets)
    OFString outputDirectory_;
+
+   /// pointer to output stream that is used when extractResponses_ is FEM_singleXMLFile
+   STD_NAMESPACE ofstream *outputStream_;
 };
 
 
 /** This class implements a complete DICOM C-FIND SCU, including association set-up, execution of the
  *  C-FIND transaction including processing of results, and closing of the association. By default,
- *  incoming C-FIND-RSP messages will be displayed on console and, optionally, also stored in files.
- *  By providing a user-defined callback, other types of processing are possible.
+ *  incoming C-FIND-RSP messages will be displayed on console and, optionally, the attached dataset
+ *  is stored in files. By providing a user-defined callback, other types of processing are possible.
  */
 class DCMTK_DCMNET_EXPORT DcmFindSCU
 {
@@ -240,8 +261,10 @@ public:
    *  @param fileNameList list of query files. Each file is expected to be a DICOM file
    *    containing a dataset that is used as a query, possibly modified by override keys, if any.
    *    This parameter, if non-NULL, points to a list of filenames (paths).
-   *  @param outputDirectory directory used to store the output files (e.g. response messages).
+   *  @param outputDirectory directory used to store the output files (e.g. response datasets).
    *    If NULL, the current directory is used.
+   *  @param extractFilename filename used to store the response datasets when extractResponses is
+   *    set to FEM_singleXMLFile
    *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition performQuery(
@@ -262,7 +285,8 @@ public:
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback = NULL,
     OFList<OFString> *fileNameList = NULL,
-    const char *outputDirectory = NULL);
+    const char *outputDirectory = NULL,
+    const char *extractFilename = NULL);
 
   /** static helper function that writes the content of the given dataset
    *  into a DICOM file (using the DICOM file format with metaheader).
@@ -318,8 +342,10 @@ private:
    *    the query dataset will be empty otherwise. For path syntax see DcmPath.
    *  @param callback user-provided non-default callback handler object.
    *    For default callback, pass NULL.
-   *  @param outputDirectory directory used to store the output files (e.g. response messages).
+   *  @param outputDirectory directory used to store the output files (e.g. response datasets).
    *    If NULL, the current directory is used.
+   *  @param outputStream pointer to output stream that is used when extractResponses is set
+   *    to FEM_singleXMLFile
    *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition findSCU(
@@ -333,7 +359,8 @@ private:
     int cancelAfterNResponses,
     OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback = NULL,
-    const char *outputDirectory = NULL) const;
+    const char *outputDirectory = NULL,
+    STD_NAMESPACE ofstream *outputStream = NULL) const;
 
   /// Private undefined copy constructor
   DcmFindSCU(const DcmFindSCU& other);
