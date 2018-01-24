@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1214,7 +1214,7 @@ OFCondition DcmPixelData::getDecompressedColorModel(
     DcmItem *dataset,
     OFString &decompressedColorModel)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (dataset != NULL)
     {
       if (existUnencapsulated)
@@ -1222,7 +1222,21 @@ OFCondition DcmPixelData::getDecompressedColorModel(
         // we already have an uncompressed version of the pixel data either in memory or in file,
         // so just retrieve the color model from the given dataset
         result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
-      } else {
+        if (result == EC_TagNotFound)
+        {
+          DCMDATA_WARN("DcmPixelData: Mandatory element PhotometricInterpretation " << DCM_PhotometricInterpretation << " is missing");
+          result = EC_MissingAttribute;
+        }
+        else if (result.bad())
+        {
+          DCMDATA_WARN("DcmPixelData: Cannot retrieve value of element PhotometricInterpretation " << DCM_PhotometricInterpretation << ": " << result.text());
+        }
+        else if (decompressedColorModel.empty())
+        {
+          DCMDATA_WARN("DcmPixelData: No value for mandatory element PhotometricInterpretation " << DCM_PhotometricInterpretation);
+          result = EC_MissingValue;
+        }
+    } else {
         // we only have a compressed version of the pixel data.
         // Identify a codec for determining the color model.
         result = DcmCodecList::determineDecompressedColorModel(

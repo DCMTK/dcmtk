@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -682,11 +682,29 @@ OFCondition DcmRLECodecDecoder::determineDecompressedColorModel(
     DcmItem *dataset,
     OFString &decompressedColorModel) const
 {
-    OFCondition result = EC_InvalidTag;
-    if ((dataset != NULL ) && ((dataset->ident() == EVR_dataset) || (dataset->ident() == EVR_item)))
+    OFCondition result = EC_IllegalParameter;
+    if (dataset != NULL )
     {
-        // retrieve color model from given dataset
-        result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
+        if ((dataset->ident() == EVR_dataset) || (dataset->ident() == EVR_item))
+        {
+            // retrieve color model from given dataset
+            result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
+            if (result == EC_TagNotFound)
+            {
+                DCMDATA_WARN("DcmRLECodecDecoder: Mandatory element PhotometricInterpretation " << DCM_PhotometricInterpretation << " is missing");
+                result = EC_MissingAttribute;
+            }
+            else if (result.bad())
+            {
+                DCMDATA_WARN("DcmRLECodecDecoder: Cannot retrieve value of element PhotometricInterpretation " << DCM_PhotometricInterpretation << ": " << result.text());
+            }
+            else if (decompressedColorModel.empty())
+            {
+                DCMDATA_WARN("DcmRLECodecDecoder: No value for mandatory element PhotometricInterpretation " << DCM_PhotometricInterpretation);
+                result = EC_MissingValue;
+            }
+        } else
+            result = EC_CorruptedData;
     }
     return result;
 }

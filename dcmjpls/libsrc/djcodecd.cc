@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2017, OFFIS e.V.
+ *  Copyright (C) 2007-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -485,6 +485,20 @@ OFCondition DJLSDecoderBase::determineDecompressedColorModel(
   {
     // retrieve color model from given dataset
     result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
+    if (result == EC_TagNotFound)
+    {
+        DCMJPLS_WARN("mandatory element PhotometricInterpretation " << DCM_PhotometricInterpretation << " is missing");
+        result = EC_MissingAttribute;
+    }
+    else if (result.bad())
+    {
+        DCMJPLS_WARN("cannot retrieve value of element PhotometricInterpretation " << DCM_PhotometricInterpretation << ": " << result.text());
+    }
+    else if (decompressedColorModel.empty())
+    {
+        DCMJPLS_WARN("no value for mandatory element PhotometricInterpretation " << DCM_PhotometricInterpretation);
+        result = EC_MissingValue;
+    }
   }
   return result;
 }

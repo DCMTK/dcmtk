@@ -352,6 +352,46 @@ OFCondition DJCodecDecoder::decode(
 }
 
 
+// the following macros make the source code more readable and easier to maintain
+
+#define GET_AND_CHECK_UINT16_VALUE(tag, variable)                                                                           \
+  if (result.good())                                                                                                        \
+  {                                                                                                                         \
+    result = dataset->findAndGetUint16(tag, variable);                                                                      \
+    if (result == EC_TagNotFound)                                                                                           \
+    {                                                                                                                       \
+      DCMJPEG_WARN("mandatory element " << DcmTag(tag).getTagName() << " " << tag << " is missing");                        \
+      result = EC_MissingAttribute;                                                                                         \
+    }                                                                                                                       \
+    else if ((result == EC_IllegalCall) || (result == EC_IllegalParameter))                                                 \
+    {                                                                                                                       \
+      DCMJPEG_WARN("no value for mandatory element " << DcmTag(tag).getTagName() << " " << tag);                            \
+      result = EC_MissingValue;                                                                                             \
+    }                                                                                                                       \
+    else if (result.bad())                                                                                                  \
+      DCMJPEG_WARN("cannot retrieve value of element " << DcmTag(tag).getTagName() << " " << tag << ": " << result.text()); \
+  }
+
+#define GET_AND_CHECK_STRING_VALUE(tag, variable)                                                                           \
+  if (result.good())                                                                                                        \
+  {                                                                                                                         \
+    result = dataset->findAndGetOFString(tag, variable);                                                                    \
+    if (result == EC_TagNotFound)                                                                                           \
+    {                                                                                                                       \
+      DCMJPEG_WARN("mandatory element " << DcmTag(tag).getTagName() << " " << tag << " is missing");                        \
+      result = EC_MissingAttribute;                                                                                         \
+    }                                                                                                                       \
+    else if (result.bad())                                                                                                  \
+    {                                                                                                                       \
+      DCMJPEG_WARN("cannot retrieve value of element " << DcmTag(tag).getTagName() << " " << tag << ": " << result.text()); \
+    }                                                                                                                       \
+    else if (variable.empty())                                                                                              \
+    {                                                                                                                       \
+      DCMJPEG_WARN("no value for mandatory element " << DcmTag(tag).getTagName() << " " << tag);                            \
+      result = EC_MissingValue;                                                                                             \
+    }                                                                                                                       \
+  }
+
 OFCondition DJCodecDecoder::decodeFrame(
     const DcmRepresentationParameter *fromParam,
     DcmPixelSequence *fromPixSeq,
@@ -368,7 +408,10 @@ OFCondition DJCodecDecoder::decodeFrame(
   // assume we can cast the codec parameter to what we need
   const DJCodecParameter *djcp = OFreinterpret_cast(const DJCodecParameter*, cp);
 
-  if ((!dataset)||((dataset->ident()!= EVR_dataset) && (dataset->ident()!= EVR_item))) result = EC_InvalidTag;
+  if (dataset == NULL)
+    result = EC_IllegalParameter;
+  else if ((dataset->ident() != EVR_dataset) && (dataset->ident() != EVR_item))
+    result = EC_CorruptedData;
   else
   {
     Uint16 imageSamplesPerPixel = 0;
@@ -383,17 +426,18 @@ OFCondition DJCodecDecoder::decodeFrame(
     OFBool isSigned = OFFalse;
     Uint16 pixelRep = 0; // needed to decline color conversion of signed pixel data to RGB
 
-    if (result.good()) result = dataset->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
-    if (result.good()) result = dataset->findAndGetUint16(DCM_Rows, imageRows);
-    if (result.good()) result = dataset->findAndGetUint16(DCM_Columns, imageColumns);
-    if (result.good()) result = dataset->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated);
-    if (result.good()) result = dataset->findAndGetUint16(DCM_BitsStored, imageBitsStored);
-    if (result.good()) result = dataset->findAndGetUint16(DCM_HighBit, imageHighBit);
-    if (result.good()) result = dataset->findAndGetUint16(DCM_PixelRepresentation, pixelRep);
-    if (result.good()) result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, photometricInterpretation);
+    /* retrieve values from dataset (and warn if missing or empty) */
+    GET_AND_CHECK_UINT16_VALUE(DCM_SamplesPerPixel, imageSamplesPerPixel)
+    GET_AND_CHECK_UINT16_VALUE(DCM_Rows, imageRows)
+    GET_AND_CHECK_UINT16_VALUE(DCM_Columns, imageColumns)
+    GET_AND_CHECK_UINT16_VALUE(DCM_BitsAllocated, imageBitsAllocated)
+    GET_AND_CHECK_UINT16_VALUE(DCM_BitsStored, imageBitsStored)
+    GET_AND_CHECK_UINT16_VALUE(DCM_HighBit, imageHighBit)
+    GET_AND_CHECK_UINT16_VALUE(DCM_PixelRepresentation, pixelRep)
+    GET_AND_CHECK_STRING_VALUE(DCM_PhotometricInterpretation, photometricInterpretation)
     if (imageSamplesPerPixel > 1)
     {
-      if (result.good()) result = dataset->findAndGetUint16(DCM_PlanarConfiguration, planarConfig);
+      GET_AND_CHECK_UINT16_VALUE(DCM_PlanarConfiguration, planarConfig);
     }
 
     isSigned = (pixelRep == 0) ? OFFalse : OFTrue;
