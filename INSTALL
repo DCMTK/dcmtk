@@ -557,7 +557,7 @@ CMake which will generate suitable build files for all of DCMTK's projects from
 these files.
 
 DCMTK 3.6.2 requires CMake version 2.8.3 or later.  We recommend using the
-latest stable release of CMake (currently version 3.8.2) since newer versions
+latest stable release of CMake (currently version 3.10.2) since newer versions
 of CMake often provide better output in case of errors and are generally easier
 to use (for example by providing better support for detecting the availability
 of third party libraries).  If possible, use the CMake version your operating
@@ -900,4 +900,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2017-11-01 (Riesmeier)
+Last revised: 2018-01-24 (Riesmeier)
