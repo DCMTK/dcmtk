@@ -634,7 +634,7 @@ static FSM_ENTRY StateTable[DUL_NUMBER_OF_EVENTS][DUL_NUMBER_OF_STATES] = {
         // DICOM part 8 does not define an action and state for the
         // situation where a timeout occurs while we are waiting for an
         // incoming A-ASSOCIATE-AC or A-ASSOCIATE-RJ. We close the transport
-        // connection, return an error code indicating a timout,
+        // connection, return an error code indicating a timeout,
         // and reset the FSM to idle state (STATE1).
         {ARTIM_TIMER_EXPIRED, STATE5, AA_2T, STATE1, "", "", NULL},
 
@@ -643,7 +643,7 @@ static FSM_ENTRY StateTable[DUL_NUMBER_OF_EVENTS][DUL_NUMBER_OF_STATES] = {
         // DICOM part 8 does not define an action and state for the
         // situation where a timeout occurs while we are waiting for an
         // incoming A-RELEASE-RSP. We close the transport
-        // connection, return an error code indicating a timout,
+        // connection, return an error code indicating a timeout,
         // and reset the FSM to idle state (STATE1).
         {ARTIM_TIMER_EXPIRED, STATE7, AA_2T, STATE1, "", "", NULL},
 
@@ -1201,13 +1201,12 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
         }
         (void) strcpy(service->calledAPTitle, assoc.calledAPTitle);
         (void) strcpy(service->callingAPTitle, assoc.callingAPTitle);
-        (void) strcpy(service->applicationContextName,
-                      assoc.applicationContext.data);
+        (void) strcpy(service->applicationContextName, assoc.applicationContext.data);
 
         if ((service->requestedPresentationContext = LST_Create()) == NULL) return EC_MemoryExhausted;
         if (translatePresentationContextList(&assoc.presentationContextList,
                                              &assoc.userInfo.SCUSCPRoleList,
-                      &service->requestedPresentationContext).bad())
+                                             &service->requestedPresentationContext).bad())
         {
             return DUL_PCTRANSLATIONFAILURE;
         }
@@ -2315,7 +2314,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 
         do {
 #ifdef DCMTK_HAVE_POLL
-            struct pollfd pfd[] = 
+            struct pollfd pfd[] =
             {
                 { s, POLLIN, 0 }
             };
@@ -2724,8 +2723,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
 
 
     OFCondition cond = constructAssociateRejectPDU((unsigned char) abortItems->result,
-     (unsigned char) abortItems->source, (unsigned char) abortItems->reason,
-                                       &pdu);
+        (unsigned char) abortItems->source, (unsigned char) abortItems->reason, &pdu);
     if (pdu.length + 6 <= sizeof(buffer))
         b = buffer;
     else {
@@ -3537,7 +3535,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 **      block           For blocking/non-blocking read
 **      timeout         Timeout interval for reading
 **      buffer          Buffer to hold the PDU
-**      maxLength       MAximum number of bytes to read
+**      maxLength       Maximum number of bytes to read
 **      pduType         PDU Type of the incoming PDU (returned to caller)
 **      pduReserved     Reserved field in the PDU
 **      pduLength       Actual number of bytes read
@@ -3654,7 +3652,7 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
     {
         /* figure out how long we want to wait: if timerStart equals 0 we want to wait exactly */
         /* timeout seconds starting from the call to select(...) within the below called function; */
-        /* if timerStart does not equal 0 we want to substract the time which has already passed */
+        /* if timerStart does not equal 0 we want to subtract the time which has already passed */
         /* after the timer was started from timeout and wait the resulting amount of seconds */
         /* starting from the call to select(...) within the below called function. */
         if (timerStart == 0) timerStart = time(NULL);

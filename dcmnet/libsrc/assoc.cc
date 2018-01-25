@@ -882,7 +882,7 @@ ASC_acceptPresentationContext(
      * proposed presentation context: If the requestor connects with default role but the
      * acceptor explicitly requires the SCP role (only) then the presentation context
      * will be rejected. All other cases do not lead to rejection but to actual "negotiation".
-     * DCMTK's behaviour can be seen in the delaration of enum DUL_SC_ROLE (see dul.h).
+     * DCMTK's behaviour can be seen in the declaration of enum DUL_SC_ROLE (see dul.h).
      * The logic of the role negotiation is implemented in constructSCUSCPRoles() (see dulconst.cc).
      */
     if ( (proposedContext->proposedSCRole == DUL_SC_ROLE_DEFAULT)
@@ -1730,7 +1730,7 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
     t.tv_usec = 0;
 
 #ifdef DCMTK_HAVE_POLL
-    struct pollfd pfd[] = 
+    struct pollfd pfd[] =
     {
         { s, POLLIN, 0 }
     };
