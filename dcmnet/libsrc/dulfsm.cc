@@ -1118,7 +1118,8 @@ AE_5_TransportConnectResponse(PRIVATE_NETWORKKEY ** /*network*/,
 {
     clearPDUCache(association);
     (*association)->protocolState = nextState;
-/*  Start the timer */
+
+    /* Start the timer (?) */
 
     return EC_Normal;
 }
@@ -1313,6 +1314,9 @@ AE_8_SendAssociateRJ(PRIVATE_NETWORKKEY ** network,
     abortItems = (DUL_ABORTITEMS *) params;
     cond = sendAssociationRJTCP(network, abortItems, association);
     (*association)->protocolState = nextState;
+
+    /* Start the timer (?) */
+
     return cond;
 }
 
