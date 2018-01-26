@@ -525,6 +525,9 @@ DUL_RequestAssociation(
     if (cond.bad())
         return cond;
 
+    if (block == DUL_NOBLOCK)
+        DCMNET_TRACE("setting association request timeout to " << timeout << " seconds");
+
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
     /* send a request primitive */
@@ -547,8 +550,17 @@ DUL_RequestAssociation(
         destroyAssociationKey(association);
         return cond;
     }
+
+    /* if no timeout is passed, use the default one (do not wait forever) */
+    if ((block == DUL_BLOCK) && ((*association)->timeout > 0))
+    {
+        block = DUL_NOBLOCK;
+        timeout = (*association)->timeout;
+        DCMNET_TRACE("setting timeout for first PDU to be read to " << timeout << " seconds");
+    }
     /* Find the next event */
     cond = PRV_NextPDUType(association, block, timeout, &pduType);
+
     if (cond == DUL_NETWORKCLOSED)
         event = TRANS_CONN_CLOSED;
     else if (cond == DUL_READTIMEOUT)
@@ -657,6 +669,9 @@ DUL_ReceiveAssociationRQ(
     if (cond.bad())
         return cond;
 
+    if (block == DUL_NOBLOCK)
+        DCMNET_TRACE("setting association receive timeout to " << timeout << " seconds");
+
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
     clearRequestorsParams(params);
 
@@ -677,7 +692,8 @@ DUL_ReceiveAssociationRQ(
     /* This is the first time we read from this new connection, so in case it
      * doesn't speak DICOM, we shouldn't wait forever (= DUL_NOBLOCK).
      */
-    cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
+    DCMNET_TRACE("setting timeout for first PDU to be read to " << (*association)->timeout << " seconds");
+    cond = PRV_NextPDUType(association, DUL_NOBLOCK, (*association)->timeout, &pduType);
 
     if (cond == DUL_NETWORKCLOSED)
         event = TRANS_CONN_CLOSED;
