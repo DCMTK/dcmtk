@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -601,9 +601,14 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
       CNF_Config.AEEntries[noOfAEEntries - 1].StorageArea = parsevalues(&lineptr);
       CNF_Config.AEEntries[noOfAEEntries - 1].Access = parsevalues(&lineptr);
       CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota = parseQuota(&lineptr);
-      CNF_Config.AEEntries[noOfAEEntries - 1].Peers = parsePeers(&lineptr, &CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers);
-      if (!CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers)
+      if ((CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxStudies == 0) ||
+         (CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxBytesPerStudy == 0))
          error = 1;
+      else
+      {
+        CNF_Config.AEEntries[noOfAEEntries - 1].Peers = parsePeers(&lineptr, &CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers);
+        if (!CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers) error = 1;
+      }
    }
 
    if (!end) {
@@ -625,9 +630,15 @@ DcmQueryRetrieveConfigQuota *DcmQueryRetrieveConfig::parseQuota(char **valuehand
    if ((helpquota = (DcmQueryRetrieveConfigQuota *)malloc(sizeof(DcmQueryRetrieveConfigQuota))) == NULL)
       panic("Memory allocation 4");
    helpvalue = parsevalues(valuehandle);
-   sscanf(helpvalue, "%d , %s", &studies, helpval);
-   helpquota->maxStudies = studies;
-   helpquota->maxBytesPerStudy = quota(helpval);
+   if (helpvalue)
+   {
+     sscanf(helpvalue, "%d , %s", &studies, helpval);
+     helpquota->maxStudies = studies;
+     helpquota->maxBytesPerStudy = quota(helpval);
+   } else {
+     helpquota->maxStudies = 0;
+     helpquota->maxBytesPerStudy = 0;
+   }
    free(helpvalue);
 
    return(helpquota);
