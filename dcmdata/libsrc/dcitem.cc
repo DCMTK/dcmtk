@@ -416,6 +416,13 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
             << tag.getTagName() << " " << tag << " to 'OB'");
         tag.setVR(EVR_OB);
     }
+    /* currently unhandled:
+     * - MappedPixelValue (0022,1452), US or SS
+     * - RedPaletteColorLookupTableDescriptor (0028,1101), US or SS
+     * - GreenPaletteColorLookupTableDescriptor (0028,1102), US or SS
+     * - BluePaletteColorLookupTableDescriptor (0028,1103), US or SS
+     * and some retired DICOM attributes as well as some DICONDE attributes
+     */
 }
 
 
