@@ -1526,8 +1526,9 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                               DUL_ASSOCIATESERVICEPARAMETERS * params,
                               PRIVATE_ASSOCIATIONKEY ** association)
 {
-    fd_set
-    fdset;
+#ifndef DCMTK_HAVE_POLL
+    fd_set fdset;
+#endif
     struct timeval timeout_val;
 #ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t len;
