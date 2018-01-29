@@ -1592,6 +1592,10 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
             timeout_val.tv_sec = timeout;
             timeout_val.tv_usec = 0;
+
+#ifdef DCMTK_HAVE_POLL
+            nfound = poll(pfd, 1, timeout_val.tv_sec*1000+(timeout_val.tv_usec/1000));
+#else
 #ifdef HAVE_INTP_SELECT
             nfound = select(
               OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
@@ -1602,7 +1606,9 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             nfound = select(
               OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
                            &fdset, NULL, NULL, &timeout_val);
-#endif
+#endif /* HAVE_INTP_SELECT */
+#endif /* DCMTK_HAVE_POLL*/
+
             if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
             {
                 DU_logSelectResult(nfound);
