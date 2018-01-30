@@ -828,6 +828,62 @@ OFBool WlmFileSystemInteractionManager::AttributeIsAbsentOrEmpty( DcmTagKey elem
     return( OFFalse );
 }
 
+
+OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenceOfItems& query,
+                                                                      const MatchingKeys& matchingKeys,
+                                                                      const OFBool normilize,
+                                                                      const OFBool enableWildcardMatching )
+{
+  DcmItem* pQueryItem = OFstatic_cast( DcmItem*, query.nextInContainer( OFnullptr ) );
+  if( pQueryItem ) {
+#ifdef HAVE_CXX11
+      for( auto& key : matchingKeys.keys )
+      {
+#else
+      // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+      for( OFVector<OFPair<DcmTagKey,OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it )
+      {
+        const OFPair<DcmTagKey,OFBool>& key = *it;
+#endif
+        DcmElement* query = OFnullptr;
+        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normilize, enableWildcardMatching ) )
+          return OFFalse;
+      }
+
+#ifdef HAVE_CXX11
+      for( auto& combinedKey : matchingKeys.combinedKeys )
+      {
+#else
+      // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+      for( OFVector<OFPair<DcmTagKey,DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it )
+      {
+        const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
+#endif
+        DcmElement* query = OFnullptr;
+        if( pQueryItem->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normilize, enableWildcardMatching ) )
+          return OFFalse;
+        else if( pQueryItem->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch( normilize, enableWildcardMatching ) )
+          return OFFalse;
+      }
+
+      // sequence matching
+#ifdef HAVE_CXX11
+      for( auto& sequenceKey : matchingKeys.sequenceKeys )
+      {
+#else
+      // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+      for( OFVector<OFPair<DcmTagKey,MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it )
+      {
+        const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
+#endif
+        DcmElement* query = OFnullptr;
+        if( pQueryItem->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second, normilize, enableWildcardMatching ) )
+          return OFFalse;
+      }
+  }
+  return OFTrue;
+}
+
 OFBool WlmFileSystemInteractionManager::MatchSequences( DcmSequenceOfItems& candidate,
                                                         DcmSequenceOfItems& query,
                                                         const MatchingKeys& matchingKeys )
@@ -865,7 +921,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
     const OFPair<DcmTagKey,OFBool>& key = *it;
 #endif
     DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( key.first, query, OFFalse ).good() && query )
+    if( searchMask->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch() )
     {
       DcmElement* candidate = OFnullptr;
       if( dataset->findAndGetElement( key.first, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate, key.second ) )
@@ -883,7 +939,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
     const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
 #endif
     DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query )
+    if( searchMask->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch() )
     {
       DcmElement* candidate = OFnullptr;
       if( dataset->findAndGetElement( combinedKey.first, candidate, OFFalse ).bad() || !candidate )
@@ -900,7 +956,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
         return OFFalse;
       }
     }
-    else if( searchMask->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query )
+    else if( searchMask->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch() )
     {
       DcmElement* candidate = OFnullptr;
       if( dataset->findAndGetElement( combinedKey.second, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate ) )
@@ -920,7 +976,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
     const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
 #endif
     DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !OFstatic_cast( DcmSequenceOfItems*, query )->isEmpty() )
+    if( searchMask->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
     {
       DcmElement* candidate = OFnullptr;
       if( dataset->findAndGetElement( sequenceKey.first, candidate, OFFalse ).bad() || !candidate || candidate->ident() != EVR_SQ || !MatchSequences( OFstatic_cast( DcmSequenceOfItems&, *candidate ), OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )

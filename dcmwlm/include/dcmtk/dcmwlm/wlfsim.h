@@ -155,6 +155,22 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        */
     OFBool MatchSequences( DcmSequenceOfItems& candidate, DcmSequenceOfItems& query, const MatchingKeys& matchingKeys );
 
+      /** Determine if the sequences elements are universal matching.
+       *  @param query The query sequence.
+       *  @param matchingKeys The matching keys to regard.
+       *  @param normalize normalize each element value. Defaults to OFTrue.
+       *  @param enableWildCardMatching enable or disable wild card matching. Defaults to OFTrue,
+       *    which means wild card matching is performed if the element's VR supports it. Set to
+       *    OFFalse to force single value matching instead.
+       *  @return returns OFTrue if sequence has no items or the element of the items are all empty or,
+       *    if enableWildCardMatching is enabled, containing only wildcard chars.
+       *    Returns OFFalse otherwise.
+       */
+    OFBool isUniversalMatchingSequences( DcmSequenceOfItems& query,
+                                         const MatchingKeys& matchingKeys,
+                                         const OFBool normalize = OFTrue,
+                                         const OFBool enableWildCardMatching = OFTrue );
+
       /** This function returns OFTrue, if the matching key attribute values in the
        *  dataset match the matching key attribute values in the search mask.
        *  @param dataset    The dataset which shall be checked.
