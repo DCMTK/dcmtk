@@ -154,3 +154,25 @@ OFBool DcmCodeString::matches(const OFString& key,
   else
     return DcmByteString::matches(key, candidate, OFFalse);
 }
+
+
+OFBool DcmCodeString::isUniversalMatch(const OFBool normalize,
+                                       const OFBool enableWildCardMatching)
+{
+  if(!isEmpty(normalize))
+  {
+    if(enableWildCardMatching)
+    {
+      OFString value;
+      for(unsigned long valNo = 0; valNo < getVM(); ++valNo)
+      {
+        getOFString(value, valNo, normalize);
+        if(value.find_first_not_of( '*' ) != OFString_npos)
+          return OFFalse;
+      }
+    }
+    else
+      return OFFalse;
+  }
+  return OFTrue;
+}

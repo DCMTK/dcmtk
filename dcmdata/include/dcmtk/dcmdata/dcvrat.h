@@ -236,6 +236,10 @@ class DCMTK_DCMDATA_EXPORT DcmAttributeTag
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
+    /// @copydoc DcmElement::isUniversalMatch()
+    virtual OFBool isUniversalMatch(const OFBool normalize = OFTrue,
+                                    const OFBool enableWildCardMatching = OFTrue);
+
     /* --- static helper functions --- */
 
     /** check whether given string value conforms to the VR "AT" (Attribute Tag)

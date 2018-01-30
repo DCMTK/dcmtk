@@ -113,6 +113,10 @@ class DCMTK_DCMDATA_EXPORT DcmCodeString
                            const OFString& candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
+    /// @copydoc DcmElement::isUniversalMatch()
+    virtual OFBool isUniversalMatch(const OFBool normalize = OFTrue,
+                                    const OFBool enableWildCardMatching = OFTrue);
+
     /* --- static helper functions --- */
 
     /** check whether given value conforms to value representation CS (Code String).

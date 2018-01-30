@@ -270,6 +270,28 @@ const OFString& DcmCharString::getDelimiterChars() const
 }
 
 
+OFBool DcmCharString::isUniversalMatch(const OFBool normalize,
+                                       const OFBool enableWildCardMatching)
+{
+  if(!isEmpty(normalize))
+  {
+    if(enableWildCardMatching)
+    {
+      OFString value;
+      for(unsigned long valNo = 0; valNo < getVM(); ++valNo)
+      {
+        getOFString(value, valNo, normalize);
+        if(value.find_first_not_of( '*' ) != OFString_npos)
+          return OFFalse;
+      }
+    }
+    else
+      return OFFalse;
+  }
+  return OFTrue;
+}
+
+
 OFBool DcmCharString::matches(const OFString& key,
                               const OFString& candidate,
                               const OFBool enableWildCardMatching) const

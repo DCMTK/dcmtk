@@ -146,6 +146,10 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
                            const OFString& candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
+    /// @copydoc DcmElement::isUniversalMatch()
+    virtual OFBool isUniversalMatch(const OFBool normalize = OFTrue,
+                                    const OFBool enableWildCardMatching = OFTrue);
+
   protected:
 
     /** get value of the SpecificCharacterSet element of the surrounding dataset/item

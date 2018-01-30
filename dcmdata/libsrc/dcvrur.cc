@@ -135,3 +135,27 @@ OFBool DcmUniversalResourceIdentifierOrLocator::matches(const OFString& key,
   else
     return DcmByteString::matches(key, candidate, OFFalse);
 }
+
+
+OFBool DcmUniversalResourceIdentifierOrLocator::isUniversalMatch(const OFBool normalize,
+                                                                 const OFBool enableWildCardMatching)
+{
+  if(!isEmpty(normalize))
+  {
+    if(enableWildCardMatching)
+    {
+      OFString value;
+      if(!normalize && getVM() > 1)
+        return OFFalse;
+      for(unsigned long valNo = 0; valNo < getVM(); ++valNo)
+      {
+        getOFString(value, valNo, normalize);
+        if(value.find_first_not_of( '*' ) != OFString_npos)
+          return OFFalse;
+      }
+    }
+    else
+      return OFFalse;
+  }
+  return OFTrue;
+}

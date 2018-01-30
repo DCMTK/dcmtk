@@ -207,6 +207,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedShort
     /// @copydoc DcmElement::matches()
     virtual OFBool matches(const DcmElement& candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
+
   protected:
 
     /** constructor. Create new element from given tag and length.

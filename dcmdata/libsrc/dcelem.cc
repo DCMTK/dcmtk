@@ -2255,6 +2255,13 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 }
 
 
+OFBool DcmElement::isUniversalMatch(const OFBool normalize,
+                                    const OFBool enableWildCardMatching)
+{
+  OFstatic_cast(void,enableWildCardMatching);
+  return isEmpty(normalize);
+}
+
 OFBool DcmElement::matches(const DcmElement& candidate,
                            const OFBool enableWildCardMatching) const
 {

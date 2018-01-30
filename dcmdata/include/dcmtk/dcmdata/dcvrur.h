@@ -128,6 +128,10 @@ class DCMTK_DCMDATA_EXPORT DcmUniversalResourceIdentifierOrLocator
                            const OFString& candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
+    /// @copydoc DcmElement::isUniversalMatch()
+    virtual OFBool isUniversalMatch(const OFBool normalize = OFTrue,
+                                    const OFBool enableWildCardMatching = OFTrue);
+
     /* --- static helper functions --- */
 
     /** check whether given string value conforms to the VR "UR" (Universal Resource Identifier

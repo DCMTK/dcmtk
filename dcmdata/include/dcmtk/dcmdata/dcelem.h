@@ -734,6 +734,17 @@ class DCMTK_DCMDATA_EXPORT DcmElement
     virtual OFCondition getDecompressedColorModel(DcmItem *dataset,
                                                   OFString &decompressedColorModel);
 
+    /** Determine if this element is universal matching.
+     *  @param normalize normalize each element value. Defaults to OFTrue.
+     *  @param enableWildCardMatching enable or disable wild card matching. Defaults to OFTrue,
+     *    which means wild card matching is performed if the element's VR supports it. Set to
+     *    OFFalse to force single value matching instead.
+     *  @return returns OFTrue if element is empty or if enableWildCardMatching is enabled and
+     *    the element contains only wildcard characters. Returns OFFalse otherwise.
+     */
+    virtual OFBool isUniversalMatch(const OFBool normalize = OFTrue,
+                                    const OFBool enableWildCardMatching = OFTrue);
+
     /** perform attribute matching.
      *  Perform attribute matching on a candidate element using this element as the matching
      *  key.
