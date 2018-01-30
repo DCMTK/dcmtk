@@ -11,7 +11,7 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-files = ciphers.txt randseed.txt
+files = ciphers.txt randseed.txt certstor.txt
 
 
 all:
