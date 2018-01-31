@@ -2227,18 +2227,6 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         return makeDcmnetCondition(DULC_ILLEGALSERVICEPARAMETER, OF_error, buf);
     }
 
-    s = socket(AF_INET, SOCK_STREAM, 0);
-#ifdef _WIN32
-    if (s == INVALID_SOCKET)
-#else
-    if (s < 0)
-#endif
-    {
-      OFString msg = "TCP Initialization Error: ";
-      msg += OFStandard::getLastNetworkErrorCode().message();
-      return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-    }
-
     /*
      * At least officially, gethostbyname will not accept an IP address on many
      * operating systems (e.g. Windows or FreeBSD), so we need to explicitly
@@ -2267,6 +2255,18 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 
     // get global connection timeout
     Sint32 connectTimeout = dcmConnectionTimeout.get();
+
+    s = socket(server.getFamily(), SOCK_STREAM, 0);
+#ifdef _WIN32
+    if (s == INVALID_SOCKET)
+#else
+    if (s < 0)
+#endif
+    {
+      OFString msg = "TCP Initialization Error: ";
+      msg += OFStandard::getLastNetworkErrorCode().message();
+      return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+    }
 
 #ifdef HAVE_WINSOCK_H
     u_long arg = TRUE;

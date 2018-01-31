@@ -384,7 +384,7 @@ typedef enum {
 */
 
 #define DUL_DULCOMPAT     2768240730UL
-#define DUL_DIMSECOMPAT   786432UL
+#define DUL_DIMSECOMPAT   851968UL
 #define DUL_MAXPDUCOMPAT  4278190335UL
 
 /* Define the function prototypes for this facility.

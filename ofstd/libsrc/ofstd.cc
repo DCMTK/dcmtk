@@ -2712,8 +2712,13 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
   struct addrinfo *result_list = NULL;
   int err = EAI_AGAIN;
 
+  // filter for the DNS lookup. Since DCMTK does not yet fully support IPv6,
+  // we only look for IPv4 addresses.
+  ::addrinfo hint = {0};
+  hint.ai_family = AF_INET;
+
   // perform DNS lookup. Repeat while we receive temporary failures.
-  while (EAI_AGAIN == err) err = getaddrinfo(name, NULL, NULL, &result_list);
+  while (EAI_AGAIN == err) err = getaddrinfo(name, NULL, &hint, &result_list);
 
   if ((0 == err) && result_list && result_list->ai_addr)
   {
