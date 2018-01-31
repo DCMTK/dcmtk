@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -831,7 +831,7 @@ OFBool WlmFileSystemInteractionManager::AttributeIsAbsentOrEmpty( DcmTagKey elem
 
 OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenceOfItems& query,
                                                                       const MatchingKeys& matchingKeys,
-                                                                      const OFBool normilize,
+                                                                      const OFBool normalize,
                                                                       const OFBool enableWildcardMatching )
 {
   DcmItem* pQueryItem = OFstatic_cast( DcmItem*, query.nextInContainer( OFnullptr ) );
@@ -846,7 +846,7 @@ OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenc
         const OFPair<DcmTagKey,OFBool>& key = *it;
 #endif
         DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normilize, enableWildcardMatching ) )
+        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
           return OFFalse;
       }
 
@@ -860,9 +860,9 @@ OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenc
         const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
 #endif
         DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normilize, enableWildcardMatching ) )
+        if( pQueryItem->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
           return OFFalse;
-        else if( pQueryItem->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch( normilize, enableWildcardMatching ) )
+        else if( pQueryItem->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
           return OFFalse;
       }
 
@@ -877,7 +877,7 @@ OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenc
         const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
 #endif
         DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second, normilize, enableWildcardMatching ) )
+        if( pQueryItem->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second, normalize, enableWildcardMatching ) )
           return OFFalse;
       }
   }
