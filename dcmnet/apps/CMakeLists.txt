@@ -9,7 +9,19 @@ ENDFOREACH(PROGRAM)
 # declare installation files
 IF(WITH_OPENSSL)
   IF(WIN32)
-    INSTALL(FILES "${OPENSSL_BINDIR}/dcmtkeay.dll" "${OPENSSL_BINDIR}/dcmtkssl.dll" DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT bin)
+    INSTALL(DIRECTORY "${OPENSSL_BINDIR}/"
+        DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        COMPONENT bin
+        CONFIGURATIONS Release MinSizeRel
+        FILES_MATCHING REGEX "dcmtk(eay|crypto|ssl).*\\.dll"
+        REGEX "dcmtk(eay|crypto|ssl)_d.*\\.dll" EXCLUDE
+    )
+    INSTALL(DIRECTORY "${OPENSSL_BINDIR}/"
+        DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        COMPONENT bin
+        CONFIGURATIONS Debug RelWithDebInfo
+        FILES_MATCHING REGEX "dcmtk(eay|crypto|ssl)_d.*\\.dll"
+    )
   ENDIF(WIN32)
 ENDIF(WITH_OPENSSL)
 
