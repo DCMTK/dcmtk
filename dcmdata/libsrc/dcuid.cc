@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -290,7 +290,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_RETIRED_UltrasoundImageStorage,                      "RETIRED_UltrasoundImageStorage" },
     { UID_RETIRED_UltrasoundMultiframeImageStorage,            "RETIRED_UltrasoundMultiframeImageStorage" },
     { UID_RETIRED_VLImageStorage,                              "RETIRED_VLImageStorage" },
-    { UID_RETIRED_VLMultiFrameImageStorage,                    "RETIRED_VLMultiFrameImageStorage" },
+    { UID_RETIRED_VLMultiframeImageStorage,                    "RETIRED_VLMultiframeImageStorage" },
     { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,         "RETIRED_XRayAngiographicBiPlaneImageStorage" },
     // Storage (DICOS)
     { UID_DICOS_CTImageStorage,                                "DICOS_CTImageStorage" },
@@ -712,7 +712,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
     UID_RETIRED_VLImageStorage,
-    UID_RETIRED_VLMultiFrameImageStorage,
+    UID_RETIRED_VLMultiframeImageStorage,
     UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     // draft
     UID_DRAFT_SRAudioStorage,
@@ -915,7 +915,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
     UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
     UID_RETIRED_VLImageStorage,
-    UID_RETIRED_VLMultiFrameImageStorage,
+    UID_RETIRED_VLMultiframeImageStorage,
     UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     // draft
 //  UID_DRAFT_RTBeamsDeliveryInstructionStorage,
@@ -1104,7 +1104,7 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
     UID_RETIRED_VLImageStorage,
-    UID_RETIRED_VLMultiFrameImageStorage,
+    UID_RETIRED_VLMultiframeImageStorage,
     UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     // DICOS
     UID_DICOS_CTImageStorage,
@@ -1283,7 +1283,7 @@ static const DcmModalityTable modalities[] = {
     { UID_RETIRED_UltrasoundImageStorage,                          "USr", 512 * 512 },
     { UID_RETIRED_UltrasoundMultiframeImageStorage,                "USf", 512 * 512 },
     { UID_RETIRED_VLImageStorage,                                  "VLr", 768 * 576 * 3 },
-    { UID_RETIRED_VLMultiFrameImageStorage,                        "VMr", 768 * 576 * 3 },
+    { UID_RETIRED_VLMultiframeImageStorage,                        "VMr", 768 * 576 * 3 },
     { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,             "XB",  512 * 512 * 2 },
     // draft
     { UID_DRAFT_RTBeamsDeliveryInstructionStorage,                 "RBd", 4096 },

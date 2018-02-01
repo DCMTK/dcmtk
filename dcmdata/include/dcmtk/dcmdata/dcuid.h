@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -487,7 +487,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_OphthalmicOpticalCoherenceTomographyEnFaceImageStorage "1.2.840.10008.5.1.4.1.1.77.1.5.7"
 #define UID_OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage "1.2.840.10008.5.1.4.1.1.77.1.5.8"
 #define UID_VLWholeSlideMicroscopyImageStorage                     "1.2.840.10008.5.1.4.1.1.77.1.6"
-#define UID_RETIRED_VLMultiFrameImageStorage                       "1.2.840.10008.5.1.4.1.1.77.2"
+#define UID_RETIRED_VLMultiframeImageStorage                       "1.2.840.10008.5.1.4.1.1.77.2"
 #define UID_LensometryMeasurementsStorage                          "1.2.840.10008.5.1.4.1.1.78.1"
 #define UID_AutorefractionMeasurementsStorage                      "1.2.840.10008.5.1.4.1.1.78.2"
 #define UID_KeratometryMeasurementsStorage                         "1.2.840.10008.5.1.4.1.1.78.3"
