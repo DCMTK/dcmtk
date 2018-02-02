@@ -26,8 +26,8 @@ elif test "x--version" = "x$*"; then
 	config/configure --version
 elif test "x-h" = "x$*"; then
 	config/configure -h
-elif test "x-v" = "x$*"; then
-	config/configure --version
+elif test "x-V" = "x$*"; then
+	config/configure -V
 else
 	args=""
 	ok=0
