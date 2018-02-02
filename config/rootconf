@@ -225,6 +225,10 @@ elif test "x--help=recursive" = "x\$*"; then
 	config/configure --help=recursive
 elif test "x--version" = "x\$*"; then
 	config/configure --version
+elif test "x-h" = "x\$*"; then
+	config/configure -h
+elif test "x-v" = "x\$*"; then
+	config/configure --version
 else
 	args=""
 	ok=0
@@ -237,18 +241,22 @@ else
 		shift
 	done
 	if [ \$ok -eq 0 ]; then
+		echo ""
 		echo "== DEPRECATION WARNING =="
 		echo ""
 		echo "Configuring DCMTK via GNU Autoconf is deprecated and will be removed.  Please have"
-		echo "a look  at CMake, which we now  consider equally mature.   If you run into serious"
-		echo "problems using  CMake or strongly prefer GNU Autoconf for some  other reason write"
+		echo "a look at CMake, which we now consider equally mature.  If you run into serious"
+		echo "problems using CMake or strongly prefer GNU Autoconf for some other reason write"
 		echo "an email to the"
 		echo ""
-		echo "DCMTK team <team@dcmtk.org> and use"
+		echo "  DCMTK Team <bugs@dcmtk.org>"
 		echo ""
-		echo "./configure --ignore-deprecation"
+		echo "and use"
+		echo ""
+		echo "  ./configure --ignore-deprecation"
 		echo ""
 		echo "to run the old configure script anyway."
+		echo ""
 		exit 1
 	fi
 	for module in \$modules ; do
