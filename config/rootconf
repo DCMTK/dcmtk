@@ -28,7 +28,7 @@ for dir in $tmpmodules; do
 	fi
 done
 
-modules=`echo $modules | sed -e "s/config//g" | sed -e "s/doxygen//g" | sed -e "s/CVS//g"`
+modules=`echo $modules | sed -e "s/config//g" | sed -e "s/doxygen//g"`
 for module in config $modules; do
 	makeall="$makeall ${module}-all"
 if test $module != config ; then
@@ -211,7 +211,7 @@ if test -d config ; then
 			fi
 		done
 	fi
-	modules=\`echo \$modules | sed -e "s/config//g" | sed -e "s/CVS//g"\`
+	modules=\`echo \$modules | sed -e "s/config//g"\`
 	modules="config \$modules doxygen"
 else
 	echo "Cannot find configure directory (config or ../config)"

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -154,8 +154,8 @@ int main(int argc, char* argv[])
     fputs("** It was generated automatically by:\n", fout);
 #ifndef SUPPRESS_CREATE_STAMP
     /*
-     * Putting the date in the file will confuse CVS/RCS
-     * if nothing has changed except the generation date.
+     * Putting the date in the file will confuse version control
+     * systems if nothing has changed except the generation date.
      * This is only an issue if the header file is continually
      * generated new.
      */
