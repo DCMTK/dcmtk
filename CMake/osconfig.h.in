@@ -399,7 +399,7 @@
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
    arguments. */
-/* #undef HAVE_OLD_READDIR_R */
+#cmakedefine HAVE_OLD_READDIR_R @HAVE_OLD_READDIR_R@
 
 /* Define if your system has a prototype for feenableexcept in fenv.h */
 #cmakedefine HAVE_PROTOTYPE_FEENABLEEXCEPT @HAVE_PROTOTYPE_FEENABLEEXCEPT@
