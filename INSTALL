@@ -123,6 +123,7 @@ that may still work, but were not tested again for this minor release:
    Windows 8.1     / amd64|x86_64 / Microsoft Visual C++ 2017 Community (VS 15)
 
 Cross compilers:
+
    Windows 7       / Intel x86    / MinGW gcc 4.9.1 (Linux host)
    Windows 7       / amd64|x86_64 / MinGW gcc 4.9.1 (Linux host)
 
@@ -791,8 +792,8 @@ as:
                 --with-opensslinc=/usr/local/apps/openssl-1.1.0g
 
 Configure will assume that the OpenSSL include files are installed in
-"/usr/local/apps/openssl-1.1.0f/include" and will expect the library in
-"/usr/local/apps/openssl-1.1.0f/lib".  Appropriate options will be passed to
+"/usr/local/apps/openssl-1.1.0g/include" and will expect the library in
+"/usr/local/apps/openssl-1.1.0g/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
 Support for zlib, libtiff, libpng, libxml2, libwrap and libiconv can be enabled
