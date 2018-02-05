@@ -1883,9 +1883,8 @@ modhelp.o: modhelp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h
-modimagepixel.o: modimagepixel.cc \
+modimagepixelbase.o: modimagepixelbase.cc \
  ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmiod/modimagepixel.h \
  ../include/dcmtk/dcmiod/modimagepixelbase.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
@@ -1959,8 +1958,9 @@ modimagepixel.o: modimagepixel.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h
-modimagepixelbase.o: modimagepixelbase.cc \
+modimagepixel.o: modimagepixel.cc \
  ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmiod/modimagepixel.h \
  ../include/dcmtk/dcmiod/modimagepixelbase.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
