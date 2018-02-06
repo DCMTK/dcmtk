@@ -1,0 +1,118 @@
+ANNOUNCEMENT
+
+Version 3.6.3 of the OFFIS DCMTK (DICOM ToolKit) software is now available for
+public release.  This is a minor release that includes the following changes
+over the previous version 3.6.2:
+
+- DCMTK 3.6.3 builds correctly on older and up-to-date versions of GNU gcc
+  (4.2.1 to 7.1.1) Clang (3.4.1 to 4.0.1),  Microsoft Visual Studio (2005 to
+  2017) and SunPro CC (5.14 and 5.15).
+
+- Tested with the following operating systems/environments:
+
+  - Android on arm64
+  - Cygwin on x86_64
+  - FreeBSD on x86_64
+  - Linux on x86_64 and x86
+  - MacOS X on x86_64
+  - NetBSD on x86_64
+  - OpenBSD on x86_64
+  - OpenIndiana on x86
+  - Solaris on x86
+  - Windows (and MinGW) on x86_64 and x86
+
+  For a complete list of tested systems and compilers, see the INSTALL file.
+
+- GNU Autoconf has been deprecated, running 'configure' will now emit a
+  warning by default.
+
+- Updated data dictionary, SOP Class and Transfer Syntax UIDs for the recently
+  approved changes to the DICOM standard (i.e. Supplements and CPs), up to DICOM
+  standard release DICOM 2017e.
+
+- Updated automatically generated classes in module "dcmrt" (Radiotherapy) and
+  "dcmsr" (Structured Reporting) based on DICOM 2017e.  Also updated the Code
+  definitions from the supported coding schemes such as DICOM, NCIt and UMLS.
+
+- Further enhanced DICOM Structured Reporting (SR) module "dcmsr":
+
+  - Added support for the Patient Radiation Dose SR IOD (Supplement 191).
+
+  - Added support for further sub-templates to the existing class for TID 1500
+    (Measurement Report), e.g. TID 300 (Measurement).
+
+  - Enhanced support for image entry descriptors in TID 1600 (Image Library),
+    e.g. by adding a new method that allows for moving common image entry
+    descriptors automatically to their respective image group.
+
+  - Added new method that allows for adding extra content items to extensible
+    SR templates.
+
+  - Further enhanced iterating an SR document tree, e.g. by providing a new
+    filter mechanism that allows for matching document tree nodes based on a
+    variety of properties like value type and concept name.
+
+  - Added another gotoNode() method to tree and cursor class, which searches for
+    a particular tree node by its value.
+
+  - Added "equal" and "not equal" comparison operators to all document tree node
+    and underlying value classes as well as to the wrapper class for "SR content
+    items".
+
+  - Updated mapping of the Defined Terms for Body Part Examined in the class
+    that implements CID 4031 (Common Anatomic Regions) based on DICOM 2017e.
+
+  - Many further improvements in order to stay up-to-date with development of
+    the DICOM standard and to make it easier to use this module and its classes.
+
+- Added options to findscu that extract the C-FIND response datasets to XML
+  files (either a single file with all responses or separate files for each
+  response, similar to the existing --extract option).
+
+- Added option --socket-timeout to echoscu (same as for e.g. storescu).
+
+- Consistently use the default value "MEDIUM" for Priority in all DIMSE request
+  messages, i.e. for C-STORE, C-FIND, C-GET and C-MOVE.
+
+- Fixed various issues that occurred after the official 3.6.2 release.
+
+
+Many people have contributed to this new release of DCMTK, appearing here in
+alphabetical order.  Thank you very much for your support!
+
+  Domen Soklic <domen.soklic@cosylab.com>
+  GwanYeong Kim <gy741.kim@gmail.com>
+  Jean-Christophe Fillion-Robin <jchris.fillionr@kitware.com>
+  Joerg Koenig <joerg.koenig@zeiss.com>
+  Michael Craggs <Michael.Craggs@ith-icoserve.com>
+  Peter Klotz <Peter.Klotz@ith-icoserve.com>
+
+  Helmut Steiner
+  Max Smolens
+  Martin Strunz
+  Sergei Khlutchin
+
+  Forum user "Hafiz Rafeeq"
+  Forum user "sfzhang"
+
+Members of the DCMTK Team who have worked on this release are
+(in alphabetical order):
+
+  Marco Eichelberg <eichelberg@offis.de>
+  Michael Onken <onken@open-connections.de>
+  Joerg Riesmeier <dicom@jriesmeier.com>
+  Jan Schlamelcher <schlamelcher@offis.de>
+
+Student associates:
+
+  Nikolas Goldhammer <nikolasgoldhammer@gmail.com>
+  Sebastian Grallert <Grallert.Sebastian@web.de>
+
+Also see CREDITS file for projects and companies who have been generously
+supporting DCMTK.
+
+The DCMTK software can be downloaded via:
+
+  http://dicom.offis.de/dcmtk or http://www.dcmtk.org/
+
+OFFIS e.V., Oldenburg, Germany, 2018-02-05
