@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -274,6 +274,12 @@ class DSRTreeNodeCursor
 
   protected:
 
+    /** fast, non-throwing swap function.
+     *  The time complexity of this function is constant.
+     ** @param  cursor  cursor to swap with
+     */
+    void swap(DSRTreeNodeCursor<T> &cursor);
+
     /** clear the internal node cursor stack
      */
     void clearNodeCursorStack();
@@ -391,14 +397,6 @@ OFBool DSRTreeNodeCursor<T>::isValid() const
 
 
 template<typename T>
-void DSRTreeNodeCursor<T>::clearNodeCursorStack()
-{
-    while (!NodeCursorStack.empty())
-        NodeCursorStack.pop();
-}
-
-
-template<typename T>
 size_t DSRTreeNodeCursor<T>::countChildNodes(const OFBool searchIntoSub) const
 {
     size_t count = 0;
@@ -496,45 +494,6 @@ const T *DSRTreeNodeCursor<T>::getNextNode() const
     T *node = NULL;
     if (NodeCursor != NULL)
         node = NodeCursor->getNext();
-    return node;
-}
-
-
-template<typename T>
-const DSRTreeNodeCursor<T> &DSRTreeNodeCursor<T>::getCursor() const
-{
-    return *this;
-}
-
-
-template<typename T>
-void DSRTreeNodeCursor<T>::setCursor(const DSRTreeNodeCursor<T> &cursor)
-{
-    NodeCursor = cursor.NodeCursor;
-    NodeCursorStack = cursor.NodeCursorStack;
-    Position = cursor.Position;
-}
-
-
-template<typename T>
-size_t DSRTreeNodeCursor<T>::setCursor(T *node)
-{
-    size_t nodeID = 0;
-    NodeCursor = node;
-    if (NodeCursor != NULL)
-        nodeID = NodeCursor->getIdent();
-    clearNodeCursorStack();
-    Position.initialize(NodeCursor != NULL);
-    return nodeID;
-}
-
-
-template<typename T>
-T *DSRTreeNodeCursor<T>::getChild() const
-{
-    T *node = NULL;
-    if (NodeCursor != NULL)
-        node = NodeCursor->getDown();
     return node;
 }
 
@@ -834,6 +793,65 @@ const OFString &DSRTreeNodeCursor<T>::getPosition(OFString &position,
                                                   const char separator) const
 {
     return Position.getString(position, separator);
+}
+
+
+// protected methods
+
+template<typename T>
+void DSRTreeNodeCursor<T>::swap(DSRTreeNodeCursor<T> &cursor)
+{
+    /* swap all members */
+    OFswap(NodeCursor, cursor.NodeCursor);
+    OFswap(NodeCursorStack, cursor.NodeCursorStack);
+    OFswap(Position, cursor.Position);
+}
+
+
+template<typename T>
+void DSRTreeNodeCursor<T>::clearNodeCursorStack()
+{
+    while (!NodeCursorStack.empty())
+        NodeCursorStack.pop();
+}
+
+
+template<typename T>
+const DSRTreeNodeCursor<T> &DSRTreeNodeCursor<T>::getCursor() const
+{
+    return *this;
+}
+
+
+template<typename T>
+void DSRTreeNodeCursor<T>::setCursor(const DSRTreeNodeCursor<T> &cursor)
+{
+    NodeCursor = cursor.NodeCursor;
+    NodeCursorStack = cursor.NodeCursorStack;
+    Position = cursor.Position;
+}
+
+
+template<typename T>
+size_t DSRTreeNodeCursor<T>::setCursor(T *node)
+{
+    size_t nodeID = 0;
+    NodeCursor = node;
+    if (NodeCursor != NULL)
+        nodeID = NodeCursor->getIdent();
+    clearNodeCursorStack();
+    Position.initialize(NodeCursor != NULL);
+    return nodeID;
+}
+
+
+template<typename T>
+T *DSRTreeNodeCursor<T>::getChild() const
+{
+    T *node = NULL;
+    if (NodeCursor != NULL)
+        node = NodeCursor->getDown();
+    return node;
 }
 
 

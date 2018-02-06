@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -962,6 +962,8 @@ DSRTree<T> *DSRTree<T>::cloneSubTree(const size_t stopAfterNodeID) const
 template<typename T>
 void DSRTree<T>::swap(DSRTree<T> &tree)
 {
+    /* swap inherited node cursor */
+    DSRTreeNodeCursor<T>::swap(tree);
     /* swap pointer to the root tree node */
     OFswap(RootNode, tree.RootNode);
 }
