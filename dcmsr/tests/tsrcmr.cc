@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -247,11 +247,20 @@ OFTEST(dcmsr_TID1411_VolumetricROIMeasurements)
     OFCHECK(measurement.addFindingSite(DSRBasicCodedEntry("EFGH.1", "99TEST", "Finding Site 1"), CMR_CID244::Left).good());
     OFCHECK(measurement.addModifier(DSRBasicCodedEntry("ABCD", "99TEST", "Concept Name Modifier"), DSRBasicCodedEntry("ABCD.2", "99TEST", "Modifier 2")).good());
     OFCHECK(measurement.setMeasurementMethod(DSRCodedEntryValue("9876", "99TEST", "Some method")).good());
+    OFCHECK(measurement.setAlgorithmIdentification("My Special Effects", "1.0").good());
     OFCHECK(measurement.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
     OFCHECK(measurement.addFindingSite(DSRBasicCodedEntry("EFGH.2", "99TEST", "Finding Site 2"), CID244e_Laterality(), DSRBasicCodedEntry("EFGH.2-1", "99TEST", "Finding Site 2 Modifier")).good());
     OFCHECK(measurement.setEquivalentMeaningOfConceptName("blabla").good());
     OFCHECK(measurement.addDerivationParameter(CODE_DCM_Derivation, CMR_SRNumericMeasurementValue("1.5", CODE_UCUM_Centimeter)).good());
     OFCHECK(volumetric.addQualitativeEvaluation(CODE_DCM_Conclusion, "it's not ok").good());
+    OFCHECK(measurement.setAlgorithmIdentification("My New Special Effects", "2.0").good());
+    OFCHECK(measurement.getAlgorithmIdentification().addParameter("Parameter #1").good());
+    OFCHECK(measurement.getAlgorithmIdentification().addParameter("Parameter #2").good());
+    OFCHECK(measurement.isValid());
+
+    /* check number of content items (expected) */
+    OFCHECK_EQUAL(volumetric.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 25);
+    OFCHECK_EQUAL(volumetric.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse), 23);
 
     /* output content of the tree (in debug mode only) */
     if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -348,6 +357,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(!volMeasurements.hasMeasurements());
     OFCHECK(volMeasurements.addMeasurement(CMR_CID7469::SUVbw, numVal1).good());
     OFCHECK(volMeasurements.getMeasurement().setDerivation(CMR_CID7464::Mean).good());
+    OFCHECK(volMeasurements.getMeasurement().setAlgorithmIdentification("My Algorithm", "0.9").good());
     OFCHECK(volMeasurements.addMeasurement(CMR_CID7469::SUVbw, numVal2).good());
     OFCHECK(volMeasurements.getMeasurement().setDerivation(CMR_CID7464::Mode).good());
     OFCHECK(volMeasurements.getMeasurement().setMeasurementMethod(DSRCodedEntryValue("0815", "99TEST", "Some test code")).good());
@@ -378,17 +388,17 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
 
     /* check number of content items (expected) */
     OFCHECK_EQUAL(report.getTree().countNodes(), 14);
-    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 48);
-    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 36);
+    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/), 52);
+    OFCHECK_EQUAL(report.getTree().countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 38);
     /* create an expanded version of the tree */
     DSRDocumentSubTree *tree = NULL;
     OFCHECK(report.getTree().createExpandedSubTree(tree).good());
     /* and check whether all content items are there */
     if (tree != NULL)
     {
-        OFCHECK_EQUAL(tree->countNodes(), 36);
-        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/), 36);
-        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 36);
+        OFCHECK_EQUAL(tree->countNodes(), 38);
+        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/), 38);
+        OFCHECK_EQUAL(tree->countNodes(OFTrue /*searchIntoSubTemplates*/, OFFalse /*countIncludedTemplateNodes*/), 38);
         delete tree;
     } else
         OFCHECK_FAIL("could create expanded tree");

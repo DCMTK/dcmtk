@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1419_ROIMeasurements_Measurement
@@ -19,6 +19,7 @@
 
 #include "dcmtk/dcmsr/cmr/define.h"
 #include "dcmtk/dcmsr/cmr/srnumvlu.h"
+#include "dcmtk/dcmsr/cmr/tid4019.h"
 #include "dcmtk/dcmsr/cmr/cid244e.h"
 
 
@@ -91,9 +92,18 @@ class DCMTK_CMR_EXPORT TID1419_ROIMeasurements_Measurement
      */
     OFBool hasMeasurement() const;
 
+    /** get algorithm identification as defined by TID 4019 (Algorithm Identification).
+     *  This included template (TID 1419 - Row 20) is optional, i.e. might be empty.
+     ** @return reference to internally managed SR template
+     */
+    inline TID4019_AlgorithmIdentification &getAlgorithmIdentification() const
+    {
+        return *OFstatic_cast(TID4019_AlgorithmIdentification *, AlgorithmIdentification.get());
+    }
+
     /** create a new measurement.
-     *  Clear the entire measurement and create the mandatory content item of this
-     *  template, i.e.\ TID 1419 - Row 5.
+     *  Clear the entire measurement and create the mandatory (and other supported) content
+     *  items of this template, i.e.\ TID 1419 - Row 5 and 20.
      ** @param  conceptName   coded entry specifying the concept name of the measurement
      *                        (e.g.\ from the given context group 'T_Measurement')
      *  @param  numericValue  numeric measurement value to be set.  The measurement unit
@@ -164,8 +174,9 @@ class DCMTK_CMR_EXPORT TID1419_ROIMeasurements_Measurement
                                        const OFBool check = OFTrue);
 
 
-    /** set the value of the 'Equivalent Meaning of Concept Name' content item (TID 1419
-     *  - Row 18).  If the content item already exists, its value is overwritten.
+    /** set the value of the 'Equivalent Meaning of Concept Name' content item (TID 1419 -
+     *  Row 18).
+     *  If the content item already exists, its value is overwritten.
      ** @param  meaning  human-readable meaning of the concept name of the measurement
      *                   that is equivalent to the post-coordinated meaning conveyed by
      *                   the coded name and its concept modifier children
@@ -197,6 +208,19 @@ class DCMTK_CMR_EXPORT TID1419_ROIMeasurements_Measurement
      */
     OFCondition setRealWorldValueMap(DcmItem &dataset,
                                      const OFBool check = OFTrue);
+
+    /** set the value of the mandatory content items for 'Algorithm Identification'
+     *  (TID 1419 - Row 20).  Further details can be specified by accessing the included
+     *  template TID 4019 with getAlgorithmIdentification().
+     *  If the content items already exist, their value is overwritten.
+     ** @param  algorithmName     name assigned by the manufacturer to the software algorithm
+     *  @param  algorithmVersion  version identifier assigned to the software algorithm
+     *  @param  check             if enabled, check values for validity before setting them
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setAlgorithmIdentification(const OFString &algorithmName,
+                                           const OFString &algorithmVersion,
+                                           const OFBool check = OFTrue);
 
 
   protected:
@@ -234,6 +258,12 @@ class DCMTK_CMR_EXPORT TID1419_ROIMeasurements_Measurement
                                         const DSRCodedEntryValue &conceptName,
                                         const OFString &annotationText,
                                         const OFBool check);
+
+
+  private:
+
+    // shared pointer to included template "Algorithm Identification" (TID 4019)
+    DSRSharedSubTemplate AlgorithmIdentification;
 };
 
 

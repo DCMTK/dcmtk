@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1419_ROIMeasurements_Measurement
@@ -41,7 +41,8 @@
 #define LAST_DERIVATION_PARAMETER 5
 #define EQUIVALENT_MEANING        6
 #define REAL_WORLD_VALUE_MAP      7
-#define NUMBER_OF_LIST_ENTRIES    8
+#define ALGORITHM_IDENTIFICATION  8
+#define NUMBER_OF_LIST_ENTRIES    9
 
 // general information on TID 1419 (ROI Measurements)
 #define TEMPLATE_NUMBER      "1419"
@@ -53,7 +54,8 @@
 
 template<typename T_Measurement, typename T2, typename T3, typename T4>
 TID1419_ROIMeasurements_Measurement<T_Measurement, T2, T3, T4>::TID1419_ROIMeasurements_Measurement()
-  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
+  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID),
+    AlgorithmIdentification(new TID4019_AlgorithmIdentification())
 {
     setExtensible(TEMPLATE_TYPE);
     setOrderSignificant(TEMPLATE_ORDER);
@@ -66,7 +68,8 @@ template<typename T_Measurement, typename T2, typename T3, typename T4>
 TID1419_ROIMeasurements_Measurement<T_Measurement, T2, T3, T4>::TID1419_ROIMeasurements_Measurement(const T_Measurement &conceptName,
                                                                                                     const MeasurementValue &numericValue,
                                                                                                     const OFBool check)
-  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID)
+  : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID),
+    AlgorithmIdentification(new TID4019_AlgorithmIdentification())
 {
     setExtensible(TEMPLATE_TYPE);
     setOrderSignificant(TEMPLATE_ORDER);
@@ -81,6 +84,7 @@ template<typename T1, typename T2, typename T3, typename T4>
 void TID1419_ROIMeasurements_Measurement<T1, T2, T3, T4>::clear()
 {
     DSRSubTemplate::clear();
+    AlgorithmIdentification->clear();
 }
 
 
@@ -208,7 +212,7 @@ OFCondition TID1419_ROIMeasurements_Measurement<T1, T2, T3, T4>::addFindingSite(
             if (subTree != NULL)
             {
                 /* TID 1419 (ROI Measurements) Row 9 */
-                CHECK_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
+                STORE_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(site, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 9"));
                 const size_t lastNode = subTree->getNodeID();
@@ -357,6 +361,28 @@ OFCondition TID1419_ROIMeasurements_Measurement<T_Measurement, T2, T3, T4>::setR
 }
 
 
+template<typename T_Measurement, typename T2, typename T3, typename T4>
+OFCondition TID1419_ROIMeasurements_Measurement<T_Measurement, T2, T3, T4>::setAlgorithmIdentification(const OFString &algorithmName,
+                                                                                                       const OFString &algorithmVersion,
+                                                                                                       const OFBool check)
+{
+    OFCondition result = EC_Normal;
+    /* basic check of parameters */
+    if (!algorithmName.empty() && !algorithmVersion.empty())
+    {
+        /* check whether measurement exists */
+        if (hasMeasurement())
+        {
+            /* TID 1419 (ROI Measurements) Row 20 */
+            result = getAlgorithmIdentification().setIdentification(algorithmName, algorithmVersion, check);
+        } else
+            result = CMR_EC_NoMeasurement;
+    } else
+        result = EC_IllegalParameter;
+    return result;
+}
+
+
 // protected methods
 
 template<typename T_Measurement, typename T2, typename T3, typename T4>
@@ -376,6 +402,10 @@ OFCondition TID1419_ROIMeasurements_Measurement<T_Measurement, T2, T3, T4>::crea
             CHECK_RESULT(getCurrentContentItem().setNumericValue(numericValue, check));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1419 - Row 5"));
             GOOD_RESULT(storeEntryInNodeList(MEASUREMENT, getNodeID()));
+            /* TID 1419 (ROI Measurements) Row 20 */
+            CHECK_RESULT(includeTemplate(AlgorithmIdentification, AM_belowCurrent, RT_hasConceptMod));
+            CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1419 - Row 20"));
+            GOOD_RESULT(storeEntryInNodeList(ALGORITHM_IDENTIFICATION, getNodeID()));
         } else
             result = SR_EC_InvalidTemplateStructure;
     }

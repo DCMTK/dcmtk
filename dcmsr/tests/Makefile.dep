@@ -308,6 +308,7 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/srnumvlu.h \
  ../include/dcmtk/dcmsr/cmr/srnumvl.h \
  ../include/dcmtk/dcmsr/cmr/tid1419m.h \
+ ../include/dcmtk/dcmsr/cmr/tid4019.h \
  ../include/dcmtk/dcmsr/cmr/cid6147.h \
  ../include/dcmtk/dcmsr/cmr/cid7464.h \
  ../include/dcmtk/dcmsr/cmr/cid7469.h \

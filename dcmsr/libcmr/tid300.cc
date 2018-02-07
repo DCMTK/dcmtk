@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID300_Measurement
@@ -209,7 +209,7 @@ OFCondition TID300_Measurement<T1, T2, T3, T4>::addFindingSite(const DSRCodedEnt
             if (subTree != NULL)
             {
                 /* TID 300 (Measurement) Row 5 */
-                CHECK_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
+                STORE_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(site, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 300 - Row 5"));
                 const size_t lastNode = subTree->getNodeID();
