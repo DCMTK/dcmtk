@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2470,7 +2470,7 @@ static void renameOnEndOfStudy()
     // determine the new file name: The first two characters of the old file name make up the [modality-prefix].
     // The value for [consecutive-numbering] will be determined using the counter variable.
     char modalityId[3];
-    char newFileName[9];
+    char newFileName[20];
     if (opt_timeNames)
     {
       // modality prefix are the first 2 characters after serial number (if present)
