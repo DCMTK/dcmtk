@@ -374,7 +374,7 @@ int DcmPixelData::compare(const DcmElement& rhs) const
         if (myPix->getItem(myPixItem, n).good() && rhsPix->getItem(rhsPixItem, n).good())
         {
           // compare them value by value, using DcmOtherByteOtherWord::compare() method
-          int result = myPixItem->compare(*rhsPixItem);
+          result = myPixItem->compare(*rhsPixItem);
           if (result != 0)
           {
             return result;

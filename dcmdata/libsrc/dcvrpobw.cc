@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -86,7 +86,7 @@ int DcmPolymorphOBOW::compare(const DcmElement& rhs) const
     // Get values, always compare in Little Endian byte order (only relevant for OW)
     void* myValue = myThis->getValue(EBO_LittleEndian);
     void* rhsValue = myRhs->getValue(EBO_LittleEndian);
-    int result = memcmp(myValue, rhsValue, myLength);
+    result = memcmp(myValue, rhsValue, myLength);
     if (result < 0)
       return -1;
     else if (result > 0)
