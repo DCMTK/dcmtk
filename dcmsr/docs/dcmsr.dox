@@ -29,6 +29,7 @@ Currently, the following SR templates are implemented (see notes for details):
 \li \b TID1500_MeasurementReport
 \li \b TID1501_MeasurementGroup
 \li \b TID1600_ImageLibrary
+\li \b TID4019_AlgorithmIdentification
 
 \section Tools
 
