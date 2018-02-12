@@ -117,7 +117,7 @@ void DcmFindSCUDefaultCallback::callback(
     if (extractResponses_ == FEM_dicomFile)
     {
         OFString outputFilename;
-        char rspIdsFileName[16];
+        char rspIdsFileName[32];
         sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
         OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
         DCMNET_INFO("Writing response dataset to file: " << outputFilename);
@@ -127,7 +127,7 @@ void DcmFindSCUDefaultCallback::callback(
     else if (extractResponses_ == FEM_xmlFile)
     {
         OFString outputFilename;
-        char rspIdsFileName[16];
+        char rspIdsFileName[32];
         sprintf(rspIdsFileName, "rsp%04d.xml", responseCount);
         OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
         DCMNET_INFO("Writing response dataset to file: " << outputFilename);
