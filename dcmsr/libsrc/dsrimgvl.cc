@@ -115,14 +115,18 @@ DSRImageReferenceValue::~DSRImageReferenceValue()
 
 DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenceValue &referenceValue)
 {
-    DSRCompositeReferenceValue::operator=(referenceValue);
-    /* do not check since this would be unexpected to the user */
-    FrameList = referenceValue.FrameList;
-    SegmentList = referenceValue.SegmentList;
-    PresentationState = referenceValue.PresentationState;
-    RealWorldValueMapping = referenceValue.RealWorldValueMapping;
-    /* create copy of icon image (if any), first frame only */
-    IconImage = (referenceValue.IconImage != NULL) ? referenceValue.IconImage->createDicomImage(0 /*fstart*/, 1 /*fcount*/) : NULL;
+    /* check for self-assignment, which would create a memory leak */
+    if (this != &referenceValue)
+    {
+        DSRCompositeReferenceValue::operator=(referenceValue);
+        /* do not check since this would be unexpected to the user */
+        FrameList = referenceValue.FrameList;
+        SegmentList = referenceValue.SegmentList;
+        PresentationState = referenceValue.PresentationState;
+        RealWorldValueMapping = referenceValue.RealWorldValueMapping;
+        /* create copy of icon image (if any), first frame only */
+        IconImage = (referenceValue.IconImage != NULL) ? referenceValue.IconImage->createDicomImage(0 /*fstart*/, 1 /*fcount*/) : NULL;
+    }
     return *this;
 }
 
