@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -74,6 +74,10 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeFilterList
 
   public:
 
+    /** default constructor
+     */
+    DSRDocumentTreeNodeFilterList();
+
     /** destructor
      */
     virtual ~DSRDocumentTreeNodeFilterList();
@@ -97,6 +101,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeFilterList
 
     /// list of pointers to filter criteria
     OFList<DSRDocumentTreeNodeFilter *> FilterList;
+
+
+  private:
+
+ // --- declaration of copy constructor and assignment operator
+
+    DSRDocumentTreeNodeFilterList(const DSRDocumentTreeNodeFilterList &);
+    DSRDocumentTreeNodeFilterList &operator=(const DSRDocumentTreeNodeFilterList &);
 };
 
 
@@ -151,7 +163,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeHasChildrenFilter
 
   public:
 
-    /** constructor
+    /** (default) constructor
      ** @param  hasChildren  mode specifying whether the filter matches on the presence
      *                       (default) or absence of child nodes
      */
@@ -185,7 +197,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeHasSiblingsFilter
 
   public:
 
-    /** constructor
+    /** (default) constructor
      ** @param  hasSiblings  mode specifying whether the filter matches on the presence
      *                       (default) or absence of sibling nodes
      */

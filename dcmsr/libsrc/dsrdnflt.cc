@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -37,6 +37,12 @@ DSRDocumentTreeNodeFilter::~DSRDocumentTreeNodeFilter()
 
 
 // implementation of filter list
+
+DSRDocumentTreeNodeFilterList::DSRDocumentTreeNodeFilterList()
+  : FilterList()
+{
+}
+
 
 DSRDocumentTreeNodeFilterList::~DSRDocumentTreeNodeFilterList()
 {
@@ -327,6 +333,6 @@ DSRDocumentTreeNodeTemplateIdentificationFilter::~DSRDocumentTreeNodeTemplateIde
 
 OFBool DSRDocumentTreeNodeTemplateIdentificationFilter::matches(const DSRDocumentTreeNode *node) const
 {
-    /* check whether the observation date/time matches */
+    /* check whether the template identification matches */
     return (node != NULL) && (node->compareTemplateIdentification(TemplateIdentifier, MappingResource, MappingResourceUID));
 }
