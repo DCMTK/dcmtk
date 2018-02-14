@@ -70,9 +70,11 @@ source file):
 DSRDocument document;
 document.setPatientName("Doe^John");
 /* ... */
-document.getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-document.getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue(/* some code */));
-document.getTree().addChildContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Code, CODE_DCM_ObserverType);
+DSRDocumentTree &tree = document.getTree();
+tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue(/* some code */));
+tree.addChildContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Code, CODE_DCM_ObserverType);
+tree.getCurrentContentItem().setCodeValue(CODE_DCM_Person);
 /* ... */
 DcmFileFormat fileformat;
 OFCondition status = document.write(*fileformat.getDataset())
@@ -91,13 +93,14 @@ modified directly as the following example shows:
 \code
 DSRDocument document(DSRTypes::DT_KeyObjectSelectionDocument);
 /* ... */
-document.getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-DSRCodedEntryValue *codePtr = document.getTree().getCurrentContentItem().getConceptNamePtr();
+DSRDocumentTree &tree = document.getTree();
+tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+DSRCodedEntryValue *codePtr = tree.getCurrentContentItem().getConceptNamePtr();
 if (codePtr != NULL)
   codePtr->setCode("113000", "DCM", "Of Interest");
 /* ... */
-document.getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
-DSRImageReferenceValue *imagePtr = document.getTree().getCurrentContentItem().getImageReferencePtr();
+tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+DSRImageReferenceValue *imagePtr = tree.getCurrentContentItem().getImageReferencePtr();
 if (imagePtr != NULL)
 {
   imagePtr->setValue(DSRImageReferenceValue(UID_UltrasoundMultiframeImageStorage, /* image UID */));
@@ -112,6 +115,36 @@ In addition, there are specific DSRDocumentTree::addContentItem() and
 DSRDocumentTree::addChildContentItem() methods that expect a pointer to a newly
 created DSRDocumentTreeNode instance.
 
+Iterating over a document tree and searching for content items that meet
+certain criteria can be achieved in various ways. Here are two of them:
+
+\code
+DSRDocument document;
+/* ... */
+DSRDocumentTree &tree = document.getTree();
+/* #1: search for content items with a certain concept name */
+if (tree.gotoNamedNode(CODE_DCM_ProcedureReported))
+{
+  do {
+    const DSRDocumentTreeNode *node = tree.getNode();
+    /* and check for expected value type */
+    if ((node != NULL) && (node->getValueType() == DSRTypes::VT_Code))
+    {
+      /* do something useful with the CODE content item */
+    }
+  } while (tree.gotoNextNamedNode(CODE_DCM_ProcedureReported, OFFalse /*searchIntoSub*/));
+}
+/* #2: search for content items using a more complex filter */
+DSRDocumentTreeNodeAndFilter filter;
+filter.addFilter(new DSRDocumentTreeNodeValueTypeFilter(DSRTypes::VT_Code));
+filter.addFilter(new DSRDocumentTreeNodeRelationshipTypeFilter(DSRTypes::RT_hasConceptMod));
+filter.addFilter(new DSRDocumentTreeNodeHasChildrenFilter());
+if (tree.gotoMatchingNode(filter))
+{
+  /* found first "has concept mod CODE" content item that has children */
+}
+\endcode
+
 The final example shows how to deal with SR templates, e.g. when creating a
 DICOM Structured Report that is based on TID 1500 (Measurement Report):
 
@@ -120,9 +153,13 @@ TID1500_MeasurementReport report(CMR_CID7021::ImagingMeasurementReport);
 report.setLanguage(CID5000_Languages::English);
 report.getObservationContext().addPersonObserver("Doe^Jane", "Some Organization");
 /* ... */
-TID1500_MeasurementReport::TID1411_Measurements &measurements = report.getVolumetricROIMeasurements();
-measurements.setActivitySession("1");
-measurements.setTrackingIdentifier("aorta reference region");
+CMR_TID1411_in_TID1500 &volumetric = report.getVolumetricROIMeasurements();
+volumetric.setActivitySession("1");
+volumetric.setTrackingIdentifier("aorta reference region");
+/* ... */
+CMR_TID1419_in_TID1411_in_TID1500 &measurement = volumetric.getMeasurement();
+measurement.createNewMeasurement(CMR_CID7469::Volume, CMR_TID1419_in_TID1411_in_TID1500::MeasurementValue("15", CMR_CID7181::CubicMillimeter));
+measurement.setDerivation(CMR_CID7464::StandardDeviation);
 /* ... */
 DSRDocument document;
 document.setPatientName("Last Name^First Name");
