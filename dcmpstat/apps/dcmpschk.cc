@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -889,15 +889,8 @@ static int checkfile(const char *filename)
           << "Pass 3 - Semantic Check of Presentation State Object         " << OFendl
           << "-------------------------------------------------------------");
 
-    DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
-    DcmStack stack;
-    if (EC_Normal == DataSet->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse))
-    {
-      sopclassuid = *((DcmUniqueIdentifier *)(stack.top()));
-    }
     OFString aString;
-    sopclassuid.getOFString(aString,0);
-    if (aString == UID_GrayscaleSoftcopyPresentationStateStorage)
+    if ((DataSet->findAndGetOFString(DCM_SOPClassUID, aString).good()) && (aString == UID_GrayscaleSoftcopyPresentationStateStorage))
     {
       DcmPresentationState pState;
       if (pState.read(*DataSet).bad())
