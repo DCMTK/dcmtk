@@ -239,7 +239,7 @@ OFTEST(dcmsr_TID1411_VolumetricROIMeasurements)
     OFCHECK(volumetric.addFindingSite(DSRBasicCodedEntry("EFGH", "99TEST", "Finding Site"), CMR_CID244::RightAndLeft).good());
     OFCHECK(!volumetric.hasMeasurements());
     OFCHECK(!measurement.hasMeasurement());
-    OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Volume, CMR_TID1411_in_TID1500::MeasurementValue("15", CMR_CID7181::CubicMillimeter)).good());
+    OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Volume, CMR_TID1419_in_TID1411_in_TID1500::MeasurementValue("15", CMR_CID7181::CubicMillimeter)).good());
     OFCHECK(volumetric.hasMeasurements());
     OFCHECK(measurement.hasMeasurement());
     OFCHECK(measurement.setDerivation(CMR_CID7464::StandardDeviation).good());
