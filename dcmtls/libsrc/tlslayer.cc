@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,7 +78,7 @@ int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int /* rwflag */,
 {
   if (userdata == NULL) return -1;
   OFString *password = OFreinterpret_cast(OFString *, userdata);
-  int passwordSize = password->length();
+  int passwordSize = OFstatic_cast(int, password->length());
   if (passwordSize > size) passwordSize = size;
   strncpy(buf, password->c_str(), passwordSize);
   return passwordSize;
@@ -478,6 +478,9 @@ DcmTransportConnection *DcmTLSTransportLayer::createConnection(DcmNativeSocketTy
       SSL *newConnection = SSL_new(transportLayerContext);
       if (newConnection)
       {
+        // On Win64, the following line will cause a warning because the native
+        // type for sockets there is 64-bit, and OpenSSL uses a 32-bit int file descriptor.
+        // This should be fixed in OpenSSL, there is nothing we can do here.
         SSL_set_fd(newConnection, openSocket);
         return new DcmTLSConnection(openSocket, newConnection);
       }

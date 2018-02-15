@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2013, OFFIS e.V.
+ *  Copyright (C) 2010-2017, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -236,7 +236,7 @@ void DcmTLSSCU::enableAuthentication(const OFString& privateKey,
     return;
   }
 
-  int passLength = strlen(passphrase) + 1;
+  size_t passLength = strlen(passphrase) + 1;
   m_passwd = new char[passLength];
   strncpy(m_passwd, passphrase, passLength);
   return;

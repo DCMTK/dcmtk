@@ -185,14 +185,14 @@ DcmTransportLayerStatus DcmTLSConnection::renegotiate(const char *newSuite)
 
 ssize_t DcmTLSConnection::read(void *buf, size_t nbyte)
 {
-  if (tlsConnection) return SSL_read(tlsConnection, OFreinterpret_cast(char*, buf), nbyte);
+  if (tlsConnection) return SSL_read(tlsConnection, OFreinterpret_cast(char*, buf), OFstatic_cast(int, nbyte));
   errno = EIO; /* IO Error */
   return -1;
 }
 
 ssize_t DcmTLSConnection::write(void *buf, size_t nbyte)
 {
-  if (tlsConnection) return SSL_write(tlsConnection, OFreinterpret_cast(char*, buf), nbyte);
+  if (tlsConnection) return SSL_write(tlsConnection, OFreinterpret_cast(char*, buf), OFstatic_cast(int, nbyte));
   errno = EIO; /* IO Error */
   return -1;
 }
