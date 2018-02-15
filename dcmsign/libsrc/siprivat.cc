@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,7 +54,7 @@ int SiPrivateKey_passwordCallback(char *buf, int size, int /* rwflag */, void *u
 {
   if (userdata == NULL) return -1;
   OFString *password = (OFString *)userdata;
-  int passwordSize = password->length();
+  int passwordSize = OFstatic_cast(int, password->length());
   if (passwordSize > size) passwordSize = size;
   strncpy(buf, password->c_str(), passwordSize);
   return passwordSize;
