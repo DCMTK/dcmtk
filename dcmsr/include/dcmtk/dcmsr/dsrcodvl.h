@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -589,9 +589,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 
     /** specify the "Enhanced Encoding Mode" for this code.
      *  This method should be used for private context groups, which are not identified by a
-     *  context identifier and mapping resource.  Before setting the code, it is usually
-     *  checked.  If the code is invalid, the current code is not replaced and remains
-     *  unchanged.
+     *  context identifier and mapping resource.
      ** @param  contextUID  uniquely identifies the context group.  (VR=UI, mandatory)
      *  @param  check       if enabled, the given value is checked for validity (conformance
      *                      with corresponding VR and VM) before setting it.  An empty value
