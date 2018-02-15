@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2017-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,7 +40,7 @@ END_EXTERN_C
 #include <ws2tcpip.h>    /* for struct sockaddr_in6 */
 #endif
 
-size_t OFSockAddr::size() const
+socklen_t OFSockAddr::size() const
 {
   switch (sa.ss_family)
   {

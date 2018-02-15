@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2017-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,6 +41,7 @@ END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
 #include <winsock2.h>
+#include <ws2tcpip.h> /* for socklen_t */
 #endif
 
 /* forward declarations */
@@ -93,7 +94,7 @@ public:
   /** return size of sockaddr struct depending on current protocol family
    *  @return size of sockaddr struct depending on current protocol family
    */
-  size_t size() const;
+  socklen_t size() const;
 
   /** get current protocol family. Returns 0 if uninitialized, AF_INET or AF_INET6 otherwise.
    *  @return current protocol family of the socket address.
