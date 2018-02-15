@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,8 +82,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
     virtual void clear();
 
     /** check whether the current internal state is valid.
-     *  The SR document is valid if the document type is supported, the tree is not
-     *  empty, the root item is a container and has the internal relationship type
+     *  The SR document tree is valid if the document type is supported, the tree is
+     *  not empty, the root item is a container and has the internal relationship type
      *  DSRTypes::RT_isRoot.  Also see DSRDocumentSubTree::isValidDocumentTree().
      ** @return OFTrue if valid, OFFalse otherwise
      */
