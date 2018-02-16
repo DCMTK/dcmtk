@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2017-12-07 15:02:17
+**   Date: 2018-02-16 22:10:18
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -926,6 +926,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x1155, 0x0008, 0x1155,
       EVR_UI, "ReferencedSOPInstanceUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x1156, 0x0008, 0x1156,
+      EVR_SQ, "DefinitionSourceSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x115a, 0x0008, 0x115a,
@@ -18391,7 +18395,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4007, 0x0040, 0x4007,
-      EVR_SQ, "PerformedProcessingApplicationsCodeSequence", 1, 1, "DICOM",
+      EVR_SQ, "RETIRED_PerformedProcessingApplicationsCodeSequence", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4009, 0x0040, 0x4009,
@@ -22282,6 +22286,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UI, "FiducialUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0070, 0x031b, 0x0070, 0x031b,
+      EVR_UI, "ReferencedFiducialUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0070, 0x031c, 0x0070, 0x031c,
       EVR_SQ, "FiducialSetSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -23607,11 +23615,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0080, 0x0010, 0x0080, 0x0010,
-      EVR_OF, "UValueData", 1, -1, "DICOM",
+      EVR_OF, "UValueData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0080, 0x0011, 0x0080, 0x0011,
-      EVR_OF, "VValueData", 1, -1, "DICOM",
+      EVR_OF, "VValueData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0080, 0x0012, 0x0080, 0x0012,

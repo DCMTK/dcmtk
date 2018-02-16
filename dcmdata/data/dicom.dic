@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2017, OFFIS e.V.
+#  Copyright (C) 1994-2018, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -21,9 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2017e and PS 3.7-2017e
-# File created on 2017-12-05 09:13:43 by J. Riesmeier on thinkpad.
-# Last modified on 2017-12-07 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2018a and PS 3.7-2018a
+# File created on 2018-02-16 22:07:34 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -222,6 +221,7 @@
 (0008,114B)	SQ	ReferencedRealWorldValueMappingInstanceSequence	1	DICOM
 (0008,1150)	UI	ReferencedSOPClassUID	1	DICOM
 (0008,1155)	UI	ReferencedSOPInstanceUID	1	DICOM
+(0008,1156)	SQ	DefinitionSourceSequence	1	DICOM
 (0008,115A)	UI	SOPClassesSupported	1-n	DICOM
 (0008,1160)	IS	ReferencedFrameNumber	1-n	DICOM
 (0008,1161)	UL	SimpleFrameList	1-n	DICOM
@@ -2053,7 +2053,6 @@
 (0040,2400)	LT	ImagingServiceRequestComments	1	DICOM
 (0040,3001)	LO	ConfidentialityConstraintOnPatientDataDescription	1	DICOM
 (0040,4005)	DT	ScheduledProcedureStepStartDateTime	1	DICOM
-(0040,4007)	SQ	PerformedProcessingApplicationsCodeSequence	1	DICOM
 (0040,4009)	SQ	HumanPerformerCodeSequence	1	DICOM
 (0040,4010)	DT	ScheduledProcedureStepModificationDateTime	1	DICOM
 (0040,4011)	DT	ExpectedCompletionDateTime	1	DICOM
@@ -2691,6 +2690,7 @@
 (0070,0314)	SQ	UsedFiducialsSequence	1	DICOM
 (0070,0318)	SQ	GraphicCoordinatesDataSequence	1	DICOM
 (0070,031A)	UI	FiducialUID	1	DICOM
+(0070,031B)	UI	ReferencedFiducialUID	1	DICOM
 (0070,031C)	SQ	FiducialSetSequence	1	DICOM
 (0070,031E)	SQ	FiducialSequence	1	DICOM
 (0070,031F)	SQ	FiducialsPropertyCategoryCodeSequence	1	DICOM
@@ -3016,8 +3016,8 @@
 (0080,0007)	US	SurfacePointColorCIELabValueData	3-3n	DICOM
 (0080,0008)	SQ	UVMappingSequence	1	DICOM
 (0080,0009)	SH	TextureLabel	1	DICOM
-(0080,0010)	OF	UValueData	1-n	DICOM
-(0080,0011)	OF	VValueData	1-n	DICOM
+(0080,0010)	OF	UValueData	1	DICOM
+(0080,0011)	OF	VValueData	1	DICOM
 (0080,0012)	SQ	ReferencedTextureSequence	1	DICOM
 (0080,0013)	SQ	ReferencedSurfaceDataSequence	1	DICOM
 (0082,0001)	CS	AssessmentSummary	1	DICOM
@@ -4150,6 +4150,7 @@
 (0040,4003)	CS	RETIRED_GeneralPurposeScheduledProcedureStepPriority	1	DICOM/retired
 (0040,4004)	SQ	RETIRED_ScheduledProcessingApplicationsCodeSequence	1	DICOM/retired
 (0040,4006)	CS	RETIRED_MultipleCopiesFlag	1	DICOM/retired
+(0040,4007)	SQ	RETIRED_PerformedProcessingApplicationsCodeSequence	1	DICOM/retired
 (0040,4015)	SQ	RETIRED_ResultingGeneralPurposePerformedProcedureStepsSequence	1	DICOM/retired
 (0040,4016)	SQ	RETIRED_ReferencedGeneralPurposeScheduledProcedureStepSequence	1	DICOM/retired
 (0040,4020)	CS	RETIRED_InputAvailabilityFlag	1	DICOM/retired
