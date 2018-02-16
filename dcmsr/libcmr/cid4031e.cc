@@ -30,7 +30,7 @@ struct DefinedTermTypeMapStruct
  *  constant definitions  *
  *------------------------*/
 
-// mapping extracted from DICOM PS 3.16-2017e Table L-1
+// mapping extracted from DICOM PS 3.16-2018a Table L-1
 
 static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
 {
@@ -58,6 +58,7 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"EXTREMITY",        CID4031_CommonAnatomicRegions::Extremity},
     {"EYE",              CID4031_CommonAnatomicRegions::Eye},
     {"FEMUR",            CID4031_CommonAnatomicRegions::Femur},
+    {"FIBULA",           CID4031_CommonAnatomicRegions::Fibula},
     {"FINGER",           CID4031_CommonAnatomicRegions::Finger},
     {"FOOT",             CID4031_CommonAnatomicRegions::Foot},
     {"FOREARM",          CID4031_CommonAnatomicRegions::Forearm},
