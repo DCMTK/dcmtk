@@ -3,11 +3,11 @@ Configuration
 
 1. Configuration File
 
-The dcmqrscp and dcmqrti applications are configured via a configuration file. 
-This configuration file defines global options, known Peer Application 
-Entities (AEs), groups of Peer AEs belonging to the same vendor, local AEs 
-(storage areas) and options specific to individual storage areas (file system 
-path, read/write premission, quota and access permission for Peer AEs).
+The dcmqrscp and dcmqrti applications are configured via a configuration file.
+This configuration file defines global options, known Peer Application
+Entities (AEs), groups of Peer AEs belonging to the same vendor, local AEs
+(storage areas) and options specific to individual storage areas (file system
+path, read/write permission, quota and access permission for Peer AEs).
 
 There are four different parts in the configuration file:
 
@@ -16,14 +16,14 @@ There are four different parts in the configuration file:
  3. Vendor Table
  4. Application Entity Table
 
-All lines in this parts define one option and the entries in one line are 
-seperated by white spaces.  Blank lines and lines which begin with a "#" will 
-be ignored.  They can be used for structuring and as comments. The first entry 
-in one line is the keyword.  All the other entries in the line will be the 
-desired values.  A string value which should include spaces must be enclosed 
-with quotes.  Known quote characters are """, "'", "(" and ")". An integer 
-value must not enclosed with quotes.  A "=" may be used in addition to the 
-white spaces between the two different entry types, a "," may be used in a 
+All lines in this parts define one option and the entries in one line are
+separated by white spaces.  Blank lines and lines which begin with a "#" will
+be ignored.  They can be used for structuring and as comments. The first entry
+in one line is the keyword.  All the other entries in the line will be the
+desired values.  A string value which should include spaces must be enclosed
+with quotes.  Known quote characters are """, "'", "(" and ")". An integer
+value must not enclosed with quotes.  A "=" may be used in addition to the
+white spaces between the two different entry types, a "," may be used in a
 value list.
 
 1.1. Global Parameters
@@ -37,7 +37,7 @@ SpecificCharacterSet - comma separated list of string options
 UserName             - string value
 GroupName            - string value
 
-There are default values for all these keywords hardcoded in the configuration 
+There are default values for all these keywords hardcoded in the configuration
 module.
 
 Example:
@@ -59,11 +59,11 @@ Available options for specific character sets are:
   transliterate     - enable transliteration of unsupported characters
   discard           - discard unsupported characters
 
-NOTE: You must have root privileges to bind port 104 for DICOM association 
-requests on Unix/Linux/Posix platforms as this is a privileged port number 
-(i.e., a port number less than 1024.)  If you wish dcmqrscp to run as user/ 
-group different from root, you must invoke dcmqrscp as root initially. 
-dcmqrscp will switch to unprivileged user/group as specified by UserName/ 
+NOTE: You must have root privileges to bind port 104 for DICOM association
+requests on Unix/Linux/Posix platforms as this is a privileged port number
+(i.e., a port number less than 1024.)  If you wish dcmqrscp to run as user/
+group different from root, you must invoke dcmqrscp as root initially.
+dcmqrscp will switch to unprivileged user/group as specified by UserName/
 GroupName keywords once it has successfully established the listen socket.
 
 
@@ -72,7 +72,7 @@ GroupName keywords once it has successfully established the listen socket.
 The Host Table part must be enclosed with the keywords "HostTable BEGIN" and
 "HostTable END".  It is used to define symbolic names for a number of DICOM
 peers.  A peer is a structure with the three values AETitle, HostName,
-PortNumber seperated with white spaces and commas and enclosed with "(" and
+PortNumber separated with white spaces and commas and enclosed with "(" and
 ")".
 
 The right hand side of each entry effectively defines a mapping between
@@ -97,14 +97,14 @@ HostTable END
 
 1.3. Vendor Table
 
-The Vendor Table part must be enclosed with the keywords "VendorTable BEGIN" 
-and "VendorTable END".  The vendor table is used by the dcmqrscp and dcmqrti 
-programs.  You can give a vendor name to the dcmqrti program and it will talk 
-to all hosts and AEs of the vendor.  The dcmqrscp program can use the vendor 
-table to restrict move destination to hosts belonging to a vendor.  A vendor 
-name may be defined with a list of symbolic names.  The vendor name defined on 
-the left hand side of an entry was used for the annotation of images in the 
-CTN Display Program (ctndisp) which existed in earlier DCMTK releases. 
+The Vendor Table part must be enclosed with the keywords "VendorTable BEGIN"
+and "VendorTable END".  The vendor table is used by the dcmqrscp and dcmqrti
+programs.  You can give a vendor name to the dcmqrti program and it will talk
+to all hosts and AEs of the vendor.  The dcmqrscp program can use the vendor
+table to restrict move destination to hosts belonging to a vendor.  A vendor
+name may be defined with a list of symbolic names.  The vendor name defined on
+the left hand side of an entry was used for the annotation of images in the
+CTN Display Program (ctndisp) which existed in earlier DCMTK releases.
 Currently the value is not used.
 
 Example:
@@ -115,13 +115,13 @@ VendorTable END
 
 1.4. Application Entity Table
 
-The Application Entity Table defines the local Application Entities managed by 
-the dcmqrscp application.  Each local AE is associated with a separate storage 
-area and defines a set of peer AE's which may communicate with the local AE. 
-Peers attempting to associate with a local AE will be refused if they are not 
+The Application Entity Table defines the local Application Entities managed by
+the dcmqrscp application.  Each local AE is associated with a separate storage
+area and defines a set of peer AE's which may communicate with the local AE.
+Peers attempting to associate with a local AE will be refused if they are not
 explicitly or implicitly mentioned.
 
-The Application Entity Table part must be enclosed with the keywords "AETable 
+The Application Entity Table part must be enclosed with the keywords "AETable
 BEGIN" and "AETable END".  The entry format is held in a very simple style:
 
 ApplicationTitle        StorageArea     Access  Quota   Peers
