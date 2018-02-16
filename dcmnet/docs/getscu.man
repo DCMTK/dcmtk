@@ -159,7 +159,7 @@ preferred storage transfer syntaxes (incoming associations):
   +xi   --implicit
           accept implicit VR little endian TS only
 
- proposed retrieve transfer syntaxes (outgoing associations):
+proposed retrieve transfer syntaxes (outgoing associations):
 
   -x=   --propose-uncompr
           propose all uncompressed TS, explicit VR
