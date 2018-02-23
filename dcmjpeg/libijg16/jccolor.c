@@ -9,8 +9,22 @@
  */
 
 #define JPEG_INTERNALS
+#include "dcmtk/config/osconfig.h"
 #include "jinclude16.h"
 #include "jpeglib16.h"
+
+/* check if we have a 64-bit integer type */
+#if SIZEOF_LONG == 8
+typedef long jccolor_sint64;
+#elif defined(_WIN32)
+typedef __int64 jccolor_sint64;
+#elif defined(HAVE_LONG_LONG)
+typedef long long jccolor_sint64;
+#elif defined (HAVE_LONGLONG)
+typedef longlong jccolor_sint64;
+#else
+#define JCCOLOR_NO_SINT64
+#endif
 
 
 /* Private subobject */
@@ -115,7 +129,11 @@ rgb_ycc_start (j_compress_ptr cinfo)
      * This ensures that the maximum output will round to MAXJSAMPLE
      * not MAXJSAMPLE+1, and thus that we don't have to range-limit.
      */
+#ifdef JCCOLOR_NO_SINT64
     rgb_ycc_tab[i+B_CB_OFF] = FIX(0.50000) * i    + CBCR_OFFSET + ONE_HALF-1;
+#else
+    rgb_ycc_tab[i+B_CB_OFF] = (jccolor_sint64) FIX(0.50000) * i    + CBCR_OFFSET + ONE_HALF-1;
+#endif
 /*  B=>Cb and R=>Cr tables are the same
     rgb_ycc_tab[i+R_CR_OFF] = FIX(0.50000) * i    + CBCR_OFFSET + ONE_HALF-1;
 */
