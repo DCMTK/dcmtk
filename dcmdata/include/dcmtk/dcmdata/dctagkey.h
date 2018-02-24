@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -139,42 +139,42 @@ public:
      *  @param key key to compare with
      *  @return true if tag keys are the same
      */
-    inline int operator == (const DcmTagKey& key) const;
+    inline OFBool operator == (const DcmTagKey& key) const;
 
     /** negation operator. Returns true if either group or element number
      *  are not the same.
      *  @param key key to compare with
      *  @return true if tag keys are not the same
      */
-    inline int operator != (const DcmTagKey& key) const;
+    inline OFBool operator != (const DcmTagKey& key) const;
 
     /** 'less than' operator. Returns true if the given tag key is greater
      *  than "this".
      *  @param key key to compare with
      *  @return true if given key is greater than "this"
      */
-    inline int operator < (const DcmTagKey& key) const;
+    inline OFBool operator < (const DcmTagKey& key) const;
 
     /** 'greater than' operator. Returns true if the given tag key is smaller
      *  than "this".
      *  @param key key to compare with
      *  @return true if "this" key is smaller than given one.
      */
-    inline int operator > (const DcmTagKey& key) const;
+    inline OFBool operator > (const DcmTagKey& key) const;
 
     /** 'less or equal' operator. Returns true if the given tag key is greater
      *  or the same as "this".
      *  @param key key to compare with
      *  @return true if given key is greater or the same as "this"
      */
-    inline int operator <= (const DcmTagKey& key) const;
+    inline OFBool operator <= (const DcmTagKey& key) const;
 
     /** 'greater or equal' operator. Returns true if the given tag key is
      *  smaller or equal as "this".
      *  @param key key to compare with
      *  @return true if "this" key is smaller or equal to given one.
      */
-    inline int operator >= (const DcmTagKey& key) const;
+    inline OFBool operator >= (const DcmTagKey& key) const;
 
     friend DCMTK_DCMDATA_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
 
@@ -380,37 +380,37 @@ DcmTagKey::elementEQ(const DcmTagKey& key) const
     return getElement() == key.getElement();
 }
 
-inline int
+inline OFBool
 DcmTagKey::operator == (const DcmTagKey& key) const
 {
     return ( groupEQ(key) && elementEQ(key) );
 }
 
-inline int
+inline OFBool
 DcmTagKey::operator != (const DcmTagKey& key) const
 {
     return !(*this == key);
 }
 
-inline int
+inline OFBool
 DcmTagKey::operator < (const DcmTagKey& key) const
 {
     return (groupLT(key) || (groupEQ(key) && elementLT(key)));
 }
 
-inline int
+inline OFBool
 DcmTagKey::operator > (const DcmTagKey& key) const
 {
     return (groupGT(key) || (groupEQ(key) && elementGT(key)));
 }
 
-inline int
+inline OFBool
 DcmTagKey::operator <= (const DcmTagKey& key) const
 {
     return (*this < key) || (*this == key);
 }
 
-inline int
+inline OFBool
 DcmTagKey::operator >= (const DcmTagKey& key) const
 {
     return (*this > key) || (*this == key);
