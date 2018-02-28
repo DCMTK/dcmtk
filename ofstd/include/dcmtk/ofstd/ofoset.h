@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -204,7 +204,7 @@ template <class T> class OFOrderedSet : public OFSet<T>
           }
 
           // delete old array
-          delete this->items;
+          delete[] this->items;
 
           // assign new array to member variable
           this->items = tmp;
