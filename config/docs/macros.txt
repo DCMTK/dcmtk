@@ -335,9 +335,9 @@ USE_NULL_SAFE_OFSTRING
   Type of modification: Activates feature
   Explanation: When this macro is defined, OFString(NULL) results in an
     empty string.  If this macro is not defined, OFString(NULL) causes a
-    NULL pointer dereference.  This macro has no effect when
-    HAVE_STD_STRING is also defined.  Currently, this macro is always defined
-    by DCMTK's Makefiles.  This will change in future releases.
+    NULL pointer dereference.  This macro has no effect when HAVE_STL_STRING
+    is also defined.  Currently, this macro is always defined by DCMTK's
+    Makefiles.  This will change in future releases.
 
 USE_WIN32_CREATE_MUTEX
   Affected: ofstd
