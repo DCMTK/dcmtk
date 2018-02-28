@@ -41,7 +41,7 @@
 #include <sys/time.h>
 #endif
 
-#if defined (DCMTK_LOG4CPLUS_HAVE_SYS_TIMEB_H)
+#if defined(DCMTK_LOG4CPLUS_HAVE_SYS_TIMEB_H) && defined(DCMTK_LOG4CPLUS_HAVE_FTIME) && !defined (DCMTK_LOG4CPLUS_HAVE_CLOCK_GETTIME) && !defined(DCMTK_LOG4CPLUS_HAVE_GETTIMEOFDAY) && !defined(_WIN32)
 #include <sys/timeb.h>
 #endif
 
