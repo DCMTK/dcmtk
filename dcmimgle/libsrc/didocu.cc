@@ -161,7 +161,7 @@ void DiDocument::convertPixelData()
                         DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data: " << status.text());
                 }
                 // determine color model of the decompressed image
-                OFCondition status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmItem *, Object), PhotometricInterpretation);
+                status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmItem *, Object), PhotometricInterpretation);
                 if (status.bad())
                 {
                     DCMIMGLE_ERROR("can't determine 'PhotometricInterpretation' of decompressed image");
