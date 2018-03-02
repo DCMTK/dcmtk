@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -679,6 +679,34 @@ OFCondition DcmSegmentation::getModality(OFString& value,
 }
 
 
+OFCondition DcmSegmentation::importFromSourceImage(const OFString& filename,
+                                                   const bool takeOverCharset)
+{
+  DcmFileFormat dcmff;
+  OFCondition result = dcmff.loadFile(filename);
+  if (result.good())
+  {
+    return importFromSourceImage(*(dcmff.getDataset()), takeOverCharset);
+  }
+  return result;
+}
+
+
+OFCondition DcmSegmentation::importFromSourceImage(DcmItem& dataset,
+                                                   const bool takeOverCharset)
+{
+  OFString FoR;
+  dataset.findAndGetOFStringArray(DCM_FrameOfReferenceUID, FoR);
+  return DcmIODCommon::importHierarchy(
+    dataset,
+    OFTrue,       // Patient
+    OFTrue,       // Study
+    !FoR.empty(), // Frame of Reference
+    OFFalse,      // Series
+    takeOverCharset);
+}
+
+
 /* protected functions */
 
 OFCondition DcmSegmentation::writeSegments(DcmItem& item)
@@ -1204,22 +1232,62 @@ OFBool DcmSegmentation::check()
     return OFFalse;
   }
 
-  // Check whether we have a Frame Content Macro for each frame
-  for (size_t count = 0; count < m_Frames.size(); count++)
+  // Check rules around Frame of Reference
+
+  // 1. If Derivation Image FG is not present, Frame of Reference is required.
+  OFBool frameOfRefRequired = OFFalse;
+  FGBase* group = m_FGInterface.get(OFstatic_cast(Uint32, 0), DcmFGTypes::EFG_DERIVATIONIMAGE);
+  if (group == NULL)
   {
-    OFBool isPerFrame;
-    FGBase* group = m_FGInterface.get(OFstatic_cast(Uint32, count), DcmFGTypes::EFG_FRAMECONTENT, isPerFrame);
-    if (group == NULL)
+    // Derivation Image FG is not present, FoR is required
+    frameOfRefRequired = OFTrue;
+  }
+  else
+  {
+    // Derivation Image FG present, Frame of Reference is not required
+    frameOfRefRequired = OFFalse;
+  }
+  OFString frameOfRef;
+  getFrameOfReference().getFrameOfReferenceUID(frameOfRef);
+  if (frameOfRefRequired && frameOfRef.empty())
+  {
+    DCMSEG_ERROR("Frame of Reference UID is not set for Segmentation but is required");
+    return OFFalse;
+  }
+
+  // 2. When a Frame of Reference UID is present the segment shall be specified
+  // within that coordinate system, using the Pixel Measures, Plane Position
+  // (Patient) and Plane Orientation (Patient) Functional Groups.
+  if (!frameOfRef.empty())
+  {
+    // Check that each of above FGs is present. We do not check this for
+    // all frames since if it exists for one frame it must exist for all others.
+    // This is a general rule and applies for all FGs, so it is not checked here.
+    FGBase* group = m_FGInterface.get(OFstatic_cast(Uint32, 0), DcmFGTypes::EFG_PIXELMEASURES);
+    if (!group)
     {
-      DCMSEG_ERROR("Frame Content Functional Group not present for frame " << count);
+      DCMSEG_ERROR("Frame of Reference UID is present but Pixel Measures FG is missing");
       return OFFalse;
     }
-    else if (!isPerFrame)
+    group = m_FGInterface.get(OFstatic_cast(Uint32, 0), DcmFGTypes::EFG_PLANEPOSPATIENT);
+    if (!group)
     {
-      DCMSEG_ERROR("Frame Content Functional Group must be per-frame but is shared");
+      DCMSEG_ERROR("Frame of Reference UID is present but Plane Position (Patient) FG is missing");
+      return OFFalse;
+    }
+    group = m_FGInterface.get(OFstatic_cast(Uint32, 0), DcmFGTypes::EFG_PLANEORIENTPATIENT);
+    if (!group)
+    {
+      DCMSEG_ERROR("Frame of Reference UID is present but Plane Orientation (Patient) FG is missing");
       return OFFalse;
     }
   }
+  // Another condition cannot be checked since we do not have access to the
+  // datasets of the source images:
+  // 3. If FoR is present but not the same in images this segmentation applies to,
+  // (those in Derivation Image FG), each pixel of the segmentation shall
+  // correspond to a pixel in a referenced image (i.e. they must share the same
+  // size and resolution).
 
   return OFTrue;
 }
