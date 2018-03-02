@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -619,7 +619,7 @@ void DiImage::convertPixelData()
         else if (InputData->getData() == NULL)
         {
             ImageStatus = EIS_InvalidImage;
-            DCMIMGLE_ERROR("can't convert input pixel data, probably unsupported compression");
+            DCMIMGLE_ERROR("can't convert input pixel data");
         }
         else if (InputData->getPixelStart() >= InputData->getCount())
         {
