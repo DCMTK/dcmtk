@@ -157,8 +157,10 @@ void DiDocument::convertPixelData()
                             Xfer = EXS_LittleEndianExplicit;
                             DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << PixelData->getLength(Xfer) << " bytes");
                         }
-                    } else
-                        DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data: " << status.text());
+                    } else {
+                        DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data");
+                        DCMIMGLE_DEBUG("DcmPixelData::chooseRepresentation() returned: " << status.text());
+                    }
                 }
                 // determine color model of the decompressed image
                 status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmItem *, Object), PhotometricInterpretation);
