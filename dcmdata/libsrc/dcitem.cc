@@ -167,18 +167,18 @@ int DcmItem::compare(const DcmItem& rhs) const
     myRhs =  OFconst_cast(DcmItem*, &rhs);
 
     // check length, i.e. number of elements in item
-    unsigned long thisVM = myThis->card();
-    unsigned long rhsVM = myRhs->card();
-    if (thisVM < rhsVM)
+    unsigned long thisNumValues = myThis->card();
+    unsigned long rhsNumValues = myRhs->card();
+    if (thisNumValues < rhsNumValues)
     {
         return -1;
     }
-    else if (thisVM > rhsVM)
+    else if (thisNumValues > rhsNumValues)
     {
         return 1;
     }
     // iterate over all items and test equality
-    for (unsigned long count = 0; count < thisVM; count++)
+    for (unsigned long count = 0; count < thisNumValues; count++)
     {
         DcmElement* val = myThis->getElement(count);
         if (val)

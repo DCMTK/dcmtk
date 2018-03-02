@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -205,19 +205,19 @@ int DcmSequenceOfItems::compare(const DcmElement& rhs) const
     myRhs = OFstatic_cast(DcmSequenceOfItems*, OFconst_cast(DcmElement*, &rhs));
 
     /* check number of items */
-    unsigned long rhsVM = myRhs->card();
-    unsigned long thisVM = myThis->card();
-    if (thisVM < rhsVM)
+    unsigned long rhsNumItems = myRhs->card();
+    unsigned long thisNumItems = myThis->card();
+    if (thisNumItems < rhsNumItems)
     {
         return -1;
     }
-    else if (thisVM > rhsVM)
+    else if (thisNumItems > rhsNumItems)
     {
         return 1;
     }
 
     /* iterate over all items and test equality */
-    for (unsigned long count = 0; count < thisVM; count++)
+    for (unsigned long count = 0; count < thisNumItems; count++)
     {
         DcmItem* val = myThis->getItem(count);
         if (val)
