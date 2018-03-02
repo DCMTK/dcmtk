@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -653,7 +653,7 @@ OFBool FGInterface::check()
       FunctionalGroups::iterator groupEnd = (*frameFG).second->end();
       while (group != groupEnd)
       {
-        // Check that per-frame group is not shared group at the same time
+        // Check that per-frame group is not a shared group at the same time
         DcmFGTypes::E_FGType groupType = group->second->getType();
         if ( (groupType != DcmFGTypes::EFG_UNDEFINED) &&
           (groupType != DcmFGTypes::EFG_UNKNOWN) )

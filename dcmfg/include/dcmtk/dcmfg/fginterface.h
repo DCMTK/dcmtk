@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -68,7 +68,12 @@ public:
    */
   virtual void clear();
 
-  /** Checks the functional groups for consistency
+  /** Checks the functional groups for consistency. The following checks are
+   *  performed:
+   *    -# Check that every frame has a FrameContent functional group.
+   *    -# Check that any per-frame group is not shared at the same time.
+   *    -# Check for each per-frame group, that it is allowed to be per-frame.
+   *    -# Check for each shared group, that it is allowed to be shared.
    *  @return OFTrue, if check consistency is ok, error otherwise
    */
   virtual OFBool check();
