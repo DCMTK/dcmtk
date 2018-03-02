@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -411,8 +411,11 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      */
     virtual OFCondition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
 
-    /** return value multiplicity of the current object
-     *  @return value multiplicity of the current object
+    /** get value multiplicity of this object.
+     *  Please note that depending on the Value Representation (VR), subclasses
+     *  derived from this class either return the number of currently stored
+     *  values or the constant value 1 (as defined in the DICOM standard).
+     *  @return value multiplicity of this object
      */
     virtual unsigned long getVM() = 0;
 

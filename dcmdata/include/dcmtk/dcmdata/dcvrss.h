@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -117,8 +117,7 @@ class DCMTK_DCMDATA_EXPORT DcmSignedShort
     virtual OFCondition checkValue(const OFString &vm = "1-n",
                                    const OFBool oldFormat = OFFalse);
 
-    /** get value multiplicity.
-     *  The number of entries can be determined by "getVM()".
+    /** get value multiplicity
      *  @return number of currently stored values
      */
     virtual unsigned long getVM();
