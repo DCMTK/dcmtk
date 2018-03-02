@@ -180,6 +180,14 @@ DcmPolymorphOBOW::createUint16Array(
     const Uint32 numWords,
     Uint16 * & words)
 {
+    // Check whether input would lead to a buffer allocation of more than
+    // 4 GB for a value, which is not possible in DICOM. The biggest input
+    // parameter value permitted is 2147483647, since 2147483647*2 is still
+    // < 2^32-1 (4 GB).
+    if (numWords > 2147483647)
+    {
+        return EC_TooManyBytesRequested;
+    }
     currentVR = EVR_OW;
     setTagVR(EVR_OW);
     errorFlag = createEmptyValue(OFstatic_cast(Uint32, sizeof(Uint16) * OFstatic_cast(size_t, numWords)));
