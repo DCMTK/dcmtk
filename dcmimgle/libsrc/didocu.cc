@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -114,6 +114,7 @@ DiDocument::DiDocument(DcmObject *object,
 void DiDocument::convertPixelData()
 {
     DcmStack pstack;
+    OFCondition status;
     DcmXfer xfer(Xfer);
     DCMIMGLE_DEBUG("transfer syntax of DICOM dataset: " << xfer.getXferName() << " (" << xfer.getXferID() << ")");
     // only search on main dataset level
@@ -147,7 +148,8 @@ void DiDocument::convertPixelData()
                     pstack.push(Object);
                     // dummy stack entry
                     pstack.push(PixelData);
-                    if (PixelData->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack).good())
+                    status = PixelData->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack);
+                    if (status.good())
                     {
                         // set transfer syntax to unencapsulated/uncompressed
                         if (xfer.isEncapsulated())
@@ -156,7 +158,7 @@ void DiDocument::convertPixelData()
                             DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << PixelData->getLength(Xfer) << " bytes");
                         }
                     } else
-                        DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data");
+                        DCMIMGLE_ERROR("can't change to unencapsulated representation for pixel data: " << status.text());
                 }
                 // determine color model of the decompressed image
                 OFCondition status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmItem *, Object), PhotometricInterpretation);
