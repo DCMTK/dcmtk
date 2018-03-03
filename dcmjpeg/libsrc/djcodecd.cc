@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2016, OFFIS e.V.
+ *  Copyright (C) 2001-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -126,7 +126,7 @@ OFCondition DJCodecDecoder::decode(
       DcmPixelItem *pixItem = NULL;
       Uint8 * jpegData = NULL;
       result = pixSeq->getItem(pixItem, 1); // first item is offset table, use second item
-      if (result.good())
+      if (result.good() && (pixItem != NULL))
       {
         Uint32 fragmentLength = pixItem->getLength();
         result = pixItem->getUint8Array(jpegData);

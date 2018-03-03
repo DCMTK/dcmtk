@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1600_ImageLibrary
@@ -672,7 +672,7 @@ OFCondition TID1600_ImageLibrary::addProjectionRadiographyDescriptors(DSRDocumen
                 {
                     /* iterate over all sequence items */
                     DcmObject *object = NULL;
-                    while (((object = sequence->nextInContainer(object)) != NULL) && result.good())
+                    while ((sequence != NULL) && ((object = sequence->nextInContainer(object)) != NULL) && result.good())
                     {
                         DSRCodedEntryValue modifierCode;
                         if (modifierCode.readSequenceItem(*OFstatic_cast(DcmItem *, object), DCM_ViewModifierCodeSequence).good())
