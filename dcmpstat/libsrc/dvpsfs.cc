@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -112,7 +112,7 @@ OFBool DVPSFilmSession::printSCPCreate(
   // numberOfCopies
   if (result)
   {
-    READ_FROM_PDATASET(DcmIntegerString, numberOfCopies)
+    READ_FROM_PDATASET(DcmIntegerString, EVR_IS, numberOfCopies)
     if (numberOfCopies.getLength() == 0) numberOfCopies.putString(DEFAULT_numberOfCopies);
     else
     {
@@ -132,7 +132,7 @@ OFBool DVPSFilmSession::printSCPCreate(
   // printPriority
   if (result)
   {
-    READ_FROM_PDATASET(DcmCodeString, printPriority)
+    READ_FROM_PDATASET(DcmCodeString, EVR_CS, printPriority)
     if (printPriority.getLength() == 0) printPriority.putString(DEFAULT_priority);
     else
     {
@@ -151,7 +151,7 @@ OFBool DVPSFilmSession::printSCPCreate(
   if (result)
   {
     Uint32 numMediumTypes = cfg.getTargetPrinterNumberOfMediumTypes(cfgname);  	
-    READ_FROM_PDATASET(DcmCodeString, mediumType)
+    READ_FROM_PDATASET(DcmCodeString, EVR_CS, mediumType)
     if (mediumType.getLength() == 0) 
     {
       if (numMediumTypes > 0)
@@ -190,7 +190,7 @@ OFBool DVPSFilmSession::printSCPCreate(
   if (result)
   {
     Uint32 numFilmDestination = cfg.getTargetPrinterNumberOfFilmDestinations(cfgname);  	
-    READ_FROM_PDATASET(DcmCodeString, filmDestination)
+    READ_FROM_PDATASET(DcmCodeString, EVR_CS, filmDestination)
     if (filmDestination.getLength() == 0) 
     {
       if (numFilmDestination > 0)
@@ -228,7 +228,7 @@ OFBool DVPSFilmSession::printSCPCreate(
   // filmSessionLabel
   if (result)
   {
-    READ_FROM_PDATASET(DcmLongString, filmSessionLabel)
+    READ_FROM_PDATASET(DcmLongString, EVR_LO, filmSessionLabel)
     if (filmSessionLabel.getLength() == 0) 
     {
       OFString labelString("print job ");
@@ -252,7 +252,7 @@ OFBool DVPSFilmSession::printSCPCreate(
   // ownerID
   if (result)
   {
-    READ_FROM_PDATASET(DcmShortString, ownerID)
+    READ_FROM_PDATASET(DcmShortString, EVR_SH, ownerID)
     if (ownerID.getLength() == 0) 
     {
       if (peerae) ownerID.putString(peerae); else ownerID.putString(DEFAULT_ownerID);
@@ -265,7 +265,7 @@ OFBool DVPSFilmSession::printSCPCreate(
     // illumination
     if (result)
     {
-      READ_FROM_PDATASET(DcmUnsignedShort, illumination)
+      READ_FROM_PDATASET(DcmUnsignedShort, EVR_US, illumination)
       if (illumination.getLength() == 0) illumination.putUint16(DEFAULT_illumination, 0);
       // we don't check illumination set by the user (for now)
     }
@@ -273,7 +273,7 @@ OFBool DVPSFilmSession::printSCPCreate(
     // reflectedAmbientLight
     if (result)
     {
-      READ_FROM_PDATASET(DcmUnsignedShort, reflectedAmbientLight)
+      READ_FROM_PDATASET(DcmUnsignedShort, EVR_US, reflectedAmbientLight)
       if (reflectedAmbientLight.getLength() == 0) illumination.putUint16(DEFAULT_reflectedAmbientLight, 0);
       // we don't check reflected ambient light set by the user (for now)
     }
@@ -291,7 +291,7 @@ OFBool DVPSFilmSession::printSCPCreate(
            OFString aString;
            DcmItem *item = seq->getItem(0);
            stack.clear();
-           READ_FROM_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)           
+           READ_FROM_DATASET2(DcmUniqueIdentifier, EVR_UI, referencedPresentationLUTInstanceUID)           
            if (referencedPresentationLUTInstanceUID.getLength() > 0)
            {
              referencedPresentationLUTInstanceUID.getOFString(aString,0);
@@ -305,7 +305,7 @@ OFBool DVPSFilmSession::printSCPCreate(
                // check referenced SOP class UID
                DcmUniqueIdentifier refClassUID(DCM_ReferencedSOPClassUID);
                stack.clear();
-               READ_FROM_DATASET2(DcmUniqueIdentifier, refClassUID)
+               READ_FROM_DATASET2(DcmUniqueIdentifier, EVR_UI, refClassUID)
                if (refClassUID.getLength() > 0)
                {     
                   aString.clear();
@@ -647,7 +647,7 @@ OFBool DVPSFilmSession::printSCPSet(
            OFString aString;
            DcmItem *item = seq->getItem(0);
            stack.clear();
-           READ_FROM_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
+           READ_FROM_DATASET2(DcmUniqueIdentifier, EVR_UI, referencedPresentationLUTInstanceUID)
            if (referencedPresentationLUTInstanceUID.getLength() > 0)
            {
              referencedPresentationLUTInstanceUID.getOFString(aString,0);
@@ -661,7 +661,7 @@ OFBool DVPSFilmSession::printSCPSet(
                // check referenced SOP class UID
                DcmUniqueIdentifier refClassUID(DCM_ReferencedSOPClassUID);
                stack.clear();
-               READ_FROM_DATASET2(DcmUniqueIdentifier, refClassUID)
+               READ_FROM_DATASET2(DcmUniqueIdentifier, EVR_UI, refClassUID)
                if (refClassUID.getLength() > 0)
                {     
                   aString.clear();

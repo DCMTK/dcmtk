@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -64,14 +64,14 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmCodeString, boundingBoxAnnotationUnits)
-  READ_FROM_DATASET(DcmCodeString, anchorPointAnnotationUnits)
-  READ_FROM_DATASET(DcmShortText, unformattedTextValue)
-  READ_FROM_DATASET(DcmFloatingPointSingle, boundingBoxTLHC)
-  READ_FROM_DATASET(DcmFloatingPointSingle, boundingBoxBRHC)
-  READ_FROM_DATASET(DcmCodeString, boundingBoxTextHorizontalJustification)
-  READ_FROM_DATASET(DcmFloatingPointSingle, anchorPoint)
-  READ_FROM_DATASET(DcmCodeString, anchorPointVisibility)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, boundingBoxAnnotationUnits)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, anchorPointAnnotationUnits)
+  READ_FROM_DATASET(DcmShortText, EVR_ST, unformattedTextValue)
+  READ_FROM_DATASET(DcmFloatingPointSingle, EVR_FL, boundingBoxTLHC)
+  READ_FROM_DATASET(DcmFloatingPointSingle, EVR_FL, boundingBoxBRHC)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, boundingBoxTextHorizontalJustification)
+  READ_FROM_DATASET(DcmFloatingPointSingle, EVR_FL, anchorPoint)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, anchorPointVisibility)
   
   /* Now perform basic sanity checks */
   

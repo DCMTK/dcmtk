@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -153,25 +153,25 @@ if (result==EC_Normal)                                              \
 }
 
 // reads a dicom element from a dataset if present
-#define READ_FROM_DATASET(a_type, a_name)                           \
+#define READ_FROM_DATASET(a_type, an_ident, a_name)                 \
 stack.clear();                                                      \
-if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
+if ((EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == an_ident)) \
 {                                                                   \
   a_name = *((a_type *)(stack.top()));                              \
 }
 
 // reads a dicom element from an item if present
-#define READ_FROM_DATASET2(a_type, a_name)                          \
+#define READ_FROM_DATASET2(a_type, an_ident, a_name)                \
 stack.clear();                                                      \
-if (EC_Normal == item->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
+if ((EC_Normal == item->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == an_ident)) \
 {                                                                   \
   a_name = *((a_type *)(stack.top()));                              \
 }
 
 // reads a dicom element from an item if present
-#define READ_FROM_PDATASET(a_type, a_name)                          \
+#define READ_FROM_PDATASET(a_type, an_ident, a_name)                \
 stack.clear();                                                      \
-if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse))) \
+if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == an_ident)) \
 {                                                                   \
   a_name = *((a_type *)(stack.top()));                              \
 }

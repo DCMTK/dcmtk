@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -51,7 +51,7 @@ OFCondition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
 
   repeatingGroup = ovGroup;
   activationLayer.setGTag(repeatingGroup);
-  READ_FROM_DATASET(DcmCodeString, activationLayer)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, activationLayer)
 
   if (activationLayer.getVM() > 1)
   {

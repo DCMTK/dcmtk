@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -245,8 +245,8 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
         DcmCodeString typeOfDataValue(DCM_RETIRED_TypeOfData);
         curveDimensionsValue.setGTag(group);
         typeOfDataValue.setGTag(group);
-        READ_FROM_DATASET(DcmUnsignedShort, curveDimensionsValue)
-        READ_FROM_DATASET(DcmCodeString, typeOfDataValue)
+        READ_FROM_DATASET(DcmUnsignedShort, EVR_US, curveDimensionsValue)
+        READ_FROM_DATASET(DcmCodeString, EVR_CS, typeOfDataValue)
 
         /* we can only display POLY and ROI curves */
         aString.clear();

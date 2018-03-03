@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -240,9 +240,9 @@ OFCondition DVPSSoftcopyVOI_PList::createFromImage(
   DcmDecimalString         windowWidth(DCM_WindowWidth);
   DcmLongString            windowCenterWidthExplanation(DCM_WindowCenterWidthExplanation);
 
-  READ_FROM_DATASET(DcmDecimalString, windowCenter)
-  READ_FROM_DATASET(DcmDecimalString, windowWidth)
-  READ_FROM_DATASET(DcmLongString, windowCenterWidthExplanation)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, windowCenter)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, windowWidth)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, windowCenterWidthExplanation)
 
   /* read VOI LUT Sequence */
   if (result==EC_Normal)

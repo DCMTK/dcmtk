@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,7 +55,7 @@ OFCondition DVPSGraphicAnnotation::read(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmCodeString, graphicAnnotationLayer)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, graphicAnnotationLayer)
   if (result==EC_Normal) result = textObjectList.read(dset);
   if (result==EC_Normal) result = graphicObjectList.read(dset);
   if (result==EC_Normal) result = referencedImageList.read(dset);

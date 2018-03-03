@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,12 +55,12 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
   DcmStack stack;
   DcmUnsignedShort graphicDimensions(DCM_GraphicDimensions); // VR=US, VM=1, Type 1
 
-  READ_FROM_DATASET(DcmCodeString, graphicAnnotationUnits)
-  READ_FROM_DATASET(DcmUnsignedShort, graphicDimensions)
-  READ_FROM_DATASET(DcmUnsignedShort, numberOfGraphicPoints)
-  READ_FROM_DATASET(DcmFloatingPointSingle, graphicData)
-  READ_FROM_DATASET(DcmCodeString, graphicType)
-  READ_FROM_DATASET(DcmCodeString, graphicFilled)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, graphicAnnotationUnits)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, graphicDimensions)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, numberOfGraphicPoints)
+  READ_FROM_DATASET(DcmFloatingPointSingle, EVR_FL, graphicData)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, graphicType)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, graphicFilled)
 
   /* Now perform basic sanity checks */
 

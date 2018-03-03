@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2013, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,9 +62,9 @@ OFCondition DVPSReferencedImage::read(DcmItem &dset)
 
   flushCache();
   
-  READ_FROM_DATASET(DcmUniqueIdentifier, referencedSOPClassUID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, referencedSOPInstanceUID)
-  READ_FROM_DATASET(DcmIntegerString, referencedFrameNumber)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, referencedSOPClassUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, referencedSOPInstanceUID)
+  READ_FROM_DATASET(DcmIntegerString, EVR_IS, referencedFrameNumber)
   
   /* Now perform basic sanity checks */
 

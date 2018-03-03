@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -300,8 +300,8 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
   DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
   DcmCodeString modality(DCM_Modality);
   OFString aString;
-  READ_FROM_DATASET(DcmUniqueIdentifier, sopclassuid)
-  READ_FROM_DATASET(DcmCodeString, modality)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, sopclassuid)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, modality)
 
   if (sopclassuid.getLength() == 0)
   {
@@ -341,45 +341,45 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
 
   if (result==EC_Normal)
   {
-    READ_FROM_DATASET(DcmPersonName, patientName)
-    READ_FROM_DATASET(DcmLongString, patientID)
-    READ_FROM_DATASET(DcmDate, patientBirthDate)
-    READ_FROM_DATASET(DcmCodeString, patientSex)
-    READ_FROM_DATASET(DcmUniqueIdentifier, studyInstanceUID)
-    READ_FROM_DATASET(DcmDate, studyDate)
-    READ_FROM_DATASET(DcmTime, studyTime)
-    READ_FROM_DATASET(DcmPersonName, referringPhysicianName)
-    READ_FROM_DATASET(DcmShortString, studyID)
-    READ_FROM_DATASET(DcmShortString, accessionNumber)
-    READ_FROM_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
-    READ_FROM_DATASET(DcmIntegerString, seriesNumber)
-    READ_FROM_DATASET(DcmLongString, manufacturer)
-    READ_FROM_DATASET(DcmIntegerString, imageNumber)
-    READ_FROM_DATASET(DcmCodeString, presentationLabel)
-    READ_FROM_DATASET(DcmLongString, presentationDescription)
-    READ_FROM_DATASET(DcmDate, presentationCreationDate)
-    READ_FROM_DATASET(DcmTime, presentationCreationTime)
-    READ_FROM_DATASET(DcmPersonName, presentationCreatorsName)
-    READ_FROM_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
-    READ_FROM_DATASET(DcmCodeString, specificCharacterSet)
-    READ_FROM_DATASET(DcmDate, instanceCreationDate)
-    READ_FROM_DATASET(DcmTime, instanceCreationTime)
-    READ_FROM_DATASET(DcmUniqueIdentifier, instanceCreatorUID)
-    READ_FROM_DATASET(DcmCodeString, shutterShape)
-    READ_FROM_DATASET(DcmIntegerString, shutterLeftVerticalEdge)
-    READ_FROM_DATASET(DcmIntegerString, shutterRightVerticalEdge)
-    READ_FROM_DATASET(DcmIntegerString, shutterUpperHorizontalEdge)
-    READ_FROM_DATASET(DcmIntegerString, shutterLowerHorizontalEdge)
-    READ_FROM_DATASET(DcmIntegerString, centerOfCircularShutter)
-    READ_FROM_DATASET(DcmIntegerString, radiusOfCircularShutter)
-    READ_FROM_DATASET(DcmIntegerString, verticesOfThePolygonalShutter)
-    READ_FROM_DATASET(DcmUnsignedShort, shutterPresentationValue)
-    READ_FROM_DATASET(DcmUnsignedShort, shutterOverlayGroup)
-    READ_FROM_DATASET(DcmUnsignedShort, imageRotation)
-    READ_FROM_DATASET(DcmCodeString, imageHorizontalFlip)
-    READ_FROM_DATASET(DcmDecimalString, rescaleIntercept)
-    READ_FROM_DATASET(DcmDecimalString, rescaleSlope)
-    READ_FROM_DATASET(DcmLongString, rescaleType)
+    READ_FROM_DATASET(DcmPersonName, EVR_PN, patientName)
+    READ_FROM_DATASET(DcmLongString, EVR_LO, patientID)
+    READ_FROM_DATASET(DcmDate, EVR_DA, patientBirthDate)
+    READ_FROM_DATASET(DcmCodeString, EVR_CS, patientSex)
+    READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, studyInstanceUID)
+    READ_FROM_DATASET(DcmDate, EVR_DA, studyDate)
+    READ_FROM_DATASET(DcmTime, EVR_TM, studyTime)
+    READ_FROM_DATASET(DcmPersonName, EVR_PN, referringPhysicianName)
+    READ_FROM_DATASET(DcmShortString, EVR_SH, studyID)
+    READ_FROM_DATASET(DcmShortString, EVR_SH, accessionNumber)
+    READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, seriesInstanceUID)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, seriesNumber)
+    READ_FROM_DATASET(DcmLongString, EVR_LO, manufacturer)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, imageNumber)
+    READ_FROM_DATASET(DcmCodeString, EVR_CS, presentationLabel)
+    READ_FROM_DATASET(DcmLongString, EVR_LO, presentationDescription)
+    READ_FROM_DATASET(DcmDate, EVR_DA, presentationCreationDate)
+    READ_FROM_DATASET(DcmTime, EVR_TM, presentationCreationTime)
+    READ_FROM_DATASET(DcmPersonName, EVR_PN, presentationCreatorsName)
+    READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, sOPInstanceUID)
+    READ_FROM_DATASET(DcmCodeString, EVR_CS, specificCharacterSet)
+    READ_FROM_DATASET(DcmDate, EVR_DA, instanceCreationDate)
+    READ_FROM_DATASET(DcmTime, EVR_TM, instanceCreationTime)
+    READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, instanceCreatorUID)
+    READ_FROM_DATASET(DcmCodeString, EVR_CS, shutterShape)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, shutterLeftVerticalEdge)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, shutterRightVerticalEdge)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, shutterUpperHorizontalEdge)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, shutterLowerHorizontalEdge)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, centerOfCircularShutter)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, radiusOfCircularShutter)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, verticesOfThePolygonalShutter)
+    READ_FROM_DATASET(DcmUnsignedShort, EVR_US, shutterPresentationValue)
+    READ_FROM_DATASET(DcmUnsignedShort, EVR_US, shutterOverlayGroup)
+    READ_FROM_DATASET(DcmUnsignedShort, EVR_US, imageRotation)
+    READ_FROM_DATASET(DcmCodeString, EVR_CS, imageHorizontalFlip)
+    READ_FROM_DATASET(DcmDecimalString, EVR_DS, rescaleIntercept)
+    READ_FROM_DATASET(DcmDecimalString, EVR_DS, rescaleSlope)
+    READ_FROM_DATASET(DcmLongString, EVR_LO, rescaleType)
   }
 
   /* read Modality LUT Sequence */
@@ -747,13 +747,13 @@ OFCondition DcmPresentationState::createDefaultDisplayedArea(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmUnsignedShort, rows)
-  READ_FROM_DATASET(DcmUnsignedShort, columns)
-  READ_FROM_DATASET(DcmUniqueIdentifier, sopclassUID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, imageUID)
-  READ_FROM_DATASET(DcmDecimalString, imagerPixelSpacing)
-  READ_FROM_DATASET(DcmDecimalString, pixelSpacing)
-  READ_FROM_DATASET(DcmIntegerString, pixelAspectRatio)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, rows)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, columns)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, sopclassUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, imageUID)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, imagerPixelSpacing)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, pixelSpacing)
+  READ_FROM_DATASET(DcmIntegerString, EVR_IS, pixelAspectRatio)
 
   if (result == EC_Normal) result = columns.getUint16(cols_uint,0);
   if (result == EC_Normal) result = rows.getUint16(rows_uint,0);
@@ -822,48 +822,48 @@ OFCondition DcmPresentationState::createFromImage(
   clear(); // re-initialize Presentation State object
 
   /* copy some image attributes we will need later */
-  READ_FROM_DATASET(DcmCodeString, photometricInterpretation)
-  READ_FROM_DATASET(DcmUniqueIdentifier, sopclassUID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, imageUID)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, photometricInterpretation)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, sopclassUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, imageUID)
   sopclassUID.getOFString(ofsopclassUID,0);
   imageUID.getOFString(ofimageUID,0);
 
   /* copy attributes for Patient, General Study and General Equipment
    * modules from image object. Also copy specific character set (SOP common). */
-  READ_FROM_DATASET(DcmPersonName, patientName)
-  READ_FROM_DATASET(DcmLongString, patientID)
-  READ_FROM_DATASET(DcmDate, patientBirthDate)
-  READ_FROM_DATASET(DcmCodeString, patientSex)
-  READ_FROM_DATASET(DcmUniqueIdentifier, studyInstanceUID)
-  READ_FROM_DATASET(DcmDate, studyDate)
-  READ_FROM_DATASET(DcmTime, studyTime)
-  READ_FROM_DATASET(DcmPersonName, referringPhysicianName)
-  READ_FROM_DATASET(DcmShortString, studyID)
-  READ_FROM_DATASET(DcmShortString, accessionNumber)
-  READ_FROM_DATASET(DcmLongString, manufacturer)
-  READ_FROM_DATASET(DcmCodeString, specificCharacterSet)
+  READ_FROM_DATASET(DcmPersonName, EVR_PN, patientName)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, patientID)
+  READ_FROM_DATASET(DcmDate, EVR_DA, patientBirthDate)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, patientSex)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, studyInstanceUID)
+  READ_FROM_DATASET(DcmDate, EVR_DA, studyDate)
+  READ_FROM_DATASET(DcmTime, EVR_TM, studyTime)
+  READ_FROM_DATASET(DcmPersonName, EVR_PN, referringPhysicianName)
+  READ_FROM_DATASET(DcmShortString, EVR_SH, studyID)
+  READ_FROM_DATASET(DcmShortString, EVR_SH, accessionNumber)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, manufacturer)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, specificCharacterSet)
 
   /* if there is a modality rescale, copy it now.
    * Later we decide whether we want to use it.
    */
-  READ_FROM_DATASET(DcmDecimalString, rescaleIntercept)
-  READ_FROM_DATASET(DcmDecimalString, rescaleSlope)
-  READ_FROM_DATASET(DcmLongString, rescaleType)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, rescaleIntercept)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, rescaleSlope)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, rescaleType)
 
   if ((result==EC_Normal) && shutterActivation)
   {
     /* if there is a display shutter in the image (i.e. in XA, RF, DX), copy it.
      * We never copy bitmap shutters.
      */
-    READ_FROM_DATASET(DcmCodeString, shutterShape)
-    READ_FROM_DATASET(DcmIntegerString, shutterLeftVerticalEdge)
-    READ_FROM_DATASET(DcmIntegerString, shutterRightVerticalEdge)
-    READ_FROM_DATASET(DcmIntegerString, shutterUpperHorizontalEdge)
-    READ_FROM_DATASET(DcmIntegerString, shutterLowerHorizontalEdge)
-    READ_FROM_DATASET(DcmIntegerString, centerOfCircularShutter)
-    READ_FROM_DATASET(DcmIntegerString, radiusOfCircularShutter)
-    READ_FROM_DATASET(DcmIntegerString, verticesOfThePolygonalShutter)
-    READ_FROM_DATASET(DcmUnsignedShort, shutterPresentationValue)
+    READ_FROM_DATASET(DcmCodeString, EVR_CS, shutterShape)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, shutterLeftVerticalEdge)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, shutterRightVerticalEdge)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, shutterUpperHorizontalEdge)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, shutterLowerHorizontalEdge)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, centerOfCircularShutter)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, radiusOfCircularShutter)
+    READ_FROM_DATASET(DcmIntegerString, EVR_IS, verticesOfThePolygonalShutter)
+    READ_FROM_DATASET(DcmUnsignedShort, EVR_US, shutterPresentationValue)
   }
 
   if ((result==EC_Normal) && presentationActivation)
@@ -871,7 +871,7 @@ OFCondition DcmPresentationState::createFromImage(
     /* if there is a Presentation LUT shape in the image (i.e. in DX), copy it.
      * We never copy presentation LUT sequences.
      */
-    READ_FROM_DATASET(DcmCodeString, presentationLUTShape)
+    READ_FROM_DATASET(DcmCodeString, EVR_CS, presentationLUTShape)
   }
 
   /* read Modality LUT Sequence */
@@ -1328,11 +1328,11 @@ OFCondition DcmPresentationState::addImageReference(
   Sint32 ofnumberOfFrames=0;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmIntegerString, numberOfFrames)
-  READ_FROM_DATASET(DcmUniqueIdentifier, studyUID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, seriesUID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, sopclassUID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, imageUID)
+  READ_FROM_DATASET(DcmIntegerString, EVR_IS, numberOfFrames)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, studyUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, seriesUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, sopclassUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, imageUID)
 
   numberOfFrames.getSint32(ofnumberOfFrames,0);
   seriesUID.getOFString(ofseriesUID,0);
@@ -1393,9 +1393,9 @@ OFCondition DcmPresentationState::removeImageReference(DcmItem &dset)
   OFString ofimageUID;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmUniqueIdentifier, studyUID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, seriesUID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, imageUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, studyUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, seriesUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, imageUID)
 
   seriesUID.getOFString(ofseriesUID,0);
   studyInstanceUID.getOFString(ofstudyInstanceUID,0);

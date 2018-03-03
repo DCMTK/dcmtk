@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,9 +76,9 @@ OFCondition DVPSAnnotationContent::read(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmStack stack;
   
-  READ_FROM_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
-  READ_FROM_DATASET(DcmUnsignedShort, annotationPosition)
-  READ_FROM_DATASET(DcmLongString, textString)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, sOPInstanceUID)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, annotationPosition)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, textString)
   
   /* Now perform basic sanity checks */
 

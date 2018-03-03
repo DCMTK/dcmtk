@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -66,12 +66,12 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
   DcmStack stack;
   OFString aString;
   
-  READ_FROM_DATASET(DcmSignedLong, displayedAreaTopLeftHandCorner)
-  READ_FROM_DATASET(DcmSignedLong, displayedAreaBottomRightHandCorner)
-  READ_FROM_DATASET(DcmCodeString, presentationSizeMode)
-  READ_FROM_DATASET(DcmDecimalString, presentationPixelSpacing)
-  READ_FROM_DATASET(DcmIntegerString, presentationPixelAspectRatio)
-  READ_FROM_DATASET(DcmFloatingPointSingle, presentationPixelMagnificationRatio)
+  READ_FROM_DATASET(DcmSignedLong, EVR_SL, displayedAreaTopLeftHandCorner)
+  READ_FROM_DATASET(DcmSignedLong, EVR_SL, displayedAreaBottomRightHandCorner)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, presentationSizeMode)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, presentationPixelSpacing)
+  READ_FROM_DATASET(DcmIntegerString, EVR_IS, presentationPixelAspectRatio)
+  READ_FROM_DATASET(DcmFloatingPointSingle, EVR_FL, presentationPixelMagnificationRatio)
 
   if (result==EC_Normal) result = referencedImageList.read(dset);
 

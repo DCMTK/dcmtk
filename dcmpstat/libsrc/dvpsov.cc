@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,15 +78,15 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   overlayData.setGTag(gtag);
   overlayDescription.setGTag(gtag);
   overlayLabel.setGTag(gtag);
-  READ_FROM_DATASET(DcmUnsignedShort, overlayRows)
-  READ_FROM_DATASET(DcmUnsignedShort, overlayColumns)
-  READ_FROM_DATASET(DcmCodeString, overlayType)
-  READ_FROM_DATASET(DcmSignedShort, overlayOrigin)
-  READ_FROM_DATASET(DcmUnsignedShort, overlayBitsAllocated)
-  READ_FROM_DATASET(DcmUnsignedShort, overlayBitPosition)
-  READ_FROM_DATASET(DcmOverlayData, overlayData)
-  READ_FROM_DATASET(DcmLongString, overlayDescription)
-  READ_FROM_DATASET(DcmLongString, overlayLabel)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, overlayRows)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, overlayColumns)
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, overlayType)
+  READ_FROM_DATASET(DcmSignedShort, EVR_SS, overlayOrigin)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, overlayBitsAllocated)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, overlayBitPosition)
+  READ_FROM_DATASET(DcmOverlayData, EVR_OverlayData, overlayData)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, overlayDescription)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, overlayLabel)
 
   /* Now perform basic sanity checks and adjust use flags */
   if (overlayRows.getLength() == 0)

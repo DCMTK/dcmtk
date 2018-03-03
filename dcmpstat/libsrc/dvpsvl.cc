@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,9 +59,9 @@ OFCondition DVPSVOILUT::read(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmUnsignedShort, voiLUTDescriptor)
-  READ_FROM_DATASET(DcmLongString, voiLUTExplanation)
-  READ_FROM_DATASET(DcmUnsignedShort, voiLUTData)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, voiLUTDescriptor)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, voiLUTExplanation)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, voiLUTData)
 
   if (EC_Normal == result)
   {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,10 +55,10 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
-  READ_FROM_DATASET(DcmApplicationEntity, retrieveAETitle)
-  READ_FROM_DATASET(DcmShortString, storageMediaFileSetID)
-  READ_FROM_DATASET(DcmUniqueIdentifier, storageMediaFileSetUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, seriesInstanceUID)
+  READ_FROM_DATASET(DcmApplicationEntity, EVR_AE, retrieveAETitle)
+  READ_FROM_DATASET(DcmShortString, EVR_SH, storageMediaFileSetID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, storageMediaFileSetUID)
   if (result==EC_Normal) result = referencedImageList.read(dset);
 
   /* Now perform basic sanity checks */

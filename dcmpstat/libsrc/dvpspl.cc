@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,8 +71,8 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
 
   DcmCodeString presentationLUTShape(DCM_PresentationLUTShape);
   
-  READ_FROM_DATASET(DcmCodeString, presentationLUTShape)
-  if (withSOPInstance) { READ_FROM_DATASET(DcmUniqueIdentifier, sOPInstanceUID) }
+  READ_FROM_DATASET(DcmCodeString, EVR_CS, presentationLUTShape)
+  if (withSOPInstance) { READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, sOPInstanceUID) }
   else sOPInstanceUID.clear();
   
   /* read Presentation LUT Sequence */

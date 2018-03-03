@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,9 +67,9 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
   DcmSequenceOfItems *seq;
   DcmItem *item;
   
-  READ_FROM_DATASET(DcmDecimalString, windowCenter)
-  READ_FROM_DATASET(DcmDecimalString, windowWidth)
-  READ_FROM_DATASET(DcmLongString, windowCenterWidthExplanation)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, windowCenter)
+  READ_FROM_DATASET(DcmDecimalString, EVR_DS, windowWidth)
+  READ_FROM_DATASET(DcmLongString, EVR_LO, windowCenterWidthExplanation)
 
   /* read VOI LUT Sequence */
   if (result==EC_Normal)
