@@ -668,7 +668,12 @@ OFCondition TID1600_ImageLibrary::addProjectionRadiographyDescriptors(DSRDocumen
             if (dataset.findAndGetSequenceItem(DCM_ViewCodeSequence, item, 0 /*itemNum*/).good())
             {
                 DcmSequenceOfItems *sequence = NULL;
-                if (item->findAndGetSequence(DCM_ViewModifierCodeSequence, sequence).good())
+                if (item->findAndGetSequence(DCM_ViewModifierCodeSequence, sequence).good()
+#ifdef __SUNPRO_CC
+                    /* unfortunately required to keep SunPro Studio 12.x quiet */
+                    && (sequence != NULL)
+#endif
+                   )
                 {
                     /* iterate over all sequence items */
                     DcmObject *object = NULL;
