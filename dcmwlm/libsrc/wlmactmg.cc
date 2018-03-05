@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -228,7 +228,7 @@ OFCondition WlmActivityManager::StartProvidingService()
     cond = WaitForAssociation( net );
 
     // Clean up any child processes if the execution is not limited to a single process.
-    // (On windows platform, childs are not handled via the process table,
+    // (On windows platform, children are not handled via the process table,
     // so there's no need to clean up children)
 #ifdef HAVE_FORK
     if( !opt_singleProcess )
@@ -890,7 +890,7 @@ void WlmActivityManager::CleanChildren()
     }
   }
 
-#elif HAVE_WAIT3                                              // PLATFORMS THAT HAVE wait3()
+#elif defined(HAVE_WAIT3)                                     // PLATFORMS THAT HAVE wait3()
 #if defined(__NeXT__)
   // some systems need a union wait as argument to wait3
   union wait status;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2017, OFFIS e.V.
+ *  Copyright (C) 1999-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -101,7 +101,7 @@ static void cleanChildren()
 {
 #ifdef HAVE_WAITPID
     int stat_loc;
-#elif HAVE_WAIT3
+#elif defined(HAVE_WAIT3)
     struct rusage rusage;
 #if defined(__NeXT__)
     /* some systems need a union wait as argument to wait3 */

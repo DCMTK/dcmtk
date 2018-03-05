@@ -2644,7 +2644,7 @@ static void cleanChildren(pid_t pid, OFBool synch)
 {
 #ifdef HAVE_WAITPID
   int stat_loc;
-#elif HAVE_WAIT3
+#elif defined(HAVE_WAIT3)
   struct rusage rusage;
 #if defined(__NeXT__)
   /* some systems need a union wait as argument to wait3 */

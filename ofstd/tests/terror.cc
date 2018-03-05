@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2017-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -83,7 +83,7 @@ OFTEST(ofstd_error)
 #ifdef _WIN32
     ec_error.assign(WSA_IO_INCOMPLETE, OFsystem_category());
     WSASetLastError(WSA_IO_INCOMPLETE);
-#elif __OpenBSD__
+#elif defined(__OpenBSD__)
     ec_error.assign(EPROTOTYPE, OFsystem_category());
     errno = EPROTOTYPE;
 #else
