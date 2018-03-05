@@ -1,6 +1,6 @@
   /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -221,7 +221,8 @@ OFCondition TrcTractographyResults::importHierarchy(
   const OFBool readStudy,
   const OFBool readFoR,
   const OFBool readSeries,
-  const OFBool updateCommonInstanceReferences)
+  const OFBool updateCommonInstanceReferences,
+  const OFBool takeOverCharset)
 {
   DcmFileFormat dcmff;
   OFCondition result = dcmff.loadFile(filename.c_str());
@@ -230,7 +231,7 @@ OFCondition TrcTractographyResults::importHierarchy(
     DcmDataset *dset = dcmff.getDataset();
     if (dset != NULL)
     {
-      result = DcmIODCommon::importHierarchy(*dset, readPatient, readStudy, readFoR, readSeries);
+      result = DcmIODCommon::importHierarchy(*dset, readPatient, readStudy, readFoR, readSeries, takeOverCharset);
       if (result.good() && updateCommonInstanceReferences)
       {
         getCommonInstanceReference().clearData();

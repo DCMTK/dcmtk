@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -66,7 +66,9 @@ public:
                             const IODReferences& imageReferences,
                             TrcTractographyResults*& result);
 
-  /** CAUTION: Parameter order (readFoR and readSeries) changed!
+  /** CAUTION: Parameter order (readFoR and readSeries) changed, and there is a
+   *  new parameter "takeOverCharset" which per default takes over the charset
+   *  from the given source file!
    *  Take over general information for Patient, Study, Series and/or Frame of Reference
    *  from existing file
    *  @param  filename The filename to read from
@@ -81,15 +83,19 @@ public:
    *          reason is that the study and series information (including UIDs)
    *          are likely to change during this call, which requires another
    *          sorting of references inside the Common Instance Reference module.
+   *  @param  takeOverCharset If OFTrue (default), Specific Character Set is
+   *          taken over from imported dataset. If it's not present or empty
+   *          (invalid), the attribute will not be present in this class either.
    *  @return EC_Normal if reading was successful (i.e.\ if any information could
    *          be read), otherwise an error is returned
    */
   virtual OFCondition importHierarchy(const OFString& filename,
-                                            const OFBool readPatient,
-                                            const OFBool readStudy,
-                                            const OFBool readFoR = OFFalse,
-                                            const OFBool readSeries = OFFalse,
-                                            const OFBool updateCommonInstanceReferences = OFTrue);
+                                      const OFBool readPatient,
+                                      const OFBool readStudy,
+                                      const OFBool readFoR = OFFalse,
+                                      const OFBool readSeries = OFFalse,
+                                      const OFBool updateCommonInstanceReferences = OFTrue,
+                                      const OFBool takeOverCharset = OFTrue);
 
   /** Add Track Set to object. If successful, the resulting Track Set can be
    *  filled by calling addTrack() (and other methods) on it.
