@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -304,7 +304,6 @@ OFCondition TrcTrack::setRecommendedDisplayCIELabValues(const Uint16* colors,
 
 OFBool TrcTrack::fixPointCoordinatesDataVM()
 {
-  DcmElement *elem = NULL;
   const Float32* values = NULL;
   unsigned long numValues = 0;
   if (m_Item->findAndGetFloat32Array(DCM_PointCoordinatesData, values, &numValues).good())
@@ -315,9 +314,9 @@ OFBool TrcTrack::fixPointCoordinatesDataVM()
     }
     else
     {
-      if (elem->putFloat32Array(values, numValues - (numValues % 3)).good())
+      if (m_Item->putAndInsertFloat32Array(DCM_PointCoordinatesData, values, numValues - (numValues % 3)).good())
       {
-        DCMTRACT_WARN("Wrong number of values in track (" << numValues << "), cutting " << numValues % 3 << " coordinates off at the end");
+        DCMTRACT_WARN("Wrong number of values in track (" << numValues << "), cutting off " << numValues % 3 << " coordinates at the end");
         return OFTrue;
       }
     }
