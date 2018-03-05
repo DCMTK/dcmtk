@@ -215,7 +215,7 @@ OFCondition TrcTractographyResults::write(DcmItem &dataset)
 }
 
 
-OFCondition TrcTractographyResults::importHierarchy(
+OFCondition TrcTractographyResults::import(
   const OFString& filename,
   const OFBool readPatient,
   const OFBool readStudy,

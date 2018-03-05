@@ -89,13 +89,13 @@ public:
    *  @return EC_Normal if reading was successful (i.e.\ if any information could
    *          be read), otherwise an error is returned
    */
-  virtual OFCondition importHierarchy(const OFString& filename,
-                                      const OFBool readPatient,
-                                      const OFBool readStudy,
-                                      const OFBool readFoR = OFFalse,
-                                      const OFBool readSeries = OFFalse,
-                                      const OFBool updateCommonInstanceReferences = OFTrue,
-                                      const OFBool takeOverCharset = OFTrue);
+  virtual OFCondition import(const OFString& filename,
+                             const OFBool readPatient,
+                             const OFBool readStudy,
+                             const OFBool readFoR = OFFalse,
+                             const OFBool readSeries = OFFalse,
+                             const OFBool updateCommonInstanceReferences = OFTrue,
+                             const OFBool takeOverCharset = OFTrue);
 
   /** Add Track Set to object. If successful, the resulting Track Set can be
    *  filled by calling addTrack() (and other methods) on it.
