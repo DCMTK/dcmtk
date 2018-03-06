@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2017, OFFIS e.V.
+ *  Copyright (C) 2001-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2714,7 +2714,7 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
 
   // filter for the DNS lookup. Since DCMTK does not yet fully support IPv6,
   // we only look for IPv4 addresses.
-  ::addrinfo hint = {0};
+  ::addrinfo hint = {};
   hint.ai_family = AF_INET;
 
   // perform DNS lookup. Repeat while we receive temporary failures.
