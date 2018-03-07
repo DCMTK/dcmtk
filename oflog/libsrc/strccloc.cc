@@ -224,6 +224,10 @@ tostring(wchar_t const * src)
     return ret;
 }
 
+#else
+
+int oflog_strccloc_cc_dummy_to_keep_linker_from_moaning = 0;
+
 
 #endif // DCMTK_LOG4CPLUS_WORKING_LOCALE
 

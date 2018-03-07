@@ -44,6 +44,10 @@
 #include <errno.h>
 #endif
 
+#ifdef MAX
+#undef MAX
+#endif
+
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
 namespace dcmtk

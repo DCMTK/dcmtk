@@ -53,6 +53,10 @@
 #define DCMTK_LOG4CPLUS_NEED_LOCALTIME_R
 #endif
 
+#ifdef MAX
+#undef MAX
+#endif
+
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 
 

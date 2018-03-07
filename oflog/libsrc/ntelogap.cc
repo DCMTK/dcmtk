@@ -347,5 +347,8 @@ NTEventLogAppender::addRegistryInfo()
 } // namespace log4cplus
 } // end namespace dcmtk
 
+#else
+
+int oflog_ntelogap_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif // DCMTK_LOG4CPLUS_HAVE_NT_EVENT_LOG

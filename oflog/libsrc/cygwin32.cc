@@ -45,5 +45,8 @@ get_current_win32_thread_id ()
 
 } } // namespace log4cplus { namespace cygwin {
 } // end namespace dcmtk
+#else
+
+int oflog_cygwin32_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif // defined (__CYGWIN__)
