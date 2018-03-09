@@ -438,7 +438,7 @@ static OFCondition addFrame(DPMParametricMapIOD& map,
   // Frame Content
   OFCondition result = fgFracon->setDimensionIndexValues(frameNo+1 /* value within dimension */, 0 /* first dimension */);
 
-  // Add frame wit related groups
+  // Add frame with related groups
   if (result.good())
   {
     // Add frame
