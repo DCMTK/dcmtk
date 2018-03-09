@@ -147,7 +147,13 @@ OFCondition DcmSignedLong::checkValue(const OFString &vm,
 
 unsigned long DcmSignedLong::getVM()
 {
-    return getLengthField() / OFstatic_cast(unsigned long, sizeof(Sint32));
+    return getNumberOfValues();
+}
+
+
+unsigned long DcmSignedLong::getNumberOfValues()
+{
+    return OFstatic_cast(unsigned long, getLengthField() / sizeof(Sint32));
 }
 
 

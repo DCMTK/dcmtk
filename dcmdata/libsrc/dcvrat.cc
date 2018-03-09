@@ -145,6 +145,12 @@ OFCondition DcmAttributeTag::checkValue(const OFString &vm,
 
 unsigned long DcmAttributeTag::getVM()
 {
+    return getNumberOfValues();
+}
+
+
+unsigned long DcmAttributeTag::getNumberOfValues()
+{
     /* attribute tags store pairs of 16 bit values */
     return OFstatic_cast(unsigned long, getLengthField() / (2 * sizeof(Uint16)));
 }

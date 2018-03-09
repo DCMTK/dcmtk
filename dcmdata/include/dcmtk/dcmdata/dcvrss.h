@@ -118,9 +118,14 @@ class DCMTK_DCMDATA_EXPORT DcmSignedShort
                                    const OFBool oldFormat = OFFalse);
 
     /** get value multiplicity
-     *  @return number of currently stored values
+     *  @return number of values in this element
      */
     virtual unsigned long getVM();
+
+    /** get number of values stored in this element
+     *  @return number of values in this element
+     */
+    virtual unsigned long getNumberOfValues();
 
     /** print element to a stream.
      *  The output format of the value is a backslash separated sequence of numbers.

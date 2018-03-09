@@ -147,7 +147,13 @@ OFCondition DcmFloatingPointSingle::checkValue(const OFString &vm,
 
 unsigned long DcmFloatingPointSingle::getVM()
 {
-    return getLengthField() / OFstatic_cast(unsigned long, sizeof(Float32));
+    return getNumberOfValues();
+}
+
+
+unsigned long DcmFloatingPointSingle::getNumberOfValues()
+{
+    return OFstatic_cast(unsigned long, getLengthField() / sizeof(Float32));
 }
 
 

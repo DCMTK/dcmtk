@@ -221,6 +221,13 @@ unsigned long DcmByteString::getVM()
 }
 
 
+unsigned long DcmByteString::getNumberOfValues()
+{
+    /* same as value multiplicity unless overwritten in a derived class */
+    return getVM();
+}
+
+
 OFCondition DcmByteString::clear()
 {
     /* call inherited method */

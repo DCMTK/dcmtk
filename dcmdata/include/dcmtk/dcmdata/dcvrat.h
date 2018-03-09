@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -126,6 +126,11 @@ class DCMTK_DCMDATA_EXPORT DcmAttributeTag
      *  @return number of tag value pairs (group,element)
      */
     virtual unsigned long getVM();
+
+    /** get number of values stored in this element
+     *  @return number of values in this element
+     */
+    virtual unsigned long getNumberOfValues();
 
     /** print element to a stream.
      *  The output format of the value is a backslash separated sequence of group and

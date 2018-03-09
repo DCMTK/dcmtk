@@ -140,6 +140,12 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      */
     virtual unsigned long getVM();
 
+    /** get number of values stored in this element.
+     *  The result is the same as getVM() unless overwritten in a derived class.
+     *  @return number of values in this element
+     */
+    virtual unsigned long getNumberOfValues();
+
     /** get length of the stored value.
      *  Trailing spaces (padding characters) are ignored for the "real" length.
      *  @return number of characters stored for the string value

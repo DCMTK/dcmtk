@@ -144,6 +144,17 @@ unsigned long DcmOtherByteOtherWord::getVM()
 }
 
 
+unsigned long DcmOtherByteOtherWord::getNumberOfValues()
+{
+    const DcmEVR evr = getTag().getEVR();
+    unsigned long result = OFstatic_cast(unsigned long, getLengthField());
+    /* check whether values are stored as 16 bit */
+    if ((evr == EVR_OW) || (evr == EVR_lt))
+        result /= 2;
+    return result;
+}
+
+
 OFCondition DcmOtherByteOtherWord::setVR(DcmEVR vr)
 {
     setTagVR(vr);

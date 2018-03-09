@@ -250,6 +250,24 @@ OFCondition DcmSequenceOfItems::checkValue(const OFString &cardinality,
 }
 
 
+unsigned long  DcmSequenceOfItems::getVM()
+{
+    return 1;
+}
+
+
+unsigned long DcmSequenceOfItems::getNumberOfValues()
+{
+    return itemList->card();
+}
+
+
+unsigned long DcmSequenceOfItems::card() const
+{
+    return itemList->card();
+}
+
+
 // ********************************
 
 
@@ -997,15 +1015,6 @@ void DcmSequenceOfItems::transferEnd()
             itemList->get()->transferEnd();
         } while (itemList->seek(ELP_next));
     }
-}
-
-
-// ********************************
-
-
-unsigned long DcmSequenceOfItems::card() const
-{
-    return itemList->card();
 }
 
 

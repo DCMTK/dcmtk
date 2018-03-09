@@ -415,9 +415,15 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *  Please note that depending on the Value Representation (VR), subclasses
      *  derived from this class either return the number of currently stored
      *  values or the constant value 1 (as defined in the DICOM standard).
+     *  See getNumberOfValues(), which always returns the number of stored values.
      *  @return value multiplicity of this object
      */
     virtual unsigned long getVM() = 0;
+
+    /** get number of values stored in this object
+     *  @return number of values in this object
+     */
+    virtual unsigned long getNumberOfValues() = 0;
 
     /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.

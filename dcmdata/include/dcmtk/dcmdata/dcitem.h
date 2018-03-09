@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -136,6 +136,12 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  @return always returns 1 (according to the DICOM standard)
      */
     virtual unsigned long getVM();
+
+    /** get number of values (elements) stored in this item.
+     *  The result is the same as card() unless overwritten in a derived class.
+     *  @return number of elements in this item
+     */
+    virtual unsigned long getNumberOfValues();
 
     /** get cardinality of this item
      *  @return number of elements in this item

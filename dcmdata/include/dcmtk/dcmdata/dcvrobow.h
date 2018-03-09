@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -126,6 +126,11 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
      *  @return always returns 1 (according to the DICOM standard)
      */
     virtual unsigned long getVM();
+
+    /** get number of values stored in this element
+     *  @return number of values in this element
+     */
+    virtual unsigned long getNumberOfValues();
 
     /** set/change the current value representation
      *  @param vr new value representation to be set.  All VRs except for OW (Other

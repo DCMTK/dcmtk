@@ -145,7 +145,13 @@ OFCondition DcmFloatingPointDouble::checkValue(const OFString &vm,
 
 unsigned long DcmFloatingPointDouble::getVM()
 {
-    return getLengthField() / OFstatic_cast(unsigned long, sizeof(Float64));
+    return getNumberOfValues();
+}
+
+
+unsigned long DcmFloatingPointDouble::getNumberOfValues()
+{
+    return OFstatic_cast(unsigned long, getLengthField() / sizeof(Float64));
 }
 
 

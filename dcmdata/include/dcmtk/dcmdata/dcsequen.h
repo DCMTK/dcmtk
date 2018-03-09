@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -156,7 +156,18 @@ public:
     /** get value multiplicity
      *  @return always returns 1 (according to the DICOM standard)
      */
-    virtual unsigned long getVM() { return 1L; }
+    virtual unsigned long getVM();
+
+    /** get number of values (items) stored in this sequence.
+     *  The result is the same as card() unless overwritten in a derived class.
+     *  @return number of items in this sequence
+     */
+    virtual unsigned long getNumberOfValues();
+
+    /** get cardinality of this sequence
+     *  @return number of items in this sequence
+     */
+    virtual unsigned long card() const;
 
     /** This function takes care of group length and padding elements
      *  in the current element list according to what is specified in
@@ -342,11 +353,6 @@ public:
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition convertCharacterSet(DcmSpecificCharacterSet &converter);
-
-    /** get cardinality of this sequence
-     *  @return number of items in this sequence
-     */
-    virtual unsigned long card() const;
 
     /** insert the given item at the start of the item list maintained by this sequence.
      *  Ownership of the item, which must be allocated on the heap, is transferred to the sequence.

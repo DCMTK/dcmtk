@@ -441,7 +441,20 @@ unsigned long DcmItem::getVM()
 }
 
 
+unsigned long DcmItem::getNumberOfValues()
+{
+    return elementList->card();
+}
+
+
+unsigned long DcmItem::card() const
+{
+    return elementList->card();
+}
+
+
 // ********************************
+
 
 void DcmItem::print(STD_NAMESPACE ostream &out,
                     const size_t flags,
@@ -1695,15 +1708,6 @@ void DcmItem::transferEnd()
             elementList->get()->transferEnd();
         } while (elementList->seek(ELP_next));
     }
-}
-
-
-// ********************************
-
-
-unsigned long DcmItem::card() const
-{
-    return elementList->card();
 }
 
 
