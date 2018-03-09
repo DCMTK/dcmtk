@@ -1290,7 +1290,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                           const E_GrpLenEncoding glenc,
                           const Uint32 maxReadLength)
 {
-	return DcmItem::readUntilTag(inStream, xfer, glenc, maxReadLength, DCM_UndefinedTagKey);
+    return DcmItem::readUntilTag(inStream, xfer, glenc, maxReadLength, DCM_UndefinedTagKey);
 }
 
 OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
@@ -3420,7 +3420,10 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
         case EVR_ox:
             /* special handling */
             if (tag == DCM_PixelData)
+            {
                 elem = new DcmPixelData(tag);
+                if (elem != NULL) elem->setVR(EVR_OW);
+            }
             else
                 elem = new DcmPolymorphOBOW(tag);
             break;
@@ -3945,6 +3948,16 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_UT:
             elem = new DcmUnlimitedText(tag);
             break;
+        case EVR_PixelData:
+            elem = new DcmPixelData(tag);
+            // set VR to OW to make sure that we never write/send the internal VR
+            if (elem) elem->setVR(EVR_OW);
+            break;
+        case EVR_OverlayData:
+            elem = new DcmOverlayData(tag);
+            // set VR to OW to make sure that we never write/send the internal VR
+            if (elem) elem->setVR(EVR_OW);
+            break;
         case EVR_UNKNOWN:
             /* Unknown VR, e.g. tag not found in data dictionary */
             status = EC_UnknownVR;
@@ -4438,6 +4451,22 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                  * application handle it.
                  */
                 newElement = new DcmOtherByteOtherWord(tag, length);
+            break;
+
+        // This case should only occur if we encounter an element with an invalid
+        // "Pi" VR. Make sure this does not cause problems later on
+        case EVR_PixelData :
+            newElement = new DcmPixelData(tag, length);
+            // set VR to OW to make sure that we never write/send the internal VR
+            if (newElement) newElement->setVR(EVR_OW);
+            break;
+
+        // This case should only occur if we encounter an element with an invalid
+        // "Ov" VR. Make sure this does not cause problems later on
+        case EVR_OverlayData :
+            newElement = new DcmOverlayData(tag, length);
+            // set VR to OW to make sure that we never write/send the internal VR
+            if (newElement) newElement->setVR(EVR_OW);
             break;
 
         case EVR_lt :
