@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -223,9 +223,13 @@ DcmVR::setVR(const char* vrName)
     {
         int found = OFFalse;
         int i = 0;
-        for (i = 0;  (!found && (i < DcmVRDict_DIM)); i++)
+        for (i = 0; (!found && (i < DcmVRDict_DIM)); i++)
         {
-            if (strncmp(vrName, DcmVRDict[i].vrName, 2) == 0)
+            /* We only compare the first two characters of the passed string and
+             * never accept a VR that is labeled for internal use only.
+             */
+            if ((strncmp(vrName, DcmVRDict[i].vrName, 2) == 0) &&
+                !(DcmVRDict[i].propertyFlags & DCMVR_PROP_INTERNAL))
             {
                 found = OFTrue;
                 vr = DcmVRDict[i].vr;
