@@ -179,6 +179,9 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofpwd.h"
 #include "dcmtk/ofstd/ofoption.h"
 
+// maximum number of repetitions for EAI_AGAIN
+#define DCMTK_MAX_EAI_AGAIN_REPETITIONS 5
+
 // --- ftoa() processing flags ---
 
 const unsigned int OFStandard::ftoa_format_e  = 0x01;
@@ -2668,9 +2671,12 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
   else return result; // unknown network type, not supported by getnameinfo()
 
   int err = EAI_AGAIN;
+  int rep = DCMTK_MAX_EAI_AGAIN_REPETITIONS;
   struct sockaddr *sa = OFreinterpret_cast(struct sockaddr *, &sas);
-  while (EAI_AGAIN == err) err = getnameinfo(sa, sizeof(sas), hostname, 512, NULL, 0, 0);
-  if (hostname[0] != '\0') result = hostname;
+
+  // perform reverse DNS lookup. Repeat while we receive temporary failures.
+  while ((EAI_AGAIN == err) && (rep-- > 0)) err = getnameinfo(sa, sizeof(sas), hostname, 512, NULL, 0, 0);
+  if ((err == 0) && (hostname[0] != '\0')) result = hostname;
 
 #elif defined(HAVE_GETHOSTBYADDR_R)
   // We do not have getaddrinfo(), but we have a thread-safe gethostbyaddr_r()
@@ -2711,6 +2717,7 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
 #ifdef HAVE_GETADDRINFO
   struct addrinfo *result_list = NULL;
   int err = EAI_AGAIN;
+  int rep = DCMTK_MAX_EAI_AGAIN_REPETITIONS;
 
   // filter for the DNS lookup. Since DCMTK does not yet fully support IPv6,
   // we only look for IPv4 addresses.
@@ -2718,13 +2725,17 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
   hint.ai_family = AF_INET;
 
   // perform DNS lookup. Repeat while we receive temporary failures.
-  while (EAI_AGAIN == err) err = getaddrinfo(name, NULL, &hint, &result_list);
+  while ((EAI_AGAIN == err) && (rep-- > 0)) err = getaddrinfo(name, NULL, &hint, &result_list);
 
-  if ((0 == err) && result_list && result_list->ai_addr)
+  if (0 == err)
   {
-    // DNS lookup successfully completed.
-    struct sockaddr *result_sa = result.getSockaddr();
-    memcpy(result_sa, result_list->ai_addr, result_list->ai_addrlen);
+    if (result_list && result_list->ai_addr)
+    {
+      // DNS lookup successfully completed.
+      struct sockaddr *result_sa = result.getSockaddr();
+      memcpy(result_sa, result_list->ai_addr, result_list->ai_addrlen);
+    }
+    freeaddrinfo(result_list);
   }
 
 #else // HAVE_GETADDRINFO
