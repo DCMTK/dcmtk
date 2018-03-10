@@ -202,4 +202,8 @@ struct InitErrorCategories
 
 InitErrorCategories InitErrorCategories::Init;
 
+#else
+
+int ofstd_oferror_cc_dummy_to_keep_linker_from_moaning = 0;
+
 #endif // !HAVE_STL_SYSTEM_ERROR OR !HAVE_STL_STRING
