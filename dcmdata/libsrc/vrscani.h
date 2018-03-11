@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010, OFFIS e.V.
+ *  Copyright (C) 2010-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,7 +38,14 @@ struct vrscan_error {
     longjmp(yyget_extra(yyscanner)->setjmp_buffer, 1); \
 } while (0);
 
+#ifndef HAVE_UNISTD_H
+
 /* Don't try to include unistd.h which doesn't exist on windows */
 #define YY_NO_UNISTD_H
+
+/* Declare isatty() to avoid a warning when compiling vrscanl.l */
+int isatty(int fd);
+
+#endif
 
 #endif /* VRSCANI_H */
