@@ -69,6 +69,10 @@ BEGIN_EXTERN_C
 #endif
 #endif
 
+#ifdef __MINGW32__
+#include <winerror.h> /* needed for NO_ERROR constant on MinGW */
+#endif
+
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstream.h"
