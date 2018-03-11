@@ -33,6 +33,10 @@
 #include "dcmtk/oflog/streams.h"
 #include <sstream>
 
+#ifdef __MINGW32__
+#include <winerror.h> /* needed for NO_ERROR constant on MinGW */
+#endif
+
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 
