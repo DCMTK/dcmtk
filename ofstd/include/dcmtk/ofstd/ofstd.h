@@ -50,7 +50,7 @@ END_EXTERN_C
  * thread-safe and where readdir_r() is deprecated.
  */
 #if defined(__GLIBC__) && (((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 24)) || (__GLIBC__ >= 3))
-#defined READDIR_IS_THREADSAFE
+#define READDIR_IS_THREADSAFE
 #endif
 
 /*------------------------*
