@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,6 +45,13 @@ BEGIN_EXTERN_C
 #include <sys/types.h>  /* for size_t */
 #endif
 END_EXTERN_C
+
+/* Check if we are using glibc in a version where readdir() is known to be
+ * thread-safe and where readdir_r() is deprecated.
+ */
+#if defined(__GLIBC__) && (((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 24)) || (__GLIBC__ >= 3))
+#defined READDIR_IS_THREADSAFE
+#endif
 
 /*------------------------*
  *  forward declarations  *

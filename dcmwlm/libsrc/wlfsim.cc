@@ -507,7 +507,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
     ret = _findnext( hFile, &fileData );
   }
   _findclose( hFile );
-#else
+#else /* HAVE__FINDFIRST */
   struct dirent *dp = NULL;
 
   // open directory
@@ -515,16 +515,16 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
   if( dirp != NULL )
   {
     // start a loop; in each iteration another directory entry is determined.
-#ifdef HAVE_READDIR_R
+#if defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE)
     unsigned char entryBuffer[sizeof(struct dirent) + _POSIX_PATH_MAX + 1];
 #ifdef HAVE_OLD_READDIR_R
     for( dp = readdir_r( dirp, (struct dirent *)entryBuffer ) ; dp != NULL ; dp = readdir_r( dirp, (struct dirent *)entryBuffer ) )
-#else
+#else /* HAVE_OLD_READDIR_R */
     for( int readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) ; readResult == 0 && dp ; readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) )
-#endif
-#else // HAVE_READDIR_R
+#endif /* HAVE_OLD_READDIR_R */
+#else /* defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE) */
     for( dp = readdir( dirp ) ; dp != NULL ; dp = readdir( dirp ) )
-#endif
+#endif /* defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE) */
     {
       // if the current entry refers to a worklist file
       if( IsWorklistFile( dp->d_name ) )
@@ -542,7 +542,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
     // close directory
     closedir( dirp );
   }
-#endif
+#endif /* HAVE__FINDFIRST */
 
   // in case we are running in verbose mode, dump all worklist file information
   if (DCM_dcmwlmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))

@@ -1047,7 +1047,7 @@ size_t OFStandard::searchDirectoryRecursively(const OFFilename &directory,
                 FindClose(handle);
             }
         } else
-#endif
+#endif /* defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32) */
         /* otherwise, use the conventional 8-bit characters version */
         {
             HANDLE handle;
@@ -1102,13 +1102,13 @@ size_t OFStandard::searchDirectoryRecursively(const OFFilename &directory,
             }
         }
     }
-#else
+#else /* HAVE_WINDOWS_H */
     /* try to open the directory */
     DIR *dirPtr = opendir(dirName.getCharPointer());
     if (dirPtr != NULL)
     {
         struct dirent *entry = NULL;
-#ifdef HAVE_READDIR_R
+#if defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE)
         dirent d = {};
         while (!readdir_r(dirPtr, &d, &entry) && entry)
 #else
@@ -1141,7 +1141,7 @@ size_t OFStandard::searchDirectoryRecursively(const OFFilename &directory,
         }
         closedir(dirPtr);
     }
-#endif
+#endif /* HAVE_WINDOWS_H */
     /* return number of added files */
     return fileList.size() - initialSize;
 }
