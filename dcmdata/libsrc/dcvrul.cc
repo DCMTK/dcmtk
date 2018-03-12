@@ -171,8 +171,8 @@ void DcmUnsignedLong::print(STD_NAMESPACE ostream&out,
         errorFlag = getUint32Array(uintVals);
         if (uintVals != NULL)
         {
-            /* do not simply use getVM() because derived classes might always return 1 */
-            const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Uint32));
+            /* do not use getVM() because derived classes might always return 1 */
+            const unsigned long count = getNumberOfValues();
             /* double-check length field for valid value */
             if (count > 0)
             {
@@ -240,8 +240,8 @@ OFCondition DcmUnsignedLong::getUint32(Uint32 &uintVal,
     {
         if (uintValues == NULL)
             errorFlag = EC_IllegalCall;
-        /* do not simply use getVM() because derived classes might always return 1 */
-        else if (pos >= getLengthField() / sizeof(Uint32))
+        /* do not use getVM() because derived classes might always return 1 */
+        else if (pos >= getNumberOfValues())
             errorFlag = EC_IllegalParameter;
         else
             uintVal = uintValues[pos];

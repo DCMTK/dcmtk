@@ -170,7 +170,7 @@ void DcmUnsignedShort::print(STD_NAMESPACE ostream&out,
         errorFlag = getUint16Array(uintVals);
         if (uintVals != NULL)
         {
-            const unsigned long count = getVM();
+            const unsigned long count = getNumberOfValues();
             /* double-check length field for valid value */
             if (count > 0)
             {

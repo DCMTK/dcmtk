@@ -184,7 +184,7 @@ void DcmOtherByteOtherWord::print(STD_NAMESPACE ostream&out,
         /* check data */
         if ((wordValues != NULL) || (byteValues != NULL))
         {
-            const unsigned long count = (evr == EVR_OW || evr == EVR_lt) ? (getLengthField() / 2) : getLengthField();
+            const unsigned long count = getNumberOfValues();
             /* double-check length field for valid value */
             if (count > 0)
             {

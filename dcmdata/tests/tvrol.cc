@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, OFFIS e.V.
+ *  Copyright (C) 2016-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,9 +43,6 @@ OFTEST(dcmdata_otherLong)
     OFCHECK(otherLong.putUint32(999999999, 8).good());
     /* value multiplicity should always be 1 */
     OFCHECK_EQUAL(otherLong.getVM(), 1);
-    /* get value as an array and check number of entries */
-    Uint32 *uintVals = NULL;
-    OFCHECK(otherLong.getUint32Array(uintVals).good());
-    OFCHECK(uintVals != NULL);
-    OFCHECK_EQUAL(otherLong.getLengthField() / sizeof(Uint32), 9);
+    /* number of values should be higher */
+    OFCHECK_EQUAL(otherLong.getNumberOfValues(), 9);
 }

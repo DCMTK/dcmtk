@@ -170,7 +170,7 @@ void DcmAttributeTag::print(STD_NAMESPACE ostream& out,
         /* get unsigned integer data */
         Uint16 *uintVals;
         errorFlag = getUint16Array(uintVals);
-        const unsigned long count = getVM();
+        const unsigned long count = getNumberOfValues();
         if ((uintVals != NULL) && (count > 0))
         {
             /* determine number of values to be printed */

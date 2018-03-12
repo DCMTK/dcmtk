@@ -171,8 +171,8 @@ void DcmFloatingPointDouble::print(STD_NAMESPACE ostream&out,
         errorFlag = getFloat64Array(doubleVals);
         if (doubleVals != NULL)
         {
-            /* do not simply use getVM() because derived classes might always return 1 */
-            const unsigned long count = getLengthField() / OFstatic_cast(unsigned long, sizeof(Float64));
+            /* do not use getVM() because derived classes might always return 1 */
+            const unsigned long count = getNumberOfValues();
             /* double-check length field for valid value */
             if (count > 0)
             {
@@ -237,8 +237,8 @@ OFCondition DcmFloatingPointDouble::getFloat64(Float64 &doubleVal,
     {
         if (doubleValues == NULL)
             errorFlag = EC_IllegalCall;
-        /* do not simply use getVM() because derived classes might always return 1 */
-        else if (pos >= getLengthField() / sizeof(Float64))
+        /* do not use getVM() because derived classes might always return 1 */
+        else if (pos >= getNumberOfValues())
             errorFlag = EC_IllegalParameter;
         else
             doubleVal = doubleValues[pos];

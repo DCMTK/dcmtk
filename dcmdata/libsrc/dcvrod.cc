@@ -133,8 +133,7 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
             /* get and check 64 bit float data */
             if (getFloat64Array(floatValues).good() && (floatValues != NULL))
             {
-                /* we cannot use getVM() since it always returns 1 */
-                const size_t count = getLengthField() / sizeof(Float64);
+                const size_t count = getNumberOfValues();
                 /* count can be zero if we have an invalid element with less than eight bytes length */
                 if (count > 0)
                 {

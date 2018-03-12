@@ -173,7 +173,7 @@ void DcmSignedLong::print(STD_NAMESPACE ostream&out,
         errorFlag = getSint32Array(sintVals);
         if (sintVals != NULL)
         {
-            const unsigned long count = getVM();
+            const unsigned long count = getNumberOfValues();
             /* double-check length field for valid value */
             if (count > 0)
             {
@@ -383,7 +383,7 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect)
 
 
 OFBool DcmSignedLong::matches(const DcmElement& candidate,
-                             const OFBool enableWildCardMatching) const
+                              const OFBool enableWildCardMatching) const
 {
   OFstatic_cast(void,enableWildCardMatching);
   if (ident() == candidate.ident())

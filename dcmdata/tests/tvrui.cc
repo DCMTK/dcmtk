@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,12 +34,14 @@ OFTEST(dcmdata_uniqueIdentifier_1)
   DcmUniqueIdentifier sopInstanceUID(DCM_SOPInstanceUID);
   dcmEnableAutomaticInputDataCorrection.set(OFTrue);
   OFCHECK(sopInstanceUID.putString("1.2.3.4\0", 8).good());
+  OFCHECK_EQUAL(sopInstanceUID.getNumberOfValues(), 1);
   OFCHECK(sopInstanceUID.checkValue("1").good());
   OFCHECK(sopInstanceUID.getOFString(value, 0).good());
   OFCHECK_EQUAL(value, "1.2.3.4");
   // switch automatic data correct off
   dcmEnableAutomaticInputDataCorrection.set(OFFalse);
   OFCHECK(sopInstanceUID.putString("1.2.3.4\\5.6.7.8").good());
+  OFCHECK_EQUAL(sopInstanceUID.getNumberOfValues(), 2);
   OFCHECK(sopInstanceUID.checkValue("2").good());
   OFCHECK(sopInstanceUID.putString("1.2.3.4\\5.6.7.8\0", 16).good());
   // the trailing 0-byte is still there, which leads to an error
