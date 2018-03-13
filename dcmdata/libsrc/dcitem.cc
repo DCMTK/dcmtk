@@ -4545,7 +4545,6 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
         case EVR_UNKNOWN :
         case EVR_UNKNOWN2B :
         case EVR_UN :
-        default :
             if (length == DCM_UndefinedLength)
             {
                 // The attribute VR is UN with undefined length. Assume it is really
@@ -4565,6 +4564,21 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                 newElement = new DcmOtherByteOtherWord(tag, length);
             }
             break;
+
+        // these types should never occur
+        case EVR_item :
+        case EVR_metainfo :
+        case EVR_dataset :
+        case EVR_fileFormat :
+        case EVR_dicomDir :
+        case EVR_dirRecord :
+        case EVR_pixelSQ :
+        case EVR_pixelItem :
+            l_error = EC_IllegalCall;
+            break;
+
+        // we deliberately have no default clause to make sure a warning is raised
+        // when an DcmEVR enum is not explicitly handled here
     }
 
     /* check for valid element pointer */
