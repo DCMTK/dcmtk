@@ -298,10 +298,12 @@ presentation contexts might be proposed to the SCP that are strictly speaking
 "illegal".  This is because, according to the DICOM standard, the SCU always
 has to propose the default transfer syntax in at least one presentation context
 associated with each abstract syntax (i.e. SOP class).  This requirement is
-waived when the SCU only has access to the SOP instance in lossy compressed
-form.  With option \e --no-illegal-proposal the strict DICOM-conformant
-behavior can be enforced, i.e. no possibly illegal presentation context will
-be proposed but the corresponding SOP instance will be rejected (if needed).
+waived if the SCU only has access to the SOP instance in lossy compressed form
+or if the decompressed pixel data would be too large to be encoded.  With
+option \e --no-illegal-proposal the strict DICOM-conformant behavior can be
+enforced, i.e. no possibly illegal presentation context will be proposed but
+the corresponding SOP instance will be rejected (if needed).  Please note,
+however, that the size of the decompressed pixel data is not checked.
 
 Please note, however, that the default transfer syntax for "Lossless JPEG
 Compression", "Lossy JPEG Compression" and so on are not always proposed as
@@ -407,6 +409,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmsend_copyright COPYRIGHT
 
-Copyright (C) 2011-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2011-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -187,6 +187,9 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *  of the DICOM standard.  For example, if a lossless compressed SOP instance is to be
      *  sent, there should be at least one presentation context for this SOP class that also
      *  proposes the default transfer syntax (Implicit VR Little Endian).
+     *  @note Please note that support for CP-1704 has not been implemented yet, i.e. it is
+     *    not checked whether the decompressed data cannot be encoded in the default transfer
+     *    syntax because it would be too large, which would also waive this requirement.
      *  @param  allowMode  mode indicating whether illegal proposals are allowed or not
      *                     (default: OFTrue, i.e.\ allowed)
      */
@@ -300,9 +303,9 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *  contexts, which can be negotiated during a single association, is reached, this method
      *  returns and any subsequent call adds the next bunch of presentation contexts needed.
      *  @return status, EC_Normal if successful, an error code otherwise.  If no presentation
-     *     contexts have been added, NET_EC_NoPresentationContextsDefined is returned.  This
-     *     code can, therefore, be used to check that all SOP instances from the transfer list
-     *     have been negotiated and sent in previous calls.
+     *    contexts have been added, NET_EC_NoPresentationContextsDefined is returned.  This
+     *    code can, therefore, be used to check that all SOP instances from the transfer list
+     *    have been negotiated and sent in previous calls.
      */
     OFCondition addPresentationContexts();
 
