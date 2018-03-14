@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -272,7 +272,7 @@ private:
 
   template<typename T>
 #ifdef HAVE_CXX11
-  typename std::enable_if<DcmIODImageHasType<T,Types...>::value,OFCondition>::type
+  typename std::enable_if<DcmIODImageHasType<IODImagePixelModule<T>,Types...>::value,OFCondition>::type
 #else
   OFTypename OFenable_if
   <
@@ -287,7 +287,7 @@ private:
 
   template<typename T>
 #ifdef HAVE_CXX11
-  typename std::enable_if<!DcmIODImageHasType<T,Types...>::value,OFCondition>::type
+  typename std::enable_if<!DcmIODImageHasType<IODImagePixelModule<T>,Types...>::value,OFCondition>::type
 #else
   OFTypename OFenable_if
   <
