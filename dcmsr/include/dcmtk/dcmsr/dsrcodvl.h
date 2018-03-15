@@ -98,7 +98,7 @@ class DCMTK_DCMSR_EXPORT DSRBasicCodedEntry
     const OFString CodeValue;
     /// Coding Scheme Designator (VR=SH, type 1)
     const OFString CodingSchemeDesignator;
-    /// Coding Scheme Version (VR=SH, 1C)
+    /// Coding Scheme Version (VR=SH, type 1C)
     const OFString CodingSchemeVersion;
     /// Code Meaning (VR=LO, type 1)
     const OFString CodeMeaning;
@@ -238,7 +238,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     virtual void clear();
 
     /** check whether the current code is valid.  This check only covers the "Basic Coded Entry
-     *  Attributes".  See checkCode() for details.
+     *  Attributes".  An empty code is not valid.  See checkCode() for details.
      ** @return OFTrue if code is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
@@ -661,7 +661,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 
     /** write code to dataset.
      *  This method also supports the attributes from the "Enhanced Encoding Mode".
-     ** @param  dataset    DICOM dataset to which the code should be written
+     ** @param  dataset  DICOM dataset to which the code should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeItem(DcmItem &dataset) const;
@@ -710,7 +710,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     OFString CodeValue;
     /// Coding Scheme Designator (VR=SH, type 1)
     OFString CodingSchemeDesignator;
-    /// Coding Scheme Version (VR=SH, 1C)
+    /// Coding Scheme Version (VR=SH, type 1C)
     OFString CodingSchemeVersion;
     /// Code Meaning (VR=LO, type 1)
     OFString CodeMeaning;
