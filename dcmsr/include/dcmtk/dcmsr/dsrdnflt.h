@@ -222,6 +222,40 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeHasSiblingsFilter
 };
 
 
+/** Class implementing a document tree node filter that checks for the presence (or
+ *  absence) of a concept name.  An empty concept name is treated as absent.
+ */
+class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeHasConceptNameFilter
+  : public DSRDocumentTreeNodeFilter
+{
+
+  public:
+
+    /** constructor
+     ** @param  hasConceptName  mode specifying whether the filter matches on the
+     *                          presence (default) or absence of a concept name
+     */
+    DSRDocumentTreeNodeHasConceptNameFilter(const OFBool hasConceptName = OFTrue);
+
+    /** destructor
+     */
+    virtual ~DSRDocumentTreeNodeHasConceptNameFilter();
+
+    /** check whether given node matches the filter criterion
+     ** @param  node  pointer to the node to be checked
+     ** @return OFTrue if 'node' matches the filter criterion, OFFalse otherwise
+     */
+    virtual OFBool matches(const DSRDocumentTreeNode *node) const;
+
+
+  private:
+
+    /// mode specifying whether the filter matches on the presence or absence of a
+    /// concept name
+    const OFBool HasConceptName;
+};
+
+
 /** Class implementing a document tree node filter that checks for a given concept name
  */
 class DCMTK_DCMSR_EXPORT DSRDocumentTreeNodeConceptNameFilter

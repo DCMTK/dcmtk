@@ -161,6 +161,26 @@ OFBool DSRDocumentTreeNodeHasSiblingsFilter::matches(const DSRDocumentTreeNode *
 }
 
 
+// implementation of "has Concept Name" filter
+
+DSRDocumentTreeNodeHasConceptNameFilter::DSRDocumentTreeNodeHasConceptNameFilter(const OFBool hasConceptName)
+  : HasConceptName(hasConceptName)
+{
+}
+
+
+DSRDocumentTreeNodeHasConceptNameFilter::~DSRDocumentTreeNodeHasConceptNameFilter()
+{
+}
+
+
+OFBool DSRDocumentTreeNodeHasConceptNameFilter::matches(const DSRDocumentTreeNode *node) const
+{
+    /* check whether the expected value matches */
+    return (node != NULL) && (node->getConceptName().isEmpty() != HasConceptName);
+}
+
+
 // implementation of Concept Name filter
 
 DSRDocumentTreeNodeConceptNameFilter::DSRDocumentTreeNodeConceptNameFilter(const DSRCodedEntryValue &conceptName)

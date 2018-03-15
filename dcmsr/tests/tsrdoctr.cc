@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -237,6 +237,8 @@ OFTEST(dcmsr_gotoMatchingNode)
     OFCHECK(tree.addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent));
     const size_t nodeID5 = tree.getNodeID();
     OFCHECK(tree.getCurrentContentItem().setConceptName(DSRCodedEntryValue("111221", "DCM", "Unknown failure")).good());
+    OFCHECK(tree.addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Composite, DSRTypes::AM_afterCurrent));
+    const size_t nodeID6 = tree.getNodeID();
     /* and check the "search by filter" function */
     OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeConceptNameFilter(DSRCodedEntryValue("121206", "DCM", "Distance"))), nodeID2);
     OFCHECK_EQUAL(tree.gotoNextMatchingNode(DSRDocumentTreeNodeValueTypeFilter(DSRTypes::VT_Code)), nodeID3);
@@ -256,6 +258,7 @@ OFTEST(dcmsr_gotoMatchingNode)
     OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("201708081000", "201708081400")), nodeID2);
     OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("20170828", "" /*toDateTime*/)), nodeID3);
     OFCHECK_EQUAL(tree.gotoNextMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("" /*fromDateTime*/, "201708280800")), nodeID4);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(DSRDocumentTreeNodeHasConceptNameFilter(OFFalse /*hasConceptName*/)), nodeID6);
     OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("20170828080001", "" /*toDateTime*/)), 0 /* not found */);
 }
 
