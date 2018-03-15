@@ -1419,7 +1419,9 @@ dsrdocst.o: dsrdocst.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrwavch.h ../include/dcmtk/dcmsr/dsrcontn.h \
  ../include/dcmtk/dcmsr/dsrreftn.h ../include/dcmtk/dcmsr/dsrtpltn.h \
  ../include/dcmtk/dcmsr/dsrstpl.h ../include/dcmtk/dcmsr/dsrdoctr.h \
- ../include/dcmtk/dcmsr/dsrctpl.h ../include/dcmtk/dcmsr/dsriodcc.h
+ ../include/dcmtk/dcmsr/dsrctpl.h ../include/dcmtk/dcmsr/dsriodcc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h
 dsrdoctn.o: dsrdoctn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/dsrdoctn.h ../include/dcmtk/dcmsr/dsrtree.h \
  ../include/dcmtk/dcmsr/dsrtypes.h ../include/dcmtk/dcmsr/dsdefine.h \

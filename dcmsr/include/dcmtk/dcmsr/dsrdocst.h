@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -564,6 +564,18 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      */
     virtual OFCondition createExpandedSubTree(DSRDocumentSubTree *&tree) const;
 
+    /** set observation date/time for all content items in the document tree.
+     *  Calling this method might be useful when a (sub)tree is copied into a new document,
+     *  since content date and time of the new document are likely to be different than the
+     *  date and time of the original observation.
+     ** @param  observationDateTime  value to be set (might be an empty string)
+     *  @param  check                check 'observationDateTime' for conformance with VR (DT)
+     *                               and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setObservationDateTime(const OFString &observationDateTime,
+                                               const OFBool check = OFTrue);
+
     /** compare template identification of the root node with given values.
      *  Please note that the comparison only takes place if there is a single node at the
      *  root of the tree and its value type is CONTAINER.
@@ -578,10 +590,11 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
                                                  const OFString &mappingResource,
                                                  const OFString &mappingResourceUID = "") const;
 
-    /** get template identifier and mapping resource from the root node of this tree.  See
-     *  DSRDocumentTreeNode::getTemplateIdentification() for details on template identification.
-     *  Please note that the template identification is only retrieved if there is a single node
-     *  at the root of the tree and its value type is CONTAINER.
+    /** get template identifier and mapping resource from the root node of this tree.
+     *  See DSRDocumentTreeNode::getTemplateIdentification() for details on template
+     *  identification.
+     *  Please note that the template identification is only retrieved if there is a single
+     *  node at the root of the tree and its value type is CONTAINER.
      ** @param  templateIdentifier  identifier of the template (might be empty)
      *  @param  mappingResource     mapping resource that defines the template (might be empty)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -592,8 +605,8 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     /** get template identifier, mapping resource and optional mapping resource UID from the
      *  root node of this tree.  See DSRDocumentTreeNode::getTemplateIdentification() for
      *  details on template identification.
-     *  Please note that the template identification is only retrieved if there is a single node
-     *  at the root of the tree and its value type is CONTAINER.
+     *  Please note that the template identification is only retrieved if there is a single
+     *  node at the root of the tree and its value type is CONTAINER.
      ** @param  templateIdentifier  identifier of the template (might be empty)
      *  @param  mappingResource     mapping resource that defines the template (might be empty)
      *  @param  mappingResourceUID  uniquely identifies the mapping resource (might be empty)

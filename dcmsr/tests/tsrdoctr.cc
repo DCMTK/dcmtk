@@ -260,6 +260,17 @@ OFTEST(dcmsr_gotoMatchingNode)
     OFCHECK_EQUAL(tree.gotoNextMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("" /*fromDateTime*/, "201708280800")), nodeID4);
     OFCHECK_EQUAL(tree.gotoNextMatchingNode(DSRDocumentTreeNodeHasConceptNameFilter(OFFalse /*hasConceptName*/)), nodeID6);
     OFCHECK_EQUAL(tree.gotoMatchingNode(DSRDocumentTreeNodeObservationDateTimeFilter("20170828080001", "" /*toDateTime*/)), 0 /* not found */);
+    /* change observation date/time for all content items */
+    OFCHECK(tree.setObservationDateTime("201803151800").good());
+    /* ... and check again */
+    const DSRDocumentTreeNodeObservationDateTimeFilter filter3("20180101", "20181231");
+    OFCHECK_EQUAL(tree.gotoNode(nodeID1), nodeID1);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter3), nodeID2);
+    OFCHECK(tree.iterate() /* skip one node */);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter3), nodeID3);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter3), nodeID4);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter3), nodeID5);
+    OFCHECK_EQUAL(tree.gotoNextMatchingNode(filter3), nodeID6);
 }
 
 

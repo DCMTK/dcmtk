@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,8 @@
 #include "dcmtk/dcmsr/dsrtpltn.h"
 #include "dcmtk/dcmsr/dsrstpl.h"
 #include "dcmtk/dcmsr/dsriodcc.h"
+
+#include "dcmtk/dcmdata/dcvrdt.h"
 
 
 DSRDocumentSubTree::DSRDocumentSubTree()
@@ -862,6 +864,27 @@ OFCondition DSRDocumentSubTree::createExpandedSubTree(DSRDocumentSubTree *&tree)
     } else {
         tree = NULL;
         result = SR_EC_EmptyDocumentTree;
+    }
+    return result;
+}
+
+
+OFCondition DSRDocumentSubTree::setObservationDateTime(const OFString &observationDateTime,
+                                                       const OFBool check)
+{
+    /* check parameter only once */
+    OFCondition result = (check) ? DcmDateTime::checkStringValue(observationDateTime, "1") : EC_Normal;
+    if (result.good())
+    {
+        DSRIncludedTemplateNodeCursor cursor(getRoot());
+        if (cursor.isValid())
+        {
+            /* iterate over all nodes */
+            do {
+                /* and set the observation data/time */
+                cursor.getNode()->setObservationDateTime(observationDateTime, OFFalse /*check*/);
+            } while (cursor.iterate());
+        }
     }
     return result;
 }
