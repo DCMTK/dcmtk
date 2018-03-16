@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2017, OFFIS e.V.
+*  Copyright (C) 2017-2018, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -203,6 +203,10 @@ public:
     {
 
     }
+
+    /** Virtual destructor, does nothing
+     */
+    virtual ~DcmJsonFormat() {}
 
     /** Method to return line break(s)
      *  @return line break(s).

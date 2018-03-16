@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2017-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,6 +85,10 @@ public:
     /** Default constructor, used by derived classes.
      */
     inline OFerror_category() {}
+
+    /** Virtual destructor, does nothing.
+     */
+    virtual ~OFerror_category() {}
 
     /** Obtains the name of the category, for example "generic".
      *  @return a character pointer that refers to the name of the category.
