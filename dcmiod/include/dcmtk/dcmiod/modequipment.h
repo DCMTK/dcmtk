@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -51,7 +51,11 @@ public:
 
       /** Default Constructor
        */
-      EquipmentInfo() {}
+      EquipmentInfo() :
+        m_Manufacturer(),
+        m_ManufacturerModelName(),
+        m_DeviceSerialNumber(),
+        m_SoftwareVersions() {}
 
       /** Convenience Constructor setting commonly used values
        *  @param manufacturer Manufacturer
