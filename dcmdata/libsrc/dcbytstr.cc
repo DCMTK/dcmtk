@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -153,20 +153,20 @@ int DcmByteString::compare(const DcmElement& rhs) const
     myThis = OFconst_cast(DcmByteString*, this);
     myRhs = OFstatic_cast(DcmByteString*, OFconst_cast(DcmElement*, &rhs));
 
-    /* check number of components. */
-    unsigned long rhsVM = myRhs->getVM();
-    unsigned long thisVM = myThis->getVM();
-    if (thisVM < rhsVM)
+    /* compare number of values */
+    unsigned long rhsNumValues = myRhs->getNumberOfValues();
+    unsigned long thisNumValues = myThis->getNumberOfValues();
+    if (thisNumValues < rhsNumValues)
     {
         return -1;
     }
-    else if (thisVM > rhsVM)
+    else if (thisNumValues > rhsNumValues)
     {
         return 1;
     }
 
     /* iterate over all components and test equality */
-    for (unsigned long count = 0; count < thisVM; count++)
+    for (unsigned long count = 0; count < thisNumValues; count++)
     {
         OFString val;
         if (myThis->getOFString(val, count).good())

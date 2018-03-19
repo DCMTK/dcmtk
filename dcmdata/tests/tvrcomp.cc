@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, OFFIS e.V.
+ *  Copyright (C) 2015-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,6 +38,8 @@
 #include "dcmtk/dcmdata/dcvrdt.h"
 #include "dcmtk/dcmdata/dcvrds.h"
 #include "dcmtk/dcmdata/dcvris.h"
+#include "dcmtk/dcmdata/dcvrod.h"
+#include "dcmtk/dcmdata/dcvrof.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcelem.h"
@@ -47,9 +49,13 @@
 #include "dcmtk/dcmdata/dcvrfd.h"
 #include "dcmtk/dcmdata/dcvrfl.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
+#include "dcmtk/dcmdata/dcvrol.h"
 #include "dcmtk/dcmdata/dcvrpobw.h"
+#include "dcmtk/dcmdata/dcvrsh.h"
 #include "dcmtk/dcmdata/dcvrsl.h"
 #include "dcmtk/dcmdata/dcvrss.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/dcmdata/dcvruc.h"
 #include "dcmtk/dcmdata/dcvrul.h"
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
@@ -61,212 +67,117 @@
 #include "dcmtk/dcmdata/dcpixseq.h"
 
 
-template <typename ByteStringType>
-static void checkByteString(const DcmTagKey& key)
+template <typename StringType>
+static void checkStringBased(
+    const DcmTagKey& key,
+    const OFString& vrName,
+    const OFString shortVal,
+    const OFString longVal)
 {
-  // Start with equal values
-  OFString val1 = "TEST";
-  OFString val2 = "TEST";
-  ByteStringType obj1(key);
-  ByteStringType obj2(key);
-  ByteStringType objOtherTag(DCM_UndefinedTagKey);
+    COUT << "Checking String-based VR: " << vrName << OFendl;
+    // Start with equal values
+    OFString val1 = shortVal;
+    OFString val2 = shortVal;
+    StringType obj1(key);
+    StringType obj2(key);
+    StringType objOtherTag(DCM_UndefinedTagKey);
 
-  // Check equality
-  obj1.putOFStringArray("TEST");
-  obj2.putOFStringArray("TEST");
-  OFCHECK_EQUAL(obj1.compare(obj2), 0);
-  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
-  // Reverse test should yield same result
-  OFCHECK_EQUAL(obj2.compare(obj1), 0);
-  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
+    // Check equality
+    obj1.putOFStringArray(shortVal);
+    obj2.putOFStringArray(shortVal);
+    OFCHECK_EQUAL(obj1.compare(obj2), 0);
+    OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
+    // Reverse test should yield same result
+    OFCHECK_EQUAL(obj2.compare(obj1), 0);
+    OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
-  // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
-  objOtherTag.putOFStringArray("TEST" /* same value*/);
-  OFCHECK(obj1.compare(objOtherTag) < 0);
-  OFCHECK(obj1 < objOtherTag);
-  OFCHECK(obj1 <= objOtherTag);
-  // Reverse test should yield opposite result
-  OFCHECK(objOtherTag.compare(obj1) > 0);
-  OFCHECK(objOtherTag > obj1);
-  OFCHECK(objOtherTag >= obj1);
+    // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
+    objOtherTag.putOFStringArray(shortVal /* same value*/);
+    OFCHECK(obj1.compare(objOtherTag) < 0);
+    OFCHECK(obj1 < objOtherTag);
+    OFCHECK(obj1 <= objOtherTag);
+    // Reverse test should yield opposite result
+    OFCHECK(objOtherTag.compare(obj1) > 0);
+    OFCHECK(objOtherTag > obj1);
+    OFCHECK(objOtherTag >= obj1);
 
-  // Check second string longer
-  obj2.putOFStringArray("TEST_LONG");
-  OFCHECK(obj1.compare(obj2) < 0);
-  OFCHECK(obj1 < obj2);
-  OFCHECK(obj1 <= obj2);
-  // Reverse test should yield opposite result
-  OFCHECK(obj2.compare(obj1) > 0);
-  OFCHECK(obj2 > obj1);
-  OFCHECK(obj2 >= obj1);
+    // Check second string longer
+    obj2.putOFStringArray(longVal);
+    OFCHECK(obj1.compare(obj2) < 0);
+    OFCHECK(obj1 < obj2);
+    OFCHECK(obj1 <= obj2);
+    // Reverse test should yield opposite result
+    OFCHECK(obj2.compare(obj1) > 0);
+    OFCHECK(obj2 > obj1);
+    OFCHECK(obj2 >= obj1);
 
-  // Test different VM
-  obj1.putOFStringArray("TEST\\TEST");
-  obj2.putOFStringArray("TEST\\TEST\\TEST");
-  OFCHECK(obj1.compare(obj2) < 0);
-  OFCHECK(obj1 < obj2);
-  OFCHECK(obj1 <= obj2);
-  // Reverse test should yield opposite result
-  OFCHECK(obj2.compare(obj1) > 0);
-  OFCHECK(obj2 > obj1);
-  OFCHECK(obj2 >= obj1);
+    // Test different number of values
+    OFString twoValues, threeValues;
+    twoValues = shortVal + "\\"; twoValues += shortVal;
+    threeValues = twoValues + "\\"; threeValues += shortVal;
+    obj1.putOFStringArray(twoValues);
+    obj2.putOFStringArray(threeValues);
+    OFCHECK(obj1.compare(obj2) < 0);
+    OFCHECK(obj1 < obj2);
+    OFCHECK(obj1 <= obj2);
+    // Reverse test should yield opposite result
+    OFCHECK(obj2.compare(obj1) > 0);
+    OFCHECK(obj2 > obj1);
+    OFCHECK(obj2 >= obj1);
 }
 
 
 static void checkAttributeTags()
 {
-  // Start with equal values
-  DcmAttributeTag obj1(DCM_FrameIncrementPointer);
-  DcmAttributeTag obj2(DCM_FrameIncrementPointer);
-  DcmAttributeTag objOtherTag(DCM_UndefinedTagKey);
+    // Start with equal values
+    DcmAttributeTag obj1(DCM_FrameIncrementPointer);
+    DcmAttributeTag obj2(DCM_FrameIncrementPointer);
+    DcmAttributeTag objOtherTag(DCM_UndefinedTagKey);
 
-  // Check equality
-  obj1.putTagVal(DCM_PatientName);
-  obj2.putTagVal(DCM_PatientName);
-  OFCHECK_EQUAL(obj1.compare(obj2), 0);
-  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
-  // Reverse test should yield same result
-  OFCHECK_EQUAL(obj2.compare(obj1), 0);
-  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
+    // Check equality
+    obj1.putTagVal(DCM_PatientName);
+    obj2.putTagVal(DCM_PatientName);
+    OFCHECK_EQUAL(obj1.compare(obj2), 0);
+    OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
+    // Reverse test should yield same result
+    OFCHECK_EQUAL(obj2.compare(obj1), 0);
+    OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
 
-  // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
-  objOtherTag.putTagVal(DCM_PatientName);
-  OFCHECK(obj1.compare(objOtherTag) < 0);
-  OFCHECK(obj1 < objOtherTag);
-  OFCHECK(obj1 <= objOtherTag);
-  // Reverse test should yield opposite result
-  OFCHECK(objOtherTag.compare(obj1) > 0);
-  OFCHECK(objOtherTag > obj1);
-  OFCHECK(objOtherTag >= obj1);
+    // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
+    objOtherTag.putTagVal(DCM_PatientName);
+    OFCHECK(obj1.compare(objOtherTag) < 0);
+    OFCHECK(obj1 < objOtherTag);
+    OFCHECK(obj1 <= objOtherTag);
+    // Reverse test should yield opposite result
+    OFCHECK(objOtherTag.compare(obj1) > 0);
+    OFCHECK(objOtherTag > obj1);
+    OFCHECK(objOtherTag >= obj1);
 
-  // Check second attribute larger
-  obj2.putTagVal(DCM_PatientID);
-  OFCHECK(obj1.compare(obj2) < 0);
-  OFCHECK(obj1 < obj2);
-  OFCHECK(obj1 <= obj2);
-  // Reverse test should yield opposite result
-  OFCHECK(obj2.compare(obj1) > 0);
-  OFCHECK(obj2 > obj1);
-  OFCHECK(obj2 >= obj1);
+    // Check second attribute larger
+    obj2.putTagVal(DCM_PatientID);
+    OFCHECK(obj1.compare(obj2) < 0);
+    OFCHECK(obj1 < obj2);
+    OFCHECK(obj1 <= obj2);
+    // Reverse test should yield opposite result
+    OFCHECK(obj2.compare(obj1) > 0);
+    OFCHECK(obj2 > obj1);
+    OFCHECK(obj2 >= obj1);
 
-  // Test different VM
-  obj1.putTagVal(DCM_PatientName, 1); // VM = 2
-  obj2.putTagVal(DCM_PatientName, 0);
-  obj2.putTagVal(DCM_PatientName, 1);
-  obj2.putTagVal(DCM_PatientName, 2); // VM = 3
+    // Test different VM
+    obj1.putTagVal(DCM_PatientName, 1); // VM = 2
+    obj2.putTagVal(DCM_PatientName, 0);
+    obj2.putTagVal(DCM_PatientName, 1);
+    obj2.putTagVal(DCM_PatientName, 2); // VM = 3
 
-  OFCHECK(obj1.compare(obj2) < 0);
-  OFCHECK(obj1 < obj2);
-  OFCHECK(obj1 <= obj2);
-  // Reverse test should yield opposite result
-  OFCHECK(obj2.compare(obj1) > 0);
-  OFCHECK(obj2 > obj1);
-  OFCHECK(obj2 >= obj1);
+    OFCHECK(obj1.compare(obj2) < 0);
+    OFCHECK(obj1 < obj2);
+    OFCHECK(obj1 <= obj2);
+    // Reverse test should yield opposite result
+    OFCHECK(obj2.compare(obj1) > 0);
+    OFCHECK(obj2 > obj1);
+    OFCHECK(obj2 >= obj1);
 }
 
-
-static void checkFloatingPointDouble()
-{
-  // Start with equal values
-  DcmFloatingPointDouble obj1(DCM_RealWorldValueLUTData);
-  DcmFloatingPointDouble obj2(DCM_RealWorldValueLUTData);
-  DcmFloatingPointDouble objOtherTag(DCM_UndefinedTagKey);
-
-  // Check equality
-  obj1.putFloat64(10.0);
-  obj2.putFloat64(10.0);
-  OFCHECK_EQUAL(obj1.compare(obj2), 0);
-  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
-  // Reverse test should yield same result
-  OFCHECK_EQUAL(obj2.compare(obj1), 0);
-  OFCHECK( (obj2 >= obj2) && (obj1 >= obj1) );
-
-  // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
-  objOtherTag.putFloat64(10.0);
-  OFCHECK(obj1.compare(objOtherTag) < 0);
-  OFCHECK(obj1 < objOtherTag);
-  OFCHECK(obj1 <= objOtherTag);
-  // Reverse test should yield opposite result
-  OFCHECK(objOtherTag.compare(obj1) > 0);
-  OFCHECK(objOtherTag > obj1);
-  OFCHECK(objOtherTag >= obj1);
-
-  // Check second attribute larger
-  obj2.putFloat64(100.50);
-  OFCHECK(obj1.compare(obj2) < 0);
-  OFCHECK(obj1 < obj2);
-  OFCHECK(obj1 <= obj2);
-  // Reverse test should yield opposite result
-  OFCHECK(obj2.compare(obj1) > 0);
-  OFCHECK(obj2 > obj1);
-  OFCHECK(obj2 >= obj1);
-
-  // Test different VM
-  obj1.putFloat64(10.0);     // VM = 2
-  obj2.putFloat64(10.0, 0);
-  obj2.putFloat64(10.0, 1);
-  obj2.putFloat64(10.0, 2); // VM = 3
-
-  OFCHECK(obj1.compare(obj2) < 0);
-  OFCHECK(obj1 < obj2);
-  OFCHECK(obj1 <= obj2);
-  // Reverse test should yield opposite result
-  OFCHECK(obj2.compare(obj1) > 0);
-  OFCHECK(obj2 > obj1);
-  OFCHECK(obj2 >= obj1);
-}
-
-
-static void checkFloatingPointSingle()
-{
-  // Start with equal values
-  DcmFloatingPointSingle obj1(DCM_CornealPointLocation);
-  DcmFloatingPointSingle obj2(DCM_CornealPointLocation);
-  DcmFloatingPointSingle objOtherTag(DCM_UndefinedTagKey);
-
-  // Check equality
-  obj1.putFloat32(10.0);
-  obj2.putFloat32(10.0);
-  OFCHECK_EQUAL(obj1.compare(obj2), 0);
-  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
-  // Reverse test should yield same result
-  OFCHECK_EQUAL(obj2.compare(obj1), 0);
-  OFCHECK( (obj2 >= obj1) && (obj1 >= obj2) );
-
-  // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
-  objOtherTag.putFloat32(10.0);
-  OFCHECK(obj1.compare(objOtherTag) < 0);
-  OFCHECK(obj1 < objOtherTag);
-  OFCHECK(obj1 <= objOtherTag);
-  // Reverse test should yield opposite result
-  OFCHECK(objOtherTag.compare(obj1) > 0);
-  OFCHECK(objOtherTag > obj1);
-  OFCHECK(objOtherTag >= obj1);
-
-  // Check second attribute larger
-  obj2.putFloat32(100.50);
-  OFCHECK(obj1.compare(obj2) < 0);
-  OFCHECK(obj1 < obj2);
-  OFCHECK(obj1 <= obj2);
-  // Reverse test should yield opposite result
-  OFCHECK(obj2.compare(obj1) > 0);
-  OFCHECK(obj2 > obj1);
-  OFCHECK(obj2 >= obj1);
-
-  // Test different VM
-  obj1.putFloat32(10.0);     // VM = 2
-  obj2.putFloat32(10.0, 0);
-  obj2.putFloat32(10.0, 1);
-  obj2.putFloat32(10.0, 2); // VM = 3
-
-  OFCHECK(obj1.compare(obj2) < 0);
-  OFCHECK(obj1 < obj2);
-  OFCHECK(obj1 <= obj2);
-  // Reverse test should yield opposite result
-  OFCHECK(obj2.compare(obj1) > 0);
-  OFCHECK(obj2 > obj1);
-  OFCHECK(obj2 >= obj1);
-}
 
 static void checkOtherByteOtherWord()
 {
@@ -808,6 +719,60 @@ static void checkUnsignedShort()
 }
 
 
+
+static void checkOtherLong()
+{
+  // Start with equal values
+  DcmOtherLong obj1(DCM_LongTrianglePointIndexList);
+  DcmOtherLong obj2(DCM_LongTrianglePointIndexList);
+  DcmOtherLong objOtherTag(DCM_UndefinedTagKey);
+
+  // Check equality
+  obj1.putUint32(100000);
+  obj2.putUint32(100000);
+  OFCHECK_EQUAL(obj1.compare(obj2), 0);
+  OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
+  // Reverse test should yield same result
+  OFCHECK_EQUAL(obj2.compare(obj1), 0);
+  OFCHECK( (obj2 >= obj2) && (obj1 >= obj2) );
+
+  // Check differing tags (DCM_UndefinedTagKey always smaller than any other key)
+  objOtherTag.putUint32(100000);
+  OFCHECK(obj1.compare(objOtherTag) < 0);
+  OFCHECK(obj1 < objOtherTag);
+  OFCHECK(obj1 <= objOtherTag);
+  // Reverse test should yield opposite result
+  OFCHECK(objOtherTag.compare(obj1) > 0);
+  OFCHECK(objOtherTag > obj1);
+  OFCHECK(objOtherTag >= obj1);
+
+  // Check second attribute larger
+  obj2.putUint32(200000);
+  OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
+  // Reverse test should yield opposite result
+  OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
+
+  // Test different VM
+  obj1.putUint32(100000);     // VM = 2
+  obj2.putUint32(100000, 0);
+  obj2.putUint32(100000, 1);
+  obj2.putUint32(100000, 2); // VM = 3
+
+  OFCHECK(obj1.compare(obj2) < 0);
+  OFCHECK(obj1 < obj2);
+  OFCHECK(obj1 <= obj2);
+  // Reverse test should yield opposite result
+  OFCHECK(obj2.compare(obj1) > 0);
+  OFCHECK(obj2 > obj1);
+  OFCHECK(obj2 >= obj1);
+}
+
+
+
 static void checkDcmItemAndSequences()
 {
   // Start with equal values
@@ -883,28 +848,48 @@ static void checkDcmItemAndSequences()
 
 OFTEST(dcmdata_VRCompare)
 {
-  // Check the different VRs implemented by DcmByteString.
-  // We gracefully ignore the maximum VM here since there is not
-  // even an attribute (e.g.) at the moment which is of VR
-  // AS and has a VM >1.
-  checkByteString<DcmAgeString>(DCM_PatientAge);
-  checkByteString<DcmApplicationEntity>(DCM_RetrieveAETitle);
-  checkByteString<DcmLongString>(DCM_SeriesDescription);
-  checkByteString<DcmLongText>(DCM_AdditionalPatientHistory);
-  checkByteString<DcmPersonName>(DCM_OtherPatientNames);
-  checkByteString<DcmShortText>(DCM_RTPlanDescription);
-  checkByteString<DcmUnlimitedText>(DCM_RetrieveURL);
-  // Check the rest
-  checkAttributeTags();
-  checkFloatingPointDouble();
-  checkFloatingPointSingle();
-  checkOtherByteOtherWord();
-  checkPolymorphOtherByteOtherWord();
-  checkDcmPixelDataNative();
-  checkDcmPixelDataEncapsulatedOB();
-  checkSignedLong();
-  checkSignedShort();
-  checkUnsignedLong();
-  checkUnsignedShort();
-  checkDcmItemAndSequences();
+    // Check the different String-based VRs (in the sense that the method
+    // putAndInsertOFStringArray() can be used by the test method for initializing
+    // the test values.
+    // This applies to: AE, AS, CS, DA, DS, DT, FD, FL, IS, LO, LT, OD, OF,PN, SH, ST,
+    // TM, UC, UI, UT,
+    // Sometimes the maximum length of the VR is exceed deliberately to perform the test,
+    // which is even useful since on that level DCMTK allows invalid values
+    // in order to handle incorrect datasets.
+    checkStringBased<DcmApplicationEntity>(DCM_RetrieveAETitle, "AE", "AE1", "AE1_CT");
+    checkStringBased<DcmAgeString>(DCM_PatientAge, "AS", "008Y", "008YY");
+    checkStringBased<DcmCodeString>(DCM_BlendingMode, "CS", "SOME", "SOME_LONGER");
+    checkStringBased<DcmDate>(DCM_StudyDate, "DA", "19771212", "1977121200");
+    checkStringBased<DcmDecimalString>(DCM_ProcedureStepProgress, "DS", "0.0", "0.01");
+    checkStringBased<DcmDateTime>(DCM_SOPAuthorizationDateTime, "DT", "19771212235900", "19771212235900.123456");
+    checkStringBased<DcmFloatingPointDouble>(DCM_BeamDeliveryDurationLimit, "FD", "10", "10.5");
+    checkStringBased<DcmFloatingPointSingle>(DCM_IsocenterToWedgeTrayDistance, "FL", "10", "10.5");
+    checkStringBased<DcmIntegerString>(DCM_NumberOfWedges, "IS", "100", "1000");
+    checkStringBased<DcmLongString>(DCM_SeriesDescription, "LO", "Description", "Description Long");
+    checkStringBased<DcmLongText>(DCM_AdditionalPatientHistory, "LT", "Text", "Text Long");
+    checkStringBased<DcmOtherDouble>(DCM_DoubleFloatPixelData, "OD", "10", "10.5");
+    checkStringBased<DcmOtherFloat>(DCM_FloatPixelData, "OF", "10", "10.5");
+    checkStringBased<DcmPersonName>(DCM_OtherPatientNames, "PN", "Bond^James", "Bond^James^Jürgen");
+    checkStringBased<DcmShortString>(DCM_WedgeID, "SH", "WEDGE1", "WEDGE1_LONG");
+    checkStringBased<DcmShortText>(DCM_RTPlanDescription, "ST", "Text", "Text Long");
+    checkStringBased<DcmTime>(DCM_StudyTime, "TM", "235959", "235959.123456");
+    checkStringBased<DcmUnlimitedCharacters>(DCM_LongCodeValue, "UC", "Code_0815", "Code_0815_4711");
+    checkStringBased<DcmUniqueIdentifier>(DCM_SOPInstanceUID, "UI", "1.2.3.4", "1.2.3.4.5");
+    checkStringBased<DcmUnlimitedText>(DCM_RetrieveURL, "UR", "http://wwww.dcmtk.org", "http://www.dcmtk.org/dcmtk.php.en");
+
+    // Check the rest
+    checkAttributeTags();
+    checkOtherByteOtherWord();
+    checkPolymorphOtherByteOtherWord();
+    checkOtherLong();
+    checkSignedLong();
+    checkSignedShort();
+    checkDcmItemAndSequences();
+    checkUnsignedLong();
+    checkUnsignedShort();
+    // Special VR helper classes:
+    checkDcmPixelDataNative();
+    checkDcmPixelDataEncapsulatedOB();
+    // UN is not represented by its own class but is handled by OB/OW VR
+    // code
 }

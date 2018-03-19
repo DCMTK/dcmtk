@@ -76,20 +76,20 @@ int DcmUnsignedShort::compare(const DcmElement& rhs) const
     myThis = OFconst_cast(DcmUnsignedShort*, this);
     myRhs =  OFstatic_cast(DcmUnsignedShort*, OFconst_cast(DcmElement*, &rhs));
 
-    /* check whether VMs are equal */
-    unsigned long thisVM = myThis->getVM();
-    unsigned long rhsVM = myRhs->getVM();
-    if (thisVM < rhsVM)
+    /* compare number of values */
+    unsigned long thisNumValues = myThis->getNumberOfValues();
+    unsigned long rhsNumValues = myRhs->getNumberOfValues();
+    if (thisNumValues < rhsNumValues)
     {
         return -1;
     }
-    else if (thisVM > rhsVM)
+    else if (thisNumValues > rhsNumValues)
     {
         return 1;
     }
 
     /* iterate over all components and test equality */
-    for (unsigned long count = 0; count < thisVM; count++)
+    for (unsigned long count = 0; count < thisNumValues; count++)
     {
         Uint16 val = 0;
         if (myThis->getUint16(val, count).good())

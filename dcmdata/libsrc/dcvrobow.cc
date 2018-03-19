@@ -90,7 +90,7 @@ int DcmOtherByteOtherWord::compare(const DcmElement& rhs) const
     myThis = OFconst_cast(DcmOtherByteOtherWord*, this);
     myRhs =  OFstatic_cast(DcmOtherByteOtherWord*, OFconst_cast(DcmElement*, &rhs));
 
-    /* check equality of length */
+    /* compare length */
     unsigned long thisLength = myThis->getLength();
     unsigned long rhsLength= myRhs->getLength();
     if (thisLength < rhsLength)
