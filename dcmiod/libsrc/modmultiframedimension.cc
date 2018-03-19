@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -44,7 +44,9 @@ IODMultiframeDimensionModule::IODMultiframeDimensionModule(OFshared_ptr<DcmItem>
 
 
 IODMultiframeDimensionModule::IODMultiframeDimensionModule()
-: IODModule()
+: IODModule(),
+  m_DimensionIndexSequence(),
+  m_DimensionOrganizationSequence()
 {
   resetRules();
 }

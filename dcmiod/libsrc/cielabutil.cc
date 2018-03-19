@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2010, Pascal Getreuer
+ *  Copyright (C) 2005-2018, Pascal Getreuer
  *  Copyright (C) 2016, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
@@ -106,9 +106,9 @@ void IODCIELabUtil::rgb2Xyz(double& X, double& Y, double& Z, double R, double G,
   R = invGammaCorrection(R);
   G = invGammaCorrection(G);
   B = invGammaCorrection(B);
-  X = (double)(0.4123955889674142161*R + 0.3575834307637148171*G + 0.1804926473817015735*B);
-  Y = (double)(0.2125862307855955516*R + 0.7151703037034108499*G + 0.07220049864333622685*B);
-  Z = (double)(0.01929721549174694484*R + 0.1191838645808485318*G + 0.9504971251315797660*B);
+  X = OFstatic_cast(double, (0.4123955889674142161*R + 0.3575834307637148171*G + 0.1804926473817015735*B));
+  Y = OFstatic_cast(double, (0.2125862307855955516*R + 0.7151703037034108499*G + 0.07220049864333622685*B));
+  Z = OFstatic_cast(double, (0.01929721549174694484*R + 0.1191838645808485318*G + 0.9504971251315797660*B));
 }
 
 
@@ -149,9 +149,9 @@ void IODCIELabUtil::xyz2Rgb(double& R, double& G, double& B, double X, double Y,
 {
   double R1, B1, G1, Min;
 
-  R1 = (double)( 3.2406*X - 1.5372*Y - 0.4986*Z);
-  G1 = (double)(-0.9689*X + 1.8758*Y + 0.0415*Z);
-  B1 = (double)( 0.0557*X - 0.2040*Y + 1.0570*Z);
+  R1 = OFstatic_cast(double, ( 3.2406*X - 1.5372*Y - 0.4986*Z));
+  G1 = OFstatic_cast(double, (-0.9689*X + 1.8758*Y + 0.0415*Z));
+  B1 = OFstatic_cast(double, ( 0.0557*X - 0.2040*Y + 1.0570*Z));
 
   Min = min3(R1, G1, B1);
 

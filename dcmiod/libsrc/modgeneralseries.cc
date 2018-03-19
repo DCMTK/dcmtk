@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -37,9 +37,18 @@ const OFString IODGeneralSeriesModule::m_ModuleName = "GeneralSeriesModule";
 
 IODGeneralSeriesModule::IODGeneralSeriesModule(OFshared_ptr<DcmItem> item,
                                                OFshared_ptr<IODRules> rules)
-: IODModule(item, rules)
+: IODModule(item, rules),
+  m_ReferencedPPS()
 {
   // reset element rules
+  resetRules();
+}
+
+
+IODGeneralSeriesModule::IODGeneralSeriesModule()
+: IODModule(),
+  m_ReferencedPPS()
+{
   resetRules();
 }
 
@@ -47,13 +56,6 @@ IODGeneralSeriesModule::IODGeneralSeriesModule(OFshared_ptr<DcmItem> item,
 OFString IODGeneralSeriesModule::getName() const
 {
   return m_ModuleName;
-}
-
-
-IODGeneralSeriesModule::IODGeneralSeriesModule()
-: IODModule()
-{
-  resetRules();
 }
 
 

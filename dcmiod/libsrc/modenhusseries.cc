@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -28,7 +28,9 @@ const OFString IODEnhancedUSSeriesModule::m_ModuleName = "EnhancedUSSeries";
 
 IODEnhancedUSSeriesModule::IODEnhancedUSSeriesModule(OFshared_ptr<DcmItem> item,
                                                      OFshared_ptr<IODRules> rules)
-: IODModule(item, rules)
+: IODModule(item, rules),
+  m_ReferencedPerformedProcedureStep(),
+  m_PerformedProtocolCode()
 {
   // reset element rules
   resetRules();
@@ -36,7 +38,9 @@ IODEnhancedUSSeriesModule::IODEnhancedUSSeriesModule(OFshared_ptr<DcmItem> item,
 
 
 IODEnhancedUSSeriesModule::IODEnhancedUSSeriesModule()
-: IODModule()
+: IODModule(),
+  m_ReferencedPerformedProcedureStep(),
+  m_PerformedProtocolCode()
 {
   // reset element rules
   resetRules();

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -236,6 +236,7 @@ CodeWithModifiers::CodeWithModifiers(const OFString& modifierType,
                                      const OFString& modifierVM,
                                      const DcmTagKey& modifierSeq)
 : CodeSequenceMacro(),
+  m_Modifiers(),
   m_ModifierType(modifierType),
   m_ModifierVM(modifierVM),
   m_CodeModifierSeq(modifierSeq)
@@ -246,7 +247,10 @@ CodeWithModifiers::CodeWithModifiers(const OFString& modifierType,
 
 CodeWithModifiers::CodeWithModifiers(const CodeWithModifiers& rhs)
 : CodeSequenceMacro(rhs),
-  m_Modifiers()
+  m_Modifiers(),
+  m_ModifierType(),
+  m_ModifierVM(),
+  m_CodeModifierSeq()
 {
   if (&rhs == this)
     return;
@@ -418,16 +422,18 @@ const OFString IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::m_Compo
 
 IODSeriesAndInstanceReferenceMacro::IODSeriesAndInstanceReferenceMacro(OFshared_ptr< DcmItem > data,
                                                                        OFshared_ptr< IODRules > rules,
-                                                                       IODComponent* parent)
-: IODComponent(data, rules, parent)
+                                                                       IODComponent* parent) :
+  IODComponent(data, rules, parent),
+  m_ReferencedSeriesItems()
 {
   // reset element rules
   resetRules();
 }
 
 
-IODSeriesAndInstanceReferenceMacro::IODSeriesAndInstanceReferenceMacro(IODComponent* parent)
-: IODComponent(parent)
+IODSeriesAndInstanceReferenceMacro::IODSeriesAndInstanceReferenceMacro(IODComponent* parent) :
+  IODComponent(parent),
+  m_ReferencedSeriesItems()
 {
   // reset element rules
   resetRules();
@@ -1783,7 +1789,9 @@ OFCondition HL7HierarchicDesignatorMacro::setUniversalEntityIDType(const OFStrin
 MandatoryViewAndSliceProgressionDirectionMacro::MandatoryViewAndSliceProgressionDirectionMacro(OFshared_ptr< DcmItem > item,
                                                                                                OFshared_ptr< IODRules > rules,
                                                                                                IODComponent* parent)
-: IODComponent(item, rules, parent)
+: IODComponent(item, rules, parent),
+  m_ViewCodeSequence(),
+  m_ViewModifierCode()
 {
   resetRules();
 }
@@ -1791,7 +1799,9 @@ MandatoryViewAndSliceProgressionDirectionMacro::MandatoryViewAndSliceProgression
 
 
 MandatoryViewAndSliceProgressionDirectionMacro::MandatoryViewAndSliceProgressionDirectionMacro(IODComponent* parent)
-: IODComponent(parent)
+: IODComponent(parent),
+  m_ViewCodeSequence(),
+  m_ViewModifierCode()
 {
   resetRules();
 }

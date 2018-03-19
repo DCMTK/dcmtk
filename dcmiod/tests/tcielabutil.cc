@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2017-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -91,9 +91,9 @@ OFTEST(dcmiod_tcielabutil)
     i1 = i2 = i3 = r1 = r2 = r3 = o1 = o2 = o3 = 0.0;
 
     // Roundtrip RGB -> CIELab -> RGB
-    i1 = (double)rand() / (double)RAND_MAX;
-    i2 = (double)rand() / (double)RAND_MAX;
-    i3 = (double)rand() / (double)RAND_MAX;
+    i1 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
+    i2 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
+    i3 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
     IODCIELabUtil::rgb2Lab(r1, r2, r3, i1, i2, i3);
     IODCIELabUtil::lab2Rgb(o1, o2, o3, r1, r2, r3);
     OFCHECK( fabs(i1 - o1) < 0.001 );
@@ -102,9 +102,9 @@ OFTEST(dcmiod_tcielabutil)
 
     // Roundtrip CIELab -> DICOM CIELab -> CIELab
     i1 = i2 = i3 = r1 = r2 = r3 = o1 = o2 = o3 = 0.0;
-    i1 = ((double)rand() / ((double)RAND_MAX)) * 100.0;
-    i2 = ((double)rand() / ((double)RAND_MAX)) * 255.0 - 128;
-    i3 = ((double)rand() / ((double)RAND_MAX)) * 255.0 - 128;
+    i1 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX) * 100.0;
+    i2 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX) * 255.0 - 128;
+    i3 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX) * 255.0 - 128;
     IODCIELabUtil::lab2DicomLab(r1, r2, r3, i1, i2, i3);
     IODCIELabUtil::dicomlab2Lab(o1, o2, o3, r1, r2, r3);
     OFCHECK( fabs(i1 - o1) < 0.001 );
@@ -113,9 +113,9 @@ OFTEST(dcmiod_tcielabutil)
 
     // Roundtrip RGB -> CIEXYZ -> CIELab -> dicomCIELab -> RGB
     i1 = i2 = i3 = r1 = r2 = r3 = o1 = o2 = o3 = 0.0;
-    i1 = ((double)rand() / ((double)RAND_MAX));
-    i2 = ((double)rand() / ((double)RAND_MAX));
-    i3 = ((double)rand() / ((double)RAND_MAX));
+    i1 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
+    i2 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
+    i3 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
     IODCIELabUtil::rgb2Xyz(r1, r2, r3, i1, i2, i3);
     IODCIELabUtil::xyz2Lab(o1, o2, o3, r1, r2, r3);
     IODCIELabUtil::lab2DicomLab(r1, r2, r3, o1, o2, o3);
