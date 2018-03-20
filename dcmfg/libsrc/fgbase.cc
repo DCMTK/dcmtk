@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -25,9 +25,9 @@
 #include "dcmtk/dcmiod/iodcommn.h" // for static element helpers
 
 
-FGBase::FGBase(const DcmFGTypes::E_FGType fgType)
+FGBase::FGBase(const DcmFGTypes::E_FGType fgType) :
+  m_fgType(fgType)
 {
-  m_fgType = fgType;
 }
 
 
@@ -118,6 +118,8 @@ OFCondition FGBase::createNewFGSequence(DcmItem& destination,
 }
 
 
+// ------------------ class FGUnknown ------------------------------------
+
 
 FGUnknown::FGUnknown(const DcmTagKey& seqStartTag,
                      const DcmFGTypes::E_FGSharedType sharedType) :
@@ -126,6 +128,23 @@ FGUnknown::FGUnknown(const DcmTagKey& seqStartTag,
   m_fgSequence(NULL),
   m_sharedType(sharedType)
 {
+}
+
+FGUnknown::FGUnknown(const FGUnknown& rhs) :
+    FGBase(DcmFGTypes::EFG_UNKNOWN),
+    m_seqStartTag(rhs.m_seqStartTag),
+    m_fgSequence(OFstatic_cast(DcmSequenceOfItems*, rhs.m_fgSequence->clone())),
+    m_sharedType(rhs.m_sharedType)
+{
+}
+
+
+FGUnknown & FGUnknown::operator=(const FGUnknown& rhs)
+{
+    m_seqStartTag = rhs.m_seqStartTag;
+    m_fgSequence = OFstatic_cast(DcmSequenceOfItems*, rhs.m_fgSequence->clone());
+    m_sharedType = rhs.m_sharedType;
+    return *this;
 }
 
 

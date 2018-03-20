@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -294,6 +294,14 @@ protected:
 
 
 private:
+
+  /** Private undefined copy constructor
+   */
+  DcmSegment(const DcmSegment&);
+
+  /** Private undefined assignment operator
+   */
+  DcmSegment& operator=(const DcmSegment&);
 
   /// The segmentation document where this segment is located in
   DcmSegmentation* m_SegmentationDoc;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -491,14 +491,6 @@ protected:
    *  @return EC_Normal if adding was successful, error otherwise
    */
   virtual OFCondition addFrame(Uint8* pixData);
-
-  /// Constant code (required by Segmentation IOD) used to fill Derivation
-  /// Image Functional Group
-  const CodeSequenceMacro  DERIVATION_CODE;
-
-  /// Constant code (required by Segmentation IOD) used to fill Derivation
-  /// Image Functional Group
-  const CodeSequenceMacro PURPOSE_OF_REFERENCE_CODE;
 
 private:
 

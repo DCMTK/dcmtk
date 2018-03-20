@@ -28,7 +28,8 @@
 TrcTractographyResults::TrcTractographyResults()
 : DcmIODCommon(),
   m_EnhancedGeneralEquipmentModule(DcmIODCommon::getData(), DcmIODCommon::getRules()),
-  m_TractographyResultsModule(DcmIODCommon::getData(), DcmIODCommon::getRules())
+  m_TractographyResultsModule(DcmIODCommon::getData(), DcmIODCommon::getRules()),
+  m_References()
 {
   TrcTractographyResults::initIODRules();
 }

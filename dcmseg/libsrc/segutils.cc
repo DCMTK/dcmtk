@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -177,7 +177,8 @@ void DcmSegUtils::debugDumpBin(Uint8* buffer,
 {
   for (size_t n=0; n<length; n++)
   {
-    DCMSEG_DEBUG(what << " #" << n << ": " << (size_t)(buffer[n]) << ", bytepos " << (size_t)(&(buffer[n])) << " (" << debugByte2Bin((buffer[n])) << ")");
+    DCMSEG_DEBUG(what << " #" << n << ": " << OFstatic_cast(size_t,(buffer[n]))
+      << ", bytepos " << &(buffer[n]) << " (" << debugByte2Bin((buffer[n])) << ")");
   }
   DCMSEG_DEBUG("");
 }

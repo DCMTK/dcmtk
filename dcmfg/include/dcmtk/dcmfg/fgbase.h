@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -171,6 +171,17 @@ public:
    */
   FGUnknown(const DcmTagKey& seqStartTag,
             const DcmFGTypes::E_FGSharedType sharedType = DcmFGTypes::EFGS_UNKNOWN);
+
+  /** Copy constructor, performs a deep copy of the given object.
+   *  @param rhs The functional group to initialize from
+   */
+  FGUnknown(const FGUnknown& rhs);
+
+  /** Assignment operator, performs a deep copy for assigning given object.
+   *  @param  rhs The functional group to assign from
+   *  @return Reference to this object
+   */
+  FGUnknown& operator=(const FGUnknown& rhs);
 
   /** Returns type of this functional group (always "EFG_UNKNOWN")
    *  @return Always returns DcmFGTypes::EFG_UNKNOWN

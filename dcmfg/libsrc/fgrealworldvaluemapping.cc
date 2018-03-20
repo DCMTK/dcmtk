@@ -141,9 +141,10 @@ FGRealWorldValueMapping::RWVMItem::RWVMItem(OFshared_ptr< DcmItem > item,
 
 
 FGRealWorldValueMapping::RWVMItem::RWVMItem(const FGRealWorldValueMapping::RWVMItem& rhs)
-: IODComponent(rhs)
+: IODComponent(rhs),
+  m_MeasurementUnitsCode(rhs.m_MeasurementUnitsCode),
+  m_QuantityDefinitionSequence()
 {
-  m_MeasurementUnitsCode = rhs.m_MeasurementUnitsCode;
   OFVector<ContentItemMacro*>::const_iterator it = rhs.m_QuantityDefinitionSequence.begin();
   while (it != rhs.m_QuantityDefinitionSequence.end())
   {
