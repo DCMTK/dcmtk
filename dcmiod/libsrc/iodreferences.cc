@@ -141,7 +141,7 @@ OFCondition IODReferences::readTractographyReferencedInstanceSequence(DcmItem& s
       DcmElement* elem = NULL;
       if (item->findAndGetElement(DCM_ReferencedFrameNumber, elem).good())
       {
-        unsigned long vm = elem->getVM();
+        unsigned long vm = elem->getNumberOfValues();
         for (unsigned long f = 0; f < vm; f++)
         {
           Sint32 val = 0;

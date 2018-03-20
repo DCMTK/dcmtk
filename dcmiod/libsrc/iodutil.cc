@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -360,7 +360,7 @@ OFCondition DcmIODUtil::getFloat64ValuesFromElement(const DcmElement& delem,
   OFCondition cond = OFconst_cast(DcmElement &, delem).getFloat64Array(floats);
   if (cond.good())
   {
-    size_t vm = OFconst_cast(DcmElement &, delem).getVM();
+    size_t vm = OFconst_cast(DcmElement &, delem).getNumberOfValues();
     for (size_t n = 0; n < vm; n++)
     {
       result.push_back(floats[n]);
@@ -441,7 +441,7 @@ OFCondition DcmIODUtil::getUint16ValuesFromElement(DcmElement &delem,
                                                    OFVector<Uint16>& values)
 {
   OFCondition result;
-  const size_t count = delem.getVM();
+  const size_t count = delem.getNumberOfValues();
   values.reserve(count);
   for (size_t i = 0;  i < count; i++)
   {

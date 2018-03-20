@@ -216,7 +216,7 @@ TrcTypes::E_TrackColorMode TrcTrack::getRecommendedDisplayCIELabMode()
   DcmElement *elem = NULL;
   if (m_Item->findAndGetElement(DCM_RecommendedDisplayCIELabValue, elem).good())
   {
-    if (elem->getVM() == 3)
+    if (elem->getNumberOfValues() == 3)
     {
       if (m_Item->findAndGetElement(DCM_RecommendedDisplayCIELabValueList, elem).good())
       {

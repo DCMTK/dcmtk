@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -353,9 +353,9 @@ public:
     if (elem == NULL)
     return EC_IllegalParameter;
 
-    size_t vm = elem->getVM();
+    size_t numValues = elem->getNumberOfValues();
     OFCondition result;
-    for (size_t count = 0; (count < vm) && result.good(); count ++)
+    for (size_t count = 0; (count < numValues) && result.good(); count ++)
     {
       Uint8 value;
       result = elem->getUint8(value, OFstatic_cast(unsigned long, count));
@@ -478,7 +478,7 @@ public:
    *          See DcmElement::checkVM() for a list of valid values.
    *  @param  type The sequence type as noted in part 3 of the DICOM standard,
    *          i.e.\ "1,1C,2,2C or 3".
-   *  @param  module Nname of the module/macro this sequence is contained in. Used
+   *  @param  module Name of the module/macro this sequence is contained in. Used
    *          for error messages and can also be left empty.
    *  @return status EC_Normal if successful, an error code otherwise
    */
@@ -501,15 +501,15 @@ public:
 
 
   /** Reads DICOM sequence into container by creating a dedicated container
-   *   element for each DICOM item. The container must support the
-   *   push_back(T) function and the container's element type T must support
-   *   the read(DcmItem*) function.
-    *  @param  source The source DICOM item read the sequence from
-    *  @param  seqKey The tag key of the sequence to be read
-    *  @param  destination The destination container to read into
-    *  @param  rule The rule for reading this sequence. If NULL, an error is returned.
-    *  @return EC_Normal if successful, an error code otherwise
-    */
+   *  element for each DICOM item. The container must support the
+   *  push_back(T) function and the container's element type T must support
+   *  the read(DcmItem*) function.
+   *  @param  source The source DICOM item read the sequence from
+   *  @param  seqKey The tag key of the sequence to be read
+   *  @param  destination The destination container to read into
+   *  @param  rule The rule for reading this sequence. If NULL, an error is returned.
+   *  @return EC_Normal if successful, an error code otherwise
+   */
   template <class Container>
   static OFCondition readSubSequence(DcmItem& source,
                                      const DcmTagKey& seqKey,

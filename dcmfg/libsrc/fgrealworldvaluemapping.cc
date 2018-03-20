@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -255,7 +255,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::getRealWorldValueLUTData(OFVector
   OFCondition result = m_Item->findAndGetElement(DCM_RealWorldValueLUTData, elem);
   if (result.good())
   {
-    size_t numValues = elem->getVM();
+    size_t numValues = elem->getNumberOfValues();
     for (size_t n = 0; n < numValues; n++)
     {
       Float64 value;

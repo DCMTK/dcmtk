@@ -846,7 +846,7 @@ OFCondition ImageSOPInstanceReferenceMacro::addReferencedFrameNumber(const Uint1
                                                                      const OFBool checkValue)
 {
   (void)checkValue;
-  const unsigned long count = ReferencedFrameNumber.getVM();
+  const unsigned long count = ReferencedFrameNumber.getNumberOfValues();
   return ReferencedFrameNumber.putUint16(value, count /* starts with 0, so add new value at the end */);
 }
 
@@ -863,7 +863,7 @@ OFCondition ImageSOPInstanceReferenceMacro::addReferencedSegmentNumber(const Uin
                                                                        const OFBool checkValue)
 {
   (void)checkValue;
-  const unsigned long count = ReferencedSegmentNumber.getVM();
+  const unsigned long count = ReferencedSegmentNumber.getNumberOfValues();
   return ReferencedSegmentNumber.putUint16(value, count /* starts with 0, so add new value at the end */);
 
 }

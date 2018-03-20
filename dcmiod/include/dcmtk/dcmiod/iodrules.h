@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -137,7 +137,7 @@ public:
   /** Constructor to create a new attribute rule
    *  @param  key The tag key of the attribute
    *  @param  VM  The VM of the attribute (notation like in DICOM part 6,
-   *          e.g.\ "1-n")
+   *          e.g.\ "1-n"), for sequences the number of items allowed.
    *  @param  type The "IOD type" of the attribute.
    *          Allowed values "1", "1C", "2", "2C" and "3"
    *  @param  module The module or "component" this attribute belongs to
@@ -175,8 +175,9 @@ public:
   virtual OFString getType() const;
 
   /** The VM of the attribute as noted in the DICOM standard part 6,
-   *  e.g.\ "1-n" or "2"
-   *  @return The VM
+   *  e.g.\ "1-n" or "2". For Sequences (VR SQ) whose VM is always 1 by the
+   *  standard, this denotes the number of items permitted.
+   *  @return The VM (or number of items permitted)
    */
   virtual OFString getVM() const;
 
