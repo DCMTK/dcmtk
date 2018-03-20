@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -757,7 +757,7 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                 {
                     if (dataset && dataset->transferState() != ERW_ready)
                     {
-                        errorFlag = dataset->readUntilTag(inStream, newxfer, glenc, maxReadLength,stopParsingAtElement);
+                        errorFlag = dataset->readUntilTag(inStream, newxfer, glenc, maxReadLength, stopParsingAtElement);
                     }
                 }
             }

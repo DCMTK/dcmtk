@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -502,6 +502,8 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             {
                 errorFlag = EC_Normal;      // there is no meta header
                 Xfer = EXS_Unknown;
+                if (preambleUsed)           // ... but a preamble!
+                    DCMDATA_WARN("DcmMetaInfo: Found Preamble but no Meta Information Header");
             } else if (errorFlag == EC_ItemEnd)
                 errorFlag = EC_Normal;
             if (errorFlag.good())
