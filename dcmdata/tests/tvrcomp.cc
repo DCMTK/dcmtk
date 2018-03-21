@@ -74,7 +74,6 @@ static void checkStringBased(
     const OFString shortVal,
     const OFString longVal)
 {
-    COUT << "Checking String-based VR: " << vrName << OFendl;
     // Start with equal values
     OFString val1 = shortVal;
     OFString val2 = shortVal;
