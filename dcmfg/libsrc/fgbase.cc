@@ -205,11 +205,11 @@ int FGUnknown::compare(const FGBase& rhs) const
       }
       else if (m_fgSequence)
       {
-        return 1; // this object is bigger (more information)
+        result = 1; // this object is bigger (more information)
       }
       else if (myRhs->m_fgSequence)
       {
-        return -1; // rhs object is bigger (more information)
+        result = -1; // rhs object is bigger (more information)
       }
     }
     else

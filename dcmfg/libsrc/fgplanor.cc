@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -123,6 +123,8 @@ int FGPlaneOrientationPatient::compare(const FGBase& rhs) const
   if (result == 0)
   {
     const FGPlaneOrientationPatient* myRhs = OFstatic_cast(const FGPlaneOrientationPatient*, &rhs);
+    if (!myRhs)
+      return -1;
 
     // Compare all elements
     result = m_ImageOrientationPatient.compare(myRhs->m_ImageOrientationPatient);

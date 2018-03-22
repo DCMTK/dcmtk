@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -122,6 +122,10 @@ int FGDerivationImage::compare(const FGBase& rhs) const
     return result;
 
   const FGDerivationImage* myRhs = OFstatic_cast(const FGDerivationImage*, &rhs);
+  if (!myRhs)
+  {
+     return -1;
+  }
 
   size_t thisSize = m_DerivationImageItems.size();
   size_t rhsSize = myRhs->m_DerivationImageItems.size();
