@@ -29,6 +29,7 @@
 #include "dcmtk/dcmsr/dsrdoc.h"
 #include "dcmtk/dcmsr/dsrdncsr.h"
 #include "dcmtk/dcmsr/dsrtpltn.h"
+#include "dcmtk/dcmsr/dsrreftn.h"
 #include "dcmtk/dcmsr/dsrimgtn.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/dsrtextn.h"
@@ -160,6 +161,23 @@ OFTEST(dcmsr_compareNodes)
     /* and compare it to the initial node */
     OFCHECK(numNode != node);
     delete newNode;
+    /* try the same with an "included template" tree node */
+    DSRIncludedTemplateTreeNode templNode1(DSRSharedSubTemplate(NULL), DSRTypes::RT_contains);
+    DSRIncludedTemplateTreeNode templNode2(templNode1);
+    OFCHECK(templNode1 == templNode2);
+    /* and a "by-reference" tree node */
+    DSRByReferenceTreeNode byRefNode1(DSRTypes::RT_inferredFrom);
+    DSRByReferenceTreeNode byRefNode2(DSRTypes::RT_inferredFrom);
+    OFCHECK(!byRefNode1.isValid());
+    OFCHECK(!byRefNode2.isValid());
+    /* make the references valid */
+    OFCHECK(byRefNode1.updateReference(1, DSRTypes::VT_Num));
+    OFCHECK(byRefNode2.updateReference(2, DSRTypes::VT_Num));
+    OFCHECK(byRefNode1.isValid());
+    OFCHECK(byRefNode2.isValid());
+    OFCHECK(byRefNode1 != byRefNode2);
+    OFCHECK(byRefNode2.updateReference(1, DSRTypes::VT_Num));
+    OFCHECK(byRefNode1 == byRefNode2);
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2016, OFFIS e.V.
+ *  Copyright (C) 2010-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,6 +67,20 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinates3DValue
      *          been copied
      */
     DSRSpatialCoordinates3DValue &operator=(const DSRSpatialCoordinates3DValue &coordinatesValue);
+
+    /** comparison operator "equal"
+     ** @param  coordinatesValue  spatial coordinates value that should be compared to the
+     *                            current one
+     ** @return OFTrue if both spatial coordinates values are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DSRSpatialCoordinates3DValue &coordinatesValue) const;
+
+    /** comparison operator "not equal"
+     ** @param  coordinatesValue  spatial coordinates value that should be compared to the
+     *                            current one
+     ** @return OFTrue if both spatial coordinates values are not equal, OFFalse otherwise
+     */
+    OFBool operator!=(const DSRSpatialCoordinates3DValue &coordinatesValue) const;
 
     /** clear all internal variables.
      *  Graphic type is set to DSRTypes::GT3_invalid.  Since an empty list of graphic data is

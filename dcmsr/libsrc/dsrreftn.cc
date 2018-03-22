@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -65,6 +65,48 @@ DSRByReferenceTreeNode::DSRByReferenceTreeNode(const DSRByReferenceTreeNode &nod
 
 DSRByReferenceTreeNode::~DSRByReferenceTreeNode()
 {
+}
+
+
+OFBool DSRByReferenceTreeNode::operator==(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::operator==(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        const DSRByReferenceTreeNode &byRefNode = OFstatic_cast(const DSRByReferenceTreeNode &, node);
+        if (ValidReference && byRefNode.ValidReference)
+        {
+            /* check referenced node ID only */
+            result = (ReferencedNodeID == byRefNode.ReferencedNodeID);
+        } else {
+            /* check whether both references are invalid */
+            result = (ValidReference == byRefNode.ValidReference);
+        }
+    }
+    return result;
+}
+
+
+OFBool DSRByReferenceTreeNode::operator!=(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::operator!=(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        const DSRByReferenceTreeNode &byRefNode = OFstatic_cast(const DSRByReferenceTreeNode &, node);
+        if (ValidReference && byRefNode.ValidReference)
+        {
+            /* check referenced node ID only */
+            result = (ReferencedNodeID != byRefNode.ReferencedNodeID);
+        } else {
+            /* check whether either of the references is invalid */
+            result = (ValidReference != byRefNode.ValidReference);
+        }
+    }
+    return result;
 }
 
 
