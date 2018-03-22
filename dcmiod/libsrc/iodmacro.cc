@@ -770,7 +770,7 @@ ImageSOPInstanceReferenceMacro::~ImageSOPInstanceReferenceMacro()
 
 int ImageSOPInstanceReferenceMacro::compare(const IODComponent& rhs) const
 {
-  ImageSOPInstanceReferenceMacro *macro = OFstatic_cast(ImageSOPInstanceReferenceMacro*, OFconst_cast(IODComponent*, &rhs) );
+  const ImageSOPInstanceReferenceMacro *macro = OFstatic_cast(const ImageSOPInstanceReferenceMacro*, &rhs);
   if (macro == NULL) return -1;
   int result = ReferencedFrameNumber.compare(macro->ReferencedFrameNumber);
   if (result == 0) ReferencedSegmentNumber.compare(macro->ReferencedSegmentNumber);
