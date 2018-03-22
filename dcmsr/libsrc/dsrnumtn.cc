@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,7 +54,7 @@ OFBool DSRNumTreeNode::operator==(const DSRDocumentTreeNode &node) const
     if (result)
     {
         /* it's safe to cast the type since the value type has already been checked */
-        result = DSRNumericMeasurementValue::operator==(*OFstatic_cast(const DSRNumericMeasurementValue *, OFstatic_cast(const DSRNumTreeNode *, &node)));
+        result = DSRNumericMeasurementValue::operator==(OFstatic_cast(const DSRNumTreeNode &, node).getValue());
     }
     return result;
 }
@@ -67,7 +67,7 @@ OFBool DSRNumTreeNode::operator!=(const DSRDocumentTreeNode &node) const
     if (!result)
     {
         /* it's safe to cast the type since the value type has already been checked */
-        result = DSRNumericMeasurementValue::operator!=(*OFstatic_cast(const DSRNumericMeasurementValue *, OFstatic_cast(const DSRNumTreeNode *, &node)));
+        result = DSRNumericMeasurementValue::operator!=(OFstatic_cast(const DSRNumTreeNode &, node).getValue());
     }
     return result;
 }
