@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -11,7 +11,7 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module: dcmpmap
+ *  Module: dcmfg
  *
  *  Author: Jan Schlamelcher
  *
@@ -174,11 +174,13 @@ int FGPixelValueTransformation::compare(const FGBase& rhs) const
   if(result == 0)
   {
     const FGPixelValueTransformation* myRhs = OFstatic_cast(const FGPixelValueTransformation*, &rhs);
+    if (!myRhs)
+      return -1;
 
     // Compare all elements
     result = m_RescaleIntercept.compare(myRhs->m_RescaleIntercept);
-    result = m_RescaleSlope.compare(myRhs->m_RescaleSlope);
-    result = m_RescaleType.compare(myRhs->m_RescaleType);
+    if (result == 0) result = m_RescaleSlope.compare(myRhs->m_RescaleSlope);
+    if (result == 0) result = m_RescaleType.compare(myRhs->m_RescaleType);
   }
 
   return result;

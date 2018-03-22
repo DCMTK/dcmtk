@@ -76,6 +76,8 @@ int FGRealWorldValueMapping::compare(const FGBase& rhs) const
     return result;
 
   const FGRealWorldValueMapping* myRhs = OFstatic_cast(const FGRealWorldValueMapping*, &rhs);
+  if (!myRhs)
+    return -1;
 
   // Compare all items, start with VM
   if (m_Items.size() < myRhs->m_Items.size())
@@ -182,7 +184,31 @@ OFString FGRealWorldValueMapping::RWVMItem::getName() const
 
 int FGRealWorldValueMapping::RWVMItem::compare(const IODComponent& rhs) const
 {
-  return IODComponent::compare(rhs);
+  int result = IODComponent::compare(rhs);
+  const FGRealWorldValueMapping::RWVMItem* myRhs = OFstatic_cast(const FGRealWorldValueMapping::RWVMItem*, &rhs);
+  if (!myRhs)
+    return -1;
+
+  if (result == 0) result = m_MeasurementUnitsCode.compare(*myRhs);
+  if (result == 0)
+  {
+    size_t rhsSize = myRhs->m_QuantityDefinitionSequence.size();
+    size_t thisSize = m_QuantityDefinitionSequence.size();
+    if (thisSize < rhsSize)
+      return -1;
+    else if (thisSize > rhsSize)
+      return 1;
+
+    OFVector<ContentItemMacro*>::const_iterator it = m_QuantityDefinitionSequence.begin();
+    OFVector<ContentItemMacro*>::const_iterator rhsIt = myRhs->m_QuantityDefinitionSequence.begin();
+    while (it != m_QuantityDefinitionSequence.end() && (result == 0))
+    {
+        result = (*it)->compare( *(*rhsIt) );
+        it++;
+    }
+  }
+  return result;
+
 }
 
 
