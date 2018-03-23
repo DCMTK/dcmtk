@@ -13,9 +13,9 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Marco Eichelberg
+ *  Author:  Marco Eichelberg, Pedro Arizpe
  *
- *  Purpose: Convert PDF file to DICOM format
+ *  Purpose: Convert CDA file to DICOM format
  *
  */
 
@@ -51,9 +51,9 @@ END_EXTERN_C
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
-#define OFFIS_CONSOLE_APPLICATION "pdf2dcm"
+#define OFFIS_CONSOLE_APPLICATION "cda2dcm"
 
-static OFLogger pdf2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+static OFLogger cda2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -98,11 +98,14 @@ static OFCondition createHeader(
 
     // insert const value attributes
     if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
-    if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID,          UID_EncapsulatedPDFStorage);
+	//insert encapsulated file storage UID (CDA/PDF)
+    if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID,          UID_EncapsulatedCDAStorage);
     // we are now using "DOC" for the modality, which seems to be more appropriate than "OT" (see CP-749)
     if (result.good()) result = dataset->putAndInsertString(DCM_Modality,             "DOC");
     if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType,       "WSD");
-    if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
+	// according to C.24.2.1 on part 3, (0042,0012) is text/XML for CDA. 
+	// TODO: functionality for (0042,0014): list of MIME Types
+    if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "text/XML");
 
     // there is no way we could determine a meaningful series number, so we just use a constant.
     if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber,         "1");
@@ -146,20 +149,20 @@ static OFCondition insertEncapsulatedDocument(
     if (0 == stat(filename, &fileStat)) fileSize = OFstatic_cast(size_t, fileStat.st_size);
     else
     {
-      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << " not found");
+      OFLOG_ERROR(cda2dcmLogger, "file " << filename << " not found");
       return EC_IllegalCall;
     }
 
     if (fileSize == 0)
     {
-      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << " is empty");
+      OFLOG_ERROR(cda2dcmLogger, "file " << filename << " is empty");
       return EC_IllegalCall;
     }
 
     FILE *encapfile = fopen(filename, "rb");
     if (encapfile == NULL)
     {
-      OFLOG_ERROR(pdf2dcmLogger, "unable to read file " << filename);
+      OFLOG_ERROR(cda2dcmLogger, "unable to read file " << filename);
       return EC_IllegalCall;
     }
 
@@ -167,44 +170,44 @@ static OFCondition insertEncapsulatedDocument(
     if (fileSize < buflen) buflen = fileSize;
     if (buflen != fread(buf, 1, buflen, encapfile))
     {
-      OFLOG_ERROR(pdf2dcmLogger, "read error in file " << filename);
+      OFLOG_ERROR(cda2dcmLogger, "read error in file " << filename);
       fclose(encapfile);
       return EC_IllegalCall;
     }
 
-    // check magic word for PDF file
-    if (0 != strncmp("%PDF-", buf, 5))
-    {
-      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << " is not a PDF file");
-      fclose(encapfile);
-      return EC_IllegalCall;
-    }
+    // // check magic word for PDF file
+    // if (0 != strncmp("%PDF-", buf, 5))
+    // {
+      // OFLOG_ERROR(cda2dcmLogger, "file " << filename << " is not a PDF file");
+      // fclose(encapfile);
+      // return EC_IllegalCall;
+    // }
 
-    // check PDF version number
-    char *version = buf + 5;
-    OFBool found = OFFalse;
-    for (int i = 0; i < 5; ++i)
-    {
-      if (version[i] == 10 || version[i] == 13)
-      {
-        version[i] = 0; // insert end of string
-        found = OFTrue;
-        break;
-      }
-    }
+    // // check PDF version number
+    // char *version = buf + 5;
+    // OFBool found = OFFalse;
+    // for (int i = 0; i < 5; ++i)
+    // {
+      // if (version[i] == 10 || version[i] == 13)
+      // {
+        // version[i] = 0; // insert end of string
+        // found = OFTrue;
+        // break;
+      // }
+    // }
 
-    if (! found)
-    {
-      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << ": unable to decode PDF version number");
-      fclose(encapfile);
-      return EC_IllegalCall;
-    }
+//    if (!found)
+//    {
+//      OFLOG_ERROR(cda2dcmLogger, "file " << filename << ": unable to decode PDF version number");
+//      fclose(encapfile);
+//      return EC_IllegalCall;
+//    }
 
-    OFLOG_INFO(pdf2dcmLogger, "file " << filename << ": PDF " << version << ", " << (fileSize + 1023) / 1024 << "kB");
+ //   OFLOG_INFO(cda2dcmLogger, "file " << filename << ": PDF " << version << ", " << (fileSize + 1023) / 1024 << "kB");
 
     if (0 != fseek(encapfile, 0, SEEK_SET))
     {
-      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << ": seek error");
+      OFLOG_ERROR(cda2dcmLogger, "file " << filename << ": seek error");
       fclose(encapfile);
       return EC_IllegalCall;
     }
@@ -225,7 +228,7 @@ static OFCondition insertEncapsulatedDocument(
         // read PDF content
         if (fileSize != fread(bytes, 1, fileSize, encapfile))
         {
-          OFLOG_ERROR(pdf2dcmLogger, "read error in file " << filename);
+          OFLOG_ERROR(cda2dcmLogger, "read error in file " << filename);
           result = EC_IllegalCall;
         }
       }
@@ -259,7 +262,7 @@ static void createIdentifiers(
     OFCondition cond = dfile.loadFile(opt_seriesFile, EXS_Unknown, EGL_noChange);
     if (cond.bad())
     {
-      OFLOG_WARN(pdf2dcmLogger, cond.text() << ": reading file: "<< opt_seriesFile);
+      OFLOG_WARN(cda2dcmLogger, cond.text() << ": reading file: "<< opt_seriesFile);
     }
     else
     {
@@ -340,7 +343,7 @@ int main(int argc, char *argv[])
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-  cmd.addParam("pdffile-in",  "PDF input filename to be converted");
+  cmd.addParam("encapfile-in",  "PDF input filename to be converted");
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
@@ -494,19 +497,19 @@ int main(int argc, char *argv[])
     }
 
     /* print resource identifier */
-    OFLOG_DEBUG(pdf2dcmLogger, rcsid << OFendl);
+    OFLOG_DEBUG(cda2dcmLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(pdf2dcmLogger, "no data dictionary loaded, check environment variable: "
+        OFLOG_WARN(cda2dcmLogger, "no data dictionary loaded, check environment variable: "
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // read raw file
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        OFLOG_FATAL(pdf2dcmLogger, "invalid filename: <empty string>");
+        OFLOG_FATAL(cda2dcmLogger, "invalid filename: <empty string>");
         return 1;
     }
 
@@ -527,14 +530,14 @@ int main(int argc, char *argv[])
     createIdentifiers(opt_readSeriesInfo, opt_seriesFile, studyUID, seriesUID, patientName, patientID, patientBirthDate, patientSex, incrementedInstance);
     if (opt_increment) opt_instance = incrementedInstance;
 
-    OFLOG_INFO(pdf2dcmLogger, "creating encapsulated PDF object");
+    OFLOG_INFO(cda2dcmLogger, "creating encapsulated PDF object");
 
     DcmFileFormat fileformat;
 
     OFCondition result = insertEncapsulatedDocument(fileformat.getDataset(), opt_ifname);
     if (result.bad())
     {
-        OFLOG_ERROR(pdf2dcmLogger, "unable to create PDF DICOM encapsulation");
+        OFLOG_ERROR(cda2dcmLogger, "unable to create PDF DICOM encapsulation");
         return 10;
     }
     if (result.bad()) return 10;
@@ -547,39 +550,39 @@ int main(int argc, char *argv[])
 
     if (result.bad())
     {
-        OFLOG_ERROR(pdf2dcmLogger, "unable to create DICOM header: " << result.text());
+        OFLOG_ERROR(cda2dcmLogger, "unable to create DICOM header: " << result.text());
         return 10;
     }
 
-    OFLOG_INFO(pdf2dcmLogger, "writing encapsulated PDF object as file " << opt_ofname);
+    OFLOG_INFO(cda2dcmLogger, "writing encapsulated CDA object as file " << opt_ofname);
 
     OFCondition error = EC_Normal;
 
-    OFLOG_INFO(pdf2dcmLogger, "Check if new output transfer syntax is possible");
+    OFLOG_INFO(cda2dcmLogger, "Check if new output transfer syntax is possible");
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
     fileformat.getDataset()->chooseRepresentation(opt_oxfer, NULL);
     if (fileformat.getDataset()->canWriteXfer(opt_oxfer))
     {
-        OFLOG_INFO(pdf2dcmLogger, "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
+        OFLOG_INFO(cda2dcmLogger, "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {
-        OFLOG_ERROR(pdf2dcmLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
+        OFLOG_ERROR(cda2dcmLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
         return 1;
     }
 
-    OFLOG_INFO(pdf2dcmLogger, "write converted DICOM file with metaheader");
+    OFLOG_INFO(cda2dcmLogger, "write converted DICOM file with metaheader");
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
         OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
 
     if (error.bad())
     {
-        OFLOG_ERROR(pdf2dcmLogger, error.text() << ": writing file: " << opt_ofname);
+        OFLOG_ERROR(cda2dcmLogger, error.text() << ": writing file: " << opt_ofname);
         return 1;
     }
 
-    OFLOG_INFO(pdf2dcmLogger, "conversion successful");
+    OFLOG_INFO(cda2dcmLogger, "conversion successful");
 
     return 0;
 }
