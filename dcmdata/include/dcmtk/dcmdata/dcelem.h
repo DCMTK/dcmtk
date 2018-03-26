@@ -780,6 +780,20 @@ class DCMTK_DCMDATA_EXPORT DcmElement
                                       const DcmElement& candidateFirst,
                                       const DcmElement& candidateSecond) const;
 
+    /** returns a pointer to the input stream, if available, NULL otherwise.
+     *  In general, this pointer is available when the element is part of a dataset
+     *  that has been read from a DICOM file, the file is not encoded in deflate
+     *  transfer syntax, and the element value is large enough that loading the value
+     *  has been postponed to the first read access. The DcmInputStreamFactory object
+     *  can create an instance of a file stream seeked to the right position within
+     *  the DICOM file from where the element value can be read.
+     *  @return pointer to the input stream factory of the element, null if no object is available
+     */
+    inline const DcmInputStreamFactory* getInputStream() const
+    {
+        return fLoadValue;
+    }
+
     /* --- static helper functions --- */
 
     /** scan string value for conformance with given value representation (VR)
