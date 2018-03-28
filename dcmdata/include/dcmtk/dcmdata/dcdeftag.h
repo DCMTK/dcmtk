@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-02-16 22:10:18
+**   Date: 2018-03-28 13:08:09
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2018-02-16 22:10:18"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2018-03-28 13:08:09"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4256
+** Number of entries: 4260
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2230,6 +2230,7 @@
 #define DCM_SpecimenPreparationStepContentItemSequence DcmTagKey(0x0040, 0x0612)
 #define DCM_SpecimenLocalizationContentItemSequence DcmTagKey(0x0040, 0x0620)
 #define DCM_RETIRED_SlideIdentifier              DcmTagKey(0x0040, 0x06fa)
+#define DCM_WholeSlideMicroscopyImageFrameTypeSequence DcmTagKey(0x0040, 0x0710)
 #define DCM_ImageCenterPointCoordinatesSequence  DcmTagKey(0x0040, 0x071a)
 #define DCM_XOffsetInSlideCoordinateSystem       DcmTagKey(0x0040, 0x072a)
 #define DCM_YOffsetInSlideCoordinateSystem       DcmTagKey(0x0040, 0x073a)
@@ -2277,6 +2278,7 @@
 #define DCM_ScheduledProcedureStepStartDateTime  DcmTagKey(0x0040, 0x4005)
 #define DCM_RETIRED_MultipleCopiesFlag           DcmTagKey(0x0040, 0x4006)
 #define DCM_RETIRED_PerformedProcessingApplicationsCodeSequence DcmTagKey(0x0040, 0x4007)
+#define DCM_ScheduledProcedureStepExpirationDateTime DcmTagKey(0x0040, 0x4008)
 #define DCM_HumanPerformerCodeSequence           DcmTagKey(0x0040, 0x4009)
 #define DCM_ScheduledProcedureStepModificationDateTime DcmTagKey(0x0040, 0x4010)
 #define DCM_ExpectedCompletionDateTime           DcmTagKey(0x0040, 0x4011)
@@ -2596,6 +2598,8 @@
 #define DCM_ColumnPositionInTotalImagePixelMatrix DcmTagKey(0x0048, 0x021e)
 #define DCM_RowPositionInTotalImagePixelMatrix   DcmTagKey(0x0048, 0x021f)
 #define DCM_PixelOriginInterpretation            DcmTagKey(0x0048, 0x0301)
+#define DCM_NumberOfOpticalPaths                 DcmTagKey(0x0048, 0x0302)
+#define DCM_TotalPixelMatrixFocalPlanes          DcmTagKey(0x0048, 0x0303)
 #define DCM_CalibrationImage                     DcmTagKey(0x0050, 0x0004)
 #define DCM_DeviceSequence                       DcmTagKey(0x0050, 0x0010)
 #define DCM_ContainerComponentTypeCodeSequence   DcmTagKey(0x0050, 0x0012)

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-02-16 22:10:18
+**   Date: 2018-03-28 13:08:10
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -18210,6 +18210,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "RETIRED_SlideIdentifier", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0040, 0x0710, 0x0040, 0x0710,
+      EVR_SQ, "WholeSlideMicroscopyImageFrameTypeSequence", 1, 1, "DICOM/CP_1740",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0040, 0x071a, 0x0040, 0x071a,
       EVR_SQ, "ImageCenterPointCoordinatesSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -18396,6 +18400,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0040, 0x4007, 0x0040, 0x4007,
       EVR_SQ, "RETIRED_PerformedProcessingApplicationsCodeSequence", 1, 1, "DICOM/retired",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0x4008, 0x0040, 0x4008,
+      EVR_DT, "ScheduledProcedureStepExpirationDateTime", 1, 1, "DICOM/CP_1224",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x4009, 0x0040, 0x4009,
@@ -20692,6 +20700,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0048, 0x0301, 0x0048, 0x0301,
       EVR_CS, "PixelOriginInterpretation", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0302, 0x0048, 0x0302,
+      EVR_UL, "NumberOfOpticalPaths", 1, 1, "DICOM/CP_1713",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0303, 0x0048, 0x0303,
+      EVR_UL, "TotalPixelMatrixFocalPlanes", 1, 1, "DICOM/CP_1713",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0050, 0x0004, 0x0050, 0x0004,

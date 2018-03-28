@@ -23,10 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2018a and PS 3.7-2018a
 # File created on 2018-02-16 22:07:34 by J. Riesmeier on thinkpad.
+# File updated manually on 2018-03-28 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - CP 1224, 1713, 1740
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4376,6 +4377,15 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
+#
+#---------------------------------------------------------------------------
+#
+# Correction Items 1224, 1713, 1740
+#
+(0040,4008)	DT	ScheduledProcedureStepExpirationDateTime	1	DICOM/CP_1224
+(0048,0302)	UL	NumberOfOpticalPaths	1	DICOM/CP_1713
+(0048,0303)	UL	TotalPixelMatrixFocalPlanes	1	DICOM/CP_1713
+(0040,0710)	SQ	WholeSlideMicroscopyImageFrameTypeSequence	1	DICOM/CP_1740
 #
 #---------------------------------------------------------------------------
 #
