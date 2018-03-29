@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2017, OFFIS e.V.
+ *  Copyright (C) 2008-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,7 +32,8 @@
 /// User Identity Negotiation acknowledge identifies with 0x59
 #define DUL_TYPENEGOTIATIONOFUSERIDENTITY_ACK (unsigned char)0x59
 
-/// Mode of User Identity Negotiation
+/// Mode of User Identity Negotiation. In case of update, don't forget to
+/// also update ASC_USER_IDENTITY_MAX_VALUE accordingly.
 enum T_ASC_UserIdentityNegotiationMode
 {
     ASC_USER_IDENTITY_NONE            = 0,
@@ -40,9 +41,14 @@ enum T_ASC_UserIdentityNegotiationMode
     ASC_USER_IDENTITY_USER_PASSWORD   = 2,
     ASC_USER_IDENTITY_KERBEROS        = 3,
     ASC_USER_IDENTITY_SAML            = 4,
+    ASC_USER_IDENTITY_JWT             = 5,
+    /// entry always pointing to last valid entry, i.e. max valid number
+    ASC_USER_IDENTITY_MAX_VALUE       = ASC_USER_IDENTITY_JWT,
     ASC_USER_IDENTITY_UNKNOWN
 };
 
+/// Number of valid User Identity Negotiaton Modes.
+#define numUserIDModes 5
 
 /** Abstract base class for User Identity Negotiation user items
  */

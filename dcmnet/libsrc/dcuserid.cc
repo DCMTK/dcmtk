@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -268,7 +268,7 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
 
   // Parse user identity type
   const unsigned char identType = *readBuffer;
-  if ((identType < 1) || (identType > 4))
+  if ((identType < 1) || (identType > ASC_USER_IDENTITY_MAX_VALUE))
     m_userIdentityType = ASC_USER_IDENTITY_UNKNOWN;
   else
     m_userIdentityType = OFstatic_cast(T_ASC_UserIdentityNegotiationMode, identType);
@@ -378,6 +378,10 @@ void UserIdentityNegotiationSubItemRQ::dump(STD_NAMESPACE ostream& outstream) co
     case ASC_USER_IDENTITY_SAML:
       outstream << "  Authentication mode 4: SAML" << OFendl <<
         "  SAML Assertion (not dumped) length: " << m_primFieldLength << OFendl;
+      break;
+    case ASC_USER_IDENTITY_JWT:
+      outstream << "  Authentication mode 5: JWT" << OFendl <<
+        "  JSON Web Token (not dumped) length: " << m_primFieldLength << OFendl;
       break;
     default:
       outstream << "  Authentication mode: Unknown " << OFendl <<

@@ -1400,6 +1400,27 @@ OFCondition ASC_setIdentRQSaml(
 }
 
 
+OFCondition ASC_setIdentRQJwt(
+    T_ASC_Parameters * params,
+    const char* jwt,
+    const Uint16 length,
+    const OFBool requestRsp)
+{
+  if (params == NULL)
+    return ASC_NULLKEY;
+  UserIdentityNegotiationSubItemRQ* rq = params->DULparams.reqUserIdentNeg;
+  if (rq == NULL)
+    rq = new UserIdentityNegotiationSubItemRQ();
+  else
+    rq->clear();
+  rq->setIdentityType(ASC_USER_IDENTITY_JWT);
+  rq->setPrimField(jwt, length);
+  rq->setReqPosResponse(requestRsp);
+  params->DULparams.reqUserIdentNeg = rq;
+  return EC_Normal;
+}
+
+
 void ASC_getCopyOfIdentResponse(T_ASC_Parameters * params,
                                 char*& buffer,
                                 unsigned short& bufferLen)

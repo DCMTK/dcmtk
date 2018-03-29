@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -278,6 +278,8 @@ int main(int argc, char *argv[])
                                                          "read kerberos ticket from file f");
       cmd.addOption("--saml",                         1, "[f]ilename: string",
                                                          "read SAML request from file f");
+      cmd.addOption("--jwt",                          1, "[f]ilename: string",
+                                                         "read JWT data from file f");
       cmd.addOption("--pos-response",         "-rsp",    "expect positive response");
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",              "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
@@ -662,6 +664,11 @@ int main(int argc, char *argv[])
       {
         app.checkValue(cmd.getValue(opt_identFile));
         opt_identMode = ASC_USER_IDENTITY_SAML;
+      }
+      if (cmd.findOption("--jwt"))
+      {
+        app.checkValue(cmd.getValue(opt_identFile));
+        opt_identMode = ASC_USER_IDENTITY_JWT;
       }
       cmd.endOptionBlock();
       cmd.beginOptionBlock();
@@ -1681,13 +1688,14 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
     }
     case ASC_USER_IDENTITY_KERBEROS:
     case ASC_USER_IDENTITY_SAML:
+    case ASC_USER_IDENTITY_JWT:
     {
       OFFile identFile;
       if (!identFile.fopen(opt_identFile.c_str(), "rb"))
       {
         OFString openerror;
         identFile.getLastErrorString(openerror);
-        OFLOG_ERROR(storescuLogger, "Unable to open Kerberos or SAML file: " << openerror);
+        OFLOG_ERROR(storescuLogger, "Unable to open Kerberos, SAML or JWT file: " << openerror);
         return EC_IllegalCall;
       }
       // determine file size
@@ -1698,7 +1706,7 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
       identFile.rewind();
       if (filesize > 65535)
       {
-        OFLOG_INFO(storescuLogger, "Kerberos or SAML file is larger than 65535 bytes, bytes after that position are ignored");
+        OFLOG_INFO(storescuLogger, "Kerberos, SAML or JWT file is larger than 65535 bytes, bytes after that position are ignored");
         filesize = 65535;
       }
 
@@ -1707,7 +1715,7 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
       identFile.fclose();
       if (bytesRead == 0)
       {
-        OFLOG_ERROR(storescuLogger, "Unable to read Kerberos or SAML info from file: File empty?");
+        OFLOG_ERROR(storescuLogger, "Unable to read Kerberos, SAML or JWT info from file: File empty?");
         delete[] buf;
         return EC_IllegalCall;
       }
@@ -1715,8 +1723,10 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
       // size does not exceed 65535 bytes.
       if (opt_identMode == ASC_USER_IDENTITY_KERBEROS)
         cond = ASC_setIdentRQKerberos(params, buf, OFstatic_cast(Uint16,bytesRead), opt_identResponse);
-      else
+      else if (opt_identMode == ASC_USER_IDENTITY_SAML)
         cond = ASC_setIdentRQSaml(params, buf, OFstatic_cast(Uint16,bytesRead), opt_identResponse);
+      else // JWT
+        cond = ASC_setIdentRQJwt(params, buf, OFstatic_cast(Uint16,bytesRead), opt_identResponse);
       delete[] buf;
       break;
     }

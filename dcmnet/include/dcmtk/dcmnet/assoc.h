@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -481,6 +481,19 @@ ASC_setIdentRQSaml(
     const Uint16 length,
     const OFBool requestRsp = OFTrue);
 
+/** Sets JSON Web Token (JWT) authentication for User Identity Negotiation
+ *  request.
+ *  @param params - [in/out] The association parameters to be filled
+ *  @param jwt    - [in]  The JWT information to send (will be copied)
+ *  @param length - [in] Length of JWT information
+ *  @return EC_Normal if JWT info could be set, error otherwise
+ */
+DCMTK_DCMNET_EXPORT OFCondition
+ASC_setIdentRQJwt(
+    T_ASC_Parameters * params,
+    const char* jwt,
+    const Uint16 length,
+    const OFBool requestRsp = OFTrue);
 
 /** Acknowledges a User Identity Negotiation request.
  *  @param params - [in/out] The association parameters to be filled

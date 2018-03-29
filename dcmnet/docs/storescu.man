@@ -224,6 +224,9 @@ user identity negotiation:
         --saml  [f]ilename: string
           read SAML request from file f
 
+        --jwt  [f]ilename: string
+          read JWT data from file f
+
   -rsp  --pos-response
           expect positive response
 
@@ -549,6 +552,6 @@ It is an error if no data dictionary can be loaded.
 
 \section storescu_copyright COPYRIGHT
 
-Copyright (C) 1996-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
