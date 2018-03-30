@@ -29,6 +29,7 @@
 #include "dcmtk/ofstd/ofchrenc.h"   /* for class OFCharacterEncoding */
 #endif
 
+OFBool OFFilename::convertOnDefault = OFFalse;
 
 OFFilename::OFFilename()
   : filename_(NULL)
