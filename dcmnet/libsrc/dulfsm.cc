@@ -1422,6 +1422,16 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
         p += 4 + pdvLength;                 //move p so that it points to the next PDV (move p 4 bytes over the length field plus the amount of bytes which is captured in the PDV's length field (over presentation context.Id, message information header and data fragment))
         length -= 4 + pdvLength;            //update length (i.e. determine the length of the buffer which has not been evaluated yet.)
         pdvCount++;                         //increase counter by one, since we've found another PDV
+
+        // There must be at least a presentation context ID and a message
+        // control header (see below), else the calculation pdvLength - 2 below
+        // will underflow.
+        if (pdvLength < 2)
+        {
+           char buf[256];
+           sprintf(buf, "PDV with invalid length %lu encountered. This probably indicates a malformed P DATA PDU.", pdvLength);
+           return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf);
+        }
     }
 
     /* if after having counted the PDVs the length variable does not equal */
