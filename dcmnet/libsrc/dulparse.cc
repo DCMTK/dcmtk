@@ -251,6 +251,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             break;
         default:
             cond = parseDummy(buf, &itemLength, pduLength);
+            if (cond.bad())
+                return cond;
             buf += itemLength;
             if (!OFStandard::safeSubtract(pduLength, itemLength, pduLength))
               return makeUnderflowError("unknown item type", pduLength, itemLength);
@@ -411,6 +413,8 @@ parsePresentationContext(unsigned char type,
                 break;
             default:
                 cond = parseDummy(buf, &length, presentationLength);
+                if (cond.bad())
+                    return cond;
                 buf += length;
                 if (!OFStandard::safeSubtract(presentationLength, length, presentationLength))
                   return makeUnderflowError("unknown presentation context type", presentationLength, length);
@@ -509,6 +513,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
 
         case DUL_TYPEASYNCOPERATIONS:
             cond = parseDummy(buf, &length, userLength);
+            if (cond.bad())
+                return cond;
             buf += length;
             if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
               return makeLengthError("asynchronous operation user item type", userLength, length);
