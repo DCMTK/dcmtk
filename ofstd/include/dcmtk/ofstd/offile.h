@@ -125,13 +125,15 @@ public:
    */
   OFFilename();
 
+  static OFBool convertOnDefault;
+
   /** constructor expecting a conventional character string
    *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
    *  @param convert  convert given filename to wide character encoding as an
    *    alternative representation
    */
   OFFilename(const char *filename,
-             const OFBool convert = OFFalse);
+             const OFBool convert = convertOnDefault);
 
   /** constructor expecting a character string as an OFString instance
    *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
@@ -139,7 +141,7 @@ public:
    *    alternative representation.  Only works on Windows systems.
    */
   OFFilename(const OFString &filename,
-             const OFBool convert = OFFalse);
+             const OFBool convert = convertOnDefault);
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** constructor expecting a wide character string
@@ -217,7 +219,7 @@ public:
    *    alternative representation.  Only works on Windows systems.
    */
   void set(const char *filename,
-           const OFBool convert = OFFalse);
+           const OFBool convert = convertOnDefault);
 
   /** replace currently stored filename by given value
    *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
@@ -225,7 +227,7 @@ public:
    *    alternative representation).  Only works on Windows systems.
    */
   void set(const OFString &filename,
-           const OFBool convert = OFFalse);
+           const OFBool convert = convertOnDefault);
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** replace currently stored filename by given value

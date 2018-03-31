@@ -210,8 +210,10 @@ static OFBool processIsForkedChild = OFFalse;
 static OFBool shouldFork = OFFalse;
 
 #ifdef _WIN32
-static char **command_argv = NULL;
-static int command_argc = 0;
+static OFString cmdLine;
+#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(DCMTK_USE_WCHAR_T)
+static STD_NAMESPACE wstring cmdLineW;
+#endif
 #endif
 
 OFBool DUL_processIsForkedChild()
@@ -266,14 +268,65 @@ void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[])
 {
   shouldFork = OFTrue;
 #ifdef _WIN32
-  command_argc = argc;
-  command_argv = argv;
+  // prepare the command line
+  cmdLine = argv[0];
+  cmdLine += " --forked-child";
+  for (int i=1; i < argc; ++i)
+  {
+    /* copy each argv value and surround it with double quotes
+     * to keep option values containing a space glued together
+     */
+    cmdLine += " \"";
+    cmdLine += argv[i];
+    /* if last character in argument value is a backslash, escape it
+     * since otherwise it would escape the quote appended in the following
+     * step, i.e. make sure that something like '\my\dir\' does not become
+     * '"\my\dir\"' but instead ends up as '"\my\dir\\"' (single quotes for
+     *  demonstration purposes). Make sure nobody passes a zero length string.
+     */
+    size_t len = strlen(argv[i]);
+    if ((len > 0) && (argv[i][len - 1] == '\\'))
+    {
+        cmdLine += "\\";
+    }
+    cmdLine += "\"";
+  }
 #else
   // Work around "Unused parameters"
   (void) argc;
   (void) argv;
 #endif
 }
+
+#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(DCMTK_USE_WCHAR_T)
+void DUL_requestForkOnTransportConnectionReceipt(int argc, wchar_t *argv[])
+{
+  shouldFork = OFTrue;
+  // prepare the command line
+  cmdLineW = argv[0];
+  cmdLineW += L" --forked-child";
+  for (int i=1; i < argc; ++i)
+  {
+    /* copy each argv value and surround it with double quotes
+     * to keep option values containing a space glued together
+     */
+    cmdLineW += L" \"";
+    cmdLineW += argv[i];
+    /* if last character in argument value is a backslash, escape it
+     * since otherwise it would escape the quote appended in the following
+     * step, i.e. make sure that something like '\my\dir\' does not become
+     * '"\my\dir\"' but instead ends up as '"\my\dir\\"' (single quotes for
+     *  demonstration purposes). Make sure nobody passes a zero length string.
+     */
+    if (argv[i][0] && cmdLineW[cmdLineW.size()-1] == L'\\')
+    {
+        cmdLineW += L"\\";
+    }
+    cmdLineW += L"\"";
+  }
+}
+#endif
+
 
 void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc)
 {
@@ -1744,7 +1797,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         }
     }
 #elif defined(_WIN32)
-    if (shouldFork && (command_argc > 0) && command_argv)
+    if (shouldFork && (cmdLine.size() > 0
+#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(DCMTK_USE_WCHAR_T)
+		|| cmdLineW.size() > 0
+#endif
+	))
     {
         // win32 code to create new child process
         HANDLE childSocketHandle;
@@ -1757,29 +1814,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         sa.bInheritHandle = TRUE;
         sa.lpSecurityDescriptor = NULL;
 
-        // prepare the command line
-        OFString cmdLine = command_argv[0];
-        cmdLine += " --forked-child";
-        for (int i=1; i < command_argc; ++i)
-        {
-            /* copy each argv value and surround it with double quotes
-             * to keep option values containing a space glued together
-             */
-            cmdLine += " \"";
-            cmdLine += command_argv[i];
-            /* if last character in argument value is a backslash, escape it
-             * since otherwise it would escape the quote appended in the following
-             * step, i.e. make sure that something like '\my\dir\' does not become
-             * '"\my\dir\"' but instead ends up as '"\my\dir\\"' (single quotes for
-             *  demonstration purposes). Make sure nobody passes a zero length string.
-             */
-            size_t len = strlen(command_argv[i]);
-            if ((len > 0) && (command_argv[i][len - 1] == '\\'))
-            {
-	            cmdLine += "\\";
-            }
-            cmdLine += "\"";
-        }
 
         // create anonymous pipe
         if (!CreatePipe(&hChildStdInRead, &hChildStdInWrite, &sa,0))
@@ -1807,7 +1841,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         PROCESS_INFORMATION pi;
         memset(&pi,0,sizeof(pi));
         memset(&si,0,sizeof(si));
-
         // prepare startup info for child process:
         // the child uses the same stdout and stderr as the parent, but
         // stdin is the read end of our anonymous pipe.
@@ -1816,9 +1849,24 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
         si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
         si.hStdInput = hChildStdInRead;
+#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(DCMTK_USE_WCHAR_T)
+		STARTUPINFOW siw;
+		memset(&siw, 0, sizeof(siw));
+		siw.cb = sizeof(siw);
+		siw.dwFlags |= STARTF_USESTDHANDLES;
+		siw.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+		siw.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+		siw.hStdInput = hChildStdInRead;
+#endif
 
         // create child process.
-        if (!CreateProcess(NULL,OFconst_cast(char *, cmdLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
+        if (
+#if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(DCMTK_USE_WCHAR_T)
+          cmdLineW.size()?
+          !CreateProcessW(NULL,OFconst_cast(wchar_t *, cmdLineW.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &siw, &pi) :
+#endif
+          !CreateProcess(NULL,OFconst_cast(char *, cmdLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi)
+        )
         {
             OFOStringStream stream;
             stream << "Multi-Process Error: Creating process failed with error code "

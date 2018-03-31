@@ -229,8 +229,9 @@ extern "C" void sigChildHandler(int)
 #define SHORTCOL 4
 #define LONGCOL 21
 
-int main(int argc, char *argv[])
+DCMTK_MAIN_FUNCTION
 {
+  OFFilename::convertOnDefault = OFTrue; // to convert filenames from utf-8 to wide characters on Windows
   T_ASC_Network *net;
   DcmAssociationConfiguration asccfg;
 

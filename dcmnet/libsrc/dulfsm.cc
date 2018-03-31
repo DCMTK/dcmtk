@@ -2320,7 +2320,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #ifdef DCMTK_HAVE_POLL
             struct pollfd pfd[] =
             {
-                { s, POLLIN, 0 }
+                { s, POLLOUT, 0 }
             };
             rc = poll(pfd, 1, timeout.tv_sec*1000+(timeout.tv_usec/1000));
 #else
