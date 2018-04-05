@@ -46,6 +46,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofdatime.h"
 #include "dcmtk/dcmdata/dccodec.h"
+#include "dcmtk/ofstd/ofxml.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -137,6 +138,116 @@ static OFCondition createHeader(
 }
 
 
+//static const char* searchmediaType(const char *filename, const char *root)
+//{
+//	char findings[5000];
+//	XMLNode currnode = XMLNode::parseFile(filename, root);
+//	if (currnode.nChildNode() == 0)
+//	{
+//		if (currnode.isAttributeSet("mediaType"))
+//		{
+//			std::cout << "\nFOUND mediaType on a leaf called "<< currnode.getName() << "!\n" << currnode.getAttribute("mediaType") << " MediaType";
+//			//return currnode.getAttribute("mediaType");
+//			strcpy(findings, currnode.getAttribute("mediaType"));
+//		}
+//		else {
+//			std::cout << "\nMedialess leaf";
+//			strcpy(findings, "");
+//		}
+//	}
+//	else {
+//		if (currnode.isAttributeSet("mediaType"))
+//		{
+//			std::cout << "\nFOUND a mediaType on a branch called " << currnode.getName() << "! The mediatype is:\n" << currnode.getAttribute("mediaType");
+//			//return currnode.getAttribute("mediaType");
+//			strcpy(findings, currnode.getAttribute("mediaType"));
+//		}
+//		for (int i = 0; i <= currnode.nChildNode(); i++)
+//		{
+//			strcpy(findings, searchmediaType(filename, currnode.getChildNode(i).getName()));
+//			std::cout<<"\n\ncalling SMT("<< currnode.getChildNode(i).getName();
+//		//for (int i = 0; i <= currnode.nChildNode(); i++)
+//		//{
+//		//	if (currnode.getChildNode(i).isAttributeSet("mediaType"))
+//		//	{
+//		//		currnode.getChildNode(i).getAttribute("mediaType");
+//		//		std::cout << "\nFOUND mediaType on the " << i << "th principal node called "<< currnode.getChildNode(i).getName() <<"!\n" << currnode.getChildNode(i).getAttribute("mediaType") << "\n";
+//		//	}
+//		//	XMLNode focusnode = currnode.getChildNode(i);
+//		//	while (focusnode.nChildNode() != 0) {
+//		//		for (int j = 0; j <= focusnode.nChildNode(); j++) {
+//		//			if (focusnode.getChildNode(j).isAttributeSet("mediaType"))
+//		//				std::cout << "\nFOUND mediaType on the " << j << "th child of the " << j << "th principal node!\n" << currnode.getChildNode(i).getAttribute("mediaType") << "\n";
+//		//		}
+//		//		focusnode = focusnode.getChildNode();
+//		//	}
+//		}
+//	}
+//	return findings;
+//}
+
+static const char* searchmediaType(XMLNode currnode)
+{
+	static const char* findings="meh";
+	if (currnode.nChildNode() == 0)
+	{
+		std::cout << "\ncurrnode has no children";
+		if (currnode.isAttributeSet("mediaType"))
+		{
+			std::cout << "\nFOUND mediaType on a leaf called " << currnode.getName() << "! The mediatype is:\n" << currnode.getAttribute("mediaType");
+			//strcpy(findings, currnode.getAttribute("mediaType"));
+		}
+		else {
+			std::cout << "\nMedialess leaf";
+			//strcpy(findings, " ");
+		}
+	}
+	else {
+		std::cout << "\ncurrnode has children";
+		if (currnode.isAttributeSet("mediaType"))
+		{
+			std::cout << "\nand mediaType";
+			std::cout << "\nFOUND a mediaType on a branch called " << currnode.getName() << "! The mediatype is:\n" << currnode.getAttribute("mediaType");
+			//strcpy(findings, currnode.getAttribute("mediaType"));
+		}
+		for (int i = 0; i < currnode.nChildNode(); i++)
+		{
+			std::cout << "\nprocessing child number "<<i;
+			std::cout << "\n\ncalling SMT(" << currnode.getChildNode(i).getName() << ")";
+			std::cout << searchmediaType(currnode.getChildNode(i));
+			//strcpy(findings, searchmediaType(currnode.getChildNode(i)));
+		}
+	}
+	return findings;
+}
+
+static OFCondition parseCDA(
+	DcmItem *dataset,
+	const char *filename)
+{
+	XMLNode fileNode = XMLNode::parseFile(filename, "ClinicalDocument");
+	std::cout << "use of patient name (L)\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getAttribute("use"))) << "\n";
+	std::cout << "Patient Name\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/given").getText())) << " " << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/family").getText())) << "\n";
+	//std::cout << "searching for media Types:\n"<< searchmediaType(filename, "ClinicalDocument");
+	std::cout << "\n\ncalling SMT(" << fileNode.getName() << ")";
+	std::cout << "searching for media Types:\n"<< searchmediaType(fileNode);
+	//if(currnode.getChildNode(i).nAttribute()>0)std::cout << "enumcontents of " <<i<< "th node's attrib name(s?)\n"<< currnode.getChildNode(i).enumContents(0).attrib.lpszName << "\n";
+	return EC_Normal;
+}
+
+
+//const char* findMediaTypeinNode(char *name, const char *filename)
+//{
+//	XMLNode node = XMLNode::parseFile(filename, "ClinicalDocument");
+//	if (node.isAttributeSet(name))
+//		return node.getAttribute(name);
+//		//return node.getAttribute(name)+ findAttributeNameinNode(name, node.getChildNode());
+//	else
+//		return "";
+//}
+
+
+
 //inserts Document
 static OFCondition insertEncapsulatedDocument(
   DcmItem *dataset,
@@ -174,36 +285,51 @@ static OFCondition insertEncapsulatedDocument(
       fclose(encapfile);
       return EC_IllegalCall;
     }
+	//CDA SPECIFIC FUNCTIONS
+    //check for ClinicalDocument
+	//TODO: REWRITE WITH XMLParser
+	 OFBool valid = OFFalse;
+	 for (int i = 0; i < 99; ++i) {
+		 char *cdavalidate = buf + i;
+		 if (0 == strncmp("<ClinicalDocument", cdavalidate, 17))
+		 {
+			 valid = OFTrue;
+			 break;
+		 }
+	 }
+	
+	 if(!valid){
+		 OFLOG_ERROR(cda2dcmLogger, "file " << filename << " is not a CDA file");
+		 fclose(encapfile);
+		 return EC_IllegalCall;
+	 }
 
-    // // check magic word for PDF file
-    // if (0 != strncmp("%PDF-", buf, 5))
-    // {
-      // OFLOG_ERROR(cda2dcmLogger, "file " << filename << " is not a PDF file");
-      // fclose(encapfile);
-      // return EC_IllegalCall;
-    // }
+	//check for media types
 
-    // // check PDF version number
-    // char *version = buf + 5;
-    // OFBool found = OFFalse;
-    // for (int i = 0; i < 5; ++i)
-    // {
-      // if (version[i] == 10 || version[i] == 13)
-      // {
-        // version[i] = 0; // insert end of string
-        // found = OFTrue;
-        // break;
-      // }
-    // }
+	//For an Encapsulated CDA Document:
+	//  Document Title: 
+	//  (0042,0010) shall have the value of the CDA Document Title,
+	//  if one is present in the encapsulated document.
+	//  Concept Name Code Sequence:
+	//  (0040, A043) shall have the value of the CDA Document Type Code, 
+	//  with transcoding as necessary for converting the HL7 CE Data Type
+	//  to the DICOM Code Sequence item.
+	//  The MIME Type of the Encapsulated Document:
+	//  (0042, 0012) value shall be ‘text / XML’.
+	
+	//search for the first occurrence of "<title>" and set as title. 
+	//Make sure no <section> was found beforehand.
 
-//    if (!found)
-//    {
-//      OFLOG_ERROR(cda2dcmLogger, "file " << filename << ": unable to decode PDF version number");
-//      fclose(encapfile);
-//      return EC_IllegalCall;
-//    }
-
- //   OFLOG_INFO(cda2dcmLogger, "file " << filename << ": PDF " << version << ", " << (fileSize + 1023) / 1024 << "kB");
+	//List of MIME Types
+	//  (0042, 0014):
+	//  1C 
+	//  MIME Types of subcomponents of the encapsulated document.
+	//	Required if the encapsulated document incorporates subcomponents with MIME types
+	//	different than the primary MIME Type of the encapsulated document.
+	//	  Note: An Encapsulated CDA that includes an embedded JPEG image and an embedded
+	//	  PDF would list “image / jpeg\application / pdf”.
+	
+	//  search for modifier "mediaType=" and return the substring that follows;
 
     if (0 != fseek(encapfile, 0, SEEK_SET))
     {
@@ -225,7 +351,7 @@ static OFCondition insertEncapsulatedDocument(
         // blank pad byte
         bytes[numBytes - 1] = 0;
 
-        // read PDF content
+        // read file content
         if (fileSize != fread(bytes, 1, fileSize, encapfile))
         {
           OFLOG_ERROR(cda2dcmLogger, "read error in file " << filename);
@@ -338,12 +464,12 @@ int main(int argc, char *argv[])
   OFCmdSignedInt opt_instance = 1;
   OFBool         opt_increment = OFFalse;
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert PDF file to DICOM", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert CDA file to DICOM", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-  cmd.addParam("encapfile-in",  "PDF input filename to be converted");
+  cmd.addParam("encapfile-in",  "CDA input filename to be converted");
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
@@ -353,8 +479,8 @@ int main(int argc, char *argv[])
 
    cmd.addGroup("DICOM document options:");
     cmd.addSubGroup("burned-in annotation:");
-      cmd.addOption("--annotation-yes",    "+an",    "PDF contains patient identifying data (default)");
-      cmd.addOption("--annotation-no",     "-an",    "PDF does not contain patient identifying data");
+      cmd.addOption("--annotation-yes",    "+an",    "CDA contains patient identifying data (default)");
+      cmd.addOption("--annotation-no",     "-an",    "CDA does not contain patient identifying data");
 
     cmd.addSubGroup("document title:");
       cmd.addOption("--title",             "+t",  1, "[t]itle: string (default: empty)",
@@ -530,17 +656,26 @@ int main(int argc, char *argv[])
     createIdentifiers(opt_readSeriesInfo, opt_seriesFile, studyUID, seriesUID, patientName, patientID, patientBirthDate, patientSex, incrementedInstance);
     if (opt_increment) opt_instance = incrementedInstance;
 
-    OFLOG_INFO(cda2dcmLogger, "creating encapsulated PDF object");
+    OFLOG_INFO(cda2dcmLogger, "creating encapsulated CDA object");
 
     DcmFileFormat fileformat;
 
     OFCondition result = insertEncapsulatedDocument(fileformat.getDataset(), opt_ifname);
-    if (result.bad())
-    {
-        OFLOG_ERROR(cda2dcmLogger, "unable to create PDF DICOM encapsulation");
-        return 10;
-    }
+	OFCondition resultxml = parseCDA(fileformat.getDataset(), opt_ifname);
+	if (result.bad())
+	{
+		OFLOG_ERROR(cda2dcmLogger, "unable to create CDA DICOM encapsulation");
+		return 10;
+	}
+
+	if (resultxml.bad())
+	{
+		OFLOG_ERROR(cda2dcmLogger, "unable to create CDA DICOM encapsulation");
+		return 10;
+	}
     if (result.bad()) return 10;
+	if (resultxml.bad()) return 10;
+	
 
     // now we need to generate an instance number that is guaranteed to be unique within a series.
 
