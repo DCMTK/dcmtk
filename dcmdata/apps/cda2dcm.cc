@@ -26,6 +26,8 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
+#include <list>
+
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
@@ -137,116 +139,67 @@ static OFCondition createHeader(
     return result;
 }
 
-
-//static const char* searchmediaType(const char *filename, const char *root)
-//{
-//	char findings[5000];
-//	XMLNode currnode = XMLNode::parseFile(filename, root);
-//	if (currnode.nChildNode() == 0)
-//	{
-//		if (currnode.isAttributeSet("mediaType"))
-//		{
-//			std::cout << "\nFOUND mediaType on a leaf called "<< currnode.getName() << "!\n" << currnode.getAttribute("mediaType") << " MediaType";
-//			//return currnode.getAttribute("mediaType");
-//			strcpy(findings, currnode.getAttribute("mediaType"));
-//		}
-//		else {
-//			std::cout << "\nMedialess leaf";
-//			strcpy(findings, "");
-//		}
-//	}
-//	else {
-//		if (currnode.isAttributeSet("mediaType"))
-//		{
-//			std::cout << "\nFOUND a mediaType on a branch called " << currnode.getName() << "! The mediatype is:\n" << currnode.getAttribute("mediaType");
-//			//return currnode.getAttribute("mediaType");
-//			strcpy(findings, currnode.getAttribute("mediaType"));
-//		}
-//		for (int i = 0; i <= currnode.nChildNode(); i++)
-//		{
-//			strcpy(findings, searchmediaType(filename, currnode.getChildNode(i).getName()));
-//			std::cout<<"\n\ncalling SMT("<< currnode.getChildNode(i).getName();
-//		//for (int i = 0; i <= currnode.nChildNode(); i++)
-//		//{
-//		//	if (currnode.getChildNode(i).isAttributeSet("mediaType"))
-//		//	{
-//		//		currnode.getChildNode(i).getAttribute("mediaType");
-//		//		std::cout << "\nFOUND mediaType on the " << i << "th principal node called "<< currnode.getChildNode(i).getName() <<"!\n" << currnode.getChildNode(i).getAttribute("mediaType") << "\n";
-//		//	}
-//		//	XMLNode focusnode = currnode.getChildNode(i);
-//		//	while (focusnode.nChildNode() != 0) {
-//		//		for (int j = 0; j <= focusnode.nChildNode(); j++) {
-//		//			if (focusnode.getChildNode(j).isAttributeSet("mediaType"))
-//		//				std::cout << "\nFOUND mediaType on the " << j << "th child of the " << j << "th principal node!\n" << currnode.getChildNode(i).getAttribute("mediaType") << "\n";
-//		//		}
-//		//		focusnode = focusnode.getChildNode();
-//		//	}
-//		}
-//	}
-//	return findings;
-//}
-
-static const char* searchmediaType(XMLNode currnode)
+static OFBool searchmediaType(XMLNode currnode, OFList<OFString> *results)
 {
-	static const char* findings="meh";
+	OFBool found = OFFalse;
 	if (currnode.nChildNode() == 0)
 	{
-		std::cout << "\ncurrnode has no children";
+		//"currnode has no children (leaf)";
 		if (currnode.isAttributeSet("mediaType"))
-		{
-			std::cout << "\nFOUND mediaType on a leaf called " << currnode.getName() << "! The mediatype is:\n" << currnode.getAttribute("mediaType");
-			//strcpy(findings, currnode.getAttribute("mediaType"));
-		}
-		else {
-			std::cout << "\nMedialess leaf";
-			//strcpy(findings, " ");
+		{//mediatype found on leaf
+			results->push_back(OFSTRING_GUARD(currnode.getAttribute("mediaType")));
+			found = OFTrue;
 		}
 	}
 	else {
-		std::cout << "\ncurrnode has children";
+		//"currnode has children (branch)";
 		if (currnode.isAttributeSet("mediaType"))
-		{
-			std::cout << "\nand mediaType";
-			std::cout << "\nFOUND a mediaType on a branch called " << currnode.getName() << "! The mediatype is:\n" << currnode.getAttribute("mediaType");
-			//strcpy(findings, currnode.getAttribute("mediaType"));
+		{//mediatype found on branch
+				results->push_back(OFSTRING_GUARD(currnode.getAttribute("mediaType")));
+				found = OFTrue;
 		}
 		for (int i = 0; i < currnode.nChildNode(); i++)
-		{
-			std::cout << "\nprocessing child number "<<i;
-			std::cout << "\n\ncalling SMT(" << currnode.getChildNode(i).getName() << ")";
-			std::cout << searchmediaType(currnode.getChildNode(i));
-			//strcpy(findings, searchmediaType(currnode.getChildNode(i)));
+		{//search all children recursively
+			OFBool childfound = searchmediaType(currnode.getChildNode(i), results);
+			found |= childfound;
 		}
 	}
-	return findings;
+	return found;
 }
+
+
 
 static OFCondition parseCDA(
 	DcmItem *dataset,
 	const char *filename)
 {
-	XMLNode fileNode = XMLNode::parseFile(filename, "ClinicalDocument");
-	std::cout << "use of patient name (L)\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getAttribute("use"))) << "\n";
-	std::cout << "Patient Name\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/given").getText())) << " " << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/family").getText())) << "\n";
-	//std::cout << "searching for media Types:\n"<< searchmediaType(filename, "ClinicalDocument");
-	std::cout << "\n\ncalling SMT(" << fileNode.getName() << ")";
-	std::cout << "searching for media Types:\n"<< searchmediaType(fileNode);
-	//if(currnode.getChildNode(i).nAttribute()>0)std::cout << "enumcontents of " <<i<< "th node's attrib name(s?)\n"<< currnode.getChildNode(i).enumContents(0).attrib.lpszName << "\n";
+	XMLResults err;
+	XMLNode fileNode = XMLNode::parseFile(filename, "ClinicalDocument", &err);
+	std::cout << "\nDocument title:\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNode("title").getText())) << "";
+	//std::cout << "\nUse of patient name\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getAttribute("use"))) << "";
+	std::cout << "\nPatient Name\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/given").getText())) << " " << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/family").getText()));
+	//std::cout << "\nFile reading returned:\n" << fileNode.getError(err.error);
+	if (0 != err.error)
+	{std::cout << "\n" << fileNode.getError(err.error) << "\n"; return EC_IllegalCall;}
+	else{
+		OFList<OFString> mediatypeslist;
+		OFString mediatypes;
+		if (searchmediaType(fileNode, &mediatypeslist))
+		{
+			while (!mediatypeslist.empty())
+			{
+				if (mediatypes.find(mediatypeslist.front()) == OFString_npos) {
+					if(!mediatypes.empty())mediatypes.append("\\");
+					mediatypes.append(mediatypeslist.front());
+				}
+				mediatypeslist.pop_front();
+			}
+			std::cout << "\nThe CDA File contains following media types:\n" <<mediatypes<< "\n\n";
+		}
+
+	}
 	return EC_Normal;
 }
-
-
-//const char* findMediaTypeinNode(char *name, const char *filename)
-//{
-//	XMLNode node = XMLNode::parseFile(filename, "ClinicalDocument");
-//	if (node.isAttributeSet(name))
-//		return node.getAttribute(name);
-//		//return node.getAttribute(name)+ findAttributeNameinNode(name, node.getChildNode());
-//	else
-//		return "";
-//}
-
-
 
 //inserts Document
 static OFCondition insertEncapsulatedDocument(
