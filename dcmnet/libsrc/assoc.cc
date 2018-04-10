@@ -518,7 +518,7 @@ ASC_getRejectParameters(T_ASC_Parameters * params,
 }
 
 OFString&
-ASC_printRejectParameters(OFString& str, T_ASC_RejectParameters *rej)
+ASC_printRejectParameters(OFString& str, const T_ASC_RejectParameters *rej)
 {
     const char *result;
     const char *source;
@@ -2140,7 +2140,7 @@ ASC_acknowledgeAssociation(
 OFCondition
 ASC_rejectAssociation(
     T_ASC_Association * association,
-    T_ASC_RejectParameters * rejectParameters,
+    const T_ASC_RejectParameters * rejectParameters,
     void **associatePDU,
     unsigned long *associatePDUlength)
 {
@@ -2265,14 +2265,14 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 
 
 // Deprecated wrapper functions follow
-void ASC_printRejectParameters(FILE *f, T_ASC_RejectParameters *rej)
+void ASC_printRejectParameters(FILE *f, const T_ASC_RejectParameters *rej)
 {
     OFString str;
     ASC_printRejectParameters(str, rej);
     fprintf(f, "%s\n", str.c_str());
 }
 
-void ASC_printRejectParameters(STD_NAMESPACE ostream& out, T_ASC_RejectParameters *rej)
+void ASC_printRejectParameters(STD_NAMESPACE ostream& out, const T_ASC_RejectParameters *rej)
 {
     OFString str;
     ASC_printRejectParameters(str, rej);

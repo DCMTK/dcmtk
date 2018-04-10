@@ -335,7 +335,7 @@ ASC_getRejectParameters(
 DCMTK_DCMNET_EXPORT OFString&
 ASC_printRejectParameters(
     OFString& str,
-    T_ASC_RejectParameters *rej);
+    const T_ASC_RejectParameters *rej);
 
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_addPresentationContext(
@@ -597,7 +597,7 @@ ASC_acknowledgeAssociation(
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_rejectAssociation(
     T_ASC_Association * association,
-    T_ASC_RejectParameters * rejectParameters,
+    const T_ASC_RejectParameters * rejectParameters,
     void **associatePDU=NULL,
     unsigned long *associatePDUlength=NULL);
 
@@ -623,13 +623,13 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 DCMTK_DCMNET_EXPORT void
 ASC_printRejectParameters(
     FILE *f,
-    T_ASC_RejectParameters *rej);
+    const T_ASC_RejectParameters *rej);
 
 /// @deprecated Please use OFString& ASC_printRejectParameters(OFString&, T_ASC_RejectParameters*) instead.
 DCMTK_DCMNET_EXPORT void
 ASC_printRejectParameters(
     STD_NAMESPACE ostream& out,
-    T_ASC_RejectParameters *rej);
+    const T_ASC_RejectParameters *rej);
 
 /**
  * @deprecated Please use OFString& ASC_dumpParameters(OFString&, T_ASC_Parameters *,
