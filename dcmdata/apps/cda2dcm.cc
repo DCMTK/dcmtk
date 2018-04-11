@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2017, OFFIS e.V.
+ *  Copyright (C) 2005-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,7 +27,6 @@
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 #include <list>
-
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
@@ -70,14 +69,15 @@ static OFCondition createHeader(
 	const char *opt_patientBirthdate,
 	const char *opt_patientSex,
 	OFBool opt_burnedInAnnotation,
-	const char *opt_mediaTypes,
 	const char *opt_studyUID,
 	const char *opt_seriesUID,
 	const char *opt_documentTitle,
 	const char *opt_conceptCSD,
 	const char *opt_conceptCV,
 	const char *opt_conceptCM,
-	Sint32 opt_instanceNumber)
+	Sint32 opt_instanceNumber,
+	const char *opt_mediaTypes = ""
+	)
 {
 	OFCondition result = EC_Normal;
 	char buf[80];
@@ -92,19 +92,15 @@ static OFCondition createHeader(
 	if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
 	if (result.good()) result = dataset->insertEmptyElement(DCM_ContentTime);
 	if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDateTime);
-	//TODO: insert concept name
-	//  Concept Name Code Sequence:
-	//  (0040, A043) shall have the value of the CDA Document Type Code, 
-	//  with transcoding as necessary for converting the HL7 CE Data Type
-	//  to the DICOM Code Sequence item.
-	if (result.good() && opt_conceptCSD && opt_conceptCV && opt_conceptCM)
-	{
-		result = DcmCodec::insertCodeSequence(dataset, DCM_ConceptNameCodeSequence, opt_conceptCSD, opt_conceptCV, opt_conceptCM);
-	}
-	else
-	{
-		result = dataset->insertEmptyElement(DCM_ConceptNameCodeSequence);
-	}
+	if (result.good())
+		if(opt_conceptCSD && opt_conceptCV && opt_conceptCM)
+		{
+			result = DcmCodec::insertCodeSequence(dataset, DCM_ConceptNameCodeSequence, opt_conceptCSD, opt_conceptCV, opt_conceptCM);
+		}
+		else
+		{
+			result = dataset->insertEmptyElement(DCM_ConceptNameCodeSequence);
+		}
 
 	// insert const value attributes
 	if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
@@ -125,8 +121,11 @@ static OFCondition createHeader(
 	if (result.good()) result = dataset->putAndInsertString(DCM_PatientBirthDate, opt_patientBirthdate);
 	if (result.good()) result = dataset->putAndInsertString(DCM_PatientSex, opt_patientSex);
 	if (result.good()) result = dataset->putAndInsertString(DCM_BurnedInAnnotation, opt_burnedInAnnotation ? "YES" : "NO");
-	//if (opt_mediaTypes != NULL)
-	if (result.good()) result = dataset->putAndInsertString(DCM_ListOfMIMETypes, opt_mediaTypes);
+	
+	if (strlen(opt_mediaTypes) >0) {
+		if (result.good()) result = dataset->putAndInsertString(DCM_ListOfMIMETypes, opt_mediaTypes);
+		std::cout << "mediatypes are:" << strlen(opt_mediaTypes) << "\n";
+	}
 	sprintf(buf, "%ld", OFstatic_cast(long, opt_instanceNumber));
 	if (result.good()) result = dataset->putAndInsertString(DCM_InstanceNumber, buf);
 
@@ -179,6 +178,9 @@ static OFString getMediaTypes(XMLNode fileNode) {
 	OFString mediatypes;
 	if (searchmediaType(fileNode, &mediatypeslist))
 	{
+		//initialize with text/xml to exclude the primary MIME Type of the
+		//encapsulated document
+		mediatypes.append("text/xml");
 		while (!mediatypeslist.empty())
 		{
 			if (mediatypes.find(mediatypeslist.front()) == OFString_npos) {
@@ -187,6 +189,12 @@ static OFString getMediaTypes(XMLNode fileNode) {
 			}
 			mediatypeslist.pop_front();
 		}
+		//remove the primary MIME Type of the
+		//encapsulated document
+		if (mediatypes.size() > 9)
+			mediatypes.erase(0, 9);
+		else
+			mediatypes = "";
 	}
 	return mediatypes;
 }
@@ -195,17 +203,14 @@ static OFString getAttribute(XMLNode fileNode, OFString attr) {
 	OFString result ="";
 	if (attr == "docTitle") {
 		if (fileNode.getChildNode("title").getText() != NULL) {
-			//std::cout << "Document title found:\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNode("title").getText())) << "";
 			result = OFString(OFSTRING_GUARD(fileNode.getChildNode("title").getText()));
 		}
 	}
 	if (attr == "nameUse") {
-		//std::cout << "\nUse of patient name\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getAttribute("use"))) << "";
 		result = OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getAttribute("use")));
 	}
 	//according to Stantard v. 2013 part20/sect_A.8
 	if (attr == "patientName") {
-		//std::cout << "\nPatient Name\n\t" << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/given").getText())) << " " << OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/family").getText()));
 		result = OFString(OFSTRING_GUARD(
 			fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/family").getText())) + "^" + OFString(OFSTRING_GUARD(
 			fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getChildNode("given",0).getText())) + "^" + OFString(OFSTRING_GUARD(
@@ -248,17 +253,18 @@ static OFString getAttribute(XMLNode fileNode, OFString attr) {
 	return result;
 }
 
-
+//retrieves patient, concept and document data and checks for conflicts with entered data
+//also retrieves mediatypes found in DCA
 static OFCondition getCDAData(const char *filename,
 	OFString& docTitle,
 	OFString& patientName,
 	OFString& patientID,
 	OFString& patientBirthDate,
 	OFString& patientSex,
-	OFString& mediaTypes,
 	OFString& conceptCSD,
 	OFString& conceptCV,
 	OFString& conceptCM,
+	OFString& mediaTypes,
 	OFBool& opt_override
 	) {
 	XMLResults err;
@@ -280,14 +286,14 @@ static OFCondition getCDAData(const char *filename,
 			if (!opt_override) {
 				OFLOG_ERROR(cda2dcmLogger, "Patient ID mismatch:"
 					<<"\nData found in the CDA file : " << pID
-					<< "\nEntered (existing DCM File): " << patientID
+					<< "\nEntered (or found in DCM file): " << patientID
 					<< "\nIf you wish to override, run with +ov");
 				return EC_IllegalCall;
 			}
 			else {
 				OFLOG_WARN(cda2dcmLogger, "Patient ID mismatch:"
 					<< "\nData found in the CDA file : " << pID
-					<< "\nEntered (existing DCM File): " << patientID);
+					<< "\nEntered (or found in DCM file): " << patientID);
 			}
 		}
 		else patientID = pID;
@@ -298,13 +304,13 @@ static OFCondition getCDAData(const char *filename,
 		if (patientBirthDate != "") {
 			if (!opt_override) {
 				OFLOG_ERROR(cda2dcmLogger, "Patient Birth Date mismatch:\n\tFound in the CDA file: " << pBirthDate
-					<< "\tEntered (or in serie): " << patientBirthDate
+					<< "\t\nEntered (or found in DCM file): " << patientBirthDate
 					<< "\nIf you wish to override, run with +ov");
 				return EC_IllegalCall;
 			}
 			else {
 				OFLOG_WARN(cda2dcmLogger, "Patient Birth Date mismatch:\n\tFound in the CDA file: " << pBirthDate
-					<< "\tEntered (or in serie): " << patientBirthDate);
+					<< "\t\nEntered (or found in DCM file): " << patientBirthDate);
 			}
 		}
 		else patientBirthDate = pBirthDate;
@@ -315,13 +321,13 @@ static OFCondition getCDAData(const char *filename,
 		if (patientSex != "") {
 			if (!opt_override) {
 				OFLOG_ERROR(cda2dcmLogger, "Patient Sex mismatch:\n\tFound in the CDA file: " << pSex
-					<< "\tEntered (or in serie): " << patientSex
+					<< "\t\nEntered (or found in DCM file): " << patientSex
 					<< "\nIf you wish to override, run with +ov");
 				return EC_IllegalCall;
 			}
 			else {
 				OFLOG_WARN(cda2dcmLogger, "Patient Sex mismatch:\n\tFound in the CDA file: " << pSex
-					<< "\tEntered (or in serie): " << patientSex);
+					<< "\t\nEntered (or found in DCM file): " << patientSex);
 			}
 		}
 		else patientSex = pSex;
@@ -332,13 +338,13 @@ static OFCondition getCDAData(const char *filename,
 		if (patientName != "") {
 			if (!opt_override) {
 				OFLOG_ERROR(cda2dcmLogger, "Patient Name mismatch:\n\tFound in the CDA file: " << pName
-					<< "\tEntered (or in serie): " << patientName
+					<< "\t\nEntered (or found in DCM file): " << patientName
 					<< "\nIf you wish to override, run with +ov");
 				return EC_IllegalCall;
 			}
 			else {
 				OFLOG_WARN(cda2dcmLogger, "Patient Name mismatch:\n\tFound in the CDA file: " << pName
-					<< "\tEntered (or in serie): " << patientName);
+					<< "\t\nEntered (or found in DCM file): " << patientName);
 			}
 		} 
 		else patientName = pName;
@@ -366,12 +372,12 @@ static OFCondition getCDAData(const char *filename,
 	{
 		if (conceptCSD != "") {
 			if (!opt_override) {
-				OFLOG_ERROR(cda2dcmLogger, "Document Title mismatch:\n\tFound in the CDA file: " << CSD
+				OFLOG_ERROR(cda2dcmLogger, "concept CSD mismatch:\n\tFound in the CDA file: " << CSD
 					<< "\tFound in the series):" << conceptCSD);
 				return EC_IllegalCall;
 			}
 			else {
-				OFLOG_WARN(cda2dcmLogger, "Document Title mismatch:\n\tFound in the CDA file: " << CSD
+				OFLOG_WARN(cda2dcmLogger, "concept CSD mismatch:\n\tFound in the CDA file: " << CSD
 					<< "\tFound in the series) : " << conceptCSD);
 			}
 		}
@@ -382,12 +388,12 @@ static OFCondition getCDAData(const char *filename,
 	{
 		if (conceptCV != "") {
 			if (!opt_override) {
-				OFLOG_ERROR(cda2dcmLogger, "Document Title mismatch:\n\tFound in the CDA file: " << CV
+				OFLOG_ERROR(cda2dcmLogger, "concept CV mismatch:\n\tFound in the CDA file: " << CV
 					<< "\tFound in the series):" << conceptCV);
 				return EC_IllegalCall;
 			}
 			else {
-				OFLOG_WARN(cda2dcmLogger, "Document Title mismatch:\n\tFound in the CDA file: " << CV
+				OFLOG_WARN(cda2dcmLogger, "concept CV mismatch:\n\tFound in the CDA file: " << CV
 					<< "\tFound in the series) : " << conceptCV);
 			}
 		}
@@ -398,12 +404,12 @@ static OFCondition getCDAData(const char *filename,
 	{
 		if (conceptCM != "") {
 			if (!opt_override) {
-				OFLOG_ERROR(cda2dcmLogger, "Document Title mismatch:\n\tFound in the CDA file: " << CM
+				OFLOG_ERROR(cda2dcmLogger, "concept CM mismatch:\n\tFound in the CDA file: " << CM
 					<< "\tFound in the series):" << conceptCM);
 				return EC_IllegalCall;
 			}
 			else {
-				OFLOG_WARN(cda2dcmLogger, "Document Title mismatch:\n\tFound in the CDA file: " << CM
+				OFLOG_WARN(cda2dcmLogger, "concept CM mismatch:\n\tFound in the CDA file: " << CM
 					<< "\tFound in the series) : " << conceptCM);
 			}
 		}
@@ -599,8 +605,6 @@ static void initializeCommandLine(OFCommandLine &cmd)
 	cmd.addOption("--instance-set", "+is", 1, "[i]nstance number: integer", "use instance number i", OFCommandLine::AF_NoWarning);
 }
 
-
-
 int main(int argc, char *argv[])
 {
 	//required parameters
@@ -787,28 +791,27 @@ int main(int argc, char *argv[])
 	OFString studyUID;
 	OFString seriesUID;
 	Sint32 incrementedInstance = 0;
+	//read patient and series info from options and file
 	if (opt_patientName) patientName = opt_patientName;
 	if (opt_patientID) patientID = opt_patientID;
 	if (opt_patientBirthdate) patientBirthDate = opt_patientBirthdate;
 	if (opt_patientSex) patientSex = opt_patientSex;
 	createIdentifiers(opt_readSeriesInfo, opt_seriesFile, studyUID, seriesUID, patientName, patientID, patientBirthDate, patientSex, incrementedInstance);
 	if (opt_increment) opt_instance = incrementedInstance;
+
 	OFLOG_INFO(cda2dcmLogger, "creating encapsulated CDA object");
-
-	//retrieve CDA Info
+	//retrieve patient and document info from CDA
 	OFString mediaTypes = "";
-
 	OFString documentTitle;
 	OFString conceptCSD;
 	OFString conceptCV;
 	OFString conceptCM;
-
 	if (opt_documentTitle) documentTitle = opt_documentTitle;
 	if (opt_conceptCSD) documentTitle = opt_conceptCSD;
 	if (opt_conceptCV) documentTitle = opt_conceptCV;
 	if (opt_conceptCM) documentTitle = opt_conceptCM;
 	OFCondition result = getCDAData(opt_ifname, documentTitle, patientName, patientID, patientBirthDate, patientSex,
-		mediaTypes, conceptCSD, conceptCV, conceptCM, opt_override);
+		conceptCSD, conceptCV, conceptCM, mediaTypes, opt_override);
 	DcmFileFormat fileformat;
 	if (result.bad())
 	{
@@ -816,17 +819,18 @@ int main(int argc, char *argv[])
 		return 10;
 	}
 	else result= insertEncapsulatedDocument(fileformat.getDataset(), opt_ifname);
+	
 	if (result.bad())
 	{
 		OFLOG_ERROR(cda2dcmLogger, "unable to create CDA DICOM encapsulation");
 		return 10;
 	}
-	// now we need to generate an instance number that is guaranteed to be unique within a series.
 
+	// now we need to generate an instance number that is guaranteed to be unique within a series.
 	result = createHeader(fileformat.getDataset(), patientName.c_str(), patientID.c_str(),
-		patientBirthDate.c_str(), patientSex.c_str(), opt_annotation, mediaTypes.c_str(), studyUID.c_str(),
+		patientBirthDate.c_str(), patientSex.c_str(), opt_annotation, studyUID.c_str(),
 		seriesUID.c_str(), documentTitle.c_str(), conceptCSD.c_str(), conceptCV.c_str(), conceptCM.c_str(), 
-		OFstatic_cast(Sint32, opt_instance));
+		OFstatic_cast(Sint32, opt_instance), mediaTypes.c_str());
 
 	if (result.bad())
 	{
