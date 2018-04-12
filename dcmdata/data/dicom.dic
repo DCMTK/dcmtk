@@ -21,13 +21,12 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2018a and PS 3.7-2018a
-# File created on 2018-02-16 22:07:34 by J. Riesmeier on thinkpad.
-# File updated manually on 2018-03-28 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2018b and PS 3.7-2018b
+# File created on 2018-04-12 18:49:36 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - CP 1224, 1713, 1740
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -2022,6 +2021,7 @@
 (0040,0610)	SQ	SpecimenPreparationSequence	1	DICOM
 (0040,0612)	SQ	SpecimenPreparationStepContentItemSequence	1	DICOM
 (0040,0620)	SQ	SpecimenLocalizationContentItemSequence	1	DICOM
+(0040,0710)	SQ	WholeSlideMicroscopyImageFrameTypeSequence	1	DICOM
 (0040,071A)	SQ	ImageCenterPointCoordinatesSequence	1	DICOM
 (0040,072A)	DS	XOffsetInSlideCoordinateSystem	1	DICOM
 (0040,073A)	DS	YOffsetInSlideCoordinateSystem	1	DICOM
@@ -2054,6 +2054,7 @@
 (0040,2400)	LT	ImagingServiceRequestComments	1	DICOM
 (0040,3001)	LO	ConfidentialityConstraintOnPatientDataDescription	1	DICOM
 (0040,4005)	DT	ScheduledProcedureStepStartDateTime	1	DICOM
+(0040,4008)	DT	ScheduledProcedureStepExpirationDateTime	1	DICOM
 (0040,4009)	SQ	HumanPerformerCodeSequence	1	DICOM
 (0040,4010)	DT	ScheduledProcedureStepModificationDateTime	1	DICOM
 (0040,4011)	DT	ExpectedCompletionDateTime	1	DICOM
@@ -2306,6 +2307,8 @@
 (0048,021E)	SL	ColumnPositionInTotalImagePixelMatrix	1	DICOM
 (0048,021F)	SL	RowPositionInTotalImagePixelMatrix	1	DICOM
 (0048,0301)	CS	PixelOriginInterpretation	1	DICOM
+(0048,0302)	UL	NumberOfOpticalPaths	1	DICOM
+(0048,0303)	UL	TotalPixelMatrixFocalPlanes	1	DICOM
 (0050,0004)	CS	CalibrationImage	1	DICOM
 (0050,0010)	SQ	DeviceSequence	1	DICOM
 (0050,0012)	SQ	ContainerComponentTypeCodeSequence	1	DICOM
@@ -2595,6 +2598,9 @@
 (0068,65F0)	FD	TwoDPlaneIntersection	4	DICOM
 (0068,6610)	FD	ThreeDPlaneOrigin	3	DICOM
 (0068,6620)	FD	ThreeDPlaneNormal	3	DICOM
+(0068,7001)	CS	ModelModification	1	DICOM
+(0068,7002)	CS	ModelMirroring	1	DICOM
+(0068,7003)	SQ	ModelUsageCodeSequence	1	DICOM
 (0070,0001)	SQ	GraphicAnnotationSequence	1	DICOM
 (0070,0002)	CS	GraphicLayer	1	DICOM
 (0070,0003)	CS	BoundingBoxAnnotationUnits	1	DICOM
@@ -4377,15 +4383,6 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
-#
-#---------------------------------------------------------------------------
-#
-# Correction Items 1224, 1713, 1740
-#
-(0040,4008)	DT	ScheduledProcedureStepExpirationDateTime	1	DICOM/CP_1224
-(0048,0302)	UL	NumberOfOpticalPaths	1	DICOM/CP_1713
-(0048,0303)	UL	TotalPixelMatrixFocalPlanes	1	DICOM/CP_1713
-(0040,0710)	SQ	WholeSlideMicroscopyImageFrameTypeSequence	1	DICOM/CP_1740
 #
 #---------------------------------------------------------------------------
 #

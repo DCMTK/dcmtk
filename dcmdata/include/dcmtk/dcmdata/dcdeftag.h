@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-03-28 13:08:09
+**   Date: 2018-04-12 18:52:47
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2018-03-28 13:08:09"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2018-04-12 18:52:47"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4260
+** Number of entries: 4263
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2895,6 +2895,9 @@
 #define DCM_TwoDPlaneIntersection                DcmTagKey(0x0068, 0x65f0)
 #define DCM_ThreeDPlaneOrigin                    DcmTagKey(0x0068, 0x6610)
 #define DCM_ThreeDPlaneNormal                    DcmTagKey(0x0068, 0x6620)
+#define DCM_ModelModification                    DcmTagKey(0x0068, 0x7001)
+#define DCM_ModelMirroring                       DcmTagKey(0x0068, 0x7002)
+#define DCM_ModelUsageCodeSequence               DcmTagKey(0x0068, 0x7003)
 #define DCM_GraphicAnnotationSequence            DcmTagKey(0x0070, 0x0001)
 #define DCM_GraphicLayer                         DcmTagKey(0x0070, 0x0002)
 #define DCM_BoundingBoxAnnotationUnits           DcmTagKey(0x0070, 0x0003)
