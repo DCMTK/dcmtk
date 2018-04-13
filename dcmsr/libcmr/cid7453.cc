@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7453_PerformingRoles
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:18:00 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018b
+ *  File created on 2018-04-12 18:59:05 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 7453 (Performing Roles)
 #define CONTEXT_GROUP_NUMBER  "7453"
-#define CONTEXT_GROUP_VERSION "20141110"
+#define CONTEXT_GROUP_VERSION "20180326"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.517"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -159,6 +159,13 @@ CID7453_PerformingRoles::CodeList &CID7453_PerformingRoles::getCodes()
         Codes->insert(OFMake_pair(Standby, DSRBasicCodedEntry("121101", "DCM", "Standby")));
         Codes->insert(OFMake_pair(IrradiationAuthorizing, DSRBasicCodedEntry("113850", "DCM", "Irradiation Authorizing")));
         Codes->insert(OFMake_pair(IrradiationAdministering, DSRBasicCodedEntry("113851", "DCM", "Irradiation Administering")));
+        Codes->insert(OFMake_pair(Reader, DSRBasicCodedEntry("C28747", "NCIt", "Reader")));
+        Codes->insert(OFMake_pair(EligibilityReader, DSRBasicCodedEntry("129001", "DCM", "Eligibility Reader")));
+        Codes->insert(OFMake_pair(Adjudicator, DSRBasicCodedEntry("C96561", "NCIt", "Adjudicator")));
+        Codes->insert(OFMake_pair(Reviewer, DSRBasicCodedEntry("C54634", "NCIt", "Reviewer")));
+        Codes->insert(OFMake_pair(Designator, DSRBasicCodedEntry("129002", "DCM", "Designator")));
+        Codes->insert(OFMake_pair(ImageQualityController, DSRBasicCodedEntry("129003", "DCM", "Image Quality Controller")));
+        Codes->insert(OFMake_pair(ResultsQualityController, DSRBasicCodedEntry("129004", "DCM", "Results Quality Controller")));
     }
     /* should never be NULL */
     return *Codes;

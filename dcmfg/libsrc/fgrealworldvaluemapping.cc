@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -76,6 +76,8 @@ int FGRealWorldValueMapping::compare(const FGBase& rhs) const
     return result;
 
   const FGRealWorldValueMapping* myRhs = OFstatic_cast(const FGRealWorldValueMapping*, &rhs);
+  if (!myRhs)
+    return -1;
 
   // Compare all items, start with VM
   if (m_Items.size() < myRhs->m_Items.size())
@@ -141,9 +143,10 @@ FGRealWorldValueMapping::RWVMItem::RWVMItem(OFshared_ptr< DcmItem > item,
 
 
 FGRealWorldValueMapping::RWVMItem::RWVMItem(const FGRealWorldValueMapping::RWVMItem& rhs)
-: IODComponent(rhs)
+: IODComponent(rhs),
+  m_MeasurementUnitsCode(rhs.m_MeasurementUnitsCode),
+  m_QuantityDefinitionSequence()
 {
-  m_MeasurementUnitsCode = rhs.m_MeasurementUnitsCode;
   OFVector<ContentItemMacro*>::const_iterator it = rhs.m_QuantityDefinitionSequence.begin();
   while (it != rhs.m_QuantityDefinitionSequence.end())
   {
@@ -181,7 +184,31 @@ OFString FGRealWorldValueMapping::RWVMItem::getName() const
 
 int FGRealWorldValueMapping::RWVMItem::compare(const IODComponent& rhs) const
 {
-  return IODComponent::compare(rhs);
+  int result = IODComponent::compare(rhs);
+  const FGRealWorldValueMapping::RWVMItem* myRhs = OFstatic_cast(const FGRealWorldValueMapping::RWVMItem*, &rhs);
+  if (!myRhs)
+    return -1;
+
+  if (result == 0) result = m_MeasurementUnitsCode.compare(*myRhs);
+  if (result == 0)
+  {
+    size_t rhsSize = myRhs->m_QuantityDefinitionSequence.size();
+    size_t thisSize = m_QuantityDefinitionSequence.size();
+    if (thisSize < rhsSize)
+      return -1;
+    else if (thisSize > rhsSize)
+      return 1;
+
+    OFVector<ContentItemMacro*>::const_iterator it = m_QuantityDefinitionSequence.begin();
+    OFVector<ContentItemMacro*>::const_iterator rhsIt = myRhs->m_QuantityDefinitionSequence.begin();
+    while (it != m_QuantityDefinitionSequence.end() && (result == 0))
+    {
+        result = (*it)->compare( *(*rhsIt) );
+        it++;
+    }
+  }
+  return result;
+
 }
 
 
@@ -255,7 +282,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::getRealWorldValueLUTData(OFVector
   OFCondition result = m_Item->findAndGetElement(DCM_RealWorldValueLUTData, elem);
   if (result.good())
   {
-    size_t numValues = elem->getVM();
+    size_t numValues = elem->getNumberOfValues();
     for (size_t n = 0; n < numValues; n++)
     {
       Float64 value;

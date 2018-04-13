@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -29,14 +29,16 @@
 const OFString DPMParametricMapSeriesModule::m_ModuleName = "DPMParametricMapSeriesModule";
 
 DPMParametricMapSeriesModule::DPMParametricMapSeriesModule()
-: IODModule()
+: IODModule(),
+  m_ReferencedPerformedProcedureStepSequence()
 {
   resetRules();
 }
 
 DPMParametricMapSeriesModule::DPMParametricMapSeriesModule(OFshared_ptr<DcmItem> item,
                                                            OFshared_ptr<IODRules> rules)
-: IODModule(item, rules)
+: IODModule(item, rules),
+  m_ReferencedPerformedProcedureStepSequence()
 {
   // reset element rules
   resetRules();

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -207,7 +207,7 @@ getString(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool *spacePadded
     if (ec == EC_Normal && elem != NULL) {
         if (elem->getLength() == 0) {
             s[0] = '\0';
-        } else if ((int)elem->getLength() > maxlen) {
+        } else if (elem->getLength() > (Uint32)maxlen) {
             return parseErrorWithMsg("dimcmd:getString: string too small", t);
         } else {
             ec =  elem->getString(aString);

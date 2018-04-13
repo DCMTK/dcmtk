@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -335,6 +335,45 @@ public:
   virtual OFCondition setContentIdentification(const ContentIdentificationMacro& contentIdentification,
                                                const OFBool checkValue = OFTrue);
 
+  /** Import Patient, Study, and Frame of Reference level information from the
+   *  given item. The method does only import Frame of Reference if Frame of
+   *  Reference (FoR) UID is found in the image (and no error is reported if not).
+   *  The reason is that if the source images of the segmentation do have an
+   *  FoR, the segmentation object must have the same one, so we must import it.
+   *  If the images do not have an FoR, we must not try at all importing it.
+   *  If the log stream is set and valid the, the reason for any error might be
+   *  obtained from the error/warning output.
+   *  @param  dataset Reference to DICOM dataset from which the document
+   *          should be read
+   *  @param  takeOverCharset If OFTrue (default), Specific Character Set is
+   *                          taken over from imported dataset. If it's not
+   *                          present or empty (invalid), the attribute will
+   *                          not be present in this class either.
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition importFromSourceImage(DcmItem& dataset,
+                                            const OFBool takeOverCharset = OFTrue);
+
+  /** Import Patient, Study, and Frame of Reference level information from the
+   *  given item. The method does only import Frame of Reference if Frame of
+   *  Reference UID is found in the image (and no error is reported if not).
+   *  The reason is that if the source images of the segmentation do have an
+   *  FoR, the segmentation object must have the same one, so we must import it.
+   *  If the images do not have an FoR, we must not try at all importing it.
+   *  The current content of this object is not deleted before reading.
+   *  If the log stream is set and valid the, the reason for any error might be
+   *  obtained from the error/warning output.
+   *  @param  filename Reference to DICOM dataset from which the document
+   *          should be read
+   *  @param  takeOverCharset If OFTrue (default), Specific Character Set is
+   *                          taken over from imported dataset. If it's not
+   *                          present or empty (invalid), the attribute will
+   *                          not be present in this class either.
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition importFromSourceImage(const OFString& filename,
+                                            const OFBool takeOverCharset = OFTrue);
+
 protected:
 
   /** Protected default constructor. Library users should the factory create..()
@@ -491,14 +530,6 @@ protected:
    *  @return EC_Normal if adding was successful, error otherwise
    */
   virtual OFCondition addFrame(Uint8* pixData);
-
-  /// Constant code (required by Segmentation IOD) used to fill Derivation
-  /// Image Functional Group
-  const CodeSequenceMacro  DERIVATION_CODE;
-
-  /// Constant code (required by Segmentation IOD) used to fill Derivation
-  /// Image Functional Group
-  const CodeSequenceMacro PURPOSE_OF_REFERENCE_CODE;
 
 private:
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -34,13 +34,23 @@
 // ------------------- class IODReference -------------------------------
 
 IODReference::IODReference(const IODReference::MAX_LEVEL level)
-: m_Level(level)
+: m_PatientID(),
+  m_StudyInstanceUID(),
+  m_SeriesInstanceUID(),
+  m_SOPClassUID(),
+  m_SOPInstanceUID(),
+  m_Level(level)
 {
 }
 
 
 IODReference::IODReference()
-: m_Level(LEVEL_STUDY)
+: m_PatientID(),
+  m_StudyInstanceUID(),
+  m_SeriesInstanceUID(),
+  m_SOPClassUID(),
+  m_SOPInstanceUID(),
+  m_Level(LEVEL_STUDY)
 {
 }
 
@@ -131,7 +141,7 @@ OFCondition IODReferences::readTractographyReferencedInstanceSequence(DcmItem& s
       DcmElement* elem = NULL;
       if (item->findAndGetElement(DCM_ReferencedFrameNumber, elem).good())
       {
-        unsigned long vm = elem->getVM();
+        unsigned long vm = elem->getNumberOfValues();
         for (unsigned long f = 0; f < vm; f++)
         {
           Sint32 val = 0;
@@ -320,12 +330,14 @@ IODReference* IODReference::clone() const
 
 
 IODImageReference::IODImageReference(const IODReference::MAX_LEVEL level)
-: IODReference(level)
+: IODReference(level),
+  m_ReferencedFrameNumber()
 {
 }
 
 IODImageReference::IODImageReference()
-: IODReference(LEVEL_INSTANCE)
+: IODReference(LEVEL_INSTANCE),
+  m_ReferencedFrameNumber()
 {
 
 }
@@ -337,13 +349,14 @@ IODImageReference::IODImageReference(const OFString& patientID,
                                      const OFString& sopInstanceUID,
                                      const OFString& sopClassUID,
                                      const OFVector<Uint32>& refFrameNumbers)
+: IODReference(LEVEL_INSTANCE),
+  m_ReferencedFrameNumber(refFrameNumbers)
 {
   m_PatientID = patientID;
   m_StudyInstanceUID = studyUID;
   m_SeriesInstanceUID = seriesUID;
   m_SOPInstanceUID = sopInstanceUID;
   m_SOPClassUID = sopClassUID;
-  m_ReferencedFrameNumber = refFrameNumbers;
 }
 
 
@@ -352,6 +365,7 @@ IODImageReference::IODImageReference(const OFString& patientID,
                                      const OFString& seriesUID,
                                      const OFString& sopInstanceUID,
                                      const OFString& sopClassUID)
+: m_ReferencedFrameNumber()
 {
   m_PatientID = patientID;
   m_StudyInstanceUID = studyUID;
@@ -402,13 +416,15 @@ OFBool IODImageReference::readFromFile(const OFString& filename,
 // ------------------ class IODSegmentationReference ---------------------------
 
 IODSegmentationReference::IODSegmentationReference(const IODReference::MAX_LEVEL level)
-: IODReference(level)
+: IODReference(level),
+  m_ReferencedSegmentNumber()
 {
 }
 
 
 IODSegmentationReference::IODSegmentationReference()
-: IODReference(LEVEL_INSTANCE)
+: IODReference(LEVEL_INSTANCE),
+  m_ReferencedSegmentNumber()
 {
 
 }
@@ -453,6 +469,7 @@ void IODSegmentationReference::clear()
 
 
 IODReferences::IODReferences()
+: m_References()
 {
   // nothing to do
 }
@@ -465,6 +482,7 @@ IODReferences::~IODReferences()
 
 
 IODReferences::IODReferences(const IODReferences& rhs)
+: m_References()
 {
   *this = rhs;
 }

@@ -518,7 +518,7 @@ ASC_getRejectParameters(T_ASC_Parameters * params,
 }
 
 OFString&
-ASC_printRejectParameters(OFString& str, T_ASC_RejectParameters *rej)
+ASC_printRejectParameters(OFString& str, const T_ASC_RejectParameters *rej)
 {
     const char *result;
     const char *source;
@@ -1400,6 +1400,27 @@ OFCondition ASC_setIdentRQSaml(
 }
 
 
+OFCondition ASC_setIdentRQJwt(
+    T_ASC_Parameters * params,
+    const char* jwt,
+    const Uint16 length,
+    const OFBool requestRsp)
+{
+  if (params == NULL)
+    return ASC_NULLKEY;
+  UserIdentityNegotiationSubItemRQ* rq = params->DULparams.reqUserIdentNeg;
+  if (rq == NULL)
+    rq = new UserIdentityNegotiationSubItemRQ();
+  else
+    rq->clear();
+  rq->setIdentityType(ASC_USER_IDENTITY_JWT);
+  rq->setPrimField(jwt, length);
+  rq->setReqPosResponse(requestRsp);
+  params->DULparams.reqUserIdentNeg = rq;
+  return EC_Normal;
+}
+
+
 void ASC_getCopyOfIdentResponse(T_ASC_Parameters * params,
                                 char*& buffer,
                                 unsigned short& bufferLen)
@@ -2119,7 +2140,7 @@ ASC_acknowledgeAssociation(
 OFCondition
 ASC_rejectAssociation(
     T_ASC_Association * association,
-    T_ASC_RejectParameters * rejectParameters,
+    const T_ASC_RejectParameters * rejectParameters,
     void **associatePDU,
     unsigned long *associatePDUlength)
 {
@@ -2244,14 +2265,14 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 
 
 // Deprecated wrapper functions follow
-void ASC_printRejectParameters(FILE *f, T_ASC_RejectParameters *rej)
+void ASC_printRejectParameters(FILE *f, const T_ASC_RejectParameters *rej)
 {
     OFString str;
     ASC_printRejectParameters(str, rej);
     fprintf(f, "%s\n", str.c_str());
 }
 
-void ASC_printRejectParameters(STD_NAMESPACE ostream& out, T_ASC_RejectParameters *rej)
+void ASC_printRejectParameters(STD_NAMESPACE ostream& out, const T_ASC_RejectParameters *rej)
 {
     OFString str;
     ASC_printRejectParameters(str, rej);

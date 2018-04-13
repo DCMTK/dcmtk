@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -77,6 +77,8 @@ int FGFrameAnatomy::compare(const FGBase& rhs) const
     return result;
 
   const FGFrameAnatomy* myRhs = OFstatic_cast(const FGFrameAnatomy*, &rhs);
+  if (!myRhs)
+    return -1;
 
   // Compare all elements
   if (m_FrameLaterality != myRhs->m_FrameLaterality)

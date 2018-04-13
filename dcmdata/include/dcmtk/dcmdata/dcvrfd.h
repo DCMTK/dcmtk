@@ -69,13 +69,13 @@ class DCMTK_DCMDATA_EXPORT DcmFloatingPointDouble
      *  object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.
-     *          -1 if either the value of the  first component that does not match
-     *          is lower in this object than in rhs, or all compared components match
-     *          but this object has fewer components than rhs. Also returned if rhs
-     *          cannot be casted to this object type.
-     *          1 if either the value of the first component that does not match
-     *          is greater in this object than in rhs object, or all compared
-     *          components match but the this component is longer.
+     *    -1 if either the value of the  first component that does not match
+     *    is lower in this object than in rhs, or all compared components match
+     *    but this object has fewer components than rhs. Also returned if rhs
+     *    cannot be casted to this object type.
+     *    1 if either the value of the first component that does not match
+     *    is greater in this object than in rhs object, or all compared
+     *    components match but the this component is longer.
      */
     virtual int compare(const DcmElement& rhs) const;
 

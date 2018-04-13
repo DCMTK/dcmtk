@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2017e
- *  File created on 2017-12-05 09:12:40 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018b
+ *  File created on 2018-04-12 18:57:58 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3861
+// total number of codes: 3880
 // - retired: 144
 // - no name: 27
 // - not unique: 15
@@ -98,6 +98,7 @@
 #define CODE_DCM_Male                                                      DSRBasicCodedEntry("M", "DCM", "Male")
 #define CODE_DCM_RETIRED_MagneticResonanceAngiography                      DSRBasicCodedEntry("MA", "DCM", "Magnetic resonance angiography")
 #define CODE_DCM_MaleChangedToFemale                                       DSRBasicCodedEntry("MC", "DCM", "Male changed to Female")
+#define CODE_DCM_3DManufacturingModelingSystem                             DSRBasicCodedEntry("M3D", "DCM", "3D Manufacturing Modeling System")
 #define CODE_DCM_MediaCreationDevice                                       DSRBasicCodedEntry("MCD", "DCM", "Media Creation Device")
 #define CODE_DCM_PortableMediaImporterEquipment                            DSRBasicCodedEntry("MEDIM", "DCM", "Portable Media Importer Equipment")
 #define CODE_DCM_Mammography                                               DSRBasicCodedEntry("MG", "DCM", "Mammography")
@@ -512,6 +513,7 @@
 #define CODE_DCM_WorkitemAssignmentRejectedByAssignedResource              DSRBasicCodedEntry("110530", "DCM", "Workitem assignment rejected by assigned resource")
 #define CODE_DCM_InsufficientQualityForInterpretation                      DSRBasicCodedEntry("110531", "DCM", "Insufficient quality for interpretation")
 #define CODE_DCM_InterpretationRequiresSpecialistExpertise                 DSRBasicCodedEntry("110532", "DCM", "Interpretation requires specialist expertise")
+#define CODE_DCM_WorkitemExpired                                           DSRBasicCodedEntry("110533", "DCM", "Workitem expired")
 #define CODE_DCM_VentralDiencephalon                                       DSRBasicCodedEntry("110700", "DCM", "Ventral Diencephalon")
 #define CODE_DCM_WhiteMatterT1Hypointensity                                DSRBasicCodedEntry("110701", "DCM", "White Matter T1 Hypointensity")
 #define CODE_DCM_WhiteMatterT2Hyperintensity                               DSRBasicCodedEntry("110702", "DCM", "White Matter T2 Hyperintensity")
@@ -2789,6 +2791,7 @@
 #define CODE_DCM_RestenoticLesion                                          DSRBasicCodedEntry("122393", "DCM", "Restenotic Lesion")
 #define CODE_DCM_FibroLipidicPlaque                                        DSRBasicCodedEntry("122394", "DCM", "Fibro-Lipidic Plaque")
 #define CODE_DCM_NecroticLipidicPlaque                                     DSRBasicCodedEntry("122395", "DCM", "Necrotic-Lipidic Plaque")
+#define CODE_DCM_AdventitialDissection                                     DSRBasicCodedEntry("122397", "DCM", "Adventitial Dissection")
 #define CODE_DCM_IntimalDissection                                         DSRBasicCodedEntry("122398", "DCM", "Intimal Dissection")
 #define CODE_DCM_MedialDissection                                          DSRBasicCodedEntry("122399", "DCM", "Medial Dissection")
 #define CODE_DCM_SimultaneouslyAcquired                                    DSRBasicCodedEntry("122400", "DCM", "Simultaneously Acquired")
@@ -3909,5 +3912,21 @@
 #define CODE_DCM_GrayLevelVarianceInZones                                  DSRBasicCodedEntry("128834", "DCM", "Gray Level Variance in Zones")
 #define CODE_DCM_ZoneSizeVariance                                          DSRBasicCodedEntry("128835", "DCM", "Zone Size Variance")
 #define CODE_DCM_ZoneSizeEntropy                                           DSRBasicCodedEntry("128836", "DCM", "Zone Size Entropy")
+#define CODE_DCM_EligibilityReader                                         DSRBasicCodedEntry("129001", "DCM", "Eligibility Reader")
+#define CODE_DCM_Designator                                                DSRBasicCodedEntry("129002", "DCM", "Designator")
+#define CODE_DCM_ImageQualityController                                    DSRBasicCodedEntry("129003", "DCM", "Image Quality Controller")
+#define CODE_DCM_ResultsQualityController                                  DSRBasicCodedEntry("129004", "DCM", "Results Quality Controller")
+#define CODE_DCM_EditedModel                                               DSRBasicCodedEntry("129010", "DCM", "Edited Model")
+#define CODE_DCM_ComponentModel                                            DSRBasicCodedEntry("129011", "DCM", "Component Model")
+#define CODE_DCM_EducationalIntent                                         DSRBasicCodedEntry("129012", "DCM", "Educational Intent")
+#define CODE_DCM_PlanningIntent                                            DSRBasicCodedEntry("129013", "DCM", "Planning Intent")
+#define CODE_DCM_ToolFabrication                                           DSRBasicCodedEntry("129014", "DCM", "Tool Fabrication")
+#define CODE_DCM_ProstheticFabrication                                     DSRBasicCodedEntry("129015", "DCM", "Prosthetic Fabrication")
+#define CODE_DCM_ImplantFabrication                                        DSRBasicCodedEntry("129016", "DCM", "Implant Fabrication")
+#define CODE_DCM_SimulationIntent                                          DSRBasicCodedEntry("129017", "DCM", "Simulation Intent")
+#define CODE_DCM_US3DCAMModel                                              DSRBasicCodedEntry("129018", "DCM", "US 3D CAM model")
+#define CODE_DCM_MixedModality3DCAMModel                                   DSRBasicCodedEntry("129019", "DCM", "Mixed Modality 3D CAM model")
+#define CODE_DCM_PhotogrammetricImaging3DCAMModel                          DSRBasicCodedEntry("129020", "DCM", "Photogrammetric Imaging 3D CAM model")
+#define CODE_DCM_LaserScanning3DCAMModel                                   DSRBasicCodedEntry("129021", "DCM", "Laser Scanning 3D CAM model")
 
 #endif

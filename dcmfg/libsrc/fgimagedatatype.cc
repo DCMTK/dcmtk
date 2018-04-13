@@ -253,6 +253,8 @@ int FGImageDataType::compare(const FGBase& rhs) const
     return result;
 
   const FGImageDataType* myRhs = OFstatic_cast(const FGImageDataType*, &rhs);
+  if (!myRhs)
+    return -1;
 
   // Compare all elements
   result = m_DataType.compare(myRhs->m_DataType);

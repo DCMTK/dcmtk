@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -30,6 +30,7 @@ const OFString IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::m_Co
 IODCommonInstanceReferenceModule::IODCommonInstanceReferenceModule(OFshared_ptr< DcmItem > item,
                                                                    OFshared_ptr< IODRules > rules)
 : IODModule(item, rules),
+  m_ReferenceSeriesItems(),
   m_StudiesContainingOtherReferencedInstancesSequence()
 {
   resetRules();
@@ -37,7 +38,9 @@ IODCommonInstanceReferenceModule::IODCommonInstanceReferenceModule(OFshared_ptr<
 
 
 IODCommonInstanceReferenceModule::IODCommonInstanceReferenceModule()
-: IODModule()
+: IODModule(),
+  m_ReferenceSeriesItems(),
+  m_StudiesContainingOtherReferencedInstancesSequence()
 {
   resetRules();
 }

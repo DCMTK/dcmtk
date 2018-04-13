@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,6 +52,41 @@ DcmUnlimitedText &DcmUnlimitedText::operator=(const DcmUnlimitedText &obj)
     DcmCharString::operator=(obj);
     return *this;
 }
+
+
+int DcmUnlimitedText::compare(const DcmElement& rhs) const
+{
+    int result = DcmElement::compare(rhs);
+    if (result != 0)
+    {
+        return result;
+    }
+
+    /* cast away constness (dcmdata is not const correct...) */
+    DcmUnlimitedText* myThis = NULL;
+    DcmUnlimitedText* myRhs = NULL;
+    myThis = OFconst_cast(DcmUnlimitedText*, this);
+    myRhs = OFstatic_cast(DcmUnlimitedText*, OFconst_cast(DcmElement*, &rhs));
+
+    /* compare length */
+    unsigned long thisLength = myThis->getLength();
+    unsigned long rhsLength = myRhs->getLength();
+    if (thisLength < rhsLength)
+    {
+        return -1;
+    }
+    else if (thisLength > rhsLength)
+    {
+        return 1;
+    }
+
+    /* check whether values are equal */
+    OFString thisValue, rhsValue;
+    myThis->getOFStringArray(thisValue);
+    myThis->getOFStringArray(rhsValue);
+    return thisValue.compare(rhsValue);
+}
+
 
 
 OFCondition DcmUnlimitedText::copyFrom(const DcmObject& rhs)

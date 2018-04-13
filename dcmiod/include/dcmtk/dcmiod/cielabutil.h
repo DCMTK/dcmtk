@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Pascal Getreuer, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Pascal Getreuer, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -146,6 +146,8 @@ int FGPlanePositionVolume::compare(const FGBase& rhs) const
     return result;
 
   const FGPlanePositionVolume* myRhs = OFstatic_cast(const FGPlanePositionVolume*, &rhs);
+  if (!myRhs)
+    return -1;
 
   // Compare all elements
   result = m_ImagePositionVolume.compare(myRhs->m_ImagePositionVolume);

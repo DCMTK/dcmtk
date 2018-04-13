@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:17:48 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018b
+ *  File created on 2018-04-12 18:58:44 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4021 (PET Radiopharmaceutical)
 #define CONTEXT_GROUP_NUMBER  "4021"
-#define CONTEXT_GROUP_VERSION "20170413"
+#define CONTEXT_GROUP_VERSION "20180327"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.305"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -263,6 +263,8 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(Tyrosine3Octreotate_Ga68, DSRBasicCodedEntry("C1742831", "UMLS", "tyrosine-3-octreotate Ga^68^")));
         Codes->insert(OFMake_pair(Ublituximab_89Zr, DSRBasicCodedEntry("126739", "DCM", "Ublituximab ^89^Zr")));
         Codes->insert(OFMake_pair(XmAb5574_89Zr, DSRBasicCodedEntry("126734", "DCM", "XmAb5574 ^89^Zr")));
+        Codes->insert(OFMake_pair(PSMA_Ga68, DSRBasicCodedEntry("C118961", "NCIt", "PSMA Ga^68^")));
+        Codes->insert(OFMake_pair(Sarcosine_C11, DSRBasicCodedEntry("C122684", "NCIt", "Sarcosine C^11^")));
     }
     /* should never be NULL */
     return *Codes;

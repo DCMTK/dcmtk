@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -31,7 +31,8 @@ TrcStatistic::TrcStatistic()
 : IODComponent(),
   m_Type(),
   m_TypeModifier(),
-  m_Units()
+  m_Units(),
+  m_Values()
 {
   // This is an abstract class so it is enough to call resetRules() is called
   // from derived classes

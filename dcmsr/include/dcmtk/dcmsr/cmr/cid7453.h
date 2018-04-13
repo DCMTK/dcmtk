@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7453_PerformingRoles
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:18:00 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018b
+ *  File created on 2018-04-12 18:59:05 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 7453 - Performing Roles.
- *  (type: extensible, version: 20141110)
+ *  (type: extensible, version: 20180326)
  */
 class DCMTK_CMR_EXPORT CID7453_PerformingRoles
   : public DSRContextGroup
@@ -59,7 +59,21 @@ class DCMTK_CMR_EXPORT CID7453_PerformingRoles
         /// (113850,DCM,"Irradiation Authorizing")
         IrradiationAuthorizing,
         /// (113851,DCM,"Irradiation Administering")
-        IrradiationAdministering
+        IrradiationAdministering,
+        /// (C28747,NCIt,"Reader")
+        Reader,
+        /// (129001,DCM,"Eligibility Reader")
+        EligibilityReader,
+        /// (C96561,NCIt,"Adjudicator")
+        Adjudicator,
+        /// (C54634,NCIt,"Reviewer")
+        Reviewer,
+        /// (129002,DCM,"Designator")
+        Designator,
+        /// (129003,DCM,"Image Quality Controller")
+        ImageQualityController,
+        /// (129004,DCM,"Results Quality Controller")
+        ResultsQualityController
     };
 
     /** (default) constructor

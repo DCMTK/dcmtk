@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -36,7 +36,8 @@ const OFString ContentItemMacro::ReferencedSOPSequenceItem::m_ComponentName = "R
 ContentItemMacro::ReferencedSOPSequenceItem::ReferencedSOPSequenceItem(OFshared_ptr<DcmItem> item,
                                                      OFshared_ptr<IODRules> rules,
                                                      IODComponent* parent)
-: IODComponent(item, rules, parent)
+: IODComponent(item, rules, parent),
+  m_SOPInstanceReferenceMacro()
 {
   // reset element rules
   resetRules();
@@ -44,7 +45,8 @@ ContentItemMacro::ReferencedSOPSequenceItem::ReferencedSOPSequenceItem(OFshared_
 
 
 ContentItemMacro::ReferencedSOPSequenceItem::ReferencedSOPSequenceItem(IODComponent* parent)
-: IODComponent(parent)
+: IODComponent(parent),
+  m_SOPInstanceReferenceMacro()
 {
   // reset element rules
   resetRules();
@@ -52,7 +54,8 @@ ContentItemMacro::ReferencedSOPSequenceItem::ReferencedSOPSequenceItem(IODCompon
 
 
 ContentItemMacro::ReferencedSOPSequenceItem::ReferencedSOPSequenceItem(const ReferencedSOPSequenceItem& rhs)
-: IODComponent(rhs)
+: IODComponent(rhs),
+  m_SOPInstanceReferenceMacro()
 {
 }
 
@@ -145,7 +148,11 @@ const OFString ContentItemMacro::m_ModuleName = "ContentItemMacro";
 
 
 ContentItemMacro::ContentItemMacro()
-: IODComponent()
+: IODComponent(),
+  m_ConceptNameCodeSequence(),
+  m_ConceptCodeSequence(),
+  m_MeasurementUnitsCodeSequence(),
+  m_ReferencedSOPSequence()
 {
   resetRules();
 }
@@ -153,7 +160,11 @@ ContentItemMacro::ContentItemMacro()
 
 ContentItemMacro::ContentItemMacro(OFshared_ptr<DcmItem> item,
                                    OFshared_ptr<IODRules> rules)
-: IODComponent(item, rules)
+: IODComponent(item, rules),
+  m_ConceptNameCodeSequence(),
+  m_ConceptCodeSequence(),
+  m_MeasurementUnitsCodeSequence(),
+  m_ReferencedSOPSequence()
 {
   // reset element rules
   resetRules();
@@ -161,7 +172,11 @@ ContentItemMacro::ContentItemMacro(OFshared_ptr<DcmItem> item,
 
 
 ContentItemMacro::ContentItemMacro(const ContentItemMacro& rhs)
-: IODComponent(rhs)
+: IODComponent(rhs),
+  m_ConceptNameCodeSequence(),
+  m_ConceptCodeSequence(),
+  m_MeasurementUnitsCodeSequence(),
+  m_ReferencedSOPSequence()
 {
   if (this == &rhs)
     return;

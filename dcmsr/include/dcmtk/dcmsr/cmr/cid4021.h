@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:17:48 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018b
+ *  File created on 2018-04-12 18:58:44 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20170413)
+ *  (type: extensible, version: 20180327)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -267,7 +267,11 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         /// (126739,DCM,"Ublituximab ^89^Zr")
         Ublituximab_89Zr,
         /// (126734,DCM,"XmAb5574 ^89^Zr")
-        XmAb5574_89Zr
+        XmAb5574_89Zr,
+        /// (C118961,NCIt,"PSMA Ga^68^")
+        PSMA_Ga68,
+        /// (C122684,NCIt,"Sarcosine C^11^")
+        Sarcosine_C11
     };
 
     /** (default) constructor

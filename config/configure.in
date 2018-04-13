@@ -987,20 +987,33 @@ AC_ARG_WITH(openssl,
 AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
 [ case "$withval" in
   yes)
-    AC_MSG_RESULT(yes)
+      AC_TRY_COMPILE([#include <openssl/ssl.h>], [
+#if OPENSSL_VERSION_NUMBER < 0x10001000L
+#error OpenSSL too old
+#endif
+],
+   [ AC_MSG_RESULT(yes)
     AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support.])
-    OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS"
+    OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ], 
+    [AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.0.1 or newer)] ) 
     ;;
   *)
     AC_MSG_RESULT(no)
     ;;
   esac ],
 [ SAVELIBS="$LIBS"
-  LIBS="$LIBS -lssl -lcrypto"
+  LIBS="$LIBS $OPENSSLLIBS -lssl -lcrypto"
   AC_TRY_LINK([#include <openssl/ssl.h>], [(void) TLSv1_method()],
-    [ AC_MSG_RESULT(yes)
+    [ 
+      AC_TRY_COMPILE([#include <openssl/ssl.h>], [
+#if OPENSSL_VERSION_NUMBER < 0x10001000L
+#error OpenSSL too old
+#endif
+],
+      [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support.])
-      OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ],
+      OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ], 
+     [AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.0.1 or newer)] )], 
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 

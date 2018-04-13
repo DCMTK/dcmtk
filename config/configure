@@ -14015,12 +14015,33 @@ $as_echo_n "checking whether to include OpenSSL support... " >&6; }
 if test "${with_openssl+set}" = set; then :
   withval=$with_openssl;  case "$withval" in
   yes)
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <openssl/ssl.h>
+int
+main ()
+{
+
+#if OPENSSL_VERSION_NUMBER < 0x10001000L
+#error OpenSSL too old
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
 $as_echo "#define WITH_OPENSSL /**/" >>confdefs.h
 
     OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS"
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no - DCMTK requires OpenSSL version 1.0.1 or newer" >&5
+$as_echo "no - DCMTK requires OpenSSL version 1.0.1 or newer" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     ;;
   *)
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -14029,7 +14050,7 @@ $as_echo "no" >&6; }
   esac
 else
    SAVELIBS="$LIBS"
-  LIBS="$LIBS -lssl -lcrypto"
+  LIBS="$LIBS $OPENSSLLIBS -lssl -lcrypto"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <openssl/ssl.h>
@@ -14042,12 +14063,34 @@ main ()
 }
 _ACEOF
 if ac_fn_cxx_try_link "$LINENO"; then :
+
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <openssl/ssl.h>
+int
+main ()
+{
+
+#if OPENSSL_VERSION_NUMBER < 0x10001000L
+#error OpenSSL too old
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
 $as_echo "#define WITH_OPENSSL /**/" >>confdefs.h
 
       OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS"
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no - DCMTK requires OpenSSL version 1.0.1 or newer" >&5
+$as_echo "no - DCMTK requires OpenSSL version 1.0.1 or newer" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }

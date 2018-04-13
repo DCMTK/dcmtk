@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -27,6 +27,7 @@
 
 DPMParametricMapBase::DPMParametricMapBase()
 : DPMParametricMapBase::IODImage()
+, m_FGInterface()
 , m_DPMParametricMapSeriesModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
 , m_IODEnhGeneralEquipmentModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
 , m_DPMParametricMapImageModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
@@ -41,6 +42,7 @@ DPMParametricMapBase::DPMParametricMapBase()
 template<typename ImagePixel>
 DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(ImagePixel))
 : DPMParametricMapBase::IODImage(OFin_place<ImagePixel>)
+, m_FGInterface()
 , m_DPMParametricMapSeriesModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
 , m_IODEnhGeneralEquipmentModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())
 , m_DPMParametricMapImageModule(DPMParametricMapBase::IODImage::getData(), DPMParametricMapBase::IODImage::getRules())

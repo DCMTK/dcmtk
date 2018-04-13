@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -251,6 +251,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             break;
         default:
             cond = parseDummy(buf, &itemLength, pduLength);
+            if (cond.bad())
+                return cond;
             buf += itemLength;
             if (!OFStandard::safeSubtract(pduLength, itemLength, pduLength))
               return makeUnderflowError("unknown item type", pduLength, itemLength);
@@ -411,6 +413,8 @@ parsePresentationContext(unsigned char type,
                 break;
             default:
                 cond = parseDummy(buf, &length, presentationLength);
+                if (cond.bad())
+                    return cond;
                 buf += length;
                 if (!OFStandard::safeSubtract(presentationLength, length, presentationLength))
                   return makeUnderflowError("unknown presentation context type", presentationLength, length);
@@ -509,6 +513,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
 
         case DUL_TYPEASYNCOPERATIONS:
             cond = parseDummy(buf, &length, userLength);
+            if (cond.bad())
+                return cond;
             buf += length;
             if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
               return makeLengthError("asynchronous operation user item type", userLength, length);
@@ -567,10 +573,13 @@ parseUserInfo(DUL_USERINFO * userInfo,
             // we hit an unknown user item that is not defined in the standard
             // or still unknown to DCMTK
             cond = parseDummy(buf, &length /* returns bytes "handled" by parseDummy */, userLength /* data available in bytes for user item */);
+            if (cond.bad())
+              return cond;
             // skip the bytes read
             buf += length;
             // subtract bytes of parsed data from available data bytes
-            if (!OFStandard::safeSubtract(userLength, OFstatic_cast(unsigned short, length), userLength))
+            if (OFstatic_cast(unsigned short, length) != length
+                || !OFStandard::safeSubtract(userLength, OFstatic_cast(unsigned short, length), userLength))
               return makeUnderflowError("unknown user item", userLength, length);
             break;
         }

@@ -82,18 +82,18 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  the object (if applicable).
      *  @param  rhs the right hand side of the comparison
      *  @return 0 if the object values are equal.
-     *          -1 if this element has fewer components than the rhs element.
-     *          Also -1 if the value of the first component that does not match
-     *          is lower in this object than in rhs. Also returned if rhs
-     *          cannot be casted to this object type or both objects are of
-     *          different VR (i.e. the DcmEVR returned by the element's ident()
-     *          call are different).
-     *          1 if either this element has more components than the rhs element, or
-     *          if the first component that does not match is greater in this object than
-     *          in rhs object.
-     *          If the function is overwritten by derived classes, the behaviour might
-     *          slightly change but all methods will return 0 on equality, and 1 or -1
-     *          if different.
+     *    -1 if this element has fewer components than the rhs element.
+     *    Also -1 if the value of the first component that does not match
+     *    is lower in this object than in rhs. Also returned if rhs
+     *    cannot be casted to this object type or both objects are of
+     *    different VR (i.e. the DcmEVR returned by the element's ident()
+     *    call are different).
+     *    1 if either this element has more components than the rhs element, or
+     *    if the first component that does not match is greater in this object
+     *    than in rhs object.
+     *    If the function is overwritten by derived classes, the behaviour might
+     *    slightly change but all methods will return 0 on equality, and 1 or -1
+     *    if different.
      */
     virtual int compare(const DcmElement& rhs) const =0;
 
@@ -779,6 +779,20 @@ class DCMTK_DCMDATA_EXPORT DcmElement
     virtual OFBool combinationMatches(const DcmElement& keySecond,
                                       const DcmElement& candidateFirst,
                                       const DcmElement& candidateSecond) const;
+
+    /** returns a pointer to the input stream, if available, NULL otherwise.
+     *  In general, this pointer is available when the element is part of a dataset
+     *  that has been read from a DICOM file, the file is not encoded in deflate
+     *  transfer syntax, and the element value is large enough that loading the value
+     *  has been postponed to the first read access. The DcmInputStreamFactory object
+     *  can create an instance of a file stream seeked to the right position within
+     *  the DICOM file from where the element value can be read.
+     *  @return pointer to the input stream factory of the element, null if no object is available
+     */
+    inline const DcmInputStreamFactory* getInputStream() const
+    {
+        return fLoadValue;
+    }
 
     /* --- static helper functions --- */
 

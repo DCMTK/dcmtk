@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -53,6 +53,32 @@ DSRIncludedTemplateTreeNode::DSRIncludedTemplateTreeNode(const DSRIncludedTempla
 
 DSRIncludedTemplateTreeNode::~DSRIncludedTemplateTreeNode()
 {
+}
+
+
+OFBool DSRIncludedTemplateTreeNode::operator==(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::operator==(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = (ReferencedTemplate.get() == OFstatic_cast(const DSRIncludedTemplateTreeNode &, node).ReferencedTemplate.get());
+    }
+    return result;
+}
+
+
+OFBool DSRIncludedTemplateTreeNode::operator!=(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::operator!=(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = (ReferencedTemplate.get() != OFstatic_cast(const DSRIncludedTemplateTreeNode &, node).ReferencedTemplate.get());
+    }
+    return result;
 }
 
 

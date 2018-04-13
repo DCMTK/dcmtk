@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -76,6 +76,8 @@ int FGPixelMeasures::compare(const FGBase& rhs) const
     return result;
 
   const FGPixelMeasures* myRhs = OFstatic_cast(const FGPixelMeasures*, &rhs);
+  if (!myRhs)
+    return -1;
 
   // Compare all elements
   result = m_PixelSpacing.compare(myRhs->m_PixelSpacing);
