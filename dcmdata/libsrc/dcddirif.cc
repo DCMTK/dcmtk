@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2017, OFFIS e.V.
+ *  Copyright (C) 2002-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -731,7 +731,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     else if (compare(sopClass, UID_MRSpectroscopyStorage))
         result = ERT_Spectroscopy;
     else if (compare(sopClass, UID_EncapsulatedPDFStorage) ||
-             compare(sopClass, UID_EncapsulatedCDAStorage))
+             compare(sopClass, UID_EncapsulatedCDAStorage) ||
+             compare(sopClass, UID_EncapsulatedSTLStorage))
     {
         result = ERT_EncapDoc;
     }
@@ -1610,7 +1611,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     if (!found)
                     {
                         found = compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage) ||
-                                compare(mediaSOPClassUID, UID_EncapsulatedCDAStorage);
+                                compare(mediaSOPClassUID, UID_EncapsulatedCDAStorage) ||
+                                compare(mediaSOPClassUID, UID_EncapsulatedSTLStorage);
                     }
                     /* is it one of the spatial registration SOP Classes? */
                     if (!found)

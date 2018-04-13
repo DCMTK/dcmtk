@@ -562,6 +562,7 @@ PatientRadiationDoseSRStorage                        1.2.840.10008.5.1.4.1.1.88.
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
+EncapsulatedSTLStorage                               1.2.840.10008.5.1.4.1.1.104.3
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
 LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
