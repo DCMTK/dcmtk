@@ -224,6 +224,18 @@ private:
     /** Helper template function for generically implementing range matching.
      *  @tparam T the type to parse the data int (e.g. OFDate), deduced automatically.
      *  @param parse a pointer to a function that parses a string as a T.
+     *  @param query the already separated (but not parsed) query.
+     *  @param candidate the already parsed candidate.
+     *  @return OFTrue if parsing of the query was successful and candidate equals
+     *    the query value or lies within the range defined by the query. OFFalse otherwise.
+     */
+    template<typename T>
+    static OFBool rangeMatchingTemplate( OFCondition (*parse)(const char*,const size_t,T&),
+                                         const DashSeparated& query, const T& candidate );
+
+    /** Helper template function for generically implementing range matching.
+     *  @tparam T the type to parse the data int (e.g. OFDate), deduced automatically.
+     *  @param parse a pointer to a function that parses a string as a T.
      *  @param queryData a pointer to a character string that can be parsed as a T or
      *    a dash separated range of two Ts.
      *  @param querySize the size (in bytes) of the string queryData refers to.

@@ -146,15 +146,8 @@ OFBool DcmAttributeMatching::wildCardMatching( const void* queryData, const size
 
 template<typename T>
 OFBool DcmAttributeMatching::rangeMatchingTemplate( OFCondition (*parse)(const char*,const size_t,T&),
-                                                    const void* queryData, const size_t querySize,
-                                                    const void* candidateData, const size_t candidateSize )
+                                                    const DashSeparated& query, const T& candidate )
 {
-    if( !querySize )
-        return OFTrue;
-    T candidate;
-    if( parse( OFreinterpret_cast( const char*, candidateData ), candidateSize, candidate ).bad() )
-        return OFFalse;
-    const DashSeparated query( queryData, querySize );
     T first;
     if( !query.firstSize || parse( query.first, query.firstSize, first ).good() )
     {
@@ -166,6 +159,19 @@ OFBool DcmAttributeMatching::rangeMatchingTemplate( OFCondition (*parse)(const c
             return ( !query.firstSize || first <= candidate ) && ( !query.secondSize || second >= candidate );
     }
     return OFFalse;
+}
+
+template<typename T>
+OFBool DcmAttributeMatching::rangeMatchingTemplate( OFCondition (*parse)(const char*,const size_t,T&),
+                                                    const void* queryData, const size_t querySize,
+                                                    const void* candidateData, const size_t candidateSize )
+{
+    if( !querySize )
+        return OFTrue;
+    T candidate;
+    if( parse( OFreinterpret_cast( const char*, candidateData ), candidateSize, candidate ).bad() )
+        return OFFalse;
+    return rangeMatchingTemplate( parse, DashSeparated( queryData, querySize ), candidate );
 }
 
 OFBool DcmAttributeMatching::rangeMatchingDate( const void* queryData, const size_t querySize,
@@ -203,10 +209,17 @@ OFBool DcmAttributeMatching::rangeMatchingDateTime( const void* dateQueryData, c
     const DashSeparated dateQuery( dateQueryData, dateQuerySize );
     const DashSeparated timeQuery( timeQueryData, timeQuerySize );
     // check that both date/time ranges have the same structure
-    if( ( dateQuery.first != dateQuery.second ) != ( timeQuery.first != timeQuery.second ) )
-        return OFFalse;
-    if( ( !dateQuery.firstSize && timeQuery.firstSize ) || ( !dateQuery.secondSize && timeQuery.secondSize ) )
-        return OFFalse;
+    if
+    (
+        ( dateQuery.first != dateQuery.second ) != ( timeQuery.first != timeQuery.second ) ||
+        ( !dateQuery.firstSize && timeQuery.firstSize ) ||
+        ( !dateQuery.secondSize && timeQuery.secondSize )
+    )
+    {
+        // fall back to individually matching them in case they don't
+        return rangeMatchingTemplate( &DcmDate::getOFDateFromString, dateQuery, candidate.getDate() ) &&
+            rangeMatchingTemplate( &DcmTime::getOFTimeFromString, timeQuery, candidate.getTime() );
+    }
     OFDateTime first;
     // parse the first date/time
     if( dateQuery.firstSize )
