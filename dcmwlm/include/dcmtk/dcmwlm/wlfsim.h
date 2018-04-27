@@ -163,7 +163,8 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *    used as padding.
        *  @param normalizeWildCards. Whether to interpret a query only consisting of wild cards as
        *    an universal match. Defaults to OFTrue, which means wild cards will be normalized if an
-       *    attribute's VR supports it. Set to OFFalse to force strict interpretation instead.
+       *    attribute's VR supports it and it is allowed for the attribute (as defined by the matchingKeys
+       *    argument). Set to OFFalse to force strict interpretation instead.
        *  @return OFTrue if the sequence has no items or if all attributes in its item can be considered
        *    an universal match. Returns OFFalse otherwise.
        */

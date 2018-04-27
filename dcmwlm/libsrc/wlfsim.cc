@@ -846,7 +846,7 @@ OFBool WlmFileSystemInteractionManager::IsUniversalMatch( DcmSequenceOfItems& qu
         const OFPair<DcmTagKey,OFBool>& key = *it;
 #endif
         DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, normalizeWildCards ) )
+        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, normalizeWildCards && key.second ) )
           return OFFalse;
       }
 
