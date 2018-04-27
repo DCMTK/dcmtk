@@ -945,7 +945,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
       if( dataset->findAndGetElement( combinedKey.first, candidate, OFFalse ).bad() || !candidate )
         return OFFalse;
       DcmElement* secondQuery = OFnullptr;
-      if( searchMask->findAndGetElement( combinedKey.second, secondQuery, OFFalse ).good() && secondQuery )
+      if( searchMask->findAndGetElement( combinedKey.second, secondQuery, OFFalse ).good() && secondQuery && !secondQuery->isUniversalMatch() )
       {
         DcmElement* secondCandidate = OFnullptr;
         if( dataset->findAndGetElement( combinedKey.second, secondCandidate, OFFalse ).bad() || !secondCandidate || !query->combinationMatches( *secondQuery, *candidate, *secondCandidate ) )
