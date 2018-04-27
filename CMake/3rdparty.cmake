@@ -89,7 +89,7 @@ IF(WIN32 AND NOT MINGW)
       SET(OPENSSL_LIBDIR "${WITH_OPENSSLINC}/lib")
       # starting with OpenSSL 1.1.0, the Windows crypt32 library is needed for a static link of OpenSSL.
       SET(OPENSSL_LIBS "crypt32" debug "${OPENSSL_LIBDIR}/dcmtkssl_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkssl_o.lib" debug "${OPENSSL_LIBDIR}/dcmtkcrypto_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkcrypto_o.lib")
-      SET( "${CMAKE_REQUIRED_INCLUDES}")
+      SET(TEMP_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
       LIST(APPEND CMAKE_REQUIRED_INCLUDES "${OPENSSL_INCDIR}")
       CHECK_CXX_SOURCE_COMPILES("extern \"C\" {\n#include <openssl/ssl.h>\n}\nint main(){\n#if OPENSSL_VERSION_NUMBER < 0x10001000L\n#error OpenSSL too old\n#endif\n}\n" OPENSSL_VERSION_CHECK)
       SET(CMAKE_REQUIRED_INCLUDES "${TEMP_INCLUDES}")
