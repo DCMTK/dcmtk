@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2017, OFFIS e.V.
+ *  Copyright (C) 2010-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,10 @@
 #include "dcmtk/dcmtls/tlsscu.h"
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
 
+BEGIN_EXTERN_C
+#include <openssl/ssl.h>
+END_EXTERN_C
+
 
 DcmTLSSCU::DcmTLSSCU() :
   m_tLayer(NULL),
@@ -32,23 +36,15 @@ DcmTLSSCU::DcmTLSSCU() :
   m_trustedCertDirs(),
   m_trustedCertFiles(),
   m_privateKeyFile(""),
-  m_privateKeyFileFormat(SSL_FILETYPE_PEM),
+  m_privateKeyFileFormat(DCF_Filetype_PEM),
   m_certificateFile(""),
-  m_certKeyFileFormat(SSL_FILETYPE_PEM),
+  m_certKeyFileFormat(DCF_Filetype_PEM),
   m_passwd(NULL),
-  m_ciphersuites(""),
   m_readSeedFile(""),
   m_writeSeedFile(""),
   m_certVerification(DCV_requireCertificate),
   m_dhparam("")
 {
-#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-  m_ciphersuites = TLS1_TXT_RSA_WITH_AES_128_SHA;
-  m_ciphersuites += ":";
-  m_ciphersuites += SSL3_TXT_RSA_DES_192_CBC3_SHA;
-#else
-  m_ciphersuites = SSL3_TXT_RSA_DES_192_CBC3_SHA;
-#endif
 }
 
 
@@ -60,23 +56,15 @@ DcmTLSSCU::DcmTLSSCU(const OFString& peerHost,
   m_trustedCertDirs(),
   m_trustedCertFiles(),
   m_privateKeyFile(""),
-  m_privateKeyFileFormat(SSL_FILETYPE_PEM),
+  m_privateKeyFileFormat(DCF_Filetype_PEM),
   m_certificateFile(""),
-  m_certKeyFileFormat(SSL_FILETYPE_PEM),
+  m_certKeyFileFormat(DCF_Filetype_PEM),
   m_passwd(NULL),
-  m_ciphersuites(""),
   m_readSeedFile(""),
   m_writeSeedFile(""),
   m_certVerification(DCV_requireCertificate),
   m_dhparam("")
 {
-#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-  m_ciphersuites = TLS1_TXT_RSA_WITH_AES_128_SHA;
-  m_ciphersuites += ":";
-  m_ciphersuites += SSL3_TXT_RSA_DES_192_CBC3_SHA;
-#else
-  m_ciphersuites = SSL3_TXT_RSA_DES_192_CBC3_SHA;
-#endif
   setPeerHostName(peerHost);
   setPeerAETitle(peerAETitle);
   setPeerPort(portNum);
@@ -98,7 +86,7 @@ OFCondition DcmTLSSCU::initNetwork()
   OFCondition cond;
 
   /* First, create TLS layer */
-  m_tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, m_readSeedFile.c_str());
+  m_tLayer = new DcmTLSTransportLayer(NET_REQUESTOR, m_readSeedFile.c_str(), OFTrue /* initialize OpenSSL */);
   if (m_tLayer == NULL)
   {
     DCMTLS_ERROR("Unable to create TLS transport layer for SCP, maybe problem with seed file?");
@@ -131,13 +119,6 @@ OFCondition DcmTLSSCU::initNetwork()
       DCMTLS_ERROR("Private key from file " << m_privateKeyFile << " and certificate from file " << m_certificateFile << " do not match");
       cond = EC_IllegalCall; // TODO: need to find better error code
     }
-  }
-
-  /* Set cipher suites to be supported */
-  if ( cond.good() && (TCS_ok != m_tLayer->setCipherSuites(m_ciphersuites.c_str())) )
-  {
-    DCMTLS_ERROR("Unable to set selected cipher suites for SCP");
-    cond = EC_IllegalCall; // TODO: need to find better error code
   }
 
   /* Initialize Diffie-Hellman parameters from file if given */
@@ -217,8 +198,8 @@ void DcmTLSSCU::closeAssociation(const DcmCloseAssociationType closeType)
 void DcmTLSSCU::enableAuthentication(const OFString& privateKey,
                                      const OFString& certFile,
                                      const char* passphrase,
-                                     const int privKeyFormat,
-                                     const int certFormat)
+                                     const DcmKeyFileFormat privKeyFormat,
+                                     const DcmKeyFileFormat certFormat)
 {
   m_doAuthenticate = OFTrue;
   m_privateKeyFile = privateKey;
@@ -260,18 +241,21 @@ void DcmTLSSCU::disableAuthentication()
   m_doAuthenticate = OFFalse;
 }
 
-
-void DcmTLSSCU::addCiphersuite(const OFString& cs)
+DcmTransportLayerStatus DcmTLSSCU::addCipherSuite(const OFString& suite)
 {
-  if (m_ciphersuites.empty())
-    m_ciphersuites = cs;
-  else
-  {
-    m_ciphersuites+= ":";
-    m_ciphersuites+= cs;
-  }
+  if (m_tLayer)
+     return m_tLayer->addCipherSuite(suite.c_str());
+     else return TCS_illegalCall;
 }
 
+DcmTransportLayerStatus DcmTLSSCU::setTLSProfile(DcmTLSSecurityProfile profile)
+{
+  if (m_tLayer) 
+  {
+    m_tLayer->setTLSProfile(profile);
+    return TCS_ok;
+  } else return TCS_illegalCall;
+}
 
 void DcmTLSSCU::setReadSeedFile(const OFString& seedFile)
 {
@@ -334,12 +318,6 @@ void DcmTLSSCU::getTrustedCertDirs(OFList<OFString>& trustedDirs /*out*/) const
     trustedDirs.push_back(*it);
     it++;
   }
-}
-
-
-OFString DcmTLSSCU::getCiphersuites() const
-{
-  return m_ciphersuites;
 }
 
 

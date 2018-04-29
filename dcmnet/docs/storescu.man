@@ -190,6 +190,10 @@ proposed transmission transfer syntaxes (not with --config-file):
           propose only required presentation contexts
           (default: propose all supported)
 
+          Note: This will also work with storage SOP classes that are
+          supported by DCMTK but are not in the list of SOP classes
+          proposed by default.
+
   +C    --combine
           combine proposed transfer syntaxes
           (default: separate presentation context for each TS)
@@ -319,13 +323,33 @@ certification authority:
   +cd   --add-cert-dir  [c]ertificate directory: string
           add certificates in d to list of certificates
 
+security profile:
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile (default)
+
+  +py   --profile-bcp195-nd
+          Non-downgrading BCP 195 TLS Profile
+
+  +pb   --profile-basic
+          Basic TLS Secure Transport Connection Profile
+          (retired)
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile
+          (retired)
+
+  +pn   --profile-null
+          Authenticated unencrypted communication
+          (retired, was used in IHE ATNA)
+
 ciphersuite:
+
+  +cc   --list-ciphers
+          Show list of supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
-
-  +dp   --dhparam  [f]ilename: string
-          read DH parameters for DH/DSS ciphersuites
 
 pseudo random generator:
 
@@ -342,9 +366,6 @@ peer authentication:
 
   -rc   --require-peer-cert
           verify peer certificate, fail if absent (default)
-
-  -vc   --verify-peer-cert
-          verify peer certificate if present
 
   -ic   --ignore-peer-cert
           don't verify peer certificate

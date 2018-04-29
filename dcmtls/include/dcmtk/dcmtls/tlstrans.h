@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,10 +30,9 @@
 
 #ifdef WITH_OPENSSL
 
-BEGIN_EXTERN_C
-#include <openssl/ssl.h>
-END_EXTERN_C
-
+// forward declarations of OpenSSL data structures
+struct ssl_st;
+typedef struct ssl_st SSL;
 
 /** this class represents a TLS (Transport Layer Security) V1 based secure
  *  transport connection.
@@ -144,6 +143,9 @@ private:
 
   /// private undefined assignment operator
   DcmTLSConnection& operator=(const DcmTLSConnection&);
+
+  /// dump TLS connection details to debug logger
+  void logTLSConnection();
 
   /// pointer to the TLS connection structure used by the OpenSSL library
   SSL *tlsConnection;

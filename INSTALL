@@ -147,8 +147,14 @@ Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements
 One", i.e. DICOM network transmission "tunneled" through a secure TLSv1
 transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org)
 for the underlying cryptographic routines and the TLS protocol implementation.
-This release of DCMTK is known to compile with the OpenSSL releases 0.9.8 to
-1.1.0g, although other releases may work as well.
+
+This release of DCMTK requires OpenSSL release 1.0.1 or newer, since older
+versions do not support the TLS 1.2 protocol required by the more recent
+DICOM security profiles. We recommend the use of OpenSSL 1.0.2 or newer,
+however, since some optional functions recommended by RFC 7525 / BCP 195
+are only available starting with this OpenSSL release. Furthermore, users
+should make care that the most recent OpenSSL patch level is applied.
+
 
 When using Autoconf, if support for security enhancements is desired, a compiled
 version of the OpenSSL libraries and include files must be available during
@@ -157,8 +163,7 @@ in the standard path and enables support automatically if present.
 
 When using CMake, if support for security enhancements is desired, a compiled
 version of the OpenSSL libraries and include files must be available during
-compilation of DCMTK, and the OpenSSL support must be switched on explicitly
-(using CMake, see below).  By default, DCMTK checks whether OpenSSL is installed
+compilation of DCMTK.  By default, DCMTK checks whether OpenSSL is installed
 and enables support automatically if present.  By default, DCMTK checks the
 standard paths on Unix platforms.  For Windows platforms, check the discussion
 on CMake below.
@@ -752,7 +757,7 @@ For more information, call this program with the --help option.
 BUILDING (Unix with Autoconf)
 =============================
 
-Configuring a DCMTK build with GNU Autoconf has been deprecated with this DCMTK
+Configuring a DCMTK build with GNU Autoconf has been deprecated with DCMTK
 release 3.6.3 and will be removed in future releases. However, you might still
 use Autoconf with this release if you prefer it for whatever reason:
 
@@ -908,4 +913,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2018-02-05 (Schlamelcher)
+Last revised: 2018-04-10 (Eichelberg)

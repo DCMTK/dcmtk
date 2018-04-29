@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2017, OFFIS e.V.
+ *  Copyright (C) 1999-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -617,6 +617,9 @@ static OFCondition updateJobList(
 int main(int argc, char *argv[])
 {
     OFStandard::initializeNetwork();
+#ifdef WITH_OPENSSL
+    DcmTLSTransportLayer::initializeOpenSSL();
+#endif
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Print spooler for presentation state viewer", rcsid);
     OFCommandLine cmd;
@@ -680,7 +683,7 @@ int main(int argc, char *argv[])
             COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
+            COUT << "- " << DcmTLSTransportLayer::getOpenSSLVersionName() << OFendl;
 #endif
             return 0;
          }
@@ -865,47 +868,44 @@ int main(int argc, char *argv[])
     if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
 
     /* key file format */
-    int keyFileFormat = SSL_FILETYPE_PEM;
-    if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
-
-    /* ciphersuites */
-#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-    OFString tlsCiphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#else
-    OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#endif
-    Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(opt_printer);
-    if (tlsNumberOfCiphersuites > 0)
-    {
-      tlsCiphersuites.clear();
-      OFString currentSuite;
-      const char *currentOpenSSL;
-      for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
-      {
-        dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
-        if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
-        {
-          OFLOG_FATAL(dcmprscuLogger, "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:");
-          unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-          for (unsigned long cs=0; cs < numSuites; cs++)
-          {
-            OFLOG_FATAL(dcmprscuLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
-          }
-          return 1;
-        } else {
-          if (!tlsCiphersuites.empty()) tlsCiphersuites += ":";
-          tlsCiphersuites += currentOpenSSL;
-        }
-      }
-    }
+    DcmKeyFileFormat keyFileFormat = DCF_Filetype_PEM;
+    if (! dvi.getTLSPEMFormat()) keyFileFormat = DCF_Filetype_ASN1;
 
     DcmTLSTransportLayer *tLayer = NULL;
     if (useTLS)
     {
-      tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
+      tLayer = new DcmTLSTransportLayer(NET_REQUESTOR, tlsRandomSeedFile.c_str(), OFFalse);
       if (tLayer == NULL)
       {
         OFLOG_FATAL(dcmprscuLogger, "unable to create TLS transport layer");
+        return 1;
+      }
+
+      // determine TLS profile
+      OFString profileName;
+      const char *profileNamePtr = dvi.getTargetTLSProfile(opt_printer);
+      if (profileNamePtr) profileName = profileNamePtr;
+      DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP195;  // default
+      if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
+      else if (profileName == "BCP195-ND") tlsProfile = TSP_Profile_BCP195_ND;
+      else if (profileName == "AES") tlsProfile = TSP_Profile_AES;
+      else if (profileName == "BASIC") tlsProfile = TSP_Profile_Basic;
+      else if (profileName == "NULL") tlsProfile = TSP_Profile_IHE_ATNA_Unencrypted;
+      else
+      {
+        OFLOG_WARN(dcmprscuLogger, "unknown TLS profile '" << profileName << "', ignoring");
+      }
+
+      if (TCS_ok != tLayer->setTLSProfile(tlsProfile))
+      {
+        OFLOG_FATAL(dcmprscuLogger, "unable to select the TLS security profile");
+        return 1;
+      }
+
+      // activate cipher suites
+      if (TCS_ok != tLayer->activateCipherSuites()) 
+      {
+        OFLOG_FATAL(dcmprscuLogger, "unable to activate the selected list of TLS ciphersuites");
         return 1;
       }
 
@@ -936,11 +936,6 @@ int main(int argc, char *argv[])
           OFLOG_FATAL(dcmprscuLogger, "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match");
           return 1;
         }
-      }
-      if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
-      {
-        OFLOG_FATAL(dcmprscuLogger, "unable to set selected cipher suites");
-        return 1;
       }
 
       tLayer->setCertificateVerification(tlsCertVerification);
@@ -1025,13 +1020,15 @@ int main(int argc, char *argv[])
 #ifdef WITH_OPENSSL
     if (useTLS)
     {
+      OFString cslist;
+      if (tLayer) tLayer->getListOfCipherSuitesForOpenSSL(cslist);
       OFLOG_INFO(dcmprscuLogger, "  certificate   : " << tlsCertificateFile);
       OFLOG_INFO(dcmprscuLogger, "  key file      : " << tlsPrivateKeyFile);
       OFLOG_INFO(dcmprscuLogger, "  DH params     : " << tlsDHParametersFile);
       OFLOG_INFO(dcmprscuLogger, "  PRNG seed     : " << tlsRandomSeedFile);
       OFLOG_INFO(dcmprscuLogger, "  CA directory  : " << tlsCACertificateFolder);
-      OFLOG_INFO(dcmprscuLogger, "  ciphersuites  : " << tlsCiphersuites);
-      OFLOG_INFO(dcmprscuLogger, "  key format    : " << (keyFileFormat == SSL_FILETYPE_PEM ? "PEM" : "DER"));
+      OFLOG_INFO(dcmprscuLogger, "  ciphersuites  : " << cslist);
+      OFLOG_INFO(dcmprscuLogger, "  key format    : " << (keyFileFormat == DCF_Filetype_PEM ? "PEM" : "DER"));
       const char *verification;
       switch (tlsCertVerification)
       {

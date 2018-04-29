@@ -62,11 +62,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcostrmz.h"     /* for dcmZlibCompressionLevel */
-
-#ifdef WITH_OPENSSL
-#include "dcmtk/dcmtls/tlstrans.h"
-#include "dcmtk/dcmtls/tlslayer.h"
-#endif
+#include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -97,7 +93,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 #define CALLING_PRESENTATION_ADDRESS_PLACEHOLDER "#r"
 
 static OFCondition processCommands(T_ASC_Association *assoc);
-static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg);
+static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg, OFBool secureConnection);
 static OFCondition echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID);
 static OFCondition storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID);
 static void executeOnReception();
@@ -157,7 +153,6 @@ OFString           lastCalledAETitle;
 OFString           callingPresentationAddress;        // remote hostname or IP address will be stored here
 OFString           lastCallingPresentationAddress;
 const char *       opt_respondingAETitle = APPLICATIONTITLE;
-static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory = ".";         // default: output directory equals "."
 E_SortStudyMode    opt_sortStudyMode = ESM_None;      // default: no sorting
 static const char *opt_sortStudyDirPrefix = NULL;     // default: no directory prefix
@@ -184,22 +179,6 @@ OFBool             opt_forkMode = OFFalse;
 
 OFBool             opt_forkedChild = OFFalse;
 OFBool             opt_execSync = OFFalse;            // default: execute in background
-
-#ifdef WITH_OPENSSL
-static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
-static const char *opt_privateKeyFile = NULL;
-static const char *opt_certificateFile = NULL;
-static const char *opt_passwd = NULL;
-#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-static OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#else
-static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#endif
-static const char *opt_readSeedFile = NULL;
-static const char *opt_writeSeedFile = NULL;
-static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
-static const char *opt_dhparam = NULL;
-#endif
 
 
 #ifdef HAVE_WAITPID
@@ -233,8 +212,12 @@ int main(int argc, char *argv[])
 {
   T_ASC_Network *net;
   DcmAssociationConfiguration asccfg;
+  DcmTLSOptions tlsOptions(NET_ACCEPTOR);
 
   OFStandard::initializeNetwork();
+#ifdef WITH_OPENSSL
+  DcmTLSTransportLayer::initializeOpenSSL();
+#endif
 
   OFString temp_str;
   OFOStringStream optStream;
@@ -326,41 +309,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--promiscuous",            "-pm",     "promiscuous mode, accept unknown SOP classes\n(not with --config-file)");
       cmd.addOption("--uid-padding",            "-up",     "silently correct space-padded UIDs");
 
-#ifdef WITH_OPENSSL
-  cmd.addGroup("transport layer security (TLS) options:");
-    cmd.addSubGroup("transport protocol stack:");
-      cmd.addOption("--disable-tls",            "-tls",    "use normal TCP/IP connection (default)");
-      cmd.addOption("--enable-tls",             "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
-                                                           "use authenticated secure TLS connection");
-    cmd.addSubGroup("private key password (only with --enable-tls):");
-      cmd.addOption("--std-passwd",             "+ps",     "prompt user to type password on stdin (default)");
-      cmd.addOption("--use-passwd",             "+pw",  1, "[p]assword: string",
-                                                           "use specified password");
-      cmd.addOption("--null-passwd",            "-pw",     "use empty string as password");
-    cmd.addSubGroup("key and certificate file format:");
-      cmd.addOption("--pem-keys",               "-pem",    "read keys and certificates as PEM file (def.)");
-      cmd.addOption("--der-keys",               "-der",    "read keys and certificates as DER file");
-    cmd.addSubGroup("certification authority:");
-      cmd.addOption("--add-cert-file",          "+cf",  1, "[c]ertificate filename: string",
-                                                           "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
-      cmd.addOption("--add-cert-dir",           "+cd",  1, "[c]ertificate directory: string",
-                                                           "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
-    cmd.addSubGroup("ciphersuite:");
-      cmd.addOption("--cipher",                 "+cs",  1, "[c]iphersuite name: string",
-                                                           "add ciphersuite to list of negotiated suites");
-      cmd.addOption("--dhparam",                "+dp",  1, "[f]ilename: string",
-                                                           "read DH parameters for DH/DSS ciphersuites");
-    cmd.addSubGroup("pseudo random generator:");
-      cmd.addOption("--seed",                   "+rs",  1, "[f]ilename: string",
-                                                           "seed random generator with contents of f");
-      cmd.addOption("--write-seed",             "+ws",     "write back modified seed (only with --seed)");
-      cmd.addOption("--write-seed-file",        "+wf",  1, "[f]ilename: string (only with --seed)",
-                                                           "write modified seed to file f");
-    cmd.addSubGroup("peer authentication");
-      cmd.addOption("--require-peer-cert",      "-rc",     "verify peer certificate, fail if absent (def.)");
-      cmd.addOption("--verify-peer-cert",       "-vc",     "verify peer certificate if present");
-      cmd.addOption("--ignore-peer-cert",       "-ic",     "don't verify peer certificate");
-#endif
+    // add TLS specific command line options if (and only if) we are compiling with OpenSSL
+    tlsOptions.addTLSCommandlineOptions(cmd);
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("general:");
@@ -445,13 +395,19 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
         COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-#ifdef WITH_OPENSSL
-        COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
-#endif
+        // print OpenSSL version if (and only if) we are compiling with OpenSSL
+        tlsOptions.printLibraryVersion();
 #ifdef WITH_TCPWRAPPER
         COUT << "- LIBWRAP" << OFendl;
 #endif
         return 0;
+      }
+
+      // check if the command line contains the --list-ciphers option
+      if (tlsOptions.listOfCiphersRequested(cmd))
+      {
+          tlsOptions.printSupportedCiphersuites(app, COUT);
+          return 0;
       }
     }
 
@@ -906,97 +862,8 @@ int main(int argc, char *argv[])
   /* print resource identifier */
   OFLOG_DEBUG(storescpLogger, rcsid << OFendl);
 
-#ifdef WITH_OPENSSL
-
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--disable-tls")) opt_secureConnection = OFFalse;
-  if (cmd.findOption("--enable-tls"))
-  {
-    opt_secureConnection = OFTrue;
-    app.checkValue(cmd.getValue(opt_privateKeyFile));
-    app.checkValue(cmd.getValue(opt_certificateFile));
-  }
-  cmd.endOptionBlock();
-
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--std-passwd"))
-  {
-    app.checkDependence("--std-passwd", "--enable-tls", opt_secureConnection);
-    opt_passwd = NULL;
-  }
-  if (cmd.findOption("--use-passwd"))
-  {
-    app.checkDependence("--use-passwd", "--enable-tls", opt_secureConnection);
-    app.checkValue(cmd.getValue(opt_passwd));
-  }
-  if (cmd.findOption("--null-passwd"))
-  {
-    app.checkDependence("--null-passwd", "--enable-tls", opt_secureConnection);
-    opt_passwd = "";
-  }
-  cmd.endOptionBlock();
-
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--pem-keys")) opt_keyFileFormat = SSL_FILETYPE_PEM;
-  if (cmd.findOption("--der-keys")) opt_keyFileFormat = SSL_FILETYPE_ASN1;
-  cmd.endOptionBlock();
-
-  if (cmd.findOption("--dhparam"))
-  {
-    app.checkValue(cmd.getValue(opt_dhparam));
-  }
-
-  if (cmd.findOption("--seed"))
-  {
-    app.checkValue(cmd.getValue(opt_readSeedFile));
-  }
-
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--write-seed"))
-  {
-    app.checkDependence("--write-seed", "--seed", opt_readSeedFile != NULL);
-    opt_writeSeedFile = opt_readSeedFile;
-  }
-  if (cmd.findOption("--write-seed-file"))
-  {
-    app.checkDependence("--write-seed-file", "--seed", opt_readSeedFile != NULL);
-    app.checkValue(cmd.getValue(opt_writeSeedFile));
-  }
-  cmd.endOptionBlock();
-
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--require-peer-cert")) opt_certVerification = DCV_requireCertificate;
-  if (cmd.findOption("--verify-peer-cert"))  opt_certVerification = DCV_checkCertificate;
-  if (cmd.findOption("--ignore-peer-cert"))  opt_certVerification = DCV_ignoreCertificate;
-  cmd.endOptionBlock();
-
-  const char *current = NULL;
-  const char *currentOpenSSL;
-  if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
-  {
-    opt_ciphersuites.clear();
-    do
-    {
-      app.checkValue(cmd.getValue(current));
-      if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
-      {
-        OFLOG_FATAL(storescpLogger, "ciphersuite '" << current << "' is unknown, known ciphersuites are:");
-        unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-        for (unsigned long cs = 0; cs < numSuites; cs++)
-        {
-          OFLOG_FATAL(storescpLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
-        }
-        return 1;
-      }
-      else
-      {
-        if (!opt_ciphersuites.empty()) opt_ciphersuites += ":";
-        opt_ciphersuites += currentOpenSSL;
-      }
-    } while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
-  }
-
-#endif
+  // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
+  tlsOptions.parseArguments(app, cmd);
 
 #ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
@@ -1073,80 +940,12 @@ int main(int argc, char *argv[])
       return 1;
   }
 
-#ifdef WITH_OPENSSL
-  DcmTLSTransportLayer *tLayer = NULL;
-  if (opt_secureConnection)
-  {
-    tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, opt_readSeedFile);
-    if (tLayer == NULL)
-    {
-      OFLOG_FATAL(storescpLogger, "unable to create TLS transport layer");
-      return 1;
-    }
-
-    if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
-    {
-      do
-      {
-        app.checkValue(cmd.getValue(current));
-        if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
-        {
-          OFLOG_WARN(storescpLogger, "unable to load certificate file '" << current << "', ignoring");
-        }
-      } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
-    }
-
-    if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
-    {
-      do
-      {
-        app.checkValue(cmd.getValue(current));
-        if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
-        {
-          OFLOG_WARN(storescpLogger, "unable to load certificates from directory '" << current << "', ignoring");
-        }
-      } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
-    }
-
-    if (opt_dhparam && !(tLayer->setTempDHParameters(opt_dhparam)))
-    {
-      OFLOG_WARN(storescpLogger, "unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring");
-    }
-
-    if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
-
-    if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
-    {
-      OFLOG_WARN(storescpLogger, "unable to load private TLS key from '" << opt_privateKeyFile << "'");
-      return 1;
-    }
-    if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
-    {
-      OFLOG_WARN(storescpLogger, "unable to load certificate from '" << opt_certificateFile << "'");
-      return 1;
-    }
-    if (! tLayer->checkPrivateKeyMatchesCertificate())
-    {
-      OFLOG_WARN(storescpLogger, "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match");
-      return 1;
-    }
-
-    if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
-    {
-      OFLOG_WARN(storescpLogger, "unable to set selected cipher suites");
-      return 1;
-    }
-
-    tLayer->setCertificateVerification(opt_certVerification);
-
-    cond = ASC_setTransportLayer(net, tLayer, 0);
-    if (cond.bad())
-    {
-      OFLOG_ERROR(storescpLogger, DimseCondition::dump(temp_str, cond));
-      return 1;
-    }
+  /* create a secure transport layer if requested and OpenSSL is available */
+  cond = tlsOptions.createTransportLayer(net, NULL, app, cmd);
+  if (cond.bad()) {
+      OFLOG_FATAL(storescpLogger, DimseCondition::dump(temp_str, cond));
+      exit(1);
   }
-#endif
 
 #ifdef HAVE_WAITPID
   // register signal handler
@@ -1157,27 +956,20 @@ int main(int argc, char *argv[])
   {
     /* receive an association and acknowledge or reject it. If the association was */
     /* acknowledged, offer corresponding services and invoke one or more if required. */
-    cond = acceptAssociation(net, asccfg);
+    cond = acceptAssociation(net, asccfg, tlsOptions.secureConnectionRequested());
 
     /* remove zombie child processes */
     cleanChildren(-1, OFFalse);
-#ifdef WITH_OPENSSL
+
     /* since storescp is usually terminated with SIGTERM or the like,
      * we write back an updated random seed after every association handled.
      */
-    if (tLayer && opt_writeSeedFile)
-    {
-      if (tLayer->canWriteRandomSeed())
-      {
-        if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-          OFLOG_WARN(storescpLogger, "cannot write random seed file '" << opt_writeSeedFile << "', ignoring");
-      }
-      else
-      {
-        OFLOG_WARN(storescpLogger, "cannot write random seed, ignoring");
-      }
+    cond = tlsOptions.writeRandomSeed();
+    if (cond.bad()) {
+        // failure to write back the random seed is a warning, not an error
+        OFLOG_WARN(storescpLogger, DimseCondition::dump(temp_str, cond));
     }
-#endif
+
     // if running in inetd mode, we always terminate after one association
     if (opt_inetd_mode) break;
 
@@ -1195,16 +987,11 @@ int main(int argc, char *argv[])
   }
 
   OFStandard::shutdownNetwork();
-
-#ifdef WITH_OPENSSL
-  delete tLayer;
-#endif
-
   return 0;
 }
 
 
-static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg)
+static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg, OFBool secureConnection)
 {
   char buf[BUFSIZ];
   T_ASC_Association *assoc;
@@ -1229,9 +1016,9 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   // try to receive an association. Here we either want to use blocking or
   // non-blocking, depending on if the option --eostudy-timeout is set.
   if( opt_endOfStudyTimeout == -1 )
-    cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection);
+    cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, secureConnection);
   else
-    cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection, DUL_NOBLOCK, OFstatic_cast(int, opt_endOfStudyTimeout));
+    cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, secureConnection, DUL_NOBLOCK, OFstatic_cast(int, opt_endOfStudyTimeout));
 
   if (cond.code() == DULC_FORKEDCHILD)
   {

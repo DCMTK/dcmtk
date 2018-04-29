@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2017, OFFIS e.V.
+ *  Copyright (C) 2010-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,7 +29,6 @@
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmtls/tlslayer.h"
 #include "dcmtk/dcmtls/tlsdefin.h"
-
 
 /** Base class for implementing DICOM TLS-enabled Service Class User functionality. This
  *  class is derived from the general DcmSCU class and just adds the corresponding TLS
@@ -102,18 +101,29 @@ public:
   virtual void enableAuthentication(const OFString& privateKey,
                                     const OFString& certFile,
                                     const char* passphrase = NULL,
-                                    const int privKeyFormat = SSL_FILETYPE_PEM,
-                                    const int certFormat = SSL_FILETYPE_PEM);
+                                    const DcmKeyFileFormat privKeyFormat = DCF_Filetype_PEM,
+                                    const DcmKeyFileFormat certFormat = DCF_Filetype_PEM);
 
   /** Disables authentication. However, DcmTLSSCU will try to establish secured
    *  connection in terms of encrypting data. Default is that authentication is disabled.
    */
   virtual void disableAuthentication();
 
-  /** Add ciphersuite to list of supported ciphersuites
-   *  @param cs The ciphersuite to add
+  /** replace the current list of ciphersuites by the list of ciphersuites
+   *  for the given profile. Caller must ensure that initNetwork() is executed before this call.
+   *  @param profile TLS Security Profile
+   *  @return TCS_ok if successful, an error code otherwise
    */
-  virtual void addCiphersuite(const OFString& cs);
+  virtual DcmTransportLayerStatus setTLSProfile(DcmTLSSecurityProfile profile);
+
+  /** adds a ciphersuite to the list of ciphersuites for TLS negotiation.
+   *  Caller must ensure that initNetwork() is executed before this call.
+   *  It is the responsibility of the user to ensure that the added ciphersuite
+   *  does not break the rules of the selected profile. Use with care!
+   *  @param suite TLS ciphersuite name, in the official TLS name form.
+   *  @return TCS_ok if successful, an error code otherwise
+   */
+  virtual DcmTransportLayerStatus addCipherSuite(const OFString& suite);
 
   /** Set file to be used as random seed for initializing the Pseudo Random
    *  Number Generator (PRNG)
@@ -167,11 +177,6 @@ public:
    */
   virtual void getTrustedCertDirs(OFList<OFString>& trustedDirs /*out*/) const;
 
-  /** Get ciphersuites set to be supported
-   *  @return Ciphersuites set to be supported
-   */
-  virtual OFString getCiphersuites() const;
-
   /** Get random seed file used for initializing Pseudo Random Number
    *  Generator (PRNG)
    *  @return Random seed file used for reading
@@ -217,20 +222,17 @@ private:
   /// The file containing the private key (if authentication is enabled)
   OFString m_privateKeyFile;
 
-  /// Might be either "SSL_FILETYPE_PEM" (default) or "SSL_FILETYPE_ASN1"
-  int m_privateKeyFileFormat;
+  /// private key file format
+  DcmKeyFileFormat m_privateKeyFileFormat;
 
   /// File containing the certificate the SCU should use for authentication
   OFString m_certificateFile;
 
-  /// Might be either "SSL_FILETYPE_PEM" (default) or "SSL_FILETYPE_ASN1"
-  int m_certKeyFileFormat;
+  /// certificate (public key) file format
+  DcmKeyFileFormat m_certKeyFileFormat;
 
-  ///
+  /// password required to open the private key file
   char* m_passwd;
-
-  /// String containing all cipher suites being configured to be used
-  OFString m_ciphersuites;
 
   /// Random seed file used for initializing Pseudo Random Number
   /// Generator (PRNG)

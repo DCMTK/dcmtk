@@ -5,10 +5,10 @@ CIPHERSUITE SUPPORT IN DCMTK
 
 When compiled with OpenSSL support, several of the DCMTK network
 applications optionally support TLS encapsulated secure DICOM communication
-as defined in the DICOM Security Enhancements One (Supplement 31). TLS
-(Transport Layer Security) can be used with different so-called
-"ciphersuites". Each ciphersuite defines
+as defined in the DICOM Part 15. TLS (Transport Layer Security) can be
+used with different so-called "ciphersuites". Each ciphersuite defines
 
+  - the algorithm to be used for the autentication of peers,
   - the algorithm to be used for key-exchange of session keys,
   - the algorithm to be used for bulk data encryption, and
   - the algorithm to be used for secure hash (message digest).
@@ -16,84 +16,138 @@ as defined in the DICOM Security Enhancements One (Supplement 31). TLS
 The ciphersuites to be used for secure DICOM communication can be
 controlled in the TLS-enabled DCMTK tools, e.g. with appropriate command
 line parameters. The ciphersuite name constants known to DCMTK are
-exactly as defined in RFC 2246, RFC 3268 and in the draft IETF specifications
-draft-ietf-tls-56-bit-ciphersuites-00.txt and draft-ietf-tls-ecc-01.txt
+exactly as defined in the RFCs that define the TLS protocol and its
+various extensions.
 
 The TLS protocol allows a dynamic negotiation of the ciphersuite to be used.
 For this purpose, the TLS-enabled DCMTK tools allow that multiple
-ciphersuites be specified.  During negotiation, the first ciphersuite that
-is supported by both communicating entities is selected, i.e. the order of
-the command line parameters decides in which order the ciphersuites are
-negotiated.
+ciphersuites be specified. During negotiation, the TLS client proposes
+a list of ciphersuites that it supports, and the TLS server selects
+from this list. Many systems will select the first entry from the list
+that is also know to the server (thus respecting the prioritization
+of ciphersuites by the client), but servers may also select based
+on their own priorities, e.g. by always selecting the most secure ciphersuite.
 
-It should be noted that DICOM applications supporting the "Basic TLS Secure
-Transport Connection Profile" defined in Part 15 of the DICOM standard must
-always support the TLS_RSA_WITH_3DES_EDE_CBC_SHA ciphersuite for secure DICOM
-communication.
+In DCMTK, the selection of ciphersuites is based on "TLS profiles", which
+follow the secure profiles define in DICOM Part 15:
 
-DICOM applications supporting the "AES TLS Secure Transport Connection Profile"
-defined in Part 15 of the DICOM standard must always support both
-TLS_RSA_WITH_AES_128_CBC_SHA and TLS_RSA_WITH_3DES_EDE_CBC_SHA ciphersuites for
-secure DICOM communication and must preferrably select the AES ciphersuite.
+- BCP 195 TLS Profile (default)
+  This profile proposes the following set of ciphersuites:
+  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2+)
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2+)
+  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2+)
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2+)
+  - TLS_RSA_WITH_AES_128_CBC_SHA
+  - TLS_RSA_WITH_3DES_EDE_CBC_SHA
 
-Applications that wish to claim conformance to one of the DICOM Secure Transport
-Connection Profiles should make sure that the required ciphersuites are always
-included in the list of ciphersuites to be negotiated.
+  The first four ciphersuites are modern, state-of the art ciphersuites
+  but only work with TLS version 1.2 (or newer). The other two ciphersuites
+  offer backward compatibility with older applications implementing the
+  AES TLS Secure Transport Connection Profile or the Basic TLS Secure
+  Transport Connection Profile (e.g. DCMTK versions older than 3.6.4) and
+  can be used with TLS version 1.0 (or newer).
 
-The default behaviour of the TLS-enabled DCMTK tools, when compiled with an
-OpenSSL version prior to 0.9.7 is to only negotiate the
-TLS_RSA_WITH_3DES_EDE_CBC_SHA ciphersuite, conforming to the "Basic TLS Secure
-Transport Connection Profile". The default behaviour when compiled with OpenSSL
-release 0.9.7 or newer is to support TLS_RSA_WITH_AES_128_CBC_SHA and
-TLS_RSA_WITH_3DES_EDE_CBC_SHA, i.e. to conform to the "AES TLS Secure Transport
-Connection Profile".
+- Non-downgrading BCP 195 TLS Profile
+  This profile proposes the following set of ciphersuites:
+  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2+)
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2+)
+  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2+)
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2+)
 
-Note: OpenSSL 0.9.8a always includes and preferrably negotiates 256 bit AES
-(TLS_RSA_WITH_AES_256_CBC_SHA) in the list of ciphersuites whenever an
-application specifies support for TLS_RSA_WITH_AES_128_CBC_SHA. This does not
-break DICOM conformance, but may affect performance. There currently seems to be
-no way to avoid this behaviour, however, since it is hard-coded in OpenSSL.
+  Furthermore, when this profile is active, only TLS version 1.2
+  or newer will be negotiated.
+
+- Basic TLS Secure Transport Connection Profile (retired)
+  This profile only proposes a single ciphersuite for use
+  with TLS 1.0 or newer:
+  - TLS_RSA_WITH_3DES_EDE_CBC_SHA
+
+- AES TLS Secure Transport Connection Profile (retired)
+  This profile proposes the following set of ciphersuites
+  for use with TLS 1.0 or newer:
+  - TLS_RSA_WITH_AES_128_CBC_SHA
+  - TLS_RSA_WITH_3DES_EDE_CBC_SHA
+
+- Authenticated unencrypted communication (retired)
+  This profile proposes a single ciphersuite that offers peer
+  authentication and integrity protection, but no encryption.
+  This profile should only be used in secure network environments.
+  This profile was defined in older versions of the IHE ATNA
+  (Audit Trail and Node Authentication) integration profile,
+  but has been retired.
+
+Furthermore, on API level it is also possible to start without
+a profile and directly define the set of supported ciphersuites,
+but for security reasons this option has not been made available
+in the command line tools.
+
+The list of ciphersuites defined by a profile can be extended by
+addition additional profiles from the list of supported ciphersuites
+(see below). The only exception is the unencrypted ciphersuite
+TLS_RSA_WITH_NULL_SHA: For security reasons, this ciphersuite cannot be
+added to one of the secure profiles other than "Authenticated
+unencrypted communication".
+
+The list of ciphersuites known to DCMTK is shown at the end
+of this document. The list of ciphersuites that is actually supported
+may also depend on the OpenSSL library with which DCMTK is compiled:
+
+- The CHACHA20 ciphers are only supported starting from OpenSSL 1.1.0
+
+- The 3DES cipher (TLS_RSA_WITH_3DES_EDE_CBC_SHA) is not available
+  in OpenSSL 1.1.0 or newer, unless OpenSSL has been configured and
+  compiled with "--enable-weak-ciphers".
+  In cases where 3DES is not available, the Basic TLS Secure Transport
+  Connection Profile cannot be used and the AES TLS Secure Transport
+  Connection Profile will not offer backwards compatibility with the
+  Basic TLS profile.
+
+OpenSSL versions older than 1.0.1 are not supported anymore, and
+we recommend the use of OpenSSL 1.0.2 or newer since some optional
+features recommended by RFC 7525 (BCP 195) are only available starting
+with this release.
+
 
 ==============================
 NOTES ON CIPHERSUITE SELECTION
 ==============================
 
-The selection of ciphersuites is a matter of Security Policy which is
-outside the scope of a technical specification (like the DICOM standard) or
-a tool-set like DCMTK.  Nevertheless, when defining this local security
-policy there is a number of aspects users should be aware of.
-
 1. Unencrypted Ciphersuites
 
-  TLS defines two unencrypted ciphersuites, TLS_RSA_WITH_NULL_MD5 and
-  TLS_RSA_WITH_NULL_SHA. These ciphersuites do not provide any
-  confidentiality during data transmission - all data is transferred in
-  unencrypted plain text and can be read by any man-in-the-middle. They do,
-  however, provide peer entity authentication and integrity: they prevent
-  any unauthorised modification of data during transfer and allow to
-  identify the communicating entities.  The use of these ciphersuites
-  should be avoided if confidential (e.g. patient) data is transmitted
+  TLS defines several "unencrypted" ciphersuites, of which only
+  TLS_RSA_WITH_NULL_SHA is also supported by DCMTK.
+  This ciphersuite does not provide any confidentiality during data
+  transmission - all data is transferred in unencrypted plain text
+  and can be read by any man-in-the-middle. It does, however, provide
+  peer entity authentication and integrity: it prevents
+  any unauthorised modification of data during transfer and
+  identifies the communicating entities.  The use of this ciphersuite
+  MUST be avoided if confidential (e.g. patient) data is transmitted
   over public networks.
 
 2. Anonymous Ciphersuites
 
   TLS defines a number of ciphersuites which use anonymous Diffie-Hellman
   key exchange without signatures. These ciphersuites can be identified by a
-  name starting with "TLS_DH_anon_".  They do not allow an authentication
+  name starting with "TLS_DH_anon_".  They do not permit an authentication
   of the communicating entities and, therefore, are susceptible to
-  man-in-the-middle attacks.
+  man-in-the-middle attacks. DCMTK does not support these ciphersuites.
 
 3. Ciphersuites with Key Length Restrictions
 
-  The length of the keys used for key exchange of session keys and bulk data
-  encryption determines the effort needed to decrypt a TLS communication
-  with "brute force" attacks (using massive computing power). A number of
-  TLS ciphersuites restricts key lengths in order to comply with U.S. export
-  regulations. These ciphersuites can be identified by the term "EXPORT" or
-  "EXPORT1024" in their name.
+  DCMTK only supports TLS ciphersuite with at least 128 bits of security
+  for the symmetric block cipher. Such ciphers can currently be considered
+  secure (not breakable by "brute force attacks").
 
-  These ciphersuites must be considered insecure. Support for these
-  ciphersuites has been removed from DCMTK starting in version 3.6.1.
+  There are two exceptions, however: The unencrypted ciphersuite
+  (TLS_RSA_WITH_NULL_SHA, see above), and the Triple-DES ciphersuite
+  (TLS_RSA_WITH_3DES_EDE_CBC_SHA), which is only supported for backwards
+  compatibility with older implementations only supporting the
+  Basic TLS Secure Transport Connection Profile. While Triple-DES
+  has 168 bits key length, the effective security is only 112 bits,
+  which is below the threadhold chosen for other ciphers.
+  Users who want to ensure at least 128 bits of security should use
+  the Non-downgrading BCP 195 TLS Profile.
 
 4. Forward Secrecy Ciphersuites
 
@@ -104,7 +158,7 @@ policy there is a number of aspects users should be aware of.
   forward secrecy by destroying cryptographic keys. This prevents an
   attacker from coercing the communicating parties into decrypting old
   ciphertext.  The forward secrecy ciphersuites can be identified by
-  the name starting with "TLS_DHE_".
+  the name starting with "TLS_DHE_" or "TLS_ECDHE_".
 
   Forward secrecy makes it harder for attackers to compromise confidential
   information in transit in encrypted form, and so is more secure than the
@@ -112,251 +166,69 @@ policy there is a number of aspects users should be aware of.
   legislations prohibit the use of forward secrecy in terms of non
   recoverable encryption.
 
-  Users in Europe who want to use forward secrecy should be aware of the
-  European Prestandard ENV 13608-3 "Health informatics - Security for
-  healthcare communication - Part 3: Secure data channels" which requires
-  that the TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA ciphersuite must be supported
-  if forward secrecy is desired and must be negotiated before ciphersuites
-  not offering forward secrecy if conformance to ENV 13608-3 is claimed by
-  an application.
+  In general, forward secrecy ciphersuites should be preferred.
+
+
+===================================
+TLS Ciphersuites Supported by DCMTK
+===================================
+
+The following list shows all TLS ciphersuites currently supported by DCMTK.
+The list of ciphersuites actually available in a DCMTK-based application
+may be smaller depending on the version of OpenSSL used and the way
+OpenSSL has been compiled (see above for details).
+
+  - TLS_RSA_WITH_NULL_SHA
+  - TLS_RSA_WITH_3DES_EDE_CBC_SHA
+  - TLS_RSA_WITH_AES_128_GCM_SHA256
+  - TLS_RSA_WITH_AES_128_CBC_SHA
+  - TLS_RSA_WITH_AES_128_CBC_SHA256
+  - TLS_RSA_WITH_AES_256_GCM_SHA384
+  - TLS_RSA_WITH_AES_256_CBC_SHA
+  - TLS_RSA_WITH_AES_256_CBC_SHA256
+  - TLS_RSA_WITH_CAMELLIA_128_CBC_SHA
+  - TLS_RSA_WITH_CAMELLIA_256_CBC_SHA
+  - TLS_DHE_DSS_WITH_AES_128_GCM_SHA256
+  - TLS_DHE_DSS_WITH_AES_128_CBC_SHA
+  - TLS_DHE_DSS_WITH_AES_128_CBC_SHA256
+  - TLS_DHE_DSS_WITH_AES_256_GCM_SHA384
+  - TLS_DHE_DSS_WITH_AES_256_CBC_SHA
+  - TLS_DHE_DSS_WITH_AES_256_CBC_SHA256
+  - TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA
+  - TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA
+  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+  - TLS_DHE_RSA_WITH_AES_128_CBC_SHA
+  - TLS_DHE_RSA_WITH_AES_128_CBC_SHA256
+  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
+  - TLS_DHE_RSA_WITH_AES_256_CBC_SHA
+  - TLS_DHE_RSA_WITH_AES_256_CBC_SHA256
+  - TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA
+  - TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA
+  - TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256
+  - TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA
+  - TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256
+  - TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384
+  - TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA
+  - TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384
+  - TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256
+  - TLS_ECDH_RSA_WITH_AES_128_CBC_SHA
+  - TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256
+  - TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384
+  - TLS_ECDH_RSA_WITH_AES_256_CBC_SHA
+  - TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384
+  - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+  - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+  - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+  - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+  - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+  - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+  - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+  - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+  - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+  - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+  - TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+  - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
+  - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
 
-5. Ciphersuites not supported by OpenSSL
-
-  DCMTK relies on the OpenSSL library to implement TLS-secured DICOM
-  communication. However, the OpenSSL library does support Diffie-Hellman
-  certificates and, therefore, does not implement the non-ephemeral
-  (i.e., non forward secrecy) ciphersuites.
-
-  The unsupported ciphersuites are documented in OpenSSL's ciphers(1)
-  manual page and currently include:
-
-  - TLS_DH_DSS_WITH_DES_CBC_SHA
-  - TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA
-  - TLS_DH_RSA_WITH_DES_CBC_SHA
-  - TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA
-  - TLS_DH_DSS_WITH_AES_128_CBC_SHA
-  - TLS_DH_RSA_WITH_AES_128_CBC_SHA
-  - TLS_DH_DSS_WITH_AES_256_CBC_SHA
-  - TLS_DH_RSA_WITH_AES_256_CBC_SHA
-
-==============================
-TLS Ciphersuites from RFC 2246
-==============================
-
-TLS_RSA_WITH_NULL_MD5
-
-  Key exchange : RSA
-  Encryption   : none
-  Secure Hash  : MD5
-  Note         : UNENCRYPTED, NO CONFIDENTIALITY
-
-TLS_RSA_WITH_NULL_SHA
-
-  Key exchange : RSA
-  Encryption   : none
-  Secure Hash  : SHA-1
-  Note         : UNENCRYPTED, NO CONFIDENTIALITY
-
-TLS_RSA_WITH_RC4_128_MD5
-
-  Key exchange : RSA
-  Encryption   : RC4 with 128 bit key
-  Secure Hash  : MD5
-
-TLS_RSA_WITH_RC4_128_SHA
-
-  Key exchange : RSA
-  Encryption   : RC4 with 128 bit key
-  Secure Hash  : SHA-1
-
-TLS_RSA_WITH_IDEA_CBC_SHA
-
-  Key exchange : RSA
-  Encryption   : IDEA (CBC mode, 128 bit key)
-  Secure Hash  : SHA-1
-
-TLS_RSA_WITH_DES_CBC_SHA
-
-  Key exchange : RSA
-  Encryption   : DES (CBC mode) with 56 bit key
-  Secure Hash  : SHA-1
-
-TLS_RSA_WITH_3DES_EDE_CBC_SHA
-
-  Key exchange : RSA
-  Encryption   : 3DES (EDE CBC mode) with 168 bit key
-  Secure Hash  : SHA-1
-
-TLS_DH_DSS_WITH_DES_CBC_SHA
-
-  Key exchange : Diffie-Hellman with DSS certificate signature
-  Encryption   : DES (CBC mode) with 56 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA
-
-  Key exchange : Diffie-Hellman with DSS certificate signature
-  Encryption   : 3DES (EDE CBC mode) with 168 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DH_RSA_WITH_DES_CBC_SHA
-
-  Key exchange : Diffie-Hellman with RSA certificate signature
-  Encryption   : DES (CBC mode) with 56 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA
-
-  Key exchange : Diffie-Hellman with RSA certificate signature
-  Encryption   : 3DES (EDE CBC mode) with 168 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DHE_DSS_WITH_DES_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with DSS certificate signature
-  Encryption   : DES (CBC mode) with 56 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with DSS certificate signature
-  Encryption   : 3DES (EDE CBC mode) with 168 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DHE_RSA_WITH_DES_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with RSA certificate signature
-  Encryption   : DES (CBC mode) with 56 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with RSA certificate signature
-  Encryption   : 3DES (EDE CBC mode) with 168 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DH_anon_WITH_RC4_128_MD5
-
-  Key exchange : Anonymous Diffie-Hellman, no signatures
-  Encryption   : RC4 with 128 bit key
-  Secure Hash  : MD5
-  Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks
-
-TLS_DH_anon_WITH_DES_CBC_SHA
-
-  Key exchange : Anonymous Diffie-Hellman, no signatures
-  Encryption   : DES (CBC mode) with 56 bit key
-  Secure Hash  : SHA-1
-  Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks
-
-TLS_DH_anon_WITH_3DES_EDE_CBC_SHA
-
-  Key exchange : Anonymous Diffie-Hellman, no signatures
-  Encryption   : 3DES (EDE CBC mode) with 168 bit key
-  Secure Hash  : SHA-1
-  Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks
-
-===============================================================
-TLS Ciphersuites from draft-ietf-tls-56-bit-ciphersuites-00.txt
-===============================================================
-
-TLS_DHE_DSS_WITH_RC4_128_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with DSS certificate signature
-  Encryption   : RC4 with 128 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-==========================================================================
-AES Ciphersuites from RFC3268. Only available with OpenSSL 0.9.7 or newer.
-==========================================================================
-
-TLS_RSA_WITH_AES_128_CBC_SHA
-
-  Key exchange : RSA
-  Encryption   : AES (CBC mode) with 128 bit key
-  Secure Hash  : SHA-1
-
-TLS_DH_DSS_WITH_AES_128_CBC_SHA
-
-  Key exchange : Diffie-Hellman with DSS certificate signature
-  Encryption   : AES (CBC mode) with 128 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DH_RSA_WITH_AES_128_CBC_SHA
-
-  Key exchange : Diffie-Hellman with RSA certificate signature
-  Encryption   : AES (CBC mode) with 128 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DHE_DSS_WITH_AES_128_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with DSS certificate signature
-  Encryption   : AES (CBC mode) with 128 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DHE_RSA_WITH_AES_128_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with RSA certificate signature
-  Encryption   : AES (CBC mode) with 128 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DH_anon_WITH_AES_128_CBC_SHA
-
-  Key exchange : Anonymous Diffie-Hellman, no signatures
-  Encryption   : AES (CBC mode) with 128 bit key
-  Secure Hash  : SHA-1
-  Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks
-
-TLS_RSA_WITH_AES_256_CBC_SHA
-
-  Key exchange : RSA
-  Encryption   : AES (CBC mode) with 256 bit key
-  Secure Hash  : SHA-1
-
-TLS_DH_DSS_WITH_AES_256_CBC_SHA
-
-  Key exchange : Diffie-Hellman with DSS certificate signature
-  Encryption   : AES (CBC mode) with 256 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DH_RSA_WITH_AES_256_CBC_SHA
-
-  Key exchange : Diffie-Hellman with RSA certificate signature
-  Encryption   : AES (CBC mode) with 256 bit key
-  Secure Hash  : SHA-1
-  Note         : not supported by OpenSSL
-
-TLS_DHE_DSS_WITH_AES_256_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with DSS certificate signature
-  Encryption   : AES (CBC mode) with 256 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DHE_RSA_WITH_AES_256_CBC_SHA
-
-  Key exchange : Ephemeral Diffie-Hellman with RSA certificate signature
-  Encryption   : AES (CBC mode) with 256 bit key
-  Secure Hash  : SHA-1
-  Note         : provides forward secrecy
-
-TLS_DH_anon_WITH_AES_256_CBC_SHA
-
-  Key exchange : Anonymous Diffie-Hellman, no signatures
-  Encryption   : AES (CBC mode) with 256 bit key
-  Secure Hash  : SHA-1
-  Note         : anonymous ciphersuite, susceptible to man-in-the-middle attacks

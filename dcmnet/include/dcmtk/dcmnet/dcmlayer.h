@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,12 +76,6 @@ public:
   /** constructor.
    */
   DcmTransportLayer() { /* empty */ }
-
-  /** constructor.
-   *  #param networkRole network role to be used by the application, influences
-   *    the choice of the secure transport layer code.
-   */
-  DcmTransportLayer(int /* networkRole */ ) { /* empty */ }
 
   /** move constructor.
    *  @param rhs an rvalue reference to another DcmTransportLayer object that

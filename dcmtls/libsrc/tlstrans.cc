@@ -48,6 +48,7 @@ BEGIN_EXTERN_C
 #include <sys/select.h>
 #endif
 #include <openssl/err.h>
+#include <openssl/ssl.h>
 END_EXTERN_C
 
 #ifdef DCMTK_HAVE_POLL
@@ -82,6 +83,7 @@ DcmTransportLayerStatus DcmTLSConnection::serverSideHandshake()
   {
     case SSL_ERROR_NONE:
       /* success */
+      logTLSConnection();
       break;
     case SSL_ERROR_SYSCALL:
     case SSL_ERROR_SSL:
@@ -114,6 +116,7 @@ DcmTransportLayerStatus DcmTLSConnection::clientSideHandshake()
   switch (SSL_get_error(tlsConnection, SSL_connect(tlsConnection)))
   {
     case SSL_ERROR_NONE:
+      logTLSConnection();
       /* success */
       break;
     case SSL_ERROR_SYSCALL:
@@ -314,16 +317,15 @@ OFString& DcmTLSConnection::dumpConnectionParameters(OFString& str)
   if (tlsConnection == NULL)
   {
     // This should never happen (famous last words)
-    str = "Transport connection: TLS/SSL over TCP/IP\n  Error: No Connection";
+    str = "Transport connection: TLS over TCP/IP\n  Error: No Connection";
     return str;
   }
 
   X509 *peerCert = SSL_get_peer_certificate(tlsConnection);
   OFOStringStream stream;
-  stream << "Transport connection: TLS/SSL over TCP/IP" << OFendl
+  stream << "Transport connection: TLS over TCP/IP" << OFendl
          << "  Protocol    : " << SSL_get_version(tlsConnection) << OFendl
          << "  Ciphersuite : " << SSL_CIPHER_get_name(SSL_get_current_cipher(tlsConnection))
-         << ", version: " << SSL_CIPHER_get_version(SSL_get_current_cipher(tlsConnection))
          << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << OFendl
          << DcmTLSTransportLayer::dumpX509Certificate(peerCert);
   // stream << OFendl << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection));
@@ -361,6 +363,15 @@ const char *DcmTLSConnection::errorString(DcmTransportLayerStatus code)
       /* break; */
   }
   return "unknown error code";
+}
+
+void DcmTLSConnection::logTLSConnection()
+{
+  OFString s;
+  dumpConnectionParameters(s);
+  DCMTLS_DEBUG(
+    "================== BEGIN TLS CONNECTION DETAILS =================\n" << s <<
+    "\n=================== END TLS CONNECTION DETAILS ==================");
 }
 
 #else  /* WITH_OPENSSL */
