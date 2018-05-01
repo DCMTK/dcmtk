@@ -218,7 +218,13 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
        transportLayerContext = SSL_CTX_new(TLS_method());
        break;
    }
-#endif
+
+   // starting with OpenSSL 1.1.0, we explicitly need to set the security level to 0
+   // if we want to support any of the NULL ciphersuites. Since we manage the list
+   // of supported ciphersuites ourselves and prevent a mix of NULL and non-NULL
+   // ciphersuites, this is safe.
+   if (transportLayerContext) SSL_CTX_set_security_level(transportLayerContext, 0);
+ #endif
 
    if (transportLayerContext == NULL)
    {
@@ -717,7 +723,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     OFSTRINGSTREAM_GETOFSTRING(out, ret)
     return ret;
   } else {
-    return "Peer did not provide a certificate (anonymous TLS).";
+    return "Peer did not provide a certificate or certificate verification is disabled.";
   }
 }
 
