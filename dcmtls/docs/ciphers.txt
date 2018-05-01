@@ -95,8 +95,8 @@ may also depend on the OpenSSL library with which DCMTK is compiled:
 - The CHACHA20 ciphers are only supported starting from OpenSSL 1.1.0
 
 - The 3DES cipher (TLS_RSA_WITH_3DES_EDE_CBC_SHA) is not available
-  in OpenSSL 1.1.0 or newer, unless OpenSSL has been configured and
-  compiled with "--enable-weak-ciphers".
+  in OpenSSL 1.1.0 or newer, unless OpenSSL has been configured 
+  with "Configure enable-weak-ssl-ciphers <os/compiler>".
   In cases where 3DES is not available, the Basic TLS Secure Transport
   Connection Profile cannot be used and the AES TLS Secure Transport
   Connection Profile will not offer backwards compatibility with the
