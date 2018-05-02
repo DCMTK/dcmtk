@@ -173,7 +173,7 @@ public:
   virtual void getTrustedCertFiles(OFList<OFString>& files /*out*/) const;
 
   /** Get directories containing considered to contain trusted certificates.
-   *  @param trustedDirs directories consiered to contain trusted certificates.
+   *  @param trustedDirs directories considered to contain trusted certificates.
    */
   virtual void getTrustedCertDirs(OFList<OFString>& trustedDirs /*out*/) const;
 

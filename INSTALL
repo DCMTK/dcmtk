@@ -758,7 +758,7 @@ BUILDING (Unix with Autoconf)
 =============================
 
 Configuring a DCMTK build with GNU Autoconf has been deprecated with DCMTK
-release 3.6.3 and will be removed in future releases. However, you might still
+release 3.6.3 and will be removed in future releases.  However, you might still
 use Autoconf with this release if you prefer it for whatever reason:
 
 You do not need to obtain GNU Autoconf to compile and install this software.

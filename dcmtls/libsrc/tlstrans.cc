@@ -276,7 +276,7 @@ OFBool DcmTLSConnection::networkDataAvailable(int timeout)
   t.tv_usec = 0;
 
 #ifdef DCMTK_HAVE_POLL
-  struct pollfd pfd[] = 
+  struct pollfd pfd[] =
   {
    { getSocket(), POLLIN, 0 }
   };

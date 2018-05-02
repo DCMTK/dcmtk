@@ -8,7 +8,7 @@ applications optionally support TLS encapsulated secure DICOM communication
 as defined in the DICOM Part 15. TLS (Transport Layer Security) can be
 used with different so-called "ciphersuites". Each ciphersuite defines
 
-  - the algorithm to be used for the autentication of peers,
+  - the algorithm to be used for the authentication of peers,
   - the algorithm to be used for key-exchange of session keys,
   - the algorithm to be used for bulk data encryption, and
   - the algorithm to be used for secure hash (message digest).
@@ -95,7 +95,7 @@ may also depend on the OpenSSL library with which DCMTK is compiled:
 - The CHACHA20 ciphers are only supported starting from OpenSSL 1.1.0
 
 - The 3DES cipher (TLS_RSA_WITH_3DES_EDE_CBC_SHA) is not available
-  in OpenSSL 1.1.0 or newer, unless OpenSSL has been configured 
+  in OpenSSL 1.1.0 or newer, unless OpenSSL has been configured
   with "Configure enable-weak-ssl-ciphers <os/compiler>".
   In cases where 3DES is not available, the Basic TLS Secure Transport
   Connection Profile cannot be used and the AES TLS Secure Transport
@@ -120,7 +120,7 @@ NOTES ON CIPHERSUITE SELECTION
   transmission - all data is transferred in unencrypted plain text
   and can be read by any man-in-the-middle. It does, however, provide
   peer entity authentication and integrity: it prevents
-  any unauthorised modification of data during transfer and
+  any unauthorized modification of data during transfer and
   identifies the communicating entities.  The use of this ciphersuite
   MUST be avoided if confidential (e.g. patient) data is transmitted
   over public networks.
@@ -145,7 +145,7 @@ NOTES ON CIPHERSUITE SELECTION
   compatibility with older implementations only supporting the
   Basic TLS Secure Transport Connection Profile. While Triple-DES
   has 168 bits key length, the effective security is only 112 bits,
-  which is below the threadhold chosen for other ciphers.
+  which is below the threshold chosen for other ciphers.
   Users who want to ensure at least 128 bits of security should use
   the Non-downgrading BCP 195 TLS Profile.
 
@@ -231,4 +231,3 @@ OpenSSL has been compiled (see above for details).
   - TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256
   - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
   - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
-

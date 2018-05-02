@@ -36,7 +36,7 @@ END_EXTERN_C
 #define SSL_CTX_get_ciphers(ctx) (ctx)->cipher_list
 #endif
 
-/* POD struct for the list of supported ciphersuite 
+/* POD struct for the list of supported ciphersuite
  */
 struct DcmCipherSuiteList
 {
@@ -55,7 +55,7 @@ struct DcmCipherSuiteList
 /* This is a subset of the list of ciphersuites supported by OpenSSL 1.0.1 and newer.
  * This list only contains ciphersuites that offer an acceptable level of security,
  * plus the "historic" ciphersuites for older TLS profiles (Basic, AES, IHE ATNA NULL).
- * 
+ *
  * IMPORTANT: This list must be sorted from the weakest to the strongest ciphersuite.
  *   - first sort by availability of forward secrecy (RSA < ECDH < ECDHE < DHE)
  *   - then sort by effective key size
@@ -123,7 +123,7 @@ static const DcmCipherSuiteList globalCipherSuiteList[] =
     {"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",       TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_SHA384,        TPV_TLSv12, TKE_ECDH,       TCA_ECDSA,  TCE_AES,      TCM_SHA384, 256, 256},
     {"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",         TLS1_TXT_ECDHE_RSA_WITH_AES_256_SHA384,          TPV_TLSv12, TKE_ECDH,       TCA_RSA,    TCE_AES,      TCM_SHA384, 256, 256},
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    /* OpenSSL 1.1.0 supports the ChaCha20-Poly1305 ciphersuites defined in RFC 7905 */ 
+    /* OpenSSL 1.1.0 supports the ChaCha20-Poly1305 ciphersuites defined in RFC 7905 */
     {"TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256", TLS1_TXT_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,     TPV_TLSv12, TKE_ECDH,       TCA_ECDSA,  TCE_ChaCha20, TCM_AEAD,   256, 256},
     {"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",   TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305,       TPV_TLSv12, TKE_ECDH,       TCA_RSA,    TCE_ChaCha20, TCM_AEAD,   256, 256},
 #endif
@@ -138,7 +138,7 @@ static const DcmCipherSuiteList globalCipherSuiteList[] =
     {"TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",           TLS1_TXT_DHE_DSS_WITH_AES_256_SHA256,            TPV_TLSv12, TKE_DH,         TCA_DSS,    TCE_AES,      TCM_SHA256, 256, 256},
     {"TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",           TLS1_TXT_DHE_RSA_WITH_AES_256_SHA256,            TPV_TLSv12, TKE_DH,         TCA_RSA,    TCE_AES,      TCM_SHA256, 256, 256},
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    /* OpenSSL 1.1.0 supports the ChaCha20-Poly1305 ciphersuites defined in RFC 7905 */ 
+    /* OpenSSL 1.1.0 supports the ChaCha20-Poly1305 ciphersuites defined in RFC 7905 */
     {"TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256",     TLS1_TXT_DHE_RSA_WITH_CHACHA20_POLY1305,         TPV_TLSv12, TKE_DH,         TCA_RSA,    TCE_ChaCha20, TCM_AEAD,   256, 256},
 #endif
     {"TLS_DHE_DSS_WITH_AES_256_GCM_SHA384",           TLS1_TXT_DHE_DSS_WITH_AES_256_GCM_SHA384,        TPV_TLSv12, TKE_DH,         TCA_DSS,    TCE_AESGCM,   TCM_AEAD,   256, 256},
@@ -193,7 +193,7 @@ void DcmTLSCiphersuiteHandler::determineSupportedCiphers()
       {
         c = sk_SSL_CIPHER_value(sk, j);
         p = SSL_CIPHER_get_name(c);
-        if (p) 
+        if (p)
         {
           // ...check if we also support it in DCMTK
           idx = lookupCiphersuiteByOpenSSLName(p);
@@ -324,7 +324,7 @@ DcmTransportLayerStatus DcmTLSCiphersuiteHandler::addCipherSuite(const char *sui
         {
           DCMTLS_FATAL("Unencrypted ciphersuite '" << suite << "' not permitted with security profile '" << lookupProfileName(currentProfile) << "'");
           return TCS_tlsError;
-        }    
+        }
         if (TKE_RSA == getCipherSuiteKeyExchange(idx))
         {
           DCMTLS_WARN("Ciphersuite '" << suite << "' uses RSA key transport. RFC 7525 recomments that such cipher suites should not be used.");
@@ -348,7 +348,7 @@ DcmTransportLayerStatus DcmTLSCiphersuiteHandler::addCipherSuite(const char *sui
   return TCS_illegalCall;
 }
 
-// Static helper function for the qsort() call in 
+// Static helper function for the qsort() call in
 // DcmTLSCiphersuiteHandler::getListOfCipherSuitesForOpenSSL().
 static int cipherSuiteComparison(const void *lhs, const void *rhs)
 {
@@ -360,7 +360,7 @@ static int cipherSuiteComparison(const void *lhs, const void *rhs)
   return 0;
 }
 
-void DcmTLSCiphersuiteHandler::getListOfCipherSuitesForOpenSSL(OFString& cslist, OFBool isServer) const 
+void DcmTLSCiphersuiteHandler::getListOfCipherSuitesForOpenSSL(OFString& cslist, OFBool isServer) const
 {
   cslist.clear();
   const char *c = NULL;
@@ -373,7 +373,7 @@ void DcmTLSCiphersuiteHandler::getListOfCipherSuitesForOpenSSL(OFString& cslist,
     // ignoring the order of preference proposed by the client; instead we select the first
     // matching ciphersuite from our own (server-side) list of supported ciphersuites.
     // We sort this list with the strongest ciphersuite first. Since the global list
-    // of ciphersuites (globalCipherSuiteList) is already sorted by strength (weakest 
+    // of ciphersuites (globalCipherSuiteList) is already sorted by strength (weakest
     // ciphersuite first), we only have to sort the ciphersuite IDs in decreasing order.
     qsort(&tempList[0], tempList.size(), sizeof(size_t), cipherSuiteComparison);
   }

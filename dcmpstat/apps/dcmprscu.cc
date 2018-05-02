@@ -54,16 +54,16 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"    /* for constants */
 #include "dcmtk/dcmpstat/dviface.h"    /* for DVInterface */
-#include "dcmtk/ofstd/ofstring.h"   /* for OFString */
-#include "dcmtk/ofstd/ofbmanip.h"   /* for OFBitmanipTemplate */
-#include "dcmtk/ofstd/ofdatime.h"   /* for OFDateTime */
-#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
-#include "dcmtk/dcmdata/cmdlnarg.h"   /* for prepareCmdLineArgs */
-#include "dcmtk/ofstd/ofconapp.h"   /* for OFConsoleApplication */
+#include "dcmtk/ofstd/ofstring.h"      /* for OFString */
+#include "dcmtk/ofstd/ofbmanip.h"      /* for OFBitmanipTemplate */
+#include "dcmtk/ofstd/ofdatime.h"      /* for OFDateTime */
+#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmdata/cmdlnarg.h"    /* for prepareCmdLineArgs */
+#include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
 #include "dcmtk/dcmimgle/dcmimage.h"
 #include "dcmtk/dcmpstat/dvpspr.h"
 #include "dcmtk/dcmpstat/dvpssp.h"
-#include "dcmtk/dcmpstat/dvpshlp.h"     /* for class DVPSHelper */
+#include "dcmtk/dcmpstat/dvpshlp.h"    /* for class DVPSHelper */
 #include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_OPENSSL
@@ -369,7 +369,7 @@ static OFCondition spoolJobList(
       result2 = spoolStoredPrintFile(currentJob->storedPrintFilename.c_str(), dvi, tlayer);
       if (result2 != EC_Normal)
       {
-        OFLOG_ERROR(dcmprscuLogger, "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename << "'");
+        OFLOG_ERROR(dcmprscuLogger, "spooler: error occurred during spooling of Stored Print object '" << currentJob->storedPrintFilename << "'");
       }
       if (result == EC_Normal) result = result2; // forward error codes, but do not erase
     } else {
@@ -903,7 +903,7 @@ int main(int argc, char *argv[])
       }
 
       // activate cipher suites
-      if (TCS_ok != tLayer->activateCipherSuites()) 
+      if (TCS_ok != tLayer->activateCipherSuites())
       {
         OFLOG_FATAL(dcmprscuLogger, "unable to activate the selected list of TLS ciphersuites");
         return 1;

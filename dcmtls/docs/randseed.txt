@@ -72,7 +72,7 @@ file "randseed.bin" that can be used to seed the OpenSSL PRNG:
 4. Pseudo Random Number Generator Daemon (PRNGD)
 
 Pseudo Random Number Generator Daemon is a user space application that
-"offers an EGD compatible interface to obtain random data and is intented to
+"offers an EGD compatible interface to obtain random data and is intended to
 be used as an entropy source to feed other software, especially software
 based on OpenSSL. Like EGD it calls system programs to collect entropy.
 Unlike EGD it does not generate a pool of random bits that can be called

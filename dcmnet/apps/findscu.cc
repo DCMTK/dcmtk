@@ -401,15 +401,15 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_OPENSSL
     if (tlsOptions.secureConnectionRequested())
-    {      
+    {
        /* create a secure transport layer */
        cond = tlsOptions.createTransportLayer(NULL, NULL, app, cmd);
-       if (cond.bad()) 
+       if (cond.bad())
        {
            OFLOG_FATAL(findscuLogger, DimseCondition::dump(temp_str, cond));
            return 1;
        }
-    
+
        /* activate secure transport layer */
        cond = findscu.setTransportLayer(tlsOptions.getTransportLayer());
        if (cond.bad())

@@ -250,7 +250,7 @@ DcmTransportLayerStatus DcmTLSSCU::addCipherSuite(const OFString& suite)
 
 DcmTransportLayerStatus DcmTLSSCU::setTLSProfile(DcmTLSSecurityProfile profile)
 {
-  if (m_tLayer) 
+  if (m_tLayer)
   {
     m_tLayer->setTLSProfile(profile);
     return TCS_ok;

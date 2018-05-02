@@ -43,9 +43,9 @@ public:
 
   /** constructor.
    *  @param openSocket TCP/IP socket to be used for the transport connection.
-   *    the connection must already be establised on socket level. This object
+   *    the connection must already be established on socket level. This object
    *    takes over control of the socket.
-   *  @param newTLSConnection pointer to intialized OpenSSL connection object
+   *  @param newTLSConnection pointer to initialized OpenSSL connection object
    *    to be used for this connection.
    */
   DcmTLSConnection(DcmNativeSocketType openSocket, SSL *newTLSConnection);

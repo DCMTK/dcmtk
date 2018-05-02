@@ -70,7 +70,7 @@ public:
     /** Create a DcmTLSTransportLayer object based on the collected command
      *  line arguments.
      *  @param net pointer to network object in which the transport layer
-     *    should be registered. May be NULL, in which case the caller 
+     *    should be registered. May be NULL, in which case the caller
      *    must activate the transport layer manually using ASC_setTransportLayer().
      *  @param params pointer to the association negotiation parameters object.
      *    For an association acceptor, this parameter is passed as NULL.
@@ -78,7 +78,7 @@ public:
      *    then it is the responsibility of the caller to call ASC_setTransportLayerType()
      *    and set the right transport layer type for the association parameters.
      *  @param app a reference to an OFConsoleApplication object used in the
-     *    calling application. 
+     *    calling application.
      *  @param cmd a reference to an OFCommandLine object used to parse
      *    the command line argument give to the calling application.
      *  @return EC_Normal if successful, an error code otherwise
@@ -86,7 +86,7 @@ public:
     OFCondition createTransportLayer(
       T_ASC_Network *net,
       T_ASC_Parameters *params,
-      OFConsoleApplication& app, 
+      OFConsoleApplication& app,
       OFCommandLine& cmd);
 
     /** Update the random seed file if this was requested by the given command
@@ -123,7 +123,7 @@ public:
      *  @param os output stream
      */
     static void printSupportedCiphersuites(OFConsoleApplication& app, STD_NAMESPACE ostream& os);
-    
+
     /** Print OpenSSL library version string.
      *  Does nothing if OpenSSL is not available.
      */

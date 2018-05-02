@@ -1148,7 +1148,7 @@ int main(int argc, char *argv[])
       }
 
       // activate cipher suites
-      if (TCS_ok != tLayer->activateCipherSuites()) 
+      if (TCS_ok != tLayer->activateCipherSuites())
       {
         OFLOG_FATAL(dcmpsrcvLogger, "unable to activate the selected list of TLS ciphersuites");
         return 1;

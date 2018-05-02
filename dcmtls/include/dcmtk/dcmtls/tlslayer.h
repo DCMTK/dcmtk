@@ -74,7 +74,7 @@ enum DcmCertificateVerification
 enum DcmKeyFileFormat
 {
  /** PEM (Privacy Enhanced Mail) format
-  */ 
+  */
  DCF_Filetype_PEM,
 
  /** ASN.1 (Abstract Syntax Notation One) format
@@ -157,7 +157,7 @@ public:
 
   /** Query whether this object has not been initialized, e.g. has been
    *  constructed using the default constructor or the initialization failed.
-   *  @return OFTrue if *this ist not initialized, OFFalse otherwise.
+   *  @return OFTrue if *this is not initialized, OFFalse otherwise.
    */
   OFBool operator!() const;
 
@@ -166,7 +166,7 @@ public:
    *  or a secure connection is established.  If the object cannot be created
    *  (e. g. because no secure layer is available), returns NULL.
    *  @param openSocket TCP/IP socket to be used for the transport connection.
-   *    the connection must already be establised on socket level. If a non-null
+   *    the connection must already be established on socket level. If a non-null
    *    pointer is returned, the new connection object takes over control of the socket.
    *  @param useSecureLayer if true, a secure layer is used. If false, a
    *    transparent layer is used.
@@ -228,13 +228,13 @@ public:
   DcmTransportLayerStatus addVerificationFlags(unsigned long flags);
 
   /** replace the current list of ciphersuites by the list of ciphersuites
-   *  for the given profile. 
+   *  for the given profile.
    *  @param profile TLS Security Profile
    *  @return TCS_ok if successful, an error code otherwise
    */
   DcmTransportLayerStatus setTLSProfile(DcmTLSSecurityProfile profile);
 
-  /** clear the current list of ciphersuites. Equivalent to 
+  /** clear the current list of ciphersuites. Equivalent to
    *  calling setTLSProfile(TSP_Profile_None).
    */
   void clearTLSProfile();
@@ -248,7 +248,7 @@ public:
   DcmTransportLayerStatus addCipherSuite(const char *suite);
 
   /** activate the current list of ciphersuites by transferring to the OpenSSL layer
-   *  This method needs to be called once after the list of ciphersuites has beed
+   *  This method needs to be called once after the list of ciphersuites has been
    *  defined used setTLSProfile() and addCipherSuite().
    *  @return TCS_ok if successful, an error code otherwise
    */
@@ -330,7 +330,7 @@ public:
    *  @return public key size (in bits) if RSA certificate, 0 otherwise.
    */
   static int getRSAKeySize(X509 *certificate);
-  
+
   /** checks the BCP 195 recommendations that RSA certificates
    *  should use SHA-256 hash keys. We also accept better SHA-2
    *  hash keys (SHA-384 and SHA-512).
@@ -341,24 +341,24 @@ public:
    */
   static const char *checkRSAHashKeyIsSHA2(X509 *certificate);
 
-  /** returns the version name of the OpenSSL version used. 
+  /** returns the version name of the OpenSSL version used.
    *  @return OpenSSL version name, never NULL.
    */
   static const char *getOpenSSLVersionName();
 
-  /** load an X.509 certificate from file. 
+  /** load an X.509 certificate from file.
    *  @param fileName path to the certificate file
    *  @param fileType, must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
-   *  @return pointer to X509 object if successfull, NULL otherwise. 
+   *  @return pointer to X509 object if successful, NULL otherwise.
    *    The X509 object must be freed by the caller.
    */
   static X509 *loadCertificateFile(const char *fileName, DcmKeyFileFormat fileType);
 
   /** returns a string in OpenSSL syntax that contains the currently defined
-   *  list of TLS ciphersuites. 
+   *  list of TLS ciphersuites.
    *  @param cslist The list of ciphersuites in OpenSSL syntax is written to this string.
    */
-  void getListOfCipherSuitesForOpenSSL(OFString& cslist) const; 
+  void getListOfCipherSuitesForOpenSSL(OFString& cslist) const;
 
   /** provides access to the underlying OpenSSL context handle for implementing
    *  custom functionality not accessible by the existing member functions of

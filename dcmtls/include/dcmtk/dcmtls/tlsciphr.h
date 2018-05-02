@@ -47,19 +47,19 @@ enum DcmTLSSecurityProfile
   TSP_Profile_Basic,
 
   /** DICOM AES TLS Secure Transport Connection Profile (retired),
-    * using the ciphersuites TLS_RSA_WITH_AES_128_CBC_SHA and TLS_RSA_WITH_3DES_EDE_CBC_SHA, 
+    * using the ciphersuites TLS_RSA_WITH_AES_128_CBC_SHA and TLS_RSA_WITH_3DES_EDE_CBC_SHA,
     * and TLS 1.0 or newer.
     */
   TSP_Profile_AES,
 
   /** DICOM BCP 195 TLS Profile, based on RFC 7525.
-   *  This profile tries to negotiate TLS 1.2 or newer, but may fall back to previous 
+   *  This profile tries to negotiate TLS 1.2 or newer, but may fall back to previous
    *  protocol versions up to TLS 1.0. It supports four TLS 1.2 specific ciphersuites
    *  (TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
    *  TLS_DHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384)
-   *  but also the ciphersuites of the AES and Basic Profile, thus providing 
-   *  backward compatibility with older implementations while offering much 
-   *  better security when used with implementations also supporting one of the 
+   *  but also the ciphersuites of the AES and Basic Profile, thus providing
+   *  backward compatibility with older implementations while offering much
+   *  better security when used with implementations also supporting one of the
    *  BCP 195 profiles.
    */
   TSP_Profile_BCP195,
@@ -78,7 +78,7 @@ enum DcmTLSSecurityProfile
    * This profile uses the ciphersuite SSL_RSA_WITH_NULL_SHA and TLS 1.0 or newer.
    * This ciphersuite offers peer authentication and integrity of communication,
    * but no encryption (i.e. no confidentiality), and is thus only suitable for use
-   * over a secure infrastructure. This was used in older versions of the 
+   * over a secure infrastructure. This was used in older versions of the
    * IHE Audit Trail and Node Authentication (ATNA) integration profile,
    * but has been retired.
    */
@@ -94,7 +94,7 @@ enum DcmTLSCipherProtocolVersion
 {
   /// Secure Socket Layer (SSL) version 3 or newer
   TPV_SSLv3,
-  /// Transport Layer Security (TLS) verion 1.2 or newer
+  /// Transport Layer Security (TLS) version 1.2 or newer
   TPV_TLSv12
 };
 
@@ -122,7 +122,7 @@ enum DcmTLSCipherKeyExchange
 };
 
 
-/** This enum describes the authentication mechanism 
+/** This enum describes the authentication mechanism
  *  used in a certain TLS ciphersuite.
  */
 enum DcmTLSCipherAuthentication
@@ -137,7 +137,7 @@ enum DcmTLSCipherAuthentication
   TCA_ECDSA,
 
   /// RSA
-  TCA_RSA  
+  TCA_RSA
 };
 
 
@@ -186,8 +186,8 @@ enum DcmTLSCipherMAC
 };
 
 
-/** This helper class manages the list of TLS ciphersuites supported by DCMTK, 
- *  translates DcmTLSSecurityProfile enums into the corresponding sets of 
+/** This helper class manages the list of TLS ciphersuites supported by DCMTK,
+ *  translates DcmTLSSecurityProfile enums into the corresponding sets of
  *  ciphersuites, and permits translation between the official TLS ciphersuite
  *  names (as used in DCMTK) and the corresponding internal OpenSSL name.
  */
@@ -197,7 +197,7 @@ public:
 
   /** constructor. The constructor assumes that the OpenSSL library
    *  has already been initialized. This should be ensured prior to creating
-   *  any DcmTLSCiphersuiteHandler instance by calling 
+   *  any DcmTLSCiphersuiteHandler instance by calling
    *  DcmTLSTransportLayer::initializeOpenSSL(). This only needs to be done once.
    */
   DcmTLSCiphersuiteHandler();
@@ -206,13 +206,13 @@ public:
   virtual ~DcmTLSCiphersuiteHandler();
 
   /** replace the current list of ciphersuites by the list of ciphersuites
-   *  for the given profile. 
+   *  for the given profile.
    *  @param profile TLS Security Profile
    *  @return TCS_ok if successful, an error code otherwise
    */
   DcmTransportLayerStatus setTLSProfile(DcmTLSSecurityProfile profile);
 
-  /** clear the current list of ciphersuites. Equivalent to 
+  /** clear the current list of ciphersuites. Equivalent to
    *  calling setTLSProfile(TSP_Profile_None).
    */
   void clearTLSProfile();
@@ -226,13 +226,13 @@ public:
   DcmTransportLayerStatus addCipherSuite(const char *suite);
 
   /** returns a string in OpenSSL syntax that contains the currently defined
-   *  list of TLS ciphersuites. 
+   *  list of TLS ciphersuites.
    *  @param cslist The list of ciphersuites in OpenSSL syntax is written to this string.
-   *  @param isServer true if the list of cipher suites is intended for 
+   *  @param isServer true if the list of cipher suites is intended for
    *    a TLS server. In this case, the list of ciphersuites will be reordered
    *    from strongest to weakest, as recommended by BCP 195.
    */
-  void getListOfCipherSuitesForOpenSSL(OFString& cslist, OFBool isServer) const; 
+  void getListOfCipherSuitesForOpenSSL(OFString& cslist, OFBool isServer) const;
 
   /** returns the set of flags that need to be activated in OpenSSL
    *  depending on the selected TLS profile.
@@ -368,8 +368,8 @@ private:
   /// currently selected DICOM TLS security profile
   DcmTLSSecurityProfile currentProfile;
 
-  /** an arry of booleans indicating which ciphersuites known to DCMTK are 
-   *  actually supported by the OpenSSL library we are using. 
+  /** an array of booleans indicating which ciphersuites known to DCMTK are
+   *  actually supported by the OpenSSL library we are using.
    */
   OFBool *ciphersuiteSupported;
 };

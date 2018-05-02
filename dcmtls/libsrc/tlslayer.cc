@@ -768,7 +768,7 @@ void DcmTLSTransportLayer::printSupportedCiphersuites(STD_NAMESPACE ostream& os)
   ciphersuites.printSupportedCiphersuites(os);
 }
 
-void DcmTLSTransportLayer::getListOfCipherSuitesForOpenSSL(OFString& cslist) const 
+void DcmTLSTransportLayer::getListOfCipherSuitesForOpenSSL(OFString& cslist) const
 {
   ciphersuites.getListOfCipherSuitesForOpenSSL(cslist, (role != NET_REQUESTOR));
 }

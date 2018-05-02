@@ -190,9 +190,9 @@ proposed transmission transfer syntaxes (not with --config-file):
           propose only required presentation contexts
           (default: propose all supported)
 
-          Note: This will also work with storage SOP classes that are
-          supported by DCMTK but are not in the list of SOP classes
-          proposed by default.
+          # This will also work with storage SOP classes that are
+          # supported by DCMTK but are not in the list of SOP classes
+          # proposed by default.
 
   +C    --combine
           combine proposed transfer syntaxes
@@ -332,12 +332,10 @@ security profile:
           Non-downgrading BCP 195 TLS Profile
 
   +pb   --profile-basic
-          Basic TLS Secure Transport Connection Profile
-          (retired)
+          Basic TLS Secure Transport Connection Profile (retired)
 
   +pa   --profile-aes
-          AES TLS Secure Transport Connection Profile
-          (retired)
+          AES TLS Secure Transport Connection Profile (retired)
 
   +pn   --profile-null
           Authenticated unencrypted communication
@@ -346,7 +344,7 @@ security profile:
 ciphersuite:
 
   +cc   --list-ciphers
-          Show list of supported TLS ciphersuites and exit
+          show list of supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites

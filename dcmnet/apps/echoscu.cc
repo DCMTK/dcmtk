@@ -156,35 +156,35 @@ main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                 "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--help",              "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",                      "print version information and exit", OFCommandLine::AF_Exclusive);
    OFLog::addOptions(cmd);
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
-      cmd.addOption("--aetitle",           "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
-      cmd.addOption("--call",              "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
+      cmd.addOption("--aetitle",        "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
+      cmd.addOption("--call",           "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
     cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
       sprintf(tempstr, "%ld", OFstatic_cast(long, maxXferSyntaxes));
       opt5 += tempstr;
       opt5 += ")";
-      cmd.addOption("--propose-ts",        "-pts", 1, opt5.c_str(), "propose n transfer syntaxes");
-      cmd.addOption("--propose-pc",        "-ppc", 1, "[n]umber: integer (1..128)", "propose n presentation contexts");
+      cmd.addOption("--propose-ts",     "-pts", 1, opt5.c_str(), "propose n transfer syntaxes");
+      cmd.addOption("--propose-pc",     "-ppc", 1, "[n]umber: integer (1..128)", "propose n presentation contexts");
 
     cmd.addSubGroup("other network options:");
-      cmd.addOption("--timeout",           "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+      cmd.addOption("--timeout",        "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
       CONVERT_TO_STRING("[s]econds: integer (default: " << opt_socket_timeout << ")", optString1);
-      cmd.addOption("--socket-timeout",    "-ts",  1, optString1.c_str(), "timeout for network socket (0 for none)");
+      cmd.addOption("--socket-timeout", "-ts",  1, optString1.c_str(), "timeout for network socket (0 for none)");
       CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString2);
-      cmd.addOption("--acse-timeout",      "-ta",  1, optString2.c_str(), "timeout for ACSE messages");
-      cmd.addOption("--dimse-timeout",     "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd.addOption("--acse-timeout",   "-ta",  1, optString2.c_str(), "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",  "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
       CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxReceivePDULength << ")", optString4);
-      cmd.addOption("--max-pdu",           "-pdu", 1, optString3.c_str(), optString4.c_str());
-      cmd.addOption("--repeat",                    1, "[n]umber: integer", "repeat n times");
-      cmd.addOption("--abort",                        "abort association instead of releasing it");
+      cmd.addOption("--max-pdu",        "-pdu", 1, optString3.c_str(), optString4.c_str());
+      cmd.addOption("--repeat",                 1, "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                     "abort association instead of releasing it");
 
     // add TLS specific command line options if (and only if) we are compiling with OpenSSL
     tlsOptions.addTLSCommandlineOptions(cmd);
