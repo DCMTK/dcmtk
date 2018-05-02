@@ -84,9 +84,9 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       cmd.addOption("--der-keys",           "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",      "+cf",  1, "[c]ertificate filename: string",
-                                                       "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
+                                                       "add certificate file to list of certificates");
       cmd.addOption("--add-cert-dir",       "+cd",  1, "[c]ertificate directory: string",
-                                                       "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
+                                                       "add certificates in d to list of certificates");
     cmd.addSubGroup("security profile:");
       cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile (default)");
       cmd.addOption("--profile-bcp195-nd",  "+py",     "Non-downgrading BCP 195 TLS Profile");
