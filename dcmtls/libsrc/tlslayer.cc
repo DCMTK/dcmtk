@@ -814,7 +814,7 @@ const char *DcmTLSTransportLayer::checkRSAHashKeyIsSHA2(X509 *certificate)
 X509 *DcmTLSTransportLayer::loadCertificateFile(const char *fileName, DcmKeyFileFormat fileType)
 {
   X509 *result = NULL;
-  BIO *in=BIO_new_file(fileName, "r");
+  BIO *in=BIO_new_file(fileName, "rb");
   if (in)
   {
     if (fileType == DCF_Filetype_ASN1)
