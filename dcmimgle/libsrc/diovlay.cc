@@ -201,33 +201,40 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
             OFstatic_cast(unsigned long, overlay->Height) * overlay->Frames;
         if ((Data != NULL) && (Data->Planes != NULL) && (count > 0))
         {
-            unsigned int i;
-            Data->DataBuffer = new Uint16[OFstatic_cast(unsigned long, Width) * OFstatic_cast(unsigned long, Height) * Frames];
-            if (Data->DataBuffer != NULL)
+            const unsigned long bufSize = OFstatic_cast(unsigned long, Width) *
+                OFstatic_cast(unsigned long, Height) * Frames;
+            if (bufSize > 0)                                            // avoid invalid buffer
             {
-                Uint16 *temp = NULL;
-                if (overlay->Data->DataBuffer == NULL)              // no data buffer
+                Data->DataBuffer = new Uint16[bufSize];
+                if (Data->DataBuffer != NULL)
                 {
-                    temp = new Uint16[count];                       // create temporary buffer
-                    if (temp != NULL)
-                        OFBitmanipTemplate<Uint16>::zeroMem(temp, count);
-                }
-                for (i = 0; i < Data->ArrayEntries; ++i)
-                {
-                    if ((overlay->Data->Planes[i] != NULL) /*&& (overlay->Data->Planes[i]->isValid())*/)
+                    unsigned int i;
+                    Uint16 *temp = NULL;
+                    if (overlay->Data->DataBuffer == NULL)              // no data buffer
                     {
-                        Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], i, Data->DataBuffer, temp,
-                            overlay->Width, overlay->Height, Width, Height);
-                        ++(Data->Count);
+                        temp = new Uint16[count];                       // create temporary buffer
+                        if (temp != NULL)
+                            OFBitmanipTemplate<Uint16>::zeroMem(temp, count);
                     }
+                    for (i = 0; i < Data->ArrayEntries; ++i)
+                    {
+                        if ((overlay->Data->Planes[i] != NULL) /*&& (overlay->Data->Planes[i]->isValid())*/)
+                        {
+                            Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], i, Data->DataBuffer, temp,
+                                overlay->Width, overlay->Height, Width, Height);
+                            ++(Data->Count);                            // increase number of valid planes
+                        }
+                    }
+                    if (Data->Count != overlay->Data->Count)            // assertion!
+                    {
+                        DCMIMGLE_WARN("different number of overlay planes for converted and original image");
+                    }
+                    if (overlay->Data->DataBuffer != NULL)              // existing data buffer
+                        temp = overlay->Data->DataBuffer;               // point to input buffer
+                    return temp;
                 }
-                if (Data->Count != overlay->Data->Count)            // assertion!
-                {
-                    DCMIMGLE_WARN("different number of overlay planes for scaled and unscaled image");
-                }
-                if (overlay->Data->DataBuffer != NULL)              // existing data buffer
-                    temp = overlay->Data->DataBuffer;               // point to input buffer
-                return temp;
+            } else {
+                DCMIMGLE_DEBUG("skipping overlay planes for converted image ... calculated buffer size is 0");
             }
         }
     }
