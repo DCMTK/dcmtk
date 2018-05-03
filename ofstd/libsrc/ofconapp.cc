@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2013, OFFIS e.V.
+ *  Copyright (C) 1999-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -202,7 +202,7 @@ void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
     output << OFendl;
     ofConsole.unlockCout();
     /* exit code: no error */
-    exit(0);
+    exit(EXITCODE_NO_ERROR);
 }
 
 

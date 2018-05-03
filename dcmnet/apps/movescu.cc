@@ -57,15 +57,8 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE        "MOVESCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
-// general
-#define EXITCODE_NO_ERROR                        0
-#define EXITCODE_COMMANDLINE_SYNTAX_ERROR        1      // this code is the default for printError()
-#define EXITCODE_INSUFFICIENT_PRIVILEGES         2
-#define EXITCODE_SETUID_FAILED                   3
-
-// output file errors
-#define EXITCODE_CANNOT_WRITE_OUTPUT_FILE       40
-#define EXITCODE_INVALID_OUTPUT_DIRECTORY       45
+/* exit codes for this command line tool */
+/* (common codes are defined in "ofexit.h" included from "ofconapp.h") */
 
 // network errors
 #define EXITCODE_CANNOT_INITIALIZE_NETWORK      60

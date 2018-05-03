@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,20 +61,9 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 
 /* exit codes for this command line tool */
-/* (EXIT_SUCCESS and EXIT_FAILURE are standard codes) */
-
-// general
-#define EXITCODE_NO_ERROR                         0
-#define EXITCODE_COMMANDLINE_SYNTAX_ERROR         1      // this code is the default for printError()
-
-// input file errors
-#define EXITCODE_CANNOT_READ_INPUT_FILE          20      // placeholder, currently not used
-#define EXITCODE_NO_INPUT_FILES                  21
-#define EXITCODE_INVALID_INPUT_FILE              22
-#define EXITCODE_NO_VALID_INPUT_FILES            23
+/* (common codes are defined in "ofexit.h" included from "ofconapp.h") */
 
 // output file errors
-#define EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40      // placeholder, currently not used
 #define EXITCODE_CANNOT_WRITE_REPORT_FILE        43
 
 // network errors
