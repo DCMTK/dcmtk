@@ -120,6 +120,7 @@ int
 main(int argc, char *argv[])
 {
   OFOStringStream optStream;
+  int result = 0;
 
   const char *     opt_peer                = NULL;
   OFCmdUnsignedInt opt_port                = 104;
@@ -408,10 +409,11 @@ main(int argc, char *argv[])
         OFLOG_ERROR(echoscuLogger, "Echo SCU Failed: " << DimseCondition::dump(temp_str, cond));
         OFLOG_INFO(echoscuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
+        result = 10; // return an error code at the end of main
         if (cond.bad()) {
             OFLOG_FATAL(echoscuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
+            exit(1);
         }
-        exit(1);
     }
 
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
@@ -438,7 +440,7 @@ main(int argc, char *argv[])
         OFLOG_WARN(echoscuLogger, DimseCondition::dump(temp_str, cond));
     }
 
-    return 0;
+    return result;
 }
 
 static OFCondition
