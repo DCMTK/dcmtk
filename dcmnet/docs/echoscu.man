@@ -243,6 +243,37 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
+
+\section dcmsend_exit_codes EXIT CODES
+
+The \b dcmsend utility uses the following exit codes when terminating.  This
+enables the user to check for the reason why the application terminated.
+
+\subsection dcmsend_exit_codes_general general
+\verbatim
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+\endverbatim
+
+\subsection dcmsend_exit_codes_input_file_errors input file errors
+\verbatim
+EXITCODE_CANNOT_READ_INPUT_FILE          20 (*)
+\endverbatim
+
+\subsection dcmsend_exit_codes_output_file_errors output file errors
+\verbatim
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40 (*)
+\endverbatim
+
+\subsection dcmsend_exit_codes_network_errors network errors
+\verbatim
+EXITCODE_CANNOT_INITIALIZE_NETWORK       60 (*)
+EXITCODE_ASSOCIATION_ABORTED             70
+\endverbatim
+
+(*) Actually, these codes are currently not used by \b dcmsend but serve as a
+placeholder for the corresponding group of exit codes.
+
 \section echoscu_environment ENVIRONMENT
 
 The \b echoscu utility will attempt to load DICOM data dictionaries specified
@@ -261,6 +292,6 @@ It is an error if no data dictionary can be loaded.
 
 \section echoscu_copyright COPYRIGHT
 
-Copyright (C) 1994-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

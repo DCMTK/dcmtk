@@ -1,4 +1,4 @@
-.TH "echoscu" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "echoscu" 1 "Fri May 4 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 echoscu \- DICOM verification (C-ECHO) SCU
@@ -137,13 +137,31 @@ certification authority:
   +cd   --add-cert-dir  [c]ertificate directory: string
           add certificates in d to list of certificates
 
+security profile:
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile (default)
+
+  +py   --profile-bcp195-nd
+          Non-downgrading BCP 195 TLS Profile
+
+  +pb   --profile-basic
+          Basic TLS Secure Transport Connection Profile (retired)
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile (retired)
+
+  +pn   --profile-null
+          Authenticated unencrypted communication
+          (retired, was used in IHE ATNA)
+
 ciphersuite:
+
+  +cc   --list-ciphers
+          show list of supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
-
-  +dp   --dhparam  [f]ilename: string
-          read DH parameters for DH/DSS ciphersuites
 
 pseudo random generator:
 
@@ -160,9 +178,6 @@ peer authentication:
 
   -rc   --require-peer-cert
           verify peer certificate, fail if absent (default)
-
-  -vc   --verify-peer-cert
-          verify peer certificate if present
 
   -ic   --ignore-peer-cert
           don't verify peer certificate
@@ -198,6 +213,37 @@ All command line tools use the following notation for parameters: square bracket
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+.SH "EXIT CODES"
+.PP
+The \fBdcmsend\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
+.SS "general"
+.PP
+.nf
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+.fi
+.PP
+.SS "input file errors"
+.PP
+.nf
+EXITCODE_CANNOT_READ_INPUT_FILE          20 (*)
+.fi
+.PP
+.SS "output file errors"
+.PP
+.nf
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40 (*)
+.fi
+.PP
+.SS "network errors"
+.PP
+.nf
+EXITCODE_CANNOT_INITIALIZE_NETWORK       60 (*)
+EXITCODE_ASSOCIATION_ABORTED             70
+.fi
+.PP
+.PP
+(*) Actually, these codes are currently not used by \fBdcmsend\fP but serve as a placeholder for the corresponding group of exit codes\&.
 .SH "ENVIRONMENT"
 .PP
 The \fBechoscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
@@ -205,4 +251,4 @@ The \fBechoscu\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
