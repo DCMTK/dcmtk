@@ -47,7 +47,7 @@ void IODCIELabUtil::rgb2DicomLab(double& LDicom, double& aDicom, double& bDicom,
 {
   double L, a, b;
   rgb2Lab(L, a, b, R, G, B);
-  lab2DicomLab(LDicom, aDicom, bDicom, R, G, B);
+  lab2DicomLab(LDicom, aDicom, bDicom, L, a, b);
 }
 
 

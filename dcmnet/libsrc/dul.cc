@@ -2244,7 +2244,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
       }
     }
 
-    (*key)->networkSpecific.TCP.tLayer = new DcmTransportLayer((*key)->applicationFunction);
+    (*key)->networkSpecific.TCP.tLayer = new DcmTransportLayer();
     (*key)->networkSpecific.TCP.tLayerOwned = 1;
     if (NULL == (*key)->networkSpecific.TCP.tLayer)
     {

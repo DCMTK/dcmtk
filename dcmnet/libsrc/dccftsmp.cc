@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,7 +108,6 @@ OFCondition DcmTransferSyntaxMap::add(
     return makeOFCondition(OFM_dcmnet, 1024, OF_error, s.c_str());
   }
 
-  DcmTransferSyntaxList * const *value = NULL;
   OFString skey(key);
   OFMap<OFString, DcmTransferSyntaxList*>::iterator it = map_.find(skey);
 
@@ -116,13 +115,11 @@ OFCondition DcmTransferSyntaxMap::add(
   {
     DcmTransferSyntaxList *newentry = new DcmTransferSyntaxList();
     map_.insert(OFPair<OFString, DcmTransferSyntaxList*>(skey, newentry));
-    value = &newentry;
+    newentry->push_back(uid);
   }
   else
-    value = & ((*it).second);
+    (*it).second->push_back(uid);
 
-  // insert UID into list.
-  (*value)->push_back(uid);
   return EC_Normal;
 }
 

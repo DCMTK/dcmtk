@@ -829,10 +829,10 @@ OFBool WlmFileSystemInteractionManager::AttributeIsAbsentOrEmpty( DcmTagKey elem
 }
 
 
-OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenceOfItems& query,
-                                                                      const MatchingKeys& matchingKeys,
-                                                                      const OFBool normalize,
-                                                                      const OFBool enableWildcardMatching )
+OFBool WlmFileSystemInteractionManager::IsUniversalMatch( DcmSequenceOfItems& query,
+                                                          const MatchingKeys& matchingKeys,
+                                                          const OFBool normalize,
+                                                          const OFBool normalizeWildCards )
 {
   DcmItem* pQueryItem = OFstatic_cast( DcmItem*, query.nextInContainer( OFnullptr ) );
   if( pQueryItem ) {
@@ -846,7 +846,7 @@ OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenc
         const OFPair<DcmTagKey,OFBool>& key = *it;
 #endif
         DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
+        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, normalizeWildCards && key.second ) )
           return OFFalse;
       }
 
@@ -860,9 +860,9 @@ OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenc
         const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
 #endif
         DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
+        if( pQueryItem->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, normalizeWildCards ) )
           return OFFalse;
-        else if( pQueryItem->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
+        else if( pQueryItem->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, normalizeWildCards ) )
           return OFFalse;
       }
 
@@ -877,7 +877,7 @@ OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenc
         const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
 #endif
         DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second, normalize, enableWildcardMatching ) )
+        if( pQueryItem->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !IsUniversalMatch( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second, normalize, normalizeWildCards ) )
           return OFFalse;
       }
   }
@@ -945,7 +945,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
       if( dataset->findAndGetElement( combinedKey.first, candidate, OFFalse ).bad() || !candidate )
         return OFFalse;
       DcmElement* secondQuery = OFnullptr;
-      if( searchMask->findAndGetElement( combinedKey.second, secondQuery, OFFalse ).good() && secondQuery )
+      if( searchMask->findAndGetElement( combinedKey.second, secondQuery, OFFalse ).good() && secondQuery && !secondQuery->isUniversalMatch() )
       {
         DcmElement* secondCandidate = OFnullptr;
         if( dataset->findAndGetElement( combinedKey.second, secondCandidate, OFFalse ).bad() || !secondCandidate || !query->combinationMatches( *secondQuery, *candidate, *secondCandidate ) )
@@ -976,7 +976,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
     const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
 #endif
     DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
+    if( searchMask->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !IsUniversalMatch( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
     {
       DcmElement* candidate = OFnullptr;
       if( dataset->findAndGetElement( sequenceKey.first, candidate, OFFalse ).bad() || !candidate || candidate->ident() != EVR_SQ || !MatchSequences( OFstatic_cast( DcmSequenceOfItems&, *candidate ), OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )

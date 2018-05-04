@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,10 +30,9 @@
 
 #ifdef WITH_OPENSSL
 
-BEGIN_EXTERN_C
-#include <openssl/ssl.h>
-END_EXTERN_C
-
+// forward declarations of OpenSSL data structures
+struct ssl_st;
+typedef struct ssl_st SSL;
 
 /** this class represents a TLS (Transport Layer Security) V1 based secure
  *  transport connection.
@@ -44,9 +43,9 @@ public:
 
   /** constructor.
    *  @param openSocket TCP/IP socket to be used for the transport connection.
-   *    the connection must already be establised on socket level. This object
+   *    the connection must already be established on socket level. This object
    *    takes over control of the socket.
-   *  @param newTLSConnection pointer to intialized OpenSSL connection object
+   *  @param newTLSConnection pointer to initialized OpenSSL connection object
    *    to be used for this connection.
    */
   DcmTLSConnection(DcmNativeSocketType openSocket, SSL *newTLSConnection);
@@ -144,6 +143,9 @@ private:
 
   /// private undefined assignment operator
   DcmTLSConnection& operator=(const DcmTLSConnection&);
+
+  /// dump TLS connection details to debug logger
+  void logTLSConnection();
 
   /// pointer to the TLS connection structure used by the OpenSSL library
   SSL *tlsConnection;

@@ -27,10 +27,12 @@ here and most error checking code is omitted for brevity.
 T_ASC_Network *net;        // network initialization code not shown,
 T_ASC_Parameters *params;  // we just assume these pointers to be valid
 
+DcmTLSTransportLayer::initializeOpenSSL(); // initialize OpenSSL library
+
 // create TLS object that initializes the random generator through a file
 // "random.dat" containing random data (1 kByte is sufficient).
 DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(
-  DICOM_APPLICATION_REQUESTOR, "random.dat");
+  NET_REQUESTOR, "random.dat");
 
 if (TCS_ok != tLayer->setPrivateKeyFile("privkey.pem", SSL_FILETYPE_PEM))
 {
@@ -43,8 +45,9 @@ if (TCS_ok != tLayer->setCertificateFile("certificate.pem", SSL_FILETYPE_PEM))
   return;
 }
 
-// enable the TLS_RSA_WITH_3DES_EDE_CBC_SHA ciphersuite
-tLayer->setCipherSuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+// enable the ciphersuites for the BCP 195 secure transport profile
+tLayer->setTLSProfile(TSP_Profile_BCP195);
+tLayer->activateCipherSuites();
 
 // accept any certificate from the remote site (not recommended)
 tLayer->setCertificateVerification(DCV_ignoreCertificate);

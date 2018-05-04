@@ -36,7 +36,7 @@ DcmTLSECUnknownCiphersuiteConst::DcmTLSECUnknownCiphersuiteConst()
     theModule = OFM_dcmtls;
     theCode = 3;
     theStatus = OF_error;
-    theText = "Unknown ciphersuite";
+    theText = "Unknown or invalid ciphersuite";
 }
 
 OFCondition DcmTLSECUnknownCiphersuiteConst::operator()( const char* ciphersuiteName ) const

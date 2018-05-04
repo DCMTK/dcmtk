@@ -105,6 +105,9 @@ static void cleanChildren()
 int main(int argc, char *argv[])
 {
     OFStandard::initializeNetwork();
+#ifdef WITH_OPENSSL
+    DcmTLSTransportLayer::initializeOpenSSL();
+#endif
 
     dcmDisableGethostbyaddr.set(OFTrue);  // disable hostname lookup
 
@@ -146,7 +149,7 @@ int main(int argc, char *argv[])
             COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
+            COUT << "- " << DcmTLSTransportLayer::getOpenSSLVersionName() << OFendl;
 #endif
             return 0;
          }
@@ -337,47 +340,44 @@ int main(int argc, char *argv[])
     if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
 
     /* key file format */
-    int keyFileFormat = SSL_FILETYPE_PEM;
-    if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
-
-    /* ciphersuites */
-#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-    OFString tlsCiphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#else
-    OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#endif
-    Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(opt_printer);
-    if (tlsNumberOfCiphersuites > 0)
-    {
-      tlsCiphersuites.clear();
-      OFString currentSuite;
-      const char *currentOpenSSL;
-      for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
-      {
-        dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
-        if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
-        {
-          OFLOG_WARN(dcmprscpLogger, "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:");
-          unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-          for (unsigned long cs=0; cs < numSuites; cs++)
-          {
-            OFLOG_WARN(dcmprscpLogger, "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
-          }
-          return 1;
-        } else {
-          if (!tlsCiphersuites.empty()) tlsCiphersuites += ":";
-          tlsCiphersuites += currentOpenSSL;
-        }
-      }
-    }
+    DcmKeyFileFormat keyFileFormat = DCF_Filetype_PEM;
+    if (! dvi.getTLSPEMFormat()) keyFileFormat = DCF_Filetype_ASN1;
 
     DcmTLSTransportLayer *tLayer = NULL;
     if (targetUseTLS)
     {
-      tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, tlsRandomSeedFile.c_str());
+      tLayer = new DcmTLSTransportLayer(NET_ACCEPTOR, tlsRandomSeedFile.c_str(), OFFalse);
       if (tLayer == NULL)
       {
         OFLOG_FATAL(dcmprscpLogger, "unable to create TLS transport layer");
+        return 1;
+      }
+
+      // determine TLS profile
+      OFString profileName;
+      const char *profileNamePtr = dvi.getTargetTLSProfile(opt_printer);
+      if (profileNamePtr) profileName = profileNamePtr;
+      DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP195;  // default
+      if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
+      else if (profileName == "BCP195-ND") tlsProfile = TSP_Profile_BCP195_ND;
+      else if (profileName == "AES") tlsProfile = TSP_Profile_AES;
+      else if (profileName == "BASIC") tlsProfile = TSP_Profile_Basic;
+      else if (profileName == "NULL") tlsProfile = TSP_Profile_IHE_ATNA_Unencrypted;
+      else
+      {
+        OFLOG_WARN(dcmprscpLogger, "unknown TLS profile '" << profileName << "', ignoring");
+      }
+
+      if (TCS_ok != tLayer->setTLSProfile(tlsProfile))
+      {
+        OFLOG_FATAL(dcmprscpLogger, "unable to select the TLS security profile");
+        return 1;
+      }
+
+      // activate cipher suites
+      if (TCS_ok != tLayer->activateCipherSuites())
+      {
+        OFLOG_FATAL(dcmprscpLogger, "unable to activate the selected list of TLS ciphersuites");
         return 1;
       }
 
@@ -406,12 +406,6 @@ int main(int argc, char *argv[])
         OFLOG_FATAL(dcmprscpLogger, "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match");
         return 1;
       }
-      if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
-      {
-        OFLOG_FATAL(dcmprscpLogger, "unable to set selected cipher suites");
-        return 1;
-      }
-
       tLayer->setCertificateVerification(tlsCertVerification);
 
     }

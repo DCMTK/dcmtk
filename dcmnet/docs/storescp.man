@@ -247,7 +247,28 @@ certification authority:
   +cd   --add-cert-dir  [c]ertificate directory: string
           add certificates in d to list of certificates
 
+security profile:
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile (default)
+
+  +py   --profile-bcp195-nd
+          Non-downgrading BCP 195 TLS Profile
+
+  +pb   --profile-basic
+          Basic TLS Secure Transport Connection Profile (retired)
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile (retired)
+
+  +pn   --profile-null
+          Authenticated unencrypted communication
+          (retired, was used in IHE ATNA)
+
 ciphersuite:
+
+  +cc   --list-ciphers
+          show list of supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites

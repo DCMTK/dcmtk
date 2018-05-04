@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -105,6 +105,7 @@ BEGIN_EXTERN_C
 #include <openssl/x509.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
+#include <openssl/ssl.h>
 END_EXTERN_C
 #endif
 
@@ -3614,8 +3615,8 @@ OFCondition DVInterface::terminatePrintServer()
   if (tlsFolder==NULL) tlsFolder = ".";
 
   /* key file format */
-  int keyFileFormat = SSL_FILETYPE_PEM;
-  if (! getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
+  DcmKeyFileFormat keyFileFormat = DCF_Filetype_PEM;
+  if (! getTLSPEMFormat()) keyFileFormat = DCF_Filetype_ASN1;
 #endif
 
   Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printLocal);
@@ -3668,30 +3669,8 @@ OFCondition DVInterface::terminatePrintServer()
           const char *tlsCACertificateFolder = getTLSCACertificateFolder();
           if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
 
-          /* ciphersuites */
-#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-          OFString tlsCiphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#else
-          OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#endif
-          Uint32 tlsNumberOfCiphersuites = getTargetNumberOfCipherSuites(target);
-          if (tlsNumberOfCiphersuites > 0)
-          {
-            tlsCiphersuites.clear();
-            OFString currentSuite;
-            const char *currentOpenSSL;
-            for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
-            {
-              getTargetCipherSuite(target, ui, currentSuite);
-              if (NULL != (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
-              {
-                if (!tlsCiphersuites.empty()) tlsCiphersuites += ":";
-                tlsCiphersuites += currentOpenSSL;
-              }
-            }
-          }
 
-          DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
+          DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(NET_REQUESTOR, tlsRandomSeedFile.c_str(), OFTrue);
           if (tLayer)
           {
             if (tlsCACertificateFolder) tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat);
@@ -3699,8 +3678,25 @@ OFCondition DVInterface::terminatePrintServer()
             tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
             tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat);
             tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat);
-            tLayer->setCipherSuites(tlsCiphersuites.c_str());
             tLayer->setCertificateVerification(DCV_ignoreCertificate);
+
+           // determine TLS profile
+             OFString profileName;
+            const char *profileNamePtr = getTargetTLSProfile(target);
+            if (profileNamePtr) profileName = profileNamePtr;
+            DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP195;  // default
+            if (profileName == "BCP195-ND") tlsProfile = TSP_Profile_BCP195_ND;
+            else if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
+            else if (profileName == "AES") tlsProfile = TSP_Profile_AES;
+            else if (profileName == "BASIC") tlsProfile = TSP_Profile_Basic;
+            else if (profileName == "NULL") tlsProfile = TSP_Profile_IHE_ATNA_Unencrypted;
+
+            // set TLS profile
+            (void) tLayer->setTLSProfile(tlsProfile);
+
+            // activate cipher suites
+            (void) tLayer->activateCipherSuites();
+
             ASC_setTransportLayer(net, tLayer, 1);
           }
 #else
