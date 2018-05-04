@@ -57,6 +57,12 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE     "ECHOSCU"
 #define PEERAPPLICATIONTITLE "ANY-SCP"
 
+
+/* exit codes for this command line tool */
+/* (common codes are defined in "ofexit.h" included from "ofconapp.h") */
+// network errors
+#define EXITCODE_ASSOCIATION_ABORTED    70
+
 static T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 static int opt_dimse_timeout = 0;
 
@@ -120,7 +126,7 @@ int
 main(int argc, char *argv[])
 {
   OFOStringStream optStream;
-  int result = 0;
+  int result = EXITCODE_NO_ERROR;
 
   const char *     opt_peer                = NULL;
   OFCmdUnsignedInt opt_port                = 104;
@@ -211,14 +217,14 @@ main(int argc, char *argv[])
 #endif
           // print OpenSSL version if (and only if) we are compiling with OpenSSL
           tlsOptions.printLibraryVersion();
-          return 0;
+          return EXITCODE_NO_ERROR;
         }
 
         // check if the command line contains the --list-ciphers option
         if (tlsOptions.listOfCiphersRequested(cmd))
         {
             tlsOptions.printSupportedCiphersuites(app, COUT);
-            return 0;
+            return EXITCODE_NO_ERROR;
         }
       }
 
@@ -395,6 +401,7 @@ main(int argc, char *argv[])
         OFLOG_FATAL(echoscuLogger, "Protocol Error: Peer requested release (Aborting)");
         OFLOG_INFO(echoscuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
+        result = EXITCODE_ASSOCIATION_ABORTED;// return an error code at the end of main
         if (cond.bad()) {
             OFLOG_FATAL(echoscuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
             exit(1);
@@ -409,7 +416,7 @@ main(int argc, char *argv[])
         OFLOG_ERROR(echoscuLogger, "Echo SCU Failed: " << DimseCondition::dump(temp_str, cond));
         OFLOG_INFO(echoscuLogger, "Aborting Association");
         cond = ASC_abortAssociation(assoc);
-        result = 10; // return an error code at the end of main
+        result = EXITCODE_ASSOCIATION_ABORTED; // return an error code at the end of main
         if (cond.bad()) {
             OFLOG_FATAL(echoscuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
             exit(1);
