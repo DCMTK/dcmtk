@@ -804,8 +804,9 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
             else {
                 const char *resValue = result.getCharPointer();
                 const size_t resLength = strlen(resValue); /* should never be 0 */
-                char *tmpString = new char[strLength + resLength + 1 + 1];
-                strcpy(tmpString, resValue);
+                const size_t buflen = strLength + resLength + 1 + 1;
+                char *tmpString = new char[buflen];
+                OFStandard::strlcpy(tmpString, resValue, buflen);
                 /* add path separator (if required) ... */
                 if (resValue[resLength - 1] != PATH_SEPARATOR)
                 {
@@ -813,7 +814,7 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
                     tmpString[resLength + 1] = '\0';
                 }
                 /* ...and file name */
-                strcat(tmpString, strValue);
+                OFStandard::strlcat(tmpString, strValue, buflen);
                 result.set(tmpString);
                 delete[] tmpString;
             }
@@ -895,9 +896,10 @@ OFCondition OFStandard::removeRootDirFromPathname(OFFilename &result,
             if (strncmp(rootValue, pathValue, rootLength) == 0)
             {
                 /* create temporary buffer for destination string */
-                char *tmpString = new char[pathLength - rootLength + 1];
+                size_t buflen = pathLength - rootLength + 1;
+                char *tmpString = new char[buflen];
                 /* remove root dir prefix from path name */
-                strcpy(tmpString, pathValue + rootLength);
+                OFStandard::strlcpy(tmpString, pathValue + rootLength, buflen);
                 /* remove leading path separator (if present) */
                 if (!allowLeadingPathSeparator && (tmpString[0] == PATH_SEPARATOR))
                     result.set(tmpString + 1);
@@ -947,10 +949,11 @@ OFFilename &OFStandard::appendFilenameExtension(OFFilename &result,
         size_t namLength = (namValue == NULL) ? 0 : strlen(namValue);
         size_t extLength = (extValue == NULL) ? 0 : strlen(extValue);
         /* create temporary buffer for destination string */
-        char *tmpString = new char[namLength + extLength + 1];
-        strcpy(tmpString, (namValue == NULL) ? "" : namValue);
+        size_t buflen = namLength + extLength + 1;
+        char *tmpString = new char[buflen];
+        OFStandard::strlcpy(tmpString, (namValue == NULL) ? "" : namValue, buflen);
         if (extValue != NULL)
-            strcat(tmpString, extValue);
+            OFStandard::strlcat(tmpString, extValue, buflen);
         result.set(tmpString);
         delete[] tmpString;
     }

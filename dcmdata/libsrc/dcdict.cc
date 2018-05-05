@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 #include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -360,8 +361,9 @@ parseWholeTagField(char* s, DcmTagKey& key,
     if (pi > 0)
     {
       // copy private creator name
-      privCreator = new char[strlen(pc) + 1]; // deleted by caller
-      if (privCreator) strcpy(privCreator,pc);
+      size_t buflen = strlen(pc) + 1;
+      privCreator = new char[buflen]; // deleted by caller
+      if (privCreator) OFStandard::strlcpy(privCreator, pc, buflen);
     }
 
     key.set(OFstatic_cast(unsigned short, gl), OFstatic_cast(unsigned short, el));

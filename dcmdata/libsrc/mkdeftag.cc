@@ -70,7 +70,7 @@ printDefined(FILE* fout, const DcmDictEntry* e)
     if (e == NULL || e->getTagName() == NULL)
         return;
 
-    strcpy(buf, e->getTagName());
+    OFStandard::strlcpy(buf, e->getTagName(), DCM_MAXDICTLINESIZE+1);
 
     convertToIdentifier(buf);
 

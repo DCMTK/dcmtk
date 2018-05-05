@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -112,7 +112,7 @@ void OFFilenameCreator::addLongToString(unsigned long l, OFString &s)
   unsigned long m;
   int idx=7;
   char chr_array[9];
-  strcpy(chr_array, "00000000");
+  OFStandard::strlcpy(chr_array, "00000000", 9);
   while (l)
   {
     m = l & 0x0FL;

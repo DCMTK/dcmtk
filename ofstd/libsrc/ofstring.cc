@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -89,9 +90,11 @@ OFString::OFString (const char* s)
     s = verify_string(s);
     const size_t n = strlen(s);
     reserve(n);
-    // Because we used strlen() to figure out the length we can use strcpy()
+    // Because we used strlen() to figure out the length we can use strlcpy()
     // since there won't be any '\0' bytes in the string.
-    strcpy(this->theCString, s);
+    // The amount of memory allocated is always theCapacity+1
+    // because one extra byte is always allocated for the eos zero byte.
+    OFStandard::strlcpy(this->theCString, s, this->theCapacity+1);
     this->theSize = n;
 }
 

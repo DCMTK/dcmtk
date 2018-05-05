@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,6 +32,7 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmdata/dcdirrec.h"
 #include "dcmtk/dcmdata/dctk.h"
@@ -270,7 +271,8 @@ E_DirRecType DcmDirectoryRecord::recordNameToType(const char *recordTypeName)
 
 
 char *DcmDirectoryRecord::buildFileName(const char *origName,
-                                        char *destName)
+                                        char *destName,
+                                        size_t len) const
 {
     const char *from = origName;
     char *to = destName;
@@ -298,13 +300,14 @@ char *DcmDirectoryRecord::buildFileName(const char *origName,
     {
         fclose(f);
     } else {
-        char* newname = new char[strlen(destName) + 2];
-        strcpy(newname, destName);
-        strcat(newname, ".");
+        size_t buflen = strlen(destName) + 2;
+        char* newname = new char[buflen];
+        OFStandard::strlcpy(newname, destName, buflen);
+        OFStandard::strlcat(newname, ".", buflen);
         if ((f = fopen(newname, "rb")) != NULL)
         {
             fclose(f);
-            strcpy(destName, newname);
+            OFStandard::strlcpy(destName, newname, len);
         } else {
             /* we cannot find the file. let the caller deal with this */
         }
@@ -625,8 +628,9 @@ OFCondition DcmDirectoryRecord::setReferencedFileID(const char *referencedFileID
 {
     OFCondition l_error = EC_Normal;
 
-    char* newFname = new char[strlen(referencedFileID) + 1];
-    strcpy(newFname, referencedFileID);
+    size_t bufsize = strlen(referencedFileID) + 1;
+    char* newFname = new char[bufsize];
+    OFStandard::strlcpy(newFname, referencedFileID, bufsize);
     hostToDicomFilename(newFname);
 
     DcmTag refFileTag(DCM_ReferencedFileID);
@@ -908,8 +912,9 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
         if (sourceFileName.isEmpty())
         {
             /* create a new source filename */
-            char *newname = new char[strlen(referencedFileID) + 2];
-            buildFileName(referencedFileID, newname);
+            size_t bufsize = strlen(referencedFileID) + 2;
+            char *newname = new char[bufsize];
+            buildFileName(referencedFileID, newname, bufsize);
             fileName.set(newname);
             delete[] newname;
         } else {
@@ -1079,8 +1084,9 @@ OFCondition DcmDirectoryRecord::purgeReferencedFile()
         const char *fileName = lookForReferencedFileID();
         if (fileName != NULL)
         {
-            localFileName = new char[strlen(fileName) + 2];
-            buildFileName(fileName, localFileName);
+            size_t buflen = strlen(fileName) + 2;
+            localFileName = new char[buflen];
+            buildFileName(fileName, localFileName, buflen);
             setReferencedFileID(NULL);
         }
 

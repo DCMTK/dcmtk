@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,6 +41,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 void prepareCmdLineArgs(int& argc, char* argv[],
                         const char* progname)
@@ -49,8 +50,9 @@ void prepareCmdLineArgs(int& argc, char* argv[],
     char buf[bufsize];
     char arg[1024];
 
-    argv[0] = new char[strlen(progname)+1];
-    strcpy(argv[0], progname);
+    size_t len = strlen(progname)+1;
+    argv[0] = new char[len];
+    OFStandard::strlcpy(argv[0], progname, len);
     argc = 1;
 
     ofConsole.lockCout() << "CmdLineArgs-> ";
@@ -63,8 +65,9 @@ void prepareCmdLineArgs(int& argc, char* argv[],
     while (is.good()) {
         is >> arg;
         if (strlen(arg) > 0) {
-            argv[argc] = new char[strlen(arg)+1];
-            strcpy(argv[argc], arg);
+            size_t len = strlen(arg)+1;
+            argv[argc] = new char[len];
+            OFStandard::strlcpy(argv[argc], arg, len);
             argc++;
         }
         arg[0] = '\0';

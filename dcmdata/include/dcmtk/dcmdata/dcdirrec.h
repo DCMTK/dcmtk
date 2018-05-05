@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -461,7 +461,7 @@ protected:
 
     // side-effect-free conversion routines:
     E_DirRecType        recordNameToType(const char *recordTypeName);
-    char*               buildFileName(const char *origName, char *destName);
+    char*               buildFileName(const char *origName, char *destName, size_t len) const;
     OFCondition         checkHierarchy(const E_DirRecType upperRecord,
                                        const E_DirRecType lowerRecord);
 
