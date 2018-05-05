@@ -338,9 +338,6 @@ OFTEST_FLAGS(ofstd_OFFile, EF_Slow)
 {
   COUT << "Test program for LFS support in DCMTK class OFFile\n" << OFendl;
 
-  // initialize random generator
-  srand(OFstatic_cast(unsigned int, time(NULL)));
-
   // check if typedefs are large enough
   COUT << "Checking typedefs.\n"
        << "- size of offile_off_t: " << sizeof(offile_off_t);

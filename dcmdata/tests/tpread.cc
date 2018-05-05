@@ -72,7 +72,7 @@ static OFCondition sequentialNonOverlappingRead(OFRandom& rnd, DcmElement *delem
 
     while (offset < BUFSIZE)
     {
-      bytes_to_read = (rand() % 20)+1;  // read 1 to 20 bytes
+      bytes_to_read = (rnd.getRND32() % 20)+1;  // read 1 to 20 bytes
 
       // make sure we don't attempt to read beyond the end of the attribute value
       if (offset + bytes_to_read > BUFSIZE) bytes_to_read = BUFSIZE - offset;
@@ -123,7 +123,7 @@ static OFCondition sequentialOverlappingRead(OFRandom& rnd, DcmElement *delem, D
 
     while (offset < BUFSIZE)
     {
-      bytes_to_read = (rand() % 20)+1;  // read 1 to 20 bytes
+      bytes_to_read = (rnd.getRND32() % 20)+1;  // read 1 to 20 bytes
 
       // make sure we don't attempt to read beyond the end of the attribute value
       if (offset + bytes_to_read > BUFSIZE) bytes_to_read = BUFSIZE - offset;
@@ -158,7 +158,7 @@ static OFCondition sequentialOverlappingRead(OFRandom& rnd, DcmElement *delem, D
       }
 
       offset += bytes_to_read;
-      if ((offset > 4) && (offset < BUFSIZE)) offset -= (rand() % 4); // let the read operations overlap by 0-3 bytes
+      if ((offset > 4) && (offset < BUFSIZE)) offset -= (rnd.getRND32() % 4); // let the read operations overlap by 0-3 bytes
     }
     delete[] target;
     return EC_Normal;
@@ -173,8 +173,8 @@ static OFCondition randomRead(OFRandom& rnd, DcmElement *delem, DcmFileCache *dc
 
     for (int i=1000; i; --i)
     {
-      bytes_to_read = (rand() % 20)+1;  // read 1 to 20 bytes
-      offset = rand() % BUFSIZE;
+      bytes_to_read = (rnd.getRND32() % 20)+1;  // read 1 to 20 bytes
+      offset = rnd.getRND32() % BUFSIZE;
 
       // make sure we don't attempt to read beyond the end of the attribute value
       if (offset + bytes_to_read > BUFSIZE) bytes_to_read = BUFSIZE - offset;
@@ -327,10 +327,9 @@ OFTEST(dcmdata_partialElementAccess)
 
     unsigned char *buffer = new unsigned char[BUFSIZE];
     unsigned char *bufptr = buffer;
-    srand(OFstatic_cast(unsigned int, time(NULL)));
     for (int i = BUFSIZE; i; --i)
     {
-      *bufptr++ = OFstatic_cast(unsigned char, rand());
+      *bufptr++ = OFstatic_cast(unsigned char, rnd.getRND32());
     }
 
     createTestDataset(dfile.getDataset(), buffer);
