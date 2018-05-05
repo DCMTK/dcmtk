@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,7 +23,6 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/ofstd/ofuuid.h"
-
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofstd.h"
@@ -51,27 +50,22 @@ static Uint8 last_node[6];
 static OFBool initialized = OFFalse;
 
 
-static void get_random(void *dest, size_t num)
+static void get_random(OFRandom &rnd, void *dest, size_t num)
 {
-    /* FIXME: We are supposed to use a cryptographic-quality random number
-     * generator. However, finding a portable one is a little hard, so
-     * rand() will do for now.
-     */
     Uint8* ptr = OFreinterpret_cast(Uint8*, dest);
     while (num > 0) {
-        *ptr = OFstatic_cast(Uint8, rand());
+        *ptr++ = OFstatic_cast(Uint8, rnd.getRND16());
         num--;
-        ptr++;
     }
 }
 
-static void get_node()
+static void get_node(OFRandom &rnd)
 {
     /* FIXME: This is supposed to be a MAC address and we are supposed to
      * re-check the MAC address each time we generate a UUID and do some stuff
      * if the MAC changes.
      */
-    get_random(&last_node[0], sizeof(last_node));
+    get_random(rnd, &last_node[0], sizeof(last_node));
 }
 
 #ifdef _WIN32
@@ -163,8 +157,8 @@ void OFUUID::generate()
     UUIDMutex.lock();
 
     if (!initialized) {
-        get_node();
-        get_random(&last_clock_sequence, sizeof(last_clock_sequence));
+        get_node(rnd);
+        get_random(rnd, &last_clock_sequence, sizeof(last_clock_sequence));
         initialized = OFTrue;
     }
 
@@ -204,7 +198,8 @@ OFUUID::OFUUID()
   version_and_time_high(0),
   variant_and_clock_seq_high(0),
   clock_seq_low(0),
-  node()
+  node(),
+  rnd()
 {
     generate();
 }

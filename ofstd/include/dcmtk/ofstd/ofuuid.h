@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2013, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofrand.h"
 
 /** Helper class for generating and storing UUIDs, as specified in ITU-T X.667.
  *  A UUID is an Universally Unique IDentifier. If UUIDs are generated
@@ -127,7 +128,8 @@ private:
     Uint8 clock_seq_low;
     /** The node value in the form of a MAC address */
     Uint8 node[6];
-
+    /** Pseudo random number generator */
+    OFRandom rnd;
 };
 
 /** Print an UUID to a stream with OFUUID::ER_RepresentationDefault.

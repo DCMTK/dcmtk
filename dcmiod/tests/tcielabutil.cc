@@ -23,10 +23,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofrand.h"
 #include "dcmtk/dcmiod/cielabutil.h"
-#define INCLUDE_CSTDLIB               // for srand()
-#define INCLUDE_CTIME                 // for time() initialization of srand()
-#include "dcmtk/ofstd/ofstdinc.h"
+
 
 OFTEST(dcmiod_tcielabutil)
 {
@@ -79,7 +78,7 @@ OFTEST(dcmiod_tcielabutil)
   // roundtrip is less than around 1 promille
 
   // Initialize random numbers
-  srand (OFstatic_cast(unsigned int, time (NULL)));
+  OFRandom rnd;
 
   // We do 1000 runs
   for (size_t numRun = 0; numRun< 1000; numRun++)
@@ -91,9 +90,9 @@ OFTEST(dcmiod_tcielabutil)
     i1 = i2 = i3 = r1 = r2 = r3 = o1 = o2 = o3 = 0.0;
 
     // Roundtrip RGB -> CIELab -> RGB
-    i1 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
-    i2 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
-    i3 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
+    i1 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1);
+    i2 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1);
+    i3 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1);
     IODCIELabUtil::rgb2Lab(r1, r2, r3, i1, i2, i3);
     IODCIELabUtil::lab2Rgb(o1, o2, o3, r1, r2, r3);
     OFCHECK( fabs(i1 - o1) < 0.001 );
@@ -102,9 +101,9 @@ OFTEST(dcmiod_tcielabutil)
 
     // Roundtrip CIELab -> DICOM CIELab -> CIELab
     i1 = i2 = i3 = r1 = r2 = r3 = o1 = o2 = o3 = 0.0;
-    i1 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX) * 100.0;
-    i2 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX) * 255.0 - 128;
-    i3 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX) * 255.0 - 128;
+    i1 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1) * 100.0;
+    i2 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1) * 255.0 - 128;
+    i3 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1) * 255.0 - 128;
     IODCIELabUtil::lab2DicomLab(r1, r2, r3, i1, i2, i3);
     IODCIELabUtil::dicomlab2Lab(o1, o2, o3, r1, r2, r3);
     OFCHECK( fabs(i1 - o1) < 0.001 );
@@ -113,9 +112,9 @@ OFTEST(dcmiod_tcielabutil)
 
     // Roundtrip RGB -> CIEXYZ -> CIELab -> dicomCIELab -> RGB
     i1 = i2 = i3 = r1 = r2 = r3 = o1 = o2 = o3 = 0.0;
-    i1 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
-    i2 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
-    i3 = OFstatic_cast(double,rand()) / OFstatic_cast(double,RAND_MAX);
+    i1 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1);
+    i2 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1);
+    i3 = OFstatic_cast(double,rnd.getRND32()) / OFstatic_cast(Uint32,-1);
     IODCIELabUtil::rgb2Xyz(r1, r2, r3, i1, i2, i3);
     IODCIELabUtil::xyz2Lab(o1, o2, o3, r1, r2, r3);
     IODCIELabUtil::lab2DicomLab(r1, r2, r3, o1, o2, o3);

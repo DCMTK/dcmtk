@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,7 @@
 #include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofrand.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -467,37 +468,30 @@ static void applyInverseGSDF(const unsigned int numberOfBits,
     }
 }
 
-#ifndef RAND_MAX
-/* some brain-dead systems such as SunOS 4.1.3 do not define any constant
- * for the upper limit of rand() calls. We hope that such systems at least
- * keep within the SysV specs and return values up to 2^15-1.
- */
-#define RAND_MAX 32767
-#endif
-
 static void mixingUpLUT(const unsigned long numberOfEntries,
                         const OFBool byteAlign,
                         const unsigned long randomCount,
-                        const unsigned int randomSeed,
+                        const Uint32 randomSeed,
                         Uint16 *outputData,
                         char *explanation)
 {
+    OFRandom rnd;
     if (outputData != NULL)
     {
         OFLOG_INFO(dcmmklutLogger, "mixing up LUT entries ...");
         if ((explanation != NULL) && (strlen(explanation) > 0))
             strcat(explanation, ", mixed-up entries");
-        srand(randomSeed);
+        rnd.seed(randomSeed);
         unsigned long i, i1, i2;
-        const double factor = (double)(numberOfEntries - 1) / RAND_MAX;
+        const double factor = (double)(numberOfEntries - 1) / OFstatic_cast(Uint32, -1);
         if (byteAlign)
         {
             Uint8 temp;
             Uint8 *data8 = (Uint8 *)outputData;
             for (i = 0; i < randomCount; i++)
             {
-                i1 = (unsigned long)(rand() * factor);
-                i2 = (unsigned long)(rand() * factor);
+                i1 = (unsigned long)(rnd.getRND32() * factor);
+                i2 = (unsigned long)(rnd.getRND32() * factor);
                 if (i1 != i2)
                 {
                     temp = data8[i1];
@@ -509,8 +503,8 @@ static void mixingUpLUT(const unsigned long numberOfEntries,
             Uint16 temp;
             for (i = 0; i < randomCount; i++)
             {
-                i1 = (unsigned long)(rand() * factor);
-                i2 = (unsigned long)(rand() * factor);
+                i1 = (unsigned long)(rnd.getRND32() * factor);
+                i2 = (unsigned long)(rnd.getRND32() * factor);
                 if (i1 != i2)
                 {
                     temp = outputData[i1];
@@ -934,7 +928,7 @@ int main(int argc, char *argv[])
                     applyInverseGSDF((unsigned int)opt_bits, opt_entries, opt_byteAlign, (unsigned int)opt_minDensity, (unsigned int)opt_maxDensity,
                         (unsigned int)opt_illumination, (unsigned int)opt_reflection, outputData, headerStr, explStr);
                 if (opt_randomCount > 0)
-                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, (unsigned int)opt_randomSeed, outputData, explStr);
+                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, (Uint32)opt_randomSeed, outputData, explStr);
                 result = createLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
                     outputData, explStr);
             }
