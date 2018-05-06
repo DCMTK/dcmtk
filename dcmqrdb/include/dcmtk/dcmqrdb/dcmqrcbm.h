@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -123,7 +123,7 @@ private:
     void buildFailedInstanceList(DcmDataset ** rspIds);
     OFBool mapMoveDestination(
       const char *origPeer, const char *origAE,
-      const char *dstAE, char *dstPeer, int *dstPort);
+      const char *dstAE, char *dstPeer, size_t dstPeerLen, int *dstPort);
     OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params);
 
     /// reference to database handle

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,7 @@
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
@@ -141,23 +142,23 @@ void DcmQueryRetrieveGetContext::callbackHandler(
 void DcmQueryRetrieveGetContext::addFailedUIDInstance(const char *sopInstance)
 {
     size_t len;
-
+    size_t buflen = DIC_UI_LEN+1;
     if (failedUIDs == NULL) {
-        if ((failedUIDs = (char*)malloc(DIC_UI_LEN+1)) == NULL) {
+        if ((failedUIDs = (char*)malloc(buflen)) == NULL) {
             DCMQRDB_ERROR("malloc failure: addFailedUIDInstance");
             return;
         }
-        strcpy(failedUIDs, sopInstance);
+        OFStandard::strlcpy(failedUIDs, sopInstance, buflen);
     } else {
         len = strlen(failedUIDs);
-        if ((failedUIDs = (char*)realloc(failedUIDs,
-            (len+strlen(sopInstance)+2))) == NULL) {
+        buflen = len+strlen(sopInstance)+2;
+        if ((failedUIDs = (char*)realloc(failedUIDs, buflen)) == NULL) {
             DCMQRDB_ERROR("realloc failure: addFailedUIDInstance");
             return;
         }
         /* tag sopInstance onto end of old with '\' between */
-        strcat(failedUIDs, "\\");
-        strcat(failedUIDs, sopInstance);
+        OFStandard::strlcat(failedUIDs, "\\", buflen);
+        OFStandard::strlcat(failedUIDs, sopInstance, buflen);
     }
 }
 
@@ -215,8 +216,8 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
     }
 
     req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID, sopClass);
-    strcpy(req.AffectedSOPInstanceUID, sopInstance);
+    OFStandard::strlcpy(req.AffectedSOPClassUID, sopClass, DIC_UI_LEN + 1);
+    OFStandard::strlcpy(req.AffectedSOPInstanceUID, sopInstance, DIC_UI_LEN + 1);
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = priority;
     req.opts = 0;

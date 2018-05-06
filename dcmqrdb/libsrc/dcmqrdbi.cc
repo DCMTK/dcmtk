@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,8 +108,9 @@ static int NbFindAttr = ((sizeof (TbFindAttr)) / (sizeof (TbFindAttr [0])));
 static char *DB_strdup(const char* str)
 {
     if (str == NULL) return NULL;
-    char* s = (char*)malloc(strlen(str)+1);
-    strcpy(s, str);
+    size_t buflen = strlen(str)+1;
+    char* s = (char*)malloc(buflen);
+    OFStandard::strlcpy(s, str, buflen);
     return s;
 }
 
@@ -2590,7 +2591,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
     pStudyDesc[s]. LastRecordedDate =  (double) time(NULL);
 
     pStudyDesc[s]. NumberofRegistratedImages++ ;
-    strcpy(pStudyDesc[s].StudyInstanceUID,StudyUID) ;
+    OFStandard::strlcpy(pStudyDesc[s].StudyInstanceUID, StudyUID, UI_MAX_LENGTH+1) ;
 
     if ( DB_StudyDescChange (pStudyDesc) == EC_Normal)
         return ( EC_Normal ) ;
@@ -2723,7 +2724,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
             descrTag = DCM_ContentDescription;
         } else if (strcmp(SOPClassUID, UID_RETIRED_HardcopyGrayscaleImageStorage) == 0)
         {
-            strcpy(idxRec.InstanceDescription, "Hardcopy Grayscale Image");
+            OFStandard::strlcpy(idxRec.InstanceDescription, "Hardcopy Grayscale Image", DESCRIPTION_MAX_LENGTH+1);
             useDescrTag = OFFalse;
         } else if ((strcmp(SOPClassUID, UID_BasicTextSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_EnhancedSRStorage) == 0) ||
@@ -2764,11 +2765,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
                 description += ", ";
                 description += string;
             }
-            strncpy(idxRec.InstanceDescription, description.c_str(), DESCRIPTION_MAX_LENGTH);
+            OFStandard::strlcpy(idxRec.InstanceDescription, description.c_str(), DESCRIPTION_MAX_LENGTH+1);
             useDescrTag = OFFalse;
         } else if (strcmp(SOPClassUID, UID_RETIRED_StoredPrintStorage) == 0)
         {
-            strcpy(idxRec.InstanceDescription, "Stored Print");
+            OFStandard::strlcpy(idxRec.InstanceDescription, "Stored Print", DESCRIPTION_MAX_LENGTH+1);
             useDescrTag = OFFalse;
         }
     }
@@ -2790,9 +2791,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
             if (((DcmSequenceOfItems *)stack.top())->card() > 0)
             {
                 if (strlen(idxRec.InstanceDescription) > 0)
-                    strcat(idxRec.InstanceDescription, " (Signed)");
+                    OFStandard::strlcat(idxRec.InstanceDescription, " (Signed)", DESCRIPTION_MAX_LENGTH+1);
                 else
-                    strcpy(idxRec.InstanceDescription, "Signed Instance");
+                    OFStandard::strlcpy(idxRec.InstanceDescription, "Signed Instance", DESCRIPTION_MAX_LENGTH+1);
             }
         }
     }

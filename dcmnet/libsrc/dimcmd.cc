@@ -97,6 +97,7 @@
 #include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dimcmd.h"
 
 /*
@@ -655,12 +656,12 @@ buildCStoreRSP(T_DIMSE_C_StoreRSP * e, DcmDataset * obj)
     if (e->opts & O_STORE_AFFECTEDSOPINSTANCEUID)
     {
         char instanceuid[DIC_UI_LEN + 10];
-        strcpy(instanceuid, e->AffectedSOPInstanceUID);
+        OFStandard::strlcpy(instanceuid, e->AffectedSOPInstanceUID, DIC_UI_LEN + 10);
         if ((e->opts & O_STORE_PEER_REQUIRES_EXACT_UID_COPY) &&
             (e->opts & O_STORE_RSP_BLANK_PADDING))
         {
             // restore illegal space padding.
-            strcat(instanceuid, " ");
+            OFStandard::strlcat(instanceuid, " ", DIC_UI_LEN + 10);
         }
         cond = addString(obj, DCM_AffectedSOPInstanceUID, instanceuid, OFTrue); RET(cond);
     }

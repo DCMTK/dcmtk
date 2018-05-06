@@ -22,6 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmpstat/dvpsda.h"
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage */
 #include "dcmtk/dcmpstat/dvpsrsl.h"     /* DVPSReferencedSeries_PList */
@@ -285,7 +286,7 @@ OFCondition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(double spacingX, dou
 {
   char str[66];
   OFStandard::ftoa(str, 32, spacingY, OFStandard::ftoa_format_f);
-  strcat(str, "\\");
+  OFStandard::strlcat(str, "\\", 66);
   OFStandard::ftoa(strchr(str, 0), 32, spacingX, OFStandard::ftoa_format_f);
 
   return setDisplayedAreaPixelSpacing(str);

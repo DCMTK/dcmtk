@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,7 @@
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
@@ -166,23 +167,23 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 void DcmQueryRetrieveMoveContext::addFailedUIDInstance(const char *sopInstance)
 {
     size_t len;
-
+    size_t buflen = DIC_UI_LEN+1;
     if (failedUIDs == NULL) {
-        if ((failedUIDs = (char*)malloc(DIC_UI_LEN+1)) == NULL) {
+        if ((failedUIDs = (char*)malloc(buflen)) == NULL) {
             DCMQRDB_ERROR("malloc failure: addFailedUIDInstance");
             return;
         }
-        strcpy(failedUIDs, sopInstance);
+        OFStandard::strlcpy(failedUIDs, sopInstance, buflen);
     } else {
         len = strlen(failedUIDs);
-        if ((failedUIDs = (char*)realloc(failedUIDs,
-            (len+strlen(sopInstance)+2))) == NULL) {
+        buflen = len+strlen(sopInstance)+2;
+        if ((failedUIDs = (char*)realloc(failedUIDs, buflen)) == NULL) {
             DCMQRDB_ERROR("realloc failure: addFailedUIDInstance");
             return;
         }
         /* tag sopInstance onto end of old with '\' between */
-        strcat(failedUIDs, "\\");
-        strcat(failedUIDs, sopInstance);
+        OFStandard::strlcat(failedUIDs, "\\", buflen);
+        OFStandard::strlcat(failedUIDs, sopInstance, buflen);
     }
 }
 
@@ -228,12 +229,12 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     }
 
     req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID, sopClass);
-    strcpy(req.AffectedSOPInstanceUID, sopInstance);
+    OFStandard::strlcpy(req.AffectedSOPClassUID, sopClass, DIC_UI_LEN + 1); // see declaration of DIC_UI in dcmtk/dcmnet/dicom.h
+    OFStandard::strlcpy(req.AffectedSOPInstanceUID, sopInstance, DIC_UI_LEN + 1);
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = priority;
     req.opts = (O_STORE_MOVEORIGINATORAETITLE | O_STORE_MOVEORIGINATORID);
-    strcpy(req.MoveOriginatorApplicationEntityTitle, origAETitle);
+    OFStandard::strlcpy(req.MoveOriginatorApplicationEntityTitle, origAETitle, DIC_AE_LEN + 1);
     req.MoveOriginatorID = origMsgId;
 
     DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("
@@ -290,7 +291,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     T_ASC_Parameters *params;
     OFString temp_str;
 
-    strcpy(dstAETitle, request->MoveDestination);
+    OFStandard::strlcpy(dstAETitle, request->MoveDestination, DIC_AE_LEN + 1);
 
     /*
      * We must map the destination AE Title into a host name and port
@@ -306,7 +307,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     ASC_getPresentationAddresses(origAssoc->params, origHostName, NULL);
 
     if (!mapMoveDestination(origHostName, origAETitle,
-        request->MoveDestination, dstHostName, &dstPortNumber)) {
+        request->MoveDestination, dstHostName, DIC_NODENAME_LEN + 1, &dstPortNumber)) {
         return QR_EC_InvalidPeer;
     }
     if (cond.good()) {
@@ -460,7 +461,7 @@ void DcmQueryRetrieveMoveContext::buildFailedInstanceList(DcmDataset ** rspIds)
 
 OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
   const char *origPeer, const char *origAE,
-  const char *dstAE, char *dstPeer, int *dstPort)
+  const char *dstAE, char *dstPeer, size_t dstPeerLen, int *dstPort)
 {
     /*
      * This routine enforces RSNA'93 Demo Requirements regarding
@@ -485,7 +486,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
         return OFFalse;     /* dstAE not known */
     }
 
-    strcpy(dstPeer, dstPeerName);
+    OFStandard::strlcpy(dstPeer, dstPeerName, dstPeerLen);
 
     if (options_.restrictMoveToSameHost_) {
         /* hosts the same ? */

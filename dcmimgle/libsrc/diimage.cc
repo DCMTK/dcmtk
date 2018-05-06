@@ -708,7 +708,7 @@ void DiImage::updateImagePixelModuleAttributes(DcmItem &dataset)
     /* update PixelAspectRatio & Co. */
     char buffer[32];
     OFStandard::ftoa(buffer, 15, PixelHeight, OFStandard::ftoa_format_f);
-    strcat(buffer, "\\");
+    OFStandard::strlcat(buffer, "\\", 32);
     OFStandard::ftoa(strchr(buffer, 0), 15, PixelWidth, OFStandard::ftoa_format_f);
 
     if (hasPixelSpacing)

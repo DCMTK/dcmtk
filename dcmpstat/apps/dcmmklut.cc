@@ -431,14 +431,15 @@ static void applyInverseGSDF(const unsigned int numberOfBits,
                              const unsigned int reflection,
                              Uint16 *outputData,
                              OFString &header,
-                             char *explanation)
+                             char *explanation,
+                             size_t explanationSize)
 {
     if (outputData != NULL)
     {
         OFLOG_INFO(dcmmklutLogger, "applying inverse GSDF ...");
         OFOStringStream oss;
         if ((explanation != NULL) && (strlen(explanation) > 0))
-            strcat(explanation, ", inverse GSDF");
+            OFStandard::strlcat(explanation, ", inverse GSDF", explanationSize);
         const double l0 = (double)illumination;
         const double la = (double)reflection;
         const double dmin = (double)minDensity / 100;
@@ -473,14 +474,15 @@ static void mixingUpLUT(const unsigned long numberOfEntries,
                         const unsigned long randomCount,
                         const Uint32 randomSeed,
                         Uint16 *outputData,
-                        char *explanation)
+                        char *explanation,
+                        size_t explanationSize)
 {
     OFRandom rnd;
     if (outputData != NULL)
     {
         OFLOG_INFO(dcmmklutLogger, "mixing up LUT entries ...");
         if ((explanation != NULL) && (strlen(explanation) > 0))
-            strcat(explanation, ", mixed-up entries");
+            OFStandard::strlcat(explanation, ", mixed-up entries", explanationSize);
         rnd.seed(randomSeed);
         unsigned long i, i1, i2;
         const double factor = (double)(numberOfEntries - 1) / OFstatic_cast(Uint32, -1);
@@ -901,7 +903,7 @@ int main(int argc, char *argv[])
         {
             char explStr[1024];
             if (opt_explanation != NULL)
-                strcpy(explStr, opt_explanation);
+                OFStandard::strlcpy(explStr, opt_explanation, 1024);
             else
                 explStr[0] = 0;
             OFString headerStr;
@@ -926,9 +928,9 @@ int main(int argc, char *argv[])
             {
                 if (opt_inverseGSDF)
                     applyInverseGSDF((unsigned int)opt_bits, opt_entries, opt_byteAlign, (unsigned int)opt_minDensity, (unsigned int)opt_maxDensity,
-                        (unsigned int)opt_illumination, (unsigned int)opt_reflection, outputData, headerStr, explStr);
+                        (unsigned int)opt_illumination, (unsigned int)opt_reflection, outputData, headerStr, explStr, 1024);
                 if (opt_randomCount > 0)
-                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, (Uint32)opt_randomSeed, outputData, explStr);
+                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, (Uint32)opt_randomSeed, outputData, explStr, 1024);
                 result = createLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
                     outputData, explStr);
             }
