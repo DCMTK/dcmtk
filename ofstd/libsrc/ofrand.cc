@@ -139,7 +139,7 @@ void OFRandom::mixSeed()
 
 void OFRandom::seed(Uint32 sval)
 {
-   for (int i=0; i<OFRandom_SIZ; i++) 
+   for (int i=0; i<OFRandom_SIZ; i++)
    {
      randrsl[i] = sval;
    }
@@ -153,7 +153,7 @@ void OFRandom::isaac()
 {
    Uint32 x,y,*m,*m2,*mend;
    Uint32 *r = randrsl;
-   Uint32 a = randa; 
+   Uint32 a = randa;
    Uint32 b = randb + (++randc);
    for (m = randmem, mend = m2 = m+(OFRandom_SIZ/2); m<mend; )
    {
@@ -175,7 +175,7 @@ void OFRandom::isaac()
 
 Uint32 OFRandom::getRND32()
 {
-  // check if we still have random numbers left  
+  // check if we still have random numbers left
   if (randcnt == 0) isaac();
 
   // we use the random numbers from last to first

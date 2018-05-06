@@ -29,7 +29,7 @@
 #define OFRandom_SIZL   (8)
 #define OFRandom_SIZ    (1<<OFRandom_SIZL)
 
-class OFRandom
+class DCMTK_OFSTD_EXPORT OFRandom
 {
 public:
 
