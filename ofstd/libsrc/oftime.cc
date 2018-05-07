@@ -606,8 +606,8 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
                   OFStandard::ftoa_format_f | OFStandard::ftoa_zeropad, 9, 6);
                 /* format: HH:MM:SS.FFFFFF */
                 if (showDelimiter)
-                    OFStandard::strlcat(buf, ":", 12);
-                OFStandard::strlcat(buf, buf2, 12);
+                    OFStandard::strlcat(buf, ":", sizeof(buf));
+                OFStandard::strlcat(buf, buf2, sizeof(buf));
             } else {
                 /* format: HH:MM:SS*/
                 if (showDelimiter)
