@@ -235,7 +235,7 @@ void DcmOtherByteOtherWord::print(STD_NAMESPACE ostream&out,
 }
 
 
-void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
+void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream &out,
                                        const size_t flags,
                                        const int level,
                                        const char *pixelFileName,
@@ -273,13 +273,19 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
                     {
                         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, data, getLengthField(), sizeof(Uint16));
                         setByteOrder(EBO_LittleEndian);
-                        fwrite(data, sizeof(Uint16), OFstatic_cast(size_t, getLengthField() / sizeof(Uint16)), file);
+                        const size_t count = OFstatic_cast(size_t, getLengthField() / sizeof(Uint16));
+                        if (fwrite(data, sizeof(Uint16), count, file) != count)
+                            DCMDATA_WARN("DcmOtherByteOtherWord: Can't write pixel data to output file: " << fname);
                     }
                 } else {
                     Uint8 *data = NULL;
                     getUint8Array(data);
                     if (data != NULL)
-                        fwrite(data, sizeof(Uint8), OFstatic_cast(size_t, getLengthField()), file);
+                    {
+                        const size_t count = OFstatic_cast(size_t, getLengthField());
+                        if (fwrite(data, sizeof(Uint8), count, file) != count)
+                            DCMDATA_WARN("DcmOtherByteOtherWord: Can't write pixel data to output file: " << fname);
+                    }
                 }
                 fclose(file);
             } else {

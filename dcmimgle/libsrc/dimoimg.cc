@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016 OFFIS e.V.
+ *  Copyright (C) 1996-2018 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2143,9 +2143,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
                 fprintf(stream, "P6\n%u %u\n255\n", Columns, Rows);
             else
                 fprintf(stream, "P5\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
-            fwrite(OutputData->getData(), OFstatic_cast(size_t, OutputData->getCount()), OutputData->getItemSize(), stream);
+            const size_t count = OFstatic_cast(size_t, OutputData->getCount());
+            int ok = (fwrite(OutputData->getData(), OutputData->getItemSize(), count, stream) == count) ? 1 : 0;
             deleteOutputData();
-            return 1;
+            return ok;
         }
     }
     return 0;

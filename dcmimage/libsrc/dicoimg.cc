@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -680,8 +680,9 @@ int DiColorImage::writeRawPPM(FILE *stream,
             if ((OutputData != NULL) && (OutputData->getData() != NULL))
             {
                 fprintf(stream, "P6\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
-                fwrite(OutputData->getData(), OFstatic_cast(size_t, OutputData->getCount()), OutputData->getItemSize(), stream);
-                return 1;
+                const size_t count = OFstatic_cast(size_t, OutputData->getCount());
+                if (fwrite(OutputData->getData(), OutputData->getItemSize(), count, stream) == count)
+                    return 1;
             }
         }
     }

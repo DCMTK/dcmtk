@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -358,10 +358,12 @@ static void dumpPresentationState(DVPresentationState &ps)
         ofile = fopen(overlayfile, "wb");
         if (ofile)
         {
-           fprintf(ofile, "P5\n%d %d 255\n", overlayWidth, overlayHeight);
-           fwrite(overlayData, overlayWidth, overlayHeight, ofile);
-           fclose(ofile);
-           oss << " - written." << OFendl;
+          fprintf(ofile, "P5\n%d %d 255\n", overlayWidth, overlayHeight);
+          if (fwrite(overlayData, overlayWidth, overlayHeight, ofile) == overlayHeight)
+            oss << " - written." << OFendl;
+          else
+            oss << " -write error-" << OFendl;
+          fclose(ofile);
         } else oss << " -write error-" << OFendl;
       } else {
         oss << "        unable to access overlay data!" << OFendl;
@@ -542,7 +544,8 @@ int main(int argc, char *argv[])
                 {
                     OFLOG_DEBUG(dcmp2pgmLogger, "writing PGM file: " << opt_pgmName);
                     fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
-                    fwrite(pixelData, (size_t)width, (size_t)height, outfile);
+                    if (fwrite(pixelData, OFstatic_cast(size_t, width), OFstatic_cast(size_t, height), outfile) != OFstatic_cast(size_t, height))
+                        OFLOG_FATAL(dcmp2pgmLogger, "Can't write output data to file.");
                     fclose(outfile);
                 } else {
                     OFLOG_FATAL(dcmp2pgmLogger, "Can't create output file.");

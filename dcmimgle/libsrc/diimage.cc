@@ -855,31 +855,32 @@ int DiImage::writeBMP(FILE *stream,
                     swapBytes(OFreinterpret_cast(Uint8 *, palette), 256 * 4 /*byteLength*/, 4 /*valWidth*/);
             }
             /* write bitmap file header: do not write the struct because of 32-bit alignment */
-            fwrite(&fileHeader.bfType, sizeof(fileHeader.bfType), 1, stream);
-            fwrite(&fileHeader.bfSize, sizeof(fileHeader.bfSize), 1, stream);
-            fwrite(&fileHeader.bfReserved1, sizeof(fileHeader.bfReserved1), 1, stream);
-            fwrite(&fileHeader.bfReserved2, sizeof(fileHeader.bfReserved2), 1, stream);
-            fwrite(&fileHeader.bfOffBits, sizeof(fileHeader.bfOffBits), 1, stream);
+            int ok = (fwrite(&fileHeader.bfType, sizeof(fileHeader.bfType), 1, stream) == 1);
+            ok &= (fwrite(&fileHeader.bfSize, sizeof(fileHeader.bfSize), 1, stream) == 1);
+            ok &= (fwrite(&fileHeader.bfReserved1, sizeof(fileHeader.bfReserved1), 1, stream) == 1);
+            ok &= (fwrite(&fileHeader.bfReserved2, sizeof(fileHeader.bfReserved2), 1, stream) == 1);
+            ok &= (fwrite(&fileHeader.bfOffBits, sizeof(fileHeader.bfOffBits), 1, stream) == 1);
             /* write bitmap info header: do not write the struct because of 32-bit alignment  */
-            fwrite(&infoHeader.biSize, sizeof(infoHeader.biSize), 1, stream);
-            fwrite(&infoHeader.biWidth, sizeof(infoHeader.biWidth), 1, stream);
-            fwrite(&infoHeader.biHeight, sizeof(infoHeader.biHeight), 1, stream);
-            fwrite(&infoHeader.biPlanes, sizeof(infoHeader.biPlanes), 1, stream);
-            fwrite(&infoHeader.biBitCount, sizeof(infoHeader.biBitCount), 1, stream);
-            fwrite(&infoHeader.biCompression, sizeof(infoHeader.biCompression), 1, stream);
-            fwrite(&infoHeader.biSizeImage, sizeof(infoHeader.biSizeImage), 1, stream);
-            fwrite(&infoHeader.biXPelsPerMeter, sizeof(infoHeader.biXPelsPerMeter), 1, stream);
-            fwrite(&infoHeader.biYPelsPerMeter, sizeof(infoHeader.biYPelsPerMeter), 1, stream);
-            fwrite(&infoHeader.biClrUsed, sizeof(infoHeader.biClrUsed), 1, stream);
-            fwrite(&infoHeader.biClrImportant, sizeof(infoHeader.biClrImportant), 1, stream);
+            ok &= (fwrite(&infoHeader.biSize, sizeof(infoHeader.biSize), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biWidth, sizeof(infoHeader.biWidth), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biHeight, sizeof(infoHeader.biHeight), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biPlanes, sizeof(infoHeader.biPlanes), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biBitCount, sizeof(infoHeader.biBitCount), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biCompression, sizeof(infoHeader.biCompression), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biSizeImage, sizeof(infoHeader.biSizeImage), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biXPelsPerMeter, sizeof(infoHeader.biXPelsPerMeter), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biYPelsPerMeter, sizeof(infoHeader.biYPelsPerMeter), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biClrUsed, sizeof(infoHeader.biClrUsed), 1, stream) == 1);
+            ok &= (fwrite(&infoHeader.biClrImportant, sizeof(infoHeader.biClrImportant), 1, stream) == 1);
             /* write color palette (if applicable) */
             if (palette != NULL)
-                fwrite(palette, 4, 256, stream);
+                ok &= (fwrite(palette, 4, 256, stream) == 256);
             /* write pixel data */
-            fwrite(data, 1, OFstatic_cast(size_t, bytes), stream);
+            ok &= (fwrite(data, 1, OFstatic_cast(size_t, bytes), stream) == OFstatic_cast(size_t, bytes));
             /* delete color palette */
             delete[] palette;
-            result = 1;
+            if (ok)
+                result = 1;
         }
         /* delete pixel data */
         delete OFstatic_cast(char *, data);     // type cast necessary to avoid compiler warnings using gcc >2.95
