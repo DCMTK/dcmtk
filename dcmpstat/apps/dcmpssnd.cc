@@ -42,6 +42,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmpstat/dvpshlp.h"     /* for class DVPSHelper */
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"     /* for LOCK_IMAGE_FILES */
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"     /* for DcmQueryRetrieveDatabaseStatus */
@@ -121,8 +122,9 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
     /* start store */
     OFBitmanipTemplate<char>::zeroMem((char *)&req, sizeof(req));
     req.MessageID = assoc->nextMsgID++;
-    strcpy(req.AffectedSOPClassUID, sopClass);
-    strcpy(req.AffectedSOPInstanceUID, sopInstance);
+
+    OFStandard::strlcpy(req.AffectedSOPClassUID, sopClass, sizeof(req.AffectedSOPClassUID));
+    OFStandard::strlcpy(req.AffectedSOPInstanceUID, sopInstance, sizeof(req.AffectedSOPInstanceUID));
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 

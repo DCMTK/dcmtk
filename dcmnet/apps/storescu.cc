@@ -1341,8 +1341,8 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* prepare the transmission of data */
   bzero(OFreinterpret_cast(char *, &req), sizeof(req));
   req.MessageID = msgId;
-  strcpy(req.AffectedSOPClassUID, sopClass);
-  strcpy(req.AffectedSOPInstanceUID, sopInstance);
+  OFStandard::strlcpy(req.AffectedSOPClassUID, sopClass, sizeof(req.AffectedSOPClassUID));
+  OFStandard::strlcpy(req.AffectedSOPInstanceUID, sopInstance, sizeof(req.AffectedSOPInstanceUID));
   req.DataSetType = DIMSE_DATASET_PRESENT;
   req.Priority = DIMSE_PRIORITY_MEDIUM;
 

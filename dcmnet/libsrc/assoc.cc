@@ -687,7 +687,7 @@ ASC_addPresentationContext(
         return EC_MemoryExhausted;
     }
     pc->presentationContextID = presentationContextID;
-    strcpy(pc->abstractSyntax, abstractSyntax);
+    OFStandard::strlcpy(pc->abstractSyntax, abstractSyntax, sizeof(pc->abstractSyntax));
     pc->result = ASC_P_NOTYETNEGOTIATED;
     pc->proposedSCRole = ascRole2dulRole(proposedRole);
     pc->acceptedSCRole = ascRole2dulRole(ASC_SC_ROLE_DEFAULT);
@@ -704,7 +704,7 @@ ASC_addPresentationContext(
     {
         transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
         if (transfer == NULL) return EC_MemoryExhausted;
-        strcpy(transfer->transferSyntax, transferSyntaxList[i]);
+        OFStandard::strlcpy(transfer->transferSyntax, transferSyntaxList[i], sizeof(transfer->transferSyntax));
         LST_Enqueue(&lst, (LST_NODE*)transfer);
     }
     pc->proposedTransferSyntax = lst;
@@ -820,11 +820,11 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
     presentationContext->resultReason = (T_ASC_P_ResultReason) pc->result;
     presentationContext->proposedRole = dulRole2ascRole(pc->proposedSCRole);
     presentationContext->acceptedRole = dulRole2ascRole(pc->acceptedSCRole);
-    strcpy(presentationContext->abstractSyntax,
-           pc->abstractSyntax);
+    OFStandard::strlcpy(presentationContext->abstractSyntax,
+           pc->abstractSyntax, sizeof(presentationContext->abstractSyntax));
     if (presentationContext->resultReason == ASC_P_ACCEPTANCE) {
-        strcpy(presentationContext->acceptedTransferSyntax,
-            pc->acceptedTransferSyntax);
+        OFStandard::strlcpy(presentationContext->acceptedTransferSyntax,
+            pc->acceptedTransferSyntax, sizeof(presentationContext->acceptedTransferSyntax));
     } else {
         presentationContext->acceptedTransferSyntax[0] = '\0';
     }
@@ -841,8 +841,8 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
         {
           return makeDcmnetCondition(ASCC_CODINGERROR, OF_error, "ASC Coding error in ASC_getPresentationContext: too many transfer syntaxes");
         }
-        strcpy(presentationContext->proposedTransferSyntaxes[count],
-               transfer->transferSyntax);
+        OFStandard::strlcpy(presentationContext->proposedTransferSyntaxes[count],
+               transfer->transferSyntax, sizeof(presentationContext->proposedTransferSyntaxes[count]));
         count++;
         transfer = (DUL_TRANSFERSYNTAX*) LST_Next(l);
     }
@@ -872,7 +872,7 @@ ASC_acceptPresentationContext(
                               params->DULparams.requestedPresentationContext,
                                                 presentationContextID);
     if (proposedContext == NULL) return ASC_BADPRESENTATIONCONTEXTID;
-    strcpy(proposedContext->acceptedTransferSyntax, transferSyntax);
+    OFStandard::strlcpy(proposedContext->acceptedTransferSyntax, transferSyntax, sizeof(proposedContext->acceptedTransferSyntax));
 
     /* we want to mark this proposed context as being ok */
     proposedContext->result = ASC_P_ACCEPTANCE;
@@ -910,9 +910,9 @@ ASC_acceptPresentationContext(
     if (acceptedContext != NULL) {
         /* it is already in the list, mark it as accepted */
         acceptedContext->result = ASC_P_ACCEPTANCE;
-        strcpy(acceptedContext->abstractSyntax,
-               proposedContext->abstractSyntax);
-        strcpy(acceptedContext->acceptedTransferSyntax, transferSyntax);
+        OFStandard::strlcpy(acceptedContext->abstractSyntax,
+               proposedContext->abstractSyntax, sizeof(acceptedContext->abstractSyntax));
+        OFStandard::strlcpy(acceptedContext->acceptedTransferSyntax, transferSyntax, sizeof(acceptedContext->acceptedTransferSyntax));
         acceptedContext->proposedSCRole = proposedContext->proposedSCRole;
         acceptedContext->acceptedSCRole = ascRole2dulRole(acceptedRole);
     } else {
@@ -970,14 +970,14 @@ ASC_refusePresentationContext(
     if (acceptedContext != NULL) {
         /* it is already in the list, mark it as refused */
         acceptedContext->result = resultReason;
-        strcpy(acceptedContext->abstractSyntax,
-               proposedContext->abstractSyntax);
+        OFStandard::strlcpy(acceptedContext->abstractSyntax,
+               proposedContext->abstractSyntax, sizeof(acceptedContext->abstractSyntax));
         /* we must send back a transfer syntax even though this
          * presentation context is refused.  Some software implementations
          * seem to get confused if we don't.
          */
-        strcpy(acceptedContext->acceptedTransferSyntax,
-                UID_LittleEndianImplicitTransferSyntax);
+        OFStandard::strlcpy(acceptedContext->acceptedTransferSyntax,
+                UID_LittleEndianImplicitTransferSyntax, sizeof(acceptedContext->acceptedTransferSyntax));
     } else {
 
         /*
@@ -1912,7 +1912,7 @@ updateRequestedPCFromAcceptedPC(
 
     rpc->result = apc->result;
     if (apc->result == ASC_P_ACCEPTANCE) {
-        strcpy(rpc->acceptedTransferSyntax, apc->acceptedTransferSyntax);
+        OFStandard::strlcpy(rpc->acceptedTransferSyntax, apc->acceptedTransferSyntax, sizeof(rpc->acceptedTransferSyntax));
     } else {
         rpc->acceptedTransferSyntax[0] = '\0';
     }
@@ -2050,10 +2050,10 @@ ASC_requestAssociation(T_ASC_Network * network,
         (*assoc)->sendPDVLength = sendLen;
         (*assoc)->sendPDVBuffer = (unsigned char*)malloc(size_t(sendLen));
         if ((*assoc)->sendPDVBuffer == NULL) return EC_MemoryExhausted;
-        strcpy(params->theirImplementationClassUID,
-           params->DULparams.calledImplementationClassUID);
-        strcpy(params->theirImplementationVersionName,
-           params->DULparams.calledImplementationVersionName);
+        OFStandard::strlcpy(params->theirImplementationClassUID,
+           params->DULparams.calledImplementationClassUID, sizeof(params->theirImplementationClassUID));
+        OFStandard::strlcpy(params->theirImplementationVersionName,
+           params->DULparams.calledImplementationVersionName, sizeof(params->theirImplementationVersionName));
 
         /* make sure accepted PCs are marked as such in the requested PC list */
         cond = updateRequestedPCListFromAcceptedPCList(&params->DULparams);
@@ -2081,10 +2081,10 @@ ASC_acknowledgeAssociation(
       assoc->params->DULparams.maxPDU = dcmEnableBackwardCompatibility.get() | DUL_DULCOMPAT | DUL_DIMSECOMPAT;
     }
 
-    strcpy(assoc->params->DULparams.calledImplementationClassUID,
-        assoc->params->ourImplementationClassUID);
-    strcpy(assoc->params->DULparams.calledImplementationVersionName,
-        assoc->params->ourImplementationVersionName);
+    OFStandard::strlcpy(assoc->params->DULparams.calledImplementationClassUID,
+        assoc->params->ourImplementationClassUID, sizeof(assoc->params->DULparams.calledImplementationClassUID));
+    OFStandard::strlcpy(assoc->params->DULparams.calledImplementationVersionName,
+        assoc->params->ourImplementationVersionName, sizeof(assoc->params->DULparams.calledImplementationVersionName));
 
     OFCondition cond = DUL_AcknowledgeAssociationRQ(&assoc->DULassociation,
                                         &assoc->params->DULparams,

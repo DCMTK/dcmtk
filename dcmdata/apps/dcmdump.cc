@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -133,7 +133,10 @@ static OFBool addPrintTagName(const char *tagName)
         printTagKeys[printTagCount] = NULL;
     }
 
-    printTagNames[printTagCount] = strcpy(OFstatic_cast(char*, malloc(strlen(tagName)+1)), tagName);
+    size_t buflen = strlen(tagName)+1;
+    char *buf = OFstatic_cast(char*, malloc(buflen));
+    OFStandard::strlcpy(buf, tagName, buflen);
+    printTagNames[printTagCount] = buf;
     printTagCount++;
     return OFTrue;
 }

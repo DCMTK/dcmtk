@@ -13,7 +13,7 @@
  *
  *  Module:  dcmpstat
  *
- *  Authors: Marco Eichelberg
+ *  Authors: Marco EichelbergimageFileName
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
@@ -40,6 +40,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"     /* for LOCK_IMAGE_FILES */
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"     /* for DcmQueryRetrieveDatabaseStatus */
 #include "dcmtk/dcmpstat/dvpsmsg.h"     /* for class DVPSIPCClient */
@@ -503,7 +504,7 @@ static OFCondition storeSCP(
         /* callback will send back sop class not supported status */
         status = STATUS_STORE_Refused_SOPClassNotSupported;
         /* must still receive data */
-        strcpy(imageFileName, NULL_DEVICE_NAME);
+        OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
     }
     else
     {
@@ -512,7 +513,7 @@ static OFCondition storeSCP(
       {
         OFLOG_ERROR(dcmpsrcvLogger, "Unable to access database '" << dbfolder << "'");
         /* must still receive data */
-        strcpy(imageFileName, NULL_DEVICE_NAME);
+        OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
         /* callback will send back out of resources status */
         status = STATUS_STORE_Refused_OutOfResources;
         dbhandle = NULL;
@@ -526,7 +527,7 @@ static OFCondition storeSCP(
         {
             OFLOG_ERROR(dcmpsrcvLogger, "storeSCP: Database: DB_makeNewStoreFileName Failed");
             /* must still receive data */
-            strcpy(imageFileName, NULL_DEVICE_NAME);
+            OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
             /* callback will send back out of resources status */
             status = STATUS_STORE_Refused_OutOfResources;
         }
@@ -564,11 +565,8 @@ static OFCondition storeSCP(
     if (cond.bad() || (context.status != STATUS_Success))
     {
         /* remove file */
-        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0)
-        {
-          OFLOG_INFO(dcmpsrcvLogger, "Store SCP: Deleting Image File: " << imageFileName);
-          OFStandard::deleteFile(imageFileName);
-        }
+        OFLOG_INFO(dcmpsrcvLogger, "Store SCP: Deleting Image File: " << imageFileName);
+        OFStandard::deleteFile(imageFileName);
         if (dbhandle) dbhandle->pruneInvalidRecords();
     }
 

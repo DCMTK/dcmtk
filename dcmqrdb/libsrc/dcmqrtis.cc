@@ -617,9 +617,9 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     }
 
     if (dbEntries[currentdb]->isRemoteDB) {
-        strcpy(currentAETitle, myAETitle);
+        OFStandard::strlcpy(currentAETitle, myAETitle, sizeof(currentAETitle));
     } else {
-        strcpy(currentAETitle, dbEntries[currentdb]->title);
+        OFStandard::strlcpy(currentAETitle, dbEntries[currentdb]->title, sizeof(currentAETitle));
     }
 
     cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
@@ -814,8 +814,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
     fflush(stdout);
     bzero((char*)&req, sizeof(req));
     req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID, sopClass);
-    strcpy(req.AffectedSOPInstanceUID, sopInstance);
+    OFStandard::strlcpy(req.AffectedSOPClassUID, sopClass, sizeof(req.AffectedSOPClassUID));
+    OFStandard::strlcpy(req.AffectedSOPInstanceUID, sopInstance, sizeof(req.AffectedSOPInstanceUID));
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 
@@ -889,8 +889,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
     DCMQRDB_INFO("Sending Find SCU RQ: MsgID " << msgId << ":" << OFendl << DcmObject::PrintHelper(*query));
 
     req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID,
-        UID_FINDStudyRootQueryRetrieveInformationModel);
+    OFStandard::strlcpy(req.AffectedSOPClassUID,
+        UID_FINDStudyRootQueryRetrieveInformationModel, sizeof(req.AffectedSOPClassUID));
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 
     cond = DIMSE_findUser(assoc, presId, &req, query,

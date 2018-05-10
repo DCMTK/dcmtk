@@ -2000,7 +2000,7 @@ static OFCondition storeSCP(
 #ifdef _WIN32
     tmpnam(imageFileName);
 #else
-    strcpy(imageFileName, NULL_DEVICE_NAME);
+    OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, 2048);
 #endif
   }
   else

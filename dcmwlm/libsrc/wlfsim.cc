@@ -390,7 +390,7 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
       else
       {
         value = new char[ 2 ];
-        strcpy( value, "4" );           // a value of "4" in attribute PregnancyStatus means "unknown" in DICOM
+        OFStandard::strlcpy( value, "4", sizeof(value) );           // a value of "4" in attribute PregnancyStatus means "unknown" in DICOM
       }
     }
     else
@@ -399,12 +399,12 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
       if( cond.good() && val != NULL )
       {
         value = new char[ strlen( val ) + 1 ];
-        strcpy( value, val );
+        OFStandard::strlcpy( value, val, sizeof(value) );
       }
       else
       {
         value = new char[ 1 ];
-        strcpy( value, "" );
+        OFStandard::strlcpy( value, "", sizeof(value) );
       }
     }
   }
@@ -428,18 +428,18 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
       if( cond.good() && val != NULL )
       {
         value = new char[ strlen( val ) + 1 ];
-        strcpy( value, val );
+        OFStandard::strlcpy( value, val, sizeof(value) );
       }
       else
       {
         value = new char[ 1 ];
-        strcpy( value, "" );
+        OFStandard::strlcpy( value, "", sizeof(value) );
       }
     }
     else
     {
       value = new char[ 1 ];
-      strcpy( value, "" );
+      OFStandard::strlcpy( value, "", sizeof(value) );
     }
   }
 }

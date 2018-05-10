@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1421,7 +1421,7 @@ static OFCondition storeSCP(
 #ifdef _WIN32
         tmpnam(imageFileName);
 #else
-        strcpy(imageFileName, NULL_DEVICE_NAME);
+        OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, 2048);
 #endif
     } else {
         sprintf(imageFileName, "%s.%s",
@@ -1646,14 +1646,14 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     callbackData.presId = presId;
 
     req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID, sopClass);
+    OFStandard::strlcpy(req.AffectedSOPClassUID, sopClass, sizeof(req.AffectedSOPClassUID));
     req.Priority = DIMSE_PRIORITY_MEDIUM;
     req.DataSetType = DIMSE_DATASET_PRESENT;
     if (opt_moveDestination == NULL) {
         /* set the destination to be me */
         ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
     } else {
-        strcpy(req.MoveDestination, opt_moveDestination);
+        OFStandard::strlcpy(req.MoveDestination, opt_moveDestination, sizeof(req.MoveDestination));
     }
 
     if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
