@@ -244,6 +244,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
      else DCMTLS_ERROR("unable to create Diffie-Hellman parameters.");
 
      // create Elliptic Curve DH parameters
+#ifndef OPENSSL_NO_ECDH
 #if OPENSSL_VERSION_NUMBER < 0x10002000L
      // we create ECDH parameters for the NIST P-256 (secp256r1) curve
      // as recommended by BCP 195.
@@ -261,7 +262,8 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
     {
       DCMTLS_ERROR("unable to create Elliptic-Curve Diffie-Hellman parameters.");
     }
-#endif
+#endif /* OPENSSL_VERSION_NUMBER < 0x10002000L */
+#endif /* OPENSSL_NO_ECDH */
 
     // set default certificate verification strategy
     setCertificateVerification(DCV_requireCertificate);
