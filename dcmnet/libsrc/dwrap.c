@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2017, OFFIS e.V.
+ *  Copyright (C) 2012-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,17 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
+#include "dcmtk/ofstd/ofexport.h"     /* for DCMTK_DECL_EXPORT */
 #ifdef WITH_TCPWRAPPER
+
+/* we cannot include "dcmtk/dcmnet/dndefine.h" from a C file.
+ * Therefore, we need to define the export macro ourselves.
+ */
+#ifdef dcmnet_EXPORTS
+#define DCMTK_DCMNET_EXPORT DCMTK_DECL_EXPORT
+#else
+#define DCMTK_DCMNET_EXPORT DCMTK_DECL_IMPORT
+#endif
 
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -36,8 +45,8 @@
  * to avoid linker errors due to duplicate symbols.
  */
 #ifndef TCPWRAPPER_SEVERITY_EXTERN
-int deny_severity = LOG_WARNING;
-int allow_severity = LOG_INFO;
+int DCMTK_DCMNET_EXPORT deny_severity = LOG_WARNING;
+int DCMTK_DCMNET_EXPORT allow_severity = LOG_INFO;
 #endif
 
 int dcmtk_hosts_access(struct request_info *req);
