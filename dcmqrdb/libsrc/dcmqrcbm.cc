@@ -301,10 +301,10 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 
     DIC_AE aeTitle;
     aeTitle[0] = '\0';
-    ASC_getAPTitles(origAssoc->params, origAETitle, aeTitle, NULL);
+    ASC_getAPTitles(origAssoc->params, origAETitle, sizeof(origAETitle), aeTitle, sizeof(aeTitle), NULL, 0);
     ourAETitle = aeTitle;
 
-    ASC_getPresentationAddresses(origAssoc->params, origHostName, NULL);
+    ASC_getPresentationAddresses(origAssoc->params, origHostName, sizeof(origHostName), NULL, 0);
 
     if (!mapMoveDestination(origHostName, origAETitle,
         request->MoveDestination, dstHostName, DIC_NODENAME_LEN + 1, &dstPortNumber)) {
@@ -398,7 +398,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 
     /* get DB response */
     dbcond = dbHandle.nextMoveResponse(
-        subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
+        subImgSOPClass, sizeof(subImgSOPClass), subImgSOPInstance, sizeof(subImgSOPInstance), subImgFileName, sizeof(subImgFileName), &nRemaining, dbStatus);
     if (dbcond.bad()) {
         DCMQRDB_ERROR("moveSCP: Database: nextMoveResponse Failed ("
                 << DU_cmoveStatusString(dbStatus->status()) << "):");
@@ -430,7 +430,7 @@ void DcmQueryRetrieveMoveContext::failAllSubOperations(DcmQueryRetrieveDatabaseS
     while (dbStatus->status() == STATUS_Pending) {
         /* get DB response */
         dbcond = dbHandle.nextMoveResponse(
-            subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
+            subImgSOPClass, sizeof(subImgSOPClass), subImgSOPInstance, sizeof(subImgSOPInstance), subImgFileName, sizeof(subImgFileName), &nRemaining, dbStatus);
         if (dbcond.bad()) {
             DCMQRDB_ERROR("moveSCP: Database: nextMoveResponse Failed ("
                 << DU_cmoveStatusString(dbStatus->status()) << "):");

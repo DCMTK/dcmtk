@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -314,7 +314,7 @@ DIMSE_sendMoveResponse(
     /* copy over stuff from request */
     rsp.msg.CMoveRSP.MessageIDBeingRespondedTo = request->MessageID;
     /* always send affected sop class uid */
-    strcpy(rsp.msg.CMoveRSP.AffectedSOPClassUID, request->AffectedSOPClassUID);
+    OFStandard::strlcpy(rsp.msg.CMoveRSP.AffectedSOPClassUID, request->AffectedSOPClassUID, sizeof(rsp.msg.CMoveRSP.AffectedSOPClassUID));
     rsp.msg.CMoveRSP.opts = O_MOVE_AFFECTEDSOPCLASSUID;
 
     switch (response->DimseStatus) {

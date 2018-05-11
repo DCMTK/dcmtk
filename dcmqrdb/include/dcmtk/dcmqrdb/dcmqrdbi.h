@@ -142,12 +142,14 @@ public:
    *  @param newImageFileName file name is returned in this parameter.
    *    Memory must be provided by the caller and should be at least MAXPATHLEN+1 
    *    characters. The file name generated should be an absolute file name.
+   *  @param newImageFileNameLen length of buffer pointed to by newImageFileName
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
    */
   OFCondition makeNewStoreFileName(
       const char *SOPClassUID,
       const char *SOPInstanceUID,
-      char *newImageFileName);
+      char       *newImageFileName,
+      size_t      newImageFileNameLen);
   
   /** register the given DICOM object, which has been received through a C-STORE 
    *  operation and stored in a file, in the database.
@@ -212,10 +214,13 @@ public:
    *  imageFileName containing the requested data). 
    *  @param SOPClassUID pointer to string of at least 65 characters into 
    *    which the SOP class UID for the next DICOM object to be transferred is copied.
+   *  @param SOPClassUIDSize size of SOPClassUID element
    *  @param SOPInstanceUID pointer to string of at least 65 characters into 
    *    which the SOP instance UID for the next DICOM object to be transferred is copied.
+   *  @param SOPInstanceUIDSize size of SOPInstanceUID element
    *  @param imageFileName pointer to string of at least MAXPATHLEN+1 characters into 
    *    which the file path for the next DICOM object to be transferred is copied.
+   *  @param imageFileNameSize size of imageFileName element
    *  @param numberOfRemainingSubOperations On return, this parameter will contain
    *     the number of suboperations still remaining for the request
    *     (this number is needed by move responses with PENDING status).
@@ -228,11 +233,14 @@ public:
    */  
   OFCondition nextMoveResponse(
       char *SOPClassUID,
+      size_t SOPClassUIDSize,
       char *SOPInstanceUID,
+      size_t SOPInstanceUIDSize,
       char *imageFileName,
+      size_t imageFileNameSize,
       unsigned short *numberOfRemainingSubOperations,
       DcmQueryRetrieveDatabaseStatus *status);
-  
+
   /** cancel the ongoing MOVE request, stop and reset every running operation
    *  associated with this request, delete existing temporary files.
    *  @param status pointer to DB status object in which a DIMSE status code 

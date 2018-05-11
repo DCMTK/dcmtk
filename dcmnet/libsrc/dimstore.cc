@@ -322,8 +322,8 @@ DIMSE_sendStoreResponse(T_ASC_Association * assoc,
     bzero((char*)&rsp, sizeof(rsp));
     rsp.CommandField = DIMSE_C_STORE_RSP;
     response->MessageIDBeingRespondedTo = request->MessageID;
-    strcpy(response->AffectedSOPClassUID, request->AffectedSOPClassUID);
-    strcpy(response->AffectedSOPInstanceUID, request->AffectedSOPInstanceUID);
+    OFStandard::strlcpy(response->AffectedSOPClassUID, request->AffectedSOPClassUID, sizeof(response->AffectedSOPClassUID));
+    OFStandard::strlcpy(response->AffectedSOPInstanceUID, request->AffectedSOPInstanceUID, sizeof(response->AffectedSOPInstanceUID));
     response->opts = (O_STORE_AFFECTEDSOPCLASSUID |
         O_STORE_AFFECTEDSOPINSTANCEUID);
     response->DataSetType = DIMSE_DATASET_NULL;
@@ -411,8 +411,8 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     response.DimseStatus = STATUS_Success;	/* assume */
     response.MessageIDBeingRespondedTo = request->MessageID;
     response.DataSetType = DIMSE_DATASET_NULL;	/* always for C-STORE-RSP */
-    strcpy(response.AffectedSOPClassUID, request->AffectedSOPClassUID);
-    strcpy(response.AffectedSOPInstanceUID, request->AffectedSOPInstanceUID);
+    OFStandard::strlcpy(response.AffectedSOPClassUID, request->AffectedSOPClassUID, sizeof(response.AffectedSOPClassUID));
+    OFStandard::strlcpy(response.AffectedSOPInstanceUID, request->AffectedSOPInstanceUID, sizeof(response.AffectedSOPInstanceUID));
     response.opts = (O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID);
     if (request->opts & O_STORE_RQ_BLANK_PADDING) response.opts |= O_STORE_RSP_BLANK_PADDING;
     if (dcmPeerRequiresExactUIDCopy.get()) response.opts |= O_STORE_PEER_REQUIRES_EXACT_UID_COPY;

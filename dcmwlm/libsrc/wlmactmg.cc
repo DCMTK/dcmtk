@@ -130,10 +130,12 @@ WlmActivityManager::WlmActivityManager(
 {
   // initialize supported abstract transfer syntaxes.
   supportedAbstractSyntaxes = new char*[2];
-  supportedAbstractSyntaxes[0] = new char[ strlen( UID_VerificationSOPClass ) + 1 ];
-  strcpy( supportedAbstractSyntaxes[0], UID_VerificationSOPClass );
-  supportedAbstractSyntaxes[1] = new char[ strlen( UID_FINDModalityWorklistInformationModel ) + 1 ];
-  strcpy( supportedAbstractSyntaxes[1], UID_FINDModalityWorklistInformationModel );
+  size_t buflen = strlen( UID_VerificationSOPClass ) + 1;
+  supportedAbstractSyntaxes[0] = new char[buflen];
+  OFStandard::strlcpy( supportedAbstractSyntaxes[0], UID_VerificationSOPClass, buflen );
+  buflen = strlen( UID_FINDModalityWorklistInformationModel ) + 1;
+  supportedAbstractSyntaxes[1] = new char[buflen];
+  OFStandard::strlcpy( supportedAbstractSyntaxes[1], UID_FINDModalityWorklistInformationModel, buflen );
   numberOfSupportedAbstractSyntaxes = 2;
 
   // make sure not to let dcmdata remove trailing blank padding or perform other
@@ -385,7 +387,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 
   // Condition 2: determine the application context name. If an error occurred or if the
   // application context name is not supported we want to refuse the association request.
-  cond = ASC_getApplicationContextName( assoc->params, buf );
+  cond = ASC_getApplicationContextName( assoc->params, buf, sizeof(buf) );
   if( cond.bad() || strcmp( buf, DICOM_STDAPPLICATIONCONTEXT ) != 0 )
   {
     RefuseAssociation( &assoc, WLM_BAD_APP_CONTEXT );
@@ -760,7 +762,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   WlmFindContextType context;
   context.dataSource = dataSource;
   context.priorStatus = WLM_PENDING;
-  ASC_getAPTitles( assoc->params, NULL, context.ourAETitle, NULL );
+  ASC_getAPTitles( assoc->params, NULL, 0, context.ourAETitle, sizeof(context.ourAETitle), NULL, 0);
   context.opt_sleepDuringFind = opt_sleepDuringFind;
 
   // Dump some information if required.
@@ -803,8 +805,8 @@ void WlmActivityManager::AddProcessToTable( int pid, T_ASC_Association *assoc )
   ps = new WlmProcessSlotType ();
 
   // Remember process information in the new item.
-  ASC_getPresentationAddresses( assoc->params, ps->peerName, NULL );
-  ASC_getAPTitles( assoc->params, ps->callingAETitle, ps->calledAETitle, NULL );
+  ASC_getPresentationAddresses( assoc->params, ps->peerName, sizeof(ps->peerName), NULL, 0 );
+  ASC_getAPTitles( assoc->params, ps->callingAETitle, sizeof(ps->callingAETitle), ps->calledAETitle, sizeof(ps->calledAETitle), NULL, 0);
   ps->processId = pid;
   ps->startTime = time(NULL);
   ps->hasStorageAbility = OFFalse;

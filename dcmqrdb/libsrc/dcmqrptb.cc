@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -128,8 +128,8 @@ void DcmQueryRetrieveProcessTable::addProcessToTable(int pid, T_ASC_Association 
     DIC_AE       calledAETitle;
     OFBool hasStorageAbility = OFFalse;
 
-    ASC_getPresentationAddresses(assoc->params, peerName, NULL);
-    ASC_getAPTitles(assoc->params, callingAETitle, calledAETitle, NULL);
+    ASC_getPresentationAddresses(assoc->params, peerName, sizeof(peerName), NULL, 0);
+    ASC_getAPTitles(assoc->params, callingAETitle, sizeof(callingAETitle), calledAETitle, sizeof(calledAETitle), NULL, 0);
 
     for (int i=0; i<numberOfDcmAllStorageSOPClassUIDs; i++)
     {

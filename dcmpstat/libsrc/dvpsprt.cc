@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2011, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -140,7 +140,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
     ASC_setAPTitles(assoc->params, NULL, NULL, aetitle);
 
     /* Application Context Name */
-    cond = ASC_getApplicationContextName(assoc->params, buf);
+    cond = ASC_getApplicationContextName(assoc->params, buf, sizeof(buf));
     if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
     {
         /* reject: the application context name is not supported */
@@ -847,7 +847,7 @@ void DVPSPrintSCP::filmSessionNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rs
     {
       DIC_AE peerTitle;
       peerTitle[0]=0;
-      ASC_getAPTitles(assoc->params, peerTitle, NULL, NULL);
+      ASC_getAPTitles(assoc->params, peerTitle, sizeof(peerTitle), NULL, 0, NULL, 0);
       if (newSession->printSCPCreate(dviface, cfgname, rqDataset, rsp, rspDataset,
           peerTitle, usePLUTinFilmSession, presentationLUTList))
           filmSession = newSession;

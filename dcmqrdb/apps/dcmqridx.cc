@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -155,7 +155,7 @@ int main (int argc, char *argv[])
             else
             {
                 OFLOG_INFO(dcmqridxLogger, "registering: " << opt_imageFile);
-                if (DU_findSOPClassAndInstanceInFile(opt_imageFile, sclass, sinst))
+                if (DU_findSOPClassAndInstanceInFile(opt_imageFile, sclass, sizeof(sclass), sinst, sizeof(sinst)))
                 {
 #ifdef DEBUG
                     /*** Test what filename is recommended by DB_Module **/

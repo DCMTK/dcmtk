@@ -163,7 +163,7 @@ DU_stripLeadingAndTrailingSpaces(char *s)
 #undef TO_UCHAR
 
 OFBool
-DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
+DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s, size_t bufsize)
 {
     DcmByteString *elem;
     DcmStack stack;
@@ -177,7 +177,7 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
             s[0] = '\0';
         } else {
             ec =  elem->getString(aString);
-            strcpy(s, aString);
+            OFStandard::strlcpy(s, aString, bufsize);
         }
     }
     return (ec == EC_Normal);
@@ -238,11 +238,13 @@ OFBool
 DU_findSOPClassAndInstanceInDataSet(
   DcmItem *obj,
   char* sopClass,
+  size_t sopClassSize,
   char* sopInstance,
+  size_t sopInstanceSize,
   OFBool tolerateSpacePaddedUIDs)
 {
-    OFBool result = (DU_getStringDOElement(obj, DCM_SOPClassUID, sopClass) &&
-        DU_getStringDOElement(obj, DCM_SOPInstanceUID, sopInstance));
+    OFBool result = (DU_getStringDOElement(obj, DCM_SOPClassUID, sopClass, sopClassSize) &&
+        DU_getStringDOElement(obj, DCM_SOPInstanceUID, sopInstance, sopInstanceSize));
 
     if (tolerateSpacePaddedUIDs)
     {
@@ -261,7 +263,9 @@ OFBool
 DU_findSOPClassAndInstanceInFile(
   const char *fname,
   char* sopClass,
+  size_t sopClassSize,
   char* sopInstance,
+  size_t sopInstanceSize,
   OFBool tolerateSpacePaddedUIDs)
 {
     DcmFileFormat ff;
@@ -270,11 +274,11 @@ DU_findSOPClassAndInstanceInFile(
 
     /* look in the meta-header first */
     OFBool found = DU_findSOPClassAndInstanceInDataSet(
-        ff.getMetaInfo(), sopClass, sopInstance, tolerateSpacePaddedUIDs);
+        ff.getMetaInfo(), sopClass, sopClassSize, sopInstance, sopInstanceSize, tolerateSpacePaddedUIDs);
 
     if (!found) {
         found = DU_findSOPClassAndInstanceInDataSet(
-            ff.getDataset(), sopClass, sopInstance, tolerateSpacePaddedUIDs);
+            ff.getDataset(), sopClass, sopClassSize, sopInstance, sopInstanceSize, tolerateSpacePaddedUIDs);
     }
 
     return found;

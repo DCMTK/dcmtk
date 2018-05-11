@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -51,15 +51,15 @@ static void
 TI_getInfoFromDataset(DcmDataset *dset, DIC_PN patientName, DIC_CS studyId,
     DIC_IS seriesNumber, DIC_CS modality, DIC_IS imageNumber)
 {
-    DU_getStringDOElement(dset, DCM_PatientName, patientName);
+    DU_getStringDOElement(dset, DCM_PatientName, patientName, sizeof(patientName));
     DU_stripLeadingAndTrailingSpaces(patientName);
-    DU_getStringDOElement(dset, DCM_StudyID, studyId);
+    DU_getStringDOElement(dset, DCM_StudyID, studyId, sizeof(studyId));
     DU_stripLeadingAndTrailingSpaces(studyId);
-    DU_getStringDOElement(dset, DCM_SeriesNumber, seriesNumber);
+    DU_getStringDOElement(dset, DCM_SeriesNumber, seriesNumber, sizeof(seriesNumber));
     DU_stripLeadingAndTrailingSpaces(seriesNumber);
-    DU_getStringDOElement(dset, DCM_Modality, modality);
+    DU_getStringDOElement(dset, DCM_Modality, modality, sizeof(modality));
     DU_stripLeadingAndTrailingSpaces(modality);
-    DU_getStringDOElement(dset, DCM_InstanceNumber, imageNumber);
+    DU_getStringDOElement(dset, DCM_InstanceNumber, imageNumber, sizeof(imageNumber));
     DU_stripLeadingAndTrailingSpaces(imageNumber);
 }
 
@@ -291,9 +291,9 @@ TI_addSeriesEntry(TI_StudyEntry *study, DcmDataset *reply)
     bzero((char*)series, sizeof(TI_SeriesEntry)); /* make sure its clean */
 
     /* extract info from reply */
-    ok = DU_getStringDOElement(reply, DCM_SeriesInstanceUID, series->seriesInstanceUID);
-    if (ok) ok = DU_getStringDOElement(reply, DCM_SeriesNumber, series->seriesNumber);
-    if (ok) ok = DU_getStringDOElement(reply, DCM_Modality, series->modality);
+    ok = DU_getStringDOElement(reply, DCM_SeriesInstanceUID, series->seriesInstanceUID, sizeof(series->seriesInstanceUID));
+    if (ok) ok = DU_getStringDOElement(reply, DCM_SeriesNumber, series->seriesNumber, sizeof(series->seriesNumber));
+    if (ok) ok = DU_getStringDOElement(reply, DCM_Modality, series->modality, sizeof(series->modality));
 
     if (!ok) {
         DCMQRDB_ERROR("TI_addSeriesEntry: missing data in DB reply");
@@ -368,9 +368,8 @@ TI_addImageEntry(TI_SeriesEntry *series, DcmDataset *reply)
     bzero((char*)studyID, sizeof(DIC_CS));
 
     /* extract info from reply */
-    ok = DU_getStringDOElement(reply, DCM_SOPInstanceUID,
-        image->sopInstanceUID);
-    if (ok) ok = DU_getStringDOElement(reply, DCM_InstanceNumber, image->imageNumber);
+    ok = DU_getStringDOElement(reply, DCM_SOPInstanceUID, image->sopInstanceUID, sizeof(image->sopInstanceUID));
+    if (ok) ok = DU_getStringDOElement(reply, DCM_InstanceNumber, image->imageNumber, sizeof(image->imageNumber));
 
     if (!ok) {
         DCMQRDB_ERROR("TI_addImageEntry: missing data in DB reply");
@@ -446,10 +445,10 @@ TI_addStudyEntry(TI_DBEntry *db, DcmDataset *reply)
     bzero((char*)se, sizeof(TI_StudyEntry));  /* make sure its clean */
 
     /* extract info from reply */
-    ok = DU_getStringDOElement(reply, DCM_StudyInstanceUID, se->studyInstanceUID);
-    if (ok) ok = DU_getStringDOElement(reply, DCM_StudyID, se->studyID);
-    if (ok) ok = DU_getStringDOElement(reply, DCM_PatientName, se->patientName);
-    if (ok) ok = DU_getStringDOElement(reply, DCM_PatientID, se->patientID);
+    ok = DU_getStringDOElement(reply, DCM_StudyInstanceUID, se->studyInstanceUID, sizeof(se->studyInstanceUID));
+    if (ok) ok = DU_getStringDOElement(reply, DCM_StudyID, se->studyID, sizeof(se->studyID));
+    if (ok) ok = DU_getStringDOElement(reply, DCM_PatientName, se->patientName, sizeof(se->patientName));
+    if (ok) ok = DU_getStringDOElement(reply, DCM_PatientID, se->patientID, sizeof(se->patientID));
 
     if (!ok) {
         DCMQRDB_ERROR("TI_addStudyEntry: missing data in DB reply");
@@ -501,9 +500,9 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_detachAssociation(OFBool abortFlag)
       return OFTrue;  /* nothing to do */
     }
 
-    ASC_getPresentationAddresses(assoc->params, NULL,
-        presentationAddress);
-    ASC_getAPTitles(assoc->params, NULL, peerTitle, NULL);
+    ASC_getPresentationAddresses(assoc->params, NULL, 0,
+        presentationAddress, sizeof(presentationAddress));
+    ASC_getAPTitles(assoc->params, NULL, 0, peerTitle, sizeof(peerTitle), NULL, 0);
 
     if (abortFlag) {
         /* abort association */
@@ -700,7 +699,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_changeAssociation()
 
     if (assoc != NULL) {
         /* do we really need to change the association */
-        ASC_getAPTitles(assoc->params, NULL, actualPeerAETitle, NULL);
+        ASC_getAPTitles(assoc->params, NULL, 0, actualPeerAETitle, sizeof(actualPeerAETitle), NULL, 0);
         if (strcmp(actualPeerAETitle, currentPeerTitle) == 0) {
             /* no need to change */
             return OFTrue;
@@ -960,7 +959,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_title(int arg, const char * /*cmdbuf*
 
     bzero(peerTitle, sizeof(peerTitle));
     if (assoc) {
-        ASC_getAPTitles(assoc->params, NULL, peerTitle, NULL);
+        ASC_getAPTitles(assoc->params, NULL, 0, peerTitle, sizeof(peerTitle), NULL, 0);
     }
 
     db = dbEntries[currentdb];
@@ -1456,8 +1455,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendStudy(int arg, const char * /*cmd
     }
 
     while (ok && dbStatus.status() == STATUS_Pending) {
-        dbcond = db->dbHandle->nextMoveResponse(sopClass, sopInstance,
-            imgFile, &nRemaining, &dbStatus);
+        dbcond = db->dbHandle->nextMoveResponse(sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance),
+            imgFile, sizeof(imgFile), &nRemaining, &dbStatus);
         if (dbcond.bad()) {
             DCMQRDB_ERROR("TI_sendStudy: database error");
             return OFFalse;
@@ -1539,8 +1538,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendSeries(int arg, const char * /*cm
     }
 
     while (ok && dbStatus.status() == STATUS_Pending) {
-        dbcond = db->dbHandle->nextMoveResponse(sopClass, sopInstance,
-            imgFile, &nRemaining, &dbStatus);
+        dbcond = db->dbHandle->nextMoveResponse(sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance),
+            imgFile, sizeof(imgFile), &nRemaining, &dbStatus);
         if (dbcond.bad()) {
             DCMQRDB_ERROR("TI_sendSeries: database error");
             return OFFalse;
@@ -1631,8 +1630,8 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_sendImage(int arg, const char * /*cmd
      * the database).
      */
     while (ok && dbStatus.status() == STATUS_Pending) {
-        dbcond = db->dbHandle->nextMoveResponse(sopClass, sopInstance,
-            imgFile, &nRemaining, &dbStatus);
+        dbcond = db->dbHandle->nextMoveResponse(sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance),
+            imgFile, sizeof(imgFile), &nRemaining, &dbStatus);
         if (dbcond.bad()) {
             DCMQRDB_ERROR("TI_sendImage: database error");
             return OFFalse;

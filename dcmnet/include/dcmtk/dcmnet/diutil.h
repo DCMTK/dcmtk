@@ -102,7 +102,7 @@ DCMTK_DCMNET_EXPORT void DU_stripTrailingSpaces(char *s);
 DCMTK_DCMNET_EXPORT void DU_stripLeadingSpaces(char *s);
 DCMTK_DCMNET_EXPORT void DU_stripLeadingAndTrailingSpaces(char *s);
 
-DCMTK_DCMNET_EXPORT OFBool DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
+DCMTK_DCMNET_EXPORT OFBool DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s, size_t bufsize);
 DCMTK_DCMNET_EXPORT OFBool DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s);
 DCMTK_DCMNET_EXPORT OFBool DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us);
 DCMTK_DCMNET_EXPORT OFBool DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us);
@@ -110,13 +110,17 @@ DCMTK_DCMNET_EXPORT OFBool DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint1
 DCMTK_DCMNET_EXPORT OFBool DU_findSOPClassAndInstanceInDataSet(
   DcmItem *obj,
   char* sopClass,
+  size_t sopClassSize,
   char* sopInstance,
+  size_t sopInstanceSize,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
 
 DCMTK_DCMNET_EXPORT OFBool DU_findSOPClassAndInstanceInFile(
   const char *fname,
   char* sopClass,
+  size_t sopClassSize,
   char* sopInstance,
+  size_t sopInstanceSize,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
 
 DCMTK_DCMNET_EXPORT const char *DU_cechoStatusString(Uint16 statusCode);

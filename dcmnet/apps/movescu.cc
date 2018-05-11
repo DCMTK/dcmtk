@@ -1387,7 +1387,7 @@ storeSCPCallback(
         if ((rsp->DimseStatus == STATUS_Success) && !opt_ignore)
         {
           /* which SOP class and SOP instance ? */
-          if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
+          if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance), opt_correctUIDPadding))
           {
              OFLOG_FATAL(movescuLogger, "bad DICOM file: " << imageFileName);
              rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -1651,7 +1651,7 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
     req.DataSetType = DIMSE_DATASET_PRESENT;
     if (opt_moveDestination == NULL) {
         /* set the destination to be me */
-        ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
+        ASC_getAPTitles(assoc->params, req.MoveDestination, sizeof(req.MoveDestination), NULL, 0, NULL, 0);
     } else {
         OFStandard::strlcpy(req.MoveDestination, opt_moveDestination, sizeof(req.MoveDestination));
     }

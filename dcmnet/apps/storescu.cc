@@ -136,7 +136,12 @@ static OFCondition
 cstore(T_ASC_Association *assoc, const OFString &fname);
 
 static OFBool
-findSOPClassAndInstanceInFile(const char *fname, char *sopClass, char *sopInstance);
+findSOPClassAndInstanceInFile(
+  const char *fname,
+  char *sopClass,
+  size_t sopClassSize,
+  char *sopInstance,
+  size_t sopInstanceSize);
 
 static OFCondition
 configureUserIdentityRequest(T_ASC_Parameters *params);
@@ -612,7 +617,7 @@ int main(int argc, char *argv[])
       {
         if (opt_proposeOnlyRequiredPresentationContexts)
         {
-          if (!findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
+          if (!findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sizeof(sopClassUID), sopInstanceUID, sizeof(sopInstanceUID)))
           {
             ignoreName = OFTrue;
             errormsg = "missing SOP class (or instance) in file: ";
@@ -1293,7 +1298,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
 
   /* figure out which SOP class and SOP instance is encapsulated in the file */
   if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
-    sopClass, sopInstance, opt_correctUIDPadding)) {
+    sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance), opt_correctUIDPadding)) {
       OFLOG_ERROR(storescuLogger, "No SOP Class or Instance UID in file: " << fname);
       return DIMSE_BADDATA;
   }
@@ -1433,17 +1438,19 @@ static OFBool
 findSOPClassAndInstanceInFile(
   const char *fname,
   char *sopClass,
-  char *sopInstance)
+  size_t sopClassSize,
+  char *sopInstance,
+  size_t sopInstanceSize)
 {
     DcmFileFormat ff;
     if (!ff.loadFile(fname, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, opt_readMode).good())
         return OFFalse;
 
     /* look in the meta-header first */
-    OFBool found = DU_findSOPClassAndInstanceInDataSet(ff.getMetaInfo(), sopClass, sopInstance, opt_correctUIDPadding);
+    OFBool found = DU_findSOPClassAndInstanceInDataSet(ff.getMetaInfo(), sopClass, sopClassSize, sopInstance, sopInstanceSize, opt_correctUIDPadding);
 
     if (!found)
-      found = DU_findSOPClassAndInstanceInDataSet(ff.getDataset(), sopClass, sopInstance, opt_correctUIDPadding);
+      found = DU_findSOPClassAndInstanceInDataSet(ff.getDataset(), sopClass, sopClassSize, sopInstance, sopInstanceSize, opt_correctUIDPadding);
 
     return found;
 }

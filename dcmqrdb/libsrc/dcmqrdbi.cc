@@ -1373,7 +1373,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                 /* only char string type tags are supported at the moment */
                 char *s = NULL;
                 dcelem->getString(s);
-                strcpy(elem.PValueField, s);
+                /* the available space is always elem.ValueLength+1 */
+                OFStandard::strlcpy(elem.PValueField, s, elem.ValueLength+1);
             }
             /** If element is the Query Level, store it in handle
              */
@@ -2049,7 +2050,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                 /* only char string type tags are supported at the moment */
                 char *s = NULL;
                 dcelem->getString(s);
-                strcpy(elem.PValueField, s);
+                /* the available space is always elem.ValueLength+1 */
+                OFStandard::strlcpy(elem.PValueField, s, elem.ValueLength+1);
             }
 
             /** If element is the Query Level, store it in handle
@@ -2241,11 +2243,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 }
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
-                char            *SOPClassUID,
-                char            *SOPInstanceUID,
-                char            *imageFileName,
-                unsigned short  *numberOfRemainingSubOperations,
-                DcmQueryRetrieveDatabaseStatus  *status)
+    char *SOPClassUID,
+    size_t SOPClassUIDSize,
+    char *SOPInstanceUID,
+    size_t SOPInstanceUIDSize,
+    char *imageFileName,
+    size_t imageFileNameSize,
+    unsigned short *numberOfRemainingSubOperations,
+    DcmQueryRetrieveDatabaseStatus *status)
 {
     IdxRecord           idxRec ;
     DB_CounterList              *nextlist ;
@@ -2276,9 +2281,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
         return (QR_EC_IndexDatabaseError) ;
     }
 
-    strcpy (SOPClassUID, (char *) idxRec. SOPClassUID) ;
-    strcpy (SOPInstanceUID, (char *) idxRec. SOPInstanceUID) ;
-    strcpy (imageFileName, (char *) idxRec. filename) ;
+    OFStandard::strlcpy(SOPClassUID, (char *) idxRec. SOPClassUID, SOPClassUIDSize) ;
+    OFStandard::strlcpy(SOPInstanceUID, (char *) idxRec. SOPInstanceUID, SOPInstanceUIDSize) ;
+    OFStandard::strlcpy(imageFileName, (char *) idxRec. filename, imageFileNameSize) ;
 
     *numberOfRemainingSubOperations = --handle_->NumberRemainOperations ;
 
@@ -3222,7 +3227,8 @@ DcmQueryRetrieveIndexDatabaseHandle::~DcmQueryRetrieveIndexDatabaseHandle()
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
                 const char      *SOPClassUID,
                 const char      * /* SOPInstanceUID */ ,
-                char            *newImageFileName)
+                char            *newImageFileName,
+                size_t          newImageFileNameLen)
 {
 
     OFString filename;
@@ -3237,7 +3243,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
     if (! fnamecreator.makeFilename(seed, handle_->storageArea, prefix, ".dcm", filename))
         return QR_EC_IndexDatabaseError;
 
-    strcpy(newImageFileName, filename.c_str());
+    OFStandard::strlcpy(newImageFileName, filename.c_str(), newImageFileNameLen);
     return EC_Normal;
 }
 

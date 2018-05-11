@@ -940,10 +940,9 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
         free(buffer);
         if (cond.bad()) return makeDcmnetSubCondition(DULC_ILLEGALPDU, OF_error, "DUL Illegal or ill-formed PDU", cond);
 
-        (void) strcpy(service->respondingAPTitle, assoc.calledAPTitle);
-        (void) strcpy(service->callingAPTitle, assoc.callingAPTitle);
-        (void) strcpy(service->applicationContextName,
-                      assoc.applicationContext.data);
+        OFStandard::strlcpy(service->respondingAPTitle, assoc.calledAPTitle, sizeof(service->respondingAPTitle));
+        OFStandard::strlcpy(service->callingAPTitle, assoc.callingAPTitle, sizeof(service->callingAPTitle));
+        OFStandard::strlcpy(service->applicationContextName, assoc.applicationContext.data, sizeof(service->applicationContextName));
 
         if ((service->acceptedPresentationContext = LST_Create()) == NULL) return EC_MemoryExhausted;
 
@@ -961,8 +960,9 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             requestedPresentationCtx = findPresentationCtx(
                  &service->requestedPresentationContext, prvCtx->contextID);
             if (requestedPresentationCtx != NULL) {
-                strcpy(userPresentationCtx->abstractSyntax,
-                       requestedPresentationCtx->abstractSyntax);
+                OFStandard::strlcpy(userPresentationCtx->abstractSyntax,
+                    requestedPresentationCtx->abstractSyntax,
+                    sizeof(userPresentationCtx->abstractSyntax));
                 userPresentationCtx->proposedSCRole =
                     requestedPresentationCtx->proposedSCRole;
             }
@@ -996,8 +996,8 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             }
             subItem = (DUL_SUBITEM*)LST_Head(&prvCtx->transferSyntaxList);
             if (subItem != NULL)
-                (void) strcpy(userPresentationCtx->acceptedTransferSyntax,
-                              subItem->data);
+                OFStandard::strlcpy(userPresentationCtx->acceptedTransferSyntax,
+                              subItem->data, sizeof(userPresentationCtx->acceptedTransferSyntax));
             LST_Enqueue(&service->acceptedPresentationContext, (LST_NODE*)userPresentationCtx);
 
             prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Next(&assoc.presentationContextList);
@@ -1200,9 +1200,9 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
                 (*association)->protocolState = STATE3;
             return cond;
         }
-        (void) strcpy(service->calledAPTitle, assoc.calledAPTitle);
-        (void) strcpy(service->callingAPTitle, assoc.callingAPTitle);
-        (void) strcpy(service->applicationContextName, assoc.applicationContext.data);
+        OFStandard::strlcpy(service->calledAPTitle, assoc.calledAPTitle, sizeof(service->calledAPTitle));
+        OFStandard::strlcpy(service->callingAPTitle, assoc.callingAPTitle, sizeof(service->callingAPTitle));
+        OFStandard::strlcpy(service->applicationContextName, assoc.applicationContext.data, sizeof(service->applicationContextName));
 
         if ((service->requestedPresentationContext = LST_Create()) == NULL) return EC_MemoryExhausted;
         if (translatePresentationContextList(&assoc.presentationContextList,
@@ -3862,7 +3862,7 @@ translatePresentationContextList(LST_HEAD ** internalList,
 
         userContext->acceptedTransferSyntax[0] = '\0';
         userContext->presentationContextID = context->contextID;
-        strcpy(userContext->abstractSyntax, context->abstractSyntax.data);
+        OFStandard::strlcpy(userContext->abstractSyntax, context->abstractSyntax.data, sizeof(userContext->abstractSyntax));
         userContext->proposedSCRole = DUL_SC_ROLE_DEFAULT;
         userContext->acceptedSCRole = DUL_SC_ROLE_DEFAULT;
 
@@ -3891,7 +3891,7 @@ translatePresentationContextList(LST_HEAD ** internalList,
         while (subItem != NULL) {
             transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
             if (transfer == NULL) return EC_MemoryExhausted;
-            strcpy(transfer->transferSyntax, subItem->data);
+            OFStandard::strlcpy(transfer->transferSyntax, subItem->data, sizeof(transfer->transferSyntax));
 
             LST_Enqueue(&userContext->proposedTransferSyntax, (LST_NODE*)transfer);
             subItem = (DUL_SUBITEM*)LST_Next(&context->transferSyntaxList);

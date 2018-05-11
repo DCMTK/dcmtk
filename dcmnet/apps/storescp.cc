@@ -1380,7 +1380,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   ASC_setAPTitles(assoc->params, NULL, NULL, opt_respondingAETitle);
 
   /* acknowledge or reject this association */
-  cond = ASC_getApplicationContextName(assoc->params, buf);
+  cond = ASC_getApplicationContextName(assoc->params, buf, sizeof(buf));
   if ((cond.bad()) || strcmp(buf, UID_StandardApplicationContext) != 0)
   {
     /* reject: the application context name is not supported */
@@ -1462,7 +1462,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   // aetitles may contain space characters.
   DIC_AE callingTitle;
   DIC_AE calledTitle;
-  if (ASC_getAPTitles(assoc->params, callingTitle, calledTitle, NULL).good())
+  if (ASC_getAPTitles(assoc->params, callingTitle, sizeof(callingTitle), calledTitle,  sizeof(calledTitle), NULL, 0).good())
   {
     callingAETitle = "\"";
     callingAETitle += OFSTRING_GUARD(callingTitle);
@@ -1942,7 +1942,7 @@ storeSCPCallback(
       if (rsp->DimseStatus == STATUS_Success)
       {
         // which SOP class and SOP instance ?
-        if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
+        if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance), opt_correctUIDPadding))
         {
            OFLOG_ERROR(storescpLogger, "bad DICOM file: " << fileName);
            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;

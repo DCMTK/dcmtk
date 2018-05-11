@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -301,8 +301,8 @@ DIMSE_sendFindResponse(T_ASC_Association * assoc,
     rsp.CommandField = DIMSE_C_FIND_RSP;
     rsp.msg.CFindRSP = *response;
     rsp.msg.CFindRSP.MessageIDBeingRespondedTo = request->MessageID;
-    strcpy(rsp.msg.CFindRSP.AffectedSOPClassUID,
-            request->AffectedSOPClassUID);
+    OFStandard::strlcpy(rsp.msg.CFindRSP.AffectedSOPClassUID,
+            request->AffectedSOPClassUID, sizeof(rsp.msg.CFindRSP.AffectedSOPClassUID));
     rsp.msg.CFindRSP.opts = O_FIND_AFFECTEDSOPCLASSUID;
 
     /* specify if the response message will contain a search result or if it will not contain one, */

@@ -254,6 +254,12 @@ struct DCMTK_DCMNET_EXPORT T_ASC_Association
 ** Public Function Prototypes
 */
 
+/*
+ * Network creation/destroy wrappers.
+ * The T_ASC_Network structure will be allocated/freed by
+ * these routines.
+ */
+
 /** network instance creation function (constructor)
  *  @param role association acceptor, requestor or both
  *  @param acceptorPort acceptor port for incoming connections.
@@ -281,11 +287,18 @@ DCMTK_DCMNET_EXPORT OFCondition ASC_dropNetwork(T_ASC_Network ** network);
  * Building Association parameters
  */
 
+/* create association parameters and initialize with default values */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_createAssociationParameters(
     T_ASC_Parameters ** params,
     long maxReceivePDUSize);
 
+ /*
+  * Free an association parameters structure and embedded information.
+  * You do not usually need to do this since the parameters structure will
+  * be noted in the association structure and automatically freed when an
+  * association terminates.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_destroyAssociationParameters(
     T_ASC_Parameters ** params);
@@ -296,6 +309,9 @@ ASC_setTransportLayerType(
     T_ASC_Parameters * params,
     OFBool useSecureLayer);
 
+ /*
+  * Copies the provided Application Titles in the association parameters.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_setAPTitles(
     T_ASC_Parameters * params,
@@ -303,30 +319,59 @@ ASC_setAPTitles(
     const char* calledAPTitle,
     const char* respondingAPTitle);
 
+ /*
+  * Copies the Application Titles stored in the association parameters
+  * into the supplied string variables.  You must provide storage to copy
+  * into.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_getAPTitles(
     T_ASC_Parameters * params,
     char* callingAPTitle,
+    size_t callingAPTitleSize,
     char* calledAPTitle,
-    char* respondingAPTitle);
+    size_t calledAPTitleSize,
+    char* respondingAPTitle,
+    size_t respondingAPTitleSize);
 
+ /*
+  * Copies the Application Context Name stored in the association parameters
+  * into the supplied string variable.  You must provide storage to copy
+  * into.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_getApplicationContextName(
     T_ASC_Parameters * params,
-    char* applicationContextName);
+    char* applicationContextName,
+    size_t applicationContextNameSize);
 
+ /*
+  * Copies the provided Presentation Addresses into the association
+  * parameters.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_setPresentationAddresses(
     T_ASC_Parameters * params,
     const char* callingPresentationAddress,
     const char* calledPresentationAddress);
 
+/*
+  * Copies the Presentation Addresses stored in the association parameters
+  * into the supplied string variables.  You must provide storage to copy
+  * into.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_getPresentationAddresses(
     T_ASC_Parameters * params,
     char* callingPresentationAddress,
-    char* calledPresentationAddress);
+    size_t callingPresentationAddressSize,
+    char* calledPresentationAddress,
+    size_t calledPresentationAddressSize);
 
+ /*
+  * Copies the Rejection Parameters stored in the association parameters into
+  * the supplied structure.  You must provide storage to copy into.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_getRejectParameters(
     T_ASC_Parameters * params,
@@ -337,6 +382,9 @@ ASC_printRejectParameters(
     OFString& str,
     const T_ASC_RejectParameters *rej);
 
+ /*
+  * Adds a presentation context entry to the presentation context list.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_addPresentationContext(
     T_ASC_Parameters * params,
@@ -346,6 +394,10 @@ ASC_addPresentationContext(
     int transferSyntaxListCount,
     T_ASC_SC_ROLE proposedRole = ASC_SC_ROLE_DEFAULT);
 
+ /*
+  * Returns the number of presentation contexts contained in the presentation
+  * context list.
+  */
 DCMTK_DCMNET_EXPORT int
 ASC_countPresentationContexts(
     T_ASC_Parameters * params);
@@ -354,12 +406,21 @@ DCMTK_DCMNET_EXPORT int
 ASC_countAcceptedPresentationContexts(
     T_ASC_Parameters * params);
 
+ /*
+  * You must supply the memory for presentationContext, the values stored in
+  * the presentation context list position indicated will be copied into the
+  * memory structure.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_getPresentationContext(
     T_ASC_Parameters * params,
     int listPosition,
     T_ASC_PresentationContext * presentationContext);
 
+ /*
+  * The presentation context will be marked as accepted and the provided
+  * transfer syntax name chosen.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_acceptPresentationContext(
     T_ASC_Parameters * params,
@@ -375,6 +436,12 @@ ASC_acceptContextsWithPreferredTransferSyntaxes(
     const char* transferSyntaxes[], int transferSyntaxCount,
     T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
+/*
+  * Any proposed presentation contexts which are found abstractSyntaxes[]
+  * which also have proposed a transfer syntax of transferSyntax, will be
+  * accepted.  Any presentation contexts already marked as accepted will be
+  * left alone but any remaining presentation contexts will be refused.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_acceptContextsWithTransferSyntax(
     T_ASC_Parameters * params,
@@ -382,23 +449,47 @@ ASC_acceptContextsWithTransferSyntax(
     const char* abstractSyntaxes[],
     T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
+ /*
+  * The presentation context will be marked as refused.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_refusePresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
     T_ASC_P_ResultReason resultReason);
 
+ /*
+  * ASC_findAcceptedPresentationContext: You must supply the memory for
+  * presentationContext, the values stored in the accepted presentation
+  * context list with given ID will be copied into the memory structure.
+  * Returns EC_Normal if found, or ASC_BADPRESENTATIONCONTEXTID if not
+  * found.
+  */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_findAcceptedPresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
     T_ASC_PresentationContext * presentationContext);
 
+/* ASC_findAcceptedPresentationContextID:
+ * Searches in the accepted presentation context list for the given
+ * abstract syntax.  If found returns its PresentationContextID, otherwise
+ * returns 0 (which is not a valid ID).
+ */
 DCMTK_DCMNET_EXPORT T_ASC_PresentationContextID
 ASC_findAcceptedPresentationContextID(
     T_ASC_Association *assoc,
     const char* abstractSyntax);
 
+/* transfer syntax aware version of T_ASC_PresentationContextID.
+ * Tries to find a presentation context that matches the characteristics
+ * of the given DICOM dataset best
+ * - if possible finds a presentation context with matching TS
+ * - then tries to find an explicit VR uncompressed TS presentation ctx
+ * - then tries to find an implicit VR uncompressed TS presentation ctx
+ * - finally accepts each matching presentation ctx independent of TS.
+ * Returns 0 if no appropriate presentation context could be found at all.
+ */
 DCMTK_DCMNET_EXPORT T_ASC_PresentationContextID
 ASC_findAcceptedPresentationContextID(
     T_ASC_Association *assoc,
@@ -631,6 +722,9 @@ ASC_printRejectParameters(
     STD_NAMESPACE ostream& out,
     const T_ASC_RejectParameters *rej);
 
+ /*
+  * Write parameters in textual form to stdout (debugging aid)
+  */
 /**
  * @deprecated Please use OFString& ASC_dumpParameters(OFString&, T_ASC_Parameters *,
  *             ASC_associateType) instead.
@@ -638,6 +732,10 @@ ASC_printRejectParameters(
 DCMTK_DCMNET_EXPORT void
 ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream);
 
+ /*
+  * Write presentation context structure in textual form to stdout.
+  * (debugging aid)
+  */
 /// @deprecated You should dump the complete T_ASC_Parameters with ASC_dumpParameters() instead.
 DCMTK_DCMNET_EXPORT void
 ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, STD_NAMESPACE ostream& outstream);

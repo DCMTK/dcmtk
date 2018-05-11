@@ -251,7 +251,7 @@ static OFCondition sendStudy(
 
     while (dbStatus.status() == STATUS_Pending)
     {
-      cond = handle.nextMoveResponse(sopClass, sopInstance, imgFile, &nRemaining, &dbStatus);
+      cond = handle.nextMoveResponse(sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance), imgFile, sizeof(imgFile), &nRemaining, &dbStatus);
       if (cond.bad()) return cond;
 
       if (dbStatus.status() == STATUS_Pending)

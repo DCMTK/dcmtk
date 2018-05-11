@@ -665,7 +665,7 @@ OFCondition DcmFindSCU::findSCU(
 
     /* prepare C-FIND-RQ message */
     bzero(OFreinterpret_cast(char*, &req), sizeof(req));
-    strcpy(req.AffectedSOPClassUID, abstractSyntax);
+    OFStandard::strlcpy(req.AffectedSOPClassUID, abstractSyntax, sizeof(req.AffectedSOPClassUID));
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 

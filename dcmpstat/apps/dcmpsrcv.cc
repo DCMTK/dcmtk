@@ -231,7 +231,7 @@ static associationType negotiateAssociation(
 
       ASC_setAPTitles((*assoc)->params, NULL, NULL, aetitle);
       /* Application Context Name */
-      cond = ASC_getApplicationContextName((*assoc)->params, buf);
+      cond = ASC_getApplicationContextName((*assoc)->params, buf, sizeof(buf));
       if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
       {
           /* reject: the application context name is not supported */
@@ -365,7 +365,7 @@ checkRequestAgainstDataset(
     DIC_UI sopClass;
     DIC_UI sopInstance;
 
-    if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance, opt_correctUIDPadding))
+    if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance), opt_correctUIDPadding))
     {
       OFLOG_ERROR(dcmpsrcvLogger, "Bad image file: " << fname);
       rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -523,7 +523,7 @@ static OFCondition storeSCP(
         if (dbhandle->makeNewStoreFileName(
             request->AffectedSOPClassUID,
             request->AffectedSOPInstanceUID,
-            imageFileName).bad())
+            imageFileName, sizeof(imageFileName)).bad())
         {
             OFLOG_ERROR(dcmpsrcvLogger, "storeSCP: Database: DB_makeNewStoreFileName Failed");
             /* must still receive data */

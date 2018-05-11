@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -213,8 +213,8 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     DIC_AE              myAETitle;
     OFString            temp_str;
 
-    ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
-    ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
+    ASC_getPresentationAddresses(assoc->params, peerHostName, sizeof(peerHostName), NULL, 0);
+    ASC_getAPTitles(assoc->params, peerAETitle, sizeof(peerAETitle), myAETitle, sizeof(myAETitle), NULL, 0);
 
     /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
@@ -273,7 +273,7 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
 
     DIC_AE aeTitle;
     aeTitle[0] = '\0';
-    ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
+    ASC_getAPTitles(assoc->params, NULL, 0, aeTitle, sizeof(aeTitle), NULL, 0);
     context.setOurAETitle(aeTitle);
 
     OFString temp_str;
@@ -296,7 +296,7 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
 
     DIC_AE aeTitle;
     aeTitle[0] = '\0';
-    ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
+    ASC_getAPTitles(assoc->params, NULL, 0, aeTitle, sizeof(aeTitle), NULL, 0);
     context.setOurAETitle(aeTitle);
 
     OFString temp_str;
@@ -319,7 +319,7 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
 
     DIC_AE aeTitle;
     aeTitle[0] = '\0';
-    ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
+    ASC_getAPTitles(assoc->params, NULL, 0, aeTitle, sizeof(aeTitle), NULL, 0);
     context.setOurAETitle(aeTitle);
 
     OFString temp_str;
@@ -353,18 +353,18 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         /* callback will send back sop class not supported status */
         context.setStatus(STATUS_STORE_Refused_SOPClassNotSupported);
         /* must still receive data */
-        strcpy(imageFileName, NULL_DEVICE_NAME);
+        OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
     } else if (options_.ignoreStoreData_) {
-        strcpy(imageFileName, NULL_DEVICE_NAME);
+        OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
     } else {
         dbcond = dbHandle.makeNewStoreFileName(
             request->AffectedSOPClassUID,
             request->AffectedSOPInstanceUID,
-            imageFileName);
+            imageFileName, sizeof(imageFileName));
         if (dbcond.bad()) {
             DCMQRDB_ERROR("storeSCP: Database: makeNewStoreFileName Failed");
             /* must still receive data */
-            strcpy(imageFileName, NULL_DEVICE_NAME);
+            OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
             /* callback will send back out of resources status */
             context.setStatus(STATUS_STORE_Refused_OutOfResources);
         }
@@ -382,7 +382,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         DCMQRDB_ERROR("storeSCP: file locking failed, cannot create file");
 
         /* must still receive data */
-        strcpy(imageFileName, NULL_DEVICE_NAME);
+        OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, sizeof(imageFileName));
 
         /* callback will send back out of resources status */
         context.setStatus(STATUS_STORE_Refused_OutOfResources);
@@ -564,7 +564,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     };
 
     DIC_AE calledAETitle;
-    ASC_getAPTitles(assoc->params, NULL, calledAETitle, NULL);
+    ASC_getAPTitles(assoc->params, NULL, 0, calledAETitle, sizeof(calledAETitle), NULL, 0);
 
     const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
@@ -1007,7 +1007,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     if (! go_cleanup)
     {
         /* Application Context Name */
-        cond = ASC_getApplicationContextName(assoc->params, buf);
+        cond = ASC_getApplicationContextName(assoc->params, buf, sizeof(buf));
         if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
         {
             /* reject: the application context name is not supported */

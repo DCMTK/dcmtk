@@ -664,7 +664,7 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
         return EC_IllegalCall;
     }
 
-    if (dbhandle.makeNewStoreFileName(UID_GrayscaleSoftcopyPresentationStateStorage, instanceUID, imageFileName).good())
+    if (dbhandle.makeNewStoreFileName(UID_GrayscaleSoftcopyPresentationStateStorage, instanceUID, imageFileName, sizeof(imageFileName)).good())
     {
         // now store presentation state as filename
         result = savePState(imageFileName, OFFalse);
@@ -688,14 +688,14 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
             DIC_UI instanceUID2;
             DIC_UI seriesUID;
             DIC_UI studyUID;
-            if (DU_getStringDOElement(dset, DCM_SOPClassUID, sopClass) &&
-                    DU_getStringDOElement(dset, DCM_SOPInstanceUID, instanceUID2) &&
-                    DU_getStringDOElement(dset, DCM_SeriesInstanceUID, seriesUID) &&
-                    DU_getStringDOElement(dset, DCM_StudyInstanceUID, studyUID) &&
+            if (DU_getStringDOElement(dset, DCM_SOPClassUID, sopClass, sizeof(sopClass)) &&
+                    DU_getStringDOElement(dset, DCM_SOPInstanceUID, instanceUID2, sizeof(instanceUID2)) &&
+                    DU_getStringDOElement(dset, DCM_SeriesInstanceUID, seriesUID, sizeof(seriesUID)) &&
+                    DU_getStringDOElement(dset, DCM_StudyInstanceUID, studyUID, sizeof(studyUID)) &&
                 ((!imageInDatabase) || (getSeriesStruct(studyUID, seriesUID, instanceUID2) == NULL)))
             {
                 releaseDatabase();   /* avoid deadlocks */
-                if (dbhandle.makeNewStoreFileName(sopClass, instanceUID2, imageFileName).good())
+                if (dbhandle.makeNewStoreFileName(sopClass, instanceUID2, imageFileName, sizeof(imageFileName)).good())
                 {
                     // now store presentation state as filename
                     result = saveCurrentImage(imageFileName);
@@ -791,7 +791,7 @@ OFCondition DVInterface::saveStructuredReport()
         return EC_IllegalCall;
     }
 
-    if (dbhandle.makeNewStoreFileName(sopClassUID.c_str(), instanceUID.c_str(), filename).good())
+    if (dbhandle.makeNewStoreFileName(sopClassUID.c_str(), instanceUID.c_str(), filename, sizeof(filename)).good())
     {
         // now store presentation state as filename
         result = saveStructuredReport(filename);
@@ -2652,7 +2652,7 @@ OFCondition DVInterface::saveDICOMImage(
     return result;
   }
 
-  if (handle.makeNewStoreFileName(UID_SecondaryCaptureImageStorage, uid, imageFileName).good())
+  if (handle.makeNewStoreFileName(UID_SecondaryCaptureImageStorage, uid, imageFileName, sizeof(imageFileName)).good())
   {
      // now store presentation state as filename
      result = saveDICOMImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
@@ -2811,7 +2811,7 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
     return result;
   }
 
-  if (handle.makeNewStoreFileName(UID_RETIRED_HardcopyGrayscaleImageStorage, uid, imageFileName).good())
+  if (handle.makeNewStoreFileName(UID_RETIRED_HardcopyGrayscaleImageStorage, uid, imageFileName, sizeof(imageFileName)).good())
   {
      result = saveHardcopyGrayscaleImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
      if (EC_Normal==result)
@@ -2863,7 +2863,7 @@ OFCondition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
     return result;
   }
 
-  if (handle.makeNewStoreFileName(classUID, instanceUID, imageFileName).good())
+  if (handle.makeNewStoreFileName(classUID, instanceUID, imageFileName, sizeof(imageFileName)).good())
   {
      // save image file
      result = DVPSHelper::saveFileFormat(imageFileName, &fileformat, OFTrue);
@@ -3041,7 +3041,7 @@ OFCondition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
     return result;
   }
 
-  if (handle.makeNewStoreFileName(UID_RETIRED_StoredPrintStorage, uid, imageFileName).good())
+  if (handle.makeNewStoreFileName(UID_RETIRED_StoredPrintStorage, uid, imageFileName, sizeof(imageFileName)).good())
   {
      // now store stored print object as filename
      result = saveStoredPrint(imageFileName, writeRequestedImageSize, OFTrue, uid);

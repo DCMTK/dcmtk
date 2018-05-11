@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -177,12 +177,12 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
 
     if (strlen(params->calledAPTitle) < 1 || strlen(params->calledAPTitle) > 16)
         return makeDcmnetCondition(DULC_ILLEGALSERVICEPARAMETER, OF_error, "Illegal service parameter: Called AP Title");
-    (void) strcpy(pdu->calledAPTitle, params->calledAPTitle);
+    OFStandard::strlcpy(pdu->calledAPTitle, params->calledAPTitle, sizeof(pdu->calledAPTitle));
     pdu->length += 16;
 
     if (strlen(params->callingAPTitle) < 1 || strlen(params->callingAPTitle) > 16)
         return makeDcmnetCondition(DULC_ILLEGALSERVICEPARAMETER, OF_error, "Illegal service parameter: Calling AP Title");
-    (void) strcpy(pdu->callingAPTitle, params->callingAPTitle);
+    OFStandard::strlcpy(pdu->callingAPTitle, params->callingAPTitle, sizeof(pdu->callingAPTitle));
     pdu->length += 16;
 
     (void) memset(pdu->rsv3, 0, 32);
@@ -670,7 +670,7 @@ constructSubItem(char *name, unsigned char type,
     subItem->type = type;
     subItem->rsv1 = 0;
     subItem->length = (unsigned short) strlen(name);
-    (void) strcpy(subItem->data, name);
+    OFStandard::strlcpy(subItem->data, name, sizeof(subItem->data));
 
     *rtnLength = subItem->length + 4;
     return EC_Normal;
@@ -1145,7 +1145,7 @@ constructSCUSCPSubItem(char *name, unsigned char type, unsigned char scuRole,
     scuscpItem->SCURole = scuRole;
     scuscpItem->SCPRole = scpRole;
     scuscpItem->length = (unsigned short) (strlen(name) + 2 + 2);
-    (void) strcpy(scuscpItem->SOPClassUID, name);
+    OFStandard::strlcpy(scuscpItem->SOPClassUID, name, sizeof(scuscpItem->SOPClassUID));
 
     *length = scuscpItem->length + 4;
     return EC_Normal;
