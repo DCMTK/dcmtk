@@ -51,15 +51,15 @@ static void
 TI_getInfoFromDataset(DcmDataset *dset, DIC_PN patientName, DIC_CS studyId,
     DIC_IS seriesNumber, DIC_CS modality, DIC_IS imageNumber)
 {
-    DU_getStringDOElement(dset, DCM_PatientName, patientName, sizeof(patientName));
+    DU_getStringDOElement(dset, DCM_PatientName, patientName, sizeof(DIC_PN));
     DU_stripLeadingAndTrailingSpaces(patientName);
-    DU_getStringDOElement(dset, DCM_StudyID, studyId, sizeof(studyId));
+    DU_getStringDOElement(dset, DCM_StudyID, studyId, sizeof(DIC_CS));
     DU_stripLeadingAndTrailingSpaces(studyId);
-    DU_getStringDOElement(dset, DCM_SeriesNumber, seriesNumber, sizeof(seriesNumber));
+    DU_getStringDOElement(dset, DCM_SeriesNumber, seriesNumber, sizeof(DIC_IS));
     DU_stripLeadingAndTrailingSpaces(seriesNumber);
-    DU_getStringDOElement(dset, DCM_Modality, modality, sizeof(modality));
+    DU_getStringDOElement(dset, DCM_Modality, modality, sizeof(DIC_CS));
     DU_stripLeadingAndTrailingSpaces(modality);
-    DU_getStringDOElement(dset, DCM_InstanceNumber, imageNumber, sizeof(imageNumber));
+    DU_getStringDOElement(dset, DCM_InstanceNumber, imageNumber, sizeof(DIC_IS));
     DU_stripLeadingAndTrailingSpaces(imageNumber);
 }
 
