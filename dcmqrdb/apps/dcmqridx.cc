@@ -159,7 +159,7 @@ int main (int argc, char *argv[])
                 {
 #ifdef DEBUG
                     /*** Test what filename is recommended by DB_Module **/
-                    hdl.makeNewStoreFileName (sclass, sinst, fname) ;
+                    hdl.makeNewStoreFileName (sclass, sinst, fname, sizeof(fname));
                     OFLOG_DEBUG(dcmqridxLogger, "DB_Module recommends " << fname << " for filename");
 #endif
                     hdl.storeRequest(sclass, sinst, opt_imageFile, &status, opt_isNewFlag) ;
