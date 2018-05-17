@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,8 +29,22 @@
 
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcond.h"
-
+#include "dcmtk/oflog/oflog.h"
 #include "dcmtk/dcmsign/sidefine.h"
+
+/*
+** Logging
+*/
+
+extern DCMTK_DCMSIGN_EXPORT OFLogger DCM_dcmsignLogger;
+
+#define DCMSIGN_TRACE(msg) OFLOG_TRACE(DCM_dcmsignLogger, msg)
+#define DCMSIGN_DEBUG(msg) OFLOG_DEBUG(DCM_dcmsignLogger, msg)
+#define DCMSIGN_INFO(msg)  OFLOG_INFO(DCM_dcmsignLogger, msg)
+#define DCMSIGN_WARN(msg)  OFLOG_WARN(DCM_dcmsignLogger, msg)
+#define DCMSIGN_ERROR(msg) OFLOG_ERROR(DCM_dcmsignLogger, msg)
+#define DCMSIGN_FATAL(msg) OFLOG_FATAL(DCM_dcmsignLogger, msg)
+
 
 // DICOM defined terms for MAC algorithms, certificate and timestamp types
 #define SI_DEFTERMS_RIPEMD160 "RIPEMD160"

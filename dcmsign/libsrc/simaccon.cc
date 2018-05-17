@@ -64,7 +64,12 @@ OFCondition SiMACConstructor::flushBuffer(SiMAC& mac)
     if (dumpFile)
     {
       if (fwrite(bufptr, 1, OFstatic_cast(size_t, bufLen), dumpFile) != OFstatic_cast(size_t, bufLen))
-        /* TODO: either report a warning or return with an error */ ;
+      {
+        // We are apparently unable to write the byte stream to a dump file.
+        // This does not prevent us, however, from creating a valid digital signature.
+        // Therefore, issue a warning but continue.
+        DCMSIGN_WARN("Write error while dumping byte stream to file");
+      }
     }
     result = mac.digest((unsigned char *)bufptr, (unsigned long)bufLen);
   }
