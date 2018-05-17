@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -137,7 +137,7 @@ private:
   /** resize payload if necessary such that at least i bytes can be written
    *  @param i number of bytes required in buffer
    */
-  void resizePayload(Uint32 i);
+  void resizePayload(size_t i);
 
   /// type of message
   Uint32 messageType;

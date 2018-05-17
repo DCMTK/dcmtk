@@ -110,7 +110,7 @@ DVPSIPCMessage& DVPSIPCMessage::operator=(const DVPSIPCMessage& copy)
   return *this;
 }
 
-void DVPSIPCMessage::resizePayload(Uint32 i)
+void DVPSIPCMessage::resizePayload(size_t i)
 {
   Uint32 requiredSize = payloadUsed+i;
   if (requiredSize < payloadAllocated) return;
