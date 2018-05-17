@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, OFFIS e.V.
+ *  Copyright (C) 2014-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,12 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/oftraits.h"
 #include "dcmtk/ofstd/ofmath.h"   // for isinf and isnan
+
+// On some platforms, such as OpenIndiana, isinf is defined as a macro,
+// and that inteferes with the OFMath function of the same name.
+#ifdef isinf
+#undef isinf
+#endif
 
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_OVERFLOW
