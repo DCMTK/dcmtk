@@ -132,7 +132,7 @@ rgb_ycc_start (j_compress_ptr cinfo)
 #ifdef JCCOLOR_NO_SINT64
     rgb_ycc_tab[i+B_CB_OFF] = FIX(0.50000) * i    + CBCR_OFFSET + ONE_HALF-1;
 #else
-    rgb_ycc_tab[i+B_CB_OFF] = (jccolor_sint64) FIX(0.50000) * i    + CBCR_OFFSET + ONE_HALF-1;
+    rgb_ycc_tab[i+B_CB_OFF] = (IJG_INT32) ((jccolor_sint64) FIX(0.50000) * i    + CBCR_OFFSET + ONE_HALF-1);
 #endif
 /*  B=>Cb and R=>Cr tables are the same
     rgb_ycc_tab[i+R_CR_OFF] = FIX(0.50000) * i    + CBCR_OFFSET + ONE_HALF-1;

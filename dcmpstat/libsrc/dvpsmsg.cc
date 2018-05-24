@@ -112,7 +112,7 @@ DVPSIPCMessage& DVPSIPCMessage::operator=(const DVPSIPCMessage& copy)
 
 void DVPSIPCMessage::resizePayload(size_t i)
 {
-  Uint32 requiredSize = payloadUsed+i;
+  size_t requiredSize = payloadUsed+i;
   if (requiredSize < payloadAllocated) return;
 
   while (payloadAllocated < requiredSize) payloadAllocated += PAYLOAD_ALLOCATION_UNIT;
@@ -136,7 +136,7 @@ void DVPSIPCMessage::addStringToPayload(const char *str)
 
   // write string
   OFStandard::strlcpy((char *)(payload + payloadUsed), str, (length+padBytes));
-  payloadUsed += length;
+  payloadUsed += OFstatic_cast(Uint32, length);
 
   // write pad bytes
   for (Uint32 i=0; i < padBytes; i++) *(payload + payloadUsed++) = 0;
