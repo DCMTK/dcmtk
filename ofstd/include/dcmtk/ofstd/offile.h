@@ -113,6 +113,9 @@ typedef fpos_t offile_fpos_t;
 typedef int offile_errno_t;
 
 
+// forward declarations
+class OFpath;
+
 /** class for managing filenames consisting either of conventional (8-bit) or
  *  wide (e.g.\ 16-bit) characters.  The wide character support is currently
  *  Windows-specific because most other operating systems use UTF-8, which is
@@ -140,6 +143,13 @@ public:
    */
   OFFilename(const OFString &filename,
              const OFBool convert = OFFalse);
+
+  /** construct an OFFilename from an OFpath.
+   *  @param path the OFpath object referring to a file.
+   *  Effectively OFFilename(path.native(), OFTrue), but potentially more
+   *  efficient.
+   */
+  OFFilename(const OFpath& path);
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** constructor expecting a wide character string

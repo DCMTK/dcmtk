@@ -80,4 +80,5 @@ OFTEST_REGISTER(ofstd_limits);
 OFTEST_REGISTER(ofstd_safeSubtractAndAdd);
 OFTEST_REGISTER(ofstd_variant);
 OFTEST_REGISTER(ofstd_error);
+OFTEST_REGISTER(ofstd_filesystem);
 OFTEST_MAIN("ofstd")

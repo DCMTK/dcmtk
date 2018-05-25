@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/ofstd/offile.h"
+#include "dcmtk/ofstd/offilsys.h"
 
 #ifdef HAVE_WINDOWS_H
 #include "dcmtk/ofstd/ofchrenc.h"   /* for class OFCharacterEncoding */
@@ -60,6 +61,14 @@ OFFilename::OFFilename(const OFString &filename,
     set(filename, convert);
 }
 
+OFFilename::OFFilename(const OFpath &path)
+  : filename_(NULL)
+#if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
+  , wfilename_(NULL)
+#endif
+{
+    set(path.native(), OFTrue);
+}
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
 OFFilename::OFFilename(const wchar_t *filename,
