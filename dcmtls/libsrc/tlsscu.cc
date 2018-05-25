@@ -20,6 +20,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"  /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmtls/tlsdefin.h"  /* for DCMTK_DCMTLS_EXPORT */
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlsscu.h"
