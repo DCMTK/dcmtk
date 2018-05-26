@@ -380,6 +380,7 @@ class DCMTK_OFSTD_EXPORT OFdirectory_iterator
 {
 public:
     /** A valid OFdirectory_iterator refers to an OFdirectory_entry
+     */
     typedef OFdirectory_entry value_type;
 
     /** The distance between to OFdirectory_iterators would be measured
