@@ -22,6 +22,7 @@
 #include "dcmtk/config/osconfig.h"
 
 #define INCLUDE_CLIMITS
+#define INCLUDE_CASSERT
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/offilsys.h"
 
@@ -365,7 +366,7 @@ OFdirectory_iterator::NativeDirectoryEntry::NativeDirectoryEntry( const OFpath& 
 , m_pDIR( ::opendir( path.c_str() ) )
 , m_pDirent()
 #if defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE)
-, m_Buffer{}
+, m_Buffer()
 #endif
 #endif // HAVE__FINDFIRST
 {
