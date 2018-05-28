@@ -112,7 +112,10 @@ public:
    *          Model Value Types"
    *  @param  algoIdentCode Code describing the algorithm identification. DICOM
    *          prescribes code from CID 7262 "Diffusion Tractography Algorithm
-   *          Families".
+   *          Families". A trackset can contain more than one algorithm
+   *          description. If you want to add more than one description macro,
+   *          use getTrackSets()->getTrackingAlgorithmIdentification() and add
+   *          as many as needed to the returned vector.
    *  @param  trackSet Returns the resulting Track Set if successful, NULL
    *          otherwise.
    *  @return EC_Normal if creation was successful, error otherwise
@@ -121,7 +124,7 @@ public:
                                   const OFString& trackSetDescription,
                                   const CodeWithModifiers& anatomyCode,
                                   const CodeSequenceMacro& diffusionModelCode,
-                                  const CodeSequenceMacro& algoIdentCode,
+                                  const AlgorithmIdentificationMacro& algoIdentCode,
                                   TrcTrackSet*& trackSet);
 
   // -------------------- destruction -------------------------------

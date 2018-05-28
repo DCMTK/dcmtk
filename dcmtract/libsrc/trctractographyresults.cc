@@ -139,7 +139,7 @@ OFCondition TrcTractographyResults::addTrackSet(const OFString& trackSetLabel,
                                                 const OFString& trackSetDescription,
                                                 const CodeWithModifiers& anatomyCode,
                                                 const CodeSequenceMacro& diffusionModelCode,
-                                                const CodeSequenceMacro& algoIdentCode,
+                                                const AlgorithmIdentificationMacro& algoIdentCode,
                                                 TrcTrackSet*& trackSet)
 {
   OFCondition result = TrcTrackSet::create(trackSetLabel, trackSetDescription, anatomyCode, diffusionModelCode, algoIdentCode, trackSet);

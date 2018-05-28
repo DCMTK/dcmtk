@@ -1,6 +1,6 @@
     /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -61,7 +61,10 @@ public:
    *          Types"
    *  @param  trackSetAlgorithmIdentification Algorithm used in order to
    *          create Track Set. DICOM prescribes code from CID 7262 "Diffusion
-   *          Tractography Algorithm Families".
+   *          Tractography Algorithm Families". A trackset can contain more than
+   *          one algorithm description. If you want to add more than one
+   *          description macro, getTrackingAlgorithmIdentification() and add
+   *          as many as needed to the returned vector.
    *  @param  trackSet Returns the created Track Set, if successfull (NULL
    *          otherwise)
    *  @return EC_Normal if creation was successful, error otherwise
@@ -70,7 +73,7 @@ public:
                             const OFString& trackSetDescription,
                             const CodeWithModifiers& trackSetAnatomy,
                             const CodeSequenceMacro& trackSetDiffusionModelCode,
-                            const CodeSequenceMacro& trackSetAlgorithmIdentification,
+                            const AlgorithmIdentificationMacro& trackSetAlgorithmIdentification,
                             TrcTrackSet*& trackSet /* result */);
 
   /** Destructor, frees memory
@@ -220,7 +223,7 @@ public:
   /** Get access to tracking algorithm identification codes
    *  @return Reference to tracking algorithm identification codes
    */
-  virtual OFVector<CodeSequenceMacro*>& getTrackingAlgorithmIdentification();
+  virtual OFVector<AlgorithmIdentificationMacro*>& getTrackingAlgorithmIdentification();
 
   /** Returns number of Tracks in Track Set
    *  @return Number of Tracks in Track Set
@@ -461,7 +464,7 @@ private:
   CodeSequenceMacro m_DiffusionModelCode;
 
   /// Codes for algorithms used to create this Track Set
-  OFVector<CodeSequenceMacro*> m_TrackingAlgorithmIdentification;
+  OFVector<AlgorithmIdentificationMacro*> m_TrackingAlgorithmIdentification;
 
 };
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -68,7 +68,7 @@ OFCondition TrcTrackSet::create(const OFString& trackSetLabel,
                                 const OFString& trackSetDescription,
                                 const CodeWithModifiers& trackSetAnatomy,
                                 const CodeSequenceMacro& trackSetDiffusionModelCode,
-                                const CodeSequenceMacro& trackSetAlgorithmIdentification,
+                                const AlgorithmIdentificationMacro& trackSetAlgorithmIdentification,
                                 TrcTrackSet*& trackSet)
 {
   // Track Set Number is set within TrcTractographyResults::addTrackSet()
@@ -99,11 +99,11 @@ OFCondition TrcTrackSet::create(const OFString& trackSetLabel,
 
   if (result.good())
   {
-    result = OFconst_cast(CodeSequenceMacro*, &trackSetAlgorithmIdentification)->check();
+    result = OFconst_cast(AlgorithmIdentificationMacro*, &trackSetAlgorithmIdentification)->check();
     if (result.good())
     {
       // add deep copy (via IODComponent) of input param
-      trackSet->m_TrackingAlgorithmIdentification.push_back(new CodeSequenceMacro(trackSetAlgorithmIdentification));
+      trackSet->m_TrackingAlgorithmIdentification.push_back(new AlgorithmIdentificationMacro(trackSetAlgorithmIdentification));
     }
   }
 
@@ -313,7 +313,7 @@ CodeSequenceMacro& TrcTrackSet::getDiffusionModelCode()
 }
 
 
-OFVector<CodeSequenceMacro*>& TrcTrackSet::getTrackingAlgorithmIdentification()
+OFVector<AlgorithmIdentificationMacro*>& TrcTrackSet::getTrackingAlgorithmIdentification()
 {
   return m_TrackingAlgorithmIdentification;
 }
