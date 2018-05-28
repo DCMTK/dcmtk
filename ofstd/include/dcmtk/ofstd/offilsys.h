@@ -29,9 +29,9 @@
 #include "dcmtk/ofstd/ofutil.h"
 
 /** @file offilsys.h
- *  Implementing the currently used subset of C++17' std::filesystem, i.e.\
- *  various classes, free standing functions and global definitions as can be
- *  found in <filesystem>.
+ *  Implementing the currently used subset of C++17' std::filesystem,
+ *  i.e.\ various classes, free standing functions and global definitions as
+ *  can be found in <filesystem>.
  */
 
 // forward declarations
@@ -193,6 +193,7 @@ public:
     /** Append another path to this one, handling various special cases.
      *  @param rhs another OFpath object to append to this one.
      *  @return *this
+     *  @details
      *  This operator will append another path to the existing one, always
      *  doing the right thing. There are many special cases it accounts for,
      *  for details see (http://en.cppreference.com/w/cpp/filesystem/path/append)
@@ -204,7 +205,7 @@ public:
     OFpath& operator/=( const OFpath& rhs );
 
 private:
-#ifndef _DOXYGEN
+#ifndef DOXYGEN
     // helper functions, common ground for the respective has_XXX() and XXX()
     // functions.
     size_t findFilename() const;
@@ -214,100 +215,140 @@ private:
 #endif
 };
 
-/** Append to paths.
+/** Append two paths.
+ *  @relates OFpath
  *  @param lhs the left hand side path for the operation.
  *  @param rhs the right hand side path for the operation.
  *  @return effectively: OFpath( lhs ) / rhs.
  */
 inline OFrvalue<OFpath> operator/( const OFpath& lhs, const OFpath& rhs )
+#ifndef DOXYGEN
 {
     return OFpath( lhs ) /= rhs;
 }
+#else
+;
+#endif
 
 /** Print a path to an output stream.
+ *  @relates OFpath
  *  The parameters and return value are as usual for the output stream
- *  operator, the only thing worth mentioning is that the path fill be put
- *  into doublequotes, i.e. it will print '"' << rhs.native() << '"'.
+ *  operator, the only thing worth mentioning is that the path will be put
+ *  into doublequotes, i.e. it will print "rhs.native()".
  *  @param out the stream.
  *  @param rhs the path
  *  @return out
  */
 inline STD_NAMESPACE ostream& operator<<( STD_NAMESPACE ostream& out, const OFpath& rhs )
+#ifndef DOXYGEN
 {
     return out << '"' << rhs.native() << '"';
 }
+#else
+;
+#endif
 
 /** Lexicographically compare two paths.
- *  @param out the stream.
- *  @param rhs the path
+ *  @relates OFpath
+ *  @param lhs the left hand side path for the operation.
+ *  @param rhs the right hand side path for the operation.
  *  @return effectively: lhs.native() < rhs.native()
- *  @note the comparison is purely lexicographic, i.e. the paths not be
+ *  @note the comparison is purely lexicographic, i.e. the paths will not be
  *    normalized in any way prior to comparing their native strings.
  */
 inline OFBool operator<( const OFpath& lhs, const OFpath& rhs )
+#ifndef DOXYGEN
 {
     return lhs.native() < rhs.native();
 }
+#else
+;
+#endif
 
 /** Lexicographically compare two paths.
- *  @param out the stream.
- *  @param rhs the path
+ *  @relates OFpath
+ *  @param lhs the left hand side path for the operation.
+ *  @param rhs the right hand side path for the operation.
  *  @return effectively: lhs.native() > rhs.native()
- *  @note the comparison is purely lexicographic, i.e. the paths not be
+ *  @note the comparison is purely lexicographic, i.e. the paths will not be
  *    normalized in any way prior to comparing their native strings.
  */
 inline OFBool operator>( const OFpath& lhs, const OFpath& rhs )
+#ifndef DOXYGEN
 {
     return lhs.native() > rhs.native();
 }
+#else
+;
+#endif
 
 /** Lexicographically compare two paths.
- *  @param out the stream.
- *  @param rhs the path
+ *  @relates OFpath
+ *  @param lhs the left hand side path for the operation.
+ *  @param rhs the right hand side path for the operation.
  *  @return effectively: lhs.native() <= rhs.native()
- *  @note the comparison is purely lexicographic, i.e. the paths not be
+ *  @note the comparison is purely lexicographic, i.e. the paths will not be
  *    normalized in any way prior to comparing their native strings.
  */
 inline OFBool operator<=( const OFpath& lhs, const OFpath& rhs )
+#ifndef DOXYGEN
 {
     return lhs.native() <= rhs.native();
 }
+#else
+;
+#endif
 
 /** Lexicographically compare two paths.
- *  @param out the stream.
- *  @param rhs the path
+ *  @relates OFpath
+ *  @param lhs the left hand side path for the operation.
+ *  @param rhs the right hand side path for the operation.
  *  @return effectively: lhs.native() >= rhs.native()
- *  @note the comparison is purely lexicographic, i.e. the paths not be
+ *  @note the comparison is purely lexicographic, i.e. the paths will not be
  *    normalized in any way prior to comparing their native strings.
  */
 inline OFBool operator>=( const OFpath& lhs, const OFpath& rhs )
+#ifndef DOXYGEN
 {
     return lhs.native() >= rhs.native();
 }
+#else
+;
+#endif
 
 /** Lexicographically compare two paths.
- *  @param out the stream.
- *  @param rhs the path
+ *  @relates OFpath
+ *  @param lhs the left hand side path for the operation.
+ *  @param rhs the right hand side path for the operation.
  *  @return effectively: lhs.native() == rhs.native()
- *  @note the comparison is purely lexicographic, i.e. the paths not be
+ *  @note the comparison is purely lexicographic, i.e. the paths will not be
  *    normalized in any way prior to comparing their native strings.
  */
 inline OFBool operator==( const OFpath& lhs, const OFpath& rhs )
+#ifndef DOXYGEN
 {
     return lhs.native() == rhs.native();
 }
+#else
+;
+#endif
 
 /** Lexicographically compare two paths.
- *  @param out the stream.
- *  @param rhs the path
+ *  @relates OFpath
+ *  @param lhs the left hand side path for the operation.
+ *  @param rhs the right hand side path for the operation.
  *  @return effectively: lhs.native() != rhs.native()
- *  @note the comparison is purely lexicographic, i.e. the paths not be
+ *  @note the comparison is purely lexicographic, i.e. the paths will not be
  *    normalized in any way prior to comparing their native strings.
  */
 inline OFBool operator!=( const OFpath& lhs, const OFpath& rhs )
+#ifndef DOXYGEN
 {
     return lhs.native() != rhs.native();
 }
+#else
+;
+#endif
 
 /** A class representing an directory entry.
  *  OFdirectory_entry implements a subset of the functionality described as
@@ -344,7 +385,7 @@ private:
 #endif
 };
 
-#ifndef DOYXGEN
+#ifndef DOXYGEN
 // This is a helper class hidden from the users.
 // It helps implementing the post increment operator of the actual directory
 // iterator, which, since it is an input iterator, cannot return a copy of

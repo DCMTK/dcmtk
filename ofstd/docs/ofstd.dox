@@ -21,9 +21,17 @@ Here are some further helper classes that are of interest:
 \li \b OFConsoleApplication
 \li \b OFDate
 \li \b OFDateTime
+\li \b OFdirectory_iterator
+\li \b OFerror_code
 \li \b OFMap
+\li \b OFoptional
+\li \b OFpath
+\li \b OFshared_ptr
 \li \b OFThread
 \li \b OFTime
+\li \b OFtuple
+\li \b OFunique_ptr
+\li \b OFvariant
 
 \section Testing
 
