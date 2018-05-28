@@ -370,6 +370,7 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
   unsigned long i;
   const char *val = NULL;
   Uint16 v;
+  size_t len = 0;
 
   // if the element in question is not contained in another sequence
   if( numOfSuperiorSequences == 0 )
@@ -384,13 +385,15 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
       cond = matchingRecords[idx]->findAndGetUint16( tag, v, 0, OFFalse );
       if( cond.good() )
       {
-        value = new char[20];
+        len = 20;
+        value = new char[len];
         sprintf( value, "%u", v );
       }
       else
       {
-        value = new char[ 2 ];
-        OFStandard::strlcpy( value, "4", sizeof(value) );           // a value of "4" in attribute PregnancyStatus means "unknown" in DICOM
+        len = 2;
+        value = new char[len];
+        OFStandard::strlcpy( value, "4", len );           // a value of "4" in attribute PregnancyStatus means "unknown" in DICOM
       }
     }
     else
@@ -398,13 +401,15 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
       cond = matchingRecords[idx]->findAndGetString( tag, val, OFFalse );
       if( cond.good() && val != NULL )
       {
-        value = new char[ strlen( val ) + 1 ];
-        OFStandard::strlcpy( value, val, sizeof(value) );
+        len = strlen( val ) + 1;
+        value = new char[len];
+        OFStandard::strlcpy( value, val, len );
       }
       else
       {
-        value = new char[ 1 ];
-        OFStandard::strlcpy( value, "", sizeof(value) );
+        len = 1;
+        value = new char[len];
+        OFStandard::strlcpy( value, "", len );
       }
     }
   }
@@ -427,19 +432,22 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
       cond = sequenceElement->getItem( superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem )->findAndGetString( tag, val, OFFalse );
       if( cond.good() && val != NULL )
       {
-        value = new char[ strlen( val ) + 1 ];
-        OFStandard::strlcpy( value, val, sizeof(value) );
+        len = strlen( val ) + 1;
+        value = new char[len];
+        OFStandard::strlcpy( value, val, len );
       }
       else
       {
-        value = new char[ 1 ];
-        OFStandard::strlcpy( value, "", sizeof(value) );
+        len = 1;
+        value = new char[len];
+        OFStandard::strlcpy( value, "", len );
       }
     }
     else
     {
-      value = new char[ 1 ];
-      OFStandard::strlcpy( value, "", sizeof(value) );
+      len = 1;
+      value = new char[len];
+      OFStandard::strlcpy( value, "", len );
     }
   }
 }
