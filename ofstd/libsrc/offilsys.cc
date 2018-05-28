@@ -178,7 +178,7 @@ OFrvalue<OFpath> OFpath::root_name() const
 #if _WIN32
     const size_t pos = m_NativeString.find_first_of( ":\\" );
     if( pos != OFString_npos && m_NativeString[pos] == ':' )
-        return m_NativeString.substr( 0, pos + 1 );
+        return OFpath( m_NativeString.substr( 0, pos + 1 ) );
 #endif
     return OFpath();
 }
@@ -360,7 +360,7 @@ OFdirectory_iterator::NativeDirectoryEntry::NativeDirectoryEntry( const OFpath& 
 : OFdirectory_entry()
 , m_Parent( path )
 #ifdef HAVE__FINDFIRST
-, m_FileData{}
+, m_FileData()
 , m_hFile( _findfirst( OFconst_cast( char*, (path / "*").c_str() ), &m_FileData ) )
 #else // HAVE__FINDFIRST
 , m_pDIR( ::opendir( path.c_str() ) )
