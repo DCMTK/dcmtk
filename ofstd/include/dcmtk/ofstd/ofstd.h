@@ -37,6 +37,7 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
+#define INCLUDE_CSTDARG
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
@@ -142,6 +143,42 @@ class DCMTK_OFSTD_EXPORT OFStandard
       return my_strlcat(dst, src, siz);
 #endif
     }
+
+    /* Standard C99 formatted string output function.
+     * This is an implementation of the snprintf(3) function as defined in the
+     * C99 standard. Like all functions of the  printf() family, it produces
+     * output according to a format string. Output is written to the character
+     * array passed as parameter str. The function never writes more than size
+     * bytes and guarantees that the result will be NUL terminated, although
+     * it may be truncated if the buffer provided is too small.
+     * @param str string buffer to write to
+     * @param size size of string buffer, in bytes
+     * @param format printf() format string
+     * @param ... parameters to be formatted
+     * @return number of characters that have been written (if the buffer is
+     *   large enough) or the number of characters that would have been
+     *   written (if the buffer is too small), in both cases not including
+     *   the final NUL character.
+     */
+    static int snprintf(char *str, size_t size, const char *format, ...);
+
+    /* Standard C99 formatted string output function.
+     * This is an implementation of the snprintf(3) function as defined in the
+     * C99 standard. Like all functions of the  printf() family, it produces
+     * output according to a format string. Output is written to the character
+     * array passed as parameter str. The function never writes more than size
+     * bytes and guarantees that the result will be NUL terminated, although
+     * it may be truncated if the buffer provided is too small.
+     * @param str string buffer to write to
+     * @param size size of string buffer, in bytes
+     * @param format printf() format string
+     * @param ap parameters to be formatted
+     * @return number of characters that have been written (if the buffer is
+     *   large enough) or the number of characters that would have been
+     *   written (if the buffer is too small), in both cases not including
+     *   the final NUL character.
+     */
+    static int vsnprintf(char *str, size_t size, const char *format, va_list ap);
 
     /** convert a given error code to a string. This function wraps the various
      *  approaches found on different systems. Internally, the standard function

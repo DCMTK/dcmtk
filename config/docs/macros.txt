@@ -46,6 +46,24 @@ DCMTK_BUILD_IN_PROGRESS
     define this macro yourself since this is done automatically by the build
     system.
 
+DCMTK_ENABLE_UNSAFE_VSNPRINTF
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: DCMTK requires the snprintf(3)/vsnprintf(3) function, which
+    was introduced with C99 and may not be supported by very old compilers.
+    As a "last resort", an implementation interally using sprintf/vsprintf
+    can be enabled with this macro, which allows the user to compile DCMTK
+    on platforms that do not have the new functions.
+    The implementation allocates a buffer that is 1 kByte larger than
+    the "size" parameter, formats the string into that buffer, and then
+    uses strlcpy() to copy the formatted string into the output buffer,
+    truncating if necessary.
+    This will work in most cases, since few snprintf calls should overrun
+    their buffer by more than 1K, but it can be easily abused by
+    a malicious attacker to cause a buffer overrun.
+    Therefore, this implementation should only be used as a "last resort"
+    and we strongly advise against using it in production code.
+
 DCMTK_GUI
   Affected: all modules
   Type of modification: Activates experimental or rarely used feature

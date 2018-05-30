@@ -264,6 +264,69 @@ size_t OFStandard::my_strlcat(char *dst, const char *src, size_t siz)
 }
 #endif /* HAVE_STRLCAT */
 
+int OFStandard::snprintf(char *str, size_t size, const char *format, ...)
+{
+    // we emulate snprintf() via vsnprintf().
+    int count;
+    va_list ap;
+    va_start(ap, format);
+    count = OFStandard::vsnprintf(str, size, format, ap);
+    va_end(ap);
+    return count;
+}
+
+int OFStandard::vsnprintf(char *str, size_t size, const char *format, va_list ap)
+{
+#ifdef _MSC_VER
+#if _MSC_VER < 1900
+    // Visual Studio versions 2005 to 2013 do not have a C99 compliant
+    // vsnprintf(), but they have _snprintf(), which can be used to emulate it.
+    int count = -1;
+
+    if (size != 0)
+        count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
+    if (count == -1)
+        count = _vscprintf(format, ap);
+
+    return count;
+#else /* _MSC_VER < 1900 */
+    // Visual Studio 2015 and newer has a C99 compliant vsnprintf().
+    return ::vsnprintf(str, size, format, ap);
+#endif /* _MSC_VER < 1900 */
+#else /* _MSC_VER */
+#ifdef HAVE_VSNPRINTF
+    return ::vsnprintf(str, size, format, ap);
+#else /* HAVE_VSNPRINTF */
+#ifdef DCMTK_ENABLE_UNSAFE_VSNPRINTF
+    // This implementation internally uses sprintf (which is inherently unsafe).
+    // It allocates a buffer that is 1 kByte larger than "size",
+    // formats the string into that buffer, and then uses strlcpy() to
+    // copy the formatted string into the output buffer, truncating if necessary.
+    // This will work in most cases, since few snprintf calls should overrun
+    // the provided buffer by more than 1K, but it can be easily abused by
+    // a malicious attacker to cause a buffer overrun.
+    //
+    // Therefore, this implementation should only be used as a "last resort"
+    // and we strongly advise against using it in production code.
+    // The macro "DCMTK_ENABLE_UNSAFE_VSNPRINTF" must explicitly be defined
+    // by the used to enable this implementation.
+    int count = -1;
+    if (size != 0)
+    {
+      char *buf = new char[size+1024];
+      count = ::vsprintf(buf, format, ap);
+      OFStandard::strlcpy(str, buf, size);
+      delete[] buf;
+    }
+    return count;
+#warning Using unsafe implementation of vsnprintf(3)
+#else /* DCMTK_ENABLE_UNSAFE_VSNPRINTF */
+    return -1;
+#error vsnprintf(3) not found. Use different compiler or compile with DCMTK_ENABLE_UNSAFE_VSNPRINTF (unsafe!)
+#endif /* DCMTK_ENABLE_UNSAFE_VSNPRINTF */
+#endif /* HAVE_VSNPRINTF */
+#endif /* _MSC_VER */
+}
 
 #ifdef HAVE_PROTOTYPE_STRERROR_R
 /*

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2014, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,4 +81,6 @@ OFTEST_REGISTER(ofstd_safeSubtractAndAdd);
 OFTEST_REGISTER(ofstd_variant);
 OFTEST_REGISTER(ofstd_error);
 OFTEST_REGISTER(ofstd_filesystem);
+OFTEST_REGISTER(ofstd_snprintf);
+
 OFTEST_MAIN("ofstd")
