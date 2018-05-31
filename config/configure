@@ -6722,6 +6722,52 @@ $as_echo "#define HAVE_NOTHROW_DELETE /**/" >>confdefs.h
 fi
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports static_assert" >&5
+$as_echo_n "checking whether the compiler supports static_assert... " >&6; }
+if ${ac_cv_cxx_static_assert+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+ ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <cassert>
+int
+main ()
+{
+static_assert(true, "good")
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ac_cv_cxx_static_assert=yes
+else
+  ac_cv_cxx_static_assert=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+ ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cxx_static_assert" >&5
+$as_echo "$ac_cv_cxx_static_assert" >&6; }
+if test "$ac_cv_cxx_static_assert" = yes; then
+
+$as_echo "#define HAVE_STATIC_ASSERT /**/" >>confdefs.h
+
+fi
+
+
 
 DEBUG="-DNDEBUG"
 DEBUGCXXFLAGS=
@@ -12952,7 +12998,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12955 "configure"
+#line 13001 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13424,7 +13470,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13427 "configure"
+#line 13473 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13496,7 +13542,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13499 "configure"
+#line 13545 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13568,7 +13614,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13571 "configure"
+#line 13617 "configure"
 #include "confdefs.h"
 
 template <class T>

@@ -15,7 +15,7 @@ The main classes are (in alphabetical order):
 \li \b OFString
 \li \b OFVector
 
-Here are some further helper classes that are of interest:
+Here are some further utilities that may be of interest:
 \li \b OFCharacterEncoding
 \li \b OFConsole
 \li \b OFConsoleApplication
@@ -27,6 +27,7 @@ Here are some further helper classes that are of interest:
 \li \b OFoptional
 \li \b OFpath
 \li \b OFshared_ptr
+\li \b #OFstatic_assert
 \li \b OFThread
 \li \b OFTime
 \li \b OFtuple

@@ -1386,6 +1386,24 @@ fi
 ])
 
 
+dnl AC_CXX_NOTHROW_DELETE checks if the compiler supports non-throwing delete using
+dnl std::nothrow.
+
+AC_DEFUN([AC_CXX_STATIC_ASSERT],
+[AH_TEMPLATE([HAVE_STATIC_ASSERT], [Define if the compiler supports static_assert])
+AC_CACHE_CHECK(whether the compiler supports static_assert,
+ac_cv_cxx_static_assert,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <cassert>],[static_assert(true, "good")],
+ ac_cv_cxx_static_assert=yes, ac_cv_cxx_static_assert=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_static_assert" = yes; then
+  AC_DEFINE(HAVE_STATIC_ASSERT,, [Define if the compiler supports static_assert])
+fi
+])
+
 dnl AC_LIBTIFF_LZW_COMPRESSION checks if libtiff supports LZW compression.
 
 AC_DEFUN([AC_LIBTIFF_LZW_COMPRESSION],

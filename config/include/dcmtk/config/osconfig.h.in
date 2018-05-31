@@ -738,6 +738,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `stat' function. */
 #undef HAVE_STAT
 
+/* Define if the compiler supports static_assert */
+#undef HAVE_STATIC_ASSERT
+
 /* define if the compiler supports static_cast<> */
 #undef HAVE_STATIC_CAST
 

@@ -1229,6 +1229,14 @@ int main()
     return 0;
 }")
 
+DCMTK_TRY_COMPILE(HAVE_STATIC_ASSERT "the compiler supports static_assert"
+    "#include <cassert>
+int main()
+{
+    static_assert(true, \"good\");
+    return 0;
+}")
+
 # Compile config/tests/arith.cc and generate config/arith.h
 function(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
   set(ARITH_H_FILE "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h")

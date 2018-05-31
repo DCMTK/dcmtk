@@ -1073,6 +1073,9 @@ typedef unsigned long ulong;
 /* Define if the compiler supports operator delete (std::nothrow) */
 #cmakedefine HAVE_NOTHROW_DELETE @HAVE_NOTHROW_DELETE@
 
+/* Define if the compiler supports static_assert */
+#cmakedefine HAVE_STATIC_ASSERT @HAVE_STATIC_ASSERT@
+
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #cmakedefine HAVE_PROTOTYPE_STD__VFPRINTF @HAVE_PROTOTYPE_STD__VFPRINTF@
 

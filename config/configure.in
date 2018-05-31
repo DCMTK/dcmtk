@@ -317,6 +317,7 @@ AC_CXX_REINTERPRET_CAST
 AC_CXX_STATIC_CAST
 AC_CXX_STD_NOTHROW
 AC_CXX_NOTHROW_DELETE
+AC_CXX_STATIC_ASSERT
 
 dnl -------------------------------------------------------
 dnl Check for Debug Mode
