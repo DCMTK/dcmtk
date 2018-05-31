@@ -2892,7 +2892,7 @@ int XMLParserBase64Tool::encodeLength(int inlen, char formatted)
     return i;
 }
 
-XMLSTR XMLParserBase64Tool::encode(unsigned char *inbuf, unsigned int inlen, char formatted)
+XMLSTR XMLParserBase64Tool::encode(const unsigned char *inbuf, unsigned int inlen, char formatted)
 {
     int i=encodeLength(inlen,formatted),k=17,eLen=inlen/3,j;
     alloc(OFstatic_cast(int, i*sizeof(XMLCHAR)));

@@ -24,7 +24,7 @@
 #include "dcmtk/dcmseg/segdef.h"
 
 
-DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(Uint8* pixelData,
+DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(const Uint8* pixelData,
                                                  const Uint16 rows,
                                                  const Uint16 columns)
 {

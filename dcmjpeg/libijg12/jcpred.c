@@ -130,7 +130,7 @@ METHODDEF(void) start_pass
 
 METHODDEF(void)
 jpeg_difference1(j_compress_ptr cinfo, int ci,
-         JSAMPROW input_buf, JSAMPROW prev_row,
+         const JSAMPROW input_buf, const JSAMPROW prev_row,
          JDIFFROW diff_buf, JDIMENSION width)
 {
   DIFFERENCE_1D(INITIAL_PREDICTOR2);
@@ -139,7 +139,7 @@ jpeg_difference1(j_compress_ptr cinfo, int ci,
 
 METHODDEF(void)
 jpeg_difference2(j_compress_ptr cinfo, int ci,
-         JSAMPROW input_buf, JSAMPROW prev_row,
+         const JSAMPROW input_buf, const JSAMPROW prev_row,
          JDIFFROW diff_buf, JDIMENSION width)
 {
   DIFFERENCE_2D(PREDICTOR2);
@@ -149,7 +149,7 @@ jpeg_difference2(j_compress_ptr cinfo, int ci,
 
 METHODDEF(void)
 jpeg_difference3(j_compress_ptr cinfo, int ci,
-         JSAMPROW input_buf, JSAMPROW prev_row,
+         const JSAMPROW input_buf, const JSAMPROW prev_row,
          JDIFFROW diff_buf, JDIMENSION width)
 {
   DIFFERENCE_2D(PREDICTOR3);
@@ -159,7 +159,7 @@ jpeg_difference3(j_compress_ptr cinfo, int ci,
 
 METHODDEF(void)
 jpeg_difference4(j_compress_ptr cinfo, int ci,
-         JSAMPROW input_buf, JSAMPROW prev_row,
+         const JSAMPROW input_buf, const JSAMPROW prev_row,
          JDIFFROW diff_buf, JDIMENSION width)
 {
   DIFFERENCE_2D(PREDICTOR4);
@@ -169,7 +169,7 @@ jpeg_difference4(j_compress_ptr cinfo, int ci,
 
 METHODDEF(void)
 jpeg_difference5(j_compress_ptr cinfo, int ci,
-         JSAMPROW input_buf, JSAMPROW prev_row,
+         const JSAMPROW input_buf, const JSAMPROW prev_row,
          JDIFFROW diff_buf, JDIMENSION width)
 {
   SHIFT_TEMPS
@@ -180,7 +180,7 @@ jpeg_difference5(j_compress_ptr cinfo, int ci,
 
 METHODDEF(void)
 jpeg_difference6(j_compress_ptr cinfo, int ci,
-         JSAMPROW input_buf, JSAMPROW prev_row,
+         const JSAMPROW input_buf, const JSAMPROW prev_row,
          JDIFFROW diff_buf, JDIMENSION width)
 {
   SHIFT_TEMPS
@@ -191,7 +191,7 @@ jpeg_difference6(j_compress_ptr cinfo, int ci,
 
 METHODDEF(void)
 jpeg_difference7(j_compress_ptr cinfo, int ci,
-         JSAMPROW input_buf, JSAMPROW prev_row,
+         const JSAMPROW input_buf, const JSAMPROW prev_row,
          JDIFFROW diff_buf, JDIMENSION width)
 {
   SHIFT_TEMPS
@@ -210,7 +210,7 @@ jpeg_difference7(j_compress_ptr cinfo, int ci,
 
 METHODDEF(void)
 jpeg_difference_first_row(j_compress_ptr cinfo, int ci,
-         JSAMPROW input_buf, JSAMPROW prev_row,
+         const JSAMPROW input_buf, JSAMPROW prev_row,
          JDIFFROW diff_buf, JDIMENSION width)
 {
   DIFFERENCE_1D(INITIAL_PREDICTORx);

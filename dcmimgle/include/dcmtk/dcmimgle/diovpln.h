@@ -103,7 +103,7 @@ class DCMTK_DCMIMGLE_EXPORT DiOverlayPlane
      */
     DiOverlayPlane(DiOverlayPlane *plane,
                    const unsigned int bit,
-                   Uint16 *data,
+                   const Uint16 *data,
                    Uint16 *temp,
                    const Uint16 width,
                    const Uint16 height,

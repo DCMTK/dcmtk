@@ -35,7 +35,7 @@ typedef scaler * scaler_ptr;
 
 METHODDEF(void)
 simple_upscale(j_decompress_ptr cinfo,
-	       JDIFFROW diff_buf, JSAMPROW output_buf,
+	       const JDIFFROW diff_buf, JSAMPROW output_buf,
 	       JDIMENSION width)
 {
   j_lossless_d_ptr losslsd = (j_lossless_d_ptr) cinfo->codec;
@@ -49,7 +49,7 @@ simple_upscale(j_decompress_ptr cinfo,
 
 METHODDEF(void)
 simple_downscale(j_decompress_ptr cinfo,
-		 JDIFFROW diff_buf, JSAMPROW output_buf,
+		 const JDIFFROW diff_buf, JSAMPROW output_buf,
 		 JDIMENSION width)
 {
   j_lossless_d_ptr losslsd = (j_lossless_d_ptr) cinfo->codec;
@@ -64,7 +64,7 @@ simple_downscale(j_decompress_ptr cinfo,
 
 METHODDEF(void)
 noscale(j_decompress_ptr cinfo,
-	JDIFFROW diff_buf, JSAMPROW output_buf,
+	const JDIFFROW diff_buf, JSAMPROW output_buf,
 	JDIMENSION width)
 {
   unsigned int xindex;

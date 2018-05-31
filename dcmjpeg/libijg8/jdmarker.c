@@ -583,7 +583,7 @@ get_dri (j_decompress_ptr cinfo)
 
 
 LOCAL(void)
-examine_app0 (j_decompress_ptr cinfo, JOCTET FAR * data,
+examine_app0 (j_decompress_ptr cinfo, const JOCTET FAR * data,
           unsigned int datalen, IJG_INT32 remaining)
 /* Examine first few bytes from an APP0.
  * Take appropriate action if it is a JFIF marker.
@@ -659,7 +659,7 @@ examine_app0 (j_decompress_ptr cinfo, JOCTET FAR * data,
 
 
 LOCAL(void)
-examine_app14 (j_decompress_ptr cinfo, JOCTET FAR * data,
+examine_app14 (j_decompress_ptr cinfo, const JOCTET FAR * data,
            unsigned int datalen, IJG_INT32 remaining)
 /* Examine first few bytes from an APP14.
  * Take appropriate action if it is an Adobe marker.

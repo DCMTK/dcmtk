@@ -769,7 +769,7 @@ public:
      * from "inByteBuf". If "formatted" parameter is true, then there will be a carriage-return every 72 chars.
      * The string will be free'd when the XMLParserBase64Tool object is deleted.
      * All returned strings are sharing the same memory space. */
-    XMLSTR encode(unsigned char *inByteBuf, unsigned int inByteLen, char formatted=0); ///< returns a pointer to an internal buffer containing the base64 string containing the binary data encoded from "inByteBuf"
+    XMLSTR encode(const unsigned char *inByteBuf, unsigned int inByteLen, char formatted=0); ///< returns a pointer to an internal buffer containing the base64 string containing the binary data encoded from "inByteBuf"
 
     /// returns the number of bytes which will be decoded from "inString".
     static unsigned int decodeSize(XMLCSTR inString, XMLError *xe=NULL);
