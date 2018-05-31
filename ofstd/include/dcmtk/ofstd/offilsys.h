@@ -83,7 +83,7 @@ public:
      *    std::filesystem::path, where various character strings (e.g. char*
      *    and wchar_t*) are handled uniformly by one of the template
      *    constructors.
-     *  @note Automatic path converstion (e.g. replacing all '/' with '\' on
+     *  @note Automatic path conversion (e.g. replacing all '/' with '\' on
      *    Windows) is currently not available, which is why this constructor
      *    lacks the second parameter "format" and instead always expects
      *    the argument to be given in the native format.
@@ -92,7 +92,7 @@ public:
 
     /** Constructs an OFpath from an OFString.
      *  @param string an OFString.
-     *  @note Automatic path converstion (e.g. replacing all '/' with '\' on
+     *  @note Automatic path conversion (e.g. replacing all '/' with '\' on
      *    Windows) is currently not available, which is why this constructor
      *    lacks the second parameter "format" and instead always expects
      *    the argument to be given in the native format.
@@ -234,7 +234,7 @@ inline OFrvalue<OFpath> operator/( const OFpath& lhs, const OFpath& rhs )
  *  @relates OFpath
  *  The parameters and return value are as usual for the output stream
  *  operator, the only thing worth mentioning is that the path will be put
- *  into doublequotes, i.e. it will print "rhs.native()".
+ *  into double quotes, i.e. it will print "rhs.native()".
  *  @param out the stream.
  *  @param rhs the path
  *  @return out
