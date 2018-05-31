@@ -27,9 +27,15 @@
 #include "dcmtk/ofstd/offilsys.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/ofstd/oftraits.h"
+#include "dcmtk/ofstd/ofassert.h"
 
 OFTEST(ofstd_filesystem)
 {
+    OFstatic_assert( (OFis_same<OFdirectory_iterator::difference_type,STD_NAMESPACE ptrdiff_t>::value), "OFdirectory_iterator has correctly defined difference type" );
+    OFstatic_assert( (OFis_same<OFdirectory_iterator::value_type,OFdirectory_entry>::value), "OFdirectory_iterator has correctly defined value type" );
+    OFstatic_assert( (OFis_same<OFdirectory_iterator::pointer,const OFdirectory_entry*>::value), "OFdirectory_iterator has correctly defined pointer type" );
+    OFstatic_assert( (OFis_same<OFdirectory_iterator::reference,const OFdirectory_entry&>::value), "OFdirectory_iterator has correctly defined reference type" );
 #if _WIN32
     const OFBool onWindows = OFTrue;
     OFCHECK_EQUAL( OFpath::preferred_separator, '\\' );
@@ -91,6 +97,7 @@ OFTEST(ofstd_filesystem)
                 break;
             }
         }
+        OFCHECK( found );
     }
     OFCHECK( files.empty() );
 }
