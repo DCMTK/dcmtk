@@ -13,7 +13,7 @@
  *
  *  Module:  dcmwlm
  *
- *  Author:  Thomas Wilkens
+ *  Author:  Thomas Wilkens, Jan Schlamelcher
  *
  *  Purpose: Class for managing file system interaction.
  *
@@ -23,27 +23,13 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#define INCLUDE_CLIMITS
-#include "dcmtk/ofstd/ofstdinc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_FILE_H
-#include <sys/file.h>  // for struct DIR, opendir()
-#endif
-#ifdef HAVE_DIRENT_H
-#include <dirent.h>    // for struct DIR, opendir()
-#endif
-END_EXTERN_C
-
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofdate.h"
 #include "dcmtk/ofstd/oftime.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/offilsys.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcitem.h"
@@ -98,15 +84,12 @@ const WlmFileSystemInteractionManager::MatchingKeys WlmFileSystemInteractionMana
 // ----------------------------------------------------------------------------
 
 WlmFileSystemInteractionManager::WlmFileSystemInteractionManager()
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : Constructor.
-// Parameters   : none.
-// Return Value : none.
-  : dfPath( "" ),
-    enableRejectionOfIncompleteWlFiles( OFTrue ), calledApplicationEntityTitle( "" ),
-    matchingRecords( NULL ), numOfMatchingRecords( 0 )
+: dfPath()
+, enableRejectionOfIncompleteWlFiles( OFTrue )
+, calledApplicationEntityTitle()
+, matchingRecords()
 {
+
 }
 
 // ----------------------------------------------------------------------------
@@ -201,92 +184,62 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 
 // ----------------------------------------------------------------------------
 
-unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmDataset *searchMask )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : This function determines the records from the worklist files which match
-//                the given search mask and returns the number of matching records. Also,
-//                this function will store the matching records in memory in the array
-//                member variable matchingRecords.
-// Parameters   : searchMask - [in] The search mask.
-// Return Value : Number of matching records.
+size_t WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmDataset* searchMask )
 {
-  OFVector<OFString> worklistFiles;
+    assert( searchMask );
+    matchingRecords.clear();
+    OFdirectory_iterator it( dfPath / calledApplicationEntityTitle );
+    if( FindNextWorklistFile( it ) != OFdirectory_iterator() )
+    {
+        MatchWorklistFile( *searchMask, *it );
+        while( FindNextWorklistFile( ++it ) != OFdirectory_iterator() )
+            MatchWorklistFile( *searchMask, *it );
+    }
+    else DCMWLM_INFO( "<no files found>" );
+    return matchingRecords.size();
+}
 
-  // initialize member variables
-  matchingRecords = NULL;
-  numOfMatchingRecords = 0;
+// ----------------------------------------------------------------------------
 
-  // determine all worklist files
-  DetermineWorklistFiles( worklistFiles );
-
-  // go through all worklist files
-  for( unsigned int i=0 ; i<worklistFiles.size() ; i++ )
-  {
+void WlmFileSystemInteractionManager::MatchWorklistFile( DcmDataset& searchMask,
+                                                         const OFpath& worklistFile )
+{
     // read information from worklist file
-    DcmFileFormat fileform;
-    if (fileform.loadFile(worklistFiles[i].c_str()).bad())
+    DcmFileFormat file;
+    OFCondition status = file.loadFile( worklistFile );
+    if( status.bad() )
     {
-      DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly, file will be ignored");
+      DCMWLM_WARN("Could not read worklist file " << worklistFile << ", file will be ignored: " << status.text());
+      return;
     }
-    else
+    // extract the data set from worklist file, if any
+    // storing it into an OFshared_ptr ensures it will be freed in the end not matter what
+    if( OFshared_ptr<DcmDataset> pDataset = file.getAndRemoveDataset() )
     {
-      // determine the data set which is contained in the worklist file
-      DcmDataset *dataset = fileform.getDataset();
-      if( dataset == NULL )
-      {
-        DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is empty, file will be ignored");
-      }
-      else
-      {
         if( enableRejectionOfIncompleteWlFiles )
-          DCMWLM_INFO("Checking whether worklist file " << worklistFiles[i] << " is complete");
-        // in case option --enable-file-reject is set, we have to check if the current
-        // .wl-file meets certain conditions; in detail, the file's dataset has to be
-        // checked whether it contains all necessary return type 1 attributes and contains
-        // information in all these attributes; if this is condition is not met, the
-        // .wl-file shall be rejected
-        if( enableRejectionOfIncompleteWlFiles && !DatasetIsComplete( dataset ) )
         {
-          DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is incomplete, file will be ignored");
+            DCMWLM_INFO("Checking whether worklist file " << worklistFile << " is complete");
+            // in case option --enable-file-reject is set, we have to check if the current
+            // .wl-file meets certain conditions; in detail, the file's dataset has to be
+            // checked whether it contains all necessary return type 1 attributes and contains
+            // information in all these attributes; if this is condition is not met, the
+            // .wl-file shall be rejected
+            if( !DatasetIsComplete( pDataset.get() ) )
+            {
+                DCMWLM_WARN("Worklist file " << worklistFile << " is incomplete, file will be ignored");
+                return;
+            }
         }
-        else
+        // check if the current dataset matches the matching key attribute values
+        if( DatasetMatchesSearchMask( *pDataset, searchMask, MatchingKeys::root ) )
         {
-          // check if the current dataset matches the matching key attribute values
-          if( !DatasetMatchesSearchMask( dataset, searchMask, MatchingKeys::root ) )
-          {
-            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " does not match query");
-          }
-          else
-          {
-            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " matches query");
-
-            // since the dataset matches the matching key attribute values
-            // we need to insert it into the matchingRecords array
-            if( numOfMatchingRecords == 0 )
-            {
-              matchingRecords = new DcmDataset*[1];
-              matchingRecords[0] = new DcmDataset( *dataset );
-            }
-            else
-            {
-              DcmDataset **tmp = new DcmDataset*[numOfMatchingRecords + 1];
-              for( unsigned long j=0 ; j<numOfMatchingRecords ; j++ )
-                tmp[j] = matchingRecords[j];
-              tmp[numOfMatchingRecords] = new DcmDataset( *dataset );
-              delete[] matchingRecords;
-              matchingRecords = tmp;
-            }
-
-            numOfMatchingRecords++;
-          }
+            DCMWLM_INFO("Information from worklist file " << worklistFile << " matches query");
+            // insert the matching dataset into matchingRecords
+            matchingRecords.push_back( pDataset );
         }
-      }
+        else DCMWLM_INFO("Information from worklist file " << worklistFile << " does not match query");
     }
-  }
-
-  // return result
-  return( numOfMatchingRecords );
+    else DCMWLM_WARN("Worklist file " << worklistFile << " is empty, file will be ignored");
 }
 
 // ----------------------------------------------------------------------------
@@ -455,151 +408,16 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
 // ----------------------------------------------------------------------------
 
 void WlmFileSystemInteractionManager::ClearMatchingRecords()
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : This function frees the memory which was occupied by matchingRecords.
-//                It shall be called when the matching records are no longer needed.
-// Parameters   : none.
-// Return Value : none.
 {
-  for( unsigned int i=0 ; i<numOfMatchingRecords ; i++ )
-    delete matchingRecords[i];
-  delete[] matchingRecords;
-  matchingRecords = NULL;
-  numOfMatchingRecords = 0;
+    matchingRecords.clear();
 }
 
 // ----------------------------------------------------------------------------
 
-void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString> &worklistFiles )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : This function determines all worklist files in the directory specified by
-//                dfPath and calledApplicationEntityTitle, and returns the complete path and
-//                filename information in an array of strings.
-// Parameters   : worklistFiles - [out] Set of strings, each specifying path and filename
-//                                      to one worklist file.
-// Return Value : none.
+OFdirectory_iterator& WlmFileSystemInteractionManager::FindNextWorklistFile( OFdirectory_iterator& it )
 {
-  // initialize out parameters
-  worklistFiles.clear();
-
-  // determine complete path to data source files
-  // (dfPath + PATH_SEPARATOR + calledApplicationEntityTitle)
-  OFString path( dfPath );
-  if( !path.empty() && path[path.length()-1] != PATH_SEPARATOR )
-    path += PATH_SEPARATOR;
-  path += calledApplicationEntityTitle;
-
-  // determine worklist files in this folder
-#ifdef HAVE__FINDFIRST
-  OFString searchname = path + PATH_SEPARATOR + '*';
-  struct _finddata_t fileData;
-  int ret = 0;
-
-  // start a loop; in each iteration another directory entry is determined
-  intptr_t hFile = _findfirst( (char*)searchname.c_str(), &fileData );
-  while( hFile != -1L && ret == 0 )
-  {
-    // if the current entry refers to a worklist file, do something
-    if( strcmp( fileData.name, "." )  !=0 && strcmp( fileData.name, ".." ) !=0 && IsWorklistFile( fileData.name ) )
-    {
-      // Create a string that contains path and filename of the current worklist file.
-      OFString subname( path );
-      subname += PATH_SEPARATOR;
-      subname += fileData.name;
-
-      // Add string to the set of strings
-      worklistFiles.push_back( subname );
-    }
-    ret = _findnext( hFile, &fileData );
-  }
-  _findclose( hFile );
-#else /* HAVE__FINDFIRST */
-  struct dirent *dp = NULL;
-
-  // open directory
-  DIR *dirp = opendir( path.c_str() );
-  if( dirp != NULL )
-  {
-    // start a loop; in each iteration another directory entry is determined.
-#if defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE)
-    unsigned char entryBuffer[sizeof(struct dirent) + _POSIX_PATH_MAX + 1];
-#ifdef HAVE_OLD_READDIR_R
-    for( dp = readdir_r( dirp, (struct dirent *)entryBuffer ) ; dp != NULL ; dp = readdir_r( dirp, (struct dirent *)entryBuffer ) )
-#else /* HAVE_OLD_READDIR_R */
-    for( int readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) ; readResult == 0 && dp ; readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) )
-#endif /* HAVE_OLD_READDIR_R */
-#else /* defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE) */
-    for( dp = readdir( dirp ) ; dp != NULL ; dp = readdir( dirp ) )
-#endif /* defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE) */
-    {
-      // if the current entry refers to a worklist file
-      if( IsWorklistFile( dp->d_name ) )
-      {
-        // create a string that contains path and filename of the current worklist file.
-        OFString subname( path );
-        subname += PATH_SEPARATOR;
-        subname += dp->d_name;
-
-        // add string to the set of strings
-        worklistFiles.push_back( subname );
-      }
-    }
-
-    // close directory
-    closedir( dirp );
-  }
-#endif /* HAVE__FINDFIRST */
-
-  // in case we are running in verbose mode, dump all worklist file information
-  if (DCM_dcmwlmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
-  {
-    DCMWLM_INFO("=============================");
-    DCMWLM_INFO("Worklist Database Files:");
-    if( worklistFiles.empty() )
-      DCMWLM_INFO("<no files found>");
-    else
-    {
-      OFVector<OFString>::const_iterator iter = worklistFiles.begin();
-      while( iter != worklistFiles.end() )
-      {
-        DCMWLM_INFO(*iter);
-        ++iter;
-      }
-    }
-    DCMWLM_INFO("=============================");
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmFileSystemInteractionManager::IsWorklistFile( const char *fname )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue if the given filename refers to a worklist file,
-//                i.e. has an extension of ".wl".
-// Parameters   : fname - [in] The name of the file.
-// Return Value : OFTrue  - The given filename refers to a worklist file.
-//                OFFalse - The given filename does not refer to a worklist file.
-{
-  // If no filename is specified, return OFFalse
-  if( fname == NULL )
-    return( OFFalse );
-
-  // look for an '.' in the filename
-  char *s = (char *)strrchr( fname, '.' );
-
-  // if there was no '.' return OFFalse
-  if( s == NULL )
-    return( OFFalse );
-
-  // if the extension is ".wl" return OFTrue
-  if( strcmp( s, ".wl" ) == 0 )
-    return( OFTrue );
-
-  // return OFFalse in all other cases
-  return( OFFalse );
+    for( ; it != OFdirectory_iterator() && ".wl" != it->path().extension(); ++it );
+    return it;
 }
 
 // ----------------------------------------------------------------------------
@@ -898,27 +716,16 @@ OFBool WlmFileSystemInteractionManager::MatchSequences( DcmSequenceOfItems& cand
 {
   for( DcmObject* pQueryItem = query.nextInContainer( OFnullptr); pQueryItem; pQueryItem = query.nextInContainer( pQueryItem ) )
     for( DcmObject* pCandidateItem = candidate.nextInContainer( OFnullptr); pCandidateItem; pCandidateItem = candidate.nextInContainer( pCandidateItem ) )
-      if( DatasetMatchesSearchMask( OFstatic_cast( DcmItem*, pCandidateItem ), OFstatic_cast( DcmItem*, pQueryItem ), matchingKeys ) )
+      if( DatasetMatchesSearchMask( *OFstatic_cast( DcmItem*, pCandidateItem ), *OFstatic_cast( DcmItem*, pQueryItem ), matchingKeys ) )
         return OFTrue;
   return OFFalse;
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *dataset, DcmItem *searchMask,
+OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem& dataset, DcmItem& searchMask,
                                                                   const MatchingKeys& matchingKeys )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue, if the matching key attribute values in the
-//                dataset match the matching key attribute values in the search mask.
-// Parameters   : dataset    - [in] The dataset which shall be checked.
-//                searchMask - [in] The search mask.
-// Return Value : OFTrue  - The dataset matches the search mask in the matching key attribute values.
-//                OFFalse - The dataset does not match the search mask in the matching key attribute values.
 {
-  assert( dataset );
-  assert( searchMask );
-
 #ifdef HAVE_CXX11
   for( auto& key : matchingKeys.keys )
   {
@@ -929,10 +736,10 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
     const OFPair<DcmTagKey,OFBool>& key = *it;
 #endif
     DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch() )
+    if( searchMask.findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch() )
     {
       DcmElement* candidate = OFnullptr;
-      if( dataset->findAndGetElement( key.first, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate, key.second ) )
+      if( dataset.findAndGetElement( key.first, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate, key.second ) )
         return OFFalse;
     }
   }
@@ -947,16 +754,16 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
     const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
 #endif
     DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch() )
+    if( searchMask.findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch() )
     {
       DcmElement* candidate = OFnullptr;
-      if( dataset->findAndGetElement( combinedKey.first, candidate, OFFalse ).bad() || !candidate )
+      if( dataset.findAndGetElement( combinedKey.first, candidate, OFFalse ).bad() || !candidate )
         return OFFalse;
       DcmElement* secondQuery = OFnullptr;
-      if( searchMask->findAndGetElement( combinedKey.second, secondQuery, OFFalse ).good() && secondQuery && !secondQuery->isUniversalMatch() )
+      if( searchMask.findAndGetElement( combinedKey.second, secondQuery, OFFalse ).good() && secondQuery && !secondQuery->isUniversalMatch() )
       {
         DcmElement* secondCandidate = OFnullptr;
-        if( dataset->findAndGetElement( combinedKey.second, secondCandidate, OFFalse ).bad() || !secondCandidate || !query->combinationMatches( *secondQuery, *candidate, *secondCandidate ) )
+        if( dataset.findAndGetElement( combinedKey.second, secondCandidate, OFFalse ).bad() || !secondCandidate || !query->combinationMatches( *secondQuery, *candidate, *secondCandidate ) )
             return OFFalse;
       }
       else if( !query->matches( *candidate ) )
@@ -964,10 +771,10 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
         return OFFalse;
       }
     }
-    else if( searchMask->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch() )
+    else if( searchMask.findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch() )
     {
       DcmElement* candidate = OFnullptr;
-      if( dataset->findAndGetElement( combinedKey.second, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate ) )
+      if( dataset.findAndGetElement( combinedKey.second, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate ) )
         return OFFalse;
     }
   }
@@ -984,10 +791,10 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *datas
     const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
 #endif
     DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !IsUniversalMatch( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
+    if( searchMask.findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !IsUniversalMatch( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
     {
       DcmElement* candidate = OFnullptr;
-      if( dataset->findAndGetElement( sequenceKey.first, candidate, OFFalse ).bad() || !candidate || candidate->ident() != EVR_SQ || !MatchSequences( OFstatic_cast( DcmSequenceOfItems&, *candidate ), OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
+      if( dataset.findAndGetElement( sequenceKey.first, candidate, OFFalse ).bad() || !candidate || candidate->ident() != EVR_SQ || !MatchSequences( OFstatic_cast( DcmSequenceOfItems&, *candidate ), OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
         return OFFalse;
     }
   }

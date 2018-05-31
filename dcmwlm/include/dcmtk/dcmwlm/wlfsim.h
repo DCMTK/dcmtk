@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,7 +13,7 @@
  *
  *  Module:  dcmwlm
  *
- *  Author:  Thomas Wilkens
+ *  Author:  Thomas Wilkens, Jan Schlamelcher
  *
  *  Purpose: Class for managing file system interaction.
  *
@@ -26,14 +26,15 @@
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oftypes.h"   /* for OFBool */
 #include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/dcmwlm/wldefine.h"
 
-template <class T> class OFOrderedSet;
 struct WlmSuperiorSequenceInfoType;
 class DcmDataset;
 class DcmTagKey;
 class OFCondition;
 class DcmItem;
+class OFdirectory_iterator;
 
 /** This class encapsulates data structures and operations for managing
  *  data base interaction in the framework of the DICOM basic worklist
@@ -63,24 +64,13 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
     OFBool enableRejectionOfIncompleteWlFiles;
     /// called AE title
     OFString calledApplicationEntityTitle;
-    /// array of matching records
-    DcmDataset **matchingRecords;
-    /// number of array fields
-    unsigned long numOfMatchingRecords;
+    /// matching records
+    OFVector<OFshared_ptr<DcmDataset> > matchingRecords;
 
-      /** This function determines all worklist files in the directory specified by
-       *  dfPath and calledApplicationEntityTitle, and returns the complete path and
-       *  filename information in an array of strings.
-       *  @param worklistFiles Set of strings, each specifying path and filename to one worklist file.
+      /** Increment the given directory iterator until it refers to a worklist file (or past-the-end).
+       *  @param it A reference to an OFdirectory_iterator.
        */
-    void DetermineWorklistFiles( OFVector<OFString> &worklistFiles );
-
-      /** This function returns OFTrue if the given filename refers to a worklist file,
-       *  i.e. has an extension of ".wl".
-       *  @param fname The name of the file.
-       *  @return OFTrue in case the given filename refers to a worklist file, OFFalse otherwise.
-       */
-    OFBool IsWorklistFile( const char *fname );
+    OFdirectory_iterator& FindNextWorklistFile( OFdirectory_iterator& it );
 
       /** This function checks if the given dataset (which represents the information from a
        *  worklist file) contains all necessary return type 1 information. According to the
@@ -180,7 +170,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  @param matchingKeys The matching keys to regard.
        *  @return OFTrue in case the dataset matches the search mask in the matching key attribute values, OFFalse otherwise.
        */
-    OFBool DatasetMatchesSearchMask( DcmItem *dataset, DcmItem *searchMask, const MatchingKeys& matchingKeys );
+    OFBool DatasetMatchesSearchMask( DcmItem& dataset, DcmItem& searchMask, const MatchingKeys& matchingKeys );
 
   public:
       /** default constructor.
@@ -191,7 +181,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        */
     ~WlmFileSystemInteractionManager();
 
-      /**  Set value in member variable.
+      /** Set value in member variable.
        *  @param value The value to set.
        */
     void SetEnableRejectionOfIncompleteWlFiles( OFBool value );
@@ -216,14 +206,26 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        */
     OFBool IsCalledApplicationEntityTitleSupported( const OFString& calledApplicationEntityTitlev );
 
-      /** This function determines the records from the worklist files which match
+      /** This function determines the records from the Worklist files that match
        *  the given search mask and returns the number of matching records. Also,
-       *  this function will store the matching records in memory in the array
-       *  member variable matchingRecords.
-       *  @param searchMask - [in] The search mask.
-       *  @return Number of matching records.
+       *  this function will store the matching records inside the member variable
+       *  matchingRecords.
+       *  @param searchMask A pointer to the search mask.
+       *  @return The number of matching records.
        */
-    unsigned long DetermineMatchingRecords( DcmDataset *searchMask );
+    size_t DetermineMatchingRecords( DcmDataset* searchMask );
+
+      /** Determine whether a Worklist file matches the search mask.
+       *  @param searchMask A reference to the search mask.
+       *  @param  worklistFile An OFpath (hopefully) referring to a Worklist
+       *    file.
+       *  @details
+       *  This method will attempt to load the Worklist file referenced by the
+       *  argument worklistFile and, on success, compare it against searchMask.
+       *  If the file matches the search mask, its dataset part will be added
+       *  to the matching records member variable.
+       */
+    void MatchWorklistFile( DcmDataset& searchMask, const OFpath& worklistFile );
 
       /** For the matching record that is identified through idx, this function returns the number
        *  of items that are contained in the sequence element that is referred to by sequenceTag.
