@@ -1,20 +1,20 @@
 # Declare project
-PROJECT(DCMTK)
+project(DCMTK)
 
 # Minimum CMake version required
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
+cmake_minimum_required(VERSION 2.8.5)
 
 # Disables a warning emitted by CMake 3.7.2. The same setting is performed
 # again in CMake/dcmtkPrepare.cmake (included below), but the warning is still
 # emitted if it is not set here (it only goes away if the policy is set in
 # both files).
 # We do not entirely understand this behavior, perhaps it is a bug in CMake?
-IF(POLICY CMP0017)
-    CMAKE_POLICY(SET CMP0017 NEW)
-ENDIF()
+if(POLICY CMP0017)
+    cmake_policy(SET CMP0017 NEW)
+endif()
 
 # Check the build system
-INCLUDE(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
+include(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
 
 #-----------------------------------------------------------------------------
 # General project settings to configure DCMTK build process
@@ -22,7 +22,7 @@ INCLUDE(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
 
 # Modules to be built
 
-SET(DCMTK_MODULES ofstd oflog dcmdata dcmimgle
+set(DCMTK_MODULES ofstd oflog dcmdata dcmimgle
   dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr
   dcmsign dcmwlm dcmqrdb dcmpstat dcmrt dcmiod dcmfg dcmseg dcmtract dcmpmap
   CACHE STRING "List of modules that should be built.")
@@ -31,19 +31,19 @@ SET(DCMTK_MODULES ofstd oflog dcmdata dcmimgle
 # Include directories
 #-----------------------------------------------------------------------------
 
-SET(DCMTK_INCLUDE_DIR "${DCMTK_BINARY_DIR}/config/include")
-FOREACH(inc ${DCMTK_MODULES})
-  LIST(APPEND DCMTK_INCLUDE_DIR "${DCMTK_SOURCE_DIR}/${inc}/include")
-ENDFOREACH(inc)
+set(DCMTK_INCLUDE_DIR "${DCMTK_BINARY_DIR}/config/include")
+foreach(inc ${DCMTK_MODULES})
+  list(APPEND DCMTK_INCLUDE_DIR "${DCMTK_SOURCE_DIR}/${inc}/include")
+endforeach()
 
-INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR})
+include_directories(${DCMTK_INCLUDE_DIR})
 
 #-----------------------------------------------------------------------------
 # Prepare osconfig.h
 #-----------------------------------------------------------------------------
 
 # add the osconfig.h.in file
-CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in"
+configure_file("${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in"
                "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h")
 
 #-----------------------------------------------------------------------------
@@ -56,19 +56,19 @@ INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES()
 # Unit test related configuration/setup
 # ----------------------------------------------------------------------------
 
-IF(CMAKE_CROSSCOMPILING)
-  IF(WIN32)
-    SET(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRunWine.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test as a detached Wine process in the prepared wineprefix")
-  ELSEIF(ANDROID)
-    SET(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRunAndroid.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test via the android emulator")
-  ELSE()
-    MESSAGE(WARNING "Emulation for your target platform is not available, CTest will not be able to execute the unit tests!")
-  ENDIF()
-ELSE(CMAKE_CROSSCOMPILING)
-  SET(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRun.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test")
-ENDIF(CMAKE_CROSSCOMPILING)
+if(CMAKE_CROSSCOMPILING)
+  if(WIN32)
+    set(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRunWine.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test as a detached Wine process in the prepared wineprefix")
+  elseif(ANDROID)
+    set(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRunAndroid.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test via the android emulator")
+  else()
+    message(WARNING "Emulation for your target platform is not available, CTest will not be able to execute the unit tests!")
+  endif()
+else()
+  set(DCMTK_RUN_CTEST_SCRIPT "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/dcmtkCTestRun.cmake" CACHE INTERNAL "path to the CMake script for launching a unit test")
+endif()
 # Add a target to run the unit tests in exhaustive mode
-ADD_CUSTOM_TARGET("test-exhaustive"
+add_custom_target("test-exhaustive"
     COMMAND "${CMAKE_COMMAND}" "-DCONFIG=${DCMTK_CONFIG_GENERATOR_EXPRESSION}" "-P"
         "${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunExhaustive.cmake"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
@@ -79,26 +79,26 @@ ADD_CUSTOM_TARGET("test-exhaustive"
 #-----------------------------------------------------------------------------
 
 # Recurse into subdirectories
-FOREACH(module config doxygen ${DCMTK_MODULES})
-  ADD_SUBDIRECTORY(${module})
-ENDFOREACH(module)
-INCLUDE(CMake/dcmtkAfterModules.cmake NO_POLICY_SCOPE)
+foreach(module config doxygen ${DCMTK_MODULES})
+  add_subdirectory(${module})
+endforeach()
+include(CMake/dcmtkAfterModules.cmake NO_POLICY_SCOPE)
 
 #-----------------------------------------------------------------------------
 # Installation tasks
 #-----------------------------------------------------------------------------
 
 # Install global headers
-INSTALL(FILES "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h"
+install(FILES "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h"
               "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h"
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/dcmtk/config"
         COMPONENT include)
 
 # Install DCMTK's general documentation files
-INSTALL(FILES ANNOUNCE CHANGES COPYRIGHT CREDITS FAQ HISTORY VERSION
+install(FILES ANNOUNCE CHANGES COPYRIGHT CREDITS FAQ HISTORY VERSION
         DESTINATION "${CMAKE_INSTALL_DOCDIR}"
         COMPONENT doc)
-INSTALL(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+install(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_DOCDIR}"
         COMPONENT doc FILES_MATCHING PATTERN "CHANGES.???")
 
 #-----------------------------------------------------------------------------
@@ -114,79 +114,79 @@ INSTALL(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_DOCDIR}"
 # under the main install dir (handled directly below).
 
 # Only create fully-fledged CMake export files if we have the related commands
-INCLUDE(CMake/CheckCMakeCommandExists.cmake)
-INCLUDE(CMakePackageConfigHelpers OPTIONAL)
+include(CMake/CheckCMakeCommandExists.cmake)
+include(CMakePackageConfigHelpers OPTIONAL)
 CHECK_CMAKE_COMMAND_EXISTS("CONFIGURE_PACKAGE_CONFIG_FILE")
 CHECK_CMAKE_COMMAND_EXISTS("WRITE_BASIC_PACKAGE_VERSION_FILE")
 
-IF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
+if(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
 
   # Create and configure CMake export files
-  INCLUDE(CMake/GenerateCMakeExports.cmake)
+  include(CMake/GenerateCMakeExports.cmake)
 
   # ${DCMTK_INSTALL_CONFIG} and ${DCMTK_CONFIG_VERSION} are
   # defined within CMake/GenerateCMakeExports.cmake.
   # Install DCMTKTargets.cmake to install tree
-  INSTALL(EXPORT DCMTKTargets FILE DCMTKTargets.cmake
+  install(EXPORT DCMTKTargets FILE DCMTKTargets.cmake
           DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
 
   # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
-  INSTALL(FILES "${DCMTK_INSTALL_CONFIG}" "${DCMTK_CONFIG_VERSION}"
+  install(FILES "${DCMTK_INSTALL_CONFIG}" "${DCMTK_CONFIG_VERSION}"
           DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
 
-ELSE(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
+else()
 
   # Warning that we use old "configure_file" command
-  MESSAGE(STATUS "Warning: Using old CONFIGURE_FILE() mechanism to produce DCMTKConfig.cmake")
+  message(STATUS "Warning: Using old configure_file() mechanism to produce DCMTKConfig.cmake")
 
   # Actually configure file
-  CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.old_cmake.in"
+  configure_file("${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.old_cmake.in"
                  "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" @ONLY)
 
   # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
-  INSTALL(FILES "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" "${DCMTK_BINARY_DIR}/DCMTKConfigVersion.cmake"
+  install(FILES "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" "${DCMTK_BINARY_DIR}/DCMTKConfigVersion.cmake"
           DESTINATION "${DCMTK_INSTALL_CMKDIR}"
           COMPONENT cmake)
 
-ENDIF(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
+endif()
 
 #-----------------------------------------------------------------------------
 # Configure files needed for running the unit tests and cleanup
 #-----------------------------------------------------------------------------
 
-IF(CMAKE_CROSSCOMPILING)
-  IF(WIN32)
-    STRING(REPLACE ";" "${ENVIRONMENT_PATH_SEPARATOR}" DCMDICTPATH "${DCMTK_DICOM_DICTIONARIES}")
-    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustomWine.cmake.in"
+if(CMAKE_CROSSCOMPILING)
+  if(WIN32)
+    string(REPLACE ";" "${ENVIRONMENT_PATH_SEPARATOR}" DCMDICTPATH "${DCMTK_DICOM_DICTIONARIES}")
+    configure_file("${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustomWine.cmake.in"
       "${DCMTK_BINARY_DIR}/CTestCustom.cmake" ESCAPE_QUOTES @ONLY
     )
-    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunWine.cmake.in"
+    configure_file("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunWine.cmake.in"
       "${DCMTK_RUN_CTEST_SCRIPT}" ESCAPE_QUOTES @ONLY
     )
-  ELSEIF(ANDROID)
+  elseif(ANDROID)
     DCMTK_ANDROID_STOP_EMULATOR(DCMTK_ANDROID_EMULATOR_INSTANCE)
     # Prepare setting environment variable DCMDICTPATH
-    SET(DICTIONARIES ${DCMTK_DICOM_DICTIONARIES})
-    LIST(GET DICTIONARIES 0 DCMDICTPATH)
-    LIST(REMOVE_AT DICTIONARIES 0)
-    GET_FILENAME_COMPONENT(DCMDICTPATH "${DCMDICTPATH}" NAME)
-    SET(DCMDICTPATH "${ANDROID_TEMPORARY_FILES_LOCATION}/${DCMDICTPATH}")
-    FOREACH(DICTIONARY ${DICTIONARIES})
-        GET_FILENAME_COMPONENT(FILE "${DICTIONARY}" NAME)
-        SET(DCMDICTPATH "${DCMDICTPATH}:${ANDROID_TEMPORARY_FILES_LOCATION}/${FILE}")
-    ENDFOREACH()
-    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustomAndroid.cmake.in"
+    set(DICTIONARIES ${DCMTK_DICOM_DICTIONARIES})
+    list(GET DICTIONARIES 0 DCMDICTPATH)
+    list(REMOVE_AT DICTIONARIES 0)
+    get_filename_component(DCMDICTPATH "${DCMDICTPATH}" NAME)
+    set(DCMDICTPATH "${ANDROID_TEMPORARY_FILES_LOCATION}/${DCMDICTPATH}")
+    foreach(DICTIONARY ${DICTIONARIES})
+        get_filename_component(FILE "${DICTIONARY}" NAME)
+        set(DCMDICTPATH "${DCMDICTPATH}:${ANDROID_TEMPORARY_FILES_LOCATION}/${FILE}")
+    endforeach()
+    configure_file("${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustomAndroid.cmake.in"
       "${DCMTK_BINARY_DIR}/CTestCustom.cmake" ESCAPE_QUOTES @ONLY
     )
-    CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunAndroid.cmake.in"
+    configure_file("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunAndroid.cmake.in"
       "${DCMTK_RUN_CTEST_SCRIPT}" ESCAPE_QUOTES @ONLY
     )
-  ELSE()
+  else()
     # nothing to do
-  ENDIF()
-ELSE(CMAKE_CROSSCOMPILING)
-  STRING(REPLACE ";" "${ENVIRONMENT_PATH_SEPARATOR}" DCMDICTPATH "${DCMTK_DICOM_DICTIONARIES}")
-  CONFIGURE_FILE("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRun.cmake.in"
+  endif()
+else()
+  string(REPLACE ";" "${ENVIRONMENT_PATH_SEPARATOR}" DCMDICTPATH "${DCMTK_DICOM_DICTIONARIES}")
+  configure_file("${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRun.cmake.in"
     "${DCMTK_RUN_CTEST_SCRIPT}" ESCAPE_QUOTES @ONLY
   )
-ENDIF(CMAKE_CROSSCOMPILING)
+endif()

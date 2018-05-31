@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL(DIRECTORY dcmtk/dcmtract DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/dcmtk" COMPONENT include FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY dcmtk/dcmtract DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/dcmtk" COMPONENT include FILES_MATCHING PATTERN "*.h")

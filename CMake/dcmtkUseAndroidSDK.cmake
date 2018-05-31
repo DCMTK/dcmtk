@@ -35,7 +35,7 @@
 #    tools of the NDK (e. g. 'adb') by referring to the
 #    instance with the value of EMULATOR_NAME.
 
-INCLUDE(CMakeParseArguments)
+include(CMakeParseArguments)
 
 #
 # 'Unpacks' an Android emulator instance handle object to
@@ -50,18 +50,18 @@ INCLUDE(CMakeParseArguments)
 # is not a valid emulator instance handle.
 # All additional arguments will be ignored.
 #
-MACRO(DCMTK_ANDROID_GET_OBJECT_PROPERTIES VAR)
-    LIST(LENGTH ${VAR} ${VAR}_LENGTH)
-    IF(${VAR}_LENGTH EQUAL 3)
-        LIST(GET ${VAR} 0 EMULATOR_STATE)
-        LIST(GET ${VAR} 1 EMULATOR_UUID)
-        LIST(GET ${VAR} 2 EMULATOR_NAME)
-    ELSE()
-        UNSET(EMULATOR_STATE)
-        UNSET(EMULATOR_UUID)
-        UNSET(EMULATOR_NAME)
-    ENDIF()
-ENDMACRO(DCMTK_ANDROID_GET_OBJECT_PROPERTIES)
+macro(DCMTK_ANDROID_GET_OBJECT_PROPERTIES VAR)
+    list(LENGTH ${VAR} ${VAR}_LENGTH)
+    if(${VAR}_LENGTH EQUAL 3)
+        list(GET ${VAR} 0 EMULATOR_STATE)
+        list(GET ${VAR} 1 EMULATOR_UUID)
+        list(GET ${VAR} 2 EMULATOR_NAME)
+    else()
+        unset(EMULATOR_STATE)
+        unset(EMULATOR_UUID)
+        unset(EMULATOR_NAME)
+    endif()
+endmacro()
 
 #
 # Stores the properties of an emulator instance inside an
@@ -73,9 +73,9 @@ ENDMACRO(DCMTK_ANDROID_GET_OBJECT_PROPERTIES)
 # EMULATOR_NAME  - the name to set
 # All additional arguments will be ignored.
 #
-MACRO(DCMTK_ANDROID_SET_OBJECT_PROPERTIES VAR EMULATOR_STATE EMULATOR_UUID EMULATOR_NAME)
-    SET(${VAR} "${EMULATOR_STATE}" "${EMULATOR_UUID}" "${EMULATOR_NAME}" CACHE INTERNAL "")
-ENDMACRO(DCMTK_ANDROID_SET_OBJECT_PROPERTIES)
+macro(DCMTK_ANDROID_SET_OBJECT_PROPERTIES VAR EMULATOR_STATE EMULATOR_UUID EMULATOR_NAME)
+    set(${VAR} "${EMULATOR_STATE}" "${EMULATOR_UUID}" "${EMULATOR_NAME}" CACHE INTERNAL "")
+endmacro()
 
 #
 # Destroys an instance handle object.
@@ -83,9 +83,9 @@ ENDMACRO(DCMTK_ANDROID_SET_OBJECT_PROPERTIES)
 #       shall be object destroyed
 # All additional arguments will be ignored.
 #
-MACRO(DCMTK_ANDROID_DESTROY_OBJECT VAR)
-    UNSET("${VAR}" CACHE)
-ENDMACRO(DCMTK_ANDROID_DESTROY_OBJECT)
+macro(DCMTK_ANDROID_DESTROY_OBJECT VAR)
+    unset("${VAR}" CACHE)
+endmacro()
 
 #
 # Tries to detect any required shared objects within the NDK
@@ -95,21 +95,21 @@ ENDMACRO(DCMTK_ANDROID_DESTROY_OBJECT)
 # required (e. g. when they are linked statically).
 # All additional arguments will be ignored.
 #
-FUNCTION(DCMTK_ANDROID_FIND_RUNTIME_LIBRARIES VAR)
-    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
-    FOREACH(DIR ${ANDROID_STL_INCLUDE_DIRS})
-        IF(CMAKE_VERSION VERSION_LESS 2.8.11)
-            GET_FILENAME_COMPONENT(DIR "${DIR}" PATH)
-        ELSE()
-            GET_FILENAME_COMPONENT(DIR "${DIR}" DIRECTORY)
-        ENDIF()
-        LIST(APPEND ANDROID_STL_LIBRARY_DIRS "${DIR}")
-    ENDFOREACH()
-    FIND_LIBRARY(ANDROID_STL_SHARED_OBJECT ${ANDROID_STL} PATHS ${ANDROID_STL_LIBRARY_DIRS} NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
-    IF(ANDROID_STL_SHARED_OBJECT)
-        SET("${VAR}" ${ANDROID_STL_SHARED_OBJECT} PARENT_SCOPE)
-    ENDIF()
-ENDFUNCTION(DCMTK_ANDROID_FIND_RUNTIME_LIBRARIES)
+function(DCMTK_ANDROID_FIND_RUNTIME_LIBRARIES VAR)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
+    foreach(DIR ${ANDROID_STL_INCLUDE_DIRS})
+        if(CMAKE_VERSION VERSION_LESS 2.8.11)
+            get_filename_component(DIR "${DIR}" PATH)
+        else()
+            get_filename_component(DIR "${DIR}" DIRECTORY)
+        endif()
+        list(APPEND ANDROID_STL_LIBRARY_DIRS "${DIR}")
+    endforeach()
+    find_library(ANDROID_STL_SHARED_OBJECT ${ANDROID_STL} PATHS ${ANDROID_STL_LIBRARY_DIRS} NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    if(ANDROID_STL_SHARED_OBJECT)
+        set("${VAR}" ${ANDROID_STL_SHARED_OBJECT} PARENT_SCOPE)
+    endif()
+endfunction()
 
 #
 # Tries to detect the required executables and scripts automatically,
@@ -119,38 +119,38 @@ ENDFUNCTION(DCMTK_ANDROID_FIND_RUNTIME_LIBRARIES)
 # successful.
 # All arguments will be ignored.
 #
-FUNCTION(DCMTK_SETUP_ANDROID_EMULATOR)
-    IF(NOT ANDROID_TEMPORARY_FILES_LOCATION)
-        SET(ANDROID_TEMPORARY_FILES_LOCATION "/cache" CACHE STRING "The path on the Android device that should be used for temporary files")
-    ENDIF()
-    IF(NOT ANDROID_SDK_ROOT)
-        IF(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
-            FILE(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" ANDROID_SDK_SEARCH_PATHS)
-            SET(ANDROID_SDK_ROOT "${ANDROID_SDK_SEARCH_PATHS}/android-sdk" CACHE PATH "Location of the Android SDK")
-        ELSE()
-            SET(ANDROID_SDK_ROOT "/opt/android-sdk" CACHE PATH "Location of the Android SDK")
-        ENDIF()
-    ENDIF()
-    FIND_PROGRAM(ANDROID_EMULATOR_PROGRAM emulator PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
-    IF(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
-        FIND_PROGRAM(ANDROID_ANDROID_PROGRAM android.bat PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
-    ELSE()
-        FIND_PROGRAM(ANDROID_ANDROID_PROGRAM android PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
-    ENDIF()
-    FIND_PROGRAM(ANDROID_ADB_PROGRAM adb PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES platform-tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
-    IF(NOT ANDROID_EMULATOR_PROGRAM OR NOT ANDROID_ANDROID_PROGRAM OR NOT ANDROID_ADB_PROGRAM)
-        MESSAGE(FATAL_ERROR
+function(DCMTK_SETUP_ANDROID_EMULATOR)
+    if(NOT ANDROID_TEMPORARY_FILES_LOCATION)
+        set(ANDROID_TEMPORARY_FILES_LOCATION "/cache" CACHE STRING "The path on the Android device that should be used for temporary files")
+    endif()
+    if(NOT ANDROID_SDK_ROOT)
+        if(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
+            file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" ANDROID_SDK_SEARCH_PATHS)
+            set(ANDROID_SDK_ROOT "${ANDROID_SDK_SEARCH_PATHS}/android-sdk" CACHE PATH "Location of the Android SDK")
+        else()
+            set(ANDROID_SDK_ROOT "/opt/android-sdk" CACHE PATH "Location of the Android SDK")
+        endif()
+    endif()
+    find_program(ANDROID_EMULATOR_PROGRAM emulator PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    if(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
+        find_program(ANDROID_ANDROID_PROGRAM android.bat PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    else()
+        find_program(ANDROID_ANDROID_PROGRAM android PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    endif()
+    find_program(ANDROID_ADB_PROGRAM adb PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES platform-tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    if(NOT ANDROID_EMULATOR_PROGRAM OR NOT ANDROID_ANDROID_PROGRAM OR NOT ANDROID_ADB_PROGRAM)
+        message(FATAL_ERROR
             "Failed to detect the Android SDK, please set ANDROID_SDK_ROOT to the location of your Android SDK"
             "or set the missing tools manually!"
         )
-    ELSE()
-        EXECUTE_PROCESS(COMMAND "${ANDROID_ANDROID_PROGRAM}" list avd RESULT_VARIABLE RESULT OUTPUT_VARIABLE OUTPUT ERROR_QUIET)
-        STRING(REGEX MATCHALL "Name:[ \t]*[^\r\n]*" ANDROID_AVAILABLE_AVDS ${OUTPUT})
-        STRING(REGEX REPLACE "Name:[ \t]*([^\r\n;]*)" "\\1" ANDROID_AVAILABLE_AVDS "${ANDROID_AVAILABLE_AVDS}")
-        SET(ANDROID_EMULATOR_AVD "${ANDROID_EMULATOR_AVD}" CACHE STRING "Android emulator Android Virtual Device (AVD) configuration" FORCE)
-        SET_PROPERTY(CACHE ANDROID_EMULATOR_AVD PROPERTY STRINGS ${ANDROID_AVAILABLE_AVDS})
-    ENDIF()
-ENDFUNCTION(DCMTK_SETUP_ANDROID_EMULATOR)
+    else()
+        execute_process(COMMAND "${ANDROID_ANDROID_PROGRAM}" list avd RESULT_VARIABLE RESULT OUTPUT_VARIABLE OUTPUT ERROR_QUIET)
+        string(REGEX MATCHALL "Name:[ \t]*[^\r\n]*" ANDROID_AVAILABLE_AVDS ${OUTPUT})
+        string(REGEX REPLACE "Name:[ \t]*([^\r\n;]*)" "\\1" ANDROID_AVAILABLE_AVDS "${ANDROID_AVAILABLE_AVDS}")
+        set(ANDROID_EMULATOR_AVD "${ANDROID_EMULATOR_AVD}" CACHE STRING "Android emulator Android Virtual Device (AVD) configuration" FORCE)
+        set_property(CACHE ANDROID_EMULATOR_AVD PROPERTY STRINGS ${ANDROID_AVAILABLE_AVDS})
+    endif()
+endfunction()
 
 #
 # Enumerates all currently available Android devices
@@ -165,33 +165,33 @@ ENDFUNCTION(DCMTK_SETUP_ANDROID_EMULATOR)
 #           instructions)
 # Will ignore all additional arguments.
 #
-FUNCTION(DCMTK_ANDROID_LIST_EMULATORS ONLINE OFFLINE)
+function(DCMTK_ANDROID_LIST_EMULATORS ONLINE OFFLINE)
     DCMTK_SETUP_ANDROID_EMULATOR()
-    IF(ANDROID_ADB_PROGRAM)
-        EXECUTE_PROCESS(
+    if(ANDROID_ADB_PROGRAM)
+        execute_process(
             COMMAND "${ANDROID_ADB_PROGRAM}" devices
             RESULT_VARIABLE RESULT
             OUTPUT_VARIABLE DEVICES_RAW
             ERROR_QUIET
         )
-        STRING(REPLACE "\n" ";" DEVICES "${DEVICES_RAW}")
-        FOREACH(DEVICE ${DEVICES})
-            STRING(REGEX REPLACE "(.+)\t(.+)" "\\1;\\2" DS "${DEVICE}")
-            LIST(LENGTH DS DSL)
-            IF(DSL EQUAL 2)
-                LIST(GET DS 0 EMULATOR_NAME)
-                LIST(GET DS 1 EMULATOR_STATE)
-                IF(EMULATOR_STATE MATCHES "^device$")
-                    LIST(APPEND "${ONLINE}" ${EMULATOR_NAME})
-                ELSE()
-                    LIST(APPEND "${OFFLINE}" ${EMULATOR_NAME})
-                ENDIF()
-            ENDIF()
-        ENDFOREACH()
-    ENDIF()
-    SET("${ONLINE}" ${${ONLINE}} PARENT_SCOPE)
-    SET("${OFFLINE}" ${${OFFLINE}} PARENT_SCOPE)
-ENDFUNCTION(DCMTK_ANDROID_LIST_EMULATORS)
+        string(REPLACE "\n" ";" DEVICES "${DEVICES_RAW}")
+        foreach(DEVICE ${DEVICES})
+            string(REGEX REPLACE "(.+)\t(.+)" "\\1;\\2" DS "${DEVICE}")
+            list(LENGTH DS DSL)
+            if(DSL EQUAL 2)
+                list(GET DS 0 EMULATOR_NAME)
+                list(GET DS 1 EMULATOR_STATE)
+                if(EMULATOR_STATE MATCHES "^device$")
+                    list(APPEND "${ONLINE}" ${EMULATOR_NAME})
+                else()
+                    list(APPEND "${OFFLINE}" ${EMULATOR_NAME})
+                endif()
+            endif()
+        endforeach()
+    endif()
+    set("${ONLINE}" ${${ONLINE}} PARENT_SCOPE)
+    set("${OFFLINE}" ${${OFFLINE}} PARENT_SCOPE)
+endfunction()
 
 #
 # Generate a random ID that is hopefully unique
@@ -200,19 +200,19 @@ ENDFUNCTION(DCMTK_ANDROID_LIST_EMULATORS)
 #       the generated UUID as a string value
 # Will ignore all additional arguments.
 #
-IF(CMAKE_VERSION VERSION_LESS 2.8.11)
-MACRO(DCMTK_ANDROID_EMULATOR_GENERATE_UUID VAR)
-    STRING(RANDOM LENGTH 20 ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" ${VAR})
-ENDMACRO(DCMTK_ANDROID_EMULATOR_GENERATE_UUID)
-ELSE(CMAKE_VERSION VERSION_LESS 2.8.11)
-FUNCTION(DCMTK_ANDROID_EMULATOR_GENERATE_UUID VAR)
-    STRING(RANDOM LENGTH 20 RAND)
-    STRING(TIMESTAMP TM)
-    SET(${VAR} "${TM}${RAND}")
-    STRING(MD5 ${VAR} ${${VAR}})
-    SET(${VAR} ${${VAR}} PARENT_SCOPE)
-ENDFUNCTION(DCMTK_ANDROID_EMULATOR_GENERATE_UUID)
-ENDIF(CMAKE_VERSION VERSION_LESS 2.8.11)
+if(CMAKE_VERSION VERSION_LESS 2.8.11)
+macro(DCMTK_ANDROID_EMULATOR_GENERATE_UUID VAR)
+    string(RANDOM LENGTH 20 ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" ${VAR})
+endmacro()
+else()
+function(DCMTK_ANDROID_EMULATOR_GENERATE_UUID VAR)
+    string(RANDOM LENGTH 20 RAND)
+    string(TIMESTAMP TM)
+    set(${VAR} "${TM}${RAND}")
+    string(MD5 ${VAR} ${${VAR}})
+    set(${VAR} ${${VAR}} PARENT_SCOPE)
+endfunction()
+endif()
 
 #
 # Tries to query the UUID property of an accessible Android device.
@@ -222,21 +222,21 @@ ENDIF(CMAKE_VERSION VERSION_LESS 2.8.11)
 # is accessible or the device is offline.
 # Will ignore all additional arguments.
 #
-FUNCTION(DCMTK_ANDROID_GET_EMULATOR_UUID EMULATOR_NAME VAR)
-    EXECUTE_PROCESS(
+function(DCMTK_ANDROID_GET_EMULATOR_UUID EMULATOR_NAME VAR)
+    execute_process(
         COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" shell getprop "ro.emu.uuid"
         RESULT_VARIABLE RESULT
         OUTPUT_VARIABLE OUTPUT
         ERROR_QUIET
     )
     DCMTK_UNSET_PARENT_SCOPE(${VAR})
-    IF(NOT RESULT)
-        STRING(STRIP "${OUTPUT}" UUID)
-        IF(UUID)
-            SET("${VAR}" ${UUID} PARENT_SCOPE)
-        ENDIF()
-    ENDIF()
-ENDFUNCTION(DCMTK_ANDROID_GET_EMULATOR_UUID)
+    if(NOT RESULT)
+        string(STRIP "${OUTPUT}" UUID)
+        if(UUID)
+            set("${VAR}" ${UUID} PARENT_SCOPE)
+        endif()
+    endif()
+endfunction()
 
 #
 # Retrieves the name of the emulator instance referred to by
@@ -249,40 +249,40 @@ ENDFUNCTION(DCMTK_ANDROID_GET_EMULATOR_UUID)
 # one has been found.
 # Will ignore all additional arguments.
 #
-FUNCTION(DCMTK_ANDROID_GET_EMULATOR_NAME VAR EMULATOR_UUID)
+function(DCMTK_ANDROID_GET_EMULATOR_NAME VAR EMULATOR_UUID)
     DCMTK_ANDROID_LIST_EMULATORS(ONLINE_EMULATORS OFFLINE_EMULATORS)
-    FOREACH(EMULATOR ${ONLINE_EMULATORS})
+    foreach(EMULATOR ${ONLINE_EMULATORS})
         DCMTK_ANDROID_GET_EMULATOR_UUID("${EMULATOR}" UUID)
-        IF(EMULATOR_UUID STREQUAL UUID)
-            SET("${VAR}" "${EMULATOR}" PARENT_SCOPE)
-            RETURN()
-        ENDIF()
-    ENDFOREACH()
-    WHILE(OFFLINE_EMULATORS)
-        LIST(GET OFFLINE_EMULATORS 0 EMULATOR)
-        LIST(REMOVE_AT OFFLINE_EMULATORS 0)
-        EXECUTE_PROCESS(
+        if(EMULATOR_UUID STREQUAL UUID)
+            set("${VAR}" "${EMULATOR}" PARENT_SCOPE)
+            return()
+        endif()
+    endforeach()
+    while(OFFLINE_EMULATORS)
+        list(GET OFFLINE_EMULATORS 0 EMULATOR)
+        list(REMOVE_AT OFFLINE_EMULATORS 0)
+        execute_process(
             COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR}" wait-for-device
             TIMEOUT 1
             RESULT_VARIABLE RESULT
             OUTPUT_QUIET
             ERROR_QUIET
         )
-        IF(NOT RESULT)
+        if(NOT RESULT)
             DCMTK_ANDROID_GET_EMULATOR_UUID("${EMULATOR}" UUID)
-            IF(UUID)
-                IF(EMULATOR_UUID STREQUAL UUID)
-                    SET("${VAR}" "${EMULATOR}" PARENT_SCOPE)
-                    RETURN()
-                ENDIF()
-            ELSE()
-                LIST(APPEND OFFLINE_EMULATORS "${EMULATOR}")
-            ENDIF()
-        ELSE()
-            LIST(APPEND OFFLINE_EMULATORS "${EMULATOR}")
-        ENDIF()
-    ENDWHILE()
-ENDFUNCTION()
+            if(UUID)
+                if(EMULATOR_UUID STREQUAL UUID)
+                    set("${VAR}" "${EMULATOR}" PARENT_SCOPE)
+                    return()
+                endif()
+            else()
+                list(APPEND OFFLINE_EMULATORS "${EMULATOR}")
+            endif()
+        else()
+            list(APPEND OFFLINE_EMULATORS "${EMULATOR}")
+        endif()
+    endwhile()
+endfunction()
 
 #
 # Sets up and starts a new emulator instance or reuses an
@@ -295,53 +295,53 @@ ENDFUNCTION()
 # if VAR does not refer to a valid emulator instance.
 # Will ignore all additional arguments.
 #
-FUNCTION(DCMTK_ANDROID_START_EMULATOR VAR)
+function(DCMTK_ANDROID_START_EMULATOR VAR)
     DCMTK_SETUP_ANDROID_EMULATOR()
-    IF(NOT ANDROID_EMULATOR_AVD)
-        MESSAGE(FATAL_ERROR "Please select which Android emulator Android Virtual Device (AVD) configuration to use!")
-    ELSE()
+    if(NOT ANDROID_EMULATOR_AVD)
+        message(FATAL_ERROR "Please select which Android emulator Android Virtual Device (AVD) configuration to use!")
+    else()
         DCMTK_ANDROID_GET_OBJECT_PROPERTIES("${VAR}")
-        IF(NOT EMULATOR_STATE)
+        if(NOT EMULATOR_STATE)
             DCMTK_ANDROID_EMULATOR_GENERATE_UUID(EMULATOR_UUID)
-        ELSEIF(EMULATOR_STATE STREQUAL "RUNNING")
+        elseif(EMULATOR_STATE STREQUAL "RUNNING")
             DCMTK_ANDROID_GET_EMULATOR_UUID("${EMULATOR_NAME}" UUID)
             # Do nothing if the running emulator instance is ok and can be reused.
             # Otherwise restart it.
-            IF(UUID STREQUAL EMULATOR_UUID)
-                MESSAGE(STATUS "Reusing already running Android device emulator...")
-                RETURN()
-            ENDIF()
-        ELSEIF(EMULATOR_STATE STREQUAL "STARTING")
+            if(UUID STREQUAL EMULATOR_UUID)
+                message(STATUS "Reusing already running Android device emulator...")
+                return()
+            endif()
+        elseif(EMULATOR_STATE STREQUAL "STARTING")
             # Is it really starting, or has somebody aborted it?
-            MESSAGE(STATUS "Found previously started Android device emulator, checking if it's still present...")
+            message(STATUS "Found previously started Android device emulator, checking if it's still present...")
             DCMTK_ANDROID_GET_EMULATOR_NAME(EMULATOR_NAME "${EMULATOR_UUID}")
-            IF(EMULATOR_NAME)
-              MESSAGE(STATUS "Found previously started Android device emulator, checking if it's still present... yes")
+            if(EMULATOR_NAME)
+              message(STATUS "Found previously started Android device emulator, checking if it's still present... yes")
               DCMTK_ANDROID_SET_OBJECT_PROPERTIES(${VAR} RUNNING "${EMULATOR_UUID}" "${EMULATOR_NAME}")
-              RETURN()
-            ENDIF()
-            MESSAGE(STATUS "Found previously started Android device emulator, checking if it's still present... no")
-        ENDIF()
-        MESSAGE(STATUS "Starting the Android device emulator...")
-        IF(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
-            SET(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-boot-anim -prop ro.emu.uuid=${EMULATOR_UUID} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
-        ELSE()
-            SET(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-window -no-boot-anim -prop ro.emu.uuid=${EMULATOR_UUID} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
-        ENDIF()
-        EXECUTE_PROCESS(
+              return()
+            endif()
+            message(STATUS "Found previously started Android device emulator, checking if it's still present... no")
+        endif()
+        message(STATUS "Starting the Android device emulator...")
+        if(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
+            set(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-boot-anim -prop ro.emu.uuid=${EMULATOR_UUID} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
+        else()
+            set(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-window -no-boot-anim -prop ro.emu.uuid=${EMULATOR_UUID} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
+        endif()
+        execute_process(
             COMMAND ${COMMAND}
             RESULT_VARIABLE RESULT
             OUTPUT_QUIET
             ERROR_QUIET
         )
-        IF(NOT RESULT)
+        if(NOT RESULT)
             DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" STARTING "${EMULATOR_UUID}" "")
-        ELSE()
+        else()
             DCMTK_ANDROID_DESTROY_OBJECT("${VAR}")
-            MESSAGE(FATAL_ERROR "Error starting Android emulator.")
-        ENDIF()
-    ENDIF()
-ENDFUNCTION(DCMTK_ANDROID_START_EMULATOR)
+            message(FATAL_ERROR "Error starting Android emulator.")
+        endif()
+    endif()
+endfunction()
 
 #
 # Restart adb/the emulated device in root mode so that we gain write access to
@@ -351,8 +351,8 @@ ENDFUNCTION(DCMTK_ANDROID_START_EMULATOR)
 # EMULATOR_NAME - the name of the emulated device that shall be rooted.
 # Will ignore all additional arguments.
 #
-FUNCTION(DCMTK_ANDROID_ADB_ROOT EMULATOR_NAME)
-    EXECUTE_PROCESS(
+function(DCMTK_ANDROID_ADB_ROOT EMULATOR_NAME)
+    execute_process(
         COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" root
         OUTPUT_QUIET
         ERROR_QUIET
@@ -360,16 +360,16 @@ FUNCTION(DCMTK_ANDROID_ADB_ROOT EMULATOR_NAME)
     # the SDK was seemingly designed by a five year old, the device will
     # become invisible while it is being rooted, therefore, wait until
     # it is ready again
-    SET(STATUS 1)
-    WHILE(STATUS)
-        EXECUTE_PROCESS(
+    set(STATUS 1)
+    while(STATUS)
+        execute_process(
             COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" wait-for-device
             RESULT_VARIABLE STATUS
             OUTPUT_QUIET
             ERROR_QUIET
         )
-    ENDWHILE()
-ENDFUNCTION(DCMTK_ANDROID_ADB_ROOT)
+    endwhile()
+endfunction()
 
 #
 # Waits until the given emulator instance becomes online (RUNNING).
@@ -382,23 +382,23 @@ ENDFUNCTION(DCMTK_ANDROID_ADB_ROOT)
 # not become online.
 # Will ignore all additional arguments.
 #
-FUNCTION(DCMTK_ANDROID_WAIT_FOR_EMULATOR VAR)
+function(DCMTK_ANDROID_WAIT_FOR_EMULATOR VAR)
     DCMTK_ANDROID_GET_OBJECT_PROPERTIES("${VAR}")
-    IF(NOT EMULATOR_STATE)
-        MESSAGE(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
-    ELSEIF(EMULATOR_STATE STREQUAL "RUNNING")
+    if(NOT EMULATOR_STATE)
+        message(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
+    elseif(EMULATOR_STATE STREQUAL "RUNNING")
         # Emulator is running, no need to wait!
-    ELSEIF(EMULATOR_STATE STREQUAL "STOPPED")
-        MESSAGE(WARNING "The Android emulator has stopped, aborting...")
-    ELSE()
-        MESSAGE(STATUS "Waiting until the Android device emulator is ready to receive instructions...")
-        WHILE(NOT EMULATOR_NAME)
+    elseif(EMULATOR_STATE STREQUAL "STOPPED")
+        message(WARNING "The Android emulator has stopped, aborting...")
+    else()
+        message(STATUS "Waiting until the Android device emulator is ready to receive instructions...")
+        while(NOT EMULATOR_NAME)
             DCMTK_ANDROID_GET_EMULATOR_NAME(EMULATOR_NAME "${EMULATOR_UUID}")
-        ENDWHILE()
+        endwhile()
         DCMTK_ANDROID_ADB_ROOT("${EMULATOR_NAME}")
         DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" RUNNING "${EMULATOR_UUID}" "${EMULATOR_NAME}")
-    ENDIF()
-ENDFUNCTION(DCMTK_ANDROID_WAIT_FOR_EMULATOR)
+    endif()
+endfunction()
 
 #
 # Prepare a command that will shutdown the given Android emulator when
@@ -411,13 +411,13 @@ ENDFUNCTION(DCMTK_ANDROID_WAIT_FOR_EMULATOR)
 # be generated for the current host platform (Windows).
 # Will ignore all additional arguments.
 #
-MACRO(DCMTK_ANDROID_STOP_EMULATOR_COMMAND VAR EMULATOR_NAME)
-    IF(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
-        UNSET("${VAR}")
-    ELSE()
-        SET("${VAR}" "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" emu kill)
-    ENDIF()
-ENDMACRO(DCMTK_ANDROID_STOP_EMULATOR_COMMAND)
+macro(DCMTK_ANDROID_STOP_EMULATOR_COMMAND VAR EMULATOR_NAME)
+    if(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
+        unset("${VAR}")
+    else()
+        set("${VAR}" "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" emu kill)
+    endif()
+endmacro()
 
 #
 # Prepare an emulator shutdown message or a warning message if automated
@@ -425,13 +425,13 @@ ENDMACRO(DCMTK_ANDROID_STOP_EMULATOR_COMMAND)
 # VAR - the name of the variable that will be set to the generated message
 # Will ignore all additional arguments.
 #
-MACRO(DCMTK_ANDROID_EMULATOR_SHUTDOWN_MESSAGE VAR)
-    IF(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
-        SET("${VAR}" WARNING "The Android device emulator can't be terminated automatically under Windows, please shutdown \"${EMULATOR_NAME}\" manually!")
-    ELSE()
-        SET("${VAR}" STATUS "Shutting down the Android device emulator...")
-    ENDIF()
-ENDMACRO(DCMTK_ANDROID_EMULATOR_SHUTDOWN_MESSAGE)
+macro(DCMTK_ANDROID_EMULATOR_SHUTDOWN_MESSAGE VAR)
+    if(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
+        set("${VAR}" WARNING "The Android device emulator can't be terminated automatically under Windows, please shutdown \"${EMULATOR_NAME}\" manually!")
+    else()
+        set("${VAR}" STATUS "Shutting down the Android device emulator...")
+    endif()
+endmacro()
 
 #
 # Stops the emulator and sets its state to STOPPED when successful.
@@ -441,34 +441,34 @@ ENDMACRO(DCMTK_ANDROID_EMULATOR_SHUTDOWN_MESSAGE)
 # won't modify its state in that case.
 # Will ignore all additional arguments.
 #
-FUNCTION(DCMTK_ANDROID_STOP_EMULATOR VAR)
+function(DCMTK_ANDROID_STOP_EMULATOR VAR)
     DCMTK_ANDROID_GET_OBJECT_PROPERTIES("${VAR}")
-    IF(NOT EMULATOR_STATE)
-        MESSAGE(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
-    ELSEIF(EMULATOR_STATE STREQUAL "STARTING")
+    if(NOT EMULATOR_STATE)
+        message(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
+    elseif(EMULATOR_STATE STREQUAL "STARTING")
         # Can't tell it to stop if it is not done starting
         DCMTK_ANDROID_WAIT_FOR_EMULATOR("${VAR}")
-    ELSEIF(EMULATOR_STATE STREQUAL "STOPPED")
+    elseif(EMULATOR_STATE STREQUAL "STOPPED")
         # Emulator is already stopped, do nothing
-        RETURN()
-    ENDIF()
+        return()
+    endif()
     DCMTK_ANDROID_EMULATOR_SHUTDOWN_MESSAGE(MESSAGE)
-    MESSAGE(${MESSAGE})
-    IF(NOT CMAKE_HOST_SYSTEM MATCHES "Windows.*")
+    message(${MESSAGE})
+    if(NOT CMAKE_HOST_SYSTEM MATCHES "Windows.*")
         DCMTK_ANDROID_STOP_EMULATOR_COMMAND(COMMAND "${EMULATOR_NAME}")
-        EXECUTE_PROCESS(
+        execute_process(
           COMMAND ${COMMAND}
           RESULT_VARIABLE RESULT
           OUTPUT_QUIET
           ERROR_QUIET
         )
-        IF(NOT RESULT)
+        if(NOT RESULT)
             DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" STOPPED "${EMULATOR_UUID}" "")
-        ELSE()
-            MESSAGE(WARNING "Unable to stop the android device emulator, please shutdown \"${EMULATOR_NAME}\" manually!")
-        ENDIF()
-    ENDIF()
-ENDFUNCTION(DCMTK_ANDROID_STOP_EMULATOR)
+        else()
+            message(WARNING "Unable to stop the android device emulator, please shutdown \"${EMULATOR_NAME}\" manually!")
+        endif()
+    endif()
+endfunction()
 
 #
 # Uploads local files to the given Android device using 'adb push'.
@@ -476,26 +476,26 @@ ENDFUNCTION(DCMTK_ANDROID_STOP_EMULATOR)
 #       device
 # Requires the device to be running.
 # Additional arguments will be parsed and interpreted similar to
-# CMake's FILE(COPY ...) command.
+# CMake's file(COPY ...) command.
 #
-FUNCTION(DCMTK_ANDROID_PUSH VAR)
+function(DCMTK_ANDROID_PUSH VAR)
     DCMTK_ANDROID_GET_OBJECT_PROPERTIES("${VAR}")
-    IF(NOT EMULATOR_STATE)
-        MESSAGE(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
-    ELSEIF(EMULATOR_STATE STREQUAL "RUNNING")
-        CMAKE_PARSE_ARGUMENTS(DCMTK_ANDROID_PUSH "" "" "DESTINATION" ${ARGN})
-        FOREACH(LOCAL_FILE ${DCMTK_ANDROID_PUSH_UNPARSED_ARGUMENTS})
-            EXECUTE_PROCESS(
+    if(NOT EMULATOR_STATE)
+        message(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
+    elseif(EMULATOR_STATE STREQUAL "RUNNING")
+        cmake_parse_arguments(DCMTK_ANDROID_PUSH "" "" "DESTINATION" ${ARGN})
+        foreach(LOCAL_FILE ${DCMTK_ANDROID_PUSH_UNPARSED_ARGUMENTS})
+            execute_process(
                 COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" push "${LOCAL_FILE}" "${DCMTK_ANDROID_PUSH_DESTINATION}"
                 RESULT_VARIABLE RESULT
                 OUTPUT_QUIET
                 ERROR_QUIET
             )
-        ENDFOREACH()
-    ELSE()
-        MESSAGE(AUTHOR_WARNING "Error: the Android emulator \"${VAR}\" is not ready to receive commands")
-    ENDIF()
-ENDFUNCTION(DCMTK_ANDROID_PUSH)
+        endforeach()
+    else()
+        message(AUTHOR_WARNING "Error: the Android emulator \"${VAR}\" is not ready to receive commands")
+    endif()
+endfunction()
 
 #
 # Downloads remote files from the given Android device using 'adb pull'.
@@ -503,26 +503,26 @@ ENDFUNCTION(DCMTK_ANDROID_PUSH)
 #       device
 # Requires the device to be running.
 # Additional arguments will be parsed and interpreted similar to
-# CMake's FILE(COPY ...) command.
+# CMake's file(COPY ...) command.
 #
-FUNCTION(DCMTK_ANDROID_PULL VAR)
+function(DCMTK_ANDROID_PULL VAR)
     DCMTK_ANDROID_GET_OBJECT_PROPERTIES("${VAR}")
-    IF(NOT EMULATOR_STATE)
-        MESSAGE(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
-    ELSEIF(EMULATOR_STATE STREQUAL "RUNNING")
-        CMAKE_PARSE_ARGUMENTS(DCMTK_ANDROID_PULL "" "" "DESTINATION" ${ARGN})
-        FOREACH(REMOTE_FILE ${DCMTK_ANDROID_PULL_UNPARSED_ARGUMENTS})
-            EXECUTE_PROCESS(
+    if(NOT EMULATOR_STATE)
+        message(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
+    elseif(EMULATOR_STATE STREQUAL "RUNNING")
+        cmake_parse_arguments(DCMTK_ANDROID_PULL "" "" "DESTINATION" ${ARGN})
+        foreach(REMOTE_FILE ${DCMTK_ANDROID_PULL_UNPARSED_ARGUMENTS})
+            execute_process(
                 COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" pull "${REMOTE_FILE}" "${DCMTK_ANDROID_PULL_DESTINATION}"
                 RESULT_VARIABLE RESULT
                 OUTPUT_QUIET
                 ERROR_QUIET
             )
-        ENDFOREACH()
-    ELSE()
-        MESSAGE(AUTHOR_WARNING "Error: the Android emulator \"${VAR}\" is not ready to receive commands")
-    ENDIF()
-ENDFUNCTION(DCMTK_ANDROID_PULL)
+        endforeach()
+    else()
+        message(AUTHOR_WARNING "Error: the Android emulator \"${VAR}\" is not ready to receive commands")
+    endif()
+endfunction()
 
 #
 # Executes a shell command on the given Android device using 'adb shell'.
@@ -530,14 +530,14 @@ ENDFUNCTION(DCMTK_ANDROID_PULL)
 #       device
 # Requires the device to be running.
 # Additional arguments will be parsed and interpreted similar to
-# CMake's EXECUTE_PROCESS(...) command.
+# CMake's execute_process(...) command.
 #
-FUNCTION(DCMTK_ANDROID_SHELL VAR)
+function(DCMTK_ANDROID_SHELL VAR)
     DCMTK_ANDROID_GET_OBJECT_PROPERTIES("${VAR}")
-    IF(NOT EMULATOR_STATE)
-        MESSAGE(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
-    ELSEIF(EMULATOR_STATE STREQUAL "RUNNING")
-        CMAKE_PARSE_ARGUMENTS(DCMTK_ANDROID_SHELL
+    if(NOT EMULATOR_STATE)
+        message(AUTHOR_WARNING "Error: ${VAR} is not a valid Android emulator instance handle.")
+    elseif(EMULATOR_STATE STREQUAL "RUNNING")
+        cmake_parse_arguments(DCMTK_ANDROID_SHELL
             "OUTPUT_QUIET;ERROR_QUIET"
             "RESULT_VARIABLE;OUTPUT_VARIABLE;ERROR_VARIABLE;WORKING_DIRECTORY"
             "COMMAND"
@@ -545,52 +545,52 @@ FUNCTION(DCMTK_ANDROID_SHELL VAR)
         )
 
         # Prepare commandline
-        SET(COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" shell)
-        IF(DCMTK_ANDROID_SHELL_WORKING_DIRECTORY)
-            LIST(APPEND COMMAND "cd" "${DCMTK_ANDROID_SHELL_WORKING_DIRECTORY}" "&&")
-        ENDIF()
-        LIST(APPEND COMMAND "${DCMTK_ANDROID_SHELL_COMMAND}")
+        set(COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" shell)
+        if(DCMTK_ANDROID_SHELL_WORKING_DIRECTORY)
+            list(APPEND COMMAND "cd" "${DCMTK_ANDROID_SHELL_WORKING_DIRECTORY}" "&&")
+        endif()
+        list(APPEND COMMAND "${DCMTK_ANDROID_SHELL_COMMAND}")
 
         # Inspect output variable parameters
-        IF(DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE)
-            SET(PUSH_OUTPUT_VAR TRUE)
-            IF(DCMTK_ANDROID_SHELL_ERROR_VARIABLE)
-                IF(DCMTK_ANDROID_SHELL_ERROR_VARIABLE STREQUAL DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE)
-                    SET(STREAMS_MERGED TRUE)
-                ELSE()
-                    SET(PUSH_ERROR_VAR TRUE)
-                ENDIF()
-            ELSE()
-                SET(DCMTK_ANDROID_SHELL_ERROR_VARIABLE DCMTK_ANDROID_SHELL_ERROR_MESSAGE_BUFFER)
-            ENDIF()
-        ELSE()
-            SET(DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE DCMTK_ANDROID_SHELL_OUTPUT_MESSAGE_BUFFER)
-            IF(DCMTK_ANDROID_SHELL_ERROR_VARIABLE)
-                SET(PUSH_ERROR_VAR TRUE)
-            ELSE()
-                SET(STREAMS_MERGED TRUE)
-            ENDIF()
-        ENDIF()
+        if(DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE)
+            set(PUSH_OUTPUT_VAR TRUE)
+            if(DCMTK_ANDROID_SHELL_ERROR_VARIABLE)
+                if(DCMTK_ANDROID_SHELL_ERROR_VARIABLE STREQUAL DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE)
+                    set(STREAMS_MERGED TRUE)
+                else()
+                    set(PUSH_ERROR_VAR TRUE)
+                endif()
+            else()
+                set(DCMTK_ANDROID_SHELL_ERROR_VARIABLE DCMTK_ANDROID_SHELL_ERROR_MESSAGE_BUFFER)
+            endif()
+        else()
+            set(DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE DCMTK_ANDROID_SHELL_OUTPUT_MESSAGE_BUFFER)
+            if(DCMTK_ANDROID_SHELL_ERROR_VARIABLE)
+                set(PUSH_ERROR_VAR TRUE)
+            else()
+                set(STREAMS_MERGED TRUE)
+            endif()
+        endif()
 
         # Prefix to prevent collision of output capturing files
-        IF(CMAKE_VERSION VERSION_LESS 2.8.7)
-            STRING(RANDOM LENGTH 20 ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" PREFIX)
-        ELSE()
-            STRING(MD5 PREFIX "${DCMTK_ANDROID_SHELL_COMMAND}")
-        ENDIF()
+        if(CMAKE_VERSION VERSION_LESS 2.8.7)
+            string(RANDOM LENGTH 20 ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" PREFIX)
+        else()
+            string(MD5 PREFIX "${DCMTK_ANDROID_SHELL_COMMAND}")
+        endif()
 
         # Prepare output redirection (buffering)
-        IF(STREAMS_MERGED)
-            LIST(APPEND COMMAND > "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_output" 2>&1)
-        ELSE()
-            LIST(APPEND COMMAND > "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_output" 2> "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_error")
-        ENDIF()
+        if(STREAMS_MERGED)
+            list(APPEND COMMAND > "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_output" 2>&1)
+        else()
+            list(APPEND COMMAND > "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_output" 2> "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_error")
+        endif()
 
         # Prepare capturing the result
-        LIST(APPEND COMMAND "\;" echo -n $? > "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_result")
+        list(APPEND COMMAND "\;" echo -n $? > "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_result")
 
         # Run the command
-        EXECUTE_PROCESS(
+        execute_process(
           COMMAND ${COMMAND}
           RESULT_VARIABLE ADB_RESULT
           OUTPUT_VARIABLE ADB_OUTPUT
@@ -598,50 +598,50 @@ FUNCTION(DCMTK_ANDROID_SHELL VAR)
         )
 
         # Deal with it
-        IF(ADB_RESULT)
-            MESSAGE(WARNING "Error sending command to the Android emulator, adb reported the error: ${ADB_OUTPUT}")
-            IF(DCMTK_ANDROID_SHELL_RESULT_VARIABLE)
-                SET("${DCMTK_ANDROID_SHELL_RESULT_VARIABLE}" ${ADB_RESULT} PARENT_SCOPE)
-            ENDIF()
-        ELSE(ADB_RESULT)
+        if(ADB_RESULT)
+            message(WARNING "Error sending command to the Android emulator, adb reported the error: ${ADB_OUTPUT}")
+            if(DCMTK_ANDROID_SHELL_RESULT_VARIABLE)
+                set("${DCMTK_ANDROID_SHELL_RESULT_VARIABLE}" ${ADB_RESULT} PARENT_SCOPE)
+            endif()
+        else()
             # Receive results
             DCMTK_ANDROID_PULL("${VAR}" "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_output" "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_error" "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_result"
                 DESTINATION "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}"
             )
             # Cleanup temp files
-            EXECUTE_PROCESS(
+            execute_process(
                 COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" shell rm "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_output" "\;" rm "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_error" "\;" rm "${ANDROID_TEMPORARY_FILES_LOCATION}/${PREFIX}_result"
                 RESULT_VARIABLE RESULT_QUIET
                 OUTPUT_QUIET
                 ERROR_QUIET
             )
             # Analyze results
-            IF(DCMTK_ANDROID_SHELL_RESULT_VARIABLE)
-                FILE(READ "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_result" "${DCMTK_ANDROID_SHELL_RESULT_VARIABLE}")
-                SET("${DCMTK_ANDROID_SHELL_RESULT_VARIABLE}" ${${DCMTK_ANDROID_SHELL_RESULT_VARIABLE}} PARENT_SCOPE)
-            ENDIF()
-            IF(NOT DCMTK_ANDROID_SHELL_OUTPUT_QUIET OR (STREAMS_MERGED AND NOT DCMTK_ANDROID_SHELL_ERROR_QUIET))
-                FILE(READ "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_output" "${DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE}")
-                IF(PUSH_OUTPUT_VAR)
-                    SET("${DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE}" ${${DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE}} PARENT_SCOPE)
-                ELSE()
-                    MESSAGE("${${DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE}}")
-                ENDIF()
-            ENDIF()
-            IF(NOT DCMTK_ANDROID_SHELL_ERROR_QUIET AND NOT STREAMS_MERGED)
-                FILE(READ "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_error" "${DCMTK_ANDROID_SHELL_ERROR_VARIABLE}")
-                IF(PUSH_ERROR_VAR)
-                    SET("${DCMTK_ANDROID_SHELL_ERROR_VARIABLE}" ${${DCMTK_ANDROID_SHELL_ERROR_VARIABLE}} PARENT_SCOPE)
-                ELSE()
-                    MESSAGE("${${DCMTK_ANDROID_SHELL_ERROR_VARIABLE}}")
-                ENDIF()
-            ENDIF()
+            if(DCMTK_ANDROID_SHELL_RESULT_VARIABLE)
+                file(READ "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_result" "${DCMTK_ANDROID_SHELL_RESULT_VARIABLE}")
+                set("${DCMTK_ANDROID_SHELL_RESULT_VARIABLE}" ${${DCMTK_ANDROID_SHELL_RESULT_VARIABLE}} PARENT_SCOPE)
+            endif()
+            if(NOT DCMTK_ANDROID_SHELL_OUTPUT_QUIET OR (STREAMS_MERGED AND NOT DCMTK_ANDROID_SHELL_ERROR_QUIET))
+                file(READ "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_output" "${DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE}")
+                if(PUSH_OUTPUT_VAR)
+                    set("${DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE}" ${${DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE}} PARENT_SCOPE)
+                else()
+                    message("${${DCMTK_ANDROID_SHELL_OUTPUT_VARIABLE}}")
+                endif()
+            endif()
+            if(NOT DCMTK_ANDROID_SHELL_ERROR_QUIET AND NOT STREAMS_MERGED)
+                file(READ "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_error" "${DCMTK_ANDROID_SHELL_ERROR_VARIABLE}")
+                if(PUSH_ERROR_VAR)
+                    set("${DCMTK_ANDROID_SHELL_ERROR_VARIABLE}" ${${DCMTK_ANDROID_SHELL_ERROR_VARIABLE}} PARENT_SCOPE)
+                else()
+                    message("${${DCMTK_ANDROID_SHELL_ERROR_VARIABLE}}")
+                endif()
+            endif()
             # Cleanup temp files
-            FILE(REMOVE "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_result")
-            FILE(REMOVE "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_output")
-            FILE(REMOVE "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_error")
-        ENDIF(ADB_RESULT)
-    ELSE()
-        MESSAGE(AUTHOR_WARNING "Error: the Android emulator \"${VAR}\" is not ready to receive commands")
-    ENDIF()
-ENDFUNCTION(DCMTK_ANDROID_SHELL)
+            file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_result")
+            file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_output")
+            file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_error")
+        endif()
+    else()
+        message(AUTHOR_WARNING "Error: the Android emulator \"${VAR}\" is not ready to receive commands")
+    endif()
+endfunction()

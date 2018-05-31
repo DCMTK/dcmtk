@@ -4,15 +4,15 @@
 # environment variable appropriately.
 #
 
-SET(ENV{DCMDICTPATH} "@DCMDICTPATH@")
+set(ENV{DCMDICTPATH} "@DCMDICTPATH@")
 
-EXECUTE_PROCESS(COMMAND
+execute_process(COMMAND
     "${DCMTK_CTEST_TESTCASE_COMMAND}" $ENV{DCMTK_CTEST_EXTRA_ARGUMENTS} "${DCMTK_CTEST_TEST_NAME}"
     RESULT_VARIABLE RESULT
 )
 
 # We cannot forward the result value to CMake, so print it instead and let CMake
 # return with code '1' or whatever it deems appropriate to notify about an error.
-IF(RESULT)
-    MESSAGE(FATAL_ERROR "Test command returned: ${RESULT}")
-ENDIF()
+if(RESULT)
+    message(FATAL_ERROR "Test command returned: ${RESULT}")
+endif()

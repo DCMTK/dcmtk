@@ -1,10 +1,10 @@
 # declare project
-PROJECT(dcmimage)
+project(dcmimage)
 
 # declare include directories which hold for all subdirectories
-INCLUDE_DIRECTORIES("${dcmimage_SOURCE_DIR}/include" "${ofstd_SOURCE_DIR}/include" "${oflog_SOURCE_DIR}/include" "${dcmdata_SOURCE_DIR}/include" "${dcmimgle_SOURCE_DIR}/include" ${ZLIB_INCDIR} ${LIBTIFF_INCDIR} ${LIBPNG_INCDIR})
+include_directories("${dcmimage_SOURCE_DIR}/include" "${ofstd_SOURCE_DIR}/include" "${oflog_SOURCE_DIR}/include" "${dcmdata_SOURCE_DIR}/include" "${dcmimgle_SOURCE_DIR}/include" ${ZLIB_INCDIR} ${LIBTIFF_INCDIR} ${LIBPNG_INCDIR})
 
 # recurse into subdirectories
-FOREACH(SUBDIR libsrc apps include)
-  ADD_SUBDIRECTORY(${SUBDIR})
-ENDFOREACH(SUBDIR)
+foreach(SUBDIR libsrc apps include)
+  add_subdirectory(${SUBDIR})
+endforeach()

@@ -39,7 +39,7 @@
 #      target_link_libraries(myapp ${ICU_LIBRARIES})
 #      # with CMake >= 3.0.0, the last two lines can be replaced by the following
 #      target_link_libraries(myapp ICU::ICU)
-#   endif(ICU_FOUND)
+#   endif()
 
 ########## <ICU finding> ##########
 
@@ -48,13 +48,13 @@ find_package(PkgConfig QUIET)
 ########## Private ##########
 if(NOT DEFINED ICU_PUBLIC_VAR_NS)
     set(ICU_PUBLIC_VAR_NS "ICU")                          # Prefix for all ICU relative public variables
-endif(NOT DEFINED ICU_PUBLIC_VAR_NS)
+endif()
 if(NOT DEFINED ICU_PRIVATE_VAR_NS)
     set(ICU_PRIVATE_VAR_NS "_${ICU_PUBLIC_VAR_NS}")       # Prefix for all ICU relative internal variables
-endif(NOT DEFINED ICU_PRIVATE_VAR_NS)
+endif()
 if(NOT DEFINED PC_ICU_PRIVATE_VAR_NS)
     set(PC_ICU_PRIVATE_VAR_NS "_PC${ICU_PRIVATE_VAR_NS}") # Prefix for all pkg-config relative internal variables
-endif(NOT DEFINED PC_ICU_PRIVATE_VAR_NS)
+endif()
 
 set(${ICU_PRIVATE_VAR_NS}_HINTS )
 # <deprecated>
@@ -62,25 +62,25 @@ set(${ICU_PRIVATE_VAR_NS}_HINTS )
 if(DEFINED ENV{ICU_ROOT})
     list(APPEND ${ICU_PRIVATE_VAR_NS}_HINTS "$ENV{ICU_ROOT}")
     message(AUTHOR_WARNING "ENV{ICU_ROOT} is deprecated in favor of ENV{ICU_ROOT_DIR}")
-endif(DEFINED ENV{ICU_ROOT})
+endif()
 if (DEFINED ICU_ROOT)
     list(APPEND ${ICU_PRIVATE_VAR_NS}_HINTS "${ICU_ROOT}")
     message(AUTHOR_WARNING "ICU_ROOT is deprecated in favor of ICU_ROOT_DIR")
-endif(DEFINED ICU_ROOT)
+endif()
 # </deprecated>
 if(DEFINED ENV{ICU_ROOT_DIR})
     list(APPEND ${ICU_PRIVATE_VAR_NS}_HINTS "$ENV{ICU_ROOT_DIR}")
-endif(DEFINED ENV{ICU_ROOT_DIR})
+endif()
 if (DEFINED ICU_ROOT_DIR)
     list(APPEND ${ICU_PRIVATE_VAR_NS}_HINTS "${ICU_ROOT_DIR}")
-endif(DEFINED ICU_ROOT_DIR)
+endif()
 
 set(${ICU_PRIVATE_VAR_NS}_COMPONENTS )
 # <icu component name> <library name 1> ... <library name N>
 macro(_icu_declare_component _NAME)
     list(APPEND ${ICU_PRIVATE_VAR_NS}_COMPONENTS ${_NAME})
     set("${ICU_PRIVATE_VAR_NS}_COMPONENTS_${_NAME}" ${ARGN})
-endmacro(_icu_declare_component)
+endmacro()
 
 _icu_declare_component(data icudata)
 _icu_declare_component(uc   icuuc)         # Common and Data libraries
@@ -103,20 +103,20 @@ set(${ICU_PUBLIC_VAR_NS}_CPP_SHARED_FLAGS "")
 foreach(${ICU_PRIVATE_VAR_NS}_COMPONENT ${${ICU_PRIVATE_VAR_NS}_COMPONENTS})
     string(TOUPPER "${${ICU_PRIVATE_VAR_NS}_COMPONENT}" ${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT)
     set("${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_FOUND" FALSE) # may be done in the _icu_declare_component macro
-endforeach(${ICU_PRIVATE_VAR_NS}_COMPONENT)
+endforeach()
 
 # Check components
 if(NOT ${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS) # uc required at least
     set(${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS uc)
-else(NOT ${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS)
+else()
     list(APPEND ${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS uc)
     list(REMOVE_DUPLICATES ${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS)
     foreach(${ICU_PRIVATE_VAR_NS}_COMPONENT ${${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS})
         if(NOT DEFINED ${ICU_PRIVATE_VAR_NS}_COMPONENTS_${${ICU_PRIVATE_VAR_NS}_COMPONENT})
             message(FATAL_ERROR "Unknown ICU component: ${${ICU_PRIVATE_VAR_NS}_COMPONENT}")
-        endif(NOT DEFINED ${ICU_PRIVATE_VAR_NS}_COMPONENTS_${${ICU_PRIVATE_VAR_NS}_COMPONENT})
-    endforeach(${ICU_PRIVATE_VAR_NS}_COMPONENT)
-endif(NOT ${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS)
+        endif()
+    endforeach()
+endif()
 
 # if pkg-config is available check components dependencies and append `pkg-config icu-<component> --variable=prefix` to hints
 if(PKG_CONFIG_FOUND)
@@ -133,12 +133,12 @@ if(PKG_CONFIG_FOUND)
                     if(${ICU_PRIVATE_VAR_NS}_COMPONENT_INDEX EQUAL -1)
                         message(WARNING "Missing component dependency: ${${PC_ICU_PRIVATE_VAR_NS}_STRIPPED_LIBRARY}. Add it to your find_package(ICU) line as COMPONENTS to fix this warning.")
                         list(APPEND ${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS ${${PC_ICU_PRIVATE_VAR_NS}_STRIPPED_LIBRARY})
-                    endif(${ICU_PRIVATE_VAR_NS}_COMPONENT_INDEX EQUAL -1)
-                endif(NOT ${PC_ICU_PRIVATE_VAR_NS}_STRIPPED_LIBRARY STREQUAL "data")
-            endforeach(${PC_ICU_PRIVATE_VAR_NS}_LIBRARY)
-        endif(${PC_ICU_PRIVATE_VAR_NS}_FOUND)
-    endforeach(${ICU_PRIVATE_VAR_NS}_COMPONENT)
-endif(PKG_CONFIG_FOUND)
+                    endif()
+                endif()
+            endforeach()
+        endif()
+    endforeach()
+endif()
 # list(APPEND ${ICU_PRIVATE_VAR_NS}_HINTS ENV ICU_ROOT_DIR)
 # message("${ICU_PRIVATE_VAR_NS}_HINTS = ${${ICU_PRIVATE_VAR_NS}_HINTS}")
 
@@ -196,12 +196,12 @@ if(${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR)
     endif()
     set(${ICU_PUBLIC_VAR_NS}_VERSION "${${ICU_PUBLIC_VAR_NS}_VERSION_MAJOR}.${${ICU_PUBLIC_VAR_NS}_VERSION_MINOR}.${${ICU_PUBLIC_VAR_NS}_VERSION_PATCH}")
     ########## </part to keep synced with tests/version/CMakeLists.txt> ##########
-endif(${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR)
+endif()
 
 # Check libraries
 if(MSVC)
     include(SelectLibraryConfigurations)
-endif(MSVC)
+endif()
 foreach(${ICU_PRIVATE_VAR_NS}_COMPONENT ${${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS})
     string(TOUPPER "${${ICU_PRIVATE_VAR_NS}_COMPONENT}" ${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT)
     if(MSVC)
@@ -212,7 +212,7 @@ foreach(${ICU_PRIVATE_VAR_NS}_COMPONENT ${${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS})
             list(APPEND ${ICU_PRIVATE_VAR_NS}_POSSIBLE_DEBUG_NAMES "${${ICU_PRIVATE_VAR_NS}_BASE_NAME}d")
             list(APPEND ${ICU_PRIVATE_VAR_NS}_POSSIBLE_RELEASE_NAMES "${${ICU_PRIVATE_VAR_NS}_BASE_NAME}${${ICU_PUBLIC_VAR_NS}_VERSION_MAJOR}${${ICU_PUBLIC_VAR_NS}_VERSION_MINOR}")
             list(APPEND ${ICU_PRIVATE_VAR_NS}_POSSIBLE_DEBUG_NAMES "${${ICU_PRIVATE_VAR_NS}_BASE_NAME}${${ICU_PUBLIC_VAR_NS}_VERSION_MAJOR}${${ICU_PUBLIC_VAR_NS}_VERSION_MINOR}d")
-        endforeach(${ICU_PRIVATE_VAR_NS}_BASE_NAME)
+        endforeach()
 
         find_library(
             ${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY_RELEASE
@@ -229,7 +229,7 @@ foreach(${ICU_PRIVATE_VAR_NS}_COMPONENT ${${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS})
 
         select_library_configurations("${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}")
         list(APPEND ${ICU_PUBLIC_VAR_NS}_LIBRARY ${${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY})
-    else(MSVC)
+    else()
         find_library(
             ${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY
             NAMES ${${ICU_PRIVATE_VAR_NS}_COMPONENTS_${${ICU_PRIVATE_VAR_NS}_COMPONENT}}
@@ -240,9 +240,9 @@ foreach(${ICU_PRIVATE_VAR_NS}_COMPONENT ${${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS})
         if(${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY)
             set("${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_FOUND" TRUE)
             list(APPEND ${ICU_PUBLIC_VAR_NS}_LIBRARY ${${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY})
-        endif(${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY)
-    endif(MSVC)
-endforeach(${ICU_PRIVATE_VAR_NS}_COMPONENT)
+        endif()
+    endif()
+endforeach()
 
 # Try to find out compiler flags
 find_program(${ICU_PUBLIC_VAR_NS}_CONFIG_EXECUTABLE icu-config HINTS ${${ICU_PRIVATE_VAR_NS}_HINTS})
@@ -254,7 +254,7 @@ if(${ICU_PUBLIC_VAR_NS}_CONFIG_EXECUTABLE)
     execute_process(COMMAND ${${ICU_PUBLIC_VAR_NS}_CONFIG_EXECUTABLE} --cflags-dynamic OUTPUT_VARIABLE ${ICU_PUBLIC_VAR_NS}_C_SHARED_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
     execute_process(COMMAND ${${ICU_PUBLIC_VAR_NS}_CONFIG_EXECUTABLE} --cxxflags-dynamic OUTPUT_VARIABLE ${ICU_PUBLIC_VAR_NS}_CXX_SHARED_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
     execute_process(COMMAND ${${ICU_PUBLIC_VAR_NS}_CONFIG_EXECUTABLE} --cppflags-dynamic OUTPUT_VARIABLE ${ICU_PUBLIC_VAR_NS}_CPP_SHARED_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-endif(${ICU_PUBLIC_VAR_NS}_CONFIG_EXECUTABLE)
+endif()
 
 # Check find_package arguments
 include(FindPackageHandleStandardArgs)
@@ -264,9 +264,9 @@ if(${ICU_PUBLIC_VAR_NS}_FIND_REQUIRED AND NOT ${ICU_PUBLIC_VAR_NS}_FIND_QUIETLY)
         REQUIRED_VARS ${ICU_PUBLIC_VAR_NS}_LIBRARY ${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR
         VERSION_VAR ${ICU_PUBLIC_VAR_NS}_VERSION
     )
-else(${ICU_PUBLIC_VAR_NS}_FIND_REQUIRED AND NOT ${ICU_PUBLIC_VAR_NS}_FIND_QUIETLY)
+else()
     find_package_handle_standard_args(${ICU_PUBLIC_VAR_NS} "Could NOT find ICU" ${ICU_PUBLIC_VAR_NS}_LIBRARY ${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR)
-endif(${ICU_PUBLIC_VAR_NS}_FIND_REQUIRED AND NOT ${ICU_PUBLIC_VAR_NS}_FIND_QUIETLY)
+endif()
 
 if(${ICU_PUBLIC_VAR_NS}_FOUND)
     # <deprecated>
@@ -281,7 +281,7 @@ if(${ICU_PUBLIC_VAR_NS}_FOUND)
     if(NOT CMAKE_VERSION VERSION_LESS "3.0.0")
         if(NOT TARGET ICU::ICU)
             add_library(ICU::ICU INTERFACE IMPORTED)
-        endif(NOT TARGET ICU::ICU)
+        endif()
         set_target_properties(ICU::ICU PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR}")
         foreach(${ICU_PRIVATE_VAR_NS}_COMPONENT ${${ICU_PUBLIC_VAR_NS}_FIND_COMPONENTS})
             string(TOUPPER "${${ICU_PRIVATE_VAR_NS}_COMPONENT}" ${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT)
@@ -289,19 +289,19 @@ if(${ICU_PUBLIC_VAR_NS}_FOUND)
             if(${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY_RELEASE)
                 set_property(TARGET "ICU::${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}" APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
                 set_target_properties("ICU::${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}" PROPERTIES IMPORTED_LOCATION_RELEASE "${${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY_RELEASE}")
-            endif(${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY_RELEASE)
+            endif()
             if(${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY_DEBUG)
                 set_property(TARGET "ICU::${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}" APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
                 set_target_properties("ICU::${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}" PROPERTIES IMPORTED_LOCATION_DEBUG "${${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY_DEBUG}")
-            endif(${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY_DEBUG)
+            endif()
             if(${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY)
                 set_target_properties("ICU::${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}" PROPERTIES IMPORTED_LOCATION "${${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY}")
-            endif(${ICU_PUBLIC_VAR_NS}_${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_LIBRARY)
+            endif()
             set_property(TARGET ICU::ICU APPEND PROPERTY INTERFACE_LINK_LIBRARIES "ICU::${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}")
 #             set_target_properties("ICU::${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}" PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR}")
-        endforeach(${ICU_PRIVATE_VAR_NS}_COMPONENT)
-    endif(NOT CMAKE_VERSION VERSION_LESS "3.0.0")
-endif(${ICU_PUBLIC_VAR_NS}_FOUND)
+        endforeach()
+    endif()
+endif()
 
 mark_as_advanced(
     ${ICU_PUBLIC_VAR_NS}_INCLUDE_DIR
@@ -319,7 +319,7 @@ function(_icu_extract_locale_from_rb _BUNDLE_SOURCE _RETURN_VAR_NAME)
     string(REGEX REPLACE "[ \t\n]" "" _BUNDLE_CONTENTS_WITHOUT_COMMENTS_AND_SPACES ${_BUNDLE_CONTENTS_WITHOUT_COMMENTS})
     string(REGEX MATCH "^([a-zA-Z_-]+)(:table)?{" LOCALE_FOUND ${_BUNDLE_CONTENTS_WITHOUT_COMMENTS_AND_SPACES})
     set("${_RETURN_VAR_NAME}" "${CMAKE_MATCH_1}" PARENT_SCOPE)
-endfunction(_icu_extract_locale_from_rb)
+endfunction()
 
 ########## Public ##########
 
@@ -376,10 +376,10 @@ function(icu_generate_resource_bundle)
 
     if(NOT ${ICU_PUBLIC_VAR_NS}_GENRB_EXECUTABLE)
         message(FATAL_ERROR "genrb not found")
-    endif(NOT ${ICU_PUBLIC_VAR_NS}_GENRB_EXECUTABLE)
+    endif()
     if(NOT ${ICU_PUBLIC_VAR_NS}_PKGDATA_EXECUTABLE)
         message(FATAL_ERROR "pkgdata not found")
-    endif(NOT ${ICU_PUBLIC_VAR_NS}_PKGDATA_EXECUTABLE)
+    endif()
     ##### </check for pkgdata/genrb availability> #####
 
     ##### <constants> #####
@@ -434,40 +434,40 @@ function(icu_generate_resource_bundle)
     # assert(${PARSED_ARGS_NAME} != "")
     if(NOT PARSED_ARGS_NAME)
         message(FATAL_ERROR "${__FUNCTION__}(): no name given, NAME parameter missing")
-    endif(NOT PARSED_ARGS_NAME)
+    endif()
 
     # assert(length(PARSED_ARGS_FILES) > 0)
     list(LENGTH PARSED_ARGS_FILES PARSED_ARGS_FILES_LEN)
     if(PARSED_ARGS_FILES_LEN LESS 1)
         message(FATAL_ERROR "${__FUNCTION__}() expects at least 1 resource bundle as FILES argument, 0 given")
-    endif(PARSED_ARGS_FILES_LEN LESS 1)
+    endif()
 
     string(TOUPPER "${PARSED_ARGS_FORMAT}" UPPER_FORMAT)
     # assert(${UPPER_FORMAT} in ['', 'java', 'xlif'])
     if(NOT DEFINED BUNDLES_${UPPER_FORMAT}_SUFFIX)
         message(FATAL_ERROR "${__FUNCTION__}(): unknown FORMAT '${PARSED_ARGS_FORMAT}'")
-    endif(NOT DEFINED BUNDLES_${UPPER_FORMAT}_SUFFIX)
+    endif()
 
     if(UPPER_FORMAT STREQUAL "JAVA")
         # assert(${PARSED_ARGS_BUNDLE} != "")
         if(NOT PARSED_ARGS_BUNDLE)
             message(FATAL_ERROR "${__FUNCTION__}(): java bundle name expected, BUNDLE parameter missing")
-        endif(NOT PARSED_ARGS_BUNDLE)
-    endif(UPPER_FORMAT STREQUAL "JAVA")
+        endif()
+    endif()
 
     if(PARSED_ARGS_PACKAGE)
         # assert(${PARSED_ARGS_FORMAT} == "")
         if(PARSED_ARGS_FORMAT)
             message(FATAL_ERROR "${__FUNCTION__}(): packaging is only supported for binary format, not xlif neither java outputs")
-        endif(PARSED_ARGS_FORMAT)
+        endif()
 
         string(TOUPPER "${PARSED_ARGS_TYPE}" UPPER_MODE)
         # assert(${UPPER_MODE} in ['', 'common', 'archive', 'dll', library'])
         if(NOT DEFINED PKGDATA_${UPPER_MODE}_ALIAS)
             message(FATAL_ERROR "${__FUNCTION__}(): unknown TYPE '${PARSED_ARGS_TYPE}'")
-        else(NOT DEFINED PKGDATA_${UPPER_MODE}_ALIAS)
+        else()
             set(TYPE "${PKGDATA_${UPPER_MODE}_ALIAS}")
-        endif(NOT DEFINED PKGDATA_${UPPER_MODE}_ALIAS)
+        endif()
 
         # Package name: strip file extension if present
         get_filename_component(PACKAGE_NAME_WE ${PARSED_ARGS_NAME} NAME_WE)
@@ -479,25 +479,25 @@ function(icu_generate_resource_bundle)
         # We make our "cook" there to prevent any conflict
         if(DEFINED CMAKE_PLATFORM_ROOT_BIN) # CMake < 2.8.10
             set(RESOURCE_GENRB_CHDIR_DIR "${CMAKE_PLATFORM_ROOT_BIN}/${PACKAGE_TARGET_NAME}.dir/")
-        else(DEFINED CMAKE_PLATFORM_ROOT_BIN) # CMake >= 2.8.10
+        else() # CMake >= 2.8.10
             set(RESOURCE_GENRB_CHDIR_DIR "${CMAKE_PLATFORM_INFO_DIR}/${PACKAGE_TARGET_NAME}.dir/")
-        endif(DEFINED CMAKE_PLATFORM_ROOT_BIN)
+        endif()
         # Directory (absolute) where resource bundles are built: concatenation of RESOURCE_GENRB_CHDIR_DIR and package name
         set(RESOURCE_OUTPUT_DIR "${RESOURCE_GENRB_CHDIR_DIR}/${PACKAGE_NAME_WE}/")
         # Output (relative) path for built package
         if(MSVC AND TYPE STREQUAL PKGDATA_LIBRARY_ALIAS)
             set(PACKAGE_OUTPUT_PATH "${RESOURCE_GENRB_CHDIR_DIR}/${PACKAGE_NAME_WE}/${PKGDATA_${TYPE}_PREFIX}${PACKAGE_NAME_WE}${PKGDATA_${TYPE}_SUFFIX}")
-        else(MSVC AND TYPE STREQUAL PKGDATA_LIBRARY_ALIAS)
+        else()
             set(PACKAGE_OUTPUT_PATH "${RESOURCE_GENRB_CHDIR_DIR}/${PKGDATA_${TYPE}_PREFIX}${PACKAGE_NAME_WE}${PKGDATA_${TYPE}_SUFFIX}")
-        endif(MSVC AND TYPE STREQUAL PKGDATA_LIBRARY_ALIAS)
+        endif()
         # Output (absolute) path for the list file
         set(PACKAGE_LIST_OUTPUT_PATH "${RESOURCE_GENRB_CHDIR_DIR}/pkglist.txt")
 
         file(MAKE_DIRECTORY "${RESOURCE_OUTPUT_DIR}")
-    else(PARSED_ARGS_PACKAGE)
+    else()
         set(RESOURCE_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/")
 #         set(RESOURCE_GENRB_CHDIR_DIR "UNUSED")
-    endif(PARSED_ARGS_PACKAGE)
+    endif()
 
     set(TARGET_RESOURCES )
     set(COMPILED_RESOURCES_PATH )
@@ -510,10 +510,10 @@ function(icu_generate_resource_bundle)
         if(UPPER_FORMAT STREQUAL "XLIFF")
             if(RESOURCE_NAME_WE STREQUAL "root")
                 set(XLIFF_LANGUAGE "en")
-            else(RESOURCE_NAME_WE STREQUAL "root")
+            else()
                 string(REGEX REPLACE "[^a-z].*$" "" XLIFF_LANGUAGE "${RESOURCE_NAME_WE}")
-            endif(RESOURCE_NAME_WE STREQUAL "root")
-        endif(UPPER_FORMAT STREQUAL "XLIFF")
+            endif()
+        endif()
 
         ##### <templates> #####
         set(RESOURCE_TARGET_NAME "${RESOURCE_TARGET_PREFIX}${TARGET_SEPARATOR}${PARSED_ARGS_NAME}${TARGET_SEPARATOR}${RESOURCE_NAME_WE}")
@@ -521,9 +521,9 @@ function(icu_generate_resource_bundle)
         set(RESOURCE_OUTPUT__PATH "${RESOURCE_NAME_WE}.res")
         if(RESOURCE_NAME_WE STREQUAL "root")
             set(RESOURCE_OUTPUT_JAVA_PATH "${PARSED_ARGS_BUNDLE}.java")
-        else(RESOURCE_NAME_WE STREQUAL "root")
+        else()
             set(RESOURCE_OUTPUT_JAVA_PATH "${PARSED_ARGS_BUNDLE}_${RESOURCE_NAME_WE}.java")
-        endif(RESOURCE_NAME_WE STREQUAL "root")
+        endif()
         set(RESOURCE_OUTPUT_XLIFF_PATH "${RESOURCE_NAME_WE}.xlf")
 
         set(GENRB__OPTIONS "")
@@ -538,13 +538,13 @@ function(icu_generate_resource_bundle)
                 COMMAND ${CMAKE_COMMAND} -E chdir ${RESOURCE_GENRB_CHDIR_DIR} ${${ICU_PUBLIC_VAR_NS}_GENRB_EXECUTABLE} ${GENRB_${UPPER_FORMAT}_OPTIONS} -d ${PACKAGE_NAME_WE} ${ABSOLUTE_SOURCE}
                 DEPENDS ${RESOURCE_SOURCE}
             )
-        else(PARSED_ARGS_PACKAGE)
+        else()
             add_custom_command(
                 OUTPUT "${RESOURCE_OUTPUT_DIR}${RESOURCE_OUTPUT_${UPPER_FORMAT}_PATH}"
                 COMMAND ${${ICU_PUBLIC_VAR_NS}_GENRB_EXECUTABLE} ${GENRB_${UPPER_FORMAT}_OPTIONS} -d ${RESOURCE_OUTPUT_DIR} ${ABSOLUTE_SOURCE}
                 DEPENDS ${RESOURCE_SOURCE}
             )
-        endif(PARSED_ARGS_PACKAGE)
+        endif()
         # dummy target (ICU+RB+<name>+<locale>) for each locale to build the <locale>.res file from its <locale>.txt by the add_custom_command above
         add_custom_target(
             "${RESOURCE_TARGET_NAME}" ALL
@@ -555,12 +555,12 @@ function(icu_generate_resource_bundle)
 
         if(PARSED_ARGS_DESTINATION AND NOT PARSED_ARGS_PACKAGE)
             install(FILES "${RESOURCE_OUTPUT_DIR}${RESOURCE_OUTPUT_${UPPER_FORMAT}_PATH}" DESTINATION ${PARSED_ARGS_DESTINATION} PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
-        endif(PARSED_ARGS_DESTINATION AND NOT PARSED_ARGS_PACKAGE)
+        endif()
 
         list(APPEND TARGET_RESOURCES "${RESOURCE_TARGET_NAME}")
         list(APPEND COMPILED_RESOURCES_PATH "${RESOURCE_OUTPUT_DIR}${RESOURCE_OUTPUT_${UPPER_FORMAT}_PATH}")
         list(APPEND COMPILED_RESOURCES_BASENAME "${RESOURCE_NAME_WE}.${BUNDLES_${UPPER_FORMAT}_SUFFIX}")
-    endforeach(RESOURCE_SOURCE)
+    endforeach()
     # convert semicolon separated list to a space separated list
     # NOTE: if the pkglist.txt file starts (or ends?) with a whitespace, pkgdata add an undefined symbol (named <package>_) for it
     string(REPLACE ";" " " COMPILED_RESOURCES_BASENAME "${COMPILED_RESOURCES_BASENAME}")
@@ -583,14 +583,14 @@ function(icu_generate_resource_bundle)
             # assert(${PARSED_ARGS_DEPENDS} != "")
             if(NOT PARSED_ARGS_DEPENDS)
                 message(FATAL_ERROR "${__FUNCTION__}(): static and library mode imply a list of targets to link to, DEPENDS parameter missing")
-            endif(NOT PARSED_ARGS_DEPENDS)
+            endif()
             add_library(${PACKAGE_TARGET_NAME} ${PKGDATA_LIBRARY_${TYPE}_TYPE} IMPORTED)
             if(MSVC)
                 string(REGEX REPLACE "${PKGDATA_LIBRARY_SUFFIX}\$" "${CMAKE_IMPORT_LIBRARY_SUFFIX}" PACKAGE_OUTPUT_LIB "${PACKAGE_OUTPUT_PATH}")
                 set_target_properties(${PACKAGE_TARGET_NAME} PROPERTIES IMPORTED_LOCATION ${PACKAGE_OUTPUT_PATH} IMPORTED_IMPLIB ${PACKAGE_OUTPUT_LIB})
-            else(MSVC)
+            else()
                 set_target_properties(${PACKAGE_TARGET_NAME} PROPERTIES IMPORTED_LOCATION ${PACKAGE_OUTPUT_PATH})
-            endif(MSVC)
+            endif()
             foreach(DEPENDENCY ${PARSED_ARGS_DEPENDS})
                 target_link_libraries(${DEPENDENCY} ${PACKAGE_TARGET_NAME})
                 if(NOT PARSED_ARGS_NO_SHARED_FLAGS)
@@ -598,11 +598,11 @@ function(icu_generate_resource_bundle)
                     list(LENGTH "${ENABLED_LANGUAGES}" ENABLED_LANGUAGES_LENGTH)
                     if(ENABLED_LANGUAGES_LENGTH GREATER 1)
                         message(WARNING "Project has more than one language enabled, skip automatic shared flags appending")
-                    else(ENABLED_LANGUAGES_LENGTH GREATER 1)
+                    else()
                         set_property(TARGET "${DEPENDENCY}" APPEND PROPERTY COMPILE_FLAGS "${${ICU_PUBLIC_VAR_NS}_${ENABLED_LANGUAGES}_SHARED_FLAGS}")
-                    endif(ENABLED_LANGUAGES_LENGTH GREATER 1)
-                endif(NOT PARSED_ARGS_NO_SHARED_FLAGS)
-            endforeach(DEPENDENCY)
+                    endif()
+                endif()
+            endforeach()
             # http://www.mail-archive.com/cmake-commits@cmake.org/msg01135.html
             set(PACKAGE_INTERMEDIATE_TARGET_NAME "${PACKAGE_TARGET_NAME}${TARGET_SEPARATOR}DUMMY")
             # dummy intermediate target (ICU+PKG+<name>+DUMMY) to link the package to the produced library by running pkgdata (see add_custom_command above)
@@ -612,14 +612,14 @@ function(icu_generate_resource_bundle)
                 DEPENDS "${PACKAGE_OUTPUT_PATH}"
             )
             add_dependencies("${PACKAGE_TARGET_NAME}" "${PACKAGE_INTERMEDIATE_TARGET_NAME}")
-        else(PKGDATA_LIBRARY_${TYPE}_TYPE)
+        else()
             # dummy target (ICU+PKG+<name>) to run pkgdata (see add_custom_command above)
             add_custom_target(
                 "${PACKAGE_TARGET_NAME}" ALL
                 COMMENT ""
                 DEPENDS "${PACKAGE_OUTPUT_PATH}"
             )
-        endif(PKGDATA_LIBRARY_${TYPE}_TYPE)
+        endif()
         # dummy target (ICU+PKG+<name>+PKGLIST) to build the file pkglist.txt
         add_custom_target(
             "${PACKAGE_LIST_TARGET_NAME}" ALL
@@ -633,10 +633,10 @@ function(icu_generate_resource_bundle)
 
         if(PARSED_ARGS_DESTINATION)
             install(FILES "${PACKAGE_OUTPUT_PATH}" DESTINATION ${PARSED_ARGS_DESTINATION} PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
-        endif(PARSED_ARGS_DESTINATION)
-    endif(PARSED_ARGS_PACKAGE)
+        endif()
+    endif()
 
-endfunction(icu_generate_resource_bundle)
+endfunction()
 
 ########## </resource bundle support> ##########
 
@@ -647,10 +647,10 @@ if(${ICU_PUBLIC_VAR_NS}_DEBUG)
     function(icudebug _VARNAME)
         if(DEFINED ${ICU_PUBLIC_VAR_NS}_${_VARNAME})
             message("${ICU_PUBLIC_VAR_NS}_${_VARNAME} = ${${ICU_PUBLIC_VAR_NS}_${_VARNAME}}")
-        else(DEFINED ${ICU_PUBLIC_VAR_NS}_${_VARNAME})
+        else()
             message("${ICU_PUBLIC_VAR_NS}_${_VARNAME} = <UNDEFINED>")
-        endif(DEFINED ${ICU_PUBLIC_VAR_NS}_${_VARNAME})
-    endfunction(icudebug)
+        endif()
+    endfunction()
 
     # IN (args)
     icudebug("FIND_COMPONENTS")
@@ -682,9 +682,9 @@ if(${ICU_PUBLIC_VAR_NS}_DEBUG)
         string(TOUPPER "${${ICU_PRIVATE_VAR_NS}_COMPONENT}" ${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT)
         foreach(${ICU_PRIVATE_VAR_NS}_COMPONENT_VARIABLE ${${ICU_PRIVATE_VAR_NS}_COMPONENT_VARIABLES})
             icudebug("${${ICU_PRIVATE_VAR_NS}_UPPER_COMPONENT}_${${ICU_PRIVATE_VAR_NS}_COMPONENT_VARIABLE}")
-        endforeach(${ICU_PRIVATE_VAR_NS}_COMPONENT_VARIABLE)
-    endforeach(${ICU_PRIVATE_VAR_NS}_COMPONENT)
+        endforeach()
+    endforeach()
 
-endif(${ICU_PUBLIC_VAR_NS}_DEBUG)
+endif()
 
 ########## </debug> ##########

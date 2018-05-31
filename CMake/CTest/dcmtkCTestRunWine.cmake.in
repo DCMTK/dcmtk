@@ -7,17 +7,17 @@
 # shutdown.
 #
 
-SET(ENV{WINEPREFIX} "@DCMTK_WINEPREFIX@")
-SET(ENV{DCMDICTPATH} "@DCMDICTPATH@")
-SET(WINE_WINE_PROGRAM "@WINE_WINE_PROGRAM@")
+set(ENV{WINEPREFIX} "@DCMTK_WINEPREFIX@")
+set(ENV{DCMDICTPATH} "@DCMDICTPATH@")
+set(WINE_WINE_PROGRAM "@WINE_WINE_PROGRAM@")
 
-EXECUTE_PROCESS(COMMAND
+execute_process(COMMAND
     "${WINE_WINE_PROGRAM}" "${DCMTK_CTEST_TESTCASE_COMMAND}" $ENV{DCMTK_CTEST_EXTRA_ARGUMENTS} "${DCMTK_CTEST_TEST_NAME}"
     RESULT_VARIABLE RESULT
 )
 
 # We cannot forward the result value to CMake, so print it instead and let CMake
 # return with code '1' or whatever it deems appropriate to notify about an error.
-IF(RESULT)
-    MESSAGE(FATAL_ERROR "Test command returned: ${RESULT}")
-ENDIF()
+if(RESULT)
+    message(FATAL_ERROR "Test command returned: ${RESULT}")
+endif()

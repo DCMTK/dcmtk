@@ -1,10 +1,10 @@
 # declare project
-PROJECT(oflog)
+project(oflog)
 
 # declare include directories which hold for all subdirectories
-INCLUDE_DIRECTORIES("${oflog_SOURCE_DIR}/include" "${ofstd_SOURCE_DIR}/include")
+include_directories("${oflog_SOURCE_DIR}/include" "${ofstd_SOURCE_DIR}/include")
 
 # recurse into subdirectories
-FOREACH(SUBDIR libsrc include etc)
-  ADD_SUBDIRECTORY(${SUBDIR})
-ENDFOREACH(SUBDIR)
+foreach(SUBDIR libsrc include etc)
+  add_subdirectory(${SUBDIR})
+endforeach()
