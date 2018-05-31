@@ -32,7 +32,7 @@ BEGIN_EXTERN_C
 #include <openssl/tls1.h>
 END_EXTERN_C
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
 #define SSL_CTX_get_ciphers(ctx) (ctx)->cipher_list
 #endif
 

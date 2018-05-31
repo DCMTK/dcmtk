@@ -51,11 +51,11 @@ END_EXTERN_C
 #define DCMTK_SSL_CTX_get0_param(A) A->param;
 #endif
 
-#if OPENSSL_VERSION_NUMBER < 0x10002000L
+#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
 #define X509_get_signature_nid(x509) OBJ_obj2nid((x509)->sig_alg->algorithm)
 #endif
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
 #define SSL_CTX_get_cert_store(ctx) (ctx)->cert_store
 #define EVP_PKEY_base_id(key) EVP_PKEY_type((key)->type)
 #define DH_bits(dh) BN_num_bits((dh)->p)
@@ -112,7 +112,7 @@ static DH *get_dh2048()
     DH *dh;
     if ((dh=DH_new()) == NULL) return(NULL);
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
     dh->p=BN_bin2bn(dh2048_p,sizeof(dh2048_p),NULL);
     dh->g=BN_bin2bn(dh2048_g,sizeof(dh2048_g),NULL);
     if ((dh->p == NULL) || (dh->g == NULL))
@@ -181,7 +181,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
    if (initOpenSSL) initializeOpenSSL();
    if (randFile) seedPRNG(randFile);
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
    // on versions of OpenSSL older than 1.1.0, we use the
    // SSLv23 methods and not the TLSv1 methods because the latter
    // only accept TLS 1.0 and prevent the negotiation of newer
@@ -245,7 +245,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
 
      // create Elliptic Curve DH parameters
 #ifndef OPENSSL_NO_ECDH
-#if OPENSSL_VERSION_NUMBER < 0x10002000L
+#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
      // we create ECDH parameters for the NIST P-256 (secp256r1) curve
      // as recommended by BCP 195.
      EC_KEY  *ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
@@ -268,7 +268,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
     // set default certificate verification strategy
     setCertificateVerification(DCV_requireCertificate);
 
-#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L && !defined(LIBRESSL_VERSION_NUMBER)
     // The TLS 1.2 Signature Algorithms extension is only supported in OpenSSL 1.0.2 and newer.
 
     if (networkRole != NET_ACCEPTOR)
