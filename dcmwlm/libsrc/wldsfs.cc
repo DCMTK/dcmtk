@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -285,7 +285,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
 
   // This member variable indicates if we encountered an unsupported
   // optional key attribute in the search mask; initialize it with false.
-  // It might be updated whithin CheckSearchMask().
+  // It might be updated within CheckSearchMask().
   foundUnsupportedOptionalKey = OFFalse;
 
   // Scrutinize the search mask.
@@ -380,7 +380,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
         {
           cond = resultRecord->putAndInsertString( DCM_SpecificCharacterSet, "ISO_IR 100" );
         }
-        // third option: use charactet set from worklist file
+        // third option: use character set from worklist file
         else if( returnedCharacterSet == RETURN_CHARACTER_SET_FROM_FILE )
         {
           char *value = NULL;
@@ -423,10 +423,10 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function will return the next dataset that matches the given search mask, if
-//                there is one more resulting dataset to return. In such a case, rstatus will be set
+//                there is one more resulting dataset to return. In such a case, rStatus will be set
 //                to WLM_PENDING or WLM_PENDING_WARNING, depending on if an unsupported key attribute
 //                was encountered in the search mask or not. If there are no more datasets that match
-//                the search mask, this function will return an empty dataset and WLM_SUCCESS in rstatus.
+//                the search mask, this function will return an empty dataset and WLM_SUCCESS in rStatus.
 // Parameters   : rStatus - [out] A value of type WlmDataSourceStatusType that can be used to
 //                          decide if there are still elements that have to be returned.
 // Return Value : The next dataset that matches the given search mask, or an empty dataset if
@@ -667,7 +667,7 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
     lockname += PATH_SEPARATOR;
 
   // append calledApplicationEntityTitle, another PATH_SEPERATOR,
-  // and LOCKFILENAME to the given path (and seperator)
+  // and LOCKFILENAME to the given path (and separator)
   lockname += calledApplicationEntityTitle;
   lockname += PATH_SEPARATOR;
   lockname += LOCKFILENAME;
