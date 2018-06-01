@@ -214,7 +214,7 @@ void WlmFileSystemInteractionManager::MatchWorklistFile( DcmDataset& searchMask,
     }
     // extract the data set from worklist file, if any
     // storing it into an OFshared_ptr ensures it will be freed in the end not matter what
-    if( OFshared_ptr<DcmDataset> pDataset = file.getAndRemoveDataset() )
+    if( OFshared_ptr<DcmDataset> pDataset = OFshared_ptr<DcmDataset>( file.getAndRemoveDataset() ) )
     {
         if( enableRejectionOfIncompleteWlFiles )
         {
