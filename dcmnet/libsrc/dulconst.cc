@@ -482,11 +482,16 @@ streamAssociatePDU(PRV_ASSOCIATEPDU * assoc, unsigned char *b,
     *b++ = assoc->rsv2[0];
     *b++ = assoc->rsv2[1];
     (void) memset(b, ' ', 32);
-    (void) strncpy((char *) b, assoc->calledAPTitle,
-            strlen(assoc->calledAPTitle));
+
+    // we don't copy the zero bytes at the end of the AEtitle strings
+    // since the PDU requires a space-padded, non zero-padded string.
+    size_t len = strlen(assoc->calledAPTitle);
+    if (len > 16) len = 16;
+    memcpy(b, assoc->calledAPTitle, len);
     b += 16;
-    (void) strncpy((char *) b, assoc->callingAPTitle,
-            strlen(assoc->callingAPTitle));
+    len = strlen(assoc->callingAPTitle);
+    if (len > 16) len = 16;
+    memcpy(b, assoc->callingAPTitle, len);
     b += 16;
     (void) memset(b, 0, 32);
     b += 32;
