@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -198,6 +198,7 @@ extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_CannotStartSCPThread;  
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_StopAfterAssociation;             /* Stop after current association (as requested) */
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_StopAfterConnectionTimeout;       /* Stop after TCP connection timeout (as requested) */
 extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_InvalidSCPAssociationProfile;     /* Invalid or non-existing SCP Association Profile */
+extern DCMTK_DCMNET_EXPORT const OFConditionConst NET_EC_AssociatePDUTooLarge;             /* A-ASSOCIATE PDU too large */
 
 // This macro creates a condition with given code, severity and text.
 // Making this a macro instead of a function saves the creation of a temporary.

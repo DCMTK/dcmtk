@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -91,6 +91,7 @@ makeOFConditionConst(NET_EC_CannotStartSCPThread,            OFM_dcmnet, 1075, O
 makeOFConditionConst(NET_EC_StopAfterAssociation,            OFM_dcmnet, 1076, OF_ok, "Stop after current association (as requested)");
 makeOFConditionConst(NET_EC_StopAfterConnectionTimeout,      OFM_dcmnet, 1077, OF_ok, "Stop after TCP connection timeout (as requested)");
 makeOFConditionConst(NET_EC_InvalidSCPAssociationProfile,    OFM_dcmnet, 1078, OF_error, "Invalid or non-existing SCP Association Profile");
+makeOFConditionConst(NET_EC_AssociatePDUTooLarge,            OFM_dcmnet, 1079, OF_error, "A-ASSOCIATE PDU too large");
 
 
 OFString& DimseCondition::dump(OFString& str, OFCondition cond)

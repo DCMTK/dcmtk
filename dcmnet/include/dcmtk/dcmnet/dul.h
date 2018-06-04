@@ -109,6 +109,18 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* 
  */
 extern DCMTK_DCMNET_EXPORT OFGlobal<unsigned long> dcmEnableBackwardCompatibility;
 
+/** Maximum size (in bytes) of incoming A-ASSOCIATE-RQ or A-ASSOCIATE-AC PDUs
+ *  that we are willing to accept. Under normal conditions, valid A-ASSOCIATE PDUs
+ *  will never be larger than 64 kBytes, so the default of 1 MByte should be safe.
+ *  We should limit the maximum accepted PDU size to avoid denial of service
+ *  attacks through faulty PDUs that cause the network layer to allocate up
+ *  to 4 GByte of memory for one PDU.
+ *
+ *  Note: This limit can be disabled by setting a value of zero, which
+ *  causes the behaviour to revert to that of DCMTK releases up to 3.6.3.
+ */
+extern DCMTK_DCMNET_EXPORT OFGlobal<size_t> dcmAssociatePDUSizeLimit;   /* default: 1 MB */
+
 typedef void DUL_NETWORKKEY;
 typedef void DUL_ASSOCIATIONKEY;
 typedef unsigned char DUL_PRESENTATIONCONTEXTID;

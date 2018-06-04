@@ -156,6 +156,7 @@ OFGlobal<Sint32> dcmConnectionTimeout(-1);
 OFGlobal<DcmNativeSocketType> dcmExternalSocketHandle(DCMNET_INVALID_SOCKET);
 OFGlobal<const char *> dcmTCPWrapperDaemonName((const char *)NULL);
 OFGlobal<unsigned long> dcmEnableBackwardCompatibility(0);
+OFGlobal<size_t> dcmAssociatePDUSizeLimit(0x100000);
 
 static int networkInitialized = 0;
 

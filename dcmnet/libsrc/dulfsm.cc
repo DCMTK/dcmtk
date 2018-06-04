@@ -3276,6 +3276,9 @@ PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 **    If malloc fails, EC_MemoryExhausted is returned.
 **    Otherwise, the buffer must be released (free) by the caller!
 **
+**    This function is only used to receive incoming A-ASSOCIATE-RQ
+**    and A-ASSOCIATE-AC PDUs.
+**
 ** Algorithm:
 **      Description of the algorithm (optional) and any other notes.
 */
@@ -3299,6 +3302,13 @@ readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
         if (cond.bad())
             return cond;
         (*association)->inputPDU = PDU_HEAD;
+    }
+
+    size_t limit = dcmAssociatePDUSizeLimit.get();
+    if ((limit > 0) && ((*association)->nextPDULength > limit))
+    {
+      DCMNET_ERROR("A-ASSOCIATE PDU too large: " << (*association)->nextPDULength << " bytes, refusing." );
+      return NET_EC_AssociatePDUTooLarge;
     }
 
     maxLength = ((*association)->nextPDULength)+100;
