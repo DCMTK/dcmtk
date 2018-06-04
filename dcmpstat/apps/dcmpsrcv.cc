@@ -13,7 +13,7 @@
  *
  *  Module:  dcmpstat
  *
- *  Authors: Marco EichelbergimageFileName
+ *  Authors: Marco Eichelberg
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
