@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -64,25 +64,55 @@ public:
                                                Uint16 rows,
                                                Uint16 cols);
 
-  /** Shifts the given memory block some defined number of bits to the right
-   *  Bits that fall off the last byte are lost (i.e. no "cycled" shift).
+  /** Aligns 1 bit per pixel frame data to make the frame start at a
+   *  specific bit position within the first byte. This is used in the context
+   *  that dcmseg holds the frames in memory aligned to exact byte positions,
+   *  while the DICOM encoding might require a frame to start at an arbitrary
+   *  bit position since all (1 bit per pixel) frames are directly concatenated
+   *  one after another (i.e. if one frame does not occupy a number of bits
+   *  dividable by 8, not all frames will be aligned at exact byte positions).
+   *  Note that each byte is filled from the right, i.e. the first pixel will
+   *  represented by the bit at the very right of the first byte, and the 9th
+   *  pixel will be in the very right position of the following byte.
+   *  This is not a regular bit shift operation since the bits from the previous
+   *  frame are on the left of the byte, but must be aligned at the right. The
+   *  current frame starts from the first bit, occupying the unused bits of
+   *  the last frame and then continuing in the next byte at the first bit
+   *  from the left.
+   *  Example for two bit shift:
+   *    Input buffer bytes: hgfedcba 87654321
+   *    Result:   fedcba00 654321hg
+   *    The 00 in the first byte must be handled by the caller (will
+   *    contain the two bits of the previous frame).
+   *    See also dcmseg/tests/tutils.cc for more examples.
    *  @param  buf The address of the memory buffer to shift
    *  @param  bufLen The length of the buf memory block in bytes
    *  @param  numBits The number of bits to shift. Must be 0 <= numBits <= 7.
    */
-  static void shiftRight(Uint8* buf,
-                         size_t bufLen,
-                         Uint8 numBits);
+  static void alignFrameOnBitPosition(Uint8* buf,
+                                      size_t bufLen,
+                                      Uint8 numBits);
 
-  /** Shifts the given memory block some defined number of bits to the left.
-   *  Bits that fall off the first byte are lost (i.e. no "cycled" shift).
+  /** Aligns 1 bit per pixel frame data starting at a given bit position in the
+   *  provided buffer with the start of that buffer. This is used to create
+   *  a frame structure where all the bytes (including the first one) only
+   *  contain data from the frame at hand.
+   *  Note that each byte is filled from the right, i.e. the first pixel will
+   *  represented by the bit at the very right of the first byte, and the 9th
+   *  pixel will be in the very right position of the following byte.
+   *  Example:
+   *    3 bytes input buffer: edcbaZYX mlkjihgf utsrqpon
+   *    Result after aligning 3 bits: fghedcba ponmlkji 000utsrq
+   *    The 000 are unused bits and therefore zeroed out in the last byte. Bits
+   *    ZYX will be shifted out which is ok since it does not belong to the
+   *    current frame. See also dcmseg/tests/tutils.cc for more examples.
    *  @param  buf The address of the memory buffer to shift
    *  @param  bufLen The length of the buf memory block in bytes
    *  @param  numBits The number of bits to shift. Must be 0 <= numBits <= 7.
    */
-  static void shiftLeft(Uint8* buf,
-                        size_t bufLen,
-                        Uint8 numBits);
+  static void alignFrameOnByteBoundary(Uint8* buf,
+                                       size_t bufLen,
+                                       Uint8 numBits);
 
   /** Dumps a byte as binary number to a string. Only useful for
    *  debugging purposes.

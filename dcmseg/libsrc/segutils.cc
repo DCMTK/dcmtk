@@ -125,49 +125,53 @@ size_t DcmSegUtils::getBytesForBinaryFrame(const size_t& numPixels)
 }
 
 
-void DcmSegUtils::shiftRight(Uint8* buf,
-                             size_t bufLen,
-                             Uint8 numBits)
+void DcmSegUtils::alignFrameOnBitPosition(Uint8* buf,
+                                          size_t bufLen,
+                                          Uint8 numBits)
 {
   if (numBits > 7)
   {
-    DCMSEG_ERROR("Invalid input data: shiftRight() can only shift 0-7 bits");
+    DCMSEG_ERROR("Invalid input data: shiftFrameBitsLeft() can only shift 0-7 bits");
     return;
   }
   Uint8 carryOver = 0;
   for (size_t x = 0; x < bufLen; x++)
   {
-    // Store current byte since we need its last bits
+    // Store current byte since we need to restore its first bits later
     Uint8 current = buf[x];
-    buf[x] >>= numBits;
-    // If there is a carry over from the last handled byte, add it
+    // Shift pixels given num bits to the left, creating (8 - num bits)
+    // empty bits at the right
+    buf[x] <<= numBits;
+    // If there is a carry over from the previous byte, add it in again (will always be at the end,
+    // see carry over calculation in next step)
     buf[x] |= carryOver;
-    // Compute carry over bits for next byte handled
-    carryOver = current << (8-numBits); // bits we need to shift over to start (left hand side) of buf[x+1]
+    // Compute carry over bits for next byte to be handled, i.e. those bits at the left that will be
+    // overwritten in the next byte
+    carryOver = current >> (8-numBits);
   }
 }
 
 
-void DcmSegUtils::shiftLeft(Uint8* buf,
-                            size_t bufLen,
-                            Uint8 numBits)
+void DcmSegUtils::alignFrameOnByteBoundary(Uint8* buf,
+                                           size_t bufLen,
+                                           Uint8 numBits)
 {
   if (numBits > 7)
   {
-    DCMSEG_ERROR("Invalid input data: shiftLeft() can only shift 0-7 bits");
+    DCMSEG_ERROR("Invalid input data: alignFrameOnByteBoundary() can only shift 0-7 bits");
     return;
   }
   for (size_t x = 0; x < bufLen-1; x++)
   {
     // Shift current byte
-    buf[x] = buf[x] << numBits;
+    buf[x] = buf[x] >> numBits;
     // isolate portion of next byte that must be shifted into current byte
-    Uint8 next = (buf[x+1] >> (8-numBits));
-    // Shift current byte
+    Uint8 next = (buf[x+1] << (8-numBits));
+    // Take over portion from next byte
     buf[x] |= next;
   }
   // Shift last byte manually
-  buf[bufLen-1] <<= numBits;
+  buf[bufLen-1] >>= numBits;
 }
 
 
