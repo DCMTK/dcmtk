@@ -370,16 +370,16 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 /// RLE Lossless
 #define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
 
-/** MIME encapsulation (Supplement 101) is only a pseudo transfer syntax used to
- *  refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
- *  on a DICOM storage medium. It is never used for network communication
+/** RFC 2557 MIME Encapsulation (RETIRED) was only a pseudo transfer syntax used
+ *  to refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
+ *  on a DICOM storage medium. It was never used for network communication
  *  or encoding of DICOM objects.
  */
 #define UID_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
 
-/** XML encoding (Supplement 114) is only a pseudo transfer syntax used to refer to
+/** XML Encoding (RETIRED) was only a pseudo transfer syntax used to refer to
  *  encapsulated HL7 CDA documents from a DICOMDIR when stored on a DICOM storage
- *  medium. It is never used for network communication or encoding of DICOM objects.
+ *  medium. It was never used for network communication or encoding of DICOM objects.
  */
 #define UID_XMLEncodingTransferSyntax "1.2.840.10008.1.2.6.2"
 

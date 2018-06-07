@@ -373,7 +373,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
             switch (lowerRecord)
             {
                 case ERT_Study:
-                case ERT_HL7StrucDoc:
+                case ERT_HL7StrucDoc:  // retired
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -521,7 +521,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_ValueMap:
         case ERT_HangingProtocol:
         case ERT_Stereometric:
-        case ERT_HL7StrucDoc:
+        case ERT_HL7StrucDoc:  // retired
         case ERT_Palette:
         case ERT_Surface:
         case ERT_Measurement:

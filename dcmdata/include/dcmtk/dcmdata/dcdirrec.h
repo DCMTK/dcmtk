@@ -105,7 +105,7 @@ typedef enum {
     ERT_HangingProtocol = 35,
     /// stereometric relationships
     ERT_Stereometric = 36,
-    /// HL7 structured document
+    /// HL7 structured document (retired)
     ERT_HL7StrucDoc = 37,
     /// palette
     ERT_Palette = 38,
