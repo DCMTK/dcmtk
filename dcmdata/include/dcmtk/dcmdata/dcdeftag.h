@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-04-12 18:52:47
+**   Date: 2018-06-07 15:57:21
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2018-04-12 18:52:47"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2018-06-07 15:57:21"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4263
+** Number of entries: 4265
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -3393,6 +3393,7 @@
 #define DCM_ModifyingSystem                      DcmTagKey(0x0400, 0x0563)
 #define DCM_SourceOfPreviousValues               DcmTagKey(0x0400, 0x0564)
 #define DCM_ReasonForTheAttributeModification    DcmTagKey(0x0400, 0x0565)
+#define DCM_InstanceOriginStatus                 DcmTagKey(0x0400, 0x0600)
 #define DCM_RETIRED_EscapeTriplet                DcmTagKey(0x1000, 0x0010)
 #define DCM_RETIRED_RunLengthTriplet             DcmTagKey(0x1000, 0x0011)
 #define DCM_RETIRED_HuffmanTableSize             DcmTagKey(0x1000, 0x0012)
@@ -3782,6 +3783,7 @@
 #define DCM_AlternateBeamDose                    DcmTagKey(0x300a, 0x0091)
 #define DCM_AlternateBeamDoseType                DcmTagKey(0x300a, 0x0092)
 #define DCM_DepthValueAveragingFlag              DcmTagKey(0x300a, 0x0093)
+#define DCM_BeamDosePointSourceToExternalContourDistance DcmTagKey(0x300a, 0x0094)
 #define DCM_NumberOfBrachyApplicationSetups      DcmTagKey(0x300a, 0x00a0)
 #define DCM_BrachyApplicationSetupDoseSpecificationPoint DcmTagKey(0x300a, 0x00a2)
 #define DCM_BrachyApplicationSetupDose           DcmTagKey(0x300a, 0x00a4)

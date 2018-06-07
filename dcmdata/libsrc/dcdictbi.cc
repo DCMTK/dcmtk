@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-04-12 18:52:48
+**   Date: 2018-06-07 15:57:23
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -23988,6 +23988,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "ReasonForTheAttributeModification", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0400, 0x0600, 0x0400, 0x0600,
+      EVR_CS, "InstanceOriginStatus", 1, 1, "DICOM/CP_1760",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
 #ifdef ENABLE_PRIVATE_TAGS
   , { 0x0601, 0x0000, 0x0601, 0x0000,
       EVR_SH, "ImplementationVersion", 1, 1, "PrivateTag",
@@ -26118,6 +26122,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x0093, 0x300a, 0x0093,
       EVR_CS, "DepthValueAveragingFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x0094, 0x300a, 0x0094,
+      EVR_DS, "BeamDosePointSourceToExternalContourDistance", 1, 1, "DICOM/CP_1762",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x00a0, 0x300a, 0x00a0,
