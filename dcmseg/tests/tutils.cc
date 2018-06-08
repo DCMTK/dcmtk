@@ -31,10 +31,10 @@
 static void resetBuf(Uint8* buf, const size_t length)
 {
   if (length != bufLen) return;
-  buf[0] = 0b10101010;
-  buf[1] = 0b11001100;
-  buf[2] = 0b11110000;
-  buf[3] = 0b00001111;
+  buf[0] = 170; // 10101010
+  buf[1] = 204; // 11001100
+  buf[2] = 240; // 11110000
+  buf[3] = 15;  // 00001111
 }
 
 OFTEST(dcmseg_utils)
@@ -44,33 +44,30 @@ OFTEST(dcmseg_utils)
 
   resetBuf(buf, bufLen);
   DcmSegUtils::alignFrameOnBitPosition(buf, 4, 2);
-  OFCHECK(buf[0] == 0b10101000);
-  OFCHECK(buf[1] == 0b00110010);
-  OFCHECK(buf[2] == 0b11000011);
-  OFCHECK(buf[3] == 0b00111111);
+  OFCHECK(buf[0] == 168); // 10101000
+  OFCHECK(buf[1] == 50);  // 00110010
+  OFCHECK(buf[2] == 195); // 11000011
+  OFCHECK(buf[3] == 63);  // 00111111
 
-  // Shift and check, should be 11001010
   resetBuf(buf, bufLen);
   DcmSegUtils::alignFrameOnByteBoundary(buf, 4, 2);
-  OFCHECK(buf[0] == 0b00101010);
-  OFCHECK(buf[1] == 0b00110011);
-  OFCHECK(buf[2] == 0b11111100);
-  OFCHECK(buf[3] == 0b00000011);
+  OFCHECK(buf[0] == 42);  // 00101010
+  OFCHECK(buf[1] == 51);  // 00110011
+  OFCHECK(buf[2] == 252); // 11111100
+  OFCHECK(buf[3] == 3);   // 00000011
 
-  // Shift and check, should be 011001100 01010101 01100110 11111000
   resetBuf(buf, bufLen);
   DcmSegUtils::alignFrameOnBitPosition(buf, 4, 7);
-  OFCHECK(buf[0] == 0b00000000);
-  OFCHECK(buf[1] == 0b01010101);
-  OFCHECK(buf[2] == 0b01100110);
-  OFCHECK(buf[3] == 0b11111000);
+  OFCHECK(buf[0] == 0);
+  OFCHECK(buf[1] == 85);  // 01010101
+  OFCHECK(buf[2] == 102); // 01100110
+  OFCHECK(buf[3] == 248); // 11111000
 
-  // Shift and check, should be 10101010 11001100 11110000 00000000
   resetBuf(buf, bufLen);
   DcmSegUtils::alignFrameOnByteBoundary(buf, 4, 7);
-  OFCHECK(buf[0] == 0b10011001);
-  OFCHECK(buf[1] == 0b11100001);
-  OFCHECK(buf[2] == 0b00011111);
-  OFCHECK(buf[3] == 0b00000000);
+  OFCHECK(buf[0] == 153); // 10011001
+  OFCHECK(buf[1] == 225); // 11100001
+  OFCHECK(buf[2] == 31);  // 00011111
+  OFCHECK(buf[3] == 0);
 
 }
