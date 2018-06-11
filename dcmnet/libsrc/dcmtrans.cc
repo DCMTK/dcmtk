@@ -54,6 +54,7 @@ END_EXTERN_C
 
 #ifdef DCMTK_HAVE_POLL
 #include <poll.h>
+#include "dcmtk/ofstd/ofvector.h"
 #endif
 
 /* platform independent definition of EINTR */
@@ -192,7 +193,9 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
   SOCKET maxsocketfd = INVALID_SOCKET;
 #else
   int socketfd = -1;
+#ifndef DCMTK_HAVE_POLL
   int maxsocketfd = -1;
+#endif
 #endif
 
   int i=0;
@@ -200,6 +203,9 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
 #ifndef DCMTK_HAVE_POLL
   fd_set fdset;
   FD_ZERO(&fdset);
+#else
+  OFVector<struct pollfd> pfd;
+  pfd.reserve(connCount);
 #endif
   OFTimer timer;
   int lTimeout = timeout;
@@ -216,16 +222,13 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
 #else
       FD_SET(socketfd, &fdset);
 #endif /* __MINGW32__ */
-#endif /* DCMTK_HAVE_POLL */
       if (socketfd > maxsocketfd) maxsocketfd = socketfd;
+#else
+      struct pollfd pfd1 = {socketfd, POLLIN, 0};
+      pfd.push_back(pfd1);
+#endif /* DCMTK_HAVE_POLL */
     }
   }
-
-#ifdef DCMTK_HAVE_POLL
-  struct pollfd pfd[] = {
-    { maxsocketfd, POLLIN, 0 }
-  };
-#endif
 
   OFBool done = OFFalse;
   while (!done)
@@ -236,7 +239,7 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     t.tv_usec = 0;
 
 #ifdef DCMTK_HAVE_POLL
-    int nfound = poll(pfd, 1, t.tv_sec*1000+(t.tv_usec/1000));
+    int nfound = poll(&pfd[0], connCount, t.tv_sec*1000+(t.tv_usec/1000));
 #else /* DCMTK_HAVE_POLL */
 #ifdef HAVE_INTP_SELECT
     int nfound = select(OFstatic_cast(int, maxsocketfd + 1), (int *)(&fdset), NULL, NULL, &t);
@@ -272,14 +275,10 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
   {
     if (connections[i])
     {
-      socketfd = connections[i]->getSocket();
 #ifdef DCMTK_HAVE_POLL
-      pfd[0].fd = socketfd;
-      pfd[0].events = POLLIN;
-      pfd[0].revents = 0;
-      poll(pfd, 1, 0);
-      if(!(pfd[0].revents & POLLIN)) connections[i] = NULL;
+      if(!(pfd[i].revents & POLLIN)) connections[i] = NULL;
 #else
+      socketfd = connections[i]->getSocket();
       /* if not available, set entry in array to NULL */
       if (!FD_ISSET(socketfd, &fdset)) connections[i] = NULL;
 #endif
