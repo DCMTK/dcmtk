@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2011, OFFIS e.V.
+ *  Copyright (C) 2003-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,6 +46,8 @@ class DiImage;
 /** describes the different types of interlace supported by
  *  the PNG plugin.  Enumeration depends on capabilities
  *  of underlying PNG library (libpng).
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  PNG (libpng) support enabled.
  */
 enum DiPNGInterlace
 {
@@ -57,7 +59,9 @@ enum DiPNGInterlace
 };
 
 /** describes the different types of metainfo written to
- *  the png file
+ *  the png file.
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  PNG (libpng) support enabled.
  */
 enum DiPNGMetainfo
 {
@@ -74,6 +78,8 @@ enum DiPNGMetainfo
  *---------------------*/
 
 /** Implementation of a PNG plugin for the dcmimgle/dcmimage library
+ *  @remark This class is only available if DCMTK is compiled with
+ *  PNG (libpng) support enabled.
  */
 class DCMTK_DCMIMAGE_EXPORT DiPNGPlugin
   : public DiPluginFormat

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2014, OFFIS e.V.
+ *  Copyright (C) 2012-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,6 +38,8 @@
  *  incoming TCP/IP connections and spawning a number of SCP worker threads
  *  that handle the incoming DICOM association on that connection. This base
  *  class is abstract.
+ *  @remark This class is only available if DCMTK is compiled with thread
+ *  support enabled.
  */
 class DCMTK_DCMNET_EXPORT DcmBaseSCPPool
 {

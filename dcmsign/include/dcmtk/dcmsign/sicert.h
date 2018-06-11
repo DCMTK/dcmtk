@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,8 @@ struct x509_st;
 typedef struct x509_st X509;
 
 /** a class representing X.509 public key certificates.
+ *  @remark this class is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 class DCMTK_DCMSIGN_EXPORT SiCertificate
 {    

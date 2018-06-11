@@ -52,6 +52,8 @@ extern DCMTK_DCMTLS_EXPORT OFLogger DCM_dcmtlsLogger;
 /** this enum describes how to handle X.509 certificates on a TLS based
  *  secure transport connection. They can be ignored, validated if present
  *  or validated and demanded.
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum DcmCertificateVerification
 {
@@ -69,7 +71,9 @@ enum DcmCertificateVerification
 };
 
 
-/** this enum describes the file format of a certificate or private key file
+/** this enum describes the file format of a certificate or private key file.
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum DcmKeyFileFormat
 {
@@ -88,6 +92,8 @@ enum DcmKeyFileFormat
  *  in one application (e.g. the pool of trusted certificates, the key
  *  and certificate to be used for authentication and the list of
  *  ciphersuite to be used for association negotiation.
+ *  @remark this class is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 
 class DCMTK_DCMTLS_EXPORT DcmTLSTransportLayer: public DcmTransportLayer

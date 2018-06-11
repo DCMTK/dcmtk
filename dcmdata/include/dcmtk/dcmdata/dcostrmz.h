@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,10 +35,14 @@ END_EXTERN_C
 /** global flag defining the compression level for zlib (deflate) compression.
  *  Legal values are 0..9. Default is Z_DEFAULT_COMPRESSION which is defined
  *  to be 6 for the current zlib implementation.
+ *  @remark this flag is only available if DCMTK is compiled with
+ *  ZLIB support enabled.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<int> dcmZlibCompressionLevel;
 
-/** zlib compression filter for output streams
+/** zlib compression filter for output streams.
+ *  @remark this class is only available if DCMTK is compiled with
+ *  ZLIB support enabled.
  */
 class DCMTK_DCMDATA_EXPORT DcmZLibOutputFilter: public DcmOutputFilter
 {

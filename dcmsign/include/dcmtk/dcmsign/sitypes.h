@@ -58,6 +58,8 @@ extern DCMTK_DCMSIGN_EXPORT OFLogger DCM_dcmsignLogger;
 
 
 /** type of key for public key cryptosystem
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum E_KeyType
 {
@@ -76,6 +78,8 @@ enum E_KeyType
 
 
 /** type of MAC algorithm
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum E_MACType
 {
@@ -103,50 +107,78 @@ enum E_MACType
  */
  
 /// object initialization failed
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_InitializationFailed;
 
 /// an OpenSSL call has failed
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_OpenSSLFailure;
 
 /// file cannot be read
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_CannotRead;
 
 /// unable to use the selected transfer syntax for MAC computation
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_WrongTransferSyntax;
 
 /// no more MAC ID numbers available
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_MacIDsExhausted;
 
 /// certificate and private key do not match
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_CertificateDoesNotMatchPrivateKey;
 
 /// MAC algorithm not allowed for the current security profile
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_MacDoesNotMatchProfile;
 
 /// Signature algorithm not allowed for the current security profile
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_AlgorithmDoesNotMatchProfile;
 
 /// Transfer syntax not allowed for the current security profile
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_TransferSyntaxDoesNotMatchProfile;
 
 /** signature verification failed because the certificate is missing
  *  or cannot be read (e.g. unsupported format)
+ *  @remark this constant is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoCertificate;
 
 /// signature verification failed because the corresponding MAC parameters item could not be found or is incomplete
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoMAC;
 
 /// signature verification failed because the corresponding signature item is incomplete
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoSignature;
 
 /// signature verification failed because the MAC algorithm is not supported
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_UnsupportedMACAlgorithm;
 
 /// signature verification failed because the signature is invalid (document corrupted)
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_Corrupted;
 
 /// signature verification failed because the certificate was issued by an untrusted (unknown) CA
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_NoTrust;
 
 #endif

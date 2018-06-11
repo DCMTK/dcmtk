@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, OFFIS e.V.
+ *  Copyright (C) 2016-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,6 +34,8 @@ typedef struct SHA256state_st SHA256_CTX;
 
 /**
  * a class implementing the hash function SHA256
+ * @remark this class is only available if DCMTK is compiled with
+ * OpenSSL support enabled.
  */
 class DCMTK_DCMSIGN_EXPORT SiSHA256 : public SiMAC
 {

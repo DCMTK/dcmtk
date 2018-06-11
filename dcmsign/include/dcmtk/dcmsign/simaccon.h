@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,6 +41,8 @@ class DcmElement;
 class DcmAttributeTag;
 
 /** a class that allows to feed selected parts of a DICOM dataset into the MAC generation code
+ *  @remark this class is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 class DCMTK_DCMSIGN_EXPORT SiMACConstructor
 {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2012, OFFIS e.V.
+ *  Copyright (C) 2001-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,8 +68,9 @@ public:
   const char *getCurrentSignatureValidationOverview() const;
 
   /** updates the digital signature information for the given object type.
-   *  If compiled without WITH_OPENSSL, always reports that no signatures
-   *  were found in the object.
+   *  @remark This class is only functional if DCMTK is compiled with
+   *  OpenSSL support enabled. If compiled without, it always reports
+   *  that no signatures were found in the object.
    *  @param dataset dataset to be checked for digital signatures
    *  @param objtype object type of dataset
    *  @param onRead true if the dataset is just being read, false if it is being written
@@ -121,7 +122,8 @@ public:
    *  is signed by a digital signature on the dataset level, or if any
    *  of the attributes is a sequence that contains one or more signatures
    *  in its items.  Otherwise returns false.
-   *  If compiled without WITH_OPENSSL, always returns false.
+   *  @remark this method is only functional if DCMTK is compiled with
+   *  OpenSSL support enabled. Otherwise it always returns false.
    *  @param item item or dataset to be tested
    *  @param tagList list of attributes (tags) to be looked up inside the dataset
    *  @return true if any of the given attributes is affected by a digital signature,
@@ -214,6 +216,9 @@ private:
 
 #ifdef WITH_OPENSSL  
   /// the certificate verifier, available only if compiled with OpenSSL support
+  /// @remark This member is only available if DCMTK is compiled with
+  /// OpenSSL support enabled.
+
   SiCertificateVerifier certVerifier;  
 #endif
 

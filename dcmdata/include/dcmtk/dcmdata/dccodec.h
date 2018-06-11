@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2016, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -504,6 +504,8 @@ private:
 
 #ifdef WITH_THREADS
   /// read/write lock guarding access to singleton list
+  /// @remark this member is only available if DCMTK is compiled with thread
+  /// support enabled.
   static OFReadWriteLock codecLock;
 #endif
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2017, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -248,18 +248,25 @@ public:
      *  and from Windows-specific wide character encoding (UTF-16).
      *  For further code pages, please refer to the MSDN documentation on
      *  "Code Page Identifiers".
+     *  @remark This list of code pages is only available if DCMTK is compiled
+     *  on Windows Operating Systems (defining _WIN32)
      */
     //@{
 
     /// system default Windows ANSI code page.  See Windows function GetACP().
+    /// @remark Only available on Windows Operating Systems (defining _WIN32).
     static const unsigned int CPC_ANSI;
     /// current system OEM code page.  See Windows function GetOEMCP().
+    /// @remark Only available on Windows Operating Systems (defining _WIN32).
     static const unsigned int CPC_OEM;
     /// code page for US-ASCII (7-bit)
+    /// @remark Only available on Windows Operating Systems (defining _WIN32).
     static const unsigned int CPC_ASCII;
     /// code page for ISO 8859-1 (Latin-1)
+    /// @remark Only available on Windows Operating Systems (defining _WIN32).
     static const unsigned int CPC_Latin1;
     /// code page for UTF-8
+    /// @remark Only available on Windows Operating Systems (defining _WIN32).
     static const unsigned int CPC_UTF8;
 
     //@}
@@ -274,6 +281,8 @@ public:
      *  call to the WideCharToMultiByte() function.
      *  Since the length of the input string has to be specified explicitly,
      *  the string can contain more than one NULL character.
+     *  @remark this method is only available if DCMTK is compiled on Windows
+     *  Operating Systems (defining _WIN32)
      *  @param  fromString  input string to be converted (using the UTF-16
      *                      character encoding).  A NULL pointer is regarded
      *                      as an empty string.
@@ -301,6 +310,8 @@ public:
      *  on the other hand it only works on Windows systems.
      *  Please note that no conversion flags are specified for the internal
      *  call to the MultiByteToWideChar() function.
+     *  @remark this method is only available if DCMTK is compiled on Windows
+     *  Operating Systems (defining _WIN32)
      *  @param  fromString  input string to be converted (using character
      *                      encoding specified by 'codePage')
      *  @param  toString    reference to variable in which the pointer to the
@@ -328,6 +339,8 @@ public:
      *  call to the MultiByteToWideChar() function.
      *  Since the length of the input string has to be specified explicitly,
      *  the string can contain more than one NULL byte.
+     *  @remark this method is only available if DCMTK is compiled on Windows
+     *  Operating Systems (defining _WIN32)
      *  @param  fromString  input string to be converted (using the  character
      *                      encoding specified by 'codePage').  A NULL pointer
      *                      is regarded as an empty string.
@@ -393,6 +406,8 @@ public:
     /** create an error condition based on the return value of "getLastError()"
      *  and the given parameters.  The Windows function FormatMessage() is used
      *  to map the numerical value of the error to a textual description.
+     *  @remark this method is only available if DCMTK is compiled on Windows
+     *  Operating Systems (defining _WIN32)
      *  @param  status   reference to variable where the condition is stored
      *  @param  message  message text that is used as a prefix to the error
      *  @param  code     unique status code of the error condition

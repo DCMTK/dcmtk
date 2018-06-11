@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,6 +108,8 @@ class DCMTK_DCMIMGLE_EXPORT DiObjectCounter
 #ifdef WITH_THREADS
     /** if compiled for multi-thread operation, the Mutex protecting
      *  access to the value of this object.
+     *  @remark this member is only available if DCMTK is compiled with thread
+     *  support enabled.
      */
     OFMutex theMutex;
 #endif

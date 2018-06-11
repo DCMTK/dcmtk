@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2015, OFFIS e.V.
+ *  Copyright (C) 2001-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -312,6 +312,9 @@ public:
   /* Implicit conversion from OFCondition to bool might
    * not always be a good idea since it can hide unwanted constructs.
    * Therefore, we disable this operator by default.
+   * @remark this method is only available if DCMTK is compiled with
+   * implicit conversion from OFCondition to bool being enabled (see macro
+   * OFCONDITION_IMPLICIT_BOOL_CONVERSION)
    */
 
   /** conversion operator to bool.

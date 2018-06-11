@@ -36,6 +36,8 @@ typedef struct ssl_st SSL;
 
 /** this class represents a TLS (Transport Layer Security) V1 based secure
  *  transport connection.
+ *  @remark This class is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 class DCMTK_DCMTLS_EXPORT DcmTLSConnection: public DcmTransportConnection
 {

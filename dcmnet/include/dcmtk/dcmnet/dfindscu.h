@@ -243,9 +243,10 @@ public:
    *    This value should be less than or equal to ASC_DEFAULTMAXPDU, and is usually identical
    *    to ASC_DEFAULTMAXPDU (other values are only useful for debugging purposes).
    *  @param secureConnection this flag, if true, requests a secure TLS connection to be used
-   *    instead of a normal connection. This will only work if DCMTK has been compiled with
-   *    OpenSSL support (WITH_OPENSSL) and if a transport layer object supporting secure
-   *    connections has been set with setTransportLayer() prior to this call.
+   *    instead of a normal connection. A transport layer object supporting secure
+   *    connections must set with setTransportLayer() prior to this call.
+   *    @remark this parameter is only functional if DCMTK is compiled with
+   *      OpenSSL support enabled. Otherwise the method will return an error.
    *  @param abortAssociation abort association instead of releasing it (for debugging purposes)
    *  @param repeatCount number of times this query should be repeated
    *    (for debugging purposes, works only with default callback)

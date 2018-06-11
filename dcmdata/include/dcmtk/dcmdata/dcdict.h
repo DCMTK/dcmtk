@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -274,6 +274,8 @@ private:
 
 #ifdef WITH_THREADS
   /** the read/write lock used to protect access from multiple threads
+   *  @remark this member is only available if DCMTK is compiled with thread
+   *  support enabled.
    */
   OFReadWriteLock dataDictLock;
 #endif

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,8 @@
 #ifdef WITH_OPENSSL
 
 /** Authorization Digital Signature Profile
+ *  @remark this class is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 class DCMTK_DCMSIGN_EXPORT SiAuthorizationProfile: public SiBaseRSAProfile
 {

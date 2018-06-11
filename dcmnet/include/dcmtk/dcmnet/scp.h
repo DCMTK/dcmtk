@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2017, OFFIS e.V.
+ *  Copyright (C) 2009-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,10 +31,6 @@
 #include "dcmtk/dcmnet/dimse.h"     /* DIMSE network layer */
 #include "dcmtk/dcmnet/scpcfg.h"
 #include "dcmtk/dcmnet/diutil.h"    /* for DCMNET_WARN() */
-
-#ifdef WITH_ZLIB
-#include <zlib.h>     /* for zlibVersion() */
-#endif
 
 
 // include this file in doxygen documentation

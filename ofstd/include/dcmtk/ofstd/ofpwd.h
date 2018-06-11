@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -51,6 +51,8 @@ END_EXTERN_C
  *  OFPasswd object is invalid or not with the overloaded operators
  *  "operator !" and "operator OFBool". Therefore, it behaves quite the same
  *  way as pointers in this regard.
+ *  @remark This class is only available if DCMTK detected a system offering
+ *    support for the the <grp.h> header file.
  *  @note The downside of this non-POD class is that it leads to some
  *    unnecessary string copy operations. The resulting performance penalty
  *    should be insignificant. However, implementing this class based on

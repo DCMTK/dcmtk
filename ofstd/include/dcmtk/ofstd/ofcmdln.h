@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -878,6 +878,8 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      *  accessing filenames with wide character encoding (UTF-16).
      *  Additionally, create internal structures for evaluation and return status indicating any
      *  errors that occurred during the parse process.
+     *  @remarks this method is only available if OS is windows (not mingw) and
+     *  MSC6 is not used for building.
      *
      ** @param  argCount  number of command line arguments stored in argValue
      *  @param  argValue  array where the command line arguments are stored
@@ -1003,6 +1005,8 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
 
     /** check whether 'argValue' points to command file and parse content if so.
      *  This is a Windows-specific version supporting wide char encoding (UTF-16).
+     *  @remarks this method is only available if OS is windows (not mingw) and
+     *  MSC6 is not used for building.
      */
     E_ParseStatus parseCommandFile(const wchar_t *argValue,
                                    const OFString &strValue,

@@ -33,6 +33,8 @@
 /** Base class for implementing DICOM TLS-enabled Service Class User functionality. This
  *  class is derived from the general DcmSCU class and just adds the corresponding TLS
  *  capabilities.
+ *  @remark This class is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
  *  API changes in the future are possible and likely to happen.
  */

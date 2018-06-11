@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2011, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,6 +31,8 @@
 /** defines a "null" security profile that does not require or forbid any 
  *  MAC algorithm, signature algorithm, or attribute tag. This class can be
  *  used to clean up a proposed attribute list against a dataset.
+ *  @remark this class is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 class DCMTK_DCMSIGN_EXPORT SiNullProfile: public SiSecurityProfile
 {

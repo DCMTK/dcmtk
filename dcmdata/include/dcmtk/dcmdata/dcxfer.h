@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -165,7 +165,8 @@ typedef enum
     /// unsupported stream compression
   , ESC_unsupported = 1
 #ifdef WITH_ZLIB
-    /// zlib stream compression
+    /// zlib stream compression.
+    /// This enum value only available if DCMTK is compiled with ZLIB support enabled.
   , ESC_zlib = 2
 #endif
 } E_StreamCompression;

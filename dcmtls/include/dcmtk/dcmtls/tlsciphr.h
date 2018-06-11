@@ -35,6 +35,8 @@
 
 /** This enum describes DICOM TLS Security Profiles, which are the basis
  *  for the selection of supported ciphersuites when using DICOM over TLS.
+ *  @remark This enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum DcmTLSSecurityProfile
 {
@@ -89,6 +91,8 @@ enum DcmTLSSecurityProfile
 
 /** This enum describes the minimum SSL/TLS protocol version required
  *  for a certain ciphersuite.
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum DcmTLSCipherProtocolVersion
 {
@@ -101,6 +105,8 @@ enum DcmTLSCipherProtocolVersion
 
 /** This enum describes the key exchange protocol used in a certain
  *  TLS ciphersuite.
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum DcmTLSCipherKeyExchange
 {
@@ -124,6 +130,8 @@ enum DcmTLSCipherKeyExchange
 
 /** This enum describes the authentication mechanism
  *  used in a certain TLS ciphersuite.
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum DcmTLSCipherAuthentication
 {
@@ -143,6 +151,8 @@ enum DcmTLSCipherAuthentication
 
 /** This enum describes the symmetric encryption algorithm
  *  (bulk cipher) used in a certain TLS ciphersuite.
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum DcmTLSCipherEncryption
 {
@@ -168,6 +178,8 @@ enum DcmTLSCipherEncryption
 
 /** This enum describes the message authentication code (MAC)
  *  used in a certain TLS ciphersuite.
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 enum DcmTLSCipherMAC
 {
@@ -190,6 +202,8 @@ enum DcmTLSCipherMAC
  *  translates DcmTLSSecurityProfile enums into the corresponding sets of
  *  ciphersuites, and permits translation between the official TLS ciphersuite
  *  names (as used in DCMTK) and the corresponding internal OpenSSL name.
+ *  @remark This class is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
  */
 class DCMTK_DCMTLS_EXPORT DcmTLSCiphersuiteHandler
 {

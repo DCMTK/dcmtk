@@ -79,15 +79,17 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
                             const int flags = 0,
                             const int startPos = 1);
 
-#ifdef DCMTK_USE_WCHAR_T
+#ifdef DCMTK_USE_WCHAR_T // see see ofcmdln.h
 
     /** parse command line.
+     *
      *  This is a Windows-specific version supporting the wide character encoding (UTF-16).
      *  If the command line has no argument (in case at least one argument is required) and
      *  if the command line has only one argument, namely "--help" or the specified shortcut,
      *  (in all cases) the usage is printed (see printUsage).
-     *
-     ** @param  cmd       reference to the OFCommandLine object.  Should be valid at least as
+     *  @remark This method is only available if DCMTK is compiled on Windows
+     *  Operating Systems with wide chars available.
+     *  @param  cmd       reference to the OFCommandLine object.  Should be valid at least as
      *                    long as this object exists.
      *  @param  argCount  number of arguments (argc)
      *  @param  argValue  pointer to argument array (argv[])
@@ -102,9 +104,10 @@ class DCMTK_OFSTD_EXPORT OFConsoleApplication
                             const int flags = 0,
                             const int startPos = 1);
 
-#endif  // HAVE_WINDOWS_H ...
+#endif  // DCMTK_USE_WCHAR_T (see ofcmdln.h)
 
     /** print header of console application (consisting of identifier, name and description)
+     *
      *
      ** @param  hostInfo  print host information as reported by 'config.guess' if OFTrue.
      *                    If compiled with 'libiconv' support, the current locale's character

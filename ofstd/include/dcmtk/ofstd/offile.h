@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2017, OFFIS e.V.
+ *  Copyright (C) 2006-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -153,6 +153,9 @@ public:
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** constructor expecting a wide character string
+   *  @remark This constructor is only available if DCMTK is compiled on Windows
+   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *  WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
    *  @param filename filename to be stored (e.g. 16-bit characters)
    *  @param convert  convert given filename to UTF-8 encoding as an
    *    alternative representation.  Only works on Windows systems.
@@ -213,6 +216,9 @@ public:
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** get stored filename consisting of wide characters
+   *  @remark This method is only available if DCMTK is compiled on Windows
+   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *  WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
    *  @return wide char filename (might be NULL if none is stored)
    */
   inline const wchar_t *getWideCharPointer() const
@@ -239,6 +245,9 @@ public:
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** replace currently stored filename by given value
+   *  @remark This method is only available if DCMTK is compiled on Windows
+   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *  WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
    *  @param filename filename to be stored (e.g. 16-bit characters)
    *  @param convert  convert given filename to UTF-8 encoding as an alternative
    *    representation.  Only works on Windows systems.
@@ -248,7 +257,10 @@ public:
 #endif
 
 private:
-  /// filename consisting of conventional characters (8-bit, e.g. UTF-8)
+  /// filename consisting of conventional characters (8-bit, e.g.\ UTF-8)
+  /// @remark This member is only available if DCMTK is compiled on Windows
+  /// Operating Systems with wide chars enabled (defining _WIN32 as well as
+  /// WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
   char *filename_;
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /// filename consisting of wide characters (e.g. 16-bit on Windows)
@@ -327,8 +339,10 @@ public:
 
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
   /** opens the file whose name is the wide character string pointed to by path and
-   *  associates a stream with it. This function is Win32 specific and only exists on
-   *  WinNT and newer.
+   *  associates a stream with it.
+   *  @remark This member is only available if DCMTK is compiled on Windows
+   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *  WIDE_CHAR_FILE_IO_FUNCTIONS).
    *  @param filename Unicode filename path to file
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a wide
    *    character string

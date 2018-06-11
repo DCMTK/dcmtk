@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1441,8 +1441,8 @@ class DCMTK_DCMPSTAT_EXPORT DVInterface: public DVConfiguration
      *  to load and decrypt the private key for the given user with the
      *  given password. If this fails, the password verification fails,
      *  otherwise the password verification succeeds.
-     *  This method requires that DCMTK be configured and compiled with
-     *  the WITH_OPENSSL flag, otherwise always returns false.
+     *  @remark this method is only functional if DCMTK is compiled with
+     *  OpenSSL support enabled. Otherwise it always returns false.
      *  @param userID symbolic user ID for given user, as returned by
      *    DVConfiguration::getUserID()
      *  @param passwd for user as entered in some GUI control
@@ -1460,9 +1460,9 @@ class DCMTK_DCMPSTAT_EXPORT DVInterface: public DVConfiguration
      *  before the object is stored in the database or a file. Otherwise the digital signature
      *  would be corrupted. Therefore, the SOP instance UID should be generated before calling
      *  this method.
-     *  To digitally sign the report it is required that DCMTK is configured and compiled
-     *  with the WITH_OPENSSL flag, otherwise only verification is available (returns an
-     *  error code if mode differs from DVPSY_verify).
+     *  @remark this method only has full functionality if DCMTK is compiled with
+     *  OpenSSL support enabled. If not, only mode DVPSY_verify (verification)
+     *  is available and an error is returned for any other mode.
      *  @param userID symbolic user ID for given user, as returned by
      *    DVConfiguration::getUserID()
      *  @param passwd for user as entered in some GUI control

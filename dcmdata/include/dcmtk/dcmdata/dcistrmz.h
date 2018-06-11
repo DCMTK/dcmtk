@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,10 +36,14 @@ END_EXTERN_C
  *  When true, the input stream is expected to be in deflated ZLIB format 
  *  instead of deflated bitstream format (i.e. RFC 1950 instead of RFC 1951).
  *  Default is false, i.e. DICOM compliant behavior.
+ *  @remark this flag is only available if DCMTK is compiled with
+ *  ZLIB support enabled.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmZlibExpectRFC1950Encoding;
 
 /** zlib compression filter for input streams
+ *  @remark this class is only available if DCMTK is compiled with
+ *  ZLIB support enabled.
  */
 class DCMTK_DCMDATA_EXPORT DcmZLibInputFilter: public DcmInputFilter
 {

@@ -52,6 +52,8 @@ namespace log4cplus
     * <code>AllocConsole()</code> Win32 function.</dd>
     *
     * </dl>
+    *  @remark This class is only available if DCMTK is compiled on Windows
+    *  Operating Systems (defining _WIN32).
     */
     class DCMTK_LOG4CPLUS_EXPORT Win32ConsoleAppender
         : public Appender

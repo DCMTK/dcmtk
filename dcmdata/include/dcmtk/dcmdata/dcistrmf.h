@@ -275,6 +275,8 @@ private:
 
 #ifdef WITH_THREADS
   /// mutex for MT-safe reference counting
+  /// @remark this member is only available if DCMTK is compiled with thread
+  /// support enabled.
   OFMutex mutex_;
 #endif
 

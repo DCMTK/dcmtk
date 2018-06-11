@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2011, OFFIS e.V.
+ *  Copyright (C) 1999-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -227,7 +227,10 @@ private:
   int joined;
 
 #ifdef WITH_THREADS
-  /** mutex protecting access to cout */
+  /** mutex protecting access to cout
+   *  @remark This member is only available if DCMTK is compiled with thread
+   *  support enabled.
+   */
   OFMutex coutMutex;
 
   /** mutex protecting access to cerr */

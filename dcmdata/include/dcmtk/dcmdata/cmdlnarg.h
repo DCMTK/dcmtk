@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,6 +42,8 @@ DCMTK_DCMDATA_EXPORT void prepareCmdLineArgs(int& argc, char** argv, const char*
  *  and allows command line arguments to be input from stdin.
  *  MT level: Thread unsafe!
  *  This is a Windows-specific version supporting the wide character encoding (UTF-16).
+ *  @remark this method is only available if DCMTK is compiled on Windows
+ *  Operating Systems (defining _WIN32)
  *  @param argc the argc parameter of main() is passed in this parameter (not used)
  *  @param argv the argv parameter of main() is passed in this parameter (not used)
  *  @param progname program name (not used)

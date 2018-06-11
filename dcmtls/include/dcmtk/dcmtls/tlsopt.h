@@ -132,44 +132,68 @@ public:
 private:
 #ifdef WITH_OPENSSL
     /// flag indicating the file format of certificates and private keys: PEM or ASN.1
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     DcmKeyFileFormat opt_keyFileFormat;
 
     /// flag indicating whether we will authenticate ourselves using a certificate and private key
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     OFBool opt_doAuthenticate;
 
     /// filename of private key file we use to authenticate ourselves
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     const char* opt_privateKeyFile;
 
     /// filename of certificate file we use to authenticate ourselves
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     const char* opt_certificateFile;
 
     /** password for reading the private key file, may be NULL.
      *  In this case the password is read from STDIN.
+     *  @remark this member is only available if DCMTK is compiled with
+     *  OpenSSL support enabled.
      */
     const char* opt_passwd;
 
     /// DICOM TLS Security Profile selected
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     DcmTLSSecurityProfile opt_tlsProfile;
 
     /// filename of file containing at least 1K of entropy used to seed the PRNG
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     const char* opt_readSeedFile;
 
     /// filename to which the modified PRNG state is written back
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     const char* opt_writeSeedFile;
 
     /// indicates whether we should verify the remote peer's certificate
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     DcmCertificateVerification opt_certVerification;
 
     /// filename of Diffie-Hellman parameters file, may be NULL
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     const char* opt_dhparam;
 
     /// a flag indicating whether or not a secure connection was requested
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     OFBool opt_secureConnection;
 
     /// indicates whether we act as client, server or both
     T_ASC_NetworkRole opt_networkRole;
 
     /// pointer to the secure transport layer managed by this object
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
     DcmTLSTransportLayer *tLayer;
 #endif // WITH_OPENSSL
 };
