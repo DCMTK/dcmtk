@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -221,7 +221,7 @@ private:
    *  reading. If none of the specified transport connections is ready
    *  for reading, this method blocks up to the specified timeout interval
    *  or until one of the connections becomes readable, whatever occurs
-   *  first. This method uses the select() system call. It may only be used
+   *  first. This method uses the poll() or select() system call. It may only be used
    *  with an array of transparent TCP transport connections. This precondition
    *  must be assured by the caller.
    *  @param connections list of transport connections. May contain NULL entries.
