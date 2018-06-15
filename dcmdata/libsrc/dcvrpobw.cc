@@ -211,6 +211,14 @@ DcmPolymorphOBOW::putUint8Array(
     {
         if (byteValue)
         {
+            // Check if more than 4 GB is requested, which is the maximum
+            // length DICOM can handle. Take into account that the alignValue()
+            // call adds a byte if an odd length is provided, thus, 4294967295
+            // would not work.
+            if (numBytes > 4294967294)
+            {
+                return EC_TooManyBytesRequested;
+            }
             errorFlag = putValue(byteValue, OFstatic_cast(Uint32, sizeof(Uint8) * OFstatic_cast(size_t, numBytes)));
             if (errorFlag == EC_Normal)
             {
@@ -241,6 +249,14 @@ DcmPolymorphOBOW::putUint16Array(
     {
         if (wordValue)
         {
+            // Check whether input would lead to a buffer allocation of more than
+            // 4 GB for a value, which is not possible in DICOM. The biggest input
+            // parameter value permitted is 2147483647, since 2147483647*2 is still
+            // < 2^32-1 (4 GB).
+            if (numWords > 2147483647)
+            {
+                return EC_TooManyBytesRequested;
+            }
             errorFlag = putValue(wordValue, OFstatic_cast(Uint32, sizeof(Uint16) * OFstatic_cast(size_t, numWords)));
             if (errorFlag == EC_Normal &&
                 getTag().getEVR() == EVR_OB && getByteOrder() == EBO_BigEndian)

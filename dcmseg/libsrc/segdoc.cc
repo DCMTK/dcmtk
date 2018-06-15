@@ -753,18 +753,28 @@ OFCondition DcmSegmentation::readFrames(DcmItem& dataset)
   }
 
   /* Read all frames into dedicated data structure */
-  size_t pixelsPerFrame = rows * cols;
+  size_t pixelsPerFrame = OFstatic_cast(size_t, rows) * cols;
   if (m_SegmentationType == DcmSegTypes::ST_BINARY)
   {
-      extractFrames(pixels, numberOfFrames, pixelsPerFrame, m_Frames);
+      result = extractFrames(pixels, numberOfFrames, pixelsPerFrame, m_Frames);
+      if (result.bad())
+      {
+        return result;
+    }
   }
   else if (m_SegmentationType == DcmSegTypes::ST_FRACTIONAL)
   {
     for (size_t count = 0; count < numberOfFrames; count++)
     {
       DcmIODTypes::Frame *frame = new DcmIODTypes::Frame();
+      if (!frame) return EC_MemoryExhausted;
       frame->length = pixelsPerFrame;
       frame->pixData= new Uint8[pixelsPerFrame];
+      if (!frame->pixData)
+      {
+          delete frame;
+          return EC_MemoryExhausted;
+      }
       memcpy(frame->pixData, pixels + count* pixelsPerFrame, pixelsPerFrame);
       m_Frames.push_back(frame);
     }
@@ -915,7 +925,14 @@ OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
   rows = cols = 0;
   getImagePixel().getRows(rows);
   getImagePixel().getColumns(cols);
-  size_t numBytes = getTotalBytesRequired(rows, cols, numFrames);
+  size_t numBytes = 0;
+  result = getTotalBytesRequired(rows, cols, numFrames, numBytes);
+  if (result.bad()) return result;
+  if (numBytes >= 4294967295)
+  {
+    DCMSEG_ERROR("Cannot store Segmentation objects with more than 4 GB pixel data (compression for writing not supported)");
+    return EC_TooManyBytesRequested;
+  }
   Uint8* pixdata = new Uint8[numBytes];
   OFVector<DcmIODTypes::Frame*>::iterator it = m_Frames.begin();
   // Just copy bytes for each frame as is
@@ -938,7 +955,14 @@ OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
   OFCondition result;
   getImagePixel().getRows(rows);
   getImagePixel().getColumns(cols);
-  size_t numBytes = getTotalBytesRequired(rows, cols, numFrames);
+  size_t numBytes = 0;
+  result = getTotalBytesRequired(rows, cols, numFrames, numBytes);
+  if (result.bad()) return result;
+  if (numBytes >= 4294967295)
+  {
+    DCMSEG_ERROR("Cannot store Segmentation objects with more than 4 GB pixel data (compression for writing not supported)");
+    return EC_TooManyBytesRequested;
+  }
   // Holds the pixels for all frames. Each bit represents a pixel which is either
   // 1 (part of segment) or 0 (not part of segment. All frames are directly
   // concatenated, i.e. there are no unused bits between the frames.
@@ -1068,7 +1092,9 @@ OFBool DcmSegmentation::checkPixDataLength(DcmElement* pixelData,
   size_t length = pixelData->getLengthField();
 
   // Find out how many bytes are needed
-  size_t bytesRequired = getTotalBytesRequired(rows, cols, numberOfFrames);
+  size_t bytesRequired = 0;
+  OFCondition result = getTotalBytesRequired(rows, cols, numberOfFrames, bytesRequired);
+  if (result.bad()) return OFFalse;
   // Length found in Pixel Data element is always even
   if (bytesRequired % 2 == 1) bytesRequired++;
   /* Compare expected and actual length */
@@ -1090,31 +1116,25 @@ OFBool DcmSegmentation::checkPixDataLength(DcmElement* pixelData,
 }
 
 
-size_t DcmSegmentation::getBitsPerFrame(const Uint16& rows,
-                                        const Uint16& cols)
+OFCondition DcmSegmentation::getTotalBytesRequired(const Uint16& rows,
+                                                   const Uint16& cols,
+                                                   const Uint16& numberOfFrames,
+                                                   size_t& bytesRequired)
 {
-  size_t bitsRequired = 0;
-  bitsRequired = rows * cols;
-  /* For fractional segmentations we need 1 byte instead of 1 bit for a single pixel */
-  if (m_SegmentationType == DcmSegTypes::ST_FRACTIONAL)
+  OFBool ok = OFStandard::safeMult(OFstatic_cast(size_t, rows), OFstatic_cast(size_t, cols), bytesRequired);
+  if (ok) OFStandard::safeMult(bytesRequired, OFstatic_cast(size_t, numberOfFrames), bytesRequired);
+  if (!ok)
   {
-    bitsRequired *= 8;
+    DCMSEG_ERROR("Cannot compute number of bytes required for Pixel Data since size_t type is too small");
+    return EC_TooManyBytesRequested;
   }
-  return bitsRequired;
-}
 
-
-size_t DcmSegmentation::getTotalBytesRequired(const Uint16& rows,
-                                              const Uint16& cols,
-                                              const Uint16& numberOfFrames)
-{
-  size_t bytesRequired = rows * cols * numberOfFrames;
   /* for binary, we only need one bit per pixel */
   size_t remainder = 0;
   if (m_SegmentationType == DcmSegTypes::ST_BINARY)
   {
     // check whether the 1-bit pixels exactly fit into bytes
-    remainder = (rows * cols) % 8;
+    remainder = (OFstatic_cast(size_t, rows) * cols) % 8;
     // number of bytes that work on an exact fit
     bytesRequired = bytesRequired / 8;
     // add one byte if we have a remainder
@@ -1122,9 +1142,8 @@ size_t DcmSegmentation::getTotalBytesRequired(const Uint16& rows,
     {
       bytesRequired++;
     }
-
   }
-  return bytesRequired;
+  return EC_Normal;
 }
 
 
@@ -1324,10 +1343,10 @@ OFCondition DcmSegmentation::decompress(DcmDataset& dset)
 }
 
 
-void DcmSegmentation::extractFrames(Uint8* pixData,
-                                    const size_t numFrames,
-                                    const size_t bitsPerFrame,
-                                    OFVector< DcmIODTypes::Frame* >& results)
+OFCondition DcmSegmentation::extractFrames(Uint8* pixData,
+                                           const size_t numFrames,
+                                           const size_t bitsPerFrame,
+                                           OFVector< DcmIODTypes::Frame* >& results)
 {
   // Will hold the bit position (0-7) that the current frame starts from. The
   // first frame will always start at bit 0.
@@ -1349,6 +1368,10 @@ void DcmSegmentation::extractFrames(Uint8* pixData,
     DcmIODTypes::Frame* frame = new DcmIODTypes::Frame();
     frame->length = frameLengthBytes;
     frame->pixData = new Uint8[frameLengthBytes];
+    if (!frame->pixData)
+    {
+        return EC_MemoryExhausted;
+    }
     memcpy(frame->pixData, readPos, frame->length);
     // If we have been copying too much, i.e the first bits of the frame
     // actually belong to the former frame, shift the whole frame this amount
@@ -1377,6 +1400,7 @@ void DcmSegmentation::extractFrames(Uint8* pixData,
       readPos = readPos + frame->length;
     }
   }
+  return EC_Normal;
 }
 
 

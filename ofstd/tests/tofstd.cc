@@ -257,7 +257,7 @@ OFTEST(ofstd_OFStandard_removeRootDirFromPathname)
     OFCHECK(OFStandard::removeRootDirFromPathname(result, nullPtr, nullPtr).good());
 }
 
-OFTEST(ofstd_safeSubtractAndAdd)
+OFTEST(ofstd_safeSubtractAddMult)
 {
   // --------------- Subtraction ----------------
 
@@ -291,6 +291,20 @@ OFTEST(ofstd_safeSubtractAndAdd)
   // dividing and then multiplying by 2 is required since max may be an
   // odd number so that max/2 is rounded to the floor number.
   OFCHECK_EQUAL(a, OFnumeric_limits<unsigned int>::max());
+
+  // --------------- Multiplication ----------------
+  a = OFnumeric_limits<unsigned int>::max() / 2;
+  // check whether overflow occurred (it should)
+  OFCHECK( OFStandard::safeMult(a, OFstatic_cast(unsigned int, 3), a) == OFFalse);
+  // check whether no overflow occurred (it shouldn't)
+  OFCHECK_EQUAL(a, OFnumeric_limits<unsigned int>::max() / 2);
+
+  b = 2; // a still equals max / 2
+  OFCHECK( OFStandard::safeMult(a, b, a) == OFTrue);
+  if ( (OFnumeric_limits<unsigned int>::max() %2 == 1) )
+      OFCHECK_EQUAL(a+1, OFnumeric_limits<unsigned int>::max());
+  else
+      OFCHECK_EQUAL(a, OFnumeric_limits<unsigned int>::max());
 }
 
 OFTEST(ofstd_snprintf)

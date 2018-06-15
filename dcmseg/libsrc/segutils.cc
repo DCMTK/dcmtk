@@ -29,7 +29,7 @@ DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(const Uint8* pixelData,
                                                  const Uint16 columns)
 {
   // Sanity checking
-  const size_t numPixels = rows*columns;
+  const size_t numPixels = OFstatic_cast(size_t, rows) * columns;
   if (numPixels == 0)
   {
     DCMSEG_ERROR("Unable to pack binary segmentation frame: Rows or Columns is 0");
@@ -78,11 +78,16 @@ DcmIODTypes::Frame* DcmSegUtils::unpackBinaryFrame(const DcmIODTypes::Frame* fra
   }
 
   // Create result frame in memory
-  size_t numBits = rows * cols;
+  size_t numBits = OFstatic_cast(size_t, rows) * cols;
   DcmIODTypes::Frame* result = new DcmIODTypes::Frame();
   if (result)
   {
     result->pixData = new Uint8[numBits];
+    if (!result->pixData)
+    {
+        delete result;
+        return NULL;
+    }
     result->length = numBits;
   }
   if ( !result || !(result->pixData) )

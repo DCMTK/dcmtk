@@ -503,11 +503,12 @@ protected:
    *  @param  bitsPerFrame The number of bits per frame (usually rows * columns)
    *  @param  results The resulting frames. Memory for the frames is allocated
    *          by the method, so the Vector can/should be empty before calling.
+   *  @result Return EC_Normal on success, error otherwise
    */
-  virtual void extractFrames(Uint8* pixData,
-                             const size_t numFrames,
-                             const size_t bitsPerFrame,
-                             OFVector< DcmIODTypes::Frame* >& results);
+  virtual OFCondition extractFrames(Uint8* pixData,
+                                   const size_t numFrames,
+                                   const size_t bitsPerFrame,
+                                   OFVector< DcmIODTypes::Frame* >& results);
 
   /** This is the counterpart to the extractFrames() function. It takes a number
    *  of frames that are in binary segmentation format (i.e. "bit-packed") and
@@ -619,27 +620,22 @@ private:
                               const OFString& filename,
                               DcmDataset*& dset);
 
-  /** Returns the number of bits per frame, taking into account binary versus
-   *  fractional segmentation (member variables) and the dimensions of the
-   *  image (parameters)
-   *  @param  rows The number of rows returned
-   *  @param  cols The number of columns returned
-   *  @return Bits used by a single frame of the segmentation
-   */
-  size_t getBitsPerFrame(const Uint16& rows,
-                         const Uint16& cols);
-
-  /** Returns the number of total bytes required for the frame data of this
+  /** Computes the number of total bytes required for the frame data of this
    *  segmentation object. Takes into account dimensions and number of frames,
-   *  as well as the type of segmentation (member variables).
+   *  as well as the type of segmentation (member variables). May file if
+   *  size_t type is not able to hold the result of intermediate computations.
    *  @param  rows Number of rows of a frame
    *  @param  cols Number of cols of a frame
    *  @param  numberOfFrames The number of frames of the object
-   *  @return Number of bytes used by all frames of this segmentation
+   *  @param  bytesRequired Will hold the result of the computation,
+   *          if successful. Does not any padding into account.
+   *  @return EC_Normal if computation was possible, EC_TooManyBytesRequested
+   *          otherwise.
    */
-  size_t getTotalBytesRequired(const Uint16& rows,
-                               const Uint16& cols,
-                               const Uint16& numberOfFrames);
+  OFCondition getTotalBytesRequired(const Uint16& rows,
+                                    const Uint16& cols,
+                                    const Uint16& numberOfFrames,
+                                    size_t& bytesRequired);
 
   /** Read Fractional Type of segmentation.
    *  @param  item The item to read from

@@ -899,13 +899,13 @@ class DCMTK_OFSTD_EXPORT OFStandard
     static OFBool
     safeSubtract(T minuend, T subtrahend, T& difference)
     {
-      assert(!OFnumeric_limits<T>::is_signed);
-      if (minuend < subtrahend) {
-        return OFFalse;
-      } else {
-        difference = minuend - subtrahend;
-        return OFTrue;
-      }
+        assert(!OFnumeric_limits<T>::is_signed);
+        if (minuend < subtrahend) {
+            return OFFalse;
+        } else {
+            difference = minuend - subtrahend;
+            return OFTrue;
+        }
     }
 
     /** check whether addition is safe (i.e.\ no overflow occurs) and if so,
@@ -921,13 +921,34 @@ class DCMTK_OFSTD_EXPORT OFStandard
     static OFBool
     safeAdd(T a, T b, T& sum)
     {
-      assert(!OFnumeric_limits<T>::is_signed);
-      if ((OFnumeric_limits<T>::max)() - a < b) {
-        return OFFalse;
-      } else {
-        sum = a + b;
+        assert(!OFnumeric_limits<T>::is_signed);
+        if ((OFnumeric_limits<T>::max)() - a < b) {
+            return OFFalse;
+        } else {
+            sum = a + b;
+            return OFTrue;
+        }
+    }
+
+    /** check whether multiplication is safe (i.e.\ no overflow occurs) and if so,
+     *  perform it (i.e.\ compute a*b=product). Only works for unsigned types.
+     *  @param a first number to multiply
+     *  @param b second number to multiply
+     *  @param product resulting product of both numbers, if multiplication is
+     *    safe, otherwise parameter value is not touched by the function
+     *  @return OFTrue if multiplication is safe and could be performed, OFFalse
+     *    otherwise
+     */
+    template <typename T>
+    static OFBool safeMult(T a, T b, T& product)
+    {
+        assert(!OFnumeric_limits<T>::is_signed);
+        T x = a * b;
+        if (a != 0 && x / a != b) {
+            return OFFalse;
+        }
+        product = x;
         return OFTrue;
-      }
     }
 
 #ifdef DOXYGEN
