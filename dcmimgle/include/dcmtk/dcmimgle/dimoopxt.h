@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1153,10 +1153,13 @@ class DiMonoOutputPixelTemplate
             {
                 if (overlays[j] != NULL)
                 {
-                    if (overlays[j]->getCount() > 0)
-                        DCMIMGLE_DEBUG("applying " << ((j == 0) ? "built-in" : "additional") << " overlay planes");
                     const signed long left_pos = overlays[j]->getLeft();
                     const signed long top_pos = overlays[j]->getTop();
+                    if (overlays[j]->getCount() > 0)
+                    {
+                        DCMIMGLE_DEBUG("applying " << ((j == 0) ? "built-in" : "additional") << " overlay planes");
+                        DCMIMGLE_TRACE("  left_pos: " << left_pos << ", top_pos: " << top_pos << ", columns: " << columns << ", rows: " << rows);
+                    }
                     DiOverlayPlane *plane;
                     for (unsigned int i = 0; i < overlays[j]->getCount(); ++i)
                     {
@@ -1277,8 +1280,10 @@ class DiMonoOutputPixelTemplate
                                     break;
                                 }
                                 default: /* e.g. EMO_Default */
-                                    DCMIMGLE_WARN("unhandled overlay mode (" << OFstatic_cast(int, plane->getMode()) << ")");
+                                    DCMIMGLE_WARN("unhandled overlay mode (" << OFstatic_cast(int, plane->getMode()) << ") for plane " << (i + 1));
                             }
+                            DCMIMGLE_TRACE("  overlay data of this plane is " << (plane->isEmbedded() ? "embedded in the pixel data" : "stored separately"));
+                            DCMIMGLE_TRACE("  xmin: " << xmin << ", ymin: " << ymin << ", xmax: " << xmax << ", ymax: " << ymax);
                         }
                     }
                 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -554,6 +554,8 @@ void DiOverlayPlane::setScaling(const double xfactor,
     Top = OFstatic_cast(Sint16, yfactor * Top);
     Width = OFstatic_cast(Uint16, xfactor * Width);
     Height = OFstatic_cast(Uint16, yfactor * Height);
+    StartLeft = OFstatic_cast(Uint16, xfactor * StartLeft);
+    StartTop = OFstatic_cast(Uint16, yfactor * StartTop);
 }
 
 
