@@ -272,7 +272,7 @@ public:
   virtual OFCondition setTrackingUID(const OFString& value,
                                      const OFBool checkValue = OFTrue);
 
-  // The utility class must access the protected default constructor
+  /// The utility class must access the protected default constructor
   friend class DcmIODUtil;
 
 protected:
@@ -300,6 +300,7 @@ private:
   DcmSegment(const DcmSegment&);
 
   /** Private undefined assignment operator
+   *  @return Reference to "this" class
    */
   DcmSegment& operator=(const DcmSegment&);
 

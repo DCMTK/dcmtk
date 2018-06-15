@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -162,7 +162,7 @@ class DCMTK_DCMSEG_EXPORT SegmentedPropertyTypeCodeItem
 
 public:
 
-  // Easy access to containing class
+  /// Easy access to containing class
   friend class SegmentDescriptionMacro;
 
   /** Constructor
