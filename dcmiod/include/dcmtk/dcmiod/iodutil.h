@@ -918,14 +918,13 @@ public:
     */
   static OFString createUID(const Uint8 level = 0);
 
-  /** Print warning if more than 65535 frames are present. This is the maximum
-   *  number since the Number of Frames attribute is only 16 bit thus not
-   *  permitting larger values.
+  /** Print warning if more than 4294967295 frames are present. This is the maximum
+   *  number since the Number of Frames attribute is only 32 bits wide.
    *  The method returns the number of frames that can be used, i.e. either
-   *  65535 if the maximum is exceeded, otherwise the actual number of frames.
+   *  4294967295 if the maximum is exceeded, otherwise the actual number of frames.
    *  @param  numFramesPresent The number of frames actually present
    *  @param  warning The message to be printed if Number of Frames is larger
-   *          than 65535.
+   *          than 4294967295.
    *  @return Number of frames that can be safely used.
    */
   static Uint16 limitMaxFrames(const size_t numFramesPresent,
