@@ -27,6 +27,7 @@
 #include "dcmtk/dcmdata/dctagkey.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/ofstd/ofbmanip.h"
+#include "dcmtk/ofstd/ofutil.h"
 
 #include "dcmtk/dcmimgle/diovpln.h"
 #include "dcmtk/dcmimgle/didocu.h"
@@ -554,8 +555,8 @@ void DiOverlayPlane::setScaling(const double xfactor,
     Top = OFstatic_cast(Sint16, yfactor * Top);
     Width = OFstatic_cast(Uint16, xfactor * Width);
     Height = OFstatic_cast(Uint16, yfactor * Height);
-    StartLeft = OFstatic_cast(Uint16, xfactor * StartLeft);
-    StartTop = OFstatic_cast(Uint16, yfactor * StartTop);
+    StartLeft = OFstatic_cast(unsigned int, xfactor * StartLeft);
+    StartTop = OFstatic_cast(unsigned int, yfactor * StartTop);
 }
 
 
@@ -567,12 +568,12 @@ void DiOverlayPlane::setFlipping(const int horz,
     if (horz)
     {
         Left = OFstatic_cast(Sint16, columns - Width - Left);
-        StartLeft = OFstatic_cast(Uint16, OFstatic_cast(signed long, Columns) - Width - StartLeft);
+        StartLeft = OFstatic_cast(unsigned int, OFstatic_cast(signed long, Columns) - Width - StartLeft);
     }
     if (vert)
     {
         Top = OFstatic_cast(Sint16, rows - Height - Top);
-        StartTop = OFstatic_cast(Uint16, OFstatic_cast(signed long, Rows) - Height - StartTop);
+        StartTop = OFstatic_cast(unsigned int, OFstatic_cast(signed long, Rows) - Height - StartTop);
     }
 }
 
@@ -587,29 +588,25 @@ void DiOverlayPlane::setRotation(const int degree,
         setFlipping(1, 1, left_pos + columns, top_pos + rows);
     else if ((degree == 90) || (degree == 270))
     {
-        Uint16 us = Height;                     // swap visible width/height
-        Height = Width;
-        Width = us;
+        OFswap(Width, Height);                  // swap visible width/height
 /*
-        us = Rows;                              // swap stored width/height -> already done in the constructor !
-        Rows = Columns;
-        Columns = us;
+        OFswap(Columns, Rows);                  // swap stored columns/rows -> already done in the constructor !
 */
         if (degree == 90)                       // rotate right
         {
-            Sint16 ss = Left;
-            us = StartLeft;
+            const Sint16 ss = Left;
+            const unsigned int ui = StartLeft;
             Left = OFstatic_cast(Sint16, OFstatic_cast(signed long, columns) - Width - Top + top_pos);
-            StartLeft = OFstatic_cast(Uint16, OFstatic_cast(signed long, Columns) - Width - StartTop);
+            StartLeft = OFstatic_cast(unsigned int, OFstatic_cast(signed long, Columns) - Width - StartTop);
             Top = OFstatic_cast(Sint16, ss - left_pos);
-            StartTop = us;
+            StartTop = ui;
         } else {                                // rotate left
-            Sint16 ss = Left;
-            us = StartLeft;
+            const Sint16 ss = Left;
+            const unsigned int ui = StartLeft;
             Left = OFstatic_cast(Sint16, Top - top_pos);
             StartLeft = StartTop;
             Top = OFstatic_cast(Sint16, OFstatic_cast(signed long, rows) - Height - ss + left_pos);
-            StartTop = OFstatic_cast(Uint16, OFstatic_cast(signed long, Rows) - Height - us);
+            StartTop = OFstatic_cast(unsigned int, OFstatic_cast(signed long, Rows) - Height - ui);
         }
     }
 }
