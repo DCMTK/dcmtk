@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -110,19 +110,20 @@ struct DPMParametricMapIOD::ReadVisitor
     OFCondition result = map.readGeneric(item);
     if (result.good())
     {
-      Uint16 rows, cols, numFrames;
+      Uint16 rows, cols;
+      Uint32 numFrames;
       size_t numBytesFrame = 0;
       rows = cols = numFrames = 0;
       map.getRows(rows);
       map.getColumns(cols);
       numFrames = DcmIODUtil::limitMaxFrames(map.getFunctionalGroups().getNumberOfFrames(),
-                                             "Functional groups implicate more than 65535 frames, only 65535 will be used");
+                                             "Functional groups implicate more than 2147483647 frames, only 2147483647 will be used");
       if (!rows || !cols || !numFrames)
       {
         DCMPMAP_ERROR("Rows (" << rows << "), Columns (" << cols << ") and Number of Frames (" << numFrames << ") must not be 0");
         return DPM_InvalidPixelInfo;
       }
-      numBytesFrame = rows * cols * sizeof(typename ImagePixel::value_type);
+      numBytesFrame = OFstatic_cast(size_t,rows) * cols * sizeof(typename ImagePixel::value_type);
       result = readSpecific(pixel, numFrames, numBytesFrame);
     }
     return result;
@@ -130,7 +131,7 @@ struct DPMParametricMapIOD::ReadVisitor
 
   template<typename T>
   OFCondition readSpecific(IODImagePixelModule<T>& p,
-                           const Uint16 numFrames,
+                           const Uint32 numFrames,
                            const size_t numBytesFrame)
   {
     // Avoid compiler warning about unused parameter
@@ -141,7 +142,7 @@ struct DPMParametricMapIOD::ReadVisitor
     {
       if (numTotalWords == numBytesFrame * numFrames / 2 /* we compare to num words not num bytes */)
       {
-        for (Uint16 n = 0; n < numFrames; n++)
+        for (Uint32 n = 0; n < numFrames; n++)
         {
           DcmIODTypes::Frame* f = new DcmIODTypes::Frame;
           if (f)
@@ -172,7 +173,7 @@ struct DPMParametricMapIOD::ReadVisitor
   }
 
   OFCondition readSpecific(IODFloatingPointImagePixelModule& p,
-                           const Uint16 numFrames,
+                           const Uint32 numFrames,
                            const size_t numBytesFrame)
   {
     // Avoid compiler warning on unused parameter
@@ -183,7 +184,7 @@ struct DPMParametricMapIOD::ReadVisitor
     {
       if (numTotalFloats == numBytesFrame * numFrames / 4 /* we compare to 32 bit floats not bytes */)
       {
-        for (Uint16 n=0; n < numFrames; n++)
+        for (Uint32 n=0; n < numFrames; n++)
         {
           DcmIODTypes::Frame* f = new DcmIODTypes::Frame;
           if (f)
@@ -214,8 +215,8 @@ struct DPMParametricMapIOD::ReadVisitor
   }
 
   OFCondition readSpecific(IODDoubleFloatingPointImagePixelModule& p,
-                    const Uint16 numFrames,
-                    const size_t numBytesFrame)
+                           const Uint32 numFrames,
+                           const size_t numBytesFrame)
   {
     // Avoid compiler warning on unused parameter
     (void)p;
@@ -976,7 +977,7 @@ OFCondition DPMParametricMapIOD::readGeneric(DcmItem& dataset)
 OFCondition DPMParametricMapIOD::writeGeneric(DcmItem& dataset)
 {
   getFrameOfReference().ensureFrameOfReferenceUID();
-  m_IODMultiFrameFGModule.setNumberOfFrames(DcmIODUtil::limitMaxFrames(m_Frames.size(), "Maximum number of frames exceeded, will write 65535"));
+  m_IODMultiFrameFGModule.setNumberOfFrames(DcmIODUtil::limitMaxFrames(m_Frames.size(), "Maximum number of frames exceeded, will write 2147483647"));
   OFCondition result = m_ContentIdentification.write(dataset);
   if (result.good())
   {

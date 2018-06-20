@@ -897,7 +897,7 @@ OFCondition DcmSegmentation::writeDataset(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeMultiFrameFunctionalGroupsModule(DcmItem& dataset)
 {
-  Uint16 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 65535 frames provided, limiting Number of Frames to 65535");
+  Uint16 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 2147483647 frames provided, limiting Number of Frames to 2147483647");
   m_FG.setNumberOfFrames(numFrames);
   OFCondition result = m_FG.write(dataset);
   if (result.good())
@@ -919,7 +919,7 @@ OFCondition DcmSegmentation::writeMultiFrameDimensionModule(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
 {
-  Uint16 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 65535 fractional frames provided, will only write 65535");
+  Uint16 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 2147483647 frames provided, will only write 2147483647");
   OFCondition result;
   Uint16 rows,cols;
   rows = cols = 0;
@@ -951,7 +951,7 @@ OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
 {
   Uint16 numFrames, rows, cols;
   rows = cols = 0;
-  numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 65535 binary frames provided, will only write 65535");
+  numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 2147483647 frames provided, will only write 2147483647");
   OFCondition result;
   getImagePixel().getRows(rows);
   getImagePixel().getColumns(cols);
