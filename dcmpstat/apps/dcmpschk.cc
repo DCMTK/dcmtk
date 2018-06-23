@@ -245,7 +245,7 @@ static OFBool isaKnownPointer(DcmTag& t)
 
     if (dictRef && (t.getEVR() == EVR_up) && (t.getEVR() == dictRef->getEVR())) result = OFTrue;
 
-    dcmDataDict.unlock();
+    dcmDataDict.rdunlock();
     return result;
 }
 
@@ -557,7 +557,7 @@ static int checkelem(
       } //end of if (isaStringVR(vr))
 
     }
-    dcmDataDict.unlock();
+    dcmDataDict.rdunlock();
     return 0;
 }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -451,14 +451,23 @@ public:
    */
   int trywrlock();
 
-  /** unlocks the read/write lock. The read/write lock must be locked and
+  /** unlocks the read lock. The read/write lock must be locked and
    *  the calling thread must be the owner of the lock, otherwise the
    *  behaviour is undefined. One of the other threads that is waiting for
    *  the read/write lock to be freed will be unblocked, provided there are
    *  other waiting threads.
    *  @return 0 upon success, an error code otherwise.
    */
-  int unlock();
+  int rdunlock();
+
+  /** unlocks the write lock. The read/write lock must be locked and
+   *  the calling thread must be the owner of the lock, otherwise the
+   *  behaviour is undefined. One of the other threads that is waiting for
+   *  the read/write lock to be freed will be unblocked, provided there are
+   *  other waiting threads.
+   *  @return 0 upon success, an error code otherwise.
+   */
+  int wrunlock();
 
   /** converts any of the error codes returned by the methods of this class
    *  into a textual description, which is written into the string object.
@@ -529,7 +538,7 @@ public:
    */
   int trywrlock();
 
-  /** unlock the lock
+  /** unlock the read/write lock
    *  @return 0 upon success, an error code otherwise
    *  @see OFReadWriteLock::unlock
    */
@@ -541,6 +550,9 @@ private:
 
   /** did we successfully lock the lock? */
   OFBool locked;
+
+  /** did we acquire a write lock? */
+  OFBool isWriteLock;
 
   /** unimplemented private copy constructor */
   OFReadWriteLocker(const OFReadWriteLocker& arg);

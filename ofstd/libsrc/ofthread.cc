@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -738,7 +738,7 @@ void OFMutex::errorstr(OFString& description, int /* code */ )
 
 /* ------------------------------------------------------------------------- */
 
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if (defined(WINDOWS_INTERFACE) && defined(USE_WIN32_READ_WRITE_LOCK_HELPER)) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
 
 class OFReadWriteLockHelper
 {
@@ -770,7 +770,11 @@ private:
 OFReadWriteLock::OFReadWriteLock()
 : theLock(NULL)
 {
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+   SRWLOCK *srwLock = new SRWLOCK;
+   InitializeSRWLock(srwLock);
+   theLock = srwLock;
+#elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
    OFReadWriteLockHelper *rwl = new OFReadWriteLockHelper();
    if ((rwl->accessMutex.initialized()) && (rwl->usageSemaphore.initialized())) theLock=rwl;
    else delete rwl;
@@ -794,7 +798,9 @@ OFReadWriteLock::OFReadWriteLock()
 
 OFReadWriteLock::~OFReadWriteLock()
 {
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+  delete OFthread_cast(SRWLOCK *, theLock);
+#elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   delete OFthread_cast(OFReadWriteLockHelper *, theLock);
 #elif defined(POSIX_INTERFACE)
   if (theLock) pthread_rwlock_destroy(OFthread_cast(pthread_rwlock_t *, theLock));
@@ -818,7 +824,13 @@ OFBool OFReadWriteLock::initialized() const
 
 int OFReadWriteLock::rdlock()
 {
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+  if (theLock)
+  {
+    AcquireSRWLockShared(OFthread_cast(SRWLOCK *, theLock));
+    return 0;
+  } else return EINVAL;
+#elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
@@ -856,7 +868,13 @@ int OFReadWriteLock::rdlock()
 
 int OFReadWriteLock::wrlock()
 {
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+  if (theLock)
+  {
+    AcquireSRWLockExclusive(OFthread_cast(SRWLOCK *, theLock));
+    return 0;
+  } else return EINVAL;
+#elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
@@ -893,7 +911,12 @@ int OFReadWriteLock::wrlock()
 
 int OFReadWriteLock::tryrdlock()
 {
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+  if (theLock)
+  {
+    return TryAcquireSRWLockShared(OFthread_cast(SRWLOCK *, theLock)) ? 0 : OFReadWriteLock::busy;
+  } else return EINVAL;
+#elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
@@ -926,7 +949,12 @@ int OFReadWriteLock::tryrdlock()
 
 int OFReadWriteLock::trywrlock()
 {
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+  if (theLock)
+  {
+    return TryAcquireSRWLockExclusive(OFthread_cast(SRWLOCK *, theLock)) ? 0 : OFReadWriteLock::busy;
+  } else return EINVAL;
+#elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
@@ -955,9 +983,46 @@ int OFReadWriteLock::trywrlock()
 }
 
 
-int OFReadWriteLock::unlock()
+int OFReadWriteLock::rdunlock()
 {
-#if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+  if (theLock)
+  {
+    ReleaseSRWLockShared(OFthread_cast(SRWLOCK *, theLock));
+    return 0;
+  } else return EINVAL;
+#elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+  if (theLock)
+  {
+    OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
+    int result =0;
+    if (0 != (result = rwl->accessMutex.lock())) return result; // lock mutex
+    if (rwl->numReaders == -1) rwl->numReaders = 0; else (rwl->numReaders)--;
+    if ((rwl->numReaders == 0) && (0 != (result = rwl->usageSemaphore.post())))
+    {
+      rwl->accessMutex.unlock();
+      return result;
+    }
+    return rwl->accessMutex.unlock();
+  } else return EINVAL;
+#elif defined(POSIX_INTERFACE)
+  if (theLock) return pthread_rwlock_unlock(OFthread_cast(pthread_rwlock_t *, theLock)); else return EINVAL;
+#elif defined(SOLARIS_INTERFACE)
+  if (theLock) return rw_unlock(OFthread_cast(rwlock_t *, theLock)); else return EINVAL;
+#else
+  return -1;
+#endif
+}
+
+int OFReadWriteLock::wrunlock()
+{
+#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+  if (theLock)
+  {
+    ReleaseSRWLockExclusive(OFthread_cast(SRWLOCK *, theLock));
+    return 0;
+  } else return EINVAL;
+#elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = OFthread_cast(OFReadWriteLockHelper *, theLock);
@@ -1009,14 +1074,18 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
 
 
 OFReadWriteLocker::OFReadWriteLocker(OFReadWriteLock& lock)
-    : theLock(lock), locked(OFFalse)
+: theLock(lock)
+, locked(OFFalse)
+, isWriteLock(OFFalse)
 {
 }
 
 OFReadWriteLocker::~OFReadWriteLocker()
 {
   if (locked)
-    theLock.unlock();
+  {
+    if (isWriteLock) theLock.wrunlock(); else theLock.rdunlock();
+  }
 }
 
 #ifdef DEBUG
@@ -1030,20 +1099,53 @@ OFReadWriteLocker::~OFReadWriteLocker()
 #define lockWarn(name, locked)
 #endif
 
-#define OFReadWriteLockerFunction(name) \
-int OFReadWriteLocker::name()           \
-{                                       \
-  lockWarn(#name, locked);              \
-  int ret = theLock. name ();           \
-  if (ret == 0)                         \
-    locked = OFTrue;                    \
-  return ret;                           \
+int OFReadWriteLocker::rdlock()
+{
+  lockWarn("rdlock", locked);
+  int ret = theLock.rdlock();
+  if (ret == 0)
+  {
+    locked = OFTrue;
+    isWriteLock = OFFalse;
+  }
+  return ret;
 }
 
-OFReadWriteLockerFunction(rdlock)
-OFReadWriteLockerFunction(wrlock)
-OFReadWriteLockerFunction(tryrdlock)
-OFReadWriteLockerFunction(trywrlock)
+int OFReadWriteLocker::wrlock()
+{
+  lockWarn("wrlock", locked);
+  int ret = theLock.wrlock();
+  if (ret == 0)
+  {
+    locked = OFTrue;
+    isWriteLock = OFTrue;
+  }
+  return ret;
+}
+
+int OFReadWriteLocker::tryrdlock()
+{
+  lockWarn("tryrdlock", locked);
+  int ret = theLock.tryrdlock();
+  if (ret == 0)
+  {
+    locked = OFTrue;
+    isWriteLock = OFFalse;
+  }
+  return ret;
+}
+
+int OFReadWriteLocker::trywrlock()
+{
+  lockWarn("trywrlock", locked);
+  int ret = theLock.trywrlock();
+  if (ret == 0)
+  {
+    locked = OFTrue;
+    isWriteLock = OFTrue;
+  }
+  return ret;
+}
 
 int OFReadWriteLocker::unlock()
 {
@@ -1055,8 +1157,10 @@ int OFReadWriteLocker::unlock()
   }
 #endif
 
-  int ret = theLock.unlock();
+  int ret = 0;
+  if (isWriteLock) ret = theLock.wrunlock(); else ret = theLock.rdunlock();
   if (ret == 0)
     locked = OFFalse;
   return ret;
 }
+

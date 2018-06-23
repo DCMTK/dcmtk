@@ -130,7 +130,7 @@ void DcmTag::lookupVRinDictionary()
         vr = dictRef->getVR();
         errorFlag = EC_Normal;
     }
-    dcmDataDict.unlock();
+    dcmDataDict.rdunlock();
 }
 
 // ********************************
@@ -163,7 +163,7 @@ const char *DcmTag::getTagName()
     if (newTagName == NULL)
         newTagName = DcmTag_ERROR_TagName;
     updateTagName(newTagName);
-    dcmDataDict.unlock();
+    dcmDataDict.rdunlock();
 
     if (tagName)
         return tagName;
@@ -223,7 +223,7 @@ OFCondition DcmTag::findTagFromName(const char *name, DcmTag &value)
             }
             else
                 result = EC_TagNotFound;
-            dcmDataDict.unlock();
+            dcmDataDict.rdunlock();
         }
     }
     return result;

@@ -236,7 +236,7 @@ public:
       rw_cond6=1;
       mutex2->unlock();
       OFStandard::milliSleep(wait_timeout);
-      if (0==rwlock->unlock()) rw_cond7=1;
+      if (0==rwlock->wrunlock()) rw_cond7=1;
     }
     return;
   }
@@ -261,11 +261,11 @@ public:
       rw_cond1 = 1; // acquired read lock
       mutex->lock();
       mutex->unlock();
-      if (0== rwlock->unlock()) rw_cond2=1;
+      if (0== rwlock->rdunlock()) rw_cond2=1;
       mutex2->lock();
       mutex2->unlock();
       if (OFReadWriteLock::busy == rwlock->tryrdlock()) rw_cond3=1;
-      if ((0 == rwlock->rdlock())&&(0==rwlock->unlock())) rw_cond4=1;
+      if ((0 == rwlock->rdlock())&&(0==rwlock->rdunlock())) rw_cond4=1;
     }
     return;
   }
@@ -306,7 +306,7 @@ static void rwlock_test()
   while ((i++<5) && ((!rw_cond1)||(!rw_cond5))) OFStandard::milliSleep(wait_timeout);
 
   if ((!rw_cond1)||(!rw_cond5)) BAILOUT("read/write lock/unlock test failed");
-  condition = rwlock->unlock();
+  condition = rwlock->rdunlock();
   if (condition)
   {
     rwlock->errorstr(errmsg, condition);

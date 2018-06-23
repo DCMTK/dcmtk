@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -70,7 +70,7 @@ static DcmTagKey parseTagKey(const char *tagName)
     } else {
       tagKey = dicent->getKey();
     }
-    dcmDataDict.unlock();
+    dcmDataDict.rdunlock();
     return tagKey;
   } else     /* tag name has format "gggg,eeee" */
   {

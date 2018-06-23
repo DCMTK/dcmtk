@@ -822,7 +822,7 @@ void GlobalDcmDataDictionary::createDataDict()
   if (!dataDict)
     dataDict = new DcmDataDictionary(OFTrue /*loadBuiltin*/, loadExternal);
 #ifdef WITH_THREADS
-  dataDictLock.unlock();
+  dataDictLock.wrunlock();
 #endif
 }
 
@@ -835,7 +835,7 @@ const DcmDataDictionary& GlobalDcmDataDictionary::rdlock()
   {
     /* dataDictLock must not be locked during createDataDict() */
 #ifdef WITH_THREADS
-    dataDictLock.unlock();
+    dataDictLock.rdunlock();
 #endif
     createDataDict();
 #ifdef WITH_THREADS
@@ -854,7 +854,7 @@ DcmDataDictionary& GlobalDcmDataDictionary::wrlock()
   {
     /* dataDictLock must not be locked during createDataDict() */
 #ifdef WITH_THREADS
-    dataDictLock.unlock();
+    dataDictLock.wrunlock();
 #endif
     createDataDict();
 #ifdef WITH_THREADS
@@ -864,22 +864,29 @@ DcmDataDictionary& GlobalDcmDataDictionary::wrlock()
   return *dataDict;
 }
 
-void GlobalDcmDataDictionary::unlock()
+void GlobalDcmDataDictionary::rdunlock()
 {
 #ifdef WITH_THREADS
-  dataDictLock.unlock();
+  dataDictLock.rdunlock();
+#endif
+}
+
+void GlobalDcmDataDictionary::wrunlock()
+{
+#ifdef WITH_THREADS
+  dataDictLock.wrunlock();
 #endif
 }
 
 OFBool GlobalDcmDataDictionary::isDictionaryLoaded()
 {
   OFBool result = rdlock().isDictionaryLoaded();
-  unlock();
+  rdunlock();
   return result;
 }
 
 void GlobalDcmDataDictionary::clear()
 {
   wrlock().clear();
-  unlock();
+  wrunlock();
 }

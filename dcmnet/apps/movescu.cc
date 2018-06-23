@@ -161,7 +161,7 @@ addOverrideKey(OFConsoleApplication& app, const char *s)
       DcmTagKey key(0xffff,0xffff);
       const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
       const DcmDictEntry *dicent = globalDataDict.findEntry(dicName.c_str());
-      dcmDataDict.unlock();
+      dcmDataDict.rdunlock();
       if (dicent!=NULL) {
         // found dictionary name, copy group and element number
         key = dicent->getKey();

@@ -236,9 +236,13 @@ public:
    */
   DcmDataDictionary& wrlock();
 
-  /** unlocks the read or write lock which must have been acquired previously.
+  /** unlocks the read lock which must have been acquired previously.
    */
-  void unlock();
+  void rdunlock();
+
+  /** unlocks the write lock which must have been acquired previously.
+   */
+  void wrunlock();
 
   /** checks if a data dictionary has been loaded. This method acquires and
    *  releases a read lock. It must not be called with another lock on the

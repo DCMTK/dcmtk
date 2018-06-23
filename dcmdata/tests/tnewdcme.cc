@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, Open Connections GmbH
+ *  Copyright (C) 2017-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -43,7 +43,7 @@ void registerPrivateTag()
 {
   DcmDataDictionary &dict = dcmDataDict.wrlock();
   dict.addEntry(new DcmDictEntry(PRIVATE_ELEMENT_STRINGELEM, EVR_LO, "StringAttributeForTesting", 1, 1, "private", OFTrue, PRIVATE_CREATOR_NAME));
-  dcmDataDict.unlock();
+  dcmDataDict.wrunlock();
 
 }
 

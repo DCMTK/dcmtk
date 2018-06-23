@@ -366,6 +366,16 @@ USE_WIN32_CREATE_MUTEX
     cannot be shared across processes. Users who want to revert to the
     behavior of older DCMTK releases can define this macro.
 
+USE_WIN32_READ_WRITE_LOCK_HELPER
+  Affected: ofstd
+  Type of modification: Re-activated behavior of earlier DCMTK releases
+  Explanation: Starting with DCMTK 3.6.4, the Win32 version of the
+    OFReadWriteLock class uses Slim Reader/Writer (SRW) Locks,
+    which are available since Windows Vista, instead of the older
+    implementation based on a Mutex, a Semaphore and a counter, because
+    SRW locks are much faster. Users who want to revert to the
+    behavior of older DCMTK releases can define this macro.
+
 USING_STD_NAMESPACE
   Affected: all modules
   Type of modification: Re-activated behavior of earlier DCMTK releases

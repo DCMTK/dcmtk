@@ -556,7 +556,7 @@ OFBool DcmIODUtil::isSequenceTag(const DcmTagKey& key,
   {
     vr = dictRef->getVR();
   }
-  dcmDataDict.unlock();
+  dcmDataDict.rdunlock();
   if (vr.getEVR() == EVR_SQ)
     return OFTrue;
   return OFFalse;
