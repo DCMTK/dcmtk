@@ -246,6 +246,9 @@
 /* Define to 1 if you have the `index' function. */
 #cmakedefine HAVE_INDEX @HAVE_INDEX@
 
+/* Define to 1 if you have the `InitializeSRWLock' function (Win32 only). */
+#cmakedefine HAVE_INITIALIZESRWLOCK @HAVE_INITIALIZESRWLOCK@
+
 /* Define if your system declares argument 3 of accept() as int * instead of
    size_t * or socklen_t * */
 #cmakedefine HAVE_INTP_ACCEPT @HAVE_INTP_ACCEPT@

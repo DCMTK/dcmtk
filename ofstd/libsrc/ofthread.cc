@@ -738,7 +738,7 @@ void OFMutex::errorstr(OFString& description, int /* code */ )
 
 /* ------------------------------------------------------------------------- */
 
-#if (defined(WINDOWS_INTERFACE) && defined(USE_WIN32_READ_WRITE_LOCK_HELPER)) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if (defined(WINDOWS_INTERFACE) && (defined(USE_WIN32_READ_WRITE_LOCK_HELPER) || ! defined(HAVE_INITIALIZESRWLOCK))) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
 
 class OFReadWriteLockHelper
 {
@@ -770,7 +770,7 @@ private:
 OFReadWriteLock::OFReadWriteLock()
 : theLock(NULL)
 {
-#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+#if defined(WINDOWS_INTERFACE) && defined(HAVE_INITIALIZESRWLOCK) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
    SRWLOCK *srwLock = new SRWLOCK;
    InitializeSRWLock(srwLock);
    theLock = srwLock;
@@ -798,7 +798,7 @@ OFReadWriteLock::OFReadWriteLock()
 
 OFReadWriteLock::~OFReadWriteLock()
 {
-#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+#if defined(WINDOWS_INTERFACE) && defined(HAVE_INITIALIZESRWLOCK) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
   delete OFthread_cast(SRWLOCK *, theLock);
 #elif defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   delete OFthread_cast(OFReadWriteLockHelper *, theLock);
@@ -824,7 +824,7 @@ OFBool OFReadWriteLock::initialized() const
 
 int OFReadWriteLock::rdlock()
 {
-#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+#if defined(WINDOWS_INTERFACE) && defined(HAVE_INITIALIZESRWLOCK) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
   if (theLock)
   {
     AcquireSRWLockShared(OFthread_cast(SRWLOCK *, theLock));
@@ -868,7 +868,7 @@ int OFReadWriteLock::rdlock()
 
 int OFReadWriteLock::wrlock()
 {
-#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+#if defined(WINDOWS_INTERFACE) && defined(HAVE_INITIALIZESRWLOCK) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
   if (theLock)
   {
     AcquireSRWLockExclusive(OFthread_cast(SRWLOCK *, theLock));
@@ -911,7 +911,7 @@ int OFReadWriteLock::wrlock()
 
 int OFReadWriteLock::tryrdlock()
 {
-#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+#if defined(WINDOWS_INTERFACE) && defined(HAVE_INITIALIZESRWLOCK) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
   if (theLock)
   {
     return TryAcquireSRWLockShared(OFthread_cast(SRWLOCK *, theLock)) ? 0 : OFReadWriteLock::busy;
@@ -949,7 +949,7 @@ int OFReadWriteLock::tryrdlock()
 
 int OFReadWriteLock::trywrlock()
 {
-#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+#if defined(WINDOWS_INTERFACE) && defined(HAVE_INITIALIZESRWLOCK) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
   if (theLock)
   {
     return TryAcquireSRWLockExclusive(OFthread_cast(SRWLOCK *, theLock)) ? 0 : OFReadWriteLock::busy;
@@ -985,7 +985,7 @@ int OFReadWriteLock::trywrlock()
 
 int OFReadWriteLock::rdunlock()
 {
-#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+#if defined(WINDOWS_INTERFACE) && defined(HAVE_INITIALIZESRWLOCK) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
   if (theLock)
   {
     ReleaseSRWLockShared(OFthread_cast(SRWLOCK *, theLock));
@@ -1016,7 +1016,7 @@ int OFReadWriteLock::rdunlock()
 
 int OFReadWriteLock::wrunlock()
 {
-#if defined(WINDOWS_INTERFACE) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
+#if defined(WINDOWS_INTERFACE) && defined(HAVE_INITIALIZESRWLOCK) && !defined(USE_WIN32_READ_WRITE_LOCK_HELPER)
   if (theLock)
   {
     ReleaseSRWLockExclusive(OFthread_cast(SRWLOCK *, theLock));
