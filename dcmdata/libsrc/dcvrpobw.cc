@@ -215,7 +215,7 @@ DcmPolymorphOBOW::putUint8Array(
             // length DICOM can handle. Take into account that the alignValue()
             // call adds a byte if an odd length is provided, thus, 4294967295
             // would not work.
-            if (numBytes > 4294967294)
+            if (numBytes > 4294967294UL)
             {
                 return EC_TooManyBytesRequested;
             }

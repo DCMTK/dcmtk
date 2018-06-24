@@ -928,7 +928,7 @@ OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
   size_t numBytes = 0;
   result = getTotalBytesRequired(rows, cols, numFrames, numBytes);
   if (result.bad()) return result;
-  if (numBytes >= 4294967295)
+  if (numBytes >= 4294967295UL)
   {
     DCMSEG_ERROR("Cannot store Segmentation objects with more than 4 GB pixel data (compression for writing not supported)");
     return EC_TooManyBytesRequested;
@@ -958,7 +958,7 @@ OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
   size_t numBytes = 0;
   result = getTotalBytesRequired(rows, cols, numFrames, numBytes);
   if (result.bad()) return result;
-  if (numBytes >= 4294967295)
+  if (numBytes >= 4294967295UL)
   {
     DCMSEG_ERROR("Cannot store Segmentation objects with more than 4 GB pixel data (compression for writing not supported)");
     return EC_TooManyBytesRequested;
