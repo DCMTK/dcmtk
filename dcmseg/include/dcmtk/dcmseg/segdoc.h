@@ -634,7 +634,7 @@ private:
    */
   OFCondition getTotalBytesRequired(const Uint16& rows,
                                     const Uint16& cols,
-                                    const Uint16& numberOfFrames,
+                                    const Uint32& numberOfFrames,
                                     size_t& bytesRequired);
 
   /** Read Fractional Type of segmentation.

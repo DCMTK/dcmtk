@@ -151,8 +151,13 @@ OFCondition IODMultiFrameFGModule::setContentTime(const OFString& value,
 }
 
 
-OFCondition IODMultiFrameFGModule::setNumberOfFrames(const Uint16 value)
+OFCondition IODMultiFrameFGModule::setNumberOfFrames(const Uint32 value)
 {
+  if (value > 2147483647)
+  {
+     DCMIOD_ERROR("Cannot set Number of Frames to " << value << ": Maximum permitted value is 2147483647");
+     return EC_InvalidValue;
+  }
   OFCondition result;
   OFStringStream oss;
   oss << value;

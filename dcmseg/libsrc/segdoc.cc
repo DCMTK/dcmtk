@@ -897,7 +897,7 @@ OFCondition DcmSegmentation::writeDataset(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeMultiFrameFunctionalGroupsModule(DcmItem& dataset)
 {
-  Uint16 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 2147483647 frames provided, limiting Number of Frames to 2147483647");
+  Uint32 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 2147483647 frames provided, limiting Number of Frames to 2147483647");
   m_FG.setNumberOfFrames(numFrames);
   OFCondition result = m_FG.write(dataset);
   if (result.good())
@@ -919,7 +919,7 @@ OFCondition DcmSegmentation::writeMultiFrameDimensionModule(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
 {
-  Uint16 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 2147483647 frames provided, will only write 2147483647");
+  Uint32 numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 2147483647 frames provided, will only write 2147483647");
   OFCondition result;
   Uint16 rows,cols;
   rows = cols = 0;
@@ -949,8 +949,9 @@ OFCondition DcmSegmentation::writeFractionalFrames(DcmItem& dataset)
 
 OFCondition DcmSegmentation::writeBinaryFrames(DcmItem& dataset)
 {
-  Uint16 numFrames, rows, cols;
+  Uint16 rows, cols;
   rows = cols = 0;
+  Uint32 numFrames = 0;
   numFrames = DcmIODUtil::limitMaxFrames(m_Frames.size(), "More than 2147483647 frames provided, will only write 2147483647");
   OFCondition result;
   getImagePixel().getRows(rows);
@@ -1118,7 +1119,7 @@ OFBool DcmSegmentation::checkPixDataLength(DcmElement* pixelData,
 
 OFCondition DcmSegmentation::getTotalBytesRequired(const Uint16& rows,
                                                    const Uint16& cols,
-                                                   const Uint16& numberOfFrames,
+                                                   const Uint32& numberOfFrames,
                                                    size_t& bytesRequired)
 {
   OFBool ok = OFStandard::safeMult(OFstatic_cast(size_t, rows), OFstatic_cast(size_t, cols), bytesRequired);
