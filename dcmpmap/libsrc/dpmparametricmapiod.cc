@@ -113,7 +113,7 @@ struct DPMParametricMapIOD::ReadVisitor
       Uint16 rows, cols;
       Uint32 numFrames;
       size_t numBytesFrame = 0;
-      rows = cols = numFrames = 0;
+      rows = cols = 0;
       map.getRows(rows);
       map.getColumns(cols);
       numFrames = DcmIODUtil::limitMaxFrames(map.getFunctionalGroups().getNumberOfFrames(),
