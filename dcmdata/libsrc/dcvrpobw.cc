@@ -217,7 +217,8 @@ DcmPolymorphOBOW::putUint8Array(
             // would not work.
             if (numBytes > 4294967294UL)
             {
-                return EC_TooManyBytesRequested;
+                errorFlag = EC_TooManyBytesRequested;
+                return errorFlag;
             }
             errorFlag = putValue(byteValue, OFstatic_cast(Uint32, sizeof(Uint8) * OFstatic_cast(size_t, numBytes)));
             if (errorFlag == EC_Normal)
