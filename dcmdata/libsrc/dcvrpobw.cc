@@ -186,7 +186,8 @@ DcmPolymorphOBOW::createUint16Array(
     // < 2^32-1 (4 GB).
     if (numWords > 2147483647)
     {
-        return EC_TooManyBytesRequested;
+        errorFlag = EC_TooManyBytesRequested;
+        return errorFlag;
     }
     currentVR = EVR_OW;
     setTagVR(EVR_OW);
