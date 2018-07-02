@@ -246,9 +246,6 @@
 /* Define to 1 if you have the `index' function. */
 #cmakedefine HAVE_INDEX @HAVE_INDEX@
 
-/* Define to 1 if you have the `InitializeSRWLock' function (Win32 only). */
-#cmakedefine HAVE_INITIALIZESRWLOCK @HAVE_INITIALIZESRWLOCK@
-
 /* Define if your system declares argument 3 of accept() as int * instead of
    size_t * or socklen_t * */
 #cmakedefine HAVE_INTP_ACCEPT @HAVE_INTP_ACCEPT@
@@ -424,6 +421,9 @@
 
 /* Define if your system has a prototype for finite in math.h */
 #cmakedefine HAVE_PROTOTYPE_FINITE @HAVE_PROTOTYPE_FINITE@
+
+/* Define to 1 if your has a prototype for `InitializeSRWLock' in windows.h (Win32 only). */
+#cmakedefine HAVE_PROTOTYPE_INITIALIZESRWLOCK @HAVE_PROTOTYPE_INITIALIZESRWLOCK@
 
 /* Define if your system has a prototype for std::finite in cmath */
 #cmakedefine HAVE_PROTOTYPE_STD__FINITE @HAVE_PROTOTYPE_STD__FINITE@
