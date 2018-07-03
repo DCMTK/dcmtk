@@ -422,8 +422,8 @@
 /* Define if your system has a prototype for finite in math.h */
 #cmakedefine HAVE_PROTOTYPE_FINITE @HAVE_PROTOTYPE_FINITE@
 
-/* Define to 1 if your has a prototype for `InitializeSRWLock' in windows.h (Win32 only). */
-#cmakedefine HAVE_PROTOTYPE_INITIALIZESRWLOCK @HAVE_PROTOTYPE_INITIALIZESRWLOCK@
+/* Define to 1 if your has a prototype for `TryAcquireSRWLockShared' in windows.h (Win32 only). */
+#cmakedefine HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED @HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED@
 
 /* Define if your system has a prototype for std::finite in cmath */
 #cmakedefine HAVE_PROTOTYPE_STD__FINITE @HAVE_PROTOTYPE_STD__FINITE@

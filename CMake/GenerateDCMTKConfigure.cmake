@@ -532,7 +532,7 @@ endif()
   CHECK_FUNCTION_EXISTS(gethostbyname HAVE_GETHOSTBYNAME)
   CHECK_FUNCTION_EXISTS(gethostbyname_r HAVE_GETHOSTBYNAME_R)
   CHECK_FUNCTION_EXISTS(gethostbyaddr_r HAVE_GETHOSTBYADDR_R)
-  CHECK_FUNCTION_EXISTS("gethostname()" HAVE_GETHOSTNAME)
+  CHECK_FUNCTION_EXISTS(gethostname HAVE_GETHOSTNAME)
   CHECK_FUNCTION_EXISTS(gethostid HAVE_GETHOSTID)
   CHECK_FUNCTION_EXISTS(getlogin HAVE_GETLOGIN)
   CHECK_FUNCTION_EXISTS(getlogin_r HAVE_GETLOGIN_R)
@@ -641,10 +641,7 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS("readdir_r((DIR*)0,(dirent*)0)" "${HEADERS}" HAVE_OLD_READDIR_R)
   CHECK_FUNCTIONWITHHEADER_EXISTS(nanosleep "${HEADERS}" HAVE_PROTOTYPE_NANOSLEEP)
   CHECK_FUNCTIONWITHHEADER_EXISTS("&passwd::pw_gecos" "${HEADERS}" HAVE_PASSWD_GECOS)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("InitializeSRWLock((PSRWLOCK)0)" "${HEADERS}" HAVE_PROTOTYPE_INITIALIZESRWLOCK)
-
-  # TODO: Uncommented because it seems not to make sense. Remove if there are no complaints.
-  #CHECK_LIBRARY_EXISTS(iostream "" "" HAVE_LIBIOSTREAM)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("TryAcquireSRWLockShared((PSRWLOCK)0)" "${HEADERS}" HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED)
 
   # Check for some type definitions needed by JasPer and defines them if necessary
   # Even if not functions but types are looked for, the script works fine.

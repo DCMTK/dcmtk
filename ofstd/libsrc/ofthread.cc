@@ -740,7 +740,7 @@ void OFMutex::errorstr(OFString& description, int /* code */ )
 // On Windows, use the slim read/write lock interface (SRW locks) if
 // both function and prototype are present (which is not the case for some MinGW versions)
 // and we have not explicitly been instructed to use the old implementation
-#if (defined(WINDOWS_INTERFACE)) && (defined(HAVE_PROTOTYPE_INITIALIZESRWLOCK)) && (! defined(USE_WIN32_READ_WRITE_LOCK_HELPER))
+#if (defined(WINDOWS_INTERFACE)) && (defined(HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED)) && (! defined(USE_WIN32_READ_WRITE_LOCK_HELPER))
 #define USE_WIN32_SRW_INTERFACE
 #endif
 
