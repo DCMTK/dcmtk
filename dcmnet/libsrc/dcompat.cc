@@ -301,7 +301,7 @@ int dcmtk_flock(int fd, int operation)
 ** Use the SYSV uname function (if we have it)
 */
 #ifdef HAVE_UNAME
-int gethostname(char* name, int namelen);
+int gethostname(char* name, int namelen)
 {
     struct utsname uts;
     int rc;
