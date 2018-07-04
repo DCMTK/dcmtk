@@ -41,6 +41,7 @@ typedef struct
     OFBool              lossy;
     OFBool              retired;
     E_StreamCompression streamCompression;
+    OFBool              referenced;
 } S_XferNames;
 
 
@@ -60,7 +61,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #1
     { "",  // illegal type
       "Virtual Big Endian Implicit",
@@ -72,7 +75,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #2
     { UID_LittleEndianExplicitTransferSyntax,
       "Little Endian Explicit",
@@ -84,7 +89,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #3
     { UID_BigEndianExplicitTransferSyntax,
       "Big Endian Explicit",
@@ -96,7 +103,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFTrue, // retired with Supplement 98
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #4
     { UID_JPEGProcess1TransferSyntax,
       "JPEG Baseline",
@@ -108,7 +117,9 @@ const S_XferNames XferNames[] =
       1L, 1L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #5
     { UID_JPEGProcess2_4TransferSyntax,
       "JPEG Extended, Process 2+4",
@@ -120,7 +131,9 @@ const S_XferNames XferNames[] =
       2L ,4L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #6
     { UID_JPEGProcess3_5TransferSyntax,
       "JPEG Extended, Process 3+5",
@@ -132,7 +145,9 @@ const S_XferNames XferNames[] =
       3L ,5L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #7
     { UID_JPEGProcess6_8TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 6+8",
@@ -144,7 +159,9 @@ const S_XferNames XferNames[] =
       6L ,8L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #8
     { UID_JPEGProcess7_9TransferSyntax,
       "JPEG Spectral Selection, Non-hierarchical, Process 7+9",
@@ -156,7 +173,9 @@ const S_XferNames XferNames[] =
       7L ,9L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #9
     { UID_JPEGProcess10_12TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 10+12",
@@ -168,7 +187,9 @@ const S_XferNames XferNames[] =
       10L ,12L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #10
     { UID_JPEGProcess11_13TransferSyntax,
       "JPEG Full Progression, Non-hierarchical, Process 11+13",
@@ -180,7 +201,9 @@ const S_XferNames XferNames[] =
       11L ,13L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #11
     { UID_JPEGProcess14TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 14",
@@ -192,7 +215,9 @@ const S_XferNames XferNames[] =
       14L ,14L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #12
     { UID_JPEGProcess15TransferSyntax,
       "JPEG Lossless, Non-hierarchical, Process 15",
@@ -204,7 +229,9 @@ const S_XferNames XferNames[] =
       15L ,15L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #13
     { UID_JPEGProcess16_18TransferSyntax,
       "JPEG Extended, Hierarchical, Process 16+18",
@@ -216,7 +243,9 @@ const S_XferNames XferNames[] =
       16L ,18L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #14
     { UID_JPEGProcess17_19TransferSyntax,
       "JPEG Extended, Hierarchical, Process 17+19",
@@ -228,7 +257,9 @@ const S_XferNames XferNames[] =
       17L ,19L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #15
     { UID_JPEGProcess20_22TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 20+22",
@@ -240,7 +271,9 @@ const S_XferNames XferNames[] =
       20L ,22L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #16
     { UID_JPEGProcess21_23TransferSyntax,
       "JPEG Spectral Selection, Hierarchical, Process 21+23",
@@ -252,7 +285,9 @@ const S_XferNames XferNames[] =
       21L ,23L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #17
     { UID_JPEGProcess24_26TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 24+26",
@@ -264,7 +299,9 @@ const S_XferNames XferNames[] =
       24L ,26L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #18
     { UID_JPEGProcess25_27TransferSyntax,
       "JPEG Full Progression, Hierarchical, Process 25+27",
@@ -276,7 +313,9 @@ const S_XferNames XferNames[] =
       25L ,27L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #19
     { UID_JPEGProcess28TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 28",
@@ -288,7 +327,9 @@ const S_XferNames XferNames[] =
       28L ,28L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #20
     { UID_JPEGProcess29TransferSyntax,
       "JPEG Lossless, Hierarchical, Process 29",
@@ -300,7 +341,9 @@ const S_XferNames XferNames[] =
       29L ,29L,
       OFTrue,
       OFTrue,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #21
     { UID_JPEGProcess14SV1TransferSyntax,
       "JPEG Lossless, Non-hierarchical, 1st Order Prediction",
@@ -312,7 +355,9 @@ const S_XferNames XferNames[] =
       14L ,14L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #22
     { UID_RLELosslessTransferSyntax,
       "RLE Lossless",
@@ -324,7 +369,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #23
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,
       "Deflated Explicit VR Little Endian",
@@ -337,10 +384,11 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
 #ifdef WITH_ZLIB
-      ESC_zlib
+      ESC_zlib,
 #else
-      ESC_unsupported
+      ESC_unsupported,
 #endif
+      OFFalse 
     },
     // entry #24
     { UID_JPEGLSLosslessTransferSyntax,
@@ -353,7 +401,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #25
     { UID_JPEGLSLossyTransferSyntax,
       "JPEG-LS Lossy (Near-lossless)",
@@ -365,7 +415,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #26
     { UID_JPEG2000LosslessOnlyTransferSyntax,
       "JPEG 2000 (Lossless only)",
@@ -377,7 +429,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #27
     { UID_JPEG2000TransferSyntax,
       "JPEG 2000 (Lossless or Lossy)",
@@ -389,7 +443,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #28
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless only)",
@@ -401,7 +457,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #29
    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless or Lossy)",
@@ -413,7 +471,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #30
    { UID_JPIPReferencedTransferSyntax,
       "JPIP Referenced",
@@ -425,7 +485,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,               // really lossy?
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFTrue 
+    },
     // entry #31
    { UID_JPIPReferencedDeflateTransferSyntax,
       "JPIP Referenced Deflate",
@@ -438,10 +500,11 @@ const S_XferNames XferNames[] =
       OFTrue,               // really lossy?
       OFFalse,
 #ifdef WITH_ZLIB
-      ESC_zlib
+      ESC_zlib,
 #else
-      ESC_unsupported
+      ESC_unsupported,
 #endif
+      OFTrue
     },
     // entry #32
     { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
@@ -454,7 +517,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #33
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
       "MPEG2 Main Profile @ High Level",  // changed with DICOM 2016e to: MPEG2 Main Profile / High Level
@@ -466,7 +531,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #34
     { UID_MPEG4HighProfileLevel4_1TransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.1",
@@ -478,7 +545,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #35
     { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
       "MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
@@ -490,7 +559,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #36
     { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video",
@@ -502,7 +573,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #37
     { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video",
@@ -514,7 +587,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #38
     { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
       "MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2",
@@ -526,7 +601,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #39
     { UID_HEVCMainProfileLevel5_1TransferSyntax,
       "HEVC/H.265 Main Profile / Level 5.1",
@@ -538,7 +615,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #40
     { UID_HEVCMain10ProfileLevel5_1TransferSyntax,
       "HEVC/H.265 Main 10 Profile / Level 5.1",
@@ -550,7 +629,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFTrue,
       OFFalse,
-      ESC_none },
+      ESC_none,
+      OFFalse 
+    },
     // entry #41
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
       "Private GE Little Endian Implicit with big endian pixel data",
@@ -562,7 +643,9 @@ const S_XferNames XferNames[] =
       0L, 0L,
       OFFalse,
       OFFalse,
-      ESC_none }
+      ESC_none,
+      OFFalse 
+    }
 };
 
 const int DIM_OF_XferNames = OFstatic_cast(int, sizeof(XferNames) / sizeof(S_XferNames));
@@ -583,7 +666,8 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
     JPEGProcess12(0L),
     lossy(OFFalse),
     retired(OFFalse),
-    streamCompression(ESC_none)
+    streamCompression(ESC_none),
+    referenced(OFFalse)
 {
     int i = 0;
     while ((i < DIM_OF_XferNames) && XferNames[i].xfer != xfer)
@@ -602,6 +686,7 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
         lossy              = XferNames[i].lossy;
         retired            = XferNames[i].retired;
         streamCompression  = XferNames[i].streamCompression;
+        referenced         = XferNames[i].referenced;
     }
 }
 
@@ -621,7 +706,8 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
     JPEGProcess12(0L),
     lossy(OFFalse),
     retired(OFFalse),
-    streamCompression(ESC_none)
+    streamCompression(ESC_none),
+    referenced(OFFalse)
 {
     const char* xname = xferName_xferID;
     if (xname != NULL)
@@ -643,6 +729,7 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
             lossy              = XferNames[i].lossy;
             retired            = XferNames[i].retired;
             streamCompression  = XferNames[i].streamCompression;
+            referenced         = XferNames[i].referenced;
         }
         else
         {
@@ -663,6 +750,7 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
                 lossy              = XferNames[i].lossy;
                 retired            = XferNames[i].retired;
                 streamCompression  = XferNames[i].streamCompression;
+                referenced         = XferNames[i].referenced;
             }
         }
     }
@@ -684,7 +772,8 @@ DcmXfer::DcmXfer(const DcmXfer &newXfer)
     JPEGProcess12(newXfer.JPEGProcess12),
     lossy(newXfer.lossy),
     retired(newXfer.retired),
-    streamCompression(newXfer.streamCompression)
+    streamCompression(newXfer.streamCompression),
+    referenced(newXfer.referenced)
 {
 }
 
@@ -721,6 +810,7 @@ DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
         lossy              = XferNames[i].lossy;
         retired            = XferNames[i].retired;
         streamCompression  = XferNames[i].streamCompression;
+        referenced         = XferNames[i].referenced;
     } else {
         xferSyn            = EXS_Unknown;
         xferID             = "";
@@ -734,6 +824,7 @@ DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
         lossy              = OFFalse;
         retired            = OFFalse;
         streamCompression  = ESC_none;
+        referenced         = OFFalse;
     }
     return *this;
 }
@@ -758,6 +849,7 @@ DcmXfer &DcmXfer::operator=(const DcmXfer &newXfer)
         lossy              = newXfer.lossy;
         retired            = newXfer.retired;
         streamCompression  = newXfer.streamCompression;
+        referenced         = newXfer.referenced;
     }
     return *this;
 }

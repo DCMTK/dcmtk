@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -721,14 +721,41 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
                                              const DcmRepresentationParameter *repParam)
 {
     OFCondition l_error = EC_Normal;
+    OFBool pixelDataEncountered = OFFalse;
     OFStack<DcmStack> pixelStack;
+    DcmXfer torep(repType);
+    DcmXfer fromrep(CurrentXfer);
 
     DcmStack resultStack;
     resultStack.push(this);
-    // in a first step, search for all PixelData elements in this dataset
+
+    // check if we are attempting to compress but the image contains
+    // floating point or double floating point pixel data, which our codecs don't support.
+    if ((tagExists(DCM_FloatPixelData, OFTrue) || tagExists(DCM_DoubleFloatPixelData, OFTrue)) &&
+         (fromrep.isEncapsulated() || torep.isEncapsulated()))
+    {
+        DCMDATA_ERROR("DcmDataset: Unable to compress/decompress floating point pixel data, cannot change representation");
+        l_error = EC_CannotChangeRepresentation;
+        return l_error;
+    }
+
+    // check if we are attempting to convert a dataset containing
+    // a pixel data URL. In that case we only continue if the target
+    // transfer syntax also uses a pixel data URL.
+    if (tagExists(DCM_PixelDataProviderURL, OFTrue))
+    {
+      if (! torep.isReferenced())
+      {
+        DCMDATA_ERROR("DcmDataset: Unable to compress image containing a pixel data provider URL, cannot change representation");
+        l_error = EC_CannotChangeRepresentation;
+        return l_error;
+      }
+    }
+
+    // Now search for all PixelData elements in this dataset
     while (search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue).good() && l_error.good())
     {
-
+        pixelDataEncountered = OFTrue;
         if (resultStack.top()->ident() == EVR_PixelData)
         {
             DcmPixelData *pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
@@ -741,7 +768,21 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
             l_error = EC_CannotChangeRepresentation;
         }
     }
-    // then call the method doing the real work for all these elements
+
+    // If there are no pixel data elements in the dataset, issue a warning
+    if (! pixelDataEncountered)
+    {
+      if (torep.isEncapsulated() && ! fromrep.isEncapsulated())
+      {
+        DCMDATA_WARN("DcmDataset: No pixel data present, nothing to compress");
+      }
+      if (! torep.isEncapsulated() && fromrep.isEncapsulated())
+      {
+        DCMDATA_WARN("DcmDataset: No pixel data present, nothing to decompress");
+      }
+    }
+
+    // then call the method doing the real work for all pixel data elements found
     while (l_error.good() && (pixelStack.size() > 0))
     {
         l_error = OFstatic_cast(DcmPixelData *, pixelStack.top().top())->
@@ -757,7 +798,8 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
 
         pixelStack.pop();
     }
-    // store current transfer syntax (if conversion was successfully)
+
+    // store current transfer syntax (if conversion was successful)
     if (l_error.good())
         CurrentXfer = repType;
     return l_error;

@@ -288,6 +288,15 @@ public:
         return streamCompression;
     }
 
+    /** check whether transfer syntax uses (0028,7FE0) Pixel Data Provider URL
+     *  to reference pixel data
+     *  @return true if transfer syntax uses URL reference to pixel data
+     */
+    inline OFBool isReferenced() const
+    {
+        return referenced;
+    }
+
     /** return the number of bytes needed to describe the tag, length, VR
      *  and any reserved fields for this transfer syntax when encoding the
      *  specified VR.
@@ -332,6 +341,10 @@ private:
 
     /// transfer syntax stream compression type
     E_StreamCompression streamCompression;
+
+    /// flag indicating whether this transfer syntax uses a pixel data URL reference
+    OFBool              referenced;
+
 };
 
 /** global constant describing the byte order on the machine the application
