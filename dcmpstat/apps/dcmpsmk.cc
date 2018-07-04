@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -353,9 +353,7 @@ int main(int argc, char *argv[])
 
     DcmXfer oxferSyn(opt_oxfer);
 
-    dataset2->chooseRepresentation(opt_oxfer, NULL);
-
-    if (dataset2->canWriteXfer(opt_oxfer))
+    if (dataset2->chooseRepresentation(opt_oxfer, NULL).good() && dataset2->canWriteXfer(opt_oxfer))
     {
         OFLOG_INFO(dcmpsmkLogger, "Output transfer syntax " << oxferSyn.getXferName()
                 << " can be written");

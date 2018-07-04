@@ -616,7 +616,7 @@ int main(int argc, char *argv[])
         /* reporting a fatal error and returning with an error code follows next */
     }
 
-    if (dataset->canWriteXfer(opt_oxfer))
+    if (error.good() && dataset->canWriteXfer(opt_oxfer))
     {
         OFLOG_INFO(dcmconvLogger, "output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {

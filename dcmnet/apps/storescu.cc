@@ -1340,7 +1340,11 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   }
 
 #ifdef ON_THE_FLY_COMPRESSION
-  dcmff.getDataset()->chooseRepresentation(netTransfer.getXfer(), NULL);
+  cond = dcmff.getDataset()->chooseRepresentation(netTransfer.getXfer(), NULL);
+  if (cond.bad()) {
+    OFLOG_ERROR(storescuLogger, "No conversion to transfer syntax " << netTransfer.getXferName() << " possible!");
+    return cond;
+  }
 #endif
 
   /* prepare the transmission of data */

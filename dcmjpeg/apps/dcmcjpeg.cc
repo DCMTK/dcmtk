@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2017, OFFIS e.V.
+ *  Copyright (C) 2001-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -670,8 +670,7 @@ int main(int argc, char *argv[])
     if (lossless)
         rp = &rp_lossless;
 
-    dataset->chooseRepresentation(opt_oxfer, rp);
-    if (dataset->canWriteXfer(opt_oxfer))
+    if (dataset->chooseRepresentation(opt_oxfer, rp).good() && dataset->canWriteXfer(opt_oxfer))
     {
       OFLOG_INFO(dcmcjpegLogger, "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {

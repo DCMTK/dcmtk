@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2017, OFFIS e.V.
+ *  Copyright (C) 2008-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -776,7 +776,13 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
       {
         DCMNET_INFO("Converting transfer syntax: " << xfer.getXferName() << " -> "
           << netXfer.getXferName());
-        dataset->chooseRepresentation(netXfer.getXfer(), NULL);
+        cond = dataset->chooseRepresentation(netXfer.getXfer(), NULL);
+        if (cond.bad())
+        {
+           DCMNET_ERROR("No conversion to transfer syntax " << netXfer.getXferName() << " possible!");
+           delete fileformat;
+           return cond;
+        }
       }
     }
   }

@@ -1141,8 +1141,7 @@ int main(int argc, char *argv[])
 
     if (opt_oxfer == EXS_Unknown) opt_oxfer = dataset->getOriginalXfer();
     DcmXfer opt_oxferSyn(opt_oxfer);
-    dataset->chooseRepresentation(opt_oxfer, NULL);
-    if (! dataset->canWriteXfer(opt_oxfer))
+    if (dataset->chooseRepresentation(opt_oxfer, NULL).bad() || (! dataset->canWriteXfer(opt_oxfer)))
     {
       OFLOG_FATAL(dcmsignLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
       return 1;

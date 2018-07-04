@@ -36,10 +36,8 @@ if (fileformat.loadFile("test.dcm").good())
   DJ_RPLossless params; // codec parameters, we use the defaults
 
   // this causes the lossless JPEG version of the dataset to be created
-  dataset->chooseRepresentation(EXS_JPEGProcess14SV1, &params);
-
-  // check if everything went well
-  if (dataset->canWriteXfer(EXS_JPEGProcess14SV1))
+  if (dataset->chooseRepresentation(EXS_JPEGProcess14SV1, &params).good() &&
+      dataset->canWriteXfer(EXS_JPEGProcess14SV1))
   {
     // force the meta-header UIDs to be re-generated when storing the file
     // since the UIDs in the data set may have changed
@@ -63,10 +61,8 @@ if (fileformat.loadFile("test_jpeg.dcm").good())
   DcmDataset *dataset = fileformat.getDataset();
 
   // decompress data set if compressed
-  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-
-  // check if everything went well
-  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+  if (dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL).good() &&
+      dataset->canWriteXfer(EXS_LittleEndianExplicit))
   {
     fileformat.saveFile("test_decompressed.dcm", EXS_LittleEndianExplicit);
   }

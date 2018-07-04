@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2017, OFFIS e.V.
+ *  Copyright (C) 2005-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -557,8 +557,7 @@ int main(int argc, char *argv[])
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
-    fileformat.getDataset()->chooseRepresentation(opt_oxfer, NULL);
-    if (fileformat.getDataset()->canWriteXfer(opt_oxfer))
+    if (fileformat.getDataset()->chooseRepresentation(opt_oxfer, NULL).good() && fileformat.getDataset()->canWriteXfer(opt_oxfer))
     {
         OFLOG_INFO(pdf2dcmLogger, "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {
