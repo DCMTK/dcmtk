@@ -386,33 +386,36 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_ModalityLUTSequence, stack, ESM_fromHere, OFFalse))
+    if ((EC_Normal == dset.search(DCM_ModalityLUTSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() ==1)
       {
          item = seq->getItem(0);
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)modalityLUTDescriptor.getTag(),
-           stack, ESM_fromHere, OFFalse))
+         // LUTDescriptor can be US or SS. For now we only handle US.
+         if ((EC_Normal == item->search((DcmTagKey &)modalityLUTDescriptor.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
          {
            modalityLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
          }
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)modalityLUTExplanation.getTag(),
-           stack, ESM_fromHere, OFFalse))
+         if ((EC_Normal == item->search((DcmTagKey &)modalityLUTExplanation.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_LO))
          {
            modalityLUTExplanation = *((DcmLongString *)(stack.top()));
          }
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)modalityLUTData.getTag(),
-           stack, ESM_fromHere, OFFalse))
+
+         // LUTData can be OW, US or SS. For now we only handle US.
+         if ((EC_Normal == item->search((DcmTagKey &)modalityLUTData.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
          {
            modalityLUTData = *((DcmUnsignedShort *)(stack.top()));
          }
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)modalityLUTType.getTag(),
-           stack, ESM_fromHere, OFFalse))
+         if ((EC_Normal == item->search((DcmTagKey &)modalityLUTType.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_LO))
          {
            modalityLUTType = *((DcmLongString *)(stack.top()));
          }
@@ -878,33 +881,36 @@ OFCondition DcmPresentationState::createFromImage(
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_ModalityLUTSequence, stack, ESM_fromHere, OFFalse))
+    if ((EC_Normal == dset.search(DCM_ModalityLUTSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() >0)
       {
          item = seq->getItem(0);
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)modalityLUTDescriptor.getTag(),
-           stack, ESM_fromHere, OFFalse))
+         // LUTDescriptor can be US or SS. For now we only handle US.
+         if ((EC_Normal == item->search((DcmTagKey &)modalityLUTDescriptor.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
          {
            modalityLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
          }
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)modalityLUTExplanation.getTag(),
-           stack, ESM_fromHere, OFFalse))
+         if ((EC_Normal == item->search((DcmTagKey &)modalityLUTExplanation.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_LO))
          {
            modalityLUTExplanation = *((DcmLongString *)(stack.top()));
          }
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)modalityLUTData.getTag(),
-           stack, ESM_fromHere, OFFalse))
+
+         // LUTData can be OW, US or SS. For now we only handle US.
+         if ((EC_Normal == item->search((DcmTagKey &)modalityLUTData.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
          {
            modalityLUTData = *((DcmUnsignedShort *)(stack.top()));
          }
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)modalityLUTType.getTag(),
-           stack, ESM_fromHere, OFFalse))
+         if ((EC_Normal == item->search((DcmTagKey &)modalityLUTType.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_LO))
          {
            modalityLUTType = *((DcmLongString *)(stack.top()));
          }
