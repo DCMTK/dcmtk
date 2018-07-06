@@ -257,6 +257,7 @@ DcmPolymorphOBOW::putUint16Array(
             // < 2^32-1 (4 GB).
             if (numWords > 2147483647)
             {
+                errorFlag = EC_TooManyBytesRequested;
                 return EC_TooManyBytesRequested;
             }
             errorFlag = putValue(wordValue, OFstatic_cast(Uint32, sizeof(Uint16) * OFstatic_cast(size_t, numWords)));
