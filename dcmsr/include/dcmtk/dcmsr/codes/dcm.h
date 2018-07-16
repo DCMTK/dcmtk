@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2018b
- *  File created on 2018-04-12 18:57:58 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018c
+ *  File created on 2018-07-16 12:38:27 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3880
+// total number of codes: 3882
 // - retired: 144
 // - no name: 27
 // - not unique: 15
@@ -115,6 +115,8 @@
 #define CODE_DCM_OphthalmicMapping                                         DSRBasicCodedEntry("OPM", "DCM", "Ophthalmic Mapping")
 #define CODE_DCM_OphthalmicRefraction                                      DSRBasicCodedEntry("OPR", "DCM", "Ophthalmic Refraction")
 #define CODE_DCM_OphthalmicTomography                                      DSRBasicCodedEntry("OPT", "DCM", "Ophthalmic Tomography")
+#define CODE_DCM_OphthalmicTomographyBScanVolumeAnalysis                   DSRBasicCodedEntry("OPTBSV", "DCM", "Ophthalmic Tomography B-scan Volume Analysis")
+#define CODE_DCM_OphthalmicTomographyEnFace                                DSRBasicCodedEntry("OPTENF", "DCM", "Ophthalmic Tomography En Face")
 #define CODE_DCM_OphthalmicVisualField                                     DSRBasicCodedEntry("OPV", "DCM", "Ophthalmic Visual Field")
 #define CODE_DCM_OpticalSurfaceScanner                                     DSRBasicCodedEntry("OSS", "DCM", "Optical Surface Scanner")
 #define CODE_DCM_OtherModality                                             DSRBasicCodedEntry("OT", "DCM", "Other Modality")
