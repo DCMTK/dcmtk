@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
     }
     fputs("\n#endif /* !DCDEFTAG_H */\n", fout);
 
-    dcmDataDict.unlock();
+    dcmDataDict.wrunlock();
     return 0;
 }
 

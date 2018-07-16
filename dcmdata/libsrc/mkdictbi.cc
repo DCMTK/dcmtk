@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -266,7 +266,7 @@ main(int argc, char* argv[])
     fprintf(fout, "\n");
     fprintf(fout, "#endif // WITH_BUILTIN_DICTIONARY\n");
     fprintf(fout, "\n");
-    dcmDataDict.unlock();
+    dcmDataDict.wrunlock();
     if (filename)
     {
         fclose(fout);
