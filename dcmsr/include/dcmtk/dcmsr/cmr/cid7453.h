@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7453_PerformingRoles
  *
- *  Generated automatically from DICOM PS 3.16-2018b
- *  File created on 2018-04-12 18:59:05 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018c
+ *  File created on 2018-07-16 13:06:59 by J. Riesmeier
  *
  */
 

@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:17:39 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018c
+ *  File created on 2018-07-16 13:06:38 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 29 (Acquisition Modality)
 #define CONTEXT_GROUP_NUMBER  "29"
-#define CONTEXT_GROUP_VERSION "20121129"
+#define CONTEXT_GROUP_VERSION "20180605"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.19"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -175,6 +175,8 @@ CID29_AcquisitionModality::CodeList &CID29_AcquisitionModality::getCodes()
         Codes->insert(OFMake_pair(OphthalmicPhotography, DSRBasicCodedEntry("OP", "DCM", "Ophthalmic Photography")));
         Codes->insert(OFMake_pair(OphthalmicRefraction, DSRBasicCodedEntry("OPR", "DCM", "Ophthalmic Refraction")));
         Codes->insert(OFMake_pair(OphthalmicTomography, DSRBasicCodedEntry("OPT", "DCM", "Ophthalmic Tomography")));
+        Codes->insert(OFMake_pair(OphthalmicTomographyBScanVolumeAnalysis, DSRBasicCodedEntry("OPTBSV", "DCM", "Ophthalmic Tomography B-scan Volume Analysis")));
+        Codes->insert(OFMake_pair(OphthalmicTomographyEnFace, DSRBasicCodedEntry("OPTENF", "DCM", "Ophthalmic Tomography En Face")));
         Codes->insert(OFMake_pair(OphthalmicVisualField, DSRBasicCodedEntry("OPV", "DCM", "Ophthalmic Visual Field")));
         Codes->insert(OFMake_pair(OpticalSurfaceScanner, DSRBasicCodedEntry("OSS", "DCM", "Optical Surface Scanner")));
         Codes->insert(OFMake_pair(PanoramicXRay, DSRBasicCodedEntry("PX", "DCM", "Panoramic X-Ray")));

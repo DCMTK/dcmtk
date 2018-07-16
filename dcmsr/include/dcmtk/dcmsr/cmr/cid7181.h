@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2017d
- *  File created on 2017-09-26 12:18:58 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018c
+ *  File created on 2018-07-16 13:06:54 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 7181 - Abstract Multi-dimensional Image Model Component Units.
- *  (type: extensible, version: 20170413)
+ *  (type: extensible, version: 20180605)
  */
 class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
   : public DSRContextGroup
@@ -122,6 +122,10 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
         Um2PerS,
         /// (10-6.mm2/s,UCUM,"10-6.mm2/s"), included from CID 7277
         _106mm2PerS,
+        /// (Gy,UCUM,"Gy"), included from CID 10071
+        Gy,
+        /// (Sv,UCUM,"Sv"), included from CID 10071
+        Sv,
         /// (1,UCUM,"no units")
         NoUnits,
         /// ({ratio},UCUM,"ratio")

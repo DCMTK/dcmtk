@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2017c
- *  File created on 2017-07-17 14:17:39 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018c
+ *  File created on 2018-07-16 13:06:38 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 29 - Acquisition Modality.
- *  (type: extensible, version: 20121129)
+ *  (type: extensible, version: 20180605)
  */
 class DCMTK_CMR_EXPORT CID29_AcquisitionModality
   : public DSRContextGroup
@@ -92,6 +92,10 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         OphthalmicRefraction,
         /// (OPT,DCM,"Ophthalmic Tomography")
         OphthalmicTomography,
+        /// (OPTBSV,DCM,"Ophthalmic Tomography B-scan Volume Analysis")
+        OphthalmicTomographyBScanVolumeAnalysis,
+        /// (OPTENF,DCM,"Ophthalmic Tomography En Face")
+        OphthalmicTomographyEnFace,
         /// (OPV,DCM,"Ophthalmic Visual Field")
         OphthalmicVisualField,
         /// (OSS,DCM,"Optical Surface Scanner")

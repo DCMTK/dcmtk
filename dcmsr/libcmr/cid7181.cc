@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *
- *  Generated automatically from DICOM PS 3.16-2017d
- *  File created on 2017-09-26 12:18:58 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018c
+ *  File created on 2018-07-16 13:06:54 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 7181 (Abstract Multi-dimensional Image Model Component Units)
 #define CONTEXT_GROUP_NUMBER  "7181"
-#define CONTEXT_GROUP_VERSION "20170413"
+#define CONTEXT_GROUP_VERSION "20180605"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.918"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -190,6 +190,8 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_Abst
         Codes->insert(OFMake_pair(Um2PerMs, DSRBasicCodedEntry("um2/ms", "UCUM", "um2/ms")));
         Codes->insert(OFMake_pair(Um2PerS, DSRBasicCodedEntry("um2/s", "UCUM", "um2/s")));
         Codes->insert(OFMake_pair(_106mm2PerS, DSRBasicCodedEntry("10-6.mm2/s", "UCUM", "10-6.mm2/s")));
+        Codes->insert(OFMake_pair(Gy, DSRBasicCodedEntry("Gy", "UCUM", "Gy")));
+        Codes->insert(OFMake_pair(Sv, DSRBasicCodedEntry("Sv", "UCUM", "Sv")));
         Codes->insert(OFMake_pair(NoUnits, DSRBasicCodedEntry("1", "UCUM", "no units")));
         Codes->insert(OFMake_pair(Ratio, DSRBasicCodedEntry("{ratio}", "UCUM", "ratio")));
         Codes->insert(OFMake_pair(HounsfieldUnit, DSRBasicCodedEntry("[hnsf'U]", "UCUM", "Hounsfield Unit")));
