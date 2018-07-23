@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, OFFIS e.V.
+ *  Copyright (C) 2016-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,7 +34,7 @@ BEGIN_EXTERN_C
 #include <openssl/sha.h>
 END_EXTERN_C
 
- 
+
 SiSHA384::SiSHA384()
 : ctx(new SHA512_CTX())
 {
@@ -48,7 +48,7 @@ SiSHA384::~SiSHA384()
 
 unsigned long SiSHA384::getSize() const
 {
-  return SHA_DIGEST_LENGTH;
+  return SHA384_DIGEST_LENGTH;
 }
 
 OFCondition SiSHA384::initialize()
@@ -69,7 +69,7 @@ OFCondition SiSHA384::finalize(unsigned char *result)
 {
   if ((result == NULL)||(ctx == NULL)) return EC_IllegalCall;
   SHA384_Final(result, ctx);
-  return EC_Normal;  
+  return EC_Normal;
 }
 
 E_MACType SiSHA384::macType() const
