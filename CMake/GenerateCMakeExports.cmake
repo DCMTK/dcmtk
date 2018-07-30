@@ -16,7 +16,7 @@
 
 # Get and store all executable targets to DCMTKTargets.cmake within build's main dir
 get_property(DCMTK_EXECUTABLE_TARGETS GLOBAL PROPERTY DCMTK_EXECUTABLE_TARGETS)
-export(TARGETS ${DCMTK_EXECUTABLE_TARGETS} APPEND FILE "${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake")
+export(TARGETS ${DCMTK_EXECUTABLE_TARGETS} FILE "${DCMTK_BUILD_CMKDIR}/DCMTKTargets.cmake")
 
 # Get and store libraries to DCMTKTargets.cmake within the build's main dir
 get_property(DCMTK_LIBRARY_TARGETS GLOBAL PROPERTY DCMTK_LIBRARY_TARGETS)
@@ -53,7 +53,7 @@ set(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}#####################################
 set(dcmtk_config "${DCMTK_BUILD_CMKDIR}/DCMTKConfig.cmake")
 # Actually configure file and write it to build's main directory
 CONFIGURE_PACKAGE_CONFIG_FILE(
-    CMake/DCMTKConfig.cmake.in
+    ${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake.in
     ${dcmtk_config}
     INSTALL_DESTINATION "${CMAKE_BINARY_DIR}"
     PATH_VARS DCMTK_CMKDIR_CONFIG DCMTK_INCLUDE_DIR_CONFIGS
@@ -74,7 +74,7 @@ set(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}#####################################
 set(DCMTK_INSTALL_CONFIG "${CMAKE_BINARY_DIR}/CMakeFiles/DCMTKConfig.cmake")
 # Actually configure file and set rule to install it to installation subdir
 CONFIGURE_PACKAGE_CONFIG_FILE(
-    CMake/DCMTKConfig.cmake.in
+    ${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.cmake.in
     "${DCMTK_INSTALL_CONFIG}"
     INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}/${DCMTK_INSTALL_CMKDIR}"
     PATH_VARS DCMTK_CMKDIR_CONFIG DCMTK_INCLUDE_DIR_CONFIGS
