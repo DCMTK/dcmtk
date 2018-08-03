@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -57,11 +57,26 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
         else if (!(docu->getFlags() & CIF_UsePresentationState))        // ignore modality LUT and rescaling
         {
             const char *sopClassUID = NULL;                             // check for XA and XRF image (ignore MLUT)
-            if ((docu->getValue(DCM_SOPClassUID, sopClassUID) == 0) || (sopClassUID == NULL) ||
-               ((strcmp(sopClassUID, UID_XRayAngiographicImageStorage) != 0) &&
-                (strcmp(sopClassUID, UID_XRayRadiofluoroscopicImageStorage) != 0) &&
-                (strcmp(sopClassUID, UID_RETIRED_XRayAngiographicBiPlaneImageStorage) != 0)))
+            if (!docu->getValue(DCM_SOPClassUID, sopClassUID) || (sopClassUID == NULL))
+                sopClassUID = "";
+            if ((strcmp(sopClassUID, UID_XRayAngiographicImageStorage) == 0) ||
+                (strcmp(sopClassUID, UID_XRayRadiofluoroscopicImageStorage) == 0) ||
+                (strcmp(sopClassUID, UID_RETIRED_XRayAngiographicBiPlaneImageStorage) == 0))
             {
+                /* David Clunie in comp.protocols.dicom (2000-12-13):
+                    "Modality LUTs in XA and XRF objects are totally screwy and
+                     do not follow the normal rules. [...] A Modality LUT may be
+                     included with the image to allow it to be scaled back to its
+                     proportional value to X-Ray beam intensity. In other words,
+                     for the objects that use this module (XA and XRF), the
+                     Modality LUT is used BACKWARDS. It is used to convert stored
+                     pixels to X-Ray beam intensity space, but it is NOT APPLIED
+                     to stored pixels for the purpose of display (or more
+                     specifically prior to application of the VOI LUT Module
+                     attributes to the stored pixel data)."
+                */
+                DCMIMGLE_INFO("processing XA or XRF image ... ignoring possible modality transform");
+            } else {
                 EL_BitsPerTableEntry descMode = ELM_UseValue;          // first search on main level
                 if (docu->getFlags() & CIF_IgnoreModalityLutBitDepth)
                     descMode = ELM_IgnoreValue;
@@ -96,20 +111,33 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                     }
                 }
                 checkRescaling(pixel);
-            } else {
-                /* David Clunie on comp.protocols.dicom (13.12.2000):
-                   Modality LUTs in XA and XRF objects are totally screwy and
-                   do not follow the normal rules. [...] A Modality LUT may be
-                   included with the image to allow it to be scaled back to its
-                   proportional value to X-Ray beamintensity. In otherwords,
-                   for the objects that use this module (XA and XRF), the
-                   Modality LUT is used BACKWARDS. It is used to convert
-                   stored pixels to X-Ray beamintensityspace, but it is NOT
-                   APPLIED to stored pixels for the purpose of display (or
-                   more specifically prior to application of the VOI LUT Module
-                   attributes to the storedpixeldata).
-                */
-                DCMIMGLE_INFO("processing XA or XRF image ... ignoring possible modality transform");
+                if (Rescaling || LookupTable)                          // check for possibly inappropriate use of MLUT
+                {
+                    /* David Clunie in comp.protocols.dicom (2012-10-28):
+                        "By the way, in general, it can be difficult to decide
+                         whether or not to apply the conceptual Modality LUT
+                         step before windowing, even if it is specified by
+                         Rescale Slope/Intercept values rather than an actual
+                         LUT. For example, in MR images to which Philips has
+                         added the rescale values, these should not be applied
+                         before their window values; likewise in PET images,
+                         especially those with GML Units and rescale values to
+                         SUV (small decimal numbers), the window values are
+                         historically usually in stored pixel values rather than
+                         SUVs.
+                         Making the correct decision may require comparing the
+                         range of possible rescaled output values (across the
+                         domain of possible input stored pixel values) with the
+                         specific window values, to see if the latter "make
+                         sense".
+                    */
+                    if (strcmp(sopClassUID, UID_MRImageStorage) == 0)
+                        DCMIMGLE_WARN("processing MR image ... applying modality transform may create unexpected result");
+                    else if (strcmp(sopClassUID, UID_PositronEmissionTomographyImageStorage) == 0)
+                        DCMIMGLE_WARN("processing PET image ... applying modality transform may create unexpected result");
+                    else if (strcmp(sopClassUID, UID_RTDoseStorage) == 0)
+                        DCMIMGLE_WARN("processing RTDOSE object ... applying modality transform may create unexpected result");
+                }
             }
         }
         determineRepresentation(docu);
