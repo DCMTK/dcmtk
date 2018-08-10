@@ -124,7 +124,7 @@ struct DCMTK_OFSTD_EXPORT OFCmdParam
 
 private:
 
-    /// private undefined copy assignment operator
+    /// private undefined assignment operator
     OFCmdParam& operator=(const OFCmdParam& arg);
 };
 
@@ -1096,6 +1096,8 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
 
  private:
 
+    /// private undefined copy constructor
+    OFCommandLine(const OFCommandLine &obj);
     /// private undefined assignment operator
     OFCommandLine &operator=(const OFCommandLine &obj);
 };
