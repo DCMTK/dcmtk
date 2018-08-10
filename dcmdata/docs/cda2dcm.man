@@ -1,34 +1,34 @@
 /*!
 
 \if MANPAGES
-\page pdf2dcm Convert PDF file to DICOM
+\page cda2dcm Convert CDA file to DICOM
 \else
-\page pdf2dcm pdf2dcm: Convert PDF file to DICOM
+\page cda2dcm cda2dcm: Convert CDA file to DICOM
 \endif
 
-\section pdf2dcm_synopsis SYNOPSIS
+\section cda2dcm_synopsis SYNOPSIS
 
 \verbatim
-pdf2dcm [options] pdffile-in dcmfile-out
+cda2dcm [options] cdafile-in dcmfile-out
 \endverbatim
 
-\section pdf2dcm_description DESCRIPTION
+\section cda2dcm_description DESCRIPTION
 
-The \b pdf2dcm utility reads a PDF file (\e pdffile-in), converts it to a
-DICOM Encapsulated PDF Storage SOP instance and stores the converted data
+The \b cda2dcm utility reads a CDA file (\e cdafile-in), converts it to a
+DICOM Encapsulated CDA Storage SOP instance and stores the converted data
 to an output file (\e dcmfile-out).
 
-\section pdf2dcm_parameters PARAMETERS
+\section cda2dcm_parameters PARAMETERS
 
 \verbatim
-pdffile-in   PDF input filename to be converted
+CDAfile-in   CDA input filename to be converted
 
 dcmfile-out  DICOM output filename
 \endverbatim
 
-\section pdf2dcm_options OPTIONS
+\section cda2dcm_options OPTIONS
 
-\subsection pdf2dcm_general_options general options
+\subsection cda2dcm_general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -56,15 +56,28 @@ dcmfile-out  DICOM output filename
          use config file f for the logger
 \endverbatim
 
-\subsection pdf2dcm_dicom_document_options DICOM document options
+\subsection cda2dcm_dicom_document_options DICOM document options
 \verbatim
 burned-in annotation:
 
   +an  --annotation-yes
-         PDF contains patient identifying data (default)
+         CDA file (or an encapsulated document within)
+         contains patient identifying data (default)
 
   -an  --annotation-no
-         PDF does not contain patient identifying data
+         CDA file (or an encapsulated document)
+         does not contain patient identifying data
+
+Override CDA file data
+
+-ov  --no-override
+       CDA patient and document data
+       must match study, series or manually entered information
+       Otherwise an error occurs (default)
+
++ov  --override
+       CDA's data will be overwritten by study, series or
+       manually entered information
 
 document title:
 
@@ -120,7 +133,7 @@ other processing options:
           add further attribute
 \endverbatim
 
-\subsection pdf2dcm_output_options output options
+\subsection cda2dcm_output_options output options
 \verbatim
 output file format:
 
@@ -159,7 +172,7 @@ data set trailing padding (not with --write-dataset):
           and items on multiple of i bytes
 \endverbatim
 
-\section pdf2dcm_logging LOGGING
+\section cda2dcm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
 libraries can be specified by the user.  By default, only errors and warnings
@@ -178,7 +191,7 @@ messages to a particular output stream and for filtering certain messages
 based on the module or application where they are generated.  An example
 configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 
-\section pdf2dcm_command_line COMMAND LINE
+\section cda2dcm_command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -200,33 +213,33 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\section pdf2dcm_exit_codes EXIT CODES
+\section cda2dcm_exit_codes EXIT CODES
 
-The \b pdf2dcm utility uses the following exit codes when terminating.  This
+The \b cda2dcm utility uses the following exit codes when terminating.  This
 enables the user to check for the reason why the application terminated.
 
-\subsection pdf2dcm_exit_codes_general general
+\subsection cda2dcm_exit_codes_general general
 \verbatim
 EXITCODE_NO_ERROR                         0
 EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 EXITCODE_MEMORY_EXHAUSTED                 4
 \endverbatim
 
-\subsection pdf2dcm_exit_codes_input_file_errors input file errors
+\subsection cda2dcm_exit_codes_input_file_errors input file errors
 \verbatim
 EXITCODE_CANNOT_READ_INPUT_FILE          20
 EXITCODE_NO_INPUT_FILES                  21
 EXITCODE_INVALID_INPUT_FILE              22
 \endverbatim
 
-\subsection pdf2dcm_exit_codes_output_file_errors output file errors
+\subsection cda2dcm_exit_codes_output_file_errors output file errors
 \verbatim
 EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
 \endverbatim
 
-\section pdf2dcm_environment ENVIRONMENT
+\section cda2dcm_environment ENVIRONMENT
 
-The \b pdf2dcm utility will attempt to load DICOM data dictionaries specified
+The \b cda2dcm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
 <em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
@@ -240,12 +253,7 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
-\section pdf2dcm_see_also SEE ALSO
+\section cda2dcm_copyright COPYRIGHT
 
-<b>dcm2pdf</b>(1)
-
-\section pdf2dcm_copyright COPYRIGHT
-
-Copyright (C) 2005-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
-
+Copyright (C) 2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 */
