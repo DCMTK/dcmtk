@@ -33,6 +33,7 @@ doxygen/dcmtk.tag
 */tests/tests
 config/arith
 config/lzwtest.tif
+dcmdata/apps/cda2dcm
 dcmdata/apps/dcm2json
 dcmdata/apps/dcm2pdf
 dcmdata/apps/dcm2xml
@@ -46,6 +47,7 @@ dcmdata/apps/dcmodify
 dcmdata/apps/dump2dcm
 dcmdata/apps/img2dcm
 dcmdata/apps/pdf2dcm
+dcmdata/apps/stl2dcm
 dcmdata/apps/xml2dcm
 dcmdata/libsrc/mkdeftag
 dcmdata/libsrc/mkdictbi
