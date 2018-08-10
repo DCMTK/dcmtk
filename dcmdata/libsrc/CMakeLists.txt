@@ -4,7 +4,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
 DCMTK_ADD_LIBRARY(dcmdata
   cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcdatutl dcddirif dcdicdir dcdicent
-  dcdict dcdictbi dcdirrec dcelem dcerror dcfilefo dcfilter dchashdi dcistrma
+  dcdict dcdictbi dcdirrec dcelem dcencdoc dcerror dcfilefo dcfilter dchashdi dcistrma
   dcistrmb dcistrmf dcistrmz dcitem dcjson dclist dcmatch dcmetinf dcobject dcostrma
   dcostrmb dcostrmf dcostrmz dcpath dcpcache dcpixel dcpixseq dcpxitem dcrleccd
   dcrlecce dcrlecp dcrledrg dcrleerg dcrlerp dcsequen dcspchrs dcstack dcswap dctag

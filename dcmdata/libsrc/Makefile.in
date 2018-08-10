@@ -35,7 +35,7 @@ privatedic = $(top_srcdir)/data/private.dic
 # Dictionary objects for building the helper tools mkdeftag and mkdictbi
 dict_tools_objs = dctagkey.o dcdicent.o dcdict.o dcvr.o dchashdi.o
 
-objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
+objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcencdoc.o\
 	dcstack.o dclist.o dcswap.o dctag.o dcxfer.o \
 	dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o dcdatutl.o dcspchrs.o \
 	dcsequen.o dcfilefo.o dcbytstr.o dcpixel.o dcvrae.o dcvras.o dcvrcs.o \
