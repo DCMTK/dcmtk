@@ -58,14 +58,6 @@ dcmfile-out  DICOM output filename
 
 \subsection stl2dcm_dicom_document_options DICOM document options
 \verbatim
-burned-in annotation:
-
-  +an  --annotation-yes
-         STL contains patient identifying data (default)
-
-  -an  --annotation-no
-         STL does not contain patient identifying data
-
 document title:
 
   +t   --title  [t]itle: string (default: empty)
@@ -110,53 +102,61 @@ instance number:
 
   +is  --instance-set  [i]nstance number: integer
          use instance number i
+
+burned-in annotation:
+
+  +an  --annotation-yes
+         STL file contains patient identifying data (default)
+
+  -an  --annotation-no
+         STL file does not contain patient identifying data
 \endverbatim
 
 \subsection cda2dcm_processing_options processing options
 \verbatim
 other processing options:
 
-  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
-          add further attribute
+  -k   --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+         add further attribute
 \endverbatim
 
 \subsection stl2dcm_output_options output options
 \verbatim
 output file format:
 
-  +F    --write-file
-          write file format (default)
+  +F   --write-file
+         write file format (default)
 
-  -F    --write-dataset
-          write data set without file meta information
+  -F   --write-dataset
+         write data set without file meta information
 
 group length encoding:
 
-  +g=   --group-length-recalc
-          recalculate group lengths if present (default)
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
 
-  +g    --group-length-create
-          always write with group length elements
+  +g   --group-length-create
+         always write with group length elements
 
-  -g    --group-length-remove
-          always write without group length elements
+  -g   --group-length-remove
+         always write without group length elements
 
 length encoding in sequences and items:
 
-  +e    --length-explicit
-          write with explicit lengths (default)
+  +e   --length-explicit
+         write with explicit lengths (default)
 
-  -e    --length-undefined
-          write with undefined lengths
+  -e   --length-undefined
+         write with undefined lengths
 
 data set trailing padding (not with --write-dataset):
 
-  -p    --padding-off
-          no padding (implicit if --write-dataset)
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
 
-  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
-          align file on multiple of f bytes
-          and items on multiple of i bytes
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes
+         and items on multiple of i bytes
 \endverbatim
 
 \section stl2dcm_logging LOGGING
@@ -239,10 +239,6 @@ variable only used when alternative data dictionaries are required.  The
 a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
-
-\section stl2dcm_see_also SEE ALSO
-
-<b>dcm2stl</b>(1)
 
 \section stl2dcm_copyright COPYRIGHT
 

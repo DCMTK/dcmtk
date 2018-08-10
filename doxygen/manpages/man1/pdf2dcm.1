@@ -1,7 +1,7 @@
-.TH "pdf2dcm" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "pdf2dcm" 1 "Fri Aug 10 2018" "Version 3.6.3+" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-pdf2dcm \- Convert PDF file to DICOM
+pdf2dcm \- Convert PDF file to DICOM 
 
 .SH "SYNOPSIS"
 .PP
@@ -56,14 +56,6 @@ dcmfile-out  DICOM output filename
 .SS "DICOM document options"
 .PP
 .nf
-burned-in annotation:
-
-  +an  --annotation-yes
-         PDF contains patient identifying data (default)
-
-  -an  --annotation-no
-         PDF does not contain patient identifying data
-
 document title:
 
   +t   --title  [t]itle: string (default: empty)
@@ -108,6 +100,65 @@ instance number:
 
   +is  --instance-set  [i]nstance number: integer
          use instance number i
+
+burned-in annotation:
+
+  +an  --annotation-yes
+         PDF file (or an image within)
+         contains patient identifying data (default)
+
+  -an  --annotation-no
+         PDF file (or an image within)
+         does not contain patient identifying data
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+other processing options:
+
+  -k   --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+         add further attribute
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+output file format:
+
+  +F   --write-file
+         write file format (default)
+
+  -F   --write-dataset
+         write data set without file meta information
+
+group length encoding:
+
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
+
+  +g   --group-length-create
+         always write with group length elements
+
+  -g   --group-length-remove
+         always write without group length elements
+
+length encoding in sequences and items:
+
+  +e   --length-explicit
+         write with explicit lengths (default)
+
+  -e   --length-undefined
+         write with undefined lengths
+
+data set trailing padding (not with --write-dataset):
+
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
+
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes
+         and items on multiple of i bytes
 .fi
 .PP
 .SH "LOGGING"
@@ -122,6 +173,31 @@ All command line tools use the following notation for parameters: square bracket
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+.SH "EXIT CODES"
+.PP
+The \fBpdf2dcm\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
+.SS "general"
+.PP
+.nf
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+EXITCODE_MEMORY_EXHAUSTED                 4
+.fi
+.PP
+.SS "input file errors"
+.PP
+.nf
+EXITCODE_CANNOT_READ_INPUT_FILE          20
+EXITCODE_NO_INPUT_FILES                  21
+EXITCODE_INVALID_INPUT_FILE              22
+.fi
+.PP
+.SS "output file errors"
+.PP
+.nf
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+.fi
+.PP
 .SH "ENVIRONMENT"
 .PP
 The \fBpdf2dcm\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
@@ -132,4 +208,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pdf\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2005-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2005-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

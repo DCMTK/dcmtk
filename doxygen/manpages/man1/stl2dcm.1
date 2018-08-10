@@ -1,8 +1,8 @@
-.TH "stl2dcm" 1 "Wed Aug 8 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "stl2dcm" 1 "Fri Aug 10 2018" "Version 3.6.3+" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-stl2dcmConvert file to DICOM
- \-
+stl2dcm \- Convert file to DICOM 
+
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -56,14 +56,6 @@ dcmfile-out  DICOM output filename
 .SS "DICOM document options"
 .PP
 .nf
-burned-in annotation:
-
-  +an  --annotation-yes
-         STL contains patient identifying data (default)
-
-  -an  --annotation-no
-         STL does not contain patient identifying data
-
 document title:
 
   +t   --title  [t]itle: string (default: empty)
@@ -108,6 +100,14 @@ instance number:
 
   +is  --instance-set  [i]nstance number: integer
          use instance number i
+
+burned-in annotation:
+
+  +an  --annotation-yes
+         STL file contains patient identifying data (default)
+
+  -an  --annotation-no
+         STL file does not contain patient identifying data
 .fi
 .PP
 .SS "processing options"
@@ -115,8 +115,8 @@ instance number:
 .nf
 other processing options:
 
-  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
-          add further attribute
+  -k   --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+         add further attribute
 .fi
 .PP
 .SS "output options"
@@ -124,39 +124,39 @@ other processing options:
 .nf
 output file format:
 
-  +F    --write-file
-          write file format (default)
+  +F   --write-file
+         write file format (default)
 
-  -F    --write-dataset
-          write data set without file meta information
+  -F   --write-dataset
+         write data set without file meta information
 
 group length encoding:
 
-  +g=   --group-length-recalc
-          recalculate group lengths if present (default)
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
 
-  +g    --group-length-create
-          always write with group length elements
+  +g   --group-length-create
+         always write with group length elements
 
-  -g    --group-length-remove
-          always write without group length elements
+  -g   --group-length-remove
+         always write without group length elements
 
 length encoding in sequences and items:
 
-  +e    --length-explicit
-          write with explicit lengths (default)
+  +e   --length-explicit
+         write with explicit lengths (default)
 
-  -e    --length-undefined
-          write with undefined lengths
+  -e   --length-undefined
+         write with undefined lengths
 
 data set trailing padding (not with --write-dataset):
 
-  -p    --padding-off
-          no padding (implicit if --write-dataset)
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
 
-  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
-          align file on multiple of f bytes
-          and items on multiple of i bytes
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes
+         and items on multiple of i bytes
 .fi
 .PP
 .SH "LOGGING"
@@ -201,9 +201,6 @@ EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
 The \fBstl2dcm\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
-.SH "SEE ALSO"
-.PP
-\fBdcm2stl\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

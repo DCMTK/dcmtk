@@ -1,8 +1,8 @@
-.TH "cda2dcm" 1 "Wed Aug 8 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "cda2dcm" 1 "Fri Aug 10 2018" "Version 3.6.3+" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-cda2dcmConvert CDA file to DICOM
- \-
+cda2dcm \- Convert CDA file to DICOM 
+
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -17,7 +17,7 @@ The \fBcda2dcm\fP utility reads a CDA file (\fIcdafile-in\fP), converts it to a 
 .PP
 .PP
 .nf
-CDAfile-in   CDA input filename to be converted
+cdafile-in   CDA input filename to be converted
 
 dcmfile-out  DICOM output filename
 .fi
@@ -56,27 +56,6 @@ dcmfile-out  DICOM output filename
 .SS "DICOM document options"
 .PP
 .nf
-burned-in annotation:
-
-  +an  --annotation-yes
-         CDA file (or an encapsulated document within)
-         contains patient identifying data (default)
-
-  -an  --annotation-no
-         CDA file (or an encapsulated document)
-         does not contain patient identifying data
-
-Override CDA file data
-
--ov  --no-override
-       CDA patient and document data
-       must match study, series or manually entered information
-       Otherwise an error occurs (default)
-
-+ov  --override
-       CDA's data will be overwritten by study, series or
-       manually entered information
-
 document title:
 
   +t   --title  [t]itle: string (default: empty)
@@ -121,6 +100,26 @@ instance number:
 
   +is  --instance-set  [i]nstance number: integer
          use instance number i
+
+burned-in annotation:
+
+  +an  --annotation-yes
+         CDA file (or an encapsulated document within)
+         contains patient identifying data (default)
+
+  -an  --annotation-no
+         CDA file (or an encapsulated document)
+         does not contain patient identifying data
+
+override CDA file data:
+
+  -ov  --no-override
+         CDA patient and document data must match study,
+         series or manually entered information (default)
+
+  +ov  --override
+         CDA's data will be overwritten by study, series
+         or manually entered information
 .fi
 .PP
 .SS "processing options"
@@ -216,4 +215,4 @@ The \fBcda2dcm\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

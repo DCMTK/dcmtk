@@ -21,7 +21,7 @@ to an output file (\e dcmfile-out).
 \section cda2dcm_parameters PARAMETERS
 
 \verbatim
-CDAfile-in   CDA input filename to be converted
+cdafile-in   CDA input filename to be converted
 
 dcmfile-out  DICOM output filename
 \endverbatim
@@ -58,27 +58,6 @@ dcmfile-out  DICOM output filename
 
 \subsection cda2dcm_dicom_document_options DICOM document options
 \verbatim
-burned-in annotation:
-
-  +an  --annotation-yes
-         CDA file (or an encapsulated document within)
-         contains patient identifying data (default)
-
-  -an  --annotation-no
-         CDA file (or an encapsulated document)
-         does not contain patient identifying data
-
-Override CDA file data
-
--ov  --no-override
-       CDA patient and document data
-       must match study, series or manually entered information
-       Otherwise an error occurs (default)
-
-+ov  --override
-       CDA's data will be overwritten by study, series or
-       manually entered information
-
 document title:
 
   +t   --title  [t]itle: string (default: empty)
@@ -123,6 +102,26 @@ instance number:
 
   +is  --instance-set  [i]nstance number: integer
          use instance number i
+
+burned-in annotation:
+
+  +an  --annotation-yes
+         CDA file (or an encapsulated document within)
+         contains patient identifying data (default)
+
+  -an  --annotation-no
+         CDA file (or an encapsulated document)
+         does not contain patient identifying data
+
+override CDA file data:
+
+  -ov  --no-override
+         CDA patient and document data must match study,
+         series or manually entered information (default)
+
+  +ov  --override
+         CDA's data will be overwritten by study, series
+         or manually entered information
 \endverbatim
 
 \subsection cda2dcm_processing_options processing options

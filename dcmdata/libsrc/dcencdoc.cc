@@ -32,7 +32,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstdinc.h"
 
-#define SHORTCOL 4
+#define SHORTCOL 3
 #define LONGCOL 21
 
 //exit codes for this command line tool
@@ -374,16 +374,16 @@ void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
 {
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  cmd.addParam(     "cdafile-in"                          "CDA input opt_ifname to be converted");
-  cmd.addParam(     "dcmfile-out",                        "DICOM output opt_ifname");
+  cmd.addParam(     "cdafile-in",                         "CDA input filename to be converted");
+  cmd.addParam(     "dcmfile-out",                        "DICOM output filename");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("burned-in annotation:");
       cmd.addOption("--annotation-yes",       "+an",      "CDA file (or an encapsulated document within)\ncontains patient identifying data (default)");
       cmd.addOption("--annotation-no",        "-an",      "CDA file (or an encapsulated document within)\ndoes not contain patient identifying data");
-    cmd.addSubGroup("override CDA data");
-      cmd.addOption("--no-override",          "-ov",      "CDA patient and document data\nmust match study, series or manually entered information\nOtherwise an error occurs (default)");
-      cmd.addOption("--override",             "+ov",      "CDA's data will be overwritten\nby study, series or\n manually entered information");
+    cmd.addSubGroup("override CDA data:");
+      cmd.addOption("--no-override",          "-ov",      "CDA patient and document data must match study,\nseries or manually entered information (default)");
+      cmd.addOption("--override",             "+ov",      "CDA's data will be overwritten by study, series\nor manually entered information");
   addOutputOptions(cmd);
 }
 
@@ -391,8 +391,8 @@ void DcmEncapsulatedDocument::addPDFCommandlineOptions(OFCommandLine &cmd)
 {
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  cmd.addParam(     "pdffile-in"                          "PDF input opt_ifname to be converted");
-  cmd.addParam(     "dcmfile-out",                        "DICOM output opt_ifname");
+  cmd.addParam(     "pdffile-in",                         "PDF input filename to be converted");
+  cmd.addParam(     "dcmfile-out",                        "DICOM output filename");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("burned-in annotation:");
@@ -404,13 +404,13 @@ void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
 {
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  cmd.addParam(     "stlfile-in"                          "STL input opt_ifname to be converted");
-  cmd.addParam(     "dcmfile-out",                        "DICOM output opt_ifname");
+  cmd.addParam(     "stlfile-in"                          "STL input filename to be converted");
+  cmd.addParam(     "dcmfile-out",                        "DICOM output filename");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("burned-in annotation:");
-      cmd.addOption("--annotation-yes",       "+an",      "STL contains patient identifying data (default)");
-      cmd.addOption("--annotation-no",        "-an",      "STL does not contain patient identifying data");
+      cmd.addOption("--annotation-yes",       "+an",      "STL file contains patient identifying data (default)");
+      cmd.addOption("--annotation-no",        "-an",      "STL file does not contain patient identifying data");
   addOutputOptions(cmd);
 }
 
@@ -429,9 +429,7 @@ void DcmEncapsulatedDocument::addDocumentOptions(OFCommandLine &cmd)
       cmd.addOption("--title",                "+t",   1,  "[t]itle: string (default: empty)",
           "document title");
       cmd.addOption("--concept-name",         "+cn",  3,  "[CSD] [CV] [CM]: string (default: empty)",
-                                                          "\ndocument title as concept name code sequence"
-                                                          "\nwith coding scheme designator CSD, code value CV"
-                                                          "\nand code meaning CM");
+                                                          "document title as concept name code sequence\nwith coding scheme designator CSD, code value CV\nand code meaning CM");
     cmd.addSubGroup("patient data:");
       cmd.addOption("--patient-name",         "+pn",  1,  "[n]ame: string",
                                                           "patient's name in DICOM PN syntax");
@@ -442,7 +440,7 @@ void DcmEncapsulatedDocument::addDocumentOptions(OFCommandLine &cmd)
       cmd.addOption("--patient-sex",          "+ps",  1,  "[s]ex: string (M, F or O)",
                                                           "patient's sex");
     cmd.addSubGroup("other processing options:");
-      cmd.addOption("--key",                    "-k", 1,  "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
+      cmd.addOption("--key",                  "-k",   1,  "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
                                                           "add further attribute");
     cmd.addSubGroup("study and series:");
       cmd.addOption("--generate",             "+sg",      "generate new study and series UIDs (default)");
