@@ -1,7 +1,7 @@
 /*!
 
 \if MANPAGES
-\page stl2dcm Convert  file to DICOM
+\page stl2dcm Convert STL file to DICOM
 \else
 \page stl2dcm stl2dcm: Convert STL file to DICOM
 \endif
