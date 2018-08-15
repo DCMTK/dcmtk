@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2017, OFFIS e.V.
+ *  Copyright (C) 2001-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -245,6 +245,24 @@ OFCondition DJCodecEncoder::encodeColorImage(
   size_t compressedSize = 0;
   double uncompressedSize = 0.0;
   Uint16 compressedBits = OFstatic_cast(Uint16, cp->getForcedBitDepth());
+
+  // Check if image is continuous-tone, bail out otherwise.
+  // We check the value of BitsStored, which is not affected by any transformation such as MLUT.
+  Uint16 bitsStored = 0;
+  result = dataset->findAndGetUint16(DCM_BitsStored, bitsStored);
+  if (result.bad()) return result;
+
+  if ((bitsStored > 16) && isLosslessProcess())
+  {
+    DCMJPEG_WARN("Cannot lossless compress image with " << bitsStored << " bits/sample: JPEG supports max. 16 bits.");
+    return EJ_UnsupportedBitDepth;
+  }
+
+  if (bitsStored < 2)
+  {
+    DCMJPEG_WARN("Cannot compress image with " << bitsStored << " bit/sample: JPEG requires at least 2 bits.");
+    return EJ_UnsupportedBitDepth;
+  }
 
   // initialize settings with defaults for RGB mode
   OFBool monochromeMode = OFFalse;
@@ -910,6 +928,24 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     flags |= CIF_WrongPaletteAttributeTags;
   if (cp->getAcrNemaCompatibility())
     flags |= CIF_AcrNemaCompatibility;
+
+  // Check if image is continuous-tone, bail out otherwise.
+  // We check the value of BitsStored, which is not affected by any transformation such as MLUT.
+  Uint16 bitsStored = 0;
+  result = dataset->findAndGetUint16(DCM_BitsStored, bitsStored);
+  if (result.bad()) return result;
+
+  if ((bitsStored > 16) && isLosslessProcess())
+  {
+    DCMJPEG_WARN("Cannot lossless compress image with " << bitsStored << " bits/sample: JPEG supports max. 16 bits.");
+    return EJ_UnsupportedBitDepth;
+  }
+
+  if (bitsStored < 2)
+  {
+    DCMJPEG_WARN("Cannot compress image with " << bitsStored << " bit/sample: JPEG requires at least 2 bits.");
+    return EJ_UnsupportedBitDepth;
+  }
 
   // create DicomImage object. Will fail if dcmimage has not been activated in main().
   // transfer syntax can be any uncompressed one.

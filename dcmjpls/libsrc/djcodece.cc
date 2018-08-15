@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2017, OFFIS e.V.
+ *  Copyright (C) 2007-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -733,6 +733,23 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
     }
   }
 
+  // Check if image is 2..16 bits/sample, bail out otherwise.
+  // We check the value of BitsStored, which is not affected by any transformation such as MLUT.
+  Uint16 bitsStored = 0;
+  result = dataset->findAndGetUint16(DCM_BitsStored, bitsStored);
+  if (result.bad()) return result;
+
+  if (bitsStored > 16)
+  {
+    DCMJPLS_WARN("Cannot compress image with " << bitsStored << " bits/sample: JPEG-LS supports max. 16 bits.");
+    return EC_JLSUnsupportedBitDepth;
+  }
+  if (bitsStored < 2)
+  {
+    DCMJPLS_WARN("Cannot compress image with " << bitsStored << " bit/sample: JPEG-LS requires at least 2 bits.");
+    return EC_JLSUnsupportedBitDepth;
+  }
+
   DcmPixelSequence *pixelSequence = NULL;
   DcmPixelItem *offsetTable = NULL;
 
@@ -758,7 +775,6 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
 
   // determine number of bits per sample
   int bitsPerSample = dimage->getDepth();
-  if (result.good() && (bitsPerSample > 16)) result = EC_JLSUnsupportedBitDepth;
 
   // create initial pixel sequence
   if (result.good())
