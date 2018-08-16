@@ -1,9 +1,9 @@
 /*!
 
 \if MANPAGES
-\page cda2dcm Convert CDA file to DICOM
+\page cda2dcm Encapsulate CDA file into DICOM format.
 \else
-\page cda2dcm cda2dcm: Convert CDA file to DICOM
+\page cda2dcm cda2dcm: Encapsulate CDA file into DICOM format.
 \endif
 
 \section cda2dcm_synopsis SYNOPSIS
@@ -21,7 +21,7 @@ to an output file (\e dcmfile-out).
 \section cda2dcm_parameters PARAMETERS
 
 \verbatim
-cdafile-in   CDA input filename to be converted
+cdafile-in   CDA input filename to be encapsulated
 
 dcmfile-out  DICOM output filename
 \endverbatim
@@ -80,6 +80,9 @@ patient data:
 
   +ps  --patient-sex  [s]ex: string (M, F or O)
          patient's sex
+other processing options:
+  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+          add further attribute
 
 study and series:
 
@@ -117,19 +120,12 @@ override CDA file data:
 
   -ov  --no-override
          CDA patient and document data must match study,
-         series or manually entered information (default)
+         series or manually entered information.
+         Otherwise, an error occurs (default).
 
   +ov  --override
          CDA's data will be overwritten by study, series
          or manually entered information
-\endverbatim
-
-\subsection cda2dcm_processing_options processing options
-\verbatim
-other processing options:
-
-  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
-          add further attribute
 \endverbatim
 
 \subsection cda2dcm_output_options output options

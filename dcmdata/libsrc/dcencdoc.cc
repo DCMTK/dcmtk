@@ -381,8 +381,8 @@ void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
   cmd.addSubGroup("burned-in annotation:");
       cmd.addOption("--annotation-yes",       "+an",      "CDA file (or an encapsulated document within)\ncontains patient identifying data (default)");
       cmd.addOption("--annotation-no",        "-an",      "CDA file (or an encapsulated document within)\ndoes not contain patient identifying data");
-    cmd.addSubGroup("override CDA data:");
-      cmd.addOption("--no-override",          "-ov",      "CDA patient and document data must match study,\nseries or manually entered information (default)");
+  cmd.addSubGroup("override CDA data:");
+      cmd.addOption("--no-override",          "-ov",      "CDA patient and document data must match study,\nseries or manually entered information.\nOtherwise, an error occurs (default)");
       cmd.addOption("--override",             "+ov",      "CDA's data will be overwritten by study, series\nor manually entered information");
   addOutputOptions(cmd);
 }
@@ -404,7 +404,7 @@ void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
 {
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  cmd.addParam(     "stlfile-in"                          "STL input filename to be converted");
+  cmd.addParam(     "stlfile-in",                          "STL input filename to be converted");
   cmd.addParam(     "dcmfile-out",                        "DICOM output filename");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);

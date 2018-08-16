@@ -1,9 +1,9 @@
 /*!
 
 \if MANPAGES
-\page stl2dcm Convert STL file to DICOM
+\page stl2dcm Encapsulate STL file into DICOM format.
 \else
-\page stl2dcm stl2dcm: Convert STL file to DICOM
+\page stl2dcm stl2dcm: Encapsulate STL file into DICOM format.
 \endif
 
 \section stl2dcm_synopsis SYNOPSIS

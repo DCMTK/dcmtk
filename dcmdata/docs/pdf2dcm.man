@@ -1,9 +1,9 @@
 /*!
 
 \if MANPAGES
-\page pdf2dcm Convert PDF file to DICOM
+\page pdf2dcm Encapsulate PDF file into DICOM format.
 \else
-\page pdf2dcm pdf2dcm: Convert PDF file to DICOM
+\page pdf2dcm pdf2dcm: Encapsulate PDF file into DICOM format.
 \endif
 
 \section pdf2dcm_synopsis SYNOPSIS
