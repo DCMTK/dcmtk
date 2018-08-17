@@ -114,7 +114,7 @@ burned-in annotation:
          does not contain patient identifying data
 \endverbatim
 
-\subsection cda2dcm_processing_options processing options
+\subsection pdf2dcm_processing_options processing options
 \verbatim
 other processing options:
 
