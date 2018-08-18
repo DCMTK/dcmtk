@@ -382,7 +382,7 @@ void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
       cmd.addOption("--annotation-yes",       "+an",      "CDA file (or an encapsulated document within)\ncontains patient identifying data (default)");
       cmd.addOption("--annotation-no",        "-an",      "CDA file (or an encapsulated document within)\ndoes not contain patient identifying data");
   cmd.addSubGroup("override CDA data:");
-      cmd.addOption("--no-override",          "-ov",      "CDA patient and document data must match study,\nseries or manually entered information(default).");
+      cmd.addOption("--no-override",          "-ov",      "CDA patient and document data must match study,\nseries or manually entered information (default)");
       cmd.addOption("--override",             "+ov",      "CDA's data will be overwritten by study, series\nor manually entered information");
   addOutputOptions(cmd);
 }

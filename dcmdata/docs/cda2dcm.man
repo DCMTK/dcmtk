@@ -117,7 +117,7 @@ override CDA file data:
 
   -ov  --no-override
          CDA patient and document data must match study,
-         series or manually entered information (default).
+         series or manually entered information (default)
 
   +ov  --override
          CDA's data will be overwritten by study, series
