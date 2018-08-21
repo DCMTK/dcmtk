@@ -81,6 +81,9 @@ int main(int argc, char *argv[])
   int              opt_compressedBits = 0; // 0=auto, 8/12/16=force
   E_CompressionColorSpaceConversion opt_compCSconversion = ECC_lossyYCbCr;
   E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
+  OFBool           opt_predictor6WorkaroundEnable = OFFalse;
+  OFBool           opt_cornellWorkaroundEnable = OFFalse;
+  OFBool           opt_forceSingleFragmentPerFrame = OFFalse;
   E_SubSampling    opt_sampleFactors = ESS_444;
   OFBool           opt_useYBR422 = OFFalse;
   OFCmdUnsignedInt opt_fragmentSize = 0; // 0=unlimited
@@ -170,6 +173,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--conv-guess-lossy",    "+cgl",   "convert to RGB if lossy JPEG and YCbCr is\nguessed by the underlying JPEG library");
       cmd.addOption("--conv-always",         "+ca",    "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",          "+cn",    "never convert color space");
+
+    cmd.addSubGroup("decompr. workaround options for incorrect encodings (if input is compressed):");
+      cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6");
+      cmd.addOption("--workaround-incpl",    "+wi",    "enable workaround for incomplete JPEG data");
+      cmd.addOption("--workaround-cornell",  "+wc",    "enable workaround for 16-bit JPEG lossless\nCornell images with Huffman table overflow");
 
     cmd.addSubGroup("standard YCbCr component subsampling (not with +tl):");
       cmd.addOption("--sample-444",          "+s4",    "4:4:4 sampling with YBR_FULL (default)");
@@ -433,6 +441,10 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
       if (opt_trueLossless) opt_decompCSconversion = EDC_never;
 
+      if (cmd.findOption("--workaround-pred6")) opt_predictor6WorkaroundEnable = OFTrue;
+      if (cmd.findOption("--workaround-incpl")) opt_forceSingleFragmentPerFrame = OFTrue;
+      if (cmd.findOption("--workaround-cornell")) opt_cornellWorkaroundEnable = OFTrue;
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--sample-444"))
       {
@@ -583,7 +595,11 @@ int main(int argc, char *argv[])
     // register global decompression codecs
     DJDecoderRegistration::registerCodecs(
       opt_decompCSconversion,
-      opt_uidcreation);
+      opt_uidcreation,
+      EPC_default,
+      opt_predictor6WorkaroundEnable,
+      opt_cornellWorkaroundEnable,
+      opt_forceSingleFragmentPerFrame);
 
     // register global compression codecs
     DJEncoderRegistration::registerCodecs(

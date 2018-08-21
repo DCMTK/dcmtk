@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -184,6 +184,9 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt    opt_quality = 90;                 /* default: 90% JPEG quality */
     E_SubSampling       opt_sampling = ESS_422;           /* default: 4:2:2 sub-sampling */
     E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
+    OFBool              opt_predictor6WorkaroundEnable = OFFalse;
+    OFBool              opt_cornellWorkaroundEnable = OFFalse;
+    OFBool              opt_forceSingleFragmentPerFrame = OFFalse;
 #endif
 
     int                 opt_Overlay[16];
@@ -265,13 +268,18 @@ int main(int argc, char *argv[])
       cmd.addOption("--scale-y-size",       "+Syv", 1, "[n]umber: integer",
                                                        "scale y axis to n pixels, auto-compute x axis");
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-     cmd.addSubGroup("color space conversion (compressed images only):");
+     cmd.addSubGroup("color space conversion (JPEG compressed images only):");
       cmd.addOption("--conv-photometric",   "+cp",     "convert if YCbCr photometric interpr. (default)");
       cmd.addOption("--conv-lossy",         "+cl",     "convert YCbCr to RGB if lossy JPEG");
       cmd.addOption("--conv-guess",         "+cg",     "convert to RGB if YCbCr is guessed by library");
       cmd.addOption("--conv-guess-lossy",   "+cgl",    "convert to RGB if lossy JPEG and YCbCr is\nguessed by the underlying JPEG library");
       cmd.addOption("--conv-always",        "+ca",     "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",         "+cn",     "never convert color space");
+
+     cmd.addSubGroup("workaround options for incorrect encodings (JPEG compressed images only):");
+      cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6");
+      cmd.addOption("--workaround-incpl",    "+wi",    "enable workaround for incomplete JPEG data");
+      cmd.addOption("--workaround-cornell",  "+wc",    "enable workaround for 16-bit JPEG lossless\nCornell images with Huffman table overflow");
 #endif
 
      cmd.addSubGroup("modality LUT transformation:");
@@ -614,6 +622,10 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--conv-never"))
             opt_decompCSconversion = EDC_never;
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--workaround-pred6")) opt_predictor6WorkaroundEnable = OFTrue;
+        if (cmd.findOption("--workaround-incpl")) opt_forceSingleFragmentPerFrame = OFTrue;
+        if (cmd.findOption("--workaround-cornell")) opt_cornellWorkaroundEnable = OFTrue;
 #endif
 
         /* image processing options: modality LUT transformation */
@@ -902,7 +914,9 @@ int main(int argc, char *argv[])
     DcmRLEDecoderRegistration::registerCodecs();
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
     // register JPEG decompression codecs
-    DJDecoderRegistration::registerCodecs(opt_decompCSconversion);
+    DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default,
+        EPC_default, opt_predictor6WorkaroundEnable, opt_cornellWorkaroundEnable,
+        opt_forceSingleFragmentPerFrame);
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCML2PNM
     // register JPEG-LS decompression codecs
