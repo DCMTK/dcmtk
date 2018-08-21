@@ -176,6 +176,16 @@ workaround options for incorrect JPEG encodings:
   # the next frame from the next fragment (if any). This permits
   # images with incomplete JPEG data to be decoded.
 
+  +wc   --workaround-cornell
+          enable workaround for 16-bit JPEG lossless
+          Cornell images with Huffman table overflow
+
+  # One of the first open-source implementations of lossless JPEG
+  # compression, the "Cornell" library, has a well-known bug that leads
+  # to invalid values in the Huffmann table when images with 16 bit/sample
+  # are compressed. This flag enables a workaround that permits such
+  # images to be decoded correctly.
+
 \endverbatim
 
 \subsection dcmdjpeg_output_options output options

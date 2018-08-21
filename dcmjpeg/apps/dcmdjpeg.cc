@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2017, OFFIS e.V.
+ *  Copyright (C) 2001-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
   E_UIDCreation opt_uidcreation = EUC_default;
   E_PlanarConfiguration opt_planarconfig = EPC_default;
   OFBool opt_predictor6WorkaroundEnable = OFFalse;
+  OFBool opt_cornellWorkaroundEnable = OFFalse;
   OFBool opt_forceSingleFragmentPerFrame = OFFalse;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Decode JPEG-compressed DICOM file", rcsid);
@@ -113,6 +114,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("workaround options for incorrect JPEG encodings:");
       cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6");
       cmd.addOption("--workaround-incpl",    "+wi",    "enable workaround for incomplete JPEG data");
+      cmd.addOption("--workaround-cornell",  "+wc",    "enable workaround for 16-bit JPEG lossless\nCornell images with Huffman table overflow");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -188,6 +190,7 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--workaround-pred6")) opt_predictor6WorkaroundEnable = OFTrue;
       if (cmd.findOption("--workaround-incpl")) opt_forceSingleFragmentPerFrame = OFTrue;
+      if (cmd.findOption("--workaround-cornell")) opt_cornellWorkaroundEnable = OFTrue;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file"))
@@ -267,6 +270,7 @@ int main(int argc, char *argv[])
       opt_uidcreation,
       opt_planarconfig,
       opt_predictor6WorkaroundEnable,
+      opt_cornellWorkaroundEnable,
       opt_forceSingleFragmentPerFrame);
 
     /* make sure data dictionary is loaded */

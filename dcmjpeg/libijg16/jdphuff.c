@@ -302,6 +302,7 @@ decode_mcu_DC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
   savable_state state;
   d_derived_tbl * tbl;
   jpeg_component_info * compptr;
+  boolean cornell_workaround = (cinfo->workaround_options & WORKAROUND_BUGGY_CORNELL_16BIT_JPEG_ENCODER) != 0;
 
   /* Process restart marker if needed; may have to suspend */
   if (cinfo->restart_interval) {
@@ -330,7 +331,7 @@ decode_mcu_DC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
       /* Decode a single block's worth of coefficients */
 
       /* Section F.2.2.1: decode the DC coefficient difference */
-      HUFF_DECODE(s, br_state, tbl, return FALSE, label1);
+      HUFF_DECODE(s, br_state, tbl, return FALSE, label1, cornell_workaround);
       if (s) {
     CHECK_BIT_BUFFER(br_state, s, return FALSE);
     r = GET_BITS(s);
@@ -373,6 +374,7 @@ decode_mcu_AC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
   JBLOCKROW block;
   BITREAD_STATE_VARS;
   d_derived_tbl * tbl;
+  boolean cornell_workaround = (cinfo->workaround_options & WORKAROUND_BUGGY_CORNELL_16BIT_JPEG_ENCODER) != 0;
 
   /* Process restart marker if needed; may have to suspend */
   if (cinfo->restart_interval) {
@@ -401,7 +403,7 @@ decode_mcu_AC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
       tbl = entropy->ac_derived_tbl;
 
       for (k = cinfo->Ss; k <= Se; k++) {
-    HUFF_DECODE(s, br_state, tbl, return FALSE, label2);
+    HUFF_DECODE(s, br_state, tbl, return FALSE, label2, cornell_workaround);
     r = s >> 4;
     s &= 15;
     if (s) {
@@ -504,6 +506,7 @@ decode_mcu_AC_refine (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) lossyd->entropy_private;
   int Se = cinfo->Se;
   int p1 = 1 << cinfo->Al;  /* 1 in the bit position being coded */
+  boolean cornell_workaround = (cinfo->workaround_options & WORKAROUND_BUGGY_CORNELL_16BIT_JPEG_ENCODER) != 0;
 
   /* Originally, a -1 was shifted but since shifting a negative value is
    * undefined behavior, now "~0U" (bit-wise NOT unsigned int 0) is used,
@@ -552,7 +555,7 @@ decode_mcu_AC_refine (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
 
     if (EOBRUN == 0) {
       for (; k <= Se; k++) {
-    HUFF_DECODE(s, br_state, tbl, goto undoit, label3);
+    HUFF_DECODE(s, br_state, tbl, goto undoit, label3, cornell_workaround);
     r = s >> 4;
     s &= 15;
     if (s) {

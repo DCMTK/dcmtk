@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2016, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,6 +40,8 @@ public:
    *    decompressed color images should be handled
    *  @param predictor6WorkaroundEnable enable workaround for buggy lossless compressed images with
    *    overflow in predictor 6 for images with 16 bits/pixel
+   *  @param cornellWorkaroundEnable enable workaround for buggy Cornell lossless compressed images with
+   *    Huffman table overflow
    *  @param pForceSingleFragmentPerFrame while decompressing a multiframe image,
    *    assume one fragment per frame even if the JPEG data for some frame is incomplete
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
@@ -73,6 +75,7 @@ public:
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
     OFBool predictor6WorkaroundEnable = OFFalse,
+    OFBool cornellWorkaroundEnable = OFFalse,
     OFBool pForceSingleFragmentPerFrame = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,
     int pSmoothingFactor = 0,
@@ -304,6 +307,14 @@ public:
     return predictor6WorkaroundEnabled_;
   }
 
+  /** returns flag indicating whether the workaround for buggy Cornell JPEG lossless images with Huffman table overflow is enabled
+   *  @return flag indicating whether the workaround for buggy Cornell JPEG lossless images with Huffman table overflow is enabled
+   */
+  OFBool cornellWorkaroundEnabled() const
+  {
+    return cornellWorkaroundEnabled_;
+  }
+
   /** returns flag indicating whether one fragment per frame should be enforced while decoding
    *  @return flag indicating whether one fragment per frame should be enforced while decoding
    */
@@ -407,6 +418,9 @@ private:
 
   /// flag indicating that the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
   OFBool predictor6WorkaroundEnabled_;
+
+  /// flag indicating that the workaround for buggy Cornell JPEG lossless images with huffman table overflow is enabled
+  OFBool cornellWorkaroundEnabled_;
 
   /** flag indicating that while decompressing a multiframe image one fragment per frame
    *  should be assumed even if the JPEG data for some frame is incomplete

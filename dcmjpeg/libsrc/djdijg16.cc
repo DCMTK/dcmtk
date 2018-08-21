@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -262,6 +262,7 @@ OFCondition DJDecompressIJG16Bit::init()
     cinfo->src = &OFconst_cast(DJDIJG16SourceManagerStruct*, src)->pub;
     cinfo->workaround_options = 0;
     if (cparam->predictor6WorkaroundEnabled()) cinfo->workaround_options |= WORKAROUND_PREDICTOR6OVERFLOW;
+    if (cparam->cornellWorkaroundEnabled()) cinfo->workaround_options |= WORKAROUND_BUGGY_CORNELL_16BIT_JPEG_ENCODER;
   } else return EC_MemoryExhausted;
 
   // everything OK

@@ -16,7 +16,6 @@
 #include "jlossls16.h"      /* Private declarations for lossless codec */
 #include "jdhuff16.h"       /* Declarations shared with jd*huff.c */
 
-
 /*
  * Compute the derived values for a Huffman table.
  * This routine also performs some validation checks on the table.
@@ -280,7 +279,7 @@ jpeg_fill_bit_buffer (bitread_working_state * state,
 GLOBAL(int)
 jpeg_huff_decode (bitread_working_state * state,
           register bit_buf_type get_buffer, register int bits_left,
-          d_derived_tbl * htbl, int min_bits)
+          d_derived_tbl * htbl, int min_bits, boolean enable_cornell_workaround)
 {
   register int l = min_bits;
   register IJG_INT32 code;
@@ -309,7 +308,17 @@ jpeg_huff_decode (bitread_working_state * state,
 
   if (l > 16) {
     WARNMS(state->cinfo, JWRN_HUFF_BAD_CODE);
-    return 0;           /* fake a zero as the safest result */
+    if (enable_cornell_workaround)
+    {
+        if (l == 17)
+          return 17;        /* this is the result of the buggy Cornell encoder */
+        else
+          return 0;         /* fake a zero as the safest result */
+    }
+    else
+    {
+        return 0;           /* fake a zero as the safest result */
+    }
   }
 
   return htbl->pub->huffval[ (int) (code + htbl->valoffset[l]) ];
