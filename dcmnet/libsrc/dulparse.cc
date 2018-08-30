@@ -223,7 +223,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             if (cond.good())
             {
                 buf += itemLength;
-                pduLength -= itemLength;
+                if (!OFStandard::safeSubtract(pduLength, itemLength, pduLength))
+                  return makeUnderflowError("Application Context item", pduLength, itemLength);
                 DCMNET_TRACE("Successfully parsed Application Context");
             }
             break;
@@ -235,7 +236,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             cond = parsePresentationContext(type, context, buf, &itemLength, pduLength);
             if (cond.bad()) return cond;
             buf += itemLength;
-            pduLength -= itemLength;
+            if (!OFStandard::safeSubtract(pduLength, itemLength, pduLength))
+              return makeUnderflowError("Presentation Context item", pduLength, itemLength);
             LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context);
             DCMNET_TRACE("Successfully parsed Presentation Context");
             break;
@@ -246,7 +248,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             if (cond.bad())
                 return cond;
             buf += itemLength;
-            pduLength -= itemLength;
+            if (!OFStandard::safeSubtract(pduLength, itemLength, pduLength))
+              return makeUnderflowError("User Information item", pduLength, itemLength);
             DCMNET_TRACE("Successfully parsed User Information");
             break;
         default:
@@ -398,7 +401,8 @@ parsePresentationContext(unsigned char type,
                     return cond;
 
                 buf += length;
-                presentationLength -= length;
+                if (!OFStandard::safeSubtract(presentationLength, length, presentationLength))
+                  return makeUnderflowError("Abstract Syntax", presentationLength, length);
                 DCMNET_TRACE("Successfully parsed Abstract Syntax");
                 break;
             case DUL_TYPETRANSFERSYNTAX:
@@ -408,7 +412,8 @@ parsePresentationContext(unsigned char type,
                 if (cond.bad()) return cond;
                 LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
                 buf += length;
-                presentationLength -= length;
+                if (!OFStandard::safeSubtract(presentationLength, length, presentationLength))
+                  return makeUnderflowError("Transfer Syntax", presentationLength, length);
                 DCMNET_TRACE("Successfully parsed Transfer Syntax");
                 break;
             default:
@@ -499,7 +504,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
             if (cond.bad())
                 return cond;
             buf += length;
-            userLength -= (unsigned short) length;
+            if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
+              return makeLengthError("maximum length sub-item", userLength, length);
             DCMNET_TRACE("Successfully parsed Maximum PDU Length");
             break;
         case DUL_TYPEIMPLEMENTATIONCLASSUID:
@@ -508,7 +514,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
             if (cond.bad())
                 return cond;
             buf += length;
-            userLength -= (unsigned short) length;
+            if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
+              return makeLengthError("Implementation Class UID sub-item", userLength, length);
             break;
 
         case DUL_TYPEASYNCOPERATIONS:
@@ -526,14 +533,16 @@ parseUserInfo(DUL_USERINFO * userInfo,
             if (cond.bad()) return cond;
             LST_Enqueue(&userInfo->SCUSCPRoleList, (LST_NODE*)role);
             buf += length;
-            userLength -= (unsigned short) length;
+            if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
+              return makeLengthError("SCP/SCU Role Selection sub-item", userLength, length);
             break;
         case DUL_TYPEIMPLEMENTATIONVERSIONNAME:
             cond = parseSubItem(&userInfo->implementationVersionName,
                                 buf, &length, userLength);
             if (cond.bad()) return cond;
             buf += length;
-            userLength -= (unsigned short) length;
+            if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
+              return makeLengthError("Implementation Version Name structure", userLength, length);
             break;
 
         case DUL_TYPESOPCLASSEXTENDEDNEGOTIATION:
@@ -549,7 +558,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
             }
             userInfo->extNegList->push_back(extNeg);
             buf += length;
-            userLength -= (unsigned short) length;
+            if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
+              return makeLengthError("SOP Class Extended Negotiation sub-item", userLength, length);
             break;
 
         case DUL_TYPENEGOTIATIONOFUSERIDENTITY_REQ:
@@ -567,7 +577,8 @@ parseUserInfo(DUL_USERINFO * userInfo,
           }
           userInfo->usrIdent = usrIdent;
           buf += length;
-          userLength -= (unsigned short) length;
+          if (!OFStandard::safeSubtract(userLength, OFstatic_cast(short unsigned int, length), userLength))
+            return makeLengthError("User Identity sub-item", userLength, length);
           break;
         default:
             // we hit an unknown user item that is not defined in the standard
