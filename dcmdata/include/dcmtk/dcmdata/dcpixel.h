@@ -467,13 +467,23 @@ public:
         const Uint16 * wordValue,
         const unsigned long length);
 
-    /** create an empty Uint8 array of given number of words and set it
+    /** create an empty Uint8 array of given number of bytes and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  This method is only applicable to certain VRs, e.g. OB.
+     *  @param numBytes number of bytes (8 bit) to be created
+     *  @param bytes stores the pointer to the resulting buffer
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition createUint8Array(
         const Uint32 numBytes,
         Uint8 * & bytes);
 
-    /** create an empty Uint16 array of given number of words and set it
+    /** create an empty Uint16 array of given number of words and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  This method is only applicable to OW data.
+     *  @param numWords number of words (16 bit) to be created
+     *  @param words stores the pointer to the resulting buffer
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition createUint16Array(
         const Uint32 numWords,
