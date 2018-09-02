@@ -40,17 +40,17 @@ struct T_DIMSE_C_FindRSP;
 // include this file in doxygen documentation
 
 /** @file dfindscu.h
- *  @brief Service Class User (SCU) for C-FIND
+ *  @brief Service Class User (SCU) for C-FIND.
  */
 
 
-/** mode specifying whether and how to extract C-FIND responses
+/** mode specifying whether and how to extract C-FIND responses.
  */
 enum DcmFindSCUExtractMode
 {
-  /// do not extract C-FIND responses to file
+  /// do not extract C-FIND responses to file.
   FEM_none,
-  /// extract each C-FIND-RSP dataset to a DICOM file
+  /// extract each C-FIND-RSP dataset to a DICOM file.
   FEM_dicomFile,
   /// extract each C-FIND-RSP dataset to an XML file.
   /// See "dcm2xml.dtd" for XML format (starts with top-level element "data-set").
@@ -88,14 +88,14 @@ public:
   virtual ~DcmFindSCUCallback() {}
 
   /** callback method that is called once for each incoming C-FIND-RSP message.
-   *  @param request DIMSE command of the original C-FIND request
-   *  @param responseCount number of current response
-   *  @param rsp DIMSE command of incoming C-FIND response
-   *  @param responseIdentifiers dataset of incoming C-FIND response
+   *  @param request DIMSE command of the original C-FIND request.
+   *  @param responseCount number of current response.
+   *  @param rsp DIMSE command of incoming C-FIND response.
+   *  @param responseIdentifiers dataset of incoming C-FIND response.
    */
   virtual void callback(
         T_DIMSE_C_FindRQ *request,
-        int responseCount,
+        int &responseCount,
         T_DIMSE_C_FindRSP *rsp,
         DcmDataset *responseIdentifiers) = 0;
 
@@ -123,10 +123,10 @@ protected: /* the two member variables are protected and can be accessed from de
 
 private:
 
-  /// private undefined copy constructor
+  /// private undefined copy constructor.
   DcmFindSCUCallback(const DcmFindSCUCallback& other);
 
-  /// private undefined assignment operator
+  /// private undefined assignment operator.
   DcmFindSCUCallback& operator=(const DcmFindSCUCallback& other);
 
 };
@@ -140,17 +140,19 @@ class DCMTK_DCMNET_EXPORT DcmFindSCUDefaultCallback: public DcmFindSCUCallback
 public:
 
   /** constructor
-   *  @param extractResponses mode specifying whether and how to extract C-FIND responses
+   *  @param extractResponses mode specifying whether and how to extract C-FIND responses.
    *  @param cancelAfterNResponses if non-negative, a C-FIND-CANCEL will be issued after the
-   *    given number of incoming C-FIND-RSP messages
+   *    given number of incoming C-FIND-RSP messages.
+   *  @param  responseCount a reference to the integer indicating the count of received responses.
    *  @param outputDirectory directory used to store the output files (e.g. response datasets).
    *    If NULL, the current directory is used.
    *  @param outputStream pointer to output stream that is used when extractResponses is set
-   *    to FEM_singleXMLFile
+   *    to FEM_singleXMLFile.
    */
   DcmFindSCUDefaultCallback(
     DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
+    int &responseCount,
     const char *outputDirectory = NULL,
     STD_NAMESPACE ofstream *outputStream = NULL);
 
@@ -158,29 +160,29 @@ public:
   virtual ~DcmFindSCUDefaultCallback() {}
 
   /** callback method that is called once for each incoming C-FIND-RSP message.
-   *  @param request DIMSE command of the original C-FIND request
-   *  @param responseCount number of current response
-   *  @param rsp DIMSE command of incoming C-FIND response
-   *  @param responseIdentifiers dataset of incoming C-FIND response
+   *  @param request DIMSE command of the original C-FIND request.
+   *  @param responseCount a reference to the integer indicating the count of received responses.
+   *  @param rsp DIMSE command of incoming C-FIND response.
+   *  @param responseIdentifiers dataset of incoming C-FIND response.
    */
   virtual void callback(
         T_DIMSE_C_FindRQ *request,
-        int responseCount,
+        int &responseCount,
         T_DIMSE_C_FindRSP *rsp,
         DcmDataset *responseIdentifiers);
 
 private:
 
-   /// mode specifying whether and how to extract C-FIND responses
+   /// mode specifying whether and how to extract C-FIND responses.
    DcmFindSCUExtractMode extractResponses_;
 
-   /// if non-negative, a C-FIND-CANCEL will be issued after the given number of incoming C-FIND-RSP messages
+   /// if non-negative, a C-FIND-CANCEL will be issued after the given number of incoming C-FIND-RSP messages.
    int cancelAfterNResponses_;
 
-   /// directory used to store the output files (e.g. response datasets)
+   /// directory used to store the output files (e.g. response datasets).
    OFString outputDirectory_;
 
-   /// pointer to output stream that is used when extractResponses_ is FEM_singleXMLFile
+   /// pointer to output stream that is used when extractResponses_ is FEM_singleXMLFile.
    STD_NAMESPACE ofstream *outputStream_;
 };
 
@@ -194,7 +196,7 @@ class DCMTK_DCMNET_EXPORT DcmFindSCU
 {
 public:
 
-  /// constructor, does not execute any network-related code
+  /// constructor, does not execute any network-related code.
   DcmFindSCU();
 
   /// destructor. Destroys network structure if not done already.
@@ -202,7 +204,7 @@ public:
 
   /** initialize the network structure. This should be done only once.
    *  @param acse_timeout timeout for ACSE operations, in seconds
-   *  @return EC_Normal if successful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition initializeNetwork(int acse_timeout);
 
@@ -214,31 +216,31 @@ public:
    *  The transport layer object will not be deleted by this class and
    *  must remain alive until this object is deleted or a new transport
    *  layer is set.
-   *  @param tLayer pointer to transport layer object
-   *  @return EC_Normal if successful, an error code otherwise
+   *  @param tLayer pointer to transport layer object.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition setTransportLayer(DcmTransportLayer *tLayer);
 
   /** destroy network struct. This should be done only once.
-   *  @return EC_Normal if successful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition dropNetwork();
 
   /** main worker method that negotiates an association, executes one or more
    *  C-FIND-RQ transactions, processes the responses and closes the association
    *  once everything is finished (or an error has occurred).
-   *  @param peer hostname or IP address of peer SCP host
-   *  @param port TCP port number of peer SCP host
-   *  @param ourTitle calling AE title
-   *  @param peerTitle called AE title
-   *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service
+   *  @param peer hostname or IP address of peer SCP host.
+   *  @param port TCP port number of peer SCP host.
+   *  @param ourTitle calling AE title.
+   *  @param peerTitle called AE title.
+   *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service.
    *  @param preferredTransferSyntax May be Unknown, Implicit Little Endian, or any of the
    *    two uncompressed explicit VR transfer syntaxes. By default (unknown), local endian
    *    explicit VR is proposed first, followed by opposite endian explicit VR, followed by
    *    implicit VR. This behavior can be modified by explicitly specifying the preferred
    *    explicit VR transfer syntax. With Little Endian Implicit, only Implicit VR is proposed.
-   *  @param blockMode DIMSE blocking mode
-   *  @param dimse_timeout timeout for DIMSE operations (in seconds)
+   *  @param blockMode DIMSE blocking mode.
+   *  @param dimse_timeout timeout for DIMSE operations (in seconds).
    *  @param maxReceivePDULength limit the maximum PDU size for incoming PDUs to the given value.
    *    This value should be less than or equal to ASC_DEFAULTMAXPDU, and is usually identical
    *    to ASC_DEFAULTMAXPDU (other values are only useful for debugging purposes).
@@ -249,11 +251,11 @@ public:
    *      OpenSSL support enabled. Otherwise the method will return an error.
    *  @param abortAssociation abort association instead of releasing it (for debugging purposes)
    *  @param repeatCount number of times this query should be repeated
-   *    (for debugging purposes, works only with default callback)
+   *    (for debugging purposes, works only with default callback).
    *  @param extractResponses mode specifying whether and how to extract C-FIND responses
-   *    (works only with default callback)
+   *    (works only with default callback).
    *  @param cancelAfterNResponses issue C-FIND-CANCEL after given number of responses
-   *    (works only with default callback)
+   *    (works only with default callback).
    *  @param overrideKeys list of keys/paths that override those in the query files, if any.
    *    Either the list of query files or override keys or both should be non-empty, because the
    *    query dataset will be empty otherwise. For path syntax see DcmPath.
@@ -265,8 +267,8 @@ public:
    *  @param outputDirectory directory used to store the output files (e.g. response datasets).
    *    If NULL, the current directory is used.
    *  @param extractFilename filename used to store the response datasets when extractResponses is
-   *    set to FEM_singleXMLFile
-   *  @return EC_Normal if successful, an error code otherwise
+   *    set to FEM_singleXMLFile.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition performQuery(
     const char *peer,
@@ -293,18 +295,18 @@ public:
    *  into a DICOM file (using the DICOM file format with metaheader).
    *  This method produces a temporary copy of the dataset and should, therefore,
    *  not be used with very large datasets.
-   *  @param ofname filename to write
-   *  @param dataset dataset to store in file
-   *  @return EC_Normal if successful, an error code otherwise
+   *  @param ofname filename to write.
+   *  @param dataset dataset to store in file.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
   static OFBool writeToFile(const char* ofname, DcmDataset *dataset);
 
   /** static helper function that writes the content of the given dataset into
    *  an XML file (see "dcm2xml.dtd", starts with top-level element "data-set").
    *  This method also tries to determine the character encoding of the dataset.
-   *  @param ofname filename to write
-   *  @param dataset dataset to store in file
-   *  @return EC_Normal if successful, an error code otherwise
+   *  @param ofname filename to write.
+   *  @param dataset dataset to store in file.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
   static OFBool writeToXMLFile(const char* ofname, DcmDataset *dataset);
 
@@ -312,14 +314,14 @@ private:
 
   /** add presentation context for given abstract syntax and given preferred transfer syntax
    *  to the ACSE parameter struct.
-   *  @param params ACSE parameter struct to be modified
-   *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service
+   *  @param params ACSE parameter struct to be modified.
+   *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service.
    *  @param preferredTransferSyntax May be Unknown, Implicit Little Endian, or any of the
    *    two uncompressed explicit VR transfer syntaxes. By default (unknown), local endian
    *    explicit VR is proposed first, followed by opposite endian explicit VR, followed by
    *    implicit VR. This behavior can be modified by explicitly specifying the preferred
    *    explicit VR transfer syntax. With Little Endian Implicit, only Implicit VR is proposed.
-   *  @return EC_Normal if successful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition addPresentationContext(
     T_ASC_Parameters *params,
@@ -330,14 +332,15 @@ private:
    *  @param assoc DIMSE association
    *  @param fname file name for the query file to be used with this query. May be NULL.
    *  @param repeatCount number of times this query should be repeated
-   *    (for debugging purposes, works only with default callback)
-   *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service
-   *  @param blockMode DIMSE blocking mode
-   *  @param dimse_timeout timeout for DIMSE operations (in seconds)
+   *    (for debugging purposes, works only with default callback).
+   *  @param responseCount a reference to the integer indicating the count of received responses.
+   *  @param abstractSyntax SOP Class UID or Meta SOP Class UID of service.
+   *  @param blockMode DIMSE blocking mode.
+   *  @param dimse_timeout timeout for DIMSE operations (in seconds).
    *  @param extractResponses mode specifying whether and how to extract C-FIND responses
-   *    (works only with default callback)
+   *    (works only with default callback).
    *  @param cancelAfterNResponses issue C-FIND-CANCEL after given number of responses
-   *    (works only with default callback)
+   *    (works only with default callback).
    *  @param overrideKeys list of keys/paths that override those in the query files, if any.
    *    Either the list of query files or override keys or both should be non-empty, because
    *    the query dataset will be empty otherwise. For path syntax see DcmPath.
@@ -346,13 +349,14 @@ private:
    *  @param outputDirectory directory used to store the output files (e.g. response datasets).
    *    If NULL, the current directory is used.
    *  @param outputStream pointer to output stream that is used when extractResponses is set
-   *    to FEM_singleXMLFile
-   *  @return EC_Normal if successful, an error code otherwise
+   *    to FEM_singleXMLFile.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition findSCU(
     T_ASC_Association * assoc,
     const char *fname,
     int repeatCount,
+    int &responseCount,
     const char *abstractSyntax,
     T_DIMSE_BlockingMode blockMode,
     int dimse_timeout,

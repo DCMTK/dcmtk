@@ -105,6 +105,7 @@ DIMSE_findUser(
         T_ASC_Association *assoc,
         T_ASC_PresentationContextID presID,
         T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
+        int &responseCount,
         DIMSE_FindUserCallback callback, void *callbackData,
         T_DIMSE_BlockingMode blockMode, int timeout,
         T_DIMSE_C_FindRSP *response, DcmDataset **statusDetail)
@@ -142,7 +143,6 @@ DIMSE_findUser(
 {
     T_DIMSE_Message req, rsp;
     DIC_US msgId;
-    int responseCount = 0;
     DcmDataset *rspIds = NULL;
     DIC_US status = STATUS_Pending;
 

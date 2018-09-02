@@ -80,7 +80,7 @@
 #define DIMSE_H
 
 /*
- * Required Include Files
+ * Required Include Files.
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
@@ -100,8 +100,8 @@ class DcmOutputFileStream;
  * Affected SOP Instance UID field of the C-STORE-RQ message is retained
  * in the corresponding C-STORE-RSP message.
  * To enable the workaround, this flag must be set to OFTrue and
- * dcmEnableAutomaticInputDataCorrection must be set to OFFalse.
- * (see declaration in dcmdata/include/dcobject.h)
+ * dcmEnableAutomaticInputDataCorrection must be set to OFFalse
+ * (see declaration in dcmdata/include/dcobject.h).
  */
 extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmPeerRequiresExactUIDCopy; /* default OFFalse */
 
@@ -115,7 +115,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 
 
 /*
- * General Status Codes
+ * General Status Codes.
  */
 #define STATUS_Success  0x0000
 #define STATUS_Pending  0xff00
@@ -124,7 +124,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 #define DICOM_WARNING_STATUS(status) ((((status) & 0xf000) == 0xb000) || ((status) == 0x0107) || ((status) == 0x0116))
 
 /*
- * Service Class Specific Status Codes
+ * Service Class Specific Status Codes.
  * NOTE: some codes are only significant in the high byte
  * or high nibble (4 bits).
  */
@@ -204,12 +204,12 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 
 
 /*
- * Type Definitions
+ * Type Definitions.
  */
 
 
 /*
- * DIMSE Command Codes (Request and Response)
+ * DIMSE Command Codes (Request and Response).
  */
 typedef enum {                  /* DIC_US */
     DIMSE_NOTHING = 0x0000,     /* none of the rest !! */
@@ -241,7 +241,7 @@ typedef enum {                  /* DIC_US */
 } T_DIMSE_Command;
 
 /*
- * DIMSE Data Set Type Codes
+ * DIMSE Data Set Type Codes.
  */
 
 typedef enum {                  /* DIC_US */
@@ -250,7 +250,7 @@ typedef enum {                  /* DIC_US */
 } T_DIMSE_DataSetType;
 
 /*
- * DIMSE Priority Codes
+ * DIMSE Priority Codes.
  */
 
 typedef enum {                  /* DIC_US */
@@ -260,7 +260,7 @@ typedef enum {                  /* DIC_US */
 } T_DIMSE_Priority;
 
 /*
- * DIMSE Blocking Modes (reading)
+ * DIMSE Blocking Modes (reading).
  */
 
 typedef enum {
@@ -270,7 +270,7 @@ typedef enum {
 
 
 /*
- * DIMSE Messages
+ * DIMSE Messages.
  *
  */
 
@@ -756,7 +756,7 @@ typedef void (*DIMSE_FindUserCallback)(
         /* in */
         void *callbackData,
         T_DIMSE_C_FindRQ *request,      /* original find request */
-        int responseCount,
+        int responseCount,				/* number of responses so far*/
         T_DIMSE_C_FindRSP *response,    /* pending response received */
         DcmDataset *responseIdentifiers /* pending response identifiers */
         );
@@ -767,6 +767,7 @@ DIMSE_findUser(
         T_ASC_Association *assoc,
         T_ASC_PresentationContextID presID,
         T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
+        int &responseCount,
         DIMSE_FindUserCallback callback, void *callbackData,
         /* blocking info for response */
         T_DIMSE_BlockingMode blockMode, int timeout,

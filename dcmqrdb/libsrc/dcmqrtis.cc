@@ -865,6 +865,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
     T_DIMSE_C_FindRQ  req;
     T_DIMSE_C_FindRSP rsp;
     DcmDataset    *stDetail = NULL;
+    int responseCount = 0;
 
     currentPeerTitle = db->title;
 
@@ -892,7 +893,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_remoteFindQuery(TI_DBEntry *db, DcmDa
         UID_FINDStudyRootQueryRetrieveInformationModel, sizeof(req.AffectedSOPClassUID));
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 
-    cond = DIMSE_findUser(assoc, presId, &req, query,
+    cond = DIMSE_findUser(assoc, presId, &req, query, responseCount,
         findCallback, &cbd, blockMode_, dimse_timeout_, &rsp, &stDetail);
 
     if (cond.good()) {

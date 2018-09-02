@@ -76,6 +76,7 @@ void DcmFindSCUCallback::setPresentationContextID(T_ASC_PresentationContextID pr
 DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
     DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
+    int &responseCount,
     const char *outputDirectory,
     STD_NAMESPACE ofstream *outputStream)
 : DcmFindSCUCallback()
@@ -88,10 +89,10 @@ DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
 
 void DcmFindSCUDefaultCallback::callback(
     T_DIMSE_C_FindRQ *request,
-    int responseCount,
+    int &responseCount,
     T_DIMSE_C_FindRSP *rsp,
     DcmDataset *responseIdentifiers)
- {
+{
     OFLogger rspLogger = OFLog::getLogger(DCMNET_LOGGER_NAME ".responses");
     /* check whether debug mode is enabled */
     if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -235,6 +236,7 @@ OFCondition DcmFindSCU::performQuery(
     OFString temp_str;
     OFString outputFilename;
     STD_NAMESPACE ofstream outputStream;
+    int responseCount = 0;
 
     /* check input parameters first */
     if (extractResponses == FEM_singleXMLFile)
@@ -334,13 +336,13 @@ OFCondition DcmFindSCU::performQuery(
     if ((fileNameList == NULL) || fileNameList->empty())
     {
         /* no files provided on command line */
-        cond = findSCU(assoc, NULL, repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponses, cancelAfterNResponses, overrideKeys, callback, outputDirectory, &outputStream);
+        cond = findSCU(assoc, NULL, repeatCount, responseCount, abstractSyntax, blockMode, dimse_timeout, extractResponses, cancelAfterNResponses, overrideKeys, callback, outputDirectory, &outputStream);
     } else {
         OFListIterator(OFString) iter = fileNameList->begin();
         OFListIterator(OFString) enditer = fileNameList->end();
         while ((iter != enditer) && cond.good())
         {
-            cond = findSCU(assoc, (*iter).c_str(), repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponses, cancelAfterNResponses, overrideKeys, callback, outputDirectory, &outputStream);
+            cond = findSCU(assoc, (*iter).c_str(), repeatCount, responseCount, abstractSyntax, blockMode, dimse_timeout, extractResponses, cancelAfterNResponses, overrideKeys, callback, outputDirectory, &outputStream);
             ++iter;
         }
     }
@@ -585,6 +587,7 @@ OFCondition DcmFindSCU::findSCU(
     T_ASC_Association * assoc,
     const char *fname,
     int repeatCount,
+    int &responseCount,
     const char *abstractSyntax,
     T_DIMSE_BlockingMode blockMode,
     int dimse_timeout,
@@ -670,7 +673,7 @@ OFCondition DcmFindSCU::findSCU(
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 
     /* prepare the callback data */
-    DcmFindSCUDefaultCallback defaultCallback(extractResponses, cancelAfterNResponses, outputDirectory, outputStream);
+    DcmFindSCUDefaultCallback defaultCallback(extractResponses, cancelAfterNResponses, responseCount, outputDirectory, outputStream);
     if (callback == NULL) callback = &defaultCallback;
     callback->setAssociation(assoc);
     callback->setPresentationContextID(presId);
@@ -695,7 +698,7 @@ OFCondition DcmFindSCU::findSCU(
         DCMNET_INFO("Request Identifiers:" << OFendl << DcmObject::PrintHelper(*dset));
 
         /* finally conduct transmission of data */
-        cond = DIMSE_findUser(assoc, presId, &req, dset,
+        cond = DIMSE_findUser(assoc, presId, &req, dset, responseCount,
             progressCallback, callback, blockMode, dimse_timeout,
             &rsp, &statusDetail);
 
