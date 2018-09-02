@@ -89,8 +89,8 @@ public:
   /** configure the display pipelines for both referenced and test image.
    *  @param windowType VOI LUT transformation to apply
    *  @param windowParameter index of VOI LUT/window in file (if windowType is EWT_window_from_file or EWT_voi_lut_from_file)
-   *  @param windowCenter window center (ignored unless indowType is EWT_window_parameters)
-   *  @param windowWidth window width (ignored unless indowType is EWT_window_parameters)
+   *  @param windowCenter window center (ignored unless windowType is EWT_window_parameters)
+   *  @param windowWidth window width (ignored unless windowType is EWT_window_parameters)
    *  @param voiFunction VOI LUT function (linear or sigmoid)
    *  @param presShape Presentation LUT Shape (identity, reverse, lin OD)
    *  @return EC_Normal if successful, and error code otherwise
@@ -147,7 +147,7 @@ private:
   DicomImageComparison& operator=(const DicomImageComparison& arg);
 
   /** read DICOM image and store pointer to it
-   *  @param di pointer to DICOM image, not NULL upon sucess, NULL otherwise
+   *  @param di pointer to DICOM image, not NULL upon success, NULL otherwise
    *  @param isReference indicates whether we're reading the reference image or the test image
    *  @param ifname filename for DcmFileFormat::loadFile()
    *  @param xfer DICOM transfer syntax for DcmFileFormat::loadFile()
@@ -169,8 +169,8 @@ private:
    *  @param di DICOM image, must not be NULL
    *  @param windowType VOI LUT transformation to apply
    *  @param windowParameter index of VOI LUT/window in file (if windowType is EWT_window_from_file or EWT_voi_lut_from_file)
-   *  @param windowCenter window center (ignored unless indowType is EWT_window_parameters)
-   *  @param windowWidth window width (ignored unless indowType is EWT_window_parameters)
+   *  @param windowCenter window center (ignored unless windowType is EWT_window_parameters)
+   *  @param windowWidth window width (ignored unless windowType is EWT_window_parameters)
    *  @param voiFunction VOI LUT function (linear or sigmoid)
    *  @param presShape Presentation LUT Shape (identity, reverse, lin OD)
    *  @return EC_Normal if successful, and error code otherwise
@@ -207,9 +207,9 @@ private:
   static void logImageInfo(DicomImage *di, const char *filename);
 
   /** create content for frame label vector
-   *  @s string to which the frame label vector is written
-   *  @numFrames number of frames present in the reference image
-   *  @isColor true if reference image is a color image
+   *  @param s string to which the frame label vector is written
+   *  @param numFrames number of frames present in the reference image
+   *  @param isColor true if reference image is a color image
    */
   static void createFrameLabelVector(OFString& s, unsigned long numFrames, OFBool isColor);
 

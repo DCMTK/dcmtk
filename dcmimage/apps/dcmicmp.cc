@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--inverse-shape",      "+Piv",    "set presentation LUT shape to INVERSE");
       cmd.addOption("--lin-od-shape",       "+Pod",    "set presentation LUT shape to LIN OD");
 
-    cmd.addGroup("image comparison metrics options:");
+    cmd.addGroup("image comparison metrics options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--check-error",        "+ce",  1, "[l]imit: integer",
                                                        "check if max absolute error <= limit");
       cmd.addOption("--check-mae",          "+cm",  1, "[l]imit: float",
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--check-snr",          "+cs",  1, "[l]imit: float",
                                                        "check if SNR >= limit");
 
-    cmd.addGroup("output options:");
+    cmd.addGroup("output options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--save-diff",          "+sd",  1, "[f]ilename: string",
                                                        "write secondary capture difference image");
       cmd.addOption("--amplify",            "+a",   1, "[f]actor: float",
@@ -381,19 +381,19 @@ int main(int argc, char *argv[])
     // process --check options
     if (opt_checkError && (dicmp.getMaxAbsoluteError() > opt_checkErrorLimit))
     {
-        OFLOG_FATAL(dcmicmpLogger, "Maximum absolute error " << dicmp.getMaxAbsoluteError() << " exeeds limit " << opt_checkErrorLimit);
+        OFLOG_FATAL(dcmicmpLogger, "Maximum absolute error " << dicmp.getMaxAbsoluteError() << " exceeds limit " << opt_checkErrorLimit);
         return EXITCODE_LIMIT_EXCEEDED_MAX_ERROR;
     }
 
     if (opt_checkMAE && (dicmp.getMeanAbsoluteError() > opt_checkMAELimit))
     {
-        OFLOG_FATAL(dcmicmpLogger, "Mean absolute error " << dicmp.getMeanAbsoluteError() << " exeeds limit " << opt_checkMAELimit);
+        OFLOG_FATAL(dcmicmpLogger, "Mean absolute error " << dicmp.getMeanAbsoluteError() << " exceeds limit " << opt_checkMAELimit);
         return EXITCODE_LIMIT_EXCEEDED_MAE;
     }
 
     if (opt_checkRMSE && (dicmp.getRootMeanSquareError() > opt_checkRMSELimit))
     {
-        OFLOG_FATAL(dcmicmpLogger, "Root mean square error (RMSE) " << dicmp.getRootMeanSquareError() << " exeeds limit " << opt_checkRMSELimit);
+        OFLOG_FATAL(dcmicmpLogger, "Root mean square error (RMSE) " << dicmp.getRootMeanSquareError() << " exceeds limit " << opt_checkRMSELimit);
         return EXITCODE_LIMIT_EXCEEDED_RMSE;
     }
 
