@@ -1,0 +1,286 @@
+.TH "dcmicmp" 1 "Sun Sep 2 2018" "Version 3.6.3+" "OFFIS DCMTK" \" -*- nroff -*-
+.nh
+.SH NAME
+dcmicmp \- Compare DICOM images and compute difference metrics 
+
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+dcmicmp [options] dcmfile-in-1 dcmfile-in-2
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcmicmp\fP utility reads two DICOM images, an original 'reference
+image' and a post-processed 'test image', to which some kind of processing such as a lossy image compression, followed by decompression, has been applied\&. This tool requires that both images have the same resolution, the same number of frames and are either both color or monochrome\&. Compressed images are not supported\&.
+.PP
+The \fBdcmicmp\fP utility then compares both images and computes and prints metrics that describe how similar or different both images are:
+.PP
+.IP "\(bu" 2
+the maximum absolute error is the largest difference between an pixel value in the reference image and the corresponding pixel value in the test image\&.
+.IP "\(bu" 2
+the mean absolute error (MAE) is the average difference between original pixel value and test image pixel value
+.IP "\(bu" 2
+the root mean square error (RMSE) is computed by adding the squares of all difference values, then dividing by the number of values added, and then taking the square root\&.
+.IP "\(bu" 2
+The peak signal to noise ratio (PSNR) considers the reference image as a signal and the differences between reference and test image as noise\&. PSNR is the maximum signal strength (i\&.e\&. maximum pixel value in the reference image) divided by the RMSE, expressed on a logarithmic scale in dB\&.
+.IP "\(bu" 2
+The signal to noise ratio (PSNR) also considers the reference image as a signal and the differences between reference and test image as noise\&. SNR is the average signal strength divided by the RMSE, expressed on a logarithmic scale in dB\&.
+.PP
+.PP
+All metrics are computed as defined in R\&.C\&. Gonzalez and R\&.E\&. Woods, 'Digital Image Processing,' Prentice Hall 2008\&.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+dcmfile-in-1  Reference DICOM image file for comparison
+
+dcmfile-in-2  Test DICOM image file for comparison
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -q    --quiet
+          quiet mode, print no warnings and errors
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input transfer syntax:
+
+  -t=   --read-xfer-auto
+          use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
+
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
+
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
+
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
+.fi
+.PP
+.SS "image processing options"
+.PP
+.nf
+modality LUT transformation:
+
+  +M    --use-modality
+          use modality LUT transformation (default)
+
+  -M    --no-modality
+          ignore stored modality LUT transformation
+
+VOI LUT transformation:
+
+  -W    --no-windowing
+          no VOI windowing (default)
+
+  +Wi   --use-window  [n]umber: integer
+          use the n-th VOI window from image file
+
+  +Wl   --use-voi-lut  [n]umber: integer
+          use the n-th VOI look up table from image file
+
+  +Ww   --set-window  [c]enter [w]idth: float
+          compute VOI window using center c and width w
+
+  +Wfl  --linear-function
+          set VOI LUT function to LINEAR
+
+  +Wfs  --sigmoid-function
+          set VOI LUT function to SIGMOID
+
+presentation LUT transformation:
+
+  +Pid  --identity-shape
+          set presentation LUT shape to IDENTITY
+
+  +Piv  --inverse-shape
+          set presentation LUT shape to INVERSE
+
+  +Pod  --lin-od-shape
+          set presentation LUT shape to LIN OD
+.fi
+.PP
+.SS "image comparison metrics options"
+.PP
+.nf
+  +ce   --check-error  [l]imit: integer
+          check if max absolute error <= limit
+
+  # Return exit code EXITCODE_LIMIT_EXCEEDED_MAX_ERROR if the computed
+  # maximum absolute error is larger than the given limit.
+
+  +cm   --check-mae  [l]imit: float
+          check if mean absolute error <= limit
+
+  # Return exit code EXITCODE_LIMIT_EXCEEDED_MAE if the computed
+  # mean absolute error is larger than the given limit.
+
+  +cr   --check-rmse  [l]imit: float
+          check if root mean square error <= limit
+
+  # Return exit code EXITCODE_LIMIT_EXCEEDED_RMSE if the computed
+  # root mean square error is larger than the given limit.
+
+  +cp   --check-psnr  [l]imit: float
+          check if PSNR >= limit
+
+  # Return exit code EXITCODE_LIMIT_EXCEEDED_PSNR if the computed
+  # peak signal to noise ratio is smaller than the given limit
+  # (for PSNR, higher values mean better image quality)
+
+  +cs   --check-snr  [l]imit: float
+          check if SNR >= limit
+
+  # Return exit code EXITCODE_LIMIT_EXCEEDED_PSNR if the computed
+  # signal to noise ratio is smaller than the given limit
+  # (for SNR, higher values mean better image quality)
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+  +sd   --save-diff  [f]ilename: string
+          write secondary capture difference image
+
+  # Create a Multiframe Secondary Capture image that contains a
+  # difference image between reference and test image. For monochrome
+  # images, one difference frame is created for each frame in the reference
+  # image. For color images, three monochrome frames are created for each
+  # frame in the reference image, corresponding to the differences in the
+  # red, green and blue color plane. The difference image will have
+  # BitsStored 8 or 16, depending on the properties of the reference image.
+
+  +a    --amplify  [f]actor: float
+          multiply diff image pixel values by f
+
+  # This option can be used to amplify the grayscale values in the
+  # difference image by multiplying each value with the given factor.
+  # Alternatively, a DICOM VOI LUT window may be used when visualizing
+  # the difference image.
+.fi
+.PP
+.SH "NOTES"
+.PP
+.SS "grayscale display pipeline"
+Monochrome DICOM images require that a multi-stage display pipeline is executed in order to convert the raw pixel values to the so-called presentation values (p-values) that are sent to the (possibly calibrated) display\&. When comparing the similarity of images before and after post-processing, it can be relevant to activate some stages of this display pipeline before calculating the difference image and metrics\&. The image processing options allow the caller to either activate or deactivate the Modality LUT, VOI LUT and Presentation LUT transformations\&. In any case, the same transformation is applied to both images, although possibly with different parameters if for example the 'first VOI LUT window' stored in each image is applied\&. This assumes that the post-processing algorithm (e\&.g\&. compression algorithm) has adapted the values of such windows during compression such that the image display after applying the window is as close as possible to the reference\&. For images with more than 8 bits/sample it may be important to known which VOI LUT transformation will be applied by the user when viewing the image, because this may affect the perceived image quality\&. Therefore, absolute Window parameters can also be given with the --set-window option, which will then be applied to both images\&.
+.SS "suitability of images for diagnostic purposes"
+The user should also note that the metrics computed by this tool cannot predict or estimate the suitability of lossy compressed image for diagnostic purposes\&. Much more complex image processing and an understanding of the image content (e\&.g\&. body part) would be needed for this purpose\&. The metrics computed provide an estimation of the level of distortion caused by the post-processing - no more and no less\&.
+.SH "TRANSFER SYNTAXES"
+.PP
+\fBdcmicmp\fP supports the following transfer syntaxes for input:
+.PP
+.PP
+.nf
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+.fi
+.PP
+.PP
+The difference image file is always written in Little Endian Implicit Transfer Syntax\&.
+.PP
+(*) if compiled with zlib support enabled
+.SH "LOGGING"
+.PP
+The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
+.PP
+In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&.
+.SH "EXIT CODES"
+.PP
+The \fBdcmicmp\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
+.SS "general"
+.PP
+.nf
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+.fi
+.PP
+.SS "input/output file errors"
+.PP
+.nf
+EXITCODE_INVALID_INPUT_FILE              22
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+.fi
+.PP
+.SS "image processing errors"
+.PP
+.nf
+EXITCODE_INITIALIZE_DIFF_IMAGE           80
+EXITCODE_DISPLAY_PIPELINE                81
+EXITCODE_IMAGE_COMPARISON                82
+.fi
+.PP
+.SS "error codes for exceeded limits"
+.PP
+.nf
+EXITCODE_LIMIT_EXCEEDED_MAX_ERROR        90
+EXITCODE_LIMIT_EXCEEDED_MAE              91
+EXITCODE_LIMIT_EXCEEDED_RMSE             92
+EXITCODE_LIMIT_EXCEEDED_PSNR             93
+EXITCODE_LIMIT_EXCEEDED_SNR              94
+.fi
+.PP
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmicmp\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
+.PP
+The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+.SH "SEE ALSO"
+.PP
+\fBdcm2pnm\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
