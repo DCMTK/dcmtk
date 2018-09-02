@@ -24,8 +24,8 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) $(PNGLIBS) \
 	$(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-objs = dcm2pnm.o dcmquant.o dcmscale.o
-progs = dcm2pnm dcmquant dcmscale
+objs = dcm2pnm.o dcmquant.o dcmscale.o dcmicmp.o
+progs = dcm2pnm dcmquant dcmscale dcmicmp
 
 
 all: $(progs)
@@ -37,6 +37,9 @@ dcmquant: dcmquant.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcmscale: dcmscale.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
+
+dcmicmp: dcmicmp.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 

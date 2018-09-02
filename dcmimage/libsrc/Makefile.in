@@ -27,9 +27,10 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
 objs = dicoimg.o dicopx.o dicoopx.o diregist.o dilogger.o \
 	diargimg.o dicmyimg.o dihsvimg.o dipalimg.o dirgbimg.o \
 	diybrimg.o diyf2img.o diyp2img.o dipitiff.o dipipng.o \
-	diqtctab.o diqtfs.o diqthash.o diqthitl.o diqtpbox.o diquant.o
-library = libdcmimage.$(LIBEXT)
+	diqtctab.o diqtfs.o diqthash.o diqthitl.o diqtpbox.o \
+	diquant.o dcmicmph.o
 
+library = libdcmimage.$(LIBEXT)
 
 all: $(library)
 
