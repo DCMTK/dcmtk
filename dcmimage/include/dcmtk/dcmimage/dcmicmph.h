@@ -109,7 +109,7 @@ public:
   OFCondition computeImageComparisonMetrics();
 
   /// return maximum absolute error
-  long getMaxAbsoluteError() const
+  unsigned long getMaxAbsoluteError() const
   {
     return max_error;
   }
@@ -250,7 +250,7 @@ private:
   /** result of image comparison: max difference between a sample value
    *  in the reference image and the corresponding sample value in the test image
    */
-  long max_error;
+  unsigned long max_error;
 
   /// result of image comparison: mean absolute error
   double meanAbsoluteError;

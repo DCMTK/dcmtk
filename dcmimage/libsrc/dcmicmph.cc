@@ -26,6 +26,7 @@
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
+#define INCLUDE_CMATH
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofconapp.h"        /* for OFConsoleApplication */
@@ -430,15 +431,15 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsWord()
             }
             f1 = OFreinterpret_cast(const Uint16 *, frame1);
             f2 = OFreinterpret_cast(const Uint16 *, frame2);
-            long i1, i2, i3;
-            unsigned long t;
+            long i1, i2;
+            unsigned long i3, t;
 
             // iterate over all samples (pixel values) of the current frame
             for (unsigned long i = 0; i < numValues; ++i)
             {
               i1 = *f1; // pixel value in the reference image
               i2 = *f2; // pixel value in the test image
-              i3 = labs(i1 - i2); // absolute difference, without sign
+              i3 = OFstatic_cast(unsigned long, labs(i1 - i2)); // absolute difference, without sign
               if (dv)
               {
                   dvp = amplification * i3;  // compute diff image pixel value
@@ -481,9 +482,9 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsWord()
         if (diff_image)
         {
             char buf[30];
-            OFStandard::snprintf(buf, 30, "%lu", di_reference->getFrameCount());
-            cond = diff_image->getDataset()->putAndInsertUint16(DCM_Rows, di_reference->getHeight());
-            if (cond.good()) cond = diff_image->getDataset()->putAndInsertUint16(DCM_Columns, di_reference->getWidth());
+            OFStandard::snprintf(buf, 30, "%lu", OFstatic_cast(unsigned long, di_reference->getFrameCount()));
+            cond = diff_image->getDataset()->putAndInsertUint16(DCM_Rows, OFstatic_cast(Uint16, di_reference->getHeight()));
+            if (cond.good()) cond = diff_image->getDataset()->putAndInsertUint16(DCM_Columns, OFstatic_cast(Uint16, di_reference->getWidth()));
             if (cond.good()) cond = diff_image->getDataset()->putAndInsertString(DCM_NumberOfFrames, buf);
             if (di_reference->getFrameCount() > 1)
             {
@@ -555,14 +556,15 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsByte()
             }
             f1 = OFreinterpret_cast(const Uint8 *, frame1);
             f2 = OFreinterpret_cast(const Uint8 *, frame2);
-            long i1, i2, i3;
-            unsigned long t;
+            long i1, i2;
+            unsigned long i3, t;
+
             // iterate over all samples (pixel values) of the current frame
             for (unsigned long i = 0; i < numValues; ++i)
             {
               i1 = *f1; // pixel value in the reference image
               i2 = *f2; // pixel value in the test image
-              i3 = labs(i1 - i2); // absolute difference, without sign
+              i3 = OFstatic_cast(unsigned long, labs(i1 - i2)); // absolute difference, without sign
               if (dv)
               {
                   dvp = amplification * i3;  // compute diff image pixel value
@@ -605,9 +607,9 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsByte()
         if (diff_image)
         {
             char buf[30];
-            OFStandard::snprintf(buf, 30, "%lu", di_reference->getFrameCount());
-            cond = diff_image->getDataset()->putAndInsertUint16(DCM_Rows, di_reference->getHeight());
-            if (cond.good()) cond = diff_image->getDataset()->putAndInsertUint16(DCM_Columns, di_reference->getWidth());
+            OFStandard::snprintf(buf, 30, "%lu", OFstatic_cast(unsigned long, di_reference->getFrameCount()));
+            cond = diff_image->getDataset()->putAndInsertUint16(DCM_Rows, OFstatic_cast(Uint16, di_reference->getHeight()));
+            if (cond.good()) cond = diff_image->getDataset()->putAndInsertUint16(DCM_Columns, OFstatic_cast(Uint16, di_reference->getWidth()));
             if (cond.good()) cond = diff_image->getDataset()->putAndInsertString(DCM_NumberOfFrames, buf);
             if (di_reference->getFrameCount() > 1)
             {
@@ -680,14 +682,15 @@ OFCondition DicomImageComparison::computeColorImageComparionMetrics()
             }
             f1 = OFreinterpret_cast(const Uint8 *, frame1);
             f2 = OFreinterpret_cast(const Uint8 *, frame2);
-            long i1, i2, i3;
-            unsigned long t;
+            long i1, i2;
+            unsigned long i3, t;
+
             // iterate over all samples (R, G and B pixel values) of the current frame
             for (unsigned long i = 0; i < numValues; ++i)
             {
               i1 = *f1; // pixel value in the reference image
               i2 = *f2; // pixel value in the test image
-              i3 = labs(i1 - i2); // absolute difference, without sign
+              i3 = OFstatic_cast(unsigned long, labs(i1 - i2)); // absolute difference, without sign
               if (dv)
               {
                   dvp = amplification * i3;  // compute diff image pixel value
@@ -732,9 +735,9 @@ OFCondition DicomImageComparison::computeColorImageComparionMetrics()
             char buf[30];
             // For color images, the difference image is always multiframe
             // because it contains separate R, G and B difference frames
-            OFStandard::snprintf(buf, 30, "%lu", di_reference->getFrameCount() * 3);
-            cond = diff_image->getDataset()->putAndInsertUint16(DCM_Rows, di_reference->getHeight());
-            if (cond.good()) cond = diff_image->getDataset()->putAndInsertUint16(DCM_Columns, di_reference->getWidth());
+            OFStandard::snprintf(buf, 30, "%lu", OFstatic_cast(unsigned long, 3UL * di_reference->getFrameCount()));
+            cond = diff_image->getDataset()->putAndInsertUint16(DCM_Rows, OFstatic_cast(Uint16, di_reference->getHeight()));
+            if (cond.good()) cond = diff_image->getDataset()->putAndInsertUint16(DCM_Columns, OFstatic_cast(Uint16, di_reference->getWidth()));
             if (cond.good()) cond = diff_image->getDataset()->putAndInsertString(DCM_NumberOfFrames, buf);
             DcmTagKey frameIncrementPointer(0x0018, 0x2002);
             if (cond.good()) cond = diff_image->getDataset()->putAndInsertTagKey(DCM_FrameIncrementPointer, frameIncrementPointer);
@@ -1289,8 +1292,8 @@ void DicomImageComparison::createFrameLabelVector(OFString& s, unsigned long num
     {
       if (i > 0) s += "\\";
       if (isColor)
-          snprintf(buf, 100, "F%03luR\\F%03luG\\F%03luB", i+1, i+1, i+1);
-          else snprintf(buf, 100, "F%03lu", i+1);
+          OFStandard::snprintf(buf, 100, "F%03luR\\F%03luG\\F%03luB", i+1, i+1, i+1);
+          else OFStandard::snprintf(buf, 100, "F%03lu", i+1);
       s += buf;
     }
 

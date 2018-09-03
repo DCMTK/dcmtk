@@ -300,7 +300,7 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--amplify"))
     {
         app.checkDependence("--amplify", "--save-diff", (opt_ofname != NULL));
-        app.checkValue(cmd.getValueAndCheckMin(opt_amplify, 1.0, 65535.0));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_amplify, 1.0, 65535.0));
     }
 
 
