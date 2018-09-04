@@ -182,6 +182,7 @@ OFCondition DcmRLECodecDecoder::decode(
               Uint32 byteOffset = 0;
 
               OFBool lastStripe = OFFalse;
+              OFBool lastStripeOfColor = OFFalse;
               Uint32 inputBytes = 0;
 
               // pointers for buffer copy operations
@@ -309,8 +310,17 @@ OFCondition DcmRLECodecDecoder::decode(
                   }
                 }
 
+                // copy the decoded stuff over to the buffer here...
                 // make sure the RLE decoder has produced the right amount of data
-                if (result.good() && (rledecoder.size() != bytesPerStripe))
+                lastStripeOfColor = lastStripe || ((imagePlanarConfiguration == 1) && ((i+1) % imageBytesAllocated == 0));
+
+                if (lastStripeOfColor && (rledecoder.size() < bytesPerStripe))
+                {
+                    // stripe ended prematurely? report a warning and continue
+                    DCMDATA_WARN("RLE decoder is finished but has produced insufficient data for this stripe, filling remaining pixels");
+                    result = EC_Normal;
+                }
+                else if (rledecoder.size() != bytesPerStripe)
                 {
                     DCMDATA_ERROR("RLE decoder is finished but has produced insufficient data for this stripe");
                     result = EC_CannotChangeRepresentation;
@@ -503,6 +513,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     Uint32 byteOffset = 0;
 
     OFBool lastStripe = OFFalse;
+    OFBool lastStripeOfColor = OFFalse;
     Uint32 inputBytes = 0;
 
     // pointers for buffer copy operations
@@ -569,14 +580,12 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
 
         // copy the decoded stuff over to the buffer here...
         // make sure the RLE decoder has produced the right amount of data
-        if (lastStripe && (rledecoder.size() < bytesPerStripe))
+        lastStripeOfColor = lastStripe || ((imagePlanarConfiguration == 1) && ((i+1) % imageBytesAllocated == 0));
+        if (lastStripeOfColor && (rledecoder.size() < bytesPerStripe))
         {
-            // stream ended premature? report a warning and continue
-            if (result == EC_StreamNotifyClient)
-            {
-                DCMDATA_WARN("RLE decoder is finished but has produced insufficient data for this stripe, filling remaining pixels");
-                result = EC_Normal;
-            }
+            // stripe ended prematurely? report a warning and continue
+            DCMDATA_WARN("RLE decoder is finished but has produced insufficient data for this stripe, filling remaining pixels");
+            result = EC_Normal;
         }
         else if (rledecoder.size() != bytesPerStripe)
         {
