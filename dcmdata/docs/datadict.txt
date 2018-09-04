@@ -22,7 +22,7 @@ outdated version.  Loading the dictionary content from a separate file,
 however, has the advantage that application programs need not be recompiled
 if additions or corrections are made to the data dictionary.
 
-DCMTK uses an external data dictionary by default on Posix systems (Linux,
+By default, DCMTK uses an external data dictionary on Posix systems (Linux,
 Mac OS X, etc.) while a built-in dictionary is used on Windows systems.  How
 these defaults can be changed or how both approaches can even be combined is
 further explained below.
@@ -46,8 +46,9 @@ DICTIONARY DEFAULT: CMAKE ON WINDOWS AND POSIX SYSTEMS
 
 On Windows, the default behavior is to compile a fully-populated DICOM
 dictionary as global data dictionary into the dcmdata library.  Thus, it is
-not required to load an external data dictionary from a file and dcmdata will
-not try loading such a file by default.
+not required to load an external data dictionary from a file.  However,
+usage of external dictionaries is still possible on Windows by setting the
+environment variable DCMDICTPATH accordingly (see further details below).
 
 On Posix systems, the default setting is to load the data dictionary from an
 external file (as described in the above section on Autoconf).
@@ -219,4 +220,4 @@ subsequently fail to compile.
 
 DCMTK Development Team, Oldenburg, Germany
 
-Last revised: 2017-09-14 (Riesmeier).
+Last revised: 2018-09-04 (Onken).
