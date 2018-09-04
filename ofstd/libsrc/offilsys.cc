@@ -413,12 +413,12 @@ OFBool OFdirectory_iterator::NativeDirectoryEntry::next()
 #else // HAVE__FINDFIRST
 #if defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE)
 #ifdef HAVE_OLD_READDIR_R
-    return m_pDirent = ::readdir_r( m_pDIR, OFreinterpret_cast(dirent*, m_Buffer ) );
+    return (m_pDirent = ::readdir_r( m_pDIR, OFreinterpret_cast(dirent*, m_Buffer ) ) );
 #else // HAVE_OLD_READDIR_R
     return !::readdir_r( m_pDIR, OFreinterpret_cast(dirent*, m_Buffer ), &m_pDirent ) && m_pDirent;
 #endif // HAVE_OLD_READDIR_R
 #else // HAVE_READDIR_R && !READDIR_IS_THREADSAFE
-    return m_pDirent = ::readdir( m_pDIR );
+    return (m_pDirent = ::readdir( m_pDIR ) );
 #endif // HAVE_READDIR_R && !READDIR_IS_THREADSAFE
 #endif // HAVE__FINDFIRST
 }
