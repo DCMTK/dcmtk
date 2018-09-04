@@ -38,7 +38,6 @@
 // This function is also used in xml2dcm, try to stay in sync!
 extern "C" void errorFunction(void * ctx, const char *msg, ...)
 {
-    OFString &buffer = *OFstatic_cast(OFString*, ctx);
     OFLogger xmlLogger = OFLog::getLogger("dcmtk.dcmsr.libxml");
 
     if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -49,6 +48,7 @@ extern "C" void errorFunction(void * ctx, const char *msg, ...)
     // result in garbled output. To avoid this, we buffer the output in a local
     // string in the caller which we get through our 'ctx' parameter. Then, we
     // output this string on one go when we receive a newline.
+    OFString &buffer = *OFstatic_cast(OFString*, ctx);
     va_list ap;
     char buf[1024];
 
