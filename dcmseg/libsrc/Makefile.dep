@@ -53,6 +53,7 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -60,6 +61,7 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
@@ -208,6 +210,7 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -215,6 +218,7 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -368,6 +372,7 @@ segtypes.o: segtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -375,6 +380,7 @@ segtypes.o: segtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -483,6 +489,7 @@ segutils.o: segutils.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
@@ -492,6 +499,7 @@ segutils.o: segutils.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \

@@ -15,9 +15,11 @@ dcmrecv.o: dcmrecv.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
@@ -143,9 +145,11 @@ dcmsend.o: dcmsend.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
@@ -309,12 +313,14 @@ echoscu.o: echoscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../include/dcmtk/dcmnet/lst.h ../include/dcmtk/dcmnet/dul.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
@@ -338,9 +344,10 @@ echoscu.o: echoscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsopt.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
+ ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h
 findscu.o: findscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmnet/dfindscu.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -380,6 +387,7 @@ findscu.o: findscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
@@ -388,6 +396,7 @@ findscu.o: findscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
@@ -414,11 +423,12 @@ findscu.o: findscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
- ../../ofstd/include/dcmtk/ofstd/ofchrenc.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
- ../include/dcmtk/dcmnet/dcmtrans.h ../include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsopt.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
+ ../include/dcmtk/dcmnet/dcmlayer.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
+ ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofchrenc.h
 getscu.o: getscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -428,17 +438,19 @@ getscu.o: getscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h ../include/dcmtk/dcmnet/scu.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h ../include/dcmtk/dcmnet/scu.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -563,9 +575,11 @@ movescu.o: movescu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h ../include/dcmtk/dcmnet/dicom.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h ../include/dcmtk/dcmnet/dicom.h \
  ../include/dcmtk/dcmnet/cond.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
@@ -640,9 +654,11 @@ storescp.o: storescp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h ../include/dcmtk/dcmnet/dicom.h \
@@ -708,9 +724,10 @@ storescp.o: storescp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsopt.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
+ ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h
 storescu.o: storescu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
@@ -728,9 +745,11 @@ storescu.o: storescu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h ../include/dcmtk/dcmnet/dicom.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h ../include/dcmtk/dcmnet/dicom.h \
  ../include/dcmtk/dcmnet/cond.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
@@ -793,9 +812,10 @@ storescu.o: storescu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsopt.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
- ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h
+ ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h
 termscu.o: termscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
@@ -804,18 +824,20 @@ termscu.o: termscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \

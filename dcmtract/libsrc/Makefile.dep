@@ -45,6 +45,7 @@ trcmeasurement.o: trcmeasurement.cc \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -52,6 +53,7 @@ trcmeasurement.o: trcmeasurement.cc \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -169,6 +171,7 @@ trcmodtractresults.o: trcmodtractresults.cc \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -176,6 +179,7 @@ trcmodtractresults.o: trcmodtractresults.cc \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -298,6 +302,7 @@ trcstatistic.o: trcstatistic.cc \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -305,6 +310,7 @@ trcstatistic.o: trcstatistic.cc \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -422,6 +428,7 @@ trctrack.o: trctrack.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -429,6 +436,7 @@ trctrack.o: trctrack.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -498,6 +506,7 @@ trctrackset.o: trctrackset.cc \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -505,6 +514,7 @@ trctrackset.o: trctrackset.cc \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -626,6 +636,7 @@ trctractographyresults.o: trctractographyresults.cc \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -633,6 +644,7 @@ trctractographyresults.o: trctractographyresults.cc \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -758,6 +770,7 @@ trctypes.o: trctypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
@@ -766,6 +779,7 @@ trctypes.o: trctypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../include/dcmtk/dcmtract/trcdef.h

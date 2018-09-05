@@ -14,8 +14,8 @@ jccoefct.o: jccoefct.c jinclude16.h jconfig16.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib16.h jmorecfg16.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint16.h jerror16.h \
  jlossy16.h
-jccolor.o: jccolor.c jinclude16.h jconfig16.h \
- ../../config/include/dcmtk/config/osconfig.h jpeglib16.h jmorecfg16.h \
+jccolor.o: jccolor.c ../../config/include/dcmtk/config/osconfig.h \
+ jinclude16.h jconfig16.h jpeglib16.h jmorecfg16.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint16.h jerror16.h
 jcdctmgr.o: jcdctmgr.c jinclude16.h jconfig16.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib16.h jmorecfg16.h \
@@ -148,8 +148,8 @@ jdmarker.o: jdmarker.c jinclude16.h jconfig16.h \
 jdmaster.o: jdmaster.c jinclude16.h jconfig16.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib16.h jmorecfg16.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint16.h jerror16.h
-jdmerge.o: jdmerge.c jinclude16.h jconfig16.h \
- ../../config/include/dcmtk/config/osconfig.h jpeglib16.h jmorecfg16.h \
+jdmerge.o: jdmerge.c ../../config/include/dcmtk/config/osconfig.h \
+ jinclude16.h jconfig16.h jpeglib16.h jmorecfg16.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint16.h jerror16.h
 jdphuff.o: jdphuff.c jinclude16.h jconfig16.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib16.h jmorecfg16.h \
