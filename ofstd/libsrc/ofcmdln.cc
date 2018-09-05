@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -512,7 +512,7 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMin(const int pos,
                                                                      OFCmdSignedInt &value,
                                                                      const OFCmdSignedInt low,
-                                                                     const OFBool incl)
+                                                                     const OFExplicitBool incl)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -557,7 +557,7 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMin(const int pos,
                                                                      OFCmdUnsignedInt &value,
                                                                      const OFCmdUnsignedInt low,
-                                                                     const OFBool incl)
+                                                                     const OFExplicitBool incl)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -603,7 +603,7 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMin(const int pos,
                                                                      OFCmdFloat &value,
                                                                      const OFCmdFloat low,
-                                                                     const OFBool incl)
+                                                                     const OFExplicitBool incl)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -827,7 +827,7 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdSignedInt &value)
 
 OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMin(OFCmdSignedInt &value,
                                                                 const OFCmdSignedInt low,
-                                                                const OFBool incl)
+                                                                const OFExplicitBool incl)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)
@@ -876,7 +876,7 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdUnsignedInt &value)
 
 OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMin(OFCmdUnsignedInt &value,
                                                                 const OFCmdUnsignedInt low,
-                                                                const OFBool incl)
+                                                                const OFExplicitBool incl)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)
@@ -919,7 +919,7 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdFloat &value)
 
 OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMin(OFCmdFloat &value,
                                                                 const OFCmdFloat low,
-                                                                const OFBool incl)
+                                                                const OFExplicitBool incl)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)

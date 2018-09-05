@@ -25,6 +25,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofexbl.h"
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofconsol.h"
@@ -504,7 +505,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     E_ParamValueStatus getParamAndCheckMin(const int pos,
                                            OFCmdSignedInt &value,
                                            const OFCmdSignedInt low,
-                                           const OFBool incl = OFTrue);
+                                           const OFExplicitBool incl = OFTrue);
 
     /** gets value of specified parameter as signed integer and checks for given boundaries
      *
@@ -549,7 +550,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     E_ParamValueStatus getParamAndCheckMin(const int pos,
                                            OFCmdUnsignedInt &value,
                                            const OFCmdUnsignedInt low,
-                                           const OFBool incl = OFTrue);
+                                           const OFExplicitBool incl = OFTrue);
 
     /** gets value of specified parameter as unsigned integer and checks for given boundaries.
      *  NB: If command line argument specifies a negative value the result depends on the
@@ -592,7 +593,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     E_ParamValueStatus getParamAndCheckMin(const int pos,
                                            OFCmdFloat &value,
                                            const OFCmdFloat low,
-                                           const OFBool incl = OFTrue);
+                                           const OFExplicitBool incl = OFTrue);
 
     /** gets value of specified parameter as floating point and checks for given boundaries
      *
@@ -733,7 +734,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      */
     E_ValueStatus getValueAndCheckMin(OFCmdSignedInt &value,
                                       const OFCmdSignedInt low,
-                                      const OFBool incl = OFTrue);
+                                      const OFExplicitBool incl = OFTrue);
 
     /** returns next argument as a signed integer value and checks for given boundaries
      *
@@ -768,7 +769,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      */
     E_ValueStatus getValueAndCheckMin(OFCmdUnsignedInt &value,
                                       const OFCmdUnsignedInt low,
-                                      const OFBool incl = OFTrue);
+                                      const OFExplicitBool incl = OFTrue);
 
     /** returns next argument as an unsigned integer value and checks for given boundaries
      *
@@ -803,7 +804,7 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      */
     E_ValueStatus getValueAndCheckMin(OFCmdFloat &value,
                                       const OFCmdFloat low,
-                                      const OFBool incl = OFTrue);
+                                      const OFExplicitBool incl = OFTrue);
 
     /** returns next argument as a floating point value and checks for given boundaries
      *
