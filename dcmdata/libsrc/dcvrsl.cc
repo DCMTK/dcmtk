@@ -27,6 +27,7 @@
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
+#define INCLUDE_CINTTYPES
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -188,7 +189,12 @@ void DcmSignedLong::print(STD_NAMESPACE ostream&out,
                 for (unsigned int i = 0; i < count; i++, sintVals++)
                 {
                     /* check whether first value is printed (omit delimiter) */
-#if SIZEOF_LONG == 8
+#ifdef PRId32
+                    if (i == 0)
+                        sprintf(buffer, "%" PRId32, *sintVals);
+                    else
+                        sprintf(buffer, "\\%" PRId32, *sintVals);
+#elif SIZEOF_LONG == 8
                     if (i == 0)
                         sprintf(buffer, "%d", *sintVals);
                     else
@@ -341,7 +347,9 @@ OFCondition DcmSignedLong::putString(const char *stringVal,
             /* get specified value from multi-valued string */
             pos = DcmElement::getValueFromString(stringVal, pos, stringLen, value);
             if (value.empty() ||
-#if SIZEOF_LONG == 8
+#ifdef SCNd32
+                (sscanf(value.c_str(), "%" SCNd32, &field[i]) != 1)
+#elif SIZEOF_LONG == 8
                 (sscanf(value.c_str(), "%d", &field[i]) != 1)
 #else
                 (sscanf(value.c_str(), "%ld", &field[i]) != 1)

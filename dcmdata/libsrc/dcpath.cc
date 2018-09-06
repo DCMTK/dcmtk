@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2017, OFFIS e.V.
+ *  Copyright (C) 2008-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,9 @@
 
 #include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/dcmdata/dcsequen.h"
+
+#define INCLUDE_CINTTYPES
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*******************************************************************/
@@ -84,7 +87,7 @@ DcmPathNode* DcmPath::back()
   return m_path.back();
 }
 
-// Returns iterator to the end of path, ie. dummy after actual last element
+// Returns iterator to the end of path, i.e. dummy after actual last element
 OFListIterator(DcmPathNode*) DcmPath::end()
 {
   return m_path.end();
@@ -98,7 +101,7 @@ Uint32 DcmPath::size() const
 }
 
 
-// Returns true if path is empty, ie. number of path nodes is zero
+// Returns true if path is empty, i.e. number of path nodes is zero
 OFBool DcmPath::empty() const
 {
   return (m_path.size() == 0);
@@ -125,7 +128,9 @@ OFString DcmPath::toString() const
     }
     else if ( (vr == EVR_item) || (vr == EVR_dataset) )
     {
-#if SIZEOF_LONG == 8
+#ifdef PRIu32
+      sprintf(buf, "[%" PRIu32 "]", (*it)->m_itemNo);
+#elif SIZEOF_LONG == 8
       sprintf(buf, "[%u]", (*it)->m_itemNo);
 #else
       sprintf(buf, "[%lu]", (*it)->m_itemNo);
@@ -259,7 +264,7 @@ DcmPath::~DcmPath()
 }
 
 
-// Seperate a string path into the different nodes
+// Separate a string path into the different nodes
 OFCondition DcmPath::separatePathNodes(const OFString& path,
                                        OFList<OFString>& result)
 {
@@ -288,7 +293,9 @@ OFCondition DcmPath::separatePathNodes(const OFString& path,
         result.push_back("[*]");
       else
       {
-#if SIZEOF_LONG == 8
+#ifdef PRIu32
+        if (sprintf(buf, "[%" PRIu32 "]", itemNo) < 2) return EC_IllegalParameter;
+#elif SIZEOF_LONG == 8
         if (sprintf(buf, "[%u]", itemNo) < 2) return EC_IllegalParameter;
 #else
         if (sprintf(buf, "[%lu]", itemNo) < 2) return EC_IllegalParameter;
@@ -436,12 +443,12 @@ OFCondition DcmPathProcessor::findOrDeletePath(DcmObject* obj,
 }
 
 
-// Get results of a an operation started before (e. g. findOrCreatePath())
+// Get results of a an operation started before (e.g. findOrCreatePath())
 Uint32 DcmPathProcessor::getResults(OFList<DcmPath*>& searchResults)
 {
   if (m_results.size() > 0)
   {
-    // explicitely copy (shallow)
+    // explicitly copy (shallow)
     OFListIterator(DcmPath*) it = m_results.begin();
     while (it != m_results.end())
     {
@@ -632,7 +639,7 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
   {
     if (m_createIfNecessary)
     {
-      // private tags needs special handling, e. g. checking reservation
+      // private tags needs special handling, e.g. checking reservation
       if (tag.isPrivate() && m_checkPrivateReservations)
       {
         status = checkPrivateTagReservation(item, tag);
@@ -823,7 +830,7 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
   else
     return EC_TagNotFound;
 
-  // at this point, the item has been obtained and everyhthing is fine so far
+  // at this point, the item has been obtained and everything is fine so far
 
   // finding/creating the path was successful. now check whether there is more to do
   if (!restPath.empty())

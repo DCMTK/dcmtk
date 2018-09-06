@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2014, OFFIS e.V.
+ *  Copyright (C) 2002-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -284,7 +284,20 @@ END_EXTERN_C
 #endif
 #endif
 
-// define INCLUDE_CSTDIO  to include <cstdio> or <stdio.h> if available
+// define INCLUDE_CINTTYPES to include <cinttypes> or <inttypes.h> if available
+#ifdef INCLUDE_CINTTYPES
+// TODO: see DCMTK issues 762, 774 and 778
+//#ifdef USE_STD_CXX_INCLUDES
+//#include <cinttypes>
+//#elif defined(HAVE_INTTYPES_H)
+#ifdef HAVE_INTTYPES_H
+BEGIN_EXTERN_C
+#include <inttypes.h>
+END_EXTERN_C
+#endif
+#endif
+
+// define INCLUDE_CSTDIO to include <cstdio> or <stdio.h> if available
 #ifdef INCLUDE_CSTDIO
 #ifdef USE_STD_CXX_INCLUDES
 #include <cstdio>

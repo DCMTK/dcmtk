@@ -20,12 +20,14 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcvrul.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
+#define INCLUDE_CINTTYPES
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -188,7 +190,11 @@ void DcmUnsignedLong::print(STD_NAMESPACE ostream&out,
                 {
                     /* check whether first value is printed (omit delimiter) */
                     if (i == 0)
-#if SIZEOF_LONG == 8
+#ifdef PRIu32
+                        sprintf(buffer, "%" PRIu32, *uintVals);
+                    else
+                        sprintf(buffer, "\\%" PRIu32, *uintVals);
+#elif SIZEOF_LONG == 8
                         sprintf(buffer, "%u", *uintVals);
                     else
                         sprintf(buffer, "\\%u", *uintVals);
@@ -340,7 +346,9 @@ OFCondition DcmUnsignedLong::putString(const char *stringVal,
             /* get specified value from multi-valued string */
             pos = DcmElement::getValueFromString(stringVal, pos, stringLen, value);
             if (value.empty() ||
-#if SIZEOF_LONG == 8
+#ifdef SCNu32
+                (sscanf(value.c_str(), "%" SCNu32, &field[i]) != 1)
+#elif SIZEOF_LONG == 8
                 (sscanf(value.c_str(), "%u", &field[i]) != 1)
 #else
                 (sscanf(value.c_str(), "%lu", &field[i]) != 1)

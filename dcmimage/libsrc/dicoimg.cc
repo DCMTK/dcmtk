@@ -37,6 +37,9 @@
 #include "dcmtk/dcmimage/dilogger.h"
 #include "dcmtk/dcmimgle/diutils.h"
 
+#define INCLUDE_CINTTYPES
+#include "dcmtk/ofstd/ofstdinc.h"
+
 
 /*----------------*
  *  constructors  *
@@ -574,7 +577,9 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
                 /* set image resolution */
                 dataset.putAndInsertUint16(DCM_Columns, Columns);
                 dataset.putAndInsertUint16(DCM_Rows, Rows);
-#if SIZEOF_LONG == 8
+#ifdef PRId32
+                sprintf(numBuf, "%" PRId32, NumberOfFrames);
+#elif SIZEOF_LONG == 8
                 sprintf(numBuf, "%d", NumberOfFrames);
 #else
                 sprintf(numBuf, "%ld", NumberOfFrames);

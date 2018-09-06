@@ -38,6 +38,7 @@
 #include "dcmtk/dcmimgle/diregbas.h"
 
 #define INCLUDE_CMATH
+#define INCLUDE_CINTTYPES
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -2019,7 +2020,9 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
             /* set image resolution */
             dataset.putAndInsertUint16(DCM_Columns, Columns);
             dataset.putAndInsertUint16(DCM_Rows, Rows);
-#if SIZEOF_LONG == 8
+#ifdef PRId32
+            sprintf(numBuf, "%" PRId32, NumberOfFrames);
+#elif SIZEOF_LONG == 8
             sprintf(numBuf, "%d", NumberOfFrames);
 #else
             sprintf(numBuf, "%ld", NumberOfFrames);

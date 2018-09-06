@@ -29,6 +29,7 @@
 #include "dcmtk/dcmdata/dcvrul.h"
 
 #define INCLUDE_CSTDIO
+#define INCLUDE_CINTTYPES
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -147,7 +148,9 @@ OFCondition DSRReferencedSamplePositionList::putString(const char *stringValue)
         /* retrieve sample positions from string */
         while (result.good() && (ptr != NULL))
         {
-#if SIZEOF_LONG == 8
+#ifdef SCNu32
+            if (sscanf(ptr, "%" SCNu32, &value) == 1)
+#elif SIZEOF_LONG == 8
             if (sscanf(ptr, "%u", &value) == 1)
 #else
             if (sscanf(ptr, "%lu", &value) == 1)

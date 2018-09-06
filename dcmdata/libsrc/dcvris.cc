@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/ofstd/ofstring.h"
 
 #define INCLUDE_CSTDIO
+#define INCLUDE_CINTTYPES
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -106,7 +107,9 @@ OFCondition DcmIntegerString::getSint32(Sint32 &sintVal,
     if (l_error.good())
     {
         /* convert string to integer value */
-#if SIZEOF_LONG == 8
+#ifdef SCNd32
+        if (sscanf(str.c_str(), "%" SCNd32, &sintVal) != 1)
+#elif SIZEOF_LONG == 8
         if (sscanf(str.c_str(), "%d", &sintVal) != 1)
 #else
         if (sscanf(str.c_str(), "%ld", &sintVal) != 1)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,7 @@
 #include "dcmtk/dcmdata/dcvris.h"
 
 #define INCLUDE_CSTDIO
+#define INCLUDE_CINTTYPES
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
@@ -127,7 +128,9 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset) const
     {
         if (!tmpString.empty())
             tmpString += '\\';
-#if SIZEOF_LONG == 8
+#ifdef PRId32
+        sprintf(buffer, "%" PRId32, *iterator);
+#elif SIZEOF_LONG == 8
         sprintf(buffer, "%d", *iterator);
 #else
         sprintf(buffer, "%ld", *iterator);
@@ -158,7 +161,9 @@ OFCondition DSRImageFrameList::putString(const char *stringValue)
         /* retrieve frame values from string */
         while (result.good() && (ptr != NULL))
         {
-#if SIZEOF_LONG == 8
+#ifdef SCNd32
+            if (sscanf(ptr, "%" SCNd32, &value) == 1)
+#elif SIZEOF_LONG == 8
             if (sscanf(ptr, "%d", &value) == 1)
 #else
             if (sscanf(ptr, "%ld", &value) == 1)
