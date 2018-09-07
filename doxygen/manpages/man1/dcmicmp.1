@@ -1,7 +1,7 @@
 .TH "dcmicmp" 1 "Sun Sep 2 2018" "Version 3.6.3+" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmicmp \- Compare DICOM images and compute difference metrics 
+dcmicmp \- Compare DICOM images and compute difference metrics
 
 .SH "SYNOPSIS"
 .PP
@@ -123,6 +123,23 @@ VOI LUT transformation:
 
   +Wl   --use-voi-lut  [n]umber: integer
           use the n-th VOI look up table from image file
+
+  +Wm   --min-max-window
+          compute VOI window using min-max algorithm
+          on both images separately
+
+  +Wn   --min-max-window-n
+          compute VOI window using min-max algorithm
+          on both images separately, ignoring extremes
+
+  +Wr   --min-max-ref
+          compute VOI window using min-max algorithm
+          and use same window for the test image
+
+  +Wq   --min-max-n-ref
+          compute VOI window using min-max algorithm,
+          ignoring extreme values
+          and use same window for the test image
 
   +Ww   --set-window  [c]enter [w]idth: float
           compute VOI window using center c and width w
@@ -283,4 +300,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

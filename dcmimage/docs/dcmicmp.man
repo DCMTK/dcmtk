@@ -135,6 +135,23 @@ VOI LUT transformation:
   +Wl   --use-voi-lut  [n]umber: integer
           use the n-th VOI look up table from image file
 
+  +Wm   --min-max-window
+          compute VOI window using min-max algorithm
+          on both images separately
+
+  +Wn   --min-max-window-n
+          compute VOI window using min-max algorithm
+          on both images separately, ignoring extremes
+
+  +Wr   --min-max-ref
+          compute VOI window using min-max algorithm
+          and use same window for the test image
+
+  +Wq   --min-max-n-ref
+          compute VOI window using min-max algorithm,
+          ignoring extreme values
+          and use same window for the test image
+
   +Ww   --set-window  [c]enter [w]idth: float
           compute VOI window using center c and width w
 

@@ -50,6 +50,8 @@ DicomImageComparison::DicomImageComparison()
 , di_test(NULL)
 , diff_image(NULL)
 , max_error(0)
+, reference_bits(0)
+, test_bits(0)
 , meanAbsoluteError(0.0)
 , rootMeanSquareError(0.0)
 , peakSignalToNoiseRatio(0.0)
@@ -177,16 +179,22 @@ OFCondition DicomImageComparison::configureImage(
     DicomImage *di,
     EW_WindowType windowType,
     OFCmdUnsignedInt windowParameter,
-    OFCmdFloat windowCenter,
-    OFCmdFloat windowWidth,
+    OFCmdFloat& windowCenter,
+    OFCmdFloat& windowWidth,
     EF_VoiLutFunction voiFunction,
-    ES_PresentationLut presShape)
+    ES_PresentationLut presShape,
+    int& depth)
 {
     /* check parameters */
     if (di == NULL) return EC_IllegalCall;
 
     /* hide overlays*/
     di->hideAllOverlays();
+
+    /* determine bit depth to request when processing the pixel data */
+    depth = di->getDepth();
+    if (depth > 16) depth = 16;
+    if (depth < 8) depth = 8;
 
     /* process VOI parameters */
     switch (windowType)
@@ -198,6 +206,20 @@ OFCondition DicomImageComparison::configureImage(
                 if (!di->setNoVoiTransformation())
                     DCMIMAGE_WARN("cannot ignore VOI window");
             }
+            break;
+        case EWT_window_minmax: /* compute VOI window using min-max algorithm */
+            if (!di->setMinMaxWindow(0))
+                DCMIMAGE_WARN("cannot compute min/max VOI window");
+            if (!di->getWindow(windowCenter, windowWidth))
+                DCMIMAGE_WARN("cannot retrieve VOI window");
+            DCMIMAGE_DEBUG("activating min/max VOI window center=" << windowCenter << ", width=" << windowWidth);
+            break;
+        case EWT_window_minmax_n: /* compute VOI window using min-max algorithm ignoring extremes */
+            if (!di->setMinMaxWindow(0))
+                DCMIMAGE_WARN("cannot compute min/max VOI window");
+            if (!di->getWindow(windowCenter, windowWidth))
+                DCMIMAGE_WARN("cannot retrieve VOI window");
+            DCMIMAGE_DEBUG("activating min/max-n VOI window center=" << windowCenter << ", width=" << windowWidth);
             break;
         case EWT_window_from_file: /* use the n-th VOI window from the image file */
             if ((windowParameter < 1) || (windowParameter > di->getWindowCount()))
@@ -262,17 +284,35 @@ OFCondition DicomImageComparison::configureImage(
 
 OFCondition DicomImageComparison::configureImages(
     EW_WindowType windowType,
+    OFBool sharedWindow,
     OFCmdUnsignedInt windowParameter,
     OFCmdFloat windowCenter,
     OFCmdFloat windowWidth,
     EF_VoiLutFunction voiFunction,
     ES_PresentationLut presShape)
 {
-  OFCondition cond = configureImage(di_reference, windowType, windowParameter, windowCenter, windowWidth, voiFunction, presShape);
-  if (cond.good()) cond = configureImage(di_test, windowType, windowParameter, windowCenter, windowWidth, voiFunction, presShape);
+  OFCondition cond = configureImage(di_reference, windowType, windowParameter, windowCenter, windowWidth, voiFunction, presShape, reference_bits);
+
+  // When the user has requested a shared min/max window, re-use the VOI window computed for the reference image also for the test image
+  EW_WindowType windowTypeTestImage = windowType;
+  if (sharedWindow && ((windowType == EWT_window_minmax)||(windowType == EWT_window_minmax_n)))
+      windowTypeTestImage = EWT_window_center_width;
+
+  if (cond.good()) cond = configureImage(di_test, windowTypeTestImage, windowParameter, windowCenter, windowWidth, voiFunction, presShape, test_bits);
+
+  if (di_reference->isMonochrome() && (windowType != EWT_none))
+  {
+      // If a VOI window is applied, use the maximum of the bit depths
+      // determined by configureImage() for both images.
+      if (reference_bits > test_bits)
+          test_bits = reference_bits;
+          else reference_bits = test_bits;
+  }
+
+  DCMIMAGE_DEBUG("Bits/sample selected for reference image: " << reference_bits);
+  DCMIMAGE_DEBUG("Bits/sample selected for test image: " << test_bits);
   return cond;
 }
-
 
 OFCondition DicomImageComparison::checkImageCharacteristics() const
 {
@@ -315,7 +355,7 @@ OFCondition DicomImageComparison::checkImageCharacteristics() const
 }
 
 
-OFCondition DicomImageComparison::computeImageComparisonMetrics()
+OFCondition DicomImageComparison::computeImageComparisonMetrics(EW_WindowType windowType)
 {
     DCMIMAGE_DEBUG("Computing image comparison metrics");
 
@@ -331,7 +371,7 @@ OFCondition DicomImageComparison::computeImageComparisonMetrics()
     {
        // we don't need to check if di_reference == NULL,
        // because checkImageCharacteristics() already did that for us.
-       if (di_reference->isMonochrome() && (di_reference->getDepth() > 8))
+       if (di_reference->isMonochrome() && ((reference_bits > 8) || (windowType == EWT_none)))
        {
               // monochrome image with more than 8 bits/pixel
               if (diff_image)
@@ -347,7 +387,9 @@ OFCondition DicomImageComparison::computeImageComparisonMetrics()
                   cond = diff_image->getDataset()->putAndInsertUint16(DCM_HighBit, 15);
                   if (cond.bad()) return cond;
               }
-              cond = computeMonochromeImageComparionMetricsWord();
+              if (windowType == EWT_none)
+                  cond = computeMonochromeImageComparionMetricsRaw();
+                  else cond = computeMonochromeImageComparionMetricsWord();
        }
        else
        {
@@ -375,20 +417,18 @@ OFCondition DicomImageComparison::computeImageComparisonMetrics()
 
 OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsWord()
 {
+    DCMIMAGE_DEBUG("Type of computation: monochrome, 16-bits/sample");
+
     // this check should have already been performed, but just to be sure, and since it's cheap...
     OFCondition cond = checkImageCharacteristics();
-    if (cond.good() && di_reference->isMonochrome() && (di_reference->getDepth() > 8))
+    if (cond.good() && di_reference->isMonochrome() && (reference_bits > 8))
     {
-        // use the native bit depth of the reference image unless it is larger than 16.
-        int bits = di_reference->getDepth();
-        if (bits > 16) bits = 16;
-
-        unsigned long numBytes = di_reference->getOutputDataSize(bits);
+        unsigned long numBytes = di_reference->getOutputDataSize(reference_bits);
         unsigned int fcount = di_reference->getFrameCount();
-        if (numBytes != di_test->getOutputDataSize(bits))
+        if (numBytes != di_test->getOutputDataSize(test_bits))
         {
             DCMIMAGE_FATAL("Frame size mismatch: "
-                << numBytes << " vs. " << di_test->getOutputDataSize(bits) << " bytes");
+                << numBytes << " vs. " << di_test->getOutputDataSize(test_bits) << " bytes");
             return makeOFCondition(OFM_dcmimage, 134, OF_error, "frame size mismatch");
         }
         unsigned long numValues = (numBytes+1) / sizeof(Uint16);
@@ -422,8 +462,8 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsWord()
         for (unsigned int frame = 0; frame < fcount; frame++)
         {
             DCMIMAGE_DEBUG("Processing frame " << frame);
-            const void *frame1 = di_reference->getOutputData(bits, frame);
-            const void *frame2 = di_test->getOutputData(bits, frame);
+            const void *frame1 = di_reference->getOutputData(16, frame);
+            const void *frame2 = di_test->getOutputData(16, frame);
             if ((frame1 == NULL) || (frame2 == NULL))
             {
               DCMIMAGE_FATAL("Memory exhausted while accessing frames");
@@ -461,6 +501,185 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsWord()
 
         // The following four metrics, MAE, RMSE, PSNR and SNR are computed as defined in
         // R.C. Gonzalez and R.E. Woods, "Digital Image Processing," Prentice Hall 2008
+
+        DCMIMAGE_DEBUG("square_signal_strength: " << square_signal_strength);
+        DCMIMAGE_DEBUG("square_error_sum: " << square_error_sum);
+
+        // as a helper variable, divide the sum of squared errors by the total number of samples
+        double meanSquareError = square_error_sum / (numValues * fcount);
+
+        // the mean absolute error is the sum of (unsigned) error values divided by the total number of samples
+        meanAbsoluteError = simple_error_sum / (numValues * fcount);
+
+        // RMSE is the square root of the mean square error
+        rootMeanSquareError = sqrt(meanSquareError);
+
+        // PSNR is -10 * the logarithm of the mean square error divided by the squared signal strength
+        //(maximum pixel value in reference image)
+        peakSignalToNoiseRatio = log10(meanSquareError / square_signal_strength) * -10.0;
+
+        // SNR is the 10 * the logarithm of the signal (squared sum of all reference pixel values)
+        // divided by the noise (squared sum of all difference values)
+        signalToNoiseRatio =  log10(square_reference_sum / square_error_sum) * 10.0;
+
+        if (diff_image)
+        {
+            char buf[30];
+            OFStandard::snprintf(buf, 30, "%lu", OFstatic_cast(unsigned long, di_reference->getFrameCount()));
+            cond = diff_image->getDataset()->putAndInsertUint16(DCM_Rows, OFstatic_cast(Uint16, di_reference->getHeight()));
+            if (cond.good()) cond = diff_image->getDataset()->putAndInsertUint16(DCM_Columns, OFstatic_cast(Uint16, di_reference->getWidth()));
+            if (cond.good()) cond = diff_image->getDataset()->putAndInsertString(DCM_NumberOfFrames, buf);
+            if (di_reference->getFrameCount() > 1)
+            {
+                DcmTagKey frameIncrementPointer(0x0018, 0x2002);
+                if (cond.good()) cond = diff_image->getDataset()->putAndInsertTagKey(DCM_FrameIncrementPointer, frameIncrementPointer);
+                OFString frameLabelVector;
+                createFrameLabelVector(frameLabelVector, di_reference->getFrameCount(), OFFalse);
+                if (cond.good()) cond = diff_image->getDataset()->putAndInsertOFStringArray(DCM_FrameLabelVector, frameLabelVector);
+            }
+        }
+    }
+    return cond;
+}
+
+OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsRaw()
+{
+    DCMIMAGE_DEBUG("Type of computation: monochrome, without VOI transformation");
+
+    // this check should have already been performed, but just to be sure, and since it's cheap...
+    OFCondition cond = checkImageCharacteristics();
+    if (cond.good() && di_reference->isMonochrome())
+    {
+        // get pointer to internal image representation
+        // (which means Modality LUT has been applied unless disabled, but nothing else)
+        const DiPixel *dinter_reference = di_reference->getInterData();
+        if (dinter_reference == NULL) return EC_IllegalCall;
+        const DiPixel *dinter_test = di_test->getInterData();
+        if (dinter_test == NULL) return EC_IllegalCall;
+
+        // get pointer to internal raw representations of image data
+        const void *draw_reference = dinter_reference->getData();
+        if (draw_reference == NULL) return EC_IllegalCall;
+        const void *draw_test = dinter_test->getData();
+        if (draw_test == NULL) return EC_IllegalCall;
+
+        // get internal representations used for both images
+        EP_Representation drep_reference = dinter_reference->getRepresentation();
+        EP_Representation drep_test = dinter_test->getRepresentation();
+
+        // determine number of pixels
+        unsigned int fcount = di_reference->getFrameCount();
+        unsigned long numValues = di_reference->getWidth() * di_reference->getHeight() * fcount;
+        if (dinter_reference->getCount() < numValues)
+        {
+            DCMIMAGE_FATAL("Insufficient pixel data in reference image: " << numValues << " needed, " << dinter_reference->getCount() << " found.");
+            return makeOFCondition(OFM_dcmimage, 138, OF_error, "insufficient pixel data in reference image");
+        }
+        if (dinter_test->getCount() < numValues)
+        {
+            DCMIMAGE_FATAL("Insufficient pixel data in test image: " << numValues << " needed, " << dinter_reference->getCount() << " found.");
+            return makeOFCondition(OFM_dcmimage, 139, OF_error, "insufficient pixel data in test image");
+        }
+
+        // prepare creation of difference image pixel data
+        Uint16 *dv = NULL;
+        double dvp;
+        if (diff_image)
+        {
+            // create empty pixel data element and insert into main dataset
+            DcmPixelData *pxd = new DcmPixelData(DCM_PixelData);
+            cond = diff_image->getDataset()->insert(pxd);
+            if (cond.bad()) return cond;
+
+            // create pixel data buffer for all frames of the difference image
+            Uint32 pixelDataLen = numValues;
+            cond = pxd->createUint16Array(pixelDataLen, dv);
+            if (cond.bad()) return cond;
+        }
+
+        // create pointers to reference image pixel data in all possible formats
+        const Uint8  *ref_as_uint8  = OFreinterpret_cast(const Uint8  *, draw_reference);
+        const Sint8  *ref_as_sint8  = OFreinterpret_cast(const Sint8  *, draw_reference);
+        const Uint16 *ref_as_uint16 = OFreinterpret_cast(const Uint16 *, draw_reference);
+        const Sint16 *ref_as_sint16 = OFreinterpret_cast(const Sint16 *, draw_reference);
+
+        // create pointers to test image pixel data in all possible formats
+        const Uint8  *test_as_uint8  = OFreinterpret_cast(const Uint8  *, draw_test);
+        const Sint8  *test_as_sint8  = OFreinterpret_cast(const Sint8  *, draw_test);
+        const Uint16 *test_as_uint16 = OFreinterpret_cast(const Uint16 *, draw_test);
+        const Sint16 *test_as_sint16 = OFreinterpret_cast(const Sint16 *, draw_test);
+
+        double square_error_sum = 0; // sum of squared differences between reference and test
+        double simple_error_sum = 0; // sum of (unsigned) differences between reference and test
+        double square_reference_sum = 0; // sum of squared pixel values in reference image
+        unsigned long square_signal_strength = 0; // maximum pixel value in reference image
+        max_error = 0; // maximum (unsigned) difference between reference and test pixel value
+
+        long i1, i2;
+        unsigned long i3, t;
+
+        // iterate over all samples (pixel values) of all frames
+        for (unsigned int i = 0; i < numValues; i++)
+        {
+            switch(drep_reference)
+            {
+                case EPR_Uint8: // image representation is 8 bit unsigned
+                    i1 = *ref_as_uint8++;
+                    break;
+                case EPR_Sint8: // image representation is 8 bit signed
+                    i1 = *ref_as_sint8++;
+                    break;
+                case EPR_Uint16: // image representation is 16 bit unsigned
+                    i1 = *ref_as_uint16++;
+                    break;
+                case EPR_Sint16: // image representation is 16 bit signed
+                    i1 = *ref_as_sint16++;
+                    break;
+                default:
+                    return makeOFCondition(OFM_dcmimage, 140, OF_error, "unsupported internal pixel representation");
+                    break;
+            }
+            switch(drep_test)
+            {
+                case EPR_Uint8: // image representation is 8 bit unsigned
+                    i2 = *test_as_uint8++;
+                    break;
+                case EPR_Sint8: // image representation is 8 bit signed
+                    i2 = *test_as_sint8++;
+                    break;
+                case EPR_Uint16: // image representation is 16 bit unsigned
+                    i2 = *test_as_uint16++;
+                    break;
+                case EPR_Sint16: // image representation is 16 bit signed
+                    i2 = *test_as_sint16++;
+                    break;
+                default:
+                    return makeOFCondition(OFM_dcmimage, 141, OF_error, "unsupported internal pixel representation");
+                    break;
+            }
+
+            i3 = OFstatic_cast(unsigned long, labs(i1 - i2)); // absolute difference, without sign
+            if (dv)
+            {
+                dvp = amplification * i3;  // compute diff image pixel value
+                if (dvp > 65535)
+                    *dv++ = OFstatic_cast(Uint16, 65535);
+                    else *dv++ = OFstatic_cast(Uint16, dvp);
+
+            }
+            max_error = (i3 > max_error ? i3 : max_error);
+            square_error_sum += (double)(i3*i3);
+            simple_error_sum += i3;
+            t = i1 * i1;
+            square_reference_sum += t;
+            square_signal_strength = (t > square_signal_strength) ? t : square_signal_strength;
+        }
+
+        // The following four metrics, MAE, RMSE, PSNR and SNR are computed as defined in
+        // R.C. Gonzalez and R.E. Woods, "Digital Image Processing," Prentice Hall 2008
+
+        DCMIMAGE_DEBUG("square_signal_strength: " << square_signal_strength);
+        DCMIMAGE_DEBUG("square_error_sum: " << square_error_sum);
 
         // as a helper variable, divide the sum of squared errors by the total number of samples
         double meanSquareError = square_error_sum / (numValues * fcount);
@@ -502,18 +721,18 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsWord()
 
 OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsByte()
 {
+    DCMIMAGE_DEBUG("Type of computation: monochrome, 8-bits/sample");
+
     // this check should have already been performed, but just to be sure, and since it's cheap...
     OFCondition cond = checkImageCharacteristics();
-    if (cond.good() && di_reference->isMonochrome() && (di_reference->getDepth() <= 8))
+    if (cond.good() && di_reference->isMonochrome())
     {
-        int bits = di_reference->getDepth();
-
-        unsigned long numBytes = di_reference->getOutputDataSize(bits);
+        unsigned long numBytes = di_reference->getOutputDataSize(8);
         unsigned int fcount = di_reference->getFrameCount();
-        if (numBytes != di_test->getOutputDataSize(bits))
+        if (numBytes != di_test->getOutputDataSize(8))
         {
           DCMIMAGE_FATAL("Frame size mismatch: "
-            << numBytes << " vs. " << di_test->getOutputDataSize(bits) << " bytes");
+            << numBytes << " vs. " << di_test->getOutputDataSize(8) << " bytes");
           return makeOFCondition(OFM_dcmimage, 135, OF_error, "frame size mismatch");
         }
         unsigned long numValues = numBytes;
@@ -547,8 +766,8 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsByte()
         for (unsigned int frame = 0; frame < fcount; frame++)
         {
             DCMIMAGE_DEBUG("Processing frame " << frame);
-            const void *frame1 = di_reference->getOutputData(bits, frame);
-            const void *frame2 = di_test->getOutputData(bits, frame);
+            const void *frame1 = di_reference->getOutputData(8, frame);
+            const void *frame2 = di_test->getOutputData(8, frame);
             if ((frame1 == NULL) || (frame2 == NULL))
             {
               DCMIMAGE_FATAL("Memory exhausted while accessing frames");
@@ -627,19 +846,18 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsByte()
 
 OFCondition DicomImageComparison::computeColorImageComparionMetrics()
 {
+    DCMIMAGE_DEBUG("Type of computation: color, 8-bits/sample");
+
     // this check should have already been performed, but just to be sure, and since it's cheap...
     OFCondition cond = checkImageCharacteristics();
     if (cond.good() && (! di_reference->isMonochrome()))
     {
-        int bits = di_reference->getDepth();
-        if (bits > 8) bits = 8;
-
-        unsigned long numBytes = di_reference->getOutputDataSize(bits);
+        unsigned long numBytes = di_reference->getOutputDataSize(8);
         unsigned int fcount = di_reference->getFrameCount();
-        if (numBytes != di_test->getOutputDataSize(bits))
+        if (numBytes != di_test->getOutputDataSize(8))
         {
           DCMIMAGE_FATAL("Frame size mismatch: "
-            << numBytes << " vs. " << di_test->getOutputDataSize(bits) << " bytes");
+            << numBytes << " vs. " << di_test->getOutputDataSize(8) << " bytes");
           return makeOFCondition(OFM_dcmimage, 136, OF_error, "frame size mismatch");
         }
         unsigned long numValues = numBytes;
@@ -673,8 +891,8 @@ OFCondition DicomImageComparison::computeColorImageComparionMetrics()
         for (unsigned int frame = 0; frame < fcount; frame++)
         {
             DCMIMAGE_DEBUG("Processing frame " << frame);
-            const void *frame1 = di_reference->getOutputData(bits, frame, 1 /* color by plane */);
-            const void *frame2 = di_test->getOutputData(bits, frame, 1 /* color by plane */);
+            const void *frame1 = di_reference->getOutputData(8, frame, 1 /* color by plane */);
+            const void *frame2 = di_test->getOutputData(8, frame, 1 /* color by plane */);
             if ((frame1 == NULL) || (frame2 == NULL))
             {
               DCMIMAGE_FATAL("Memory exhausted while accessing frames");

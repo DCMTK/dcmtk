@@ -88,6 +88,7 @@ public:
 
   /** configure the display pipelines for both referenced and test image.
    *  @param windowType VOI LUT transformation to apply
+   *  @param sharedWindow compute common min/max window for both images if true, separate windows if false
    *  @param windowParameter index of VOI LUT/window in file (if windowType is EWT_window_from_file or EWT_voi_lut_from_file)
    *  @param windowCenter window center (ignored unless windowType is EWT_window_parameters)
    *  @param windowWidth window width (ignored unless windowType is EWT_window_parameters)
@@ -97,6 +98,7 @@ public:
    */
   OFCondition configureImages(
     EW_WindowType windowType,
+    OFBool sharedWindow,
     OFCmdUnsignedInt windowParameter,
     OFCmdFloat windowCenter,
     OFCmdFloat windowWidth,
@@ -104,9 +106,10 @@ public:
     ES_PresentationLut presShape);
 
   /** compare both images and compute image comparion metrics.
+   *  @param windowType VOI LUT transformation to apply
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  OFCondition computeImageComparisonMetrics();
+  OFCondition computeImageComparisonMetrics(EW_WindowType windowType);
 
   /// return maximum absolute error
   unsigned long getMaxAbsoluteError() const
@@ -169,20 +172,22 @@ private:
    *  @param di DICOM image, must not be NULL
    *  @param windowType VOI LUT transformation to apply
    *  @param windowParameter index of VOI LUT/window in file (if windowType is EWT_window_from_file or EWT_voi_lut_from_file)
-   *  @param windowCenter window center (ignored unless windowType is EWT_window_parameters)
-   *  @param windowWidth window width (ignored unless windowType is EWT_window_parameters)
+   *  @param windowCenter window center (input for EWT_window_parameters, output for EWT_window_min_max and EWT_window_min_max_n)
+   *  @param windowWidth window width  (input for EWT_window_parameters, output for EWT_window_min_max and EWT_window_min_max_n)
    *  @param voiFunction VOI LUT function (linear or sigmoid)
    *  @param presShape Presentation LUT Shape (identity, reverse, lin OD)
+   *  @param depth bit depth to be used when accessing pixel data for this image returned in this parameter
    *  @return EC_Normal if successful, and error code otherwise
    */
   static OFCondition configureImage(
     DicomImage *di,
     EW_WindowType windowType,
     OFCmdUnsignedInt windowParameter,
-    OFCmdFloat windowCenter,
-    OFCmdFloat windowWidth,
+    OFCmdFloat& windowCenter,
+    OFCmdFloat& windowWidth,
     EF_VoiLutFunction voiFunction,
-    ES_PresentationLut presShape);
+    ES_PresentationLut presShape,
+    int& depth);
 
   /** initialize the difference image DICOM dataset by copying all required
    *  attributes from the reference image and by generating all other attributes
@@ -226,6 +231,11 @@ private:
    */
   OFCondition computeMonochromeImageComparionMetricsWord();
 
+  /** compare two monochrome images without setting a VOI window.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  OFCondition computeMonochromeImageComparionMetricsRaw();
+
   /** compare two images that are both monochrome and have at most
    *  8 bits/pixel in internal storage, as determined by BitsStored and
    *  the Modality LUT that may have been applied.
@@ -251,6 +261,12 @@ private:
    *  in the reference image and the corresponding sample value in the test image
    */
   unsigned long max_error;
+
+  /// bits/sample to use when processing the reference image
+  int reference_bits;
+
+  /// bits/sample to use when processing the test image
+  int test_bits;
 
   /// result of image comparison: mean absolute error
   double meanAbsoluteError;

@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
     EW_WindowType       opt_windowType = EWT_none;        /* default: no windowing */
     OFCmdUnsignedInt    opt_windowParameter = 0;
     OFCmdFloat          opt_windowCenter = 0.0, opt_windowWidth = 0.0;
+    OFBool              opt_sharedWindow = OFFalse;
     EF_VoiLutFunction   opt_voiFunction = EFV_Default;
     ES_PresentationLut  opt_presShape = ESP_Default;
     const char *        opt_ifname1 = NULL;
@@ -125,6 +126,10 @@ int main(int argc, char *argv[])
                                                        "use the n-th VOI window from image file");
       cmd.addOption("--use-voi-lut",        "+Wl",  1, "[n]umber: integer",
                                                        "use the n-th VOI look up table from image file");
+      cmd.addOption("--min-max-window",     "+Wm",     "compute VOI window using min-max algorithm\non both images separately");
+      cmd.addOption("--min-max-window-n",   "+Wn",     "compute VOI window using min-max algorithm\non both images separately, ignoring extremes");
+      cmd.addOption("--min-max-ref",        "+Wr",     "compute VOI window using min-max algorithm\nand use same window for the test image");
+      cmd.addOption("--min-max-n-ref",      "+Wq",     "compute VOI window using min-max algorithm,\nignoring extreme values\nand use same window for the test image");
       cmd.addOption("--set-window",         "+Ww",  2, "[c]enter [w]idth: float",
                                                        "compute VOI window using center c and width w");
       cmd.addOption("--linear-function",    "+Wfl",    "set VOI LUT function to LINEAR");
@@ -237,6 +242,28 @@ int main(int argc, char *argv[])
         opt_windowType = EWT_voi_lut_from_file;
         app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
     }
+    if (cmd.findOption("--min-max-window"))
+    {
+        opt_windowType = EWT_window_minmax;
+        opt_sharedWindow = OFFalse;
+    }
+    if (cmd.findOption("--min-max-window-n"))
+    {
+        opt_windowType = EWT_window_minmax_n;
+        opt_sharedWindow = OFFalse;
+    }
+
+    if (cmd.findOption("--min-max-ref"))
+    {
+        opt_windowType = EWT_window_minmax;
+        opt_sharedWindow = OFTrue;
+    }
+    if (cmd.findOption("--min-max-n-ref"))
+    {
+        opt_windowType = EWT_window_minmax_n;
+        opt_sharedWindow = OFTrue;
+    }
+
     if (cmd.findOption("--set-window"))
     {
         opt_windowType = EWT_window_center_width;
@@ -345,7 +372,7 @@ int main(int argc, char *argv[])
     }
 
     // configure the display pipelines for both images with the same parameter set
-    cond = dicmp.configureImages(opt_windowType, opt_windowParameter, opt_windowCenter, opt_windowWidth, opt_voiFunction, opt_presShape);
+    cond = dicmp.configureImages(opt_windowType, opt_sharedWindow, opt_windowParameter, opt_windowCenter, opt_windowWidth, opt_voiFunction, opt_presShape);
     if (cond.bad())
     {
         OFLOG_FATAL(dcmicmpLogger, "Error while configuring display pipeline: " << cond.text());
@@ -353,7 +380,7 @@ int main(int argc, char *argv[])
     }
 
     // compute image comparison metrics
-    cond = dicmp.computeImageComparisonMetrics();
+    cond = dicmp.computeImageComparisonMetrics(opt_windowType);
     if (cond.bad())
     {
         OFLOG_FATAL(dcmicmpLogger, "Error while performing image comparison: " << cond.text());
