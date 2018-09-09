@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
   errorCode = encapsulator.insertEncapsulatedDocument(fileformat.getDataset(), pdf2dcmLogger);
   if (errorCode != EXITCODE_NO_ERROR)
   {
-    OFLOG_ERROR(pdf2dcmLogger, "unable to create PDF encapsulation to DICOM");
+    OFLOG_ERROR(pdf2dcmLogger, "unable to create PDF encapsulation to DICOM format");
     return errorCode;
   }
   // now we need to generate an instance number that is guaranteed to be unique within a series.

@@ -104,18 +104,20 @@ int main(int argc, char *argv[])
     OFLOG_FATAL(cda2dcmLogger, "There was an error while reading the series data");
     return EXITCODE_INVALID_INPUT_FILE;
   }
-  OFLOG_INFO(cda2dcmLogger, "creating encapsulated CDA object");
   errorCode = encapsulator.getCDAData(encapsulator.getInputFileName().c_str(), cda2dcmLogger);
   if (errorCode != EXITCODE_NO_ERROR)
   {
     OFLOG_ERROR(cda2dcmLogger, "There was a problem with the CDA File");
     return errorCode;
   }
-  else errorCode = encapsulator.insertEncapsulatedDocument(fileformat.getDataset(), cda2dcmLogger);
-
+  else
+  {
+  OFLOG_INFO(cda2dcmLogger, "creating encapsulated CDA object");
+  errorCode = encapsulator.insertEncapsulatedDocument(fileformat.getDataset(), cda2dcmLogger);
+  }
   if (errorCode != EXITCODE_NO_ERROR)
   {
-    OFLOG_ERROR(cda2dcmLogger, "unable to create CDA DICOM encapsulation");
+    OFLOG_ERROR(cda2dcmLogger, "unable to create CDA encapsulation to DICOM format");
     return errorCode;
   }
   // now we need to generate an instance number that is guaranteed to be unique within a series.
