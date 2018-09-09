@@ -797,7 +797,7 @@ OFCondition DcmEncapsulatedDocument::createHeader(
 {
   OFCondition result = EC_Normal;
   char buf[80];
-
+  OFString ftype;
   // insert empty type 2 attributes
   if (result.good()) result = dataset->insertEmptyElement(DCM_StudyDate);
   if (result.good()) result = dataset->insertEmptyElement(DCM_StudyTime);
@@ -825,20 +825,35 @@ OFCondition DcmEncapsulatedDocument::createHeader(
   //insert encapsulated file storage UID (CDA/PDF/STL)
   if (result.good()) {
     if (logger.getName() == "dcmtk.apps.pdf2dcm"){
+      ftype=="pdf";
       result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedPDFStorage);
     }
     if (logger.getName() == "dcmtk.apps.cda2dcm"){
+      ftype=="cda";
       result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedCDAStorage);
     }
     if (logger.getName() == "dcmtk.apps.stl2dcm") {
+      ftype=="stl";
       result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedSTLStorage);
     }
   }
   // we are now using "DOC" for the modality, which seems to be more appropriate than "OT" (see CP-749)
-  if (result.good()) result = dataset->putAndInsertString(DCM_Modality, "DOC");
-  if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
-  // according to C.24.2.1 on part 3, (0042,0012) is text/XML for CDA.
-  if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "text/XML");
+
+  if (result.good())
+    if (ftype=="stl")
+      result = dataset->putAndInsertString(DCM_Modality, "M3D");
+    else
+      result = dataset->putAndInsertString(DCM_Modality, "DOC");
+  if (result.good())
+    result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
+  if (result.good())
+    // according to C.24.2.1 on part 3, (0042,0012) is text/XML for CDA.
+    if (ftype=="cda")
+      result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "text/XML");
+    if (ftype=="pdf")
+      result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
+    if (ftype=="stl")
+      result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/stl");
   // there is no way we could determine a meaningful series number, so we just use a constant.
   if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber, "1");
 
