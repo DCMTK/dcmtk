@@ -439,9 +439,6 @@ void DcmEncapsulatedDocument::addDocumentOptions(OFCommandLine &cmd)
                                                           "patient's birth date");
       cmd.addOption("--patient-sex",          "+ps",  1,  "[s]ex: string (M, F or O)",
                                                           "patient's sex");
-    cmd.addSubGroup("other processing options:");
-      cmd.addOption("--key",                  "-k",   1,  "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
-                                                          "add further attribute");
     cmd.addSubGroup("study and series:");
       cmd.addOption("--generate",             "+sg",      "generate new study and series UIDs (default)");
       cmd.addOption("--study-from",           "+st",  1,  "[f]ilename: string",
@@ -456,6 +453,10 @@ void DcmEncapsulatedDocument::addDocumentOptions(OFCommandLine &cmd)
 
 void DcmEncapsulatedDocument::addOutputOptions(OFCommandLine &cmd)
 {
+  cmd.addGroup("processing options:");
+    cmd.addSubGroup("other processing options:");
+      cmd.addOption("--key",                  "-k",   1,  "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
+                                                          "add further attribute");
   cmd.addGroup("output options:");
     cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-little",    "+te",      "write with explicit VR little endian (default)");
@@ -545,7 +546,11 @@ void DcmEncapsulatedDocument::parseArguments(OFConsoleApplication& app, OFComman
     }
     if (cmd.findOption("--annotation-no"))
     {
-      opt_annotation = OFTrue;
+      opt_annotation = OFFalse;
+    }
+    if (cmd.findOption("--override"))
+    {
+      opt_override = OFTrue;
     }
     cmd.endOptionBlock();
 
@@ -930,3 +935,4 @@ E_TransferSyntax DcmEncapsulatedDocument::getTransferSyntax()
 DcmEncapsulatedDocument::~DcmEncapsulatedDocument()
 {
 }
+
