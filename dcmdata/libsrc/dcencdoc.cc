@@ -505,7 +505,6 @@ void DcmEncapsulatedDocument::parseArguments(OFConsoleApplication& app, OFComman
       opt_readSeriesInfo = OFFalse;
     }
     cmd.endOptionBlock();
-    cmd.beginOptionBlock();
     if (cmd.findOption("--title"))
     {
       app.checkValue(cmd.getValue(opt_documentTitle));
@@ -516,8 +515,6 @@ void DcmEncapsulatedDocument::parseArguments(OFConsoleApplication& app, OFComman
       app.checkValue(cmd.getValue(opt_conceptCV));
       app.checkValue(cmd.getValue(opt_conceptCM));
     }
-    cmd.endOptionBlock();
-    cmd.beginOptionBlock();
     if (cmd.findOption("--patient-name"))
     {
       app.checkValue(cmd.getValue(opt_patientName));
@@ -538,7 +535,6 @@ void DcmEncapsulatedDocument::parseArguments(OFConsoleApplication& app, OFComman
       app.checkValue(cmd.getValue(opt_patientSex));
       app.checkConflict("--patient-sex", "--study-from or --series-from", opt_seriesFile != "");
     }
-    cmd.endOptionBlock();
     cmd.beginOptionBlock();
     if (cmd.findOption("--annotation-yes"))
     {
@@ -548,9 +544,15 @@ void DcmEncapsulatedDocument::parseArguments(OFConsoleApplication& app, OFComman
     {
       opt_annotation = OFFalse;
     }
+    cmd.endOptionBlock();
+    cmd.beginOptionBlock();
     if (cmd.findOption("--override"))
     {
       opt_override = OFTrue;
+    }
+    if (cmd.findOption("--no-override"))
+    {
+      opt_override = OFFalse;
     }
     cmd.endOptionBlock();
 
@@ -825,35 +827,43 @@ OFCondition DcmEncapsulatedDocument::createHeader(
   //insert encapsulated file storage UID (CDA/PDF/STL)
   if (result.good()) {
     if (logger.getName() == "dcmtk.apps.pdf2dcm"){
-      ftype=="pdf";
+      ftype="pdf";
       result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedPDFStorage);
     }
     if (logger.getName() == "dcmtk.apps.cda2dcm"){
-      ftype=="cda";
+      ftype="cda";
       result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedCDAStorage);
     }
     if (logger.getName() == "dcmtk.apps.stl2dcm") {
-      ftype=="stl";
+      ftype="stl";
       result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedSTLStorage);
     }
   }
   // we are now using "DOC" for the modality, which seems to be more appropriate than "OT" (see CP-749)
 
   if (result.good())
+  {
     if (ftype=="stl")
+    {
       result = dataset->putAndInsertString(DCM_Modality, "M3D");
+    }
     else
+    {
       result = dataset->putAndInsertString(DCM_Modality, "DOC");
-  if (result.good())
-    result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
-  if (result.good())
+    }
+  }
+  if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
+  if (result.good()){
     // according to C.24.2.1 on part 3, (0042,0012) is text/XML for CDA.
     if (ftype=="cda")
       result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "text/XML");
+    // according to A.45.1.4.1 on part 3, MIME Type is application/pdf for PDF.
     if (ftype=="pdf")
       result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
+    // according to A.85.1.4.2 on part 3, MIME Type is application/pdf for STL, which is not right.
     if (ftype=="stl")
       result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/stl");
+  }
   // there is no way we could determine a meaningful series number, so we just use a constant.
   if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber, "1");
 
