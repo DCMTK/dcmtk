@@ -55,7 +55,7 @@ set(DCMTK_PACKAGE_VERSION_SUFFIX "+")
 #set(DCMTK_PACKAGE_URL "http://www.dcmtk.org/")
 
 # Shared library version information
-set(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCMTK_ABI_VERSION}")
+SET(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCMTK_ABI_VERSION}")
 
 # General build options and settings
 option(BUILD_APPS "Build command line applications and test programs." ON)
