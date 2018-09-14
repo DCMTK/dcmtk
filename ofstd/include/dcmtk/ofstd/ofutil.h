@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, OFFIS e.V.
+ *  Copyright (C) 2014-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -115,7 +115,7 @@ public:
 /** A helper class to 'tag' objects as <i>rvalues</i> to help
  *  DCMTK's move emulation employed on pre C++11 compilers.
  *  @tparam T the base type an rvalue should be create of.
- *  @details OFrvalue wrapps the type T inside a zero-overhead
+ *  @details OFrvalue wraps the type T inside a zero-overhead
  *    object employing T's move constructor when possible.
  *  @note When C++11 support is available, OFrvalue<T> will
  *    simply be a type alias for <i>T</i>, since a C++11 compiler

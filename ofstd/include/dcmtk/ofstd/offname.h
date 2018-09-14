@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,13 +28,13 @@
 #include "dcmtk/ofstd/ofstring.h"
 
 /** A class for automatically creating unique pseudo-random filenames.
- */  
+ */
 class DCMTK_OFSTD_EXPORT OFFilenameCreator
 {
 public:
   /// default constructor
   OFFilenameCreator();
-  
+
   /// copy constructor
   OFFilenameCreator(const OFFilenameCreator& copy);
 
@@ -66,7 +66,7 @@ private:
   unsigned long creation_time;
 
    /** appends the lower 32 bit of the given number to the given string.
-    *  Always appends exactly 8 digits (padded with leading zeroes).
+    *  Always appends exactly 8 digits (padded with leading zeros).
     *  @param l number to be appended to string
     *  @param s string to be added to
     */

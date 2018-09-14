@@ -36,7 +36,7 @@
  *   - it is allowed to insert identical elements into the set
  *   - if a user requires to remove a certain element and if there are several elements
  *     which are identical to this element, only one element will be removed from the set
- *   - when removing an element, the indeces of the elements behind the removed element will
+ *   - when removing an element, the indices of the elements behind the removed element will
  *     be reduced by one
  *   - the set will be ordered according to the point in time at which an element is inserted
  *     into the set; a new element will always be inserted at the end of the set

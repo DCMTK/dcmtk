@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2010, OFFIS e.V.
+ *  Copyright (C) 2003-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,7 +36,7 @@
  *   - it is possible to iterate from beginning to end or from end to beginning of the underlying set
  *     using Next() or Prev() (see below)
  *   - if an element from the set is removed during the iteration, the iteration process has to be
- *     cancelled and restarted
+ *     canceled and restarted
  *   - two OFSetIterators can be compared through operators == and !=; two iterators are considered
  *     to be identical, if and only if they operate on the exact same set (identical memory addresses)
  *     and they currently refer to the same element

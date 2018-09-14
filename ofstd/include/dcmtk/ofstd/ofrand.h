@@ -73,7 +73,7 @@ private:
    */
   void mixSeed();
 
-  /// number of random bytes still availabe before isaac() needs to called again
+  /// number of random bytes still available before isaac() needs to called again
   Uint32 randcnt;
 
   /// random memory

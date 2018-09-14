@@ -56,7 +56,7 @@ END_EXTERN_C
  *  @note The downside of this non-POD class is that it leads to some
  *    unnecessary string copy operations. The resulting performance penalty
  *    should be insignificant. However, implementing this class based on
- *    auto_ptr / unique_ptr or using c++11 move sematics would prevent that,
+ *    auto_ptr / unique_ptr or using c++11 move semantics would prevent that,
  *    if somebody thinks it is necessary.
  */
 class OFStandard::OFPasswd

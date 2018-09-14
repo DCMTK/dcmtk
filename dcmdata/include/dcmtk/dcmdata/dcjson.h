@@ -181,14 +181,14 @@ public:
     static void printValueString(STD_NAMESPACE ostream &out,
                                  const OFString &value);
 
-    /** Print either null if empty or a Number as normelized IntegerString
+    /** Print either null if empty or a Number as normalized IntegerString
      *  @param out output stream to which the Value prefix is written
      *  @param value String that should be printed
      */
     static void printNumberInteger(STD_NAMESPACE ostream &out,
                                    OFString &value);
 
-    /** Print either null if empty or a Number as normelized IntegerDecimal
+    /** Print either null if empty or a Number as normalized IntegerDecimal
      *  @param out output stream to which the Value prefix is written
      *  @param value String that should be printed
      */

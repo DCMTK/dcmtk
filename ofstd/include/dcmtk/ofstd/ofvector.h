@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2017, OFFIS e.V.
+ *  Copyright (C) 2010-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -190,7 +190,7 @@ public:
      */
     size_type size() const { return size_; }
 
-    /** check wether this OFVector is empty.
+    /** check whether this OFVector is empty.
      *  @return true if this OFVector is empty.
      */
     OFBool empty() const { return size_ == 0; }

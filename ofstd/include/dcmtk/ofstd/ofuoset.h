@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2012, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,7 +36,7 @@
  *  - it is allowed to insert identical elements into the set
  *  - if a user requires to remove a certain element and if there are several elements
  *    which are identical to this element, only one element will be removed from the set
- *  - after removing an element of a set, the indeces of the set's elements might have
+ *  - after removing an element of a set, the indices of the set's elements might have
  *    changed; hence, looping over all elements of a set must be restarted if an element
  *    was removed from the set within the loop
  *  - the order of the elements is arbitrary, but it will not be changed unless an element

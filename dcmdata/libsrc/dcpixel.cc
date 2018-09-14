@@ -187,8 +187,7 @@ DcmPixelData::calcElementLength(
     if (xferSyn.isEncapsulated() && (! writeUnencapsulated(xfer)))
     {
         DcmRepresentationListIterator found;
-        errorFlag =
-            findConformingEncapsulatedRepresentation(xfer, NULL, found);
+        errorFlag = findConformingEncapsulatedRepresentation(xfer, NULL, found);
         if (errorFlag == EC_Normal)
             elementLength = (*found)->pixSeq->calcElementLength(xfer, enctype);
     }
@@ -212,7 +211,7 @@ DcmPixelData::canChooseRepresentation(
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator resultIt(repListEnd);
     // find out whether we have the desired target representation available. Three possibilities:
-    // 1. we have uncompressed data, and target is uncompressed (conversion betweeen uncompressed always possible)
+    // 1. we have uncompressed data, and target is uncompressed (conversion between uncompressed always possible)
     // 2. we have uncompressed and want compressed, but we are forced to write uncompressed anyway
     // 3. we want to go to compressed, and already have the desired representation available
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
