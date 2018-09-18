@@ -115,6 +115,15 @@ DcmDataDictionary::DcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
     skeletonCount(0),
     dictionaryLoaded(OFFalse)
 {
+    /* Make sure any DCMDICTPATH dictionary is loaded even if loading
+     * of external (default) dictionary is not enabled.
+     */
+    if (!loadExternal)
+    {
+        const char* env = getenv(DCM_DICT_ENVIRONMENT_VARIABLE);
+        if ((env != NULL) && (strlen(env) != 0))
+            loadExternal = OFTrue;
+    }
     reloadDictionaries(loadBuiltin, loadExternal);
 }
 
