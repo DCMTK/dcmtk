@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,6 +39,12 @@ BEGIN_EXTERN_C
 #undef access
 #endif
 END_EXTERN_C
+
+// include this file in doxygen documentation
+
+/** @file dcmqridx.h
+ *  @brief type definitions and constants for the database index file
+ */
 
 /** types of query keys
  */

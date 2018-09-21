@@ -33,6 +33,12 @@
 #include "dcmtk/dcmtls/tlsdefin.h"    /* for DCMTK_DCMTLS_EXPORT */
 #include "dcmtk/dcmnet/dcmlayer.h"    /* for DcmTransportLayerStatus */
 
+// include this file in doxygen documentation
+
+/** @file tlsciphr.h
+ *  @brief type definitions and classes for TLS ciphersuites
+ */
+
 /** This enum describes DICOM TLS Security Profiles, which are the basis
  *  for the selection of supported ciphersuites when using DICOM over TLS.
  *  @remark This enum is only available if DCMTK is compiled with

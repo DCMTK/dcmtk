@@ -27,6 +27,12 @@
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmnet/dndefine.h"
 
+// include this file in doxygen documentation
+
+/** @file dcuserid.h
+ *  @brief type definitions, constants and classes for User Identity Negotiation
+ */
+
 /// User Identity Negotiation request always identifies with 0x58
 #define DUL_TYPENEGOTIATIONOFUSERIDENTITY_REQ (unsigned char)0x58
 /// User Identity Negotiation acknowledge identifies with 0x59

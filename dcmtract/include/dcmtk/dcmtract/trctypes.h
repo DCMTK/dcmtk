@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -39,6 +39,13 @@ extern DCMTK_DCMTRACT_EXPORT OFLogger DCM_dcmtractLogger;
 #define DCMTRACT_WARN(msg)  OFLOG_WARN(DCM_dcmtractLogger, msg)
 #define DCMTRACT_ERROR(msg) OFLOG_ERROR(DCM_dcmtractLogger, msg)
 #define DCMTRACT_FATAL(msg) OFLOG_FATAL(DCM_dcmtractLogger, msg)
+
+
+// include this file in doxygen documentation
+
+/** @file trctypes.h
+ *  @brief type definitions, constants and classes for the dcmtract module
+ */
 
 
 /*

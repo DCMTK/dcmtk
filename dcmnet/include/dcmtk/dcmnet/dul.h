@@ -77,6 +77,12 @@ class DcmTransportConnection;
 class DcmTransportLayer;
 class LST_HEAD;
 
+// include this file in doxygen documentation
+
+/** @file dul.h
+ *  @brief type definitions, constants, global variables and functions for the dcmnet/dul module
+ */
+
 /** Global flag to enable/disable reverse DNS lookup when accepting associations.
  *  If disabled, the numerical IP address instead of the symbolic hostname is
  *  stored in the callingPresentationAddress field of the association parameters

@@ -44,7 +44,7 @@ extern DCMTK_DCMJPEG_EXPORT OFLogger DCM_dcmjpegLogger;
 // include this file in doxygen documentation
 
 /** @file djutils.h
- *  @brief enumerations, error constants and helper functions for the dcmjpeg module
+ *  @brief type definitions and constants for the dcmjpeg module
  */
 
 

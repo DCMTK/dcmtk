@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -42,6 +42,13 @@ extern DCMTK_DCMFG_EXPORT OFLogger DCM_dcmfgLogger;
 #define DCMFG_WARN(msg)  OFLOG_WARN(DCM_dcmfgLogger, msg)
 #define DCMFG_ERROR(msg) OFLOG_ERROR(DCM_dcmfgLogger, msg)
 #define DCMFG_FATAL(msg) OFLOG_FATAL(DCM_dcmfgLogger, msg)
+
+
+// include this file in doxygen documentation
+
+/** @file fgtypes.h
+ *  @brief type definitions, constants and helper functions for the dcmfg module
+ */
 
 
 /*-----------------------*

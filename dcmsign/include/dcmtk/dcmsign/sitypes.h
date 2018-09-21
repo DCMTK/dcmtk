@@ -57,6 +57,13 @@ extern DCMTK_DCMSIGN_EXPORT OFLogger DCM_dcmsignLogger;
 #define SI_DEFTERMS_SHA512    "SHA512"
 
 
+// include this file in doxygen documentation
+
+/** @file sitypes.h
+ *  @brief type definitions and constants for the dcmsign module
+ */
+
+
 /** type of key for public key cryptosystem
  *  @remark this enum is only available if DCMTK is compiled with
  *  OpenSSL support enabled.
@@ -71,7 +78,7 @@ enum E_KeyType
 
   /// DH key
   EKT_DH,
-  
+
   /// no key present
   EKT_none
 };
@@ -85,10 +92,10 @@ enum E_MACType
 {
   /// SHA-1
   EMT_SHA1,
-  
+
   /// RIPEMD160
   EMT_RIPEMD160,
-  
+
   /// MD5
   EMT_MD5,
 
@@ -105,7 +112,7 @@ enum E_MACType
 /*
  * specific error conditions for module dcmsign
  */
- 
+
 /// object initialization failed
 /// @remark this constant is only available if DCMTK is compiled with
 /// OpenSSL support enabled.

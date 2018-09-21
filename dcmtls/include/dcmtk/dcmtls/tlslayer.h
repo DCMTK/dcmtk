@@ -49,6 +49,13 @@ extern DCMTK_DCMTLS_EXPORT OFLogger DCM_dcmtlsLogger;
 #define DCMTLS_ERROR(msg) OFLOG_ERROR(DCM_dcmtlsLogger, msg)
 #define DCMTLS_FATAL(msg) OFLOG_FATAL(DCM_dcmtlsLogger, msg)
 
+// include this file in doxygen documentation
+
+/** @file tlslayer.h
+ *  @brief type definitions and classes for TLS transport connections
+ */
+
+
 /** this enum describes how to handle X.509 certificates on a TLS based
  *  secure transport connection. They can be ignored, validated if present
  *  or validated and demanded.

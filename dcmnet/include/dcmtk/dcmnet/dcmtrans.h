@@ -33,6 +33,12 @@
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
+// include this file in doxygen documentation
+
+/** @file dcmtrans.h
+ *  @brief global variables and classes for transport connections
+ */
+
 /** Global timeout in seconds for sending data on a socket to a remote host.
  *  The default value is 60, which is useful in cases where the sender (e.g.
  *  storescu) looses the connection to the receiver because the network cable

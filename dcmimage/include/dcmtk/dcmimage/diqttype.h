@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: typdefs and constants for the color quantization classes
+ *  Purpose: typedefs and constants for the color quantization classes
  *
  */
 
@@ -40,6 +40,13 @@ typedef unsigned char DcmQuantComponent;
  *  of colors becomes smaller than this maximum.
  */
 #define DcmQuantMaxColors 65536
+
+
+// include this file in doxygen documentation
+
+/** @file diqttype.h
+ *  @brief type definitions and constants for the color quantization classes
+ */
 
 
 /** defines the algorithm used for determining the

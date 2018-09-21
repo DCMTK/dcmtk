@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,7 +30,7 @@
 // include this file in doxygen documentation
 
 /** @file wltypdef.h
- *  @brief type definitions and macros for the dcmwlm module
+ *  @brief type definitions and constants for the dcmwlm module
  */
 
 

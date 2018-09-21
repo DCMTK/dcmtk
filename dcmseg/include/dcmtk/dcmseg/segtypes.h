@@ -41,6 +41,12 @@ extern DCMTK_DCMSEG_EXPORT OFLogger DCM_dcmsegLogger;
 #define DCMSEG_ERROR(msg) OFLOG_ERROR(DCM_dcmsegLogger, msg)
 #define DCMSEG_FATAL(msg) OFLOG_FATAL(DCM_dcmsegLogger, msg)
 
+// include this file in doxygen documentation
+
+/** @file segtypes.h
+ *  @brief type definitions, constants and helper classes for the dcmseg module
+ */
+
 /*-----------------------*
  *  constant definitions  *
  *-----------------------*/

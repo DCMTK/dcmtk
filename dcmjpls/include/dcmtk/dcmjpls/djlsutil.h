@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,7 +46,7 @@ extern DCMTK_DCMJPLS_EXPORT OFLogger DCM_dcmjplsLogger;
 // include this file in doxygen documentation
 
 /** @file djlsutil.h
- *  @brief enumerations, error constants and helper functions for the dcmjpls module
+ *  @brief type definitions and constants for the dcmjpls module
  */
 
 

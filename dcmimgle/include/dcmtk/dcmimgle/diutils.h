@@ -45,7 +45,7 @@ extern DCMTK_DCMIMGLE_EXPORT OFLogger DCM_dcmimgleLogger;
 // include this file in doxygen documentation
 
 /** @file diutils.h
- *  @brief utilities for the dcmimgle/dcmimage module
+ *  @brief type definitions, constants and helper functions for the dcmimgle/dcmimage module
  */
 
 

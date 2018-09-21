@@ -35,6 +35,10 @@
 #include "dcmtk/dcmnet/dndefine.h"
 #include "dcmtk/dcmnet/dntypes.h"
 
+/** @file dcmlayer.h
+ *  @brief type definitions and classes for transport connections
+ */
+
 /** this enum represents the result of a transport layer operation
  *  which may be a transparent TCP/IP or a secure TLS operation.
  */
@@ -68,7 +72,6 @@ class DcmTransportConnection;
  *  Base class only supports transparent TCP connections, subclasses
  *  may also support secure transport layer connections.
  */
-
 class DCMTK_DCMNET_EXPORT DcmTransportLayer
 {
 public:
@@ -98,7 +101,7 @@ public:
    *  or a secure connection is established.  If the object cannot be created
    *  (e. g. because no secure layer is available), returns NULL.
    *  @param openSocket TCP/IP socket to be used for the transport connection.
-   *    the connection must already be establised on socket level. If a non-null
+   *    the connection must already be established on socket level. If a non-null
    *    pointer is returned, the new connection object takes over control of the socket.
    *  @param useSecureLayer if true, a secure layer is used. If false, a
    *    transparent layer is used.

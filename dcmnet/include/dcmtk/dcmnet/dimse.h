@@ -95,6 +95,12 @@
 
 class DcmOutputFileStream;
 
+// include this file in doxygen documentation
+
+/** @file dimse.h
+ *  @brief type definitions, constants, global variables and functions for the dcmnet/dimse module
+ */
+
 /** Global flag to enable/disable workaround code for some buggy Store SCUs
  * in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
  * Affected SOP Instance UID field of the C-STORE-RQ message is retained
