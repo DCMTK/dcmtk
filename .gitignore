@@ -52,6 +52,7 @@ dcmdata/apps/xml2dcm
 dcmdata/libsrc/mkdeftag
 dcmdata/libsrc/mkdictbi
 dcmimage/apps/dcm2pnm
+dcmimage/apps/dcmicmp
 dcmimage/apps/dcmquant
 dcmimage/apps/dcmscale
 dcmimgle/apps/dcmdspfn
