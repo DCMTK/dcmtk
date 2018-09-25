@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,15 @@ OFTEST(dcmdata_readingDataDictionary)
 
 OFTEST(dcmdata_usingDataDictionary)
 {
+    // All tests run with an DCMDICTPATH external dictionary defined. This test
+    // expects an empty dictionary though, so we disable the DCMDICTPATH
+    // dictionary in this test by unsetting the environment variable.
+#ifdef _WIN32
+    SetEnvironmentVariable("DCMDICTPATH", "");
+#else
+    setenv("DCMDICTPATH","", 1 /* overwrite */);
+#endif
+
     // This dictionary will only contain the skeleton entries
     DcmDataDictionary localDict(OFFalse, OFFalse);
     DcmDictEntry *entry1;
