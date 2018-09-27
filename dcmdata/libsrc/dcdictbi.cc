@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-07-16 12:45:32
+**   Date: 2018-09-27 16:38:26
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -21314,6 +21314,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "UsedSegmentsSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0062, 0x0013, 0x0062, 0x0013,
+      EVR_CS, "SegmentsOverlap", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0062, 0x0020, 0x0062, 0x0020,
       EVR_UT, "TrackingID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -25338,6 +25342,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x3006, 0x0036, 0x3006, 0x0036,
       EVR_CS, "ROIGenerationAlgorithm", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3006, 0x0037, 0x3006, 0x0037,
+      EVR_SQ, "ROIDerivationAlgorithmIdentificationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x0038, 0x3006, 0x0038,

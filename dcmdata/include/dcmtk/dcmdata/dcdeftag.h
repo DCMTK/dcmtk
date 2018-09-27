@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-07-16 12:45:31
+**   Date: 2018-09-27 16:38:30
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2018-07-16 12:45:31"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2018-09-27 16:38:30"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4265
+** Number of entries: 4267
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2748,6 +2748,7 @@
 #define DCM_SegmentationFractionalType           DcmTagKey(0x0062, 0x0010)
 #define DCM_SegmentedPropertyTypeModifierCodeSequence DcmTagKey(0x0062, 0x0011)
 #define DCM_UsedSegmentsSequence                 DcmTagKey(0x0062, 0x0012)
+#define DCM_SegmentsOverlap                      DcmTagKey(0x0062, 0x0013)
 #define DCM_TrackingID                           DcmTagKey(0x0062, 0x0020)
 #define DCM_TrackingUID                          DcmTagKey(0x0062, 0x0021)
 #define DCM_DeformableRegistrationSequence       DcmTagKey(0x0064, 0x0002)
@@ -3587,6 +3588,7 @@
 #define DCM_RTRelatedROISequence                 DcmTagKey(0x3006, 0x0030)
 #define DCM_RTROIRelationship                    DcmTagKey(0x3006, 0x0033)
 #define DCM_ROIGenerationAlgorithm               DcmTagKey(0x3006, 0x0036)
+#define DCM_ROIDerivationAlgorithmIdentificationSequence DcmTagKey(0x3006, 0x0037)
 #define DCM_ROIGenerationDescription             DcmTagKey(0x3006, 0x0038)
 #define DCM_ROIContourSequence                   DcmTagKey(0x3006, 0x0039)
 #define DCM_ContourSequence                      DcmTagKey(0x3006, 0x0040)

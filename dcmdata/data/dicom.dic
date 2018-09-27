@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2018c and PS 3.7-2018c
-# File created on 2018-07-16 12:38:18 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2018d and PS 3.7-2018d
+# File created on 2018-09-19 14:20:31 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -2455,6 +2455,7 @@
 (0062,0010)	CS	SegmentationFractionalType	1	DICOM
 (0062,0011)	SQ	SegmentedPropertyTypeModifierCodeSequence	1	DICOM
 (0062,0012)	SQ	UsedSegmentsSequence	1	DICOM
+(0062,0013)	CS	SegmentsOverlap	1	DICOM
 (0062,0020)	UT	TrackingID	1	DICOM
 (0062,0021)	UI	TrackingUID	1	DICOM
 (0064,0002)	SQ	DeformableRegistrationSequence	1	DICOM
@@ -3233,6 +3234,7 @@
 (3006,0030)	SQ	RTRelatedROISequence	1	DICOM
 (3006,0033)	CS	RTROIRelationship	1	DICOM
 (3006,0036)	CS	ROIGenerationAlgorithm	1	DICOM
+(3006,0037)	SQ	ROIDerivationAlgorithmIdentificationSequence	1	DICOM
 (3006,0038)	LO	ROIGenerationDescription	1	DICOM
 (3006,0039)	SQ	ROIContourSequence	1	DICOM
 (3006,0040)	SQ	ContourSequence	1	DICOM
