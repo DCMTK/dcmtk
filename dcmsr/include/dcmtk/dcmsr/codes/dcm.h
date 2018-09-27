@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2018c
- *  File created on 2018-07-16 12:38:27 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018d
+ *  File created on 2018-09-27 16:45:05 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 3882
+// total number of codes: 3902
 // - retired: 144
 // - no name: 27
 // - not unique: 15
@@ -3930,5 +3930,25 @@
 #define CODE_DCM_MixedModality3DCAMModel                                   DSRBasicCodedEntry("129019", "DCM", "Mixed Modality 3D CAM model")
 #define CODE_DCM_PhotogrammetricImaging3DCAMModel                          DSRBasicCodedEntry("129020", "DCM", "Photogrammetric Imaging 3D CAM model")
 #define CODE_DCM_LaserScanning3DCAMModel                                   DSRBasicCodedEntry("129021", "DCM", "Laser Scanning 3D CAM model")
+#define CODE_DCM_FatFraction                                               DSRBasicCodedEntry("129100", "DCM", "Fat fraction")
+#define CODE_DCM_WaterFatInPhase                                           DSRBasicCodedEntry("129101", "DCM", "Water/fat in phase")
+#define CODE_DCM_WaterFatOutOfPhase                                        DSRBasicCodedEntry("129102", "DCM", "Water/fat out of phase")
+#define CODE_DCM_WaterFraction                                             DSRBasicCodedEntry("129103", "DCM", "Water fraction")
+#define CODE_DCM_PerfusionImageAnalysis                                    DSRBasicCodedEntry("129104", "DCM", "Perfusion image analysis")
+#define CODE_DCM_DiffusionImageAnalysis                                    DSRBasicCodedEntry("129105", "DCM", "Diffusion image analysis")
+#define CODE_DCM_DiffusionTractography                                     DSRBasicCodedEntry("129106", "DCM", "Diffusion tractography")
+#define CODE_DCM_ImageUsedForTreatmentPlanning                             DSRBasicCodedEntry("129201", "DCM", "Image used for Treatment Planning")
+#define CODE_DCM_ImageUsedForDoseCalculation                               DSRBasicCodedEntry("129202", "DCM", "Image used for Dose Calculation")
+#define CODE_DCM_ImageAcquiredDuringTreatment                              DSRBasicCodedEntry("129203", "DCM", "Image Acquired during Treatment")
+#define CODE_DCM_ImageUsedAsReferenceImageForTreatment                     DSRBasicCodedEntry("129204", "DCM", "Image used as Reference Image for Treatment")
+#define CODE_DCM_RegistrationUsedInPlanning                                DSRBasicCodedEntry("129210", "DCM", "Registration used in Planning")
+#define CODE_DCM_RegistrationCreatedDuringTreatment                        DSRBasicCodedEntry("129211", "DCM", "Registration created during Treatment")
+#define CODE_DCM_CoilMarker                                                DSRBasicCodedEntry("129301", "DCM", "Coil Marker")
+#define CODE_DCM_CylinderMarker                                            DSRBasicCodedEntry("129303", "DCM", "Cylinder Marker")
+#define CODE_DCM_WireMarker                                                DSRBasicCodedEntry("129305", "DCM", "Wire Marker")
+#define CODE_DCM_TransponderMarker                                         DSRBasicCodedEntry("129306", "DCM", "Transponder Marker")
+#define CODE_DCM_MRMarker                                                  DSRBasicCodedEntry("129308", "DCM", "MR Marker")
+#define CODE_DCM_InfraredReflectorMarker                                   DSRBasicCodedEntry("129309", "DCM", "Infrared Reflector Marker")
+#define CODE_DCM_VisibleReflectorMarker                                    DSRBasicCodedEntry("129310", "DCM", "Visible Reflector Marker")
 
 #endif
