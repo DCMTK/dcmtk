@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2018c
- *  File created on 2018-07-16 13:07:03 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018d
+ *  File created on 2018-09-27 16:57:33 by J. Riesmeier
  *
  */
 
@@ -292,6 +292,16 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(SUVibw, DSRBasicCodedEntry("126404", "DCM", "SUVibw")));
         Codes->insert(OFMake_pair(AbsorbedDose, DSRBasicCodedEntry("128513", "DCM", "Absorbed Dose")));
         Codes->insert(OFMake_pair(EquivalentDose, DSRBasicCodedEntry("128512", "DCM", "Equivalent Dose")));
+        Codes->insert(OFMake_pair(Fat, DSRBasicCodedEntry("T-D008A", "SRT", "Fat")));
+        Codes->insert(OFMake_pair(FatFraction, DSRBasicCodedEntry("129100", "DCM", "Fat fraction")));
+        Codes->insert(OFMake_pair(WaterPerFatInPhase, DSRBasicCodedEntry("129101", "DCM", "Water/fat in phase")));
+        Codes->insert(OFMake_pair(WaterPerFatOutOfPhase, DSRBasicCodedEntry("129102", "DCM", "Water/fat out of phase")));
+        Codes->insert(OFMake_pair(NegativeEnhancementIntegral, DSRBasicCodedEntry("113054", "DCM", "Negative enhancement integral")));
+        Codes->insert(OFMake_pair(SignalChange, DSRBasicCodedEntry("113059", "DCM", "Signal change")));
+        Codes->insert(OFMake_pair(SignalToNoise, DSRBasicCodedEntry("113060", "DCM", "Signal to noise")));
+        Codes->insert(OFMake_pair(TimeCourseOfSignal, DSRBasicCodedEntry("113066", "DCM", "Time course of signal")));
+        Codes->insert(OFMake_pair(Water, DSRBasicCodedEntry("C-10120", "SRT", "Water")));
+        Codes->insert(OFMake_pair(WaterFraction, DSRBasicCodedEntry("129103", "DCM", "Water fraction")));
         Codes->insert(OFMake_pair(Length, DSRBasicCodedEntry("G-D7FE", "SRT", "Length")));
         Codes->insert(OFMake_pair(PathLength, DSRBasicCodedEntry("121211", "DCM", "Path length")));
         Codes->insert(OFMake_pair(Distance, DSRBasicCodedEntry("121206", "DCM", "Distance")));

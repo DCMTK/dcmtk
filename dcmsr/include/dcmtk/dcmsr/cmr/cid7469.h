@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2018c
- *  File created on 2018-07-16 13:07:03 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018d
+ *  File created on 2018-09-27 16:57:33 by J. Riesmeier
  *
  */
 
@@ -326,6 +326,26 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         AbsorbedDose,
         /// (128512,DCM,"Equivalent Dose"), included from CID 10070
         EquivalentDose,
+        /// (T-D008A,SRT,"Fat"), included from CID 7180
+        Fat,
+        /// (129100,DCM,"Fat fraction"), included from CID 7180
+        FatFraction,
+        /// (129101,DCM,"Water/fat in phase"), included from CID 7180
+        WaterPerFatInPhase,
+        /// (129102,DCM,"Water/fat out of phase"), included from CID 7180
+        WaterPerFatOutOfPhase,
+        /// (113054,DCM,"Negative enhancement integral"), included from CID 7180
+        NegativeEnhancementIntegral,
+        /// (113059,DCM,"Signal change"), included from CID 7180
+        SignalChange,
+        /// (113060,DCM,"Signal to noise"), included from CID 7180
+        SignalToNoise,
+        /// (113066,DCM,"Time course of signal"), included from CID 7180
+        TimeCourseOfSignal,
+        /// (C-10120,SRT,"Water"), included from CID 7180
+        Water,
+        /// (129103,DCM,"Water fraction"), included from CID 7180
+        WaterFraction,
         /// (G-D7FE,SRT,"Length"), included from CID 7470
         Length,
         /// (121211,DCM,"Path length"), included from CID 7470
