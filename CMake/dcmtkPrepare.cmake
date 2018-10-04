@@ -8,8 +8,8 @@ endif()
 set(DCMTK_CONFIGURATION_DONE true)
 
 # Minimum CMake version required
-if(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.10.2)
-  set(CMAKE_BACKWARDS_COMPATIBILITY 3.10.2 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+if(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.12.3)
+  set(CMAKE_BACKWARDS_COMPATIBILITY 3.12.3 CACHE STRING "Latest version of CMake when this project was released." FORCE)
 endif()
 
 # CMAKE_BUILD_TYPE is set to value "Release" if none is specified by the
