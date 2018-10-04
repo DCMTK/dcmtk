@@ -40,7 +40,7 @@ OFTEST(dcmdata_usingDataDictionary)
     // expects an empty dictionary though, so we disable the DCMDICTPATH
     // dictionary in this test by unsetting the environment variable.
 #ifdef _WIN32
-    SetEnvironmentVariable("DCMDICTPATH", "");
+    _putenv_s("DCMDICTPATH", "");
 #else
     setenv("DCMDICTPATH","", 1 /* overwrite */);
 #endif
