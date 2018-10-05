@@ -353,7 +353,7 @@ OFCondition CodeWithModifiers::addModifier(const CodeSequenceMacro& modifier)
 
 CodeSequenceMacro* CodeWithModifiers::getModifier(const size_t index)
 {
-  if (index > m_Modifiers.size())
+  if (index + 1 > m_Modifiers.size())
     return NULL;
   else
     return m_Modifiers[index];
