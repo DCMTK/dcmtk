@@ -73,6 +73,7 @@ DcmEncapsulatedDocument::DcmEncapsulatedDocument() :
   opt_overrideKeys(),
 
   cda_mediaTypes(),
+  hl7_InstanceIdentifier(),
   opt_override(OFFalse)
 {
 }
@@ -123,7 +124,8 @@ OFString DcmEncapsulatedDocument::XMLgetAllAttributeValues(
     if (attr == "mediaType")attributeValues.append("text/xml");
     while (!attributeValueslist.empty())
     {
-      if (attributeValues.find(attributeValueslist.front()) == OFString_npos) {
+      if (attributeValues.find(attributeValueslist.front()) == OFString_npos)
+      {
         if (!attributeValues.empty())attributeValues.append("\\");
         attributeValues.append(attributeValueslist.front());
       }
@@ -145,16 +147,26 @@ OFString DcmEncapsulatedDocument::XMLgetAllAttributeValues(
 OFString DcmEncapsulatedDocument::XMLgetAttribute(XMLNode fileNode, DcmTagKey attr)
 {
   OFString result = "";
-  if (attr == DCM_DocumentTitle) {
-    if (fileNode.getChildNode("title").getText() != NULL) {
+  if (attr == DCM_DocumentTitle)
+  {
+    if (fileNode.getChildNode("title").getText() != NULL)
+    {
       result = OFString(OFSTRING_GUARD(fileNode.getChildNode("title").getText()));
     }
   }
+  if (attr == DCM_HL7InstanceIdentifier)
+  {
+      result = OFString(OFSTRING_GUARD(
+        fileNode.getChildNode("id").getAttribute("root"))) + "^" + OFString(OFSTRING_GUARD(
+          fileNode.getChildNode("id").getAttribute("extension")));
+  }
   /*PatientNameExtension could reflect the type of name (PHON, IDE, ABC)
-  if (attr == DCM_PatientNameExtension) {
+  if (attr == DCM_PatientNameExtension)
+  {
   result = OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getAttribute("use")));
   }*/
-  if (attr == DCM_PatientName) {
+  if (attr == DCM_PatientName)
+  {
     result = OFString(OFSTRING_GUARD(
       fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/family").getText())) + "^" + OFString(OFSTRING_GUARD(
         fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getChildNode("given", 0).getText())) + "^" + OFString(OFSTRING_GUARD(
@@ -162,10 +174,12 @@ OFString DcmEncapsulatedDocument::XMLgetAttribute(XMLNode fileNode, DcmTagKey at
             fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/prefix").getText())) + "^" + OFString(OFSTRING_GUARD(
               fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/suffix").getText()));
   }
-  if (attr == DCM_PatientSex) {
+  if (attr == DCM_PatientSex)
+  {
     result = OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/administrativeGenderCode").getAttribute("code")));
   }
-  if (attr == DCM_PatientBirthDate) {
+  if (attr == DCM_PatientBirthDate)
+  {
     result = OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/birthTime").getAttribute("value")));
   }
   //Table A.8-1. Basic Code Attributes Mapping to HL7 V3 Code Data Types (CV, CS, CE and CD)
@@ -183,7 +197,30 @@ OFString DcmEncapsulatedDocument::XMLgetAttribute(XMLNode fileNode, DcmTagKey at
   }
   if (attr == DCM_CodingSchemeDesignator)//Coding Scheme Designator (0008,0102)
   {
-    result = OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("codeSystemName")));
+    OFString CSDtemp=OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("codeSystemName")));
+    // Abbreviate most common CSNs
+    if(CSDtemp==OFString("LOINC"))
+    {
+    result = OFString("LN");
+    }
+    else
+    {
+      if(CSDtemp==OFString("DICOM"))
+      {
+      result = OFString("DC");
+      }
+      else
+      {
+        if(CSDtemp==OFString("SNOMED"))
+        {
+          result = OFString("SRT");
+        }
+        else
+        {
+          result=CSDtemp;
+        }
+      }
+    }
   }
   if (attr == DCM_CodingSchemeVersion)//Coding Scheme Version (0008,0103)
   {
@@ -211,32 +248,41 @@ int DcmEncapsulatedDocument::getCDAData(
 
   //get all media types from CDA file
   cda_mediaTypes = XMLgetAllAttributeValues(fileNode, "mediaType");
+  hl7_InstanceIdentifier = XMLgetAttribute(fileNode, DCM_HL7InstanceIdentifier);
   //read and compare patient information from CDA File
   OFString pID = XMLgetAttribute(fileNode, DCM_PatientID);
   if ((pID != "") && (opt_patientID != pID))
   {
-    if (opt_patientID != "") {
+    if (opt_patientID != "")
+    {
       //if override option is inactive, return an error
-      if (!opt_override) {
+      if (!opt_override)
+      {
         OFLOG_ERROR(appLogger, "Patient ID mismatch:" << OFendl
           << "Found in the CDA file : " << pID << OFendl
           << "Entered (or found in DCM file): " << opt_patientID << OFendl
           << "If you wish to override, run again with +ov");
         return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
       }
-      else {
+      else
+      {
         OFLOG_WARN(appLogger, "Patient ID mismatch:" << OFendl
           << "Found in the CDA file : " << pID << OFendl
           << "Provided (in DCM file): " << opt_patientID);
       }
     }
-    else opt_patientID = pID;
+    else
+    {
+      opt_patientID = pID;
+    }
   }
   OFString pBirthDate = XMLgetAttribute(fileNode, DCM_PatientBirthDate);
   if ((pBirthDate != "") && (opt_patientBirthdate != pBirthDate))
   {
-    if (opt_patientBirthdate != "") {
-      if (!opt_override) {
+    if (opt_patientBirthdate != "")
+    {
+      if (!opt_override)
+      {
         OFLOG_ERROR(appLogger, "Patient Birth Date mismatch:" << OFendl
           << "Found in the CDA file : " << pBirthDate << OFendl
           << "Provided (in DCM file): " << opt_patientBirthdate << OFendl
@@ -254,8 +300,10 @@ int DcmEncapsulatedDocument::getCDAData(
   OFString pSex = XMLgetAttribute(fileNode, DCM_PatientSex);
   if ((pSex != "") && (opt_patientSex != pSex))
   {
-    if (opt_patientSex != "") {
-      if (!opt_override) {
+    if (opt_patientSex != "")
+    {
+      if (!opt_override)
+      {
         OFLOG_ERROR(appLogger, "Patient Sex mismatch:" << OFendl
           << "Found in the CDA file : " << pSex << OFendl
           << "Provided (in DCM file): " << opt_patientSex << OFendl
@@ -273,8 +321,10 @@ int DcmEncapsulatedDocument::getCDAData(
   OFString pName = XMLgetAttribute(fileNode, DCM_PatientName);
   if ((pName != "^^^^") && (opt_patientName != pName))
   {
-    if (opt_patientName != "") {
-      if (!opt_override) {
+    if (opt_patientName != "")
+    {
+      if (!opt_override)
+      {
         OFLOG_ERROR(appLogger, "Patient Name mismatch:" << OFendl
           << "Found in the CDA file : " << pName << OFendl
           << "Provided (in DCM file): " << opt_patientName << OFendl
@@ -291,7 +341,8 @@ int DcmEncapsulatedDocument::getCDAData(
   }
   //get document title from CDA
   OFString dTitle = XMLgetAttribute(fileNode, DCM_DocumentTitle);
-  if (opt_documentTitle == "") {
+  if (opt_documentTitle == "")
+  {
     if (opt_conceptCSD != "") opt_documentTitle = opt_conceptCSD;
     if (opt_conceptCV != "") opt_documentTitle = opt_conceptCV;
     if (opt_conceptCM != "") opt_documentTitle = opt_conceptCM;
@@ -299,8 +350,10 @@ int DcmEncapsulatedDocument::getCDAData(
 
   if ((dTitle != "") && (opt_documentTitle != dTitle))
   {
-    if (opt_documentTitle != "") {
-      if (!opt_override) {
+    if (opt_documentTitle != "")
+    {
+      if (!opt_override)
+      {
         OFLOG_ERROR(appLogger, "Document Title mismatch:" << OFendl
           << "Found in the CDA file : " << dTitle << OFendl
           << "Provided (in DCM file): " << opt_documentTitle << OFendl
@@ -319,8 +372,10 @@ int DcmEncapsulatedDocument::getCDAData(
   OFString cCSD = XMLgetAttribute(fileNode, DCM_CodingSchemeDesignator);
   if ((cCSD != "") && (opt_conceptCSD != cCSD))
   {
-    if (opt_conceptCSD != "") {
-      if (!opt_override) {
+    if (opt_conceptCSD != "")
+    {
+      if (!opt_override)
+      {
         OFLOG_ERROR(appLogger, "concept CSD mismatch:" << OFendl
           << "Found in the CDA file : " << cCSD << OFendl
           << "Provided (in DCM file): " << opt_conceptCSD << OFendl
@@ -338,8 +393,10 @@ int DcmEncapsulatedDocument::getCDAData(
   OFString cCV = XMLgetAttribute(fileNode, DCM_CodeValue);
   if ((cCV != "") && (opt_conceptCV != cCV))
   {
-    if (opt_conceptCV != "") {
-      if (!opt_override) {
+    if (opt_conceptCV != "")
+    {
+      if (!opt_override)
+      {
         OFLOG_ERROR(appLogger, "concept CV mismatch:" << OFendl
           << "Found in the CDA file : " << cCV << OFendl
           << "Provided (in DCM file): " << opt_conceptCV << OFendl
@@ -357,8 +414,10 @@ int DcmEncapsulatedDocument::getCDAData(
   OFString cCM = XMLgetAttribute(fileNode, DCM_CodeMeaning);
   if ((cCM != "") && (opt_conceptCM != cCM))
   {
-    if (opt_conceptCM != "") {
-      if (!opt_override) {
+    if (opt_conceptCM != "")
+    {
+      if (!opt_override)
+      {
         OFLOG_ERROR(appLogger, "concept CM mismatch:" << OFendl
           << "Found in the CDA file : " << cCM << OFendl
           << "Provided (in DCM file): " << opt_conceptCM << OFendl
@@ -927,7 +986,7 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
   }
   else
   {
-  return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
+    return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
   }
 }
 
@@ -935,7 +994,8 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
 OFCondition DcmEncapsulatedDocument::createHeader(
   DcmItem *dataset,
   OFLogger& logger,
-  const char *opt_mediaTypes)
+  const char *opt_mediaTypes,
+  const char *opt_hl7InstanceId)
 {
   OFCondition result = EC_Normal;
   char buf[80];
@@ -950,7 +1010,8 @@ OFCondition DcmEncapsulatedDocument::createHeader(
   if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
   if (result.good()) result = dataset->insertEmptyElement(DCM_ContentTime);
   if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDateTime);
-  if (result.good()) {
+  if (result.good())
+  {
     if (opt_conceptCSD!="" && opt_conceptCV != "" && opt_conceptCM != "")
     {
       result = DcmCodec::insertCodeSequence(dataset, DCM_ConceptNameCodeSequence,
@@ -1029,6 +1090,10 @@ OFCondition DcmEncapsulatedDocument::createHeader(
   if (strlen(opt_mediaTypes) >0)
   {
     if (result.good()) result = dataset->putAndInsertString(DCM_ListOfMIMETypes, opt_mediaTypes);
+  }
+  if (hl7_InstanceIdentifier.size() >0)
+  {
+    if (result.good()) result = dataset->putAndInsertString(DCM_HL7InstanceIdentifier, hl7_InstanceIdentifier.c_str());
   }
   sprintf(buf, "%ld", OFstatic_cast(long, opt_instance));
   if (result.good()) result = dataset->putAndInsertString(DCM_InstanceNumber, buf);

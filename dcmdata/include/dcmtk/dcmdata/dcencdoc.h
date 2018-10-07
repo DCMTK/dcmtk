@@ -135,11 +135,13 @@ public:
    *  @param dataset a reference to a DcmItem containing the information to be included.
    *  @param logger The logger of the application calling this method.
    *  @param opt_mediaTypes optional parameter. Necessary when encapsulating.
+   *  @param opt_hl7InstanceId optional parameter. Necessary when encapsulating.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition createHeader (DcmItem *dataset,
     OFLogger& logger,
-    const char *opt_mediaTypes = "");
+    const char *opt_mediaTypes = "",
+    const char *opt_hl7InstanceId = "");
 
   /** Correctly inserts encapsulated document data.
    *  @param dataset The dataset to which we should encapsulate this document.
@@ -248,6 +250,7 @@ private:
 
   ///CDA specific variables
   OFString                cda_mediaTypes;
+  OFString                hl7_InstanceIdentifier;
   OFBool                  opt_override;
 };
 #endif // DCENCDOC_H
