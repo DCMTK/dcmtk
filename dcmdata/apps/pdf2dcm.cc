@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     return errorCode;
   }
   // now we need to generate an instance number that is guaranteed to be unique within a series.
-  result = encapsulator.createHeader(fileformat.getDataset(), pdf2dcmLogger);
+  result = encapsulator.createHeader(fileformat.getDataset(), pdf2dcmLogger,"","");
   if (result.bad())
   {
     OFLOG_ERROR(pdf2dcmLogger, "unable to create DICOM header: " << result.text());
