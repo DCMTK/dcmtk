@@ -867,10 +867,10 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
     // Total: 50 bytes per facet
     const size_t facetSize32 = 3*sizeof(Float32)
                                + 3*3*sizeof(Float32)
-                               + sizeof(uint16_t);
+                               + sizeof(Uint16);
     const size_t facetSize64 = 3*sizeof(Float64)
                                + 3*3*sizeof(Float64)
-                               + sizeof(uint16_t);
+                               + sizeof(Uint16);
     // STL validation for ASCII CODE
     if (fileSize < 15)
     {
