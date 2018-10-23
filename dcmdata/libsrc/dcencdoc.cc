@@ -471,7 +471,7 @@ void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam(     "stlfile-in",                          "STL input filename to be converted");
-  cmd.addParam(     "dcmfile-out",                        "DICOM output filename");
+  cmd.addParam(     "dcmfile-out",                         "DICOM output filename");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("burned-in annotation:");
@@ -493,7 +493,7 @@ void DcmEncapsulatedDocument::addDocumentOptions(OFCommandLine &cmd)
   cmd.addGroup(     "DICOM document options:");
     cmd.addSubGroup("document title:");
       cmd.addOption("--title",                "+t",   1,  "[t]itle: string (default: empty)",
-          "document title");
+                                                          "document title");
       cmd.addOption("--concept-name",         "+cn",  3,  "[CSD] [CV] [CM]: string (default: empty)",
                                                           "document title as concept name code sequence\nwith coding scheme designator CSD, code value CV\nand code meaning CM");
     cmd.addSubGroup("patient data:");
@@ -538,7 +538,7 @@ void DcmEncapsulatedDocument::addOutputOptions(OFCommandLine &cmd)
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
       cmd.addOption("--padding-retain",       "-p=",      "do not change padding (default)");
       cmd.addOption("--padding-off",          "-p",       "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",       "+p",  2,   "[f]ile-pad [i]tem-pad: integer",
+      cmd.addOption("--padding-create",       "+p",   2,  "[f]ile-pad [i]tem-pad: integer",
                                                           "align file on multiple of f bytes\nand items on multiple of i bytes");
 }
 
@@ -613,6 +613,7 @@ void DcmEncapsulatedDocument::parseArguments(OFConsoleApplication& app, OFComman
       opt_annotation = OFFalse;
     }
     cmd.endOptionBlock();
+
     cmd.beginOptionBlock();
     if (cmd.findOption("--override"))
     {
@@ -908,29 +909,46 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
         fclose(encapfile);
         return EXITCODE_INVALID_INPUT_FILE;
       }
-      // Header is from bytes 0-79; numTriangleBytes starts at byte offset 80.
-      char ntriangleschar=buf[80];
-      Uint32 nTriangles=OFstatic_cast(Uint32,ntriangleschar);
+      // Header is from bytes 0-79
+      // The number of Triangles starts at byte offset 80 and is a uint32 (4 Bytes)
+      char ntriangleschar[5];
+      for(int j=0; j<4;j++)
+        ntriangleschar[j] = buf[80 + j];
+      ntriangleschar[4]= 0;
+      Uint32* nTriangles = OFreinterpret_cast (Uint32*, ntriangleschar);
       // Verify that file size equals the sum of
       // header + nTriangles value + all triangles
       OFLOG_DEBUG(appLogger, "verifying if the file size is consistent");
-      if (fileSize == (84 + nTriangles* facetSize32)||
-          fileSize == (84 + nTriangles* facetSize64))
+      if (fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32)||
+          fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64))
       {
         OFLOG_DEBUG(appLogger, "File " << opt_ifname
-                              << " passed binary STL validation."<<OFendl
-                              << "Assuming valid STL file "
-                              << "in binary format");
+                    << " passed binary STL validation."<<OFendl
+                    << "Assuming valid STL file "
+                    << "in binary format"
+                      );
+        OFLOG_TRACE(appLogger, "The binary STL file is:"<<OFendl
+                    << fileSize << " kB " << " as expected."<< OFendl
+                    << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) << " kB for x86" << OFendl
+                    << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64) << " kB for x64" << OFendl
+                    << "(84 + triangles number * facet size)" << OFendl
+                    << " number of Triangles " << *OFconst_cast(Uint32*, nTriangles) << OFendl
+                    << " nTriangles (Uint32): " << nTriangles << OFendl
+                    << " facetSize32: " << facetSize32 << OFendl
+                    << " facetSize64: " << facetSize64 << OFendl
+                      );
       }
       else
       {
-        OFLOG_ERROR(appLogger, "The binary STL file is not consistent "
-                              <<"(file is "<< fileSize << "kB "<<OFendl
-                              <<"and not "<< (84 + nTriangles* facetSize32)
-                              <<OFendl
-                              <<"numTriangles: "<< nTriangles
-                              <<" facetSize32: "<< facetSize32<<OFendl
-                              <<" facetSize64: "<< facetSize64);
+        OFLOG_ERROR(appLogger, "The binary STL file is not consistent." << OFendl
+                    << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) << " kB for x86 and "
+                    << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64) << " kB for x64 " << OFendl
+                    << "(84 + triangles number * facet size)" << OFendl
+                    << " number of Triangles " << *OFconst_cast(Uint32*, nTriangles) << OFendl
+                    << " nTriangles (Uint32): " << nTriangles << OFendl
+                    << " facetSize32: " << facetSize32 << OFendl
+                    << " facetSize64: " << facetSize64 << OFendl
+                      );
         fclose(encapfile);
         return EXITCODE_INVALID_INPUT_FILE;
       }
