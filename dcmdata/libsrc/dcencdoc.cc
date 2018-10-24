@@ -72,9 +72,11 @@ DcmEncapsulatedDocument::DcmEncapsulatedDocument() :
   opt_instance(1),
   opt_overrideKeys(),
 
+  opt_override(OFFalse),
+
   cda_mediaTypes(),
   hl7_InstanceIdentifier(),
-  opt_override(OFFalse)
+  ftype()
 {
 }
 
@@ -144,7 +146,9 @@ OFString DcmEncapsulatedDocument::XMLgetAllAttributeValues(
   return attributeValues;
 }
 
-OFString DcmEncapsulatedDocument::XMLgetAttribute(XMLNode fileNode, DcmTagKey attr)
+OFString DcmEncapsulatedDocument::XMLgetAttribute(
+  XMLNode fileNode,
+  DcmTagKey attr)
 {
   OFString result = "";
   if (attr == DCM_DocumentTitle)
@@ -234,28 +238,37 @@ OFString DcmEncapsulatedDocument::XMLgetAttribute(XMLNode fileNode, DcmTagKey at
 }
 
 int DcmEncapsulatedDocument::getCDAData(
-          const char *filename,
-          OFLogger &appLogger)
+  const char *filename,
+  OFLogger &appLogger)
 {
+  if (ftype != "cda")
+  {
+    OFLOG_WARN(appLogger, "Filetype mismatch or filetype not set. Current ftype is " << ftype);
+  }
   XMLResults err;
   XMLNode fileNode = XMLNode::parseFile(filename, "ClinicalDocument", &err);
-  //checks if the XML file is correctly formatted
+  OFLOG_TRACE(appLogger, "checking if the XML file is correctly formatted");
   if (0 != err.error)
   {
     OFLOG_ERROR(appLogger, fileNode.getError(err.error));
     return EXITCODE_INVALID_INPUT_FILE;
   }
-
-  //get all media types from CDA file
+  else
+  {
+    OFLOG_TRACE(appLogger, "XML file is correctly formatted");
+  }
+  OFLOG_TRACE(appLogger, "Getting all media types from CDA file");
   cda_mediaTypes = XMLgetAllAttributeValues(fileNode, "mediaType");
+  OFLOG_TRACE(appLogger, "Following mediaTypes were found: " << cda_mediaTypes);
+  OFLOG_TRACE(appLogger, "Getting HL7 Instance Identifier from CDA file");
   hl7_InstanceIdentifier = XMLgetAttribute(fileNode, DCM_HL7InstanceIdentifier);
-  //read and compare patient information from CDA File
+  OFLOG_TRACE(appLogger, "Reading and comparing patient information between CDA File and options");
   OFString pID = XMLgetAttribute(fileNode, DCM_PatientID);
   if ((pID != "") && (opt_patientID != pID))
   {
     if (opt_patientID != "")
     {
-      //if override option is inactive, return an error
+      //if no-override option is inactive, return an error
       if (!opt_override)
       {
         OFLOG_ERROR(appLogger, "Patient ID mismatch:" << OFendl
@@ -437,6 +450,7 @@ int DcmEncapsulatedDocument::getCDAData(
 
 void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
 {
+  ftype = "cda";
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam(     "cdafile-in",                         "CDA input filename to be converted");
@@ -454,6 +468,7 @@ void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
 
 void DcmEncapsulatedDocument::addPDFCommandlineOptions(OFCommandLine &cmd)
 {
+  ftype = "pdf";
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam(     "pdffile-in",                         "PDF input filename to be converted");
@@ -468,6 +483,7 @@ void DcmEncapsulatedDocument::addPDFCommandlineOptions(OFCommandLine &cmd)
 
 void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
 {
+  ftype = "stl";
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam(     "stlfile-in",                          "STL input filename to be converted");
@@ -542,78 +558,81 @@ void DcmEncapsulatedDocument::addOutputOptions(OFCommandLine &cmd)
                                                           "align file on multiple of f bytes\nand items on multiple of i bytes");
 }
 
-void DcmEncapsulatedDocument::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd)
+void DcmEncapsulatedDocument::parseArguments(
+  OFConsoleApplication& app,
+  OFCommandLine& cmd)
 {
-    /* command line parameters and options */
-    cmd.getParam(1, opt_ifname);
-    cmd.getParam(2, opt_ofname);
+  /* command line parameters and options */
+  cmd.getParam(1, opt_ifname);
+  cmd.getParam(2, opt_ofname);
 
-    OFLog::configureFromCommandLine(cmd, app);
+  OFLog::configureFromCommandLine(cmd, app);
 
-    dcmEnableGenerationOfNewVRs();
+  dcmEnableGenerationOfNewVRs();
 
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--generate"))
-    {
-      opt_seriesFile = "";
-      opt_readSeriesInfo = OFFalse;
-    }
+  cmd.beginOptionBlock();
+  if (cmd.findOption("--generate"))
+  {
+    opt_seriesFile = "";
+    opt_readSeriesInfo = OFFalse;
+  }
 
-    if (cmd.findOption("--series-from"))
-    {
-      app.checkValue(cmd.getValue(opt_seriesFile));
-      opt_readSeriesInfo = OFTrue;
-    }
+  if (cmd.findOption("--series-from"))
+  {
+    app.checkValue(cmd.getValue(opt_seriesFile));
+    opt_readSeriesInfo = OFTrue;
+  }
 
-    if (cmd.findOption("--study-from"))
-    {
-      app.checkValue(cmd.getValue(opt_seriesFile));
-      opt_readSeriesInfo = OFFalse;
-    }
-    cmd.endOptionBlock();
-    if (cmd.findOption("--title"))
-    {
-      app.checkValue(cmd.getValue(opt_documentTitle));
-    }
-    if (cmd.findOption("--concept-name"))
-    {
-      app.checkValue(cmd.getValue(opt_conceptCSD));
-      app.checkValue(cmd.getValue(opt_conceptCV));
-      app.checkValue(cmd.getValue(opt_conceptCM));
-    }
-    if (cmd.findOption("--patient-name"))
-    {
-      app.checkValue(cmd.getValue(opt_patientName));
-      app.checkConflict("--patient-name", "--study-from or --series-from",
-                          opt_seriesFile != "");
-    }
-    if (cmd.findOption("--patient-id"))
-    {
-      app.checkValue(cmd.getValue(opt_patientID));
-      app.checkConflict("--patient-id", "--study-from or --series-from",
-                          opt_seriesFile != "");
-    }
-    if (cmd.findOption("--patient-birthdate"))
-    {
-      app.checkValue(cmd.getValue(opt_patientBirthdate));
-      app.checkConflict("--patient-birthdate", "--study-from or --series-from", opt_seriesFile != "");
-    }
-    if (cmd.findOption("--patient-sex"))
-    {
-      app.checkValue(cmd.getValue(opt_patientSex));
-      app.checkConflict("--patient-sex", "--study-from or --series-from", opt_seriesFile != "");
-    }
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--annotation-yes"))
-    {
-      opt_annotation = OFTrue;
-    }
-    if (cmd.findOption("--annotation-no"))
-    {
-      opt_annotation = OFFalse;
-    }
-    cmd.endOptionBlock();
-
+  if (cmd.findOption("--study-from"))
+  {
+    app.checkValue(cmd.getValue(opt_seriesFile));
+    opt_readSeriesInfo = OFFalse;
+  }
+  cmd.endOptionBlock();
+  if (cmd.findOption("--title"))
+  {
+    app.checkValue(cmd.getValue(opt_documentTitle));
+  }
+  if (cmd.findOption("--concept-name"))
+  {
+    app.checkValue(cmd.getValue(opt_conceptCSD));
+    app.checkValue(cmd.getValue(opt_conceptCV));
+    app.checkValue(cmd.getValue(opt_conceptCM));
+  }
+  if (cmd.findOption("--patient-name"))
+  {
+    app.checkValue(cmd.getValue(opt_patientName));
+    app.checkConflict("--patient-name", "--study-from or --series-from",
+                        opt_seriesFile != "");
+  }
+  if (cmd.findOption("--patient-id"))
+  {
+    app.checkValue(cmd.getValue(opt_patientID));
+    app.checkConflict("--patient-id", "--study-from or --series-from",
+                        opt_seriesFile != "");
+  }
+  if (cmd.findOption("--patient-birthdate"))
+  {
+    app.checkValue(cmd.getValue(opt_patientBirthdate));
+    app.checkConflict("--patient-birthdate", "--study-from or --series-from", opt_seriesFile != "");
+  }
+  if (cmd.findOption("--patient-sex"))
+  {
+    app.checkValue(cmd.getValue(opt_patientSex));
+    app.checkConflict("--patient-sex", "--study-from or --series-from", opt_seriesFile != "");
+  }
+  cmd.beginOptionBlock();
+  if (cmd.findOption("--annotation-yes"))
+  {
+    opt_annotation = OFTrue;
+  }
+  if (cmd.findOption("--annotation-no"))
+  {
+    opt_annotation = OFFalse;
+  }
+  cmd.endOptionBlock();
+  if (ftype == "cda")
+  {
     cmd.beginOptionBlock();
     if (cmd.findOption("--override"))
     {
@@ -624,76 +643,76 @@ void DcmEncapsulatedDocument::parseArguments(OFConsoleApplication& app, OFComman
       opt_override = OFFalse;
     }
     cmd.endOptionBlock();
+  }
+  cmd.beginOptionBlock();
+  if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
+  if (cmd.findOption("--write-xfer-big")) opt_oxfer = EXS_BigEndianExplicit;
+  if (cmd.findOption("--write-xfer-implicit")) opt_oxfer = EXS_LittleEndianImplicit;
+  cmd.endOptionBlock();
 
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
-    if (cmd.findOption("--write-xfer-big")) opt_oxfer = EXS_BigEndianExplicit;
-    if (cmd.findOption("--write-xfer-implicit")) opt_oxfer = EXS_LittleEndianImplicit;
-    cmd.endOptionBlock();
+  cmd.beginOptionBlock();
+  if (cmd.findOption("--group-length-recalc")) opt_oglenc = EGL_recalcGL;
+  if (cmd.findOption("--group-length-create")) opt_oglenc = EGL_withGL;
+  if (cmd.findOption("--group-length-remove")) opt_oglenc = EGL_withoutGL;
+  cmd.endOptionBlock();
 
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--group-length-recalc")) opt_oglenc = EGL_recalcGL;
-    if (cmd.findOption("--group-length-create")) opt_oglenc = EGL_withGL;
-    if (cmd.findOption("--group-length-remove")) opt_oglenc = EGL_withoutGL;
-    cmd.endOptionBlock();
+  cmd.beginOptionBlock();
+  if (cmd.findOption("--length-explicit")) opt_oenctype = EET_ExplicitLength;
+  if (cmd.findOption("--length-undefined")) opt_oenctype = EET_UndefinedLength;
+  cmd.endOptionBlock();
 
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--length-explicit")) opt_oenctype = EET_ExplicitLength;
-    if (cmd.findOption("--length-undefined")) opt_oenctype = EET_UndefinedLength;
-    cmd.endOptionBlock();
+  cmd.beginOptionBlock();
+  if (cmd.findOption("--padding-retain"))
+  {
+    app.checkConflict("--padding-retain", "--write-dataset",
+                        opt_writeMode == EWM_dataset);
+    opt_opadenc = EPD_noChange;
+  }
+  if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
+  if (cmd.findOption("--padding-create"))
+  {
+    app.checkConflict("--padding-create", "--write-dataset",
+                        opt_writeMode == EWM_dataset);
+    app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
+    app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
+    opt_opadenc = EPD_withPadding;
+  }
+  cmd.endOptionBlock();
 
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--padding-retain"))
-    {
-      app.checkConflict("--padding-retain", "--write-dataset",
-                          opt_writeMode == EWM_dataset);
-      opt_opadenc = EPD_noChange;
-    }
-    if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
-    if (cmd.findOption("--padding-create"))
-    {
-      app.checkConflict("--padding-create", "--write-dataset",
-                          opt_writeMode == EWM_dataset);
-      app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
-      app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
-      opt_opadenc = EPD_withPadding;
-    }
-    cmd.endOptionBlock();
+  // create override attribute dataset
+  if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
+  {
+    const char *ovKey = NULL;
+    do {
+      app.checkValue(cmd.getValue(ovKey));
+      opt_overrideKeys.push_back(ovKey);
+    } while (cmd.findOption("--key", 0, OFCommandLine::FOM_NextFromLeft));
+  }
+  setOverrideKeys(opt_overrideKeys);
+  // initialize default for --series-from
+  if (opt_seriesFile!="" && opt_readSeriesInfo) opt_increment = OFTrue;
 
-    // create override attribute dataset
-    if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
-    {
-      const char *ovKey = NULL;
-      do {
-        app.checkValue(cmd.getValue(ovKey));
-        opt_overrideKeys.push_back(ovKey);
-      } while (cmd.findOption("--key", 0, OFCommandLine::FOM_NextFromLeft));
-      }
-      setOverrideKeys(opt_overrideKeys);
-      // initialize default for --series-from
-      if (opt_seriesFile!="" && opt_readSeriesInfo) opt_increment = OFTrue;
-
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--instance-one"))
-      {
-        app.checkConflict("--instance-one", "--series-from",
-                          (opt_seriesFile != "") && opt_readSeriesInfo);
-        opt_increment = OFFalse;
-        opt_instance = 1;
-      }
-      if (cmd.findOption("--instance-inc"))
-      {
-        app.checkDependence("--instance-inc", "--series-from",
-                            (opt_seriesFile != "") && opt_readSeriesInfo);
-        opt_increment = OFTrue;
-      }
-      if (cmd.findOption("--instance-set"))
-      {
-        opt_increment = OFFalse;
-        app.checkValue(cmd.getValueAndCheckMin(opt_instance, 1));
-      }
-      cmd.endOptionBlock();
-    }
+  cmd.beginOptionBlock();
+  if (cmd.findOption("--instance-one"))
+  {
+    app.checkConflict("--instance-one", "--series-from",
+                      (opt_seriesFile != "") && opt_readSeriesInfo);
+    opt_increment = OFFalse;
+    opt_instance = 1;
+  }
+  if (cmd.findOption("--instance-inc"))
+  {
+    app.checkDependence("--instance-inc", "--series-from",
+                        (opt_seriesFile != "") && opt_readSeriesInfo);
+    opt_increment = OFTrue;
+  }
+  if (cmd.findOption("--instance-set"))
+  {
+    opt_increment = OFFalse;
+    app.checkValue(cmd.getValueAndCheckMin(opt_instance, 1));
+  }
+  cmd.endOptionBlock();
+}
 
 OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger& appLogger)
 {
@@ -782,14 +801,13 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
   OFLogger& appLogger)
 {
   char buf[100];
-  OFString ftype;
   size_t fileSize = 0;
   size_t buflen = 100;
   struct stat fileStat;
 
   if (0 == stat(opt_ifname.c_str(), &fileStat))
   {
-      fileSize = OFstatic_cast(size_t, fileStat.st_size);
+    fileSize = OFstatic_cast(size_t, fileStat.st_size);
   }
   else
   {
@@ -817,9 +835,8 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
     fclose(encapfile);
     return EXITCODE_INVALID_INPUT_FILE;
   }
-  if (appLogger.getName() == "dcmtk.apps.pdf2dcm")
+  if (ftype == "pdf")
   {
-    ftype="pdf";
     // check magic word for PDF file
     if (0 != strncmp("%PDF-", buf, 5))
     {
@@ -842,115 +859,124 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
     if (!found)
     {
       OFLOG_ERROR(appLogger, "file " << opt_ifname
-                            << ": unable to decode PDF version number");
+        << ": unable to decode PDF version number");
       fclose(encapfile);
       return EXITCODE_INVALID_INPUT_FILE;
     }
     OFLOG_INFO(appLogger, "file " << opt_ifname
-                         << ": PDF " << version << ", "
-                         << (fileSize + 1023) / 1024 << "kB");
+      << ": PDF " << version << ", "
+      << (fileSize + 1023) / 1024 << "kB");
   }
-  if (appLogger.getName() == "dcmtk.apps.cda2dcm")
+  else
   {
-    ftype="cda";
-    //xml validation occurs when getting data
-    OFLOG_INFO(appLogger, "file " << opt_ifname
-                         << ": HL7 CDA file (XML Format)" << ", "
-                         << (fileSize + 1023) / 1024 << "kB");
-  }
-  if (appLogger.getName() == "dcmtk.apps.stl2dcm")
-  {
-    ftype="stl";
-    // Each facet contains:
-    //  - Normals: 3 floats (4 bytes)
-    //  - Vertices: 3x floats (4 byte each, 12 bytes total)
-    //  - AttributeCount: 1 short (2 bytes)
-    // Total: 50 bytes per facet
-    const size_t facetSize32 = 3*sizeof(Float32)
-                               + 3*3*sizeof(Float32)
-                               + sizeof(Uint16);
-    const size_t facetSize64 = 3*sizeof(Float64)
-                               + 3*3*sizeof(Float64)
-                               + sizeof(Uint16);
-    // STL validation for ASCII CODE
-    if (fileSize < 15)
+    if (ftype == "cda")
     {
-    // "solid " and "endsolid " markers for an ASCII file
-      OFLOG_ERROR(appLogger, "The STL file is not long enough"
-                            <<" ("<< fileSize << "kB)");
-      fclose(encapfile);
-      return EXITCODE_INVALID_INPUT_FILE;
+      //xml validation occurs when getting data
+      OFLOG_INFO(appLogger, "file " << opt_ifname
+        << ": HL7 CDA file (XML Format)" << ", "
+        << (fileSize + 1023) / 1024 << "kB");
     }
-    // Binary files should never start with "solid ",
-    // but just in case, check for ASCII,
-    // and if not valid then check for binary...
-    // Look for text "solid " in first 6 bytes,
-    // indicating the possibility that this is an
-    // ASCII STL format.
-    if (0 == strncmp("solid ", buf, 6))
-    {
-      OFLOG_DEBUG(appLogger, "File " << opt_ifname
-                            << " starts with 'solid '. "
-                            <<"Assuming valid STL file "
-                            <<"in ASCII Code");
-    //TODO: check if last line starts with "endsolid"
-    }
-    //////STL validation for Binary Format
     else
     {
-      OFLOG_DEBUG(appLogger, "Magic word 'solid ' not found. "
-                            <<"Validating STL file "
-                            <<"in Binary format");
-      // 80-byte header + 4-byte "number of triangles" for a binary file
-      if (fileSize < 84)
+      if (ftype == "stl")
       {
-        OFLOG_ERROR(appLogger, "The binary STL file is not long enough"
-                              <<" ("<< fileSize << "kB)");
-        fclose(encapfile);
-        return EXITCODE_INVALID_INPUT_FILE;
-      }
-      // Header is from bytes 0-79
-      // The number of Triangles starts at byte offset 80 and is a uint32 (4 Bytes)
-      char ntriangleschar[5];
-      for(int j=0; j<4;j++)
-        ntriangleschar[j] = buf[80 + j];
-      ntriangleschar[4]= 0;
-      Uint32* nTriangles = OFreinterpret_cast (Uint32*, ntriangleschar);
-      // Verify that file size equals the sum of
-      // header + nTriangles value + all triangles
-      OFLOG_DEBUG(appLogger, "verifying if the file size is consistent");
-      if (fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32)||
-          fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64))
-      {
-        OFLOG_DEBUG(appLogger, "File " << opt_ifname
-                    << " passed binary STL validation."<<OFendl
-                    << "Assuming valid STL file "
-                    << "in binary format"
-                      );
-        OFLOG_TRACE(appLogger, "The binary STL file is:"<<OFendl
-                    << fileSize << " kB " << " as expected."<< OFendl
-                    << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) << " kB for x86" << OFendl
-                    << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64) << " kB for x64" << OFendl
-                    << "(84 + triangles number * facet size)" << OFendl
-                    << " number of Triangles " << *OFconst_cast(Uint32*, nTriangles) << OFendl
-                    << " nTriangles (Uint32): " << nTriangles << OFendl
-                    << " facetSize32: " << facetSize32 << OFendl
-                    << " facetSize64: " << facetSize64 << OFendl
-                      );
+        // Each facet contains:
+        //  - Normals: 3 floats (4 bytes)
+        //  - Vertices: 3x floats (4 byte each, 12 bytes total)
+        //  - AttributeCount: 1 short (2 bytes)
+        // Total: 50 bytes per facet
+        const size_t facetSize32 = 3 * sizeof(Float32)
+          + 3 * 3 * sizeof(Float32)
+          + sizeof(Uint16);
+        const size_t facetSize64 = 3 * sizeof(Float64)
+          + 3 * 3 * sizeof(Float64)
+          + sizeof(Uint16);
+        // STL validation for ASCII CODE
+        if (fileSize < 15)
+        {
+          // "solid " and "endsolid " markers for an ASCII file
+          OFLOG_ERROR(appLogger, "The STL file is not long enough"
+            << " (" << fileSize << "kB)");
+          fclose(encapfile);
+          return EXITCODE_INVALID_INPUT_FILE;
+        }
+        // Binary files should never start with "solid ",
+        // but just in case, check for ASCII,
+        // and if not valid then check for binary...
+        // Look for text "solid " in first 6 bytes,
+        // indicating the possibility that this is an
+        // ASCII STL format.
+        if (0 == strncmp("solid ", buf, 6))
+        {
+          OFLOG_DEBUG(appLogger, "File " << opt_ifname
+            << " starts with 'solid '. "
+            << "Assuming valid STL file "
+            << "in ASCII Code");
+          //TODO: check if last line starts with "endsolid"
+        }
+        //////STL validation for Binary Format
+        else
+        {
+          OFLOG_DEBUG(appLogger, "Magic word 'solid ' not found. "
+            << "Validating STL file "
+            << "in Binary format");
+          // 80-byte header + 4-byte "number of triangles" for a binary file
+          if (fileSize < 84)
+          {
+            OFLOG_ERROR(appLogger, "The binary STL file is not long enough"
+              << " (" << fileSize << "kB)");
+            fclose(encapfile);
+            return EXITCODE_INVALID_INPUT_FILE;
+          }
+          // Header is from bytes 0-79
+          // The number of Triangles starts at byte offset 80 and is a uint32 (4 Bytes)
+          char ntriangleschar[5];
+          for (int j = 0; j < 4; j++)
+            ntriangleschar[j] = buf[80 + j];
+          ntriangleschar[4] = 0;
+          Uint32* nTriangles = OFreinterpret_cast(Uint32*, ntriangleschar);
+          // Verify that file size equals the sum of
+          // header + nTriangles value + all triangles
+          OFLOG_DEBUG(appLogger, "verifying if the file size is consistent");
+          if (fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) ||
+            fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64))
+          {
+            OFLOG_DEBUG(appLogger, "File " << opt_ifname
+              << " passed binary STL validation." << OFendl
+              << "Assuming valid STL file "
+              << "in binary format"
+            );
+            OFLOG_TRACE(appLogger, "The binary STL file is:" << OFendl
+              << fileSize << " kB " << " as expected." << OFendl
+              << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) << " kB for x86" << OFendl
+              << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64) << " kB for x64" << OFendl
+              << "(84 + triangles number * facet size)" << OFendl
+              << " number of Triangles " << *OFconst_cast(Uint32*, nTriangles) << OFendl
+              << " nTriangles (Uint32): " << nTriangles << OFendl
+              << " facetSize32: " << facetSize32 << OFendl
+              << " facetSize64: " << facetSize64 << OFendl
+            );
+          }
+          else
+          {
+            OFLOG_ERROR(appLogger, "The binary STL file is not consistent." << OFendl
+              << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) << " kB for x86 and "
+              << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64) << " kB for x64 " << OFendl
+              << "(84 + triangles number * facet size)" << OFendl
+              << " number of Triangles " << *OFconst_cast(Uint32*, nTriangles) << OFendl
+              << " nTriangles (Uint32): " << nTriangles << OFendl
+              << " facetSize32: " << facetSize32 << OFendl
+              << " facetSize64: " << facetSize64 << OFendl
+            );
+            fclose(encapfile);
+            return EXITCODE_INVALID_INPUT_FILE;
+          }
+        }
       }
       else
       {
-        OFLOG_ERROR(appLogger, "The binary STL file is not consistent." << OFendl
-                    << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) << " kB for x86 and "
-                    << (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64) << " kB for x64 " << OFendl
-                    << "(84 + triangles number * facet size)" << OFendl
-                    << " number of Triangles " << *OFconst_cast(Uint32*, nTriangles) << OFendl
-                    << " nTriangles (Uint32): " << nTriangles << OFendl
-                    << " facetSize32: " << facetSize32 << OFendl
-                    << " facetSize64: " << facetSize64 << OFendl
-                      );
-        fclose(encapfile);
-        return EXITCODE_INVALID_INPUT_FILE;
+        OFLOG_WARN(appLogger, "Filetype not supported or filetype not set. Current ftype is " << ftype << OFendl
+          << "The name of the passed logger is: " << appLogger.getName());
       }
     }
   }
@@ -1008,16 +1034,12 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
   }
 }
 
-
 OFCondition DcmEncapsulatedDocument::createHeader(
   DcmItem *dataset,
-  OFLogger& logger,
-  const char *opt_mediaTypes,
-  const char *opt_hl7InstanceId)
+  OFLogger& logger)
 {
   OFCondition result = EC_Normal;
   char buf[80];
-  OFString ftype;
   // insert empty type 2 attributes
   if (result.good()) result = dataset->insertEmptyElement(DCM_StudyDate);
   if (result.good()) result = dataset->insertEmptyElement(DCM_StudyTime);
@@ -1105,9 +1127,9 @@ OFCondition DcmEncapsulatedDocument::createHeader(
   if (result.good()) result = dataset->putAndInsertString(DCM_PatientBirthDate, opt_patientBirthdate.c_str());
   if (result.good()) result = dataset->putAndInsertString(DCM_PatientSex, opt_patientSex.c_str());
   if (result.good()) result = dataset->putAndInsertString(DCM_BurnedInAnnotation, opt_annotation ? "YES" : "NO");
-  if (strlen(opt_mediaTypes) >0)
+  if (strlen(cda_mediaTypes.c_str()) >0)
   {
-    if (result.good()) result = dataset->putAndInsertString(DCM_ListOfMIMETypes, opt_mediaTypes);
+    if (result.good()) result = dataset->putAndInsertString(DCM_ListOfMIMETypes, cda_mediaTypes.c_str());
   }
   if (hl7_InstanceIdentifier.size() >0)
   {
@@ -1187,6 +1209,16 @@ void DcmEncapsulatedDocument::setOutputFileName(OFString fName)
   opt_ofname = fName;
 }
 
+OFString DcmEncapsulatedDocument::getFileType()
+{
+  return ftype;
+}
+
+void DcmEncapsulatedDocument::setFileType(OFString fType)
+{
+  ftype = fType;
+}
+
 E_TransferSyntax DcmEncapsulatedDocument::getTransferSyntax()
 {
   return opt_oxfer;
@@ -1195,4 +1227,3 @@ E_TransferSyntax DcmEncapsulatedDocument::getTransferSyntax()
 DcmEncapsulatedDocument::~DcmEncapsulatedDocument()
 {
 }
-

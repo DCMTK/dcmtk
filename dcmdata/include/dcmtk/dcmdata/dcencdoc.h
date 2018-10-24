@@ -134,14 +134,10 @@ public:
   /** Includes basic information into the dicom file.
    *  @param dataset a reference to a DcmItem containing the information to be included.
    *  @param logger The logger of the application calling this method.
-   *  @param opt_mediaTypes optional parameter. Necessary when encapsulating.
-   *  @param opt_hl7InstanceId optional parameter. Necessary when encapsulating.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition createHeader (DcmItem *dataset,
-    OFLogger& logger,
-    const char *opt_mediaTypes = "",
-    const char *opt_hl7InstanceId = "");
+    OFLogger& logger);
 
   /** Correctly inserts encapsulated document data.
    *  @param dataset The dataset to which we should encapsulate this document.
@@ -206,6 +202,20 @@ public:
    *  @return the transfer syntax as E_TransferSyntax.
    */
   E_TransferSyntax getTransferSyntax();
+
+  ///Type of file currently being converted.
+  OFString ftype;
+
+  /** Returns the current filetype.
+   *  @return the current filetype as OFString.
+   */
+  OFString getFileType();
+
+  /** Sets the current filetype.
+   *  @param fName the current filetype.
+   *  @return none.
+   */
+  void setFileType(OFString fType);
 
 private:
   ///input file name
