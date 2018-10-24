@@ -92,18 +92,20 @@ int main(int argc, char *argv[])
   /* print resource identifier */
   OFLOG_DEBUG(cda2dcmLogger, rcsid << OFendl);
 
-  /* make sure data dictionary is loaded */
+  OFLOG_DEBUG(cda2dcmLogger, "making sure data dictionary is loaded");
   if (!dcmDataDict.isDictionaryLoaded())
   {
     OFLOG_WARN(cda2dcmLogger, "no data dictionary loaded, check environment variable: "
       << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
+  OFLOG_DEBUG(cda2dcmLogger, "Creating identifiers (and reading series data)");
   result = encapsulator.createIdentifiers(cda2dcmLogger);
   if (result.bad())
   {
     OFLOG_FATAL(cda2dcmLogger, "There was an error while reading the series data");
     return EXITCODE_INVALID_INPUT_FILE;
   }
+  OFLOG_DEBUG(cda2dcmLogger, "Fetching CDA Data");
   errorCode = encapsulator.getCDAData(encapsulator.getInputFileName().c_str(), cda2dcmLogger);
   if (errorCode != EXITCODE_NO_ERROR)
   {
@@ -120,7 +122,7 @@ int main(int argc, char *argv[])
     OFLOG_ERROR(cda2dcmLogger, "unable to create CDA encapsulation to DICOM format");
     return errorCode;
   }
-  // now we need to generate an instance number that is guaranteed to be unique within a series.
+  OFLOG_INFO(cda2dcmLogger, "Generating an instance number that is guaranteed to be unique within a series.");
   result = encapsulator.createHeader(fileformat.getDataset(), cda2dcmLogger);
   if (result.bad())
   {

@@ -92,12 +92,13 @@ int main(int argc, char *argv[])
   /* print resource identifier */
   OFLOG_DEBUG(pdf2dcmLogger, rcsid << OFendl);
 
-  /* make sure data dictionary is loaded */
+  OFLOG_DEBUG(pdf2dcmLogger, "making sure data dictionary is loaded");
   if (!dcmDataDict.isDictionaryLoaded())
   {
     OFLOG_WARN(pdf2dcmLogger, "no data dictionary loaded, check environment variable: "
       << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
+  OFLOG_DEBUG(pdf2dcmLogger, "Creating identifiers (and reading series data)");
   result = encapsulator.createIdentifiers(pdf2dcmLogger);
   if (result.bad())
   {
@@ -111,8 +112,8 @@ int main(int argc, char *argv[])
     OFLOG_ERROR(pdf2dcmLogger, "unable to create PDF encapsulation to DICOM format");
     return errorCode;
   }
-  // now we need to generate an instance number that is guaranteed to be unique within a series.
-  result = encapsulator.createHeader(fileformat.getDataset(), pdf2dcmLogger,"","");
+  OFLOG_INFO(pdf2dcmLogger, "Generating an instance number that is guaranteed to be unique within a series.");
+  result = encapsulator.createHeader(fileformat.getDataset(), pdf2dcmLogger);
   if (result.bad())
   {
     OFLOG_ERROR(pdf2dcmLogger, "unable to create DICOM header: " << result.text());

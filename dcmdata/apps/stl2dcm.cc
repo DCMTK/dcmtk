@@ -92,12 +92,13 @@ int main(int argc, char *argv[])
   /* print resource identifier */
   OFLOG_DEBUG(stl2dcmLogger, rcsid << OFendl);
 
-  /* make sure data dictionary is loaded */
+  OFLOG_DEBUG(stl2dcmLogger, "making sure data dictionary is loaded");
   if (!dcmDataDict.isDictionaryLoaded())
   {
     OFLOG_WARN(stl2dcmLogger, "no data dictionary loaded, check environment variable: "
       << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
+  OFLOG_DEBUG(stl2dcmLogger, "Creating identifiers (and reading series data)");
   result = encapsulator.createIdentifiers(stl2dcmLogger);
   if (result.bad())
   {
@@ -111,7 +112,7 @@ int main(int argc, char *argv[])
     OFLOG_ERROR(stl2dcmLogger, "unable to create STL encapsulation to DICOM format");
     return errorCode;
   }
-  // now we need to generate an instance number that is guaranteed to be unique within a series.
+  OFLOG_INFO(stl2dcmLogger, "Generating an instance number that is guaranteed to be unique within a series.");
   result = encapsulator.createHeader(fileformat.getDataset(), stl2dcmLogger);
   if (result.bad())
   {
