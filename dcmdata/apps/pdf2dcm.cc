@@ -66,13 +66,13 @@ int main(int argc, char *argv[])
   DcmFileFormat fileformat;
   DcmEncapsulatedDocument encapsulator;
 
-  /*include necessary options*/
+  OFLOG_TRACE(pdf2dcmLogger, "Including necessary options");
   encapsulator.addPDFCommandlineOptions(cmd);
-  /* evaluate command line */
+  OFLOG_TRACE(pdf2dcmLogger, "Evaluating command line");
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
 
   if (app.parseCommandLine(cmd, argc, argv)) {
-    /* check exclusive options first */
+    OFLOG_TRACE(pdf2dcmLogger, "Checking exclusive options first");
     if (cmd.hasExclusiveOption())
     {
       if (cmd.findOption("--version"))
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     }
     encapsulator.parseArguments(app, cmd);
   }
-  /* print resource identifier */
+  //print resource identifier
   OFLOG_DEBUG(pdf2dcmLogger, rcsid << OFendl);
 
   OFLOG_DEBUG(pdf2dcmLogger, "making sure data dictionary is loaded");

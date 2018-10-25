@@ -65,14 +65,13 @@ int main(int argc, char *argv[])
   OFCondition result = EC_Normal;
   DcmFileFormat fileformat;
   DcmEncapsulatedDocument encapsulator;
-
-  /*include necessary options*/
+  OFLOG_TRACE(cda2dcmLogger, "Including necessary options");
   encapsulator.addCDACommandlineOptions(cmd);
-  /* evaluate command line */
+  OFLOG_TRACE(cda2dcmLogger, "Evaluating command line");
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
 
   if (app.parseCommandLine(cmd, argc, argv)) {
-    /* check exclusive options first */
+    OFLOG_TRACE (cda2dcmLogger, "Checking exclusive options first");
     if (cmd.hasExclusiveOption())
     {
       if (cmd.findOption("--version"))
@@ -89,7 +88,7 @@ int main(int argc, char *argv[])
     }
     encapsulator.parseArguments(app, cmd);
   }
-  /* print resource identifier */
+  //print resource identifier
   OFLOG_DEBUG(cda2dcmLogger, rcsid << OFendl);
 
   OFLOG_DEBUG(cda2dcmLogger, "making sure data dictionary is loaded");
@@ -98,7 +97,7 @@ int main(int argc, char *argv[])
     OFLOG_WARN(cda2dcmLogger, "no data dictionary loaded, check environment variable: "
       << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
-  OFLOG_DEBUG(cda2dcmLogger, "Creating identifiers (and reading series data)");
+  OFLOG_TRACE(cda2dcmLogger, "Creating identifiers (and reading series data)");
   result = encapsulator.createIdentifiers(cda2dcmLogger);
   if (result.bad())
   {

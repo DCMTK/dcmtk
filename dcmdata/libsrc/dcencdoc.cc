@@ -28,6 +28,7 @@
 #include "dcmtk/dcmdata/dcencdoc.h"
 //for dcmtk version name
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmiod/modequipment.h"
 #include "dcmtk/ofstd/ofdatime.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -76,6 +77,19 @@ DcmEncapsulatedDocument::DcmEncapsulatedDocument() :
 
   cda_mediaTypes(),
   hl7_InstanceIdentifier(),
+  // Frame of Reference Module (STL)
+  opt_frameOfReferenceUID(),
+  opt_positionReferenceIndicator(),
+  // Frame of Reference Module (STL)
+  opt_Manufacturer(),
+  opt_ManufacturerModelName(),
+  opt_DeviceSerialNumber(),
+  opt_SoftwareVersions(),
+  // Enhanced General Equipment Module (STL)
+  opt_measurementUnitsCM(),
+  opt_measurementUnitsCSD(),
+  opt_measurementUnitsCV(),
+  //encapsulation file type
   ftype()
 {
 }
@@ -100,12 +114,14 @@ OFBool DcmEncapsulatedDocument::XMLsearchAttribute(
   {
     //"currnode has children (branch)";
     if (currnode.isAttributeSet(attr.c_str()))
-    {//attribute found on branch
+    {
+      //attribute found on branch
       results->push_back(OFSTRING_GUARD(currnode.getAttribute(attr.c_str())));
       found = OFTrue;
     }
     for (int i = 0; i < currnode.nChildNode(); i++)
-    {//search all children recursively
+    {
+      //search all children recursively
       OFBool childfound = XMLsearchAttribute(currnode.getChildNode(i), results, attr);
       found |= childfound;
     }
@@ -494,6 +510,19 @@ void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
       cmd.addOption("--annotation-yes",       "+an",      "STL file contains patient identifying data (default)");
       cmd.addOption("--annotation-no",        "-an",      "STL file does not contain patient identifying data");
   addOutputOptions(cmd);
+  cmd.addGroup("Manufacturing 3D Model Measurement Units Options:");
+    cmd.addSubGroup("3D Model Measurement Units:");
+      cmd.addOption("--measurement-units",    "+mu",  3,  "[CSD] [CV] [CM]: string (default: empty)",
+                                                          "Coding scheme designator CSD (default: UCUM) code value CV (default: um)\nand code meaning CM(default: um)");
+  cmd.addGroup("Enhanced general equipment Options:");
+    cmd.addOption("--manufacturer",           "+mn",  1,  "[n]ame: string",
+                                                          "manufacturer's name in DICOM PN syntax");
+    cmd.addOption("--manufacturer-model-name","+mi",  1,  "[i]d: string",
+                                                          "manufacturer model name");
+    cmd.addOption("--device-serial-number",   "+ds",  1,  "[s]erial number: string",
+                                                          "device serial number");
+    cmd.addOption("--software-versions",      "+sv",  1,  "[v]ersions: string",
+                                                          "software versions");
 }
 
 void DcmEncapsulatedDocument::addGeneralOptions(OFCommandLine &cmd)
@@ -562,13 +591,16 @@ void DcmEncapsulatedDocument::parseArguments(
   OFConsoleApplication& app,
   OFCommandLine& cmd)
 {
-  /* command line parameters and options */
+  //command line parameters and options
   cmd.getParam(1, opt_ifname);
   cmd.getParam(2, opt_ofname);
 
   OFLog::configureFromCommandLine(cmd, app);
 
   dcmEnableGenerationOfNewVRs();
+
+  // Override keys are applied at the very end of the conversion "pipeline"
+  OFList<OFString> overrideKeys;
 
   cmd.beginOptionBlock();
   if (cmd.findOption("--generate"))
@@ -644,6 +676,19 @@ void DcmEncapsulatedDocument::parseArguments(
     }
     cmd.endOptionBlock();
   }
+  if (ftype == "stl")
+  {
+    if (cmd.findOption("--measurement-units"))
+    {
+      app.checkValue(cmd.getValue(opt_measurementUnitsCSD));
+      app.checkValue(cmd.getValue(opt_measurementUnitsCV));
+      app.checkValue(cmd.getValue(opt_measurementUnitsCM));
+    }
+    if (cmd.findOption("--manufacturer"))app.checkValue(cmd.getValue(opt_Manufacturer));
+    if (cmd.findOption("--manufacturer-model-name"))app.checkValue(cmd.getValue(opt_ManufacturerModelName));
+    if (cmd.findOption("--device-serial-number"))app.checkValue(cmd.getValue(opt_DeviceSerialNumber));
+    if (cmd.findOption("--software-versions"))app.checkValue(cmd.getValue(opt_SoftwareVersions));
+  }
   cmd.beginOptionBlock();
   if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
   if (cmd.findOption("--write-xfer-big")) opt_oxfer = EXS_BigEndianExplicit;
@@ -679,16 +724,16 @@ void DcmEncapsulatedDocument::parseArguments(
   }
   cmd.endOptionBlock();
 
-  // create override attribute dataset
-  if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
+  // create override attribute dataset (copied from findscu code)
+  if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft ) )
   {
     const char *ovKey = NULL;
     do {
       app.checkValue(cmd.getValue(ovKey));
-      opt_overrideKeys.push_back(ovKey);
-    } while (cmd.findOption("--key", 0, OFCommandLine::FOM_NextFromLeft));
+      overrideKeys.push_back(ovKey);
+    } while (cmd.findOption("--key", 0, OFCommandLine::FOM_NextFromLeft ) );
   }
-  setOverrideKeys(opt_overrideKeys);
+  DcmEncapsulatedDocument::setOverrideKeys(overrideKeys);
   // initialize default for --series-from
   if (opt_seriesFile!="" && opt_readSeriesInfo) opt_increment = OFTrue;
 
@@ -734,7 +779,7 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger& appLogger)
       DcmDataset *dset = dfile.getDataset();
       if (dset)
       {
-        // read patient attributes
+        OFLOG_TRACE(appLogger, "reading patient attributes");
         c = NULL;
         if (dset->findAndGetString(DCM_PatientName, c).good() && c)
         {
@@ -755,13 +800,13 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger& appLogger)
         {
         opt_patientSex = c;
         }
-        // read study attributes
+        OFLOG_TRACE(appLogger, "reading study attributes");
         c = NULL;
         if (dset->findAndGetString(DCM_StudyInstanceUID, c).good() && c)
         {
         opt_studyUID = c;
         }
-        // read series attributes
+        OFLOG_TRACE(appLogger, "reading series attributes");
         if (opt_readSeriesInfo)
         {
           c = NULL;
@@ -779,6 +824,47 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger& appLogger)
             incrementedInstance = 0;
           }
           if (opt_increment) opt_instance = incrementedInstance;
+        }
+        if (ftype == "stl")
+        {
+          OFLOG_TRACE(appLogger, "reading STL specific information");
+          c = NULL;
+          OFLOG_TRACE(appLogger, "reading Frame of Reference Info");
+          if (dset->findAndGetString(DCM_FrameOfReferenceUID, c).good() && c)
+          {
+            opt_frameOfReferenceUID = c;
+          }
+          c = NULL;
+          if (dset->findAndGetString(DCM_PositionReferenceIndicator, c).good() && c)
+          {
+            opt_positionReferenceIndicator = c;
+          }
+          OFLOG_TRACE(appLogger, "reading Enhanced Equipment info");
+          c = NULL;
+          if (dset->findAndGetString(DCM_Manufacturer, c).good() && c)
+          {
+            opt_Manufacturer = c;
+          }
+          c = NULL;
+          if (dset->findAndGetString(DCM_ManufacturerModelName, c).good() && c)
+          {
+            opt_ManufacturerModelName = c;
+          }
+          c = NULL;
+          if (dset->findAndGetString(DCM_DeviceSerialNumber, c).good() && c)
+          {
+            opt_DeviceSerialNumber = c;
+          }
+          c = NULL;
+          if (dset->findAndGetString(DCM_SoftwareVersions, c).good() && c)
+          {
+            opt_SoftwareVersions = c;
+          }
+          OFLOG_TRACE(appLogger, "reading Manufacturing 3D Model info");
+          {
+
+            OFLOG_TRACE(appLogger, "Manufacturing 3D Model info read successfully");
+          }
         }
       }
     }
@@ -1072,25 +1158,124 @@ OFCondition DcmEncapsulatedDocument::createHeader(
   //insert encapsulated file storage UID (CDA/PDF/STL)
   if (result.good())
   {
-    if (logger.getName() == "dcmtk.apps.pdf2dcm")
+    if (ftype == "pdf")
     {
-      ftype="pdf";
+      OFLOG_TRACE(logger, "Inserting SOPClassUID to dataset");
       result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedPDFStorage);
     }
-    if (logger.getName() == "dcmtk.apps.cda2dcm")
+    if (ftype == "cda")
     {
-      ftype="cda";
+      OFLOG_TRACE(logger, "Inserting SOPClassUID to dataset");
       result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedCDAStorage);
     }
-    if (logger.getName() == "dcmtk.apps.stl2dcm")
-    {
-      ftype="stl";
-      result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedSTLStorage);
-      //insert Frame of Reference
-      //result = dataset->putAndInsertString(DCM_FrameOfReferenceUID, "1.2.3.4.5.6.7.8.9.3");
+    if (ftype == "stl")
+    {//STL Specific modules
+      OFLOG_TRACE(logger, "Validating Frame of Reference UID value");
+      if (opt_frameOfReferenceUID.empty())
+      {
+        OFLOG_DEBUG(logger, "Frame of Reference UID "
+                    << DCM_FrameOfReferenceUID
+                    << "value was empty, generating a new one."
+                      );
+        dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
+        opt_frameOfReferenceUID = buf;
+      }
+      else
+      {
+        if (DcmUniqueIdentifier::checkStringValue(opt_frameOfReferenceUID, "1").bad())
+        {
+          OFLOG_DEBUG(logger, "Frame of Reference UID "
+                      << DCM_FrameOfReferenceUID
+                      << "value was faulty, generating a new one."
+                        );
+          dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
+          opt_frameOfReferenceUID = buf;
+        }
+      }
+      if (result.good())
+      {
+        OFLOG_TRACE(logger, "Inserting Frame of Reference info to dataset");
+        result = dataset->putAndInsertOFStringArray(DCM_FrameOfReferenceUID, opt_frameOfReferenceUID);
+      }
+      if (result.good())result = dataset->putAndInsertOFStringArray(DCM_PositionReferenceIndicator, opt_positionReferenceIndicator);
+      OFLOG_TRACE(logger, "Validating and inserting Enhanced General Equipment fields");
+      if (result.good())
+      {
+        if (opt_Manufacturer.empty())
+        {
+          OFLOG_ERROR(logger, "No Manufacturer "
+                      << DCM_Manufacturer
+                      << " provided nor found in series "
+                      <<"(required for Enhanced General Equipment module)."
+                        );
+          result = EC_InvalidValue;
+        }
+        else result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, opt_Manufacturer);
+      }
+      if (result.good())
+      {
+        if (opt_ManufacturerModelName.empty())
+        {
+          OFLOG_ERROR(logger, "No Manufacturer Model Name "
+                      << DCM_ManufacturerModelName
+                      << " provided nor found in series "
+                      <<"(required for Enhanced General Equipment module)."
+                        );
+          result = EC_InvalidValue;
+        }
+        else result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, opt_ManufacturerModelName);
+      }
+      if (result.good())
+      {
+        if (opt_DeviceSerialNumber.empty())
+        {
+          OFLOG_ERROR(logger, "No Device Serial Number "
+                      << DCM_DeviceSerialNumber
+                      << " provided nor found in series "
+                      <<"(required for Enhanced General Equipment module)."
+                        );
+          result = EC_InvalidValue;
+        }
+        else result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, opt_DeviceSerialNumber);
+      }
+      if (result.good())
+      {
+        if (opt_SoftwareVersions.empty())
+        {
+          OFLOG_ERROR(logger, "No Software Versions "
+                      << DCM_SoftwareVersions
+                      << " provided nor found in series "
+                      <<"(required for Enhanced General Equipment module)."
+                        );
+          result = EC_InvalidValue;
+        }
+        else result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, opt_SoftwareVersions);
+      }
+      if (result.good())
+      {
+        if (opt_measurementUnitsCSD != "" && opt_measurementUnitsCV != "" && opt_measurementUnitsCM != "")
+        {
+          result = DcmCodec::insertCodeSequence(dataset, DCM_MeasurementUnitsCodeSequence,
+            opt_measurementUnitsCSD.c_str(),
+            opt_measurementUnitsCV.c_str(),
+            opt_measurementUnitsCM.c_str());
+        }
+        else
+        {
+          OFLOG_DEBUG(logger, "Measurement Units Code Sequence "
+                      << DCM_FrameOfReferenceUID
+                      << "had one or more empty values, generating default values."
+                        );
+          result = DcmCodec::insertCodeSequence(dataset, DCM_MeasurementUnitsCodeSequence, "UCUM","um","um");
+        }
+      }
+      if (result.good())
+      {
+        OFLOG_TRACE(logger, "Inserting SOPClassUID to dataset");
+        result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedSTLStorage);
+      }
     }
   }
-  // we are now using "DOC" for the modality, which seems to be more appropriate than "OT" (see CP-749)
   if (result.good())
   {
     if (ftype=="stl")
@@ -1099,12 +1284,22 @@ OFCondition DcmEncapsulatedDocument::createHeader(
     }
     else
     {
+      // we are now using "DOC" for the modality, which seems to be more appropriate than "OT" (see CP-749)
       result = dataset->putAndInsertString(DCM_Modality, "DOC");
     }
   }
   if (result.good())
   {
-  result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
+    if (ftype != "stl")
+    {
+      OFLOG_TRACE(logger, "Inserting default Conversion type: Workstation (WSD) to dataset");
+      result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
+    }
+    else
+    {
+      OFLOG_TRACE(logger, "STL has no Conversion Type");
+      result = EC_Normal;
+    }
   }
   if (result.good())
   {
@@ -1114,7 +1309,7 @@ OFCondition DcmEncapsulatedDocument::createHeader(
     // according to A.45.1.4.1 on part 3, MIME Type is application/pdf for PDF.
     if (ftype=="pdf")
       result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
-    // according to A.85.1.4.2 on part 3, MIME Type is application/pdf for STL, which is not right.
+    // according to A.85.1.4.2 on part 3, MIME Type is model/stl.
     if (ftype=="stl")
       result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/stl");
   }

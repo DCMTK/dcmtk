@@ -26,8 +26,10 @@
 //for override keys
 #include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmiod/iodcommn.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofxml.h"
+
 
 /** This class handles common functions of all command line applications
  *  for document encapsulation.
@@ -262,5 +264,28 @@ private:
   OFString                cda_mediaTypes;
   OFString                hl7_InstanceIdentifier;
   OFBool                  opt_override;
+
+  /// STL specific variables
+  /// Frame of Reference module
+  OFString                opt_frameOfReferenceUID;
+  OFString                opt_positionReferenceIndicator;
+  ///Enhanced general equipment module
+  /// Manufacturer (VM 1)
+  OFString                opt_Manufacturer;
+  /// Manufacturer's Model Name (VM 1)
+  OFString                opt_ManufacturerModelName;
+  /// Device Serial Number (VM 1)
+  OFString                opt_DeviceSerialNumber;
+  /// Software Version(s) (VM 1-n)
+  OFString                opt_SoftwareVersions;
+
+  /// Manufacturing 3D Model Module
+  /// 3d Model Measurement Units Code Meaning
+  OFString                opt_measurementUnitsCM;
+  /// 3d Model Measurement Units Code Scheme Designator
+  OFString                opt_measurementUnitsCSD;
+  /// 3d Model Measurement Units Code Value
+  OFString                opt_measurementUnitsCV;
+
 };
 #endif // DCENCDOC_H
