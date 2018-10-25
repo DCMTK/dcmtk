@@ -81,10 +81,10 @@ DcmEncapsulatedDocument::DcmEncapsulatedDocument() :
   opt_frameOfReferenceUID(),
   opt_positionReferenceIndicator(),
   // Frame of Reference Module (STL)
-  opt_Manufacturer(),
-  opt_ManufacturerModelName(),
-  opt_DeviceSerialNumber(),
-  opt_SoftwareVersions(),
+  opt_manufacturer(),
+  opt_manufacturerModelName(),
+  opt_deviceSerialNumber(),
+  opt_softwareVersions(),
   // Enhanced General Equipment Module (STL)
   opt_measurementUnitsCM(),
   opt_measurementUnitsCSD(),
@@ -684,10 +684,10 @@ void DcmEncapsulatedDocument::parseArguments(
       app.checkValue(cmd.getValue(opt_measurementUnitsCV));
       app.checkValue(cmd.getValue(opt_measurementUnitsCM));
     }
-    if (cmd.findOption("--manufacturer"))app.checkValue(cmd.getValue(opt_Manufacturer));
-    if (cmd.findOption("--manufacturer-model-name"))app.checkValue(cmd.getValue(opt_ManufacturerModelName));
-    if (cmd.findOption("--device-serial-number"))app.checkValue(cmd.getValue(opt_DeviceSerialNumber));
-    if (cmd.findOption("--software-versions"))app.checkValue(cmd.getValue(opt_SoftwareVersions));
+    if (cmd.findOption("--manufacturer"))app.checkValue(cmd.getValue(opt_manufacturer));
+    if (cmd.findOption("--manufacturer-model-name"))app.checkValue(cmd.getValue(opt_manufacturerModelName));
+    if (cmd.findOption("--device-serial-number"))app.checkValue(cmd.getValue(opt_deviceSerialNumber));
+    if (cmd.findOption("--software-versions"))app.checkValue(cmd.getValue(opt_softwareVersions));
   }
   cmd.beginOptionBlock();
   if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
@@ -843,22 +843,22 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger& appLogger)
           c = NULL;
           if (dset->findAndGetString(DCM_Manufacturer, c).good() && c)
           {
-            opt_Manufacturer = c;
+            opt_manufacturer = c;
           }
           c = NULL;
           if (dset->findAndGetString(DCM_ManufacturerModelName, c).good() && c)
           {
-            opt_ManufacturerModelName = c;
+            opt_manufacturerModelName = c;
           }
           c = NULL;
           if (dset->findAndGetString(DCM_DeviceSerialNumber, c).good() && c)
           {
-            opt_DeviceSerialNumber = c;
+            opt_deviceSerialNumber = c;
           }
           c = NULL;
           if (dset->findAndGetString(DCM_SoftwareVersions, c).good() && c)
           {
-            opt_SoftwareVersions = c;
+            opt_softwareVersions = c;
           }
           OFLOG_TRACE(appLogger, "reading Manufacturing 3D Model info");
           {
@@ -1201,7 +1201,7 @@ OFCondition DcmEncapsulatedDocument::createHeader(
       OFLOG_TRACE(logger, "Validating and inserting Enhanced General Equipment fields");
       if (result.good())
       {
-        if (opt_Manufacturer.empty())
+        if (opt_manufacturer.empty())
         {
           OFLOG_ERROR(logger, "No Manufacturer "
                       << DCM_Manufacturer
@@ -1210,11 +1210,11 @@ OFCondition DcmEncapsulatedDocument::createHeader(
                         );
           result = EC_InvalidValue;
         }
-        else result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, opt_Manufacturer);
+        else result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, opt_manufacturer);
       }
       if (result.good())
       {
-        if (opt_ManufacturerModelName.empty())
+        if (opt_manufacturerModelName.empty())
         {
           OFLOG_ERROR(logger, "No Manufacturer Model Name "
                       << DCM_ManufacturerModelName
@@ -1223,11 +1223,11 @@ OFCondition DcmEncapsulatedDocument::createHeader(
                         );
           result = EC_InvalidValue;
         }
-        else result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, opt_ManufacturerModelName);
+        else result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, opt_manufacturerModelName);
       }
       if (result.good())
       {
-        if (opt_DeviceSerialNumber.empty())
+        if (opt_deviceSerialNumber.empty())
         {
           OFLOG_ERROR(logger, "No Device Serial Number "
                       << DCM_DeviceSerialNumber
@@ -1236,11 +1236,11 @@ OFCondition DcmEncapsulatedDocument::createHeader(
                         );
           result = EC_InvalidValue;
         }
-        else result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, opt_DeviceSerialNumber);
+        else result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, opt_deviceSerialNumber);
       }
       if (result.good())
       {
-        if (opt_SoftwareVersions.empty())
+        if (opt_softwareVersions.empty())
         {
           OFLOG_ERROR(logger, "No Software Versions "
                       << DCM_SoftwareVersions
@@ -1249,7 +1249,7 @@ OFCondition DcmEncapsulatedDocument::createHeader(
                         );
           result = EC_InvalidValue;
         }
-        else result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, opt_SoftwareVersions);
+        else result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, opt_softwareVersions);
       }
       if (result.good())
       {

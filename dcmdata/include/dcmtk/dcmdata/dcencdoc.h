@@ -271,13 +271,13 @@ private:
   OFString                opt_positionReferenceIndicator;
   ///Enhanced general equipment module
   /// Manufacturer (VM 1)
-  OFString                opt_Manufacturer;
+  OFString                opt_manufacturer;
   /// Manufacturer's Model Name (VM 1)
-  OFString                opt_ManufacturerModelName;
+  OFString                opt_manufacturerModelName;
   /// Device Serial Number (VM 1)
-  OFString                opt_DeviceSerialNumber;
+  OFString                opt_deviceSerialNumber;
   /// Software Version(s) (VM 1-n)
-  OFString                opt_SoftwareVersions;
+  OFString                opt_softwareVersions;
 
   /// Manufacturing 3D Model Module
   /// 3d Model Measurement Units Code Meaning
@@ -286,6 +286,5 @@ private:
   OFString                opt_measurementUnitsCSD;
   /// 3d Model Measurement Units Code Value
   OFString                opt_measurementUnitsCV;
-
 };
 #endif // DCENCDOC_H
