@@ -4,7 +4,7 @@
 **
 **   User: jan
 **   Host: myhostname
-**   Date: 2018-10-25 16:37:37
+**   Date: 2018-10-26 09:12:12
 **   Prog: /home/jan/make_variadic.sh
 **
 ** Purpose:
@@ -54,7 +54,7 @@ struct OFvariadic_find_type_t<Index,T0,T0,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12
 
 template<size_t Index,typename T>
 struct OFvariadic_find_type_t<Index,T>
-: OFintegral_constant<size_t,~0> {};
+: OFintegral_constant<size_t,~OFstatic_cast(size_t,0)> {};
 
 template<typename T,typename T0=OFvariadic_nil,typename T1=OFvariadic_nil,typename T2=OFvariadic_nil,typename T3=OFvariadic_nil,typename T4=OFvariadic_nil,typename T5=OFvariadic_nil,typename T6=OFvariadic_nil,typename T7=OFvariadic_nil,typename T8=OFvariadic_nil,typename T9=OFvariadic_nil,typename T10=OFvariadic_nil,typename T11=OFvariadic_nil,typename T12=OFvariadic_nil,typename T13=OFvariadic_nil,typename T14=OFvariadic_nil,typename T15=OFvariadic_nil,typename T16=OFvariadic_nil,typename T17=OFvariadic_nil,typename T18=OFvariadic_nil,typename T19=OFvariadic_nil,typename T20=OFvariadic_nil,typename T21=OFvariadic_nil,typename T22=OFvariadic_nil,typename T23=OFvariadic_nil,typename T24=OFvariadic_nil,typename T25=OFvariadic_nil,typename T26=OFvariadic_nil,typename T27=OFvariadic_nil,typename T28=OFvariadic_nil,typename T29=OFvariadic_nil,typename T30=OFvariadic_nil,typename T31=OFvariadic_nil,typename T32=OFvariadic_nil,typename T33=OFvariadic_nil,typename T34=OFvariadic_nil,typename T35=OFvariadic_nil,typename T36=OFvariadic_nil,typename T37=OFvariadic_nil,typename T38=OFvariadic_nil,typename T39=OFvariadic_nil,typename T40=OFvariadic_nil,typename T41=OFvariadic_nil,typename T42=OFvariadic_nil,typename T43=OFvariadic_nil,typename T44=OFvariadic_nil,typename T45=OFvariadic_nil,typename T46=OFvariadic_nil,typename T47=OFvariadic_nil,typename T48=OFvariadic_nil,typename T49=OFvariadic_nil>
 struct OFvariadic_find_type
