@@ -30,30 +30,24 @@ dcmfile-out  DICOM output filename
 
 \subsection stl2dcm_general_options general options
 \verbatim
-  -h   --help
-         print this help text and exit
+  -h   --help                     print this help text and exit
 
-       --version
-         print version information and exit
+       --version                  print version information and exit
 
-       --arguments
-         print expanded command line arguments
+       --arguments                print expanded command line arguments
 
-  -q   --quiet
-         quiet mode, print no warnings and errors
+  -q   --quiet                    quiet mode, print no warnings and errors
 
-  -v   --verbose
-         verbose mode, print processing details
+  -v   --verbose                  verbose mode, print processing details
 
-  -d   --debug
-         debug mode, print debug information
+  -d   --debug                    debug mode, print debug information
 
-  -ll  --log-level  [l]evel: string constant
-         (fatal, error, warn, info, debug, trace)
-         use level l for the logger
+  -ll  --log-level                [l]evel: string constant
+                                  (fatal, error, warn, info, debug, trace)
+                                  use level l for the logger
 
-  -lc  --log-config  [f]ilename: string
-                     use config file f for the logger
+  -lc  --log-config               [f]ilename: string
+                                  use config file f for the logger
 \endverbatim
 
 \subsection stl2dcm_dicom_document_options DICOM document options
@@ -90,7 +84,7 @@ study and series:
                                   read patient/study data from DICOM file
 
   +se  --series-from              [f]ilename: string
-                                  read patient/study/series data from 
+                                  read patient/study/series data from
                                   DICOM file
 
 instance number:
@@ -115,7 +109,7 @@ burned-in annotation:
 \verbatim
 other processing options:
 
-  -k   --key                      [k]ey: gggg,eeee="str", 
+  -k   --key                      [k]ey: gggg,eeee="str",
                                   path or dictionary name="str"
                                   add further attribute
 \endverbatim
@@ -222,21 +216,21 @@ enables the user to check for the reason why the application terminated.
 
 \subsection stl2dcm_exit_codes_general general
 \verbatim
-EXITCODE_NO_ERROR                         0
-EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
-EXITCODE_MEMORY_EXHAUSTED                 4
+EXITCODE_NO_ERROR                 0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR 1
+EXITCODE_MEMORY_EXHAUSTED         4
 \endverbatim
 
 \subsection stl2dcm_exit_codes_input_file_errors input file errors
 \verbatim
-EXITCODE_CANNOT_READ_INPUT_FILE          20
-EXITCODE_NO_INPUT_FILES                  21
-EXITCODE_INVALID_INPUT_FILE              22
+EXITCODE_CANNOT_READ_INPUT_FILE   20
+EXITCODE_NO_INPUT_FILES           21
+EXITCODE_INVALID_INPUT_FILE       22
 \endverbatim
 
 \subsection stl2dcm_exit_codes_output_file_errors output file errors
 \verbatim
-EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE 40
 \endverbatim
 
 \section stl2dcm_environment ENVIRONMENT
