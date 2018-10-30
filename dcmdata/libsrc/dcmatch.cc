@@ -101,27 +101,36 @@ private:
     const char* const candidateDataEnd;
 };
 
-struct DcmAttributeMatching::DashSeparated
+DcmAttributeMatching::Range::Range( const void* const data, const size_t size, const char separator )
+: first( OFreinterpret_cast( const char* const, data ) )
+, firstSize( 0 )
+, second( first )
+, secondSize( size )
 {
-    DashSeparated( const void* data, const size_t size )
-    : first( OFreinterpret_cast( const char*, data ) )
-    , firstSize( 0 )
-    , second( first )
-    , secondSize( size )
+    while( firstSize != secondSize && separator != first[firstSize] )
+        ++firstSize;
+    if( firstSize != secondSize )
     {
-        while( firstSize != secondSize && first[firstSize] != '-' )
-            ++firstSize;
-        if( firstSize != secondSize )
-        {
-            secondSize = secondSize - firstSize - 1;
-            second = second + firstSize + 1;
-        }
+        secondSize = secondSize - firstSize - 1;
+        second = second + firstSize + 1;
     }
-    const char* first;
-    size_t firstSize;
-    const char* second;
-    size_t secondSize;
-};
+}
+
+OFBool DcmAttributeMatching::Range::isRange() const
+{
+    return first != second;
+}
+
+
+OFBool DcmAttributeMatching::Range::hasOpenBeginning() const
+{
+    return !firstSize;
+}
+
+OFBool DcmAttributeMatching::Range::hasOpenEnd() const
+{
+    return !secondSize;
+}
 
 OFBool DcmAttributeMatching::singleValueMatching( const void* queryData, const size_t querySize,
                                                   const void* candidateData, const size_t candidateSize )
@@ -146,17 +155,17 @@ OFBool DcmAttributeMatching::wildCardMatching( const void* queryData, const size
 
 template<typename T>
 OFBool DcmAttributeMatching::rangeMatchingTemplate( OFCondition (*parse)(const char*,const size_t,T&),
-                                                    const DashSeparated& query, const T& candidate )
+                                                    const Range& query, const T& candidate )
 {
     T first;
-    if( !query.firstSize || parse( query.first, query.firstSize, first ).good() )
+    if( query.hasOpenBeginning() || parse( query.first, query.firstSize, first ).good() )
     {
-        // test whether it's a single date/time and not a range
-        if( query.first == query.second )
+        if( !query.isRange() )
             return query.firstSize && first == candidate;
         T second;
-        if( !query.secondSize || parse( query.second, query.secondSize, second ).good() )
-            return ( !query.firstSize || first <= candidate ) && ( !query.secondSize || second >= candidate );
+        if( query.hasOpenEnd() || parse( query.second, query.secondSize, second ).good() )
+            return ( query.hasOpenBeginning() || first <= candidate )
+                && ( query.hasOpenEnd() || second >= candidate );
     }
     return OFFalse;
 }
@@ -171,7 +180,7 @@ OFBool DcmAttributeMatching::rangeMatchingTemplate( OFCondition (*parse)(const c
     T candidate;
     if( parse( OFreinterpret_cast( const char*, candidateData ), candidateSize, candidate ).bad() )
         return OFFalse;
-    return rangeMatchingTemplate( parse, DashSeparated( queryData, querySize ), candidate );
+    return rangeMatchingTemplate( parse, Range( queryData, querySize ), candidate );
 }
 
 OFBool DcmAttributeMatching::rangeMatchingDate( const void* queryData, const size_t querySize,
@@ -206,43 +215,43 @@ OFBool DcmAttributeMatching::rangeMatchingDateTime( const void* dateQueryData, c
         return OFFalse;
     if( timeCandidateSize && DcmTime::getOFTimeFromString( OFreinterpret_cast( const char*, timeCandidateData ), timeCandidateSize, candidate.Time ).bad() )
         return OFFalse;
-    const DashSeparated dateQuery( dateQueryData, dateQuerySize );
-    const DashSeparated timeQuery( timeQueryData, timeQuerySize );
+    const Range dateQuery( dateQueryData, dateQuerySize );
+    const Range timeQuery( timeQueryData, timeQuerySize );
     // check that both date/time ranges have the same structure
     if
     (
-        ( dateQuery.first != dateQuery.second ) != ( timeQuery.first != timeQuery.second ) ||
-        ( !dateQuery.firstSize && timeQuery.firstSize ) ||
-        ( !dateQuery.secondSize && timeQuery.secondSize )
+        ( dateQuery.isRange() != timeQuery.isRange() )                    ||
+        ( dateQuery.hasOpenBeginning() && !timeQuery.hasOpenBeginning() ) ||
+        ( dateQuery.hasOpenEnd() && !timeQuery.hasOpenEnd() )
     )
     {
         // fall back to individually matching them in case they don't
-        return rangeMatchingTemplate( &DcmDate::getOFDateFromString, dateQuery, candidate.getDate() ) &&
-            rangeMatchingTemplate( &DcmTime::getOFTimeFromString, timeQuery, candidate.getTime() );
+        return rangeMatchingTemplate( &DcmDate::getOFDateFromString, dateQuery, candidate.getDate() )
+            && rangeMatchingTemplate( &DcmTime::getOFTimeFromString, timeQuery, candidate.getTime() );
     }
     OFDateTime first;
     // parse the first date/time
-    if( dateQuery.firstSize )
+    if( !dateQuery.hasOpenBeginning() )
     {
         if( DcmDate::getOFDateFromString( dateQuery.first, dateQuery.firstSize, first.Date ).bad() )
             return OFFalse;
-        if( timeQuery.firstSize && DcmTime::getOFTimeFromString( timeQuery.first, timeQuery.firstSize, first.Time ).bad() )
+        if( !timeQuery.hasOpenBeginning() && DcmTime::getOFTimeFromString( timeQuery.first, timeQuery.firstSize, first.Time ).bad() )
             return OFFalse;
     }
-    // test whether it's a single date/time and not a range
-    if( dateQuery.first == dateQuery.second )
+    if( !dateQuery.isRange() )
         return dateQuery.firstSize && first == candidate;
     OFDateTime second;
     // parse the second date/time
-    if( dateQuery.secondSize )
+    if( !dateQuery.hasOpenEnd() )
     {
         if( DcmDate::getOFDateFromString( dateQuery.second, dateQuery.secondSize, second.Date ).bad() )
             return OFFalse;
-        if( timeQuery.secondSize && DcmTime::getOFTimeFromString( timeQuery.second, timeQuery.secondSize, second.Time ).bad() )
+        if( !timeQuery.hasOpenEnd() && DcmTime::getOFTimeFromString( timeQuery.second, timeQuery.secondSize, second.Time ).bad() )
             return OFFalse;
     }
     // compare candidate with the date/time range
-    return ( !dateQuery.firstSize || first <= candidate ) && ( !dateQuery.secondSize || second >= candidate );
+    return ( dateQuery.hasOpenBeginning() || first <= candidate )
+        && ( dateQuery.hasOpenEnd() || second >= candidate );
 }
 
 OFBool DcmAttributeMatching::listOfUIDMatching( const void* queryData, const size_t querySize,

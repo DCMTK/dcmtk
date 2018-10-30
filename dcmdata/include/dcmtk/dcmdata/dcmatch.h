@@ -41,6 +41,62 @@ class DCMTK_DCMDATA_EXPORT DcmAttributeMatching
 {
 public:
 
+    /** Helper class for parsing value range pairs, as in date/time ranges.
+     */
+    struct Range
+    {
+        /** Separate the given value into two range components (if possible).
+         *  @param data any data that might be a range of values.
+         *  @param size the size in bytes of the value(s) passed as data.
+         *  @param separator optional argument for using another separator than the default
+         *    one (dash character '-').
+         */
+        Range( const void* const data, const size_t size, const char separator = '-' );
+
+        /** Return the information whether *this refers to an actual range of values or
+         *  just a single value.
+         *  @return OFTrue if the given argument is a range of values (i.e. contains the
+         *    given/default range separator character), OFFalse otherwise.
+         */
+        OFBool isRange() const;
+
+        /** Return the information whether *this refers to an open range without a definite
+         *  beginning.
+         *  @return OFTrue if the given argument is an open range without a definite beginning
+         *    OFFalse otherwise.
+         */
+        OFBool hasOpenBeginning() const;
+
+        /** Return the information whether *this refers to an open range without a definite
+         *  end.
+         *  @return OFTrue if the given argument is an open range without a definite end
+         *    OFFalse otherwise.
+         */
+        OFBool hasOpenEnd() const;
+
+        /** The first value in the range, i.e. the beginning of the range.
+         *  @note this will contain the whole value if the argument is not a range of values,
+         *    use isRange() to retrieve that information.
+         */
+        const char* first;
+
+        /** The size in bytes of the first value, will be zero if the argument is an open range
+         *  with no definite beginning.
+         */
+        size_t firstSize;
+
+        /** The second value in the range, e.g. the end of the range.
+         *  @note this will also contain the whole value if the argument is not a range of values,
+         *    use isRange() to retrieve that information.
+         */
+        const char* second;
+
+        /** The size in bytes of the second value, will be zero if the argument is an open range
+         *  with no definite end.
+         */
+        size_t secondSize;
+    };
+
     /** Match the query data and the candidate using Single Value Matching, as defined by the DICOM standard.
      *  @param queryData a pointer to some data.
      *  @param querySize the size (in bytes) of the data queryData refers to.
@@ -218,9 +274,6 @@ private:
     /// Helper class for implementing Wild Card Matching
     class WildCardMatcher;
 
-    /// Helper class for parsing dash-separated value pairs, as in date/time ranges.
-    class DashSeparated;
-
     /** Helper template function for generically implementing range matching.
      *  @tparam T the type to parse the data int (e.g. OFDate), deduced automatically.
      *  @param parse a pointer to a function that parses a string as a T.
@@ -231,7 +284,7 @@ private:
      */
     template<typename T>
     static OFBool rangeMatchingTemplate( OFCondition (*parse)(const char*,const size_t,T&),
-                                         const DashSeparated& query, const T& candidate );
+                                         const Range& query, const T& candidate );
 
     /** Helper template function for generically implementing range matching.
      *  @tparam T the type to parse the data int (e.g. OFDate), deduced automatically.
