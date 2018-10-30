@@ -46,10 +46,18 @@ OFTEST(ofstd_filesystem)
     OFCHECK( OFpath().empty() );
     OFCHECK_EQUAL( OFpath( "C:" ).is_absolute(), onWindows );
     OFCHECK_EQUAL( OFpath( OFString( 1, OFpath::preferred_separator ) ).is_absolute(), !onWindows );
+    // root name checks
 #if _WIN32
     OFCHECK_EQUAL( OFpath( "C:\\test" ).root_name(), "C:" );
+    OFCHECK_EQUAL( OFpath( "C:\\test" ) / "\\good", "C:\\good" );
+    OFCHECK_EQUAL( OFpath( "C:\\test" ) / "C:\\good", "C:\\good" );
+    OFCHECK_EQUAL( OFpath( "C:\\test" ) / "Y:\\good", "Y:\\good" );
+    OFCHECK_EQUAL( OFpath( "C:\\test" ) / "Y:good", "Y:good" );
+    OFCHECK_EQUAL( OFpath( "C:\\test" ) / "C:good", "C:\\test\\good" );
+    OFCHECK_EQUAL( OFpath( "\\test" ) / "Y:good", "Y:good" );
 #else
     OFCHECK( !OFpath( "C:\\test" ).has_root_name() );
+    OFCHECK_EQUAL( OFpath( "/test" ) / "/good", "/good" );
 #endif
     OFString expected = OFString( "path" ) + OFpath::preferred_separator + "to" + OFpath::preferred_separator + "file";
     OFCHECK_EQUAL( "path" / ( OFString( "to" ) + OFpath::preferred_separator ) / "file", expected );
@@ -71,6 +79,25 @@ OFTEST(ofstd_filesystem)
     OFCHECK_EQUAL( ( OFpath( "test" ) / "..bla" ).extension(), ".bla" );
     OFCHECK_EQUAL( ( OFpath( "test" ) / ".." ).extension(), "" );
     OFCHECK_EQUAL( ( OFpath( "test" ) / "..." ).extension(), "." );
+    // self append
+    OFpath p( OFString( "my" ) + OFpath::preferred_separator + "path" );
+    expected = OFString( "my" )
+             + OFpath::preferred_separator + "path"
+             + OFpath::preferred_separator + "my"
+             + OFpath::preferred_separator + "path";
+    p /= p;
+    OFCHECK_EQUAL( p, expected );
+#ifdef _WIN32
+    p = ( OFString( "C:" ) + OFpath::preferred_separator ) / p;
+    expected = OFString( "C:" ) + OFpath::preferred_separator + expected;
+#else
+    p = OFString( 1, OFpath::preferred_separator ) / p;
+    expected = OFpath::preferred_separator + expected;
+#endif
+    OFCHECK_EQUAL( p, expected );
+    p /= p;
+    OFCHECK_EQUAL( p, expected );
+    // directory iterator stuff
     OFCHECK( OFdirectory_iterator() == OFdirectory_iterator() );
     OFCHECK( OFdirectory_iterator( "./#$aninvalidpathihope--~~~" ) == OFdirectory_iterator() );
     OFCHECK( OFdirectory_iterator( "." ) != OFdirectory_iterator() );

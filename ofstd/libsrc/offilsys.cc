@@ -102,11 +102,12 @@ OFBool OFpath::empty() const
 OFBool OFpath::is_absolute() const
 {
 #if _WIN32
-    const std::size_t pos = m_NativeString.find_first_of( ":\\" );
-    return pos != OFString_npos &&
-        m_NativeString[pos] == ':' &&
-        ( ( pos + 1 ) == m_NativeString.size() || m_NativeString[pos+1] == preferred_separator )
-    ;
+    const std::size_t pos = findRootName();
+    return OFString_npos != pos &&
+    (
+        ( pos + 1 ) == m_NativeString.size() ||
+        preferred_separator == m_NativeString[pos+1]
+    );
 #else
     return has_root_directory();
 #endif
@@ -119,22 +120,18 @@ OFBool OFpath::is_relative() const
 
 OFBool OFpath::has_root_name() const
 {
-#if _WIN32
-    const std::size_t pos = m_NativeString.find_first_of( ":\\" );
-    if( pos != OFString_npos )
-        return m_NativeString[pos] == ':';
-#endif
-    return OFFalse;
+    return OFString_npos != findRootName();
 }
 
 OFBool OFpath::has_root_directory() const
 {
 #if _WIN32
-    const size_t pos = m_NativeString.find_first_of( ":\\" );
-    if( pos != OFString_npos && m_NativeString[pos] == ':' )
-        return ( pos + 1 ) < m_NativeString.size() && m_NativeString[pos+1] == preferred_separator;
+    size_t pos = findRootName();
+    pos = ( OFString_npos != pos ? pos + 1 : 0 );
+    return pos < m_NativeString.size() && preferred_separator == m_NativeString[pos];
+#else
+    return !empty() && preferred_separator == *m_NativeString.begin();
 #endif
-    return !empty() && *m_NativeString.begin() == preferred_separator;
 }
 
 OFBool OFpath::has_filename() const
@@ -153,14 +150,14 @@ OFBool OFpath::has_filename() const
             return OFTrue;
     return OFFalse;
 #else
-    return !empty() && *(m_NativeString.end() - 1) != preferred_separator;
+    return !empty() && preferred_separator != *(m_NativeString.end() - 1);
 #endif
 }
 
 
 OFBool OFpath::has_extension() const
 {
-    return findExtension() != OFString_npos;
+    return OFString_npos != findExtension();
 }
 
 const OFString& OFpath::native() const
@@ -176,8 +173,8 @@ const char* OFpath::c_str() const
 OFrvalue<OFpath> OFpath::root_name() const
 {
 #if _WIN32
-    const size_t pos = m_NativeString.find_first_of( ":\\" );
-    if( pos != OFString_npos && m_NativeString[pos] == ':' )
+    const size_t pos = findRootName();
+    if( OFString_npos != pos )
         return OFpath( m_NativeString.substr( 0, pos + 1 ) );
 #endif
     return OFpath();
@@ -186,7 +183,7 @@ OFrvalue<OFpath> OFpath::root_name() const
 OFrvalue<OFpath> OFpath::filename() const
 {
     const size_t pos = findFilename();
-    if( pos != OFString_npos )
+    if( OFString_npos != pos )
         return OFpath( m_NativeString.substr( pos ) );
     return OFpath();
 }
@@ -194,66 +191,94 @@ OFrvalue<OFpath> OFpath::filename() const
 OFrvalue<OFpath> OFpath::extension() const
 {
     const size_t pos = findExtension();
-    if( pos != OFString_npos )
+    if( OFString_npos != pos )
         return OFpath( m_NativeString.substr( pos ) );
     return OFpath();
 }
 
 OFpath& OFpath::operator/=( const OFpath& rhs )
 {
-#if _WIN32
+    // self append
     if( this == &rhs )
-        return *this;
-    std::size_t pos = rhs.m_NativeString.find_first_of( ":\\" );
-    if
-    (
-        pos != OFString_npos && rhs.m_NativeString[pos] == ':' &&
-        (
-            ( ( pos + 1 ) < rhs.m_NativeString.size() && rhs.m_NativeString[pos+1] == preferred_separator ) ||
-            ( pos >= m_NativeString.size() || 0 != m_NativeString.compare( 0, pos, rhs.m_NativeString, 0, pos ) )
-        )
-    )
+        return *this /= OFpath( rhs );
+#if _WIN32
+    // Comments are the descriptions from en.cppreference.com, put to whatever code segment handles it:
+    // If p.is_absolute() || (p.has_root_name() && p.root_name() != root_name()),
+    // then replaces the current path with p as if by operator=(p) and finishes.
+    std::size_t pos = rhs.findRootName();
+    if( OFString_npos != pos ) // .. p.has_root_name()
     {
-        m_NativeString = rhs.m_NativeString;
-        return *this;
-    }
-    if( pos != OFString_npos || rhs.m_NativeString[pos] == ':' )
         ++pos;
-    else
-        pos = 0;
-    if( pos < rhs.m_NativeString.size() && rhs.m_NativeString[pos] == '\\' )
-    {
-        pos = m_NativeString.find( ':' );
-        if( pos == OFString_npos )
+        if
+        (
+            // .. p.is_absolute()
+            ( pos < rhs.m_NativeString.size() && rhs.m_NativeString[pos] == preferred_separator ) ||
+            // .. p.root_name() != root_name()
+            ( pos > m_NativeString.size() || 0 != m_NativeString.compare( 0, pos - 1, rhs.m_NativeString, 0, pos - 1 ) )
+        )
+        {
+            // then replaces the current path with p as if by operator=(p) and finishes.
             m_NativeString = rhs.m_NativeString;
+            return *this;
+        }
+    }
+    else pos = 0;
+    // Otherwise, if p.has_root_directory(), then removes any root directory and the
+    // entire relative path from the generic format pathname of *this, then appends the native format
+    // pathname of p, omitting any root-name from its generic format, to the native format of *this.
+    if( pos < rhs.m_NativeString.size() && rhs.m_NativeString[pos] == '\\' ) // .. p.has_root_directory()
+    {
+        // we shall remove ONLY the root directory and relative path, not the root name
+        // so find it and, if it exists, keep it
+        const size_t root = findRootName();
+        if( OFString_npos == root )
+        {
+            // no root name, so replace the entire string
+            m_NativeString = rhs.m_NativeString;
+        }
         else
-            m_NativeString.replace( pos, m_NativeString.size() - pos, rhs.m_NativeString );
+        {
+            // removes any root directory and the entire relative path from the generic format pathname of *this
+            // appends the native format pathname of p, omitting any root-name from its generic format
+            m_NativeString.replace( root + 1, OFString_npos, rhs.m_NativeString, pos, OFString_npos );
+        }
     }
     else
     {
-        if( !empty() && *(m_NativeString.end() - 1) != preferred_separator )
+        // If has_filename() || (!has_root_directory() && is_absolute())
+        if( !empty() && preferred_separator != *(m_NativeString.end() - 1) )
+        {
+            // then appends path::preferred_separator to the generic format of *this
+            m_NativeString.reserve( m_NativeString.size() + rhs.m_NativeString.size() - pos + 1 );
+            m_NativeString += preferred_separator;
+        }
+        // appends the native format pathname of p, omitting any root-name from its generic format
+        m_NativeString += rhs.m_NativeString.substr( pos );
+    }
+#else
+    // version for filesystems without root names, pretty straight forward
+    if( !rhs.is_absolute() )
+    {
+        if( has_filename() )
         {
             m_NativeString.reserve( m_NativeString.size() + rhs.m_NativeString.size() + 1 );
             m_NativeString += preferred_separator;
         }
         m_NativeString += rhs.m_NativeString;
     }
-#else
-    if( this != &rhs )
-    {
-        if( !rhs.is_absolute() )
-        {
-            if( has_filename() )
-            {
-                m_NativeString.reserve( m_NativeString.size() + rhs.m_NativeString.size() + 1 );
-                m_NativeString += preferred_separator;
-            }
-            m_NativeString += rhs.m_NativeString;
-        }
-        else m_NativeString = rhs.m_NativeString;
-    }
+    else m_NativeString = rhs.m_NativeString;
 #endif
     return *this;
+}
+
+size_t OFpath::findRootName() const
+{
+#if _WIN32
+    const size_t pos = m_NativeString.find_first_of( ":\\" );
+    if( OFString_npos != pos && m_NativeString[pos] == ':' )
+        return pos;
+#endif
+    return OFString_npos;
 }
 
 size_t OFpath::findFilename() const
@@ -278,7 +303,7 @@ size_t OFpath::findExtension() const
 #endif
     if
     (
-        pos && pos != OFString_npos && m_NativeString[pos] == '.'
+        pos && OFString_npos != pos && m_NativeString[pos] == '.'
     )
     {
         switch( m_NativeString[pos-1] )

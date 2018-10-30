@@ -208,6 +208,7 @@ private:
 #ifndef DOXYGEN
     // helper functions, common ground for the respective has_XXX() and XXX()
     // functions.
+    size_t findRootName() const;
     size_t findFilename() const;
     size_t findExtension() const;
     // the actual native string, who would have guessed
