@@ -102,21 +102,21 @@ public:
      *  @param querySize the size (in bytes) of the data queryData refers to.
      *  @return OFTrue if the query is a valid Date or Date Range, OFFalse otherwise.
      */
-    static OFBool isDateRange( const void* queryData, const size_t querySize );
+    static OFBool isDateQuery( const void* queryData, const size_t querySize );
 
     /** Check whether the given query data conforms to the VR TM.
      *  @param queryData a pointer to some data.
      *  @param querySize the size (in bytes) of the data queryData refers to.
      *  @return OFTrue if the query is a valid Time or Time Range, OFFalse otherwise.
      */
-    static OFBool isTimeRange( const void* queryData, const size_t querySize );
+    static OFBool isTimeQuery( const void* queryData, const size_t querySize );
 
     /** Check whether the given query data conforms to the VR DT.
      *  @param queryData a pointer to some data.
      *  @param querySize the size (in bytes) of the data queryData refers to.
      *  @return OFTrue if the query is a valid Date Time or Date Time Range, OFFalse otherwise.
      */
-    static OFBool isDateTimeRange( const void* queryData, const size_t querySize );
+    static OFBool isDateTimeQuery( const void* queryData, const size_t querySize );
 
     /** Match the query data and the candidate using Single Value Matching, as defined by the DICOM standard.
      *  @param queryData a pointer to some data.
@@ -302,8 +302,8 @@ private:
      *  @return logical AND of the results of the given check function applied to the
      *    beginning and the end of the range (as available).
      */
-    static OFBool isRange( OFBool (*check)(const char*,const size_t),
-                           const void* queryData, const size_t querySize );
+    static OFBool checkRangeQuery( OFBool (*check)(const char*,const size_t),
+                                   const void* queryData, const size_t querySize );
 
     /** Helper template function for generically implementing range matching.
      *  @tparam T the type to parse the data int (e.g. OFDate), deduced automatically.

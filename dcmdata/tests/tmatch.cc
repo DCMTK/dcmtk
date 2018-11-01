@@ -38,7 +38,7 @@ static OFBool test_wildcards( const char* const query, const char* const candida
 
 static OFBool test_date( const char* const query )
 {
-    return DcmAttributeMatching::isDateRange( query, strlen( query ) );
+    return DcmAttributeMatching::isDateQuery( query, strlen( query ) );
 }
 
 static OFBool test_date( const char* const query, const char* const candidate )
@@ -48,7 +48,7 @@ static OFBool test_date( const char* const query, const char* const candidate )
 
 static OFBool test_time( const char* const query )
 {
-    return DcmAttributeMatching::isTimeRange( query, strlen( query ) );
+    return DcmAttributeMatching::isTimeQuery( query, strlen( query ) );
 }
 
 static OFBool test_time( const char* const query, const char* const candidate )
@@ -58,7 +58,7 @@ static OFBool test_time( const char* const query, const char* const candidate )
 
 static OFBool test_datetime( const char* const query )
 {
-    return DcmAttributeMatching::isDateTimeRange( query, strlen( query ) );
+    return DcmAttributeMatching::isDateTimeQuery( query, strlen( query ) );
 }
 
 static OFBool test_datetime( const char* const query, const char* const candidate )
