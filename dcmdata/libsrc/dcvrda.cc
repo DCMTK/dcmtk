@@ -296,6 +296,12 @@ OFCondition DcmDate::getISOFormattedDateFromString(const OFString &dicomDate,
 // ********************************
 
 OFBool DcmDate::check(const char* dicomDate,
+                      const size_t dicomDateSize)
+{
+    return check(dicomDate, dicomDateSize, OFFalse);
+}
+
+OFBool DcmDate::check(const char* dicomDate,
                       const size_t dicomDateSize,
                       const OFBool supportOldFormat)
 {

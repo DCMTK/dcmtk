@@ -373,6 +373,14 @@ class DCMTK_DCMDATA_EXPORT DcmTime
                                              double &timeZone);
 
     /** check whether given string conforms to a single value of VR "TM" (Time).
+     *  The old ACR/NEMA time format is considered invalid.
+     *  @param dicomTime string value to be checked
+     *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
+     *  @return OFTrue if the given string conforms to the Time format, OFFalse otherwise
+     */
+    static OFBool check(const char* dicomTime, const size_t dicomTimeSize);
+
+    /** check whether given string conforms to a single value of VR "TM" (Time).
      *  @param dicomTime string value to be checked
      *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
      *  @param supportOldFormat whether to accept the old ACR/NEMA time format.
@@ -381,8 +389,8 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  @return OFTrue if the given string conforms to the Time format, OFFalse otherwise
      */
     static OFBool check(const char* dicomTime, /* STOP: DICOM time!! */
-                             const size_t dicomTimeSize,
-                             const OFBool supportOldFormat = OFFalse);
+                        const size_t dicomTimeSize,
+                        const OFBool supportOldFormat);
 
     /** check whether given string value conforms to the VR "TM" (Time)
      *  and to the specified VM.

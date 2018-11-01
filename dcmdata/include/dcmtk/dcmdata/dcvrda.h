@@ -255,17 +255,25 @@ class DCMTK_DCMDATA_EXPORT DcmDate
                                                      const OFBool supportOldFormat = OFTrue);
 
     /** check whether the given string conforms to a single value of VR "DA" (Date).
+     *  The old (prior V3.0) date format is considered invalid.
+     *  @param dicomDate string value to be checked. An empty string is not regarded as valid
+     *    input, since the date would be unknown
+     *  @param dicomDateSize the size (in bytes) of the string 'dicomDate' refers to
+     *  @return OFTrue if the given string conforms to the Date format, OFFalse otherwise
+     */
+    static OFBool check(const char *dicomDate, const size_t dicomDateSize);
+
+    /** check whether the given string conforms to a single value of VR "DA" (Date).
      *  @param dicomDate string value to be checked. An empty string is not regarded as valid
      *    input, since the date would be unknown
      *  @param dicomDateSize the size (in bytes) of the string 'dicomDate' refers to
      *  @param supportOldFormat whether to accept the old (prior V3.0) date format.
      *    Set to OFTrue for enabling support for "YYYY.MM.DD" in addition to "YYYYMMDD".
-     *    Defaults to OFFalse, disable it by default.
      *  @return OFTrue if the given string conforms to the Date format, OFFalse otherwise
      */
     static OFBool check(const char *dicomDate,
                         const size_t dicomDateSize,
-                        const OFBool supportOldFormat = OFFalse);
+                        const OFBool supportOldFormat);
 
     /** check whether given string value conforms to the VR "DA" (Date)
      *  and to the specified VM.

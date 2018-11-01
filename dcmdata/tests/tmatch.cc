@@ -36,14 +36,29 @@ static OFBool test_wildcards( const char* const query, const char* const candida
     return DcmAttributeMatching::wildCardMatching( query, strlen( query ), candidate, strlen( candidate ) );
 }
 
+static OFBool test_date( const char* const query )
+{
+    return DcmAttributeMatching::isDateRange( query, strlen( query ) );
+}
+
 static OFBool test_date( const char* const query, const char* const candidate )
 {
     return DcmAttributeMatching::rangeMatchingDate( query, strlen( query ), candidate, strlen( candidate ) );
 }
 
+static OFBool test_time( const char* const query )
+{
+    return DcmAttributeMatching::isTimeRange( query, strlen( query ) );
+}
+
 static OFBool test_time( const char* const query, const char* const candidate )
 {
     return DcmAttributeMatching::rangeMatchingTime( query, strlen( query ), candidate, strlen( candidate ) );
+}
+
+static OFBool test_datetime( const char* const query )
+{
+    return DcmAttributeMatching::isDateTimeRange( query, strlen( query ) );
 }
 
 static OFBool test_datetime( const char* const query, const char* const candidate )
@@ -67,6 +82,15 @@ OFTEST(dcmdata_attribute_matching)
     OFCHECK(!test_wildcards( "?ell***?*?l??", "hello world" ));
     OFCHECK(test_wildcards( "?ell*?**?l?*", "hello world" ));
     // date
+    OFCHECK(test_date( "17000101" ));
+    OFCHECK(test_date( "30001010" ));
+    OFCHECK(test_date( "-12000101" ));
+    OFCHECK(test_date( "12451210-" ));
+    OFCHECK(test_date( "20451210-29110114" ));
+    OFCHECK(!test_date( "204512101-29110114" ));
+    OFCHECK(!test_date( "20451210-29110134" ));
+    OFCHECK(!test_date( "3124" ));
+    OFCHECK(!test_date( "2017.05.12" ));
     OFCHECK(test_date( "", "20170224" ));
     OFCHECK(test_date( "1987.08.02", "19870802" ));
     OFCHECK(test_date( "-20000101", "20000101" ));
@@ -79,6 +103,14 @@ OFTEST(dcmdata_attribute_matching)
     OFCHECK(!test_date( "19990101-20000305", "20000306"));
     OFCHECK(!test_date( "19990101-20000305", "122713.114122"));
     // time
+    OFCHECK(test_time( "12" ));
+    OFCHECK(!test_time( "49" ));
+    OFCHECK(!test_time( "12:00:00" ));
+    OFCHECK(test_time( "122413.123456-13" ));
+    OFCHECK(!test_time( "29-13" ));
+    OFCHECK(!test_time( "04-25" ));
+    OFCHECK(test_time( "-231211" ));
+    OFCHECK(test_time( "124222-" ));
     OFCHECK(test_time( "", "120224" ));
     OFCHECK(test_time( "11:23:17.123456", "112317.123456" ));
     OFCHECK(test_time( "-12", "120000" ));
@@ -91,6 +123,15 @@ OFTEST(dcmdata_attribute_matching)
     OFCHECK(!test_time( "11-121428.234763", "121428.234764"));
     OFCHECK(!test_time( "11-121428.234763", "20140909"));
     // datetime
+    OFCHECK(test_datetime( "20170224120224+0100" ));
+    OFCHECK(!test_datetime( "2017224120224+0100" ));
+    OFCHECK(test_datetime( "2017-2018" ));
+    OFCHECK(!test_datetime( "201713-2018" ));
+    OFCHECK(!test_datetime( "2017-201813" ));
+    OFCHECK(test_datetime( "2017-201812" ));
+    OFCHECK(test_datetime( "191712-19991231235959.999999" ));
+    OFCHECK(test_datetime( "19991231235959.999999-" ));
+    OFCHECK(test_datetime( "-20000305173259.123456" ));
     OFCHECK(test_datetime( "", "20170224120224+0100" ));
     OFCHECK(test_datetime( "20170224113224.000000+0030", "20170224120224+0100" ));
     OFCHECK(test_datetime( "-2000", "20000101000000.000000" ));

@@ -429,8 +429,14 @@ OFCondition DcmTime::getTimeZoneFromString(const char *dicomTimeZone,
 // ********************************
 
 OFBool DcmTime::check(const char* dicomTime,
-                           const size_t dicomTimeSize,
-                           const OFBool supportOldFormat)
+                      const size_t dicomTimeSize)
+{
+    return check(dicomTime, dicomTimeSize, OFFalse);
+}
+
+OFBool DcmTime::check(const char* dicomTime,
+                      const size_t dicomTimeSize,
+                      const OFBool supportOldFormat)
 {
     switch (DcmElement::scanValue("tm", dicomTime, dicomTimeSize))
     {

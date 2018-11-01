@@ -153,6 +153,17 @@ OFBool DcmAttributeMatching::wildCardMatching( const void* queryData, const size
     );
 }
 
+OFBool DcmAttributeMatching::isRange( OFBool (*check)(const char*,const size_t),
+                                      const void* queryData, const size_t querySize )
+{
+    const Range range( queryData, querySize );
+    if( !range.isRange() )
+        return check( range.first, range.firstSize );
+    return ( range.hasOpenBeginning() || check( range.first, range.firstSize ) ) &&
+        ( range.hasOpenEnd() || check( range.second, range.secondSize ) )
+    ;
+}
+
 template<typename T>
 OFBool DcmAttributeMatching::rangeMatchingTemplate( OFCondition (*parse)(const char*,const size_t,T&),
                                                     const Range& query, const T& candidate )
@@ -181,6 +192,21 @@ OFBool DcmAttributeMatching::rangeMatchingTemplate( OFCondition (*parse)(const c
     if( parse( OFreinterpret_cast( const char*, candidateData ), candidateSize, candidate ).bad() )
         return OFFalse;
     return rangeMatchingTemplate( parse, Range( queryData, querySize ), candidate );
+}
+
+OFBool DcmAttributeMatching::isDateRange( const void* queryData, const size_t querySize )
+{
+    return isRange( &DcmDate::check, queryData, querySize );
+}
+
+OFBool DcmAttributeMatching::isTimeRange( const void* queryData, const size_t querySize )
+{
+    return isRange( &DcmTime::check, queryData, querySize );
+}
+
+OFBool DcmAttributeMatching::isDateTimeRange( const void* queryData, const size_t querySize )
+{
+    return isRange( &DcmDateTime::check, queryData, querySize );
 }
 
 OFBool DcmAttributeMatching::rangeMatchingDate( const void* queryData, const size_t querySize,
