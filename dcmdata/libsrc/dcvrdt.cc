@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -358,6 +358,13 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
 // ********************************
 
 
+OFBool DcmDateTime::check(const char* dicomDateTime,
+                               const size_t dicomDateTimeSize)
+{
+    const int vrID = DcmElement::scanValue("dt", dicomDateTime, dicomDateTimeSize);
+    return vrID == 7 /* DT */ || vrID == 18 /* dubious DT (pre 1850 or post 2049) */;
+}
+
 OFCondition DcmDateTime::checkStringValue(const OFString &value,
                                           const OFString &vm)
 {
@@ -383,8 +390,7 @@ OFCondition DcmDateTime::checkStringValue(const OFString &value,
             else if (dcmEnableVRCheckerForStringValues.get())
             {
                 /* check value representation */
-                const int vrID = DcmElement::scanValue(value, "dt", posStart, length);
-                if ((vrID != 7) && (vrID != 18))
+                if (!check(value.data() + posStart, length))
                 {
                     result = EC_ValueRepresentationViolated;
                     break;

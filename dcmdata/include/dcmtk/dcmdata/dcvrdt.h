@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -281,6 +281,14 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
                                                          const OFBool createMissingPart = OFFalse,
                                                          const OFString &dateTimeSeparator = " ",
                                                          const OFString &timeZoneSeparator = " ");
+
+    /** check whether the given string conforms to a single value of VR "DT" (Date Time).
+     *  @param dicomDateTime string value to be checked
+     *  @param dicomDateTimeSize the size (in bytes) of the string 'dicomDateTime' refers to
+     *  @return OFTrue if the given string conforms to the Date Time format, OFFalse otherwise
+     */
+    static OFBool check(const char *dicomDateTime,
+                        const size_t dicomDateTimeSize);
 
     /** check whether given string value conforms to the VR "DT" (Date Time)
      *  and to the specified VM.

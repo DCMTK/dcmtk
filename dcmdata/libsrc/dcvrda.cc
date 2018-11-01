@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -295,6 +295,21 @@ OFCondition DcmDate::getISOFormattedDateFromString(const OFString &dicomDate,
 
 // ********************************
 
+OFBool DcmDate::check(const char* dicomDate,
+                      const size_t dicomDateSize,
+                      const OFBool supportOldFormat)
+{
+    switch (DcmElement::scanValue("da", dicomDate, dicomDateSize))
+    {
+    case  2 /* DA */:
+    case 17 /* dubious DA (pre 1850 or post 2049) */:
+        return OFTrue;
+    case  3 /* old style DA */:
+        return supportOldFormat;
+    default:
+        return OFFalse;
+    }
+}
 
 OFCondition DcmDate::checkStringValue(const OFString &value,
                                       const OFString &vm,
@@ -316,8 +331,7 @@ OFCondition DcmDate::checkStringValue(const OFString &value,
             if (dcmEnableVRCheckerForStringValues.get())
             {
                 /* check value representation */
-                const int vrID = DcmElement::scanValue(value, "da", posStart, length);
-                if ((vrID != 2) && (!oldFormat || (vrID != 3)) && (vrID != 17))
+                if (!check(value.data() + posStart, length, oldFormat))
                 {
                     result = EC_ValueRepresentationViolated;
                     break;

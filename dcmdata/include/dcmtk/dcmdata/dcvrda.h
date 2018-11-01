@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -253,6 +253,19 @@ class DCMTK_DCMDATA_EXPORT DcmDate
     static OFCondition getISOFormattedDateFromString(const OFString &dicomDate,
                                                      OFString &formattedDate,
                                                      const OFBool supportOldFormat = OFTrue);
+
+    /** check whether the given string conforms to a single value of VR "DA" (Date).
+     *  @param dicomDate string value to be checked. An empty string is not regarded as valid
+     *    input, since the date would be unknown
+     *  @param dicomDateSize the size (in bytes) of the string 'dicomDate' refers to
+     *  @param supportOldFormat whether to accept the old (prior V3.0) date format.
+     *    Set to OFTrue for enabling support for "YYYY.MM.DD" in addition to "YYYYMMDD".
+     *    Defaults to OFFalse, disable it by default.
+     *  @return OFTrue if the given string conforms to the Date format, OFFalse otherwise
+     */
+    static OFBool check(const char *dicomDate,
+                        const size_t dicomDateSize,
+                        const OFBool supportOldFormat = OFFalse);
 
     /** check whether given string value conforms to the VR "DA" (Date)
      *  and to the specified VM.

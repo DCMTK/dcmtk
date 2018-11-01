@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -371,6 +371,18 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     static OFCondition getTimeZoneFromString(const char *dicomTimeZone,
                                              const size_t dicomTimeZoneSize,
                                              double &timeZone);
+
+    /** check whether given string conforms to a single value of VR "TM" (Time).
+     *  @param dicomTime string value to be checked
+     *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
+     *  @param supportOldFormat whether to accept the old ACR/NEMA time format.
+     *    Set to OFTrue for enabling support for (HH:MM:SS in addition to HHMMSS...).
+     *    Defaults to OFFalse, disabling it by default.
+     *  @return OFTrue if the given string conforms to the Time format, OFFalse otherwise
+     */
+    static OFBool check(const char* dicomTime, /* STOP: DICOM time!! */
+                             const size_t dicomTimeSize,
+                             const OFBool supportOldFormat = OFFalse);
 
     /** check whether given string value conforms to the VR "TM" (Time)
      *  and to the specified VM.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -428,6 +428,20 @@ OFCondition DcmTime::getTimeZoneFromString(const char *dicomTimeZone,
 
 // ********************************
 
+OFBool DcmTime::check(const char* dicomTime,
+                           const size_t dicomTimeSize,
+                           const OFBool supportOldFormat)
+{
+    switch (DcmElement::scanValue("tm", dicomTime, dicomTimeSize))
+    {
+    case 4 /* TM */:
+        return OFTrue;
+    case 5 /* old style TM */:
+        return supportOldFormat;
+    default:
+        return OFFalse;
+    }
+}
 
 OFCondition DcmTime::checkStringValue(const OFString &value,
                                       const OFString &vm,
@@ -455,8 +469,7 @@ OFCondition DcmTime::checkStringValue(const OFString &value,
             else if (dcmEnableVRCheckerForStringValues.get())
             {
                 /* check value representation */
-                const int vrID = DcmElement::scanValue(value, "tm", posStart, length);
-                if ((vrID != 4) && (!oldFormat || (vrID != 5)))
+                if (!check(value.data() + posStart, length, oldFormat))
                 {
                     result = EC_ValueRepresentationViolated;
                     break;
