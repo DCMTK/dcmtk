@@ -808,6 +808,16 @@ class DCMTK_DCMDATA_EXPORT DcmElement
                          const size_t pos = 0,
                          const size_t num = OFString_npos);
 
+    /** scan string value for conformance with given value representation (VR)
+     *  @param vr two-character identifier of the VR to be checked (lower case)
+     *  @param value string value to be scanned
+     *  @param size number of characters to be scanned in 'value'
+     *  @return numeric identifier of the VR found, 16 in case of unknown VR
+     */
+    static int scanValue(const OFString &vr,
+                         const char* const value,
+                         const size_t size);
+
     /** determine the number of values stored in a string, i.e.\ the value multiplicity (VM)
      *  @param str character string
      *  @param len length of the string (number of characters without the trailing NULL byte)

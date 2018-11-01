@@ -2094,13 +2094,15 @@ int DcmElement::scanValue(const OFString &value,
                           const size_t pos,
                           const size_t num)
 {
-  // Only create a copy of the string if we have to, this could be a lot of data
-  if (pos == 0 && (num == OFString_npos || num >= value.length()))
-      return vrscan::scan(vr, value);
+  return scanValue(vr, value.data() + pos, num);
+}
 
-  // construct input string to be scanned
-  OFString realValue(value, pos, num);
-  return vrscan::scan(vr, realValue);
+
+int DcmElement::scanValue(const OFString& vr,
+                          const char* const value,
+                          const size_t size)
+{
+  return vrscan::scan(vr, value, size);
 }
 
 

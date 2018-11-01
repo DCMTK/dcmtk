@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2017, OFFIS e.V.
+ *  Copyright (C) 2010-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,59 +32,49 @@ BEGIN_EXTERN_C
 #include "vrscanl.h"
 END_EXTERN_C
 
-char* vrscan::makeBuffer(const OFString& vr, const OFString& value, size_t& size)
+int vrscan::scan(const OFString& vr, const char* const value, const size_t size)
 {
-    char *buffer, *pos;
-
-    // Allocate the needed buffer
-    size = vr.length() + value.length() + 2;
-    pos = buffer = new char[size];
-
-    // Fill it with the input
-    OFBitmanipTemplate<char>::copyMem(vr.data(), pos, vr.size());
-    pos += vr.size();
-
-    OFBitmanipTemplate<char>::copyMem(value.data(), pos, value.size());
-    pos += value.size();
-
-    // yy_scan_buffer() requires this
-    pos[0] = pos[1] = '\0';
-
-    return buffer;
-}
-
-int vrscan::scan(const OFString& vr, const OFString& value)
-{
-    struct vrscan_error error;
     yyscan_t scanner;
-    int result;
-
     if (yylex_init(&scanner))
     {
         DCMDATA_WARN("Error while setting up lexer: "
                 << OFStandard::getLastSystemErrorCode().message());
-        return 16;
+        return 16 /* UNKNOWN */;
     }
 
-    size_t bufSize;
-    char *buf = makeBuffer(vr, value, bufSize);
+    struct cleanup_t
+    {
+        cleanup_t(yyscan_t& y) : t(y) {}
+        ~cleanup_t() { yylex_destroy(t); }
+        yyscan_t& t;
+    }
+    cleanup(scanner);
+
+    OFString buffer;
+    buffer.reserve(vr.size() + size + 2);
+    buffer.append(vr);
+    buffer.append(value, size);
+    buffer.append("\0\0", 2); // yy_scan_buffer() requires this
+
+    struct vrscan_error error;
     error.error_msg = "(Unknown error)";
     yyset_extra(&error, scanner);
 
-    if (setjmp(error.setjmp_buffer))
+    if (setjmp(error.setjmp_buffer)) // poor man's catch()
     {
         DCMDATA_WARN("Fatal error in lexer: " << error.error_msg);
-        result = 16 /* UNKNOWN */;
-    } else {
-        yy_scan_buffer(buf, bufSize, scanner);
-
-        result = yylex(scanner);
-        if (yylex(scanner))
-            result = 16 /* UNKNOWN */;
+        return 16 /* UNKNOWN */;
     }
 
-    yylex_destroy(scanner);
-    delete[] buf;
+    yy_scan_buffer(OFconst_cast(char*, buffer.data()), buffer.size(), scanner);
+    const int result = yylex(scanner);
+    if (yylex(scanner))
+        return 16 /* UNKNOWN */;
 
     return result;
+}
+
+int vrscan::scan(const OFString& vr, const OFString& value)
+{
+    return scan(vr, value.data(), value.size());
 }

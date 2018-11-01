@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2011, OFFIS e.V.
+ *  Copyright (C) 2010-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,8 +33,7 @@ class DCMTK_DCMDATA_EXPORT vrscan
 {
 public:
     static int scan(const OFString& vr, const OFString& value);
-private:
-    static char* makeBuffer(const OFString& vr, const OFString& value, size_t& size);
+    static int scan(const OFString& vr, const char* const value, const size_t size);
 };
 
 #endif // VRSCAN_H
