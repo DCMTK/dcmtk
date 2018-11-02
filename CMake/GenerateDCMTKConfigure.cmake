@@ -1235,6 +1235,27 @@ int main()
     return 0;
 }")
 
+if(DCMTK_WITH_STDLIBC_ICONV AND NOT DCMTK_STDLIBC_ICONV_ANALYZED)
+    set(TEXT "Detecting builtin iconv conversion flags")
+    message(STATUS "${TEXT}")
+    DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT "${CMAKE_BINARY_DIR}"
+        "${DCMTK_SOURCE_DIR}/config/tests/iconv.cc"
+        COMPILE_OUTPUT_VARIABLE CERR
+        RUN_OUTPUT_VARIABLE OUTPUT
+    )
+    if(COMPILE_RESULT)
+        set(DCMTK_STDLIBC_ICONV_ANALYZED TRUE CACHE INTERNAL "")
+        if(RUN_RESULT EQUAL 0)
+            message(STATUS "${TEXT} - ${OUTPUT}")
+            set(DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS "${OUTPUT}" CACHE INTERNAL "")
+        else()
+            message(STATUS "${TEXT} - unknown")
+        endif()
+    else()
+        message(FATAL_ERROR "${CERR}")
+    endif()
+endif()
+
 # Compile config/tests/arith.cc and generate config/arith.h
 function(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
   set(ARITH_H_FILE "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h")

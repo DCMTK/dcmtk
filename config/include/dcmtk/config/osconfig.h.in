@@ -60,6 +60,9 @@
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 
+/* Try to define the STDLIBC iconv behavior as conversion flags */
+#undef DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
+
 /* Define the default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
 

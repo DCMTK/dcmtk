@@ -363,16 +363,13 @@ class OFCharacterEncoding::Implementation
 #else
         // the iconvctl function is implemented only in GNU libiconv and not in other
         // iconv implementations. The iconv implementation in the C standard library
-        // therefore does not support different encoding flags.
-#ifdef __FreeBSD__
-        // FreeBSD has a custom mode where illegal sequences are replaced by '?', so
-        // none of the normal modes are supported.
+        // therefore does not support different encoding flags and only has a
+        // (varying) fixed functionality that we detect with a configuration test.
+#ifdef DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
+        return flags == DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
+#else // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
         return OFFalse;
-#else
-        // All other implementations seem to return an error when encountering
-        // illegal sequences by default, so 'abort' is the only supported mode.
-        return flags == AbortTranscodingOnIllegalSequence;
-#endif
+#endif // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
 #endif
     }
 
@@ -391,14 +388,16 @@ class OFCharacterEncoding::Implementation
             result |= DiscardIllegalSequences;
         if (result)
             return result;
-#endif
-#ifdef __FreeBSD__
-        // FreeBSD has a custom mode where illegal sequences are replaced by '?',
-        // which is none of the normal modes and can only be described as
-        // 'unknown' = 0
-        return 0;
 #else
-        return AbortTranscodingOnIllegalSequence;
+        // the iconvctl function is implemented only in GNU libiconv and not in other
+        // iconv implementations. The iconv implementation in the C standard library
+        // therefore does not support different encoding flags and only has a
+        // (varying) fixed functionality that we detect with a configuration test.
+#ifdef DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
+        return DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
+#else // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
+        return 0;
+#endif // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
 #endif
     }
 
@@ -441,14 +440,13 @@ class OFCharacterEncoding::Implementation
 #else
         // the iconvctl function is implemented only in GNU libiconv and not in other
         // iconv implementations. The iconv implementation in the C standard library
-        // therefore does not support different encoding flags.
-#ifdef __FreeBSD__
-        // FreeBSD has a custom mode where illegal sequences are replaced by '?', so
-        // none of the normal modes are supported.
+        // therefore does not support different encoding flags and only has a
+        // (varying) fixed functionality that we detect with a configuration test.
+#ifdef DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
+        return flags == DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
+#else // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
         return OFFalse;
-#else
-        return flags == AbortTranscodingOnIllegalSequence;
-#endif
+#endif // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
 #endif
     }
 

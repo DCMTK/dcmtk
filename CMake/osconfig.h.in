@@ -926,6 +926,9 @@
 /* Define if the second argument to iconv() is const */
 #cmakedefine LIBICONV_SECOND_ARGUMENT_CONST @LIBICONV_SECOND_ARGUMENT_CONST@
 
+/* Try to define the STDLIBC iconv behavior as conversion flags */
+#cmakedefine DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS @DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS@
+
 /* Define if we are compiling with libpng support */
 #cmakedefine WITH_LIBPNG
 
