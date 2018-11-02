@@ -2094,7 +2094,7 @@ int DcmElement::scanValue(const OFString &value,
                           const size_t pos,
                           const size_t num)
 {
-  return scanValue(vr, value.data() + pos, num);
+  return scanValue(vr, value.data() + pos, num != OFString_npos ? num : value.size() - pos);
 }
 
 
