@@ -506,7 +506,7 @@ main(int argc, char *argv[])
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--port"))    app.checkValue(cmd.getValueAndCheckMinMax(opt_retrievePort, 1, 65535));
-      if (cmd.findOption("--no-port")) { /* do nothing */ }
+      if (cmd.findOption("--no-port")) opt_retrievePort = 0;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -522,7 +522,11 @@ main(int argc, char *argv[])
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
       if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
 
-      if (cmd.findOption("--output-directory")) app.checkValue(cmd.getValue(opt_outputDirectory));
+      if (cmd.findOption("--output-directory"))
+      {
+        app.checkDependence("--output-directory", "--port", opt_retrievePort > 0);
+        app.checkValue(cmd.getValue(opt_outputDirectory));
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
