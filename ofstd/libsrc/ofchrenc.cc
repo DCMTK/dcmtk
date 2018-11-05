@@ -360,17 +360,14 @@ class OFCharacterEncoding::Implementation
             || flags == TransliterateIllegalSequences
             || flags == (DiscardIllegalSequences | TransliterateIllegalSequences)
         ;
-#else
+#elif defined DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
         // the iconvctl function is implemented only in GNU libiconv and not in other
         // iconv implementations. The iconv implementation in the C standard library
         // therefore does not support different encoding flags and only has a
         // (varying) fixed functionality that we detect with a configuration test.
-#ifdef DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
         return flags == DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
-#else // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
-        return OFFalse;
-#endif // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
 #endif
+        return OFFalse;
     }
 
     unsigned getConversionFlags() const
@@ -388,17 +385,14 @@ class OFCharacterEncoding::Implementation
             result |= DiscardIllegalSequences;
         if (result)
             return result;
-#else
+#elif defined DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
         // the iconvctl function is implemented only in GNU libiconv and not in other
         // iconv implementations. The iconv implementation in the C standard library
         // therefore does not support different encoding flags and only has a
         // (varying) fixed functionality that we detect with a configuration test.
-#ifdef DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
         return DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
-#else // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
-        return 0;
-#endif // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
 #endif
+        return 0;
     }
 
     OFBool setConversionFlags(const unsigned flags)
@@ -437,17 +431,14 @@ class OFCharacterEncoding::Implementation
             default:
                 return OFFalse;
         }
-#else
+#elif defined DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
         // the iconvctl function is implemented only in GNU libiconv and not in other
         // iconv implementations. The iconv implementation in the C standard library
         // therefore does not support different encoding flags and only has a
         // (varying) fixed functionality that we detect with a configuration test.
-#ifdef DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
         return flags == DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
-#else // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
-        return OFFalse;
-#endif // DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
 #endif
+        return OFFalse;
     }
 
 
