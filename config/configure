@@ -15232,8 +15232,8 @@ CHARCONVLIBS=""
 
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking builtin iconv conversion flags" >&5
-$as_echo_n "checking builtin iconv conversion flags... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking fixed iconv conversion flags" >&5
+$as_echo_n "checking fixed iconv conversion flags... " >&6; }
 if test "$cross_compiling" = yes; then :
   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -15248,7 +15248,7 @@ if ac_fn_cxx_try_run "$LINENO"; then :
 
 
 cat >>confdefs.h <<_ACEOF
-#define DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS `./conftest$EXEEXT`
+#define DCMTK_FIXED_ICONV_CONVERSION_FLAGS `./conftest$EXEEXT`
 _ACEOF
 
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5

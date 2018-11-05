@@ -1408,11 +1408,11 @@ else
 fi
 ])
 
-AC_MSG_CHECKING(builtin iconv conversion flags)
+AC_MSG_CHECKING(fixed iconv conversion flags)
 AC_RUN_IFELSE(
     [AC_LANG_SOURCE([[#include "tests/iconv.cc"]])],
     [
-        AC_DEFINE_UNQUOTED(DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS, [`./conftest$EXEEXT`], [Try to define the STDLIBC iconv behavior as conversion flags])
+        AC_DEFINE_UNQUOTED(DCMTK_FIXED_ICONV_CONVERSION_FLAGS, [`./conftest$EXEEXT`], [Try to define the iconv behavior as conversion flags])
         AC_MSG_RESULT()
     ],
     [AC_MSG_RESULT([unknown])]

@@ -360,12 +360,13 @@ class OFCharacterEncoding::Implementation
             || flags == TransliterateIllegalSequences
             || flags == (DiscardIllegalSequences | TransliterateIllegalSequences)
         ;
-#elif defined DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
-        // the iconvctl function is implemented only in GNU libiconv and not in other
-        // iconv implementations. The iconv implementation in the C standard library
-        // therefore does not support different encoding flags and only has a
-        // (varying) fixed functionality that we detect with a configuration test.
-        return flags == DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
+#elif defined DCMTK_FIXED_ICONV_CONVERSION_FLAGS
+        // the iconvctl function is implemented only in newer versions of the
+        // GNU libiconv and not in other iconv implementations. For instance,
+        // the iconv implementation in the C standard library does not support
+        // different encoding flags and only has a (varying) fixed functionality
+        // that we detect with a configuration test.
+        return flags == DCMTK_FIXED_ICONV_CONVERSION_FLAGS;
 #endif
         return OFFalse;
     }
@@ -385,12 +386,13 @@ class OFCharacterEncoding::Implementation
             result |= DiscardIllegalSequences;
         if (result)
             return result;
-#elif defined DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
-        // the iconvctl function is implemented only in GNU libiconv and not in other
-        // iconv implementations. The iconv implementation in the C standard library
-        // therefore does not support different encoding flags and only has a
-        // (varying) fixed functionality that we detect with a configuration test.
-        return DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
+#elif defined DCMTK_FIXED_ICONV_CONVERSION_FLAGS
+        // the iconvctl function is implemented only in newer versions of the
+        // GNU libiconv and not in other iconv implementations. For instance,
+        // the iconv implementation in the C standard library does not support
+        // different encoding flags and only has a (varying) fixed functionality
+        // that we detect with a configuration test.
+        return DCMTK_FIXED_ICONV_CONVERSION_FLAGS;
 #endif
         return 0;
     }
@@ -431,12 +433,13 @@ class OFCharacterEncoding::Implementation
             default:
                 return OFFalse;
         }
-#elif defined DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS
-        // the iconvctl function is implemented only in GNU libiconv and not in other
-        // iconv implementations. The iconv implementation in the C standard library
-        // therefore does not support different encoding flags and only has a
-        // (varying) fixed functionality that we detect with a configuration test.
-        return flags == DCMTK_STDLIBC_ICONV_CONVERSION_FLAGS;
+#elif defined DCMTK_FIXED_ICONV_CONVERSION_FLAGS
+        // the iconvctl function is implemented only in newer versions of the
+        // GNU libiconv and not in other iconv implementations. For instance,
+        // the iconv implementation in the C standard library does not support
+        // different encoding flags and only has a (varying) fixed functionality
+        // that we detect with a configuration test.
+        return flags == DCMTK_FIXED_ICONV_CONVERSION_FLAGS;
 #endif
         return OFFalse;
     }
