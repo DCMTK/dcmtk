@@ -39,7 +39,7 @@ int main()
             printf( "AbortTranscodingOnIllegalSequence" );
             return 0;
         }
-        if( !output[0] )
+        if( 8 == outs ) // output buffer not touched
         {
             printf( "DiscardIllegalSequences" );
             return 0;
