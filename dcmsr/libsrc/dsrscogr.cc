@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,9 +76,9 @@ OFCondition DSRGraphicDataList::print(STD_NAMESPACE ostream &stream,
     while (iterator != endPos)
     {
         /* need to convert float to avoid problems with decimal point ('.' or ',') */
-        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).Column);
+        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).Column, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
         stream << buffer << pairSeparator;
-        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).Row);
+        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).Row, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
         stream << buffer;
         iterator++;
         if (iterator != endPos)

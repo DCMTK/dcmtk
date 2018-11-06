@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2017, OFFIS e.V.
+ *  Copyright (C) 2010-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,11 +76,11 @@ OFCondition DSRGraphicData3DList::print(STD_NAMESPACE ostream &stream,
     while (iterator != endPos)
     {
         /* need to convert float to avoid problems with decimal point ('.' or ',') */
-        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).XCoord);
+        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).XCoord, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
         stream << buffer << tripletSeparator;
-        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).YCoord);
+        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).YCoord, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
         stream << buffer << tripletSeparator;
-        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).ZCoord);
+        OFStandard::ftoa(buffer, sizeof(buffer), (*iterator).ZCoord, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
         stream << buffer;
         iterator++;
         if (iterator != endPos)
