@@ -2686,6 +2686,13 @@ void OFStandard::trimString(const char*& pBegin, const char*& pEnd)
     --pEnd;
 }
 
+void OFStandard::trimString( const char*& str, size_t& size )
+{
+    const char* end = str + size;
+    trimString( str, end );
+    size = end - str;
+}
+
 #define MAX_NAME 65536
 
 #ifdef HAVE_GETHOSTBYNAME_R

@@ -1037,6 +1037,18 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static void trimString( const char*& pBegin, const char*& pEnd );
 
+    /** An utility function that finds a substring within a string that does
+     *  not contain leading and trailing spaces and null bytes, effectively
+     *  trimming the string without unnecessary copies.
+     *  @param str a reference to a pointer to the beginning of the string.
+     *  @param size a reference to a size_t variable containing the number of
+     *    bytes in the string referenced by str.
+     *  @details
+     *  This overload is implemented using the other overload of the function
+     *  operating on two character pointers.
+     */
+    static void trimString( const char*& str, size_t& size );
+
     /** This function performs a reverse DNS lookup of a hostname.
      *  The parameters are identical to those passed to gethostbyaddr().
      *  If the lookup fails, an empty string is returned.
