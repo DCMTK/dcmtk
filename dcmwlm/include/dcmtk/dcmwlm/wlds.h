@@ -298,42 +298,6 @@ class DCMTK_DCMWLM_EXPORT WlmDataSource
        */
     OFBool ContainsOnlyValidCharacters( const char *s, const char *charset );
 
-      /** This function checks if the given value is a valid date or date range.
-       *  @param value The value which shall be checked.
-       *  @return OFTrue in case the given value is a valid date or date range, OFFalse otherwise.
-       */
-    OFBool IsValidDateOrDateRange( const OFString& value );
-
-      /** This function checks if the given date value is valid.
-       *  According to the 2001 DICOM standard, part 5, Table 6.2-1, a date
-       *  value is either in format "yyyymmdd" or in format "yyyy.mm.dd",
-       *  so that e.g. "19840822" represents August 22, 1984.
-       *  @param value The value which shall be checked.
-       *  @return OFTrue in case the Date is valid, OFFalse otherwise.
-       */
-    OFBool IsValidDate( const OFString& value );
-
-      /** This function checks if the given value is a valid time or time range.
-       *  @param value The value which shall be checked.
-       *  @return OFTrue in case the given value is a valid time or time range, OFFalse otherwise.
-       */
-    OFBool IsValidTimeOrTimeRange( const OFString& value );
-
-      /** This function checks if the given time value is valid.
-       *  According to the 2001 DICOM standard, part 5, Table 6.2-1, a time
-       *  value is either in format "hhmmss.fracxx" or "hh:mm:ss.fracxx" where
-       *  - hh represents the hour (0-23)
-       *  - mm represents the minutes (0-59)
-       *  - ss represents the seconds (0-59)
-       *  - fracxx represents the fraction of a second in millionths of seconds (000000-999999)
-       *  Note that one or more of the components mm, ss, or fracxx may be missing as
-       *  long as every component to the right of a missing component is also missing.
-       *  If fracxx is missing, the "." character in front of fracxx is also missing.
-       *  @param value The value which shall be checked.
-       *  @return OFTrue in case the time is valid, OFFalse otherwise.
-       */
-    OFBool IsValidTime( const OFString& value );
-
       /** This function returns the value of the given DICOM string element (attribute)
        *  in the parameter resultVal and returns OFTrue if successful.
        *  If the element does not refer to a string attribute or contains an empty value,

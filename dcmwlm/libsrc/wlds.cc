@@ -27,6 +27,7 @@
 #include "dcmtk/dcmwlm/wltypdef.h"   // for type definitions
 #include "dcmtk/ofstd/oftypes.h"     // for OFBool
 #include "dcmtk/dcmdata/dcdatset.h"  // for DcmDataset
+#include "dcmtk/dcmdata/dcmatch.h"   // for DcmAttributeMatching
 #include "dcmtk/dcmdata/dcvrat.h"    // for DcmAttributTag
 #include "dcmtk/dcmdata/dcvrlo.h"    // for DcmLongString
 #include "dcmtk/dcmdata/dcvrae.h"
@@ -648,33 +649,50 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
   switch( elem->ident() )
   {
     case EVR_DA:
-      // get string value
-      ok = GetStringValue( elem, val );
-      // if there is a value and if the value is not a date or a date range, return invalid value
-      if( ok && !IsValidDateOrDateRange( val ) )
-      {
-        DcmTag tag( elem->getTag() );
-        PutOffendingElements( tag );
-        errorComment->putString("Invalid value for an attribute of datatype DA");
-        ok = OFFalse;
-      }
-      else
-        ok = OFTrue;
-      break;
-
+    case EVR_DT:
     case EVR_TM:
-      // get string value
-      ok = GetStringValue( elem, val );
-      // if there is a value and if the value is not a time or a time range, return invalid value
-      if( ok && !IsValidTimeOrTimeRange( val ) )
+    {
+      const char* data;
+      size_t size;
+
+      {
+        char* c;
+        Uint32 s;
+        if( OFconst_cast( DcmElement*, elem )->getString( c, s ).bad() )
+            break;
+        data = c;
+        size = s;
+      }
+
+      OFStandard::trimString( data, size );
+      if( !size )
+        break;
+
+      switch( elem->ident() )
+      {
+      case EVR_DA:
+        ok = DcmAttributeMatching::isDateQuery( data, size );
+        break;
+      case EVR_DT:
+        ok = DcmAttributeMatching::isDateTimeQuery( data, size );
+        break;
+      case EVR_TM:
+        ok = DcmAttributeMatching::isTimeQuery( data, size );
+        break;
+      default:
+        ok = false;
+        break;
+      }
+
+      if( !ok )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
-        errorComment->putString("Invalid value for an attribute of datatype TM");
-        ok = OFFalse;
+        OFString message( "Invalid value for an attribute with VR=" );
+        message += DcmVR( elem->ident() ).getVRName();
+        errorComment->putString( message.data(), message.size() );
       }
-      else
-        ok = OFTrue;
+    }
       break;
 
     case EVR_CS:
@@ -757,261 +775,6 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
   }
 
   return( ok );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmDataSource::IsValidDateOrDateRange( const OFString& value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : This function checks if the given value is a valid date or date range.
-// Parameters   : value - [in] The value which shall be checked.
-// Return Value : OFTrue  - The given value is a valid date or date range.
-//                OFFalse - The given value is not a valid date or date range.
-{
-  // create new string without leading or trailing blanks
-  OFString dateRange = DeleteLeadingAndTrailingBlanks( value );
-
-  if (dateRange.empty())
-    return OFFalse;
-
-  // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( dateRange.c_str(), "0123456789.-" ) )
-    return( OFFalse );
-
-  // initialize return value
-  OFBool isValidDateRange = OFFalse;
-
-  // Determine if a hyphen occurs in the date range
-  size_t hyphen = dateRange.find('-');
-  if( hyphen != OFString_npos )
-  {
-    // determine if two date values are given or not
-    if( dateRange[0] == '-' )
-    {
-      // if the hyphen occurs at the beginning, there is just one date value which has to be checked for validity
-      isValidDateRange = IsValidDate( dateRange.substr(1) );
-    }
-    else if( dateRange[ dateRange.length() - 1 ] == '-' )
-    {
-      // if the hyphen occurs at the end, there is just one date value which has to be checked for validity
-      isValidDateRange = IsValidDate( dateRange.substr(0, dateRange.length() -1 ));
-    }
-    else
-    {
-      // in this case the hyphen occurs somewhere in between beginning and end; hence there are two date values
-      // which have to be checked for validity. Determine where the hyphen occurs exactly
-      // check both dates for validity
-      if( IsValidDate( dateRange.substr(0, dateRange.length()-hyphen-1 )) &&
-          IsValidDate( dateRange.substr(        hyphen + 1             )) )
-      {
-        isValidDateRange = OFTrue;
-      }
-    }
-  }
-  else
-  {
-    // if there is no hyphen, there is just one date value which has to be checked for validity
-    isValidDateRange = IsValidDate( dateRange );
-  }
-
-  // return result
-  return( isValidDateRange );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmDataSource::IsValidDate( const OFString& value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : This function checks if the given date value is valid.
-//                According to the 2001 DICOM standard, part 5, Table 6.2-1, a date
-//                value is either in format "yyyymmdd" or in format "yyyy.mm.dd",
-//                so that e.g. "19840822" represents August 22, 1984.
-// Parameters   : value - [in] The value which shall be checked.
-// Return Value : OFTrue  - Date is valid.
-//                OFFalse - Date is not valid.
-{
-  int year=0, month=0, day=0;
-
-  // create new string without leading or trailing blanks
-  OFString date = DeleteLeadingAndTrailingBlanks( value );
-  // check parameter
-
-  if( value.empty() )
-    return( OFFalse );
-
-  // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( date.c_str(), "0123456789." ) )
-    return( OFFalse );
-
-  // initialize return value
-  OFBool isValidDate = OFFalse;
-
-  // check which of the two formats applies to the given string
-  if( date.length() == 8 )
-  {
-    // scan given date string
-    sscanf( date.c_str(), "%4d%2d%2d", &year, &month, &day );
-    if( year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31 )
-      isValidDate = OFTrue;
-  }
-  else if( date.length() == 10 )
-  {
-    // scan given date string
-    sscanf( date.c_str(), "%4d.%2d.%2d", &year, &month, &day );
-    if( year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31 )
-      isValidDate = OFTrue;
-  }
-
-  // return result
-  return( isValidDate );
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmDataSource::IsValidTimeOrTimeRange( const OFString& value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : This function checks if the given value is a valid time or time range.
-// Parameters   : timeRange - [in] The value which shall be checked.
-// Return Value : OFTrue  - The given value is a valid time or time range.
-//                OFFalse - The given value is not a valid time or time range.
-{
-  // create new string without leading or trailing blanks
-  OFString timeRange = DeleteLeadingAndTrailingBlanks( value );
-
-  // check if string is empty now
-  if( timeRange.empty() )
-    return( OFFalse );
-
-  // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( timeRange.c_str(), "0123456789.:-" ) )
-    return( OFFalse );
-
-  // Determine if a hyphen occurs in the time range
-  size_t hyphen = timeRange.find('-');
-  if( hyphen != OFString_npos )
-  {
-    // determine if two time values are given or not
-    if( timeRange[0] == '-' )
-    {
-      // if the hyphen occurs at the beginning, there is just one time value which has to be checked for validity
-      return IsValidTime( timeRange.substr(1) );
-    }
-    else if( timeRange[ timeRange.length() - 1 ] == '-' )
-    {
-      // if the hyphen occurs at the end, there is just one time value which has to be checked for validity
-      return IsValidTime( timeRange.substr(0, timeRange.length()-1) );
-    }
-    else
-    {
-      // in this case the hyphen occurs somewhere in between beginning and end; hence there are two time values
-      // which have to be checked for validity.
-
-      // check both times for validity
-      if( IsValidTime( timeRange.substr(0, timeRange.length() - hyphen -1 )) &&
-          IsValidTime( timeRange.substr( hyphen + 1 )                     ))
-        return OFTrue;
-    }
-  }
-  else
-  {
-    // if there is no hyphen, there is just one date value which has to be checked for validity
-    return IsValidTime( timeRange );
-  }
-  return OFFalse;
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmDataSource::IsValidTime( const OFString& value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : This function checks if the given time value is valid.
-//                According to the 2001 DICOM standard, part 5, Table 6.2-1, a time
-//                value is either in format "hhmmss.fracxx" or "hh:mm:ss.fracxx" where
-//                 - hh represents the hour (0-23)
-//                 - mm represents the minutes (0-59)
-//                 - ss represents the seconds (0-59)
-//                 - fracxx represents the fraction of a second in millionths of seconds (000000-999999)
-//                Note that one or more of the components mm, ss, or fracxx may be missing as
-//                long as every component to the right of a missing component is also missing.
-//                If fracxx is missing, the "." character in front of fracxx is also missing.
-// Parameters   : value - [in] The value which shall be checked.
-// Return Value : OFTrue  - Time is valid.
-//                OFFalse - Time is not valid.
-{
-  int hour=0, min=0, sec=0, frac=0, fieldsRead=0;
-  // create new string without leading or trailing blanks
-  OFString timevalue = DeleteLeadingAndTrailingBlanks( value );
-
-  // check if string is empty now
-  if( timevalue.empty() )
-    return( OFFalse );
-
-  // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( timevalue.c_str(), "0123456789.:" ) )
-    return( OFFalse );
-
-  // check which of the two formats applies to the given string
-  size_t colon = timevalue.find(':');
-  if( colon != OFString_npos )
-  {
-    // time format is "hh:mm:ss.fracxx"
-
-    // check which components are missing
-    if( timevalue.length() == 5 )
-    {
-      // scan given time string "hh:mm"
-      fieldsRead = sscanf( timevalue.c_str(), "%2d:%2d", &hour, &min );
-      if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
-        return OFTrue;
-    }
-    else if( timevalue.length() == 8 )
-    {
-      // scan given time string "hh:mm:ss"
-      fieldsRead = sscanf( timevalue.c_str(), "%2d:%2d:%2d", &hour, &min, &sec );
-      if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
-        return OFTrue;
-    }
-    else if( timevalue.length() > 8 && timevalue.length() < 16 )
-    {
-      // scan given time string "hh:mm:ss.fracxx"
-      fieldsRead = sscanf( timevalue.c_str(), "%2d:%2d:%2d.%6d", &hour, &min, &sec, &frac );
-      if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
-        return OFTrue;
-    }
-  }
-  else
-  {
-    // time format is "hhmmss.fracxx"
-
-    // check which components are missing
-    if( timevalue.length() == 4 )
-    {
-      // scan given time string "hhmm"
-      fieldsRead = sscanf( timevalue.c_str(), "%2d%2d", &hour, &min );
-      if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
-        return OFTrue;
-    }
-    else if( timevalue.length() == 6 )
-    {
-      // scan given time string "hhmmss"
-      fieldsRead = sscanf( timevalue.c_str(), "%2d%2d%2d", &hour, &min, &sec );
-      if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
-        return OFTrue;
-    }
-    else if( timevalue.length() > 6 && timevalue.length() < 14 )
-    {
-      // scan given time string "hhmmss.fracxx"
-      fieldsRead = sscanf( timevalue.c_str(), "%2d%2d%2d.%6d", &hour, &min, &sec, &frac );
-      if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
-        return OFTrue;
-    }
-  }
-
- return OFFalse;
 }
 
 // ----------------------------------------------------------------------------
