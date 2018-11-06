@@ -24,7 +24,7 @@ int main()
 {
     char input[2] = { '\366', '\0' };
     char output[8];
-    iconv_t i = iconv_open( "ISO-8859-1", "ASCII" );
+    iconv_t i = iconv_open( "ASCII", "ISO-8859-1" );
     if( (iconv_t)-1 != i )
     {
         iconv( i, 0, 0, 0, 0 );
