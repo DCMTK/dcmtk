@@ -1235,25 +1235,41 @@ int main()
     return 0;
 }")
 
-if((DCMTK_WITH_ICONV OR DCMTK_WITH_STDLIBC_ICONV) AND NOT DCMTK_ICONV_FLAGS_ANALYZED)
-    set(TEXT "Detecting builtin iconv conversion flags")
-    message(STATUS "${TEXT}")
-    DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT "${CMAKE_BINARY_DIR}"
-        "${DCMTK_SOURCE_DIR}/config/tests/iconv.cc"
-        COMPILE_OUTPUT_VARIABLE CERR
-        RUN_OUTPUT_VARIABLE OUTPUT
-    )
-    if(COMPILE_RESULT)
-        set(DCMTK_ICONV_FLAGS_ANALYZED TRUE CACHE INTERNAL "")
-        if(RUN_RESULT EQUAL 0)
-            message(STATUS "${TEXT} - ${OUTPUT}")
-            set(DCMTK_FIXED_ICONV_CONVERSION_FLAGS "${OUTPUT}" CACHE INTERNAL "")
+function(ANALYZE_ICONV_FLAGS)
+    if(DCMTK_WITH_ICONV OR DCMTK_WITH_STDLIBC_ICONV)
+        set(TEXT "Detecting fixed iconv conversion flags")
+        message(STATUS "${TEXT}")
+        if(NOT DCMTK_WITH_STDLIBC_ICONV)
+            set(CMAKE_FLAGS
+                CMAKE_FLAGS
+                "-DINCLUDE_DIRECTORIES=${LIBICONV_INCDIR}"
+                "-DLINK_LIBRARIES=${LIBICONV_LIBS}"
+            )
         else()
-            message(STATUS "${TEXT} - unknown")
+            set(CMAKE_FLAGS)
         endif()
-    else()
-        message(FATAL_ERROR "${CERR}")
+        DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT "${CMAKE_BINARY_DIR}"
+            "${DCMTK_SOURCE_DIR}/config/tests/iconv.cc"
+            ${CMAKE_FLAGS}
+            COMPILE_OUTPUT_VARIABLE CERR
+            RUN_OUTPUT_VARIABLE OUTPUT
+        )
+        if(COMPILE_RESULT)
+            set(DCMTK_ICONV_FLAGS_ANALYZED TRUE CACHE INTERNAL "")
+            if(RUN_RESULT EQUAL 0)
+                message(STATUS "${TEXT} - ${OUTPUT}")
+                set(DCMTK_FIXED_ICONV_CONVERSION_FLAGS "${OUTPUT}" CACHE INTERNAL "")
+            else()
+                message(STATUS "${TEXT} - unknown")
+            endif()
+        else()
+            message(FATAL_ERROR "${CERR}")
+        endif()
     endif()
+endfunction()
+
+if(NOT DCMTK_ICONV_FLAGS_ANALYZED)
+    analyze_iconv_flags()
 endif()
 
 # Compile config/tests/arith.cc and generate config/arith.h

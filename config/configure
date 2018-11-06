@@ -15234,6 +15234,10 @@ CHARCONVLIBS=""
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking fixed iconv conversion flags" >&5
 $as_echo_n "checking fixed iconv conversion flags... " >&6; }
+if test "$WITH_STDLIBC_ICONV" != "yes"; then
+    SAVELIBS="$LIBS"
+    LIBS="$LIBS $ICONVLIBS"
+fi
 if test "$cross_compiling" = yes; then :
   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -15263,6 +15267,9 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
+if test "$WITH_STDLIBC_ICONV" != "yes"; then
+    LIBS="$SAVELIBS"
+fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable character set conversion support" >&5
 $as_echo_n "checking whether to enable character set conversion support... " >&6; }

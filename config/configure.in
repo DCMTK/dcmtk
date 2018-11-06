@@ -1409,6 +1409,10 @@ fi
 ])
 
 AC_MSG_CHECKING(fixed iconv conversion flags)
+if test "$WITH_STDLIBC_ICONV" != "yes"; then
+    SAVELIBS="$LIBS"
+    LIBS="$LIBS $ICONVLIBS"
+fi
 AC_RUN_IFELSE(
     [AC_LANG_SOURCE([[#include "tests/iconv.cc"]])],
     [
@@ -1417,6 +1421,9 @@ AC_RUN_IFELSE(
     ],
     [AC_MSG_RESULT([unknown])]
 )
+if test "$WITH_STDLIBC_ICONV" != "yes"; then
+    LIBS="$SAVELIBS"
+fi
 
 AC_MSG_CHECKING(whether to enable character set conversion support)
 AC_ARG_ENABLE(charconv,

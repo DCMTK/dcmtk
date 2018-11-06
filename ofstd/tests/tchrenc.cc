@@ -27,15 +27,12 @@
 #include "dcmtk/ofstd/ofchrenc.h"
 
 
-static void checkConversionFlags(OFCharacterEncoding& charEnc,
-                                 const unsigned flags)
-{
-    if (OFCharacterEncoding::supportsConversionFlags(flags))
-    {
-        OFCHECK(charEnc.setConversionFlags(flags).good());
-        OFCHECK_EQUAL(charEnc.getConversionFlags(), flags);
+#define checkConversionFlags(flags)\
+    if (OFCharacterEncoding::supportsConversionFlags(flags))\
+    {\
+        OFCHECK(charEnc.setConversionFlags(flags).good());\
+        OFCHECK_EQUAL(charEnc.getConversionFlags(), flags);\
     }
-}
 
 
 OFTEST(ofstd_OFCharacterEncoding_1)
@@ -67,11 +64,11 @@ OFTEST(ofstd_OFCharacterEncoding_1)
         OFCHECK(charEnc.selectEncoding("", "ASCII").good());
         OFCHECK(charEnc.selectEncoding("ASCII", "").good());
         OFCHECK(charEnc.selectEncoding("ASCII", charEnc.getLocaleEncoding()).good());
-        checkConversionFlags(charEnc, OFCharacterEncoding::AbortTranscodingOnIllegalSequence);
-        checkConversionFlags(charEnc, OFCharacterEncoding::DiscardIllegalSequences);
-        checkConversionFlags(charEnc, OFCharacterEncoding::TransliterateIllegalSequences);
-        checkConversionFlags(charEnc, OFCharacterEncoding::TransliterateIllegalSequences
-                                    | OFCharacterEncoding::DiscardIllegalSequences);
+        checkConversionFlags(OFCharacterEncoding::AbortTranscodingOnIllegalSequence);
+        checkConversionFlags(OFCharacterEncoding::DiscardIllegalSequences);
+        checkConversionFlags(OFCharacterEncoding::TransliterateIllegalSequences);
+        checkConversionFlags(OFCharacterEncoding::TransliterateIllegalSequences
+                             | OFCharacterEncoding::DiscardIllegalSequences);
         charEnc.clear();
         OFCHECK(charEnc.convertString("Simple Text", resultStr).bad());
     }

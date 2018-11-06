@@ -386,6 +386,8 @@ class OFCharacterEncoding::Implementation
             result |= DiscardIllegalSequences;
         if (result)
             return result;
+        // no flags set, so return libiconv default (=abort)
+        return AbortTranscodingOnIllegalSequence;
 #elif defined DCMTK_FIXED_ICONV_CONVERSION_FLAGS
         // the iconvctl function is implemented only in newer versions of the
         // GNU libiconv and not in other iconv implementations. For instance,
