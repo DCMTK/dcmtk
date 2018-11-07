@@ -192,7 +192,7 @@ public:
    *          otherwise
    */
   virtual OFCondition getMeasurement(const size_t measurementIndex,
-                                     const TrcMeasurement*& measurement);
+                                     TrcMeasurement*& measurement);
 
   /** Get descriptive information of all measurements
    *  @param typesAndUnits  Returns vector of pairs, which each pair holding

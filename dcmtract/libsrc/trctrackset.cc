@@ -378,7 +378,7 @@ OFCondition TrcTrackSet::findMeasurementsByType(const CodeSequenceMacro& type,
 
 
 OFCondition TrcTrackSet::getMeasurement(const size_t measurementIndex,
-                                        const TrcMeasurement*& measurement)
+                                        TrcMeasurement*& measurement)
 {
   if (measurementIndex > m_Measurements.size() - 1)
   {

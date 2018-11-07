@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2018, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -80,7 +80,7 @@ OFCondition TrcMeasurement::get(const size_t trackNumber,
 {
   type = m_Type;
   units = m_Units;
-  if (trackNumber < m_Values.size() -1 )
+  if (trackNumber > m_Values.size() - 1)
   {
     return TRC_EC_NoSuchMeasurement;
   }
@@ -296,6 +296,7 @@ OFCondition TrcMeasurement::Values::get(const Float32*& dataValues,
     if (result.bad())
     {
       trackPointIndices = NULL;
+      numIndices = numValues;
       result = EC_Normal; // no track point indices mean that measurements cover all points
     }
   }
