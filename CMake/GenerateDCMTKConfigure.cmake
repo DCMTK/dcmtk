@@ -1239,18 +1239,22 @@ function(ANALYZE_ICONV_FLAGS)
     if(DCMTK_WITH_ICONV OR DCMTK_WITH_STDLIBC_ICONV)
         set(TEXT "Detecting fixed iconv conversion flags")
         message(STATUS "${TEXT}")
+        set(EXTRA_ARGS)
         if(NOT DCMTK_WITH_STDLIBC_ICONV)
-            set(CMAKE_FLAGS
-                CMAKE_FLAGS
-                "-DINCLUDE_DIRECTORIES=${LIBICONV_INCDIR}"
-                "-DLINK_LIBRARIES=${LIBICONV_LIBS}"
+            list(APPEND EXTRA_ARGS
+                CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${LIBICONV_INCDIR}"
+                LINK_LIBRARIES ${LIBICONV_LIBS}
             )
-        else()
-            set(CMAKE_FLAGS)
         endif()
-        DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT "${CMAKE_BINARY_DIR}"
+        if(LIBICONV_SECOND_ARGUMENT_CONST)
+            list(APPEND EXTRA_ARGS
+                COMPILE_DEFINITIONS "-DLIBICONV_SECOND_ARGUMENT_CONST=${LIBICONV_SECOND_ARGUMENT_CONST}"
+            )
+        endif()
+        DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT
+            "${CMAKE_BINARY_DIR}/CMakeTmp/Iconv"
             "${DCMTK_SOURCE_DIR}/config/tests/iconv.cc"
-            ${CMAKE_FLAGS}
+            ${EXTRA_ARGS}
             COMPILE_OUTPUT_VARIABLE CERR
             RUN_OUTPUT_VARIABLE OUTPUT
         )

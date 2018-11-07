@@ -28,6 +28,9 @@ int main()
     if( (iconv_t)-1 != i )
     {
         iconv( i, 0, 0, 0, 0 );
+#ifdef LIBICONV_SECOND_ARGUMENT_CONST
+        const
+#endif
         char* in = input;
         char* out = output;
         size_t ins = 1;
