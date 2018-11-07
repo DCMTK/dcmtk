@@ -518,6 +518,7 @@ AC_CHECK_HEADERS(cstdio)
 AC_CHECK_HEADERS(stdio.h)
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(stdlib.h)
+AC_CHECK_HEADERS(streambuf.h)
 AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)
 AC_CHECK_HEADERS(strstrea.h)
@@ -995,8 +996,8 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
 ],
    [ AC_MSG_RESULT(yes)
     AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support.])
-    OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ], 
-    [AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.0.1 or newer)] ) 
+    OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ],
+    [AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.0.1 or newer)] )
     ;;
   *)
     AC_MSG_RESULT(no)
@@ -1005,7 +1006,7 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
 [ SAVELIBS="$LIBS"
   LIBS="$LIBS $OPENSSLLIBS -lssl -lcrypto"
   AC_TRY_LINK([#include <openssl/ssl.h>], [(void) TLSv1_method()],
-    [ 
+    [
       AC_TRY_COMPILE([#include <openssl/ssl.h>], [
 #if OPENSSL_VERSION_NUMBER < 0x10001000L
 #error OpenSSL too old
@@ -1013,8 +1014,8 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
 ],
       [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support.])
-      OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ], 
-     [AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.0.1 or newer)] )], 
+      OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ],
+     [AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.0.1 or newer)] )],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 

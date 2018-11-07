@@ -8399,6 +8399,18 @@ fi
 
 done
 
+for ac_header in streambuf.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "streambuf.h" "ac_cv_header_streambuf_h" "$ac_includes_default"
+if test "x$ac_cv_header_streambuf_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_STREAMBUF_H 1
+_ACEOF
+
+fi
+
+done
+
 for ac_header in string.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "string.h" "ac_cv_header_string_h" "$ac_includes_default"
@@ -12998,7 +13010,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13001 "configure"
+#line 13013 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13470,7 +13482,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13473 "configure"
+#line 13485 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13542,7 +13554,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13545 "configure"
+#line 13557 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13614,7 +13626,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13617 "configure"
+#line 13629 "configure"
 #include "confdefs.h"
 
 template <class T>

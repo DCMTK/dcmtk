@@ -817,6 +817,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `strdup' function. */
 #undef HAVE_STRDUP
 
+/* Define to 1 if you have the <streambuf.h> header file. */
+#undef HAVE_STREAMBUF_H
+
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
 
