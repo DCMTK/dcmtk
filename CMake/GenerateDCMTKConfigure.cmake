@@ -1277,6 +1277,20 @@ if(NOT DCMTK_ICONV_FLAGS_ANALYZED)
     analyze_iconv_flags()
 endif()
 
+if(HAVE_PASSWD_GECOS AND NOT DEFINED PASSWD_GECOS_IS_DEFINE_TO_PASSWD)
+    DCMTK_TRY_COMPILE(PASSWD_GECOS_IS_DEFINE_TO_PASSWD "pw_gecos is #defined to pw_passwd"
+        "#include <pwd.h>
+int main()
+{
+    struct S { int pw_passwd; };
+    &S::pw_gecos;
+    return 0;
+}")
+    if(PASSWD_GECOS_IS_DEFINE_TO_PASSWD)
+        set(HAVE_PASSWD_GECOS 0 CACHE INTERNAL "Have symbol &passwd::pw_gecos")
+    endif()
+endif()
+
 # Compile config/tests/arith.cc and generate config/arith.h
 function(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
   set(ARITH_H_FILE "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h")
