@@ -53,7 +53,7 @@ public:
 
   /** This function is only used to process CDA files.
    *  It retrieves the value from the CDA document
-   *  corresponding to the DCM Tag. According to Stantard v. 2013 part20/sect_A.8.
+   *  corresponding to the DCM Tag. According to Standard v. 2013 part20/sect_A.8.
    *  @param fileNode the root XML node.
    *  @param attr the tag to search for in the CDA file.
    *  @return OFstring containing the value of the corresponding tag.
@@ -64,7 +64,7 @@ public:
    *  with series, study and user input. It also retrieves all mediatypes found in the CDA document.
    *  @param filename The filename of the CDA document.
    *  @param appLogger The logger of the application calling this method.
-   *  @return EXITCODE_NO_ERROR (0) if successfull or error code in case of failure.
+   *  @return EXITCODE_NO_ERROR (0) if successful or error code in case of failure.
    */
   int getCDAData(const char *filename, OFLogger &appLogger);
 
@@ -133,7 +133,7 @@ public:
    */
   void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd);
 
-  /** Includes basic information into the dicom file.
+  /** Includes basic information into the DICOM file.
    *  @param dataset a reference to a DcmItem containing the information to be included.
    *  @param logger The logger of the application calling this method.
    *  @return EC_Normal if successful, an error code otherwise.
@@ -144,7 +144,7 @@ public:
   /** Correctly inserts encapsulated document data.
    *  @param dataset The dataset to which we should encapsulate this document.
    *  @param logger The logger of the application calling this method.
-   *  @return EXITCODE_NO_ERROR (0) if successfull or error code in case of failure.
+   *  @return EXITCODE_NO_ERROR (0) if successful or error code in case of failure.
    */
   int insertEncapsulatedDocument(DcmItem *dataset,
     OFLogger& logger);
@@ -204,9 +204,6 @@ public:
    *  @return the transfer syntax as E_TransferSyntax.
    */
   E_TransferSyntax getTransferSyntax();
-
-  ///Type of file currently being converted.
-  OFString ftype;
 
   /** Returns the current filetype.
    *  @return the current filetype as OFString.
@@ -286,5 +283,8 @@ private:
   OFString                opt_measurementUnitsCSD;
   /// 3d Model Measurement Units Code Value
   OFString                opt_measurementUnitsCV;
+
+  ///Type of file currently being converted.
+  OFString ftype;
 };
 #endif // DCENCDOC_H

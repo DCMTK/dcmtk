@@ -73,10 +73,9 @@ DcmEncapsulatedDocument::DcmEncapsulatedDocument() :
   opt_instance(1),
   opt_overrideKeys(),
 
-  opt_override(OFFalse),
-
   cda_mediaTypes(),
   hl7_InstanceIdentifier(),
+  opt_override(OFFalse),
   // Frame of Reference Module (STL)
   opt_frameOfReferenceUID(),
   opt_positionReferenceIndicator(),
@@ -502,8 +501,8 @@ void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
   ftype = "stl";
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  cmd.addParam(     "stlfile-in",                          "STL input filename to be converted");
-  cmd.addParam(     "dcmfile-out",                         "DICOM output filename");
+  cmd.addParam(     "stlfile-in",                         "STL input filename to be converted");
+  cmd.addParam(     "dcmfile-out",                        "DICOM output filename");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("burned-in annotation:");
