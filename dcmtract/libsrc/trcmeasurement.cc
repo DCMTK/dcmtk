@@ -80,7 +80,7 @@ OFCondition TrcMeasurement::get(const size_t trackNumber,
 {
   type = m_Type;
   units = m_Units;
-  if (trackNumber > m_Values.size() - 1)
+  if (m_Values.size() >= trackNumber + 1)
   {
     return TRC_EC_NoSuchMeasurement;
   }
