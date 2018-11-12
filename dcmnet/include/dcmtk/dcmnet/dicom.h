@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -133,7 +133,11 @@ typedef Uint32	MASK_32;	/* for bit masks */
 #define DIC_DS_LEN		16
 #define DIC_IS_LEN		12
 #define DIC_AT_LEN		(2*sizeof(DIC_US))
-#define DIC_NODENAME_LEN	128
+
+/* a valid DNS name can be up to 253 characters, and we need to add
+ * a port number. This should be sufficient.
+ */
+#define DIC_NODENAME_LEN	270
 
 #define DICOM_UI_LENGTH DIC_UI_LEN
 

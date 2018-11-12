@@ -317,7 +317,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
         }
     }
     if (cond.good()) {
-        sprintf(dstHostNamePlusPort, "%s:%d", dstHostName, dstPortNumber);
+        OFStandard::snprintf(dstHostNamePlusPort, sizeof(DIC_NODENAME), "%s:%d", dstHostName, dstPortNumber);
         ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(),
             dstHostNamePlusPort);
         ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle,NULL);
