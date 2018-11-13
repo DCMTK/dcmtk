@@ -313,44 +313,44 @@ decompr. workaround options for incorrect encodings (if input is compressed):
   # are compressed. This flag enables a workaround that permits such
   # images to be decoded correctly.
 
-standard YCbCr component subsampling (not with +tl):
-
-  +s4   --sample-444
-          4:4:4 sampling with YBR_FULL (default)
-
-  # This option disables color component subsampling for compression in
-  # the YCbCr color space. The DICOM photometric interpretation is
-  # encoded as YBR_FULL.
+YCbCr component subsampling (lossy JPEG only):
 
   +s2   --sample-422
-          4:2:2 subsampling with YBR_FULL_422
+          4:2:2 subsampling with YBR_FULL_422 (default)
 
   # This option enables a 4:2:2 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL.
+  # interpretation is encoded as YBR_FULL_422.
 
 non-standard YCbCr component subsampling (not with +tl):
+
+  +s4   --nonstd-444
+          4:4:4 sampling with YBR_FULL
+
+  # This option disables color component subsampling for compression in
+  # the YCbCr color space. The DICOM photometric interpretation is
+  # encoded as YBR_FULL, which violates DICOM rules for lossy JPEG.
 
   +n2   --nonstd-422-full
           4:2:2 subsampling with YBR_FULL
 
   # This option enables a 4:2:2 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL which violates DICOM rules.
+  # interpretation is encoded as YBR_FULL, which violates DICOM rules.
 
   +n1   --nonstd-411-full
           4:1:1 subsampling with YBR_FULL
 
   # This option enables a 4:1:1 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL which violates DICOM rules.
+  # interpretation is encoded as YBR_FULL, which violates DICOM rules.
 
   +np   --nonstd-411
           4:1:1 subsampling with YBR_FULL_422
 
   # This option enables a 4:1:1 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL_422 which violates DICOM rules.
+  # interpretation is encoded as YBR_FULL_422, which violates DICOM rules.
 \endverbatim
 
 \subsection dcmcjpeg_enc_pix_data_encoding_opt encapsulated pixel data encoding options:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -410,7 +410,7 @@ OFCondition DJCompressIJG12Bit::encode(
   cinfo.smoothing_factor = cparam->getSmoothingFactor();
 
   // initialize sampling factors
-  if (cinfo.jpeg_color_space == JCS_YCbCr)
+  if ((cinfo.jpeg_color_space == JCS_YCbCr) && (modeofOperation != EJM_lossless))
   {
     switch(cparam->getSampleFactors())
     {
@@ -430,7 +430,8 @@ OFCondition DJCompressIJG12Bit::encode(
   }
   else
   {
-    // JPEG color space is not YCbCr, disable subsampling.
+    // JPEG color space is not YCbCr, or we are using lossless compression.
+    // Disable subsampling.
     cinfo.comp_info[0].h_samp_factor = 1;
     cinfo.comp_info[0].v_samp_factor = 1;
   }

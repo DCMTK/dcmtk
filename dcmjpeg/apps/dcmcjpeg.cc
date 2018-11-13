@@ -84,8 +84,8 @@ int main(int argc, char *argv[])
   OFBool           opt_predictor6WorkaroundEnable = OFFalse;
   OFBool           opt_cornellWorkaroundEnable = OFFalse;
   OFBool           opt_forceSingleFragmentPerFrame = OFFalse;
-  E_SubSampling    opt_sampleFactors = ESS_444;
-  OFBool           opt_useYBR422 = OFFalse;
+  E_SubSampling    opt_sampleFactors = ESS_422;
+  OFBool           opt_useYBR422 = OFTrue;
   OFCmdUnsignedInt opt_fragmentSize = 0; // 0=unlimited
   OFBool           opt_createOffsetTable = OFTrue;
   int              opt_windowType = 0;  /* default: no windowing; 1=Wi, 2=Wl, 3=Wm, 4=Wh, 5=Ww, 6=Wn, 7=Wr */
@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
   OFBool           opt_usePixelValues = OFTrue;
   OFBool           opt_useModalityRescale = OFFalse;
   OFBool           opt_trueLossless = OFTrue;
+  OFBool           opt_lossless = OFTrue;
   OFBool           lossless = OFTrue;  /* see opt_oxfer */
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Encode DICOM file to JPEG transfer syntax", rcsid);
@@ -179,11 +180,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--workaround-incpl",    "+wi",    "enable workaround for incomplete JPEG data");
       cmd.addOption("--workaround-cornell",  "+wc",    "enable workaround for 16-bit JPEG lossless\nCornell images with Huffman table overflow");
 
-    cmd.addSubGroup("standard YCbCr component subsampling (not with +tl):");
-      cmd.addOption("--sample-444",          "+s4",    "4:4:4 sampling with YBR_FULL (default)");
-      cmd.addOption("--sample-422",          "+s2",    "4:2:2 subsampling with YBR_FULL_422");
+    cmd.addSubGroup("YCbCr component subsampling (lossy JPEG only):");
+      cmd.addOption("--sample-422",          "+s2",    "4:2:2 subsampling with YBR_FULL_422 (default)");
 
-    cmd.addSubGroup("non-standard YCbCr component subsampling (not with +tl):");
+    cmd.addSubGroup("non-standard YCbCr component subsampling (lossy JPEG only):");
+      cmd.addOption("--nonstd-444",          "+s4",    "4:4:4 sampling with YBR_FULL");
       cmd.addOption("--nonstd-422-full",     "+n2",    "4:2:2 subsampling with YBR_FULL");
       cmd.addOption("--nonstd-411-full",     "+n1",    "4:1:1 subsampling with YBR_FULL");
       cmd.addOption("--nonstd-411",          "+np",    "4:1:1 subsampling with YBR_FULL_422");
@@ -310,12 +311,36 @@ int main(int argc, char *argv[])
       // JPEG options
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--encode-lossless-sv1")) opt_oxfer = EXS_JPEGProcess14SV1;
-      if (cmd.findOption("--encode-lossless")) opt_oxfer = EXS_JPEGProcess14;
-      if (cmd.findOption("--encode-baseline")) opt_oxfer = EXS_JPEGProcess1;
-      if (cmd.findOption("--encode-extended")) opt_oxfer = EXS_JPEGProcess2_4;
-      if (cmd.findOption("--encode-spectral")) opt_oxfer = EXS_JPEGProcess6_8;
-      if (cmd.findOption("--encode-progressive")) opt_oxfer = EXS_JPEGProcess10_12;
+      if (cmd.findOption("--encode-lossless-sv1"))
+      {
+          opt_oxfer = EXS_JPEGProcess14SV1;
+          opt_lossless = OFTrue;
+      }
+      if (cmd.findOption("--encode-lossless"))
+      {
+          opt_oxfer = EXS_JPEGProcess14;
+          opt_lossless = OFTrue;
+      }
+      if (cmd.findOption("--encode-baseline"))
+      {
+          opt_oxfer = EXS_JPEGProcess1;
+          opt_lossless = OFFalse;
+      }
+      if (cmd.findOption("--encode-extended"))
+      {
+          opt_oxfer = EXS_JPEGProcess2_4;
+          opt_lossless = OFFalse;
+      }
+      if (cmd.findOption("--encode-spectral"))
+      {
+          opt_oxfer = EXS_JPEGProcess6_8;
+          opt_lossless = OFFalse;
+      }
+      if (cmd.findOption("--encode-progressive"))
+      {
+          opt_oxfer = EXS_JPEGProcess10_12;
+          opt_lossless = OFFalse;
+      }
       cmd.endOptionBlock();
 
       // check for JPEG lossless output transfer syntaxes
@@ -446,33 +471,38 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--workaround-cornell")) opt_cornellWorkaroundEnable = OFTrue;
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--sample-444"))
+      if (cmd.findOption("--nonstd-444"))
       {
-        app.checkConflict("--sample-444", "--true-lossless", opt_trueLossless);
+        app.checkConflict("--nonstd-444", "--true-lossless", opt_trueLossless);
+        app.checkConflict("--nonstd-444", "--pseudo-lossless", opt_lossless);
         opt_sampleFactors = ESS_444;
         opt_useYBR422 = OFFalse;
       }
       if (cmd.findOption("--sample-422"))
       {
         app.checkConflict("--sample-422", "--true-lossless", opt_trueLossless);
+        app.checkConflict("--sample-422", "--pseudo-lossless", opt_lossless);
         opt_sampleFactors = ESS_422;
         opt_useYBR422 = OFTrue;
       }
       if (cmd.findOption("--nonstd-422-full"))
       {
         app.checkConflict("--nonstd-422-full", "--true-lossless", opt_trueLossless);
+        app.checkConflict("--nonstd-422-full", "--pseudo-lossless", opt_lossless);
         opt_sampleFactors = ESS_422;
         opt_useYBR422 = OFFalse;
       }
       if (cmd.findOption("--nonstd-411-full"))
       {
         app.checkConflict("--nonstd-411-full", "--true-lossless", opt_trueLossless);
+        app.checkConflict("--nonstd-411-full", "--pseudo-lossless", opt_lossless);
         opt_sampleFactors = ESS_411;
         opt_useYBR422 = OFFalse;
       }
       if (cmd.findOption("--nonstd-411"))
       {
         app.checkConflict("--nonstd-411", "--true-lossless", opt_trueLossless);
+        app.checkConflict("--nonstd-411", "--pseudo-lossless", opt_lossless);
         opt_sampleFactors = ESS_411;
         opt_useYBR422 = OFTrue;
       }
