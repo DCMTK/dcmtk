@@ -23,10 +23,12 @@
 #
 # Generated automatically from DICOM PS 3.6-2018d and PS 3.7-2018d
 # File created on 2018-09-19 14:20:31 by J. Riesmeier on thinkpad.
+# File updated manually on 2018-11-15 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - Supplement 188
+# - CP 1803, 1809
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4387,6 +4389,55 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 188 (Multi-energy CT Images)
+#
+(0018,9361)	CS	MultienergyCTAcquisition	1	DICOM/Supplement_188
+(0018,9362)	SQ	MultienergyCTAcquisitionSequence	1	DICOM/Supplement_188
+(0018,9363)	SQ	MultienergyCTProcessingSequence	1	DICOM/Supplement_188
+(0018,9364)	SQ	MultienergyCTCharacteristicsSequence	1	DICOM/Supplement_188
+(0018,9365)	SQ	MultienergyCTXRaySourceSequence	1	DICOM/Supplement_188
+(0018,9366)	US	XRaySourceIndex	1	DICOM/Supplement_188
+(0018,9367)	UC	XRaySourceID	1	DICOM/Supplement_188
+(0018,9368)	CS	MultienergySourceTechnique	1	DICOM/Supplement_188
+(0018,9369)	DT	SourceStartDateTime	1	DICOM/Supplement_188
+(0018,936A)	DT	SourceEndDateTime	1	DICOM/Supplement_188
+(0018,936B)	US	SwitchingPhaseNumber	1	DICOM/Supplement_188
+(0018,936C)	DS	SwitchingPhaseNominalDuration	1	DICOM/Supplement_188
+(0018,936D)	DS	SwitchingPhaseTransitionDuration	1	DICOM/Supplement_188
+(0018,936E)	DS	EffectiveBinEnergy	1	DICOM/Supplement_188
+(0018,936F)	SQ	MultienergyCTXRayDetectorSequence	1	DICOM/Supplement_188
+(0018,9370)	US	XRayDetectorIndex	1	DICOM/Supplement_188
+(0018,9371)	UC	XRayDetectorID	1	DICOM/Supplement_188
+(0018,9372)	CS	MultienergyDetectorType	1	DICOM/Supplement_188
+(0018,9373)	ST	XRayDetectorLabel	1	DICOM/Supplement_188
+(0018,9374)	DS	NominalMaxEnergy	1	DICOM/Supplement_188
+(0018,9375)	DS	NominalMinEnergy	1	DICOM/Supplement_188
+(0018,9376)	US	ReferencedXRayDetectorIndex	1-n	DICOM/Supplement_188
+(0018,9377)	US	ReferencedXRaySourceIndex	1-n	DICOM/Supplement_188
+(0018,9378)	US	ReferencedPathIndex	1-n	DICOM/Supplement_188
+(0018,9379)	SQ	MultienergyCTPathSequence	1	DICOM/Supplement_188
+(0018,937A)	US	MultienergyCTPathIndex	1	DICOM/Supplement_188
+(0018,937B)	UT	MultienergyAcquisitionDescription	1	DICOM/Supplement_188
+(0018,937C)	FD	MonoenergeticEnergyEquivalent	1	DICOM/Supplement_188
+(0018,937D)	SQ	MaterialCodeSequence	1	DICOM/Supplement_188
+(0018,937E)	CS	DecompositionMethod	1	DICOM/Supplement_188
+(0018,937F)	UT	DecompositionDescription	1	DICOM/Supplement_188
+(0018,9380)	SQ	DecompositionAlgorithmIdentificationSequence	1	DICOM/Supplement_188
+(0018,9381)	SQ	DecompositionMaterialSequence	1	DICOM/Supplement_188
+(0018,9382)	SQ	MaterialAttenuationSequence	1	DICOM/Supplement_188
+(0018,9383)	DS	PhotonEnergy	1	DICOM/Supplement_188
+(0018,9384)	DS	XRayMassAttenuationCoefficient	1	DICOM/Supplement_188
+#
+#---------------------------------------------------------------------------
+#
+# Correction Items 1803, 1809
+#
+(0022,1036)	SQ	SourceOfCornealSizeDataCodeSequence	1	DICOM/CP_1803
+(0046,0047)	SQ	CornealSizeSequence	1	DICOM/CP_1803
+(0008,1041)	SQ	InstitutionalDepartmentTypeCodeSequence	1	DICOM/CP_1809
 #
 #---------------------------------------------------------------------------
 #

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-09-27 16:38:30
+**   Date: 2018-11-15 17:07:40
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2018-09-27 16:38:30"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2018-11-15 17:07:40"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4267
+** Number of entries: 4306
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -212,6 +212,7 @@
 #define DCM_SeriesDescription                    DcmTagKey(0x0008, 0x103e)
 #define DCM_SeriesDescriptionCodeSequence        DcmTagKey(0x0008, 0x103f)
 #define DCM_InstitutionalDepartmentName          DcmTagKey(0x0008, 0x1040)
+#define DCM_InstitutionalDepartmentTypeCodeSequence DcmTagKey(0x0008, 0x1041)
 #define DCM_PhysiciansOfRecord                   DcmTagKey(0x0008, 0x1048)
 #define DCM_PhysiciansOfRecordIdentificationSequence DcmTagKey(0x0008, 0x1049)
 #define DCM_PerformingPhysicianName              DcmTagKey(0x0008, 0x1050)
@@ -1190,6 +1191,42 @@
 #define DCM_CalciumScoringMassFactorDevice       DcmTagKey(0x0018, 0x9352)
 #define DCM_EnergyWeightingFactor                DcmTagKey(0x0018, 0x9353)
 #define DCM_CTAdditionalXRaySourceSequence       DcmTagKey(0x0018, 0x9360)
+#define DCM_MultienergyCTAcquisition             DcmTagKey(0x0018, 0x9361)
+#define DCM_MultienergyCTAcquisitionSequence     DcmTagKey(0x0018, 0x9362)
+#define DCM_MultienergyCTProcessingSequence      DcmTagKey(0x0018, 0x9363)
+#define DCM_MultienergyCTCharacteristicsSequence DcmTagKey(0x0018, 0x9364)
+#define DCM_MultienergyCTXRaySourceSequence      DcmTagKey(0x0018, 0x9365)
+#define DCM_XRaySourceIndex                      DcmTagKey(0x0018, 0x9366)
+#define DCM_XRaySourceID                         DcmTagKey(0x0018, 0x9367)
+#define DCM_MultienergySourceTechnique           DcmTagKey(0x0018, 0x9368)
+#define DCM_SourceStartDateTime                  DcmTagKey(0x0018, 0x9369)
+#define DCM_SourceEndDateTime                    DcmTagKey(0x0018, 0x936a)
+#define DCM_SwitchingPhaseNumber                 DcmTagKey(0x0018, 0x936b)
+#define DCM_SwitchingPhaseNominalDuration        DcmTagKey(0x0018, 0x936c)
+#define DCM_SwitchingPhaseTransitionDuration     DcmTagKey(0x0018, 0x936d)
+#define DCM_EffectiveBinEnergy                   DcmTagKey(0x0018, 0x936e)
+#define DCM_MultienergyCTXRayDetectorSequence    DcmTagKey(0x0018, 0x936f)
+#define DCM_XRayDetectorIndex                    DcmTagKey(0x0018, 0x9370)
+#define DCM_XRayDetectorID                       DcmTagKey(0x0018, 0x9371)
+#define DCM_MultienergyDetectorType              DcmTagKey(0x0018, 0x9372)
+#define DCM_XRayDetectorLabel                    DcmTagKey(0x0018, 0x9373)
+#define DCM_NominalMaxEnergy                     DcmTagKey(0x0018, 0x9374)
+#define DCM_NominalMinEnergy                     DcmTagKey(0x0018, 0x9375)
+#define DCM_ReferencedXRayDetectorIndex          DcmTagKey(0x0018, 0x9376)
+#define DCM_ReferencedXRaySourceIndex            DcmTagKey(0x0018, 0x9377)
+#define DCM_ReferencedPathIndex                  DcmTagKey(0x0018, 0x9378)
+#define DCM_MultienergyCTPathSequence            DcmTagKey(0x0018, 0x9379)
+#define DCM_MultienergyCTPathIndex               DcmTagKey(0x0018, 0x937a)
+#define DCM_MultienergyAcquisitionDescription    DcmTagKey(0x0018, 0x937b)
+#define DCM_MonoenergeticEnergyEquivalent        DcmTagKey(0x0018, 0x937c)
+#define DCM_MaterialCodeSequence                 DcmTagKey(0x0018, 0x937d)
+#define DCM_DecompositionMethod                  DcmTagKey(0x0018, 0x937e)
+#define DCM_DecompositionDescription             DcmTagKey(0x0018, 0x937f)
+#define DCM_DecompositionAlgorithmIdentificationSequence DcmTagKey(0x0018, 0x9380)
+#define DCM_DecompositionMaterialSequence        DcmTagKey(0x0018, 0x9381)
+#define DCM_MaterialAttenuationSequence          DcmTagKey(0x0018, 0x9382)
+#define DCM_PhotonEnergy                         DcmTagKey(0x0018, 0x9383)
+#define DCM_XRayMassAttenuationCoefficient       DcmTagKey(0x0018, 0x9384)
 #define DCM_ProjectionPixelCalibrationSequence   DcmTagKey(0x0018, 0x9401)
 #define DCM_DistanceSourceToIsocenter            DcmTagKey(0x0018, 0x9402)
 #define DCM_DistanceObjectToTableTop             DcmTagKey(0x0018, 0x9403)
@@ -1596,6 +1633,7 @@
 #define DCM_IOLFormulaDetail                     DcmTagKey(0x0022, 0x1029)
 #define DCM_KeratometerIndex                     DcmTagKey(0x0022, 0x1033)
 #define DCM_SourceOfOphthalmicAxialLengthCodeSequence DcmTagKey(0x0022, 0x1035)
+#define DCM_SourceOfCornealSizeDataCodeSequence  DcmTagKey(0x0022, 0x1036)
 #define DCM_TargetRefraction                     DcmTagKey(0x0022, 0x1037)
 #define DCM_RefractiveProcedureOccurred          DcmTagKey(0x0022, 0x1039)
 #define DCM_RefractiveSurgeryTypeCodeSequence    DcmTagKey(0x0022, 0x1040)
@@ -2503,6 +2541,7 @@
 #define DCM_ChannelWidth                         DcmTagKey(0x0046, 0x0042)
 #define DCM_PupilSize                            DcmTagKey(0x0046, 0x0044)
 #define DCM_CornealSize                          DcmTagKey(0x0046, 0x0046)
+#define DCM_CornealSizeSequence                  DcmTagKey(0x0046, 0x0047)
 #define DCM_AutorefractionRightEyeSequence       DcmTagKey(0x0046, 0x0050)
 #define DCM_AutorefractionLeftEyeSequence        DcmTagKey(0x0046, 0x0052)
 #define DCM_DistancePupillaryDistance            DcmTagKey(0x0046, 0x0060)

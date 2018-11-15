@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2018-09-27 16:38:26
+**   Date: 2018-11-15 17:07:40
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -822,6 +822,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x1040, 0x0008, 0x1040,
       EVR_LO, "InstitutionalDepartmentName", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x1041, 0x0008, 0x1041,
+      EVR_SQ, "InstitutionalDepartmentTypeCodeSequence", 1, 1, "DICOM/CP_1809",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1048, 0x0008, 0x1048,
@@ -6110,6 +6114,150 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x9360, 0x0018, 0x9360,
       EVR_SQ, "CTAdditionalXRaySourceSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9361, 0x0018, 0x9361,
+      EVR_CS, "MultienergyCTAcquisition", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9362, 0x0018, 0x9362,
+      EVR_SQ, "MultienergyCTAcquisitionSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9363, 0x0018, 0x9363,
+      EVR_SQ, "MultienergyCTProcessingSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9364, 0x0018, 0x9364,
+      EVR_SQ, "MultienergyCTCharacteristicsSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9365, 0x0018, 0x9365,
+      EVR_SQ, "MultienergyCTXRaySourceSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9366, 0x0018, 0x9366,
+      EVR_US, "XRaySourceIndex", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9367, 0x0018, 0x9367,
+      EVR_UC, "XRaySourceID", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9368, 0x0018, 0x9368,
+      EVR_CS, "MultienergySourceTechnique", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9369, 0x0018, 0x9369,
+      EVR_DT, "SourceStartDateTime", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x936a, 0x0018, 0x936a,
+      EVR_DT, "SourceEndDateTime", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x936b, 0x0018, 0x936b,
+      EVR_US, "SwitchingPhaseNumber", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x936c, 0x0018, 0x936c,
+      EVR_DS, "SwitchingPhaseNominalDuration", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x936d, 0x0018, 0x936d,
+      EVR_DS, "SwitchingPhaseTransitionDuration", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x936e, 0x0018, 0x936e,
+      EVR_DS, "EffectiveBinEnergy", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x936f, 0x0018, 0x936f,
+      EVR_SQ, "MultienergyCTXRayDetectorSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9370, 0x0018, 0x9370,
+      EVR_US, "XRayDetectorIndex", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9371, 0x0018, 0x9371,
+      EVR_UC, "XRayDetectorID", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9372, 0x0018, 0x9372,
+      EVR_CS, "MultienergyDetectorType", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9373, 0x0018, 0x9373,
+      EVR_ST, "XRayDetectorLabel", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9374, 0x0018, 0x9374,
+      EVR_DS, "NominalMaxEnergy", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9375, 0x0018, 0x9375,
+      EVR_DS, "NominalMinEnergy", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9376, 0x0018, 0x9376,
+      EVR_US, "ReferencedXRayDetectorIndex", 1, -1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9377, 0x0018, 0x9377,
+      EVR_US, "ReferencedXRaySourceIndex", 1, -1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9378, 0x0018, 0x9378,
+      EVR_US, "ReferencedPathIndex", 1, -1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9379, 0x0018, 0x9379,
+      EVR_SQ, "MultienergyCTPathSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x937a, 0x0018, 0x937a,
+      EVR_US, "MultienergyCTPathIndex", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x937b, 0x0018, 0x937b,
+      EVR_UT, "MultienergyAcquisitionDescription", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x937c, 0x0018, 0x937c,
+      EVR_FD, "MonoenergeticEnergyEquivalent", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x937d, 0x0018, 0x937d,
+      EVR_SQ, "MaterialCodeSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x937e, 0x0018, 0x937e,
+      EVR_CS, "DecompositionMethod", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x937f, 0x0018, 0x937f,
+      EVR_UT, "DecompositionDescription", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9380, 0x0018, 0x9380,
+      EVR_SQ, "DecompositionAlgorithmIdentificationSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9381, 0x0018, 0x9381,
+      EVR_SQ, "DecompositionMaterialSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9382, 0x0018, 0x9382,
+      EVR_SQ, "MaterialAttenuationSequence", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9383, 0x0018, 0x9383,
+      EVR_DS, "PhotonEnergy", 1, 1, "DICOM/Supplement_188",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9384, 0x0018, 0x9384,
+      EVR_DS, "XRayMassAttenuationCoefficient", 1, 1, "DICOM/Supplement_188",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x9401, 0x0018, 0x9401,
@@ -13112,6 +13260,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "SourceOfOphthalmicAxialLengthCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0022, 0x1036, 0x0022, 0x1036,
+      EVR_SQ, "SourceOfCornealSizeDataCodeSequence", 1, 1, "DICOM/CP_1803",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0022, 0x1037, 0x0022, 0x1037,
       EVR_FL, "TargetRefraction", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -20110,6 +20262,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0046, 0x0046, 0x0046, 0x0046,
       EVR_FD, "CornealSize", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0046, 0x0047, 0x0046, 0x0047,
+      EVR_SQ, "CornealSizeSequence", 1, 1, "DICOM/CP_1803",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0046, 0x0050, 0x0046, 0x0050,
