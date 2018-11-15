@@ -165,10 +165,14 @@ data set trailing padding:
 
 \section dcmcrle_notes NOTES
 
+The \b dcmcrle utility compresses DICOM images of all SOP classes.  It processes
+all Pixel Data (7fe0,0010) elements in the dataset, i.e. compression is also
+performed on an icon image.
+
 Please note that the DICOM standard does not allow for storing the pixel data
 with multiple fragments per frame (when RLE compression is used).  So limiting
 the fragment size with option \e --fragment-size (or \e +fs) may result in a
-non-standard conformant DICOM image.
+non-standard compliant DICOM image.
 
 \section dcmcrle_transfer_syntaxes TRANSFER SYNTAXES
 
@@ -254,6 +258,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmcrle_copyright COPYRIGHT
 
-Copyright (C) 2002-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

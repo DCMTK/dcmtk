@@ -282,9 +282,11 @@ data set trailing padding:
 
 \section dcmcjpls_notes NOTES
 
-The \b dcmcjpls utility compresses DICOM images of all SOP classes. However,
-\b dcmcjpls does not attempt to ensure that the compressed image still
-complies with all restrictions of the object's IOD.
+The \b dcmcjpls utility compresses DICOM images of all SOP classes.  It
+processes all Pixel Data (7fe0,0010) elements in the dataset, i.e. compression
+is also performed on an icon image.  However, \b dcmcjpls does not attempt to
+ensure that the compressed image still complies with all restrictions of the
+object's IOD.
 
 The user is responsible for making sure that the compressed images he creates
 are compliant with the DICOM standard.  If in question, the \b dcmcjpls utility
@@ -376,6 +378,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmcjpls_copyright COPYRIGHT
 
-Copyright (C) 2009-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2009-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

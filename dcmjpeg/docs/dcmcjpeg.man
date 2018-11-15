@@ -560,12 +560,13 @@ data set trailing padding:
 
 \section dcmcjpeg_notes NOTES
 
-The \b dcmcjpeg utility compresses DICOM images of all SOP classes.  Special
-handling has been implemented for CT images (where the modality transformation
-is required to create Hounsfield units) and the XA/RF/Biplane SOP classes
-(where the modality transformation has "inversed" semantics).  However,
-\b dcmcjpeg does not attempt to ensure that the compressed image still complies
-with all restrictions of the object's IOD.
+The \b dcmcjpeg utility compresses DICOM images of all SOP classes.  It
+processes all Pixel Data (7fe0,0010) elements in the dataset, i.e. compression
+is also performed on an icon image.  Special handling has been implemented for
+CT images (where the modality transformation is required to create Hounsfield
+units) and the XA/RF/Biplane SOP classes (where the modality transformation has
+"inversed" semantics).  However, \b dcmcjpeg does not attempt to ensure that the
+compressed image still complies with all restrictions of the object's IOD.
 
 A few examples:
 
@@ -578,8 +579,8 @@ A few examples:
 
 The user is responsible for making sure that the compressed images he creates
 are compliant with the DICOM standard.  If in question, the \b dcmcjpeg utility
-allows one to convert an image to secondary capture - this SOP class does not pose
-restrictions as the ones mentioned above.
+allows one to convert an image to secondary capture - this SOP class does not
+pose restrictions as the ones mentioned above.
 
 With version DCMTK 3.5.4 a new encoder for truly lossless JPEG compression was
 added (\e --true-lossless).  Compared to the old (\e --pseudo-lossless) encoder,
