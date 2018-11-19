@@ -85,6 +85,7 @@ DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
 , outputDirectory_(OFSTRING_GUARD(outputDirectory))
 , outputStream_(outputStream)
 {
+    responseCount = 0;
 }
 
 void DcmFindSCUDefaultCallback::callback(
