@@ -6128,6 +6128,28 @@ _ACEOF
 fi
 done
 
+for ac_func in getrusage
+do :
+  ac_fn_c_check_func "$LINENO" "getrusage" "ac_cv_func_getrusage"
+if test "x$ac_cv_func_getrusage" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GETRUSAGE 1
+_ACEOF
+
+fi
+done
+
+for ac_func in gettimeofday
+do :
+  ac_fn_c_check_func "$LINENO" "gettimeofday" "ac_cv_func_gettimeofday"
+if test "x$ac_cv_func_gettimeofday" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GETTIMEOFDAY 1
+_ACEOF
+
+fi
+done
+
 for ac_func in waitpid
 do :
   ac_fn_c_check_func "$LINENO" "waitpid" "ac_cv_func_waitpid"
@@ -13010,7 +13032,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13013 "configure"
+#line 13035 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13482,7 +13504,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13485 "configure"
+#line 13507 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13554,7 +13576,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13557 "configure"
+#line 13579 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13626,7 +13648,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13629 "configure"
+#line 13651 "configure"
 #include "confdefs.h"
 
 template <class T>

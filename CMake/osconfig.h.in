@@ -225,11 +225,17 @@
 /* Define to 1 if you have the `getpwnam' function. */
 #cmakedefine HAVE_GETPWNAM @HAVE_GETPWNAM@
 
+/* Define to 1 if you have the `getrusage' function. */
+#cmakedefine HAVE_GETRUSAGE @HAVE_GETRUSAGE@
+
 /* Define to 1 if you have the `getsockname' function. */
 #cmakedefine HAVE_GETSOCKNAME @HAVE_GETSOCKNAME@
 
 /* Define to 1 if you have the `getsockopt' function. */
 #cmakedefine HAVE_GETSOCKOPT @HAVE_GETSOCKOPT@
+
+/* Define to 1 if you have the `gettimeofday' function. */
+#cmakedefine HAVE_GETTIMEOFDAY @HAVE_GETTIMEOFDAY@
 
 /* Define to 1 if you have the `getuid' function. */
 #cmakedefine HAVE_GETUID @HAVE_GETUID@
