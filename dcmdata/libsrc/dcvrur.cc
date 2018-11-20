@@ -179,14 +179,10 @@ OFBool DcmUniversalResourceIdentifierOrLocator::isUniversalMatch(const OFBool no
     if(enableWildCardMatching)
     {
       OFString value;
-      if(!normalize && getVM() > 1)
+      /* by definition, the VM of a non-empty value of this VR is 1 */
+      getOFStringArray(value, normalize);
+      if(value.find_first_not_of( '*' ) != OFString_npos)
         return OFFalse;
-      for(unsigned long valNo = 0; valNo < getVM(); ++valNo)
-      {
-        getOFString(value, valNo, normalize);
-        if(value.find_first_not_of( '*' ) != OFString_npos)
-          return OFFalse;
-      }
     }
     else
       return OFFalse;
