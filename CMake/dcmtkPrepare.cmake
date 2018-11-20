@@ -89,6 +89,7 @@ option(DCMTK_WITH_ICU "Configure DCMTK with support for ICU." ON)
 if(NOT WIN32)
   option(DCMTK_WITH_WRAP "Configure DCMTK with support for WRAP." ON)
 endif()
+option(DCMTK_WITH_OPENJPEG "Configure DCMTK with support for OPENJPEG." ON)
 option(DCMTK_ENABLE_PRIVATE_TAGS "Configure DCMTK with support for DICOM private tags coming with DCMTK." OFF)
 option(DCMTK_WITH_THREADS "Configure DCMTK with support for multi-threading." ON)
 option(DCMTK_WITH_DOXYGEN "Build API documentation with DOXYGEN." ON)
@@ -137,6 +138,8 @@ mark_as_advanced(CMAKE_DEBUG_POSTFIX)
 mark_as_advanced(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 mark_as_advanced(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
 mark_as_advanced(DCMTK_GENERATE_DOXYGEN_TAGFILE)
+mark_as_advanced(DCMTK_WITH_OPENJPEG) # only needed by DCMJP2K module
+
 if(NOT WIN32)
   # support for wide char file I/O functions is currently Windows-specific
   mark_as_advanced(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)

@@ -434,15 +434,17 @@ fi
 
 dnl Some newer versions of OpenSSL must be linked against libdl.
 dnl We just check whether libdl exists and in this case always
-dnl add -ldl to OPENSSLLIBS.
-dnl
+dnl add -ldl to OPENSSLLIBS. The same applies for OPENJPEG.
 OPENSSLLIBS=""
+OPENJPEGLIBS=""
 AC_CHECK_LIB(dl, main,[
 OPENSSLLIBS="-ldl"
+OPENJPEGLIBS="-ldl"
 ])
 if test $ac_cv_lib_dl_main = no ; then
 AC_CHECK_LIB(dl, dlopen,[
 OPENSSLLIBS="-ldl"
+OPENJPEGLIBS="-ldl"
 ])
 fi
 
@@ -1239,6 +1241,36 @@ AS_HELP_STRING([--without-libwrap], [don't include libwrap support])],
 
 
 dnl -------------------------------------------------------
+dnl Check for OpenJPEG support
+dnl -------------------------------------------------------
+
+AC_MY_OPENJPEG_PATH()
+
+AC_MSG_CHECKING(whether to include OpenJPEG support)
+AC_ARG_WITH(libwrap,
+[AS_HELP_STRING([--with-openjpeg], [include OpenJPEG support (default: auto)])
+AS_HELP_STRING([--without-openjpeg], [don't include OpenJPEG support])],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_OPENJPEG, , [Define if we are compiling with OpenJPEG support.])
+    OPENJPEGLIBS="-lopenjp2 $OPENJPEGLIBS"
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+[ SAVELIBS="$LIBS"
+  LIBS="-lopenjp2 $OPENJPEGLIBS $LIBS"
+  AC_TRY_LINK([#include <openjpeg.h>], [(void) opj_version()],
+    [ AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_OPENJPEG, , [Define if we are compiling with OpenJPEG support.])
+    OPENJPEGLIBS="-lopenjp2 $OPENJPEGLIBS" ],
+    [AC_MSG_RESULT(no)])
+  LIBS="$SAVELIBS"] )
+
+
+dnl -------------------------------------------------------
 dnl Check for libsndfile support
 dnl -------------------------------------------------------
 
@@ -1837,6 +1869,7 @@ AC_SUBST(XMLLIBS)
 AC_SUBST(TCPWRAPPERLIBS)
 AC_SUBST(SNDFILELIBS)
 AC_SUBST(ICONVLIBS)
+AC_SUBST(OPENJPEGLIBS)
 AC_SUBST(DEBUG)
 
 AC_OUTPUT(Makefile.def Makefile)

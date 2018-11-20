@@ -625,6 +625,7 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 DEBUG
+OPENJPEGLIBS
 ICONVLIBS
 SNDFILELIBS
 TCPWRAPPERLIBS
@@ -737,6 +738,7 @@ with_libxmlinc
 with_libxml
 with_libwrapinc
 with_libwrap
+with_openjpeginc
 with_libsndfileinc
 with_libsndfile
 with_libiconvinc
@@ -1454,6 +1456,10 @@ Optional Packages:
   --with-libwrapinc=DIR   location of libwrap includes and libraries
   --with-libwrap          include libwrap support (default: auto)
   --without-libwrap       don't include libwrap support
+  --with-openjpeginc=DIR  location of OpenJPEG includes and libraries (MUST be
+                          specified, otherwise OpenJPEG will not be found)
+  --with-openjpeg         include OpenJPEG support (default: auto)
+  --without-openjpeg      don't include OpenJPEG support
   --with-libsndfileinc=DIR
                           location of libsndfile includes and libraries
   --with-libsndfile       include libsndfile support (default: auto)
@@ -7155,6 +7161,7 @@ fi
 fi
 
 OPENSSLLIBS=""
+OPENJPEGLIBS=""
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -ldl" >&5
 $as_echo_n "checking for main in -ldl... " >&6; }
 if ${ac_cv_lib_dl_main+:} false; then :
@@ -7188,6 +7195,7 @@ $as_echo "$ac_cv_lib_dl_main" >&6; }
 if test "x$ac_cv_lib_dl_main" = xyes; then :
 
 OPENSSLLIBS="-ldl"
+OPENJPEGLIBS="-ldl"
 
 fi
 
@@ -7231,6 +7239,7 @@ $as_echo "$ac_cv_lib_dl_dlopen" >&6; }
 if test "x$ac_cv_lib_dl_dlopen" = xyes; then :
 
 OPENSSLLIBS="-ldl"
+OPENJPEGLIBS="-ldl"
 
 fi
 
@@ -13032,7 +13041,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13035 "configure"
+#line 13044 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13504,7 +13513,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13507 "configure"
+#line 13516 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13576,7 +13585,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13579 "configure"
+#line 13588 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13648,7 +13657,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13651 "configure"
+#line 13660 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -14924,6 +14933,93 @@ $as_echo "yes" >&6; }
 $as_echo "#define WITH_TCPWRAPPER /**/" >>confdefs.h
 
     TCPWRAPPERLIBS="-lwrap"
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+  LIBS="$SAVELIBS"
+fi
+
+
+
+
+
+
+# Check whether --with-openjpeginc was given.
+if test "${with_openjpeginc+set}" = set; then :
+  withval=$with_openjpeginc; case $withval in #(
+  yes|no) :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: --with-openjpeginc called without argument - will use default" >&5
+$as_echo "$as_me: WARNING: --with-openjpeginc called without argument - will use default" >&2;}
+       ;; #(
+  *) :
+
+        if test ! -d ${withval}; then
+          as_fn_error $? "called with --with-openjpeginc but OpenJPEG base directory ${withval} does not exist or is not a directory." "$LINENO" 5
+        fi
+
+                OPENJPEGINCLUDEPATH=`(
+          eval echo "${withval}/include/openjpeg*"
+        )`
+
+                if test ! -d "${OPENJPEGINCLUDEPATH}"; then
+          OPENJPEGINCLUDEPATH="${withval}/include"
+        fi
+
+        CPPFLAGS="-I${OPENJPEGINCLUDEPATH} $CPPFLAGS"
+        LDFLAGS="-L${withval}/lib $LDFLAGS"
+        if test "x$dcmtk_cv_rpath_works" = "xyes"; then
+          LDFLAGS="-Wl,-rpath,${withval}/lib $LDFLAGS"
+        fi
+       ;;
+esac
+
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to include OpenJPEG support" >&5
+$as_echo_n "checking whether to include OpenJPEG support... " >&6; }
+
+# Check whether --with-libwrap was given.
+if test "${with_libwrap+set}" = set; then :
+  withval=$with_libwrap;  case "$withval" in
+  yes)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define WITH_OPENJPEG /**/" >>confdefs.h
+
+    OPENJPEGLIBS="-lopenjp2 $OPENJPEGLIBS"
+    ;;
+  *)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    ;;
+  esac
+else
+   SAVELIBS="$LIBS"
+  LIBS="-lopenjp2 $OPENJPEGLIBS $LIBS"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <openjpeg.h>
+int
+main ()
+{
+(void) opj_version()
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define WITH_OPENJPEG /**/" >>confdefs.h
+
+    OPENJPEGLIBS="-lopenjp2 $OPENJPEGLIBS"
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -16948,6 +17044,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
+
 
 
 

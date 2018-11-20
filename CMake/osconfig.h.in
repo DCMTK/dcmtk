@@ -950,6 +950,9 @@
 /* Define if we are compiling with libxml support */
 #cmakedefine WITH_LIBXML
 
+/* Define if we are compiling with OpenJPEG support */
+#cmakedefine WITH_OPENJPEG
+
 /* Define if we are compiling with OpenSSL support */
 #cmakedefine WITH_OPENSSL
 

@@ -33,6 +33,10 @@ if(WIN32 AND NOT MINGW)
   file(GLOB LIBICONV_DIR "${DCMTK_SOURCE_DIR}/../libiconv*")
   find_path(WITH_LIBICONVINC "include/iconv.h" "${LIBICONV_DIR}" NO_DEFAULT_PATH)
 
+  # OpenJPEG support: find out whether user has library
+  file(GLOB OPENJPEG_DIR "${DCMTK_SOURCE_DIR}/../openjpeg*")
+  find_path(WITH_OPENJPEGINC "lib/openjp2_o.lib" "${OPENJPEG_DIR}" NO_DEFAULT_PATH)
+
   # libxml support: configure compiler
   if(DCMTK_WITH_XML)
     if(WITH_LIBXMLINC)
@@ -153,7 +157,32 @@ if(WIN32 AND NOT MINGW)
     endif()
   endif()
 
-else()
+  # OpenJPEG support: configure compiler
+  if(DCMTK_WITH_OPENJPEG)
+    if(WITH_OPENJPEGINC)
+      # Unfortunately, OpenJPEG uses a version number in the include path. This needs special handling.
+      file(GLOB OPENJPEG2_DIR "${WITH_OPENJPEGINC}/include/openjpeg*")
+      find_path(WITH_OPENJPEGINC1 "openjpeg.h" "${OPENJPEG2_DIR}" NO_DEFAULT_PATH)
+      find_path(WITH_OPENJPEGINC2 "openjp2.lib" "${WITH_OPENJPEGINC}" NO_DEFAULT_PATH)
+      if ("${WITH_OPENJPEGINC1}" STREQUAL "WITH_OPENJPEGINC1-NOTFOUND")
+          message(STATUS "Info: DCMTK OpenJPEG support will be disabled because the header files were not found.")
+          set(DCMTK_WITH_OPENJPEG OFF CACHE BOOL "" FORCE)
+          set(WITH_OPENJPEG "")
+      else()
+          set(OPENJPEG_INCDIR "${WITH_OPENJPEGINC1}")
+          set(OPENJPEG_LIBDIR "${WITH_OPENJPEGINC2}")
+          set(OPENJPEG_LIBS debug "${OPENJPEG_LIBDIR}/openjp2_d.lib" optimized "${OPENJPEG_LIBDIR}/openjp2_o.lib")
+          message(STATUS "Info: DCMTK OpenJPEG support will be enabled")
+          set(WITH_OPENJPEG 1)
+      endif()
+    else() # turn off library if library path not set
+      message(STATUS "Warning: OpenJPEG support will be disabled because openjpeg directory was not specified. Correct path and re-enable DCMTK_WITH_OPENJPEG.")
+      set(DCMTK_WITH_OPENJPEG OFF CACHE BOOL "" FORCE)
+      set(WITH_OPENJPEG "")
+    endif()
+  endif()
+
+else(WIN32 AND NOT MINGW)
 
   # Find TIFF
   if(DCMTK_WITH_TIFF)
@@ -306,7 +335,22 @@ else()
     endif()
   endif()
 
-endif()
+  # Find OpenJPEG
+  if(DCMTK_WITH_OPENJPEG)
+    find_package(OpenJPEG QUIET)
+    if(NOT OPENJPEG_FOUND)
+      message(STATUS "Warning: OpenJPEG support will be disabled because the OpenJPEG library was not found.")
+      set(WITH_OPENJPEG "")
+      set(DCMTK_WITH_OPENJPEG OFF CACHE BOOL "" FORCE)
+    else()
+      message(STATUS "Info: DCMTK OpenJPEG support will be enabled")
+      set(WITH_OPENJPEG 1)
+      include_directories(${OPENJPEG_INCLUDE_DIRS})
+      set(OPENJPEG_LIBS ${OPENJPEG_LIBRARIES})
+    endif()
+  endif()
+
+endif(WIN32 AND NOT MINGW)
 
 if(NOT DEFINED DCMTK_WITH_STDLIBC_ICONV)
   include(CheckCXXSourceCompiles)
