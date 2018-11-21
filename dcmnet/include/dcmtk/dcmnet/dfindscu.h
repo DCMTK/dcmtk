@@ -143,7 +143,6 @@ public:
    *  @param extractResponses mode specifying whether and how to extract C-FIND responses.
    *  @param cancelAfterNResponses if non-negative, a C-FIND-CANCEL will be issued after the
    *    given number of incoming C-FIND-RSP messages.
-   *  @param  responseCount a reference to the integer indicating the count of received responses.
    *  @param outputDirectory directory used to store the output files (e.g. response datasets).
    *    If NULL, the current directory is used.
    *  @param outputStream pointer to output stream that is used when extractResponses is set
@@ -152,7 +151,6 @@ public:
   DcmFindSCUDefaultCallback(
     DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
-    int &responseCount,
     const char *outputDirectory = NULL,
     STD_NAMESPACE ofstream *outputStream = NULL);
 

@@ -76,7 +76,6 @@ void DcmFindSCUCallback::setPresentationContextID(T_ASC_PresentationContextID pr
 DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
     DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
-    int &responseCount,
     const char *outputDirectory,
     STD_NAMESPACE ofstream *outputStream)
 : DcmFindSCUCallback()
@@ -85,7 +84,6 @@ DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
 , outputDirectory_(OFSTRING_GUARD(outputDirectory))
 , outputStream_(outputStream)
 {
-    responseCount = 0;
 }
 
 void DcmFindSCUDefaultCallback::callback(
@@ -674,7 +672,7 @@ OFCondition DcmFindSCU::findSCU(
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 
     /* prepare the callback data */
-    DcmFindSCUDefaultCallback defaultCallback(extractResponses, cancelAfterNResponses, responseCount, outputDirectory, outputStream);
+    DcmFindSCUDefaultCallback defaultCallback(extractResponses, cancelAfterNResponses, outputDirectory, outputStream);
     if (callback == NULL) callback = &defaultCallback;
     callback->setAssociation(assoc);
     callback->setPresentationContextID(presId);
