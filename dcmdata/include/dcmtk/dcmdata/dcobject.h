@@ -430,7 +430,12 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
      *  the length of the complete item or sequence including delimitation tags
-     *  if applicable. Never returns undefined length.
+     *  if applicable.
+     *  @warning Since calcElementLength() returns a 32 bit integer, an
+     *    overflow during calculation is possible for some derived classes that
+     *    actually represent a compound value (e.g. items like DcmPixelItem).
+     *    Such overflows will be detected, in which case the maximum possible
+     *    value will be returned instead, coinciding with DCM_UndefinedLength.
      *  @param xfer transfer syntax for length calculation
      *  @param enctype sequence encoding type for length calculation
      *  @return length of DICOM element

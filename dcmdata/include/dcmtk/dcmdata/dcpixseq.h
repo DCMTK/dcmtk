@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -117,15 +117,7 @@ public:
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    /** calculate the length of this DICOM element when encoded with the
-     *  given transfer syntax and the given encoding type for sequences.
-     *  For elements, the length includes the length of the tag, length field,
-     *  VR field and the value itself, for items and sequences it returns
-     *  the length of the complete item or sequence including delimitation tags
-     *  if applicable. Never returns undefined length.
-     *  @param xfer transfer syntax for length calculation
-     *  @param enctype sequence encoding type for length calculation
-     *  @return length of DICOM element
+    /** @copydoc DcmObject::calcElementLength()
      */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
