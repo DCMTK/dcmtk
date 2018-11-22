@@ -477,7 +477,8 @@ endif()
   endif()
 
   if(HAVE_WINDOWS_H)
-    set(HEADERS ${HEADERS} windows.h)
+    # also add winsock2.h and ws2tcpip.h that are available since Windows NT 4.0
+    set(HEADERS ${HEADERS} winsock2.h ws2tcpip.h windows.h)
   endif()
 
   if(HAVE_GRP_H)
