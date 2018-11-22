@@ -862,17 +862,6 @@ int DiImage::writeBMP(FILE *stream,
             singleitem = singleitem && fwrite(&fileHeader.bfReserved2, sizeof(fileHeader.bfReserved2), 1, stream);
             singleitem = singleitem && fwrite(&fileHeader.bfOffBits, sizeof(fileHeader.bfOffBits), 1, stream);
             /* write bitmap info header: do not write the struct because of 32-bit alignment  */
-            ok &= (fwrite(&infoHeader.biSize, sizeof(infoHeader.biSize), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biWidth, sizeof(infoHeader.biWidth), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biHeight, sizeof(infoHeader.biHeight), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biPlanes, sizeof(infoHeader.biPlanes), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biBitCount, sizeof(infoHeader.biBitCount), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biCompression, sizeof(infoHeader.biCompression), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biSizeImage, sizeof(infoHeader.biSizeImage), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biXPelsPerMeter, sizeof(infoHeader.biXPelsPerMeter), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biYPelsPerMeter, sizeof(infoHeader.biYPelsPerMeter), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biClrUsed, sizeof(infoHeader.biClrUsed), 1, stream) == 1);
-            ok &= (fwrite(&infoHeader.biClrImportant, sizeof(infoHeader.biClrImportant), 1, stream) == 1);
             singleitem = singleitem && fwrite(&infoHeader.biSize, sizeof(infoHeader.biSize), 1, stream);
             singleitem = singleitem && fwrite(&infoHeader.biWidth, sizeof(infoHeader.biWidth), 1, stream);
             singleitem = singleitem && fwrite(&infoHeader.biHeight, sizeof(infoHeader.biHeight), 1, stream);
