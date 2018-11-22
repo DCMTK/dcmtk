@@ -932,6 +932,9 @@
 /* Try to define the iconv behavior as conversion flags */
 #cmakedefine DCMTK_FIXED_ICONV_CONVERSION_FLAGS @DCMTK_FIXED_ICONV_CONVERSION_FLAGS@
 
+/* Define if iconv_open() accepts "" as an argument */
+#cmakedefine DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING @DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING@
+
 /* Define if we are compiling with libpng support */
 #cmakedefine WITH_LIBPNG
 

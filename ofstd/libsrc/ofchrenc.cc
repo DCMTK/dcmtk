@@ -568,6 +568,19 @@ size_t OFCharacterEncoding::countCharactersInUTF8String(const OFString &utf8Stri
     return count;
 }
 
+OFBool OFCharacterEncoding::hasDefaultEncoding()
+{
+#if defined(DCMTK_ENABLE_CHARSET_CONVERSION) &&\
+    (\
+        DCMTK_ENABLE_CHARSET_CONVERSION != DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV\
+     || DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING\
+    )
+    return OFTrue;
+#else
+    return OFFalse;
+#endif
+}
+
 OFString OFCharacterEncoding::getLocaleEncoding()
 {
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION

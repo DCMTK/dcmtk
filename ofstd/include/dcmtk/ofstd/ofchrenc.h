@@ -79,6 +79,22 @@ public:
         TransliterateIllegalSequences = 4
     };
 
+    /** determine whether the underlying implementations defines a default
+     *  encoding.
+     *  Most implementations define a default encoding, i.e. one can pass an
+     *  empty string as the toEncoding and/or fromEncoding argument(s) of
+     *  selectEncoding() to select the current locale's encoding.
+     *  However, some iconv implementations inside the C standard library do
+     *  not understand this.
+     *  @warning Using getLocaleEncoding() instead of an empty string argument
+     *    in this case typically won't work, since the implementations that
+     *    don't define a default encoding typically also don't support
+     *    determining the current locale's encoding.
+     *  @return OFTrue if a default encoding is defined and empty strings
+     *    are valid arguments to selectEncoding(), OFFalse otherwise.
+     */
+    static OFBool hasDefaultEncoding();
+
     /** get the character encoding of the currently set global locale.
      *  @remarks Calling this function might be rather exhaustive depending on
      *    employed character set conversion library.  Caching the result might

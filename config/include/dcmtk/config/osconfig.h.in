@@ -63,6 +63,9 @@
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 
+/* Define if iconv_open() accepts "" as an argument */
+#undef DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING
+
 /* Define the default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
 

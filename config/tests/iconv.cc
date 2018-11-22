@@ -14,7 +14,7 @@
  *
  *  Author:  Jan Schlamelcher
  *
- *  Purpose: Analyze behavior of an STDLIBC iconv implementation.
+ *  Purpose: Analyze behavior of an iconv implementation.
  */
 
 #include <iconv.h>

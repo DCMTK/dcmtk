@@ -1303,6 +1303,34 @@ if(NOT DCMTK_ICONV_FLAGS_ANALYZED)
     analyze_iconv_flags()
 endif()
 
+function(ANALYZE_STDLIBC_ICONV_DEFAULT_ENCODING)
+    if(DCMTK_WITH_STDLIBC_ICONV)
+        set(TEXT "Checking whether iconv_open() accepts \"\" as an argument")
+        message(STATUS "${TEXT}")
+        set(EXTRA_ARGS)
+        DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT
+            "${CMAKE_BINARY_DIR}/CMakeTmp/lciconv"
+            "${DCMTK_SOURCE_DIR}/config/tests/lciconv.cc"
+            COMPILE_OUTPUT_VARIABLE CERR
+        )
+        if(COMPILE_RESULT)
+            if(RUN_RESULT EQUAL 0)
+                message(STATUS "${TEXT} - yes")
+                set(DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING 1 CACHE INTERNAL "")
+            else()
+                message(STATUS "${TEXT} - no")
+                set(DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING CACHE INTERNAL "")
+            endif()
+        else()
+            message(FATAL_ERROR "${CERR}")
+        endif()
+    endif()
+endfunction()
+
+if(NOT DEFINED DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING)
+    analyze_stdlibc_iconv_default_encoding()
+endif()
+
 if(HAVE_PASSWD_GECOS AND NOT DEFINED PASSWD_GECOS_IS_DEFINE_TO_PASSWD)
     DCMTK_TRY_COMPILE(PASSWD_GECOS_IS_DEFINE_TO_PASSWD "pw_gecos is #defined to pw_passwd"
         "#include <pwd.h>

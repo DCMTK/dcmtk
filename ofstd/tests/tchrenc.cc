@@ -61,9 +61,18 @@ OFTEST(ofstd_OFCharacterEncoding_1)
         OFCHECK_EQUAL(resultStr, OFString(" \0 ", 3));
         OFCHECK(charEnc.selectEncoding("ASCII", "DCMTK").bad());
         OFCHECK(charEnc.selectEncoding("DCMTK", "ASCII").bad());
-        OFCHECK(charEnc.selectEncoding("", "ASCII").good());
-        OFCHECK(charEnc.selectEncoding("ASCII", "").good());
-        OFCHECK(charEnc.selectEncoding("ASCII", charEnc.getLocaleEncoding()).good());
+        // some implementations of iconv_open() in the C standard library do
+        // not understand the "" argument
+        if (OFCharacterEncoding::hasDefaultEncoding())
+        {
+            OFCHECK(charEnc.selectEncoding("", "ASCII").good());
+            OFCHECK(charEnc.selectEncoding("ASCII", "").good());
+            OFCHECK(charEnc.selectEncoding("ASCII", charEnc.getLocaleEncoding()).good());
+        }
+        else
+        {
+            OFCHECK(charEnc.selectEncoding("ASCII", "UTF-8").good());
+        }
         checkConversionFlags(OFCharacterEncoding::AbortTranscodingOnIllegalSequence);
         checkConversionFlags(OFCharacterEncoding::DiscardIllegalSequences);
         checkConversionFlags(OFCharacterEncoding::TransliterateIllegalSequences);
