@@ -61,9 +61,11 @@ OFCondition SiMACConstructor::flushBuffer(SiMAC& mac)
   stream.flushBuffer(bufptr, bufLen);
   if (bufLen > 0)
   {
+    size_t written = OFstatic_cast(size_t, bufLen);
     if (dumpFile)
     {
-      if (fwrite(bufptr, 1, OFstatic_cast(size_t, bufLen), dumpFile) != OFstatic_cast(size_t, bufLen))
+      written = fwrite(bufptr, 1, OFstatic_cast(size_t, bufLen), dumpFile);
+      if ( written != OFstatic_cast(size_t, bufLen))
       {
         // We are apparently unable to write the byte stream to a dump file.
         // This does not prevent us, however, from creating a valid digital signature.

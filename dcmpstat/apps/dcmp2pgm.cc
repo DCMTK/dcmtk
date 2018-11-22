@@ -359,7 +359,8 @@ static void dumpPresentationState(DVPresentationState &ps)
         if (ofile)
         {
           fprintf(ofile, "P5\n%d %d 255\n", overlayWidth, overlayHeight);
-          if (fwrite(overlayData, overlayWidth, overlayHeight, ofile) == overlayHeight)
+          size_t written = fwrite(overlayData, overlayWidth, overlayHeight, ofile);
+          if (written == overlayHeight)
             oss << " - written." << OFendl;
           else
             oss << " -write error-" << OFendl;
@@ -544,7 +545,8 @@ int main(int argc, char *argv[])
                 {
                     OFLOG_DEBUG(dcmp2pgmLogger, "writing PGM file: " << opt_pgmName);
                     fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
-                    if (fwrite(pixelData, OFstatic_cast(size_t, width), OFstatic_cast(size_t, height), outfile) != OFstatic_cast(size_t, height))
+                    size_t written = fwrite(pixelData, (size_t)width, (size_t)height, outfile);
+                    if (written != OFstatic_cast(size_t, height))
                         OFLOG_FATAL(dcmp2pgmLogger, "Can't write output data to file.");
                     fclose(outfile);
                 } else {

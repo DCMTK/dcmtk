@@ -3265,8 +3265,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::instanceReviewed(int idx)
 
       record.hstat = DVIF_objectIsNotNew;
       DB_lseek(handle_->pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET);
-      if (write(handle_->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
-          result = QR_EC_IndexDatabaseError;
+      ssize_t written = write(handle_->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD);
+      if( written != SIZEOF_IDXRECORD ) result = QR_EC_IndexDatabaseError;
       DB_lseek(handle_->pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET);
       DB_unlock();
     }

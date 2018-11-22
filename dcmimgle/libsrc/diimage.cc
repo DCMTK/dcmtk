@@ -855,11 +855,12 @@ int DiImage::writeBMP(FILE *stream,
                     swapBytes(OFreinterpret_cast(Uint8 *, palette), 256 * 4 /*byteLength*/, 4 /*valWidth*/);
             }
             /* write bitmap file header: do not write the struct because of 32-bit alignment */
-            int ok = (fwrite(&fileHeader.bfType, sizeof(fileHeader.bfType), 1, stream) == 1);
-            ok &= (fwrite(&fileHeader.bfSize, sizeof(fileHeader.bfSize), 1, stream) == 1);
-            ok &= (fwrite(&fileHeader.bfReserved1, sizeof(fileHeader.bfReserved1), 1, stream) == 1);
-            ok &= (fwrite(&fileHeader.bfReserved2, sizeof(fileHeader.bfReserved2), 1, stream) == 1);
-            ok &= (fwrite(&fileHeader.bfOffBits, sizeof(fileHeader.bfOffBits), 1, stream) == 1);
+            size_t singleitem; // should always be equal to 1 in the following:
+            singleitem = fwrite(&fileHeader.bfType, sizeof(fileHeader.bfType), 1, stream);
+            singleitem = singleitem && fwrite(&fileHeader.bfSize, sizeof(fileHeader.bfSize), 1, stream);
+            singleitem = singleitem && fwrite(&fileHeader.bfReserved1, sizeof(fileHeader.bfReserved1), 1, stream);
+            singleitem = singleitem && fwrite(&fileHeader.bfReserved2, sizeof(fileHeader.bfReserved2), 1, stream);
+            singleitem = singleitem && fwrite(&fileHeader.bfOffBits, sizeof(fileHeader.bfOffBits), 1, stream);
             /* write bitmap info header: do not write the struct because of 32-bit alignment  */
             ok &= (fwrite(&infoHeader.biSize, sizeof(infoHeader.biSize), 1, stream) == 1);
             ok &= (fwrite(&infoHeader.biWidth, sizeof(infoHeader.biWidth), 1, stream) == 1);
@@ -872,15 +873,33 @@ int DiImage::writeBMP(FILE *stream,
             ok &= (fwrite(&infoHeader.biYPelsPerMeter, sizeof(infoHeader.biYPelsPerMeter), 1, stream) == 1);
             ok &= (fwrite(&infoHeader.biClrUsed, sizeof(infoHeader.biClrUsed), 1, stream) == 1);
             ok &= (fwrite(&infoHeader.biClrImportant, sizeof(infoHeader.biClrImportant), 1, stream) == 1);
+            singleitem = singleitem && fwrite(&infoHeader.biSize, sizeof(infoHeader.biSize), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biWidth, sizeof(infoHeader.biWidth), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biHeight, sizeof(infoHeader.biHeight), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biPlanes, sizeof(infoHeader.biPlanes), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biBitCount, sizeof(infoHeader.biBitCount), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biCompression, sizeof(infoHeader.biCompression), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biSizeImage, sizeof(infoHeader.biSizeImage), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biXPelsPerMeter, sizeof(infoHeader.biXPelsPerMeter), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biYPelsPerMeter, sizeof(infoHeader.biYPelsPerMeter), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biClrUsed, sizeof(infoHeader.biClrUsed), 1, stream);
+            singleitem = singleitem && fwrite(&infoHeader.biClrImportant, sizeof(infoHeader.biClrImportant), 1, stream);
             /* write color palette (if applicable) */
-            if (palette != NULL)
-                ok &= (fwrite(palette, 4, 256, stream) == 256);
+            if (singleitem && palette != NULL)
+              {
+              size_t paletteitems = fwrite(palette, 4, 256, stream);
+              if( paletteitems != 256 ) singleitem = 0;
+              }
             /* write pixel data */
-            ok &= (fwrite(data, 1, OFstatic_cast(size_t, bytes), stream) == OFstatic_cast(size_t, bytes));
+            if( singleitem )
+              {
+              size_t pddata = fwrite(data, 1, OFstatic_cast(size_t, bytes), stream);
+              if( pddata != OFstatic_cast(size_t, bytes)) singleitem = 0;
+              }
             /* delete color palette */
             delete[] palette;
-            if (ok)
-                result = 1;
+            if( singleitem )
+              result = 1;
         }
         /* delete pixel data */
         delete OFstatic_cast(char *, data);     // type cast necessary to avoid compiler warnings using gcc >2.95
