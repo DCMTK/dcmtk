@@ -67,6 +67,8 @@
 #ifdef HAVE_WINDOWS_H
 // on Windows, we need Winsock2 for network functions
 #include <winsock2.h>
+// and ws2tcpip for socklen_t
+#include <ws2tcpip.h>
 #endif
 
 #define INCLUDE_CSTDLIB

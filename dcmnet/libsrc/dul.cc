@@ -74,6 +74,7 @@
 
 #ifdef HAVE_WINDOWS_H
 #include <winsock2.h>  /* for SO_EXCLUSIVEADDRUSE */
+#include <ws2tcpip.h>  /* for socklen_t */
 #endif
 
 #include "dcmtk/dcmnet/diutil.h"

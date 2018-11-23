@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,7 @@
 
 #ifdef HAVE_WINDOWS_H
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #elif defined(HAVE_WINSOCK_H)
 #include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
 #endif
