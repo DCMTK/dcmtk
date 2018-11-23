@@ -993,11 +993,11 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
         // ASCII STL format.
         if (0 == strncmp("solid ", buf, 6))
         {
-          OFLOG_DEBUG(appLogger, "File " << opt_ifname
+          OFLOG_ERROR(appLogger, "File " << opt_ifname
             << " starts with 'solid '. "
-            << "Assuming valid STL file "
-            << "in ASCII Code");
-          //TODO: check if last line starts with "endsolid"
+            << "It is a valid STL file but it is in ASCII Code"
+            << "and DICOM only accepts binary STL");
+          return EXITCODE_INVALID_INPUT_FILE;
         }
         //////STL validation for Binary Format
         else
