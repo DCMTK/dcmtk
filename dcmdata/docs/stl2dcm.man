@@ -1,9 +1,9 @@
 /*!
 
 \if MANPAGES
-\page stl2dcm Encapsulate STL file into DICOM file format.
+\page stl2dcm Encapsulate STL file into DICOM file format
 \else
-\page stl2dcm stl2dcm: Encapsulate STL file into DICOM file format.
+\page stl2dcm stl2dcm: Encapsulate STL file into DICOM file format
 \endif
 
 \section stl2dcm_synopsis SYNOPSIS
@@ -21,7 +21,7 @@ to an output file (\e dcmfile-out).
 \section stl2dcm_parameters PARAMETERS
 
 \verbatim
-stlfile-in  STL input filename to be encapsulated
+stlfile-in   STL input filename to be encapsulated
 
 dcmfile-out  DICOM output filename
 \endverbatim
@@ -64,9 +64,8 @@ document title:
          document title
 
   +cn  --concept-name  [CSD] [CV] [CM]: string (default: empty)
-         document title as concept name code sequence
-         with coding scheme designator CSD,
-         code value CV and code meaning CM
+         coded representation of document title defined by coding
+         scheme designator CSD, code value CV and code meaning CM
 
 patient data:
 
@@ -107,20 +106,37 @@ instance number:
 burned-in annotation:
 
   +an  --annotation-yes
-         PDF file (or an object within)
-         contains patient identifying data (default)
+         document contains patient identifying data (default)
 
   -an  --annotation-no
-         PDF file (or an object within)
-         does not contain patient identifying data
+         document does not contain patient identifying data
+
+enhanced general equipment:
+
+  +mn  --manufacturer  [n]ame: string
+         manufacturer's name
+
+  +mm  --manufacturer-model  [n]ame: string
+         manufacturer's model name
+
+  +ds  --device-serial  [n]umber: string
+         device serial number
+
+  +sv  --software-versions  [v]ersions: string
+         software versions
+
+3d model measurement units:
+
+  +mu  --measurement-units  [CSD] [CV] [CM]: string
+         measurement units with coding scheme designator CSD,
+         code value CV and code meaning CM (default: UCUM, um, um)
 \endverbatim
 
 \subsection stl2dcm_processing_options processing options
 \verbatim
 other processing options:
 
-  -k   --key  [k]ey: gggg,eeee="str",
-         path or dictionary name="str"
+  -k   --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
          add further attribute
 \endverbatim
 
@@ -161,28 +177,6 @@ data set trailing padding (not with --write-dataset):
   +p   --padding-create  [f]ile-pad [i]tem-pad: integer
          align file on multiple of f bytes
          and items on multiple of i bytes
-\endverbatim
-
-\subsection stl2dcm_manufacturing_3d_model_measurement_units_options manufacturing 3d model measurement units options
-\verbatim
-3d model measurement units:
-
-  +mu  --measurement-units  [CSD] [CV] [CM] strings
-         coding scheme designator CSD (default: UCUM)
-         code value CV (default: um)
-         and code meaning CM(default: um)
-\endverbatim
-
-\subsection stl2dcm_enhanced_general_equipment_options enhanced general equipment options:
-\verbatim
-  +mn  --manufacturer [n]ame: string
-         manufacturer's name in DICOM PN syntax
-  +mm  --manufacturer-model  [n]ame: string
-         manufacturer's model name
-  +ds  --device-serial-number [s]erial number: string
-         device serial number
-  +sv  --software-versions  [v]ersions: string
-         software versions
 \endverbatim
 
 \section stl2dcm_logging LOGGING
