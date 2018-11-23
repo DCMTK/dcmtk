@@ -178,7 +178,7 @@ data set trailing padding (not with --write-dataset):
   +mn  --manufacturer [n]ame: string
          manufacturer's name in DICOM PN syntax
   +mm  --manufacturer-model  [n]ame: string
-         name of the manufacturer for the model
+         manufacturer's model name
   +ds  --device-serial-number [s]erial number: string
          device serial number
   +sv  --software-versions  [v]ersions: string

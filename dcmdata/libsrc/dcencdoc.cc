@@ -476,8 +476,8 @@ void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
       cmd.addOption("--annotation-yes",       "+an",      "CDA file (or an encapsulated document within)\ncontains patient identifying data (default)");
       cmd.addOption("--annotation-no",        "-an",      "CDA file (or an encapsulated document within)\ndoes not contain patient identifying data");
   cmd.addSubGroup("override CDA data:");
-      cmd.addOption("--no-override",          "-ov",      "CDA patient and document data must match study,\nseries or manually entered information (default)");
-      cmd.addOption("--override",             "+ov",      "CDA's data will be overwritten by study, series\nor manually entered information");
+      cmd.addOption("--no-override",          "-ov",      "CDA patient and document data must match\nstudy, series or manually entered information (default)");
+      cmd.addOption("--override",             "+ov",      "CDA's data will be overwritten by study,\nseries or manually entered information");
   addOutputOptions(cmd);
 }
 
@@ -506,18 +506,18 @@ void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("burned-in annotation:");
-      cmd.addOption("--annotation-yes",       "+an",      "STL file contains patient identifying data (default)");
-      cmd.addOption("--annotation-no",        "-an",      "STL file does not contain patient identifying data");
+      cmd.addOption("--annotation-yes",       "+an",      "STL file contains patient identifying data\n(default)");
+      cmd.addOption("--annotation-no",        "-an",      "STL file does not contain\npatient identifying data");
   addOutputOptions(cmd);
-  cmd.addGroup("Manufacturing 3D Model Measurement Units Options:");
-    cmd.addSubGroup("3D Model Measurement Units:");
-      cmd.addOption("--measurement-units",    "+mu",  3,  "[CSD] [CV] [CM]: string (default: empty)",
-                                                          "Coding scheme designator CSD (default: UCUM) code value CV (default: um)\nand code meaning CM(default: um)");
-  cmd.addGroup("Enhanced general equipment Options:");
+  cmd.addGroup("manufacturing 3d model measurement units options:");
+    cmd.addSubGroup("3d model measurement units:");
+      cmd.addOption("--measurement-units",    "+mu",  3,  "[CSD] [CV] [CM]: string",
+                                                          "coding scheme designator CSD (default: UCUM)\ncode value CV (default: um)\nand code meaning CM (default: um)");
+  cmd.addGroup("enhanced general equipment options:");
     cmd.addOption("--manufacturer",           "+mn",  1,  "[n]ame: string",
                                                           "manufacturer's name in DICOM PN syntax");
-    cmd.addOption("--manufacturer-model-name","+mi",  1,  "[i]d: string",
-                                                          "manufacturer model name");
+    cmd.addOption("--manufacturer-model",     "+mm",  1,  "[n]ame: string",
+                                                          "manufacturer's model name");
     cmd.addOption("--device-serial-number",   "+ds",  1,  "[s]erial number: string",
                                                           "device serial number");
     cmd.addOption("--software-versions",      "+sv",  1,  "[v]ersions: string",
@@ -539,7 +539,7 @@ void DcmEncapsulatedDocument::addDocumentOptions(OFCommandLine &cmd)
       cmd.addOption("--title",                "+t",   1,  "[t]itle: string (default: empty)",
                                                           "document title");
       cmd.addOption("--concept-name",         "+cn",  3,  "[CSD] [CV] [CM]: string (default: empty)",
-                                                          "document title as concept name code sequence\nwith coding scheme designator CSD, code value CV\nand code meaning CM");
+                                                          "document title as concept name code sequence\nwith coding scheme designator CSD,\ncode value CV and code meaning CM");
     cmd.addSubGroup("patient data:");
       cmd.addOption("--patient-name",         "+pn",  1,  "[n]ame: string",
                                                           "patient's name in DICOM PN syntax");
@@ -550,13 +550,13 @@ void DcmEncapsulatedDocument::addDocumentOptions(OFCommandLine &cmd)
       cmd.addOption("--patient-sex",          "+ps",  1,  "[s]ex: string (M, F or O)",
                                                           "patient's sex");
     cmd.addSubGroup("study and series:");
-      cmd.addOption("--generate",             "+sg",      "generate new study and series UIDs (default)");
+      cmd.addOption("--generate",             "+sg",      "generate new study and\nseries UIDs (default)");
       cmd.addOption("--study-from",           "+st",  1,  "[f]ilename: string",
                                                           "read patient/study data from DICOM file");
       cmd.addOption("--series-from",          "+se",  1,  "[f]ilename: string",
-                                                          "read patient/study/series data from DICOM file");
+                                                          "read patient/study/series data\nfrom DICOM file");
     cmd.addSubGroup("instance number:");
-      cmd.addOption("--instance-one",         "+i1",      "use instance number 1 (default, not with +se)");
+      cmd.addOption("--instance-one",         "+i1",      "use instance number 1\n(default, not with +se)");
       cmd.addOption("--instance-inc",         "+ii",      "increment instance number (only with +se)");
       cmd.addOption("--instance-set",         "+is",  1,  "[i]nstance number: integer", "use instance number i");
 }
@@ -565,15 +565,15 @@ void DcmEncapsulatedDocument::addOutputOptions(OFCommandLine &cmd)
 {
   cmd.addGroup(     "processing options:");
     cmd.addSubGroup("other processing options:");
-      cmd.addOption("--key",                  "-k",   1,  "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
+      cmd.addOption("--key",                  "-k",   1,  "[k]ey: gggg,eeee=\"str\", qpath\nor dict. name=\"str\"",
                                                           "add further attribute");
   cmd.addGroup(     "output options:");
     cmd.addSubGroup("output transfer syntax:");
-      cmd.addOption("--write-xfer-little",    "+te",      "write with explicit VR little endian (default)");
+      cmd.addOption("--write-xfer-little",    "+te",      "write with explicit VR little endian\n(default)");
       cmd.addOption("--write-xfer-big",       "+tb",      "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit",  "+ti",      "write with implicit VR little endian TS");
     cmd.addSubGroup("group length encoding:");
-      cmd.addOption("--group-length-recalc",  "+g=",      "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-recalc",  "+g=",      "recalculate group lengths if present\n(default)");
       cmd.addOption("--group-length-create",  "+g",       "always write with group length elements");
       cmd.addOption("--group-length-remove",  "-g",       "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items:");
@@ -684,7 +684,7 @@ void DcmEncapsulatedDocument::parseArguments(
       app.checkValue(cmd.getValue(opt_measurementUnitsCM));
     }
     if (cmd.findOption("--manufacturer"))app.checkValue(cmd.getValue(opt_manufacturer));
-    if (cmd.findOption("--manufacturer-model-name"))app.checkValue(cmd.getValue(opt_manufacturerModelName));
+    if (cmd.findOption("--manufacturer-model"))app.checkValue(cmd.getValue(opt_manufacturerModelName));
     if (cmd.findOption("--device-serial-number"))app.checkValue(cmd.getValue(opt_deviceSerialNumber));
     if (cmd.findOption("--software-versions"))app.checkValue(cmd.getValue(opt_softwareVersions));
   }
@@ -859,10 +859,10 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger& appLogger)
           {
             opt_softwareVersions = c;
           }
-          OFLOG_TRACE(appLogger, "reading Manufacturing 3D Model info");
+          OFLOG_TRACE(appLogger, "reading manufacturing 3d model info");
           {
 
-            OFLOG_TRACE(appLogger, "Manufacturing 3D Model info read successfully");
+            OFLOG_TRACE(appLogger, "manufacturing 3d model info read successfully");
           }
         }
       }
