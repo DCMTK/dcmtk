@@ -77,4 +77,8 @@ OFTEST(ofstd_xmlParser)
     OFCHECK(!rootNode.getChildNode("parent").getChildNode("child", 1).isEmpty());
     OFCHECK(rootNode.getChildNode("parent").getChildNode("child" ,2).isEmpty());
     OFCHECK(rootNode.getChildNode("element").isAttributeSet("attribute"));
+<<<<<<< HEAD
+=======
+	
+>>>>>>> c04f23875ce248a32a3c524195128366fb689ab5
 }
