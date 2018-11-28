@@ -226,6 +226,9 @@ OFCondition DcmRLECodecDecoder::decode(
                   }
                 }
 
+                // something went wrong; most likely the byte offset in the RLE header is incorrect.
+                if (result.bad()) return EC_CannotChangeRepresentation;
+
                 // byteOffset now points to the first byte of the new RLE stripe
                 // check if the current stripe is the last one for this frame
                 if (i+1 == numberOfStripes) lastStripe = OFTrue; else lastStripe = OFFalse;
