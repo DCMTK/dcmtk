@@ -1,4 +1,4 @@
-.TH "echoscu" 1 "Fri May 4 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "echoscu" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 echoscu \- DICOM verification (C-ECHO) SCU
@@ -215,7 +215,7 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "EXIT CODES"
 .PP
-The \fBdcmsend\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
+The \fBechoscu\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
 .SS "general"
 .PP
 .nf
@@ -243,7 +243,7 @@ EXITCODE_ASSOCIATION_ABORTED             70
 .fi
 .PP
 .PP
-(*) Actually, these codes are currently not used by \fBdcmsend\fP but serve as a placeholder for the corresponding group of exit codes\&.
+(*) Actually, these codes are currently not used by \fBechoscu\fP but serve as a placeholder for the corresponding group of exit codes\&.
 .SH "ENVIRONMENT"
 .PP
 The \fBechoscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.

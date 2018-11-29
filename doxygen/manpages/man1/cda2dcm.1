@@ -1,7 +1,8 @@
-.TH "cda2dcm" 1 "Wed Aug 15 2018" "Version 3.6.3+" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "cda2dcm" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-cda2dcm \- Encapsulate CDA file into DICOM format\&.
+cda2dcm \- Encapsulate CDA file into DICOM file format
+
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -61,7 +62,7 @@ document title:
          document title
 
   +cn  --concept-name  [CSD] [CV] [CM]: string (default: empty)
-         document title as concept name code sequence with coding
+         coded representation of document title defined by coding
          scheme designator CSD, code value CV and code meaning CM
 
 patient data:
@@ -97,29 +98,26 @@ instance number:
   +ii  --instance-inc
          increment instance number (only with +se)
 
-  +is  --instance-set  [i]nstance number: integer
+  +is  --instance-set [i]nstance number: integer
          use instance number i
 
 burned-in annotation:
 
   +an  --annotation-yes
-         CDA file (or an encapsulated document within)
-         contains patient identifying data (default)
+         document contains patient identifying data (default)
 
   -an  --annotation-no
-         CDA file (or an encapsulated document)
-         does not contain patient identifying data
+         document does not contain patient identifying data
 
 override CDA file data:
 
   -ov  --no-override
          CDA patient and document data must match study,
-         series or manually entered information.
-         Otherwise, an error occurs (default).
+         series or manually entered information (default)
 
   +ov  --override
-         CDA's data will be overwritten by study, series
-         or manually entered information
+         data obtained from the CDA file will be overwritten
+         by study, series, or manually entered information
 .fi
 .PP
 .SS "processing options"
@@ -127,8 +125,8 @@ override CDA file data:
 .nf
 other processing options:
 
-  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
-          add further attribute
+  -k   --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+         add further attribute
 .fi
 .PP
 .SS "output options"
@@ -136,39 +134,39 @@ other processing options:
 .nf
 output file format:
 
-  +F    --write-file
-          write file format (default)
+  +F   --write-file
+         write file format (default)
 
-  -F    --write-dataset
-          write data set without file meta information
+  -F   --write-dataset
+         write data set without file meta information
 
 group length encoding:
 
-  +g=   --group-length-recalc
-          recalculate group lengths if present (default)
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
 
-  +g    --group-length-create
-          always write with group length elements
+  +g   --group-length-create
+         always write with group length elements
 
-  -g    --group-length-remove
-          always write without group length elements
+  -g   --group-length-remove
+         always write without group length elements
 
 length encoding in sequences and items:
 
-  +e    --length-explicit
-          write with explicit lengths (default)
+  +e   --length-explicit
+         write with explicit lengths (default)
 
-  -e    --length-undefined
-          write with undefined lengths
+  -e   --length-undefined
+         write with undefined lengths
 
 data set trailing padding (not with --write-dataset):
 
-  -p    --padding-off
-          no padding (implicit if --write-dataset)
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
 
-  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
-          align file on multiple of f bytes
-          and items on multiple of i bytes
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes
+         and items on multiple of i bytes
 .fi
 .PP
 .SH "LOGGING"
@@ -189,23 +187,23 @@ The \fBcda2dcm\fP utility uses the following exit codes when terminating\&. This
 .SS "general"
 .PP
 .nf
-EXITCODE_NO_ERROR                         0
-EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
-EXITCODE_MEMORY_EXHAUSTED                 4
+EXITCODE_NO_ERROR                 0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR 1
+EXITCODE_MEMORY_EXHAUSTED         4
 .fi
 .PP
 .SS "input file errors"
 .PP
 .nf
-EXITCODE_CANNOT_READ_INPUT_FILE          20
-EXITCODE_NO_INPUT_FILES                  21
-EXITCODE_INVALID_INPUT_FILE              22
+EXITCODE_CANNOT_READ_INPUT_FILE   20
+EXITCODE_NO_INPUT_FILES           21
+EXITCODE_INVALID_INPUT_FILE       22
 .fi
 .PP
 .SS "output file errors"
 .PP
 .nf
-EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE 40
 .fi
 .PP
 .SH "ENVIRONMENT"

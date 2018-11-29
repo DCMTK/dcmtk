@@ -1,4 +1,4 @@
-.TH "dcmcjpls" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpls" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpls \- Encode DICOM file to JPEG-LS transfer syntax
@@ -282,7 +282,7 @@ data set trailing padding:
 .PP
 .SH "NOTES"
 .PP
-The \fBdcmcjpls\fP utility compresses DICOM images of all SOP classes\&. However, \fBdcmcjpls\fP does not attempt to ensure that the compressed image still complies with all restrictions of the object's IOD\&.
+The \fBdcmcjpls\fP utility compresses DICOM images of all SOP classes\&. It processes all Pixel Data (7fe0,0010) elements in the dataset, i\&.e\&. compression is also performed on an icon image\&. However, \fBdcmcjpls\fP does not attempt to ensure that the compressed image still complies with all restrictions of the object's IOD\&.
 .PP
 The user is responsible for making sure that the compressed images he creates are compliant with the DICOM standard\&. If in question, the \fBdcmcjpls\fP utility allows one to convert an image to secondary capture - this SOP class does not pose restrictions as the ones mentioned above\&.
 .SH "TRANSFER SYNTAXES"
@@ -330,4 +330,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdjpls\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2009-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2009-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

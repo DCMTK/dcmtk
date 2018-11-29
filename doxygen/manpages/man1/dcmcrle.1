@@ -1,4 +1,4 @@
-.TH "dcmcrle" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcrle" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcrle \- Encode DICOM file to RLE transfer syntax
@@ -165,7 +165,9 @@ data set trailing padding:
 .PP
 .SH "NOTES"
 .PP
-Please note that the DICOM standard does not allow for storing the pixel data with multiple fragments per frame (when RLE compression is used)\&. So limiting the fragment size with option \fI--fragment-size\fP (or \fI+fs\fP) may result in a non-standard conformant DICOM image\&.
+The \fBdcmcrle\fP utility compresses DICOM images of all SOP classes\&. It processes all Pixel Data (7fe0,0010) elements in the dataset, i\&.e\&. compression is also performed on an icon image\&.
+.PP
+Please note that the DICOM standard does not allow for storing the pixel data with multiple fragments per frame (when RLE compression is used)\&. So limiting the fragment size with option \fI--fragment-size\fP (or \fI+fs\fP) may result in a non-standard compliant DICOM image\&.
 .SH "TRANSFER SYNTAXES"
 .PP
 \fBdcmcrle\fP supports the following transfer syntaxes for input (\fIdcmfile-in\fP):
@@ -210,4 +212,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdrle\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2002-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

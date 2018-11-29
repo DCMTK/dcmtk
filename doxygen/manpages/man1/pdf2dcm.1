@@ -1,7 +1,8 @@
-.TH "pdf2dcm" 1 "Wed Aug 15 2018" "Version 3.6.3+" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "pdf2dcm" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-pdf2dcm \- Encapsulate PDF file into DICOM format\&.
+pdf2dcm \- Encapsulate PDF file into DICOM file format
+
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -16,7 +17,7 @@ The \fBpdf2dcm\fP utility reads a PDF file (\fIpdffile-in\fP), converts it to a 
 .PP
 .PP
 .nf
-pdffile-in   PDF input filename to be converted
+pdffile-in   PDF input filename to be encapsulated
 
 dcmfile-out  DICOM output filename
 .fi
@@ -61,7 +62,7 @@ document title:
          document title
 
   +cn  --concept-name  [CSD] [CV] [CM]: string (default: empty)
-         document title as concept name code sequence with coding
+         coded representation of document title defined by coding
          scheme designator CSD, code value CV and code meaning CM
 
 patient data:
@@ -97,18 +98,16 @@ instance number:
   +ii  --instance-inc
          increment instance number (only with +se)
 
-  +is  --instance-set  [i]nstance number: integer
+  +is  --instance-set [i]nstance number: integer
          use instance number i
 
 burned-in annotation:
 
   +an  --annotation-yes
-         PDF file (or an image within)
-         contains patient identifying data (default)
+         document contains patient identifying data (default)
 
   -an  --annotation-no
-         PDF file (or an image within)
-         does not contain patient identifying data
+         document does not contain patient identifying data
 .fi
 .PP
 .SS "processing options"
@@ -178,23 +177,23 @@ The \fBpdf2dcm\fP utility uses the following exit codes when terminating\&. This
 .SS "general"
 .PP
 .nf
-EXITCODE_NO_ERROR                         0
-EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
-EXITCODE_MEMORY_EXHAUSTED                 4
+EXITCODE_NO_ERROR                 0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR 1
+EXITCODE_MEMORY_EXHAUSTED         4
 .fi
 .PP
 .SS "input file errors"
 .PP
 .nf
-EXITCODE_CANNOT_READ_INPUT_FILE          20
-EXITCODE_NO_INPUT_FILES                  21
-EXITCODE_INVALID_INPUT_FILE              22
+EXITCODE_CANNOT_READ_INPUT_FILE   20
+EXITCODE_NO_INPUT_FILES           21
+EXITCODE_INVALID_INPUT_FILE       22
 .fi
 .PP
 .SS "output file errors"
 .PP
 .nf
-EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE 40
 .fi
 .PP
 .SH "ENVIRONMENT"

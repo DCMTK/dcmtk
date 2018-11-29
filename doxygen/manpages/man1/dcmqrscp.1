@@ -1,4 +1,4 @@
-.TH "dcmqrscp" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrscp" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrscp \- DICOM image archive (central test node)
@@ -370,21 +370,47 @@ other network options:
           silently correct space-padded UIDs
 .fi
 .PP
-.SS "encoding options"
+.SS "processing options"
 .PP
 .nf
-post-1993 value representations:
+specific character set:
 
-  +u    --enable-new-vr
-          enable support for new VRs (UN/UT) (default)
+  # the following options require support from an underlying character
+  # encoding library (see output of --version on which one is available)
 
-  -u    --disable-new-vr
-          disable support for new VRs, convert to OB
+  +Cr   --use-request-charset
+          try to convert all element values that are affected by
+          Specific Character Set (0008,0005) to the one specified
+          in the request data set, fall back to the one specified
+          via --convert-to-xxx if that is not possible
+          (default, unless overridden by config file)
 
-  # This option disables generation of new VRs (UN/UT) when writing
-  # DICOM encoded data to a file to the network.  This option can be
-  # used to force compatibility with applications which do not support
-  # these value representations.
+  -Cr   --override-charset
+          convert affected element values to the character set
+          specified via --convert-to-xxx, ignoring the one
+          specified in the request
+
+  +A7   --convert-to-ascii
+          convert affected element values to 7-bit ASCII
+          (default, unless overridden by config file)
+
+  +U8   --convert-to-utf8
+          convert affected element values to UTF-8
+
+  +L1   --convert-to-latin1
+          convert affected element values to ISO 8859-1
+
+  +C    --convert-to-charset  [c]harset: string
+          convert affected element values to the character set
+          specified by the DICOM defined term c
+
+  -Ct   --transliterate
+          try to approximate characters that cannot be
+          represented through similar looking characters
+
+  -Cd   --discard-illegal
+          discard characters that cannot be represented
+          in destination character set
 .fi
 .PP
 .SS "output options"
@@ -424,6 +450,14 @@ output transfer syntax:
   +td   --write-xfer-deflated
           write with deflated explicit VR little endian TS
 
+post-1993 value representations:
+
+  +u    --enable-new-vr
+          enable support for new VRs (UN/UT) (default)
+
+  -u    --disable-new-vr
+          disable support for new VRs, convert to OB
+
 group length encoding (not with --bit-preserving):
 
   +g=   --group-length-recalc
@@ -457,45 +491,6 @@ deflate compression level (only with --propose-deflated or
 
   +cl   --compression-level  [l]evel: integer (default: 6)
           0=uncompressed, 1=fastest, 9=best compression
-
-specific character set:
-
-  # the following options require support from an underlying character
-  # encoding library (see output of --version on which one is available)
-
-  +Cr   --use-request-charset
-          try to convert all element values that are affected by
-          Specific Character Set (0008,0005) to the one specified
-          in the request data set, fall back to the one specified
-          via --convert-to-xxx if that is not possible
-          (default, unless overridden by config file)
-
-  -Cr   --override-charset
-          convert affected element values to the character
-          set specified via --convert-to-xxx, ignoring
-          the one specified in the request
-
-  +A7   --convert-to-ascii
-          convert affected element values to 7-bit ASCII
-          (default, unless overridden by config file)
-
-  +U8   --convert-to-utf8
-          convert affected element values to UTF-8
-
-  +L1   --convert-to-latin1
-          convert affected element values to ISO 8859-1
-
-  +C    --convert-to-charset  [c]harset: string
-          convert affected element values to the character set
-          specified by the DICOM defined term c
-
-  -Ct   --transliterate
-          try to approximate characters that cannot be
-          represented through similar looking characters
-
-  -Cd   --discard-illegal
-          discard characters that cannot be represented
-          in destination character set
 .fi
 .PP
 .SH "NOTES"
@@ -594,7 +589,7 @@ OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.
 StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
 OphthalmicTomographyImageStorage                     1.2.840.10008.5.1.4.1.1.77.1.5.4
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
-RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
+RETIRED_VLMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
 AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2
 KeratometryMeasurementsStorage                       1.2.840.10008.5.1.4.1.1.78.3
@@ -790,7 +785,7 @@ WideFieldOphthalmicPhotogr.3DCoordinatesImageStorage 1.2.840.10008.5.1.4.1.1.77.
 OphthalmicOpticalCoherenceTomogr.EnFaceImageStorage  1.2.840.10008.5.1.4.1.1.77.1.5.7
 OphthalmicOpticalCoh.Tomogr.BscanVolumeAnalysisStor. 1.2.840.10008.5.1.4.1.1.77.1.5.8
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
-RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
+RETIRED_VLMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
 AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2
 KeratometryMeasurementsStorage                       1.2.840.10008.5.1.4.1.1.78.3
@@ -826,6 +821,7 @@ PatientRadiationDoseSRStorage                        1.2.840.10008.5.1.4.1.1.88.
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
+EncapsulatedSTLStorage                               1.2.840.10008.5.1.4.1.1.104.3
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
 LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
@@ -994,4 +990,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmqridx\fP(1), \fBdcmqrti\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1993-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "storescu" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescu \- DICOM storage (C-STORE) SCU
@@ -187,6 +187,10 @@ proposed transmission transfer syntaxes (not with --config-file):
           propose only required presentation contexts
           (default: propose all supported)
 
+          # This will also work with storage SOP classes that are
+          # supported by DCMTK but are not in the list of SOP classes
+          # proposed by default.
+
   +C    --combine
           combine proposed transfer syntaxes
           (default: separate presentation context for each TS)
@@ -220,6 +224,9 @@ user identity negotiation:
 
         --saml  [f]ilename: string
           read SAML request from file f
+
+        --jwt  [f]ilename: string
+          read JWT data from file f
 
   -rsp  --pos-response
           expect positive response
@@ -314,13 +321,31 @@ certification authority:
   +cd   --add-cert-dir  [c]ertificate directory: string
           add certificates in d to list of certificates
 
+security profile:
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile (default)
+
+  +py   --profile-bcp195-nd
+          Non-downgrading BCP 195 TLS Profile
+
+  +pb   --profile-basic
+          Basic TLS Secure Transport Connection Profile (retired)
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile (retired)
+
+  +pn   --profile-null
+          Authenticated unencrypted communication
+          (retired, was used in IHE ATNA)
+
 ciphersuite:
+
+  +cc   --list-ciphers
+          show list of supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
-
-  +dp   --dhparam  [f]ilename: string
-          read DH parameters for DH/DSS ciphersuites
 
 pseudo random generator:
 
@@ -337,9 +362,6 @@ peer authentication:
 
   -rc   --require-peer-cert
           verify peer certificate, fail if absent (default)
-
-  -vc   --verify-peer-cert
-          verify peer certificate if present
 
   -ic   --ignore-peer-cert
           don't verify peer certificate
@@ -482,4 +504,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

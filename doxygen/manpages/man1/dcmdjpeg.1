@@ -1,4 +1,4 @@
-.TH "dcmdjpeg" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdjpeg" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdjpeg \- Decode JPEG-compressed DICOM file
@@ -171,7 +171,17 @@ workaround options for incorrect JPEG encodings:
   # This option causes dcmjpeg to ignore incomplete JPEG data
   # at the end of a compressed fragment and to start decompressing
   # the next frame from the next fragment (if any). This permits
-  # images with incomplete JPEG data to be decoded..fi
+  # images with incomplete JPEG data to be decoded.
+
+  +wc   --workaround-cornell
+          enable workaround for 16-bit JPEG lossless
+          Cornell images with Huffman table overflow
+
+  # One of the first open-source implementations of lossless JPEG
+  # compression, the "Cornell" library, has a well-known bug that leads
+  # to invalid values in the Huffmann table when images with 16 bit/sample
+  # are compressed. This flag enables a workaround that permits such
+  # images to be decoded correctly..fi
 .PP
 .SS "output options"
 .PP
@@ -287,4 +297,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmcjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

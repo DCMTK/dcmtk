@@ -1,4 +1,4 @@
-.TH "dcmj2pnm" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmj2pnm" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmj2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF, JPEG or BMP
@@ -150,7 +150,7 @@ scaling:
   +Syv  --scale-y-size  [n]umber: integer
           scale y axis to n pixels, auto-compute x axis
 
-color space conversion (compressed images only):
+color space conversion (JPEG compressed images only):
 
   +cp   --conv-photometric
           convert if YCbCr photometric interpretation (default)
@@ -170,6 +170,38 @@ color space conversion (compressed images only):
 
   +cn   --conv-never
           never convert color space
+
+workaround options for incorrect encodings (JPEG compressed images only):
+
+  +w6   --workaround-pred6
+          enable workaround for JPEG lossless images
+          with overflow in predictor 6
+
+  # DICOM images with 16 bits/pixel have been observed "in the wild"
+  # that are compressed with lossless JPEG and need special handling
+  # because the encoder produced an 16-bit integer overflow in predictor
+  # 6, which needs to be compensated (reproduced) during decompression.
+  # This flag enables a correct decompression of such faulty images, but
+  # at the same time will cause an incorrect decompression of correctly
+  # compressed images. Use with care.
+
+  +wi   --workaround-incpl
+          enable workaround for incomplete JPEG data
+
+  # This option causes dcmj2pnm to ignore incomplete JPEG data
+  # at the end of a compressed fragment and to start decompressing
+  # the next frame from the next fragment (if any). This permits
+  # images with incomplete JPEG data to be decoded.
+
+  +wc   --workaround-cornell
+          enable workaround for 16-bit JPEG lossless
+          Cornell images with Huffman table overflow
+
+  # One of the first open-source implementations of lossless JPEG
+  # compression, the "Cornell" library, has a well-known bug that leads
+  # to invalid values in the Huffmann table when images with 16 bit/sample
+  # are compressed. This flag enables a workaround that permits such
+  # images to be decoded correctly.
 
 modality LUT transformation:
 
@@ -498,4 +530,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1), \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "dcmcjpeg" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpeg" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpeg \- Encode DICOM file to JPEG transfer syntax
@@ -280,44 +280,76 @@ decompression color space conversion
 
   # Never convert color space during decompression.
 
-standard YCbCr component subsampling (not with +tl):
+decompr. workaround options for incorrect encodings (if input is compressed):
 
-  +s4   --sample-444
-          4:4:4 sampling with YBR_FULL (default)
+  +w6   --workaround-pred6
+          enable workaround for JPEG lossless images
+          with overflow in predictor 6
 
-  # This option disables color component subsampling for compression in
-  # the YCbCr color space. The DICOM photometric interpretation is
-  # encoded as YBR_FULL.
+  # DICOM images with 16 bits/pixel have been observed "in the wild"
+  # that are compressed with lossless JPEG and need special handling
+  # because the encoder produced an 16-bit integer overflow in predictor
+  # 6, which needs to be compensated (reproduced) during decompression.
+  # This flag enables a correct decompression of such faulty images, but
+  # at the same time will cause an incorrect decompression of correctly
+  # compressed images. Use with care.
+
+  +wi   --workaround-incpl
+          enable workaround for incomplete JPEG data
+
+  # This option causes dcmjpeg to ignore incomplete JPEG data
+  # at the end of a compressed fragment and to start decompressing
+  # the next frame from the next fragment (if any). This permits
+  # images with incomplete JPEG data to be decoded.
+
+  +wc   --workaround-cornell
+          enable workaround for 16-bit JPEG lossless
+          Cornell images with Huffman table overflow
+
+  # One of the first open-source implementations of lossless JPEG
+  # compression, the "Cornell" library, has a well-known bug that leads
+  # to invalid values in the Huffmann table when images with 16 bit/sample
+  # are compressed. This flag enables a workaround that permits such
+  # images to be decoded correctly.
+
+YCbCr component subsampling (lossy JPEG only):
 
   +s2   --sample-422
-          4:2:2 subsampling with YBR_FULL_422
+          4:2:2 subsampling with YBR_FULL_422 (default)
 
   # This option enables a 4:2:2 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL.
+  # interpretation is encoded as YBR_FULL_422.
 
 non-standard YCbCr component subsampling (not with +tl):
+
+  +s4   --nonstd-444
+          4:4:4 sampling with YBR_FULL
+
+  # This option disables color component subsampling for compression in
+  # the YCbCr color space. The DICOM photometric interpretation is
+  # encoded as YBR_FULL, which violates DICOM rules for lossy JPEG.
 
   +n2   --nonstd-422-full
           4:2:2 subsampling with YBR_FULL
 
   # This option enables a 4:2:2 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL which violates DICOM rules.
+  # interpretation is encoded as YBR_FULL, which violates DICOM rules.
 
   +n1   --nonstd-411-full
           4:1:1 subsampling with YBR_FULL
 
   # This option enables a 4:1:1 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL which violates DICOM rules.
+  # interpretation is encoded as YBR_FULL, which violates DICOM rules.
 
   +np   --nonstd-411
           4:1:1 subsampling with YBR_FULL_422
 
   # This option enables a 4:1:1 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL_422 which violates DICOM rules.
+  # interpretation is encoded as YBR_FULL_422, which violates DICOM rules.
 .fi
 .PP
 .SS "encapsulated pixel data encoding options:"
@@ -529,7 +561,7 @@ data set trailing padding:
 .PP
 .SH "NOTES"
 .PP
-The \fBdcmcjpeg\fP utility compresses DICOM images of all SOP classes\&. Special handling has been implemented for CT images (where the modality transformation is required to create Hounsfield units) and the XA/RF/Biplane SOP classes (where the modality transformation has 'inversed' semantics)\&. However, \fBdcmcjpeg\fP does not attempt to ensure that the compressed image still complies with all restrictions of the object's IOD\&.
+The \fBdcmcjpeg\fP utility compresses DICOM images of all SOP classes\&. It processes all Pixel Data (7fe0,0010) elements in the dataset, i\&.e\&. compression is also performed on an icon image\&. Special handling has been implemented for CT images (where the modality transformation is required to create Hounsfield units) and the XA/RF/Biplane SOP classes (where the modality transformation has 'inversed' semantics)\&. However, \fBdcmcjpeg\fP does not attempt to ensure that the compressed image still complies with all restrictions of the object's IOD\&.
 .PP
 A few examples:
 .PP
@@ -615,4 +647,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

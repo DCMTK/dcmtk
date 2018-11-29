@@ -1,4 +1,4 @@
-.TH "dcmsend" 1 "Mon Feb 5 2018" "Version 3.6.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsend" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsend \- Simple DICOM storage SCU (sender)
@@ -254,7 +254,7 @@ Transfer syntaxes supported by decoders:
 .fi
 .PP
 .PP
-Since \fBdcmsend\fP tries to be as simple as possible for the user, by default presentation contexts might be proposed to the SCP that are strictly speaking 'illegal'\&. This is because, according to the DICOM standard, the SCU always has to propose the default transfer syntax in at least one presentation context associated with each abstract syntax (i\&.e\&. SOP class)\&. This requirement is waived when the SCU only has access to the SOP instance in lossy compressed form\&. With option \fI--no-illegal-proposal\fP the strict DICOM-conformant behavior can be enforced, i\&.e\&. no possibly illegal presentation context will be proposed but the corresponding SOP instance will be rejected (if needed)\&.
+Since \fBdcmsend\fP tries to be as simple as possible for the user, by default presentation contexts might be proposed to the SCP that are strictly speaking 'illegal'\&. This is because, according to the DICOM standard, the SCU always has to propose the default transfer syntax in at least one presentation context associated with each abstract syntax (i\&.e\&. SOP class)\&. This requirement is waived if the SCU only has access to the SOP instance in lossy compressed form or if the decompressed pixel data would be too large to be encoded\&. With option \fI--no-illegal-proposal\fP the strict DICOM-conformant behavior can be enforced, i\&.e\&. no possibly illegal presentation context will be proposed but the corresponding SOP instance will be rejected (if needed)\&. Please note, however, that the size of the decompressed pixel data is not checked\&.
 .PP
 Please note, however, that the default transfer syntax for 'Lossless JPEG
 Compression', 'Lossy JPEG Compression' and so on are not always proposed as also required by the DICOM standard\&. The same limitation applies to other compression schemes\&. See DICOM PS 3\&.5 section 10 for details\&.
@@ -317,4 +317,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmrecv\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2011-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2011-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
