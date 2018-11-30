@@ -1,0 +1,164 @@
+ANNOUNCEMENT
+
+Version 3.6.4 of the OFFIS DCMTK (DICOM ToolKit) software is now available for
+public release.  This is a minor release that includes the following changes
+over the previous version 3.6.3:
+
+- DCMTK 3.6.4 builds correctly on older and up-to-date versions of GNU gcc
+  (4.2.1 to 8.2.1) Clang (3.4.2 to 7.0.0),  Microsoft Visual Studio (2005 to
+  2017) and SunPro CC (5.14 and 5.15).
+
+- Tested with the following operating systems/environments:
+
+  - Android on arm64
+  - Cygwin on x86_64
+  - FreeBSD on x86_64
+  - Linux on x86_64 and x86
+  - MacOS X on x86_64
+  - NetBSD on x86_64
+  - OpenBSD on x86_64
+  - OpenIndiana on x86
+  - Solaris on x86
+  - Windows (and MinGW) on x86_64 and x86
+
+  For a complete list of tested systems and compilers, see the INSTALL file.
+
+- GNU Autoconf is still deprecated, running 'configure' emits a warning by
+  default.  Support for GNU Autoconf will be removed after this release.
+
+- Updated data dictionary, SOP Class and Transfer Syntax UIDs for the recently
+  approved changes to the DICOM standard (i.e. Supplements and CPs), up to DICOM
+  standard release DICOM 2018d plus Supplement 188 (Multi-energy CT Images),
+  CP-1803 and CP-1809.
+
+- Added "dcmicmp", a new tool that reads two DICOM images, an original
+  "reference image" and a post-processed "test image" to which some kind of
+  processing such as a lossy image compression has been applied.  dcmicmp
+  compares both images and computes several metrics that describe how similar
+  or different both images are.
+
+- Added new command line applications: cda2dcm and stl2dcm for encapsulation
+  of HL7 CDA documents and STL files into DICOM file format.  Revised
+  implementation of pdf2dcm based on new class DcmEncapsulatedDocument.
+
+- The lossless JPEG decoder can now handle images compressed with the
+  Cornell codec, which creates invalid Huffman codes for 16-bit images.
+
+- The new class OFRandom implements a cryptographically secure pseudo
+  random number generator (PRNG) based on the ISAAC algorithm and its public
+  domain reference implementation by Bob Jenkins.
+
+- Major revision of the TLS code in DCMTK (module dcmtls and related command
+  line tools) implementing DICOM Supplement 204 "TLS Security Profiles".
+  Selection of TLS ciphersuites is now based on security profiles, and
+  DCMTK now implements the recommendations of BCP 195 / RFC 7525.
+
+- DCMTK can now be compiled with LibreSSL as an alternative to OpenSSL.
+
+- Updated automatically generated Context Group classes in "dcmsr"
+  (Structured Reporting) based on DICOM 2018d.  Also updated the Code
+  definitions from the supported coding schemes such as DICOM, NCIt and UMLS.
+
+- Further enhanced DICOM Structured Reporting (SR) module "dcmsr":
+
+  - Added support for included template TID 4019 (Algorithm Identification) to
+    the implementation of TID 1419 (ROI Measurements).
+
+  - Added a document tree node filter that checks for the presence or absence
+    of a concept name, i.e. whether it is empty or not.
+
+  - Added new and enhanced existing code examples for this module.
+
+- Enhanced Worklist SCP code to make use of existing classes and functions
+  instead of using its own "spaghetti" code for everything.  This also
+  resolves issues with the Worklist SCP rejecting some legit Worklist queries
+  as its own verification functions were too strict.
+
+- Added method getNumberOfValues() to all VR and other classes that are
+  derived from DcmObject (such as DcmItem).  This new method always returns
+  the number of values currently stored in the corresponding object/element,
+  in contrast to getVM(), which sometimes returns the constant 1, or card(),
+  which is not available for all classes.
+
+- The ACSE timeout, e.g. passed to the various networking command line tools
+  using --acse-timeout, is now also used for the first PDU to be read.  This is
+  another step towards cleaning up the timeout handling in dcmnet module.
+
+- Replaced all calls of strcpy() by OFStandard::strlcpy(), which should reduce
+  the possibility of buffer overflows.  Also added OFStandard::snprintf() and
+  OFStandard::vsnprintf(), which should be used within the DCMTK as safe and
+  portable helper functions.
+
+- Fixed bug in dcmseg that produced broken binary Segmentation objects if the
+  number of pixels were not dividable by 8 for a single frame.
+
+- Enhanced Worklist SCP code to make use of existing classes and functions
+  instead of using its own "spaghetti" code for everything.  This also
+  resolves issues with the Worklist SCP rejecting some legit Worklist queries
+  as its own verification functions were too strict.
+
+- Introduced a subset of std::filesystem to ofstd, currently providing the
+  classes OFpath, OFdirectory_entry and OFdirectory_iterator as portable
+  implementations for the respective C++17 STL classes.
+
+- The Windows implementation of class OFReadWriteLock class now uses Slim
+  Reader/Writer (SRW) Locks, which are available since Windows Vista, instead
+  of the older implementation based on a Mutex, a Semaphore and a counter,
+  because SRW locks are much faster.
+
+- Changed version numbering of shared objects.  On Posix operating systems,
+  it now follows these guidelines: https://autotools.io/libtool/version.html.
+
+- Fixed various issues that occurred after the official 3.6.3 release.
+  See CHANGES file for details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here in
+alphabetical order.  Thank you very much for your support!
+
+  Klaus Eisentraut <klaus.eisentraut@siemens-healthineers.com>
+  Andrey Fedorov <andrey.fedorov@gmail.com>
+  Florian Franzen <Florian.Franzen@caesar.de>
+  Christian Fremgen <Christian.Fremgen@ith-icoserve.com>
+  Omar Ganiev <beched@deteact.com>
+  Daniel Grieger <Daniel.Grieger@ith-icoserve.com>
+  Helmut Grohne <helmut@subdivi.de>
+  GwanYeong Kim <gy741.kim@gmail.com>
+  Peter Klotz <Peter.Klotz@ith-icoserve.com>
+  Mathieu Malaterre <mathieu.malaterre@gmail.com>
+  Savvas Metallidis <savvas.metallidis@infomedcs.com>
+  Isaiah Norton <inorton@bwh.harvard.edu>
+  Lukas Raesenhoeft <lukas@raesenhoeft.com>
+  Uli Schlachter <psychon@znc.in>
+  Max Smolens (github user msmolens)
+  Christian Wetzel <wetzel@phoenix-pacs.de>
+  Gert Wollny <gw.fossdev@gmail.com>
+  Sahab Zanjanizadeh <Sahab.Zanjanizadeh@ge.com>
+
+  Thomas Dement
+  Hans Johnson (GitHub user "hjmjohnson")
+
+  Forum user "deepakt"
+  GitHub user "sercxjo"
+
+Members of the DCMTK Team who have worked on this release are
+(in alphabetical order):
+
+  Pedro Arizpe Gomez <arizpegomez@offis.de>
+  Marco Eichelberg <eichelberg@offis.de>
+  Michael Onken <onken@open-connections.de>
+  Joerg Riesmeier <dicom@jriesmeier.com>
+  Jan Schlamelcher <schlamelcher@offis.de>
+
+Student associates:
+
+  Nikolas Goldhammer <nikolasgoldhammer@gmail.com>
+
+Also see CREDITS file for projects and companies who have been generously
+supporting DCMTK.
+
+The DCMTK software can be downloaded via:
+
+  https://dicom.offis.de/dcmtk or https://www.dcmtk.org/
+
+OFFIS e.V., Oldenburg, Germany, 2018-11-29

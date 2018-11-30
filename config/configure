@@ -2828,8 +2828,8 @@ ac_config_headers="$ac_config_headers include/dcmtk/config/osconfig.h"
 
 
 PACKAGE_VERSION_NUMBER=364
-PACKAGE_VERSION_SUFFIX=""
-PACKAGE_DATE="2018-11-29"
+PACKAGE_VERSION_SUFFIX="+"
+PACKAGE_DATE="DEV"
 
 
 cat >>confdefs.h <<_ACEOF
