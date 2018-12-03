@@ -273,20 +273,20 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream &out,
                     {
                         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, data, getLengthField(), sizeof(Uint16));
                         setByteOrder(EBO_LittleEndian);
-                        size_t tobewritten = OFstatic_cast(size_t, getLengthField() / sizeof(Uint16));
-                        size_t written = fwrite(data, sizeof(Uint16), tobewritten, file);
-                        if( written != tobewritten )
-                        DCMDATA_WARN("DcmOtherByteOtherWord: Some bytes were not written: " << (tobewritten - written) );
+                        const size_t tobewritten = OFstatic_cast(size_t, getLengthField() / sizeof(Uint16));
+                        const size_t written = fwrite(data, sizeof(Uint16), tobewritten, file);
+                        if (written != tobewritten)
+                            DCMDATA_WARN("DcmOtherByteOtherWord: Some bytes were not written: " << (tobewritten - written));
                     }
                 } else {
                     Uint8 *data = NULL;
                     getUint8Array(data);
                     if (data != NULL)
                     {
-                      size_t tobewritten = OFstatic_cast(size_t, getLengthField());
-                      size_t written = fwrite(data, sizeof(Uint8), tobewritten, file);
-                      if( written != tobewritten )
-                        DCMDATA_WARN("DcmOtherByteOtherWord: Some bytes were not written: " << (tobewritten - written) );
+                        const size_t tobewritten = OFstatic_cast(size_t, getLengthField());
+                        const size_t written = fwrite(data, sizeof(Uint8), tobewritten, file);
+                        if (written != tobewritten)
+                            DCMDATA_WARN("DcmOtherByteOtherWord: Some bytes were not written: " << (tobewritten - written));
                     }
                 }
                 fclose(file);
