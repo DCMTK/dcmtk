@@ -21,14 +21,12 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2018d and PS 3.7-2018d
-# File created on 2018-09-19 14:20:31 by J. Riesmeier on thinkpad.
-# File updated manually on 2018-11-15 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2018e and PS 3.7-2018e
+# File created on 2018-12-03 12:54:19 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - Supplement 188
-# - CP 1803, 1809
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -200,6 +198,7 @@
 (0008,103E)	LO	SeriesDescription	1	DICOM
 (0008,103F)	SQ	SeriesDescriptionCodeSequence	1	DICOM
 (0008,1040)	LO	InstitutionalDepartmentName	1	DICOM
+(0008,1041)	SQ	InstitutionalDepartmentTypeCodeSequence	1	DICOM
 (0008,1048)	PN	PhysiciansOfRecord	1-n	DICOM
 (0008,1049)	SQ	PhysiciansOfRecordIdentificationSequence	1	DICOM
 (0008,1050)	PN	PerformingPhysicianName	1-n	DICOM
@@ -1122,6 +1121,42 @@
 (0018,9352)	FL	CalciumScoringMassFactorDevice	3	DICOM
 (0018,9353)	FL	EnergyWeightingFactor	1	DICOM
 (0018,9360)	SQ	CTAdditionalXRaySourceSequence	1	DICOM
+(0018,9361)	CS	MultienergyCTAcquisition	1	DICOM
+(0018,9362)	SQ	MultienergyCTAcquisitionSequence	1	DICOM
+(0018,9363)	SQ	MultienergyCTProcessingSequence	1	DICOM
+(0018,9364)	SQ	MultienergyCTCharacteristicsSequence	1	DICOM
+(0018,9365)	SQ	MultienergyCTXRaySourceSequence	1	DICOM
+(0018,9366)	US	XRaySourceIndex	1	DICOM
+(0018,9367)	UC	XRaySourceID	1	DICOM
+(0018,9368)	CS	MultienergySourceTechnique	1	DICOM
+(0018,9369)	DT	SourceStartDateTime	1	DICOM
+(0018,936A)	DT	SourceEndDateTime	1	DICOM
+(0018,936B)	US	SwitchingPhaseNumber	1	DICOM
+(0018,936C)	DS	SwitchingPhaseNominalDuration	1	DICOM
+(0018,936D)	DS	SwitchingPhaseTransitionDuration	1	DICOM
+(0018,936E)	DS	EffectiveBinEnergy	1	DICOM
+(0018,936F)	SQ	MultienergyCTXRayDetectorSequence	1	DICOM
+(0018,9370)	US	XRayDetectorIndex	1	DICOM
+(0018,9371)	UC	XRayDetectorID	1	DICOM
+(0018,9372)	CS	MultienergyDetectorType	1	DICOM
+(0018,9373)	ST	XRayDetectorLabel	1	DICOM
+(0018,9374)	DS	NominalMaxEnergy	1	DICOM
+(0018,9375)	DS	NominalMinEnergy	1	DICOM
+(0018,9376)	US	ReferencedXRayDetectorIndex	1-n	DICOM
+(0018,9377)	US	ReferencedXRaySourceIndex	1-n	DICOM
+(0018,9378)	US	ReferencedPathIndex	1-n	DICOM
+(0018,9379)	SQ	MultienergyCTPathSequence	1	DICOM
+(0018,937A)	US	MultienergyCTPathIndex	1	DICOM
+(0018,937B)	UT	MultienergyAcquisitionDescription	1	DICOM
+(0018,937C)	FD	MonoenergeticEnergyEquivalent	1	DICOM
+(0018,937D)	SQ	MaterialCodeSequence	1	DICOM
+(0018,937E)	CS	DecompositionMethod	1	DICOM
+(0018,937F)	UT	DecompositionDescription	1	DICOM
+(0018,9380)	SQ	DecompositionAlgorithmIdentificationSequence	1	DICOM
+(0018,9381)	SQ	DecompositionMaterialSequence	1	DICOM
+(0018,9382)	SQ	MaterialAttenuationSequence	1	DICOM
+(0018,9383)	DS	PhotonEnergy	1	DICOM
+(0018,9384)	DS	XRayMassAttenuationCoefficient	1	DICOM
 (0018,9401)	SQ	ProjectionPixelCalibrationSequence	1	DICOM
 (0018,9402)	FL	DistanceSourceToIsocenter	1	DICOM
 (0018,9403)	FL	DistanceObjectToTableTop	1	DICOM
@@ -1499,6 +1534,7 @@
 (0022,1029)	LO	IOLFormulaDetail	1	DICOM
 (0022,1033)	FL	KeratometerIndex	1	DICOM
 (0022,1035)	SQ	SourceOfOphthalmicAxialLengthCodeSequence	1	DICOM
+(0022,1036)	SQ	SourceOfCornealSizeDataCodeSequence	1	DICOM
 (0022,1037)	FL	TargetRefraction	1	DICOM
 (0022,1039)	CS	RefractiveProcedureOccurred	1	DICOM
 (0022,1040)	SQ	RefractiveSurgeryTypeCodeSequence	1	DICOM
@@ -2214,6 +2250,7 @@
 (0046,0042)	FD	ChannelWidth	1	DICOM
 (0046,0044)	FD	PupilSize	1	DICOM
 (0046,0046)	FD	CornealSize	1	DICOM
+(0046,0047)	SQ	CornealSizeSequence	1	DICOM
 (0046,0050)	SQ	AutorefractionRightEyeSequence	1	DICOM
 (0046,0052)	SQ	AutorefractionLeftEyeSequence	1	DICOM
 (0046,0060)	FD	DistancePupillaryDistance	1	DICOM
@@ -2327,6 +2364,7 @@
 (0050,001D)	FD	ContainerComponentDiameter	1	DICOM
 (0050,001E)	LO	ContainerComponentDescription	1	DICOM
 (0050,0020)	LO	DeviceDescription	1	DICOM
+(0050,0021)	ST	LongDeviceDescription	1	DICOM
 (0052,0001)	FL	ContrastBolusIngredientPercentByVolume	1	DICOM
 (0052,0002)	FD	OCTFocalDistance	1	DICOM
 (0052,0003)	FD	BeamSpotSize	1	DICOM
@@ -3794,6 +3832,140 @@
 (300E,0004)	DA	ReviewDate	1	DICOM
 (300E,0005)	TM	ReviewTime	1	DICOM
 (300E,0008)	PN	ReviewerName	1	DICOM
+(3010,0001)	SQ	RadiobiologicalDoseEffectSequence	1	DICOM
+(3010,0002)	CS	RadiobiologicalDoseEffectFlag	1	DICOM
+(3010,0003)	SQ	EffectiveDoseCalculationMethodCategoryCodeSequence	1	DICOM
+(3010,0004)	SQ	EffectiveDoseCalculationMethodCodeSequence	1	DICOM
+(3010,0005)	LO	EffectiveDoseMethodDescription	1	DICOM
+(3010,0006)	UI	ConceptualVolumeUID	1	DICOM
+(3010,0007)	SQ	OriginatingSOPInstanceReferenceSequence	1	DICOM
+(3010,0008)	SQ	ConceptualVolumeConstituentSequence	1	DICOM
+(3010,0009)	SQ	EquivalentConceptualVolumeInstanceReferenceSequence	1	DICOM
+(3010,000A)	SQ	EquivalentConceptualVolumesSequence	1	DICOM
+(3010,000B)	UI	ReferencedConceptualVolumeUID	1	DICOM
+(3010,000C)	UT	ConceptualVolumeCombinationExpression	1	DICOM
+(3010,000D)	US	ConceptualVolumeConstituentIndex	1	DICOM
+(3010,000E)	CS	ConceptualVolumeCombinationFlag	1	DICOM
+(3010,000F)	ST	ConceptualVolumeCombinationDescription	1	DICOM
+(3010,0010)	CS	ConceptualVolumeSegmentationDefinedFlag	1	DICOM
+(3010,0011)	SQ	ConceptualVolumeSegmentationReferenceSequence	1	DICOM
+(3010,0012)	SQ	ConceptualVolumeConstituentSegmentationReferenceSequence	1	DICOM
+(3010,0013)	UI	ConstituentConceptualVolumeUID	1	DICOM
+(3010,0014)	SQ	DerivationConceptualVolumeSequence	1	DICOM
+(3010,0015)	UI	SourceConceptualVolumeUID	1	DICOM
+(3010,0016)	SQ	ConceptualVolumeDerivationAlgorithmSequence	1	DICOM
+(3010,0017)	ST	ConceptualVolumeDescription	1	DICOM
+(3010,0018)	SQ	SourceConceptualVolumeSequence	1	DICOM
+(3010,0019)	SQ	AuthorIdentificationSequence	1	DICOM
+(3010,001A)	LO	ManufacturersModelVersion	1	DICOM
+(3010,001B)	UC	DeviceAlternateIdentifier	1	DICOM
+(3010,001C)	CS	DeviceAlternateIdentifierType	1	DICOM
+(3010,001D)	LT	DeviceAlternateIdentifierFormat	1	DICOM
+(3010,001E)	LO	SegmentationCreationTemplateLabel	1	DICOM
+(3010,001F)	UI	SegmentationTemplateUID	1	DICOM
+(3010,0020)	US	ReferencedSegmentReferenceIndex	1	DICOM
+(3010,0021)	SQ	SegmentReferenceSequence	1	DICOM
+(3010,0022)	US	SegmentReferenceIndex	1	DICOM
+(3010,0023)	SQ	DirectSegmentReferenceSequence	1	DICOM
+(3010,0024)	SQ	CombinationSegmentReferenceSequence	1	DICOM
+(3010,0025)	SQ	ConceptualVolumeSequence	1	DICOM
+(3010,0026)	SQ	SegmentedRTAccessoryDeviceSequence	1	DICOM
+(3010,0027)	SQ	SegmentCharacteristicsSequence	1	DICOM
+(3010,0028)	SQ	RelatedSegmentCharacteristicsSequence	1	DICOM
+(3010,0029)	US	SegmentCharacteristicsPrecedence	1	DICOM
+(3010,002A)	SQ	RTSegmentAnnotationSequence	1	DICOM
+(3010,002B)	SQ	SegmentAnnotationCategoryCodeSequence	1	DICOM
+(3010,002C)	SQ	SegmentAnnotationTypeCodeSequence	1	DICOM
+(3010,002D)	LO	DeviceLabel	1	DICOM
+(3010,002E)	SQ	DeviceTypeCodeSequence	1	DICOM
+(3010,0030)	SQ	PatientEquipmentRelationshipCodeSequence	1	DICOM
+(3010,0031)	UI	ReferencedFiducialsUID	1	DICOM
+(3010,0032)	SQ	PatientTreatmentOrientationSequence	1	DICOM
+(3010,0033)	SH	UserContentLabel	1	DICOM
+(3010,0034)	LO	UserContentLongLabel	1	DICOM
+(3010,0035)	SH	EntityLabel	1	DICOM
+(3010,0036)	LO	EntityName	1	DICOM
+(3010,0037)	ST	EntityDescription	1	DICOM
+(3010,0038)	LO	EntityLongLabel	1	DICOM
+(3010,0039)	US	DeviceIndex	1	DICOM
+(3010,003A)	US	RTTreatmentPhaseIndex	1	DICOM
+(3010,003B)	UI	RTTreatmentPhaseUID	1	DICOM
+(3010,003C)	US	RTPrescriptionIndex	1	DICOM
+(3010,003D)	US	RTSegmentAnnotationIndex	1	DICOM
+(3010,003E)	US	BasisRTTreatmentPhaseIndex	1	DICOM
+(3010,003F)	US	RelatedRTTreatmentPhaseIndex	1	DICOM
+(3010,0040)	US	ReferencedRTTreatmentPhaseIndex	1	DICOM
+(3010,0041)	US	ReferencedRTPrescriptionIndex	1	DICOM
+(3010,0042)	US	ReferencedParentRTPrescriptionIndex	1	DICOM
+(3010,0043)	ST	ManufacturerDeviceIdentifier	1	DICOM
+(3010,0044)	SQ	InstanceLevelReferencedPerformedProcedureStepSequence	1	DICOM
+(3010,0045)	CS	RTTreatmentPhaseIntentPresenceFlag	1	DICOM
+(3010,0046)	CS	RadiotherapyTreatmentType	1	DICOM
+(3010,0047)	CS	TeletherapyRadiationType	1-n	DICOM
+(3010,0048)	CS	BrachytherapySourceType	1-n	DICOM
+(3010,0049)	SQ	ReferencedRTTreatmentPhaseSequence	1	DICOM
+(3010,004A)	SQ	ReferencedDirectSegmentInstanceSequence	1	DICOM
+(3010,004B)	SQ	IntendedRTTreatmentPhaseSequence	1	DICOM
+(3010,004C)	DA	IntendedPhaseStartDate	1	DICOM
+(3010,004D)	DA	IntendedPhaseEndDate	1	DICOM
+(3010,004E)	SQ	RTTreatmentPhaseIntervalSequence	1	DICOM
+(3010,004F)	CS	TemporalRelationshipIntervalAnchor	1	DICOM
+(3010,0050)	FD	MinimumNumberOfIntervalDays	1	DICOM
+(3010,0051)	FD	MaximumNumberOfIntervalDays	1	DICOM
+(3010,0052)	UI	PertinentSOPClassesInStudy	1-n	DICOM
+(3010,0053)	UI	PertinentSOPClassesInSeries	1-n	DICOM
+(3010,0054)	LO	RTPrescriptionLabel	1	DICOM
+(3010,0055)	SQ	RTPhysicianIntentPredecessorSequence	1	DICOM
+(3010,0056)	LO	RTTreatmentApproachLabel	1	DICOM
+(3010,0057)	SQ	RTPhysicianIntentSequence	1	DICOM
+(3010,0058)	US	RTPhysicianIntentIndex	1	DICOM
+(3010,0059)	CS	RTTreatmentIntentType	1	DICOM
+(3010,005A)	UT	RTPhysicianIntentNarrative	1	DICOM
+(3010,005B)	SQ	RTProtocolCodeSequence	1	DICOM
+(3010,005C)	ST	ReasonForSuperseding	1	DICOM
+(3010,005D)	SQ	RTDiagnosisCodeSequence	1	DICOM
+(3010,005E)	US	ReferencedRTPhysicianIntentIndex	1	DICOM
+(3010,005F)	SQ	RTPhysicianIntentInputInstanceSequence	1	DICOM
+(3010,0060)	SQ	RTAnatomicPrescriptionSequence	1	DICOM
+(3010,0061)	UT	PriorTreatmentDoseDescription	1	DICOM
+(3010,0062)	SQ	PriorTreatmentReferenceSequence	1	DICOM
+(3010,0063)	CS	DosimetricObjectiveEvaluationScope	1	DICOM
+(3010,0064)	SQ	TherapeuticRoleCategoryCodeSequence	1	DICOM
+(3010,0065)	SQ	TherapeuticRoleTypeCodeSequence	1	DICOM
+(3010,0066)	US	ConceptualVolumeOptimizationPrecedence	1	DICOM
+(3010,0067)	SQ	ConceptualVolumeCategoryCodeSequence	1	DICOM
+(3010,0068)	CS	ConceptualVolumeBlockingConstraint	1	DICOM
+(3010,0069)	SQ	ConceptualVolumeTypeCodeSequence	1	DICOM
+(3010,006A)	SQ	ConceptualVolumeTypeModifierCodeSequence	1	DICOM
+(3010,006B)	SQ	RTPrescriptionSequence	1	DICOM
+(3010,006C)	SQ	DosimetricObjectiveSequence	1	DICOM
+(3010,006D)	SQ	DosimetricObjectiveTypeCodeSequence	1	DICOM
+(3010,006E)	UI	DosimetricObjectiveUID	1	DICOM
+(3010,006F)	UI	ReferencedDosimetricObjectiveUID	1	DICOM
+(3010,0070)	SQ	DosimetricObjectiveParameterSequence	1	DICOM
+(3010,0071)	SQ	ReferencedDosimetricObjectivesSequence	1	DICOM
+(3010,0073)	CS	AbsoluteDosimetricObjectiveFlag	1	DICOM
+(3010,0074)	FD	DosimetricObjectiveWeight	1	DICOM
+(3010,0075)	CS	DosimetricObjectivePurpose	1	DICOM
+(3010,0076)	SQ	PlanningInputInformationSequence	1	DICOM
+(3010,0077)	LO	TreatmentSite	1	DICOM
+(3010,0078)	SQ	TreatmentSiteCodeSequence	1	DICOM
+(3010,0079)	SQ	FractionPatternSequence	1	DICOM
+(3010,007A)	UT	TreatmentTechniqueNotes	1	DICOM
+(3010,007B)	UT	PrescriptionNotes	1	DICOM
+(3010,007C)	IS	NumberOfIntervalFractions	1	DICOM
+(3010,007D)	US	NumberOfFractions	1	DICOM
+(3010,007E)	US	IntendedDeliveryDuration	1	DICOM
+(3010,007F)	UT	FractionationNotes	1	DICOM
+(3010,0080)	SQ	RTTreatmentTechniqueCodeSequence	1	DICOM
+(3010,0081)	SQ	PrescriptionNotesSequence	1	DICOM
+(3010,0082)	SQ	FractionBasedRelationshipSequence	1	DICOM
+(3010,0083)	CS	FractionBasedRelationshipIntervalAnchor	1	DICOM
+(3010,0084)	FD	MinimumHoursBetweenFractions	1	DICOM
+(3010,0085)	TM	IntendedFractionStartTime	1-n	DICOM
+(3010,0086)	LT	IntendedStartDayOfWeek	1	DICOM
+(3010,0087)	SQ	WeekdayFractionPatternSequence	1	DICOM
+(3010,0088)	SQ	DeliveryTimeStructureCodeSequence	1	DICOM
 (4010,0001)	CS	LowEnergyDetectors	1	DICOM/DICOS
 (4010,0002)	CS	HighEnergyDetectors	1	DICOM/DICOS
 (4010,0004)	SQ	DetectorGeometrySequence	1	DICOM/DICOS
@@ -4389,55 +4561,6 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 188 (Multi-energy CT Images)
-#
-(0018,9361)	CS	MultienergyCTAcquisition	1	DICOM/Supplement_188
-(0018,9362)	SQ	MultienergyCTAcquisitionSequence	1	DICOM/Supplement_188
-(0018,9363)	SQ	MultienergyCTProcessingSequence	1	DICOM/Supplement_188
-(0018,9364)	SQ	MultienergyCTCharacteristicsSequence	1	DICOM/Supplement_188
-(0018,9365)	SQ	MultienergyCTXRaySourceSequence	1	DICOM/Supplement_188
-(0018,9366)	US	XRaySourceIndex	1	DICOM/Supplement_188
-(0018,9367)	UC	XRaySourceID	1	DICOM/Supplement_188
-(0018,9368)	CS	MultienergySourceTechnique	1	DICOM/Supplement_188
-(0018,9369)	DT	SourceStartDateTime	1	DICOM/Supplement_188
-(0018,936A)	DT	SourceEndDateTime	1	DICOM/Supplement_188
-(0018,936B)	US	SwitchingPhaseNumber	1	DICOM/Supplement_188
-(0018,936C)	DS	SwitchingPhaseNominalDuration	1	DICOM/Supplement_188
-(0018,936D)	DS	SwitchingPhaseTransitionDuration	1	DICOM/Supplement_188
-(0018,936E)	DS	EffectiveBinEnergy	1	DICOM/Supplement_188
-(0018,936F)	SQ	MultienergyCTXRayDetectorSequence	1	DICOM/Supplement_188
-(0018,9370)	US	XRayDetectorIndex	1	DICOM/Supplement_188
-(0018,9371)	UC	XRayDetectorID	1	DICOM/Supplement_188
-(0018,9372)	CS	MultienergyDetectorType	1	DICOM/Supplement_188
-(0018,9373)	ST	XRayDetectorLabel	1	DICOM/Supplement_188
-(0018,9374)	DS	NominalMaxEnergy	1	DICOM/Supplement_188
-(0018,9375)	DS	NominalMinEnergy	1	DICOM/Supplement_188
-(0018,9376)	US	ReferencedXRayDetectorIndex	1-n	DICOM/Supplement_188
-(0018,9377)	US	ReferencedXRaySourceIndex	1-n	DICOM/Supplement_188
-(0018,9378)	US	ReferencedPathIndex	1-n	DICOM/Supplement_188
-(0018,9379)	SQ	MultienergyCTPathSequence	1	DICOM/Supplement_188
-(0018,937A)	US	MultienergyCTPathIndex	1	DICOM/Supplement_188
-(0018,937B)	UT	MultienergyAcquisitionDescription	1	DICOM/Supplement_188
-(0018,937C)	FD	MonoenergeticEnergyEquivalent	1	DICOM/Supplement_188
-(0018,937D)	SQ	MaterialCodeSequence	1	DICOM/Supplement_188
-(0018,937E)	CS	DecompositionMethod	1	DICOM/Supplement_188
-(0018,937F)	UT	DecompositionDescription	1	DICOM/Supplement_188
-(0018,9380)	SQ	DecompositionAlgorithmIdentificationSequence	1	DICOM/Supplement_188
-(0018,9381)	SQ	DecompositionMaterialSequence	1	DICOM/Supplement_188
-(0018,9382)	SQ	MaterialAttenuationSequence	1	DICOM/Supplement_188
-(0018,9383)	DS	PhotonEnergy	1	DICOM/Supplement_188
-(0018,9384)	DS	XRayMassAttenuationCoefficient	1	DICOM/Supplement_188
-#
-#---------------------------------------------------------------------------
-#
-# Correction Items 1803, 1809
-#
-(0022,1036)	SQ	SourceOfCornealSizeDataCodeSequence	1	DICOM/CP_1803
-(0046,0047)	SQ	CornealSizeSequence	1	DICOM/CP_1803
-(0008,1041)	SQ	InstitutionalDepartmentTypeCodeSequence	1	DICOM/CP_1809
 #
 #---------------------------------------------------------------------------
 #
