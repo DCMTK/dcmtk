@@ -5,8 +5,8 @@
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2018d
- *  File created on 2018-09-27 16:45:13 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018e
+ *  File created on 2018-12-03 13:04:55 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 24
+// total number of codes: 26
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -58,11 +58,13 @@
 #define CODE_NCIt_ExtraluminalRoute                                        DSRBasicCodedEntry("C38213", "NCIt", "Extraluminal route")
 #define CODE_NCIt_IntraepithelialRoute                                     DSRBasicCodedEntry("C38244", "NCIt", "Intraepithelial route")
 #define CODE_NCIt_TransluminalRoute                                        DSRBasicCodedEntry("C38306", "NCIt", "Transluminal route")
+#define CODE_NCIt_AdverseEvent                                             DSRBasicCodedEntry("C41331", "NCIt", "Adverse Event")
 #define CODE_NCIt_TemperatureSensorDeviceComponent                         DSRBasicCodedEntry("C50304", "NCIt", "Temperature sensor device component")
 #define CODE_NCIt_Reviewer                                                 DSRBasicCodedEntry("C54634", "NCIt", "Reviewer")
 #define CODE_NCIt_AdLibitum                                                DSRBasicCodedEntry("C64636", "NCIt", "ad libitum")
 #define CODE_NCIt_ActivitySession                                          DSRBasicCodedEntry("C67447", "NCIt", "Activity Session")
 #define CODE_NCIt_UnitConversionFactor                                     DSRBasicCodedEntry("C70774", "NCIt", "Unit Conversion Factor")
+#define CODE_NCIt_MedicalProductExpirationDate                             DSRBasicCodedEntry("C70854", "NCIt", "Medical Product Expiration Date")
 #define CODE_NCIt_Erect                                                    DSRBasicCodedEntry("C86043", "NCIt", "erect")
 #define CODE_NCIt_BeddingChange                                            DSRBasicCodedEntry("C90365", "NCIt", "Bedding change")
 #define CODE_NCIt_BeddingMaterial                                          DSRBasicCodedEntry("C90366", "NCIt", "Bedding material")

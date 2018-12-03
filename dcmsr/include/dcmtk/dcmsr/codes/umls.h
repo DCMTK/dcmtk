@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2018d
- *  File created on 2018-09-27 16:45:12 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2018e
+ *  File created on 2018-12-03 13:04:54 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 43
+// total number of codes: 45
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -64,8 +64,10 @@
 #define CODE_UMLS_HeatLamp                                                 DSRBasicCodedEntry("C0181514", "UMLS", "Heat lamp")
 #define CODE_UMLS_UnknownPrimaryNeoplasiaSite                              DSRBasicCodedEntry("C0221297", "UMLS", "unknown primary neoplasia site")
 #define CODE_UMLS_RestrictedDiet                                           DSRBasicCodedEntry("C0425422", "UMLS", "Restricted diet")
+#define CODE_UMLS_Duration                                                 DSRBasicCodedEntry("C0449238", "UMLS", "Duration")
 #define CODE_UMLS_InfantOfMotherWithGestationalDiabetes                    DSRBasicCodedEntry("C0456029", "UMLS", "Infant of mother with gestational diabetes")
 #define CODE_UMLS_CoefficientOfVariance                                    DSRBasicCodedEntry("C0681921", "UMLS", "Coefficient of Variance")
+#define CODE_UMLS_ManufacturerName                                         DSRBasicCodedEntry("C0947322", "UMLS", "Manufacturer Name")
 #define CODE_UMLS_Intern                                                   DSRBasicCodedEntry("C1144859", "UMLS", "Intern")
 #define CODE_UMLS_ConsultingPhysician                                      DSRBasicCodedEntry("C1441532", "UMLS", "Consulting Physician")
 #define CODE_UMLS_Baseline                                                 DSRBasicCodedEntry("C1442488", "UMLS", "Baseline")
