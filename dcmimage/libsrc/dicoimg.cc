@@ -686,8 +686,7 @@ int DiColorImage::writeRawPPM(FILE *stream,
             {
                 fprintf(stream, "P6\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
                 const size_t count = OFstatic_cast(size_t, OutputData->getCount());
-                size_t written = fwrite(OutputData->getData(), OutputData->getItemSize(), count, stream);
-                if (written == count)
+                if (fwrite(OutputData->getData(), OutputData->getItemSize(), count, stream) == count)
                     return 1;
             }
         }
