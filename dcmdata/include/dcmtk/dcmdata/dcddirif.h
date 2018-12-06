@@ -1104,6 +1104,18 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                               const OFString &referencedFileID,
                                               const OFFilename &sourceFilename);
 
+    /** create or update radiotherapy record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param fileformat DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildRadiotherapyRecord(DcmDirectoryRecord *record,
+                                                DcmFileFormat *fileformat,
+                                                const OFString &referencedFileID,
+                                                const OFFilename &sourceFilename);
+
     /** create or update image record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
      *  @param fileformat DICOM dataset of the current file

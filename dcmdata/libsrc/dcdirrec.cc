@@ -103,7 +103,8 @@ static const char *DRTypeNames[] =
     "PLAN",
     "SURFACE SCAN",
     "TRACT",
-    "ASSESSMENT"
+    "ASSESSMENT",
+    "RADIOTHERAPY"
 };
 
 static const short DIM_OF_DRTypeNames = OFstatic_cast(short, (sizeof(DRTypeNames) / sizeof(DRTypeNames[0])));
@@ -436,6 +437,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_SurfaceScan:
                 case ERT_Tract:
                 case ERT_Assessment:
+                case ERT_Radiotherapy:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -532,6 +534,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_SurfaceScan:
         case ERT_Tract:
         case ERT_Assessment:
+        case ERT_Radiotherapy:
         case ERT_Private:
             switch (lowerRecord)
             {

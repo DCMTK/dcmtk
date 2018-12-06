@@ -126,7 +126,9 @@ typedef enum {
     /// tractography
     ERT_Tract = 46,
     /// assessment
-    ERT_Assessment = 47
+    ERT_Assessment = 47,
+    /// radiotherapy
+    ERT_Radiotherapy = 48
 } E_DirRecType;
 
 

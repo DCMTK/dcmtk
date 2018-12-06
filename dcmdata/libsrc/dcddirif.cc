@@ -777,6 +777,11 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_Tract;
     else if (compare(sopClass, UID_ContentAssessmentResultsStorage))
         result = ERT_Assessment;
+    else if (compare(sopClass, UID_RTPhysicianIntentStorage) ||
+             compare(sopClass, UID_RTSegmentAnnotationStorage))
+    {
+        result = ERT_Radiotherapy;
+    }
     return result;
 }
 
@@ -965,6 +970,7 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_SurfaceScan:
             case ERT_Tract:
             case ERT_Assessment:
+            case ERT_Radiotherapy:
                 /* try to insert based on InstanceNumber */
                 result = insertWithISCriterion(parent, child, DCM_InstanceNumber);
                 break;
@@ -1555,7 +1561,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage) ||
                                 compare(mediaSOPClassUID, UID_RTBrachyApplicationSetupDeliveryInstructionStorage) ||
                                 compare(mediaSOPClassUID, UID_RTIonPlanStorage) ||
-                                compare(mediaSOPClassUID, UID_RTIonBeamsTreatmentRecordStorage);
+                                compare(mediaSOPClassUID, UID_RTIonBeamsTreatmentRecordStorage) ||
+                                compare(mediaSOPClassUID, UID_RTPhysicianIntentStorage) ||
+                                compare(mediaSOPClassUID, UID_RTSegmentAnnotationStorage);
                     }
                     /* is it one of the structured reporting SOP Classes? */
                     if (!found)
@@ -1604,8 +1612,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_AdvancedBlendingPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_VolumeRenderingVolumetricPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_MultipleVolumeRenderingVolumetricPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_BasicStructuredDisplayStorage);
+                                compare(mediaSOPClassUID, UID_MultipleVolumeRenderingVolumetricPresentationStateStorage);
                     }
                     /* is it one of the encapsulated document SOP Classes? */
                     if (!found)
@@ -1660,6 +1667,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_MRSpectroscopyStorage) ||
                                 compare(mediaSOPClassUID, UID_RealWorldValueMappingStorage) ||
                                 compare(mediaSOPClassUID, UID_HangingProtocolStorage) ||
+                                compare(mediaSOPClassUID, UID_BasicStructuredDisplayStorage) ||
                                 compare(mediaSOPClassUID, UID_StereometricRelationshipStorage) ||
                                 compare(mediaSOPClassUID, UID_ColorPaletteStorage) ||
                                 compare(mediaSOPClassUID, UID_TractographyResultsStorage) ||
@@ -2700,6 +2708,10 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     if (!checkExistsWithValue(dataset, DCM_InstanceCreationDate, filename))
                         result = EC_MissingAttribute;
                     break;
+                case ERT_Radiotherapy:
+                    if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                        result = EC_MissingAttribute;
+                    break;
                 case ERT_Image:
                 default:
                     {
@@ -2953,6 +2965,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_SurfaceScan:
             case ERT_Tract:
             case ERT_Assessment:
+            case ERT_Radiotherapy:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -4125,7 +4138,7 @@ DcmDirectoryRecord *DicomDirInterface::buildTractRecord(DcmDirectoryRecord *reco
         if (record->error().good())
         {
             DcmDataset *dataset = fileformat->getDataset();
-            /* copy attribute values from dataset to surface record */
+            /* copy attribute values from dataset to tract record */
             copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
@@ -4159,7 +4172,7 @@ DcmDirectoryRecord *DicomDirInterface::buildAssessmentRecord(DcmDirectoryRecord 
         if (record->error().good())
         {
             DcmDataset *dataset = fileformat->getDataset();
-            /* copy attribute values from dataset to surface record */
+            /* copy attribute values from dataset to assessment record */
             copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
             copyElementType1(dataset, DCM_InstanceCreationDate, record, sourceFilename);
             copyElementType2(dataset, DCM_InstanceCreationTime, record, sourceFilename);
@@ -4171,6 +4184,39 @@ DcmDirectoryRecord *DicomDirInterface::buildAssessmentRecord(DcmDirectoryRecord 
         }
     } else
         printRecordErrorMessage(EC_MemoryExhausted, ERT_Assessment, "create");
+    return record;
+}
+
+
+// create or update radiotherapy record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRadiotherapyRecord(DcmDirectoryRecord *record,
+                                                               DcmFileFormat *fileformat,
+                                                               const OFString &referencedFileID,
+                                                               const OFFilename &sourceFilename)
+{
+    /* create new surface record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Radiotherapy, referencedFileID.c_str(), sourceFilename, fileformat);
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            DcmDataset *dataset = fileformat->getDataset();
+            /* copy attribute values from dataset to radiotherapy record */
+            copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
+            copyElementType1C(dataset, DCM_UserContentLabel, record, sourceFilename);
+            copyElementType1C(dataset, DCM_UserContentLongLabel, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Radiotherapy, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Radiotherapy, "create");
     return record;
 }
 
@@ -4607,6 +4653,9 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                     break;
                 case ERT_Assessment:
                     record = buildAssessmentRecord(record, fileformat, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Radiotherapy:
+                    record = buildRadiotherapyRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 default:
                     /* it can only be an image */
