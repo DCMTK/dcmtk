@@ -712,9 +712,12 @@ ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.
 AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                         1.2.840.10008.5.1.4.1.1.88.72
 PatientRadiationDoseSRStorage                        1.2.840.10008.5.1.4.1.1.88.73
+PlannedImagingAgentAdministrationSRStorage           1.2.840.10008.5.1.4.1.1.88.74
+PerformedImagingAgentAdministrationSRStorage         1.2.840.10008.5.1.4.1.1.88.75
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
+EncapsulatedSTLStorage                               1.2.840.10008.5.1.4.1.1.104.3
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
 LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
@@ -730,6 +733,8 @@ RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
+RTPhysicianIntentStorage                             1.2.840.10008.5.1.4.1.1.481.10
+RTSegmentAnnotationStorage                           1.2.840.10008.5.1.4.1.1.481.11
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
