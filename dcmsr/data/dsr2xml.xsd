@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2017, OFFIS e.V.
+      Copyright (C) 2003-2018, OFFIS e.V.
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -725,6 +725,8 @@
       <xsd:enumeration value="Acquisition Context SR"/>
       <xsd:enumeration value="Simplified Adult Echo SR"/>
       <xsd:enumeration value="Patient Radiation Dose SR"/>
+      <xsd:enumeration value="Performed Imaging Agent Administration SR"/>
+      <xsd:enumeration value="Planned Imaging Agent Administration SR"/>
     </xsd:restriction>
   </xsd:simpleType>
 

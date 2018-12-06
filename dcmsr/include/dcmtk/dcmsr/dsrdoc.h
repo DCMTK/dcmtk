@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1318,9 +1318,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     // Software Version(s): (LO, 1-n, 1)
     // - see 'General Equipment Module'
 
-    // --- Synchronization Module (C/U - for some IODs) ---
+    // --- Synchronization Module (M/C/U - for some IODs) ---
 
-    // tbd: conditional/optional module not yet supported
+    // tbd: module not yet supported
 
     // --- SR Document Series / Key Object Document Series Module (M) ---
 

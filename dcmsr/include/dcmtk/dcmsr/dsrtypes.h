@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -536,8 +536,12 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_SimplifiedAdultEchoSR,
         /// DICOM IOD: Patient Radiation Dose SR
         DT_PatientRadiationDoseSR,
+        /// DICOM IOD: Performed Imaging Agent Administration SR
+        DT_PerformedImagingAgentAdministrationSR,
+        /// DICOM IOD: Planned Imaging Agent Administration SR
+        DT_PlannedImagingAgentAdministrationSR,
         /// internal type used to mark the last entry
-        DT_last = DT_PatientRadiationDoseSR
+        DT_last = DT_PlannedImagingAgentAdministrationSR
     };
 
     /** SR relationship types

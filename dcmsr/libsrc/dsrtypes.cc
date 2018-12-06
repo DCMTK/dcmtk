@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2018, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -316,28 +316,31 @@ makeOFConditionConst(SR_EC_CannotProcessIncludedTemplates,      OFM_dcmsr, 34, O
 /* extended IOD modules (only used internally) */
 const size_t EM_EnhancedEquipment = 1 << 0;
 const size_t EM_Timezone          = 1 << 1;
+const size_t EM_Synchronization   = 1 << 2;
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
-    {DSRTypes::DT_invalid,                             "",                                             0,                                  "",   "invalid document type"},
-    {DSRTypes::DT_BasicTextSR,                         UID_BasicTextSRStorage,                         0,                                  "SR", "Basic Text SR"},
-    {DSRTypes::DT_EnhancedSR,                          UID_EnhancedSRStorage,                          0,                                  "SR", "Enhanced SR"},
-    {DSRTypes::DT_ComprehensiveSR,                     UID_ComprehensiveSRStorage,                     0,                                  "SR", "Comprehensive SR"},
-    {DSRTypes::DT_KeyObjectSelectionDocument,          UID_KeyObjectSelectionDocumentStorage,          0,                                  "KO", "Key Object Selection Document"},
-    {DSRTypes::DT_MammographyCadSR,                    UID_MammographyCADSRStorage,                    0,                                  "SR", "Mammography CAD SR"},
-    {DSRTypes::DT_ChestCadSR,                          UID_ChestCADSRStorage,                          0,                                  "SR", "Chest CAD SR"},
-    {DSRTypes::DT_ColonCadSR,                          UID_ColonCADSRStorage,                          EM_EnhancedEquipment,               "SR", "Colon CAD SR"},
-    {DSRTypes::DT_ProcedureLog,                        UID_ProcedureLogStorage,                        0,                                  "SR", "Procedure Log"},
-    {DSRTypes::DT_XRayRadiationDoseSR,                 UID_XRayRadiationDoseSRStorage,                 EM_EnhancedEquipment,               "SR", "X-Ray Radiation Dose SR"},
-    {DSRTypes::DT_SpectaclePrescriptionReport,         UID_SpectaclePrescriptionReportStorage,         EM_EnhancedEquipment,               "SR", "Spectacle Prescription Report"},
-    {DSRTypes::DT_MacularGridThicknessAndVolumeReport, UID_MacularGridThicknessAndVolumeReportStorage, EM_EnhancedEquipment,               "SR", "Macular Grid Thickness and Volume Report"},
-    {DSRTypes::DT_ImplantationPlanSRDocument,          UID_ImplantationPlanSRDocumentStorage,          EM_EnhancedEquipment,               "SR", "Implantation Plan SR Document"},
-    {DSRTypes::DT_Comprehensive3DSR,                   UID_Comprehensive3DSRStorage,                   0,                                  "SR", "Comprehensive 3D SR"},
-    {DSRTypes::DT_RadiopharmaceuticalRadiationDoseSR,  UID_RadiopharmaceuticalRadiationDoseSRStorage,  EM_EnhancedEquipment,               "SR", "Radiopharmaceutical Radiation Dose SR"},
-    {DSRTypes::DT_ExtensibleSR,                        UID_ExtensibleSRStorage,                        EM_EnhancedEquipment,               "SR", "Extensible SR"},
-    {DSRTypes::DT_AcquisitionContextSR,                UID_AcquisitionContextSRStorage,                EM_EnhancedEquipment,               "SR", "Acquisition Context SR"},
-    {DSRTypes::DT_SimplifiedAdultEchoSR,               UID_SimplifiedAdultEchoSRStorage,               EM_EnhancedEquipment | EM_Timezone, "SR", "Simplified Adult Echo SR"},
-    {DSRTypes::DT_PatientRadiationDoseSR,              UID_PatientRadiationDoseSRStorage,              EM_EnhancedEquipment,               "SR", "Patient Radiation Dose SR"}
+    {DSRTypes::DT_invalid,                               "",                                               0,                                         "",   "invalid document type"},
+    {DSRTypes::DT_BasicTextSR,                           UID_BasicTextSRStorage,                           0,                                         "SR", "Basic Text SR"},
+    {DSRTypes::DT_EnhancedSR,                            UID_EnhancedSRStorage,                            0,                                         "SR", "Enhanced SR"},
+    {DSRTypes::DT_ComprehensiveSR,                       UID_ComprehensiveSRStorage,                       0,                                         "SR", "Comprehensive SR"},
+    {DSRTypes::DT_KeyObjectSelectionDocument,            UID_KeyObjectSelectionDocumentStorage,            0,                                         "KO", "Key Object Selection Document"},
+    {DSRTypes::DT_MammographyCadSR,                      UID_MammographyCADSRStorage,                      0,                                         "SR", "Mammography CAD SR"},
+    {DSRTypes::DT_ChestCadSR,                            UID_ChestCADSRStorage,                            0,                                         "SR", "Chest CAD SR"},
+    {DSRTypes::DT_ColonCadSR,                            UID_ColonCADSRStorage,                            EM_EnhancedEquipment,                      "SR", "Colon CAD SR"},
+    {DSRTypes::DT_ProcedureLog,                          UID_ProcedureLogStorage,                          0,                                         "SR", "Procedure Log"},
+    {DSRTypes::DT_XRayRadiationDoseSR,                   UID_XRayRadiationDoseSRStorage,                   EM_EnhancedEquipment,                      "SR", "X-Ray Radiation Dose SR"},
+    {DSRTypes::DT_SpectaclePrescriptionReport,           UID_SpectaclePrescriptionReportStorage,           EM_EnhancedEquipment,                      "SR", "Spectacle Prescription Report"},
+    {DSRTypes::DT_MacularGridThicknessAndVolumeReport,   UID_MacularGridThicknessAndVolumeReportStorage,   EM_EnhancedEquipment,                      "SR", "Macular Grid Thickness and Volume Report"},
+    {DSRTypes::DT_ImplantationPlanSRDocument,            UID_ImplantationPlanSRDocumentStorage,            EM_EnhancedEquipment,                      "SR", "Implantation Plan SR Document"},
+    {DSRTypes::DT_Comprehensive3DSR,                     UID_Comprehensive3DSRStorage,                     0,                                         "SR", "Comprehensive 3D SR"},
+    {DSRTypes::DT_RadiopharmaceuticalRadiationDoseSR,    UID_RadiopharmaceuticalRadiationDoseSRStorage,    EM_EnhancedEquipment,                      "SR", "Radiopharmaceutical Radiation Dose SR"},
+    {DSRTypes::DT_ExtensibleSR,                          UID_ExtensibleSRStorage,                          EM_EnhancedEquipment,                      "SR", "Extensible SR"},
+    {DSRTypes::DT_AcquisitionContextSR,                  UID_AcquisitionContextSRStorage,                  EM_EnhancedEquipment,                      "SR", "Acquisition Context SR"},
+    {DSRTypes::DT_SimplifiedAdultEchoSR,                 UID_SimplifiedAdultEchoSRStorage,                 EM_EnhancedEquipment | EM_Timezone,        "SR", "Simplified Adult Echo SR"},
+    {DSRTypes::DT_PatientRadiationDoseSR,                UID_PatientRadiationDoseSRStorage,                EM_EnhancedEquipment,                      "SR", "Patient Radiation Dose SR"},
+    {DSRTypes::DT_PerformedImagingAgentAdministrationSR, UID_PerformedImagingAgentAdministrationSRStorage, EM_EnhancedEquipment | EM_Synchronization, "SR", "Performed Imaging Agent Administration SR"},
+    {DSRTypes::DT_PlannedImagingAgentAdministrationSR,   UID_PlannedImagingAgentAdministrationSRStorage,   EM_EnhancedEquipment,                      "SR", "Planned Imaging Agent Administration SR"}
 };
 
 
@@ -908,7 +911,9 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR);
+    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) &&
+        (documentType != DT_PerformedImagingAgentAdministrationSR) &&
+        (documentType != DT_PlannedImagingAgentAdministrationSR);
 }
 
 
@@ -1497,6 +1502,12 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             break;
         case DT_PatientRadiationDoseSR:
             checker = new DSRPatientRadiationDoseSRConstraintChecker();
+            break;
+        case DT_PerformedImagingAgentAdministrationSR:
+            /* not yet supported */
+            break;
+        case DT_PlannedImagingAgentAdministrationSR:
+            /* not yet supported */
             break;
         case DT_invalid:
             /* nothing to do */
