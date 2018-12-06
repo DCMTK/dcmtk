@@ -668,7 +668,9 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_ImplantationPlanSRDocumentStorage) ||
              compare(sopClass, UID_AcquisitionContextSRStorage) ||
              compare(sopClass, UID_SimplifiedAdultEchoSRStorage) ||
-             compare(sopClass, UID_PatientRadiationDoseSRStorage))
+             compare(sopClass, UID_PatientRadiationDoseSRStorage) ||
+             compare(sopClass, UID_PerformedImagingAgentAdministrationSRStorage) ||
+             compare(sopClass, UID_PlannedImagingAgentAdministrationSRStorage))
     {
         result = ERT_SRDocument;
     }
@@ -1584,7 +1586,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_ImplantationPlanSRDocumentStorage) ||
                                 compare(mediaSOPClassUID, UID_AcquisitionContextSRStorage) ||
                                 compare(mediaSOPClassUID, UID_SimplifiedAdultEchoSRStorage) ||
-                                compare(mediaSOPClassUID, UID_PatientRadiationDoseSRStorage);
+                                compare(mediaSOPClassUID, UID_PatientRadiationDoseSRStorage) ||
+                                compare(mediaSOPClassUID, UID_PerformedImagingAgentAdministrationSRStorage) ||
+                                compare(mediaSOPClassUID, UID_PlannedImagingAgentAdministrationSRStorage);
                      }
                     /* is it one of the waveform SOP Classes? */
                     if (!found)
