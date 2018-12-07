@@ -664,22 +664,48 @@ respective "find_package()" module to find out which variables need to be
 modified, e.g. "FindZLIB" to control which version of the zlib will be used:
 https://cmake.org/cmake/help/latest/module/FindZLIB.html .
 
-The typical way to build DCMTK on Unix like systems with CMake is as follows
-(if not using the GUI, in that case look at the description for Windows above):
+The typical way to build DCMTK on Unix like systems with CMake is as follows:
 
-    mkdir dcmtk-gcc-`g++ -dumpversion`
-    cd dcmtk-gcc-<TAB>
+    mkdir dcmtk-3.6.4-build
+    cd dcmtk-3.6.4-build
     cmake ../dcmtk-3.6.4
     make -j8
     make DESTDIR=../dcmtk-3.6.4-install install
 
 The above commands assume that the DCMTK source code was extracted to the
-current working directory into a folder named dcmtk-3.6.4 and that the GNU gcc
-compiler will be used (note that clang++ -dumpversion will give wrong results).
-DCMTK will be configured using CMake with the default options, detecting and
-including all available support libraries and then compiled using eight CPU
-cores (adjust as needed).  The result will be installed to the directory
+current working directory into a folder named dcmtk-3.6.4. DCMTK will be
+configured using CMake with the default options, detecting and including all
+available support libraries and then compiled using eight CPU cores
+('make -j8', adjust as needed).  The result will be installed to the directory
 "dcmtk-3.6.4-install" next to the source code directory.
+
+If you want to modify your build-configuration, like enabling or disabling
+some features of DCMTK (e.g. PNG support), or if you need to modify the
+pre-defined build-variables, you can use the curses based cmake configuration
+tool 'ccmake'. First create the initial build setup (system check) and then
+call ccmake:
+
+    mkdir dcmtk-3.6.4-build
+    cd dcmtk-3.6.4-build
+    cmake ../dcmtk-3.6.4
+    ccmake ../dcmtk-3.6.4
+
+Now you can modify the configuration values. Please see the help on the
+bottom of the screen. When finished, press 'c' to generate a new build
+configuration, then quit ccmake. Now you can continue to build by calling
+'make' etc.
+
+If you already know the variable names, types and values to set, you can skip
+the 'ccmake' step above and can call 'cmake' directly with the values set.
+Example for a build with TCP wrapper disabled:
+
+    mkdir dcmtk-3.6.4-build
+    cd dcmtk-3.6.4-build
+    cmake -DDCMTK_WITH_WRAP:BOOL=FALSE ../dcmtk-3.6.4
+    ...
+
+The format is NAME:TYPE=VALUE. Use 'ccmake' to find out the variable names
+and their types (BOOL with TRUE/FALSE or STRING).
 
 
 HTML DOCUMENTATION AND MAN PAGES
