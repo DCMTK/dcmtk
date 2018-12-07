@@ -7,6 +7,7 @@
 #  OPENJPEG_FOUND        - True if OpenJPEG found
 
 # Use pkg_check_modules to determine the paths for OpenJPEG
+find_package(PkgConfig REQUIRED)
 pkg_check_modules(OPENJPEG_PKGCONF libopenjp2)
 
 # Look for the header file
