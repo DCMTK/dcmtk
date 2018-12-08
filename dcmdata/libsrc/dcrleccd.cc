@@ -118,13 +118,14 @@ OFCondition DcmRLECodecDecoder::decode(
     {
       DcmPixelItem *pixItem = NULL;
       Uint8 * rleData = NULL;
-      const size_t bytesPerStripe = imageColumns * imageRows;
+      const size_t bytesPerStripe = static_cast<size_t>(imageColumns) * static_cast<size_t>(imageRows);
 
       DcmRLEDecoder rledecoder(bytesPerStripe);
       if (rledecoder.fail()) result = EC_MemoryExhausted;  // RLE decoder failed to initialize
       else
       {
-        size_t frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
+        const size_t frameSize = static_cast<size_t>(imageBytesAllocated) * static_cast<size_t>(imageRows) 
+								* static_cast<size_t>(imageColumns) * static_cast<size_t>(imageSamplesPerPixel);
         size_t totalSize = frameSize * imageFrames;
         if (totalSize & 1) totalSize++; // align on 16-bit word boundary
         Uint16 *imageData16 = NULL;
@@ -465,11 +466,12 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
 
     DcmPixelItem *pixItem = NULL;
     Uint8 * rleData = NULL;
-    const size_t bytesPerStripe = imageColumns * imageRows;
+    const size_t bytesPerStripe = static_cast<Uint32>(imageColumns) * static_cast<Uint32>(imageRows);
     Uint32 numberOfStripes = 0;
     Uint32 fragmentLength = 0;
     Uint32 i;
-    Uint32 frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
+    Uint32 frameSize = static_cast<Uint32>(imageBytesAllocated`) * static_cast<Uint32>(imageRows) 
+					   * static_cast<Uint32>(imageColumns) * static_cast<Uint32>(imageSamplesPerPixel);
 
     if (frameSize > bufSize) return EC_IllegalCall;
 
