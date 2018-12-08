@@ -132,7 +132,6 @@ OFCondition DcmRLECodecDecoder::decode(
         Uint32 currentItem = 1; // ignore offset table
         Uint32 numberOfStripes = 0;
         Uint32 fragmentLength = 0;
-        Uint32 i;
 
         result = uncompressedPixelData.createUint16Array(OFstatic_cast(Uint32, totalSize/sizeof(Uint16)), imageData16);
         if (result.good())
@@ -201,13 +200,13 @@ OFCondition DcmRLECodecDecoder::decode(
               Uint32 pixel = 0;
 
               // for each stripe in stripe set
-              for (i=0; (i<numberOfStripes) && result.good(); ++i)
+              for (Uint32 stripeIndex = 0; (stripeIndex < numberOfStripes) && result.good(); ++stripeIndex)
               {
                 // reset RLE codec
                 rledecoder.clear();
 
                 // adjust start point for RLE stripe, ignoring trailing garbage from the last run
-                byteOffset = rleHeader[i+1];
+                byteOffset = rleHeader[stripeIndex + 1];
                 if (byteOffset < fragmentOffset) result = EC_CannotChangeRepresentation;
                 else
                 {
@@ -231,7 +230,7 @@ OFCondition DcmRLECodecDecoder::decode(
 
                 // byteOffset now points to the first byte of the new RLE stripe
                 // check if the current stripe is the last one for this frame
-                if (i+1 == numberOfStripes) lastStripe = OFTrue; else lastStripe = OFFalse;
+                if (stripeIndex + 1 == numberOfStripes) lastStripe = OFTrue; else lastStripe = OFFalse;
 
                 if (lastStripe)
                 {
@@ -275,11 +274,11 @@ OFCondition DcmRLECodecDecoder::decode(
                 {
                   // not the last stripe. We can use the offset table to determine
                   // the number of bytes to feed to the RLE codec.
-                  inputBytes = rleHeader[i+2];
-                  if (inputBytes < rleHeader[i+1]) result = EC_CannotChangeRepresentation;
+                  inputBytes = rleHeader[stripeIndex+2];
+                  if (inputBytes < rleHeader[stripeIndex + 1]) result = EC_CannotChangeRepresentation;
                   else
                   {
-                    inputBytes -= rleHeader[i+1]; // number of bytes to feed to codec
+                    inputBytes -= rleHeader[stripeIndex + 1]; // number of bytes to feed to codec
                     while ((inputBytes > (fragmentLength - byteOffset)) && result.good())
                     {
                       // feed complete remaining content of fragment to RLE codec and
@@ -315,7 +314,7 @@ OFCondition DcmRLECodecDecoder::decode(
 
                 // copy the decoded stuff over to the buffer here...
                 // make sure the RLE decoder has produced the right amount of data
-                lastStripeOfColor = lastStripe || ((imagePlanarConfiguration == 1) && ((i+1) % imageBytesAllocated == 0));
+                lastStripeOfColor = lastStripe || ((imagePlanarConfiguration == 1) && ((stripeIndex + 1) % imageBytesAllocated == 0));
 
                 if (lastStripeOfColor && (rledecoder.size() < bytesPerStripe))
                 {
@@ -333,8 +332,8 @@ OFCondition DcmRLECodecDecoder::decode(
                 if (result.good())
                 {
                   // which sample and byte are we currently compressing?
-                  sample = i / imageBytesAllocated;
-                  byte = i % imageBytesAllocated;
+                  sample = stripeIndex / imageBytesAllocated;
+                  byte = stripeIndex % imageBytesAllocated;
 
                   // raw buffer containing bytesPerStripe bytes of uncompressed data
                   outputBuffer = OFstatic_cast(Uint8 *, rledecoder.getOutputBuffer());
@@ -468,7 +467,6 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     const size_t bytesPerStripe = imageColumns * imageRows;
     Uint32 numberOfStripes = 0;
     Uint32 fragmentLength = 0;
-    Uint32 i;
     Uint32 frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
 
     if (frameSize > bufSize) return EC_IllegalCall;
@@ -538,17 +536,17 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     size_t bytesToDecode;
 
     // for each stripe in stripe set
-    for (i = 0; i < numberOfStripes; ++i)
+    for (Uint32 stripeIndex = 0; stripeIndex < numberOfStripes; ++stripeIndex)
     {
         // reset RLE codec
         rledecoder.clear();
 
         // adjust start point for RLE stripe
-        byteOffset = rleHeader[i+1];
+        byteOffset = rleHeader[stripeIndex + 1];
 
         // byteOffset now points to the first byte of the new RLE stripe
         // check if the current stripe is the last one for this frame
-        if (i+1 == numberOfStripes) lastStripe = OFTrue; else lastStripe = OFFalse;
+        if (stripeIndex + 1 == numberOfStripes) lastStripe = OFTrue; else lastStripe = OFFalse;
 
         if (lastStripe)
         {
@@ -563,10 +561,10 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
         {
             // not the last stripe. We can use the offset table to determine
             // the number of bytes to feed to the RLE codec.
-            inputBytes = rleHeader[i+2];
-            if (inputBytes < rleHeader[i+1]) return EC_CannotChangeRepresentation;
+            inputBytes = rleHeader[stripeIndex+2];
+            if (inputBytes < rleHeader[stripeIndex + 1]) return EC_CannotChangeRepresentation;
 
-            inputBytes -= rleHeader[i+1]; // number of bytes to feed to codec
+            inputBytes -= rleHeader[stripeIndex + 1]; // number of bytes to feed to codec
 
             bytesToDecode = OFstatic_cast(size_t, inputBytes);
         }
@@ -583,7 +581,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
 
         // copy the decoded stuff over to the buffer here...
         // make sure the RLE decoder has produced the right amount of data
-        lastStripeOfColor = lastStripe || ((imagePlanarConfiguration == 1) && ((i+1) % imageBytesAllocated == 0));
+        lastStripeOfColor = lastStripe || ((imagePlanarConfiguration == 1) && ((stripeIndex + 1) % imageBytesAllocated == 0));
         if (lastStripeOfColor && (rledecoder.size() < bytesPerStripe))
         {
             // stripe ended prematurely? report a warning and continue
@@ -598,8 +596,8 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
 
         // distribute decompressed bytes into output image array
         // which sample and byte are we currently decompressing?
-        sample = i / imageBytesAllocated;
-        byte = i % imageBytesAllocated;
+        sample = stripeIndex / imageBytesAllocated;
+        byte = stripeIndex % imageBytesAllocated;
 
         // raw buffer containing bytesPerStripe bytes of uncompressed data
         outputBuffer = OFstatic_cast(Uint8 *, rledecoder.getOutputBuffer());
