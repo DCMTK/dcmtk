@@ -312,9 +312,6 @@
 /* Define to 1 if you have the `socket' library (-lsocket). */
 #cmakedefine HAVE_LIBSOCKET @HAVE_LIBSOCKET@
 
-/* Define if libtiff supports LZW compression */
-#define HAVE_LIBTIFF_LZW_COMPRESSION 1
-
 /* Define to 1 if you have the <limits.h> header file. */
 #cmakedefine HAVE_LIMITS_H @HAVE_LIMITS_H@
 

@@ -1404,60 +1404,6 @@ if test "$ac_cv_cxx_static_assert" = yes; then
 fi
 ])
 
-dnl AC_LIBTIFF_LZW_COMPRESSION checks if libtiff supports LZW compression.
-
-AC_DEFUN([AC_LIBTIFF_LZW_COMPRESSION],
-[AH_TEMPLATE([HAVE_LIBTIFF_LZW_COMPRESSION], [Define if libtiff supports LZW compression])
-AC_CACHE_CHECK(whether libtiff supports LZW compression,
-ac_cv_libtiff_lzw_compression,
-[AC_TRY_RUN(
-changequote({{, }})dnl
-{{
-extern "C" {
-#include <tiffio.h>
-}
-
-int main()
-{
-  const char *data[256];
-  for (int j=0; j<256; ++j) data[j]= 0;
-
-  int OK = 1;
-  TIFF *tif = TIFFOpen("lzwtest.tif", "w");
-  if (tif)
-  {
-    TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, 16);
-    TIFFSetField(tif, TIFFTAG_IMAGELENGTH, 16);
-    TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, 8);
-    TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
-    TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
-    TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    TIFFSetField(tif, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
-    TIFFSetField(tif, TIFFTAG_DOCUMENTNAME, "unnamed");
-    TIFFSetField(tif, TIFFTAG_IMAGEDESCRIPTION, "test");
-    TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 1);
-    TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, 512);
-    TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-
-    for (unsigned long i=0; (i < 16) && OK; i++)
-    {
-      if (TIFFWriteScanline(tif, data + (i << 4), i, 0) < 0) OK = 0;
-    }
-    TIFFFlushData(tif);
-    TIFFClose(tif);
-  }
-  if (OK) return 0; else return 10;
-}
-
-}}
-changequote([, ])dnl
- , ac_cv_libtiff_lzw_compression=yes, ac_cv_libtiff_lzw_compression=no, ac_cv_libtiff_lzw_compression=no)
-])
-if test "$ac_cv_libtiff_lzw_compression" = yes; then
-  AC_DEFINE(HAVE_LIBTIFF_LZW_COMPRESSION,, [Define if libtiff supports LZW compression])
-fi
-])
-
 
 dnl AC_CXX_LIBC_H_EXTERN_C checks if <libc.h> and <math.h> cause a problem if
 dnl   libc.h is included extern "C" and math.h is not. This is the case on QNX

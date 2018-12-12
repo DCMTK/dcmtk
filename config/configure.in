@@ -1086,10 +1086,6 @@ AS_HELP_STRING([--without-libtiff], [don't include libtiff support])],
     AC_MSG_RESULT(yes)
     AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support.])
     TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS"
-    SAVELIBS="$LIBS"
-    LIBS="$LIBS -ltiff $JPEGLIBS $ZLIBLIBS"
-    AC_LIBTIFF_LZW_COMPRESSION
-    LIBS="$SAVELIBS"
     ;;
   *)
     AC_MSG_RESULT(no)
@@ -1101,7 +1097,6 @@ AS_HELP_STRING([--without-libtiff], [don't include libtiff support])],
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support.])
       TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS"
-      AC_LIBTIFF_LZW_COMPRESSION
     ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )

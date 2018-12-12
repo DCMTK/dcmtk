@@ -164,11 +164,7 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBTIFF
     // TIFF parameters
-#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
     DiTIFFCompression   opt_tiffCompression = E_tiffLZWCompression;
-#else
-    DiTIFFCompression   opt_tiffCompression = E_tiffPackBitsCompression;
-#endif
     DiTIFFLZWPredictor  opt_lzwPredictor = E_tiffLZWPredictorDefault;
     OFCmdUnsignedInt    opt_rowsPerStrip = 0;
 #endif
@@ -347,17 +343,12 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBTIFF
      cmd.addSubGroup("TIFF format:");
-#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
       cmd.addOption("--compr-lzw",          "+Tl",     "LZW compression (default)");
       cmd.addOption("--compr-rle",          "+Tr",     "RLE compression");
       cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
       cmd.addOption("--predictor-default",  "+Pd",     "no LZW predictor (default)");
       cmd.addOption("--predictor-none",     "+Pn",     "LZW predictor 1 (no prediction)");
       cmd.addOption("--predictor-horz",     "+Ph",     "LZW predictor 2 (horizontal differencing)");
-#else
-      cmd.addOption("--compr-rle",          "+Tr",     "RLE compression (default)");
-      cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
-#endif
       cmd.addOption("--rows-per-strip",     "+Rs",  1, "[r]ows: integer (default: 0)",
                                                        "rows per strip, default 8K per strip");
 #endif
@@ -441,11 +432,6 @@ int main(int argc, char *argv[])
 #endif
 #ifdef WITH_LIBTIFF
                 COUT << "- " << DiTIFFPlugin::getLibraryVersionString() << OFendl;
-#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
-                COUT << "  with LZW compression support" << OFendl;
-#else
-                COUT << "  without LZW compression support" << OFendl;
-#endif
 #endif
 #ifdef WITH_LIBPNG
                 COUT << "- " << DiPNGPlugin::getLibraryVersionString() << OFendl;
@@ -783,20 +769,16 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBTIFF
         cmd.beginOptionBlock();
-#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
         if (cmd.findOption("--compr-lzw")) opt_tiffCompression = E_tiffLZWCompression;
-#endif
         if (cmd.findOption("--compr-rle")) opt_tiffCompression = E_tiffPackBitsCompression;
         if (cmd.findOption("--compr-none")) opt_tiffCompression = E_tiffNoCompression;
         cmd.endOptionBlock();
 
-#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
         cmd.beginOptionBlock();
         if (cmd.findOption("--predictor-default")) opt_lzwPredictor = E_tiffLZWPredictorDefault;
         if (cmd.findOption("--predictor-none")) opt_lzwPredictor = E_tiffLZWPredictorNoPrediction;
         if (cmd.findOption("--predictor-horz")) opt_lzwPredictor = E_tiffLZWPredictorHDifferencing;
         cmd.endOptionBlock();
-#endif
 
         if (cmd.findOption("--rows-per-strip"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_rowsPerStrip, 0, 65535));
