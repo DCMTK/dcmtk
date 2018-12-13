@@ -267,6 +267,21 @@ public:
    */
   DcmTransportLayerStatus activateCipherSuites();
 
+  /** sets the list of ciphersuites to negotiate, in OpenSSL syntax.
+   *  @note This method is deprecated because it breaks the encapsulation of the
+   *    underlying TLS library (i.e. the parameter string is OpenSSL specific)
+   *    and because this method can be used to violate the constraints of the
+   *    TLS profiles, which other otherwise enforced by this class.
+   *    The newer methods setTLSProfile() and addCipherSuite(), introduced with
+   *    DCMTK 3.6.4, offer a cleaner interface that should be preferred.
+   *  @param suites string containing the list of ciphersuites.
+   *    The list must be in OpenSSL syntax (use findOpenSSLCipherSuiteName to convert
+   *    from RFC 2246 ciphersuite names to OpenSSL names), with ciphersuites separated
+   *    by ':' characters.
+   *  @return TCS_ok if successful, an error code otherwise
+   */
+  DcmTransportLayerStatus setCipherSuites(const char *suites);
+
   /** checks if enough entropy data is available to write back a modified
    *  random seed file.
    *  @return OFTrue if random seed file can be written, OFFalse otherwise.

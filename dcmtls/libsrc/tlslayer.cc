@@ -467,6 +467,20 @@ DcmTransportLayerStatus DcmTLSTransportLayer::activateCipherSuites()
   return TCS_ok;
 }
 
+DcmTransportLayerStatus DcmTLSTransportLayer::setCipherSuites(const char *suites)
+{
+  if (transportLayerContext && suites)
+  {
+    if (!SSL_CTX_set_cipher_list(transportLayerContext, suites))
+    {
+      const char *err = ERR_reason_error_string(ERR_peek_error());
+      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
+      return TCS_tlsError;
+    }
+  } else return TCS_illegalCall;
+  return TCS_ok;
+}
+
 DcmTLSTransportLayer::~DcmTLSTransportLayer()
 {
   clear();
