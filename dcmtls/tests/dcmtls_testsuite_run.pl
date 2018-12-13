@@ -383,7 +383,7 @@ print "Test 37: client adds non-recommended ciphersuite: ";
 $pid = &startBackgroundProcess("$storescp -d +tls user1_key.pem user1_cert.pem -ic $tlsport >test37_server_out.log 2>test37_server_err.log");
 do { $result = system("$tcpclient localhost $tlsport >tcpclient.log"); } while ($result != 0);
 $result = system("$echoscu -d +tla --cipher TLS_RSA_WITH_AES_128_GCM_SHA256 -ic localhost $tlsport >test37_client_out.log 2>test37_client_err.log");
-if (($result == 0) && (&findInFiles("RFC 7525 recomments that such cipher suites should not be used", "test37_client_err.log", "test37_client_out.log"))) { &testPassed(); } else { &testFailed(); }
+if (($result == 0) && (&findInFiles("RFC 7525 recommends that such cipher suites should not be used", "test37_client_err.log", "test37_client_out.log"))) { &testPassed(); } else { &testFailed(); }
 &doKill($pid);
 $tlsport++;
 

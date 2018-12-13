@@ -327,11 +327,11 @@ DcmTransportLayerStatus DcmTLSCiphersuiteHandler::addCipherSuite(const char *sui
         }
         if (TKE_RSA == getCipherSuiteKeyExchange(idx))
         {
-          DCMTLS_WARN("Ciphersuite '" << suite << "' uses RSA key transport. RFC 7525 recomments that such cipher suites should not be used.");
+          DCMTLS_WARN("Ciphersuite '" << suite << "' uses RSA key transport. RFC 7525 recommends that such cipher suites should not be used.");
         }
 		else
         {
-          DCMTLS_WARN("Ciphersuite '" << suite << "' uses NO RSA key transport. RFC 7525 recomments that such cipher suites should not be used.");
+          DCMTLS_WARN("Ciphersuite '" << suite << "' uses NO RSA key transport. RFC 7525 recommends that such cipher suites should not be used.");
         }
         break;
 
