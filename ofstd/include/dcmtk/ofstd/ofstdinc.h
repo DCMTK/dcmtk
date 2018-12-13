@@ -215,7 +215,7 @@ END_EXTERN_C
 
 // define INCLUDE_CMATH to include <cmath> or <math.h> if available
 #ifdef INCLUDE_CMATH
-#ifdef HAVE_CMATH
+#if defined(USE_STD_CXX_INCLUDES) && defined(HAVE_CMATH)
 #include <cmath>
 #elif defined(HAVE_MATH_H)
 #ifndef INCLUDE_MATH_H_AS_CXX
@@ -264,7 +264,7 @@ END_EXTERN_C
 
 // define INCLUDE_CSTDDEF to include <cstddef> or <stddef.h> if available
 #ifdef INCLUDE_CSTDDEF
-#ifdef HAVE_CSTDDEF
+#if defined(USE_STD_CXX_INCLUDES) && defined(HAVE_CSTDDEF)
 #include <cstddef>
 #elif defined(HAVE_STDDEF_H)
 BEGIN_EXTERN_C
@@ -275,7 +275,7 @@ END_EXTERN_C
 
 // define INCLUDE_CSTDDINT to include <cstdint>, <stdint.h> or <sys/types.h> if available
 #ifdef INCLUDE_CSTDINT
-#ifdef HAVE_CSTDINT
+#if defined(USE_STD_CXX_INCLUDES) && defined(HAVE_CSTDINT)
 #include <cstdint>
 #elif defined(HAVE_STDINT_H)
 #include <stdint.h>
