@@ -93,12 +93,6 @@ when targeting Android or Windows respectively.  Other versions of Android will
 most likely also work, but the above mentioned one is currently the only one
 that is being regularly tested.
 
-Of course, GNU Autoconf also provides cross compiling support and using it for
-various platforms might also work but probably not out of the box, i.e. some
-customization is needed and you have to find a way to provide the information
-from the configuration tests that need to be run on the target hardware
-yourself.
-
 Other Platforms
 ---------------
 
@@ -167,11 +161,6 @@ and enables support automatically if present.  By default, DCMTK checks the
 standard paths on Unix platforms.  For Windows platforms, check the discussion
 on CMake below.
 
-When using Autoconf, if support for security enhancements is desired, a compiled
-version of the OpenSSL libraries and include files must be available during
-compilation of DCMTK.  By default, DCMTK checks whether OpenSSL is installed
-in the standard path and enables support automatically if present.
-
 
 ZLIB SUPPORT
 ============
@@ -184,11 +173,6 @@ releases 1.2.8 to 1.2.11, although other releases may work as well.
 
 When using CMake, a compiled version of the zlib libraries and include files
 must be available during compilation of DCMTK.  See discussion on CMake below.
-
-When using Autoconf, if support for zlib compression is desired, a compiled
-version of the zlib library and include files must be available during
-compilation of DCMTK.  By default, DCMTK checks whether zlib is installed in
-the standard path and enables support automatically if present.
 
 
 LIBTIFF SUPPORT
@@ -205,12 +189,6 @@ incompatible API changes in libtiff.
 When using CMake, a compiled version of the libtiff libraries and include files
 must be available during compilation of DCMTK.  See discussion on CMake below.
 
-When using Autoconf, if support for TIFF export is desired, a compiled version
-of the libtiff libraries and include files must be available during compilation
-of DCMTK, and the libtiff support must be switched on explicitly.  By default,
-DCMTK checks whether libtiff is installed in the standard path and enables
-support automatically if present.
-
 
 LIBPNG SUPPORT
 ==============
@@ -224,12 +202,6 @@ When using CMake, a compiled version of the libpng libraries and include
 files must be available during compilation of DCMTK.  See discussion on CMake
 below.
 
-When using Autoconf, if support for PNG export is desired, a compiled version of
-the libpng libraries and include files must be available during compilation of
-DCMTK, and the libpng support must be switched on explicitly.  By default, DCMTK
-checks whether libpng is installed in the standard path and enables support
-automatically if present.  It should be noted that libpng requires zlib.
-
 
 LIBXML2 SUPPORT
 ===============
@@ -242,11 +214,6 @@ purpose.  This release of DCMTK is known to compile with the libxml2 releases
 When using CMake, if support for XML import is desired, a compiled version of
 the libxml2 (and possibly iconv) libraries and include files must be available
 during compilation of DCMTK.  See discussion on CMake below.
-
-When using Autoconf, if support for XML import is desired, a compiled version of
-the libxml2 (and possibly iconv) libraries and include files must be available
-during compilation of DCMTK.  By default, DCMTK checks whether libxml2 is
-installed in the standard path and enables support automatically if present.
 
 
 TCP WRAPPER (LIBWRAP) SUPPORT
@@ -262,11 +229,6 @@ details.
 When using CMake, if support for TCP wrappers is desired, a compiled version of
 the libwrap library and include file <tcpd.h> must be available during
 compilation of DCMTK.  See discussion on CMake below.
-
-When using Autoconf, if support for TCP wrappers is desired, a compiled version
-of the libwrap library and include file <tcpd.h> must be available during
-compilation of DCMTK.  By default, DCMTK checks whether libwrap is installed
-in the standard path and enables support automatically if present.
 
 Since DCMTK uses the TCP wrappers from C++ code, an ANSI C compatible header
 file <tcpd.h> is required.  The official release 7.6 of the TCP wrappers
@@ -294,6 +256,7 @@ used C standard library provides it).  This choice can be overridden via the
 (CMake).  Selecting an implementation that is not available will be ignored,
 i.e. the user choice will be overridden.
 
+
 LIBICONV SUPPORT
 ----------------
 
@@ -306,11 +269,6 @@ When using CMake, a compiled version of the libiconv and libcharset libraries
 and include files must be available during compilation of DCMTK.  See discussion
 on CMake below.
 
-When using Autoconf, if support for libiconv conversion is desired, a compiled
-version of the libiconv library and include files must be available during
-compilation of DCMTK.  Please note that DCMTK also needs the bundled copy of
-libcharset.  By default, DCMTK checks whether libiconv and libcharset are
-installed in the standard path and enables support automatically if present.
 
 ICU SUPPORT
 -----------
@@ -333,11 +291,6 @@ transliteration.
 When using CMake, if support for character set conversion using ICU is desired,
 a compiled version of the ICU libraries and include files must be available
 during compilation of DCMTK.  See discussion on CMake below.
-
-When using Autoconf, if support for character set conversion using ICU is
-desired, a compiled version of the ICU libraries and include files must be
-available during compilation of DCMTK.  By default, DCMTK checks whether ICU is
-installed in the standard path and enables support automatically if present.
 
 
 Support for iconv provided in the C standard library
@@ -705,7 +658,20 @@ Example for a build with TCP wrapper disabled:
     ...
 
 The format is NAME:TYPE=VALUE. Use 'ccmake' to find out the variable names
-and their types (BOOL with TRUE/FALSE or STRING).
+and their types (BOOL with TRUE/FALSE or STRING). Some of the more important
+variables are:
+
+    - BUILD_APPS: Build the DCMTK command line tools? Default: ON.
+    - BUILD_SHARED_LIBS: Build the DCMTK libraries as shared libraries?
+      Default: OFF.
+    - CMAKE_BUILD_TYPE: Debug or Release build, default: Release.
+    - CMAKE_INSTALL_PREFIX: Installation prefix, default: /usr/local.
+      Not used on Windows.
+    - DCMTK_ENABLE_BUILTIN_DICTIONARY (Generate a built-in DICOM data
+      dictionary? Default: ON on Windows, OFF on Linux/Posix)
+    - DCMTK_ENABLE_CXX11: Assume the compiler is C++11 compliant, default: OFF.
+    - DCMTK_ENABLE_STL: Replace DCMTK's OFString, OFList, OFVector etc. by
+      the STL classes std::string, std::list etc. Default: OFF.
 
 
 HTML DOCUMENTATION AND MAN PAGES
@@ -786,20 +752,24 @@ will build the test runner for each module as "<module>/tests/tests".  CMake
 will add the module name as a prefix to this file's name, e.g. "ofstd_tests".
 For more information, call this program with the --help option.
 
+
 BUILDING (Unix with Autoconf)
 =============================
 
 Configuring a DCMTK build with GNU Autoconf has been deprecated with DCMTK
-release 3.6.4 and will be removed in future releases.  However, you might still
-use Autoconf with this release if you prefer it for whatever reason:
+release 3.6.4 and will be removed in future releases. In the current release,
+the "configure" script in DCMTK's top-level main directory has been removed
+as the final warning for users of the Autoconf toolchain. If you prefer to
+build DCMTK with Autoconf, however, this is still possible. Perform the
+following  steps from the top-level (dcmtk-3.6.4) directory to compile
+and install the software:
 
-You do not need to obtain GNU Autoconf to compile and install this software.
-All the necessary configure scripts are included in this distribution.  The
-configure scripts examine your system capabilities and automatically generate
-include files and Makefiles.
+Step 0:
+    cd config
+    ./rootconf
+    cd ..
 
-Perform the following steps from the top-level (dcmtk-3.6.4) directory to
-compile and install the software:
+Step 0 creates the configure script in DCMTK's top-level directory.
 
 Step 1:
     ./configure --ignore-deprecation
@@ -911,8 +881,8 @@ following commands:
 This generates a new Makefile and configure script in the top-level toolkit
 directory.
 
-Solving configuration and compilation problems
-----------------------------------------------
+Solving configuration and compilation problems with Autoconf
+------------------------------------------------------------
 
 The configure script might not be able to guess the correct compiler and
 compiler flags to use.  For example, we have noticed that use of the -pedantic
@@ -942,7 +912,7 @@ See also the FAQ at https://forum.dcmtk.org/faq for more hints.
 
 Have fun.
 
-M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
+M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher, P. Arizpe Gomez
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2018-11-29 (Schlamelcher)
+Last revised: 2019-12-17 (Eichelberg)
