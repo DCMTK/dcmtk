@@ -612,8 +612,8 @@ installed such that the CMake "find_package()" mechanism typically finds them
 out of the box.
 
 If that does not work or you want to use a different version of a library than
-the one in the default search paths, you should look at the documentation of the
-respective "find_package()" module to find out which variables need to be
+the one in the default search paths, you should look at the documentation of
+the respective "find_package()" module to find out which variables need to be
 modified, e.g. "FindZLIB" to control which version of the zlib will be used:
 https://cmake.org/cmake/help/latest/module/FindZLIB.html .
 
@@ -626,7 +626,7 @@ The typical way to build DCMTK on Unix like systems with CMake is as follows:
     make DESTDIR=../dcmtk-3.6.4-install install
 
 The above commands assume that the DCMTK source code was extracted to the
-current working directory into a folder named dcmtk-3.6.4. DCMTK will be
+current working directory into a folder named dcmtk-3.6.4.  DCMTK will be
 configured using CMake with the default options, detecting and including all
 available support libraries and then compiled using eight CPU cores
 ('make -j8', adjust as needed).  The result will be installed to the directory
@@ -635,7 +635,7 @@ available support libraries and then compiled using eight CPU cores
 If you want to modify your build-configuration, like enabling or disabling
 some features of DCMTK (e.g. PNG support), or if you need to modify the
 pre-defined build-variables, you can use the curses based cmake configuration
-tool 'ccmake'. First create the initial build setup (system check) and then
+tool 'ccmake'.  First create the initial build setup (system check) and then
 call ccmake:
 
     mkdir dcmtk-3.6.4-build
@@ -643,10 +643,9 @@ call ccmake:
     cmake ../dcmtk-3.6.4
     ccmake ../dcmtk-3.6.4
 
-Now you can modify the configuration values. Please see the help on the
-bottom of the screen. When finished, press 'c' to generate a new build
-configuration, then quit ccmake. Now you can continue to build by calling
-'make' etc.
+Now you can modify the configuration values.  Please see the help on the bottom
+of the screen.  When finished, press 'c' to generate a new build configuration,
+then quit ccmake.  Now you can continue to build by calling 'make' etc.
 
 If you already know the variable names, types and values to set, you can skip
 the 'ccmake' step above and can call 'cmake' directly with the values set.
@@ -657,8 +656,8 @@ Example for a build with TCP wrapper disabled:
     cmake -DDCMTK_WITH_WRAP:BOOL=FALSE ../dcmtk-3.6.4
     ...
 
-The format is NAME:TYPE=VALUE. Use 'ccmake' to find out the variable names
-and their types (BOOL with TRUE/FALSE or STRING). Some of the more important
+The format is NAME:TYPE=VALUE.  Use 'ccmake' to find out the variable names and
+their types (BOOL with TRUE/FALSE or STRING).  Some of the more important
 variables are:
 
     - BUILD_APPS: Build the DCMTK command line tools? Default: ON.
@@ -669,7 +668,7 @@ variables are:
       Not used on Windows.
     - DCMTK_ENABLE_BUILTIN_DICTIONARY (Generate a built-in DICOM data
       dictionary? Default: ON on Windows, OFF on Linux/Posix)
-    - DCMTK_ENABLE_CXX11: Assume the compiler is C++11 compliant, default: OFF.
+    - DCMTK_ENABLE_CXX11: Assume the compiler is C++11 compliant. Default: OFF.
     - DCMTK_ENABLE_STL: Replace DCMTK's OFString, OFList, OFVector etc. by
       the STL classes std::string, std::list etc. Default: OFF.
 
@@ -757,12 +756,12 @@ BUILDING (Unix with Autoconf)
 =============================
 
 Configuring a DCMTK build with GNU Autoconf has been deprecated with DCMTK
-release 3.6.4 and will be removed in future releases. In the current release,
+release 3.6.4 and will be removed in future releases.  In the current release,
 the "configure" script in DCMTK's top-level main directory has been removed
-as the final warning for users of the Autoconf toolchain. If you prefer to
-build DCMTK with Autoconf, however, this is still possible. Perform the
-following  steps from the top-level (dcmtk-3.6.4) directory to compile
-and install the software:
+as the final warning for users of the Autoconf toolchain.  If you prefer to
+build DCMTK with Autoconf, however, this is still possible.  Perform the
+following steps from the top-level (dcmtk-3.6.4) directory to compile and
+install the software:
 
 Step 0:
     cd config
@@ -915,4 +914,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher, P. Arizpe Gomez
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2019-12-17 (Eichelberg)
+Last revised: 2018-12-17 (Riesmeier)
