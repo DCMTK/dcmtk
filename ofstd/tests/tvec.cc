@@ -43,9 +43,18 @@ OFTEST(ofstd_OFVector)
     // Test whether iterators stay valid if enough space was reserved
     m.reserve(6);
     it = m.begin();
+    OFCHECK(it == m.begin());
+    OFCHECK(it == m.end());
+
+    // the first push_back() invalidates the iterator,
+    // therefore, get a new one
+    m.push_back(1);
+    it = m.begin();
+    OFCHECK(it == m.begin());
+    OFCHECK(it != m.end());
 
     // Fill with some entries
-    for (i = 1; i <= 6; ++i)
+    for (i = 2; i <= 6; ++i)
         m.push_back(i);
 
     OFCHECK(it == m.begin());
