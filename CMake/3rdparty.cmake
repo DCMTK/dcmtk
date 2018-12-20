@@ -1,5 +1,5 @@
-if(DCMTK_WIN_LEGACY_FIND AND WIN32 AND NOT MINGW)
-
+option(DCMTK_UNIFIED_FIND "This enables the unified find mechanism that will use standard cmake find scripts on windows as well" OFF)
+if(NOT DCMTK_UNIFIED_FIND AND WIN32 AND NOT MINGW)
   # For Windows, we don't used FIND_PACKAGE because DCMTK usually is used with its
   # own set of 3rd-party support libraries that can be downloaded from DCMTK's
   # website (pre-built).
@@ -181,7 +181,7 @@ if(DCMTK_WIN_LEGACY_FIND AND WIN32 AND NOT MINGW)
     endif()
   endif()
 
-else(DCMTK_WIN_LEGACY_FIND AND WIN32 AND NOT MINGW)
+else(NOT DCMTK_UNIFIED_FIND AND WIN32 AND NOT MINGW)
 
   # Find TIFF
   if(DCMTK_WITH_TIFF)
@@ -286,7 +286,7 @@ else(DCMTK_WIN_LEGACY_FIND AND WIN32 AND NOT MINGW)
       message(STATUS "Info: DCMTK ZLIB support will be enabled")
       set(WITH_ZLIB 1)
       if(TARGET ZLIB::ZLIB)
-        if(TARGET ZLIB::ZLIB)
+        set(ZLIB_LIBS ZLIB::ZLIB)
       else()
         include_directories(${ZLIB_INCLUDE_DIRS})
         set(ZLIB_LIBS ${ZLIB_LIBRARIES})
@@ -304,8 +304,13 @@ else(DCMTK_WIN_LEGACY_FIND AND WIN32 AND NOT MINGW)
     else()
       message(STATUS "Info: DCMTK SNDFILE support will be enabled")
       set(WITH_SNDFILE 1)
-      include_directories(${SNDFILE_INCLUDE_DIRS})
-      set(SNDFILE_LIBS ${SNDFILE_LIBRARIES})
+      if(TARGET Sndfile::Sndfile)
+        set(SNDFILE_LIBS Sndfile::Sndfile)
+      else()
+        include_directories(${SNDFILE_INCLUDE_DIRS})
+        set(SNDFILE_LIBS ${SNDFILE_LIBRARIES})
+      endif()
+
     endif()
   endif()
 
@@ -384,7 +389,7 @@ else(DCMTK_WIN_LEGACY_FIND AND WIN32 AND NOT MINGW)
     endif()
   endif()
 
-endif(WIN32 AND NOT MINGW)
+endif(NOT DCMTK_UNIFIED_FIND AND WIN32 AND NOT MINGW)
 
 if(NOT DEFINED DCMTK_WITH_STDLIBC_ICONV)
   include(CheckCXXSourceCompiles)
