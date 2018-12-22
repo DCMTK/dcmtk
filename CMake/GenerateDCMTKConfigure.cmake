@@ -1421,8 +1421,15 @@ function(DCMTK_TEST_ENABLE_CXX11)
   set(HAVE_CXX11 "${RESULT}" CACHE INTERNAL "Set to 1 if the compiler supports C++11 and it should be enabled.")
   message(STATUS "Info: C++11 features ${TEXT_RESULT}")
   if(RESULT)
-    # push C++11 CXX-flags to the parent scope
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} PARENT_SCOPE)
+    set(CMAKE_CXX_STANDARD 11 CACHE INTERNAL "Set the language standard to be compliant with.")
+    if(CMAKE_VERSION_MAJOR LESS 3 OR ( CMAKE_VERSION_MAJOR GREATER 2 AND CMAKE_VERSION_MINOR LESS 1 ) )
+      # For cmake 3.1+ cmake will automatically add compiler flags for supporting the language
+      # features of the requested C++ standard as defined by CMAKE_CXX_STANDARD.
+      #
+      # Earler versions of cmake require explicit setting of the flags.
+      # push C++11 CXX-flags to the parent scope
+      set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} PARENT_SCOPE)
+    endif()
   endif()
 endfunction()
 

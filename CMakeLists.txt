@@ -15,6 +15,28 @@ else()
 endif()
 cmake_policy(VERSION "${DCMTK_CMAKE_POLICY_VERSION}")
 
+if(CMAKE_VERSION_MAJOR GREATER 3 AND CMAKE_VERSION_MINOR GREATER 0)
+  ##  Set the default language standard
+  if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 98)
+  endif()
+  if(NOT CMAKE_CXX_STANDARD_REQUIRED)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  endif()
+  if(NOT CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+  endif()
+  # Supported values are ``98``, ``11``, ``14``, ``17``, and ``20``.
+  set(VALID_CXX_STANDARDS "98" "11" "14" "17")
+  if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
+     message(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} is in the valid standards list [${VALID_CXX_STANDARDS}].")
+  endif()
+  if( CMAKE_CXX_STANDARD GREATER 10 AND CMAKE_CXX_STANDARD LESS 97 )
+    set(HAVE_CXX11 "${RESULT}" CACHE INTERNAL "Set to 1 if the compiler supports C++11 and it should be enabled.")
+    message(STATUS "Info: C++11 features ${TEXT_RESULT}")
+  endif()
+endif()
+
 # Declare project
 project(DCMTK)
 
