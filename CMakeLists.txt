@@ -1,17 +1,21 @@
+# Minimum CMake version required
+cmake_minimum_required(VERSION 2.8.5 FATAL_ERROR)
+
+# As of 2018-12-26 ZSTD has been validated to build with cmake version 3.13.2 new policies.
+# Set and use the newest cmake policies that are validated to work
+set(DCMTK_MAX_VALIDATED_CMAKE_MAJOR_VERSION "3")
+set(DCMTK_MAX_VALIDATED_CMAKE_MINOR_VERSION "13") #Policies never changed at PATCH level
+if("${CMAKE_MAJOR_VERSION}" LESS 3)
+  set(DCMTK_CMAKE_POLICY_VERSION "${CMAKE_VERSION}")
+elseif( "${DCMTK_MAX_VALIDATED_CMAKE_MINOR_VERSION}" GREATER "${CMAKE_MINOR_VERSION}")
+    set(DCMTK_CMAKE_POLICY_VERSION "${CMAKE_VERSION}")
+else()
+    set(DCMTK_CMAKE_POLICY_VERSION "${DCMTK_MAX_VALIDATED_CMAKE_MAJOR_VERSION}.${DCMTK_MAX_VALIDATED_CMAKE_MINOR_VERSION}.0")
+endif()
+cmake_policy(VERSION ${DCMTK_CMAKE_POLICY_VERSION})
+
 # Declare project
 project(DCMTK)
-
-# Minimum CMake version required
-cmake_minimum_required(VERSION 2.8.5)
-
-# Disables a warning emitted by CMake 3.7.2. The same setting is performed
-# again in CMake/dcmtkPrepare.cmake (included below), but the warning is still
-# emitted if it is not set here (it only goes away if the policy is set in
-# both files).
-# We do not entirely understand this behavior, perhaps it is a bug in CMake?
-if(POLICY CMP0017)
-    cmake_policy(SET CMP0017 NEW)
-endif()
 
 # Check the build system
 include(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
