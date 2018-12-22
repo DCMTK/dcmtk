@@ -21,15 +21,18 @@
 
 #ifndef DCENCDOC_H
 #define DCENCDOC_H
+
 //make sure OS specific configuration is included first
 #include "dcmtk/config/osconfig.h"
-//for override keys
-#include "dcmtk/dcmdata/dcpath.h"
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmiod/iodcommn.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/ofxml.h"
+#include "dcmtk/ofstd/ofstring.h"     /* for class OFString */
+#include "dcmtk/ofstd/ofcond.h"       /* for class OFCondition */
+#include "dcmtk/dcmdata/dcdefine.h"   /* for DCMTK_DCMDATA_EXPORT */
+#include "dcmtk/dcmdata/dcfilefo.h"   /* for class DcmFileFormat */
 
+class XMLNode;
+class OFCommandLine;
+class OFConsoleApplication;
+class OFLogger;
 
 /** This class handles common functions of all command line applications
  *  for document encapsulation.

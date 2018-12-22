@@ -21,24 +21,23 @@
 
 //make sure OS specific configuration is included first
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/dcmdata/dccodec.h"
-//for tag constants
-#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcencdoc.h"
-//for dcmtk version name
+
+#include "dcmtk/ofstd/ofxml.h"
+#include "dcmtk/dcmdata/dcpath.h"
+#include "dcmtk/dcmdata/dccodec.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
-#include "dcmtk/dcmiod/modequipment.h"
-#include "dcmtk/ofstd/ofdatime.h"
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/dcmdata/dcvrpobw.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
 
 #define SHORTCOL 3
 #define LONGCOL 21
 
 // exit codes for this command line tool
-// (common codes are defined in "ofexit.h"
-// included from "ofconapp.h")
+// (common codes are defined in "ofexit.h" included from "ofconapp.h")
 
 // general errors
 #define EXITCODE_MEMORY_EXHAUSTED                4
