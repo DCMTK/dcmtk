@@ -278,9 +278,14 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
       // We implement this by requesting SHA-256 OR BETTER, i.e. we also indicate
       // support for SHA-384 and SHA-512.
 
-      const int slist[] = {NID_sha256, EVP_PKEY_RSA, NID_sha256, EVP_PKEY_DSA, NID_sha256, EVP_PKEY_EC,
-                           NID_sha384, EVP_PKEY_RSA, NID_sha384, EVP_PKEY_DSA, NID_sha384, EVP_PKEY_EC,
-                           NID_sha512, EVP_PKEY_RSA, NID_sha512, EVP_PKEY_DSA, NID_sha512, EVP_PKEY_EC};
+      const int slist[] = {NID_sha256, EVP_PKEY_RSA,     NID_sha384, EVP_PKEY_RSA,     NID_sha512, EVP_PKEY_RSA,
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L
+                           // Connections between a client and a server that both use OpenSSL 1.1.1
+                           // will fail unless RSA-PSS is also offered as a signature algorithm.
+                           NID_sha256, EVP_PKEY_RSA_PSS, NID_sha384, EVP_PKEY_RSA_PSS, NID_sha512, EVP_PKEY_RSA_PSS,
+#endif
+                           NID_sha256, EVP_PKEY_DSA,     NID_sha384, EVP_PKEY_DSA,     NID_sha512, EVP_PKEY_DSA,
+                           NID_sha256, EVP_PKEY_EC,      NID_sha384, EVP_PKEY_EC,      NID_sha512, EVP_PKEY_EC};
 
       if (0 == SSL_CTX_set1_sigalgs(transportLayerContext, slist, sizeof(slist)/sizeof(int)))
       {
