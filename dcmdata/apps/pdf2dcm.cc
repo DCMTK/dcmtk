@@ -20,31 +20,8 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofdatime.h"
-#include "dcmtk/dcmdata/dccodec.h"
 #include "dcmtk/dcmdata/dcencdoc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_FCNTL_H
-#include <fcntl.h>       /* for O_RDONLY */
-#endif
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>   /* required for sys/stat.h */
-#endif
-#ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>    /* for stat, fstat */
-#endif
-END_EXTERN_C
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
