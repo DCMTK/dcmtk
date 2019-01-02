@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2018, OFFIS e.V.
+ *  Copyright (C) 2002-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -118,13 +118,14 @@ OFCondition DcmRLECodecDecoder::decode(
     {
       DcmPixelItem *pixItem = NULL;
       Uint8 * rleData = NULL;
-      const size_t bytesPerStripe = imageColumns * imageRows;
+      const size_t bytesPerStripe = OFstatic_cast(size_t, imageColumns) * OFstatic_cast(size_t, imageRows);
 
       DcmRLEDecoder rledecoder(bytesPerStripe);
       if (rledecoder.fail()) result = EC_MemoryExhausted;  // RLE decoder failed to initialize
       else
       {
-        size_t frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
+        const size_t frameSize = OFstatic_cast(size_t, imageBytesAllocated) * OFstatic_cast(size_t, imageRows)
+            * OFstatic_cast(size_t, imageColumns) * OFstatic_cast(size_t, imageSamplesPerPixel);
         size_t totalSize = frameSize * imageFrames;
         if (totalSize & 1) totalSize++; // align on 16-bit word boundary
         Uint16 *imageData16 = NULL;
@@ -464,10 +465,11 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
 
     DcmPixelItem *pixItem = NULL;
     Uint8 * rleData = NULL;
-    const size_t bytesPerStripe = imageColumns * imageRows;
+    const size_t bytesPerStripe = OFstatic_cast(size_t, imageColumns) * OFstatic_cast(size_t, imageRows);
     Uint32 numberOfStripes = 0;
     Uint32 fragmentLength = 0;
-    Uint32 frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
+    Uint32 frameSize = OFstatic_cast(Uint32, imageBytesAllocated) * OFstatic_cast(Uint32, imageRows)
+                       * OFstatic_cast(Uint32, imageColumns) * OFstatic_cast(Uint32, imageSamplesPerPixel);
 
     if (frameSize > bufSize) return EC_IllegalCall;
 
