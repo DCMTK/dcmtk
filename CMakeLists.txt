@@ -1,8 +1,5 @@
-# Declare project
-project(DCMTK)
-
 # Minimum CMake version required
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 2.8.5 FATAL_ERROR)
 
 # Disables a warning emitted by CMake 3.7.2. The same setting is performed
 # again in CMake/dcmtkPrepare.cmake (included below), but the warning is still
@@ -12,6 +9,9 @@ cmake_minimum_required(VERSION 2.8.5)
 if(POLICY CMP0017)
     cmake_policy(SET CMP0017 NEW)
 endif()
+
+# Declare project
+project(DCMTK)
 
 # Check the build system
 include(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
