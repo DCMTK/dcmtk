@@ -65,13 +65,6 @@ mark_as_advanced(BUILD_SINGLE_SHARED_LIBRARY)
 set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Library postfix for debug builds. Usually left blank.")
 # add our CMake modules to the module path, but prefer the ones from CMake.
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_ROOT}/Modules" "${CMAKE_CURRENT_SOURCE_DIR}/${DCMTK_CMAKE_INCLUDE}/CMake/")
-# newer CMake versions will warn if a module exists in its and the project's module paths, which is now always
-# the case since above line adds CMake's module path to the project's one. It, therefore, doesn't matter whether
-# we set the policy to OLD or NEW, since in both cases CMake's own module will be preferred. We just set
-# the policy to silence the warning.
-if(POLICY CMP0017)
-    cmake_policy(SET CMP0017 NEW)
-endif()
 if(BUILD_SINGLE_SHARED_LIBRARY)
   # When we are building a single shared lib, we are building shared libs :-)
   set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
