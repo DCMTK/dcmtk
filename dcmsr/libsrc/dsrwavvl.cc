@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -134,7 +134,7 @@ OFCondition DSRWaveformReferenceValue::readXML(const DSRXMLDocument &doc,
     if (result.good())
     {
         /* channel list (optional) */
-        cursor = doc.getNamedNode(cursor.getChild(), "channels");
+        cursor = doc.getNamedChildNode(cursor, "channels");
         if (cursor.valid())
         {
             OFString tmpString;

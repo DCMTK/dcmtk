@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -124,7 +124,7 @@ OFCondition DSRCodeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
     if (cursor.valid())
     {
         /* goto "value" element */
-        const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "value");
+        const DSRXMLCursor childCursor = doc.getNamedChildNode(cursor, "value");
         if (childCursor.valid())
         {
             /* check whether code is stored as XML elements or attributes */

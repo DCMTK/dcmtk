@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -152,8 +152,8 @@ OFCondition DSRReferencedInstanceList::readXML(const DSRXMLDocument &doc,
         if (doc.checkNode(cursor, "value").good())
         {
             /* retrieve SOP class and instance UID */
-            if (!doc.getStringFromAttribute(doc.getNamedNode(cursor.getChild(), "sopclass"), sopClassUID, "uid").empty() &&
-                !doc.getStringFromAttribute(doc.getNamedNode(cursor.getChild(), "instance"), instanceUID, "uid").empty())
+            if (!doc.getStringFromAttribute(doc.getNamedChildNode(cursor, "sopclass"), sopClassUID, "uid").empty() &&
+                !doc.getStringFromAttribute(doc.getNamedChildNode(cursor, "instance"), instanceUID, "uid").empty())
             {
                 result = addItem(sopClassUID, instanceUID, item);
                 if (result.good())

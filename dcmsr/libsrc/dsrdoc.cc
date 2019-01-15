@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -831,7 +831,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
             else if (doc.matchNode(cursor, "referringphysician"))
             {
                 /* goto sub-element "name" */
-                const DSRXMLCursor childNode = doc.getNamedNode(cursor.getChild(), "name");
+                const DSRXMLCursor childNode = doc.getNamedChildNode(cursor, "name");
                 if (childNode.valid())
                 {
                     /* Referring Physician's Name */
@@ -918,7 +918,7 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
             else if (doc.matchNode(cursor, "birthday"))
             {
                 /* Patient's Birth Date */
-                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "date"), tmpString);
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "date"), tmpString);
                 PatientBirthDate.putOFStringArray(tmpString);
             }
             else if (doc.getElementFromNodeContent(cursor, PatientID, "id").bad() &&
@@ -959,7 +959,7 @@ OFCondition DSRDocument::readXMLStudyData(const DSRXMLDocument &doc,
             if (doc.matchNode(cursor, "accession"))
             {
                 /* goto sub-element "number" */
-                doc.getElementFromNodeContent(doc.getNamedNode(cursor.getChild(), "number"), AccessionNumber);
+                doc.getElementFromNodeContent(doc.getNamedChildNode(cursor, "number"), AccessionNumber);
             }
             else if (doc.matchNode(cursor, "date"))
             {
@@ -1062,10 +1062,10 @@ OFCondition DSRDocument::readXMLInstanceData(const DSRXMLDocument &doc,
                 /* Instance Creator UID */
                 doc.getElementFromAttribute(cursor, InstanceCreatorUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
                 /* Instance Creation Date */
-                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "date"), tmpString);
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "date"), tmpString);
                 InstanceCreationDate.putOFStringArray(tmpString);
                 /* Instance Creation Time */
-                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.getChild(), "time"), tmpString);
+                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "time"), tmpString);
                 InstanceCreationTime.putOFStringArray(tmpString);
             }
             else if (doc.getElementFromNodeContent(cursor, InstanceNumber, "number").bad())
@@ -1109,7 +1109,7 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
                 if (CompletionFlagEnum != CF_invalid)
                 {
                     /* Completion Flag Description (optional) */
-                    const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "description", OFFalse /*required*/);
+                    const DSRXMLCursor childCursor = doc.getNamedChildNode(cursor, "description", OFFalse /*required*/);
                     if (childCursor.valid())
                         doc.getElementFromNodeContent(childCursor, CompletionFlagDescription, NULL /*name*/, OFTrue /*encoding*/);
                 } else
@@ -1141,15 +1141,14 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
             }
             else if (doc.matchNode(cursor, "content"))
             {
-                const DSRXMLCursor childCursor = cursor.getChild();
                 /* Content Date */
-                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor, "date"), tmpString);
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "date"), tmpString);
                 ContentDate.putOFStringArray(tmpString);
                 /* Content Time */
-                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor, "time"), tmpString);
+                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "time"), tmpString);
                 ContentTime.putOFStringArray(tmpString);
                 /* proceed with document tree */
-                result = DocumentTree.readXML(doc, childCursor, flags);
+                result = DocumentTree.readXML(doc, cursor.getChild(), flags);
             } else
                 doc.printUnexpectedNodeWarning(cursor);
             /* print node error message (if any) */

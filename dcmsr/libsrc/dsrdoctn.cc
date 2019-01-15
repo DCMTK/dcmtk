@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -231,7 +231,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
         if (!(flags & XF_templateElementEnclosesItems))
         {
             /* check for optional template identification */
-            const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "template", OFFalse /*required*/);
+            const DSRXMLCursor childCursor = doc.getNamedChildNode(cursor, "template", OFFalse /*required*/);
             if (childCursor.valid())
             {
                 /* check whether information is stored as XML attributes */
@@ -241,26 +241,26 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                     doc.getStringFromAttribute(childCursor, mappingResourceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
                     doc.getStringFromAttribute(childCursor, templateIdentifier, "tid");
                 } else {
-                    const DSRXMLCursor resourceCursor = doc.getNamedNode(childCursor.getChild(), "resource");
+                    const DSRXMLCursor resourceCursor = doc.getNamedChildNode(childCursor, "resource");
                     if (resourceCursor.valid())
                     {
                         doc.getStringFromAttribute(resourceCursor, mappingResourceUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
                         doc.getStringFromNodeContent(resourceCursor, mappingResource);
                     }
-                    doc.getStringFromNodeContent(doc.getNamedNode(childCursor.getChild(), "id"), templateIdentifier);
+                    doc.getStringFromNodeContent(doc.getNamedChildNode(childCursor, "id"), templateIdentifier);
                 }
                 if (setTemplateIdentification(templateIdentifier, mappingResource, mappingResourceUID).bad())
                     DCMSR_WARN("Content item has invalid/incomplete template identification");
             }
         }
         /* read concept name (not required in some cases) */
-        ConceptName.readXML(doc, doc.getNamedNode(cursor.getChild(), "concept", OFFalse /*required*/), flags);
+        ConceptName.readXML(doc, doc.getNamedChildNode(cursor, "concept", OFFalse /*required*/), flags);
         /* read observation UID and date/time (optional) */
-        const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "observation", OFFalse /*required*/);
+        const DSRXMLCursor childCursor = doc.getNamedChildNode(cursor, "observation", OFFalse /*required*/);
         if (childCursor.valid())
         {
             doc.getStringFromAttribute(childCursor, ObservationUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
-            DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor.getChild(), "datetime", OFFalse /*required*/), ObservationDateTime);
+            DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(childCursor, "datetime", OFFalse /*required*/), ObservationDateTime);
         }
         /* read node content (depends on value type) */
         result = readXMLContentItem(doc, cursor, flags);

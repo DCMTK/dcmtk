@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -475,8 +475,8 @@ OFCondition DSRCodedEntryValue::readXML(const DSRXMLDocument &doc,
                 /* check for known element tags */
                 if (doc.matchNode(cursor, "scheme"))
                 {
-                    doc.getStringFromNodeContent(doc.getNamedNode(cursor.getChild(), "designator"), CodingSchemeDesignator, NULL /*name*/, OFTrue /*encoding*/, OFFalse /*clearString*/);
-                    doc.getStringFromNodeContent(doc.getNamedNode(cursor.getChild(), "version", OFFalse /*required*/), CodingSchemeVersion, NULL /*name*/, OFTrue /*encoding*/, OFFalse /*clearString*/);
+                    doc.getStringFromNodeContent(doc.getNamedChildNode(cursor, "designator"), CodingSchemeDesignator, NULL /*name*/, OFTrue /*encoding*/, OFFalse /*clearString*/);
+                    doc.getStringFromNodeContent(doc.getNamedChildNode(cursor, "version", OFFalse /*required*/), CodingSchemeVersion, NULL /*name*/, OFTrue /*encoding*/, OFFalse /*clearString*/);
                 } else {
                     doc.getStringFromNodeContent(cursor, CodeValue, "value", OFTrue /*encoding*/, OFFalse /*clearString*/);
                     doc.getStringFromNodeContent(cursor, CodeMeaning, "meaning", OFTrue /*encoding*/, OFFalse /*clearString*/);

@@ -150,7 +150,7 @@ OFCondition DSRCompositeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
                                                      const size_t flags)
 {
     /* retrieve value from XML element "value" */
-    return DSRCompositeReferenceValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"), flags);
+    return DSRCompositeReferenceValue::readXML(doc, doc.getNamedChildNode(cursor, "value"), flags);
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -162,7 +162,7 @@ OFCondition DSRTimeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 {
     OFString tmpString;
     /* retrieve value from XML element "value" */
-    OFCondition result = setValue(getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.gotoChild(), "value"), tmpString));
+    OFCondition result = setValue(getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "value"), tmpString));
     if (result == EC_IllegalParameter)
         result = SR_EC_InvalidValue;
     return result;

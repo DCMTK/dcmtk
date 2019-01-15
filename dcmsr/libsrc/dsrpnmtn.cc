@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -165,7 +165,7 @@ OFCondition DSRPNameTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
     if (cursor.valid())
     {
         /* goto sub-node "value" */
-        cursor = doc.getNamedNode(cursor.getChild(), "value").getChild();
+        cursor = doc.getNamedChildNode(cursor, "value").getChild();
         if (cursor.valid())
         {
             /* retrieve person name from XML tag */

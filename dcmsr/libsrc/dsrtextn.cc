@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -168,7 +168,7 @@ OFCondition DSRTextTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
                                                 const size_t flags)
 {
     /* retrieve value from XML element "value" */
-    return DSRStringValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"), flags, OFTrue /*encoding*/);
+    return DSRStringValue::readXML(doc, doc.getNamedChildNode(cursor, "value"), flags, OFTrue /*encoding*/);
 }
 
 
