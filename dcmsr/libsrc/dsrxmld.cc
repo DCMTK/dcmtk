@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2016, OFFIS e.V.
+ *  Copyright (C) 2003-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -300,7 +300,7 @@ DSRXMLCursor DSRXMLDocument::getNamedNode(const DSRXMLCursor &cursor,
             {
                 OFString tmpString;
                 DCMSR_ERROR("Document of the wrong type, '" << name
-                    << "' expected at " << getFullNodePath(cursor, tmpString, OFFalse /*omitCurrent*/));
+                    << "' expected at " << getFullNodePath(cursor, tmpString, OFTrue /*omitCurrent*/));
             }
         } else {
             /* return new node position */
@@ -313,6 +313,35 @@ DSRXMLCursor DSRXMLDocument::getNamedNode(const DSRXMLCursor &cursor,
 DSRXMLCursor DSRXMLDocument::getNamedNode(const DSRXMLCursor &,
                                           const char *,
                                           const OFBool) const
+{
+    DSRXMLCursor result;
+    return result;
+}
+#endif
+
+
+#ifdef WITH_LIBXML
+DSRXMLCursor DSRXMLDocument::getNamedChildNode(const DSRXMLCursor &cursor,
+                                               const char *name,
+                                               const OFBool required) const
+{
+    DSRXMLCursor result;
+    const DSRXMLCursor childCursor = cursor.getChild();
+    /* check whether child node is valid */
+    if (childCursor.valid())
+        result = getNamedNode(childCursor, name, required);
+    else if (required)
+    {
+        OFString tmpString;
+        DCMSR_ERROR("Document of the wrong type, '" << name
+            << "' expected at " << getFullNodePath(cursor, tmpString, OFFalse /*omitCurrent*/));
+    }
+    return result;
+}
+#else /* WITH_LIBXML */
+DSRXMLCursor DSRXMLDocument::getNamedChildNode(const DSRXMLCursor &,
+                                               const char *,
+                                               const OFBool) const
 {
     DSRXMLCursor result;
     return result;
