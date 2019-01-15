@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -579,13 +579,37 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition getDeviceSerialNumber(OFString &value,
                                               const signed long pos = 0) const;
 
-    /** get software version(s). Please note that only the first component is returned.
+    /** get software version(s)
      ** @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getSoftwareVersions(OFString &value,
                                             const signed long pos = 0) const;
+
+    /** get synchronization frame of reference UID
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getSynchronizationFrameOfReferenceUID(OFString &value,
+                                                              const signed long pos = 0) const;
+
+    /** get synchronization trigger
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getSynchronizationTrigger(OFString &value,
+                                                  const signed long pos = 0) const;
+
+    /** get acquisition time synchronized
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getAcquisitionTimeSynchronized(OFString &value,
+                                                       const signed long pos = 0) const;
 
     /** get study date
      ** @param  value  reference to variable in which the value should be stored
@@ -814,6 +838,29 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     virtual OFCondition setSoftwareVersions(const OFString &value,
                                             const OFBool check = OFTrue);
+
+    /** set synchronization frame of reference UID
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setSynchronizationFrameOfReferenceUID(const OFString &value,
+                                                              const OFBool check = OFTrue);
+    /** set synchronization trigger
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setSynchronizationTrigger(const OFString &value,
+                                                  const OFBool check = OFTrue);
+
+    /** set acquisition time synchronized
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setAcquisitionTimeSynchronized(const OFString &value,
+                                                       const OFBool check = OFTrue);
 
     /** set content date
      ** @param  value  value to be set (single value only).  If an empty string is passed,
@@ -1320,7 +1367,12 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     // --- Synchronization Module (M/C/U - for some IODs) ---
 
-    // tbd: module not yet supported
+    /// Synchronization Frame of Reference UID: (UI, 1, 1)
+    DcmUniqueIdentifier SynchronizationFrameOfReferenceUID;
+    /// Synchronization Trigger: (CS, 1, 1)
+    DcmCodeString       SynchronizationTrigger;
+    /// Acquisition Time Synchronized: (CS, 1, 1)
+    DcmCodeString       AcquisitionTimeSynchronized;
 
     // --- SR Document Series / Key Object Document Series Module (M) ---
 

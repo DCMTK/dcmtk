@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -328,7 +328,7 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_MammographyCadSR,                      UID_MammographyCADSRStorage,                      0,                                         "SR", "Mammography CAD SR"},
     {DSRTypes::DT_ChestCadSR,                            UID_ChestCADSRStorage,                            0,                                         "SR", "Chest CAD SR"},
     {DSRTypes::DT_ColonCadSR,                            UID_ColonCADSRStorage,                            EM_EnhancedEquipment,                      "SR", "Colon CAD SR"},
-    {DSRTypes::DT_ProcedureLog,                          UID_ProcedureLogStorage,                          0,                                         "SR", "Procedure Log"},
+    {DSRTypes::DT_ProcedureLog,                          UID_ProcedureLogStorage,                          EM_Synchronization,                        "SR", "Procedure Log"},
     {DSRTypes::DT_XRayRadiationDoseSR,                   UID_XRayRadiationDoseSRStorage,                   EM_EnhancedEquipment,                      "SR", "X-Ray Radiation Dose SR"},
     {DSRTypes::DT_SpectaclePrescriptionReport,           UID_SpectaclePrescriptionReportStorage,           EM_EnhancedEquipment,                      "SR", "Spectacle Prescription Report"},
     {DSRTypes::DT_MacularGridThicknessAndVolumeReport,   UID_MacularGridThicknessAndVolumeReportStorage,   EM_EnhancedEquipment,                      "SR", "Macular Grid Thickness and Volume Report"},
@@ -569,6 +569,15 @@ OFBool DSRTypes::requiresTimezoneModule(const E_DocumentType documentType)
     while ((iterator->Type != DT_last) && (iterator->Type != documentType))
         iterator++;
     return (iterator->ExtendedModules & EM_Timezone) > 0;
+}
+
+
+OFBool DSRTypes::requiresSynchronizationModule(const E_DocumentType documentType)
+{
+    const S_DocumentTypeNameMap *iterator = DocumentTypeNameMap;
+    while ((iterator->Type != DT_last) && (iterator->Type != documentType))
+        iterator++;
+    return (iterator->ExtendedModules & EM_Synchronization) > 0;
 }
 
 

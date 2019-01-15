@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -901,6 +901,12 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      ** @return OFTrue if Timezone Module is required, OFFalse otherwise
      */
     static OFBool requiresTimezoneModule(const E_DocumentType documentType);
+
+    /** check whether SR document type requires Synchronization Module
+     ** @param  documentType  SR document type to be checked
+     ** @return OFTrue if Synchronization Module is required, OFFalse otherwise
+     */
+    static OFBool requiresSynchronizationModule(const E_DocumentType documentType);
 
     /** convert relationship type to DICOM defined term
      ** @param  relationshipType  relationship type to be converted

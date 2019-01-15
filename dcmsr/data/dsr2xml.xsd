@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2018, OFFIS e.V.
+      Copyright (C) 2003-2019, OFFIS e.V. and J. Riesmeier
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -31,6 +31,7 @@
         <xsd:element name="manufacturer" type="xsd:string" minOccurs="0"/>
         <xsd:element name="device" type="dsr:Device"/>
       </xsd:choice>
+      <xsd:element name="synchronization" type="dsr:Synchronization" minOccurs="0"/>
       <xsd:element name="referringphysician" type="dsr:ReferringPhysician" minOccurs="0"/>
       <xsd:element name="patient" type="dsr:Patient"/>
       <xsd:element name="study" type="dsr:Study"/>
@@ -56,11 +57,19 @@
 
   <xsd:complexType name="Device">
     <xsd:sequence>
-      <xsd:element name="manufacturer" type="dsr:LongString"/>
+      <xsd:element name="manufacturer" type="dsr:LongString" minOccurs="0"/>
       <xsd:element name="model" type="dsr:LongString"/>
       <xsd:element name="serial" type="dsr:LongString" minOccurs="0"/>
       <xsd:element name="version" type="dsr:LongString" minOccurs="0"/>
     </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Synchronization">
+    <xsd:sequence>
+      <xsd:element name="trigger" type="dsr:SynchronizationTrigger"/>
+      <xsd:element name="acquisitiontime" type="dsr:YesNo"/>
+    </xsd:sequence>
+    <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
   </xsd:complexType>
 
   <xsd:complexType name="ReferringPhysician">
@@ -817,6 +826,15 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="SynchronizationTrigger">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SOURCE"/>
+      <xsd:enumeration value="EXTERNAL"/>
+      <xsd:enumeration value="PASSTHRU"/>
+      <xsd:enumeration value="NO TRIGGER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="Charset">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="ISO_IR 6"/>
@@ -851,6 +869,13 @@
       <xsd:enumeration value="M"/>
       <xsd:enumeration value="F"/>
       <xsd:enumeration value="O"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="YesNo">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="YES"/>
+      <xsd:enumeration value="NO"/>
     </xsd:restriction>
   </xsd:simpleType>
 
