@@ -57,6 +57,19 @@ set(DCMTK_PACKAGE_VERSION_SUFFIX "+")
 # Shared library version information
 SET(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCMTK_ABI_VERSION}")
 
+# Gather information about the employed CMake version's behavior
+set(DCMTK_CMAKE_HAS_CXX_STANDARD FALSE)
+if(CMAKE_MAJOR_VERSION GREATER_EQUAL 3) # CMake versions prior to 3 don't understand VERSION_LESS etc.
+  if(NOT CMAKE_VERSION VERSION_LESS "3.1.3")
+    set(DCMTK_CMAKE_HAS_CXX_STANDARD TRUE)
+  endif()
+endif()
+define_property(GLOBAL PROPERTY DCMTK_CMAKE_HAS_CXX_STANDARD
+  BRIEF_DOCS "TRUE iff the CXX_STANDARD property exists."
+  FULL_DOCS "TRUE for CMake versions since 3.1.3 that evaluate the CXX_STANDARD property and CMAKE_CXX_STANDARD variable."
+)
+set_property(GLOBAL PROPERTY DCMTK_CMAKE_HAS_CXX_STANDARD ${DCMTK_CMAKE_HAS_CXX_STANDARD})
+
 # General build options and settings
 option(BUILD_APPS "Build command line applications and test programs." ON)
 option(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
@@ -90,7 +103,6 @@ option(DCMTK_GENERATE_DOXYGEN_TAGFILE "Generate a tag file with DOXYGEN." OFF)
 option(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS "Build with wide char file I/O functions." OFF)
 option(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char main function." OFF)
 option(DCMTK_ENABLE_STL "Enable use of native STL classes and algorithms instead of DCMTK's own implementations." OFF)
-option(DCMTK_ENABLE_CXX11 "Enable use of native C++11 features (eg. move semantics)." OFF)
 
 macro(DCMTK_INFERABLE_OPTION OPTION DESCRIPTION)
   set("${OPTION}" INFERRED CACHE STRING "${DESCRIPTION}")
@@ -110,6 +122,7 @@ DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_STRING "Enable use of STL string.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TYPE_TRAITS "Enable use of STL type traits.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TUPLE "Enable use of STL tuple.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_SYSTEM_ERROR "Enable use of STL system_error.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_CXX11 "Enable use of native C++11 features (eg. move semantics).")
 
 # Built-in (compiled-in) dictionary enabled on Windows per default, otherwise
 # disabled. Loading of external dictionary via run-time is, per default,
@@ -398,8 +411,31 @@ endif()
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
-# determine which flags are required to enable C++11 features (if any)
-if(NOT DEFINED DCMTK_CXX11_FLAGS)
+# handle CMAKE_CXX_STANDARD and related variables
+if(DCMTK_CMAKE_HAS_CXX_STANDARD)
+  if(NOT DEFINED CMAKE_CXX_STANDARD)
+    # default to C++98 unless the user asked for C++11
+    if(DCMTK_ENABLE_CXX11 AND NOT DCMTK_ENABLE_CXX11 STREQUAL "INFERRED")
+      set(CMAKE_CXX_STANDARD 11)
+    else()
+      set(CMAKE_CXX_STANDARD 98)
+    endif()
+  endif()
+  if(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$")
+    set(DCMTK_MODERN_CXX_STANDARD FALSE)
+  else()
+    set(DCMTK_MODERN_CXX_STANDARD TRUE)
+  endif()
+  define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD
+    BRIEF_DOCS "TRUE when compiling C++11 (or newer) code."
+    FULL_DOCS "TRUE when the compiler does support and is configured for C++11 or a later C++ standard."
+  )
+  set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD ${DCMTK_MODERN_CXX_STANDARD})
+  if(DEFINED DCMTK_CXX11_FLAGS)
+    message(WARNING "Legacy variable DCMTK_CXX11_FLAGS will be ignored since CMake now sets the flags based on the CMAKE_CXX_STANDARD variable automatically.")
+  endif()
+elseif(NOT DEFINED DCMTK_CXX11_FLAGS)
+  # determine which flags are required to enable C++11 features (if any)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     set(DCMTK_CXX11_FLAGS "-std=c++11")
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
@@ -414,6 +450,11 @@ if(NOT DEFINED DCMTK_CXX11_FLAGS)
   set(DCMTK_CXX11_FLAGS "${DCMTK_CXX11_FLAGS}" CACHE STRING "The flags to add to CMAKE_CXX_FLAGS for enabling C++11 (if any).")
   mark_as_advanced(DCMTK_CXX11_FLAGS)
 endif()
+define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS
+  BRIEF_DOCS "Modern C++ standards DCMTK knows about."
+  FULL_DOCS "The list of C++ standards since C++11 that DCMTK currently has configuration tests for. "
+)
+set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS 11 14 17)
 
 #-----------------------------------------------------------------------------
 # Third party libraries

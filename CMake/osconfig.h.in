@@ -1129,6 +1129,22 @@ typedef unsigned long ulong;
 DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
 #endif
 
+/* Define if we can use C++14 */
+#cmakedefine HAVE_CXX14 @HAVE_CXX14@
+
+#if defined(HAVE_CXX14) && defined(__cplusplus) && __cplusplus < 201402L
+#error\
+DCMTK was configured to use C++14 features, but your compiler does not or was not configured to provide them.
+#endif
+
+/* Define if we can use C++17 */
+#cmakedefine HAVE_CXX17 @HAVE_CXX17@
+
+#if defined(HAVE_CXX17) && defined(__cplusplus) && __cplusplus < 201703L
+#error\
+DCMTK was configured to use C++17 features, but your compiler does not or was not configured to provide them.
+#endif
+
 /* Define if the compiler supports __alignof__ */
 #cmakedefine HAVE_GNU_ALIGNOF @HAVE_GNU_ALIGNOF@
 

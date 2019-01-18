@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2017-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -16,6 +16,25 @@
  *
  *  Purpose: Presents constructs that every C++11 compliant
  *           compiler should be able to compile.
+ *
+ *
+ *  This file is based on ax_cxx_compile_stdcxx from the GNU Autoconf project.
+ *  The original license is as follows:
+ *
+ *  LICENSE
+ *
+ *   Copyright (c) 2008 Benjamin Kosnik <bkoz@redhat.com>
+ *   Copyright (c) 2012 Zack Weinberg <zackw@panix.com>
+ *   Copyright (c) 2013 Roy Stogner <roystgnr@ices.utexas.edu>
+ *   Copyright (c) 2014, 2015 Google Inc.; contributed by Alexey Sokolov <sokolov@google.com>
+ *   Copyright (c) 2015 Paul Norman <penorman@mac.com>
+ *   Copyright (c) 2015 Moritz Klammler <moritz@klammler.eu>
+ *   Copyright (c) 2016 Krzesimir Nowak <qdlacz@gmail.com>
+ *
+ *   Copying and distribution of this file, with or without modification, are
+ *   permitted in any medium without royalty provided the copyright notice
+ *   and this notice are preserved.  This file is offered as-is, without any
+ *   warranty.
  */
 
 #ifndef __cplusplus
@@ -35,21 +54,17 @@ int main()
 
 namespace cxx11
 {
-
   namespace test_static_assert
   {
-
     template <typename T>
     struct check
     {
       static_assert(sizeof(int) <= sizeof(T), "not big enough");
     };
-
   }
 
   namespace test_final_override
   {
-
     struct Base
     {
       virtual void f() {}
@@ -59,25 +74,21 @@ namespace cxx11
     {
       virtual void f() override {}
     };
-
   }
 
   namespace test_double_right_angle_brackets
   {
-
-    template < typename T >
+    template <typename T>
     struct check {};
 
     typedef check<void> single_type;
     typedef check<check<void>> double_type;
     typedef check<check<check<void>>> triple_type;
     typedef check<check<check<check<void>>>> quadruple_type;
-
   }
 
   namespace test_decltype
   {
-
     int
     f()
     {
@@ -85,12 +96,10 @@ namespace cxx11
       decltype(a) b = 2;
       return a + b;
     }
-
   }
 
   namespace test_type_deduction
   {
-
     template < typename T1, typename T2 >
     struct is_same
     {
@@ -127,23 +136,19 @@ namespace cxx11
       static_assert(is_same<int, decltype(add(c, v))>::value == true, "");
       return (sumf > 0.0) ? sumi : add(c, v);
     }
-
   }
 
   namespace test_noexcept
   {
-
     int f() { return 0; }
     int g() noexcept { return 0; }
 
     static_assert(noexcept(f()) == false, "");
     static_assert(noexcept(g()) == true, "");
-
   }
 
   namespace test_constexpr
   {
-
     template < typename CharT >
     unsigned long constexpr
     strlen_c_r(const CharT *const s, const unsigned long acc) noexcept
@@ -162,12 +167,10 @@ namespace cxx11
     static_assert(strlen_c("1") == 1UL, "");
     static_assert(strlen_c("example") == 7UL, "");
     static_assert(strlen_c("another\0example") == 7UL, "");
-
   }
 
   namespace test_rvalue_references
   {
-
     template < int N >
     struct answer
     {
@@ -187,12 +190,10 @@ namespace cxx11
       static_assert(decltype(f(c))::value == 2, "");
       static_assert(decltype(f(0))::value == 3, "");
     }
-
   }
 
   namespace test_uniform_initialization
   {
-
     struct test
     {
       static const int zero {};
@@ -201,12 +202,10 @@ namespace cxx11
 
     static_assert(test::zero == 0, "");
     static_assert(test::one == 1, "");
-
   }
 
   namespace test_lambdas
   {
-
     void
     test1()
     {
@@ -245,12 +244,10 @@ namespace cxx11
       };
       return higher1st(nullary) + higher2nd(nullary)(unary);
     }
-
   }
 
   namespace test_variadic_templates
   {
-
     template <int...>
     struct sum;
 
@@ -272,7 +269,6 @@ namespace cxx11
     static_assert(sum<1, 2>::value == 3, "");
     static_assert(sum<5, 5, 11>::value == 21, "");
     static_assert(sum<2, 3, 5, 7, 11, 13>::value == 41, "");
-
   }
 
   // http://stackoverflow.com/questions/13728184/template-aliases-and-sfinae
@@ -280,7 +276,6 @@ namespace cxx11
   // because of this.
   namespace test_template_alias_sfinae
   {
-
     struct foo {};
 
     template<typename T>
@@ -295,9 +290,7 @@ namespace cxx11
     void test();
 
     void test() { func<foo>(0); }
-
   }
-
 }  // namespace cxx11
 
 #endif  // __cplusplus >= 201103L
