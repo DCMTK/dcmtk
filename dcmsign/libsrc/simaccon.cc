@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,7 +61,6 @@ OFCondition SiMACConstructor::flushBuffer(SiMAC& mac)
   stream.flushBuffer(bufptr, bufLen);
   if (bufLen > 0)
   {
-    size_t written = OFstatic_cast(size_t, bufLen);
     if (dumpFile)
     {
       if (fwrite(bufptr, 1, OFstatic_cast(size_t, bufLen), dumpFile) != OFstatic_cast(size_t, bufLen))
