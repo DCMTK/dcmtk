@@ -1498,13 +1498,13 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             checker = new DSRComprehensive3DSRConstraintChecker();
             break;
         case DT_RadiopharmaceuticalRadiationDoseSR:
-            checker = new DSRRadiopharmaceuticalRadiationDoseConstraintChecker();
+            checker = new DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker();
             break;
         case DT_ExtensibleSR:
             /* not yet supported */
             break;
         case DT_AcquisitionContextSR:
-            checker = new DSRAcquisitionContextConstraintChecker();
+            checker = new DSRAcquisitionContextSRConstraintChecker();
             break;
         case DT_SimplifiedAdultEchoSR:
             checker = new DSRSimplifiedAdultEchoSRConstraintChecker();

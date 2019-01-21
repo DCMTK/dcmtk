@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -16,7 +16,7 @@
  *  Author:  Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRRadiopharmaceuticalRadiationDoseConstraintChecker
+ *    classes: DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker
  *
  */
 
@@ -26,31 +26,31 @@
 #include "dcmtk/dcmsr/dsrrrdcc.h"
 
 
-DSRRadiopharmaceuticalRadiationDoseConstraintChecker::DSRRadiopharmaceuticalRadiationDoseConstraintChecker()
+DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker::DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker()
   : DSRIODConstraintChecker()
 {
 }
 
 
-DSRRadiopharmaceuticalRadiationDoseConstraintChecker::~DSRRadiopharmaceuticalRadiationDoseConstraintChecker()
+DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker::~DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker()
 {
 }
 
 
-OFBool DSRRadiopharmaceuticalRadiationDoseConstraintChecker::isByReferenceAllowed() const
-{
-    return OFFalse;
-}
-
-
-OFBool DSRRadiopharmaceuticalRadiationDoseConstraintChecker::isTemplateSupportRequired() const
+OFBool DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker::isByReferenceAllowed() const
 {
     return OFFalse;
 }
 
 
-OFCondition DSRRadiopharmaceuticalRadiationDoseConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
-                                                                                                OFString &mappingResource) const
+OFBool DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker::isTemplateSupportRequired() const
+{
+    return OFFalse;
+}
+
+
+OFCondition DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                                  OFString &mappingResource) const
 {
     templateIdentifier.clear();
     mappingResource.clear();
@@ -58,16 +58,16 @@ OFCondition DSRRadiopharmaceuticalRadiationDoseConstraintChecker::getRootTemplat
 }
 
 
-DSRTypes::E_DocumentType DSRRadiopharmaceuticalRadiationDoseConstraintChecker::getDocumentType() const
+DSRTypes::E_DocumentType DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker::getDocumentType() const
 {
     return DT_RadiopharmaceuticalRadiationDoseSR;
 }
 
 
-OFBool DSRRadiopharmaceuticalRadiationDoseConstraintChecker::checkContentRelationship(const E_ValueType sourceValueType,
-                                                                                      const E_RelationshipType relationshipType,
-                                                                                      const E_ValueType targetValueType,
-                                                                                      const OFBool byReference) const
+OFBool DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker::checkContentRelationship(const E_ValueType sourceValueType,
+                                                                                        const E_RelationshipType relationshipType,
+                                                                                        const E_ValueType targetValueType,
+                                                                                        const OFBool byReference) const
 {
     /* the following code implements the constraints of table A.35.14-2 in DICOM PS3.3 */
     OFBool result = OFFalse;

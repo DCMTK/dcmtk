@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -16,7 +16,7 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRRadiopharmaceuticalRadiationDoseConstraintChecker
+ *    classes: DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker
  *
  */
 
@@ -38,7 +38,7 @@
  *  According to DICOM PS 3.3: "The document may be constructed from Baseline TID 10021
  *  (Radiopharmaceutical Radiation Dose) invoked at the root node."
  */
-class DCMTK_DCMSR_EXPORT DSRRadiopharmaceuticalRadiationDoseConstraintChecker
+class DCMTK_DCMSR_EXPORT DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker
   : public DSRIODConstraintChecker
 {
 
@@ -46,11 +46,11 @@ class DCMTK_DCMSR_EXPORT DSRRadiopharmaceuticalRadiationDoseConstraintChecker
 
     /** default constructor
      */
-    DSRRadiopharmaceuticalRadiationDoseConstraintChecker();
+    DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker();
 
     /** destructor
      */
-    virtual ~DSRRadiopharmaceuticalRadiationDoseConstraintChecker();
+    virtual ~DSRRadiopharmaceuticalRadiationDoseSRConstraintChecker();
 
     /** check whether by-reference relationships are allowed for this SR IOD
      ** @return always returns OFFalse, i.e. by-reference relationships are not allowed

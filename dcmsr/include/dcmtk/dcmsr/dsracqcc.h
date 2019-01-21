@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -16,7 +16,7 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRAcquisitionContextConstraintChecker
+ *    classes: DSRAcquisitionContextSRConstraintChecker
  *
  */
 
@@ -39,7 +39,7 @@
  *  (Preclinical Small Animal Image Acquisition Context) invoked at the root node.
  *  Note: This IOD may be used with other Templates defined for Acquisition Context."
  */
-class DCMTK_DCMSR_EXPORT DSRAcquisitionContextConstraintChecker
+class DCMTK_DCMSR_EXPORT DSRAcquisitionContextSRConstraintChecker
   : public DSRIODConstraintChecker
 {
 
@@ -47,11 +47,11 @@ class DCMTK_DCMSR_EXPORT DSRAcquisitionContextConstraintChecker
 
     /** default constructor
      */
-    DSRAcquisitionContextConstraintChecker();
+    DSRAcquisitionContextSRConstraintChecker();
 
     /** destructor
      */
-    virtual ~DSRAcquisitionContextConstraintChecker();
+    virtual ~DSRAcquisitionContextSRConstraintChecker();
 
     /** check whether by-reference relationships are allowed for this SR IOD
      ** @return always returns OFFalse, i.e. by-reference relationships are not allowed

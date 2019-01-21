@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -16,7 +16,7 @@
  *  Author:  Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRAcquisitionContextConstraintChecker
+ *    classes: DSRAcquisitionContextSRConstraintChecker
  *
  */
 
@@ -26,31 +26,31 @@
 #include "dcmtk/dcmsr/dsracqcc.h"
 
 
-DSRAcquisitionContextConstraintChecker::DSRAcquisitionContextConstraintChecker()
+DSRAcquisitionContextSRConstraintChecker::DSRAcquisitionContextSRConstraintChecker()
   : DSRIODConstraintChecker()
 {
 }
 
 
-DSRAcquisitionContextConstraintChecker::~DSRAcquisitionContextConstraintChecker()
+DSRAcquisitionContextSRConstraintChecker::~DSRAcquisitionContextSRConstraintChecker()
 {
 }
 
 
-OFBool DSRAcquisitionContextConstraintChecker::isByReferenceAllowed() const
-{
-    return OFFalse;
-}
-
-
-OFBool DSRAcquisitionContextConstraintChecker::isTemplateSupportRequired() const
+OFBool DSRAcquisitionContextSRConstraintChecker::isByReferenceAllowed() const
 {
     return OFFalse;
 }
 
 
-OFCondition DSRAcquisitionContextConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
-                                                                                  OFString &mappingResource) const
+OFBool DSRAcquisitionContextSRConstraintChecker::isTemplateSupportRequired() const
+{
+    return OFFalse;
+}
+
+
+OFCondition DSRAcquisitionContextSRConstraintChecker::getRootTemplateIdentification(OFString &templateIdentifier,
+                                                                                    OFString &mappingResource) const
 {
     templateIdentifier.clear();
     mappingResource.clear();
@@ -58,16 +58,16 @@ OFCondition DSRAcquisitionContextConstraintChecker::getRootTemplateIdentificatio
 }
 
 
-DSRTypes::E_DocumentType DSRAcquisitionContextConstraintChecker::getDocumentType() const
+DSRTypes::E_DocumentType DSRAcquisitionContextSRConstraintChecker::getDocumentType() const
 {
     return DT_AcquisitionContextSR;
 }
 
 
-OFBool DSRAcquisitionContextConstraintChecker::checkContentRelationship(const E_ValueType sourceValueType,
-                                                                        const E_RelationshipType relationshipType,
-                                                                        const E_ValueType targetValueType,
-                                                                        const OFBool byReference) const
+OFBool DSRAcquisitionContextSRConstraintChecker::checkContentRelationship(const E_ValueType sourceValueType,
+                                                                          const E_RelationshipType relationshipType,
+                                                                          const E_ValueType targetValueType,
+                                                                          const OFBool byReference) const
 {
     /* the following code implements the constraints of table A.35.16-2 in DICOM PS3.3 */
     OFBool result = OFFalse;
