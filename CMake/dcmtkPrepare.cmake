@@ -59,7 +59,7 @@ SET(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSI
 
 # Gather information about the employed CMake version's behavior
 set(DCMTK_CMAKE_HAS_CXX_STANDARD FALSE)
-if(CMAKE_MAJOR_VERSION GREATER_EQUAL 3) # CMake versions prior to 3 don't understand VERSION_LESS etc.
+if(NOT CMAKE_MAJOR_VERSION LESS 3) # CMake versions prior to 3 don't understand VERSION_LESS etc.
   if(NOT CMAKE_VERSION VERSION_LESS "3.1.3")
     set(DCMTK_CMAKE_HAS_CXX_STANDARD TRUE)
   endif()
