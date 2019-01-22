@@ -57,6 +57,8 @@
 #include "dcmtk/dcmsr/dsracqcc.h"
 #include "dcmtk/dcmsr/dsrsaecc.h"
 #include "dcmtk/dcmsr/dsrprdcc.h"
+#include "dcmtk/dcmsr/dsrpficc.h"
+#include "dcmtk/dcmsr/dsrplicc.h"
 
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
@@ -920,9 +922,7 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) &&
-        (documentType != DT_PerformedImagingAgentAdministrationSR) &&
-        (documentType != DT_PlannedImagingAgentAdministrationSR);
+    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR);
 }
 
 
@@ -1513,10 +1513,10 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             checker = new DSRPatientRadiationDoseSRConstraintChecker();
             break;
         case DT_PerformedImagingAgentAdministrationSR:
-            /* not yet supported */
+            checker = new DSRPerformedImagingAgentAdministrationSRConstraintChecker();
             break;
         case DT_PlannedImagingAgentAdministrationSR:
-            /* not yet supported */
+            checker = new DSRPlannedImagingAgentAdministrationSRConstraintChecker();
             break;
         case DT_invalid:
             /* nothing to do */

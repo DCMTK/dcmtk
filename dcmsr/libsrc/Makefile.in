@@ -33,7 +33,8 @@ objs = dsrdoc.o dsrposcn.o dsrdncsr.o dsritcsr.o dsrdnflt.o dsrtree.o \
 	dsrtpltn.o dsrsoprf.o dsrrefin.o dsrcsidl.o dsrxmlc.o dsrxmld.o \
 	dsriodcc.o dsrbascc.o dsrenhcc.o dsrcomcc.o dsrkeycc.o dsrmamcc.o \
 	dsrchecc.o dsrcolcc.o dsrprocc.o dsrxrdcc.o dsrspecc.o dsrmaccc.o \
-	dsrimpcc.o dsrc3dcc.o dsrrrdcc.o dsracqcc.o dsrsaecc.o dsrprdcc.o
+	dsrimpcc.o dsrc3dcc.o dsrrrdcc.o dsracqcc.o dsrsaecc.o dsrprdcc.o \
+	dsrpficc.o dsrplicc.o
 library = libdcmsr.$(LIBEXT)
 
 
