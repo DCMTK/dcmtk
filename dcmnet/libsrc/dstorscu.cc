@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -961,6 +961,7 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
     size_t numError = 0;
     size_t numWarning = 0;
     size_t numSuccess = 0;
+    size_t numUnknown = 0;
     size_t numPending = 0;
     size_t numInvalid = 0;
     OFListConstIterator(TransferEntry *) transferEntry = TransferList.begin();
@@ -1003,6 +1004,9 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
             {
                 --numSent;
                 ++numInvalid;
+            } else {
+                /* any other (unknown/unsupported) DIMSE status code */
+                ++numUnknown;
             }
         }
         ++transferEntry;
@@ -1017,6 +1021,8 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
         stream << OFendl << "  * with status ERROR    : " << numError;
     if (numRefused > 0)
         stream << OFendl << "  * with status REFUSED  : " << numRefused;
+    if (numUnknown > 0)
+        stream << OFendl << "  * with unknown status  : " << numUnknown;
     if (numSent < numInstances)
         stream << OFendl << "- NOT sent to the peer   : " << (numInstances - numSent);
     if (numPending > 0)
