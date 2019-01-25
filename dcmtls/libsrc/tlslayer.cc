@@ -152,6 +152,21 @@ int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX * 
  */
 extern "C" int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int rwflag, void *userdata);
 
+int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int /* rwflag */, void *userdata)
+{
+  if (userdata == NULL) return -1;
+  OFString *password = OFreinterpret_cast(OFString *, userdata);
+  int passwordSize = OFstatic_cast(int, password->length());
+  if (passwordSize > size) passwordSize = size;
+  strncpy(buf, password->c_str(), passwordSize);
+  return passwordSize;
+}
+
+
+// The TLS Supported Elliptic Curves extension (RFC 4492) is only supported in OpenSSL 1.0.2 and newer.
+// When compiling with OpenSSL 1.0.1, we are not using computeEllipticCurveList().
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L && !defined(LIBRESSL_VERSION_NUMBER)
+
 /** determine the list of elliptic curves supported by the OpenSSL library
  *  for use with the TLS elliptic curve extension.
  *  @param ecvector a list of supported elliptic curves that have 256 or
@@ -186,7 +201,7 @@ static void computeEllipticCurveList(OFVector<int>& ecvector)
 #else
    SSL_CTX *ctx = SSL_CTX_new(TLS_method());
    if (ctx) SSL_CTX_set_security_level(ctx, 0);
- #endif
+#endif
   if (ctx)
   {
     size_t numentries = sizeof(eclist) / sizeof(int);
@@ -205,15 +220,8 @@ static void computeEllipticCurveList(OFVector<int>& ecvector)
   }
 }
 
-int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int /* rwflag */, void *userdata)
-{
-  if (userdata == NULL) return -1;
-  OFString *password = OFreinterpret_cast(OFString *, userdata);
-  int passwordSize = OFstatic_cast(int, password->length());
-  if (passwordSize > size) passwordSize = size;
-  strncpy(buf, password->c_str(), passwordSize);
-  return passwordSize;
-}
+#endif
+
 
 DcmTLSTransportLayer::DcmTLSTransportLayer()
 : DcmTransportLayer()
