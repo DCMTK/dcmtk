@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2016, OFFIS e.V.
+ *  Copyright (C) 1997-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,7 +81,7 @@ class OFBitmanipTemplate
                         const size_t count)
     {
 #ifdef HAVE_MEMMOVE
-        memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
+        memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), count * sizeof(T));
 #else
         if (src == dest)
             return;
@@ -119,7 +119,7 @@ class OFBitmanipTemplate
     {
 #ifdef HAVE_MEMSET
         if ((value == 0) || (sizeof(T) == sizeof(unsigned char)))
-            memset(OFstatic_cast(void *, dest), OFstatic_cast(int, value), OFstatic_cast(size_t, count) * sizeof(T));
+            memset(OFstatic_cast(void *, dest), OFstatic_cast(int, value), count * sizeof(T));
         else
 #endif
         {
@@ -140,7 +140,7 @@ class OFBitmanipTemplate
                         const size_t count)
     {
 #ifdef HAVE_MEMZERO
-        memzero(dest, OFstatic_cast(size_t, count) * sizeof(T));
+        memzero(dest, count * sizeof(T));
 #else
         size_t i;
         T *q = dest;
