@@ -364,7 +364,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
     computeEllipticCurveList(ecvector);
     if (ecvector.size() > 0) // only try to add the EC extension if we actually do support at least one curve
     {
-      if (0 == SSL_CTX_set1_curves(transportLayerContext, &ecvector[0], ecvector.size()))
+      if (0 == SSL_CTX_set1_curves(transportLayerContext, &ecvector[0], OFstatic_cast(int, ecvector.size())))
       {
         DCMTLS_ERROR("unable to configure the TLS Supported Elliptic Curves extension.");
       }

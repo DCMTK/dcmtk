@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -310,7 +310,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
   DCMWLM_INFO("Determining matching records from worklist files");
 
   // Determine records from worklist files which match the search mask
-  unsigned long numOfMatchingRecords = fileSystemInteractionManager.DetermineMatchingRecords( identifiers );
+  unsigned long numOfMatchingRecords = OFstatic_cast(unsigned long, fileSystemInteractionManager.DetermineMatchingRecords( identifiers ));
 
   // dump some information if required
   DCMWLM_INFO("Matching results: " << numOfMatchingRecords << " matching records found in worklist files");
