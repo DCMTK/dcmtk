@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -25,7 +25,7 @@
  * for portability. It works by using recursion and a node tree for breaking
  * down the elements of an XML document.  </P>
  *
- * @version     V2.43
+ * @version     V2.44
  * @author      Frank Vanden Berghen
  *
  * NOTE:
@@ -143,7 +143,7 @@ using STD_NAMESPACE ftell;
 using STD_NAMESPACE fclose;
 #endif
 
-XMLCSTR XMLNode::getVersion() { return _CXML("v2.43"); }
+XMLCSTR XMLNode::getVersion() { return _CXML("v2.44"); }
 void freeXMLString(XMLSTR t){if(t)free(t);}
 
 static XMLNode::XMLCharEncoding characterEncoding=XMLNode::char_encoding_UTF8;
@@ -424,30 +424,42 @@ char myIsTextWideChar(const void * /*b*/, int /*len*/) { return FALSE; }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//            the "xmltoc,xmltob,xmltoi,xmltol,xmltof,xmltoa" functions      //
+//     the "xmltoc,xmltob,xmltoi,xmltol,xmltoll,xmltof,xmltoa" functions     //
 ///////////////////////////////////////////////////////////////////////////////
-// These 6 functions are not used inside the XMLparser.
+// These 7 functions are not used inside the XMLparser.
 // There are only here as "convenience" functions for the user.
 // If you don't need them, you can delete them without any trouble.
 #ifdef _XMLWIDECHAR
     #ifdef _XMLWINDOWS
     // for Microsoft Visual Studio 6.0 and Microsoft Visual Studio .NET and Borland C++ Builder 6.0
-        char    xmltob(XMLCSTR t,char    v){ if (t&&(*t)) return (char)_wtoi(t); return v; }
-        int     xmltoi(XMLCSTR t,int     v){ if (t&&(*t)) return _wtoi(t); return v; }
-        long    xmltol(XMLCSTR t,long    v){ if (t&&(*t)) return _wtol(t); return v; }
-        double  xmltof(XMLCSTR t,double  v){ if (t&&(*t)) swscanf(t, L"%lf", &v); /*v=_wtof(t);*/ return v; }
+        char      xmltob (XMLCSTR t,char      v){ if (t&&(*t)) return (char)_wtoi(t); return v; }
+        int       xmltoi (XMLCSTR t,int       v){ if (t&&(*t)) return _wtoi(t); return v; }
+        long      xmltol (XMLCSTR t,long      v){ if (t&&(*t)) return _wtol(t); return v; }
+      #ifdef HAVE_LONG_LONG
+        // DCMTK adds xmltoll() in addition to xmltol()
+        long long xmltoll(XMLCSTR t,long long v){ if (t&&(*t)) return _wtoi64(t); return v; }
+      #endif
+        double    xmltof (XMLCSTR t,double    v){ if (t&&(*t)) swscanf(t, L"%lf", &v); /*v=_wtof(t);*/ return v; }
     #else
         #ifdef sun
         // for CC
-           #include <widec.h>
-           char    xmltob(XMLCSTR t,char    v){ if (t) return (char)wstol(t,NULL,10); return v; }
-           int     xmltoi(XMLCSTR t,int     v){ if (t) return (int)wstol(t,NULL,10); return v; }
-           long    xmltol(XMLCSTR t,long    v){ if (t) return wstol(t,NULL,10); return v; }
+            #include <widec.h>
+            char      xmltob (XMLCSTR t,char      v){ if (t) return (char)wstol(t,NULL,10); return v; }
+            int       xmltoi (XMLCSTR t,int       v){ if (t) return (int)wstol(t,NULL,10); return v; }
+            long      xmltol (XMLCSTR t,long      v){ if (t) return wstol(t,NULL,10); return v; }
+          #ifdef HAVE_LONG_LONG
+            // DCMTK adds xmltoll() in addition to xmltol()
+            long long xmltoll(XMLCSTR t,long long v){ if (t) return wstol(t,NULL,10); return v; }
+          #endif
         #else
         // for gcc
-           char    xmltob(XMLCSTR t,char    v){ if (t) return (char)wcstol(t,NULL,10); return v; }
-           int     xmltoi(XMLCSTR t,int     v){ if (t) return (int)wcstol(t,NULL,10); return v; }
-           long    xmltol(XMLCSTR t,long    v){ if (t) return wcstol(t,NULL,10); return v; }
+            char      xmltob (XMLCSTR t,char      v){ if (t) return (char)wcstol(t,NULL,10); return v; }
+            int       xmltoi (XMLCSTR t,int       v){ if (t) return (int)wcstol(t,NULL,10); return v; }
+            long      xmltol (XMLCSTR t,long      v){ if (t) return wcstol(t,NULL,10); return v; }
+          #ifdef HAVE_LONG_LONG
+            // DCMTK adds xmltoll() in addition to xmltol()
+            long long xmltoll(XMLCSTR t,long long v){ if (t) return wcstol(t,NULL,10); return v; }
+          #endif
         #endif
         double  xmltof(XMLCSTR t,double  v){ if (t&&(*t)) swscanf(t, L"%lf", &v); /*v=_wtof(t);*/ return v; }
     #endif
@@ -455,6 +467,14 @@ char myIsTextWideChar(const void * /*b*/, int /*len*/) { return FALSE; }
     char    xmltob(XMLCSTR t,char    v){ if (t&&(*t)) return OFstatic_cast(char, atoi(t)); return v; }
     int     xmltoi(XMLCSTR t,int     v){ if (t&&(*t)) return atoi(t); return v; }
     long    xmltol(XMLCSTR t,long    v){ if (t&&(*t)) return atol(t); return v; }
+    #ifdef HAVE_LONG_LONG
+      // DCMTK adds xmltoll() in addition to xmltol()
+      #ifdef _XMLWINDOWS
+        long long xmltoll(XMLCSTR t,long long v){ if (t&&(*t)) return _atoi64(t); return v; }
+      #else
+        long long xmltoll(XMLCSTR t,long long v){ if (t&&(*t)) return atoll(t); return v; }
+      #endif
+    #endif
     double  xmltof(XMLCSTR t,double  v){ if (t&&(*t)) return atof(t); return v; }
 #endif
 XMLCSTR xmltoa(XMLCSTR t,      XMLCSTR v){ if (t)       return  t; return v; }
@@ -491,7 +511,11 @@ XMLNode XMLNode::openFileHelper(XMLCSTR filename, XMLCSTR tag)
         // create message
         char message[2000],*s1=(char*)"",*s3=(char*)""; XMLCSTR s2=_CXML("");
         if (pResults.error==eXMLErrorFirstTagNotFound) { s1=(char*)"First Tag should be '"; s2=tag; s3=(char*)"'.\n"; }
-        sprintf(message,
+#ifdef _XMLWINDOWS
+        _snprintf(message,2000,
+#else
+        snprintf(message,2000,
+#endif
 #ifdef _XMLWIDECHAR
             "XML Parsing error inside file '%S'.\n%S\nAt line %i, column %i.\n%s%S%s"
 #else
@@ -777,9 +801,36 @@ XMLSTR ToXMLStringTool::toXMLUnSafe(XMLSTR dest,XMLCSTR source)
 #else
         switch(XML_ByteTable[OFstatic_cast(unsigned char, ch)])
         {
-        case 4: *(dest++)=*(source++);
-        case 3: *(dest++)=*(source++);
-        case 2: *(dest++)=*(source++);
+        case 4:
+            if ((!(source[1]))||(!(source[2]))||(!(source[3]))) { *(dest++)='_'; source++; }
+            else
+            {
+                *dest=*source;
+                dest[1]=source[1];
+                dest[2]=source[2];
+                dest[3]=source[3];
+                dest+=4; source+=4;
+            }
+            break;
+        case 3:
+            if ((!(source[1]))||(!(source[2]))) { *(dest++)='_'; source++; }
+            else
+            {
+                *dest=*source;
+                dest[1]=source[1];
+                dest[2]=source[2];
+                dest+=3; source+=3;
+            }
+            break;
+        case 2:
+            if (!(source[1])) { *(dest++)='_'; source++; }
+            else
+            {
+                *dest=*source;
+                dest[1]=source[1];
+                dest+=2; source+=2;
+            }
+            break;
         case 1: *(dest++)=*(source++);
         }
 #endif

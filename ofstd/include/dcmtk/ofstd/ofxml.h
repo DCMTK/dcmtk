@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011, OFFIS e.V.
+ *  Copyright (C) 2011-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -61,7 +61,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version     V2.43
+ * @version     V2.44
  * @author      Frank Vanden Berghen
  *
  * \section tutorial First Tutorial
@@ -144,11 +144,11 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofdefine.h"
 
-#ifdef _UNICODE
+#if defined(UNICODE) || defined(_UNICODE)
 // If you comment the next "define" line then the library will never "switch to" _UNICODE (wchar_t*) mode (16/32 bits per characters).
 // This is useful when you get error messages like:
 //    'XMLNode::openFileHelper' : cannot convert parameter 2 from 'const char [5]' to 'const wchar_t *'
-// The _XMLWIDECHAR preprocessor variable force the XMLParser library into either utf16/32-mode (the proprocessor variable
+// The _XMLWIDECHAR preprocessor variable force the XMLParser library into either utf16/32-mode (the preprocessor variable
 // must be defined) or utf8-mode(the pre-processor variable must be undefined).
 #define _XMLWIDECHAR
 #endif
@@ -683,25 +683,26 @@ XMLDLLENTRY XMLSTR stringDup(XMLCSTR source, int cbData=-1);
 XMLDLLENTRY void freeXMLString(XMLSTR t); // {free(t);}
 /** @} */
 
-// DCMTK: currently, these functions are not needed
-#if 0
 /** @defgroup atoX ato? like functions
  * @ingroup XMLParserGeneral
- * The "xmlto?" functions are equivalents to the atoi, atol, atof functions.
+ * The "xmlto?" functions are equivalents to the atoi, atol, atoll, atof functions.
  * The only difference is: If the variable "xmlString" is NULL, than the return value
- * is "defautValue". These 6 functions are only here as "convenience" functions for the
+ * is "defautValue". These 7 functions are only here as "convenience" functions for the
  * user (they are not used inside the XMLparser). If you don't need them, you can
  * delete them without any trouble.
  *
  * @{ */
-XMLDLLENTRY char    xmltob(XMLCSTR xmlString,char   defautValue=0);
-XMLDLLENTRY int     xmltoi(XMLCSTR xmlString,int    defautValue=0);
-XMLDLLENTRY long    xmltol(XMLCSTR xmlString,long   defautValue=0);
-XMLDLLENTRY double  xmltof(XMLCSTR xmlString,double defautValue=.0);
-XMLDLLENTRY XMLCSTR xmltoa(XMLCSTR xmlString,XMLCSTR defautValue=_CXML(""));
-XMLDLLENTRY XMLCHAR xmltoc(XMLCSTR xmlString,const XMLCHAR defautValue=_CXML('\0'));
-/** @} */
+XMLDLLENTRY char      xmltob (XMLCSTR xmlString,char      defautValue=0);
+XMLDLLENTRY int       xmltoi (XMLCSTR xmlString,int       defautValue=0);
+XMLDLLENTRY long      xmltol (XMLCSTR xmlString,long      defautValue=0);
+// DCMTK adds xmltoll() in addition to xmltol()
+#ifdef HAVE_LONG_LONG
+XMLDLLENTRY long long xmltoll(XMLCSTR xmlString,long long defautValue=0);
 #endif
+XMLDLLENTRY double    xmltof (XMLCSTR xmlString,double    defautValue=.0);
+XMLDLLENTRY XMLCSTR   xmltoa (XMLCSTR xmlString,XMLCSTR   defautValue=_CXML(""));
+XMLDLLENTRY XMLCHAR   xmltoc (XMLCSTR xmlString,const XMLCHAR defautValue=_CXML('\0'));
+/** @} */
 
 /** @defgroup ToXMLStringTool Helper class to create XML files using "printf", "fprintf", "cout",... functions.
  * @ingroup XMLParserGeneral
