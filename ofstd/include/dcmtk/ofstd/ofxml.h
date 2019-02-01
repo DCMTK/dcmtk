@@ -696,7 +696,7 @@ XMLDLLENTRY char      xmltob (XMLCSTR xmlString,char      defautValue=0);
 XMLDLLENTRY int       xmltoi (XMLCSTR xmlString,int       defautValue=0);
 XMLDLLENTRY long      xmltol (XMLCSTR xmlString,long      defautValue=0);
 // DCMTK adds xmltoll() in addition to xmltol()
-#ifdef HAVE_LONG_LONG
+#if defined(HAVE_LONG_LONG) && (defined(HAVE_ATOLL) || defined (_XMLWINDOWS))
 XMLDLLENTRY long long xmltoll(XMLCSTR xmlString,long long defautValue=0);
 #endif
 XMLDLLENTRY double    xmltof (XMLCSTR xmlString,double    defautValue=.0);

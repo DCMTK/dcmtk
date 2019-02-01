@@ -244,7 +244,7 @@ AC_FUNC_VPRINTF
 AC_TYPE_SIGNAL
 AC_FUNC_WAIT3
 AC_CHECK_FUNCS(gethostname gethostid socket sysinfo)
-AC_CHECK_FUNCS(strchr strstr strtoul itoa)
+AC_CHECK_FUNCS(strchr strstr strtoul itoa atoll)
 AC_CHECK_FUNCS(memcpy memset memmove memcmp bcopy bcmp)
 AC_CHECK_FUNCS(getpid mktemp tempnam tmpnam getenv mkstemp)
 AC_CHECK_FUNCS(stat)

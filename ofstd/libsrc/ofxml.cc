@@ -125,13 +125,14 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
-// workaround for SunPro not defining these C functions in the global namespace
+// DCMTK: workaround for SunPro not defining these C functions in the global namespace
 #ifdef __sun
 using STD_NAMESPACE free;
 using STD_NAMESPACE malloc;
 using STD_NAMESPACE realloc;
 using STD_NAMESPACE atoi;
 using STD_NAMESPACE atol;
+using STD_NAMESPACE atoll;
 using STD_NAMESPACE atof;
 using STD_NAMESPACE FILE;
 using STD_NAMESPACE fopen;
@@ -471,7 +472,7 @@ char myIsTextWideChar(const void * /*b*/, int /*len*/) { return FALSE; }
       // DCMTK adds xmltoll() in addition to xmltol()
       #ifdef _XMLWINDOWS
         long long xmltoll(XMLCSTR t,long long v){ if (t&&(*t)) return _atoi64(t); return v; }
-      #else
+      #elif defined(HAVE_ATOLL)
         long long xmltoll(XMLCSTR t,long long v){ if (t&&(*t)) return atoll(t); return v; }
       #endif
     #endif
