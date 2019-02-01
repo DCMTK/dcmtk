@@ -73,6 +73,19 @@ DCMTK_GUI
     either present them to the user or store them in a log file.  See
     comments in ofstd/include/dcmtk/ofstd/ofconsol.h.
 
+DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
+  Affected: oflog
+  Type of modification: Disables feature
+  Explanation: Starting with release 3.6.5, DCMTK uses fiber local
+  storage instead of thread local storage in the oflog module on Windows
+  to store thread-specific information. This has the advantage that
+  a callback can be (and is) registered that automatically cleans up
+  the memory when a thread ends. The old behaviour can be re-activated
+  with this macro. This may be necessary when an application wants to
+  use multiple fibers within a single thread. In that case, before
+  ending a thread, dcmtk::log4cplus::threadCleanup() should be called
+  by the user code in order to clean-up oflog's thread local storage.
+
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
   Type of modification: Disables feature

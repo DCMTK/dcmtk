@@ -1,16 +1,16 @@
 // -*- C++ -*-
 //  Copyright (C) 2010, Vaclav Haisman. All rights reserved.
-//  
+//
 //  Redistribution and use in source and binary forms, with or without modifica-
 //  tion, are permitted provided that the following conditions are met:
-//  
+//
 //  1. Redistributions of  source code must  retain the above copyright  notice,
 //     this list of conditions and the following disclaimer.
-//  
+//
 //  2. Redistributions in binary form must reproduce the above copyright notice,
 //     this list of conditions and the following disclaimer in the documentation
 //     and/or other materials provided with the distribution.
-//  
+//
 //  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
 //  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
 //  FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
@@ -108,30 +108,51 @@ tls_cleanup (tls_key_type key)
 
 
 #elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
+
+#ifdef DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
 tls_key_type
 tls_init (tls_init_cleanup_func_type)
 {
-    return TlsAlloc ();
+    return TlsAlloc();
 }
+#else
+tls_key_type
+tls_init (tls_init_cleanup_func_type cleanupfunc)
+{
+    return FlsAlloc(cleanupfunc);
+}
+#endif
 
 
 tls_value_type tls_get_value (tls_key_type k)
 {
-    return TlsGetValue (k);
+#ifdef DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
+    return TlsGetValue(k);
+#else
+    return FlsGetValue(k);
+#endif
 }
 
 
 void
 tls_set_value (tls_key_type k, tls_value_type value)
 {
-    TlsSetValue (k, value);
+#ifdef DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
+    TlsSetValue(k, value);
+#else
+    FlsSetValue(k, value);
+#endif
 }
 
 
 void
 tls_cleanup (tls_key_type k)
 {
-    TlsFree (k);
+#ifdef DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
+    TlsFree(k);
+#else
+    FlsFree(k);
+#endif
 }
 
 
