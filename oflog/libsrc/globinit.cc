@@ -341,6 +341,9 @@ alloc_ptd ()
 
 void initializeFactoryRegistry();
 
+
+#ifdef DCMTK_LOG4CPLUS_USE_WIN32_THREADS
+
 //! Thread local storage clean up function for WIN32 threads.
 static
 void
@@ -348,6 +351,8 @@ ptd_cleanup_func_win32(void * /* arg */ )
 {
     threadCleanup();
 }
+
+#endif
 
 
 //! Thread local storage clean up function for POSIX threads.
