@@ -132,7 +132,6 @@ using STD_NAMESPACE malloc;
 using STD_NAMESPACE realloc;
 using STD_NAMESPACE atoi;
 using STD_NAMESPACE atol;
-using STD_NAMESPACE atoll;
 using STD_NAMESPACE atof;
 using STD_NAMESPACE FILE;
 using STD_NAMESPACE fopen;
