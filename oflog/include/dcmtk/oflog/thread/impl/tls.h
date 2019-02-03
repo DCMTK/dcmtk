@@ -69,13 +69,14 @@ typedef size_t tls_key_type;
 #endif
 
 
-inline tls_key_type tls_init (tls_init_cleanup_func_type);
 inline tls_value_type tls_get_value (tls_key_type);
 inline void tls_set_value (tls_key_type, tls_value_type);
 inline void tls_cleanup (tls_key_type);
 
-
 #if defined (DCMTK_LOG4CPLUS_USE_PTHREADS)
+
+inline tls_key_type tls_init (tls_init_cleanup_func_type);
+
 tls_key_type
 tls_init (tls_init_cleanup_func_type cleanupfunc)
 {
@@ -110,14 +111,18 @@ tls_cleanup (tls_key_type key)
 #elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
 
 #ifdef DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
+inline tls_key_type tls_init (tls_init_cleanup_func_type);
+
 tls_key_type
 tls_init (tls_init_cleanup_func_type)
 {
     return TlsAlloc();
 }
 #else
+inline tls_key_type tls_init (PFLS_CALLBACK_FUNCTION);
+
 tls_key_type
-tls_init (tls_init_cleanup_func_type cleanupfunc)
+tls_init (PFLS_CALLBACK_FUNCTION cleanupfunc)
 {
     return FlsAlloc(cleanupfunc);
 }
@@ -159,6 +164,7 @@ tls_cleanup (tls_key_type k)
 #elif defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
 extern OFVector<tls_value_type> * tls_single_threaded_values;
 
+inline tls_key_type tls_init (tls_init_cleanup_func_type);
 
 tls_key_type
 tls_init (tls_init_cleanup_func_type)

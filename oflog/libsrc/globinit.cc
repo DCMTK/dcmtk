@@ -346,7 +346,7 @@ void initializeFactoryRegistry();
 
 //! Thread local storage clean up function for WIN32 threads.
 static
-void
+void WINAPI
 ptd_cleanup_func_win32(void * /* arg */ )
 {
     threadCleanup();
