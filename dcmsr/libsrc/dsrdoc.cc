@@ -79,6 +79,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     StudyDescription(DCM_StudyDescription),
     PatientName(DCM_PatientName),
     PatientID(DCM_PatientID),
+    IssuerOfPatientID(DCM_IssuerOfPatientID),
     PatientBirthDate(DCM_PatientBirthDate),
     PatientSex(DCM_PatientSex),
     Manufacturer(DCM_Manufacturer),
@@ -150,6 +151,7 @@ void DSRDocument::clear()
     StudyDescription.clear();
     PatientName.clear();
     PatientID.clear();
+    IssuerOfPatientID.clear();
     PatientBirthDate.clear();
     PatientSex.clear();
     Manufacturer.clear();
@@ -227,16 +229,21 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                     patientStr += getPrintStringFromElement(PatientSex, tmpString);
                 if (!PatientBirthDate.isEmpty())
                 {
-                   if (!patientStr.empty())
-                       patientStr += ", ";
-                   patientStr += dicomToReadableDate(getStringValueFromElement(PatientBirthDate, tmpString), string2);
+                    if (!patientStr.empty())
+                        patientStr += ", ";
+                    patientStr += dicomToReadableDate(getStringValueFromElement(PatientBirthDate, tmpString), string2);
                 }
                 if (!PatientID.isEmpty())
                 {
-                   if (!patientStr.empty())
-                       patientStr += ", ";
-                   patientStr += '#';
-                   patientStr += getPrintStringFromElement(PatientID, tmpString);
+                    if (!patientStr.empty())
+                        patientStr += ", ";
+                    patientStr += '#';
+                    patientStr += getPrintStringFromElement(PatientID, tmpString);
+                    if (!IssuerOfPatientID.isEmpty())
+                    {
+                        patientStr += ":";
+                        patientStr += getPrintStringFromElement(IssuerOfPatientID, tmpString);
+                    }
                 }
                 if (!patientStr.empty())
                     stream << " (" << patientStr << ")";
@@ -244,11 +251,11 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
             }
             /* referring physician */
             if (!ReferringPhysicianName.isEmpty())
-             {
+            {
                 DCMSR_PRINT_HEADER_FIELD_START("Referring Physician", " : ")
                 stream << getPrintStringFromElement(ReferringPhysicianName, tmpString);
                 DCMSR_PRINT_HEADER_FIELD_END
-             }
+            }
             /* study-related information */
             if (!StudyDescription.isEmpty())
             {
@@ -284,10 +291,10 @@ OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                     deviceStr += getPrintStringFromElement(ManufacturerModelName, tmpString);
                 if (!DeviceSerialNumber.isEmpty())
                 {
-                   if (!deviceStr.empty())
-                       deviceStr += ", ";
-                   deviceStr += '#';
-                   deviceStr += getPrintStringFromElement(DeviceSerialNumber, tmpString);
+                    if (!deviceStr.empty())
+                        deviceStr += ", ";
+                    deviceStr += '#';
+                    deviceStr += getPrintStringFromElement(DeviceSerialNumber, tmpString);
                 }
                 if (!deviceStr.empty())
                     stream << " (" << deviceStr << ")";
@@ -602,6 +609,7 @@ OFCondition DSRDocument::readPatientData(DcmItem &dataset,
     // --- Patient Module ---
     getAndCheckElementFromDataset(dataset, PatientName, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientID, "1", "2", "PatientModule");
+    getAndCheckElementFromDataset(dataset, IssuerOfPatientID, "1", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientSex, "1", "2", "PatientModule");
     /* always return success */
@@ -673,6 +681,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         // --- Patient Module ---
         addElementToDataset(result, dataset, new DcmPersonName(PatientName), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(PatientID), "1", "2", "PatientModule");
+        addElementToDataset(result, dataset, new DcmLongString(IssuerOfPatientID), "1", "3", "PatientModule");
         addElementToDataset(result, dataset, new DcmDate(PatientBirthDate), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmCodeString(PatientSex), "1", "2", "PatientModule");
 
@@ -955,6 +964,7 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
                 PatientBirthDate.putOFStringArray(tmpString);
             }
             else if (doc.getElementFromNodeContent(cursor, PatientID, "id").bad() &&
+                     doc.getElementFromNodeContent(cursor, IssuerOfPatientID, "issuer").bad() &&
                      doc.getElementFromNodeContent(cursor, PatientSex, "sex").bad())
             {
                 doc.printUnexpectedNodeWarning(cursor);
@@ -1338,6 +1348,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
 
         stream << "<patient>" << OFendl;
         writeStringFromElementToXML(stream, PatientID, "id", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, IssuerOfPatientID, "issuer", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, PatientName, "name", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || !PatientBirthDate.isEmpty())
         {
@@ -1512,17 +1523,22 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream &stream,
     }
     if (!PatientBirthDate.isEmpty())
     {
-       if (!patientStr.empty())
-           patientStr += ", ";
-       patientStr += '*';
-       patientStr += dicomToReadableDate(getStringValueFromElement(PatientBirthDate, tmpString), string2);
+        if (!patientStr.empty())
+            patientStr += ", ";
+        patientStr += '*';
+        patientStr += dicomToReadableDate(getStringValueFromElement(PatientBirthDate, tmpString), string2);
     }
     if (!PatientID.isEmpty())
     {
-       if (!patientStr.empty())
-           patientStr += ", ";
-       patientStr += '#';
-       patientStr += convertToHTMLString(getStringValueFromElement(PatientID, tmpString), htmlString, flags);
+        if (!patientStr.empty())
+            patientStr += ", ";
+        patientStr += '#';
+        patientStr += convertToHTMLString(getStringValueFromElement(PatientID, tmpString), htmlString, flags);
+        if (!IssuerOfPatientID.isEmpty())
+        {
+            patientStr += ":";
+            patientStr += convertToHTMLString(getStringValueFromElement(IssuerOfPatientID, tmpString), htmlString, flags);
+        }
     }
     if (!patientStr.empty())
         stream << " (" << patientStr << ")";
@@ -2413,6 +2429,13 @@ OFCondition DSRDocument::getPatientID(OFString &value,
 }
 
 
+OFCondition DSRDocument::getIssuerOfPatientID(OFString &value,
+                                              const signed long pos) const
+{
+    return getStringValueFromElement(IssuerOfPatientID, value, pos);
+}
+
+
 OFCondition DSRDocument::getSeriesNumber(OFString &value,
                                          const signed long pos) const
 {
@@ -2695,6 +2718,16 @@ OFCondition DSRDocument::setPatientID(const OFString &value,
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
     if (result.good())
         result = PatientID.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DSRDocument::setIssuerOfPatientID(const OFString &value,
+                                              const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1", getSpecificCharacterSet()) : EC_Normal;
+    if (result.good())
+        result = IssuerOfPatientID.putOFStringArray(value);
     return result;
 }
 

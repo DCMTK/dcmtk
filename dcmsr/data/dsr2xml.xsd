@@ -81,6 +81,7 @@
   <xsd:complexType name="Patient">
     <xsd:sequence>
       <xsd:element name="id" type="dsr:LongString" minOccurs="0"/>
+      <xsd:element name="issuer" type="dsr:LongString" minOccurs="0"/>
       <xsd:element name="name" type="dsr:PersonName" minOccurs="0"/>
       <xsd:element name="birthday" minOccurs="0">
         <xsd:complexType>

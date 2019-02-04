@@ -691,6 +691,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition getPatientID(OFString &value,
                                      const signed long pos = 0) const;
 
+    /** get issuer of patient ID
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getIssuerOfPatientID(OFString &value,
+                                             const signed long pos = 0) const;
+
     /** get series number
      ** @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -929,6 +937,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     virtual OFCondition setPatientID(const OFString &value,
                                      const OFBool check = OFTrue);
+
+    /** set issuer of patient ID
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setIssuerOfPatientID(const OFString &value,
+                                             const OFBool check = OFTrue);
 
     /** set series number
      ** @param  value  value to be set (single value only).  If an empty string is passed,
@@ -1338,6 +1354,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmPersonName       PatientName;
     /// Patient ID: (LO, 1, 2)
     DcmLongString       PatientID;
+    /// Issuer of Patient ID: (LO, 1, 3)
+    DcmLongString       IssuerOfPatientID;
     /// Patient's Birth Date: (DA, 1, 2)
     DcmDate             PatientBirthDate;
     /// Patient's Sex: (CS, 1, 2)
