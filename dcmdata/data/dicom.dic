@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2018, OFFIS e.V.
+#  Copyright (C) 1994-2019, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2018e and PS 3.7-2018e
-# File created on 2018-12-03 12:54:19 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2019a and PS 3.7-2019a.
+# File created on 2019-02-04 12:26:44 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -567,6 +567,111 @@
 (0014,511D)	DS	WedgeChamferHeight	1	DICOM/DICONDE
 (0014,511E)	CS	WedgeCurve	1	DICOM/DICONDE
 (0014,511F)	DS	RadiusAlongWedge	1	DICOM/DICONDE
+(0016,0001)	DS	WhitePoint	1	DICOM
+(0016,0002)	DS	PrimaryChromaticities	3	DICOM
+(0016,0003)	UT	BatteryLevel	1	DICOM
+(0016,0004)	DS	ExposureTimeInSeconds	1	DICOM
+(0016,0005)	DS	FNumber	1	DICOM
+(0016,0006)	IS	OECFRows	1	DICOM
+(0016,0007)	IS	OECFColumns	1	DICOM
+(0016,0008)	UC	OECFColumnNames	1-n	DICOM
+(0016,0009)	DS	OECFValues	1-n	DICOM
+(0016,000A)	IS	SpatialFrequencyResponseRows	1	DICOM
+(0016,000B)	IS	SpatialFrequencyResponseColumns	1	DICOM
+(0016,000C)	UC	SpatialFrequencyResponseColumnNames	1-n	DICOM
+(0016,000D)	DS	SpatialFrequencyResponseValues	1-n	DICOM
+(0016,000E)	IS	ColorFilterArrayPatternRows	1	DICOM
+(0016,000F)	IS	ColorFilterArrayPatternColumns	1	DICOM
+(0016,0010)	DS	ColorFilterArrayPatternValues	1-n	DICOM
+(0016,0011)	US	FlashFiringStatus	1	DICOM
+(0016,0012)	US	FlashReturnStatus	1	DICOM
+(0016,0013)	US	FlashMode	1	DICOM
+(0016,0014)	US	FlashFunctionPresent	1	DICOM
+(0016,0015)	US	FlashRedEyeMode	1	DICOM
+(0016,0016)	US	ExposureProgram	1	DICOM
+(0016,0017)	UT	SpectralSensitivity	1	DICOM
+(0016,0018)	IS	PhotographicSensitivity	1	DICOM
+(0016,0019)	IS	SelfTimerMode	1	DICOM
+(0016,001A)	US	SensitivityType	1	DICOM
+(0016,001B)	IS	StandardOutputSensitivity	1	DICOM
+(0016,001C)	IS	RecommendedExposureIndex	1	DICOM
+(0016,001D)	IS	ISOSpeed	1	DICOM
+(0016,001E)	IS	ISOSpeedLatitudeyyy	1	DICOM
+(0016,001F)	IS	ISOSpeedLatitudezzz	1	DICOM
+(0016,0020)	UT	EXIFVersion	1	DICOM
+(0016,0021)	DS	ShutterSpeedValue	1	DICOM
+(0016,0022)	DS	ApertureValue	1	DICOM
+(0016,0023)	DS	BrightnessValue	1	DICOM
+(0016,0024)	DS	ExposureBiasValue	1	DICOM
+(0016,0025)	DS	MaxApertureValue	1	DICOM
+(0016,0026)	DS	SubjectDistance	1	DICOM
+(0016,0027)	US	MeteringMode	1	DICOM
+(0016,0028)	US	LightSource	1	DICOM
+(0016,0029)	DS	FocalLength	1	DICOM
+(0016,002A)	IS	SubjectArea	2-4	DICOM
+(0016,002B)	OB	MakerNote	1	DICOM
+(0016,0030)	DS	Temperature	1	DICOM
+(0016,0031)	DS	Humidity	1	DICOM
+(0016,0032)	DS	Pressure	1	DICOM
+(0016,0033)	DS	WaterDepth	1	DICOM
+(0016,0034)	DS	Acceleration	1	DICOM
+(0016,0035)	DS	CameraElevationAngle	1	DICOM
+(0016,0036)	DS	FlashEnergy	1-2	DICOM
+(0016,0037)	IS	SubjectLocation	2	DICOM
+(0016,0038)	DS	PhotographicExposureIndex	1	DICOM
+(0016,0039)	US	SensingMethod	1	DICOM
+(0016,003A)	US	FileSource	1	DICOM
+(0016,003B)	US	SceneType	1	DICOM
+(0016,0041)	US	CustomRendered	1	DICOM
+(0016,0042)	US	ExposureMode	1	DICOM
+(0016,0043)	US	WhiteBalance	1	DICOM
+(0016,0044)	DS	DigitalZoomRatio	1	DICOM
+(0016,0045)	IS	FocalLengthIn35mmFilm	1	DICOM
+(0016,0046)	US	SceneCaptureType	1	DICOM
+(0016,0047)	US	GainControl	1	DICOM
+(0016,0048)	US	Contrast	1	DICOM
+(0016,0049)	US	Saturation	1	DICOM
+(0016,004A)	US	Sharpness	1	DICOM
+(0016,004B)	OB	DeviceSettingDescription	1	DICOM
+(0016,004C)	US	SubjectDistanceRange	1	DICOM
+(0016,004D)	UT	CameraOwnerName	1	DICOM
+(0016,004E)	DS	LensSpecification	4	DICOM
+(0016,004F)	UT	LensMake	1	DICOM
+(0016,0050)	UT	LensModel	1	DICOM
+(0016,0051)	UT	LensSerialNumber	1	DICOM
+(0016,0061)	CS	InteroperabilityIndex	1	DICOM
+(0016,0062)	OB	InteroperabilityVersion	1	DICOM
+(0016,0070)	OB	GPSVersionID	1	DICOM
+(0016,0071)	CS	GPSLatitudeRef	1	DICOM
+(0016,0072)	DS	GPSLatitude	3	DICOM
+(0016,0073)	CS	GPSLongitudeRef	1	DICOM
+(0016,0074)	DS	GPSLongitude	3	DICOM
+(0016,0075)	US	GPSAltitudeRef	1	DICOM
+(0016,0076)	DS	GPSAltitude	1	DICOM
+(0016,0077)	DT	GPSTimeStamp	1	DICOM
+(0016,0078)	UT	GPSSatellites	1	DICOM
+(0016,0079)	CS	GPSStatus	1	DICOM
+(0016,007A)	CS	GPSMeasureMode	1	DICOM
+(0016,007B)	DS	GPSDOP	1	DICOM
+(0016,007C)	CS	GPSSpeedRef	1	DICOM
+(0016,007D)	DS	GPSSpeed	1	DICOM
+(0016,007E)	CS	GPSTrackRef	1	DICOM
+(0016,007F)	DS	GPSTrack	1	DICOM
+(0016,0080)	CS	GPSImgDirectionRef	1	DICOM
+(0016,0081)	DS	GPSImgDirection	1	DICOM
+(0016,0082)	UT	GPSMapDatum	1	DICOM
+(0016,0083)	CS	GPSDestLatitudeRef	1	DICOM
+(0016,0084)	DS	GPSDestLatitude	3	DICOM
+(0016,0085)	CS	GPSDestLongitudeRef	1	DICOM
+(0016,0086)	DS	GPSDestLongitude	3	DICOM
+(0016,0087)	CS	GPSDestBearingRef	1	DICOM
+(0016,0088)	DS	GPSDestBearing	1	DICOM
+(0016,0089)	CS	GPSDestDistanceRef	1	DICOM
+(0016,008A)	DS	GPSDestDistance	1	DICOM
+(0016,008B)	OB	GPSProcessingMethod	1	DICOM
+(0016,008C)	OB	GPSAreaInformation	1	DICOM
+(0016,008D)	DT	GPSDateStamp	1	DICOM
+(0016,008E)	IS	GPSDifferential	1	DICOM
 (0018,0010)	LO	ContrastBolusAgent	1	DICOM
 (0018,0012)	SQ	ContrastBolusAgentSequence	1	DICOM
 (0018,0013)	FL	ContrastBolusT1Relaxivity	1	DICOM
@@ -1539,6 +1644,13 @@
 (0022,1039)	CS	RefractiveProcedureOccurred	1	DICOM
 (0022,1040)	SQ	RefractiveSurgeryTypeCodeSequence	1	DICOM
 (0022,1044)	SQ	OphthalmicUltrasoundMethodCodeSequence	1	DICOM
+(0022,1045)	SQ	SurgicallyInducedAstigmatismSequence	1	DICOM
+(0022,1046)	CS	TypeOfOpticalCorrection	1	DICOM
+(0022,1047)	SQ	ToricIOLPowerSequence	1	DICOM
+(0022,1048)	SQ	PredictedToricErrorSequence	1	DICOM
+(0022,1049)	CS	PreSelectedForImplantation	1	DICOM
+(0022,104A)	SQ	ToricIOLPowerForExactEmmetropiaSequence	1	DICOM
+(0022,104B)	SQ	ToricIOLPowerForExactTargetRefractionSequence	1	DICOM
 (0022,1050)	SQ	OphthalmicAxialLengthMeasurementsSequence	1	DICOM
 (0022,1053)	FL	IOLPower	1	DICOM
 (0022,1054)	FL	PredictedRefractiveError	1	DICOM
@@ -1559,6 +1671,9 @@
 (0022,1125)	SQ	AnteriorChamberDepthDefinitionCodeSequence	1	DICOM
 (0022,1127)	SQ	LensThicknessSequence	1	DICOM
 (0022,1128)	SQ	AnteriorChamberDepthSequence	1	DICOM
+(0022,112A)	SQ	CalculationCommentSequence	1	DICOM
+(0022,112B)	CS	CalculationCommentType	1	DICOM
+(0022,112C)	LT	CalculationComment	1	DICOM
 (0022,1130)	FL	LensThickness	1	DICOM
 (0022,1131)	FL	AnteriorChamberDepth	1	DICOM
 (0022,1132)	SQ	SourceOfLensThicknessDataCodeSequence	1	DICOM
@@ -1920,6 +2035,8 @@
 (0032,1034)	SQ	RequestingServiceCodeSequence	1	DICOM
 (0032,1060)	LO	RequestedProcedureDescription	1	DICOM
 (0032,1064)	SQ	RequestedProcedureCodeSequence	1	DICOM
+(0032,1066)	UT	ReasonForVisit	1	DICOM
+(0032,1067)	SQ	ReasonForVisitCodeSequence	1	DICOM
 (0032,1070)	LO	RequestedContrastAgent	1	DICOM
 (0038,0004)	SQ	ReferencedPatientAliasSequence	1	DICOM
 (0038,0008)	CS	VisitStatusID	1	DICOM
@@ -2274,6 +2391,15 @@
 (0046,0102)	SQ	AddOtherSequence	1	DICOM
 (0046,0104)	FD	AddPower	1	DICOM
 (0046,0106)	FD	ViewingDistance	1	DICOM
+(0046,0110)	SQ	CorneaMeasurementsSequence	1	DICOM
+(0046,0111)	SQ	SourceOfCorneaMeasurementDataCodeSequence	1	DICOM
+(0046,0112)	SQ	SteepCornealAxisSequence	1	DICOM
+(0046,0113)	SQ	FlatCornealAxisSequence	1	DICOM
+(0046,0114)	FD	CornealPower	1	DICOM
+(0046,0115)	FD	CornealAxis	1	DICOM
+(0046,0116)	SQ	CorneaMeasurementMethodCodeSequence	1	DICOM
+(0046,0117)	FL	RefractiveIndexOfCornea	1	DICOM
+(0046,0118)	FL	RefractiveIndexOfAqueousHumor	1	DICOM
 (0046,0121)	SQ	VisualAcuityTypeCodeSequence	1	DICOM
 (0046,0122)	SQ	VisualAcuityRightEyeSequence	1	DICOM
 (0046,0123)	SQ	VisualAcuityLeftEyeSequence	1	DICOM
@@ -3836,7 +3962,7 @@
 (3010,0002)	CS	RadiobiologicalDoseEffectFlag	1	DICOM
 (3010,0003)	SQ	EffectiveDoseCalculationMethodCategoryCodeSequence	1	DICOM
 (3010,0004)	SQ	EffectiveDoseCalculationMethodCodeSequence	1	DICOM
-(3010,0005)	LO	EffectiveDoseMethodDescription	1	DICOM
+(3010,0005)	LO	EffectiveDoseCalculationMethodDescription	1	DICOM
 (3010,0006)	UI	ConceptualVolumeUID	1	DICOM
 (3010,0007)	SQ	OriginatingSOPInstanceReferenceSequence	1	DICOM
 (3010,0008)	SQ	ConceptualVolumeConstituentSequence	1	DICOM
@@ -3857,7 +3983,7 @@
 (3010,0017)	ST	ConceptualVolumeDescription	1	DICOM
 (3010,0018)	SQ	SourceConceptualVolumeSequence	1	DICOM
 (3010,0019)	SQ	AuthorIdentificationSequence	1	DICOM
-(3010,001A)	LO	ManufacturersModelVersion	1	DICOM
+(3010,001A)	LO	ManufacturerModelVersion	1	DICOM
 (3010,001B)	UC	DeviceAlternateIdentifier	1	DICOM
 (3010,001C)	CS	DeviceAlternateIdentifierType	1	DICOM
 (3010,001D)	LT	DeviceAlternateIdentifierFormat	1	DICOM
@@ -4080,6 +4206,9 @@
 (6000-60FF,1303)	DS	ROIStandardDeviation	1	DICOM
 (6000-60FF,1500)	LO	OverlayLabel	1	DICOM
 (6000-60FF,3000)	ox	OverlayData	1	DICOM
+# TODO: the new VR "OV" is not yet supported by the DCMTK
+#(7FE0,0001)	OV	ExtendedOffsetTable	1	DICOM
+#(7FE0,0002)	OV	ExtendedOffsetTableLengths	1	DICOM
 (7FE0,0008)	OF	FloatPixelData	1	DICOM
 (7FE0,0009)	OD	DoubleFloatPixelData	1	DICOM
 (7FE0,0010)	ox	PixelData	1	DICOM
