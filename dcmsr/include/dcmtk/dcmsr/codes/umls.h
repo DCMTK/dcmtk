@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2018e
- *  File created on 2018-12-03 13:04:54 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019a
+ *  File created on 2019-02-04 12:37:54 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 45
+// total number of codes: 50
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -93,5 +93,10 @@
 #define CODE_UMLS_Pretreatment                                             DSRBasicCodedEntry("C3539075", "UMLS", "Pretreatment")
 #define CODE_UMLS_DistalPhalanx                                            DSRBasicCodedEntry("C3669027", "UMLS", "Distal phalanx")
 #define CODE_UMLS_RoomAir                                                  DSRBasicCodedEntry("C3846005", "UMLS", "Room air")
+#define CODE_UMLS_THK5351_F18                                              DSRBasicCodedEntry("C4279748", "UMLS", "THK5351 F^18^")
+#define CODE_UMLS_MK6240_F18                                               DSRBasicCodedEntry("C4506764", "UMLS", "MK-6240 F^18^")
+#define CODE_UMLS_UCBJ_C11                                                 DSRBasicCodedEntry("C4506788", "UMLS", "UCB-J C^11^")
+#define CODE_UMLS_Flortaucipir_F18                                         DSRBasicCodedEntry("C4547429", "UMLS", "Flortaucipir F^18^")
+#define CODE_UMLS_THK5317_F18                                              DSRBasicCodedEntry("C4550127", "UMLS", "THK5317 F^18^")
 
 #endif
