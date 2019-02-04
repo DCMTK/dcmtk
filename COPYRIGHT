@@ -5,7 +5,7 @@ Unless otherwise specified, the DCMTK software package has the following
 copyright:
 
 /*
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.
  *
  *  This software and supporting documentation were developed by
@@ -478,7 +478,7 @@ The dcmrt sub-package is covered by the following copyright:
 ---------------------------------------------------------------------------
 
 Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
-Copyright (C) 2013-2018, J. Riesmeier, Oldenburg, Germany
+Copyright (C) 2013-2019, J. Riesmeier, Oldenburg, Germany
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -511,7 +511,7 @@ Parts of the dcmsr sub-package are covered by the following copyright:
 
 ---------------------------------------------------------------------------
 
-Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
