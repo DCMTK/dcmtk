@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID244_Laterality
  *
- *  Generated automatically from DICOM PS 3.16-2018d
- *  File created on 2018-09-27 16:57:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019a
+ *  File created on 2019-02-04 12:56:20 by J. Riesmeier
  *
  */
 
@@ -151,7 +151,7 @@ CID244_Laterality::CodeList &CID244_Laterality::getCodes()
         /* and initialize it by adding the coded entries */
         Codes->insert(OFMake_pair(Right, DSRBasicCodedEntry("G-A100", "SRT", "Right")));
         Codes->insert(OFMake_pair(Left, DSRBasicCodedEntry("G-A101", "SRT", "Left")));
-        Codes->insert(OFMake_pair(RightAndLeft, DSRBasicCodedEntry("G-A102", "SRT", "Right and left")));
+        Codes->insert(OFMake_pair(Bilateral, DSRBasicCodedEntry("G-A102", "SRT", "Bilateral")));
         Codes->insert(OFMake_pair(Unilateral, DSRBasicCodedEntry("G-A103", "SRT", "Unilateral")));
     }
     /* should never be NULL */

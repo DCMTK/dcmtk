@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -236,7 +236,7 @@ OFTEST(dcmsr_TID1411_VolumetricROIMeasurements)
     OFCHECK(!volumetric.isValid());
     /* do more sophisticated tests */
     CMR_TID1419_in_TID1411_in_TID1500 &measurement = volumetric.getMeasurement();
-    OFCHECK(volumetric.addFindingSite(DSRBasicCodedEntry("EFGH", "99TEST", "Finding Site"), CMR_CID244::RightAndLeft).good());
+    OFCHECK(volumetric.addFindingSite(DSRBasicCodedEntry("EFGH", "99TEST", "Finding Site"), CMR_CID244::Bilateral).good());
     OFCHECK(!volumetric.hasMeasurements());
     OFCHECK(!measurement.hasMeasurement());
     OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Volume, CMR_TID1419_in_TID1411_in_TID1500::MeasurementValue("15", CMR_CID7181::CubicMillimeter)).good());

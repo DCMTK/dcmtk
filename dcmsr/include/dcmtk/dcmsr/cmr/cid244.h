@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID244_Laterality
  *
- *  Generated automatically from DICOM PS 3.16-2018d
- *  File created on 2018-09-27 16:57:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019a
+ *  File created on 2019-02-04 12:56:20 by J. Riesmeier
  *
  */
 
@@ -44,8 +44,8 @@ class DCMTK_CMR_EXPORT CID244_Laterality
         Right,
         /// (G-A101,SRT,"Left")
         Left,
-        /// (G-A102,SRT,"Right and left")
-        RightAndLeft,
+        /// (G-A102,SRT,"Bilateral")
+        Bilateral,
         /// (G-A103,SRT,"Unilateral")
         Unilateral
     };

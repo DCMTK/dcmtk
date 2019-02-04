@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2018d
- *  File created on 2018-09-27 16:57:33 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019a
+ *  File created on 2019-02-04 12:56:41 by J. Riesmeier
  *
  */
 
@@ -318,8 +318,13 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(Circumference, DSRBasicCodedEntry("M-02560", "SRT", "Circumference")));
         Codes->insert(OFMake_pair(DiameterOfCircumscribedCircle, DSRBasicCodedEntry("G-A198", "SRT", "Diameter of circumscribed circle")));
         Codes->insert(OFMake_pair(Height, DSRBasicCodedEntry("121207", "DCM", "Height")));
+        Codes->insert(OFMake_pair(Maximum3DDiameterOfAMesh, DSRBasicCodedEntry("L0JK", "IBSI", "Maximum 3D Diameter of a Mesh")));
+        Codes->insert(OFMake_pair(MajorAxisIn3DLength, DSRBasicCodedEntry("TDIC", "IBSI", "Major Axis in 3D Length")));
+        Codes->insert(OFMake_pair(MinorAxisIn3DLength, DSRBasicCodedEntry("P9VJ", "IBSI", "Minor Axis in 3D Length")));
+        Codes->insert(OFMake_pair(LeastAxisIn3DLength, DSRBasicCodedEntry("7J51", "IBSI", "Least Axis in 3D Length")));
         Codes->insert(OFMake_pair(Area, DSRBasicCodedEntry("G-A166", "SRT", "Area")));
         Codes->insert(OFMake_pair(AreaOfDefinedRegion, DSRBasicCodedEntry("G-A16A", "SRT", "Area of defined region")));
+        Codes->insert(OFMake_pair(SurfaceAreaOfMesh, DSRBasicCodedEntry("C0JK", "IBSI", "Surface Area of Mesh")));
         Codes->insert(OFMake_pair(Volume, DSRBasicCodedEntry("G-D705", "SRT", "Volume")));
         Codes->insert(OFMake_pair(VolumeEstimatedFromSingle2DRegion, DSRBasicCodedEntry("121216", "DCM", "Volume estimated from single 2D region")));
         Codes->insert(OFMake_pair(VolumeEstimatedFromTwoNonCoplanar2DRegions, DSRBasicCodedEntry("121218", "DCM", "Volume estimated from two non-coplanar 2D regions")));
@@ -328,6 +333,8 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(VolumeOfEllipsoid, DSRBasicCodedEntry("121221", "DCM", "Volume of ellipsoid")));
         Codes->insert(OFMake_pair(VolumeOfCircumscribedSphere, DSRBasicCodedEntry("121220", "DCM", "Volume of circumscribed sphere")));
         Codes->insert(OFMake_pair(VolumeOfBoundingThreeDimensionalRegion, DSRBasicCodedEntry("121219", "DCM", "Volume of bounding three dimensional region")));
+        Codes->insert(OFMake_pair(VolumeOfMesh, DSRBasicCodedEntry("RNU0", "IBSI", "Volume of Mesh")));
+        Codes->insert(OFMake_pair(VolumeFromVoxelSummation, DSRBasicCodedEntry("YEKZ", "IBSI", "Volume from Voxel Summation")));
     }
     /* should never be NULL */
     return *Codes;

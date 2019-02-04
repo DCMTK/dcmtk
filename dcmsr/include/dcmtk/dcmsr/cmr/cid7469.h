@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2018d
- *  File created on 2018-09-27 16:57:33 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019a
+ *  File created on 2019-02-04 12:56:41 by J. Riesmeier
  *
  */
 
@@ -378,10 +378,20 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         DiameterOfCircumscribedCircle,
         /// (121207,DCM,"Height"), included from CID 7470
         Height,
+        /// (L0JK,IBSI,"Maximum 3D Diameter of a Mesh"), included from CID 7470
+        Maximum3DDiameterOfAMesh,
+        /// (TDIC,IBSI,"Major Axis in 3D Length"), included from CID 7470
+        MajorAxisIn3DLength,
+        /// (P9VJ,IBSI,"Minor Axis in 3D Length"), included from CID 7470
+        MinorAxisIn3DLength,
+        /// (7J51,IBSI,"Least Axis in 3D Length"), included from CID 7470
+        LeastAxisIn3DLength,
         /// (G-A166,SRT,"Area"), included from CID 7471
         Area,
         /// (G-A16A,SRT,"Area of defined region"), included from CID 7471
         AreaOfDefinedRegion,
+        /// (C0JK,IBSI,"Surface Area of Mesh"), included from CID 7471
+        SurfaceAreaOfMesh,
         /// (G-D705,SRT,"Volume"), included from CID 7472
         Volume,
         /// (121216,DCM,"Volume estimated from single 2D region"), included from CID 7472
@@ -397,7 +407,11 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         /// (121220,DCM,"Volume of circumscribed sphere"), included from CID 7472
         VolumeOfCircumscribedSphere,
         /// (121219,DCM,"Volume of bounding three dimensional region"), included from CID 7472
-        VolumeOfBoundingThreeDimensionalRegion
+        VolumeOfBoundingThreeDimensionalRegion,
+        /// (RNU0,IBSI,"Volume of Mesh"), included from CID 7472
+        VolumeOfMesh,
+        /// (YEKZ,IBSI,"Volume from Voxel Summation"), included from CID 7472
+        VolumeFromVoxelSummation
     };
 
     /** (default) constructor

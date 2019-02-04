@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
- *  Generated automatically from DICOM PS 3.16-2018d
- *  File created on 2018-09-27 16:57:12 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019a
+ *  File created on 2019-02-04 12:56:18 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 100 - Quantitative Diagnostic Imaging Procedures.
- *  (type: extensible, version: 20141110)
+ *  (type: extensible, version: 20190121)
  */
 class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
   : public DSRContextGroup
@@ -40,6 +40,8 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
      */
     enum EnumType
     {
+        /// (P0-0099A,SRT,"Imaging procedure")
+        ImagingProcedure,
         /// (P5-09051,SRT,"Magnetic resonance imaging guidance")
         MagneticResonanceImagingGuidance,
         /// (126020,DCM,"Multiparametric MRI")
@@ -52,16 +54,24 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
         DynamicMagneticResonanceImagingOfKnee,
         /// (P5-70694,SRT,"Dynamic magnetic resonance imaging of pelvis")
         DynamicMagneticResonanceImagingOfPelvis,
+        /// (25045-6,LN,"CT unspecified body region")
+        CTUnspecifiedBodyRegion,
+        /// (25056-3,LN,"MRI unspecified body region")
+        MRIUnspecifiedBodyRegion,
+        /// (49118-3,LN,"NM unspecified body region")
+        NMUnspecifiedBodyRegion,
+        /// (44136-0,LN,"PET unspecified body region")
+        PETUnspecifiedBodyRegion,
         /// (44139-4,LN,"PET whole body")
         PETWholeBody,
         /// (P5-080FF,SRT,"PET/CT FDG imaging of whole body")
         PETCT_FDGImagingOfWholeBody,
         /// (P5-08118,SRT,"PET/CT MET imaging of whole body")
         PETCT_METImagingOfWholeBody,
-        /// (RPID96,RADLEX,"CT head perfusion with IV contrast")
-        CTHeadPerfusionWithIVContrast,
-        /// (RPID5258,RADLEX,"NM head perfusion brain SPECT")
-        NMHeadPerfusionBrainSPECT,
+        /// (39142-5,LN,"CT perfusion head with contrast IV")
+        CTPerfusionHeadWithContrastIV,
+        /// (39632-5,LN,"SPECT brain")
+        SPECTBrain,
         /// (RPID5427,RADLEX,"NM head perfusion brain PET-CT AV-45")
         NMHeadPerfusionBrainPET_CT_AV45
     };

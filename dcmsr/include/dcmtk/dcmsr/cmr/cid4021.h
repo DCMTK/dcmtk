@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2018d
- *  File created on 2018-09-27 16:57:17 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019a
+ *  File created on 2019-02-04 12:56:24 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20180327)
+ *  (type: extensible, version: 20190124)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -96,6 +96,10 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         CMAbU36_89Zr,
         /// (126515,DCM,"cU36 ^89^Zr")
         CU36_89Zr,
+        /// (C96234,NCIt,"DCFBC F^18^")
+        DCFBC_F18,
+        /// (C116352,NCIt,"DCFPyL F^18^")
+        DCFPyL_F18,
         /// (126762,DCM,"Df-[FK](2) ^89^Zr")
         DfFK2_89Zr,
         /// (126763,DCM,"Df-[FK](2)-3PEG(4) ^89^Zr")
@@ -126,6 +130,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Florbetaben_F18,
         /// (C-E0269,SRT,"Florbetapir F^18^")
         Florbetapir_F18,
+        /// (C4547429,UMLS,"Flortaucipir F^18^")
+        Flortaucipir_F18,
         /// (126503,DCM,"Flubatine F^18^")
         Flubatine_F18,
         /// (C-E0265,SRT,"Fluciclatide F^18^")
@@ -192,6 +198,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Mespiperone_C11,
         /// (C-B103E,SRT,"Methionine C^11^")
         Methionine_C11,
+        /// (C4506764,UMLS,"MK-6240 F^18^")
+        MK6240_F18,
         /// (126738,DCM,"Mogamulizumab ^89^Zr")
         Mogamulizumab_89Zr,
         /// (126510,DCM,"Monoclonal Antibody (mAb) ^64^Cu")
@@ -224,6 +232,12 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         PittsburghCompoundB_C11,
         /// (126726,DCM,"Polatuzumab vedotin ^89^Zr")
         PolatuzumabVedotin_89Zr,
+        /// (126758,DCM,"PSMA-1007 F^18^")
+        PSMA1007_F18,
+        /// (C118961,NCIt,"PSMA-11 Ga^68^")
+        PSMA11_Ga68,
+        /// (126759,DCM,"PSMA-617 Ga^68^")
+        PSMA617_Ga68,
         /// (C-B07E7,SRT,"PTSM Cu^62^")
         PTSM_Cu62,
         /// (126518,DCM,"R1507 ^89^Zr")
@@ -238,12 +252,20 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         RO5323441_89Zr,
         /// (126756,DCM,"RO542908 ^89^Zr")
         RO542908_89Zr,
+        /// (126719,DCM,"RO6924963 ^11^C")
+        RO6924963_11C,
+        /// (126720,DCM,"RO6931643 ^11^C")
+        RO6931643_11C,
+        /// (126757,DCM,"RO6958948 ^18^F")
+        RO6958948_18F,
         /// (126733,DCM,"Roledumab ^89^Zr")
         Roledumab_89Zr,
         /// (C-B1037,SRT,"Rubidium chloride Rb^82^")
         RubidiumChloride_Rb82,
         /// (126741,DCM,"SAR3419 ^89^Zr")
         SAR3419_89Zr,
+        /// (C122684,NCIt,"Sarcosine C^11^")
+        Sarcosine_C11,
         /// (C-B1032,SRT,"Sodium fluoride F^18^")
         SodiumFluoride_F18,
         /// (C-B07E8,SRT,"Sodium iodide I^124^")
@@ -254,7 +276,9 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Spiperone_F18,
         /// (126502,DCM,"T807 F^18^")
         T807_F18,
-        /// (126717,DCM,"THK5351 F^18^")
+        /// (C4550127,UMLS,"THK5317 F^18^")
+        THK5317_F18,
+        /// (C4279748,UMLS,"THK5351 F^18^")
         THK5351_F18,
         /// (C-B1036,SRT,"Thymidine (FLT) F^18^")
         ThymidineFLT_F18,
@@ -266,12 +290,10 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Tyrosine3Octreotate_Ga68,
         /// (126739,DCM,"Ublituximab ^89^Zr")
         Ublituximab_89Zr,
+        /// (C4506788,UMLS,"UCB-J C^11^")
+        UCBJ_C11,
         /// (126734,DCM,"XmAb5574 ^89^Zr")
-        XmAb5574_89Zr,
-        /// (C118961,NCIt,"PSMA Ga^68^")
-        PSMA_Ga68,
-        /// (C122684,NCIt,"Sarcosine C^11^")
-        Sarcosine_C11
+        XmAb5574_89Zr
     };
 
     /** (default) constructor

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID244e_Laterality
@@ -74,7 +74,7 @@ OFCondition CID244e_Laterality::mapImageLaterality(const OFString &enumeratedVal
     else if (enumeratedValue == "L")  // left
         codedEntryValue = getCodedEntry(Left);
     else if (enumeratedValue == "B")  // both left and right
-        codedEntryValue = getCodedEntry(RightAndLeft);
+        codedEntryValue = getCodedEntry(Bilateral);
     else if (enumeratedValue == "U")  // unpaired
         codedEntryValue = getCodedEntry(Unilateral);
     else
