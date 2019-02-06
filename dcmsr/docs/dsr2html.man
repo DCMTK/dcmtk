@@ -232,23 +232,25 @@ code rendering:
 The \b dsr2html utility supports the following SOP Classes:
 
 \verbatim
-SpectaclePrescriptionReportStorage          1.2.840.10008.5.1.4.1.1.78.6
-MacularGridThicknessAndVolumeReportStorage  1.2.840.10008.5.1.4.1.1.79.1
-BasicTextSRStorage                          1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSRStorage                           1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSRStorage                      1.2.840.10008.5.1.4.1.1.88.33
-Comprehensive3DSRStorage                    1.2.840.10008.5.1.4.1.1.88.34
-ProcedureLogStorage                         1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSRStorage                     1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocumentStorage           1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSRStorage                           1.2.840.10008.5.1.4.1.1.88.65
-XRayRadiationDoseSRStorage                  1.2.840.10008.5.1.4.1.1.88.67
-RadiopharmaceuticalRadiationDoseSRStorage   1.2.840.10008.5.1.4.1.1.88.68
-ColonCADSRStorage                           1.2.840.10008.5.1.4.1.1.88.69
-ImplantationPlanSRDocumentStorage           1.2.840.10008.5.1.4.1.1.88.70
-AcquisitionContextSRStorage                 1.2.840.10008.5.1.4.1.1.88.71
-SimplifiedAdultEchoSRStorage                1.2.840.10008.5.1.4.1.1.88.72
-PatientRadiationDoseSRStorage               1.2.840.10008.5.1.4.1.1.88.73
+SpectaclePrescriptionReportStorage           1.2.840.10008.5.1.4.1.1.78.6
+MacularGridThicknessAndVolumeReportStorage   1.2.840.10008.5.1.4.1.1.79.1
+BasicTextSRStorage                           1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSRStorage                            1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSRStorage                       1.2.840.10008.5.1.4.1.1.88.33
+Comprehensive3DSRStorage                     1.2.840.10008.5.1.4.1.1.88.34
+ProcedureLogStorage                          1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSRStorage                      1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocumentStorage            1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSRStorage                   1.2.840.10008.5.1.4.1.1.88.67
+RadiopharmaceuticalRadiationDoseSRStorage    1.2.840.10008.5.1.4.1.1.88.68
+ColonCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.69
+ImplantationPlanSRDocumentStorage            1.2.840.10008.5.1.4.1.1.88.70
+AcquisitionContextSRStorage                  1.2.840.10008.5.1.4.1.1.88.71
+SimplifiedAdultEchoSRStorage                 1.2.840.10008.5.1.4.1.1.88.72
+PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
+PlannedImagingAgentAdministrationSRStorage   1.2.840.10008.5.1.4.1.1.88.74
+PerformedImagingAgentAdministrationSRStorage 1.2.840.10008.5.1.4.1.1.88.75
 \endverbatim
 
 \subsection dsr2html_character_encoding Character Encoding
@@ -354,6 +356,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dsr2html_copyright COPYRIGHT
 
-Copyright (C) 2000-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
