@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,6 +74,24 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUniversalResourceIdentifie
  *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnlimitedCharactersVRGeneration; /* default OFTrue */
+
+/** Global flag to enable/disable the generation of VR=OV, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableOther64bitVeryLongVRGeneration; /* default OFTrue */
+
+/** Global flag to enable/disable the generation of VR=SV, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableSigned64bitVeryLongVRGeneration; /* default OFTrue */
+
+/** Global flag to enable/disable the generation of VR=UV, which has been
+ *  introduced after the first edition of the DICOM standard (1993).
+ *  If disabled, the VR=UN (if enabled) or alternatively VR=OB is used.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmEnableUnsigned64bitVeryLongVRGeneration; /* default OFTrue */
 
 /** Global flag to enable/disable the automatic re-conversion of defined
  *  length UN elements read in an explicit VR transfer syntax, if the real
@@ -149,6 +167,9 @@ enum DcmEVR
     /// other long
     EVR_OL,
 
+    /// other 64-bit very long
+    EVR_OV,
+
     /// other word
     EVR_OW,
 
@@ -170,6 +191,9 @@ enum DcmEVR
     /// short text
     EVR_ST,
 
+    /// signed 64-bit very long
+    EVR_SV,
+
     /// time string
     EVR_TM,
 
@@ -190,6 +214,9 @@ enum DcmEVR
 
     /// unlimited text
     EVR_UT,
+
+    /// unsigned 64-bit very long
+    EVR_UV,
 
     /// OB or OW depending on context
     EVR_ox,

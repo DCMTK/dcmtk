@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-02-04 12:31:21
+**   Date: 2019-02-06 13:23:38
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -29450,6 +29450,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED" }
 #endif
+  , { 0x7fe0, 0x0001, 0x7fe0, 0x0001,
+      EVR_OV, "ExtendedOffsetTable", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x7fe0, 0x0002, 0x7fe0, 0x0002,
+      EVR_OV, "ExtendedOffsetTableLengths", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x7fe0, 0x0008, 0x7fe0, 0x0008,
       EVR_OF, "FloatPixelData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,

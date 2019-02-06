@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -3208,6 +3208,13 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
             /* Unknown VR, e.g. tag not found in data dictionary */
             status = EC_UnknownVR;
             break;
+        case EVR_SV:
+        case EVR_UV:
+        case EVR_OV:
+            // TODO: requires new VR classes
+            DCMDATA_ERROR("DcmItem: Support for new VR=" << tag.getVRName() << " not yet implemented");
+            status = EC_NotYetImplemented;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3966,6 +3973,13 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
             /* Unknown VR, e.g. tag not found in data dictionary */
             status = EC_UnknownVR;
             break;
+        case EVR_SV:
+        case EVR_UV:
+        case EVR_OV:
+            // TODO: requires new VR classes
+            DCMDATA_ERROR("DcmItem: Support for new VR=" << tag.getVRName() << " not yet implemented");
+            status = EC_NotYetImplemented;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -4316,8 +4330,8 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
         }
 
         /* update VR for tag, set "readAsUN" flag that makes sure the element value
-        * is read in Little Endian Implicit VR (i.e. the UN encoding)
-        */
+         * is read in Little Endian Implicit VR (i.e. the UN encoding)
+         */
         if (newTag.getEVR() != EVR_UNKNOWN)
         {
             tag.setVR(newTag.getVR());
@@ -4541,7 +4555,13 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                 }
             break;
 
-        // read unknown types as byte string:
+        case EVR_SV :
+        case EVR_UV :
+        case EVR_OV :
+            // TODO: requires new VR classes
+            DCMDATA_WARN("DcmItem: Support for new VR=" << tag.getVRName() << " not yet implemented, treating as UN");
+
+            // read unknown types as byte string:
         case EVR_UNKNOWN :
         case EVR_UNKNOWN2B :
         case EVR_UN :

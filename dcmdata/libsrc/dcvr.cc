@@ -39,6 +39,9 @@ OFGlobal<OFBool> dcmEnableOtherDoubleVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableOtherLongVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedCharactersVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableOther64bitVeryLongVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableSigned64bitVeryLongVRGeneration(OFTrue);
+OFGlobal<OFBool> dcmEnableUnsigned64bitVeryLongVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
 
 /*
@@ -53,6 +56,9 @@ void dcmEnableGenerationOfNewVRs()
     dcmEnableOtherLongVRGeneration.set(OFTrue);
     dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFTrue);
     dcmEnableUnlimitedCharactersVRGeneration.set(OFTrue);
+    dcmEnableOther64bitVeryLongVRGeneration.set(OFTrue);
+    dcmEnableSigned64bitVeryLongVRGeneration.set(OFTrue);
+    dcmEnableUnsigned64bitVeryLongVRGeneration.set(OFTrue);
 }
 
 void dcmDisableGenerationOfNewVRs()
@@ -64,6 +70,9 @@ void dcmDisableGenerationOfNewVRs()
     dcmEnableOtherLongVRGeneration.set(OFFalse);
     dcmEnableUniversalResourceIdentifierOrLocatorVRGeneration.set(OFFalse);
     dcmEnableUnlimitedCharactersVRGeneration.set(OFFalse);
+    dcmEnableOther64bitVeryLongVRGeneration.set(OFFalse);
+    dcmEnableSigned64bitVeryLongVRGeneration.set(OFFalse);
+    dcmEnableUnsigned64bitVeryLongVRGeneration.set(OFFalse);
 }
 
 
@@ -111,6 +120,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_OD, "OD", &noDelimiters, sizeof(Float64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967288U },
     { EVR_OF, "OF", &noDelimiters, sizeof(Float32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967292U },
     { EVR_OL, "OL", &noDelimiters, sizeof(Uint32), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967292U },
+    { EVR_OV, "OV", &noDelimiters, sizeof(Uint64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967288U },
     { EVR_OW, "OW", &noDelimiters, sizeof(Uint16), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294U },
     { EVR_PN, "PN", &pnDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 64 },
     { EVR_SH, "SH", &bsDelimiter, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 16 },
@@ -118,6 +128,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_SQ, "SQ", &noDelimiters, 0, DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294U },
     { EVR_SS, "SS", &noDelimiters, sizeof(Sint16), DCMVR_PROP_NONE, 2, 2 },
     { EVR_ST, "ST", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 1024 },
+    { EVR_SV, "SV", &noDelimiters, sizeof(Sint64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 8, 8 },
     { EVR_TM, "TM", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
     { EVR_UC, "UC", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 4294967294U },
     { EVR_UI, "UI", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
@@ -125,6 +136,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_UR, "UR", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294U },
     { EVR_US, "US", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
     { EVR_UT, "UT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 4294967294U },
+    { EVR_UV, "UV", &noDelimiters, sizeof(Uint64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 8, 8 },
     { EVR_ox, "ox", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294U },
     { EVR_xs, "xs", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
     { EVR_lt, "lt", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294U },
@@ -343,6 +355,33 @@ DcmVR::getValidEVR() const
                     evr = EVR_UN; /* handle UC as if UN */
                 else
                     evr = EVR_OB; /* handle UC as if OB */
+            }
+            break;
+        case EVR_OV:
+            if (!dcmEnableOther64bitVeryLongVRGeneration.get())
+            {
+                if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle OV as if UN */
+                else
+                    evr = EVR_OB; /* handle OV as if OB */
+            }
+            break;
+        case EVR_SV:
+            if (!dcmEnableSigned64bitVeryLongVRGeneration.get())
+            {
+                if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle SV as if UN */
+                else
+                    evr = EVR_OB; /* handle SV as if OB */
+            }
+            break;
+        case EVR_UV:
+            if (!dcmEnableUnsigned64bitVeryLongVRGeneration.get())
+            {
+                if (dcmEnableUnknownVRGeneration.get())
+                    evr = EVR_UN; /* handle UV as if UN */
+                else
+                    evr = EVR_OB; /* handle UV as if OB */
             }
             break;
         default:

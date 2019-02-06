@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-02-04 12:31:20
+**   Date: 2019-02-06 13:23:32
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2019-02-04 12:31:20"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2019-02-06 13:23:32"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4567
+** Number of entries: 4569
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -4581,6 +4581,8 @@
 #define DCM_WaveformData                         DcmTagKey(0x5400, 0x1010)
 #define DCM_FirstOrderPhaseCorrectionAngle       DcmTagKey(0x5600, 0x0010)
 #define DCM_SpectroscopyData                     DcmTagKey(0x5600, 0x0020)
+#define DCM_ExtendedOffsetTable                  DcmTagKey(0x7fe0, 0x0001)
+#define DCM_ExtendedOffsetTableLengths           DcmTagKey(0x7fe0, 0x0002)
 #define DCM_FloatPixelData                       DcmTagKey(0x7fe0, 0x0008)
 #define DCM_DoubleFloatPixelData                 DcmTagKey(0x7fe0, 0x0009)
 #define DCM_PixelData                            DcmTagKey(0x7fe0, 0x0010)
