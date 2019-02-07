@@ -408,6 +408,12 @@ public:
      */
     OFBool usesExtendedLengthEncoding() const;
 
+    /** returns true if VR supports undefined length for the value length field
+     *  and a sequence delimitation item marks the end of the value field
+     *  @return true if VR supports undefined length, false otherwise
+     */
+    OFBool supportsUndefinedLength() const;
+
     /** check if VRs are equivalent.
      *  VRs are considered equivalent if equal or if one of them is an internal
      *  VR and the other one is a possible standard VR to which the internal one
