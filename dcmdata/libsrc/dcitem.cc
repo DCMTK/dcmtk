@@ -4426,6 +4426,14 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
         case EVR_OL :
             newElement = new DcmOtherLong(tag, length);
             break;
+        case EVR_SV :
+        case EVR_UV :
+        case EVR_OV :
+            // TODO: requires new VR classes; also need to add support for OV with undefined length
+            DCMDATA_WARN("DcmItem: Support for new VR=" << tag.getVRName() << " not yet implemented, treating as UN/OB");
+            // until dedicated support is available, treat as OB
+            newElement = new DcmOtherByteOtherWord(tag, length);
+            break;
         case EVR_FL :
             newElement = new DcmFloatingPointSingle(tag, length);
             break;
@@ -4555,13 +4563,7 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                 }
             break;
 
-        case EVR_SV :
-        case EVR_UV :
-        case EVR_OV :
-            // TODO: requires new VR classes
-            DCMDATA_WARN("DcmItem: Support for new VR=" << tag.getVRName() << " not yet implemented, treating as UN");
-
-            // read unknown types as byte string:
+        // read unknown types as byte string:
         case EVR_UNKNOWN :
         case EVR_UNKNOWN2B :
         case EVR_UN :
