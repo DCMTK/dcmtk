@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,13 +44,13 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
     OFCmdUnsignedInt opt_port;
     /// indicates if the application shall refuse any association
     OFBool opt_refuseAssociation;
-    /// indicates if the application shall reject associations without implementation class uids
+    /// indicates if the application shall reject associations without implementation class UIDs
     OFBool opt_rejectWithoutImplementationUID;
     /// indicates how long the application shall sleep after a find
     OFCmdUnsignedInt opt_sleepAfterFind;
     /// indicates how long the application shall sleep during a find
     OFCmdUnsignedInt opt_sleepDuringFind;
-    /// max pdu size
+    /// max PDU size
     OFCmdUnsignedInt opt_maxPDU;
     /// preferred network transfer syntax
     E_TransferSyntax opt_networkTransferSyntax;
@@ -82,7 +82,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
 
       /** This function takes care of receiving, negotiating and accepting/refusing an
        *  association request. Additionally, it handles the request the association
-       *  requesting application transmits after a connection isd established.
+       *  requesting application transmits after a connection is established.
        *  @param net Contains network parameters.
        */
     OFCondition WaitForAssociation( T_ASC_Network *net );
@@ -94,7 +94,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
     void CleanChildren();
 
       /** This function negotiates a presentation context which will be used by this application
-       *  and the other DICOM appliation that requests an association.
+       *  and the other DICOM application that requests an association.
        *  @param assoc The association (network connection to another DICOM application).
        */
     OFCondition NegotiateAssociation( T_ASC_Association *assoc );
@@ -111,7 +111,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        */
     void RemoveProcessFromTable( int pid );
 
-      /** This function takes care of refusing an assocation request.
+      /** This function takes care of refusing an association request.
        *  @param assoc  The association (network connection to another DICOM application).
        *  @param reason The reason why the association request will be refused.
        */
@@ -181,21 +181,21 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        *  @param opt_dimse_timeoutv                  Specifies the timeout for DIMSE operations
        *  @param opt_acse_timeoutv                   Specifies the timeout for ACSE operations
        *  @param opt_forkedChildv                    Indicates, whether this process was "forked" from a parent process, default: false
-			 *  @param argcv															 Number of commandline arguments given
-			 *  @param argvv															 Complete command line
+       *  @param argcv                               Number of commandline arguments given
+       *  @param argvv                               Complete command line
        */
     WlmActivityManager(
-        WlmDataSource *dataSourcev, 
-        OFCmdUnsignedInt opt_portv, 
-        OFBool opt_refuseAssociationv, 
-        OFBool opt_rejectWithoutImplementationUIDv, 
-        OFCmdUnsignedInt opt_sleepAfterFindv, 
-        OFCmdUnsignedInt opt_sleepDuringFindv, 
-        OFCmdUnsignedInt opt_maxPDUv, 
-        E_TransferSyntax opt_networkTransferSyntaxv, 
-        OFBool opt_failInvalidQueryv, 
-        OFBool opt_singleProcessv, 
-        int opt_maxAssociationsv, 
+        WlmDataSource *dataSourcev,
+        OFCmdUnsignedInt opt_portv,
+        OFBool opt_refuseAssociationv,
+        OFBool opt_rejectWithoutImplementationUIDv,
+        OFCmdUnsignedInt opt_sleepAfterFindv,
+        OFCmdUnsignedInt opt_sleepDuringFindv,
+        OFCmdUnsignedInt opt_maxPDUv,
+        E_TransferSyntax opt_networkTransferSyntaxv,
+        OFBool opt_failInvalidQueryv,
+        OFBool opt_singleProcessv,
+        int opt_maxAssociationsv,
         T_DIMSE_BlockingMode opt_blockModev,
         int opt_dimse_timeoutv,
         int opt_acse_timeoutv,

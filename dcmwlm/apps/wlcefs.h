@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,7 +80,7 @@ class WlmConsoleEngineFileSystem
     OFCommandLine *cmd;
     /// number of command line arguments, needed for multiprocess mode on WIN32
     int command_argc;
-    /// complete command line, needed for mulitprocess mode on WIN32
+    /// complete command line, needed for multiprocess mode on WIN32
     char **command_argv;
     /// data source which shall be queried on incoming C-Find RQ messages
     WlmDataSource *dataSource;
