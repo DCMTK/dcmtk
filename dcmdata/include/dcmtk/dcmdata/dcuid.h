@@ -182,14 +182,14 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 **          for OFFIS GO-Kard project: 1.2.276.0.7230010.8
 */
 
-#ifndef PACKAGE_DATE
-#error Required compiler definition PACKAGE_DATE undefined
+#ifndef DCMTK_PACKAGE_DATE
+#error Required compiler definition DCMTK_PACKAGE_DATE undefined
 #endif
-#ifndef PACKAGE_VERSION
-#error Required compiler definition PACKAGE_VERSION undefined
+#ifndef DCMTK_PACKAGE_VERSION
+#error Required compiler definition DCMTK_PACKAGE_VERSION undefined
 #endif
-#ifndef PACKAGE_VERSION_NUMBER
-#error Required compiler definition PACKAGE_VERSION_NUMBER undefined
+#ifndef DCMTK_PACKAGE_VERSION_NUMBER
+#error Required compiler definition DCMTK_PACKAGE_VERSION_NUMBER undefined
 #endif
 
 // helper macros for version number conversion
@@ -203,29 +203,29 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
  */
 
 /// implementation version name for this version of the toolkit
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_" PACKAGE_VERSION_NUMBER_TO_STRING(PACKAGE_VERSION_NUMBER)
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_" PACKAGE_VERSION_NUMBER_TO_STRING(DCMTK_PACKAGE_VERSION_NUMBER)
 
 /// implementation version name for this version of the toolkit, used for files received in "bit preserving" mode
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_" PACKAGE_VERSION_NUMBER_TO_STRING(PACKAGE_VERSION_NUMBER)
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_" PACKAGE_VERSION_NUMBER_TO_STRING(DCMTK_PACKAGE_VERSION_NUMBER)
 
 /// release date of current toolkit release
 #ifdef DCMTK_BUILD_DATE
 #define OFFIS_DCMTK_RELEASEDATE                 DCMTK_BUILD_DATE
 #else
-#define OFFIS_DCMTK_RELEASEDATE                 PACKAGE_DATE
+#define OFFIS_DCMTK_RELEASEDATE                 DCMTK_PACKAGE_DATE
 #endif
 
 /// UID root for DCMTK, registered for OFFIS with DIN in Germany
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
 
 /// DCMTK version number for this release
-#define OFFIS_DCMTK_VERSION_NUMBER              PACKAGE_VERSION_NUMBER
+#define OFFIS_DCMTK_VERSION_NUMBER              DCMTK_PACKAGE_VERSION_NUMBER
 
 /// DCMTK version number (as string) for this release
-#define OFFIS_DCMTK_VERSION_STRING              PACKAGE_VERSION
+#define OFFIS_DCMTK_VERSION_STRING              DCMTK_PACKAGE_VERSION
 
 /// DCMTK version number suffix string for this release
-#define OFFIS_DCMTK_VERSION_SUFFIX              PACKAGE_VERSION_SUFFIX
+#define OFFIS_DCMTK_VERSION_SUFFIX              DCMTK_PACKAGE_VERSION_SUFFIX
 
 /// DCMTK version number string including suffix
 #define OFFIS_DCMTK_VERSION                     OFFIS_DCMTK_VERSION_STRING OFFIS_DCMTK_VERSION_SUFFIX

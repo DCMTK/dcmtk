@@ -834,10 +834,10 @@
 /* #undef PACKAGE_BUGREPORT */
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "@DCMTK_PACKAGE_NAME@"
+#define DCMTK_PACKAGE_NAME "@DCMTK_PACKAGE_NAME@"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "@DCMTK_PACKAGE_STRING@"
+#define DCMTK_PACKAGE_STRING "@DCMTK_PACKAGE_STRING@"
 
 /* Define to the default configuration directory (used by some applications) */
 #define DEFAULT_CONFIGURATION_DIR "@DCMTK_DEFAULT_CONFIGURATION_DIR@"
@@ -849,16 +849,16 @@
 /* #undef PACKAGE_TARNAME */
 
 /* Define to the date of this package. */
-#define PACKAGE_DATE "@DCMTK_PACKAGE_DATE@"
+#define DCMTK_PACKAGE_DATE "@DCMTK_PACKAGE_DATE@"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "@DCMTK_PACKAGE_VERSION@"
+#define DCMTK_PACKAGE_VERSION "@DCMTK_PACKAGE_VERSION@"
 
 /* Define to the version suffix of this package. */
-#define PACKAGE_VERSION_SUFFIX "@DCMTK_PACKAGE_VERSION_SUFFIX@"
+#define DCMTK_PACKAGE_VERSION_SUFFIX "@DCMTK_PACKAGE_VERSION_SUFFIX@"
 
 /* Define to the version number of this package. */
-#define PACKAGE_VERSION_NUMBER @DCMTK_PACKAGE_VERSION_NUMBER@
+#define DCMTK_PACKAGE_VERSION_NUMBER @DCMTK_PACKAGE_VERSION_NUMBER@
 
 /* Define path separator */
 #define PATH_SEPARATOR '@PATH_SEPARATOR@'
