@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018 OFFIS e.V.
+ *  Copyright (C) 1996-2019 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2020,12 +2020,12 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
             /* set image resolution */
             dataset.putAndInsertUint16(DCM_Columns, Columns);
             dataset.putAndInsertUint16(DCM_Rows, Rows);
-#ifdef PRId32
-            sprintf(numBuf, "%" PRId32, NumberOfFrames);
+#ifdef PRIu32
+            sprintf(numBuf, "%" PRIu32, NumberOfFrames);
 #elif SIZEOF_LONG == 8
-            sprintf(numBuf, "%d", NumberOfFrames);
+            sprintf(numBuf, "%u", NumberOfFrames);
 #else
-            sprintf(numBuf, "%ld", NumberOfFrames);
+            sprintf(numBuf, "%lu", NumberOfFrames);
 #endif
             dataset.putAndInsertString(DCM_NumberOfFrames, numBuf);
             dataset.putAndInsertUint16(DCM_SamplesPerPixel, 1);
