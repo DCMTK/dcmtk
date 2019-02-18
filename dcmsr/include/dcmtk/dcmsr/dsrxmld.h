@@ -103,7 +103,9 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
      */
     OFBool encodingHandlerValid() const;
 
-    /** set the specified character encoding handler.
+    /** set character encoding handler for converting internally stored character strings
+     *  (UTF-8) to a particular character set.  This conversion is only done when requested,
+     *  e.g. when calling getStringFromAttribute() with the 'encoding' parameter being OFTrue.
      *  NB: 'libxml' relies on GNU 'libiconv' for most character sets.
      ** @param  charset  XML name of the character set (e.g. "ISO-8859-1" for ISO Latin-1)
      ** @return status, EC_Normal if successful, an error code otherwise
