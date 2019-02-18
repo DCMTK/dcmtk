@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -484,7 +484,6 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
                 OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
             }
-
         }
         else if (xtag == DCM_ImplementationVersionName)     // (0002,0013)
         {
@@ -498,16 +497,17 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 const char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
                 OFstatic_cast(DcmShortString *, elem)->putString(uid);
             }
-
         }
-        else if (xtag == DCM_SourceApplicationEntityTitle)  // (0002,0016)
+        else if ((xtag == DCM_SourceApplicationEntityTitle) ||  // (0002,0016)
+                 (xtag == DCM_SendingApplicationEntityTitle) || // (0002,0017)
+                 (xtag == DCM_ReceivingApplicationEntityTitle)) // (0002,0018)
         {
             if (elem == NULL)
             {
                 elem = new DcmApplicationEntity(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            DCMDATA_ERROR("DcmFileFormat: Don't know how to handle SourceApplicationEntityTitle");
+            DCMDATA_WARN("DcmFileFormat: Don't know how to handle " << tag.getTagName());
         }
         else if (xtag == DCM_PrivateInformationCreatorUID)  // (0002,0100)
         {
@@ -516,7 +516,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            DCMDATA_ERROR("DcmFileFormat: Don't know how to handle PrivateInformationCreatorUID");
+            DCMDATA_WARN("DcmFileFormat: Don't know how to handle PrivateInformationCreatorUID");
         }
         else if (xtag == DCM_PrivateInformation)            // (0002,0102)
         {
@@ -526,9 +526,8 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 metainfo->insert(elem, OFTrue);
             }
             DCMDATA_WARN("DcmFileFormat: Don't know how to handle PrivateInformation");
-        } else {
-            DCMDATA_WARN("DcmFileFormat: Don't know how to handle " << tag.getTagName());
-        }
+        } else
+            DCMDATA_ERROR("DcmFileFormat: Don't know how to handle " << tag.getTagName());
 
         /* if at this point elem still equals NULL, something is fishy */
         if (elem == NULL)
