@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -51,7 +51,7 @@ class DCMTK_DCMSR_EXPORT DSRBasicCodedEntry
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
-     *                                  a term is defined.  (VR=SH, mandatory)
+     *                                  a term is defined.  (VR=SH, conditional)
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
      *                                  used for display when code dictionary is not available.
      *                                  (VR=LO, mandatory)
@@ -71,7 +71,7 @@ class DCMTK_DCMSR_EXPORT DSRBasicCodedEntry
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
-     *                                  a term is defined.  (VR=SH, mandatory)
+     *                                  a term is defined.  (VR=SH, conditional)
      *  @param  codingSchemeVersion     version of the coding scheme.  May be used to identify
      *                                  the version of a coding scheme if necessary to resolve
      *                                  ambiguity in the 'codeValue' or 'codeMeaning'.  (VR=SH,
@@ -96,7 +96,7 @@ class DCMTK_DCMSR_EXPORT DSRBasicCodedEntry
     const DSRTypes::E_CodeValueType CodeValueType;
     /// Code Value (VR=SH/UC/UR, type 1)
     const OFString CodeValue;
-    /// Coding Scheme Designator (VR=SH, type 1)
+    /// Coding Scheme Designator (VR=SH, type 1C)
     const OFString CodingSchemeDesignator;
     /// Coding Scheme Version (VR=SH, type 1C)
     const OFString CodingSchemeVersion;
@@ -135,7 +135,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
-     *                                  a term is defined.  (VR=SH, mandatory)
+     *                                  a term is defined.  (VR=SH, conditional)
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
      *                                  used for display when code dictionary is not available.
      *                                  (VR=LO, mandatory)
@@ -159,7 +159,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
-     *                                  a term is defined.  (VR=SH, mandatory)
+     *                                  a term is defined.  (VR=SH, conditional)
      *  @param  codingSchemeVersion     version of the coding scheme.  May be used to identify
      *                                  the version of a coding scheme if necessary to resolve
      *                                  ambiguity in the 'codeValue' or 'codeMeaning'.  (VR=SH,
@@ -249,10 +249,10 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     virtual OFBool isEmpty() const;
 
-    /** check whether the current code is complete, i.e.\ whether the three mandatory
-     *  components of the code are non-empty.  This is just a basic check that might be useful
-     *  for "validating" input data.  See isValid() for a more sophisticated way of checking
-     *  the current code.
+    /** check whether the current code is complete, i.e.\ whether the three (two for URN code
+     *  value) mandatory components of the code are non-empty.  This is just a basic check
+     *  that might be useful for "validating" input data.  See isValid() for a more
+     *  sophisticated way of checking the current code.
      ** @return OFTrue if code is complete, OFFalse otherwise
      */
     virtual OFBool isComplete() const;
@@ -517,7 +517,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH/UC/UR, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
-     *                                  a term is defined.  (VR=SH, mandatory)
+     *                                  a term is defined.  (VR=SH, conditional)
      *                                  Designators beginning with "99" and the designator
      *                                  "L" are defined to be private or local coding schemes.
      *  @param  codeMeaning             human-readable translation of the 'codeValue'.  Can be
@@ -549,7 +549,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      ** @param  codeValue               identifier of the code to be set that is unambiguous
      *                                  within the coding scheme.  (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  identifier of the coding scheme in which the code for
-     *                                  a term is defined.  (VR=SH, mandatory)
+     *                                  a term is defined.  (VR=SH, conditional)
      *                                  Designators beginning with "99" and the designator
      *                                  "L" are defined to be private or local coding schemes.
      *  @param  codingSchemeVersion     version of the coding scheme.  May be used to identify
@@ -669,9 +669,10 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
   // --- static helper functions ---
 
     /** check the specified code for validity.
-     *  Currently, the only checks performed are that the three mandatory string values are
-     *  non-empty and that all four values conform to the corresponding VR and VM.  Later on,
-     *  it might also be checked whether the specified code really belongs to the coding
+     *  Currently, the only checks performed are that the three (two for URN code value)
+     *  mandatory string values are non-empty and that all four values conform to the
+     *  corresponding VR and VM.  Later on, it might also be checked whether the specified
+     *  code really belongs to the coding
      *  scheme, etc.  This requires the presence of the relevant code dictionaries, though.
      ** @param  codeValue               code value to be checked
      *  @param  codingSchemeDesignator  coding scheme designator to be checked
@@ -708,7 +709,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     DSRTypes::E_CodeValueType CodeValueType;
     /// Code Value (VR=SH/UC/UR, type 1)
     OFString CodeValue;
-    /// Coding Scheme Designator (VR=SH, type 1)
+    /// Coding Scheme Designator (VR=SH, type 1C)
     OFString CodingSchemeDesignator;
     /// Coding Scheme Version (VR=SH, type 1C)
     OFString CodingSchemeVersion;
