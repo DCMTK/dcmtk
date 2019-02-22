@@ -254,7 +254,7 @@ OFBool DSRCodedEntryValue::isEmpty() const
 
 OFBool DSRCodedEntryValue::isComplete() const
 {
-    return !CodeValue.empty() && (!CodingSchemeDesignator.empty() || (CodeValueType == DSRTypes::DSRTypes::CVT_URN)) && !CodeMeaning.empty();
+    return !CodeValue.empty() && (!CodingSchemeDesignator.empty() || (CodeValueType == DSRTypes::CVT_URN)) && !CodeMeaning.empty();
 }
 
 
@@ -643,7 +643,7 @@ OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
         result = checkCode(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning, actualCodeValueType);
     } else {
         /* make sure that the mandatory values are non-empty */
-        if (codeValue.empty() || (codingSchemeDesignator.empty() && (actualCodeValueType != DSRTypes::DSRTypes::CVT_URN)) || codeMeaning.empty())
+        if (codeValue.empty() || (codingSchemeDesignator.empty() && (actualCodeValueType != DSRTypes::CVT_URN)) || codeMeaning.empty())
             result = EC_IllegalParameter;
     }
     if (result.good())
@@ -765,7 +765,7 @@ OFCondition DSRCodedEntryValue::checkCode(const OFString &codeValue,
 {
     OFCondition result = EC_Normal;
     /* first, make sure that the mandatory values are non-empty and the type is valid */
-    if (codeValue.empty() || (codingSchemeDesignator.empty() && (codeValueType != DSRTypes::DSRTypes::CVT_URN)) || codeMeaning.empty())
+    if (codeValue.empty() || (codingSchemeDesignator.empty() && (codeValueType != DSRTypes::CVT_URN)) || codeMeaning.empty())
         result = SR_EC_InvalidValue;
     else if (codeValueType == DSRTypes::CVT_auto)
     {
