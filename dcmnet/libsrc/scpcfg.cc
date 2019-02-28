@@ -41,6 +41,10 @@ DcmSCPConfig::DcmSCPConfig() :
   m_connectionTimeout(1000),
   m_respondWithCalledAETitle(OFTrue),
   m_progressNotificationMode(OFTrue)
+#ifdef WITH_OPENSSL
+  ,
+  m_tLayer(NULL)
+#endif
 {
 }
 
@@ -295,6 +299,28 @@ OFBool DcmSCPConfig::getProgressNotificationMode() const
   return m_progressNotificationMode;
 }
 
+// ----------------------------------------------------------------------------
+
+#ifdef WITH_OPENSSL
+OFBool DcmSCPConfig::getSecureLayerEnabled() const
+{
+  return (m_tLayer != NULL);
+}
+
+// ----------------------------------------------------------------------------
+
+DcmTLSTransportLayer * DcmSCPConfig::getSecureTransportLayer() const
+{
+    return m_tLayer;
+}
+
+// ----------------------------------------------------------------------------
+
+void DcmSCPConfig::setSecureConnection(DcmTLSTransportLayer *tlayer)
+{
+  m_tLayer = tlayer;
+}
+#endif
 // ----------------------------------------------------------------------------
 
 // Reads association configuration from config file

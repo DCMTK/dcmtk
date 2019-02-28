@@ -28,6 +28,8 @@
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/ofstd/ofmem.h"      /* For OFshared_ptr */
 
+class DcmTLSTransportLayer;
+
 /** Class that encapsulates an SCP configuration that is needed in order to
  *  configure the service negotiation behavior (presentation contexts, AE
  *  title, listening port, etc) as well as some runtime configuration like
@@ -296,6 +298,26 @@ public:
    */
   OFBool getProgressNotificationMode() const;
 
+#ifdef WITH_OPENSSL
+  /** Returns true if a secure layer is used,
+   *  false if a transparent layer is used.
+   *  @return If a secure layer is enabled
+   */
+  OFBool getSecureLayerEnabled() const;
+
+  /** Returns secure layer
+   *  @return Pointer to DcmTLSTransportLayer for secure layer
+   */
+  DcmTLSTransportLayer * getSecureTransportLayer() const;
+
+  /** Tells DcmSCP to set a secure TLS connection described by the given TLS layer
+   *  @param tlayer [in] The TLS transport layer including all TLS parameters.
+   *                     The function doesn't take ownership of tlayer.
+   *  @return void
+   */
+  void setSecureConnection(DcmTLSTransportLayer *tlayer);
+#endif
+
   /** Dump presentation contexts to given output stream, useful for debugging.
    *  @param out [out] The output stream
    *  @param profileName [in] The profile to dump. If empty (default), the currently
@@ -393,6 +415,13 @@ protected:
 
   /// Progress notification mode (default: OFTrue)
   OFBool m_progressNotificationMode;
+
+#ifdef WITH_OPENSSL
+  /// The TLS layer responsible for all encryption/authentication stuff
+  /// If not null, a secure layer is used,
+  /// if null, a transparent layer is used. (default: null)
+  DcmTLSTransportLayer *m_tLayer; /// Doesn't have ownership
+#endif
 };
 
 /** Enables sharing configurations by multiple DcmSCPs.
