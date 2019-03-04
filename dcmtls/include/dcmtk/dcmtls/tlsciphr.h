@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -274,6 +274,13 @@ public:
    */
   OFBool cipherNULLsupported() const;
 
+  /** checks if TLS 1.3 is enabled (permitted) for the currently selected
+   *  TLS security profile. Note that this does not imply that the underlying
+   *  OpenSSL library version actually supports TLS 1.3. That is checked elsewhere.
+   *  @return true if we support TLS 1.3, false otherwise
+   */
+  OFBool isTLS13Enabled() const;
+
   /** print a list of supported ciphersuites to the given output stream
    *  @param os output stream
    */
@@ -387,6 +394,9 @@ private:
 
   /// currently selected DICOM TLS security profile
   DcmTLSSecurityProfile currentProfile;
+
+  /// indicator whether TLS 1.3 is enabled or disabled for the current profile
+   OFBool tls13_enabled;
 
   /** an array of booleans indicating which ciphersuites known to DCMTK are
    *  actually supported by the OpenSSL library we are using.

@@ -519,6 +519,15 @@ DcmTransportLayerStatus DcmTLSTransportLayer::activateCipherSuites()
 
     SSL_CTX_set_options(transportLayerContext, ciphersuites.getTLSOptions());
 
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+    // when compiling with OpenSSL 1.1.1 or newer, set the maximum supported
+    // TLS protocol version to TLS 1.2 if required (i.e. for the historic
+    // security profiles, which would otherwise show unexpected behaviour).
+    if (! ciphersuites.isTLS13Enabled())
+    {
+      SSL_CTX_set_max_proto_version(transportLayerContext, TLS1_2_VERSION);
+    }
+#endif
   } else return TCS_illegalCall;
 
   return TCS_ok;

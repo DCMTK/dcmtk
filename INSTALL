@@ -670,6 +670,8 @@ variables are:
     - DCMTK_ENABLE_CXX11: Assume the compiler is C++11 compliant. Default: OFF.
     - DCMTK_ENABLE_STL: Replace DCMTK's OFString, OFList, OFVector etc. by
       the STL classes std::string, std::list, std::vector etc. Default: OFF.
+    - OPENSSL_ROOT_DIR: Directory where OpenSSL is installed.
+      Default: search in standard directories for headers and libraries.
 
 
 HTML DOCUMENTATION AND MAN PAGES
