@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2018, OFFIS e.V.
+ *  Copyright (C) 2003-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -463,7 +463,7 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
     else if (job.option == "mf")
         result = ds_man->modifyOrInsertFromFile(job.path, job.value /*filename*/, OFTrue, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
     else if (job.option == "ma")
-        result = ds_man->modifyAllTags(job.path, job.value, update_metaheader_uids_option, count);
+        result = ds_man->modifyAllTags(job.path, job.value, update_metaheader_uids_option, count, ignore_missing_tags_option);
     else if (job.option == "e")
         result = ds_man->deleteTag(job.path, OFFalse, ignore_missing_tags_option);
     else if (job.option == "ea")
