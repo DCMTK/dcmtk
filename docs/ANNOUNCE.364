@@ -69,11 +69,6 @@ over the previous version 3.6.3:
 
   - Added new and enhanced existing code examples for this module.
 
-- Enhanced Worklist SCP code to make use of existing classes and functions
-  instead of using its own "spaghetti" code for everything.  This also
-  resolves issues with the Worklist SCP rejecting some legit Worklist queries
-  as its own verification functions were too strict.
-
 - Added method getNumberOfValues() to all VR and other classes that are
   derived from DcmObject (such as DcmItem).  This new method always returns
   the number of values currently stored in the corresponding object/element,
