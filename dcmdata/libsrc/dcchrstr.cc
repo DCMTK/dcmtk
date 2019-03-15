@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -92,6 +92,7 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
     /* check for non-empty string */
     if ((str != NULL) && (len > 0))
     {
+        const unsigned long vm = getVM();
         /* check whether there is anything to verify at all */
         if (maxLen != DCM_UndefinedLength)
         {
@@ -104,7 +105,7 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
             {
                 ++vmNum;
                 /* search for next component separator */
-                const size_t posEnd = value.find('\\', posStart);
+                const size_t posEnd = (vm > 1) ? value.find('\\', posStart) : OFString_npos;
                 const size_t fieldLen = (posEnd == OFString_npos) ? value.length() - posStart : posEnd - posStart;
                 /* check size limit for each string component */
                 if (fieldLen > maxLen)
@@ -115,9 +116,9 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
                     errorFlag = EC_MaximumLengthViolated;
                     if (autocorrect)
                     {
-                        /*  We are currently not removing any characters since we do not know
-                         *  whether a character consists of one or more bytes.  This will be
-                         *  fixed in a future version.
+                        /*  TODO: We are currently not removing any characters since we do not
+                         *        know whether a character consists of one or more bytes.
+                         *        This will be fixed in a future version.
                          */
                         DCMDATA_DEBUG("DcmCharString::verify() not correcting value length since "
                             << "multi-byte character sets are not yet supported, so cannot decide");

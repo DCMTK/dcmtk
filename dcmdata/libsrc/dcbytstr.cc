@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -652,6 +652,7 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
         /* check whether there is anything to verify at all */
         if (maxLength != DCM_UndefinedLength)
         {
+            const unsigned long vm = getVM();
             /* TODO: is it really a good idea to create a copy of the string? */
             OFString value(str, len);
             size_t posStart = 0;
@@ -661,7 +662,7 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
             {
                 ++vmNum;
                 /* search for next component separator */
-                size_t posEnd = value.find('\\', posStart);
+                size_t posEnd = (vm > 1) ? value.find('\\', posStart) : OFString_npos;
                 const size_t fieldLen = (posEnd == OFString_npos) ? value.length() - posStart : posEnd - posStart;
                 /* check size limit for each string component */
                 if (fieldLen > maxLength)
