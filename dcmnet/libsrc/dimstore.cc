@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -92,7 +92,7 @@
 #endif
 
 #include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/dcmnet/dimse.h"		/* always include the module header */
+#include "dcmtk/dcmnet/dimse.h"        /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
 #include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
 #include "dcmtk/ofstd/ofstd.h"         /* for OFStandard::getFileSize() */
@@ -136,15 +136,15 @@ privateUserCallback(void *callbackData, unsigned long bytes)
 
 OFCondition
 DIMSE_storeUser(
-	T_ASC_Association *assoc, T_ASC_PresentationContextID presId,
-	T_DIMSE_C_StoreRQ *request,
-	const char *imageFileName, DcmDataset *imageDataSet,
-	DIMSE_StoreUserCallback callback, void *callbackData,
-	T_DIMSE_BlockingMode blockMode, int timeout,
-	T_DIMSE_C_StoreRSP *response,
-	DcmDataset **statusDetail,
-        T_DIMSE_DetectedCancelParameters *checkForCancelParams,
-        long imageFileTotalBytes)
+    T_ASC_Association *assoc, T_ASC_PresentationContextID presId,
+    T_DIMSE_C_StoreRQ *request,
+    const char *imageFileName, DcmDataset *imageDataSet,
+    DIMSE_StoreUserCallback callback, void *callbackData,
+    T_DIMSE_BlockingMode blockMode, int timeout,
+    T_DIMSE_C_StoreRSP *response,
+    DcmDataset **statusDetail,
+    T_DIMSE_DetectedCancelParameters *checkForCancelParams,
+    long imageFileTotalBytes)
     /*
      * This function transmits data from a file or a dataset to an SCP. The transmission is
      * conducted via network and using DIMSE C-STORE messages. Additionally, this function
@@ -198,22 +198,22 @@ DIMSE_storeUser(
         /* in case the caller indicated that he has his own progress indicating */
         /* function set some variables correspondingly so that this particular */
         /* function will be called whenever progress shall be indicated. */
-        privCallback = privateUserCallback;	/* function defined above */
-	callbackCtx.callbackData = callbackData;
+        privCallback = privateUserCallback;     /* function defined above */
+        callbackCtx.callbackData = callbackData;
         progress.state = DIMSE_StoreBegin;
-	progress.callbackCount = 1;
-	progress.progressBytes = 0;
-	if (imageFileTotalBytes > 0) progress.totalBytes = imageFileTotalBytes;
-	else
-	{
+        progress.callbackCount = 1;
+        progress.progressBytes = 0;
+        if (imageFileTotalBytes > 0) progress.totalBytes = imageFileTotalBytes;
+        else
+        {
           if (imageFileName != NULL) progress.totalBytes = OFstatic_cast(long, OFStandard::getFileSize(imageFileName));
           else progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
         }
-	callbackCtx.progress = &progress;
-	callbackCtx.request = request;
+        callbackCtx.progress = &progress;
+        callbackCtx.request = request;
         callbackCtx.callback = callback;
-	/* execute initial callback */
-	callback(callbackData, &progress, request);
+        /* execute initial callback */
+        callback(callbackData, &progress, request);
     } else {
         /* in case the caller does not have his own progress indicating function no */
         /* corresponding function will be called when progress shall be indicated. */
@@ -223,22 +223,22 @@ DIMSE_storeUser(
     /* send C-STORE-RQ message and instance data using file data or data set */
     if (imageFileName != NULL) {
         cond = DIMSE_sendMessageUsingFileData(assoc, presId, &req,
-	    NULL, imageFileName, privCallback, &callbackCtx);
+            NULL, imageFileName, privCallback, &callbackCtx);
     } else {
         cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req,
-	    NULL, imageDataSet, privCallback, &callbackCtx);
+            NULL, imageDataSet, privCallback, &callbackCtx);
     }
 
     if (cond != EC_Normal) {
-	return cond;
+        return cond;
     }
 
     /* execute final callback */
     if (callback) {
         progress.state = DIMSE_StoreEnd;
-	progress.callbackCount++;
-	/* execute final callback */
-	callback(callbackData, &progress, request);
+        progress.callbackCount++;
+        /* execute final callback */
+        callback(callbackData, &progress, request);
     }
 
     /* check if a C-CANCEL-RQ message was encountered earlier */
@@ -296,10 +296,10 @@ DIMSE_storeUser(
 
 OFCondition
 DIMSE_sendStoreResponse(T_ASC_Association * assoc,
-	T_ASC_PresentationContextID presID,
+    T_ASC_PresentationContextID presID,
     const T_DIMSE_C_StoreRQ *request,
-	T_DIMSE_C_StoreRSP *response,
-	DcmDataset *statusDetail)
+    T_DIMSE_C_StoreRSP *response,
+    DcmDataset *statusDetail)
     /*
      * This function takes care of sending a C-STORE-RSP message over the network to the DICOM
      * application this application is connected with.
@@ -315,7 +315,7 @@ DIMSE_sendStoreResponse(T_ASC_Association * assoc,
      *                       is contained in this variable.
      */
 {
-    OFCondition           cond = EC_Normal;
+    OFCondition         cond = EC_Normal;
     T_DIMSE_Message     rsp;
 
     /* create response message */
@@ -324,16 +324,14 @@ DIMSE_sendStoreResponse(T_ASC_Association * assoc,
     response->MessageIDBeingRespondedTo = request->MessageID;
     OFStandard::strlcpy(response->AffectedSOPClassUID, request->AffectedSOPClassUID, sizeof(response->AffectedSOPClassUID));
     OFStandard::strlcpy(response->AffectedSOPInstanceUID, request->AffectedSOPInstanceUID, sizeof(response->AffectedSOPInstanceUID));
-    response->opts = (O_STORE_AFFECTEDSOPCLASSUID |
-        O_STORE_AFFECTEDSOPINSTANCEUID);
+    response->opts = (O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID);
     response->DataSetType = DIMSE_DATASET_NULL;
     rsp.msg.CStoreRSP = *response;
 
     /* send response message over the network */
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp,
-		statusDetail, NULL, NULL, NULL);
+    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, statusDetail, NULL, NULL, NULL);
 
-    /* return reult value */
+    /* return result value */
     return cond;
 }
 
@@ -345,8 +343,8 @@ typedef struct {
     char *imageFileName;
     DcmDataset **imageDataSet;
     T_DIMSE_C_StoreRSP *response;
-    DcmDataset	**statusDetail;
-    DIMSE_StoreProviderCallback	callback;
+    DcmDataset **statusDetail;
+    DIMSE_StoreProviderCallback callback;
 } DIMSE_PrivateProviderContext;
 
 static void
@@ -359,20 +357,20 @@ privateProviderCallback(void *callbackData, unsigned long bytes)
     ctx->progress->callbackCount++;
     if (ctx->callback) {
         ctx->callback(ctx->callbackData, ctx->progress, ctx->request,
-	    ctx->imageFileName, ctx->imageDataSet, ctx->response,
-	    ctx->statusDetail);
+            ctx->imageFileName, ctx->imageDataSet, ctx->response,
+            ctx->statusDetail);
     }
 }
 
 
 OFCondition
 DIMSE_storeProvider( T_ASC_Association *assoc,
-	T_ASC_PresentationContextID presIdCmd,
-	T_DIMSE_C_StoreRQ *request,
-	const char* imageFileName, int writeMetaheader,
-	DcmDataset **imageDataSet,
-	DIMSE_StoreProviderCallback callback, void *callbackData,
-	T_DIMSE_BlockingMode blockMode, int timeout)
+    T_ASC_PresentationContextID presIdCmd,
+    T_DIMSE_C_StoreRQ *request,
+    const char* imageFileName, int writeMetaheader,
+    DcmDataset **imageDataSet,
+    DIMSE_StoreProviderCallback callback, void *callbackData,
+    T_DIMSE_BlockingMode blockMode, int timeout)
     /*
      * This function receives a data set over the network and either stores this data in a file (exactly as it was
      * received) or it stores this data in memory. Before, during and after the process of receiving data, the callback
@@ -408,9 +406,9 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 
     /* initialize the C-STORE-RSP message variable */
     bzero((char*)&response, sizeof(response));
-    response.DimseStatus = STATUS_Success;	/* assume */
+    response.DimseStatus = STATUS_Success;      /* assume */
     response.MessageIDBeingRespondedTo = request->MessageID;
-    response.DataSetType = DIMSE_DATASET_NULL;	/* always for C-STORE-RSP */
+    response.DataSetType = DIMSE_DATASET_NULL;  /* always for C-STORE-RSP */
     OFStandard::strlcpy(response.AffectedSOPClassUID, request->AffectedSOPClassUID, sizeof(response.AffectedSOPClassUID));
     OFStandard::strlcpy(response.AffectedSOPInstanceUID, request->AffectedSOPInstanceUID, sizeof(response.AffectedSOPInstanceUID));
     response.opts = (O_STORE_AFFECTEDSOPCLASSUID | O_STORE_AFFECTEDSOPINSTANCEUID);
@@ -420,23 +418,23 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     /* set up callback routine */
     if (callback != NULL) {
         /* only if caller requires */
-        privCallback = privateProviderCallback;	/* function defined above */
-	callbackCtx.callbackData = callbackData;
+        privCallback = privateProviderCallback; /* function defined above */
+        callbackCtx.callbackData = callbackData;
         progress.state = DIMSE_StoreBegin;
-	progress.callbackCount = 1;
-	progress.progressBytes = 0;
+        progress.callbackCount = 1;
+        progress.progressBytes = 0;
         progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
-	callbackCtx.progress = &progress;
-	callbackCtx.request = request;
-	callbackCtx.imageFileName = (char*)imageFileName;
-	callbackCtx.imageDataSet = imageDataSet;
-	callbackCtx.response = &response;
-	callbackCtx.statusDetail = &statusDetail;
+        callbackCtx.progress = &progress;
+        callbackCtx.request = request;
+        callbackCtx.imageFileName = (char*)imageFileName;
+        callbackCtx.imageDataSet = imageDataSet;
+        callbackCtx.response = &response;
+        callbackCtx.statusDetail = &statusDetail;
         callbackCtx.callback = callback;
-	/* execute initial callback */
-	callback(callbackData, &progress, request,
-	    (char*)imageFileName, imageDataSet,
-	    &response, &statusDetail);
+        /* execute initial callback */
+        callback(callbackData, &progress, request,
+            (char*)imageFileName, imageDataSet,
+            &response, &statusDetail);
     } else {
         privCallback = NULL;
     }
@@ -466,7 +464,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
             cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, s.c_str());
           }
         } else {
-          /* if no error occured, receive data and write it to the file */
+          /* if no error occurred, receive data and write it to the file */
           cond = DIMSE_receiveDataSetInFile(assoc, blockMode, timeout, &presIdData, filestream, privCallback, &callbackCtx);
           delete filestream;
           if (cond != EC_Normal)
@@ -479,17 +477,17 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     {
         /* receive data and store it in memory */
         cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
-		&presIdData, imageDataSet, privCallback, &callbackCtx);
+            &presIdData, imageDataSet, privCallback, &callbackCtx);
     } else {
         /* if both variables are set to NULL, report an error */
- 	return DIMSE_BADDATA;
+        return DIMSE_BADDATA;
     }
 
     /* check if presentation context IDs of the command (which was received earlier) and of the data */
     /* set (which was received just now) differ from each other. If this is the case, return an error. */
     if (cond.good() && (presIdData != presIdCmd))
     {
-    	cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
+        cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
     }
 
     /* depending on the error status, set the success indicating flag in the response message */
@@ -504,11 +502,11 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     /* execute final callback (user does not have to provide callback) */
     if (callback) {
         progress.state = DIMSE_StoreEnd;
-	progress.callbackCount++;
-	/* execute final callback */
-	callback(callbackData, &progress, request,
-	    (char*)imageFileName, imageDataSet,
-	    &response, &statusDetail);
+        progress.callbackCount++;
+        /* execute final callback */
+        callback(callbackData, &progress, request,
+            (char*)imageFileName, imageDataSet,
+            &response, &statusDetail);
     }
 
     /* send a C-STORE-RSP message over the network to the other DICOM application */
