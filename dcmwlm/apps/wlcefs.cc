@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,8 +68,9 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 //                dataSourcev     - [in] Pointer to the dataSource object.
 // Return Value : none.
   : opt_returnedCharacterSet( RETURN_NO_CHARACTER_SET ),
-    opt_dfPath( "" ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
-    opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
+    opt_dfPath( "" ), opt_rfPath( "" ), opt_rfFormat( "#t.dump" ), opt_refuseAssociation( OFFalse ),
+    opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepBeforeFindReq ( 0 ),
+    opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
     opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
     opt_forkedChild( OFFalse ), opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ),
@@ -119,6 +120,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       OFString opt5 = "[p]ath: string (default: ";
       opt5 += opt_dfPath;
       opt5 += ")";
+
       cmd->addOption("--data-files-path",     "-dfp", 1, opt5.c_str(), "path to worklist data files" );
     cmd->addSubGroup("handling of worklist files:");
       cmd->addOption("--enable-file-reject",  "-efr",    "enable rejection of incomplete worklist files\n(default)");
@@ -131,6 +133,9 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--keep-char-set",       "-csk",    "return character set provided in file");
     cmd->addSubGroup("other processing options:");
       cmd->addOption("--no-sq-expansion",     "-nse",    "disable expansion of empty sequences in C-FIND\nrequest messages");
+      cmd->addOption("--request-file-path",  "-rfp", 1,   "[p]ath: string", "path to store request files to");
+      cmd->addOption("--request-file-format","-rff", 1,  "[f]ormat: string (default: #t.dump)", "request file name format");
+
 
   cmd->addGroup("network options:");
     cmd->addSubGroup("preferred network transfer syntaxes:");
@@ -170,6 +175,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--refuse",                         "refuse association");
       cmd->addOption("--reject",                         "reject association if no implement. class UID");
       cmd->addOption("--no-fail",                        "don't fail on an invalid query");
+      cmd->addOption("--sleep-before",                1, "[s]econds: integer", "sleep s seconds before find (default: 0)");
       cmd->addOption("--sleep-after",                 1, "[s]econds: integer", "sleep s seconds after find (default: 0)");
       cmd->addOption("--sleep-during",                1, "[s]econds: integer", "sleep s seconds during find (default: 0)");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
@@ -228,6 +234,12 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 #endif
 
     if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
+    if( cmd->findOption("--request-file-path") ) app->checkValue(cmd->getValue(opt_rfPath));
+    if( cmd->findOption("--request-file-format") )
+    {
+        app->checkDependence("--request-file-format", "--request-file-path", !opt_rfPath.empty());
+        app->checkValue(cmd->getValue(opt_rfFormat));
+    }
 
     cmd->beginOptionBlock();
     if( cmd->findOption("--enable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFTrue;
@@ -299,6 +311,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--refuse") ) opt_refuseAssociation = OFTrue;
     if( cmd->findOption("--reject") ) opt_rejectWithoutImplementationUID = OFTrue;
     if( cmd->findOption("--no-fail") ) opt_failInvalidQuery = OFFalse;
+    if( cmd->findOption("--sleep-before") ) app->checkValue(cmd->getValueAndCheckMin(opt_sleepBeforeFindReq, 0));
     if( cmd->findOption("--sleep-after") ) app->checkValue(cmd->getValueAndCheckMin(opt_sleepAfterFind, 0));
     if( cmd->findOption("--sleep-during") ) app->checkValue(cmd->getValueAndCheckMin(opt_sleepDuringFind, 0));
     if( cmd->findOption("--max-pdu") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
@@ -360,15 +373,35 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
 
   // start providing the basic worklist management service
   WlmActivityManager *activityManager = new WlmActivityManager(
-      dataSource, opt_port,
+      dataSource,
+      opt_port,
       opt_refuseAssociation,
       opt_rejectWithoutImplementationUID,
-      opt_sleepAfterFind, opt_sleepDuringFind,
-      opt_maxPDU, opt_networkTransferSyntax,
+      opt_sleepBeforeFindReq,
+      opt_sleepAfterFind,
+      opt_sleepDuringFind,
+      opt_maxPDU,
+      opt_networkTransferSyntax,
       opt_failInvalidQuery,
-      opt_singleProcess, opt_maxAssociations,
-      opt_blockMode, opt_dimse_timeout, opt_acse_timeout,
-      opt_forkedChild, command_argc, command_argv );
+      opt_singleProcess,
+      opt_maxAssociations,
+      opt_blockMode,
+      opt_dimse_timeout,
+      opt_acse_timeout,
+      opt_forkedChild,
+      command_argc,
+      command_argv );
+
+  if (!activityManager->setRequestFilePath(opt_rfPath, opt_rfFormat))
+  {
+      // dump error if given directory is not sufficient
+      OFLOG_ERROR(wlmscpfsLogger, "Request file directory (" << opt_rfPath << ") cannot be created or is not writable");
+      // free memory
+      delete activityManager;
+      // return errro
+      return( 1 );
+  }
+
   cond = activityManager->StartProvidingService();
   if( cond.bad() )
   {

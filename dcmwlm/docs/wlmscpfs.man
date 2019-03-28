@@ -104,6 +104,13 @@ other processing options:
   -nse  --no-sq-expansion
           disable expansion of empty sequences in C-FIND
           request messages
+
+  -rfp  --request-file-path  [p]ath: string
+          path to store request files to
+
+  -rff  --request-file-format  [f]ormat: string (default: #t.dump)
+          request file name format
+
 \endverbatim
 
 \subsection wlmscpfs_network_options network options
@@ -166,6 +173,9 @@ other network options:
         --no-fail
           don't fail on an invalid query
 
+        --sleep-before  [s]econds: integer
+          sleep s seconds before find (default: 0)
+
         --sleep-after  [s]econds: integer
           sleep s seconds after find (default: 0)
 
@@ -216,6 +226,63 @@ considered to be complete if it contains all necessary type 1 information
 which the SCP might have to return to an SCU in a C-FIND response message.
 Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding
 type 1 attributes (see column "Return Key Type").
+
+\subsection wlmscpfs_request_files WRITING REQUEST FILES
+
+Providing option --request-file-path enables writing of the incoming C-FIND
+requests into text files.  The option value provides the target directory where
+these files will be stored.  All request files are stored in "dump" format as
+provided by the \b dcmdump tool and are raw, i.e. they are written as they
+arrive at \b wlmscpfs, without any tag processing applied by \b wlmscpfs.
+
+Writing request files allows users to "interactively" prepare the worklist
+database (for wlmscpfs the worklist files served from the \e --data-file-path
+directory) by watching the request file directory.  Once a request file appears,
+one needs some time to update worklist entries in the database.  For that
+reason it makes sense to use \e --request-file-path in combination with option
+\e --sleep-before which lets users specify a certain amount of seconds that
+\b wlmscpfs should wait before actually starting to check the worklist database.
+Note that the request files written with \e --data-file-path are not
+automatically deleted by \b wlmscpfs.
+
+If request files are enabled, \b wlmscpfs must automatically create file names
+within the given directory. Per default, the format is \<timestamp\>.dump where
+\<timestamp\> is in the format YYYYMMDDhhmmssffffff where:
+- YYYY is the current year
+- MM is the current month
+- DD is the current day
+- hh are the current hours (in 24 hour format)
+- mm are the current minutes
+- ss are the current seconds and
+- ffffff is the fraction of the current second
+
+This should work as a default for most applications that would like to use
+request files and want to ensure unique file names.  If it is desired to change
+this naming scheme, the option \e --request-file-format can be used.  It
+permits to specify the file naming pattern used by \e --request-file-path.
+
+For flexibility, the following placeholders can be used in the pattern provided
+for \e --request-file-format:
+
+- \#a: calling application entity title of the peer SCU
+- \#c: called application entity title (AE title of worklist SCP application)
+- \#i: process id of the worklist SCP application process handling the request
+- \#p: patient ID if present, otherwise empty string
+- \#t: timestamp in the format YYYYMMDDhhmmssffffff
+
+The default (i.e. the value if \e --request-file-format is not explicitly set)
+is \#t.dump resulting in the timestamp format described above.
+
+An example for such a user-defined format string would be
+"request_#i_#a_#c.txt".  The \#i makes most sense if \b wlmscpfs multi-process
+mode is enabled via \e --fork option in order to ensure that simultaneous
+request will not result in the same file name for both requests.
+
+It should be noted that the \#p placeholder uses the value of Patient ID
+(0010,0020) from the request as is, i.e. if the string contains non-ASCII
+characters, the file name computed by \b wlmscpfs might be broken and thus
+cannot be written successfully or will look broken once written.  Also, an empty
+Patient ID is used as such, i.e. the \#p will be replaced with an empty string.
 
 \subsection wlmscpfs_dicom_conformance DICOM Conformance
 
@@ -442,6 +509,6 @@ It is an error if no data dictionary can be loaded.
 
 \section wlmscpfs_copyright COPYRIGHT
 
-Copyright (C) 1996-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

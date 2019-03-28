@@ -27,9 +27,13 @@ BEGIN_EXTERN_C
 #include <fcntl.h>     // for O_RDWR
 #endif
 END_EXTERN_C
-#include "dcmtk/dcmnet/dicom.h"
-#include "dcmtk/dcmwlm/wltypdef.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/oflog/internal/env.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmwlm/wltypdef.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcvrat.h"
@@ -38,7 +42,6 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmwlm/wlds.h"
 #include "dcmtk/dcmwlm/wlfsim.h"
-#include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmwlm/wldsfs.h"
 
@@ -50,8 +53,7 @@ WlmDataSourceFileSystem::WlmDataSourceFileSystem()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : fileSystemInteractionManager( ), dfPath( "" ), enableRejectionOfIncompleteWlFiles( OFTrue ),
-    handleToReadLockFile( 0 )
+  : fileSystemInteractionManager( ), dfPath( "" ), enableRejectionOfIncompleteWlFiles( OFTrue ), handleToReadLockFile( 0 )
 {
 }
 
@@ -303,8 +305,8 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
     << "=============================");
 
   // Set a read lock on the worklist files which shall be read from.
-  if( !SetReadlock() )
-    return( WLM_REFUSED_OUT_OF_RESOURCES );
+  if (!SetReadlock())
+    return(WLM_REFUSED_OUT_OF_RESOURCES);
 
   // dump some information if required
   DCMWLM_INFO("Determining matching records from worklist files");

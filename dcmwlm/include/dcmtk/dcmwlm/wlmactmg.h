@@ -46,6 +46,8 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
     OFBool opt_refuseAssociation;
     /// indicates if the application shall reject associations without implementation class UIDs
     OFBool opt_rejectWithoutImplementationUID;
+    /// indicates how many seconds the application is supposed to sleep before handling a find request
+    OFCmdUnsignedInt opt_sleepBeforeFindReq;
     /// indicates how long the application shall sleep after a find
     OFCmdUnsignedInt opt_sleepAfterFind;
     /// indicates how long the application shall sleep during a find
@@ -79,6 +81,16 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
     int numberOfSupportedAbstractSyntaxes;
     /// table of processes for non-single process mode
     OFList<WlmProcessSlotType*> processTable;
+    /// the directory where to store request files to
+    OFString opt_requestFilePath;
+    /// the format used for the request file names.
+    /// Several placeholders can be used by(denoted by #) :
+    ///   \#a: calling application entity title of the peer SCU
+    ///   \#c: called application entity title (AE title of worklist SCP application)
+    ///   \#i process id of the worklist SCP application process handling the request
+    ///   \#p: patient ID if present, otherwise empty string
+    ///   \ #t: timestamp in the format YYYYMMDDhhmmssffffff
+    OFString opt_requestFileFormat;
 
       /** This function takes care of receiving, negotiating and accepting/refusing an
        *  association request. Additionally, it handles the request the association
@@ -170,6 +182,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        *  @param opt_portv                           The port on which the application is supposed to listen.
        *  @param opt_refuseAssociationv              Specifies if an association shall always be refused by the SCP.
        *  @param opt_rejectWithoutImplementationUIDv Specifies if the application shall reject an association if no implementation class UID is provided by the calling SCU.
+       *  @param opt_sleepBeforeFindReqv             Specifies how many seconds the application is supposed to sleep before handling a C-FIND-Req.
        *  @param opt_sleepAfterFindv                 Specifies how many seconds the application is supposed to sleep after having handled a C-FIND-Rsp.
        *  @param opt_sleepDuringFindv                Specifies how many seconds the application is supposed to sleep during the handling of a C-FIND-Rsp.
        *  @param opt_maxPDUv                         Maximum length of a PDU that can be received in bytes.
@@ -189,6 +202,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
         OFCmdUnsignedInt opt_portv,
         OFBool opt_refuseAssociationv,
         OFBool opt_rejectWithoutImplementationUIDv,
+        OFCmdUnsignedInt opt_sleepBeforeFindReqv,
         OFCmdUnsignedInt opt_sleepAfterFindv,
         OFCmdUnsignedInt opt_sleepDuringFindv,
         OFCmdUnsignedInt opt_maxPDUv,
@@ -199,7 +213,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
         T_DIMSE_BlockingMode opt_blockModev,
         int opt_dimse_timeoutv,
         int opt_acse_timeoutv,
-        OFBool opt_forkedChild = OFFalse,
+        OFBool opt_forkedChildv = OFFalse,
         int argcv = 0,
         char *argvv[] = NULL );
 
@@ -213,6 +227,22 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        *  @return Value that is supposed to be returned from main().
        */
     OFCondition StartProvidingService();
+
+      /** Set directory to store request files to. If set to empty path (default),
+       *  request files are not stored.
+       *  @param path   Path to directory where request files should be stored to.
+       *                Must exist and be writable for worklist application.
+       *  @param format The format used for the request file names.
+       *                Several placeholders can be used by (denoted by #):<br>
+       *                \#a: calling application entity title of the peer SCU<br>
+       *                \#c: called application entity title (AE title of worklist SCP application)<br>
+       *                \#i: process id of the worklist SCP application process handling the request<br>
+       *                \#p: patient ID if present, otherwise empty string<br>
+       *                \#t: timestamp in the format YYYYMMDDhhmmssffffff<br>
+       *                Default is #t.dump.
+       *  @return       OFTrue if path is accepted, OFFalse otherwise
+       */
+    OFBool setRequestFilePath(const OFString& path="", const OFString& format="#t.dump");
 };
 
 #endif

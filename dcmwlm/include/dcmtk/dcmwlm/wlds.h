@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,6 +21,12 @@
 
 #ifndef WlmDataSource_h
 #define WlmDataSource_h
+
+#define WLM_CALLING_AETITLE_PLACEHOLDER "#a"
+#define WLM_CALLED_AETITLE_PLACEHOLDER "#c"
+#define WLM_TIMESTAMP_PLACEHOLDER "#t"
+#define WLM_PATIENT_ID_PLACEHOLDER "#p"
+#define WLM_PROCESS_ID_PLACEHOLDER "#i"
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
@@ -48,6 +54,8 @@ class DCMTK_DCMWLM_EXPORT WlmDataSource
 
     /// indicates if the application shall fail on an invalid C-Find RQ message
     OFBool failOnInvalidQuery;
+    /// calling AE Title
+    OFString callingApplicationEntityTitle;
     /// called AE title
     OFString calledApplicationEntityTitle;
     /// the search mask which is contained in the C-Find RQ message
@@ -345,11 +353,6 @@ class DCMTK_DCMWLM_EXPORT WlmDataSource
        * @return Indicates if the disconnection was completed successfully.
        */
     virtual OFCondition DisconnectFromDataSource() = 0;
-
-      /** Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetCalledApplicationEntityTitle( const OFString& value );
 
       /** Set value in member variable.
        *  @param value The value to set.

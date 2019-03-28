@@ -53,7 +53,7 @@ WlmDataSource::WlmDataSource()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle(""),
+  : failOnInvalidQuery( OFTrue ), callingApplicationEntityTitle(""), calledApplicationEntityTitle(""),
     identifiers( NULL ), errorElements( NULL ), offendingElements( NULL ), errorComment( NULL ),
     foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ),
     noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET ), matchingDatasets(),
@@ -88,18 +88,6 @@ WlmDataSource::~WlmDataSource()
   delete offendingElements;
   delete errorElements;
   delete errorComment;
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSource::SetCalledApplicationEntityTitle( const OFString& value )
-// Date         : December 10, 2001
-// Author       : Thomas Wilkens
-// Task         : Sets the member variable that specifies called application entity title.
-// Parameters   : value - Value for calledApplicationEntityTitle.
-// Return Value : none.
-{
-  calledApplicationEntityTitle = value;
 }
 
 // ----------------------------------------------------------------------------
