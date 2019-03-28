@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -353,6 +353,26 @@ OFString::replace (size_t pos, size_t n, size_t rep, char s)
 {
     OFString str(rep, s);
     return this->replace(pos, n, str);
+}
+
+void
+OFString::replace_all(OFString& src, const OFString& pattern, const OFString& rplc)
+{
+    size_t pos = src.find(pattern, 0);
+    while (pos != OFString_npos)
+    {
+        src.replace(pos, pattern.length(), rplc);
+        pos += (pos > rplc.length()) ? pos : rplc.length();
+        pos = src.find(pattern, pos);
+    }
+}
+
+OFString
+OFString::replace_all(const OFString& src, const OFString& pattern, const OFString& rplc)
+{
+    OFString result(src);
+    OFString::replace_all(result, pattern, rplc);
+    return result;
 }
 
 

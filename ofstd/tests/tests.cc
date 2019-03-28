@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2018, OFFIS e.V.
+ *  Copyright (C) 2011-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,6 +52,7 @@ OFTEST_REGISTER(ofstd_OFString_identity_2);
 OFTEST_REGISTER(ofstd_OFString_identity_3);
 OFTEST_REGISTER(ofstd_OFString_reserve);
 OFTEST_REGISTER(ofstd_OFString_substr);
+OFTEST_REGISTER(ofstd_OFString_replace_all);
 OFTEST_REGISTER(ofstd_OFTime);
 OFTEST_REGISTER(ofstd_OFUUID_1);
 OFTEST_REGISTER(ofstd_OFUUID_2);

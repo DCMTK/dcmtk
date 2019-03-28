@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -216,6 +216,73 @@ OFTEST(ofstd_OFString_substr)
   x.replace (0, 1, 1, 'j');
   OFCHECK_EQUAL(x, "jello");
 }
+
+OFTEST(ofstd_OFString_replace_all)
+{
+    // Pattern found
+
+    OFString s("Jon");
+    OFString::replace_all(s, "Jon", "Doe");
+    OFCHECK_EQUAL(s, "Doe");
+
+    s = "Jon Doe";
+    OFString::replace_all(s, "Jon", "Doe");
+    OFCHECK_EQUAL(s, "Doe Doe");
+
+    s = "Doe Doe";
+    OFString::replace_all(s, "Doe", "");
+    OFCHECK_EQUAL(s, " ");
+
+    s = "blablabla";
+    OFString::replace_all(s, "b", "p");
+    OFCHECK_EQUAL(s, "plaplapla");
+
+    s = "plaplapla";
+    OFString::replace_all(s, "pla", "");
+    OFCHECK_EQUAL(s, "");
+
+    s = "blablabla";
+    OFString::replace_all(s, "bl", "b");
+    OFCHECK_EQUAL(s, "bababa");
+
+    s = "blablabla";
+    OFString::replace_all(s, "bla", "bla");
+    OFCHECK_EQUAL(s, "blablabla");
+
+    s = "blablabla";
+    OFString::replace_all(s, "b", "bo");
+    OFCHECK_EQUAL(s, "bolabolabola");
+
+    // Pattern found and part of replacement
+
+    s = "blabla";
+    OFString::replace_all(s, "bla", "blabla");
+    OFCHECK_EQUAL(s, "blablablabla");
+
+    // Pattern not found
+
+    s = "Jon";
+    OFString::replace_all(s, "Doe", "Doe");
+    OFCHECK_EQUAL(s, "Jon");
+
+    s = "";
+    OFString::replace_all(s, "Doe", "Doe");
+    OFCHECK_EQUAL(s, "");
+
+    s = "blablabla";
+    OFString::replace_all(s, "Doe", "");
+    OFCHECK_EQUAL(s, "blablabla");
+
+    // Empty pattern or source (should have no effect)
+    s = "blablabla";
+    OFString::replace_all(s, "", "notfound");
+    OFCHECK_EQUAL(s, "blablabla");
+
+    s = "";
+    OFString::replace_all(s, "", "notfound");
+    OFCHECK_EQUAL(s, "");
+}
+
 
 OFTEST(ofstd_OFString_reserve)
 {
