@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1010,25 +1010,6 @@ DIMSE_sendMessageUsingFileData(
         DIMSE_ProgressCallback callback,
         void *callbackContext,
         DcmDataset **commandSet)
-    /*
-     * This function sends a DIMSE command and possibly also instance data from a file via network to another
-     * DICOM application.
-     *
-     * Parameters:
-     *   assoc           - [in] The association (network connection to another DICOM application).
-     *   presId          - [in] The ID of the presentation context which shall be used
-     *   msg             - [in] Structure that represents a certain DIMSE command which shall be sent.
-     *   statusDetail    - [in] Detailed information with regard to the status information which is captured
-     *                          in the status element (0000,0900). Note that the value for element (0000,0900)
-     *                          is contained in this variable.
-     *   dataFileName    - [in] The name of the file that contains the instance data which shall be sent to
-     *                          the other DICOM application, NULL; if there is none.
-     *   callback        - [in] Pointer to a function which shall be called to indicate progress.
-     *   callbackContext - []
-     *   commandSet      - [out] [optional parameter, default = NULL] If this parameter is not NULL
-     *                           it will return a copy of the DIMSE command which is sent to the other
-     *                           DICOM application.
-     */
 {
     /* simply call DIMSE_sendMessage to accomplish this task */
     return DIMSE_sendMessage(assoc, presID, msg, statusDetail, NULL, dataFileName, callback, callbackContext, commandSet);
@@ -1044,25 +1025,6 @@ DIMSE_sendMessageUsingMemoryData(
         DIMSE_ProgressCallback callback,
         void *callbackContext,
         DcmDataset **commandSet)
-    /*
-     * This function sends a DIMSE command and possibly also instance data from a data object via network
-     * to another DICOM application.
-     *
-     * Parameters:
-     *   assoc           - [in] The association (network connection to another DICOM application).
-     *   presId          - [in] The ID of the presentation context which shall be used
-     *   msg             - [in] Structure that represents a certain DIMSE command which shall be sent.
-     *   statusDetail    - [in] Detailed information with regard to the status information which is captured
-     *                          in the status element (0000,0900). Note that the value for element (0000,0900)
-     *                          is contained in this variable.
-     *   dataObject      - [in] The instance data which shall be sent to the other DICOM application,
-     *                          NULL, if there is none
-     *   callback        - [in] Pointer to a function which shall be called to indicate progress.
-     *   callbackContext - []
-     *   commandSet      - [out] [optional parameter, default = NULL] If this parameter is not NULL
-     *                           it will return a copy of the DIMSE command which is sent to the other
-     *                           DICOM application.
-     */
 {
     /* simply call DIMSE_sendMessage to accomplish this task */
     return DIMSE_sendMessage(assoc, presID, msg, statusDetail, dataObject, NULL, callback, callbackContext, commandSet);
@@ -1109,27 +1071,6 @@ DIMSE_receiveCommand(
         T_DIMSE_Message *msg,
         DcmDataset **statusDetail,
         DcmDataset **commandSet)
-    /*
-     * This function receives a DIMSE command via network from another DICOM application.
-     *
-     * Parameters:
-     *   assoc        - [in] The association (network connection to another DICOM application).
-     *   blocking     - [in] The blocking mode for reading data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
-     *   timeout      - [in] Timeout interval for receiving data. If the blocking mode is DIMSE_NONBLOCKING
-     *                       and we are trying to read data from the incoming socket stream and no data has
-     *                       been received after timeout seconds, an error will be reported.
-     *   presId       - [out] Contains in the end the ID of the presentation context which was specified in the DIMSE command.
-     *   msg          - [out] Contains in the end information which represents a certain DIMSE command which was received.
-     *   statusDetail - [out] If a non-NULL value is passed this variable will in the end contain detailed
-     *                        information with regard to the status information which is captured in the status
-     *                        element (0000,0900). Note that the value for element (0000,0900) is not contained
-     *                        in this return value but in msg. For details on the structure of this object, see
-     *                        DICOM standard (year 2000) part 7, annex C) (or the corresponding section in a later
-     *                        version of the standard.)
-     *   commandSet   - [out] [optional parameter, default = NULL] If this parameter is not NULL
-     *                        it will return a copy of the DIMSE command which was received from the other
-     *                        DICOM application.
-     */
 {
     OFCondition cond = EC_Normal;
     unsigned long bytesRead;
@@ -1568,21 +1509,6 @@ DIMSE_receiveDataSetInMemory(
         DcmDataset **dataObject,
         DIMSE_ProgressCallback callback,
         void *callbackData)
-    /*
-     * This function receives one data set (of instance data) via network from another DICOM application.
-     *
-     * Parameters:
-     *   assoc           - [in] The association (network connection to another DICOM application).
-     *   blocking        - [in] The blocking mode for receiving data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
-     *   timeout         - [in] Timeout interval for receiving data (if the blocking mode is DIMSE_NONBLOCKING).
-     *   presID          - [out] Contains in the end the ID of the presentation context which was used in the PDVs
-     *                          that were received on the network. If the PDVs show different presentation context
-     *                          IDs, this function will return an error.
-     *   dataObject      - [out] Contains in the end the information which was received over the network.
-     *                          Note that this function assumes that either imageFileName or imageDataSet does not equal NULL.
-     *   callback        - [in] Pointer to a function which shall be called to indicate progress.
-     *   callbackData    - [in] Pointer to data which shall be passed to the progress indicating function
-     */
 {
     OFCondition cond = EC_Normal;
     OFCondition econd = EC_Normal;

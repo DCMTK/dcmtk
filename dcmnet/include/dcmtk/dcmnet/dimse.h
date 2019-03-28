@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2014, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -670,7 +670,12 @@ DIMSE_echoUser(
         /* blocking info for response */
         T_DIMSE_BlockingMode blockMode, int timeout,
         /* out */
-        DIC_US *status, DcmDataset **statusDetail);
+        DIC_US *status,
+        /* if a pointer to a DcmDataset instance is passed in this variable,
+         * then any status detail information from the C-ECHO-RSP message will
+         * be returned in this dataset.
+         */
+        DcmDataset **statusDetail);
 
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendEchoResponse(T_ASC_Association * assoc,
@@ -719,6 +724,10 @@ DIMSE_storeUser(
         T_DIMSE_BlockingMode blockMode, int timeout,
         /* out */
         T_DIMSE_C_StoreRSP *response,
+        /* if a pointer to a DcmDataset instance is passed in this variable,
+         * then any status detail information from the C-STORE-RSP message will
+         * be returned in this dataset.
+         */
         DcmDataset **statusDetail,
         T_DIMSE_DetectedCancelParameters *checkForCancelParams = NULL,
         /* in */
@@ -732,7 +741,12 @@ typedef void (*DIMSE_StoreProviderCallback)(
     char *imageFileName, DcmDataset **imageDataSet, /* being received into */
     /* in/out */
     T_DIMSE_C_StoreRSP *response,       /* final store response */
-    /* out */
+    /* out. The callback can assign a pointer to a dataset here and insert
+     * status detail attributes which will be added to the C-STORE-RSP message.
+     * The ownership of the DcmDataset instance is not transferred, and it is
+     * the responsibility of the library user to delete the instance after
+     * the call to DIMSE_storeProvider() has completed.
+     */
     DcmDataset **statusDetail);
 
 DCMTK_DCMNET_EXPORT OFCondition
@@ -762,7 +776,7 @@ typedef void (*DIMSE_FindUserCallback)(
         /* in */
         void *callbackData,
         T_DIMSE_C_FindRQ *request,      /* original find request */
-        int responseCount,				/* number of responses so far*/
+        int responseCount,              /* number of responses so far*/
         T_DIMSE_C_FindRSP *response,    /* pending response received */
         DcmDataset *responseIdentifiers /* pending response identifiers */
         );
@@ -778,7 +792,12 @@ DIMSE_findUser(
         /* blocking info for response */
         T_DIMSE_BlockingMode blockMode, int timeout,
         /* out */
-        T_DIMSE_C_FindRSP *response, DcmDataset **statusDetail);
+        T_DIMSE_C_FindRSP *response,
+        /* if a pointer to a DcmDataset instance is passed in this variable,
+         * then any status detail information from the C-FIND-RSP message will
+         * be returned in this dataset.
+         */
+        DcmDataset **statusDetail);
 
 typedef void (*DIMSE_FindProviderCallback)(
         /* in */
@@ -788,6 +807,12 @@ typedef void (*DIMSE_FindProviderCallback)(
         /* out */
         T_DIMSE_C_FindRSP *response,
         DcmDataset **responseIdentifiers,
+        /* out. The callback can assign a pointer to a dataset here and insert
+         * status detail attributes which will be added to the C-FIND-RSP message.
+         * The ownership of the DcmDataset instance is not transferred, and it is
+         * the responsibility of the library user to delete the instance after
+         * the call to DIMSE_storeProvider() has completed.
+         */
         DcmDataset **statusDetail);
 
 DCMTK_DCMNET_EXPORT OFCondition
@@ -834,7 +859,12 @@ DIMSE_moveUser(
         T_ASC_Network *net,
         DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
         /* out */
-        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
+        T_DIMSE_C_MoveRSP *response,
+        /* if a pointer to a DcmDataset instance is passed in this variable,
+         * then any status detail information from the C-MOVE-RSP message will
+         * be returned in this dataset.
+         */
+        DcmDataset **statusDetail,
         DcmDataset **responseIdentifers,
         OFBool ignorePendingDatasets = OFFalse);
 
@@ -844,7 +874,14 @@ typedef void (*DIMSE_MoveProviderCallback)(
         OFBool cancelled, T_DIMSE_C_MoveRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
-        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
+        T_DIMSE_C_MoveRSP *response,
+        /* out. The callback can assign a pointer to a dataset here and insert
+         * status detail attributes which will be added to the C-MOVE-RSP message.
+         * The ownership of the DcmDataset instance is not transferred, and it is
+         * the responsibility of the library user to delete the instance after
+         * the call to DIMSE_storeProvider() has completed.
+         */
+        DcmDataset **statusDetail,
         DcmDataset **responseIdentifiers);
 
 DCMTK_DCMNET_EXPORT OFCondition
@@ -890,7 +927,12 @@ DIMSE_getUser(
         T_ASC_Network *net,
         DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
         /* out */
-        T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,
+        T_DIMSE_C_GetRSP *response,
+        /* if a pointer to a DcmDataset instance is passed in this variable,
+         * then any status detail information from the C-GET-RSP message will
+         * be returned in this dataset.
+         */
+        DcmDataset **statusDetail,
         DcmDataset **responseIdentifers);
 
 typedef void (*DIMSE_GetProviderCallback)(
@@ -899,7 +941,14 @@ typedef void (*DIMSE_GetProviderCallback)(
         OFBool cancelled, T_DIMSE_C_GetRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
-        T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,
+        T_DIMSE_C_GetRSP *response,
+        /* out. The callback can assign a pointer to a dataset here and insert
+         * status detail attributes which will be added to the C-GET-RSP message.
+         * The ownership of the DcmDataset instance is not transferred, and it is
+         * the responsibility of the library user to delete the instance after
+         * the call to DIMSE_storeProvider() has completed.
+         */
+        DcmDataset **statusDetail,
         DcmDataset **responseIdentifiers);
 
 DCMTK_DCMNET_EXPORT OFCondition
@@ -947,7 +996,23 @@ DIMSE_checkForCancelRQ(T_ASC_Association * assoc,
 typedef void (*DIMSE_ProgressCallback)(void *callbackContext,
     unsigned long byteCount);
 
-
+/** send a DIMSE command and possibly also instance data from a file via network to another
+ *  DICOM application.
+ *  @param assoc           The association (network connection to another DICOM application).
+ *  @param presId          The ID of the presentation context which shall be used
+ *  @param msg             Structure that represents a certain DIMSE command which shall be sent.
+ *  @param statusDetail    Detailed information with regard to the status information which is captured
+ *                         in the status element (0000,0900). Note that the value for element (0000,0900)
+ *                         is contained in this variable.
+ *  @param dataFileName    The name of the file that contains the instance data which shall be sent to
+ *                          the other DICOM application, NULL; if there is none.
+ *  @param callback        Pointer to a function which shall be called to indicate progress.
+ *  @param callbackContext pointer to opaque object passed to the callback
+ *  @param commandSet      [out] If this parameter is not NULL
+ *                         it will return a copy of the DIMSE command which is sent to the other
+ *                         DICOM application.
+ *  @return EC_Normal if successful, an error code otherwise.
+ */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendMessageUsingFileData(T_ASC_Association *association,
                   T_ASC_PresentationContextID presID,
@@ -957,6 +1022,24 @@ DIMSE_sendMessageUsingFileData(T_ASC_Association *association,
                   void *callbackContext,
                   DcmDataset **commandSet=NULL);
 
+
+/** send a DIMSE command and possibly also instance data from a data object via network
+ *  to another DICOM application.
+ *  @param assoc            The association (network connection to another DICOM application).
+ *  @param presId           The ID of the presentation context which shall be used
+ *  @param msg              Structure that represents a certain DIMSE command which shall be sent.
+ *  @param statusDetail     Detailed information with regard to the status information which is captured
+ *                          in the status element (0000,0900). Note that the value for element (0000,0900)
+ *                          is contained in this variable.
+ *  @param dataObject       The instance data which shall be sent to the other DICOM application,
+ *                          NULL, if there is none
+ *  @param callback         Pointer to a function which shall be called to indicate progress.
+ *  @param callbackContext  pointer to opaque object passed to the callback
+ *  @param commandSet       [out] If this parameter is not NULL
+ *                          it will return a copy of the DIMSE command which is sent to the other
+ *                          DICOM application.
+ *  @return EC_Normal if successful, an error code otherwise.
+ */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendMessageUsingMemoryData(T_ASC_Association *association,
                   T_ASC_PresentationContextID presID,
@@ -966,6 +1049,25 @@ DIMSE_sendMessageUsingMemoryData(T_ASC_Association *association,
                   void *callbackContext,
                   DcmDataset **commandSet=NULL);
 
+/** receive a DIMSE command via network from another DICOM application.
+ *  @param assoc        The association (network connection to another DICOM application).
+ *  @param blocking     The blocking mode for reading data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
+ *  @param timeout      Timeout interval for receiving data. If the blocking mode is DIMSE_NONBLOCKING
+ *                      and we are trying to read data from the incoming socket stream and no data has
+ *                      been received after timeout seconds, an error will be reported.
+ *  @param presId       [out] Contains in the end the ID of the presentation context which was specified in the DIMSE command.
+ *  @param msg          [out] Contains in the end information which represents a certain DIMSE command which was received.
+ *  @param statusDetail [out] If a non-NULL value is passed this variable will in the end contain detailed
+ *                      information with regard to the status information which is captured in the status
+ *                      element (0000,0900). Note that the value for element (0000,0900) is not contained
+ *                      in this return value but in msg. For details on the structure of this object, see
+ *                      DICOM standard (year 2000) part 7, annex C) (or the corresponding section in a later
+ *                      version of the standard.)
+ *  @param commandSet   [out] If this parameter is not NULL
+ *                      it will return a copy of the DIMSE command which was received from the other
+ *                      DICOM application.
+ *  @return EC_Normal if successful, an error code otherwise.
+ */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_receiveCommand(T_ASC_Association *association,
                      T_DIMSE_BlockingMode blocking,
@@ -975,6 +1077,19 @@ DIMSE_receiveCommand(T_ASC_Association *association,
                      DcmDataset **statusDetail,
                      DcmDataset **commandSet=NULL);
 
+/** receive one data set (of instance data) via network from another DICOM application and store in memory
+ *  @param assoc           The association (network connection to another DICOM application).
+ *  @param blocking        The blocking mode for receiving data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
+ *  @param timeout         Timeout interval for receiving data (if the blocking mode is DIMSE_NONBLOCKING).
+ *  @param presID          [out] Contains in the end the ID of the presentation context which was used in the PDVs
+ *                         that were received on the network. If the PDVs show different presentation context
+ *                         IDs, this function will return an error.
+ *  @param dataObject      [out] Contains in the end the information which was received over the network.
+ *                         Note that this function assumes that either imageFileName or imageDataSet does not equal NULL.
+ *  @param callback        Pointer to a function which shall be called to indicate progress.
+ *  @param callbackData    Pointer to data which shall be passed to the progress indicating function
+ *  @return EC_Normal if successful, an error code otherwise.
+ */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
                      T_DIMSE_BlockingMode blocking,
@@ -984,6 +1099,22 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
                      DIMSE_ProgressCallback callback,
                      void *callbackContext);
 
+/** create a DICOM file, populate the meta-header from the content of the given
+ *  C-STORE request, and return an ouput stream that can be used to store the
+ *  dataset associated with the C-STORE request message. This function is used
+ *  in conjunction with DIMSE_receiveDataSetInFile() to directly "stream" incoming
+ *  DICOM datasets to file without storing them in memory and without passing
+ *  them through the dcmdata parser.
+ *  @param filename filename of file to be created
+ *  @param request C-STORE request message from which the meta-header is populated
+ *  @param assoc association network association over which the C-STORE request
+ *    was received. Used to populate the aetitles in the metaheader.
+ *  @param presIdCmd presentation context ID of the C-STORE message, determines
+ *    the transfer syntax
+ *  @param writeMetaheader write file with/without metaheader
+ *  @param filestream pointer to output stream returned in this variable upon success.
+ *  @return EC_Normal if successful, an error code otherwise.
+ */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_createFilestream(
                      /* in */
@@ -995,6 +1126,20 @@ DIMSE_createFilestream(
                      /* out */
                      DcmOutputFileStream **filestream);
 
+/** receive one data set (of instance data) via network from another DICOM application and store in file.
+ *  @param assoc           The association (network connection to another DICOM application).
+ *  @param blocking        The blocking mode for receiving data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
+ *  @param timeout         Timeout interval for receiving data (if the blocking mode is DIMSE_NONBLOCKING).
+ *  @param presID          [out] Contains in the end the ID of the presentation context which was used in the PDVs
+ *                         that were received on the network. If the PDVs show different presentation context
+ *                         IDs, this function will return an error.
+ *  @param filestream      output stream to which the incoming dataset is written
+ *  @param dataObject      [out] Contains in the end the information which was received over the network.
+ *                         Note that this function assumes that either imageFileName or imageDataSet does not equal NULL.
+ *  @param callback        Pointer to a function which shall be called to indicate progress.
+ *  @param callbackData    Pointer to data which shall be passed to the progress indicating function
+ *  @return EC_Normal if successful, an error code otherwise.
+ */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
                      T_DIMSE_BlockingMode blocking, int timeout,
@@ -1002,6 +1147,14 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
                      DcmOutputStream *filestream,
                      DIMSE_ProgressCallback callback, void *callbackData);
 
+/** receive and discard one data set (of instance data) via network from another DICOM application.
+ *  @param assoc           The association (network connection to another DICOM application).
+ *  @param blocking        The blocking mode for receiving data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
+ *  @param timeout         Timeout interval for receiving data (if the blocking mode is DIMSE_NONBLOCKING).
+ *  @param bytesRead       [out] number of bytes read
+ *  @param pdvCount        [out] number of PDVs read
+ *  @return EC_Normal if successful, an error code otherwise.
+ */
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_ignoreDataSet( T_ASC_Association * assoc,
                      T_DIMSE_BlockingMode blocking,
