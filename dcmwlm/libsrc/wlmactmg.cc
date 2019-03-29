@@ -774,12 +774,14 @@ struct WlmFindContextType
   WlmFindContextType() :
     dataSource(NULL),
     priorStatus(WLM_SUCCESS),
-    ourAETitle(""),
-    theirAETitle(""),
     opt_sleepBeforeFindReq(0),
     opt_sleepDuringFind(0),
     opt_reqFilePath(),
-    opt_reqFileFormat("#t.dump") {};
+    opt_reqFileFormat("#t.dump")
+  {
+    ourAETitle[0] = '\0';
+    theirAETitle[0] = '\0';
+  };
 
   WlmDataSource *dataSource;
   WlmDataSourceStatusType priorStatus;
