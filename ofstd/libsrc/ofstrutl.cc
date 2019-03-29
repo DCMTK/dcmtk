@@ -24,12 +24,15 @@
 
 void OFStringUtil::replace_all(OFString& src, const OFString& pattern, const OFString& rplc)
 {
-    size_t pos = src.find(pattern, 0);
-    while (pos != OFString_npos)
+    if (!pattern.empty())
     {
-        src.replace(pos, pattern.length(), rplc);
-        pos += (pos > rplc.length()) ? pos : rplc.length();
-        pos = src.find(pattern, pos);
+        size_t pos = src.find(pattern, 0);
+        while (pos != OFString_npos)
+        {
+            src.replace(pos, pattern.length(), rplc);
+            pos += (pos > rplc.length()) ? pos : rplc.length();
+            pos = src.find(pattern, pos);
+        }
     }
 }
 
