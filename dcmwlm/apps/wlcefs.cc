@@ -398,7 +398,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
       OFLOG_ERROR(wlmscpfsLogger, "Request file directory (" << opt_rfPath << ") cannot be created or is not writable");
       // free memory
       delete activityManager;
-      // return errro
+      // return error
       return( 1 );
   }
 
