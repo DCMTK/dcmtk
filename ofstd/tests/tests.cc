@@ -52,7 +52,6 @@ OFTEST_REGISTER(ofstd_OFString_identity_2);
 OFTEST_REGISTER(ofstd_OFString_identity_3);
 OFTEST_REGISTER(ofstd_OFString_reserve);
 OFTEST_REGISTER(ofstd_OFString_substr);
-OFTEST_REGISTER(ofstd_OFString_replace_all);
 OFTEST_REGISTER(ofstd_OFTime);
 OFTEST_REGISTER(ofstd_OFUUID_1);
 OFTEST_REGISTER(ofstd_OFUUID_2);
@@ -83,5 +82,6 @@ OFTEST_REGISTER(ofstd_variant);
 OFTEST_REGISTER(ofstd_error);
 OFTEST_REGISTER(ofstd_filesystem);
 OFTEST_REGISTER(ofstd_snprintf);
+OFTEST_REGISTER(ofstd_OFStringUtil_replace_all);
 
 OFTEST_MAIN("ofstd")

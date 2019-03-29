@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/ofstd/ofstrutl.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
 #include "dcmtk/ofstd/oftypes.h"
@@ -34,7 +35,6 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmwlm/wlds.h"
-#include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
@@ -1192,15 +1192,15 @@ static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, c
 {
   OFString fileName = reqFileFormat;
   // Called Application Entity Title
-  OFString::replace_all(fileName, WLM_CALLED_AETITLE_PLACEHOLDER, calledAE);
+  OFStringUtil::replace_all(fileName, WLM_CALLED_AETITLE_PLACEHOLDER, calledAE);
   // Calling Application Entity Title
-  OFString::replace_all(fileName, WLM_CALLING_AETITLE_PLACEHOLDER, callingAE);
+  OFStringUtil::replace_all(fileName, WLM_CALLING_AETITLE_PLACEHOLDER, callingAE);
 
   // Process ID
   int processID = dcmtk::log4cplus::internal::get_process_id();
   OFOStringStream convInt;
   convInt << processID;
-  OFString::replace_all(fileName, WLM_PROCESS_ID_PLACEHOLDER, convInt.str().c_str());
+  OFStringUtil::replace_all(fileName, WLM_PROCESS_ID_PLACEHOLDER, convInt.str().c_str());
 
   // Timestamp
   if (reqFileFormat.find("#t") != OFString_npos)
@@ -1209,14 +1209,14 @@ static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, c
     OFDateTime dt;
     dt.setCurrentDateTime();
     dt.getISOFormattedDateTime(ts, OFTrue /* seconds */, OFTrue /* fraction */, OFFalse /* no tz */, OFFalse /* no delimiters */, "" /* no date / time separator */);
-    OFString::replace_all(ts, ".", "");
-    OFString::replace_all(fileName, WLM_TIMESTAMP_PLACEHOLDER, ts);
+    OFStringUtil::replace_all(ts, ".", "");
+    OFStringUtil::replace_all(fileName, WLM_TIMESTAMP_PLACEHOLDER, ts);
   }
 
   // Patient ID goes last since it might contain placeholders again (".#x...)"
   OFString patientID;
   request.findAndGetOFStringArray(DCM_PatientID, patientID);
-  OFString::replace_all(fileName, WLM_PATIENT_ID_PLACEHOLDER, patientID);
+  OFStringUtil::replace_all(fileName, WLM_PATIENT_ID_PLACEHOLDER, patientID);
 
   // Finally store file
   STD_NAMESPACE ofstream outputStream;

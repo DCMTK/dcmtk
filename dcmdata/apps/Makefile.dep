@@ -1,5 +1,4 @@
 cda2dcm.o: cda2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -7,6 +6,7 @@ cda2dcm.o: cda2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../oflog/include/dcmtk/oflog/config/defines.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
@@ -82,9 +82,7 @@ cda2dcm.o: cda2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
  ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dccodec.h ../include/dcmtk/dcmdata/dcencdoc.h \
- ../include/dcmtk/dcmdata/dcpath.h \
- ../../ofstd/include/dcmtk/ofstd/ofxml.h
+ ../include/dcmtk/dcmdata/dcencdoc.h
 dcm2json.o: dcm2json.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1201,7 +1199,6 @@ mdfdsman.o: mdfdsman.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
  ../include/dcmtk/dcmdata/dcpath.h ../include/dcmtk/dcmdata/dcistrmf.h
 pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -1209,6 +1206,7 @@ pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../oflog/include/dcmtk/oflog/config/defines.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
@@ -1284,11 +1282,8 @@ pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
  ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dccodec.h ../include/dcmtk/dcmdata/dcencdoc.h \
- ../include/dcmtk/dcmdata/dcpath.h \
- ../../ofstd/include/dcmtk/ofstd/ofxml.h
+ ../include/dcmtk/dcmdata/dcencdoc.h
 stl2dcm.o: stl2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -1296,6 +1291,7 @@ stl2dcm.o: stl2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../oflog/include/dcmtk/oflog/config/defines.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
@@ -1371,9 +1367,7 @@ stl2dcm.o: stl2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
  ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dccodec.h ../include/dcmtk/dcmdata/dcencdoc.h \
- ../include/dcmtk/dcmdata/dcpath.h \
- ../../ofstd/include/dcmtk/ofstd/ofxml.h
+ ../include/dcmtk/dcmdata/dcencdoc.h
 xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \

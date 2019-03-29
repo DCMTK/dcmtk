@@ -355,26 +355,6 @@ OFString::replace (size_t pos, size_t n, size_t rep, char s)
     return this->replace(pos, n, str);
 }
 
-void
-OFString::replace_all(OFString& src, const OFString& pattern, const OFString& rplc)
-{
-    size_t pos = src.find(pattern, 0);
-    while (pos != OFString_npos)
-    {
-        src.replace(pos, pattern.length(), rplc);
-        pos += (pos > rplc.length()) ? pos : rplc.length();
-        pos = src.find(pattern, pos);
-    }
-}
-
-OFString
-OFString::replace_all(const OFString& src, const OFString& pattern, const OFString& rplc)
-{
-    OFString result(src);
-    OFString::replace_all(result, pattern, rplc);
-    return result;
-}
-
 
 /*
 ** Data
