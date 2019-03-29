@@ -110,7 +110,6 @@ other processing options:
 
   -rff  --request-file-format  [f]ormat: string (default: #t.dump)
           request file name format
-
 \endverbatim
 
 \subsection wlmscpfs_network_options network options
@@ -227,16 +226,16 @@ which the SCP might have to return to an SCU in a C-FIND response message.
 Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding
 type 1 attributes (see column "Return Key Type").
 
-\subsection wlmscpfs_request_files WRITING REQUEST FILES
+\subsection wlmscpfs_request_files Writing Request Files
 
-Providing option --request-file-path enables writing of the incoming C-FIND
+Providing option \e --request-file-path enables writing of the incoming C-FIND
 requests into text files.  The option value provides the target directory where
 these files will be stored.  All request files are stored in "dump" format as
 provided by the \b dcmdump tool and are raw, i.e. they are written as they
 arrive at \b wlmscpfs, without any tag processing applied by \b wlmscpfs.
 
 Writing request files allows users to "interactively" prepare the worklist
-database (for wlmscpfs the worklist files served from the \e --data-file-path
+database (for \b wlmscpfs the worklist files served from the \e --data-file-path
 directory) by watching the request file directory.  Once a request file appears,
 one needs some time to update worklist entries in the database.  For that
 reason it makes sense to use \e --request-file-path in combination with option
@@ -246,7 +245,7 @@ Note that the request files written with \e --data-file-path are not
 automatically deleted by \b wlmscpfs.
 
 If request files are enabled, \b wlmscpfs must automatically create file names
-within the given directory. Per default, the format is \<timestamp\>.dump where
+within the given directory.  By default, the format is \<timestamp\>.dump where
 \<timestamp\> is in the format YYYYMMDDhhmmssffffff where:
 - YYYY is the current year
 - MM is the current month
