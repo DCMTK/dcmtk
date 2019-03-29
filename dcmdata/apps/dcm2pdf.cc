@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2012, OFFIS e.V.
+ *  Copyright (C) 2007-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -313,10 +313,12 @@ int main(int argc, char *argv[])
     }
 
     /* strip pad byte at end of file, if there is one. The PDF format expects
-     * files to end with %%EOF followed by CR/LF. If the last character of the
-     * file is not a CR or LF, we assume it is a pad byte and remove it.
+     * files to end with %%EOF followed by CR/LF (although in some cases the
+     * CR/LF may be missing or you might only find CR or LF).
+     * If the last character of the file is not a CR or LF, and not the
+     * letter 'F', we assume it is either trailing garbage or a pad byte, and remove it.
      */
-    if (pdfDocument[len-1] != 10 && pdfDocument[len-1] != 13)
+    if (pdfDocument[len-1] != 10 && pdfDocument[len-1] != 13 && pdfDocument[len-1] != 'F')
     {
         --len;
     }
