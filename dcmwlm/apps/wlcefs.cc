@@ -133,8 +133,8 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--keep-char-set",       "-csk",    "return character set provided in file");
     cmd->addSubGroup("other processing options:");
       cmd->addOption("--no-sq-expansion",     "-nse",    "disable expansion of empty sequences in C-FIND\nrequest messages");
-      cmd->addOption("--request-file-path",  "-rfp", 1,   "[p]ath: string", "path to store request files to");
-      cmd->addOption("--request-file-format","-rff", 1,  "[f]ormat: string (default: #t.dump)", "request file name format");
+      cmd->addOption("--request-file-path",   "-rfp", 1, "[p]ath: string", "path to store request files to");
+      cmd->addOption("--request-file-format", "-rff", 1, "[f]ormat: string (default: #t.dump)", "request file name format");
 
 
   cmd->addGroup("network options:");
