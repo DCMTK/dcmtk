@@ -1,13 +1,13 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with SNOMED-RT Code Definitions (Coding Scheme "SRT")
  *
  *  Generated semi-automatically from DICOM PS 3.16-2015c
  *  File created on 2015-08-24 by J. Riesmeier
- *  Last modified on 2017-07-31 by Riesmeier
+ *  Last modified on 2019-04-11 by J. Riesmeier
  *
  *  NB: This file does not yet contain all codes defined in PS 3.16 since the
  *      mapping of the code meaning to a compiler-friendly representation is
@@ -28,8 +28,13 @@
  *  general information  *
  *-----------------------*/
 
+// DICOM PS3.16 states:
+//   "This coding scheme is deprecated.  The use of 'SNOMED-RT style' code values
+//    is no longer authorized by SNOMED except for creation by legacy devices,
+//    legacy objects in archives, and receiving systems that need to understand them."
+
 #define CODE_SRT_CodingSchemeDesignator  "SRT"
-#define CODE_SRT_CodingSchemeName        "SNOMED-RT"
+#define CODE_SRT_CodingSchemeName        "SNOMED RT"
 #define CODE_SRT_CodingSchemeDescription "SNOMED, using the 'SNOMED-RT style' code values"
 #define CODE_SRT_CodingSchemeUID         "2.16.840.1.113883.6.96"
 

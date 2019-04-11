@@ -7,7 +7,7 @@
  *
  *  Generated semi-automatically from DICOM PS 3.16-2015c
  *  File created on 2015-08-24 by J. Riesmeier
- *  Last modified on 2017-03-08 by Riesmeier
+ *  Last modified on 2017-03-08 by J. Riesmeier
  *
  *  NB: This file does not yet contain all codes defined in PS 3.16 since the
  *      mapping of the code meaning to a compiler-friendly representation is
