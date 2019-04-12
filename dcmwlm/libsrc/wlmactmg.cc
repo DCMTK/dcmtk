@@ -461,6 +461,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 
   // Condition 5: if the called application entity title is not supported
   // within the data source we want to refuse the association request
+  dataSource->SetCalledApplicationEntityTitle( assoc->params->DULparams.calledAPTitle );
   if( !dataSource->IsCalledApplicationEntityTitleSupported() )
   {
     RefuseAssociation( &assoc, WLM_BAD_AE_SERVICE );

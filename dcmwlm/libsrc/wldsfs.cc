@@ -106,6 +106,7 @@ OFCondition WlmDataSourceFileSystem::DisconnectFromDataSource()
   return( cond );
 }
 
+
 // ----------------------------------------------------------------------------
 
 void WlmDataSourceFileSystem::SetDfPath( const OFString& value )

@@ -349,6 +349,11 @@ class DCMTK_DCMWLM_EXPORT WlmDataSource
        */
     virtual OFCondition ConnectToDataSource() = 0;
 
+      /** Set value in member variable.
+       *  @param value The value to set.
+       */
+    void SetCalledApplicationEntityTitle( const OFString& value );
+
       /** Disconnects from the data source.
        * @return Indicates if the disconnection was completed successfully.
        */

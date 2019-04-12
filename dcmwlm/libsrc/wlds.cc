@@ -92,6 +92,18 @@ WlmDataSource::~WlmDataSource()
 
 // ----------------------------------------------------------------------------
 
+void WlmDataSource::SetCalledApplicationEntityTitle( const OFString& value )
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
+// Task         : Sets the member variable that specifies called application entity title.
+// Parameters   : value - Value for calledApplicationEntityTitle.
+// Return Value : none.
+{
+  calledApplicationEntityTitle = value;
+}
+
+// ----------------------------------------------------------------------------
+
 void WlmDataSource::SetFailOnInvalidQuery( OFBool value )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
