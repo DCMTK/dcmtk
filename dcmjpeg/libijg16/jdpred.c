@@ -125,6 +125,16 @@ jpeg_undifference3(j_decompress_ptr cinfo, int comp_index,
 }
 
 METHODDEF(void)
+jpeg_undifference4a(j_decompress_ptr cinfo, int comp_index,
+           const JDIFFROW diff_buf, const JDIFFROW prev_row,
+           JDIFFROW undiff_buf, JDIMENSION width)
+{
+  UNDIFFERENCE_2D(PREDICTOR4A);
+  JPEG_UNUSED(Rc);
+  JPEG_UNUSED(Rb);
+}
+
+METHODDEF(void)
 jpeg_undifference4(j_decompress_ptr cinfo, int comp_index,
            const JDIFFROW diff_buf, const JDIFFROW prev_row,
            JDIFFROW undiff_buf, JDIMENSION width)
@@ -141,6 +151,17 @@ jpeg_undifference5(j_decompress_ptr cinfo, int comp_index,
 {
   SHIFT_TEMPS
   UNDIFFERENCE_2D(PREDICTOR5);
+  JPEG_UNUSED(Rc);
+  JPEG_UNUSED(Rb);
+}
+
+METHODDEF(void)
+jpeg_undifference5a(j_decompress_ptr cinfo, int comp_index,
+           const JDIFFROW diff_buf, const JDIFFROW prev_row,
+           JDIFFROW undiff_buf, JDIMENSION width)
+{
+  SHIFT_TEMPS
+  UNDIFFERENCE_2D(PREDICTOR5A);
   JPEG_UNUSED(Rc);
   JPEG_UNUSED(Rb);
 }
@@ -178,6 +199,17 @@ jpeg_undifference7(j_decompress_ptr cinfo, int comp_index,
   JPEG_UNUSED(Rb);
 }
 
+METHODDEF(void)
+jpeg_undifference7a(j_decompress_ptr cinfo, int comp_index,
+           const JDIFFROW diff_buf, const JDIFFROW prev_row,
+           JDIFFROW undiff_buf, JDIMENSION width)
+{
+  SHIFT_TEMPS
+  UNDIFFERENCE_2D(PREDICTOR7A);
+  JPEG_UNUSED(Rc);
+  JPEG_UNUSED(Rb);
+}
+
 
 /*
  * Undifferencer for the first row in a scan or restart interval.  The first
@@ -211,10 +243,20 @@ jpeg_undifference_first_row(j_decompress_ptr cinfo, int comp_index,
     losslsd->predict_undifference[comp_index] = jpeg_undifference3;
     break;
   case 4:
-    losslsd->predict_undifference[comp_index] = jpeg_undifference4;
+    /* DCMTK specific code that is only needed in the 16-bit library.
+     * Enables workaround for faulty images with integer overflow in predictor 6.
+     */
+    if (cinfo->workaround_options & WORKAROUND_PREDICTOR6OVERFLOW)
+      losslsd->predict_undifference[comp_index] = jpeg_undifference4a;
+      else losslsd->predict_undifference[comp_index] = jpeg_undifference4;
     break;
   case 5:
-    losslsd->predict_undifference[comp_index] = jpeg_undifference5;
+    /* DCMTK specific code that is only needed in the 16-bit library.
+     * Enables workaround for faulty images with integer overflow in predictor 6.
+     */
+    if (cinfo->workaround_options & WORKAROUND_PREDICTOR6OVERFLOW)
+      losslsd->predict_undifference[comp_index] = jpeg_undifference5a;
+      else losslsd->predict_undifference[comp_index] = jpeg_undifference5;
     break;
   case 6:
     /* DCMTK specific code that is only needed in the 16-bit library.
@@ -225,7 +267,12 @@ jpeg_undifference_first_row(j_decompress_ptr cinfo, int comp_index,
       else losslsd->predict_undifference[comp_index] = jpeg_undifference6;
     break;
   case 7:
-    losslsd->predict_undifference[comp_index] = jpeg_undifference7;
+    /* DCMTK specific code that is only needed in the 16-bit library.
+     * Enables workaround for faulty images with integer overflow in predictor 6.
+     */
+    if (cinfo->workaround_options & WORKAROUND_PREDICTOR6OVERFLOW)
+      losslsd->predict_undifference[comp_index] = jpeg_undifference7a;
+      else losslsd->predict_undifference[comp_index] = jpeg_undifference7;
     break;
   }
 }
