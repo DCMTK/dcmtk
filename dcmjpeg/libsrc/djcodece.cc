@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2018, OFFIS e.V.
+ *  Copyright (C) 2001-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -166,9 +166,14 @@ OFCondition DJCodecEncoder::encode(
         result = encodeColorImage(OFTrue, OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
         break;
       case EPI_Unknown:
-      case EPI_Missing:
         // unknown color model - bail out
         result = EJ_UnsupportedPhotometricInterpretation;
+        break;
+      case EPI_Missing:
+        // photometric interpretation missing. If ACR-NEMA compatibility is activated, we treat this as MONOCHOME2, otherwise we report an error
+        if (djcp->getAcrNemaCompatibility())
+            result = encodeMonochromeImage(OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
+            else result = EJ_UnsupportedPhotometricInterpretation;
         break;
     }
 
@@ -315,7 +320,11 @@ OFCondition DJCodecEncoder::encodeColorImage(
   }
 
   if (dimage == NULL) result = EC_MemoryExhausted;
-  else if (dimage->getStatus() != EIS_Normal) result = EC_IllegalCall; // should return dimage->getStatus()
+  else if (dimage->getStatus() != EIS_Normal)
+  {
+    DCMJPEG_WARN("Color encoder: " << DicomImage::getString(dimage->getStatus()));
+    result = EC_IllegalCall;
+  }
 
   // don't render overlays
   if (result.good())
@@ -950,7 +959,11 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   // create DicomImage object. Will fail if dcmimage has not been activated in main().
   // transfer syntax can be any uncompressed one.
   DicomImage dimage(dataset, EXS_LittleEndianImplicit, flags); // read all frames
-  if (dimage.getStatus() != EIS_Normal) result = EC_IllegalCall; // should return dimage.getStatus()
+  if (dimage.getStatus() != EIS_Normal)
+  {
+    DCMJPEG_WARN("Monochrome encoder: " << DicomImage::getString(dimage.getStatus()));
+    result = EC_IllegalCall;
+  }
 
   // don't render overlays
   dimage.hideAllOverlays();

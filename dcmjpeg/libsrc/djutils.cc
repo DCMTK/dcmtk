@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Norbert Olges, Marco Eichelberg
  *
- *  Purpose: (STATUS: OK)
+ *  Purpose: Various helper methods for the JPEG encoder
  *
  */
 
@@ -65,9 +65,10 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
         if (photometric == PhotometricInterpretationNames[i].Name) return PhotometricInterpretationNames[i].Type;
         i++;
       }
+      return EPI_Unknown;
     }
   }
-  return EPI_Unknown;
+  return EPI_Missing;
 }
 
 void DcmJpegHelper::fixPadding(
