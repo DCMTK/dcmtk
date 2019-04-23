@@ -395,7 +395,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if (!activityManager->setRequestFilePath(opt_rfPath, opt_rfFormat))
   {
       // dump error if given directory is not sufficient
-      OFLOG_ERROR(wlmscpfsLogger, "Request file directory (" << opt_rfPath << ") cannot be created or is not writable");
+      OFLOG_ERROR(wlmscpfsLogger, "Request file directory (" << opt_rfPath << ") does not exist or is not writable");
       // free memory
       delete activityManager;
       // return error

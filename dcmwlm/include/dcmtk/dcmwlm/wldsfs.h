@@ -112,11 +112,6 @@ class DCMTK_DCMWLM_EXPORT WlmDataSourceFileSystem : public WlmDataSource
        */
     OFCondition DisconnectFromDataSource();
 
-     /** Set value in member variable.
-      *  @param value The value to set.
-      */
-     void SetCalledApplicationEntityTitle( const OFString& value );
-
       /** Set value in member variable.
        *  @param value The value to set.
        */
