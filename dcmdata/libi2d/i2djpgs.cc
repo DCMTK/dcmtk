@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2017, OFFIS e.V.
+ *  Copyright (C) 2007-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -199,6 +199,12 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   cols = width;
   samplesPerPixel = spp;
   bitsAlloc = bps;
+  // Some output formats do not allow 12 bit at all, so it is more safe to
+  // use 16 bit for Bits Allocated (and therefore for Bits Stored, see below)
+  if (bitsAlloc == 12)
+  {
+    bitsAlloc = 16;
+  }
   bitsStored = bitsAlloc;
   highBit = OFstatic_cast(Uint16, bitsStored - 1);
   if (samplesPerPixel == 1)
