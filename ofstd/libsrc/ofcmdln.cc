@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -269,6 +269,13 @@ OFBool OFCommandLine::checkOption(const OFString &option,
     return result;
 }
 
+void OFCommandLine::addGeneralOptions(const int longCols,
+                                      const int shortCols)
+{
+    addGroup("general options:", longCols, shortCols + 2);
+        addOption("--help",    "-h", "print this help text and exit",      OFCommandLine::AF_Exclusive);
+        addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
+}
 
 OFBool OFCommandLine::addOption(const char *longOpt,
                                 const char *shortOpt,

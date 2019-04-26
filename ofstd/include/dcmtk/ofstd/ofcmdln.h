@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -254,6 +254,17 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
      *  @param  column  minimum width of the long option column
      */
     void setParamColumn(const int column);
+
+    /** generates all exclusive options in "general" group (top-level).
+     *  following options belong to this group:
+     *  help (h): prints the help text and exits
+     *  version: prints version information and exit
+     *
+     *  @param  longCols   minimum width of the long option column
+     *  @param  shortCols  minimum width of the short option column
+     */
+    void addGeneralOptions(const int longCols = 0,
+                           const int shortCols = 0);
 
     /** adds an item to the list of valid options
      *  (full version)
