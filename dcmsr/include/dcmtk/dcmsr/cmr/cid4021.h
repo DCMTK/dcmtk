@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:24 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:20 by J. Riesmeier
  *
  */
 
@@ -48,11 +48,11 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         _7D12_89Zr,
         /// (126750,DCM,"7E11 ^89^Zr")
         _7E11_89Zr,
-        /// (C-B1043,SRT,"Acetate C^11^")
+        /// (129513004,SCT,"Acetate C^11^")
         Acetate_C11,
         /// (126729,DCM,"AGN-150998 ^89^Zr")
         AGN150998_89Zr,
-        /// (C-B103C,SRT,"Ammonia N^13^")
+        /// (129508003,SCT,"Ammonia N^13^")
         Ammonia_N13,
         /// (126754,DCM,"Anti-B220 ^89^Zr")
         AntiB220_89Zr,
@@ -62,7 +62,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         ATSM_Cu61,
         /// (126702,DCM,"ATSM Cu^62^")
         ATSM_Cu62,
-        /// (C-B07DB,SRT,"ATSM Cu^64^")
+        /// (422855001,SCT,"ATSM Cu^64^")
         ATSM_Cu64,
         /// (126722,DCM,"Benralizumab ^89^Zr")
         Benralizumab_89Zr,
@@ -72,15 +72,15 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Blinatumomab_89Zr,
         /// (126735,DCM,"Brentuximab ^89^Zr")
         Brentuximab_89Zr,
-        /// (C-B07DC,SRT,"Butanol O^15^")
+        /// (422540000,SCT,"Butanol O^15^")
         Butanol_O15,
-        /// (C-B103B,SRT,"Carbon dioxide O^15^")
+        /// (129507008,SCT,"Carbon dioxide O^15^")
         CarbonDioxide_O15,
-        /// (C-B1045,SRT,"Carbon monoxide C^11^")
+        /// (129515006,SCT,"Carbon monoxide C^11^")
         CarbonMonoxide_C11,
-        /// (C-B103A,SRT,"Carbon monoxide O^15^")
+        /// (129506004,SCT,"Carbon monoxide O^15^")
         CarbonMonoxide_O15,
-        /// (C-B103F,SRT,"Carfentanil C^11^")
+        /// (129511002,SCT,"Carfentanil C^11^")
         Carfentanil_C11,
         /// (126513,DCM,"Cetuximab ^89^Zr")
         Cetuximab_89Zr,
@@ -118,7 +118,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Ecromeximab_89Zr,
         /// (C2713594,UMLS,"Edotreotide Ga^68^")
         Edotreotide_Ga68,
-        /// (C-B07DD,SRT,"EDTA Ga^68^")
+        /// (423498000,SCT,"EDTA Ga^68^")
         EDTA_Ga68,
         /// (126704,DCM,"Fallypride C^11^")
         Fallypride_C11,
@@ -126,59 +126,59 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Fallypride_F18,
         /// (126706,DCM,"FLB 457 C^11^")
         FLB457_C11,
-        /// (C-D6858,SRT,"Florbetaben F^18^")
+        /// (712736002,SCT,"Florbetaben F^18^")
         Florbetaben_F18,
-        /// (C-E0269,SRT,"Florbetapir F^18^")
+        /// (456995000,SCT,"Florbetapir F^18^")
         Florbetapir_F18,
         /// (C4547429,UMLS,"Flortaucipir F^18^")
         Flortaucipir_F18,
         /// (126503,DCM,"Flubatine F^18^")
         Flubatine_F18,
-        /// (C-E0265,SRT,"Fluciclatide F^18^")
+        /// (456999006,SCT,"Fluciclatide F^18^")
         Fluciclatide_F18,
-        /// (C-E026A,SRT,"Fluciclovine F^18^")
+        /// (457000009,SCT,"Fluciclovine F^18^")
         Fluciclovine_F18,
-        /// (C-B07DE,SRT,"Flumazenil C^11^")
+        /// (423543007,SCT,"Flumazenil C^11^")
         Flumazenil_C11,
-        /// (C-B07DF,SRT,"Flumazenil F^18^")
+        /// (422975006,SCT,"Flumazenil F^18^")
         Flumazenil_F18,
-        /// (C-B07E0,SRT,"Fluorethyltyrosin F^18^")
+        /// (424708001,SCT,"Fluorethyltyrosin F^18^")
         Fluorethyltyrosin_F18,
-        /// (C-B07E4,SRT,"Fluorobenzothiazole F^18^")
+        /// (423546004,SCT,"Fluorobenzothiazole F^18^")
         Fluorobenzothiazole_F18,
-        /// (C-E0273,SRT,"Fluorocholine F^18^")
+        /// (456992002,SCT,"Fluorocholine F^18^")
         Fluorocholine_F18,
-        /// (C-B1031,SRT,"Fluorodeoxyglucose F^18^")
+        /// (35321007,SCT,"Fluorodeoxyglucose F^18^")
         Fluorodeoxyglucose_F18,
         /// (C1831937,UMLS,"Fluoroestradiol (FES) F^18^")
         FluoroestradiolFES_F18,
         /// (C1541539,UMLS,"Fluoroetanidazole F^18^")
         Fluoroetanidazole_F18,
-        /// (C-B1034,SRT,"Fluoro-L-dopa F^18^")
+        /// (129500005,SCT,"Fluoro-L-dopa F^18^")
         FluoroLDopa_F18,
-        /// (C-B07E2,SRT,"Fluoromethane F^18^")
+        /// (422763008,SCT,"Fluoromethane F^18^")
         Fluoromethane_F18,
-        /// (C-B07E1,SRT,"Fluoromisonidazole F^18^")
+        /// (422598008,SCT,"Fluoromisonidazole F^18^")
         Fluoromisonidazole_F18,
         /// (C2934038,UMLS,"Fluoropropyl-dihydrotetrabenazine (DTBZ) F^18^")
         FluoropropylDihydrotetrabenazineDTBZ_F18,
         /// (126707,DCM,"Fluorotriopride F^18^")
         Fluorotriopride_F18,
-        /// (C-B07E3,SRT,"Fluorouracil F^18^")
+        /// (425236000,SCT,"Fluorouracil F^18^")
         Fluorouracil_F18,
         /// (126718,DCM,"Flurpiridaz F^18^")
         Flurpiridaz_F18,
-        /// (C-E0267,SRT,"Flutemetamol F^18^")
+        /// (456997008,SCT,"Flutemetamol F^18^")
         Flutemetamol_F18,
         /// (126748,DCM,"Fresolimumab ^89^Zr")
         Fresolimumab_89Zr,
         /// (126731,DCM,"GA201 ^89^Zr")
         GA201_89Zr,
-        /// (C-B1046,SRT,"Germanium Ge^68^")
+        /// (129516007,SCT,"Germanium Ge^68^")
         Germanium_Ge68,
         /// (126724,DCM,"Glembatumumab vedotin ^89^Zr")
         GlembatumumabVedotin_89Zr,
-        /// (C-B103D,SRT,"Glutamate N^13^")
+        /// (129509006,SCT,"Glutamate N^13^")
         Glutamate_N13,
         /// (126709,DCM,"Glutamine C^11^")
         Glutamine_C11,
@@ -194,9 +194,9 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Margetuximab_89Zr,
         /// (126730,DCM,"MEDI-551 ^89^Zr")
         MEDI551_89Zr,
-        /// (C-B07E5,SRT,"Mespiperone C^11^")
+        /// (424789007,SCT,"Mespiperone C^11^")
         Mespiperone_C11,
-        /// (C-B103E,SRT,"Methionine C^11^")
+        /// (129510001,SCT,"Methionine C^11^")
         Methionine_C11,
         /// (C4506764,UMLS,"MK-6240 F^18^")
         MK6240_F18,
@@ -206,7 +206,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         MonoclonalAntibodymAb_64Cu,
         /// (126511,DCM,"Monoclonal Antibody (mAb) ^89^Zr")
         MonoclonalAntibodymAb_89Zr,
-        /// (C-B07E6,SRT,"Monoclonal antibody I^124^")
+        /// (424874008,SCT,"Monoclonal antibody I^124^")
         MonoclonalAntibody_I124,
         /// (126753,DCM,"Nanocolloidal albumin ^89^Zr")
         NanocolloidalAlbumin_89Zr,
@@ -216,11 +216,11 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Obinituzimab_89Zr,
         /// (126723,DCM,"Ocaratuzumab ^89^Zr")
         Ocaratuzumab_89Zr,
-        /// (C-B1038,SRT,"Oxygen O^15^")
+        /// (129504001,SCT,"Oxygen O^15^")
         Oxygen_O15,
-        /// (C-B1039,SRT,"Oxygen-water O^15^")
+        /// (129505000,SCT,"Oxygen-water O^15^")
         OxygenWater_O15,
-        /// (C-B1044,SRT,"Palmitate C^11^")
+        /// (129514005,SCT,"Palmitate C^11^")
         Palmitate_C11,
         /// (126736,DCM,"Panitumumab ^89^Zr")
         Panitumumab_89Zr,
@@ -238,11 +238,11 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         PSMA11_Ga68,
         /// (126759,DCM,"PSMA-617 Ga^68^")
         PSMA617_Ga68,
-        /// (C-B07E7,SRT,"PTSM Cu^62^")
+        /// (422789008,SCT,"PTSM Cu^62^")
         PTSM_Cu62,
         /// (126518,DCM,"R1507 ^89^Zr")
         R1507_89Zr,
-        /// (C-B1042,SRT,"Raclopride C^11^")
+        /// (129512009,SCT,"Raclopride C^11^")
         Raclopride_C11,
         /// (126742,DCM,"Ranibizumab ^89^Zr")
         Ranibizumab_89Zr,
@@ -260,19 +260,19 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         RO6958948_18F,
         /// (126733,DCM,"Roledumab ^89^Zr")
         Roledumab_89Zr,
-        /// (C-B1037,SRT,"Rubidium chloride Rb^82^")
+        /// (129503007,SCT,"Rubidium chloride Rb^82^")
         RubidiumChloride_Rb82,
         /// (126741,DCM,"SAR3419 ^89^Zr")
         SAR3419_89Zr,
         /// (C122684,NCIt,"Sarcosine C^11^")
         Sarcosine_C11,
-        /// (C-B1032,SRT,"Sodium fluoride F^18^")
+        /// (129501009,SCT,"Sodium fluoride F^18^")
         SodiumFluoride_F18,
-        /// (C-B07E8,SRT,"Sodium iodide I^124^")
+        /// (422980002,SCT,"Sodium iodide I^124^")
         SodiumIodide_I124,
-        /// (C-B1047,SRT,"Sodium Na^22^")
+        /// (129517003,SCT,"Sodium Na^22^")
         Sodium_Na22,
-        /// (C-B1033,SRT,"Spiperone F^18^")
+        /// (129499001,SCT,"Spiperone F^18^")
         Spiperone_F18,
         /// (126502,DCM,"T807 F^18^")
         T807_F18,
@@ -280,7 +280,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         THK5317_F18,
         /// (C4279748,UMLS,"THK5351 F^18^")
         THK5351_F18,
-        /// (C-B1036,SRT,"Thymidine (FLT) F^18^")
+        /// (129502002,SCT,"Thymidine (FLT) F^18^")
         ThymidineFLT_F18,
         /// (126512,DCM,"Trastuzumab ^89^Zr")
         Trastuzumab_89Zr,

@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7464_GeneralRegionOfInterestMeasurementModifiers
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:39 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:35 by J. Riesmeier
  *
  */
 
@@ -149,13 +149,13 @@ CID7464_GeneralRegionOfInterestMeasurementModifiers::CodeList &CID7464_GeneralRe
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(Maximum, DSRBasicCodedEntry("G-A437", "SRT", "Maximum")));
-        Codes->insert(OFMake_pair(Minimum, DSRBasicCodedEntry("R-404FB", "SRT", "Minimum")));
-        Codes->insert(OFMake_pair(Mean, DSRBasicCodedEntry("R-00317", "SRT", "Mean")));
-        Codes->insert(OFMake_pair(StandardDeviation, DSRBasicCodedEntry("R-10047", "SRT", "Standard Deviation")));
-        Codes->insert(OFMake_pair(Total, DSRBasicCodedEntry("R-40507", "SRT", "Total")));
-        Codes->insert(OFMake_pair(Median, DSRBasicCodedEntry("R-00319", "SRT", "Median")));
-        Codes->insert(OFMake_pair(Mode, DSRBasicCodedEntry("R-0032E", "SRT", "Mode")));
+        Codes->insert(OFMake_pair(Maximum, DSRBasicCodedEntry("56851009", "SCT", "Maximum")));
+        Codes->insert(OFMake_pair(Minimum, DSRBasicCodedEntry("255605001", "SCT", "Minimum")));
+        Codes->insert(OFMake_pair(Mean, DSRBasicCodedEntry("373098007", "SCT", "Mean")));
+        Codes->insert(OFMake_pair(StandardDeviation, DSRBasicCodedEntry("386136009", "SCT", "Standard Deviation")));
+        Codes->insert(OFMake_pair(Total, DSRBasicCodedEntry("255619001", "SCT", "Total")));
+        Codes->insert(OFMake_pair(Median, DSRBasicCodedEntry("373099004", "SCT", "Median")));
+        Codes->insert(OFMake_pair(Mode, DSRBasicCodedEntry("373100007", "SCT", "Mode")));
         Codes->insert(OFMake_pair(PeakValueWithinROI, DSRBasicCodedEntry("126031", "DCM", "Peak Value Within ROI")));
         Codes->insert(OFMake_pair(CoefficientOfVariance, DSRBasicCodedEntry("C0681921", "UMLS", "Coefficient of Variance")));
         Codes->insert(OFMake_pair(Skewness, DSRBasicCodedEntry("126051", "DCM", "Skewness")));

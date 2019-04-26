@@ -32,7 +32,7 @@
 #include "dcmtk/dcmsr/dsrnumvl.h"
 #include "dcmtk/dcmsr/dsrnumtn.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
-#include "dcmtk/dcmsr/codes/srt.h"
+#include "dcmtk/dcmsr/codes/sct.h"
 #include "dcmtk/dcmsr/codes/ucum.h"
 #include "dcmtk/dcmsr/cmr/init.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
@@ -87,7 +87,7 @@ OFTEST(dcmsr_CID244e_Laterality)
     CID244e_Laterality ctxGroup;
     DSRCodedEntryValue codedEntry;
     OFCHECK(!ctxGroup.hasSelectedValue());
-    OFCHECK_EQUAL(ctxGroup.mapImageLaterality("R").getCodeValue(), "G-A100");
+    OFCHECK_EQUAL(ctxGroup.mapImageLaterality("R").getCodeValue(), "24028007");
     OFCHECK(ctxGroup.mapImageLaterality("B", codedEntry).good());
     OFCHECK(ctxGroup.selectValue("L").good());
     OFCHECK(DSRCodedEntryValue(ctxGroup).getCodeMeaning() == "Left");
@@ -348,7 +348,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(volMeasurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_RealWorldValueMappingStorage, "2.0.3.0.4.0")).good());
     OFCHECK(volMeasurements.setRealWorldValueMap(DSRCompositeReferenceValue(UID_CTImageStorage, "2.0")).bad());
     OFCHECK(volMeasurements.setRealWorldValueMap(dataset).good());
-    OFCHECK(volMeasurements.addFindingSite(CODE_SRT_AorticArch).good());
+    OFCHECK(volMeasurements.addFindingSite(CODE_SCT_AorticArch).good());
     OFCHECK(volMeasurements.setMeasurementMethod(DSRCodedEntryValue(CODE_DCM_SUVBodyWeightCalculationMethod)).good());
     OFCHECK(!volMeasurements.isValid());
     /* add two measurement values */

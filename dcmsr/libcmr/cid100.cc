@@ -5,8 +5,8 @@
  *
  *  Source file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:14 by J. Riesmeier
  *
  */
 
@@ -149,20 +149,20 @@ CID100_QuantitativeDiagnosticImagingProcedures::CodeList &CID100_QuantitativeDia
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(ImagingProcedure, DSRBasicCodedEntry("P0-0099A", "SRT", "Imaging procedure")));
-        Codes->insert(OFMake_pair(MagneticResonanceImagingGuidance, DSRBasicCodedEntry("P5-09051", "SRT", "Magnetic resonance imaging guidance")));
+        Codes->insert(OFMake_pair(ImagingProcedure, DSRBasicCodedEntry("363679005", "SCT", "Imaging procedure")));
+        Codes->insert(OFMake_pair(MagneticResonanceImagingGuidance, DSRBasicCodedEntry("258177008", "SCT", "Magnetic resonance imaging guidance")));
         Codes->insert(OFMake_pair(MultiparametricMRI, DSRBasicCodedEntry("126020", "DCM", "Multiparametric MRI")));
         Codes->insert(OFMake_pair(MultiparametricMRIOfProstate, DSRBasicCodedEntry("126021", "DCM", "Multiparametric MRI of prostate")));
         Codes->insert(OFMake_pair(MultiparametricMRIOfWholeBody, DSRBasicCodedEntry("126022", "DCM", "Multiparametric MRI of whole body")));
-        Codes->insert(OFMake_pair(DynamicMagneticResonanceImagingOfKnee, DSRBasicCodedEntry("P5-0907F", "SRT", "Dynamic magnetic resonance imaging of knee")));
-        Codes->insert(OFMake_pair(DynamicMagneticResonanceImagingOfPelvis, DSRBasicCodedEntry("P5-70694", "SRT", "Dynamic magnetic resonance imaging of pelvis")));
+        Codes->insert(OFMake_pair(DynamicMagneticResonanceImagingOfKnee, DSRBasicCodedEntry("433139009", "SCT", "Dynamic magnetic resonance imaging of knee")));
+        Codes->insert(OFMake_pair(DynamicMagneticResonanceImagingOfPelvis, DSRBasicCodedEntry("446315002", "SCT", "Dynamic magnetic resonance imaging of pelvis")));
         Codes->insert(OFMake_pair(CTUnspecifiedBodyRegion, DSRBasicCodedEntry("25045-6", "LN", "CT unspecified body region")));
         Codes->insert(OFMake_pair(MRIUnspecifiedBodyRegion, DSRBasicCodedEntry("25056-3", "LN", "MRI unspecified body region")));
         Codes->insert(OFMake_pair(NMUnspecifiedBodyRegion, DSRBasicCodedEntry("49118-3", "LN", "NM unspecified body region")));
         Codes->insert(OFMake_pair(PETUnspecifiedBodyRegion, DSRBasicCodedEntry("44136-0", "LN", "PET unspecified body region")));
         Codes->insert(OFMake_pair(PETWholeBody, DSRBasicCodedEntry("44139-4", "LN", "PET whole body")));
-        Codes->insert(OFMake_pair(PETCT_FDGImagingOfWholeBody, DSRBasicCodedEntry("P5-080FF", "SRT", "PET/CT FDG imaging of whole body")));
-        Codes->insert(OFMake_pair(PETCT_METImagingOfWholeBody, DSRBasicCodedEntry("P5-08118", "SRT", "PET/CT MET imaging of whole body")));
+        Codes->insert(OFMake_pair(PETCT_FDGImagingOfWholeBody, DSRBasicCodedEntry("443271005", "SCT", "PET/CT FDG imaging of whole body")));
+        Codes->insert(OFMake_pair(PETCT_METImagingOfWholeBody, DSRBasicCodedEntry("443844003", "SCT", "PET/CT MET imaging of whole body")));
         Codes->insert(OFMake_pair(CTPerfusionHeadWithContrastIV, DSRBasicCodedEntry("39142-5", "LN", "CT perfusion head with contrast IV")));
         Codes->insert(OFMake_pair(SPECTBrain, DSRBasicCodedEntry("39632-5", "LN", "SPECT brain")));
         Codes->insert(OFMake_pair(NMHeadPerfusionBrainPET_CT_AV45, DSRBasicCodedEntry("RPID5427", "RADLEX", "NM head perfusion brain PET-CT AV-45")));

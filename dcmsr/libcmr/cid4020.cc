@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4020_PETRadionuclide
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:22 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:18 by J. Riesmeier
  *
  */
 
@@ -149,41 +149,41 @@ CID4020_PETRadionuclide::CodeList &CID4020_PETRadionuclide::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(_11_Carbon, DSRBasicCodedEntry("C-105A1", "SRT", "^11^Carbon")));
-        Codes->insert(OFMake_pair(_13_Nitrogen, DSRBasicCodedEntry("C-107A1", "SRT", "^13^Nitrogen")));
-        Codes->insert(OFMake_pair(_14_Oxygen, DSRBasicCodedEntry("C-1018C", "SRT", "^14^Oxygen")));
-        Codes->insert(OFMake_pair(_15_Oxygen, DSRBasicCodedEntry("C-B1038", "SRT", "^15^Oxygen")));
-        Codes->insert(OFMake_pair(_18_Fluorine, DSRBasicCodedEntry("C-111A1", "SRT", "^18^Fluorine")));
-        Codes->insert(OFMake_pair(_22_Sodium, DSRBasicCodedEntry("C-155A1", "SRT", "^22^Sodium")));
-        Codes->insert(OFMake_pair(_38_Potassium, DSRBasicCodedEntry("C-135A4", "SRT", "^38^Potassium")));
+        Codes->insert(OFMake_pair(_11_Carbon, DSRBasicCodedEntry("40565003", "SCT", "^11^Carbon")));
+        Codes->insert(OFMake_pair(_13_Nitrogen, DSRBasicCodedEntry("21576001", "SCT", "^13^Nitrogen")));
+        Codes->insert(OFMake_pair(_14_Oxygen, DSRBasicCodedEntry("424875009", "SCT", "^14^Oxygen")));
+        Codes->insert(OFMake_pair(_15_Oxygen, DSRBasicCodedEntry("129504001", "SCT", "^15^Oxygen")));
+        Codes->insert(OFMake_pair(_18_Fluorine, DSRBasicCodedEntry("77004003", "SCT", "^18^Fluorine")));
+        Codes->insert(OFMake_pair(_22_Sodium, DSRBasicCodedEntry("71633006", "SCT", "^22^Sodium")));
+        Codes->insert(OFMake_pair(_38_Potassium, DSRBasicCodedEntry("423764008", "SCT", "^38^Potassium")));
         Codes->insert(OFMake_pair(_43_Scandium, DSRBasicCodedEntry("126605", "DCM", "^43^Scandium")));
         Codes->insert(OFMake_pair(_44_Scandium, DSRBasicCodedEntry("126600", "DCM", "^44^Scandium")));
-        Codes->insert(OFMake_pair(_45_Titanium, DSRBasicCodedEntry("C-166A2", "SRT", "^45^Titanium")));
+        Codes->insert(OFMake_pair(_45_Titanium, DSRBasicCodedEntry("75696008", "SCT", "^45^Titanium")));
         Codes->insert(OFMake_pair(_51_Manganese, DSRBasicCodedEntry("126601", "DCM", "^51^Manganese")));
-        Codes->insert(OFMake_pair(_52_Iron, DSRBasicCodedEntry("C-130A1", "SRT", "^52^Iron")));
-        Codes->insert(OFMake_pair(_52_Manganese, DSRBasicCodedEntry("C-149A1", "SRT", "^52^Manganese")));
+        Codes->insert(OFMake_pair(_52_Iron, DSRBasicCodedEntry("69089000", "SCT", "^52^Iron")));
+        Codes->insert(OFMake_pair(_52_Manganese, DSRBasicCodedEntry("37225000", "SCT", "^52^Manganese")));
         Codes->insert(OFMake_pair(_52m_Manganese, DSRBasicCodedEntry("126607", "DCM", "^52m^Manganese")));
-        Codes->insert(OFMake_pair(_60_Copper, DSRBasicCodedEntry("C-127A4", "SRT", "^60^Copper")));
-        Codes->insert(OFMake_pair(_61_Copper, DSRBasicCodedEntry("C-127A1", "SRT", "^61^Copper")));
-        Codes->insert(OFMake_pair(_62_Copper, DSRBasicCodedEntry("C-127A5", "SRT", "^62^Copper")));
-        Codes->insert(OFMake_pair(_62_Zinc, DSRBasicCodedEntry("C-141A1", "SRT", "^62^Zinc")));
-        Codes->insert(OFMake_pair(_64_Copper, DSRBasicCodedEntry("C-127A2", "SRT", "^64^Copper")));
-        Codes->insert(OFMake_pair(_66_Gallium, DSRBasicCodedEntry("C-131A1", "SRT", "^66^Gallium")));
-        Codes->insert(OFMake_pair(_68_Gallium, DSRBasicCodedEntry("C-131A3", "SRT", "^68^Gallium")));
-        Codes->insert(OFMake_pair(_68_Germanium, DSRBasicCodedEntry("C-128A2", "SRT", "^68^Germanium")));
+        Codes->insert(OFMake_pair(_60_Copper, DSRBasicCodedEntry("425364008", "SCT", "^60^Copper")));
+        Codes->insert(OFMake_pair(_61_Copper, DSRBasicCodedEntry("71425003", "SCT", "^61^Copper")));
+        Codes->insert(OFMake_pair(_62_Copper, DSRBasicCodedEntry("422934004", "SCT", "^62^Copper")));
+        Codes->insert(OFMake_pair(_62_Zinc, DSRBasicCodedEntry("65054007", "SCT", "^62^Zinc")));
+        Codes->insert(OFMake_pair(_64_Copper, DSRBasicCodedEntry("3932008", "SCT", "^64^Copper")));
+        Codes->insert(OFMake_pair(_66_Gallium, DSRBasicCodedEntry("79477007", "SCT", "^66^Gallium")));
+        Codes->insert(OFMake_pair(_68_Gallium, DSRBasicCodedEntry("35337001", "SCT", "^68^Gallium")));
+        Codes->insert(OFMake_pair(_68_Germanium, DSRBasicCodedEntry("53315004", "SCT", "^68^Germanium")));
         Codes->insert(OFMake_pair(_70_Arsenic, DSRBasicCodedEntry("126602", "DCM", "^70^Arsenic")));
-        Codes->insert(OFMake_pair(_72_Arsenic, DSRBasicCodedEntry("C-115A2", "SRT", "^72^Arsenic")));
-        Codes->insert(OFMake_pair(_73_Selenium, DSRBasicCodedEntry("C-116A2", "SRT", "^73^Selenium")));
-        Codes->insert(OFMake_pair(_75_Bromine, DSRBasicCodedEntry("C-113A1", "SRT", "^75^Bromine")));
-        Codes->insert(OFMake_pair(_76_Bromine, DSRBasicCodedEntry("C-113A2", "SRT", "^76^Bromine")));
-        Codes->insert(OFMake_pair(_77_Bromine, DSRBasicCodedEntry("C-113A3", "SRT", "^77^Bromine")));
-        Codes->insert(OFMake_pair(_82_Rubidium, DSRBasicCodedEntry("C-159A2", "SRT", "^82^Rubidium")));
-        Codes->insert(OFMake_pair(_86_Yttrium, DSRBasicCodedEntry("C-162A3", "SRT", "^86^Yttrium")));
-        Codes->insert(OFMake_pair(_89_Zirconium, DSRBasicCodedEntry("C-168A4", "SRT", "^89^Zirconium")));
+        Codes->insert(OFMake_pair(_72_Arsenic, DSRBasicCodedEntry("2705002", "SCT", "^72^Arsenic")));
+        Codes->insert(OFMake_pair(_73_Selenium, DSRBasicCodedEntry("87437000", "SCT", "^73^Selenium")));
+        Codes->insert(OFMake_pair(_75_Bromine, DSRBasicCodedEntry("17910003", "SCT", "^75^Bromine")));
+        Codes->insert(OFMake_pair(_76_Bromine, DSRBasicCodedEntry("79523006", "SCT", "^76^Bromine")));
+        Codes->insert(OFMake_pair(_77_Bromine, DSRBasicCodedEntry("86521004", "SCT", "^77^Bromine")));
+        Codes->insert(OFMake_pair(_82_Rubidium, DSRBasicCodedEntry("79197006", "SCT", "^82^Rubidium")));
+        Codes->insert(OFMake_pair(_86_Yttrium, DSRBasicCodedEntry("10738001", "SCT", "^86^Yttrium")));
+        Codes->insert(OFMake_pair(_89_Zirconium, DSRBasicCodedEntry("63360001", "SCT", "^89^Zirconium")));
         Codes->insert(OFMake_pair(_90_Niobium, DSRBasicCodedEntry("126603", "DCM", "^90^Niobium")));
-        Codes->insert(OFMake_pair(_90_Yttrium, DSRBasicCodedEntry("C-162A7", "SRT", "^90^Yttrium")));
-        Codes->insert(OFMake_pair(_94m_Technetium, DSRBasicCodedEntry("C-163AA", "SRT", "^94m^Technetium")));
-        Codes->insert(OFMake_pair(_124_Iodine, DSRBasicCodedEntry("C-114A5", "SRT", "^124^Iodine")));
+        Codes->insert(OFMake_pair(_90_Yttrium, DSRBasicCodedEntry("14691008", "SCT", "^90^Yttrium")));
+        Codes->insert(OFMake_pair(_94m_Technetium, DSRBasicCodedEntry("424079002", "SCT", "^94m^Technetium")));
+        Codes->insert(OFMake_pair(_124_Iodine, DSRBasicCodedEntry("40937006", "SCT", "^124^Iodine")));
         Codes->insert(OFMake_pair(_152_Terbium, DSRBasicCodedEntry("126606", "DCM", "^152^Terbium")));
     }
     /* should never be NULL */

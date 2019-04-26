@@ -5,8 +5,8 @@
  *
  *  Header file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:14 by J. Riesmeier
  *
  */
 
@@ -40,9 +40,9 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
      */
     enum EnumType
     {
-        /// (P0-0099A,SRT,"Imaging procedure")
+        /// (363679005,SCT,"Imaging procedure")
         ImagingProcedure,
-        /// (P5-09051,SRT,"Magnetic resonance imaging guidance")
+        /// (258177008,SCT,"Magnetic resonance imaging guidance")
         MagneticResonanceImagingGuidance,
         /// (126020,DCM,"Multiparametric MRI")
         MultiparametricMRI,
@@ -50,9 +50,9 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
         MultiparametricMRIOfProstate,
         /// (126022,DCM,"Multiparametric MRI of whole body")
         MultiparametricMRIOfWholeBody,
-        /// (P5-0907F,SRT,"Dynamic magnetic resonance imaging of knee")
+        /// (433139009,SCT,"Dynamic magnetic resonance imaging of knee")
         DynamicMagneticResonanceImagingOfKnee,
-        /// (P5-70694,SRT,"Dynamic magnetic resonance imaging of pelvis")
+        /// (446315002,SCT,"Dynamic magnetic resonance imaging of pelvis")
         DynamicMagneticResonanceImagingOfPelvis,
         /// (25045-6,LN,"CT unspecified body region")
         CTUnspecifiedBodyRegion,
@@ -64,9 +64,9 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
         PETUnspecifiedBodyRegion,
         /// (44139-4,LN,"PET whole body")
         PETWholeBody,
-        /// (P5-080FF,SRT,"PET/CT FDG imaging of whole body")
+        /// (443271005,SCT,"PET/CT FDG imaging of whole body")
         PETCT_FDGImagingOfWholeBody,
-        /// (P5-08118,SRT,"PET/CT MET imaging of whole body")
+        /// (443844003,SCT,"PET/CT MET imaging of whole body")
         PETCT_METImagingOfWholeBody,
         /// (39142-5,LN,"CT perfusion head with contrast IV")
         CTPerfusionHeadWithContrastIV,

@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:26 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:22 by J. Riesmeier
  *
  */
 
@@ -40,219 +40,219 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
      */
     enum EnumType
     {
-        /// (T-D4000,SRT,"Abdomen")
+        /// (113345001,SCT,"Abdomen")
         Abdomen,
-        /// (R-FAB57,SRT,"Abdomen and Pelvis")
+        /// (416949008,SCT,"Abdomen and Pelvis")
         AbdomenAndPelvis,
-        /// (T-15420,SRT,"Acromioclavicular joint")
+        /// (85856004,SCT,"Acromioclavicular joint")
         AcromioclavicularJoint,
-        /// (T-15750,SRT,"Ankle joint")
+        /// (70258002,SCT,"Ankle joint")
         AnkleJoint,
-        /// (T-59900,SRT,"Anus")
+        /// (53505006,SCT,"Anus")
         Anus,
-        /// (T-280A0,SRT,"Apex of Lung")
+        /// (86598002,SCT,"Apex of Lung")
         ApexOfLung,
-        /// (T-60610,SRT,"Bile duct")
+        /// (28273000,SCT,"Bile duct")
         BileDuct,
-        /// (T-74000,SRT,"Bladder")
+        /// (89837001,SCT,"Bladder")
         Bladder,
-        /// (T-12700,SRT,"Bone of lower limb")
+        /// (72001000,SCT,"Bone of lower limb")
         BoneOfLowerLimb,
-        /// (T-D0821,SRT,"Bone of upper limb")
+        /// (371195002,SCT,"Bone of upper limb")
         BoneOfUpperLimb,
-        /// (T-04000,SRT,"Breast")
+        /// (76752008,SCT,"Breast")
         Breast,
-        /// (T-26000,SRT,"Bronchus")
+        /// (955009,SCT,"Bronchus")
         Bronchus,
-        /// (T-12770,SRT,"Calcaneus")
+        /// (80144004,SCT,"Calcaneus")
         Calcaneus,
-        /// (T-11501,SRT,"Cervical spine")
+        /// (122494005,SCT,"Cervical spine")
         CervicalSpine,
-        /// (T-D00F7,SRT,"Cervico-thoracic spine")
+        /// (297171002,SCT,"Cervico-thoracic spine")
         CervicoThoracicSpine,
-        /// (T-D3000,SRT,"Chest")
+        /// (51185008,SCT,"Chest")
         Chest,
-        /// (R-FAB55,SRT,"Chest and Abdomen")
+        /// (416550000,SCT,"Chest and Abdomen")
         ChestAndAbdomen,
-        /// (R-FAB56,SRT,"Chest, Abdomen and Pelvis")
+        /// (416775004,SCT,"Chest, Abdomen and Pelvis")
         ChestAbdomenAndPelvis,
-        /// (T-12310,SRT,"Clavicle")
+        /// (51299004,SCT,"Clavicle")
         Clavicle,
-        /// (T-11BF0,SRT,"Coccyx")
+        /// (64688005,SCT,"Coccyx")
         Coccyx,
-        /// (T-59300,SRT,"Colon")
+        /// (71854001,SCT,"Colon")
         Colon,
-        /// (T-58200,SRT,"Duodenum")
+        /// (38848004,SCT,"Duodenum")
         Duodenum,
-        /// (T-15430,SRT,"Elbow joint")
+        /// (16953009,SCT,"Elbow joint")
         ElbowJoint,
-        /// (T-D0010,SRT,"Entire body")
+        /// (38266002,SCT,"Entire body")
         EntireBody,
-        /// (T-56000,SRT,"Esophagus")
+        /// (32849002,SCT,"Esophagus")
         Esophagus,
-        /// (T-DD163,SRT,"Esophagus, stomach and duodenum")
+        /// (110861005,SCT,"Esophagus, stomach and duodenum")
         EsophagusStomachAndDuodenum,
-        /// (T-D0300,SRT,"Extremity")
+        /// (66019005,SCT,"Extremity")
         Extremity,
-        /// (T-AA000,SRT,"Eye")
+        /// (81745001,SCT,"Eye")
         Eye,
-        /// (T-D0801,SRT,"Eye region")
+        /// (371398005,SCT,"Eye region")
         EyeRegion,
-        /// (T-11196,SRT,"Facial bones")
+        /// (91397008,SCT,"Facial bones")
         FacialBones,
-        /// (T-12710,SRT,"Femur")
+        /// (71341001,SCT,"Femur")
         Femur,
-        /// (T-12750,SRT,"Fibula")
+        /// (87342007,SCT,"Fibula")
         Fibula,
-        /// (T-D8800,SRT,"Finger")
+        /// (7569003,SCT,"Finger")
         Finger,
-        /// (T-D9700,SRT,"Foot")
+        /// (56459004,SCT,"Foot")
         Foot,
-        /// (T-D8500,SRT,"Forearm")
+        /// (14975008,SCT,"Forearm")
         Forearm,
-        /// (T-63000,SRT,"Gallbladder")
+        /// (28231008,SCT,"Gallbladder")
         Gallbladder,
-        /// (T-D8700,SRT,"Hand")
+        /// (85562004,SCT,"Hand")
         Hand,
-        /// (T-D1100,SRT,"Head")
+        /// (69536005,SCT,"Head")
         Head,
-        /// (T-D1000,SRT,"Head and Neck")
+        /// (774007,SCT,"Head and Neck")
         HeadAndNeck,
-        /// (T-32000,SRT,"Heart")
+        /// (80891009,SCT,"Heart")
         Heart,
-        /// (T-15710,SRT,"Hip joint")
+        /// (29836001,SCT,"Hip joint")
         HipJoint,
-        /// (T-12410,SRT,"Humerus")
+        /// (85050009,SCT,"Humerus")
         Humerus,
-        /// (T-58600,SRT,"Ileum")
+        /// (34516001,SCT,"Ileum")
         Ileum,
-        /// (T-12340,SRT,"Ilium")
+        /// (22356005,SCT,"Ilium")
         Ilium,
-        /// (T-AB959,SRT,"Internal Auditory Canal")
+        /// (361078006,SCT,"Internal Auditory Canal")
         InternalAuditoryCanal,
-        /// (T-D1213,SRT,"Jaw region")
+        /// (661005,SCT,"Jaw region")
         JawRegion,
-        /// (T-58400,SRT,"Jejunum")
+        /// (21306003,SCT,"Jejunum")
         Jejunum,
-        /// (T-D9200,SRT,"Knee")
+        /// (72696002,SCT,"Knee")
         Knee,
-        /// (T-59000,SRT,"Large intestine")
+        /// (14742008,SCT,"Large intestine")
         LargeIntestine,
-        /// (T-24100,SRT,"Larynx")
+        /// (4596009,SCT,"Larynx")
         Larynx,
-        /// (T-D9400,SRT,"Lower leg")
+        /// (30021000,SCT,"Lower leg")
         LowerLeg,
-        /// (T-D9000,SRT,"Lower limb")
+        /// (61685007,SCT,"Lower limb")
         LowerLimb,
-        /// (T-11503,SRT,"Lumbar spine")
+        /// (122496007,SCT,"Lumbar spine")
         LumbarSpine,
-        /// (T-D00F9,SRT,"Lumbo-sacral spine")
+        /// (297173004,SCT,"Lumbo-sacral spine")
         LumboSacralSpine,
-        /// (T-11180,SRT,"Mandible")
+        /// (91609006,SCT,"Mandible")
         Mandible,
-        /// (T-11133,SRT,"Mastoid bone")
+        /// (59066005,SCT,"Mastoid bone")
         MastoidBone,
-        /// (T-11170,SRT,"Maxilla")
+        /// (70925003,SCT,"Maxilla")
         Maxilla,
-        /// (T-D3300,SRT,"Mediastinum")
+        /// (72410000,SCT,"Mediastinum")
         Mediastinum,
-        /// (T-14668,SRT,"Muscle of lower limb")
+        /// (102292000,SCT,"Muscle of lower limb")
         MuscleOfLowerLimb,
-        /// (T-13600,SRT,"Muscle of upper limb")
+        /// (30608006,SCT,"Muscle of upper limb")
         MuscleOfUpperLimb,
-        /// (T-11149,SRT,"Nasal bone")
+        /// (74386004,SCT,"Nasal bone")
         NasalBone,
-        /// (T-D1600,SRT,"Neck")
+        /// (45048000,SCT,"Neck")
         Neck,
-        /// (R-FAB52,SRT,"Neck and Chest")
+        /// (417437006,SCT,"Neck and Chest")
         NeckAndChest,
-        /// (R-FAB53,SRT,"Neck, Chest and Abdomen")
+        /// (416152001,SCT,"Neck, Chest and Abdomen")
         NeckChestAndAbdomen,
-        /// (R-FAB54,SRT,"Neck, Chest, Abdomen and Pelvis")
+        /// (416319003,SCT,"Neck, Chest, Abdomen and Pelvis")
         NeckChestAbdomenAndPelvis,
-        /// (T-11102,SRT,"Optic canal")
+        /// (55024004,SCT,"Optic canal")
         OpticCanal,
-        /// (T-D14AE,SRT,"Orbital structure")
+        /// (363654007,SCT,"Orbital structure")
         OrbitalStructure,
-        /// (T-65600,SRT,"Pancreatic duct and bile duct systems")
+        /// (110621006,SCT,"Pancreatic duct and bile duct systems")
         PancreaticDuctAndBileDuctSystems,
-        /// (T-22000,SRT,"Paranasal sinus")
+        /// (2095001,SCT,"Paranasal sinus")
         ParanasalSinus,
-        /// (T-61100,SRT,"Parotid gland")
+        /// (45289007,SCT,"Parotid gland")
         ParotidGland,
-        /// (T-12730,SRT,"Patella")
+        /// (64234005,SCT,"Patella")
         Patella,
-        /// (T-D6000,SRT,"Pelvis")
+        /// (12921003,SCT,"Pelvis")
         Pelvis,
-        /// (R-FAB58,SRT,"Pelvis and lower extremities")
+        /// (416631005,SCT,"Pelvis and lower extremities")
         PelvisAndLowerExtremities,
         /// (113681,DCM,"Phantom")
         Phantom,
-        /// (T-92000,SRT,"Prostate")
+        /// (41216001,SCT,"Prostate")
         Prostate,
-        /// (T-59600,SRT,"Rectum")
+        /// (34402009,SCT,"Rectum")
         Rectum,
-        /// (T-11300,SRT,"Rib")
+        /// (113197003,SCT,"Rib")
         Rib,
-        /// (T-15680,SRT,"Sacroiliac joint")
+        /// (39723000,SCT,"Sacroiliac joint")
         SacroiliacJoint,
-        /// (T-11AD0,SRT,"Sacrum")
+        /// (54735007,SCT,"Sacrum")
         Sacrum,
-        /// (T-12280,SRT,"Scapula")
+        /// (79601000,SCT,"Scapula")
         Scapula,
-        /// (T-D1460,SRT,"Sella turcica")
+        /// (42575006,SCT,"Sella turcica")
         SellaTurcica,
-        /// (T-12980,SRT,"Sesamoid bones of foot")
+        /// (58742003,SCT,"Sesamoid bones of foot")
         SesamoidBonesOfFoot,
-        /// (T-D2220,SRT,"Shoulder")
+        /// (16982005,SCT,"Shoulder")
         Shoulder,
-        /// (T-11100,SRT,"Skull")
+        /// (89546000,SCT,"Skull")
         Skull,
-        /// (T-58000,SRT,"Small intestine")
+        /// (30315005,SCT,"Small intestine")
         SmallIntestine,
-        /// (T-D04FF,SRT,"Spine")
+        /// (421060004,SCT,"Spine")
         Spine,
-        /// (T-15610,SRT,"Sternoclavicular joint")
+        /// (7844006,SCT,"Sternoclavicular joint")
         SternoclavicularJoint,
-        /// (T-11210,SRT,"Sternum")
+        /// (56873002,SCT,"Sternum")
         Sternum,
-        /// (T-57000,SRT,"Stomach")
+        /// (69695003,SCT,"Stomach")
         Stomach,
-        /// (T-61300,SRT,"Submandibular gland")
+        /// (54019009,SCT,"Submandibular gland")
         SubmandibularGland,
-        /// (T-15770,SRT,"Tarsal joint")
+        /// (27949001,SCT,"Tarsal joint")
         TarsalJoint,
-        /// (T-15290,SRT,"Temporomandibular joint")
+        /// (53620006,SCT,"Temporomandibular joint")
         TemporomandibularJoint,
-        /// (T-D9100,SRT,"Thigh")
+        /// (68367000,SCT,"Thigh")
         Thigh,
-        /// (T-11502,SRT,"Thoracic spine")
+        /// (122495006,SCT,"Thoracic spine")
         ThoracicSpine,
-        /// (T-D00F8,SRT,"Thoraco-lumbar spine")
+        /// (297172009,SCT,"Thoraco-lumbar spine")
         ThoracoLumbarSpine,
-        /// (T-D8810,SRT,"Thumb")
+        /// (76505004,SCT,"Thumb")
         Thumb,
-        /// (T-D9800,SRT,"Toe")
+        /// (29707007,SCT,"Toe")
         Toe,
-        /// (T-25000,SRT,"Trachea")
+        /// (44567001,SCT,"Trachea")
         Trachea,
-        /// (T-D8200,SRT,"Upper arm")
+        /// (40983000,SCT,"Upper arm")
         UpperArm,
-        /// (T-D8000,SRT,"Upper limb")
+        /// (53120007,SCT,"Upper limb")
         UpperLimb,
-        /// (T-7000B,SRT,"Upper urinary tract")
+        /// (431491007,SCT,"Upper urinary tract")
         UpperUrinaryTract,
-        /// (T-73000,SRT,"Ureter")
+        /// (87953007,SCT,"Ureter")
         Ureter,
-        /// (T-75000,SRT,"Urethra")
+        /// (13648007,SCT,"Urethra")
         Urethra,
-        /// (T-88920,SRT,"Uterus and fallopian tubes")
+        /// (110639002,SCT,"Uterus and fallopian tubes")
         UterusAndFallopianTubes,
-        /// (T-11011,SRT,"Vertebral column and cranium")
+        /// (110517009,SCT,"Vertebral column and cranium")
         VertebralColumnAndCranium,
-        /// (T-15460,SRT,"Wrist joint")
+        /// (74670003,SCT,"Wrist joint")
         WristJoint,
-        /// (T-11166,SRT,"Zygoma")
+        /// (13881006,SCT,"Zygoma")
         Zygoma
     };
 

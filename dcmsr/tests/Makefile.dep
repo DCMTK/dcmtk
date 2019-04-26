@@ -286,7 +286,7 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
  ../include/dcmtk/dcmsr/dsrnumtn.h ../include/dcmtk/dcmsr/codes/dcm.h \
- ../include/dcmtk/dcmsr/codes/srt.h ../include/dcmtk/dcmsr/codes/ucum.h \
+ ../include/dcmtk/dcmsr/codes/sct.h ../include/dcmtk/dcmsr/codes/ucum.h \
  ../include/dcmtk/dcmsr/cmr/init.h ../include/dcmtk/dcmsr/cmr/define.h \
  ../include/dcmtk/dcmsr/cmr/logger.h ../include/dcmtk/dcmsr/cmr/cid29e.h \
  ../include/dcmtk/dcmsr/cmr/cid29.h ../include/dcmtk/dcmsr/dsrctxgr.h \

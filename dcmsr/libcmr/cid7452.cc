@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7452_OrganizationalRoles
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:35 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:32 by J. Riesmeier
  *
  */
 
@@ -149,28 +149,28 @@ CID7452_OrganizationalRoles::CodeList &CID7452_OrganizationalRoles::getCodes()
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(MedicalPractitioner, DSRBasicCodedEntry("J-0016E", "SRT", "Medical Practitioner")));
-        Codes->insert(OFMake_pair(Physician, DSRBasicCodedEntry("J-004E8", "SRT", "Physician")));
+        Codes->insert(OFMake_pair(MedicalPractitioner, DSRBasicCodedEntry("158965000", "SCT", "Medical Practitioner")));
+        Codes->insert(OFMake_pair(Physician, DSRBasicCodedEntry("309343006", "SCT", "Physician")));
         Codes->insert(OFMake_pair(HeadOfRadiology, DSRBasicCodedEntry("128670", "DCM", "Head of Radiology")));
         Codes->insert(OFMake_pair(ChairOfProtocolCommittee, DSRBasicCodedEntry("128671", "DCM", "Chair of Protocol Committee")));
         Codes->insert(OFMake_pair(RepresentativeOfProtocolCommittee, DSRBasicCodedEntry("128676", "DCM", "Representative of Protocol Committee")));
         Codes->insert(OFMake_pair(RepresentativeOfEthicsCommittee, DSRBasicCodedEntry("128677", "DCM", "Representative of Ethics Committee")));
         Codes->insert(OFMake_pair(HeadOfCardiology, DSRBasicCodedEntry("128675", "DCM", "Head of Cardiology")));
         Codes->insert(OFMake_pair(AdministratorOfRadiologyDepartment, DSRBasicCodedEntry("128673", "DCM", "Administrator of Radiology Department")));
-        Codes->insert(OFMake_pair(Nurse, DSRBasicCodedEntry("J-07100", "SRT", "Nurse")));
-        Codes->insert(OFMake_pair(RadiologicTechnologist, DSRBasicCodedEntry("J-00187", "SRT", "Radiologic Technologist")));
+        Codes->insert(OFMake_pair(Nurse, DSRBasicCodedEntry("106292003", "SCT", "Nurse")));
+        Codes->insert(OFMake_pair(RadiologicTechnologist, DSRBasicCodedEntry("159016003", "SCT", "Radiologic Technologist")));
         Codes->insert(OFMake_pair(LeadRadiologicTechnologist, DSRBasicCodedEntry("128674", "DCM", "Lead Radiologic Technologist")));
-        Codes->insert(OFMake_pair(RadiationTherapist, DSRBasicCodedEntry("J-06173", "SRT", "Radiation Therapist")));
-        Codes->insert(OFMake_pair(Radiographer, DSRBasicCodedEntry("J-00187", "SRT", "Radiographer")));
+        Codes->insert(OFMake_pair(RadiationTherapist, DSRBasicCodedEntry("3430008", "SCT", "Radiation Therapist")));
+        Codes->insert(OFMake_pair(Radiographer, DSRBasicCodedEntry("159016003", "SCT", "Radiographer")));
         Codes->insert(OFMake_pair(Intern, DSRBasicCodedEntry("C1144859", "UMLS", "Intern")));
-        Codes->insert(OFMake_pair(Resident, DSRBasicCodedEntry("J-005E6", "SRT", "Resident")));
-        Codes->insert(OFMake_pair(Registrar, DSRBasicCodedEntry("J-00172", "SRT", "Registrar")));
+        Codes->insert(OFMake_pair(Resident, DSRBasicCodedEntry("405277009", "SCT", "Resident")));
+        Codes->insert(OFMake_pair(Registrar, DSRBasicCodedEntry("158971006", "SCT", "Registrar")));
         Codes->insert(OFMake_pair(Fellow, DSRBasicCodedEntry("121088", "DCM", "Fellow")));
-        Codes->insert(OFMake_pair(Attending, DSRBasicCodedEntry("J-005E8", "SRT", "Attending")));
-        Codes->insert(OFMake_pair(Consultant, DSRBasicCodedEntry("J-0050A", "SRT", "Consultant")));
+        Codes->insert(OFMake_pair(Attending, DSRBasicCodedEntry("405279007", "SCT", "Attending")));
+        Codes->insert(OFMake_pair(Consultant, DSRBasicCodedEntry("309390008", "SCT", "Consultant")));
         Codes->insert(OFMake_pair(ConsultingPhysician, DSRBasicCodedEntry("C1441532", "UMLS", "Consulting Physician")));
-        Codes->insert(OFMake_pair(ScrubNurse, DSRBasicCodedEntry("J-0714A", "SRT", "Scrub nurse")));
-        Codes->insert(OFMake_pair(Surgeon, DSRBasicCodedEntry("J-00556", "SRT", "Surgeon")));
+        Codes->insert(OFMake_pair(ScrubNurse, DSRBasicCodedEntry("415506007", "SCT", "Scrub nurse")));
+        Codes->insert(OFMake_pair(Surgeon, DSRBasicCodedEntry("304292004", "SCT", "Surgeon")));
         Codes->insert(OFMake_pair(Sonologist, DSRBasicCodedEntry("121092", "DCM", "Sonologist")));
         Codes->insert(OFMake_pair(Sonographer, DSRBasicCodedEntry("C1954848", "UMLS", "Sonographer")));
         Codes->insert(OFMake_pair(RadiationPhysicist, DSRBasicCodedEntry("C2985483", "UMLS", "Radiation Physicist")));

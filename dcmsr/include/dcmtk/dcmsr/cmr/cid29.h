@@ -5,8 +5,8 @@
  *
  *  Header file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:11 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 29 - Acquisition Modality.
- *  (type: extensible, version: 20180605)
+ *  (type: extensible, version: 20190327)
  */
 class DCMTK_CMR_EXPORT CID29_AcquisitionModality
   : public DSRContextGroup
@@ -42,24 +42,26 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
     {
         /// (AR,DCM,"Autorefraction")
         Autorefraction,
-        /// (BMD,DCM,"Bone Mineral Densitometry")
-        BoneMineralDensitometry,
         /// (BDUS,DCM,"Ultrasound Bone Densitometry")
         UltrasoundBoneDensitometry,
-        /// (EPS,DCM,"Cardiac Electrophysiology")
-        CardiacElectrophysiology,
+        /// (BI,DCM,"Biomagnetic Imaging")
+        BiomagneticImaging,
+        /// (BMD,DCM,"Bone Mineral Densitometry")
+        BoneMineralDensitometry,
         /// (CR,DCM,"Computed Radiography")
         ComputedRadiography,
         /// (CT,DCM,"Computed Tomography")
         ComputedTomography,
+        /// (DG,DCM,"Diaphanography")
+        Diaphanography,
         /// (DX,DCM,"Digital Radiography")
         DigitalRadiography,
         /// (ECG,DCM,"Electrocardiography")
         Electrocardiography,
+        /// (EPS,DCM,"Cardiac Electrophysiology")
+        CardiacElectrophysiology,
         /// (ES,DCM,"Endoscopy")
         Endoscopy,
-        /// (XC,DCM,"External-camera Photography")
-        ExternalCameraPhotography,
         /// (GM,DCM,"General Microscopy")
         GeneralMicroscopy,
         /// (HD,DCM,"Hemodynamic Waveform")
@@ -74,22 +76,22 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         Keratometry,
         /// (LEN,DCM,"Lensometry")
         Lensometry,
-        /// (MR,DCM,"Magnetic Resonance")
-        MagneticResonance,
+        /// (LS,DCM,"Laser Scan")
+        LaserScan,
         /// (MG,DCM,"Mammography")
         Mammography,
+        /// (MR,DCM,"Magnetic Resonance")
+        MagneticResonance,
         /// (NM,DCM,"Nuclear Medicine")
         NuclearMedicine,
         /// (OAM,DCM,"Ophthalmic Axial Measurements")
         OphthalmicAxialMeasurements,
         /// (OCT,DCM,"Optical Coherence Tomography")
         OpticalCoherenceTomography,
-        /// (OPM,DCM,"Ophthalmic Mapping")
-        OphthalmicMapping,
         /// (OP,DCM,"Ophthalmic Photography")
         OphthalmicPhotography,
-        /// (OPR,DCM,"Ophthalmic Refraction")
-        OphthalmicRefraction,
+        /// (OPM,DCM,"Ophthalmic Mapping")
+        OphthalmicMapping,
         /// (OPT,DCM,"Ophthalmic Tomography")
         OphthalmicTomography,
         /// (OPTBSV,DCM,"Ophthalmic Tomography B-scan Volume Analysis")
@@ -100,24 +102,32 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         OphthalmicVisualField,
         /// (OSS,DCM,"Optical Surface Scanner")
         OpticalSurfaceScanner,
-        /// (PX,DCM,"Panoramic X-Ray")
-        PanoramicXRay,
         /// (PT,DCM,"Positron emission tomography")
         PositronEmissionTomography,
+        /// (PX,DCM,"Panoramic X-Ray")
+        PanoramicXRay,
+        /// (RESP,DCM,"Respiratory Waveform")
+        RespiratoryWaveform,
         /// (RF,DCM,"Radiofluoroscopy")
         Radiofluoroscopy,
         /// (RG,DCM,"Radiographic imaging")
         RadiographicImaging,
+        /// (RTIMAGE,DCM,"RT Image")
+        RTImage,
         /// (SM,DCM,"Slide Microscopy")
         SlideMicroscopy,
         /// (SRF,DCM,"Subjective Refraction")
         SubjectiveRefraction,
+        /// (TG,DCM,"Thermography")
+        Thermography,
         /// (US,DCM,"Ultrasound")
         Ultrasound,
         /// (VA,DCM,"Visual Acuity")
         VisualAcuity,
         /// (XA,DCM,"X-Ray Angiography")
-        XRayAngiography
+        XRayAngiography,
+        /// (XC,DCM,"External-camera Photography")
+        ExternalCameraPhotography
     };
 
     /** (default) constructor

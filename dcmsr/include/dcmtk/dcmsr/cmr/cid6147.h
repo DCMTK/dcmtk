@@ -5,8 +5,8 @@
  *
  *  Header file for class CID6147_ResponseCriteria
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:27 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:24 by J. Riesmeier
  *
  */
 

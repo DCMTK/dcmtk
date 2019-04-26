@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7453_PerformingRoles
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:37 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:33 by J. Riesmeier
  *
  */
 
@@ -52,7 +52,7 @@ class DCMTK_CMR_EXPORT CID7453_PerformingRoles
         Verifying,
         /// (121099,DCM,"Assisting")
         Assisting,
-        /// (J-0714B,SRT,"Circulating Nurse")
+        /// (413854007,SCT,"Circulating Nurse")
         CirculatingNurse,
         /// (121101,DCM,"Standby")
         Standby,

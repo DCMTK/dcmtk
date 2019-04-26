@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4020_PETRadionuclide
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:22 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:18 by J. Riesmeier
  *
  */
 
@@ -40,75 +40,75 @@ class DCMTK_CMR_EXPORT CID4020_PETRadionuclide
      */
     enum EnumType
     {
-        /// (C-105A1,SRT,"^11^Carbon")
+        /// (40565003,SCT,"^11^Carbon")
         _11_Carbon,
-        /// (C-107A1,SRT,"^13^Nitrogen")
+        /// (21576001,SCT,"^13^Nitrogen")
         _13_Nitrogen,
-        /// (C-1018C,SRT,"^14^Oxygen")
+        /// (424875009,SCT,"^14^Oxygen")
         _14_Oxygen,
-        /// (C-B1038,SRT,"^15^Oxygen")
+        /// (129504001,SCT,"^15^Oxygen")
         _15_Oxygen,
-        /// (C-111A1,SRT,"^18^Fluorine")
+        /// (77004003,SCT,"^18^Fluorine")
         _18_Fluorine,
-        /// (C-155A1,SRT,"^22^Sodium")
+        /// (71633006,SCT,"^22^Sodium")
         _22_Sodium,
-        /// (C-135A4,SRT,"^38^Potassium")
+        /// (423764008,SCT,"^38^Potassium")
         _38_Potassium,
         /// (126605,DCM,"^43^Scandium")
         _43_Scandium,
         /// (126600,DCM,"^44^Scandium")
         _44_Scandium,
-        /// (C-166A2,SRT,"^45^Titanium")
+        /// (75696008,SCT,"^45^Titanium")
         _45_Titanium,
         /// (126601,DCM,"^51^Manganese")
         _51_Manganese,
-        /// (C-130A1,SRT,"^52^Iron")
+        /// (69089000,SCT,"^52^Iron")
         _52_Iron,
-        /// (C-149A1,SRT,"^52^Manganese")
+        /// (37225000,SCT,"^52^Manganese")
         _52_Manganese,
         /// (126607,DCM,"^52m^Manganese")
         _52m_Manganese,
-        /// (C-127A4,SRT,"^60^Copper")
+        /// (425364008,SCT,"^60^Copper")
         _60_Copper,
-        /// (C-127A1,SRT,"^61^Copper")
+        /// (71425003,SCT,"^61^Copper")
         _61_Copper,
-        /// (C-127A5,SRT,"^62^Copper")
+        /// (422934004,SCT,"^62^Copper")
         _62_Copper,
-        /// (C-141A1,SRT,"^62^Zinc")
+        /// (65054007,SCT,"^62^Zinc")
         _62_Zinc,
-        /// (C-127A2,SRT,"^64^Copper")
+        /// (3932008,SCT,"^64^Copper")
         _64_Copper,
-        /// (C-131A1,SRT,"^66^Gallium")
+        /// (79477007,SCT,"^66^Gallium")
         _66_Gallium,
-        /// (C-131A3,SRT,"^68^Gallium")
+        /// (35337001,SCT,"^68^Gallium")
         _68_Gallium,
-        /// (C-128A2,SRT,"^68^Germanium")
+        /// (53315004,SCT,"^68^Germanium")
         _68_Germanium,
         /// (126602,DCM,"^70^Arsenic")
         _70_Arsenic,
-        /// (C-115A2,SRT,"^72^Arsenic")
+        /// (2705002,SCT,"^72^Arsenic")
         _72_Arsenic,
-        /// (C-116A2,SRT,"^73^Selenium")
+        /// (87437000,SCT,"^73^Selenium")
         _73_Selenium,
-        /// (C-113A1,SRT,"^75^Bromine")
+        /// (17910003,SCT,"^75^Bromine")
         _75_Bromine,
-        /// (C-113A2,SRT,"^76^Bromine")
+        /// (79523006,SCT,"^76^Bromine")
         _76_Bromine,
-        /// (C-113A3,SRT,"^77^Bromine")
+        /// (86521004,SCT,"^77^Bromine")
         _77_Bromine,
-        /// (C-159A2,SRT,"^82^Rubidium")
+        /// (79197006,SCT,"^82^Rubidium")
         _82_Rubidium,
-        /// (C-162A3,SRT,"^86^Yttrium")
+        /// (10738001,SCT,"^86^Yttrium")
         _86_Yttrium,
-        /// (C-168A4,SRT,"^89^Zirconium")
+        /// (63360001,SCT,"^89^Zirconium")
         _89_Zirconium,
         /// (126603,DCM,"^90^Niobium")
         _90_Niobium,
-        /// (C-162A7,SRT,"^90^Yttrium")
+        /// (14691008,SCT,"^90^Yttrium")
         _90_Yttrium,
-        /// (C-163AA,SRT,"^94m^Technetium")
+        /// (424079002,SCT,"^94m^Technetium")
         _94m_Technetium,
-        /// (C-114A5,SRT,"^124^Iodine")
+        /// (40937006,SCT,"^124^Iodine")
         _124_Iodine,
         /// (126606,DCM,"^152^Terbium")
         _152_Terbium

@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:41 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:37 by J. Riesmeier
  *
  */
 
@@ -149,18 +149,18 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(NAcetylaspartate, DSRBasicCodedEntry("F-65C50", "SRT", "N-acetylaspartate")));
-        Codes->insert(OFMake_pair(Citrate, DSRBasicCodedEntry("F-61080", "SRT", "Citrate")));
-        Codes->insert(OFMake_pair(Choline, DSRBasicCodedEntry("F-61620", "SRT", "Choline")));
-        Codes->insert(OFMake_pair(Creatine, DSRBasicCodedEntry("F-61380", "SRT", "Creatine")));
+        Codes->insert(OFMake_pair(NAcetylaspartate, DSRBasicCodedEntry("115391007", "SCT", "N-acetylaspartate")));
+        Codes->insert(OFMake_pair(Citrate, DSRBasicCodedEntry("59351004", "SCT", "Citrate")));
+        Codes->insert(OFMake_pair(Choline, DSRBasicCodedEntry("65123005", "SCT", "Choline")));
+        Codes->insert(OFMake_pair(Creatine, DSRBasicCodedEntry("14804005", "SCT", "Creatine")));
         Codes->insert(OFMake_pair(CreatineAndCholine, DSRBasicCodedEntry("113094", "DCM", "Creatine and Choline")));
-        Codes->insert(OFMake_pair(Lactate, DSRBasicCodedEntry("F-61760", "SRT", "Lactate")));
-        Codes->insert(OFMake_pair(Lipid, DSRBasicCodedEntry("F-63600", "SRT", "Lipid")));
+        Codes->insert(OFMake_pair(Lactate, DSRBasicCodedEntry("83036002", "SCT", "Lactate")));
+        Codes->insert(OFMake_pair(Lipid, DSRBasicCodedEntry("70106000", "SCT", "Lipid")));
         Codes->insert(OFMake_pair(LipidAndLactate, DSRBasicCodedEntry("113095", "DCM", "Lipid and Lactate")));
         Codes->insert(OFMake_pair(GlutamateAndGlutamine, DSRBasicCodedEntry("113080", "DCM", "Glutamate and glutamine")));
-        Codes->insert(OFMake_pair(Glutamine, DSRBasicCodedEntry("F-64210", "SRT", "Glutamine")));
-        Codes->insert(OFMake_pair(Tuarine, DSRBasicCodedEntry("F-64460", "SRT", "Tuarine")));
-        Codes->insert(OFMake_pair(Inositol, DSRBasicCodedEntry("F-61A90", "SRT", "Inositol")));
+        Codes->insert(OFMake_pair(Glutamine, DSRBasicCodedEntry("25761002", "SCT", "Glutamine")));
+        Codes->insert(OFMake_pair(Tuarine, DSRBasicCodedEntry("10944007", "SCT", "Tuarine")));
+        Codes->insert(OFMake_pair(Inositol, DSRBasicCodedEntry("72164009", "SCT", "Inositol")));
         Codes->insert(OFMake_pair(CholinePerCreatineRatio, DSRBasicCodedEntry("113081", "DCM", "Choline/Creatine Ratio")));
         Codes->insert(OFMake_pair(NAcetylaspartatePerCreatineRatio, DSRBasicCodedEntry("113082", "DCM", "N-acetylaspartate/Creatine Ratio")));
         Codes->insert(OFMake_pair(NAcetylaspartatePerCholineRatio, DSRBasicCodedEntry("113083", "DCM", "N-acetylaspartate/Choline Ratio")));
@@ -215,7 +215,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(AttenuationCoefficient, DSRBasicCodedEntry("112031", "DCM", "Attenuation Coefficient")));
         Codes->insert(OFMake_pair(TissueVelocity, DSRBasicCodedEntry("110827", "DCM", "Tissue Velocity")));
         Codes->insert(OFMake_pair(FlowVelocity, DSRBasicCodedEntry("110828", "DCM", "Flow Velocity")));
-        Codes->insert(OFMake_pair(PowerDoppler, DSRBasicCodedEntry("P0-02241", "SRT", "Power Doppler")));
+        Codes->insert(OFMake_pair(PowerDoppler, DSRBasicCodedEntry("425704008", "SCT", "Power Doppler")));
         Codes->insert(OFMake_pair(FlowVariance, DSRBasicCodedEntry("110829", "DCM", "Flow Variance")));
         Codes->insert(OFMake_pair(Elasticity, DSRBasicCodedEntry("110830", "DCM", "Elasticity")));
         Codes->insert(OFMake_pair(Perfusion, DSRBasicCodedEntry("110831", "DCM", "Perfusion")));
@@ -260,10 +260,10 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(Ve, DSRBasicCodedEntry("126314", "DCM", "ve")));
         Codes->insert(OFMake_pair(Tau_m, DSRBasicCodedEntry("126330", "DCM", "tau_m")));
         Codes->insert(OFMake_pair(Vp, DSRBasicCodedEntry("126331", "DCM", "vp")));
-        Codes->insert(OFMake_pair(RegionalCerebralBloodFlow, DSRBasicCodedEntry("113055", "DCM", "Regional Cerebral Blood Flow")));
-        Codes->insert(OFMake_pair(RegionalBloodFlow, DSRBasicCodedEntry("126390", "DCM", "Regional Blood Flow")));
-        Codes->insert(OFMake_pair(RegionalCerebralBloodVolume, DSRBasicCodedEntry("113056", "DCM", "Regional Cerebral Blood Volume")));
-        Codes->insert(OFMake_pair(RegionalBloodVolume, DSRBasicCodedEntry("126391", "DCM", "Regional Blood Volume")));
+        Codes->insert(OFMake_pair(AbsoluteRegionalBloodFlow, DSRBasicCodedEntry("126390", "DCM", "Absolute Regional Blood Flow")));
+        Codes->insert(OFMake_pair(AbsoluteRegionalBloodVolume, DSRBasicCodedEntry("126391", "DCM", "Absolute Regional Blood Volume")));
+        Codes->insert(OFMake_pair(RelativeRegionalBloodFlow, DSRBasicCodedEntry("126397", "DCM", "Relative Regional Blood Flow")));
+        Codes->insert(OFMake_pair(RelativeRegionalBloodVolume, DSRBasicCodedEntry("126398", "DCM", "Relative Regional Blood Volume")));
         Codes->insert(OFMake_pair(MeanTransitTime, DSRBasicCodedEntry("113052", "DCM", "Mean Transit Time")));
         Codes->insert(OFMake_pair(TimeToPeak, DSRBasicCodedEntry("113069", "DCM", "Time To Peak")));
         Codes->insert(OFMake_pair(OxygenExtractionFraction, DSRBasicCodedEntry("126392", "DCM", "Oxygen Extraction Fraction")));
@@ -292,7 +292,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(SUVibw, DSRBasicCodedEntry("126404", "DCM", "SUVibw")));
         Codes->insert(OFMake_pair(AbsorbedDose, DSRBasicCodedEntry("128513", "DCM", "Absorbed Dose")));
         Codes->insert(OFMake_pair(EquivalentDose, DSRBasicCodedEntry("128512", "DCM", "Equivalent Dose")));
-        Codes->insert(OFMake_pair(Fat, DSRBasicCodedEntry("T-D008A", "SRT", "Fat")));
+        Codes->insert(OFMake_pair(Fat, DSRBasicCodedEntry("256674009", "SCT", "Fat")));
         Codes->insert(OFMake_pair(FatFraction, DSRBasicCodedEntry("129100", "DCM", "Fat fraction")));
         Codes->insert(OFMake_pair(WaterPerFatInPhase, DSRBasicCodedEntry("129101", "DCM", "Water/fat in phase")));
         Codes->insert(OFMake_pair(WaterPerFatOutOfPhase, DSRBasicCodedEntry("129102", "DCM", "Water/fat out of phase")));
@@ -300,32 +300,33 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(SignalChange, DSRBasicCodedEntry("113059", "DCM", "Signal change")));
         Codes->insert(OFMake_pair(SignalToNoise, DSRBasicCodedEntry("113060", "DCM", "Signal to noise")));
         Codes->insert(OFMake_pair(TimeCourseOfSignal, DSRBasicCodedEntry("113066", "DCM", "Time course of signal")));
-        Codes->insert(OFMake_pair(Water, DSRBasicCodedEntry("C-10120", "SRT", "Water")));
+        Codes->insert(OFMake_pair(Water, DSRBasicCodedEntry("11713004", "SCT", "Water")));
         Codes->insert(OFMake_pair(WaterFraction, DSRBasicCodedEntry("129103", "DCM", "Water fraction")));
-        Codes->insert(OFMake_pair(Length, DSRBasicCodedEntry("G-D7FE", "SRT", "Length")));
+        Codes->insert(OFMake_pair(RelativeLinearStoppingPower, DSRBasicCodedEntry("130086", "DCM", "Relative Linear Stopping Power")));
+        Codes->insert(OFMake_pair(Length, DSRBasicCodedEntry("410668003", "SCT", "Length")));
         Codes->insert(OFMake_pair(PathLength, DSRBasicCodedEntry("121211", "DCM", "Path length")));
         Codes->insert(OFMake_pair(Distance, DSRBasicCodedEntry("121206", "DCM", "Distance")));
-        Codes->insert(OFMake_pair(Width, DSRBasicCodedEntry("G-A220", "SRT", "Width")));
-        Codes->insert(OFMake_pair(Depth, DSRBasicCodedEntry("G-D785", "SRT", "Depth")));
-        Codes->insert(OFMake_pair(Diameter, DSRBasicCodedEntry("M-02550", "SRT", "Diameter")));
-        Codes->insert(OFMake_pair(LongAxis, DSRBasicCodedEntry("G-A185", "SRT", "Long Axis")));
-        Codes->insert(OFMake_pair(ShortAxis, DSRBasicCodedEntry("G-A186", "SRT", "Short Axis")));
-        Codes->insert(OFMake_pair(MajorAxis, DSRBasicCodedEntry("G-A193", "SRT", "Major Axis")));
-        Codes->insert(OFMake_pair(MinorAxis, DSRBasicCodedEntry("G-A194", "SRT", "Minor Axis")));
-        Codes->insert(OFMake_pair(PerpendicularAxis, DSRBasicCodedEntry("G-A195", "SRT", "Perpendicular Axis")));
-        Codes->insert(OFMake_pair(Radius, DSRBasicCodedEntry("G-A196", "SRT", "Radius")));
-        Codes->insert(OFMake_pair(Perimeter, DSRBasicCodedEntry("G-A197", "SRT", "Perimeter")));
-        Codes->insert(OFMake_pair(Circumference, DSRBasicCodedEntry("M-02560", "SRT", "Circumference")));
-        Codes->insert(OFMake_pair(DiameterOfCircumscribedCircle, DSRBasicCodedEntry("G-A198", "SRT", "Diameter of circumscribed circle")));
+        Codes->insert(OFMake_pair(Width, DSRBasicCodedEntry("103355008", "SCT", "Width")));
+        Codes->insert(OFMake_pair(Depth, DSRBasicCodedEntry("131197000", "SCT", "Depth")));
+        Codes->insert(OFMake_pair(Diameter, DSRBasicCodedEntry("81827009", "SCT", "Diameter")));
+        Codes->insert(OFMake_pair(LongAxis, DSRBasicCodedEntry("103339001", "SCT", "Long Axis")));
+        Codes->insert(OFMake_pair(ShortAxis, DSRBasicCodedEntry("103340004", "SCT", "Short Axis")));
+        Codes->insert(OFMake_pair(MajorAxis, DSRBasicCodedEntry("131187009", "SCT", "Major Axis")));
+        Codes->insert(OFMake_pair(MinorAxis, DSRBasicCodedEntry("131188004", "SCT", "Minor Axis")));
+        Codes->insert(OFMake_pair(PerpendicularAxis, DSRBasicCodedEntry("131189007", "SCT", "Perpendicular Axis")));
+        Codes->insert(OFMake_pair(Radius, DSRBasicCodedEntry("131190003", "SCT", "Radius")));
+        Codes->insert(OFMake_pair(Perimeter, DSRBasicCodedEntry("131191004", "SCT", "Perimeter")));
+        Codes->insert(OFMake_pair(Circumference, DSRBasicCodedEntry("74551000", "SCT", "Circumference")));
+        Codes->insert(OFMake_pair(DiameterOfCircumscribedCircle, DSRBasicCodedEntry("131192006", "SCT", "Diameter of circumscribed circle")));
         Codes->insert(OFMake_pair(Height, DSRBasicCodedEntry("121207", "DCM", "Height")));
         Codes->insert(OFMake_pair(Maximum3DDiameterOfAMesh, DSRBasicCodedEntry("L0JK", "IBSI", "Maximum 3D Diameter of a Mesh")));
         Codes->insert(OFMake_pair(MajorAxisIn3DLength, DSRBasicCodedEntry("TDIC", "IBSI", "Major Axis in 3D Length")));
         Codes->insert(OFMake_pair(MinorAxisIn3DLength, DSRBasicCodedEntry("P9VJ", "IBSI", "Minor Axis in 3D Length")));
         Codes->insert(OFMake_pair(LeastAxisIn3DLength, DSRBasicCodedEntry("7J51", "IBSI", "Least Axis in 3D Length")));
-        Codes->insert(OFMake_pair(Area, DSRBasicCodedEntry("G-A166", "SRT", "Area")));
-        Codes->insert(OFMake_pair(AreaOfDefinedRegion, DSRBasicCodedEntry("G-A16A", "SRT", "Area of defined region")));
+        Codes->insert(OFMake_pair(Area, DSRBasicCodedEntry("42798000", "SCT", "Area")));
+        Codes->insert(OFMake_pair(AreaOfDefinedRegion, DSRBasicCodedEntry("131184002", "SCT", "Area of defined region")));
         Codes->insert(OFMake_pair(SurfaceAreaOfMesh, DSRBasicCodedEntry("C0JK", "IBSI", "Surface Area of Mesh")));
-        Codes->insert(OFMake_pair(Volume, DSRBasicCodedEntry("G-D705", "SRT", "Volume")));
+        Codes->insert(OFMake_pair(Volume, DSRBasicCodedEntry("118565006", "SCT", "Volume")));
         Codes->insert(OFMake_pair(VolumeEstimatedFromSingle2DRegion, DSRBasicCodedEntry("121216", "DCM", "Volume estimated from single 2D region")));
         Codes->insert(OFMake_pair(VolumeEstimatedFromTwoNonCoplanar2DRegions, DSRBasicCodedEntry("121218", "DCM", "Volume estimated from two non-coplanar 2D regions")));
         Codes->insert(OFMake_pair(VolumeEstimatedFromThreeOrMoreNonCoplanar2DRegions, DSRBasicCodedEntry("121217", "DCM", "Volume estimated from three or more non-coplanar 2D regions")));

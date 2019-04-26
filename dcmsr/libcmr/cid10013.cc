@@ -5,8 +5,8 @@
  *
  *  Source file for class CID10013_CTAcquisitionType
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:43 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:39 by J. Riesmeier
  *
  */
 
@@ -150,11 +150,11 @@ CID10013_CTAcquisitionType::CodeList &CID10013_CTAcquisitionType::getCodes()
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
         Codes->insert(OFMake_pair(SequencedAcquisition, DSRBasicCodedEntry("113804", "DCM", "Sequenced Acquisition")));
-        Codes->insert(OFMake_pair(SpiralAcquisition, DSRBasicCodedEntry("P5-08001", "SRT", "Spiral Acquisition")));
+        Codes->insert(OFMake_pair(SpiralAcquisition, DSRBasicCodedEntry("116152004", "SCT", "Spiral Acquisition")));
         Codes->insert(OFMake_pair(ConstantAngleAcquisition, DSRBasicCodedEntry("113805", "DCM", "Constant Angle Acquisition")));
         Codes->insert(OFMake_pair(StationaryAcquisition, DSRBasicCodedEntry("113806", "DCM", "Stationary Acquisition")));
         Codes->insert(OFMake_pair(FreeAcquisition, DSRBasicCodedEntry("113807", "DCM", "Free Acquisition")));
-        Codes->insert(OFMake_pair(ConeBeamAcquisition, DSRBasicCodedEntry("R-FB8F1", "SRT", "Cone Beam Acquisition")));
+        Codes->insert(OFMake_pair(ConeBeamAcquisition, DSRBasicCodedEntry("702569007", "SCT", "Cone Beam Acquisition")));
     }
     /* should never be NULL */
     return *Codes;

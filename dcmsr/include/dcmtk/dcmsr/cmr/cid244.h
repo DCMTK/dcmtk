@@ -5,8 +5,8 @@
  *
  *  Header file for class CID244_Laterality
  *
- *  Generated automatically from DICOM PS 3.16-2019a
- *  File created on 2019-02-04 12:56:20 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019b
+ *  File created on 2019-04-26 17:15:16 by J. Riesmeier
  *
  */
 
@@ -40,13 +40,13 @@ class DCMTK_CMR_EXPORT CID244_Laterality
      */
     enum EnumType
     {
-        /// (G-A100,SRT,"Right")
+        /// (24028007,SCT,"Right")
         Right,
-        /// (G-A101,SRT,"Left")
+        /// (7771000,SCT,"Left")
         Left,
-        /// (G-A102,SRT,"Bilateral")
+        /// (51440002,SCT,"Bilateral")
         Bilateral,
-        /// (G-A103,SRT,"Unilateral")
+        /// (66459002,SCT,"Unilateral")
         Unilateral
     };
 
