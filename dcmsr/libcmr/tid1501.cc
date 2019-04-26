@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1501_MeasurementGroup
@@ -17,7 +17,7 @@
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
 #include "dcmtk/dcmsr/codes/ncit.h"
-#include "dcmtk/dcmsr/codes/srt.h"
+#include "dcmtk/dcmsr/codes/sct.h"
 #include "dcmtk/dcmsr/codes/umls.h"
 #include "dcmtk/dcmsr/dsrtpltn.h"
 
@@ -273,7 +273,7 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T_Method, T4>::setMeasurementMethod
         if (!hasMeasurementGroup())
             result = createMeasurementGroup();
         /* TID 1501 (Measurement Group) Row 5 */
-        CHECK_RESULT(addOrReplaceContentItem(MEASUREMENT_METHOD, RT_hasConceptMod, VT_Code, CODE_SRT_MeasurementMethod, "TID 1501 - Row 5", check));
+        CHECK_RESULT(addOrReplaceContentItem(MEASUREMENT_METHOD, RT_hasConceptMod, VT_Code, CODE_SCT_MeasurementMethod, "TID 1501 - Row 5", check));
         CHECK_RESULT(getCurrentContentItem().setCodeValue(method, check));
     } else
         result = EC_IllegalParameter;
@@ -301,14 +301,14 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addFindingSite(const DSRCo
             if (subTree != NULL)
             {
                 /* 1501 (Measurement Group) Row 6 */
-                CHECK_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
+                CHECK_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SCT_FindingSite, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(site, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1501 - Row 6"));
                 const size_t lastNode = subTree->getNodeID();
                 /* 1501 (Measurement Group) Row 7 - optional */
                 if (laterality.hasSelectedValue())
                 {
-                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_Laterality, check));
+                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SCT_Laterality, check));
                     CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(laterality, check));
                     CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1501 - Row 7"));
                     GOOD_RESULT(subTree->gotoParent());
@@ -316,7 +316,7 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addFindingSite(const DSRCo
                 /* 1501 (Measurement Group) Row 8 - optional */
                 if (siteModifier.isComplete())
                 {
-                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_TopographicalModifier, check));
+                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SCT_TopographicalModifier, check));
                     CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(siteModifier, check));
                     CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1501 - Row 8"));
                     GOOD_RESULT(subTree->gotoParent());

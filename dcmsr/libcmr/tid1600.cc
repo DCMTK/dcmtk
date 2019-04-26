@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1600_ImageLibrary
@@ -20,7 +20,7 @@
 #include "dcmtk/dcmsr/cmr/cid10033e.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
-#include "dcmtk/dcmsr/codes/srt.h"
+#include "dcmtk/dcmsr/codes/sct.h"
 #include "dcmtk/dcmsr/codes/ucum.h"
 #include "dcmtk/dcmsr/dsrdattn.h"
 
@@ -415,7 +415,7 @@ OFCondition TID1600_ImageLibrary::setPETImageRadionuclide(const CID4020_PETRadio
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    CHECK_RESULT(setCodeContentItemFromValue(CODE_SRT_Radionuclide, radionuclide, "TID 1607 - Row 1", check));
+    CHECK_RESULT(setCodeContentItemFromValue(CODE_SCT_Radionuclide, radionuclide, "TID 1607 - Row 1", check));
     /* in case of error, reset cursor to stored node */
     BAD_RESULT(setCursor(cursor));
     return result;
@@ -430,7 +430,7 @@ OFCondition TID1600_ImageLibrary::setPETImageRadiopharmaceuticalAgent(const CID4
     /* go to image library entry and check for expected modality */
     OFCondition result = goAndCheckImageLibraryEntry(CODE_DCM_PositronEmissionTomography);
     /* set content item value (and add a new content item if needed) */
-    CHECK_RESULT(setCodeContentItemFromValue(CODE_SRT_RadiopharmaceuticalAgent, agent, "TID 1607 - Row 2", check));
+    CHECK_RESULT(setCodeContentItemFromValue(CODE_SCT_RadiopharmaceuticalAgent, agent, "TID 1607 - Row 2", check));
     /* in case of error, reset cursor to stored node */
     BAD_RESULT(setCursor(cursor));
     return result;
@@ -871,14 +871,14 @@ OFCondition TID1600_ImageLibrary::addPositronEmissionTomographyDescriptors(DSRDo
         if (item != NULL)
         {
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 1 */
-            if (checkDescriptorToBeAdded(CODE_SRT_Radionuclide, mode, descriptors))
-                CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_RadionuclideCodeSequence, CODE_SRT_Radionuclide, "TID 1607 - Row 1", check));
+            if (checkDescriptorToBeAdded(CODE_SCT_Radionuclide, mode, descriptors))
+                CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_RadionuclideCodeSequence, CODE_SCT_Radionuclide, "TID 1607 - Row 1", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 2 */
-            if (checkDescriptorToBeAdded(CODE_SRT_RadiopharmaceuticalAgent, mode, descriptors))
-                CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalCodeSequence, CODE_SRT_RadiopharmaceuticalAgent, "TID 1607 - Row 2", check));
+            if (checkDescriptorToBeAdded(CODE_SCT_RadiopharmaceuticalAgent, mode, descriptors))
+                CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalCodeSequence, CODE_SCT_RadiopharmaceuticalAgent, "TID 1607 - Row 2", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 3 */
-            if (checkDescriptorToBeAdded(CODE_SRT_HalfLifeOfRadiopharmaceutical, mode, descriptors))
-                CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideHalfLife, 0 /*pos*/, CODE_SRT_HalfLifeOfRadiopharmaceutical, CODE_UCUM_s, "TID 1607 - Row 3", check));
+            if (checkDescriptorToBeAdded(CODE_SCT_HalfLifeOfRadiopharmaceutical, mode, descriptors))
+                CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadionuclideHalfLife, 0 /*pos*/, CODE_SCT_HalfLifeOfRadiopharmaceutical, CODE_UCUM_s, "TID 1607 - Row 3", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 4 */
             if (checkDescriptorToBeAdded(CODE_DCM_RadiopharmaceuticalStartDateTime, mode, descriptors))
                 CHECK_RESULT(addStringContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalStartDateTime, 0 /*pos*/, VT_DateTime, CODE_DCM_RadiopharmaceuticalStartDateTime, "TID 1607 - Row 4", check));
@@ -895,8 +895,8 @@ OFCondition TID1600_ImageLibrary::addPositronEmissionTomographyDescriptors(DSRDo
             if (checkDescriptorToBeAdded(CODE_DCM_RadiopharmaceuticalSpecificActivity, mode, descriptors))
                 CHECK_RESULT(addNumericContentItemFromDataset(tree, *item, DCM_RadiopharmaceuticalSpecificActivity, 0 /*pos*/, CODE_DCM_RadiopharmaceuticalSpecificActivity, CODE_UCUM_BqPerMol, "TID 1607 - Row 8", check));
             /* TID 1607 (Image Library Entry Descriptors for PET) Row 9 */
-            if (checkDescriptorToBeAdded(CODE_SRT_RouteOfAdministration, mode, descriptors))
-                CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_AdministrationRouteCodeSequence, CODE_SRT_RouteOfAdministration, "TID 1607 - Row 9", check));
+            if (checkDescriptorToBeAdded(CODE_SCT_RouteOfAdministration, mode, descriptors))
+                CHECK_RESULT(addCodeContentItemFromDataset(tree, *item, DCM_AdministrationRouteCodeSequence, CODE_SCT_RouteOfAdministration, "TID 1607 - Row 9", check));
         }
     }
     /* TID 1607 (Image Library Entry Descriptors for PET) Row 10 to 11

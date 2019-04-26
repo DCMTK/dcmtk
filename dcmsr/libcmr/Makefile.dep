@@ -2136,7 +2136,7 @@ tid1411.o: tid1411.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid7469.h \
  ../include/dcmtk/dcmsr/cmr/tid15def.h \
  ../include/dcmtk/dcmsr/cmr/logger.h ../include/dcmtk/dcmsr/codes/dcm.h \
- ../include/dcmtk/dcmsr/codes/ncit.h ../include/dcmtk/dcmsr/codes/srt.h \
+ ../include/dcmtk/dcmsr/codes/ncit.h ../include/dcmtk/dcmsr/codes/sct.h \
  ../include/dcmtk/dcmsr/codes/umls.h ../include/dcmtk/dcmsr/dsrtpltn.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
@@ -2238,7 +2238,7 @@ tid1419m.o: tid1419m.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid7181.h \
  ../include/dcmtk/dcmsr/cmr/cid7464.h \
  ../include/dcmtk/dcmsr/cmr/cid7469.h ../include/dcmtk/dcmsr/cmr/logger.h \
- ../include/dcmtk/dcmsr/codes/dcm.h ../include/dcmtk/dcmsr/codes/srt.h \
+ ../include/dcmtk/dcmsr/codes/dcm.h ../include/dcmtk/dcmsr/codes/sct.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 tid1500.o: tid1500.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -2453,7 +2453,7 @@ tid1501.o: tid1501.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid7469.h \
  ../include/dcmtk/dcmsr/cmr/tid15def.h \
  ../include/dcmtk/dcmsr/cmr/logger.h ../include/dcmtk/dcmsr/codes/dcm.h \
- ../include/dcmtk/dcmsr/codes/ncit.h ../include/dcmtk/dcmsr/codes/srt.h \
+ ../include/dcmtk/dcmsr/codes/ncit.h ../include/dcmtk/dcmsr/codes/sct.h \
  ../include/dcmtk/dcmsr/codes/umls.h ../include/dcmtk/dcmsr/dsrtpltn.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 tid15def.o: tid15def.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -2569,7 +2569,7 @@ tid1600.o: tid1600.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid10033e.h \
  ../include/dcmtk/dcmsr/cmr/cid10033.h \
  ../include/dcmtk/dcmsr/cmr/logger.h ../include/dcmtk/dcmsr/codes/dcm.h \
- ../include/dcmtk/dcmsr/codes/srt.h ../include/dcmtk/dcmsr/codes/ucum.h \
+ ../include/dcmtk/dcmsr/codes/sct.h ../include/dcmtk/dcmsr/codes/ucum.h \
  ../include/dcmtk/dcmsr/dsrdattn.h ../include/dcmtk/dcmsr/dsrstrvl.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
@@ -2670,7 +2670,7 @@ tid300.o: tid300.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsr/cmr/cid7181.h \
  ../include/dcmtk/dcmsr/cmr/cid7464.h \
  ../include/dcmtk/dcmsr/cmr/cid7469.h ../include/dcmtk/dcmsr/cmr/logger.h \
- ../include/dcmtk/dcmsr/codes/dcm.h ../include/dcmtk/dcmsr/codes/srt.h \
+ ../include/dcmtk/dcmsr/codes/dcm.h ../include/dcmtk/dcmsr/codes/sct.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 tid4019.o: tid4019.cc ../../config/include/dcmtk/config/osconfig.h \

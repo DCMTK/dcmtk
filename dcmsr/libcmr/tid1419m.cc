@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1419_ROIMeasurements_Measurement
@@ -20,7 +20,7 @@
 #include "dcmtk/dcmsr/cmr/cid7469.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
-#include "dcmtk/dcmsr/codes/srt.h"
+#include "dcmtk/dcmsr/codes/sct.h"
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
@@ -164,7 +164,7 @@ OFCondition TID1419_ROIMeasurements_Measurement<T1, T2, T_Method, T4>::setMeasur
         if (hasMeasurement())
         {
             /* TID 1419 (ROI Measurements) Row 7 */
-            STORE_RESULT(addOrReplaceContentItem(MEASUREMENT_METHOD, RT_hasConceptMod, VT_Code, CODE_SRT_MeasurementMethod, "TID 1419 - Row 7", check));
+            STORE_RESULT(addOrReplaceContentItem(MEASUREMENT_METHOD, RT_hasConceptMod, VT_Code, CODE_SCT_MeasurementMethod, "TID 1419 - Row 7", check));
             CHECK_RESULT(getCurrentContentItem().setCodeValue(method, check));
         } else
             result = CMR_EC_NoMeasurement;
@@ -212,14 +212,14 @@ OFCondition TID1419_ROIMeasurements_Measurement<T1, T2, T3, T4>::addFindingSite(
             if (subTree != NULL)
             {
                 /* TID 1419 (ROI Measurements) Row 9 */
-                STORE_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_FindingSite, check));
+                STORE_RESULT(subTree->addContentItem(RT_hasConceptMod, VT_Code, CODE_SCT_FindingSite, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(site, check));
                 CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 9"));
                 const size_t lastNode = subTree->getNodeID();
                 /* TID 1419 (ROI Measurements) Row 10 - optional */
                 if (laterality.hasSelectedValue())
                 {
-                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_Laterality, check));
+                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SCT_Laterality, check));
                     CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(laterality, check));
                     CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 10"));
                     GOOD_RESULT(subTree->gotoParent());
@@ -227,7 +227,7 @@ OFCondition TID1419_ROIMeasurements_Measurement<T1, T2, T3, T4>::addFindingSite(
                 /* TID 1419 (ROI Measurements) Row 11 - optional */
                 if (siteModifier.isComplete())
                 {
-                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SRT_TopographicalModifier, check));
+                    CHECK_RESULT(subTree->addChildContentItem(RT_hasConceptMod, VT_Code, CODE_SCT_TopographicalModifier, check));
                     CHECK_RESULT(subTree->getCurrentContentItem().setCodeValue(siteModifier, check));
                     CHECK_RESULT(subTree->getCurrentContentItem().setAnnotationText("TID 1419 - Row 11"));
                     GOOD_RESULT(subTree->gotoParent());
