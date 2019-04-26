@@ -256,9 +256,9 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     void setParamColumn(const int column);
 
     /** generates all exclusive options in "general" group (top-level).
-     *  following options belong to this group:
-     *  help (h): prints the help text and exits
-     *  version: prints version information and exit
+     *  The following options belong to this group:
+     *  - --help (-h): prints the help text and exits
+     *  - --version: prints version information and exit
      *
      *  @param  longCols   minimum width of the long option column
      *  @param  shortCols  minimum width of the short option column
