@@ -15,7 +15,7 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: Template class for command line arguments (Source)
+ *  Purpose: Handle command line arguments (Source)
  *
  */
 
