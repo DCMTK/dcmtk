@@ -21,9 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2019a and PS 3.7-2019a.
-# File created on 2019-02-04 12:26:44 by J. Riesmeier on thinkpad.
-# File updated manually on 2019-02-06 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2019b and PS 3.7-2019b
+# File created on 2019-04-26 14:51:35 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -2277,7 +2276,6 @@
 (0040,A124)	UI	UID	1	DICOM
 (0040,A130)	CS	TemporalRangeType	1	DICOM
 (0040,A132)	UL	ReferencedSamplePositions	1-n	DICOM
-(0040,A136)	US	ReferencedFrameNumbers	1-n	DICOM
 (0040,A138)	DS	ReferencedTimeOffsets	1-n	DICOM
 (0040,A13A)	DT	ReferencedDateTime	1-n	DICOM
 (0040,A160)	UT	TextValue	1	DICOM
@@ -2328,6 +2326,7 @@
 (0042,0012)	LO	MIMETypeOfEncapsulatedDocument	1	DICOM
 (0042,0013)	SQ	SourceInstanceSequence	1	DICOM
 (0042,0014)	LO	ListOfMIMETypes	1-n	DICOM
+(0042,0015)	UL	EncapsulatedDocumentLength	1	DICOM
 (0044,0001)	ST	ProductPackageIdentifier	1	DICOM
 (0044,0002)	CS	SubstanceAdministrationApproval	1	DICOM
 (0044,0003)	LT	ApprovalStatusFurtherDescription	1	DICOM
@@ -3245,6 +3244,8 @@
 (0400,0510)	UI	EncryptedContentTransferSyntaxUID	1	DICOM
 (0400,0520)	OB	EncryptedContent	1	DICOM
 (0400,0550)	SQ	ModifiedAttributesSequence	1	DICOM
+(0400,0551)	SQ	NonconformingModifiedAttributesSequence	1	DICOM
+(0400,0552)	OB	NonconformingDataElementValue	1	DICOM
 (0400,0561)	SQ	OriginalAttributesSequence	1	DICOM
 (0400,0562)	DT	AttributeModificationDateTime	1	DICOM
 (0400,0563)	LO	ModifyingSystem	1	DICOM
@@ -4495,6 +4496,7 @@
 (0040,A110)	DA	RETIRED_DateOfDocumentOrVerbalTransactionTrial	1	DICOM/retired
 (0040,A112)	TM	RETIRED_TimeOfDocumentCreationOrVerbalTransactionTrial	1	DICOM/retired
 (0040,A125)	CS	RETIRED_ReportStatusIDTrial	2	DICOM/retired
+(0040,A136)	US	RETIRED_ReferencedFrameNumbers	1-n	DICOM/retired
 (0040,A167)	SQ	RETIRED_ObservationCategoryCodeSequenceTrial	1	DICOM/retired
 (0040,A16A)	ST	RETIRED_BibliographicCitationTrial	1	DICOM/retired
 (0040,A172)	UI	RETIRED_ReferencedObservationUIDTrial	1	DICOM/retired

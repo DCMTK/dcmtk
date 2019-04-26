@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-02-06 13:23:32
+**   Date: 2019-04-26 14:54:23
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2019-02-06 13:23:32"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2019-04-26 14:54:23"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4569
+** Number of entries: 4572
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2530,7 +2530,7 @@
 #define DCM_RETIRED_ReportStatusIDTrial          DcmTagKey(0x0040, 0xa125)
 #define DCM_TemporalRangeType                    DcmTagKey(0x0040, 0xa130)
 #define DCM_ReferencedSamplePositions            DcmTagKey(0x0040, 0xa132)
-#define DCM_ReferencedFrameNumbers               DcmTagKey(0x0040, 0xa136)
+#define DCM_RETIRED_ReferencedFrameNumbers       DcmTagKey(0x0040, 0xa136)
 #define DCM_ReferencedTimeOffsets                DcmTagKey(0x0040, 0xa138)
 #define DCM_ReferencedDateTime                   DcmTagKey(0x0040, 0xa13a)
 #define DCM_TextValue                            DcmTagKey(0x0040, 0xa160)
@@ -2618,6 +2618,7 @@
 #define DCM_MIMETypeOfEncapsulatedDocument       DcmTagKey(0x0042, 0x0012)
 #define DCM_SourceInstanceSequence               DcmTagKey(0x0042, 0x0013)
 #define DCM_ListOfMIMETypes                      DcmTagKey(0x0042, 0x0014)
+#define DCM_EncapsulatedDocumentLength           DcmTagKey(0x0042, 0x0015)
 #define DCM_ProductPackageIdentifier             DcmTagKey(0x0044, 0x0001)
 #define DCM_SubstanceAdministrationApproval      DcmTagKey(0x0044, 0x0002)
 #define DCM_ApprovalStatusFurtherDescription     DcmTagKey(0x0044, 0x0003)
@@ -3555,6 +3556,8 @@
 #define DCM_EncryptedContentTransferSyntaxUID    DcmTagKey(0x0400, 0x0510)
 #define DCM_EncryptedContent                     DcmTagKey(0x0400, 0x0520)
 #define DCM_ModifiedAttributesSequence           DcmTagKey(0x0400, 0x0550)
+#define DCM_NonconformingModifiedAttributesSequence DcmTagKey(0x0400, 0x0551)
+#define DCM_NonconformingDataElementValue        DcmTagKey(0x0400, 0x0552)
 #define DCM_OriginalAttributesSequence           DcmTagKey(0x0400, 0x0561)
 #define DCM_AttributeModificationDateTime        DcmTagKey(0x0400, 0x0562)
 #define DCM_ModifyingSystem                      DcmTagKey(0x0400, 0x0563)

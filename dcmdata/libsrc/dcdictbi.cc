@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-02-06 13:23:38
+**   Date: 2019-04-26 14:54:24
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -19413,7 +19413,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0xa136, 0x0040, 0xa136,
-      EVR_US, "ReferencedFrameNumbers", 1, -1, "DICOM",
+      EVR_US, "RETIRED_ReferencedFrameNumbers", 1, -1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0xa138, 0x0040, 0xa138,
@@ -19936,6 +19936,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0042, 0x0014, 0x0042, 0x0014,
       EVR_LO, "ListOfMIMETypes", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0042, 0x0015, 0x0042, 0x0015,
+      EVR_UL, "EncapsulatedDocumentLength", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef ENABLE_PRIVATE_TAGS
@@ -24636,6 +24640,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0400, 0x0550, 0x0400, 0x0550,
       EVR_SQ, "ModifiedAttributesSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0400, 0x0551, 0x0400, 0x0551,
+      EVR_SQ, "NonconformingModifiedAttributesSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0400, 0x0552, 0x0400, 0x0552,
+      EVR_OB, "NonconformingDataElementValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0400, 0x0561, 0x0400, 0x0561,
