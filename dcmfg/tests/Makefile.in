@@ -24,7 +24,7 @@ LOCALLIBS = -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd $(ZLIBLIBS) \
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmioddir)/include \
 
-test_objs = tests.o t_deriv_image.cc
+test_objs = tests.o t_deriv_image.o
 objs = $(test_objs)
 progs = tests
 
