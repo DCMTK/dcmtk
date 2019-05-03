@@ -156,4 +156,5 @@ OFTEST(dcmfg_derivation_image)
     FGDerivationImage* clone = OFstatic_cast(FGDerivationImage*, fg.clone());
     OFCHECK(clone != NULL);
     OFCHECK(clone->compare(fg) == 0);
+    delete clone;
 }
