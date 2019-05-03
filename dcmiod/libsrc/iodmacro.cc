@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -821,7 +821,18 @@ OFCondition ImageSOPInstanceReferenceMacro::getReferencedFrameNumber(OFVector<Ui
 {
   // cast away const since underlying dcmdata routine is not const...
   DcmIntegerString *is = OFconst_cast(DcmIntegerString*, &ReferencedFrameNumber);
-  return DcmIODUtil::getUint16ValuesFromElement(*is, values);
+  for (size_t n = 0; n < is->getNumberOfValues(); n++)
+  {
+    Sint32 sint = 0;
+    is->getSint32(sint, n);
+    if (sint < 0)
+    {
+      DCMIOD_WARN("Invalid Referenced Frame Number in Image SOP Instance Reference Macro: " << sint);
+      return EC_CorruptedData;
+    }
+    values.push_back(OFstatic_cast(Uint16, sint));
+  }
+  return EC_Normal;
 }
 
 
@@ -846,8 +857,16 @@ OFCondition ImageSOPInstanceReferenceMacro::addReferencedFrameNumber(const Uint1
                                                                      const OFBool checkValue)
 {
   (void)checkValue;
-  const unsigned long count = ReferencedFrameNumber.getNumberOfValues();
-  return ReferencedFrameNumber.putUint16(value, count /* starts with 0, so add new value at the end */);
+  OFString val;
+  ReferencedFrameNumber.getOFStringArray(val);
+  if (ReferencedFrameNumber.getNumberOfValues() > 0)
+  {
+    val += "\\";
+  }
+  char buf[10];
+  sprintf(buf, "%u", value);
+  val += buf;
+  return ReferencedFrameNumber.putOFStringArray(val);
 }
 
 
