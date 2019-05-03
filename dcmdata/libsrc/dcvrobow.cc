@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -399,7 +399,14 @@ OFCondition DcmOtherByteOtherWord::createUint16Array(const Uint32 numWords,
 {
     /* check value representation */
     if ((getTag().getEVR() == EVR_OW) || (getTag().getEVR() == EVR_lt))
-        errorFlag = createEmptyValue(OFstatic_cast(Uint32, sizeof(Uint16) * OFstatic_cast(size_t, numWords)));
+    {
+        Uint32 bytesRequired = 0;
+        OFBool size_fits = OFStandard::safeMult(numWords, OFstatic_cast(Uint32, sizeof(Uint16)), bytesRequired);
+        if (size_fits)
+            errorFlag = createEmptyValue(bytesRequired);
+        else
+            errorFlag = EC_CorruptedData;
+    }
     else
         errorFlag = EC_CorruptedData;
     if (errorFlag.good())
