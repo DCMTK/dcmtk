@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -30,7 +30,8 @@
 
 FGInterface::FGInterface() :
 m_shared(),
-m_perFrame()
+m_perFrame(),
+m_checkOnWrite(OFTrue)
 {
 }
 
@@ -339,13 +340,15 @@ OFCondition FGInterface::readSingleFG(DcmItem& fgItem,
 }
 
 
-
 // Write enhanced multi-frame information to DICOM item, usually DcmDataset
 OFCondition FGInterface::write(DcmItem& dataset)
 {
   //Check data integrity of functional group macros */
-  if ( !check() )
-    return FG_EC_CouldNotWriteFG;
+  if (m_checkOnWrite)
+  {
+    if ( !check() )
+      return FG_EC_CouldNotWriteFG;
+  }
 
   // Write shared functional Groups
   OFCondition result = writeSharedFG(dataset);
@@ -452,6 +455,18 @@ size_t FGInterface::deleteFrame(const Uint32 frameNo)
     m_perFrame.erase(it);
   }
   return OFFalse;
+}
+
+
+void FGInterface::setCheckOnWrite(const OFBool doCheck)
+{
+  m_checkOnWrite = doCheck;
+}
+
+
+OFBool FGInterface::getCheckOnWrite()
+{
+  return m_checkOnWrite;
 }
 
 

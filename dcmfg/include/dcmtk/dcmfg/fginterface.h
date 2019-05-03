@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -192,6 +192,25 @@ public:
    */
   size_t deleteFrame(const Uint32 frameNo);
 
+  /** If enabled, functional group structure is checked before actual writing
+   *  is performed in the write() method. Checking might be time consuming
+   *  on functional groups with many frames, though disabling might result in
+   *  invalid functional group structures. Disabling should only be done if the
+   *  user knows that the functional groups are valid, wants to to adapt the
+   *  functional groups manually after calling write() or knows what he's doing
+   *  otherwise.<br>
+   *  Per default, checking is enabled.
+   *  @param  doCheck If OFTrue, checking will be performed. If OFFalse,
+   *          no checks are performed.
+   */
+  virtual void setCheckOnWrite(const OFBool doCheck);
+
+  /** Returns whether functional group structure is checked before actual
+   *  writing is performed in the write() method.
+   *  @return OFTrue if checking is performed, OFFalse otherwise
+   */
+  virtual OFBool getCheckOnWrite();
+
 protected:
 
   /** Get shared functional group based on its type
@@ -289,6 +308,10 @@ private:
   /// Link from frame number (map key) to the list of functional groups (value)
   /// relevant for the frame
   PerFrameGroups m_perFrame;
+
+  /// If enabled, functional group structure is checked on write(). Otherwise,
+  /// checks are skipped.
+  OFBool m_checkOnWrite;
 };
 
 #endif // MODMULTIFRAMEFGH_H

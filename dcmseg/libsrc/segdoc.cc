@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -256,9 +256,23 @@ OFCondition DcmSegmentation::read(DcmItem &dataset)
 }
 
 
+void DcmSegmentation::setCheckFGOnWrite(const OFBool doCheck)
+{
+  m_FGInterface.setCheckOnWrite(doCheck);
+}
+
+
+OFBool DcmSegmentation::getCheckFGOnWrite()
+{
+  return m_FGInterface.getCheckOnWrite();
+}
+
+
 OFCondition DcmSegmentation::write(DcmItem &dataset)
 {
-  if (!check())
+  // FGInterface::write() will know whether it has to check FG structure
+  // so we do not need to check FG structure here (OFFalse).
+  if (!check(OFFalse))
   {
     return IOD_EC_InvalidObject;
   }
@@ -1229,7 +1243,7 @@ IODImagePixelModule<Uint8>& DcmSegmentation::getImagePixel()
 }
 
 
-OFBool DcmSegmentation::check()
+OFBool DcmSegmentation::check(const OFBool checkFGStructure)
 {
   if (m_Frames.size() == 0)
   {
@@ -1247,9 +1261,10 @@ OFBool DcmSegmentation::check()
     return OFFalse;
   }
 
-  if (!m_FGInterface.check())
+  if (checkFGStructure)
   {
-    return OFFalse;
+     if (!m_FGInterface.check())
+       return OFFalse;
   }
 
   // Check rules around Frame of Reference

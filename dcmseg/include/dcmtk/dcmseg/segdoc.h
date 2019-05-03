@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -98,6 +98,26 @@ public:
    */
   OFCondition writeDataset(DcmItem& dataset);
 
+  /** If enabled, functional group structure is checked before actual writing
+   *  is performed in the write() method. Checking might be time consuming
+   *  on functional groups with many frames, though disabling might result in
+   *  invalid functional group structures. Disabling should only be done if the
+   *  user knows that the functional groups are valid, wants to to adapt the
+   *  functional groups manually after calling write() or knows what he's doing
+   *  otherwise.<br>
+   *  Per default, checking is enabled.
+   *  @param  doCheck If OFTrue, checking will be performed. If OFFalse,
+   *          no checks are performed.
+   */
+  virtual void setCheckFGOnWrite(const OFBool doCheck);
+
+  /** Returns whether functional group structure is checked before actual
+   *  writing is performed in the write() method.
+   *  @return OFTrue if checking is performed, OFFalse otherwise
+   */
+  virtual OFBool getCheckFGOnWrite();
+
+
   // -------------------- creation ---------------------
 
   /** Factory method to create a binary segmentation object from the minimal
@@ -191,9 +211,11 @@ public:
 
   /** Perform some basic checking. This method is also invoked when
    *  writing the object to a DICOM dataset or file.
+   *  @param  checkFGStructure If OFTrue (default), structure of functional
+   *          groups is checked, too.
    *  @return OFTrue, if no errors were found, OFFalse otherwise.
    */
-  virtual OFBool check();
+  virtual OFBool check(const OFBool checkFGStructure = OFTrue);
 
   /** Get access to functional groups. This is meant for reading data from
    *  functional groups that are not actively managed, i.e.\ made accessible by
