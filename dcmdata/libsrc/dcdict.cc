@@ -253,7 +253,7 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
             len = p - line;
         }
         fields[foundFields] = OFstatic_cast(char *, malloc(len + 1));
-        strncpy(fields[foundFields], line, len);
+        OFStandard::strlcpy(fields[foundFields], line, len+1);
         fields[foundFields][len] = '\0';
         foundFields++;
         line = p + 1;
