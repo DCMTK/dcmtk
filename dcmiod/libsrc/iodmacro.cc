@@ -824,7 +824,7 @@ OFCondition ImageSOPInstanceReferenceMacro::getReferencedFrameNumber(OFVector<Ui
   for (size_t n = 0; n < is->getNumberOfValues(); n++)
   {
     Sint32 sint = 0;
-    is->getSint32(sint, n);
+    is->getSint32(sint, OFstatic_cast(unsigned long, n));
     if (sint < 0)
     {
       DCMIOD_WARN("Invalid Referenced Frame Number in Image SOP Instance Reference Macro: " << sint);
