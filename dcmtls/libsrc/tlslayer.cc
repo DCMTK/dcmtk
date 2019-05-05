@@ -688,10 +688,17 @@ DcmTransportConnection *DcmTLSTransportLayer::createConnection(DcmNativeSocketTy
       SSL *newConnection = SSL_new(transportLayerContext);
       if (newConnection)
       {
-        // On Win64, the following line will cause a warning because the native
-        // type for sockets there is 64-bit, and OpenSSL uses a 32-bit int file descriptor.
-        // This should be fixed in OpenSSL, there is nothing we can do here.
-        SSL_set_fd(newConnection, openSocket);
+        int s = OFstatic_cast(int, openSocket);
+        if (openSocket != OFstatic_cast(DcmNativeSocketType, s))
+        {
+          // On Win64, the native type for sockets there is an unsigned 64-bit integer, 
+          // and OpenSSL uses a signed 32-bit int file descriptor.
+          // This should be fixed in OpenSSL, there is nothing we can do here
+          // except to check whether the type conversion truncates the value and,
+          // in this case, issue an error message.
+          DCMTLS_ERROR("Conversion of 64-bit socket type to int in OpenSSL API causes loss of information.");
+        }
+        SSL_set_fd(newConnection, s);
         return new DcmTLSConnection(openSocket, newConnection);
       }
     }
