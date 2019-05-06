@@ -447,8 +447,15 @@ OFBool DcmTLSTransportLayer::setTempDHParameters(const char *filename)
       // DH key lengths of at least 2048 bits are RECOMMENDED.
       if (DH_bits(dh) < 2048)
       {
-        DCMTLS_WARN("Key length of Diffie-Hellman parameter file too short: RFC 7525 recommends at least 2048 bits, but the key in file '"
+          DCMTLS_WARN("Key length of Diffie-Hellman parameter file too short: RFC 7525 recommends at least 2048 bits, but the key in file '"
           << filename << "' is only " << DH_bits(dh) << " bits.");
+          if (ciphersuites.getTLSProfile() == TSP_Profile_BCP195_Extended)
+          {
+              // Extended BCP 195 profile: Reject DH parameter set, because it has less than 2048 bits
+              // This will cause the default DH parameter set (which is large enough) to be used
+              DH_free(dh);
+              return OFFalse;
+          }
       }
       SSL_CTX_set_tmp_dh(transportLayerContext,dh);
       DH_free(dh); /* Safe because of reference counts in OpenSSL */
@@ -691,7 +698,7 @@ DcmTransportConnection *DcmTLSTransportLayer::createConnection(DcmNativeSocketTy
         int s = OFstatic_cast(int, openSocket);
         if (openSocket != OFstatic_cast(DcmNativeSocketType, s))
         {
-          // On Win64, the native type for sockets there is an unsigned 64-bit integer, 
+          // On Win64, the native type for sockets there is an unsigned 64-bit integer,
           // and OpenSSL uses a signed 32-bit int file descriptor.
           // This should be fixed in OpenSSL, there is nothing we can do here
           // except to check whether the type conversion truncates the value and,

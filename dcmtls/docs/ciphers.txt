@@ -33,10 +33,10 @@ follow the secure profiles define in DICOM Part 15:
 
 - BCP 195 TLS Profile (default)
   This profile proposes the following set of ciphersuites:
-  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2+)
-  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2+)
-  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2+)
-  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2+)
+  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
   - TLS_RSA_WITH_AES_128_CBC_SHA
   - TLS_RSA_WITH_3DES_EDE_CBC_SHA
 
@@ -49,24 +49,42 @@ follow the secure profiles define in DICOM Part 15:
 
 - Non-downgrading BCP 195 TLS Profile
   This profile proposes the following set of ciphersuites:
-  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2+)
-  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2+)
-  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2+)
-  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2+)
+  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
 
   Furthermore, when this profile is active, only TLS version 1.2
   or newer will be negotiated.
+
+- Extended BCP 195 TLS Profile
+  This profile proposes the following set of ciphersuites:
+  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+
+  Furthermore, when this profile is active, only TLS version 1.2
+  will be negotiated. In particular, TLS 1.3 will be disabled.
 
 - Basic TLS Secure Transport Connection Profile (retired)
   This profile only proposes a single ciphersuite for use
   with TLS 1.0 or newer:
   - TLS_RSA_WITH_3DES_EDE_CBC_SHA
 
+  When this profile is active, only TLS versions up to 1.2
+  will be negotiated. TLS 1.3 will be disabled.
+
 - AES TLS Secure Transport Connection Profile (retired)
   This profile proposes the following set of ciphersuites
   for use with TLS 1.0 or newer:
   - TLS_RSA_WITH_AES_128_CBC_SHA
   - TLS_RSA_WITH_3DES_EDE_CBC_SHA
+
+  When this profile is active, only TLS versions up to 1.2
+  will be negotiated. TLS 1.3 will be disabled.
 
 - Authenticated unencrypted communication (retired)
   This profile proposes a single ciphersuite that offers peer
@@ -75,6 +93,9 @@ follow the secure profiles define in DICOM Part 15:
   This profile was defined in older versions of the IHE ATNA
   (Audit Trail and Node Authentication) integration profile,
   but has been retired.
+
+  When this profile is active, only TLS versions up to 1.2
+  will be negotiated. TLS 1.3 will be disabled.
 
 Furthermore, on API level it is also possible to start without
 a profile and directly define the set of supported ciphersuites,

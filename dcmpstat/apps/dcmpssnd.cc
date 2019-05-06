@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2018, OFFIS e.V.
+ *  Copyright (C) 1999-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -580,6 +580,7 @@ int main(int argc, char *argv[])
       DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP195;  // default
       if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
       else if (profileName == "BCP195-ND") tlsProfile = TSP_Profile_BCP195_ND;
+      else if (profileName == "BCP195-EX") tlsProfile = TSP_Profile_BCP195_Extended;
       else if (profileName == "AES") tlsProfile = TSP_Profile_AES;
       else if (profileName == "BASIC") tlsProfile = TSP_Profile_Basic;
       else if (profileName == "NULL") tlsProfile = TSP_Profile_IHE_ATNA_Unencrypted;

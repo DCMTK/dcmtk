@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by

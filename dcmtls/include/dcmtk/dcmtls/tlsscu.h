@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2018, OFFIS e.V.
+ *  Copyright (C) 2010-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -145,8 +145,9 @@ public:
    */
   virtual void setPeerCertVerification(const DcmCertificateVerification cert);
 
-  /** Set Diffie-Hellman parameters
-   *  @param dhParam Diffie-Hellman parameters to be used.
+  /** Set Diffie-Hellman parameters from file. This method should be
+   *  called after calls to initNetwork() and setTLSProfile().
+   *  @param filename of dhParam Diffie-Hellman parameter file to be used.
    */
   virtual void setDHParam(const OFString& dhParam);
 
@@ -190,11 +191,6 @@ public:
    *  @return Get random seed file used for writing back updated seed
    */
   virtual OFString getWriteSeedFile() const;
-
-  /** Get Diffie-Hellman parameters set to be used
-   *  @return Diffie-Hellman parameters set to be used
-   */
-  virtual OFString getDHParam() const;
 
 private:
 
@@ -247,9 +243,6 @@ private:
   /// Denotes how certificates are handled, i.e.\ whether they are required, validated or
   /// only validated if present
   DcmCertificateVerification m_certVerification;
-
-  /// File containing Diffie-Hellman parameters to be used
-  OFString m_dhparam;
 
 };
 

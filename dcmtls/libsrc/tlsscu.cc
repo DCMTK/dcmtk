@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2018, OFFIS e.V.
+ *  Copyright (C) 2010-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,8 +43,7 @@ DcmTLSSCU::DcmTLSSCU() :
   m_passwd(NULL),
   m_readSeedFile(""),
   m_writeSeedFile(""),
-  m_certVerification(DCV_requireCertificate),
-  m_dhparam("")
+  m_certVerification(DCV_requireCertificate)
 {
 }
 
@@ -63,8 +62,7 @@ DcmTLSSCU::DcmTLSSCU(const OFString& peerHost,
   m_passwd(NULL),
   m_readSeedFile(""),
   m_writeSeedFile(""),
-  m_certVerification(DCV_requireCertificate),
-  m_dhparam("")
+  m_certVerification(DCV_requireCertificate)
 {
   setPeerHostName(peerHost);
   setPeerAETitle(peerAETitle);
@@ -120,13 +118,6 @@ OFCondition DcmTLSSCU::initNetwork()
       DCMTLS_ERROR("Private key from file " << m_privateKeyFile << " and certificate from file " << m_certificateFile << " do not match");
       cond = EC_IllegalCall; // TODO: need to find better error code
     }
-  }
-
-  /* Initialize Diffie-Hellman parameters from file if given */
-  if (!m_dhparam.empty() && cond.good())
-  {
-    if (!m_tLayer->setTempDHParameters(m_dhparam.c_str()))
-      cond = EC_IllegalCall; // TODO: need to find better error code
   }
 
   /* Set whether SCU should check the SCP's certificate for validity */
@@ -276,12 +267,6 @@ void DcmTLSSCU::setPeerCertVerification(const DcmCertificateVerification cert)
 }
 
 
-void DcmTLSSCU::setDHParam(const OFString& dhParam)
-{
-  m_dhparam = dhParam;
-}
-
-
 OFBool DcmTLSSCU::getAuthenticationParams(OFString& privKeyFile,
                                           OFString& certFile,
                                           const char*& passphrase,
@@ -334,9 +319,10 @@ OFString DcmTLSSCU::getWriteSeedFile() const
 }
 
 
-OFString DcmTLSSCU::getDHParam() const
+void DcmTLSSCU::setDHParam(const OFString& dhParam)
 {
-  return m_dhparam;
+  if (!m_tLayer->setTempDHParameters(dhParam.c_str()))
+     DCMTLS_WARN("unable to load temporary DH parameter file '" << dhParam << "', ignoring");
 }
 
 #else

@@ -255,6 +255,9 @@ security profile:
   +py   --profile-bcp195-nd
           Non-downgrading BCP 195 TLS Profile
 
+  +pz   --profile-bcp195-ex
+          Extended BCP 195 TLS Profile
+
   +pb   --profile-basic
           Basic TLS Secure Transport Connection Profile (retired)
 

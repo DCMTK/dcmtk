@@ -287,6 +287,22 @@ DcmTransportLayerStatus DcmTLSCiphersuiteHandler::setTLSProfile(DcmTLSSecurityPr
       result = addRequiredCipherSuite("TLS_DHE_RSA_WITH_AES_256_GCM_SHA384");
       if (TCS_ok != result) return result;
       break;
+    case TSP_Profile_BCP195_Extended:
+      tls13_enabled = OFFalse;
+      // required ciphersuites as defined in the DICOM profile
+      result = addRequiredCipherSuite("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256");
+      if (TCS_ok != result) return result;
+      result = addRequiredCipherSuite("TLS_DHE_RSA_WITH_AES_128_GCM_SHA256");
+      if (TCS_ok != result) return result;
+      result = addRequiredCipherSuite("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384");
+      if (TCS_ok != result) return result;
+      result = addRequiredCipherSuite("TLS_DHE_RSA_WITH_AES_256_GCM_SHA384");
+      if (TCS_ok != result) return result;
+      result = addRequiredCipherSuite("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384");
+      if (TCS_ok != result) return result;
+      result = addRequiredCipherSuite("TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256");
+      if (TCS_ok != result) return result;
+      break;
     case TSP_Profile_IHE_ATNA_Unencrypted:
       tls13_enabled = OFFalse;
       result = addRequiredCipherSuite("TLS_RSA_WITH_NULL_SHA");
@@ -344,6 +360,11 @@ DcmTransportLayerStatus DcmTLSCiphersuiteHandler::addCipherSuite(const char *sui
         {
           DCMTLS_WARN("Ciphersuite '" << suite << "' uses NO RSA key transport. RFC 7525 recommends that such cipher suites should not be used.");
         }
+        break;
+
+      case TSP_Profile_BCP195_Extended:
+        DCMTLS_FATAL("Additional ciphersuites not permitted with security profile '" << lookupProfileName(currentProfile) << "'");
+        return TCS_tlsError;
         break;
 
       case TSP_Profile_None:
@@ -515,6 +536,9 @@ const char *DcmTLSCiphersuiteHandler::lookupProfileName(DcmTLSSecurityProfile pr
     case TSP_Profile_BCP195_ND:
       return "Non-downgrading BCP 195 TLS Profile";
       break;
+    case TSP_Profile_BCP195_Extended:
+      return "Extended BCP 195 TLS Profile";
+      break;
     case TSP_Profile_None:
       return "None";
       break;
@@ -558,9 +582,9 @@ long DcmTLSCiphersuiteHandler::getTLSOptions() const
   result |= SSL_OP_NO_SSLv3;
 #endif
 
-  // For the Non-downgrading BCP 195 TLS Profile,
+  // For the Non-downgrading and Extended BCP 195 TLS Profile,
   // we also disable TLS 1.0 and TLS 1.1
-  if (currentProfile == TSP_Profile_BCP195_ND)
+  if ((currentProfile == TSP_Profile_BCP195_ND) || (currentProfile == TSP_Profile_BCP195_Extended))
   {
     result |= SSL_OP_NO_TLSv1;
     result |= SSL_OP_NO_TLSv1_1;

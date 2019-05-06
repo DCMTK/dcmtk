@@ -82,6 +82,19 @@ enum DcmTLSSecurityProfile
    */
   TSP_Profile_BCP195_ND,
 
+  /** DICOM Extended BCP 195 TLS Profile, based on RFC 7525.
+   *  This profile only negotiates TLS 1.2, and will not fall back to
+   *  previous TLS versions. It does NOT support TLS 1.3.
+   *  It supports the same set of ciphersuites as TSP_Profile_BCP195_ND,
+   *  plus TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 and TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256.
+   *  The other ciphersuites suggested by the profile (see DICOM Part 15, section B.11)
+   *  are not supported in OpenSSL 1.0.1 to 1.1.0.
+   *  This profile requires DHE keys of at least 2048 bits and ECDHE keys of at least 256 bits.
+   *  It does not provide backwards compatibility with the older Basic and AES profiles,
+   *  and thus guarantees the higher security level of BCP 195.
+   */
+  TSP_Profile_BCP195_Extended,
+
   /** IHE ATNA Profile for Unencrypted In-house Communication (retired).
    * This profile uses the ciphersuite SSL_RSA_WITH_NULL_SHA and TLS 1.0 or newer.
    * This ciphersuite offers peer authentication and integrity of communication,
@@ -231,6 +244,14 @@ public:
    *  @return TCS_ok if successful, an error code otherwise
    */
   DcmTransportLayerStatus setTLSProfile(DcmTLSSecurityProfile profile);
+
+  /** return the currently selected TLS profile
+   *  @return currently selected TLS profile
+   */
+  DcmTLSSecurityProfile getTLSProfile() const
+  {
+      return currentProfile;
+  }
 
   /** clear the current list of ciphersuites. Equivalent to
    *  calling setTLSProfile(TSP_Profile_None).

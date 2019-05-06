@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, OFFIS e.V.
+ *  Copyright (C) 2017-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -90,6 +90,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
     cmd.addSubGroup("security profile:");
       cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile (default)");
       cmd.addOption("--profile-bcp195-nd",  "+py",     "Non-downgrading BCP 195 TLS Profile");
+      cmd.addOption("--profile-bcp195-ex",  "+pz",     "Extended BCP 195 TLS Profile");
       if (csh.cipher3DESsupported())
       {
         cmd.addOption("--profile-basic",    "+pb",     "Basic TLS Secure Transport Connection Profile\n(retired)");
@@ -103,7 +104,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
     cmd.addSubGroup("ciphersuite:");
       cmd.addOption("--list-ciphers",       "+cc",     "show list of supported TLS ciphersuites and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--cipher",             "+cs",  1, "[c]iphersuite name: string",
-                                                       "add ciphersuite to list of negotiated suites");
+                                                       "add ciphersuite to list of negotiated suites\n(not with --profile-bcp195-ex)");
       if (opt_networkRole != NET_REQUESTOR)
       {
         // this command line options only makes sense for association acceptors (TLS servers)
@@ -240,6 +241,11 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
         app.checkDependence("--profile-bcp195-nd", tlsopts, opt_secureConnection);
         opt_tlsProfile = TSP_Profile_BCP195_ND;
     }
+    if (cmd.findOption("--profile-bcp195-ex"))
+    {
+        app.checkDependence("--profile-bcp195-ex", tlsopts, opt_secureConnection);
+        opt_tlsProfile = TSP_Profile_BCP195_Extended;
+    }
     if (csh.cipher3DESsupported())
     {
       if (cmd.findOption("--profile-basic"))
@@ -270,7 +276,10 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
     if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
       app.checkDependence("--add-cert-dir", tlsopts, opt_secureConnection);
     if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
+    {
       app.checkDependence("--cipher", tlsopts, opt_secureConnection);
+      app.checkConflict("--cipher", "--profile-bcp195-ex", (opt_tlsProfile == TSP_Profile_BCP195_Extended));
+    }
 
 #endif
 }
@@ -297,7 +306,7 @@ OFCondition DcmTLSOptions::createTransportLayer(
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
           {
-              DCMTLS_WARN("unable to load certificate file '" << current << "', ignoring");
+              DCMTLS_WARN("unable to load certificate file '" << current << "', ignoring.");
           }
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
@@ -314,9 +323,6 @@ OFCondition DcmTLSOptions::createTransportLayer(
           }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
-
-      if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
-         DCMTLS_WARN("unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring");
 
       if (opt_doAuthenticate)
       {
@@ -350,6 +356,11 @@ OFCondition DcmTLSOptions::createTransportLayer(
 
       if (TCS_ok != tLayer->activateCipherSuites())
          return DCMTLS_EC_FailedToSetCiphersuites;
+
+      // Loading of DH parameters should happen after the call to setTLSProfile()
+      // because otherwise we cannot check profile specific restrictions
+      if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
+         DCMTLS_WARN("unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring");
 
       tLayer->setCertificateVerification(opt_certVerification);
 
