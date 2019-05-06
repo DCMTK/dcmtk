@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2018, OFFIS e.V.
+ *  Copyright (C) 2014-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,9 +36,13 @@
 
 // -------------------- misc C++11 / non C++11 utils --------------------
 
+// The internet says <utility> should always be available, so we include
+// it here to fix an issue with compilers that support std::tuple but
+// not all of C++11 and perhaps other stuff.
+#include <utility>
+
 #ifdef HAVE_CXX11
 
-#include <utility>
 #include <tuple>
 #define OFmove std::move
 #define OFswap std::swap
