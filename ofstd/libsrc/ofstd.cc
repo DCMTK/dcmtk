@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2018, OFFIS e.V.
+ *  Copyright (C) 2001-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -3120,4 +3120,16 @@ OFerror_code OFStandard::getLastNetworkErrorCode()
 #endif
 }
 
-DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place() { return *static_cast<OFin_place_tag*>(OFnullptr); }
+// black magic:
+// The C++ standard says that std::in_place should not be called as a function,
+// but the linker says we still need a function body. Normally, we would mark
+// it as [[noreturn]] and be done, but that's not available pre C++11.
+// Therefore, we need a return statement to silence 'missing return statement...'
+// style warnings. However, OFin_place_tag is a forward declared struct with
+// no actual definition, so, we cannot return an actual OFin_place_tag object.
+// Instead, we cast some pointer to it although that is actually bullshit, but
+// the code will never be executed anyway. Prior versions of this code returned
+// a casted nullptr, but some compilers are just too smart and return a warning
+// for that, so, now we cast a pointer to the function itself into an
+// OFin_place_tag instead to silence the warnings.
+DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place() { return *reinterpret_cast<OFin_place_tag*>(&OFin_place<0>); }
