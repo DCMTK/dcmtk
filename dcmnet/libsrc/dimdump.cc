@@ -274,7 +274,58 @@ static void DIMSE_printCFindStatusString(STD_NAMESPACE ostream& dumpStream, int 
   }
 }
 
-static void DIMSE_printCGetMoveStatusString(STD_NAMESPACE ostream& dumpStream, int status)
+static void DIMSE_printCGetStatusString(STD_NAMESPACE ostream& dumpStream, int status)
+{
+  dumpStream << "0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+      << STD_NAMESPACE setw(4) << status;
+
+  if ((status & 0xf000) == STATUS_GET_Failed_UnableToProcess)
+  {
+    dumpStream << ": Error: Failed - Unable to process";
+  }
+  else if (status == STATUS_GET_Refused_OutOfResourcesNumberOfMatches)
+  {
+    dumpStream << ": Error: Refused - Out of resources - Number of matches";
+  }
+  else if (status == STATUS_GET_Refused_OutOfResourcesSubOperations)
+  {
+    dumpStream << ": Error: Refused - Out of resources - Suboperations";
+  }
+  else if (status == STATUS_GET_Failed_SOPClassNotSupported)
+  {
+    dumpStream << ": Failed: SOP Class not supported";
+  }
+  else if (status == STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass)
+  {
+    dumpStream << ": Failed: Identifier does not match SOP Class";
+  }
+  else if (status == STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication)
+  {
+    dumpStream << ": Cancel: Suboperations terminated due to Cancel Indication";
+  }
+  else if (status == STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures)
+  {
+    dumpStream << ": Warning: Suboperations complete, one or more failures";
+  }
+  else if (DICOM_WARNING_STATUS(status))
+  {
+    dumpStream << ": Warning";
+  }
+  else if (DICOM_PENDING_STATUS(status))
+  {
+    dumpStream << ": Pending";
+  }
+  else if (status == STATUS_Success)
+  {
+    dumpStream << ": Success";
+  }
+  else
+  {
+    dumpStream << ": Unknown Status Code";
+  }
+}
+
+static void DIMSE_printCMoveStatusString(STD_NAMESPACE ostream& dumpStream, int status)
 {
   dumpStream << "0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
       << STD_NAMESPACE setw(4) << status;
@@ -547,7 +598,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_GetRSP &msg, enum DIMSE_dir
     else stream << "none" << OFendl;
     stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
-    DIMSE_printCGetMoveStatusString(stream, msg.DimseStatus);
+    DIMSE_printCGetStatusString(stream, msg.DimseStatus);
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
@@ -626,7 +677,7 @@ OFString& DIMSE_dumpMessage(OFString &str, T_DIMSE_C_MoveRSP &msg, enum DIMSE_di
     else stream << "none" << OFendl;
     stream << "Data Set                      : " << ((msg.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present") << OFendl
            << "DIMSE Status                  : ";
-    DIMSE_printCGetMoveStatusString(stream, msg.DimseStatus);
+    DIMSE_printCMoveStatusString(stream, msg.DimseStatus);
 
     OFSTRINGSTREAM_GETSTR(stream, result)
     str += result;
