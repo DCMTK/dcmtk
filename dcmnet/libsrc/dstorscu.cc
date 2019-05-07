@@ -975,7 +975,7 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
             // check DIMSE status
             const Uint16 rspStatus = (*transferEntry)->ResponseStatusCode;
             if (((rspStatus & 0xff00) == STATUS_STORE_Refused_OutOfResources) ||
-                ((rspStatus & 0xff00) == STATUS_STORE_Refused_SOPClassNotSupported))
+                (rspStatus == STATUS_STORE_Refused_SOPClassNotSupported))
             {
                 ++numRefused;
             }

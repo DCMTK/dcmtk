@@ -136,7 +136,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
  */
 /* Storage Specific Codes*/
 #define STATUS_STORE_Refused_OutOfResources             /* high byte */ 0xa700
-#define STATUS_STORE_Refused_SOPClassNotSupported       /* high byte */ 0xa800
+#define STATUS_STORE_Refused_SOPClassNotSupported                       0x0122
 #define STATUS_STORE_Error_DataSetDoesNotMatchSOPClass  /* high byte */ 0xa900
 #define STATUS_STORE_Error_CannotUnderstand           /* high nibble */ 0xc000
 #define STATUS_STORE_Warning_CoercionOfDataElements                     0xb000
@@ -146,7 +146,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 
 /* Find Specific Codes */
 #define STATUS_FIND_Refused_OutOfResources                              0xa700
-#define STATUS_FIND_Refused_SOPClassNotSupported                        0xa800
+#define STATUS_FIND_Refused_SOPClassNotSupported                        0x0122
 #define STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass               0xa900
 #define STATUS_FIND_Failed_UnableToProcess            /* high nibble */ 0xc000
 #define STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest         0xfe00
@@ -155,7 +155,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 /* Move Specific Codes */
 #define STATUS_MOVE_Refused_OutOfResourcesNumberOfMatches               0xa701
 #define STATUS_MOVE_Refused_OutOfResourcesSubOperations                 0xa702
-#define STATUS_MOVE_Failed_SOPClassNotSupported                         0xa800
+#define STATUS_MOVE_Failed_SOPClassNotSupported                         0x0122
 #define STATUS_MOVE_Failed_MoveDestinationUnknown                       0xa801
 #define STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass               0xa900
 #define STATUS_MOVE_Failed_UnableToProcess            /* high nibble */ 0xc000
@@ -165,7 +165,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 /* Get Specific Codes */
 #define STATUS_GET_Refused_OutOfResourcesNumberOfMatches                0xa701
 #define STATUS_GET_Refused_OutOfResourcesSubOperations                  0xa702
-#define STATUS_GET_Failed_SOPClassNotSupported                          0xa800
+#define STATUS_GET_Failed_SOPClassNotSupported                          0x0122
 #define STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass                0xa900
 #define STATUS_GET_Failed_UnableToProcess             /* high nibble */ 0xc000
 #define STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication  0xfe00

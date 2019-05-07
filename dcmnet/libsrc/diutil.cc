@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -307,6 +307,9 @@ DU_cstoreStatusString(Uint16 statusCode)
       case STATUS_Success:
           s = "Success";
           break;
+      case STATUS_STORE_Refused_SOPClassNotSupported:
+          s = "Refused: SOPClassNotSupported";
+          break;
       case STATUS_STORE_Warning_CoercionOfDataElements:
           s = "Warning: CoercionOfDataElements";
           break;
@@ -323,9 +326,6 @@ DU_cstoreStatusString(Uint16 statusCode)
     switch (statusCode & 0xff00) {      /* high byte significant */
       case STATUS_STORE_Refused_OutOfResources:   /* high byte */
           s = "Refused: OutOfResources";
-          break;
-      case STATUS_STORE_Refused_SOPClassNotSupported:     /* high byte */
-          s = "Error: SOPClassNotSupported";
           break;
       case STATUS_STORE_Error_DataSetDoesNotMatchSOPClass:        /* high byte */
           s = "Error: DataSetDoesNotMatchSOPClass";

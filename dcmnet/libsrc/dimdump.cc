@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2011, OFFIS e.V.
+ *  Copyright (C) 1993-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -185,7 +185,7 @@ static void DIMSE_printCStoreStatusString(STD_NAMESPACE ostream& dumpStream, int
   {
     dumpStream << ": Error: Refused - Out of resources";
   }
-  else if ((status & 0xff00) == STATUS_STORE_Refused_SOPClassNotSupported)
+  else if (status == STATUS_STORE_Refused_SOPClassNotSupported)
   {
     dumpStream << ": Error: Refused - SOP Class not supported";
   }
@@ -236,7 +236,7 @@ static void DIMSE_printCFindStatusString(STD_NAMESPACE ostream& dumpStream, int 
   {
     dumpStream << ": Error: Refused - Out of resources";
   }
-  else if ((status & 0xff00) == STATUS_FIND_Refused_SOPClassNotSupported)
+  else if (status == STATUS_FIND_Refused_SOPClassNotSupported)
   {
     dumpStream << ": Error: Refused - SOP Class not supported";
   }
