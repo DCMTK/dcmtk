@@ -306,7 +306,7 @@ OFCondition DcmTLSOptions::createTransportLayer(
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
           {
-              DCMTLS_WARN("unable to load certificate file '" << current << "', ignoring.");
+              DCMTLS_WARN("unable to load certificate file '" << current << "', ignoring");
           }
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
