@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -315,7 +315,7 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         DCMDATA_DEBUG("DcmMetaInfo::checkAndReadPreamble() TransferSyntax=\""
             << DcmXfer(newxfer).getXferName() << "\"");
     } else
-        DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preambel found");
+        DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preamble found");
 
     return hasPreamble;
 }
