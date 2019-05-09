@@ -77,19 +77,18 @@ inline std::ostream& operator<<( std::ostream& o, OFnullptr_t /* unused */ )
 typedef signed char     Sint8;
 typedef unsigned char   Uint8;
 
-#if SIZEOF_LONG == 8
 #ifdef PRIu32 /* if that macro exists, we also have int32_t et al */
 typedef int32_t         Sint32;
 typedef uint32_t        Uint32;
-#else
+#else /* defined(PRIu32) */
+#if SIZEOF_LONG == 8
 typedef signed int      Sint32;
 typedef unsigned int    Uint32;
-#endif
-
 #else /* SIZEOF_LONG == 8 */
 typedef signed long     Sint32;
 typedef unsigned long   Uint32;
 #endif /* SIZEOF_LONG == 8 */
+#endif /* defined(PRIu32) */
 
 typedef signed short    Sint16;
 typedef unsigned short  Uint16;
