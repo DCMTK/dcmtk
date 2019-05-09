@@ -23,4 +23,5 @@
 #include "dcmtk/ofstd/oftest.h"
 
 OFTEST_REGISTER(dcmfg_derivation_image);
+OFTEST_REGISTER(dcmfg_frame_content);
 OFTEST_MAIN("dcmfg")
