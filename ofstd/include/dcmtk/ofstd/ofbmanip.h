@@ -82,15 +82,19 @@ class OFBitmanipTemplate
                         const size_t count)
     {
 #ifdef HAVE_MEMMOVE
-       // On some platforms (such as MinGW), memmove cannot move buffers
-       // larger than PTRDIFF_MAX. In the rare case of such huge buffers,
-       // fall back to our own implementation.
-       size_t c = count * sizeof(T);
-       if (c < PTRDIFF_MAX)
-       {
-         memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), c);
-         return;
-       }
+#ifdef PTRDIFF_MAX
+        // On some platforms (such as MinGW), memmove cannot move buffers
+        // larger than PTRDIFF_MAX. In the rare case of such huge buffers,
+        // fall back to our own implementation.
+        const size_t c = count * sizeof(T);
+        if (c <= PTRDIFF_MAX)
+        {
+            memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), c);
+            return;
+        }
+#else
+        memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), count * sizeof(T));
+#endif
 #endif
         if (src == dest)
             return;
