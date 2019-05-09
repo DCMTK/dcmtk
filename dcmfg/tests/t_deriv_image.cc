@@ -19,46 +19,44 @@
  *
  */
 
+#include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dcmtk/ofstd/oftest.h"
-#include "dcmtk/dcmfg/fginterface.h"
 #include "dcmtk/dcmfg/fgderimg.h"
+#include "dcmtk/dcmfg/fginterface.h"
+#include "dcmtk/ofstd/oftest.h"
 
-
-static void init_template (OFString &fg_dump)
+static void init_template(OFString& fg_dump)
 {
-    fg_dump          = "(fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n";
-    fg_dump         += "(0008,9124) SQ (Sequence with explicit length #=1)      #   0, 1 DerivationImageSequence\n";
-    fg_dump         += "  (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
-    fg_dump         += "    (0008,2111) ST [Some Description]                       #  16, 1 DerivationDescription\n";
-    fg_dump         += "    (0008,2112) SQ (Sequence with explicit length #=1)      #   0, 1 SourceImageSequence\n";
-    fg_dump         += "      (fffe,e000) na (Item with explicit length #=5)          #   0, 1 Item\n";
-    fg_dump         += "        (0008,1150) UI =CTImageStorage                          #  26, 1 ReferencedSOPClassUID\n";
-    fg_dump         += "        (0008,1155) UI [1.2.3.4]                                #   8, 1 ReferencedSOPInstanceUID\n";
-    fg_dump         += "        (0008,1160) IS [1\\2]                                    #   4, 2 ReferencedFrameNumber\n";
-    fg_dump         += "        (0040,a170) SQ (Sequence with explicit length #=1)      #   0, 1 PurposeOfReferenceCodeSequence\n";
-    fg_dump         += "          (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
-    fg_dump         += "            (0008,0100) SH [PURPOSE CODE]                           #  12, 1 CodeValue\n";
-    fg_dump         += "            (0008,0102) SH [99DCMFG]                                #   8, 1 CodingSchemeDesignator\n";
-    fg_dump         += "            (0008,0104) LO [Code Meaning Purpose]                   #  20, 1 CodeMeaning\n";
-    fg_dump         += "          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
-    fg_dump         += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    fg_dump         += "        (0062,000b) US 3\\4                                      #   4, 2 ReferencedSegmentNumber\n";
-    fg_dump         += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
-    fg_dump         += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    fg_dump         += "    (0008,9215) SQ (Sequence with explicit length #=1)      #   0, 1 DerivationCodeSequence\n";
-    fg_dump         += "      (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
-    fg_dump         += "        (0008,0100) SH [CODE_VALUE]                             #  10, 1 CodeValue\n";
-    fg_dump         += "        (0008,0102) SH [99DCMFG]                                #   8, 1 CodingSchemeDesignator\n";
-    fg_dump         += "        (0008,0104) LO [Code Meaning Derivation Description]    #  36, 1 CodeMeaning\n";
-    fg_dump         += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
-    fg_dump         += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    fg_dump         += "  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
-    fg_dump         += "(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    fg_dump         += "(fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
-
+    fg_dump = "(fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n";
+    fg_dump += "(0008,9124) SQ (Sequence with explicit length #=1)      #   0, 1 DerivationImageSequence\n";
+    fg_dump += "  (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
+    fg_dump += "    (0008,2111) ST [Some Description]                       #  16, 1 DerivationDescription\n";
+    fg_dump += "    (0008,2112) SQ (Sequence with explicit length #=1)      #   0, 1 SourceImageSequence\n";
+    fg_dump += "      (fffe,e000) na (Item with explicit length #=5)          #   0, 1 Item\n";
+    fg_dump += "        (0008,1150) UI =CTImageStorage                          #  26, 1 ReferencedSOPClassUID\n";
+    fg_dump += "        (0008,1155) UI [1.2.3.4]                                #   8, 1 ReferencedSOPInstanceUID\n";
+    fg_dump += "        (0008,1160) IS [1\\2]                                    #   4, 2 ReferencedFrameNumber\n";
+    fg_dump
+        += "        (0040,a170) SQ (Sequence with explicit length #=1)      #   0, 1 PurposeOfReferenceCodeSequence\n";
+    fg_dump += "          (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
+    fg_dump += "            (0008,0100) SH [PURPOSE CODE]                           #  12, 1 CodeValue\n";
+    fg_dump += "            (0008,0102) SH [99DCMFG]                                #   8, 1 CodingSchemeDesignator\n";
+    fg_dump += "            (0008,0104) LO [Code Meaning Purpose]                   #  20, 1 CodeMeaning\n";
+    fg_dump += "          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
+    fg_dump += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
+    fg_dump += "        (0062,000b) US 3\\4                                      #   4, 2 ReferencedSegmentNumber\n";
+    fg_dump += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
+    fg_dump += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
+    fg_dump += "    (0008,9215) SQ (Sequence with explicit length #=1)      #   0, 1 DerivationCodeSequence\n";
+    fg_dump += "      (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
+    fg_dump += "        (0008,0100) SH [CODE_VALUE]                             #  10, 1 CodeValue\n";
+    fg_dump += "        (0008,0102) SH [99DCMFG]                                #   8, 1 CodingSchemeDesignator\n";
+    fg_dump += "        (0008,0104) LO [Code Meaning Derivation Description]    #  36, 1 CodeMeaning\n";
+    fg_dump += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
+    fg_dump += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
+    fg_dump += "  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
+    fg_dump += "(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
+    fg_dump += "(fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
 }
 
 static void check_deriv_image_fg(FGDerivationImage& fg)
@@ -101,7 +99,6 @@ static void check_deriv_image_fg(FGDerivationImage& fg)
     OFCHECK(str == "Code Meaning Purpose");
 }
 
-
 OFTEST(dcmfg_derivation_image)
 {
     OFString fg_dump;
@@ -110,11 +107,11 @@ OFTEST(dcmfg_derivation_image)
     FGDerivationImage fg;
     CodeSequenceMacro deriv_code("CODE_VALUE", "99DCMFG", "Code Meaning Derivation Description");
     DerivationImageItem* deriv_item = NULL;
-    OFCondition result = fg.addDerivationImageItem(deriv_code, "Some Description", deriv_item);
+    OFCondition result              = fg.addDerivationImageItem(deriv_code, "Some Description", deriv_item);
     OFCHECK(result.good());
     OFCHECK(deriv_item != NULL);
 
-    SourceImageItem *src_image_item = new SourceImageItem();
+    SourceImageItem* src_image_item = new SourceImageItem();
     OFCHECK(src_image_item->getImageSOPInstanceReference().addReferencedFrameNumber(1).good());
     OFCHECK(src_image_item->getImageSOPInstanceReference().addReferencedFrameNumber(2).good());
     OFCHECK(src_image_item->getImageSOPInstanceReference().addReferencedSegmentNumber(3).good());
@@ -135,7 +132,7 @@ OFTEST(dcmfg_derivation_image)
     OFCHECK(result.good());
     OFStringStream out;
     dest_item.print(out);
-    OFCHECK(out.str() == fg_dump.c_str());/**/
+    OFCHECK(out.str() == fg_dump.c_str());
 
     // Test read method: Read from dataset, write again, and compare another time
     FGDerivationImage fg_for_read;
