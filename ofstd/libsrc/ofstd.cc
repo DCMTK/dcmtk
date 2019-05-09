@@ -3130,11 +3130,6 @@ OFerror_code OFStandard::getLastNetworkErrorCode()
 // Instead, we cast some pointer to it although that is actually bullshit, but
 // the code will never be executed anyway. Prior versions of this code returned
 // a casted nullptr, but some compilers are just too smart and return a warning
-// for that, so, now we cast a pointer to the function itself into an
-// OFin_place_tag instead to silence the warnings.
-#ifndef _MSC_VER
-DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place() { return *reinterpret_cast<OFin_place_tag*>(&OFin_place<0>); }
-#else
-// Visual Studio won't get it, so it gets the old code
-DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place() { return *static_cast<OFin_place_tag*>(OFnullptr); }
-#endif
+// for that, so, now we cast a pointer to OFnullptr into an OFin_place_tag
+// instead to silence the warnings.
+DCMTK_OFSTD_EXPORT OFin_place_tag OFin_place() { return *reinterpret_cast<const OFin_place_tag*>(&OFnullptr); }
