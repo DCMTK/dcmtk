@@ -83,9 +83,9 @@ class OFBitmanipTemplate
     {
 #if defined(HAVE_MEMMOVE) && !defined(PTRDIFF_MAX)
         // some platforms have memmove() but not PTRDIFF_MAX.
-		// In this case, just call memmove().
+        // In this case, just call memmove().
         memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), count * sizeof(T));
-#else 
+#else
 
 #ifdef HAVE_MEMMOVE
         // On some platforms (such as MinGW), memmove cannot move buffers
@@ -119,7 +119,7 @@ class OFBitmanipTemplate
             for (i = count; i != 0; --i)
                 *q-- = *p--;
         }
-#endif 
+#endif
     }
 
 
