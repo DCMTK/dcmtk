@@ -41,9 +41,12 @@
 // not all of C++11 and perhaps other stuff.
 #include <utility>
 
+#ifdef HAVE_STL_TUPLE
+#include <tuple>
+#endif
+
 #ifdef HAVE_CXX11
 
-#include <tuple>
 #define OFmove std::move
 #define OFswap std::swap
 
