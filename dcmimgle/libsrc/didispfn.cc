@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2016, OFFIS e.V.
+ *  Copyright (C) 1999-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -336,7 +336,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
-#ifdef HAVE_IOS_NOCREATE
+#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
         STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
         STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in);

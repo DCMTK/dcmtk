@@ -1096,7 +1096,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
         /* skip '@' symbol in filename */
         const char *filename = argValue + 1;
         /* open command file */
-#ifdef HAVE_IOS_NOCREATE
+#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
         STD_NAMESPACE ifstream cmdFile(filename, STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate);
 #else
         STD_NAMESPACE ifstream cmdFile(filename, STD_NAMESPACE ios::in);
@@ -1176,7 +1176,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argV
         /* skip '@' symbol in filename */
         const wchar_t *filename = argValue + 1;
         /* open command file */
-#ifdef HAVE_IOS_NOCREATE
+#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
         STD_NAMESPACE wifstream cmdFile(filename, STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate);
 #else
         STD_NAMESPACE wifstream cmdFile(filename, STD_NAMESPACE ios::in);

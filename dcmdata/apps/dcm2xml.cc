@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -184,7 +184,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
             {
                 out << " [" << OFendl;
                 /* copy content from DTD file */
-#ifdef HAVE_IOS_NOCREATE
+#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
                 STD_NAMESPACE ifstream dtdFile(dtdFilename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
                 STD_NAMESPACE ifstream dtdFile(dtdFilename, STD_NAMESPACE ios::in);

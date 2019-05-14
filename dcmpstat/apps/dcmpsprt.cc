@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2017, OFFIS e.V.
+ *  Copyright (C) 1999-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,7 +61,7 @@ static int addOverlay(const char *filename,
 {
     if ((filename != NULL) && (pixel != NULL))
     {
-#ifdef HAVE_IOS_NOCREATE
+#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
         STD_NAMESPACE ifstream input(filename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
         STD_NAMESPACE ifstream input(filename);
