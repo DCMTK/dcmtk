@@ -230,10 +230,10 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** set the time value to the given ISO formatted time string.
      *  The two ISO time formats supported by this function are
-     *  - "HH:MM[:SS [&ZZ:ZZ]]" (with arbitrary delimiters) and
-     *  - "HHMM[SS[&ZZZZ]]" (without delimiters)
-     *  where the brackets enclose optional parts. Please note that the optional fractional
-     *  part of a second ".FFFFFF" (see getISOFormattedTime()) is not yet supported.
+     *  - "HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters) and
+     *  - "HHMM[SS[.FFFFFF][&ZZZZ]]" (without delimiters)
+     *  where the brackets enclose optional parts. Optional fractional
+     *  part of a second ".FFFFFF" (see getISOFormattedTime()) is supported.
      *  @param formattedTime ISO formatted time value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */

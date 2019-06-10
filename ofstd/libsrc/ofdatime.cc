@@ -203,31 +203,47 @@ OFBool OFDateTime::setCurrentDateTime()
 
 OFBool OFDateTime::setISOFormattedDateTime(const OFString &formattedDateTime)
 {
-    OFBool result = OFFalse;
     const size_t length = formattedDateTime.length();
-    const size_t firstSep = formattedDateTime.find_first_not_of("0123456789");
-    const OFBool separators = (firstSep != OFString_npos);
-    /* check for supported formats: "YYYYMMDDHHMM[SS]" or "YYYYMMDDHHMMSS&ZZZZ" */
-    if (((((length == 12) || (length == 14)) && !separators) ||
-        ((length == 19) && (firstSep == 14) && ((formattedDateTime[14] == '+') || (formattedDateTime[14] == '-')))))
-    {
-        if (Date.setISOFormattedDate(formattedDateTime.substr(0, 8)) && Time.setISOFormattedTime(formattedDateTime.substr(8)))
-            result = OFTrue;
+
+    size_t tm_pos = 0;
+    size_t date_digits = 0;
+    size_t date_size = 0;
+
+    /* find end of YYYYMMDD or YYYY-MM-DD */
+    while (tm_pos < length && date_digits < 8) {
+        if (isdigit(formattedDateTime.at(tm_pos)))
+            date_digits++;
+        tm_pos++;
     }
-    /* "YYYY-MM-DD HH:MM[:SS]" or "YYYY-MM-DD HH:MM:SS &ZZ:ZZ" */
-    else if ((length >= 16) && separators)
-    {
-        if (Date.setISOFormattedDate(formattedDateTime.substr(0, 10)))
-        {
-            size_t pos = 10;
-            /* search for first digit of the time value (skip arbitrary separators) */
-            while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedDateTime.at(pos))))
-                ++pos;
-            if ((pos < length) && Time.setISOFormattedTime(formattedDateTime.substr(pos)))
-                result = OFTrue;
-        }
+
+    /* check if we found enough number of digits for date and symbols for time to continue parsing */
+    if (date_digits < 8 || tm_pos == length)
+        return OFFalse;
+
+    date_size = tm_pos;
+
+    if (formattedDateTime.at(tm_pos) == 'T') {
+        /* dateTtime, skip T */
+        tm_pos++;
+    } else {
+        /* skip heading spaces from time */
+        while (tm_pos < length && formattedDateTime.at(tm_pos) == ' ')
+            tm_pos++;
     }
-    return result;
+
+    /* check if we have enough symbols for time to continue parsing */
+    if (tm_pos == length)
+        return OFFalse;
+
+    /* parse ISO formatted date */
+    if (!Date.setISOFormattedDate(formattedDateTime.substr(0, date_size)))
+        return OFFalse;
+
+    /* parse ISO formatted time */
+    if (!Time.setISOFormattedTime(formattedDateTime.substr(tm_pos)))
+        return OFFalse;
+
+    return OFTrue;
 }
 
 

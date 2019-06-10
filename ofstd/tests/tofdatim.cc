@@ -105,6 +105,17 @@ OFTEST(ofstd_OFTime)
     OFCHECK_EQUAL(time1.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/), 13599);
     OFCHECK(time1.setTimeInHours(99, 0, OFTrue /*normalized*/));
     OFCHECK_EQUAL(time1.getTimeInHours(OFTrue /*useTimeZone*/, OFFalse /*normalize*/), 3);
+    /* the "seconds" part is mandatory if fractional part is present */
+    OFCHECK(!time1.setISOFormattedTime("10:15.9"));
+    OFCHECK(time1.setISOFormattedTime("10:15:30.9"));
+    OFCHECK_EQUAL(time1.getSecond(), 30.9);
+    OFCHECK(time1.setISOFormattedTime("101530.987654"));
+    OFCHECK_EQUAL(time1.getHour(), 10);
+    OFCHECK_EQUAL(time1.getMinute(), 15);
+    OFCHECK_EQUAL(time1.getSecond(), 30.987654);
+    OFCHECK(time1.setISOFormattedTime("10:15:30.102030 +01:30"));
+    OFCHECK_EQUAL(time1.getTimeZone(), +1.50);
+    OFCHECK_EQUAL(time1.getSecond(), 30.10203);
 }
 
 
@@ -152,6 +163,20 @@ OFTEST(ofstd_OFDateTime)
     /* the "seconds" part is mandatory if time zone is present */
     OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15 -02:30"));
     OFCHECK(!dateTime2.setISOFormattedDateTime("200012311015+0100"));
+    /* the "seconds" part is mandatory if fractional part is present */
+    OFCHECK(!dateTime1.setISOFormattedDateTime("200012311015.9"));
+    /* fractional part must contain digits only */
+    OFCHECK(!dateTime1.setISOFormattedDateTime("20001231101530.9B2"));
+    OFCHECK(dateTime1.setISOFormattedDateTime("20001231101530.9"));
+    OFCHECK(dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/,
+        OFTrue /*showTimeZone*/, OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/));
+    OFCHECK_EQUAL(tmpString, "20001231101530.900000+0000");
+    /* maximal length is 6 digits */
+    OFCHECK(!dateTime1.setISOFormattedDateTime("20001231101530.0000001"));
+    OFCHECK(dateTime1.setISOFormattedDateTime("20001231101530.123456-0130"));
+    OFCHECK(dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/,
+        OFTrue /*showTimeZone*/, OFTrue /*showDelimiter*/, " " /*dateTimeSeparator*/, " " /*timeZoneSeparator*/));
+    OFCHECK_EQUAL(tmpString, "2000-12-31 10:15:30.123456 -01:30");
 }
 
 

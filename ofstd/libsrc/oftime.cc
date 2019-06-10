@@ -19,7 +19,6 @@
  *
  */
 
-
 #include "dcmtk/config/osconfig.h"
 
 #define INCLUDE_CSTDIO
@@ -389,77 +388,115 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
 
 OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
 {
-    OFBool status = OFFalse;
+    unsigned int hours, minutes;
+    double seconds, timezone;
+
+    size_t pos = 0;
     const size_t length = formattedTime.length();
-    const size_t firstSep = formattedTime.find_first_not_of("0123456789");
-    const OFBool separators = (firstSep != OFString_npos);
-    unsigned int hours, minutes, seconds;
-    /* check for supported formats: HHMM */
-    if ((length == 4) && !separators)
-    {
-        /* extract "HH" and "MM" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%02u", &hours, &minutes) == 2)
-            status = setTime(hours, minutes, 0 /*seconds*/);
+    OFBool delim_must_present = OFFalse;
+    char delimiter = ':';
+
+    #define FTOA_TODIGIT(c)      ((c) - '0')
+
+    if ((length - pos) < 2 || !isdigit(formattedTime[pos]) || !isdigit(formattedTime[pos + 1])) {
+        /* no digits available to get hours */
+        return OFFalse;
     }
-    /* HH:MM */
-    else if ((length == 5) && separators)
-    {
-        /* extract "HH" and "MM" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%*c%02u", &hours, &minutes) == 2)
-            status = setTime(hours, minutes, 0 /*seconds*/);
+    hours = FTOA_TODIGIT(formattedTime[pos]) * 10 + FTOA_TODIGIT(formattedTime[pos + 1]);
+
+    /* step to minutes or delimiter */
+    pos += 2;
+    if ((length - pos) < 1) {
+        /* length is not enough for ':' (possible) delimiter */
+        return OFFalse;
     }
-    /* HHMMSS */
-    else if ((length == 6) && !separators)
-    {
-        /* extract "HH", "MM" and "SS" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%02u%02u", &hours, &minutes, &seconds) == 3)
-            status = setTime(hours, minutes, seconds);
+    /* skip delimiter ':' if it found here */
+    if (formattedTime[pos] == ':' || formattedTime[pos] == '-') {
+        /* after first ':' between HH and MM we require it everywhere */
+        delim_must_present = OFTrue;
+        delimiter = formattedTime[pos];
+        pos++;
     }
-    /* HH:MM:SS */
-    else if ((length == 8) && separators)
-    {
-        /* extract "HH", "MM" and "SS" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%*c%02u%*c%02u", &hours, &minutes, &seconds) == 3)
-            status = setTime(hours, minutes, seconds);
+    if ((length - pos) < 2 || !isdigit(formattedTime[pos]) || !isdigit(formattedTime[pos + 1])) {
+        /* no digits available to get minutes */
+        return OFFalse;
     }
-    /* HHMMSS&ZZZZ */
-    else if ((length == 11) && (firstSep == 6) && ((formattedTime[6] == '+') || (formattedTime[6] == '-')))
-    {
+    minutes = FTOA_TODIGIT(formattedTime[pos]) * 10 + FTOA_TODIGIT(formattedTime[pos + 1]);
+
+    /* step to seconds or delimiter */
+    pos += 2;
+    if ((length - pos) < 1) {
+        /* HHMM or HH:MM is okay */
+        return setTime(hours, minutes, seconds);
+    }
+    /* skip one allowed ':' if it found here */
+    if (formattedTime[pos] == delimiter) {
+        pos++;
+    } else if (delim_must_present) {
+        return OFFalse;
+    }
+
+    if ((length - pos) < 2 || !isdigit(formattedTime[pos]) || !isdigit(formattedTime[pos + 1])) {
+        /* no digits available to get seconds */
+        return OFFalse;
+    }
+    seconds = FTOA_TODIGIT(formattedTime[pos]) * 10.0 + FTOA_TODIGIT(formattedTime[pos + 1]);
+
+    /* step to fractional part of seconds or time zone */
+    pos += 2;
+
+    if ((length - pos) >= 1 && formattedTime[pos] == '.') {
+        pos++;
+
+        size_t fp_start = pos, fp_size = 0;
+
+        /* we are on beginning of the fractional part of seconds */
+        while ( pos < length && isdigit(formattedTime[pos]) ) {
+            fp_size++;
+            pos++;
+        }
+        /* Part 05, sect 6.2. The FFFFFF component, if present, shall contain 1 to 6 digits. */
+        if (fp_size == 0 || fp_size > 6) {
+            return OFFalse;
+        }
+        double fp_divider = 0.1;
+        for (size_t fpi = fp_start; fpi < pos; fpi++, fp_divider /= 10.0) {
+            seconds += fp_divider * FTOA_TODIGIT(formattedTime[fpi]);
+        }
+    }
+
+    if ((length - pos) >= 1) {
+        /* extract "&ZZZZ" or "&ZZ:ZZ" components from time string */
+
+        if (delim_must_present) {
+            while (pos < length && formattedTime[pos] == ' ')
+                pos++;
+        }
+
+        if ((length - pos) < 1) {
+            /* length is not enough for '&' delimiter */
+            return OFFalse;
+        }
+
+        if (((formattedTime[pos] != '+') && (formattedTime[pos] != '-')))
+            return OFFalse;
+
         int tzHours;
         unsigned int tzMinutes;
-        /* extract "HH", "MM", "SS" and "&ZZZZ" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%02u%02u%03d%02u", &hours, &minutes, &seconds, &tzHours, &tzMinutes) == 5)
-        {
-            const double timeZone = (tzHours < 0) ? tzHours - OFstatic_cast(double, tzMinutes) / 60
-                                                  : tzHours + OFstatic_cast(double, tzMinutes) / 60;
-            status = setTime(hours, minutes, seconds, timeZone);
+
+        if (delim_must_present) {
+            if (sscanf(formattedTime.c_str() + pos, "%03d%*c%02u", &tzHours, &tzMinutes) != 2)
+                return OFFalse;
+        } else {
+            if (sscanf(formattedTime.c_str() + pos, "%03d%02u", &tzHours, &tzMinutes) != 2)
+                return OFFalse;
         }
+        const double timeZone = (tzHours < 0) ? tzHours - OFstatic_cast(double, tzMinutes) / 60
+                                            : tzHours + OFstatic_cast(double, tzMinutes) / 60;
+        return setTime(hours, minutes, seconds, timeZone);
     }
-    /* HH:MM:SS &ZZ:ZZ */
-    else if ((length >= 14) && separators)
-    {
-        /* first, extract "HH", "MM" and "SS" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%*c%02u%*c%02u", &hours, &minutes, &seconds) == 3)
-        {
-            size_t pos = 8;
-            /* then search for the first digit of the time zone value (skip arbitrary separators) */
-            while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedTime.at(pos))))
-                ++pos;
-            if (pos < length)
-            {
-                /* and finally, extract the time zone component from the time string */
-                int tzHours;
-                unsigned int tzMinutes;
-                if (sscanf(formattedTime.c_str() + pos - 1, "%03d%*c%02u", &tzHours, &tzMinutes) == 2)
-                {
-                    const double timeZone = (tzHours < 0) ? tzHours - OFstatic_cast(double, tzMinutes) / 60
-                                                          : tzHours + OFstatic_cast(double, tzMinutes) / 60;
-                    status = setTime(hours, minutes, seconds, timeZone);
-                }
-            }
-        }
-    }
-    return status;
+
+    return setTime(hours, minutes, seconds);
 }
 
 

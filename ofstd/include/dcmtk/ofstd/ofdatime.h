@@ -205,10 +205,10 @@ class DCMTK_OFSTD_EXPORT OFDateTime
 
     /** set the date/time value to the given ISO formatted date/time string.
      *  The two ISO date/time formats supported by this function are
-     *  - "YYYY-MM-DD HH:MM[:SS [&ZZ:ZZ]]" (with arbitrary delimiters) and
-     *  - "YYYYMMDDHHMM[SS[&ZZZZ]]" (without delimiters, useful for DICOM datetime type)
-     *  where the brackets enclose optional parts. Please note that the optional fractional
-     *  part of a second ".FFFFFF" (see getISOFormattedDateTime()) is not yet supported.
+     *  - "YYYY-MM-DD HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters) and
+     *  - "YYYYMMDDHHMM[SS[.FFFFFF][&ZZZZ]]" (without delimiters, useful for DICOM datetime type)
+     *  where the brackets enclose optional parts. Optional fractional
+     *  part of a second ".FFFFFF" (see getISOFormattedDateTime()) is supported.
      *  @param formattedDateTime ISO formatted date/time value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */
