@@ -391,6 +391,11 @@ else()   # ... for non-Windows systems
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
   endif()
 
+  # When compiling with IBM xlC, add flags to suppress some noisy C++ warnings
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XL")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -qsuppress=1500-029:1500-030")
+  endif()
+
 endif()
 
 # define libraries and object files that must be linked to most Windows applications
