@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2016, OFFIS e.V.
+ *  Copyright (C) 2003-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,6 +48,13 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 
 #ifdef WITH_LIBXML
+
+#ifdef __ibmxl__
+// IBM xlC defines __GNUC__ but does not support the GNUC extension
+// __attribute__ ((format (printf, 2, 3))).
+// This avoids a compiler warning in <libxml/parser.h>.
+#define LIBXML_ATTR_FORMAT(fmt,args)
+#endif
 
 #include <libxml/parser.h>
 
