@@ -11,10 +11,10 @@ cda2dcm.o: cda2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -79,10 +79,11 @@ cda2dcm.o: cda2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcencdoc.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcencdoc.h
 dcm2json.o: dcm2json.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -96,10 +97,10 @@ dcm2json.o: dcm2json.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -164,10 +165,11 @@ dcm2json.o: dcm2json.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcjson.h \
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcjson.h \
  ../../ofstd/include/dcmtk/ofstd/ofchrenc.h
 dcm2pdf.o: dcm2pdf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -182,10 +184,10 @@ dcm2pdf.o: dcm2pdf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -250,10 +252,11 @@ dcm2pdf.o: dcm2pdf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcistrmz.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcistrmz.h
 dcm2xml.o: dcm2xml.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -267,10 +270,10 @@ dcm2xml.o: dcm2xml.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -335,9 +338,11 @@ dcm2xml.o: dcm2xml.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h \
  ../../ofstd/include/dcmtk/ofstd/ofchrenc.h
 dcmconv.o: dcmconv.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -352,10 +357,10 @@ dcmconv.o: dcmconv.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -420,10 +425,12 @@ dcmconv.o: dcmconv.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcostrmz.h ../include/dcmtk/dcmdata/dcistrmz.h \
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcostrmz.h \
+ ../include/dcmtk/dcmdata/dcistrmz.h \
  ../../ofstd/include/dcmtk/ofstd/ofchrenc.h
 dcmcrle.o: dcmcrle.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -438,10 +445,10 @@ dcmcrle.o: dcmcrle.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -506,10 +513,11 @@ dcmcrle.o: dcmcrle.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcrleerg.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcrleerg.h
 dcmdrle.o: dcmdrle.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
@@ -523,10 +531,10 @@ dcmdrle.o: dcmdrle.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -591,10 +599,11 @@ dcmdrle.o: dcmdrle.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcrledrg.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcrledrg.h
 dcmdump.o: dcmdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
@@ -609,9 +618,9 @@ dcmdump.o: dcmdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -676,10 +685,11 @@ dcmdump.o: dcmdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcistrmz.h \
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcistrmz.h \
  ../../ofstd/include/dcmtk/ofstd/ofchrenc.h
 dcmftest.o: dcmftest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -749,10 +759,10 @@ dcmgpdir.o: dcmgpdir.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -817,10 +827,11 @@ dcmgpdir.o: dcmgpdir.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcddirif.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcddirif.h
 dcmodify.o: dcmodify.cc ../../config/include/dcmtk/config/osconfig.h \
  mdfconen.h ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -956,10 +967,12 @@ dump2dcm.o: dump2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcpxitem.h ../include/dcmtk/dcmdata/dcostrmz.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcpxitem.h \
+ ../include/dcmtk/dcmdata/dcostrmz.h
 img2dcm.o: img2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
@@ -1110,10 +1123,11 @@ mdfconen.o: mdfconen.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcistrmz.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcistrmz.h
 mdfdsman.o: mdfdsman.cc ../../config/include/dcmtk/config/osconfig.h \
  mdfdsman.h ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -1194,10 +1208,12 @@ mdfdsman.o: mdfdsman.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcpath.h ../include/dcmtk/dcmdata/dcistrmf.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcpath.h \
+ ../include/dcmtk/dcmdata/dcistrmf.h
 pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1211,10 +1227,10 @@ pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -1279,10 +1295,11 @@ pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcencdoc.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcencdoc.h
 stl2dcm.o: stl2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1296,10 +1313,10 @@ stl2dcm.o: stl2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -1364,10 +1381,11 @@ stl2dcm.o: stl2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcencdoc.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcencdoc.h
 xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1381,10 +1399,10 @@ xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
  ../../oflog/include/dcmtk/oflog/loglevel.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/tchar.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
@@ -1449,7 +1467,9 @@ xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrpobw.h ../include/dcmtk/dcmdata/dcovlay.h \
  ../include/dcmtk/dcmdata/dcvrat.h ../include/dcmtk/dcmdata/dcvrss.h \
  ../include/dcmtk/dcmdata/dcvrus.h ../include/dcmtk/dcmdata/dcvrsl.h \
+ ../include/dcmtk/dcmdata/dcvrsv.h ../include/dcmtk/dcmdata/dcvruv.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
- ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmdata/dcpxitem.h ../include/dcmtk/dcmdata/dcostrmz.h
+ ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
+ ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcpxitem.h \
+ ../include/dcmtk/dcmdata/dcostrmz.h

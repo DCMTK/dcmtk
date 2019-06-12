@@ -22,8 +22,9 @@ LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 I2DLIBS = -li2d
 
 objs = tests.o tpread.o ti2dbmp.o tchval.o tpath.o tvrdatim.o telemlen.o tparser.o \
-	tdict.o tvrds.o tvrfd.o tvrui.o tvrol.o tstrval.o tspchrs.o tvrpn.o \
-	tparent.o tfilter.o tvrcomp.o tmatch.o tnewdcme.o tgenuid.o
+	tdict.o tvrds.o tvrfd.o tvrui.o tvrol.o tvrov.o tvrsv.o tvruv.o tstrval.o \
+	tspchrs.o tvrpn.o tparent.o tfilter.o tvrcomp.o tmatch.o tnewdcme.o \
+	tgenuid.o
 
 progs = tests
 

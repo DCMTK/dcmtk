@@ -55,11 +55,13 @@
 #include "dcmtk/dcmdata/dcvrod.h"
 #include "dcmtk/dcmdata/dcvrof.h"
 #include "dcmtk/dcmdata/dcvrol.h"
+#include "dcmtk/dcmdata/dcvrov.h"
 #include "dcmtk/dcmdata/dcvrpn.h"
 #include "dcmtk/dcmdata/dcvrsh.h"
 #include "dcmtk/dcmdata/dcvrsl.h"
 #include "dcmtk/dcmdata/dcvrss.h"
 #include "dcmtk/dcmdata/dcvrst.h"
+#include "dcmtk/dcmdata/dcvrsv.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
 #include "dcmtk/dcmdata/dcvruc.h"
 #include "dcmtk/dcmdata/dcvrui.h"
@@ -68,6 +70,7 @@
 #include "dcmtk/dcmdata/dcvrur.h"
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcvrut.h"
+#include "dcmtk/dcmdata/dcvruv.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
 #include "dcmtk/dcmdata/dcjson.h"
@@ -2464,7 +2467,7 @@ OFCondition DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Uint8));
+            *count = elem->getNumberOfValues();
         else
             *count = 0;
     }
@@ -2514,7 +2517,7 @@ OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Uint16));
+            *count = elem->getNumberOfValues();
         else
             *count = 0;
     }
@@ -2564,7 +2567,7 @@ OFCondition DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Sint16));
+            *count = elem->getNumberOfValues();
         else
             *count = 0;
     }
@@ -2614,7 +2617,7 @@ OFCondition DcmItem::findAndGetUint32Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Uint32));
+            *count = elem->getNumberOfValues();
         else
             *count = 0;
     }
@@ -2664,7 +2667,107 @@ OFCondition DcmItem::findAndGetSint32Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Sint32));
+            *count = elem->getNumberOfValues();
+        else
+            *count = 0;
+    }
+    /* reset value */
+    if (status.bad())
+        value = NULL;
+    return status;
+}
+
+
+OFCondition DcmItem::findAndGetUint64(const DcmTagKey& tagKey,
+                                      Uint64 &value,
+                                      const unsigned long pos,
+                                      const OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* get the value */
+        status = elem->getUint64(value, pos);
+    }
+    /* reset value */
+    if (status.bad())
+        value = 0;
+    return status;
+}
+
+
+OFCondition DcmItem::findAndGetUint64Array(const DcmTagKey& tagKey,
+                                           const Uint64 *&value,
+                                           unsigned long *count,
+                                           const OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* get the value */
+        Uint64 *array = NULL;
+        status = elem->getUint64Array(array);
+        value = array;
+    }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getNumberOfValues();
+        else
+            *count = 0;
+    }
+    /* reset value */
+    if (status.bad())
+        value = NULL;
+    return status;
+}
+
+
+OFCondition DcmItem::findAndGetSint64(const DcmTagKey& tagKey,
+                                      Sint64 &value,
+                                      const unsigned long pos,
+                                      const OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* get the value */
+        status = elem->getSint64(value, pos);
+    }
+    /* reset value */
+    if (status.bad())
+        value = 0;
+    return status;
+}
+
+
+OFCondition DcmItem::findAndGetSint64Array(const DcmTagKey& tagKey,
+                                           const Sint64 *&value,
+                                           unsigned long *count,
+                                           const OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* get the value */
+        Sint64 *array = NULL;
+        status = elem->getSint64Array(array);
+        value = array;
+    }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getNumberOfValues();
         else
             *count = 0;
     }
@@ -2764,7 +2867,7 @@ OFCondition DcmItem::findAndGetFloat32Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Float32));
+            *count = elem->getNumberOfValues();
         else
             *count = 0;
     }
@@ -2814,7 +2917,7 @@ OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
-            *count = elem->getLength() / OFstatic_cast(unsigned long, sizeof(Float64));
+            *count = elem->getNumberOfValues();
         else
             *count = 0;
     }
@@ -3168,6 +3271,9 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_OL:
             elem = new DcmOtherLong(tag);
             break;
+        case EVR_OV:
+            elem = new DcmOther64bitVeryLong(tag);
+            break;
         case EVR_PN:
             elem = new DcmPersonName(tag);
             break;
@@ -3182,6 +3288,9 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
             break;
         case EVR_ST:
             elem = new DcmShortText(tag);
+            break;
+        case EVR_SV:
+            elem = new DcmSigned64bitVeryLong(tag);
             break;
         case EVR_TM:
             elem = new DcmTime(tag);
@@ -3204,16 +3313,12 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_UT:
             elem = new DcmUnlimitedText(tag);
             break;
+        case EVR_UV:
+            elem = new DcmUnsigned64bitVeryLong(tag);
+            break;
         case EVR_UNKNOWN:
             /* Unknown VR, e.g. tag not found in data dictionary */
             status = EC_UnknownVR;
-            break;
-        case EVR_SV:
-        case EVR_UV:
-        case EVR_OV:
-            // TODO: requires new VR classes
-            DCMDATA_ERROR("DcmItem: Support for new VR=" << tag.getVRName() << " not yet implemented");
-            status = EC_NotYetImplemented;
             break;
         default:
             status = EC_IllegalCall;
@@ -3920,6 +4025,9 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_OL:
             elem = new DcmOtherLong(tag);
             break;
+        case EVR_OV:
+            elem = new DcmOther64bitVeryLong(tag);
+            break;
         case EVR_PN:
             elem = new DcmPersonName(tag);
             break;
@@ -3937,6 +4045,9 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
             break;
         case EVR_ST:
             elem = new DcmShortText(tag);
+            break;
+        case EVR_SV:
+            elem = new DcmSigned64bitVeryLong(tag);
             break;
         case EVR_TM:
             elem = new DcmTime(tag);
@@ -3959,6 +4070,9 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_UT:
             elem = new DcmUnlimitedText(tag);
             break;
+        case EVR_UV:
+            elem = new DcmUnsigned64bitVeryLong(tag);
+            break;
         case EVR_PixelData:
             elem = new DcmPixelData(tag);
             // set VR to OW to make sure that we never write/send the internal VR
@@ -3972,13 +4086,6 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_UNKNOWN:
             /* Unknown VR, e.g. tag not found in data dictionary */
             status = EC_UnknownVR;
-            break;
-        case EVR_SV:
-        case EVR_UV:
-        case EVR_OV:
-            // TODO: requires new VR classes
-            DCMDATA_ERROR("DcmItem: Support for new VR=" << tag.getVRName() << " not yet implemented");
-            status = EC_NotYetImplemented;
             break;
         default:
             status = EC_IllegalCall;
@@ -4427,12 +4534,13 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
             newElement = new DcmOtherLong(tag, length);
             break;
         case EVR_SV :
+            newElement = new DcmSigned64bitVeryLong(tag, length);
+            break;
         case EVR_UV :
+            newElement = new DcmUnsigned64bitVeryLong(tag, length);
+            break;
         case EVR_OV :
-            // TODO: requires new VR classes; also need to add support for OV with undefined length
-            DCMDATA_WARN("DcmItem: Support for new VR=" << tag.getVRName() << " not yet implemented, treating as UN/OB");
-            // until dedicated support is available, treat as OB
-            newElement = new DcmOtherByteOtherWord(tag, length);
+            newElement = new DcmOther64bitVeryLong(tag, length);
             break;
         case EVR_FL :
             newElement = new DcmFloatingPointSingle(tag, length);

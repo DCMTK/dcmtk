@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -304,6 +304,22 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition getFloat32(Float32 &val, const unsigned long pos = 0);
 
+    /** retrieve a single value of type Sint64. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition getSint64(Sint64 &val, const unsigned long pos = 0);
+
+    /** retrieve a single value of type Uint64. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition getUint64(Uint64 &val, const unsigned long pos = 0);
+
     /** retrieve a single value of type Float64. Requires element to be of corresponding VR,
      *  otherwise an error is returned.
      *  @param val value returned in this parameter upon success
@@ -424,6 +440,26 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition getFloat32Array(Float32 *&val);
+
+    /** get a pointer to the element value of the current element as type Sint64.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition getSint64Array(Sint64 *&val);
+
+    /** get a pointer to the element value of the current element as type Uint64.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition getUint64Array(Uint64 *&val);
 
     /** get a pointer to the element value of the current element as type Float64.
      *  Requires element to be of corresponding VR, otherwise an error is returned.

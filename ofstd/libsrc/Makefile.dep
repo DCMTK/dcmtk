@@ -117,11 +117,7 @@ offname.o: offname.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../include/dcmtk/ofstd/oferror.h
-oflist.o: oflist.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
- ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
- ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstdinc.h \
- ../include/dcmtk/ofstd/ofstream.h
+oflist.o: oflist.cc ../../config/include/dcmtk/config/osconfig.h
 ofmath.o: ofmath.cc ../../config/math.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstream.h \
@@ -161,16 +157,7 @@ ofstd.o: ofstd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofsockad.h ../include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/ofstd/ofgrp.h ../include/dcmtk/ofstd/ofpwd.h \
  ../include/dcmtk/ofstd/ofoption.h ../include/dcmtk/ofstd/ofalign.h
-ofstring.o: ofstring.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftypes.h \
- ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
- ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstdinc.h \
- ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofbmanip.h \
- ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
- ../include/dcmtk/ofstd/oftraits.h ../include/dcmtk/ofstd/ofcond.h \
- ../include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/oferror.h
+ofstring.o: ofstring.cc ../../config/include/dcmtk/config/osconfig.h
 ofstrutl.o: ofstrutl.cc ../include/dcmtk/ofstd/ofstrutl.h \
  ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftypes.h \

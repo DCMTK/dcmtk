@@ -41,9 +41,9 @@ objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcencdoc.o\
 	dcsequen.o dcfilefo.o dcbytstr.o dcpixel.o dcvrae.o dcvras.o dcvrcs.o \
 	dccodec.o dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
-	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
-	dcvrfd.o dcvrpobw.o dcvrof.o dcvrod.o dcvrol.o dcdirrec.o dcdicdir.o \
-	dcrleccd.o dcrlecce.o dcrlecp.o dcrlerp.o dcrledrg.o dcrleerg.o \
+	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrsv.o dcvrul.o dcvruv.o dcvrulup.o \
+	dcvrfl.o dcvrfd.o dcvrpobw.o dcvrof.o dcvrod.o dcvrol.o dcvrov.o dcdirrec.o \
+	dcdicdir.o dcrleccd.o dcrlecce.o dcrlecp.o dcrlerp.o dcrledrg.o dcrleerg.o \
 	dcdictbi.o dctagkey.o dcdicent.o dcdict.o dcvr.o dchashdi.o cmdlnarg.o \
 	dcvrut.o dcvrur.o dcvruc.o dctypes.o dcpcache.o dcddirif.o dcistrma.o \
 	dcistrmb.o dcistrmf.o dcistrmz.o dcostrma.o dcostrmb.o dcostrmf.o \

@@ -236,14 +236,14 @@ default.  They can be identified by the additional attribute "loaded" with a
 value of "no" (see example above).  The command line option \e --load-all
 forces to load all value fields including the very long ones.
 
-Furthermore, binary information of OB and OW attributes are not written to the
-XML output file by default.  These elements can be identified by the
-additional attribute "binary" with a value of "hidden" (default is "no").  The
-command line option \e --write-binary-data causes also binary value fields to
-be printed (attribute value is "yes" or "base64").  But, be careful when using
-this option together with \e --load-all because of the large amounts of pixel
-data that might be printed to the output.  Please note that in this context
-element values with a VR of OD or OF are not regarded as "binary information".
+Furthermore, binary data of OB and OW attributes are not written to the XML
+output file by default.  These elements can be identified by the additional
+attribute "binary" with a value of "hidden" (default is "no").  The command line
+option \e --write-binary-data causes also binary value fields to be printed
+(attribute value is "yes" or "base64").  But, be careful when using this option
+together with \e --load-all because of the large amounts of pixel data that
+might be printed to the output.  Please note that in this context element values
+with a VR of OD, OF, OL and OV are not regarded as "binary data".
 
 Multiple values (i.e. where the DICOM value multiplicity is greater than 1)
 are separated by a backslash "\" (except for Base64 encoded data).  The "len"
@@ -386,6 +386,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2xml_copyright COPYRIGHT
 
-Copyright (C) 2002-2016 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

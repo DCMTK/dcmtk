@@ -9,9 +9,9 @@ DCMTK_ADD_LIBRARY(dcmdata
   dcostrmb dcostrmf dcostrmz dcpath dcpcache dcpixel dcpixseq dcpxitem dcrleccd
   dcrlecce dcrlecp dcrledrg dcrleerg dcrlerp dcsequen dcspchrs dcstack dcswap dctag
   dctagkey dctypes dcuid dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt
-  dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrod dcvrof dcvrol dcvrpn dcvrpobw
-  dcvrsh dcvrsl dcvrss dcvrst dcvrtm dcvruc dcvrui dcvrul dcvrulup dcvrur dcvrus
-  dcvrut dcwcache dcxfer vrscan vrscanl)
+  dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrod dcvrof dcvrol dcvrov dcvrpn
+  dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrsv dcvrtm dcvruc dcvrui dcvrul dcvrulup
+  dcvrur dcvrus dcvrut dcvruv dcwcache dcxfer vrscan vrscanl)
 
 DCMTK_TARGET_LINK_MODULES(dcmdata ofstd oflog)
 DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS})

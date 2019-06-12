@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2017 OFFIS e.V.
+ *  Copyright (C) 2011-2019 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,6 +39,9 @@ OFTEST_REGISTER(dcmdata_personName);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_1);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_2);
 OFTEST_REGISTER(dcmdata_otherLong);
+OFTEST_REGISTER(dcmdata_other64bitVeryLong);
+OFTEST_REGISTER(dcmdata_signed64bitVeryLong);
+OFTEST_REGISTER(dcmdata_unsigned64bitVeryLong);
 OFTEST_REGISTER(dcmdata_VRCompare);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AE);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AS);
@@ -56,6 +59,7 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_OB);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_OD);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_OF);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_OL);
+OFTEST_REGISTER(dcmdata_elementLength_EVR_OV);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_OW);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_OverlayData);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_PN);
@@ -65,6 +69,7 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_SL);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_SQ);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_SS);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_ST);
+OFTEST_REGISTER(dcmdata_elementLength_EVR_SV);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_TM);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_UC);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_UI);
@@ -74,6 +79,7 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_UNKNOWN);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_UNKNOWN2B);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_UR);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_US);
+OFTEST_REGISTER(dcmdata_elementLength_EVR_UV);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_UT);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_lt);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_na);

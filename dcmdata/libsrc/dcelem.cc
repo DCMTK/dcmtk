@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -444,6 +444,22 @@ OFCondition DcmElement::getFloat32(Float32 & /*val*/,
 }
 
 
+OFCondition DcmElement::getSint64(Sint64 & /*val*/,
+                                  const unsigned long /*pos*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+OFCondition DcmElement::getUint64(Uint64 & /*val*/,
+                                  const unsigned long /*pos*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
 OFCondition DcmElement::getFloat64(Float64 & /*val*/,
                                    const unsigned long /*pos*/)
 {
@@ -550,6 +566,20 @@ OFCondition DcmElement::getUint32Array(Uint32 * & /*val*/)
 
 
 OFCondition DcmElement::getFloat32Array(Float32 * & /*val*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+OFCondition DcmElement::getSint64Array(Sint64 * & /*val*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+OFCondition DcmElement::getUint64Array(Uint64 * & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;

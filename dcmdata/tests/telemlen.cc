@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -112,7 +112,10 @@ TEST_VR(EVR_OB)
 TEST_VR(EVR_OD)
 TEST_VR(EVR_OF)
 TEST_VR(EVR_OL)
+TEST_VR(EVR_OV)
 TEST_VR(EVR_OW)
+TEST_VR(EVR_SV)
+TEST_VR(EVR_UV)
 TEST_VR(EVR_SQ)
 TEST_VR(EVR_UC)
 TEST_VR(EVR_UR)

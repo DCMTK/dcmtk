@@ -240,8 +240,8 @@ See \b dcm2xml documentation for more details on the XML structure.
 
 \subsection xml2dcm_binary_data Binary Data
 
-Binary data can be encoded either as a sequence of hex numbers separated by a
-backslash "\" or in Base64 format (binary="base64").  In addition, binary data
+Binary data (*) can be encoded either as a sequence of hex numbers separated by
+a backslash "\" or in Base64 format (binary="base64").  In addition, binary data
 can also be read from file (binary="file").  In this case, the filename has to
 be specified as the element value, e.g.
 
@@ -253,6 +253,10 @@ Please note that the contents of the file will be read as is.  OW data is
 expected to be little endian ordered and will be swapped if necessary.  No
 checks will be made to ensure that the amount of data is reasonable in terms
 of other attributes such as Rows or Columns.
+
+(*) Please note that currently only OB and OW data is supported, i.e. element
+values with a VR of OD, OF, OL and OV are not regarded as "binary data" and
+treated as all other VRs.
 
 \subsection xml2dcm_compression Compression
 
@@ -338,6 +342,6 @@ It is an error if no data dictionary can be loaded.
 
 \section xml2dcm_copyright COPYRIGHT
 
-Copyright (C) 2003-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
