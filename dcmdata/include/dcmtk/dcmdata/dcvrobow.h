@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -149,7 +149,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
      *  @param pixelFileName not used
      *  @param pixelCounter not used
      */
-    virtual void print(STD_NAMESPACE ostream&out,
+    virtual void print(STD_NAMESPACE ostream &out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -180,7 +180,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** write object in JSON format to a stream
@@ -188,7 +188,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
      *  @param format used to format and customize the output
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeJson(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
     /** special write method for creation of digital signatures
@@ -363,7 +363,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
      *  @param pixelFileName optional filename used to write the raw pixel data file
      *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
-    void printPixel(STD_NAMESPACE ostream&out,
+    void printPixel(STD_NAMESPACE ostream &out,
                     const size_t flags,
                     const int level,
                     const char *pixelFileName,

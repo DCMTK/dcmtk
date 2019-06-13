@@ -138,7 +138,7 @@ void DcmMetaInfo::removeInvalidGroups()
 // ********************************
 
 
-void DcmMetaInfo::print(STD_NAMESPACE ostream&out,
+void DcmMetaInfo::print(STD_NAMESPACE ostream &out,
                         const size_t flags,
                         const int level,
                         const char *pixelFileName,

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -249,7 +249,8 @@ private:
 
 public:
 
-    /** constructor
+    /** constructor.
+     *  Create new element from given tag and length.
      *  @param tag attribute tag
      *  @param len length of the attribute value
      */
@@ -327,7 +328,7 @@ public:
      *  @param pixelFileName optional filename used to write the raw pixel data file
      *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
-    virtual void print(STD_NAMESPACE ostream&out,
+    virtual void print(STD_NAMESPACE ostream &out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -375,7 +376,7 @@ public:
      *  @param maxReadLength Maximum read length for reading an attribute value.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition read(DcmInputStream & inStream,
+    virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
@@ -396,7 +397,7 @@ public:
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures

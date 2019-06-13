@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -115,7 +115,7 @@ public:
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(
-        DcmInputStream & inStream,
+        DcmInputStream &inStream,
         const E_TransferSyntax ixfer,
         const E_GrpLenEncoding glenc,
         const Uint32 maxReadLength);

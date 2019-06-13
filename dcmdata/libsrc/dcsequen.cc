@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -271,7 +271,7 @@ unsigned long DcmSequenceOfItems::card() const
 // ********************************
 
 
-void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
+void DcmSequenceOfItems::print(STD_NAMESPACE ostream &out,
                                const size_t flags,
                                const int level,
                                const char *pixelFileName,
@@ -327,7 +327,7 @@ void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream &out,
                                          const size_t flags)
 {
     OFCondition l_error = EC_Normal;

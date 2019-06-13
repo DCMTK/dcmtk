@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,7 +47,8 @@ class DCMTK_DCMDATA_EXPORT DcmPixelItem : public DcmOtherByteOtherWord
 {
   public:
 
-    /** constructor
+    /** constructor.
+     *  Create new element from given tag.
      *  @param tag attribute tag
      *  @param len length of the attribute value
      */

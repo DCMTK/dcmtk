@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,7 +45,7 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedLongOffset
     friend class DcmItem;
 
     /** constructor.
-     *  Create new element from given tag and length.
+     *  Create new element from given tag.
      *  @param tag DICOM tag for the new element
      */
     DcmUnsignedLongOffset(const DcmTag &tag);
@@ -134,4 +134,4 @@ class DCMTK_DCMDATA_EXPORT DcmUnsignedLongOffset
 };
 
 
-#endif // DCVRUSUP_H
+#endif // DCVRULUP_H

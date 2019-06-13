@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,7 +108,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherFloat
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** write object in JSON format to a stream
@@ -116,7 +116,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherFloat
      *  @param format used to format and customize the output
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeJson(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 };
 

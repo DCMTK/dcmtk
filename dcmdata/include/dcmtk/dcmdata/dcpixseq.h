@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -58,7 +58,8 @@ public:
     // constructor allowing construction using an explicit value length.
     friend class DcmPixelData;
 
-    /** constructor
+    /** constructor.
+     *  Create new element from given tag.
      *  @param tag attribute tag
      */
     DcmPixelSequence(const DcmTag &tag);
@@ -150,7 +151,7 @@ public:
     virtual OFCondition remove(DcmPixelItem * &item,
                                const unsigned long num);
 
-    /** remove pixel item from list. Tthe pixel item is not deleted;
+    /** remove pixel item from list. The pixel item is not deleted;
      *  the caller is responsible for further management of the DcmPixelItem object.
      *  @param item pointer to element to be removed from list
      *  @return EC_Normal if successful, an error code otherwise
@@ -186,7 +187,7 @@ public:
      *  @param maxReadLength Maximum read length for reading an attribute value.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition read(DcmInputStream & inStream,
+    virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);

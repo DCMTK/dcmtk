@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -492,7 +492,7 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, always returns EC_Illegal Call
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** write object in JSON format to a stream
@@ -500,7 +500,7 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *  @param format used to format and customize the output
      *  @return status, always returns EC_Illegal Call
      */
-    virtual OFCondition writeJson(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
     /** special write method for creation of digital signatures (abstract)

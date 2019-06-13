@@ -165,7 +165,7 @@ OFCondition DcmOtherByteOtherWord::setVR(DcmEVR vr)
 // ********************************
 
 
-void DcmOtherByteOtherWord::print(STD_NAMESPACE ostream&out,
+void DcmOtherByteOtherWord::print(STD_NAMESPACE ostream &out,
                                   const size_t flags,
                                   const int level,
                                   const char * /*pixelFileName*/,

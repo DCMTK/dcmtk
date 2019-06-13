@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -242,7 +242,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
 }
 
 
-OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream &out,
                                    const size_t flags)
 {
     if (flags & DCMTypes::XF_useNativeModel)

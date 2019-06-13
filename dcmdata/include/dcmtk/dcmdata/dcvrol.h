@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, OFFIS e.V.
+ *  Copyright (C) 2016-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,7 +45,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherLong
     friend class DcmItem;
 
     /** constructor.
-     *  Create new element from given tag and length.
+     *  Create new element from given tag.
      *  @param tag DICOM tag for the new element
      */
     DcmOtherLong(const DcmTag &tag);
@@ -110,7 +110,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherLong
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** write object in JSON format

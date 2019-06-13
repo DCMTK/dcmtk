@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,7 +48,8 @@ public:
     // constructor allowing construction using an explicit value length.
     friend class DcmItem;
 
-    /** constructor
+    /** constructor.
+     *  Create new element from given tag.
      *  @param tag attribute tag
      */
     DcmSequenceOfItems(const DcmTag &tag);
@@ -137,7 +138,7 @@ public:
      *  @param pixelFileName not used (used in certain sub-classes of this class)
      *  @param pixelCounter not used (used in certain sub-classes of this class)
      */
-    virtual void print(STD_NAMESPACE ostream&out,
+    virtual void print(STD_NAMESPACE ostream &out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -293,7 +294,7 @@ public:
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** write object in JSON format
@@ -301,7 +302,7 @@ public:
      *  @param format used to format and customize the output
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeJson(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
     /** special write method for creation of digital signatures
