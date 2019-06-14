@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -782,7 +782,18 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
     virtual OFCondition checkSubTreeConstraints(const DSRDocumentSubTree *tree,
                                                 const DSRIODConstraintChecker *checker) const;
 
+
     // --- static helper function ---
+
+    /** check whether a by-reference relationship from a given source to a target node
+     *  (specified by the position strings) is valid, i.e.\ is allowed according to the
+     *  DICOM standard.  This check should prevent loops (directed acyclic graphs).
+     ** @param sourcePosition position string of the source content item to be checked
+     *  @param targetPosition position string of the target content item to be checked
+     ** @return OFTrue if by-reference relationship is allowed, OFFalse otherwise
+     */
+    virtual OFBool validByReferenceRelationship(const OFString &sourcePosition,
+                                                const OFString &targetPosition);
 
     /** clone a particular subtree, i.e.\ a fragment of a tree
      ** @param  startCursor      cursor pointing to first node of the subtree to be copied

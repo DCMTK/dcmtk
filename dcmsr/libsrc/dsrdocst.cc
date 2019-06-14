@@ -644,7 +644,7 @@ size_t DSRDocumentSubTree::addByReferenceRelationship(const E_RelationshipType r
                 getPosition(sourceString);
                 cursor.getPosition(targetString);
                 /* check whether target node is an ancestor of source node (prevent loops) */
-                if (sourceString.substr(0, targetString.length()) != targetString)
+                if (validByReferenceRelationship(sourceString, targetString))
                 {
                     const DSRDocumentTreeNode *targetNode = cursor.getNode();
                     const E_ValueType targetValueType = targetNode->getValueType();
@@ -1168,7 +1168,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                             if (refNodeID != cursor.getNodeID())
                             {
                                 /* check whether target node is an ancestor of source node (prevent loops) */
-                                if (refContentItem.empty() || (nodePosString.substr(0, refContentItem.length()) != refContentItem))
+                                if (refContentItem.empty() || validByReferenceRelationship(nodePosString, refContentItem))
                                 {
                                     /* refCursor should now point to the reference target (refNodeID > 0) */
                                     const DSRDocumentTreeNode *parentNode = cursor.getParentNode();
@@ -1292,5 +1292,18 @@ OFCondition DSRDocumentSubTree::checkSubTreeConstraints(const DSRDocumentSubTree
         }
     } else
         result = EC_IllegalParameter;
+    return result;
+}
+
+
+// static functions
+
+OFBool DSRDocumentSubTree::validByReferenceRelationship(const OFString &sourcePosition,
+                                                        const OFString &targetPosition)
+{
+    /* check whether target node is an ancestor of source node (prevent loops) */
+    OFBool result = (sourcePosition != targetPosition);
+    if (result && (sourcePosition.length() > targetPosition.length()) && (sourcePosition.compare(0, targetPosition.length() + 1, targetPosition + ".") == 0))
+        result = OFFalse;
     return result;
 }
