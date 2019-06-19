@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, OFFIS e.V.
+ *  Copyright (C) 2014-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -340,7 +340,13 @@ static void provoke_snan()
     feenableexcept( FE_INVALID );
 #elif defined(HAVE_IEEEFP_H)
     fp_except cw = fpgetmask();
+
+#ifdef FP_X_DX
+    // on some systems such as CygWin, the devide-by-zero flag is called FP_X_DX
+    fpsetmask(cw | FP_X_INV | FP_X_DX | FP_X_OFL);
+#else
     fpsetmask(cw | FP_X_INV | FP_X_DZ | FP_X_OFL);
+#endif
 #endif
     // Visual Studio will emit an exception the moment
     // we assign a signaling NaN to another float variable
@@ -370,7 +376,14 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
     fedisableexcept( FE_INVALID );
 #elif defined(HAVE_IEEEFP_H)
     fp_except cw = fpgetmask();
+
+#ifdef FP_X_DX
+    // on some systems such as CygWin, the devide-by-zero flag is called FP_X_DX
+    fpsetmask(cw & ~(FP_X_INV | FP_X_DX | FP_X_OFL));
+#else
     fpsetmask(cw & ~(FP_X_INV | FP_X_DZ | FP_X_OFL));
+#endif
+
 #endif
 #endif
     // Print and return the result
