@@ -5,8 +5,8 @@
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2019b
- *  File created on 2019-04-26 16:52:50 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019c
+ *  File created on 2019-06-19 17:38:36 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 35
+// total number of codes: 36
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -55,6 +55,7 @@
 #define CODE_NCIt_PSMA11_Ga68                                              DSRBasicCodedEntry("C118961", "NCIt", "PSMA-11 Ga^68^")
 #define CODE_NCIt_Sarcosine_C11                                            DSRBasicCodedEntry("C122684", "NCIt", "Sarcosine C^11^")
 #define CODE_NCIt_MouseMammaryFatPad                                       DSRBasicCodedEntry("C22550", "NCIt", "Mouse mammary fat pad")
+#define CODE_NCIt_Middle                                                   DSRBasicCodedEntry("C25569", "NCIt", "Middle")
 #define CODE_NCIt_Reader                                                   DSRBasicCodedEntry("C28747", "NCIt", "Reader")
 #define CODE_NCIt_BronchioloalveolarAdenocarcinoma                         DSRBasicCodedEntry("C2923", "NCIt", "Bronchioloalveolar adenocarcinoma")
 #define CODE_NCIt_ClinicalCourseOfDisease                                  DSRBasicCodedEntry("C35461", "NCIt", "Clinical course of disease")
