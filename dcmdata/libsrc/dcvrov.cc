@@ -191,3 +191,23 @@ OFCondition DcmOther64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
     /* always report success */
     return EC_Normal;
 }
+
+
+// ********************************
+
+
+OFCondition DcmOther64bitVeryLong::createUint64Array(const Uint32 numQuadWords,
+                                                     Uint64 *&quadWords)
+{
+    Uint32 bytesRequired = 0;
+    /* make sure that max length is not exceeded */
+    if (OFStandard::safeMult(numQuadWords, OFstatic_cast(Uint32, sizeof(Uint64)), bytesRequired))
+        errorFlag = createEmptyValue(bytesRequired);
+    else
+        errorFlag = EC_ElemLengthExceeds32BitField;
+    if (errorFlag.good())
+        quadWords = OFstatic_cast(Uint64 *, this->getValue());
+    else
+        quadWords = NULL;
+    return errorFlag;
+}

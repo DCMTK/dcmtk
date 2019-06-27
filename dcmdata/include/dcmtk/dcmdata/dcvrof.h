@@ -118,6 +118,18 @@ class DCMTK_DCMDATA_EXPORT DcmOtherFloat
      */
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
+
+    /** create an empty Float32 array of given number of float values and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  @param numFloats number of float values (32 bit) to be created
+     *  @param floatVals stores the pointer to the resulting Float32 array
+     *    (set to NULL in case of error)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createFloat32Array(const Uint32 numFloats,
+                                           Float32 *&floatVals);
+
+
 };
 
 

@@ -191,3 +191,23 @@ OFCondition DcmOtherLong::writeJson(STD_NAMESPACE ostream &out,
     /* always report success */
     return EC_Normal;
 }
+
+
+// ********************************
+
+
+OFCondition DcmOtherLong::createUint32Array(const Uint32 numDoubleWords,
+                                            Uint32 *&doubleWords)
+{
+    Uint32 bytesRequired = 0;
+    /* make sure that max length is not exceeded */
+    if (OFStandard::safeMult(numDoubleWords, OFstatic_cast(Uint32, sizeof(Uint32)), bytesRequired))
+        errorFlag = createEmptyValue(bytesRequired);
+    else
+        errorFlag = EC_ElemLengthExceeds32BitField;
+    if (errorFlag.good())
+        doubleWords = OFstatic_cast(Uint32 *, this->getValue());
+    else
+        doubleWords = NULL;
+    return errorFlag;
+}

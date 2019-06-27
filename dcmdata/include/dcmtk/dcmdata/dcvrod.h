@@ -118,6 +118,16 @@ class DCMTK_DCMDATA_EXPORT DcmOtherDouble
      */
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
+
+    /** create an empty Float64 array of given number of double values and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  @param numDoubles number of double values (64 bit) to be created
+     *  @param doubleVals stores the pointer to the resulting Float64 array
+     *    (set to NULL in case of error)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createFloat64Array(const Uint32 numDoubles,
+                                           Float64 *&doubleVals);
 };
 
 

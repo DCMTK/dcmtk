@@ -121,6 +121,16 @@ class DCMTK_DCMDATA_EXPORT DcmOtherLong
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
+    /** create an empty Uint32 array of given number of double-words and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  @param numDoubleWords number of double-words (32 bit) to be created
+     *  @param doubleWords stores the pointer to the resulting Uint32 array
+     *    (set to NULL in case of error)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createUint32Array(const Uint32 numDoubleWords,
+                                          Uint32 *&doubleWords);
+
   protected:
 
     /** constructor. Create new element from given tag and length.

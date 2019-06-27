@@ -168,6 +168,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UndefinedLengthOBOW;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_VOI_LUT_OBOW;
 /// Pixel data in top level dataset in compressed Transfer Syntax uses explicit length (undefined required)
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PixelDataExplLengthIllegal;
+/// Element length is larger than 32-bit length field permits
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthExceeds32BitField;
 //@}
 
 // status code constants

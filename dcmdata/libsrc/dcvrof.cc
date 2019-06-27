@@ -189,3 +189,23 @@ OFCondition DcmOtherFloat::writeJson(STD_NAMESPACE ostream &out,
     /* always report success */
     return EC_Normal;
 }
+
+
+// ********************************
+
+
+OFCondition DcmOtherFloat::createFloat32Array(const Uint32 numFloats,
+                                              Float32 *&floatVals)
+{
+    Uint32 bytesRequired = 0;
+    /* make sure that max length is not exceeded */
+    if (OFStandard::safeMult(numFloats, OFstatic_cast(Uint32, sizeof(Float32)), bytesRequired))
+        errorFlag = createEmptyValue(bytesRequired);
+    else
+        errorFlag = EC_ElemLengthExceeds32BitField;
+    if (errorFlag.good())
+        floatVals = OFstatic_cast(Float32 *, this->getValue());
+    else
+        floatVals = NULL;
+    return errorFlag;
+}

@@ -121,6 +121,17 @@ class DCMTK_DCMDATA_EXPORT DcmOther64bitVeryLong
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
+    /** create an empty Uint64 array of given number of quad-words and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  @param numQuadWords number of quad-words (64 bit) to be created
+     *  @param quadWords stores the pointer to the resulting Uint64 array
+     *    (set to NULL in case of error)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createUint64Array(const Uint32 numQuadWords,
+                                          Uint64 *&quadWords);
+
+
   protected:
 
     /** constructor. Create new element from given tag and length.
