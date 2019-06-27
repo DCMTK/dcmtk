@@ -63,7 +63,6 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
     /** constructor.
      *  Create new element from given tag.
      *  @param tag DICOM tag for the new element
-     *  @param len value length for the new element
      */
     DcmByteString(const DcmTag &tag);
 

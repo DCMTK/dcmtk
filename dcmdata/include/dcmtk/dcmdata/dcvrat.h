@@ -46,7 +46,6 @@ class DCMTK_DCMDATA_EXPORT DcmAttributeTag
     /** constructor.
      *  Create new element from given tag.
      *  @param tag DICOM tag for the new element
-     *  @param len value length for the new element
      */
     DcmAttributeTag(const DcmTag &tag);
 
@@ -272,6 +271,7 @@ protected:
      */
     DcmAttributeTag(const DcmTag &tag,
                     const Uint32 len);
+
 };
 
 

@@ -168,11 +168,11 @@ class DCMTK_DCMDATA_EXPORT DcmFloatingPointDouble
                                     OFBool normalize = OFTrue);
 
     /** set particular element value to given double
-     *  @param doubleval double precision floating point value to be set
+     *  @param doubleVal double precision floating point value to be set
      *  @param pos index of the value to be set (0 = first position)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition putFloat64(const Float64 doubleval,
+    virtual OFCondition putFloat64(const Float64 doubleVal,
                                    const unsigned long pos = 0);
 
     /** set element value to given double array data
@@ -229,6 +229,7 @@ class DCMTK_DCMDATA_EXPORT DcmFloatingPointDouble
      */
     DcmFloatingPointDouble(const DcmTag &tag,
                            const Uint32 len);
+
 };
 
 
