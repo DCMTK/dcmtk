@@ -156,6 +156,7 @@ const size_t DSRTypes::PF_indicateEnhancedEncodingMode      = 1 << 11;
 const size_t DSRTypes::PF_printAnnotation                   = 1 << 12;
 const size_t DSRTypes::PF_hideIncludedTemplateNodes         = 1 << 13;
 const size_t DSRTypes::PF_dontCountIncludedTemplateNodes    = 1 << 14;
+const size_t DSRTypes::PF_printEmptyCodes                   = 1 << 15;
 /* shortcuts */
 const size_t DSRTypes::PF_printAllCodes                     = DSRTypes::PF_printConceptNameCodes;
 

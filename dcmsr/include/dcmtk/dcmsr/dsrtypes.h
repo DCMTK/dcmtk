@@ -455,6 +455,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// do not count internal "included template" nodes (only with PF_hideIncludedTemplateNodes)
     static const size_t PF_dontCountIncludedTemplateNodes;
 
+    /// print text "empty code" for empty codes (instead of "invalid code")
+    static const size_t PF_printEmptyCodes;
+
     /// shortcut: print all codes (combines all PF_printXxxCodes flags, see above)
     static const size_t PF_printAllCodes;
     //@}

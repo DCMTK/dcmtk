@@ -277,7 +277,10 @@ void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
         stream << ",\"" << DSRTypes::convertToPrintString(CodeMeaning, printString) << "\")";
         if ((flags & DSRTypes::PF_indicateEnhancedEncodingMode) && usesEnhancedEncodingMode())
             stream << "*";
-    } else
+    }
+    else if ((flags & DSRTypes::PF_printEmptyCodes) && isEmpty())
+        stream << "empty code";
+    else
         stream << "invalid code";
 }
 
@@ -814,6 +817,6 @@ DSRTypes::E_CodeValueType DSRCodedEntryValue::determineCodeValueType(const OFStr
 STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
                                   const DSRCodedEntryValue& codedEntryValue)
 {
-    codedEntryValue.print(stream, OFTrue /*printCodeValue*/, 0 /*flags*/);
+    codedEntryValue.print(stream, OFTrue /*printCodeValue*/, DSRTypes::PF_printEmptyCodes /*flags*/);
     return stream;
 }
