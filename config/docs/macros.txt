@@ -375,8 +375,8 @@ USE_WIN32_CREATE_MUTEX
   Type of modification: Activates alternative implementation
   Explanation: Starting with DCMTK 3.6.2, the Win32 version of the
     OFMutex class uses critical sections instead of Win32 mutexes, because
-    critical sections are much faster. Their only drawback is that they
-    cannot be shared across processes. Users who want to revert to the
+    critical sections are much faster.  Their only drawback is that they
+    cannot be shared across processes.  Users who want to revert to the
     behavior of older DCMTK releases can define this macro.
 
 USE_WIN32_READ_WRITE_LOCK_HELPER
@@ -386,7 +386,7 @@ USE_WIN32_READ_WRITE_LOCK_HELPER
     OFReadWriteLock class uses Slim Reader/Writer (SRW) Locks,
     which are available since Windows Vista, instead of the older
     implementation based on a Mutex, a Semaphore and a counter, because
-    SRW locks are much faster. Users who want to revert to the
+    SRW locks are much faster.  Users who want to revert to the
     behavior of older DCMTK releases can define this macro.
 
 USING_STD_NAMESPACE
@@ -418,6 +418,17 @@ WIDE_CHAR_MAIN_FUNCTION
     expands to wmain() instead of main().  When using CMake, you can enable
     this macro by setting the CMake option DCMTK_WIDE_CHAR_MAIN_FUNCTION to
     "on".  Usually, WIDE_CHAR_FILE_IO_FUNCTIONS should also be enabled.
+
+WIDE_CHAR_XML_PARSER
+  Affected: ofstd
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: The XML parser that is part of the DCMTK also supports a wide
+    character API, at least on Windows systems.  By defining this macro, the
+    type "wchar_t" is used for character strings instead of "char".  Please
+    note, however, that some DCMTK tools and classes have not yet been adapted
+    for the wide character API of the parser, e.g. cda2dcm and the underlying
+    class DcmEncapsulatedDocument.  This is also the reason why there is no
+    CMake option yet.
 
 WRITE_VERY_LARGE_CHUNKS
   Affected: dcmdata

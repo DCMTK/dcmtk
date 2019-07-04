@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,6 +98,7 @@ OFBool DcmEncapsulatedDocument::XMLsearchAttribute(
   OFString attr)
 {
   OFBool found = OFFalse;
+#ifndef _XMLWIDECHAR
   if (currnode.nChildNode() == 0)
   {
     //"currnode has no children (leaf)";
@@ -124,6 +125,7 @@ OFBool DcmEncapsulatedDocument::XMLsearchAttribute(
       found |= childfound;
     }
   }
+#endif
   return found;
 }
 
@@ -131,8 +133,9 @@ OFString DcmEncapsulatedDocument::XMLgetAllAttributeValues(
   XMLNode fileNode,
   OFString attr)
 {
-  OFList<OFString> attributeValueslist;
   OFString attributeValues;
+#ifndef _XMLWIDECHAR
+  OFList<OFString> attributeValueslist;
   if (XMLsearchAttribute(fileNode, &attributeValueslist, attr))
   {
     //If the Attribute is mediaType, initialize with text/xml to exclude
@@ -157,6 +160,7 @@ OFString DcmEncapsulatedDocument::XMLgetAllAttributeValues(
         attributeValues = "";
     }
   }
+#endif
   return attributeValues;
 }
 
@@ -165,6 +169,7 @@ OFString DcmEncapsulatedDocument::XMLgetAttribute(
   DcmTagKey attr)
 {
   OFString result = "";
+#ifndef _XMLWIDECHAR
   if (attr == DCM_DocumentTitle)
   {
     if (fileNode.getChildNode("title").getText() != NULL)
@@ -248,6 +253,7 @@ OFString DcmEncapsulatedDocument::XMLgetAttribute(
   {
     result = OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("displayName")));
   }
+#endif
   return result;
 }
 
@@ -255,6 +261,10 @@ int DcmEncapsulatedDocument::getCDAData(
   const char *filename,
   OFLogger &appLogger)
 {
+#ifdef _XMLWIDECHAR
+  OFLOG_ERROR(appLogger, "DCMTK compiled with \"wide char XML parser\". Cannot parse CDA data because of incompatible API.");
+  return 99;
+#else
   if (ftype != "cda")
   {
     OFLOG_WARN(appLogger, "Filetype mismatch or filetype not set. Current ftype is " << ftype);
@@ -460,6 +470,7 @@ int DcmEncapsulatedDocument::getCDAData(
     else opt_conceptCM = cCM;
   }
   return EXITCODE_NO_ERROR;
+#endif
 }
 
 void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)

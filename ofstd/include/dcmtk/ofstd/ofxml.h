@@ -144,12 +144,13 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofdefine.h"
 
-#if defined(UNICODE) || defined(_UNICODE)
+// DCMTK: we might want to enable wide characters without the "official" defines
+#if defined(UNICODE) || defined(_UNICODE) || defined(WIDE_CHAR_XML_PARSER)
 // If you comment the next "define" line then the library will never "switch to" _UNICODE (wchar_t*) mode (16/32 bits per characters).
 // This is useful when you get error messages like:
 //    'XMLNode::openFileHelper' : cannot convert parameter 2 from 'const char [5]' to 'const wchar_t *'
 // The _XMLWIDECHAR preprocessor variable force the XMLParser library into either utf16/32-mode (the preprocessor variable
-// must be defined) or utf8-mode(the pre-processor variable must be undefined).
+// must be defined) or utf8-mode (the pre-processor variable must be undefined).
 #define _XMLWIDECHAR
 #endif
 
@@ -161,9 +162,11 @@
 // DCMTK: Simplified to use our own version in ofstd
 #define XMLDLLENTRY DCMTK_OFSTD_EXPORT
 
+// DCMTK: we don't want wide characters on other systems than Windows
+#if !defined(_XMLWINDOWS) || !defined(_XMLWIDECHAR)
 // uncomment the next line if you want no support for wchar_t* (no need for the <wchar.h> or <tchar.h> libraries anymore to compile)
-// DCMTK: we don't want wide characters
 #define XML_NO_WIDE_CHAR
+#endif
 
 #ifdef XML_NO_WIDE_CHAR
 // DCMTK: we definitely need the following define on Windows systems
