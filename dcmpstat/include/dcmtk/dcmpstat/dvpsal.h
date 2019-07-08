@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,7 +31,7 @@
 /** a curve or overlay activation layer in a presentation state (internal use only).
  *  This class manages the data structures comprising a single curve
  *  activation layer or overlay activation layer
- *  (one instance of the Curve Activation Layer Module or 
+ *  (one instance of the Curve Activation Layer Module or
  *  Overlay Activation Layer Module repeating elements)
  *  contained in a Presentation State object.
  */
@@ -41,7 +41,7 @@ class DCMTK_DCMPSTAT_EXPORT DVPSOverlayCurveActivationLayer
 public:
   /// default constructor
   DVPSOverlayCurveActivationLayer();
-  
+
   /// copy constructor
   DVPSOverlayCurveActivationLayer(const DVPSOverlayCurveActivationLayer& copy);
 
@@ -56,7 +56,7 @@ public:
 
   /** reads the activation layer for the specified repeating group from a DICOM dataset.
    *  The DICOM elements of the Overlay/Curve Activation Layer module are copied
-   *  from the dataset to this object. 
+   *  from the dataset to this object.
    *  The completeness of the module is checked.
    *  If this method returns an error code, the object is in undefined state afterwards.
    *  @param dset the DICOM dataset from which the activation layer is to be read
@@ -64,7 +64,7 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition read(DcmItem &dset, Uint16 ovGroup);
-  
+
   /** writes the activation layer managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
    *  the DICOM dataset.
@@ -84,7 +84,7 @@ public:
   void setRepeatingGroup(Uint16 rGroup);
 
   /** get activation layer name.
-   *  @return a pointer to the activation layer name
+   *  @return a pointer to the activation layer name (might be NULL)
    */
   const char *getActivationLayer();
 
