@@ -91,6 +91,13 @@ input files:
 
   +r    --recurse
           recurse within specified directories
+
+  -rn   --no-rename
+          do not rename processed files (default)
+
+  +rn   --rename
+          append .done/.bad to processed files
+
 \endverbatim
 
 \subsection storescu_network_options network options
@@ -574,6 +581,6 @@ It is an error if no data dictionary can be loaded.
 
 \section storescu_copyright COPYRIGHT
 
-Copyright (C) 1996-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

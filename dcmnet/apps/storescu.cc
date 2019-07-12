@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -92,6 +92,7 @@ static E_FileReadMode opt_readMode = ERM_autoDetect;
 
 static OFBool opt_scanDir = OFFalse;
 static OFBool opt_recurse = OFFalse;
+static OFBool opt_renameFile = OFFalse;
 static const char *opt_scanPattern = "";
 
 static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
@@ -213,6 +214,8 @@ int main(int argc, char *argv[])
 #endif
       cmd.addOption("--no-recurse",           "-r",      "do not recurse within directories (default)");
       cmd.addOption("--recurse",              "+r",      "recurse within specified directories");
+      cmd.addOption("--no-rename",            "-rn",     "do not rename processed files (default)");
+      cmd.addOption("--rename",               "+rn",     "append .done/.bad to processed files");
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
       cmd.addOption("--aetitle",              "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
@@ -364,6 +367,12 @@ int main(int argc, char *argv[])
         app.checkDependence("--recurse", "--scan-directories", opt_scanDir);
         opt_recurse = OFTrue;
       }
+      cmd.endOptionBlock();
+
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--no-rename")) opt_renameFile = OFFalse;
+      if (cmd.findOption("--rename")) opt_renameFile = OFTrue;
       cmd.endOptionBlock();
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
@@ -1253,6 +1262,16 @@ progressCallback(void * /*callbackData*/,
   }
 }
 
+static void
+renameFile (const char *fname, const char *fext)
+{
+  if (!opt_renameFile) return;
+  OFString fnewname(fname);
+  fnewname += fext;
+  if( !OFStandard::renameFile(fname, fnewname.c_str()) )
+    OFLOG_WARN(storescuLogger, "cannot rename file '" << fname << "' to '" << fnewname.c_str() << "'");
+}
+
 static OFCondition
 storeSCU(T_ASC_Association *assoc, const char *fname)
   /*
@@ -1288,6 +1307,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* figure out if an error occured while the file was read*/
   if (cond.bad()) {
     OFLOG_ERROR(storescuLogger, "Bad DICOM file: " << fname << ": " << cond.text());
+      renameFile(fname,".bad");
     return cond;
   }
 
@@ -1300,6 +1320,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
     sopClass, sizeof(sopClass), sopInstance, sizeof(sopInstance), opt_correctUIDPadding)) {
       OFLOG_ERROR(storescuLogger, "No SOP Class or Instance UID in file: " << fname);
+         renameFile(fname,".bad");
       return DIMSE_BADDATA;
   }
 
@@ -1325,6 +1346,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
     if (!modalityName) modalityName = "unknown SOP class";
     OFLOG_ERROR(storescuLogger, "No presentation context for: (" << modalityName << ") " << sopClass);
+     renameFile(fname,".bad");
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
@@ -1371,6 +1393,11 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
    */
   if (cond == EC_Normal && (rsp.DimseStatus == STATUS_Success || DICOM_WARNING_STATUS(rsp.DimseStatus))) {
     unsuccessfulStoreEncountered = OFFalse;
+     renameFile(fname,".done");
+  }
+  else
+  {
+    renameFile(fname,".bad");
   }
 
   /* remember the response's status for later transmissions of data */
