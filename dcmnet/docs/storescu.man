@@ -97,7 +97,6 @@ input files:
 
   +rn   --rename
           append .done/.bad to processed files
-
 \endverbatim
 
 \subsection storescu_network_options network options
