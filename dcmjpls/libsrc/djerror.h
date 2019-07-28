@@ -24,7 +24,8 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpls/djlsutil.h" /* For the OFCondition codes */
-#include "intrface.h" /* CharLS include */
+#include "CharLS/charls.h" /* CharLS include */
+#include "CharLS/publictypes.h" /* CharLS include */
 
 /** Helper class for converting between dcmjpls and CharLS error codes
  */
@@ -40,29 +41,29 @@ public:
    *  @param error The CharLS error code
    *  @return The OFCondition
    */
-  static const OFConditionConst& convert(JLS_ERROR error)
+  static const OFConditionConst& convert(CharlsApiResultType error)
   {
     switch (error)
     {
-      case OK:
+        case charls::ApiResult::OK:
         return EC_Normal;
-      case UncompressedBufferTooSmall:
+      case charls::ApiResult::UncompressedBufferTooSmall:
         return EC_JLSUncompressedBufferTooSmall;
-      case CompressedBufferTooSmall:
+      case charls::ApiResult::CompressedBufferTooSmall:
         return EC_JLSCompressedBufferTooSmall;
-      case ImageTypeNotSupported:
+      case charls::ApiResult::ImageTypeNotSupported:
         return EC_JLSCodecUnsupportedImageType;
-      case InvalidJlsParameters:
+      case charls::ApiResult::InvalidJlsParameters:
         return EC_JLSCodecInvalidParameters;
-      case ParameterValueNotSupported:
+      case charls::ApiResult::ParameterValueNotSupported:
         return EC_JLSCodecUnsupportedValue;
-      case InvalidCompressedData:
+      case charls::ApiResult::InvalidCompressedData:
         return EC_JLSInvalidCompressedData;
-      case UnsupportedBitDepthForTransform:
+      case charls::ApiResult::UnsupportedBitDepthForTransform:
         return EC_JLSUnsupportedBitDepthForTransform;
-      case UnsupportedColorTransform:
+      case charls::ApiResult::UnsupportedColorTransform:
         return EC_JLSUnsupportedColorTransform;
-      case TooMuchCompressedData:
+      case charls::ApiResult::TooMuchCompressedData:
         return EC_JLSTooMuchCompressedData;
       default:
         return EC_IllegalParameter;

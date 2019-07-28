@@ -37,7 +37,8 @@
 #include "djerror.h"                 /* for private class DJLSError */
 
 // JPEG-LS library (CharLS) includes
-#include "intrface.h"
+#include "CharLS/charls.h"
+#include "CharLS/publictypes.h"
 
 E_TransferSyntax DJLSLosslessDecoder::supportedTransferSyntax() const
 {
@@ -382,9 +383,9 @@ OFCondition DJLSDecoderBase::decodeFrame(
   if (result.good())
   {
     JlsParameters params;
-    JLS_ERROR err;
+    CharlsApiResultType err;
 
-    err = JpegLsReadHeader(jlsData, compressedSize, &params);
+    err = JpegLsReadHeader(jlsData, compressedSize, &params, NULL);
     result = DJLSError::convert(err);
 
     if (result.good())
@@ -392,8 +393,8 @@ OFCondition DJLSDecoderBase::decodeFrame(
       if (params.width != imageColumns) result = EC_JLSImageDataMismatch;
       else if (params.height != imageRows) result = EC_JLSImageDataMismatch;
       else if (params.components != imageSamplesPerPixel) result = EC_JLSImageDataMismatch;
-      else if ((bytesPerSample == 1) && (params.bitspersample > 8)) result = EC_JLSImageDataMismatch;
-      else if ((bytesPerSample == 2) && (params.bitspersample <= 8)) result = EC_JLSImageDataMismatch;
+      else if ((bytesPerSample == 1) && (params.bitsPerSample > 8)) result = EC_JLSImageDataMismatch;
+      else if ((bytesPerSample == 2) && (params.bitsPerSample <= 8)) result = EC_JLSImageDataMismatch;
     }
 
     if (!result.good())
@@ -402,13 +403,13 @@ OFCondition DJLSDecoderBase::decodeFrame(
     }
     else
     {
-      err = JpegLsDecode(buffer, bufSize, jlsData, compressedSize, &params);
+      err = JpegLsDecode(buffer, bufSize, jlsData, compressedSize, &params, NULL);
       result = DJLSError::convert(err);
       delete[] jlsData;
 
       if (result.good() && imageSamplesPerPixel == 3)
       {
-        if (imagePlanarConfiguration == 1 && params.ilv != ILV_NONE)
+        if (imagePlanarConfiguration == 1 && params.interleaveMode != charls::InterleaveMode::None)
         {
           // The dataset says this should be planarConfiguration == 1, but
           // it isn't -> convert it.
@@ -418,7 +419,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
           else
             result = createPlanarConfiguration1Word(OFreinterpret_cast(Uint16*, buffer), imageColumns, imageRows);
         }
-        else if (imagePlanarConfiguration == 0 && params.ilv != ILV_SAMPLE && params.ilv != ILV_LINE)
+        else if (imagePlanarConfiguration == 0 && params.interleaveMode != charls::InterleaveMode::Sample && params.interleaveMode != charls::InterleaveMode::Line)
         {
           // The dataset says this should be planarConfiguration == 0, but
           // it isn't -> convert it.

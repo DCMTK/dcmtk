@@ -55,7 +55,8 @@
 #include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
 
 // JPEG-LS library (CharLS) includes
-#include "intrface.h"
+#include "CharLS/charls.h"
+#include "CharLS/publictypes.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
@@ -68,6 +69,9 @@ BEGIN_EXTERN_C
 #include <sys/stat.h>    /* for stat, fstat */
 #endif
 END_EXTERN_C
+
+// No longer defined in charls
+typedef unsigned char BYTE;
 
 
 E_TransferSyntax DJLSLosslessEncoder::supportedTransferSyntax() const
@@ -568,13 +572,13 @@ OFCondition DJLSEncoderBase::compressRawFrame(
 
   // Set up the information structure for CharLS
   OFBitmanipTemplate<char>::zeroMem((char *) &jls_params, sizeof(jls_params));
-  jls_params.bitspersample = bitsAllocated;
+  jls_params.bitsPerSample = bitsAllocated;
   jls_params.height = height;
   jls_params.width = width;
-  jls_params.allowedlossyerror = 0; // must be zero for raw mode
+  jls_params.allowedLossyError = 0; // must be zero for raw mode
   jls_params.outputBgr = false;
   // No idea what this one does, but I don't think DICOM says anything about it
-  jls_params.colorTransform = 0;
+  jls_params.colorTransformation = charls::ColorTransformation::None;
 
   // Unset: jls_params.jfif (thumbnail, dpi)
 
@@ -596,15 +600,15 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   else
     return EC_IllegalCall;
 
-  enum interleavemode ilv;
+  CharlsInterleaveModeType ilv;
   switch (planarConfiguration)
   {
-    // ILV_LINE is not supported by DICOM
+    // charls::InterleaveMode::Line is not supported by DICOM
     case 0:
-      ilv = ILV_SAMPLE;
+      ilv = charls::InterleaveMode::Sample;
       break;
     case 1:
-      ilv = ILV_NONE;
+      ilv = charls::InterleaveMode::None;
       break;
     default:
       return EC_IllegalCall;
@@ -613,39 +617,39 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   switch (djcp->getJplsInterleaveMode())
   {
     case DJLSCodecParameter::interleaveSample:
-      jls_params.ilv = ILV_SAMPLE;
+      jls_params.interleaveMode = charls::InterleaveMode::Sample;
       break;
     case DJLSCodecParameter::interleaveLine:
-      jls_params.ilv = ILV_LINE;
+      jls_params.interleaveMode = charls::InterleaveMode::Line;
       break;
     case DJLSCodecParameter::interleaveNone:
-      jls_params.ilv = ILV_NONE;
+      jls_params.interleaveMode = charls::InterleaveMode::None;
       break;
     case DJLSCodecParameter::interleaveDefault:
     default:
       // In default mode we just never convert the image to another
       // interleave-mode. Instead, we use what is already there.
-      jls_params.ilv = ilv;
+      jls_params.interleaveMode = ilv;
       break;
   }
 
-  // Special case: one component images are always ILV_NONE (Standard requires this)
+  // Special case: one component images are always charls::InterleaveMode::None (Standard requires this)
   if (jls_params.components == 1)
   {
-    jls_params.ilv = ILV_NONE;
+    jls_params.interleaveMode = charls::InterleaveMode::None;
     // Don't try to convert to another interleave mode, not necessary
-    ilv = ILV_NONE;
+    ilv = charls::InterleaveMode::None;
   }
 
   // Do we have to convert the image to some other interleave mode?
-  if ((jls_params.ilv == ILV_NONE && (ilv == ILV_SAMPLE || ilv == ILV_LINE)) ||
-      (ilv == ILV_NONE && (jls_params.ilv == ILV_SAMPLE || jls_params.ilv == ILV_LINE)))
+  if ((jls_params.interleaveMode == charls::InterleaveMode::None && (ilv == charls::InterleaveMode::Sample || ilv == charls::InterleaveMode::Line)) ||
+      (ilv == charls::InterleaveMode::None && (jls_params.interleaveMode == charls::InterleaveMode::Sample || jls_params.interleaveMode == charls::InterleaveMode::Line)))
   {
-    DCMJPLS_DEBUG("Converting image from " << (ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel")
-          << " to " << (jls_params.ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel"));
+    DCMJPLS_DEBUG("Converting image from " << (ilv == charls::InterleaveMode::None ? "color-by-plane" : "color-by-pixel")
+          << " to " << (jls_params.interleaveMode == charls::InterleaveMode::None ? "color-by-plane" : "color-by-pixel"));
 
     frameBuffer = new Uint8[frameSize];
-    if (jls_params.ilv == ILV_NONE)
+    if (jls_params.interleaveMode == charls::InterleaveMode::None)
       result = convertToUninterleaved(frameBuffer, framePointer, samplesPerPixel, width, height, bitsAllocated);
     else
       /* For CharLS, sample-interleaved and line-interleaved is both expected to
@@ -664,7 +668,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
 
     size_t bytesWritten = 0;
 
-    JLS_ERROR err = JpegLsEncode(&buffer, &size, &bytesWritten, framePointer, frameSize, &jls_params);
+    CharlsApiResultType err = JpegLsEncode(buffer, size, &bytesWritten, framePointer, frameSize, &jls_params, NULL);
     result = DJLSError::convert(err);
 
     if (result.good())
@@ -997,11 +1001,11 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   OFBitmanipTemplate<char>::zeroMem((char *) &jls_params, sizeof(jls_params));
   jls_params.height = height;
   jls_params.width = width;
-  jls_params.allowedlossyerror = nearLosslessDeviation;
+  jls_params.allowedLossyError = nearLosslessDeviation;
   jls_params.outputBgr = false;
-  jls_params.bitspersample = depth;
+  jls_params.bitsPerSample = depth;
   // No idea what this one does, but I don't think DICOM says anything about it
-  jls_params.colorTransform = 0;
+  jls_params.colorTransformation = charls::ColorTransformation::None;
 
   // This was already checked for a sane value above
   jls_params.components = samplesPerPixel;
@@ -1009,11 +1013,11 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   {
     case EPR_Uint8:
     case EPR_Sint8:
-      jls_params.bitspersample = 8;
+      jls_params.bitsPerSample = 8;
       break;
     case EPR_Uint16:
     case EPR_Sint16:
-      jls_params.bitspersample = 16;
+      jls_params.bitsPerSample = 16;
       break;
     default:
       // Everything else was already handled above and can't happen here
@@ -1033,37 +1037,37 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   switch (djcp->getJplsInterleaveMode())
   {
     case DJLSCodecParameter::interleaveSample:
-      jls_params.ilv = ILV_SAMPLE;
+      jls_params.interleaveMode = charls::InterleaveMode::Sample;
       break;
     case DJLSCodecParameter::interleaveLine:
-      jls_params.ilv = ILV_LINE;
+      jls_params.interleaveMode = charls::InterleaveMode::Line;
       break;
     case DJLSCodecParameter::interleaveNone:
-      jls_params.ilv = ILV_NONE;
+      jls_params.interleaveMode = charls::InterleaveMode::None;
       break;
     case DJLSCodecParameter::interleaveDefault:
     default:
-      // Default for the cooked encoder is always ILV_LINE
-      jls_params.ilv = ILV_LINE;
+      // Default for the cooked encoder is always charls::InterleaveMode::Line
+      jls_params.interleaveMode = charls::InterleaveMode::Line;
       break;
   }
 
-  // Special case: one component images are always ILV_NONE (Standard requires this)
+  // Special case: one component images are always CharlsInterleaveMode.None (Standard requires this)
   if (jls_params.components == 1)
   {
-    jls_params.ilv = ILV_NONE;
+    jls_params.interleaveMode = charls::InterleaveMode::None;
   }
 
   Uint8 *frameBuffer = NULL;
   Uint8 *framePointer = buffer;
   // Do we have to convert the image to color-by-plane now?
-  if (jls_params.ilv == ILV_NONE && jls_params.components != 1)
+  if (jls_params.interleaveMode == charls::InterleaveMode::None && jls_params.components != 1)
   {
     DCMJPLS_DEBUG("Converting image from color-by-pixel to color-by-plane");
 
     frameBuffer = new Uint8[buffer_size];
     framePointer = frameBuffer;
-    result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitspersample);
+    result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitsPerSample);
   }
 
   size_t compressed_buffer_size = buffer_size + 1024;
@@ -1071,7 +1075,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
   size_t bytesWritten = 0;
 
-  JLS_ERROR err = JpegLsEncode(&compressed_buffer, &compressed_buffer_size, &bytesWritten, framePointer, buffer_size, &jls_params);
+  CharlsApiResultType err = JpegLsEncode(compressed_buffer, compressed_buffer_size, &bytesWritten, framePointer, buffer_size, &jls_params, NULL);
   result = DJLSError::convert(err);
 
   if (result.good())
