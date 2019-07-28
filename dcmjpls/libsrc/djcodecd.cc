@@ -393,8 +393,8 @@ OFCondition DJLSDecoderBase::decodeFrame(
       if (params.width != imageColumns) result = EC_JLSImageDataMismatch;
       else if (params.height != imageRows) result = EC_JLSImageDataMismatch;
       else if (params.components != imageSamplesPerPixel) result = EC_JLSImageDataMismatch;
-      else if ((bytesPerSample == 1) && (params.bitspersample > 8)) result = EC_JLSImageDataMismatch;
-      else if ((bytesPerSample == 2) && (params.bitspersample <= 8)) result = EC_JLSImageDataMismatch;
+      else if ((bytesPerSample == 1) && (params.bitsPerSample > 8)) result = EC_JLSImageDataMismatch;
+      else if ((bytesPerSample == 2) && (params.bitsPerSample <= 8)) result = EC_JLSImageDataMismatch;
     }
 
     if (!result.good())

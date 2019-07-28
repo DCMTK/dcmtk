@@ -573,13 +573,13 @@ OFCondition DJLSEncoderBase::compressRawFrame(
 
   // Set up the information structure for CharLS
   OFBitmanipTemplate<char>::zeroMem((char *) &jls_params, sizeof(jls_params));
-  jls_params.bitspersample = bitsAllocated;
+  jls_params.bitsPerSample = bitsAllocated;
   jls_params.height = height;
   jls_params.width = width;
-  jls_params.allowedlossyerror = 0; // must be zero for raw mode
+  jls_params.allowedLossyError = 0; // must be zero for raw mode
   jls_params.outputBgr = false;
   // No idea what this one does, but I don't think DICOM says anything about it
-  jls_params.colorTransform = 0;
+  jls_params.colorTransformation = 0;
 
   // Unset: jls_params.jfif (thumbnail, dpi)
 
@@ -1002,11 +1002,11 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   OFBitmanipTemplate<char>::zeroMem((char *) &jls_params, sizeof(jls_params));
   jls_params.height = height;
   jls_params.width = width;
-  jls_params.allowedlossyerror = nearLosslessDeviation;
+  jls_params.allowedLossyError = nearLosslessDeviation;
   jls_params.outputBgr = false;
-  jls_params.bitspersample = depth;
+  jls_params.bitsPerSample = depth;
   // No idea what this one does, but I don't think DICOM says anything about it
-  jls_params.colorTransform = 0;
+  jls_params.colorTransformation = 0;
 
   // This was already checked for a sane value above
   jls_params.components = samplesPerPixel;
@@ -1014,11 +1014,11 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   {
     case EPR_Uint8:
     case EPR_Sint8:
-      jls_params.bitspersample = 8;
+      jls_params.bitsPerSample = 8;
       break;
     case EPR_Uint16:
     case EPR_Sint16:
-      jls_params.bitspersample = 16;
+      jls_params.bitsPerSample = 16;
       break;
     default:
       // Everything else was already handled above and can't happen here
@@ -1068,7 +1068,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
     frameBuffer = new Uint8[buffer_size];
     framePointer = frameBuffer;
-    result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitspersample);
+    result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitsPerSample);
   }
 
   size_t compressed_buffer_size = buffer_size + 1024;
