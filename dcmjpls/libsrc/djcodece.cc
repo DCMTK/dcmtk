@@ -55,12 +55,8 @@
 #include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
 
 // JPEG-LS library (CharLS) includes
-<<<<<<< HEAD
-#include "intrface.h"
-=======
 #include "CharLS/charls.h"
-#include "CharLS/public_types.h"
->>>>>>> 42dbe6a06... 3.6.4 Update JLS_ERROR to jpegls_error in CharLS usage
+#include "CharLS/publictypes.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H

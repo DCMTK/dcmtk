@@ -38,7 +38,7 @@
 
 // JPEG-LS library (CharLS) includes
 #include "CharLS/charls.h"
-#include "CharLS/public_types.h"
+#include "CharLS/publictypes.h"
 
 E_TransferSyntax DJLSLosslessDecoder::supportedTransferSyntax() const
 {
