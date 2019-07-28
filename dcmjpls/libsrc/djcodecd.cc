@@ -403,7 +403,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
     }
     else
     {
-      err = JpegLsDecode(buffer, bufSize, jlsData, compressedSize, &params);
+      err = JpegLsDecode(buffer, bufSize, jlsData, compressedSize, &params, NULL);
       result = DJLSError::convert(err);
       delete[] jlsData;
 
