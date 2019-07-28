@@ -601,15 +601,15 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   else
     return EC_IllegalCall;
 
-  enum interleavemode ilv;
+  CharlsInterleaveModeType ilv;
   switch (planarConfiguration)
   {
-    // ILV_LINE is not supported by DICOM
+    // charls::InterleaveMode::Line is not supported by DICOM
     case 0:
-      ilv = ILV_SAMPLE;
+      ilv = charls::InterleaveMode::Sample;
       break;
     case 1:
-      ilv = ILV_NONE;
+      ilv = charls::InterleaveMode::None;
       break;
     default:
       return EC_IllegalCall;
@@ -618,39 +618,39 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   switch (djcp->getJplsInterleaveMode())
   {
     case DJLSCodecParameter::interleaveSample:
-      jls_params.ilv = ILV_SAMPLE;
+      jls_params.interleaveMode = charls::InterleaveMode::Sample;
       break;
     case DJLSCodecParameter::interleaveLine:
-      jls_params.ilv = ILV_LINE;
+      jls_params.interleaveMode = charls::InterleaveMode::Line;
       break;
     case DJLSCodecParameter::interleaveNone:
-      jls_params.ilv = ILV_NONE;
+      jls_params.interleaveMode = charls::InterleaveMode::None;
       break;
     case DJLSCodecParameter::interleaveDefault:
     default:
       // In default mode we just never convert the image to another
       // interleave-mode. Instead, we use what is already there.
-      jls_params.ilv = ilv;
+      jls_params.interleaveMode = ilv;
       break;
   }
 
-  // Special case: one component images are always ILV_NONE (Standard requires this)
+  // Special case: one component images are always charls::InterleaveMode::None (Standard requires this)
   if (jls_params.components == 1)
   {
-    jls_params.ilv = ILV_NONE;
+    jls_params.interleaveMode = charls::InterleaveMode::None;
     // Don't try to convert to another interleave mode, not necessary
-    ilv = ILV_NONE;
+    ilv = charls::InterleaveMode::None;
   }
 
   // Do we have to convert the image to some other interleave mode?
-  if ((jls_params.ilv == ILV_NONE && (ilv == ILV_SAMPLE || ilv == ILV_LINE)) ||
-      (ilv == ILV_NONE && (jls_params.ilv == ILV_SAMPLE || jls_params.ilv == ILV_LINE)))
+  if ((jls_params.interleaveMode == charls::InterleaveMode::None && (ilv == charls::InterleaveMode::Sample || ilv == charls::InterleaveMode::Line)) ||
+      (ilv == charls::InterleaveMode::None && (jls_params.interleaveMode == charls::InterleaveMode::Sample || jls_params.interleaveMode == charls::InterleaveMode::Line)))
   {
-    DCMJPLS_DEBUG("Converting image from " << (ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel")
-          << " to " << (jls_params.ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel"));
+    DCMJPLS_DEBUG("Converting image from " << (ilv == charls::InterleaveMode::None ? "color-by-plane" : "color-by-pixel")
+          << " to " << (jls_params.interleaveMode == charls::InterleaveMode::None ? "color-by-plane" : "color-by-pixel"));
 
     frameBuffer = new Uint8[frameSize];
-    if (jls_params.ilv == ILV_NONE)
+    if (jls_params.interleaveMode == charls::InterleaveMode::None)
       result = convertToUninterleaved(frameBuffer, framePointer, samplesPerPixel, width, height, bitsAllocated);
     else
       /* For CharLS, sample-interleaved and line-interleaved is both expected to
@@ -1038,31 +1038,31 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   switch (djcp->getJplsInterleaveMode())
   {
     case DJLSCodecParameter::interleaveSample:
-      jls_params.ilv = ILV_SAMPLE;
+      jls_params.interleaveMode = charls::InterleaveMode::Sample;
       break;
     case DJLSCodecParameter::interleaveLine:
-      jls_params.ilv = ILV_LINE;
+      jls_params.interleaveMode = charls::InterleaveMode::Line;
       break;
     case DJLSCodecParameter::interleaveNone:
-      jls_params.ilv = ILV_NONE;
+      jls_params.interleaveMode = charls::InterleaveMode::None;
       break;
     case DJLSCodecParameter::interleaveDefault:
     default:
-      // Default for the cooked encoder is always ILV_LINE
-      jls_params.ilv = ILV_LINE;
+      // Default for the cooked encoder is always charls::InterleaveMode::Line
+      jls_params.interleaveMode = charls::InterleaveMode::Line;
       break;
   }
 
-  // Special case: one component images are always ILV_NONE (Standard requires this)
+  // Special case: one component images are always CharlsInterleaveMode.None (Standard requires this)
   if (jls_params.components == 1)
   {
-    jls_params.ilv = ILV_NONE;
+    jls_params.interleaveMode = charls::InterleaveMode::None;
   }
 
   Uint8 *frameBuffer = NULL;
   Uint8 *framePointer = buffer;
   // Do we have to convert the image to color-by-plane now?
-  if (jls_params.ilv == ILV_NONE && jls_params.components != 1)
+  if (jls_params.interleaveMode == charls::InterleaveMode::None && jls_params.components != 1)
   {
     DCMJPLS_DEBUG("Converting image from color-by-pixel to color-by-plane");
 

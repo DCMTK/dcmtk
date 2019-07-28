@@ -409,7 +409,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
 
       if (result.good() && imageSamplesPerPixel == 3)
       {
-        if (imagePlanarConfiguration == 1 && params.ilv != ILV_NONE)
+        if (imagePlanarConfiguration == 1 && params.interleaveMode != charls::InterleaveMode::None)
         {
           // The dataset says this should be planarConfiguration == 1, but
           // it isn't -> convert it.
@@ -419,7 +419,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
           else
             result = createPlanarConfiguration1Word(OFreinterpret_cast(Uint16*, buffer), imageColumns, imageRows);
         }
-        else if (imagePlanarConfiguration == 0 && params.ilv != ILV_SAMPLE && params.ilv != ILV_LINE)
+        else if (imagePlanarConfiguration == 0 && params.interleaveMode != charls::InterleaveMode::Sample && params.interleaveMode != charls::InterleaveMode::Line)
         {
           // The dataset says this should be planarConfiguration == 0, but
           // it isn't -> convert it.
