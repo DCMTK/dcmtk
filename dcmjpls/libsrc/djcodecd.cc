@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2018, OFFIS e.V.
+ *  Copyright (C) 2007-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -438,6 +438,11 @@ OFCondition DJLSDecoderBase::decodeFrame(
               result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buffer,
                       bufSize, sizeof(Uint16));
           }
+      }
+
+      if (result.good())
+      {
+        dataset->putAndInsertUint16(DCM_PlanarConfiguration, imagePlanarConfiguration);
       }
     }
   }
