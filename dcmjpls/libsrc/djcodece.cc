@@ -668,7 +668,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
 
     size_t bytesWritten = 0;
 
-    CharlsApiResultType err = JpegLsEncode(buffer, size, &bytesWritten, framePointer, frameSize, &jls_params);
+    CharlsApiResultType err = JpegLsEncode(buffer, size, &bytesWritten, framePointer, frameSize, &jls_params, NULL);
     result = DJLSError::convert(err);
 
     if (result.good())
@@ -1075,7 +1075,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
   size_t bytesWritten = 0;
 
-  CharlsApiResultType err = JpegLsEncode(compressed_buffer, compressed_buffer_size, &bytesWritten, framePointer, buffer_size, &jls_params);
+  CharlsApiResultType err = JpegLsEncode(compressed_buffer, compressed_buffer_size, &bytesWritten, framePointer, buffer_size, &jls_params, NULL);
   result = DJLSError::convert(err);
 
   if (result.good())
