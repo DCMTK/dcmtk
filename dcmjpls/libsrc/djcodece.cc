@@ -55,7 +55,12 @@
 #include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
 
 // JPEG-LS library (CharLS) includes
+<<<<<<< HEAD
 #include "intrface.h"
+=======
+#include "CharLS/charls.h"
+#include "CharLS/public_types.h"
+>>>>>>> 42dbe6a06... 3.6.4 Update JLS_ERROR to jpegls_error in CharLS usage
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
@@ -664,7 +669,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
 
     size_t bytesWritten = 0;
 
-    JLS_ERROR err = JpegLsEncode(buffer, size, &bytesWritten, framePointer, frameSize, &jls_params);
+    CharlsApiResultType err = JpegLsEncode(buffer, size, &bytesWritten, framePointer, frameSize, &jls_params);
     result = DJLSError::convert(err);
 
     if (result.good())
@@ -1071,7 +1076,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
   size_t bytesWritten = 0;
 
-  JLS_ERROR err = JpegLsEncode(compressed_buffer, compressed_buffer_size, &bytesWritten, framePointer, buffer_size, &jls_params);
+  CharlsApiResultType err = JpegLsEncode(compressed_buffer, compressed_buffer_size, &bytesWritten, framePointer, buffer_size, &jls_params);
   result = DJLSError::convert(err);
 
   if (result.good())

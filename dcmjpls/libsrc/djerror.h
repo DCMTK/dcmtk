@@ -40,7 +40,7 @@ public:
    *  @param error The CharLS error code
    *  @return The OFCondition
    */
-  static const OFConditionConst& convert(JLS_ERROR error)
+  static const OFConditionConst& convert(CharlsApiResultType error)
   {
     switch (error)
     {
