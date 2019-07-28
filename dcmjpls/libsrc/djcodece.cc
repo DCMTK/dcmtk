@@ -70,6 +70,9 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+// No longer defined in charls
+typedef unsigned char BYTE;
+
 
 E_TransferSyntax DJLSLosslessEncoder::supportedTransferSyntax() const
 {
