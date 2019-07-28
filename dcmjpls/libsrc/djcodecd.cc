@@ -385,7 +385,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
     JlsParameters params;
     CharlsApiResultType err;
 
-    err = JpegLsReadHeader(jlsData, compressedSize, &params);
+    err = JpegLsReadHeader(jlsData, compressedSize, &params, NULL);
     result = DJLSError::convert(err);
 
     if (result.good())
