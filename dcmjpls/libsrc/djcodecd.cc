@@ -440,7 +440,8 @@ OFCondition DJLSDecoderBase::decodeFrame(
           }
       }
 
-      if (result.good())
+      // update planar configuration if we are decoding a color image
+      if (result.good() && (imageSamplesPerPixel > 1))
       {
         dataset->putAndInsertUint16(DCM_PlanarConfiguration, imagePlanarConfiguration);
       }
