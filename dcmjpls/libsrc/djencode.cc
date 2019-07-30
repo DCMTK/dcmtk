@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,12 +33,10 @@ DJLSNearLosslessEncoder *DJLSEncoderRegistration::nearlosslessencoder_  = NULL;
 
 
 void DJLSEncoderRegistration::registerCodecs(
-    OFBool jpls_optionsEnabled,
     Uint16 jpls_t1,
     Uint16 jpls_t2,
     Uint16 jpls_t3,
     Uint16 jpls_reset,
-    Uint16 jpls_limit,
     OFBool preferCookedEncoding,
     Uint32 fragmentSize,
     OFBool createOffsetTable,
@@ -48,8 +46,8 @@ void DJLSEncoderRegistration::registerCodecs(
 {
   if (! registered_)
   {
-    cp_ = new DJLSCodecParameter(jpls_optionsEnabled, jpls_t1, jpls_t2, jpls_t3, jpls_reset,
-      jpls_limit, preferCookedEncoding, fragmentSize, createOffsetTable, uidCreation, 
+    cp_ = new DJLSCodecParameter(jpls_t1, jpls_t2, jpls_t3, jpls_reset,
+      preferCookedEncoding, fragmentSize, createOffsetTable, uidCreation,
       convertToSC, EJLSPC_restore, OFFalse, jplsInterleaveMode);
 
     if (cp_)

@@ -130,20 +130,20 @@ lossless compression:
 
 JPEG-LS compression:
 
-  +t1  --threshold1  [t]hreshhold: integer (default for 8 bpp: 3)
+  +t1  --threshold1  [t]hreshhold: integer
          set JPEG-LS encoding parameter threshold 1
 
-  +t2  --threshold2  [t]hreshhold: integer (default for 8 bpp: 7)
+  +t2  --threshold2  [t]hreshhold: integer
          set JPEG-LS encoding parameter threshold 2
 
-  +t3  --threshold3  [t]hreshhold: integer (default for 8 bpp: 21)
+  +t3  --threshold3  [t]hreshhold: integer
          set JPEG-LS encoding parameter threshold 3
+
+  # By default, the values for T1, T2, T3 are computed based on
+  # the number of bits per sample.
 
   +rs  --reset  [r]eset: integer (default: 64)
          set JPEG-LS encoding parameter reset
-
-  +lm  --limit  [l]imit: integer (default: 0)
-         set JPEG-LS encoding parameter limit
 
 JPEG-LS interleave:
 
@@ -378,6 +378,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmcjpls_copyright COPYRIGHT
 
-Copyright (C) 2009-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2009-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

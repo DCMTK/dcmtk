@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2018, OFFIS e.V.
+ *  Copyright (C) 2007-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -545,6 +545,56 @@ OFCondition DJLSEncoderBase::losslessRawEncode(
   return result;
 }
 
+// static helper functions for DJLSEncoderBase::setCustomParameters().
+static long setcp_clamp(long i, long j, long MAXVAL)
+{
+    if (i > MAXVAL || i < j)
+        return j;
+
+    return i;
+}
+
+long setcp_min(long a, long b)
+{
+  return (((a) < (b)) ? (a) : (b));
+}
+
+void DJLSEncoderBase::setCustomParameters(
+  JlsCustomParameters& custom,
+  Uint16 bitsAllocated,
+  Uint16 nearLosslessDeviation,
+  const DJLSCodecParameter *djcp)
+{
+  // unfortunately, CharLS either takes all or none of the parameters
+  // in the "custom" struct. So if we change any of them, we need to provide
+  // legal values for all of them. The function in CharLS that computes these
+  // values is not public, so we basically have to re-implement it here.
+
+  const int BASIC_T1       = 3;
+  const int BASIC_T2       = 7;
+  const int BASIC_T3       = 21;
+  const long BASIC_RESET   = 64;
+
+  long MAXVAL = (1 << bitsAllocated) - 1;
+  long FACTOR = (setcp_min(MAXVAL, 4095) + 128)/256;
+  long NEAR = nearLosslessDeviation;
+
+  custom.MAXVAL = MAXVAL;
+
+  if (djcp->getT1() > 0) custom.T1 = djcp->getT1(); else
+    custom.T1 = setcp_clamp(FACTOR * (BASIC_T1 - 2) + 2 + 3*NEAR, NEAR + 1, MAXVAL);
+
+  if (djcp->getT2() > 0) custom.T2 = djcp->getT2(); else
+    custom.T2 = setcp_clamp(FACTOR * (BASIC_T2 - 3) + 3 + 5*NEAR, custom.T1, MAXVAL);
+
+  if (djcp->getT3() > 0) custom.T3 = djcp->getT3(); else
+    custom.T3 = setcp_clamp(FACTOR * (BASIC_T3 - 4) + 4 + 7*NEAR, custom.T2, MAXVAL);
+
+  if (djcp->getReset() > 0) custom.RESET = djcp->getReset();
+    else custom.RESET = BASIC_RESET;
+
+}
+
 OFCondition DJLSEncoderBase::compressRawFrame(
   const Uint8 *framePointer,
   Uint16 bitsAllocated,
@@ -562,7 +612,6 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   Uint16 bytesAllocated = bitsAllocated / 8;
   Uint32 frameSize = width*height*bytesAllocated*samplesPerPixel;
   Uint32 fragmentSize = djcp->getFragmentSize();
-  OFBool opt_use_custom_options = djcp->getUseCustomOptions();
   JlsParameters jls_params;
   Uint8 *frameBuffer = NULL;
 
@@ -575,19 +624,11 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   jls_params.outputBgr = false;
   // No idea what this one does, but I don't think DICOM says anything about it
   jls_params.colorTransform = 0;
-
   // Unset: jls_params.jfif (thumbnail, dpi)
 
-  if (opt_use_custom_options)
-  {
-    jls_params.custom.T1 = djcp->getT1();
-    jls_params.custom.T2 = djcp->getT2();
-    jls_params.custom.T3 = djcp->getT3();
-    jls_params.custom.RESET = djcp->getReset();
-    // not set: jls_params.custom.MAXVAL
-    // MAXVAL is the maximum sample value in the image, it helps the compression
-    // if it's used (I think...)
-  }
+  // set parameters T1, T2, T3, MAXVAL and RESET.
+  // compressRawFrame() is only used for true lossless mode, so the near-lossless deviation is always 0 here.
+  setCustomParameters(jls_params.custom, bitsAllocated, 0, djcp);
 
   // Theoretically we could support any samplesPerPixel value, but for now we
   // only accept these (charls is a little picky for other values).
@@ -868,7 +909,6 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   if ((depth < 1) || (depth > 16)) return EC_JLSUnsupportedBitDepth;
 
   Uint32 fragmentSize = djcp->getFragmentSize();
-  OFBool opt_use_custom_options = djcp->getUseCustomOptions();
 
   const DiPixel *dinter = dimage->getInterData();
   if (dinter == NULL) return EC_IllegalCall;
@@ -1022,13 +1062,8 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
   // Unset: jls_params.jfif (thumbnail, dpi)
 
-  if (opt_use_custom_options)
-  {
-    jls_params.custom.T1 = djcp->getT1();
-    jls_params.custom.T2 = djcp->getT2();
-    jls_params.custom.T3 = djcp->getT3();
-    jls_params.custom.RESET = djcp->getReset();
-  }
+  // set parameters T1, T2, T3, MAXVAL and RESET
+  setCustomParameters(jls_params.custom, depth, nearLosslessDeviation, djcp);
 
   switch (djcp->getJplsInterleaveMode())
   {
