@@ -1,0 +1,69 @@
+=====================================================================
+SETTING UP THE WORKLIST SCP
+=====================================================================
+
+INTRODUCTION
+
+The DICOM Modality Worklist Management SCP component in DCMTK (wlmscpfs)
+was originally developed for a public demonstration at the Computer
+Assisted Radiology 1996 congress (CAR '96) as the first operational
+demo implementation of a DICOM worklist server.
+
+In production use, one would expect a Worklist SCP to be part of an
+information system such as a RIS or a HIS that is used to create, manage
+and delete work items that can be queried over a DICOM interface by
+modalities using the DICOM Worklist Management (MWL) service. DICOM MWL
+does not offer any way of creating, modifying or deleting a worklist
+entry. Since no such information system with DICOM support was available
+at the time, a simple web-based user interface was devised that would
+allow demo participants to create worklist entries, which could then be
+queried using DICOM MWL. Interaction between the Web GUI (scripts
+running on a web server) and the Worklist SCP was through a shared
+directory.
+
+These scripts were unmaintained for a long time and have been removed
+from DCMTK in 2015 (the last stable release that provided them was
+DCMTK 3.6.0). This bit of history explains, however, the directory
+structure used by the Worklist SCP.
+
+DIRECTORIES
+
+A single working directory must be created for the Worklist SCP,
+for example /export/services/worklist.
+
+The Worklist SCP supports multiple "storage areas" that are selected
+based upon the called application entity title (Called AETitle) when
+an incoming DICOM network connection is accepted. For each storage
+area, the following steps must be performed:
+
+- Create a subdirectory in the storage area directory, with
+  it's name identical to the application entity title, e.g.:
+  mkdir /export/services/worklist/AETITLE_1
+
+- In the subdirectory, create a file named "lockfile", e.g.:
+  touch /export/services/worklist/AETITLE_1/lockfile
+
+  This file is locked with a read lock by the Worklist SCP
+  before it tries to read Worklist entries from that directory.
+  The file should be locked with a write lock by any application
+  that wants to modify the content of that directory, prior to
+  the modification. This makes sure that Worklist SCP never "sees"
+  an inconsistent state of the directory or tries to read a file
+  that is currently being written to.
+
+WORKLIST FILES
+
+The Worklist SCP expects each worklist entry to be stored as a separate
+file, in DICOM file format, using the filename extension ".wl". When
+responding to an incoming Worklist Query, the Worklist SCP will read all
+".wl" files from the subdirectory corresponding to the called AETitle
+and will produce the query response from the content of these files. All
+files with other file name extensions (or no extension) will be ignored.
+
+A set of sample files is provided with DCMTK. These are located in
+dcmwlm/data/wlistdb/OFFIS. Convert each file to DICOM format by calling
+dump2dcm wklist1.dump wklist1.wl (and so on for all ten files).
+You can then use dcmwlm/data/wlistdb as a valid working directory
+for the Worklist SCP, which contains a single storage area that
+is accessibly by using OFFIS as the called aetitle in the query.
+
