@@ -120,6 +120,11 @@ SOP Instance UID:
 
   # Always assigns a new SOP instance UID.
 
+workaround options for incorrect JPEG-LS encodings:
+
+  +wi  --workaround-incpl
+         enable workaround for incomplete JPEG-LS data
+
 other processing options:
 
   +io  --ignore-offsettable

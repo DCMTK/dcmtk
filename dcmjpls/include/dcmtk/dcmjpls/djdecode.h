@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,11 +44,14 @@ public:
    *  @param planarconfig flag indicating how planar configuration
    *    of color images should be encoded upon decompression.
    *  @param ignoreOffsetTable flag indicating whether to ignore the offset table when decompressing multiframe images
+   *  @param forceSingleFragmentPerFrame while decompressing a multiframe image,
+   *    assume one fragment per frame even if the JPEG data for some frame is incomplete
    */
   static void registerCodecs(
     JLS_UIDCreation uidcreation = EJLSUC_default,
     JLS_PlanarConfiguration planarconfig = EJLSPC_restore,
-    OFBool ignoreOffsetTable = OFFalse);
+    OFBool ignoreOffsetTable = OFFalse,
+    OFBool forceSingleFragmentPerFrame = OFFalse);
 
   /** deregisters decoders.
    *  Attention: Must not be called while other threads might still use

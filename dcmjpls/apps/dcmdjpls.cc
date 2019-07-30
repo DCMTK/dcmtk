@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2017, OFFIS e.V.
+ *  Copyright (C) 2007-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
   E_FileReadMode opt_readMode = ERM_autoDetect;
   E_FileWriteMode opt_writeMode = EWM_fileformat;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
+  OFBool opt_forceSingleFragmentPerFrame = OFFalse;
 
   // parameter
   JLS_UIDCreation opt_uidcreation = EJLSUC_default;
@@ -113,6 +114,8 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
     cmd.addSubGroup("SOP Instance UID:");
       cmd.addOption("--uid-default",            "+ud",    "keep same SOP Instance UID (default)");
       cmd.addOption("--uid-always",             "+ua",    "always assign new UID");
+    cmd.addSubGroup("workaround options for incorrect JPEG-LS encodings:");
+      cmd.addOption("--workaround-incpl",       "+wi",    "enable workaround for incomplete JPEG-LS data");
     cmd.addSubGroup("other processing options:");
       cmd.addOption("--ignore-offsettable",     "+io",    "ignore offset table when decompressing");
 
@@ -184,6 +187,7 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       if (cmd.findOption("--uid-always")) opt_uidcreation = EJLSUC_always;
       cmd.endOptionBlock();
 
+      if (cmd.findOption("--workaround-incpl")) opt_forceSingleFragmentPerFrame = OFTrue;
       if (cmd.findOption("--ignore-offsettable")) opt_ignoreOffsetTable = OFTrue;
 
       cmd.beginOptionBlock();
@@ -255,7 +259,11 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
     OFLOG_DEBUG(dcmdjplsLogger, rcsid << OFendl);
 
     // register global decompression codecs
-    DJLSDecoderRegistration::registerCodecs(opt_uidcreation, opt_planarconfig, opt_ignoreOffsetTable);
+    DJLSDecoderRegistration::registerCodecs(
+        opt_uidcreation,
+        opt_planarconfig,
+        opt_ignoreOffsetTable,
+        opt_forceSingleFragmentPerFrame);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())

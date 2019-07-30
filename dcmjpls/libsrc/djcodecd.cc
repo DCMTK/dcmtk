@@ -94,6 +94,7 @@ OFCondition DJLSDecoderBase::decode(
   // determine properties of uncompressed dataset
   Uint16 imageSamplesPerPixel = 0;
   if (dataset->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel).bad()) return EC_TagNotFound;
+
   // we only handle one or three samples per pixel
   if ((imageSamplesPerPixel != 3) && (imageSamplesPerPixel != 1)) return EC_InvalidTag;
 
@@ -156,6 +157,7 @@ OFCondition DJLSDecoderBase::decode(
   Sint32 currentFrame = 0;
   Uint32 currentItem = 1; // item 0 contains the offset table
   OFBool done = OFFalse;
+  OFBool forceSingleFragmentPerFrame = djcp->getForceSingleFragmentPerFrame();
 
   while (result.good() && !done)
   {
@@ -163,6 +165,16 @@ OFCondition DJLSDecoderBase::decode(
 
       result = decodeFrame(pixSeq, djcp, dataset, currentFrame, currentItem, pixeldata8, frameSize,
           imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
+
+      // check if we should enforce "one fragment per frame" while
+      // decompressing a multi-frame image even if stream suspension occurs
+      if ((result == EC_JLSInvalidCompressedData) && forceSingleFragmentPerFrame)
+      {
+        // frame is incomplete. Nevertheless skip to next frame.
+        // This permits decompression of faulty multi-frame images.
+        DCMJPLS_WARN("JPEG-LS bitstream invalid or incomplete, ignoring (but image is likely to be incomplete).");
+        result = EC_Normal;
+      }
 
       if (result.good())
       {

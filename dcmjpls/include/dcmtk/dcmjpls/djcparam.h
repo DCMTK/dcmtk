@@ -79,11 +79,14 @@ public:
    *  @param uidCreation               mode for SOP Instance UID creation (used both for encoding and decoding)
    *  @param planarConfiguration       flag describing how planar configuration of decompressed color images should be handled
    *  @param ignoreOffsetTable         flag indicating whether to ignore the offset table when decompressing multiframe images
+   *  @param forceSingleFragmentPerFrame while decompressing a multiframe image,
+   *    assume one fragment per frame even if the JPEG data for some frame is incomplete
    */
   DJLSCodecParameter(
     JLS_UIDCreation uidCreation = EJLSUC_default,
     JLS_PlanarConfiguration planarConfiguration = EJLSPC_restore,
-    OFBool ignoreOffsetTable = OFFalse);
+    OFBool ignoreOffsetTable = OFFalse,
+    OFBool forceSingleFragmentPerFrame = OFFalse);
 
   /// copy constructor
   DJLSCodecParameter(const DJLSCodecParameter& arg);
@@ -199,6 +202,14 @@ public:
     return jplsInterleaveMode_;
   }
 
+  /** returns flag indicating whether one fragment per frame should be enforced while decoding
+   *  @return flag indicating whether one fragment per frame should be enforced while decoding
+   */
+  OFBool getForceSingleFragmentPerFrame() const
+  {
+    return forceSingleFragmentPerFrame_;
+  }
+
 private:
 
   /// private undefined copy assignment operator
@@ -245,6 +256,11 @@ private:
 
   /// flag indicating if temporary files should be kept, false if they should be deleted after use
   OFBool ignoreOffsetTable_;
+
+  /** while decompressing a multiframe image,
+   *  assume one fragment per frame even if the JPEG data for some frame is incomplete
+   */
+  OFBool forceSingleFragmentPerFrame_;
 
 };
 

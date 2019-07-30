@@ -49,6 +49,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 , jplsInterleaveMode_(jplsInterleaveMode)
 , planarConfiguration_(planarConfiguration)
 , ignoreOffsetTable_(ignoreOffsetTble)
+, forceSingleFragmentPerFrame_(OFFalse)
 {
 }
 
@@ -56,7 +57,8 @@ DJLSCodecParameter::DJLSCodecParameter(
 DJLSCodecParameter::DJLSCodecParameter(
     JLS_UIDCreation uidCreation,
     JLS_PlanarConfiguration planarConfiguration,
-    OFBool ignoreOffsetTble)
+    OFBool ignoreOffsetTble,
+    OFBool forceSingleFragmentPerFrame)
 : DcmCodecParameter()
 , jpls_t1_(0)
 , jpls_t2_(0)
@@ -70,6 +72,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 , jplsInterleaveMode_(interleaveDefault)
 , planarConfiguration_(planarConfiguration)
 , ignoreOffsetTable_(ignoreOffsetTble)
+, forceSingleFragmentPerFrame_(forceSingleFragmentPerFrame)
 {
 }
 
@@ -87,6 +90,7 @@ DJLSCodecParameter::DJLSCodecParameter(const DJLSCodecParameter& arg)
 , jplsInterleaveMode_(arg.jplsInterleaveMode_)
 , planarConfiguration_(arg.planarConfiguration_)
 , ignoreOffsetTable_(arg.ignoreOffsetTable_)
+, forceSingleFragmentPerFrame_(arg.forceSingleFragmentPerFrame_)
 {
 }
 
