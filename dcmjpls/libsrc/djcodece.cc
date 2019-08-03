@@ -1057,20 +1057,6 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
   // This was already checked for a sane value above
   jls_params.components = samplesPerPixel;
-  switch(dinter->getRepresentation())
-  {
-    case EPR_Uint8:
-    case EPR_Sint8:
-      jls_params.bitspersample = 8;
-      break;
-    case EPR_Uint16:
-    case EPR_Sint16:
-      jls_params.bitspersample = 16;
-      break;
-    default:
-      // Everything else was already handled above and can't happen here
-      break;
-  }
 
   // Unset: jls_params.jfif (thumbnail, dpi)
 
