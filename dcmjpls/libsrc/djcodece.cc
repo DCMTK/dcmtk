@@ -565,6 +565,18 @@ void DJLSEncoderBase::setCustomParameters(
   Uint16 nearLosslessDeviation,
   const DJLSCodecParameter *djcp)
 {
+  // first check if all parameters are set to default (which will be the most common case).
+  // In this case we will set everything in the custom struct to zero as well.
+  if ((djcp->getT1() == 0) && (djcp->getT2() == 0) && (djcp->getT3() == 0) && (djcp->getReset() == 0))
+  {
+      custom.T1 = 0;
+      custom.T2 = 0;
+      custom.T3 = 0;
+      custom.RESET = 0;
+      custom.MAXVAL = 0;
+      return;
+  }
+
   // unfortunately, CharLS either takes all or none of the parameters
   // in the "custom" struct. So if we change any of them, we need to provide
   // legal values for all of them. The function in CharLS that computes these
