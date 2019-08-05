@@ -254,9 +254,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 # set project wide flags for compiler and linker
 
 if(WIN32)
-  option(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS "Overwrite compiler flags with DCMTK's WIN32 package default values." ON)
+  option(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS  "Overwrite compiler flags with DCMTK's WIN32 package default values." ON)
+  option(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL "Compile DCMTK using the Multithreaded DLL runtime library." OFF)
+  if (BUILD_SHARED_LIBS)
+    set(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL ON)
+  endif()
 else()
   set(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS OFF)
+  set(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OFF)
 endif()
 
 if(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS AND NOT BUILD_SHARED_LIBS)
@@ -295,6 +300,37 @@ if(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS AND NOT BUILD_SHARED_LIBS)
     set(CMAKE_STANDARD_LIBRARIES "import32.lib cw32mt.lib")
   endif()
 
+endif()
+
+if(WIN32 AND CMAKE_GENERATOR MATCHES "Visual Studio .*")
+  # Evaluate the DCMTK_COMPILE_WIN32_MULTITHREADED_DLL option and adjust
+  # the runtime library setting (/MT or /MD) accordingly
+  set(CompilerFlags
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_MINSIZEREL
+        CMAKE_CXX_FLAGS_RELWITHDEBINFO
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+        CMAKE_C_FLAGS_MINSIZEREL
+        CMAKE_C_FLAGS_RELWITHDEBINFO
+        )
+
+  if(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OR BUILD_SHARED_LIBS)
+    # Convert any /MT or /MTd option to /MD or /MDd
+    foreach(CompilerFlag ${CompilerFlags})
+        string(REPLACE "/MT" "/MD" ${CompilerFlag} "${${CompilerFlag}}")
+        set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
+    endforeach()
+  else()
+    # Convert any /MD or /MDd option to /MT or /MTd
+    foreach(CompilerFlag ${CompilerFlags})
+        string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+        set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
+    endforeach()
+  endif()
 endif()
 
 if(BUILD_SHARED_LIBS)
