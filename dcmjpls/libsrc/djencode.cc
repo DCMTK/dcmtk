@@ -46,8 +46,8 @@ void DJLSEncoderRegistration::registerCodecs(
 {
   if (! registered_)
   {
-    cp_ = new DJLSCodecParameter(jpls_t1, jpls_t2, jpls_t3, jpls_reset,
-      preferCookedEncoding, fragmentSize, createOffsetTable, uidCreation,
+    cp_ = new DJLSCodecParameter(preferCookedEncoding, jpls_t1, jpls_t2, jpls_t3,
+      jpls_reset, fragmentSize, createOffsetTable, uidCreation,
       convertToSC, EJLSPC_restore, OFFalse, jplsInterleaveMode);
 
     if (cp_)

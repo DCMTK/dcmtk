@@ -48,11 +48,11 @@ public:
   };
 
   /** constructor, for use with encoders.
+   *  @param preferCookedEncoding      true if the "cooked" lossless encoder should be preferred over the "raw" one (which should be the default)
    *  @param jpls_t1                   JPEG-LS parameter "Threshold 1" (used for quantization)
    *  @param jpls_t2                   JPEG-LS parameter "Threshold 2"
    *  @param jpls_t3                   JPEG-LS parameter "Threshold 3"
    *  @param jpls_reset                JPEG-LS parameter "RESET", i.e., value at which the counters A, B, and N are halved.
-   *  @param preferCookedEncoding      true if the "cooked" lossless encoder should be preferred over the "raw" one
    *  @param fragmentSize              maximum fragment size (in kbytes) for compression, 0 for unlimited.
    *  @param createOffsetTable         create offset table during image compression
    *  @param uidCreation               mode for SOP Instance UID creation
@@ -62,11 +62,11 @@ public:
    *  @param jplsInterleaveMode        flag describing which interleave the JPEG-LS datastream should use
    */
    DJLSCodecParameter(
+     OFBool preferCookedEncoding,
      Uint16 jpls_t1 = 0,
      Uint16 jpls_t2 = 0,
      Uint16 jpls_t3 = 0,
      Uint16 jpls_reset = 0,
-     OFBool preferCookedEncoding = OFTrue,
      Uint32 fragmentSize = 0,
      OFBool createOffsetTable = OFTrue,
      JLS_UIDCreation uidCreation = EJLSUC_default,

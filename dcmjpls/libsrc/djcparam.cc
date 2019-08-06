@@ -24,11 +24,11 @@
 #include "dcmtk/ofstd/ofstd.h"
 
 DJLSCodecParameter::DJLSCodecParameter(
+     OFBool preferCookedEncoding,
      Uint16 jpls_t1,
      Uint16 jpls_t2,
      Uint16 jpls_t3,
      Uint16 jpls_reset,
-     OFBool preferCookedEncoding,
      Uint32 fragmentSize,
      OFBool createOffsetTable,
      JLS_UIDCreation uidCreation,
@@ -37,13 +37,13 @@ DJLSCodecParameter::DJLSCodecParameter(
      OFBool ignoreOffsetTble,
      interleaveMode jplsInterleaveMode)
 : DcmCodecParameter()
+, preferCookedEncoding_(preferCookedEncoding)
 , jpls_t1_(jpls_t1)
 , jpls_t2_(jpls_t2)
 , jpls_t3_(jpls_t3)
 , jpls_reset_(jpls_reset)
 , fragmentSize_(fragmentSize)
 , createOffsetTable_(createOffsetTable)
-, preferCookedEncoding_(preferCookedEncoding)
 , uidCreation_(uidCreation)
 , convertToSC_(convertToSC)
 , jplsInterleaveMode_(jplsInterleaveMode)
@@ -60,13 +60,13 @@ DJLSCodecParameter::DJLSCodecParameter(
     OFBool ignoreOffsetTble,
     OFBool forceSingleFragmentPerFrame)
 : DcmCodecParameter()
+, preferCookedEncoding_(OFTrue)
 , jpls_t1_(0)
 , jpls_t2_(0)
 , jpls_t3_(0)
 , jpls_reset_(0)
 , fragmentSize_(0)
 , createOffsetTable_(OFTrue)
-, preferCookedEncoding_(OFTrue)
 , uidCreation_(uidCreation)
 , convertToSC_(OFFalse)
 , jplsInterleaveMode_(interleaveDefault)
@@ -78,13 +78,13 @@ DJLSCodecParameter::DJLSCodecParameter(
 
 DJLSCodecParameter::DJLSCodecParameter(const DJLSCodecParameter& arg)
 : DcmCodecParameter(arg)
+, preferCookedEncoding_(arg.preferCookedEncoding_)
 , jpls_t1_(arg.jpls_t1_)
 , jpls_t2_(arg.jpls_t2_)
 , jpls_t3_(arg.jpls_t3_)
 , jpls_reset_(arg.jpls_reset_)
 , fragmentSize_(arg.fragmentSize_)
 , createOffsetTable_(arg.createOffsetTable_)
-, preferCookedEncoding_(arg.preferCookedEncoding_)
 , uidCreation_(arg.uidCreation_)
 , convertToSC_(arg.convertToSC_)
 , jplsInterleaveMode_(arg.jplsInterleaveMode_)
