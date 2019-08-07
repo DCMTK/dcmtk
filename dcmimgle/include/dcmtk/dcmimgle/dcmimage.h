@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -457,7 +457,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
     }
 
     /** render pixel data and return pointer to given plane (internal memory buffer).
-     *  apply VOI/PLUT transformation and (visible) overlay planes
+     *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *  Supported output color models: Monochrome 2 for monochrome images and RGB
      *  (or YCbCr_Full if flag CIF_KeepYCbCrColorModel is set) for color images.
