@@ -23,10 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2019b and PS 3.7-2019b
 # File created on 2019-04-26 14:51:35 by J. Riesmeier on thinkpad.
+# File updated manually on 2019-08-07 by J. Riesmeier
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - Supplement 175
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4692,6 +4693,161 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 175 (Second Generation Radiotherapy - C-Arm RT Treatment Modalities)
+#
+(0018,100B)	UI	ManufacturersDeviceClassUID	1-n	DICOM/Supplement_175
+(0018,1630)	CS	OutlineShapeType	1	DICOM/Supplement_175
+(0018,1631)	FD	OutlineLeftVerticalEdge	1	DICOM/Supplement_175
+(0018,1632)	FD	OutlineRightVerticalEdge	1	DICOM/Supplement_175
+(0018,1633)	FD	OutlineUpperHorizontalEdge	1	DICOM/Supplement_175
+(0018,1634)	FD	OutlineLowerHorizontalEdge	1	DICOM/Supplement_175
+(0018,1635)	FD	CenterOfCircularOutline	2	DICOM/Supplement_175
+(0018,1636)	FD	DiameterOfCircularOutline	1	DICOM/Supplement_175
+(0018,1637)	UL	NumberOfPolygonalVertices	1	DICOM/Supplement_175
+(0018,1638)	OF	VerticesOfThePolygonalOutline	1	DICOM/Supplement_175
+(3006,00C9)	SQ	PatientLocationCoordinatesSequence	1	DICOM/Supplement_175
+(3006,00CA)	SQ	PatientLocationCoordinatesCodeSequence	1	DICOM/Supplement_175
+(3006,00CB)	SQ	PatientSupportPositionSequence	1	DICOM/Supplement_175
+(300A,0600)	US	RTControlPointIndex	1	DICOM/Supplement_175
+(300A,0601)	US	RadiationGenerationModeIndex	1	DICOM/Supplement_175
+(300A,0602)	US	ReferencedDefinedDeviceIndex	1	DICOM/Supplement_175
+(300A,0603)	US	RadiationDoseIdentificationIndex	1	DICOM/Supplement_175
+(300A,0604)	US	NumberOfRTControlPoints	1	DICOM/Supplement_175
+(300A,0605)	US	ReferencedRadiationGenerationModeIndex	1	DICOM/Supplement_175
+(300A,0606)	US	TreatmentPositionIndex	1	DICOM/Supplement_175
+(300A,0607)	US	ReferencedDeviceIndex	1	DICOM/Supplement_175
+(300A,0608)	LO	TreatmentPositionGroupLabel	1	DICOM/Supplement_175
+(300A,0609)	UI	TreatmentPositionGroupUID	1	DICOM/Supplement_175
+(300A,060A)	SQ	TreatmentPositionGroupSequence	1	DICOM/Supplement_175
+(300A,060B)	US	ReferencedTreatmentPositionIndex	1	DICOM/Supplement_175
+(300A,060C)	US	ReferencedRadiationDoseIdentificationIndex	1	DICOM/Supplement_175
+(300A,060D)	FD	RTAccessoryHolderWaterEquivalentThickness	1	DICOM/Supplement_175
+(300A,060E)	US	ReferencedRTAccessoryHolderDeviceIndex	1	DICOM/Supplement_175
+(300A,060F)	CS	RTAccessoryHolderSlotExistenceFlag	1	DICOM/Supplement_175
+(300A,0610)	SQ	RTAccessoryHolderSlotSequence	1	DICOM/Supplement_175
+(300A,0611)	LO	RTAccessoryHolderSlotID	1	DICOM/Supplement_175
+(300A,0612)	FD	RTAccessoryHolderSlotDistance	1	DICOM/Supplement_175
+(300A,0613)	FD	RTAccessorySlotDistance	1	DICOM/Supplement_175
+(300A,0614)	SQ	RTAccessoryHolderDefinitionSequence	1	DICOM/Supplement_175
+(300A,0615)	LO	RTAccessoryDeviceSlotID	1	DICOM/Supplement_175
+(300A,0616)	SQ	RTRadiationSequence	1	DICOM/Supplement_175
+(300A,0617)	SQ	RadiationDoseSequence	1	DICOM/Supplement_175
+(300A,0618)	SQ	RadiationDoseIdentificationSequence	1	DICOM/Supplement_175
+(300A,0619)	LO	RadiationDoseIdentificationLabel	1	DICOM/Supplement_175
+(300A,061A)	CS	ReferenceDoseType	1	DICOM/Supplement_175
+(300A,061B)	CS	PrimaryDoseValueIndicator	1	DICOM/Supplement_175
+(300A,061C)	SQ	DoseValuesSequence	1	DICOM/Supplement_175
+(300A,061D)	CS	DoseValuePurpose	1-n	DICOM/Supplement_175
+(300A,061E)	FD	ReferenceDosePointCoordinates	3	DICOM/Supplement_175
+(300A,061F)	SQ	RadiationDoseValuesParametersSequence	1	DICOM/Supplement_175
+(300A,0620)	SQ	MetersetToDoseMappingSequence	1	DICOM/Supplement_175
+(300A,0621)	SQ	ExpectedInVivoMeasurementValuesSequence	1	DICOM/Supplement_175
+(300A,0622)	US	ExpectedInVivoMeasurementValueIndex	1	DICOM/Supplement_175
+(300A,0623)	LO	RadiationDoseInVivoMeasurementLabel	1	DICOM/Supplement_175
+(300A,0624)	FD	RadiationDoseCentralAxisDisplacement	2	DICOM/Supplement_175
+(300A,0625)	FD	RadiationDoseValue	1	DICOM/Supplement_175
+(300A,0626)	FD	RadiationDoseSourceToSkinDistance	1	DICOM/Supplement_175
+(300A,0627)	FD	RadiationDoseMeasurementPointCoordinates	3	DICOM/Supplement_175
+(300A,0628)	FD	RadiationDoseSourceToExternalContourDistance	1	DICOM/Supplement_175
+(300A,0629)	SQ	RTToleranceSetSequence	1	DICOM/Supplement_175
+(300A,062A)	LO	RTToleranceSetLabel	1	DICOM/Supplement_175
+(300A,062B)	SQ	AttributeToleranceValuesSequence	1	DICOM/Supplement_175
+(300A,062C)	FD	ToleranceValue	1	DICOM/Supplement_175
+(300A,062D)	SQ	PatientSupportPositionToleranceSequence	1	DICOM/Supplement_175
+(300A,062E)	FD	TreatmentTimeLimit	1	DICOM/Supplement_175
+(300A,062F)	SQ	CArmPhotonElectronControlPointSequence	1	DICOM/Supplement_175
+(300A,0630)	SQ	ReferencedRTRadiationSequence	1	DICOM/Supplement_175
+(300A,0631)	SQ	ReferencedRTInstanceSequence	1	DICOM/Supplement_175
+(300A,0632)	SQ	ReferencedRTPatientSetupSequence	1	DICOM/Supplement_175
+(300A,0634)	FD	SourceToPatientSurfaceDistance	1	DICOM/Supplement_175
+(300A,0635)	SQ	TreatmentMachineSpecialModeCodeSequence	1	DICOM/Supplement_175
+(300A,0636)	US	IntendedNumberOfFractions	1	DICOM/Supplement_175
+(300A,0637)	CS	RTRadiationSetIntent	1	DICOM/Supplement_175
+(300A,0638)	CS	RTRadiationPhysicalAndGeometricContentDetailFlag	1	DICOM/Supplement_175
+(300A,0639)	CS	RTRecordFlag	1	DICOM/Supplement_175
+(300A,063A)	SQ	TreatmentDeviceIdentificationSequence	1	DICOM/Supplement_175
+(300A,063B)	SQ	ReferencedRTPhysicianIntentSequence	1	DICOM/Supplement_175
+(300A,063C)	FD	CumulativeMeterset	1	DICOM/Supplement_175
+(300A,063D)	FD	DeliveryRate	1	DICOM/Supplement_175
+(300A,063E)	SQ	DeliveryRateUnitSequence	1	DICOM/Supplement_175
+(300A,063F)	SQ	TreatmentPositionSequence	1	DICOM/Supplement_175
+(300A,0640)	FD	RadiationSourceAxisDistance	1	DICOM/Supplement_175
+(300A,0641)	US	NumberOfRTBeamLimitingDevices	1	DICOM/Supplement_175
+(300A,0642)	FD	RTBeamLimitingDeviceProximalDistance	1	DICOM/Supplement_175
+(300A,0643)	FD	RTBeamLimitingDeviceDistalDistance	1	DICOM/Supplement_175
+(300A,0644)	SQ	ParallelRTBeamDelimiterDeviceOrientationLabelCodeSequence	1	DICOM/Supplement_175
+(300A,0645)	FD	BeamsModifierOrientationAngle	1	DICOM/Supplement_175
+(300A,0646)	SQ	FixedRTBeamDelimiterDeviceSequence	1	DICOM/Supplement_175
+(300A,0647)	SQ	ParallelRTBeamDelimiterDeviceSequence	1	DICOM/Supplement_175
+(300A,0648)	US	NumberOfParallelRTBeamDelimiters	1	DICOM/Supplement_175
+(300A,0649)	FD	ParallelRTBeamDelimiterBoundaries	2-n	DICOM/Supplement_175
+(300A,064A)	FD	ParallelRTBeamDelimiterPositions	2-n	DICOM/Supplement_175
+(300A,064B)	FD	RTBeamLimitingDeviceOffset	2	DICOM/Supplement_175
+(300A,064C)	SQ	RTBeamDelimiterGeometrySequence	1	DICOM/Supplement_175
+(300A,064D)	SQ	RTBeamLimitingDeviceDefinitionSequence	1	DICOM/Supplement_175
+(300A,064E)	CS	ParallelRTBeamDelimiterOpeningMode	1	DICOM/Supplement_175
+(300A,064F)	CS	ParallelRTBeamDelimiterLeafMountingSide	1-n	DICOM/Supplement_175
+(300A,0650)	UI	PatientSetupUID	1	DICOM/Supplement_175
+(300A,0651)	SQ	WedgeDefinitionSequence	1	DICOM/Supplement_175
+(300A,0652)	FD	RadiationBeamWedgeAngle	1	DICOM/Supplement_175
+(300A,0653)	FD	RadiationBeamWedgeThinEdgeDistance	1	DICOM/Supplement_175
+(300A,0654)	FD	RadiationBeamEffectiveWedgeAngle	1	DICOM/Supplement_175
+(300A,0655)	US	NumberOfWedgePositions	1	DICOM/Supplement_175
+(300A,0656)	SQ	RTBeamLimitingDeviceOpeningSequence	1	DICOM/Supplement_175
+(300A,0657)	US	NumberOfRTBeamLimitingDeviceOpenings	1	DICOM/Supplement_175
+(300A,0658)	SQ	RadiationDosimeterUnitSequence	1	DICOM/Supplement_175
+(300A,0659)	SQ	RTDeviceDistanceReferenceLocationCodeSequence	1	DICOM/Supplement_175
+(300A,065A)	SQ	RadiationDeviceConfigurationAndCommissioningKeySequence	1	DICOM/Supplement_175
+(300A,065B)	SQ	PatientSupportPositionParameterSequence	1	DICOM/Supplement_175
+(300A,065C)	CS	PatientSupportPositionSpecificationMethod	1	DICOM/Supplement_175
+(300A,065D)	SQ	PatientSupportPositionDeviceParameterSequence	1	DICOM/Supplement_175
+(300A,065E)	US	DeviceOrderIndex	1	DICOM/Supplement_175
+(300A,065F)	US	PatientSupportPositionParameterOrderIndex	1	DICOM/Supplement_175
+(300A,0660)	SQ	PatientSupportPositionDeviceToleranceSequence	1	DICOM/Supplement_175
+(300A,0661)	US	PatientSupportPositionToleranceOrderIndex	1	DICOM/Supplement_175
+(300A,0662)	SQ	CompensatorDefinitionSequence	1	DICOM/Supplement_175
+(300A,0663)	CS	CompensatorMapOrientation	1	DICOM/Supplement_175
+(300A,0664)	OF	CompensatorProximalThicknessMap	1	DICOM/Supplement_175
+(300A,0665)	OF	CompensatorDistalThicknessMap	1	DICOM/Supplement_175
+(300A,0666)	FD	CompensatorBasePlaneOffset	1	DICOM/Supplement_175
+(300A,0667)	SQ	CompensatorShapeFabricationCodeSequence	1	DICOM/Supplement_175
+(300A,0668)	SQ	CompensatorShapeSequence	1	DICOM/Supplement_175
+(300A,0669)	FD	RadiationBeamCompensatorMillingToolDiameter	1	DICOM/Supplement_175
+(300A,066A)	SQ	BlockDefinitionSequence	1	DICOM/Supplement_175
+(300A,066B)	OF	BlockEdgeData	1	DICOM/Supplement_175
+(300A,066C)	CS	BlockOrientation	1	DICOM/Supplement_175
+(300A,066D)	FD	RadiationBeamBlockThickness	1	DICOM/Supplement_175
+(300A,066E)	FD	RadiationBeamBlockSlabThickness	1	DICOM/Supplement_175
+(300A,066F)	SQ	BlockEdgeDataSequence	1	DICOM/Supplement_175
+(300A,0670)	US	NumberOfRTAccessoryHolders	1	DICOM/Supplement_175
+(300A,0671)	SQ	GeneralAccessoryDefinitionSequence	1	DICOM/Supplement_175
+(300A,0672)	US	NumberOfGeneralAccessories	1	DICOM/Supplement_175
+(300A,0673)	SQ	BolusDefinitionSequence	1	DICOM/Supplement_175
+(300A,0674)	US	NumberOfBoluses	1	DICOM/Supplement_175
+(300A,0675)	UI	EquipmentFrameOfReferenceUID	1	DICOM/Supplement_175
+(300A,0676)	ST	EquipmentFrameOfReferenceDescription	1	DICOM/Supplement_175
+(300A,0677)	SQ	EquipmentReferencePointCoordinatesSequence	1	DICOM/Supplement_175
+(300A,0678)	SQ	EquipmentReferencePointCodeSequence	1	DICOM/Supplement_175
+(300A,0679)	FD	RTBeamLimitingDeviceAngle	1	DICOM/Supplement_175
+(300A,067A)	FD	SourceRollAngle	1	DICOM/Supplement_175
+(300A,067B)	SQ	RadiationGenerationModeSequence	1	DICOM/Supplement_175
+(300A,067C)	SH	RadiationGenerationModeLabel	1	DICOM/Supplement_175
+(300A,067D)	ST	RadiationGenerationModeDescription	1	DICOM/Supplement_175
+(300A,067E)	SQ	RadiationGenerationModeMachineCodeSequence	1	DICOM/Supplement_175
+(300A,067F)	SQ	RadiationTypeCodeSequence	1	DICOM/Supplement_175
+(300A,0680)	DS	NominalEnergy	1	DICOM/Supplement_175
+(300A,0681)	DS	MinimumNominalEnergy	1	DICOM/Supplement_175
+(300A,0682)	DS	MaximumNominalEnergy	1	DICOM/Supplement_175
+(300A,0683)	SQ	RadiationFluenceModifierCodeSequence	1	DICOM/Supplement_175
+(300A,0684)	SQ	EnergyUnitCodeSequence	1	DICOM/Supplement_175
+(300A,0685)	US	NumberOfRadiationGenerationModes	1	DICOM/Supplement_175
+(300A,0686)	SQ	PatientSupportDevicesSequence	1	DICOM/Supplement_175
+(300A,0687)	US	NumberOfPatientSupportDevices	1	DICOM/Supplement_175
+(300A,0688)	FD	RTBeamModifierDefinitionDistance	1	DICOM/Supplement_175
+(300A,0689)	SQ	BeamAreaLimitSequence	1	DICOM/Supplement_175
 #
 #---------------------------------------------------------------------------
 #
