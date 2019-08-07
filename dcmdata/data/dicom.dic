@@ -27,7 +27,7 @@
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - Supplement 175
+# - Supplement 175 (FT2)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4698,7 +4698,7 @@
 #
 # Supplement 175 (Second Generation Radiotherapy - C-Arm RT Treatment Modalities)
 #
-(0018,100B)	UI	ManufacturersDeviceClassUID	1-n	DICOM/Supplement_175
+(0018,100B)	UI	ManufacturerDeviceClassUID	1-n	DICOM/Supplement_175
 (0018,1630)	CS	OutlineShapeType	1	DICOM/Supplement_175
 (0018,1631)	FD	OutlineLeftVerticalEdge	1	DICOM/Supplement_175
 (0018,1632)	FD	OutlineRightVerticalEdge	1	DICOM/Supplement_175

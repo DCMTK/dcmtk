@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-08-07 17:32:20
+**   Date: 2019-08-07 18:58:15
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -4459,7 +4459,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x100b, 0x0018, 0x100b,
-      EVR_UI, "ManufacturersDeviceClassUID", 1, -1, "DICOM/Supplement_175",
+      EVR_UI, "ManufacturerDeviceClassUID", 1, -1, "DICOM/Supplement_175",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x1010, 0x0018, 0x1010,

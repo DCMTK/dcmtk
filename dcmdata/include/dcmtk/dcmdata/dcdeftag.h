@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-08-07 17:32:19
+**   Date: 2019-08-07 18:58:15
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2019-08-07 17:32:19"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2019-08-07 18:58:15"
 
 
 /*
@@ -776,7 +776,7 @@
 #define DCM_GantryID                             DcmTagKey(0x0018, 0x1008)
 #define DCM_UniqueDeviceIdentifier               DcmTagKey(0x0018, 0x1009)
 #define DCM_UDISequence                          DcmTagKey(0x0018, 0x100a)
-#define DCM_ManufacturersDeviceClassUID          DcmTagKey(0x0018, 0x100b)
+#define DCM_ManufacturerDeviceClassUID           DcmTagKey(0x0018, 0x100b)
 #define DCM_SecondaryCaptureDeviceID             DcmTagKey(0x0018, 0x1010)
 #define DCM_RETIRED_HardcopyCreationDeviceID     DcmTagKey(0x0018, 0x1011)
 #define DCM_DateOfSecondaryCapture               DcmTagKey(0x0018, 0x1012)
