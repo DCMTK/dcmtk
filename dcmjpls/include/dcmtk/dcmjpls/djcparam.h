@@ -48,7 +48,8 @@ public:
   };
 
   /** constructor, for use with encoders.
-   *  @param preferCookedEncoding      true if the "cooked" lossless encoder should be preferred over the "raw" one (which should be the default)
+   *  @param preferCookedEncoding      true if the "cooked" lossless encoder should be preferred over the "raw" one
+   *                                   (which should be the default)
    *  @param jpls_t1                   JPEG-LS parameter "Threshold 1" (used for quantization)
    *  @param jpls_t2                   JPEG-LS parameter "Threshold 2"
    *  @param jpls_t3                   JPEG-LS parameter "Threshold 3"
@@ -76,11 +77,11 @@ public:
      interleaveMode jplsInterleaveMode = interleaveLine);
 
   /** constructor, for use with decoders. Initializes all encoder options to defaults.
-   *  @param uidCreation               mode for SOP Instance UID creation (used both for encoding and decoding)
-   *  @param planarConfiguration       flag describing how planar configuration of decompressed color images should be handled
-   *  @param ignoreOffsetTable         flag indicating whether to ignore the offset table when decompressing multiframe images
-   *  @param forceSingleFragmentPerFrame while decompressing a multiframe image,
-   *    assume one fragment per frame even if the JPEG data for some frame is incomplete
+   *  @param uidCreation                 mode for SOP Instance UID creation (used both for encoding and decoding)
+   *  @param planarConfiguration         flag describing how planar configuration of decompressed color images should be handled
+   *  @param ignoreOffsetTable           flag indicating whether to ignore the offset table when decompressing multiframe images
+   *  @param forceSingleFragmentPerFrame while decompressing a multiframe image, assume one fragment per frame even if the JPEG
+   *                                     data for some frame is incomplete
    */
   DJLSCodecParameter(
     JLS_UIDCreation uidCreation = EJLSUC_default,
@@ -95,7 +96,7 @@ public:
   virtual ~DJLSCodecParameter();
 
   /** this methods creates a copy of type DcmCodecParameter *
-   *  it must be overweritten in every subclass.
+   *  it must be overwritten in every subclass.
    *  @return copy of this object
    */
   virtual DcmCodecParameter *clone() const;
@@ -218,6 +219,9 @@ private:
   // ****************************************************
   // **** Parameters describing the encoding process ****
 
+  /// flag indicating if the "cooked" lossless encoder should be preferred over the "raw" one
+  OFBool preferCookedEncoding_;
+
   /// JPEG-LS parameter "Threshold 1" (used for quantization), 0 if unused
   Uint16 jpls_t1_;
 
@@ -235,9 +239,6 @@ private:
 
   /// create offset table during image compression
   OFBool createOffsetTable_;
-
-  /// Flag indicating if the "cooked" lossless encoder should be preferred over the "raw" one
-  OFBool preferCookedEncoding_;
 
   /// mode for SOP Instance UID creation (used both for encoding and decoding)
   JLS_UIDCreation uidCreation_;
