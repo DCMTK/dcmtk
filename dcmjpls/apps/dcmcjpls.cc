@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
   // JPEG-LS encoding options
   E_TransferSyntax opt_oxfer = EXS_JPEGLSLossless;
   OFBool opt_useLosslessProcess = OFTrue;
+  OFBool opt_useFFpadding = OFTrue;
 
   OFCmdUnsignedInt opt_t1 = 0;
   OFCmdUnsignedInt opt_t2 = 0;
@@ -153,6 +154,9 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
       cmd.addOption("--interleave-sample",      "+is",    "force sample-interleaved JPEG-LS images");
       cmd.addOption("--interleave-none",        "+in",    "force uninterleaved JPEG-LS images");
       cmd.addOption("--interleave-default",     "+iv",    "use the fastest possible interleave mode");
+    cmd.addSubGroup("JPEG-LS padding of odd-length bitstreams:");
+      cmd.addOption("--padding-standard",       "+ps",    "pad with extended EOI marker (default)");
+      cmd.addOption("--padding-zero",           "+pz",    "pad with zero byte (non-standard)");
 
   cmd.addGroup("encapsulated pixel data encoding options:");
     cmd.addSubGroup("pixel data fragmentation:");
@@ -323,6 +327,18 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       }
       cmd.endOptionBlock();
 
+      // padding
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--padding-standard"))
+      {
+        opt_useFFpadding = OFTrue;
+      }
+      if (cmd.findOption("--padding-zero"))
+      {
+        opt_useFFpadding = OFFalse;
+      }
+      cmd.endOptionBlock();
+
       // encapsulated pixel data encoding options
       // pixel data fragmentation options
       cmd.beginOptionBlock();
@@ -393,7 +409,7 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       OFstatic_cast(Uint16, opt_t1), OFstatic_cast(Uint16, opt_t2), OFstatic_cast(Uint16, opt_t3),
       OFstatic_cast(Uint16, opt_reset),
       opt_prefer_cooked, opt_fragmentSize, opt_createOffsetTable,
-      opt_uidcreation, opt_secondarycapture, opt_interleaveMode);
+      opt_uidcreation, opt_secondarycapture, opt_interleaveMode, opt_useFFpadding);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())

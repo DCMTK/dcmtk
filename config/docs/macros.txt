@@ -100,13 +100,15 @@ DISABLE_COMPRESSION_EXTENSION
     syntaxes) in dcmqrdb, a feature which is still experimental.
 
 DISABLE_FF_JPEG_BITSTREAM_PADDING
-  Affected: dcmjpeg, dcmjpls
+  Affected: dcmjpeg, dcmjpls (dcmjpls only up to DCMTK 3.6.4)
   Type of modification: Disables feature
   Explanation: Starting with release 3.6.2, DCMTK pads JPEG and JPEG-LS
     bitstreams that have odd length with an "extended" end of image (EOI)
     marker, writing ff/ff/d9 instead of adding a zero byte after the
     EOI marker, i.e. writing ff/d9/00. The old behaviour can be restored
     by defining this macro.
+    In the dcmjpls module, the macro has been replaced by a codec
+    parameter that can be set at runtime starting with DCMTK 3.6.5.
 
 DISABLE_NAGLE_ALGORITHM
   Affected: dcmnet

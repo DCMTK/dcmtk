@@ -174,6 +174,23 @@ JPEG-LS interleave:
 
   # This flag selects an interleave mode based on the source image's mode.
   # If possible, the image is not converted to a different interleave mode.
+
+JPEG-LS padding of odd-length bitstreams:
+
+  +ps  --padding-standard
+         pad with extended EOI marker (default)
+
+  # Pad odd-length JPEG-LS bitstreams by writing an extended end of image
+  # segment marker FF FF D9, as required by the DICOM standard.
+
+  +pz  --padding-zero
+         pad with zero byte (non-standard)
+
+  # Pad odd-length JPEG-LS bitstreams by writing a zero byte after the
+  # end of image segment marker, i.e. FF D9 00. This is not DICOM conformant
+  # but required for interoperability with the HP LOCO reference implementation,
+  # which does not support extended JPEG-LS bitstreams.
+
 \endverbatim
 
 \subsection dcmcjpls_enc_pix_data_encoding_opt encapsulated pixel data encoding options

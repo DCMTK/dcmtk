@@ -61,6 +61,7 @@ public:
    *  @param planarConfiguration       flag describing how planar configuration of decompressed color images should be handled
    *  @param ignoreOffsetTable         flag indicating whether to ignore the offset table when decompressing multiframe images
    *  @param jplsInterleaveMode        flag describing which interleave the JPEG-LS datastream should use
+   *  @param useFFbitstreamPadding     flag indicating whether the JPEG-LS bitstream should be FF padded as required by DICOM.
    */
    DJLSCodecParameter(
      OFBool preferCookedEncoding,
@@ -74,7 +75,8 @@ public:
      OFBool convertToSC = OFFalse,
      JLS_PlanarConfiguration planarConfiguration = EJLSPC_restore,
      OFBool ignoreOffsetTable = OFFalse,
-     interleaveMode jplsInterleaveMode = interleaveLine);
+     interleaveMode jplsInterleaveMode = interleaveLine,
+     OFBool useFFbitstreamPadding = OFTrue );
 
   /** constructor, for use with decoders. Initializes all encoder options to defaults.
    *  @param uidCreation                 mode for SOP Instance UID creation (used both for encoding and decoding)
@@ -211,6 +213,14 @@ public:
     return forceSingleFragmentPerFrame_;
   }
 
+  /** returns flag indicating whether odd-length bitstreams should be padded as FF FF D9
+   *  @return flag indicating whether odd-length bitstreams should be padded as FF FF D9
+   */
+  OFBool getUseFFbitstreamPadding() const
+  {
+    return useFFbitstreamPadding_;
+  }
+
 private:
 
   /// private undefined copy assignment operator
@@ -248,6 +258,14 @@ private:
 
   /// Flag describing the interleave mode which the encoder will use
   interleaveMode jplsInterleaveMode_;
+
+  /** When true, a JPEG-LS bitstream of odd length is padded by extending the
+   *  FF D9 "end of image" marker to FF FF D9, as required by DICOM. When false,
+   *  the bitstream is written as FF D9 00, which is not standard compliant, but
+   *  required for interoperability with the HP LOCO reference implementation,
+   *  which does not support FF padded markers.
+   */
+  OFBool useFFbitstreamPadding_;
 
   // ****************************************************
   // **** Parameters describing the decoding process ****

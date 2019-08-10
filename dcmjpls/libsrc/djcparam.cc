@@ -35,7 +35,8 @@ DJLSCodecParameter::DJLSCodecParameter(
      OFBool convertToSC,
      JLS_PlanarConfiguration planarConfiguration,
      OFBool ignoreOffsetTble,
-     interleaveMode jplsInterleaveMode)
+     interleaveMode jplsInterleaveMode,
+     OFBool useFFbitstreamPadding)
 : DcmCodecParameter()
 , preferCookedEncoding_(preferCookedEncoding)
 , jpls_t1_(jpls_t1)
@@ -47,6 +48,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 , uidCreation_(uidCreation)
 , convertToSC_(convertToSC)
 , jplsInterleaveMode_(jplsInterleaveMode)
+, useFFbitstreamPadding_(useFFbitstreamPadding)
 , planarConfiguration_(planarConfiguration)
 , ignoreOffsetTable_(ignoreOffsetTble)
 , forceSingleFragmentPerFrame_(OFFalse)
@@ -70,6 +72,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 , uidCreation_(uidCreation)
 , convertToSC_(OFFalse)
 , jplsInterleaveMode_(interleaveDefault)
+, useFFbitstreamPadding_(OFTrue)
 , planarConfiguration_(planarConfiguration)
 , ignoreOffsetTable_(ignoreOffsetTble)
 , forceSingleFragmentPerFrame_(forceSingleFragmentPerFrame)
@@ -88,6 +91,7 @@ DJLSCodecParameter::DJLSCodecParameter(const DJLSCodecParameter& arg)
 , uidCreation_(arg.uidCreation_)
 , convertToSC_(arg.convertToSC_)
 , jplsInterleaveMode_(arg.jplsInterleaveMode_)
+, useFFbitstreamPadding_(arg.useFFbitstreamPadding_)
 , planarConfiguration_(arg.planarConfiguration_)
 , ignoreOffsetTable_(arg.ignoreOffsetTable_)
 , forceSingleFragmentPerFrame_(arg.forceSingleFragmentPerFrame_)

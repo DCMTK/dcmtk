@@ -42,13 +42,14 @@ void DJLSEncoderRegistration::registerCodecs(
     OFBool createOffsetTable,
     JLS_UIDCreation uidCreation,
     OFBool convertToSC,
-    DJLSCodecParameter::interleaveMode jplsInterleaveMode)
+    DJLSCodecParameter::interleaveMode jplsInterleaveMode,
+    OFBool useFFbitstreamPadding)
 {
   if (! registered_)
   {
     cp_ = new DJLSCodecParameter(preferCookedEncoding, jpls_t1, jpls_t2, jpls_t3,
       jpls_reset, fragmentSize, createOffsetTable, uidCreation,
-      convertToSC, EJLSPC_restore, OFFalse, jplsInterleaveMode);
+      convertToSC, EJLSPC_restore, OFFalse, jplsInterleaveMode, useFFbitstreamPadding);
 
     if (cp_)
     {

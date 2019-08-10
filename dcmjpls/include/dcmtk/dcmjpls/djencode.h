@@ -51,6 +51,7 @@ public:
    *  @param uidCreation               mode for SOP Instance UID creation
    *  @param convertToSC               flag indicating whether image should be converted to Secondary Capture upon compression
    *  @param jplsInterleaveMode        flag describing which interleave the JPEG-LS datastream should use
+   *  @param useFFbitstreamPadding     flag indicating whether the JPEG-LS bitstream should be FF padded as required by DICOM.
    */
   static void registerCodecs(
     Uint16 jpls_t1 = 0,
@@ -62,7 +63,8 @@ public:
     OFBool createOffsetTable = OFTrue,
     JLS_UIDCreation uidCreation = EJLSUC_default,
     OFBool convertToSC = OFFalse,
-    DJLSCodecParameter::interleaveMode jplsInterleaveMode = DJLSCodecParameter::interleaveDefault);
+    DJLSCodecParameter::interleaveMode jplsInterleaveMode = DJLSCodecParameter::interleaveDefault,
+    OFBool useFFbitstreamPadding = OFTrue );
 
   /** deregisters encoders.
    *  Attention: Must not be called while other threads might still use

@@ -723,7 +723,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
     if (result.good())
     {
       compressedSize = OFstatic_cast(unsigned long, bytesWritten);
-      fixPaddingIfNecessary(OFstatic_cast(Uint8 *, buffer), size, compressedSize);
+      fixPaddingIfNecessary(OFstatic_cast(Uint8 *, buffer), size, compressedSize, djcp->getUseFFbitstreamPadding());
       result = pixelSequence->storeCompressedFrame(offsetList, buffer, compressedSize, fragmentSize);
     }
 
@@ -1111,7 +1111,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   {
     // 'compressed_buffer_size' now contains the size of the compressed data in buffer
     compressedSize = OFstatic_cast(unsigned long, bytesWritten);
-    fixPaddingIfNecessary(OFstatic_cast(Uint8 *, buffer), compressed_buffer_size, compressedSize);
+    fixPaddingIfNecessary(OFstatic_cast(Uint8 *, buffer), compressed_buffer_size, compressedSize, djcp->getUseFFbitstreamPadding());
     result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, compressedSize, fragmentSize);
   }
 
@@ -1176,7 +1176,8 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 void DJLSEncoderBase::fixPaddingIfNecessary(
     Uint8 *buffer,
     size_t bufSize,
-    unsigned long &bytesWritten)
+    unsigned long &bytesWritten,
+    OFBool useFFpadding)
 {
   // check if an odd number of bytes was written and the buffer
   // has space for the needed pad byte (which should in practice
@@ -1186,18 +1187,20 @@ void DJLSEncoderBase::fixPaddingIfNecessary(
     // first write a zero pad byte after the end of the JPEG-LS bitstream
     buffer[bytesWritten++] = 0;
 
-#ifndef DISABLE_FF_JPEG_BITSTREAM_PADDING
-    // look for the EOI marker
-    if ((bytesWritten > 2) && (buffer[bytesWritten-3] == 0xFF) && (buffer[bytesWritten-2] == 0xD9))
+    // check if we are expected to use an extended EOI marker for padding
+    if (useFFpadding)
     {
-      // we now have ff/d9/00 at the end of the JPEG bitstream,
-      // i.e. an end of image (EOI) marker followed by a pad byte.
-      // Replace this with ff/ff/d9, which is an "extended" EOI marker
-      // ending on an even byte boundary.
-      buffer[bytesWritten-2] = 0xFF;
-      buffer[bytesWritten-1] = 0xD9;
+      // look for the EOI marker
+      if ((bytesWritten > 2) && (buffer[bytesWritten-3] == 0xFF) && (buffer[bytesWritten-2] == 0xD9))
+      {
+        // we now have ff/d9/00 at the end of the JPEG bitstream,
+        // i.e. an end of image (EOI) marker followed by a pad byte.
+        // Replace this with ff/ff/d9, which is an "extended" EOI marker
+        // ending on an even byte boundary.
+        buffer[bytesWritten-2] = 0xFF;
+        buffer[bytesWritten-1] = 0xD9;
+      }
     }
   }
-#endif
   return;
 }

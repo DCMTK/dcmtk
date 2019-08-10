@@ -351,11 +351,14 @@ private:
    *  @param bufSize size of the buffer in bytes
    *  @param bytesWritten number of bytes written to buffer; value is increased
    *   if this method adds a pad byte.
+   *  @param useFFpadding true if a standard-conforming extended EOI marker
+   *   should be used for padding an odd-length bitstream
    */
   static void fixPaddingIfNecessary(
     Uint8 *buffer,
     size_t bufSize,
-    unsigned long &bytesWritten);
+    unsigned long &bytesWritten,
+    OFBool useFFpadding);
 
   /** compute the parameters for the CharLS JlsCustomParameters struct, which maintains
    *  the JPEG-LS encoding process parameters T1, T2, T3, MAXVAL and RESET.
