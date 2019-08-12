@@ -23,6 +23,7 @@
 
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"

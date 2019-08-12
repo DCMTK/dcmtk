@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmimage/dicdefin.h" /* for export macros */
 #include "dcmtk/dcmimgle/diutils.h"  /* for EW_WindowType */
 #include "dcmtk/ofstd/ofstd.h"       /* for OFCondition */
+#include "dcmtk/ofstd/ofcmdln.h"     /* for OFCmdUnsignedInt */
 #include "dcmtk/dcmdata/dcxfer.h"    /* for E_TransferSyntax */
 
 class DicomImage;

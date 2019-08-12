@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2017, OFFIS e.V.
+ *  Copyright (C) 2009-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,9 +27,6 @@
 
 #include "dcmtk/oflog/logger.h"
 #include "dcmtk/oflog/logmacro.h"
-#include "dcmtk/ofstd/oftypes.h"
-#include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/ofstd/ofconapp.h"
 
 #define OFLOG_TRACE(logger, msg) DCMTK_LOG4CPLUS_TRACE(logger, msg)
 #define OFLOG_DEBUG(logger, msg) DCMTK_LOG4CPLUS_DEBUG(logger, msg)
@@ -37,6 +34,9 @@
 #define OFLOG_WARN(logger, msg)  DCMTK_LOG4CPLUS_WARN(logger, msg)
 #define OFLOG_ERROR(logger, msg) DCMTK_LOG4CPLUS_ERROR(logger, msg)
 #define OFLOG_FATAL(logger, msg) DCMTK_LOG4CPLUS_FATAL(logger, msg)
+
+class OFCommandLine;
+class OFConsoleApplication;
 
 /** simple wrapper around the "low-level" Logger object to make it easier to
  *  switch to a different system

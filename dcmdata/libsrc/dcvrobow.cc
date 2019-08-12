@@ -25,6 +25,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofuuid.h"
+#include "dcmtk/ofstd/offile.h"
 
 #include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcvrobow.h"

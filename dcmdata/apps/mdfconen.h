@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2018, OFFIS e.V.
+ *  Copyright (C) 2003-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/ofstd/ofcmdln.h"
 
 
 // forward declarations

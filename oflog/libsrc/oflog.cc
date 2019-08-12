@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2017, OFFIS e.V.
+ *  Copyright (C) 2009-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,12 +20,13 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/oflog/oflog.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofdate.h"
 #include "dcmtk/ofstd/oftime.h"
+#include "dcmtk/ofstd/ofconapp.h"
 
-#include "dcmtk/oflog/oflog.h"
 #include "dcmtk/oflog/configrt.h"
 #include "dcmtk/oflog/consap.h"
 #include "dcmtk/oflog/helpers/loglog.h"

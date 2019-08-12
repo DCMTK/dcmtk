@@ -23,7 +23,10 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcencdoc.h"
 
+#include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofxml.h"
+#include "dcmtk/ofstd/oftypes.h"
+
 #include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/dcmdata/dccodec.h"
 #include "dcmtk/dcmdata/dcdeftag.h"

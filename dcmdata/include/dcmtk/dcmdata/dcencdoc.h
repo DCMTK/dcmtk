@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofcond.h"       /* for class OFCondition */
 #include "dcmtk/dcmdata/dcdefine.h"   /* for DCMTK_DCMDATA_EXPORT */
 #include "dcmtk/dcmdata/dcfilefo.h"   /* for class DcmFileFormat */
+#include "dcmtk/ofstd/ofcmdln.h"      /* for OFCmdUnsignedInt */
 
 class XMLNode;
 class OFCommandLine;

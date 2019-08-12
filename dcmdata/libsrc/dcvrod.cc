@@ -23,6 +23,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/ofuuid.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmdata/dcvrod.h"
 #include "dcmtk/dcmdata/dcswap.h"

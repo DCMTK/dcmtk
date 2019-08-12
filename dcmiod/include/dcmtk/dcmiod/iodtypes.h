@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,6 +24,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmiod/ioddef.h"
 #include "dcmtk/dcmiod/cielabutil.h"
 

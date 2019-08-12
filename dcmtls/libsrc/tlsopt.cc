@@ -22,7 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmtls/tlsopt.h"
-#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmtls/tlscond.h"
 #include "dcmtk/dcmnet/assoc.h"       /* for ASC_setTransportLayer() */
 
