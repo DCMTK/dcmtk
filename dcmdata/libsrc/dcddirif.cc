@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2018, OFFIS e.V.
+ *  Copyright (C) 2002-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -780,7 +780,9 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     else if (compare(sopClass, UID_ContentAssessmentResultsStorage))
         result = ERT_Assessment;
     else if (compare(sopClass, UID_RTPhysicianIntentStorage) ||
-             compare(sopClass, UID_RTSegmentAnnotationStorage))
+             compare(sopClass, UID_RTSegmentAnnotationStorage) ||
+             compare(sopClass, UID_RTRadiationSetStorage) ||
+             compare(sopClass, UID_CArmPhotonElectronRadiationStorage))
     {
         result = ERT_Radiotherapy;
     }
@@ -1565,7 +1567,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_RTIonPlanStorage) ||
                                 compare(mediaSOPClassUID, UID_RTIonBeamsTreatmentRecordStorage) ||
                                 compare(mediaSOPClassUID, UID_RTPhysicianIntentStorage) ||
-                                compare(mediaSOPClassUID, UID_RTSegmentAnnotationStorage);
+                                compare(mediaSOPClassUID, UID_RTSegmentAnnotationStorage) ||
+                                compare(mediaSOPClassUID, UID_RTRadiationSetStorage) ||
+                                compare(mediaSOPClassUID, UID_CArmPhotonElectronRadiationStorage);
                     }
                     /* is it one of the structured reporting SOP Classes? */
                     if (!found)

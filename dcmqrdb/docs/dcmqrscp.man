@@ -871,6 +871,8 @@ RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
 RTPhysicianIntentStorage                             1.2.840.10008.5.1.4.1.1.481.10
 RTSegmentAnnotationStorage                           1.2.840.10008.5.1.4.1.1.481.11
+RTRadiationSetStorage                                1.2.840.10008.5.1.4.1.1.481.12
+CArmPhotonElectronRadiationStorage                   1.2.840.10008.5.1.4.1.1.481.13
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
@@ -1075,6 +1077,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmqrscp_copyright COPYRIGHT
 
-Copyright (C) 1993-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

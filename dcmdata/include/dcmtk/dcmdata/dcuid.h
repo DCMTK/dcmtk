@@ -541,6 +541,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RTIonBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.9"
 #define UID_RTPhysicianIntentStorage                               "1.2.840.10008.5.1.4.1.1.481.10"
 #define UID_RTSegmentAnnotationStorage                             "1.2.840.10008.5.1.4.1.1.481.11"
+#define UID_RTRadiationSetStorage                                  "1.2.840.10008.5.1.4.1.1.481.12"
+#define UID_CArmPhotonElectronRadiationStorage                     "1.2.840.10008.5.1.4.1.1.481.13"
 #define UID_RTBeamsDeliveryInstructionStorage                      "1.2.840.10008.5.1.4.34.7"
 #define UID_RTBrachyApplicationSetupDeliveryInstructionStorage     "1.2.840.10008.5.1.4.34.10"
 #define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
