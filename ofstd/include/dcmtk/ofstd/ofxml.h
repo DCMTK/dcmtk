@@ -324,7 +324,7 @@ typedef struct XMLDLLENTRY XMLNode
     /// Parse an XML file and return the root of a XMLNode tree representing the file. A very crude error checking is made. An attempt to guess the Char Encoding used in the file is made.
     static XMLNode openFileHelper(XMLCSTR     filename, XMLCSTR tag=NULL);
     /**< The "openFileHelper" function reports to the screen all the warnings and errors that occurred during parsing of the XML file.
-     * This function also tries to guess char Encoding (UTF-8, ASCII or SHIT-JIS) based on the first 200 bytes of the file. Since each
+     * This function also tries to guess char Encoding (UTF-8, ASCII or SHIFT-JIS) based on the first 200 bytes of the file. Since each
      * application has its own way to report and deal with errors, you should rather use the "parseFile" function to parse XML files
      * and program yourself thereafter an "error reporting" tailored for your needs (instead of using the very crude "error reporting"
      * mechanism included inside the "openFileHelper" function).
