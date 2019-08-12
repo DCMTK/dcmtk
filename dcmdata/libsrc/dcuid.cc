@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -513,6 +513,7 @@ static const UIDNameMap uidNameMap[] = {
     // Well-known Frame of References
     { UID_ICBM452T1FrameOfReference,                           "ICBM452T1FrameOfReference" },
     { UID_ICBMSingleSubjectMRIFrameOfReference,                "ICBMSingleSubjectMRIFrameOfReference" },
+    { UID_IEC61217FixedCoordinateSystemFrameOfReference,       "IEC61217FixedCoordinateSystemFrameOfReference" },
     { UID_SPM2AVG152PDFrameOfReference,                        "SPM2AVG152PDFrameOfReference" },
     { UID_SPM2AVG152T1FrameOfReference,                        "SPM2AVG152T1FrameOfReference" },
     { UID_SPM2AVG152T2FrameOfReference,                        "SPM2AVG152T2FrameOfReference" },

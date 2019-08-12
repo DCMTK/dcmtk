@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -790,6 +790,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_SPM2SINGLESUBJT1FrameOfReference                       "1.2.840.10008.1.4.1.18"
 #define UID_ICBM452T1FrameOfReference                              "1.2.840.10008.1.4.2.1"
 #define UID_ICBMSingleSubjectMRIFrameOfReference                   "1.2.840.10008.1.4.2.2"
+#define UID_IEC61217FixedCoordinateSystemFrameOfReference          "1.2.840.10008.1.4.3.1"
 
 // Well-known SOP Instances for Color Palettes
 #define UID_HotIronColorPaletteSOPInstance                         "1.2.840.10008.1.5.1"
