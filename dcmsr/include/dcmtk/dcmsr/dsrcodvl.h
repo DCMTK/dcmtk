@@ -320,7 +320,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeSequenceItem(DcmItem &item,
-                                  const DcmTagKey &tagKey);
+                                  const DcmTagKey &tagKey) const;
 
     /** read code from XML document.
      *  Please note that only the "Basic Coded Entry Attributes" are supported by this method.

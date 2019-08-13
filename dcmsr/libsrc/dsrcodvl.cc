@@ -453,7 +453,7 @@ OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
 
 
 OFCondition DSRCodedEntryValue::writeSequenceItem(DcmItem &item,
-                                                  const DcmTagKey & /*tagKey*/)
+                                                  const DcmTagKey & /*tagKey*/) const
 {
     /* call the real function, which is "protected" */
     return writeItem(item);
