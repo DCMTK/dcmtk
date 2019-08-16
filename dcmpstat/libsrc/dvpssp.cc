@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,7 +30,7 @@
 #include "dcmtk/dcmimgle/dcmimage.h"
 #include "dcmtk/dcmimgle/digsdfn.h"
 #include "dcmtk/dcmpstat/dvpscf.h"
-
+#include "dcmtk/dcmnet/dimse.h"         /* for DICOM_WARNING_STATUS */
 #include "dcmtk/dcmpstat/dvpsov.h"      /* for DVPSOverlay, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsgl.h"      /* for DVPSGraphicLayer, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
@@ -49,6 +49,10 @@
 #define INCLUDE_CMATH
 #define INCLUDE_CTIME
 #include "dcmtk/ofstd/ofstdinc.h"
+
+#define DIMSE_STATUS_OK(status) (((status) == 0) || DICOM_WARNING_STATUS(status))
+#define DIMSE_STATUS_BAD(status) (((status) != 0) && !(DICOM_WARNING_STATUS(status)))
+
 
 /* --------------- class DVPSStoredPrint --------------- */
 
@@ -1332,7 +1336,7 @@ OFCondition DVPSStoredPrint::printSCUpreparePresentationLUT(
     if (result==EC_Normal)
     {
       OFCondition cond = printHandler.createRQ(UID_PresentationLUTSOPClass, presentationLUTInstanceUID, &dset, status, attributeListOut);
-      if ((cond.good())&&((status==0)||((status & 0xf000)==0xb000)))
+      if (cond.good() && DIMSE_STATUS_OK(status))
       {
         /* nothing */
       } else {
@@ -1430,7 +1434,7 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmSession(
   if (result==EC_Normal)
   {
     OFCondition cond = printHandler.createRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID, &dset, status, attributeListOut);
-    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000)))
+    if (cond.bad() || DIMSE_STATUS_BAD(status))
     {
       result = EC_IllegalCall;
       filmSessionInstanceUID.clear();
@@ -1517,7 +1521,7 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
         size_t numItems = 0;
         size_t i;
     OFCondition cond = printHandler.createRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID, &dset, status, attributeListOut);
-    if ((cond.good())&&((status==0)||((status & 0xf000)==0xb000))&& attributeListOut)
+    if (cond.good() && DIMSE_STATUS_OK(status) && attributeListOut)
     {
       // N-CREATE was successful, now evaluate Referenced Image Box SQ
       stack.clear();
@@ -1583,7 +1587,7 @@ OFCondition DVPSStoredPrint::printSCUprintBasicFilmBox(DVPSPrintMessageHandler& 
     1 /* action type ID 1 = print */, NULL /* no action information */, status, attributeListOut);
   delete attributeListOut; // should be empty anyway
 
-  if ((cond.good())&&((status==0)||((status & 0xf000)==0xb000))) return EC_Normal;
+  if (cond.good() && DIMSE_STATUS_OK(status)) return EC_Normal;
   return EC_IllegalCall; // otherwise
 }
 
@@ -1596,7 +1600,7 @@ OFCondition DVPSStoredPrint::printSCUprintBasicFilmSession(DVPSPrintMessageHandl
     1 /* action type ID 1 = print */, NULL /* no action information */, status, attributeListOut);
   delete attributeListOut; // should be empty anyway
 
-  if ((cond.good())&&((status==0)||((status & 0xf000)==0xb000))) return EC_Normal;
+  if (cond.good() && DIMSE_STATUS_OK(status)) return EC_Normal;
   return EC_IllegalCall; // otherwise
 }
 
@@ -1610,7 +1614,7 @@ OFCondition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
   if (filmBoxInstanceUID.size() > 0)
   {
     cond = printHandler.deleteRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), status);
-    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    if (cond.bad() || DIMSE_STATUS_BAD(status)) result = EC_IllegalCall;
     filmBoxInstanceUID.clear();
   }
 
@@ -1618,7 +1622,7 @@ OFCondition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
   if (filmSessionInstanceUID.size() > 0)
   {
     cond = printHandler.deleteRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), status);
-    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    if (cond.bad() || DIMSE_STATUS_BAD(status)) result = EC_IllegalCall;
     filmSessionInstanceUID.clear();
   }
 
@@ -1626,7 +1630,7 @@ OFCondition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
   if ((presentationLUTInstanceUID.size() > 0)&&(printHandler.printerSupportsPresentationLUT()))
   {
     cond = printHandler.deleteRQ(UID_PresentationLUTSOPClass, presentationLUTInstanceUID.c_str(), status);
-    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    if (cond.bad() || DIMSE_STATUS_BAD(status)) result = EC_IllegalCall;
     presentationLUTInstanceUID.clear();
   }
   return result;
@@ -1757,7 +1761,7 @@ OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
   if (EC_Normal == result)
   {
     OFCondition cond = printHandler.setRQ(UID_BasicGrayscaleImageBoxSOPClass, imageSopInstanceUID, &dataset, status, attributeListOut);
-    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    if (cond.bad() || DIMSE_STATUS_BAD(status)) result = EC_IllegalCall;
   }
   delete attributeListOut;
   return result;
@@ -1786,7 +1790,7 @@ OFCondition DVPSStoredPrint::printSCUsetBasicAnnotationBox(
     if (EC_Normal == result)
     {
       OFCondition cond = printHandler.setRQ(UID_BasicAnnotationBoxSOPClass, annotationSopInstanceUID, &dataset, status, attributeListOut);
-      if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+      if (cond.bad() || DIMSE_STATUS_BAD(status)) result = EC_IllegalCall;
     }
     delete attributeListOut;
   } else {

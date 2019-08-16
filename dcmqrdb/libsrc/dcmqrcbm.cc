@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2018, OFFIS e.V.
+ *  Copyright (C) 1993-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmqrdb/dcmqropt.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmnet/dimse.h"       /* for DICOM_WARNING_STATUS */
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
@@ -257,7 +258,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
         if (rsp.DimseStatus == STATUS_Success) {
             /* everything ok */
             nCompleted++;
-        } else if ((rsp.DimseStatus & 0xf000) == 0xb000) {
+        } else if (DICOM_WARNING_STATUS(rsp.DimseStatus)) {
             /* a warning status message */
             nWarning++;
             DCMQRDB_ERROR("Move SCP: Store Warning: Response Status: " <<
