@@ -82,8 +82,10 @@ OFTEST(dcmsr_determineCodeValueType)
     /* then, set a long code value */
     OFCHECK(codedEntry.setCode("621566751000087104", "SCT", "Invasive diagnostic procedure").good());
     OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_Long);
-    /* and finally, set a URN code value */
+    /* and finally, set a URN/URL code value */
     OFCHECK(codedEntry.setCode("urn:lex:us:federal:codified.regulation:2013-04-25;45CFR164", "99TEST", "HIPAA Privacy Rule").good());
+    OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_URN);
+    OFCHECK(codedEntry.setCode("http://dcmtk.org/code/0815", "99TEST", "URL test code").good());
     OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_URN);
     /* also check an empty code */
     codedEntry.clear();

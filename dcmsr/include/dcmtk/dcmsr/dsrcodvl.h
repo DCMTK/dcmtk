@@ -692,7 +692,7 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  Please note that the check that is currently performed is very simple.  So, the user
      *  is advised to passed the correct type (short, long or URN) to the appropriate method
      *  and should not rely on this automatic detection.  Specifically, URN values are only
-     *  detected by the prefix "urn:" (i.e. no URL allowed), and the maximum length of a
+     *  detected by the prefix "urn:" or by the substring "://".  The maximum length of a
      *  short code value is determined based on the number of bytes (not characters, since
      *  the character set is unknown to this function - and to this class).
      ** @param  codeValue  code value to be checked

@@ -800,8 +800,8 @@ OFCondition DSRCodedEntryValue::checkCode(const OFString &codeValue,
 DSRTypes::E_CodeValueType DSRCodedEntryValue::determineCodeValueType(const OFString &codeValue)
 {
     DSRTypes::E_CodeValueType codeValueType = DSRTypes::CVT_auto;
-    /* first, check for URN schema (tbd: also need to check for URLs?) */
-    if (codeValue.compare(0, 4, "urn:") == 0)
+    /* first, check for URN or URL scheme (not perfect but should do in most cases) */
+    if ((codeValue.compare(0, 4, "urn:") == 0) || (codeValue.find("://") != OFString_npos))
         codeValueType = DSRTypes::CVT_URN;
     /* then, check maximum value length (tbd: should be characters not bytes!) */
     else if (codeValue.length() > 16)
