@@ -687,6 +687,9 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS("int64_t definition" "${HEADERS}" HAVE_INT64_T)
   CHECK_FUNCTIONWITHHEADER_EXISTS("uint64_t definition" "${HEADERS}" HAVE_UINT64_T)
 
+  # ICU prefers to use char16_t, but it is only supported since C++11
+  CHECK_FUNCTIONWITHHEADER_EXISTS("char16_t definition" "${HEADERS}" HAVE_CHAR16_T)
+
   # File access stuff
   CHECK_FUNCTIONWITHHEADER_EXISTS("fpos64_t definition" "${HEADERS}" HAVE_FPOS64_T)
   CHECK_FUNCTIONWITHHEADER_EXISTS("off64_t definition" "${HEADERS}" HAVE_OFF64_T)

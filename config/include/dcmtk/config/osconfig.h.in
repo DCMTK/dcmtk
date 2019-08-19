@@ -124,6 +124,9 @@
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
 
+/* Define to 1 if the system has the type `char16_t'. */
+#undef HAVE_CHAR16_T
+
 /* Define if your system declares the return type of strerror_r as char *
    instead of int */
 #undef HAVE_CHARP_STRERROR_R

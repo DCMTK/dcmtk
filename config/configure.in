@@ -233,6 +233,8 @@ AC_CHECK_HEADERS(cstdint)
 AC_CHECK_TYPES(int64_t)
 AC_CHECK_TYPES(uint64_t)
 
+AC_CHECK_TYPES(char16_t)
+
 AC_CHECK_TYPES([sigjmp_buf], [], [], [[#include <setjmp.h>]])
 
 dnl -------------------------------------------------------

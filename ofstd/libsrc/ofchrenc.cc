@@ -55,6 +55,18 @@ const unsigned int OFCharacterEncoding::CPC_UTF8   = CP_UTF8;
 
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
+
+// Workaround for ICU. Type char16_t is only supported since C++11.
+#ifndef HAVE_CHAR16_T
+#define UCHAR_TYPE uint16_t
+#endif
+
+// Another Workaround for ICU. DCMTK does not use exceptions.
+// If U_NOEXCEPT is not defined, ICU falls back to NOEXCEPT.
+#ifndef HAVE_CXX11
+#define U_NOEXCEPT
+#endif
+
 #include <unicode/ucnv.h>
 #include <unicode/ucnv_err.h>
 
