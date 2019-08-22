@@ -48,7 +48,7 @@ namespace log4cplus {
 
     }
 
-    
+
     namespace helpers
     {
 
@@ -77,12 +77,12 @@ namespace log4cplus {
         Layout(const helpers::Properties& properties);
         virtual ~Layout() = 0;
 
-        virtual void formatAndAppend(log4cplus::tostream& output, 
+        virtual void formatAndAppend(log4cplus::tostream& output,
             const log4cplus::spi::InternalLoggingEvent& event) = 0;
 
     protected:
         LogLevelManager& llmCache;
-        
+
     private:
       // Disable copy
         Layout(const Layout&);
@@ -109,10 +109,10 @@ namespace log4cplus {
         SimpleLayout(const log4cplus::helpers::Properties& properties);
         virtual ~SimpleLayout();
 
-        virtual void formatAndAppend(log4cplus::tostream& output, 
+        virtual void formatAndAppend(log4cplus::tostream& output,
                                      const log4cplus::spi::InternalLoggingEvent& event);
 
-    private: 
+    private:
       // Disallow copying of instances of this class
         SimpleLayout(const SimpleLayout&);
         SimpleLayout& operator=(const SimpleLayout&);
@@ -123,13 +123,13 @@ namespace log4cplus {
     /**
      * TTCC layout format consists of time, thread, Logger and nested
      * diagnostic context information, hence the name.
-     * 
+     *
      * The time format depends on the <code>DateFormat</code> used.  Use the
      * <code>Use_gmtime</code> to specify whether messages should be logged using
      * <code>localtime</code> or <code>gmtime</code>.
-     * 
+     *
      * Here is an example TTCCLayout output:
-     * 
+     *
      * <pre>
      * 176 [main] INFO  org.apache.log4j.examples.Sort - Populating an array of 2 elements in reverse order.
      * 225 [main] INFO  org.apache.log4j.examples.SortAlgo - Entered the sort method.
@@ -143,17 +143,17 @@ namespace log4cplus {
      * 346 [main] ERROR org.apache.log4j.examples.SortAlgo.DUMP - Tried to dump an uninitialized array.
      * 467 [main] INFO  org.apache.log4j.examples.Sort - Exiting main method.
      * </pre>
-     * 
+     *
      *  The first field is the number of milliseconds elapsed since the
      *  start of the program. The second field is the thread outputting the
      *  log statement. The third field is the LogLevel, the fourth field is
      *  the logger to which the statement belongs.
-     * 
+     *
      *  The fifth field (just before the '-') is the nested diagnostic
      *  context.  Note the nested diagnostic context may be empty as in the
      *  first two statements. The text after the '-' is the message of the
      *  statement.
-     * 
+     *
      *  PatternLayout offers a much more flexible alternative.
      */
     class DCMTK_LOG4CPLUS_EXPORT TTCCLayout
@@ -165,14 +165,14 @@ namespace log4cplus {
         TTCCLayout(const log4cplus::helpers::Properties& properties);
         virtual ~TTCCLayout();
 
-        virtual void formatAndAppend(log4cplus::tostream& output, 
+        virtual void formatAndAppend(log4cplus::tostream& output,
                                      const log4cplus::spi::InternalLoggingEvent& event);
 
     protected:
        log4cplus::tstring dateFormat;
        bool use_gmtime;
-     
-    private: 
+
+    private:
       // Disallow copying of instances of this class
         TTCCLayout(const TTCCLayout&);
         TTCCLayout& operator=(const TTCCLayout&);
@@ -184,26 +184,26 @@ namespace log4cplus {
 
     /**
      * A flexible layout configurable with pattern string.
-     * 
-     * The goal of this class is to format a InternalLoggingEvent and return 
-     * the results as a string. The results depend on the <em>conversion 
+     *
+     * The goal of this class is to format a InternalLoggingEvent and return
+     * the results as a string. The results depend on the <em>conversion
      * pattern</em>.
-     * 
+     *
      * The conversion pattern is closely related to the conversion
      * pattern of the printf function in C. A conversion pattern is
      * composed of literal text and format control expressions called
      * <em>conversion specifiers</em>.
-     *  
+     *
      * <i>You are free to insert any literal text within the conversion
      * pattern.</i>
-     * 
+     *
      * Each conversion specifier starts with a percent sign (%%) and is
      * followed by optional <em>format modifiers</em> and a <em>conversion
      * character</em>. The conversion character specifies the type of
      * data, e.g. Logger, LogLevel, date, thread name. The format
      * modifiers control such things as field width, padding, left and
      * right justification. The following is a simple example.
-     * 
+     *
      * Let the conversion pattern be <b>"%-5p [%t]: %m%n"</b> and assume
      * that the log4cplus environment was set to use a PatternLayout. Then the
      * statements
@@ -215,19 +215,19 @@ namespace log4cplus {
      * would yield the output
      * <tt><pre>
      * DEBUG [main]: Message 1
-     * WARN  [main]: Message 2  
+     * WARN  [main]: Message 2
      * </pre></tt>
-     * 
+     *
      * Note that there is no explicit separator between text and
      * conversion specifiers. The pattern parser knows when it has reached
      * the end of a conversion specifier when it reads a conversion
      * character. In the example above the conversion specifier
      * <b>"%-5p"</b> means the LogLevel of the logging event should be left
      * justified to a width of five characters.
-     * 
+     *
      * The recognized conversion characters are
-     * 
-     * 
+     *
+     *
      * <table border="1" CELLPADDING="8">
      * <tr>
      * <td>Conversion Character</td>
@@ -243,30 +243,30 @@ namespace log4cplus {
      *
      * <tr>
      *   <td align=center><b>c</b></td>
-     * 
+     *
      *   <td>Used to output the logger of the logging event. The
      *   logger conversion specifier can be optionally followed by
      *   <em>precision specifier</em>, that is a decimal constant in
      *   brackets.
-     * 
+     *
      *   If a precision specifier is given, then only the corresponding
      *   number of right most components of the logger name will be
      *   printed. By default the logger name is printed in full.
-     * 
+     *
      *   For example, for the logger name "a.b.c" the pattern
      *   <b>%c{2}</b> will output "b.c".
-     * 
+     *
      * </td>
      * </tr>
-     * 
-     * <tr> 
-     *   <td align=center><b>d</b></td> 
      *
-     *   <td>Used to output the date of the logging event in <b>UTC</b>. 
+     * <tr>
+     *   <td align=center><b>d</b></td>
+     *
+     *   <td>Used to output the date of the logging event in <b>UTC</b>.
      *
      *   The date conversion specifier may be followed by a <em>date format
      *   specifier</em> enclosed between braces. For example, <b>%%d{%%H:%%M:%%s}</b>
-     *   or <b>%%d{%%d&nbsp;%%b&nbsp;%%Y&nbsp;%%H:%%M:%%s}</b>.  If no date format 
+     *   or <b>%%d{%%d&nbsp;%%b&nbsp;%%Y&nbsp;%%H:%%M:%%s}</b>.  If no date format
      *   specifier is given then <b>%%d{%%d&nbsp;%%m&nbsp;%%Y&nbsp;%%H:%%M:%%s}</b>
      *   is assumed.
      *
@@ -302,9 +302,9 @@ namespace log4cplus {
      *   found in the <code>&lt;ctime&gt;</code> header for more information.
      * </td>
      * </tr>
-     * 
-     * <tr> 
-     *   <td align=center><b>D</b></td> 
+     *
+     * <tr>
+     *   <td align=center><b>D</b></td>
      *
      *   <td>Used to output the date of the logging event in <b>local</b> time.
      *
@@ -314,16 +314,18 @@ namespace log4cplus {
      *
      * <tr>
      *   <td align=center><b>F</b></td>
-     * 
+     *
      *   <td>Used to output the file name where the logging request was
      *   issued.
-     * 
+     *
      *   <b>NOTE</b> Unlike log4j, there is no performance penalty for
      *   calling this method.</td>
+     *
+     * </td>
      * </tr>
-     * 
-     * <tr> 
-     *   <td align=center><b>h</b></td> 
+     *
+     * <tr>
+     *   <td align=center><b>h</b></td>
      *
      *   <td>Used to output the hostname of this system (as returned
      *   by gethostname(2)).
@@ -333,9 +335,9 @@ namespace log4cplus {
      *
      * </td>
      * </tr>
-     * 
-     * <tr> 
-     *   <td align=center><b>H</b></td> 
+     *
+     * <tr>
+     *   <td align=center><b>H</b></td>
      *
      *   <td>Used to output the fully-qualified domain name of this
      *   system (as returned by gethostbyname(2) for the hostname
@@ -346,33 +348,34 @@ namespace log4cplus {
      *
      * </td>
      * </tr>
-     * 
+     *
      * <tr>
      * <td align=center><b>l</b></td>
-     * 
+     *
      *   <td>Equivalent to using "%F:%L"
-     * 
+     *
      *   <b>NOTE:</b> Unlike log4j, there is no performance penalty for
      *   calling this method.
-     * 
+     *
      * </td>
      * </tr>
-     * 
+     *
      * <tr>
      *   <td align=center><b>L</b></td>
-     * 
+     *
      *   <td>Used to output the line number from where the logging request
      *   was issued.
-     * 
+     *
      *   <b>NOTE:</b> Unlike log4j, there is no performance penalty for
      *   calling this method.
-     * 
+     *
+     * </td>
      * </tr>
      *
      * <tr>
      *   <td align=center><b>m</b></td>
-     *   <td>Used to output the application supplied message associated with 
-     *   the logging event.</td>   
+     *   <td>Used to output the application supplied message associated with
+     *   the logging event.</td>
      * </tr>
      *
      * <tr>
@@ -388,14 +391,14 @@ namespace log4cplus {
      *   <code>DCMTK_LOG4CPLUS_DISABLE_FUNCTION_MACRO</code> macro, %M
      *   expands to an empty string.</td>
      * </tr>
-     * 
+     *
      * <tr>
      *   <td align=center><b>n</b></td>
-     *   
+     *
      *   <td>Outputs the platform dependent line separator character or
-     *   characters. 
+     *   characters.</td>
      * </tr>
-     * 
+     *
      * <tr>
      *   <td align=center><b>p</b></td>
      *   <td>Used to output the LogLevel of the logging event.</td>
@@ -403,27 +406,30 @@ namespace log4cplus {
      *
      * <tr>
      *   <td align=center><b>P</b></td>
+     *
      *   <td>Used to output the first character of the LogLevel of the logging event.
-     *     <b>NOTE:</b> This pattern has been added to log4cplus.
-     *   </td>
+     *
+     *   <b>NOTE:</b> This pattern has been added to log4cplus.
+     * </td>
      * </tr>
      *
      * <tr>
      *   <td align=center><b>r</b></td>
+     *
      *   <td>Used to output miliseconds since program start
      *   of the logging event.</td>
      * </tr>
-     * 
+     *
      * <tr>
      *   <td align=center><b>t</b></td>
-     * 
+     *
      *   <td>Used to output the name of the thread that generated the
      *   logging event.</td>
      * </tr>
      *
      * <tr>
      *   <td align=center><b>T</b></td>
-     * 
+     *
      *   <td>Used to output alternative name of the thread that generated the
      *   logging event.</td>
      * </tr>
@@ -437,27 +443,26 @@ namespace log4cplus {
      *
      * <tr>
      *   <td align=center><b>x</b></td>
-     * 
+     *
      *   <td>Used to output the NDC (nested diagnostic context) associated
-     *   with the thread that generated the logging event.
-     *   </td>     
+     *   with the thread that generated the logging event.</td>
      * </tr>
      *
      * <tr>
      *   <td align=center><b>"%%"</b></td>
-     *   <td>The sequence "%%" outputs a single percent sign.
-     *   </td>     
+     *
+     *   <td>The sequence "%%" outputs a single percent sign.</td>
      * </tr>
-     *  
+     *
      * </table>
-     * 
+     *
      * By default the relevant information is output as is. However,
      * with the aid of format modifiers it is possible to change the
      * minimum field width, the maximum field width and justification.
-     * 
+     *
      * The optional format modifier is placed between the percent sign
      * and the conversion character.
-     * 
+     *
      * The first optional format modifier is the <em>left justification
      * flag</em> which is just the minus (-) character. Then comes the
      * optional <em>minimum field width</em> modifier. This is a decimal
@@ -469,7 +474,7 @@ namespace log4cplus {
      * padding character is space. If the data item is larger than the
      * minimum field width, the field is expanded to accommodate the
      * data. The value is never truncated.
-     * 
+     *
      * This behavior can be changed using the <em>maximum field
      * width</em> modifier which is designated by a period followed by a
      * decimal constant. If the data item is longer than the maximum
@@ -479,11 +484,11 @@ namespace log4cplus {
      * ten characters long, then the first two characters of the data item
      * are dropped. This behavior deviates from the printf function in C
      * where truncation is done from the end.
-     * 
+     *
      * Below are various format modifier examples for the logger
      * conversion specifier.
-     * 
-     * 
+     *
+     *
      * <TABLE BORDER=1 CELLPADDING=8>
      * <tr>
      * <td>Format modifier</td>
@@ -498,67 +503,67 @@ namespace log4cplus {
      * <td align=center>false</td>
      * <td align=center>20</td>
      * <td align=center>none</td>
-     * 
+     *
      * <td>Left pad with spaces if the logger name is less than 20
      * characters long.
      * </tr>
-     * 
+     *
      * <tr> <td align=center>%-20c</td> <td align=center>true</td> <td
      * align=center>20</td> <td align=center>none</td> <td>Right pad with
      * spaces if the logger name is less than 20 characters long.
      * </tr>
-     * 
+     *
      * <tr>
      * <td align=center>%.30c</td>
      * <td align=center>NA</td>
      * <td align=center>none</td>
      * <td align=center>30</td>
-     * 
+     *
      * <td>Truncate from the beginning if the logger name is longer than 30
      * characters.
      * </tr>
-     * 
+     *
      * <tr>
      * <td align=center>%20.30c</td>
      * <td align=center>false</td>
      * <td align=center>20</td>
      * <td align=center>30</td>
-     * 
+     *
      * <td>Left pad with spaces if the logger name is shorter than 20
      * characters. However, if logger name is longer than 30 characters,
-     * then truncate from the beginning.   
+     * then truncate from the beginning.
      * </tr>
-     * 
+     *
      * <tr>
      * <td align=center>%-20.30c</td>
      * <td align=center>true</td>
      * <td align=center>20</td>
      * <td align=center>30</td>
-     *  
+     *
      * <td>Right pad with spaces if the logger name is shorter than 20
      * characters. However, if logger name is longer than 30 characters,
-     * then truncate from the beginning.   
+     * then truncate from the beginning.
      * </tr>
-     * 
+     *
      * </table>
-     * 
+     *
      * Below are some examples of conversion patterns.
-     * 
+     *
      * <dl>
-     * 
-     * <dt><b>"%r [%t] %-5p %c %x - %m%n"</b> 
+     *
+     * <dt><b>"%r [%t] %-5p %c %x - %m%n"</b>
      * <dd>This is essentially the TTCC layout.
-     * 
+     *
      * <dt><b>"%-6r [%15.15t] %-5p %30.30c %x - %m%n"</b>
-     * 
+     *
      * <dd>Similar to the TTCC layout except that the relative time is
      * right padded if less than 6 digits, thread name is right padded if
      * less than 15 characters and truncated if longer and the logger
      * name is left padded if shorter than 30 characters and truncated if
      * longer.
-     *  
+     *
      * </dl>
-     * 
+     *
      * The above text is largely inspired from Peter A. Darnell and
      * Philip E. Margolis' highly recommended book "C -- a Software
      * Engineering Approach", ISBN 0-387-97389-3.
@@ -572,7 +577,7 @@ namespace log4cplus {
         PatternLayout(const log4cplus::helpers::Properties& properties);
         virtual ~PatternLayout();
 
-        virtual void formatAndAppend(log4cplus::tostream& output, 
+        virtual void formatAndAppend(log4cplus::tostream& output,
                                      const log4cplus::spi::InternalLoggingEvent& event);
 
     protected:
@@ -583,7 +588,7 @@ namespace log4cplus {
         bool formatEachLine;
         OFVector<pattern::PatternConverter*> parsedPattern;
 
-    private: 
+    private:
       // Disallow copying of instances of this class
         PatternLayout(const PatternLayout&);
         PatternLayout& operator=(const PatternLayout&);
