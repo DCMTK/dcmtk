@@ -59,6 +59,18 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define LIBXML_ATTR_FORMAT(fmt,args)
 #endif
 
+// The libxml library also uses unicode. So we have to reuse some
+// workarounds for the ICU library here as well.
+// The type char16_t is only supported since C++11.
+#ifndef HAVE_CHAR16_T
+#define UCHAR_TYPE uint16_t
+#endif
+
+//If U_NOEXCEPT is not defined, ICU falls back to NOEXCEPT.
+#ifndef HAVE_CXX11
+#define U_NOEXCEPT
+#endif
+
 #include <libxml/parser.h>
 
 
