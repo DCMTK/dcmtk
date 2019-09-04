@@ -193,7 +193,14 @@ static OFCondition createNewElement(xmlNodePtr current,
         DcmTagKey dcmTagKey;
         unsigned int group = 0xffff;
         unsigned int elem = 0xffff;
-        if (sscanf(OFreinterpret_cast(char *, elemTag), "%x,%x", &group, &elem ) == 2)
+        /* make sure that "tag" attribute exists */
+        if (elemTag == NULL)
+        {
+            OFLOG_WARN(xml2dcmLogger, "missing 'tag' attribute, ignoring node");
+            result = EC_InvalidTag;
+        }
+        /* determine group and element number from "tag" */
+        else if (sscanf(OFreinterpret_cast(char *, elemTag), "%x,%x", &group, &elem ) == 2)
         {
             dcmTagKey.set(OFstatic_cast(Uint16, group), OFstatic_cast(Uint16, elem));
             DcmTag dcmTag(dcmTagKey);
@@ -202,8 +209,15 @@ static OFCondition createNewElement(xmlNodePtr current,
             DcmEVR dcmEVR = dcmVR.getEVR();
             if (dcmEVR == EVR_UNKNOWN)
             {
-                OFLOG_WARN(xml2dcmLogger, "invalid 'vr' attribute (" << elemVR
-                    << ") for " << dcmTag << ", using unknown VR");
+                /* check whether "vr" attribute exists */
+                if (elemVR == NULL)
+                {
+                    OFLOG_WARN(xml2dcmLogger, "missing 'vr' attribute for " << dcmTag
+                        << ", using unknown VR");
+                } else {
+                    OFLOG_WARN(xml2dcmLogger, "invalid 'vr' attribute (" << elemVR
+                        << ") for " << dcmTag << ", using unknown VR");
+                }
             }
             /* check for correct vr */
             const DcmEVR tagEVR = dcmTag.getEVR();
