@@ -537,13 +537,20 @@ static OFCondition parseDataSet(DcmItem *dataset,
                         DcmPixelSequence *sequence = new DcmPixelSequence(DCM_PixelSequenceTag);
                         if (sequence != NULL)
                         {
-                            /* ... insert it into the dataset and proceed with the pixel items */
-                            OFstatic_cast(DcmPixelData *, newElem)->putOriginalRepresentation(xfer, NULL, sequence);
-                            parsePixelSequence(sequence, current->xmlChildrenNode);
+                            if (newElem->ident() == EVR_PixelData)
+                            {
+                                /* ... insert it into the dataset and proceed with the pixel items */
+                                OFstatic_cast(DcmPixelData *, newElem)->putOriginalRepresentation(xfer, NULL, sequence);
+                                parsePixelSequence(sequence, current->xmlChildrenNode);
+                            } else
+                                OFLOG_WARN(xml2dcmLogger, "wrong VR for 'sequence' element with pixel data, ignoring child nodes");
                         }
                     } else {
                         /* proceed parsing the items of the sequence */
-                        parseSequence(OFstatic_cast(DcmSequenceOfItems *, newElem), current->xmlChildrenNode, xfer);
+                        if (newElem->ident() == EVR_SQ)
+                            parseSequence(OFstatic_cast(DcmSequenceOfItems *, newElem), current->xmlChildrenNode, xfer);
+                        else
+                            OFLOG_WARN(xml2dcmLogger, "wrong VR for 'sequence' element, ignoring child nodes");
                     }
                 } else {
                     /* delete element if insertion failed */
