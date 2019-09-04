@@ -2392,7 +2392,7 @@ static void executeCommand( const OFString &cmd )
     // we 'emulate' a call to system() by passing the command to /bin/sh
     // which hopefully exists on all Posix systems.
 
-    if (execl( "/bin/sh", "/bin/sh", "-c", cmd.c_str(), OFnullptr ) < 0)
+    if (execl( "/bin/sh", "/bin/sh", "-c", cmd.c_str(), OFreinterpret_cast(char *, 0) ) < 0)
       OFLOG_ERROR(storescpLogger, "cannot execute /bin/sh");
 
     // if execl succeeds, this part will not get executed.
