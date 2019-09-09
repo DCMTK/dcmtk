@@ -32,7 +32,6 @@
 #include <windows.h>
 #endif
 
-
 /*---------------------*
  *  macro definitions  *
  *---------------------*/
@@ -1096,11 +1095,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
         /* skip '@' symbol in filename */
         const char *filename = argValue + 1;
         /* open command file */
-#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
-        STD_NAMESPACE ifstream cmdFile(filename, STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate);
-#else
-        STD_NAMESPACE ifstream cmdFile(filename, STD_NAMESPACE ios::in);
-#endif
+        STD_NAMESPACE ifstream cmdFile(filename, OFopenmode_in_nocreate);
         if (cmdFile)
         {
             char c, block = 0;
@@ -1176,11 +1171,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argV
         /* skip '@' symbol in filename */
         const wchar_t *filename = argValue + 1;
         /* open command file */
-#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
-        STD_NAMESPACE wifstream cmdFile(filename, STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate);
-#else
-        STD_NAMESPACE wifstream cmdFile(filename, STD_NAMESPACE ios::in);
-#endif
+        STD_NAMESPACE wifstream cmdFile(filename, OFopenmode_in_nocreate);
         if (cmdFile)
         {
             wchar_t c, block = 0;

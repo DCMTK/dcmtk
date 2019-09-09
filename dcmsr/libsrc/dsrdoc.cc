@@ -1699,11 +1699,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 if (newFlags & HF_copyStyleSheetContent)
                 {
                     /* copy content from CSS file */
-#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
-                    STD_NAMESPACE ifstream cssFile(styleSheet, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
-#else
-                    STD_NAMESPACE ifstream cssFile(styleSheet, STD_NAMESPACE ios::in);
-#endif
+                    STD_NAMESPACE ifstream cssFile(styleSheet, OFopenmode_in_nocreate);
                     if (cssFile)
                     {
                         char c;

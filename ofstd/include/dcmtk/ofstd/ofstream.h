@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2017, OFFIS e.V.
+ *  Copyright (C) 2002-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -134,5 +134,14 @@ typedef STD_NAMESPACE istrstream OFIStringStream;
 }
 
 #endif /* USE_STRINGSTREAM */
+
+// Define OFopenmode_in_nocreate as a macro that either expands
+// to ios::in or to ios::in|ios::nocreate, if the historic
+// nocreate flag is supported on the platform.
+#if defined(HAVE_IOS_NOCREATE) && (__cplusplus < 201103L)
+#define OFopenmode_in_nocreate STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate
+#else
+#define OFopenmode_in_nocreate STD_NAMESPACE ios::in
+#endif
 
 #endif /* OFSTREAM_H */

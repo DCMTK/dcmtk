@@ -43,11 +43,7 @@ int main(int argc, char *argv[])
     /* check number of arguments */
     if ((argc >= 3) && (argc <= 4))
     {
-#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
-        STD_NAMESPACE ifstream input(argv[1], STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
-#else
-        STD_NAMESPACE ifstream input(argv[1], STD_NAMESPACE ios::in);
-#endif
+        STD_NAMESPACE ifstream input(argv[1], OFopenmode_in_nocreate);
         if (input)
         {
             STD_NAMESPACE ofstream output(argv[2]);

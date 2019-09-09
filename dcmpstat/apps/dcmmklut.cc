@@ -125,11 +125,7 @@ static OFCondition readTextFile(const char *filename,
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         OFLOG_INFO(dcmmklutLogger, "reading text file ...");
-#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
-        STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
-#else
-        STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in);
-#endif
+        STD_NAMESPACE ifstream file(filename, OFopenmode_in_nocreate);
         if (file)
         {
             inputEntries = 0;

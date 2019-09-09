@@ -61,11 +61,7 @@ static int addOverlay(const char *filename,
 {
     if ((filename != NULL) && (pixel != NULL))
     {
-#if defined(HAVE_IOS_NOCREATE) && !defined(HAVE_CXX11)
-        STD_NAMESPACE ifstream input(filename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
-#else
-        STD_NAMESPACE ifstream input(filename);
-#endif
+        STD_NAMESPACE ifstream input(filename, OFopenmode_in_nocreate);
         if (input)
         {
             char c;
