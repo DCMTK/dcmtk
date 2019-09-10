@@ -396,6 +396,9 @@
 /* Define to 1 if you have the <sys/systeminfo.h> header file. */
 #cmakedefine HAVE_SYS_SYSTEMINFO_H @HAVE_SYS_SYSTEMINFO_H@
 
+/* Define to 1 if you have the <iterator> header file. */
+#cmakedefine HAVE_ITERATOR_HEADER @HAVE_ITERATOR_HEADER@
+
 /* Define to 1 if you have readdir_r */
 #cmakedefine HAVE_READDIR_R @HAVE_READDIR_R@
 
@@ -1201,5 +1204,23 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 
 /* Define if we are supposed to use STL's system_error */
 #cmakedefine HAVE_STL_SYSTEM_ERROR @HAVE_STL_SYSTEM_ERROR@
+
+/* Define if the input iterator category is supported */
+#cmakedefine HAVE_INPUT_ITERATOR_CATEGORY @HAVE_INPUT_ITERATOR_CATEGORY@
+
+/* Define if the input iterator category is supported */
+#cmakedefine HAVE_OUTPUT_ITERATOR_CATEGORY @HAVE_OUTPUT_ITERATOR_CATEGORY@
+
+/* Define if the input iterator category is supported */
+#cmakedefine HAVE_FORWARD_ITERATOR_CATEGORY @HAVE_FORWARD_ITERATOR_CATEGORY@
+
+/* Define if the input iterator category is supported */
+#cmakedefine HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY @HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY@
+
+/* Define if the input iterator category is supported */
+#cmakedefine HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY @HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY@
+
+/* Define if the input iterator category is supported */
+#cmakedefine HAVE_CONTIGUOUS_ITERATOR_CATEGORY @HAVE_CONTIGUOUS_ITERATOR_CATEGORY@
 
 #endif /* !OSCONFIG_H*/

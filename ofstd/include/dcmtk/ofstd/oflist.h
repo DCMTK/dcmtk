@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,6 +72,10 @@
 #define OFLIST_TYPENAME OFTypename
 
 #else
+
+#ifdef HAVE_ITERATOR_HEADER
+#include <iterator>
+#endif
 
 #define INCLUDE_CASSERT
 #define INCLUDE_CSTDDEF
@@ -175,6 +179,20 @@ protected:
      */
     OFIterator(OFListLinkBase * x) : node(x) { }
 public:
+
+    /// member typedef for T
+    typedef T value_type;
+
+    /// member typedef for T*
+    typedef T* pointer;
+
+    /// member typedef for T&
+    typedef T& reference;
+
+#ifdef HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY
+    /// member typedef declaring the category
+    typedef STD_NAMESPACE bidirectional_iterator_tag iterator_category;
+#endif
 
     /** default constructor. Creates an iterator referencing nothing.
      *  In general, iterators should always be copy-constructed

@@ -1861,6 +1861,28 @@ AC_DEFUN([AC_CHECK_SYNC_FN],
     fi
 ])
 
+AC_DEFUN([AC_CHECK_ITERATOR_CATEGORY],
+[
+    AC_MSG_CHECKING([whether iterator category $1 is declared])
+    AC_COMPILE_IFELSE(
+    [
+        AC_LANG_SOURCE(
+        [
+            #include <iterator>
+            int main(){typedef std::$1_iterator_tag category;return 0;}
+        ])
+    ],
+    [dcmtk_have_iter_cat=[yes]],
+    [dcmtk_have_iter_cat=[no]]
+    )
+    if test "$dcmtk_have_iter_cat" = yes; then
+        AC_MSG_RESULT([yes])
+        AC_DEFINE($2,[1],[Define if the $1 iterator category is supported])
+    else
+        AC_MSG_RESULT([no])
+    fi
+])
+
 AC_DEFUN([AC_CHECK_ALIGNOF],
 [
     AC_MSG_CHECKING([for __alignof__])

@@ -118,6 +118,9 @@
 /* Define to 1 if you have the `bcopy' function. */
 #undef HAVE_BCOPY
 
+/* Define if the bidirectional iterator category is supported */
+#undef HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY
+
 /* Define to 1 if you have the `bind' function. */
 #undef HAVE_BIND
 
@@ -145,6 +148,9 @@
 
 /* define if the compiler supports const_cast<> */
 #undef HAVE_CONST_CAST
+
+/* Define if the contiguous iterator category is supported */
+#undef HAVE_CONTIGUOUS_ITERATOR_CATEGORY
 
 /* Define to 1 if you have the <cstdarg> header file. */
 #undef HAVE_CSTDARG
@@ -237,6 +243,9 @@
 
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
+
+/* Define if the forward iterator category is supported */
+#undef HAVE_FORWARD_ITERATOR_CATEGORY
 
 /* Define to 1 if the system has the type `fpos64_t'. */
 #undef HAVE_FPOS64_T
@@ -337,6 +346,9 @@
 /* Define to 1 if you have the `index' function. */
 #undef HAVE_INDEX
 
+/* Define if the input iterator category is supported */
+#undef HAVE_INPUT_ITERATOR_CATEGORY
+
 /* Define to 1 if the system has the type `int64_t'. */
 #undef HAVE_INT64_T
 
@@ -381,6 +393,12 @@
 
 /* Define to 1 if you have the <iso646.h> header file. */
 #undef HAVE_ISO646_H
+
+/* Define to 1 if you have the <iterator> header file. */
+#undef HAVE_ITERATOR
+
+/* Define to 1 if you have the <iterator> header file. */
+#undef HAVE_ITERATOR_HEADER
 
 /* Define to 1 if you have the `itoa' function. */
 #undef HAVE_ITOA
@@ -550,6 +568,9 @@ typedef unsigned short ushort;
    arguments. */
 #undef HAVE_OLD_READDIR_R
 
+/* Define if the output iterator category is supported */
+#undef HAVE_OUTPUT_ITERATOR_CATEGORY
+
 /* Define if passwd::pw_gecos is available. */
 #undef HAVE_PASSWD_GECOS
 
@@ -701,6 +722,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
+
+/* Define if the random_access iterator category is supported */
+#undef HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY
 
 /* Define if OpenSSL provides the RAND_egd function. */
 #undef HAVE_RAND_EGD

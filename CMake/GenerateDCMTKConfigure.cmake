@@ -326,6 +326,7 @@ endif()
   CHECK_INCLUDE_FILE_CXX("cstdarg" HAVE_CSTDARG)
   CHECK_INCLUDE_FILE_CXX("signal.h" HAVE_SIGNAL_H)
   CHECK_INCLUDE_FILE_CXX("fenv.h" HAVE_FENV_H)
+  CHECK_INCLUDE_FILE_CXX("iterator" HAVE_ITERATOR_HEADER)
 
 if(NOT APPLE)
   # poll on macOS is unreliable, it first did not exist, then was broken until
@@ -1267,6 +1268,26 @@ int main()
     static_assert(true, \"good\");
     return 0;
 }")
+
+function(DCMTK_CHECK_ITERATOR_CATEGORY CATEGORY)
+    if(HAVE_ITERATOR_HEADER)
+        string(TOUPPER "${CATEGORY}" CAT)
+        DCMTK_TRY_COMPILE(HAVE_${CAT}_ITERATOR_CATEGORY "the iterator category ${CATEGORY} is declared"
+            "#include <iterator>
+int main()
+{
+    typedef std::${CATEGORY}_iterator_tag category;
+    return 0;
+}")
+    endif()
+endfunction()
+
+DCMTK_CHECK_ITERATOR_CATEGORY(input)
+DCMTK_CHECK_ITERATOR_CATEGORY(output)
+DCMTK_CHECK_ITERATOR_CATEGORY(forward)
+DCMTK_CHECK_ITERATOR_CATEGORY(bidirectional)
+DCMTK_CHECK_ITERATOR_CATEGORY(random_access)
+DCMTK_CHECK_ITERATOR_CATEGORY(contiguous)
 
 function(ANALYZE_ICONV_FLAGS)
     if(DCMTK_WITH_ICONV OR DCMTK_WITH_STDLIBC_ICONV)

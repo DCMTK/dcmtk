@@ -553,6 +553,10 @@ AC_CHECK_HEADERS(utime.h)
 AC_CHECK_HEADERS(wchar.h)
 AC_CHECK_HEADERS(wctype.h)
 AC_CHECK_HEADERS(fenv.h)
+AC_CHECK_HEADERS(iterator,
+    [AC_DEFINE([HAVE_ITERATOR_HEADER], , [Define to 1 if you have the <iterator> header file.])]
+)
+
 AC_CHECK_POLL_H
 
 if test $ac_cv_header_libc_h = yes ; then
@@ -1846,6 +1850,19 @@ AC_TRY_COMPILE([#include <sys/syscall.h>],
   [ AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_SYS_GETTID, , [Define if your system has a prototype for gettid.]) ],
   [AC_MSG_RESULT(no)])
+
+
+dnl -------------------------------------------------------
+dnl Test for defined iterator categories
+dnl -------------------------------------------------------
+
+AC_CHECK_ITERATOR_CATEGORY([input],[HAVE_INPUT_ITERATOR_CATEGORY])
+AC_CHECK_ITERATOR_CATEGORY([output],[HAVE_OUTPUT_ITERATOR_CATEGORY])
+AC_CHECK_ITERATOR_CATEGORY([forward],[HAVE_FORWARD_ITERATOR_CATEGORY])
+AC_CHECK_ITERATOR_CATEGORY([bidirectional],[HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY])
+AC_CHECK_ITERATOR_CATEGORY([random_access],[HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY])
+AC_CHECK_ITERATOR_CATEGORY([contiguous],[HAVE_CONTIGUOUS_ITERATOR_CATEGORY])
+
 
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
