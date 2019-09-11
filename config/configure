@@ -8788,20 +8788,14 @@ fi
 
 done
 
-for ac_header in iterator
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "iterator" "ac_cv_header_iterator" "$ac_includes_default"
+ac_fn_cxx_check_header_mongrel "$LINENO" "iterator" "ac_cv_header_iterator" "$ac_includes_default"
 if test "x$ac_cv_header_iterator" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_ITERATOR 1
-_ACEOF
 
-$as_echo "#define HAVE_ITERATOR_HEADER /**/" >>confdefs.h
+$as_echo "#define HAVE_ITERATOR_HEADER 1" >>confdefs.h
 
 
 fi
 
-done
 
 
 
@@ -13067,7 +13061,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13070 "configure"
+#line 13064 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13539,7 +13533,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13542 "configure"
+#line 13536 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13611,7 +13605,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13614 "configure"
+#line 13608 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13683,7 +13677,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13686 "configure"
+#line 13680 "configure"
 #include "confdefs.h"
 
 template <class T>

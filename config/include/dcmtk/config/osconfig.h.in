@@ -396,9 +396,6 @@
 #undef HAVE_ISO646_H
 
 /* Define to 1 if you have the <iterator> header file. */
-#undef HAVE_ITERATOR
-
-/* Define to 1 if you have the <iterator> header file. */
 #undef HAVE_ITERATOR_HEADER
 
 /* Define to 1 if you have the `itoa' function. */

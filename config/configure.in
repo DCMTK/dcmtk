@@ -552,8 +552,8 @@ AC_CHECK_HEADERS(utime.h)
 AC_CHECK_HEADERS(wchar.h)
 AC_CHECK_HEADERS(wctype.h)
 AC_CHECK_HEADERS(fenv.h)
-AC_CHECK_HEADERS(iterator,
-    [AC_DEFINE([HAVE_ITERATOR_HEADER], , [Define to 1 if you have the <iterator> header file.])]
+AC_CHECK_HEADER(iterator,
+    [AC_DEFINE([HAVE_ITERATOR_HEADER], 1, [Define to 1 if you have the <iterator> header file.])]
 )
 
 AC_CHECK_POLL_H
