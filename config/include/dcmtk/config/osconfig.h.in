@@ -23,13 +23,13 @@
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif
 
-/* Define if __attribute__((aligned)) supports templates */
+/* Define if __attribute__((aligned)) supports templates. */
 #undef ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES
 
 /* Define the canonical host system type as a string constant. */
 #undef CANONICAL_HOST_TYPE
 
-/* Define if char is unsigned on the C compiler */
+/* Define if char is unsigned on the C compiler. */
 #undef C_CHAR_UNSIGNED
 
 /* Define to the inline keyword supported by the C compiler, if any, or to the
@@ -57,7 +57,7 @@
 /* Try to define the iconv behavior as conversion flags */
 #undef DCMTK_FIXED_ICONV_CONVERSION_FLAGS
 
-/* Define if your system has a usable <poll.h> */
+/* Define if your system has a usable <poll.h>. */
 #undef DCMTK_HAVE_POLL
 
 /* Define the DCMTK default path. */
@@ -109,7 +109,7 @@
 /* Define to 1 if you have the `atoll' function. */
 #undef HAVE_ATOLL
 
-/* Define if __attribute__((aligned)) is available */
+/* Define if __attribute__((aligned)) is available. */
 #undef HAVE_ATTRIBUTE_ALIGNED
 
 /* Define to 1 if you have the `bcmp' function. */
@@ -118,7 +118,7 @@
 /* Define to 1 if you have the `bcopy' function. */
 #undef HAVE_BCOPY
 
-/* Define if the bidirectional iterator category is supported */
+/* Define if the bidirectional iterator category is supported. */
 #undef HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY
 
 /* Define to 1 if you have the `bind' function. */
@@ -134,7 +134,7 @@
    instead of int */
 #undef HAVE_CHARP_STRERROR_R
 
-/* Define if your C++ compiler can work with class templates */
+/* Define if your C++ compiler can work with class templates. */
 #undef HAVE_CLASS_TEMPLATE
 
 /* Define to 1 if you have the <climits> header file. */
@@ -146,10 +146,10 @@
 /* Define to 1 if you have the `connect' function. */
 #undef HAVE_CONNECT
 
-/* define if the compiler supports const_cast<> */
+/* Define if the compiler supports const_cast<>. */
 #undef HAVE_CONST_CAST
 
-/* Define if the contiguous iterator category is supported */
+/* Define if the contiguous iterator category is supported. */
 #undef HAVE_CONTIGUOUS_ITERATOR_CATEGORY
 
 /* Define to 1 if you have the <cstdarg> header file. */
@@ -173,28 +173,29 @@
 /* define if the compiler supports basic C++11 syntax */
 #undef HAVE_CXX11
 
-/* Define if bool is a built-in type */
+/* Define if bool is a built-in type. */
 #undef HAVE_CXX_BOOL
 
 /* Define if volatile is a known keyword */
 #undef HAVE_CXX_VOLATILE
 
-/* Define if "const" is supported by the C compiler */
+/* Define if "const" is supported by the C compiler. */
 #undef HAVE_C_CONST
 
 /* Define if your system has a declaration for socklen_t in sys/types.h
-   sys/socket.h */
+   sys/socket.h . */
 #undef HAVE_DECLARATION_SOCKLEN_T
 
 /* Define if your system has a declaration for std::ios_base::openmode in
-   iostream.h */
+   iostream.h. */
 #undef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE
 
 /* Define if your system has a declaration for struct utimbuf in sys/types.h
-   utime.h sys/utime.h */
+   utime.h sys/utime.h . */
 #undef HAVE_DECLARATION_STRUCT_UTIMBUF
 
-/* Define if the compiler supports default constructor detection via SFINAE */
+/* Define if the compiler supports default constructor detection via SFINAE.
+   */
 #undef HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
@@ -204,7 +205,7 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
-/* define if the compiler supports dynamic_cast<> */
+/* Define if the compiler supports dynamic_cast<>. */
 #undef HAVE_DYNAMIC_CAST
 
 /* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
@@ -217,7 +218,7 @@
 #undef HAVE_ERRNO_H
 
 /* Define if your C++ compiler supports the explicit template specialization
-   syntax */
+   syntax. */
 #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
 
 /* Define to 1 if you have the `fcntl' function. */
@@ -244,7 +245,7 @@
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
-/* Define if the forward iterator category is supported */
+/* Define if the forward iterator category is supported. */
 #undef HAVE_FORWARD_ITERATOR_CATEGORY
 
 /* Define to 1 if the system has the type `fpos64_t'. */
@@ -262,7 +263,7 @@
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
 
-/* Define if your C++ compiler can work with function templates */
+/* Define if your C++ compiler can work with function templates. */
 #undef HAVE_FUNCTION_TEMPLATE
 
 /* Define to 1 if you have the `getaddrinfo' function. */
@@ -328,7 +329,7 @@
 /* Define to 1 if you have the `gmtime_r' function. */
 #undef HAVE_GMTIME_R
 
-/* Define if __alignof__ is available */
+/* Define if __alignof__ is available. */
 #undef HAVE_GNU_ALIGNOF
 
 /* Define to 1 if you have the <grp.h> header file. */
@@ -346,22 +347,22 @@
 /* Define to 1 if you have the `index' function. */
 #undef HAVE_INDEX
 
-/* Define if the input iterator category is supported */
+/* Define if the input iterator category is supported. */
 #undef HAVE_INPUT_ITERATOR_CATEGORY
 
 /* Define to 1 if the system has the type `int64_t'. */
 #undef HAVE_INT64_T
 
 /* Define if your system declares argument 3 of accept() as int * instead of
-   size_t * or socklen_t * */
+   size_t * or socklen_t *. */
 #undef HAVE_INTP_ACCEPT
 
 /* Define if your system declares argument 5 of getsockopt() as int * instead
-   of size_t * or socklen_t */
+   of size_t * or socklen_t. */
 #undef HAVE_INTP_GETSOCKOPT
 
 /* Define if your system declares argument 2-4 of select() as int * instead of
-   struct fd_set * */
+   struct fd_set *. */
 #undef HAVE_INTP_SELECT
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -502,7 +503,7 @@
 /* Define to 1 if you have the <new.h> header file. */
 #undef HAVE_NEW_H
 
-/* Define if the compiler supports operator delete (std::nothrow) */
+/* Define if the compiler supports operator delete (std::nothrow.) */
 #undef HAVE_NOTHROW_DELETE
 
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
@@ -568,7 +569,7 @@ typedef unsigned short ushort;
    arguments. */
 #undef HAVE_OLD_READDIR_R
 
-/* Define if the output iterator category is supported */
+/* Define if the output iterator category is supported. */
 #undef HAVE_OUTPUT_ITERATOR_CATEGORY
 
 /* Define if passwd::pw_gecos is available. */
@@ -584,134 +585,134 @@ typedef unsigned short ushort;
 #undef HAVE_POPEN
 
 /* Define if your system has a prototype for accept in sys/types.h
-   sys/socket.h */
+   sys/socket.h. */
 #undef HAVE_PROTOTYPE_ACCEPT
 
-/* Define if your system has a prototype for bind in sys/types.h sys/socket.h
+/* Define if your system has a prototype for bind in sys/types.h sys/socket.h.
    */
 #undef HAVE_PROTOTYPE_BIND
 
 /* Define if your system has a prototype for bzero in string.h strings.h
-   libc.h unistd.h stdlib.h */
+   libc.h unistd.h stdlib.h. */
 #undef HAVE_PROTOTYPE_BZERO
 
 /* Define if your system has a prototype for connect in sys/types.h
-   sys/socket.h */
+   sys/socket.h. */
 #undef HAVE_PROTOTYPE_CONNECT
 
-/* Define if your system has a prototype for feenableexcept in fenv.h */
+/* Define if your system has a prototype for feenableexcept in fenv.h. */
 #undef HAVE_PROTOTYPE_FEENABLEEXCEPT
 
-/* Define if your system has a prototype for finite in math.h */
+/* Define if your system has a prototype for finite in math.h. */
 #undef HAVE_PROTOTYPE_FINITE
 
-/* Define if your system has a prototype for flock in sys/file.h */
+/* Define if your system has a prototype for flock in sys/file.h. */
 #undef HAVE_PROTOTYPE_FLOCK
 
 /* Define if your system has a prototype for gethostbyaddr_r in libc.h
-   unistd.h stdlib.h netdb.h */
+   unistd.h stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTBYADDR_R
 
 /* Define if your system has a prototype for gethostbyname in libc.h unistd.h
-   stdlib.h netdb.h */
+   stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTBYNAME
 
 /* Define if your system has a prototype for gethostbyname_r in libc.h
-   unistd.h stdlib.h netdb.h */
+   unistd.h stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTBYNAME_R
 
 /* Define if your system has a prototype for gethostid in libc.h unistd.h
-   stdlib.h netdb.h */
+   stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTID
 
 /* Define if your system has a prototype for gethostname in unistd.h libc.h
-   stdlib.h netdb.h */
+   stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTNAME
 
 /* Define if your system has a prototype for getsockname in sys/types.h
-   sys/socket.h */
+   sys/socket.h. */
 #undef HAVE_PROTOTYPE_GETSOCKNAME
 
 /* Define if your system has a prototype for getsockopt in sys/types.h
-   sys/socket.h */
+   sys/socket.h. */
 #undef HAVE_PROTOTYPE_GETSOCKOPT
 
 /* Define if your system has a prototype for gettimeofday in sys/time.h
-   unistd.h */
+   unistd.h. */
 #undef HAVE_PROTOTYPE_GETTIMEOFDAY
 
-/* Define if your system has a prototype for isinf in math.h */
+/* Define if your system has a prototype for isinf in math.h. */
 #undef HAVE_PROTOTYPE_ISINF
 
-/* Define if your system has a prototype for isnan in math.h */
+/* Define if your system has a prototype for isnan in math.h. */
 #undef HAVE_PROTOTYPE_ISNAN
 
 /* Define if your system has a prototype for listen in sys/types.h
-   sys/socket.h */
+   sys/socket.h. */
 #undef HAVE_PROTOTYPE_LISTEN
 
 /* Define if your system has a prototype for mkstemp in libc.h unistd.h
-   stdlib.h */
+   stdlib.h. */
 #undef HAVE_PROTOTYPE_MKSTEMP
 
 /* Define if your system has a prototype for mktemp in libc.h unistd.h
-   stdlib.h */
+   stdlib.h. */
 #undef HAVE_PROTOTYPE_MKTEMP
 
 /* Define if your system has a prototype for select in sys/select.h
-   sys/types.h sys/socket.h sys/time.h */
+   sys/types.h sys/socket.h sys/time.h. */
 #undef HAVE_PROTOTYPE_SELECT
 
 /* Define if your system has a prototype for setsockopt in sys/types.h
-   sys/socket.h */
+   sys/socket.h. */
 #undef HAVE_PROTOTYPE_SETSOCKOPT
 
 /* Define if your system has a prototype for socket in sys/types.h
-   sys/socket.h */
+   sys/socket.h. */
 #undef HAVE_PROTOTYPE_SOCKET
 
-/* Define if your system has a prototype for std::finite in cmath */
+/* Define if your system has a prototype for std::finite in cmath. */
 #undef HAVE_PROTOTYPE_STD__FINITE
 
-/* Define if your system has a prototype for std::isinf in cmath */
+/* Define if your system has a prototype for std::isinf in cmath. */
 #undef HAVE_PROTOTYPE_STD__ISINF
 
-/* Define if your system has a prototype for std::isnan in cmath */
+/* Define if your system has a prototype for std::isnan in cmath. */
 #undef HAVE_PROTOTYPE_STD__ISNAN
 
-/* Define if your system has a prototype for std::vfprintf in stdarg.h stdio.h
-   */
+/* Define if your system has a prototype for std::vfprintf in stdarg.h
+   stdio.h. */
 #undef HAVE_PROTOTYPE_STD__VFPRINTF
 
 /* Define if your system has a prototype for std::vsnprintf in stdarg.h
-   stdio.h */
+   stdio.h. */
 #undef HAVE_PROTOTYPE_STD__VSNPRINTF
 
-/* Define if your system has a prototype for strcasecmp in string.h */
+/* Define if your system has a prototype for strcasecmp in string.h. */
 #undef HAVE_PROTOTYPE_STRCASECMP
 
-/* Define if your system has a prototype for strerror_r in string.h */
+/* Define if your system has a prototype for strerror_r in string.h. */
 #undef HAVE_PROTOTYPE_STRERROR_R
 
-/* Define if your system has a prototype for strncasecmp in string.h */
+/* Define if your system has a prototype for strncasecmp in string.h. */
 #undef HAVE_PROTOTYPE_STRNCASECMP
 
 /* Define if your system has a prototype for usleep in libc.h unistd.h
-   stdlib.h */
+   stdlib.h. */
 #undef HAVE_PROTOTYPE_USLEEP
 
-/* Define if your system has a prototype for vsnprintf in stdio.h stdarg.h */
+/* Define if your system has a prototype for vsnprintf in stdio.h stdarg.h. */
 #undef HAVE_PROTOTYPE_VSNPRINTF
 
 /* Define if your system has a prototype for wait3 in libc.h sys/wait.h
-   sys/time.h sys/resource.h */
+   sys/time.h sys/resource.h. */
 #undef HAVE_PROTOTYPE_WAIT3
 
 /* Define if your system has a prototype for waitpid in sys/wait.h sys/time.h
-   sys/resource.h */
+   sys/resource.h. */
 #undef HAVE_PROTOTYPE_WAITPID
 
-/* Define if your system has a prototype for _stricmp in string.h */
+/* Define if your system has a prototype for _stricmp in string.h. */
 #undef HAVE_PROTOTYPE__STRICMP
 
 /* Define to 1 if you have the <pthread.h> header file. */
@@ -723,7 +724,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
 
-/* Define if the random_access iterator category is supported */
+/* Define if the random_access iterator category is supported. */
 #undef HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY
 
 /* Define if OpenSSL provides the RAND_egd function. */
@@ -732,7 +733,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `readdir_r' function. */
 #undef HAVE_READDIR_R
 
-/* define if the compiler supports reinterpret_cast<> */
+/* Define if the compiler supports reinterpret_cast<>. */
 #undef HAVE_REINTERPRET_CAST
 
 /* Define to 1 if you have the `rindex' function. */
@@ -780,11 +781,11 @@ typedef unsigned short ushort;
 /* Define if the compiler supports static_assert */
 #undef HAVE_STATIC_ASSERT
 
-/* define if the compiler supports static_cast<> */
+/* Define if the compiler supports static_cast<>. */
 #undef HAVE_STATIC_CAST
 
-/* Define if your C++ compiler can work with static methods in class templates
-   */
+/* Define if your C++ compiler can work with static methods in class
+   templates. */
 #undef HAVE_STATIC_TEMPLATE_METHOD
 
 /* Define to 1 if you have the <stat.h> header file. */
@@ -808,10 +809,10 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
-/* Define if ANSI standard C++ includes use std namespace */
+/* Define if ANSI standard C++ includes use std namespace. */
 #undef HAVE_STD_NAMESPACE
 
-/* Define if the compiler supports std::nothrow */
+/* Define if the compiler supports std::nothrow. */
 #undef HAVE_STD__NOTHROW
 
 /* Define if STL's algorithm should be used. */
@@ -889,10 +890,10 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <synch.h> header file. */
 #undef HAVE_SYNCH_H
 
-/* Define if __sync_add_and_fetch is available */
+/* Define if __sync_add_and_fetch is available. */
 #undef HAVE_SYNC_ADD_AND_FETCH
 
-/* Define if __sync_sub_and_fetch is available */
+/* Define if __sync_sub_and_fetch is available. */
 #undef HAVE_SYNC_SUB_AND_FETCH
 
 /* Define to 1 if you have the `sysinfo' function. */
@@ -969,7 +970,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `tmpnam' function. */
 #undef HAVE_TMPNAM
 
-/* define if the compiler recognizes typename */
+/* Define if the compiler recognizes typename. */
 #undef HAVE_TYPENAME
 
 /* Define to 1 if the system has the type `uint64_t'. */
@@ -1036,7 +1037,7 @@ typedef unsigned short ushort;
 /* Define if libc.h should be treated as a C++ header */
 #undef INCLUDE_LIBC_H_AS_CXX
 
-/* Define if <math.h> fails if included extern "C" */
+/* Define if <math.h> fails if included extern "C". */
 #undef INCLUDE_MATH_H_AS_CXX
 
 /* Define if the second argument to iconv() is const. */
@@ -1075,7 +1076,7 @@ typedef unsigned short ushort;
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
-/* Define if signal handlers need ellipse (...) parameters */
+/* Define if signal handlers need ellipse (...) parameters. */
 #undef SIGNAL_HANDLER_WITH_ELLIPSE
 
 /* The size of `char', as computed by sizeof. */
