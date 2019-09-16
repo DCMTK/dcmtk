@@ -534,6 +534,20 @@ OFCondition DJLSEncoderBase::losslessRawEncode(
     result = offsetTable->createOffsetTable(offsetList);
   }
 
+  // adjust planar configuration
+  if (result.good())
+  {
+    if (photometricInterpretation == "RGB" || photometricInterpretation == "YBR_FULL")
+    {
+      // CP 1843 requires a planar configuration value of 0 for these color models
+      result = dataset->putAndInsertUint16(DCM_PlanarConfiguration, 0);
+    }
+    else if (samplesPerPixel == 1)
+    {
+      delete dataset->remove(DCM_PlanarConfiguration);
+    }
+  }
+
   if (compressedSize > 0) compressionRatio = uncompressedSize / compressedSize;
 
   // byte swap pixel data back to local endian if necessary
@@ -894,6 +908,20 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
         result = dataset->putAndInsertUint16(DCM_BitsAllocated, 8);
     if (result.good()) result = dataset->putAndInsertUint16(DCM_BitsStored, bitsPerSample);
     if (result.good()) result = dataset->putAndInsertUint16(DCM_HighBit, bitsPerSample-1);
+    if (result.good())
+    {
+      if (photometricInterpretation == "RGB" || photometricInterpretation == "YBR_FULL")
+      {
+        // CP 1843 requires a planar configuration value of 0 for these color models
+        result = dataset->putAndInsertUint16(DCM_PlanarConfiguration, 0);
+      }
+      else
+      {
+        // this is monochrome since we have ruled out all other photometric interpretations
+        // at the start of this method
+        delete dataset->remove(DCM_PlanarConfiguration);
+      }
+    }
   }
 
   if (compressedSize > 0) compressionRatio = uncompressedSize / compressedSize;
