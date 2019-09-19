@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -677,6 +677,19 @@ OFCondition DcmSignature::verifyCurrent()
       if ((signature->getUint8Array(sigData)).bad() || (sigData == NULL)) result = SI_EC_VerificationFailed_NoSignature;
       else
       {
+        // check if the digital signature has an odd number of bytes
+        if (selectedCertificate->getKeyType() == EKT_DSA || selectedCertificate->getKeyType() == EKT_EC)
+        {
+            // DSA and ECDSA signatures are encoded in DER and can have odd length
+            if ((sigLength > 2) && sigData && (sigData[0] == 0x30) && (sigData[1]+3 == sigLength))
+            {
+                // The first byte of the signature is 0x30 (DER encoding for SEQUENCE)
+                // and the second byte is signature length - 3. This means that the signature
+                // is one byte shorter than our buffer. Adjust sigLength to remove the pad byte.
+                --sigLength;
+            }
+        }
+
         unsigned long digestLength = mac->getSize();
         unsigned char *digest = new unsigned char[digestLength];
         if (digest == NULL) result =  EC_MemoryExhausted;
