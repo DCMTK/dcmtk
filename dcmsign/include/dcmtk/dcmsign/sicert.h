@@ -40,12 +40,12 @@ typedef struct x509_st X509;
  *  OpenSSL support enabled.
  */
 class DCMTK_DCMSIGN_EXPORT SiCertificate
-{    
+{
 public:
 
   /// default constructor
   SiCertificate();
-  
+
   ///destructor
   virtual ~SiCertificate();
 
@@ -69,11 +69,11 @@ public:
    *  @return dcmdata OFCondition status code
    */
   OFCondition write(DcmItem& item);
-  
+
   /** returns the type of public key stored in this certificate
    */
   E_KeyType getKeyType();
-  
+
   /** creates an SiAlgorithm object for the public key contained in this certificate.
    *  If no certificate loaded or operation fails, returns NULL.
    *  New SiAlgorithm object must be deleted by caller.
@@ -124,7 +124,14 @@ public:
    */
   long getCertKeyBits();
 
-  /** returns a pointer to the raw certificate structure or NULL if no 
+  /** returns the name of the elliptic curve used in the certificate.
+   *  @return NULL if the certificate is not of elliptic curve type,
+   *    "unnamed curve" if the curve name has not been stored in the certificate,
+   *    or the short name of the elliptic curve if available.
+   */
+  const char *getCertCurveName();
+
+  /** returns a pointer to the raw certificate structure or NULL if no
    *  certificate present. Should not be called by users of this library.
    */
   X509 *getRawCertificate();

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmsign/sicert.h"
 #include "dcmtk/dcmsign/sirsa.h"   /* for class SiRSA */
 #include "dcmtk/dcmsign/sidsa.h"   /* for class SiDSA */
+#include "dcmtk/dcmsign/siecdsa.h" /* for class SiECDSA */
 #include "dcmtk/dcmdata/dcstack.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
@@ -50,7 +51,7 @@ SiCertificate::SiCertificate()
 
 SiCertificate::~SiCertificate()
 {
-  if (x509) X509_free(x509);	
+  if (x509) X509_free(x509);
 }
 
 E_KeyType SiCertificate::getKeyType()
@@ -61,7 +62,7 @@ E_KeyType SiCertificate::getKeyType()
     EVP_PKEY *pkey = X509_extract_key(x509);
     if (pkey)
     {
-      switch(EVP_PKEY_id(pkey))
+      switch(EVP_PKEY_type(EVP_PKEY_id(pkey)))
       {
         case EVP_PKEY_RSA:
           result = EKT_RSA;
@@ -72,12 +73,15 @@ E_KeyType SiCertificate::getKeyType()
         case EVP_PKEY_DH:
           result = EKT_DH;
           break;
+        case EVP_PKEY_EC:
+          result = EKT_EC;
+          break;
         default:
           /* nothing */
           break;
       }
       EVP_PKEY_free(pkey);
-    }    
+    }
   }
   return result;
 }
@@ -89,7 +93,7 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
     EVP_PKEY *pkey = X509_extract_key(x509);
     if (pkey)
     {
-      switch(EVP_PKEY_id(pkey))
+      switch(EVP_PKEY_type(EVP_PKEY_id(pkey)))
       {
         case EVP_PKEY_RSA:
           return new SiRSA(EVP_PKEY_get1_RSA(pkey));
@@ -97,21 +101,24 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
         case EVP_PKEY_DSA:
           return new SiDSA(EVP_PKEY_get1_DSA(pkey));
           /* break; */
+        case EVP_PKEY_EC:
+          return new SiECDSA(EVP_PKEY_get1_EC_KEY(pkey));
+          break;
         case EVP_PKEY_DH:
         default:
           /* nothing */
           break;
       }
       EVP_PKEY_free(pkey);
-    }    
+    }
   }
   return NULL;
 }
 
 OFCondition SiCertificate::loadCertificate(const char *filename, int filetype)
 {
-  OFCondition result = SI_EC_CannotRead;  
-  if (x509) X509_free(x509);	
+  OFCondition result = SI_EC_CannotRead;
+  if (x509) X509_free(x509);
   x509 = NULL;
   if (filename)
   {
@@ -149,8 +156,8 @@ OFCondition SiCertificate::read(DcmItem& item)
     {
       if (aString == SI_DEFTERMS_X509CERT)
       {
-      	stack.clear();
-      	result = item.search(DCM_CertificateOfSigner, stack, ESM_fromHere, OFFalse);
+        stack.clear();
+        result = item.search(DCM_CertificateOfSigner, stack, ESM_fromHere, OFFalse);
         if (result.good())
         {
           DcmElement *cert = (DcmElement *)stack.top();
@@ -167,10 +174,10 @@ OFCondition SiCertificate::read(DcmItem& item)
 #else
               x509 = d2i_X509(NULL, &data, cert->getLength());
 #endif
-              if (x509 == NULL) result = EC_IllegalCall;              
-            } else result = EC_IllegalCall;            
-          }      
-        } 
+              if (x509 == NULL) result = EC_IllegalCall;
+            } else result = EC_IllegalCall;
+          }
+        }
       } else result = EC_IllegalCall;
     }
   }
@@ -300,6 +307,38 @@ long SiCertificate::getCertKeyBits()
   }
   return certPubKeyBits;
 }
+
+const char *SiCertificate::getCertCurveName()
+{
+  const char *result = NULL;
+  if (x509)
+  {
+    EVP_PKEY *pkey = X509_extract_key(x509);
+    if (pkey && EVP_PKEY_type(EVP_PKEY_id(pkey)) == EVP_PKEY_EC)
+    {
+      // we have an elliptic curve. Access EC key.
+      const EC_KEY *eckey = EVP_PKEY_get0_EC_KEY(pkey);
+      if (eckey)
+      {
+        // access EC group within EC key
+        const EC_GROUP *ecgroup = EC_KEY_get0_group(eckey);
+        if (ecgroup)
+        {
+          // check if we have a named curve
+          int nid = EC_GROUP_get_curve_name(ecgroup);
+          if (nid > 0)
+          {
+            return OBJ_nid2sn(nid);
+          }
+          else result = "unnamed curve";
+        }
+      }
+      EVP_PKEY_free(pkey);
+    }
+  }
+  return result;
+}
+
 
 #else /* WITH_OPENSSL */
 

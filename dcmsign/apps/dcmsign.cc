@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -550,6 +550,7 @@ static int do_verify(
             OFLOG_INFO(dcmsignLogger, "      Validity                : not before " << aString);
             cert->getCertValidityNotAfter(aString);
             OFLOG_INFO(dcmsignLogger, "      Validity                : not after " << aString);
+            const char *ecname = NULL;
             switch (cert->getKeyType())
             {
               case EKT_RSA:
@@ -558,11 +559,23 @@ static int do_verify(
               case EKT_DSA:
                 OFLOG_INFO(dcmsignLogger, "      Public key              : DSA, " << cert->getCertKeyBits() << " bits");
                 break;
+              case EKT_EC:
+                ecname = cert->getCertCurveName();
+                if (ecname)
+                {
+                  OFLOG_INFO(dcmsignLogger, "      Public key              : EC, curve " << ecname << ", " << cert->getCertKeyBits() << " bits");
+                }
+                else
+                {
+                  OFLOG_INFO(dcmsignLogger, "      Public key              : EC, " << cert->getCertKeyBits() << " bits");
+                }
+                break;
               case EKT_DH:
                 OFLOG_INFO(dcmsignLogger, "      Public key              : DH, " << cert->getCertKeyBits() << " bits");
                 break;
+              default:
               case EKT_none: // should never happen
-                OFLOG_INFO(dcmsignLogger, "      Public key              : none");
+                OFLOG_INFO(dcmsignLogger, "      Public key              : unknown type");
                 break;
             }
           }

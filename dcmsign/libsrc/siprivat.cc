@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmsign/siprivat.h"
 #include "dcmtk/dcmsign/sirsa.h"
 #include "dcmtk/dcmsign/sidsa.h"
+#include "dcmtk/dcmsign/siecdsa.h"
 #include "dcmtk/dcmsign/sicert.h"
 
 #define INCLUDE_CSTRING
@@ -94,7 +95,7 @@ void SiPrivateKey::setPrivateKeyPasswdFromConsole()
 
 OFCondition SiPrivateKey::loadPrivateKey(const char *filename, int filetype)
 {
-  OFCondition result = SI_EC_CannotRead;  
+  OFCondition result = SI_EC_CannotRead;
   if (pkey) EVP_PKEY_free(pkey);
   pkey = NULL;
   if (filename)
@@ -128,7 +129,7 @@ E_KeyType SiPrivateKey::getKeyType() const
   E_KeyType result = EKT_none;
   if (pkey)
   {
-    switch(EVP_PKEY_id(pkey))
+    switch(EVP_PKEY_type(EVP_PKEY_id(pkey)))
     {
       case EVP_PKEY_RSA:
         result = EKT_RSA;
@@ -138,6 +139,9 @@ E_KeyType SiPrivateKey::getKeyType() const
         break;
       case EVP_PKEY_DH:
         result = EKT_DH;
+        break;
+      case EVP_PKEY_EC:
+        result = EKT_EC;
         break;
       default:
         /* nothing */
@@ -152,7 +156,7 @@ SiAlgorithm *SiPrivateKey::createAlgorithmForPrivateKey()
 {
   if (pkey)
   {
-    switch(EVP_PKEY_id(pkey))
+    switch(EVP_PKEY_type(EVP_PKEY_id(pkey)))
     {
       case EVP_PKEY_RSA:
         return new SiRSA(EVP_PKEY_get1_RSA(pkey));
@@ -160,12 +164,15 @@ SiAlgorithm *SiPrivateKey::createAlgorithmForPrivateKey()
       case EVP_PKEY_DSA:
         return new SiDSA(EVP_PKEY_get1_DSA(pkey));
         /* break; */
+      case EVP_PKEY_EC:
+        return new SiECDSA(EVP_PKEY_get1_EC_KEY(pkey));
+        /* break; */
       case EVP_PKEY_DH:
       default:
         /* nothing */
         break;
     }
-  }    
+  }
   return NULL;
 }
 
