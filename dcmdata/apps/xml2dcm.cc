@@ -933,10 +933,11 @@ int main(int argc, char *argv[])
     OFString tmpErrorString;
     /* initialize the XML library (only required for MT-safety) */
     xmlInitParser();
-    /* substitute default entities (XML mnenonics) */
-    xmlSubstituteEntitiesDefault(1);
+    /* do not substitute entities (other than the standard ones) */
+    xmlSubstituteEntitiesDefault(0);
     /* add line number to debug messages */
     xmlLineNumbersDefault(1);
+    /* enable libxml warnings and error messages */
     xmlGetWarningsDefaultValue = 1;
     xmlSetGenericErrorFunc(&tmpErrorString, errorFunction);
 
