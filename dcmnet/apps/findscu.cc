@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -443,9 +443,15 @@ int main(int argc, char *argv[])
       opt_outputDirectory.c_str(),
       opt_extractXMLFilename.c_str());
 
+    // make sure that an appropriate exit code is returned
+    int exitCode = cond.good() ? 0 : 2;
+
     // destroy network structure
     cond = findscu.dropNetwork();
-    if (cond.bad()) OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
+    if (cond.bad()) {
+        OFLOG_ERROR(findscuLogger, DimseCondition::dump(temp_str, cond));
+        if (!exitCode) exitCode = 3;
+    }
 
     OFStandard::shutdownNetwork();
 
@@ -455,5 +461,5 @@ int main(int argc, char *argv[])
         OFLOG_WARN(findscuLogger, DimseCondition::dump(temp_str, cond));
     }
 
-    return 0;
+    return exitCode;
 }
