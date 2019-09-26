@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2011, OFFIS e.V.
+ *  Copyright (C) 2003-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -181,7 +181,7 @@ int DiPNGPlugin::write(
       png_write_end( png_ptr, info_ptr );
 
       // finish
-      png_destroy_write_struct( &png_ptr, NULL );
+      png_destroy_write_struct( &png_ptr, &info_ptr );
       delete[] row_ptr;
       if( text_ptr ) delete[] text_ptr;
       result = 1;
