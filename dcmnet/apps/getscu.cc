@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2017, OFFIS e.V.
+ *  Copyright (C) 2011-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -406,7 +406,7 @@ main(int argc, char *argv[])
   cond = scu.negotiateAssociation();
   if (cond.bad())
   {
-    OFLOG_FATAL(getscuLogger, "No Acceptable Presentation Contexts");
+    OFLOG_FATAL(getscuLogger, "Could not negotiate association: " << cond.text());
     exit(1);
   }
   cond = EC_Normal;
