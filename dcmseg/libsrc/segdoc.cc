@@ -394,7 +394,16 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData)
       if (frame)
       {
         frame->length = rows*cols;
-        frame->pixData = pixData;
+        frame->pixData = new Uint8[frame->length];
+        if (frame->pixData)
+        {
+          memcpy(frame->pixData, pixData, frame->length);
+        }
+        else
+        {
+          delete frame;
+          result = EC_MemoryExhausted;
+        }
       }
       else
         result = EC_MemoryExhausted;
@@ -409,7 +418,6 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData)
     DCMSEG_ERROR("Cannot add frame since rows and/or columns are unknown");
     result = IOD_EC_CannotInsertFrame;
   }
-
   return result;
 }
 
