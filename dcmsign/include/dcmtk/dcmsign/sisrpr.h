@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,35 +13,34 @@
  *
  *  Module: dcmsign
  *
- *  Author: Norbert Loxen, Marco Eichelberg
+ *  Author: Marco Eichelberg
  *
  *  Purpose:
- *    classes: SiCreatorProfile
+ *    classes: SiStructuredReportingProfile
  *
  */
 
-#ifndef SICREAPR_H
-#define SICREAPR_H
+#ifndef SISRPR_H
+#define SISRPR_H
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmsign/sibrsapr.h"   /* for SiBaseRSAProfile */
 
 #ifdef WITH_OPENSSL
 
-#include "dcmtk/dcmsign/sibrsapr.h"   /* for SiBaseRSAProfile */
-
-/** Creator RSA Digital Signature Profile
+/** Structured Reporting RSA Digital Signature Profile
  *  @remark this class is only available if DCMTK is compiled with
  *  OpenSSL support enabled.
  */
-class DCMTK_DCMSIGN_EXPORT SiCreatorProfile: public SiBaseRSAProfile
+class DCMTK_DCMSIGN_EXPORT SiStructuredReportingProfile: public SiBaseRSAProfile
 {
 public:
 
   /// default constructor
-  SiCreatorProfile();
+  SiStructuredReportingProfile() { }
 
   /// destructor
-  virtual ~SiCreatorProfile() { }
+  virtual ~SiStructuredReportingProfile() { }
 
   /** checks whether an attribute with the given tag is required to be signed
    *  for the current security profile.
@@ -60,10 +59,6 @@ public:
    */
   virtual OFCondition inspectSignatureDataset(DcmItem &item);
 
-private:
-
-  /// flag indicating whether or not the signature dataset contains the raw data module
-  OFBool containsRawData_;
 };
 
 #endif

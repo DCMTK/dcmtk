@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,11 +24,12 @@
 #define DCMSIGN_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmsign/sitypes.h"
 
 #ifdef WITH_OPENSSL
 
-#include "dcmtk/dcmdata/dcxfer.h"  /* for E_TransferSyntax */
+#include "dcmtk/dcmsign/sitypes.h"
+#include "dcmtk/dcmdata/dcxfer.h"    /* for E_TransferSyntax */
+#include "dcmtk/dcmsign/sipurpos.h"  /* for E_SignaturePurposeType */
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -94,6 +95,7 @@ public:
    *    i.e. all signable attributes in the data set are signed.
    *  @param timeStamp pointer to time stamp client used to create timestamps
    *    for the digital signature.
+   *  @param sigPurpose digital signature purpose
    *  @return status code
    */
   OFCondition createSignature(
@@ -103,7 +105,8 @@ public:
     SiSecurityProfile& profile, 
     E_TransferSyntax xfer=EXS_LittleEndianExplicit,
     const DcmAttributeTag *tagList=NULL,
-    SiTimeStamp *timeStamp=NULL);
+    SiTimeStamp *timeStamp=NULL,
+    SiSignaturePurpose::E_SignaturePurposeType sigPurpose=SiSignaturePurpose::ESP_none);
 
   /** returns the number of signatures in the dataset. Does not count 
    *  signatures embedded in sequence items within the dataset.

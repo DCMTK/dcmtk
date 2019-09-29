@@ -36,14 +36,14 @@
 ** Logging
 */
 
-extern DCMTK_DCMSIGN_EXPORT OFLogger DCM_dcmsignLogger;
+extern DCMTK_DCMSIGN_EXPORT OFLogger dcmsignLogger;
 
-#define DCMSIGN_TRACE(msg) OFLOG_TRACE(DCM_dcmsignLogger, msg)
-#define DCMSIGN_DEBUG(msg) OFLOG_DEBUG(DCM_dcmsignLogger, msg)
-#define DCMSIGN_INFO(msg)  OFLOG_INFO(DCM_dcmsignLogger, msg)
-#define DCMSIGN_WARN(msg)  OFLOG_WARN(DCM_dcmsignLogger, msg)
-#define DCMSIGN_ERROR(msg) OFLOG_ERROR(DCM_dcmsignLogger, msg)
-#define DCMSIGN_FATAL(msg) OFLOG_FATAL(DCM_dcmsignLogger, msg)
+#define DCMSIGN_TRACE(msg) OFLOG_TRACE(dcmsignLogger, msg)
+#define DCMSIGN_DEBUG(msg) OFLOG_DEBUG(dcmsignLogger, msg)
+#define DCMSIGN_INFO(msg)  OFLOG_INFO(dcmsignLogger, msg)
+#define DCMSIGN_WARN(msg)  OFLOG_WARN(dcmsignLogger, msg)
+#define DCMSIGN_ERROR(msg) OFLOG_ERROR(dcmsignLogger, msg)
+#define DCMSIGN_FATAL(msg) OFLOG_FATAL(dcmsignLogger, msg)
 
 
 // DICOM defined terms for MAC algorithms, certificate and timestamp types
@@ -112,6 +112,7 @@ enum E_MACType
   EMT_SHA512
 };
 
+
 /*
  * specific error conditions for module dcmsign
  */
@@ -160,6 +161,11 @@ extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_AlgorithmDoesNotMatchPr
 /// @remark this constant is only available if DCMTK is compiled with
 /// OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_TransferSyntaxDoesNotMatchProfile;
+
+/// Dataset is not suitable for the current security profile (e.g. wrong SOP class)
+/// @remark this constant is only available if DCMTK is compiled with
+/// OpenSSL support enabled.
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_DatasetDoesNotMatchProfile;
 
 /** signature verification failed because the certificate is missing
  *  or cannot be read (e.g. unsupported format)

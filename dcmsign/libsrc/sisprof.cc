@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -129,6 +129,11 @@ OFBool SiSecurityProfile::containsTag(DcmAttributeTag& tagList, const DcmTagKey&
     if ((tagList.getTagVal(current, i)).good() && (key == current)) return OFTrue;
   }
   return OFFalse;
+}
+
+SiSignaturePurpose::E_SignaturePurposeType SiSecurityProfile::getOverrideSignaturePurpose() const
+{
+  return SiSignaturePurpose::ESP_none;
 }
 
 

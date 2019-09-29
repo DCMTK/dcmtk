@@ -266,7 +266,8 @@ OFCondition DcmSignature::createSignature(
     SiSecurityProfile& profile,
     E_TransferSyntax xfer,
     const DcmAttributeTag *tagList,
-    SiTimeStamp *timeStamp)
+    SiTimeStamp *timeStamp,
+    SiSignaturePurpose::E_SignaturePurposeType sigPurpose)
 {
   // do some checks first
   if (currentItem == NULL) return EC_IllegalCall;
@@ -369,6 +370,17 @@ OFCondition DcmSignature::createSignature(
         } else result = EC_MemoryExhausted;
       }
 
+      // Digital Signature Purpose Code Sequence
+      if (result.good())
+      {
+
+        // check if the signature profile requires a certain signature purpose
+        sigPurpose = SiSignaturePurpose::determineOverridePurpose(sigPurpose, profile.getOverrideSignaturePurpose());
+
+        // create digital signature purpose code sequence (unless sigPurpose is ESP_none)
+        result = SiSignaturePurpose::insertDigitalSignaturePurposeCodeSQ(*seqItem, sigPurpose);
+      }
+
       // Certificate of Signer and Certificate Type
       if (result.good())
       {
@@ -386,6 +398,8 @@ OFCondition DcmSignature::createSignature(
   if (tagListOut == NULL) result = EC_MemoryExhausted;
   unsigned long sigLength = 0;
   unsigned char *signature = NULL;
+  unsigned long digestLength = mac.getSize();
+  unsigned char *digest = new unsigned char[digestLength];
 
   if (result.good())
   {
@@ -411,14 +425,11 @@ OFCondition DcmSignature::createSignature(
   // sign MAC
   if (result.good())
   {
-    unsigned long digestLength = mac.getSize();
-    unsigned char *digest = new unsigned char[digestLength];
     if (digest == NULL) result = EC_MemoryExhausted;
     else
     {
       result = mac.finalize(digest);
       if (result.good()) result = algorithm->sign(digest, digestLength, mac.macType(), signature, sigLength);
-      delete[] digest;
     }
   }
 
@@ -543,6 +554,7 @@ OFCondition DcmSignature::createSignature(
   }
 
   delete[] signature;
+  delete[] digest;
   delete tagListOut;
   delete updatedTagList;
   delete algorithm;
@@ -680,11 +692,13 @@ OFCondition DcmSignature::verifyCurrent()
         // check if the digital signature has an odd number of bytes
         if (selectedCertificate->getKeyType() == EKT_DSA || selectedCertificate->getKeyType() == EKT_EC)
         {
-            // DSA and ECDSA signatures are encoded in DER and can have odd length
-            if ((sigLength > 2) && sigData && (sigData[0] == 0x30) && (sigData[1]+3 == sigLength))
+            // DSA and ECDSA signatures are encoded in DER and can have odd length. We must remove
+            // the pad byte before feeding the signature to the OpenSSL layer.
+            if (((sigLength > 2) && sigData && (sigData[0] == 0x30) && (sigData[1] < 128) && (sigData[1]+3 == sigLength)) || // one-byte length encoding
+                ((sigLength > 4) && sigData && (sigData[0] == 0x30) && (sigData[1] == 0x82) && ((256UL * sigData[2]) + sigData[3] + 3 == sigLength))) // two-byte length encoding
             {
                 // The first byte of the signature is 0x30 (DER encoding for SEQUENCE)
-                // and the second byte is signature length - 3. This means that the signature
+                // and length field is signature length - 3. This means that the signature
                 // is one byte shorter than our buffer. Adjust sigLength to remove the pad byte.
                 --sigLength;
             }

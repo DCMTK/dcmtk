@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,8 +42,10 @@ makeOFConditionConst(SI_EC_VerificationFailed_NoSignature,             OFM_dcmsi
 makeOFConditionConst(SI_EC_VerificationFailed_UnsupportedMACAlgorithm, OFM_dcmsign, 13, OF_error, "signature verification failed: MAC algorithm not supported");
 makeOFConditionConst(SI_EC_VerificationFailed_Corrupted,               OFM_dcmsign, 14, OF_error, "signature verification failed: signature is invalid (document corrupted)");
 makeOFConditionConst(SI_EC_VerificationFailed_NoTrust,                 OFM_dcmsign, 16, OF_error, "signature verification failed: certificate issued by unknown CA");
+makeOFConditionConst(SI_EC_DatasetDoesNotMatchProfile,                 OFM_dcmsign, 17, OF_error, "dataset not suitable for the selected security profile");
 
-OFLogger DCM_dcmsignLogger = OFLog::getLogger("dcmtk.dcmsign");
+
+OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.dcmsign");
 
 #else /* WITH_OPENSSL */
 

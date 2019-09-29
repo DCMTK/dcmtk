@@ -24,10 +24,10 @@
 #define SIECDSA_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmsign/sialgo.h"
 
 #ifdef WITH_OPENSSL
 
+#include "dcmtk/dcmsign/sialgo.h"
 #include "dcmtk/ofstd/oftypes.h"
 
 class SiPrivateKey;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,10 +24,11 @@
 #define SIRIPEMD_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmsign/simac.h"
-#include "dcmtk/dcmsign/sitypes.h"
 
 #ifdef WITH_OPENSSL
+
+#include "dcmtk/dcmsign/simac.h"
+#include "dcmtk/dcmsign/sitypes.h"
 
 struct RIPEMD160state_st;
 typedef struct RIPEMD160state_st RIPEMD160_CTX;

@@ -149,6 +149,12 @@ digital signature profile:
   +pa   --profile-auth
           enforce authorization signature profile
 
+  +pr   --profile-sr
+          enforce SR RSA signature profile
+
+  +pv   --profile-srv
+          enforce SR RSA signature profile (verification)
+
 MAC algorithm:
 
   +mr   --mac-ripemd160
@@ -159,6 +165,27 @@ MAC algorithm:
 
   +mm   --mac-md5
           use MD 5
+
+  +m2   --mac-sha256
+          use SHA-256
+
+  +m3   --mac-sha384
+          use SHA-384
+
+  +m5   --mac-sha512
+          use SHA-512
+
+Signature purpose:
+
+  +lp   --list-purposes
+          show list of signature purpose codes and exit
+
+  -sp   --no-sig-purpose
+          do not add signature purpose (default)
+
+  +sp   --sig-purpose
+          [p]urpose code (1..18)
+          add digital signature purpose code p
 
 tag selection:
 
@@ -177,7 +204,8 @@ signature format:
 
   -fo   --format-old
           use old (pre-3.5.4) DCMTK signature format, non-conformant
-          if signature includes compressed pixel data
+          if signature includes compressed pixel data. This option should
+          only be used to verify signatures in the old format.
 \endverbatim
 
 \subsection dcmsign_output_options output options
@@ -230,10 +258,13 @@ opened (see above).  In general it is not recommended to specify the encryption
 password in the command line because the command line may be visible to other
 processes in the system, e.g. "ps -ef".
 
-The list of data elements to sign can either be read from a file or specified
-on the command line or both (in this case the keys are combined).
+By default, dcmsign will create a signature covering all data elements
+in the dataset or item. This default can be overridden by explicitly
+specifying a list of data elements (attribute tags). This list can either
+be read from a file or specified on the command line or both
+(in this case the attribute tags are combined).
 
-On the command line, attribute keys are specified as
+On the command line, attribute tags are specified as
 
 \verbatim
 --tag "gggg,eeee"  where gggg and eeee are the hexadecimal group
@@ -246,6 +277,10 @@ When attribute tags are read from file with the \e --tag-file option, a plain
 text file of max. 64 kbyte is expected.  Tags within the file are either
 symbolic names from the data dictionary or have the format (gggg,eeee) (with
 braces).  Tags are separated by one or more whitespace characters.
+
+The currently selected digital signature profile may specify additional
+attribute tags required to be included in the signature, which will
+be silently added.
 
 The \e --sign-item operation requires a location string that describes in which
 sequence item a signature is to be created.  The location string has the
@@ -328,6 +363,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmsign_copyright COPYRIGHT
 
-Copyright (C) 2000-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,6 +52,12 @@ OFBool SiNullProfile::isAllowableTransferSyntax(E_TransferSyntax xfer) const
   if ((xfer == EXS_LittleEndianImplicit)||(xfer == EXS_BigEndianExplicit)) return OFFalse;
   return OFTrue;
 }
+
+OFCondition SiNullProfile::inspectSignatureDataset(DcmItem & /* item */)
+{
+  return EC_Normal;
+}
+
 
 #else /* WITH_OPENSSL */
 

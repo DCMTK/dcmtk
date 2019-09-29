@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,9 +24,10 @@
 #define SICERTVF_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmsign/sitypes.h"
 
 #ifdef WITH_OPENSSL
+
+#include "dcmtk/dcmsign/sitypes.h"
 
 class SiCertificate;
 struct x509_store_st;
