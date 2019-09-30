@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, OFFIS e.V.
+ *  Copyright (C) 2015-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -70,7 +70,6 @@
 template <typename StringType>
 static void checkStringBased(
     const DcmTagKey& key,
-    const OFString& vrName,
     const OFString shortVal,
     const OFString longVal)
 {
@@ -850,31 +849,31 @@ OFTEST(dcmdata_VRCompare)
     // Check the different String-based VRs (in the sense that the method
     // putAndInsertOFStringArray() can be used by the test method for initializing
     // the test values.
-    // This applies to: AE, AS, CS, DA, DS, DT, FD, FL, IS, LO, LT, OD, OF,PN, SH, ST,
+    // This applies to: AE, AS, CS, DA, DS, DT, FD, FL, IS, LO, LT, OD, OF, PN, SH, ST,
     // TM, UC, UI, UT,
     // Sometimes the maximum length of the VR is exceed deliberately to perform the test,
     // which is even useful since on that level DCMTK allows invalid values
     // in order to handle incorrect datasets.
-    checkStringBased<DcmApplicationEntity>(DCM_RetrieveAETitle, "AE", "AE1", "AE1_CT");
-    checkStringBased<DcmAgeString>(DCM_PatientAge, "AS", "008Y", "008YY");
-    checkStringBased<DcmCodeString>(DCM_BlendingMode, "CS", "SOME", "SOME_LONGER");
-    checkStringBased<DcmDate>(DCM_StudyDate, "DA", "19771212", "1977121200");
-    checkStringBased<DcmDecimalString>(DCM_ProcedureStepProgress, "DS", "0.0", "0.01");
-    checkStringBased<DcmDateTime>(DCM_SOPAuthorizationDateTime, "DT", "19771212235900", "19771212235900.123456");
-    checkStringBased<DcmFloatingPointDouble>(DCM_BeamDeliveryDurationLimit, "FD", "10", "10.5");
-    checkStringBased<DcmFloatingPointSingle>(DCM_IsocenterToWedgeTrayDistance, "FL", "10", "10.5");
-    checkStringBased<DcmIntegerString>(DCM_NumberOfWedges, "IS", "100", "1000");
-    checkStringBased<DcmLongString>(DCM_SeriesDescription, "LO", "Description", "Description Long");
-    checkStringBased<DcmLongText>(DCM_AdditionalPatientHistory, "LT", "Text", "Text Long");
-    checkStringBased<DcmOtherDouble>(DCM_DoubleFloatPixelData, "OD", "10", "10.5");
-    checkStringBased<DcmOtherFloat>(DCM_FloatPixelData, "OF", "10", "10.5");
-    checkStringBased<DcmPersonName>(DCM_OtherPatientNames, "PN", "Bond^James", "Bond^James^Jürgen");
-    checkStringBased<DcmShortString>(DCM_WedgeID, "SH", "WEDGE1", "WEDGE1_LONG");
-    checkStringBased<DcmShortText>(DCM_RTPlanDescription, "ST", "Text", "Text Long");
-    checkStringBased<DcmTime>(DCM_StudyTime, "TM", "235959", "235959.123456");
-    checkStringBased<DcmUnlimitedCharacters>(DCM_LongCodeValue, "UC", "Code_0815", "Code_0815_4711");
-    checkStringBased<DcmUniqueIdentifier>(DCM_SOPInstanceUID, "UI", "1.2.3.4", "1.2.3.4.5");
-    checkStringBased<DcmUnlimitedText>(DCM_RetrieveURL, "UR", "http://wwww.dcmtk.org", "http://www.dcmtk.org/dcmtk.php.en");
+    checkStringBased<DcmApplicationEntity>(DCM_RetrieveAETitle,"AE1", "AE1_CT");
+    checkStringBased<DcmAgeString>(DCM_PatientAge, "008Y", "008YY");
+    checkStringBased<DcmCodeString>(DCM_BlendingMode, "SOME", "SOME_LONGER");
+    checkStringBased<DcmDate>(DCM_StudyDate, "19771212", "1977121200");
+    checkStringBased<DcmDecimalString>(DCM_ProcedureStepProgress, "0.0", "0.01");
+    checkStringBased<DcmDateTime>(DCM_SOPAuthorizationDateTime, "19771212235900", "19771212235900.123456");
+    checkStringBased<DcmFloatingPointDouble>(DCM_BeamDeliveryDurationLimit, "10", "10.5");
+    checkStringBased<DcmFloatingPointSingle>(DCM_IsocenterToWedgeTrayDistance, "10", "10.5");
+    checkStringBased<DcmIntegerString>(DCM_NumberOfWedges, "100", "1000");
+    checkStringBased<DcmLongString>(DCM_SeriesDescription, "Description", "Description Long");
+    checkStringBased<DcmLongText>(DCM_AdditionalPatientHistory, "Text", "Text Long");
+    checkStringBased<DcmOtherDouble>(DCM_DoubleFloatPixelData, "10", "10.5");
+    checkStringBased<DcmOtherFloat>(DCM_FloatPixelData, "10", "10.5");
+    checkStringBased<DcmPersonName>(DCM_OtherPatientNames, "Bond^James", "Bond^James^Jürgen");
+    checkStringBased<DcmShortString>(DCM_WedgeID, "WEDGE1", "WEDGE1_LONG");
+    checkStringBased<DcmShortText>(DCM_RTPlanDescription, "Text", "Text Long");
+    checkStringBased<DcmTime>(DCM_StudyTime, "235959", "235959.123456");
+    checkStringBased<DcmUnlimitedCharacters>(DCM_LongCodeValue, "Code_0815", "Code_0815_4711");
+    checkStringBased<DcmUniqueIdentifier>(DCM_SOPInstanceUID, "1.2.3.4", "1.2.3.4.5");
+    checkStringBased<DcmUnlimitedText>(DCM_RetrieveURL, "http://wwww.dcmtk.org", "http://www.dcmtk.org/dcmtk.php.en");
 
     // Check the rest
     checkAttributeTags();
