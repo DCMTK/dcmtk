@@ -1306,7 +1306,7 @@ OFBool DcmSegmentation::check(const OFBool checkFGStructure)
     // Check that each of above FGs is present. We do not check this for
     // all frames since if it exists for one frame it must exist for all others.
     // This is a general rule and applies for all FGs, so it is not checked here.
-    FGBase* group = m_FGInterface.get(OFstatic_cast(Uint32, 0), DcmFGTypes::EFG_PIXELMEASURES);
+    group = m_FGInterface.get(OFstatic_cast(Uint32, 0), DcmFGTypes::EFG_PIXELMEASURES);
     if (!group)
     {
       DCMSEG_ERROR("Frame of Reference UID is present but Pixel Measures FG is missing");
@@ -1383,7 +1383,7 @@ OFCondition DcmSegmentation::extractFrames(Uint8* pixData,
   size_t overlapBits = (8 - (bitsPerFrame % 8)) % 8;
   // Add an extra byte if we we fill a partial byte in the end
   if (overlapBits != 0) frameLengthBytes++;
-  // Points to current reading position within pixeldata
+  // Points to current reading position within pixData
   Uint8* readPos = pixData;
   // Loop over each frame and copy it to Frame structures
   for (size_t f = 0; f < numFrames; f++)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2018, OFFIS e.V.
+ *  Copyright (C) 1993-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -555,7 +555,7 @@ main(int argc, char *argv[])
         app.checkValue(cmd.getValue(options.outgoingProfile));
 
         // read configuration file
-        OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, options.associationConfigFile.c_str());
+        cond = DcmAssociationConfigurationFile::initialize(asccfg, options.associationConfigFile.c_str());
         if (cond.bad())
         {
           OFLOG_FATAL(dcmqrscpLogger, "cannot read association config file: " << cond.text());
@@ -855,45 +855,45 @@ main(int argc, char *argv[])
       return 10;
     }
 
-  /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
-  if (OFStandard::dropPrivileges().bad())
-  {
+    /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
+    if (OFStandard::dropPrivileges().bad())
+    {
       OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
       return 10;
-  }
+    }
 
 #if defined(HAVE_SETUID) && defined(HAVE_GRP_H) && defined(HAVE_PWD_H)
-     OFStandard::OFGroup grp;
-     OFStandard::OFPasswd pwd;
-     const char *opt_UserName = NULL;
-     const char *opt_GroupName = NULL;
+    OFStandard::OFGroup grp;
+    OFStandard::OFPasswd pwd;
+    const char *opt_UserName = NULL;
+    const char *opt_GroupName = NULL;
 
-     if (((opt_GroupName = config.getGroupName()) != NULL) && strlen(opt_GroupName) > 0)
-     {
-       if (!(grp = OFStandard::getGrNam(opt_GroupName)))
-       {
-         OFLOG_FATAL(dcmqrscpLogger, "bad group name " << opt_GroupName);
-         return 10;
-       }
-       if (setgid(grp.gr_gid) == -1)
-       {
-         OFLOG_FATAL(dcmqrscpLogger, "setgid: Unable to set group id to group " << (unsigned)grp.gr_gid);
-         return 10;
-       }
-     }
-     if (((opt_UserName = config.getUserName()) != NULL) && strlen(opt_UserName) > 0)
-     {
-       if (!(pwd = OFStandard::getPwNam(opt_UserName)))
-       {
-         OFLOG_FATAL(dcmqrscpLogger, "bad user name " << opt_UserName);
-         return 10;
-       }
-       if (setuid(pwd.pw_uid) == -1)
-       {
-         OFLOG_FATAL(dcmqrscpLogger, "setuid: Unable to set user id to user " << (unsigned)pwd.pw_uid);
-         return 10;
-       }
-     }
+    if (((opt_GroupName = config.getGroupName()) != NULL) && strlen(opt_GroupName) > 0)
+    {
+      if (!(grp = OFStandard::getGrNam(opt_GroupName)))
+      {
+        OFLOG_FATAL(dcmqrscpLogger, "bad group name " << opt_GroupName);
+        return 10;
+      }
+      if (setgid(grp.gr_gid) == -1)
+      {
+        OFLOG_FATAL(dcmqrscpLogger, "setgid: Unable to set group id to group " << (unsigned)grp.gr_gid);
+        return 10;
+      }
+    }
+    if (((opt_UserName = config.getUserName()) != NULL) && strlen(opt_UserName) > 0)
+    {
+      if (!(pwd = OFStandard::getPwNam(opt_UserName)))
+      {
+        OFLOG_FATAL(dcmqrscpLogger, "bad user name " << opt_UserName);
+        return 10;
+      }
+      if (setuid(pwd.pw_uid) == -1)
+      {
+        OFLOG_FATAL(dcmqrscpLogger, "setuid: Unable to set user id to user " << (unsigned)pwd.pw_uid);
+        return 10;
+      }
+    }
 #endif // defined(HAVE_SETUID) && defined(HAVE_GRP_H) && defined(HAVE_PWD_H)
 
 #ifdef WITH_SQL_DATABASE
