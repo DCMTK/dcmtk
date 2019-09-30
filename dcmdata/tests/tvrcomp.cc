@@ -31,6 +31,7 @@
 #include "dcmtk/dcmdata/dcvrlt.h"
 #include "dcmtk/dcmdata/dcvrpn.h"
 #include "dcmtk/dcmdata/dcvrst.h"
+#include "dcmtk/dcmdata/dcvrur.h"
 #include "dcmtk/dcmdata/dcvrut.h"
 #include "dcmtk/dcmdata/dcvras.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
@@ -848,7 +849,7 @@ OFTEST(dcmdata_VRCompare)
     // putAndInsertOFStringArray() can be used by the test method for initializing
     // the test values.
     // This applies to: AE, AS, CS, DA, DS, DT, FD, FL, IS, LO, LT, OD, OF, PN, SH, ST,
-    // TM, UC, UI, UT,
+    // TM, UC, UI, UR, UT,
     // Sometimes the maximum length of the VR is exceed deliberately to perform the test,
     // which is even useful since on that level DCMTK allows invalid values
     // in order to handle incorrect datasets.
@@ -865,13 +866,14 @@ OFTEST(dcmdata_VRCompare)
     checkStringBased<DcmLongText>(DCM_AdditionalPatientHistory, "Text", "Text Long");
     checkStringBased<DcmOtherDouble>(DCM_DoubleFloatPixelData, "10", "10.5");
     checkStringBased<DcmOtherFloat>(DCM_FloatPixelData, "10", "10.5");
-    checkStringBased<DcmPersonName>(DCM_OtherPatientNames, "Bond^James", "Bond^James^Jürgen");
+    checkStringBased<DcmPersonName>(DCM_OtherPatientNames, "Bond^James", "Bond^James^T.");
     checkStringBased<DcmShortString>(DCM_WedgeID, "WEDGE1", "WEDGE1_LONG");
     checkStringBased<DcmShortText>(DCM_RTPlanDescription, "Text", "Text Long");
     checkStringBased<DcmTime>(DCM_StudyTime, "235959", "235959.123456");
     checkStringBased<DcmUnlimitedCharacters>(DCM_LongCodeValue, "Code_0815", "Code_0815_4711");
     checkStringBased<DcmUniqueIdentifier>(DCM_SOPInstanceUID, "1.2.3.4", "1.2.3.4.5");
-    checkStringBased<DcmUnlimitedText>(DCM_RetrieveURL, "http://wwww.dcmtk.org", "http://www.dcmtk.org/dcmtk.php.en");
+    checkStringBased<DcmUniversalResourceIdentifierOrLocator>(DCM_RetrieveURL, "http://wwww.dcmtk.org", "http://www.dcmtk.org/dcmtk.php.en");
+    checkStringBased<DcmUnlimitedText>(DCM_TextValue, "Some (very long) text...", "Some (very long) text... hmm, not really.");
 
     // Check the rest
     checkAttributeTags();
