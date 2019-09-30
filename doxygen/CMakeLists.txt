@@ -8,7 +8,7 @@ if(DCMTK_WITH_DOXYGEN)
     add_custom_target(DOXYGEN)
     add_custom_target(html "${DOXYGEN_EXECUTABLE}" htmldocs.tmp)
     add_dependencies(DOXYGEN html)
-    if(NOT WIN32) # For Unix systems, also build manpages
+    if(DCMTK_ENABLE_MANPAGES)
       add_custom_target(man COMMAND "${DOXYGEN_EXECUTABLE}" manpages.tmp
                             COMMAND rm -f "${CMAKE_CURRENT_BINARY_DIR}/manpages/man1/*.man.1"
                             COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/patchman.sh")
@@ -29,13 +29,13 @@ if(DCMTK_WITH_DOXYGEN)
   set(DOXYGEN_INPUT_DIR "${CMAKE_SOURCE_DIR}")
   set(DOXYGEN_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/htmldocs.cfg" "${CMAKE_CURRENT_BINARY_DIR}/htmldocs.tmp" ESCAPE_QUOTES @ONLY)
-  if(NOT WIN32)
+  if(DCMTK_ENABLE_MANPAGES)
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/manpages.cfg" "${CMAKE_CURRENT_BINARY_DIR}/manpages.tmp" ESCAPE_QUOTES @ONLY)
   endif()
 
   # Make sure these directories exist when we try to install them
   install(CODE "file(MAKE_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/htmldocs\")" COMPONENT html)
-  if(NOT WIN32)
+  if(DCMTK_ENABLE_MANPAGES)
     install(CODE "file(MAKE_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/manpages\")" COMPONENT man)
   endif()
 
@@ -44,7 +44,7 @@ if(DCMTK_WITH_DOXYGEN)
   if(DCMTK_GENERATE_DOXYGEN_TAGFILE)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_TAGFILE}" DESTINATION "${CMAKE_INSTALL_DOCDIR}" COMPONENT html OPTIONAL)
   endif()
-  if(NOT WIN32)
+  if(DCMTK_ENABLE_MANPAGES)
     file(GLOB_RECURSE MANPAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/manpages/" "${CMAKE_CURRENT_SOURCE_DIR}/manpages/*.1")
     foreach(MANPAGE ${MANPAGES})
         if("${CMAKE_CURRENT_SOURCE_DIR}/manpages/${MANPAGE}" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/manpages/${MANPAGE}")
@@ -65,8 +65,8 @@ if(DCMTK_WITH_DOXYGEN)
 
 else()
 
-  # by default, install the pre-defined manpages, i.e. the ones shipped with this package
-  if(NOT WIN32)
+  if(DCMTK_ENABLE_MANPAGES)
+    # since Doxygen is not available, install the pre-defined manpages, i.e. the ones shipped with this package
     install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/manpages/" DESTINATION "${CMAKE_INSTALL_MANDIR}" COMPONENT man)
   endif()
 

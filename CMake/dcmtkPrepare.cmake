@@ -153,6 +153,15 @@ if(NOT WIN32)
   mark_as_advanced(DCMTK_WIDE_CHAR_MAIN_FUNCTION)
 endif()
 
+# Enable manpages only for non-Windows systems by default
+set(DCMTK_ENABLE_MANPAGES_DOCSTRING "Enable building/installing of manpages.")
+if(WIN32)
+  option(DCMTK_ENABLE_MANPAGES "${DCMTK_ENABLE_MANPAGES_DOCSTRING}" OFF)
+else()
+  option(DCMTK_ENABLE_MANPAGES "${DCMTK_ENABLE_MANPAGES_DOCSTRING}" ON)
+endif()
+mark_as_advanced(DCMTK_ENABLE_MANPAGES)
+
 enable_testing()
 
 #-----------------------------------------------------------------------------
