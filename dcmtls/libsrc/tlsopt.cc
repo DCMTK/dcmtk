@@ -408,7 +408,7 @@ OFBool DcmTLSOptions::secureConnectionRequested() const
 #endif
 }
 
-DcmTLSTransportLayer *DcmTLSOptions::getTransportLayer()
+DcmTransportLayer *DcmTLSOptions::getTransportLayer()
 {
 #ifdef WITH_OPENSSL
   return tLayer;

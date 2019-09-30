@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, OFFIS e.V.
+ *  Copyright (C) 2017-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,7 +108,7 @@ public:
      *  has not yet been created by a call to createTransportLayer().
      *  @return pointer to transport layer object, may be NULL.
      */
-    DcmTLSTransportLayer *getTransportLayer();
+    DcmTransportLayer *getTransportLayer();
 
     /** checks if the command line option --list-ciphers was given.
      *  In this case the list of supported TLS ciphersuites should be
