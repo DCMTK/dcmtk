@@ -848,11 +848,11 @@ OFTEST(dcmdata_VRCompare)
     // Check the different String-based VRs (in the sense that the method
     // putAndInsertOFStringArray() can be used by the test method for initializing
     // the test values.
-    // This applies to: AE, AS, CS, DA, DS, DT, FD, FL, IS, LO, LT, OD, OF, PN, SH, ST,
-    // TM, UC, UI, UR, UT,
-    // Sometimes the maximum length of the VR is exceed deliberately to perform the test,
-    // which is even useful since on that level DCMTK allows invalid values
-    // in order to handle incorrect datasets.
+    // This applies to: AE, AS, CS, DA, DS, DT, FD, FL, IS, LO, LT, OD, OF, PN,
+    // SH, ST, TM, UC, UI, UR, UT.
+    // Sometimes the maximum length of the VR is exceed deliberately to perform
+    // the test, which is even useful since on that level DCMTK allows invalid
+    // values in order to handle incorrect datasets.
     checkStringBased<DcmApplicationEntity>(DCM_RetrieveAETitle,"AE1", "AE1_CT");
     checkStringBased<DcmAgeString>(DCM_PatientAge, "008Y", "008YY");
     checkStringBased<DcmCodeString>(DCM_BlendingMode, "SOME", "SOME_LONGER");
@@ -889,5 +889,6 @@ OFTEST(dcmdata_VRCompare)
     checkDcmPixelDataNative();
     checkDcmPixelDataEncapsulatedOB();
     // UN is not represented by its own class but is handled by OB/OW VR
-    // code
+
+    // The following, recently introduced VRs are not tested yet: OV, SV, UV.
 }
