@@ -502,8 +502,12 @@ int DcmSignatureHelper::do_verify(DcmItem *dataset)
   if (counter == 0)
     DCMSIGN_WARN("no signatures found in dataset.");
   else
+  {
     DCMSIGN_INFO(counter << " signatures verified in dataset, " << corrupt_counter << " corrupted.");
-  return 0;
+  }
+
+  // return non-zero if any verification has failed
+  return (corrupt_counter == 0 ? 0 :1);
 }
 
 
