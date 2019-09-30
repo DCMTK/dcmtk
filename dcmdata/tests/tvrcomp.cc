@@ -70,19 +70,17 @@
 template <typename StringType>
 static void checkStringBased(
     const DcmTagKey& key,
-    const OFString shortVal,
-    const OFString longVal)
+    const OFString& shortVal,
+    const OFString& longVal)
 {
     // Start with equal values
-    OFString val1 = shortVal;
-    OFString val2 = shortVal;
     StringType obj1(key);
     StringType obj2(key);
     StringType objOtherTag(DCM_UndefinedTagKey);
-
-    // Check equality
     obj1.putOFStringArray(shortVal);
     obj2.putOFStringArray(shortVal);
+
+    // Check equality
     OFCHECK_EQUAL(obj1.compare(obj2), 0);
     OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
     // Reverse test should yield same result
@@ -131,10 +129,10 @@ static void checkAttributeTags()
     DcmAttributeTag obj1(DCM_FrameIncrementPointer);
     DcmAttributeTag obj2(DCM_FrameIncrementPointer);
     DcmAttributeTag objOtherTag(DCM_UndefinedTagKey);
-
-    // Check equality
     obj1.putTagVal(DCM_PatientName);
     obj2.putTagVal(DCM_PatientName);
+
+    // Check equality
     OFCHECK_EQUAL(obj1.compare(obj2), 0);
     OFCHECK( (obj1 <= obj2) && (obj2 <= obj1) );
     // Reverse test should yield same result
