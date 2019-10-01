@@ -45,7 +45,7 @@
 #  include <sched.h>
 #  include <signal.h>
 #elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
-#  include <process.h> 
+#  include <process.h>
 #endif
 #include "dcmtk/oflog/config/windowsh.h"
 #include "dcmtk/oflog/thread/syncpub.h"
@@ -79,7 +79,7 @@ blockAllSignals()
     sigset_t signal_set;
     sigfillset (&signal_set);
     pthread_sigmask (SIG_BLOCK, &signal_set, 0);
-#endif    
+#endif
 }
 
 
@@ -119,9 +119,10 @@ getCurrentThreadName()
 }
 
 
+#ifndef DCMTK_LOG4CPLUS_SINGLE_THREADED
+
 namespace
 {
-
 
 static
 bool
@@ -137,7 +138,7 @@ get_current_thread_name_alt (log4cplus::tostream * s)
 #elif defined (__CYGWIN__)
     unsigned long tid = cygwin::get_current_win32_thread_id ();
     os << tid;
-    
+
 #else
     os << getCurrentThreadName ();
 
@@ -148,6 +149,8 @@ get_current_thread_name_alt (log4cplus::tostream * s)
 
 
 } // namespace
+
+#endif // DCMTK_LOG4CPLUS_SINGLE_THREADED
 
 
 DCMTK_LOG4CPLUS_EXPORT
@@ -198,7 +201,7 @@ namespace log4cplus { namespace thread { namespace impl {
 
 
 #if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
-void* 
+void*
 ThreadStart::threadStartFuncWorker(void * arg)
 #elif defined(DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
 unsigned
@@ -435,7 +438,7 @@ AbstractThread::~AbstractThread()
 { }
 
 
-} } // namespace log4cplus { namespace thread { 
+} } // namespace log4cplus { namespace thread {
 } // end namespace dcmtk
 
 
