@@ -695,7 +695,7 @@ OFCondition DcmSignature::verifyCurrent()
             // DSA and ECDSA signatures are encoded in DER and can have odd length. We must remove
             // the pad byte before feeding the signature to the OpenSSL layer.
             if (((sigLength > 2) && sigData && (sigData[0] == 0x30) && (sigData[1] < 128) && (sigData[1]+3 == sigLength)) || // one-byte length encoding
-                ((sigLength > 4) && sigData && (sigData[0] == 0x30) && (sigData[1] == 0x82) && ((256UL * sigData[2]) + sigData[3] + 3 == sigLength))) // two-byte length encoding
+                ((sigLength > 4) && sigData && (sigData[0] == 0x30) && (sigData[1] == 0x82) && ((256UL * sigData[2]) + sigData[3] + 5 == sigLength))) // two-byte length encoding
             {
                 // The first byte of the signature is 0x30 (DER encoding for SEQUENCE)
                 // and length field is signature length - 3. This means that the signature
