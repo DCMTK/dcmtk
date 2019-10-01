@@ -154,7 +154,7 @@ public:
     OFLogger& logger);
 
   /** Get study or series data from provided file. Generate UID if none present.
-   *  @param logger The logger of the application calling this method.
+   *  @param appLogger The logger of the application calling this method.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition createIdentifiers(OFLogger& appLogger);
@@ -215,7 +215,7 @@ public:
   OFString getFileType();
 
   /** Sets the current filetype.
-   *  @param fName the current filetype.
+   *  @param fType the current filetype.
    *  @return none.
    */
   void setFileType(OFString fType);
