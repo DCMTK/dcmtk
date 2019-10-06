@@ -129,16 +129,6 @@ int FGDerivationImage::compare(const FGBase& rhs) const
 
   size_t thisSize = m_DerivationImageItems.size();
   size_t rhsSize = myRhs->m_DerivationImageItems.size();
-  size_t maxSize = (thisSize > rhsSize) ? thisSize : rhsSize;
-  for (size_t count = 0; count < maxSize; count++)
-  {
-    int error = (*(m_DerivationImageItems[count])).compare( (*(myRhs->m_DerivationImageItems[count])) );
-    if (error != 0)
-    {
-      return error;
-    }
-  }
-
   if (thisSize < rhsSize)
   {
     return 1;
@@ -146,6 +136,15 @@ int FGDerivationImage::compare(const FGBase& rhs) const
   else if (thisSize > rhsSize)
   {
     return -1;
+  }
+
+  for (size_t count = 0; count < thisSize; count++)
+  {
+    int error = (*(m_DerivationImageItems[count])).compare( (*(myRhs->m_DerivationImageItems[count])) );
+    if (error != 0)
+    {
+      return error;
+    }
   }
 
   return 0;

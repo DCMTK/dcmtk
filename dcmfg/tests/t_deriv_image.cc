@@ -63,8 +63,10 @@ static void check_deriv_image_fg(FGDerivationImage& fg)
 {
     OFVector<DerivationImageItem*> deriv_img_items = fg.getDerivationImageItems();
     OFCHECK(deriv_img_items.size() == 1);
+    if (deriv_img_items.size() == 0) return;
     OFVector<CodeSequenceMacro*>& deriv_code_items = deriv_img_items[0]->getDerivationCodeItems();
     OFCHECK(deriv_code_items.size() == 1);
+    if (deriv_code_items.size() == 0) return;
     CodeSequenceMacro* code_item = deriv_code_items[0];
     OFString str;
     code_item->getCodeValue(str);
@@ -110,8 +112,11 @@ OFTEST(dcmfg_derivation_image)
     OFCondition result              = fg.addDerivationImageItem(deriv_code, "Some Description", deriv_item);
     OFCHECK(result.good());
     OFCHECK(deriv_item != NULL);
+    if (result.bad() || !deriv_item) return;
 
     SourceImageItem* src_image_item = new SourceImageItem();
+    OFCHECK(src_image_item != NULL);
+    if (!deriv_item) return;
     OFCHECK(src_image_item->getImageSOPInstanceReference().addReferencedFrameNumber(1).good());
     OFCHECK(src_image_item->getImageSOPInstanceReference().addReferencedFrameNumber(2).good());
     OFCHECK(src_image_item->getImageSOPInstanceReference().addReferencedSegmentNumber(3).good());
@@ -141,6 +146,7 @@ OFTEST(dcmfg_derivation_image)
     dest_item.clear();
     result = fg_for_read.write(dest_item);
     OFCHECK(result.good());
+    if (result.bad()) return;
     dest_item.print(out);
     OFCHECK(out.str() == fg_dump.c_str());
 
@@ -152,6 +158,7 @@ OFTEST(dcmfg_derivation_image)
     // Test clone() method
     FGDerivationImage* clone = OFstatic_cast(FGDerivationImage*, fg.clone());
     OFCHECK(clone != NULL);
+    if (clone == NULL) return;
     OFCHECK(clone->compare(fg) == 0);
     delete clone;
 }

@@ -119,6 +119,7 @@ OFTEST(dcmfg_frame_content)
     dest_item.clear();
     result = fg_for_read.write(dest_item);
     OFCHECK(result.good());
+    if (result.bad()) return;
     dest_item.print(out);
     OFCHECK(out.str() == fg_dump.c_str());
 
@@ -130,6 +131,7 @@ OFTEST(dcmfg_frame_content)
     // Test clone() method
     FGFrameContent* clone = OFstatic_cast(FGFrameContent*, fg.clone());
     OFCHECK(clone != NULL);
+    if (clone == NULL) return;
     OFCHECK(clone->compare(fg) == 0);
     delete clone;
 }
