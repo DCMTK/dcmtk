@@ -113,9 +113,11 @@ color space conversion:
   # and convert to RGB.
 
   +cn   --conv-never
-          never convert color space
+          never convert YCbCr to RGB
 
-  # Never convert color space during decompression.
+  # Never convert color space from YCbCr to RGB during decompression.
+  # Note that a conversion from YBR_FULL_422 to YBR_FULL will still take
+  # place if the source images has been compressed with subsampling.
 
 planar configuration:
 
@@ -342,6 +344,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmdjpeg_copyright COPYRIGHT
 
-Copyright (C) 2001-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

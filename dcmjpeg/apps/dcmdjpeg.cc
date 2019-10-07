@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2018, OFFIS e.V.
+ *  Copyright (C) 2001-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--conv-guess",          "+cg",    "convert to RGB if YCbCr is guessed by library");
       cmd.addOption("--conv-guess-lossy",    "+cgl",   "convert to RGB if lossy JPEG and YCbCr is\nguessed by the underlying JPEG library");
       cmd.addOption("--conv-always",         "+ca",    "always convert YCbCr to RGB");
-      cmd.addOption("--conv-never",          "+cn",    "never convert color space");
+      cmd.addOption("--conv-never",          "+cn",    "never convert YCbCr to RGB");
 
     cmd.addSubGroup("planar configuration:");
       cmd.addOption("--planar-auto",         "+pa",    "automatically determine planar configuration\nfrom SOP class and color space (default)");
