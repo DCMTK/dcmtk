@@ -40,10 +40,6 @@ OFTEST(ofstd_OFStringUtil_replace_all)
     OFStringUtil::replace_all(s, "Jon", "Doe");
     OFCHECK_EQUAL(s, "Doe Doe");
 
-    s = "Doe Doe";
-    OFStringUtil::replace_all(s, "Doe", "");
-    OFCHECK_EQUAL(s, " ");
-
     s = "blablabla";
     OFStringUtil::replace_all(s, "b", "p");
     OFCHECK_EQUAL(s, "plaplapla");
@@ -92,4 +88,9 @@ OFTEST(ofstd_OFStringUtil_replace_all)
     s = "";
     OFStringUtil::replace_all(s, "", "notfound");
     OFCHECK_EQUAL(s, "");
+
+    s = "This is the home of the brother of my brother";
+    OFStringUtil::replace_all(s, "brother", "sister");
+    OFCHECK_EQUAL(s, "This is the home of the sister of my sister");
+
 }
