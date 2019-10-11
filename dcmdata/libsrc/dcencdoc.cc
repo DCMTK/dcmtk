@@ -1208,53 +1208,58 @@ OFCondition DcmEncapsulatedDocument::createHeader(
       {
         if (opt_manufacturer.empty())
         {
-          OFLOG_ERROR(logger, "No Manufacturer "
+          opt_manufacturer="DCMTK_MANUFACTURING";
+          OFLOG_WARN(logger, "No Manufacturer "
                       << DCM_Manufacturer
-                      << " provided nor found in series "
-                      <<"(required for Enhanced General Equipment module)."
+                      << " provided nor found in series. This attribute is "
+                      <<"required for Enhanced General Equipment module. "
+                      <<opt_manufacturer
+                      <<" WILL BE INSERTED AS DUMMY VALUE."
                         );
-          result = EC_InvalidValue;
         }
-        else result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, opt_manufacturer);
+        result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, opt_manufacturer);
       }
       if (result.good())
       {
         if (opt_manufacturerModelName.empty())
         {
-          OFLOG_ERROR(logger, "No Manufacturer Model Name "
-                      << DCM_ManufacturerModelName
-                      << " provided nor found in series "
-                      <<"(required for Enhanced General Equipment module)."
+          opt_manufacturerModelName="DCMTK_3DMODEL_3";
+          OFLOG_WARN(logger, "No Manufacturer Model Name "
+                      << " provided nor found in series. This attribute is "
+                      <<"required for Enhanced General Equipment module. "
+                      <<opt_manufacturerModelName
+                      <<" WILL BE INSERTED AS DUMMY VALUE."
                         );
-          result = EC_InvalidValue;
         }
-        else result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, opt_manufacturerModelName);
+        result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, opt_manufacturerModelName);
       }
       if (result.good())
       {
         if (opt_deviceSerialNumber.empty())
         {
-          OFLOG_ERROR(logger, "No Device Serial Number "
-                      << DCM_DeviceSerialNumber
-                      << " provided nor found in series "
-                      <<"(required for Enhanced General Equipment module)."
+          opt_deviceSerialNumber="DCMTK01234567890";
+          OFLOG_WARN(logger, "No Device Serial Number "
+                      << " provided nor found in series. This attribute is "
+                      <<"required for Enhanced General Equipment module. "
+                      <<opt_deviceSerialNumber
+                      <<" WILL BE INSERTED AS DUMMY VALUE."
                         );
-          result = EC_InvalidValue;
         }
-        else result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, opt_deviceSerialNumber);
+        result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, opt_deviceSerialNumber);
       }
       if (result.good())
       {
         if (opt_softwareVersions.empty())
         {
-          OFLOG_ERROR(logger, "No Software Versions "
-                      << DCM_SoftwareVersions
-                      << " provided nor found in series "
-                      <<"(required for Enhanced General Equipment module)."
+          opt_softwareVersions=OFFIS_DCMTK_VERSION;
+          OFLOG_WARN(logger, "No Software Versions "
+                      << " provided nor found in series. This attribute is "
+                      <<"required for Enhanced General Equipment module. "
+                      <<opt_softwareVersions
+                      <<" WILL BE INSERTED AS DUMMY VALUE."
                         );
-          result = EC_InvalidValue;
         }
-        else result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, opt_softwareVersions);
+        result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, opt_softwareVersions);
       }
       if (result.good())
       {
