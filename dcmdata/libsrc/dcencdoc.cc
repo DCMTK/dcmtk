@@ -775,7 +775,7 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger& appLogger)
     cond = dfile.loadFile(opt_seriesFile, EXS_Unknown, EGL_noChange);
     if (cond.bad())
     {
-      OFLOG_WARN(appLogger, cond.text() 
+      OFLOG_WARN(appLogger, cond.text()
                   << ": reading file: " << opt_seriesFile);
     }
     else
@@ -1180,7 +1180,7 @@ OFCondition DcmEncapsulatedDocument::createHeader(
       {
         OFLOG_DEBUG(logger, "Frame of Reference UID "
                     << DCM_FrameOfReferenceUID
-                    << "value was empty, generating a new one."
+                    << " value was empty, generating a new one."
                       );
         dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
         opt_frameOfReferenceUID = buf;
@@ -1191,7 +1191,7 @@ OFCondition DcmEncapsulatedDocument::createHeader(
         {
           OFLOG_DEBUG(logger, "Frame of Reference UID "
                       << DCM_FrameOfReferenceUID
-                      << "value was faulty, generating a new one."
+                      << " value was faulty, generating a new one."
                         );
           dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
           opt_frameOfReferenceUID = buf;
