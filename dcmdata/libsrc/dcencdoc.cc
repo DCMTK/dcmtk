@@ -775,8 +775,8 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger& appLogger)
     cond = dfile.loadFile(opt_seriesFile, EXS_Unknown, EGL_noChange);
     if (cond.bad())
     {
-      OFLOG_WARN(appLogger, cond.text() <<
-                  ": reading file: " << opt_seriesFile);
+      OFLOG_WARN(appLogger, cond.text() 
+                  << ": reading file: " << opt_seriesFile);
     }
     else
     {
@@ -1212,9 +1212,9 @@ OFCondition DcmEncapsulatedDocument::createHeader(
           OFLOG_WARN(logger, "No Manufacturer "
                       << DCM_Manufacturer
                       << " provided nor found in series. This attribute is "
-                      <<"required for Enhanced General Equipment module. "
-                      <<opt_manufacturer
-                      <<" WILL BE INSERTED AS DUMMY VALUE."
+                      << "required for Enhanced General Equipment module. "
+                      << opt_manufacturer
+                      << " will be inserted as dummy value."
                         );
         }
         result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, opt_manufacturer);
@@ -1225,10 +1225,11 @@ OFCondition DcmEncapsulatedDocument::createHeader(
         {
           opt_manufacturerModelName="DCMTK_3DMODEL_3";
           OFLOG_WARN(logger, "No Manufacturer Model Name "
+                      << DCM_ManufacturerModelName
                       << " provided nor found in series. This attribute is "
-                      <<"required for Enhanced General Equipment module. "
-                      <<opt_manufacturerModelName
-                      <<" WILL BE INSERTED AS DUMMY VALUE."
+                      << "required for Enhanced General Equipment module. "
+                      << opt_manufacturerModelName
+                      << " will be inserted as dummy value."
                         );
         }
         result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, opt_manufacturerModelName);
@@ -1239,10 +1240,11 @@ OFCondition DcmEncapsulatedDocument::createHeader(
         {
           opt_deviceSerialNumber="DCMTK01234567890";
           OFLOG_WARN(logger, "No Device Serial Number "
+                      << DCM_DeviceSerialNumber
                       << " provided nor found in series. This attribute is "
-                      <<"required for Enhanced General Equipment module. "
-                      <<opt_deviceSerialNumber
-                      <<" WILL BE INSERTED AS DUMMY VALUE."
+                      << "required for Enhanced General Equipment module. "
+                      << opt_deviceSerialNumber
+                      << " will be inserted as dummy value."
                         );
         }
         result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, opt_deviceSerialNumber);
@@ -1253,10 +1255,11 @@ OFCondition DcmEncapsulatedDocument::createHeader(
         {
           opt_softwareVersions=OFFIS_DCMTK_VERSION;
           OFLOG_WARN(logger, "No Software Versions "
+                      << DCM_SoftwareVersions
                       << " provided nor found in series. This attribute is "
-                      <<"required for Enhanced General Equipment module. "
-                      <<opt_softwareVersions
-                      <<" WILL BE INSERTED AS DUMMY VALUE."
+                      << "required for Enhanced General Equipment module. "
+                      << opt_softwareVersions
+                      << " will be inserted as dummy value."
                         );
         }
         result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, opt_softwareVersions);
