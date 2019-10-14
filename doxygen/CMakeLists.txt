@@ -10,8 +10,7 @@ if(DCMTK_WITH_DOXYGEN)
     add_dependencies(DOXYGEN html)
     if(DCMTK_ENABLE_MANPAGES)
       add_custom_target(man COMMAND "${DOXYGEN_EXECUTABLE}" manpages.tmp
-                            COMMAND rm -f "${CMAKE_CURRENT_BINARY_DIR}/manpages/man1/*.man.1"
-                            COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/patchman.sh")
+                            COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_SOURCE_DIR}/patchman.cmake")
       add_dependencies(DOXYGEN man)
       add_custom_target(man2text COMMAND "${CMAKE_COMMAND}" -E make_directory man2text
                                  COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/man2text.sh")
