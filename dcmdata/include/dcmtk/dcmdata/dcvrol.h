@@ -68,7 +68,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherLong
     /** clone method
      *  @return deep copy of this object
      */
-    virtual DcmOtherLong *clone() const
+    virtual DcmObject *clone() const
     {
       return new DcmOtherLong(*this);
     }

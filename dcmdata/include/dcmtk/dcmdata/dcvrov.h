@@ -68,7 +68,7 @@ class DCMTK_DCMDATA_EXPORT DcmOther64bitVeryLong
     /** clone method
      *  @return deep copy of this object
      */
-    virtual DcmOther64bitVeryLong *clone() const
+    virtual DcmObject *clone() const
     {
       return new DcmOther64bitVeryLong(*this);
     }
