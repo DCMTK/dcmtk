@@ -85,6 +85,11 @@ OFCondition SiBaseRSAProfile::inspectSignatureDataset(DcmItem & /* item */)
   return EC_Normal;
 }
 
+OFBool SiBaseRSAProfile::mainDatasetRequired() const
+{
+  return OFFalse;
+}
+
 #else /* WITH_OPENSSL */
 
 int sibrsapr_cc_dummy_to_keep_linker_from_moaning = 0;

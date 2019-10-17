@@ -49,6 +49,11 @@ SiCertificate::SiCertificate()
 {
 }
 
+SiCertificate::SiCertificate(X509 *cert)
+: x509(cert)
+{
+}
+
 SiCertificate::~SiCertificate()
 {
   if (x509) X509_free(x509);
@@ -146,6 +151,8 @@ OFCondition SiCertificate::loadCertificate(const char *filename, int filetype)
 OFCondition SiCertificate::read(DcmItem& item)
 {
   OFCondition result = EC_Normal;
+  if (x509) X509_free(x509);
+  x509 = NULL;
   OFString aString;
   DcmStack stack;
   result = item.search(DCM_CertificateType, stack, ESM_fromHere, OFFalse);
@@ -266,7 +273,7 @@ void SiCertificate::getCertValidityNotBefore(OFString& str)
     BIO *certValidNotBeforeBIO = BIO_new(BIO_s_mem());
     if (certValidNotBeforeBIO)
     {
-      ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get_notBefore(x509));
+      ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get0_notBefore(x509));
       BIO_write(certValidNotBeforeBIO,"\0",1);
       BIO_get_mem_data(certValidNotBeforeBIO, (char *)(&bufptr));
       if (bufptr) str = bufptr;
@@ -284,7 +291,7 @@ void SiCertificate::getCertValidityNotAfter(OFString& str)
     BIO *certValidNotAfterBIO = BIO_new(BIO_s_mem());
     if (certValidNotAfterBIO)
     {
-      ASN1_UTCTIME_print(certValidNotAfterBIO, X509_get_notAfter(x509));
+      ASN1_UTCTIME_print(certValidNotAfterBIO, X509_get0_notAfter(x509));
       BIO_write(certValidNotAfterBIO,"\0",1);
       BIO_get_mem_data(certValidNotAfterBIO, (char *)(&bufptr));
       if (bufptr) str = bufptr;

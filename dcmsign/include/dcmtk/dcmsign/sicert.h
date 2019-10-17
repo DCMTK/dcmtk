@@ -46,6 +46,11 @@ public:
   /// default constructor
   SiCertificate();
 
+  /** constructor
+   *  @param cert pointer to OpenSSL X509 object. Ownership is transferred to the SiCertificate instance
+   */
+  SiCertificate(X509 *cert);
+
   ///destructor
   virtual ~SiCertificate();
 

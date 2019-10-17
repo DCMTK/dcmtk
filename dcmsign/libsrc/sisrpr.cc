@@ -125,7 +125,7 @@ OFCondition SiStructuredReportingProfile::inspectSignatureDataset(DcmItem& item)
       // check if we already have a verification signature in this dataset
       if (! haveVerificationSignature(item))
       {
-        DCMSIGN_WARN("SR document status is 'VERIFIED', but the verification signature is still missing");
+        DCMSIGN_WARN("SR document status is 'VERIFIED', but the verification signature is missing");
       }
     }
     return EC_Normal;
@@ -133,9 +133,13 @@ OFCondition SiStructuredReportingProfile::inspectSignatureDataset(DcmItem& item)
   else
   {
     // not an SR document
-    DCMSIGN_ERROR("Dataset is not a Structured Report, cannot apply Structured Reporting RSA Digital Signature Profile");
     return SI_EC_DatasetDoesNotMatchProfile;
   }
+}
+
+OFBool SiStructuredReportingProfile::mainDatasetRequired() const
+{
+  return OFTrue;
 }
 
 #else /* WITH_OPENSSL */

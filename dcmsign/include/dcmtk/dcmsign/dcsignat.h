@@ -179,12 +179,33 @@ public:
    */
   OFCondition getCurrentDataElementsSigned(DcmAttributeTag& desig);
 
+  /** verifies whether the currently selected signature within the
+   *  currently attached dataset matches the requirements of the
+   *  given signature profile.
+   *  @param sprof security profile
+   *  @return EC_Normal if signature matches, an error code otherwise
+   */
+  OFCondition verifySignatureProfile(SiSecurityProfile &sprof);
+
   /** returns the certificate of the current signature if present.
    *  Current signature must be selected with selectSignature().
    *  May return NULL if certificate is unavailable.
    *  @return pointer to current certificate, NULL if unavailable.
    */
   SiCertificate *getCurrentCertificate();
+
+  /** returns the certified timestamp of the current signature if present.
+   *  Current signature must be selected with selectSignature().
+   *  May return NULL if timestamp is unavailable.
+   *  @return pointer to current timestamp, NULL if unavailable.
+   */
+  SiTimeStamp *getCurrentTimestamp();
+
+  /** returns the item of the DigitalSignaturesSequence selected by the last call
+   *  to selectSignature(), or NULL if no signature has been selected.
+   *  @return pointer to current signature item, may be NULL
+   */
+  DcmItem *getSelectedSignatureItem();
   
   /** dump all data that is fed into the MAC algorithm into the given file,
    *  which must be opened and closed by caller.
@@ -209,6 +230,16 @@ public:
    *  @return pointer to Item containing a DigitalSignatureSequence if found, NULL otherwise.
    */
   static DcmItem *findNextSignatureItem(DcmItem& item, DcmStack& stack);
+
+  /** check a DER encoded ASN.1 SEQUENCE structure for a possible pad byte
+   *  and, if a pad byte is detected, remove it by decreasing buflen.
+   *  This will work for SEQUENCEs with one byte and two byte encoding
+   *  (i.e. max 64 kBytes).
+   *  @param buf pointer to DER encoded ASN.1 data
+   *  @param buflen length of buffer pointed to, in bytes. The variable is
+   *    decreased by one if a pad byte is detected.
+   */
+  static void adjustASN1SequenceLength(const unsigned char *buf, unsigned long& buflen);
 
 private:
 
@@ -261,7 +292,9 @@ private:
 
   /// pointer to certificate for currently selected signature item
   SiCertificate *selectedCertificate;  
-  
+
+  /// pointer to certified timestamp for currently selected signature item
+  SiTimeStamp *selectedTimestamp;
 };
 
 #endif

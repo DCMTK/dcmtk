@@ -97,7 +97,7 @@ OFCondition SiSignaturePurpose::insertDigitalSignaturePurposeCodeSQ(DcmItem& seq
     if (codeValue && codeMeaning && codingSchemeDesignator)
     {
         DcmItem *ditem = NULL;
-        OFCondition result = seqItem.findOrCreateSequenceItem(DCM_DigitalSignaturePurposeCodeSequence, ditem);
+        result = seqItem.findOrCreateSequenceItem(DCM_DigitalSignaturePurposeCodeSequence, ditem);
         if (ditem)
         {
           if (result.good()) result = ditem->putAndInsertString(DCM_CodingSchemeDesignator, codingSchemeDesignator);

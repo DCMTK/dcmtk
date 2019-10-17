@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,14 +35,30 @@ END_EXTERN_C
 
 SiCertificateVerifier::SiCertificateVerifier()
 : x509store(NULL)
+, x509untrusted(NULL)
 , errorCode(0)
 {
   x509store = X509_STORE_new();
+  x509untrusted = sk_X509_new_null();
 }
+
 
 SiCertificateVerifier::~SiCertificateVerifier()
 {
-  if (x509store) X509_STORE_free(x509store);
+  X509_STORE_free(x509store);
+  sk_X509_free(x509untrusted);
+}
+
+
+X509_STORE *SiCertificateVerifier::getTrustedCertStore()
+{
+  return x509store;
+}
+
+
+stack_st_X509 *SiCertificateVerifier::getUntrustedCerts()
+{
+  return x509untrusted;
 }
 
 
@@ -53,6 +69,56 @@ OFCondition SiCertificateVerifier::addTrustedCertificateFile(const char *fileNam
   if (x509_lookup == NULL) return SI_EC_OpenSSLFailure;
   if (! X509_LOOKUP_load_file(x509_lookup, fileName, fileType)) return SI_EC_CannotRead;
   return EC_Normal;
+}
+
+
+OFCondition SiCertificateVerifier::addUntrustedCertificateFile(const char *fileName, int fileType)
+{
+  OFCondition result = EC_Normal;
+  if (x509untrusted)
+  {
+    // PEM has different loading code because a PEM file can contain several certificates and CRLs
+    if (fileType == X509_FILETYPE_PEM)
+    {
+      BIO *bio = BIO_new_file(fileName, "r");
+      if (bio)
+      {
+        STACK_OF(X509_INFO) *x509infostack = PEM_X509_INFO_read_bio(bio, NULL, NULL, NULL);
+        if (x509infostack)
+        {
+          for (int i = 0; i < sk_X509_INFO_num(x509infostack); i++)
+          {
+            X509_INFO *xi = sk_X509_INFO_value(x509infostack, i);
+            if (xi->x509)
+            {
+              // move certificate to our list of untrusted certificates
+              sk_X509_push(x509untrusted, xi->x509);
+              xi->x509 = NULL;
+            }
+          }
+          // delete the remaining x509infostack
+          sk_X509_INFO_pop_free(x509infostack, X509_INFO_free);
+        } else result = SI_EC_CannotRead;
+        BIO_free(bio);
+      } else result = SI_EC_CannotRead;
+    }
+    else if (fileType == X509_FILETYPE_ASN1)
+    {
+      // load a single certificate in ASN.1 DER format
+      BIO *bio = BIO_new_file(fileName, "rb");
+      if (bio)
+      {
+        X509 *xcert = d2i_X509_bio(bio, NULL);
+        if (xcert)
+        {
+          sk_X509_push(x509untrusted, xcert);
+        } else result = SI_EC_CannotRead;
+        BIO_free(bio);
+      } else result = SI_EC_CannotRead;
+    } else result = SI_EC_InvalidFiletype;
+  } else result = SI_EC_CannotRead;
+
+  return result;
 }
 
 
@@ -108,7 +174,7 @@ OFCondition SiCertificateVerifier::verifyCertificate(SiCertificate& certificate)
   if (rawcert == NULL) return SI_EC_VerificationFailed_NoCertificate;
 
   X509_STORE_CTX *ctx = X509_STORE_CTX_new();
-  X509_STORE_CTX_init(ctx, x509store, rawcert, NULL);
+  X509_STORE_CTX_init(ctx, x509store, rawcert, x509untrusted);
 
   // If a complete chain can be built and validated X509_verify_cert() returns 1,
   // otherwise it returns zero, in exceptional circumstances it can also return a negative code.

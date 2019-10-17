@@ -65,6 +65,8 @@ static OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APP
 #include "dcmtk/dcmsign/siripemd.h"
 #include "dcmtk/dcmsign/siprivat.h"
 #include "dcmtk/dcmsign/sicert.h"
+#include "dcmtk/dcmsign/sitsfs.h"
+#include "dcmtk/dcmsign/sicertvf.h"
 #include "dcmtk/dcmdata/dctk.h"
 
 BEGIN_EXTERN_C
@@ -78,6 +80,7 @@ enum DcmSignOperation
   DSO_verify,
   DSO_sign,
   DSO_signItem,
+  DSO_insertTimestamp,
   DSO_remove,
   DSO_removeAll
 };
@@ -93,8 +96,8 @@ int main(int argc, char *argv[])
   OFCmdUnsignedInt              opt_filepad = 0;
   E_FileReadMode                opt_readMode = ERM_autoDetect;
   const char *                  opt_ifname = NULL;
-  OFCmdUnsignedInt              opt_itempad = 0;
   E_TransferSyntax              opt_ixfer = EXS_Unknown;
+  OFCmdUnsignedInt              opt_itempad = 0;
   const char *                  opt_keyfile = NULL;  // private key file
   int                           opt_keyFileFormat = X509_FILETYPE_PEM; // file format for certificates and private keys
   const char *                  opt_location = NULL; // location (path) within dataset
@@ -111,6 +114,20 @@ int main(int argc, char *argv[])
   DcmAttributeTag *             opt_tagList = NULL; // list of attribute tags
   E_TransferSyntax              opt_signatureXfer = EXS_Unknown;
   FILE *                        opt_dumpFile = NULL;
+  SiTimeStampFS *               opt_timeStamp = NULL;
+  const char *                  opt_ts_queryfile = NULL;
+  const char *                  opt_ts_responsefile = NULL;
+  const char *                  opt_ts_uidfile = NULL;
+  const char *                  opt_ts_policyoid = NULL;
+  E_SignatureVerificationPolicy opt_verificationPolicy = ESVP_verifyIfPresent;
+  E_TimestampVerificationPolicy opt_timestampPolicy = ETVP_verifyTSIfPresent;
+  SiCertificateVerifier         certVerifier;
+  DcmDataset *dataset = NULL;
+  SiCertificate cert;
+  SiPrivateKey key;
+  OFCondition sicond;
+  DcmFileFormat fileformat;
+
   SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose = SiSignaturePurpose::ESP_none;
   int result = 0;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , APPLICATION_ABSTRACT, rcsid);
@@ -140,17 +157,45 @@ int main(int argc, char *argv[])
                                                                 "create signature in main object");
       cmd.addOption("--sign-item",                 "+si",    3, "[k]eyfile, [c]ertfile, [i]tem location: string",
                                                                 "create signature in sequence item");
+      cmd.addOption("--insert-timestamp",          "+t",     3, "ts[q]file, ts[r]file [u]idfile: string",
+                                                                "insert certified timestamp from ts response r\n"
+                                                                "from timestamp query q at signature UID u");
       cmd.addOption("--remove",                    "+r",     1, "[s]ignature UID: string", "remove signature");
       cmd.addOption("--remove-all",                "+ra",       "remove all signatures from data set");
+  cmd.addGroup("general options:");
+    cmd.addSubGroup("key and certificate file format:");
+      cmd.addOption("--pem-keys",                 "-pem",       "read keys/certificates as PEM file (default)");
+      cmd.addOption("--der-keys",                 "-der",       "read keys/certificates as DER file");
+    cmd.addSubGroup("signature format:");
+      cmd.addOption("--format-new",               "-fn",        "use correct DICOM signature format (default)");
+      cmd.addOption("--format-old",               "-fo",        "use old (pre-3.5.4) DCMTK signature format");
+  cmd.addGroup("signature verification options (only with --verify):");
+    cmd.addSubGroup("signature verification:");
+      cmd.addOption("--verify-if-present",         "+rv",       "verify signatures if present, pass otherwise");
+      cmd.addOption("--require-sig",               "+rg",       "fail if no signature at all is present");
+      cmd.addOption("--require-creator",           "+rc",       "fail if no creator RSA signature is present");
+      cmd.addOption("--require-auth",              "+ru",       "fail if no auth RSA signature is present");
+      cmd.addOption("--require-sr",                "+rs",       "fail if no SR RSA signature is present");
+    cmd.addSubGroup("timestamp verification:");
+      cmd.addOption("--verify-ts",                 "+tv",       "verify certified timestamp if present (default)");
+      cmd.addOption("--ignore-ts",                 "-tv",       "ignore certified timestamps");
+      cmd.addOption("--require-ts",                "+tr",       "fail if no certified timestamp is present");
+    cmd.addSubGroup("certification authority:");
+      cmd.addOption("--add-cert-file",             "+cf",    1, "[c]ertificate filename: string",
+                                                                "add trusted certificate file to cert store");
+      cmd.addOption("--add-ucert-file",            "+uf",    1, "[c]ertificate filename: string",
+                                                                "add untrusted intermediate certificate file");
+      cmd.addOption("--add-cert-dir",              "+cd",    1, "[c]ertificate directory: string",
+                                                                "add certificates in d to cert store");
+      cmd.addOption("--add-crl-file",              "+cr",    1, "[c]rl filename: string",
+                                                                "add certificate revocation list file");
+
   cmd.addGroup("signature creation options (only with --sign or --sign-item):");
     cmd.addSubGroup("private key password:");
       cmd.addOption("--std-passwd",               "+ps",        "prompt user to type password on stdin (default)");
       cmd.addOption("--use-passwd",               "+pw",    1,  "[p]assword: string ",
                                                                 "use specified password");
       cmd.addOption("--null-passwd",              "-pw",        "use empty string as password");
-    cmd.addSubGroup("key and certificate file format:");
-      cmd.addOption("--pem-keys",                 "-pem",       "read keys/certificates as PEM file (default)");
-      cmd.addOption("--der-keys",                 "-der",       "read keys/certificates as DER file");
     cmd.addSubGroup("digital signature profile:");
       cmd.addOption("--profile-none",             "-pf",        "don't enforce any signature profile (default)");
       cmd.addOption("--profile-base",             "+pb",        "enforce base RSA signature profile");
@@ -172,10 +217,28 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("tag selection:");
       cmd.addOption("--tag",                      "-t",      1, "[t]ag: \"gggg,eeee\" or dictionary name", "sign only specified tag\n(this option can be specified multiple times)");
       cmd.addOption("--tag-file",                 "-tf",     1, "[f]ilename: string", "read list of tags from text file");
-    cmd.addSubGroup("signature format:");
-      cmd.addOption("--format-new",               "-fn",        "use correct DICOM signature format (default)");
-      cmd.addOption("--format-old",               "-fo",        "use old (pre-3.5.4) DCMTK signature format,\n"
-                                                                "non-conformant if signature includes\ncompressed pixel data");
+  cmd.addGroup("timestamp creation options (only with --sign or --sign-item):");
+    cmd.addSubGroup("timestamp creation:");
+      cmd.addOption("--timestamp-off",            "-ts",          "do not create timestamp (default)");
+      cmd.addOption("--timestamp-file",           "+ts",       2, "[t]sq-filename, [u]id-filename: string",
+                                                                  "create timestamp query file t and uid file u");
+    cmd.addSubGroup("timestamp MAC algorithm (only with --timestamp-file):");
+      cmd.addOption("--ts-mac-sha256",            "+tm2",        "use SHA-256 (default)");
+      cmd.addOption("--ts-mac-sha384",            "+tm3",        "use SHA-384");
+      cmd.addOption("--ts-mac-sha512",            "+tm5",        "use SHA-512");
+      cmd.addOption("--ts-mac-ripemd160",         "+tmr",        "use RIPEMD 160");
+      cmd.addOption("--ts-mac-sha1",              "+tms",        "use SHA-1 (not recommended)");
+      cmd.addOption("--ts-mac-md5",               "+tmm",        "use MD5 (not recommended)");
+    cmd.addSubGroup("timestamp query nonce options (only with --timestamp-file):");
+      cmd.addOption("--ts-use-nonce",             "+tn",         "include random nonce (default)");
+      cmd.addOption("--ts-no-nonce",              "-tn",         "do not include nonce");
+    cmd.addSubGroup("timestamp certificate inclusion options (only with --timestamp-file):");
+      cmd.addOption("--ts-request-cert",          "+tc",         "request TSA certificate in timestamp (default)");
+      cmd.addOption("--ts-no-cert",               "-tc",         "do not request TSA certificate in timestamp");
+    cmd.addSubGroup("timestamp policy options (only with --timestamp-file):");
+      cmd.addOption("--ts-no-policy",             "-tp",         "do not specify ts policy (default)");
+      cmd.addOption("--ts-policy",                "+tp",      1, "[p]olicy-OID: OID string",
+                                                                 "request timestamp policy p");
   cmd.addGroup("output options:");
     cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-same",          "+t=",        "write with same TS as input (default)");
@@ -269,6 +332,18 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValue(opt_certfile));
       app.checkValue(cmd.getValue(opt_location));
     }
+    if (cmd.findOption("--insert-timestamp"))
+    {
+      opt_operation = DSO_insertTimestamp;
+      if (opt_ofname == NULL) app.printError("parameter dcmfile-out required for --insert-timestamp");
+      app.checkValue(cmd.getValue(opt_ts_queryfile));
+      app.checkValue(cmd.getValue(opt_ts_responsefile));
+      app.checkValue(cmd.getValue(opt_ts_uidfile));
+      opt_timeStamp = new SiTimeStampFS();
+      opt_timeStamp->setTSQFilename(opt_ts_queryfile);
+      opt_timeStamp->setTSRFilename(opt_ts_responsefile);
+      opt_timeStamp->setUIDFilename(opt_ts_uidfile);
+    }
     if (cmd.findOption("--remove"))
     {
       opt_operation = DSO_remove;
@@ -282,6 +357,111 @@ int main(int argc, char *argv[])
     }
     cmd.endOptionBlock();
     if ((opt_operation == DSO_verify) && opt_ofname) app.printError("parameter dcmfile-out not allowed for --verify");
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--pem-keys")) opt_keyFileFormat = X509_FILETYPE_PEM;
+    if (cmd.findOption("--der-keys")) opt_keyFileFormat = X509_FILETYPE_ASN1;
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--verify-if-present"))
+    {
+      app.checkDependence("--verify-if-present", "--verify", (opt_operation == DSO_verify));
+      opt_verificationPolicy = ESVP_verifyIfPresent;
+    }
+    if (cmd.findOption("--require-sig"))
+    {
+      app.checkDependence("--require-sig", "--verify", (opt_operation == DSO_verify));
+      opt_verificationPolicy = ESVP_requireSignature;
+    }
+    if (cmd.findOption("--require-creator"))
+    {
+      app.checkDependence("--require-creator", "--verify", (opt_operation == DSO_verify));
+      opt_verificationPolicy = ESVP_requireCreatorRSASignature;
+    }
+    if (cmd.findOption("--require-auth"))
+    {
+      app.checkDependence("--require-auth", "--verify", (opt_operation == DSO_verify));
+      opt_verificationPolicy = ESVP_requireAuthorizationRSASignature;
+    }
+    if (cmd.findOption("--require-sr"))
+    {
+      app.checkDependence("--require-sr", "--verify", (opt_operation == DSO_verify));
+      opt_verificationPolicy = ESVP_requireSRRSASignature;
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--verify-ts"))
+    {
+      app.checkDependence("--verify-ts", "--verify", (opt_operation == DSO_verify));
+      opt_timestampPolicy = ETVP_verifyTSIfPresent;
+    }
+    if (cmd.findOption("--ignore-ts"))
+    {
+      app.checkDependence("--ignore-ts", "--verify", (opt_operation == DSO_verify));
+      opt_timestampPolicy = ETVP_ignoreTS;
+    }
+    if (cmd.findOption("--require-ts"))
+    {
+      app.checkDependence("--require-ts", "--verify", (opt_operation == DSO_verify));
+      opt_timestampPolicy = ETVP_requireTS;
+    }
+    cmd.endOptionBlock();
+
+    if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
+    {
+      app.checkDependence("--add-cert-file", "--verify", (opt_operation == DSO_verify));
+      const char *current = NULL;
+      do
+      {
+        app.checkValue(cmd.getValue(current));
+        if (certVerifier.addTrustedCertificateFile(current, opt_keyFileFormat).bad())
+        {
+          OFLOG_WARN(dcmsignLogger, "unable to load certificate file '" << current << "', ignoring");
+        }
+      } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
+    }
+    if (cmd.findOption("--add-ucert-file", 0, OFCommandLine::FOM_First))
+    {
+      app.checkDependence("--add-ucert-file", "--verify", (opt_operation == DSO_verify));
+      const char *current = NULL;
+      do
+      {
+        app.checkValue(cmd.getValue(current));
+        if (certVerifier.addUntrustedCertificateFile(current, opt_keyFileFormat).bad())
+        {
+          OFLOG_WARN(dcmsignLogger, "unable to load certificate file '" << current << "', ignoring");
+        }
+      } while (cmd.findOption("--add-ucert-file", 0, OFCommandLine::FOM_Next));
+    }
+    if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
+    {
+      app.checkDependence("--add-cert-dir", "--verify", (opt_operation == DSO_verify));
+      const char *current = NULL;
+      do
+      {
+        app.checkValue(cmd.getValue(current));
+        if (certVerifier.addTrustedCertificateDir(current, opt_keyFileFormat).bad())
+        {
+          OFLOG_WARN(dcmsignLogger, "unable to load certificates from directory '" << current << "', ignoring");
+        }
+      } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
+    }
+    if (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_First))
+    {
+      app.checkDependence("--add-crl-file", "--verify", (opt_operation == DSO_verify));
+      const char *current = NULL;
+      do
+      {
+        app.checkValue(cmd.getValue(current));
+        if (certVerifier.addCertificateRevocationList(current, opt_keyFileFormat).bad())
+        {
+            OFLOG_WARN(dcmsignLogger, "unable to load CRL file '" << current << "', ignoring");
+        }
+      } while (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_Next));
+    }
+
     cmd.beginOptionBlock();
     if (cmd.findOption("--std-passwd"))
     {
@@ -300,10 +480,6 @@ int main(int argc, char *argv[])
     }
     cmd.endOptionBlock();
     cmd.beginOptionBlock();
-    if (cmd.findOption("--pem-keys")) opt_keyFileFormat = X509_FILETYPE_PEM;
-    if (cmd.findOption("--der-keys")) opt_keyFileFormat = X509_FILETYPE_ASN1;
-    cmd.endOptionBlock();
-    cmd.beginOptionBlock();
     if (cmd.findOption("--profile-none"))
     {
       app.checkDependence("--profile-none", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
@@ -311,26 +487,36 @@ int main(int argc, char *argv[])
     }
     if (cmd.findOption("--profile-base"))
     {
+      // the RSA base profile can be used on dataset and item level
       app.checkDependence("--profile-base", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_profile = new SiBaseRSAProfile();
     }
     if (cmd.findOption("--profile-creator"))
     {
-      app.checkDependence("--profile-creator", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
+      // the creator RSA profile only makes sense when applied on main dataset level
+      app.checkDependence("--profile-creator", "--sign", (opt_operation == DSO_sign));
       opt_profile = new SiCreatorProfile();
     }
     if (cmd.findOption("--profile-auth"))
     {
-      app.checkDependence("--profile-auth", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
+      // the authorization RSA profile only makes sense when applied on main dataset level
+      app.checkDependence("--profile-auth", "--sign", (opt_operation == DSO_sign));
       opt_profile = new SiAuthorizationProfile();
+      DCMSIGN_WARN(
+       "The Authorization RSA Digital Signature Profile requires that any\n"
+       "attributes whose values are verifiable by the technician or physician\n"
+       "(e.g., their values are displayed to the technician or physician) must\n"
+       "be included in the signature. Please assure this using --tag options." );
     }
     if (cmd.findOption("--profile-sr"))
     {
+      // the SR RSA profile only makes sense when applied on main dataset level
       app.checkDependence("--profile-sr", "--sign", (opt_operation == DSO_sign));
       opt_profile = new SiStructuredReportingProfile();
     }
     if (cmd.findOption("--profile-srv"))
     {
+      // the SR RSA profile only makes sense when applied on main dataset level
       app.checkDependence("--profile-srv", "--sign", (opt_operation == DSO_sign));
       opt_profile = new SiStructuredReportingVerificationProfile();
     }
@@ -398,7 +584,7 @@ int main(int argc, char *argv[])
       if (result > 0)
       {
         OFLOG_FATAL(dcmsignLogger, "Error while reading tag file '" << opt_tagFile << "', giving up.");
-        return result;
+        goto cleanup;
       }
     }
     if (cmd.findOption("--tag", 0, OFCommandLine::FOM_First))
@@ -411,7 +597,8 @@ int main(int argc, char *argv[])
         if (! DcmSignatureHelper::addTag(current, *opt_tagList))
         {
           OFLOG_FATAL(dcmsignLogger, "unknown attribute tag '" << current << "'");
-          return 10;
+          result = 10;
+          goto cleanup;
         }
       } while (cmd.findOption("--tag", 0, OFCommandLine::FOM_Next));
     }
@@ -419,6 +606,99 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--format-new")) dcmEnableOldSignatureFormat.set(OFFalse);
     if (cmd.findOption("--format-old")) dcmEnableOldSignatureFormat.set(OFTrue);
     cmd.endOptionBlock();
+
+    // timestamp command line options
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--timestamp-off"))
+    {
+      app.checkDependence("--timestamp-off", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
+      opt_timeStamp = NULL;
+    }
+    if (cmd.findOption("--timestamp-file"))
+    {
+      app.checkDependence("--timestamp-file", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
+      app.checkValue(cmd.getValue(opt_ts_queryfile));
+      app.checkValue(cmd.getValue(opt_ts_uidfile));
+      opt_timeStamp = new SiTimeStampFS();
+      opt_timeStamp->setTSQFilename(opt_ts_queryfile);
+      opt_timeStamp->setUIDFilename(opt_ts_uidfile);
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--ts-mac-sha256"))
+    {
+      app.checkDependence("--ts-mac-sha256", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setMAC(EMT_SHA256);
+    }
+    if (cmd.findOption("--ts-mac-sha384"))
+    {
+      app.checkDependence("--ts-mac-sha384", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setMAC(EMT_SHA384);
+    }
+    if (cmd.findOption("--ts-mac-sha512"))
+    {
+      app.checkDependence("--ts-mac-sha512", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setMAC(EMT_SHA512);
+    }
+    if (cmd.findOption("--ts-mac-ripemd160"))
+    {
+      app.checkDependence("--ts-mac-ripemd160", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setMAC(EMT_RIPEMD160);
+    }
+    if (cmd.findOption("--ts-mac-sha1"))
+    {
+      app.checkDependence("--ts-mac-sha1", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setMAC(EMT_SHA1);
+    }
+    if (cmd.findOption("--ts-mac-md5"))
+    {
+      app.checkDependence("--ts-mac-md5", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setMAC(EMT_MD5);
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--ts-use-nonce"))
+    {
+      app.checkDependence("--ts-use-nonce", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setNonce(OFTrue);
+    }
+    if (cmd.findOption("--ts-no-nonce"))
+    {
+      app.checkDependence("--ts-no-nonce", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setNonce(OFFalse);
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--ts-request-cert"))
+    {
+      app.checkDependence("--ts-request-cert", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setCertificateRequested(OFTrue);
+    }
+    if (cmd.findOption("--ts-no-cert"))
+    {
+      app.checkDependence("--ts-no-cert", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setCertificateRequested(OFFalse);
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--ts-no-policy"))
+    {
+      app.checkDependence("--ts-no-policy", "--timestamp-file", (opt_timeStamp != NULL));
+      opt_timeStamp->setPolicyOID(NULL);
+    }
+    if (cmd.findOption("--ts-policy"))
+    {
+      app.checkDependence("--ts-policy", "--timestamp-file", (opt_timeStamp != NULL));
+      app.checkValue(cmd.getValue(opt_ts_policyoid));
+      opt_timeStamp->setPolicyOID(opt_ts_policyoid);
+    }
+    cmd.endOptionBlock();
+
+    // output command line options
     cmd.beginOptionBlock();
     if (cmd.findOption("--write-xfer-same")) opt_oxfer = EXS_Unknown;
     if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
@@ -438,7 +718,8 @@ int main(int argc, char *argv[])
       if (opt_dumpFile == NULL)
       {
         OFLOG_FATAL(dcmsignLogger, "unable to create dump file '" << fileName << "'");
-        return 10;
+        result = 10;
+        goto cleanup;
       }
     }
   }
@@ -454,26 +735,26 @@ int main(int argc, char *argv[])
   if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
   {
     OFLOG_FATAL(dcmsignLogger, "invalid filename: <empty string>");
-    return 1;
+    result = 1;
+    goto cleanup;
   }
   OFLOG_INFO(dcmsignLogger, "open input file " << opt_ifname);
-  DcmFileFormat *fileformat = new DcmFileFormat;
-  OFCondition sicond = fileformat->loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
+  sicond = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
   if (sicond.bad())
   {
     OFLOG_FATAL(dcmsignLogger, sicond.text() << ": reading file: " << opt_ifname);
-    return 1;
+    result = 1;
+    goto cleanup;
   }
-  DcmDataset *dataset = fileformat->getDataset();
-  SiCertificate cert;
-  SiPrivateKey key;
+  dataset = fileformat.getDataset();
   if (opt_certfile)
   {
     sicond = cert.loadCertificate(opt_certfile, opt_keyFileFormat);
     if (sicond != EC_Normal)
     {
       OFLOG_FATAL(dcmsignLogger, sicond.text() << ": while loading certificate file '" << opt_certfile << "'");
-      return 1;
+      result = 1;
+      goto cleanup;
     }
   }
   if (opt_keyfile)
@@ -483,12 +764,13 @@ int main(int argc, char *argv[])
     if (sicond != EC_Normal)
     {
       OFLOG_FATAL(dcmsignLogger, sicond.text() << ": while loading private key file '" << opt_keyfile << "'");
-      return 1;
+      result = 1;
+      goto cleanup;
     }
   }
   // need to load all data into memory before signing the document,
   // otherwise the pixel data would be empty for compressed images
-  fileformat->loadAllDataIntoMemory();
+  fileformat.loadAllDataIntoMemory();
   // select transfer syntax in which digital signatures are created
   opt_signatureXfer = dataset->getOriginalXfer();
   // use Little Endian Explicit for uncompressed files
@@ -500,28 +782,33 @@ int main(int argc, char *argv[])
   {
     case DSO_verify:
       OFLOG_INFO(dcmsignLogger, "verifying all signatures.");
-      result = DcmSignatureHelper::do_verify(dataset);
-      if (result != 0) return result;
+      result = DcmSignatureHelper::do_verify(dataset, certVerifier, opt_verificationPolicy, opt_timestampPolicy);
+      if (result != 0) goto cleanup;
       break;
     case DSO_sign:
       OFLOG_INFO(dcmsignLogger, "create signature in main object.");
-      result = DcmSignatureHelper::do_sign(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_signatureXfer, opt_dumpFile, opt_sigPurpose);
-      if (result != 0) return result;
+      result = DcmSignatureHelper::do_sign(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_signatureXfer, opt_dumpFile, opt_sigPurpose, opt_timeStamp);
+      if (result != 0) goto cleanup;
       break;
     case DSO_signItem:
       OFLOG_INFO(dcmsignLogger, "create signature in sequence item.");
-      result = DcmSignatureHelper::do_sign_item(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_location, opt_signatureXfer, opt_dumpFile, opt_sigPurpose);
-      if (result != 0) return result;
+      result = DcmSignatureHelper::do_sign_item(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_location, opt_signatureXfer, opt_dumpFile, opt_sigPurpose, opt_timeStamp);
+      if (result != 0) goto cleanup;
+      break;
+    case DSO_insertTimestamp:
+      OFLOG_INFO(dcmsignLogger, "inserting certified timestamp.");
+      result = DcmSignatureHelper::do_insert_ts(dataset, opt_timeStamp);
+      if (result != 0) goto cleanup;
       break;
     case DSO_remove:
       OFLOG_INFO(dcmsignLogger, "removing signature from sequence item.");
       result = DcmSignatureHelper::do_remove(dataset, opt_location);
-      if (result != 0) return result;
+      if (result != 0) goto cleanup;
       break;
     case DSO_removeAll:
       OFLOG_INFO(dcmsignLogger, "removing all signatures.");
       result = DcmSignatureHelper::do_remove_all(dataset);
-      if (result != 0) return result;
+      if (result != 0) goto cleanup;
       break;
   }
   if (opt_dumpFile)
@@ -540,19 +827,25 @@ int main(int argc, char *argv[])
     if (dataset->chooseRepresentation(opt_oxfer, NULL).bad() || (! dataset->canWriteXfer(opt_oxfer)))
     {
       OFLOG_FATAL(dcmsignLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
-      return 1;
+      result = 1;
+      goto cleanup;
     }
-    sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
+    sicond = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
     if (sicond.bad())
     {
       OFLOG_FATAL(dcmsignLogger, sicond.text() << ": writing file: " <<  opt_ofname);
-      return 1;
+      result = 1;
+      goto cleanup;
     }
   }
+
+cleanup:
+
+  delete opt_timeStamp;
   delete opt_mac;
   delete opt_profile;
   delete opt_tagList;
-  return 0;
+  return result;
 }
 
 #else /* WITH_OPENSSL */

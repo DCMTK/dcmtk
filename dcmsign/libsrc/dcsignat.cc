@@ -50,6 +50,7 @@
 #include "dcmtk/dcmsign/sisha512.h"
 #include "dcmtk/dcmsign/sisprof.h"
 #include "dcmtk/dcmsign/sitstamp.h"
+#include "dcmtk/dcmsign/sitsfs.h"
 
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
@@ -95,6 +96,7 @@ DcmSignature::DcmSignature()
 , selectedSignatureItem(NULL)
 , selectedMacParametersItem(NULL)
 , selectedCertificate(NULL)
+, selectedTimestamp(NULL)
 {
 }
 
@@ -111,6 +113,8 @@ void DcmSignature::deselect()
   selectedMacParametersItem = NULL;
   delete selectedCertificate;
   selectedCertificate = NULL;
+  delete selectedTimestamp;
+  selectedTimestamp = NULL;
 }
 
 
@@ -460,7 +464,16 @@ OFCondition DcmSignature::createSignature(
       {
         if (timeStamp)
         {
-          // this would be the right time to request the time stamp
+          // now is the right time to request the certified time stamp
+
+          // check if the digital signature has an odd number of bytes
+          if (algorithm->keyType() == EKT_DSA || algorithm->keyType() == EKT_EC)
+          {
+              // DSA and ECDSA signatures are encoded in DER and can have odd length. We must remove
+              // the pad byte before feeding the signature to the timestamping layer.
+              adjustASN1SequenceLength(signature, sigLength);
+          }
+
           result = timeStamp->stamp(signature, sigLength);
           if (result.good())
           {
@@ -586,7 +599,19 @@ OFCondition DcmSignature::selectSignature(unsigned long i)
   }
   selectedCertificate = new SiCertificate();
   if (selectedCertificate == NULL) return EC_MemoryExhausted;
-  selectedCertificate->read(*selectedSignatureItem);
+  OFCondition result = selectedCertificate->read(*selectedSignatureItem);
+  if (result.bad()) return result;
+
+  selectedTimestamp = new SiTimeStampFS();
+  if (selectedTimestamp == NULL) return EC_MemoryExhausted;
+  result = selectedTimestamp->read(*selectedSignatureItem);
+  if (result.bad() && (result != EC_TagNotFound))
+  {
+    DCMSIGN_WARN(result.text() << " while reading timestamp, ignoring.");
+    delete selectedTimestamp;
+    selectedTimestamp = NULL;
+  }
+
   return EC_Normal;
 }
 
@@ -646,7 +671,9 @@ OFCondition DcmSignature::verifyCurrent()
     {
       tagList = new DcmAttributeTag(*((DcmAttributeTag *)(stack.top())));
       if (tagList == NULL) result = EC_MemoryExhausted;
+      else if (tagList->getVM() == 0) result = SI_EC_VerificationFailed_NoDataElementsSigned; // DataElementsSigned is present but empty
     }
+    else result = SI_EC_VerificationFailed_NoDataElementsSigned; // DataElementsSigned is absent or does not have "AT" VR
   }
 
   // read Signature
@@ -684,7 +711,7 @@ OFCondition DcmSignature::verifyCurrent()
     if (algorithm)
     {
       OFBool verified = OFTrue;
-      Uint32 sigLength = signature->getLength();
+      unsigned long sigLength = signature->getLength();
       Uint8 *sigData = NULL;
       if ((signature->getUint8Array(sigData)).bad() || (sigData == NULL)) result = SI_EC_VerificationFailed_NoSignature;
       else
@@ -694,14 +721,7 @@ OFCondition DcmSignature::verifyCurrent()
         {
             // DSA and ECDSA signatures are encoded in DER and can have odd length. We must remove
             // the pad byte before feeding the signature to the OpenSSL layer.
-            if (((sigLength > 2) && sigData && (sigData[0] == 0x30) && (sigData[1] < 128) && (sigData[1]+3 == sigLength)) || // one-byte length encoding
-                ((sigLength > 4) && sigData && (sigData[0] == 0x30) && (sigData[1] == 0x82) && ((256UL * sigData[2]) + sigData[3] + 5 == sigLength))) // two-byte length encoding
-            {
-                // The first byte of the signature is 0x30 (DER encoding for SEQUENCE)
-                // and length field is signature length - 3. This means that the signature
-                // is one byte shorter than our buffer. Adjust sigLength to remove the pad byte.
-                --sigLength;
-            }
+            adjustASN1SequenceLength(sigData, sigLength);
         }
 
         unsigned long digestLength = mac->getSize();
@@ -738,12 +758,40 @@ DcmItem *DcmSignature::findFirstSignatureItem(DcmItem& item, DcmStack& stack)
 
 DcmItem *DcmSignature::findNextSignatureItem(DcmItem& item, DcmStack& stack)
 {
-  if (item.search(DCM_DigitalSignaturesSequence, stack, ESM_afterStackTop, OFTrue).good())
+  do
   {
-    DcmObject *nextItem = stack.elem(1);
-    if (nextItem && ((nextItem->ident() == EVR_item) || (nextItem->ident() == EVR_dataset))) return (DcmItem *)nextItem;
-  }
-  return NULL;
+    if (item.search(DCM_DigitalSignaturesSequence, stack, ESM_afterStackTop, OFTrue).good())
+    {
+      // We have found a DigitalSignaturesSequence. Check if the sequence is
+      // located within the OriginalAttributesSequence. This would indicate that
+      // this is an "old" signature that was valid before some update was applied
+      // to the DICOM object. This signature thus cannot and should not be verified.
+      // We currently have no code that would "undo" the modifications by moving
+      // the content of the OriginalAttributesSequence back to its original place
+      // and then try to verify the signature. For now we only inform the user
+      // about the situation.
+      DcmObject *nextItem = NULL;
+      unsigned long card = stack.card();
+      OFBool inOriginalAttributesSequence = OFFalse;
+      for (unsigned long i=0; i<card; ++i)
+      {
+        nextItem = stack.elem(i);
+        if (nextItem && nextItem->getTag() == DCM_OriginalAttributesSequence)
+        {
+          DCMSIGN_WARN("Found Digital Signature Sequence within the Original Attributes Sequence, ignoring.");
+          inOriginalAttributesSequence = OFTrue;
+          break; // break out of for loop
+        }
+      }
+      if (inOriginalAttributesSequence) continue; // skip to next iteration of do-while loop
+
+      // we're not in the OriginalAttributesSequence. Return a pointer to the dataset
+      // or item in which the DigitalSignaturesSequence is contained.
+      nextItem = stack.elem(1);
+      if (nextItem && ((nextItem->ident() == EVR_item) || (nextItem->ident() == EVR_dataset))) return (DcmItem *)nextItem;
+    }
+    return NULL; // no signature found or invalid VR (i.e. something has gone very wrong)
+  } while (OFTrue);
 }
 
 OFCondition DcmSignature::getCurrentMacID(Uint16& macID)
@@ -827,6 +875,11 @@ SiCertificate *DcmSignature::getCurrentCertificate()
   return selectedCertificate;
 }
 
+SiTimeStamp *DcmSignature::getCurrentTimestamp()
+{
+  return selectedTimestamp;
+}
+
 OFCondition DcmSignature::getCurrentDataElementsSigned(DcmAttributeTag& desig)
 {
   desig.clear();
@@ -840,6 +893,101 @@ OFCondition DcmSignature::getCurrentDataElementsSigned(DcmAttributeTag& desig)
     desig = *((DcmAttributeTag *)(stack.top()));
     result = EC_Normal;
   }
+  return result;
+}
+
+DcmItem *DcmSignature::getSelectedSignatureItem()
+{
+  return selectedSignatureItem;
+}
+
+void DcmSignature::adjustASN1SequenceLength(const unsigned char *buf, unsigned long& buflen)
+{
+   // ASN.1 sequence objects encoded in DER can have odd length. Remove the pad byte, if any.
+   if (((buflen > 2) && buf && (buf[0] == 0x30) && (buf[1] < 128) && (buf[1]+3U == buflen)) || // one-byte length encoding
+       ((buflen > 4) && buf && (buf[0] == 0x30) && (buf[1] == 0x82) && ((256UL * buf[2]) + buf[3] + 5U == buflen))) // two-byte length encoding
+   {
+       // The first byte of the signature is 0x30 (DER encoding for SEQUENCE)
+       // and length field is one byte shorter than our buffer size.
+       // Adjust buflen to remove the pad byte.
+       --buflen;
+   }
+}
+
+
+OFCondition DcmSignature::verifySignatureProfile(SiSecurityProfile &sprof)
+{
+  if (NULL == currentItem) return EC_IllegalCall;
+  if (selectedMacParametersItem == NULL) return SI_EC_VerificationFailed_NoMAC;
+  if ((selectedCertificate == NULL)||(selectedCertificate->getKeyType() == EKT_none)) return SI_EC_VerificationFailed_NoCertificate;
+
+  E_TransferSyntax xfer = EXS_Unknown;
+  DcmStack stack;
+
+  // check if the profile only applies to main dataset level
+  if ((currentItem->ident() != EVR_dataset) && sprof.mainDatasetRequired())
+    return SI_EC_DatasetDoesNotMatchProfile;
+
+  // let the signature profile handler inspect the dataset first
+  OFCondition result = sprof.inspectSignatureDataset(*currentItem);
+
+  // check MAC Calculation Transfer Syntax UID
+  if (result.good())
+  {
+    if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+    {
+      char *uid = NULL;
+      if ((((DcmElement *)(stack.top()))->getString(uid)).good())
+      {
+        DcmXfer xf(uid);
+        xfer = xf.getXfer();
+        if ((xfer == EXS_Unknown) || (! sprof.isAllowableTransferSyntax(xfer))) result = SI_EC_TransferSyntaxDoesNotMatchProfile;
+      } else result = SI_EC_VerificationFailed_NoMAC;
+    } else result = SI_EC_VerificationFailed_NoMAC;
+  }
+
+  // check signature algorithm type
+  if (result.good())
+  {
+    if (! sprof.isAllowableAlgorithmType(selectedCertificate->getKeyType())) result = SI_EC_AlgorithmDoesNotMatchProfile;
+  }
+
+  // check MAC Algorithm
+  if (result.good())
+  {
+    E_MACType mac = EMT_RIPEMD160;
+    stack.clear();
+    if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+    {
+      OFString macidentifier;
+      if ((((DcmElement *)(stack.top()))->getOFString(macidentifier, 0)).good())
+      {
+        if (macidentifier == SI_DEFTERMS_RIPEMD160) mac = EMT_RIPEMD160;
+        else if (macidentifier == SI_DEFTERMS_SHA1) mac = EMT_SHA1;
+        else if (macidentifier == SI_DEFTERMS_MD5)  mac = EMT_MD5;
+        else if (macidentifier == SI_DEFTERMS_SHA256) mac = EMT_SHA256;
+        else if (macidentifier == SI_DEFTERMS_SHA384) mac = EMT_SHA384;
+        else if (macidentifier == SI_DEFTERMS_SHA512) mac = EMT_SHA512;
+        else result = SI_EC_VerificationFailed_UnsupportedMACAlgorithm;
+        if (result.good() && (! sprof.isAllowableMACType(mac))) result = SI_EC_MacDoesNotMatchProfile;
+      } else result = SI_EC_VerificationFailed_NoMAC;
+    } else result = SI_EC_VerificationFailed_NoMAC;
+  }
+
+  // check list of Data Elements Signed
+  if (result.good())
+  {
+    stack.clear();
+    if ((selectedMacParametersItem->search(DCM_DataElementsSigned, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->ident() == EVR_AT))
+    {
+      DcmAttributeTag *tagList = new DcmAttributeTag(*((DcmAttributeTag *)(stack.top())));
+      if (tagList == NULL) result = EC_MemoryExhausted;
+      else if (! sprof.checkAttributeList(*currentItem, *tagList)) result = SI_EC_DataElementsSignedDoesNotMatchProfile;
+      delete tagList;
+    }
+    else result = SI_EC_VerificationFailed_NoDataElementsSigned; // DataElementsSigned is absent or does not have "AT" VR
+  }
+
   return result;
 }
 

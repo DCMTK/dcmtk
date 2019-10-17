@@ -43,7 +43,17 @@ makeOFConditionConst(SI_EC_VerificationFailed_UnsupportedMACAlgorithm, OFM_dcmsi
 makeOFConditionConst(SI_EC_VerificationFailed_Corrupted,               OFM_dcmsign, 14, OF_error, "signature verification failed: signature is invalid (document corrupted)");
 makeOFConditionConst(SI_EC_VerificationFailed_NoTrust,                 OFM_dcmsign, 16, OF_error, "signature verification failed: certificate issued by unknown CA");
 makeOFConditionConst(SI_EC_DatasetDoesNotMatchProfile,                 OFM_dcmsign, 17, OF_error, "dataset not suitable for the selected security profile");
-
+makeOFConditionConst(SI_EC_UnsupportedMAC,                             OFM_dcmsign, 18, OF_error, "unsupported MAC algorithm selected");
+makeOFConditionConst(SI_EC_InvalidOID,                                 OFM_dcmsign, 19, OF_error, "invalid object identifier (OID) string");
+makeOFConditionConst(SI_EC_CannotWriteTSQ,                             OFM_dcmsign, 20, OF_error, "unable to write time stamp query file");
+makeOFConditionConst(SI_EC_InvalidTSR,                                 OFM_dcmsign, 21, OF_error, "verification of timestamp response message failed");
+makeOFConditionConst(SI_EC_VerificationFailed_NoDataElementsSigned,    OFM_dcmsign, 22, OF_error, "signature verification failed: DataElementsSigned missing or incorrect");
+makeOFConditionConst(SI_EC_DataElementsSignedDoesNotMatchProfile,      OFM_dcmsign, 23, OF_error, "list of data elements signed does not match profile requirements");
+makeOFConditionConst(SI_EC_ItemLocationNotFound,                       OFM_dcmsign, 24, OF_error, "desired signature location not found");
+makeOFConditionConst(SI_EC_UnknownTimestampType,                       OFM_dcmsign, 25, OF_error, "unknown certified timestamp type");
+makeOFConditionConst(SI_EC_InvalidTimestamp,                           OFM_dcmsign, 26, OF_error, "certified timestamp in dataset cannot be read");
+makeOFConditionConst(SI_EC_InvalidFiletype,                            OFM_dcmsign, 27, OF_error, "filetype is unknown (neither PEM nor DER)");
+makeOFConditionConst(SI_EC_TimestampSignatureVerificationFailed,       OFM_dcmsign, 28, OF_error, "signature verification of the certified timestamp failed");
 
 OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.dcmsign");
 

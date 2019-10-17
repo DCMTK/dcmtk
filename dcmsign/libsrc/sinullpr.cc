@@ -58,6 +58,11 @@ OFCondition SiNullProfile::inspectSignatureDataset(DcmItem & /* item */)
   return EC_Normal;
 }
 
+OFBool SiNullProfile::mainDatasetRequired() const
+{
+  return OFFalse;
+}
+
 
 #else /* WITH_OPENSSL */
 

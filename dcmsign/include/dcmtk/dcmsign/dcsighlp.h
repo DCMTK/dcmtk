@@ -29,6 +29,7 @@
 #include "dcmtk/dcmdata/dcxfer.h"    /* for E_TransferSyntax */
 #include "dcmtk/dcmsign/sidefine.h"  /* for DCMTK_DCMSIGN_EXPORT */
 #include "dcmtk/dcmsign/sipurpos.h"  /* for class SiSignaturePurpose */
+#include "dcmtk/dcmsign/sitypes.h"   /* for dcmsign enums */
 
 #ifdef WITH_OPENSSL
 
@@ -40,6 +41,10 @@ class SiCertificate;
 class SiMAC;
 class SiPrivateKey;
 class SiSecurityProfile;
+class SiTimeStamp;
+class SiTimeStampFS;
+class SiCertificateVerifier;
+class DcmSignature;
 
 /** this class provides helper functions for creating and verifying
  *  digital signatures. It encapsulates most of the code that was part
@@ -57,7 +62,7 @@ public:
   /// destructor
   virtual ~DcmSignatureHelper();
 
-  /* locate a specific item within the given dataset.
+  /** locate a specific item within the given dataset.
    * @param dataset dataset to be searched
    * @param location location string. Format is "sequence[item]{.sequence[item]}*"
    *   Where sequence can be (gggg,eeee) or a dictionary name and items
@@ -66,7 +71,7 @@ public:
    */
   static DcmItem *locateItemforSignatureCreation(DcmItem& dataset, const char *location);
 
-  /* read a list of attributes from a text file.
+  /** read a list of attributes from a text file.
    * The attributes can be in the form (gggg,eeee) or can be dictionary names,
    * separated by arbitrary whitespace.
    * @param filename file to be read from
@@ -75,7 +80,7 @@ public:
    */
   static int parseTextFile(const char *filename, DcmAttributeTag& tagList);
 
-  /* read an attribute tag in the form "gggg,eeee" and adds it
+  /** read an attribute tag in the form "gggg,eeee" and adds it
    * to the given attribute tag list
    * @param c input string
    * @param tagList list to be added to
@@ -83,7 +88,7 @@ public:
    */
   static OFBool addTag(const char *c, DcmAttributeTag& tagList);
 
-  /* print the location stack into the given stack.
+  /** print the location stack into the given stack.
    * It is assumed that the stack top is a DigitalSignatureSequence which is not printed
    * and that the stack bottom is the main dataset, which is also not printed.
    * @param stack search stack, as returned by DcmSignature::findFirstSignatureItem() etc.
@@ -91,7 +96,7 @@ public:
    */
   static void printSignatureItemPosition(DcmStack& stack, OFString& str);
 
-  /* perform a signature operation on a given dataset
+  /** perform a signature operation on a given dataset
    * @param dataset to sign
    * @param key private key for signature
    * @param cert certificate for signature
@@ -101,6 +106,7 @@ public:
    * @param opt_signatureXfer signature transfer syntax
    * @param dumpFile file to dump the byte stream to
    * @param opt_sigPurpose signature purpose
+   * @param timeStamp pointer to timestamp client, may be NULL
    * @return 0 if successful, a program exit code otherwise
    */
   static int do_sign(
@@ -112,9 +118,10 @@ public:
     DcmAttributeTag *opt_tagList,
     E_TransferSyntax opt_signatureXfer,
     FILE *dumpFile,
-    SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose);
+    SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose,
+    SiTimeStamp *timeStamp = NULL);
 
-  /* performs a signature operation on a sub-item within a dataset
+  /** performs a signature operation on a sub-item within a dataset
    * @param dataset in which to sign
    * @param key private key for signature
    * @param cert certificate for signature
@@ -127,6 +134,7 @@ public:
    * @param opt_signatureXfer signature transfer syntax
    * @param dumpFile file to dump the byte stream to
    * @param opt_sigPurpose signature purpose
+   * @param timeStamp pointer to timestamp client, may be NULL
    * @return 0 if successful, a program exit code otherwise
    */
   static int do_sign_item(
@@ -139,21 +147,35 @@ public:
     const char *opt_location,
     E_TransferSyntax opt_signatureXfer,
     FILE *dumpFile,
-    SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose);
+    SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose,
+    SiTimeStamp *timeStamp = NULL);
 
-  /* verify all signatures in the given dataset and print results to stdout.
+  /** verify all signatures in the given dataset and print results to stdout.
    * @param dataset dataset to verify
+   * @param certVerifier certification verifier helper object
+   * @param verificationPolicy signature verification policy
+   * @param timstampPolicy timestamp verification policy
    * @return 0 if successful, a program exit code otherwise
    */
-  static int do_verify(DcmItem *dataset);
+  static int do_verify(
+    DcmItem *dataset,
+    SiCertificateVerifier& certVerifier,
+    E_SignatureVerificationPolicy verificationPolicy,
+    E_TimestampVerificationPolicy timstampPolicy);
 
-  /* remove all signatures from the given dataset, print action details.
+  /** insert certified timestamp from file.
+   *  @param dataset in which to add timestamp
+   *  @param timeStamp handler, must not be NULL
+   */
+  static int do_insert_ts(DcmItem *dataset, SiTimeStampFS *timeStamp);
+
+  /** remove all signatures from the given dataset, print action details.
    * @param dataset dataset to modify
    * @return 0 if successful, a program exit code otherwise
    */
   static int do_remove_all(DcmItem *dataset);
 
-  /* remove the signature with the given UID from the dataset, print action details.
+  /** remove the signature with the given UID from the dataset, print action details.
    * @param dataset dataset to modify
    * @param opt_location Digital Signature UID of the signature to remove
    * @return 0 if successful, a program exit code otherwise
@@ -164,7 +186,7 @@ public:
 
 private:
 
-  /* scans a token from the given string and returns it. Ignores leading whitespace.
+  /** scans a token from the given string and returns it. Ignores leading whitespace.
    * @param c string to parse
    * @param pos position within string, modified after successful scan
    * @param key tag key returned in this parameter if return value is "tag key".
@@ -173,13 +195,26 @@ private:
    */
   static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx);
 
-  /* reads a complete text file (max 64K) into a memory block
+  /** reads a complete text file (max 64K) into a memory block
    * and returns a pointer to the memory block.
    * memory must be freed by caller.
    * @param filename file to be read
    * @return pointer to memory block if successful, NULL otherwise.
    */
   static char *readTextFile(const char *filename);
+
+  /** print the details of the current signature to the logger
+   *  @param sig signature object
+   *  @param stack position of the signature object in the dataset
+   *  @param count number of the signature (counter)
+   */
+  static void printSignatureDetails(DcmSignature& sig, DcmStack& stack, int count);
+
+  /** print the details of the timestamp for the current signature to the logger
+   *  @param sig signature object
+   *  @param tsPolicy timestamp verification policy
+   */
+  static void printTimestampDetails(DcmSignature& sig, E_TimestampVerificationPolicy tsPolicy);
 
 };
 

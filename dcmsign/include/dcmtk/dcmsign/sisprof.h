@@ -127,6 +127,11 @@ public:
    */
   virtual SiSignaturePurpose::E_SignaturePurposeType getOverrideSignaturePurpose() const;
 
+  /** returns true if this signature profile only applies to main dataset level
+   *  @return OFTrue if this signature profile only applies to main dataset level, OFFalse otherwise
+   */
+  virtual OFBool mainDatasetRequired() const = 0;
+
   /** checks if the given tag key is contained in the given list.
    *  @param tagList list of tag keys
    *  @param key tag key

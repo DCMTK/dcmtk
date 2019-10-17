@@ -637,12 +637,6 @@ OFBool SiAuthorizationProfile::attributeRequired(const DcmTagKey& key) const
 
 OFCondition SiAuthorizationProfile::inspectSignatureDataset(DcmItem &item)
 {
-  DCMSIGN_WARN(
-    "The Authorization RSA Digital Signature Profile requires that any\n"
-    "attributes whose values are verifiable by the technician or physician\n"
-    "(e.g., their values are displayed to the technician or physician) must\n"
-    "be included in the signature. Please assure this manually." );
-
   DcmElement *delem = NULL;
   if (item.findAndGetElement(DCM_CreatorVersionUID, delem).good())
   {
@@ -656,6 +650,11 @@ OFCondition SiAuthorizationProfile::inspectSignatureDataset(DcmItem &item)
     containsRawData_ = OFFalse;
   }
   return EC_Normal;
+}
+
+OFBool SiAuthorizationProfile::mainDatasetRequired() const
+{
+  return OFTrue;
 }
 
 #else /* WITH_OPENSSL */

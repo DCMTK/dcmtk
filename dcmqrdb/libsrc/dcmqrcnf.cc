@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2018, OFFIS e.V.
+ *  Copyright (C) 1993-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -75,7 +75,7 @@ OFBool DcmQueryRetrieveCharacterSetOptions::parseOptions(const char* mnemonic, c
 {
     struct RAIIFree
     {
-        RAIIFree(char* ptr) : ptr(ptr) {}
+        RAIIFree(char* p) : ptr(p) {}
         ~RAIIFree() {free(ptr);}
         char* ptr;
     };

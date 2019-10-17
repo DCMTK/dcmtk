@@ -60,6 +60,11 @@ public:
    */
   virtual OFCondition inspectSignatureDataset(DcmItem &item);
 
+  /** returns true if this signature profile only applies to main dataset level
+   *  @return OFTrue if this signature profile only applies to main dataset level, OFFalse otherwise
+   */
+  virtual OFBool mainDatasetRequired() const;
+
 private:
 
   /// flag indicating whether or not the signature dataset contains the raw data module

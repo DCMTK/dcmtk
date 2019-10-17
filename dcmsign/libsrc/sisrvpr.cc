@@ -58,7 +58,7 @@ OFCondition SiStructuredReportingVerificationProfile::inspectSignatureDataset(Dc
     // fine, this is an SR document
     if (item.findAndGetOFString(DCM_VerificationFlag, s).bad() || (s != "VERIFIED"))
     {
-      DCMSIGN_ERROR("SR document status is not 'VERIFIED', cannot apply SR RSA Digital Signature Profile verification signature");
+      // SR document status is not 'VERIFIED', cannot apply SR RSA Digital Signature Profile verification signature
       return SI_EC_DatasetDoesNotMatchProfile;
     }
     return EC_Normal;
@@ -66,7 +66,6 @@ OFCondition SiStructuredReportingVerificationProfile::inspectSignatureDataset(Dc
   else
   {
     // not an SR document
-    DCMSIGN_ERROR("Dataset is not a Structured Report, cannot apply Structured Reporting RSA Digital Signature Profile");
     return SI_EC_DatasetDoesNotMatchProfile;
   }
 }

@@ -25,17 +25,21 @@
 #ifdef WITH_OPENSSL
 
 #include "dcmtk/dcmsign/dcsighlp.h"
-#include "dcmtk/dcmsign/sitypes.h"  /* for logger macros */
-#include "dcmtk/dcmsign/sicert.h"   /* for class SiCertificate */
-#include "dcmtk/dcmdata/dcitem.h"   /* for class DcmItem */
-#include "dcmtk/dcmdata/dcdict.h"   /* for class DcmDataDictionary */
-#include "dcmtk/dcmdata/dcdicent.h" /* for class DcmDictEntry */
-#include "dcmtk/dcmdata/dcsequen.h" /* for class DcmSequenceOfItems */
 #include "dcmtk/dcmdata/dcdeftag.h" /* for attribute tag constants */
+#include "dcmtk/dcmdata/dcdicent.h" /* for class DcmDictEntry */
+#include "dcmtk/dcmdata/dcdict.h"   /* for class DcmDataDictionary */
+#include "dcmtk/dcmdata/dcitem.h"   /* for class DcmItem */
+#include "dcmtk/dcmdata/dcsequen.h" /* for class DcmSequenceOfItems */
 #include "dcmtk/dcmdata/dcvrat.h"   /* for class DcmAttributeTag */
-#include "dcmtk/dcmsign/sisprof.h"  /* for class SiSecurityProfile */
 #include "dcmtk/dcmsign/dcsignat.h" /* for class DcmSignature */
-
+#include "dcmtk/dcmsign/sicert.h"   /* for class SiCertificate */
+#include "dcmtk/dcmsign/sicertvf.h" /* for class SiCertificateVerifier */
+#include "dcmtk/dcmsign/sisprof.h"  /* for class SiSecurityProfile */
+#include "dcmtk/dcmsign/sitsfs.h"   /* for class SiTimeStampFS */
+#include "dcmtk/dcmsign/sitypes.h"  /* for logger macros */
+#include "dcmtk/dcmsign/sicreapr.h" /* for class SiCreatorProfile */
+#include "dcmtk/dcmsign/siautopr.h" /* for class SiAuthorizationProfile */
+#include "dcmtk/dcmsign/sisrvpr.h"  /* for class SiStructuredReportingVerificationProfile */
 
 
 int DcmSignatureHelper::readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
@@ -319,17 +323,22 @@ int DcmSignatureHelper::do_sign(
   DcmAttributeTag *opt_tagList,
   E_TransferSyntax opt_signatureXfer,
   FILE *dumpFile,
-  SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose)
+  SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose,
+  SiTimeStamp *timeStamp)
 {
-  OFCondition sicond = EC_Normal;
-  if (opt_profile->inspectSignatureDataset(*dataset).bad()) return 1;
-  DcmSignature signer;
-  signer.attach(dataset);
-  signer.setDumpFile(dumpFile);
-  sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList, NULL, opt_sigPurpose);
-  if (sicond != EC_Normal)
+  OFCondition sicond = opt_profile->inspectSignatureDataset(*dataset);
+  if (sicond.good())
   {
-    DCMSIGN_ERROR(sicond.text() << ": while creating signature in main dataset");
+    DcmSignature signer;
+    signer.attach(dataset);
+    signer.setDumpFile(dumpFile);
+    sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList, timeStamp, opt_sigPurpose);
+    signer.detach();
+  }
+
+  if (sicond.bad())
+  {
+    DCMSIGN_ERROR(sicond.text() << " while creating signature in main dataset");
     return 1;
   }
   return 0;
@@ -346,44 +355,66 @@ int DcmSignatureHelper::do_sign_item(
   const char *opt_location,
   E_TransferSyntax opt_signatureXfer,
   FILE *dumpFile,
-  SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose)
+  SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose,
+  SiTimeStamp *timeStamp)
 {
   OFCondition sicond = EC_Normal;
-  DcmSignature signer;
   DcmItem *sigItem = locateItemforSignatureCreation(*dataset, opt_location);
-  if (sigItem == NULL) return 1;
-  if (opt_profile->inspectSignatureDataset(*sigItem).bad()) return 1;
-
-  signer.detach();
-  signer.attach(sigItem);
-  signer.setDumpFile(dumpFile);
-  sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList, NULL, opt_sigPurpose);
-  if (sicond != EC_Normal)
+  if (sigItem == NULL) sicond = SI_EC_ItemLocationNotFound;
+  else
   {
-    DCMSIGN_ERROR(sicond.text() << ": while creating signature in item '" << opt_location << "'");
+    sicond = opt_profile->inspectSignatureDataset(*sigItem);
+    if (sicond.good())
+    {
+      DcmSignature signer;
+      signer.attach(sigItem);
+      signer.setDumpFile(dumpFile);
+      sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList, timeStamp, opt_sigPurpose);
+      signer.detach();
+    }
+  }
+
+  if (sicond.bad())
+  {
+    DCMSIGN_ERROR(sicond.text() << " while creating signature in item '" << opt_location << "'");
     return 1;
   }
-  signer.detach();
   return 0;
 }
 
 
-int DcmSignatureHelper::do_verify(DcmItem *dataset)
+int DcmSignatureHelper::do_verify(
+    DcmItem *dataset,
+    SiCertificateVerifier& certVerifier,
+    E_SignatureVerificationPolicy verificationPolicy,
+    E_TimestampVerificationPolicy timestampPolicy)
 {
   OFCondition sicond = EC_Normal;
   DcmStack stack;
   DcmSignature signer;
   OFString aString;
+
+  // this counter counts the number of signatures found in the dataset
   int counter = 0;
+
+  // this counter contains the number of signatures in the dataset
+  // that have failed validation
   int corrupt_counter = 0;
+
   unsigned long numSignatures = 0;
   unsigned long l=0;
-  Uint16 macID = 0;
-  DcmAttributeTag at(DCM_DataElementsSigned);
   DcmItem *sigItem = DcmSignature::findFirstSignatureItem(*dataset, stack);
-  DcmTagKey tagkey;
-  DcmTag tag;
-  const char *tagName = NULL;
+
+  // this flag is set to true if we find any signature in the dataset
+  // that complies with the verification policy.
+  OFBool verificationPolicyFulfilled = OFFalse;
+  const char *verificationPolicyName = "(undefined)";
+
+  // for these verification policies, there is nothing to check,
+  // ESVP_requireSignature is checked elsewhere.
+  if ((verificationPolicy == ESVP_verifyIfPresent) ||
+      (verificationPolicy == ESVP_requireSignature))
+      verificationPolicyFulfilled = OFTrue;
 
   while (sigItem)
   {
@@ -391,119 +422,165 @@ int DcmSignatureHelper::do_verify(DcmItem *dataset)
     numSignatures = signer.numberOfSignatures();
     for (l=0; l<numSignatures; l++)
     {
+      OFBool checkTimestamp = OFFalse;
       if (EC_Normal == signer.selectSignature(l))
       {
         ++counter;
-        if (EC_Normal == signer.getCurrentSignatureUID(aString))
-          DCMSIGN_WARN("Signature #" << counter << " UID=" << aString);
-        else
-          DCMSIGN_WARN("Signature #" << counter << " UID=" << "(unknown)");
-        printSignatureItemPosition(stack, aString);
-        if (dcmsignLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
-        {
-          DCMSIGN_INFO("  Location                    : " << aString);
-          if (EC_Normal == signer.getCurrentMacID(macID))
-            DCMSIGN_INFO("  MAC ID                      : " << macID);
-          else
-            DCMSIGN_INFO("  MAC ID                      : (unknown)");
-          if (EC_Normal == signer.getCurrentMacName(aString))
-            DCMSIGN_INFO("  MAC algorithm               : " << aString);
-          else
-            DCMSIGN_INFO("  MAC algorithm               : (unknown)");
-          if (EC_Normal == signer.getCurrentMacXferSyntaxName(aString))
-            DCMSIGN_INFO("  MAC calculation xfer syntax : " << aString);
-          else
-            DCMSIGN_INFO("  MAC calculation xfer syntax : (unknown)");
-          // data elements signed
-          if (EC_Normal != signer.getCurrentDataElementsSigned(at))
-            DCMSIGN_INFO("  Data elements signed        : all elements");
-          else
-          {
-            DCMSIGN_INFO("  Data elements signed        :");
-            unsigned long atVM = at.getVM();
-            for (unsigned long n=0; n<atVM; n++)
-            {
-              if (EC_Normal == at.getTagVal(tagkey, n))
-              {
-                tag = tagkey;
-                tagName = tag.getTagName();
-                DCMSIGN_INFO("      " << tagkey << " " << (tagName != NULL ? tagName : ""));
-              }
-            }
-          }
+        printSignatureDetails(signer, stack, counter);
 
-          if (EC_Normal == signer.getCurrentSignatureDateTime(aString))
-            DCMSIGN_INFO("  Signature date/time         : " << aString);
-          else
-            DCMSIGN_INFO("  Signature date/time         : (unknown)");
-          DCMSIGN_INFO("  Certificate of signer       : ");
-          SiCertificate *cert = signer.getCurrentCertificate();
-          if ((cert == NULL)||(cert->getKeyType()==EKT_none))
-            DCMSIGN_INFO("      none");
-          else
-          {
-            DCMSIGN_INFO("      X.509v" << cert->getX509Version());
-            cert->getCertSubjectName(aString);
-            DCMSIGN_INFO("      Subject                 : " << aString);
-            cert->getCertIssuerName(aString);
-            DCMSIGN_INFO("      Issued by               : " << aString);
-            DCMSIGN_INFO("      Serial no.              : " << cert->getCertSerialNo());
-            cert->getCertValidityNotBefore(aString);
-            DCMSIGN_INFO("      Validity                : not before " << aString);
-            cert->getCertValidityNotAfter(aString);
-            DCMSIGN_INFO("      Validity                : not after " << aString);
-            const char *ecname = NULL;
-            switch (cert->getKeyType())
+        if (dcmsignLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+          aString = "  Signature Verification      : ";
+          else aString = "  Signature Verification : ";
+
+        // verify signature profile
+        switch (verificationPolicy)
+        {
+          case ESVP_requireCreatorRSASignature:
             {
-              case EKT_RSA:
-                DCMSIGN_INFO("      Public key              : RSA, " << cert->getCertKeyBits() << " bits");
-                break;
-              case EKT_DSA:
-                DCMSIGN_INFO("      Public key              : DSA, " << cert->getCertKeyBits() << " bits");
-                break;
-              case EKT_EC:
-                ecname = cert->getCertCurveName();
-                if (ecname)
-                {
-                  DCMSIGN_INFO("      Public key              : EC, curve " << ecname << ", " << cert->getCertKeyBits() << " bits");
-                }
-                else
-                {
-                  DCMSIGN_INFO("      Public key              : EC, " << cert->getCertKeyBits() << " bits");
-                }
-                break;
-              case EKT_DH:
-                DCMSIGN_INFO("      Public key              : DH, " << cert->getCertKeyBits() << " bits");
-                break;
-              default:
-              case EKT_none: // should never happen
-                DCMSIGN_INFO("      Public key              : unknown type");
-                break;
+              verificationPolicyName = "Creator RSA Signature";
+              SiCreatorProfile sprofCr;
+              if (! verificationPolicyFulfilled) verificationPolicyFulfilled = signer.verifySignatureProfile(sprofCr).good();
             }
-          }
-          aString = "  Verification                : ";
-        } else {
-          DCMSIGN_INFO("  Location     : " << aString);
-          aString = "  Verification : ";
+            break;
+          case ESVP_requireAuthorizationRSASignature:
+            {
+              verificationPolicyName = "Authorization RSA Signature";
+              SiAuthorizationProfile sprofAu;
+              if (! verificationPolicyFulfilled) verificationPolicyFulfilled = signer.verifySignatureProfile(sprofAu).good();
+            }
+            break;
+          case ESVP_requireSRRSASignature:
+            {
+              // there are two types of possible matches here:
+              // either the dataset is an UNVERIFIED SR and SiStructuredReportingProfile matches,
+              // or the dataset is a VERIFIED SR and SiStructuredReportingVerificationProfile matches.
+              // We simply check both. Note that this is not particularly efficient, but it avoids
+              // that we have to replicate application logic of the profile here.
+              verificationPolicyName = "SR RSA Signature";
+              SiStructuredReportingProfile sprofSR;
+              SiStructuredReportingVerificationProfile sprofSRV;
+              if (! verificationPolicyFulfilled) verificationPolicyFulfilled = signer.verifySignatureProfile(sprofSR).good();
+              if (! verificationPolicyFulfilled) verificationPolicyFulfilled = signer.verifySignatureProfile(sprofSRV).good();
+            }
+            break;
+          case ESVP_verifyIfPresent:
+          case ESVP_requireSignature:
+            break;
+          // There is deliberately no default here because if we extend
+          // the enum then we will have to extend this code.
         }
+
+        // first verify if the signature matches the dataset
         sicond = signer.verifyCurrent();
         if (sicond.good())
         {
-          DCMSIGN_WARN(aString << "OK\n");
+          // now check if we can successfully verify the signer's certificate
+          SiCertificate *cert = signer.getCurrentCertificate();
+          if (cert)
+          {
+            if (certVerifier.verifyCertificate(*cert).good())
+            {
+              DCMSIGN_WARN(aString << "OK");
+              checkTimestamp = OFTrue;
+            }
+            else
+            {
+              DCMSIGN_WARN(aString << "signature is OK but certificate verification failed: " << certVerifier.lastError());
+              corrupt_counter++;
+            }
+          }
+          else
+          {
+            DCMSIGN_WARN(aString << "failed, certificate empty or invalid");
+            corrupt_counter++;
+          }
         } else {
+          DCMSIGN_WARN(aString << sicond.text());
           corrupt_counter++;
-          DCMSIGN_WARN(aString << sicond.text() << "\n");
         }
-      }
-    }
+
+        // check certified timestamp (if any).
+        // We only do this if the signature verification has passed.
+        if (checkTimestamp)
+        {
+          printTimestampDetails(signer, timestampPolicy);
+
+          SiTimeStamp *tstamp = signer.getCurrentTimestamp();
+          OFBool haveTS = (tstamp != NULL) && tstamp->have_tsinfo();
+          if (haveTS)
+          {
+            if (timestampPolicy != ETVP_ignoreTS)
+            {
+              // timestamp is present and according to our policy we should verify it
+              if (dcmsignLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+                aString = "  Timestamp Verification      : ";
+                else aString = "  Timestamp Verification : ";
+
+
+              sicond = tstamp->verifyTSSignature(certVerifier);
+              if (sicond.good())
+              {
+                sicond = tstamp->verifyTSToken(certVerifier, *signer.getSelectedSignatureItem(), *signer.getCurrentCertificate());
+                if (sicond.good())
+                {
+                  DCMSIGN_WARN(aString << "OK");
+                }
+                else
+                {
+                  OFString errString;
+                  tstamp->lastError(errString); // check if we have an OpenSSL error message
+                  if (errString.length() == 0) errString = sicond.text(); // use DCMTK error message otherwise
+                  DCMSIGN_WARN(aString << "timestamp signature verification failed: " << errString);
+                  corrupt_counter++;
+                }
+              }
+              else
+              {
+                OFString errString;
+                tstamp->lastError(errString);
+                DCMSIGN_WARN(aString << "timestamp signature verification failed: " << errString);
+                corrupt_counter++;
+              }
+            }
+          }
+          else
+          {
+            // no timestamp present. Check if this is a problem.
+            if (timestampPolicy == ETVP_requireTS)
+            {
+              DCMSIGN_WARN("  Certified timestamp : absent, but required by timestamp policy");
+              corrupt_counter++;
+            }
+          }
+        } // if (checkTimestamp)
+      } // if (EC_Normal == signer.selectSignature(l))
+    } // for (l=0; l<numSignatures; l++)
     signer.detach();
     sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
-  }
+  } // while (sigItem)
+
   if (counter == 0)
-    DCMSIGN_WARN("no signatures found in dataset.");
+  {
+    if (verificationPolicy == ESVP_verifyIfPresent)
+    {
+      DCMSIGN_WARN("no signatures found in dataset.");
+    }
+    else
+    {
+      // no signature present but according to the signature policy, we would have expected one
+      DCMSIGN_ERROR("no signatures found although required by the signature verification policy.");
+      return 1;
+    }
+  }
   else
   {
     DCMSIGN_INFO(counter << " signatures verified in dataset, " << corrupt_counter << " corrupted.");
+  }
+
+  if (! verificationPolicyFulfilled)
+  {
+    DCMSIGN_ERROR("No signature in this dataset fulfills the required " << verificationPolicyName << " signature policy");
+    return 1;
   }
 
   // return non-zero if any verification has failed
@@ -594,6 +671,271 @@ int DcmSignatureHelper::do_remove(
   DCMSIGN_ERROR("signature with UID '" << opt_location << "' not found.");
   return 1;
 }
+
+int DcmSignatureHelper::do_insert_ts(DcmItem *dataset, SiTimeStampFS *timeStamp)
+{
+  // check parameters
+  if (dataset == NULL || timeStamp == NULL) return 1;
+
+  // load timestamp query
+  if (timeStamp->load_ts_query().bad())
+  {
+    return 1;
+  }
+
+  // load timestamp response
+  if (timeStamp->load_ts_response().bad())
+  {
+    return 1;
+  }
+
+  // load digital signature UID
+  OFString uid;
+  OFCondition result = timeStamp->getUIDFromFile(uid);
+  if (result.bad()) return 1;
+
+  // locate digital signature
+  DcmSignature signer;
+  OFString currentUID;
+  DcmStack stack;
+  unsigned long cardSQ;
+  unsigned long i;
+  OFBool found = OFFalse;
+
+  DcmItem *sigItem = DcmSignature::findFirstSignatureItem(*dataset, stack);
+  while (sigItem)
+  {
+    // attach the item in which a digital signatures sequence was found
+    signer.attach(sigItem);
+    // determine the number of signatures in this item
+    cardSQ = signer.numberOfSignatures();
+    for (i=0; i<cardSQ; i++)
+    {
+      if (signer.selectSignature(i).good() && signer.getCurrentSignatureUID(currentUID).good() && (currentUID == uid))
+      {
+        // we have found the right digital signature
+        found = OFTrue;
+        DcmItem *currentSignatureItem = signer.getSelectedSignatureItem();
+        if (currentSignatureItem == NULL)
+        {
+          return 1; // should never happen
+        }
+        else
+        {
+          // check if the timestamp response matches the query and the dataset
+          result = timeStamp->check_ts_response(*currentSignatureItem);
+          if (result.bad()) return 1;
+
+          // write timestamp to dataset
+          result = timeStamp->write_ts_token(*currentSignatureItem);
+          if (result.bad()) return 1;
+        }
+      }
+    }
+    signer.detach();
+    if (found) sigItem = NULL; else sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
+  }
+
+  if (!found)
+  {
+    DCMSIGN_ERROR("signature with UID '" << uid << "' not found.");
+    return 1;
+  }
+  return 0;
+}
+
+
+void DcmSignatureHelper::printSignatureDetails(DcmSignature& sig, DcmStack& stack, int count)
+{
+  OFString aString;
+  Uint16 macID = 0;
+  DcmAttributeTag at(DCM_DataElementsSigned);
+  DcmTagKey tagkey;
+  DcmTag tag;
+  const char *tagName = NULL;
+
+  if (EC_Normal == sig.getCurrentSignatureUID(aString))
+    DCMSIGN_WARN("Signature #" << count << " UID=" << aString);
+  else
+    DCMSIGN_WARN("Signature #" << count << " UID=" << "(unknown)");
+  printSignatureItemPosition(stack, aString);
+  if (dcmsignLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+  {
+    DCMSIGN_INFO("  Location                    : " << aString);
+    if (EC_Normal == sig.getCurrentMacID(macID))
+      DCMSIGN_INFO("  MAC ID                      : " << macID);
+    else
+      DCMSIGN_INFO("  MAC ID                      : (unknown)");
+    if (EC_Normal == sig.getCurrentMacName(aString))
+      DCMSIGN_INFO("  MAC algorithm               : " << aString);
+    else
+      DCMSIGN_INFO("  MAC algorithm               : (unknown)");
+    if (EC_Normal == sig.getCurrentMacXferSyntaxName(aString))
+      DCMSIGN_INFO("  MAC calculation xfer syntax : " << aString);
+    else
+      DCMSIGN_INFO("  MAC calculation xfer syntax : (unknown)");
+    // data elements signed
+    if (EC_Normal != sig.getCurrentDataElementsSigned(at))
+      DCMSIGN_INFO("  Data elements signed        : (unknown)");
+    else
+    {
+      DCMSIGN_INFO("  Data elements signed        :");
+      unsigned long atVM = at.getVM();
+      for (unsigned long n=0; n<atVM; n++)
+      {
+        if (EC_Normal == at.getTagVal(tagkey, n))
+        {
+          tag = tagkey;
+          tagName = tag.getTagName();
+          DCMSIGN_INFO("      " << tagkey << " " << (tagName != NULL ? tagName : ""));
+        }
+      }
+    }
+
+    if (EC_Normal == sig.getCurrentSignatureDateTime(aString))
+      DCMSIGN_INFO("  Signature date/time         : " << aString);
+    else
+      DCMSIGN_INFO("  Signature date/time         : (unknown)");
+    DCMSIGN_INFO("  Certificate of signer       : ");
+    SiCertificate *cert = sig.getCurrentCertificate();
+    if ((cert == NULL)||(cert->getKeyType()==EKT_none))
+      DCMSIGN_INFO("      none");
+    else
+    {
+      DCMSIGN_INFO("      X.509v" << cert->getX509Version());
+      cert->getCertSubjectName(aString);
+      DCMSIGN_INFO("      Subject                 : " << aString);
+      cert->getCertIssuerName(aString);
+      DCMSIGN_INFO("      Issued by               : " << aString);
+      DCMSIGN_INFO("      Serial no.              : " << cert->getCertSerialNo());
+      cert->getCertValidityNotBefore(aString);
+      DCMSIGN_INFO("      Validity                : not before " << aString);
+      cert->getCertValidityNotAfter(aString);
+      DCMSIGN_INFO("      Validity                : not after " << aString);
+      const char *ecname = NULL;
+      switch (cert->getKeyType())
+      {
+        case EKT_RSA:
+          DCMSIGN_INFO("      Public key              : RSA, " << cert->getCertKeyBits() << " bits");
+          break;
+        case EKT_DSA:
+          DCMSIGN_INFO("      Public key              : DSA, " << cert->getCertKeyBits() << " bits");
+          break;
+        case EKT_EC:
+          ecname = cert->getCertCurveName();
+          if (ecname)
+          {
+            DCMSIGN_INFO("      Public key              : EC, curve " << ecname << ", " << cert->getCertKeyBits() << " bits");
+          }
+          else
+          {
+            DCMSIGN_INFO("      Public key              : EC, " << cert->getCertKeyBits() << " bits");
+          }
+          break;
+        case EKT_DH:
+          DCMSIGN_INFO("      Public key              : DH, " << cert->getCertKeyBits() << " bits");
+          break;
+        default:
+        case EKT_none: // should never happen
+          DCMSIGN_INFO("      Public key              : unknown type");
+          break;
+      }
+    }
+  } else {
+    DCMSIGN_INFO("  Location     : " << aString);
+  }
+}
+
+
+void DcmSignatureHelper::printTimestampDetails(DcmSignature& sig, E_TimestampVerificationPolicy tsPolicy)
+{
+  SiTimeStamp *tstamp = sig.getCurrentTimestamp();
+  OFBool haveTS = (tstamp != NULL) && tstamp->have_tsinfo();
+
+  if (dcmsignLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+  {
+    switch (tsPolicy)
+    {
+      case ETVP_verifyTSIfPresent:
+        if (haveTS)
+        {
+          DCMSIGN_INFO("  Certified timestamp         : CMS_TSP version " << tstamp->get_tsinfo_version());
+        }
+        else
+        {
+          DCMSIGN_INFO("  Certified timestamp         : absent");
+          return;
+        }
+        break;
+      case ETVP_ignoreTS:
+        if (haveTS)
+        {
+          DCMSIGN_INFO("  Certified timestamp         : present, but ignored according to timestamp policy");
+          return;
+        }
+        else
+        {
+          DCMSIGN_INFO("  Certified timestamp         : absent");
+          return;
+        }
+        break;
+
+      case ETVP_requireTS:
+        if (haveTS)
+        {
+          DCMSIGN_INFO("  Certified timestamp         : CMS_TSP version " << tstamp->get_tsinfo_version());
+        }
+        else
+        {
+          DCMSIGN_INFO("  Certified timestamp         : absent, but required by timestamp policy");
+          return;
+        }
+        break;
+    }
+  }
+
+  if (haveTS)
+  {
+    // Now print timestamp details
+    OFString s;
+    tstamp->get_tsinfo_policy_oid(s);
+    DCMSIGN_INFO("      Policy OID              : " << s);
+    tstamp->get_tsinfo_imprint_algorithm_name(s);
+    DCMSIGN_INFO("      Imprint MAC algorithm   : " << s);
+    tstamp->get_tsinfo_serial_number(s);
+    DCMSIGN_INFO("      Serial number           : " << s);
+    tstamp->get_tsinfo_nonce(s);
+    if (s.length() == 0) s = "none";
+    DCMSIGN_INFO("      Nonce                   : " << s);
+    tstamp->get_tsinfo_tsa_name(s);
+    if (s.length() == 0) s = "none";
+    DCMSIGN_INFO("      TSA Name                : " << s);
+    DCMSIGN_INFO("      Ordering                : " << (tstamp->get_tsinfo_ordering() ? "true" : "false" ));
+    tstamp->get_tsinfo_accuracy(s);
+    if (s.length() == 0) s = "not specified";
+    DCMSIGN_INFO("      Accuracy                : " << s);
+    tstamp->get_tsinfo_timestamp(s);
+    DCMSIGN_INFO("      Timestamp               : " << s);
+    tstamp->get_tsinfo_policy_oid(s);
+
+    // finally, print extensions (if any)
+    int numext = tstamp->get_tsinfo_numextensions();
+    if (numext == 0)
+    {
+      DCMSIGN_INFO("      Extensions              : none");
+    }
+    else
+    {
+      DCMSIGN_INFO("      Extensions              :");
+      for (int i=0; i<numext; ++i)
+      {
+        tstamp->get_tsinfo_extension(s, i);
+        DCMSIGN_INFO("        - " << s);
+      }
+    }
+  }
+}
+
 
 
 #else /* WITH_OPENSSL */

@@ -107,11 +107,86 @@ input transfer syntax:
   +si   --sign-item  [k]eyfile, [c]ertfile, [i]tem location: string
           create signature in sequence item
 
+  +t    --insert-timestamp  ts[q]file, ts[r]file [u]idfile: string
+          insert certified timestamp from ts response r
+          from timestamp query q at signature UID u
+
   +r    --remove  [s]ignature UID: string
           remove signature
 
   +ra   --remove-all
           remove all signatures from data set
+\endverbatim
+
+\subsection dcmsign_signature_general_options general options
+\verbatim
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys/certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys/certificates as DER file
+
+signature format:
+
+  -fn   --format-new
+          use correct DICOM signature format (default)
+
+  -fo   --format-old
+          use old (pre-3.5.4) DCMTK signature format, non-conformant
+          if signature includes compressed pixel data. This option should
+          only be used to verify signatures in the old format.
+\endverbatim
+
+\subsection dcmsign_signature_verification_options signature verification options (only with --verify):
+\verbatim
+signature verification:
+
+  +rv   --verify-if-present    
+          verify signatures if present, pass otherwise
+
+  +rg   --require-sig          
+          fail if no signature at all is present
+
+  +rc   --require-creator      
+          fail if no creator RSA signature is present
+
+  +ru   --require-auth         
+          fail if no auth RSA signature is present
+
+  +rs   --require-sr           
+          fail if no SR RSA signature is present
+
+timestamp verification:
+
+  +tv   --verify-ts            
+          verify certified timestamp if present (default)
+
+  -tv   --ignore-ts            
+          ignore certified timestamps
+
+  +tr   --require-ts           
+          fail if no certified timestamp is present
+
+certification authority:
+
+  +cf   --add-cert-file        
+          [c]ertificate filename: string
+          add trusted certificate file to cert store
+
+  +uf   --add-ucert-file       
+          [c]ertificate filename: string
+          add untrusted intermediate certificate file
+
+  +cd   --add-cert-dir         
+          [c]ertificate directory: string
+          add certificates in d to cert store
+
+  +cr   --add-crl-file         
+          [c]rl filename: string
+          add certificate revocation list file
+
 \endverbatim
 
 \subsection dcmsign_signature_creation_options signature creation options (only with --sign or --sign-item):
@@ -126,14 +201,6 @@ private key password:
 
   -pw   --null-passwd
           use empty string as password
-
-key and certificate file format:
-
-  -pem  --pem-keys
-          read keys/certificates as PEM file (default)
-
-  -der  --der-keys
-          read keys/certificates as DER file
 
 digital signature profile:
 
@@ -197,15 +264,6 @@ tag selection:
   -tf   --tag-file  [f]ilename: string
           read list of tags from text file
 
-signature format:
-
-  -fn   --format-new
-          use correct DICOM signature format (default)
-
-  -fo   --format-old
-          use old (pre-3.5.4) DCMTK signature format, non-conformant
-          if signature includes compressed pixel data. This option should
-          only be used to verify signatures in the old format.
 \endverbatim
 
 \subsection dcmsign_output_options output options
@@ -303,6 +361,46 @@ would cause a digital signature to be created in the second item of the
 ReferencedImageSequence (0008,1140) which is located in the first item of the
 ReferencedSeriesSequence (0008,1115) which is located in the main DICOM
 dataset.
+
+\subsection dcmsign_certified_timestamps Certified Timestamps
+
+Starting with release 3.6.6, dcmsign offers support for certified timestamps
+according to RFC 3161. For now, the tool does not implement any of the network
+protocols defined in RFC 3161 for communicating with a timestamp authority (TSA),
+but it can write a timestamp query (TSQ) during signature creation, and the
+new command \e --insert-timestamp will read a timestamp response (TSR) from file
+and add it to the DICOM digital signature. Since a DICOM file can contain
+multiple signatures, a "UID file" (which contains the Digital Signature UID)
+is used to identify the signature to which the TSR should be added.
+The dcmsign tool will also perform various consistency checks before storing
+the timestamp.
+
+During signature verification, the presence of a certified timestamp will
+be detected and the timestamp will also be verified unless option 
+\e --ignore-ts was used. Signature verification and timestamp verification
+use a common certificate store to check the certificates of the DICOM
+signature and the timestamp. This store can be populated with the options
+--add-cert-file and --add-cert-dir, which both add trusted CA certificates,
+--add-ucert-file, which adds an untrusted intermediate CA certificate,
+and --add-crl-file, which adds a certificate revocation list.
+
+\subsection dcmsign_hashed_certificate_directories Hashed Certificate Directories
+
+Instead of adding CA certificates manually using --add-cert-file, the user
+can set-up a directory where dcmsign will look-up and load certificates from
+as needed, using --add-cert-dir.
+
+Th directory should contain one certificate or CRL per file in PEM format, 
+with a filename of the form hash.N for a certificate, or hash.rN for a CRL.
+The hash is the value returned by 
+
+  <em>openssl x509 -hash -noout -in \<filename.pem\></em>
+
+The .N or .rN suffix is a sequence number that starts at zero, and is 
+incremented consecutively for each certificate or CRL with the same hash
+value. Gaps in the sequence numbers are not supported, it is assumed that
+there are no more objects with the same hash beyond the first missing number
+in the sequence.
 
 \section dcmsign_logging LOGGING
 

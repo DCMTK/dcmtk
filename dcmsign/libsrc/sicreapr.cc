@@ -687,6 +687,11 @@ OFCondition SiCreatorProfile::inspectSignatureDataset(DcmItem &item)
   return EC_Normal;
 }
 
+OFBool SiCreatorProfile::mainDatasetRequired() const
+{
+  return OFTrue;
+}
+
 #else /* WITH_OPENSSL */
 
 int sicreapr_cc_dummy_to_keep_linker_from_moaning = 0;
