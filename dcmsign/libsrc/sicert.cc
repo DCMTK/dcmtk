@@ -93,6 +93,7 @@ E_KeyType SiCertificate::getKeyType()
 
 SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
 {
+  SiAlgorithm *result = NULL;
   if (x509)
   {
     EVP_PKEY *pkey = X509_extract_key(x509);
@@ -101,13 +102,13 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
       switch(EVP_PKEY_type(EVP_PKEY_id(pkey)))
       {
         case EVP_PKEY_RSA:
-          return new SiRSA(EVP_PKEY_get1_RSA(pkey));
-          /* break; */
+          result = new SiRSA(EVP_PKEY_get1_RSA(pkey));
+          break;
         case EVP_PKEY_DSA:
-          return new SiDSA(EVP_PKEY_get1_DSA(pkey));
-          /* break; */
+          result = new SiDSA(EVP_PKEY_get1_DSA(pkey));
+          break;
         case EVP_PKEY_EC:
-          return new SiECDSA(EVP_PKEY_get1_EC_KEY(pkey));
+          result = new SiECDSA(EVP_PKEY_get1_EC_KEY(pkey));
           break;
         case EVP_PKEY_DH:
         default:
@@ -117,7 +118,7 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
       EVP_PKEY_free(pkey);
     }
   }
-  return NULL;
+  return result;
 }
 
 OFCondition SiCertificate::loadCertificate(const char *filename, int filetype)
@@ -335,7 +336,7 @@ const char *SiCertificate::getCertCurveName()
           int nid = EC_GROUP_get_curve_name(ecgroup);
           if (nid > 0)
           {
-            return OBJ_nid2sn(nid);
+            result = OBJ_nid2sn(nid);
           }
           else result = "unnamed curve";
         }
