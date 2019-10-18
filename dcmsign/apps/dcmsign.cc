@@ -73,6 +73,9 @@ BEGIN_EXTERN_C
 #include <openssl/x509.h>
 END_EXTERN_C
 
+// exit code constants in addition to those defined in "dcmtk/ofstd/ofexit.h"
+#define EXITCODE_CANNOT_WRITE_SUPPORT_FILE       46
+
 // ********************************************
 
 enum DcmSignOperation
@@ -129,7 +132,7 @@ int main(int argc, char *argv[])
   DcmFileFormat fileformat;
 
   SiSignaturePurpose::E_SignaturePurposeType opt_sigPurpose = SiSignaturePurpose::ESP_none;
-  int result = 0;
+  int result = EXITCODE_NO_ERROR;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , APPLICATION_ABSTRACT, rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -273,13 +276,13 @@ int main(int argc, char *argv[])
 #ifdef WITH_OPENSSL
             COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
-            return 0;
+            return EXITCODE_NO_ERROR;
         }
         if (cmd.findOption("--list-purposes"))
         {
             app.printHeader(OFTrue /*print host identifier*/);
             SiSignaturePurpose::printSignatureCodes(COUT);
-            return 0;
+            return EXITCODE_NO_ERROR;
         }
     }
     /* command line parameters */
@@ -597,7 +600,7 @@ int main(int argc, char *argv[])
         if (! DcmSignatureHelper::addTag(current, *opt_tagList))
         {
           OFLOG_FATAL(dcmsignLogger, "unknown attribute tag '" << current << "'");
-          result = 10;
+          result = EXITCODE_COMMANDLINE_SYNTAX_ERROR;
           goto cleanup;
         }
       } while (cmd.findOption("--tag", 0, OFCommandLine::FOM_Next));
@@ -718,7 +721,7 @@ int main(int argc, char *argv[])
       if (opt_dumpFile == NULL)
       {
         OFLOG_FATAL(dcmsignLogger, "unable to create dump file '" << fileName << "'");
-        result = 10;
+        result = EXITCODE_CANNOT_WRITE_SUPPORT_FILE;
         goto cleanup;
       }
     }
@@ -735,7 +738,7 @@ int main(int argc, char *argv[])
   if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
   {
     OFLOG_FATAL(dcmsignLogger, "invalid filename: <empty string>");
-    result = 1;
+    result = EXITCODE_NO_INPUT_FILES;
     goto cleanup;
   }
   OFLOG_INFO(dcmsignLogger, "open input file " << opt_ifname);
@@ -743,7 +746,7 @@ int main(int argc, char *argv[])
   if (sicond.bad())
   {
     OFLOG_FATAL(dcmsignLogger, sicond.text() << ": reading file: " << opt_ifname);
-    result = 1;
+    result = EXITCODE_CANNOT_READ_INPUT_FILE;
     goto cleanup;
   }
   dataset = fileformat.getDataset();
@@ -753,7 +756,7 @@ int main(int argc, char *argv[])
     if (sicond != EC_Normal)
     {
       OFLOG_FATAL(dcmsignLogger, sicond.text() << ": while loading certificate file '" << opt_certfile << "'");
-      result = 1;
+      result = EXITCODE_CANNOT_READ_INPUT_FILE;
       goto cleanup;
     }
   }
@@ -764,7 +767,7 @@ int main(int argc, char *argv[])
     if (sicond != EC_Normal)
     {
       OFLOG_FATAL(dcmsignLogger, sicond.text() << ": while loading private key file '" << opt_keyfile << "'");
-      result = 1;
+      result = EXITCODE_CANNOT_READ_INPUT_FILE;
       goto cleanup;
     }
   }
@@ -827,14 +830,14 @@ int main(int argc, char *argv[])
     if (dataset->chooseRepresentation(opt_oxfer, NULL).bad() || (! dataset->canWriteXfer(opt_oxfer)))
     {
       OFLOG_FATAL(dcmsignLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
-      result = 1;
+      result = EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
       goto cleanup;
     }
     sicond = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
     if (sicond.bad())
     {
       OFLOG_FATAL(dcmsignLogger, sicond.text() << ": writing file: " <<  opt_ofname);
-      result = 1;
+      result = EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
       goto cleanup;
     }
   }
@@ -856,7 +859,7 @@ int main(int, char *[])
        << OFFIS_CONSOLE_APPLICATION " requires the OpenSSL library." << OFendl
        << "This " OFFIS_CONSOLE_APPLICATION " has been configured and compiled without OpenSSL." << OFendl
        << "Please reconfigure your system and recompile if appropriate." << OFendl;
-  return 0;
+  return EXITCODE_NOOPENSSL;
 }
 
 #endif /* WITH_OPENSSL */

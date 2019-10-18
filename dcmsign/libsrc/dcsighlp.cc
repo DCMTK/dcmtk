@@ -40,6 +40,25 @@
 #include "dcmtk/dcmsign/sicreapr.h" /* for class SiCreatorProfile */
 #include "dcmtk/dcmsign/siautopr.h" /* for class SiAuthorizationProfile */
 #include "dcmtk/dcmsign/sisrvpr.h"  /* for class SiStructuredReportingVerificationProfile */
+#include "dcmtk/ofstd/ofexit.h"     /* for common exit codes */
+
+
+// exit code constants in addition to those defined in "dcmtk/ofstd/ofexit.h"
+#define EXITCODE_CANNOT_ACCESS_SIGNATURE         80
+#define EXITCODE_CANNOT_ACCESS_TS                81
+#define EXITCODE_CANNOT_INSERT_TS                82
+#define EXITCODE_CANNOT_READ_TAG_FILE            83
+#define EXITCODE_CANNOT_READ_TSQ_FILE            84
+#define EXITCODE_CANNOT_READ_TSR_FILE            85
+#define EXITCODE_CANNOT_READ_UID_FILE            86
+#define EXITCODE_NO_SIGNATURES_PRESENT           87
+#define EXITCODE_SIGNATURE_CREATION_FAILED       88
+#define EXITCODE_SIGNATURE_REMOVAL_FAILED        89
+#define EXITCODE_SIGNATURE_UID_NOT_FOUND         90
+#define EXITCODE_SIGNATURE_VERIFICATION_FAILED   91
+#define EXITCODE_SIGNATURE_VERIFICATION_POLICY   92
+#define EXITCODE_SYNTAX_ERROR_IN_TAG_FILE        93
+#define EXITCODE_TS_CONSISTENCY_CHECK_FAILED     94
 
 
 int DcmSignatureHelper::readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
@@ -131,12 +150,12 @@ char *DcmSignatureHelper::readTextFile(const char *filename)
 int DcmSignatureHelper::parseTextFile(const char *filename, DcmAttributeTag& tagList)
 {
   char *c=readTextFile(filename);
-  if (c==NULL) return 10; // bail out
+  if (c==NULL) return EXITCODE_CANNOT_READ_TAG_FILE; // bail out
   int position = 0;
   int token = 0;
   Uint32 idx = 0;
   DcmTagKey key;
-  int result = 0;
+  int result = EXITCODE_NO_ERROR;
   do
   {
     token = readNextToken(c, position, key, idx);
@@ -144,14 +163,14 @@ int DcmSignatureHelper::parseTextFile(const char *filename, DcmAttributeTag& tag
     {
       if (EC_Normal != tagList.putTagVal(key, tagList.getVM()))
       {
-        result = 10;
+        result = EXITCODE_SYNTAX_ERROR_IN_TAG_FILE;
         token = -1;
       }
     }
     else if (token >= 0)
     {
       DCMSIGN_ERROR("parse error in text file '" << filename << "'");
-      result = 10;
+      result = EXITCODE_SYNTAX_ERROR_IN_TAG_FILE;
       token = -1;
     }
   } while (token >= 0);
@@ -339,9 +358,9 @@ int DcmSignatureHelper::do_sign(
   if (sicond.bad())
   {
     DCMSIGN_ERROR(sicond.text() << " while creating signature in main dataset");
-    return 1;
+    return EXITCODE_SIGNATURE_CREATION_FAILED;
   }
-  return 0;
+  return EXITCODE_NO_ERROR;
 }
 
 
@@ -377,9 +396,9 @@ int DcmSignatureHelper::do_sign_item(
   if (sicond.bad())
   {
     DCMSIGN_ERROR(sicond.text() << " while creating signature in item '" << opt_location << "'");
-    return 1;
+    return EXITCODE_SIGNATURE_CREATION_FAILED;
   }
-  return 0;
+  return EXITCODE_NO_ERROR;
 }
 
 
@@ -569,7 +588,7 @@ int DcmSignatureHelper::do_verify(
     {
       // no signature present but according to the signature policy, we would have expected one
       DCMSIGN_ERROR("no signatures found although required by the signature verification policy.");
-      return 1;
+      return EXITCODE_NO_SIGNATURES_PRESENT;
     }
   }
   else
@@ -580,11 +599,11 @@ int DcmSignatureHelper::do_verify(
   if (! verificationPolicyFulfilled)
   {
     DCMSIGN_ERROR("No signature in this dataset fulfills the required " << verificationPolicyName << " signature policy");
-    return 1;
+    return EXITCODE_SIGNATURE_VERIFICATION_POLICY;
   }
 
   // return non-zero if any verification has failed
-  return (corrupt_counter == 0 ? 0 :1);
+  return (corrupt_counter == 0 ? EXITCODE_NO_ERROR : EXITCODE_SIGNATURE_VERIFICATION_FAILED);
 }
 
 
@@ -615,7 +634,7 @@ int DcmSignatureHelper::do_remove_all(DcmItem *dataset)
       if (sicond != EC_Normal)
       {
         DCMSIGN_ERROR(sicond.text() << ": while removing signature");
-        return 1;
+        return EXITCODE_SIGNATURE_REMOVAL_FAILED;
       }
     }
     signer.detach();
@@ -623,7 +642,7 @@ int DcmSignatureHelper::do_remove_all(DcmItem *dataset)
     sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
   }
   DCMSIGN_INFO(counter << " signatures found and removed from dataset.");
-  return 0;
+  return EXITCODE_NO_ERROR;
 }
 
 
@@ -657,9 +676,9 @@ int DcmSignatureHelper::do_remove(
             if (sicond != EC_Normal)
             {
               DCMSIGN_ERROR(sicond.text() << ": while removing signature");
-              return 1;
+              return EXITCODE_SIGNATURE_REMOVAL_FAILED;
             } else {
-              return 0;
+              return EXITCODE_NO_ERROR;
             }
           }
         }
@@ -669,30 +688,30 @@ int DcmSignatureHelper::do_remove(
     sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
   }
   DCMSIGN_ERROR("signature with UID '" << opt_location << "' not found.");
-  return 1;
+  return EXITCODE_SIGNATURE_UID_NOT_FOUND;
 }
 
 int DcmSignatureHelper::do_insert_ts(DcmItem *dataset, SiTimeStampFS *timeStamp)
 {
   // check parameters
-  if (dataset == NULL || timeStamp == NULL) return 1;
+  if (dataset == NULL || timeStamp == NULL) return EXITCODE_CANNOT_ACCESS_TS;
 
   // load timestamp query
   if (timeStamp->load_ts_query().bad())
   {
-    return 1;
+    return EXITCODE_CANNOT_READ_TSQ_FILE;
   }
 
   // load timestamp response
   if (timeStamp->load_ts_response().bad())
   {
-    return 1;
+    return EXITCODE_CANNOT_READ_TSR_FILE;
   }
 
   // load digital signature UID
   OFString uid;
   OFCondition result = timeStamp->getUIDFromFile(uid);
-  if (result.bad()) return 1;
+  if (result.bad()) return EXITCODE_CANNOT_READ_UID_FILE;
 
   // locate digital signature
   DcmSignature signer;
@@ -718,17 +737,17 @@ int DcmSignatureHelper::do_insert_ts(DcmItem *dataset, SiTimeStampFS *timeStamp)
         DcmItem *currentSignatureItem = signer.getSelectedSignatureItem();
         if (currentSignatureItem == NULL)
         {
-          return 1; // should never happen
+          return EXITCODE_CANNOT_ACCESS_SIGNATURE; // should never happen
         }
         else
         {
           // check if the timestamp response matches the query and the dataset
           result = timeStamp->check_ts_response(*currentSignatureItem);
-          if (result.bad()) return 1;
+          if (result.bad()) return EXITCODE_TS_CONSISTENCY_CHECK_FAILED;
 
           // write timestamp to dataset
           result = timeStamp->write_ts_token(*currentSignatureItem);
-          if (result.bad()) return 1;
+          if (result.bad()) return EXITCODE_CANNOT_INSERT_TS;
         }
       }
     }
@@ -739,9 +758,9 @@ int DcmSignatureHelper::do_insert_ts(DcmItem *dataset, SiTimeStampFS *timeStamp)
   if (!found)
   {
     DCMSIGN_ERROR("signature with UID '" << uid << "' not found.");
-    return 1;
+    return EXITCODE_SIGNATURE_UID_NOT_FOUND;
   }
-  return 0;
+  return EXITCODE_NO_ERROR;
 }
 
 
