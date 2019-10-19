@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,8 @@
 #define EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 #define EXITCODE_INSUFFICIENT_PRIVILEGES          2
 #define EXITCODE_SETUID_FAILED                    3
+#define EXITCODE_MEMORY_EXHAUSTED                 4
+#define EXITCODE_NOOPENSSL                        5
 
 // input file errors (20-39)
 #define EXITCODE_CANNOT_READ_INPUT_FILE          20
