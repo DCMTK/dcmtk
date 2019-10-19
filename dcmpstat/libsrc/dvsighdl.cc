@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -333,6 +333,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
           cert->getCertValidityNotAfter(aString);
           os << aString.c_str() << htmlEndl
              << htmlLine4 << "Public key" << htmlNext;
+          const char *ecname = NULL;
           switch (cert->getKeyType())
           {
             case EKT_RSA:
@@ -340,6 +341,17 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
               break;
             case EKT_DSA:
               os << "DSA, " << cert->getCertKeyBits() << " bits" << htmlEndl;
+              break;
+            case EKT_EC:
+              ecname = cert->getCertCurveName();
+              if (ecname)
+              {
+                os << "EC, curve " << ecname << ", " << cert->getCertKeyBits() << " bits";
+              }
+              else
+              {
+                os << "EC, " << cert->getCertKeyBits() << " bits";
+              }
               break;
             case EKT_DH:
               os << "DH, " << cert->getCertKeyBits() << " bits" << htmlEndl;
