@@ -282,6 +282,9 @@ OFCondition DcmSignature::createSignature(
 
   OFCondition result = EC_Normal;
 
+  // print a warning if we have a weak (i.e. too short) key in the certificate
+  cert.checkForWeakKey();
+
   // update tag list if present
   DcmAttributeTag *updatedTagList = NULL;
   if (tagList)

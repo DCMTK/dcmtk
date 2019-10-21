@@ -136,6 +136,18 @@ public:
    */
   const char *getCertCurveName();
 
+  /** checks if the length of the public key in the certificate is too short
+   *  and must be considered weak. Currently, an RSA or DSA key with less than
+   *  1024 bits and an ECDSA key with less than 256 bits are considered weak.
+   *  @return OFTrue if key is weak, OFFalse otherwise.
+   */
+  OFBool isWeakKey();
+
+  /** checks if the length of the public key in the certificate is too short
+   *  and must be considered weak, and if so, prints a warning to the logger.
+   */
+  void checkForWeakKey();
+
   /** returns a pointer to the raw certificate structure or NULL if no
    *  certificate present. Should not be called by users of this library.
    */

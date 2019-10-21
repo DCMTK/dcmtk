@@ -497,6 +497,9 @@ int DcmSignatureHelper::do_verify(
           SiCertificate *cert = signer.getCurrentCertificate();
           if (cert)
           {
+            // print a warning if we have a weak (i.e. too short) key in the certificate
+            cert->checkForWeakKey();
+
             if (certVerifier.verifyCertificate(*cert).good())
             {
               DCMSIGN_WARN(aString << "OK");

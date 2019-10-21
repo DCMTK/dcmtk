@@ -347,6 +347,51 @@ const char *SiCertificate::getCertCurveName()
   return result;
 }
 
+OFBool SiCertificate::isWeakKey()
+{
+  OFBool result = OFTrue;
+  long bits = getCertKeyBits();
+  switch (getKeyType())
+  {
+    case EKT_RSA:
+    case EKT_DSA:
+    case EKT_DH:
+      if (bits >= 1024) result = OFFalse;
+      break;
+    case EKT_EC:
+      if (bits >= 256) result = OFFalse;
+      break;
+    case EKT_none: // should never happen
+      break;
+  }
+  return result;
+}
+
+void SiCertificate::checkForWeakKey()
+{
+  if (isWeakKey())
+  {
+    switch (getKeyType())
+    {
+      case EKT_RSA:
+        DCMSIGN_WARN("Certificate contains a weak key: RSA, " << getCertKeyBits() << " bits");
+        break;
+      case EKT_DSA:
+        DCMSIGN_WARN("Certificate contains a weak key: DSA, " << getCertKeyBits() << " bits");
+        break;
+      case EKT_EC:
+        DCMSIGN_WARN("Certificate contains a weak key: EC, " << getCertKeyBits() << " bits");
+        break;
+      case EKT_DH:
+        DCMSIGN_WARN("Certificate contains a weak key: DH, " << getCertKeyBits() << " bits");
+        break;
+      case EKT_none: // should never happen
+        DCMSIGN_WARN("Certificate contains a weak key: unknown type");
+        break;
+    }
+  }
+}
+
 
 #else /* WITH_OPENSSL */
 
