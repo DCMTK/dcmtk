@@ -261,8 +261,8 @@ standard, part 19 ("Application Hosting").
 \subsection dcm2xml_bulk_data Bulk Data
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
-or OW, as well as OD, OF and UN values are by default not written to the XML
-output because of their size.  Instead, for each element, a new Universally
+or OW, as well as OD, OF, OV and UN values are by default not written to the
+XML output because of their size.  Instead, for each element, a new Universally
 Unique Identifier (UUID) is being generated and written as an attribute of a
 \<BulkData\> XML element.  So far, there is no possibility to write an
 additional file to hold the binary data for each of the binary data chunks.
@@ -273,15 +273,15 @@ available in future versions of \b dcm2xml.
 In addition, Supplement 163 (Store Over the Web by Representational State
 Transfer Services) introduces a new \<InlineBinary\> XML element that allows
 for encoding binary data as Base64.  Currently, the command line option
-\e --encode-base64 enables this encoding for the following VRs: OB, OD, OF, OW,
-and UN.
+\e --encode-base64 enables this encoding for the following VRs: OB, OD, OF, OV,
+OW and UN.
 
 \subsection dcm2xml_known_issues Known Issues
 
 In addition to what is written in the above section on "Bulk Data", there are
 further known issues with the current implementation of the Native DICOM Model
-format.  For example, large element values with a VR other than OB, OD, OF, OW
-or UN are currently never written as bulk data, although it might be useful,
+format.  For example, large element values with a VR other than OB, OD, OF, OV,
+OW or UN are currently never written as bulk data, although it might be useful,
 e.g. for very long text elements (especially UT) or very long numeric fields
 (of various VRs).
 
