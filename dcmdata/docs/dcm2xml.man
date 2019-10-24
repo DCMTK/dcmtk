@@ -319,6 +319,11 @@ data set to UTF-8 encoding prior to the conversion to XML format.  This is also
 useful for DICOMDIR files where each directory record can have a different
 character set.
 
+If no mapping is defined and option \e --convert-to-utf8 is not used, non-ASCII
+characters and those below #32 are stored as "&#nnn;" where "nnn" refers to the
+numeric character code.  This might lead to invalid character entity references
+(such as "&#27;" for ESC) and will cause most XML parsers to reject the document.
+
 \section dcm2xml_logging LOGGING
 
 The level of logging output of the various command line tools and underlying

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -613,10 +613,14 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  (") is converted to "&#34;" instead of "&quot;" because the latter entity is not defined.
      *  In HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
      *  same reason.
+     *  @note This method might create invalid character entity references, such as "&#27;" for ESC,
+     *    if contained in the 'sourceString'.  An XML document with such character entities cannot
+     *    be parsed by most XML parsers.  However, removing them from the output stream would also
+     *    be no option.
      ** @param out stream used for the HTML/XHTML/XML mnenonic output
      *  @param sourceString source string to be converted.  May contain one or more NULL bytes.
      *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
-     *    (@&@#nnn;) if OFTrue
+     *    (@&@#nnn;) if OFTrue.  This might lead to invalid XML character entity references.
      *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup.
      *    LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the flag 'newlineAllowed'
      *    has no meaning in this case.
@@ -642,10 +646,14 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  (") is converted to "&#34;" instead of "&quot;" because the latter entity is not defined.
      *  In HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
      *  same reason.
+     *  @note This method might create invalid character entity references, such as "&#27;" for ESC,
+     *    if contained in the 'sourceString'.  An XML document with such character entities cannot
+     *    be parsed by most XML parsers.  However, removing them from the 'markupString' would also
+     *    be no option.
      ** @param sourceString source string to be converted.  May also contain one or more NULL bytes.
      *  @param markupString reference to character string where the result should be stored
      *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
-     *    (@&@#nnn;) if OFTrue
+     *    (@&@#nnn;) if OFTrue.  This might lead to invalid XML character entity references.
      *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup string.
      *    LF and CR are encoded as "@&@#10;" and "@&@#13;" in XML mode, the flag 'newlineAllowed'
      *    has no meaning in this case.

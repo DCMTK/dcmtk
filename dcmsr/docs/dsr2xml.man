@@ -257,6 +257,11 @@ latin-1, latin-2, latin-3, latin-4, latin-5, cyrillic, arabic, greek, hebrew.
 Option \e --convert-to-utf8 can be used to convert the DICOM file or data set
 to UTF-8 encoding prior to the conversion to XML format.
 
+If no mapping is defined and option \e --convert-to-utf8 is not used, non-ASCII
+characters and those below #32 are stored as "&#nnn;" where "nnn" refers to the
+numeric character code.  This might lead to invalid character entity references
+(such as "&#27;" for ESC) and will cause most XML parsers to reject the document.
+
 \subsection dsr2xml_error_handling Error Handling
 
 Please be careful with the processing options \e --unknown-relationship,
