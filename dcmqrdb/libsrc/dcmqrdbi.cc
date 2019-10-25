@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2018, OFFIS e.V.
+ *  Copyright (C) 1993-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1680,33 +1680,33 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         }
 
         if (isConversionNecessary(specificCharacterSet, *destinationCharacterSet)) {
-            OFCondition status = (*findResponseIdentifiers)->convertCharacterSet(
+            OFCondition charset_status = (*findResponseIdentifiers)->convertCharacterSet(
                 specificCharacterSet,
                 *destinationCharacterSet,
                 characterSetOptions.conversionFlags,
                 OFTrue);
-            if (status.bad()) {
+            if (charset_status.bad()) {
                 DCMQRDB_WARN("Converting response from character set \""
                     << characterSetName(specificCharacterSet)
                     << "\" to character set \""
                     << characterSetName(*destinationCharacterSet)
-                    << "\" failed, (error message: " << status.text() << ')');
+                    << "\" failed, (error message: " << charset_status.text() << ')');
                 if (fallbackCharacterSet && isConversionNecessary(specificCharacterSet, *fallbackCharacterSet)) {
                     DCMQRDB_INFO("Trying to convert response from character set \""
                         << characterSetName(specificCharacterSet)
                         << "\" to fall-back character set \""
                         << characterSetName(*fallbackCharacterSet) << "\" instead");
-                    status = (*findResponseIdentifiers)->convertCharacterSet(
+                    charset_status = (*findResponseIdentifiers)->convertCharacterSet(
                         specificCharacterSet,
                         *fallbackCharacterSet,
                         characterSetOptions.conversionFlags,
                         OFTrue);
-                    if (status.bad()) {
+                    if (charset_status.bad()) {
                         DCMQRDB_WARN("Converting response from character set \""
                             << characterSetName(specificCharacterSet)
                             << "\" to character set \""
                             << characterSetName(*fallbackCharacterSet)
-                            << "\" failed, (error message: " << status.text() << ')');
+                            << "\" failed, (error message: " << charset_status.text() << ')');
                     } else {
                         DCMQRDB_INFO("Successfully converted response from character set \""
                             << characterSetName(specificCharacterSet)
