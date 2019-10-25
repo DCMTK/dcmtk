@@ -66,21 +66,21 @@ void DcmSignature::initializeLibrary()
   ERR_load_crypto_strings();
 }
 
-
-Uint16 DcmSignature::getMACIDnumber(DcmItem &item)
+OFCondition DcmSignature::getMACIDnumber(DcmItem &item, Uint16& macid)
 {
-  Uint16 macIDnumber = 0;
+  macid = 0xFFFF;
   DcmStack stack;
-  if (item.search(DCM_MACIDNumber, stack, ESM_fromHere, OFFalse).good() && (stack.top()->isLeaf()))
+  OFCondition result = item.search(DCM_MACIDNumber, stack, ESM_fromHere, OFFalse);
+  if (result.good() && (stack.top()->isLeaf()))
   {
-    ((DcmElement *)(stack.top()))->getUint16(macIDnumber);
+    result = ((DcmElement *)(stack.top()))->getUint16(macid);
   }
-  return macIDnumber;
+  return result;
 }
-
 
 void DcmSignature::currentDateTime(OFString &str)
 {
+  str = "";
   DcmDateTime::getCurrentDateTime(str, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/);
 }
 
@@ -171,15 +171,19 @@ OFCondition DcmSignature::removeSignature(unsigned long i)
   DcmItem *removalItem = signatureSq->getItem(i);
   if (removalItem == NULL) return EC_IllegalCall; // should never happen
 
+  Uint16 macIDnumber = 0;
+  OFCondition result = getMACIDnumber(*removalItem, macIDnumber);
+  if (result.bad()) return result;
+
   // check mac ID number and whether it is unique
-  Uint16 macIDnumber = getMACIDnumber(*removalItem);
   OFBool macIDunique = OFTrue;
   DcmItem *tmpItem=NULL;
   unsigned long j=0;
+  Uint16 macIDnumber2 = 0;
   for (j=0; j < seqCard; ++j)
   {
     tmpItem = signatureSq->getItem(j);
-    if ((i != j) && tmpItem && (macIDnumber == getMACIDnumber(*tmpItem))) macIDunique = OFFalse;
+    if ((i != j) && tmpItem && (getMACIDnumber(*tmpItem, macIDnumber2).good()) && (macIDnumber == macIDnumber2)) macIDunique = OFFalse;
   }
 
   // delete signature item
@@ -192,7 +196,7 @@ OFCondition DcmSignature::removeSignature(unsigned long i)
     while (j < macParametersSq->card())
     {
       tmpItem = macParametersSq->getItem(j);
-      if (tmpItem && (macIDnumber == getMACIDnumber(*tmpItem))) delete macParametersSq->remove(j); else ++j;
+      if (tmpItem && (getMACIDnumber(*tmpItem, macIDnumber2).good()) && (macIDnumber == macIDnumber2)) delete macParametersSq->remove(j); else ++j;
     }
   }
 
@@ -228,6 +232,7 @@ OFCondition DcmSignature::allocateMACID(Uint16& newID)
   if (isAllocated==NULL) return EC_MemoryExhausted;
 
   OFCondition result = SI_EC_MacIDsExhausted;
+  Uint16 macID = 0;
 
   for (i=0; i < 65536; ++i) isAllocated[i]=0;
   if (signatureSq)
@@ -236,7 +241,10 @@ OFCondition DcmSignature::allocateMACID(Uint16& newID)
     for (i=0; i < sqCard; ++i)
     {
       tmpItem = signatureSq->getItem(i);
-      if (tmpItem) isAllocated[getMACIDnumber(*tmpItem)] = 1;
+      if (tmpItem && getMACIDnumber(*tmpItem, macID).good())
+      {
+        isAllocated[macID] = 1;
+      }
     }
   }
   if (macParametersSq)
@@ -245,7 +253,10 @@ OFCondition DcmSignature::allocateMACID(Uint16& newID)
     for (i=0; i < macCard; ++i)
     {
       tmpItem = macParametersSq->getItem(i);
-      if (tmpItem) isAllocated[getMACIDnumber(*tmpItem)] = 1;
+      if (tmpItem && getMACIDnumber(*tmpItem, macID).good())
+      {
+        isAllocated[macID] = 1;
+      }
     }
   }
   i = 0;
@@ -585,15 +596,24 @@ OFCondition DcmSignature::selectSignature(unsigned long i)
 
   selectedSignatureItem = signatureSq->getItem(i);
   if (selectedSignatureItem == NULL) return EC_IllegalCall;
-  Uint16 macID = getMACIDnumber(*selectedSignatureItem);
+
+  selectedMacParametersItem = NULL;
+  Uint16 macID = 0xFFFF;
+  OFCondition result = getMACIDnumber(*selectedSignatureItem, macID);
+  if (result.bad())
+  {
+    DCMSIGN_WARN("Cannot read MAC ID number in DigitalSignaturesSequence.");
+  }
+
   if (macParametersSq)
   {
+    Uint16 macID2 = 0;
     DcmItem *tmpItem=NULL;
     unsigned long cardMac = macParametersSq->card();
     for (unsigned long j=0; j<cardMac; j++)
     {
       tmpItem = macParametersSq->getItem(j);
-      if (macID == getMACIDnumber(*tmpItem))
+      if (result.good() && getMACIDnumber(*tmpItem, macID2).good() &&  macID == macID2)
       {
         selectedMacParametersItem = tmpItem;
         break;
@@ -602,15 +622,21 @@ OFCondition DcmSignature::selectSignature(unsigned long i)
   }
   selectedCertificate = new SiCertificate();
   if (selectedCertificate == NULL) return EC_MemoryExhausted;
-  OFCondition result = selectedCertificate->read(*selectedSignatureItem);
-  if (result.bad()) return result;
+  result = selectedCertificate->read(*selectedSignatureItem);
+  if (result.bad())
+  {
+    // a failure to read the certificate should not cause a failure
+    // of the "selectSignature" operation. We actually want the
+    // signature verification to fail in this case.
+    DCMSIGN_DEBUG(result.text() << " while reading certificate.");
+  }
 
   selectedTimestamp = new SiTimeStampFS();
   if (selectedTimestamp == NULL) return EC_MemoryExhausted;
   result = selectedTimestamp->read(*selectedSignatureItem);
   if (result.bad() && (result != EC_TagNotFound))
   {
-    DCMSIGN_WARN(result.text() << " while reading timestamp, ignoring.");
+    DCMSIGN_WARN(result.text() << " while reading timestamp.");
     delete selectedTimestamp;
     selectedTimestamp = NULL;
   }
@@ -800,8 +826,7 @@ DcmItem *DcmSignature::findNextSignatureItem(DcmItem& item, DcmStack& stack)
 OFCondition DcmSignature::getCurrentMacID(Uint16& macID)
 {
   if (NULL == selectedSignatureItem) return EC_IllegalCall;
-  macID = getMACIDnumber(*selectedSignatureItem);
-  return EC_Normal;
+  return getMACIDnumber(*selectedSignatureItem, macID);
 }
 
 OFCondition DcmSignature::getCurrentMacXferSyntaxName(OFString& str)

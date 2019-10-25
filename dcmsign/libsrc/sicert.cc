@@ -38,6 +38,7 @@ BEGIN_EXTERN_C
 #include <openssl/evp.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
+#include <openssl/err.h>
 END_EXTERN_C
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
@@ -182,12 +183,34 @@ OFCondition SiCertificate::read(DcmItem& item)
 #else
               x509 = d2i_X509(NULL, &data, cert->getLength());
 #endif
-              if (x509 == NULL) result = EC_IllegalCall;
-            } else result = EC_IllegalCall;
+              if (x509 == NULL)
+              {
+                DCMSIGN_WARN("Unable to parse X.509 certificate.");
+                result = SI_EC_VerificationFailed_NoCertificate;
+              }
+            }
+            else
+            {
+              DCMSIGN_WARN("Empty certificate of signer.");
+              result = SI_EC_VerificationFailed_NoCertificate;
+            }
           }
         }
-      } else result = EC_IllegalCall;
+        else
+        {
+          DCMSIGN_WARN("Certificate missing in dataset.");
+          result = SI_EC_VerificationFailed_NoCertificate;
+        }
+      } else {
+        DCMSIGN_WARN("Encountered unsupported certificate type '" << aString << "' (expected '" << SI_DEFTERMS_X509CERT << "').");
+        result = SI_EC_VerificationFailed_NoCertificate;
+      }
     }
+  }
+  else
+  {
+    DCMSIGN_WARN("Certificate type missing in dataset.");
+    result = SI_EC_VerificationFailed_NoCertificate;
   }
   return result;
 }

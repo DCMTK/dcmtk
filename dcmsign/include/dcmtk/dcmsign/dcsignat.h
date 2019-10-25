@@ -261,11 +261,12 @@ private:
   OFCondition allocateMACID(Uint16& newID);
   
   /** searches a given item for the DCM_MACIDnumber element and returns
-   *  its value if present, otherwise returns 0.
+   *  its value if present
    *  @param item item to be searched
-   *  @return MAC ID number in item or zero if absent.
+   *  @param macid MAC ID returned in this parameter upon success
+   *  @return EC_Normal if successful, an error code otherwise
    */
-  static Uint16 getMACIDnumber(DcmItem &item);
+  static OFCondition getMACIDnumber(DcmItem &item, Uint16& macid);
 
   /** returns the current date and time as a DICOM DT string.
    *  @param str date/time returned in this string.
