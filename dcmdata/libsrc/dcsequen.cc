@@ -1046,15 +1046,25 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
     errorFlag = EC_Normal;
     if (item != NULL)
     {
-        itemList->seek_to(where);
-        // insert before or after "where"
-        E_ListPos whichSide = (before) ? (ELP_prev) : (ELP_next);
-        itemList->insert(item, whichSide);
+        // special case: last position
         if (where == DCM_EndOfListIndex)
         {
+            if (before)
+            {
+                // insert before end of list
+                itemList->seek(ELP_last);
+                itemList->prepend(item);
+            } else {
+                // insert at end of list
+                itemList->append(item);
+            }
             DCMDATA_TRACE("DcmSequenceOfItems::insert() Item inserted "
                 << (before ? "before" : "after") << " last position");
         } else {
+            itemList->seek_to(where);
+            // insert before or after "where"
+            E_ListPos whichSide = (before) ? (ELP_prev) : (ELP_next);
+            itemList->insert(item, whichSide);
             DCMDATA_TRACE("DcmSequenceOfItems::insert() Item inserted "
                 << (before ? "before" : "after") << " position " << where);
         }

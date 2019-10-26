@@ -4152,7 +4152,7 @@ OFCondition DcmItem::insertSequenceItem(const DcmTag &seqTag,
                     if (itemNum == -1)
                     {
                         /* insert given item before last entry */
-                        status = sequence->insert(item, count - 1, OFTrue /*before*/);
+                        status = sequence->insert(item, DCM_EndOfListIndex, OFTrue /*before*/);
                     } else {
                         /* insert given item before specified entry */
                         status = sequence->insert(item, OFstatic_cast(unsigned long, itemNum), OFTrue /*before*/);
