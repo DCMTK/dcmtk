@@ -47,11 +47,18 @@ OFTEST(dcmdata_sequenceInsert)
     }
     /* check whether that worked (for-loop shouldn't take too long) */
     OFCHECK_EQUAL(counter, NUMBER_OF_ITEMS);
+    /* access specific items (performance should be no issue) */
+    OFCHECK(sequence.getItem(0) != NULL);
+    OFCHECK(sequence.getItem(2) != NULL);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS) == NULL);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 1) != NULL);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 2) != NULL);
 }
 
 
 OFTEST(dcmdata_pixelSequenceInsert)
 {
+    DcmPixelItem *pixelItem = NULL;
     DcmPixelSequence pixelSequence(DCM_PixelData);
     /* add a large number of items to the sequence */
     unsigned long counter = 0;
@@ -62,6 +69,12 @@ OFTEST(dcmdata_pixelSequenceInsert)
     }
     /* check whether that worked (for-loop shouldn't take too long) */
     OFCHECK_EQUAL(counter, NUMBER_OF_ITEMS);
+    /* access specific items (performance should be no issue) */
+    OFCHECK(pixelSequence.getItem(pixelItem, 0).good());
+    OFCHECK(pixelSequence.getItem(pixelItem, 2).good());
+    OFCHECK(pixelSequence.getItem(pixelItem, NUMBER_OF_ITEMS).bad());
+    OFCHECK(pixelSequence.getItem(pixelItem, NUMBER_OF_ITEMS - 1).good());
+    OFCHECK(pixelSequence.getItem(pixelItem, NUMBER_OF_ITEMS - 2).good());
 }
 
 

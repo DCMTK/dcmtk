@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,7 +71,7 @@ DcmList::~DcmList()
         do {
             DcmListNode *temp = firstNode;
             firstNode = firstNode->nextNode;
-            // delete temp->objNodeValue;;        // dangerous!
+            // delete temp->objNodeValue;         // dangerous!
             delete temp;
         } while ( firstNode != NULL );
         currentNode = firstNode = lastNode = NULL;
@@ -254,10 +254,23 @@ DcmObject *DcmList::seek( E_ListPos pos )
 
 DcmObject *DcmList::seek_to(unsigned long absolute_position)
 {
-    const unsigned long tmppos = absolute_position < cardinality ? absolute_position : cardinality;
-    seek( ELP_first );
-    for (unsigned long i = 0; i < tmppos; i++)
-        seek( ELP_next );
+    if (absolute_position < cardinality / 2)
+    {
+        /* iterate over first half of the list */
+        seek( ELP_first );
+        for (unsigned long i = 0; i < absolute_position; i++)
+            seek( ELP_next );
+    }
+    else if (absolute_position < cardinality)
+    {
+        /* iterate over second half of the list (starting from the end) */
+        seek( ELP_last );
+        for (unsigned long i = absolute_position + 1; i < cardinality; i++)
+            seek( ELP_prev );
+    } else {
+        /* invalid position */
+        currentNode = NULL;
+    }
     return get( ELP_atpos );
 }
 
