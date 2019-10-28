@@ -1061,8 +1061,8 @@ tvrcomp.o: tvrcomp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrae.h ../include/dcmtk/dcmdata/dcchrstr.h \
  ../include/dcmtk/dcmdata/dcvrlo.h ../include/dcmtk/dcmdata/dcvrlt.h \
  ../include/dcmtk/dcmdata/dcvrpn.h ../include/dcmtk/dcmdata/dcvrst.h \
- ../include/dcmtk/dcmdata/dcvrut.h ../include/dcmtk/dcmdata/dcvrcs.h \
- ../include/dcmtk/dcmdata/dcvrda.h \
+ ../include/dcmtk/dcmdata/dcvrur.h ../include/dcmtk/dcmdata/dcvrut.h \
+ ../include/dcmtk/dcmdata/dcvrcs.h ../include/dcmtk/dcmdata/dcvrda.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../include/dcmtk/dcmdata/dcvrdt.h \
  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \

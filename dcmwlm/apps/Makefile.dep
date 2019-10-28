@@ -42,7 +42,7 @@ wlcefs.o: wlcefs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -51,14 +51,14 @@ wlcefs.o: wlcefs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
- ../../ofstd/include/dcmtk/ofstd/ofexit.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../include/dcmtk/dcmwlm/wltypdef.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../include/dcmtk/dcmwlm/wldefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
  ../../dcmnet/include/dcmtk/dcmnet/lst.h \
  ../../dcmnet/include/dcmtk/dcmnet/dul.h \
@@ -129,7 +129,7 @@ wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -138,14 +138,14 @@ wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
- ../../ofstd/include/dcmtk/ofstd/ofexit.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../include/dcmtk/dcmwlm/wltypdef.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../include/dcmtk/dcmwlm/wldefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h wlcefs.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h wlcefs.h \
  ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
  ../../dcmnet/include/dcmtk/dcmnet/lst.h \
  ../../dcmnet/include/dcmtk/dcmnet/dul.h \

@@ -42,20 +42,11 @@ wltest.o: wltest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
- ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
- ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h \
- ../../ofstd/include/dcmtk/ofstd/ofexit.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../../dcmnet/include/dcmtk/dcmnet/dul.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
  ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../include/dcmtk/dcmwlm/wltypdef.h \
@@ -74,6 +65,11 @@ wltest.o: wltest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmwlm/wldsfs.h ../include/dcmtk/dcmwlm/wlds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmwlm/wlfsim.h \
