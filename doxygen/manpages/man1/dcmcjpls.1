@@ -1,4 +1,4 @@
-.TH "dcmcjpls" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpls" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpls \- Encode DICOM file to JPEG-LS transfer syntax
@@ -128,20 +128,20 @@ lossless compression:
 
 JPEG-LS compression:
 
-  +t1  --threshold1  [t]hreshhold: integer (default for 8 bpp: 3)
+  +t1  --threshold1  [t]hreshhold: integer
          set JPEG-LS encoding parameter threshold 1
 
-  +t2  --threshold2  [t]hreshhold: integer (default for 8 bpp: 7)
+  +t2  --threshold2  [t]hreshhold: integer
          set JPEG-LS encoding parameter threshold 2
 
-  +t3  --threshold3  [t]hreshhold: integer (default for 8 bpp: 21)
+  +t3  --threshold3  [t]hreshhold: integer
          set JPEG-LS encoding parameter threshold 3
+
+  # By default, the values for T1, T2, T3 are computed based on
+  # the number of bits per sample.
 
   +rs  --reset  [r]eset: integer (default: 64)
          set JPEG-LS encoding parameter reset
-
-  +lm  --limit  [l]imit: integer (default: 0)
-         set JPEG-LS encoding parameter limit
 
 JPEG-LS interleave:
 
@@ -172,7 +172,22 @@ JPEG-LS interleave:
 
   # This flag selects an interleave mode based on the source image's mode.
   # If possible, the image is not converted to a different interleave mode.
-.fi
+
+JPEG-LS padding of odd-length bitstreams:
+
+  +ps  --padding-standard
+         pad with extended EOI marker (default)
+
+  # Pad odd-length JPEG-LS bitstreams by writing an extended end of image
+  # segment marker FF FF D9, as required by the DICOM standard.
+
+  +pz  --padding-zero
+         pad with zero byte (non-standard)
+
+  # Pad odd-length JPEG-LS bitstreams by writing a zero byte after the
+  # end of image segment marker, i.e. FF D9 00. This is not DICOM conformant
+  # but required for interoperability with the HP LOCO reference implementation,
+  # which does not support extended JPEG-LS bitstreams..fi
 .PP
 .SS "encapsulated pixel data encoding options"
 .PP
@@ -330,4 +345,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdjpls\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2009-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2009-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

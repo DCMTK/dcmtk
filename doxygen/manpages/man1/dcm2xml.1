@@ -1,4 +1,4 @@
-.TH "dcm2xml" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2xml" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2xml \- Convert DICOM file and data set to XML
@@ -223,18 +223,18 @@ The 'file-format' and 'meta-header' tags are absent for DICOM data sets\&.
 .SS "XML Encoding"
 Attributes with very large value fields (e\&.g\&. pixel data) are not loaded by default\&. They can be identified by the additional attribute 'loaded' with a value of 'no' (see example above)\&. The command line option \fI--load-all\fP forces to load all value fields including the very long ones\&.
 .PP
-Furthermore, binary information of OB and OW attributes are not written to the XML output file by default\&. These elements can be identified by the additional attribute 'binary' with a value of 'hidden' (default is 'no')\&. The command line option \fI--write-binary-data\fP causes also binary value fields to be printed (attribute value is 'yes' or 'base64')\&. But, be careful when using this option together with \fI--load-all\fP because of the large amounts of pixel data that might be printed to the output\&. Please note that in this context element values with a VR of OD or OF are not regarded as 'binary information'\&.
+Furthermore, binary data of OB and OW attributes are not written to the XML output file by default\&. These elements can be identified by the additional attribute 'binary' with a value of 'hidden' (default is 'no')\&. The command line option \fI--write-binary-data\fP causes also binary value fields to be printed (attribute value is 'yes' or 'base64')\&. But, be careful when using this option together with \fI--load-all\fP because of the large amounts of pixel data that might be printed to the output\&. Please note that in this context element values with a VR of OD, OF, OL and OV are not regarded as 'binary data'\&.
 .PP
 Multiple values (i\&.e\&. where the DICOM value multiplicity is greater than 1) are separated by a backslash '\\' (except for Base64 encoded data)\&. The 'len' attribute indicates the number of bytes for the particular value field as stored in the DICOM data set, i\&.e\&. it might deviate from the XML encoded value length e\&.g\&. because of non-significant padding that has been removed\&. If this attribute is missing in 'sequence' or 'item' start tags, the corresponding DICOM element has been stored with undefined length\&.
 .SH "Native DICOM Model Format"
 .PP
 The description of the Native DICOM Model format can be found in the DICOM standard, part 19 ('Application Hosting')\&.
 .SS "Bulk Data"
-Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB or OW, as well as OD, OF and UN values are by default not written to the XML output because of their size\&. Instead, for each element, a new Universally Unique Identifier (UUID) is being generated and written as an attribute of a <BulkData> XML element\&. So far, there is no possibility to write an additional file to hold the binary data for each of the binary data chunks\&. This is not required by the standard, however, it might be useful for implementing an Application Hosting interface; thus this feature may be available in future versions of \fBdcm2xml\fP\&.
+Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB or OW, as well as OD, OF, OV and UN values are by default not written to the XML output because of their size\&. Instead, for each element, a new Universally Unique Identifier (UUID) is being generated and written as an attribute of a <BulkData> XML element\&. So far, there is no possibility to write an additional file to hold the binary data for each of the binary data chunks\&. This is not required by the standard, however, it might be useful for implementing an Application Hosting interface; thus this feature may be available in future versions of \fBdcm2xml\fP\&.
 .PP
-In addition, Supplement 163 (Store Over the Web by Representational State Transfer Services) introduces a new <InlineBinary> XML element that allows for encoding binary data as Base64\&. Currently, the command line option \fI--encode-base64\fP enables this encoding for the following VRs: OB, OD, OF, OW, and UN\&.
+In addition, Supplement 163 (Store Over the Web by Representational State Transfer Services) introduces a new <InlineBinary> XML element that allows for encoding binary data as Base64\&. Currently, the command line option \fI--encode-base64\fP enables this encoding for the following VRs: OB, OD, OF, OV, OW and UN\&.
 .SS "Known Issues"
-In addition to what is written in the above section on 'Bulk Data', there are further known issues with the current implementation of the Native DICOM Model format\&. For example, large element values with a VR other than OB, OD, OF, OW or UN are currently never written as bulk data, although it might be useful, e\&.g\&. for very long text elements (especially UT) or very long numeric fields (of various VRs)\&.
+In addition to what is written in the above section on 'Bulk Data', there are further known issues with the current implementation of the Native DICOM Model format\&. For example, large element values with a VR other than OB, OD, OF, OV, OW or UN are currently never written as bulk data, although it might be useful, e\&.g\&. for very long text elements (especially UT) or very long numeric fields (of various VRs)\&.
 .SH "NOTES"
 .PP
 .SS "Character Encoding"
@@ -259,6 +259,8 @@ Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&. For reasons of backward compatibility with previous versions of this tool, the following terms are also supported and mapped automatically to the associated DICOM defined terms: latin-1, latin-2, latin-3, latin-4, latin-5, cyrillic, arabic, greek, hebrew\&.
 .PP
 Multiple character sets using code extension techniques are not supported\&. If needed, option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the conversion to XML format\&. This is also useful for DICOMDIR files where each directory record can have a different character set\&.
+.PP
+If no mapping is defined and option \fI--convert-to-utf8\fP is not used, non-ASCII characters and those below #32 are stored as '&#nnn;' where 'nnn' refers to the numeric character code\&. This might lead to invalid character entity references (such as '&#27;' for ESC) and will cause most XML parsers to reject the document\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -284,4 +286,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBxml2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2016 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2002-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "xml2dcm" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "xml2dcm" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 xml2dcm \- Convert XML document to DICOM file or data set
@@ -233,7 +233,7 @@ Multiple character sets are not supported (only the first value of the 'Specific
 .PP
 See \fBdcm2xml\fP documentation for more details on the XML structure\&.
 .SS "Binary Data"
-Binary data can be encoded either as a sequence of hex numbers separated by a backslash '\\' or in Base64 format (binary='base64')\&. In addition, binary data can also be read from file (binary='file')\&. In this case, the filename has to be specified as the element value, e\&.g\&.
+Binary data (*) can be encoded either as a sequence of hex numbers separated by a backslash '\\' or in Base64 format (binary='base64')\&. In addition, binary data can also be read from file (binary='file')\&. In this case, the filename has to be specified as the element value, e\&.g\&.
 .PP
 .PP
 .nf
@@ -242,6 +242,8 @@ Binary data can be encoded either as a sequence of hex numbers separated by a ba
 .PP
 .PP
 Please note that the contents of the file will be read as is\&. OW data is expected to be little endian ordered and will be swapped if necessary\&. No checks will be made to ensure that the amount of data is reasonable in terms of other attributes such as Rows or Columns\&.
+.PP
+(*) Please note that currently only OB and OW data is supported, i\&.e\&. element values with a VR of OD, OF, OL and OV are not regarded as 'binary data' and treated as all other VRs\&.
 .SS "Compression"
 If libxml is compiled with zlib support, the input file (\fIxmlfile-in\fP) can also be compressed with ZIP, which usually results in much smaller files\&. See output of option \fI--version\fP in order to check whether zlib support is available\&.
 .SS "Limitations"
@@ -273,4 +275,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2003-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

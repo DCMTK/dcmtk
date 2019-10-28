@@ -1,4 +1,4 @@
-.TH "dcmdjpeg" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdjpeg" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdjpeg \- Decode JPEG-compressed DICOM file
@@ -110,9 +110,11 @@ color space conversion:
   # and convert to RGB.
 
   +cn   --conv-never
-          never convert color space
+          never convert YCbCr to RGB
 
-  # Never convert color space during decompression.
+  # Never convert color space from YCbCr to RGB during decompression.
+  # Note that a conversion from YBR_FULL_422 to YBR_FULL will still take
+  # place if the source images has been compressed with subsampling.
 
 planar configuration:
 
@@ -297,4 +299,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmcjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "movescu" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "movescu" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 movescu \- DICOM retrieve (C-MOVE) SCU
@@ -523,6 +523,8 @@ ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.
 AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                         1.2.840.10008.5.1.4.1.1.88.72
 PatientRadiationDoseSRStorage                        1.2.840.10008.5.1.4.1.1.88.73
+PlannedImagingAgentAdministrationSRStorage           1.2.840.10008.5.1.4.1.1.88.74
+PerformedImagingAgentAdministrationSRStorage         1.2.840.10008.5.1.4.1.1.88.75
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
@@ -542,6 +544,10 @@ RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
 RTIonPlanStorage                                     1.2.840.10008.5.1.4.1.1.481.8
 RTIonBeamsTreatmentRecordStorage                     1.2.840.10008.5.1.4.1.1.481.9
+RTPhysicianIntentStorage                             1.2.840.10008.5.1.4.1.1.481.10
+RTSegmentAnnotationStorage                           1.2.840.10008.5.1.4.1.1.481.11
+RTRadiationSetStorage                                1.2.840.10008.5.1.4.1.1.481.12
+CArmPhotonElectronRadiationStorage                   1.2.840.10008.5.1.4.1.1.481.13
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
@@ -664,4 +670,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBfindscu\fP(1), \fBstorescp\fP(1), \fBdump2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

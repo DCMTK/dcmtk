@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -97,6 +97,12 @@ other processing options:
   -nse  --no-sq-expansion
           disable expansion of empty sequences in C-FIND
           request messages
+
+  -rfp  --request-file-path  [p]ath: string
+          path to store request files to
+
+  -rff  --request-file-format  [f]ormat: string (default: #t.dump)
+          request file name format
 .fi
 .PP
 .SS "network options"
@@ -160,6 +166,9 @@ other network options:
         --no-fail
           don't fail on an invalid query
 
+        --sleep-before  [s]econds: integer
+          sleep s seconds before find (default: 0)
+
         --sleep-after  [s]econds: integer
           sleep s seconds after find (default: 0)
 
@@ -184,6 +193,49 @@ In general, the Specific Character Set attribute (0008,0005) will only be includ
 Please note that a C-FIND request which is handled by this application may contain DICOM's Specific Character Set attribute (0008,0005), but this application will never use this attribute's value for matching\&. Besides, the question if DICOM's Specific Character Set attribute (0008,0005) will be contained in a C-FIND response which is returned by this application is always determined by the returned character set option which was specified when this application was started\&.
 .PP
 The options --enable-file-reject and --disable-file-reject can be used to enable or disable a file rejection mechanism which makes sure only complete worklist files will be used during the matching process\&. A worklist file is considered to be complete if it contains all necessary type 1 information which the SCP might have to return to an SCU in a C-FIND response message\&. Table K\&.6-1 in part 4 annex K of the DICOM standard lists all corresponding type 1 attributes (see column 'Return Key Type')\&.
+.SS "Writing Request Files"
+Providing option \fI--request-file-path\fP enables writing of the incoming C-FIND requests into text files\&. The option value provides the target directory where these files will be stored\&. All request files are stored in 'dump' format as provided by the \fBdcmdump\fP tool and are raw, i\&.e\&. they are written as they arrive at \fBwlmscpfs\fP, without any tag processing applied by \fBwlmscpfs\fP\&.
+.PP
+Writing request files allows users to 'interactively' prepare the worklist database (for \fBwlmscpfs\fP the worklist files served from the \fI--data-file-path\fP directory) by watching the request file directory\&. Once a request file appears, one needs some time to update worklist entries in the database\&. For that reason it makes sense to use \fI--request-file-path\fP in combination with option \fI--sleep-before\fP which lets users specify a certain amount of seconds that \fBwlmscpfs\fP should wait before actually starting to check the worklist database\&. Note that the request files written with \fI--data-file-path\fP are not automatically deleted by \fBwlmscpfs\fP\&.
+.PP
+If request files are enabled, \fBwlmscpfs\fP must automatically create file names within the given directory\&. By default, the format is <timestamp>\&.dump where <timestamp> is in the format YYYYMMDDhhmmssffffff where:
+.IP "\(bu" 2
+YYYY is the current year
+.IP "\(bu" 2
+MM is the current month
+.IP "\(bu" 2
+DD is the current day
+.IP "\(bu" 2
+hh are the current hours (in 24 hour format)
+.IP "\(bu" 2
+mm are the current minutes
+.IP "\(bu" 2
+ss are the current seconds and
+.IP "\(bu" 2
+ffffff is the fraction of the current second
+.PP
+.PP
+This should work as a default for most applications that would like to use request files and want to ensure unique file names\&. If it is desired to change this naming scheme, the option \fI--request-file-format\fP can be used\&. It permits to specify the file naming pattern used by \fI--request-file-path\fP\&.
+.PP
+For flexibility, the following placeholders can be used in the pattern provided for \fI--request-file-format\fP:
+.PP
+.IP "\(bu" 2
+#a: calling application entity title of the peer SCU
+.IP "\(bu" 2
+#c: called application entity title (AE title of worklist SCP application)
+.IP "\(bu" 2
+#i: process id of the worklist SCP application process handling the request
+.IP "\(bu" 2
+#p: patient ID if present, otherwise empty string
+.IP "\(bu" 2
+#t: timestamp in the format YYYYMMDDhhmmssffffff
+.PP
+.PP
+The default (i\&.e\&. the value if \fI--request-file-format\fP is not explicitly set) is #t\&.dump resulting in the timestamp format described above\&.
+.PP
+An example for such a user-defined format string would be 'request_#i_#a_#c\&.txt'\&. The #i makes most sense if \fBwlmscpfs\fP multi-process mode is enabled via \fI--fork\fP option in order to ensure that simultaneous request will not result in the same file name for both requests\&.
+.PP
+It should be noted that the #p placeholder uses the value of Patient ID (0010,0020) from the request as is, i\&.e\&. if the string contains non-ASCII characters, the file name computed by \fBwlmscpfs\fP might be broken and thus cannot be written successfully or will look broken once written\&. Also, an empty Patient ID is used as such, i\&.e\&. the #p will be replaced with an empty string\&.
 .SS "DICOM Conformance"
 The \fBwlmscpfs\fP application supports the following SOP Classes as an SCP:
 .PP
@@ -361,4 +413,4 @@ The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "findscu" 1 "Thu Nov 29 2018" "Version 3.6.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -192,6 +192,9 @@ security profile:
   +py   --profile-bcp195-nd
           Non-downgrading BCP 195 TLS Profile
 
+  +pz   --profile-bcp195-ex
+          Extended BCP 195 TLS Profile
+
   +pb   --profile-basic
           Basic TLS Secure Transport Connection Profile (retired)
 
@@ -312,7 +315,7 @@ If no file is specified on the command line, the query must be specified complet
 .PP
 Each set of response identifiers received will be output to the logger unless option \fI--hide-responses\fP, any of the below \fI--extract\fP variants, \fI--quiet\fP or an appropriate logger configuration is used\&. In such cases, the output to the logger can be enforced with option \fI--show-responses\fP\&.
 .PP
-In addition, the response datasets can also be extracted as individual DICOM files (using option \fI--extract\fP) or XML files (using option \fI--extract-xml\fP)\&. The output format of the latter is described by the file \fIdcm2xml\&.dtd\fP (starting with top-level element 'data-set')\&.
+In addition, the response datasets can also be extracted as individual DICOM files (using option \fI--extract\fP) or XML files (using option \fI--extract-xml\fP)\&. The output format of the latter is described by the file \fIdcm2xml\&.dtd\fP (starting with top-level element 'data-set')\&. For XML files, the Specific Character Set is mapped automatically to an appropriate XML encoding\&. If this is not possible, e\&.g\&. in case of ISO 2022 character sets, non-ASCII characters and those below #32 are stored as '&#nnn;' where 'nnn' refers to the numeric character code\&. Please note that this might lead to invalid character entity references (such as '&#27;' for ESC) and will cause most XML parsers to reject the document\&.
 .PP
 Alternatively, all response datasets of an association can be extracted to a single XML file using option \fI--extract-xml-single\fP\&. The top-level element of the XML document is 'responses' (with a 'type' attribute of 'C-FIND')\&. The individual datasets are stored as described above\&. If support for character set conversion is enabled, UTF-8 encoding is used, i\&.e\&. all datasets are converted to UTF-8 encoding (which is strongly recommended in order to avoid issues with non-ASCII characters when different character sets are used)\&.
 .SS "DICOM Conformance"
@@ -368,4 +371,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2018 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
