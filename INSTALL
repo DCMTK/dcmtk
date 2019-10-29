@@ -363,13 +363,13 @@ respectively: use "--enable-stl-<feature>", "--disable-stl-<feature>" and/or
 SUPPORT FOR MODERN C++ STANDARDS
 ================================
 
-DCMTK can be configured to use several features of modern C++ standards, eg.
-(e.g. C++11 move semantics, variadic templates and the like) instead of its own
+DCMTK can be configured to use several features of modern C++ standards (e.g.
+C++11 move semantics, variadic templates and the like) instead of its own
 workarounds and fallback implementations.  This can be achieved using CMake's
 variables "CMAKE_CXX_STANDARD" and "CMAKE_CXX_STANDARD_REQUIRED".
 The previous mechanism only handled C++11 and is available on old versions of
-CMake (versions prior 3.1.3): set "DCMTK_ENABLE_CXX11" to "ON". For Autoconf,
-use the "--enable-cxx11" argument. Both the "DCMTK_ENABLE_CXX11" variable and
+CMake (versions prior 3.1.3): set "DCMTK_ENABLE_CXX11" to "ON".  For Autoconf,
+use the "--enable-cxx11" argument.  Both the "DCMTK_ENABLE_CXX11" variable and
 Autoconf support are now deprecated and will be removed in a future release.
 
 Enabling e.g. C++11 will change some parts of DCMTK's API, so a C++11 build of
@@ -934,4 +934,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher, P. Arizpe Gomez
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2019-10-28 (Schlamelcher)
+Last revised: 2019-10-29 (Riesmeier)

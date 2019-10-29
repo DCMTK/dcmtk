@@ -24,7 +24,7 @@
 ** A simple string class
 ** - for OFFIS projects when an ANSI string class is not always available
 ** - based on the ANSI-C++ specifications
-** - this impementation is intended to be slow but reliable
+** - this implementation is intended to be slow but reliable
 ** - it is known to be slow but is it reliable?
 */
 
@@ -527,7 +527,7 @@ OFString::find (const OFString& pattern, size_t pos) const
         return OFString_npos;
     }
     for (size_t i = pos; i < this_size; i++) {
-        /* is there enought space for the pattern? */
+        /* is there enough space for the pattern? */
         if ((i + pattern_size) > this_size) {
             return OFString_npos;
         }
