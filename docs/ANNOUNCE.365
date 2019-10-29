@@ -1,0 +1,169 @@
+ANNOUNCEMENT
+
+Version 3.6.5 of the OFFIS DCMTK (DICOM ToolKit) software is now available for
+public release.  This is a minor release that includes the following changes
+over the previous version 3.6.4:
+
+- DCMTK 3.6.5 builds correctly on older and up-to-date versions of GNU gcc
+  (4.4.7 to 9.2.0), Clang (3.4.2 to 9.0.0), AppleClang (11.0.0), Microsoft
+  Visual Studio (2008 to 2019), SunPro CC (5.14 and 5.15) and IBM XL C/C++
+  (16.1.1.3).
+
+- Tested with the following operating systems/environments:
+
+  - Android on arm64
+  - Cygwin on x86_64
+  - FreeBSD on x86_64
+  - Linux on x86_64 and x86
+  - MacOS X on x86_64
+  - NetBSD on x86_64
+  - OpenBSD on x86_64
+  - OpenIndiana on x86
+  - Solaris on x86
+  - Windows (and MinGW) on x86_64 and x86
+
+  For a complete list of tested systems and compilers, see the INSTALL file.
+
+- GNU Autoconf is still deprecated, running 'configure' emits a warning by
+  default.  Support for GNU Autoconf will be removed after this release.
+
+- Updated data dictionary, SOP Class, Frame of Reference and Transfer Syntax
+  UIDs for the recently approved changes to the DICOM standard (i.e. Supplements
+  and CPs), up to DICOM standard release DICOM 2019c plus Supplement 175 (Second
+  Generation Radiotherapy - C-Arm RT Treatment Modalities).
+
+- Added support for directory record "RADIOTHERAPY" that has been introduced
+  with Supplement 147 (Second Generation Radiotherapy - Prescription and Segment
+  Annotation).
+
+- Added support for the three new 64-bit integer VRs introduced with CP-1819:
+  Other 64-bit Very Long (OV), Signed 64-bit Very Long (SV) and Unsigned 64-bit
+  Very Long (UV).
+
+- Implemented support for the Extended BCP 195 TLS Profile, introduced with
+  Supplement 206, in the dcmtls module and the various TLS-enabled DCMTK tools.
+
+- Added option to "storescu" to rename files after processing them by appending
+  ".bad" or ".good" at the end of the filename.
+
+- Added new options to "wlmscpfs" that allow for dumping incoming C-FIND
+  requests to text files using a configurable directory and filename.
+
+- Updated automatically generated Context Group classes in "dcmsr"
+  (Structured Reporting) based on DICOM 2019c.  Also updated the Code
+  definitions from the supported coding schemes such as DICOM, NCIt and UMLS.
+
+- Further enhanced DICOM Structured Reporting (SR) module "dcmsr":
+
+  - Added support for the Performed Imaging Agent Administration SR IOD and the
+    Planned Imaging Agent Administration SR IOD introduced with Supplement 164.
+
+  - Added support for the Synchronization Module, which is required for some SR
+    IODs, e.g. Procedure Log SR or Performed Imaging Agent Administration SR.
+
+  - Added initial support for coding scheme "SCT" (SNOMED CT) by defining those
+    CODE_SCT_xxx code constants that are needed for the "cmr" submodule.
+
+  - Updated SR Template classes from DCMR for the 2019b edition of the DICOM
+    standard, i.e. all SRT (SNOMED RT) codes were replaced by their associated
+    SCT (SNOMED CT) counterparts. This change was introduced with CP-1850.
+
+  - Added new print flag PF_printEmptyCodes, which prints the text "empty code"
+    for empty codes instead of "invalid code". This new flag is e.g. used for
+    the output stream operator of the DSRCodedEntryValue class.
+
+- The list of elliptic curves to be negotiated as part of a TLS is now created
+  dynamically, i.e. it is tested at runtime which elliptic curves are supported
+  by the installed OpenSSL library.
+
+- Allow disabling Functional Group checks when writing Segmentations and
+  Parametric Map objects in order to speed up writing objects with many frames.
+
+- Added macro that enables the wide char (wchar_t*) support of the XML parser
+  that is part of the DCMTK (ofstd/ofxml). This support is limited to Windows
+  systems and still regarded as experimental (see documentation for details).
+
+- The tool "findscu" now always returns with a non-zero exit code when an error
+  occurred, e.g. when association negotiation failed.
+
+- CMake-related enhancements:
+
+  - DCMTK now understands and makes use of the CMake variable CMAKE_CXX_STANDARD
+    when a CMake version that supports it is employed (CMake 3.1.3 and newer).
+
+  - Added CMake option that controls whether DCMTK gets compiled using the
+    multi-threaded static or DLL runtime library when using MSVC on Windows.
+
+- Various fixes and extensions to the JPEG-LS implementation:
+
+  - Added command line options controlling how odd-length bitstreams are
+    padded to even length (for compatibility with HP LOCO).
+
+  - Added command line option that causes the decoder to store images even
+    though an error occurred during the decoding process, which may be helpful
+    for slightly truncated bitstreams.
+
+  - Enable setting of individual JPEG-LS encoding parameters
+    T1, T2, T3 and RESET.
+
+  - Various bugfixes in JPEG-LS encoder and decoder.
+
+- Fixed binary Segmentation object creation when width is not dividable by 8.
+
+- Fixed wrong DIMSE status codes A8xx (for C-STORE and C-FIND) and A800 (for
+  C-GET and C-MOVE), which were never defined in the official DICOM standard.
+  Now, the DCMTK uses the correct DIMSE status code 0122H for "SOP Class not
+  supported" for all DIMSE messages.
+
+- Fixed various issues that occurred after the official 3.6.4 release.
+  See CHANGES file for details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here in
+alphabetical order.  Thank you very much for your support!
+
+  Victor Derks <vderks@delftdi.com>
+  Chinna Durai <chinnadurai410@gmail.com>
+  Holger Franke <franke@image-instruments.de>
+  Sergei Gordey <serg.gordey@gmail.com>
+  Daniel Grieger <Daniel.Grieger@ith-icoserve.com>
+  Bengt Gustafsson <Bengt.Gustafsson@contextvision.se>
+  Alexander Haderer <alexander.haderer@loescap.de>
+  Peter Klotz <Peter.Klotz@ith-icoserve.com>
+  Brian Lucas <brian.lucas@heartit.com>
+  Mathieu Malaterre <mathieu.malaterre@gmail.com>
+  Hans Meine <hans.meine@mevis.fraunhofer.de>
+  Maria Samoylova <mashanedyak@gmail.com>
+  Martin Wenger <Martin.Wenger@klinikum-hef.de>
+  Brian Wise <brian.wise@medtronic.com>
+  Grischa Zengel <ggz@zmt.info>
+
+  Andreas Gravgaard Andersen (GitHub user "agravgaard")
+  Hans Johnson (GitHub user "hjmjohnson")
+  Stefano Magni
+
+  Forum user "AlexanderLysenko"
+  GitHub user "eborisch"
+  GitHub user "FreddyFunk"
+
+Members of the DCMTK Team who have worked on this release are
+(in alphabetical order):
+
+  Pedro Arizpe Gomez <arizpegomez@offis.de>
+  Marco Eichelberg <eichelberg@offis.de>
+  Michael Onken <onken@open-connections.de>
+  Joerg Riesmeier <dicom@jriesmeier.com>
+  Jan Schlamelcher <schlamelcher@offis.de>
+
+Student associates:
+
+  Nikolas Goldhammer <nikolasgoldhammer@gmail.com>
+
+Also see CREDITS file for projects and companies who have been generously
+supporting DCMTK.
+
+The DCMTK software can be downloaded via:
+
+  https://dicom.offis.de/dcmtk or https://www.dcmtk.org/
+
+OFFIS e.V., Oldenburg, Germany, 2019-10-28
