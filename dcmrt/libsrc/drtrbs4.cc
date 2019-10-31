@@ -1,13 +1,14 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2019, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule
  *
  *  Generated automatically from DICOM PS 3.3-2017e
  *  File created on 2017-12-05 09:30:54
+ *  Last modified on 2019-10-31 by Riesmeier
  *
  */
 
@@ -25,7 +26,7 @@ DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::Item(const OFBo
     AlternateBeamDoseType(DCM_AlternateBeamDoseType),
     BeamDeliveryDurationLimit(DCM_BeamDeliveryDurationLimit),
     BeamDose(DCM_BeamDose),
-    BeamDoseSpecificationPoint(DCM_BeamDoseSpecificationPoint),
+    BeamDoseSpecificationPoint(DCM_RETIRED_BeamDoseSpecificationPoint),
     BeamDoseType(DCM_BeamDoseType),
     BeamMeterset(DCM_BeamMeterset),
     ReferencedBeamNumber(DCM_ReferencedBeamNumber),

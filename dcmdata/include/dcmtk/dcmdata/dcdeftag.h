@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-08-07 18:58:15
+**   Date: 2019-10-31 16:15:51
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2019-08-07 18:58:15"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2019-10-31 16:15:51"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4722
+** Number of entries: 4743
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -81,6 +81,13 @@
 #define DCM_SourceApplicationEntityTitle         DcmTagKey(0x0002, 0x0016)
 #define DCM_SendingApplicationEntityTitle        DcmTagKey(0x0002, 0x0017)
 #define DCM_ReceivingApplicationEntityTitle      DcmTagKey(0x0002, 0x0018)
+#define DCM_RTVMetaInformationVersion            DcmTagKey(0x0002, 0x0031)
+#define DCM_RTVCommunicationSOPClassUID          DcmTagKey(0x0002, 0x0032)
+#define DCM_RTVCommunicationSOPInstanceUID       DcmTagKey(0x0002, 0x0033)
+#define DCM_RTVSourceIdentifier                  DcmTagKey(0x0002, 0x0035)
+#define DCM_RTVFlowIdentifier                    DcmTagKey(0x0002, 0x0036)
+#define DCM_RTVFlowRTPSamplingRate               DcmTagKey(0x0002, 0x0037)
+#define DCM_RTVFlowActualFrameDuration           DcmTagKey(0x0002, 0x0038)
 #define DCM_PrivateInformationCreatorUID         DcmTagKey(0x0002, 0x0100)
 #define DCM_PrivateInformation                   DcmTagKey(0x0002, 0x0102)
 #define DCM_FileSetID                            DcmTagKey(0x0004, 0x1130)
@@ -102,6 +109,7 @@
 #define DCM_ReferencedTransferSyntaxUIDInFile    DcmTagKey(0x0004, 0x1512)
 #define DCM_ReferencedRelatedGeneralSOPClassUIDInFile DcmTagKey(0x0004, 0x151a)
 #define DCM_RETIRED_NumberOfReferences           DcmTagKey(0x0004, 0x1600)
+#define DCM_CurrentFrameFunctionalGroupsSequence DcmTagKey(0x0006, 0x0001)
 #define DCM_RETIRED_LengthToEnd                  DcmTagKey(0x0008, 0x0001)
 #define DCM_SpecificCharacterSet                 DcmTagKey(0x0008, 0x0005)
 #define DCM_LanguageCodeSequence                 DcmTagKey(0x0008, 0x0006)
@@ -2236,6 +2244,18 @@
 #define DCM_ReasonForVisitCodeSequence           DcmTagKey(0x0032, 0x1067)
 #define DCM_RequestedContrastAgent               DcmTagKey(0x0032, 0x1070)
 #define DCM_RETIRED_StudyComments                DcmTagKey(0x0032, 0x4000)
+#define DCM_FlowIdentifierSequence               DcmTagKey(0x0034, 0x0001)
+#define DCM_FlowIdentifier                       DcmTagKey(0x0034, 0x0002)
+#define DCM_FlowTransferSyntaxUID                DcmTagKey(0x0034, 0x0003)
+#define DCM_FlowRTPSamplingRate                  DcmTagKey(0x0034, 0x0004)
+#define DCM_SourceIdentifier                     DcmTagKey(0x0034, 0x0005)
+#define DCM_FrameOriginTimestamp                 DcmTagKey(0x0034, 0x0007)
+#define DCM_IncludesImagingSubject               DcmTagKey(0x0034, 0x0008)
+#define DCM_FrameUsefulnessGroupSequence         DcmTagKey(0x0034, 0x0009)
+#define DCM_RealTimeBulkDataFlowSequence         DcmTagKey(0x0034, 0x000a)
+#define DCM_CameraPositionGroupSequence          DcmTagKey(0x0034, 0x000b)
+#define DCM_IncludesInformation                  DcmTagKey(0x0034, 0x000c)
+#define DCM_TimeOfFrameGroupSequence             DcmTagKey(0x0034, 0x000d)
 #define DCM_ReferencedPatientAliasSequence       DcmTagKey(0x0038, 0x0004)
 #define DCM_VisitStatusID                        DcmTagKey(0x0038, 0x0008)
 #define DCM_AdmissionID                          DcmTagKey(0x0038, 0x0010)
@@ -3951,7 +3971,7 @@
 #define DCM_RepeatFractionCycleLength            DcmTagKey(0x300a, 0x007a)
 #define DCM_FractionPattern                      DcmTagKey(0x300a, 0x007b)
 #define DCM_NumberOfBeams                        DcmTagKey(0x300a, 0x0080)
-#define DCM_BeamDoseSpecificationPoint           DcmTagKey(0x300a, 0x0082)
+#define DCM_RETIRED_BeamDoseSpecificationPoint   DcmTagKey(0x300a, 0x0082)
 #define DCM_ReferencedDoseReferenceUID           DcmTagKey(0x300a, 0x0083)
 #define DCM_BeamDose                             DcmTagKey(0x300a, 0x0084)
 #define DCM_BeamMeterset                         DcmTagKey(0x300a, 0x0086)
@@ -4365,7 +4385,7 @@
 #define DCM_RTBeamLimitingDeviceProximalDistance DcmTagKey(0x300a, 0x0642)
 #define DCM_RTBeamLimitingDeviceDistalDistance   DcmTagKey(0x300a, 0x0643)
 #define DCM_ParallelRTBeamDelimiterDeviceOrientationLabelCodeSequence DcmTagKey(0x300a, 0x0644)
-#define DCM_BeamsModifierOrientationAngle        DcmTagKey(0x300a, 0x0645)
+#define DCM_BeamModifierOrientationAngle         DcmTagKey(0x300a, 0x0645)
 #define DCM_FixedRTBeamDelimiterDeviceSequence   DcmTagKey(0x300a, 0x0646)
 #define DCM_ParallelRTBeamDelimiterDeviceSequence DcmTagKey(0x300a, 0x0647)
 #define DCM_NumberOfParallelRTBeamDelimiters     DcmTagKey(0x300a, 0x0648)
@@ -4434,6 +4454,7 @@
 #define DCM_NumberOfPatientSupportDevices        DcmTagKey(0x300a, 0x0687)
 #define DCM_RTBeamModifierDefinitionDistance     DcmTagKey(0x300a, 0x0688)
 #define DCM_BeamAreaLimitSequence                DcmTagKey(0x300a, 0x0689)
+#define DCM_ReferencedRTPrescriptionSequence     DcmTagKey(0x300a, 0x068a)
 #define DCM_ReferencedRTPlanSequence             DcmTagKey(0x300c, 0x0002)
 #define DCM_ReferencedBeamSequence               DcmTagKey(0x300c, 0x0004)
 #define DCM_ReferencedBeamNumber                 DcmTagKey(0x300c, 0x0006)
