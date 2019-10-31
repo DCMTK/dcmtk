@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2019b
- *  File created on 2019-04-26 16:52:41 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019d
+ *  File created on 2019-09-20 20:16:50 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4218
-// - retired: 194
+// total number of codes: 4269
+// - retired: 196
 // - no name: 27
 // - not unique: 17
 
@@ -621,6 +621,7 @@
 #define CODE_DCM_ImageOrientation_Patient_ColumnZ                          DSRBasicCodedEntry("110909", "DCM", "Image Orientation (Patient) Column Z")
 #define CODE_DCM_PixelDataRows                                             DSRBasicCodedEntry("110910", "DCM", "Pixel Data Rows")
 #define CODE_DCM_PixelDataColumns                                          DSRBasicCodedEntry("110911", "DCM", "Pixel Data Columns")
+#define CODE_DCM_AlgorithmFamily                                           DSRBasicCodedEntry("111000", "DCM", "Algorithm Family")
 #define CODE_DCM_AlgorithmName                                             DSRBasicCodedEntry("111001", "DCM", "Algorithm Name")
 #define CODE_DCM_AlgorithmParameters                                       DSRBasicCodedEntry("111002", "DCM", "Algorithm Parameters")
 #define CODE_DCM_AlgorithmVersion                                          DSRBasicCodedEntry("111003", "DCM", "Algorithm Version")
@@ -956,7 +957,7 @@
 #define CODE_DCM_NumberOfSimilarFindings                                   DSRBasicCodedEntry("111406", "DCM", "Number of similar findings")
 #define CODE_DCM_ImplantFinding                                            DSRBasicCodedEntry("111407", "DCM", "Implant finding")
 #define CODE_DCM_FilmScreenMammography                                     DSRBasicCodedEntry("111408", "DCM", "Film Screen Mammography")
-#define CODE_DCM_DigitalMammography                                        DSRBasicCodedEntry("111409", "DCM", "Digital Mammography")
+#define CODE_DCM_RETIRED_DigitalMammography                                DSRBasicCodedEntry("111409", "DCM", "Digital Mammography")
 #define CODE_DCM_SurgicalConsult                                           DSRBasicCodedEntry("111410", "DCM", "Surgical consult")
 #define CODE_DCM_MammographyCAD                                            DSRBasicCodedEntry("111411", "DCM", "Mammography CAD")
 #define CODE_DCM_NarrativeSummary                                          DSRBasicCodedEntry("111412", "DCM", "Narrative Summary")
@@ -2172,6 +2173,8 @@
 #define CODE_DCM_IterativeClosestPoint                                     DSRBasicCodedEntry("114213", "DCM", "Iterative Closest Point")
 #define CODE_DCM_Freehand                                                  DSRBasicCodedEntry("114215", "DCM", "Freehand")
 #define CODE_DCM_Checkerboard                                              DSRBasicCodedEntry("114216", "DCM", "Checkerboard")
+#define CODE_DCM_DeviceDescription                                         DSRBasicCodedEntry("120999", "DCM", "Device Description")
+#define CODE_DCM_UniqueDeviceIdentifiers                                   DSRBasicCodedEntry("121000", "DCM", "Unique Device Identifiers")
 #define CODE_DCM_QuotationMode                                             DSRBasicCodedEntry("121001", "DCM", "Quotation Mode")
 #define CODE_DCM_QuotedSource                                              DSRBasicCodedEntry("121002", "DCM", "Quoted Source")
 #define CODE_DCM_Document_121003                                           DSRBasicCodedEntry("121003", "DCM", "Document")
@@ -2232,6 +2235,7 @@
 #define CODE_DCM_ProcedureReported                                         DSRBasicCodedEntry("121058", "DCM", "Procedure reported")
 #define CODE_DCM_RETIRED_PresenceUndetermined                              DSRBasicCodedEntry("121059", "DCM", "Presence Undetermined")
 #define CODE_DCM_RETIRED_History                                           DSRBasicCodedEntry("121060", "DCM", "History")
+#define CODE_DCM_DeviceObserverManufacturerClassUID                        DSRBasicCodedEntry("121061", "DCM", "Device Observer Manufacturer Class UID")
 #define CODE_DCM_RETIRED_Request                                           DSRBasicCodedEntry("121062", "DCM", "Request")
 #define CODE_DCM_RETIRED_CurrentProcedureDescriptions                      DSRBasicCodedEntry("121064", "DCM", "Current Procedure Descriptions")
 #define CODE_DCM_ProcedureDescription                                      DSRBasicCodedEntry("121065", "DCM", "Procedure Description")
@@ -2434,6 +2438,12 @@
 #define CODE_DCM_ContrastBolusIngredientOpaque                             DSRBasicCodedEntry("121381", "DCM", "Contrast/Bolus Ingredient Opaque")
 #define CODE_DCM_QuantityAdministered                                      DSRBasicCodedEntry("121382", "DCM", "Quantity administered")
 #define CODE_DCM_MassAdministered                                          DSRBasicCodedEntry("121383", "DCM", "Mass administered")
+#define CODE_DCM_RTPlanLabel                                               DSRBasicCodedEntry("121384", "DCM", "RT Plan Label")
+#define CODE_DCM_CurrentFractionNumber                                     DSRBasicCodedEntry("121385", "DCM", "Current Fraction Number")
+#define CODE_DCM_NumberOfFractionsPlanned                                  DSRBasicCodedEntry("121386", "DCM", "Number of Fractions Planned")
+#define CODE_DCM_NumberOfFractionsCompleted                                DSRBasicCodedEntry("121387", "DCM", "Number of Fractions Completed")
+#define CODE_DCM_CheckedInStatus                                           DSRBasicCodedEntry("121388", "DCM", "Checked-In Status")
+#define CODE_DCM_ReferencedBeamNumber                                      DSRBasicCodedEntry("121389", "DCM", "Referenced Beam Number")
 #define CODE_DCM_Derivation                                                DSRBasicCodedEntry("121401", "DCM", "Derivation")
 #define CODE_DCM_Normality                                                 DSRBasicCodedEntry("121402", "DCM", "Normality")
 #define CODE_DCM_LevelOfSignificance                                       DSRBasicCodedEntry("121403", "DCM", "Level of Significance")
@@ -3417,7 +3427,7 @@
 #define CODE_DCM_DfFKPEG3_89Zr                                             DSRBasicCodedEntry("126761", "DCM", "Df-FK-PEG(3) ^89^Zr")
 #define CODE_DCM_DfFK2_89Zr                                                DSRBasicCodedEntry("126762", "DCM", "Df-[FK](2) ^89^Zr")
 #define CODE_DCM_DfFK23PEG4_89Zr                                           DSRBasicCodedEntry("126763", "DCM", "Df-[FK](2)-3PEG(4) ^89^Zr")
-#define CODE_DCM_IEC61217PatientSupportContinuousAngle                     DSRBasicCodedEntry("126801", "DCM", "IEC61217 Patient Support Continuous Angle")
+#define CODE_DCM_IEC61217PatientSupportContinuousYawAngle                  DSRBasicCodedEntry("126801", "DCM", "IEC61217 Patient Support Continuous Yaw Angle")
 #define CODE_DCM_IEC61217TableTopContinuousPitchAngle                      DSRBasicCodedEntry("126802", "DCM", "IEC61217 Table Top Continuous Pitch Angle")
 #define CODE_DCM_IEC61217TableTopContinuousRollAngle                       DSRBasicCodedEntry("126803", "DCM", "IEC61217 Table Top Continuous Roll Angle")
 #define CODE_DCM_IEC61217TableTopEccentricAxisDistance                     DSRBasicCodedEntry("126804", "DCM", "IEC61217 Table Top Eccentric Axis Distance")
@@ -3550,7 +3560,7 @@
 #define CODE_DCM_MouseAlphaSynucleinPreformedFibrils                       DSRBasicCodedEntry("127852", "DCM", "Mouse alpha synuclein preformed fibrils")
 #define CODE_DCM_HumanTauPreformedFibrils                                  DSRBasicCodedEntry("127853", "DCM", "Human Tau preformed fibrils")
 #define CODE_DCM_MouseTauPreformedFibrils                                  DSRBasicCodedEntry("127854", "DCM", "Mouse Tau preformed fibrils")
-#define CODE_DCM_NonIonicIodinatedContrastAgent                            DSRBasicCodedEntry("127855", "DCM", "Non-ionic iodinated contrast agent")
+#define CODE_DCM_RETIRED_NonIonicIodinatedContrastAgent                    DSRBasicCodedEntry("127855", "DCM", "Non-ionic iodinated contrast agent")
 #define CODE_DCM_HeartValveFlail                                           DSRBasicCodedEntry("127856", "DCM", "Heart valve flail")
 #define CODE_DCM_GlucoseMeasurementDate                                    DSRBasicCodedEntry("127857", "DCM", "Glucose Measurement Date")
 #define CODE_DCM_GlucoseMeasurementTime                                    DSRBasicCodedEntry("127858", "DCM", "Glucose Measurement Time")
@@ -4242,6 +4252,7 @@
 #define CODE_DCM_ContrastReactionProphylacticAgent                         DSRBasicCodedEntry("130259", "DCM", "Contrast Reaction Prophylactic Agent")
 #define CODE_DCM_ImagingAgentAdministrationPerformedPhaseUID               DSRBasicCodedEntry("130261", "DCM", "Imaging Agent Administration Performed Phase UID")
 #define CODE_DCM_ReferencedImagingAgentAdministrationPhaseUID              DSRBasicCodedEntry("130262", "DCM", "Referenced Imaging Agent Administration Phase UID")
+#define CODE_DCM_Median                                                    DSRBasicCodedEntry("130290", "DCM", "Median")
 #define CODE_DCM_SkinOfParaspinalAreaOfTheNeck                             DSRBasicCodedEntry("130300", "DCM", "Skin of paraspinal area of the neck")
 #define CODE_DCM_SkinOfParaspinalAreaOfTheSuperiorBack                     DSRBasicCodedEntry("130301", "DCM", "Skin of paraspinal area of the superior back")
 #define CODE_DCM_SkinOfUpperParaspinalRegion                               DSRBasicCodedEntry("130302", "DCM", "Skin of upper paraspinal region")
@@ -4266,5 +4277,45 @@
 #define CODE_DCM_SkinOfUpperAntihelixOfEar                                 DSRBasicCodedEntry("130321", "DCM", "Skin of upper antihelix of ear")
 #define CODE_DCM_SkinOfUpperEyelidMargin                                   DSRBasicCodedEntry("130322", "DCM", "Skin of upper eyelid margin")
 #define CODE_DCM_SkinOfMidBack                                             DSRBasicCodedEntry("130323", "DCM", "Skin of mid back")
+#define CODE_DCM_FunctionalConditionPresentDuringAcquisition               DSRBasicCodedEntry("130324", "DCM", "Functional condition present during acquisition")
+#define CODE_DCM_JawPair                                                   DSRBasicCodedEntry("130330", "DCM", "Jaw Pair")
+#define CODE_DCM_LeafPairs                                                 DSRBasicCodedEntry("130331", "DCM", "Leaf Pairs")
+#define CODE_DCM_VariableCircularCollimator                                DSRBasicCodedEntry("130332", "DCM", "Variable Circular Collimator")
+#define CODE_DCM_SingleLeaves                                              DSRBasicCodedEntry("130333", "DCM", "Single Leaves")
+#define CODE_DCM_XOrientation                                              DSRBasicCodedEntry("130334", "DCM", "X Orientation")
+#define CODE_DCM_YOrientation                                              DSRBasicCodedEntry("130335", "DCM", "Y Orientation")
+#define CODE_DCM_PhysicalCompensator                                       DSRBasicCodedEntry("130340", "DCM", "Physical Compensator")
+#define CODE_DCM_TotalBodyIrradiation                                      DSRBasicCodedEntry("130341", "DCM", "Total Body Irradiation")
+#define CODE_DCM_TotalSkinIrradiation                                      DSRBasicCodedEntry("130342", "DCM", "Total Skin Irradiation")
+#define CODE_DCM_IsocentricPatientSupportContinuousPitchAngle              DSRBasicCodedEntry("126812", "DCM", "Isocentric Patient Support Continuous Pitch Angle")
+#define CODE_DCM_IsocentricPatientSupportContinuousRollAngle               DSRBasicCodedEntry("126813", "DCM", "Isocentric Patient Support Continuous Roll Angle")
+#define CODE_DCM_IsocentricPatientSupportContinuousYawAngle                DSRBasicCodedEntry("126814", "DCM", "Isocentric Patient Support Continuous Yaw Angle")
+#define CODE_DCM_IsocentricPatientSupportLateralPosition                   DSRBasicCodedEntry("126815", "DCM", "Isocentric Patient Support Lateral Position")
+#define CODE_DCM_IsocentricPatientSupportLongitudinalPosition              DSRBasicCodedEntry("126816", "DCM", "Isocentric Patient Support Longitudinal Position")
+#define CODE_DCM_IsocentricPatientSupportVerticalPosition                  DSRBasicCodedEntry("126817", "DCM", "Isocentric Patient Support Vertical Position")
+#define CODE_DCM_ElectronFixedAperture                                     DSRBasicCodedEntry("130343", "DCM", "Electron Fixed Aperture")
+#define CODE_DCM_PhotonFixedAperture                                       DSRBasicCodedEntry("130344", "DCM", "Photon Fixed Aperture")
+#define CODE_DCM_IntraoperativeFixedAperture                               DSRBasicCodedEntry("130345", "DCM", "Intraoperative Fixed Aperture")
+#define CODE_DCM_HardWedge                                                 DSRBasicCodedEntry("130346", "DCM", "Hard Wedge")
+#define CODE_DCM_MotorizedWedge                                            DSRBasicCodedEntry("130347", "DCM", "Motorized Wedge")
+#define CODE_DCM_DynamicWedge                                              DSRBasicCodedEntry("130348", "DCM", "Dynamic Wedge")
+#define CODE_DCM_Graticule                                                 DSRBasicCodedEntry("130349", "DCM", "Graticule")
+#define CODE_DCM_Reticle                                                   DSRBasicCodedEntry("130350", "DCM", "Reticle")
+#define CODE_DCM_ImageDetector                                             DSRBasicCodedEntry("130351", "DCM", "Image Detector")
+#define CODE_DCM_FilmHolder                                                DSRBasicCodedEntry("130352", "DCM", "Film Holder")
+#define CODE_DCM_WinstonLutzPointer                                        DSRBasicCodedEntry("130353", "DCM", "Winston-Lutz Pointer")
+#define CODE_DCM_BowtieFilter                                              DSRBasicCodedEntry("130354", "DCM", "Bowtie Filter")
+#define CODE_DCM_FlatteningFilterBeam                                      DSRBasicCodedEntry("130355", "DCM", "Flattening Filter Beam")
+#define CODE_DCM_NonFlatteningFilterBeam                                   DSRBasicCodedEntry("130356", "DCM", "Non-Flattening Filter Beam")
+#define CODE_DCM_PartialFlatteningFilterBeam                               DSRBasicCodedEntry("130357", "DCM", "Partial Flattening Filter Beam")
+#define CODE_DCM_PhysicsAssistant                                          DSRBasicCodedEntry("128678", "DCM", "Physics Assistant")
+#define CODE_DCM_NominalRadiationSourceLocation                            DSRBasicCodedEntry("130358", "DCM", "Nominal Radiation Source Location")
+#define CODE_DCM_TreatmentMachineIsocenter                                 DSRBasicCodedEntry("130359", "DCM", "Treatment Machine Isocenter")
+#define CODE_DCM_FixedLaserSetupPoint                                      DSRBasicCodedEntry("130360", "DCM", "Fixed Laser Setup Point")
+#define CODE_DCM_RadiotherapyTreatmentDevice                               DSRBasicCodedEntry("130361", "DCM", "Radiotherapy Treatment Device")
+#define CODE_DCM_RTVRendition                                              DSRBasicCodedEntry("130370", "DCM", "RTV Rendition")
+#define CODE_DCM_RTVAudioAndVideoRendition                                 DSRBasicCodedEntry("130371", "DCM", "RTV Audio and Video Rendition")
+#define CODE_DCM_RTVStereoVideoRendition                                   DSRBasicCodedEntry("130372", "DCM", "RTV Stereo Video Rendition")
+#define CODE_DCM_RTVAudioAndStereoVideoRendition                           DSRBasicCodedEntry("130373", "DCM", "RTV Audio and Stereo Video Rendition")
 
 #endif

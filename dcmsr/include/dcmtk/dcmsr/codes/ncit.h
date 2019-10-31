@@ -5,8 +5,8 @@
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2019c
- *  File created on 2019-06-19 17:38:36 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019d
+ *  File created on 2019-09-20 20:16:58 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 36
+// total number of codes: 40
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -69,10 +69,12 @@
 #define CODE_NCIt_AdverseEvent                                             DSRBasicCodedEntry("C41331", "NCIt", "Adverse Event")
 #define CODE_NCIt_TemperatureSensorDeviceComponent                         DSRBasicCodedEntry("C50304", "NCIt", "Temperature sensor device component")
 #define CODE_NCIt_Reviewer                                                 DSRBasicCodedEntry("C54634", "NCIt", "Reviewer")
+#define CODE_NCIt_Ion                                                      DSRBasicCodedEntry("C597", "NCIt", "Ion")
 #define CODE_NCIt_AdLibitum                                                DSRBasicCodedEntry("C64636", "NCIt", "ad libitum")
 #define CODE_NCIt_ActivitySession                                          DSRBasicCodedEntry("C67447", "NCIt", "Activity Session")
 #define CODE_NCIt_UnitConversionFactor                                     DSRBasicCodedEntry("C70774", "NCIt", "Unit Conversion Factor")
 #define CODE_NCIt_MedicalProductExpirationDate                             DSRBasicCodedEntry("C70854", "NCIt", "Medical Product Expiration Date")
+#define CODE_NCIt_CardiotonicAgent                                         DSRBasicCodedEntry("C78322", "NCIt", "Cardiotonic agent")
 #define CODE_NCIt_NonEnhancingLesion                                       DSRBasicCodedEntry("C81175", "NCIt", "Non-Enhancing Lesion")
 #define CODE_NCIt_Erect                                                    DSRBasicCodedEntry("C86043", "NCIt", "erect")
 #define CODE_NCIt_BeddingChange                                            DSRBasicCodedEntry("C90365", "NCIt", "Bedding change")
@@ -81,8 +83,10 @@
 #define CODE_NCIt_HousingHumidity                                          DSRBasicCodedEntry("C90395", "NCIt", "Housing humidity")
 #define CODE_NCIt_LightCycle                                               DSRBasicCodedEntry("C90419", "NCIt", "Light cycle")
 #define CODE_NCIt_WaterDelivery                                            DSRBasicCodedEntry("C90486", "NCIt", "Water delivery")
+#define CODE_NCIt_Dosimetrist                                              DSRBasicCodedEntry("C93176", "NCIt", "Dosimetrist")
 #define CODE_NCIt_ReferenceRegion                                          DSRBasicCodedEntry("C94970", "NCIt", "Reference Region")
 #define CODE_NCIt_DCFBC_F18                                                DSRBasicCodedEntry("C96234", "NCIt", "DCFBC F^18^")
 #define CODE_NCIt_Adjudicator                                              DSRBasicCodedEntry("C96561", "NCIt", "Adjudicator")
+#define CODE_NCIt_Fibrate                                                  DSRBasicCodedEntry("C98150", "NCIt", "Fibrate")
 
 #endif
