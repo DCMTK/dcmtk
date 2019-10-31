@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2019b
- *  File created on 2019-04-26 17:15:20 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019d
+ *  File created on 2019-10-31 16:47:54 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20190124)
+ *  (type: extensible, version: 20190817)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -154,7 +154,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         FluoroestradiolFES_F18,
         /// (C1541539,UMLS,"Fluoroetanidazole F^18^")
         Fluoroetanidazole_F18,
-        /// (129500005,SCT,"Fluoro-L-dopa F^18^")
+        /// (5811000122108,SCT,"Fluoro-L-dopa F^18^")
         FluoroLDopa_F18,
         /// (422763008,SCT,"Fluoromethane F^18^")
         Fluoromethane_F18,
@@ -174,7 +174,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Fresolimumab_89Zr,
         /// (126731,DCM,"GA201 ^89^Zr")
         GA201_89Zr,
-        /// (129516007,SCT,"Germanium Ge^68^")
+        /// (53315004,SCT,"Germanium Ge^68^")
         Germanium_Ge68,
         /// (126724,DCM,"Glembatumumab vedotin ^89^Zr")
         GlembatumumabVedotin_89Zr,
@@ -206,7 +206,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         MonoclonalAntibodymAb_64Cu,
         /// (126511,DCM,"Monoclonal Antibody (mAb) ^89^Zr")
         MonoclonalAntibodymAb_89Zr,
-        /// (424874008,SCT,"Monoclonal antibody I^124^")
+        /// (423249007,SCT,"Monoclonal antibody I^124^")
         MonoclonalAntibody_I124,
         /// (126753,DCM,"Nanocolloidal albumin ^89^Zr")
         NanocolloidalAlbumin_89Zr,
@@ -270,7 +270,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         SodiumFluoride_F18,
         /// (422980002,SCT,"Sodium iodide I^124^")
         SodiumIodide_I124,
-        /// (129517003,SCT,"Sodium Na^22^")
+        /// (71633006,SCT,"Sodium Na^22^")
         Sodium_Na22,
         /// (129499001,SCT,"Spiperone F^18^")
         Spiperone_F18,

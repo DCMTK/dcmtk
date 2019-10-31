@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2019b
- *  File created on 2019-04-26 17:15:37 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019d
+ *  File created on 2019-10-31 16:48:11 by J. Riesmeier
  *
  */
 

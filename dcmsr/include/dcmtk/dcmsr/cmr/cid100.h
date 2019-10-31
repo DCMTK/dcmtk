@@ -5,8 +5,8 @@
  *
  *  Header file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
- *  Generated automatically from DICOM PS 3.16-2019b
- *  File created on 2019-04-26 17:15:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019d
+ *  File created on 2019-10-31 16:47:48 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 100 - Quantitative Diagnostic Imaging Procedures.
- *  (type: extensible, version: 20190121)
+ *  (type: extensible, version: 20190817)
  */
 class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
   : public DSRContextGroup
@@ -66,7 +66,7 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedures
         PETWholeBody,
         /// (443271005,SCT,"PET/CT FDG imaging of whole body")
         PETCT_FDGImagingOfWholeBody,
-        /// (443844003,SCT,"PET/CT MET imaging of whole body")
+        /// (764704008,SCT,"PET/CT MET imaging of whole body")
         PETCT_METImagingOfWholeBody,
         /// (39142-5,LN,"CT perfusion head with contrast IV")
         CTPerfusionHeadWithContrastIV,

@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4020_PETRadionuclide
  *
- *  Generated automatically from DICOM PS 3.16-2019b
- *  File created on 2019-04-26 17:15:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019d
+ *  File created on 2019-10-31 16:47:52 by J. Riesmeier
  *
  */
 
