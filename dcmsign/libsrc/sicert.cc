@@ -324,6 +324,99 @@ void SiCertificate::getCertValidityNotAfter(OFString& str)
   }
 }
 
+OFBool SiCertificate::isCertExpiredAt(OFString& date)
+{
+  OFBool result = OFTrue;
+  if (x509)
+  {
+    const ASN1_TIME *certexpiry = X509_get0_notAfter(x509);
+    if (certexpiry)
+    {
+      ASN1_TIME *sigdate = ASN1_TIME_new(); // ASN1_TIME is a typedef for ASN1_STRING
+      if (sigdate)
+      {
+        if (ASN1_TIME_set_string(sigdate, date.c_str()))
+        {
+          int pday = 0;
+          int psec = 0;
+          if (ASN1_TIME_diff(&pday, &psec, sigdate, certexpiry))
+          {
+            // if the given date is before certificate expiry, then pday or psec will be positive,
+            // which means that the certificate is not expired at the given date.
+            if ((pday > 0)||(psec > 0)) result = OFFalse;
+          }
+        }
+        ASN1_TIME_free(sigdate);
+      }
+    }
+  }
+  return result;
+}
+
+OFBool SiCertificate::isCertNotYetValidAt(OFString& date)
+{
+  OFBool result = OFTrue;
+  if (x509)
+  {
+    const ASN1_TIME *certstart = X509_get0_notBefore(x509);
+    if (certstart)
+    {
+      ASN1_TIME *sigdate = ASN1_TIME_new(); // ASN1_TIME is a typedef for ASN1_STRING
+      if (sigdate)
+      {
+        if (ASN1_TIME_set_string(sigdate, date.c_str()))
+        {
+          int pday = 0;
+          int psec = 0;
+          if (ASN1_TIME_diff(&pday, &psec, sigdate, certstart))
+          {
+            // if the given date is after the start of certificate validity, then pday or psec will be negative,
+            // which means that the certificate is past the start of validity at the given date.
+            if ((pday < 0)||(psec < 0)) result = OFFalse;
+          }
+        }
+        ASN1_TIME_free(sigdate);
+      }
+    }
+  }
+  return result;
+}
+
+
+OFBool SiCertificate::isCertExpiredNow() const
+{
+  OFBool result = OFTrue;
+  if (x509)
+  {
+    const ASN1_TIME *certexpiry = X509_get0_notAfter(x509);
+    if (certexpiry)
+    {
+      // X509_cmp_current_time() will return -1 when certexpiry is in the past
+      // and zero if there is an error. In both cases we treat the certificate as expired.
+      if (X509_cmp_current_time(certexpiry) > 0) result = OFFalse;
+    }
+  }
+  return result;
+}
+
+
+OFBool SiCertificate::isCertNotYetValidNow() const
+{
+  OFBool result = OFTrue;
+  if (x509)
+  {
+    const ASN1_TIME *certstart = X509_get0_notBefore(x509);
+    if (certstart)
+    {
+      // X509_cmp_current_time() will return 1 when certstart is in the future
+      // and zero if there is an error. In both cases we treat the certificate as invalid.
+      if (X509_cmp_current_time(certstart) < 0) result = OFFalse;
+    }
+  }
+  return result;
+}
+
+
 long SiCertificate::getCertKeyBits()
 {
   long certPubKeyBits = 0;                   /* certificate number of bits in public key */

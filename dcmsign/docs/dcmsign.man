@@ -145,6 +145,7 @@ signature verification:
 
   +rv   --verify-if-present    
           verify signatures if present, pass otherwise
+          (default)
 
   +rg   --require-sig          
           fail if no signature at all is present

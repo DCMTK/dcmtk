@@ -264,5 +264,13 @@ extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_InvalidFiletype;
 /// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_TimestampSignatureVerificationFailed;
 
+/// signature verification failed because the certificate was already expired at the signature create date
+/// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_CertExpiredAtSignature;
+
+/// signature verification failed because the certificate was not yet valid at signature creation date
+/// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_CertNotYetValidAtSig;
+
 #endif
 #endif

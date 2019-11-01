@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--format-old",               "-fo",        "use old (pre-3.5.4) DCMTK signature format");
   cmd.addGroup("signature verification options (only with --verify):");
     cmd.addSubGroup("signature verification:");
-      cmd.addOption("--verify-if-present",         "+rv",       "verify signatures if present, pass otherwise");
+      cmd.addOption("--verify-if-present",         "+rv",       "verify signatures if present, pass otherwise\n(default)");
       cmd.addOption("--require-sig",               "+rg",       "fail if no signature at all is present");
       cmd.addOption("--require-creator",           "+rc",       "fail if no creator RSA signature is present");
       cmd.addOption("--require-auth",              "+ru",       "fail if no auth RSA signature is present");

@@ -153,6 +153,32 @@ public:
    */
   X509 *getRawCertificate();
 
+  /** returns true if the certificate expires before the given date.
+   *  @param date a string in the format YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ
+   *    (where Z represents the letter 'Z', meaning time zone UTC+0)
+   *  @return OFTrue if certificate expires before the given date,
+   *    or if the given date is invalid; OFFalse otherwise.
+   */
+  OFBool isCertExpiredAt(OFString& date);
+
+  /** returns true if the certificate is expired.
+   *  @return OFTrue if certificate is expired, OFFalse otherwise
+   */
+  OFBool isCertExpiredNow() const;
+
+  /** returns true if the certificate is not yet valid at the given date.
+   *  @param date a string in the format YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ
+   *    (where Z represents the letter 'Z', meaning time zone UTC+0)
+   *  @return OFTrue if certificate is not yet valid at the given date,
+   *    or if the given date is invalid; OFFalse otherwise.
+   */
+  OFBool isCertNotYetValidAt(OFString& date);
+
+  /** returns true if the certificate is not yet valid.
+   *  @return OFTrue if certificate is not yet valid, OFFalse otherwise
+   */
+  OFBool isCertNotYetValidNow() const;
+
 private:
 
   /// private undefined copy constructor

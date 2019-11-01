@@ -34,6 +34,7 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
+class DcmDateTime;
 class DcmItem;
 class DcmStack;
 class DcmSequenceOfItems;
@@ -44,11 +45,11 @@ class SiSecurityProfile;
 class SiMAC;
 class SiTimeStamp;
 
-/** this class provides the main interface to the dcmsign module - it allows 
- *  to create, examine and verify digital signatures in DICOM datasets or 
- *  items. The methods in this class do not handle digital signatures 
- *  embedded in sequence items within the dataset, other than providing 
- *  helper functions that allow to locate and attach the sub-items 
+/** this class provides the main interface to the dcmsign module - it allows
+ *  to create, examine and verify digital signatures in DICOM datasets or
+ *  items. The methods in this class do not handle digital signatures
+ *  embedded in sequence items within the dataset, other than providing
+ *  helper functions that allow to locate and attach the sub-items
  *  separately.
  *  @remark this class is only available if DCMTK is compiled with
  *  OpenSSL support enabled.
@@ -64,18 +65,18 @@ public:
 
   /// default constructor
   DcmSignature();
- 
+
   /// destructor
   virtual ~DcmSignature();
 
   /** attaches a DICOM dataset or item to the signature object.
    *  The dataset is detached by a call to detach() or by destruction
-   *  of the signature object.  This object may modify but never deletes 
+   *  of the signature object.  This object may modify but never deletes
    *  an attached dataset.
    *  @param dataset dataset or item to be attached
    */
-  void attach(DcmItem *dataset);  
-  
+  void attach(DcmItem *dataset);
+
   /** detaches an attached DICOM dataset from the signature object.
    */
   void detach();
@@ -99,16 +100,16 @@ public:
    *  @return status code
    */
   OFCondition createSignature(
-    SiPrivateKey& key, 
-    SiCertificate& cert, 
+    SiPrivateKey& key,
+    SiCertificate& cert,
     SiMAC& mac,
-    SiSecurityProfile& profile, 
+    SiSecurityProfile& profile,
     E_TransferSyntax xfer=EXS_LittleEndianExplicit,
     const DcmAttributeTag *tagList=NULL,
     SiTimeStamp *timeStamp=NULL,
     SiSignaturePurpose::E_SignaturePurposeType sigPurpose=SiSignaturePurpose::ESP_none);
 
-  /** returns the number of signatures in the dataset. Does not count 
+  /** returns the number of signatures in the dataset. Does not count
    *  signatures embedded in sequence items within the dataset.
    */
   unsigned long numberOfSignatures();
@@ -124,7 +125,7 @@ public:
    *  @return status code
    */
   OFCondition selectSignature(unsigned long i);
-  
+
   /** verifies the current signature.
    *  Current signature must be selected with selectSignature().
    *  @return SI_EC_Normal if signature is complete and valid, an error code
@@ -169,6 +170,13 @@ public:
    */
   OFCondition getCurrentSignatureDateTime(OFString& str);
 
+  /** returns a pointer to the object representing Signature Date/Time
+   *  of the current signature.
+   *  Current signature must be selected with selectSignature().
+   *  @return pointer to signature datetime if present, NULL otherwise
+   */
+  DcmDateTime *getCurrentSignatureDateTime();
+
   /** returns the Data Elements Signed attribute of the current signature if present.
    *  Current signature must be selected with selectSignature().
    *  If a valid signature is selected but the signature does not contain
@@ -206,7 +214,7 @@ public:
    *  @return pointer to current signature item, may be NULL
    */
   DcmItem *getSelectedSignatureItem();
-  
+
   /** dump all data that is fed into the MAC algorithm into the given file,
    *  which must be opened and closed by caller.
    *  @param f pointer to file already opened for writing; may be NULL.
@@ -259,7 +267,7 @@ private:
    *  @return status code
    */
   OFCondition allocateMACID(Uint16& newID);
-  
+
   /** searches a given item for the DCM_MACIDnumber element and returns
    *  its value if present
    *  @param item item to be searched
@@ -292,7 +300,7 @@ private:
   DcmItem *selectedMacParametersItem;
 
   /// pointer to certificate for currently selected signature item
-  SiCertificate *selectedCertificate;  
+  SiCertificate *selectedCertificate;
 
   /// pointer to certified timestamp for currently selected signature item
   SiTimeStamp *selectedTimestamp;

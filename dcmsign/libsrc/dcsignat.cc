@@ -33,6 +33,7 @@
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcvrdt.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
@@ -295,6 +296,22 @@ OFCondition DcmSignature::createSignature(
 
   // print a warning if we have a weak (i.e. too short) key in the certificate
   cert.checkForWeakKey();
+
+  // print a warning if the certificate has already expired
+  if (cert.isCertExpiredNow())
+  {
+    OFString expiry;
+    cert.getCertValidityNotAfter(expiry);
+    DCMSIGN_WARN("Certificate has expired " << expiry << ", signature will be invalid.");
+  }
+
+  // print a warning if the certificate is not yet valid
+  if (cert.isCertNotYetValidNow())
+  {
+    OFString notBefore;
+    cert.getCertValidityNotBefore(notBefore);
+    DCMSIGN_WARN("Certificate is not yet valid, validity starts " << notBefore << ", signature will be invalid.");
+  }
 
   // update tag list if present
   DcmAttributeTag *updatedTagList = NULL;
@@ -771,6 +788,45 @@ OFCondition DcmSignature::verifyCurrent()
     } else result = SI_EC_VerificationFailed_NoCertificate;
   }
 
+  // check signature date against certificate expiry date
+  if (result.good())
+  {
+    DcmDateTime *dt = getCurrentSignatureDateTime();
+    if (dt)
+    {
+      OFDateTime odt;
+      result = dt->getOFDateTime(odt);
+      if (result.good())
+      {
+        // convert DICOM datetime string to YYYYMMDDHHMMSSZ format.
+        // Note that we ignore the timezone here, which not correct
+        // (we should adjust the datetime for the timezone)
+        OFString asn1dt;
+        char buf[40];
+        snprintf(buf, 40, "%04u%02u%02u%02u%02u%02uZ",
+          odt.getDate().getYear(), odt.getDate().getMonth(), odt.getDate().getDay(),
+          odt.getTime().getHour(), odt.getTime().getMinute(), odt.getTime().getIntSecond());
+        asn1dt = buf;
+        if (selectedCertificate->isCertExpiredAt(asn1dt))
+        {
+          // certificate was already expired at signature date time
+          result = SI_EC_VerificationFailed_CertExpiredAtSignature;
+        }
+        else if (selectedCertificate->isCertNotYetValidAt(asn1dt))
+        {
+          // certificate was not yet valid at signature date time,
+          // so this is probably a backdated signature
+          result = SI_EC_VerificationFailed_CertNotYetValidAtSig;
+        }
+      }
+    }
+    else
+    {
+      DCMSIGN_WARN("DigitalSignatureDateTime attribute is invalid");
+      result = SI_EC_VerificationFailed_CertExpiredAtSignature;
+    }
+  }
+
   delete signature;
   delete tagList;
   delete mac;
@@ -881,6 +937,19 @@ OFCondition DcmSignature::getCurrentSignatureUID(OFString& str)
     if ((((DcmElement *)(stack.top()))->getOFString(str, 0)).good()) result = EC_Normal;
   }
   return result;
+}
+
+DcmDateTime *DcmSignature::getCurrentSignatureDateTime()
+{
+  DcmStack stack;
+  if (selectedSignatureItem && (selectedSignatureItem->search(DCM_DigitalSignatureDateTime, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+  {
+     if (stack.top()->ident() == EVR_DT)
+     {
+         return OFreinterpret_cast(DcmDateTime *, stack.top());
+     }
+  }
+  return NULL;
 }
 
 OFCondition DcmSignature::getCurrentSignatureDateTime(OFString& str)

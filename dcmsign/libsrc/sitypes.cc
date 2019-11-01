@@ -54,6 +54,10 @@ makeOFConditionConst(SI_EC_UnknownTimestampType,                       OFM_dcmsi
 makeOFConditionConst(SI_EC_InvalidTimestamp,                           OFM_dcmsign, 26, OF_error, "certified timestamp in dataset cannot be read");
 makeOFConditionConst(SI_EC_InvalidFiletype,                            OFM_dcmsign, 27, OF_error, "filetype is unknown (neither PEM nor DER)");
 makeOFConditionConst(SI_EC_TimestampSignatureVerificationFailed,       OFM_dcmsign, 28, OF_error, "signature verification of the certified timestamp failed");
+makeOFConditionConst(SI_EC_VerificationFailed_CertExpiredAtSignature,  OFM_dcmsign, 29, OF_error, "signature verification failed: certificate was expired at signature creation date");
+makeOFConditionConst(SI_EC_VerificationFailed_CertNotYetValidAtSig,    OFM_dcmsign, 30, OF_error, "signature verification failed: certificate was not yet valid at signature creation date");
+
+
 
 OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.dcmsign");
 
