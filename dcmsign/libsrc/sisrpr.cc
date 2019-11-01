@@ -29,7 +29,7 @@
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmsign/sitypes.h"
 
-OFBool SiStructuredReportingProfile::attributeRequired(const DcmTagKey& key) const
+OFBool SiStructuredReportingProfile::attributeRequiredIfPresent(const DcmTagKey& key) const
 {
 
   // the SOP Class UID
@@ -79,6 +79,29 @@ OFBool SiStructuredReportingProfile::attributeRequired(const DcmTagKey& key) con
   if (key == DCM_ContentSequence) return OFTrue;
 
   return OFFalse;
+}
+
+
+OFBool SiStructuredReportingProfile::checkRequiredAttributeList(DcmAttributeTag& tagList) const
+{
+  OFBool result =
+    containsTag(tagList, DCM_SOPClassUID) &&
+    containsTag(tagList, DCM_StudyInstanceUID) &&
+    containsTag(tagList, DCM_SeriesInstanceUID);
+
+  // The wording in DICOM part 15 seems to indicate that the following
+  // attributes must also be signed unconditionally. However, since they
+  // optional (type 1c or type 3) and thus not present in all
+  // valid SR documents, we do not treat them as attributes that cause
+  // signature validation according to this profile to fail if absent.
+  // We include them in the list of attributes that must be signed if present:
+  //
+  // - DCM_CurrentRequestedProcedureEvidenceSequence
+  // - DCM_PertinentOtherEvidenceSequence
+  // - DCM_PredecessorDocumentsSequence
+  // - DCM_ObservationDateTime
+
+  return result;
 }
 
 

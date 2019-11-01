@@ -55,18 +55,18 @@ OFCondition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTa
   unsigned long maxArray = 2*card;
   Uint16 *array = new Uint16[maxArray];
   if (array == NULL) return EC_MemoryExhausted;
-  unsigned long i=0;  
+  unsigned long i=0;
   for (i=0; i<maxArray; i++) array[i]=0;
   DcmElement *elem = NULL;
 
-  // for all elements in the dataset, check if we want to have them in the list  
+  // for all elements in the dataset, check if we want to have them in the list
   for (i=0; i<card; i++)
   {
     elem = item.getElement(i);
     const DcmTagKey& key = elem->getTag();
     if (key.isSignableTag())
     {
-      if ((attributeRequired(key))||((containsTag(tagList, key))&&(! attributeForbidden(key))))
+      if ((attributeRequiredIfPresent(key))||((containsTag(tagList, key))&&(! attributeForbidden(key))))
       {
       	array[2*i] = key.getGroup();
       	array[2*i+1] = key.getElement();
@@ -85,7 +85,7 @@ OFCondition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTa
       array [j++] = array[i++];
     } else i += 2;
   }
-  
+
   // now copy nonzero entries from array to tagList
   tagList.clear();
   if (j > 0)
@@ -98,6 +98,8 @@ OFCondition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTa
 
 OFBool SiSecurityProfile::checkAttributeList(DcmItem &item, DcmAttributeTag& tagList)
 {
+  // first check if all attributes that must be signed if present
+  // are included in the signature, if present
   DcmElement *elem = NULL;
   unsigned long card = item.card();
   for (unsigned long i=0; i<card; i++)
@@ -110,15 +112,17 @@ OFBool SiSecurityProfile::checkAttributeList(DcmItem &item, DcmAttributeTag& tag
       {
         if (attributeForbidden(key)) return OFFalse; // attribute is signed but forbidden
       } else {
-        if (attributeRequired(key)) return OFFalse;  // attribute is required but unsigned
+        if (attributeRequiredIfPresent(key)) return OFFalse;  // attribute is required but unsigned
       }
     } else {
       if (containsTag(tagList, key)) return OFFalse; // unsignable tag contained in list
     }
   }
-  return OFTrue;
-}
 
+  // finally check if all attributes that must be signed unconditionally
+  // are included in the signature.
+  return checkRequiredAttributeList(tagList);
+}
 
 OFBool SiSecurityProfile::containsTag(DcmAttributeTag& tagList, const DcmTagKey& key)
 {

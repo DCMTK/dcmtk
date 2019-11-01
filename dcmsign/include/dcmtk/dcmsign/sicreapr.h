@@ -44,11 +44,18 @@ public:
   virtual ~SiCreatorProfile() { }
 
   /** checks whether an attribute with the given tag is required to be signed
-   *  for the current security profile.
+   *  for the current security profile if the attribute is present in the dataset
    *  @param key tag key to be checked
    *  @return true if required, false otherwise.
    */
-  virtual OFBool attributeRequired(const DcmTagKey& key) const;
+  virtual OFBool attributeRequiredIfPresent(const DcmTagKey& key) const;
+
+  /** checks whether all attributes that are required unconditionally
+   *  to be signed in this profile are included in the given tagList.
+   *  @param taglist attribute tag list
+   *  @return true if requirements for profile are fulfilled, false otherwise.
+   */
+  virtual OFBool checkRequiredAttributeList(DcmAttributeTag& tagList) const;
 
   /** some digital signature profiles specify conditions under which certain
    *  attributes must be included into the signature.

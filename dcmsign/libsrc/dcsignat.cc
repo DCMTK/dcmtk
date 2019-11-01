@@ -1079,7 +1079,10 @@ OFCondition DcmSignature::verifySignatureProfile(SiSecurityProfile &sprof)
     {
       DcmAttributeTag *tagList = new DcmAttributeTag(*((DcmAttributeTag *)(stack.top())));
       if (tagList == NULL) result = EC_MemoryExhausted;
-      else if (! sprof.checkAttributeList(*currentItem, *tagList)) result = SI_EC_DataElementsSignedDoesNotMatchProfile;
+      else
+      {
+        if (! sprof.checkAttributeList(*currentItem, *tagList)) result = SI_EC_DataElementsSignedDoesNotMatchProfile;
+      }
       delete tagList;
     }
     else result = SI_EC_VerificationFailed_NoDataElementsSigned; // DataElementsSigned is absent or does not have "AT" VR

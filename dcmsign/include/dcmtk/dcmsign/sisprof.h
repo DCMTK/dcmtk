@@ -82,11 +82,11 @@ public:
   virtual OFBool isAllowableTransferSyntax(E_TransferSyntax xfer) const = 0;
 
   /** checks whether an attribute with the given tag is required to be signed
-   *  for the current security profile.
+   *  for the current security profile if the attribute is present in the dataset
    *  @param key tag key to be checked
    *  @return true if required, false otherwise.
    */
-  virtual OFBool attributeRequired(const DcmTagKey& key) const = 0;
+  virtual OFBool attributeRequiredIfPresent(const DcmTagKey& key) const = 0;
 
   /** checks whether an attribute with the given tag must not be signed
    *  for the current security profile.
@@ -111,6 +111,13 @@ public:
    *  @return true if minimum requirements for profile are fulfilled, false otherwise.
    */
   virtual OFBool checkAttributeList(DcmItem &item, DcmAttributeTag& tagList);
+
+  /** checks whether all attributes that are required unconditionally
+   *  to be signed in this profile are included in the given tagList.
+   *  @param taglist attribute tag list
+   *  @return true if requirements for profile are fulfilled, false otherwise.
+   */
+  virtual OFBool checkRequiredAttributeList(DcmAttributeTag& tagList) const = 0;
 
   /** some digital signature profiles specify conditions under which certain
    *  attributes must be included into the signature.

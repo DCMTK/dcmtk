@@ -428,6 +428,7 @@ int DcmSignatureHelper::do_verify(
   // that complies with the verification policy.
   OFBool verificationPolicyFulfilled = OFFalse;
   const char *verificationPolicyName = "(undefined)";
+  OFString s;
 
   // for these verification policies, there is nothing to check,
   // ESVP_requireSignature is checked elsewhere.
@@ -473,13 +474,21 @@ int DcmSignatureHelper::do_verify(
               // there are two types of possible matches here:
               // either the dataset is an UNVERIFIED SR and SiStructuredReportingProfile matches,
               // or the dataset is a VERIFIED SR and SiStructuredReportingVerificationProfile matches.
-              // We simply check both. Note that this is not particularly efficient, but it avoids
-              // that we have to replicate application logic of the profile here.
+              // We select the profile based on the value of VerificationFlag on main dataset level.
               verificationPolicyName = "SR RSA Signature";
-              SiStructuredReportingProfile sprofSR;
-              SiStructuredReportingVerificationProfile sprofSRV;
-              if (! verificationPolicyFulfilled) verificationPolicyFulfilled = signer.verifySignatureProfile(sprofSR).good();
-              if (! verificationPolicyFulfilled) verificationPolicyFulfilled = signer.verifySignatureProfile(sprofSRV).good();
+              if (! verificationPolicyFulfilled)
+              {
+                if (dataset->findAndGetOFString(DCM_VerificationFlag, s).good() && (s == "VERIFIED"))
+                {
+                  SiStructuredReportingVerificationProfile sprofSRV;
+                  verificationPolicyFulfilled = signer.verifySignatureProfile(sprofSRV).good();
+                }
+                else
+                {
+                  SiStructuredReportingProfile sprofSR;
+                  verificationPolicyFulfilled = signer.verifySignatureProfile(sprofSR).good();
+                }
+              }
             }
             break;
           case ESVP_verifyIfPresent:

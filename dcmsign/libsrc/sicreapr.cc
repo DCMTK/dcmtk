@@ -34,7 +34,7 @@ SiCreatorProfile::SiCreatorProfile()
 {
 }
 
-OFBool SiCreatorProfile::attributeRequired(const DcmTagKey& key) const
+OFBool SiCreatorProfile::attributeRequiredIfPresent(const DcmTagKey& key) const
 {
   // This list of attribute tags was extracted from DICOM 2019c.
   // Attribute tags occuring in multiple modules were commented out
@@ -669,6 +669,19 @@ OFBool SiCreatorProfile::attributeRequired(const DcmTagKey& key) const
 
   return OFFalse;
 }
+
+
+OFBool SiCreatorProfile::checkRequiredAttributeList(DcmAttributeTag& tagList) const
+{
+  OFBool result =
+    containsTag(tagList, DCM_SOPClassUID) &&
+    containsTag(tagList, DCM_StudyInstanceUID) &&
+    containsTag(tagList, DCM_SeriesInstanceUID) &&
+    containsTag(tagList, DCM_SOPInstanceUID);
+
+  return result;
+}
+
 
 OFCondition SiCreatorProfile::inspectSignatureDataset(DcmItem &item)
 {

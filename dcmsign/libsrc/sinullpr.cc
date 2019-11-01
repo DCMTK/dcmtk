@@ -37,9 +37,14 @@ OFBool SiNullProfile::isAllowableAlgorithmType(E_KeyType keyType) const
   return OFTrue;
 }
 
-OFBool SiNullProfile::attributeRequired(const DcmTagKey& /* key */) const
+OFBool SiNullProfile::attributeRequiredIfPresent(const DcmTagKey& /* key */) const
 {
   return OFFalse;
+}
+
+OFBool SiNullProfile::checkRequiredAttributeList(DcmAttributeTag& /* tagList */) const
+{
+  return OFTrue;
 }
 
 OFBool SiNullProfile::attributeForbidden(const DcmTagKey& /* key */) const

@@ -34,7 +34,7 @@ SiAuthorizationProfile::SiAuthorizationProfile()
 {
 }
 
-OFBool SiAuthorizationProfile::attributeRequired(const DcmTagKey& key) const
+OFBool SiAuthorizationProfile::attributeRequiredIfPresent(const DcmTagKey& key) const
 {
   // The Authorization RSA Digital Signature Profile requires that any
   // attributes whose Values are verifiable by the technician or physician
@@ -634,6 +634,19 @@ OFBool SiAuthorizationProfile::attributeRequired(const DcmTagKey& key) const
    */
   return OFFalse;
 }
+
+
+OFBool SiAuthorizationProfile::checkRequiredAttributeList(DcmAttributeTag& tagList) const
+{
+  OFBool result =
+    containsTag(tagList, DCM_SOPClassUID) &&
+    containsTag(tagList, DCM_StudyInstanceUID) &&
+    containsTag(tagList, DCM_SeriesInstanceUID) &&
+    containsTag(tagList, DCM_SOPInstanceUID);
+
+  return result;
+}
+
 
 OFCondition SiAuthorizationProfile::inspectSignatureDataset(DcmItem &item)
 {

@@ -64,9 +64,14 @@ OFBool SiBaseRSAProfile::isAllowableAlgorithmType(E_KeyType keyType) const
   return result;
 }
 
-OFBool SiBaseRSAProfile::attributeRequired(const DcmTagKey& /* key */) const
+OFBool SiBaseRSAProfile::attributeRequiredIfPresent(const DcmTagKey& /* key */) const
 {
   return OFFalse;
+}
+
+OFBool SiBaseRSAProfile::checkRequiredAttributeList(DcmAttributeTag& /* tagList */) const
+{
+  return OFTrue;
 }
 
 OFBool SiBaseRSAProfile::attributeForbidden(const DcmTagKey& /* key */) const

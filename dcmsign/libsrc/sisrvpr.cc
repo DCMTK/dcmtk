@@ -29,20 +29,39 @@
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmsign/sitypes.h"
 
-OFBool SiStructuredReportingVerificationProfile::attributeRequired(const DcmTagKey& key) const
+OFBool SiStructuredReportingVerificationProfile::attributeRequiredIfPresent(const DcmTagKey& key) const
 {
 
   // call base class implementation
-  if (SiStructuredReportingProfile::attributeRequired(key)) return OFTrue;
+  if (SiStructuredReportingProfile::attributeRequiredIfPresent(key)) return OFTrue;
 
   // check additional keys required for a verification signature
   if (key == DCM_SOPInstanceUID) return OFTrue;
-  if (key == DCM_VerificationFlag) return OFTrue;
-  if (key == DCM_VerifyingObserverSequence) return OFTrue;
+  if (key == DCM_VerificationFlag) return OFTrue; // Type 1 in SR Document General Module
+  if (key == DCM_VerifyingObserverSequence) return OFTrue; // Type 1C, must be present if VerificationFlag == VERIFIED
   if (key == DCM_VerificationDateTime) return OFTrue;
 
   return OFFalse;
 }
+
+
+OFBool SiStructuredReportingVerificationProfile::checkRequiredAttributeList(DcmAttributeTag& tagList) const
+{
+  OFBool result = SiStructuredReportingProfile::checkRequiredAttributeList(tagList);
+
+  result = result &&
+    containsTag(tagList, DCM_SOPInstanceUID) &&
+    containsTag(tagList, DCM_VerificationFlag) &&
+    containsTag(tagList, DCM_VerifyingObserverSequence);
+
+  // The wording in DICOM part 15 seems to indicate that ObservationDateTime
+  // must also be signed unconditionally. However, ObservationDateTime is actually
+  // an attribute within the VerifyingObserverSequence and will thus not be listed
+  // explicitly in tagList.
+
+  return result;
+}
+
 
 OFCondition SiStructuredReportingVerificationProfile::inspectSignatureDataset(DcmItem & item)
 {
