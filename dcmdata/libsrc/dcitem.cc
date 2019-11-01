@@ -1610,7 +1610,7 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
           do
           {
             dO = elementList->get();
-            if (dO->transferState() != ERW_ready)
+            if (dO->isSignable() && dO->transferState() != ERW_ready)
               errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype, wcache);
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
