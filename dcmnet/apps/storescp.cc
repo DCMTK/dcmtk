@@ -1919,13 +1919,13 @@ storeSCPCallback(
           else
           {
             OFLOG_INFO(storescpLogger, "created new subdirectory for study: " << subdirectoryPathAndName);
-          }
 
-          // all objects of a study have been received, so a new subdirectory is started.
-          // ->timename counter can be reset, because the next filename can't cause a duplicate.
-          // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
-          if (opt_timeNames)
-            timeNameCounter = -1;
+            // all objects of a study have been received, so a new subdirectory is started.
+            // ->timename counter can be reset, because the next filename can't cause a duplicate.
+            // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
+            if (opt_timeNames)
+              timeNameCounter = -1;
+          }
         }
 
         // integrate subdirectory name into file name (note that cbdata->imageFileName currently contains both
