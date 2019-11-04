@@ -1886,7 +1886,7 @@ storeSCPCallback(
 #endif
           if( mkdirStatus == -1 )
           {
-            int cannotUnderstand = 0;
+            int cannotUnderstand = 1;
 
             switch( errno )
             {
@@ -1896,17 +1896,16 @@ storeSCPCallback(
                   case ESM_StudyInstanceUID:
                     // If the subdirectory already exists, then re-use it
                     OFLOG_INFO(storescpLogger, "using existing subdirectory for study: " << subdirectoryPathAndName);
+                    cannotUnderstand = 0;
                     break;      
 
                   default:
                     OFLOG_INFO(storescpLogger, "cannot use existing subdirectory in the current sort mode: " << opt_sortStudyMode);
-                    cannotUnderstand = 1;
                 }
                 break;
 
               default:
                 OFLOG_INFO(storescpLogger, "cannot use existing subdirectory due to error: " << errno);
-                cannotUnderstand = 1;
             }
 
             if( cannotUnderstand == 1 )
