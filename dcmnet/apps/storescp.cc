@@ -32,6 +32,9 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#endif
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
 #endif
@@ -1871,30 +1874,54 @@ storeSCPCallback(
           // create subdirectoryPathAndName (string with full path to new subdirectory)
           OFStandard::combineDirAndFilename(subdirectoryPathAndName, OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName), subdirectoryName);
 
-          // check if the subdirectory already exists
-          // if it already exists dump a warning
-          if( OFStandard::dirExists(subdirectoryPathAndName) )
-            OFLOG_WARN(storescpLogger, "subdirectory for study already exists: " << subdirectoryPathAndName);
-          else
-          {
-            // if it does not exist create it
-            OFLOG_INFO(storescpLogger, "creating new subdirectory for study: " << subdirectoryPathAndName);
+          // EAFP: https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use
+          // create the subdirectory as needed and check errno to determine how to handle race conditions
+          // caused by using both --su and --fork together.
+          int mkdirStatus;
+          
 #ifdef HAVE_WINDOWS_H
-            if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
+          mkdirStatus = _mkdir( subdirectoryPathAndName.c_str() );
 #else
-            if( mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
+          mkdirStatus = mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO );
 #endif
+          if( mkdirStatus == -1 ) {
+          {
+            int cannotUnderstand = 0;
+
+            switch( errno )
             {
+              case EEXIST:
+                switch (opt_sortStudyMode)
+                {                  
+                  case ESM_StudyInstanceUID:
+                    // If the subdirectory already exists, then re-use it
+                    OFLOG_INFO(storescpLogger, "using existing subdirectory for study: " << subdirectoryPathAndName);
+                    break;      
+
+                  default:
+                    cannotUnderstand = 1;
+                }
+
+              default:
+                cannotUnderstand = 1;
+            }
+
+            if( cannotUnderstand == 1 )
               OFLOG_ERROR(storescpLogger, "could not create subdirectory for study: " << subdirectoryPathAndName);
               rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
               return;
             }
-            // all objects of a study have been received, so a new subdirectory is started.
-            // ->timename counter can be reset, because the next filename can't cause a duplicate.
-            // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
-            if (opt_timeNames)
-              timeNameCounter = -1;
           }
+          else 
+          {
+            OFLOG_INFO(storescpLogger, "created new subdirectory for study: " << subdirectoryPathAndName);
+          }
+
+          // all objects of a study have been received, so a new subdirectory is started.
+          // ->timename counter can be reset, because the next filename can't cause a duplicate.
+          // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
+          if (opt_timeNames)
+            timeNameCounter = -1;
         }
 
         // integrate subdirectory name into file name (note that cbdata->imageFileName currently contains both
