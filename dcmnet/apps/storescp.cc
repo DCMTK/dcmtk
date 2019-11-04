@@ -1884,7 +1884,7 @@ storeSCPCallback(
 #else
           mkdirStatus = mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO );
 #endif
-          if( mkdirStatus == -1 ) {
+          if( mkdirStatus == -1 )
           {
             int cannotUnderstand = 0;
 
@@ -1899,20 +1899,24 @@ storeSCPCallback(
                     break;      
 
                   default:
+                    OFLOG_INFO(storescpLogger, "cannot use existing subdirectory in the current sort mode: " << opt_sortStudyMode);
                     cannotUnderstand = 1;
                 }
+                break;
 
               default:
+                OFLOG_INFO(storescpLogger, "cannot use existing subdirectory due to error: " << errno);
                 cannotUnderstand = 1;
             }
 
             if( cannotUnderstand == 1 )
+            {
               OFLOG_ERROR(storescpLogger, "could not create subdirectory for study: " << subdirectoryPathAndName);
               rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
               return;
             }
           }
-          else 
+          else
           {
             OFLOG_INFO(storescpLogger, "created new subdirectory for study: " << subdirectoryPathAndName);
           }
