@@ -1888,6 +1888,7 @@ storeSCPCallback(
           {
             int cannotUnderstand = 1;
 
+#ifndef HAVE_WINDOWS_H
             switch( errno )
             {
               case EEXIST:
@@ -1907,6 +1908,7 @@ storeSCPCallback(
               default:
                 OFLOG_INFO(storescpLogger, "cannot use existing subdirectory due to error: " << errno);
             }
+#endif
 
             if( cannotUnderstand == 1 )
             {
