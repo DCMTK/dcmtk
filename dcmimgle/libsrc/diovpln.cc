@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,7 +76,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
     {
         /* determine first frame to be processed */
         FirstFrame = docu->getFrameStart();
-        /* specifiy overlay group number */
+        /* specify overlay group number */
         DcmTagKey tag(group, DCM_OverlayRows.getElement() /* dummy */);
         /* get descriptive data */
         tag.setElement(DCM_OverlayLabel.getElement());
@@ -349,7 +349,8 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                               const Uint16 ymax,
                               const int bits,
                               const Uint16 fore,
-                              const Uint16 back)
+                              const Uint16 back,
+                              const OFBool useOrigin)
 {
     const unsigned long count = OFstatic_cast(unsigned long, xmax - xmin) * OFstatic_cast(unsigned long, ymax - ymin);
     if (Valid && (count > 0))
@@ -373,7 +374,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     {
                         for (y = ymin; y < ymax; ++y)
                         {
-                            setStart(xmin, y);
+                            setStart(xmin, y, useOrigin);
                             for (x = xmin; x < xmax; ++x)
                             {
                                 if (getNextBit())
@@ -418,7 +419,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     {
                         for (y = ymin; y < ymax; ++y)
                         {
-                            setStart(xmin, y);
+                            setStart(xmin, y, useOrigin);
                             for (x = xmin; x < xmax; ++x, ++q)
                             {
                                 if (getNextBit())
@@ -447,7 +448,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     {
                         for (y = ymin; y < ymax; ++y)
                         {
-                            setStart(xmin, y);
+                            setStart(xmin, y, useOrigin);
                             for (x = xmin; x < xmax; ++x, ++q)
                             {
                                 if (getNextBit())

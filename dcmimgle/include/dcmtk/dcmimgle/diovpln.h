@@ -357,14 +357,16 @@ class DCMTK_DCMIMGLE_EXPORT DiOverlayPlane
      *  Overlay plane is clipped to the area specified by the four min/max coordinates.
      *  Memory isn't handled internally and must therefore be deleted from calling program.
      *
-     ** @param  frame  number of frame
-     *  @param  xmin   x-coordinate of the top left hand corner
-     *  @param  ymin   y-coordinate of the top left hand corner
-     *  @param  xmax   x-coordinate of the bottom right hand corner
-     *  @param  ymax   y-coordinate of the bottom right hand corner
-     *  @param  bits   number of bits (stored) in the resulting array
-     *  @param  fore   foreground color used for the plane (0x00-0xff)
-     *  @param  back   transparent background color (0x00-0xff)
+     ** @param  frame      number of frame
+     *  @param  xmin       x-coordinate of the top left hand corner
+     *  @param  ymin       y-coordinate of the top left hand corner
+     *  @param  xmax       x-coordinate of the bottom right hand corner
+     *  @param  ymax       y-coordinate of the bottom right hand corner
+     *  @param  bits       number of bits (stored) in the resulting array
+     *  @param  fore       foreground color used for the plane (0..2^bits-1)
+     *  @param  back       transparent background color (0..2^bits-1)
+     *  @param  useOrigin  use overlay plane's origin for calculating the start position
+     *                     if true (default), ignore it otherwise
      *
      ** @return pointer to pixel data if successful, NULL otherwise
      */
@@ -375,7 +377,8 @@ class DCMTK_DCMIMGLE_EXPORT DiOverlayPlane
                   const Uint16 ymax,
                   const int bits,
                   const Uint16 fore,
-                  const Uint16 back);
+                  const Uint16 back,
+                  const OFBool useOrigin = OFTrue);
 
     /** create overlay plane data in (6xxx,3000) format.
      *  (1 bit allocated and stored, foreground color is 1, background color is 0,
@@ -410,11 +413,14 @@ class DCMTK_DCMIMGLE_EXPORT DiOverlayPlane
 
     /** set internal 'cursor' to a specific position
      *
-     ** @param  x  new x-coordinate to start from
-     *  @param  y  new y-coordinate to start from
+     ** @param  x          new x-coordinate to start from
+     *  @param  y          new y-coordinate to start from
+     *  @param  useOrigin  use overlay plane's origin for calculating the start position
+     *                     if true (default), ignore it otherwise
      */
     inline void setStart(const Uint16 x,
-                         const Uint16 y);
+                         const Uint16 y,
+                         const OFBool useOrigin = OFTrue);
 
 
  protected:
@@ -547,15 +553,25 @@ inline int DiOverlayPlane::getNextBit()
 
 
 inline void DiOverlayPlane::setStart(const Uint16 x,
-                                     const Uint16 y)
+                                     const Uint16 y,
+                                     const OFBool useOrigin)
 {
-    if (BitsAllocated == 16)
-        Ptr = StartPtr + OFstatic_cast(unsigned long, y - Top) * OFstatic_cast(unsigned long, Columns) +
-            OFstatic_cast(unsigned long, x - Left);
-    else
-        BitPos = StartBitPos + (OFstatic_cast(unsigned long, y - Top) * OFstatic_cast(unsigned long, Columns) +
-            OFstatic_cast(unsigned long, x - Left)) * OFstatic_cast(unsigned long, BitsAllocated);
+    if (useOrigin)
+    {
+        if (BitsAllocated == 16)
+            Ptr = StartPtr + OFstatic_cast(unsigned long, y - Top) * OFstatic_cast(unsigned long, Columns) +
+                OFstatic_cast(unsigned long, x - Left);
+        else
+            BitPos = StartBitPos + (OFstatic_cast(unsigned long, y - Top) * OFstatic_cast(unsigned long, Columns) +
+                OFstatic_cast(unsigned long, x - Left)) * OFstatic_cast(unsigned long, BitsAllocated);
+    } else {
+        if (BitsAllocated == 16)
+            Ptr = StartPtr + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, Columns) +
+                OFstatic_cast(unsigned long, x);
+        else
+            BitPos = StartBitPos + (OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, Columns) +
+                OFstatic_cast(unsigned long, x)) * OFstatic_cast(unsigned long, BitsAllocated);
+    }
 }
-
 
 #endif
