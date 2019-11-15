@@ -768,12 +768,20 @@ OFCondition DSRCodedEntryValue::checkCode(const OFString &codeValue,
 {
     OFCondition result = EC_Normal;
     /* first, make sure that the mandatory values are non-empty and the type is valid */
-    if (codeValue.empty() || (codingSchemeDesignator.empty() && (codeValueType != DSRTypes::CVT_URN)) || codeMeaning.empty())
-        result = SR_EC_InvalidValue;
+    if (codeValueType == DSRTypes::CVT_URN)
+    {
+        /* CP-1913: Coding Scheme Version shall not be present if Coding Scheme Designator is absent */
+        if (codeValue.empty() || (codingSchemeDesignator.empty() && !codingSchemeVersion.empty()) || codeMeaning.empty())
+            result = SR_EC_InvalidValue;
+    }
     else if (codeValueType == DSRTypes::CVT_auto)
     {
         DCMSR_DEBUG("INTERNAL ERROR: DSRCodedEntryValue::checkCode() called with DSRTypes::CVT_auto");
         result = EC_IllegalCall;
+    } else {
+        /* short or long code value */
+        if (codeValue.empty() || codingSchemeDesignator.empty() || codeMeaning.empty())
+            result = SR_EC_InvalidValue;
     }
     /* then, check whether the passed values are valid with regards to VR and VM.
      * tbd: unfortunately, we do not know the character set, so "UNKNOWN" is used. */
