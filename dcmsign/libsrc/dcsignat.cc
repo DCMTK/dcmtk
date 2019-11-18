@@ -313,13 +313,19 @@ OFCondition DcmSignature::createSignature(
     DCMSIGN_WARN("Certificate is not yet valid, validity starts " << notBefore << ", signature will be invalid.");
   }
 
-  // update tag list if present
+  // create updated tag list
   DcmAttributeTag *updatedTagList = NULL;
   if (tagList)
   {
     updatedTagList = new DcmAttributeTag(*tagList);
     if (updatedTagList == NULL) result = EC_MemoryExhausted;
     else result = profile.updateAttributeList(*currentItem, *updatedTagList);
+  }
+  else
+  {
+    updatedTagList = new DcmAttributeTag(DCM_DataElementsSigned);
+    if (updatedTagList == NULL) result = EC_MemoryExhausted;
+    else result = profile.createAttributeList(*currentItem, *updatedTagList);
   }
 
   // make sure we have a MAC parameter sequence
@@ -736,12 +742,11 @@ OFCondition DcmSignature::verifyCurrent()
   // create MAC
   if (result.good())
   {
-    DcmAttributeTag tagListOut(DCM_DataElementsSigned);
     SiMACConstructor constructor;
     if (dumpFile) constructor.setDumpFile(dumpFile);
 
     // encode main dataset
-    result = constructor.encodeDataset(*currentItem, *mac, xfer, tagListOut, tagList);
+    result = constructor.encodeDatasetForVerification(*currentItem, *mac, xfer, tagList);
 
     // encode required attributes from the digital signatures sequence
     if (result.good()) result = constructor.encodeDigitalSignatureItem(*selectedSignatureItem, *mac, xfer);

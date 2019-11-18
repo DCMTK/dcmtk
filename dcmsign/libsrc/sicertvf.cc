@@ -36,6 +36,7 @@ END_EXTERN_C
 SiCertificateVerifier::SiCertificateVerifier()
 : x509store(NULL)
 , x509untrusted(NULL)
+, enableCRLverification(OFFalse)
 , errorCode(0)
 {
   x509store = X509_STORE_new();
@@ -146,18 +147,15 @@ OFCondition SiCertificateVerifier::addCertificateRevocationList(const char *file
         if (fileType == X509_FILETYPE_ASN1)
         {
           x509crl = d2i_X509_CRL_bio(in, NULL);
-          if (x509crl)
-          {
-            X509_STORE_add_crl(x509store, x509crl);
-            result = EC_Normal;
-          }
         } else {
           x509crl = PEM_read_bio_X509_CRL(in, NULL, NULL, NULL);
-          if (x509crl)
-          {
-            X509_STORE_add_crl(x509store, x509crl);
-            result = EC_Normal;
-          }
+        }
+        if (x509crl)
+        {
+          X509_STORE_add_crl(x509store, x509crl); // creates a copy of the CRL object
+          X509_CRL_free(x509crl);
+          enableCRLverification = OFTrue;
+          result = EC_Normal;
         }
       }
       BIO_free(in);
@@ -166,6 +164,31 @@ OFCondition SiCertificateVerifier::addCertificateRevocationList(const char *file
   return result;
 }
 
+
+void SiCertificateVerifier::setCRLverification(OFBool enabled)
+{
+  enableCRLverification = enabled;
+}
+
+
+extern "C"
+{
+  int sicertvf_verify_callback(int deflt, X509_STORE_CTX *ctx);
+}
+
+int sicertvf_verify_callback(int deflt, X509_STORE_CTX *ctx)
+{
+  if (ctx)
+  {
+    void *p = X509_STORE_CTX_get_ex_data(ctx, 0);
+    if (p)
+    {
+      SiCertificateVerifier *pthis = OFreinterpret_cast(SiCertificateVerifier *, p);
+      return pthis->verifyCallback(deflt, ctx);
+    }
+  }
+  return deflt;
+}
 
 OFCondition SiCertificateVerifier::verifyCertificate(SiCertificate& certificate)
 {
@@ -176,6 +199,21 @@ OFCondition SiCertificateVerifier::verifyCertificate(SiCertificate& certificate)
   X509_STORE_CTX *ctx = X509_STORE_CTX_new();
   X509_STORE_CTX_init(ctx, x509store, rawcert, x509untrusted);
 
+  X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
+  if (param)
+  {
+    if (enableCRLverification)
+    {
+      // enable CRL checking for the signer certificate
+      X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+    }
+    X509_VERIFY_PARAM_set_depth(param, 100); // that's the OpenSSL default
+    X509_STORE_CTX_set0_param(ctx, param);
+  }
+
+  X509_STORE_CTX_set_ex_data(ctx, 0, OFreinterpret_cast(void *, this));
+  X509_STORE_CTX_set_verify_cb(ctx, sicertvf_verify_callback);
+
   // If a complete chain can be built and validated X509_verify_cert() returns 1,
   // otherwise it returns zero, in exceptional circumstances it can also return a negative code.
   int ok = X509_verify_cert(ctx);
@@ -185,6 +223,21 @@ OFCondition SiCertificateVerifier::verifyCertificate(SiCertificate& certificate)
   X509_STORE_CTX_free(ctx);
 
   if (ok == 1) return EC_Normal; else return SI_EC_VerificationFailed_NoTrust;
+}
+
+int SiCertificateVerifier::verifyCallback(int deflt, X509_STORE_CTX *ctx)
+{
+  if (X509_STORE_CTX_get_error(ctx) == X509_V_ERR_CERT_REVOKED)
+  {
+     // The signer certificate is on the revocation list. By default, this means that
+     // the certificate verification will fail, independent from the timestamp of the signature
+     // and the timestamp of the revocation. At this point we could add additional code that
+     // compares the time of revocation with the DICOM signature datetime or (preferrably) a
+     // certified timestamp that might also be present. If the revocation occured after the time of
+     // signature, we could still accept the certificate and thus the signature.
+     // For now, we retain the OpenSSL default behaviour.
+  }
+  return deflt;
 }
 
 

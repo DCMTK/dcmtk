@@ -272,5 +272,21 @@ extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_Cert
 /// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_CertNotYetValidAtSig;
 
+/// list of attributes to be signed contains attribute that is not signable
+/// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_AttributeNotSignable;
+
+/// signature verification failed because the signature contains an attribute that is not signable
+/// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_VerificationFailed_AttributeNotSignable;
+
+/// selected dataset or item is empty, nothing to sign
+/// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_DatasetEmpty;
+
+/// cannot create signature for current signature profile: required attributes missing
+/// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_RequiredAttributeMissing;
+
 #endif
 #endif

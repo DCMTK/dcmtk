@@ -56,8 +56,10 @@ makeOFConditionConst(SI_EC_InvalidFiletype,                            OFM_dcmsi
 makeOFConditionConst(SI_EC_TimestampSignatureVerificationFailed,       OFM_dcmsign, 28, OF_error, "signature verification of the certified timestamp failed");
 makeOFConditionConst(SI_EC_VerificationFailed_CertExpiredAtSignature,  OFM_dcmsign, 29, OF_error, "signature verification failed: certificate was expired at signature creation date");
 makeOFConditionConst(SI_EC_VerificationFailed_CertNotYetValidAtSig,    OFM_dcmsign, 30, OF_error, "signature verification failed: certificate was not yet valid at signature creation date");
-
-
+makeOFConditionConst(SI_EC_AttributeNotSignable,                       OFM_dcmsign, 31, OF_error, "list of attributes to be signed contains attribute that is not signable");
+makeOFConditionConst(SI_EC_VerificationFailed_AttributeNotSignable,    OFM_dcmsign, 32, OF_error, "signature verification failed: signature contains attribute that is not signable");
+makeOFConditionConst(SI_EC_DatasetEmpty,                               OFM_dcmsign, 33, OF_error, "selected dataset or item is empty, nothing to sign");
+makeOFConditionConst(SI_EC_RequiredAttributeMissing,                   OFM_dcmsign, 34, OF_error, "cannot create signature for current signature profile: required attributes missing");
 
 OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.dcmsign");
 

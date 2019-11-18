@@ -143,50 +143,54 @@ signature format:
 \verbatim
 signature verification:
 
-  +rv   --verify-if-present    
+  +rv   --verify-if-present
           verify signatures if present, pass otherwise
           (default)
 
-  +rg   --require-sig          
+  +rg   --require-sig
           fail if no signature at all is present
 
-  +rc   --require-creator      
+  +rc   --require-creator
           fail if no creator RSA signature is present
 
-  +ru   --require-auth         
+  +ru   --require-auth
           fail if no auth RSA signature is present
 
-  +rs   --require-sr           
+  +rs   --require-sr
           fail if no SR RSA signature is present
 
 timestamp verification:
 
-  +tv   --verify-ts            
+  +tv   --verify-ts
           verify certified timestamp if present (default)
 
-  -tv   --ignore-ts            
+  -tv   --ignore-ts
           ignore certified timestamps
 
-  +tr   --require-ts           
+  +tr   --require-ts
           fail if no certified timestamp is present
 
 certification authority:
 
-  +cf   --add-cert-file        
+  +cf   --add-cert-file
           [c]ertificate filename: string
           add trusted certificate file to cert store
 
-  +uf   --add-ucert-file       
+  +uf   --add-ucert-file
           [c]ertificate filename: string
           add untrusted intermediate certificate file
 
-  +cd   --add-cert-dir         
+  +cd   --add-cert-dir
           [c]ertificate directory: string
           add certificates in d to cert store
 
-  +cr   --add-crl-file         
+  +cr   --add-crl-file
           [c]rl filename: string
           add certificate revocation list file
+          (implies --enable-crl-vfy)
+
+  +cl   --enable-crl-vfy
+          enable certificate revocation list verification
 
 \endverbatim
 
@@ -377,7 +381,7 @@ The dcmsign tool will also perform various consistency checks before storing
 the timestamp.
 
 During signature verification, the presence of a certified timestamp will
-be detected and the timestamp will also be verified unless option 
+be detected and the timestamp will also be verified unless option
 \e --ignore-ts was used. Signature verification and timestamp verification
 use a common certificate store to check the certificates of the DICOM
 signature and the timestamp. This store can be populated with the options
@@ -387,21 +391,28 @@ and --add-crl-file, which adds a certificate revocation list.
 
 \subsection dcmsign_hashed_certificate_directories Hashed Certificate Directories
 
-Instead of adding CA certificates manually using --add-cert-file, the user
-can set-up a directory where dcmsign will look-up and load certificates from
+Instead of adding CA certificates and certificate revocation lists (CRLs)
+manually using --add-cert-file and --add-crl-file, the user can set-up
+a directory where dcmsign will look-up and load certificates and CRLs from
 as needed, using --add-cert-dir.
 
-Th directory should contain one certificate or CRL per file in PEM format, 
+Th directory should contain one certificate or CRL per file in PEM format,
 with a filename of the form hash.N for a certificate, or hash.rN for a CRL.
-The hash is the value returned by 
+The hash is the value returned by
 
-  <em>openssl x509 -hash -noout -in \<filename.pem\></em>
+  <em>openssl x509 -hash -noout -in \<filename.pem\></em> (for a certificate)
+  <em>openssl crl -hash -noout -in \<filename.pem\></em> (for a CRL)
 
-The .N or .rN suffix is a sequence number that starts at zero, and is 
+The .N or .rN suffix is a sequence number that starts at zero, and is
 incremented consecutively for each certificate or CRL with the same hash
 value. Gaps in the sequence numbers are not supported, it is assumed that
 there are no more objects with the same hash beyond the first missing number
 in the sequence.
+
+CRLs will only be verified when option --enable-crl-vfy is specified.
+In this case, dcmsign will expect a CRL to be present for each CA
+and will fail signature verification if no CRL can be found for the
+CA that issued the signer certificate.
 
 \section dcmsign_logging LOGGING
 

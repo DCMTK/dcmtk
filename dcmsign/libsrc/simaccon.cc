@@ -189,15 +189,65 @@ OFCondition SiMACConstructor::encodeDataset(
           result = tagListOut.putTagVal(element->getTag(), tagListOut.getVM());
         }
       }
+      else
+      {
+        // the element is unsignable, but either the user or the active
+        // signature profile have requested its inclusion in the signature.
+        if (tagListIn)
+        {
+          // print a warning
+          DcmTag tag(element->getTag()); // we need to create a temporary copy of the tag
+          DCMSIGN_INFO("List of attributes to be signed contains unsignable element " << tag << " " << tag.getTagName() );
+          result = SI_EC_AttributeNotSignable;
+        }
+      }
     }
   }
 
   /* done, flush stream buffer */
-  result = flushBuffer(mac);
+  if (result.good()) result = flushBuffer(mac);
   item.transferEnd();
   return result;
 }
 
+
+OFCondition SiMACConstructor::encodeDatasetForVerification(
+  DcmItem& item,
+  SiMAC& mac,
+  E_TransferSyntax oxfer,
+  DcmAttributeTag *tagListIn)
+{
+  if (! item.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;
+
+  OFCondition result = EC_Normal;
+  item.transferInit();
+  unsigned long numElements = item.card();
+  DcmElement *element;
+  for (unsigned long i=0; i < numElements; i++)
+  {
+    element = item.getElement(i);
+    if (result.good() && (inTagList(element, tagListIn)))
+    {
+      if (element->isSignable())
+      {
+        // element is signable, we should encode it
+        result = encodeElement(element, mac, oxfer);
+      }
+      else
+      {
+        // print a warning
+        DcmTag tag(element->getTag()); // we need to create a temporary copy of the tag
+        DCMSIGN_INFO("  Signature contains unsignable element " << tag << " " << tag.getTagName() );
+        result = SI_EC_VerificationFailed_AttributeNotSignable;
+      }
+    }
+  }
+
+  /* done, flush stream buffer */
+  if (result.good()) result = flushBuffer(mac);
+  item.transferEnd();
+  return result;
+}
 #else /* WITH_OPENSSL */
 
 int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;

@@ -191,7 +191,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--add-cert-dir",              "+cd",    1, "[c]ertificate directory: string",
                                                                 "add certificates in d to cert store");
       cmd.addOption("--add-crl-file",              "+cr",    1, "[c]rl filename: string",
-                                                                "add certificate revocation list file");
+                                                                "add certificate revocation list file\n(implies --enable-crl-vfy)");
+      cmd.addOption("--enable-crl-vfy",            "+cl",       "enable CRL verification");
 
   cmd.addGroup("signature creation options (only with --sign or --sign-item):");
     cmd.addSubGroup("private key password:");
@@ -463,6 +464,11 @@ int main(int argc, char *argv[])
             OFLOG_WARN(dcmsignLogger, "unable to load CRL file '" << current << "', ignoring");
         }
       } while (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_Next));
+    }
+    if (cmd.findOption("--enable-crl-vfy", 0, OFCommandLine::FOM_First))
+    {
+      app.checkDependence("--enable-crl-vfy", "--verify", (opt_operation == DSO_verify));
+      certVerifier.setCRLverification(OFTrue);
     }
 
     cmd.beginOptionBlock();

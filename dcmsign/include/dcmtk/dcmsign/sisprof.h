@@ -104,6 +104,15 @@ public:
    */
   virtual OFCondition updateAttributeList(DcmItem &item, DcmAttributeTag& tagList);
 
+  /** create a maximum list of attribute tags according to the
+   *  requirements of the current security profile. For all elements present in the
+   *  dataset, the attribute tag is inserted if permitted by the profile.
+   *  @param item dataset to be handled
+   *  @param tagList attribute tag list to be created
+   *  @return status code
+   */
+  virtual OFCondition createAttributeList(DcmItem &item, DcmAttributeTag& tagList);
+
   /** checks whether the given list of attribute tags fulfils the requirements
    *  of the current security profile for the given dataset.
    *  @param item dataset to be checked
