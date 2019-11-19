@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-10-31 16:15:51
+**   Date: 2019-11-19 21:20:59
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -254,6 +254,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0002, 0x0018, 0x0002, 0x0018,
       EVR_AE, "ReceivingApplicationEntityTitle", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0002, 0x0026, 0x0002, 0x0026,
+      EVR_UR, "SourcePresentationAddress", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0002, 0x0027, 0x0002, 0x0027,
+      EVR_UR, "SendingPresentationAddress", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0002, 0x0028, 0x0002, 0x0028,
+      EVR_UR, "ReceivingPresentationAddress", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0002, 0x0031, 0x0002, 0x0031,
@@ -1190,6 +1202,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x3001, 0x0008, 0x3001,
       EVR_SQ, "AlternateRepresentationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x3002, 0x0008, 0x3002,
+      EVR_UI, "AvailableTransferSyntaxUID", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x3010, 0x0008, 0x3010,
@@ -28160,6 +28176,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FL, "SourceToGeneralAccessoryDistance", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x0426, 0x300a, 0x0426,
+      EVR_DS, "IsocenterToGeneralAccessoryDistance", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x0431, 0x300a, 0x0431,
       EVR_SQ, "ApplicatorGeometrySequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -29152,6 +29172,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "DeviceTypeCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x3010, 0x002f, 0x3010, 0x002f,
+      EVR_SQ, "SegmentAnnotationTypeModifierCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x3010, 0x0030, 0x3010, 0x0030,
       EVR_SQ, "PatientEquipmentRelationshipCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -29502,6 +29526,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x3010, 0x0088, 0x3010, 0x0088,
       EVR_SQ, "DeliveryTimeStructureCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0089, 0x3010, 0x0089,
+      EVR_SQ, "TreatmentSiteModifierCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef ENABLE_PRIVATE_TAGS

@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2019d and PS 3.7-2019d
-# File created on 2019-09-20 20:33:21 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2019e and PS 3.7-2019e
+# File created on 2019-11-19 21:18:01 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -79,6 +79,9 @@
 (0002,0016)	AE	SourceApplicationEntityTitle	1	DICOM
 (0002,0017)	AE	SendingApplicationEntityTitle	1	DICOM
 (0002,0018)	AE	ReceivingApplicationEntityTitle	1	DICOM
+(0002,0026)	UR	SourcePresentationAddress	1	DICOM
+(0002,0027)	UR	SendingPresentationAddress	1	DICOM
+(0002,0028)	UR	ReceivingPresentationAddress	1	DICOM
 (0002,0031)	OB	RTVMetaInformationVersion	1	DICOM
 (0002,0032)	UI	RTVCommunicationSOPClassUID	1	DICOM
 (0002,0033)	UI	RTVCommunicationSOPInstanceUID	1	DICOM
@@ -269,6 +272,7 @@
 (0008,2228)	SQ	PrimaryAnatomicStructureSequence	1	DICOM
 (0008,2230)	SQ	PrimaryAnatomicStructureModifierSequence	1	DICOM
 (0008,3001)	SQ	AlternateRepresentationSequence	1	DICOM
+(0008,3002)	UI	AvailableTransferSyntaxUID	1-n	DICOM
 (0008,3010)	UI	IrradiationEventUID	1-n	DICOM
 (0008,3011)	SQ	SourceIrradiationEventSequence	1	DICOM
 (0008,3012)	UI	RadiopharmaceuticalAdministrationEventUID	1	DICOM
@@ -3928,6 +3932,7 @@
 (300A,0423)	CS	GeneralAccessoryType	1	DICOM
 (300A,0424)	IS	GeneralAccessoryNumber	1	DICOM
 (300A,0425)	FL	SourceToGeneralAccessoryDistance	1	DICOM
+(300A,0426)	DS	IsocenterToGeneralAccessoryDistance	1	DICOM
 (300A,0431)	SQ	ApplicatorGeometrySequence	1	DICOM
 (300A,0432)	CS	ApplicatorApertureShape	1	DICOM
 (300A,0433)	FL	ApplicatorOpening	1	DICOM
@@ -4176,6 +4181,7 @@
 (3010,002C)	SQ	SegmentAnnotationTypeCodeSequence	1	DICOM
 (3010,002D)	LO	DeviceLabel	1	DICOM
 (3010,002E)	SQ	DeviceTypeCodeSequence	1	DICOM
+(3010,002F)	SQ	SegmentAnnotationTypeModifierCodeSequence	1	DICOM
 (3010,0030)	SQ	PatientEquipmentRelationshipCodeSequence	1	DICOM
 (3010,0031)	UI	ReferencedFiducialsUID	1	DICOM
 (3010,0032)	SQ	PatientTreatmentOrientationSequence	1	DICOM
@@ -4264,6 +4270,7 @@
 (3010,0086)	LT	IntendedStartDayOfWeek	1	DICOM
 (3010,0087)	SQ	WeekdayFractionPatternSequence	1	DICOM
 (3010,0088)	SQ	DeliveryTimeStructureCodeSequence	1	DICOM
+(3010,0089)	SQ	TreatmentSiteModifierCodeSequence	1	DICOM
 (4010,0001)	CS	LowEnergyDetectors	1	DICOM/DICOS
 (4010,0002)	CS	HighEnergyDetectors	1	DICOM/DICOS
 (4010,0004)	SQ	DetectorGeometrySequence	1	DICOM/DICOS

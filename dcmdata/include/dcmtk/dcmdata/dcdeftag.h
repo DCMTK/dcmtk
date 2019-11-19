@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-10-31 16:15:51
+**   Date: 2019-11-19 21:20:58
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2019-10-31 16:15:51"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2019-11-19 21:20:58"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4743
+** Number of entries: 4750
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -81,6 +81,9 @@
 #define DCM_SourceApplicationEntityTitle         DcmTagKey(0x0002, 0x0016)
 #define DCM_SendingApplicationEntityTitle        DcmTagKey(0x0002, 0x0017)
 #define DCM_ReceivingApplicationEntityTitle      DcmTagKey(0x0002, 0x0018)
+#define DCM_SourcePresentationAddress            DcmTagKey(0x0002, 0x0026)
+#define DCM_SendingPresentationAddress           DcmTagKey(0x0002, 0x0027)
+#define DCM_ReceivingPresentationAddress         DcmTagKey(0x0002, 0x0028)
 #define DCM_RTVMetaInformationVersion            DcmTagKey(0x0002, 0x0031)
 #define DCM_RTVCommunicationSOPClassUID          DcmTagKey(0x0002, 0x0032)
 #define DCM_RTVCommunicationSOPInstanceUID       DcmTagKey(0x0002, 0x0033)
@@ -304,6 +307,7 @@
 #define DCM_RETIRED_AnatomicStructureSpaceOrRegionModifierCodeSequenceTrial DcmTagKey(0x0008, 0x225a)
 #define DCM_RETIRED_OnAxisBackgroundAnatomicStructureCodeSequenceTrial DcmTagKey(0x0008, 0x225c)
 #define DCM_AlternateRepresentationSequence      DcmTagKey(0x0008, 0x3001)
+#define DCM_AvailableTransferSyntaxUID           DcmTagKey(0x0008, 0x3002)
 #define DCM_IrradiationEventUID                  DcmTagKey(0x0008, 0x3010)
 #define DCM_SourceIrradiationEventSequence       DcmTagKey(0x0008, 0x3011)
 #define DCM_RadiopharmaceuticalAdministrationEventUID DcmTagKey(0x0008, 0x3012)
@@ -4291,6 +4295,7 @@
 #define DCM_GeneralAccessoryType                 DcmTagKey(0x300a, 0x0423)
 #define DCM_GeneralAccessoryNumber               DcmTagKey(0x300a, 0x0424)
 #define DCM_SourceToGeneralAccessoryDistance     DcmTagKey(0x300a, 0x0425)
+#define DCM_IsocenterToGeneralAccessoryDistance  DcmTagKey(0x300a, 0x0426)
 #define DCM_ApplicatorGeometrySequence           DcmTagKey(0x300a, 0x0431)
 #define DCM_ApplicatorApertureShape              DcmTagKey(0x300a, 0x0432)
 #define DCM_ApplicatorOpening                    DcmTagKey(0x300a, 0x0433)
@@ -4539,6 +4544,7 @@
 #define DCM_SegmentAnnotationTypeCodeSequence    DcmTagKey(0x3010, 0x002c)
 #define DCM_DeviceLabel                          DcmTagKey(0x3010, 0x002d)
 #define DCM_DeviceTypeCodeSequence               DcmTagKey(0x3010, 0x002e)
+#define DCM_SegmentAnnotationTypeModifierCodeSequence DcmTagKey(0x3010, 0x002f)
 #define DCM_PatientEquipmentRelationshipCodeSequence DcmTagKey(0x3010, 0x0030)
 #define DCM_ReferencedFiducialsUID               DcmTagKey(0x3010, 0x0031)
 #define DCM_PatientTreatmentOrientationSequence  DcmTagKey(0x3010, 0x0032)
@@ -4627,6 +4633,7 @@
 #define DCM_IntendedStartDayOfWeek               DcmTagKey(0x3010, 0x0086)
 #define DCM_WeekdayFractionPatternSequence       DcmTagKey(0x3010, 0x0087)
 #define DCM_DeliveryTimeStructureCodeSequence    DcmTagKey(0x3010, 0x0088)
+#define DCM_TreatmentSiteModifierCodeSequence    DcmTagKey(0x3010, 0x0089)
 #define DCM_RETIRED_Arbitrary                    DcmTagKey(0x4000, 0x0010)
 #define DCM_RETIRED_TextComments                 DcmTagKey(0x4000, 0x4000)
 #define DCM_RETIRED_ResultsID                    DcmTagKey(0x4008, 0x0040)
