@@ -5,8 +5,8 @@
  *
  *  Header file for class CID10013_CTAcquisitionType
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:48:13 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019e
+ *  File created on 2019-11-20 16:10:31 by J. Riesmeier
  *
  */
 

@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:48:11 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019e
+ *  File created on 2019-11-20 16:10:29 by J. Riesmeier
  *
  */
 
@@ -303,6 +303,9 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(Water, DSRBasicCodedEntry("11713004", "SCT", "Water")));
         Codes->insert(OFMake_pair(WaterFraction, DSRBasicCodedEntry("129103", "DCM", "Water fraction")));
         Codes->insert(OFMake_pair(RelativeLinearStoppingPower, DSRBasicCodedEntry("130086", "DCM", "Relative Linear Stopping Power")));
+        Codes->insert(OFMake_pair(ClassActivation, DSRBasicCodedEntry("130402", "DCM", "Class activation")));
+        Codes->insert(OFMake_pair(GradientWeightedClassActivation, DSRBasicCodedEntry("130403", "DCM", "Gradient-weighted class activation")));
+        Codes->insert(OFMake_pair(Saliency, DSRBasicCodedEntry("130404", "DCM", "Saliency")));
         Codes->insert(OFMake_pair(Length, DSRBasicCodedEntry("410668003", "SCT", "Length")));
         Codes->insert(OFMake_pair(PathLength, DSRBasicCodedEntry("121211", "DCM", "Path length")));
         Codes->insert(OFMake_pair(Distance, DSRBasicCodedEntry("121206", "DCM", "Distance")));

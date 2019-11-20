@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7452_OrganizationalRoles
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:48:05 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019e
+ *  File created on 2019-11-20 16:10:23 by J. Riesmeier
  *
  */
 

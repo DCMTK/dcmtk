@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:47:54 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019e
+ *  File created on 2019-11-20 16:10:12 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4021 (PET Radiopharmaceutical)
 #define CONTEXT_GROUP_NUMBER  "4021"
-#define CONTEXT_GROUP_VERSION "20190817"
+#define CONTEXT_GROUP_VERSION "20191109"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.305"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -185,6 +185,8 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(DfFK_89Zr, DSRBasicCodedEntry("126760", "DCM", "Df-FK ^89^Zr")));
         Codes->insert(OFMake_pair(DfFKPEG3_89Zr, DSRBasicCodedEntry("126761", "DCM", "Df-FK-PEG(3) ^89^Zr")));
         Codes->insert(OFMake_pair(DN30_89Zr, DSRBasicCodedEntry("126747", "DCM", "DN30 ^89^Zr")));
+        Codes->insert(OFMake_pair(DPA713_11C, DSRBasicCodedEntry("126765", "DCM", "DPA-713 ^11^C")));
+        Codes->insert(OFMake_pair(DPA714_18F, DSRBasicCodedEntry("126766", "DCM", "DPA-714 ^18^F")));
         Codes->insert(OFMake_pair(E4G10_89Zr, DSRBasicCodedEntry("126519", "DCM", "E4G10 ^89^Zr")));
         Codes->insert(OFMake_pair(Ecromeximab_89Zr, DSRBasicCodedEntry("126732", "DCM", "Ecromeximab ^89^Zr")));
         Codes->insert(OFMake_pair(Edotreotide_Ga68, DSRBasicCodedEntry("C2713594", "UMLS", "Edotreotide Ga^68^")));
@@ -244,6 +246,7 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(Pegdinetanib_89Zr, DSRBasicCodedEntry("126728", "DCM", "Pegdinetanib ^89^Zr")));
         Codes->insert(OFMake_pair(PinatuzumabVedotin_89Zr, DSRBasicCodedEntry("126725", "DCM", "Pinatuzumab vedotin ^89^Zr")));
         Codes->insert(OFMake_pair(PittsburghCompoundB_C11, DSRBasicCodedEntry("126500", "DCM", "Pittsburgh compound B C^11^")));
+        Codes->insert(OFMake_pair(PK11195_11C, DSRBasicCodedEntry("C1609883", "UMLS", "PK11195 ^11^C")));
         Codes->insert(OFMake_pair(PolatuzumabVedotin_89Zr, DSRBasicCodedEntry("126726", "DCM", "Polatuzumab vedotin ^89^Zr")));
         Codes->insert(OFMake_pair(PSMA1007_F18, DSRBasicCodedEntry("126758", "DCM", "PSMA-1007 F^18^")));
         Codes->insert(OFMake_pair(PSMA11_Ga68, DSRBasicCodedEntry("C118961", "NCIt", "PSMA-11 Ga^68^")));
