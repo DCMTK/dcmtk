@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2019b
- *  File created on 2019-04-26 16:52:49 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019e
+ *  File created on 2019-11-20 15:53:47 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 50
+// total number of codes: 51
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -74,6 +74,7 @@
 #define CODE_UMLS_Fluoroetanidazole_F18                                    DSRBasicCodedEntry("C1541539", "UMLS", "Fluoroetanidazole F^18^")
 #define CODE_UMLS_CommercialProduct                                        DSRBasicCodedEntry("C1547887", "UMLS", "Commercial product")
 #define CODE_UMLS_Antihypoglycemic                                         DSRBasicCodedEntry("C1579431", "UMLS", "Antihypoglycemic")
+#define CODE_UMLS_PK11195_11C                                              DSRBasicCodedEntry("C1609883", "UMLS", "PK11195 ^11^C")
 #define CODE_UMLS_Unscheduled                                              DSRBasicCodedEntry("C1699701", "UMLS", "Unscheduled")
 #define CODE_UMLS_Nadir                                                    DSRBasicCodedEntry("C1708760", "UMLS", "Nadir")
 #define CODE_UMLS_MedicalPhysicist                                         DSRBasicCodedEntry("C1708969", "UMLS", "Medical Physicist")

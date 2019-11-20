@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-09-20 20:16:50 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2019e
+ *  File created on 2019-11-20 16:01:08 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4269
+// total number of codes: 4278
 // - retired: 196
 // - no name: 27
 // - not unique: 17
@@ -2713,13 +2713,13 @@
 #define CODE_DCM_CorrectedSinusNodeRecoveryTime                            DSRBasicCodedEntry("122237", "DCM", "Corrected Sinus Node Recovery Time")
 #define CODE_DCM_MaxVolumeNormalizedTo50mmHgPulsePressure                  DSRBasicCodedEntry("122238", "DCM", "Max volume normalized to 50mmHg pulse pressure")
 #define CODE_DCM_OxygenConsumption                                         DSRBasicCodedEntry("122239", "DCM", "Oxygen Consumption")
-#define CODE_DCM_122240                                                    DSRBasicCodedEntry("122240", "DCM", "BSA = 3.207*WT^(0.7285-0.0188 log (WT)) *HT^0.3")
-#define CODE_DCM_122241                                                    DSRBasicCodedEntry("122241", "DCM", "BSA = 0.007184*WT^ 0.425*HT^0.725")
-#define CODE_DCM_122242                                                    DSRBasicCodedEntry("122242", "DCM", "BSA = 0.0235*WT^0.51456*HT^ 0.42246")
+#define CODE_DCM_122240                                                    DSRBasicCodedEntry("122240", "DCM", "BSA = 0.003207*WT^(0.7285-0.0188*log(WT))*HT^0.3")
+#define CODE_DCM_122241                                                    DSRBasicCodedEntry("122241", "DCM", "BSA = 0.007184*WT^0.425*HT^0.725")
+#define CODE_DCM_122242                                                    DSRBasicCodedEntry("122242", "DCM", "BSA = 0.0235*WT^0.51456*HT^0.42246")
 #define CODE_DCM_122243                                                    DSRBasicCodedEntry("122243", "DCM", "BSA = 0.024265*WT^0.5378*HT^0.3964")
-#define CODE_DCM_122244                                                    DSRBasicCodedEntry("122244", "DCM", "BSA = (HT * WT/36) ^0.5")
+#define CODE_DCM_122244                                                    DSRBasicCodedEntry("122244", "DCM", "BSA = (HT*WT/36)^0.5")
 #define CODE_DCM_122245                                                    DSRBasicCodedEntry("122245", "DCM", "BSA = 1321+0.3433*WT")
-#define CODE_DCM_122246                                                    DSRBasicCodedEntry("122246", "DCM", "BSA = 0.0004688 * WT ^ (0.8168 - 0.0154 * log(WT))")
+#define CODE_DCM_122246                                                    DSRBasicCodedEntry("122246", "DCM", "BSA = 0.0004688*WT^(0.8168-0.0154*log(WT))")
 #define CODE_DCM_122247                                                    DSRBasicCodedEntry("122247", "DCM", "VO2male = BSA (138.1 - 11.49 * loge(age) + 0.378 * HRf)")
 #define CODE_DCM_122248                                                    DSRBasicCodedEntry("122248", "DCM", "VO2female = BSA (138.1 - 17.04 * loge(age) + 0.378 * HRf)")
 #define CODE_DCM_122249                                                    DSRBasicCodedEntry("122249", "DCM", "VO2 = VeSTPD * 10 * (FIO2 - FE02)")
@@ -2738,11 +2738,11 @@
 #define CODE_DCM_122262                                                    DSRBasicCodedEntry("122262", "DCM", "Area = Flow / 44.5 * sqrt(Gradient[mmHg])")
 #define CODE_DCM_122263                                                    DSRBasicCodedEntry("122263", "DCM", "MVA = Flow / 38.0 * sqrt(Gradient[mmHg])")
 #define CODE_DCM_122265                                                    DSRBasicCodedEntry("122265", "DCM", "BMI = Wt / Ht ^ 2")
-#define CODE_DCM_122266                                                    DSRBasicCodedEntry("122266", "DCM", "BSA = 0.007358 * WT ^ 0.425 * HT ^ 0.725")
-#define CODE_DCM_122267                                                    DSRBasicCodedEntry("122267", "DCM", "BSA = 0.010265 * WT ^ 0.423 * HT ^ 0.651")
-#define CODE_DCM_122268                                                    DSRBasicCodedEntry("122268", "DCM", "BSA = 0.008883 * WT ^ 0.444 * HT ^ 0.663")
-#define CODE_DCM_122269                                                    DSRBasicCodedEntry("122269", "DCM", "BSA = 0.038189 * WT ^ 0.423 * HT ^ 0.362")
-#define CODE_DCM_122270                                                    DSRBasicCodedEntry("122270", "DCM", "BSA = 0.009568 * WT ^ 0.473 * HT ^ 0.655")
+#define CODE_DCM_122266                                                    DSRBasicCodedEntry("122266", "DCM", "BSA = 0.007358*WT^0.425*HT^0.725")
+#define CODE_DCM_122267                                                    DSRBasicCodedEntry("122267", "DCM", "BSA = 0.010265*WT^0.423*HT^0.651")
+#define CODE_DCM_122268                                                    DSRBasicCodedEntry("122268", "DCM", "BSA = 0.008883*WT^0.444*HT^0.663")
+#define CODE_DCM_122269                                                    DSRBasicCodedEntry("122269", "DCM", "BSA = 0.038189*WT^0.423*HT^0.362")
+#define CODE_DCM_122270                                                    DSRBasicCodedEntry("122270", "DCM", "BSA = 0.009568*WT^0.473*HT^0.655")
 #define CODE_DCM_SkinConditionWarm                                         DSRBasicCodedEntry("122271", "DCM", "Skin Condition Warm")
 #define CODE_DCM_SkinConditionCool                                         DSRBasicCodedEntry("122272", "DCM", "Skin Condition Cool")
 #define CODE_DCM_SkinConditionCold                                         DSRBasicCodedEntry("122273", "DCM", "Skin Condition Cold")
@@ -3427,6 +3427,9 @@
 #define CODE_DCM_DfFKPEG3_89Zr                                             DSRBasicCodedEntry("126761", "DCM", "Df-FK-PEG(3) ^89^Zr")
 #define CODE_DCM_DfFK2_89Zr                                                DSRBasicCodedEntry("126762", "DCM", "Df-[FK](2) ^89^Zr")
 #define CODE_DCM_DfFK23PEG4_89Zr                                           DSRBasicCodedEntry("126763", "DCM", "Df-[FK](2)-3PEG(4) ^89^Zr")
+#define CODE_DCM_Iodinated_I125DPA713                                      DSRBasicCodedEntry("126764", "DCM", "Iodinated I^125^ DPA-713")
+#define CODE_DCM_DPA713_11C                                                DSRBasicCodedEntry("126765", "DCM", "DPA-713 ^11^C")
+#define CODE_DCM_DPA714_18F                                                DSRBasicCodedEntry("126766", "DCM", "DPA-714 ^18^F")
 #define CODE_DCM_IEC61217PatientSupportContinuousYawAngle                  DSRBasicCodedEntry("126801", "DCM", "IEC61217 Patient Support Continuous Yaw Angle")
 #define CODE_DCM_IEC61217TableTopContinuousPitchAngle                      DSRBasicCodedEntry("126802", "DCM", "IEC61217 Table Top Continuous Pitch Angle")
 #define CODE_DCM_IEC61217TableTopContinuousRollAngle                       DSRBasicCodedEntry("126803", "DCM", "IEC61217 Table Top Continuous Roll Angle")
@@ -4317,5 +4320,11 @@
 #define CODE_DCM_RTVAudioAndVideoRendition                                 DSRBasicCodedEntry("130371", "DCM", "RTV Audio and Video Rendition")
 #define CODE_DCM_RTVStereoVideoRendition                                   DSRBasicCodedEntry("130372", "DCM", "RTV Stereo Video Rendition")
 #define CODE_DCM_RTVAudioAndStereoVideoRendition                           DSRBasicCodedEntry("130373", "DCM", "RTV Audio and Stereo Video Rendition")
+#define CODE_DCM_GeometricPurposeOfRegion                                  DSRBasicCodedEntry("130400", "DCM", "Geometric purpose of region")
+#define CODE_DCM_VisualExplanation                                         DSRBasicCodedEntry("130401", "DCM", "Visual explanation")
+#define CODE_DCM_ClassActivation                                           DSRBasicCodedEntry("130402", "DCM", "Class activation")
+#define CODE_DCM_GradientWeightedClassActivation                           DSRBasicCodedEntry("130403", "DCM", "Gradient-weighted class activation")
+#define CODE_DCM_Saliency                                                  DSRBasicCodedEntry("130404", "DCM", "Saliency")
+#define CODE_DCM_PatientAttachedDoseControlObject                          DSRBasicCodedEntry("130405", "DCM", "Patient-Attached Dose Control Object")
 
 #endif
