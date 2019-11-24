@@ -99,6 +99,13 @@ public:
    */
   virtual const char *lastError() const;
 
+  /** returns true if the result of the last call to verifyCertificate()
+   *  was the status code indicating that the certificate has expired,
+   *  false otherwise
+   *  @return true if verifyCertificate() reported certificate expiry.
+   */
+  virtual OFBool lastErrorIsCertExpiry() const;
+
   /** returns a pointer to the trusted certificate store managed by this object.
    *  @return pointer to trusted certificate store
    */

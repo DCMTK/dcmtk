@@ -240,6 +240,10 @@ int SiCertificateVerifier::verifyCallback(int deflt, X509_STORE_CTX *ctx)
   return deflt;
 }
 
+OFBool SiCertificateVerifier::lastErrorIsCertExpiry() const
+{
+  return (errorCode == X509_V_ERR_CERT_HAS_EXPIRED);
+}
 
 const char *SiCertificateVerifier::lastError() const
 {

@@ -442,6 +442,7 @@ int DcmSignatureHelper::do_verify(
     numSignatures = signer.numberOfSignatures();
     for (l=0; l<numSignatures; l++)
     {
+      OFBool cert_expiry = OFFalse;
       OFBool checkTimestamp = OFFalse;
       if (EC_Normal == signer.selectSignature(l))
       {
@@ -516,6 +517,7 @@ int DcmSignatureHelper::do_verify(
             }
             else
             {
+              cert_expiry = certVerifier.lastErrorIsCertExpiry();
               DCMSIGN_WARN(aString << "signature is OK but certificate verification failed: " << certVerifier.lastError());
               corrupt_counter++;
             }
@@ -531,8 +533,10 @@ int DcmSignatureHelper::do_verify(
         }
 
         // check certified timestamp (if any).
-        // We only do this if the signature verification has passed.
-        if (checkTimestamp)
+        // We only do this if the signature verification has passed
+        // or if the signature is OK but the signer certificate has expired,
+        // which may be "healed" by a timestamp that is still valid
+        if (checkTimestamp || cert_expiry)
         {
           printTimestampDetails(signer, timestampPolicy);
 
@@ -547,14 +551,23 @@ int DcmSignatureHelper::do_verify(
                 aString = "  Timestamp Verification      : ";
                 else aString = "  Timestamp Verification : ";
 
-
               sicond = tstamp->verifyTSSignature(certVerifier);
               if (sicond.good())
               {
                 sicond = tstamp->verifyTSToken(certVerifier, *signer.getSelectedSignatureItem(), *signer.getCurrentCertificate());
                 if (sicond.good())
                 {
-                  DCMSIGN_WARN(aString << "OK");
+                  if (cert_expiry)
+                  {
+                    // we have an expired signature but a timestamp that is still valid,
+                    // which means that the timestamp "heals" the failed signature verification
+                    corrupt_counter--;
+                    DCMSIGN_WARN(aString << "OK, extends validity period of expired signature.");
+                  }
+                  else
+                  {
+                    DCMSIGN_WARN(aString << "OK");
+                  }
                 }
                 else
                 {
@@ -562,7 +575,7 @@ int DcmSignatureHelper::do_verify(
                   tstamp->lastError(errString); // check if we have an OpenSSL error message
                   if (errString.length() == 0) errString = sicond.text(); // use DCMTK error message otherwise
                   DCMSIGN_WARN(aString << "timestamp signature verification failed: " << errString);
-                  corrupt_counter++;
+                  if (!cert_expiry) corrupt_counter++; // if cert_expiry is true, the counter has already been increased
                 }
               }
               else
@@ -570,7 +583,7 @@ int DcmSignatureHelper::do_verify(
                 OFString errString;
                 tstamp->lastError(errString);
                 DCMSIGN_WARN(aString << "timestamp signature verification failed: " << errString);
-                corrupt_counter++;
+                if (!cert_expiry) corrupt_counter++; // if cert_expiry is true, the counter has already been increased
               }
             }
           }
@@ -580,7 +593,7 @@ int DcmSignatureHelper::do_verify(
             if (timestampPolicy == ETVP_requireTS)
             {
               DCMSIGN_WARN("  Certified timestamp : absent, but required by timestamp policy");
-              corrupt_counter++;
+              if (!cert_expiry) corrupt_counter++; // if cert_expiry is true, the counter has already been increased
             }
           }
         } // if (checkTimestamp)

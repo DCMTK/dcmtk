@@ -304,6 +304,9 @@ private:
   /// OpenSSL X.509 certificate verification error code for the last operation
   long errorCode_;
 
+  /// error string for the last operation, valid if errorCode_ < 0
+  const char *errorString_;
+
 };
 
 #endif
