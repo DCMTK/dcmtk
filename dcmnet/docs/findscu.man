@@ -267,6 +267,10 @@ C-FIND responses:
 
   -Xs   --extract-xml-single  [f]ilename: string
           extract all responses to given XML file f
+
+  -Xlo  --limit-output  [n]umber: integer
+          limit number of responses extracted to file to n
+          (default: unlimited)
 \endverbatim
 
 \section findscu_notes NOTES

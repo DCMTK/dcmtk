@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
     DcmFindSCUExtractMode opt_extractResponses = FEM_none;
     OFString              opt_extractXMLFilename;
     OFString              opt_outputDirectory = ".";
+    OFCmdUnsignedInt      opt_limitOutputToNResponses = 0;
     OFCmdUnsignedInt      opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
     E_TransferSyntax      opt_networkTransferSyntax = EXS_Unknown;
     const char *          opt_ourTitle = APPLICATIONTITLE;
@@ -176,6 +177,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--extract-xml",        "-Xx",     "extract responses to XML file (rsp0001.xml...)");
       cmd.addOption("--extract-xml-single", "-Xs",  1, "[f]ilename: string",
                                                        "extract all responses to given XML file f");
+      cmd.addOption("--limit-output",       "-Xlo", 1, "[n]umber: integer",
+                                                       "limit number of responses extracted to file to n\n(default: unlimited)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -310,6 +313,11 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(opt_extractXMLFilename));
       }
       cmd.endOptionBlock();
+      if (cmd.findOption("--limit-output"))
+      {
+          app.checkDependence("--limit-output", "--extract, --extract-xml or --extract-xml-single", opt_extractResponses != FEM_none);
+          app.checkValue(cmd.getValueAndCheckMin(opt_limitOutputToNResponses, 1));
+      }
 
       /* finally parse filenames */
       int paramCount = cmd.getParamCount();
@@ -419,6 +427,9 @@ int main(int argc, char *argv[])
        }
     }
 #endif
+
+    // set further parameters
+    findscu.setOutputResponseLimit(opt_limitOutputToNResponses);
 
     // do the main work: negotiate network association, perform C-FIND transaction,
     // process results, and finally tear down the association.
