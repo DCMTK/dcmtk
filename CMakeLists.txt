@@ -100,7 +100,7 @@ install(FILES "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h"
         COMPONENT include)
 
 # Install DCMTK's general documentation files
-install(FILES ANNOUNCE CHANGES COPYRIGHT CREDITS FAQ HISTORY VERSION
+install(FILES ANNOUNCE COPYRIGHT CREDITS FAQ HISTORY VERSION
         DESTINATION "${CMAKE_INSTALL_DOCDIR}"
         COMPONENT doc)
 install(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_DOCDIR}"

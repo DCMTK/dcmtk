@@ -1,12 +1,13 @@
 
 In earlier versions of DCMTK, changes between releases had been documented in a
-CHANGES.XXX file inside DCMTK's main directory.
+CHANGES.XXX file inside DCMTK's main directory, with "XXX" referring to the
+version number of the release.
 
-Now, the CHANGES.XXX file has been moved to the dcmtk/doc folder with the latest
-one being updated every time that a new DCMTK version is released.  Thus it
-always contains all DCMTK changes between the last DCMTK release and the most
-recent one.
+Now, the CHANGES.XXX file has been moved to the dcmtk/docs folder (in the
+source code package) with the latest one being updated every time a new DCMTK
+version is released.  Thus, it always contains all DCMTK changes between the
+previous DCMTK release and the most recent one.
 
 For very recent changes, i. e. those changes to DCMTK that have been applied
-after the most recent release, see the DCMTK git repository log at
-http://git.dcmtk.org/ .
+after the most recent release, see the commit history of DCMTK's git repository
+at https://git.dcmtk.org/.
