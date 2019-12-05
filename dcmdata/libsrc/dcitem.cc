@@ -3858,6 +3858,9 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
     DcmElement *elem = NULL;
     switch(tag.getEVR())
     {
+        case EVR_DS:
+            elem = new DcmDecimalString(tag);
+            break;
         case EVR_FD:
             elem = new DcmFloatingPointDouble(tag);
             break;

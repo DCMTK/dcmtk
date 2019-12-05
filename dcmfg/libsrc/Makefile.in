@@ -22,12 +22,42 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 
 LOCALDEFS =
 
-objs = fgderimg.o fgframevoilut.o fgpixmsr.o fgplanpo.o fgseg.o stackinterface.o \
-	fgbase.o fgfact.o fgimagedatatype.o fgplanor.o fgplanposvol.o fgtypes.o \
-	fg.o fgfracon.o fginterface.o fgplanorvol.o fgrealworldvaluemapping.o \
-	fgusimagedescription.o fgparametricmapframetype.o \
-	fgpixeltransform.o fgframeanatomy.o stack.o
-
+objs = concatenationcreator.o \
+	concatenationloader.o \
+	fg.o \
+	fgbase.o \
+	fgctacquisitiondetails.o \
+	fgctacquisitiontype.o \
+	fgctadditionalxraysource.o \
+	fgctexposure.o \
+	fgctgeometry.o \
+	fgctimageframetype.o \
+	fgctposition.o \
+	fgctreconstruction.o \
+	fgcttabledynamics.o \
+	fgctxraydetails.o \
+	fgderimg.o \
+	fgfact.o \
+	fgfracon.o \
+	fgframeanatomy.o \
+	fgframevoilut.o \
+	fgpixeltransform.o \
+	fgimagedatatype.o \
+	fginterface.o \
+	fgirradiationeventid.o \
+	fgpixmsr.o \
+	fgparametricmapframetype.o \
+	fgplanor.o \
+	fgplanorvol.o \
+	fgplanpo.o \
+	fgplanposvol.o \
+	fgrealworldvaluemapping.o \
+	fgseg.o \
+	fgtemporalposition.o \
+	fgusimagedescription.o \
+	fgtypes.o \
+	stack.o \
+	stackinterface.o
 
 library = libdcmfg.$(LIBEXT)
 

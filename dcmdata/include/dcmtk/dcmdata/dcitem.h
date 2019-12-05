@@ -1232,7 +1232,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                          const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: FD, OD.
+     *  Applicable to the following VRs: DS, FD, OD
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to

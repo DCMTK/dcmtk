@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,8 +23,9 @@
 #define IODREFERENCES_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/oflog/oflog.h"
 #include "dcmtk/dcmiod/ioddef.h"
+#include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/ofstd/ofvector.h"
 
 // Forward declaration
 class DcmItem;
@@ -42,30 +43,30 @@ class DcmItem;
  */
 class DCMTK_DCMIOD_EXPORT IODReference
 {
-  public:
+public:
     /// The maximum DICOM entity level that this reference refers to. This is
     /// mostly used in order to check whether a reference is complete or not.
     enum MAX_LEVEL
     {
-      /// Instance Level
-      LEVEL_INSTANCE,
-      /// Series Level
-      LEVEL_SERIES,
-      /// Study level
-      LEVEL_STUDY,
-      /// Patient level
-      LEVEL_PATIENT
+        /// Instance Level
+        LEVEL_INSTANCE,
+        /// Series Level
+        LEVEL_SERIES,
+        /// Study level
+        LEVEL_STUDY,
+        /// Patient level
+        LEVEL_PATIENT
     };
 
     /// Type of reference
     enum TYPE
     {
-      /// Generic (or unknown)
-      GENERIC,
-      /// Reference to an image object, see also class IODImageReference
-      IMAGE,
-      /// Reference to a segmentation object, see also class IDOSegmentationReference
-      SEGMENT
+        /// Generic (or unknown)
+        GENERIC,
+        /// Reference to an image object, see also class IODImageReference
+        IMAGE,
+        /// Reference to a segmentation object, see also class IDOSegmentationReference
+        SEGMENT
     };
 
     /** Constructor, creates empty reference, default level is "STUDY"
@@ -89,7 +90,10 @@ class DCMTK_DCMIOD_EXPORT IODReference
     /** Get type of reference. Base class always returns "GENERIC"
      *  @return Returns "GENERIC" type
      */
-    virtual TYPE getType() const {return GENERIC; }
+    virtual TYPE getType() const
+    {
+        return GENERIC;
+    }
 
     /** Check whether this reference is valid, i.e. complete related to its
      *  level. Also in case of UIDs it is checked whether they conform to the
@@ -142,14 +146,12 @@ class DCMTK_DCMIOD_EXPORT IODReference
     MAX_LEVEL m_Level;
 };
 
-
 /** Class representing a reference to an image. Compared to IODReference, this
  *  class also allows to provide references to specific frames
  */
 class DCMTK_DCMIOD_EXPORT IODImageReference : public IODReference
 {
-  public:
-
+public:
     /** Default constructor, uses level STUDY
      */
     IODImageReference();
@@ -195,7 +197,10 @@ class DCMTK_DCMIOD_EXPORT IODImageReference : public IODReference
     /** Get type (always returns IMAGE type)
      *  @return Returns IMAGE type
      */
-    virtual TYPE getType() const {return IMAGE; }
+    virtual TYPE getType() const
+    {
+        return IMAGE;
+    }
 
     // Avoid overridden virtual function warning, i.e. tell the compiler that
     // we want to have both functions to be polymorph and available to the user.
@@ -208,11 +213,12 @@ class DCMTK_DCMIOD_EXPORT IODImageReference : public IODReference
      *           such frames. First frame is denoted by 1.
      *  @return OFTrue if initialization was successful, OFFalse otherwise
      */
-    virtual OFBool readFromFile(const OFString& filename,
-                                const OFVector<Uint32> frameNumbers);
+    virtual OFBool readFromFile(const OFString& filename, const OFVector<Uint32> frameNumbers);
     /** Destructor
      */
-    virtual ~IODImageReference() {}
+    virtual ~IODImageReference()
+    {
+    }
 
     /** Clear reference data
      */
@@ -222,15 +228,13 @@ class DCMTK_DCMIOD_EXPORT IODImageReference : public IODReference
     OFVector<Uint32> m_ReferencedFrameNumber;
 };
 
-
 /** Class representing a reference to a Segmentation. Compared to IODReference,
  *  this class also allows to provide references to specific segments by
  *  referencing the value of their Segment Number attribute.
  */
 class DCMTK_DCMIOD_EXPORT IODSegmentationReference : public IODReference
 {
-  public:
-
+public:
     /** Constructor allowing to set reference level.
      *  @param  level The maximum level this reference should deal with
      */
@@ -248,7 +252,10 @@ class DCMTK_DCMIOD_EXPORT IODSegmentationReference : public IODReference
     /** Get type (always returns SEGMENT type)
      *  @return Returns SEGMENT type
      */
-    virtual TYPE getType() const {return SEGMENT; }
+    virtual TYPE getType() const
+    {
+        return SEGMENT;
+    }
 
     // Avoid overridden virtual function warning, i.e. tell the compiler that
     // we want to have both functions to be polymorph and available to the user.
@@ -261,12 +268,13 @@ class DCMTK_DCMIOD_EXPORT IODSegmentationReference : public IODReference
      *          contains such Segment Numbers. First segment is 1.
      *  @return OFTrue if initialization was successful, OFFalse otherwise
      */
-    virtual OFBool readFromFile(const OFString& filename,
-                                const OFVector<Uint16> segmentNumbers);
+    virtual OFBool readFromFile(const OFString& filename, const OFVector<Uint16> segmentNumbers);
 
     /** Destructor
      */
-    virtual ~IODSegmentationReference() {}
+    virtual ~IODSegmentationReference()
+    {
+    }
 
     /** Clear reference data
      */
@@ -276,15 +284,13 @@ class DCMTK_DCMIOD_EXPORT IODSegmentationReference : public IODReference
     OFVector<Uint16> m_ReferencedSegmentNumber;
 };
 
-
 /** Class that holds a set of IODReference instances (or its sub classes) and
  *  offers helper functionality to read and write such references
  */
 class DCMTK_DCMIOD_EXPORT IODReferences
 {
 
-  public:
-
+public:
     /** Default constructor
      */
     IODReferences();
@@ -295,6 +301,8 @@ class DCMTK_DCMIOD_EXPORT IODReferences
     IODReferences(const IODReferences& rhs);
 
     /** Assignment operator, copies all provided references
+     *  @param  rhs The right hand side of the assignment
+     *  @return Reference to "this" object
      */
     IODReferences& operator=(const IODReferences& rhs);
 
@@ -354,11 +362,9 @@ class DCMTK_DCMIOD_EXPORT IODReferences
      */
     virtual void clearData();
 
-  private:
-
+private:
     /// Set of references managed by this class
     OFVector<IODReference*> m_References;
 };
-
 
 #endif // IODREFERENCES_H

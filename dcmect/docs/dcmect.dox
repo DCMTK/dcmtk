@@ -1,0 +1,180 @@
+/*!
+
+\page mod_dcmect dcmect: a library for working with Enhanced CT objects
+
+\tableofcontents
+
+\section dcmect_introduction Introduction
+
+This module contains classes to deal with DICOM Enhanced CT objects. It is able
+to create, load and save them. Several checks (as possible) make sure
+that only valid Enhanced CT objects are written. This module makes heavy use of
+the \ref mod_dcmiod "dcmiod" module for managing common IOD attribute as well
+as the \ref mod_dcmfg "dcmfg" module to manage the functional groups required
+forEnhanced CT objects.
+
+The main class of this module is:
+\li \b EctEnhancedCT
+
+\section dcmect_howto_use_dcmect How to use dcmect
+
+The \ref mod_dcmect "dcmect" module offers a main class, \b EctEnhancedCT,
+that should be used as a starting point to load or create Enhanced CT objects.
+The \b EctEnhancedCT class manages its data in a similar way as the related
+Enhanced CT IOD is organized in the standard. It holds a list of modules
+(see \ref dcmect_supported_modules) and a set of functional group macros
+(see \ref dcmect_supported_functional_group_macros) that together make up
+the Enhanced CT object.
+
+\subsection dcmect_creation Creation
+
+In order to create a new Enhanced CT object from scratch, a factory method
+EctEnhancedCT::create() must be used (regular constructor is protected)).
+create() asks for some required information that is needed in any case to
+create valid Enhanced CT objects.
+
+Afterwards, the various attributes in the supported modules can be set.
+There is a get() method for each Module that returns a reference, e.g.
+EctEnhancedCT::getIODPatientModule() to retrieve the Patient Module in
+order to set the attribute Patient's Name (IODPatientModule::setPatientName())
+
+An exception are the attributes of the Enhanced CT Image Module which can be
+set directly using set() methods on the \b EctEnhancedCT class,
+e.g. EctEnhancedCT::setISOCenterPosition().
+
+Functional Groups are added in two ways:
+    -# EctEnhancedCT::addForAllFrames() adds a Functional Group as "shared",
+    i.e. as being valid for all frames that will be part of this Enhanced CT
+    object
+    -# EctEnhancedCT::Frames::addFrame() adds a new frame with pixel data
+    and also takes a set of functional groups that should be added as
+    "per-frame".
+
+After constructing the Enhanced CT object it can be written to a \b DcmItem
+or to a DICOM file (EctEnhancedCT::writeDataset() versus EctEnhancedCT::saveFile()).
+
+\subsection dcmect_reading Reading
+
+An existing Enhanced CT object can be read using the static methods
+EctEnhancedCT::loadFile() (load from DICOM file) or EctEnhancedCT::loadDataset()
+(reading from an existing \b DcmItem object in memory).
+
+For compression see section \ref dcmect_compression "on compression".
+
+\subsection dcmect_saving Saving
+
+An existing Enhanced CT object can be written using the methods
+EctEnhancedCT::saveFile() (save to DICOM file) or EctEnhancedCT::writeDataset()
+(writing to an existing \b DcmItem object in memory). By default, EctEnhancedCT
+writes uncompressed files in transfer syntax Little Endian Explicit.
+
+For compression section \ref dcmect_compression "on compression".
+
+\subsection dcmect_modification Modification
+
+An existing \b EctEnhancedCT object can be modified in memory using the methods
+described above. Note that modification must be done careful and might lead to
+inconsistent objects. That's why it is not the recommended to modify existing
+objects with the \ref mod_dcmect "dcmect" module.
+
+\subsection dcmect_code_example Code Example
+
+The dcmect/tests directory contains a file called t_roundtrip.cc which contains
+code that creates, writes and reads a Enhanced CT object so it is a quite
+complete demo case that shows how to use \ref mod_dcmect "dcmect" module.
+
+\subsection dcmect_compression Compression
+
+The EctEnhancedCT works on uncompressed pixel data. Therefore it first tries
+to decompress a file that is encoded using a compressed ("encapsulated")
+transfer syntax.
+
+DCMTK supports various compressed transfer syntaxes, however, the related
+codecs that perform compression or decompression must be registered first
+by the application that wants to use them. EctEnhancedCT does not automatically
+register those codecs but leaves this to the user of the module. Once the
+codecs are registered, EctEnhancedCT will make use of them when trying to
+decompress the compressed dataset.
+
+See for example the \ref mod_dcmjpeg "dcmjpeg module" to see how registering
+(and later deregistering) codecs work.
+
+When sving, EctEnhancedCT::saveFile() writes the file in Little Endian Explicit
+transfer syntax. By setting its parameter \em writeXfer to a compressed transfer
+syntax, \ref mod_dcmect "dcmect" tries to compress the file before writing. As when
+reading a dataset or file, this only works if the user registered the related
+decompression codecs first.
+
+\section dcmect_supported_modules Supported Modules
+
+The following modules of the Enhanced CT IOD are supported:
+
+\li Patient Module
+\li Patient Study Module
+\li General Study Module
+\li General Series Module
+\li Enhanced CT Series Module
+\li Frame of Reference Module
+\li Synchronization Module
+\li General Equipment Module
+\li Enhanced General Equipment Module
+\li Image Pixel Module
+\li Multi-frame Functional Groups Module
+\li Multi-frame Dimension Module
+\li Acquisition Context Module
+\li Enhanced CT Module
+\li SOP Common Module
+\li Common Instance Reference Module
+
+ The following modules are \e not (yet) supported:
+ \li Enhanced Contrast/Bolus Module
+ \li Cardiac Synchronization Module
+ \li Respiratory Synchronization Module
+ \li Supplemental Palette Color Lookup Table Module
+ \li Device Module
+ \li Specimen Module
+ \li Enhanced Multi-energy CT Acquisition Module
+ \li ICC Profile Module
+ \li Frame Extraction Module
+
+ There might be further unsupported optional modules that have been added to
+ the DICOM Standard after the last update of this documentation.
+
+ \section dcmect_supported_functional_group_macros Supported Functional Group Macros
+
+ The following functional group macros are supported:
+
+\li Pixel Measures
+\li Frame Content
+\li Plane Position (Patient)
+\li Plane Orientation (Patient)
+\li Derivation Image
+\li Frame Anatomy
+\li Frame VOI LUT
+\li Real World Value Mapping
+\li Irradiation Event Identification
+\li CT Image Frame Type
+\li CT Acquisition Type
+\li CT Acquisition Details
+\li CT Table Dynamics
+\li CT Position
+\li CT Geometry
+\li CT Reconstruction
+\li CT Exposure
+\li CT X-Ray Details
+\li CT Pixel Value Transformation
+\li CT Additional X-Ray Source
+\li Temporal Position
+
+The following functional group macros are \e not (yet) support:
+\li Referenced Image
+\li Cardiac Synchronization
+\li Contrast/Bolus Usage
+\li Respiratory Synchronization
+\li Multi-energy CT Processing
+\li Multi-energy CT Characteristics
+
+There might be further unsupported optional functional group macros that have
+been added to the DICOM Standard after the last update of this documentation.
+
+*/

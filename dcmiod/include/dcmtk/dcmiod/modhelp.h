@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -22,7 +22,7 @@
 #ifndef MODHELP_H
 #define MODHELP_H
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oftypes.h"
 
 #include "dcmtk/dcmiod/ioddef.h"
@@ -30,20 +30,22 @@
 class DcmTagKey;
 class DcmItem;
 
-
 /** This class contains helper functions that permit copying common modules
  *  from DICOM standard part 3 between DICOM datasets.
  *  @note The attribute lists per module are taken from the final text version
  *        of DICOM 2013.
  */
-class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
+class DCMTK_DCMIOD_EXPORT DcmModuleHelpers
+{
 
-  protected:
-
-    /// Generic copy module helper method.
-    template<size_t N>
-    static inline void copyModule(const DcmTagKey (&tags)[N],
-                                  DcmItem& src, DcmItem& dest);
+protected:
+    /** Generic copy module helper method.
+     *  @param  tags Reference of array with tags to be copied
+     *  @param  src  The source item to read the attributes from
+     *  @param  dest The target item to write the attributes to
+     */
+    template <size_t N>
+    static inline void copyModule(const DcmTagKey (&tags)[N], DcmItem& src, DcmItem& dest);
 
     /// List of tags within the Patient Module
     static const DcmTagKey patientModuleTags[];
@@ -79,8 +81,7 @@ class DCMTK_DCMIOD_EXPORT DcmModuleHelpers {
     /// List of tags within the General Image Module
     static const DcmTagKey generalImageModuleTags[];
 
-  public:
-
+public:
     /** Copy element defined by tag from source item to destination item.
      *  No in-depth search is performed but only the main level is searched
      *  for the given tag. If the tag is not found, the destination item

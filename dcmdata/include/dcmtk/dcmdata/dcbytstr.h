@@ -247,6 +247,14 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      */
     virtual OFCondition putString(const char *stringVal);
 
+    /** set element value at specific VM position in the given character string.
+     *  @param stringVal input character string (possibly multi-valued)
+     *  @param pos position (0..vm) where the value should be inserted
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putStringAtPos(const OFString& stringVal,
+                                       const unsigned long pos = 0);
+
     /** set element value from the given character string.
      *  The length of the string has to be specified explicitly. The string can, therefore,
      *  also contain more than one NULL byte.

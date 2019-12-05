@@ -475,6 +475,91 @@ OFCondition DcmByteString::putString(const char *stringVal,
 }
 
 
+OFCondition DcmByteString::putStringAtPos(const OFString& stringVal,
+                                          const unsigned long pos)
+{
+    OFCondition result;
+    // Get old value
+    OFString str;
+    result = getOFStringArray( str );
+    if (result.good())
+    {
+        size_t currentVM = getNumberOfValues();
+        // Trivial case: No values are set and new value should go to first position
+        if ( (currentVM == 0) && (pos == 0))
+            return putOFStringArray(stringVal);
+
+        // 1st case: Insert at the end
+        // If we insert at a position that does not yet exist, append missing number of components by
+        // adding the corresponding number of backspace chars, append new float value and return.
+        size_t futureVM = pos + 1;
+        if (futureVM > currentVM)
+        {
+            str = str.append(currentVM == 0 ? futureVM - currentVM - 1 : futureVM - currentVM, '\\');
+            str = str.append(stringVal);
+            return putOFStringArray(str);
+        }
+
+        // 2nd case: New value should be at position 0
+        size_t rightPos = 0;
+        if (pos == 0)
+        {
+            // First value is empty: Insert new value
+            if (str[0] == '\\')
+            {
+                str = str.insert(0, stringVal);
+            }
+            // First value is set: Replace old value with new value
+            else
+            {
+                rightPos = str.find_first_of('\\', 0);
+                str = str.replace(0, rightPos, stringVal);
+            }
+            return putOFStringArray(str);
+        }
+
+        // 3rd case: New value should be inserted somewhere in the middle
+        size_t leftPos = 0;
+        size_t vmPos = 0;
+        // First, find the correct position, and then insert / replace new value
+        do
+        {
+            // Step from value to value by looking for delimiters.
+            // Special handling first search (start looking at position 0 instead of 1)
+            if (vmPos == 0) leftPos = str.find('\\', 0);
+            else leftPos = str.find('\\', leftPos + 1 );
+            // leftPos = str.find('\\', leftPos == 0 ? 0 : leftPos +1);
+            if (leftPos != OFString_npos)
+            {
+                vmPos++;
+            }
+        }
+        while ( (leftPos != OFString_npos) && (vmPos != pos) );
+        rightPos = str.find_first_of('\\', leftPos+1);
+        if (rightPos == OFString_npos) rightPos = str.length();
+
+        // If we do not have an old value of size 1 or we have an empty value
+        if (rightPos - leftPos == 1)
+        {
+            // Empty value
+            if (str.at(leftPos) == '\\')
+                str = str.insert(rightPos, stringVal);
+            // Old value (length 1)
+            else
+                str = str.replace(leftPos, 1, stringVal);
+        }
+        // Otherwise replace existing old value (length > 1)
+        else
+        {
+            str = str.replace(leftPos+1, rightPos - leftPos, stringVal);
+        }
+        // Finally re-insert all values include new value
+        result = putOFStringArray( str );
+    }
+    return result;
+}
+
+
 // ********************************
 
 
