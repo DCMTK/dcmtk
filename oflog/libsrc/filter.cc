@@ -137,9 +137,9 @@ LogLevelMatchFilter::decide(const InternalLoggingEvent& event) const
         return NEUTRAL;
     }
 
-    bool matchOccured = (logLevelToMatch == event.getLogLevel());
+    bool matchOccurred = (logLevelToMatch == event.getLogLevel());
        
-    if(matchOccured) {
+    if(matchOccurred) {
         return (acceptOnMatch ? ACCEPT : DENY);
     }
     else {

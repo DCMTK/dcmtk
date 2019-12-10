@@ -12024,7 +12024,7 @@ Release 3.6.2 (Public Release - 2017-07-14)
            dcmsr/tests/tsrdoctr.cc
            dcmsr/tests/tsrtree.cc
 
-- Avoid seperator if time component is empty:
+- Avoid separator if time component is empty:
   Avoid separator between date and time component of a "DateTime" value if the
   latter is empty. Before, there was a trailing space in the resulting string.
   Affects: dcmdata/include/dcmtk/dcmdata/dcvrdt.h
@@ -19120,7 +19120,7 @@ Release 3.6.2 (Public Release - 2017-07-14)
 **** Changes from 2013.01.04 (onken)
 
 - Made DcmAssociationConfiguration and underlying classes copy-constructable.
-  Replaced all occurences of DcmSimpleMap with OFMap.
+  Replaced all occurrences of DcmSimpleMap with OFMap.
   Affects: dcmnet/apps/Makefile.dep
            dcmnet/include/dcmtk/dcmnet/dcasccfg.h
            dcmnet/include/dcmtk/dcmnet/dccfenmp.h

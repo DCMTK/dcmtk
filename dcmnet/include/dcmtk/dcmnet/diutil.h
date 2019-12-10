@@ -139,7 +139,7 @@ DCMTK_DCMNET_EXPORT const char *DU_neventReportStatusString(Uint16 statusCode);
 /** Logs result of a select() call. According to the select() documentation,
  *  a value of > 1 means that data has arrived. This is logged on TRACE level
  *  since it should be a very regular case. If select() returns 0, a timeout
- *  has occured, and in case of -1 another error happened (e.g. interrupt).
+ *  has occurred, and in case of -1 another error happened (e.g. interrupt).
  *  These two events are logged to DEBUG log level.
  *  Note that this function makes use of errno (Unix) or WSAGetLastError()
  *  (Windows aka Winsock), so it must be called right after the select() call

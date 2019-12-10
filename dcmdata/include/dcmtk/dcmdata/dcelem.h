@@ -721,7 +721,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  which must be large enough to contain a complete frame.
      *  @param dataset pointer to DICOM dataset in which this pixel data object is
      *    located. Used to access rows, columns, samples per pixel etc.
-     *  @param frameNo numer of frame, starting with 0 for the first frame.
+     *  @param frameNo number of frame, starting with 0 for the first frame.
      *  @param startFragment index of the compressed fragment that contains
      *    all or the first part of the compressed bitstream for the given frameNo.
      *    Upon successful return this parameter is updated to contain the index

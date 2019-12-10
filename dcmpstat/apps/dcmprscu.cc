@@ -1067,7 +1067,7 @@ int main(int argc, char *argv[])
         OFStandard::sleep((unsigned int)opt_sleep);
         if (EC_Normal != updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str()))
         {
-          OFLOG_FATAL(dcmprscuLogger, "spooler: non recoverable error occured, terminating");
+          OFLOG_FATAL(dcmprscuLogger, "spooler: non recoverable error occurred, terminating");
           return 10;
         }
         // static OFCondition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());

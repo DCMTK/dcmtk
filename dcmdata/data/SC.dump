@@ -5,7 +5,7 @@
 ################################################################################
 # Type 1:  Value MUST be filled in                                             #
 # Type 1C: Value MUST be filled in if known, if certain condition (see         #
-#          standard) is fullfilled, otherwise DO NOT insert                    #
+#          standard) is fulfilled, otherwise DO NOT insert                     #
 # Type 2:  Value MUST be filled in if known, MUST be left empty otherwise      #
 # Type 2C: Same as 2, if a certain condition (see standard) is met. If the     #
 #          condition is not met, DO NOT insert                                 #

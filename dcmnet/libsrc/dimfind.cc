@@ -168,7 +168,7 @@ DIMSE_findUser(
     if (cond.bad()) return cond;
 
     /* try to receive (one or more) C-STORE-RSP messages, continue loop as long */
-    /* as no error occured and not all result information has been received. */
+    /* as no error occurred and not all result information has been received. */
     while (cond == EC_Normal && DICOM_PENDING_STATUS(status))
     {
 	/* initialize the response to collect */
@@ -362,7 +362,7 @@ DIMSE_findProvider(
     /* receive data (i.e. the search mask) and store it in memory */
     OFCondition cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presIdData, &reqIds, NULL, NULL);
 
-    /* if no error occured while receiving data */
+    /* if no error occurred while receiving data */
     if (cond.good())
     {
         /* check if the presentation context IDs of the C-FIND-RQ and */
@@ -378,7 +378,7 @@ DIMSE_findProvider(
             bzero((char*)&rsp, sizeof(rsp));
             rsp.DimseStatus = STATUS_Pending;
 
-            /* as long as no error occured and the status of the C-FIND-RSP message which will */
+            /* as long as no error occurred and the status of the C-FIND-RSP message which will */
             /* be/was sent is pending, perform this loop in which records that match the search */
             /* mask are selected (whithin the execution of the callback function) and sent over */
             /* the network to the other DICOM application using C-FIND-RSP messages. */
@@ -400,7 +400,7 @@ DIMSE_findProvider(
                 }
                 else
                 {
-                    /* some execption condition occured, bail out */
+                    /* some execption condition occurred, bail out */
                     normal = OFFalse;
                 }
 

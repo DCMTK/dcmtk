@@ -96,7 +96,7 @@ public:
      *               coordinate 0.
      *  @param frame frame to use. The first frame has number 0, the last
      *               frame is getNumberOfFrames()-1.
-     *  @return unscaled dose value for the pixel or 0 if an error occured.
+     *  @return unscaled dose value for the pixel or 0 if an error occurred.
      */
     virtual double getUnscaledDose(unsigned int x, unsigned int y, unsigned int frame = 0) const;
 

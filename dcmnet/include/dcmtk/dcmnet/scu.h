@@ -489,7 +489,7 @@ public:
    *                                   response. If set to OFTrue, then sendFINDRequest()
    *                                   will continue waiting for responses. The current
    *                                   implementation does that for all responses do not have
-   *                                   status SUCESSS. If set to OFFalse, sendFINDRequest()
+   *                                   status SUCCESS. If set to OFFalse, sendFINDRequest()
    *                                   will return control to the caller.
    *  @return EC_Normal, if response could be handled. Error code otherwise.
    *          The current implementation always returns EC_Normal.

@@ -190,7 +190,7 @@ public:
   void setDumpFile(FILE *f);
 
   /** recursively browses through the given dataset and searches the first
-   *  occurence of the DigitalSignaturesSequence. If found, returns
+   *  occurrence of the DigitalSignaturesSequence. If found, returns
    *  a pointer to the Item in which the sequence is contained.
    *  @param item dataset to be browsed
    *  @param stack search stack, must be passed to findNextSignatureItem() later on.
@@ -199,7 +199,7 @@ public:
   static DcmItem *findFirstSignatureItem(DcmItem& item, DcmStack& stack);
 
   /** recursively browses through the given dataset and searches the next
-   *  occurence of the DigitalSignaturesSequence. If found, returns
+   *  occurrence of the DigitalSignaturesSequence. If found, returns
    *  a pointer to the Item in which the sequence is contained.
    *  @param item dataset to be browsed
    *  @param stack search stack as returned by findFirstSignatureItem() or the last call to this method.

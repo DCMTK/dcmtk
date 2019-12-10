@@ -28,8 +28,8 @@ OFCondition swapIfNecessary(const E_ByteOrder newByteOrder,
                             const size_t valWidth)
     /*
      * This function swaps byteLength bytes in value if newByteOrder and oldByteOrder
-     * differ from each other. In case bytes have to be swapped, these bytes are seperated
-     * in valWidth elements which will be swapped seperately.
+     * differ from each other. In case bytes have to be swapped, these bytes are separated
+     * in valWidth elements which will be swapped separately.
      *
      * Parameters:
      *   newByteOrder - [in] The new byte ordering (little or big endian).
@@ -70,8 +70,8 @@ OFCondition swapIfNecessary(const E_ByteOrder newByteOrder,
 void swapBytes(void * value, const Uint32 byteLength,
                const size_t valWidth)
     /*
-     * This function swaps byteLength bytes in value. These bytes are seperated
-     * in valWidth elements which will be swapped seperately.
+     * This function swaps byteLength bytes in value. These bytes are separated
+     * in valWidth elements which will be swapped separately.
      *
      * Parameters:
      *   value        - [in] Array that contains the actual bytes which might have to be swapped.

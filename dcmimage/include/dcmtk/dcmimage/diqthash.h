@@ -69,7 +69,7 @@ public:
 
   /** adds all pixels of all frames of the given image (which must be a
    *  color image) to the hash table.  The counter (integer value associated
-   *  to each color) counts the occurence of the color in the image.
+   *  to each color) counts the occurrence of the color in the image.
    *  If more than maxcolors colors are found, the function returns zero.
    *  @param image image in which colors are to be counted
    *  @param newmaxval maximum pixel value to which the contents of the

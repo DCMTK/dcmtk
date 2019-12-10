@@ -482,7 +482,7 @@ Release 3.6.3 (Public Minor Release - 2018-02-05)
   Affects: dcmdata/libsrc/dcvrof.cc
 
 - Fixed buffer overrrun in DcmOtherFloat::writeXML():
-  Fixed buffer overrun in DcmOtherFloat::writeXML() that occured if
+  Fixed buffer overrun in DcmOtherFloat::writeXML() that occurred if
   an invalid element with VR=OF and Length=2 is present in the dataset
   that is converted to XML.
   Thanks to Gwan Yeong Kim for the bug report.

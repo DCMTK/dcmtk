@@ -3499,7 +3499,7 @@ Release 3.6.0 (Public Release - 2011-01-06)
   Affects: dcmdata/libsrc/dcitem.cc
 
 - Fixed memory leak in assignment operators of DcmItem and DcmSequenceOfItems.
-  Replaced all code occurences of cleaning all elements from internal lists to
+  Replaced all code occurrences of cleaning all elements from internal lists to
   newly introduced function in DcmList.
   Affects: dcmdata/libsrc/dcitem.cc
            dcmdata/libsrc/dcsequen.cc
@@ -9311,7 +9311,7 @@ Release 3.6.0 (Public Release - 2011-01-06)
   Affects: dcmdata/libsrc/private.dic
 
 - Fixed memory leak in DIMSE_receiveDataSetInMemory when parameter dataObject
-  was passed as NULL and an error condition occured.
+  was passed as NULL and an error condition occurred.
   Thanks to Michael Doppler <m.doppler@gmail.com> for the report and fix.
   Affects: dcmnet/libsrc/dimse.cc
 

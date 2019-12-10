@@ -999,7 +999,7 @@ protected:
    *  @param network [in] Contains network parameters
    *  @return EC_Normal, if everything went fine, DUL_NOASSOCIATIONREQUEST if a timeout
    *          occurs in non-blocking mode, DIMSE_ILLEGALASSOCIATION or ASC_NULLKEY if
-   *          severe internal errors occured (should not happen)
+   *          severe internal errors occurred (should not happen)
    */
   virtual OFCondition waitForAssociationRQ(T_ASC_Network *network);
 

@@ -1784,7 +1784,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 
     }
 
-    /**** If an error occured in Matching function
+    /**** If an error occurred in Matching function
     ****    return status is pending
     ***/
 

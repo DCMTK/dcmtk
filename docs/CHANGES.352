@@ -2421,7 +2421,7 @@ Release 3.5.2 (Public Release - 2002-12-23)
 - Added vitual destructor to class OFStackLink
   Affects: ofstd/include/ofstack.h
 
-- Fixed memory leak that occured when compression of an image failed in
+- Fixed memory leak that occurred when compression of an image failed in
   a compression codec.
   Affects: dcmdata/libsrc/dcpixel.cc
 

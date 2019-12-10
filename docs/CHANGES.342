@@ -1971,7 +1971,7 @@ Release 3.4.2 (Public Release - 2000-12-20)
            dcmnet/libsrc/dimdump.cc
            dcmnet/libsrc/dimse.cc
 
-- added optional paramter to DIMSE_storeUser that enables precise file size
+- added optional parameter to DIMSE_storeUser that enables precise file size
   information inside the store user callback.
   Thanks to Mohamed Ahmed Abd Elkader <mokader@iti-idsc.gov.eg>
   for the bug report.

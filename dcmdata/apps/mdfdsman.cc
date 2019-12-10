@@ -481,10 +481,10 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
     DcmStack result_stack;
     DcmObject *elem;
     // get references to all matching tags in dataset and store them in stack
-    OFLOG_DEBUG(mdfdsmanLogger, "looking for occurences of: " << key.toString());
+    OFLOG_DEBUG(mdfdsmanLogger, "looking for occurrences of: " << key.toString());
     result=dset->findAndGetElements(key, result_stack);
     // if there are elements found, modify metaheader if necessary
-    OFLOG_DEBUG(mdfdsmanLogger, "found " << result_stack.card() << " occurences");
+    OFLOG_DEBUG(mdfdsmanLogger, "found " << result_stack.card() << " occurrences");
     // as long there are matching elements left on the stack
     while( result_stack.card() > 0 && result.good() )
     {

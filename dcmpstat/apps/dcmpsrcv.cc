@@ -547,7 +547,7 @@ static OFCondition storeSCP(
     dcmtk_flock(lockfd, LOCK_EX);
 #endif
 
-    /* we must still retrieve the data set even if some error has occured */
+    /* we must still retrieve the data set even if some error has occurred */
     StoreContext context(dbhandle, status, imageFileName, &dcmff, opt_correctUIDPadding);
 
     if (opt_bitpreserving)
