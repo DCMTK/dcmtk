@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, Open Connections GmbH
+ *  Copyright (C) 2018-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -64,7 +64,7 @@ public:
 
     private:
 
-      // Make sure the Parametric Map object (and no one else) can use the constructor below.
+      /// Make sure the Parametric Map object (and no one else) can use the constructor below.
       friend class DPMParametricMapIOD;
 
       /** Create Frames object in DPMParametricMapIOD (see friend declaration above)

@@ -131,7 +131,7 @@ class DCMTK_DCMDATA_EXPORT DcmDecimalString
     /** put particular float value at a specific position. Precision (number of digits
      *  in fractional part) is 6. However, trailing zeroes from fractional part will be removed
      *  in every case.
-     *  @param doubleVal the floating point value to put
+     *  @param val the floating point value to put
      *  @param pos index where to put the value (0..vm-1)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
@@ -140,7 +140,7 @@ class DCMTK_DCMDATA_EXPORT DcmDecimalString
 
     /** put particular float value at a specific position, using a particular
      *  precision (number of digits in fractional part).
-     *  @param doubleVal the floating point value to put
+     *  @param val the floating point value to put
      *  @param pos index where to put the value (0..vm-1)
      *  @param prec precision to be used, i.e. maximum number of fractional digits.
      *         Value should be 0 < prec < 15 (positive val) or 0 < prec < 14 (negative).
