@@ -700,7 +700,7 @@ protected:
      */
     virtual IODGeneralImageModule& getGeneralImage()
     {
-        return getGeneralImage();
+        return IODImage::getGeneralImage();
     }
 
 private:
