@@ -320,7 +320,7 @@ protected:
     virtual OFCondition insertDestinationAttributes();
 
     virtual OFCondition
-    computeBytesPerFrame(const Uint16 rows, const Uint16 cols, const Uint8 bitsAlloc, size_t& bytes_per_frame);
+    computeBytesPerFrame(const Uint16 rows, const Uint16 cols, const Uint16 bitsAlloc, size_t& bytes_per_frame);
 
 private:
     /// Map with entries consisting each of ConcatenationUID and related

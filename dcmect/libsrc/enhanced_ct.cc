@@ -112,7 +112,7 @@ struct EctEnhancedCT::WriteVisitor
             size_t numBytesTotal = numBytesFrame * numFrames / 2;
             if (numBytesTotal <= 4294967294UL)
             {
-                result = pixData->createUint16Array(numBytesTotal, ptr);
+                result = pixData->createUint16Array(OFstatic_cast(Uint32, numBytesTotal), ptr);
                 // copy all frames into CT's frame structure
                 if (ptr)
                 {

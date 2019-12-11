@@ -97,7 +97,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getZeroVelocityPixelValue(Sint32& value, const signed long pos = 0);
+    virtual OFCondition getZeroVelocityPixelValue(Sint32& value, const unsigned long pos = 0);
 
     // --- set() functionality ---
 

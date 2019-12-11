@@ -123,7 +123,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    OFCondition getSamplesPerPixel(Uint16& value, const signed long pos = 0)
+    OFCondition getSamplesPerPixel(Uint16& value, const unsigned long pos = 0)
     {
         if (IODImagePixelBase* pBase = OFvisit<IODImagePixelBase*>(IODImagePixelVariantBaseVisitor(), *this))
             return pBase->getSamplesPerPixel(value, pos);
@@ -147,7 +147,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    OFCondition getRows(Uint16& value, const signed long pos = 0)
+    OFCondition getRows(Uint16& value, const unsigned long pos = 0)
     {
         if (IODImagePixelBase* pBase = OFvisit<IODImagePixelBase*>(IODImagePixelVariantBaseVisitor(), *this))
             return pBase->getRows(value, pos);
@@ -159,7 +159,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    OFCondition getColumns(Uint16& value, const signed long pos = 0)
+    OFCondition getColumns(Uint16& value, const unsigned long pos = 0)
     {
         if (IODImagePixelBase* pBase = OFvisit<IODImagePixelBase*>(IODImagePixelVariantBaseVisitor(), *this))
             return pBase->getColumns(value, pos);
@@ -171,7 +171,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    OFCondition getBitsAllocated(Uint16& value, const signed long pos = 0)
+    OFCondition getBitsAllocated(Uint16& value, const unsigned long pos = 0)
     {
         if (IODImagePixelBase* pBase = OFvisit<IODImagePixelBase*>(IODImagePixelVariantBaseVisitor(), *this))
             return pBase->getBitsAllocated(value, pos);
@@ -183,7 +183,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    OFCondition getPixelAspectRatio(Uint16& value, const signed long pos = 0)
+    OFCondition getPixelAspectRatio(Uint16& value, const unsigned long pos = 0)
     {
         if (IODImagePixelBase* pBase = OFvisit<IODImagePixelBase*>(IODImagePixelVariantBaseVisitor(), *this))
             return pBase->getPixelAspectRatio(value, pos);

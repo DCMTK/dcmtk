@@ -83,17 +83,17 @@ OFCondition IODUSFoRModule::getApexPosition(OFVector<Float64>& value)
     return DcmIODUtil::getFloat64ValuesFromItem(DCM_ApexPosition, *m_Item, value);
 }
 
-OFCondition IODUSFoRModule::getApexPosition(Float64& value, const long unsigned int pos) const
+OFCondition IODUSFoRModule::getApexPosition(Float64& value, const unsigned long pos) const
 {
     return DcmIODUtil::getFloat64ValueFromItem(DCM_ApexPosition, *m_Item, value, pos);
 }
 
-OFCondition IODUSFoRModule::getVolumetoTransducerRelationship(OFString& value, const long signed int pos)
+OFCondition IODUSFoRModule::getVolumetoTransducerRelationship(OFString& value, const signed long pos)
 {
     return DcmIODUtil::getStringValueFromItem(DCM_UltrasoundAcquisitionGeometry, *m_Item, value, pos);
 }
 
-OFCondition IODUSFoRModule::getVolumetoTransducerMappingMatrix(Float64& value, const signed long pos) const
+OFCondition IODUSFoRModule::getVolumetoTransducerMappingMatrix(Float64& value, const unsigned long pos) const
 {
     return DcmIODUtil::getFloat64ValueFromItem(DCM_VolumeToTransducerMappingMatrix, *m_Item, value, pos);
 }
@@ -113,7 +113,7 @@ OFCondition IODUSFoRModule::getTableFrameofReferenceUID(OFString& value, const l
     return DcmIODUtil::getStringValueFromItem(DCM_TableFrameOfReferenceUID, *m_Item, value, pos);
 }
 
-OFCondition IODUSFoRModule::getVolumetoTableMappingMatrix(Float64& value, const long signed int pos) const
+OFCondition IODUSFoRModule::getVolumetoTableMappingMatrix(Float64& value, const unsigned long pos) const
 {
     return DcmIODUtil::getFloat64ValueFromItem(DCM_VolumeToTableMappingMatrix, *m_Item, value, pos);
 }

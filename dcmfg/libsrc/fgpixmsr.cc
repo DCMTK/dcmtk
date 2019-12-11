@@ -116,17 +116,17 @@ OFCondition FGPixelMeasures::write(DcmItem& item)
     return result;
 }
 
-OFCondition FGPixelMeasures::getPixelSpacing(Float64& value, const signed long pos)
+OFCondition FGPixelMeasures::getPixelSpacing(Float64& value, const unsigned long pos)
 {
     return m_PixelSpacing.getFloat64(value, pos);
 }
 
-OFCondition FGPixelMeasures::getSliceThickness(Float64& value, const signed long pos)
+OFCondition FGPixelMeasures::getSliceThickness(Float64& value, const unsigned long pos)
 {
     return m_SliceThickness.getFloat64(value, pos);
 }
 
-OFCondition FGPixelMeasures::getSpacingBetweenSlices(Float64& value, const signed long pos)
+OFCondition FGPixelMeasures::getSpacingBetweenSlices(Float64& value, const unsigned long pos)
 {
     return m_SpacingBetweenSlices.getFloat64(value, pos);
 }

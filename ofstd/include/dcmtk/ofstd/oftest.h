@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This code is inspired by quicktest.
@@ -207,7 +207,7 @@ public:
             return 254;
         }
 
-        return numFailed;
+        return OFstatic_cast(int, numFailed);
     }
 
     /** Handle the given arguments and run the requested test case. This

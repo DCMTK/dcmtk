@@ -112,7 +112,7 @@ public:
      *          an error is returned.
      *  @return EC_Normal, if value could be returned, error otherwise
      */
-    virtual OFCondition getFrameAcquisitionNumber(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getFrameAcquisitionNumber(Uint16& value, const unsigned long pos = 0);
 
     /** Get Frame Reference Date Time
      *  @param  value Reference to variable that should hold the result
@@ -157,7 +157,7 @@ public:
      *          an error is returned.
      *  @return EC_Normal, if value could be returned, error otherwise
      */
-    virtual OFCondition getDimensionIndexValues(Uint32& value, const signed long pos = 0);
+    virtual OFCondition getDimensionIndexValues(Uint32& value, const unsigned long pos = 0);
 
     /** Get Temporal Position Index
      *  @param  value Reference to variable that should hold the result
@@ -166,7 +166,7 @@ public:
      *          an error is returned.
      *  @return EC_Normal, if value could be returned, error otherwise
      */
-    virtual OFCondition getTemporalPositionIndex(Uint32& value, const signed long pos = 0);
+    virtual OFCondition getTemporalPositionIndex(Uint32& value, const unsigned long pos = 0);
 
     /** Get Stack ID
      *  @param  value Reference to variable that should hold the result
@@ -180,7 +180,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal, if value could be returned, error otherwise
      */
-    virtual OFCondition getInStackPositionNumber(Uint32& value, const signed long pos = 0);
+    virtual OFCondition getInStackPositionNumber(Uint32& value, const unsigned long pos = 0);
 
     /** Get Frame Comments
      *  @param  value Reference to variable that should hold the result

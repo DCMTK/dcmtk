@@ -152,10 +152,10 @@ public:
         /** Get XRayTubeCurrentInmA
          *  Nominal X-Ray tube current in milliamperes.
          *  @param  value Reference to variable in which the value should be stored
-         *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+         *  @param  pos Index of the value to get (0..vm-1)
          *  @return EC_Normal if successful, an error code otherwise
          */
-        virtual OFCondition getXRayTubeCurrentInmA(Float64& value, const signed long pos = 0) const;
+        virtual OFCondition getXRayTubeCurrentInmA(Float64& value, const unsigned long pos = 0) const;
 
         /** Get DataCollectionDiameter
          *  The diameter in mm of the region over which data were collected.
@@ -193,10 +193,10 @@ public:
          *  The exposure expressed in milliampere seconds, for example calculated from exposure time and X-Ray tube
          * current.
          *  @param  value Reference to variable in which the value should be stored
-         *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+         *  @param  pos Index of the value to get (0..vm-1)
          *  @return EC_Normal if successful, an error code otherwise
          */
-        virtual OFCondition getExposureInmAs(Float64& value, const signed long pos = 0) const;
+        virtual OFCondition getExposureInmAs(Float64& value, const unsigned long pos = 0) const;
 
         /** Get EnergyWeightingFactor
          *  The weighting factor of the data from this additional source in a multiple energy composition image. This
@@ -206,7 +206,7 @@ public:
          *  @param  pos Index of the value to get (0..vm-1), -1 for all components
          *  @return EC_Normal if successful, an error code otherwise
          */
-        virtual OFCondition getEnergyWeightingFactor(Float32& value, const signed long pos = 0) const;
+        virtual OFCondition getEnergyWeightingFactor(Float32& value, const unsigned long pos = 0) const;
 
         /** Set KVP
          *  Peak kilo voltage output of the X-Ray generator used.

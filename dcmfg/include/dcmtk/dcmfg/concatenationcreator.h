@@ -157,7 +157,7 @@ protected:
      *          the dataset
      *  @return EC_Normal if setting worked, error otherwise
      */
-    virtual OFCondition setConcatenationAttributes(DcmItem& dstDataset, Uint16 numFramesCurrentInstance);
+    virtual OFCondition setConcatenationAttributes(DcmItem& dstDataset, Uint32 numFramesCurrentInstance);
 
     /** Advance internal counters to next frame
      *  @return EC_Normal if there is a next frame, error otherwise
@@ -168,7 +168,7 @@ protected:
      *  Will be the same for each instance except (potentially) the last one.
      *  @return Number of frames
      */
-    virtual Uint16 numFramesCurrentDstInstance();
+    virtual Uint32 numFramesCurrentDstInstance();
 
     /** Configure class based on input/configuration settings, i.e. prepare for
      *  concatenation writing.
@@ -218,18 +218,21 @@ private:
     DcmSequenceOfItems* m_srcPerFrameFG;
 
     /// Number of frames in source instance.
-    Uint16 m_srcNumFrames;
+    Uint32 m_srcNumFrames;
 
-    /// Number of instances to be produced for Concatenation
-    size_t m_dstNumInstances;
+    /// Number of instances to be produced for Concatenation.
+    /// This is limited to 16 bit since the attributes
+    /// In-concatentation Number and In-concatenation Total Number only
+    /// stores 16 bit values (VR US).
+    Uint16 m_dstNumInstances;
 
     /// Number of Frames per instance (cached) to be produced for
     /// all frames (last frame may differ)
-    Uint16 m_dstNumFramesPerInstance;
+    Uint32 m_dstNumFramesPerInstance;
 
     /// Number of Frames per instance (cached) to be produced for
     /// last frame
-    Uint16 m_dstNumFramesLastInstance;
+    Uint32 m_dstNumFramesLastInstance;
 
     /// Concatenation UID to be used in the concatenation instances. Automatically
     /// created during conversion.

@@ -56,7 +56,7 @@ void IODImagePixelBase::resetRules()
     // all rules in sub classes
 }
 
-OFCondition IODImagePixelBase::getSamplesPerPixel(Uint16& value, const signed long pos)
+OFCondition IODImagePixelBase::getSamplesPerPixel(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_SamplesPerPixel, value, pos);
 }
@@ -66,22 +66,22 @@ OFCondition IODImagePixelBase::getPhotometricInterpretation(OFString& value, con
     return DcmIODUtil::getStringValueFromItem(DCM_PhotometricInterpretation, *m_Item, value, pos);
 }
 
-OFCondition IODImagePixelBase::getRows(Uint16& value, const signed long pos)
+OFCondition IODImagePixelBase::getRows(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_Rows, value, pos);
 }
 
-OFCondition IODImagePixelBase::getColumns(Uint16& value, const signed long pos)
+OFCondition IODImagePixelBase::getColumns(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_Columns, value, pos);
 }
 
-OFCondition IODImagePixelBase::getBitsAllocated(Uint16& value, const signed long pos)
+OFCondition IODImagePixelBase::getBitsAllocated(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_BitsAllocated, value, pos);
 }
 
-OFCondition IODImagePixelBase::getPixelAspectRatio(Uint16& value, const signed long pos)
+OFCondition IODImagePixelBase::getPixelAspectRatio(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_PixelAspectRatio, value, pos);
 }

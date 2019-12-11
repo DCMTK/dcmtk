@@ -87,7 +87,7 @@ OFCondition FGImageDataType::getAliasedDataType(OFString& value, const long sign
     return DcmIODUtil::getStringValueFromElement(m_AliasedDataType, value, pos);
 }
 
-OFCondition FGImageDataType::getZeroVelocityPixelValue(Sint32& value, const long signed int pos)
+OFCondition FGImageDataType::getZeroVelocityPixelValue(Sint32& value, const unsigned long pos)
 {
     OFCondition result;
     if (!m_ZeroVelocityPixelValueSS.isEmpty())
@@ -177,11 +177,11 @@ OFCondition FGImageDataType::read(DcmItem& item)
             {
                 if (pixrep == 0)
                 {
-                    m_ZeroVelocityPixelValueUS.putUint16(pixrep, 0);
+                    m_ZeroVelocityPixelValueUS.putUint16(0, 0);
                 }
                 else
                 {
-                    m_ZeroVelocityPixelValueSS.putSint16(pixrep, 1);
+                    m_ZeroVelocityPixelValueSS.putSint16(1, 1);
                 }
             }
             else

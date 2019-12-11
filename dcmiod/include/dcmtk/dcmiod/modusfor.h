@@ -106,7 +106,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getVolumetoTransducerMappingMatrix(Float64& value, const signed long pos = 0) const;
+    virtual OFCondition getVolumetoTransducerMappingMatrix(Float64& value, const unsigned  long pos = 0) const;
 
     /** Get Volume to Table Mapping Matrix
      *  @param  value Reference to variable in which the value should be stored
@@ -133,7 +133,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getVolumetoTableMappingMatrix(Float64& value, const signed long pos = 0) const;
+    virtual OFCondition getVolumetoTableMappingMatrix(Float64& value, const unsigned  long pos = 0) const;
 
     /** Get Volume to Table Mapping Matrix
      *  @param  value Reference to variable in which the value should be stored

@@ -103,12 +103,12 @@ IODImagePixelBase::DataType IODFloatingPointImagePixelModule::getDataType() cons
     return IODImagePixelBase::DATA_TYPE_FLOAT;
 }
 
-OFCondition IODFloatingPointImagePixelModule::getFloatPixelPaddingValue(Float32& value, const long pos)
+OFCondition IODFloatingPointImagePixelModule::getFloatPixelPaddingValue(Float32& value, const unsigned long pos)
 {
     return m_Item->findAndGetFloat32(DCM_FloatPixelPaddingValue, value, pos);
 }
 
-OFCondition IODFloatingPointImagePixelModule::getFloatPixelPaddingRangeLimit(Float32& value, const long pos)
+OFCondition IODFloatingPointImagePixelModule::getFloatPixelPaddingRangeLimit(Float32& value, const unsigned long pos)
 {
     return m_Item->findAndGetFloat32(DCM_FloatPixelPaddingRangeLimit, value, pos);
 }
@@ -208,12 +208,12 @@ IODImagePixelBase::DataType IODDoubleFloatingPointImagePixelModule::getDataType(
     return IODImagePixelBase::DATA_TYPE_DOUBLE;
 }
 
-OFCondition IODDoubleFloatingPointImagePixelModule::getDoubleFloatPixelPaddingValue(Float64& value, const long pos)
+OFCondition IODDoubleFloatingPointImagePixelModule::getDoubleFloatPixelPaddingValue(Float64& value, const unsigned long pos)
 {
     return m_Item->findAndGetFloat64(DCM_FloatPixelPaddingValue, value, pos);
 }
 
-OFCondition IODDoubleFloatingPointImagePixelModule::getDoubleFloatPixelPaddingRangeLimit(Float64& value, const long pos)
+OFCondition IODDoubleFloatingPointImagePixelModule::getDoubleFloatPixelPaddingRangeLimit(Float64& value, const unsigned long pos)
 {
     return m_Item->findAndGetFloat64(DCM_DoubleFloatPixelPaddingRangeLimit, value, pos);
 }

@@ -420,8 +420,14 @@ OFCondition DcmIODUtil::setFloat64ValuesOnElement(DcmElement& delem,
                                                   const OFBool check)
 {
     OFCondition result;
+    if (values.size() > OFnumeric_limits<unsigned long>::max())
+    {
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        return IOD_EC_InvalidElementValue;
+    }
+    const unsigned long vmCount= OFstatic_cast(unsigned long, values.size());
     OFVector<Float64>::const_iterator it = values.begin();
-    for (size_t count = 0; count < values.size(); count++)
+    for (unsigned long count = 0; count < vmCount; count++)
     {
         result = delem.putFloat64((*it), count);
         if (result.bad())
@@ -431,7 +437,7 @@ OFCondition DcmIODUtil::setFloat64ValuesOnElement(DcmElement& delem,
         }
         else if (check)
         {
-            result = DcmElement::checkVM(OFstatic_cast(unsigned long, values.size()), vm);
+            result = DcmElement::checkVM(vmCount, vm);
         }
         it++;
     }
@@ -449,8 +455,14 @@ OFCondition DcmIODUtil::setFloat32ValuesOnElement(DcmElement& delem,
                                                   const OFBool check)
 {
     OFCondition result;
+    if (values.size() > OFnumeric_limits<unsigned long>::max())
+    {
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        return IOD_EC_InvalidElementValue;
+    }
+    const unsigned long vmCount= OFstatic_cast(unsigned long, values.size());
     OFVector<Float32>::const_iterator it = values.begin();
-    for (size_t count = 0; count < values.size(); count++)
+    for (unsigned long count = 0; count < vmCount; count++)
     {
         result = delem.putFloat32((*it), count);
         if (result.bad())
@@ -460,7 +472,7 @@ OFCondition DcmIODUtil::setFloat32ValuesOnElement(DcmElement& delem,
         }
         else if (check)
         {
-            result = DcmElement::checkVM(OFstatic_cast(unsigned long, values.size()), vm);
+            result = DcmElement::checkVM(vmCount, vm);
         }
         it++;
     }
@@ -473,8 +485,14 @@ OFCondition DcmIODUtil::setUint16ValuesOnElement(DcmElement& delem,
                                                  const OFBool check)
 {
     OFCondition result;
+    if (values.size() > OFnumeric_limits<unsigned long>::max())
+    {
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        return IOD_EC_InvalidElementValue;
+    }
+    const unsigned long vmCount= OFstatic_cast(unsigned long, values.size());
     OFVector<Uint16>::const_iterator it = values.begin();
-    for (size_t count = 0; count < values.size(); count++)
+    for (unsigned long count = 0; count < vmCount; count++)
     {
         result = delem.putUint16((*it), count);
         if (result.bad())
@@ -484,7 +502,7 @@ OFCondition DcmIODUtil::setUint16ValuesOnElement(DcmElement& delem,
         }
         else if (check)
         {
-            result = DcmElement::checkVM(OFstatic_cast(unsigned long, values.size()), vm);
+            result = DcmElement::checkVM(vmCount, vm);
         }
         it++;
     }

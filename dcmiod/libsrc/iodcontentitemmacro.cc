@@ -104,7 +104,7 @@ OFCondition ContentItemMacro::ReferencedSOPSequenceItem::getReferencedFrameNumbe
 }
 
 OFCondition ContentItemMacro::ReferencedSOPSequenceItem::getReferencedSegmentNumber(Uint16& value,
-                                                                                    const signed long pos) const
+                                                                                    const unsigned long pos) const
 {
     return m_Item->findAndGetUint16(DCM_ReferencedSegmentNumber, value, pos);
 }
@@ -367,7 +367,7 @@ OFCondition ContentItemMacro::getPersonName(OFString& value, const signed long p
 
 OFCondition ContentItemMacro::getUID(OFString& value, const signed long pos) const
 {
-    return m_Item->findAndGetOFString(DCM_UID, value, pos);
+    return DcmIODUtil::getStringValueFromItem(DCM_UID, *m_Item, value, pos);
 }
 
 OFCondition ContentItemMacro::getTextValue(OFString& value, const signed long pos) const
@@ -390,17 +390,17 @@ OFCondition ContentItemMacro::getNumericValue(OFString& value, const signed long
     return DcmIODUtil::getStringValueFromItem(DCM_NumericValue, *m_Item, value, pos);
 }
 
-OFCondition ContentItemMacro::getFloatingPointValue(Float64& value, const signed long pos) const
+OFCondition ContentItemMacro::getFloatingPointValue(Float64& value, const unsigned long pos) const
 {
     return m_Item->findAndGetFloat64(DCM_FloatingPointValue, value, pos);
 }
 
-OFCondition ContentItemMacro::getRationalNumeratorValue(Sint32& value, const signed long pos) const
+OFCondition ContentItemMacro::getRationalNumeratorValue(Sint32& value, const unsigned long pos) const
 {
     return m_Item->findAndGetSint32(DCM_RationalNumeratorValue, value, pos);
 }
 
-OFCondition ContentItemMacro::getRationalDenominatorValue(Uint32& value, const signed long pos) const
+OFCondition ContentItemMacro::getRationalDenominatorValue(Uint32& value, const unsigned long pos) const
 {
     return m_Item->findAndGetUint32(DCM_RationalDenominatorValue, value, pos);
 }

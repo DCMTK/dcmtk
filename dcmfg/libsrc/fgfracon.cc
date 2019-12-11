@@ -182,7 +182,7 @@ int FGFrameContent::compare(const FGBase& rhs) const
 
 // --- get() functionality ---
 
-OFCondition FGFrameContent::getFrameAcquisitionNumber(Uint16& value, const signed long pos)
+OFCondition FGFrameContent::getFrameAcquisitionNumber(Uint16& value, const unsigned long pos)
 {
     return m_FrameAcquisitonNumber.getUint16(value, pos);
 }
@@ -212,12 +212,12 @@ OFCondition FGFrameContent::getRespiratoryCyclePosition(OFString& value, const s
     return DcmIODUtil::getStringValueFromElement(m_RespiratoryCyclePosition, value, pos);
 }
 
-OFCondition FGFrameContent::getDimensionIndexValues(Uint32& value, const signed long pos)
+OFCondition FGFrameContent::getDimensionIndexValues(Uint32& value, const unsigned long pos)
 {
     return m_DimensionIndexValues.getUint32(value, pos);
 }
 
-OFCondition FGFrameContent::getTemporalPositionIndex(Uint32& value, const signed long pos)
+OFCondition FGFrameContent::getTemporalPositionIndex(Uint32& value, const unsigned long pos)
 {
     return m_TemporalPositionIndex.getUint32(value, pos);
 }
@@ -227,7 +227,7 @@ OFCondition FGFrameContent::getStackID(OFString& value, const signed long pos)
     return DcmIODUtil::getStringValueFromElement(m_StackID, value, pos);
 }
 
-OFCondition FGFrameContent::getInStackPositionNumber(Uint32& value, const long signed int pos)
+OFCondition FGFrameContent::getInStackPositionNumber(Uint32& value, const unsigned long pos)
 {
     return m_InStackPositionNumber.getUint32(value, pos);
 }

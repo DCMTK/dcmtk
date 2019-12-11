@@ -132,7 +132,7 @@ OFCondition ConcatenationCreator::writeNextInstance(DcmItem& dstDataset)
     }
 
     // Store number of frames for this instance for later use
-    Uint16 numFramesThisInstance = numFramesCurrentDstInstance();
+    Uint32 numFramesThisInstance = numFramesCurrentDstInstance();
     if (numFramesThisInstance == 0)
     {
         return FG_EC_ConcatenationComplete;
@@ -156,13 +156,15 @@ OFCondition ConcatenationCreator::writeNextInstance(DcmItem& dstDataset)
     }
 
     Uint8* dstData = NULL;
-    dstPixelData->createUint8Array(m_numBytesFrame * numFramesThisInstance, dstData);
+    size_t numTotalBytesInstance = m_numBytesFrame * numFramesThisInstance;
+    // Cast is safe, checked in configureCommon()
+    dstPixelData->createUint8Array(OFstatic_cast(Uint32, numTotalBytesInstance), dstData);
     if (!dstData)
     {
         return EC_MemoryExhausted;
     }
     dstPixelData->setVR(m_VRPixelData);
-    memcpy(dstData, &(m_srcPixelData[m_numBytesFrame * m_currentSrcFrame]), m_numBytesFrame * numFramesThisInstance);
+    memcpy(dstData, &(m_srcPixelData[m_numBytesFrame * m_currentSrcFrame]), numTotalBytesInstance);
     result = dstDataset.insert(dstPixelData.release());
     if (result.good())
     {
@@ -291,7 +293,7 @@ OFBool ConcatenationCreator::checkColorModel(DcmItem& srcDataset)
     return OFTrue;
 }
 
-OFCondition ConcatenationCreator::setConcatenationAttributes(DcmItem& dstDataset, Uint16 numFramesCurrentInstance)
+OFCondition ConcatenationCreator::setConcatenationAttributes(DcmItem& dstDataset, Uint32 numFramesCurrentInstance)
 {
     OFCondition result = dstDataset.putAndInsertOFStringArray(DCM_ConcatenationUID, m_dstConcatenationUID);
     if (result.good())
@@ -304,7 +306,10 @@ OFCondition ConcatenationCreator::setConcatenationAttributes(DcmItem& dstDataset
     if (result.good())
         result = dstDataset.putAndInsertUint16(DCM_InConcatenationNumber, m_currentInstanceNum + 1 /* first is #1 */);
     if (result.good())
-        result = dstDataset.putAndInsertUint16(DCM_InConcatenationTotalNumber, m_dstNumInstances);
+    {
+        // safe cast since configureCommon() already checks whether m_dstNumInstances is in Uint16 range
+        result = dstDataset.putAndInsertUint16(DCM_InConcatenationTotalNumber, OFstatic_cast(Uint16, m_dstNumInstances));
+    }
     if (result.good())
     {
 
@@ -336,11 +341,11 @@ OFCondition ConcatenationCreator::goToNextFrame()
     return EC_Normal;
 }
 
-Uint16 ConcatenationCreator::numFramesCurrentDstInstance()
+Uint32 ConcatenationCreator::numFramesCurrentDstInstance()
 {
-    Uint16 numFrames = 0;
+    Uint32 numFrames = 0;
     // Calculate last frame number that will be part of "regular" bucket size
-    Uint16 lastRegular = (m_srcNumFrames / m_dstNumFramesPerInstance) * m_dstNumFramesPerInstance - 1;
+    Uint32 lastRegular = (m_srcNumFrames / m_dstNumFramesPerInstance) * m_dstNumFramesPerInstance - 1;
     if (m_currentSrcFrame == lastRegular + 1)
     {
         numFrames = m_dstNumFramesLastInstance;
@@ -380,16 +385,32 @@ OFCondition ConcatenationCreator::configureCommon()
     m_dstNumFramesPerInstance = m_cfgNumFramesPerInstance;
     Sint32 srcNumFrames       = 0;
     result                    = m_srcDataset->findAndGetSint32(DCM_NumberOfFrames, srcNumFrames);
-    if (result.bad() || (srcNumFrames <= 1) || (srcNumFrames < m_dstNumFramesPerInstance))
+    if (result.bad() || (srcNumFrames <= 1))
         return FG_EC_NotEnoughFrames;
-    m_srcNumFrames = OFstatic_cast(Uint16, srcNumFrames); // safe since we checked value before
+    m_srcNumFrames = OFstatic_cast(Uint32, srcNumFrames); // safe since we checked value before
+    if (m_srcNumFrames < m_dstNumFramesPerInstance)
+        return FG_EC_NotEnoughFrames;
 
     // Remember number of instances to be produced
-    m_dstNumInstances          = m_srcNumFrames / m_dstNumFramesPerInstance;
+    Uint32 u32 = m_srcNumFrames / m_dstNumFramesPerInstance;
     m_dstNumFramesLastInstance = m_srcNumFrames % m_dstNumFramesPerInstance;
     if (m_dstNumFramesLastInstance > 0)
     {
-        m_dstNumInstances++;
+        u32++;
+    }
+    if (u32 > OFnumeric_limits<Uint16>::max())
+    {
+        DCMFG_ERROR("Too many concatenation instances (" << u32 << "), maximum is " << OFnumeric_limits<Uint16>::max());
+        return FG_EC_InvalidData;
+    }
+    m_dstNumInstances = OFstatic_cast(Uint16, u32); // safe now
+
+    // Check whether pixel data for one instance stays below 4 GB
+    size_t numTotalBytesInstance = m_numBytesFrame * m_dstNumFramesPerInstance;
+    if (numTotalBytesInstance > 4294967294UL)
+    {
+        DCMFG_ERROR("Uncompressed pixel data exceeds 4294967294 bytes per concatenation instance");
+        return FG_EC_PixelDataDimensionsInvalid;
     }
 
     // Check whether number of items in per-frame functional groups is identical to Number of Frames attribute

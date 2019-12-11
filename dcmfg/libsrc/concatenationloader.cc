@@ -128,7 +128,7 @@ void ConcatenationLoader::handleFile(const OFFilename& file, ConcatenationLoader
             if (dset->findAndGetSint32(DCM_NumberOfFrames, numFrames).good())
             {
                 if (numFrames > 0)
-                    inst.m_NumberOfFrames = numFrames;
+                    inst.m_NumberOfFrames = OFstatic_cast(Uint32, numFrames);
             }
             dset->findAndGetUint16(DCM_InConcatenationNumber, inst.m_InConcatenationNumber);
             inst.m_Filename = file;
@@ -388,7 +388,7 @@ OFCondition ConcatenationLoader::extractBinaryFrames(DcmItem& item, Info& info, 
 
 OFCondition ConcatenationLoader::computeBytesPerFrame(const Uint16 rows,
                                                       const Uint16 cols,
-                                                      const Uint8 bitsAlloc,
+                                                      const Uint16 bitsAlloc,
                                                       size_t& bytes_per_frame)
 {
     // Usually bytes of one frame simply computes using cols * rows * num bytes per pixel.
@@ -431,7 +431,7 @@ OFCondition ConcatenationLoader::movePerFrameItems(DcmItem& item)
     {
         while (result.good() && (srcPerFrame->card() != 0))
         {
-            result = dstPerFrame->append(srcPerFrame->remove((const unsigned long)0));
+            result = dstPerFrame->append(srcPerFrame->remove(OFstatic_cast(Uint8,0)));
         }
     }
     return result;
@@ -523,7 +523,7 @@ ConcatenationLoader::Info& ConcatenationLoader::Info::operator=(const Concatenat
     this->m_ConcatenationUID         = rhs.m_ConcatenationUID;
     this->m_SourceUID                = rhs.m_SourceUID;
     this->m_NumTotalFrames           = rhs.m_NumTotalFrames;
-    this->m_inConcatTotalNumber      = rhs.m_NumTotalFrames;
+    this->m_inConcatTotalNumber      = rhs.m_inConcatTotalNumber;
     this->m_PatientID                = rhs.m_PatientID;
     this->m_StudyInstanceUID         = rhs.m_StudyInstanceUID;
     this->m_SeriesInstanceUID        = rhs.m_SeriesInstanceUID;

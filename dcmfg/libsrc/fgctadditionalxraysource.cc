@@ -237,7 +237,7 @@ OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::getKVP(OFStr
 }
 
 OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::getXRayTubeCurrentInmA(Float64& value,
-                                                                                           const signed long pos) const
+                                                                                           const unsigned long pos) const
 {
     return DcmIODUtil::getFloat64ValueFromElement(m_XRayTubeCurrentInmA, value, pos);
 }
@@ -268,14 +268,14 @@ OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::getFilterMat
 }
 
 OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::getExposureInmAs(Float64& value,
-                                                                                     const signed long pos) const
+                                                                                     const unsigned long pos) const
 {
     return DcmIODUtil::getFloat64ValueFromElement(m_ExposureInmAs, value, pos);
 }
 
 OFCondition
 FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::getEnergyWeightingFactor(Float32& value,
-                                                                                 const signed long pos) const
+                                                                                 const unsigned long pos) const
 {
     return DcmIODUtil::getFloat32ValueFromElement(m_EnergyWeightingFactor, value, pos);
 }

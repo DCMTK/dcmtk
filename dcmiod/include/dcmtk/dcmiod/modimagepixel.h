@@ -100,28 +100,28 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getBitsStored(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getBitsStored(Uint16& value, const unsigned long pos = 0);
 
     /** Get High Bit
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getHighBit(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getHighBit(Uint16& value, const unsigned long pos = 0);
 
     /** Get Pixel Representation
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getPixelRepresentation(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getPixelRepresentation(Uint16& value, const unsigned long pos = 0);
 
     /** Get Planar Configuration
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getPlanarConfiguration(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getPlanarConfiguration(Uint16& value, const unsigned long pos = 0);
 
     /** Get ICC Profile
      *  @param  values Reference to variable in which the values should be stored

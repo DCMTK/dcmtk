@@ -79,11 +79,11 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getSamplesPerPixel(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getSamplesPerPixel(Uint16& value, const unsigned long pos = 0);
 
     /** Get Photometric Interpretation
      *  @param  value Reference to variable in which the value should be stored
-     *  @param  pos Index of the value to get (0..vm-1)
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getPhotometricInterpretation(OFString& value, const signed long pos = 0);
@@ -93,28 +93,28 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getRows(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getRows(Uint16& value, const unsigned long pos = 0);
 
     /** Get Columns
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getColumns(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getColumns(Uint16& value, const unsigned long pos = 0);
 
     /** Get Bits Allocated
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getBitsAllocated(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getBitsAllocated(Uint16& value, const unsigned long pos = 0);
 
     /** Get Pixel Aspect Ratio
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getPixelAspectRatio(Uint16& value, const signed long pos = 0);
+    virtual OFCondition getPixelAspectRatio(Uint16& value, const unsigned long pos = 0);
 
     // -------------------------------------------------------------------------
     // Setters for all attribute that appear in all Image Pixel Modules and which

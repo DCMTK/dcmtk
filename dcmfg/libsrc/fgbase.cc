@@ -106,6 +106,9 @@ OFCondition FGBase::createNewFGSequence(DcmItem& destination,
                                         const long unsigned int numItems,
                                         DcmItem*& firstItem)
 {
+    if (numItems > OFnumeric_limits<signed long>::max())
+        return EC_IllegalParameter;
+
     firstItem          = NULL;
     OFCondition result = destination.insertEmptyElement(seqKey, OFTrue /* replace old */);
     if (result.bad())
@@ -115,7 +118,7 @@ OFCondition FGBase::createNewFGSequence(DcmItem& destination,
         return FG_EC_CouldNotInsertFG;
     }
     DcmItem* dummy = NULL;
-    result         = destination.findOrCreateSequenceItem(seqKey, dummy, numItems);
+    result         = destination.findOrCreateSequenceItem(seqKey, dummy, OFstatic_cast(signed long, numItems));
     if (result.bad())
     {
         // clean up

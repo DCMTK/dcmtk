@@ -136,10 +136,10 @@ public:
 
         /** Get ReferencedSegmentNumber
          *  @param  value Reference to variable in which the value should be stored
-         *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+         *  @param  pos Index of the value to get (0..vm-1)
          *  @return EC_Normal if successful, an error code otherwise
          */
-        virtual OFCondition getReferencedSegmentNumber(Uint16& value, const signed long pos = 0) const;
+        virtual OFCondition getReferencedSegmentNumber(Uint16& value, const unsigned long pos = 0) const;
 
         /** Set ReferencedFrameNumber
          *  @param  value Value to be set (single value only) or "" for no value
@@ -290,24 +290,24 @@ public:
 
     /** Get FloatingPointValue
      *  @param  value Reference to variable in which the value should be stored
-     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getFloatingPointValue(Float64& value, const signed long pos = 0) const;
+    virtual OFCondition getFloatingPointValue(Float64& value, const unsigned long pos = 0) const;
 
     /** Get RationalNumeratorValue
      *  @param  value Reference to variable in which the value should be stored
-     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getRationalNumeratorValue(Sint32& value, const signed long pos = 0) const;
+    virtual OFCondition getRationalNumeratorValue(Sint32& value, const unsigned long pos = 0) const;
 
     /** Get RationalDenominatorValue
      *  @param  value Reference to variable in which the value should be stored
-     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getRationalDenominatorValue(Uint32& value, const signed long pos = 0) const;
+    virtual OFCondition getRationalDenominatorValue(Uint32& value, const unsigned long pos = 0) const;
 
     /** Get reference to the MeasurementUnitsCodeSequence
      *  @return a reference to the MeasurementUnitsCodeSequence

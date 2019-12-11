@@ -95,14 +95,14 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getFloatPixelPaddingValue(Float32& value, const signed long pos = 0);
+    virtual OFCondition getFloatPixelPaddingValue(Float32& value, const unsigned long pos = 0);
 
     /** Get Float Pixel Padding Range Limit
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getFloatPixelPaddingRangeLimit(Float32& value, const signed long pos = 0);
+    virtual OFCondition getFloatPixelPaddingRangeLimit(Float32& value, const unsigned long pos = 0);
 
     /** Set Float Pixel Pixel Padding Value
      *  @param  value Reference to variable in which the value should be stored
@@ -194,14 +194,14 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getDoubleFloatPixelPaddingValue(Float64& value, const signed long pos = 0);
+    virtual OFCondition getDoubleFloatPixelPaddingValue(Float64& value, const unsigned long pos = 0);
 
     /** Get Double Float Pixel Padding Range Limit
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getDoubleFloatPixelPaddingRangeLimit(Float64& value, const signed long pos = 0);
+    virtual OFCondition getDoubleFloatPixelPaddingRangeLimit(Float64& value, const unsigned long pos = 0);
 
     /** Set Double Float Pixel Pixel Padding Value
      *  @param  value Reference to variable in which the value should be stored

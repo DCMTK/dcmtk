@@ -105,25 +105,25 @@ IODImagePixelBase::DataType IODImagePixelModule<T>::getDataType() const
 }
 
 template <typename T>
-OFCondition IODImagePixelModule<T>::getBitsStored(Uint16& value, const signed long pos)
+OFCondition IODImagePixelModule<T>::getBitsStored(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_BitsStored, value, pos);
 }
 
 template <typename T>
-OFCondition IODImagePixelModule<T>::getHighBit(Uint16& value, const signed long pos)
+OFCondition IODImagePixelModule<T>::getHighBit(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_HighBit, value, pos);
 }
 
 template <typename T>
-OFCondition IODImagePixelModule<T>::getPixelRepresentation(Uint16& value, const signed long pos)
+OFCondition IODImagePixelModule<T>::getPixelRepresentation(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_PixelRepresentation, value, pos);
 }
 
 template <typename T>
-OFCondition IODImagePixelModule<T>::getPlanarConfiguration(Uint16& value, const signed long pos)
+OFCondition IODImagePixelModule<T>::getPlanarConfiguration(Uint16& value, const unsigned long pos)
 {
     return m_Item->findAndGetUint16(DCM_PlanarConfiguration, value, pos);
 }
