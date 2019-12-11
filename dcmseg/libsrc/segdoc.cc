@@ -985,7 +985,7 @@ OFCondition DcmSegmentation::writeDataset(DcmItem& dataset)
     {
         if (pixDataLength <= 4294967294UL)
         {
-            result = dataset.putAndInsertUint8Array(DCM_PixelData, pixData, pixDataLength);
+            result = dataset.putAndInsertUint8Array(DCM_PixelData, pixData, OFstatic_cast(unsigned long, pixDataLength));
         }
         else
         {

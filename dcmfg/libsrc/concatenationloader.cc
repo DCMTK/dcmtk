@@ -406,7 +406,7 @@ OFCondition ConcatenationLoader::computeBytesPerFrame(const Uint16 rows,
     {
         // results in rows * cols / 8 if rows*cols is dividable by 8,
         // otherwise rows * cols / 8 +1 (extra byte)
-        OFBool remainder = bytes_per_frame % 8;
+        OFBool remainder = (bytes_per_frame % 8 != 0) ? OFTrue: OFFalse;
         bytes_per_frame  = bytes_per_frame / 8;
         if (remainder)
         {
@@ -431,7 +431,7 @@ OFCondition ConcatenationLoader::movePerFrameItems(DcmItem& item)
     {
         while (result.good() && (srcPerFrame->card() != 0))
         {
-            result = dstPerFrame->append(srcPerFrame->remove(OFstatic_cast(Uint8,0)));
+            result = dstPerFrame->append(srcPerFrame->remove(OFstatic_cast(unsigned long, 0)));
         }
     }
     return result;
