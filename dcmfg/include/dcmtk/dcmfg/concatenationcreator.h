@@ -177,6 +177,16 @@ protected:
     virtual OFCondition configureCommon();
 
 private:
+
+    /// Maximum number of instances that make up a Concatenation (=2^16-1=65535),
+    /// derived from attributes In-concatentation Number and In-concatenation Total Number
+    /// that only store 16 bit values (VR US).
+    static Uint16 const m_MAX_INSTANCES_PER_CONCATENATION;
+
+    /// Maximum number of bytes for uncompressed pixel data (=2^32-2), derived from
+    /// 32 bit length field of Pixel Data attribute with even length being required.
+    static Uint32 const m_MAX_PIXEL_DATA_LENGTH;
+
     /// Flag denoting whether class is configured (i.e. configureCommon() has been called)
     /// and ready for concatenation writing.
     OFBool m_configured;

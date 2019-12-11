@@ -29,6 +29,14 @@
 #include "dcmtk/dcmfg/fgtypes.h"
 #include "dcmtk/ofstd/ofstd.h"
 
+// Maximum number of instances that make up a Concatenation
+const Uint16 ConcatenationCreator::m_MAX_INSTANCES_PER_CONCATENATION = 65535;
+
+/// Maximum number of bytes for uncompressed pixel data (=2^32-2), derived from
+/// 32 bit length field of Pixel Data attribute with even length being required.
+Uint32 const ConcatenationCreator::m_MAX_PIXEL_DATA_LENGTH = 4294967294UL;
+
+
 //  --------------------------------- Public API ------------------------------
 
 // Constructor
@@ -398,18 +406,18 @@ OFCondition ConcatenationCreator::configureCommon()
     {
         u32++;
     }
-    if (u32 > OFnumeric_limits<Uint16>::max())
+    if (u32 > m_MAX_INSTANCES_PER_CONCATENATION)
     {
-        DCMFG_ERROR("Too many concatenation instances (" << u32 << "), maximum is " << OFnumeric_limits<Uint16>::max());
+        DCMFG_ERROR("Too many concatenation instances (" << u32 << "), maximum is " << m_MAX_INSTANCES_PER_CONCATENATION);
         return FG_EC_InvalidData;
     }
     m_dstNumInstances = OFstatic_cast(Uint16, u32); // safe now
 
     // Check whether pixel data for one instance stays below 4 GB
     size_t numTotalBytesInstance = m_numBytesFrame * m_dstNumFramesPerInstance;
-    if (numTotalBytesInstance > 4294967294UL)
+    if (numTotalBytesInstance > m_MAX_PIXEL_DATA_LENGTH)
     {
-        DCMFG_ERROR("Uncompressed pixel data exceeds 4294967294 bytes per concatenation instance");
+        DCMFG_ERROR("Uncompressed pixel data must not exceed " << m_MAX_PIXEL_DATA_LENGTH << "bytes per concatenation instance");
         return FG_EC_PixelDataDimensionsInvalid;
     }
 
