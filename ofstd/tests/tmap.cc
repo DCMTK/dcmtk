@@ -75,12 +75,12 @@ OFTEST(ofstd_OFMap)
     // Check whether map is sorted
     m.clear();
     // Insert values in reverse order
-    for (i = 0; i < 6 ; i++)
-        m[6-i] = 6-i;
+    for (i = 0; i < 6 ; ++i)
+        m[6 - i] = 6 - i;
     // Check all elements are stored in sorted order
     OFCHECK_EQUAL(m.size(), 6);
     it = m.begin();
-    for (size_t i=1; i <= m.size(); i++)
+    for (i = 1; i <= 6; ++i)
     {
         OFCHECK((*it).second == i);
         it++;
