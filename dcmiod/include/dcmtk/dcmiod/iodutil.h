@@ -961,20 +961,20 @@ public:
      */
     static Uint32 limitMaxFrames(const size_t numFramesPresent, const OFString& warning);
 
-   /** Extracts Frame structures from the given pixel data element. Only
-    *  applicable for pixel data with Bits Allocated = 1. Within the pixel data element, all
-    *  frames are packed next to each other, with the end of one frame and the
-    *  beginning of the next frame packed bit by bit next to each other. The
-    *  resulting Frames are a bit-by-bit copy of their original counterpart.
-    *  However, their first bit is aligned to the first bit/byte in the Frame,
-    *  and the unused bits in the last byte (if any) are zeroed out.
-    *  @param  pixData The pixel data to read from
-    *  @param  numFrames The number of frames to read
-    *  @param  bitsPerFrame The number of bits per frame (usually rows * columns)
-    *  @param  results The resulting frames. Memory for the frames is allocated
-    *          by the method, so the Vector can/should be empty before calling.
-    *  @result Return EC_Normal on success, error otherwise
-    */
+    /** Extracts Frame structures from the given pixel data element. Only
+     *  applicable for pixel data with Bits Allocated = 1. Within the pixel data element, all
+     *  frames are packed next to each other, with the end of one frame and the
+     *  beginning of the next frame packed bit by bit next to each other. The
+     *  resulting Frames are a bit-by-bit copy of their original counterpart.
+     *  However, their first bit is aligned to the first bit/byte in the Frame,
+     *  and the unused bits in the last byte (if any) are zeroed out.
+     *  @param  pixData The pixel data to read from
+     *  @param  numFrames The number of frames to read
+     *  @param  bitsPerFrame The number of bits per frame (usually rows * columns)
+     *  @param  results The resulting frames. Memory for the frames is allocated
+     *          by the method, so the Vector can/should be empty before calling.
+     *  @result Return EC_Normal on success, error otherwise
+     */
     static OFCondition extractBinaryFrames(Uint8* pixData,
                                            const size_t numFrames,
                                            const size_t bitsPerFrame,

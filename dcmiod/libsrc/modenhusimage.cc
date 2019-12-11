@@ -51,7 +51,10 @@ IODEnhUSImageModule::IODEnhUSImageModule()
     resetRules();
 }
 
-OFString IODEnhUSImageModule::getName() const { return m_ModuleName; }
+OFString IODEnhUSImageModule::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODEnhUSImageModule::resetRules()
 {
@@ -100,7 +103,10 @@ void IODEnhUSImageModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_DepthOfScanField, "1", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
 }
 
-IODEnhUSImageModule::~IODEnhUSImageModule() { DcmIODUtil::freeContainer(m_TransducerBeamSteering); }
+IODEnhUSImageModule::~IODEnhUSImageModule()
+{
+    DcmIODUtil::freeContainer(m_TransducerBeamSteering);
+}
 
 OFCondition IODEnhUSImageModule::read(DcmItem& source, const OFBool clearOldData)
 {
@@ -265,7 +271,10 @@ OFCondition IODEnhUSImageModule::getRescaleIntercept(OFString& value, const sign
     return DcmIODUtil::getStringValueFromItem(DCM_RescaleSlope, *m_Item, value, pos);
 }
 
-GeneralAnatomyMacro& IODEnhUSImageModule::getAnatomy() { return m_Anatomy; }
+GeneralAnatomyMacro& IODEnhUSImageModule::getAnatomy()
+{
+    return m_Anatomy;
+}
 
 MandatoryViewAndSliceProgressionDirectionMacro& IODEnhUSImageModule::getMandatoryViewAndSliceProgressionDirection()
 {
@@ -282,13 +291,25 @@ OFCondition IODEnhUSImageModule::getRecognizableVisibleFeatures(OFString& value,
     return DcmIODUtil::getStringValueFromItem(DCM_RecognizableVisualFeatures, *m_Item, value, pos);
 }
 
-CodeSequenceMacro& IODEnhUSImageModule::getTransducerScanPattern() { return m_TransducerScanPattern; }
+CodeSequenceMacro& IODEnhUSImageModule::getTransducerScanPattern()
+{
+    return m_TransducerScanPattern;
+}
 
-CodeSequenceMacro& IODEnhUSImageModule::getTransducerGeometry() { return m_TransducerGeometry; }
+CodeSequenceMacro& IODEnhUSImageModule::getTransducerGeometry()
+{
+    return m_TransducerGeometry;
+}
 
-OFVector<CodeSequenceMacro*>& IODEnhUSImageModule::getTransducerBeamSteering() { return m_TransducerBeamSteering; }
+OFVector<CodeSequenceMacro*>& IODEnhUSImageModule::getTransducerBeamSteering()
+{
+    return m_TransducerBeamSteering;
+}
 
-CodeSequenceMacro& IODEnhUSImageModule::getTransducerApplication() { return m_TransducerApplication; }
+CodeSequenceMacro& IODEnhUSImageModule::getTransducerApplication()
+{
+    return m_TransducerApplication;
+}
 
 OFCondition IODEnhUSImageModule::getProcessingFunction(OFString& value, const signed long pos)
 {

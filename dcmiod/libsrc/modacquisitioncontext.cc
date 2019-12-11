@@ -39,7 +39,10 @@ IODAcquisitionContextModule::IODAcquisitionContextModule()
     resetRules();
 }
 
-OFString IODAcquisitionContextModule::getName() const { return m_ModuleName; }
+OFString IODAcquisitionContextModule::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODAcquisitionContextModule::resetRules()
 {
@@ -48,7 +51,9 @@ void IODAcquisitionContextModule::resetRules()
                      OFTrue);
 }
 
-IODAcquisitionContextModule::~IODAcquisitionContextModule() {}
+IODAcquisitionContextModule::~IODAcquisitionContextModule()
+{
+}
 
 // --- get attributes (C++ string) ---
 

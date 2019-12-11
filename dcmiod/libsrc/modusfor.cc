@@ -58,7 +58,10 @@ void IODUSFoRModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_VolumeToTableMappingMatrix, "16", "1C", getName(), DcmIODTypes::IE_FOR), OFTrue);
 }
 
-OFString IODUSFoRModule::getName() const { return m_ModuleName; }
+OFString IODUSFoRModule::getName() const
+{
+    return m_ModuleName;
+}
 
 IODUSFoRModule::~IODUSFoRModule()
 {

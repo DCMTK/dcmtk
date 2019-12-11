@@ -38,9 +38,14 @@ IODSegmentationSeriesModule::IODSegmentationSeriesModule()
     resetRules();
 }
 
-IODSegmentationSeriesModule::~IODSegmentationSeriesModule() {}
+IODSegmentationSeriesModule::~IODSegmentationSeriesModule()
+{
+}
 
-OFString IODSegmentationSeriesModule::getName() const { return m_ModuleName; }
+OFString IODSegmentationSeriesModule::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODSegmentationSeriesModule::resetRules()
 {

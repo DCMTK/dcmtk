@@ -57,9 +57,14 @@ void IODGeneralEquipmentModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_SoftwareVersions, "1-n", "3", getName(), DcmIODTypes::IE_EQUIPMENT), OFTrue);
 }
 
-IODGeneralEquipmentModule::~IODGeneralEquipmentModule() {}
+IODGeneralEquipmentModule::~IODGeneralEquipmentModule()
+{
+}
 
-OFString IODGeneralEquipmentModule::getName() const { return m_ModuleName; }
+OFString IODGeneralEquipmentModule::getName() const
+{
+    return m_ModuleName;
+}
 
 OFCondition IODGeneralEquipmentModule::getDeviceSerialNumber(OFString& value, const long signed int pos) const
 {

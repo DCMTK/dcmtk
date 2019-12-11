@@ -43,7 +43,10 @@ IODEnhancedUSSeriesModule::IODEnhancedUSSeriesModule()
     resetRules();
 }
 
-OFString IODEnhancedUSSeriesModule::getName() const { return m_ModuleName; }
+OFString IODEnhancedUSSeriesModule::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODEnhancedUSSeriesModule::resetRules()
 {
@@ -96,16 +99,24 @@ OFCondition IODEnhancedUSSeriesModule::write(DcmItem& destination)
     return result;
 }
 
-IODEnhancedUSSeriesModule::~IODEnhancedUSSeriesModule() {}
+IODEnhancedUSSeriesModule::~IODEnhancedUSSeriesModule()
+{
+}
 
 OFCondition IODEnhancedUSSeriesModule::getModality(OFString& value, const signed long pos) const
 {
     return DcmIODUtil::getStringValueFromItem(DCM_Modality, *m_Item, value, pos);
 }
 
-CodeSequenceMacro& IODEnhancedUSSeriesModule::getPerformedProtocolCode() { return m_PerformedProtocolCode; }
+CodeSequenceMacro& IODEnhancedUSSeriesModule::getPerformedProtocolCode()
+{
+    return m_PerformedProtocolCode;
+}
 
-SOPInstanceReferenceMacro& IODEnhancedUSSeriesModule::getReferencedPPS() { return m_ReferencedPerformedProcedureStep; }
+SOPInstanceReferenceMacro& IODEnhancedUSSeriesModule::getReferencedPPS()
+{
+    return m_ReferencedPerformedProcedureStep;
+}
 
 OFCondition IODEnhancedUSSeriesModule::getPerformedProtocolType(OFString& value, const signed long pos) const
 {

@@ -32,7 +32,10 @@ IODPatientModule::IODPatientModule(OFshared_ptr<DcmItem> item, OFshared_ptr<IODR
     resetRules();
 }
 
-OFString IODPatientModule::getName() const { return m_ModuleName; }
+OFString IODPatientModule::getName() const
+{
+    return m_ModuleName;
+}
 
 IODPatientModule::IODPatientModule()
     : IODModule()
@@ -49,7 +52,9 @@ void IODPatientModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_PatientSex, "1", "2", getName(), DcmIODTypes::IE_PATIENT), OFTrue);
 }
 
-IODPatientModule::~IODPatientModule() {}
+IODPatientModule::~IODPatientModule()
+{
+}
 
 // --- get attributes (C++ string) ---
 

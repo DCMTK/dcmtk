@@ -36,7 +36,10 @@ IODImagePixelBase::IODImagePixelBase(OFshared_ptr<DcmItem> item, OFshared_ptr<IO
     resetRules();
 }
 
-OFString IODImagePixelBase::getName() const { return m_ModuleName; }
+OFString IODImagePixelBase::getName() const
+{
+    return m_ModuleName;
+}
 
 IODImagePixelBase::IODImagePixelBase()
     : IODModule()
@@ -44,7 +47,9 @@ IODImagePixelBase::IODImagePixelBase()
     resetRules();
 }
 
-IODImagePixelBase::~IODImagePixelBase() {}
+IODImagePixelBase::~IODImagePixelBase()
+{
+}
 
 void IODImagePixelBase::resetRules()
 {

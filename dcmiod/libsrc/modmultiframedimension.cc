@@ -120,7 +120,10 @@ OFCondition IODMultiframeDimensionModule::addDimensionIndex(const DcmTagKey& dim
     return result;
 }
 
-OFString IODMultiframeDimensionModule::getName() const { return m_ModuleName; }
+OFString IODMultiframeDimensionModule::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODMultiframeDimensionModule::clearData()
 {
@@ -151,18 +154,18 @@ OFCondition IODMultiframeDimensionModule::write(DcmItem& destination)
 
     // Re-create dimension organization data
     createDimensionOrganizationData();
-    DcmIODUtil::writeSubSequence<OFVector<DimensionOrganizationItem*>>(
+    DcmIODUtil::writeSubSequence<OFVector<DimensionOrganizationItem*> >(
         result,
         DCM_DimensionOrganizationSequence,
         m_DimensionOrganizationSequence,
         *m_Item,
         m_Rules->getByTag(DCM_DimensionOrganizationSequence));
 
-    DcmIODUtil::writeSubSequence<OFVector<DimensionIndexItem*>>(result,
-                                                                DCM_DimensionIndexSequence,
-                                                                m_DimensionIndexSequence,
-                                                                *m_Item,
-                                                                m_Rules->getByTag(DCM_DimensionIndexSequence));
+    DcmIODUtil::writeSubSequence<OFVector<DimensionIndexItem*> >(result,
+                                                                 DCM_DimensionIndexSequence,
+                                                                 m_DimensionIndexSequence,
+                                                                 *m_Item,
+                                                                 m_Rules->getByTag(DCM_DimensionIndexSequence));
 
     result = IODComponent::write(destination);
     return result;
@@ -459,7 +462,10 @@ void IODMultiframeDimensionModule::DimensionIndexItem::resetRules()
                      OFTrue);
 }
 
-OFString IODMultiframeDimensionModule::DimensionIndexItem::getName() const { return "DimensionIndexSequence"; }
+OFString IODMultiframeDimensionModule::DimensionIndexItem::getName() const
+{
+    return "DimensionIndexSequence";
+}
 
 OFCondition
 IODMultiframeDimensionModule::DimensionIndexItem::getDimensionDescriptionLabel(OFString& value,

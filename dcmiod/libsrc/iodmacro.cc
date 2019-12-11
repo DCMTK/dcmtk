@@ -104,7 +104,10 @@ CodeSequenceMacro::CodeSequenceMacro(OFshared_ptr<DcmItem> item,
     }
 }
 
-OFString CodeSequenceMacro::getName() const { return "CodeSequenceMacro"; }
+OFString CodeSequenceMacro::getName() const
+{
+    return "CodeSequenceMacro";
+}
 
 void CodeSequenceMacro::resetRules()
 {
@@ -320,7 +323,10 @@ int CodeWithModifiers::compare(const IODComponent& rhs) const
     return result;
 }
 
-OFString CodeWithModifiers::getName() const { return "CodeWithModifiers"; }
+OFString CodeWithModifiers::getName() const
+{
+    return "CodeWithModifiers";
+}
 
 OFCondition CodeWithModifiers::addModifier(const CodeSequenceMacro& modifier)
 {
@@ -374,7 +380,10 @@ OFCondition CodeWithModifiers::write(DcmItem& destination)
     return result;
 }
 
-CodeWithModifiers::~CodeWithModifiers() { DcmIODUtil::freeContainer(m_Modifiers); }
+CodeWithModifiers::~CodeWithModifiers()
+{
+    DcmIODUtil::freeContainer(m_Modifiers);
+}
 
 OFString CodeSequenceMacro::toString()
 {
@@ -412,14 +421,17 @@ IODSeriesAndInstanceReferenceMacro::IODSeriesAndInstanceReferenceMacro(IODCompon
     resetRules();
 }
 
-OFString IODSeriesAndInstanceReferenceMacro::getName() const { return m_ComponentName; }
+OFString IODSeriesAndInstanceReferenceMacro::getName() const
+{
+    return m_ComponentName;
+}
 
 OFCondition IODSeriesAndInstanceReferenceMacro::read(DcmItem& source, const OFBool clearOldData)
 {
     if (clearOldData)
         clearData();
 
-    DcmIODUtil::readSubSequence<OFVector<ReferencedSeriesItem*>>(
+    DcmIODUtil::readSubSequence<OFVector<ReferencedSeriesItem*> >(
         source, DCM_ReferencedSeriesSequence, m_ReferencedSeriesItems, m_Rules->getByTag(DCM_ReferencedSeriesSequence));
     return EC_Normal;
 }
@@ -428,16 +440,19 @@ OFCondition IODSeriesAndInstanceReferenceMacro::write(DcmItem& destination)
 {
     OFCondition result = EC_Normal;
 
-    DcmIODUtil::writeSubSequence<OFVector<ReferencedSeriesItem*>>(result,
-                                                                  DCM_ReferencedSeriesSequence,
-                                                                  m_ReferencedSeriesItems,
-                                                                  destination,
-                                                                  m_Rules->getByTag(DCM_ReferencedSeriesSequence));
+    DcmIODUtil::writeSubSequence<OFVector<ReferencedSeriesItem*> >(result,
+                                                                   DCM_ReferencedSeriesSequence,
+                                                                   m_ReferencedSeriesItems,
+                                                                   destination,
+                                                                   m_Rules->getByTag(DCM_ReferencedSeriesSequence));
 
     return result;
 }
 
-void IODSeriesAndInstanceReferenceMacro::clearData() { DcmIODUtil::freeContainer(m_ReferencedSeriesItems); }
+void IODSeriesAndInstanceReferenceMacro::clearData()
+{
+    DcmIODUtil::freeContainer(m_ReferencedSeriesItems);
+}
 
 void IODSeriesAndInstanceReferenceMacro::resetRules()
 {
@@ -474,9 +489,15 @@ IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::ReferencedSeriesItem(I
     resetRules();
 }
 
-IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::~ReferencedSeriesItem() { clearData(); }
+IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::~ReferencedSeriesItem()
+{
+    clearData();
+}
 
-OFString IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::getName() const { return m_ComponentName; }
+OFString IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::getName() const
+{
+    return m_ComponentName;
+}
 
 void IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::clearData()
 {
@@ -501,7 +522,7 @@ OFCondition IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem::write(DcmI
 {
     OFCondition result = EC_Normal;
 
-    DcmIODUtil::writeSubSequence<OFVector<SOPInstanceReferenceMacro*>>(
+    DcmIODUtil::writeSubSequence<OFVector<SOPInstanceReferenceMacro*> >(
         result,
         DCM_ReferencedInstanceSequence,
         m_ReferencedInstanceSequence,
@@ -605,7 +626,10 @@ SOPInstanceReferenceMacro::~SOPInstanceReferenceMacro()
     // nothing to do
 }
 
-OFString SOPInstanceReferenceMacro::getName() const { return "SOPInstanceReferenceMacro"; }
+OFString SOPInstanceReferenceMacro::getName() const
+{
+    return "SOPInstanceReferenceMacro";
+}
 
 void SOPInstanceReferenceMacro::resetRules()
 {
@@ -701,7 +725,9 @@ OFCondition ImageSOPInstanceReferenceMacro::create(const OFString& sopClassUID,
     return cond;
 }
 
-ImageSOPInstanceReferenceMacro::~ImageSOPInstanceReferenceMacro() {}
+ImageSOPInstanceReferenceMacro::~ImageSOPInstanceReferenceMacro()
+{
+}
 
 int ImageSOPInstanceReferenceMacro::compare(const IODComponent& rhs) const
 {
@@ -860,7 +886,10 @@ GeneralAnatomyMacro& GeneralAnatomyMacro::operator=(const GeneralAnatomyMacro& r
     return *this;
 }
 
-GeneralAnatomyMacro::~GeneralAnatomyMacro() { clearData(); }
+GeneralAnatomyMacro::~GeneralAnatomyMacro()
+{
+    clearData();
+}
 
 void GeneralAnatomyMacro::clearData()
 {
@@ -893,11 +922,20 @@ OFCondition GeneralAnatomyMacro::check(const OFBool quiet)
     return result;
 }
 
-CodeSequenceMacro& GeneralAnatomyMacro::getAnatomicRegion() { return m_AnatomicRegion; }
+CodeSequenceMacro& GeneralAnatomyMacro::getAnatomicRegion()
+{
+    return m_AnatomicRegion;
+}
 
-OFVector<CodeSequenceMacro*>& GeneralAnatomyMacro::getAnatomicRegionModifier() { return m_AnatomicRegionModifier; }
+OFVector<CodeSequenceMacro*>& GeneralAnatomyMacro::getAnatomicRegionModifier()
+{
+    return m_AnatomicRegionModifier;
+}
 
-PrimaryAnatomicStructureMacro& GeneralAnatomyMacro::getPrimaryAnatomicStructure() { return m_PrimaryAnatomicStructure; }
+PrimaryAnatomicStructureMacro& GeneralAnatomyMacro::getPrimaryAnatomicStructure()
+{
+    return m_PrimaryAnatomicStructure;
+}
 
 // Reads Anatomic Region Sequence and Primary Anatomic Structure Macro from given item
 OFCondition GeneralAnatomyMacro::read(DcmItem& source, const OFBool clearOldData)
@@ -924,12 +962,12 @@ OFCondition GeneralAnatomyMacro::read(DcmItem& source, const OFBool clearOldData
     }
 
     /* read Anatomic Region Modifier Sequence from */
-    DcmIODUtil::readSubSequence<OFVector<CodeSequenceMacro*>>(*localItem, /* item of Anatomic Region Sequence */
-                                                              DCM_AnatomicRegionModifierSequence,
-                                                              m_AnatomicRegionModifier,
-                                                              "1-n",
-                                                              "3",
-                                                              "GeneralAnatomyMacro");
+    DcmIODUtil::readSubSequence<OFVector<CodeSequenceMacro*> >(*localItem, /* item of Anatomic Region Sequence */
+                                                               DCM_AnatomicRegionModifierSequence,
+                                                               m_AnatomicRegionModifier,
+                                                               "1-n",
+                                                               "3",
+                                                               "GeneralAnatomyMacro");
 
     return result;
 }
@@ -952,13 +990,13 @@ OFCondition GeneralAnatomyMacro::write(DcmItem& item)
         result           = item.findAndGetSequenceItem(DCM_AnatomicRegionSequence, seqItem, 0);
         if (result.good())
         {
-            DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*>>(result,
-                                                                       DCM_AnatomicRegionModifierSequence,
-                                                                       m_AnatomicRegionModifier,
-                                                                       *seqItem,
-                                                                       "1-n",
-                                                                       "3",
-                                                                       "GeneralAnatomyMacro");
+            DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*> >(result,
+                                                                        DCM_AnatomicRegionModifierSequence,
+                                                                        m_AnatomicRegionModifier,
+                                                                        *seqItem,
+                                                                        "1-n",
+                                                                        "3",
+                                                                        "GeneralAnatomyMacro");
         }
     }
     DcmIODUtil::writeSingleItem(
@@ -1006,7 +1044,10 @@ AlgorithmIdentificationMacro::AlgorithmIdentificationMacro()
 {
 }
 //
-AlgorithmIdentificationMacro::~AlgorithmIdentificationMacro() { clearData(); }
+AlgorithmIdentificationMacro::~AlgorithmIdentificationMacro()
+{
+    clearData();
+}
 
 void AlgorithmIdentificationMacro::clearData()
 {
@@ -1032,9 +1073,15 @@ OFCondition AlgorithmIdentificationMacro::check(const OFBool quiet)
     return result;
 }
 
-CodeSequenceMacro& AlgorithmIdentificationMacro::getAlgorithmFamilyCode() { return m_AlgorithmFamilyCode; }
+CodeSequenceMacro& AlgorithmIdentificationMacro::getAlgorithmFamilyCode()
+{
+    return m_AlgorithmFamilyCode;
+}
 
-CodeSequenceMacro& AlgorithmIdentificationMacro::getAlgorithmNameCode() { return m_AlgorithmNameCode; }
+CodeSequenceMacro& AlgorithmIdentificationMacro::getAlgorithmNameCode()
+{
+    return m_AlgorithmNameCode;
+}
 
 OFCondition AlgorithmIdentificationMacro::getAlgorithmName(OFString& value, const signed long pos)
 {
@@ -1174,9 +1221,15 @@ void ContentIdentificationMacro::resetRules()
         OFTrue);
 }
 
-OFString ContentIdentificationMacro::getName() const { return "ContentIdentificationMacro"; }
+OFString ContentIdentificationMacro::getName() const
+{
+    return "ContentIdentificationMacro";
+}
 
-IODRules& ContentIdentificationMacro::getIODRules() { return m_IODRules; }
+IODRules& ContentIdentificationMacro::getIODRules()
+{
+    return m_IODRules;
+}
 
 ContentIdentificationMacro::ContentIdentificationMacro(const ContentIdentificationMacro& rhs)
     : m_InstanceNumber(DCM_InstanceNumber)
@@ -1262,7 +1315,10 @@ ContentIdentificationMacro& ContentIdentificationMacro::operator=(const ContentI
     return *this;
 }
 
-ContentIdentificationMacro::~ContentIdentificationMacro() { clearData(); }
+ContentIdentificationMacro::~ContentIdentificationMacro()
+{
+    clearData();
+}
 
 void ContentIdentificationMacro::clearData()
 {
@@ -1399,12 +1455,12 @@ OFCondition ContentIdentificationMacro::read(DcmItem& source, const OFBool clear
 
     /* sub sequences */
     IODRule* rule = m_IODRules.getByTag(DCM_AlternateContentDescriptionSequence);
-    DcmIODUtil::readSubSequence<OFVector<AlternateContentDescriptionItem*>>(source,
-                                                                            DCM_AlternateContentDescriptionSequence,
-                                                                            m_AlternateContentDescription,
-                                                                            rule->getVM(),
-                                                                            rule->getType(),
-                                                                            "ContentIdentificationMacro");
+    DcmIODUtil::readSubSequence<OFVector<AlternateContentDescriptionItem*> >(source,
+                                                                             DCM_AlternateContentDescriptionSequence,
+                                                                             m_AlternateContentDescription,
+                                                                             rule->getVM(),
+                                                                             rule->getType(),
+                                                                             "ContentIdentificationMacro");
 
     rule = m_IODRules.getByTag(DCM_ContentCreatorIdentificationCodeSequence);
     DcmIODUtil::readSingleItem<CodeSequenceMacro>(source,
@@ -1435,7 +1491,7 @@ OFCondition ContentIdentificationMacro::write(DcmItem& item)
                                                    "ContentIdentificationMacro");
 
     rule = m_IODRules.getByTag(DCM_AlternateContentDescriptionSequence);
-    DcmIODUtil::writeSubSequence<OFVector<ContentIdentificationMacro::AlternateContentDescriptionItem*>>(
+    DcmIODUtil::writeSubSequence<OFVector<ContentIdentificationMacro::AlternateContentDescriptionItem*> >(
         result,
         DCM_AlternateContentDescriptionSequence,
         m_AlternateContentDescription,
@@ -1545,7 +1601,10 @@ OFCondition HL7HierarchicDesignatorMacro::getUniversalEntityIDType(OFString& val
     return DcmIODUtil::getStringValueFromItem(DCM_UniversalEntityIDType, *m_Item, value, pos);
 }
 
-OFString HL7HierarchicDesignatorMacro::getName() const { return "HL7HierarchicDesignatorMacro"; }
+OFString HL7HierarchicDesignatorMacro::getName() const
+{
+    return "HL7HierarchicDesignatorMacro";
+}
 
 void HL7HierarchicDesignatorMacro::resetRules()
 {
@@ -1644,7 +1703,10 @@ OFCondition MandatoryViewAndSliceProgressionDirectionMacro::write(DcmItem& item)
     return result;
 }
 
-CodeSequenceMacro& MandatoryViewAndSliceProgressionDirectionMacro::getViewCode() { return m_ViewCodeSequence; }
+CodeSequenceMacro& MandatoryViewAndSliceProgressionDirectionMacro::getViewCode()
+{
+    return m_ViewCodeSequence;
+}
 
 OFVector<CodeSequenceMacro*>& MandatoryViewAndSliceProgressionDirectionMacro::getViewModifierCode()
 {

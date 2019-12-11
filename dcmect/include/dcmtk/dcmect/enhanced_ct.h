@@ -74,7 +74,7 @@ class IODImagePixelModule;
  *     - ICC Profile
  *     - Frame Extraction
  */
-class DCMTK_DCMECT_EXPORT EctEnhancedCT : public DcmIODImage<IODImagePixelModule<Uint16>, IODImagePixelModule<Sint16>>
+class DCMTK_DCMECT_EXPORT EctEnhancedCT : public DcmIODImage<IODImagePixelModule<Uint16>, IODImagePixelModule<Sint16> >
 {
 
 public:
@@ -119,7 +119,7 @@ public:
     /** Frames can contain Uint16, Sint16 or nothing (i.e.\ error condition)
      *  at all (in that case OFCondition denotes a corresponding error)
      */
-    typedef OFvariant<OFCondition, Frames<Uint16>, Frames<Sint16>> FramesType;
+    typedef OFvariant<OFCondition, Frames<Uint16>, Frames<Sint16> > FramesType;
 
     // -------------------- destruction -------------------------------
 

@@ -49,7 +49,10 @@ IODGeneralSeriesModule::IODGeneralSeriesModule()
     resetRules();
 }
 
-OFString IODGeneralSeriesModule::getName() const { return m_ModuleName; }
+OFString IODGeneralSeriesModule::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODGeneralSeriesModule::inventMissing()
 {
@@ -127,7 +130,9 @@ void IODGeneralSeriesModule::ensureInstanceUID(const OFBool correctInvalid)
     }
 }
 
-IODGeneralSeriesModule::~IODGeneralSeriesModule() {}
+IODGeneralSeriesModule::~IODGeneralSeriesModule()
+{
+}
 
 OFCondition IODGeneralSeriesModule::getModality(OFString& value, const signed long pos) const
 {
@@ -189,7 +194,10 @@ OFCondition IODGeneralSeriesModule::getPatientPosition(OFString& value, const si
     return DcmIODUtil::getStringValueFromItem(DCM_PatientPosition, *m_Item, value, pos);
 }
 
-SOPInstanceReferenceMacro& IODGeneralSeriesModule::getReferencedPPS() { return m_ReferencedPPS; }
+SOPInstanceReferenceMacro& IODGeneralSeriesModule::getReferencedPPS()
+{
+    return m_ReferencedPPS;
+}
 
 OFCondition IODGeneralSeriesModule::setModality(const OFString& value, const OFBool checkValue)
 {

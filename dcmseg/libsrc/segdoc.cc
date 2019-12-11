@@ -36,7 +36,7 @@
 
 // default constructor (protected, instance creation via create() function)
 DcmSegmentation::DcmSegmentation()
-    : DcmSegmentation::IODImage(OFin_place<IODImagePixelModule<Uint8>>)
+    : DcmSegmentation::IODImage(OFin_place<IODImagePixelModule<Uint8> >)
     , m_SegmentationSeries(DcmSegmentation::IODImage::getData(), DcmSegmentation::IODImage::getRules())
     , m_EnhancedGeneralEquipmentModule(DcmSegmentation::IODImage::getData(), DcmSegmentation::IODImage::getRules())
     , m_FG(DcmSegmentation::IODImage::getData(), DcmSegmentation::IODImage::getRules())
@@ -791,14 +791,14 @@ OFCondition DcmSegmentation::importFromSourceImage(DcmItem& dataset, const bool 
 OFCondition DcmSegmentation::writeSegments(DcmItem& item)
 {
     OFCondition result;
-    DcmIODUtil::writeSubSequence<OFVector<DcmSegment*>>(
+    DcmIODUtil::writeSubSequence<OFVector<DcmSegment*> >(
         result, DCM_SegmentSequence, m_Segments, item, "1-n", "1", "SegmentationImageModule");
     return result;
 }
 
 OFCondition DcmSegmentation::readSegments(DcmItem& item)
 {
-    return DcmIODUtil::readSubSequence<OFVector<DcmSegment*>>(
+    return DcmIODUtil::readSubSequence<OFVector<DcmSegment*> >(
         item, DCM_SegmentSequence, m_Segments, "1-n", "1", "SegmentationImageModule");
 }
 
@@ -1296,7 +1296,7 @@ OFCondition DcmSegmentation::readSegmentationType(DcmItem& item)
 // protected override of public base class function
 IODImagePixelModule<Uint8>& DcmSegmentation::getImagePixel()
 {
-    return *OFget<IODImagePixelModule<Uint8>>(&DcmSegmentation::IODImage::getImagePixel());
+    return *OFget<IODImagePixelModule<Uint8> >(&DcmSegmentation::IODImage::getImagePixel());
 }
 
 OFBool DcmSegmentation::check(const OFBool checkFGStructure)

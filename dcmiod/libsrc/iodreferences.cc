@@ -452,7 +452,10 @@ IODReferences::IODReferences()
     // nothing to do
 }
 
-IODReferences::~IODReferences() { DcmIODUtil::freeContainer(m_References); }
+IODReferences::~IODReferences()
+{
+    DcmIODUtil::freeContainer(m_References);
+}
 
 IODReferences::IODReferences(const IODReferences& rhs)
     : m_References()
@@ -474,9 +477,15 @@ IODReferences& IODReferences::operator=(const IODReferences& rhs)
     return *this;
 }
 
-const OFVector<IODReference*>& IODReferences::get() const { return m_References; }
+const OFVector<IODReference*>& IODReferences::get() const
+{
+    return m_References;
+}
 
-size_t IODReferences::size() const { return m_References.size(); }
+size_t IODReferences::size() const
+{
+    return m_References.size();
+}
 
 size_t IODReferences::addFromFiles(const OFVector<OFString>& dcmFiles, const IODReference::MAX_LEVEL level)
 {
@@ -506,4 +515,7 @@ size_t IODReferences::addFromFiles(const OFVector<OFString>& dcmFiles, const IOD
     return count;
 }
 
-void IODReferences::clearData() { DcmIODUtil::freeContainer(m_References); }
+void IODReferences::clearData()
+{
+    DcmIODUtil::freeContainer(m_References);
+}

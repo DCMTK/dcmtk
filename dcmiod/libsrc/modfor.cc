@@ -48,7 +48,10 @@ void IODFoRModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_PositionReferenceIndicator, "1", "2", getName(), DcmIODTypes::IE_FOR), OFTrue);
 }
 
-OFString IODFoRModule::getName() const { return m_ModuleName; }
+OFString IODFoRModule::getName() const
+{
+    return m_ModuleName;
+}
 
 IODFoRModule::~IODFoRModule()
 {

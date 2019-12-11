@@ -278,7 +278,7 @@ private:
 #endif
     readImagePixel(DcmItem& dataset)
     {
-        return OFget<IODImagePixelModule<T>>(&(m_ImagePixel = IODImagePixelModule<T>(getData(), getRules())))
+        return OFget<IODImagePixelModule<T> >(&(m_ImagePixel = IODImagePixelModule<T>(getData(), getRules())))
             ->read(dataset);
     }
 

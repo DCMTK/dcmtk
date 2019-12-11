@@ -158,7 +158,10 @@ OFCondition IODComponent::write(DcmItem& destination)
     return result;
 }
 
-int IODComponent::compare(const IODComponent& rhs) const { return this->m_Item.get()->compare(*(rhs.m_Item.get())); }
+int IODComponent::compare(const IODComponent& rhs) const
+{
+    return this->m_Item.get()->compare(*(rhs.m_Item.get()));
+}
 
 OFCondition IODComponent::check(const OFBool quiet)
 {

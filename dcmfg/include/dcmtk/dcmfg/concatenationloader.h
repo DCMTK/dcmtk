@@ -149,7 +149,7 @@ public:
     typedef OFMap<OFString, ConcatenationLoader::Info*>::iterator ScanResultIt;
 
     /// Result type for the failures reported by scan()
-    typedef OFList<OFtuple<OFFilename, OFString, OFString>> TScanFailures;
+    typedef OFList<OFtuple<OFFilename, OFString, OFString> > TScanFailures;
 
     /// Helper type, mainly for iterator definition
     typedef OFtuple<OFFilename, OFString, OFString> TScanFailureEntry;

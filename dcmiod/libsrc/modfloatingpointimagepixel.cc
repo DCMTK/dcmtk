@@ -42,7 +42,10 @@ IODFloatingPointImagePixelModule::IODFloatingPointImagePixelModule(OFshared_ptr<
     getData().putAndInsertOFStringArray(DCM_PhotometricInterpretation, "MONOCHROME2");
 }
 
-OFString IODFloatingPointImagePixelModule::getName() const { return m_ModuleName; }
+OFString IODFloatingPointImagePixelModule::getName() const
+{
+    return m_ModuleName;
+}
 
 IODFloatingPointImagePixelModule::IODFloatingPointImagePixelModule()
     : IODImagePixelBase()
@@ -140,7 +143,10 @@ IODDoubleFloatingPointImagePixelModule::IODDoubleFloatingPointImagePixelModule(O
     getData().putAndInsertOFStringArray(DCM_PhotometricInterpretation, "MONOCHROME2");
 }
 
-OFString IODDoubleFloatingPointImagePixelModule::getName() const { return m_ModuleName; }
+OFString IODDoubleFloatingPointImagePixelModule::getName() const
+{
+    return m_ModuleName;
+}
 
 IODDoubleFloatingPointImagePixelModule::IODDoubleFloatingPointImagePixelModule()
     : IODImagePixelBase()

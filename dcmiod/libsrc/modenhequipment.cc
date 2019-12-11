@@ -66,7 +66,10 @@ IODEnhGeneralEquipmentModule::~IODEnhGeneralEquipmentModule()
     // Nothing to do
 }
 
-OFString IODEnhGeneralEquipmentModule::getName() const { return m_ModuleName; }
+OFString IODEnhGeneralEquipmentModule::getName() const
+{
+    return m_ModuleName;
+}
 
 OFCondition IODEnhGeneralEquipmentModule::getDeviceSerialNumber(OFString& value, const long signed int pos) const
 {

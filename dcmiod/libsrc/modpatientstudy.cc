@@ -31,7 +31,10 @@ IODPatientStudyModule::IODPatientStudyModule(OFshared_ptr<DcmItem> item, OFshare
     resetRules();
 }
 
-OFString IODPatientStudyModule::getName() const { return m_ModuleName; }
+OFString IODPatientStudyModule::getName() const
+{
+    return m_ModuleName;
+}
 
 IODPatientStudyModule::IODPatientStudyModule()
     : IODModule()
@@ -49,7 +52,9 @@ void IODPatientStudyModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_PatientWeight, "1", "3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
 }
 
-IODPatientStudyModule::~IODPatientStudyModule() {}
+IODPatientStudyModule::~IODPatientStudyModule()
+{
+}
 
 // --- get attributes (C++ string) ---
 

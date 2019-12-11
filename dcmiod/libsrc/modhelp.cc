@@ -235,13 +235,17 @@ void DcmModuleHelpers::copyElement(const DcmTagKey& tag, DcmItem& src, DcmItem& 
     }
 }
 
-template <size_t N> inline void DcmModuleHelpers::copyModule(const DcmTagKey (&tags)[N], DcmItem& src, DcmItem& dest)
+template <size_t N>
+inline void DcmModuleHelpers::copyModule(const DcmTagKey (&tags)[N], DcmItem& src, DcmItem& dest)
 {
     for (const DcmTagKey *it = tags, *const end = tags + N; it != end; ++it)
         DcmModuleHelpers::copyElement(*it, src, dest);
 }
 
-void DcmModuleHelpers::copyPatientModule(DcmItem& src, DcmItem& dest) { copyModule(patientModuleTags, src, dest); }
+void DcmModuleHelpers::copyPatientModule(DcmItem& src, DcmItem& dest)
+{
+    copyModule(patientModuleTags, src, dest);
+}
 
 void DcmModuleHelpers::copyClinicalTrialSubjectModule(DcmItem& src, DcmItem& dest)
 {
@@ -283,7 +287,10 @@ void DcmModuleHelpers::copyFrameOfReferenceModule(DcmItem& src, DcmItem& dest)
     copyModule(frameOfReferenceModuleTags, src, dest);
 }
 
-void DcmModuleHelpers::copySOPCommonModule(DcmItem& src, DcmItem& dest) { copyModule(sopCommonModuleTags, src, dest); }
+void DcmModuleHelpers::copySOPCommonModule(DcmItem& src, DcmItem& dest)
+{
+    copyModule(sopCommonModuleTags, src, dest);
+}
 
 void DcmModuleHelpers::copyGeneralImageModule(DcmItem& src, DcmItem& dest)
 {

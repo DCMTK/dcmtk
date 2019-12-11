@@ -113,7 +113,6 @@ OFCondition DcmIODUtil::getAndCheckElementFromDataset(DcmItem& dataset, DcmEleme
         dataset, rule->getTagKey(), delem, rule->getVM(), rule->getType(), rule->getModule().c_str());
 }
 
-
 OFCondition
 DcmIODUtil::copyElementToDataset(OFCondition& result, DcmItem& dataset, const DcmElement& delem, const IODRule* rule)
 {
@@ -439,12 +438,10 @@ OFCondition DcmIODUtil::setFloat64ValuesOnElement(DcmElement& delem,
     return result;
 }
 
-
 OFCondition DcmIODUtil::getFloat32ValueFromElement(const DcmElement& delem, Float32& result, const unsigned long pos)
 {
     return OFconst_cast(DcmElement&, delem).getFloat32(result, OFstatic_cast(unsigned long, pos));
 }
-
 
 OFCondition DcmIODUtil::setFloat32ValuesOnElement(DcmElement& delem,
                                                   const OFVector<Float32>& values,
@@ -668,7 +665,6 @@ Uint32 DcmIODUtil::limitMaxFrames(const size_t numFramesPresent, const OFString&
     return OFstatic_cast(Uint16, numFramesPresent);
 }
 
-
 OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
                                             const size_t numFrames,
                                             const size_t bitsPerFrame,
@@ -731,8 +727,7 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
     return EC_Normal;
 }
 
-
-void DcmIODUtil::alignFrameOnByteBoundary ( Uint8* buf, size_t bufLen, Uint8 numBits )
+void DcmIODUtil::alignFrameOnByteBoundary(Uint8* buf, size_t bufLen, Uint8 numBits)
 {
     if (numBits > 7)
     {

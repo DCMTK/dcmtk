@@ -37,7 +37,10 @@ IODMultiFrameFGModule::IODMultiFrameFGModule(OFshared_ptr<DcmItem> data, OFshare
     resetRules();
 }
 
-OFString IODMultiFrameFGModule::getName() const { return m_ModuleName; }
+OFString IODMultiFrameFGModule::getName() const
+{
+    return m_ModuleName;
+}
 
 IODMultiFrameFGModule::IODMultiFrameFGModule()
     : IODModule()
@@ -56,7 +59,9 @@ void IODMultiFrameFGModule::resetRules()
     m_ConcatenationInfo.resetRules();
 }
 
-IODMultiFrameFGModule::~IODMultiFrameFGModule() {}
+IODMultiFrameFGModule::~IODMultiFrameFGModule()
+{
+}
 
 OFCondition IODMultiFrameFGModule::read(DcmItem& source, const bool clearOldData)
 {
@@ -65,17 +70,18 @@ OFCondition IODMultiFrameFGModule::read(DcmItem& source, const bool clearOldData
     return EC_Normal;
 }
 
-
 OFCondition IODMultiFrameFGModule::write(DcmItem& destination)
 {
     OFCondition result = IODModule::write(destination);
-    if (result.good()) m_ConcatenationInfo.write(destination);
+    if (result.good())
+        m_ConcatenationInfo.write(destination);
     return result;
 }
 
-
-
-IODMultiFrameFGModule::ConcatenationInfo& IODMultiFrameFGModule::getConcatenationInfo() { return m_ConcatenationInfo; }
+IODMultiFrameFGModule::ConcatenationInfo& IODMultiFrameFGModule::getConcatenationInfo()
+{
+    return m_ConcatenationInfo;
+}
 
 OFCondition IODMultiFrameFGModule::getInstanceNumber(Sint32& value, const unsigned int pos)
 {
@@ -176,7 +182,10 @@ IODMultiFrameFGModule::ConcatenationInfo::~ConcatenationInfo()
     // Nothing to do
 }
 
-OFString IODMultiFrameFGModule::ConcatenationInfo::getName() const { return m_ModuleName; }
+OFString IODMultiFrameFGModule::ConcatenationInfo::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODMultiFrameFGModule::ConcatenationInfo::resetRules()
 {
@@ -191,7 +200,6 @@ void IODMultiFrameFGModule::ConcatenationInfo::resetRules()
     m_Rules->addRule(new IODRule(DCM_InConcatenationTotalNumber, "1", "3", m_ModuleName, DcmIODTypes::IE_INSTANCE),
                      OFTrue);
 }
-
 
 OFCondition IODMultiFrameFGModule::ConcatenationInfo::getConcatenationFrameOffsetNumber(Uint32& value,
                                                                                         const unsigned int pos)

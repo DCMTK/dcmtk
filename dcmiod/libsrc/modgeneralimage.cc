@@ -48,7 +48,9 @@ IODGeneralImageModule::IODGeneralImageModule()
     resetRules();
 }
 
-IODGeneralImageModule::~IODGeneralImageModule() {}
+IODGeneralImageModule::~IODGeneralImageModule()
+{
+}
 
 void IODGeneralImageModule::resetRules()
 {
@@ -73,7 +75,10 @@ void IODGeneralImageModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_IrradiationEventUID, "1-n", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
 }
 
-OFString IODGeneralImageModule::getName() const { return "GeneralImageModule"; }
+OFString IODGeneralImageModule::getName() const
+{
+    return "GeneralImageModule";
+}
 
 OFCondition IODGeneralImageModule::getInstanceNumber(OFString& value, const signed long pos)
 {

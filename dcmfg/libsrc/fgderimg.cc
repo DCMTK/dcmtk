@@ -219,12 +219,12 @@ OFCondition FGDerivationImage::read(DcmItem& item)
         return FG_EC_NoSuchGroup;
 
     /* Read Derivation Image Sequence */
-    DcmIODUtil::readSubSequence<OFVector<DerivationImageItem*>>(derivationImageSequence,
-                                                                DCM_DerivationImageSequence,
-                                                                m_DerivationImageItems,
-                                                                "0-n",
-                                                                "2",
-                                                                "DerivationImageMacro");
+    DcmIODUtil::readSubSequence<OFVector<DerivationImageItem*> >(derivationImageSequence,
+                                                                 DCM_DerivationImageSequence,
+                                                                 m_DerivationImageItems,
+                                                                 "0-n",
+                                                                 "2",
+                                                                 "DerivationImageMacro");
 
     return EC_Normal;
 }
@@ -232,7 +232,7 @@ OFCondition FGDerivationImage::read(DcmItem& item)
 OFCondition FGDerivationImage::write(DcmItem& item)
 {
     OFCondition result = check();
-    DcmIODUtil::writeSubSequence<OFVector<DerivationImageItem*>>(
+    DcmIODUtil::writeSubSequence<OFVector<DerivationImageItem*> >(
         result, DCM_DerivationImageSequence, m_DerivationImageItems, item, "0-n", "2", "DerivationImageMacro");
     return result;
 }
@@ -590,20 +590,20 @@ OFCondition DerivationImageItem::read(DcmItem& itemOfDerivationImageSequence, co
         itemOfDerivationImageSequence, m_DerivationDescription, "1" /* vm */, "3" /* type */, "DerivationImageMacro");
 
     /* Derivation Code Sequence */
-    DcmIODUtil::readSubSequence<OFVector<CodeSequenceMacro*>>(itemOfDerivationImageSequence,
-                                                              DCM_DerivationCodeSequence,
-                                                              m_DerivationCodeItems,
-                                                              "1" /* vm */,
-                                                              "3" /* type */,
-                                                              "DerivationImageMacro");
+    DcmIODUtil::readSubSequence<OFVector<CodeSequenceMacro*> >(itemOfDerivationImageSequence,
+                                                               DCM_DerivationCodeSequence,
+                                                               m_DerivationCodeItems,
+                                                               "1" /* vm */,
+                                                               "3" /* type */,
+                                                               "DerivationImageMacro");
 
     /* Source Image Sequence */
-    DcmIODUtil::readSubSequence<OFVector<SourceImageItem*>>(itemOfDerivationImageSequence,
-                                                            DCM_SourceImageSequence,
-                                                            m_SourceImageItems,
-                                                            "0-n" /* vm */,
-                                                            "2" /* type */,
-                                                            "DerivationImageMacro");
+    DcmIODUtil::readSubSequence<OFVector<SourceImageItem*> >(itemOfDerivationImageSequence,
+                                                             DCM_SourceImageSequence,
+                                                             m_SourceImageItems,
+                                                             "0-n" /* vm */,
+                                                             "2" /* type */,
+                                                             "DerivationImageMacro");
 
     return result;
 }
@@ -617,22 +617,22 @@ OFCondition DerivationImageItem::write(DcmItem& itemOfDerivationImageSequence)
         result, itemOfDerivationImageSequence, m_DerivationDescription, "1", "3", "DerivationImageMacro");
 
     /* Write Derivation Code Sequence */
-    DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*>>(result,
-                                                               DCM_DerivationCodeSequence,
-                                                               m_DerivationCodeItems,
-                                                               itemOfDerivationImageSequence,
-                                                               "1-n",
-                                                               "1",
-                                                               "DerivationImageMacro");
+    DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*> >(result,
+                                                                DCM_DerivationCodeSequence,
+                                                                m_DerivationCodeItems,
+                                                                itemOfDerivationImageSequence,
+                                                                "1-n",
+                                                                "1",
+                                                                "DerivationImageMacro");
 
     /* Write Source Image Sequence */
-    DcmIODUtil::writeSubSequence<OFVector<SourceImageItem*>>(result,
-                                                             DCM_SourceImageSequence,
-                                                             m_SourceImageItems,
-                                                             itemOfDerivationImageSequence,
-                                                             "0-n",
-                                                             "2",
-                                                             "DerivationImageMacro");
+    DcmIODUtil::writeSubSequence<OFVector<SourceImageItem*> >(result,
+                                                              DCM_SourceImageSequence,
+                                                              m_SourceImageItems,
+                                                              itemOfDerivationImageSequence,
+                                                              "0-n",
+                                                              "2",
+                                                              "DerivationImageMacro");
 
     return result;
 }

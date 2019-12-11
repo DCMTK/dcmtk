@@ -61,7 +61,10 @@ ContentItemMacro::ReferencedSOPSequenceItem::~ReferencedSOPSequenceItem()
     // nothing to do
 }
 
-OFString ContentItemMacro::ReferencedSOPSequenceItem::getName() const { return m_ComponentName; }
+OFString ContentItemMacro::ReferencedSOPSequenceItem::getName() const
+{
+    return m_ComponentName;
+}
 
 void ContentItemMacro::ReferencedSOPSequenceItem::resetRules()
 {
@@ -196,7 +199,10 @@ ContentItemMacro::~ContentItemMacro()
     DcmIODUtil::freeContainer(m_ReferencedSOPSequence);
 }
 
-OFString ContentItemMacro::getName() const { return m_ModuleName; }
+OFString ContentItemMacro::getName() const
+{
+    return m_ModuleName;
+}
 
 void ContentItemMacro::resetRules()
 {
@@ -334,7 +340,10 @@ CodeSequenceMacro* ContentItemMacro::getConceptNameCodeSequence()
     return m_ConceptNameCodeSequence.empty() ? OFnullptr : *m_ConceptNameCodeSequence.begin();
 }
 
-OFVector<CodeSequenceMacro*>& ContentItemMacro::getEntireConceptNameCodeSequence() { return m_ConceptNameCodeSequence; }
+OFVector<CodeSequenceMacro*>& ContentItemMacro::getEntireConceptNameCodeSequence()
+{
+    return m_ConceptNameCodeSequence;
+}
 
 OFCondition ContentItemMacro::getDateTime(OFString& value, const signed long pos) const
 {
@@ -371,7 +380,10 @@ CodeSequenceMacro* ContentItemMacro::getConceptCodeSequence()
     return m_ConceptCodeSequence.empty() ? OFnullptr : *m_ConceptCodeSequence.begin();
 }
 
-OFVector<CodeSequenceMacro*>& ContentItemMacro::getEntireConceptCodeSequence() { return m_ConceptCodeSequence; }
+OFVector<CodeSequenceMacro*>& ContentItemMacro::getEntireConceptCodeSequence()
+{
+    return m_ConceptCodeSequence;
+}
 
 OFCondition ContentItemMacro::getNumericValue(OFString& value, const signed long pos) const
 {

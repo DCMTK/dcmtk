@@ -449,18 +449,18 @@ OFCondition EctEnhancedCT::loadDataset(DcmDataset& dataset, EctEnhancedCT*& ct)
                     {
                         if (pr == 0)
                         {
-                            ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16>>);
+                            ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16> >);
                         }
                         else
                         {
-                            ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Sint16>>);
+                            ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Sint16> >);
                         }
                     }
                     else
                     {
                         DCMECT_WARN("Pixel Data element found but no Pixel Presentation set, assuming 16 bit unsigned "
                                     "integer data");
-                        ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16>>);
+                        ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16> >);
                     }
                 }
                 else
@@ -508,18 +508,18 @@ EctEnhancedCT::loadConcatenation(ConcatenationLoader& cl, const OFString& concat
         {
             if (pr == 0)
             {
-                ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16>>);
+                ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16> >);
             }
             else
             {
-                ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Sint16>>);
+                ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Sint16> >);
             }
         }
         else
         {
             DCMECT_WARN("No Pixel Presentation set, assuming 16 bit unsigned "
                         "integer data");
-            ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16>>);
+            ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16> >);
         }
         result
             = OFvisit<OFCondition>(ReadVisitor(dset, *ct, OFFalse /* do not read pixel data */), ct->getImagePixel());
@@ -584,19 +584,19 @@ OFCondition EctEnhancedCT::create(EctEnhancedCT*& ct,
     OFCondition status;
     if (!signedPixelData)
     {
-        ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16>>);
+        ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Uint16> >);
         if (ct)
             status
-                = SetImagePixelModuleVisitor(rows, columns)(*OFget<IODImagePixelModule<Uint16>>(&ct->getImagePixel()));
+                = SetImagePixelModuleVisitor(rows, columns)(*OFget<IODImagePixelModule<Uint16> >(&ct->getImagePixel()));
         else
             status = EC_MemoryExhausted;
     }
     else
     {
-        ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Sint16>>);
+        ct = new EctEnhancedCT(OFin_place<IODImagePixelModule<Sint16> >);
         if (ct)
             status
-                = SetImagePixelModuleVisitor(rows, columns)(*OFget<IODImagePixelModule<Sint16>>(&ct->getImagePixel()));
+                = SetImagePixelModuleVisitor(rows, columns)(*OFget<IODImagePixelModule<Sint16> >(&ct->getImagePixel()));
         else
             status = EC_MemoryExhausted;
     }

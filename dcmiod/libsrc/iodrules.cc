@@ -75,9 +75,15 @@ IODRule* IODRules::getByTag(const DcmTagKey& key) const
         return NULL;
 }
 
-IODRules::iterator IODRules::begin() { return m_Rules.begin(); }
+IODRules::iterator IODRules::begin()
+{
+    return m_Rules.begin();
+}
 
-IODRules::iterator IODRules::end() { return m_Rules.end(); }
+IODRules::iterator IODRules::end()
+{
+    return m_Rules.end();
+}
 
 void IODRules::clear()
 {
@@ -160,7 +166,10 @@ void IODRules::dump(STD_NAMESPACE ostream& out)
     }
 }
 
-IODRules::~IODRules() { clear(); }
+IODRules::~IODRules()
+{
+    clear();
+}
 
 IODRule::IODRule(const DcmTagKey& key,
                  const OFString& VM,
@@ -185,21 +194,45 @@ IODRule::~IODRule()
     // nothing to do
 }
 
-IODRule* IODRule::clone() { return new IODRule(m_Key, m_VM, m_Type, m_Module, m_IE, m_DefaultValue, m_PrivateCreator); }
+IODRule* IODRule::clone()
+{
+    return new IODRule(m_Key, m_VM, m_Type, m_Module, m_IE, m_DefaultValue, m_PrivateCreator);
+}
 
-OFString IODRule::getPrivateCreator() const { return m_PrivateCreator; }
+OFString IODRule::getPrivateCreator() const
+{
+    return m_PrivateCreator;
+}
 
-DcmTagKey IODRule::getTagKey() const { return m_Key; }
+DcmTagKey IODRule::getTagKey() const
+{
+    return m_Key;
+}
 
-OFString IODRule::getModule() const { return m_Module; }
+OFString IODRule::getModule() const
+{
+    return m_Module;
+}
 
-OFString IODRule::getType() const { return m_Type; }
+OFString IODRule::getType() const
+{
+    return m_Type;
+}
 
-OFString IODRule::getVM() const { return m_VM; }
+OFString IODRule::getVM() const
+{
+    return m_VM;
+}
 
-OFString IODRule::getDefaultValue() const { return m_DefaultValue; }
+OFString IODRule::getDefaultValue() const
+{
+    return m_DefaultValue;
+}
 
-DcmIODTypes::IOD_IE IODRule::getIE() const { return m_IE; }
+DcmIODTypes::IOD_IE IODRule::getIE() const
+{
+    return m_IE;
+}
 
 OFBool IODRule::setType(const OFString& val)
 {

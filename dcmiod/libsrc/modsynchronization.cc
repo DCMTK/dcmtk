@@ -58,9 +58,14 @@ void IODSynchronizationModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_NTPSourceAddress, "1", "3", getName(), DcmIODTypes::IE_FOR), OFTrue);
 }
 
-OFString IODSynchronizationModule::getName() const { return m_ModuleName; }
+OFString IODSynchronizationModule::getName() const
+{
+    return m_ModuleName;
+}
 
-IODSynchronizationModule::~IODSynchronizationModule() {}
+IODSynchronizationModule::~IODSynchronizationModule()
+{
+}
 
 OFCondition IODSynchronizationModule::getSynchronizationFrameOfReferenceUID(OFString& value,
                                                                             const signed long pos) const

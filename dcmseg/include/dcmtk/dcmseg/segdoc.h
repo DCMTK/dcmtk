@@ -47,7 +47,7 @@ class FGDerivationImage;
 
 /** Class representing an object of the "Segmentation SOP Class".
  */
-class DCMTK_DCMSEG_EXPORT DcmSegmentation : public DcmIODImage<IODImagePixelModule<Uint8>>
+class DCMTK_DCMSEG_EXPORT DcmSegmentation : public DcmIODImage<IODImagePixelModule<Uint8> >
 {
 
 public:

@@ -119,4 +119,3 @@ OFTEST(dcmseg_concat_binary)
         }
     }
 }
-

@@ -30,5 +30,5 @@ OFTEST(dcmiod_imagepixel)
 {
     DcmIODImage<IODImagePixelModule<Uint8>, IODFloatingPointImagePixelModule> image1;
     DcmIODImage<IODImagePixelModule<Uint8>, IODImagePixelModule<Uint8>, IODDoubleFloatingPointImagePixelModule> image2(
-        OFin_place<IODImagePixelModule<Uint8>>);
+        OFin_place<IODImagePixelModule<Uint8> >);
 }

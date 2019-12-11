@@ -371,7 +371,8 @@ static void addFrames(EctEnhancedCT* ct)
             {
                 data[i] = frameNo;
             }
-            OFCHECK(OFget<EctEnhancedCT::Frames<Uint16>>(&frames)->addFrame(data, NUM_PIXELS_PER_FRAME, groups).good());
+            OFCHECK(
+                OFget<EctEnhancedCT::Frames<Uint16> >(&frames)->addFrame(data, NUM_PIXELS_PER_FRAME, groups).good());
             delete[] data;
         }
     }
@@ -569,7 +570,7 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
     OFCHECK(perFrame == OFFalse);
 
     EctEnhancedCT::FramesType frames = concat->getFrames();
-    Uint16* frame                    = OFget<EctEnhancedCT::Frames<Uint16>>(&frames)->getFrame(0);
+    Uint16* frame                    = OFget<EctEnhancedCT::Frames<Uint16> >(&frames)->getFrame(0);
     OFCHECK(frame != OFnullptr);
     // Check that all pixels are set to their original source instances frame number (starting from 1)
     for (size_t pix = 0; pix < NUM_PIXELS_PER_FRAME; pix++)

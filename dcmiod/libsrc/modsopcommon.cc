@@ -57,7 +57,10 @@ void IODSOPCommonModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_TimezoneOffsetFromUTC, "1", "3", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
 
-OFString IODSOPCommonModule::getName() const { return m_ModuleName; }
+OFString IODSOPCommonModule::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODSOPCommonModule::inventMissing()
 {
@@ -68,7 +71,9 @@ void IODSOPCommonModule::inventMissing()
     IODComponent::inventMissing();
 }
 
-IODSOPCommonModule::~IODSOPCommonModule() {}
+IODSOPCommonModule::~IODSOPCommonModule()
+{
+}
 
 void IODSOPCommonModule::ensureInstanceUID(const OFBool correctInvalid)
 {

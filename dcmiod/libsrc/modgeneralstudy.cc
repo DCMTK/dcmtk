@@ -77,7 +77,10 @@ void IODGeneralStudyModule::resetRules()
         new IODRule(DCM_ReasonForPerformedProcedureCodeSequence, "1-n", "3", getName(), DcmIODTypes::IE_STUDY), OFTrue);
 }
 
-OFString IODGeneralStudyModule::getName() const { return m_ModuleName; }
+OFString IODGeneralStudyModule::getName() const
+{
+    return m_ModuleName;
+}
 
 void IODGeneralStudyModule::clearData()
 {
@@ -200,7 +203,10 @@ HL7HierarchicDesignatorMacro& IODGeneralStudyModule::getIssuerOfAccessionNumber(
     return m_IssuerOfAccessionNumberSequence;
 }
 
-OFVector<CodeSequenceMacro*>& IODGeneralStudyModule::getProcedureCodeSequence() { return m_ProcedureCodeSequence; }
+OFVector<CodeSequenceMacro*>& IODGeneralStudyModule::getProcedureCodeSequence()
+{
+    return m_ProcedureCodeSequence;
+}
 
 OFVector<CodeSequenceMacro*>& IODGeneralStudyModule::getReasonForPerformedProcedureCodeSequence()
 {

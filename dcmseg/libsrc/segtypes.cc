@@ -328,13 +328,13 @@ OFCondition SegmentedPropertyTypeCodeItem::write(DcmItem& item)
         result = checkModifiers();
         if (result.good())
         {
-            DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*>>(result,
-                                                                       DCM_SegmentedPropertyTypeModifierCodeSequence,
-                                                                       m_SegmentedPropertyTypeModifierCode,
-                                                                       item,
-                                                                       "1-n",
-                                                                       "3",
-                                                                       "SegmentDescriptionMacro");
+            DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*> >(result,
+                                                                        DCM_SegmentedPropertyTypeModifierCodeSequence,
+                                                                        m_SegmentedPropertyTypeModifierCode,
+                                                                        item,
+                                                                        "1-n",
+                                                                        "3",
+                                                                        "SegmentDescriptionMacro");
         }
     }
     return result;

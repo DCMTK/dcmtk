@@ -44,9 +44,15 @@ IODCommonInstanceReferenceModule::IODCommonInstanceReferenceModule()
     resetRules();
 }
 
-IODCommonInstanceReferenceModule::~IODCommonInstanceReferenceModule() { freeMemory(); }
+IODCommonInstanceReferenceModule::~IODCommonInstanceReferenceModule()
+{
+    freeMemory();
+}
 
-OFString IODCommonInstanceReferenceModule::getName() const { return m_ComponentName; }
+OFString IODCommonInstanceReferenceModule::getName() const
+{
+    return m_ComponentName;
+}
 
 OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>&
 IODCommonInstanceReferenceModule::getReferencedSeriesItems()
@@ -60,7 +66,10 @@ IODCommonInstanceReferenceModule::getStudiesContainingOtherReferences()
     return m_StudiesContainingOtherReferencedInstancesSequence;
 }
 
-void IODCommonInstanceReferenceModule::clearData() { freeMemory(); }
+void IODCommonInstanceReferenceModule::clearData()
+{
+    freeMemory();
+}
 
 OFCondition IODCommonInstanceReferenceModule::read(DcmItem& source, const OFBool clearOldData)
 {
@@ -81,13 +90,13 @@ OFCondition IODCommonInstanceReferenceModule::write(DcmItem& destination)
 {
     OFCondition result = EC_Normal;
 
-    DcmIODUtil::writeSubSequence<OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>>(
+    DcmIODUtil::writeSubSequence<OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*> >(
         result,
         DCM_ReferencedSeriesSequence,
         m_ReferenceSeriesItems,
         *m_Item,
         m_Rules->getByTag(DCM_ReferencedSeriesSequence));
-    DcmIODUtil::writeSubSequence<OFVector<StudiesOtherInstancesItem*>>(
+    DcmIODUtil::writeSubSequence<OFVector<StudiesOtherInstancesItem*> >(
         result,
         DCM_StudiesContainingOtherReferencedInstancesSequence,
         m_StudiesContainingOtherReferencedInstancesSequence,
@@ -267,9 +276,15 @@ IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::StudiesOtherInstanc
     resetRules();
 }
 
-IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::~StudiesOtherInstancesItem() { clearData(); }
+IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::~StudiesOtherInstancesItem()
+{
+    clearData();
+}
 
-OFString IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::getName() const { return m_ComponentName; }
+OFString IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::getName() const
+{
+    return m_ComponentName;
+}
 
 void IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::clearData()
 {

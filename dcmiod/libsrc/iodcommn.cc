@@ -76,7 +76,9 @@ DcmIODCommon::DcmIODCommon(const DcmIODCommon& rhs)
     m_Modules.push_back(&m_CommonInstanceReferenceModule);
 }
 
-DcmIODCommon::~DcmIODCommon() {}
+DcmIODCommon::~DcmIODCommon()
+{
+}
 
 void DcmIODCommon::clearData()
 {
@@ -89,25 +91,55 @@ void DcmIODCommon::clearData()
     //   }
 }
 
-IODPatientModule& DcmIODCommon::getPatient() { return m_Patient; }
+IODPatientModule& DcmIODCommon::getPatient()
+{
+    return m_Patient;
+}
 
-IODPatientStudyModule& DcmIODCommon::getPatientStudy() { return m_PatientStudy; }
+IODPatientStudyModule& DcmIODCommon::getPatientStudy()
+{
+    return m_PatientStudy;
+}
 
-IODGeneralStudyModule& DcmIODCommon::getStudy() { return m_Study; }
+IODGeneralStudyModule& DcmIODCommon::getStudy()
+{
+    return m_Study;
+}
 
-IODGeneralEquipmentModule& DcmIODCommon::getEquipment() { return m_Equipment; }
+IODGeneralEquipmentModule& DcmIODCommon::getEquipment()
+{
+    return m_Equipment;
+}
 
-IODGeneralSeriesModule& DcmIODCommon::getSeries() { return m_Series; }
+IODGeneralSeriesModule& DcmIODCommon::getSeries()
+{
+    return m_Series;
+}
 
-IODFoRModule& DcmIODCommon::getFrameOfReference() { return m_FrameOfReference; }
+IODFoRModule& DcmIODCommon::getFrameOfReference()
+{
+    return m_FrameOfReference;
+}
 
-IODSOPCommonModule& DcmIODCommon::getSOPCommon() { return m_SOPCommon; }
+IODSOPCommonModule& DcmIODCommon::getSOPCommon()
+{
+    return m_SOPCommon;
+}
 
-IODCommonInstanceReferenceModule& DcmIODCommon::getCommonInstanceReference() { return m_CommonInstanceReferenceModule; }
+IODCommonInstanceReferenceModule& DcmIODCommon::getCommonInstanceReference()
+{
+    return m_CommonInstanceReferenceModule;
+}
 
-OFshared_ptr<IODRules> DcmIODCommon::getRules() { return m_Rules; }
+OFshared_ptr<IODRules> DcmIODCommon::getRules()
+{
+    return m_Rules;
+}
 
-OFshared_ptr<DcmItem> DcmIODCommon::getData() { return m_Item; }
+OFshared_ptr<DcmItem> DcmIODCommon::getData()
+{
+    return m_Item;
+}
 
 OFCondition DcmIODCommon::read(DcmItem& dataset)
 {
