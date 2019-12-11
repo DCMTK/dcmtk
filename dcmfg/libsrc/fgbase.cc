@@ -103,10 +103,10 @@ OFCondition FGBase::getNumItemsFromFGSequence(DcmItem& source, const DcmTagKey& 
 
 OFCondition FGBase::createNewFGSequence(DcmItem& destination,
                                         const DcmTagKey& seqKey,
-                                        const long unsigned int numItems,
+                                        const unsigned long numItems,
                                         DcmItem*& firstItem)
 {
-    if (numItems > OFnumeric_limits<signed long>::max())
+    if (numItems > OFstatic_cast(unsigned long, OFnumeric_limits<signed long>::max()))
         return EC_IllegalParameter;
 
     firstItem          = NULL;
