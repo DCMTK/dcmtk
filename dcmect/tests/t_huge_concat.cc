@@ -430,7 +430,10 @@ static void writeAndCheckConcatenation(EctEnhancedCT* ct, OFList<OFFilename>& co
 static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcInstance, DcmDataset* concatInstance)
 {
     EctEnhancedCT* concat = NULL;
-    OFCHECK(EctEnhancedCT::loadDataset(*concatInstance, concat).good());
+    OFCondition result = EctEnhancedCT::loadDataset(*concatInstance, concat);
+    OFCHECK(result.good());
+    if (result.bad()) return;
+
     Uint32 numFrames;
     numFrames = concat->getNumberOfFrames();
     OFCHECK(numFrames == 1);
@@ -470,7 +473,9 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
     OFCHECK((srcShared == srcInstance->getFunctionalGroups().getShared()->end())
             && (cShared == concat->getFunctionalGroups().getShared()->end()));
     DcmSequenceOfItems* cPerFrame = NULL;
-    OFCHECK(concatInstance->findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, cPerFrame).good());
+    result = concatInstance->findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, cPerFrame);
+    OFCHECK(result.good());
+    if (result.bad()) return;
     OFCHECK(cPerFrame->card() == 1);
 
     OFBool perFrame = OFFalse;

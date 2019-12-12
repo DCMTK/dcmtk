@@ -145,7 +145,8 @@ void ConcatenationLoader::handleFile(const OFFilename& file, ConcatenationLoader
     }
     if (!err.empty())
     {
-        m_FailedFiles.push_back(OFmake_tuple(file, err, inst.m_sopInstanceUID));
+        OFtuple<OFFilename, OFString, OFString> t(file, err, inst.m_sopInstanceUID);
+        m_FailedFiles.push_back(t);
     }
 }
 
