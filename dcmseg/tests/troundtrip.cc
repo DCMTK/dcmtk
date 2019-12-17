@@ -372,12 +372,12 @@ static void loadAndCheckConcatenation(const OFList<OFFilename>& concats)
     OFCHECK(result.good());
     if (result.good())
     {
-        ConcatenationLoader::TScanResult concats = cl.getInfo();
-        OFCHECK(concats.size() == 1);
-        if (concats.size() != 1)
+        ConcatenationLoader::TScanResult results = cl.getInfo();
+        OFCHECK(results.size() == 1);
+        if (results.size() != 1)
             return;
         DcmSegmentation* seg = NULL;
-        result               = DcmSegmentation::loadConcatenation(cl, concats.begin()->first, seg);
+        result               = DcmSegmentation::loadConcatenation(cl, results.begin()->first, seg);
 
         OFCHECK(result.good());
         if (result.good())
