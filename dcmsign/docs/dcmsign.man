@@ -337,9 +337,9 @@ On the command line, attribute tags are specified as
 \endverbatim
 
 When attribute tags are read from file with the \e --tag-file option, a plain
-text file of max. 64 kbyte is expected.  Tags within the file are either
-symbolic names from the data dictionary or have the format (gggg,eeee) (with
-braces).  Tags are separated by one or more whitespace characters.
+text file is expected.  Tags within the file are either symbolic names from
+the data dictionary or have the format (gggg,eeee) (with braces).
+Tags are separated by one or more whitespace characters.
 
 The currently selected digital signature profile may specify additional
 attribute tags required to be included in the signature, which will

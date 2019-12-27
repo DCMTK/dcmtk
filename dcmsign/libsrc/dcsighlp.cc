@@ -124,14 +124,10 @@ char *DcmSignatureHelper::readTextFile(const char *filename)
     fseek(file, 0, SEEK_END);
     long numBytes = ftell(file);
     fseek(file, 0, SEEK_SET);
-    if (numBytes > 65536)
-    {
-      DCMSIGN_WARN("text file too large, ignoring everything beyond 64K.");
-      numBytes = 65536;
-    }
-    result = new char[numBytes];
+    result = new char[numBytes+1];
     if (result)
     {
+      result[numBytes] = '\0'; // ensure zero termination of text field
       if (OFstatic_cast(size_t, numBytes) != fread(result, 1, OFstatic_cast(size_t, numBytes), file))
       {
         DCMSIGN_WARN("read error in file " << filename);
@@ -792,6 +788,9 @@ int DcmSignatureHelper::do_insert_ts(DcmItem *dataset, SiTimeStampFS *timeStamp)
 void DcmSignatureHelper::printSignatureDetails(DcmSignature& sig, DcmStack& stack, int count)
 {
   OFString aString;
+  OFString codeValue;
+  OFString codeMeaning;
+  OFString codingSchemeDesignator;
   Uint16 macID = 0;
   DcmAttributeTag at(DCM_DataElementsSigned);
   DcmTagKey tagkey;
@@ -835,11 +834,16 @@ void DcmSignatureHelper::printSignatureDetails(DcmSignature& sig, DcmStack& stac
         }
       }
     }
-
     if (EC_Normal == sig.getCurrentSignatureDateTime(aString))
       DCMSIGN_INFO("  Signature date/time         : " << aString);
     else
       DCMSIGN_INFO("  Signature date/time         : (unknown)");
+
+    if (sig.getCurrentSignaturePurpose(codeValue, codeMeaning, codingSchemeDesignator).good())
+      DCMSIGN_INFO("  Signature purpose           : " << codeMeaning << " (" << codeValue << ", " << codingSchemeDesignator << ")" );
+    else
+      DCMSIGN_INFO("  Signature purpose           : (not specified)");
+
     DCMSIGN_INFO("  Certificate of signer       : ");
     SiCertificate *cert = sig.getCurrentCertificate();
     if ((cert == NULL)||(cert->getKeyType()==EKT_none))

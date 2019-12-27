@@ -34,11 +34,12 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
+class DcmAttributeTag;
 class DcmDateTime;
 class DcmItem;
-class DcmStack;
 class DcmSequenceOfItems;
-class DcmAttributeTag;
+class DcmStack;
+class DcmTagKey;
 class SiPrivateKey;
 class SiCertificate;
 class SiSecurityProfile;
@@ -187,6 +188,17 @@ public:
    */
   OFCondition getCurrentDataElementsSigned(DcmAttributeTag& desig);
 
+  /** returns the signature purpose code of the current signature if present.
+   *  Current signature must be selected with selectSignature().
+   *  If a valid signature is selected but the signature does not contain
+   *  a valid SignaturePurposeCodeSequence, this method returns an error code.
+   *  @param codeValue signature purpose code value returned in this parameter upon success
+   *  @param codeMeaning signature purpose code meaning returned in this parameter upon success
+   *  @param codingSchemeDesignator signature purpose coding scheme designator returned in this parameter upon success
+   *  @return status code
+   */
+  OFCondition getCurrentSignaturePurpose(OFString& codeValue, OFString& codeMeaning, OFString& codingSchemeDesignator);
+
   /** verifies whether the currently selected signature within the
    *  currently attached dataset matches the requirements of the
    *  given signature profile.
@@ -275,6 +287,23 @@ private:
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition getMACIDnumber(DcmItem &item, Uint16& macid);
+
+  /** checks if all tags from tagList are present in tagListOut,
+   *  which is the list of attribute tags actually included in a signature,
+   *  including tags added due to a signature profile, and without tags
+   *  that were absent in the dataset.
+   *  @param tagList list of attribute tags that should be present in the signature, may be NULL
+   *  @param tagListOut list of attribute tags actually present in the signature, must not be NULL
+   *  @return EC_Normal if check succeeds, an error code otherwise
+   */
+  static OFCondition checkListOfSignedTags(const DcmAttributeTag *tagList, const DcmAttributeTag *tagListOut);
+
+  /** checks if the given tag key is present in tagList
+   *  @param tag tag key
+   *  @param tagList list of tag keys
+   *  @return OFTrue of tag is present in tagList, OFFalse otherwise
+   */
+  static OFBool inTagList(const DcmTagKey &tag, const DcmAttributeTag& tagList);
 
   /** returns the current date and time as a DICOM DT string.
    *  @param str date/time returned in this string.

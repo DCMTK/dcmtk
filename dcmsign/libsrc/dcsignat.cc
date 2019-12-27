@@ -463,6 +463,12 @@ OFCondition DcmSignature::createSignature(
     } else result = EC_MemoryExhausted;
   }
 
+  // check whether all tags from tagList are really present in the signature
+  if (result.good())
+  {
+    result = checkListOfSignedTags(tagList, tagListOut);
+  }
+
   // sign MAC
   if (result.good())
   {
@@ -914,6 +920,27 @@ OFCondition DcmSignature::getCurrentMacXferSyntaxName(OFString& str)
   return result;
 }
 
+
+OFCondition DcmSignature::getCurrentSignaturePurpose(OFString& codeValue, OFString& codeMeaning, OFString& codingSchemeDesignator)
+{
+  codeValue.clear();
+  codeMeaning.clear();
+  codingSchemeDesignator.clear();
+
+  if ((NULL == selectedSignatureItem)||(NULL == selectedMacParametersItem)) return EC_IllegalCall;
+
+  DcmItem *item = NULL;
+  OFCondition result = selectedSignatureItem->findAndGetSequenceItem(DCM_DigitalSignaturePurposeCodeSequence, item, 0);
+  if (result.good())
+  {
+    result = item->findAndGetOFString(DCM_CodeValue, codeValue);
+    if (result.good()) result = item->findAndGetOFString(DCM_CodeValue, codeValue);
+    if (result.good()) result = item->findAndGetOFString(DCM_CodeMeaning, codeMeaning);
+    if (result.good()) result = item->findAndGetOFString(DCM_CodingSchemeDesignator, codingSchemeDesignator);
+  }
+  return result;
+}
+
 OFCondition DcmSignature::getCurrentMacName(OFString& str)
 {
   str.clear();
@@ -1095,6 +1122,42 @@ OFCondition DcmSignature::verifySignatureProfile(SiSecurityProfile &sprof)
 
   return result;
 }
+
+OFCondition DcmSignature::checkListOfSignedTags(const DcmAttributeTag *tagList, const DcmAttributeTag *tagListOut)
+{
+  if (tagListOut == NULL) return EC_IllegalCall;
+
+  OFCondition result = EC_Normal;
+  if (tagList)
+  {
+    DcmAttributeTag tagListNonConst(*tagList); // we need a non-const copy of tagList
+    DcmTagKey key;
+    unsigned long vm = tagListNonConst.getVM();
+    for (unsigned long i=0; i < vm; i++)
+    {
+      if ((tagListNonConst.getTagVal(key, i)).good() && (! inTagList(key, *tagListOut)))
+      {
+        result = EC_TagNotFound;
+        DCMSIGN_ERROR("attribute " << key << " should be signed but is not present in the dataset.");
+      }
+    }
+  }
+  return result;
+}
+
+OFBool DcmSignature::inTagList(const DcmTagKey &tag, const DcmAttributeTag& tagList)
+{
+  DcmTagKey key;
+  DcmAttributeTag tagListNonConst(tagList); // we need a non-const copy of tagList
+  unsigned long vm = tagListNonConst.getVM();
+  for (unsigned long i=0; i < vm; i++)
+  {
+    if ((tagListNonConst.getTagVal(key, i)).good() && (key == tag)) return OFTrue;
+  }
+  return OFFalse;
+}
+
+
 
 #else /* WITH_OPENSSL */
 
