@@ -44,7 +44,21 @@ BEGIN_EXTERN_C
 #include <openssl/err.h>
 #include <openssl/rand.h>
 #include <openssl/bn.h>
+#include <openssl/x509.h>
 END_EXTERN_C
+
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+#define X509_get0_notBefore(x) X509_get_notBefore(x)
+#define X509_get0_notAfter(x) X509_get_notAfter(x)
+#define TS_STATUS_INFO_get0_status(x) (x)->status
+#define TS_STATUS_INFO_get0_text(x) (x)->text
+#define TS_STATUS_INFO_get0_failure_info(x) (x)->failure_info
+#define TS_VERIFY_CTS_set_certs(x,y) ((x)->certs = (y))
+#define TS_VERIFY_CTX_set_data(x,y) ((x)->data = (y))
+#define TS_VERIFY_CTX_set_flags(x,y) ((x)->flags = (y))
+#define TS_VERIFY_CTX_set_store(x,y) ((x)->store = (y))
+#define ASN1_STRING_get0_data(x) ASN1_STRING_data((asn1_string_st*)x)
+#endif
 
 /// maximum length of the integer nonce, in bytes
 #define NONCE_LENGTH 8
@@ -604,9 +618,14 @@ OFCondition SiTimeStamp::check_ts_response(
   SiMAC *mac = NULL;
   if (result.good())
   {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+    ASN1_OBJECT *mac_oid = NULL;
+    void *ppval = NULL;
+#else
     const ASN1_OBJECT *mac_oid = NULL;
-    int pptype = 0;
     const void *ppval = NULL;
+#endif
+    int pptype = 0;
     X509_ALGOR_get0(&mac_oid, &pptype, &ppval, ts_info_algo);
     if (mac_oid == NULL)
     {

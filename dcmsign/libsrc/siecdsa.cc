@@ -32,6 +32,7 @@ BEGIN_EXTERN_C
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/ec.h>
+#include <openssl/ecdsa.h>
 END_EXTERN_C
 
 SiECDSA::SiECDSA(EC_KEY *key)

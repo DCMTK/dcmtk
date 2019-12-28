@@ -41,10 +41,7 @@
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-static OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
-
 #define APPLICATION_ABSTRACT "Sign and Verify DICOM Files"
-
 
 #ifdef WITH_OPENSSL
 
@@ -422,7 +419,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (certVerifier.addTrustedCertificateFile(current, opt_keyFileFormat).bad())
         {
-          OFLOG_WARN(dcmsignLogger, "unable to load certificate file '" << current << "', ignoring");
+          DCMSIGN_WARN("unable to load certificate file '" << current << "', ignoring");
         }
       } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
     }
@@ -435,7 +432,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (certVerifier.addUntrustedCertificateFile(current, opt_keyFileFormat).bad())
         {
-          OFLOG_WARN(dcmsignLogger, "unable to load certificate file '" << current << "', ignoring");
+          DCMSIGN_WARN("unable to load certificate file '" << current << "', ignoring");
         }
       } while (cmd.findOption("--add-ucert-file", 0, OFCommandLine::FOM_Next));
     }
@@ -448,7 +445,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (certVerifier.addTrustedCertificateDir(current, opt_keyFileFormat).bad())
         {
-          OFLOG_WARN(dcmsignLogger, "unable to load certificates from directory '" << current << "', ignoring");
+          DCMSIGN_WARN("unable to load certificates from directory '" << current << "', ignoring");
         }
       } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
     }
@@ -461,7 +458,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (certVerifier.addCertificateRevocationList(current, opt_keyFileFormat).bad())
         {
-            OFLOG_WARN(dcmsignLogger, "unable to load CRL file '" << current << "', ignoring");
+            DCMSIGN_WARN("unable to load CRL file '" << current << "', ignoring");
         }
       } while (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_Next));
     }
@@ -580,7 +577,7 @@ int main(int argc, char *argv[])
       if (opt_sigPurpose == SiSignaturePurpose::ESP_none)
       {
           // should never happen
-          OFLOG_WARN(dcmsignLogger, "unknown digital signature purpose code, ignoring.");
+          DCMSIGN_WARN("unknown digital signature purpose code, ignoring.");
       }
     }
     cmd.endOptionBlock();
@@ -592,7 +589,7 @@ int main(int argc, char *argv[])
       result = DcmSignatureHelper::parseTextFile(opt_tagFile, *opt_tagList);
       if (result > 0)
       {
-        OFLOG_FATAL(dcmsignLogger, "Error while reading tag file '" << opt_tagFile << "', giving up.");
+        DCMSIGN_FATAL("Error while reading tag file '" << opt_tagFile << "', giving up.");
         goto cleanup;
       }
     }
@@ -605,7 +602,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (! DcmSignatureHelper::addTag(current, *opt_tagList))
         {
-          OFLOG_FATAL(dcmsignLogger, "unknown attribute tag '" << current << "'");
+          DCMSIGN_FATAL("unknown attribute tag '" << current << "'");
           result = EXITCODE_COMMANDLINE_SYNTAX_ERROR;
           goto cleanup;
         }
@@ -726,32 +723,32 @@ int main(int argc, char *argv[])
       opt_dumpFile = fopen(fileName, "wb");
       if (opt_dumpFile == NULL)
       {
-        OFLOG_FATAL(dcmsignLogger, "unable to create dump file '" << fileName << "'");
+        DCMSIGN_FATAL("unable to create dump file '" << fileName << "'");
         result = EXITCODE_CANNOT_WRITE_SUPPORT_FILE;
         goto cleanup;
       }
     }
   }
   /* print resource identifier */
-  OFLOG_DEBUG(dcmsignLogger, rcsid << OFendl);
+  DCMSIGN_DEBUG(rcsid << OFendl);
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
   {
-    OFLOG_WARN(dcmsignLogger, "no data dictionary loaded, "
+    DCMSIGN_WARN("no data dictionary loaded, "
       << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
   // open inputfile
   if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
   {
-    OFLOG_FATAL(dcmsignLogger, "invalid filename: <empty string>");
+    DCMSIGN_FATAL("invalid filename: <empty string>");
     result = EXITCODE_NO_INPUT_FILES;
     goto cleanup;
   }
-  OFLOG_INFO(dcmsignLogger, "open input file " << opt_ifname);
+  DCMSIGN_INFO("open input file " << opt_ifname);
   sicond = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
   if (sicond.bad())
   {
-    OFLOG_FATAL(dcmsignLogger, sicond.text() << ": reading file: " << opt_ifname);
+    DCMSIGN_FATAL(sicond.text() << ": reading file: " << opt_ifname);
     result = EXITCODE_CANNOT_READ_INPUT_FILE;
     goto cleanup;
   }
@@ -761,7 +758,7 @@ int main(int argc, char *argv[])
     sicond = cert.loadCertificate(opt_certfile, opt_keyFileFormat);
     if (sicond != EC_Normal)
     {
-      OFLOG_FATAL(dcmsignLogger, sicond.text() << ": while loading certificate file '" << opt_certfile << "'");
+      DCMSIGN_FATAL(sicond.text() << ": while loading certificate file '" << opt_certfile << "'");
       result = EXITCODE_CANNOT_READ_INPUT_FILE;
       goto cleanup;
     }
@@ -772,7 +769,7 @@ int main(int argc, char *argv[])
     sicond = key.loadPrivateKey(opt_keyfile, opt_keyFileFormat);
     if (sicond != EC_Normal)
     {
-      OFLOG_FATAL(dcmsignLogger, sicond.text() << ": while loading private key file '" << opt_keyfile << "'");
+      DCMSIGN_FATAL(sicond.text() << ": while loading private key file '" << opt_keyfile << "'");
       result = EXITCODE_CANNOT_READ_INPUT_FILE;
       goto cleanup;
     }
@@ -790,32 +787,32 @@ int main(int argc, char *argv[])
   switch (opt_operation)
   {
     case DSO_verify:
-      OFLOG_INFO(dcmsignLogger, "verifying all signatures.");
+      DCMSIGN_INFO("verifying all signatures.");
       result = DcmSignatureHelper::do_verify(dataset, certVerifier, opt_verificationPolicy, opt_timestampPolicy);
       if (result != 0) goto cleanup;
       break;
     case DSO_sign:
-      OFLOG_INFO(dcmsignLogger, "create signature in main object.");
+      DCMSIGN_INFO("create signature in main object.");
       result = DcmSignatureHelper::do_sign(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_signatureXfer, opt_dumpFile, opt_sigPurpose, opt_timeStamp);
       if (result != 0) goto cleanup;
       break;
     case DSO_signItem:
-      OFLOG_INFO(dcmsignLogger, "create signature in sequence item.");
+      DCMSIGN_INFO("create signature in sequence item.");
       result = DcmSignatureHelper::do_sign_item(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_location, opt_signatureXfer, opt_dumpFile, opt_sigPurpose, opt_timeStamp);
       if (result != 0) goto cleanup;
       break;
     case DSO_insertTimestamp:
-      OFLOG_INFO(dcmsignLogger, "inserting certified timestamp.");
+      DCMSIGN_INFO("inserting certified timestamp.");
       result = DcmSignatureHelper::do_insert_ts(dataset, opt_timeStamp);
       if (result != 0) goto cleanup;
       break;
     case DSO_remove:
-      OFLOG_INFO(dcmsignLogger, "removing signature from sequence item.");
+      DCMSIGN_INFO("removing signature from sequence item.");
       result = DcmSignatureHelper::do_remove(dataset, opt_location);
       if (result != 0) goto cleanup;
       break;
     case DSO_removeAll:
-      OFLOG_INFO(dcmsignLogger, "removing all signatures.");
+      DCMSIGN_INFO("removing all signatures.");
       result = DcmSignatureHelper::do_remove_all(dataset);
       if (result != 0) goto cleanup;
       break;
@@ -824,25 +821,25 @@ int main(int argc, char *argv[])
   {
     if (0 != fclose(opt_dumpFile))
     {
-      OFLOG_FATAL(dcmsignLogger, "Error while closing dump file, content may be incomplete.");
+      DCMSIGN_FATAL("Error while closing dump file, content may be incomplete.");
     }
     opt_dumpFile = NULL;
   }
   if (opt_ofname)
   {
-    OFLOG_INFO(dcmsignLogger, "create output file " << opt_ofname);
+    DCMSIGN_INFO("create output file " << opt_ofname);
     if (opt_oxfer == EXS_Unknown) opt_oxfer = dataset->getOriginalXfer();
     DcmXfer opt_oxferSyn(opt_oxfer);
     if (dataset->chooseRepresentation(opt_oxfer, NULL).bad() || (! dataset->canWriteXfer(opt_oxfer)))
     {
-      OFLOG_FATAL(dcmsignLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
+      DCMSIGN_FATAL("No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
       result = EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
       goto cleanup;
     }
     sicond = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
     if (sicond.bad())
     {
-      OFLOG_FATAL(dcmsignLogger, sicond.text() << ": writing file: " <<  opt_ofname);
+      DCMSIGN_FATAL(sicond.text() << ": writing file: " <<  opt_ofname);
       result = EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
       goto cleanup;
     }

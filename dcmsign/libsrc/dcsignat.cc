@@ -37,7 +37,7 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
-
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmsign/sialgo.h"
 #include "dcmtk/dcmsign/sicert.h"
 #include "dcmtk/dcmsign/simac.h"
@@ -814,7 +814,7 @@ OFCondition DcmSignature::verifyCurrent()
         // (we should adjust the datetime for the timezone)
         OFString asn1dt;
         char buf[40];
-        snprintf(buf, 40, "%04u%02u%02u%02u%02u%02uZ",
+        OFStandard::snprintf(buf, 40, "%04u%02u%02u%02u%02u%02uZ",
           odt.getDate().getYear(), odt.getDate().getMonth(), odt.getDate().getDay(),
           odt.getTime().getHour(), odt.getTime().getMinute(), odt.getTime().getIntSecond());
         asn1dt = buf;

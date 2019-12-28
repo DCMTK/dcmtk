@@ -41,7 +41,9 @@ BEGIN_EXTERN_C
 #include <openssl/err.h>
 END_EXTERN_C
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+#define X509_get0_notBefore(x) X509_get_notBefore(x)
+#define X509_get0_notAfter(x) X509_get_notAfter(x)
 #define EVP_PKEY_id(key) key->type
 #endif
 
@@ -441,7 +443,11 @@ const char *SiCertificate::getCertCurveName()
     if (pkey && EVP_PKEY_type(EVP_PKEY_id(pkey)) == EVP_PKEY_EC)
     {
       // we have an elliptic curve. Access EC key.
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+      EC_KEY *eckey = EVP_PKEY_get1_EC_KEY(pkey);
+#else
       const EC_KEY *eckey = EVP_PKEY_get0_EC_KEY(pkey);
+#endif
       if (eckey)
       {
         // access EC group within EC key
@@ -456,6 +462,9 @@ const char *SiCertificate::getCertCurveName()
           }
           else result = "unnamed curve";
         }
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+        EC_KEY_free(eckey);
+#endif
       }
       EVP_PKEY_free(pkey);
     }

@@ -31,6 +31,7 @@
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/oflog/oflog.h"
 #include "dcmtk/dcmsign/sidefine.h"
+#include "dcmtk/dcmsign/sitypes.h"
 
 /*
 ** Logging
@@ -56,6 +57,22 @@ extern DCMTK_DCMSIGN_EXPORT OFLogger dcmsignLogger;
 #define SI_DEFTERMS_SHA384    "SHA384"
 #define SI_DEFTERMS_SHA512    "SHA512"
 
+// exit code constants in addition to those defined in "dcmtk/ofstd/ofexit.h"
+#define EXITCODE_CANNOT_ACCESS_SIGNATURE         80
+#define EXITCODE_CANNOT_ACCESS_TS                81
+#define EXITCODE_CANNOT_INSERT_TS                82
+#define EXITCODE_CANNOT_READ_TAG_FILE            83
+#define EXITCODE_CANNOT_READ_TSQ_FILE            84
+#define EXITCODE_CANNOT_READ_TSR_FILE            85
+#define EXITCODE_CANNOT_READ_UID_FILE            86
+#define EXITCODE_NO_SIGNATURES_PRESENT           87
+#define EXITCODE_SIGNATURE_CREATION_FAILED       88
+#define EXITCODE_SIGNATURE_REMOVAL_FAILED        89
+#define EXITCODE_SIGNATURE_UID_NOT_FOUND         90
+#define EXITCODE_SIGNATURE_VERIFICATION_FAILED   91
+#define EXITCODE_SIGNATURE_VERIFICATION_POLICY   92
+#define EXITCODE_SYNTAX_ERROR_IN_TAG_FILE        93
+#define EXITCODE_TS_CONSISTENCY_CHECK_FAILED     94
 
 // include this file in doxygen documentation
 
