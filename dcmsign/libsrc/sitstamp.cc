@@ -230,7 +230,7 @@ OFCondition SiTimeStamp::create_ts_query(
       // copy message digest into message imprint
       if (result.good())
       {
-        if (!TS_MSG_IMPRINT_set_msg(msg_imprint, md.buf_, md.len_)) result = SI_EC_OpenSSLFailure;
+        if (!TS_MSG_IMPRINT_set_msg(msg_imprint, md.buf_, OFstatic_cast(int, md.len_))) result = SI_EC_OpenSSLFailure;
       }
 
       // copy message imprint into time stamp query
@@ -275,7 +275,7 @@ OFCondition SiTimeStamp::create_ts_query(
     }
 
     // nonce (pseudo-random integer used as protection against replay attacks)
-    if (result.good() && (tsq_use_nonce_ > 0))
+    if (result.good() && tsq_use_nonce_)
     {
       // create buffer for random data
       unsigned char nonce_buf[NONCE_LENGTH];
@@ -1043,7 +1043,7 @@ OFBool SiTimeStamp::get_tsinfo_ordering() const
   OFBool result = OFFalse; // the default
   if (tsinfo_)
   {
-    result = TS_TST_INFO_get_ordering(tsinfo_);
+    result = TS_TST_INFO_get_ordering(tsinfo_) ? OFTrue : OFFalse;
   }
   return result;
 }
