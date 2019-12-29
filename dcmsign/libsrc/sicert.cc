@@ -33,6 +33,7 @@
 #include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/ofstd/ofdatime.h"
 
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
@@ -46,6 +47,7 @@ END_EXTERN_C
 #define X509_get0_notAfter(x) X509_get_notAfter(x)
 #define EVP_PKEY_id(key) key->type
 #endif
+
 
 SiCertificate::SiCertificate()
 : x509(NULL)
@@ -332,21 +334,17 @@ OFBool SiCertificate::isCertExpiredAt(OFString& date)
   if (x509)
   {
     const ASN1_TIME *certexpiry = X509_get0_notAfter(x509);
-    if (certexpiry)
+    OFDateTime dt_certexpiry;
+    if (certexpiry && convertASN1Time(certexpiry, dt_certexpiry).good())
     {
       ASN1_TIME *sigdate = ASN1_TIME_new(); // ASN1_TIME is a typedef for ASN1_STRING
       if (sigdate)
       {
-        if (ASN1_TIME_set_string(sigdate, date.c_str()))
+        OFDateTime dt_sigdate;
+        if (ASN1_TIME_set_string(sigdate, date.c_str()) && convertASN1Time(sigdate, dt_sigdate).good())
         {
-          int pday = 0;
-          int psec = 0;
-          if (ASN1_TIME_diff(&pday, &psec, sigdate, certexpiry))
-          {
-            // if the given date is before certificate expiry, then pday or psec will be positive,
-            // which means that the certificate is not expired at the given date.
-            if ((pday > 0)||(psec > 0)) result = OFFalse;
-          }
+          // check if signature date is before certificate expiry
+          if (dt_sigdate < dt_certexpiry) result = OFFalse;
         }
         ASN1_TIME_free(sigdate);
       }
@@ -361,21 +359,17 @@ OFBool SiCertificate::isCertNotYetValidAt(OFString& date)
   if (x509)
   {
     const ASN1_TIME *certstart = X509_get0_notBefore(x509);
-    if (certstart)
+    OFDateTime dt_certstart;
+    if (certstart && convertASN1Time(certstart, dt_certstart).good())
     {
       ASN1_TIME *sigdate = ASN1_TIME_new(); // ASN1_TIME is a typedef for ASN1_STRING
       if (sigdate)
       {
-        if (ASN1_TIME_set_string(sigdate, date.c_str()))
+        OFDateTime dt_sigdate;
+        if (ASN1_TIME_set_string(sigdate, date.c_str()) && convertASN1Time(sigdate, dt_sigdate).good())
         {
-          int pday = 0;
-          int psec = 0;
-          if (ASN1_TIME_diff(&pday, &psec, sigdate, certstart))
-          {
-            // if the given date is after the start of certificate validity, then pday or psec will be negative,
-            // which means that the certificate is past the start of validity at the given date.
-            if ((pday < 0)||(psec < 0)) result = OFFalse;
-          }
+          // check if signature date is after certificate validity start
+          if (dt_sigdate > dt_certstart) result = OFFalse;
         }
         ASN1_TIME_free(sigdate);
       }
@@ -515,6 +509,140 @@ void SiCertificate::checkForWeakKey()
         break;
     }
   }
+}
+
+OFCondition SiCertificate::convertGeneralizedTime(const ASN1_GENERALIZEDTIME *d, OFDateTime& dt)
+{
+    // This method is derived from OpenSSL's asn1_generalizedtime_to_tm(),
+    // which was introduced in OpenSSL 1.0.2. Since we still support OpenSSL 1.0.1,
+    // we cannot use that function.
+
+    static const int minval[9] = { 0, 0, 1, 1, 0, 0, 0, 0, 0 };
+    static const int maxval[9] = { 99, 99, 12, 31, 23, 59, 59, 12, 59 };
+
+    unsigned int dt_year = 0;
+    unsigned int dt_month = 0;
+    unsigned int dt_day = 0;
+    unsigned int dt_hour = 0;
+    unsigned int dt_minute = 0;
+    double dt_second = 0.0;
+    double dt_timeZone = 0.0;
+    char *a;
+    int n, i, l, o;
+
+    if (d == NULL) return EC_IllegalCall;
+    if (d->type != V_ASN1_GENERALIZEDTIME) return EC_IllegalCall;
+    l = d->length;
+    a = (char *)d->data;
+    o = 0;
+    /*
+     * GENERALIZEDTIME is similar to UTCTIME except the year is represented
+     * as YYYY. This stuff treats everything as a two digit field so make
+     * first two fields 00 to 99
+     */
+    if (l < 13) return EC_IllegalCall;
+    for (i = 0; i < 7; i++) {
+        if ((i == 6) && ((a[o] == 'Z') || (a[o] == '+') || (a[o] == '-'))) {
+            i++;
+            dt_second = 0;
+            break;
+        }
+        if ((a[o] < '0') || (a[o] > '9')) return EC_IllegalCall;
+        n = a[o] - '0';
+        if (++o > l) return EC_IllegalCall;
+
+        if ((a[o] < '0') || (a[o] > '9')) return EC_IllegalCall;
+        n = (n * 10) + a[o] - '0';
+        if (++o > l) return EC_IllegalCall;
+
+        if ((n < minval[i]) || (n > maxval[i])) return EC_IllegalCall;
+        switch (i)
+       {
+          case 0:
+            dt_year = n * 100;
+            break;
+          case 1:
+            dt_year += n;
+            break;
+          case 2:
+            dt_month = n;
+            break;
+          case 3:
+            dt_day = n;
+            break;
+          case 4:
+            dt_hour = n;
+            break;
+          case 5:
+            dt_minute = n;
+            break;
+          case 6:
+            dt_second = n;
+            break;
+        }
+    }
+    /*
+     * Optional fractional seconds: decimal point followed by one or more
+     * digits.
+     */
+    if (a[o] == '.') {
+        if (++o > l) return EC_IllegalCall;
+        i = o;
+        while ((a[o] >= '0') && (a[o] <= '9') && (o <= l)) o++;
+        /* Must have at least one digit after decimal point */
+        if (i == o) return EC_IllegalCall;
+    }
+
+    if (a[o] == 'Z')
+        o++;
+    else if ((a[o] == '+') || (a[o] == '-')) {
+        int offsign = a[o] == '-' ? 1 : -1, offset = 0;
+        o++;
+        if (o + 4 > l)
+            return EC_IllegalCall;
+        for (i = 7; i < 9; i++) {
+            if ((a[o] < '0') || (a[o] > '9')) return EC_IllegalCall;
+            n = a[o] - '0';
+            o++;
+            if ((a[o] < '0') || (a[o] > '9')) return EC_IllegalCall;
+            n = (n * 10) + a[o] - '0';
+            if ((n < minval[i]) || (n > maxval[i])) return EC_IllegalCall;
+            if (i == 7)
+                offset = n * 3600;
+            else if (i == 8)
+                offset += n * 60;
+            o++;
+        }
+        if (offset) dt_timeZone = offset / 3600.0 * offsign;
+    } else if (a[o]) {
+        /* Missing time zone information. */
+        return EC_IllegalCall;
+    }
+    if (! dt.setDateTime(dt_year, dt_month, dt_day, dt_hour, dt_minute, dt_second, dt_timeZone)) return EC_IllegalCall;
+
+    return ((o == l) ? EC_Normal : EC_IllegalCall);
+}
+
+
+OFCondition SiCertificate::convertASN1Time(const ASN1_TIME *d, OFDateTime& dt)
+{
+  if (d)
+  {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+    // Before OpenSSL 1.1.0, the first parameter of ASN1_TIME_to_generalizedtime()
+    // was not declared const, as it should be
+    ASN1_GENERALIZEDTIME *gm = ASN1_TIME_to_generalizedtime(OFconst_cast(ASN1_TIME *, d), NULL);
+#else
+    ASN1_GENERALIZEDTIME *gm = ASN1_TIME_to_generalizedtime(d, NULL);
+#endif
+    if (gm)
+    {
+      OFCondition result = convertGeneralizedTime(gm, dt);
+      ASN1_GENERALIZEDTIME_free(gm);
+      return result;
+    }
+  }
+  return EC_IllegalCall;
 }
 
 

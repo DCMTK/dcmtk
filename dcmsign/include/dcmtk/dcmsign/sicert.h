@@ -32,8 +32,12 @@
 
 class DcmItem;
 class SiAlgorithm;
+class OFDateTime;
 struct x509_st;
+struct asn1_string_st;
 typedef struct x509_st X509;
+typedef struct asn1_string_st ASN1_STRING;
+typedef struct asn1_string_st ASN1_GENERALIZEDTIME;
 
 /** a class representing X.509 public key certificates.
  *  @remark this class is only available if DCMTK is compiled with
@@ -178,6 +182,22 @@ public:
    *  @return OFTrue if certificate is not yet valid, OFFalse otherwise
    */
   OFBool isCertNotYetValidNow() const;
+
+  /** this helper function converts a datetime in ASN1_GENERALIZEDTIME
+   *  format to OFDateTime.
+   *  @param d datetime in ASN1_GENERALIZEDTIME format
+   *  @param dt dt datetime stored in this parameter upon success
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  static OFCondition convertGeneralizedTime(const ASN1_GENERALIZEDTIME *d, OFDateTime& dt);
+
+  /** this helper function converts a datetime in ASN1_TIME format
+   *  (which is in fact an alias for ASN1_STRING) to OFDateTime.
+   *  @param d datetime in ASN1_TIME format
+   *  @param dt dt datetime stored in this parameter upon success
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  static OFCondition convertASN1Time(const ASN1_STRING *d, OFDateTime& dt);
 
 private:
 

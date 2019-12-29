@@ -38,6 +38,7 @@
 #include "dcmtk/dcmsign/sicert.h"
 #include "dcmtk/dcmsign/sicertvf.h"
 #include "dcmtk/dcmsign/dcsignat.h"
+#include "dcmtk/ofstd/ofdatime.h"
 
 BEGIN_EXTERN_C
 #include <openssl/ts.h>
@@ -1148,44 +1149,37 @@ OFCondition SiTimeStamp::verifyTSSignature(SiCertificateVerifier& cv)
     const ASN1_TIME *notBefore = X509_get0_notBefore(signerCert);
     const ASN1_TIME *notAfter = X509_get0_notAfter(signerCert);
     const ASN1_GENERALIZEDTIME *gtime = TS_TST_INFO_get_time(tsinfo_);
-    int pday = 0;
-    int psec = 0;
-    if (ASN1_TIME_diff(&pday, &psec, notBefore, gtime))
+
+    OFDateTime dt_notBefore;
+    OFDateTime dt_notAfter;
+    OFDateTime dt_gtime;
+
+    if ((notBefore == NULL)||(notAfter == NULL)||(gtime == NULL)||
+      SiCertificate::convertASN1Time(notBefore, dt_notBefore).bad() ||
+      SiCertificate::convertASN1Time(notAfter, dt_notAfter).bad() ||
+      SiCertificate::convertGeneralizedTime(gtime, dt_gtime).bad())
     {
-      if (pday < 0 || psec < 0)
+      errorCode_ = -1;
+      errorString_ = "comparison of timestamp date/time with TSA certificate notBefore/notAfter attribute failed, value possibly malformed.";
+      DCMSIGN_ERROR(errorString_);
+      result = SI_EC_TimestampSignatureVerificationFailed;
+    }
+    else
+    {
+      if (dt_gtime < dt_notBefore)
       {
         errorCode_ = -1;
         errorString_ = "timestamp created before start of TSA certificate validity.";
         DCMSIGN_ERROR(errorString_);
         result = SI_EC_TimestampSignatureVerificationFailed;
       }
-    }
-    else
-    {
-      errorCode_ = -1;
-      errorString_ = "comparison of timestamp date/time with TSA certificate notBefore attribute failed, value possibly malformed.";
-      DCMSIGN_ERROR(errorString_);
-      result = SI_EC_TimestampSignatureVerificationFailed;
-    }
-
-    pday = 0;
-    psec = 0;
-    if (ASN1_TIME_diff(&pday, &psec, gtime, notAfter))
-    {
-      if (pday < 0 || psec < 0)
+      else if (dt_gtime > dt_notAfter)
       {
         errorCode_ = -1;
         errorString_ = "timestamp created after expiry of TSA certificate.";
         DCMSIGN_ERROR(errorString_);
         result = SI_EC_TimestampSignatureVerificationFailed;
       }
-    }
-    else
-    {
-      errorCode_ = -1;
-      errorString_ = "comparison of timestamp date/time with TSA certificate notAfter attribute failed, value possibly malformed.";
-      DCMSIGN_ERROR(errorString_);
-      result = SI_EC_TimestampSignatureVerificationFailed;
     }
   }
 
@@ -1265,7 +1259,7 @@ OFCondition SiTimeStamp::verifyTSToken(
   if (ctx)
   {
     // these are the checks we want to perform
-    TS_VERIFY_CTX_set_flags(ctx, TS_VFY_VERSION | TS_VFY_SIGNER | TS_VFY_DATA);
+    TS_VERIFY_CTX_set_flags(ctx, TS_VFY_VERSION | TS_VFY_SIGNER | TS_VFY_DATA | TS_VFY_SIGNATURE);
 
     // get the signature from the DICOM dataset
     const Uint8 *signature = NULL;
@@ -1288,7 +1282,12 @@ OFCondition SiTimeStamp::verifyTSToken(
 
     if (result.good())
     {
+
+#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
+      BIO *bio = BIO_new_mem_buf(OFconst_cast(Uint8 *, signature), sigLength);
+#else
       BIO *bio = BIO_new_mem_buf(signature, sigLength);
+#endif
       if (bio)
       {
         // set the digital signature as the raw data against which
@@ -1335,44 +1334,37 @@ OFCondition SiTimeStamp::verifyTSToken(
     const ASN1_TIME *notBefore = X509_get0_notBefore(rawcert);
     const ASN1_TIME *notAfter = X509_get0_notAfter(rawcert);
     const ASN1_GENERALIZEDTIME *gtime = TS_TST_INFO_get_time(tsinfo_);
-    int pday = 0;
-    int psec = 0;
-    if (ASN1_TIME_diff(&pday, &psec, notBefore, gtime))
+
+    OFDateTime dt_notBefore;
+    OFDateTime dt_notAfter;
+    OFDateTime dt_gtime;
+
+    if ((notBefore == NULL)||(notAfter == NULL)||(gtime == NULL)||
+      SiCertificate::convertASN1Time(notBefore, dt_notBefore).bad() ||
+      SiCertificate::convertASN1Time(notAfter, dt_notAfter).bad() ||
+      SiCertificate::convertGeneralizedTime(gtime, dt_gtime).bad())
     {
-      if (pday < 0 || psec < 0)
+      errorCode_ = -1;
+      errorString_ = "comparison of timestamp date/time with signer certificate notBefore/notAfter attribute failed, value possibly malformed.";
+      DCMSIGN_ERROR(errorString_);
+      result = SI_EC_TimestampSignatureVerificationFailed;
+    }
+    else
+    {
+      if (dt_gtime < dt_notBefore)
       {
         errorCode_ = -1;
         errorString_ = "timestamp created before start of signer certificate validity.";
         DCMSIGN_ERROR(errorString_);
         result = SI_EC_TimestampSignatureVerificationFailed;
       }
-    }
-    else
-    {
-      errorCode_ = -1;
-      errorString_ = "comparison of timestamp date/time with signer certificate notBefore attribute failed, value possibly malformed.";
-      DCMSIGN_ERROR(errorString_);
-      result = SI_EC_TimestampSignatureVerificationFailed;
-    }
-
-    pday = 0;
-    psec = 0;
-    if (ASN1_TIME_diff(&pday, &psec, gtime, notAfter))
-    {
-      if (pday < 0 || psec < 0)
+      else if (dt_gtime > dt_notAfter)
       {
         errorCode_ = -1;
         errorString_ = "timestamp created after expiry of signer certificate.";
         DCMSIGN_ERROR(errorString_);
         result = SI_EC_TimestampSignatureVerificationFailed;
       }
-    }
-    else
-    {
-      errorCode_ = -1;
-      errorString_ = "comparison of timestamp date/time with signer certificate notAfter attribute failed, value possibly malformed.";
-      DCMSIGN_ERROR(errorString_);
-      result = SI_EC_TimestampSignatureVerificationFailed;
     }
   }
 
