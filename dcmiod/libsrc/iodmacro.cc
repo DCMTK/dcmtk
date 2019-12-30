@@ -99,11 +99,11 @@ OFString CodeSequenceMacro::getName() const
 
 void CodeSequenceMacro::resetRules()
 {
-    m_Rules->addRule(new IODRule(DCM_CodeValue, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED),
+    m_Rules->addRule(new IODRule(DCM_CodeValue, "1", "1C", getName(), DcmIODTypes::IE_UNDEFINED),
                      OFTrue /*overwrite old rule*/);
-    m_Rules->addRule(new IODRule(DCM_URNCodeValue, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED),
+    m_Rules->addRule(new IODRule(DCM_URNCodeValue, "1", "1C", getName(), DcmIODTypes::IE_UNDEFINED),
                      OFTrue /*overwrite old rule*/);
-    m_Rules->addRule(new IODRule(DCM_LongCodeValue, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED),
+    m_Rules->addRule(new IODRule(DCM_LongCodeValue, "1", "1C", getName(), DcmIODTypes::IE_UNDEFINED),
                      OFTrue /*overwrite old rule*/);
     m_Rules->addRule(new IODRule(DCM_CodingSchemeDesignator, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED),
                      OFTrue /*overwrite old rule*/);
