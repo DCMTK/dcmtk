@@ -61,13 +61,7 @@ CodeSequenceMacro::CodeSequenceMacro(const OFString& codeValue,
 {
     // reset element rules
     resetRules();
-    setCodeValue(codeValue);
-    setCodeMeaning(codeMeaning);
-    setCodingSchemeDesignator(codingSchemeDesignator);
-    if (!codingSchemeVersion.empty())
-    {
-        setCodingSchemeVersion(codingSchemeVersion);
-    }
+    set(codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion);
 }
 
 OFCondition CodeSequenceMacro::check(const bool quiet)
@@ -95,13 +89,7 @@ CodeSequenceMacro::CodeSequenceMacro(OFshared_ptr<DcmItem> item,
 {
     // reset element rules
     resetRules();
-    setCodeValue(codeValue);
-    setCodeMeaning(codeMeaning);
-    setCodingSchemeDesignator(codingSchemeDesignator);
-    if (!codingSchemeVersion.empty())
-    {
-        setCodingSchemeVersion(codingSchemeVersion);
-    }
+    set(codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion);
 }
 
 OFString CodeSequenceMacro::getName() const
@@ -113,6 +101,10 @@ void CodeSequenceMacro::resetRules()
 {
     m_Rules->addRule(new IODRule(DCM_CodeValue, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED),
                      OFTrue /*overwrite old rule*/);
+    m_Rules->addRule(new IODRule(DCM_URNCodeValue, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED),
+                     OFTrue /*overwrite old rule*/);
+    m_Rules->addRule(new IODRule(DCM_LongCodeValue, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED),
+                     OFTrue /*overwrite old rule*/);
     m_Rules->addRule(new IODRule(DCM_CodingSchemeDesignator, "1", "1", getName(), DcmIODTypes::IE_UNDEFINED),
                      OFTrue /*overwrite old rule*/);
     m_Rules->addRule(new IODRule(DCM_CodingSchemeVersion, "1", "1C", getName(), DcmIODTypes::IE_UNDEFINED),
@@ -123,9 +115,29 @@ void CodeSequenceMacro::resetRules()
 
 // -- get dicom attributes --
 
-OFCondition CodeSequenceMacro::getCodeValue(OFString& value, const signed long pos)
+OFCondition CodeSequenceMacro::getCodeValue(OFString& value, const signed long pos, const OFBool autoTag)
 {
-    return DcmIODUtil::getStringValueFromItem(DCM_CodeValue, *m_Item, value, pos);
+    OFString c;
+    OFCondition cond = DcmIODUtil::getStringValueFromItem(DCM_CodeValue, *m_Item, value, pos);
+    if (cond.good() || ((cond == EC_TagNotFound) && !autoTag))
+        return cond;
+
+    cond = DcmIODUtil::getStringValueFromItem(DCM_URNCodeValue, *m_Item, value, pos);
+    if (cond != EC_TagNotFound)
+        return cond;
+
+    cond = DcmIODUtil::getStringValueFromItem(DCM_LongCodeValue, *m_Item, value, pos);
+    return cond;
+}
+
+OFCondition CodeSequenceMacro::getURNCodeValue(OFString& value, const signed long pos)
+{
+    return DcmIODUtil::getStringValueFromItem(DCM_URNCodeValue, *m_Item, value, pos);
+}
+
+OFCondition CodeSequenceMacro::getLongCodeValue(OFString& value, const signed long pos)
+{
+    return DcmIODUtil::getStringValueFromItem(DCM_LongCodeValue, *m_Item, value, pos);
 }
 
 OFCondition CodeSequenceMacro::getCodingSchemeDesignator(OFString& value, const signed long pos)
@@ -168,11 +180,59 @@ OFBool CodeSequenceMacro::empty()
 
 // -- set dicom attributes --
 
-OFCondition CodeSequenceMacro::setCodeValue(const OFString& value, const OFBool checkValue)
+OFCondition CodeSequenceMacro::setCodeValue(const OFString& value, const OFBool checkValue, const OFBool autoTag)
 {
-    OFCondition result = (checkValue) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+    OFCondition result;
+
+    // Identify the code value tag to be used
+    if (autoTag)
+    {
+        if ((value.find("://") != OFString_npos) || (value.compare(0, 4, "urn:") == 0))
+        {
+            return setURNCodeValue(value, checkValue);
+        }
+        else if (value.length() > 16) // Long Code Value
+        {
+            return setLongCodeValue(value, checkValue);
+        }
+    }
+    // Classic Code Value
+    result = (checkValue) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+    if (result.bad())
+        return result;
+    // TODO: Should check length in characters (not bytes), since SH permits usage of
+    // non-ASCII characters (i.e. as defined in 0008,0015).
+    if (value.length() > 16)
+        return EC_MaximumLengthViolated;
+    result = m_Item->putAndInsertOFStringArray(DCM_CodeValue, value);
     if (result.good())
-        result = m_Item->putAndInsertOFStringArray(DCM_CodeValue, value);
+    {
+        deleteUnusedCodeValues(DCM_CodeValue);
+    }
+    return result;
+}
+
+OFCondition CodeSequenceMacro::setURNCodeValue(const OFString& value, const bool checkValue)
+{
+    OFCondition result = (checkValue) ? DcmUniversalResourceIdentifierOrLocator::checkStringValue(value) : EC_Normal;
+    if (result.good())
+        result = m_Item->putAndInsertOFStringArray(DCM_URNCodeValue, value);
+    if (result.good())
+    {
+        deleteUnusedCodeValues(DCM_URNCodeValue);
+    }
+    return result;
+}
+
+OFCondition CodeSequenceMacro::setLongCodeValue(const OFString& value, const bool checkValue)
+{
+    OFCondition result = (checkValue) ? DcmUnlimitedCharacters::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = m_Item->putAndInsertOFStringArray(DCM_LongCodeValue, value);
+    if (result.good())
+    {
+        deleteUnusedCodeValues(DCM_LongCodeValue);
+    }
     return result;
 }
 
@@ -186,7 +246,7 @@ OFCondition CodeSequenceMacro::setCodingSchemeDesignator(const OFString& value, 
 
 OFCondition CodeSequenceMacro::setCodingSchemeVersion(const OFString& value, const OFBool checkValue)
 {
-    OFCondition result = (checkValue) ? DcmShortString::checkStringValue(value, "1C") : EC_Normal;
+    OFCondition result = (checkValue) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = m_Item->putAndInsertOFStringArray(DCM_CodingSchemeVersion, value);
     return result;
@@ -204,18 +264,11 @@ OFCondition CodeSequenceMacro::set(const OFString& value,
                                    const OFString& scheme,
                                    const OFString& meaning,
                                    const OFString& schemeVersion,
-                                   const OFBool checkValue)
+                                   const OFBool checkValue,
+                                   const OFBool autoTag)
 {
-    if (checkValue)
-    {
-        if (value.empty() || scheme.empty() || meaning.empty())
-        {
-            DCMIOD_ERROR("Could not set code since Code Value, Coding Scheme Designator and Code Meaning must have "
-                         "non-empty values");
-            return IOD_EC_InvalidElementValue;
-        }
-    }
-    OFCondition result = setCodeValue(value, checkValue);
+    OFCondition result;
+    result = setCodeValue(value, checkValue, autoTag);
     if (result.good())
         result = setCodingSchemeDesignator(scheme, checkValue);
     if (result.good())
@@ -223,6 +276,16 @@ OFCondition CodeSequenceMacro::set(const OFString& value,
     if (result.good() && !schemeVersion.empty())
         result = setCodingSchemeVersion(schemeVersion, checkValue);
     return result;
+}
+
+void CodeSequenceMacro::deleteUnusedCodeValues(const DcmTagKey& keepTag)
+{
+    if (keepTag != DCM_CodeValue)
+        m_Item->findAndDeleteElement(DCM_CodeValue);
+    if (keepTag != DCM_URNCodeValue)
+        m_Item->findAndDeleteElement(DCM_URNCodeValue);
+    if (keepTag != DCM_LongCodeValue)
+        m_Item->findAndDeleteElement(DCM_LongCodeValue);
 }
 
 // ---------------------- CodeWithModifiers----------------------

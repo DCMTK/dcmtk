@@ -111,12 +111,34 @@ public:
      */
     virtual OFCondition check(const OFBool quiet = OFFalse);
 
-    /** Get Code Value
+    /** Get Code Value, URL Code Value or Long Code Value
+     *  @param  value Reference to variable in which the value should be stored
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @param  autoTag If OFTrue, this method will consider tags
+     *                  Code Value (0008,0100)
+     *                  URN Code Code Value (0008,0120) and
+     *                  Long Code Value (0008,0119) and
+     *                  in this order and will return once it finds that tag,
+     *                  even if the related value is empty.
+     *                  If OFFalse, getCodeValue() only returns the value
+     *                  found in Code Value (0008,0100).
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getCodeValue(OFString& value, const signed long pos = 0, const OFBool autoTag = OFTrue);
+
+    /** Get URN Code Value
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getCodeValue(OFString& value, const signed long pos = 0);
+    virtual OFCondition getURNCodeValue(OFString& value, const signed long pos = 0);
+
+    /** Get Long Code Value
+     *  @param  value Reference to variable in which the value should be stored
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getLongCodeValue(OFString& value, const signed long pos = 0);
 
     /** Get Coding Scheme Designator
      *  @param  value Reference to variable in which the value should be stored
@@ -149,9 +171,28 @@ public:
     /** Set Code Value
      *  @param  value The value to set
      *  @param  checkValue If OFTrue, VM and VR of value are checked
+     *  @param  autoTag If OFTrue, it is determined automatically if
+     *          tag Code Value, URN Code Value or Long Code Value is used.
+     *          If OFFalse, the classic Code Value is used.
+     *          Default is OFTrue.
      *  @return EC_Normal if setting was successful, error otherwise
      */
-    virtual OFCondition setCodeValue(const OFString& value, const OFBool checkValue = OFTrue);
+    virtual OFCondition
+    setCodeValue(const OFString& value, const OFBool checkValue = OFTrue, const OFBool autoTag = OFTrue);
+
+    /** Set URN Code Value
+     *  @param  value The value to set
+     *  @param  checkValue If OFTrue, VM and VR of value are checked
+     *  @return EC_Normal if setting was successful, error otherwise
+     */
+    virtual OFCondition setURNCodeValue(const OFString& value, const OFBool checkValue = OFTrue);
+
+    /** Set Long Code Value
+     *  @param  value The value to set
+     *  @param  checkValue If OFTrue, VM and VR of value are checked
+     *  @return EC_Normal if setting was successful, error otherwise
+     */
+    virtual OFCondition setLongCodeValue(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Coding Scheme Designator
      *  @param  value The value to set
@@ -181,15 +222,31 @@ public:
      *  @param  schemeVersion The Coding Scheme Designator version to set
      *  (optional)
      *  @param  checkValue If OFTrue, VM and VR of values is checked
+     *  @param  autoTag If OFTrue, it is determined automatically if
+     *          tag Code Value, URN Code Value or Long Code Value is used.
+     *          If OFFalse, the classic Code Value is used.
+     *          Default is OFTrue.
      *  @return EC_Normal if setting was successful, error otherwise
      */
     virtual OFCondition set(const OFString& value,
                             const OFString& scheme,
                             const OFString& meaning,
                             const OFString& schemeVersion = "",
-                            const OFBool checkValue       = OFTrue);
+                            const OFBool checkValue       = OFTrue,
+                            const OFBool autoTag          = OFTrue);
 
+    /** Returns string representation reflecting the coded value.
+     *  Mostly useful for debugging purposes.
+     *  @return String representing the coded value
+     */
     virtual OFString toString();
+
+protected:
+    /** Deletes all out of the the following list of tags:
+     *  Code Value, Long Code Value and URN Code Value
+     *  @param  keepTag The tag to be keep
+     */
+    void deleteUnusedCodeValues(const DcmTagKey& keepTag);
 };
 
 /** Code with Modifier(s). Represents the combination of a Code Sequence Macro

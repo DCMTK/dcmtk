@@ -22,6 +22,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftest.h"
 
+OFTEST_REGISTER(dcmiod_codes);
 OFTEST_REGISTER(dcmiod_tcielabutil);
 OFTEST_REGISTER(dcmiod_imagepixel);
 OFTEST_MAIN("dcmiod")
