@@ -208,12 +208,14 @@ IODImagePixelBase::DataType IODDoubleFloatingPointImagePixelModule::getDataType(
     return IODImagePixelBase::DATA_TYPE_DOUBLE;
 }
 
-OFCondition IODDoubleFloatingPointImagePixelModule::getDoubleFloatPixelPaddingValue(Float64& value, const unsigned long pos)
+OFCondition IODDoubleFloatingPointImagePixelModule::getDoubleFloatPixelPaddingValue(Float64& value,
+                                                                                    const unsigned long pos)
 {
     return m_Item->findAndGetFloat64(DCM_FloatPixelPaddingValue, value, pos);
 }
 
-OFCondition IODDoubleFloatingPointImagePixelModule::getDoubleFloatPixelPaddingRangeLimit(Float64& value, const unsigned long pos)
+OFCondition IODDoubleFloatingPointImagePixelModule::getDoubleFloatPixelPaddingRangeLimit(Float64& value,
+                                                                                         const unsigned long pos)
 {
     return m_Item->findAndGetFloat64(DCM_DoubleFloatPixelPaddingRangeLimit, value, pos);
 }
