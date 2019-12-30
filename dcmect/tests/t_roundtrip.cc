@@ -469,7 +469,7 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
 {
     EctEnhancedCT* concat = NULL;
     OFCHECK(EctEnhancedCT::loadDataset(*concatInstance, concat).good());
-    Uint32 numFrames;
+    size_t numFrames;
     numFrames = concat->getNumberOfFrames();
     OFCHECK(numFrames == 1);
     IODMultiFrameFGModule::ConcatenationInfo& ci = concat->getConcatenationInfo();

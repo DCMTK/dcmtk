@@ -434,7 +434,7 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
     OFCHECK(result.good());
     if (result.bad()) return;
 
-    Uint32 numFrames;
+    size_t numFrames;
     numFrames = concat->getNumberOfFrames();
     OFCHECK(numFrames == 1);
     IODMultiFrameFGModule::ConcatenationInfo& ci = concat->getConcatenationInfo();

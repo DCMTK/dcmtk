@@ -36,10 +36,10 @@
 #include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/oftest.h"
 
-static const Uint16 NUM_ROWS             = 10;
-static const Uint16 NUM_COLS             = 10;
-static const Uint16 NUM_FRAMES           = 10;
-static const size_t NUM_PIXELS_PER_FRAME = NUM_COLS * NUM_ROWS;
+static const Uint8 NUM_ROWS             = 10;
+static const Uint8 NUM_COLS             = 10;
+static const Uint8 NUM_FRAMES           = 10;
+static const Uint8 NUM_PIXELS_PER_FRAME = NUM_COLS * NUM_ROWS;
 
 static OFString EXPECTED_DUMP;
 
@@ -204,7 +204,7 @@ static void addFrames(DcmSegmentation* seg)
             groups.push_back(fg);
 
             Uint8* data = new Uint8[NUM_PIXELS_PER_FRAME];
-            for (size_t i = 0; i < NUM_PIXELS_PER_FRAME; ++i)
+            for (Uint8 i = 0; i < NUM_PIXELS_PER_FRAME; ++i)
             {
                 data[i] = i;
             }
@@ -285,7 +285,7 @@ static void checkConcatenationInstance(size_t numInstance, DcmSegmentation* srcI
 {
     DcmSegmentation* concat = NULL;
     OFCHECK(DcmSegmentation::loadDataset(*concatInstance, concat).good());
-    Uint32 numFrames;
+    size_t numFrames;
     numFrames = concat->getNumberOfFrames();
     OFCHECK(numFrames == 1);
     size_t numSegs = concat->getNumberOfSegments();
@@ -357,7 +357,7 @@ static void checkConcatenationInstance(size_t numInstance, DcmSegmentation* srcI
     const DcmIODTypes::Frame* frame = concat->getFrame(0);
     OFCHECK(frame != OFnullptr);
     OFCHECK(frame->pixData != OFnullptr);
-    OFCHECK(frame->length == NUM_PIXELS_PER_FRAME);
+    OFCHECK(OFstatic_cast(Uint8, frame->length) == NUM_PIXELS_PER_FRAME);
     for (size_t pix = 0; pix < frame->length; pix++)
     {
         OFCHECK(frame->pixData[pix] == pix);
