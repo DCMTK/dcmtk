@@ -165,7 +165,11 @@ SiAlgorithm *SiPrivateKey::createAlgorithmForPrivateKey()
         return new SiDSA(EVP_PKEY_get1_DSA(pkey));
         /* break; */
       case EVP_PKEY_EC:
+#ifdef OPENSSL_NO_EC
+        return new SiECDSA(NULL);
+#else
         return new SiECDSA(EVP_PKEY_get1_EC_KEY(pkey));
+#endif
         /* break; */
       case EVP_PKEY_DH:
       default:

@@ -31,8 +31,10 @@
 BEGIN_EXTERN_C
 #include <openssl/err.h>
 #include <openssl/evp.h>
+#ifndef OPENSSL_NO_EC
 #include <openssl/ec.h>
 #include <openssl/ecdsa.h>
+#endif
 END_EXTERN_C
 
 SiECDSA::SiECDSA(EC_KEY *key)
@@ -40,6 +42,7 @@ SiECDSA::SiECDSA(EC_KEY *key)
 {
 }
 
+#ifndef OPENSSL_NO_EC
 
 SiECDSA::~SiECDSA()
 {
@@ -139,6 +142,39 @@ unsigned long SiECDSA::getSize() const
   return ECDSA_size(ecdsa);
 }
 
+#else /* OPENSSL_NO_EC */
+
+SiECDSA::~SiECDSA()
+{
+}
+
+OFCondition SiECDSA::sign(
+    const unsigned char * /* inputHash */,
+    unsigned long /* inputHashSize */,
+    E_MACType /* inputHashAlgorithm */,
+    unsigned char * /* outputSignature */,
+    unsigned long& /* outputSignatureSize */)
+{
+    return SI_EC_EllipticCurveNotSupported;
+}
+
+OFCondition SiECDSA::verify(
+    const unsigned char * /* inputHash */,
+    unsigned long /* inputHashSize */,
+    E_MACType /* inputHashAlgorithm */,
+    const unsigned char * /* inputSignature */,
+    unsigned long /* inputSignatureSize */,
+    OFBool& /* verified */)
+{
+    return SI_EC_EllipticCurveNotSupported;
+}
+
+unsigned long SiECDSA::getSize() const
+{
+  return 0;
+}
+
+#endif /* OPENSSL_NO_EC */
 
 E_KeyType SiECDSA::keyType() const
 {

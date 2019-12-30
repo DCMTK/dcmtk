@@ -113,7 +113,11 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
           result = new SiDSA(EVP_PKEY_get1_DSA(pkey));
           break;
         case EVP_PKEY_EC:
+#ifdef OPENSSL_NO_EC
+          result = new SiECDSA(NULL);
+#else
           result = new SiECDSA(EVP_PKEY_get1_EC_KEY(pkey));
+#endif
           break;
         case EVP_PKEY_DH:
         default:
@@ -431,6 +435,7 @@ long SiCertificate::getCertKeyBits()
 const char *SiCertificate::getCertCurveName()
 {
   const char *result = NULL;
+#ifndef OPENSSL_NO_EC
   if (x509)
   {
     EVP_PKEY *pkey = X509_extract_key(x509);
@@ -463,6 +468,7 @@ const char *SiCertificate::getCertCurveName()
       EVP_PKEY_free(pkey);
     }
   }
+#endif
   return result;
 }
 

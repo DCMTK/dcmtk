@@ -305,5 +305,9 @@ extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_DatasetEmpty;
 /// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
 extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_RequiredAttributeMissing;
 
+/// cannot handle ECDSA signatures because OpenSSL was compiled without elliptic curve support
+/// @remark this constant is only available if DCMTK is compiled with OpenSSL support enabled.
+extern DCMTK_DCMSIGN_EXPORT const OFConditionConst SI_EC_EllipticCurveNotSupported;
+
 #endif
 #endif

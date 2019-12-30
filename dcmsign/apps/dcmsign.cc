@@ -68,6 +68,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 BEGIN_EXTERN_C
 #include <openssl/x509.h>
+#include <openssl/evp.h> /* for OPENSSL_NO_EC */
 END_EXTERN_C
 
 // exit code constants in addition to those defined in "dcmtk/ofstd/ofexit.h"
@@ -272,7 +273,11 @@ int main(int argc, char *argv[])
             COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
+#ifdef OPENSSL_NO_EC
+            COUT << "- " << OPENSSL_VERSION_TEXT << ", without ECDSA support" << OFendl;
+#else
+            COUT << "- " << OPENSSL_VERSION_TEXT << ", with ECDSA support" << OFendl;
+#endif
 #endif
             return EXITCODE_NO_ERROR;
         }

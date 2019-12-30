@@ -60,6 +60,7 @@ makeOFConditionConst(SI_EC_AttributeNotSignable,                       OFM_dcmsi
 makeOFConditionConst(SI_EC_VerificationFailed_AttributeNotSignable,    OFM_dcmsign, 32, OF_error, "signature verification failed: signature contains attribute that is not signable");
 makeOFConditionConst(SI_EC_DatasetEmpty,                               OFM_dcmsign, 33, OF_error, "selected dataset or item is empty, nothing to sign");
 makeOFConditionConst(SI_EC_RequiredAttributeMissing,                   OFM_dcmsign, 34, OF_error, "cannot create signature for current signature profile: required attributes missing");
+makeOFConditionConst(SI_EC_EllipticCurveNotSupported,                  OFM_dcmsign, 35, OF_error, "cannot handle ECDSA signatures because OpenSSL was compiled without elliptic curve support");
 
 OFLogger dcmsignLogger = OFLog::getLogger("dcmtk.dcmsign");
 
