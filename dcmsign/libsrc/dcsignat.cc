@@ -907,7 +907,7 @@ OFCondition DcmSignature::getCurrentMacXferSyntaxName(OFString& str)
   if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
   {
     char *uid = NULL;
-    if ((((DcmElement *)(stack.top()))->getString(uid)).good())
+    if ((((DcmElement *)(stack.top()))->getString(uid)).good() && uid)
     {
       DcmXfer xf(uid);
       if (xf.getXfer() == EXS_Unknown) str=uid; else
