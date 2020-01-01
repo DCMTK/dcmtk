@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2017, OFFIS e.V.
+ *  Copyright (C) 2008-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -552,6 +552,21 @@ public:
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition handleEVENTREPORTRequest(DcmDataset*& reqDataset, Uint16& eventTypeID, const int timeout = 0);
+
+    /** Function handling a single C-GET, C-FIND or C-MOVE Response, used by
+     *  handleCGETResponse(), handleFINDResponse() and handleMOVEResponse().
+     *  It prints a message to the logger (warning, error or debug level related
+     *  to the status code provided) and sets waitForNextResponse if the status
+     *  provided is a DIMSE pending status.
+     *  @param dimseStatus         [in]  The DIMSE status code to handle
+     *  @param message             [in]  The message to be printed
+     *  @param waitForNextResponse [out] Defines whether it is decided to wait for further
+     *                                   Responses with the C-GET/FIND/MOVE session.
+     *  @return If no processing errors occurs this method will return EC_Normal,
+     *          otherwise an error code.
+     */
+    virtual OFCondition
+    handleSessionResponseDefault(const Uint16 dimseStatus, const OFString& message, OFBool& waitForNextResponse);
 
     /** Closes the association created by this SCU. Also resets the current association.
      *  @deprecated The use of this method is deprecated. Please use releaseAssociation()

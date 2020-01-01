@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2017, OFFIS e.V.
+ *  Copyright (C) 2012-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,7 @@ OFTEST_REGISTER(dcmnet_scp_no_stop_wo_request_noblock);
 OFTEST_REGISTER(dcmnet_scp_no_stop_wo_request_block);
 OFTEST_REGISTER(dcmnet_scp_no_term_notify_without_association);
 OFTEST_REGISTER(dcmnet_scp_role_selection);
+OFTEST_REGISTER(dcmnet_scu_session_handler);
 #endif // WITH_THREADS
 
 OFTEST_MAIN("dcmnet")

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2018, OFFIS e.V.
+ *  Copyright (C) 2008-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1033,57 +1033,14 @@ OFCondition DcmSCU::handleMOVEResponse(const T_ASC_PresentationContextID /* pres
                                        RetrieveResponse* response,
                                        OFBool& waitForNextResponse)
 {
-    // Do some basic validity checks
-    if (!isConnected())
-        return DIMSE_ILLEGALASSOCIATION;
+    waitForNextResponse = OFFalse;
     if (response == NULL)
         return DIMSE_NULLKEY;
 
     DCMNET_DEBUG("Handling C-MOVE Response");
-    switch (response->m_status)
-    {
-        case STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass:
-            waitForNextResponse = OFFalse;
-            DCMNET_ERROR("Identifier does not match SOP class in C-MOVE response");
-            break;
-        case STATUS_MOVE_Failed_MoveDestinationUnknown:
-            waitForNextResponse = OFFalse;
-            DCMNET_ERROR("Move destination unknown");
-            break;
-        case STATUS_MOVE_Failed_UnableToProcess:
-            waitForNextResponse = OFFalse;
-            DCMNET_ERROR("Unable to process C-Move response");
-            break;
-        case STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication:
-            waitForNextResponse = OFFalse;
-            DCMNET_DEBUG("Suboperations canceled by server due to CANCEL indication");
-            break;
-        case STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures:
-            waitForNextResponse = OFFalse;
-            DCMNET_WARN("Suboperations of C-MOVE completed with one or more failures");
-            break;
-        case STATUS_Pending:
-            /* in this case the current C-MOVE-RSP indicates that */
-            /* there will be some more results */
-            waitForNextResponse = OFTrue;
-            DCMNET_DEBUG("One or more pending C-MOVE responses");
-            break;
-        case STATUS_Success:
-            /* in this case, we received the last C-MOVE-RSP so there */
-            /* will be no other responses we have to wait for. */
-            waitForNextResponse = OFFalse;
-            DCMNET_DEBUG("Received final C-MOVE response, no more C-MOVE responses expected");
-            break;
-        default:
-            /* in all other cases, don't expect further responses to come */
-            waitForNextResponse = OFFalse;
-            DCMNET_WARN("Status is 0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-                                       << response->m_status << " (unknown)");
-            DCMNET_WARN("Will not wait for further C-MOVE responses");
-            break;
-    } // switch
-
-    return EC_Normal;
+    OFString s;
+    s = DU_cmoveStatusString(response->m_status);
+    return handleSessionResponseDefault(response->m_status, s, waitForNextResponse);
 }
 
 /* ************************************************************************* */
@@ -1306,70 +1263,14 @@ OFCondition DcmSCU::handleCGETResponse(const T_ASC_PresentationContextID /* pres
                                        RetrieveResponse* response,
                                        OFBool& continueCGETSession)
 {
-    // Do some basic validity checks
-    if (!isConnected())
-        return DIMSE_ILLEGALASSOCIATION;
+    continueCGETSession = OFFalse;
     if (response == NULL)
         return DIMSE_NULLKEY;
 
     DCMNET_DEBUG("Handling C-GET Response");
-
-    /* First, perform separate check for 0xCxxx error codes */
-    Uint16 highNibble = response->m_status & 0xf000;
-    if (highNibble == STATUS_GET_Failed_UnableToProcess)
-    {
-        continueCGETSession = OFFalse;
-        DCMNET_ERROR("Unable to Process");
-        DCMNET_WARN("Full status is 0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-                                        << response->m_status);
-        return EC_Normal;
-    }
-
-    /* Check for other error codes */
-    switch (response->m_status)
-    {
-        case STATUS_GET_Refused_OutOfResourcesNumberOfMatches:
-            continueCGETSession = OFFalse;
-            DCMNET_ERROR("Out of Resources - Unable to calculate number of matches");
-            break;
-        case STATUS_GET_Refused_OutOfResourcesSubOperations:
-            continueCGETSession = OFFalse;
-            DCMNET_ERROR("Out of Resources - Unable to perform sub-operations");
-            break;
-        case STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass:
-            continueCGETSession = OFFalse;
-            DCMNET_ERROR("Identifier does not match SOP class");
-            break;
-        case STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication:
-            continueCGETSession = OFFalse;
-            DCMNET_DEBUG("Suboperations canceled by server due to CANCEL indication");
-            break;
-        case STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures:
-            continueCGETSession = OFFalse;
-            DCMNET_WARN("Suboperations of C-GET completed with one or more failures");
-            break;
-        case STATUS_Pending:
-            /* in this case the current C-MOVE-RSP indicates that */
-            /* there will be some more results */
-            continueCGETSession = OFTrue;
-            DCMNET_DEBUG("One or more pending C-GET responses");
-            break;
-        case STATUS_Success:
-            /* in this case, we received the last C-MOVE-RSP so there */
-            /* will be no other responses we have to wait for. */
-            continueCGETSession = OFFalse;
-            DCMNET_DEBUG("Received final C-GET response, no more C-GET responses expected");
-            break;
-        default:
-            /* in all other cases, don't expect further responses to come */
-            continueCGETSession = OFFalse;
-            DCMNET_WARN("Status is 0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-                                       << response->m_status << " (unknown)");
-            DCMNET_WARN("Will not wait for further C-GET responses");
-            break;
-    } // switch
-
-    return EC_Normal;
+    OFString s;
+    s = DU_cgetStatusString(response->m_status);
+    return handleSessionResponseDefault(response->m_status, s, continueCGETSession);
 }
 
 // Handles single C-STORE Request received during C-GET session
@@ -1694,34 +1595,14 @@ OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* pres
                                        QRResponse* response,
                                        OFBool& waitForNextResponse)
 {
-    if (!isConnected())
-        return DIMSE_ILLEGALASSOCIATION;
+    waitForNextResponse = OFFalse;
     if (response == NULL)
         return DIMSE_NULLKEY;
 
     DCMNET_DEBUG("Handling C-FIND Response");
-    switch (response->m_status)
-    {
-        case STATUS_Pending:
-        case STATUS_FIND_Pending_WarningUnsupportedOptionalKeys:
-            /* in this case the current C-FIND-RSP indicates that */
-            /* there will be some more results */
-            waitForNextResponse = OFTrue;
-            DCMNET_DEBUG("One or more pending C-FIND responses");
-            break;
-        case STATUS_Success:
-            /* in this case the current C-FIND-RSP indicates that */
-            /* there are no more records that match the search mask */
-            waitForNextResponse = OFFalse;
-            DCMNET_DEBUG("Received final C-FIND response, no more C-FIND responses expected");
-            break;
-        default:
-            /* in all other cases, don't expect further responses to come */
-            waitForNextResponse = OFFalse;
-            DCMNET_DEBUG("Status tells not to wait for further C-FIND responses");
-            break;
-    } // switch
-    return EC_Normal;
+    OFString s;
+    s = DU_cfindStatusString(response->m_status);
+    return handleSessionResponseDefault(response->m_status, s, waitForNextResponse);
 }
 
 /* ************************************************************************* */
@@ -2196,6 +2077,36 @@ Uint16 DcmSCU::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ& /*eventReportReq
 {
     // we default to success
     return STATUS_Success;
+}
+
+OFCondition
+DcmSCU::handleSessionResponseDefault(const Uint16 dimseStatus, const OFString& message, OFBool& waitForNextResponse)
+{
+    waitForNextResponse = OFFalse;
+
+    // Do some basic validity checks
+    if (!isConnected())
+        return DIMSE_ILLEGALASSOCIATION;
+
+    if (DICOM_WARNING_STATUS(dimseStatus))
+    {
+        DCMNET_WARN("DIMSE status is: " << message);
+    }
+    else if (DICOM_PENDING_STATUS(dimseStatus))
+    {
+        waitForNextResponse = OFTrue;
+        DCMNET_DEBUG("DIMSE status is: " << message);
+    }
+    else if (dimseStatus == STATUS_Success)
+    {
+        DCMNET_DEBUG("DIMSE status is: " << message);
+    }
+    else
+    {
+        DCMNET_ERROR("DIMSE status is: " << message);
+    }
+
+    return EC_Normal;
 }
 
 /* ************************************************************************* */
