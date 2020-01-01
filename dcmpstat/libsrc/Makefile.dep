@@ -306,6 +306,7 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmsign/include/dcmtk/dcmsign/sitypes.h \
  ../../dcmsign/include/dcmtk/dcmsign/sidefine.h \
  ../../dcmsign/include/dcmtk/dcmsign/dcsignat.h \
+ ../../dcmsign/include/dcmtk/dcmsign/sipurpos.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrdoc.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrdoctr.h \
  ../../dcmsr/include/dcmtk/dcmsr/dsrdocst.h \
@@ -4781,6 +4782,7 @@ dvsighdl.o: dvsighdl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmsign/include/dcmtk/dcmsign/sipurpos.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
