@@ -48,10 +48,10 @@ tests: $(test_objs)
 
 
 check: tests
-	./tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
 
 
 install: all
