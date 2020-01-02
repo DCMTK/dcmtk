@@ -163,29 +163,9 @@ typedef Uint64 OFuintptr_t;
 
 // Definition of type OFBool
 
-#ifdef HAVE_CXX_BOOL
-
 #define OFBool bool
 #define OFTrue true
 #define OFFalse false
-
-#else
-
-/** the boolean type used throughout the DCMTK project. Mapped to the
- *  built-in type "bool" if the current C++ compiler supports it. Mapped
- *  to int for old-fashioned compilers which do not yet support bool.
- */
-typedef int OFBool;
-
-#ifndef OFTrue
-#define OFTrue (1)
-#endif
-
-#ifndef OFFalse
-#define OFFalse (0)
-#endif
-
-#endif
 
 #if defined(HAVE_TYPENAME)
 #define OFTypename typename

@@ -173,9 +173,6 @@
 /* define if the compiler supports basic C++11 syntax */
 #undef HAVE_CXX11
 
-/* Define if bool is a built-in type. */
-#undef HAVE_CXX_BOOL
-
 /* Define if volatile is a known keyword */
 #undef HAVE_CXX_VOLATILE
 

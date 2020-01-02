@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, OFFIS e.V.
+ *  Copyright (C) 2014-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -983,7 +983,6 @@ struct OFnumeric_limits
     static inline T denorm_min()                    { return T(); }
 };
 
-#ifdef HAVE_CXX_BOOL
 template<>
 struct OFnumeric_limits<bool>
 {
@@ -1020,7 +1019,6 @@ struct OFnumeric_limits<bool>
     static inline bool signaling_NaN()              { return OFFalse; }
     static inline bool denorm_min()                 { return OFFalse; }
 };
-#endif
 
 template<>
 struct OFnumeric_limits<char>
