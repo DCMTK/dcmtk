@@ -230,7 +230,7 @@ OFCondition DcmDecimalString::putFloat64Prec(const Float64 val,
         return EC_IllegalParameter;
     }
 
-    return putStringAtPos(str.c_str(), pos);
+    return putOFStringAtPos(str.c_str(), pos);
 }
 
 

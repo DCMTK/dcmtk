@@ -475,8 +475,8 @@ OFCondition DcmByteString::putString(const char *stringVal,
 }
 
 
-OFCondition DcmByteString::putStringAtPos(const OFString& stringVal,
-                                          const unsigned long pos)
+OFCondition DcmByteString::putOFStringAtPos(const OFString& stringVal,
+                                            const unsigned long pos)
 {
     OFCondition result;
     // Get old value
