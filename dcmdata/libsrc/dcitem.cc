@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -4560,7 +4560,7 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
 
         // sequences and items:
         case EVR_SQ :
-            newElement = new DcmSequenceOfItems(tag, length);
+            newElement = new DcmSequenceOfItems(tag, length, readAsUN);
             break;
         case EVR_na :
             if (tag.getXTag() == DCM_Item)

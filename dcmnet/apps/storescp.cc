@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -343,6 +343,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-off",            "-p",      "no padding (default)");
       cmd.addOption("--padding-create",         "+p",   2, "[f]ile-pad [i]tem-pad: integer",
                                                            "align file on multiple of f bytes and items\non multiple of i bytes");
+
+    cmd.addSubGroup("handling of defined length UN elements:");
+      cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
+      cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
+
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated/same):");
       cmd.addOption("--compression-level",      "+cl",  1, "[l]evel: integer (default: 6)",
@@ -786,6 +791,17 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
       app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
       opt_paddingType = EPD_withPadding;
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--retain-un"))
+    {
+      dcmEnableUnknownVRConversion.set(OFFalse);
+    }
+    if (cmd.findOption("--convert-un"))
+    {
+      dcmEnableUnknownVRConversion.set(OFTrue);
     }
     cmd.endOptionBlock();
 
