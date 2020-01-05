@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2019, OFFIS e.V.
+ *  Copyright (C) 2001-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -151,7 +151,7 @@ void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, STD_NAMESPA
   unsigned long sqCard=0;
   const char *tagname = NULL;
   unsigned long m=0;
-  char buf[20];
+  char buf[30];
   OFBool printed = OFFalse;
   
   if (stack.card() > 2)
