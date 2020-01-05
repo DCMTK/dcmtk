@@ -163,7 +163,7 @@ typedef Uint64 OFuintptr_t;
 
 // Definition of type OFBool
 
-#define OFBool bool
+typedef bool OFBool;
 #define OFTrue true
 #define OFFalse false
 
