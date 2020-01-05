@@ -343,11 +343,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-off",            "-p",      "no padding (default)");
       cmd.addOption("--padding-create",         "+p",   2, "[f]ile-pad [i]tem-pad: integer",
                                                            "align file on multiple of f bytes and items\non multiple of i bytes");
-
     cmd.addSubGroup("handling of defined length UN elements:");
-      cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
-      cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
-
+      cmd.addOption("--retain-un",              "-uc",     "retain elements as UN (default)");
+      cmd.addOption("--convert-un",             "+uc",     "convert to real VR if known");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated/same):");
       cmd.addOption("--compression-level",      "+cl",  1, "[l]evel: integer (default: 6)",
@@ -359,7 +357,6 @@ int main(int argc, char *argv[])
       cmd.addOption("--sort-on-study-uid",      "-su",  1, "[p]refix: string",
                                                            "sort studies using prefix p and the Study\nInstance UID");
       cmd.addOption("--sort-on-patientname",    "-sp",     "sort studies using the Patient's Name and\na timestamp");
-
     cmd.addSubGroup("filename generation:");
       cmd.addOption("--default-filenames",      "-uf",     "generate filename from instance UID (default)");
       cmd.addOption("--unique-filenames",       "+uf",     "generate unique filenames");
@@ -795,14 +792,8 @@ int main(int argc, char *argv[])
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
-    if (cmd.findOption("--retain-un"))
-    {
-      dcmEnableUnknownVRConversion.set(OFFalse);
-    }
-    if (cmd.findOption("--convert-un"))
-    {
-      dcmEnableUnknownVRConversion.set(OFTrue);
-    }
+    if (cmd.findOption("--retain-un")) dcmEnableUnknownVRConversion.set(OFFalse);
+    if (cmd.findOption("--convert-un")) dcmEnableUnknownVRConversion.set(OFTrue);
     cmd.endOptionBlock();
 
 #ifdef WITH_ZLIB
