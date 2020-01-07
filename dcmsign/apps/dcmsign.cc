@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -152,6 +152,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--read-xfer-little",          "-te",       "read with explicit VR little endian TS");
       cmd.addOption("--read-xfer-big",             "-tb",       "read with explicit VR big endian TS");
       cmd.addOption("--read-xfer-implicit",        "-ti",       "read with implicit VR little endian TS");
+    cmd.addSubGroup("handling of defined length UN elements:");
+      cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
+      cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
   cmd.addGroup("signature commands:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--verify",                                 "verify all signatures (default)");
       cmd.addOption("--sign",                      "+s",     2, "[p]rivate key file, [c]ertificate file: string",
@@ -318,6 +321,18 @@ int main(int argc, char *argv[])
         opt_ixfer = EXS_LittleEndianImplicit;
     }
     cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--retain-un"))
+    {
+      dcmEnableUnknownVRConversion.set(OFFalse);
+    }
+    if (cmd.findOption("--convert-un"))
+    {
+      dcmEnableUnknownVRConversion.set(OFTrue);
+    }
+    cmd.endOptionBlock();
+
     cmd.beginOptionBlock();
     if (cmd.findOption("--verify"))
     {
