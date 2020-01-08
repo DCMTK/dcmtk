@@ -137,10 +137,12 @@ int main(int argc, char *argv[])
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("dcmfile-in",  "DICOM input filename to be processed");
   cmd.addParam("dcmfile-out", "DICOM output filename", OFCmdParam::PM_Optional);
+
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                      "-h",        "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                                "print version information and exit", OFCommandLine::AF_Exclusive);
       OFLog::addOptions(cmd);
+
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",                 "+f",        "read file format or data set (default)");
@@ -153,8 +155,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--read-xfer-big",             "-tb",       "read with explicit VR big endian TS");
       cmd.addOption("--read-xfer-implicit",        "-ti",       "read with implicit VR little endian TS");
     cmd.addSubGroup("handling of defined length UN elements:");
-      cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
-      cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
+      cmd.addOption("--retain-un",                 "-uc",       "retain elements as UN (default)");
+      cmd.addOption("--convert-un",                "+uc",       "convert to real VR if known");
+
   cmd.addGroup("signature commands:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--verify",                                 "verify all signatures (default)");
       cmd.addOption("--sign",                      "+s",     2, "[p]rivate key file, [c]ertificate file: string",
@@ -166,13 +169,15 @@ int main(int argc, char *argv[])
                                                                 "from timestamp query q at signature UID u");
       cmd.addOption("--remove",                    "+r",     1, "[s]ignature UID: string", "remove signature");
       cmd.addOption("--remove-all",                "+ra",       "remove all signatures from data set");
-  cmd.addGroup("general options:");
+
+  cmd.addGroup("general signature options:");
     cmd.addSubGroup("key and certificate file format:");
       cmd.addOption("--pem-keys",                 "-pem",       "read keys/certificates as PEM file (default)");
       cmd.addOption("--der-keys",                 "-der",       "read keys/certificates as DER file");
     cmd.addSubGroup("signature format:");
       cmd.addOption("--format-new",               "-fn",        "use correct DICOM signature format (default)");
       cmd.addOption("--format-old",               "-fo",        "use old (pre-3.5.4) DCMTK signature format");
+
   cmd.addGroup("signature verification options (only with --verify):");
     cmd.addSubGroup("signature verification:");
       cmd.addOption("--verify-if-present",         "+rv",       "verify signatures if present, pass otherwise\n(default)");
@@ -215,35 +220,39 @@ int main(int argc, char *argv[])
       cmd.addOption("--mac-sha256",               "+m2",        "use SHA-256");
       cmd.addOption("--mac-sha384",               "+m3",        "use SHA-384");
       cmd.addOption("--mac-sha512",               "+m5",        "use SHA-512");
-    cmd.addSubGroup("Signature purpose:");
+    cmd.addSubGroup("signature purpose:");
       cmd.addOption("--list-purposes",            "+lp",        "show list of signature purpose codes and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--no-sig-purpose",           "-sp",        "do not add signature purpose (default)");
-      cmd.addOption("--sig-purpose",              "+sp",     1, "[p]urpose code (1..18)", "add digital signature purpose code p");
+      cmd.addOption("--sig-purpose",              "+sp",     1, "[p]urpose code: integer (1..18)",
+                                                                "add digital signature purpose code p");
     cmd.addSubGroup("tag selection:");
-      cmd.addOption("--tag",                      "-t",      1, "[t]ag: \"gggg,eeee\" or dictionary name", "sign only specified tag\n(this option can be specified multiple times)");
-      cmd.addOption("--tag-file",                 "-tf",     1, "[f]ilename: string", "read list of tags from text file");
+      cmd.addOption("--tag",                      "-t",      1, "[t]ag: \"gggg,eeee\" or dictionary name",
+                                                                "sign only specified tag\n(this option can be specified multiple times)");
+      cmd.addOption("--tag-file",                 "-tf",     1, "[f]ilename: string",
+                                                                "read list of tags from text file");
+
   cmd.addGroup("timestamp creation options (only with --sign or --sign-item):");
     cmd.addSubGroup("timestamp creation:");
-      cmd.addOption("--timestamp-off",            "-ts",          "do not create timestamp (default)");
-      cmd.addOption("--timestamp-file",           "+ts",       2, "[t]sq-filename, [u]id-filename: string",
-                                                                  "create timestamp query file t and uid file u");
+      cmd.addOption("--timestamp-off",            "-ts",        "do not create timestamp (default)");
+      cmd.addOption("--timestamp-file",           "+ts",     2, "[t]sq-filename, [u]id-filename: string",
+                                                                "create timestamp query file t and uid file u");
     cmd.addSubGroup("timestamp MAC algorithm (only with --timestamp-file):");
-      cmd.addOption("--ts-mac-sha256",            "+tm2",        "use SHA-256 (default)");
-      cmd.addOption("--ts-mac-sha384",            "+tm3",        "use SHA-384");
-      cmd.addOption("--ts-mac-sha512",            "+tm5",        "use SHA-512");
-      cmd.addOption("--ts-mac-ripemd160",         "+tmr",        "use RIPEMD 160");
-      cmd.addOption("--ts-mac-sha1",              "+tms",        "use SHA-1 (not recommended)");
-      cmd.addOption("--ts-mac-md5",               "+tmm",        "use MD5 (not recommended)");
+      cmd.addOption("--ts-mac-sha256",            "+tm2",       "use SHA-256 (default)");
+      cmd.addOption("--ts-mac-sha384",            "+tm3",       "use SHA-384");
+      cmd.addOption("--ts-mac-sha512",            "+tm5",       "use SHA-512");
+      cmd.addOption("--ts-mac-ripemd160",         "+tmr",       "use RIPEMD 160");
+      cmd.addOption("--ts-mac-sha1",              "+tms",       "use SHA-1 (not recommended)");
+      cmd.addOption("--ts-mac-md5",               "+tmm",       "use MD5 (not recommended)");
     cmd.addSubGroup("timestamp query nonce options (only with --timestamp-file):");
-      cmd.addOption("--ts-use-nonce",             "+tn",         "include random nonce (default)");
-      cmd.addOption("--ts-no-nonce",              "-tn",         "do not include nonce");
+      cmd.addOption("--ts-use-nonce",             "+tn",        "include random nonce (default)");
+      cmd.addOption("--ts-no-nonce",              "-tn",        "do not include nonce");
     cmd.addSubGroup("timestamp certificate inclusion options (only with --timestamp-file):");
-      cmd.addOption("--ts-request-cert",          "+tc",         "request TSA certificate in timestamp (default)");
-      cmd.addOption("--ts-no-cert",               "-tc",         "do not request TSA certificate in timestamp");
+      cmd.addOption("--ts-request-cert",          "+tc",        "request TSA certificate in timestamp (default)");
+      cmd.addOption("--ts-no-cert",               "-tc",        "do not request TSA certificate in timestamp");
     cmd.addSubGroup("timestamp policy options (only with --timestamp-file):");
-      cmd.addOption("--ts-no-policy",             "-tp",         "do not specify ts policy (default)");
-      cmd.addOption("--ts-policy",                "+tp",      1, "[p]olicy-OID: OID string",
-                                                                 "request timestamp policy p");
+      cmd.addOption("--ts-no-policy",             "-tp",        "do not specify ts policy (default)");
+      cmd.addOption("--ts-policy",                "+tp",     1, "[p]olicy-OID: string",
+                                                                "request timestamp policy p");
   cmd.addGroup("output options:");
     cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-same",          "+t=",        "write with same TS as input (default)");
@@ -263,74 +272,67 @@ int main(int argc, char *argv[])
     /* check exclusive options first */
     if (cmd.hasExclusiveOption())
     {
-        if (cmd.findOption("--version"))
-        {
-            app.printHeader(OFTrue /*print host identifier*/);
-            COUT << OFendl << "External libraries used:";
+      if (cmd.findOption("--version"))
+      {
+        app.printHeader(OFTrue /*print host identifier*/);
+        COUT << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            COUT << " none" << OFendl;
+        COUT << " none" << OFendl;
 #else
-            COUT << OFendl;
+        COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
+        COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
 #ifdef OPENSSL_NO_EC
-            COUT << "- " << OPENSSL_VERSION_TEXT << ", without ECDSA support" << OFendl;
+        COUT << "- " << OPENSSL_VERSION_TEXT << ", without ECDSA support" << OFendl;
 #else
-            COUT << "- " << OPENSSL_VERSION_TEXT << ", with ECDSA support" << OFendl;
+        COUT << "- " << OPENSSL_VERSION_TEXT << ", with ECDSA support" << OFendl;
 #endif
 #endif
-            return EXITCODE_NO_ERROR;
-        }
-        if (cmd.findOption("--list-purposes"))
-        {
-            app.printHeader(OFTrue /*print host identifier*/);
-            SiSignaturePurpose::printSignatureCodes(COUT);
-            return EXITCODE_NO_ERROR;
-        }
+        return EXITCODE_NO_ERROR;
+      }
+      if (cmd.findOption("--list-purposes"))
+      {
+        app.printHeader(OFTrue /*print host identifier*/);
+        SiSignaturePurpose::printSignatureCodes(COUT);
+        return EXITCODE_NO_ERROR;
+      }
     }
     /* command line parameters */
     cmd.getParam(1, opt_ifname);
     if (cmd.getParamCount() > 1) cmd.getParam(2, opt_ofname);
     OFLog::configureFromCommandLine(cmd, app);
+
     cmd.beginOptionBlock();
     if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
     if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
     if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
     cmd.endOptionBlock();
     cmd.beginOptionBlock();
-    if (cmd.findOption("--read-xfer-auto"))
-        opt_ixfer = EXS_Unknown;
-    if (cmd.findOption("--read-xfer-detect"))
-        dcmAutoDetectDatasetXfer.set(OFTrue);
+    if (cmd.findOption("--read-xfer-auto")) opt_ixfer = EXS_Unknown;
+    if (cmd.findOption("--read-xfer-detect")) dcmAutoDetectDatasetXfer.set(OFTrue);
     if (cmd.findOption("--read-xfer-little"))
     {
-        app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
-        opt_ixfer = EXS_LittleEndianExplicit;
+      app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
+      opt_ixfer = EXS_LittleEndianExplicit;
     }
     if (cmd.findOption("--read-xfer-big"))
     {
-        app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
-        opt_ixfer = EXS_BigEndianExplicit;
+      app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
+      opt_ixfer = EXS_BigEndianExplicit;
     }
     if (cmd.findOption("--read-xfer-implicit"))
     {
-        app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
-        opt_ixfer = EXS_LittleEndianImplicit;
+      app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
+      opt_ixfer = EXS_LittleEndianImplicit;
     }
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
-    if (cmd.findOption("--retain-un"))
-    {
-      dcmEnableUnknownVRConversion.set(OFFalse);
-    }
-    if (cmd.findOption("--convert-un"))
-    {
-      dcmEnableUnknownVRConversion.set(OFTrue);
-    }
+    if (cmd.findOption("--retain-un")) dcmEnableUnknownVRConversion.set(OFFalse);
+    if (cmd.findOption("--convert-un")) dcmEnableUnknownVRConversion.set(OFTrue);
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
@@ -482,7 +484,7 @@ int main(int argc, char *argv[])
         }
       } while (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_Next));
     }
-    if (cmd.findOption("--enable-crl-vfy", 0, OFCommandLine::FOM_First))
+    if (cmd.findOption("--enable-crl-vfy"))
     {
       app.checkDependence("--enable-crl-vfy", "--verify", (opt_operation == DSO_verify));
       certVerifier.setCRLverification(OFTrue);
@@ -757,7 +759,7 @@ int main(int argc, char *argv[])
     DCMSIGN_WARN("no data dictionary loaded, "
       << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
-  // open inputfile
+  // open input file
   if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
   {
     DCMSIGN_FATAL("invalid filename: <empty string>");

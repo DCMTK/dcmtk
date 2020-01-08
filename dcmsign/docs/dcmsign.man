@@ -126,7 +126,7 @@ handling of defined length UN elements:
           remove all signatures from data set
 \endverbatim
 
-\subsection dcmsign_signature_general_options general options
+\subsection dcmsign_general_signature_options general signature options
 \verbatim
 key and certificate file format:
 
@@ -147,7 +147,7 @@ signature format:
           only be used to verify signatures in the old format.
 \endverbatim
 
-\subsection dcmsign_signature_verification_options signature verification options (only with --verify):
+\subsection dcmsign_signature_verification_options signature verification options (only with --verify)
 \verbatim
 signature verification:
 
@@ -202,7 +202,7 @@ certification authority:
 
 \endverbatim
 
-\subsection dcmsign_signature_creation_options signature creation options (only with --sign or --sign-item):
+\subsection dcmsign_signature_creation_options signature creation options (only with --sign or --sign-item)
 \verbatim
 private key password:
 
@@ -255,7 +255,7 @@ MAC algorithm:
   +m5   --mac-sha512
           use SHA-512
 
-Signature purpose:
+signature purpose:
 
   +lp   --list-purposes
           show list of signature purpose codes and exit
@@ -264,7 +264,7 @@ Signature purpose:
           do not add signature purpose (default)
 
   +sp   --sig-purpose
-          [p]urpose code (1..18)
+          [p]urpose code: integer (1..18)
           add digital signature purpose code p
 
 tag selection:
@@ -277,6 +277,61 @@ tag selection:
   -tf   --tag-file  [f]ilename: string
           read list of tags from text file
 
+\endverbatim
+
+\subsection dcmsign_timestamp_creation_options timestamp creation options (only with --sign or --sign-item)
+\verbatim
+timestamp creation:
+
+  -ts   --timestamp-off
+          do not create timestamp (default)
+
+  +ts   --timestamp-file  [t]sq-filename, [u]id-filename: string
+          create timestamp query file t and uid file u
+
+timestamp MAC algorithm (only with --timestamp-file):
+
+  +tm2  --ts-mac-sha256
+          use SHA-256 (default)
+
+  +tm3  --ts-mac-sha384
+          use SHA-384
+
+  +tm5  --ts-mac-sha512
+          use SHA-512
+
+  +tmr  --ts-mac-ripemd160
+          use RIPEMD 160
+
+  +tms  --ts-mac-sha1
+          use SHA-1 (not recommended)
+
+  +tmm  --ts-mac-md5
+          use MD5 (not recommended)
+
+timestamp query nonce options (only with --timestamp-file):
+
+  +tn   --ts-use-nonce
+          include random nonce (default)
+
+  -tn   --ts-no-nonce
+          do not include nonce
+
+timestamp certificate inclusion options (only with --timestamp-file):
+
+  +tc   --ts-request-cert
+          request TSA certificate in timestamp (default)
+
+  -tc   --ts-no-cert
+          do not request TSA certificate in timestamp
+
+timestamp policy options (only with --timestamp-file):
+
+  -tp   --ts-no-policy
+          do not specify ts policy (default)
+
+  +tp   --ts-policy  [p]olicy-OID: string
+          request timestamp policy p
 \endverbatim
 
 \subsection dcmsign_output_options output options
@@ -318,22 +373,22 @@ The \b dcmsign utility reads and writes a number of files and file formats
 which are described in this section.
 
 Public Key Certificates are expected in X.509v3 format, either with PEM or DER
-encoding. The dcmsign utility currently supports RSA and DSA public keys,
+encoding.  The \b dcmsign utility currently supports RSA and DSA public keys,
 although only RSA keys are defines in the Security Profiles of the DICOM
 standard.
 
 Private Keys are expected in PEM or DER encoding. PEM is recommended (and
-default) because this allows one to keep private keys in encrypted form. Command
-line options control the behavior of \b dcmsign when an encrypted PEM key is
-opened (see above).  In general it is not recommended to specify the encryption
-password in the command line because the command line may be visible to other
-processes in the system, e.g. "ps -ef".
+default) because this allows one to keep private keys in encrypted form.
+Command line options control the behavior of \b dcmsign when an encrypted PEM
+key is opened (see above).  In general it is not recommended to specify the
+encryption password in the command line because the command line may be visible
+to other processes in the system, e.g. "ps -ef".
 
-By default, dcmsign will create a signature covering all data elements
-in the dataset or item. This default can be overridden by explicitly
-specifying a list of data elements (attribute tags). This list can either
-be read from a file or specified on the command line or both
-(in this case the attribute tags are combined).
+By default, \b dcmsign will create a signature covering all data elements in the
+dataset or item. This default can be overridden by explicitly specifying a list
+of data elements (attribute tags).  This list can either be read from a file or
+specified on the command line or both (in this case the attribute tags are
+combined).
 
 On the command line, attribute tags are specified as
 
@@ -345,13 +400,13 @@ On the command line, attribute tags are specified as
 \endverbatim
 
 When attribute tags are read from file with the \e --tag-file option, a plain
-text file is expected.  Tags within the file are either symbolic names from
-the data dictionary or have the format (gggg,eeee) (with braces).
-Tags are separated by one or more whitespace characters.
+text file is expected.  Tags within the file are either symbolic names from the
+data dictionary or have the format (gggg,eeee) (with braces).  Tags are
+separated by one or more whitespace characters.
 
 The currently selected digital signature profile may specify additional
-attribute tags required to be included in the signature, which will
-be silently added.
+attribute tags required to be included in the signature, which will be silently
+added.
 
 The \e --sign-item operation requires a location string that describes in which
 sequence item a signature is to be created.  The location string has the
@@ -377,32 +432,32 @@ dataset.
 
 \subsection dcmsign_certified_timestamps Certified Timestamps
 
-Starting with release 3.6.6, dcmsign offers support for certified timestamps
-according to RFC 3161. For now, the tool does not implement any of the network
-protocols defined in RFC 3161 for communicating with a timestamp authority (TSA),
-but it can write a timestamp query (TSQ) during signature creation, and the
-new command \e --insert-timestamp will read a timestamp response (TSR) from file
-and add it to the DICOM digital signature. Since a DICOM file can contain
+Starting with release 3.6.6, \b dcmsign offers support for certified timestamps
+according to RFC 3161.  For now, the tool does not implement any of the network
+protocols defined in RFC 3161 for communicating with a timestamp authority
+(TSA), but it can write a timestamp query (TSQ) during signature creation, and
+the new command \e --insert-timestamp will read a timestamp response (TSR) from
+file and add it to the DICOM digital signature. Since a DICOM file can contain
 multiple signatures, a "UID file" (which contains the Digital Signature UID)
-is used to identify the signature to which the TSR should be added.
-The dcmsign tool will also perform various consistency checks before storing
-the timestamp.
+is used to identify the signature to which the TSR should be added.  The
+\b dcmsign tool will also perform various consistency checks before storing the
+timestamp.
 
-During signature verification, the presence of a certified timestamp will
-be detected and the timestamp will also be verified unless option
-\e --ignore-ts was used. Signature verification and timestamp verification
-use a common certificate store to check the certificates of the DICOM
-signature and the timestamp. This store can be populated with the options
---add-cert-file and --add-cert-dir, which both add trusted CA certificates,
---add-ucert-file, which adds an untrusted intermediate CA certificate,
-and --add-crl-file, which adds a certificate revocation list.
+During signature verification, the presence of a certified timestamp will be
+detected and the timestamp will also be verified unless option \e --ignore-ts
+was used.  Signature verification and timestamp verification use a common
+certificate store to check the certificates of the DICOM signature and the
+timestamp.  This store can be populated with the options \e --add-cert-file and
+\e --add-cert-dir, which both add trusted CA certificates, \e --add-ucert-file,
+which adds an untrusted intermediate CA certificate, and \e --add-crl-file,
+which adds a certificate revocation list.
 
 \subsection dcmsign_hashed_certificate_directories Hashed Certificate Directories
 
 Instead of adding CA certificates and certificate revocation lists (CRLs)
-manually using --add-cert-file and --add-crl-file, the user can set-up
-a directory where dcmsign will look-up and load certificates and CRLs from
-as needed, using --add-cert-dir.
+manually using \e --add-cert-file and \e --add-crl-file, the user can set-up
+a directory where \b dcmsign will look-up and load certificates and CRLs from
+as needed, using \e --add-cert-dir.
 
 Th directory should contain one certificate or CRL per file in PEM format,
 with a filename of the form hash.N for a certificate, or hash.rN for a CRL.
@@ -412,15 +467,14 @@ The hash is the value returned by
   <em>openssl crl -hash -noout -in \<filename.pem\></em> (for a CRL)
 
 The .N or .rN suffix is a sequence number that starts at zero, and is
-incremented consecutively for each certificate or CRL with the same hash
-value. Gaps in the sequence numbers are not supported, it is assumed that
-there are no more objects with the same hash beyond the first missing number
-in the sequence.
+incremented consecutively for each certificate or CRL with the same hash value.
+Gaps in the sequence numbers are not supported, it is assumed that there are no
+more objects with the same hash beyond the first missing number in the sequence.
 
-CRLs will only be verified when option --enable-crl-vfy is specified.
-In this case, dcmsign will expect a CRL to be present for each CA
-and will fail signature verification if no CRL can be found for the
-CA that issued the signer certificate.
+CRLs will only be verified when option \e --enable-crl-vfy is specified.  In
+this case, \b dcmsign will expect a CRL to be present for each CA and will fail
+signature verification if no CRL can be found for the CA that issued the signer
+certificate.
 
 \section dcmsign_logging LOGGING
 
