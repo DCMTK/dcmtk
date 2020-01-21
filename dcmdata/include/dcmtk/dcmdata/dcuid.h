@@ -717,6 +717,12 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_DisplaySystemSOPClass                                  "1.2.840.10008.5.1.1.40"
 #define UID_DisplaySystemSOPInstance                               "1.2.840.10008.5.1.1.40.1"
 
+// Real-Time Video
+#define UID_VideoEndoscopicImageRealTimeCommunicationSOPClass      "1.2.840.10008.10.1"
+#define UID_VideoPhotographicImageRealTimeCommunicationSOPClass    "1.2.840.10008.10.2"
+#define UID_AudioWaveformRealTimeCommunicationSOPClass             "1.2.840.10008.10.3"
+#define UID_RenditionSelectionDocumentRealTimeCommunicationSOPClass "1.2.840.10008.10.4"
+
 // Other
 #define UID_VerificationSOPClass                                   "1.2.840.10008.1.1"
 #define UID_RETIRED_BasicStudyContentNotificationSOPClass          "1.2.840.10008.1.9"
