@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -139,6 +139,9 @@ static const UIDNameMap uidNameMap[] = {
     { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,        "MPEG4StereoHighProfile/Level4.2" },
     { UID_HEVCMainProfileLevel5_1TransferSyntax,               "HEVCMainProfile/Level5.1" },
     { UID_HEVCMain10ProfileLevel5_1TransferSyntax,             "HEVCMain10Profile/Level5.1" },
+    { UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax, "SMPTEST2110-20:UncompressedProgressiveActiveVideo" },
+    { UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax, "SMPTEST2110-20:UncompressedInterlacedActiveVideo" },
+    { UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax,        "SMPTEST2110-30:PCMDigitalAudio" },
     { UID_RFC2557MIMEEncapsulationTransferSyntax,              "RFC2557MIMEEncapsulation" },
     { UID_XMLEncodingTransferSyntax,                           "XMLEncoding" },
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,  "PrivateGELittleEndianImplicitWithBigEndianPixelData" },

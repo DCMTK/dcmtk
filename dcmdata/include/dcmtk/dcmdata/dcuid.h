@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -369,6 +369,12 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_HEVCMain10ProfileLevel5_1TransferSyntax "1.2.840.10008.1.2.4.108"
 /// RLE Lossless
 #define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
+/// SMPTE ST 2110-20 Uncompressed Progressive Active Video
+#define UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax "1.2.840.10008.1.2.7.1"
+/// SMPTE ST 2110-20 Uncompressed Interlaced Active Video
+#define UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax "1.2.840.10008.1.2.7.2"
+/// SMPTE ST 2110-30 PCM Digital Audio
+#define UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax "1.2.840.10008.1.2.7.3"
 
 /** RFC 2557 MIME Encapsulation (RETIRED) was only a pseudo transfer syntax used
  *  to refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
