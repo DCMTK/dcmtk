@@ -416,7 +416,7 @@ CMake and shared libraries
 The CMake build system allows for building shared libraries instead of static
 libraries.  On Windows systems, these are dynamic link libraries (.dll).
 On Unix systems, these are shared objects (.so).  To enable this, set the
-"BUILD_SHARED_LIB" option to "ON".
+"BUILD_SHARED_LIBS" option to "ON".
 
 Additionally, it is possible to produce a single shared library for the whole
 toolkit.  This mode is controlled by the "BUILD_SINGLE_SHARED_LIBRARY" option.
@@ -934,4 +934,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher, P. Arizpe Gomez
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2019-10-29 (Riesmeier)
+Last revised: 2020-01-22 (Onken)
