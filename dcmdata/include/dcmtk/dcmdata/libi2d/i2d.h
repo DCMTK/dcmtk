@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,6 +43,8 @@ public:
    *  @param inputPlug - [in] The input plugin to read pixel data
    *  @param outPlug - [in] The output plugin for specific SOP class output
    *  @param resultDset - [out] The DICOM object resulting from the conversion
+   *         The dataset is allocated in this method and must be freed by the
+   *         caller.
    *  @param proposedTS - [out] The proposed transfer syntax (needed e. g.
    *                            by JPEG input plugin)
    *  @return EC_Normal, if successfull, error otherwise
