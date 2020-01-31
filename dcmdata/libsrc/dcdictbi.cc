@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-01-30 19:10:09
+**   Date: 2020-01-31 21:42:01
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -22726,6 +22726,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "ModelUsageCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0068, 0x7004, 0x0068, 0x7004,
+      EVR_UI, "ModelGroupUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0068, 0x7005, 0x0068, 0x7005,
+      EVR_UR, "RelativeURIReferenceWithinEncapsulatedDocument", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0070, 0x0001, 0x0070, 0x0001,
       EVR_SQ, "GraphicAnnotationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -29530,6 +29538,50 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x3010, 0x0089, 0x3010, 0x0089,
       EVR_SQ, "TreatmentSiteModifierCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0090, 0x3010, 0x0090,
+      EVR_CS, "RoboticBaseLocationIndicator", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0091, 0x3010, 0x0091,
+      EVR_SQ, "RoboticPathNodeSetCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0092, 0x3010, 0x0092,
+      EVR_UL, "RoboticNodeIdentifier", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0093, 0x3010, 0x0093,
+      EVR_FD, "RTTreatmentSourceCoordinates", 3, 3, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0094, 0x3010, 0x0094,
+      EVR_FD, "RadiationSourceCoordinateSystemYawAngle", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0095, 0x3010, 0x0095,
+      EVR_FD, "RadiationSourceCoordinateSystemRollAngle", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0096, 0x3010, 0x0096,
+      EVR_FD, "RadiationSourceCoordinateSystemPitchAngle", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0097, 0x3010, 0x0097,
+      EVR_SQ, "RoboticPathControlPointSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0098, 0x3010, 0x0098,
+      EVR_SQ, "TomotherapeuticControlPointSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x0099, 0x3010, 0x0099,
+      EVR_FD, "TomotherapeuticLeafOpenDurations", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3010, 0x009a, 0x3010, 0x009a,
+      EVR_FD, "TomotherapeuticLeafInitialClosedDurations", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef ENABLE_PRIVATE_TAGS

@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2019e and PS 3.7-2019e
-# File created on 2019-11-19 21:18:01 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2020a and PS 3.7-2020a
+# File created on 2020-01-31 21:38:50 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -2802,6 +2802,8 @@
 (0068,7001)	CS	ModelModification	1	DICOM
 (0068,7002)	CS	ModelMirroring	1	DICOM
 (0068,7003)	SQ	ModelUsageCodeSequence	1	DICOM
+(0068,7004)	UI	ModelGroupUID	1	DICOM
+(0068,7005)	UR	RelativeURIReferenceWithinEncapsulatedDocument	1	DICOM
 (0070,0001)	SQ	GraphicAnnotationSequence	1	DICOM
 (0070,0002)	CS	GraphicLayer	1	DICOM
 (0070,0003)	CS	BoundingBoxAnnotationUnits	1	DICOM
@@ -4271,6 +4273,17 @@
 (3010,0087)	SQ	WeekdayFractionPatternSequence	1	DICOM
 (3010,0088)	SQ	DeliveryTimeStructureCodeSequence	1	DICOM
 (3010,0089)	SQ	TreatmentSiteModifierCodeSequence	1	DICOM
+(3010,0090)	CS	RoboticBaseLocationIndicator	1	DICOM
+(3010,0091)	SQ	RoboticPathNodeSetCodeSequence	1	DICOM
+(3010,0092)	UL	RoboticNodeIdentifier	1	DICOM
+(3010,0093)	FD	RTTreatmentSourceCoordinates	3	DICOM
+(3010,0094)	FD	RadiationSourceCoordinateSystemYawAngle	1	DICOM
+(3010,0095)	FD	RadiationSourceCoordinateSystemRollAngle	1	DICOM
+(3010,0096)	FD	RadiationSourceCoordinateSystemPitchAngle	1	DICOM
+(3010,0097)	SQ	RoboticPathControlPointSequence	1	DICOM
+(3010,0098)	SQ	TomotherapeuticControlPointSequence	1	DICOM
+(3010,0099)	FD	TomotherapeuticLeafOpenDurations	1-n	DICOM
+(3010,009A)	FD	TomotherapeuticLeafInitialClosedDurations	1-n	DICOM
 (4010,0001)	CS	LowEnergyDetectors	1	DICOM/DICOS
 (4010,0002)	CS	HighEnergyDetectors	1	DICOM/DICOS
 (4010,0004)	SQ	DetectorGeometrySequence	1	DICOM/DICOS

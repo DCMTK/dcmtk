@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-01-30 19:10:08
+**   Date: 2020-01-31 21:42:01
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2020-01-30 19:10:08"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2020-01-31 21:42:01"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4750
+** Number of entries: 4763
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -3100,6 +3100,8 @@
 #define DCM_ModelModification                    DcmTagKey(0x0068, 0x7001)
 #define DCM_ModelMirroring                       DcmTagKey(0x0068, 0x7002)
 #define DCM_ModelUsageCodeSequence               DcmTagKey(0x0068, 0x7003)
+#define DCM_ModelGroupUID                        DcmTagKey(0x0068, 0x7004)
+#define DCM_RelativeURIReferenceWithinEncapsulatedDocument DcmTagKey(0x0068, 0x7005)
 #define DCM_GraphicAnnotationSequence            DcmTagKey(0x0070, 0x0001)
 #define DCM_GraphicLayer                         DcmTagKey(0x0070, 0x0002)
 #define DCM_BoundingBoxAnnotationUnits           DcmTagKey(0x0070, 0x0003)
@@ -4634,6 +4636,17 @@
 #define DCM_WeekdayFractionPatternSequence       DcmTagKey(0x3010, 0x0087)
 #define DCM_DeliveryTimeStructureCodeSequence    DcmTagKey(0x3010, 0x0088)
 #define DCM_TreatmentSiteModifierCodeSequence    DcmTagKey(0x3010, 0x0089)
+#define DCM_RoboticBaseLocationIndicator         DcmTagKey(0x3010, 0x0090)
+#define DCM_RoboticPathNodeSetCodeSequence       DcmTagKey(0x3010, 0x0091)
+#define DCM_RoboticNodeIdentifier                DcmTagKey(0x3010, 0x0092)
+#define DCM_RTTreatmentSourceCoordinates         DcmTagKey(0x3010, 0x0093)
+#define DCM_RadiationSourceCoordinateSystemYawAngle DcmTagKey(0x3010, 0x0094)
+#define DCM_RadiationSourceCoordinateSystemRollAngle DcmTagKey(0x3010, 0x0095)
+#define DCM_RadiationSourceCoordinateSystemPitchAngle DcmTagKey(0x3010, 0x0096)
+#define DCM_RoboticPathControlPointSequence      DcmTagKey(0x3010, 0x0097)
+#define DCM_TomotherapeuticControlPointSequence  DcmTagKey(0x3010, 0x0098)
+#define DCM_TomotherapeuticLeafOpenDurations     DcmTagKey(0x3010, 0x0099)
+#define DCM_TomotherapeuticLeafInitialClosedDurations DcmTagKey(0x3010, 0x009a)
 #define DCM_RETIRED_Arbitrary                    DcmTagKey(0x4000, 0x0010)
 #define DCM_RETIRED_TextComments                 DcmTagKey(0x4000, 0x4000)
 #define DCM_RETIRED_ResultsID                    DcmTagKey(0x4008, 0x0040)
