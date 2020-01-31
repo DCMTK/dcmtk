@@ -3447,6 +3447,11 @@ OFCondition DcmItem::putAndInsertUint8Array(const DcmTag& tag,
             } else
                 elem = new DcmPolymorphOBOW(tag);
             break;
+        case EVR_px:
+            elem = new DcmPixelData(tag);
+            if (elem != NULL)
+                elem->setVR(EVR_OB);
+            break;
         case EVR_UNKNOWN:
             /* Unknown VR, e.g. tag not found in data dictionary */
             status = EC_UnknownVR;
@@ -3538,10 +3543,15 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
             if (tag == DCM_PixelData)
             {
                 elem = new DcmPixelData(tag);
-                if (elem != NULL) elem->setVR(EVR_OW);
-            }
-            else
+                if (elem != NULL)
+                    elem->setVR(EVR_OW);
+            } else
                 elem = new DcmPolymorphOBOW(tag);
+            break;
+        case EVR_px:
+            elem = new DcmPixelData(tag);
+            if (elem != NULL)
+                elem->setVR(EVR_OW);
             break;
         case EVR_xs:
             /* special handling */
@@ -4590,6 +4600,10 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                 newElement = new DcmOtherByteOtherWord(tag, length);
             break;
 
+        case EVR_px :
+            newElement = new DcmPixelData(tag, length);
+            break;
+
         // This case should only occur if we encounter an element with an invalid
         // "Pi" VR. Make sure this does not cause problems later on
         case EVR_PixelData :
@@ -4642,7 +4656,21 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                     }
                 }
             }
-            else
+            else if (tag.isPrivate())
+            {
+                // look up VR in private data dictionary
+                DcmTag newTag(tag.getXTag(), tag.getPrivateCreator());
+                // special handling for private pixel data (compressed or uncompressed)
+                if (newTag.getEVR() == EVR_px)
+                {
+                    DCMDATA_WARN("Found private element " << tag << " with VR " << tag.getVRName()
+                        << " and undefined length, reading a pixel sequence according to data dictionary");
+                    newElement = new DcmPixelData(tag, length);
+                }
+            }
+            // no element has been created yet and no error reported
+            if ((newElement == NULL) && l_error.good())
+            {
                 if (length == DCM_UndefinedLength)
                 {
                     // The attribute is OB or OW but is encoded with undefined
@@ -4661,17 +4689,17 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                             OFCondition tempcond = EC_UndefinedLengthOBOW;
                             DCMDATA_WARN("DcmItem: Parse error in " << tag << ": " << tempcond.text());
                             newElement = new DcmSequenceOfItems(tag, length);
-                        }
-                        else
-                        {
+                        } else {
                             // bail out with an error
                             l_error = EC_UndefinedLengthOBOW;
                             DCMDATA_ERROR("DcmItem: Parse error in " << tag << ": " << l_error.text());
                         }
                     }
                 } else {
+                    // default case
                     newElement = new DcmOtherByteOtherWord(tag, length);
                 }
+            }
             break;
 
         // read unknown types as byte string:

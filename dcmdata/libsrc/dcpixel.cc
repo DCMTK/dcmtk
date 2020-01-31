@@ -89,7 +89,8 @@ DcmPixelData::DcmPixelData(
 {
     repListEnd = repList.end();
     current = original = repListEnd;
-    if (getTag().getEVR() == EVR_ox) setTagVR(EVR_OW);
+    if ((getTag().getEVR() == EVR_ox) || (getTag().getEVR() == EVR_px))
+        setTagVR(EVR_OW);
     unencapsulatedVR = getTag().getEVR();
     recalcVR();
 }

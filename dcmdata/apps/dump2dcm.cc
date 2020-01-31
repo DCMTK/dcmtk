@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -505,7 +505,7 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
            (tagkey != DCM_LUTData || (vr != EVR_US && vr != EVR_SS && vr != EVR_OW)) &&
            (tagkey != DCM_PixelData || (vr != EVR_OB && vr != EVR_OW && vr != EVR_pixelSQ)) &&
            (tagvr != EVR_xs || (vr != EVR_US && vr != EVR_SS)) &&
-           (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)) &&
+           (tagvr != EVR_ox || tagvr != EVR_px || (vr != EVR_OB && vr != EVR_OW)) &&
            (tagvr != EVR_na || vr != EVR_pixelItem))
         {
             OFLOG_WARN(dump2dcmLogger, "Tag " << tag << " with wrong VR '"
