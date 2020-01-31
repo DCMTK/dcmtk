@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2013, OFFIS e.V.
+#  Copyright (C) 1994-2020, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #   - Circle Cardiovascular Imaging cmr42 3.0 conformance statement
 #   - David Clunie's dicom3tools package, 2002-04-20 snapshot
 #   - Fuji CR console, 3rd release
+#   - GE Vivid S70 version 201 conformance statement
 #   - Intelerad Medical Systems Inc., Image Server
 #   - OCULUS Pentacam 1.17 conformance statement
 #   - Philips Digital Diagnost 1.3 conformance statement
@@ -1043,6 +1044,8 @@
 (0023,"GEMS_STDY_01",70)	FD	StartTimeSecsInFirstAxial	1	PrivateTag
 (0023,"GEMS_STDY_01",74)	SL	NumberOfUpdatesToHeader	1	PrivateTag
 (0023,"GEMS_STDY_01",7d)	SS	IndicatesIfStudyHasCompleteInfo	1	PrivateTag
+
+(7fe1,"GEMS_Ultrasound_MovieGroup_001",1060)	px	IllegalPrivatePixelSequence	1	PrivateTag
 
 (0033,"GEMS_YMHD_01",05)	UN	Unknown	1	PrivateTag
 (0033,"GEMS_YMHD_01",06)	UN	Unknown	1	PrivateTag

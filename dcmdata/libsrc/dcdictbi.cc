@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2019-11-19 21:20:59
+**   Date: 2020-01-30 19:10:09
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -30193,7 +30193,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x7fe0, 0x0010, 0x7fe0, 0x0010,
-      EVR_ox, "PixelData", 1, 1, "DICOM",
+      EVR_px, "PixelData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x7fe0, 0x0020, 0x7fe0, 0x0020,
@@ -30221,6 +30221,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_ox, "PixelData", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x7fe1, 0x1060, 0x7fe1, 0x1060,
+      EVR_px, "IllegalPrivatePixelSequence", 1, 1, "PrivateTag",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_Ultrasound_MovieGroup_001" }
   , { 0x7fe3, 0x0000, 0x7fe3, 0x0000,
       EVR_LT, "ImageGraphicsFormatCode", 1, 1, "PrivateTag",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,

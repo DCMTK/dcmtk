@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2019, OFFIS e.V.
+#  Copyright (C) 1994-2020, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -4389,7 +4389,7 @@
 (7FE0,0002)	OV	ExtendedOffsetTableLengths	1	DICOM
 (7FE0,0008)	OF	FloatPixelData	1	DICOM
 (7FE0,0009)	OD	DoubleFloatPixelData	1	DICOM
-(7FE0,0010)	ox	PixelData	1	DICOM
+(7FE0,0010)	px	PixelData	1	DICOM
 (FFFA,FFFA)	SQ	DigitalSignaturesSequence	1	DICOM
 (FFFC,FFFC)	OB	DataSetTrailingPadding	1	DICOM
 (FFFE,E000)	na	Item	1	DICOM
