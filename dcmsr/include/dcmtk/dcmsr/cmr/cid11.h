@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID11_RouteOfAdministration
  *
- *  Generated automatically from DICOM PS 3.16-2019e
- *  File created on 2019-11-20 16:10:00 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020a
+ *  File created on 2020-02-04 12:03:35 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 11 - Route of Administration.
- *  (type: extensible, version: 20160314)
+ *  (type: extensible, version: 20200117)
  */
 class DCMTK_CMR_EXPORT CID11_RouteOfAdministration
   : public DSRContextGroup
@@ -89,7 +89,9 @@ class DCMTK_CMR_EXPORT CID11_RouteOfAdministration
         /// (372464004,SCT,"Intradermal route")
         IntradermalRoute,
         /// (447122006,SCT,"Intratumor route")
-        IntratumorRoute
+        IntratumorRoute,
+        /// (445769006,SCT,"Intracorpus cavernosum route")
+        IntracorpusCavernosumRoute
     };
 
     /** (default) constructor
