@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2019e
- *  File created on 2019-11-20 15:53:47 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020a
+ *  File created on 2020-02-04 11:54:06 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 40
+// total number of codes: 41
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -54,6 +54,7 @@
 #define CODE_NCIt_Technetium99mTrofolastat                                 DSRBasicCodedEntry("C116887", "NCIt", "Technetium^99m Trofolastat")
 #define CODE_NCIt_PSMA11_Ga68                                              DSRBasicCodedEntry("C118961", "NCIt", "PSMA-11 Ga^68^")
 #define CODE_NCIt_Sarcosine_C11                                            DSRBasicCodedEntry("C122684", "NCIt", "Sarcosine C^11^")
+#define CODE_NCIt_SoftTissueSarcoma_excludingRhabdomyosarcoma              DSRBasicCodedEntry("C148457", "NCIt", "Soft tissue sarcoma, excluding rhabdomyosarcoma")
 #define CODE_NCIt_MouseMammaryFatPad                                       DSRBasicCodedEntry("C22550", "NCIt", "Mouse mammary fat pad")
 #define CODE_NCIt_Middle                                                   DSRBasicCodedEntry("C25569", "NCIt", "Middle")
 #define CODE_NCIt_Reader                                                   DSRBasicCodedEntry("C28747", "NCIt", "Reader")

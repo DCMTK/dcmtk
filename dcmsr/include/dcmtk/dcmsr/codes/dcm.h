@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2019e
- *  File created on 2019-11-20 16:01:08 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020a
+ *  File created on 2020-02-04 11:53:58 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4278
+// total number of codes: 4286
 // - retired: 196
 // - no name: 27
 // - not unique: 17
@@ -148,6 +148,7 @@
 #define CODE_DCM_SubjectiveRefraction                                      DSRBasicCodedEntry("SRF", "DCM", "Subjective Refraction")
 #define CODE_DCM_RETIRED_SinglePhotonEmissionComputedTomography            DSRBasicCodedEntry("ST", "DCM", "Single-photon emission computed tomography")
 #define CODE_DCM_AutomatedSlideStainer                                     DSRBasicCodedEntry("STAIN", "DCM", "Automated Slide Stainer")
+#define CODE_DCM_TextureMap                                                DSRBasicCodedEntry("TEXTUREMAP", "DCM", "Texture Map")
 #define CODE_DCM_Thermography                                              DSRBasicCodedEntry("TG", "DCM", "Thermography")
 #define CODE_DCM_UnknownSex                                                DSRBasicCodedEntry("U", "DCM", "Unknown Sex")
 #define CODE_DCM_Unavailable                                               DSRBasicCodedEntry("UNAVAILABLE", "DCM", "Unavailable")
@@ -4233,7 +4234,7 @@
 #define CODE_DCM_ImagingAgentAdministrationInjectorEventType               DSRBasicCodedEntry("130234", "DCM", "Imaging Agent Administration Injector Event Type")
 #define CODE_DCM_InjectorEventDetectionDateTime                            DSRBasicCodedEntry("130235", "DCM", "Injector Event Detection DateTime")
 #define CODE_DCM_PlannedImagingAgentAdministrationSOPInstance              DSRBasicCodedEntry("130236", "DCM", "Planned Imaging Agent Administration SOP Instance")
-#define CODE_DCM_ImagingAgentAdministrationSyringePumpPhaseActivity        DSRBasicCodedEntry("130237", "DCM", "Imaging Agent Administration Syringe/Pump Phase Activity")
+#define CODE_DCM_ImagingAgentAdministrationActivity                        DSRBasicCodedEntry("130237", "DCM", "Imaging Agent Administration Activity")
 #define CODE_DCM_ImagingAgentComponent                                     DSRBasicCodedEntry("130238", "DCM", "Imaging Agent Component")
 #define CODE_DCM_ComponentVolume                                           DSRBasicCodedEntry("130239", "DCM", "Component Volume")
 #define CODE_DCM_TotalPhaseVolumeAdministered                              DSRBasicCodedEntry("130240", "DCM", "Total Phase Volume Administered")
@@ -4316,6 +4317,11 @@
 #define CODE_DCM_TreatmentMachineIsocenter                                 DSRBasicCodedEntry("130359", "DCM", "Treatment Machine Isocenter")
 #define CODE_DCM_FixedLaserSetupPoint                                      DSRBasicCodedEntry("130360", "DCM", "Fixed Laser Setup Point")
 #define CODE_DCM_RadiotherapyTreatmentDevice                               DSRBasicCodedEntry("130361", "DCM", "Radiotherapy Treatment Device")
+#define CODE_DCM_HeadNodeSet                                               DSRBasicCodedEntry("130362", "DCM", "Head Node Set")
+#define CODE_DCM_BodyNodeSet                                               DSRBasicCodedEntry("130363", "DCM", "Body Node Set")
+#define CODE_DCM_TrigeminalNodeSet                                         DSRBasicCodedEntry("130364", "DCM", "Trigeminal Node Set")
+#define CODE_DCM_QANodePair                                                DSRBasicCodedEntry("130365", "DCM", "QA Node Pair")
+#define CODE_DCM_QANode                                                    DSRBasicCodedEntry("130366", "DCM", "QA Node")
 #define CODE_DCM_RTVRendition                                              DSRBasicCodedEntry("130370", "DCM", "RTV Rendition")
 #define CODE_DCM_RTVAudioAndVideoRendition                                 DSRBasicCodedEntry("130371", "DCM", "RTV Audio and Video Rendition")
 #define CODE_DCM_RTVStereoVideoRendition                                   DSRBasicCodedEntry("130372", "DCM", "RTV Stereo Video Rendition")
@@ -4326,5 +4332,7 @@
 #define CODE_DCM_GradientWeightedClassActivation                           DSRBasicCodedEntry("130403", "DCM", "Gradient-weighted class activation")
 #define CODE_DCM_Saliency                                                  DSRBasicCodedEntry("130404", "DCM", "Saliency")
 #define CODE_DCM_PatientAttachedDoseControlObject                          DSRBasicCodedEntry("130405", "DCM", "Patient-Attached Dose Control Object")
+#define CODE_DCM_NonUterineLeiomyosarcoma                                  DSRBasicCodedEntry("130406", "DCM", "Non-uterine leiomyosarcoma")
+#define CODE_DCM_BoneAndSoftTissue                                         DSRBasicCodedEntry("130407", "DCM", "Bone and soft tissue")
 
 #endif
