@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -272,7 +272,11 @@ OFCondition DcmFindSCU::performQuery(
 
     /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
     OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        DCMNET_ERROR("Creating Association Parameters Failed: " << DimseCondition::dump(temp_str, cond));
+        return cond;
+    }
 
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values to be set here are "FINDSCU" and "ANY-SCP". */
@@ -282,7 +286,11 @@ OFCondition DcmFindSCU::performQuery(
     /* structure. The default is an insecure connection; where OpenSSL is  */
     /* available the user is able to request an encrypted,secure connection. */
     cond = ASC_setTransportLayerType(params, secureConnection);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        DCMNET_ERROR("Setting Transport Layer Type Failed: " << DimseCondition::dump(temp_str, cond));
+        return cond;
+    }
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
@@ -292,7 +300,11 @@ OFCondition DcmFindSCU::performQuery(
     /* Set the presentation contexts which will be negotiated */
     /* when the network connection will be established */
     cond = addPresentationContext(params, abstractSyntax, preferredTransferSyntax);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        DCMNET_ERROR("Adding Presentation Contexts Failed: " << DimseCondition::dump(temp_str, cond));
+        return cond;
+    }
 
     /* dump presentation contexts if required */
     DCMNET_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
@@ -305,7 +317,8 @@ OFCondition DcmFindSCU::performQuery(
 
     if (cond.bad())
     {
-        if (cond == DUL_ASSOCIATIONREJECTED) {
+        if (cond == DUL_ASSOCIATIONREJECTED)
+        {
             T_ASC_RejectParameters rej;
             ASC_getRejectParameters(params, &rej);
 
@@ -322,7 +335,8 @@ OFCondition DcmFindSCU::performQuery(
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
-    if (ASC_countAcceptedPresentationContexts(params) == 0) {
+    if (ASC_countAcceptedPresentationContexts(params) == 0)
+    {
         DCMNET_ERROR("No Acceptable Presentation Contexts");
         return NET_EC_NoAcceptablePresentationContexts;
     }
@@ -410,9 +424,7 @@ OFCondition DcmFindSCU::performQuery(
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
         DCMNET_INFO("Peer Aborted Association");
-    }
-    else
-    {
+    } else {
         DCMNET_ERROR("Find SCU Failed: " << DimseCondition::dump(temp_str, cond));
         DCMNET_INFO("Aborting Association");
         cond = ASC_abortAssociation(assoc);
@@ -426,7 +438,9 @@ OFCondition DcmFindSCU::performQuery(
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad())
-        DCMNET_ERROR(DimseCondition::dump(temp_str, cond));
+    {
+        DCMNET_ERROR("Destroying Association Failed: " << DimseCondition::dump(temp_str, cond));
+    }
     return cond;
 }
 
@@ -670,7 +684,7 @@ OFCondition DcmFindSCU::findSCU(
         cond = proc.applyPathWithValue(dset, *path);
         if (cond.bad())
         {
-            DCMNET_ERROR("Bad override key/path: " << *path << ": " << cond.text());
+            DCMNET_ERROR("Bad override key/path: " << *path);
             return cond;
         }
         path++;
@@ -680,7 +694,7 @@ OFCondition DcmFindSCU::findSCU(
     presId = ASC_findAcceptedPresentationContextID(assoc, abstractSyntax);
 
     if (presId == 0) {
-        DCMNET_ERROR("No presentation context");
+        DCMNET_ERROR("No Presentation Context");
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
