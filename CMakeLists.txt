@@ -18,25 +18,18 @@ cmake_policy(VERSION "${DCMTK_CMAKE_POLICY_VERSION}")
 # Declare project
 project(DCMTK)
 
-# Check the build system
-include(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
-
 #-----------------------------------------------------------------------------
 # General project settings to configure DCMTK build process
 #-----------------------------------------------------------------------------
 
 # Modules to be built
-
 set(DCMTK_MODULES ofstd oflog dcmdata dcmimgle
   dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr
   dcmsign dcmwlm dcmqrdb dcmpstat dcmrt dcmiod dcmfg
   dcmseg dcmtract dcmpmap dcmect
   CACHE STRING "List of modules that should be built.")
 
-#-----------------------------------------------------------------------------
 # Include directories
-#-----------------------------------------------------------------------------
-
 set(DCMTK_INCLUDE_DIR "${DCMTK_BINARY_DIR}/config/include")
 foreach(inc ${DCMTK_MODULES})
   list(APPEND DCMTK_INCLUDE_DIR "${DCMTK_SOURCE_DIR}/${inc}/include")
@@ -45,10 +38,16 @@ endforeach()
 include_directories(${DCMTK_INCLUDE_DIR})
 
 #-----------------------------------------------------------------------------
+# Check the build system
+#-----------------------------------------------------------------------------
+
+include(CMake/dcmtkPrepare.cmake NO_POLICY_SCOPE)
+
+#-----------------------------------------------------------------------------
 # Prepare osconfig.h
 #-----------------------------------------------------------------------------
 
-# add the osconfig.h.in file
+# Add the osconfig.h.in file
 configure_file("${DCMTK_SOURCE_DIR}/CMake/osconfig.h.in"
                "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h")
 
@@ -188,7 +187,7 @@ if(CMAKE_CROSSCOMPILING)
       "${DCMTK_RUN_CTEST_SCRIPT}" ESCAPE_QUOTES @ONLY
     )
   else()
-    # nothing to do
+    # Nothing to do
   endif()
 else()
   string(REPLACE ";" "${ENVIRONMENT_PATH_SEPARATOR}" DCMDICTPATH "${DCMTK_DICOM_DICTIONARIES}")
