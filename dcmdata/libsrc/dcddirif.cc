@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2019, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -734,7 +734,9 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_Spectroscopy;
     else if (compare(sopClass, UID_EncapsulatedPDFStorage) ||
              compare(sopClass, UID_EncapsulatedCDAStorage) ||
-             compare(sopClass, UID_EncapsulatedSTLStorage))
+             compare(sopClass, UID_EncapsulatedSTLStorage) ||
+             compare(sopClass, UID_EncapsulatedOBJStorage) ||
+             compare(sopClass, UID_EncapsulatedMTLStorage))
     {
         result = ERT_EncapDoc;
     }
@@ -782,7 +784,9 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     else if (compare(sopClass, UID_RTPhysicianIntentStorage) ||
              compare(sopClass, UID_RTSegmentAnnotationStorage) ||
              compare(sopClass, UID_RTRadiationSetStorage) ||
-             compare(sopClass, UID_CArmPhotonElectronRadiationStorage))
+             compare(sopClass, UID_CArmPhotonElectronRadiationStorage) ||
+             compare(sopClass, UID_TomotherapeuticRadiationStorage) ||
+             compare(sopClass, UID_RoboticArmRadiationStorage))
     {
         result = ERT_Radiotherapy;
     }
