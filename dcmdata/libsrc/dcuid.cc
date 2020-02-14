@@ -542,6 +542,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_SPM2T2FrameOfReference,                              "SPM2T2FrameOfReference" },
     { UID_SPM2TRANSMFrameOfReference,                          "SPM2TRANSMFrameOfReference" },
     { UID_SPM2WHITEFrameOfReference,                           "SPM2WHITEFrameOfReference" },
+    { UID_StandardRoboticCoordinateSystemFrameOfReference,     "StandardRoboticCoordinateSystemFrameOfReference" },
     { UID_TalairachBrainAtlasFrameOfReference,                 "TalairachBrainAtlasFrameOfReference" },
 
     // UTC Synchronization Frame of Reference

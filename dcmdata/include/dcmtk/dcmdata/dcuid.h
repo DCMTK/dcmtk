@@ -805,6 +805,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_ICBM452T1FrameOfReference                              "1.2.840.10008.1.4.2.1"
 #define UID_ICBMSingleSubjectMRIFrameOfReference                   "1.2.840.10008.1.4.2.2"
 #define UID_IEC61217FixedCoordinateSystemFrameOfReference          "1.2.840.10008.1.4.3.1"
+#define UID_StandardRoboticCoordinateSystemFrameOfReference        "1.2.840.10008.1.4.3.2"
 
 // Well-known SOP Instances for Color Palettes
 #define UID_HotIronColorPaletteSOPInstance                         "1.2.840.10008.1.5.1"
