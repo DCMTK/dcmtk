@@ -15,7 +15,7 @@
  *
  *  Author:  Andreas Barth
  *
- *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
+ *  Purpose: create a DICOM FileFormat or DataSet from an ASCII-dump
  *
  */
 
@@ -34,8 +34,8 @@
  *        two characters.  If the VR can determined from the tag, this part
  *        of a line is optional.
  * Value: There are several rules for writing values:
- *        1. US, SS, SL, UL, FD, FL, OD, OF and OL are written as decimal
- *           strings that can be read by scanf().
+ *        1. US, SS, UL, SL, UV, SV, FD, FL, OD, OF, OL and OV are written as
+ *           decimal strings that can be read by scanf().
  *        2. AT is written as '(gggg,eeee)' with additional spaces stripped
  *           off automatically and gggg and eeee being decimal strings that
  *           can be read by scanf().
