@@ -276,7 +276,7 @@ void DcmSignatureHelper::printSignatureItemPosition(DcmStack& stack, OFString& s
   unsigned long sqCard=0;
   const char *tagname = NULL;
   unsigned long m=0;
-  char buf[20];
+  char buf[30];
   if (stack.card() > 2)
   {
     // signature is located within a sequence
