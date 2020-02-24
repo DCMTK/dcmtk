@@ -128,6 +128,9 @@ other network options:
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
 
+  -ts   --socket-timeout  [s]econds: integer (default: 60)
+          timeout for network socket (0 for none)
+
   -ta   --acse-timeout  [s]econds: integer (default: 30)
           timeout for ACSE messages
 
@@ -452,6 +455,6 @@ It is an error if no data dictionary can be loaded.
 
 \section findscu_copyright COPYRIGHT
 
-Copyright (C) 1994-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

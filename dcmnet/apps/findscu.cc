@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,7 @@
 
 #include "dcmtk/dcmnet/dfindscu.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmnet/dcmtrans.h"    /* for dcmSocketSend/ReceiveTimeout */
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcdict.h"
@@ -47,15 +48,24 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE        "FINDSCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
+/* helper macro for converting stream output to a string */
+#define CONVERT_TO_STRING(output, string) \
+    optStream.str(""); \
+    optStream.clear(); \
+    optStream << output << OFStringStream_ends; \
+    OFSTRINGSTREAM_GETOFSTRING(optStream, string)
+
 #define SHORTCOL 4
 #define LONGCOL 20
 
 int main(int argc, char *argv[])
 {
+    OFOStringStream       optStream;
     OFList<OFString>      fileNameList;
     OFBool                opt_abortAssociation = OFFalse;
     const char *          opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
     int                   opt_acse_timeout = 30;
+    OFCmdSignedInt        opt_socket_timeout = 60;
     T_DIMSE_BlockingMode  opt_blockMode = DIMSE_BLOCKING;
     OFCmdSignedInt        opt_cancelAfterNResponses = -1;
     int                   opt_dimse_timeout = 0;
@@ -89,7 +99,6 @@ int main(int argc, char *argv[])
   DcmTLSTransportLayer::initializeOpenSSL();
 #endif
 
-  char tempstr[20];
   OFString temp_str;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM query (C-FIND) SCU", rcsid);
   OFCommandLine cmd;
@@ -115,14 +124,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--study",              "-S",      "use study root information model");
       cmd.addOption("--psonly",             "-O",      "use patient/study only information model");
     cmd.addSubGroup("application entity titles:");
-      OFString opt1 = "set my calling AE title (default: ";
-      opt1 += APPLICATIONTITLE;
-      opt1 += ")";
-      cmd.addOption("--aetitle",            "-aet", 1, "[a]etitle: string", opt1.c_str());
-      OFString opt2 = "set called AE title of peer (default: ";
-      opt2 += PEERAPPLICATIONTITLE;
-      opt2 += ")";
-      cmd.addOption("--call",               "-aec", 1, "[a]etitle: string", opt2.c_str());
+      cmd.addOption("--aetitle",            "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
+      cmd.addOption("--call",               "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
     cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",      "+u",      "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",     "-u",      "disable support for new VRs, convert to OB");
@@ -140,21 +143,15 @@ int main(int argc, char *argv[])
                                                        "0=uncompressed, 1=fastest, 9=best compression");
 #endif
     cmd.addSubGroup("other network options:");
-      OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
-      opt3 += tempstr;
-      opt3 += ")";
-      OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
-      opt4 += tempstr;
-      opt4 += "..";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
-      opt4 += tempstr;
-      opt4 += ")";
       cmd.addOption("--timeout",            "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      cmd.addOption("--acse-timeout",       "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_socket_timeout << ")", optString1);
+      cmd.addOption("--socket-timeout",     "-ts",  1, optString1.c_str(), "timeout for network socket (0 for none)");
+      CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString2);
+      cmd.addOption("--acse-timeout",       "-ta",  1, optString2.c_str(), "timeout for ACSE messages");
       cmd.addOption("--dimse-timeout",      "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
-      cmd.addOption("--max-pdu",            "-pdu", 1, opt4.c_str(), opt3.c_str());
+      CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
+      CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxReceivePDULength << ")", optString4);
+      cmd.addOption("--max-pdu",            "-pdu", 1, optString3.c_str(), optString4.c_str());
       cmd.addOption("--repeat",                     1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                         "abort association instead of releasing it");
       cmd.addOption("--cancel",                     1, "[n]umber: integer",
@@ -271,6 +268,12 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
         dcmConnectionTimeout.set(OFstatic_cast(Sint32, opt_timeout));
       }
+
+      if (cmd.findOption("--socket-timeout"))
+        app.checkValue(cmd.getValueAndCheckMin(opt_socket_timeout, -1));
+      // always set the timeout values since the global default might be different
+      dcmSocketSendTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
+      dcmSocketReceiveTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
 
       if (cmd.findOption("--acse-timeout"))
       {
