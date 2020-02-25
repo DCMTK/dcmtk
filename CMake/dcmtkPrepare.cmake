@@ -263,52 +263,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 # set project wide flags for compiler and linker
 
 if(WIN32)
-  option(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS  "Overwrite compiler flags with DCMTK's WIN32 package default values." ON)
+  option(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS  "Modify the default compiler flags selected by CMake." ON)
   option(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL "Compile DCMTK using the Multithreaded DLL runtime library." OFF)
   if (BUILD_SHARED_LIBS)
     set(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL ON)
   endif()
 else()
+  # these settings play no role on other platforms
   set(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS OFF)
   set(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OFF)
-endif()
-
-if(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS AND NOT BUILD_SHARED_LIBS)
-
-  # settings for Microsoft Visual Studio
-  if(CMAKE_GENERATOR MATCHES "Visual Studio .*")
-    # get Visual Studio Version
-    string(REGEX REPLACE "Visual Studio ([0-9]+).*" "\\1" VS_VERSION "${CMAKE_GENERATOR}")
-    # these settings never change even for C or C++
-    set(CMAKE_C_FLAGS_DEBUG "/MTd /Z7 /Od")
-    set(CMAKE_C_FLAGS_RELEASE "/DNDEBUG /MT /O2")
-    set(CMAKE_C_FLAGS_MINSIZEREL "/DNDEBUG /MT /O2")
-    set(CMAKE_C_FLAGS_RELWITHDEBINFO "/DNDEBUG /MTd /Z7 /Od")
-    set(CMAKE_CXX_FLAGS_DEBUG "/MTd /Z7 /Od")
-    set(CMAKE_CXX_FLAGS_RELEASE "/DNDEBUG /MT /O2")
-    set(CMAKE_CXX_FLAGS_MINSIZEREL "/DNDEBUG /MT /O2")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/DNDEBUG /MTd /Z7 /Od")
-    # specific settings for the various Visual Studio versions
-    if(VS_VERSION EQUAL 6)
-      set(CMAKE_C_FLAGS "/nologo /W3 /GX /Gy /YX")
-      set(CMAKE_CXX_FLAGS "/nologo /W3 /GX /Gy /YX /Zm500") # /Zm500 increments heap size which is needed on some system to compile templates in dcmimgle
-    endif()
-    if(VS_VERSION EQUAL 7)
-      set(CMAKE_C_FLAGS "/nologo /W3 /Gy")
-      set(CMAKE_CXX_FLAGS "/nologo /W3 /Gy")
-    endif()
-    if(VS_VERSION GREATER 7)
-      set(CMAKE_C_FLAGS "/nologo /W3 /Gy /EHsc")
-      set(CMAKE_CXX_FLAGS "/nologo /W3 /Gy /EHsc")
-    endif()
-  endif()
-
-  # settings for Borland C++
-  if(CMAKE_GENERATOR MATCHES "Borland Makefiles")
-    # further settings required? not tested for a very long time!
-    set(CMAKE_STANDARD_LIBRARIES "import32.lib cw32mt.lib")
-  endif()
-
 endif()
 
 if(WIN32 AND CMAKE_GENERATOR MATCHES "Visual Studio .*")
@@ -327,18 +290,20 @@ if(WIN32 AND CMAKE_GENERATOR MATCHES "Visual Studio .*")
         CMAKE_C_FLAGS_RELWITHDEBINFO
         )
 
-  if(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OR BUILD_SHARED_LIBS)
-    # Convert any /MT or /MTd option to /MD or /MDd
-    foreach(CompilerFlag ${CompilerFlags})
-        string(REPLACE "/MT" "/MD" ${CompilerFlag} "${${CompilerFlag}}")
-        set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
-    endforeach()
-  else()
-    # Convert any /MD or /MDd option to /MT or /MTd
-    foreach(CompilerFlag ${CompilerFlags})
-        string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-        set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
-    endforeach()
+  if(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS OR BUILD_SHARED_LIBS)
+    if(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OR BUILD_SHARED_LIBS)
+      # Convert any /MT or /MTd option to /MD or /MDd
+      foreach(CompilerFlag ${CompilerFlags})
+          string(REPLACE "/MT" "/MD" ${CompilerFlag} "${${CompilerFlag}}")
+          set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
+      endforeach()
+    else()
+      # Convert any /MD or /MDd option to /MT or /MTd
+      foreach(CompilerFlag ${CompilerFlags})
+          string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+          set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
+      endforeach()
+    endif()
   endif()
 endif()
 

@@ -578,6 +578,30 @@ CMake, perform the following steps:
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
    libraries can be downloaded from https://www.dcmtk.org/dcmtk#lib-win.
 
+   In the CMake GUI, there are a few more settings that can be modified
+   to affect the way DCMTK is compiled. The most important of these are:
+
+    - DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS: By default, DCMTK will compile
+      using the default compiler options selected by CMake. When this macro
+      is enabled, these default options are modified based on the value
+      of the DCMTK_COMPILE_WIN32_MULTITHREADED_DLL setting (see below).
+      Default: ON.
+    - DCMTK_COMPILE_WIN32_MULTITHREADED_DLL: Controls the Windows build
+      model. When this setting is ON, DCMTK compiled with the
+      "Multithreaded DLL" build model (/MD or /MDd); when the setting is
+      OFF, DCMTK is compiled with the "Multithreaded" build model
+      (/MT or /MTd). This setting is ignored unless the
+      DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS option is ON.
+      Default: OFF.
+    - BUILD_SHARED_LIBS: Build the DCMTK libraries as shared libraries.
+      This setting overrides the value of the options
+      DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS and
+      DCMTK_COMPILE_WIN32_MULTITHREADED_DLL, which are both set to ON.
+      Default: OFF.
+    - BUILD_SINGLE_SHARED_LIBRARY: Build a single shared library for the
+      whole toolkit. This setting overrides the value of the option
+      BUILD_SHARED_LIBS, which is set to ON. Default: OFF.
+
 7. Go "Configure" a second time.  (CMake will adjust the configuration
    according to the displayed specifications.)
 8. Go "OK" or "Generate".  (CMake will generate new project files in the
