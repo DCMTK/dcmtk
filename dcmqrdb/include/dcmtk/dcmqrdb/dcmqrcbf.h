@@ -28,7 +28,7 @@
 
 class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
-class DcmQueryRetrieveCharacterSetOptions;
+struct DcmQueryRetrieveCharacterSetOptions;
 
 /** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_findProvider.
