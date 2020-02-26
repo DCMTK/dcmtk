@@ -33,7 +33,7 @@
 
 class DcmDataset;
 class DcmQueryRetrieveDatabaseStatus;
-struct DcmQueryRetrieveCharacterSetOptions;
+class DcmQueryRetrieveCharacterSetOptions;
 
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 1024
