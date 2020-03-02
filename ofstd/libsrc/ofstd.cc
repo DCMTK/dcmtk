@@ -471,7 +471,7 @@ OFBool OFStandard::fileExists(const OFFilename &fileName)
             fileAttr = GetFileAttributesW(fileName.getWideCharPointer());
         else
 #endif
-            fileAttr = GetFileAttributes(fileName.getCharPointer());
+            fileAttr = GetFileAttributesA(fileName.getCharPointer());
         if (fileAttr != 0xffffffff)
         {
             /* check file type (not a directory?) */
@@ -501,7 +501,7 @@ OFBool OFStandard::dirExists(const OFFilename &dirName)
             fileAttr = GetFileAttributesW(dirName.getWideCharPointer());
         else
 #endif
-            fileAttr = GetFileAttributes(dirName.getCharPointer());
+            fileAttr = GetFileAttributesA(dirName.getCharPointer());
         if (fileAttr != 0xffffffff)
         {
             /* check file type (is a directory?) */

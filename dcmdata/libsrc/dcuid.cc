@@ -1617,14 +1617,14 @@ static long gethostid(void)
     /* get volume information of the system drive */
     char systemDrive[MAX_PATH];
     DWORD serialNumber = 0;
-    if (GetSystemDirectory(systemDrive, OFstatic_cast(UINT, sizeof(systemDrive))) >= 0)
+    if (GetSystemDirectoryA(systemDrive, OFstatic_cast(UINT, sizeof(systemDrive))) >= 0)
     {
         /* check for proper pathname */
         if ((strlen(systemDrive) >= 3) && (systemDrive[1] == ':') && (systemDrive[2] == '\\'))
         {
             /* truncate the pathname directly after the drive specification */
             systemDrive[3] = 0;
-            if (!GetVolumeInformation(systemDrive, NULL, 0, &serialNumber, NULL, NULL, NULL, 0))
+            if (!GetVolumeInformationA(systemDrive, NULL, 0, &serialNumber, NULL, NULL, NULL, 0))
                 serialNumber = 0;
         }
     }

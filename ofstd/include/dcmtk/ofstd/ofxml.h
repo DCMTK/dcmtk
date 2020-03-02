@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2019, OFFIS e.V.
+ *  Copyright (C) 2011-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -78,9 +78,8 @@
  * full-fledged HTML documentation using the DOXYGEN software: simply type: "doxygen doxy.cfg"
  *
  * By default, the XMLParser library uses (char*) for string representation.To use the (wchar_t*)
- * version of the library, you need to define the "_UNICODE" preprocessor definition variable
- * (this is usually done inside your project definition file) (This is done automatically for you
- * when using Visual Studio).
+ * version of the library, you need to define the "WIDE_CHAR_XML_PARSER" preprocessor definition variable
+ * (this is usually done inside your project definition file)
  *
  * \section example Advanced Tutorial and Many Examples of usage.
  *
@@ -144,13 +143,9 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofdefine.h"
 
-// DCMTK: we might want to enable wide characters without the "official" defines
-#if defined(UNICODE) || defined(_UNICODE) || defined(WIDE_CHAR_XML_PARSER)
-// If you comment the next "define" line then the library will never "switch to" _UNICODE (wchar_t*) mode (16/32 bits per characters).
-// This is useful when you get error messages like:
-//    'XMLNode::openFileHelper' : cannot convert parameter 2 from 'const char [5]' to 'const wchar_t *'
-// The _XMLWIDECHAR preprocessor variable force the XMLParser library into either utf16/32-mode (the preprocessor variable
-// must be defined) or utf8-mode (the pre-processor variable must be undefined).
+// DCMTK: The XML parser is compiled in wide char (UTF-16) mode if and only if this macro is defined.
+// We want this to be independent from the UNICODE/_UNICODE macros.
+#ifdef WIDE_CHAR_XML_PARSER
 #define _XMLWIDECHAR
 #endif
 

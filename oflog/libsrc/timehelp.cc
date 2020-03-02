@@ -29,7 +29,7 @@
 #include <iomanip>
 #include <cassert>
 #include <cerrno>
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
 #include <cwchar>
 #endif
 
@@ -69,7 +69,7 @@ const int ONE_SEC_IN_USEC = 1000000;
 using STD_NAMESPACE mktime;
 using STD_NAMESPACE gmtime;
 using STD_NAMESPACE localtime;
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
 using STD_NAMESPACE wcsftime;
 #else
 using STD_NAMESPACE strftime;
@@ -368,7 +368,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
     {
         gft_sp.buffer.resize (buffer_size);
         errno = 0;
-#ifdef UNICODE
+#ifdef DCMTK_OFLOG_UNICODE
         len = wcsftime(&gft_sp.buffer[0], buffer_size,
             gft_sp.fmt.c_str(), &time);
 #else

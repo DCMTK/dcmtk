@@ -42,7 +42,7 @@ namespace log4cplus
 {
  
 
-#ifndef UNICODE
+#ifndef DCMTK_OFLOG_UNICODE
     size_t const DCMTK_LOG4CPLUS_MAX_MESSAGE_SIZE = 8*1024;
 #else
     size_t const DCMTK_LOG4CPLUS_MAX_MESSAGE_SIZE = 2*8*1024;

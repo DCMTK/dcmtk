@@ -637,10 +637,6 @@ Known limitations of DCMTK on the Windows platform.
    DCMTK can be configured to use either of the two interfaces.  This behavior
    can be changed in "config/include/dcmtk/config/osconfig.h" in the build
    directory where the symbol USE_STD_CXX_INCLUDES is declared.
-3. DCMTK does not compile when UNICODE or _UNICODE is defined because the
-   VisualStudio compiler then uses the Unicode version instead of the ANSI
-   version for all Windows API functions (i.e. type wchar_t instead of char
-   for all character string parameters and return values).
 
 
 Unix with CMake

@@ -128,7 +128,7 @@ void OFTempFile::getTempPath(OFString& sPath)
 #ifdef _WIN32
 #define BUFFER_SIZE 1024
     char buffer[BUFFER_SIZE];
-    GetTempPath(BUFFER_SIZE, buffer);
+    GetTempPathA(BUFFER_SIZE, buffer);
     sPath = buffer;
 #elif defined(__ANDROID__)
     sPath = ANDROID_TEMPORARY_FILES_LOCATION;

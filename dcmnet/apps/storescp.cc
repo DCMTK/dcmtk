@@ -2408,13 +2408,13 @@ static void executeCommand( const OFString &cmd )
   }
 #else
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
 
   // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
   // called function because in such a case the execution of batch-files is not going to work.)
-  if( !CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
+  if( !CreateProcessA(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
     OFLOG_ERROR(storescpLogger, "cannot execute command '" << cmd << "'");
 
   if (opt_execSync)

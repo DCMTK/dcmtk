@@ -54,13 +54,13 @@ typedef int loglevel_t;
 #define L4CP_ALL_LOG_LEVEL TRACE_LOG_LEVEL
 #define L4CP_NOT_SET_LOG_LEVEL -1
 
-#ifdef UNICODE
+#ifdef DCMTK_OFLOG_UNICODE
 #  define DCMTK_LOG4CPLUS_TEXT2(STRING) L##STRING
 typedef wchar_t log4cplus_char_t;
 #else
 #  define DCMTK_LOG4CPLUS_TEXT2(STRING) STRING
 typedef char log4cplus_char_t;
-#endif // UNICODE
+#endif // DCMTK_OFLOG_UNICODE
 #define DCMTK_LOG4CPLUS_TEXT(STRING) DCMTK_LOG4CPLUS_TEXT2(STRING)
 
 DCMTK_LOG4CPLUS_EXPORT int log4cplus_file_configure(const log4cplus_char_t *pathname);

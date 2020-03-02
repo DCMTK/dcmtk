@@ -29,7 +29,7 @@
 #include "dcmtk/oflog/thread/syncpub.h"
 #include <iomanip>
 #include <cstring>
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
 #include <cwctype>
 #else
 #include <cctype>
@@ -48,7 +48,7 @@ namespace
 static inline bool
 is_control (tchar ch)
 {
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
     return !! STD_NAMESPACE iswcntrl (STD_NAMESPACE char_traits<tchar>::to_int_type (ch));
 #elif defined (_MSC_VER) && _MSC_VER <= 1200 /* MSC6 and older */
     return !! iscntrl (STD_NAMESPACE char_traits<tchar>::to_int_type (ch));
@@ -175,7 +175,7 @@ Log4jUdpAppender::~Log4jUdpAppender()
 // Log4jUdpAppender public methods
 //////////////////////////////////////////////////////////////////////////////
 
-void 
+void
 Log4jUdpAppender::close()
 {
     helpers::getLogLog().debug(

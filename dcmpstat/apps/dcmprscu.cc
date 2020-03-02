@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2019, OFFIS e.V.
+ *  Copyright (C) 1999-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -543,11 +543,11 @@ static OFCondition updateJobList(
   const char *spoolFolder = dvi.getSpoolFolder();
 
 #ifdef HAVE_WINDOWS_H
-  WIN32_FIND_DATA stWin32FindData;
+  WIN32_FIND_DATAA stWin32FindData;
   OFString currentdir = spoolFolder;
   currentdir += "\\*";
 
-  HANDLE hFile = FindFirstFile(currentdir.c_str(), &stWin32FindData);
+  HANDLE hFile = FindFirstFileA(currentdir.c_str(), &stWin32FindData);
   int ret = (hFile != INVALID_HANDLE_VALUE);
   while (ret)
   {
@@ -595,7 +595,7 @@ static OFCondition updateJobList(
       }
 
 #ifdef HAVE_WINDOWS_H
-      ret = FindNextFile(hFile, &stWin32FindData);
+      ret = FindNextFileA(hFile, &stWin32FindData);
   } /* while */
   if(hFile != INVALID_HANDLE_VALUE)
   {

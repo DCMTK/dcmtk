@@ -42,7 +42,7 @@ namespace dcmtk
 namespace log4cplus
 {
 
-#ifdef UNICODE
+#ifdef DCMTK_OFLOG_UNICODE
 DCMTK_LOG4CPLUS_EXPORT tostream & tcout = STD_NAMESPACE wcout;
 DCMTK_LOG4CPLUS_EXPORT tostream & tcerr = STD_NAMESPACE wcerr;
 

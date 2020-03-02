@@ -150,7 +150,7 @@ SocketBuffer::readString(unsigned char sizeOfChar)
         strlen = bufferLen / sizeOfChar;
     }
 
-#ifndef UNICODE
+#ifndef DCMTK_OFLOG_UNICODE
     if(sizeOfChar == 1) {
         tstring ret(&buffer[pos], strlen);
         pos += strlen;
@@ -168,7 +168,7 @@ SocketBuffer::readString(unsigned char sizeOfChar)
         getLogLog().error(DCMTK_LOG4CPLUS_TEXT("SocketBuffer::readString()- Invalid sizeOfChar!!!!"));
     }
 
-#else /* UNICODE */
+#else /* DCMTK_OFLOG_UNICODE */
     if(sizeOfChar == 1) {
         STD_NAMESPACE string ret(&buffer[pos], strlen);
         pos += strlen;
@@ -252,7 +252,7 @@ SocketBuffer::appendString(const tstring& str)
     }
 
     appendInt(OFstatic_cast(unsigned, strlen));
-#ifndef UNICODE
+#ifndef DCMTK_OFLOG_UNICODE
     memcpy(&buffer[pos], str.data(), strlen);
     pos += strlen;
     size = pos;

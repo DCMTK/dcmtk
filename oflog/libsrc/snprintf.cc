@@ -26,7 +26,7 @@
 #include "dcmtk/oflog/internal/internal.h"
 #include <cstdarg>
 #include <cstdio>
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
 #include <cwchar>
 #endif
 #if defined (DCMTK_LOG4CPLUS_HAVE_STDARG_H)
@@ -66,7 +66,7 @@ static inline
 int
 vftprintf (STD_NAMESPACE FILE * file, tchar const * fmt, va_list args)
 {
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
 #  if defined (DCMTK_LOG4CPLUS_HAVE_VFWPRINTF_S)
     return vfwprintf_s (file, fmt, args);
 #  else
@@ -92,7 +92,7 @@ vstprintf (tchar * dest, size_t dest_size, tchar const * fmt,
     va_list args)
 {
     int ret;
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
 #  if defined (DCMTK_LOG4CPLUS_HAVE_VSWPRINTF_S)
     ret = vswprintf_s (dest, dest_size, fmt, args);
 #  else
@@ -125,7 +125,7 @@ vsntprintf (tchar * dest, size_t dest_size, tchar const * fmt,
 {
     int ret;
 
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
 #  if defined (DCMTK_LOG4CPLUS_HAVE__VSNWPRINTF_S) && defined (_TRUNCATE)
     ret = _vsnwprintf_s (dest, dest_size, _TRUNCATE, fmt, args);
 #  else

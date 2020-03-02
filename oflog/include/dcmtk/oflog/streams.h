@@ -49,7 +49,7 @@ namespace log4cplus
 }
 }
 
-#if defined (UNICODE) && defined (DCMTK_LOG4CPLUS_ENABLE_GLOBAL_C_STRING_STREAM_INSERTER)
+#if defined (DCMTK_OFLOG_UNICODE) && defined (DCMTK_LOG4CPLUS_ENABLE_GLOBAL_C_STRING_STREAM_INSERTER)
 
 DCMTK_LOG4CPLUS_EXPORT log4cplus::tostream& operator <<(log4cplus::tostream&, const char* psz );
 

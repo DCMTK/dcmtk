@@ -2236,7 +2236,7 @@ OFCondition DVInterface::sendIOD(const char * targetID,
 
   // initialize startup info
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
@@ -2246,9 +2246,9 @@ OFCondition DVInterface::sendIOD(const char * targetID,
       studyUID, seriesUID);
   else sprintf(commandline, "%s %s %s %s", sender_application, configPath.c_str(), targetID, studyUID);
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
   {
     return EC_Normal;
@@ -2298,15 +2298,15 @@ OFCondition DVInterface::startReceiver()
     // Windows version - call CreateProcess()
     // initialize startup info
     PROCESS_INFORMATION procinfo;
-    STARTUPINFO sinfo;
+    STARTUPINFOA sinfo;
     OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
     sinfo.cb = sizeof(sinfo);
     char commandline[4096];
     sprintf(commandline, "%s %s %s", receiver_application, configPath.c_str(), getTargetID(i, DVPSE_receiver));
 #ifdef DEBUG
-    if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+    if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-    if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+    if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
       // continue loop
@@ -2353,15 +2353,15 @@ OFCondition DVInterface::terminateReceiver()
   // Windows version - call CreateProcess()
   // initialize startup info
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
   sprintf(commandline, "%s %s %s", receiver_application, configPath.c_str(), "--terminate");
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
   {
     // continue loop
@@ -2426,7 +2426,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
   // Windows version - call CreateProcess()
   // initialize startup info
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
@@ -2442,9 +2442,9 @@ OFCondition DVInterface::startQueryRetrieveServer()
   }
 
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
   {
     return EC_Normal;
@@ -3432,7 +3432,7 @@ OFCondition DVInterface::startPrintSpooler()
     // Windows version - call CreateProcess()
     // initialize startup info
     PROCESS_INFORMATION procinfo;
-    STARTUPINFO sinfo;
+    STARTUPINFOA sinfo;
     OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
     sinfo.cb = sizeof(sinfo);
     char commandline[4096];
@@ -3445,9 +3445,9 @@ OFCondition DVInterface::startPrintSpooler()
         printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
     }
 #ifdef DEBUG
-    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
       DCMPSTAT_ERROR("Unable to execute '" << spooler_application << "'");
@@ -3567,7 +3567,7 @@ OFCondition DVInterface::startPrintServer()
     // Windows version - call CreateProcess()
     // initialize startup info
     PROCESS_INFORMATION procinfo;
-    STARTUPINFO sinfo;
+    STARTUPINFOA sinfo;
     OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
     sinfo.cb = sizeof(sinfo);
     char commandline[4096];
@@ -3578,9 +3578,9 @@ OFCondition DVInterface::startPrintServer()
       sprintf(commandline, "%s --logfile --printer %s --config %s", application, printer, configPath.c_str());
     }
 #ifdef DEBUG
-    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
       DCMPSTAT_ERROR("Unable to execute '" << application << "'");
@@ -3922,15 +3922,15 @@ OFCondition DVInterface::startExternalApplication(const char *application, const
 
   // initialize startup info
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
   sprintf(commandline, "%s %s", application, filename);
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
   {
     return EC_Normal;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1803,7 +1803,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         CloseHandle(hChildStdInWrite);
 
         // we need a STARTUPINFO and a PROCESS_INFORMATION structure for CreateProcess.
-        STARTUPINFO si;
+        STARTUPINFOA si;
         PROCESS_INFORMATION pi;
         memset(&pi,0,sizeof(pi));
         memset(&si,0,sizeof(si));
@@ -1818,7 +1818,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         si.hStdInput = hChildStdInRead;
 
         // create child process.
-        if (!CreateProcess(NULL,OFconst_cast(char *, cmdLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
+        if (!CreateProcessA(NULL,OFconst_cast(char *, cmdLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
         {
             OFOStringStream stream;
             stream << "Multi-Process Error: Creating process failed with error code "
