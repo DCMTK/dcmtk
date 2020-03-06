@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2019, OFFIS e.V.
+ *  Copyright (C) 2012-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/ofstd/oftest.h"
 
 OFTEST_REGISTER(dcmnet_dimseDump_nullByte);
+OFTEST_REGISTER(dcmnet_dimseStatusClass);
 
 #ifdef WITH_THREADS
 OFTEST_REGISTER(dcmnet_scp_pool);

@@ -126,15 +126,22 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 #define STATUS_Success  0x0000
 #define STATUS_Pending  0xff00
 
-#define DICOM_WARNING_STATUS(status) ((((status) & 0xf000) == 0xb000) || ((status) == 0x0001) || ((status) == 0x0107) || ((status) == 0x0116))
-#define DICOM_PENDING_STATUS(status) (((status) == 0xff00) || ((status) == 0xff01))
+/*
+ * Status Classes (see DICOM PS3.7 Annex C).
+ */
+#define DICOM_SUCCESS_STATUS(status)  ((status) == 0x0000)
+#define DICOM_FAILURE_STATUS(status)  ((((status) & 0xf000) == 0xa000) || (((status) & 0xf000) == 0xc000) || ((((status) & 0xff00) == 0x0100) && ((status) != 0x0107) && ((status) != 0x0116)) || (((status) & 0xff00) == 0x0200))
+#define DICOM_WARNING_STATUS(status)  ((((status) & 0xf000) == 0xb000) || ((status) == 0x0001) || ((status) == 0x0107) || ((status) == 0x0116))
+#define DICOM_CANCEL_STATUS(status)   ((status) == 0xfe00)
+#define DICOM_PENDING_STATUS(status)  (((status) == 0xff00) || ((status) == 0xff01))
+#define DICOM_STANDARD_STATUS(status) (((status) == 0x0000) || ((status) == 0x0001) || (((status) & 0xff00) == 0x0100) || (((status) & 0xff00) == 0x0200) || (((status) & 0xf000) == 0xa000) || (((status) & 0xf000) == 0xb000) || (((status) & 0xf000) == 0xc000) || ((status) == 0xfe00) || ((status) == 0xff00) || ((status) == 0xff01))
 
 /*
  * Service Class Specific Status Codes.
  * NOTE: some codes are only significant in the high byte
  * or high nibble (4 bits).
  */
-/* Storage Specific Codes*/
+/* Storage Specific Codes */
 #define STATUS_STORE_Refused_OutOfResources             /* high byte */ 0xa700
 #define STATUS_STORE_Refused_SOPClassNotSupported                       0x0122
 #define STATUS_STORE_Error_DataSetDoesNotMatchSOPClass  /* high byte */ 0xa900
