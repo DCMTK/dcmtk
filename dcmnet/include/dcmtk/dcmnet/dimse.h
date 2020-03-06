@@ -126,8 +126,8 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 #define STATUS_Success  0x0000
 #define STATUS_Pending  0xff00
 
-#define DICOM_PENDING_STATUS(status)  (((status) & 0xff00) == 0xff00)
 #define DICOM_WARNING_STATUS(status) ((((status) & 0xf000) == 0xb000) || ((status) == 0x0001) || ((status) == 0x0107) || ((status) == 0x0116))
+#define DICOM_PENDING_STATUS(status) (((status) == 0xff00) || ((status) == 0xff01))
 
 /*
  * Service Class Specific Status Codes.
