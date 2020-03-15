@@ -619,7 +619,7 @@ OFCondition SiTimeStamp::check_ts_response(
   SiMAC *mac = NULL;
   if (result.good())
   {
-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     ASN1_OBJECT *mac_oid = NULL;
     void *ppval = NULL;
 #else
