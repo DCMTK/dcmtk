@@ -92,9 +92,9 @@ public:
 
    /** sets bounding box for this text object.
     *  @param TLHC_x bounding box top-lefthand corner X value
-    *  @param TLHC_x bounding box top-lefthand corner Y value
+    *  @param TLHC_y bounding box top-lefthand corner Y value
     *  @param BRHC_x bounding box bottom-righthand corner X value
-    *  @param BRHC_x bounding box bottom-righthand corner Y value
+    *  @param BRHC_y bounding box bottom-righthand corner Y value
     *  @param unit bounding box annotation units (pixel/display)
     *  @param justification bounding box horizontal justification (left/right/center)
     *  @return EC_Normal if successful, an error code otherwise.
