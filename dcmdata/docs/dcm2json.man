@@ -277,8 +277,8 @@ the following (see DICOM Part 18 Section F for details):
 \subsection dcm2json_bulk_data Bulk Data
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
-or OW, as well as OD, OF and UN values are by default not written to the JSON
-output because of their size.  Instead, for each element, a new Universally
+or OW, as well as OD, OF, OL, OV and UN values are by default not written to the
+JSON output because of their size.  Instead, for each element, a new Universally
 Unique Identifier (UUID) is being generated and written as an value of a
 BulkDataURI JSON element.  So far, there is no possibility to write an
 additional file to hold the binary data for each of the binary data chunks.
@@ -350,6 +350,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2json_copyright COPYRIGHT
 
-Copyright (C) 2016-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
