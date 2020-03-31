@@ -13,7 +13,7 @@
  *
  *  Module:  dcmnet
  *
- *  Author: Joerg Riesmeier
+ *  Author:  Joerg Riesmeier
  *
  *  Purpose: test program for DIMSE Status Codes and Classes
  *

@@ -628,6 +628,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_MOVEHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.3"
 
 // Relevant Patient Information Query
+#define UID_RelevantPatientInformationQuery_Prefix                 "1.2.840.10008.5.1.4.37."
 #define UID_GeneralRelevantPatientInformationQuery                 "1.2.840.10008.5.1.4.37.1"
 #define UID_BreastImagingRelevantPatientInformationQuery           "1.2.840.10008.5.1.4.37.2"
 #define UID_CardiacRelevantPatientInformationQuery                 "1.2.840.10008.5.1.4.37.3"
