@@ -1103,9 +1103,18 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
   if (elem)
   {
     size_t numBytes = fileSize;
-    if (numBytes & 1) ++numBytes;
+    // according to CP 1851
+    result = dataset->putAndInsertUint32(DCM_EncapsulatedDocumentLength, numBytes);
+    if (numBytes & 1)++numBytes;
     Uint8 *bytes = NULL;
-    result = elem->createUint8Array(OFstatic_cast(Uint32, numBytes), bytes);
+    if (result.good())
+    {
+      result = elem->createUint8Array(OFstatic_cast(Uint32, numBytes), bytes);
+    }
+    else
+    {
+      return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
+    }
     if (result.good())
     {
       // blank pad byte
@@ -1116,6 +1125,10 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
         OFLOG_ERROR(appLogger, "read error in file " << opt_ifname);
         return EXITCODE_CANNOT_READ_INPUT_FILE;
       }
+    }
+    else
+    {
+      return EXITCODE_MEMORY_EXHAUSTED;
     }
   }
   else
