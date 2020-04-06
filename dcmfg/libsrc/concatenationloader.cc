@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2020, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -145,8 +145,7 @@ void ConcatenationLoader::handleFile(const OFFilename& file, ConcatenationLoader
     }
     if (!err.empty())
     {
-        OFtuple<OFFilename, OFString, OFString> t(file, err, inst.m_sopInstanceUID);
-        m_FailedFiles.push_back(t);
+        m_FailedFiles.push_back(OFmake_tuple(file, err, inst.m_sopInstanceUID));
     }
 }
 
