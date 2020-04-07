@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2019, OFFIS e.V.
+ *  Copyright (C) 2001-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -823,10 +823,9 @@ OFCondition DJCodecEncoder::updateDerivationDescription(
     // assume we can cast the codec parameter to what we need
     DJCodecParameter *djcp = OFconst_cast(DJCodecParameter*, cp);
 
-    if (djcp->getTrueLosslessMode())
-      result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "121327", "Full fidelity image");
-    else // pseudo-lossless mode may also result in lossy compression
+    if (!isLosslessProcess() || !djcp->getTrueLosslessMode())
       result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "113040", "Lossy Compression");
+
   }
   return result;
 }
