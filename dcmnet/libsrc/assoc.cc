@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -286,12 +286,12 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     if (*params == NULL) return EC_MemoryExhausted;
     bzero((char*)*params, sizeof(**params));
 
-    strncpy((*params)->ourImplementationClassUID,
+    OFStandard::strlcpy((*params)->ourImplementationClassUID,
             OFFIS_IMPLEMENTATION_CLASS_UID,
-            sizeof((*params)->ourImplementationClassUID)-1);
-    strncpy((*params)->ourImplementationVersionName,
+            sizeof((*params)->ourImplementationClassUID));
+    OFStandard::strlcpy((*params)->ourImplementationVersionName,
             OFFIS_DTK_IMPLEMENTATION_VERSION_NAME,
-            sizeof((*params)->ourImplementationVersionName)-1);
+            sizeof((*params)->ourImplementationVersionName));
 
     if (strlen(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME) > 16)
     {
@@ -303,9 +303,9 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     OFStandard::strlcpy((*params)->DULparams.callingImplementationVersionName,
         (*params)->ourImplementationVersionName, 16+1);
 
-    strncpy((*params)->DULparams.applicationContextName,
+    OFStandard::strlcpy((*params)->DULparams.applicationContextName,
             UID_StandardApplicationContext,
-            sizeof((*params)->DULparams.applicationContextName)-1);
+            sizeof((*params)->DULparams.applicationContextName));
 
     ASC_setAPTitles(*params,
                     "calling AP Title",
@@ -391,14 +391,14 @@ ASC_setAPTitles(T_ASC_Parameters * params,
                 const char* respondingAPTitle)
 {
     if (callingAPTitle)
-        strncpy(params->DULparams.callingAPTitle, callingAPTitle,
-                sizeof(params->DULparams.callingAPTitle)-1);
+        OFStandard::strlcpy(params->DULparams.callingAPTitle, callingAPTitle,
+                sizeof(params->DULparams.callingAPTitle));
     if (calledAPTitle)
-        strncpy(params->DULparams.calledAPTitle, calledAPTitle,
-                sizeof(params->DULparams.calledAPTitle)-1);
+        OFStandard::strlcpy(params->DULparams.calledAPTitle, calledAPTitle,
+                sizeof(params->DULparams.calledAPTitle));
     if (respondingAPTitle)
-        strncpy(params->DULparams.respondingAPTitle, respondingAPTitle,
-                sizeof(params->DULparams.respondingAPTitle)-1);
+        OFStandard::strlcpy(params->DULparams.respondingAPTitle, respondingAPTitle,
+                sizeof(params->DULparams.respondingAPTitle));
 
     return EC_Normal;
 }
@@ -440,13 +440,13 @@ ASC_setPresentationAddresses(T_ASC_Parameters * params,
                              const char* calledPresentationAddress)
 {
     if (callingPresentationAddress)
-        strncpy(params->DULparams.callingPresentationAddress,
+        OFStandard::strlcpy(params->DULparams.callingPresentationAddress,
                 callingPresentationAddress,
-                sizeof(params->DULparams.callingPresentationAddress)-1);
+                sizeof(params->DULparams.callingPresentationAddress));
     if (calledPresentationAddress)
-        strncpy(params->DULparams.calledPresentationAddress,
+        OFStandard::strlcpy(params->DULparams.calledPresentationAddress,
                 calledPresentationAddress,
-                sizeof(params->DULparams.calledPresentationAddress)-1);
+                sizeof(params->DULparams.calledPresentationAddress));
 
     return EC_Normal;
 }
@@ -1792,14 +1792,12 @@ ASC_receiveAssociation(T_ASC_Network * network,
     }
 
     // copy only maximum number of allowed characters
-    // trailing zero is always present because
-    // ASC_createAssociationParameters zero-initializes the complete struct.
-    strncpy(params->theirImplementationClassUID,
+    OFStandard::strlcpy(params->theirImplementationClassUID,
             params->DULparams.callingImplementationClassUID,
-            sizeof (params->theirImplementationClassUID) - 1);
-    strncpy(params->theirImplementationVersionName,
+            sizeof (params->theirImplementationClassUID));
+    OFStandard::strlcpy(params->theirImplementationVersionName,
             params->DULparams.callingImplementationVersionName,
-            sizeof (params->theirImplementationVersionName) - 1);
+            sizeof (params->theirImplementationVersionName));
 
     /*
      * The params->DULparams.peerMaxPDU parameter contains the
