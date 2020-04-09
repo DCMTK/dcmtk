@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2017, OFFIS e.V.
+ *  Copyright (C) 2012-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,7 +20,6 @@
  */
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
-
 #include "dcmtk/dcmnet/scpcfg.h"
 #include "dcmtk/dcmnet/diutil.h"
 
@@ -41,6 +40,10 @@ DcmSCPConfig::DcmSCPConfig() :
   m_connectionTimeout(1000),
   m_respondWithCalledAETitle(OFTrue),
   m_progressNotificationMode(OFTrue)
+#ifdef WITH_OPENSSL
+  ,
+  m_tLayer(NULL)
+#endif
 {
 }
 
@@ -294,6 +297,29 @@ OFBool DcmSCPConfig::getProgressNotificationMode() const
 {
   return m_progressNotificationMode;
 }
+
+// ----------------------------------------------------------------------------
+
+#ifdef WITH_OPENSSL
+OFBool DcmSCPConfig::getSecureLayerEnabled() const
+{
+  return (m_tLayer != NULL);
+}
+
+// ----------------------------------------------------------------------------
+
+DcmTransportLayer * DcmSCPConfig::getSecureTransportLayer() const
+{
+    return m_tLayer;
+}
+
+// ----------------------------------------------------------------------------
+
+void DcmSCPConfig::setSecureConnection(DcmTransportLayer *tlayer)
+{
+  m_tLayer = tlayer;
+}
+#endif
 
 // ----------------------------------------------------------------------------
 

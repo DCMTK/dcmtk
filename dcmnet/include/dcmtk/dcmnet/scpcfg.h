@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2017, OFFIS e.V.
+ *  Copyright (C) 2012-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,8 @@
 #include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association cfg file infos */
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/ofstd/ofmem.h"      /* For OFshared_ptr */
+
+class DcmTransportLayer;
 
 /** Class that encapsulates an SCP configuration that is needed in order to
  *  configure the service negotiation behavior (presentation contexts, AE
@@ -296,6 +298,25 @@ public:
    */
   OFBool getProgressNotificationMode() const;
 
+#ifdef WITH_OPENSSL
+  /** Returns true if a secure layer is used,
+   *  false if a transparent layer is used.
+   *  @return If a secure layer is enabled
+   */
+  OFBool getSecureLayerEnabled() const;
+
+  /** Returns secure layer
+   *  @return Pointer to DcmTransportLayer for secure layer
+   */
+  DcmTransportLayer * getSecureTransportLayer() const;
+
+  /** Tells DcmSCP to set a secure TLS connection described by the given TLS layer
+   *  @param tlayer [in] The TLS transport layer including all TLS parameters.
+   *                     The function doesn't take ownership of tlayer.
+   */
+  void setSecureConnection(DcmTransportLayer *tlayer);
+#endif
+
   /** Dump presentation contexts to given output stream, useful for debugging.
    *  @param out [out] The output stream
    *  @param profileName [in] The profile to dump. If empty (default), the currently
@@ -393,6 +414,13 @@ protected:
 
   /// Progress notification mode (default: OFTrue)
   OFBool m_progressNotificationMode;
+
+#ifdef WITH_OPENSSL
+  /// The TLS layer responsible for all encryption/authentication stuff
+  /// If not null, a secure layer is used,
+  /// if null, a transparent layer is used. (default: null)
+  DcmTransportLayer *m_tLayer; /// Doesn't have ownership
+#endif
 };
 
 /** Enables sharing configurations by multiple DcmSCPs.
