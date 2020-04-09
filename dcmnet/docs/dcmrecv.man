@@ -90,6 +90,98 @@ other network options:
   -dhl  --disable-host-lookup  disable hostname lookup
 \endverbatim
 
+\subsection dcmrecv_tls_options transport layer security (TLS) options
+\verbatim
+transport protocol stack:
+
+  -tls  --disable-tls
+          use normal TCP/IP connection (default)
+
+  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
+          use authenticated secure TLS connection
+
+private key password (only with --enable-tls):
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys and certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys and certificates as DER file
+
+certification authority:
+
+  +cf   --add-cert-file  [c]ertificate filename: string
+          add certificate file to list of certificates
+
+  +cd   --add-cert-dir  [c]ertificate directory: string
+          add certificates in d to list of certificates
+
+security profile:
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile (default)
+
+  +py   --profile-bcp195-nd
+          Non-downgrading BCP 195 TLS Profile
+
+  +pz   --profile-bcp195-ex
+          Extended BCP 195 TLS Profile
+
+  +pb   --profile-basic
+          Basic TLS Secure Transport Connection Profile (retired)
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile (retired)
+
+  +pn   --profile-null
+          Authenticated unencrypted communication
+          (retired, was used in IHE ATNA)
+
+ciphersuite:
+
+  +cc   --list-ciphers
+          show list of supported TLS ciphersuites and exit
+
+  +cs   --cipher  [c]iphersuite name: string
+          add ciphersuite to list of negotiated suites
+
+  +dp   --dhparam  [f]ilename: string
+          read DH parameters for DH/DSS ciphersuites
+
+pseudo random generator:
+
+  +rs   --seed  [f]ilename: string
+          seed random generator with contents of f
+
+  +ws   --write-seed
+          write back modified seed (only with --seed)
+
+  +wf   --write-seed-file  [f]ilename: string (only with --seed)
+          write modified seed to file f
+
+peer authentication:
+
+  -rc   --require-peer-cert
+          verify peer certificate, fail if absent (default)
+
+  -vc   --verify-peer-cert
+          verify peer certificate if present
+
+  -ic   --ignore-peer-cert
+          don't verify peer certificate
+\endverbatim
+
 \subsection dcmrecv_output_options output options
 \verbatim
 general:
@@ -323,6 +415,7 @@ EXITCODE_INVALID_OUTPUT_DIRECTORY        45
 EXITCODE_CANNOT_INITIALIZE_NETWORK       60 (*)
 EXITCODE_CANNOT_START_SCP_AND_LISTEN     64
 EXITCODE_INVALID_ASSOCIATION_CONFIG      66
+EXITCODE_CANNOT_CREATE_TRANSPORT_LAYER   71
 \endverbatim
 
 (*) Actually, these codes are currently not used by \b dcmrecv but serve as a
@@ -355,6 +448,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmrecv_copyright COPYRIGHT
 
-Copyright (C) 2013-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2013-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
