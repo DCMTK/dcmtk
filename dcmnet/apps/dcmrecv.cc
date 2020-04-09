@@ -31,6 +31,7 @@
 #include "dcmtk/dcmnet/dstorscp.h"   /* for DcmStorageSCP */
 #include "dcmtk/dcmtls/tlsopt.h"     /* for DcmTLSOptions */
 
+
 /* general definitions */
 
 #define OFFIS_CONSOLE_APPLICATION "dcmrecv"
@@ -71,11 +72,10 @@ int main(int argc, char *argv[])
 {
 
 #ifdef WITH_OPENSSL
-  DcmTLSTransportLayer::initializeOpenSSL();
+    DcmTLSTransportLayer::initializeOpenSSL();
 #endif
 
     OFOStringStream optStream;
-    OFString temp_str;
     DcmTLSOptions tlsOptions(NET_ACCEPTOR);
 
     const char *opt_configFile = NULL;
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
                                                           optString4.c_str());
         cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
 
-    // add TLS specific command line options if (and only if) we are compiling with OpenSSL
+    /* add TLS specific command line options if (and only if) we are compiling with OpenSSL */
     tlsOptions.addTLSCommandlineOptions(cmd);
 
     cmd.addGroup("output options:");
@@ -167,7 +167,6 @@ int main(int argc, char *argv[])
                 COUT << OFendl << "External libraries used:";
 #ifdef WITH_OPENSSL
                 COUT << OFendl;
-                // print OpenSSL version if (and only if) we are compiling with OpenSSL
                 tlsOptions.printLibraryVersion();
 #else
                 COUT << " none" << OFendl;
@@ -175,7 +174,7 @@ int main(int argc, char *argv[])
                 return EXITCODE_NO_ERROR;
             }
 
-            // check if the command line contains the --list-ciphers option
+            /* check if the command line contains the --list-ciphers option */
             if (tlsOptions.listOfCiphersRequested(cmd))
             {
                 tlsOptions.printSupportedCiphersuites(app, COUT);
@@ -324,14 +323,14 @@ int main(int argc, char *argv[])
     status = tlsOptions.createTransportLayer(NULL, NULL, app, cmd);
     if (status.bad())
     {
-        OFLOG_FATAL(dcmrecvLogger, DimseCondition::dump(temp_str, status));
+        OFString tempStr;
+        OFLOG_FATAL(dcmrecvLogger, DimseCondition::dump(tempStr, status));
         return EXITCODE_CANNOT_CREATE_TRANSPORT_LAYER;
     }
-
+#ifdef WITH_OPENSSL
     if (tlsOptions.secureConnectionRequested())
-    {
-      storageSCP.getConfig().setSecureConnection(tlsOptions.getTransportLayer());
-    }
+        storageSCP.getConfig().setSecureConnection(tlsOptions.getTransportLayer());
+#endif
 
     /* start SCP and listen on the specified port */
     status = storageSCP.listen();
