@@ -327,10 +327,9 @@ int main(int argc, char *argv[])
         OFLOG_FATAL(dcmrecvLogger, DimseCondition::dump(tempStr, status));
         return EXITCODE_CANNOT_CREATE_TRANSPORT_LAYER;
     }
-#ifdef WITH_OPENSSL
+
     if (tlsOptions.secureConnectionRequested())
-        storageSCP.getConfig().setSecureConnection(tlsOptions.getTransportLayer());
-#endif
+        storageSCP.getConfig().setTransportLayer(tlsOptions.getTransportLayer());
 
     /* start SCP and listen on the specified port */
     status = storageSCP.listen();

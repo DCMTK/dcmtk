@@ -28,9 +28,7 @@
 
 #include "dcmtk/dcmnet/scppool.h"
 #include "dcmtk/dcmnet/diutil.h"
-#ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlslayer.h"
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -67,16 +65,14 @@ OFCondition DcmBaseSCPPool::listen()
   if( cond.bad() )
     return cond;
 
-#ifdef WITH_OPENSSL
-  if (m_cfg.getSecureLayerEnabled())
+  if (m_cfg.transportLayerEnabled())
   {
-    cond = ASC_setTransportLayer(network, m_cfg.getSecureTransportLayer(), 0 /* Do not take over ownership */);
+    cond = ASC_setTransportLayer(network, m_cfg.getTransportLayer(), 0 /* Do not take over ownership */);
     if (cond.bad())
     {
         DCMNET_ERROR("DcmBaseSCPPool: Error setting secured transport layer: " << cond.text());
     }
   }
-#endif
 
   /* As long as all is fine (or we have been to busy handling last connection request) keep listening */
   while ( m_runMode == LISTEN && ( cond.good() || (cond == NET_EC_SCPBusy) ) )
@@ -85,10 +81,8 @@ OFCondition DcmBaseSCPPool::listen()
     cond = EC_Normal;
     // Every incoming connection is handled in a new association object
     T_ASC_Association *assoc = NULL;
-    OFBool useSecureLayer = OFFalse;
-#ifdef WITH_OPENSSL
-    useSecureLayer = m_cfg.getSecureLayerEnabled();
-#endif
+    OFBool useSecureLayer = m_cfg.transportLayerEnabled();
+
     // Listen to a socket for timeout seconds for an association request, accepts TCP connection.
     cond = ASC_receiveAssociation( network, &assoc, m_cfg.getMaxReceivePDULength(), NULL, NULL, useSecureLayer,
         m_cfg.getConnectionBlockingMode(), OFstatic_cast(int, m_cfg.getConnectionTimeout()) );

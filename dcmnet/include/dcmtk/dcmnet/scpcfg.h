@@ -298,24 +298,22 @@ public:
    */
   OFBool getProgressNotificationMode() const;
 
-#ifdef WITH_OPENSSL
-  /** Returns true if a secure layer is used,
-   *  false if a transparent layer is used.
-   *  @return If a secure layer is enabled
+  /** Returns true if an external transport layer (e.g. TLS) is enabled,
+   *  false if the default, transparent layer is used.
+   *  @return true if an external transport layer is enabled
    */
-  OFBool getSecureLayerEnabled() const;
+  OFBool transportLayerEnabled() const;
 
-  /** Returns secure layer
-   *  @return Pointer to DcmTransportLayer for secure layer
+  /** Returns pointer to the transport layer object in use
+   *  @return pointer to the transport layer object in use, may be NULL.
    */
-  DcmTransportLayer * getSecureTransportLayer() const;
+  DcmTransportLayer * getTransportLayer() const;
 
-  /** Tells DcmSCP to set a secure TLS connection described by the given TLS layer
-   *  @param tlayer [in] The TLS transport layer including all TLS parameters.
-   *                     The function doesn't take ownership of tlayer.
+  /** set an explicit transport layer (e.g. for TLS communication) to use
+   *  @param tlayer [in] The transport layer object.
+   *                     This function does not take ownership of tlayer.
    */
-  void setSecureConnection(DcmTransportLayer *tlayer);
-#endif
+  void setTransportLayer(DcmTransportLayer *tlayer);
 
   /** Dump presentation contexts to given output stream, useful for debugging.
    *  @param out [out] The output stream
@@ -415,12 +413,9 @@ protected:
   /// Progress notification mode (default: OFTrue)
   OFBool m_progressNotificationMode;
 
-#ifdef WITH_OPENSSL
-  /// The TLS layer responsible for all encryption/authentication stuff
-  /// If not null, a secure layer is used,
-  /// if null, a transparent layer is used. (default: null)
+  /// The transport layer in use for communication (e.g. for TLS). 
+  /// Default is NULL for the normal TCP layer.
   DcmTransportLayer *m_tLayer; /// Doesn't have ownership
-#endif
 };
 
 /** Enables sharing configurations by multiple DcmSCPs.

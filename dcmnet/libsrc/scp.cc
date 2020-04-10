@@ -24,10 +24,7 @@
 #include "dcmtk/dcmdata/dcostrmf.h" /* for class DcmOutputFileStream */
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmnet/scp.h"
-
-#ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlslayer.h"
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -106,17 +103,15 @@ OFCondition DcmSCP::listen()
     if (cond.bad())
         return cond;
 
-#ifdef WITH_OPENSSL
-    if (m_cfg->getSecureLayerEnabled())
+    if (m_cfg->transportLayerEnabled())
     {
-      cond = ASC_setTransportLayer(network, m_cfg->getSecureTransportLayer(), OFFalse /* Do not take over ownership */);
+      cond = ASC_setTransportLayer(network, m_cfg->getTransportLayer(), OFFalse /* Do not take over ownership */);
       if (cond.bad())
       {
-          DCMNET_ERROR("DcmSCP: Error setting secured transport layer: " << cond.text());
+          DCMNET_ERROR("DcmSCP: Error setting secure transport layer: " << cond.text());
           return cond;
       }
     }
-#endif
 
     // drop root privileges now and revert to the calling user id (if we are running as setuid root)
     cond = OFStandard::dropPrivileges();
@@ -340,11 +335,7 @@ OFCondition DcmSCP::waitForAssociationRQ(T_ASC_Network* network)
         return DIMSE_ILLEGALASSOCIATION;
 
     Uint32 timeout = m_cfg->getConnectionTimeout();
-
-    OFBool useSecureLayer = OFFalse;
-#ifdef WITH_OPENSSL
-    useSecureLayer = m_cfg->getSecureLayerEnabled();
-#endif
+    OFBool useSecureLayer = m_cfg->transportLayerEnabled();
 
     // Listen to a socket for timeout seconds and wait for an association request
     OFCondition cond = ASC_receiveAssociation(network,

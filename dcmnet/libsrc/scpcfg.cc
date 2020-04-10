@@ -39,11 +39,8 @@ DcmSCPConfig::DcmSCPConfig() :
   m_verbosePCMode(OFFalse),
   m_connectionTimeout(1000),
   m_respondWithCalledAETitle(OFTrue),
-  m_progressNotificationMode(OFTrue)
-#ifdef WITH_OPENSSL
-  ,
+  m_progressNotificationMode(OFTrue),
   m_tLayer(NULL)
-#endif
 {
 }
 
@@ -300,26 +297,24 @@ OFBool DcmSCPConfig::getProgressNotificationMode() const
 
 // ----------------------------------------------------------------------------
 
-#ifdef WITH_OPENSSL
-OFBool DcmSCPConfig::getSecureLayerEnabled() const
+OFBool DcmSCPConfig::transportLayerEnabled() const
 {
   return (m_tLayer != NULL);
 }
 
 // ----------------------------------------------------------------------------
 
-DcmTransportLayer * DcmSCPConfig::getSecureTransportLayer() const
+DcmTransportLayer * DcmSCPConfig::getTransportLayer() const
 {
     return m_tLayer;
 }
 
 // ----------------------------------------------------------------------------
 
-void DcmSCPConfig::setSecureConnection(DcmTransportLayer *tlayer)
+void DcmSCPConfig::setTransportLayer(DcmTransportLayer *tlayer)
 {
   m_tLayer = tlayer;
 }
-#endif
 
 // ----------------------------------------------------------------------------
 
