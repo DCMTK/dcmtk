@@ -32,6 +32,7 @@
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/dcmnet/scppool.h"
+#include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmtls/tlsscu.h"
 
 #ifdef WITH_THREADS
@@ -58,7 +59,7 @@ static void force_sleep(Uint32 sleep)
 
 
 /** TestSCP derived from DcmSCP in order to test TLS functionality
- *  through function setSecureConnection of DcmSCPConfig.
+ *  through function setTransportLayer of DcmSCPConfig.
  *
  *  Additionally the SCP derives from OFThread in order to construct the
  *  test case (i.e. send data with SCU at the same time and check results).
@@ -313,7 +314,7 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
     xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
     OFCHECK(config.addPresentationContext(UID_VerificationSOPClass, xfers, ASC_SC_ROLE_SCP).good());
 
-    config.setSecureConnection(&scpTlsLayer);
+    config.setTransportLayer(&scpTlsLayer);
     scp.start();
 
     // Ensure server is up and listening
@@ -380,7 +381,7 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
     OFList<OFString> xfers;
     xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
     OFCHECK(config.addPresentationContext(UID_VerificationSOPClass, xfers, ASC_SC_ROLE_DEFAULT).good());
-    config.setSecureConnection(&scpTlsLayer);
+    config.setTransportLayer(&scpTlsLayer);
     pool.setMaxThreads(20);
     pool.start();
 
@@ -437,3 +438,25 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
 #endif // WITH_OPENSSL
 
 #endif // WITH_THREADS
+
+#if (!defined(WITH_THREADS)) || (!defined(WITH_OPENSSL))
+
+// Dummy versions of the test cases. Needed to prevent ctest test failures.
+OFTEST(dcmtls_scp_tls)
+{
+}
+
+OFTEST(dcmtls_scp_pool_tls)
+{
+}
+
+// This dummy function creates a dependency on libdcmnet that is required when compiling
+// on NetBSD with libwrap support enabled and OpenSSL support disabled. Otherwise there
+// would be a linker error complaining about unresolved symbols allow_severity and deny_severity.
+
+DcmTransportLayer *tscuscptls_dummyFunction()
+{
+  return new DcmTransportLayer();
+}
+
+#endif

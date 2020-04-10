@@ -22,11 +22,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftest.h"
 
-#ifdef WITH_THREADS
-#ifdef WITH_OPENSSL
 OFTEST_REGISTER(dcmtls_scp_tls);
 OFTEST_REGISTER(dcmtls_scp_pool_tls);
-#endif // WITH_OPENSSL
-#endif // WITH_THREADS
 
 OFTEST_MAIN("dcmtls")
