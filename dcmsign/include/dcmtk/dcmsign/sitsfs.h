@@ -92,12 +92,12 @@ public:
   /** load timestamp query from file
    *  @return status code
    */
-  virtual OFCondition load_ts_query();
+  virtual OFCondition load_ts_query_from_file();
 
   /** load timestamp response from file
    *  @return status code
    */
-  virtual OFCondition load_ts_response();
+  virtual OFCondition load_ts_response_from_file();
 
   /** check consistency between timestamp query (if available), timestamp
    *  response and DICOM digital signature. Query and response files must have

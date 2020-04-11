@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -708,13 +708,13 @@ int DcmSignatureHelper::do_insert_ts(DcmItem *dataset, SiTimeStampFS *timeStamp)
   if (dataset == NULL || timeStamp == NULL) return EXITCODE_CANNOT_ACCESS_TS;
 
   // load timestamp query
-  if (timeStamp->load_ts_query().bad())
+  if (timeStamp->load_ts_query_from_file().bad())
   {
     return EXITCODE_CANNOT_READ_TSQ_FILE;
   }
 
   // load timestamp response
-  if (timeStamp->load_ts_response().bad())
+  if (timeStamp->load_ts_response_from_file().bad())
   {
     return EXITCODE_CANNOT_READ_TSR_FILE;
   }

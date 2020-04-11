@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -169,7 +169,7 @@ OFCondition SiTimeStampFS::getUIDFromFile(OFString& uid)
 }
 
 
-OFCondition SiTimeStampFS::load_ts_query()
+OFCondition SiTimeStampFS::load_ts_query_from_file()
 {
   if (tsqFilename_.length() == 0)
   {
@@ -181,7 +181,7 @@ OFCondition SiTimeStampFS::load_ts_query()
 }
 
 
-OFCondition SiTimeStampFS::load_ts_response()
+OFCondition SiTimeStampFS::load_ts_response_from_file()
 {
   if (tsrFilename_.length() == 0)
   {
