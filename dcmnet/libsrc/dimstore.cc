@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -406,7 +406,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 
     /* initialize the C-STORE-RSP message variable */
     bzero((char*)&response, sizeof(response));
-    response.DimseStatus = STATUS_Success;      /* assume */
+    response.DimseStatus = STATUS_STORE_Success;      /* assume */
     response.MessageIDBeingRespondedTo = request->MessageID;
     response.DataSetType = DIMSE_DATASET_NULL;  /* always for C-STORE-RSP */
     OFStandard::strlcpy(response.AffectedSOPClassUID, request->AffectedSOPClassUID, sizeof(response.AffectedSOPClassUID));
@@ -492,7 +492,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 
     /* depending on the error status, set the success indicating flag in the response message */
     if (cond == EC_Normal) {
-        response.DimseStatus = STATUS_Success;
+        response.DimseStatus = STATUS_STORE_Success;
     } else if (cond == DIMSE_OUTOFRESOURCES) {
         response.DimseStatus = STATUS_STORE_Refused_OutOfResources;
     } else {

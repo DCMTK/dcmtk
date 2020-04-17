@@ -219,7 +219,7 @@ static void DIMSE_printNStatusString(STD_NAMESPACE ostream& dumpStream, int stat
 
     /* Modality Performed Procedure Step Retrieve SOP Class Specific Codes */
     case STATUS_N_MPPS_Warning_RequestedOptionalAttributesNotSupported:
-      dumpStream << "Warning: Requested attributes not supported";
+      dumpStream << "MPPS retrieve warning: Requested optional attributes not supported";
       break;
 
     /* Application Event Logging Service Class Specific Codes */

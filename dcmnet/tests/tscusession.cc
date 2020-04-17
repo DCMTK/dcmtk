@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -115,7 +115,7 @@ struct SessionSCP : public DcmSCP, OFThread
             OFunique_ptr<DcmDataset> rsp(new DcmDataset);
             *rsp = *reqDataset;
             DcmSCP::findPresentationContext(presID, sop_class, ts);
-            Uint16 status = STATUS_Pending;
+            Uint16 status = STATUS_MOVE_Pending_SubOperationsAreContinuing;
             // Send back configured number of responses, all but last with status PENDING (last: SUCCESS).
             // All but the last one will return a copy of the request dataset (random choice for this test;
             // last response will not have a dataset.
@@ -150,7 +150,7 @@ struct SessionSCP : public DcmSCP, OFThread
             OFunique_ptr<DcmDataset> rsp(new DcmDataset);
             *rsp = *reqDataset;
             DcmSCP::findPresentationContext(presID, sop_class, ts);
-            Uint16 status = STATUS_Pending;
+            Uint16 status = STATUS_FIND_Pending_MatchesAreContinuing;
             // Send back configured number of responses, all but last with status PENDING (last: SUCCESS).
             // All but the last one will return a copy of the request dataset (random choice for this test;
             // last response will not have a dataset.

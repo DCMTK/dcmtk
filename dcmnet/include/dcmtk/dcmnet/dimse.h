@@ -301,6 +301,9 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 
 // --- TODO (DIMSE-N) ---
 
+// the following Services use different DIMSE Status Code meanings for
+// each SOP Class, including standard Codes such as 0x0000 (Success):
+
 /* (Unified Procedure Step) */
 /* (RT Machine Verification) */
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -165,7 +165,7 @@ DIMSE_moveUser(
     DIC_US msgId;
     int responseCount = 0;
     T_ASC_Association *subAssoc = NULL;
-    DIC_US status = STATUS_Pending;
+    DIC_US status = STATUS_MOVE_Pending_SubOperationsAreContinuing;
     OFBool firstLoop = OFTrue;
 
     if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
@@ -187,7 +187,7 @@ DIMSE_moveUser(
     /* receive responses */
 
     OFTimer timer;
-    while (cond == EC_Normal && status == STATUS_Pending) {
+    while (cond == EC_Normal && status == STATUS_MOVE_Pending_SubOperationsAreContinuing) {
 
         /* if user wants, multiplex between net/subAssoc
          * and move responses over main assoc.
@@ -239,7 +239,7 @@ DIMSE_moveUser(
         responseCount++;
 
         switch (status) {
-        case STATUS_Pending:
+        case STATUS_MOVE_Pending_SubOperationsAreContinuing:
             if (*statusDetail != NULL) {
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "moveUser: Pending with statusDetail, ignoring detail");
                 delete *statusDetail;
@@ -318,8 +318,8 @@ DIMSE_sendMoveResponse(
     rsp.msg.CMoveRSP.opts = O_MOVE_AFFECTEDSOPCLASSUID;
 
     switch (response->DimseStatus) {
-    case STATUS_Success:
-    case STATUS_Pending:
+    case STATUS_MOVE_Success:
+    case STATUS_MOVE_Pending_SubOperationsAreContinuing:
         /* Success cannot have a Failed SOP Instance UID list (no failures).
          * Pending may not send such a list.
          */
@@ -343,7 +343,7 @@ DIMSE_sendMoveResponse(
             O_MOVE_NUMBEROFWARNINGSUBOPERATIONS);
 
     switch (response->DimseStatus) {
-    case STATUS_Pending:
+    case STATUS_MOVE_Pending_SubOperationsAreContinuing:
     case STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication:
         break;
     default:
@@ -389,9 +389,9 @@ DIMSE_moveProvider(
           cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
         } else {
             bzero((char*)&rsp, sizeof(rsp));
-            rsp.DimseStatus = STATUS_Pending;   /* assume */
+            rsp.DimseStatus = STATUS_MOVE_Pending_SubOperationsAreContinuing;   /* assume */
 
-            while (cond == EC_Normal && rsp.DimseStatus == STATUS_Pending && normal) {
+            while (cond == EC_Normal && rsp.DimseStatus == STATUS_MOVE_Pending_SubOperationsAreContinuing && normal) {
                 responseCount++;
 
                 cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);

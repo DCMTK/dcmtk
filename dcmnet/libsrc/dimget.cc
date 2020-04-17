@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -100,7 +100,7 @@ DIMSE_getUser(
     DIC_US msgId;
     int responseCount = 0;
     T_ASC_Association *subAssoc = NULL;
-    DIC_US status = STATUS_Pending;
+    DIC_US status = STATUS_GET_Pending_SubOperationsAreContinuing;
 
     if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
 
@@ -184,7 +184,7 @@ DIMSE_getUser(
         responseCount++;
 
         switch (status) {
-        case STATUS_Pending:
+        case STATUS_GET_Pending_SubOperationsAreContinuing:
             if (*statusDetail != NULL) {
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "getUser: Pending with statusDetail, ignoring detail");
                 delete *statusDetail;
@@ -238,14 +238,14 @@ DIMSE_sendGetResponse(T_ASC_Association * assoc,
     rsp.msg.CGetRSP = *response;
     /* copy over stuff from request */
     rsp.msg.CGetRSP.MessageIDBeingRespondedTo = request->MessageID;
-    /* always send afected sop class uid */
+    /* always send affected sop class uid */
     OFStandard::strlcpy(rsp.msg.CGetRSP.AffectedSOPClassUID, request->AffectedSOPClassUID,
         sizeof(rsp.msg.CGetRSP.AffectedSOPClassUID));
     rsp.msg.CGetRSP.opts = O_GET_AFFECTEDSOPCLASSUID;
 
     switch (response->DimseStatus) {
-    case STATUS_Success:
-    case STATUS_Pending:
+    case STATUS_GET_Success:
+    case STATUS_GET_Pending_SubOperationsAreContinuing:
         /* Success cannot have a Failed SOP Instance UID list (no failures).
          * Pending may not send such a list.
          */
@@ -269,7 +269,7 @@ DIMSE_sendGetResponse(T_ASC_Association * assoc,
         O_GET_NUMBEROFWARNINGSUBOPERATIONS);
 
     switch (response->DimseStatus) {
-    case STATUS_Pending:
+    case STATUS_GET_Pending_SubOperationsAreContinuing:
     case STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication:
         break;
     default:
@@ -315,9 +315,9 @@ DIMSE_getProvider(
         else
         {
             bzero((char*)&rsp, sizeof(rsp));
-            rsp.DimseStatus = STATUS_Pending;   /* assume */
+            rsp.DimseStatus = STATUS_GET_Pending_SubOperationsAreContinuing;   /* assume */
 
-            while (cond == EC_Normal && rsp.DimseStatus == STATUS_Pending && normal)
+            while (cond == EC_Normal && rsp.DimseStatus == STATUS_GET_Pending_SubOperationsAreContinuing && normal)
             {
                 responseCount++;
 
@@ -330,7 +330,7 @@ DIMSE_getProvider(
                 } else if (cond == DIMSE_NODATAAVAILABLE) {
                     /* timeout */
                 } else {
-                    /* some execption condition occurred, bail out */
+                    /* some exception condition occurred, bail out */
                     normal = OFFalse;
                 }
 
