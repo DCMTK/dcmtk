@@ -289,6 +289,7 @@ OFCondition DcmFindSCU::performQuery(
     if (cond.bad())
     {
         DCMNET_ERROR("Setting Transport Layer Type Failed: " << DimseCondition::dump(temp_str, cond));
+        (void) ASC_destroyAssociationParameters(&params);
         return cond;
     }
 
@@ -303,6 +304,7 @@ OFCondition DcmFindSCU::performQuery(
     if (cond.bad())
     {
         DCMNET_ERROR("Adding Presentation Contexts Failed: " << DimseCondition::dump(temp_str, cond));
+        (void) ASC_destroyAssociationParameters(&params);
         return cond;
     }
 
@@ -323,9 +325,11 @@ OFCondition DcmFindSCU::performQuery(
             ASC_getRejectParameters(params, &rej);
 
             DCMNET_ERROR("Association Rejected:" << OFendl << ASC_printRejectParameters(temp_str, &rej));
+            (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
             return cond;
         } else {
             DCMNET_ERROR("Association Request Failed: " << DimseCondition::dump(temp_str, cond));
+            (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
             return cond;
         }
     }
@@ -338,6 +342,7 @@ OFCondition DcmFindSCU::performQuery(
     if (ASC_countAcceptedPresentationContexts(params) == 0)
     {
         DCMNET_ERROR("No Acceptable Presentation Contexts");
+        (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
         return NET_EC_NoAcceptablePresentationContexts;
     }
 
@@ -398,6 +403,7 @@ OFCondition DcmFindSCU::performQuery(
             cond = ASC_abortAssociation(assoc);
             if (cond.bad()) {
                 DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
+                (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
                 return cond;
             }
         } else {
@@ -407,6 +413,7 @@ OFCondition DcmFindSCU::performQuery(
             if (cond.bad())
             {
                 DCMNET_ERROR("Association Release Failed: " << DimseCondition::dump(temp_str, cond));
+                (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
                 return cond;
             }
         }
@@ -418,6 +425,7 @@ OFCondition DcmFindSCU::performQuery(
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
+            (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
             return cond;
         }
     }
@@ -430,6 +438,7 @@ OFCondition DcmFindSCU::performQuery(
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
+            (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
             return cond;
         }
     }
