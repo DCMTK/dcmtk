@@ -332,6 +332,9 @@ SITE_UID_ROOT
     namespace should compile DCMTK with SITE_UID_ROOT defined to their own
     UID root.  Please make sure that the resulting UIDs do not exceed the
     64 characters limit!
+    DCMTK may add a maximum of 44 characters to the UID root when
+    generating UIDs. Therefore, the root must not be longer than 20
+    characters in order to avoid UID truncation.
 
 STARVIEW
   Affected: dcmimgle, dcmimage
