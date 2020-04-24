@@ -29,7 +29,6 @@
 #include "dcmtk/dcmfg/fg.h"
 #include "dcmtk/dcmfg/fgtypes.h"
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/oftuple.h"
 
 //  --------------------------------- Public API ------------------------------
 
@@ -145,7 +144,7 @@ void ConcatenationLoader::handleFile(const OFFilename& file, ConcatenationLoader
     }
     if (!err.empty())
     {
-        m_FailedFiles.push_back(OFmake_tuple(file, err, inst.m_sopInstanceUID));
+        m_FailedFiles.push_back(Failure(file, err, inst.m_sopInstanceUID));
     }
 }
 

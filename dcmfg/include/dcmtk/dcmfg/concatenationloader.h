@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2020, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -29,7 +29,6 @@
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofmap.h"
-#include "dcmtk/ofstd/oftuple.h"
 
 class DcmDataset;
 
@@ -76,6 +75,7 @@ public:
              */
             Instance();
         };
+
         /** Default constructor */
         Info();
 
@@ -142,6 +142,27 @@ public:
         virtual ~Info();
     };
 
+    /// structure representing error information about a failed file
+    struct DCMTK_DCMFG_EXPORT Failure
+    {
+      /// filename
+      OFFilename fname;
+
+      /// error text
+      OFString errorText;
+
+      /// SOP Instance UID
+      OFString sopInstance;
+
+      /** constructor.
+       *  @param fn filename
+       *  @param err error text
+       *  @param uid SOP instance UID
+       */
+      Failure(const OFFilename& fn, const OFString& err, const OFString& uid)
+      : fname(fn), errorText(err), sopInstance(uid) {}
+    };
+
     /// Result type of scan()
     typedef OFMap<OFString, ConcatenationLoader::Info*> TScanResult;
 
@@ -149,13 +170,10 @@ public:
     typedef OFMap<OFString, ConcatenationLoader::Info*>::iterator ScanResultIt;
 
     /// Result type for the failures reported by scan()
-    typedef OFList<OFtuple<OFFilename, OFString, OFString> > TScanFailures;
-
-    /// Helper type, mainly for iterator definition
-    typedef OFtuple<OFFilename, OFString, OFString> TScanFailureEntry;
+    typedef OFList<Failure> TScanFailures;
 
     /// Result type for iterating the failures reported by scan()
-    typedef OFListIterator(TScanFailureEntry) TScanFailureIt;
+    typedef OFListIterator(Failure) TScanFailureIt;
 
     /** Constructor
      */

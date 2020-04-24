@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,11 +79,11 @@ OFTEST(dcmfg_concatenation_loader)
     while (ff != failed.end())
     {
         // Filename is set
-        OFCHECK(!OFget<0>(*ff).isEmpty());
+        OFCHECK(!(*ff).fname.isEmpty());
         // Error is set accordingly
-        OFCHECK(OFget<1>(*ff) == "File is not part of Concatenation");
+        OFCHECK((*ff).errorText == "File is not part of Concatenation");
         // SOP Instance UID is set and valid
-        DcmUniqueIdentifier::checkStringValue(OFget<2>(*ff), "1");
+        DcmUniqueIdentifier::checkStringValue((*ff).sopInstance, "1");
         ff++;
     }
     // Scanning done, now load
