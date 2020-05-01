@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2018, OFFIS e.V.
+ *  Copyright (C) 2009-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -173,6 +173,25 @@ public:
      *          </ul>
      */
     virtual OFCondition listen();
+
+    /** Alternative interface to providing the implemented services to SCUs.
+     *  This method opens the TCP port for incoming connections, drops root privileges
+     *  if necessary and then returns. The caller can then perform short other operations
+     *  and finally call acceptAssociations(). If any SCU tries to connect between
+     *  this method and the call to acceptAssociations(), they are placed on the
+     *  TCP listen backlog and will be handled by acceptAssociations() unless they
+     *  time out or the backlog overflows (the size of the backlog is defined by the
+     *  PRV_LISTENBACKLOG macro).
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    virtual OFCondition openListenPort();
+
+    /** Alternative interface to providing the implemented services to SCUs.
+     *  This method should be called after a call to openListenPort().
+     *  @return The result. Per default, the method only returns in case of fatal errors.
+     *    See documentation of listen() method on how to stop listening in a controlled way.
+     */
+    virtual OFCondition acceptAssociations();
 
     /* ************************************************************* */
     /*             Set methods for configuring SCP behavior          */
@@ -1117,6 +1136,9 @@ protected:
     static void callbackRECEIVEProgress(void* callbackContext, unsigned long byteCount);
 
 private:
+    /// Network instance run by this SCP
+    T_ASC_Network* m_network;
+
     /// Current association run by this SCP
     T_ASC_Association* m_assoc;
 

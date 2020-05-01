@@ -29,8 +29,9 @@
 // ----------------------------------------------------------------------------
 
 DcmSCP::DcmSCP()
-    : m_assoc(NULL)
-    , m_cfg()
+: m_network(NULL)
+, m_assoc(NULL)
+, m_cfg()
 {
     OFStandard::initializeNetwork();
 }
@@ -43,6 +44,12 @@ DcmSCP::~DcmSCP()
     if (m_assoc)
     {
         dropAndDestroyAssociation();
+    }
+
+    // clean up network structure if initialized
+    if (m_network)
+    {
+        ASC_dropNetwork(&m_network);
     }
 
     OFStandard::shutdownNetwork();
@@ -69,8 +76,16 @@ OFCondition DcmSCP::setConfig(const DcmSCPConfig& config)
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmSCP::listen()
+OFCondition DcmSCP::openListenPort()
 {
+
+    // clean up network structure if already initialized
+    if (m_network)
+    {
+      ASC_dropNetwork(&m_network);
+      m_network = NULL;
+    }
+
     // make sure not to let dcmdata remove trailing blank padding or perform other
     // manipulations. We want to see the real data.
     dcmEnableAutomaticInputDataCorrection.set(OFFalse);
@@ -98,14 +113,16 @@ OFCondition DcmSCP::listen()
         return result;
 
     // Initialize network, i.e. create an instance of T_ASC_Network*.
-    T_ASC_Network* network = NULL;
-    cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, m_cfg->getPort()), m_cfg->getACSETimeout(), &network);
+    cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, m_cfg->getPort()), m_cfg->getACSETimeout(), &m_network);
     if (cond.bad())
+    {
+        m_network = NULL;
         return cond;
+    }
 
     if (m_cfg->transportLayerEnabled())
     {
-      cond = ASC_setTransportLayer(network, m_cfg->getTransportLayer(), OFFalse /* Do not take over ownership */);
+      cond = ASC_setTransportLayer(m_network, m_cfg->getTransportLayer(), OFFalse /* Do not take over ownership */);
       if (cond.bad())
       {
           DCMNET_ERROR("DcmSCP: Error setting secure transport layer: " << cond.text());
@@ -121,7 +138,22 @@ OFCondition DcmSCP::listen()
         return cond;
     }
 
-    // If we get to this point, the entire initialization process has been completed
+    return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+OFCondition DcmSCP::acceptAssociations()
+{
+    if (m_network == NULL)
+    {
+       DCMNET_ERROR("network port not initialized, call DcmSCP::openListenPort() first.");
+       return EC_IllegalCall;
+    }
+
+    OFCondition cond = EC_Normal;
+
+    // At this point, the entire initialization process has been completed
     // successfully. Now, we want to start handling all incoming requests. Since
     // this activity is supposed to represent a server process, we do not want to
     // terminate this activity (unless indicated by the stopAfterCurrentAssociation()
@@ -130,7 +162,7 @@ OFCondition DcmSCP::listen()
     {
         // Wait for an association and handle the requests of
         // the calling applications correspondingly.
-        cond = waitForAssociationRQ(network);
+        cond = waitForAssociationRQ(m_network);
 
         // Check whether we have a timeout
         if (cond == DUL_NOASSOCIATIONREQUEST)
@@ -157,11 +189,20 @@ OFCondition DcmSCP::listen()
 
     // Drop the network, i.e. free memory of T_ASC_Network* structure. This call
     // is the counterpart of ASC_initializeNetwork(...) which was called above.
-    ASC_dropNetwork(&network);
-    network = NULL;
+    ASC_dropNetwork(&m_network);
+    m_network = NULL;
 
     // return ok
     return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+OFCondition DcmSCP::listen()
+{
+  OFCondition cond = openListenPort();
+  if (cond.good()) cond = acceptAssociations();
+  return cond;
 }
 
 // ----------------------------------------------------------------------------
