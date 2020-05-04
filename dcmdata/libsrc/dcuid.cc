@@ -360,6 +360,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_UnifiedProcedureStepWatchSOPClass,                   "UnifiedProcedureStepWatchSOPClass" },
     { UID_UnifiedProcedureStepPullSOPClass,                    "UnifiedProcedureStepPullSOPClass" },
     { UID_UnifiedProcedureStepEventSOPClass,                   "UnifiedProcedureStepEventSOPClass" },
+    { UID_UnifiedProcedureStepQuerySOPClass,                   "UnifiedProcedureStepQuerySOPClass" },
     { UID_UPSGlobalSubscriptionSOPInstance,                    "UPSGlobalSubscriptionSOPInstance" },
     { UID_UPSFilteredGlobalSubscriptionSOPInstance,            "UPSFilteredGlobalSubscriptionSOPInstance" },
 
