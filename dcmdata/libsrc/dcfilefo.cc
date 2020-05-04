@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,6 +39,7 @@
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcvrae.h"
 #include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcvrur.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
 
 #include "dcmtk/dcmdata/dcdeftag.h"
@@ -505,6 +506,17 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             if (elem == NULL)
             {
                 elem = new DcmApplicationEntity(tag);
+                metainfo->insert(elem, OFTrue);
+            }
+            DCMDATA_WARN("DcmFileFormat: Don't know how to handle " << tag.getTagName());
+        }
+        else if ((xtag == DCM_SourcePresentationAddress) ||  // (0002,0026)
+                 (xtag == DCM_SendingPresentationAddress) || // (0002,0027)
+                 (xtag == DCM_ReceivingPresentationAddress)) // (0002,0028)
+        {
+            if (elem == NULL)
+            {
+                elem = new DcmUniversalResourceIdentifierOrLocator(tag);
                 metainfo->insert(elem, OFTrue);
             }
             DCMDATA_WARN("DcmFileFormat: Don't know how to handle " << tag.getTagName());
