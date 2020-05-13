@@ -162,13 +162,6 @@ JPEG-LS interleave:
   # In sample-interleave mode each pixel's components are encoded before
   # the next pixel is encoded.
 
-  +in  --interleave-none
-         force uninterleaved JPEG-LS images
-
-  # This flag forces uninterleaved mode for the resulting image.
-  # In this mode, each of the image's components are completely encoded
-  # before the next component is handled.
-
   +iv  --interleave-default
          use the fastest possible interleave mode
 
@@ -395,6 +388,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmcjpls_copyright COPYRIGHT
 
-Copyright (C) 2009-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2009-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

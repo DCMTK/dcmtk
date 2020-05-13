@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2019, OFFIS e.V.
+ *  Copyright (C) 2007-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -152,7 +152,9 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
     cmd.addSubGroup("JPEG-LS interleave:");
       cmd.addOption("--interleave-line",        "+il",    "force line-interleaved JPEG-LS images (default)");
       cmd.addOption("--interleave-sample",      "+is",    "force sample-interleaved JPEG-LS images");
+#ifdef ENABLE_DCMJPLS_INTERLEAVE_NONE
       cmd.addOption("--interleave-none",        "+in",    "force uninterleaved JPEG-LS images");
+#endif
       cmd.addOption("--interleave-default",     "+iv",    "use the fastest possible interleave mode");
     cmd.addSubGroup("JPEG-LS padding of odd-length bitstreams:");
       cmd.addOption("--padding-standard",       "+ps",    "pad with extended EOI marker (default)");
@@ -321,10 +323,12 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       {
         opt_interleaveMode = DJLSCodecParameter::interleaveLine;
       }
+#ifdef ENABLE_DCMJPLS_INTERLEAVE_NONE
       if (cmd.findOption("--interleave-none"))
       {
         opt_interleaveMode = DJLSCodecParameter::interleaveNone;
       }
+#endif
       cmd.endOptionBlock();
 
       // padding
