@@ -2015,7 +2015,7 @@ double OFStandard::atof(const char *s, OFBool *success)
               }
               else
               {
-                // positive exponent. return HUGE_VALF or HUGE_VALL, depending on the sign bit
+                // positive exponent. return plus/minus HUGE_VAL, depending on the sign bit
                 if (sign) return -HUGE_VAL; else return HUGE_VAL;
               }
             }
