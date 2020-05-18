@@ -455,6 +455,8 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         ec = EC_IllegalCall;
     if (ec.good())
     {
+        OFLOG_INFO(dump2dcmLogger, "reading " << len << " bytes from binary data file: " << filename);
+        OFLOG_DEBUG(dump2dcmLogger, "  and storing it in the element " << elem->getTag());
         /* read binary file into the buffer */
         if (fread(buf, 1, len, f) != len)
         {

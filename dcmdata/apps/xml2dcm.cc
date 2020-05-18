@@ -309,6 +309,8 @@ static OFCondition putElementContent(xmlNodePtr current,
                         result = element->createUint8Array(OFstatic_cast(Uint32, buflen), buf);
                     if (result.good())
                     {
+                        OFLOG_INFO(xml2dcmLogger, "reading " << fileSize << " bytes from binary data file: " << filename);
+                        OFLOG_DEBUG(xml2dcmLogger, "  and storing it in the element " << element->getTag());
                         /* read binary file into the buffer */
                         if (fread(buf, 1, OFstatic_cast(size_t, fileSize), f) != fileSize)
                         {
