@@ -191,6 +191,18 @@ ENABLE_BUILTIN_DICTIONARY
     builtin dictionary stays empty.  For further information about dictionary
     configuration read dcmdata/docs/datadict.txt.
 
+ENABLE_DCMJPLS_INTERLEAVE_NONE
+  Affected: dcmjpls
+  Type of modification: Enables feature
+  Explanation: Re-enables the option for uninterleaved encoding
+    (--interleave-none) in the JPEG-LS encoder on command line and library
+    level. This option was removed after DCMTK 3.6.5 since it may in certain
+    cases (color image with BitsStored > 12) create compressed images that
+    are correct but cannot be decoded by the JPEG-LS library due to a known
+    bug (DCMTK issue #892). The option will be re-enabled permanently once
+    DCMTK has been ported to CharLS 2.x, another branch of the JPEG-LS
+    library that requires a C++14 compiler, however.
+
 ENABLE_EXTERNAL_DICTIONARY
   Affected: dcmdata
   Type of modification: Enables feature
