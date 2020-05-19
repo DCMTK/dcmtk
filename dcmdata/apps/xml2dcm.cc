@@ -341,6 +341,8 @@ static OFCondition putElementContent(xmlNodePtr current,
                 /* set the value of the newly created element */
                 result = element->putString(OFreinterpret_cast(char *, elemVal));
             }
+            if (result.bad())
+                OFLOG_ERROR(xml2dcmLogger, "cannot put content to element " << element->getTag() << ": " << result.text());
         }
         /* free allocated memory */
         xmlFree(elemVal);
