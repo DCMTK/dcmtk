@@ -277,11 +277,11 @@ the following (see DICOM Part 18 Section F for details):
 \subsection dcm2json_bulk_data Bulk Data
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
-or OW, as well as OD, OF, OL, OV and UN values are by default not written to the
-JSON output because of their size.  Instead, for each element, a new Universally
-Unique Identifier (UUID) is being generated and written as an value of a
-BulkDataURI JSON element.  So far, there is no possibility to write an
-additional file to hold the binary data for each of the binary data chunks.
+or OW, as well as OD, OF, OL, OV and UN values are always written as
+"InlineBinary" (base64 encoding) to the JSON output.  A future version of this
+tool might optionally use a "BulkDataURI" instead, i.e. the WADO-RS URL of a
+bulk data item that contains the element value.  This would be particularly
+useful for large amounts of data, e.g. pixel data.
 
 \section dcm2json_notes NOTES
 
