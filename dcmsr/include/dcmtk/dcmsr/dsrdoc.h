@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -263,7 +263,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition setSpecificCharacterSetType(const E_CharacterSet characterSet);
 
     /** get document preliminary flag.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return preliminary flag (might be DSRTypes::PF_invalid if not specified)
      */
     virtual E_PreliminaryFlag getPreliminaryFlag() const;
@@ -271,7 +271,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** set document preliminary flag.
      *  According to the DICOM standard, the concept of "completeness" is independent of the
      *  concept of "preliminary" or "final".  Therefore, this flag can be specified separately.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @param  flag  preliminary flag to be set (use DSRTypes::PF_invalid to omit this optional
      *                value)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -281,19 +281,19 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** get document completion flag.
      *  According to the DICOM standard, this flag describes the estimated degree of completeness
      *  of an SR Document.  See DICOM standard for details.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return completion flag (might be DSRTypes::CF_invalid if read from dataset)
      */
     virtual E_CompletionFlag getCompletionFlag() const;
 
     /** get document verification flag.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return verification flag (might be DSRTypes::VF_invalid if read from dataset)
      */
     virtual E_VerificationFlag getVerificationFlag() const;
 
     /** check whether there are one or more verifying observers.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return OFTrue if there is at least one verifying observer, OFFalse otherwise
      */
     virtual OFBool hasVerifyingObservers() const;
@@ -302,7 +302,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  A document can be verified more than once.  The verification flag should be VERIFIED
      *  if any verifying observer is specified.  The details on the observer can be retrieved
      *  using the getVerifyingObserver() methods.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return number of verifying observers (if any), 0 otherwise
      */
     virtual size_t getNumberOfVerifyingObservers() const;
@@ -310,7 +310,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** get information about a verifying observer.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
      *  occurs (return value != EC_Normal) non-empty variables do contain valid (empty) data.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @param  idx           index of the verifying observer to be retrieved (starting with 1).
      *                        Use getNumberOfVerifyingObservers() to get the maximum value.
      *  @param  dateTime      reference to variable where the date and time when this document
@@ -329,7 +329,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     /** get information about a verifying observer.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
      *  occurs (return value != EC_Normal) non-empty variables do contain valid (empty) data.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @param  idx           index of the verifying observer to be retrieved (starting with 1).
      *                        Use getNumberOfVerifyingObservers() to get the maximum value.
      *  @param  dateTime      reference to variable where the date and time when this document
@@ -357,7 +357,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  included in this document with or without modification." and "[...] the use of the
      *  Predecessor Document Sequence allows tracing back to the input SR Document, which in this
      *  case is the previous version."
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return reference to list object
      */
     virtual DSRSOPInstanceReferenceList &getPredecessorDocuments();
@@ -398,7 +398,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  reference all other evidence considered pertinent for this SR Document that is not listed
      *  in the Current Requested Procedure Evidence Sequence.  This requires that the same SOP
      *  Instance shall not be referenced in both of these Sequences."
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return reference to list object
      */
     virtual DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
@@ -411,7 +411,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  Group 7006 (SR Document Purposes of Reference).
      *  Note: An equivalent rendering of the document might be provided as an "Encapsulated PDF"
      *  DICOM object.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return reference to list object
      */
     virtual DSRReferencedInstanceList &getReferencedInstances();
@@ -435,7 +435,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
                                                 const signed long pos = 0) const;
 
     /** get completion flag description.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -740,7 +740,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
                                                 const OFBool check = OFTrue);
 
     /** set completion flag description.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @param  value  explanation of the value that is set for completion flag.  If an empty
      *                 string is passed, the description is removed from the dataset (type 3).
      *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
@@ -1061,7 +1061,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  reset (OFFalse).  The preliminary flag is not modified by this method.  Also the
      *  various lists of referenced instances remain unchanged, i.e. they have to be
      *  adapted manually if needed.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      *  @param  clearList  clear list of predecessor documents before adding the current
      *                     document if OFTrue.  Append current document to existing list
      *                     otherwise.
@@ -1074,7 +1074,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  describes the estimated degree of completeness of an SR Document (see DICOM standard
      *  for details).  The completion flag description is set to an empty string (i.e. absent
      *  in DICOM dataset).
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition completeDocument();
@@ -1084,7 +1084,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  describes the estimated degree of completeness of an SR Document (see DICOM standard
      *  for details).  The completion flag description can be modified independently from the
      *  flag by means of the method setCompletionFlagDescription() - see above.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @param  description  explanation of the value set for completion flag.
      *                       (optional, see previous method, VR=LO)
      *  @param  check        check 'description' for conformance with VR and VM if enabled
@@ -1100,7 +1100,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  Please note that only completed documents (see completion flag) can be verified and that
      *  a new SOP instance UID has to be generated (manually) according to the DICOM standard when
      *  creating a dataset/file from this document.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      *  @param  dateTime      verification date time (optional). If empty/absent the current date and
@@ -1121,7 +1121,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  Please note that only completed documents (see completion flag) can be verified and that
      *  a new SOP instance UID has to be generated (manually) according to the DICOM standard when
      *  creating a dataset/file from this document.
-     *  @note Not applicable to Key Object Selection Documents.
+     *  @note Not applicable to document types that use the Key Object Document Module.
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  observerCode  code identifying the verifying observer (optional, see previous method)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
@@ -1154,9 +1154,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *      document management functions do reset the flag (i.e. set the FinalizedFlag to OFFalse),
      *      other methods (e.g. setXXX) do not change the flag though the state of the document is
      *      not finalized any more after they have been called.
-     *  @note Not applicable to Key Object Selection Documents since there's no completion flag in
-     *        this type of SR document.  Please note that this method has nothing to do with the
-     *        preliminary flag.
+     *  @note Not applicable to document types that use the Key Object Document Module since there
+     *        is no completion flag attribute in this module.  Please note that this method has
+     *        nothing to do with the preliminary flag.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition finalizeDocument();

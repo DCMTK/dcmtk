@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -320,6 +320,7 @@ makeOFConditionConst(SR_EC_CannotProcessIncludedTemplates,      OFM_dcmsr, 34, O
 const size_t EM_EnhancedEquipment = 1 << 0;
 const size_t EM_Timezone          = 1 << 1;
 const size_t EM_Synchronization   = 1 << 2;
+const size_t EM_KeyObjectDocument = 1 << 3;
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
@@ -327,7 +328,7 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_BasicTextSR,                           UID_BasicTextSRStorage,                           0,                                         "SR", "Basic Text SR"},
     {DSRTypes::DT_EnhancedSR,                            UID_EnhancedSRStorage,                            0,                                         "SR", "Enhanced SR"},
     {DSRTypes::DT_ComprehensiveSR,                       UID_ComprehensiveSRStorage,                       0,                                         "SR", "Comprehensive SR"},
-    {DSRTypes::DT_KeyObjectSelectionDocument,            UID_KeyObjectSelectionDocumentStorage,            0,                                         "KO", "Key Object Selection Document"},
+    {DSRTypes::DT_KeyObjectSelectionDocument,            UID_KeyObjectSelectionDocumentStorage,            EM_KeyObjectDocument,                      "KO", "Key Object Selection Document"},
     {DSRTypes::DT_MammographyCadSR,                      UID_MammographyCADSRStorage,                      0,                                         "SR", "Mammography CAD SR"},
     {DSRTypes::DT_ChestCadSR,                            UID_ChestCADSRStorage,                            0,                                         "SR", "Chest CAD SR"},
     {DSRTypes::DT_ColonCadSR,                            UID_ColonCADSRStorage,                            EM_EnhancedEquipment,                      "SR", "Colon CAD SR"},
@@ -581,6 +582,36 @@ OFBool DSRTypes::requiresSynchronizationModule(const E_DocumentType documentType
     while ((iterator->Type != DT_last) && (iterator->Type != documentType))
         iterator++;
     return (iterator->ExtendedModules & EM_Synchronization) > 0;
+}
+
+
+OFBool DSRTypes::usesSRDocumentSeriesModule(const E_DocumentType documentType)
+{
+    /* SR Document Series Module and Key Object Document Series Module are mutually exclusive */
+    return !usesKeyObjectDocumentSeriesModule(documentType);
+}
+
+
+OFBool DSRTypes::usesKeyObjectDocumentSeriesModule(const E_DocumentType documentType)
+{
+    /* Key Object Document Series Module is used if (and only if) Key Object Document Module is used */
+    return usesKeyObjectDocumentModule(documentType);
+}
+
+
+OFBool DSRTypes::usesSRDocumentGeneralModule(const E_DocumentType documentType)
+{
+    /* SR Document Module and Key Object Document Module are mutually exclusive */
+    return !usesKeyObjectDocumentModule(documentType);
+}
+
+
+OFBool DSRTypes::usesKeyObjectDocumentModule(const E_DocumentType documentType)
+{
+    const S_DocumentTypeNameMap *iterator = DocumentTypeNameMap;
+    while ((iterator->Type != DT_last) && (iterator->Type != documentType))
+        iterator++;
+    return (iterator->ExtendedModules & EM_KeyObjectDocument) > 0;
 }
 
 
