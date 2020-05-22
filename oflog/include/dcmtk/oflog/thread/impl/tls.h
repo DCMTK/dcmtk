@@ -55,16 +55,18 @@ namespace log4cplus { namespace thread { namespace impl {
 
 
 typedef void * tls_value_type;
-typedef void (* tls_init_cleanup_func_type)(void *);
 
 #ifdef DCMTK_LOG4CPLUS_USE_PTHREADS
 typedef pthread_key_t * tls_key_type;
+typedef void (* tls_init_cleanup_func_type)(void *);
 
 #elif defined (DCMTK_LOG4CPLUS_USE_WIN32_THREADS)
 typedef DWORD tls_key_type;
+typedef void (WINAPI * tls_init_cleanup_func_type)(void *);
 
 #elif defined (DCMTK_LOG4CPLUS_SINGLE_THREADED)
 typedef size_t tls_key_type;
+typedef void (* tls_init_cleanup_func_type)(void *);
 
 #endif
 
