@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2017, OFFIS e.V.
+ *  Copyright (C) 2008-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -236,6 +236,17 @@ public:
    *                    OFFalse disables it.
    */
   void checkPrivateReservations(const OFBool doChecking);
+
+  /** Returns private creator string for given tag
+   *  @param item   [in] The item to search in
+   *  @param tagKey [in] The tag key for which a reservation should be looked up
+   *  @param privateCreator [out] The private creator string
+   *  @return Return EC_Normal if reservation was found (can be empty, though),
+   *          EC_TagNotFound if no private creator tag exists, error otherwise
+   */
+  static OFCondition getPrivateCreator(DcmItem* item,
+                                       const DcmTagKey& tagKey,
+                                       OFString& privateCreator);
 
   /** Checks in item, whether a private reservation for a given
    *  tag key exists.
