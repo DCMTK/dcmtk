@@ -468,10 +468,10 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DisplaySystemSOPInstance,                            "DisplaySystemSOPInstance" },
 
     // Real-Time Video
-    { UID_VideoEndoscopicImageRealTimeCommunicationSOPClass,   "VideoEndoscopicImageRealTimeCommunicationSOPClass" },
-    { UID_VideoPhotographicImageRealTimeCommunicationSOPClass, "VideoPhotographicImageRealTimeCommunicationSOPClass" },
-    { UID_AudioWaveformRealTimeCommunicationSOPClass,          "AudioWaveformRealTimeCommunicationSOPClass" },
-    { UID_RenditionSelectionDocumentRealTimeCommunicationSOPClass, "RenditionSelectionDocumentRealTimeCommunicationSOPClass" },
+    { UID_VideoEndoscopicImageRealTimeCommunication,           "VideoEndoscopicImageRealTimeCommunication" },
+    { UID_VideoPhotographicImageRealTimeCommunication,         "VideoPhotographicImageRealTimeCommunication" },
+    { UID_AudioWaveformRealTimeCommunication,                  "AudioWaveformRealTimeCommunication" },
+    { UID_RenditionSelectionDocumentRealTimeCommunication,     "RenditionSelectionDocumentRealTimeCommunication" },
 
     // Other
     { UID_RETIRED_BasicStudyContentNotificationSOPClass,       "RETIRED_BasicStudyContentNotificationSOPClass" },
