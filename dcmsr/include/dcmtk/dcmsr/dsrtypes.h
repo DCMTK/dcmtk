@@ -543,8 +543,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_PerformedImagingAgentAdministrationSR,
         /// DICOM IOD: Planned Imaging Agent Administration SR
         DT_PlannedImagingAgentAdministrationSR,
+        /// DICOM IOD: Rendition Selection Document
+        DT_RenditionSelectionDocument,
         /// internal type used to mark the last entry
-        DT_last = DT_PlannedImagingAgentAdministrationSR
+        DT_last = DT_RenditionSelectionDocument
     };
 
     /** SR relationship types
