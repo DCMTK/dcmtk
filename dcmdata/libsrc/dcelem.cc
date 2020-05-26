@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1176,7 +1176,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
             {
                 /* Return error code if we are are not ignoring parsing errors */
                 if (!dcmIgnoreParsingErrors.get())
-                    errorFlag = EC_StreamNotifyClient;
+                    errorFlag = EC_StreamNotifyClient; // should we rather return EC_InvalidStream?
                 /* In any case, make sure that calling the load value routine on this
                  * element will fail later. For that, create the stream factory that
                  * the load routine will use. Otherwise it would not realize
