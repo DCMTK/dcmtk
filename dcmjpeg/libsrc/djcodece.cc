@@ -81,7 +81,8 @@ OFCondition DJCodecEncoder::decode(
   DcmPixelSequence * /* pixSeq */,
   DcmPolymorphOBOW& /* uncompressedPixelData */,
   const DcmCodecParameter * /* cp */,
-  const DcmStack& /* objStack */) const
+  const DcmStack& /* objStack */,
+  OFBool& /* removeOldRep */ ) const
 {
   // we are an encoder only
   return EC_IllegalCall;
@@ -111,7 +112,8 @@ OFCondition DJCodecEncoder::encode(
   const DcmRepresentationParameter * /* toRepParam */,
   DcmPixelSequence * & /* toPixSeq */,
   const DcmCodecParameter * /* cp */,
-  DcmStack & /* objStack */) const
+  DcmStack & /* objStack */,
+  OFBool& /* removeOldRep */) const
 {
   // we don't support re-coding for now
   return EC_IllegalCall;
@@ -124,9 +126,16 @@ OFCondition DJCodecEncoder::encode(
   const DcmRepresentationParameter * toRepParam,
   DcmPixelSequence * & pixSeq,
   const DcmCodecParameter *cp,
-  DcmStack & objStack) const
+  DcmStack & objStack,
+  OFBool& removeOldRep) const
 {
   OFCondition result = EC_Normal;
+
+  // this codec may modify the DICOM header such that the previous pixel
+  // representation is not valid anymore. Indicate this to the caller
+  // to trigger removal.
+  removeOldRep = OFTrue;
+
   // assume we can cast the codec parameter to what we need
   const DJCodecParameter *djcp = OFreinterpret_cast(const DJCodecParameter*, cp);
 

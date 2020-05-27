@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2016, OFFIS e.V.
+ *  Copyright (C) 1997-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -434,7 +434,8 @@ OFCondition DcmCodecList::decode(
   const DcmRepresentationParameter * fromParam,
   DcmPixelSequence * fromPixSeq,
   DcmPolymorphOBOW& uncompressedPixelData,
-  DcmStack & pixelStack)
+  DcmStack & pixelStack,
+  OFBool& removeOldRep)
 {
 #ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
@@ -454,7 +455,7 @@ OFCondition DcmCodecList::decode(
     {
       if ((*first)->codec->canChangeCoding(fromXfer, EXS_LittleEndianExplicit))
       {
-        result = (*first)->codec->decode(fromParam, fromPixSeq, uncompressedPixelData, (*first)->codecParameter, pixelStack);
+        result = (*first)->codec->decode(fromParam, fromPixSeq, uncompressedPixelData, (*first)->codecParameter, pixelStack, removeOldRep);
         first = last;
       } else ++first;
     }
@@ -513,7 +514,8 @@ OFCondition DcmCodecList::encode(
   const E_TransferSyntax toRepType,
   const DcmRepresentationParameter * toRepParam,
   DcmPixelSequence * & toPixSeq,
-  DcmStack & pixelStack)
+  DcmStack & pixelStack,
+  OFBool& removeOldRep)
 {
   toPixSeq = NULL;
 #ifdef WITH_THREADS
@@ -535,7 +537,7 @@ OFCondition DcmCodecList::encode(
       {
         if (!toRepParam) toRepParam = (*first)->defaultRepParam;
         result = (*first)->codec->encode(fromRepType, fromParam, fromPixSeq,
-                 toRepParam, toPixSeq, (*first)->codecParameter, pixelStack);
+                 toRepParam, toPixSeq, (*first)->codecParameter, pixelStack, removeOldRep);
         first = last;
       } else ++first;
     }
@@ -553,7 +555,8 @@ OFCondition DcmCodecList::encode(
   const E_TransferSyntax toRepType,
   const DcmRepresentationParameter * toRepParam,
   DcmPixelSequence * & toPixSeq,
-  DcmStack & pixelStack)
+  DcmStack & pixelStack,
+  OFBool& removeOldRep)
 {
   toPixSeq = NULL;
 #ifdef WITH_THREADS
@@ -575,7 +578,7 @@ OFCondition DcmCodecList::encode(
       {
         if (!toRepParam) toRepParam = (*first)->defaultRepParam;
         result = (*first)->codec->encode(pixelData, length, toRepParam, toPixSeq,
-                 (*first)->codecParameter, pixelStack);
+                 (*first)->codecParameter, pixelStack, removeOldRep);
         first = last;
       } else ++first;
     }

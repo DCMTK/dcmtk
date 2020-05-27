@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2019, OFFIS e.V.
+ *  Copyright (C) 1997-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -442,13 +442,20 @@ DcmPixelData::decode(
     DcmStack & pixelStack)
 {
     if (existUnencapsulated) return EC_Normal;
-    OFCondition l_error = DcmCodecList::decode(fromType, fromParam, fromPixSeq, *this, pixelStack);
+    OFBool removeOldPixelRepresentation = OFFalse;
+    OFCondition l_error = DcmCodecList::decode(fromType, fromParam, fromPixSeq, *this, pixelStack, removeOldPixelRepresentation);
     if (l_error.good())
     {
         existUnencapsulated = OFTrue;
         current = repListEnd;
         setVR(EVR_OW);
         recalcVR();
+
+        // the codec has indicated that the image pixel module has been modified
+        // in a way that may affect the validity of the old representation of pixel data.
+        // Thus, we cannot just switch back to the old representation.
+        // Thus, remove old representation(s).
+        if (removeOldPixelRepresentation) removeAllButCurrentRepresentations();
     }
     else
     {
@@ -473,10 +480,11 @@ DcmPixelData::encode(
     if (toType.isEncapsulated())
     {
        DcmPixelSequence * toPixSeq = NULL;
+       OFBool removeOldPixelRepresentation = OFFalse;
        if (fromType.isEncapsulated())
        {
          l_error = DcmCodecList::encode(fromType.getXfer(), fromParam, fromPixSeq,
-                   toType.getXfer(), toParam, toPixSeq, pixelStack);
+                   toType.getXfer(), toParam, toPixSeq, pixelStack, removeOldPixelRepresentation);
        }
        else
        {
@@ -486,7 +494,7 @@ DcmPixelData::encode(
          if (l_error == EC_Normal)
          {
            l_error = DcmCodecList::encode(fromType.getXfer(), pixelData, length,
-                     toType.getXfer(), toParam, toPixSeq, pixelStack);
+                     toType.getXfer(), toParam, toPixSeq, pixelStack, removeOldPixelRepresentation);
          }
        }
 
@@ -495,6 +503,11 @@ DcmPixelData::encode(
            current = insertRepresentationEntry(
              new DcmRepresentationEntry(toType.getXfer(), toParam, toPixSeq));
            recalcVR();
+           // the codec has indicated that the image pixel module has been modified
+           // in a way that may affect the validity of the old representation of pixel data.
+           // Thus, we cannot just switch back to the old representation, but have
+           // to actually decode in this case. Thus, remove old representation(s).
+           if (removeOldPixelRepresentation) removeAllButCurrentRepresentations();
        } else delete toPixSeq;
 
        // if it was possible to convert one encapsulated syntax into
