@@ -2581,16 +2581,22 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                         OFString tmpString;
                         if (compare(getStringFromDataset(dataset, DCM_VerificationFlag, tmpString), "VERIFIED"))
                         {
-                            /* VerificationDateTime is required if verification flag is VERIFIED,
-                               retrieve most recent (= last) entry from VerifyingObserverSequence */
-                            DcmItem *ditem = NULL;
-                            OFCondition l_status = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);
-                            if (l_status.good())
+                            if (checkExistsWithValue(dataset, DCM_VerifyingObserverSequence, filename))
                             {
-                                if (!checkExistsWithValue(ditem, DCM_VerificationDateTime, filename))
-                                    result = EC_MissingAttribute;
+                                /* VerificationDateTime is required if VerificationFlag is VERIFIED,
+                                   retrieve most recent (= last) entry from VerifyingObserverSequence */
+                                DcmItem *ditem = NULL;
+                                if (dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/).good())
+                                {
+                                    if (!checkExistsWithValue(ditem, DCM_VerificationDateTime, filename))
+                                        result = EC_MissingAttribute;
+                                } else {
+                                    /* should never happen */
+                                    DCMDATA_ERROR("INTERNAL ERROR: cannot get last item of VerifyingObserverSequence");
+                                    result = EC_InternalError;
+                                }
                             } else
-                                result = l_status;
+                                result = EC_MissingAttribute;
                         }
                     }
                     break;
@@ -3304,7 +3310,7 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
             if (compare(getStringFromDataset(dataset, DCM_VerificationFlag, tmpString), "VERIFIED"))
             {
-                /* VerificationDateTime is required if verification flag is VERIFIED,
+                /* VerificationDateTime is required if VerificationFlag is VERIFIED,
                    retrieve most recent (= last) entry from VerifyingObserverSequence */
                 DcmItem *ditem = NULL;
                 OFCondition status = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);
