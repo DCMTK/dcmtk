@@ -697,7 +697,13 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_BasicVoiceAudioWaveformStorage) ||
              compare(sopClass, UID_GeneralAudioWaveformStorage) ||
              compare(sopClass, UID_ArterialPulseWaveformStorage) ||
-             compare(sopClass, UID_RespiratoryWaveformStorage))
+             compare(sopClass, UID_RespiratoryWaveformStorage) ||
+             compare(sopClass, UID_RoutineScalpElectroencephalogramWaveformStorage) ||
+             compare(sopClass, UID_ElectromyogramWaveformStorage) ||
+             compare(sopClass, UID_ElectrooculogramWaveformStorage) ||
+             compare(sopClass, UID_SleepElectroencephalogramWaveformStorage) ||
+             compare(sopClass, UID_MultichannelRespiratoryWaveformStorage) ||
+             compare(sopClass, UID_BodyPositionWaveformStorage))
     {
         result = ERT_Waveform;
     }
@@ -786,7 +792,12 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_RTRadiationSetStorage) ||
              compare(sopClass, UID_CArmPhotonElectronRadiationStorage) ||
              compare(sopClass, UID_TomotherapeuticRadiationStorage) ||
-             compare(sopClass, UID_RoboticArmRadiationStorage))
+             compare(sopClass, UID_RoboticArmRadiationStorage) ||
+             compare(sopClass, UID_RTRadiationRecordSetStorage) ||
+             compare(sopClass, UID_RTRadiationSalvageRecordStorage) ||
+             compare(sopClass, UID_TomotherapeuticRadiationRecordStorage) ||
+             compare(sopClass, UID_CArmPhotonElectronRadiationRecordStorage) ||
+             compare(sopClass, UID_RoboticRadiationRecordStorage))
     {
         result = ERT_Radiotherapy;
     }

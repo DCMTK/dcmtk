@@ -472,6 +472,12 @@ BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4
 GeneralAudioWaveformStorage                          1.2.840.10008.5.1.4.1.1.9.4.2
 ArterialPulseWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.5.1
 RespiratoryWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.6.1
+MultichannelRespiratoryWaveformStorage               1.2.840.10008.5.1.4.1.1.9.6.2
+RoutineScalpElectroencephalogramWaveformStorage      1.2.840.10008.5.1.4.1.1.9.7.1
+ElectromyogramWaveformStorage                        1.2.840.10008.5.1.4.1.1.9.7.2
+ElectrooculogramWaveformStorage                      1.2.840.10008.5.1.4.1.1.9.7.3
+SleepElectroencephalogramWaveformStorage             1.2.840.10008.5.1.4.1.1.9.7.4
+BodyPositionWaveformStorage                          1.2.840.10008.5.1.4.1.1.9.8.1
 RETIRED_StandaloneModalityLUTStorage                 1.2.840.10008.5.1.4.1.1.10
 RETIRED_StandaloneVOILUTStorage                      1.2.840.10008.5.1.4.1.1.11
 GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
@@ -588,6 +594,11 @@ RTRadiationSetStorage                                1.2.840.10008.5.1.4.1.1.481
 CArmPhotonElectronRadiationStorage                   1.2.840.10008.5.1.4.1.1.481.13
 TomotherapeuticRadiationStorage                      1.2.840.10008.5.1.4.1.1.481.14
 RoboticArmRadiationStorage                           1.2.840.10008.5.1.4.1.1.481.15
+RTRadiationRecordSetStorage                          1.2.840.10008.5.1.4.1.1.481.16
+RTRadiationSalvageRecordStorage                      1.2.840.10008.5.1.4.1.1.481.17
+TomotherapeuticRadiationRecordStorage                1.2.840.10008.5.1.4.1.1.481.18
+CArmPhotonElectronRadiationRecordStorage             1.2.840.10008.5.1.4.1.1.481.19
+RoboticRadiationRecordStorage                        1.2.840.10008.5.1.4.1.1.481.20
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
