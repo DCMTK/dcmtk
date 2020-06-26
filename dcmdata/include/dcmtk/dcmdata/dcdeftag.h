@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-01-31 21:42:01
+**   Date: 2020-06-26 11:18:49
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2020-01-31 21:42:01"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2020-06-26 11:18:49"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4763
+** Number of entries: 4811
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2328,6 +2328,13 @@
 #define DCM_MultiplexedAudioChannelsDescriptionCodeSequence DcmTagKey(0x003a, 0x0300)
 #define DCM_ChannelIdentificationCode            DcmTagKey(0x003a, 0x0301)
 #define DCM_ChannelMode                          DcmTagKey(0x003a, 0x0302)
+#define DCM_MultiplexGroupUID                    DcmTagKey(0x003a, 0x0310)
+#define DCM_PowerlineFrequency                   DcmTagKey(0x003a, 0x0311)
+#define DCM_ChannelImpedanceSequence             DcmTagKey(0x003a, 0x0312)
+#define DCM_ImpedanceValue                       DcmTagKey(0x003a, 0x0313)
+#define DCM_ImpedanceMeasurementDateTime         DcmTagKey(0x003a, 0x0314)
+#define DCM_ImpedanceMeasurementFrequency        DcmTagKey(0x003a, 0x0315)
+#define DCM_ImpedanceMeasurementCurrentType      DcmTagKey(0x003a, 0x0316)
 #define DCM_ScheduledStationAETitle              DcmTagKey(0x0040, 0x0001)
 #define DCM_ScheduledProcedureStepStartDate      DcmTagKey(0x0040, 0x0002)
 #define DCM_ScheduledProcedureStepStartTime      DcmTagKey(0x0040, 0x0003)
@@ -4462,6 +4469,47 @@
 #define DCM_RTBeamModifierDefinitionDistance     DcmTagKey(0x300a, 0x0688)
 #define DCM_BeamAreaLimitSequence                DcmTagKey(0x300a, 0x0689)
 #define DCM_ReferencedRTPrescriptionSequence     DcmTagKey(0x300a, 0x068a)
+#define DCM_TreatmentSessionUID                  DcmTagKey(0x300a, 0x0700)
+#define DCM_RTRadiationUsage                     DcmTagKey(0x300a, 0x0701)
+#define DCM_ReferencedRTRadiationSetSequence     DcmTagKey(0x300a, 0x0702)
+#define DCM_ReferencedRTRadiationRecordSequence  DcmTagKey(0x300a, 0x0703)
+#define DCM_RTRadiationSetDeliveryNumber         DcmTagKey(0x300a, 0x0704)
+#define DCM_ClinicalFractionNumber               DcmTagKey(0x300a, 0x0705)
+#define DCM_RTTreatmentFractionCompletionStatus  DcmTagKey(0x300a, 0x0706)
+#define DCM_RTRadiationSetUsage                  DcmTagKey(0x300a, 0x0707)
+#define DCM_TreatmentDeliveryContinuationFlag    DcmTagKey(0x300a, 0x0708)
+#define DCM_TreatmentRecordContentOrigin         DcmTagKey(0x300a, 0x0709)
+#define DCM_RTTreatmentTerminationStatus         DcmTagKey(0x300a, 0x0714)
+#define DCM_RTTreatmentTerminationReasonCodeSequence DcmTagKey(0x300a, 0x0715)
+#define DCM_MachineSpecificTreatmentTerminationCodeSequence DcmTagKey(0x300a, 0x0716)
+#define DCM_RTRadiationSalvageRecordControlPointSequence DcmTagKey(0x300a, 0x0722)
+#define DCM_StartingMetersetValueKnownFlag       DcmTagKey(0x300a, 0x0723)
+#define DCM_TreatmentTerminationDescription      DcmTagKey(0x300a, 0x0730)
+#define DCM_TreatmentToleranceViolationSequence  DcmTagKey(0x300a, 0x0731)
+#define DCM_TreatmentToleranceViolationCategory  DcmTagKey(0x300a, 0x0732)
+#define DCM_TreatmentToleranceViolationAttributeSequence DcmTagKey(0x300a, 0x0733)
+#define DCM_TreatmentToleranceViolationDescription DcmTagKey(0x300a, 0x0734)
+#define DCM_TreatmentToleranceViolationIdentification DcmTagKey(0x300a, 0x0735)
+#define DCM_TreatmentToleranceViolationDateTime  DcmTagKey(0x300a, 0x0736)
+#define DCM_RecordedRTControlPointDateTime       DcmTagKey(0x300a, 0x073a)
+#define DCM_ReferencedRadiationRTControlPointIndex DcmTagKey(0x300a, 0x073b)
+#define DCM_AlternateValueSequence               DcmTagKey(0x300a, 0x073e)
+#define DCM_ConfirmationSequence                 DcmTagKey(0x300a, 0x073f)
+#define DCM_InterlockSequence                    DcmTagKey(0x300a, 0x0740)
+#define DCM_InterlockDateTime                    DcmTagKey(0x300a, 0x0741)
+#define DCM_InterlockDescription                 DcmTagKey(0x300a, 0x0742)
+#define DCM_InterlockOriginatingDeviceSequence   DcmTagKey(0x300a, 0x0743)
+#define DCM_InterlockCodeSequence                DcmTagKey(0x300a, 0x0744)
+#define DCM_InterlockResolutionCodeSequence      DcmTagKey(0x300a, 0x0745)
+#define DCM_InterlockResolutionUserSequence      DcmTagKey(0x300a, 0x0746)
+#define DCM_OverrideDateTime                     DcmTagKey(0x300a, 0x0760)
+#define DCM_TreatmentToleranceViolationTypeCodeSequence DcmTagKey(0x300a, 0x0761)
+#define DCM_TreatmentToleranceViolationCauseCodeSequence DcmTagKey(0x300a, 0x0762)
+#define DCM_MeasuredMetersetToDoseMappingSequence DcmTagKey(0x300a, 0x0772)
+#define DCM_ReferencedExpectedInVivoMeasurementValueIndex DcmTagKey(0x300a, 0x0773)
+#define DCM_DoseMeasurementDeviceCodeSequence    DcmTagKey(0x300a, 0x0774)
+#define DCM_AdditionalParameterRecordingInstanceSequence DcmTagKey(0x300a, 0x0780)
+#define DCM_InterlockOriginDescription           DcmTagKey(0x300a, 0x0783)
 #define DCM_ReferencedRTPlanSequence             DcmTagKey(0x300c, 0x0002)
 #define DCM_ReferencedBeamSequence               DcmTagKey(0x300c, 0x0004)
 #define DCM_ReferencedBeamNumber                 DcmTagKey(0x300c, 0x0006)

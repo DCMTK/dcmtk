@@ -23,10 +23,11 @@
 #
 # Generated automatically from DICOM PS 3.6-2020a and PS 3.7-2020a
 # File created on 2020-01-31 21:38:50 by J. Riesmeier on thinkpad.
+# File updated manually on 2020-06-26 by J. Riesmeier.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - (none)
+# - Supplement 199, 217
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -4883,6 +4884,66 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 199 (Second Generation Radiotherapy - RT Radiation Records)
+#
+(300A,0700)	UI	TreatmentSessionUID	1	DICOM/Supplement_199
+(300A,0701)	CS	RTRadiationUsage	1	DICOM/Supplement_199
+(300A,0702)	SQ	ReferencedRTRadiationSetSequence	1	DICOM/Supplement_199
+(300A,0703)	SQ	ReferencedRTRadiationRecordSequence	1	DICOM/Supplement_199
+(300A,0704)	US	RTRadiationSetDeliveryNumber	1	DICOM/Supplement_199
+(300A,0705)	US	ClinicalFractionNumber	1	DICOM/Supplement_199
+(300A,0706)	CS	RTTreatmentFractionCompletionStatus	1	DICOM/Supplement_199
+(300A,0707)	CS	RTRadiationSetUsage	1	DICOM/Supplement_199
+(300A,0708)	CS	TreatmentDeliveryContinuationFlag	1	DICOM/Supplement_199
+(300A,0709)	CS	TreatmentRecordContentOrigin	1	DICOM/Supplement_199
+(300A,0714)	CS	RTTreatmentTerminationStatus	1	DICOM/Supplement_199
+(300A,0715)	SQ	RTTreatmentTerminationReasonCodeSequence	1	DICOM/Supplement_199
+(300A,0716)	SQ	MachineSpecificTreatmentTerminationCodeSequence	1	DICOM/Supplement_199
+(300A,0722)	SQ	RTRadiationSalvageRecordControlPointSequence	1	DICOM/Supplement_199
+(300A,0723)	CS	StartingMetersetValueKnownFlag	1	DICOM/Supplement_199
+(300A,0730)	ST	TreatmentTerminationDescription	1	DICOM/Supplement_199
+(300A,0731)	SQ	TreatmentToleranceViolationSequence	1	DICOM/Supplement_199
+(300A,0732)	CS	TreatmentToleranceViolationCategory	1	DICOM/Supplement_199
+(300A,0733)	SQ	TreatmentToleranceViolationAttributeSequence	1	DICOM/Supplement_199
+(300A,0734)	ST	TreatmentToleranceViolationDescription	1	DICOM/Supplement_199
+(300A,0735)	ST	TreatmentToleranceViolationIdentification	1	DICOM/Supplement_199
+(300A,0736)	DT	TreatmentToleranceViolationDateTime	1	DICOM/Supplement_199
+(300A,073A)	DT	RecordedRTControlPointDateTime	1	DICOM/Supplement_199
+(300A,073B)	US	ReferencedRadiationRTControlPointIndex	1	DICOM/Supplement_199
+(300A,073E)	SQ	AlternateValueSequence	1	DICOM/Supplement_199
+(300A,073F)	SQ	ConfirmationSequence	1	DICOM/Supplement_199
+(300A,0740)	SQ	InterlockSequence	1	DICOM/Supplement_199
+(300A,0741)	DT	InterlockDateTime	1	DICOM/Supplement_199
+(300A,0742)	ST	InterlockDescription	1	DICOM/Supplement_199
+(300A,0743)	SQ	InterlockOriginatingDeviceSequence	1	DICOM/Supplement_199
+(300A,0744)	SQ	InterlockCodeSequence	1	DICOM/Supplement_199
+(300A,0745)	SQ	InterlockResolutionCodeSequence	1	DICOM/Supplement_199
+(300A,0746)	SQ	InterlockResolutionUserSequence	1	DICOM/Supplement_199
+(300A,0760)	DT	OverrideDateTime	1	DICOM/Supplement_199
+(300A,0761)	SQ	TreatmentToleranceViolationTypeCodeSequence	1	DICOM/Supplement_199
+(300A,0762)	SQ	TreatmentToleranceViolationCauseCodeSequence	1	DICOM/Supplement_199
+(300A,0772)	SQ	MeasuredMetersetToDoseMappingSequence	1	DICOM/Supplement_199
+(300A,0773)	US	ReferencedExpectedInVivoMeasurementValueIndex	1	DICOM/Supplement_199
+(300A,0774)	SQ	DoseMeasurementDeviceCodeSequence	1	DICOM/Supplement_199
+(300A,0780)	SQ	AdditionalParameterRecordingInstanceSequence	1	DICOM/Supplement_199
+# the following definition has been removed from the "FT3" version (i.e. retired)
+#(300A,0782)	US	ReferencedRadiationDoseIdentificationIndex	1	DICOM/Supplement_199
+(300A,0783)	ST	InterlockOriginDescription	1	DICOM/Supplement_199
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 217 (Neurophysiology Waveforms)
+#
+(003A,0310)	UI	MultiplexGroupUID	1	DICOM/Supplement_217
+(003A,0311)	DS	PowerlineFrequency	1	DICOM/Supplement_217
+(003A,0312)	SQ	ChannelImpedanceSequence	1	DICOM/Supplement_217
+(003A,0313)	DS	ImpedanceValue	1	DICOM/Supplement_217
+(003A,0314)	DT	ImpedanceMeasurementDateTime	1	DICOM/Supplement_217
+(003A,0315)	DS	ImpedanceMeasurementFrequency	1	DICOM/Supplement_217
+(003A,0316)	CS	ImpedanceMeasurementCurrentType	1	DICOM/Supplement_217
 #
 #---------------------------------------------------------------------------
 #
