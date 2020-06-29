@@ -582,7 +582,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             CompletionFlagEnum = enumeratedValueToCompletionFlag(getStringValueFromElement(CompletionFlag, tmpString));
             if (CompletionFlagEnum == CF_invalid)
                 printUnknownValueWarningMessage("CompletionFlag", tmpString.c_str());
-            else if ((CompletionFlagEnum == CF_Partial) && (documentType == DT_XRayRadiationDoseSR))
+            else if ((documentType == DT_XRayRadiationDoseSR) && (CompletionFlagEnum != CF_Complete))
                 DCMSR_WARN("Invalid value for Completion Flag, should be 'COMPLETE' for X-Ray Radiation Dose SR");
             /* get and check VerificationFlag / VerifyingObserverSequence */
             VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, tmpString));
@@ -647,7 +647,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         updateAttributes();
 
         /* checking particular values */
-        if ((CompletionFlagEnum == CF_Partial) && (getDocumentType() == DT_XRayRadiationDoseSR))
+        if ((getDocumentType() == DT_XRayRadiationDoseSR) && (CompletionFlagEnum != CF_Complete))
             DCMSR_WARN("Invalid value for Completion Flag, should be 'COMPLETE' for X-Ray Radiation Dose SR");
 
         /* write general document attributes */
