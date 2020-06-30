@@ -1661,7 +1661,7 @@ void DcmElement::writeJsonOpener(STD_NAMESPACE ostream &out,
     /* write attribute tag */
     out << ++format.indent() << "\""
         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-        << STD_NAMESPACE setw(4) << tag.getGTag();
+        << STD_NAMESPACE setw(4) << STD_NAMESPACE uppercase << tag.getGTag();
     /* write "ggggeeee" (no comma, upper case!) */
     /* for private element numbers, zero out 2 first element digits */
     /* or output full element number "eeee" */
