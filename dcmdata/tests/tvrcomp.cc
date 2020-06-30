@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, OFFIS e.V.
+ *  Copyright (C) 2015-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -66,6 +66,7 @@
 #include "dcmtk/dcmdata/dcovlay.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmdata/dcpixseq.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 
 template <typename StringType>
@@ -845,6 +846,13 @@ static void checkDcmItemAndSequences()
 
 OFTEST(dcmdata_VRCompare)
 {
+    // Make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     // Check the different String-based VRs (in the sense that the method
     // putAndInsertOFStringArray() can be used by the test method for initializing
     // the test values.

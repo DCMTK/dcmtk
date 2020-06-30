@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2013, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmdata/dcvrtm.h"
 #include "dcmtk/dcmdata/dcvrdt.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 #define CHECK_EQUAL(string) do { \
     strstream << OFStringStream_ends; \
@@ -44,6 +45,13 @@
 
 OFTEST(dcmdata_dateTime)
 {
+    // Make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     double timeZone;
     OFDate dateVal;
     OFTime timeVal;

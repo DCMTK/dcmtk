@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2018, OFFIS e.V.
+ *  Copyright (C) 2011-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -437,26 +437,61 @@ static void testExplicitVRinDataset(OFBool useDictionaryVR, OFBool useDictionary
 
 OFTEST(dcmdata_parser_wrongExplicitVRinDataset_default)
 {
+    // Make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     testExplicitVRinDataset(OFFalse, OFFalse);
 }
 
 OFTEST(dcmdata_parser_wrongExplicitVRinDataset_defaultVR_dictLen)
 {
+    // Make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     testExplicitVRinDataset(OFFalse, OFTrue);
 }
 
 OFTEST(dcmdata_parser_wrongExplicitVRinDataset_dictVR_defaultLen)
 {
+    // Make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     testExplicitVRinDataset(OFTrue, OFFalse);
 }
 
 OFTEST(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict)
 {
+    // Make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     testExplicitVRinDataset(OFTrue, OFTrue);
 }
 
 OFTEST(dcmdata_parser_undefinedLengthUNSequence)
 {
+    // Make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     const Uint8 data[] = {
         // Sequence with undefined length and VR UN => gets read as implicit TS
         TAG_AND_LENGTH(DCM_IconImageSequence, 'U', 'N', UNDEFINED_LENGTH),

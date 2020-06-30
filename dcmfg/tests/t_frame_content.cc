@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,10 +84,10 @@ static void check_frame_content_fg(FGFrameContent& fg)
 
 OFTEST(dcmfg_frame_content)
 {
-    /* make sure data dictionary is loaded */
+    // Make sure data dictionary is loaded
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFCHECK(dcmDataDict.isDictionaryLoaded());
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
         return;
     }
 

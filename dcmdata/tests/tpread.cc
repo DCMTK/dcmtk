@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -312,7 +312,6 @@ static OFCondition randomRead(OFRandom& rnd, DcmDataset *dset, unsigned char *bu
 
 OFTEST(dcmdata_partialElementAccess)
 {
-
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {

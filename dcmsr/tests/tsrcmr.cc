@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -27,6 +27,7 @@
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 #include "dcmtk/dcmsr/dsrdoc.h"
 #include "dcmtk/dcmsr/dsrnumvl.h"
@@ -273,6 +274,13 @@ OFTEST(dcmsr_TID1411_VolumetricROIMeasurements)
 
 OFTEST(dcmsr_TID1500_MeasurementReport)
 {
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     TID1500_MeasurementReport report(CMR_CID7021::ImagingMeasurementReport);
     DSRCodedEntryValue title;
     /* check initial settings */
@@ -486,6 +494,13 @@ OFTEST(dcmsr_TID1501_MeasurementGroup)
 
 OFTEST(dcmsr_TID1600_ImageLibrary)
 {
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     TID1600_ImageLibrary library;
     DcmItem *item1, *item2;
     /* check template identification */

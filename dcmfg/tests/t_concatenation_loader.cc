@@ -41,10 +41,10 @@ static void check_dump(const OFString& expected, const OFString& output);
 
 OFTEST(dcmfg_concatenation_loader)
 {
-    /* make sure data dictionary is loaded */
+    // Make sure data dictionary is loaded
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFCHECK(dcmDataDict.isDictionaryLoaded());
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
         return;
     }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -27,6 +27,7 @@
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 #include "dcmtk/dcmsr/dsrcodvl.h"
 
@@ -103,6 +104,13 @@ OFTEST(dcmsr_determineCodeValueType)
 
 OFTEST(dcmsr_writeCodeSequence)
 {
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     DcmDataset dataset;
     /* first, try the standard case (short code value) */
     DSRCodedEntryValue codedEntry("121206", "DCM", "Distance", DSRTypes::CVT_Short);
