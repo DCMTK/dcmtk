@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, OFFIS e.V.
+ *  Copyright (C) 2016-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,15 +78,21 @@ void DcmJsonFormat::escapeControlCharacters(STD_NAMESPACE ostream &out, const OF
 // Formats the number to JSON standard as DecimalString
 void DcmJsonFormat::normalizeDecimalString(OFString &value)
 {
+    // remove all plus characters that may occur in the string.
+    // These are permitted in DICOM but not in Json.
+    size_t pos;
+    while (OFString_npos != (pos = value.find('+')))
+      value.erase(pos,1);
+
     OFBool minus = OFFalse;
 
-    if (value[0] == '-')
+    if (value.length() > 0 && value[0] == '-')
     {
         value = value.substr(1);
         minus = OFTrue;
     }
 
-    size_t pos = value.find_first_not_of("0");
+    pos = value.find_first_not_of("0");
 
     if (pos == OFString_npos)
         value = "0";
@@ -105,15 +111,21 @@ void DcmJsonFormat::normalizeDecimalString(OFString &value)
 // Formats the number to JSON standard as IntegerString
 void DcmJsonFormat::normalizeIntegerString(OFString &value)
 {
+    // remove all plus characters that may occur in the string.
+    // These are permitted in DICOM but not in Json.
+    size_t pos;
+    while (OFString_npos != (pos = value.find('+')))
+      value.erase(pos,1);
+
     OFBool minus = OFFalse;
 
-    if (value[0] == '-')
+    if (value.length() > 0 && value[0] == '-')
     {
         value = value.substr(1);
         minus = OFTrue;
     }
 
-    size_t pos = value.find_first_not_of("0");
+    pos = value.find_first_not_of("0");
 
     if (pos == OFString_npos)
         value = "0";

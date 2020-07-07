@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -208,6 +208,14 @@ class DCMTK_DCMDATA_EXPORT DcmSigned64bitVeryLong
      *  @return status, EC_Normal if value length is correct, an error code otherwise
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format);
 
   protected:
 

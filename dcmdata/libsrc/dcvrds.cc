@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -282,9 +282,10 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
 {
     /* always write JSON Opener */
     writeJsonOpener(out, format);
-    /* write element value (if loaded) */
-    if (valueLoaded())
+
+    if (!isEmpty())
     {
+        /* write element value */
         OFString bulkDataValue;
         if (format.asBulkDataURI(getTag(), bulkDataValue))
         {
@@ -299,13 +300,20 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
             getString(value_, length);
             if ((value_ != OFnullptr) && (length > 0))
             {
+                // check if the IS values are proper numbers. If they are, we
+                // print them to Json as numbers, otherwise we print as string.
+                OFBool printAsNumber = checkValue().good();
+
                 /* explicitly convert to OFString because of possible NULL bytes */
                 OFString value(value_, length);
                 OFCondition status = getOFString(value, 0L);
                 if (status.bad())
                     return status;
                 format.printValuePrefix(out);
-                DcmJsonFormat::printNumberDecimal(out, value);
+                if (printAsNumber)
+                    DcmJsonFormat::printNumberDecimal(out, value);
+                    else DcmJsonFormat::printValueString(out, value);
+
                 const unsigned long vm = getVM();
                 for (unsigned long valNo = 1; valNo < vm; ++valNo)
                 {
@@ -313,12 +321,15 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                     if (status.bad())
                         return status;
                     format.printNextArrayElementPrefix(out);
-                    DcmJsonFormat::printNumberDecimal(out, value);
+                    if (printAsNumber)
+                        DcmJsonFormat::printNumberDecimal(out, value);
+                        else DcmJsonFormat::printValueString(out, value);
                 }
                 format.printValueSuffix(out);
             }
         }
     }
+
     /* write JSON Closer  */
     writeJsonCloser(out, format);
     /* always report success */

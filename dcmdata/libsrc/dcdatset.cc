@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -343,21 +343,7 @@ OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream &out,
 OFCondition DcmDataset::writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format)
 {
-    // write dataset content
-    if (!elementList->empty())
-    {
-        elementList->seek(ELP_first);
-        OFCondition status = EC_Normal;
-        // write content of all children
-        status = elementList->get()->writeJson(out, format);
-        while (status.good() && elementList->seek(ELP_next))
-        {
-            out << "," << format.newline();
-            status = elementList->get()->writeJson(out, format);
-        }
-        return status;
-    }
-    return EC_Normal;
+    return writeJsonExt(out, format, OFFalse, OFFalse); // omit braces
 }
 
 

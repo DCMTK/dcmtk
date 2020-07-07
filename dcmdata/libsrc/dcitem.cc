@@ -554,31 +554,73 @@ OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
 
 // ********************************
 
-
 OFCondition DcmItem::writeJson(STD_NAMESPACE ostream &out,
                                DcmJsonFormat &format)
 {
+    return writeJsonExt(out, format, OFTrue, OFFalse);
+}
+
+// ********************************
+
+OFCondition DcmItem::writeJsonExt(STD_NAMESPACE ostream &out,
+                               DcmJsonFormat &format,
+                                OFBool printBraces,
+                                OFBool printNewline)
+{
+    size_t num_printed = 0;
+    OFBool first = OFTrue;
+    DcmObject *elem = NULL;
+    OFCondition status = EC_Normal;
+
     if (!elementList->empty())
     {
-        // write content of all children
-        out << "{" << format.newline();
+        // iterate through all elements in this item
         elementList->seek(ELP_first);
-        OFCondition status = EC_Normal;
-        status = elementList->get()->writeJson(out, format);
-        while (status.good() && elementList->seek(ELP_next))
+        do
         {
-            out << "," << format.newline();
-            status = elementList->get()->writeJson(out, format);
+            // get next item
+            elem = elementList->get();
+
+            // check if this is a group length, and if so, ignore
+            if (elem->getTag().getElement() != 0)
+            {
+              // if this is the first element to be printed, print opening braces if needed
+              if (first && printBraces) out << "{" << format.newline();
+
+              // if this is not the first element to be printed, start with a comma
+              if (!first) out << "," << format.newline();
+
+              // print element
+              status = elem->writeJson(out, format);
+              first = OFFalse;
+              num_printed++;
+            }
         }
-        out << format.newline() << format.indent() << "}";
-        return status;
+        while (status.good() && elementList->seek(ELP_next));
+
+        // print closing braces if and only if there were opening braces
+        if (num_printed > 0 && printBraces)
+        {
+            out << format.newline() << format.indent() << "}";
+            if (printNewline) out << format.newline();
+        }
     }
-    else
+
+    // if no element was printed (item empty or only group list elements)
+    if (num_printed == 0)
     {
-        out << "{}" << format.newline();
+        if (printBraces)
+        {
+            // print empty braces if requested
+            out << "{}";
+            if (printNewline) out << format.newline();
+        }
     }
-    return EC_Normal;
+
+    return status;
+
 }
+
 
 // ********************************
 

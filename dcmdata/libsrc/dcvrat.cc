@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -260,31 +260,36 @@ OFCondition DcmAttributeTag::writeJson(STD_NAMESPACE ostream &out,
 {
     // always write JSON Opener
     DcmElement::writeJsonOpener(out, format);
-    Uint16 *uintVals;
-    getUint16Array(uintVals);
-    const unsigned long vm = getVM();
-    // check for empty/invalid value
-    if ((uintVals != NULL) && (vm > 0))
+
+    if (!isEmpty())
     {
-        format.printValuePrefix(out);
-        out << STD_NAMESPACE uppercase << STD_NAMESPACE setfill('0');
-        // print tag values "ggggeeee" in hex mode (upper case!)
-        out << "\"";
-        out << STD_NAMESPACE hex << STD_NAMESPACE setw(4) << (*(uintVals++));
-        out << STD_NAMESPACE setw(4) << (*(uintVals++)) << STD_NAMESPACE dec;
-        out << "\"";
-        for (unsigned long valNo = 1; valNo < vm; valNo++)
+        Uint16 *uintVals;
+        getUint16Array(uintVals);
+        const unsigned long vm = getVM();
+        // check for empty/invalid value
+        if ((uintVals != NULL) && (vm > 0))
         {
-            format.printNextArrayElementPrefix(out);
+            format.printValuePrefix(out);
+            out << STD_NAMESPACE uppercase << STD_NAMESPACE setfill('0');
+            // print tag values "ggggeeee" in hex mode (upper case!)
             out << "\"";
             out << STD_NAMESPACE hex << STD_NAMESPACE setw(4) << (*(uintVals++));
             out << STD_NAMESPACE setw(4) << (*(uintVals++)) << STD_NAMESPACE dec;
             out << "\"";
+            for (unsigned long valNo = 1; valNo < vm; valNo++)
+            {
+                format.printNextArrayElementPrefix(out);
+                out << "\"";
+                out << STD_NAMESPACE hex << STD_NAMESPACE setw(4) << (*(uintVals++));
+                out << STD_NAMESPACE setw(4) << (*(uintVals++)) << STD_NAMESPACE dec;
+                out << "\"";
+            }
+            // reset i/o manipulators
+            out << STD_NAMESPACE nouppercase << STD_NAMESPACE setfill(' ');
+            format.printValueSuffix(out);
         }
-        // reset i/o manipulators
-        out << STD_NAMESPACE nouppercase << STD_NAMESPACE setfill(' ');
-        format.printValueSuffix(out);
     }
+
     // write normal JSON closer
     DcmElement::writeJsonCloser(out, format);
     // always report success

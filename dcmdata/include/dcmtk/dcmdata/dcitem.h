@@ -301,6 +301,19 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
+    /** write object in JSON format and control whether the output
+     *  is encapsulated in braces
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @param printBraces true if output should be encapsulated in braces
+     *  @param printNewline true if a newline should be printed after a closing brace
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJsonExt(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format,
+                                  OFBool printBraces,
+                                  OFBool printNewline);
+
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax

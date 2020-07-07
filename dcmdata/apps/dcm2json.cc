@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2016-2017, OFFIS e.V.
+*  Copyright (C) 2016-2020, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -59,24 +59,31 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
         DcmDataset *dset = dfile->getDataset();
 
         /* write JSON document content */
-
         if (readMode == ERM_dataset)
         {
-            result = format
-            ?
-                dset->writeJson(out, DcmJsonFormatPretty(printMetaInfo))
-            :
-                dset->writeJson(out, DcmJsonFormatCompact(printMetaInfo))
-            ;
+            if (format)
+            {
+               DcmJsonFormatPretty fmt(printMetaInfo);
+               result = dset->writeJsonExt(out, fmt, OFTrue, OFTrue);
+            }
+            else
+            {
+               DcmJsonFormatCompact fmt(printMetaInfo);
+               result = dset->writeJsonExt(out, fmt, OFTrue, OFTrue);
+            }
         }
         else
         {
-            result = format
-            ?
-                dfile->writeJson(out, DcmJsonFormatPretty(printMetaInfo))
-            :
-                dfile->writeJson(out, DcmJsonFormatCompact(printMetaInfo))
-            ;
+            if (format)
+            {
+               DcmJsonFormatPretty fmt(printMetaInfo);
+               result = dfile->writeJson(out, fmt);
+            }
+            else
+            {
+               DcmJsonFormatCompact fmt(printMetaInfo);
+               result = dfile->writeJson(out, fmt);
+            }
         }
     }
     return result;

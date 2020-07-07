@@ -232,46 +232,38 @@ OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
 OFCondition DcmFileFormat::writeJson(STD_NAMESPACE ostream &out,
                                      DcmJsonFormat &format)
 {
-    if (format.printMetaheaderInformation)
+    OFBool meta = format.printMetaheaderInformation;
+    DcmDataset *dset = getDataset();
+    OFCondition status = EC_Normal;
+    if (meta)
     {
-        if (!itemList->empty())
+        // print out meta-header elements and dataset (non-standard)
+        DcmMetaInfo *metinf = getMetaInfo();
+        out << format.indent() << "{" << format.newline();
+        if (metinf)
         {
-            out << format.indent() << "{" << format.newline();
-            // write content of all children (DcmObject)
-            itemList->seek(ELP_first);
-            OFCondition status = EC_Normal;
-            status = itemList->get()->writeJson(out, format);
-            while (status.good() && itemList->seek(ELP_next))
-            {
-                out << "," << format.newline();
-                status = itemList->get()->writeJson(out, format);
-            }
-            out << format.newline() << format.indent() << "}" << format.newline();
-            return status;
+          status = metinf->writeJsonExt(out, format, OFFalse, OFFalse);
+          out << format.newline();
         }
-        else
+        if (dset && status.good())
         {
-            return EC_CorruptedData;
+            status = dset->writeJsonExt(out, format, OFFalse, OFFalse);
         }
+        out << format.newline() << format.indent() << "}" << format.newline();
     }
     else
     {
-        if (DcmDataset *dset = getDataset())
+        // standard case: only print dataset
+        if (dset)
         {
-            out << format.indent() << "{" << format.newline();
-            OFCondition status = EC_Normal;
-            // write content of dataset
-            status = dset->writeJson(out, format);
-            out << format.newline() << format.indent() << "}" << format.newline();
-            return status;
+            status = dset->writeJsonExt(out, format, OFTrue, OFTrue);
         }
         else
         {
             out << format.indent() << "{}" << format.newline();
-            return EC_Normal;
         }
     }
-    return EC_Normal;
+    return status;
 }
 
 

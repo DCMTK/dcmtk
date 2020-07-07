@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,10 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcvruv.h"
 
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/dcmdata/dcvruv.h"
+#include "dcmtk/dcmdata/dcjson.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -392,4 +393,71 @@ OFCondition DcmUnsigned64bitVeryLong::verify(const OFBool autocorrect)
     } else
         errorFlag = EC_Normal;
     return errorFlag;
+}
+
+
+// ********************************
+
+// The largest number permitted in Javascript
+#define JSON_MAX_SAFE_INTEGER 9007199254740991ull
+
+OFCondition DcmUnsigned64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
+                                                DcmJsonFormat &format)
+{
+    /* always write JSON Opener */
+    writeJsonOpener(out, format);
+
+    if (!isEmpty())
+    {
+
+        /* write element value */
+        OFString bulkDataValue;
+        if (format.asBulkDataURI(getTag(), bulkDataValue))
+        {
+            format.printBulkDataURIPrefix(out);
+            DcmJsonFormat::printString(out, bulkDataValue);
+        }
+        else
+        {
+            // check if the UV values can be represented in Json,
+            // where numbers should not be larger than JSON_MAX_SAFE_INTEGER.
+            // if any number in a multi-valued UV attribute is too large,
+            // then we print all numbers as string.
+            const unsigned long vm = getVM();
+            OFBool printAsNumber = OFTrue;
+            OFCondition status = EC_Normal;
+            OFString value;
+            Uint64 v = 0;
+            for (unsigned long valNo = 0; valNo < vm; ++valNo)
+            {
+              status = getUint64(v, valNo);
+              if (status.bad() || (v > JSON_MAX_SAFE_INTEGER)) printAsNumber = OFFalse;
+            }
+
+            status = getOFString(value, 0L);
+            if (status.bad()) return status;
+            format.printValuePrefix(out);
+
+            if (printAsNumber)
+                DcmJsonFormat::printNumberInteger(out, value);
+                else DcmJsonFormat::printValueString(out, value);
+
+            for (unsigned long valNo = 1; valNo < vm; ++valNo)
+            {
+                status = getOFString(value, valNo);
+                if (status.bad()) return status;
+                format.printNextArrayElementPrefix(out);
+
+                if (printAsNumber)
+                    DcmJsonFormat::printNumberInteger(out, value);
+                    else DcmJsonFormat::printValueString(out, value);
+            }
+            format.printValueSuffix(out);
+        }
+    }
+
+    /* write JSON Closer  */
+    writeJsonCloser(out, format);
+    /* always report success */
+    return EC_Normal;
 }
