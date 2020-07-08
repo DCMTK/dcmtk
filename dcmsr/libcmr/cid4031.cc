@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2020a
- *  File created on 2020-02-04 12:03:50 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020c
+ *  File created on 2020-07-08 17:48:29 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4031 (Common Anatomic Regions)
 #define CONTEXT_GROUP_NUMBER  "4031"
-#define CONTEXT_GROUP_VERSION "20170914"
+#define CONTEXT_GROUP_VERSION "20200704"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.308"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -149,8 +149,8 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(Abdomen, DSRBasicCodedEntry("113345001", "SCT", "Abdomen")));
-        Codes->insert(OFMake_pair(AbdomenAndPelvis, DSRBasicCodedEntry("416949008", "SCT", "Abdomen and Pelvis")));
+        Codes->insert(OFMake_pair(Abdomen, DSRBasicCodedEntry("818981001", "SCT", "Abdomen")));
+        Codes->insert(OFMake_pair(AbdomenAndPelvis, DSRBasicCodedEntry("818982008", "SCT", "Abdomen and Pelvis")));
         Codes->insert(OFMake_pair(AcromioclavicularJoint, DSRBasicCodedEntry("85856004", "SCT", "Acromioclavicular joint")));
         Codes->insert(OFMake_pair(AnkleJoint, DSRBasicCodedEntry("70258002", "SCT", "Ankle joint")));
         Codes->insert(OFMake_pair(Anus, DSRBasicCodedEntry("53505006", "SCT", "Anus")));
@@ -164,12 +164,13 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         Codes->insert(OFMake_pair(Calcaneus, DSRBasicCodedEntry("80144004", "SCT", "Calcaneus")));
         Codes->insert(OFMake_pair(CervicalSpine, DSRBasicCodedEntry("122494005", "SCT", "Cervical spine")));
         Codes->insert(OFMake_pair(CervicoThoracicSpine, DSRBasicCodedEntry("297171002", "SCT", "Cervico-thoracic spine")));
-        Codes->insert(OFMake_pair(Chest, DSRBasicCodedEntry("51185008", "SCT", "Chest")));
+        Codes->insert(OFMake_pair(Chest, DSRBasicCodedEntry("816094009", "SCT", "Chest")));
         Codes->insert(OFMake_pair(ChestAndAbdomen, DSRBasicCodedEntry("416550000", "SCT", "Chest and Abdomen")));
         Codes->insert(OFMake_pair(ChestAbdomenAndPelvis, DSRBasicCodedEntry("416775004", "SCT", "Chest, Abdomen and Pelvis")));
         Codes->insert(OFMake_pair(Clavicle, DSRBasicCodedEntry("51299004", "SCT", "Clavicle")));
         Codes->insert(OFMake_pair(Coccyx, DSRBasicCodedEntry("64688005", "SCT", "Coccyx")));
         Codes->insert(OFMake_pair(Colon, DSRBasicCodedEntry("71854001", "SCT", "Colon")));
+        Codes->insert(OFMake_pair(CommonBileDuct, DSRBasicCodedEntry("79741001", "SCT", "Common bile duct")));
         Codes->insert(OFMake_pair(Duodenum, DSRBasicCodedEntry("38848004", "SCT", "Duodenum")));
         Codes->insert(OFMake_pair(ElbowJoint, DSRBasicCodedEntry("16953009", "SCT", "Elbow joint")));
         Codes->insert(OFMake_pair(EntireBody, DSRBasicCodedEntry("38266002", "SCT", "Entire body")));
@@ -189,7 +190,8 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         Codes->insert(OFMake_pair(Head, DSRBasicCodedEntry("69536005", "SCT", "Head")));
         Codes->insert(OFMake_pair(HeadAndNeck, DSRBasicCodedEntry("774007", "SCT", "Head and Neck")));
         Codes->insert(OFMake_pair(Heart, DSRBasicCodedEntry("80891009", "SCT", "Heart")));
-        Codes->insert(OFMake_pair(HipJoint, DSRBasicCodedEntry("29836001", "SCT", "Hip joint")));
+        Codes->insert(OFMake_pair(Hip, DSRBasicCodedEntry("29836001", "SCT", "Hip")));
+        Codes->insert(OFMake_pair(HipJoint, DSRBasicCodedEntry("24136001", "SCT", "Hip Joint")));
         Codes->insert(OFMake_pair(Humerus, DSRBasicCodedEntry("85050009", "SCT", "Humerus")));
         Codes->insert(OFMake_pair(Ileum, DSRBasicCodedEntry("34516001", "SCT", "Ileum")));
         Codes->insert(OFMake_pair(Ilium, DSRBasicCodedEntry("22356005", "SCT", "Ilium")));
@@ -199,6 +201,7 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         Codes->insert(OFMake_pair(Knee, DSRBasicCodedEntry("72696002", "SCT", "Knee")));
         Codes->insert(OFMake_pair(LargeIntestine, DSRBasicCodedEntry("14742008", "SCT", "Large intestine")));
         Codes->insert(OFMake_pair(Larynx, DSRBasicCodedEntry("4596009", "SCT", "Larynx")));
+        Codes->insert(OFMake_pair(LiverAndBiliaryStructure, DSRBasicCodedEntry("303270005", "SCT", "Liver and biliary structure")));
         Codes->insert(OFMake_pair(LowerLeg, DSRBasicCodedEntry("30021000", "SCT", "Lower leg")));
         Codes->insert(OFMake_pair(LowerLimb, DSRBasicCodedEntry("61685007", "SCT", "Lower limb")));
         Codes->insert(OFMake_pair(LumbarSpine, DSRBasicCodedEntry("122496007", "SCT", "Lumbar spine")));
@@ -216,16 +219,19 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         Codes->insert(OFMake_pair(NeckChestAbdomenAndPelvis, DSRBasicCodedEntry("416319003", "SCT", "Neck, Chest, Abdomen and Pelvis")));
         Codes->insert(OFMake_pair(OpticCanal, DSRBasicCodedEntry("55024004", "SCT", "Optic canal")));
         Codes->insert(OFMake_pair(OrbitalStructure, DSRBasicCodedEntry("363654007", "SCT", "Orbital structure")));
+        Codes->insert(OFMake_pair(Pancreas, DSRBasicCodedEntry("15776009", "SCT", "Pancreas")));
+        Codes->insert(OFMake_pair(PancreaticDuct, DSRBasicCodedEntry("69930009", "SCT", "Pancreatic duct")));
         Codes->insert(OFMake_pair(PancreaticDuctAndBileDuctSystems, DSRBasicCodedEntry("110621006", "SCT", "Pancreatic duct and bile duct systems")));
         Codes->insert(OFMake_pair(ParanasalSinus, DSRBasicCodedEntry("2095001", "SCT", "Paranasal sinus")));
         Codes->insert(OFMake_pair(ParotidGland, DSRBasicCodedEntry("45289007", "SCT", "Parotid gland")));
         Codes->insert(OFMake_pair(Patella, DSRBasicCodedEntry("64234005", "SCT", "Patella")));
-        Codes->insert(OFMake_pair(Pelvis, DSRBasicCodedEntry("12921003", "SCT", "Pelvis")));
+        Codes->insert(OFMake_pair(Pelvis, DSRBasicCodedEntry("816092008", "SCT", "Pelvis")));
         Codes->insert(OFMake_pair(PelvisAndLowerExtremities, DSRBasicCodedEntry("416631005", "SCT", "Pelvis and lower extremities")));
         Codes->insert(OFMake_pair(Phantom, DSRBasicCodedEntry("113681", "DCM", "Phantom")));
         Codes->insert(OFMake_pair(Prostate, DSRBasicCodedEntry("41216001", "SCT", "Prostate")));
         Codes->insert(OFMake_pair(Rectum, DSRBasicCodedEntry("34402009", "SCT", "Rectum")));
         Codes->insert(OFMake_pair(Rib, DSRBasicCodedEntry("113197003", "SCT", "Rib")));
+        Codes->insert(OFMake_pair(SacroCoccygealSpine, DSRBasicCodedEntry("297174005", "SCT", "Sacro-coccygeal Spine")));
         Codes->insert(OFMake_pair(SacroiliacJoint, DSRBasicCodedEntry("39723000", "SCT", "Sacroiliac joint")));
         Codes->insert(OFMake_pair(Sacrum, DSRBasicCodedEntry("54735007", "SCT", "Sacrum")));
         Codes->insert(OFMake_pair(Scapula, DSRBasicCodedEntry("79601000", "SCT", "Scapula")));
