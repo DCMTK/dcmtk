@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2020a
- *  File created on 2020-02-04 11:53:58 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020c
+ *  File created on 2020-07-08 15:51:19 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4286
-// - retired: 196
+// total number of codes: 4357
+// - retired: 198
 // - no name: 27
 // - not unique: 17
 
@@ -77,6 +77,9 @@
 #define CODE_DCM_DigitalRadiography                                        DSRBasicCodedEntry("DX", "DCM", "Digital Radiography")
 #define CODE_DCM_RETIRED_Echocardiography                                  DSRBasicCodedEntry("EC", "DCM", "Echocardiography")
 #define CODE_DCM_Electrocardiography                                       DSRBasicCodedEntry("ECG", "DCM", "Electrocardiography")
+#define CODE_DCM_Electroencephalography                                    DSRBasicCodedEntry("EEG", "DCM", "Electroencephalography")
+#define CODE_DCM_Electromyography                                          DSRBasicCodedEntry("EMG", "DCM", "Electromyography")
+#define CODE_DCM_Electrooculography                                        DSRBasicCodedEntry("EOG", "DCM", "Electrooculography")
 #define CODE_DCM_CardiacElectrophysiology                                  DSRBasicCodedEntry("EPS", "DCM", "Cardiac Electrophysiology")
 #define CODE_DCM_Endoscopy                                                 DSRBasicCodedEntry("ES", "DCM", "Endoscopy")
 #define CODE_DCM_Female                                                    DSRBasicCodedEntry("F", "DCM", "Female")
@@ -126,6 +129,7 @@
 #define CODE_DCM_OpticalSurfaceScanner                                     DSRBasicCodedEntry("OSS", "DCM", "Optical Surface Scanner")
 #define CODE_DCM_OtherModality                                             DSRBasicCodedEntry("OT", "DCM", "Other Modality")
 #define CODE_DCM_Plan                                                      DSRBasicCodedEntry("PLAN", "DCM", "Plan")
+#define CODE_DCM_PositionSensor                                            DSRBasicCodedEntry("POS", "DCM", "Position Sensor")
 #define CODE_DCM_PresentationState                                         DSRBasicCodedEntry("PR", "DCM", "Presentation State")
 #define CODE_DCM_HardCopyPrintServer                                       DSRBasicCodedEntry("PRINT", "DCM", "Hard Copy Print Server")
 #define CODE_DCM_PositronEmissionTomography                                DSRBasicCodedEntry("PT", "DCM", "Positron emission tomography")
@@ -950,7 +954,7 @@
 #define CODE_DCM_GreaterThan1YearAgo                                       DSRBasicCodedEntry("111398", "DCM", "> 1 year ago")
 #define CODE_DCM_TimeframeUncertain                                        DSRBasicCodedEntry("111399", "DCM", "Timeframe uncertain")
 #define CODE_DCM_BreastImagingReport                                       DSRBasicCodedEntry("111400", "DCM", "Breast Imaging Report")
-#define CODE_DCM_ReasonForProcedure                                        DSRBasicCodedEntry("111401", "DCM", "Reason for procedure")
+#define CODE_DCM_RETIRED_ReasonForProcedure                                DSRBasicCodedEntry("111401", "DCM", "Reason for Procedure")
 #define CODE_DCM_ClinicalFinding                                           DSRBasicCodedEntry("111402", "DCM", "Clinical Finding")
 #define CODE_DCM_BaselineScreeningMammogram                                DSRBasicCodedEntry("111403", "DCM", "Baseline screening mammogram")
 #define CODE_DCM_FirstMammogramEver                                        DSRBasicCodedEntry("111404", "DCM", "First mammogram ever")
@@ -3118,7 +3122,7 @@
 #define CODE_DCM_LeftHemisphereMostInferior                                DSRBasicCodedEntry("125038", "DCM", "Left Hemisphere Most Inferior")
 #define CODE_DCM_Background                                                DSRBasicCodedEntry("125040", "DCM", "Background")
 #define CODE_DCM_RegistrationInput                                         DSRBasicCodedEntry("125041", "DCM", "Registration Input")
-#define CODE_DCM_VascularUltrasoundProcedureReport                         DSRBasicCodedEntry("125100", "DCM", "Vascular Ultrasound Procedure Report")
+#define CODE_DCM_RETIRED_VascularUltrasoundProcedureReport                 DSRBasicCodedEntry("125100", "DCM", "Vascular Ultrasound Procedure Report")
 #define CODE_DCM_VesselBranch                                              DSRBasicCodedEntry("125101", "DCM", "Vessel Branch")
 #define CODE_DCM_GraftType                                                 DSRBasicCodedEntry("125102", "DCM", "Graft Type")
 #define CODE_DCM_MeasurementOrientation                                    DSRBasicCodedEntry("125105", "DCM", "Measurement Orientation")
@@ -4216,7 +4220,7 @@
 #define CODE_DCM_AdverseEventDetectionDateTime                             DSRBasicCodedEntry("130215", "DCM", "Adverse Event Detection DateTime")
 #define CODE_DCM_ReferencedImagingAgentAdministrationStepUID               DSRBasicCodedEntry("130216", "DCM", "Referenced Imaging Agent Administration Step UID")
 #define CODE_DCM_ReferencedImagingAgentAdministrationPhaseIdentifier       DSRBasicCodedEntry("130217", "DCM", "Referenced Imaging Agent Administration Phase Identifier")
-#define CODE_DCM_ProgrammableDevice                                        DSRBasicCodedEntry("130218", "DCM", "Programmable Device")
+#define CODE_DCM_ProgrammableInjectorDevice                                DSRBasicCodedEntry("130218", "DCM", "Programmable Injector Device")
 #define CODE_DCM_NumberOfInjectorHeads                                     DSRBasicCodedEntry("130219", "DCM", "Number of Injector Heads")
 #define CODE_DCM_AdministrationDiscontinued                                DSRBasicCodedEntry("130220", "DCM", "Administration discontinued")
 #define CODE_DCM_ImagingAgentVolumePerUnitOfPresentation                   DSRBasicCodedEntry("130221", "DCM", "Imaging Agent Volume per Unit of Presentation")
@@ -4334,5 +4338,72 @@
 #define CODE_DCM_PatientAttachedDoseControlObject                          DSRBasicCodedEntry("130405", "DCM", "Patient-Attached Dose Control Object")
 #define CODE_DCM_NonUterineLeiomyosarcoma                                  DSRBasicCodedEntry("130406", "DCM", "Non-uterine leiomyosarcoma")
 #define CODE_DCM_BoneAndSoftTissue                                         DSRBasicCodedEntry("130407", "DCM", "Bone and soft tissue")
+#define CODE_DCM_PerivascularAdiposeTissueFatAttenuationIndex              DSRBasicCodedEntry("130408", "DCM", "Perivascular adipose tissue fat attenuation index")
+#define CODE_DCM_PatientPosition                                           DSRBasicCodedEntry("130410", "DCM", "Patient position")
+#define CODE_DCM_PatientRotationLongitudinal                               DSRBasicCodedEntry("130411", "DCM", "Patient rotation longitudinal")
+#define CODE_DCM_PatientElevation                                          DSRBasicCodedEntry("130412", "DCM", "Patient elevation")
+#define CODE_DCM_HyperventilationBegin                                     DSRBasicCodedEntry("130413", "DCM", "Hyperventilation begin")
+#define CODE_DCM_HyperventilationEnd                                       DSRBasicCodedEntry("130414", "DCM", "Hyperventilation end")
+#define CODE_DCM_PostHyperventilation                                      DSRBasicCodedEntry("130415", "DCM", "Post-hyperventilation")
+#define CODE_DCM_AirflowThermistor                                         DSRBasicCodedEntry("130416", "DCM", "Airflow Thermistor")
+#define CODE_DCM_AirflowThermocouple                                       DSRBasicCodedEntry("130417", "DCM", "Airflow Thermocouple")
+#define CODE_DCM_AirflowNasalProng                                         DSRBasicCodedEntry("130418", "DCM", "Airflow Nasal Prong")
+#define CODE_DCM_AirflowPVDF                                               DSRBasicCodedEntry("130419", "DCM", "Airflow PVDF")
+#define CODE_DCM_AirflowCPAP                                               DSRBasicCodedEntry("130420", "DCM", "Airflow CPAP")
+#define CODE_DCM_Airflow                                                   DSRBasicCodedEntry("130421", "DCM", "Airflow")
+#define CODE_DCM_PAPPressure                                               DSRBasicCodedEntry("130422", "DCM", "PAP Pressure")
+#define CODE_DCM_PAPLeakPressure                                           DSRBasicCodedEntry("130423", "DCM", "PAP Leak Pressure")
+#define CODE_DCM_PAPTidalVolume                                            DSRBasicCodedEntry("130424", "DCM", "PAP Tidal Volume")
+#define CODE_DCM_EsophagealPressure                                        DSRBasicCodedEntry("130425", "DCM", "Esophageal Pressure")
+#define CODE_DCM_RespiratoryPressure                                       DSRBasicCodedEntry("130426", "DCM", "Respiratory Pressure")
+#define CODE_DCM_ThoracicRespiratoryInductance                             DSRBasicCodedEntry("130427", "DCM", "Thoracic Respiratory Inductance")
+#define CODE_DCM_AbdominalRespiratoryInductance                            DSRBasicCodedEntry("130428", "DCM", "Abdominal Respiratory Inductance")
+#define CODE_DCM_ThoracicRespiratoryPVDF                                   DSRBasicCodedEntry("130429", "DCM", "Thoracic Respiratory PVDF")
+#define CODE_DCM_AbdominalRespiratoryPVDF                                  DSRBasicCodedEntry("130430", "DCM", "Abdominal Respiratory PVDF")
+#define CODE_DCM_ThoracicRespiratoryEffort                                 DSRBasicCodedEntry("130431", "DCM", "Thoracic Respiratory Effort")
+#define CODE_DCM_AbdominalRespiratoryEffort                                DSRBasicCodedEntry("130432", "DCM", "Abdominal Respiratory Effort")
+#define CODE_DCM_RespiratoryEffort                                         DSRBasicCodedEntry("130433", "DCM", "Respiratory Effort")
+#define CODE_DCM_CO2Transcutaneous                                         DSRBasicCodedEntry("130434", "DCM", "CO2 Transcutaneous")
+#define CODE_DCM_CO2WaveformEndTidalMainStream                             DSRBasicCodedEntry("130435", "DCM", "CO2 Waveform End-tidal Main-stream")
+#define CODE_DCM_CO2TrendEndTidalMainStream                                DSRBasicCodedEntry("130436", "DCM", "CO2 Trend End-tidal Main-stream")
+#define CODE_DCM_CO2WaveformEndTidalSideStream                             DSRBasicCodedEntry("130437", "DCM", "CO2 Waveform End-tidal Side-stream")
+#define CODE_DCM_CO2TrendEndTidalSideStream                                DSRBasicCodedEntry("130438", "DCM", "CO2 Trend End-tidal Side-stream")
+#define CODE_DCM_CO2WaveformMainStream                                     DSRBasicCodedEntry("130439", "DCM", "CO2 Waveform Main-stream")
+#define CODE_DCM_CO2WaveformSideStream                                     DSRBasicCodedEntry("130440", "DCM", "CO2 Waveform Side-stream")
+#define CODE_DCM_CO2TrendMainStream                                        DSRBasicCodedEntry("130441", "DCM", "CO2 Trend Main-stream")
+#define CODE_DCM_CO2TrendSideStream                                        DSRBasicCodedEntry("130442", "DCM", "CO2 Trend Side-stream")
+#define CODE_DCM_CO2Respiration                                            DSRBasicCodedEntry("130443", "DCM", "CO2 Respiration")
+#define CODE_DCM_RTTreatmentWithAdHocPlanning                              DSRBasicCodedEntry("130444", "DCM", "RT Treatment with Ad Hoc Planning")
+#define CODE_DCM_ImagingAgentAdministrationStepSequenceNumber              DSRBasicCodedEntry("130445", "DCM", "Imaging Agent Administration Step Sequence Number")
+#define CODE_DCM_OperatorDecisionToTerminateTreatment                      DSRBasicCodedEntry("130450", "DCM", "Operator decision to terminate treatment")
+#define CODE_DCM_PatientDecisionToTerminateTreatment                       DSRBasicCodedEntry("130451", "DCM", "Patient decision to terminate treatment")
+#define CODE_DCM_PhysicianDecisionToTerminateTreatment                     DSRBasicCodedEntry("130452", "DCM", "Physician decision to terminate treatment")
+#define CODE_DCM_TreatmentTerminated                                       DSRBasicCodedEntry("130453", "DCM", "Treatment Terminated")
+#define CODE_DCM_ResolvedByOverridingInterlock                             DSRBasicCodedEntry("130454", "DCM", "Resolved by overriding Interlock")
+#define CODE_DCM_ResolvedByRepositioningPatient                            DSRBasicCodedEntry("130455", "DCM", "Resolved by repositioning Patient")
+#define CODE_DCM_BolusPresent                                              DSRBasicCodedEntry("130456", "DCM", "Bolus Present")
+#define CODE_DCM_ConePresent                                               DSRBasicCodedEntry("130457", "DCM", "Cone Present")
+#define CODE_DCM_BlockPresent                                              DSRBasicCodedEntry("130458", "DCM", "Block Present")
+#define CODE_DCM_ApplicatorPresent                                         DSRBasicCodedEntry("130459", "DCM", "Applicator Present")
+#define CODE_DCM_HeadframePresent                                          DSRBasicCodedEntry("130460", "DCM", "Headframe Present")
+#define CODE_DCM_InappropriatePatientOrientation                           DSRBasicCodedEntry("130461", "DCM", "Inappropriate Patient Orientation")
+#define CODE_DCM_InappropriatePatientPosition                              DSRBasicCodedEntry("130462", "DCM", "Inappropriate Patient Position")
+#define CODE_DCM_MachineNotAvailable                                       DSRBasicCodedEntry("130463", "DCM", "Machine Not Available")
+#define CODE_DCM_ChangeInPatientAnatomy                                    DSRBasicCodedEntry("130464", "DCM", "Change in Patient Anatomy")
+#define CODE_DCM_MachineCalibrationAdjustment                              DSRBasicCodedEntry("130465", "DCM", "Machine Calibration Adjustment")
+#define CODE_DCM_UnavailabilityOfABeamModifier                             DSRBasicCodedEntry("130466", "DCM", "Unavailability of a Beam Modifier")
+#define CODE_DCM_MachineCapabilityLicenseExpired                           DSRBasicCodedEntry("130467", "DCM", "Machine Capability License Expired")
+#define CODE_DCM_BeamTargetingToleranceViolation                           DSRBasicCodedEntry("130468", "DCM", "Beam Targeting Tolerance Violation")
+#define CODE_DCM_MetersetToleranceViolation                                DSRBasicCodedEntry("130469", "DCM", "Meterset Tolerance Violation")
+#define CODE_DCM_DeliveryRateToleranceViolation                            DSRBasicCodedEntry("130470", "DCM", "Delivery Rate Tolerance Violation")
+#define CODE_DCM_JawPositionToleranceViolation                             DSRBasicCodedEntry("130471", "DCM", "Jaw Position Tolerance Violation")
+#define CODE_DCM_MLCPositionToleranceViolation                             DSRBasicCodedEntry("130472", "DCM", "MLC Position Tolerance Violation")
+#define CODE_DCM_SourcePositionToleranceViolation                          DSRBasicCodedEntry("130473", "DCM", "Source Position Tolerance Violation")
+#define CODE_DCM_DoseRateToleranceViolation                                DSRBasicCodedEntry("130474", "DCM", "Dose Rate Tolerance Violation")
+#define CODE_DCM_PrimaryFluenceMonitoringSystemInterlock                   DSRBasicCodedEntry("130475", "DCM", "Primary Fluence Monitoring System Interlock")
+#define CODE_DCM_SecondaryFluenceMonitoringSystemInterlock                 DSRBasicCodedEntry("130476", "DCM", "Secondary Fluence Monitoring System Interlock")
+#define CODE_DCM_TimerInterlock                                            DSRBasicCodedEntry("130477", "DCM", "Timer Interlock")
+#define CODE_DCM_DoorInterlock                                             DSRBasicCodedEntry("130478", "DCM", "Door Interlock")
+#define CODE_DCM_PatientMotionInterlock                                    DSRBasicCodedEntry("130479", "DCM", "Patient Motion Interlock")
 
 #endif
