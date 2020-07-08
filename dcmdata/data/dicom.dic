@@ -21,13 +21,12 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2020a and PS 3.7-2020a
-# File created on 2020-01-31 21:38:50 by J. Riesmeier on thinkpad.
-# File updated manually on 2020-06-26 by J. Riesmeier.
+# Generated automatically from DICOM PS 3.6-2020c and PS 3.7-2020c
+# File created on 2020-07-08 15:51:08 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
-# - Supplement 199, 217
+# - (none)
 #
 # Each line represents an entry in the data dictionary.  Each line has 5 fields
 # (Tag, VR, Name, VM, Version).  Entries need not be in ascending tag order.
@@ -2130,6 +2129,13 @@
 (003A,0300)	SQ	MultiplexedAudioChannelsDescriptionCodeSequence	1	DICOM
 (003A,0301)	IS	ChannelIdentificationCode	1	DICOM
 (003A,0302)	CS	ChannelMode	1	DICOM
+(003A,0310)	UI	MultiplexGroupUID	1	DICOM
+(003A,0311)	DS	PowerlineFrequency	1	DICOM
+(003A,0312)	SQ	ChannelImpedanceSequence	1	DICOM
+(003A,0313)	DS	ImpedanceValue	1	DICOM
+(003A,0314)	DT	ImpedanceMeasurementDateTime	1	DICOM
+(003A,0315)	DS	ImpedanceMeasurementFrequency	1	DICOM
+(003A,0316)	CS	ImpedanceMeasurementCurrentType	1	DICOM
 (0040,0001)	AE	ScheduledStationAETitle	1-n	DICOM
 (0040,0002)	DA	ScheduledProcedureStepStartDate	1	DICOM
 (0040,0003)	TM	ScheduledProcedureStepStartTime	1	DICOM
@@ -3917,6 +3923,7 @@
 (300A,0395)	CS	ScanSpotReorderingAllowed	1	DICOM
 (300A,0396)	FL	ScanSpotMetersetWeights	1-n	DICOM
 (300A,0398)	FL	ScanningSpotSize	2	DICOM
+(300A,0399)	FL	ScanSpotSizesDelivered	2-2n	DICOM
 (300A,039A)	IS	NumberOfPaintings	1	DICOM
 (300A,03A0)	SQ	IonToleranceTableSequence	1	DICOM
 (300A,03A2)	SQ	IonBeamSequence	1	DICOM
@@ -4100,6 +4107,47 @@
 (300A,0688)	FD	RTBeamModifierDefinitionDistance	1	DICOM
 (300A,0689)	SQ	BeamAreaLimitSequence	1	DICOM
 (300A,068A)	SQ	ReferencedRTPrescriptionSequence	1	DICOM
+(300A,0700)	UI	TreatmentSessionUID	1	DICOM
+(300A,0701)	CS	RTRadiationUsage	1	DICOM
+(300A,0702)	SQ	ReferencedRTRadiationSetSequence	1	DICOM
+(300A,0703)	SQ	ReferencedRTRadiationRecordSequence	1	DICOM
+(300A,0704)	US	RTRadiationSetDeliveryNumber	1	DICOM
+(300A,0705)	US	ClinicalFractionNumber	1	DICOM
+(300A,0706)	CS	RTTreatmentFractionCompletionStatus	1	DICOM
+(300A,0707)	CS	RTRadiationSetUsage	1	DICOM
+(300A,0708)	CS	TreatmentDeliveryContinuationFlag	1	DICOM
+(300A,0709)	CS	TreatmentRecordContentOrigin	1	DICOM
+(300A,0714)	CS	RTTreatmentTerminationStatus	1	DICOM
+(300A,0715)	SQ	RTTreatmentTerminationReasonCodeSequence	1	DICOM
+(300A,0716)	SQ	MachineSpecificTreatmentTerminationCodeSequence	1	DICOM
+(300A,0722)	SQ	RTRadiationSalvageRecordControlPointSequence	1	DICOM
+(300A,0723)	CS	StartingMetersetValueKnownFlag	1	DICOM
+(300A,0730)	ST	TreatmentTerminationDescription	1	DICOM
+(300A,0731)	SQ	TreatmentToleranceViolationSequence	1	DICOM
+(300A,0732)	CS	TreatmentToleranceViolationCategory	1	DICOM
+(300A,0733)	SQ	TreatmentToleranceViolationAttributeSequence	1	DICOM
+(300A,0734)	ST	TreatmentToleranceViolationDescription	1	DICOM
+(300A,0735)	ST	TreatmentToleranceViolationIdentification	1	DICOM
+(300A,0736)	DT	TreatmentToleranceViolationDateTime	1	DICOM
+(300A,073A)	DT	RecordedRTControlPointDateTime	1	DICOM
+(300A,073B)	US	ReferencedRadiationRTControlPointIndex	1	DICOM
+(300A,073E)	SQ	AlternateValueSequence	1	DICOM
+(300A,073F)	SQ	ConfirmationSequence	1	DICOM
+(300A,0740)	SQ	InterlockSequence	1	DICOM
+(300A,0741)	DT	InterlockDateTime	1	DICOM
+(300A,0742)	ST	InterlockDescription	1	DICOM
+(300A,0743)	SQ	InterlockOriginatingDeviceSequence	1	DICOM
+(300A,0744)	SQ	InterlockCodeSequence	1	DICOM
+(300A,0745)	SQ	InterlockResolutionCodeSequence	1	DICOM
+(300A,0746)	SQ	InterlockResolutionUserSequence	1	DICOM
+(300A,0760)	DT	OverrideDateTime	1	DICOM
+(300A,0761)	SQ	TreatmentToleranceViolationTypeCodeSequence	1	DICOM
+(300A,0762)	SQ	TreatmentToleranceViolationCauseCodeSequence	1	DICOM
+(300A,0772)	SQ	MeasuredMetersetToDoseMappingSequence	1	DICOM
+(300A,0773)	US	ReferencedExpectedInVivoMeasurementValueIndex	1	DICOM
+(300A,0774)	SQ	DoseMeasurementDeviceCodeSequence	1	DICOM
+(300A,0780)	SQ	AdditionalParameterRecordingInstanceSequence	1	DICOM
+(300A,0783)	ST	InterlockOriginDescription	1	DICOM
 (300C,0002)	SQ	ReferencedRTPlanSequence	1	DICOM
 (300C,0004)	SQ	ReferencedBeamSequence	1	DICOM
 (300C,0006)	IS	ReferencedBeamNumber	1	DICOM
@@ -4884,66 +4932,6 @@
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 199 (Second Generation Radiotherapy - RT Radiation Records)
-#
-(300A,0700)	UI	TreatmentSessionUID	1	DICOM/Supplement_199
-(300A,0701)	CS	RTRadiationUsage	1	DICOM/Supplement_199
-(300A,0702)	SQ	ReferencedRTRadiationSetSequence	1	DICOM/Supplement_199
-(300A,0703)	SQ	ReferencedRTRadiationRecordSequence	1	DICOM/Supplement_199
-(300A,0704)	US	RTRadiationSetDeliveryNumber	1	DICOM/Supplement_199
-(300A,0705)	US	ClinicalFractionNumber	1	DICOM/Supplement_199
-(300A,0706)	CS	RTTreatmentFractionCompletionStatus	1	DICOM/Supplement_199
-(300A,0707)	CS	RTRadiationSetUsage	1	DICOM/Supplement_199
-(300A,0708)	CS	TreatmentDeliveryContinuationFlag	1	DICOM/Supplement_199
-(300A,0709)	CS	TreatmentRecordContentOrigin	1	DICOM/Supplement_199
-(300A,0714)	CS	RTTreatmentTerminationStatus	1	DICOM/Supplement_199
-(300A,0715)	SQ	RTTreatmentTerminationReasonCodeSequence	1	DICOM/Supplement_199
-(300A,0716)	SQ	MachineSpecificTreatmentTerminationCodeSequence	1	DICOM/Supplement_199
-(300A,0722)	SQ	RTRadiationSalvageRecordControlPointSequence	1	DICOM/Supplement_199
-(300A,0723)	CS	StartingMetersetValueKnownFlag	1	DICOM/Supplement_199
-(300A,0730)	ST	TreatmentTerminationDescription	1	DICOM/Supplement_199
-(300A,0731)	SQ	TreatmentToleranceViolationSequence	1	DICOM/Supplement_199
-(300A,0732)	CS	TreatmentToleranceViolationCategory	1	DICOM/Supplement_199
-(300A,0733)	SQ	TreatmentToleranceViolationAttributeSequence	1	DICOM/Supplement_199
-(300A,0734)	ST	TreatmentToleranceViolationDescription	1	DICOM/Supplement_199
-(300A,0735)	ST	TreatmentToleranceViolationIdentification	1	DICOM/Supplement_199
-(300A,0736)	DT	TreatmentToleranceViolationDateTime	1	DICOM/Supplement_199
-(300A,073A)	DT	RecordedRTControlPointDateTime	1	DICOM/Supplement_199
-(300A,073B)	US	ReferencedRadiationRTControlPointIndex	1	DICOM/Supplement_199
-(300A,073E)	SQ	AlternateValueSequence	1	DICOM/Supplement_199
-(300A,073F)	SQ	ConfirmationSequence	1	DICOM/Supplement_199
-(300A,0740)	SQ	InterlockSequence	1	DICOM/Supplement_199
-(300A,0741)	DT	InterlockDateTime	1	DICOM/Supplement_199
-(300A,0742)	ST	InterlockDescription	1	DICOM/Supplement_199
-(300A,0743)	SQ	InterlockOriginatingDeviceSequence	1	DICOM/Supplement_199
-(300A,0744)	SQ	InterlockCodeSequence	1	DICOM/Supplement_199
-(300A,0745)	SQ	InterlockResolutionCodeSequence	1	DICOM/Supplement_199
-(300A,0746)	SQ	InterlockResolutionUserSequence	1	DICOM/Supplement_199
-(300A,0760)	DT	OverrideDateTime	1	DICOM/Supplement_199
-(300A,0761)	SQ	TreatmentToleranceViolationTypeCodeSequence	1	DICOM/Supplement_199
-(300A,0762)	SQ	TreatmentToleranceViolationCauseCodeSequence	1	DICOM/Supplement_199
-(300A,0772)	SQ	MeasuredMetersetToDoseMappingSequence	1	DICOM/Supplement_199
-(300A,0773)	US	ReferencedExpectedInVivoMeasurementValueIndex	1	DICOM/Supplement_199
-(300A,0774)	SQ	DoseMeasurementDeviceCodeSequence	1	DICOM/Supplement_199
-(300A,0780)	SQ	AdditionalParameterRecordingInstanceSequence	1	DICOM/Supplement_199
-# the following definition has been removed from the "FT3" version (i.e. retired)
-#(300A,0782)	US	ReferencedRadiationDoseIdentificationIndex	1	DICOM/Supplement_199
-(300A,0783)	ST	InterlockOriginDescription	1	DICOM/Supplement_199
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 217 (Neurophysiology Waveforms)
-#
-(003A,0310)	UI	MultiplexGroupUID	1	DICOM/Supplement_217
-(003A,0311)	DS	PowerlineFrequency	1	DICOM/Supplement_217
-(003A,0312)	SQ	ChannelImpedanceSequence	1	DICOM/Supplement_217
-(003A,0313)	DS	ImpedanceValue	1	DICOM/Supplement_217
-(003A,0314)	DT	ImpedanceMeasurementDateTime	1	DICOM/Supplement_217
-(003A,0315)	DS	ImpedanceMeasurementFrequency	1	DICOM/Supplement_217
-(003A,0316)	CS	ImpedanceMeasurementCurrentType	1	DICOM/Supplement_217
 #
 #---------------------------------------------------------------------------
 #

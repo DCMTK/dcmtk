@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-06-26 11:18:49
+**   Date: 2020-07-08 15:54:18
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -18607,31 +18607,31 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0310, 0x003a, 0x0310,
-      EVR_UI, "MultiplexGroupUID", 1, 1, "DICOM/Supplement_217",
+      EVR_UI, "MultiplexGroupUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0311, 0x003a, 0x0311,
-      EVR_DS, "PowerlineFrequency", 1, 1, "DICOM/Supplement_217",
+      EVR_DS, "PowerlineFrequency", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0312, 0x003a, 0x0312,
-      EVR_SQ, "ChannelImpedanceSequence", 1, 1, "DICOM/Supplement_217",
+      EVR_SQ, "ChannelImpedanceSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0313, 0x003a, 0x0313,
-      EVR_DS, "ImpedanceValue", 1, 1, "DICOM/Supplement_217",
+      EVR_DS, "ImpedanceValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0314, 0x003a, 0x0314,
-      EVR_DT, "ImpedanceMeasurementDateTime", 1, 1, "DICOM/Supplement_217",
+      EVR_DT, "ImpedanceMeasurementDateTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0315, 0x003a, 0x0315,
-      EVR_DS, "ImpedanceMeasurementFrequency", 1, 1, "DICOM/Supplement_217",
+      EVR_DS, "ImpedanceMeasurementFrequency", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0316, 0x003a, 0x0316,
-      EVR_CS, "ImpedanceMeasurementCurrentType", 1, 1, "DICOM/Supplement_217",
+      EVR_CS, "ImpedanceMeasurementCurrentType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x0001, 0x0040, 0x0001,
@@ -28140,6 +28140,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FL, "ScanningSpotSize", 2, 2, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x0399, 0x300a, 0x0399,
+      EVR_FL, "ScanSpotSizesDelivered", 2, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x039a, 0x300a, 0x039a,
       EVR_IS, "NumberOfPaintings", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -28873,167 +28877,167 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0700, 0x300a, 0x0700,
-      EVR_UI, "TreatmentSessionUID", 1, 1, "DICOM/Supplement_199",
+      EVR_UI, "TreatmentSessionUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0701, 0x300a, 0x0701,
-      EVR_CS, "RTRadiationUsage", 1, 1, "DICOM/Supplement_199",
+      EVR_CS, "RTRadiationUsage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0702, 0x300a, 0x0702,
-      EVR_SQ, "ReferencedRTRadiationSetSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "ReferencedRTRadiationSetSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0703, 0x300a, 0x0703,
-      EVR_SQ, "ReferencedRTRadiationRecordSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "ReferencedRTRadiationRecordSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0704, 0x300a, 0x0704,
-      EVR_US, "RTRadiationSetDeliveryNumber", 1, 1, "DICOM/Supplement_199",
+      EVR_US, "RTRadiationSetDeliveryNumber", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0705, 0x300a, 0x0705,
-      EVR_US, "ClinicalFractionNumber", 1, 1, "DICOM/Supplement_199",
+      EVR_US, "ClinicalFractionNumber", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0706, 0x300a, 0x0706,
-      EVR_CS, "RTTreatmentFractionCompletionStatus", 1, 1, "DICOM/Supplement_199",
+      EVR_CS, "RTTreatmentFractionCompletionStatus", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0707, 0x300a, 0x0707,
-      EVR_CS, "RTRadiationSetUsage", 1, 1, "DICOM/Supplement_199",
+      EVR_CS, "RTRadiationSetUsage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0708, 0x300a, 0x0708,
-      EVR_CS, "TreatmentDeliveryContinuationFlag", 1, 1, "DICOM/Supplement_199",
+      EVR_CS, "TreatmentDeliveryContinuationFlag", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0709, 0x300a, 0x0709,
-      EVR_CS, "TreatmentRecordContentOrigin", 1, 1, "DICOM/Supplement_199",
+      EVR_CS, "TreatmentRecordContentOrigin", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0714, 0x300a, 0x0714,
-      EVR_CS, "RTTreatmentTerminationStatus", 1, 1, "DICOM/Supplement_199",
+      EVR_CS, "RTTreatmentTerminationStatus", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0715, 0x300a, 0x0715,
-      EVR_SQ, "RTTreatmentTerminationReasonCodeSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "RTTreatmentTerminationReasonCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0716, 0x300a, 0x0716,
-      EVR_SQ, "MachineSpecificTreatmentTerminationCodeSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "MachineSpecificTreatmentTerminationCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0722, 0x300a, 0x0722,
-      EVR_SQ, "RTRadiationSalvageRecordControlPointSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "RTRadiationSalvageRecordControlPointSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0723, 0x300a, 0x0723,
-      EVR_CS, "StartingMetersetValueKnownFlag", 1, 1, "DICOM/Supplement_199",
+      EVR_CS, "StartingMetersetValueKnownFlag", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0730, 0x300a, 0x0730,
-      EVR_ST, "TreatmentTerminationDescription", 1, 1, "DICOM/Supplement_199",
+      EVR_ST, "TreatmentTerminationDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0731, 0x300a, 0x0731,
-      EVR_SQ, "TreatmentToleranceViolationSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "TreatmentToleranceViolationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0732, 0x300a, 0x0732,
-      EVR_CS, "TreatmentToleranceViolationCategory", 1, 1, "DICOM/Supplement_199",
+      EVR_CS, "TreatmentToleranceViolationCategory", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0733, 0x300a, 0x0733,
-      EVR_SQ, "TreatmentToleranceViolationAttributeSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "TreatmentToleranceViolationAttributeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0734, 0x300a, 0x0734,
-      EVR_ST, "TreatmentToleranceViolationDescription", 1, 1, "DICOM/Supplement_199",
+      EVR_ST, "TreatmentToleranceViolationDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0735, 0x300a, 0x0735,
-      EVR_ST, "TreatmentToleranceViolationIdentification", 1, 1, "DICOM/Supplement_199",
+      EVR_ST, "TreatmentToleranceViolationIdentification", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0736, 0x300a, 0x0736,
-      EVR_DT, "TreatmentToleranceViolationDateTime", 1, 1, "DICOM/Supplement_199",
+      EVR_DT, "TreatmentToleranceViolationDateTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x073a, 0x300a, 0x073a,
-      EVR_DT, "RecordedRTControlPointDateTime", 1, 1, "DICOM/Supplement_199",
+      EVR_DT, "RecordedRTControlPointDateTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x073b, 0x300a, 0x073b,
-      EVR_US, "ReferencedRadiationRTControlPointIndex", 1, 1, "DICOM/Supplement_199",
+      EVR_US, "ReferencedRadiationRTControlPointIndex", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x073e, 0x300a, 0x073e,
-      EVR_SQ, "AlternateValueSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "AlternateValueSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x073f, 0x300a, 0x073f,
-      EVR_SQ, "ConfirmationSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "ConfirmationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0740, 0x300a, 0x0740,
-      EVR_SQ, "InterlockSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "InterlockSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0741, 0x300a, 0x0741,
-      EVR_DT, "InterlockDateTime", 1, 1, "DICOM/Supplement_199",
+      EVR_DT, "InterlockDateTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0742, 0x300a, 0x0742,
-      EVR_ST, "InterlockDescription", 1, 1, "DICOM/Supplement_199",
+      EVR_ST, "InterlockDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0743, 0x300a, 0x0743,
-      EVR_SQ, "InterlockOriginatingDeviceSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "InterlockOriginatingDeviceSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0744, 0x300a, 0x0744,
-      EVR_SQ, "InterlockCodeSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "InterlockCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0745, 0x300a, 0x0745,
-      EVR_SQ, "InterlockResolutionCodeSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "InterlockResolutionCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0746, 0x300a, 0x0746,
-      EVR_SQ, "InterlockResolutionUserSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "InterlockResolutionUserSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0760, 0x300a, 0x0760,
-      EVR_DT, "OverrideDateTime", 1, 1, "DICOM/Supplement_199",
+      EVR_DT, "OverrideDateTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0761, 0x300a, 0x0761,
-      EVR_SQ, "TreatmentToleranceViolationTypeCodeSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "TreatmentToleranceViolationTypeCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0762, 0x300a, 0x0762,
-      EVR_SQ, "TreatmentToleranceViolationCauseCodeSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "TreatmentToleranceViolationCauseCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0772, 0x300a, 0x0772,
-      EVR_SQ, "MeasuredMetersetToDoseMappingSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "MeasuredMetersetToDoseMappingSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0773, 0x300a, 0x0773,
-      EVR_US, "ReferencedExpectedInVivoMeasurementValueIndex", 1, 1, "DICOM/Supplement_199",
+      EVR_US, "ReferencedExpectedInVivoMeasurementValueIndex", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0774, 0x300a, 0x0774,
-      EVR_SQ, "DoseMeasurementDeviceCodeSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "DoseMeasurementDeviceCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0780, 0x300a, 0x0780,
-      EVR_SQ, "AdditionalParameterRecordingInstanceSequence", 1, 1, "DICOM/Supplement_199",
+      EVR_SQ, "AdditionalParameterRecordingInstanceSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0783, 0x300a, 0x0783,
-      EVR_ST, "InterlockOriginDescription", 1, 1, "DICOM/Supplement_199",
+      EVR_ST, "InterlockOriginDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300c, 0x0002, 0x300c, 0x0002,

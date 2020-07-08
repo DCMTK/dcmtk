@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-06-26 11:18:49
+**   Date: 2020-07-08 15:54:18
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2020-06-26 11:18:49"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2020-07-08 15:54:18"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4811
+** Number of entries: 4812
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -4286,6 +4286,7 @@
 #define DCM_ScanSpotReorderingAllowed            DcmTagKey(0x300a, 0x0395)
 #define DCM_ScanSpotMetersetWeights              DcmTagKey(0x300a, 0x0396)
 #define DCM_ScanningSpotSize                     DcmTagKey(0x300a, 0x0398)
+#define DCM_ScanSpotSizesDelivered               DcmTagKey(0x300a, 0x0399)
 #define DCM_NumberOfPaintings                    DcmTagKey(0x300a, 0x039a)
 #define DCM_IonToleranceTableSequence            DcmTagKey(0x300a, 0x03a0)
 #define DCM_IonBeamSequence                      DcmTagKey(0x300a, 0x03a2)
