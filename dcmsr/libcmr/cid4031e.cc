@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4031e_CommonAnatomicRegions
@@ -30,7 +30,7 @@ struct DefinedTermTypeMapStruct
  *  constant definitions  *
  *------------------------*/
 
-// mapping extracted from DICOM PS 3.16-2018a Table L-1
+// mapping extracted from DICOM PS 3.16-2020c Table L-1
 
 static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
 {
@@ -50,6 +50,7 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"CHESTABDPELVIS",   CID4031_CommonAnatomicRegions::ChestAbdomenAndPelvis},
     {"CLAVICLE",         CID4031_CommonAnatomicRegions::Clavicle},
     {"COCCYX",           CID4031_CommonAnatomicRegions::Coccyx},
+    {"COMMONBILEDUCT",   CID4031_CommonAnatomicRegions::CommonBileDuct},
     {"COLON",            CID4031_CommonAnatomicRegions::Colon},
     {"DUODENUM",         CID4031_CommonAnatomicRegions::Duodenum},
     {"ELBOW",            CID4031_CommonAnatomicRegions::ElbowJoint},
@@ -90,6 +91,8 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"NECKCHESTABDPELV", CID4031_CommonAnatomicRegions::NeckChestAbdomenAndPelvis},
     {"OPTICCANAL",       CID4031_CommonAnatomicRegions::OpticCanal},
     {"ORBIT",            CID4031_CommonAnatomicRegions::OrbitalStructure},
+    {"PANCREAS",         CID4031_CommonAnatomicRegions::Pancreas},
+    {"PANCREATICDUCT",   CID4031_CommonAnatomicRegions::PancreaticDuct},
     {"PAROTID",          CID4031_CommonAnatomicRegions::ParotidGland},
     {"PATELLA",          CID4031_CommonAnatomicRegions::Patella},
     {"PELVIS",           CID4031_CommonAnatomicRegions::Pelvis},
