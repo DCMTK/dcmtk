@@ -169,6 +169,30 @@ data set trailing padding (not with --write-dataset):
          and items on multiple of i bytes
 \endverbatim
 
+\section cda2dcm_notes NOTES
+
+\subsection cda2dcm_attribute_sources Attribute Sources
+
+The application may be fed with some additional input for filling mandatory (and
+optional) attributes in the new DICOM file like patient, study and series
+information:
+
+\li The \e --key option can be used to add further attributes to the DICOM
+    output file.
+
+\li It is also possible to specify sequences, items and nested
+    attributes using the \e --key option. In these cases, a special "path"
+    notation has to be used. Details on this path notation can be found in the
+    documentation of \b dcmodify.
+
+\li The \e -k option can be present more than once.
+
+\li The value part (after the '=') may be absent causing the attribute to be
+    set with zero length.
+
+\li Please be advised that the -k option is applied at the very end, just before
+    saving the DICOM file, so there is no value checking whatsoever.
+
 \section cda2dcm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying

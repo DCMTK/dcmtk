@@ -246,11 +246,14 @@ order:
     enabled, no automatic attribute insertion will take place.
 
 \li The \e --key option can be used to add further attributes to the DICOM
-    output file. This option is applied at the very end, just before saving the
-    DICOM file. It is also possible to specify sequences, items and nested
+    output file. It is also possible to specify sequences, items and nested
     attributes using the \e --key option. In these cases, a special "path"
     notation has to be used. Details on this path notation can be found in the
-    documentation of \b dcmodify.
+    documentation of \b dcmodify. The \e -k option can be present more than
+    once. The value part (after the '=') may be absent causing the attribute to
+    be set with zero length. Please be advised that the -k option is applied at
+    thevery end, just before saving the DICOM file, so there is no value
+    checking whatsoever.
 
 \subsection img2dcm_uids UIDs
 
