@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2017, OFFIS e.V.
+ *  Copyright (C) 2003-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -652,7 +652,7 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
                                  opt_padenc,
                                  OFstatic_cast(Uint32, opt_filepad),
                                  OFstatic_cast(Uint32, opt_itempad),
-                                 (opt_dataset) ? EWM_dataset : EWM_fileformat);
+                                 (opt_dataset) ? EWM_dataset : EWM_createNewMeta);
 
     } else {
         OFLOG_DEBUG(mdfdsmanLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName() << " possible!");

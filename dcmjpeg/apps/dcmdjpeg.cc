@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2019, OFFIS e.V.
+ *  Copyright (C) 2001-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
   const char *opt_ofname = NULL;
 
   E_FileReadMode opt_readMode = ERM_autoDetect;
-  E_FileWriteMode opt_writeMode = EWM_fileformat;
+  E_FileWriteMode opt_writeMode = EWM_createNewMeta;
   E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
+      if (cmd.findOption("--write-file")) opt_writeMode = EWM_createNewMeta;
       if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
@@ -325,10 +325,6 @@ int main(int argc, char *argv[])
     }
 
     OFLOG_INFO(dcmdjpegLogger, "creating output file " << opt_ofname);
-
-    // update file meta information with new SOP Instance UID
-    if ((opt_uidcreation == EUC_always) && (opt_writeMode == EWM_fileformat))
-        opt_writeMode = EWM_updateMeta;
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,

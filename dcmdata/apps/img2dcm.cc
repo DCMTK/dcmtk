@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2013, OFFIS e.V.
+ *  Copyright (C) 2007-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -188,7 +188,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   OFCmdUnsignedInt filepad = 0;
   // Item pad length for output DICOM file
   OFCmdUnsignedInt itempad = 0;
-  // Write only pure dataset, i.e. without meta header
+  // Write file format (with meta header)
   E_FileWriteMode writeMode = EWM_fileformat;
   // Override keys are applied at the very end of the conversion "pipeline"
   OFList<OFString> overrideKeys;

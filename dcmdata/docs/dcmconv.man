@@ -242,11 +242,11 @@ other processing options:
 \verbatim
 output file format:
 
+  +Fm  --write-new-meta-info
+         write file format with new meta information (default)
+
   +F   --write-file
          write file format (default)
-
-  +Fm  --write-new-meta-info
-         write file format with new meta information
 
   -F   --write-dataset
          write data set without file meta information

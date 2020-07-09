@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
   const char *opt_ofname = NULL;
 
   E_FileReadMode opt_readMode = ERM_autoDetect;
-  E_FileWriteMode opt_writeMode = EWM_fileformat;
+  E_FileWriteMode opt_writeMode = EWM_createNewMeta;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
   E_TransferSyntax opt_oxfer = EXS_Unknown;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -189,8 +189,8 @@ int main(int argc, char *argv[])
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",          "+F",     "write file format (default)");
-      cmd.addOption("--write-new-meta-info", "+Fm",    "write file format with new meta information");
+      cmd.addOption("--write-new-meta-info", "+Fm",    "write file format\nwith new meta information (default)");
+      cmd.addOption("--write-file",          "+F",     "write file format");
       cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as input (default)");

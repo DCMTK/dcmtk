@@ -128,11 +128,13 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
     /** make sure that all data elements of the file meta information header are existent
      *  in metainfo and contain correct values.
      *  @param oxfer the transfer syntax which shall be used
-     *  @param writeMode flag indicating whether to update the file meta information or not
+     *  @param writeMode flag indicating whether to update the file meta information or not.
+     *         The default behavior is to delete all old meta information in order to create
+     *         it from scratch.
      *  @return EC_Normal if valid, an error code otherwise
      */
     virtual OFCondition validateMetaInfo(const E_TransferSyntax oxfer,
-                                         const E_FileWriteMode writeMode = EWM_fileformat);
+                                         const E_FileWriteMode writeMode = EWM_createNewMeta);
 
     /** get file meta information header part of the fileformat
      *  @return reference to internally stored file meta information header
@@ -221,6 +223,8 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *    DcmFileFormat to the DcmDataset object.
      *  @param writeMode write file with or without meta header. Also allows for
      *    updating the information in the file meta information header.
+     *    The default behavior is to delete all old meta information in order to
+     *    create it from scratch.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmOutputStream &outStream,
@@ -232,7 +236,7 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
                               const Uint32 padlen = 0,
                               const Uint32 subPadlen = 0,
                               Uint32 instanceLength = 0,
-                              const E_FileWriteMode writeMode = EWM_fileformat);
+                              const E_FileWriteMode writeMode = EWM_createNewMeta);
 
     /** write object in XML format.
      *  The XML declaration (e.g. <?xml version="1.0"?>) is not written by this function.
@@ -309,7 +313,9 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param padLength number of bytes used for the dataset padding (has to be an even number)
      *  @param subPadLength number of bytes used for the item padding (has to be an even number)
      *  @param writeMode write file with or without meta header. Also allows for updating the
-     *    information in the file meta information header.
+     *    information in the file meta information header. The default behavior is to delete
+     *    all old meta information in order to create it from scratch.
+     *
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition saveFile(const OFFilename &fileName,
@@ -319,7 +325,7 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
                                  const E_PaddingEncoding padEncoding = EPD_noChange,
                                  const Uint32 padLength = 0,
                                  const Uint32 subPadLength = 0,
-                                 const E_FileWriteMode writeMode = EWM_fileformat);
+                                 const E_FileWriteMode writeMode = EWM_createNewMeta);
 
     // methods for different pixel representations
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2018, OFFIS e.V.
+ *  Copyright (C) 2001-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     OFCommandLine cmd;
 
     E_FileReadMode opt_readMode = ERM_autoDetect;
-    E_FileWriteMode opt_writeMode = EWM_fileformat;
+    E_FileWriteMode opt_writeMode = EWM_createNewMeta;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     E_TransferSyntax opt_oxfer = EXS_Unknown;
     E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
+      if (cmd.findOption("--write-file")) opt_writeMode = EWM_createNewMeta;
       if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
@@ -486,7 +486,7 @@ int main(int argc, char *argv[])
     OFLOG_INFO(dcmquantLogger, "write converted DICOM file");
 
     // update file meta information with new SOP Instance UID
-    if ((opt_uidcreation || opt_secondarycapture) && (opt_writeMode == EWM_fileformat))
+    if ((opt_uidcreation || opt_secondarycapture) && (opt_writeMode == EWM_createNewMeta))
         opt_writeMode = EWM_updateMeta;
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
