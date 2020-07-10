@@ -41,11 +41,6 @@ if (fileformat.loadFile("test.dcm").good())
   // check if everything went well
   if (dataset->canWriteXfer(EXS_JPEGLSLossless))
   {
-    // force the meta-header UIDs to be re-generated when storing the file
-    // since the UIDs in the data set may have changed
-    delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-    delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-
     // store in lossless JPEG-LS format
     fileformat.saveFile("test_jpls.dcm", EXS_JPEGLSLossless);
   }
@@ -76,12 +71,12 @@ DJLSDecoderRegistration::cleanup(); // deregister JPEG-LS codecs
 
 \section Legal Legal Remark
 
-Please note that Hewlett Packard claims to own patents that apply to 
-JPEG-LS. Hewlett Packard grants free licenses for conformant 
-implementations of JPEG-LS. OFFIS as the author of the DCMTK toolkit 
-has obtained such a license, but depending on your national 
-legislations companies that use DCMTK's JPEG-LS codec may need to 
-also acquire a license. Read more at http://www.hpl.hp.com/loco/ if 
+Please note that Hewlett Packard claims to own patents that apply to
+JPEG-LS. Hewlett Packard grants free licenses for conformant
+implementations of JPEG-LS. OFFIS as the author of the DCMTK toolkit
+has obtained such a license, but depending on your national
+legislations companies that use DCMTK's JPEG-LS codec may need to
+also acquire a license. Read more at http://www.hpl.hp.com/loco/ if
 you intend to use this module for commercial purposes.
 
 */
