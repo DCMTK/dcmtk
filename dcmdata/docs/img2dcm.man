@@ -249,11 +249,11 @@ order:
     output file. It is also possible to specify sequences, items and nested
     attributes using the \e --key option. In these cases, a special "path"
     notation has to be used. Details on this path notation can be found in the
-    documentation of \b dcmodify. The \e -k option can be present more than
+    documentation of \b dcmodify. The \e --key option can be present more than
     once. The value part (after the '=') may be absent causing the attribute to
-    be set with zero length. Please be advised that the -k option is applied at
-    thevery end, just before saving the DICOM file, so there is no value
-    checking whatsoever.
+    be set with zero length. Please be advised that the \e --key option is
+    applied at the very end, just before saving the DICOM file, so there is no
+    value checking whatsoever.
 
 \subsection img2dcm_uids UIDs
 
@@ -499,6 +499,6 @@ images
 
 \section img2dcm_copyright COPYRIGHT
 
-Copyright (C) 2007-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

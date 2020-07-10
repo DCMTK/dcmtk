@@ -195,13 +195,13 @@ information:
     notation has to be used. Details on this path notation can be found in the
     documentation of \b dcmodify.
 
-\li The \e -k option can be present more than once.
+\li The \e --key option can be present more than once.
 
 \li The value part (after the '=') may be absent causing the attribute to be
     set with zero length.
 
-\li Please be advised that the -k option is applied at the very end, just before
-    saving the DICOM file, so there is no value checking whatsoever.
+\li Please be advised that the \e --key option is applied at the very end, just
+    before saving the DICOM file, so there is no value checking whatsoever.
 
 \section stl2dcm_logging LOGGING
 
@@ -287,6 +287,6 @@ It is an error if no data dictionary can be loaded.
 
 \section stl2dcm_copyright COPYRIGHT
 
-Copyright (C) 2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2018-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
