@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -607,9 +607,10 @@ parseUserInfo(DUL_USERINFO * userInfo,
 **      Parse the buffer and extract the Max PDU structure.
 **
 ** Parameter Dictionary:
-**      max             The structure to hold the Max PDU
-**      buf             The buffer that is to be parsed
-**      itemLength      Length of structure extracted.
+**      max             The structure to hold the Max PDU item
+**      buf             The buffer that is to be parsed (input/output value)
+**      itemLength      Length of structure extracted (output value)
+**      availData       Number of bytes announced to be available for this sub item (input value)
 **
 ** Return Values:
 **
@@ -692,8 +693,9 @@ parseDummy(unsigned char *buf, unsigned long *itemLength, unsigned long availDat
 **
 ** Parameter Dictionary:
 **      role            The structure to hold the SCU-SCP role list
-**      buf             The buffer that is to be parsed
-**      itemLength      Length of structure extracted.
+**      buf             The buffer that is to be parsed (input/output value)
+**      itemLength      Length of structure extracted (output value)
+**      availData       Number of bytes announced to be available for this sub item (input value)
 **
 ** Return Values:
 **
@@ -733,7 +735,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
     if (UIDLength > DICOM_UI_LENGTH)
     {
       DCMNET_WARN("Provided role SOP Class UID length " << UIDLength
-      << " is larger than maximum allowed UID length " << DICOM_UI_LENGTH << " (will use 64 bytes max)");
+            << " is larger than maximum allowed UID length " << DICOM_UI_LENGTH << " (will use 64 bytes max)");
       UIDLength = DICOM_UI_LENGTH;
     }
     OFStandard::strlcpy(role->SOPClassUID, (char*)buf, UIDLength+1 /* +1 for 0-byte */);
@@ -755,12 +757,18 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 ** Purpose:
 **      Parse the buffer and extract the extended negotiation item
 **
+** Parameter Dictionary:
+**      extNeg          The structure to hold the extended negotiation item
+**      buf             The buffer that is to be parsed (input/output value)
+**      itemLength      Length of structure extracted (output value)
+**      availData       Number of bytes announced to be available for this sub item (input value)
+**
 ** Return Values:
 **
 */
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
-                unsigned long *length, unsigned long availData)
+            unsigned long *length, unsigned long availData)
 {
     unsigned char *bufStart = buf;
 
@@ -825,8 +833,8 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
  *
  * @param pdu The name of the field or PDU which got an invalid length field.
  * @param bufSize The size of the buffer that we received.
- * @param length The length as given by the length field.
  * @param minSize The minimum size that a 'pdu' has to have.
+ * @param length The length as given by the length field.
  */
 static OFCondition
 makeLengthError(const char *pdu, unsigned long bufSize, unsigned long minSize,
