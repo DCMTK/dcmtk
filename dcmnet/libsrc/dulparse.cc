@@ -637,6 +637,10 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
     if (max->length != 4)
         DCMNET_WARN("Invalid length (" << max->length << ") for maximum length item, must be 4");
 
+    // Is there less data than the length field claims there is?
+    if (availData - 4 < max->length)
+        return makeLengthError("Max PDU", availData, 0, max->length);
+
     DCMNET_TRACE("Maximum PDU Length: " << (unsigned long)max->maxLength);
 
     return EC_Normal;
