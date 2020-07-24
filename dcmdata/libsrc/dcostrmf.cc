@@ -80,7 +80,6 @@ offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
   if (status_.good() && file_.open() && buf && buflen)
   {
 #ifdef WRITE_VERY_LARGE_CHUNKS
-
     /* This is the old behaviour prior to DCMTK 3.5.5 */
     result = OFstatic_cast(offile_off_t, file_.fwrite(buf, 1, OFstatic_cast(size_t, buflen)));
 #else
@@ -90,7 +89,6 @@ offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
      * 32M which should hardly negatively affect performance.
      */
 #define DcmFileConsumer_MAX_CHUNK_SIZE 33554432 /* 32 MByte */
-
     offile_off_t written;
     const char *buf2 = OFstatic_cast(const char *, buf);
     while (buflen > DcmFileConsumer_MAX_CHUNK_SIZE)

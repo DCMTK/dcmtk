@@ -139,7 +139,7 @@ private:
 };
 
 
-/** consumer class that stores data in a plain file.
+/** consumer class that writes to standard output.
  */
 class DCMTK_DCMDATA_EXPORT DcmStdoutConsumer: public DcmConsumer
 {
@@ -216,7 +216,7 @@ private:
 };
 
 
-/** output stream that writes into a plain file
+/** output stream that writes to standard output
  */
 class DCMTK_DCMDATA_EXPORT DcmStdoutStream: public DcmOutputStream
 {

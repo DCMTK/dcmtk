@@ -745,12 +745,9 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
             }
             if (errorFlag.good() && (!metaInfo || metaInfo->transferState() == ERW_ready))
             {
-
                 dataset = getDataset();
-
                 if (dataset == NULL && getTransferState() == ERW_init)
                 {
-
                     dataset = new DcmDataset();
                     itemList->seek (ELP_first);
                     itemList->insert(dataset, ELP_next);
@@ -766,7 +763,6 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                     }
                 }
             }
-	    
         }
         if (getTransferState() == ERW_init)
             setTransferState(ERW_inWork);
@@ -774,7 +770,6 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
         if (dataset && dataset->transferState() == ERW_ready)
             setTransferState(ERW_ready);
     }
-    
     return errorFlag;
 }  // DcmFileFormat::readUntilTag()
 
@@ -911,7 +906,8 @@ OFCondition DcmFileFormat::loadFileUntilTag(
 
     OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
-    if (!fileName.isEmpty()){
+    if (!fileName.isEmpty())
+    {
         /* open file for input */
 
 	if (*fileName.getCharPointer() == '-'){
@@ -960,11 +956,8 @@ OFCondition DcmFileFormat::loadFileUntilTag(
                 		FileReadMode = oldMode;
             		}
         	}
-
 	 }
-    
     }
-
     return l_error;
 }
 

@@ -587,7 +587,7 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     ds_man->setModifyUNValues(!ignore_un_modifies);
     OFLOG_INFO(dcmodifyLogger, "Processing file: " << filename);
     // load file into dataset manager
-    //was_created = !OFStandard::fileExists(filename);
+    was_created = !OFStandard::fileExists(filename);
     result = ds_man->loadFile(filename, read_mode_option, input_xfer_option, create_if_necessary);
     if (result.good() && !no_backup_option && !was_created && *filename != '-')
         result = backupFile(filename);

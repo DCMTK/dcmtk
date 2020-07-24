@@ -437,7 +437,6 @@ OFCondition DcmDataset::readUntilTag(DcmInputStream &inStream,
         }
         /* pass processing the task to class DcmItem */
         if (errorFlag.good())
-
             errorFlag = DcmItem::readUntilTag(inStream, OriginalXfer, glenc, maxReadLength, stopParsingAtElement);
 
     }

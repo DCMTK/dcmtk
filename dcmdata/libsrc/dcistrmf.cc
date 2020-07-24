@@ -35,7 +35,6 @@ DcmFileProducer::DcmFileProducer(const OFFilename &filename, offile_off_t offset
 , status_(EC_Normal)
 , size_(0)
 {
-
   if (file_.fopen(filename, "rb"))
   {
      // Get number of bytes in file
@@ -47,7 +46,6 @@ DcmFileProducer::DcmFileProducer(const OFFilename &filename, offile_off_t offset
        file_.getLastErrorString(s);
        status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
      }
- 
   }
   else
   {
@@ -89,10 +87,9 @@ offile_off_t DcmFileProducer::read(void *buf, offile_off_t buflen)
 {
   offile_off_t result = 0;
   if (status_.good() && file_.open() && buf && buflen)
-  { 
-    result += file_.fread(buf, 1, OFstatic_cast(size_t, buflen));
+  {
+    result = file_.fread(buf, 1, OFstatic_cast(size_t, buflen));
   }
-
   return result;
 }
 
@@ -129,7 +126,6 @@ void DcmFileProducer::putback(offile_off_t num)
     }
     else status_ = EC_PutbackFailed; // tried to putback before start of file
   }
-
 }
 
 
