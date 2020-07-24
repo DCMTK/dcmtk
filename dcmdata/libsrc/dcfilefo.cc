@@ -51,7 +51,6 @@
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 #include "dcmtk/dcmdata/dcjson.h"
 
-
 // ********************************
 
 
@@ -746,9 +745,12 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
             }
             if (errorFlag.good() && (!metaInfo || metaInfo->transferState() == ERW_ready))
             {
+
                 dataset = getDataset();
+
                 if (dataset == NULL && getTransferState() == ERW_init)
                 {
+
                     dataset = new DcmDataset();
                     itemList->seek (ELP_first);
                     itemList->insert(dataset, ELP_next);
@@ -764,6 +766,7 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                     }
                 }
             }
+	    
         }
         if (getTransferState() == ERW_init)
             setTransferState(ERW_inWork);
@@ -771,6 +774,7 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
         if (dataset && dataset->transferState() == ERW_ready)
             setTransferState(ERW_ready);
     }
+    
     return errorFlag;
 }  // DcmFileFormat::readUntilTag()
 
@@ -907,30 +911,60 @@ OFCondition DcmFileFormat::loadFileUntilTag(
 
     OFCondition l_error = EC_InvalidFilename;
     /* check parameters first */
-    if (!fileName.isEmpty())
-    {
+    if (!fileName.isEmpty()){
         /* open file for input */
-        DcmInputFileStream fileStream(fileName);
-        /* check stream status */
-        l_error = fileStream.status();
-        if (l_error.good())
-        {
-            /* clear this object */
-            l_error = clear();
-            if (l_error.good())
-            {
-                /* save old value */
-                const E_FileReadMode oldMode = FileReadMode;
-                FileReadMode = readMode;
-                /* read data from file */
-                transferInit();
-                l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
-                transferEnd();
-                /* restore old value */
-                FileReadMode = oldMode;
-            }
-        }
+
+	if (*fileName.getCharPointer() == '-'){
+		DcmStdinStream fileStream(fileName);
+	     
+	
+        	/* check stream status */
+        	l_error = fileStream.status();
+        	if (l_error.good())
+        	{
+            		/* clear this object */
+            		l_error = clear();
+            		if (l_error.good())
+            		{
+                		/* save old value */
+                		const E_FileReadMode oldMode = FileReadMode;
+                		FileReadMode = readMode;
+                		/* read data from file */
+                		transferInit();
+                		l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                		transferEnd();
+                		/* restore old value */
+                		FileReadMode = oldMode;
+            		}
+        	}
+	 } else {
+		DcmInputFileStream fileStream(fileName);
+	     
+	
+        	/* check stream status */
+        	l_error = fileStream.status();
+        	if (l_error.good())
+        	{
+            		/* clear this object */
+            		l_error = clear();
+            		if (l_error.good())
+            		{
+                		/* save old value */
+                		const E_FileReadMode oldMode = FileReadMode;
+                		FileReadMode = readMode;
+                		/* read data from file */
+                		transferInit();
+                		l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                		transferEnd();
+                		/* restore old value */
+                		FileReadMode = oldMode;
+            		}
+        	}
+
+	 }
+    
     }
+
     return l_error;
 }
 
@@ -954,20 +988,35 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
     if (!fileName.isEmpty())
     {
         DcmWriteCache wcache;
+	if (*fileName.getCharPointer() == '-'){
+            /* open file for output */
+            DcmStdoutStream fileStream(fileName);
 
-        /* open file for output */
-        DcmOutputFileStream fileStream(fileName);
-
-        /* check stream status */
-        l_error = fileStream.status();
-        if (l_error.good())
-        {
-            /* write data to file */
-            transferInit();
-            l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength,
+            /* check stream status */
+            l_error = fileStream.status();
+            if (l_error.good())
+            {
+                /* write data to file */
+            	transferInit();
+            	l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength,
                 padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
-            transferEnd();
-        }
+            	transferEnd();
+            }
+	} else {
+	    /* open file for output */
+            DcmOutputFileStream fileStream(fileName);
+
+            /* check stream status */
+            l_error = fileStream.status();
+            if (l_error.good())
+            {
+                /* write data to file */
+            	transferInit();
+            	l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength,
+                padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
+            	transferEnd();
+            }
+	}
     }
     return l_error;
 }

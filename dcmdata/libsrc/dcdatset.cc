@@ -437,6 +437,7 @@ OFCondition DcmDataset::readUntilTag(DcmInputStream &inStream,
         }
         /* pass processing the task to class DcmItem */
         if (errorFlag.good())
+
             errorFlag = DcmItem::readUntilTag(inStream, OriginalXfer, glenc, maxReadLength, stopParsingAtElement);
 
     }
@@ -647,24 +648,47 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-        /* open file for input */
-        DcmInputFileStream fileStream(fileName);
+        if (*fileName.getCharPointer() == '-')
+	{
+            /* open file for input */
+            DcmStdinStream fileStream(fileName);
 
-        /* check stream status */
-        l_error = fileStream.status();
+            /* check stream status */
+            l_error = fileStream.status();
 
-        if (l_error.good())
-        {
-            /* clear this object */
-            l_error = clear();
             if (l_error.good())
             {
-                /* read data from file */
-                transferInit();
-                l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
-                transferEnd();
+                /* clear this object */
+                l_error = clear();
+                if (l_error.good())
+                {
+                    /* read data from file */
+                    transferInit();
+                    l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                    transferEnd();
+                }
             }
-        }
+	} else {
+	     /* open file for input */
+            DcmInputFileStream fileStream(fileName);
+
+            /* check stream status */
+            l_error = fileStream.status();
+
+            if (l_error.good())
+            {
+                /* clear this object */
+                l_error = clear();
+                if (l_error.good())
+                {
+                    /* read data from file */
+                    transferInit();
+                    l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                    transferEnd();
+                }
+            }
+	}
+
     }
     return l_error;
 }
@@ -682,19 +706,37 @@ OFCondition DcmDataset::saveFile(const OFFilename &fileName,
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-        DcmWriteCache wcache;
-        /* open file for output */
-        DcmOutputFileStream fileStream(fileName);
+	DcmWriteCache wcache;
 
-        /* check stream status */
-        l_error = fileStream.status();
-        if (l_error.good())
-        {
-            /* write data to file */
-            transferInit();
-            l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
-            transferEnd();
-        }
+	if (*fileName.getCharPointer() == '-')
+	{
+            /* open file for output */
+            DcmStdoutStream fileStream(fileName);
+
+            /* check stream status */
+            l_error = fileStream.status();
+            if (l_error.good())
+            {
+                /* write data to file */
+                transferInit();
+                l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
+                transferEnd();
+            }
+	} else {
+	    /* open file for output */
+            DcmOutputFileStream fileStream(fileName);
+
+            /* check stream status */
+            l_error = fileStream.status();
+            if (l_error.good())
+            {
+                /* write data to file */
+                transferInit();
+                l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
+                transferEnd();
+            }
+	}
+
     }
     return l_error;
 }

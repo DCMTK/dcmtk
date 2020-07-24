@@ -80,6 +80,7 @@ offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
   if (status_.good() && file_.open() && buf && buflen)
   {
 #ifdef WRITE_VERY_LARGE_CHUNKS
+
     /* This is the old behaviour prior to DCMTK 3.5.5 */
     result = OFstatic_cast(offile_off_t, file_.fwrite(buf, 1, OFstatic_cast(size_t, buflen)));
 #else
@@ -89,6 +90,7 @@ offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
      * 32M which should hardly negatively affect performance.
      */
 #define DcmFileConsumer_MAX_CHUNK_SIZE 33554432 /* 32 MByte */
+
     offile_off_t written;
     const char *buf2 = OFstatic_cast(const char *, buf);
     while (buflen > DcmFileConsumer_MAX_CHUNK_SIZE)
@@ -132,6 +134,98 @@ DcmOutputFileStream::DcmOutputFileStream(FILE *file)
 }
 
 DcmOutputFileStream::~DcmOutputFileStream()
+{
+  // last attempt to flush stream before file is closed
+  flush();
+#ifdef DEBUG
+  if (! isFlushed())
+  {
+    DCMDATA_WARN("closing unflushed DcmOutputFileStream, loss of data!");
+  }
+#endif
+}
+
+/* ====================================================================== */
+// The DcmStdoutConsumer class is reponsible for printing binary dicom data to Stdout
+// and is triggered when the output filename is '-'
+DcmStdoutConsumer::DcmStdoutConsumer(const OFFilename &filename)
+: DcmConsumer()
+, file_()
+, status_(EC_Normal)
+{
+}
+
+DcmStdoutConsumer::DcmStdoutConsumer(FILE *file)
+: DcmConsumer()
+, file_(file)
+, status_(EC_Normal)
+{
+}
+
+DcmStdoutConsumer::~DcmStdoutConsumer()
+{
+}
+
+OFBool DcmStdoutConsumer::good() const
+{
+  return status_.good();
+}
+
+OFCondition DcmStdoutConsumer::status() const
+{
+  return status_;
+}
+
+OFBool DcmStdoutConsumer::isFlushed() const
+{
+  return OFTrue;
+}
+
+offile_off_t DcmStdoutConsumer::avail() const
+{
+  // since we cannot report "unlimited", let's claim that we can still write 2GB.
+  // Note that offile_off_t is a signed type.
+  return 2147483647L;
+}
+
+offile_off_t DcmStdoutConsumer::write(const void *buf, offile_off_t buflen)
+{
+  offile_off_t result = 0;
+  if (status_.good() && buf && buflen)
+  {
+
+    offile_off_t written;
+    const char *buf2 = OFstatic_cast(const char *, buf);
+    for (int i=0; i < buflen; i++){
+        std::cout << *(buf2 + i);
+	result ++;
+    }
+    std::cout << std::flush;
+  }
+   
+  return result;
+}
+
+void DcmStdoutConsumer::flush()
+{
+  // nothing to flush
+}
+
+/* ======================================================================= */
+
+DcmStdoutStream::DcmStdoutStream(const OFFilename &filename)
+: DcmOutputStream(&consumer_) // safe because DcmStdoutStream only stores pointer
+, consumer_(filename)
+{
+}
+
+DcmStdoutStream::DcmStdoutStream(FILE *file)
+: DcmOutputStream(&consumer_) // safe because DcmStdoutStream only stores pointer
+, consumer_(file)
+{
+}
+
+DcmStdoutStream::~DcmStdoutStream()
 {
   // last attempt to flush stream before file is closed
   flush();

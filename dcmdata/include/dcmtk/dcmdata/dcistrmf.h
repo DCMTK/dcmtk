@@ -25,7 +25,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcistrma.h"
-
+#include <vector>
 
 /** producer class that reads data from a plain file.
  */
@@ -326,6 +326,134 @@ private:
 
   /// handler for temporary file
   DcmTempFileHandler *fileHandler_;
+};
+
+
+/** producer class that reads data from standard input.
+ */
+class DCMTK_DCMDATA_EXPORT DcmStdinProducer: public DcmProducer
+{
+public:
+  /** constructor
+   *  @param filename name of file to be opened (may contain wide chars
+   *    if support enabled)
+   *  @param offset byte offset to skip from the start of file
+   */
+  DcmStdinProducer(const OFFilename &filename, offile_off_t offset = 0);
+
+  /// destructor
+  virtual ~DcmStdinProducer();
+
+  /** returns the status of the producer. Unless the status is good,
+   *  the producer will not permit any operation.
+   *  @return status, true if good
+   */
+  virtual OFBool good() const;
+
+  /** returns the status of the producer as an OFCondition object.
+   *  Unless the status is good, the producer will not permit any operation.
+   *  @return status, EC_Normal if good
+   */
+  virtual OFCondition status() const;
+
+  /** returns true if the producer is at the end of stream.
+   *  @return true if end of stream, false otherwise
+   */
+  virtual OFBool eos();
+
+  /** returns the minimum number of bytes that can be read with the
+   *  next call to read(). The DcmObject read methods rely on avail
+   *  to return a value > 0 if there is no I/O suspension since certain
+   *  data such as tag and length are only read "en bloc", i.e. all
+   *  or nothing.
+   *  @return minimum of data available in producer
+   */
+  virtual offile_off_t avail();
+
+  /** reads as many bytes as possible into the given block.
+   *  @param buf pointer to memory block, must not be NULL
+   *  @param buflen length of memory block
+   *  @return number of bytes actually read.
+   */
+  virtual offile_off_t read(void *buf, offile_off_t buflen);
+
+  /** skips over the given number of bytes (or less)
+   *  @param skiplen number of bytes to skip
+   *  @return number of bytes actually skipped.
+   */
+  virtual offile_off_t skip(offile_off_t skiplen);
+
+  /** resets the stream to the position by the given number of bytes.
+   *  @param num number of bytes to putback. If the putback operation
+   *    fails, the producer status becomes bad.
+   */
+  virtual void putback(offile_off_t num);
+
+private:
+
+  std::vector<char> arr;
+
+  offile_off_t position;
+ 
+  /// private unimplemented copy constructor
+  DcmStdinProducer(const DcmStdinProducer&);
+
+  /// private unimplemented copy assignment operator
+  DcmStdinProducer& operator=(const DcmStdinProducer&);
+
+  /// the file we're actually reading from
+  OFFile file_;
+
+  /// status
+  OFCondition status_;
+
+  /// number of bytes in file
+  offile_off_t size_;
+};
+
+
+/** input stream that reads from standard input
+ */
+class DCMTK_DCMDATA_EXPORT DcmStdinStream: public DcmInputStream
+{
+public:
+  /** constructor
+   *  @param filename name of file to be opened (may contain wide chars
+   *    if support enabled)
+   *  @param offset byte offset to skip from the start of file
+   */
+  DcmStdinStream(const OFFilename &filename, offile_off_t offset = 0);
+
+  /// destructor
+  virtual ~DcmStdinStream();
+
+  /** creates a new factory object for the current stream
+   *  and stream position.  When activated, the factory will be
+   *  able to create new DcmInputStream delivering the same
+   *  data as the current stream.  Used to defer loading of
+   *  value fields until accessed.
+   *  If no factory object can be created (e.g. because the
+   *  stream is not seekable), returns NULL.
+   *  @return pointer to new factory object if successful, NULL otherwise.
+   */
+  virtual DcmInputStreamFactory *newFactory() const
+  {
+	  return NULL;
+  }
+
+private:
+
+  /// private unimplemented copy constructor
+  DcmStdinStream(const DcmStdinStream&);
+
+  /// private unimplemented copy assignment operator
+  DcmStdinStream& operator=(const DcmStdinStream&);
+
+  /// the final producer of the filter chain
+  DcmStdinProducer producer_;
+
+  /// filename
+  OFFilename filename_;
 };
 
 
