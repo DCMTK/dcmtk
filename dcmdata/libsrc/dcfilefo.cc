@@ -980,7 +980,7 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
 			padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
 			transferEnd();
 		}
-	delete fileStream;
+		delete fileStream;
 	}
 	return l_error;
 }

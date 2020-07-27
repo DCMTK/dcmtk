@@ -194,8 +194,8 @@ offile_off_t DcmStdoutConsumer::write(const void *buf, offile_off_t buflen)
     offile_off_t written;
     const char *buf2 = OFstatic_cast(const char *, buf);
     for (int i=0; i < buflen; i++)
-    {
-        std::cout << *(buf2 + i);
+	{
+	std::cout << *(buf2 + i);
 	result ++;
     }
     std::cout << std::flush;
