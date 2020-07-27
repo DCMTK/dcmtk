@@ -911,7 +911,7 @@ OFCondition DcmFileFormat::loadFileUntilTag(
 	DcmInputStream *fileStream;
 	if (*fileName.getCharPointer() == '-')
 	{
-	    /* use stdin stream */
+            /* use stdin stream */
 	    fileStream = new DcmStdinStream(fileName);
 	} else {
 	    /* open file for output */
@@ -964,13 +964,13 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
 	DcmOutputStream *fileStream;
 	if (*fileName.getCharPointer() == '-')
 	{
-	    /* use stdout stream */
+            /* use stdout stream */
             fileStream = new DcmStdoutStream(fileName);
 	} else {
-	    /* open file for output */
+            /* open file for output */
             fileStream = new DcmOutputFileStream(fileName);
 	}
-            /* check stream status */
+        /* check stream status */
         l_error = fileStream->status();
         if (l_error.good())
         {

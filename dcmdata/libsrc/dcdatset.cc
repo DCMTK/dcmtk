@@ -647,13 +647,13 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-	DcmInputStream *fileStream;
+        DcmInputStream *fileStream;
         if (*fileName.getCharPointer() == '-')
 	{
             /* use stdin stream */
             fileStream = new DcmStdinStream(fileName);
 	} else {
-	     /* open file for input */
+            /* open file for input */
             fileStream = new DcmInputFileStream(fileName);
 	}
         /* check stream status */
@@ -697,7 +697,7 @@ OFCondition DcmDataset::saveFile(const OFFilename &fileName,
             /* use stdout stream */
             fileStream = new DcmStdoutStream(fileName);
 	} else {
-	    /* open file for output */
+            /* open file for output */
             fileStream = new DcmOutputFileStream(fileName);
 	}
         /* check stream status */
