@@ -25,7 +25,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcistrma.h"
-#include <vector>
+#include "dcmtk/ofstd/ofvector.h"
 
 /** producer class that reads data from a plain file.
  */
@@ -391,7 +391,7 @@ public:
 
 private:
 
-  std::vector<char> arr;
+  OFVector<char> arr;
 
   offile_off_t position;
  
