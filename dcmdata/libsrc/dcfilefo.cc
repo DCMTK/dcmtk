@@ -936,6 +936,7 @@ OFCondition DcmFileFormat::loadFileUntilTag(
                 FileReadMode = oldMode;
             }
         }
+	delete fileStream;
     }
     return l_error;
 }
@@ -978,8 +979,11 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
             l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength,
             padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
             transferEnd();
-        }	
+        }
+	delete fileStream;
     }
+
+
     return l_error;
 }
 

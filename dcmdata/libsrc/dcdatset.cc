@@ -671,6 +671,7 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
                 transferEnd();
             }
         }
+	delete fileStream;
     }
     return l_error;
 }
@@ -708,6 +709,7 @@ OFCondition DcmDataset::saveFile(const OFFilename &fileName,
             l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
             transferEnd();
         }
+	delete fileStream;
     }
     return l_error;
 }
