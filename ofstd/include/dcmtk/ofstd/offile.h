@@ -154,8 +154,8 @@ public:
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** constructor expecting a wide character string
    *  @remark This constructor is only available if DCMTK is compiled on Windows
-   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
-   *  WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
+   *    Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *    WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
    *  @param filename filename to be stored (e.g. 16-bit characters)
    *  @param convert  convert given filename to UTF-8 encoding as an
    *    alternative representation.  Only works on Windows systems.
@@ -258,12 +258,12 @@ public:
 
 private:
   /// filename consisting of conventional characters (8-bit, e.g.\ UTF-8)
-  /// @remark This member is only available if DCMTK is compiled on Windows
-  ///   Operating Systems with wide chars enabled (defining _WIN32 as well as
-  ///   WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
   char *filename_;
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /// filename consisting of wide characters (e.g. 16-bit on Windows)
+  /// @remark This member is only available if DCMTK is compiled on Windows
+  ///   Operating Systems with wide chars enabled (defining _WIN32 as well as
+  ///   WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
   wchar_t *wfilename_;
 #endif
 };
@@ -341,8 +341,8 @@ public:
   /** opens the file whose name is the wide character string pointed to by path and
    *  associates a stream with it.
    *  @remark This member is only available if DCMTK is compiled on Windows
-   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
-   *  WIDE_CHAR_FILE_IO_FUNCTIONS).
+   *    Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *    WIDE_CHAR_FILE_IO_FUNCTIONS).
    *  @param filename Unicode filename path to file
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a wide
    *    character string
