@@ -268,16 +268,12 @@ DcmStdinProducer::DcmStdinProducer(const OFFilename &filename, offile_off_t offs
 , status_(EC_Normal)
 , size_(0)
 {
-
     char ch;
      // Get the number of bytes in the file
      while ( std::cin >> std::noskipws >> ch) {
-	     arr.push_back(ch);
-	 
+	     arr.push_back(ch);	 
      }
-     
      size_ = arr.size();
-
      position = offset;
 }
 
@@ -305,7 +301,7 @@ OFBool DcmStdinProducer::eos()
 
 offile_off_t DcmStdinProducer::avail()
 {
-  return size_ - 1 - position;
+  return size_ - position;
 }
 
 offile_off_t DcmStdinProducer::read(void *buf, offile_off_t buflen)
@@ -313,24 +309,23 @@ offile_off_t DcmStdinProducer::read(void *buf, offile_off_t buflen)
   offile_off_t result = 0;
   if (status_.good() && buf && buflen)
   { 
-      for (int i = 0; i < OFstatic_cast(size_t, buflen); i++){
-	  if ((position + i) >= size_) {
+      for (int i = 0; i < OFstatic_cast(size_t, buflen); i++)
+      {
+	  if ((position + i) >= size_)
+	  {
 	      break;
 	  }
-	  char ch = arr[position + i];
-
-	 *((char*)buf + i) = ch;
-	 result += 1;
+      char ch = arr[position + i];
+      *((char*)buf + i) = ch;
+      result += 1;
       } 
   }
-
   position += result;
   return result;
 }
 
 offile_off_t DcmStdinProducer::skip(offile_off_t skiplen)
 {
-
   offile_off_t result = 0;
   if (status_.good() && skiplen)
   {
@@ -342,7 +337,6 @@ offile_off_t DcmStdinProducer::skip(offile_off_t skiplen)
 
 void DcmStdinProducer::putback(offile_off_t num)
 {
-
   if (status_.good() && num)
   {
  
