@@ -909,7 +909,7 @@ OFCondition DcmFileFormat::loadFileUntilTag(
     if (!fileName.isEmpty())
     {
 		DcmInputStream *fileStream;
-		if (OFString(fileName.getCharPointer()) == "-")
+		if (fileName.isStandardStream())
 		{
 			/* use stdin stream */
 			fileStream = new DcmStdinStream(fileName);
@@ -962,7 +962,7 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
     {
         DcmWriteCache wcache;
 		DcmOutputStream *fileStream;
-		if (OFString(fileName.getCharPointer()) == "-")
+		if (fileName.isStandardStream())
 		{
 			/* use stdout stream */
 			fileStream = new DcmStdoutStream(fileName);
