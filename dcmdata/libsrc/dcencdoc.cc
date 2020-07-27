@@ -1104,8 +1104,8 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
   {
     size_t numBytes = fileSize;
     // according to CP 1851
-    result = dataset->putAndInsertUint32(DCM_EncapsulatedDocumentLength, numBytes);
-    if (numBytes & 1)++numBytes;
+    result = dataset->putAndInsertUint32(DCM_EncapsulatedDocumentLength, OFstatic_cast(Uint32, numBytes));
+    if (numBytes & 1) ++numBytes;
     Uint8 *bytes = NULL;
     if (result.good())
     {
