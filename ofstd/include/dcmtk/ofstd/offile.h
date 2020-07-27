@@ -144,12 +144,14 @@ public:
   OFFilename(const OFString &filename,
              const OFBool convert = OFFalse);
 
-  /** construct an OFFilename from an OFpath.
-   *  @param path the OFpath object referring to a file.
-   *  Effectively OFFilename(path.native(), OFTrue), but potentially more
-   *  efficient.
+  /** constructor expecting an OFpath instance
+   *  @param path    OFpath instance storing a filename in native format
+   *    (currently, identical to an 8-bit character string)
+   *  @param convert convert given filename to wide character encoding as an
+   *    alternative representation.  Only works on Windows systems.
    */
-  OFFilename(const OFpath& path);
+  OFFilename(const OFpath &path,
+             const OFBool convert = OFFalse);
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** constructor expecting a wide character string
@@ -241,6 +243,15 @@ public:
    *    alternative representation).  Only works on Windows systems.
    */
   void set(const OFString &filename,
+           const OFBool convert = OFFalse);
+
+  /** replace currently stored filename by given value
+   *  @param OFpath  OFpath instance storing a filename in native format
+   *    (currently, identical to an 8-bit character string)
+   *  @param convert convert given filename to wide character encoding as an
+   *    alternative representation).  Only works on Windows systems.
+   */
+  void set(const OFpath &path,
            const OFBool convert = OFFalse);
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)

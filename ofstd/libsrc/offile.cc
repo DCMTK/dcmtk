@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,13 +61,14 @@ OFFilename::OFFilename(const OFString &filename,
     set(filename, convert);
 }
 
-OFFilename::OFFilename(const OFpath &path)
+OFFilename::OFFilename(const OFpath &path,
+                       const OFBool convert)
   : filename_(NULL)
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   , wfilename_(NULL)
 #endif
 {
-    set(path.native(), OFTrue);
+    set(path, convert);
 }
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
@@ -183,6 +184,13 @@ void OFFilename::set(const OFString &filename,
                      const OFBool convert)
 {
     set(filename.c_str(), convert);
+}
+
+
+void OFFilename::set(const OFpath &path,
+                     const OFBool convert)
+{
+    set(path.native(), convert);
 }
 
 
