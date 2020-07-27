@@ -25,6 +25,7 @@
 
 #include "dcmtk/ofstd/offile.h"
 #include "dcmtk/ofstd/offilsys.h"
+#include "dcmtk/ofstd/ofutil.h"
 
 #ifdef HAVE_WINDOWS_H
 #include "dcmtk/ofstd/ofchrenc.h"   /* for class OFCharacterEncoding */
@@ -131,13 +132,9 @@ void OFFilename::clear()
 
 void OFFilename::swap(OFFilename &arg)
 {
-    char *charPointer = filename_;
-    filename_ = arg.filename_;
-    arg.filename_ = charPointer;
+    OFswap(filename_, arg.filename_);
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
-    wchar_t *wideCharPointer = wfilename_;
-    wfilename_ = arg.wfilename_;
-    arg.wfilename_ = wideCharPointer;
+    OFswap(wfilename_, arg.wfilename_);
 #endif
 }
 
