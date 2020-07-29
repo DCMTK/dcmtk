@@ -233,20 +233,20 @@ public:
    */
   OFBool isStandardStream() const
   {
-	OFBool result = OFFalse;
+    OFBool result = OFFalse;
 #if defined(WIDE_CHAR_FILE_IO_FUNCTONS) && defined(_WIN32)
-	if (usesWideChars())
-	{
+    if (usesWideChars())
+    {
         if (getWideCharPointer() != NULL)
         {
-		    result = (std::wstring(getWideCharPointer()) == L"-");
+            result = (std::wstring(getWideCharPointer()) == L"-");
         }
-	} else
+    } else
 #endif
-		if (getCharPointer() != NULL)
+        if (getCharPointer() != NULL)
         {
-		    result = (OFString(getCharPointer()) == "-");
-	    }
+            result = (OFString(getCharPointer()) == "-");
+        }
     return result;
   }
 
