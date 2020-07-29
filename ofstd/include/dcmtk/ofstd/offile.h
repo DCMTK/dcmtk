@@ -237,11 +237,17 @@ public:
 #if defined(WIDE_CHAR_FILE_IO_FUNCTONS) && defined(_WIN32)
 	if (usesWideChars())
 	{
-		result = (std::wstring(getWideCharPointer()) == L"-");
+        if (getWideCharPointer() != NULL)
+        {
+		    result = (std::wstring(getWideCharPointer()) == L"-");
+        }
 	} else
 #endif
-		result = (OFString(getCharPointer()) == "-");
-	return result;
+		if (getCharPointer() != NULL)
+        {
+		    result = (OFString(getCharPointer()) == "-");
+	    }
+    return result;
   }
 
   /** replace currently stored filename by given value
