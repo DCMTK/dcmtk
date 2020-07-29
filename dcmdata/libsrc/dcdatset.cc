@@ -647,33 +647,33 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-		DcmInputStream *fileStream;
-		if (fileName.isStandardStream())
-		{
-			/* use stdin stream */
-			fileStream = new DcmStdinStream(fileName);
-		} else {
-			/* open file for input */
-			fileStream = new DcmInputFileStream(fileName);
-		}
-		/* check stream status */
-		l_error = fileStream->status();
+        DcmInputStream *fileStream;
+        if (fileName.isStandardStream())
+        {
+            /* use stdin stream */
+            fileStream = new DcmStdinStream(fileName);
+        } else {
+            /* open file for input */
+            fileStream = new DcmInputFileStream(fileName);
+        }
+        /* check stream status */
+        l_error = fileStream->status();
 
-		if (l_error.good())
-		{
-			/* clear this object */
-			l_error = clear();
-			if (l_error.good())
-			{
-				/* read data from file */
-				transferInit();
-				l_error = readUntilTag(*fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
-				transferEnd();
-			}
-		}
-		delete fileStream;
-	}
-	return l_error;
+        if (l_error.good())
+        {
+            /* clear this object */
+            l_error = clear();
+            if (l_error.good())
+            {
+                /* read data from file */
+                transferInit();
+                l_error = readUntilTag(*fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                transferEnd();
+            } 
+        }
+        delete fileStream;
+    }
+    return l_error;
 }
 
 
@@ -689,29 +689,29 @@ OFCondition DcmDataset::saveFile(const OFFilename &fileName,
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-		DcmWriteCache wcache;
-		DcmOutputStream *fileStream;
+        DcmWriteCache wcache;
+        DcmOutputStream *fileStream;
 
-		if (fileName.isStandardStream())
-		{
-			/* use stdout stream */
-			fileStream = new DcmStdoutStream(fileName);
-		} else {
-			/* open file for output */
-			fileStream = new DcmOutputFileStream(fileName);
-		}
-		/* check stream status */
-		l_error = fileStream->status();
-		if (l_error.good())
-		{
-			/* write data to file */
-			transferInit();
-			l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
-			transferEnd();
-		}
-		delete fileStream;
-	}
-	return l_error;
+        if (fileName.isStandardStream())
+        {
+            /* use stdout stream */
+            fileStream = new DcmStdoutStream(fileName);
+        } else {
+            /* open file for output */
+            fileStream = new DcmOutputFileStream(fileName);
+        }
+        /* check stream status */
+        l_error = fileStream->status();
+        if (l_error.good())
+        {
+            /* write data to file */
+            transferInit();
+            l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
+            transferEnd();
+        }
+        delete fileStream;
+    }
+    return l_error;
 }
 
 

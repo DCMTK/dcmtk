@@ -908,37 +908,37 @@ OFCondition DcmFileFormat::loadFileUntilTag(
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-		DcmInputStream *fileStream;
-		if (fileName.isStandardStream())
-		{
-			/* use stdin stream */
-			fileStream = new DcmStdinStream(fileName);
-		} else {
-			/* open file for output */
-			fileStream = new DcmInputFileStream(fileName);
-		}
-		/* check stream status */
-		l_error = fileStream->status();
-		if (l_error.good())
-		{
-			/* clear this object */
-			l_error = clear();
-			if (l_error.good())
-			{
-				/* save old value */
-				const E_FileReadMode oldMode = FileReadMode;
-				FileReadMode = readMode;
-				/* read data from file */
-				transferInit();
-				l_error = readUntilTag(*fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
-				transferEnd();
-				/* restore old value */
-				FileReadMode = oldMode;
-			}
-		}
-		delete fileStream;
-	}
-	return l_error;
+        DcmInputStream *fileStream;
+        if (fileName.isStandardStream())
+        {
+            /* use stdin stream */
+            fileStream = new DcmStdinStream(fileName);
+        } else {
+            /* open file for output */
+            fileStream = new DcmInputFileStream(fileName);
+        }
+        /* check stream status */
+        l_error = fileStream->status();
+        if (l_error.good())
+        {
+            /* clear this object */
+            l_error = clear();
+            if (l_error.good())
+            {
+                /* save old value */
+                const E_FileReadMode oldMode = FileReadMode;
+                FileReadMode = readMode;
+                /* read data from file */
+                transferInit();
+                l_error = readUntilTag(*fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                transferEnd();
+                /* restore old value */
+                FileReadMode = oldMode;
+            }
+        }
+        delete fileStream;
+    }
+    return l_error;
 }
 
 
@@ -961,28 +961,28 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
     if (!fileName.isEmpty())
     {
         DcmWriteCache wcache;
-		DcmOutputStream *fileStream;
-		if (fileName.isStandardStream())
-		{
-			/* use stdout stream */
-			fileStream = new DcmStdoutStream(fileName);
-		} else {
-			/* open file for output */
-			fileStream = new DcmOutputFileStream(fileName);
-		}
-		/* check stream status */
-		l_error = fileStream->status();
-		if (l_error.good())
-		{
-			/* write data to file */
-			transferInit();
-			l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength,
-			padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
-			transferEnd();
-		}
-		delete fileStream;
-	}
-	return l_error;
+        DcmOutputStream *fileStream;
+        if (fileName.isStandardStream())
+        {
+            /* use stdout stream */
+            fileStream = new DcmStdoutStream(fileName);
+        } else {
+            /* open file for output */
+            fileStream = new DcmOutputFileStream(fileName);
+        }
+        /* check stream status */
+        l_error = fileStream->status();
+        if (l_error.good())
+        {
+            /* write data to file */
+            transferInit();
+            l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength,
+            padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
+            transferEnd();
+        }
+        delete fileStream;
+    }
+    return l_error;
 }
 
 
