@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2020, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -1083,7 +1083,6 @@ int GeneralAnatomyMacro::compare(const GeneralAnatomyMacro& rhs) const
 
         for (size_t m = 0; m < m_AnatomicRegionModifier.size(); m++)
         {
-            rhs.m_AnatomicRegionModifier[m];
             result = m_AnatomicRegionModifier[m]->compare(*(rhs.m_AnatomicRegionModifier[m]));
             if (result != 0)
             {
