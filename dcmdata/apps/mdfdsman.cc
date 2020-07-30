@@ -57,7 +57,7 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name,
 
     // load file into dfile if it exists
     OFLOG_INFO(mdfdsmanLogger, "Loading file into dataset manager: " << file_name);
-    if (OFStandard::fileExists(file_name) || OFString(file_name) == "-")
+    if (OFStandard::fileExists(file_name) || (strcmp(file_name, "-") == 0))
     {
       cond = dfile->loadFile(file_name, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
     }

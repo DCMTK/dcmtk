@@ -311,13 +311,13 @@ offile_off_t DcmStdinProducer::read(void *buf, offile_off_t buflen)
   { 
       for (int i = 0; i < OFstatic_cast(size_t, buflen); i++)
       {
-	  if ((position + i) >= size_)
-	  {
-	      break;
-	  }
-      char ch = arr[position + i];
-      *((char*)buf + i) = ch;
-      result += 1;
+          if ((position + i) >= size_)
+          {
+              break;
+          }
+          char ch = arr[position + i];
+          *((char*)buf + i) = ch;
+          result += 1;
       } 
   }
   position += result;
@@ -339,7 +339,6 @@ void DcmStdinProducer::putback(offile_off_t num)
 {
   if (status_.good() && num)
   {
- 
     if (num <= position)
     {
       position -= num;

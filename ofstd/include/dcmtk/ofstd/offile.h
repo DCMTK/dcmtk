@@ -237,15 +237,12 @@ public:
 #if defined(WIDE_CHAR_FILE_IO_FUNCTONS) && defined(_WIN32)
     if (usesWideChars())
     {
-        if (getWideCharPointer() != NULL)
-        {
-            result = (std::wstring(getWideCharPointer()) == L"-");
-        }
+        result = (wcscmp(getWideCharPointer(), L"-") == 0);
     } else
 #endif
         if (getCharPointer() != NULL)
         {
-            result = (OFString(getCharPointer()) == "-");
+            result = (strcmp(getCharPointer(), "-") == 0);
         }
     return result;
   }

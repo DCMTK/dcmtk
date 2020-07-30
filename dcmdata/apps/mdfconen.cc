@@ -541,7 +541,7 @@ int MdfConsoleEngine::startProvidingService()
                 {
                     OFLOG_ERROR(dcmodifyLogger, "couldn't save file: " << result.text());
                     errors++;
-                    if (!no_backup_option && !was_created && OFString(filename) != "-")
+                    if (!no_backup_option && !was_created && strcmp(filename, "-"))
                     {
                         result = restoreFile(filename);
                         if (result.bad())
@@ -553,7 +553,7 @@ int MdfConsoleEngine::startProvidingService()
                 }
             }
             // errors occurred and user doesn't want to ignore them:
-            else if (!no_backup_option && !was_created && OFString(filename) != "-")
+            else if (!no_backup_option && !was_created && strcmp(filename, "-"))
             {
                 result = restoreFile(filename);
                 if (result.bad())
@@ -589,7 +589,7 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     // load file into dataset manager
     was_created = !OFStandard::fileExists(filename);
     result = ds_man->loadFile(filename, read_mode_option, input_xfer_option, create_if_necessary);
-    if (result.good() && !no_backup_option && !was_created && OFString(filename) != "-")
+    if (result.good() && !no_backup_option && !was_created && strcmp(filename, "-"))
         result = backupFile(filename);
     return result;
 }
