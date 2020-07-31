@@ -1304,15 +1304,15 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
 
     if ((elemLength) > 0xffff && (! myvalidvr.usesExtendedLengthEncoding()) && outXfer.isExplicitVR())
     {
-      /* special case: we are writing in explicit VR, the VR of this
-       * element uses a 2-byte length encoding, but the element length is
-       * too large for a 2-byte length field. We need to write this element
-       * as VR=UN (or VR=OB if the generation of UN is disabled).
-       * In this method, the variable "vr" is only used to determine the
-       * output byte order, which is always the same for OB and UN.
-       * Therefore, we do not need to distinguish between these two.
-       */
-       vr = EVR_UN;
+        /* special case: we are writing in explicit VR, the VR of this
+         * element uses a 2-byte length encoding, but the element length is
+         * too large for a 2-byte length field. We need to write this element
+         * as VR=UN (or VR=OB if the generation of UN is disabled).
+         * In this method, the variable "vr" is only used to determine the
+         * output byte order, which is always the same for OB and UN.
+         * Therefore, we do not need to distinguish between these two.
+         */
+        vr = EVR_UN;
     }
 
     /* In case the transfer state is not initialized, this is an illegal call */
