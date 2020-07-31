@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2017, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -97,6 +97,10 @@ OFTEST(ofstd_OFTime)
     OFCHECK_EQUAL(time1.getTimeZone(), -9.75);
     OFCHECK(time1.setISOFormattedTime("12:15:30 +09:15"));
     OFCHECK_EQUAL(time1.getTimeZone(), +9.25);
+    /* check support for leap second */
+    OFCHECK(time1.setTime(23, 59, 59));
+    OFCHECK(time1.setTime(23, 59, 60));
+    OFCHECK(!time1.setTime(23, 59, 61));
     /* the "seconds" part is mandatory if time zone is present */
     OFCHECK(!time2.setISOFormattedTime("10:15 -02:30"));
     OFCHECK(!time2.setISOFormattedTime("1015+0100"));

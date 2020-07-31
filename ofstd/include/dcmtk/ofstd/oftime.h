@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,7 +41,10 @@ END_EXTERN_C
  *  class declaration  *
  *---------------------*/
 
-/** This class provides a collection of time functions
+/** This class provides a collection of time functions.
+ *  @note Please note that support for the leap second is limited: a value of
+ *    60 seconds is accepted (i.e. regarded as valid) but calculations based on
+ *    such a time value might be incorrect.
  */
 class DCMTK_OFSTD_EXPORT OFTime
 {
@@ -138,8 +141,8 @@ class DCMTK_OFSTD_EXPORT OFTime
     virtual void clear();
 
     /** check whether the currently stored time value is valid.
-     *  Valid ranges: [0,24[ for 'hour', [0,60[ for 'minute', [0.0,60.0[ for 'second'
-     *  and [-12.0,+14.0] for 'timeZone'
+     *  Valid ranges: [0,24[ for 'hour', [0,60[ for 'minute', [0.0,60.0] for 'second'
+     *  (including leap second) and [-12.0,+14.0] for 'timeZone'
      *  @return OFTrue if the current value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
