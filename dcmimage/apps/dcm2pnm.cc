@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
 
      cmd.addSubGroup("frame selection:");
       cmd.addOption("--frame",              "+F",   1, "[n]umber: integer",
-                                                        "select specified frame (default: 1)");
+                                                       "select specified frame (default: 1)");
       cmd.addOption("--frame-range",        "+Fr",  2, "[n]umber [c]ount: integer",
                                                        "select c frames beginning with frame n");
       cmd.addOption("--all-frames",         "+Fa",     "select all frames");
@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--flip-both-axes",     "+Lhv",    "flip image horizontally and vertically");
 
      cmd.addSubGroup("scaling:");
-      cmd.addOption("--recognize-aspect",   "+a",      "recognize pixel aspect ratio (default)");
+      cmd.addOption("--recognize-aspect",   "+a",      "recognize pixel aspect ratio when scaling (def.)");
       cmd.addOption("--ignore-aspect",      "-a",      "ignore pixel aspect ratio when scaling");
       cmd.addOption("--interpolate",        "+i",   1, "[n]umber of algorithm: integer",
                                                        "use interpolation when scaling (1..4, def: 1)");
