@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmimgle/diimage.h"
 #include "dcmtk/dcmimage/dipitiff.h"
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version */
 
 BEGIN_EXTERN_C
 #include <tiffio.h>
@@ -145,7 +146,8 @@ int DiTIFFPlugin::write(
           TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, photometric);
           TIFFSetField(tif, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
           TIFFSetField(tif, TIFFTAG_DOCUMENTNAME, "unnamed");
-          TIFFSetField(tif, TIFFTAG_IMAGEDESCRIPTION, "converted DICOM image");
+          TIFFSetField(tif, TIFFTAG_IMAGEDESCRIPTION, "Converted DICOM Image");
+          TIFFSetField(tif, TIFFTAG_SOFTWARE, "OFFIS DCMTK " OFFIS_DCMTK_VERSION);
           TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, samplesperpixel);
           TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, opt_rowsperstrip);
           /* TIFFSetField(tif, TIFFTAG_STRIPBYTECOUNTS, rows / opt_rowsperstrip); */
