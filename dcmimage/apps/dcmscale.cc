@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--conv-never",         "+cn",      "never convert color space");
 #endif
      cmd.addSubGroup("scaling:");
-      cmd.addOption("--recognize-aspect",    "+a",      "recognize pixel aspect ratio (default)");
+      cmd.addOption("--recognize-aspect",    "+a",      "recognize pixel aspect ratio when scaling (def)");
       cmd.addOption("--ignore-aspect",       "-a",      "ignore pixel aspect ratio when scaling");
       cmd.addOption("--interpolate",         "+i",   1, "[n]umber of algorithm: integer",
                                                         "use interpolation when scaling (1..4, def: 1)");
