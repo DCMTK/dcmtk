@@ -371,7 +371,7 @@ int main(int argc, char *argv[])
 #endif
 
      cmd.addSubGroup("other transformations:");
-      cmd.addOption("--grayscale",          "+G",      "convert to grayscale if necessary");
+      cmd.addOption("--grayscale",          "+G",      "convert to grayscale if color model not mono");
       cmd.addOption("--change-polarity",    "+P",      "change polarity (invert pixel output)");
       cmd.addOption("--clip-region",        "+C",   4, "[l]eft [t]op [w]idth [h]eight: integer",
                                                        "clip image region (l, t, w, h)");
@@ -1101,7 +1101,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        /* convert to grayscale if necessary */
+        /* convert to grayscale if color model not monochrome */
         if ((opt_convertToGrayscale) && (!di->isMonochrome()))
         {
              OFLOG_INFO(dcm2pnmLogger, "converting image to grayscale");
