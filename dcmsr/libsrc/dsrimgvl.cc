@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -688,7 +688,7 @@ OFBool DSRImageReferenceValue::appliesToSegment(const Uint16 segmentNumber) cons
 
 OFBool DSRImageReferenceValue::isSegmentationObject(const OFString &sopClassUID) const
 {
-    /* check for all segmentation SOP classes (according to DICOM PS 3.6-2017e) */
+    /* check for all segmentation SOP classes (according to DICOM PS 3.6-2020c) */
     return (sopClassUID == UID_SegmentationStorage) || (sopClassUID == UID_SurfaceSegmentationStorage);
 }
 
