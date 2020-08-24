@@ -1620,7 +1620,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_GeneralAudioWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_ArterialPulseWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_RespiratoryWaveformStorage);
+                                compare(mediaSOPClassUID, UID_RespiratoryWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_MultichannelRespiratoryWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_RoutineScalpElectroencephalogramWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_ElectromyogramWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_ElectrooculogramWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_SleepElectroencephalogramWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_BodyPositionWaveformStorage);
                     }
                     /* is it one of the presentation state SOP Classes? */
                     if (!found)
