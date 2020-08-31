@@ -325,7 +325,8 @@ OFCondition DcmPersonName::writeJson(STD_NAMESPACE ostream &out,
             const char* componentEnd = it - 1;
             while (*componentEnd == ' ')
                 --componentEnd;
-            out.write(begin, componentEnd - begin + 1);
+            OFString s(begin, 0, componentEnd - begin + 1);
+            DcmJsonFormat::escapeControlCharacters(out, s);
         }
 
         // writes the name of the current component group and all components
