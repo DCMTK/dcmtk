@@ -19,7 +19,7 @@ raw data set) to JSON (JavaScript Object Notation).  The output refers to the
 "DICOM JSON Model", which is found in DICOM Part 18 Section F.
 
 If \b dcm2json reads a raw data set (DICOM data without a file format
-meta-header) it will attempt to guess the transfer syntax by examining the
+meta-header), it will attempt to guess the transfer syntax by examining the
 first few bytes of the file.  It is not always possible to correctly guess the
 transfer syntax and it is better to convert a data set to a file format
 whenever possible (using the \b dcmconv utility).  It is also possible to use
@@ -97,6 +97,13 @@ input transfer syntax:
 
 \subsection dcm2json_output_options output options
 \verbatim
+encoding of infinity and nan:
+  -es  --encode-strict
+         report error for inf and nan (default)
+
+  -ee  --encode-extended
+         permit inf and nan in Json numbers
+
 output format:
 
   +fc   --formatted-code
@@ -281,7 +288,7 @@ or OW, as well as OD, OF, OL, OV and UN values are always written as
 "InlineBinary" (base64 encoding) to the JSON output.  A future version of this
 tool might optionally use a "BulkDataURI" instead, i.e. the WADO-RS URL of a
 bulk data item that contains the element value.  This would be particularly
-useful for large amounts of data, e.g. pixel data.
+useful for large amounts of data, such as pixel data.
 
 \section dcm2json_notes NOTES
 
@@ -331,6 +338,15 @@ file cannot contain another command file.  This simple but effective approach
 allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
+
+\subsection dcm2json_exit_codes_application_errors application specific errors
+\verbatim
+EXITCODE_NO_INPUT_FILES                  21
+EXITCODE_CANNOT_READ_INPUT_FILE          20
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+EXITCODE_CANNOT_CONVERT_TO_UNICODE       80
+EXITCODE_CANNOT_WRITE_VALID_JSON         81
+\endverbatim
 
 \section dcm2json_environment ENVIRONMENT
 

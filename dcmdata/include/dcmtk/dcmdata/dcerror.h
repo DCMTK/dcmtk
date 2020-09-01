@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -171,6 +171,9 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_VOI_LUT_OBOW;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PixelDataExplLengthIllegal;
 /// Element length is larger than 32-bit length field permits
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthExceeds32BitField;
+/// Cannot write 'nan' or 'inf' as Json number
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonNumber;
+
 //@}
 
 // status code constants

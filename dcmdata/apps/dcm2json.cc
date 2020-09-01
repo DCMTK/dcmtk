@@ -27,6 +27,7 @@
 #include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofexit.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                       /* for zlibVersion() */
@@ -37,6 +38,9 @@
 
 #define OFFIS_CONSOLE_APPLICATION "dcm2json"
 #define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM file and data set to JSON"
+
+#define EXITCODE_CANNOT_CONVERT_TO_UNICODE 80
+#define EXITCODE_CANNOT_WRITE_VALID_JSON   81
 
 static OFLogger dcm2jsonLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
@@ -51,39 +55,29 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
     DcmFileFormat *dfile,
     const E_FileReadMode readMode,
     const OFBool format,
-    const OFBool printMetaInfo)
+    const OFBool printMetaInfo,
+    const OFBool encode_extended)
 {
     OFCondition result = EC_IllegalParameter;
     if ((ifname != NULL) && (dfile != NULL))
     {
-        DcmDataset *dset = dfile->getDataset();
-
         /* write JSON document content */
-        if (readMode == ERM_dataset)
+        DcmDataset *dset = dfile->getDataset();
+        if (format)
         {
-            if (format)
-            {
-               DcmJsonFormatPretty fmt(printMetaInfo);
+            DcmJsonFormatPretty fmt(printMetaInfo);
+            fmt.setJsonExtensionEnabled(encode_extended);
+            if (readMode == ERM_dataset)
                result = dset->writeJsonExt(out, fmt, OFTrue, OFTrue);
-            }
-            else
-            {
-               DcmJsonFormatCompact fmt(printMetaInfo);
-               result = dset->writeJsonExt(out, fmt, OFTrue, OFTrue);
-            }
+               else result = dfile->writeJson(out, fmt);
         }
         else
         {
-            if (format)
-            {
-               DcmJsonFormatPretty fmt(printMetaInfo);
-               result = dfile->writeJson(out, fmt);
-            }
-            else
-            {
-               DcmJsonFormatCompact fmt(printMetaInfo);
-               result = dfile->writeJson(out, fmt);
-            }
+            DcmJsonFormatCompact fmt(printMetaInfo);
+            fmt.setJsonExtensionEnabled(encode_extended);
+            if (readMode == ERM_dataset)
+               result = dset->writeJsonExt(out, fmt, OFTrue, OFTrue);
+               else result = dfile->writeJson(out, fmt);
         }
     }
     return result;
@@ -96,7 +90,7 @@ int main(int argc, char *argv[])
 {
     OFBool opt_format = OFTrue;
     OFBool opt_addMetaInformation = OFFalse;
-
+    OFBool opt_encode_extended = OFFalse;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     OFString optStr;
@@ -127,6 +121,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-implicit", "-ti", "read with implicit VR little endian TS");
 
     cmd.addGroup("output options:");
+      cmd.addSubGroup("encoding of infinity and nan:");
+        cmd.addOption("--encode-strict",      "-es", "report error for inf and nan (default)");
+        cmd.addOption("--encode-extended",    "-ee", "permit inf and nan in Json numbers");
       cmd.addSubGroup("output format:");
         cmd.addOption("--formatted-code",     "+fc", "enable whitespace formatting (default)");
         cmd.addOption("--compact-code",       "-fc", "print only required characters");
@@ -190,6 +187,14 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* number encoding options */
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--encode-strict"))
+            opt_encode_extended = OFFalse;
+        if (cmd.findOption("--encode-extended"))
+            opt_encode_extended = OFTrue;
+        cmd.endOptionBlock();
+
         /* format options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--formatted-code"))
@@ -241,11 +246,11 @@ int main(int argc, char *argv[])
                     if (status.bad())
                     {
                         OFLOG_FATAL(dcm2jsonLogger, status.text() << ": converting file to UTF-8: " << ifname);
-                        result = 4;
+                        result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
                     }
 #else
                     OFLOG_FATAL(dcm2jsonLogger, "character set conversion not available");
-                    return 4;
+                    result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
 #endif
                 }
             }
@@ -260,25 +265,38 @@ int main(int argc, char *argv[])
                     if (stream.good())
                     {
                         /* write content in JSON format to file */
-                        if (writeFile(stream, ifname, &dfile, opt_readMode, opt_format, opt_addMetaInformation).bad())
-                            result = 2;
+                        status = writeFile(stream, ifname, &dfile, opt_readMode, opt_format, opt_addMetaInformation, opt_encode_extended);
+                        if (status.bad())
+                        {
+                            OFLOG_FATAL(dcm2jsonLogger, status.text() << ": " << ifname);
+                            result = EXITCODE_CANNOT_WRITE_VALID_JSON;
+                        }
                     }
                     else
-                        result = 1;
+                        result = EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
                 }
                 else
                 {
                     /* write content in JSON format to standard output */
-                    if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_format, opt_addMetaInformation).bad())
-                        result = 3;
+                    status = writeFile(COUT, ifname, &dfile, opt_readMode, opt_format, opt_addMetaInformation, opt_encode_extended);
+                    if (status.bad())
+                    {
+                        OFLOG_FATAL(dcm2jsonLogger, status.text() << ": " << ifname);
+                        result = EXITCODE_CANNOT_WRITE_VALID_JSON;
+                    }
                 }
             }
         }
         else
+        {
             OFLOG_ERROR(dcm2jsonLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: " << ifname);
+            return EXITCODE_CANNOT_READ_INPUT_FILE;
+        }
     }
     else
+    {
         OFLOG_ERROR(dcm2jsonLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
-
+        return EXITCODE_NO_INPUT_FILES;
+    }
     return result;
 }

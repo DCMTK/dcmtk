@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,11 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcvrfl.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/dcmdata/dcvrfl.h"
+#include "dcmtk/ofstd/ofmath.h"
+#include "dcmtk/dcmdata/dcjson.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -396,4 +398,58 @@ OFBool DcmFloatingPointSingle::matches(const DcmElement& candidate,
     return key.getVM() == 0;
   }
   return OFFalse;
+}
+
+// ********************************
+
+OFCondition DcmFloatingPointSingle::writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format)
+{
+    /* always write JSON Opener */
+    writeJsonOpener(out, format);
+    /* write element value (if non-empty) */
+    if (!isEmpty())
+    {
+        OFCondition status;
+        const unsigned long vm = getVM();
+
+        if (! format.getJsonExtensionEnabled())
+        {
+          // check if any values is inf or nan, and return an error in this case
+          // since the Json extension that would allow us to write these is not enabled
+          Float32 f = 0.0;
+          for (unsigned long valNo = 1; valNo < vm; ++valNo)
+          {
+            status = getFloat32(f, valNo);
+            if (status.bad()) return status;
+            if (OFMath::isinf(f) || OFMath::isnan(f)) return EC_CannotWriteJsonNumber;
+          }
+        }
+
+        OFString value;
+        if (format.asBulkDataURI(getTag(), value))
+        {
+            format.printBulkDataURIPrefix(out);
+            DcmJsonFormat::printString(out, value);
+        }
+        else
+        {
+            status = getOFString(value, 0L);
+            if (status.bad()) return status;
+            format.printValuePrefix(out);
+            DcmJsonFormat::printNumberDecimal(out, value);
+            for (unsigned long valNo = 1; valNo < vm; ++valNo)
+            {
+                status = getOFString(value, valNo);
+                if (status.bad()) return status;
+                format.printNextArrayElementPrefix(out);
+                DcmJsonFormat::printNumberDecimal(out, value);
+            }
+            format.printValueSuffix(out);
+        }
+    }
+    /* write JSON Closer  */
+    writeJsonCloser(out, format);
+    /* always report success */
+    return EC_Normal;
 }
