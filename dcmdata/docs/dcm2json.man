@@ -339,11 +339,30 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
-\subsection dcm2json_exit_codes_application_errors application specific errors
+\section dcm2json_exit_codes EXIT CODES
+
+The \b dcm2json utility uses the following exit codes when terminating.  This
+enables the user to check for the reason why the application terminated.
+
+\subsection dcm2json_exit_codes_general general
 \verbatim
-EXITCODE_NO_INPUT_FILES                  21
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+\endverbatim
+
+\subsection dcm2json_exit_codes_input_file_errors input file errors
+\verbatim
 EXITCODE_CANNOT_READ_INPUT_FILE          20
+EXITCODE_NO_INPUT_FILES                  21
+\endverbatim
+
+\subsection dcm2json_exit_codes_output_file_errors output file errors
+\verbatim
 EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+\endverbatim
+
+\subsection dcm2json_exit_codes_processing_errors processing errors
+\verbatim
 EXITCODE_CANNOT_CONVERT_TO_UNICODE       80
 EXITCODE_CANNOT_WRITE_VALID_JSON         81
 \endverbatim
