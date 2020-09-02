@@ -329,7 +329,7 @@ PNG format:
 other transformations:
 
   +G    --grayscale
-          convert to grayscale if necessary
+          convert color image to grayscale (monochrome)
 
   +P    --change-polarity
           change polarity (invert pixel output)
