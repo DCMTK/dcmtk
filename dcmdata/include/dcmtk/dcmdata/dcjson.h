@@ -314,14 +314,14 @@ public:
      */
     virtual void printNextArrayElementPrefix(STD_NAMESPACE ostream &out);
 
-    /** return the flag indicating whether extended Json number encoding is enabled.
+    /** return the flag indicating whether extended JSON number encoding is enabled.
      */
     virtual OFBool getJsonExtensionEnabled() const
     {
       return enableJsonExtension;
     }
 
-    /** set the flag indicating whether extended Json number encoding is enabled.
+    /** set the flag indicating whether extended JSON number encoding is enabled.
      *  @param enabled new value of the flag
      */
     virtual void setJsonExtensionEnabled(OFBool enabled)
@@ -349,7 +349,7 @@ protected:
 
 private:
 
-    /** Option that defines if the inofficial Json extension should be
+    /** Option that defines if the inofficial JSON extension should be
      *  permitted under which decimal numbers may have the values "-inf",
      *  "inf" or "nan". Default is OFFalse, in which case such values
      *  will lead to an error code being returned instead.
@@ -365,7 +365,7 @@ private:
 class DCMTK_DCMDATA_EXPORT DcmJsonFormatPretty : public DcmJsonFormat
 {
 private:
-    /** Variable for the indentenlevel of DcmJsonFormat
+    /** Variable for the indention level of DcmJsonFormat
      */
     unsigned m_IndentionLevel;
 

@@ -38,86 +38,86 @@ jsonfile-out  JSON output filename (default: stdout)
 
 \subsection dcm2json_general_options general options
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h   --help
+         print this help text and exit
 
-        --version
-          print version information and exit
+       --version
+         print version information and exit
 
-        --arguments
-          print expanded command line arguments
+       --arguments
+         print expanded command line arguments
 
-  -q    --quiet
-          quiet mode, print no warnings and errors
+  -q   --quiet
+         quiet mode, print no warnings and errors
 
-  -v    --verbose
-          verbose mode, print processing details
+  -v   --verbose
+         verbose mode, print processing details
 
-  -d    --debug
-          debug mode, print debug information
+  -d   --debug
+         debug mode, print debug information
 
-  -ll   --log-level  [l]evel: string constant
-          (fatal, error, warn, info, debug, trace)
-          use level l for the logger
+  -ll  --log-level  [l]evel: string constant
+         (fatal, error, warn, info, debug, trace)
+         use level l for the logger
 
-  -lc   --log-config  [f]ilename: string
-          use config file f for the logger
+  -lc  --log-config  [f]ilename: string
+         use config file f for the logger
 \endverbatim
 
 \subsection dcm2json_input_options input options
 \verbatim
 input file format:
 
-  +f    --read-file
-          read file format or data set (default)
+  +f   --read-file
+         read file format or data set (default)
 
-  +fo   --read-file-only
-          read file format only
+  +fo  --read-file-only
+         read file format only
 
-  -f    --read-dataset
-          read data set without file meta information
+  -f   --read-dataset
+         read data set without file meta information
 
 input transfer syntax:
 
-  -t=   --read-xfer-auto
-          use TS recognition (default)
+  -t=  --read-xfer-auto
+         use TS recognition (default)
 
-  -td   --read-xfer-detect
-          ignore TS specified in the file meta header
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
-  -te   --read-xfer-little
-          read with explicit VR little endian TS
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
 
-  -tb   --read-xfer-big
-          read with explicit VR big endian TS
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
 
-  -ti   --read-xfer-implicit
-          read with implicit VR little endian TS
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
 \endverbatim
 
 \subsection dcm2json_output_options output options
 \verbatim
-encoding of infinity and nan:
+encoding of infinity and not a number:
   -es  --encode-strict
-         report error for inf and nan (default)
+         report error for 'inf' and 'nan' (default)
 
   -ee  --encode-extended
-         permit inf and nan in Json numbers
+         permit 'inf' and 'nan' in JSON numbers
 
 output format:
 
-  +fc   --formatted-code
-          enable whitespace formatting (default)
+  +fc  --formatted-code
+         enable whitespace formatting (default)
 
-          # prints additional spaces and newlines for increased
-          # readability
+         # prints additional spaces and newlines for increased
+         # readability
 
-  -fc   --compact-code
-          print only required characters
+  -fc  --compact-code
+         print only required characters
 
-  +m    --write-meta
-          write data set with meta information
-          (warning: not conforming to the DICOM standard)
+  +m   --write-meta
+         write data set with meta information
+         (warning: not conforming to the DICOM standard)
 \endverbatim
 
 \section dcm2json_json_format JSON Format

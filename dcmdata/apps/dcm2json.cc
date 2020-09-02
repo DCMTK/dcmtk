@@ -121,9 +121,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-implicit", "-ti", "read with implicit VR little endian TS");
 
     cmd.addGroup("output options:");
-      cmd.addSubGroup("encoding of infinity and nan:");
-        cmd.addOption("--encode-strict",      "-es", "report error for inf and nan (default)");
-        cmd.addOption("--encode-extended",    "-ee", "permit inf and nan in Json numbers");
+      cmd.addSubGroup("encoding of infinity and not a number:");
+        cmd.addOption("--encode-strict",      "-es", "report error for 'inf' and 'nan' (default)");
+        cmd.addOption("--encode-extended",    "-ee", "permit 'inf' and 'nan' in JSON numbers");
       cmd.addSubGroup("output format:");
         cmd.addOption("--formatted-code",     "+fc", "enable whitespace formatting (default)");
         cmd.addOption("--compact-code",       "-fc", "print only required characters");

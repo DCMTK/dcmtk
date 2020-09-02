@@ -401,7 +401,7 @@ OFBool DcmFloatingPointDouble::matches(const DcmElement& candidate,
 // ********************************
 
 OFCondition DcmFloatingPointDouble::writeJson(STD_NAMESPACE ostream &out,
-                                  DcmJsonFormat &format)
+                                              DcmJsonFormat &format)
 {
     /* always write JSON Opener */
     writeJsonOpener(out, format);
@@ -413,8 +413,8 @@ OFCondition DcmFloatingPointDouble::writeJson(STD_NAMESPACE ostream &out,
 
         if (! format.getJsonExtensionEnabled())
         {
-          // check if any values is inf or nan, and return an error in this case
-          // since the Json extension that would allow us to write these is not enabled
+          // check if any values is 'inf' or 'nan', and return an error in this case
+          // since the JSON extension that would allow us to write these is not enabled
           Float64 f = 0.0;
           for (unsigned long valNo = 1; valNo < vm; ++valNo)
           {
