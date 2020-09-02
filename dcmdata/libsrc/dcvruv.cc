@@ -419,28 +419,20 @@ OFCondition DcmUnsigned64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
         }
         else
         {
-            // check if the UV values can be represented in Json,
-            // where numbers should not be larger than JSON_MAX_SAFE_INTEGER.
-            // if any number in a multi-valued UV attribute is too large,
-            // then we print all numbers as string.
             const unsigned long vm = getVM();
-            OFBool printAsNumber = OFTrue;
-            OFCondition status = EC_Normal;
             OFString value;
             Uint64 v = 0;
-            for (unsigned long valNo = 0; valNo < vm; ++valNo)
-            {
-              status = getUint64(v, valNo);
-              if (status.bad() || (v > JSON_MAX_SAFE_INTEGER)) printAsNumber = OFFalse;
-            }
 
-            status = getOFString(value, 0L);
+            OFCondition status = getOFString(value, 0L);
             if (status.bad()) return status;
             format.printValuePrefix(out);
 
-            if (printAsNumber)
-                DcmJsonFormat::printNumberInteger(out, value);
-                else DcmJsonFormat::printValueString(out, value);
+            // check if we can represent the value as a JSON number.
+            // Unsigned JSON numbers should be <= JSON_MAX_SAFE_INTEGER.
+            status = getUint64(v, 0L);
+            if (status.bad() || (v > JSON_MAX_SAFE_INTEGER))
+                DcmJsonFormat::printValueString(out, value);
+                else DcmJsonFormat::printNumberInteger(out, value);
 
             for (unsigned long valNo = 1; valNo < vm; ++valNo)
             {
@@ -448,9 +440,12 @@ OFCondition DcmUnsigned64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
                 if (status.bad()) return status;
                 format.printNextArrayElementPrefix(out);
 
-                if (printAsNumber)
-                    DcmJsonFormat::printNumberInteger(out, value);
-                    else DcmJsonFormat::printValueString(out, value);
+                // check if we can represent the value as a JSON number.
+                // Unsigned JSON numbers should be <= JSON_MAX_SAFE_INTEGER.
+                status = getUint64(v, valNo);
+                if (status.bad() || (v > JSON_MAX_SAFE_INTEGER))
+                    DcmJsonFormat::printValueString(out, value);
+                    else DcmJsonFormat::printNumberInteger(out, value);
             }
             format.printValueSuffix(out);
         }

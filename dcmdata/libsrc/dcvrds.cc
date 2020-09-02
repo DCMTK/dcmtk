@@ -294,34 +294,29 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
         }
         else
         {
-            /* get string data (without normalization) */
-            char *value_ = OFnullptr;
-            Uint32 length = 0;
-            getString(value_, length);
-            if ((value_ != OFnullptr) && (length > 0))
+            const unsigned long vm = getVM();
+            if (vm > 0)
             {
-                // check if the IS values are proper numbers. If they are, we
-                // print them to Json as numbers, otherwise we print as string.
-                OFBool printAsNumber = checkValue().good();
-
-                /* explicitly convert to OFString because of possible NULL bytes */
-                OFString value(value_, length);
+                OFString value;
+                OFString vmstring = "1";
                 OFCondition status = getOFString(value, 0L);
                 if (status.bad())
                     return status;
                 format.printValuePrefix(out);
-                if (printAsNumber)
+                // if the value is a proper number, write as JSON number,
+                // otherwise write as JSON string.
+                if (checkStringValue(value, vmstring).good())
                     DcmJsonFormat::printNumberDecimal(out, value);
                     else DcmJsonFormat::printValueString(out, value);
-
-                const unsigned long vm = getVM();
                 for (unsigned long valNo = 1; valNo < vm; ++valNo)
                 {
                     status = getOFString(value, valNo);
                     if (status.bad())
                         return status;
                     format.printNextArrayElementPrefix(out);
-                    if (printAsNumber)
+                    // if the value is a proper number, write as JSON number,
+                    // otherwise write as JSON string.
+                    if (checkStringValue(value, vmstring).good())
                         DcmJsonFormat::printNumberDecimal(out, value);
                         else DcmJsonFormat::printValueString(out, value);
                 }

@@ -182,7 +182,8 @@ OFCondition DcmOtherLong::writeJson(STD_NAMESPACE ostream &out,
             /* encode binary data as Base64 */
             format.printInlineBinaryPrefix(out);
             out << "\"";
-            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
+            /* adjust byte order to little endian */
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
             OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
             out << "\"";
         }

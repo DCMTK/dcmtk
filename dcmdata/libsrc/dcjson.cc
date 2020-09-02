@@ -227,7 +227,7 @@ void DcmJsonFormat::printNextArrayElementPrefix(STD_NAMESPACE ostream &out)
 // This also manipulate uri String, if BulkDataURI should be printed.
 OFBool DcmJsonFormat::asBulkDataURI(const DcmTagKey& /*tag*/, OFString& /*uri*/)
 {
-    return false;
+    return OFFalse;
 }
 
 //Class for formatted output
