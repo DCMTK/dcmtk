@@ -422,7 +422,7 @@ OFCondition DcmFloatingPointSingle::writeJson(STD_NAMESPACE ostream &out,
           {
             status = getFloat32(f, valNo);
             if (status.bad()) return status;
-            if (OFMath::isinf(f) || OFMath::isnan(f)) return EC_CannotWriteJsonNumber;
+            if ((OFMath::isinf)(f) || (OFMath::isnan)(f)) return EC_CannotWriteJsonNumber;
           }
         }
 
