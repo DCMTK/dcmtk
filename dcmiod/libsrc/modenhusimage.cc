@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2020, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -126,7 +126,7 @@ OFCondition IODEnhUSImageModule::read(DcmItem& source, const OFBool clearOldData
                                m_Rules->getByTag(DCM_TransducerGeometryCodeSequence));
     DcmIODUtil::readSingleItem(source,
                                DCM_TransducerScanPatternCodeSequence,
-                               m_TransducerGeometry,
+                               m_TransducerScanPattern,
                                m_Rules->getByTag(DCM_TransducerScanPatternCodeSequence));
     DcmIODUtil::readSubSequence(source,
                                 DCM_TransducerBeamSteeringCodeSequence,
