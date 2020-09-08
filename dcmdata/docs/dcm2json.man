@@ -95,15 +95,18 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection dcm2json_output_options output options
+\subsection dcm2json_processing_options processing options
 \verbatim
-encoding of infinity and not a number:
+encoding of infinity and not-a-number:
   -es  --encode-strict
          report error for 'inf' and 'nan' (default)
 
   -ee  --encode-extended
          permit 'inf' and 'nan' in JSON numbers
+\endverbatim
 
+\subsection dcm2json_output_options output options
+\verbatim
 output format:
 
   +fc  --formatted-code
@@ -294,9 +297,10 @@ useful for large amounts of data, such as pixel data.
 
 \subsection dcm2json_character_encoding Character Encoding
 
-\b dcm2json always tries to output in UTF-8 encoding.  If this is not possible,
-e.g. because there is no support for character set conversion, ASCII is used
-instead (which is a subset of UTF-8).
+\b As required by the DICOM JSON encoding, dcm2json always creates
+output in Unicode UTF-8 encoding and converts DICOM datasets accordingly.
+If this is not possible, for example because DCMTK has been compiled
+without either iconv or ICU library, an error is returned.
 
 \section dcm2json_logging LOGGING
 
