@@ -78,8 +78,7 @@ makeOFConditionConst(EC_VOI_LUT_OBOW,                    OFM_dcmdata, 52, OF_err
 makeOFConditionConst(EC_PixelDataExplLengthIllegal,      OFM_dcmdata, 53, OF_error, "Pixel data in top level dataset in compressed Transfer Syntax uses explicit length");
 makeOFConditionConst(EC_ElemLengthExceeds32BitField,     OFM_dcmdata, 54, OF_error, "Length of element value exceeds maximum of 32-bit length field" );
 makeOFConditionConst(EC_CannotWriteJsonNumber,           OFM_dcmdata, 55, OF_error, "Cannot write 'nan' or 'inf' as JSON number" );
-
-
+makeOFConditionConst(EC_CannotWriteJsonInlineBinary,     OFM_dcmdata, 55, OF_error, "JSON InlineBinary encoding not supported for compressed pixel data" );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;

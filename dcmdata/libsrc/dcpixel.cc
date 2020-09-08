@@ -26,6 +26,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
+#include "dcmtk/dcmdata/dcjson.h"
 
 //
 // class DcmRepresentationEntry
@@ -1283,4 +1284,67 @@ OFBool DcmPixelData::writeUnencapsulated(const E_TransferSyntax xfer)
     }
 
     return existUnencapsulated && isNested();
+}
+
+
+OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
+                                             DcmJsonFormat &format)
+{
+
+    // check if we have an empty uncompressed value field.
+    // We never encode that as BulkDataURI.
+    OFBool emptyValue = OFFalse;
+    if ((current == repListEnd) && existUnencapsulated && (getLengthField() == 0))
+    {
+      emptyValue = OFTrue;
+    }
+
+    // now check if the pixel data will be written as
+    // BulkDataURI, which is possible for both uncompressed
+    // and encapsulated pixel data.
+    OFString value;
+    if ((! emptyValue) && format.asBulkDataURI(getTag(), value))
+    {
+        /* write JSON Opener */
+        writeJsonOpener(out, format);
+
+        /* return defined BulkDataURI */
+        format.printBulkDataURIPrefix(out);
+        DcmJsonFormat::printString(out, value);
+
+        /* write JSON Closer */
+        writeJsonCloser(out, format);
+        return EC_Normal;
+    }
+
+    // No bulk data URI, we're supposed to write as InlineBinary.
+    // This is only defined for uncompressed data, not for any of the
+    // encapsulated encodings.
+
+    // check the current pixel data representation
+    if ((current == repListEnd) && existUnencapsulated)
+    {
+      // current pixel data representation is uncompressed (and available).
+
+      /* write JSON Opener */
+      writeJsonOpener(out, format);
+
+      /* for an empty value field, we do not need to do anything */
+      if (getLengthField() > 0)
+      {
+         /* encode binary data as Base64 */
+         format.printInlineBinaryPrefix(out);
+         out << "\"";
+         /* adjust byte order to little endian */
+         Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+         OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
+         out << "\"";
+      }
+      /* write JSON Closer */
+      writeJsonCloser(out, format);
+      return EC_Normal;
+    }
+
+    // pixel data is encapsulated, return error
+    return EC_CannotWriteJsonInlineBinary;
 }

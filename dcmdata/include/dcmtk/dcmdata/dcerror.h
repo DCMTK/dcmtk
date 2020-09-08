@@ -173,6 +173,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PixelDataExplLengthIllegal
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthExceeds32BitField;
 /// Cannot write 'nan' or 'inf' as JSON number
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonNumber;
+/// Cannot write compressed pixel data JSON InlineBinary
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonInlineBinary;
 
 //@}
 
