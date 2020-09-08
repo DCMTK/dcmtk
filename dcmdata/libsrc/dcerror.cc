@@ -62,23 +62,23 @@ makeOFConditionConst(EC_SequDelimitationItemMissing,     OFM_dcmdata, 34, OF_err
 // error code 37 is reserved for XML conversion error messages (see below)
 makeOFConditionConst(EC_ItemDelimitationItemMissing,     OFM_dcmdata, 38, OF_error, "Item Delimitation Item missing"             );
 makeOFConditionConst(EC_PrematureSequDelimitationItem,   OFM_dcmdata, 39, OF_error, "Sequence Delimitation Item occurred before Item was completely read" );
-makeOFConditionConst(EC_InvalidDICOMDIR,                 OFM_dcmdata, 40, OF_error, "Invalid DICOMDIR" );
+makeOFConditionConst(EC_InvalidDICOMDIR,                 OFM_dcmdata, 40, OF_error, "Invalid DICOMDIR"                           );
 makeOFConditionConst(EC_UnknownVR,                       OFM_dcmdata, 41, OF_error, "Unknown VR: Tag not found in data dictionary" );
-makeOFConditionConst(EC_InvalidValue,                    OFM_dcmdata, 42, OF_error, "Invalid Value");
-makeOFConditionConst(EC_ItemNotFound,                    OFM_dcmdata, 43, OF_error, "Item not found");
-makeOFConditionConst(EC_UnknownTransferSyntax,           OFM_dcmdata, 44, OF_error, "Unknown Transfer Syntax");
-makeOFConditionConst(EC_CannotCheck,                     OFM_dcmdata, 45, OF_error, "Cannot perform check");
-makeOFConditionConst(EC_MissingValue,                    OFM_dcmdata, 46, OF_error, "Missing value");
-makeOFConditionConst(EC_MissingAttribute,                OFM_dcmdata, 47, OF_error, "Missing attribute");
-makeOFConditionConst(EC_InternalError,                   OFM_dcmdata, 48, OF_error, "Internal error");
-makeOFConditionConst(EC_InvalidCharacter,                OFM_dcmdata, 49, OF_error, "Invalid character");
+makeOFConditionConst(EC_InvalidValue,                    OFM_dcmdata, 42, OF_error, "Invalid Value"                              );
+makeOFConditionConst(EC_ItemNotFound,                    OFM_dcmdata, 43, OF_error, "Item not found"                             );
+makeOFConditionConst(EC_UnknownTransferSyntax,           OFM_dcmdata, 44, OF_error, "Unknown Transfer Syntax"                    );
+makeOFConditionConst(EC_CannotCheck,                     OFM_dcmdata, 45, OF_error, "Cannot perform check"                       );
+makeOFConditionConst(EC_MissingValue,                    OFM_dcmdata, 46, OF_error, "Missing value"                              );
+makeOFConditionConst(EC_MissingAttribute,                OFM_dcmdata, 47, OF_error, "Missing attribute"                          );
+makeOFConditionConst(EC_InternalError,                   OFM_dcmdata, 48, OF_error, "Internal error"                             );
+makeOFConditionConst(EC_InvalidCharacter,                OFM_dcmdata, 49, OF_error, "Invalid character"                          );
 // error code 50 is reserved for determine start fragment error messages (see below)
-makeOFConditionConst(EC_UndefinedLengthOBOW,             OFM_dcmdata, 51, OF_error, "Illegal element with OB or OW Value Representation and undefined length encountered");
-makeOFConditionConst(EC_VOI_LUT_OBOW,                    OFM_dcmdata, 52, OF_error, "Illegal VOI LUT Sequence element with OB or OW Value Representation and explicit length encountered");
-makeOFConditionConst(EC_PixelDataExplLengthIllegal,      OFM_dcmdata, 53, OF_error, "Pixel data in top level dataset in compressed Transfer Syntax uses explicit length");
+makeOFConditionConst(EC_UndefinedLengthOBOW,             OFM_dcmdata, 51, OF_error, "Illegal element with OB or OW Value Representation and undefined length encountered" );
+makeOFConditionConst(EC_VOI_LUT_OBOW,                    OFM_dcmdata, 52, OF_error, "Illegal VOI LUT Sequence element with OB or OW Value Representation and explicit length encountered" );
+makeOFConditionConst(EC_PixelDataExplLengthIllegal,      OFM_dcmdata, 53, OF_error, "Pixel data in top level dataset in compressed Transfer Syntax uses explicit length" );
 makeOFConditionConst(EC_ElemLengthExceeds32BitField,     OFM_dcmdata, 54, OF_error, "Length of element value exceeds maximum of 32-bit length field" );
 makeOFConditionConst(EC_CannotWriteJsonNumber,           OFM_dcmdata, 55, OF_error, "Cannot write 'nan' or 'inf' as JSON number" );
-makeOFConditionConst(EC_CannotWriteJsonInlineBinary,     OFM_dcmdata, 55, OF_error, "JSON InlineBinary encoding not supported for compressed pixel data" );
+makeOFConditionConst(EC_CannotWriteJsonInlineBinary,     OFM_dcmdata, 56, OF_error, "JSON InlineBinary encoding not supported for compressed pixel data" );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;
