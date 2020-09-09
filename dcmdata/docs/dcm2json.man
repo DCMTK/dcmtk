@@ -297,10 +297,10 @@ useful for large amounts of data, such as pixel data.
 
 \subsection dcm2json_character_encoding Character Encoding
 
-\b As required by the DICOM JSON encoding, dcm2json always creates
-output in Unicode UTF-8 encoding and converts DICOM datasets accordingly.
-If this is not possible, for example because DCMTK has been compiled
-without either iconv or ICU library, an error is returned.
+As required by the DICOM JSON encoding, \b dcm2json always creates output in
+Unicode UTF-8 encoding and converts DICOM datasets accordingly.  If this is not
+possible, for example because DCMTK has been compiled without either iconv or
+ICU library, an error is returned.
 
 \section dcm2json_logging LOGGING
 
