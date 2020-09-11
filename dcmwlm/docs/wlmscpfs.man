@@ -104,12 +104,6 @@ other processing options:
   -nse  --no-sq-expansion
           disable expansion of empty sequences in C-FIND
           request messages
-
-  -rfp  --request-file-path  [p]ath: string
-          path to store request files to
-
-  -rff  --request-file-format  [f]ormat: string (default: #t.dump)
-          request file name format
 \endverbatim
 
 \subsection wlmscpfs_network_options network options
@@ -186,6 +180,18 @@ other network options:
 
   -dhl  --disable-host-lookup
           disable hostname lookup
+\endverbatim
+
+\subsection wlmscp_output_options output options
+\verbatim
+general:
+
+  -rfp  --request-file-path  [p]ath: string
+          path to store request files to
+
+  -rff  --request-file-format  [f]ormat: string (default: #t.dump)
+          request file name format
+
 \endverbatim
 
 \section wlmscpfs_notes NOTES
@@ -508,6 +514,6 @@ It is an error if no data dictionary can be loaded.
 
 \section wlmscpfs_copyright COPYRIGHT
 
-Copyright (C) 1996-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

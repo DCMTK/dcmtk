@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -133,9 +133,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--keep-char-set",       "-csk",    "return character set provided in file");
     cmd->addSubGroup("other processing options:");
       cmd->addOption("--no-sq-expansion",     "-nse",    "disable expansion of empty sequences in C-FIND\nrequest messages");
-      cmd->addOption("--request-file-path",   "-rfp", 1, "[p]ath: string", "path to store request files to");
-      cmd->addOption("--request-file-format", "-rff", 1, "[f]ormat: string (default: #t.dump)", "request file name format");
-
 
   cmd->addGroup("network options:");
     cmd->addSubGroup("preferred network transfer syntaxes:");
@@ -191,6 +188,11 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       opt4 += ")";
       cmd->addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd->addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
+
+  cmd->addGroup("output options:");
+    cmd->addSubGroup("general:");
+      cmd->addOption("--request-file-path",   "-rfp", 1, "[p]ath: string", "path to store request files to");
+      cmd->addOption("--request-file-format", "-rff", 1, "[f]ormat: string (default: #t.dump)", "request file name format");
 
   // Evaluate command line.
   prepareCmdLineArgs( argc, argv, applicationName );
