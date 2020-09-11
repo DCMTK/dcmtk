@@ -41,6 +41,7 @@
 #include "dcmtk/dcmsign/siautopr.h" /* for class SiAuthorizationProfile */
 #include "dcmtk/dcmsign/sisrvpr.h"  /* for class SiStructuredReportingVerificationProfile */
 #include "dcmtk/ofstd/ofexit.h"     /* for common exit codes */
+#include "dcmtk/dcmsign/siexit.h"   /* for dcmsign specific exit codes */
 
 
 DcmSignatureHelper::DcmSignatureHelper()

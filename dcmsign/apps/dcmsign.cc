@@ -64,6 +64,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #include "dcmtk/dcmsign/sicert.h"
 #include "dcmtk/dcmsign/sitsfs.h"
 #include "dcmtk/dcmsign/sicertvf.h"
+#include "dcmtk/dcmsign/siexit.h"
 #include "dcmtk/dcmdata/dctk.h"
 
 BEGIN_EXTERN_C
@@ -71,8 +72,6 @@ BEGIN_EXTERN_C
 #include <openssl/evp.h> /* for OPENSSL_NO_EC */
 END_EXTERN_C
 
-// exit code constants in addition to those defined in "dcmtk/ofstd/ofexit.h"
-#define EXITCODE_CANNOT_WRITE_SUPPORT_FILE       46
 
 // ********************************************
 
