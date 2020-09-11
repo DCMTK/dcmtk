@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -882,7 +882,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
   protected:
 
     /** This function returns this element's value. The returned value corresponds to the
-    *   byte ordering (little or big endian) that was passed.
+     *   byte ordering (little or big endian) that was passed.
      *  @param newByteOrder The byte ordering that shall be accounted
      *                      for (little or big endian).
      */
