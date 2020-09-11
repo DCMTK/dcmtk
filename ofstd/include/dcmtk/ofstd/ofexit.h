@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2019, OFFIS e.V.
+ *  Copyright (C) 2018-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,7 +56,7 @@
 // processing errors (80-99)
 // - defined in the respective modules / tools
 
-// user-defined errors (100-119)
+// application-specific or user-defined errors (100-127)
 // - defined in the respective modules / tools
 
 // GNU recommends that the codes 128-255 be reserved for serious errors:
