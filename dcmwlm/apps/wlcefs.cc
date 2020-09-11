@@ -225,6 +225,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
     OFLog::configureFromCommandLine(*cmd, *app);
 
+    // general options
 #if defined(HAVE_FORK) || defined(_WIN32)
     cmd->beginOptionBlock();
     if (cmd->findOption("--single-process")) opt_singleProcess = OFTrue;
@@ -235,19 +236,15 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 #endif
 #endif
 
+    // input options
     if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
-    if( cmd->findOption("--request-file-path") ) app->checkValue(cmd->getValue(opt_rfPath));
-    if( cmd->findOption("--request-file-format") )
-    {
-        app->checkDependence("--request-file-format", "--request-file-path", !opt_rfPath.empty());
-        app->checkValue(cmd->getValue(opt_rfFormat));
-    }
 
     cmd->beginOptionBlock();
     if( cmd->findOption("--enable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFTrue;
     if( cmd->findOption("--disable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFFalse;
     cmd->endOptionBlock();
 
+    // processing options
     cmd->beginOptionBlock();
     if( cmd->findOption("--return-no-char-set") ) opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
     if( cmd->findOption("--return-iso-ir-100") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
@@ -256,6 +253,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
     if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
 
+    // network options
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
     if( cmd->findOption("--prefer-little") ) opt_networkTransferSyntax = EXS_LittleEndianExplicit;
@@ -318,6 +316,14 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--sleep-during") ) app->checkValue(cmd->getValueAndCheckMin(opt_sleepDuringFind, 0));
     if( cmd->findOption("--max-pdu") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
     if( cmd->findOption("--disable-host-lookup") ) dcmDisableGethostbyaddr.set(OFTrue);
+
+    // output options
+    if( cmd->findOption("--request-file-path") ) app->checkValue(cmd->getValue(opt_rfPath));
+    if( cmd->findOption("--request-file-format") )
+    {
+        app->checkDependence("--request-file-format", "--request-file-path", !opt_rfPath.empty());
+        app->checkValue(cmd->getValue(opt_rfFormat));
+    }
   }
 
   // dump application information
