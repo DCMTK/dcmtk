@@ -46,7 +46,7 @@ DCMTK_BUILD_IN_PROGRESS
     define this macro yourself since this is done automatically by the build
     system.
 
-DCMTK_UNDEF_SANIZITER
+DCMTK_UNDEF_SANITIZER
   Affected: all modules
   Type of modification: Toolkit customization
   Explanation: When compiling with the GCC undefined behavior sanitizer
