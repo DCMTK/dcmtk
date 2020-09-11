@@ -191,7 +191,6 @@ general:
 
   -rff  --request-file-format  [f]ormat: string (default: #t.dump)
           request file name format
-
 \endverbatim
 
 \section wlmscpfs_notes NOTES
