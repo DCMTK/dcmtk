@@ -742,7 +742,13 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
             << " is larger than maximum allowed UID length " << DICOM_UI_LENGTH << " (will use 64 bytes max)");
       UIDLength = DICOM_UI_LENGTH;
     }
-    OFStandard::strlcpy(role->SOPClassUID, (char*)buf, UIDLength+1 /* +1 for 0-byte */);
+
+    // The UID in the source buffer is not necessarily null terminated. Copy with memcpy
+    // and add a zero byte. We have already checked that there is enough data available
+    // in the source source buffer and enough space in the target buffer.
+    (void) memcpy(role->SOPClassUID, buf, UIDLength);
+    role->SOPClassUID[UIDLength] = '\0';
+
     buf += UIDLength;
     role->SCURole = *buf++;
     role->SCPRole = *buf++;
