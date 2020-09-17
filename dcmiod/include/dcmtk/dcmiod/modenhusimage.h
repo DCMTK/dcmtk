@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2020, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -333,7 +333,7 @@ public:
      *  @param  pos Index of the value to get (0..vm-1)
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getDepthsOfScanField(Float64& value, const unsigned long pos = 0);
+    virtual OFCondition getDepthsOfScanField(Sint32& value, const unsigned long pos = 0);
 
     /** Set Image Type. Image Type contains up to four values. Value 3 and 4 are
      *  optional and can be left empty if desired. The values in their order

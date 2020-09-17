@@ -341,9 +341,9 @@ OFCondition IODEnhUSImageModule::getDepthsOfFocus(Float64& value, const unsigned
     return m_Item->findAndGetFloat64(DCM_DepthsOfFocus, value, pos);
 }
 
-OFCondition IODEnhUSImageModule::getDepthsOfScanField(Float64& value, const unsigned long pos)
+OFCondition IODEnhUSImageModule::getDepthsOfScanField(Sint32& value, const unsigned long pos)
 {
-    return m_Item->findAndGetFloat64(DCM_DepthsOfFocus, value, pos);
+    return m_Item->findAndGetSint32(DCM_DepthOfScanField, value, pos);
 }
 
 // --- set attributes ---
