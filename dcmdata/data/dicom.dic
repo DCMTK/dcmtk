@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2020c and PS 3.7-2020c
-# File created on 2020-07-08 15:51:08 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2020d and PS 3.7-2020d
+# File created on 2020-09-28 08:22:52 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -946,6 +946,7 @@
 (0018,3105)	IS	LesionNumber	1-n	DICOM
 (0018,5000)	SH	OutputPower	1-n	DICOM
 (0018,5010)	LO	TransducerData	1-n	DICOM
+(0018,5011)	SQ	TransducerIdentificationSequence	1	DICOM
 (0018,5012)	DS	FocusDepth	1	DICOM
 (0018,5020)	LO	ProcessingFunction	1	DICOM
 (0018,5022)	DS	MechanicalIndex	1	DICOM
@@ -4368,7 +4369,7 @@
 (4010,1026)	DT	RouteSegmentEndTime	1	DICOM/DICOS
 (4010,1027)	CS	TDRType	1	DICOM/DICOS
 (4010,1028)	CS	InternationalRouteSegment	1	DICOM/DICOS
-(4010,1029)	LO	ThreatDetectionAlgorithmandVersion	1-n	DICOM/DICOS
+(4010,1029)	LO	ThreatDetectionAlgorithmAndVersion	1-n	DICOM/DICOS
 (4010,102A)	SH	AssignedLocation	1	DICOM/DICOS
 (4010,102B)	DT	AlarmDecisionTime	1	DICOM/DICOS
 (4010,1031)	CS	AlarmDecision	1	DICOM/DICOS

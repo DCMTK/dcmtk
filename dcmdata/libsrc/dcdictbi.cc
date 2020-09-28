@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-07-08 15:54:18
+**   Date: 2020-09-28 09:44:16
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -5356,6 +5356,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x5010, 0x0018, 0x5010,
       EVR_LO, "TransducerData", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x5011, 0x0018, 0x5011,
+      EVR_SQ, "TransducerIdentificationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x5012, 0x0018, 0x5012,
@@ -30105,7 +30109,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x4010, 0x1029, 0x4010, 0x1029,
-      EVR_LO, "ThreatDetectionAlgorithmandVersion", 1, -1, "DICOM/DICOS",
+      EVR_LO, "ThreatDetectionAlgorithmAndVersion", 1, -1, "DICOM/DICOS",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x4010, 0x102a, 0x4010, 0x102a,

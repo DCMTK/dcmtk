@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-07-08 15:54:18
+**   Date: 2020-09-28 09:44:16
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2020-07-08 15:54:18"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2020-09-28 09:44:16"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4812
+** Number of entries: 4813
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1001,6 +1001,7 @@
 #define DCM_RETIRED_AcquisitionComments          DcmTagKey(0x0018, 0x4000)
 #define DCM_OutputPower                          DcmTagKey(0x0018, 0x5000)
 #define DCM_TransducerData                       DcmTagKey(0x0018, 0x5010)
+#define DCM_TransducerIdentificationSequence     DcmTagKey(0x0018, 0x5011)
 #define DCM_FocusDepth                           DcmTagKey(0x0018, 0x5012)
 #define DCM_ProcessingFunction                   DcmTagKey(0x0018, 0x5020)
 #define DCM_RETIRED_PostprocessingFunction       DcmTagKey(0x0018, 0x5021)
@@ -4761,7 +4762,7 @@
 #define DCM_RouteSegmentEndTime                  DcmTagKey(0x4010, 0x1026)
 #define DCM_TDRType                              DcmTagKey(0x4010, 0x1027)
 #define DCM_InternationalRouteSegment            DcmTagKey(0x4010, 0x1028)
-#define DCM_ThreatDetectionAlgorithmandVersion   DcmTagKey(0x4010, 0x1029)
+#define DCM_ThreatDetectionAlgorithmAndVersion   DcmTagKey(0x4010, 0x1029)
 #define DCM_AssignedLocation                     DcmTagKey(0x4010, 0x102a)
 #define DCM_AlarmDecisionTime                    DcmTagKey(0x4010, 0x102b)
 #define DCM_AlarmDecision                        DcmTagKey(0x4010, 0x1031)
