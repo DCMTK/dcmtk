@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2020c
- *  File created on 2020-07-08 15:51:19 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020d
+ *  File created on 2020-09-28 09:53:37 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4357
-// - retired: 198
+// total number of codes: 4375
+// - retired: 199
 // - no name: 27
 // - not unique: 17
 
@@ -1527,7 +1527,7 @@
 #define CODE_DCM_PoorlyDemarcated                                          DSRBasicCodedEntry("112141", "DCM", "Poorly demarcated")
 #define CODE_DCM_RETIRED_Circumscribed                                     DSRBasicCodedEntry("112142", "DCM", "Circumscribed")
 #define CODE_DCM_Air                                                       DSRBasicCodedEntry("112143", "DCM", "Air")
-#define CODE_DCM_SoftTissue                                                DSRBasicCodedEntry("112144", "DCM", "Soft tissue")
+#define CODE_DCM_RETIRED_SoftTissue                                        DSRBasicCodedEntry("112144", "DCM", "Soft tissue")
 #define CODE_DCM_Calcium                                                   DSRBasicCodedEntry("112145", "DCM", "Calcium")
 #define CODE_DCM_Acinar                                                    DSRBasicCodedEntry("112146", "DCM", "Acinar")
 #define CODE_DCM_AirSpace                                                  DSRBasicCodedEntry("112147", "DCM", "Air space")
@@ -2108,10 +2108,11 @@
 #define CODE_DCM_CTDIvolNotificationValue                                  DSRBasicCodedEntry("113912", "DCM", "CTDIvol Notification Value")
 #define CODE_DCM_DLPForwardEstimate                                        DSRBasicCodedEntry("113913", "DCM", "DLP Forward Estimate")
 #define CODE_DCM_CTDIvolForwardEstimate                                    DSRBasicCodedEntry("113914", "DCM", "CTDIvol Forward Estimate")
+#define CODE_DCM_AlternativeDoseAlertBehaviorActive                        DSRBasicCodedEntry("113915", "DCM", "Alternative dose alert behavior active")
 #define CODE_DCM_RadiationExposure                                         DSRBasicCodedEntry("113921", "DCM", "Radiation Exposure")
 #define CODE_DCM_RETIRED_RadioactiveSubstanceAdministered                  DSRBasicCodedEntry("113922", "DCM", "Radioactive Substance Administered")
 #define CODE_DCM_RETIRED_RadiationExposureAndProtectionInformation         DSRBasicCodedEntry("113923", "DCM", "Radiation Exposure and Protection Information")
-#define CODE_DCM_SizeSpecificDoseEstimation                                DSRBasicCodedEntry("113930", "DCM", "Size Specific Dose Estimation")
+#define CODE_DCM_SizeSpecificDoseEstimate                                  DSRBasicCodedEntry("113930", "DCM", "Size Specific Dose Estimate")
 #define CODE_DCM_MeasuredLateralDimension                                  DSRBasicCodedEntry("113931", "DCM", "Measured Lateral Dimension")
 #define CODE_DCM_MeasuredAPDimension                                       DSRBasicCodedEntry("113932", "DCM", "Measured AP Dimension")
 #define CODE_DCM_DerivedEffectiveDiameter                                  DSRBasicCodedEntry("113933", "DCM", "Derived Effective Diameter")
@@ -2152,6 +2153,14 @@
 #define CODE_DCM_SeriesOrInstanceUsedForWaterEquivalentDiameterEstimation  DSRBasicCodedEntry("113985", "DCM", "Series or Instance used for Water Equivalent Diameter estimation")
 #define CODE_DCM_ZValueOfLocationOfWaterEquivalentDiameterEstimation       DSRBasicCodedEntry("113986", "DCM", "Z value of location of Water Equivalent Diameter estimation")
 #define CODE_DCM_AAPM220                                                   DSRBasicCodedEntry("113987", "DCM", "AAPM 220")
+#define CODE_DCM_EstimatedFromWaterEquivalentDiameter                      DSRBasicCodedEntry("113988", "DCM", "Estimated from Water Equivalent Diameter")
+#define CODE_DCM_ArithmeticAverageOfSSDEz                                  DSRBasicCodedEntry("113989", "DCM", "Arithmetic Average of SSDE(z)")
+#define CODE_DCM_ArithmeticAverageOfDwz                                    DSRBasicCodedEntry("113990", "DCM", "Arithmetic Average of Dw(z)")
+#define CODE_DCM_DwConversionFactorCoefficients                            DSRBasicCodedEntry("113991", "DCM", "Dw Conversion Factor Coefficients")
+#define CODE_DCM_WaterEquivalentDiameterFromLimitedFOVImages               DSRBasicCodedEntry("113992", "DCM", "Water Equivalent Diameter From Limited FOV Images")
+#define CODE_DCM_SizeSpecificDoseEstimateAtLongitudinalPositionZ           DSRBasicCodedEntry("113993", "DCM", "Size Specific Dose Estimate At Longitudinal Position Z")
+#define CODE_DCM_LongitudinalPositionZ                                     DSRBasicCodedEntry("113994", "DCM", "Longitudinal Position Z")
+#define CODE_DCM_WaterEquivalentDiameterAtLongitudinalPositionZ            DSRBasicCodedEntry("113995", "DCM", "Water Equivalent Diameter At Longitudinal Position Z")
 #define CODE_DCM_NotANumber                                                DSRBasicCodedEntry("114000", "DCM", "Not a number")
 #define CODE_DCM_NegativeInfinity                                          DSRBasicCodedEntry("114001", "DCM", "Negative Infinity")
 #define CODE_DCM_PositiveInfinity                                          DSRBasicCodedEntry("114002", "DCM", "Positive Infinity")
@@ -2372,6 +2381,11 @@
 #define CODE_DCM_VolumeOfCircumscribedSphere                               DSRBasicCodedEntry("121220", "DCM", "Volume of circumscribed sphere")
 #define CODE_DCM_VolumeOfEllipsoid                                         DSRBasicCodedEntry("121221", "DCM", "Volume of ellipsoid")
 #define CODE_DCM_VolumeOfSphere                                            DSRBasicCodedEntry("121222", "DCM", "Volume of sphere")
+#define CODE_DCM_ArmOfAngle                                                DSRBasicCodedEntry("121223", "DCM", "Arm of angle")
+#define CODE_DCM_AcetabularAngle                                           DSRBasicCodedEntry("121224", "DCM", "Acetabular angle")
+#define CODE_DCM_Vector                                                    DSRBasicCodedEntry("121225", "DCM", "Vector")
+#define CODE_DCM_ApproximateSpatialLocation                                DSRBasicCodedEntry("121226", "DCM", "Approximate spatial location")
+#define CODE_DCM_LineSegmentLength                                         DSRBasicCodedEntry("121227", "DCM", "Line segment length")
 #define CODE_DCM_PathVertex                                                DSRBasicCodedEntry("121230", "DCM", "Path Vertex")
 #define CODE_DCM_VolumeSurface                                             DSRBasicCodedEntry("121231", "DCM", "Volume Surface")
 #define CODE_DCM_SourceSeriesForSegmentation                               DSRBasicCodedEntry("121232", "DCM", "Source series for segmentation")
@@ -2903,7 +2917,7 @@
 #define CODE_DCM_FrameToFrameAnalysis                                      DSRBasicCodedEntry("122499", "DCM", "Frame to Frame Analysis")
 #define CODE_DCM_AreaOfClosedIrregularPolygon                              DSRBasicCodedEntry("122501", "DCM", "Area of closed irregular polygon")
 #define CODE_DCM_AreaOfAClosedNURBS                                        DSRBasicCodedEntry("122502", "DCM", "Area of a closed NURBS")
-#define CODE_DCM_IntegrationOfSumOfClosedAreasonContiguousSlices           DSRBasicCodedEntry("122503", "DCM", "Integration of sum of closed areas on contiguous slices")
+#define CODE_DCM_IntegrationOfSumOfClosedAreasonContiguousSlicesMethodForVolume DSRBasicCodedEntry("122503", "DCM", "Integration of sum of closed areas on contiguous slices method for volume")
 #define CODE_DCM_Calibration                                               DSRBasicCodedEntry("122505", "DCM", "Calibration")
 #define CODE_DCM_LeftContour                                               DSRBasicCodedEntry("122507", "DCM", "Left Contour")
 #define CODE_DCM_RightContour                                              DSRBasicCodedEntry("122508", "DCM", "Right Contour")
@@ -3111,6 +3125,9 @@
 #define CODE_DCM_AcquisitionEquipmentAlignment                             DSRBasicCodedEntry("125023", "DCM", "Acquisition Equipment Alignment")
 #define CODE_DCM_ImageContentBasedAlignment                                DSRBasicCodedEntry("125024", "DCM", "Image Content-based Alignment")
 #define CODE_DCM_VisualAlignment                                           DSRBasicCodedEntry("125025", "DCM", "Visual Alignment")
+#define CODE_DCM_ImageContentAndFiducialBasedAlignment                     DSRBasicCodedEntry("125026", "DCM", "Image Content and Fiducial Based Alignment")
+#define CODE_DCM_DeformedForRegistration                                   DSRBasicCodedEntry("125027", "DCM", "Deformed for Registration")
+#define CODE_DCM_SourceDeformableSpatialRegistration                       DSRBasicCodedEntry("125028", "DCM", "Source Deformable Spatial Registration")
 #define CODE_DCM_InterHemisphericPlane                                     DSRBasicCodedEntry("125030", "DCM", "Inter-Hemispheric Plane")
 #define CODE_DCM_RightHemisphereMostAnterior                               DSRBasicCodedEntry("125031", "DCM", "Right Hemisphere Most Anterior")
 #define CODE_DCM_RightHemisphereMostPosterior                              DSRBasicCodedEntry("125032", "DCM", "Right Hemisphere Most Posterior")
@@ -3241,7 +3258,8 @@
 #define CODE_DCM_MultiparametricMRI                                        DSRBasicCodedEntry("126020", "DCM", "Multiparametric MRI")
 #define CODE_DCM_MultiparametricMRIOfProstate                              DSRBasicCodedEntry("126021", "DCM", "Multiparametric MRI of prostate")
 #define CODE_DCM_MultiparametricMRIOfWholeBody                             DSRBasicCodedEntry("126022", "DCM", "Multiparametric MRI of whole body")
-#define CODE_DCM_SumOfSegmentedVoxelVolumes                                DSRBasicCodedEntry("126030", "DCM", "Sum of segmented voxel volumes")
+#define CODE_DCM_LWHMethodForVolumeOfEllipsoid                             DSRBasicCodedEntry("126029", "DCM", "LWH method for volume of ellipsoid")
+#define CODE_DCM_SumOfSegmentedVoxelMethodForVolume                        DSRBasicCodedEntry("126030", "DCM", "Sum of segmented voxel method for volume")
 #define CODE_DCM_PeakValueWithinROI                                        DSRBasicCodedEntry("126031", "DCM", "Peak Value Within ROI")
 #define CODE_DCM_MetabolicVolume                                           DSRBasicCodedEntry("126032", "DCM", "Metabolic Volume")
 #define CODE_DCM_TotalLesionGlycolysis                                     DSRBasicCodedEntry("126033", "DCM", "Total Lesion Glycolysis")
