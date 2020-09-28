@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7445_DeviceParticipatingRoles
  *
- *  Generated automatically from DICOM PS 3.16-2020c
- *  File created on 2020-07-08 17:48:36 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020d
+ *  File created on 2020-09-28 10:08:36 by J. Riesmeier
  *
  */
 

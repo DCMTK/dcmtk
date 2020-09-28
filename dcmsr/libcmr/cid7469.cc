@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2020c
- *  File created on 2020-07-08 17:48:43 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020d
+ *  File created on 2020-09-28 10:08:47 by J. Riesmeier
  *
  */
 
@@ -322,6 +322,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(Circumference, DSRBasicCodedEntry("74551000", "SCT", "Circumference")));
         Codes->insert(OFMake_pair(DiameterOfCircumscribedCircle, DSRBasicCodedEntry("131192006", "SCT", "Diameter of circumscribed circle")));
         Codes->insert(OFMake_pair(Height, DSRBasicCodedEntry("121207", "DCM", "Height")));
+        Codes->insert(OFMake_pair(LineSegmentLength, DSRBasicCodedEntry("121227", "DCM", "Line segment length")));
         Codes->insert(OFMake_pair(Maximum3DDiameterOfAMesh, DSRBasicCodedEntry("L0JK", "IBSI", "Maximum 3D Diameter of a Mesh")));
         Codes->insert(OFMake_pair(MajorAxisIn3DLength, DSRBasicCodedEntry("TDIC", "IBSI", "Major Axis in 3D Length")));
         Codes->insert(OFMake_pair(MinorAxisIn3DLength, DSRBasicCodedEntry("P9VJ", "IBSI", "Minor Axis in 3D Length")));

@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2020c
- *  File created on 2020-07-08 17:48:43 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020d
+ *  File created on 2020-09-28 10:08:47 by J. Riesmeier
  *
  */
 
@@ -386,6 +386,8 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         DiameterOfCircumscribedCircle,
         /// (121207,DCM,"Height"), included from CID 7470
         Height,
+        /// (121227,DCM,"Line segment length"), included from CID 7470
+        LineSegmentLength,
         /// (L0JK,IBSI,"Maximum 3D Diameter of a Mesh"), included from CID 7470
         Maximum3DDiameterOfAMesh,
         /// (TDIC,IBSI,"Major Axis in 3D Length"), included from CID 7470
