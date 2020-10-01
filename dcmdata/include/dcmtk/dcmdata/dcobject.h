@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -436,6 +436,18 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *    actually represent a compound value (e.g. items like DcmPixelItem).
      *    Such overflows will be detected, in which case the maximum possible
      *    value will be returned instead, coinciding with DCM_UndefinedLength.
+     *  @warning The implementation in DcmPixelData may return zero if no
+     *    conforming representation exists and set the
+     *    EC_RepresentationNotFound error flag to indicated it.
+     *  @warning When calculation the length of a sequence or an item
+     *    containing multiple attributes, the implementation may return
+     *    DCM_UndefinedLength to indicate a value that can not be encoded as
+     *    a 32 bit length field. It will even do so if
+     *    "dcmWriteOversizedSeqsAndItemsUndefined" is disabled, but then also
+     *    set the EC_SeqOrItemContentOverflow error flag (inside getLength())
+     *    to indicated it.
+     *  @note Just check for zero or DCM_UndefinedLength return value and then
+     *    have a look at the error flag in either case.
      *  @param xfer transfer syntax for length calculation
      *  @param enctype sequence encoding type for length calculation
      *  @return length of DICOM element

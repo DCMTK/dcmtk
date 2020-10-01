@@ -341,10 +341,7 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
 
-    /** returns length of representation conforming to the
-     *  transfer syntax with tag, vr, ... It does not create a
-     *  representation. If no conforming representation exists an
-     *  error code is set and 0 returned.
+    /** @copydoc DcmObject::calcElementLength()
      */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);

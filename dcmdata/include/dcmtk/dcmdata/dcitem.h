@@ -175,21 +175,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    /** calculate the length of this DICOM element when encoded with the
-     *  given transfer syntax and the given encoding type for sequences.
-     *  For elements, the length includes the length of the tag, length field,
-     *  VR field and the value itself, for items and sequences it returns
-     *  the length of the complete item or sequence including delimitation tags
-     *  if applicable.
-     *  If length encoding is set to be explicit and the total item size is
-     *  larger than the available 32-bit length field, then undefined length
-     *  is returned. If "dcmWriteOversizedSeqsAndItemsImplicit" is disabled,
-     *  also the internal DcmObject errorFlag is set to EC_SeqOrItemContentOverflow
-     *  in case the item content (excluding tag header etc.) is already too
-     *  large.
-     *  @param xfer transfer syntax for length calculation
-     *  @param enctype sequence encoding type for length calculation
-     *  @return length of DICOM element
+    /** @copydoc DcmObject::calcElementLength()
      */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
