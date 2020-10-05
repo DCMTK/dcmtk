@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2020, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -59,7 +59,7 @@ void IODGeneralImageModule::resetRules()
     m_Rules->addRule(new IODRule(DCM_PatientOrientation, "2", "2C", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
     m_Rules->addRule(new IODRule(DCM_ContentDate, "1", "2C", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
     m_Rules->addRule(new IODRule(DCM_ContentTime, "1", "2C", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
-    m_Rules->addRule(new IODRule(DCM_ImageType, "2-n", "1", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
+    m_Rules->addRule(new IODRule(DCM_ImageType, "2-n", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
     m_Rules->addRule(new IODRule(DCM_AcquisitionNumber, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
     m_Rules->addRule(new IODRule(DCM_AcquisitionDate, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
     m_Rules->addRule(new IODRule(DCM_AcquisitionTime, "1", "3", getName(), DcmIODTypes::IE_IMAGE), OFTrue);
