@@ -484,11 +484,9 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
     Uint32 sublen = 0;
     if (!itemList->empty())
     {
-        DcmItem *dI;
         itemList->seek(ELP_first);
         do {
-            dI = OFstatic_cast(DcmItem *, itemList->get());
-            sublen = dI->calcElementLength(xfer, enctype);
+            sublen = itemList->get()->calcElementLength(xfer, enctype);
             /* explicit length: be sure that total size of contained elements fits into sequence's
                32 Bit length field. If not, switch encoding automatically to undefined
                length for this sequence. Nevertheless, any contained items will be
