@@ -909,10 +909,18 @@ OFCondition DcmFileFormat::loadFileUntilTag(
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-        /* open file for input */
-        DcmInputFileStream fileStream(fileName);
+        DcmInputStream *fileStream;
+        if (fileName.isStandardStream())
+        {
+            /* use stdin stream */
+            fileStream = new DcmStdinStream(fileName);
+        } else {
+            /* open file for output */
+            fileStream = new DcmInputFileStream(fileName);
+        }
+
         /* check stream status */
-        l_error = fileStream.status();
+        l_error = fileStream->status();
         if (l_error.good())
         {
             /* clear this object */
@@ -924,12 +932,13 @@ OFCondition DcmFileFormat::loadFileUntilTag(
                 FileReadMode = readMode;
                 /* read data from file */
                 transferInit();
-                l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                l_error = readUntilTag(*fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
                 transferEnd();
                 /* restore old value */
                 FileReadMode = oldMode;
             }
         }
+        delete fileStream;
     }
     return l_error;
 }
@@ -954,20 +963,28 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
     if (!fileName.isEmpty())
     {
         DcmWriteCache wcache;
+        DcmOutputStream *fileStream;
 
-        /* open file for output */
-        DcmOutputFileStream fileStream(fileName);
+        if (fileName.isStandardStream())
+        {
+            /* use stdout stream */
+            fileStream = new DcmStdoutStream(fileName);
+        } else {
+            /* open file for output */
+            fileStream = new DcmOutputFileStream(fileName);
+        }
 
         /* check stream status */
-        l_error = fileStream.status();
+        l_error = fileStream->status();
         if (l_error.good())
         {
             /* write data to file */
             transferInit();
-            l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength,
+            l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength,
                 padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
             transferEnd();
         }
+        delete fileStream;
     }
     return l_error;
 }

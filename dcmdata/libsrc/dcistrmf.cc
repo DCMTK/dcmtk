@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2012, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -256,4 +256,108 @@ DcmInputStream *DcmInputTempFileStreamFactory::create() const
 DcmInputStreamFactory *DcmInputTempFileStreamFactory::clone() const
 {
     return new DcmInputTempFileStreamFactory(*this);
+}
+
+
+/* ============================================================================== */
+
+// DcmStdinProducer class is responsible for reading the binary data from a
+// DICOM file and is triggered when the filename is '-'
+
+DcmStdinProducer::DcmStdinProducer(const OFFilename &filename, offile_off_t offset)
+: DcmProducer()
+, file_()
+, status_(EC_Normal)
+, size_(0)
+{
+    char ch;
+     // Get the number of bytes in the file
+     while ( std::cin >> std::noskipws >> ch) {
+         arr.push_back(ch);
+     }
+     size_ = arr.size();
+     position = offset;
+}
+
+DcmStdinProducer::~DcmStdinProducer()
+{
+}
+
+OFBool DcmStdinProducer::good() const
+{
+  return status_.good();
+}
+
+OFCondition DcmStdinProducer::status() const
+{
+  return status_;
+}
+
+OFBool DcmStdinProducer::eos()
+{
+  if (position == arr.size() ) {
+      return OFTrue;
+  }
+  return OFFalse;
+}
+
+offile_off_t DcmStdinProducer::avail()
+{
+  return size_ - position;
+}
+
+offile_off_t DcmStdinProducer::read(void *buf, offile_off_t buflen)
+{
+  offile_off_t result = 0;
+  if (status_.good() && buf && buflen)
+  {
+      for (int i = 0; i < OFstatic_cast(size_t, buflen); i++)
+      {
+          if ((position + i) >= size_)
+          {
+              break;
+          }
+          char ch = arr[position + i];
+          *((char*)buf + i) = ch;
+          result += 1;
+      }
+  }
+  position += result;
+  return result;
+}
+
+offile_off_t DcmStdinProducer::skip(offile_off_t skiplen)
+{
+  offile_off_t result = 0;
+  if (status_.good() && skiplen)
+  {
+    result = (size_ - position < skiplen) ? (size_ - position) : skiplen;
+  }
+  position += result;
+  return result;
+}
+
+void DcmStdinProducer::putback(offile_off_t num)
+{
+  if (status_.good() && num)
+  {
+    if (num <= position)
+    {
+      position -= num;
+    }
+    else status_ = EC_PutbackFailed; // tried to putback before start of file
+  }
+}
+
+/* ======================================================================= */
+
+DcmStdinStream::DcmStdinStream(const OFFilename &filename, offile_off_t offset)
+: DcmInputStream(&producer_) // safe because DcmInputStream only stores pointer
+, producer_(filename, offset)
+, filename_(filename)
+{
+}
+
+DcmStdinStream::~DcmStdinStream()
+{
 }

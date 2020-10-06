@@ -229,6 +229,26 @@ public:
   }
 #endif
 
+  /** Uses the filename to determine whether the standard input or output streams
+   *  should be used. Checks for filename = "-" and supports wchar filenames
+   *  @return true if stdin or stdout should be used, false otherwise
+   */
+  OFBool isStandardStream() const
+  {
+    OFBool result = OFFalse;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTONS) && defined(_WIN32)
+    if (usesWideChars())
+    {
+        result = (wcscmp(getWideCharPointer(), L"-") == 0);
+    } else
+#endif
+    if (getCharPointer() != NULL)
+    {
+        result = (strcmp(getCharPointer(), "-") == 0);
+    }
+    return result;
+  }
+
   /** replace currently stored filename by given value
    *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
    *  @param convert  convert given filename to wide character encoding as an
