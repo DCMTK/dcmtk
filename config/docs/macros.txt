@@ -95,6 +95,17 @@ DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
     dcmtk::log4cplus::threadCleanup() should be called by the user code in
     order to clean-up oflog's thread local storage.
 
+DCMTK_MERGE_STDERR_TO_STDOUT
+  Affected: dcmdata
+  Type of modification: Activates feature
+  Explanation: DCMTK releases up to 3.6.6 redirected the stderr stream to
+    stdout on Windows to make it easier to pipe the output of the command
+    line tools to "more". With the introduction of the ability to write
+    DICOM files to stdout, this feature has been disabled as debug output
+    will otherwise get mixed into the DICOM file. The old behaviour can be
+    re-activated by compiling with this macro. In this case, DICOM files
+    should never to written to stdout as this will be unreliable.
+
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
   Type of modification: Disables feature

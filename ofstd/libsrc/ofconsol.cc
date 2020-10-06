@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2010, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,7 +24,17 @@
 #include "dcmtk/ofstd/ofthread.h"
 
 #define INCLUDE_CASSERT
+#define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>
+#endif
+END_EXTERN_C
 
 
 #ifdef DCMTK_GUI
@@ -120,6 +130,64 @@ OFConsole& OFConsole::instance()
   return instance_;
 }
 
+int OFConsole::old_stderr = -1;
+
+void OFConsole::mergeStderrStdout()
+{
+    fflush(stderr);
+    if (fileno(stderr) != fileno(stdout))
+    {
+        /* duplicate the stderr file descriptor to be the same as stdout */
+        if (old_stderr < 0) old_stderr = dup(fileno(stderr));
+
+        /* now duplicate the file descriptor of stdout into the file descriptor of stderr.
+         * This will silently close the previous file descriptor of stderr.
+         */
+        if (0 != dup2(fileno(stdout), fileno(stderr)))
+        {
+            OFConsole::instance().lockCerr() << "Unable to redirect stderr to stdout" << OFendl;
+            OFConsole::instance().unlockCerr();
+        }
+    }
+
+#ifndef __BORLANDC__  /* setvbuf on stdout/stderr does not work with Borland C++ */
+    /* set stdout and stderr to unbuffered mode */
+    if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
+    {
+        OFConsole::instance().lockCerr() << "Unable to switch stdout to unbuffered mode" << OFendl;
+        OFConsole::instance().unlockCerr();
+    }
+    if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
+    {
+        OFConsole::instance().lockCerr() << "Unable to switch stderr to unbuffered mode" << OFendl;
+        OFConsole::instance().unlockCerr();
+    }
+#endif /* __BORLANDC__ */
+}
+
+
+void OFConsole::unmergeStderrStdout()
+{
+    /* only execute this code if stderr was actually redirected before */
+    if (old_stderr > 0)
+    {
+        if (0 != dup2(old_stderr, fileno(stderr)))
+        {
+            OFConsole::instance().lockCerr() << "Error: Unable to release redirection of stderr to stdout" << OFendl;
+            OFConsole::instance().unlockCerr();
+        }
+
+#ifndef __BORLANDC__
+        /* switch stdout to buffered mode */
+        if (setvbuf(stdout, NULL, _IOFBF, BUFSIZ ) != 0 )
+        {
+            OFConsole::instance().lockCerr() << "Error: Unable to switch stdout to buffered mode" << OFendl;
+            OFConsole::instance().unlockCerr();
+
+        }
+#endif /* __BORLANDC__ */
+    }
+}
 
 class OFConsoleInitializer
 {

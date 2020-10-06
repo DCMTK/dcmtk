@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2018, OFFIS e.V.
+ *  Copyright (C) 1999-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -202,6 +202,14 @@ public:
    */
   static OFConsole& instance();
 
+  /** redirect stderr to stdout on file descriptor level
+   */
+  static void mergeStderrStdout();
+
+  /** remove a redirection of stderr to stdout on file descriptor level
+   */
+  static void unmergeStderrStdout();
+
 private:
 
   /** default constructor. After construction, the cout methods refer to the
@@ -225,6 +233,9 @@ private:
 
   /** true if streams are combined, false otherwise */
   int joined;
+
+  /** file descriptor for stderr, if redirected on FILE I/O level */
+  static int old_stderr;
 
 #ifdef WITH_THREADS
   /** mutex protecting access to cout
