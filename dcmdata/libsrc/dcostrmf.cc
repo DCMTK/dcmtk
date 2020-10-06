@@ -23,9 +23,19 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcostrmf.h"
 #include "dcmtk/dcmdata/dcerror.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>
+#endif
+END_EXTERN_C
 
 
 DcmFileConsumer::DcmFileConsumer(const OFFilename &filename)
@@ -147,11 +157,17 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /* ====================================================================== */
 // The DcmStdoutConsumer class is reponsible for printing binary dicom data to Stdout
 // and is triggered when the output filename is '-'
+
 DcmStdoutConsumer::DcmStdoutConsumer(const OFFilename &filename)
 : DcmConsumer()
 , file_()
 , status_(EC_Normal)
 {
+#ifdef _WIN32
+    // Set "stdout" to binary mode
+    int result = setmode(fileno(stdout), O_BINARY);
+    if (result == -1) DCMDATA_ERROR("Failed to switch stdout to binary mode");
+#endif
 }
 
 DcmStdoutConsumer::DcmStdoutConsumer(FILE *file)
@@ -189,24 +205,12 @@ offile_off_t DcmStdoutConsumer::avail() const
 
 offile_off_t DcmStdoutConsumer::write(const void *buf, offile_off_t buflen)
 {
-  offile_off_t result = 0;
-  if (status_.good() && buf && buflen)
-  {
-    offile_off_t written;
-    const char *buf2 = OFstatic_cast(const char *, buf);
-    for (int i=0; i < buflen; i++)
-    {
-        std::cout << *(buf2 + i);
-        result ++;
-    }
-    std::cout << std::flush;
-  }
-  return result;
+  return OFstatic_cast(offile_off_t, fwrite(buf, 1, OFstatic_cast(size_t, buflen), stdout));
 }
 
 void DcmStdoutConsumer::flush()
 {
-  // nothing to flush
+  fflush(stdout);
 }
 
 /* ======================================================================= */

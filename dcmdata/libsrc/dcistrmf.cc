@@ -28,6 +28,14 @@
 #define INCLUDE_CERRNO
 #include "dcmtk/ofstd/ofstdinc.h"
 
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>
+#endif
+END_EXTERN_C
 
 DcmFileProducer::DcmFileProducer(const OFFilename &filename, offile_off_t offset)
 : DcmProducer()
@@ -270,10 +278,18 @@ DcmStdinProducer::DcmStdinProducer(const OFFilename &filename, offile_off_t offs
 , status_(EC_Normal)
 , size_(0)
 {
-    char ch;
-     // Get the number of bytes in the file
-     while ( std::cin >> std::noskipws >> ch) {
-         arr.push_back(ch);
+#ifdef _WIN32
+    // Set "stdin" to binary mode
+    int result = setmode(fileno(stdin), O_BINARY);
+    if (result == -1) DCMDATA_ERROR("Failed to switch stdin to binary mode");
+#endif
+
+    // Naive implementation: load the whole stream from stdin into memory
+    // before we start parsing
+    int ch;
+    while ((ch = fgetc(stdin)) != EOF)
+     {
+         arr.push_back(OFstatic_cast(char, ch));
      }
      size_ = arr.size();
      position = offset;
