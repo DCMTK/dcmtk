@@ -49,6 +49,10 @@
 
 #endif
 
+#ifdef __MINGW32__
+/* MinGW does not support fiber local storage. Use Thread Local Storage instead. */
+#define DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
+#endif
 
 namespace dcmtk {
 namespace log4cplus { namespace thread { namespace impl {
