@@ -3830,7 +3830,7 @@ OFCondition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
   OFCondition result = EC_Normal;
   DcmDataset dset;
   DcmElement *delem = NULL;
-  char buf[20];
+  char buf[30];
 
   if ((EC_Normal==result)&&(printerMediumType.size() > 0))
   {
