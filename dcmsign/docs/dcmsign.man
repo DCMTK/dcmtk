@@ -181,19 +181,19 @@ timestamp verification:
 certification authority:
 
   +cf   --add-cert-file
-          [c]ertificate filename: string
+          [f]ilename: string
           add trusted certificate file to cert store
 
   +uf   --add-ucert-file
-          [c]ertificate filename: string
+          [f]ilename: string
           add untrusted intermediate certificate file
 
   +cd   --add-cert-dir
-          [c]ertificate directory: string
+          [d]irectory: string
           add certificates in d to cert store
 
   +cr   --add-crl-file
-          [c]rl filename: string
+          [f]ilename: string
           add certificate revocation list file
           (implies --enable-crl-vfy)
 

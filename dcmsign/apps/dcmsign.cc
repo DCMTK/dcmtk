@@ -189,13 +189,13 @@ int main(int argc, char *argv[])
       cmd.addOption("--ignore-ts",                 "-tv",       "ignore certified timestamps");
       cmd.addOption("--require-ts",                "+tr",       "fail if no certified timestamp is present");
     cmd.addSubGroup("certification authority:");
-      cmd.addOption("--add-cert-file",             "+cf",    1, "[c]ertificate filename: string",
+      cmd.addOption("--add-cert-file",             "+cf",    1, "[f]ilename: string",
                                                                 "add trusted certificate file to cert store");
-      cmd.addOption("--add-ucert-file",            "+uf",    1, "[c]ertificate filename: string",
+      cmd.addOption("--add-ucert-file",            "+uf",    1, "[f]ilename: string",
                                                                 "add untrusted intermediate certificate file");
-      cmd.addOption("--add-cert-dir",              "+cd",    1, "[c]ertificate directory: string",
+      cmd.addOption("--add-cert-dir",              "+cd",    1, "[d]irectory: string",
                                                                 "add certificates in d to cert store");
-      cmd.addOption("--add-crl-file",              "+cr",    1, "[c]rl filename: string",
+      cmd.addOption("--add-crl-file",              "+cr",    1, "[f]ilename: string",
                                                                 "add certificate revocation list file\n(implies --enable-crl-vfy)");
       cmd.addOption("--enable-crl-vfy",            "+cl",       "enable CRL verification");
 

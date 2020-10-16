@@ -241,10 +241,10 @@ key and certificate file format:
 
 certification authority:
 
-  +cf   --add-cert-file  [c]ertificate filename: string
+  +cf   --add-cert-file  [f]ilename: string
           add certificate file to list of certificates
 
-  +cd   --add-cert-dir  [c]ertificate directory: string
+  +cd   --add-cert-dir  [d]directory: string
           add certificates in d to list of certificates
 
 security profile:
