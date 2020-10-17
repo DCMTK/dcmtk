@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2019, OFFIS e.V.
+ *  Copyright (C) 2017-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,7 +85,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
     cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",      "+cf",  1, "[f]ilename: string",
                                                        "add certificate file to list of certificates");
-      cmd.addOption("--add-cert-dir",       "+cd",  1, "[d]directory: string",
+      cmd.addOption("--add-cert-dir",       "+cd",  1, "[d]irectory: string",
                                                        "add certificates in d to list of certificates");
     cmd.addSubGroup("security profile:");
       cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile (default)");

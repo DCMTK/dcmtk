@@ -124,7 +124,7 @@ certification authority:
   +cf   --add-cert-file  [f]ilename: string
           add certificate file to list of certificates
 
-  +cd   --add-cert-dir  [d]directory: string
+  +cd   --add-cert-dir  [d]irectory: string
           add certificates in d to list of certificates
 
 security profile:
