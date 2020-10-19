@@ -11,7 +11,7 @@ DCMTK_ADD_LIBRARY(dcmdata
   dctagkey dctypes dcuid dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt
   dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrod dcvrof dcvrol dcvrov dcvrpn
   dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrsv dcvrtm dcvruc dcvrui dcvrul dcvrulup
-  dcvrur dcvrus dcvrut dcvruv dcwcache dcxfer vrscan vrscanl)
+  dcvrur dcvrus dcvrut dcvruv dcwcache dcxfer vrscan vrscanl dcistrms dcostrms)
 
 DCMTK_TARGET_LINK_MODULES(dcmdata ofstd oflog)
 DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS})

@@ -44,10 +44,12 @@
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
-#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
-#include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcistrms.h"    /* for class DcmStdinStream */
+#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcmtk/dcmdata/dcostrms.h"    /* for class DcmStdoutStream */
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 #include "dcmtk/dcmdata/dcjson.h"
 
@@ -913,16 +915,8 @@ OFCondition DcmFileFormat::loadFileUntilTag(
         if (fileName.isStandardStream())
         {
             /* use stdin stream */
-            fileStream = new DcmStdinStream(fileName);
-        } else {
-            /* open file for output */
-            fileStream = new DcmInputFileStream(fileName);
-        }
+            DcmStdinStream inStream;
 
-        /* check stream status */
-        l_error = fileStream->status();
-        if (l_error.good())
-        {
             /* clear this object */
             l_error = clear();
             if (l_error.good())
@@ -930,15 +924,49 @@ OFCondition DcmFileFormat::loadFileUntilTag(
                 /* save old value */
                 const E_FileReadMode oldMode = FileReadMode;
                 FileReadMode = readMode;
-                /* read data from file */
+
+                /* initialize transfer */
                 transferInit();
-                l_error = readUntilTag(*fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+
+                do
+                {
+                  /* fill the buffer from stdin */
+                  inStream.fillBuffer();
+                  /* and read the buffer content into the DICOM dataset */
+                  l_error = readUntilTag(inStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                } while (l_error == EC_StreamNotifyClient); /* repeat until we're at the end of the stream, or an error occurs */
+
+                /* end transfer */
                 transferEnd();
+
                 /* restore old value */
                 FileReadMode = oldMode;
             }
+
+        } else {
+            /* open file for output */
+            DcmInputFileStream fileStream(fileName);
+
+            /* check stream status */
+            l_error = fileStream.status();
+            if (l_error.good())
+            {
+                /* clear this object */
+                l_error = clear();
+                if (l_error.good())
+                {
+                    /* save old value */
+                    const E_FileReadMode oldMode = FileReadMode;
+                    FileReadMode = readMode;
+                    /* read data from file */
+                    transferInit();
+                    l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                    transferEnd();
+                    /* restore old value */
+                    FileReadMode = oldMode;
+                }
+            }
         }
-        delete fileStream;
     }
     return l_error;
 }

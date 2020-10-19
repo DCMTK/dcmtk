@@ -13,15 +13,15 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Marco Eichelberg
+ *  Author:  Jasper den Otter, Marco Eichelberg
  *
- *  Purpose: DcmOutputFileStream and related classes,
- *    implements streamed output to files.
+ *  Purpose: DcmStdoutStream and related classes,
+ *    implements streamed output to stdout.
  *
  */
 
-#ifndef DCOSTRMF_H
-#define DCOSTRMF_H
+#ifndef DCOSTRMS_H
+#define DCOSTRMS_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcostrma.h"
@@ -29,25 +29,24 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
-
-/** consumer class that stores data in a plain file.
+/** consumer class that writes to standard output.
  */
-class DCMTK_DCMDATA_EXPORT DcmFileConsumer: public DcmConsumer
+class DCMTK_DCMDATA_EXPORT DcmStdoutConsumer: public DcmConsumer
 {
 public:
   /** constructor
    *  @param filename name of file to be created (may contain wide chars
    *    if support enabled)
    */
-  DcmFileConsumer(const OFFilename &filename);
+  DcmStdoutConsumer(const OFFilename &filename);
 
   /** constructor
    *  @param file structure, file must already be open for writing
    */
-  DcmFileConsumer(FILE *file);
+  DcmStdoutConsumer(FILE *file);
 
   /// destructor
-  virtual ~DcmFileConsumer();
+  virtual ~DcmStdoutConsumer();
 
   /** returns the status of the consumer. Unless the status is good,
    *  the consumer will not permit any operation.
@@ -94,10 +93,10 @@ public:
 private:
 
   /// private unimplemented copy constructor
-  DcmFileConsumer(const DcmFileConsumer&);
+  DcmStdoutConsumer(const DcmStdoutConsumer&);
 
   /// private unimplemented copy assignment operator
-  DcmFileConsumer& operator=(const DcmFileConsumer&);
+  DcmStdoutConsumer& operator=(const DcmStdoutConsumer&);
 
   /// the file we're actually writing to
   OFFile file_;
@@ -107,35 +106,35 @@ private:
 };
 
 
-/** output stream that writes into a plain file
+/** output stream that writes to standard output
  */
-class DCMTK_DCMDATA_EXPORT DcmOutputFileStream: public DcmOutputStream
+class DCMTK_DCMDATA_EXPORT DcmStdoutStream: public DcmOutputStream
 {
 public:
   /** constructor
    *  @param filename name of file to be created (may contain wide chars
    *    if support enabled)
    */
-  DcmOutputFileStream(const OFFilename &filename);
+  DcmStdoutStream(const OFFilename &filename);
 
   /** constructor
    *  @param file structure, file must already be open for writing
    */
-  DcmOutputFileStream(FILE *file);
+  DcmStdoutStream(FILE *file);
 
   /// destructor
-  virtual ~DcmOutputFileStream();
+  virtual ~DcmStdoutStream();
 
 private:
 
   /// private unimplemented copy constructor
-  DcmOutputFileStream(const DcmOutputFileStream&);
+  DcmStdoutStream(const DcmStdoutStream&);
 
   /// private unimplemented copy assignment operator
-  DcmOutputFileStream& operator=(const DcmOutputFileStream&);
+  DcmStdoutStream& operator=(const DcmStdoutStream&);
 
   /// the final consumer of the filter chain
-  DcmFileConsumer consumer_;
+  DcmStdoutConsumer consumer_;
 };
 
 #endif
