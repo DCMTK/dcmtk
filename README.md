@@ -28,10 +28,10 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 
 Each sub-directory (except _config_) contains further sub-directories for application source code (_apps_), library source code (_libsrc_), library include files (_include_), configuration data (_etc_), documentation (_docs_), sample and support data (_data_) as well as test programs (_tests_).
 
-To build and install the DCMTK package see the [INSTALL](INSTALL) file.  For copyright information see the [COPYRIGHT](COPYRIGHT) file.  For information about the history of this software see the [HISTORY](HISTORY) file.  For answers to frequently asked questions please consult the [FAQ](http://forum.dcmtk.org/faq/).
+To build and install the DCMTK package see the [INSTALL](INSTALL) file.  For copyright information see the [COPYRIGHT](COPYRIGHT) file.  For information about the history of this software see the [HISTORY](HISTORY) file.  For answers to frequently asked questions please consult the [FAQ](https://forum.dcmtk.org/faq/).
 
-In addition to the API documentation, which is also available [online](https://support.dcmtk.org/docs/), there is a [Wiki](http://support.dcmtk.org/wiki/) system where further information (e.g. HOWTOs) can be found.
+In addition to the API documentation, which is also available [online](https://support.dcmtk.org/docs/), there is a [Wiki](https://support.dcmtk.org/wiki/) system where further information (e.g. HOWTOs) can be found.
 
 If you find bugs or other problems with this software, we would appreciate hearing about them.  Please send electronic mail to: bugs/at/dcmtk/dot/org
 
-Please try to describe the problem in detail and if possible give a suggested fix.  For general questions on how to compile, install or use the toolkit we recommend the [public discussion forum](http://forum.dcmtk.org/).
+Please try to describe the problem in detail and if possible give a suggested fix.  For general questions on how to compile, install or use the toolkit we recommend the [public discussion forum](https://forum.dcmtk.org/).
