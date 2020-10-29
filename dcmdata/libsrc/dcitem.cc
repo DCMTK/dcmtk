@@ -4496,6 +4496,8 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
          */
         if (newTag.getEVR() != EVR_UNKNOWN)
         {
+            DCMDATA_DEBUG("DcmItem::newDicomElement() reverted VR of element " << tag
+                << " from 'UN' to '" << newTag.getVRName() << "'");
             tag.setVR(newTag.getVR());
             evr = tag.getEVR();
             readAsUN = OFTrue;
