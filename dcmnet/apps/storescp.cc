@@ -147,11 +147,8 @@ OFBool             opt_promiscuous = OFFalse;
 OFBool             opt_correctUIDPadding = OFFalse;
 OFBool             opt_inetd_mode = OFFalse;
 OFString           callingAETitle;                    // calling application entity title will be stored here
-OFString           lastCallingAETitle;
 OFString           calledAETitle;                     // called application entity title will be stored here
-OFString           lastCalledAETitle;
 OFString           callingPresentationAddress;        // remote hostname or IP address will be stored here
-OFString           lastCallingPresentationAddress;
 const char *       opt_respondingAETitle = APPLICATIONTITLE;
 static OFString    opt_outputDirectory = ".";         // default: output directory equals "."
 E_SortStudyMode    opt_sortStudyMode = ESM_None;      // default: no sorting
@@ -1460,10 +1457,6 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
 #endif
 
-  // store previous values for later use
-  lastCallingAETitle = callingAETitle;
-  lastCalledAETitle = calledAETitle;
-  lastCallingPresentationAddress = callingPresentationAddress;
   // store calling and called aetitle in global variables to enable
   // the --exec options using them. Enclose in quotation marks because
   // aetitles may contain space characters.
@@ -2330,13 +2323,13 @@ static void executeOnEndOfStudy()
   cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName );
 
   // perform substitution for placeholder #a
-  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingAETitle : lastCallingAETitle );
+  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingAETitle );
 
   // perform substitution for placeholder #c
-  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? calledAETitle : lastCalledAETitle );
+  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledAETitle );
 
   // perform substitution for placeholder #r
-  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingPresentationAddress : lastCallingPresentationAddress );
+  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress );
 
   // Execute command in a new process
   executeCommand( cmd );
