@@ -32,7 +32,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
 	$(CHARCONVLIBS) $(MATHLIBS)
 DCMTLSLIBS = -ldcmtls
-COMPR_LIBS = -ldcmjpls -lcharls -ldcmjpeg -lijg8 -lijg12 -lijg16 -ldcmimage -ldcmimgle
+COMPR_LIBS = -ldcmjpls -ldcmtkcharls -ldcmjpeg -lijg8 -lijg12 -lijg16 -ldcmimage -ldcmimgle
 
 objs = echoscu.o storescu.o storescp.o findscu.o movescu.o termscu.o getscu.o dcmsend.o \
 	dcmrecv.o
