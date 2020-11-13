@@ -8,8 +8,8 @@ endif()
 set(DCMTK_CONFIGURATION_DONE true)
 
 # Latest CMake version tested
-if(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.18.2)
-  set(CMAKE_BACKWARDS_COMPATIBILITY 3.18.2 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+if(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.18.4)
+  set(CMAKE_BACKWARDS_COMPATIBILITY 3.18.4 CACHE STRING "Latest version of CMake when this project was released." FORCE)
 endif()
 
 # CMAKE_BUILD_TYPE is set to value "Release" if none is specified by the
