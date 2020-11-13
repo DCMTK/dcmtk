@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 
 #include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcvrpn.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 // ********************************
@@ -117,7 +118,9 @@ OFCondition DcmPersonName::writeXML(STD_NAMESPACE ostream &out,
     /* PN requires special handling in the Native DICOM Model format */
     if (flags & DCMTypes::XF_useNativeModel)
     {
-        /* write normal XML start tag */
+       const OFBool convertNonASCII = (flags & DCMTypes::XF_convertNonASCII) > 0;
+
+       /* write normal XML start tag */
         DcmElement::writeXMLStartTag(out, flags);
         /* if the value is empty, we do not need to insert any PersonName attribute at all */
         if (!isEmpty())
@@ -159,7 +162,14 @@ OFCondition DcmPersonName::writeXML(STD_NAMESPACE ostream &out,
                                 if (!components[c].empty())
                                 {
                                     /* output name component, e.g. <FamilyName>Onken</FamilyName> */
-                                    out << "<" << compNames[c] << ">" << components[c] << "</" << compNames[c] << ">" << OFendl;
+                                    out << "<" << compNames[c] << ">";
+
+                                    /* check whether conversion to XML markup string is required */
+                                    if (OFStandard::checkForMarkupConversion(components[c], convertNonASCII))
+                                        OFStandard::convertToMarkupStream(out, components[c], convertNonASCII);
+                                    else
+                                        out << components[c];
+                                    out << "</" << compNames[c] << ">" << OFendl;
                                 }
                             }
                             out << "</" << componentGroupNames[cg] << ">" << OFendl; // e.g. </SingleByte>
