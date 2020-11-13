@@ -313,7 +313,7 @@ findSCUSCPRole(LST_HEAD ** lst, char *abstractSyntax);
 void destroyPresentationContextList(LST_HEAD ** l);
 void destroyUserInformationLists(DUL_USERINFO * userInfo);
 
-static FSM_Event_Description Event_Table[] = {
+static volatile FSM_Event_Description Event_Table[] = {
     {A_ASSOCIATE_REQ_LOCAL_USER, "A-ASSOCIATE request (local user)"},
     {TRANS_CONN_CONFIRM_LOCAL_USER, "Transport conn confirmation (local)"},
     {A_ASSOCIATE_AC_PDU_RCV, "A-ASSOCIATE-AC PDU (on transport)"},
@@ -335,7 +335,7 @@ static FSM_Event_Description Event_Table[] = {
     {INVALID_PDU, "Unrecognized/invalid PDU"}
 };
 
-static FSM_FUNCTION FSM_FunctionTable[] = {
+static volatile FSM_FUNCTION FSM_FunctionTable[] = {
     {AE_1, AE_1_TransportConnect, "AE 1 Transport Connect"},
     {AE_2, AE_2_SendAssociateRQPDU, "AE 2 Send Associate RQ PDU"},
     {AE_3, AE_3_AssociateConfirmationAccept, "AE 3 Associate Confirmation Accept"},
@@ -370,7 +370,7 @@ static FSM_FUNCTION FSM_FunctionTable[] = {
     {AR_10, AR_10_ConfirmRelease, "AR 10 Confirm Release"}
 };
 
-static FSM_ENTRY StateTable[DUL_NUMBER_OF_EVENTS][DUL_NUMBER_OF_STATES] = {
+static volatile FSM_ENTRY StateTable[DUL_NUMBER_OF_EVENTS][DUL_NUMBER_OF_STATES] = {
     {
         // EVENT,                    STATE,  ACTION,   NEXT_STATE
         {A_ASSOCIATE_REQ_LOCAL_USER, STATE1, AE_1, STATE4, "", "", NULL},
@@ -750,7 +750,7 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
                  PRIVATE_ASSOCIATIONKEY ** association, int event, int state,
                  void *params)
 {
-    FSM_ENTRY
+    volatile FSM_ENTRY
         * entry;
 
     /* check if the given event is valid, if not return an error */
@@ -3476,7 +3476,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 {
     unsigned long
         length;
-    static unsigned char
+    static const unsigned char
         legalPDUTypes[] = {
         DUL_TYPEASSOCIATERQ, DUL_TYPEASSOCIATEAC,
         DUL_TYPEASSOCIATERJ, DUL_TYPEDATA,
