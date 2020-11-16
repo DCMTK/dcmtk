@@ -777,7 +777,7 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
 
     /* dump information if required */
     DCMNET_TRACE("DUL  FSM Table: State: " << state << " Event: " << event << OFendl
-            << "DUL  Event:  " << entry->eventName << OFendl
+            << "DUL  Event:  " << OFconst_cast(const char *, entry->eventName) << OFendl
             << "DUL  Action: " << entry->actionName);
 
     /* if the state table's entry specifies an action function, execute this function and return */
