@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,7 +47,7 @@ SiCertificateVerifier::SiCertificateVerifier()
 SiCertificateVerifier::~SiCertificateVerifier()
 {
   X509_STORE_free(x509store);
-  sk_X509_free(x509untrusted);
+  sk_X509_pop_free(x509untrusted, X509_free);
 }
 
 
