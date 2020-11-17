@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -469,153 +469,160 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
 {
     EctEnhancedCT* concat = NULL;
     OFCHECK(EctEnhancedCT::loadDataset(*concatInstance, concat).good());
-    size_t numFrames;
-    numFrames = concat->getNumberOfFrames();
-    OFCHECK(numFrames == 1);
-    IODMultiFrameFGModule::ConcatenationInfo& ci = concat->getConcatenationInfo();
-    OFString val;
-    OFCHECK(ci.getConcatenationUID(val).good());
-    OFCHECK(DcmUniqueIdentifier::checkStringValue(val, "1").good());
-    Uint32 frameOffsetNo = 0;
-    OFCHECK(ci.getConcatenationFrameOffsetNumber(frameOffsetNo).good());
-    OFCHECK(frameOffsetNo == numInstance);
-    Uint16 inConcatNo = 0;
-    OFCHECK(ci.getInConcatenationNumber(inConcatNo).good());
-    OFCHECK(inConcatNo == numInstance + 1);
-    Uint16 concatTotalNo = 0;
-    OFCHECK(ci.getInConcatenationTotalNumber(concatTotalNo).good());
-    OFCHECK(concatTotalNo == NUM_FRAMES);
-
-    OFString srcUID;
-    OFCHECK(ci.getSOPInstanceUIDOfConcatenationSource(srcUID).good());
-    OFCHECK(srcInstance->getSOPCommon().getSOPInstanceUID(val).good());
-    OFCHECK(srcUID == val);
-
-    OFCHECK(concat->getSOPCommon().getSOPInstanceUID(val).good());
-    OFCHECK(srcUID != val);
-
-    FunctionalGroups::const_iterator srcShared = srcInstance->getFunctionalGroups().getShared()->begin();
-    FunctionalGroups::const_iterator cShared   = concat->getFunctionalGroups().getShared()->begin();
-    size_t numShared                           = 0;
-    do
+    if (concat)
     {
-        OFCHECK(srcShared->second->compare(*cShared->second) == 0);
-        srcShared++;
-        cShared++;
-        numShared++;
-    } while ((srcShared != srcInstance->getFunctionalGroups().getShared()->end())
-             && (cShared != concat->getFunctionalGroups().getShared()->end()));
-    OFCHECK((srcShared == srcInstance->getFunctionalGroups().getShared()->end())
-            && (cShared == concat->getFunctionalGroups().getShared()->end()));
-    DcmSequenceOfItems* cPerFrame = NULL;
-    OFCHECK(concatInstance->findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, cPerFrame).good());
-    OFCHECK(cPerFrame->card() == 1);
+        size_t numFrames;
+        numFrames = concat->getNumberOfFrames();
+        OFCHECK(numFrames == 1);
+        IODMultiFrameFGModule::ConcatenationInfo& ci = concat->getConcatenationInfo();
+        OFString val;
+        OFCHECK(ci.getConcatenationUID(val).good());
+        OFCHECK(DcmUniqueIdentifier::checkStringValue(val, "1").good());
+        Uint32 frameOffsetNo = 0;
+        OFCHECK(ci.getConcatenationFrameOffsetNumber(frameOffsetNo).good());
+        OFCHECK(frameOffsetNo == numInstance);
+        Uint16 inConcatNo = 0;
+        OFCHECK(ci.getInConcatenationNumber(inConcatNo).good());
+        OFCHECK(inConcatNo == numInstance + 1);
+        Uint16 concatTotalNo = 0;
+        OFCHECK(ci.getInConcatenationTotalNumber(concatTotalNo).good());
+        OFCHECK(concatTotalNo == NUM_FRAMES);
 
-    OFBool perFrame = OFFalse;
-    FGBase* fg      = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTACQUISITIONDETAILS, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        OFString srcUID;
+        OFCHECK(ci.getSOPInstanceUIDOfConcatenationSource(srcUID).good());
+        OFCHECK(srcInstance->getSOPCommon().getSOPInstanceUID(val).good());
+        OFCHECK(srcUID == val);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTACQUISITIONTYPE, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        OFCHECK(concat->getSOPCommon().getSOPInstanceUID(val).good());
+        OFCHECK(srcUID != val);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTADDITIONALXRAYSOURCE, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        FunctionalGroups::const_iterator srcShared = srcInstance->getFunctionalGroups().getShared()->begin();
+        FunctionalGroups::const_iterator cShared   = concat->getFunctionalGroups().getShared()->begin();
+        size_t numShared                           = 0;
+        do
+        {
+            OFCHECK(srcShared->second->compare(*cShared->second) == 0);
+            srcShared++;
+            cShared++;
+            numShared++;
+        } while ((srcShared != srcInstance->getFunctionalGroups().getShared()->end())
+                 && (cShared != concat->getFunctionalGroups().getShared()->end()));
+        OFCHECK((srcShared == srcInstance->getFunctionalGroups().getShared()->end())
+                && (cShared == concat->getFunctionalGroups().getShared()->end()));
+        DcmSequenceOfItems* cPerFrame = NULL;
+        OFCHECK(concatInstance->findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, cPerFrame).good());
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTEXPOSURE, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        if (cPerFrame)
+        {
+            OFCHECK(cPerFrame->card() == 1);
+        }
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTGEOMETRY, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        OFBool perFrame = OFFalse;
+        FGBase* fg      = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTACQUISITIONDETAILS, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTIMAGEFRAMETYPE, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTACQUISITIONTYPE, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTPOSITION, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTADDITIONALXRAYSOURCE, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTRECONSTRUCTION, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTEXPOSURE, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTTABLEDYNAMICS, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTGEOMETRY, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTXRAYDETAILS, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTIMAGEFRAMETYPE, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTXRAYDETAILS, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTPOSITION, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMECONTENT, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFTrue);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTRECONSTRUCTION, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMEANATOMY, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTTABLEDYNAMICS, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMEANATOMY, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTXRAYDETAILS, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMEVOILUTMETA, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_CTXRAYDETAILS, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMEANATOMY, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMECONTENT, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFTrue);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_IRRADIATIONEVENTIDENT, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMEANATOMY, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_PIXELVALUETRANSMETA, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMEANATOMY, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_IRRADIATIONEVENTIDENT, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMEVOILUTMETA, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = NULL;
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_PIXELMEASURES, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMEANATOMY, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = NULL;
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_PLANEPOSPATIENT, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_IRRADIATIONEVENTIDENT, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = NULL;
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_PLANEORIENTPATIENT, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_PIXELVALUETRANSMETA, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_TEMPORALPOSITION, perFrame);
-    OFCHECK(fg != NULL);
-    OFCHECK(perFrame == OFFalse);
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_IRRADIATIONEVENTIDENT, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
 
-    EctEnhancedCT::FramesType frames = concat->getFrames();
-    Uint16* frame                    = OFget<EctEnhancedCT::Frames<Uint16> >(&frames)->getFrame(0);
-    OFCHECK(frame != OFnullptr);
-    // Check that all pixels are set to their original source instances frame number (starting from 1)
-    for (size_t pix = 0; pix < NUM_PIXELS_PER_FRAME; pix++)
-    {
-        OFCHECK(frame[pix] == numInstance + 1);
+        fg = NULL;
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_PIXELMEASURES, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
+
+        fg = NULL;
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_PLANEPOSPATIENT, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
+
+        fg = NULL;
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_PLANEORIENTPATIENT, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
+
+        fg = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_TEMPORALPOSITION, perFrame);
+        OFCHECK(fg != NULL);
+        OFCHECK(perFrame == OFFalse);
+
+        EctEnhancedCT::FramesType frames = concat->getFrames();
+        Uint16* frame                    = OFget<EctEnhancedCT::Frames<Uint16> >(&frames)->getFrame(0);
+        OFCHECK(frame != OFnullptr);
+        // Check that all pixels are set to their original source instances frame number (starting from 1)
+        for (size_t pix = 0; pix < NUM_PIXELS_PER_FRAME; pix++)
+        {
+            OFCHECK(frame[pix] == numInstance + 1);
+        }
+        delete concat;
     }
-    delete concat;
 }
 
 void loadAndCheckConcatenation(const OFList<OFFilename>& concats)

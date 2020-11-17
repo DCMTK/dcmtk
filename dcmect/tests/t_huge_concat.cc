@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -432,7 +432,7 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
     EctEnhancedCT* concat = NULL;
     OFCondition result = EctEnhancedCT::loadDataset(*concatInstance, concat);
     OFCHECK(result.good());
-    if (result.bad()) return;
+    if ((concat == NULL )|| result.bad()) return;
 
     size_t numFrames;
     numFrames = concat->getNumberOfFrames();
@@ -475,7 +475,7 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
     DcmSequenceOfItems* cPerFrame = NULL;
     result = concatInstance->findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, cPerFrame);
     OFCHECK(result.good());
-    if (result.bad()) return;
+    if ((cPerFrame == NULL) || result.bad()) return;
     OFCHECK(cPerFrame->card() == 1);
 
     OFBool perFrame = OFFalse;
