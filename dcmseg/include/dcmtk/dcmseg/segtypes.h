@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2020, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -32,7 +32,6 @@
  * *  Logging
  */
 
-extern OFString c;
 extern DCMTK_DCMSEG_EXPORT OFLogger DCM_dcmsegLogger;
 
 #define DCMSEG_TRACE(msg) OFLOG_TRACE(DCM_dcmsegLogger, msg)
