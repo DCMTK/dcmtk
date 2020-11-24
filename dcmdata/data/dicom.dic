@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2020d and PS 3.7-2020d
-# File created on 2020-09-28 08:22:52 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2020e and PS 3.7-2020e
+# File created on 2020-11-24 14:44:39 by J. Riesmeier on thinkpad.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -684,6 +684,11 @@
 (0016,008C)	OB	GPSAreaInformation	1	DICOM
 (0016,008D)	DT	GPSDateStamp	1	DICOM
 (0016,008E)	IS	GPSDifferential	1	DICOM
+(0016,1001)	CS	LightSourcePolarization	1	DICOM
+(0016,1002)	DS	EmitterColorTemperature	1	DICOM
+(0016,1003)	CS	ContactMethod	1	DICOM
+(0016,1004)	CS	ImmersionMedia	1-n	DICOM
+(0016,1005)	DS	OpticalMagnificationFactor	1	DICOM
 (0018,0010)	LO	ContrastBolusAgent	1	DICOM
 (0018,0012)	SQ	ContrastBolusAgentSequence	1	DICOM
 (0018,0013)	FL	ContrastBolusT1Relaxivity	1	DICOM
@@ -2346,6 +2351,14 @@
 (0040,A504)	SQ	ContentTemplateSequence	1	DICOM
 (0040,A525)	SQ	IdenticalDocumentsSequence	1	DICOM
 (0040,A730)	SQ	ContentSequence	1	DICOM
+(0040,A801)	SQ	TabulatedValuesSequence	1	DICOM
+(0040,A802)	UL	NumberOfTableRows	1	DICOM
+(0040,A803)	UL	NumbeOfTableColumns	1	DICOM
+(0040,A804)	UL	TableRowNumber	1	DICOM
+(0040,A805)	UL	TableColumnNumber	1	DICOM
+(0040,A806)	SQ	TableRowDefinitionSequence	1	DICOM
+(0040,A807)	SQ	TableColumnDefinitionSequence	1	DICOM
+(0040,A808)	SQ	CellValuesSequence	1	DICOM
 (0040,B020)	SQ	WaveformAnnotationSequence	1	DICOM
 (0040,DB00)	CS	TemplateIdentifier	1	DICOM
 (0040,DB73)	UL	ReferencedContentItemIdentifier	1-n	DICOM
@@ -3052,6 +3065,9 @@
 (0072,007E)	SS	SelectorSSValue	1-n	DICOM
 (0072,007F)	UI	SelectorUIValue	1-n	DICOM
 (0072,0080)	SQ	SelectorCodeSequenceValue	1	DICOM
+(0072,0081)	OV	SelectorOVValue	1	DICOM
+(0072,0082)	SV	SelectorSVValue	1-n	DICOM
+(0072,0083)	UV	SelectorUVValue	1-n	DICOM
 (0072,0100)	US	NumberOfScreens	1	DICOM
 (0072,0102)	SQ	NominalScreenDefinitionSequence	1	DICOM
 (0072,0104)	US	NumberOfVerticalPixels	1	DICOM

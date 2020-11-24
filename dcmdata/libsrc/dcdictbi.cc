@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-09-28 09:44:16
+**   Date: 2020-11-24 14:49:53
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -4242,6 +4242,26 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0016, 0x008e, 0x0016, 0x008e,
       EVR_IS, "GPSDifferential", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0016, 0x1001, 0x0016, 0x1001,
+      EVR_CS, "LightSourcePolarization", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0016, 0x1002, 0x0016, 0x1002,
+      EVR_DS, "EmitterColorTemperature", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0016, 0x1003, 0x0016, 0x1003,
+      EVR_CS, "ContactMethod", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0016, 0x1004, 0x0016, 0x1004,
+      EVR_CS, "ImmersionMedia", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0016, 0x1005, 0x0016, 0x1005,
+      EVR_DS, "OpticalMagnificationFactor", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef ENABLE_PRIVATE_TAGS
@@ -19822,6 +19842,38 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "RETIRED_LanguageCodeSequenceTrial", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0040, 0xa801, 0x0040, 0xa801,
+      EVR_SQ, "TabulatedValuesSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa802, 0x0040, 0xa802,
+      EVR_UL, "NumberOfTableRows", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa803, 0x0040, 0xa803,
+      EVR_UL, "NumbeOfTableColumns", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa804, 0x0040, 0xa804,
+      EVR_UL, "TableRowNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa805, 0x0040, 0xa805,
+      EVR_UL, "TableColumnNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa806, 0x0040, 0xa806,
+      EVR_SQ, "TableRowDefinitionSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa807, 0x0040, 0xa807,
+      EVR_SQ, "TableColumnDefinitionSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0xa808, 0x0040, 0xa808,
+      EVR_SQ, "CellValuesSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0040, 0xa992, 0x0040, 0xa992,
       EVR_ST, "RETIRED_UniformResourceLocatorTrial", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -23744,6 +23796,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0072, 0x0080, 0x0072, 0x0080,
       EVR_SQ, "SelectorCodeSequenceValue", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0072, 0x0081, 0x0072, 0x0081,
+      EVR_OV, "SelectorOVValue", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0072, 0x0082, 0x0072, 0x0082,
+      EVR_SV, "SelectorSVValue", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0072, 0x0083, 0x0072, 0x0083,
+      EVR_UV, "SelectorUVValue", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0072, 0x0100, 0x0072, 0x0100,

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2020-09-28 09:44:16
+**   Date: 2020-11-24 14:49:52
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2020-09-28 09:44:16"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2020-11-24 14:49:52"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4813
+** Number of entries: 4829
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -726,6 +726,11 @@
 #define DCM_GPSAreaInformation                   DcmTagKey(0x0016, 0x008c)
 #define DCM_GPSDateStamp                         DcmTagKey(0x0016, 0x008d)
 #define DCM_GPSDifferential                      DcmTagKey(0x0016, 0x008e)
+#define DCM_LightSourcePolarization              DcmTagKey(0x0016, 0x1001)
+#define DCM_EmitterColorTemperature              DcmTagKey(0x0016, 0x1002)
+#define DCM_ContactMethod                        DcmTagKey(0x0016, 0x1003)
+#define DCM_ImmersionMedia                       DcmTagKey(0x0016, 0x1004)
+#define DCM_OpticalMagnificationFactor           DcmTagKey(0x0016, 0x1005)
 #define DCM_ContrastBolusAgent                   DcmTagKey(0x0018, 0x0010)
 #define DCM_ContrastBolusAgentSequence           DcmTagKey(0x0018, 0x0012)
 #define DCM_ContrastBolusT1Relaxivity            DcmTagKey(0x0018, 0x0013)
@@ -2632,6 +2637,14 @@
 #define DCM_RETIRED_RelationshipSequenceTrial    DcmTagKey(0x0040, 0xa731)
 #define DCM_RETIRED_RelationshipTypeCodeSequenceTrial DcmTagKey(0x0040, 0xa732)
 #define DCM_RETIRED_LanguageCodeSequenceTrial    DcmTagKey(0x0040, 0xa744)
+#define DCM_TabulatedValuesSequence              DcmTagKey(0x0040, 0xa801)
+#define DCM_NumberOfTableRows                    DcmTagKey(0x0040, 0xa802)
+#define DCM_NumbeOfTableColumns                  DcmTagKey(0x0040, 0xa803)
+#define DCM_TableRowNumber                       DcmTagKey(0x0040, 0xa804)
+#define DCM_TableColumnNumber                    DcmTagKey(0x0040, 0xa805)
+#define DCM_TableRowDefinitionSequence           DcmTagKey(0x0040, 0xa806)
+#define DCM_TableColumnDefinitionSequence        DcmTagKey(0x0040, 0xa807)
+#define DCM_CellValuesSequence                   DcmTagKey(0x0040, 0xa808)
 #define DCM_RETIRED_UniformResourceLocatorTrial  DcmTagKey(0x0040, 0xa992)
 #define DCM_WaveformAnnotationSequence           DcmTagKey(0x0040, 0xb020)
 #define DCM_TemplateIdentifier                   DcmTagKey(0x0040, 0xdb00)
@@ -3355,6 +3368,9 @@
 #define DCM_SelectorSSValue                      DcmTagKey(0x0072, 0x007e)
 #define DCM_SelectorUIValue                      DcmTagKey(0x0072, 0x007f)
 #define DCM_SelectorCodeSequenceValue            DcmTagKey(0x0072, 0x0080)
+#define DCM_SelectorOVValue                      DcmTagKey(0x0072, 0x0081)
+#define DCM_SelectorSVValue                      DcmTagKey(0x0072, 0x0082)
+#define DCM_SelectorUVValue                      DcmTagKey(0x0072, 0x0083)
 #define DCM_NumberOfScreens                      DcmTagKey(0x0072, 0x0100)
 #define DCM_NominalScreenDefinitionSequence      DcmTagKey(0x0072, 0x0102)
 #define DCM_NumberOfVerticalPixels               DcmTagKey(0x0072, 0x0104)
