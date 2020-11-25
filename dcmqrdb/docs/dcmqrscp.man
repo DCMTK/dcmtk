@@ -821,6 +821,7 @@ WideFieldOphthalmicPhotogr.3DCoordinatesImageStorage 1.2.840.10008.5.1.4.1.1.77.
 OphthalmicOpticalCoherenceTomogr.EnFaceImageStorage  1.2.840.10008.5.1.4.1.1.77.1.5.7
 OphthalmicOpticalCoh.Tomogr.BscanVolumeAnalysisStor. 1.2.840.10008.5.1.4.1.1.77.1.5.8
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
+DermoscopicPhotographyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.7
 RETIRED_VLMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
 AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2
