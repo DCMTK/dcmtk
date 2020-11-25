@@ -5,8 +5,8 @@
  *
  *  Source file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 10:08:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 11:12:45 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 29 (Acquisition Modality)
 #define CONTEXT_GROUP_NUMBER  "29"
-#define CONTEXT_GROUP_VERSION "20200623"
+#define CONTEXT_GROUP_VERSION "20201115"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.19"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -155,6 +155,7 @@ CID29_AcquisitionModality::CodeList &CID29_AcquisitionModality::getCodes()
         Codes->insert(OFMake_pair(CardiacElectrophysiology, DSRBasicCodedEntry("EPS", "DCM", "Cardiac Electrophysiology")));
         Codes->insert(OFMake_pair(ComputedRadiography, DSRBasicCodedEntry("CR", "DCM", "Computed Radiography")));
         Codes->insert(OFMake_pair(ComputedTomography, DSRBasicCodedEntry("CT", "DCM", "Computed Tomography")));
+        Codes->insert(OFMake_pair(Dermoscopy, DSRBasicCodedEntry("DMS", "DCM", "Dermoscopy")));
         Codes->insert(OFMake_pair(Diaphanography, DSRBasicCodedEntry("DG", "DCM", "Diaphanography")));
         Codes->insert(OFMake_pair(DigitalRadiography, DSRBasicCodedEntry("DX", "DCM", "Digital Radiography")));
         Codes->insert(OFMake_pair(Electrocardiography, DSRBasicCodedEntry("ECG", "DCM", "Electrocardiography")));

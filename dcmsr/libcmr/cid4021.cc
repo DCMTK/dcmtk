@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 10:08:25 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 11:12:57 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4021 (PET Radiopharmaceutical)
 #define CONTEXT_GROUP_NUMBER  "4021"
-#define CONTEXT_GROUP_VERSION "20191109"
+#define CONTEXT_GROUP_VERSION "20201116"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.305"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -149,6 +149,7 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
+        Codes->insert(OFMake_pair(_18_FluorineFlortaucipir, DSRBasicCodedEntry("C000591008", "MSH", "^18^Fluorine flortaucipir")));
         Codes->insert(OFMake_pair(_28H1_89Zr, DSRBasicCodedEntry("126752", "DCM", "28H1 ^89^Zr")));
         Codes->insert(OFMake_pair(_2FA_F18, DSRBasicCodedEntry("126713", "DCM", "2FA F^18^")));
         Codes->insert(OFMake_pair(_7D12_89Zr, DSRBasicCodedEntry("126751", "DCM", "7D12 ^89^Zr")));
@@ -196,7 +197,7 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(FLB457_C11, DSRBasicCodedEntry("126706", "DCM", "FLB 457 C^11^")));
         Codes->insert(OFMake_pair(Florbetaben_F18, DSRBasicCodedEntry("712736002", "SCT", "Florbetaben F^18^")));
         Codes->insert(OFMake_pair(Florbetapir_F18, DSRBasicCodedEntry("456995000", "SCT", "Florbetapir F^18^")));
-        Codes->insert(OFMake_pair(Flortaucipir_F18, DSRBasicCodedEntry("C4547429", "UMLS", "Flortaucipir F^18^")));
+        Codes->insert(OFMake_pair(Flortaucipir_F18, DSRBasicCodedEntry("C000591008", "MSH", "Flortaucipir F^18^")));
         Codes->insert(OFMake_pair(Flubatine_F18, DSRBasicCodedEntry("126503", "DCM", "Flubatine F^18^")));
         Codes->insert(OFMake_pair(Fluciclatide_F18, DSRBasicCodedEntry("456999006", "SCT", "Fluciclatide F^18^")));
         Codes->insert(OFMake_pair(Fluciclovine_F18, DSRBasicCodedEntry("457000009", "SCT", "Fluciclovine F^18^")));

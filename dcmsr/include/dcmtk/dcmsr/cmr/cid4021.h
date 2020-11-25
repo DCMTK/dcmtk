@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 10:08:25 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 11:12:57 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20191109)
+ *  (type: extensible, version: 20201116)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -40,6 +40,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
      */
     enum EnumType
     {
+        /// (C000591008,MSH,"^18^Fluorine flortaucipir")
+        _18_FluorineFlortaucipir,
         /// (126752,DCM,"28H1 ^89^Zr")
         _28H1_89Zr,
         /// (126713,DCM,"2FA F^18^")
@@ -134,7 +136,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Florbetaben_F18,
         /// (456995000,SCT,"Florbetapir F^18^")
         Florbetapir_F18,
-        /// (C4547429,UMLS,"Flortaucipir F^18^")
+        /// (C000591008,MSH,"Flortaucipir F^18^")
         Flortaucipir_F18,
         /// (126503,DCM,"Flubatine F^18^")
         Flubatine_F18,

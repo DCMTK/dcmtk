@@ -5,8 +5,8 @@
  *
  *  Source file for class CID6147_ResponseCriteria
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 10:08:29 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 11:13:01 by J. Riesmeier
  *
  */
 

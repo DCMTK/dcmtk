@@ -5,8 +5,8 @@
  *
  *  Header file for class CID11_RouteOfAdministration
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 10:08:12 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 11:12:44 by J. Riesmeier
  *
  */
 

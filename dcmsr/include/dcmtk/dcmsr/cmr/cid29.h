@@ -5,8 +5,8 @@
  *
  *  Header file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 10:08:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 11:12:45 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 29 - Acquisition Modality.
- *  (type: extensible, version: 20200623)
+ *  (type: extensible, version: 20201115)
  */
 class DCMTK_CMR_EXPORT CID29_AcquisitionModality
   : public DSRContextGroup
@@ -52,6 +52,8 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         ComputedRadiography,
         /// (CT,DCM,"Computed Tomography")
         ComputedTomography,
+        /// (DMS,DCM,"Dermoscopy")
+        Dermoscopy,
         /// (DG,DCM,"Diaphanography")
         Diaphanography,
         /// (DX,DCM,"Digital Radiography")

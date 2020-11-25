@@ -5,8 +5,8 @@
  *
  *  Source file for class CID10013_CTAcquisitionType
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 10:08:49 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 11:13:16 by J. Riesmeier
  *
  */
 
