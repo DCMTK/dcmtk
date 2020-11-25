@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 09:53:37 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 10:55:18 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4375
+// total number of codes: 4387
 // - retired: 199
 // - no name: 27
 // - not unique: 17
@@ -70,6 +70,7 @@
 #define CODE_DCM_RETIRED_DigitalFluoroscopy                                DSRBasicCodedEntry("DF", "DCM", "Digital fluoroscopy")
 #define CODE_DCM_Diaphanography                                            DSRBasicCodedEntry("DG", "DCM", "Diaphanography")
 #define CODE_DCM_RETIRED_DigitalMicroscopy                                 DSRBasicCodedEntry("DM", "DCM", "Digital microscopy")
+#define CODE_DCM_Dermoscopy                                                DSRBasicCodedEntry("DMS", "DCM", "Dermoscopy")
 #define CODE_DCM_Document_DOC                                              DSRBasicCodedEntry("DOC", "DCM", "Document")
 #define CODE_DCM_DocumentDigitizerEquipment                                DSRBasicCodedEntry("DOCD", "DCM", "Document Digitizer Equipment")
 #define CODE_DCM_RETIRED_DigitalSubtractionAngiography                     DSRBasicCodedEntry("DS", "DCM", "Digital Subtraction Angiography")
@@ -3370,6 +3371,7 @@
 #define CODE_DCM_Florbetaben_F18                                           DSRBasicCodedEntry("126501", "DCM", "Florbetaben F^18^")
 #define CODE_DCM_T807_F18                                                  DSRBasicCodedEntry("126502", "DCM", "T807 F^18^")
 #define CODE_DCM_Flubatine_F18                                             DSRBasicCodedEntry("126503", "DCM", "Flubatine F^18^")
+#define CODE_DCM_Lutetium177NAcetylaspartylglutamate                       DSRBasicCodedEntry("126509", "DCM", "Lutetium^177^ n-acetylaspartylglutamate")
 #define CODE_DCM_MonoclonalAntibody_mAb_64Cu                               DSRBasicCodedEntry("126510", "DCM", "Monoclonal Antibody (mAb) ^64^Cu")
 #define CODE_DCM_MonoclonalAntibody_mAb_89Zr                               DSRBasicCodedEntry("126511", "DCM", "Monoclonal Antibody (mAb) ^89^Zr")
 #define CODE_DCM_Trastuzumab_89Zr                                          DSRBasicCodedEntry("126512", "DCM", "Trastuzumab ^89^Zr")
@@ -4423,5 +4425,15 @@
 #define CODE_DCM_TimerInterlock                                            DSRBasicCodedEntry("130477", "DCM", "Timer Interlock")
 #define CODE_DCM_DoorInterlock                                             DSRBasicCodedEntry("130478", "DCM", "Door Interlock")
 #define CODE_DCM_PatientMotionInterlock                                    DSRBasicCodedEntry("130479", "DCM", "Patient Motion Interlock")
+#define CODE_DCM_FamilyHistoryOfNonMelanomaSkinCancer                      DSRBasicCodedEntry("130480", "DCM", "Family history of non-melanoma skin cancer")
+#define CODE_DCM_FamilyHistoryOfMelanomaInSitu                             DSRBasicCodedEntry("130481", "DCM", "Family history of melanoma in situ")
+#define CODE_DCM_HistoryOfNonMelanomaSkinCancer                            DSRBasicCodedEntry("130482", "DCM", "History of non-melanoma skin cancer")
+#define CODE_DCM_NumberOfMalignantMelanomas                                DSRBasicCodedEntry("130483", "DCM", "Number of malignant melanomas")
+#define CODE_DCM_NumberOfMelanomasInSitu                                   DSRBasicCodedEntry("130484", "DCM", "Number of melanomas in situ")
+#define CODE_DCM_FirmSkinLesion                                            DSRBasicCodedEntry("130485", "DCM", "Firm skin lesion")
+#define CODE_DCM_RaisedSkinLesion                                          DSRBasicCodedEntry("130486", "DCM", "Raised skin lesion")
+#define CODE_DCM_NumberOfFirstDegreeRelativesAffectedByMalignantMelanoma   DSRBasicCodedEntry("130487", "DCM", "Number of first-degree relatives affected by malignant melanoma")
+#define CODE_DCM_RegionInSpace                                             DSRBasicCodedEntry("130488", "DCM", "Region in Space")
+#define CODE_DCM_ReferencedRegionOfInterestIdentifier                      DSRBasicCodedEntry("130489", "DCM", "Referenced Region of Interest Identifier")
 
 #endif

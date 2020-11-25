@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2020d
- *  File created on 2020-09-28 09:53:46 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2020e
+ *  File created on 2020-11-25 10:55:25 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 51
+// total number of codes: 50
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -97,7 +97,6 @@
 #define CODE_UMLS_THK5351_F18                                              DSRBasicCodedEntry("C4279748", "UMLS", "THK5351 F^18^")
 #define CODE_UMLS_MK6240_F18                                               DSRBasicCodedEntry("C4506764", "UMLS", "MK-6240 F^18^")
 #define CODE_UMLS_UCBJ_C11                                                 DSRBasicCodedEntry("C4506788", "UMLS", "UCB-J C^11^")
-#define CODE_UMLS_Flortaucipir_F18                                         DSRBasicCodedEntry("C4547429", "UMLS", "Flortaucipir F^18^")
 #define CODE_UMLS_THK5317_F18                                              DSRBasicCodedEntry("C4550127", "UMLS", "THK5317 F^18^")
 
 #endif
