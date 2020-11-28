@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,6 +63,11 @@ public:
    *  library is created or used.
    */
   static void initializeLibrary();
+
+  /** cleans up the dcmsign library including the underlying OpenSSL library.
+   *  this method should be called by main() before program end to avoid memory leaks.
+   */
+  static void cleanupLibrary();
 
   /// default constructor
   DcmSignature();
@@ -333,6 +338,7 @@ private:
 
   /// pointer to certified timestamp for currently selected signature item
   SiTimeStamp *selectedTimestamp;
+
 };
 
 #endif

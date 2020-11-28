@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,15 +13,15 @@
  *
  *  Module: dcmsign
  *
- *  Author: Marco Eichelberg
+ *  Author: Norbert Loxen, Marco Eichelberg
  *
  *  Purpose:
- *    classes: SiDSA
+ *    classes: SiPKEY
  *
  */
 
-#ifndef SIECDSA_H
-#define SIECDSA_H
+#ifndef SIPKEY_H
+#define SIPKEY_H
 
 #include "dcmtk/config/osconfig.h"
 
@@ -31,31 +31,34 @@
 #include "dcmtk/ofstd/oftypes.h"
 
 class SiPrivateKey;
-struct ec_key_st;
-typedef struct ec_key_st EC_KEY;
+struct evp_pkey_st;
+typedef struct evp_pkey_st EVP_PKEY;
 
 /**
- *  This class implements the ECDSA public key crypto algorithms.
- *  @remark This class is only available if DCMTK is compiled with
+ *  This class implements all supported public key crypto algorithms
+ *  using the OpenSSL EVP_PKEY high level API.
+ *  @remark this class is only available if DCMTK is compiled with
  *  OpenSSL support enabled.
  */
 
-class DCMTK_DCMSIGN_EXPORT SiECDSA : public SiAlgorithm
+class DCMTK_DCMSIGN_EXPORT SiPKEY : public SiAlgorithm
 {
 public:
 
   /** constructor
-   *  @param pointer to public ECDSA key
+   *  @param pointer to public or private key
+   *  @param owned if true, ownership of the key is transferred to the SiPKEY instance
    */
-  SiECDSA(EC_KEY *key);
+  SiPKEY(EVP_PKEY *key, OFBool owned);
 
   /// destructor
-  virtual ~SiECDSA();
+  virtual ~SiPKEY();
 
   /** creates a signature.
    *  @param inputHash array of hash key bytes that are to be signed
    *  @param inputHashSize length of hash key array in bytes
-   *  @param inputHashAlgorithm MAC algorithm used for creation of hash key. Ignored for ECDSA signatures.
+   *  @param inputHashAlgorithm MAC algorithm used for creation of hash key.
+   *    Required for creation of PKCS#1 RSA signature padding.
    *  @param outputSignature pointer to array of at least getSize() which must be allocated by caller.
    *  @param outputSignatureSize returns the number of bytes written to outputSignature.
    *  @return SI_EC_Normal if successful, errorcode otherwise.
@@ -70,7 +73,8 @@ public:
   /** verifies a signature.
    *  @param inputHash array of bytes containing hash key to be verified against signature
    *  @param inputHashSize length of hash key array in bytes
-   *  @param inputHashAlgorithm MAC algorithm used for creation of hash key. Ignored for ECDSA signatures.
+   *  @param inputHashAlgorithm MAC algorithm used for creation of hash key.
+   *    Required for creation of PKCS#1 RSA signature padding.
    *  @param inputSignature array of bytes containing signature to be verified
    *  @param inputSignatureSize length of signature array in bytes
    *  @param verified returns whether the signature was successfully verified
@@ -101,14 +105,16 @@ public:
 private:
 
   /// private undefined copy constructor
-  SiECDSA(SiECDSA& arg);
+  SiPKEY(SiPKEY& arg);
 
   /// private undefined copy assignment operator
-  SiECDSA& operator=(SiECDSA& arg);
+  SiPKEY& operator=(SiPKEY& arg);
 
-  /// ECDSA key used for signature/verification
-  EC_KEY *ecdsa;
+  /// key used for signature/verification
+  EVP_PKEY *signing_key;
 
+  /// indicates if the signing key object is owned by this instance.
+  OFBool owned_;
 };
 
 #endif

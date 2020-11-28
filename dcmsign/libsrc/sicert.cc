@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,9 +25,7 @@
 #ifdef WITH_OPENSSL
 
 #include "dcmtk/dcmsign/sicert.h"
-#include "dcmtk/dcmsign/sirsa.h"   /* for class SiRSA */
-#include "dcmtk/dcmsign/sidsa.h"   /* for class SiDSA */
-#include "dcmtk/dcmsign/siecdsa.h" /* for class SiECDSA */
+#include "dcmtk/dcmsign/sipkey.h"
 #include "dcmtk/dcmdata/dcstack.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
@@ -102,30 +100,7 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
   if (x509)
   {
     EVP_PKEY *pkey = X509_extract_key(x509);
-    if (pkey)
-    {
-      switch(EVP_PKEY_type(EVP_PKEY_id(pkey)))
-      {
-        case EVP_PKEY_RSA:
-          result = new SiRSA(EVP_PKEY_get1_RSA(pkey));
-          break;
-        case EVP_PKEY_DSA:
-          result = new SiDSA(EVP_PKEY_get1_DSA(pkey));
-          break;
-        case EVP_PKEY_EC:
-#ifdef OPENSSL_NO_EC
-          result = new SiECDSA(NULL);
-#else
-          result = new SiECDSA(EVP_PKEY_get1_EC_KEY(pkey));
-#endif
-          break;
-        case EVP_PKEY_DH:
-        default:
-          /* nothing */
-          break;
-      }
-      EVP_PKEY_free(pkey);
-    }
+    if (pkey) result = new SiPKEY(pkey, OFTrue);
   }
   return result;
 }

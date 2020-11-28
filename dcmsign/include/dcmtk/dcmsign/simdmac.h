@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,38 +13,39 @@
  *
  *  Module: dcmsign
  *
- *  Author: Marco Eichelberg
+ *  Author: Norbert Loxen, Marco Eichelberg
  *
  *  Purpose:
- *    classes: SiSHA512
+ *    classes: SiMDMAC
  *
  */
 
-#ifndef SISHA512_H
-#define SISHA512_H
+#ifndef SIMDMAC_H
+#define SIMDMAC_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmsign/simac.h"
-#include "dcmtk/dcmsign/sitypes.h"
 
 #ifdef WITH_OPENSSL
 
-struct SHA512state_st;
-typedef struct SHA512state_st SHA512_CTX;
+#include "dcmtk/dcmsign/simac.h"
+#include "dcmtk/dcmsign/sitypes.h"
+
+struct evp_md_ctx_st;
+typedef struct evp_md_ctx_st EVP_MD_CTX;
 
 /**
- * a class implementing the hash function SHA512
+ * a class implementing all supported hash functions using the OpenSSL EVP_MD high level API.
  * @remark this class is only available if DCMTK is compiled with
  * OpenSSL support enabled.
  */
-class DCMTK_DCMSIGN_EXPORT SiSHA512 : public SiMAC
+class DCMTK_DCMSIGN_EXPORT SiMDMAC : public SiMAC
 {
 public:
   /// default constructor
-  SiSHA512();
+  SiMDMAC(E_MACType mactype);
 
   /// destructor
-  virtual ~SiSHA512();
+  virtual ~SiMDMAC();
 
   /** initializes the MAC algorithm.
    *  @return status code
@@ -85,13 +86,17 @@ public:
 private:
 
   /// private undefined copy constructor
-  SiSHA512(SiSHA512& arg);
+  SiMDMAC(SiMDMAC& arg);
 
   /// private undefined copy assignment operator
-  SiSHA512& operator=(SiSHA512& arg);
+  SiMDMAC& operator=(SiMDMAC& arg);
 
-  /// OpenSSL SHA512 context
-  SHA512_CTX *ctx;
+  /// OpenSSL MAC context
+  EVP_MD_CTX *ctx;
+
+  /// MAC type
+  E_MACType macType_;
+
 };
 
 #endif

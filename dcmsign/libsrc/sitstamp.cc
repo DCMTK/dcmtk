@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,12 +29,7 @@
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/dcmsign/simd5.h"
-#include "dcmtk/dcmsign/siripemd.h"
-#include "dcmtk/dcmsign/sisha1.h"
-#include "dcmtk/dcmsign/sisha256.h"
-#include "dcmtk/dcmsign/sisha384.h"
-#include "dcmtk/dcmsign/sisha512.h"
+#include "dcmtk/dcmsign/simdmac.h"
 #include "dcmtk/dcmsign/sicert.h"
 #include "dcmtk/dcmsign/sicertvf.h"
 #include "dcmtk/dcmsign/dcsignat.h"
@@ -158,27 +153,27 @@ OFCondition SiTimeStamp::create_ts_query(
   switch (tsq_mac_)
   {
     case EMT_SHA1:
-      mac = new SiSHA1();
+      mac = new SiMDMAC(EMT_SHA1);
       evpmd = EVP_sha1();
       break;
     case EMT_RIPEMD160:
-      mac = new SiRIPEMD160();
+      mac = new SiMDMAC(EMT_RIPEMD160);
       evpmd = EVP_ripemd160();
       break;
     case EMT_MD5:
-      mac = new SiMD5();
+      mac = new SiMDMAC(EMT_MD5);
       evpmd = EVP_md5();
       break;
     case EMT_SHA256:
-      mac = new SiSHA256();
+      mac = new SiMDMAC(EMT_SHA256);
       evpmd = EVP_sha256();
       break;
     case EMT_SHA384:
-      mac = new SiSHA384();
+      mac = new SiMDMAC(EMT_SHA384);
       evpmd = EVP_sha384();
       break;
     case EMT_SHA512:
-      mac = new SiSHA512();
+      mac = new SiMDMAC(EMT_SHA512);
       evpmd = EVP_sha512();
       break;
     default:
@@ -640,22 +635,22 @@ OFCondition SiTimeStamp::check_ts_response(
       switch (mac_nid)
       {
         case NID_sha1:
-          mac = new SiSHA1();
+          mac = new SiMDMAC(EMT_SHA1);
           break;
         case NID_ripemd160:
-          mac = new SiRIPEMD160();
+          mac = new SiMDMAC(EMT_RIPEMD160);
           break;
         case NID_md5:
-          mac = new SiMD5();
+          mac = new SiMDMAC(EMT_MD5);
           break;
         case NID_sha256:
-          mac = new SiSHA256();
+          mac = new SiMDMAC(EMT_SHA256);
           break;
         case NID_sha384:
-          mac = new SiSHA384();
+          mac = new SiMDMAC(EMT_SHA384);
           break;
         case NID_sha512:
-          mac = new SiSHA512();
+          mac = new SiMDMAC(EMT_SHA512);
           break;
         default:
           DCMSIGN_ERROR("timestamp response validation failed: unsupported MAC algorithm " << ( mac_name ? mac_name : "(unknown)") << " in timestamp response");

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,13 +42,8 @@
 #include "dcmtk/dcmsign/sicert.h"
 #include "dcmtk/dcmsign/simac.h"
 #include "dcmtk/dcmsign/simaccon.h"
-#include "dcmtk/dcmsign/simd5.h"
 #include "dcmtk/dcmsign/siprivat.h"
-#include "dcmtk/dcmsign/siripemd.h"
-#include "dcmtk/dcmsign/sisha1.h"
-#include "dcmtk/dcmsign/sisha256.h"
-#include "dcmtk/dcmsign/sisha384.h"
-#include "dcmtk/dcmsign/sisha512.h"
+#include "dcmtk/dcmsign/simdmac.h"
 #include "dcmtk/dcmsign/sisprof.h"
 #include "dcmtk/dcmsign/sitstamp.h"
 #include "dcmtk/dcmsign/sitsfs.h"
@@ -56,15 +51,47 @@
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
 #include <openssl/err.h>
+#include <openssl/ssl.h>
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#include <openssl/provider.h>
+#endif
 END_EXTERN_C
 
 
 /* static helper methods */
 
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+static OSSL_PROVIDER *legacyProvider = NULL;
+static OSSL_PROVIDER *defaultProvider = NULL;
+#endif
+
 void DcmSignature::initializeLibrary()
 {
+  SSL_library_init();
+  SSL_load_error_strings();
   OpenSSL_add_all_algorithms();
-  ERR_load_crypto_strings();
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+  // load the legacy provider, which is needed for RIPEMD160
+  if (legacyProvider == NULL) legacyProvider = OSSL_PROVIDER_load(NULL, "legacy");
+  // explicitly also load the default provider
+  if (defaultProvider == NULL) defaultProvider = OSSL_PROVIDER_load(NULL, "default");
+#endif
+}
+
+void DcmSignature::cleanupLibrary()
+{
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+  if (legacyProvider)
+  {
+    OSSL_PROVIDER_unload(legacyProvider);
+    legacyProvider = NULL;
+  }
+  if (defaultProvider)
+  {
+    OSSL_PROVIDER_unload(defaultProvider);
+    defaultProvider = NULL;
+  }
+#endif
 }
 
 OFCondition DcmSignature::getMACIDnumber(DcmItem &item, Uint16& macid)
@@ -476,6 +503,19 @@ OFCondition DcmSignature::createSignature(
     else
     {
       result = mac.finalize(digest);
+
+      if (dcmsignLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+      {
+        OFString logString;
+        char c[5];
+        for (size_t i=0; i<digestLength; i++)
+        {
+           sprintf(c, "%02hu", digest[i]);
+           logString += c;
+        }
+        DCMSIGN_DEBUG("DcmSignature::createSignature(): " << mac.getDefinedTerm() << " MAC = " << logString);
+      }
+
       if (result.good()) result = algorithm->sign(digest, digestLength, mac.macType(), signature, sigLength);
     }
   }
@@ -710,12 +750,12 @@ OFCondition DcmSignature::verifyCurrent()
       OFString macidentifier;
       if ((((DcmElement *)(stack.top()))->getOFString(macidentifier, 0)).good())
       {
-        if (macidentifier == SI_DEFTERMS_RIPEMD160) mac = new SiRIPEMD160();
-        else if (macidentifier == SI_DEFTERMS_SHA1) mac = new SiSHA1();
-        else if (macidentifier == SI_DEFTERMS_MD5)  mac = new SiMD5();
-        else if (macidentifier == SI_DEFTERMS_SHA256) mac = new SiSHA256();
-        else if (macidentifier == SI_DEFTERMS_SHA384) mac = new SiSHA384();
-        else if (macidentifier == SI_DEFTERMS_SHA512) mac = new SiSHA512();
+        if (macidentifier == SI_DEFTERMS_RIPEMD160) mac = new SiMDMAC(EMT_RIPEMD160);
+        else if (macidentifier == SI_DEFTERMS_SHA1) mac = new SiMDMAC(EMT_SHA1);
+        else if (macidentifier == SI_DEFTERMS_MD5)  mac = new SiMDMAC(EMT_MD5);
+        else if (macidentifier == SI_DEFTERMS_SHA256) mac = new SiMDMAC(EMT_SHA256);
+        else if (macidentifier == SI_DEFTERMS_SHA384) mac = new SiMDMAC(EMT_SHA384);
+        else if (macidentifier == SI_DEFTERMS_SHA512) mac = new SiMDMAC(EMT_SHA512);
         if (mac == NULL) result = SI_EC_VerificationFailed_UnsupportedMACAlgorithm;
       } else result = SI_EC_VerificationFailed_NoMAC;
     } else result = SI_EC_VerificationFailed_NoMAC;
@@ -789,6 +829,17 @@ OFCondition DcmSignature::verifyCurrent()
           result = mac->finalize(digest);
           if (result.good())
           {
+            if (dcmsignLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+            {
+              OFString logString;
+              char c[5];
+              for (size_t i=0; i<digestLength; i++)
+              {
+                 sprintf(c, "%02hu", digest[i]);
+                 logString += c;
+              }
+              DCMSIGN_DEBUG("DcmSignature::verifyCurrent(): " << mac->getDefinedTerm() << " MAC = " << logString);
+            }
             result = algorithm->verify(digest, digestLength, mac->macType(), sigData, sigLength, verified);
             if ((result.good()) && (! verified)) result = SI_EC_VerificationFailed_Corrupted;
           }
