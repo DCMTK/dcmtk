@@ -567,7 +567,7 @@ int main(int argc, char *argv[])
     if (!derivationDescription.empty())
     {
         const char *oldDerivation = NULL;
-        if (dataset->findAndGetString(DCM_DerivationDescription, oldDerivation).good())
+        if (dataset->findAndGetString(DCM_DerivationDescription, oldDerivation).good() && oldDerivation)
         {
              // append old Derivation Description, if any
             derivationDescription += " [";
