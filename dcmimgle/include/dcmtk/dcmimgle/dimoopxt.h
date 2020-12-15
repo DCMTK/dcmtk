@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -350,7 +350,8 @@ class DiMonoOutputPixelTemplate
                 DCMIMGLE_DEBUG("applying VOI transformation with LUT (" << vlut->getCount() << " entries)");
                 const DiDisplayLUT *dlut = NULL;
                 const double minvalue = vlut->getMinValue();
-                const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
+                const double lowvalue = OFstatic_cast(double, low);
+                const double outrange = OFstatic_cast(double, high) - lowvalue + 1;
                 unsigned long i;
                 if (minvalue == vlut->getMaxValue())                                    // LUT has only one entry or all entries are equal
                 {
@@ -369,7 +370,7 @@ class DiMonoOutputPixelTemplate
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, plut->getValue(value2))));
                         } else {                                                        // don't use display: invalid or absent
                             DCMIMGLE_TRACE("monochrome rendering: VOI LUT #2");
-                            value = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * outrange / OFstatic_cast(double, plut->getAbsMaxRange()));
+                            value = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value2)) * outrange / OFstatic_cast(double, plut->getAbsMaxRange()));
                         }
                     } else {                                                            // has no presentation LUT
                         createDisplayLUT(dlut, disp, vlut->getBits());
@@ -382,7 +383,7 @@ class DiMonoOutputPixelTemplate
                                 value = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, minvalue)));
                         } else {                                                        // don't use display: invalid or absent
                             DCMIMGLE_TRACE("monochrome rendering: VOI LUT #4");
-                            value = OFstatic_cast(T3, OFstatic_cast(double, low) + (minvalue / OFstatic_cast(double, vlut->getAbsMaxRange())) * outrange);
+                            value = OFstatic_cast(T3, lowvalue + (minvalue / OFstatic_cast(double, vlut->getAbsMaxRange())) * outrange);
                         }
                     }
                     OFBitmanipTemplate<T3>::setMem(Data, value, Count);                 // set output pixels to LUT value
@@ -449,7 +450,7 @@ class DiMonoOutputPixelTemplate
                                         value2 = lastvalue;
                                     else
                                         value2 = OFstatic_cast(Uint32, OFstatic_cast(double, vlut->getValue(value)) * gradient1);
-                                    *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * gradient2);
+                                    *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value2)) * gradient2);
                                 }
                             }
                             const T3 *lut0 = lut - OFstatic_cast(T2, inter->getAbsMinimum());  // points to 'zero' entry
@@ -501,15 +502,15 @@ class DiMonoOutputPixelTemplate
                                         value2 = lastvalue;
                                     else
                                         value2 = OFstatic_cast(Uint32, OFstatic_cast(double, vlut->getValue(value)) * gradient1);
-                                    *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * gradient2);
+                                    *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value2)) * gradient2);
                                 }
                             }
                         }
                     } else {                                                              // has no presentation LUT
                         createDisplayLUT(dlut, disp, vlut->getBits());
                         const double gradient = outrange / OFstatic_cast(double, vlut->getAbsMaxRange());
-                        const T3 firstvalue = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, vlut->getFirstValue()) * gradient);
-                        const T3 lastvalue = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, vlut->getLastValue()) * gradient);
+                        const T3 firstvalue = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, vlut->getFirstValue()) * gradient);
+                        const T3 lastvalue = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, vlut->getLastValue()) * gradient);
                         if (initOptimizationLUT(lut, ocnt))
                         {                                                                 // use LUT for optimization
                             q = lut;
@@ -549,7 +550,7 @@ class DiMonoOutputPixelTemplate
                                     else if (value >= lastentry)
                                         *(q++) = lastvalue;
                                     else
-                                        *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, vlut->getValue(value)) * gradient);
+                                        *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, vlut->getValue(value)) * gradient);
                                 }
                             }
                             const T3 *lut0 = lut - OFstatic_cast(T2, inter->getAbsMinimum());   // points to 'zero' entry
@@ -595,7 +596,7 @@ class DiMonoOutputPixelTemplate
                                     else if (value >= lastentry)
                                         *(q++) = lastvalue;
                                     else
-                                        *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, vlut->getValue(value)) * gradient);
+                                        *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, vlut->getValue(value)) * gradient);
                                 }
                             }
                         }
@@ -636,7 +637,8 @@ class DiMonoOutputPixelTemplate
                 DCMIMGLE_DEBUG("applying no VOI transformation (linear scaling)");
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
-                const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;  // output range
+                const double lowvalue = OFstatic_cast(double, low);
+                const double outrange = OFstatic_cast(double, high) - lowvalue + 1;   // output range
                 const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());        // number of LUT entries
                 DCMIMGLE_TRACE("intermediate pixel data - absmin: " << absmin << ", absmax: " << absmax);
                 const T1 *p = pixel + start;
@@ -676,7 +678,7 @@ class DiMonoOutputPixelTemplate
                             for (i = 0; i < ocnt; ++i)
                             {
                                 value = OFstatic_cast(Uint32, OFstatic_cast(double, i) * gradient1);
-                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value)) * gradient2);
+                                *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value)) * gradient2);
                             }
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, inter->getAbsMinimum());  // points to 'zero' entry
@@ -709,7 +711,7 @@ class DiMonoOutputPixelTemplate
                             for (i = Count; i != 0; --i)
                             {
                                 value = OFstatic_cast(Uint32, (OFstatic_cast(double, *(p++)) - absmin) * gradient1);
-                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value)) * gradient2);
+                                *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value)) * gradient2);
                             }
                         }
                     }
@@ -733,7 +735,7 @@ class DiMonoOutputPixelTemplate
                         } else {                                                      // don't use display: invalid or absent
                             DCMIMGLE_TRACE("monochrome rendering: VOI NONE #6");
                             for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
-                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, i) * gradient);
+                                *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, i) * gradient);
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, inter->getAbsMinimum());  // points to 'zero' entry
                         q = Data;
@@ -756,7 +758,7 @@ class DiMonoOutputPixelTemplate
                         } else {                                                      // don't use display: invalid or absent
                             DCMIMGLE_TRACE("monochrome rendering: VOI NONE #8");
                             for (i = Count; i != 0; --i)
-                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + (OFstatic_cast(double, *(p++)) - absmin) * gradient);
+                                *(q++) = OFstatic_cast(T3, lowvalue + (OFstatic_cast(double, *(p++)) - absmin) * gradient);
                         }
                     }
                 }
@@ -798,7 +800,8 @@ class DiMonoOutputPixelTemplate
                 DCMIMGLE_DEBUG("applying sigmoid VOI transformation with window center = " << center << ", width = " << width);
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
-                const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low);  // output range
+                const double lowvalue = OFstatic_cast(double, low);
+                const double outrange = OFstatic_cast(double, high) - lowvalue;       // output range
                 const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());    // number of LUT entries
                 const T1 *p = pixel + start;
                 T3 *q = Data;
@@ -834,7 +837,7 @@ class DiMonoOutputPixelTemplate
                             {
                                 value = OFstatic_cast(double, i) + absmin;
                                 value2 = OFstatic_cast(Uint32, plutcnt_1 / (1 + exp(-4 * (value - center) / width)));
-                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * gradient);
+                                *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value2)) * gradient);
                             }
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);             // points to 'zero' entry
@@ -863,7 +866,7 @@ class DiMonoOutputPixelTemplate
                             {
                                 value = OFstatic_cast(double, *(p++));
                                 value2 = OFstatic_cast(Uint32, plutcnt_1 / (1 + exp(-4 * (value - center) / width)));
-                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * gradient);
+                                *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value2)) * gradient);
                             }
                         }
                     }
@@ -960,7 +963,8 @@ class DiMonoOutputPixelTemplate
                 const double width_1 = width - 1;
                 const double leftBorder = center - 0.5 - width_1 / 2;                 // window borders, according to supplement 33
                 const double rightBorder = center - 0.5 + width_1 / 2;
-                const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low);  // output range
+                const double lowvalue = OFstatic_cast(double, low);
+                const double outrange = OFstatic_cast(double, high) - lowvalue;       // output range
                 const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());    // number of LUT entries
                 const T1 *p = pixel + start;
                 T3 *q = Data;
@@ -1007,7 +1011,7 @@ class DiMonoOutputPixelTemplate
                                     value2 = pcnt - 1;                                // last LUT index
                                 else
                                     value2 = OFstatic_cast(Uint32, (value - leftBorder) * gradient1);
-                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * gradient2);
+                                *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value2)) * gradient2);
                             }
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);             // points to 'zero' entry
@@ -1046,7 +1050,7 @@ class DiMonoOutputPixelTemplate
                                     value2 = pcnt - 1;                                // last LUT index
                                 else
                                     value2 = OFstatic_cast(Uint32, (value - leftBorder) * gradient1);
-                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value2)) * gradient2);
+                                *(q++) = OFstatic_cast(T3, lowvalue + OFstatic_cast(double, plut->getValue(value2)) * gradient2);
                             }
                         }
                     }
