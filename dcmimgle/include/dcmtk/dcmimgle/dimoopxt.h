@@ -891,7 +891,7 @@ class DiMonoOutputPixelTemplate
                             for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
                             {
                                 value = OFstatic_cast(double, i) + absmin;
-                                *(q++) = OFstatic_cast(T3, outrange / (1 + exp(-4 * (value - center) / width)));
+                                *(q++) = OFstatic_cast(T3, outrange / (1 + exp(-4 * (value - center) / width)) + lowvalue);
                             }
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);             // points to 'zero' entry
@@ -917,7 +917,7 @@ class DiMonoOutputPixelTemplate
                             for (i = Count; i != 0; --i)
                             {
                                 value = OFstatic_cast(double, *(p++));
-                                *(q++) = OFstatic_cast(T3, outrange / (1 + exp(-4 * (value - center) / width)));
+                                *(q++) = OFstatic_cast(T3, outrange / (1 + exp(-4 * (value - center) / width)) + lowvalue);
                             }
                         }
                     }
