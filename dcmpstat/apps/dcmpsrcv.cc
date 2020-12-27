@@ -1315,8 +1315,8 @@ int main(int argc, char *argv[])
               dropAssociation(&assoc);
             } else if (pid > 0)
             {
-              /* parent process */
-              assoc = NULL;
+              /* we're the parent process, close accepted socket and continue */
+              dropAssociation(&assoc);
             } else {
               /* child process */
 
