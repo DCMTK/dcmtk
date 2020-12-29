@@ -2972,6 +2972,7 @@ OFCondition DVInterface::saveStoredPrint(
       if (prependDateTime)
       {
         OFDateTime::getCurrentDateTime().getISOFormattedDateTime(text, OFFalse /*showSeconds*/);
+        text += " ";
       }
       if (prependPrinterName)
       {
