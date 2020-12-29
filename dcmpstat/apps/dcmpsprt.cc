@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2019, OFFIS e.V.
+ *  Copyright (C) 1999-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,9 +80,12 @@ static int addOverlay(const char *filename,
                         for (unsigned long xs = 0; xs < xsize; xs++)
                         {
                             while (input.get(c) && !isdigit(OFstatic_cast(unsigned char, c)));  // skip non-numeric chars
-                            input.putback(c);
-                            input >> value;
-                            if (value)
+                            if (!isdigit(OFstatic_cast(unsigned char, c)))
+                            {
+                              OFLOG_ERROR(dcmpsprtLogger, "syntax error in PBM file '" << filename << "'");
+                              return 0;
+                            }
+                            if (c != '0')
                                 *p = gray;
                             p++;
                         }
@@ -90,7 +93,7 @@ static int addOverlay(const char *filename,
                     }
                     return 1;
                 } else
-                    OFLOG_ERROR(dcmpsprtLogger, "invalid position for overlay PBM file '" << filename);
+                    OFLOG_ERROR(dcmpsprtLogger, "invalid position for overlay PBM file '" << filename << "'");
             } else
                 OFLOG_ERROR(dcmpsprtLogger, "overlay PBM file '" << filename << "' has no magic number P1");
         } else
@@ -445,7 +448,7 @@ int main(int argc, char *argv[])
     /* dump printer characteristics if requested */
     const char *currentPrinter = dvi.getCurrentPrinter();
 
-    if ((opt_img_request_size) && (!dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
+    if ((opt_img_request_size) && (!dvi.getTargetPrinterSupportsRequestedImageSize(currentPrinter)))
       OFLOG_WARN(dcmpsprtLogger, "printer does not support requested image size");
 
     if (EC_Normal != dvi.getPrintHandler().setImageDisplayFormat(opt_columns, opt_rows))
@@ -645,7 +648,7 @@ int main(int argc, char *argv[])
       {
         // no need to do this manually if we are spooling - spoolPrintJob() will do this anyway.
         OFLOG_WARN(dcmpsprtLogger, "writing DICOM stored print object to database.");
-        if (EC_Normal != dvi.saveStoredPrint(dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
+        if (EC_Normal != dvi.saveStoredPrint(dvi.getTargetPrinterSupportsRequestedImageSize(currentPrinter)))
         {
           OFLOG_ERROR(dcmpsprtLogger, "error during creation of DICOM stored print object");
         }
