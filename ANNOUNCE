@@ -5,7 +5,7 @@ public release.  This release includes the following main changes over the
 previous version 3.6.5:
 
 - DCMTK 3.6.6 builds correctly on older and up-to-date versions of GNU gcc
-  (4.2.1 to 10.2.0) Clang (3.4.2 to 10.0.1), Apple Clang 11.0.0, 
+  (4.2.1 to 10.2.0) Clang (3.4.2 to 11.0.0), Apple Clang 11.0.0,
   Microsoft Visual Studio (2008 to 2019) and SunPro CC (5.14 and 5.15).
 
 - Tested with the following operating systems/environments:
@@ -22,44 +22,58 @@ previous version 3.6.5:
 
   For a complete list of tested systems and compilers, see the INSTALL file.
 
-- Updated data dictionary, SOP classes, transfer syntaxes, code definitions
-  and context group classes for DICOM standard release 2020d.
+- Updated data dictionary, SOP classes, well-known frame of references,
+  transfer syntaxes, code definitions and supported context group classes for
+  DICOM standard release 2020e.
 
-- Added new DCMTK module dcmect which facilitates creation, loading,
-  (partly) modification and storing Enhanced CT objects.  
-  Also included is a general Concatenation API that allows to create and
-  re-assemble Concatenations from given DICOM datasets. The related
-  classes are called ConcatenationCreator and ConcatentionLoader and are
-  part of the dcmfg module. Right now, only uncompressed ("unencapsulated")
-  pixel data is supported. 
-  The existing Segmentation API (dcmseg) as well as the new Enhanced CT API
-  (dcmect) both support writing and reading Concatenations via dedicated
-  methods.  
-  Thanks to GE Aviation for sponsoring this feature.
+- Added new DCMTK module dcmect, which facilitates creation, loading, (partly)
+  modification and storing Enhanced CT objects:
 
-- Major revision of JSON export tool (dcm2json), which should now be
-  fully standard compliant.
+  - Also included is a general Concatenation API that allows for creating and
+    re-assembling Concatenations from given DICOM datasets. Right now, only
+    uncompressed ("unencapsulated") pixel data is supported.
 
-- Major revision of the dcmsign module, which now supports Elliptic Curve 
-  (ECDSA) signatures, the DICOM SR RSA Digital Signature Profile, and
-  CRLs in hashed certificate directories. During signature verification
-  the chain of trust for the signer certificates are now fully checked
-  and there is limited support for the creation and verification of
-  trusted timestamps.
+  - The existing Segmentation API (dcmseg) as well as the new Enhanced CT API
+    (dcmect) both support writing and reading Concatenations via dedicated
+    methods.
 
-- Added support for Rendition Selection Document IOD
+  - Thanks to GE Aviation for sponsoring this feature.
 
-- Added TLS support to the DcmSCP and DcmSCPPool classes and the
-  dcmrecv command line tool.
+- Major revision of JSON export tool (dcm2json), which should now be fully
+  standard compliant.
 
-- DCMTK now successfully compiles when UNICODE/_UNICODE is defined
-  on Windows.
+- Major revision of the dcmsign module, which now supports Elliptic Curve
+  (ECDSA) signatures, the DICOM SR RSA Digital Signature Profile, and CRLs in
+  hashed certificate directories.  During signature verification the chain of
+  trust for the signer certificates are now fully checked and there is limited
+  support for the creation and verification of trusted timestamps.
 
-- When compiling on Windows, new CMake options can now be used to 
-  control the Win32 build model (multithreaded or multithreaded DLL). 
+- Added support for the Rendition Selection Document IOD, which has been
+  introduced with Supplement 202 (Real-Time Video), to the dcmsr module.
 
-- Performance enhancements for code that gets an item from, or inserts
-  an item into a sequence with a large number of items
+- Added support for the new Waveform Storage SOP Classes that have been
+  introduced with Supplement 217 (Neurophysiology Waveforms) to the DICOMDIR
+  generation code and to the dcmsr module.
+
+- Added support for the new 2nd generation RT Storage SOP Classes that have
+  been introduced with Supplement 175, 176 and 199, as well as for the new
+  Encapsulated OBJ and MTL Storage SOP Classes (Supplement 208) to the
+  DICOMDIR generation code.
+
+- Added TLS support to the DcmSCP and DcmSCPPool classes and to the dcmrecv
+  command line tool.
+
+- Updated and completely revised DIMSE Status Code definitions.  Now, the
+  definitions and also the log output are consistent with the current edition
+  of the DICOM standard.
+
+- Significant performance enhancements for code that gets an item from or
+  inserts an item into a sequence with a large number of items.
+
+- DCMTK now successfully compiles when UNICODE/_UNICODE is defined on Windows.
+
+- When compiling on Windows, new CMake options can now be used to control the
+  Win32 build model (multi-threaded or multi-threaded DLL).
 
 - Fixed various issues that occurred after the official 3.6.5 release.
   See CHANGES file for details.
@@ -76,14 +90,16 @@ alphabetical order.  Thank you very much for your support!
   Matthias Gierlings <matthias.gierlings@ruhr-uni-bochum.de>
   Niklas Johansson (GitHub user "Raphexion")
   Andreas Keizers <an-kei@web.de>
+  Peter Klotz <Peter.Klotz@ith-icoserve.com>
   Damien Lerat
   Mathieu Malaterre <malat@debian.org>
+  Robert Mulcahey <rob@asteris.com>
   Maria Nedyak <mashanedyak@gmail.com>
+  Steve Pieper <pieper@isomics.com>
+  Sergey Razuvaev <Sergey.Razuvaev@waveaccess.ru>
   Markus Sabin <Markus.Sabin@soft-gate.de>
   Maria Samoylova <mashanedyak@gmail.com>
-  Peter Klotz <Peter.Klotz@ith-icoserve.com>
-  Sergey Razuvaev <Sergey.Razuvaev@waveaccess.ru>
-  Steve Pieper <pieper@isomics.com>
+  Adrian Schmidt-Foehre <A.Schmidt-Foehre@mint-medical.de>
   Waldo Valenzuela <waldo.valenzuela@artorg.unibe.ch>
 
   DCMTK forum users "CStarkey", "JustSomeGuy", "Shaeto", and "ruben.cruz"
