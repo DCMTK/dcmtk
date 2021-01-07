@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "Wed Jan 06 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding
@@ -243,11 +243,11 @@ other processing options:
 .nf
 output file format:
 
-  +F   --write-file
-         write file format (default)
-
   +Fm  --write-new-meta-info
-         write file format with new meta information
+         write file format with new meta information (default)
+
+  +F   --write-file
+         write file format
 
   -F   --write-dataset
          write data set without file meta information
@@ -347,4 +347,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2020 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

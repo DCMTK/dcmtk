@@ -1,4 +1,4 @@
-.TH "dcml2pnm" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcml2pnm" 1 "Wed Jan 06 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcml2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
@@ -124,7 +124,7 @@ flipping:
 scaling:
 
   +a    --recognize-aspect
-          recognize pixel aspect ratio (default)
+          recognize pixel aspect ratio when scaling (default)
 
   -a    --ignore-aspect
           ignore pixel aspect ratio when scaling
@@ -325,7 +325,7 @@ PNG format:
 other transformations:
 
   +G    --grayscale
-          convert to grayscale if necessary
+          convert color image to grayscale (monochrome)
 
   +P    --change-polarity
           change polarity (invert pixel output)
@@ -454,4 +454,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1), \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2020 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

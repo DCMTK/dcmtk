@@ -1,9 +1,3 @@
--------------------------------------------------------------------------------
-  Since this is a development version of the DCMTK, there is no public
-  announcement.  This file will be updated for the next official release.
--------------------------------------------------------------------------------
-
-
 ANNOUNCEMENT
 
 Version 3.6.6 of the OFFIS DCMTK (DICOM ToolKit) software is now available for
@@ -107,4 +101,4 @@ The DCMTK software can be downloaded via:
 
   https://dicom.offis.de/dcmtk or https://www.dcmtk.org/
 
-OFFIS e.V., Oldenburg, Germany, 2020-XX-XX
+OFFIS e.V., Oldenburg, Germany, 2021-01-06

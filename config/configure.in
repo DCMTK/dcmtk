@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(dcmtk, 3.6.5, [bugs@dcmtk.org], [dcmtk-3.6.5], [http://www.dcmtk.org/])
+AC_INIT(dcmtk, 3.6.6, [bugs@dcmtk.org], [dcmtk-3.6.6], [http://www.dcmtk.org/])
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADERS(include/dcmtk/config/osconfig.h)
@@ -10,7 +10,7 @@ dnl -------------------------------------------------------
 dnl Additional Package Information
 dnl -------------------------------------------------------
 
-PACKAGE_VERSION_NUMBER=365
+PACKAGE_VERSION_NUMBER=366
 PACKAGE_VERSION_SUFFIX="+"
 PACKAGE_DATE="DEV"
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_NUMBER,${PACKAGE_VERSION_NUMBER},[Define to the version number of this package.])

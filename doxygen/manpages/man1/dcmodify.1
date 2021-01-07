@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "Wed Jan 06 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -29,6 +29,8 @@ If \fBdcmodify\fP doesn't know the tag it should insert, then the tag's VR is se
 where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag\&. 'item-no' describes the item number to be accessed (counting from zero)\&. 'element' defines the target tag to work on\&. A tag can either be specified directly as (0010,0010) or through the corresponding dictionary name 'PatientName'\&. The '*' denotes that you can repeat sequence statements to access deeper levels in DICOM files (see EXAMPLES section)\&. For 'item-no', also a wildcard character '*' can be used selecting all items in surrounding sequence (see section WILDCARDS below)\&.
 .PP
 When inserting tag paths consisting of multiple nodes (i\&.e\&. not a single element) using the \fI-i\fP option, any missing path elements (items, sequences, leaf elements) are inserted automatically when missing\&. That does not work for item wildcards: When no single item exists in the surrounding sequence \fBdcmodify\fP of course can't decide, how many items should be generated\&. However, if specifying an item number like '5', all 6 items (counted from zero) can be (and are) automatically generated in insert mode\&. If already 2 items would exist, the rest (4) would be inserted\&.
+.PP
+\fBdcmodify\fP does not work on directories, i\&.e\&. the parameter \fIdcmfile-in\fP\&.\&.\&. must not include directory names\&.
 .PP
 Please note that there are some issues concerning the modification of private tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section)\&.
 .SH "PARAMETERS"
@@ -292,6 +294,8 @@ For the deletion of private non-reservation tags there are no special issues\&.
 If you generate new UID's with \fI-gst\fP, \fI-gse\fP or \fI-gin\fP, this will only affect the UID you chose to generate\&. So if you use \fI-gst\fP to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value separately\&. Normally, you would also modify the 'underlying' UIDs\&. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' DICOM files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary\&.
 .PP
 When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically\&. This behavior cannot be disabled\&.
+.PP
+When working on multiple input files, \fBdcmodify\fP processes each file in isolated fashion, i\&.e\&. it will generate UIDs for each single file\&. For example, when using the \fI-gst\fP option, \fBdcmodify\fP will insert a different Study Instance UID into each file instead of generating a single one and writing it to each file that is being processed\&.
 .SH "CREATING NEW FILES"
 .PP
 Option \fI--create-file\fP lets \fBdcmodify\fP create a file if it does not already exist on disk\&. This can be used in order to create files from scratch by performing consecutive insertions with options like \fI--insert\fP\&. This might especially become handy when creating query files for tools like \fBfindscu\fP or \fBmovescu\fP\&. In case no specific output transfer syntax is defined, \fBdcmodify\fP chooses Little Endian Explicit Uncompressed for output\&. Files that are newly created are always written as DICOM file format, i\&.e\&. option \fI--write-dataset\fP is not permitted together with \fI--create\fP\&. This way, at least the metaheader is written and no file with zero byte length is created in a case where no insertions are performed in the \fBdcmodify\fP call\&.

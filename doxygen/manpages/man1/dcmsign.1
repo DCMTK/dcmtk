@@ -1,4 +1,4 @@
-.TH "dcmsign" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "Wed Jan 06 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsign \- Sign and Verify DICOM Files
@@ -98,6 +98,14 @@ input transfer syntax:
 
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
+
+handling of defined length UN elements:
+
+  -uc   --retain-un
+          retain elements as UN (default)
+
+  +uc   --convert-un
+          convert to real VR if known
 .fi
 .PP
 .SS "signature commands"
@@ -112,6 +120,10 @@ input transfer syntax:
   +si   --sign-item  [k]eyfile, [c]ertfile, [i]tem location: string
           create signature in sequence item
 
+  +t    --insert-timestamp  ts[q]file, ts[r]file [u]idfile: string
+          insert certified timestamp from ts response r
+          from timestamp query q at signature UID u
+
   +r    --remove  [s]ignature UID: string
           remove signature
 
@@ -119,7 +131,83 @@ input transfer syntax:
           remove all signatures from data set
 .fi
 .PP
-.SS "signature creation options (only with &ndash;sign or &ndash;sign-item):"
+.SS "general signature options"
+.PP
+.nf
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys/certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys/certificates as DER file
+
+signature format:
+
+  -fn   --format-new
+          use correct DICOM signature format (default)
+
+  -fo   --format-old
+          use old (pre-3.5.4) DCMTK signature format, non-conformant
+          if signature includes compressed pixel data. This option should
+          only be used to verify signatures in the old format.
+.fi
+.PP
+.SS "signature verification options (only with &ndash;verify)"
+.PP
+.nf
+signature verification:
+
+  +rv   --verify-if-present
+          verify signatures if present, pass otherwise
+          (default)
+
+  +rg   --require-sig
+          fail if no signature at all is present
+
+  +rc   --require-creator
+          fail if no creator RSA signature is present
+
+  +ru   --require-auth
+          fail if no auth RSA signature is present
+
+  +rs   --require-sr
+          fail if no SR RSA signature is present
+
+timestamp verification:
+
+  +tv   --verify-ts
+          verify certified timestamp if present (default)
+
+  -tv   --ignore-ts
+          ignore certified timestamps
+
+  +tr   --require-ts
+          fail if no certified timestamp is present
+
+certification authority:
+
+  +cf   --add-cert-file
+          [f]ilename: string
+          add trusted certificate file to cert store
+
+  +uf   --add-ucert-file
+          [f]ilename: string
+          add untrusted intermediate certificate file
+
+  +cd   --add-cert-dir
+          [d]irectory: string
+          add certificates in d to cert store
+
+  +cr   --add-crl-file
+          [f]ilename: string
+          add certificate revocation list file
+          (implies --enable-crl-vfy)
+
+  +cl   --enable-crl-vfy
+          enable certificate revocation list verification.fi
+.PP
+.SS "signature creation options (only with &ndash;sign or &ndash;sign-item)"
 .PP
 .nf
 private key password:
@@ -132,14 +220,6 @@ private key password:
 
   -pw   --null-passwd
           use empty string as password
-
-key and certificate file format:
-
-  -pem  --pem-keys
-          read keys/certificates as PEM file (default)
-
-  -der  --der-keys
-          read keys/certificates as DER file
 
 digital signature profile:
 
@@ -155,6 +235,12 @@ digital signature profile:
   +pa   --profile-auth
           enforce authorization signature profile
 
+  +pr   --profile-sr
+          enforce SR RSA signature profile
+
+  +pv   --profile-srv
+          enforce SR RSA signature profile (verification)
+
 MAC algorithm:
 
   +mr   --mac-ripemd160
@@ -166,6 +252,27 @@ MAC algorithm:
   +mm   --mac-md5
           use MD 5
 
+  +m2   --mac-sha256
+          use SHA-256
+
+  +m3   --mac-sha384
+          use SHA-384
+
+  +m5   --mac-sha512
+          use SHA-512
+
+signature purpose:
+
+  +lp   --list-purposes
+          show list of signature purpose codes and exit
+
+  -sp   --no-sig-purpose
+          do not add signature purpose (default)
+
+  +sp   --sig-purpose
+          [p]urpose code: integer (1..18)
+          add digital signature purpose code p
+
 tag selection:
 
   -t    --tag
@@ -174,16 +281,62 @@ tag selection:
           (this option can be specified multiple times)
 
   -tf   --tag-file  [f]ilename: string
-          read list of tags from text file
+          read list of tags from text file.fi
+.PP
+.SS "timestamp creation options (only with &ndash;sign or &ndash;sign-item)"
+.PP
+.nf
+timestamp creation:
 
-signature format:
+  -ts   --timestamp-off
+          do not create timestamp (default)
 
-  -fn   --format-new
-          use correct DICOM signature format (default)
+  +ts   --timestamp-file  [t]sq-filename, [u]id-filename: string
+          create timestamp query file t and uid file u
 
-  -fo   --format-old
-          use old (pre-3.5.4) DCMTK signature format, non-conformant
-          if signature includes compressed pixel data
+timestamp MAC algorithm (only with --timestamp-file):
+
+  +tm2  --ts-mac-sha256
+          use SHA-256 (default)
+
+  +tm3  --ts-mac-sha384
+          use SHA-384
+
+  +tm5  --ts-mac-sha512
+          use SHA-512
+
+  +tmr  --ts-mac-ripemd160
+          use RIPEMD 160
+
+  +tms  --ts-mac-sha1
+          use SHA-1 (not recommended)
+
+  +tmm  --ts-mac-md5
+          use MD5 (not recommended)
+
+timestamp query nonce options (only with --timestamp-file):
+
+  +tn   --ts-use-nonce
+          include random nonce (default)
+
+  -tn   --ts-no-nonce
+          do not include nonce
+
+timestamp certificate inclusion options (only with --timestamp-file):
+
+  +tc   --ts-request-cert
+          request TSA certificate in timestamp (default)
+
+  -tc   --ts-no-cert
+          do not request TSA certificate in timestamp
+
+timestamp policy options (only with --timestamp-file):
+
+  -tp   --ts-no-policy
+          do not specify ts policy (default)
+
+  +tp   --ts-policy  [p]olicy-OID: string
+          request timestamp policy p
 .fi
 .PP
 .SS "output options"
@@ -223,13 +376,13 @@ other output options:
 .SS "Files and Parameters"
 The \fBdcmsign\fP utility reads and writes a number of files and file formats which are described in this section\&.
 .PP
-Public Key Certificates are expected in X\&.509v3 format, either with PEM or DER encoding\&. The dcmsign utility currently supports RSA and DSA public keys, although only RSA keys are defines in the Security Profiles of the DICOM standard\&.
+Public Key Certificates are expected in X\&.509v3 format, either with PEM or DER encoding\&. The \fBdcmsign\fP utility currently supports RSA and DSA public keys, although only RSA keys are defines in the Security Profiles of the DICOM standard\&.
 .PP
 Private Keys are expected in PEM or DER encoding\&. PEM is recommended (and default) because this allows one to keep private keys in encrypted form\&. Command line options control the behavior of \fBdcmsign\fP when an encrypted PEM key is opened (see above)\&. In general it is not recommended to specify the encryption password in the command line because the command line may be visible to other processes in the system, e\&.g\&. 'ps -ef'\&.
 .PP
-The list of data elements to sign can either be read from a file or specified on the command line or both (in this case the keys are combined)\&.
+By default, \fBdcmsign\fP will create a signature covering all data elements in the dataset or item\&. This default can be overridden by explicitly specifying a list of data elements (attribute tags)\&. This list can either be read from a file or specified on the command line or both (in this case the attribute tags are combined)\&.
 .PP
-On the command line, attribute keys are specified as
+On the command line, attribute tags are specified as
 .PP
 .PP
 .nf
@@ -240,7 +393,9 @@ On the command line, attribute keys are specified as
 .fi
 .PP
 .PP
-When attribute tags are read from file with the \fI--tag-file\fP option, a plain text file of max\&. 64 kbyte is expected\&. Tags within the file are either symbolic names from the data dictionary or have the format (gggg,eeee) (with braces)\&. Tags are separated by one or more whitespace characters\&.
+When attribute tags are read from file with the \fI--tag-file\fP option, a plain text file is expected\&. Tags within the file are either symbolic names from the data dictionary or have the format (gggg,eeee) (with braces)\&. Tags are separated by one or more whitespace characters\&.
+.PP
+The currently selected digital signature profile may specify additional attribute tags required to be included in the signature, which will be silently added\&.
 .PP
 The \fI--sign-item\fP operation requires a location string that describes in which sequence item a signature is to be created\&. The location string has the following format:
 .PP
@@ -259,6 +414,20 @@ ReferencedSeriesSequence[0].ReferencedImageSequence[1]
 .PP
 .PP
 would cause a digital signature to be created in the second item of the ReferencedImageSequence (0008,1140) which is located in the first item of the ReferencedSeriesSequence (0008,1115) which is located in the main DICOM dataset\&.
+.SS "Certified Timestamps"
+Starting with release 3\&.6\&.6, \fBdcmsign\fP offers support for certified timestamps according to RFC 3161\&. For now, the tool does not implement any of the network protocols defined in RFC 3161 for communicating with a timestamp authority (TSA), but it can write a timestamp query (TSQ) during signature creation, and the new command \fI--insert-timestamp\fP will read a timestamp response (TSR) from file and add it to the DICOM digital signature\&. Since a DICOM file can contain multiple signatures, a 'UID file' (which contains the Digital Signature UID) is used to identify the signature to which the TSR should be added\&. The \fBdcmsign\fP tool will also perform various consistency checks before storing the timestamp\&.
+.PP
+During signature verification, the presence of a certified timestamp will be detected and the timestamp will also be verified unless option \fI--ignore-ts\fP was used\&. Signature verification and timestamp verification use a common certificate store to check the certificates of the DICOM signature and the timestamp\&. This store can be populated with the options \fI--add-cert-file\fP and \fI--add-cert-dir\fP, which both add trusted CA certificates, \fI--add-ucert-file\fP, which adds an untrusted intermediate CA certificate, and \fI--add-crl-file\fP, which adds a certificate revocation list\&.
+.SS "Hashed Certificate Directories"
+Instead of adding CA certificates and certificate revocation lists (CRLs) manually using \fI--add-cert-file\fP and \fI--add-crl-file\fP, the user can set-up a directory where \fBdcmsign\fP will look-up and load certificates and CRLs from as needed, using \fI--add-cert-dir\fP\&.
+.PP
+Th directory should contain one certificate or CRL per file in PEM format, with a filename of the form hash\&.N for a certificate, or hash\&.rN for a CRL\&. The hash is the value returned by
+.PP
+\fIopenssl x509 -hash -noout -in <filename\&.pem>\fP (for a certificate) \fIopenssl crl -hash -noout -in <filename\&.pem>\fP (for a CRL)
+.PP
+The \&.N or \&.rN suffix is a sequence number that starts at zero, and is incremented consecutively for each certificate or CRL with the same hash value\&. Gaps in the sequence numbers are not supported, it is assumed that there are no more objects with the same hash beyond the first missing number in the sequence\&.
+.PP
+CRLs will only be verified when option \fI--enable-crl-vfy\fP is specified\&. In this case, \fBdcmsign\fP will expect a CRL to be present for each CA and will fail signature verification if no CRL can be found for the CA that issued the signer certificate\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -271,6 +440,56 @@ All command line tools use the following notation for parameters: square bracket
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
 .PP
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
+.SH "EXIT CODES"
+.PP
+The \fBdcmsign\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
+.SS "general"
+.PP
+.nf
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+EXITCODE_NOOPENSSL                        5
+.fi
+.PP
+.SS "input file errors"
+.PP
+.nf
+EXITCODE_CANNOT_READ_INPUT_FILE          20
+EXITCODE_NO_INPUT_FILES                  21
+EXITCODE_CANNOT_READ_TAG_FILE            30
+EXITCODE_CANNOT_READ_TSQ_FILE            31
+EXITCODE_CANNOT_READ_TSR_FILE            32
+EXITCODE_CANNOT_READ_UID_FILE            33
+.fi
+.PP
+.SS "output file errors"
+.PP
+.nf
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+EXITCODE_CANNOT_WRITE_SUPPORT_FILE       46
+.fi
+.PP
+.SS "processing errors"
+.PP
+.nf
+EXITCODE_CANNOT_ACCESS_SIGNATURE         80
+EXITCODE_CANNOT_ACCESS_TS                81
+EXITCODE_CANNOT_INSERT_TS                82
+EXITCODE_SIGNATURE_REMOVAL_FAILED        83
+EXITCODE_SIGNATURE_UID_NOT_FOUND         84
+EXITCODE_SIGNATURE_CREATION_FAILED       85
+EXITCODE_SYNTAX_ERROR_IN_TAG_FILE        86
+EXITCODE_TS_CONSISTENCY_CHECK_FAILED     87
+.fi
+.PP
+.SS "application specific errors"
+.PP
+.nf
+EXITCODE_NO_SIGNATURES_PRESENT           100
+EXITCODE_SIGNATURE_VERIFICATION_FAILED   101
+EXITCODE_SIGNATURE_VERIFICATION_POLICY   102
+.fi
+.PP
 .SH "ENVIRONMENT"
 .PP
 The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
@@ -278,4 +497,4 @@ The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2020 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
