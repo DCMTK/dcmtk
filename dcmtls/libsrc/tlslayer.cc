@@ -58,6 +58,7 @@ END_EXTERN_C
 #if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
 #define SSL_CTX_get_cert_store(ctx) (ctx)->cert_store
 #define EVP_PKEY_base_id(key) EVP_PKEY_type((key)->type)
+#define DH_bits(dh) BN_num_bits((dh)->p)
 #endif
 
 extern "C" int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
@@ -76,7 +77,7 @@ OFLogger DCM_dcmtlsLogger = OFLog::getLogger("dcmtk.dcmtls");
  */
 OFBool DcmTLSTransportLayer::setBuiltInDHParameters()
 {
-  static const char dh2048_p[] =
+  static char dh2048_p[] =
     "-----BEGIN DH PARAMETERS-----\n"
     "MIIBCAKCAQEAzEaoIXpuyK2D+If94J2iSxYqi1Ot+HD7FKvszu7Bxlh8izm1nyzk\n"
     "b0zUJfcXOaxnSsqmfGxLfPRm5+vD3aeD6mugrR1zZSemXUiq6CsONZZQ1MxStJvk\n"
@@ -87,18 +88,29 @@ OFBool DcmTLSTransportLayer::setBuiltInDHParameters()
     "-----END DH PARAMETERS-----\n";
 
   if (transportLayerContext==NULL) return OFFalse;
-  EVP_PKEY *dhparams = NULL;
   BIO *bio = BIO_new_mem_buf(dh2048_p, sizeof(dh2048_p));
   if (bio)
   {
-    dhparams = PEM_read_bio_Parameters(bio,NULL);
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+    EVP_PKEY *dhparams = PEM_read_bio_Parameters(bio,NULL);
     BIO_free(bio);
     if (dhparams)
     {
       SSL_CTX_set0_tmp_dh_pkey(transportLayerContext, dhparams); // transfers ownership of "dhparams" to transportLayerContext
       return OFTrue;
     }
+#else
+    DH *dhparams = PEM_read_bio_DHparams(bio,NULL,NULL,NULL);
+    BIO_free(bio);
+    if (dhparams)
+    {
+      SSL_CTX_set_tmp_dh(transportLayerContext,dhparams);
+      DH_free(dhparams); /* Safe because of reference counts in OpenSSL */
+      return OFTrue;
+    }
+#endif
   }
+
   return OFFalse;
 }
 
@@ -399,7 +411,8 @@ OFBool DcmTLSTransportLayer::setTempDHParameters(const char *filename)
   BIO *bio = BIO_new_file(filename,"r");
   if (bio)
   {
-    dh = PEM_read_bio_Parameters(bio,NULL);
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+    EVP_PKEY *dh = PEM_read_bio_Parameters(bio,NULL);
     BIO_free(bio);
     if (dh)
     {
@@ -422,9 +435,37 @@ OFBool DcmTLSTransportLayer::setTempDHParameters(const char *filename)
       SSL_CTX_set0_tmp_dh_pkey(transportLayerContext, dh); // transfers ownership of "dh" to transportLayerContext
       return OFTrue;
     }
+#else
+    DH *dh = PEM_read_bio_DHparams(bio,NULL,NULL,NULL);
+    BIO_free(bio);
+    if (dh)
+    {
+      // check BCP 195 recommendation: With a key exchange based on modular
+      // exponential (MODP) Diffie-Hellman groups ("DHE" cipher suites),
+      // DH key lengths of at least 2048 bits are RECOMMENDED.
+      if (DH_bits(dh) < 2048)
+      {
+          DCMTLS_WARN("Key length of Diffie-Hellman parameter file too short: RFC 7525 recommends at least 2048 bits, but the key in file '"
+          << filename << "' is only " << DH_bits(dh) << " bits.");
+          if (ciphersuites.getTLSProfile() == TSP_Profile_BCP195_Extended)
+          {
+              // Extended BCP 195 profile: Reject DH parameter set, because it has less than 2048 bits
+              // This will cause the default DH parameter set (which is large enough) to be used
+              DH_free(dh);
+              return OFFalse;
+          }
+      }
+      SSL_CTX_set_tmp_dh(transportLayerContext,dh);
+      DH_free(dh); /* Safe because of reference counts in OpenSSL */
+      return OFTrue;
+    }
+#endif
   }
   return OFFalse;
 }
+
+
+
 
 void DcmTLSTransportLayer::setPrivateKeyPasswd(const char *thePasswd)
 {

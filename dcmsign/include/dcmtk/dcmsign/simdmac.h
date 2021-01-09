@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2020, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,8 +30,17 @@
 #include "dcmtk/dcmsign/simac.h"
 #include "dcmtk/dcmsign/sitypes.h"
 
+BEGIN_EXTERN_C
+#include <openssl/opensslv.h>
+END_EXTERN_C
+
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+struct env_md_ctx_st;
+typedef struct env_md_ctx_st EVP_MD_CTX;
+#else
 struct evp_md_ctx_st;
 typedef struct evp_md_ctx_st EVP_MD_CTX;
+#endif
 
 /**
  * a class implementing all supported hash functions using the OpenSSL EVP_MD high level API.

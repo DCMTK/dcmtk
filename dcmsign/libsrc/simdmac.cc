@@ -44,7 +44,7 @@ SiMDMAC::SiMDMAC(E_MACType mactype)
 
 SiMDMAC::~SiMDMAC()
 {
-  EVP_MD_CTX_free(ctx);
+  EVP_MD_CTX_destroy(ctx); // This is the same as EVP_MD_CTX_free() in OpenSSL 3.0
 }
 
 unsigned long SiMDMAC::getSize() const
@@ -55,9 +55,9 @@ unsigned long SiMDMAC::getSize() const
 
 OFCondition SiMDMAC::initialize()
 {
-  EVP_MD_CTX_free(ctx);
+  EVP_MD_CTX_destroy(ctx); // This is the same as EVP_MD_CTX_free() in OpenSSL 3.0
 
-  ctx = EVP_MD_CTX_new();
+  ctx = EVP_MD_CTX_create(); // This is the same as EVP_MD_CTX_new() in OpenSSL 3.0
   if (ctx==NULL) return SI_EC_InitializationFailed;
 
   const EVP_MD *md_type = NULL;
@@ -87,7 +87,7 @@ OFCondition SiMDMAC::initialize()
   if (EVP_DigestInit_ex(ctx, md_type, NULL) <= 0)
   {
      DCMSIGN_DEBUG("SiMDMAC::initialize(): call to EVP_DigestInit_ex() failed");
-     EVP_MD_CTX_free(ctx);
+     EVP_MD_CTX_destroy(ctx); // This is the same as EVP_MD_CTX_free() in OpenSSL 3.0
      ctx = NULL;
      return SI_EC_OpenSSLFailure;
   }
