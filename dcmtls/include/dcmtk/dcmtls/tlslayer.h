@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -329,6 +329,12 @@ public:
    *  encrypted private key file to be read from the console stdin.
    */
   void setPrivateKeyPasswdFromConsole();
+
+  /** loads the hard-coded set of Diffie-Hellman parameters from memory.
+   *  These parameters are required for DH, DHE or DSS ciphersuites.
+   *  @return OFTrue if successful, OFFalse otherwise.
+   */
+  OFBool setBuiltInDHParameters();
 
   /** loads a set of Diffie-Hellman parameters from file.
    *  These parameters are required for DH, DHE or DSS ciphersuites.
