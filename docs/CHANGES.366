@@ -3,6 +3,11 @@ Release 3.6.6 (Public Minor Release - 2021-01-14)
 
 **** Changes from 2021.01.14 (onken)
 
+- Updated release date in INSTALL file and for autoconf.
+  Affects: INSTALL
+           public/config/configure
+           public/config/configure.in
+
 - Final changes for Release 3.6.6.
   Affects: ANNOUNCE
            CMake/dcmtkPrepare.cmake
