@@ -1,14 +1,14 @@
 
-Release 3.6.6 (Public Minor Release - 2021-01-06)
+Release 3.6.6 (Public Minor Release - 2021-01-14)
 
-**** Changes from 2021.01.06 (onken)
+**** Changes from 2021.01.14 (onken)
 
-- Created CHANGES.366 for DCMTK release 3.6.6:
-  CHANGES.366 contains the Git commit history since DCMTK release 3.6.5.
-  Added:   docs/CHANGES.366
-
-- Updated man pages for DCMTK release 3.6.6.
-  Affects: doxygen/manpages/man1/cda2dcm.1
+- Final changes for Release 3.6.6.
+  Affects: ANNOUNCE
+           CMake/dcmtkPrepare.cmake
+           CREDITS
+           docs/CHANGES.366
+           doxygen/manpages/man1/cda2dcm.1
            doxygen/manpages/man1/dcm2json.1
            doxygen/manpages/man1/dcm2pdf.1
            doxygen/manpages/man1/dcm2pnm.1
@@ -68,17 +68,118 @@ Release 3.6.6 (Public Minor Release - 2021-01-06)
            doxygen/manpages/man1/xml2dcm.1
            doxygen/manpages/man1/xml2dsr.1
 
-- Updated version information for DCMTK release 3.6.6.
-  Affects: CMake/dcmtkPrepare.cmake
-           VERSION
 
-- Updated ANNOUNCE and INSTALL for DCMTK release 3.6.6.
+**** Changes from 2021.01.07 (onken)
+
+- Updated ANNOUNCE for Release 3.6.6
   Affects: ANNOUNCE
-           INSTALL
 
-- Prepared autoconf for release 3.6.6.
-  Affects: config/configure
+- Prepared source tree for DCMTK release 3.6.6.
+  Affects: ANNOUNCE
+           CMake/dcmtkPrepare.cmake
+           COPYRIGHT
+           CREDITS
+           INSTALL
+           VERSION
+           config/configure
            config/configure.in
+           docs/CHANGES.366
+           doxygen/manpages/man1/cda2dcm.1
+           doxygen/manpages/man1/dcm2json.1
+           doxygen/manpages/man1/dcm2pdf.1
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcjpeg.1
+           doxygen/manpages/man1/dcmcjpls.1
+           doxygen/manpages/man1/dcmconv.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dcmdjpeg.1
+           doxygen/manpages/man1/dcmdjpls.1
+           doxygen/manpages/man1/dcmdrle.1
+           doxygen/manpages/man1/dcmdspfn.1
+           doxygen/manpages/man1/dcmdump.1
+           doxygen/manpages/man1/dcmftest.1
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmicmp.1
+           doxygen/manpages/man1/dcmj2pnm.1
+           doxygen/manpages/man1/dcml2pnm.1
+           doxygen/manpages/man1/dcmmkcrv.1
+           doxygen/manpages/man1/dcmmkdir.1
+           doxygen/manpages/man1/dcmmklut.1
+           doxygen/manpages/man1/dcmodify.1
+           doxygen/manpages/man1/dcmp2pgm.1
+           doxygen/manpages/man1/dcmprscp.1
+           doxygen/manpages/man1/dcmprscu.1
+           doxygen/manpages/man1/dcmpschk.1
+           doxygen/manpages/man1/dcmpsmk.1
+           doxygen/manpages/man1/dcmpsprt.1
+           doxygen/manpages/man1/dcmpsrcv.1
+           doxygen/manpages/man1/dcmpssnd.1
+           doxygen/manpages/man1/dcmqridx.1
+           doxygen/manpages/man1/dcmqrscp.1
+           doxygen/manpages/man1/dcmqrti.1
+           doxygen/manpages/man1/dcmquant.1
+           doxygen/manpages/man1/dcmrecv.1
+           doxygen/manpages/man1/dcmscale.1
+           doxygen/manpages/man1/dcmsend.1
+           doxygen/manpages/man1/dcmsign.1
+           doxygen/manpages/man1/dcod2lum.1
+           doxygen/manpages/man1/dconvlum.1
+           doxygen/manpages/man1/drtdump.1
+           doxygen/manpages/man1/dsr2html.1
+           doxygen/manpages/man1/dsr2xml.1
+           doxygen/manpages/man1/dsrdump.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/echoscu.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/getscu.1
+           doxygen/manpages/man1/img2dcm.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/pdf2dcm.1
+           doxygen/manpages/man1/stl2dcm.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           doxygen/manpages/man1/termscu.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+**** Changes from 2020.12.29 (eichelberg)
+
+- Minor bug fixes in dcmpsprt application.
+  The --img-request-size option now works correctly when the target printer
+  is not explicitly specified with --printer. Furthermore, the --overlay
+  option now correctly processes PBM files with no whitespace between digits.
+  Affects: dcmpstat/apps/dcmpsprt.cc
+
+- Fixed annotation layout.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 2020.12.27 (eichelberg)
+
+- Fixed socket handling in dcmpsrcv.
+  Fixed the handling of the accepted socket in the parent process when running
+  dcmpsrcv on a Posix platform. The parent process did not properly close the
+  socket, causing the transport connection to stay open after an A-ABORT, which
+  in turn led to a long timeout in storescu.
+  Affects: dcmpstat/apps/dcmpsrcv.cc
+
+**** Changes from 2020.12.15 (riesmeier)
+
+- Fixed wrong calculation of sigmoid VOI function.
+  Fixed possibly wrong output of sigmoid VOI LUT function, e.g. when
+  processing an image with a photometric interpretation of MONOCHROME1
+  (i.e. inverse). The original formula in the DICOM standard was incorrect
+  and has been fixed only recently with CP-1880.
+  Please note that the issue was only present when no presentation LUT or
+  display calibration was enabled (case #6 and #8 of the monochrome "VOI
+  SIGMOID" rendering algorithm).
+  Thanks to Robert Mulcahey <rob@asteris.com> for the report and suggested fix.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+
+- Introduced local constant "lowvalue" for typecast.
+  This is just a preparatory step for the subsequent commit.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
 
 **** Changes from 2020.12.07 (eichelberg)
 
