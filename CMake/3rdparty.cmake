@@ -180,7 +180,7 @@ if(DCMTK_USE_FIND_PACKAGE)
 
   # Find OpenJPEG
   if(DCMTK_WITH_OPENJPEG)
-    find_package(OpenJPEG QUIET)
+    find_package(OpenJPEG QUIET PATH_SUFFIXES "openjpeg-2.4.0" "openjpeg-2.3.1" "openjpeg-2.3.0")
     if(NOT OPENJPEG_FOUND)
       message(STATUS "Warning: OpenJPEG support will be disabled because the OpenJPEG library was not found.")
       set(WITH_OPENJPEG "")
