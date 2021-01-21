@@ -937,6 +937,40 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 }
 
 
+/* DUL_CloseTransportConnection
+**
+** Purpose:
+**      This function closes the transport connection of an Association
+**      without notifying the peer application. This routine should only
+**      be used by the parent process after an association has been
+**      delegated to a forked child.
+**
+** Parameter Dictionary:
+**      callerAssociation  Caller's handle to the Association that is to
+**                         be dropped.
+**
+** Return Values:
+**
+**
+*/
+OFCondition
+DUL_CloseTransportConnection(DUL_ASSOCIATIONKEY ** callerAssociation)
+{
+    PRIVATE_ASSOCIATIONKEY ** association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
+
+    if ((*association)->connection)
+    {
+     (*association)->connection->closeTransportConnection();
+     delete (*association)->connection;
+     (*association)->connection = NULL;
+    }
+    destroyAssociationKey(association);
+    return EC_Normal;
+}
+
+
 /* DUL_ReleaseAssociation
 **
 ** Purpose:

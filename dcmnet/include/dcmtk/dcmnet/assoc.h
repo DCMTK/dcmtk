@@ -708,6 +708,9 @@ DCMTK_DCMNET_EXPORT OFCondition
 ASC_dropAssociation(T_ASC_Association * association);
 
 DCMTK_DCMNET_EXPORT OFCondition
+ASC_closeTransportConnection(T_ASC_Association * association);
+
+DCMTK_DCMNET_EXPORT OFCondition
 ASC_destroyAssociation(T_ASC_Association ** association);
 
 /// @deprecated Please use OFString& ASC_printRejectParameters(OFString&, T_ASC_RejectParameters*) instead.

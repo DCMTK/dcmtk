@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -99,6 +99,12 @@ public:
    *  is closed.
    */
   virtual void close();
+
+  /** Closes the transport connection directly. If a secure connection
+   *  is used, a closure alert is NOT sent before the connection
+   *  is closed.
+   */
+  virtual void closeTransportConnection();
 
   /** returns the size in bytes of the peer certificate of a secure connection.
    *  @return peer certificate length in bytes

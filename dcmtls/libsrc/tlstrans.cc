@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -208,14 +208,20 @@ void DcmTLSConnection::close()
     SSL_free(tlsConnection);
     tlsConnection = NULL;
   }
-  if (getSocket()!=-1)
+  closeTransportConnection();
+}
+
+void DcmTLSConnection::closeTransportConnection()
+{
+  if (getSocket() != -1)
   {
 #ifdef HAVE_WINSOCK_H
-    (void) shutdown(getSocket(),  1 /* SD_SEND */);
+    (void) shutdown(getSocket(), 1 /* SD_SEND */);
     (void) closesocket(getSocket());
 #else
     (void) ::close(getSocket());
 #endif
+  /* forget about this socket (now closed) */
     setSocket(-1);
   }
 }

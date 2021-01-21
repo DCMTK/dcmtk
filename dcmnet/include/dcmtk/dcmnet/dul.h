@@ -453,6 +453,7 @@ DUL_RequestAssociation(
 */
 DCMTK_DCMNET_EXPORT OFCondition DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** association);
 DCMTK_DCMNET_EXPORT OFCondition DUL_DropAssociation(DUL_ASSOCIATIONKEY ** association);
+DCMTK_DCMNET_EXPORT OFCondition DUL_CloseTransportConnection(DUL_ASSOCIATIONKEY ** association);
 DCMTK_DCMNET_EXPORT OFCondition DUL_DropNetwork(DUL_NETWORKKEY ** network);
 DCMTK_DCMNET_EXPORT OFCondition DUL_ReleaseAssociation(DUL_ASSOCIATIONKEY ** association);
 DCMTK_DCMNET_EXPORT OFCondition DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** association);

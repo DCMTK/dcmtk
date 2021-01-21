@@ -2130,7 +2130,6 @@ ASC_dropSCPAssociation(T_ASC_Association * association, int timeout)
 }
 
 
-
 OFCondition
 ASC_dropAssociation(T_ASC_Association * association)
 {
@@ -2142,6 +2141,16 @@ ASC_dropAssociation(T_ASC_Association * association)
     return cond;
 }
 
+
+OFCondition
+ASC_closeTransportConnection(T_ASC_Association * association)
+{
+    /* if already dead don't worry */
+    if (association == NULL) return EC_Normal;
+    if (association->DULassociation == NULL) return EC_Normal;
+
+    return DUL_CloseTransportConnection(&association->DULassociation);
+}
 
 
 OFCondition

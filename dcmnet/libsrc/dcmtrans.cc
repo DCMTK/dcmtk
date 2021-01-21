@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -353,6 +353,11 @@ ssize_t DcmTCPConnection::write(void *buf, size_t nbyte)
 }
 
 void DcmTCPConnection::close()
+{
+  closeTransportConnection();
+}
+
+void DcmTCPConnection::closeTransportConnection()
 {
   if (getSocket() != -1)
   {
