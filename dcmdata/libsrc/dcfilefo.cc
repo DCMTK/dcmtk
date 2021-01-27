@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -911,7 +911,6 @@ OFCondition DcmFileFormat::loadFileUntilTag(
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-        DcmInputStream *fileStream;
         if (fileName.isStandardStream())
         {
             /* use stdin stream */
