@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2020, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -103,7 +103,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 #ifndef __CYGWIN__
 
 #ifdef DCMTK_MERGE_STDERR_TO_STDOUT
-   /* Map stderr onto stdout (cannot redirect stderr under Windows).
+    /* Map stderr onto stdout (cannot redirect stderr under Windows).
      * We also remove any buffering since Windows by default uses buffered mode
      * for stdout when not writing to the console. Since dcmtk uses mixed
      * stdout, stderr, cout and cerr, this results in _very_ mixed up output).
