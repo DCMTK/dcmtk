@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2020, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,7 @@
 
 #define INCLUDE_CASSERT
 #define INCLUDE_CSTDIO
+#define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
