@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2020, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -73,7 +73,6 @@ static int addOverlay(const char *filename,
                 input >> ysize;
                 if ((xpos + xsize <= width) && (ypos + ysize <= height))
                 {
-                    unsigned int value;
                     Uint16 *p = pixel + (ypos * width) + xpos;
                     for (unsigned long ys = 0; ys < ysize; ys++)
                     {
