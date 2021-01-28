@@ -407,7 +407,6 @@ OFBool DcmTLSTransportLayer::operator!() const
 OFBool DcmTLSTransportLayer::setTempDHParameters(const char *filename)
 {
   if ((filename==NULL)||(transportLayerContext==NULL)) return OFFalse;
-  EVP_PKEY *dh = NULL;
   BIO *bio = BIO_new_file(filename,"r");
   if (bio)
   {
