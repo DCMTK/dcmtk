@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2020, OFFIS e.V.
+ *  Copyright (C) 2006-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -191,12 +191,12 @@ public:
    */
   void swap(OFFilename &arg);
 
-  /** checks whether this object stores an empty filename
+  /** check whether this object stores an empty filename
    *  @return OFTrue if the filename is empty, OFFalse otherwise
    */
   OFBool isEmpty() const;
 
-  /** checks whether this object stores a wide character filename
+  /** check whether this object stores a wide character filename
    *  @return OFTrue if the filename uses wide characters, OFFalse otherwise
    */
   inline OFBool usesWideChars() const
@@ -229,9 +229,9 @@ public:
   }
 #endif
 
-  /** Uses the filename to determine whether the standard input or output streams
-   *  should be used. Checks for filename = "-" and supports wchar filenames
-   *  @return true if stdin or stdout should be used, false otherwise
+  /** check whether the standard input or output streams should be used by
+   *  comparing the filename with "-"
+   *  @return OFTrue if stdin or stdout should be used, OFFalse otherwise
    */
   OFBool isStandardStream() const
   {
