@@ -477,9 +477,9 @@ int main(int argc, char *argv[])
       OFLOG_WARN(dcmpsprtLogger, "cannot set trim, ignoring.");
     if (EC_Normal != dvi.getPrintHandler().setRequestedDecimateCropBehaviour(opt_decimate))
       OFLOG_WARN(dcmpsprtLogger, "cannot set requested decimate/crop behaviour, ignoring.");
-    if ((opt_illumination != OFstatic_cast(OFCmdUnsignedInt, -1)&&(EC_Normal != dvi.getPrintHandler().setPrintIllumination(OFstatic_cast(Uint16, opt_illumination)))))
+    if ((opt_illumination != OFstatic_cast(OFCmdUnsignedInt, -1))&&(EC_Normal != dvi.getPrintHandler().setPrintIllumination(OFstatic_cast(Uint16, opt_illumination))))
       OFLOG_WARN(dcmpsprtLogger, "cannot set illumination to '" << opt_illumination << "', ignoring.");
-    if ((opt_reflection != OFstatic_cast(OFCmdUnsignedInt, -1)&&(EC_Normal != dvi.getPrintHandler().setPrintReflectedAmbientLight(OFstatic_cast(Uint16, opt_reflection)))))
+    if ((opt_reflection != OFstatic_cast(OFCmdUnsignedInt, -1))&&(EC_Normal != dvi.getPrintHandler().setPrintReflectedAmbientLight(OFstatic_cast(Uint16, opt_reflection))))
       OFLOG_WARN(dcmpsprtLogger, "cannot set reflected ambient light to '" << opt_reflection << "', ignoring.");
 
     if ((opt_copies > 0)&&(EC_Normal != dvi.setPrinterNumberOfCopies(opt_copies)))
