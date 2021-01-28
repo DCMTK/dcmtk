@@ -4803,5 +4803,5 @@ dvsighdl.o: dvsighdl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmsign/include/dcmtk/dcmsign/sinullpr.h \
  ../../dcmsign/include/dcmtk/dcmsign/sisprof.h \
  ../../dcmsign/include/dcmtk/dcmsign/siprivat.h \
- ../../dcmsign/include/dcmtk/dcmsign/siripemd.h \
+ ../../dcmsign/include/dcmtk/dcmsign/simdmac.h \
  ../../dcmsign/include/dcmtk/dcmsign/simac.h
