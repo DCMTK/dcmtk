@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2020, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -510,7 +510,7 @@ OFCondition DcmSignature::createSignature(
         char c[5];
         for (size_t i=0; i<digestLength; i++)
         {
-           sprintf(c, "%02hu", digest[i]);
+           sprintf(c, "%02hu", OFstatic_cast(unsigned short, digest[i]));
            logString += c;
         }
         DCMSIGN_DEBUG("DcmSignature::createSignature(): " << mac.getDefinedTerm() << " MAC = " << logString);
@@ -835,7 +835,7 @@ OFCondition DcmSignature::verifyCurrent()
               char c[5];
               for (size_t i=0; i<digestLength; i++)
               {
-                 sprintf(c, "%02hu", digest[i]);
+                 sprintf(c, "%02hu", OFstatic_cast(unsigned short, digest[i]));
                  logString += c;
               }
               DCMSIGN_DEBUG("DcmSignature::verifyCurrent(): " << mac->getDefinedTerm() << " MAC = " << logString);

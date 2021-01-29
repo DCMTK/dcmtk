@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2020, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -132,7 +132,7 @@ OFCondition SiPKEY::sign(
     // clean up context. Call is safe if ctx==NULL.
     EVP_PKEY_CTX_free(ctx);
 
-    outputSignatureSize = sigLen;
+    outputSignatureSize = OFstatic_cast(unsigned long, sigLen);
     return result;
 }
 
