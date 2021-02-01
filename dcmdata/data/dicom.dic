@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2020, OFFIS e.V.
+#  Copyright (C) 1994-2021, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2020e and PS 3.7-2020e
-# File created on 2020-11-24 14:44:39 by J. Riesmeier on thinkpad.
+# Generated automatically from DICOM PS 3.6-2021a and PS 3.7-2021a.
+# File created on 2021-02-01 14:58:43 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -849,6 +849,24 @@
 (0018,11A3)	DS	CompressionPressure	1	DICOM
 (0018,11A4)	LO	PaddleDescription	1	DICOM
 (0018,11A5)	DS	CompressionContactArea	1	DICOM
+(0018,11B0)	LO	AcquisitionMode	1	DICOM
+(0018,11B1)	LO	DoseModeName	1	DICOM
+(0018,11B2)	CS	AcquiredSubtractionMaskFlag	1	DICOM
+(0018,11B3)	CS	FluoroscopyPersistenceFlag	1	DICOM
+(0018,11B4)	CS	FluoroscopyLastImageHoldPersistenceFlag	1	DICOM
+(0018,11B5)	IS	UpperLimitNumberOfPersistentFluoroscopyFrames	1	DICOM
+(0018,11B6)	CS	ContrastBolusAutoInjectionTriggerFlag	1	DICOM
+(0018,11B7)	FD	ContrastBolusInjectionDelay	1	DICOM
+(0018,11B8)	SQ	XAAcquisitionPhaseDetailsSequence	1	DICOM
+(0018,11B9)	FD	XAAcquisitionFrameRate	1	DICOM
+(0018,11BA)	SQ	XAPlaneDetailsSequence	1	DICOM
+(0018,11BB)	LO	AcquisitionFieldOfViewLabel	1	DICOM
+(0018,11BC)	SQ	XRayFilterDetailsSequence	1	DICOM
+(0018,11BD)	FD	XAAcquisitionDuration	1	DICOM
+(0018,11BE)	CS	ReconstructionPipelineType	1	DICOM
+(0018,11BF)	SQ	ImageFilterDetailsSequence	1	DICOM
+(0018,11C0)	CS	AppliedMaskSubtractionFlag	1	DICOM
+(0018,11C1)	SQ	RequestedSeriesDescriptionCodeSequence	1	DICOM
 (0018,1200)	DA	DateOfLastCalibration	1-n	DICOM
 (0018,1201)	TM	TimeOfLastCalibration	1-n	DICOM
 (0018,1202)	DT	DateTimeOfLastCalibration	1	DICOM
@@ -1005,6 +1023,7 @@
 (0018,6058)	UL	TableOfPixelValues	1-n	DICOM
 (0018,605A)	FL	TableOfParameterValues	1-n	DICOM
 (0018,6060)	FL	RWaveTimeVector	1-n	DICOM
+(0018,6070)	US	ActiveImageAreaOverlayGroup	1	DICOM
 (0018,7000)	CS	DetectorConditionsNominalFlag	1	DICOM
 (0018,7001)	DS	DetectorTemperature	1	DICOM
 (0018,7004)	CS	DetectorType	1	DICOM
@@ -2303,6 +2322,7 @@
 (0040,A027)	LO	VerifyingOrganization	1	DICOM
 (0040,A030)	DT	VerificationDateTime	1	DICOM
 (0040,A032)	DT	ObservationDateTime	1	DICOM
+(0040,A033)	DT	ObservationStartDateTime	1	DICOM
 (0040,A040)	CS	ValueType	1	DICOM
 (0040,A043)	SQ	ConceptNameCodeSequence	1	DICOM
 (0040,A050)	CS	ContinuityOfContent	1	DICOM
@@ -3467,11 +3487,9 @@
 (3006,0039)	SQ	ROIContourSequence	1	DICOM
 (3006,0040)	SQ	ContourSequence	1	DICOM
 (3006,0042)	CS	ContourGeometricType	1	DICOM
-(3006,0044)	DS	ContourSlabThickness	1	DICOM
-(3006,0045)	DS	ContourOffsetVector	3	DICOM
 (3006,0046)	IS	NumberOfContourPoints	1	DICOM
 (3006,0048)	IS	ContourNumber	1	DICOM
-(3006,0049)	IS	AttachedContours	1-n	DICOM
+(3006,004A)	SQ	SourcePixelPlanesCharacteristicsSequence	1	DICOM
 (3006,0050)	DS	ContourData	3-3n	DICOM
 (3006,0080)	SQ	RTROIObservationsSequence	1	DICOM
 (3006,0082)	IS	ObservationNumber	1	DICOM
@@ -4853,6 +4871,9 @@
 (2130,0080)	SQ	RETIRED_PresentationLUTContentSequence	1	DICOM/retired
 (2130,00A0)	SQ	RETIRED_ProposedStudySequence	1	DICOM/retired
 (2130,00C0)	SQ	RETIRED_OriginalImageSequence	1	DICOM/retired
+(3006,0044)	DS	RETIRED_ContourSlabThickness	1	DICOM/retired
+(3006,0045)	DS	RETIRED_ContourOffsetVector	3	DICOM/retired
+(3006,0049)	IS	RETIRED_AttachedContours	1-n	DICOM/retired
 (3006,00B9)	SQ	RETIRED_AdditionalRTROIIdentificationCodeSequence	1	DICOM/retired
 (3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	DICOM/retired
 (3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	DICOM/retired

@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: joergr
-**   Host: thinkpad
-**   Date: 2020-11-24 14:49:53
+**   Host: thinkpad2
+**   Date: 2021-02-01 15:02:17
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -4962,6 +4962,78 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "CompressionContactArea", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0018, 0x11b0, 0x0018, 0x11b0,
+      EVR_LO, "AcquisitionMode", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b1, 0x0018, 0x11b1,
+      EVR_LO, "DoseModeName", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b2, 0x0018, 0x11b2,
+      EVR_CS, "AcquiredSubtractionMaskFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b3, 0x0018, 0x11b3,
+      EVR_CS, "FluoroscopyPersistenceFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b4, 0x0018, 0x11b4,
+      EVR_CS, "FluoroscopyLastImageHoldPersistenceFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b5, 0x0018, 0x11b5,
+      EVR_IS, "UpperLimitNumberOfPersistentFluoroscopyFrames", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b6, 0x0018, 0x11b6,
+      EVR_CS, "ContrastBolusAutoInjectionTriggerFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b7, 0x0018, 0x11b7,
+      EVR_FD, "ContrastBolusInjectionDelay", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b8, 0x0018, 0x11b8,
+      EVR_SQ, "XAAcquisitionPhaseDetailsSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11b9, 0x0018, 0x11b9,
+      EVR_FD, "XAAcquisitionFrameRate", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11ba, 0x0018, 0x11ba,
+      EVR_SQ, "XAPlaneDetailsSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11bb, 0x0018, 0x11bb,
+      EVR_LO, "AcquisitionFieldOfViewLabel", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11bc, 0x0018, 0x11bc,
+      EVR_SQ, "XRayFilterDetailsSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11bd, 0x0018, 0x11bd,
+      EVR_FD, "XAAcquisitionDuration", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11be, 0x0018, 0x11be,
+      EVR_CS, "ReconstructionPipelineType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11bf, 0x0018, 0x11bf,
+      EVR_SQ, "ImageFilterDetailsSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11c0, 0x0018, 0x11c0,
+      EVR_CS, "AppliedMaskSubtractionFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x11c1, 0x0018, 0x11c1,
+      EVR_SQ, "RequestedSeriesDescriptionCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0018, 0x1200, 0x0018, 0x1200,
       EVR_DA, "DateOfLastCalibration", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5636,6 +5708,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x6060, 0x0018, 0x6060,
       EVR_FL, "RWaveTimeVector", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x6070, 0x0018, 0x6070,
+      EVR_US, "ActiveImageAreaOverlayGroup", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x7000, 0x0018, 0x7000,
@@ -19462,6 +19538,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DT, "ObservationDateTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0040, 0xa033, 0x0040, 0xa033,
+      EVR_DT, "ObservationStartDateTime", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0040, 0xa040, 0x0040, 0xa040,
       EVR_CS, "ValueType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -26285,11 +26365,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x0044, 0x3006, 0x0044,
-      EVR_DS, "ContourSlabThickness", 1, 1, "DICOM",
+      EVR_DS, "RETIRED_ContourSlabThickness", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x0045, 0x3006, 0x0045,
-      EVR_DS, "ContourOffsetVector", 3, 3, "DICOM",
+      EVR_DS, "RETIRED_ContourOffsetVector", 3, 3, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x0046, 0x3006, 0x0046,
@@ -26301,7 +26381,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x0049, 0x3006, 0x0049,
-      EVR_IS, "AttachedContours", 1, -1, "DICOM",
+      EVR_IS, "RETIRED_AttachedContours", 1, -1, "DICOM/retired",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3006, 0x004a, 0x3006, 0x004a,
+      EVR_SQ, "SourcePixelPlanesCharacteristicsSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x0050, 0x3006, 0x0050,

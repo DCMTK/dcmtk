@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: joergr
-**   Host: thinkpad
-**   Date: 2020-11-24 14:49:52
+**   Host: thinkpad2
+**   Date: 2021-02-01 15:02:16
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2020-11-24 14:49:52"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2021-02-01 15:02:16"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4829
+** Number of entries: 4850
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -902,6 +902,24 @@
 #define DCM_CompressionPressure                  DcmTagKey(0x0018, 0x11a3)
 #define DCM_PaddleDescription                    DcmTagKey(0x0018, 0x11a4)
 #define DCM_CompressionContactArea               DcmTagKey(0x0018, 0x11a5)
+#define DCM_AcquisitionMode                      DcmTagKey(0x0018, 0x11b0)
+#define DCM_DoseModeName                         DcmTagKey(0x0018, 0x11b1)
+#define DCM_AcquiredSubtractionMaskFlag          DcmTagKey(0x0018, 0x11b2)
+#define DCM_FluoroscopyPersistenceFlag           DcmTagKey(0x0018, 0x11b3)
+#define DCM_FluoroscopyLastImageHoldPersistenceFlag DcmTagKey(0x0018, 0x11b4)
+#define DCM_UpperLimitNumberOfPersistentFluoroscopyFrames DcmTagKey(0x0018, 0x11b5)
+#define DCM_ContrastBolusAutoInjectionTriggerFlag DcmTagKey(0x0018, 0x11b6)
+#define DCM_ContrastBolusInjectionDelay          DcmTagKey(0x0018, 0x11b7)
+#define DCM_XAAcquisitionPhaseDetailsSequence    DcmTagKey(0x0018, 0x11b8)
+#define DCM_XAAcquisitionFrameRate               DcmTagKey(0x0018, 0x11b9)
+#define DCM_XAPlaneDetailsSequence               DcmTagKey(0x0018, 0x11ba)
+#define DCM_AcquisitionFieldOfViewLabel          DcmTagKey(0x0018, 0x11bb)
+#define DCM_XRayFilterDetailsSequence            DcmTagKey(0x0018, 0x11bc)
+#define DCM_XAAcquisitionDuration                DcmTagKey(0x0018, 0x11bd)
+#define DCM_ReconstructionPipelineType           DcmTagKey(0x0018, 0x11be)
+#define DCM_ImageFilterDetailsSequence           DcmTagKey(0x0018, 0x11bf)
+#define DCM_AppliedMaskSubtractionFlag           DcmTagKey(0x0018, 0x11c0)
+#define DCM_RequestedSeriesDescriptionCodeSequence DcmTagKey(0x0018, 0x11c1)
 #define DCM_DateOfLastCalibration                DcmTagKey(0x0018, 0x1200)
 #define DCM_TimeOfLastCalibration                DcmTagKey(0x0018, 0x1201)
 #define DCM_DateTimeOfLastCalibration            DcmTagKey(0x0018, 0x1202)
@@ -1071,6 +1089,7 @@
 #define DCM_TableOfPixelValues                   DcmTagKey(0x0018, 0x6058)
 #define DCM_TableOfParameterValues               DcmTagKey(0x0018, 0x605a)
 #define DCM_RWaveTimeVector                      DcmTagKey(0x0018, 0x6060)
+#define DCM_ActiveImageAreaOverlayGroup          DcmTagKey(0x0018, 0x6070)
 #define DCM_DetectorConditionsNominalFlag        DcmTagKey(0x0018, 0x7000)
 #define DCM_DetectorTemperature                  DcmTagKey(0x0018, 0x7001)
 #define DCM_DetectorType                         DcmTagKey(0x0018, 0x7004)
@@ -2542,6 +2561,7 @@
 #define DCM_RETIRED_DocumentingOrganizationIdentifierCodeSequenceTrial DcmTagKey(0x0040, 0xa028)
 #define DCM_VerificationDateTime                 DcmTagKey(0x0040, 0xa030)
 #define DCM_ObservationDateTime                  DcmTagKey(0x0040, 0xa032)
+#define DCM_ObservationStartDateTime             DcmTagKey(0x0040, 0xa033)
 #define DCM_ValueType                            DcmTagKey(0x0040, 0xa040)
 #define DCM_ConceptNameCodeSequence              DcmTagKey(0x0040, 0xa043)
 #define DCM_RETIRED_MeasurementPrecisionDescriptionTrial DcmTagKey(0x0040, 0xa047)
@@ -3822,11 +3842,12 @@
 #define DCM_ROIContourSequence                   DcmTagKey(0x3006, 0x0039)
 #define DCM_ContourSequence                      DcmTagKey(0x3006, 0x0040)
 #define DCM_ContourGeometricType                 DcmTagKey(0x3006, 0x0042)
-#define DCM_ContourSlabThickness                 DcmTagKey(0x3006, 0x0044)
-#define DCM_ContourOffsetVector                  DcmTagKey(0x3006, 0x0045)
+#define DCM_RETIRED_ContourSlabThickness         DcmTagKey(0x3006, 0x0044)
+#define DCM_RETIRED_ContourOffsetVector          DcmTagKey(0x3006, 0x0045)
 #define DCM_NumberOfContourPoints                DcmTagKey(0x3006, 0x0046)
 #define DCM_ContourNumber                        DcmTagKey(0x3006, 0x0048)
-#define DCM_AttachedContours                     DcmTagKey(0x3006, 0x0049)
+#define DCM_RETIRED_AttachedContours             DcmTagKey(0x3006, 0x0049)
+#define DCM_SourcePixelPlanesCharacteristicsSequence DcmTagKey(0x3006, 0x004a)
 #define DCM_ContourData                          DcmTagKey(0x3006, 0x0050)
 #define DCM_RTROIObservationsSequence            DcmTagKey(0x3006, 0x0080)
 #define DCM_ObservationNumber                    DcmTagKey(0x3006, 0x0082)
