@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2020e
- *  File created on 2020-11-25 10:55:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 20:46:59 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4387
+// total number of codes: 4388
 // - retired: 199
 // - no name: 27
 // - not unique: 17
@@ -4435,5 +4435,6 @@
 #define CODE_DCM_NumberOfFirstDegreeRelativesAffectedByMalignantMelanoma   DSRBasicCodedEntry("130487", "DCM", "Number of first-degree relatives affected by malignant melanoma")
 #define CODE_DCM_RegionInSpace                                             DSRBasicCodedEntry("130488", "DCM", "Region in Space")
 #define CODE_DCM_ReferencedRegionOfInterestIdentifier                      DSRBasicCodedEntry("130489", "DCM", "Referenced Region of Interest Identifier")
+#define CODE_DCM_Centerline                                                DSRBasicCodedEntry("130490", "DCM", "Centerline")
 
 #endif
