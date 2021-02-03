@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID10033_CTReconstructionAlgorithm
  *
- *  Generated automatically from DICOM PS 3.16-2020e
- *  File created on 2020-11-25 11:13:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:36 by J. Riesmeier
  *
  */
 

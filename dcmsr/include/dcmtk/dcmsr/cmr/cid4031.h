@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2020e
- *  File created on 2020-11-25 11:12:59 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:22 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4031 - Common Anatomic Regions.
- *  (type: extensible, version: 20200704)
+ *  (type: extensible, version: 20210120)
  */
 class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
   : public DSRContextGroup
@@ -54,6 +54,8 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         ApexOfLung,
         /// (28273000,SCT,"Bile duct")
         BileDuct,
+        /// (34707002,SCT,"Biliary tract")
+        BiliaryTract,
         /// (89837001,SCT,"Bladder")
         Bladder,
         /// (72001000,SCT,"Bone of lower limb")

@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2020e
- *  File created on 2020-11-25 11:12:59 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:22 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4031 (Common Anatomic Regions)
 #define CONTEXT_GROUP_NUMBER  "4031"
-#define CONTEXT_GROUP_VERSION "20200704"
+#define CONTEXT_GROUP_VERSION "20210120"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.308"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -156,6 +156,7 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
         Codes->insert(OFMake_pair(Anus, DSRBasicCodedEntry("53505006", "SCT", "Anus")));
         Codes->insert(OFMake_pair(ApexOfLung, DSRBasicCodedEntry("86598002", "SCT", "Apex of Lung")));
         Codes->insert(OFMake_pair(BileDuct, DSRBasicCodedEntry("28273000", "SCT", "Bile duct")));
+        Codes->insert(OFMake_pair(BiliaryTract, DSRBasicCodedEntry("34707002", "SCT", "Biliary tract")));
         Codes->insert(OFMake_pair(Bladder, DSRBasicCodedEntry("89837001", "SCT", "Bladder")));
         Codes->insert(OFMake_pair(BoneOfLowerLimb, DSRBasicCodedEntry("72001000", "SCT", "Bone of lower limb")));
         Codes->insert(OFMake_pair(BoneOfUpperLimb, DSRBasicCodedEntry("371195002", "SCT", "Bone of upper limb")));
