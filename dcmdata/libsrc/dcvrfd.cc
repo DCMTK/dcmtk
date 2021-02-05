@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -190,11 +190,11 @@ void DcmFloatingPointDouble::print(STD_NAMESPACE ostream &out,
                 {
                     /* check whether first value is printed (omit delimiter) */
                     if (i == 0)
-                        OFStandard::ftoa(buffer, sizeof(buffer), *doubleVals, 0, 0, 17 /* DBL_DIG + 2 for DICOM FD */);
+                        OFStandard::ftoa(buffer, sizeof(buffer), *doubleVals, 0, 0, 17 /* DBL_DECIMAL_DIG for DICOM FD */);
                     else
                     {
                         buffer[0] = '\\';
-                        OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *doubleVals, 0, 0, 17 /* DBL_DIG + 2 for DICOM FD */);
+                        OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *doubleVals, 0, 0, 17 /* DBL_DECIMAL_DIG for DICOM FD */);
                     }
                     /* check whether current value sticks to the length limit */
                     newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
@@ -273,7 +273,7 @@ OFCondition DcmFloatingPointDouble::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[64];
-        OFStandard::ftoa(buffer, sizeof(buffer), doubleVal, 0, 0, 17 /* DBL_DIG + 2 for DICOM FD */);
+        OFStandard::ftoa(buffer, sizeof(buffer), doubleVal, 0, 0, 17 /* DBL_DECIMAL_DIG for DICOM FD */);
         /* assign result */
         stringVal = buffer;
     }

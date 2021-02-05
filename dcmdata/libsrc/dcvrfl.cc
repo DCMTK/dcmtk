@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -192,11 +192,11 @@ void DcmFloatingPointSingle::print(STD_NAMESPACE ostream &out,
                 {
                     /* check whether first value is printed (omit delimiter) */
                     if (i == 0)
-                        OFStandard::ftoa(buffer, sizeof(buffer), *floatVals, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
+                        OFStandard::ftoa(buffer, sizeof(buffer), *floatVals, 0, 0, 9 /* FLT_DECIMAL_DIG for DICOM FL */);
                     else
                     {
                         buffer[0] = '\\';
-                        OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *floatVals, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
+                        OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *floatVals, 0, 0, 9 /* FLT_DECIMAL_DIG for DICOM FL */);
                     }
                     /* check whether current value sticks to the length limit */
                     newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
@@ -275,7 +275,7 @@ OFCondition DcmFloatingPointSingle::getOFString(OFString &value,
     {
         /* ... and convert it to a character string */
         char buffer[64];
-        OFStandard::ftoa(buffer, sizeof(buffer), floatVal, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
+        OFStandard::ftoa(buffer, sizeof(buffer), floatVal, 0, 0, 9 /* FLT_DECIMAL_DIG for DICOM FL */);
         /* assign result */
         value = buffer;
     }
