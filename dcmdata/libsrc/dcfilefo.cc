@@ -245,10 +245,10 @@ OFCondition DcmFileFormat::writeJson(STD_NAMESPACE ostream &out,
         if (metinf)
         {
           status = metinf->writeJsonExt(out, format, OFFalse, OFFalse);
-          out << format.newline();
         }
         if (dset && status.good())
         {
+            if (metinf && (metinf->card() > 0) && (dset->card() > 0)) out << "," << format.newline();
             status = dset->writeJsonExt(out, format, OFFalse, OFFalse);
         }
         out << format.newline() << format.indent() << "}" << format.newline();
