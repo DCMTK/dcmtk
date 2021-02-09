@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -545,6 +545,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_CTDefinedProcedureProtocolStorage                      "1.2.840.10008.5.1.4.1.1.200.1"
 #define UID_CTPerformedProcedureProtocolStorage                    "1.2.840.10008.5.1.4.1.1.200.2"
 #define UID_ProtocolApprovalStorage                                "1.2.840.10008.5.1.4.1.1.200.3"
+#define UID_XADefinedProcedureProtocolStorage                      "1.2.840.10008.5.1.4.1.1.200.7"
+#define UID_XAPerformedProcedureProtocolStorage                    "1.2.840.10008.5.1.4.1.1.200.8"
 #define UID_RTImageStorage                                         "1.2.840.10008.5.1.4.1.1.481.1"
 #define UID_RTDoseStorage                                          "1.2.840.10008.5.1.4.1.1.481.2"
 #define UID_RTStructureSetStorage                                  "1.2.840.10008.5.1.4.1.1.481.3"
