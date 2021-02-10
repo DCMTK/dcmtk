@@ -297,16 +297,15 @@ useful for large amounts of data, such as pixel data.
 
 \subsection dcm2json_numbers_as_strings Numbers as Strings
 
-The DICOM standard allows certain numeric DICOM value representations,
-DS, IS, SV and UV, to be converted either to a JSON number or a
-JSON string. \b dcm2json converts DS and IS values to JSON numbers
-if they are valid decimal strings or integer strings, and to string
-if they contain any illegal character. \b dcm2json converts SV and UV
-values to number if the are not larger than 9007199254740991ll
-or smaller than -9007199254740991ll, and to string otherwise.
-While the JSON specification permits larger numbers, these are
-largest integers that Javascript can handle.
-Therefore, many JSON parsers cannot process larger numbers.
+The DICOM standard allows certain numeric DICOM value representations, DS, IS,
+SV and UV, to be converted either to a JSON number or a JSON string.
+\b dcm2json converts DS and IS values to JSON numbers if they are valid decimal
+strings or integer strings, and to strings if they contain any illegal
+character.  \b dcm2json converts SV and UV values to numbers if they are not
+larger than 9007199254740991ll or smaller than -9007199254740991ll, and to
+strings otherwise.  While the JSON specification permits larger numbers, these
+are the largest integers that JavaScript can handle.  Therefore, many JSON
+parsers cannot process larger numbers.
 
 \subsection dcm2json_character_encoding Character Encoding
 
@@ -402,6 +401,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2json_copyright COPYRIGHT
 
-Copyright (C) 2016-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
