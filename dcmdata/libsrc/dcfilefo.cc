@@ -736,6 +736,8 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
             {
                 // do read meta header not in given transfer syntax (always Little Endian Explicit)
                 errorFlag = metaInfo->read(inStream, EXS_Unknown, glenc, maxReadLength);
+	        if (errorFlag.bad())
+		    return errorFlag;
             }
 
             // determine xfer from tag (0002,0010) in the meta header
