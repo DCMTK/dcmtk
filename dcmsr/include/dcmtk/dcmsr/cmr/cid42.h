@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID42_NumericValueQualifier
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:47:46 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:14 by J. Riesmeier
  *
  */
 
@@ -40,29 +40,29 @@ class DCMTK_CMR_EXPORT CID42_NumericValueQualifier
      */
     enum EnumType
     {
-        /// (114000,DCM,"Not a number")
+        /// (114000,DCM,"Not a number"), included from CID 43
         NotANumber,
-        /// (114001,DCM,"Negative Infinity")
+        /// (114001,DCM,"Negative Infinity"), included from CID 43
         NegativeInfinity,
-        /// (114002,DCM,"Positive Infinity")
+        /// (114002,DCM,"Positive Infinity"), included from CID 43
         PositiveInfinity,
-        /// (114003,DCM,"Divide by zero")
+        /// (114003,DCM,"Divide by zero"), included from CID 43
         DivideByZero,
-        /// (114004,DCM,"Underflow")
+        /// (114004,DCM,"Underflow"), included from CID 43
         Underflow,
-        /// (114005,DCM,"Overflow")
+        /// (114005,DCM,"Overflow"), included from CID 43
         Overflow,
-        /// (114006,DCM,"Measurement failure")
+        /// (114006,DCM,"Measurement failure"), included from CID 43
         MeasurementFailure,
-        /// (114007,DCM,"Measurement not attempted")
-        MeasurementNotAttempted,
-        /// (114008,DCM,"Calculation failure")
+        /// (114008,DCM,"Calculation failure"), included from CID 43
         CalculationFailure,
-        /// (114009,DCM,"Value out of range")
+        /// (114009,DCM,"Value out of range"), included from CID 43
         ValueOutOfRange,
-        /// (114010,DCM,"Value unknown")
+        /// (114007,DCM,"Measurement not attempted"), included from CID 44
+        MeasurementNotAttempted,
+        /// (114010,DCM,"Value unknown"), included from CID 44
         ValueUnknown,
-        /// (114011,DCM,"Value indeterminate")
+        /// (114011,DCM,"Value indeterminate"), included from CID 44
         ValueIndeterminate
     };
 

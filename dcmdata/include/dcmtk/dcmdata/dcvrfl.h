@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,8 @@
 
 #include "dcmtk/dcmdata/dcelem.h"
 
+// forward declarations
+class DcmJsonFormat;
 
 /** a class representing the DICOM value representation 'Floating Point Single' (FL)
  */
@@ -215,6 +217,14 @@ class DCMTK_DCMDATA_EXPORT DcmFloatingPointSingle
     /// @copydoc DcmElement::matches()
     virtual OFBool matches(const DcmElement& candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
+
+    /** write object in JSON format
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format);
 
   protected:
 

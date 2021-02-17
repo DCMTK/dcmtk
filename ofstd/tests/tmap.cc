@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2011, OFFIS e.V.
+ *  Copyright (C) 2009-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,4 +71,18 @@ OFTEST(ofstd_OFMap)
 
     OFCHECK_EQUAL(m.size(), 2);
     OFCHECK_EQUAL(m[3], 3);
+
+    // Check whether map is sorted
+    m.clear();
+    // Insert values in reverse order
+    for (i = 0; i < 6 ; ++i)
+        m[6 - i] = 6 - i;
+    // Check all elements are stored in sorted order
+    OFCHECK_EQUAL(m.size(), 6);
+    it = m.begin();
+    for (i = 1; i <= 6; ++i)
+    {
+        OFCHECK((*it).second == i);
+        it++;
+    }
 }

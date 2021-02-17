@@ -23,7 +23,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
 	$(CHARCONVLIBS) $(MATHLIBS)
 
-objs = tests.o tdump.o tpool.o tscuscp.o
+objs = tests.o tdump.o tdimse.o tpool.o tscuscp.o tscusession.o
 progs = tests
 
 

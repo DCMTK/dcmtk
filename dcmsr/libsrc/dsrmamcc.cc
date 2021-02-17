@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -90,7 +90,7 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     else if ((relationshipType == RT_hasAcqContext) && !byReference && (sourceValueType == VT_Image))
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Date) ||
-                 (targetValueType == VT_Time) || (targetValueType == VT_Num);
+                 (targetValueType == VT_Time) || (targetValueType == VT_Num)  || (targetValueType == VT_UIDRef) /* see CP-2053 */;
     }
     /* row 4 of the table */
     else if ((relationshipType == RT_hasConceptMod) && !byReference &&

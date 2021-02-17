@@ -1,6 +1,6 @@
-=============================================================================
+============================================================
 CERTIFICATION AUTHORITY (CA) CERTIFICATE MANAGEMENT IN DCMTK
-=============================================================================
+============================================================
 
 All tools in DCMTK that support TLS encrypted network connections
 need to have a list of trusted certificates (typically CA certificates)
@@ -12,10 +12,11 @@ file-based and directory-based. The command line tools in DCMTK
 offer the following command line options for this purpose:
 
   certification authority:
-    +cf   --add-cert-file        [c]ertificate filename: string
-                                 add certificate file to list of certificates
-    +cd   --add-cert-dir         [c]ertificate directory: string
-                                 add certificates in d to list of certificates
+    +cf   --add-cert-file  [f]ilename: string
+            add certificate file to list of certificates
+
+    +cd   --add-cert-dir  [d]irectory: string
+            add certificates in d to list of certificates
 
 When using DCMTK at library level, the methods corresponding to these
 command line options are DcmTransportLayer::addTrustedCertificateFile()

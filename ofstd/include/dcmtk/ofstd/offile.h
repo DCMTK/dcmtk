@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2019, OFFIS e.V.
+ *  Copyright (C) 2006-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -131,7 +131,7 @@ public:
   /** constructor expecting a conventional character string
    *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
    *  @param convert  convert given filename to wide character encoding as an
-   *    alternative representation
+   *    alternative representation.  Only works on Windows systems.
    */
   OFFilename(const char *filename,
              const OFBool convert = OFFalse);
@@ -144,18 +144,20 @@ public:
   OFFilename(const OFString &filename,
              const OFBool convert = OFFalse);
 
-  /** construct an OFFilename from an OFpath.
-   *  @param path the OFpath object referring to a file.
-   *  Effectively OFFilename(path.native(), OFTrue), but potentially more
-   *  efficient.
+  /** constructor expecting an OFpath instance
+   *  @param path    OFpath instance storing a filename in native format
+   *    (currently, identical to an 8-bit character string)
+   *  @param convert convert given filename to wide character encoding as an
+   *    alternative representation.  Only works on Windows systems.
    */
-  OFFilename(const OFpath& path);
+  OFFilename(const OFpath &path,
+             const OFBool convert = OFFalse);
 
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** constructor expecting a wide character string
    *  @remark This constructor is only available if DCMTK is compiled on Windows
-   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
-   *  WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
+   *    Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *    WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
    *  @param filename filename to be stored (e.g. 16-bit characters)
    *  @param convert  convert given filename to UTF-8 encoding as an
    *    alternative representation.  Only works on Windows systems.
@@ -189,12 +191,12 @@ public:
    */
   void swap(OFFilename &arg);
 
-  /** checks whether this object stores an empty filename
+  /** check whether this object stores an empty filename
    *  @return OFTrue if the filename is empty, OFFalse otherwise
    */
   OFBool isEmpty() const;
 
-  /** checks whether this object stores a wide character filename
+  /** check whether this object stores a wide character filename
    *  @return OFTrue if the filename uses wide characters, OFFalse otherwise
    */
   inline OFBool usesWideChars() const
@@ -217,8 +219,8 @@ public:
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** get stored filename consisting of wide characters
    *  @remark This method is only available if DCMTK is compiled on Windows
-   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
-   *  WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
+   *    Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *    WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
    *  @return wide char filename (might be NULL if none is stored)
    */
   inline const wchar_t *getWideCharPointer() const
@@ -226,6 +228,26 @@ public:
     return wfilename_;
   }
 #endif
+
+  /** check whether the standard input or output streams should be used by
+   *  comparing the filename with "-"
+   *  @return OFTrue if stdin or stdout should be used, OFFalse otherwise
+   */
+  OFBool isStandardStream() const
+  {
+    OFBool result = OFFalse;
+#if defined(WIDE_CHAR_FILE_IO_FUNCTONS) && defined(_WIN32)
+    if (usesWideChars())
+    {
+        result = (wcscmp(getWideCharPointer(), L"-") == 0);
+    } else
+#endif
+    if (getCharPointer() != NULL)
+    {
+        result = (strcmp(getCharPointer(), "-") == 0);
+    }
+    return result;
+  }
 
   /** replace currently stored filename by given value
    *  @param filename filename to be stored (8-bit characters, e.g. UTF-8)
@@ -243,11 +265,20 @@ public:
   void set(const OFString &filename,
            const OFBool convert = OFFalse);
 
+  /** replace currently stored filename by given value
+   *  @param OFpath  OFpath instance storing a filename in native format
+   *    (currently, identical to an 8-bit character string)
+   *  @param convert convert given filename to wide character encoding as an
+   *    alternative representation).  Only works on Windows systems.
+   */
+  void set(const OFpath &path,
+           const OFBool convert = OFFalse);
+
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /** replace currently stored filename by given value
    *  @remark This method is only available if DCMTK is compiled on Windows
-   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
-   *  WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
+   *    Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *    WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
    *  @param filename filename to be stored (e.g. 16-bit characters)
    *  @param convert  convert given filename to UTF-8 encoding as an alternative
    *    representation.  Only works on Windows systems.
@@ -258,12 +289,12 @@ public:
 
 private:
   /// filename consisting of conventional characters (8-bit, e.g.\ UTF-8)
-  /// @remark This member is only available if DCMTK is compiled on Windows
-  /// Operating Systems with wide chars enabled (defining _WIN32 as well as
-  /// WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
   char *filename_;
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
   /// filename consisting of wide characters (e.g. 16-bit on Windows)
+  /// @remark This member is only available if DCMTK is compiled on Windows
+  ///   Operating Systems with wide chars enabled (defining _WIN32 as well as
+  ///   WIDE_CHAR_FILE_IO_FUNCTIONS or WIDE_CHAR_MAIN_FUNCTION).
   wchar_t *wfilename_;
 #endif
 };
@@ -341,8 +372,8 @@ public:
   /** opens the file whose name is the wide character string pointed to by path and
    *  associates a stream with it.
    *  @remark This member is only available if DCMTK is compiled on Windows
-   *  Operating Systems with wide chars enabled (defining _WIN32 as well as
-   *  WIDE_CHAR_FILE_IO_FUNCTIONS).
+   *    Operating Systems with wide chars enabled (defining _WIN32 as well as
+   *    WIDE_CHAR_FILE_IO_FUNCTIONS).
    *  @param filename Unicode filename path to file
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a wide
    *    character string

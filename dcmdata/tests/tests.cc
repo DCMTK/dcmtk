@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2019 OFFIS e.V.
+ *  Copyright (C) 2011-2020 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,6 +34,7 @@ OFTEST_REGISTER(dcmdata_decimalString_1);
 OFTEST_REGISTER(dcmdata_decimalString_2);
 OFTEST_REGISTER(dcmdata_decimalString_3);
 OFTEST_REGISTER(dcmdata_decimalString_4);
+OFTEST_REGISTER(dcmdata_decimalString_putFloat64);
 OFTEST_REGISTER(dcmdata_floatingPointDouble);
 OFTEST_REGISTER(dcmdata_personName);
 OFTEST_REGISTER(dcmdata_uniqueIdentifier_1);
@@ -84,6 +85,7 @@ OFTEST_REGISTER(dcmdata_elementLength_EVR_UT);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_lt);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_na);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_ox);
+OFTEST_REGISTER(dcmdata_elementLength_EVR_px);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_up);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_xs);
 OFTEST_REGISTER(dcmdata_elementLength_pixelItem);

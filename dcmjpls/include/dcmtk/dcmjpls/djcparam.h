@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2019, OFFIS e.V.
+ *  Copyright (C) 1997-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,9 +42,12 @@ public:
     /// Sample-interleaved (color-by-pixel)
     interleaveSample,
     /// Line-interleaved (color-by-line)
-    interleaveLine,
+    interleaveLine
+#ifdef ENABLE_DCMJPLS_INTERLEAVE_NONE
+    ,
     /// Uninterleaved (color-by-plane)
     interleaveNone
+#endif
   };
 
   /** constructor, for use with encoders.

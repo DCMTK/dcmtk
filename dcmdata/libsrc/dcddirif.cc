@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2019, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -697,7 +697,13 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_BasicVoiceAudioWaveformStorage) ||
              compare(sopClass, UID_GeneralAudioWaveformStorage) ||
              compare(sopClass, UID_ArterialPulseWaveformStorage) ||
-             compare(sopClass, UID_RespiratoryWaveformStorage))
+             compare(sopClass, UID_RespiratoryWaveformStorage) ||
+             compare(sopClass, UID_RoutineScalpElectroencephalogramWaveformStorage) ||
+             compare(sopClass, UID_ElectromyogramWaveformStorage) ||
+             compare(sopClass, UID_ElectrooculogramWaveformStorage) ||
+             compare(sopClass, UID_SleepElectroencephalogramWaveformStorage) ||
+             compare(sopClass, UID_MultichannelRespiratoryWaveformStorage) ||
+             compare(sopClass, UID_BodyPositionWaveformStorage))
     {
         result = ERT_Waveform;
     }
@@ -734,7 +740,9 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_Spectroscopy;
     else if (compare(sopClass, UID_EncapsulatedPDFStorage) ||
              compare(sopClass, UID_EncapsulatedCDAStorage) ||
-             compare(sopClass, UID_EncapsulatedSTLStorage))
+             compare(sopClass, UID_EncapsulatedSTLStorage) ||
+             compare(sopClass, UID_EncapsulatedOBJStorage) ||
+             compare(sopClass, UID_EncapsulatedMTLStorage))
     {
         result = ERT_EncapDoc;
     }
@@ -782,7 +790,14 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     else if (compare(sopClass, UID_RTPhysicianIntentStorage) ||
              compare(sopClass, UID_RTSegmentAnnotationStorage) ||
              compare(sopClass, UID_RTRadiationSetStorage) ||
-             compare(sopClass, UID_CArmPhotonElectronRadiationStorage))
+             compare(sopClass, UID_CArmPhotonElectronRadiationStorage) ||
+             compare(sopClass, UID_TomotherapeuticRadiationStorage) ||
+             compare(sopClass, UID_RoboticArmRadiationStorage) ||
+             compare(sopClass, UID_RTRadiationRecordSetStorage) ||
+             compare(sopClass, UID_RTRadiationSalvageRecordStorage) ||
+             compare(sopClass, UID_TomotherapeuticRadiationRecordStorage) ||
+             compare(sopClass, UID_CArmPhotonElectronRadiationRecordStorage) ||
+             compare(sopClass, UID_RoboticRadiationRecordStorage))
     {
         result = ERT_Radiotherapy;
     }
@@ -1605,7 +1620,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_GeneralAudioWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_ArterialPulseWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_RespiratoryWaveformStorage);
+                                compare(mediaSOPClassUID, UID_RespiratoryWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_MultichannelRespiratoryWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_RoutineScalpElectroencephalogramWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_ElectromyogramWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_ElectrooculogramWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_SleepElectroencephalogramWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_BodyPositionWaveformStorage);
                     }
                     /* is it one of the presentation state SOP Classes? */
                     if (!found)
@@ -2577,16 +2598,22 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                         OFString tmpString;
                         if (compare(getStringFromDataset(dataset, DCM_VerificationFlag, tmpString), "VERIFIED"))
                         {
-                            /* VerificationDateTime is required if verification flag is VERIFIED,
-                               retrieve most recent (= last) entry from VerifyingObserverSequence */
-                            DcmItem *ditem = NULL;
-                            OFCondition l_status = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);
-                            if (l_status.good())
+                            if (checkExistsWithValue(dataset, DCM_VerifyingObserverSequence, filename))
                             {
-                                if (!checkExistsWithValue(ditem, DCM_VerificationDateTime, filename))
-                                    result = EC_MissingAttribute;
+                                /* VerificationDateTime is required if VerificationFlag is VERIFIED,
+                                   retrieve most recent (= last) entry from VerifyingObserverSequence */
+                                DcmItem *ditem = NULL;
+                                if (dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/).good())
+                                {
+                                    if (!checkExistsWithValue(ditem, DCM_VerificationDateTime, filename))
+                                        result = EC_MissingAttribute;
+                                } else {
+                                    /* should never happen */
+                                    DCMDATA_ERROR("INTERNAL ERROR: cannot get last item of VerifyingObserverSequence");
+                                    result = EC_InternalError;
+                                }
                             } else
-                                result = l_status;
+                                result = EC_MissingAttribute;
                         }
                     }
                     break;
@@ -3300,7 +3327,7 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
             if (compare(getStringFromDataset(dataset, DCM_VerificationFlag, tmpString), "VERIFIED"))
             {
-                /* VerificationDateTime is required if verification flag is VERIFIED,
+                /* VerificationDateTime is required if VerificationFlag is VERIFIED,
                    retrieve most recent (= last) entry from VerifyingObserverSequence */
                 DcmItem *ditem = NULL;
                 OFCondition status = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);

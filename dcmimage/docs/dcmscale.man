@@ -92,7 +92,7 @@ input transfer syntax:
 scaling:
 
   +a    --recognize-aspect
-          recognize pixel aspect ratio (default)
+          recognize pixel aspect ratio when scaling (default)
 
   -a    --ignore-aspect
           ignore pixel aspect ratio when scaling
@@ -266,6 +266,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmscale_copyright COPYRIGHT
 
-Copyright (C) 2002-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

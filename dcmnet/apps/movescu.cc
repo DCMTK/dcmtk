@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1374,7 +1374,7 @@ storeSCPCallback(
 
          OFCondition cond = cbdata->dcmff->saveFile(ofname.c_str(), xfer, opt_sequenceType, opt_groupLength,
            opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
-           (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
+           (opt_useMetaheader) ? EWM_createNewMeta : EWM_dataset);
          if (cond.bad())
          {
            OFLOG_ERROR(movescuLogger, "cannot write DICOM file: " << ofname);

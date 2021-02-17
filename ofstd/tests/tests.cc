@@ -23,6 +23,7 @@
 
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofxml.h"
 
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_1);
 OFTEST_REGISTER(ofstd_OFCharacterEncoding_2);
@@ -72,7 +73,9 @@ OFTEST_REGISTER(ofstd_testPaths_2);
 #ifdef WITH_THREADS
 OFTEST_REGISTER(ofstd_thread);
 #endif // WITH_THREADS
+#ifndef _XMLWIDECHAR
 OFTEST_REGISTER(ofstd_xmlParser);
+#endif
 OFTEST_REGISTER(ofstd_memory);
 OFTEST_REGISTER(ofstd_optional);
 OFTEST_REGISTER(ofstd_tuple);

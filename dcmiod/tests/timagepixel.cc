@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, OFFIS e.V.
+ *  Copyright (C) 2016-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,20 +15,20 @@
  *
  *  Author:  Jan Schlamelcher
  *
- *  Purpose: Tests for dcmiod's color conversion functionalities
+ *  Purpose: Tests for Image Pixel Module functionalities
  *
  */
 
+#include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmiod/iodimage.h"
-#include "dcmtk/dcmiod/modimagepixel.h"
 #include "dcmtk/dcmiod/modfloatingpointimagepixel.h"
+#include "dcmtk/dcmiod/modimagepixel.h"
+#include "dcmtk/ofstd/oftest.h"
 
 OFTEST(dcmiod_imagepixel)
 {
-  DcmIODImage<IODImagePixelModule<Uint8>,IODFloatingPointImagePixelModule> image1;
-  DcmIODImage<IODImagePixelModule<Uint8>,IODImagePixelModule<Uint8>,IODDoubleFloatingPointImagePixelModule> image2( OFin_place<IODImagePixelModule<Uint8> > );
+    DcmIODImage<IODImagePixelModule<Uint8>, IODFloatingPointImagePixelModule> image1;
+    DcmIODImage<IODImagePixelModule<Uint8>, IODImagePixelModule<Uint8>, IODDoubleFloatingPointImagePixelModule> image2(
+        OFin_place<IODImagePixelModule<Uint8> >);
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -495,7 +495,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
   // --- type definitions ---
 
-    /** SR document types
+    /** SR document types (DICOM IOD)
      */
     enum E_DocumentType
     {
@@ -543,8 +543,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_PerformedImagingAgentAdministrationSR,
         /// DICOM IOD: Planned Imaging Agent Administration SR
         DT_PlannedImagingAgentAdministrationSR,
+        /// DICOM IOD: Rendition Selection Document
+        DT_RenditionSelectionDocument,
         /// internal type used to mark the last entry
-        DT_last = DT_PlannedImagingAgentAdministrationSR
+        DT_last = DT_RenditionSelectionDocument
     };
 
     /** SR relationship types
@@ -893,23 +895,51 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     static const char *documentTypeToDocumentTitle(const E_DocumentType documentType,
                                                    OFString &documentTitle);
 
-    /** check whether SR document type requires Enhanced General Equipment Module
+    /** check whether a given SR document type requires the Enhanced General Equipment Module
      ** @param  documentType  SR document type to be checked
-     ** @return OFTrue if Enhanced General Equipment Module is required, OFFalse otherwise
+     ** @return OFTrue if the Enhanced General Equipment Module is required, OFFalse otherwise
      */
     static OFBool requiresEnhancedEquipmentModule(const E_DocumentType documentType);
 
-    /** check whether SR document type requires Timezone Module
+    /** check whether a given SR document type requires the Timezone Module
      ** @param  documentType  SR document type to be checked
-     ** @return OFTrue if Timezone Module is required, OFFalse otherwise
+     ** @return OFTrue if the Timezone Module is required, OFFalse otherwise
      */
     static OFBool requiresTimezoneModule(const E_DocumentType documentType);
 
-    /** check whether SR document type requires Synchronization Module
+    /** check whether a given SR document type requires the Synchronization Module
      ** @param  documentType  SR document type to be checked
-     ** @return OFTrue if Synchronization Module is required, OFFalse otherwise
+     ** @return OFTrue if the Synchronization Module is required, OFFalse otherwise
      */
     static OFBool requiresSynchronizationModule(const E_DocumentType documentType);
+
+    /** check whether a given SR document type uses the SR Document Series Module
+     *  (instead of the Key Object Document Series Module)
+     ** @param  documentType  SR document type to be checked
+     ** @return OFTrue if the SR Document Series Module is used, OFFalse otherwise
+     */
+    static OFBool usesSRDocumentSeriesModule(const E_DocumentType documentType);
+
+    /** check whether a given SR document type uses the Key Object Document Series Module
+     *  (instead of the SR Document Series Module)
+     ** @param  documentType  SR document type to be checked
+     ** @return OFTrue if the Key Object Document Series Module is used, OFFalse otherwise
+     */
+    static OFBool usesKeyObjectDocumentSeriesModule(const E_DocumentType documentType);
+
+    /** check whether a given SR document type uses the SR Document General Module
+     *  (instead of the Key Object Document Module)
+     ** @param  documentType  SR document type to be checked
+     ** @return OFTrue if the SR Document General Module is used, OFFalse otherwise
+     */
+    static OFBool usesSRDocumentGeneralModule(const E_DocumentType documentType);
+
+    /** check whether a given SR document type uses the Key Object Document Module
+     *  (instead of the SR Document General Module)
+     ** @param  documentType  SR document type to be checked
+     ** @return OFTrue if the Key Object Document Module is used, OFFalse otherwise
+     */
+    static OFBool usesKeyObjectDocumentModule(const E_DocumentType documentType);
 
     /** convert relationship type to DICOM defined term
      ** @param  relationshipType  relationship type to be converted

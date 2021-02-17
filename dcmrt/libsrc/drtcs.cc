@@ -1,13 +1,14 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTContourSequence
  *
  *  Generated automatically from DICOM PS 3.3-2017e
  *  File created on 2017-12-05 09:30:54
+ *  Last modified on 2021-02-01 by Riesmeier
  *
  */
 
@@ -21,13 +22,13 @@
 
 DRTContourSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    AttachedContours(DCM_AttachedContours),
+    AttachedContours(DCM_RETIRED_AttachedContours),
     ContourData(DCM_ContourData),
     ContourGeometricType(DCM_ContourGeometricType),
     ContourImageSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ContourNumber(DCM_ContourNumber),
-    ContourOffsetVector(DCM_ContourOffsetVector),
-    ContourSlabThickness(DCM_ContourSlabThickness),
+    ContourOffsetVector(DCM_RETIRED_ContourOffsetVector),
+    ContourSlabThickness(DCM_RETIRED_ContourSlabThickness),
     NumberOfContourPoints(DCM_NumberOfContourPoints)
 {
 }

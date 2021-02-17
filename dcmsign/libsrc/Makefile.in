@@ -19,11 +19,12 @@ dcmdatadir = $(top_srcdir)/../dcmdata
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include
 LOCALDEFS =
 
-objs = dcsignat.o sicert.o sidsa.o simd5.o siprivat.o sirsa.o sisprof.o \
-	siautopr.o sicreapr.o simaccon.o sinullpr.o siripemd.o sisha1.o \
-	sitypes.o sicertvf.o sibrsapr.o sisha256.o sisha384.o sisha512.o
-library = libdcmdsig.$(LIBEXT)
+objs = dcsignat.o sicert.o siprivat.o sipkey.o sisprof.o \
+       siautopr.o sicreapr.o simaccon.o sinullpr.o simdmac.o \
+       sitypes.o sicertvf.o sibrsapr.o sisrpr.o sisrvpr.o \
+       sipurpos.o dcsighlp.o sitstamp.o sitsfs.o
 
+library = libdcmdsig.$(LIBEXT)
 
 all: $(library)
 

@@ -128,6 +128,9 @@ other network options:
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
 
+  -ts   --socket-timeout  [s]econds: integer (default: 60)
+          timeout for network socket (0 for none)
+
   -ta   --acse-timeout  [s]econds: integer (default: 30)
           timeout for ACSE messages
 
@@ -181,10 +184,10 @@ key and certificate file format:
 
 certification authority:
 
-  +cf   --add-cert-file  [c]ertificate filename: string
+  +cf   --add-cert-file  [f]ilename: string
           add certificate file to list of certificates
 
-  +cd   --add-cert-dir  [c]ertificate directory: string
+  +cd   --add-cert-dir  [d]irectory: string
           add certificates in d to list of certificates
 
 security profile:
@@ -267,6 +270,10 @@ C-FIND responses:
 
   -Xs   --extract-xml-single  [f]ilename: string
           extract all responses to given XML file f
+
+  -Xlo  --limit-output  [n]umber: integer
+          limit number of responses extracted to file to n
+          (default: unlimited)
 \endverbatim
 
 \section findscu_notes NOTES
@@ -448,6 +455,6 @@ It is an error if no data dictionary can be loaded.
 
 \section findscu_copyright COPYRIGHT
 
-Copyright (C) 1994-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

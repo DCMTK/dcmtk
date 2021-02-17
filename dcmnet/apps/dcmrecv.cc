@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2018, OFFIS e.V.
+ *  Copyright (C) 2013-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,7 @@
 #include "dcmtk/dcmdata/dcuid.h"     /* for dcmtk version name */
 #include "dcmtk/dcmdata/cmdlnarg.h"  /* for prepareCmdLineArgs */
 #include "dcmtk/dcmnet/dstorscp.h"   /* for DcmStorageSCP */
+#include "dcmtk/dcmtls/tlsopt.h"     /* for DcmTLSOptions */
 
 
 /* general definitions */
@@ -51,6 +52,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define EXITCODE_CANNOT_INITIALIZE_NETWORK       60      // placeholder, currently not used
 #define EXITCODE_CANNOT_START_SCP_AND_LISTEN     64
 #define EXITCODE_INVALID_ASSOCIATION_CONFIG      66
+#define EXITCODE_CANNOT_CREATE_TRANSPORT_LAYER   71
 
 
 /* helper macro for converting stream output to a string */
@@ -68,7 +70,13 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
+
+#ifdef WITH_OPENSSL
+    DcmTLSTransportLayer::initializeOpenSSL();
+#endif
+
     OFOStringStream optStream;
+    DcmTLSOptions tlsOptions(NET_ACCEPTOR);
 
     const char *opt_configFile = NULL;
     const char *opt_profileName = NULL;
@@ -122,6 +130,10 @@ int main(int argc, char *argv[])
         cmd.addOption("--max-pdu",             "-pdu", 1, optString3.c_str(),
                                                           optString4.c_str());
         cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
+
+    /* add TLS specific command line options if (and only if) we are compiling with OpenSSL */
+    tlsOptions.addTLSCommandlineOptions(cmd);
+
     cmd.addGroup("output options:");
       cmd.addSubGroup("general:");
         CONVERT_TO_STRING("[d]irectory: string (default: \"" << opt_outputDirectory << "\")", optString5);
@@ -152,9 +164,23 @@ int main(int argc, char *argv[])
             if (cmd.findOption("--version"))
             {
                 app.printHeader(OFTrue /*print host identifier*/);
-                COUT << OFendl << "External libraries used: none" << OFendl;
+                COUT << OFendl << "External libraries used:";
+#ifdef WITH_OPENSSL
+                COUT << OFendl;
+                tlsOptions.printLibraryVersion();
+#else
+                COUT << " none" << OFendl;
+#endif
                 return EXITCODE_NO_ERROR;
             }
+
+            /* check if the command line contains the --list-ciphers option */
+            if (tlsOptions.listOfCiphersRequested(cmd))
+            {
+                tlsOptions.printSupportedCiphersuites(app, COUT);
+                return EXITCODE_NO_ERROR;
+            }
+
         }
 
         /* general options */
@@ -233,6 +259,9 @@ int main(int argc, char *argv[])
 
         /* command line parameters */
         app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
+
+        /* evaluate (most of) the TLS command line options (if we are compiling with OpenSSL) */
+        tlsOptions.parseArguments(app, cmd);
     }
 
     /* print resource identifier */
@@ -289,6 +318,18 @@ int main(int argc, char *argv[])
     }
 
     OFLOG_INFO(dcmrecvLogger, "starting service class provider and listening ...");
+
+    /* create a secure transport layer if requested and OpenSSL is available */
+    status = tlsOptions.createTransportLayer(NULL, NULL, app, cmd);
+    if (status.bad())
+    {
+        OFString tempStr;
+        OFLOG_FATAL(dcmrecvLogger, DimseCondition::dump(tempStr, status));
+        return EXITCODE_CANNOT_CREATE_TRANSPORT_LAYER;
+    }
+
+    if (tlsOptions.secureConnectionRequested())
+        storageSCP.getConfig().setTransportLayer(tlsOptions.getTransportLayer());
 
     /* start SCP and listen on the specified port */
     status = storageSCP.listen();

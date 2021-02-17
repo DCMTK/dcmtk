@@ -1,188 +1,24 @@
-if(WIN32 AND NOT MINGW)
-
+set(USE_FIND_PACKAGE_DOCS "Control whether libraries are searched via CMake's find_package() mechanism or a Windows specific fallback")
+if(WIN32)
   # For Windows, we don't used FIND_PACKAGE because DCMTK usually is used with its
   # own set of 3rd-party support libraries that can be downloaded from DCMTK's
   # website (pre-built).
-
-  # libxml support: find out whether user has library
-  file(GLOB LIBXML_DIR "${DCMTK_SOURCE_DIR}/../libxml2*")
-  find_path(WITH_LIBXMLINC "/include/libxml/parser.h" "${LIBXML_DIR}" NO_DEFAULT_PATH)
-
-  # libpng support: find out whether user has library
-  file(GLOB LIBPNG_DIR "${DCMTK_SOURCE_DIR}/../libpng*")
-  find_path(WITH_LIBPNGINC "include/png.h" "${LIBPNG_DIR}" NO_DEFAULT_PATH)
-
-  # libtiff support: find out whether user has library
-  file(GLOB LIBTIFF_DIR "${DCMTK_SOURCE_DIR}/../libtiff*")
-  find_path(WITH_LIBTIFFINC "include/tiff.h" "${LIBTIFF_DIR}" NO_DEFAULT_PATH)
-
-  # OpenSSL support: find out whether user has library
-  file(GLOB OPENSSL_DIR "${DCMTK_SOURCE_DIR}/../openssl*")
-  find_path(WITH_OPENSSLINC "include/openssl/ssl.h" "${OPENSSL_DIR}" NO_DEFAULT_PATH)
-
-  # zlib support: find out whether user has library
-  file(GLOB ZLIB_DIR "${DCMTK_SOURCE_DIR}/../zlib*")
-  find_path(WITH_ZLIBINC "include/zlib.h" "${ZLIB_DIR}" NO_DEFAULT_PATH)
-
-  # sndfile support: find out whether user has library. Needed for module dcmwave (not in public DCMTK yet, marked as advanced)
-  file(GLOB SNDFILE_DIR "${DCMTK_SOURCE_DIR}/../libsndfile*")
-  find_path(WITH_SNDFILEINC "sndfile.h" "${SNDFILE_DIR}" NO_DEFAULT_PATH)
-  mark_as_advanced(SNDFILE_DIR WITH_SNDFILEINC)
-
-  # libiconv support: find out whether user has library
-  file(GLOB LIBICONV_DIR "${DCMTK_SOURCE_DIR}/../libiconv*")
-  find_path(WITH_LIBICONVINC "include/iconv.h" "${LIBICONV_DIR}" NO_DEFAULT_PATH)
-
-  # OpenJPEG support: find out whether user has library
-  file(GLOB OPENJPEG_DIR "${DCMTK_SOURCE_DIR}/../openjpeg*")
-  find_path(WITH_OPENJPEGINC "lib/openjp2_o.lib" "${OPENJPEG_DIR}" NO_DEFAULT_PATH)
-
-  # libxml support: configure compiler
-  if(DCMTK_WITH_XML)
-    if(WITH_LIBXMLINC)
-      set(LIBXML_INCDIR "${WITH_LIBXMLINC}/include")
-      set(LIBXML_LIBDIR "${WITH_LIBXMLINC}/lib")
-      set(LIBXML_LIBS debug "${LIBXML_LIBDIR}/libxml2_d.lib" optimized "${LIBXML_LIBDIR}/libxml2_o.lib" debug "${LIBXML_LIBDIR}/iconv_d.lib" optimized "${LIBXML_LIBDIR}/iconv_o.lib")
-      message(STATUS "Info: DCMTK XML support will be enabled")
-      set(WITH_LIBXML 1)
-      # this hides some warnings that are emitted when linking against libxmlXXX.lib instead of linking the DLL directly
-      add_definitions("-DLIBXML_STATIC")
-    else() # turn off library if library path not set
-      message(STATUS "Warning: XML support will be disabled because libxml2 directory is not specified. Correct path and re-enable DCMTK_WITH_XML.")
-      set(DCMTK_WITH_XML OFF CACHE BOOL "" FORCE)
-      set(WITH_LIBXML "")
-    endif()
+  if(MINGW)
+    set(DCMTK_USE_FIND_PACKAGE TRUE CACHE BOOL "${USE_FIND_PACKAGE_DOCS}")
+  else()
+    set(DCMTK_USE_FIND_PACKAGE FALSE CACHE BOOL "${USE_FIND_PACKAGE_DOCS}")
   endif()
-
-  # libpng support: configure compiler
-  if(DCMTK_WITH_PNG)
-    if(WITH_LIBPNGINC)
-      set(LIBPNG_INCDIR "${WITH_LIBPNGINC}/include")
-      set(LIBPNG_LIBDIR "${WITH_LIBPNGINC}/lib")
-      set(LIBPNG_LIBS debug "${LIBPNG_LIBDIR}/libpng_d.lib" optimized "${LIBPNG_LIBDIR}/libpng_o.lib")
-      message(STATUS "Info: DCMTK PNG support will be enabled")
-      set(WITH_LIBPNG 1)
-    else() # turn off library if library path not set
-      message(STATUS "Warning: PNG support will be disabled because libpng directory was not specified. Correct path and re-enable DCMTK_WITH_PNG.")
-      set(DCMTK_WITH_PNG OFF CACHE BOOL "" FORCE)
-      set(WITH_LIBPNG "")
-    endif()
+else()
+  # Only find_package is supported
+  set(DCMTK_USE_FIND_PACKAGE TRUE CACHE BOOL "${USE_FIND_PACKAGE_DOCS}")
+  if(NOT DCMTK_USE_FIND_PACKAGE)
+    message(WARNING "Only find_package is supported on this platform, overriding user setting of DCMTK_USE_FIND_PACKAGE.")
+    set(DCMTK_USE_FIND_PACKAGE TRUE FORCE)
   endif()
+endif()
+mark_as_advanced(DCMTK_USE_FIND_PACKAGE)
 
-  # libtiff support: configure compiler
-  if(DCMTK_WITH_TIFF)
-    if(WITH_LIBTIFFINC)
-      set(LIBTIFF_INCDIR "${WITH_LIBTIFFINC}/include")
-      set(LIBTIFF_LIBDIR "${WITH_LIBTIFFINC}/lib")
-      set(LIBTIFF_LIBS debug "${LIBTIFF_LIBDIR}/libtiff_d.lib" optimized "${LIBTIFF_LIBDIR}/libtiff_o.lib")
-      message(STATUS "Info: DCMTK TIFF support will be enabled")
-      set(WITH_LIBTIFF 1)
-    else() # turn off library if library path not set
-      message(STATUS "Warning: TIFF support will be disabled because libtiff directory was not specified. Correct path and re-enable DCMTK_WITH_TIFF.")
-      set(DCMTK_WITH_TIFF OFF CACHE BOOL "" FORCE)
-      set(WITH_LIBTIFF "")
-    endif()
-  endif()
-
-  # OpenSSL support: configure compiler
-  if(DCMTK_WITH_OPENSSL)
-    if(WITH_OPENSSLINC)
-      include(CheckCXXSourceCompiles)
-      set(OPENSSL_BINDIR "${WITH_OPENSSLINC}/bin")
-      set(OPENSSL_INCDIR "${WITH_OPENSSLINC}/include")
-      set(OPENSSL_LIBDIR "${WITH_OPENSSLINC}/lib")
-      # starting with OpenSSL 1.1.0, the Windows crypt32 library is needed for a static link of OpenSSL.
-      set(OPENSSL_LIBS "crypt32" debug "${OPENSSL_LIBDIR}/dcmtkssl_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkssl_o.lib" debug "${OPENSSL_LIBDIR}/dcmtkcrypto_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkcrypto_o.lib")
-      set(TEMP_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
-      list(APPEND CMAKE_REQUIRED_INCLUDES "${OPENSSL_INCDIR}")
-      CHECK_CXX_SOURCE_COMPILES("extern \"C\" {\n#include <openssl/ssl.h>\n}\nint main(){\n#if OPENSSL_VERSION_NUMBER < 0x10001000L\n#error OpenSSL too old\n#endif\n}\n" OPENSSL_VERSION_CHECK)
-      set(CMAKE_REQUIRED_INCLUDES "${TEMP_INCLUDES}")
-      if(OPENSSL_VERSION_CHECK)
-        message(STATUS "Info: DCMTK OPENSSL support will be enabled")
-        set(WITH_OPENSSL 1)
-      else()
-        message(STATUS "Info: DCMTK OPENSSL support will be disabled: DCMTK requires OpenSSL version 1.0.1 or newer")
-        set(DCMTK_WITH_OPENSSL OFF CACHE BOOL "" FORCE)
-        set(WITH_OPENSSL "")
-      endif()
-    else() # turn off library if library path not set
-      message(STATUS "Warning: OPENSSL support will be disabled because openssl directory was not specified. Correct path and re-enable DCMTK_WITH_OPENSSL.")
-      set(DCMTK_WITH_OPENSSL OFF CACHE BOOL "" FORCE)
-      set(WITH_OPENSSL "")
-    endif()
-  endif()
-
-  # zlib support: configure compiler
-  if(DCMTK_WITH_ZLIB)
-    if(WITH_ZLIBINC)
-      set(ZLIB_INCDIR "${WITH_ZLIBINC}/include")
-      set(ZLIB_LIBDIR "${WITH_ZLIBINC}/lib")
-      set(ZLIB_LIBS debug "${ZLIB_LIBDIR}/zlib_d.lib" optimized "${ZLIB_LIBDIR}/zlib_o.lib")
-      message(STATUS "Info: DCMTK ZLIB support will be enabled")
-      set(WITH_ZLIB 1)
-    else() # turn off library if library path not set
-      message(STATUS "Warning: ZLIB support will be disabled because zlib directory was not specified. Correct path and re-enable DCMTK_WITH_ZLIB.")
-      set(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)
-      set(WITH_ZLIB "")
-    endif()
-  endif()
-
-  # sndfile support: configure compiler
-  if(DCMTK_WITH_SNDFILE)
-    if(WITH_SNDFILEINC)
-      set(SNDFILE_INCDIR "${WITH_SNDFILEINC}/include")
-      set(SNDFILE_LIBDIR "${WITH_SNDFILEINC}/lib")
-      set(SNDFILE_LIBS debug "${SNDFILE_LIBDIR}/libsndfile_d.lib" optimized "${SNDFILE_LIBDIR}/libsndfile_o.lib")
-      message(STATUS "Info: DCMTK SNDFILE support will be enabled")
-      set(WITH_SNDFILE 1)
-    else() # turn off library if library path not set
-      message(STATUS "Warning: SNDFILE support will be disabled because libsndfile directory was not specified. Correct path and re-enable DCMTK_WITH_SNDFILE.")
-      set(DCMTK_WITH_SNDFILE OFF CACHE BOOL "" FORCE)
-      set(WITH_SNDFILE "")
-    endif()
-  endif()
-
-  # libiconv support: configure compiler
-  if(DCMTK_WITH_ICONV)
-    if(WITH_LIBICONVINC)
-      set(LIBICONV_INCDIR "${WITH_LIBICONVINC}/include")
-      set(LIBICONV_LIBDIR "${WITH_LIBICONVINC}/lib")
-      set(LIBICONV_LIBS debug "${LIBICONV_LIBDIR}/libiconv_d.lib" optimized "${LIBICONV_LIBDIR}/libiconv_o.lib")
-      message(STATUS "Info: DCMTK ICONV support will be enabled")
-      set(WITH_LIBICONV 1)
-    else() # turn off library if library path not set
-      message(STATUS "Warning: ICONV support will be disabled because libiconv directory was not specified. Correct path and re-enable DCMTK_WITH_ICONV.")
-      set(DCMTK_WITH_ICONV OFF CACHE BOOL "" FORCE)
-      set(WITH_LIBICONV "")
-    endif()
-  endif()
-
-  # OpenJPEG support: configure compiler
-  if(DCMTK_WITH_OPENJPEG)
-    if(WITH_OPENJPEGINC)
-      # Unfortunately, OpenJPEG uses a version number in the include path. This needs special handling.
-      file(GLOB OPENJPEG2_DIR "${WITH_OPENJPEGINC}/include/openjpeg*")
-      find_path(WITH_OPENJPEGINC1 "openjpeg.h" "${OPENJPEG2_DIR}" NO_DEFAULT_PATH)
-      if ("${WITH_OPENJPEGINC1}" STREQUAL "WITH_OPENJPEGINC1-NOTFOUND")
-          message(STATUS "Info: DCMTK OpenJPEG support will be disabled because the header files were not found.")
-          set(DCMTK_WITH_OPENJPEG OFF CACHE BOOL "" FORCE)
-          set(WITH_OPENJPEG "")
-      else()
-          set(OPENJPEG_INCDIR "${WITH_OPENJPEGINC1}")
-          set(OPENJPEG_LIBDIR "${WITH_OPENJPEGINC}/lib")
-          set(OPENJPEG_LIBS debug "${OPENJPEG_LIBDIR}/openjp2_d.lib" optimized "${OPENJPEG_LIBDIR}/openjp2_o.lib")
-          message(STATUS "Info: DCMTK OpenJPEG support will be enabled")
-          set(WITH_OPENJPEG 1)
-      endif()
-    else() # turn off library if library path not set
-      message(STATUS "Warning: OpenJPEG support will be disabled because openjpeg directory was not specified. Correct path and re-enable DCMTK_WITH_OPENJPEG.")
-      set(DCMTK_WITH_OPENJPEG OFF CACHE BOOL "" FORCE)
-      set(WITH_OPENJPEG "")
-    endif()
-  endif()
-
-else(WIN32 AND NOT MINGW)
-
+if(DCMTK_USE_FIND_PACKAGE)
   # Find TIFF
   if(DCMTK_WITH_TIFF)
     find_package(TIFF QUIET)
@@ -344,7 +180,7 @@ else(WIN32 AND NOT MINGW)
 
   # Find OpenJPEG
   if(DCMTK_WITH_OPENJPEG)
-    find_package(OpenJPEG QUIET)
+    find_package(OpenJPEG QUIET PATH_SUFFIXES "openjpeg-2.4.0" "openjpeg-2.3.1" "openjpeg-2.3.0")
     if(NOT OPENJPEG_FOUND)
       message(STATUS "Warning: OpenJPEG support will be disabled because the OpenJPEG library was not found.")
       set(WITH_OPENJPEG "")
@@ -356,8 +192,189 @@ else(WIN32 AND NOT MINGW)
       set(OPENJPEG_LIBS ${OPENJPEG_LIBRARIES})
     endif()
   endif()
+else()
+  if(NOT DEFINED DCMTK_SUPPORT_LIBRARIES_DIR)
+    get_filename_component(DCMTK_SUPPORT_LIBRARIES_DIR "${DCMTK_SOURCE_DIR}" PATH)
+    set(DCMTK_SUPPORT_LIBRARIES_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}" CACHE PATH "The directory to search for precompiled DCMTK support libraries.")
+  endif()
 
-endif(WIN32 AND NOT MINGW)
+  # libxml support: find out whether user has library
+  file(GLOB LIBXML_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/libxml2*")
+  find_path(WITH_LIBXMLINC "${DCMTK_SUPPORT_LIBRARIES_DIR}/include/libxml/parser.h" "${LIBXML_DIR}" NO_DEFAULT_PATH)
+
+  # libpng support: find out whether user has library
+  file(GLOB LIBPNG_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/libpng*")
+  find_path(WITH_LIBPNGINC "include/png.h" "${LIBPNG_DIR}" NO_DEFAULT_PATH)
+
+  # libtiff support: find out whether user has library
+  file(GLOB LIBTIFF_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/libtiff*")
+  find_path(WITH_LIBTIFFINC "include/tiff.h" "${LIBTIFF_DIR}" NO_DEFAULT_PATH)
+
+  # OpenSSL support: find out whether user has library
+  file(GLOB OPENSSL_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/openssl*")
+  find_path(WITH_OPENSSLINC "include/openssl/ssl.h" "${OPENSSL_DIR}" NO_DEFAULT_PATH)
+
+  # zlib support: find out whether user has library
+  file(GLOB ZLIB_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/zlib*")
+  find_path(WITH_ZLIBINC "include/zlib.h" "${ZLIB_DIR}" NO_DEFAULT_PATH)
+
+  # sndfile support: find out whether user has library. Needed for module dcmwave (not in public DCMTK yet, marked as advanced)
+  file(GLOB SNDFILE_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/libsndfile*")
+  find_path(WITH_SNDFILEINC "sndfile.h" "${SNDFILE_DIR}" NO_DEFAULT_PATH)
+  mark_as_advanced(SNDFILE_DIR WITH_SNDFILEINC)
+
+  # libiconv support: find out whether user has library
+  file(GLOB LIBICONV_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/libiconv*")
+  find_path(WITH_LIBICONVINC "include/iconv.h" "${LIBICONV_DIR}" NO_DEFAULT_PATH)
+
+  # OpenJPEG support: find out whether user has library
+  file(GLOB OPENJPEG_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/openjpeg*")
+  find_path(WITH_OPENJPEGINC "lib/openjp2_o.lib" "${OPENJPEG_DIR}" NO_DEFAULT_PATH)
+
+  # libxml support: configure compiler
+  if(DCMTK_WITH_XML)
+    if(WITH_LIBXMLINC)
+      set(LIBXML_INCDIR "${WITH_LIBXMLINC}/include")
+      set(LIBXML_LIBDIR "${WITH_LIBXMLINC}/lib")
+      set(LIBXML_LIBS debug "${LIBXML_LIBDIR}/libxml2_d.lib" optimized "${LIBXML_LIBDIR}/libxml2_o.lib" debug "${LIBXML_LIBDIR}/iconv_d.lib" optimized "${LIBXML_LIBDIR}/iconv_o.lib")
+      message(STATUS "Info: DCMTK XML support will be enabled")
+      set(WITH_LIBXML 1)
+      # this hides some warnings that are emitted when linking against libxmlXXX.lib instead of linking the DLL directly
+      add_definitions("-DLIBXML_STATIC")
+    else() # turn off library if library path not set
+      message(STATUS "Warning: XML support will be disabled because libxml2 directory is not specified. Correct path and re-enable DCMTK_WITH_XML.")
+      set(DCMTK_WITH_XML OFF CACHE BOOL "" FORCE)
+      set(WITH_LIBXML "")
+    endif()
+  endif()
+
+  # libpng support: configure compiler
+  if(DCMTK_WITH_PNG)
+    if(WITH_LIBPNGINC)
+      set(LIBPNG_INCDIR "${WITH_LIBPNGINC}/include")
+      set(LIBPNG_LIBDIR "${WITH_LIBPNGINC}/lib")
+      set(LIBPNG_LIBS debug "${LIBPNG_LIBDIR}/libpng_d.lib" optimized "${LIBPNG_LIBDIR}/libpng_o.lib")
+      message(STATUS "Info: DCMTK PNG support will be enabled")
+      set(WITH_LIBPNG 1)
+    else() # turn off library if library path not set
+      message(STATUS "Warning: PNG support will be disabled because libpng directory was not specified. Correct path and re-enable DCMTK_WITH_PNG.")
+      set(DCMTK_WITH_PNG OFF CACHE BOOL "" FORCE)
+      set(WITH_LIBPNG "")
+    endif()
+  endif()
+
+  # libtiff support: configure compiler
+  if(DCMTK_WITH_TIFF)
+    if(WITH_LIBTIFFINC)
+      set(LIBTIFF_INCDIR "${WITH_LIBTIFFINC}/include")
+      set(LIBTIFF_LIBDIR "${WITH_LIBTIFFINC}/lib")
+      set(LIBTIFF_LIBS debug "${LIBTIFF_LIBDIR}/libtiff_d.lib" optimized "${LIBTIFF_LIBDIR}/libtiff_o.lib")
+      message(STATUS "Info: DCMTK TIFF support will be enabled")
+      set(WITH_LIBTIFF 1)
+    else() # turn off library if library path not set
+      message(STATUS "Warning: TIFF support will be disabled because libtiff directory was not specified. Correct path and re-enable DCMTK_WITH_TIFF.")
+      set(DCMTK_WITH_TIFF OFF CACHE BOOL "" FORCE)
+      set(WITH_LIBTIFF "")
+    endif()
+  endif()
+
+  # OpenSSL support: configure compiler
+  if(DCMTK_WITH_OPENSSL)
+    if(WITH_OPENSSLINC)
+      include(CheckCXXSourceCompiles)
+      set(OPENSSL_BINDIR "${WITH_OPENSSLINC}/bin")
+      set(OPENSSL_INCDIR "${WITH_OPENSSLINC}/include")
+      set(OPENSSL_LIBDIR "${WITH_OPENSSLINC}/lib")
+      # starting with OpenSSL 1.1.0, the Windows crypt32 library is needed for a static link of OpenSSL.
+      set(OPENSSL_LIBS "crypt32" debug "${OPENSSL_LIBDIR}/dcmtkssl_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkssl_o.lib" debug "${OPENSSL_LIBDIR}/dcmtkcrypto_d.lib" optimized "${OPENSSL_LIBDIR}/dcmtkcrypto_o.lib")
+      set(TEMP_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
+      list(APPEND CMAKE_REQUIRED_INCLUDES "${OPENSSL_INCDIR}")
+      CHECK_CXX_SOURCE_COMPILES("extern \"C\" {\n#include <openssl/ssl.h>\n}\nint main(){\n#if OPENSSL_VERSION_NUMBER < 0x10001000L\n#error OpenSSL too old\n#endif\n}\n" OPENSSL_VERSION_CHECK)
+      set(CMAKE_REQUIRED_INCLUDES "${TEMP_INCLUDES}")
+      if(OPENSSL_VERSION_CHECK)
+        message(STATUS "Info: DCMTK OPENSSL support will be enabled")
+        set(WITH_OPENSSL 1)
+      else()
+        message(STATUS "Info: DCMTK OPENSSL support will be disabled: DCMTK requires OpenSSL version 1.0.1 or newer")
+        set(DCMTK_WITH_OPENSSL OFF CACHE BOOL "" FORCE)
+        set(WITH_OPENSSL "")
+      endif()
+    else() # turn off library if library path not set
+      message(STATUS "Warning: OPENSSL support will be disabled because openssl directory was not specified. Correct path and re-enable DCMTK_WITH_OPENSSL.")
+      set(DCMTK_WITH_OPENSSL OFF CACHE BOOL "" FORCE)
+      set(WITH_OPENSSL "")
+    endif()
+  endif()
+
+  # zlib support: configure compiler
+  if(DCMTK_WITH_ZLIB)
+    if(WITH_ZLIBINC)
+      set(ZLIB_INCDIR "${WITH_ZLIBINC}/include")
+      set(ZLIB_LIBDIR "${WITH_ZLIBINC}/lib")
+      set(ZLIB_LIBS debug "${ZLIB_LIBDIR}/zlib_d.lib" optimized "${ZLIB_LIBDIR}/zlib_o.lib")
+      message(STATUS "Info: DCMTK ZLIB support will be enabled")
+      set(WITH_ZLIB 1)
+    else() # turn off library if library path not set
+      message(STATUS "Warning: ZLIB support will be disabled because zlib directory was not specified. Correct path and re-enable DCMTK_WITH_ZLIB.")
+      set(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)
+      set(WITH_ZLIB "")
+    endif()
+  endif()
+
+  # sndfile support: configure compiler
+  if(DCMTK_WITH_SNDFILE)
+    if(WITH_SNDFILEINC)
+      set(SNDFILE_INCDIR "${WITH_SNDFILEINC}/include")
+      set(SNDFILE_LIBDIR "${WITH_SNDFILEINC}/lib")
+      set(SNDFILE_LIBS debug "${SNDFILE_LIBDIR}/libsndfile_d.lib" optimized "${SNDFILE_LIBDIR}/libsndfile_o.lib")
+      message(STATUS "Info: DCMTK SNDFILE support will be enabled")
+      set(WITH_SNDFILE 1)
+    else() # turn off library if library path not set
+      message(STATUS "Warning: SNDFILE support will be disabled because libsndfile directory was not specified. Correct path and re-enable DCMTK_WITH_SNDFILE.")
+      set(DCMTK_WITH_SNDFILE OFF CACHE BOOL "" FORCE)
+      set(WITH_SNDFILE "")
+    endif()
+  endif()
+
+  # libiconv support: configure compiler
+  if(DCMTK_WITH_ICONV)
+    if(WITH_LIBICONVINC)
+      set(LIBICONV_INCDIR "${WITH_LIBICONVINC}/include")
+      set(LIBICONV_LIBDIR "${WITH_LIBICONVINC}/lib")
+      set(LIBICONV_LIBS debug "${LIBICONV_LIBDIR}/libiconv_d.lib" optimized "${LIBICONV_LIBDIR}/libiconv_o.lib")
+      message(STATUS "Info: DCMTK ICONV support will be enabled")
+      set(WITH_LIBICONV 1)
+    else() # turn off library if library path not set
+      message(STATUS "Warning: ICONV support will be disabled because libiconv directory was not specified. Correct path and re-enable DCMTK_WITH_ICONV.")
+      set(DCMTK_WITH_ICONV OFF CACHE BOOL "" FORCE)
+      set(WITH_LIBICONV "")
+    endif()
+  endif()
+
+  # OpenJPEG support: configure compiler
+  if(DCMTK_WITH_OPENJPEG)
+    if(WITH_OPENJPEGINC)
+      # Unfortunately, OpenJPEG uses a version number in the include path. This needs special handling.
+      file(GLOB OPENJPEG2_DIR "${WITH_OPENJPEGINC}/include/openjpeg*")
+      find_path(WITH_OPENJPEGINC1 "openjpeg.h" "${OPENJPEG2_DIR}" NO_DEFAULT_PATH)
+      if ("${WITH_OPENJPEGINC1}" STREQUAL "WITH_OPENJPEGINC1-NOTFOUND")
+          message(STATUS "Info: DCMTK OpenJPEG support will be disabled because the header files were not found.")
+          set(DCMTK_WITH_OPENJPEG OFF CACHE BOOL "" FORCE)
+          set(WITH_OPENJPEG "")
+      else()
+          set(OPENJPEG_INCDIR "${WITH_OPENJPEGINC1}")
+          set(OPENJPEG_LIBDIR "${WITH_OPENJPEGINC}/lib")
+          set(OPENJPEG_LIBS debug "${OPENJPEG_LIBDIR}/openjp2_d.lib" optimized "${OPENJPEG_LIBDIR}/openjp2_o.lib")
+          message(STATUS "Info: DCMTK OpenJPEG support will be enabled")
+          set(WITH_OPENJPEG 1)
+      endif()
+    else() # turn off library if library path not set
+      message(STATUS "Warning: OpenJPEG support will be disabled because openjpeg directory was not specified. Correct path and re-enable DCMTK_WITH_OPENJPEG.")
+      set(DCMTK_WITH_OPENJPEG OFF CACHE BOOL "" FORCE)
+      set(WITH_OPENJPEG "")
+    endif()
+  endif()
+endif()
 
 if(NOT DEFINED DCMTK_WITH_STDLIBC_ICONV)
   include(CheckCXXSourceCompiles)

@@ -19,7 +19,7 @@ raw data set) to JSON (JavaScript Object Notation).  The output refers to the
 "DICOM JSON Model", which is found in DICOM Part 18 Section F.
 
 If \b dcm2json reads a raw data set (DICOM data without a file format
-meta-header) it will attempt to guess the transfer syntax by examining the
+meta-header), it will attempt to guess the transfer syntax by examining the
 first few bytes of the file.  It is not always possible to correctly guess the
 transfer syntax and it is better to convert a data set to a file format
 whenever possible (using the \b dcmconv utility).  It is also possible to use
@@ -38,79 +38,89 @@ jsonfile-out  JSON output filename (default: stdout)
 
 \subsection dcm2json_general_options general options
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h   --help
+         print this help text and exit
 
-        --version
-          print version information and exit
+       --version
+         print version information and exit
 
-        --arguments
-          print expanded command line arguments
+       --arguments
+         print expanded command line arguments
 
-  -q    --quiet
-          quiet mode, print no warnings and errors
+  -q   --quiet
+         quiet mode, print no warnings and errors
 
-  -v    --verbose
-          verbose mode, print processing details
+  -v   --verbose
+         verbose mode, print processing details
 
-  -d    --debug
-          debug mode, print debug information
+  -d   --debug
+         debug mode, print debug information
 
-  -ll   --log-level  [l]evel: string constant
-          (fatal, error, warn, info, debug, trace)
-          use level l for the logger
+  -ll  --log-level  [l]evel: string constant
+         (fatal, error, warn, info, debug, trace)
+         use level l for the logger
 
-  -lc   --log-config  [f]ilename: string
-          use config file f for the logger
+  -lc  --log-config  [f]ilename: string
+         use config file f for the logger
 \endverbatim
 
 \subsection dcm2json_input_options input options
 \verbatim
 input file format:
 
-  +f    --read-file
-          read file format or data set (default)
+  +f   --read-file
+         read file format or data set (default)
 
-  +fo   --read-file-only
-          read file format only
+  +fo  --read-file-only
+         read file format only
 
-  -f    --read-dataset
-          read data set without file meta information
+  -f   --read-dataset
+         read data set without file meta information
 
 input transfer syntax:
 
-  -t=   --read-xfer-auto
-          use TS recognition (default)
+  -t=  --read-xfer-auto
+         use TS recognition (default)
 
-  -td   --read-xfer-detect
-          ignore TS specified in the file meta header
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
-  -te   --read-xfer-little
-          read with explicit VR little endian TS
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
 
-  -tb   --read-xfer-big
-          read with explicit VR big endian TS
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
 
-  -ti   --read-xfer-implicit
-          read with implicit VR little endian TS
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+\endverbatim
+
+\subsection dcm2json_processing_options processing options
+\verbatim
+encoding of infinity and not-a-number:
+  -es  --encode-strict
+         report error for 'inf' and 'nan' (default)
+
+  -ee  --encode-extended
+         permit 'inf' and 'nan' in JSON numbers
 \endverbatim
 
 \subsection dcm2json_output_options output options
 \verbatim
 output format:
 
-  +fc   --formatted-code
-          enable whitespace formatting (default)
+  +fc  --formatted-code
+         enable whitespace formatting (default)
 
-          # prints additional spaces and newlines for increased
-          # readability
+         # prints additional spaces and newlines for increased
+         # readability
 
-  -fc   --compact-code
-          print only required characters
+  -fc  --compact-code
+         print only required characters
 
-  +m    --write-meta
-          write data set with meta information
-          (warning: not conforming to the DICOM standard)
+  +m   --write-meta
+         write data set with meta information
+         (warning: not conforming to the DICOM standard)
 \endverbatim
 
 \section dcm2json_json_format JSON Format
@@ -277,19 +287,32 @@ the following (see DICOM Part 18 Section F for details):
 \subsection dcm2json_bulk_data Bulk Data
 
 Binary data, i.e. DICOM element values with Value Representations (VR) of OB
-or OW, as well as OD, OF and UN values are by default not written to the JSON
-output because of their size.  Instead, for each element, a new Universally
-Unique Identifier (UUID) is being generated and written as an value of a
-BulkDataURI JSON element.  So far, there is no possibility to write an
-additional file to hold the binary data for each of the binary data chunks.
+or OW, as well as OD, OF, OL, OV and UN values are always written as
+"InlineBinary" (base64 encoding) to the JSON output.  A future version of this
+tool might optionally use a "BulkDataURI" instead, i.e. the WADO-RS URL of a
+bulk data item that contains the element value.  This would be particularly
+useful for large amounts of data, such as pixel data.
 
 \section dcm2json_notes NOTES
 
+\subsection dcm2json_numbers_as_strings Numbers as Strings
+
+The DICOM standard allows certain numeric DICOM value representations, DS, IS,
+SV and UV, to be converted either to a JSON number or a JSON string.
+\b dcm2json converts DS and IS values to JSON numbers if they are valid decimal
+strings or integer strings, and to strings if they contain any illegal
+character.  \b dcm2json converts SV and UV values to numbers if they are not
+larger than 9007199254740991ll or smaller than -9007199254740991ll, and to
+strings otherwise.  While the JSON specification permits larger numbers, these
+are the largest integers that JavaScript can handle.  Therefore, many JSON
+parsers cannot process larger numbers.
+
 \subsection dcm2json_character_encoding Character Encoding
 
-\b dcm2json always tries to output in UTF-8 encoding.  If this is not possible,
-e.g. because there is no support for character set conversion, ASCII is used
-instead (which is a subset of UTF-8).
+As required by the DICOM JSON encoding, \b dcm2json always creates output in
+Unicode UTF-8 encoding and converts DICOM datasets accordingly.  If this is not
+possible, for example because DCMTK has been compiled without either iconv or
+ICU library, an error is returned.
 
 \section dcm2json_logging LOGGING
 
@@ -332,6 +355,34 @@ allows one to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
 <em>\<datadir\>/dumppat.txt</em>).
 
+\section dcm2json_exit_codes EXIT CODES
+
+The \b dcm2json utility uses the following exit codes when terminating.  This
+enables the user to check for the reason why the application terminated.
+
+\subsection dcm2json_exit_codes_general general
+\verbatim
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+\endverbatim
+
+\subsection dcm2json_exit_codes_input_file_errors input file errors
+\verbatim
+EXITCODE_CANNOT_READ_INPUT_FILE          20
+EXITCODE_NO_INPUT_FILES                  21
+\endverbatim
+
+\subsection dcm2json_exit_codes_output_file_errors output file errors
+\verbatim
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+\endverbatim
+
+\subsection dcm2json_exit_codes_processing_errors processing errors
+\verbatim
+EXITCODE_CANNOT_CONVERT_TO_UNICODE       80
+EXITCODE_CANNOT_WRITE_VALID_JSON         81
+\endverbatim
+
 \section dcm2json_environment ENVIRONMENT
 
 The \b dcm2json utility will attempt to load DICOM data dictionaries specified
@@ -350,6 +401,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2json_copyright COPYRIGHT
 
-Copyright (C) 2016-2017 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

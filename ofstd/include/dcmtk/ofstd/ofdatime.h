@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2017, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,7 +34,10 @@
  *  class declaration  *
  *---------------------*/
 
-/** This class is a combination of OFDate and OFTime
+/** This class is a combination of OFDate and OFTime.
+ *  @note Please note that support for the leap second is limited: a value of
+ *    60 seconds is accepted (i.e. regarded as valid) but calculations based on
+ *    such a time value might be incorrect.
  */
 class DCMTK_OFSTD_EXPORT OFDateTime
 {

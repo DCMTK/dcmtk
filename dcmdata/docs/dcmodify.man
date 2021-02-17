@@ -60,6 +60,9 @@ However, if specifying an item number like '5', all 6 items (counted from zero)
 can be (and are) automatically generated in insert mode.  If already 2 items
 would exist, the rest (4) would be inserted.
 
+\b dcmodify does not work on directories, i.e. the parameter \e dcmfile-in...
+must not include directory names.
+
 Please note that there are some issues concerning the modification of private
 tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
 
@@ -361,6 +364,12 @@ by the user as necessary.
 When choosing the \e -gin option, the related metaheader tag ('Media Storage
 SOP Instance UID') is updated automatically.  This behavior cannot be
 disabled.
+
+When working on multiple input files, \b dcmodify processes each file
+in isolated fashion, i.e. it will generate UIDs for each single file.  For
+example, when using the \e -gst option, \b dcmodify will insert a different
+Study Instance UID into each file instead of generating a single one and
+writing it to each file that is being processed.
 
 \section dcmodify_creating_new_files CREATING NEW FILES
 

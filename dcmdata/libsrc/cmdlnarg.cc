@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 /*
 ** prepareCmdLineArgs
@@ -100,53 +101,24 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 #ifdef _WIN32
 #ifndef DCMTK_GUI
 #ifndef __CYGWIN__
+
+#ifdef DCMTK_MERGE_STDERR_TO_STDOUT
     /* Map stderr onto stdout (cannot redirect stderr under Windows).
-     * Remove any buffering (windows uses a 2k buffer for stdout when not
-     * writing to the console.  since dcmtk uses mixed stdout, stderr
-     * cout and cerr, this results in _very_ mixed up output).
+     * We also remove any buffering since Windows by default uses buffered mode
+     * for stdout when not writing to the console. Since dcmtk uses mixed
+     * stdout, stderr, cout and cerr, this results in _very_ mixed up output).
      */
-
-    /* first of all, check whether stderr and stdout file descriptors are
-     * already the same, e.g. from a previous call of this function
-     */
-    if (fileno(stderr) != fileno(stdout))
-    {
-        /* duplicate the stderr file descriptor to be the same as stdout */
-        close(fileno(stderr));
-        int fderr = dup(fileno(stdout));
-        if (fderr != fileno(stderr))
-        {
-            DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: "
-                << OFStandard::getLastSystemErrorCode().message());
-        }
-    }
-
-    /* make stdout the same as stderr */
-    *stdout = *stderr;
+    OFConsole::mergeStderrStdout();
+#endif
 
 #ifdef USE_BINARY_MODE_FOR_STDOUT_ON_WINDOWS
     /* use binary mode for stdout in order to be more consistent with common Unix behavior */
     setmode(fileno(stdout), O_BINARY);
 #endif
 
-#ifndef __BORLANDC__  /* setvbuf on stdout/stderr does not work with Borland C++ */
-    /* make sure the buffering is removed */
-    if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
-    {
-        DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stdout: "
-            << OFStandard::getLastSystemErrorCode().message());
-    }
-    if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
-    {
-        DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stderr: "
-            << OFStandard::getLastSystemErrorCode().message());
-    }
-#endif /* __BORLANDC__ */
 #endif
 #endif
 #endif
-
-    /* no need to process the arguments */
 }
 
 

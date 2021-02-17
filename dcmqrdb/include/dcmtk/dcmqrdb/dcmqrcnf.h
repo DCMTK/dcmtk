@@ -400,7 +400,7 @@ public:
 
 private:
 
-  friend class DcmQueryRetrieveCharacterSetOptions;
+  friend struct DcmQueryRetrieveCharacterSetOptions;
 
   const char* vendorForPeerAETitle(const char *peerAETitle) const;
 

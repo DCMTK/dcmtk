@@ -104,9 +104,6 @@
 /* Define to 1 if you have the `cuserid' function. */
 #cmakedefine HAVE_CUSERID @HAVE_CUSERID@
 
-/* Define if bool is a built-in type */
-#cmakedefine HAVE_CXX_BOOL @HAVE_CXX_BOOL@
-
 /* Define if volatile is a known keyword */
 #define HAVE_CXX_VOLATILE 1
 

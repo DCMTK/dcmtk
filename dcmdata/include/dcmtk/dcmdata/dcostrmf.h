@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -137,6 +137,5 @@ private:
   /// the final consumer of the filter chain
   DcmFileConsumer consumer_;
 };
-
 
 #endif

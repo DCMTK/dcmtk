@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,11 +19,11 @@
  *
  */
 
-
 #ifndef SEGDEF_H
 #define SEGDEF_H
 
 #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/ofstd/ofdefine.h"
 
 // definitions for DLL/shared library exports

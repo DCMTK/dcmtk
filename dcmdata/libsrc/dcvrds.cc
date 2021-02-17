@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -114,6 +114,9 @@ OFCondition DcmDecimalString::getFloat64(Float64 &doubleVal,
 }
 
 
+// ********************************
+
+
 OFCondition DcmDecimalString::getFloat64Vector(OFVector<Float64> &doubleVals)
 {
     /* get stored value */
@@ -162,6 +165,7 @@ OFCondition DcmDecimalString::getFloat64Vector(OFVector<Float64> &doubleVals)
 }
 
 
+
 // ********************************
 
 
@@ -175,6 +179,58 @@ OFCondition DcmDecimalString::getOFString(OFString &stringVal,
     if (l_error.good() && normalize)
         normalizeString(stringVal, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
+}
+
+
+// ********************************
+
+
+OFCondition DcmDecimalString::putFloat64(const Float64 val,
+                                         const unsigned long pos)
+{
+    return putFloat64Prec(val, pos, 6);
+}
+
+
+OFCondition DcmDecimalString::putFloat64Prec(const Float64 val,
+                                             const unsigned long pos,
+                                             const Uint8 prec,
+                                             const OFBool cutTrailZeroes)
+{
+    if (prec > 100)
+        return EC_IllegalParameter;
+
+    // Reserve enough bytes for conversion (considering high precision values that
+    // might be cut off later, i.e. 16 for integer part, 1 for dot, 14 max precision, 1 for NUL, i.e.
+    char buf[16 + 1 + 14 +1];
+    int written = OFStandard::snprintf(buf, 32, "%.*f", prec, val);
+    if (written > 31 /* NUL not counting in */)
+    {
+        return EC_IllegalParameter;
+    }
+
+    OFString str(buf);
+    if (cutTrailZeroes)
+    {
+        size_t dot = str.find_last_of('.');
+        if (dot != OFString_npos)
+        {
+            size_t last_valid = str.find_last_not_of('0');
+            if (last_valid != str.length() -1)
+            {
+                if (str[last_valid] == '.')
+                    str = str.substr(0, last_valid);
+                else
+                    str = str.substr(0, last_valid+1);
+            }
+        }
+    }
+    if (str.length() > 16)
+    {
+        return EC_IllegalParameter;
+    }
+
+    return putOFStringAtPos(str.c_str(), pos);
 }
 
 
@@ -226,9 +282,10 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
 {
     /* always write JSON Opener */
     writeJsonOpener(out, format);
-    /* write element value (if loaded) */
-    if (valueLoaded())
+
+    if (!isEmpty())
     {
+        /* write element value */
         OFString bulkDataValue;
         if (format.asBulkDataURI(getTag(), bulkDataValue))
         {
@@ -237,32 +294,37 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
         }
         else
         {
-            /* get string data (without normalization) */
-            char *value_ = OFnullptr;
-            Uint32 length = 0;
-            getString(value_, length);
-            if ((value_ != OFnullptr) && (length > 0))
+            const unsigned long vm = getVM();
+            if (vm > 0)
             {
-                /* explicitly convert to OFString because of possible NULL bytes */
-                OFString value(value_, length);
+                OFString value;
+                OFString vmstring = "1";
                 OFCondition status = getOFString(value, 0L);
                 if (status.bad())
                     return status;
                 format.printValuePrefix(out);
-                DcmJsonFormat::printNumberDecimal(out, value);
-                const unsigned long vm = getVM();
+                // if the value is a proper number, write as JSON number,
+                // otherwise write as JSON string.
+                if (checkStringValue(value, vmstring).good())
+                    DcmJsonFormat::printNumberDecimal(out, value);
+                    else DcmJsonFormat::printValueString(out, value);
                 for (unsigned long valNo = 1; valNo < vm; ++valNo)
                 {
                     status = getOFString(value, valNo);
                     if (status.bad())
                         return status;
                     format.printNextArrayElementPrefix(out);
-                    DcmJsonFormat::printNumberDecimal(out, value);
+                    // if the value is a proper number, write as JSON number,
+                    // otherwise write as JSON string.
+                    if (checkStringValue(value, vmstring).good())
+                        DcmJsonFormat::printNumberDecimal(out, value);
+                        else DcmJsonFormat::printValueString(out, value);
                 }
                 format.printValueSuffix(out);
             }
         }
     }
+
     /* write JSON Closer  */
     writeJsonCloser(out, format);
     /* always report success */

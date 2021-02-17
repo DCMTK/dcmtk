@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -261,7 +261,7 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
     OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
     if (result.good())
     {
-        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2017e) */
+        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2020c) */
         if ((sopClassUID != UID_TwelveLeadECGWaveformStorage) &&
             (sopClassUID != UID_GeneralECGWaveformStorage) &&
             (sopClassUID != UID_AmbulatoryECGWaveformStorage) &&
@@ -270,7 +270,13 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
             (sopClassUID != UID_BasicVoiceAudioWaveformStorage) &&
             (sopClassUID != UID_GeneralAudioWaveformStorage) &&
             (sopClassUID != UID_ArterialPulseWaveformStorage) &&
-            (sopClassUID != UID_RespiratoryWaveformStorage))
+            (sopClassUID != UID_RespiratoryWaveformStorage) &&
+            (sopClassUID != UID_MultichannelRespiratoryWaveformStorage) &&
+            (sopClassUID != UID_RoutineScalpElectroencephalogramWaveformStorage) &&
+            (sopClassUID != UID_ElectromyogramWaveformStorage) &&
+            (sopClassUID != UID_ElectrooculogramWaveformStorage) &&
+            (sopClassUID != UID_SleepElectroencephalogramWaveformStorage) &&
+            (sopClassUID != UID_BodyPositionWaveformStorage))
         {
             result = SR_EC_InvalidValue;
         }

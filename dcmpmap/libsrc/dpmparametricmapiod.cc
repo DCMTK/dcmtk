@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -365,34 +365,6 @@ private:
 
   OFunique_ptr<DcmOtherByteOtherWord> m_pElement;
 };
-
-
-template<>
-Uint8* DPMParametricMapIOD::WriteVisitor::DcmElementOf<IODImagePixelModule<Uint8> >::getData(const size_t size)
-{
-  if (m_pElement)
-  if (m_pElement->setVR(EVR_OB).good())
-  {
-    Uint8* result;
-    if (m_pElement->createUint8Array(OFstatic_cast(Uint32, size), result).good())
-      return result;
-  }
-  return OFnullptr;
-}
-
-
-template<>
-Sint8* DPMParametricMapIOD::WriteVisitor::DcmElementOf<IODImagePixelModule<Sint8> >::getData(const size_t size)
-{
-  if (m_pElement)
-  if (m_pElement->setVR(EVR_OB).good())
-  {
-    Uint8* result;
-    if (m_pElement->createUint8Array(OFstatic_cast(Uint32, size), result).good())
-      return OFreinterpret_cast(Sint8*, result);
-  }
-  return OFnullptr;
-}
 
 
 template<>

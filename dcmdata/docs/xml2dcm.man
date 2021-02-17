@@ -195,7 +195,7 @@ The basic structure of the XML input expected looks like the following:
       <item card="3">
         <element tag="0028,3002" vr="xs" vm="3" len="6"
                  name="LUTDescriptor">
-          256\\0\\8
+          256\0\8
         </element>
         ...
       </item>
@@ -342,6 +342,6 @@ It is an error if no data dictionary can be loaded.
 
 \section xml2dcm_copyright COPYRIGHT
 
-Copyright (C) 2003-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

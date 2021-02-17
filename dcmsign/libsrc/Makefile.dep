@@ -1,3 +1,75 @@
+dcsighlp.o: dcsighlp.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/dcsighlp.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipurpos.h \
+ ../include/dcmtk/dcmsign/sitypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+ ../include/dcmtk/dcmsign/dcsignat.h ../include/dcmtk/dcmsign/sicert.h \
+ ../include/dcmtk/dcmsign/sicertvf.h ../include/dcmtk/dcmsign/sisprof.h \
+ ../include/dcmtk/dcmsign/sitsfs.h ../include/dcmtk/dcmsign/sitstamp.h \
+ ../include/dcmtk/dcmsign/sicreapr.h ../include/dcmtk/dcmsign/sibrsapr.h \
+ ../include/dcmtk/dcmsign/siautopr.h ../include/dcmtk/dcmsign/sisrvpr.h \
+ ../include/dcmtk/dcmsign/sisrpr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h \
+ ../include/dcmtk/dcmsign/siexit.h
 dcsignat.o: dcsignat.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsign/dcsignat.h ../include/dcmtk/dcmsign/sitypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -40,6 +112,7 @@ dcsignat.o: dcsignat.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../include/dcmtk/dcmsign/sipurpos.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -72,11 +145,9 @@ dcsignat.o: dcsignat.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsign/simac.h ../include/dcmtk/dcmsign/simaccon.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrmb.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
- ../include/dcmtk/dcmsign/simd5.h ../include/dcmtk/dcmsign/siprivat.h \
- ../include/dcmtk/dcmsign/siripemd.h ../include/dcmtk/dcmsign/sisha1.h \
- ../include/dcmtk/dcmsign/sisha256.h ../include/dcmtk/dcmsign/sisha384.h \
- ../include/dcmtk/dcmsign/sisha512.h ../include/dcmtk/dcmsign/sisprof.h \
- ../include/dcmtk/dcmsign/sitstamp.h
+ ../include/dcmtk/dcmsign/siprivat.h ../include/dcmtk/dcmsign/simdmac.h \
+ ../include/dcmtk/dcmsign/sisprof.h ../include/dcmtk/dcmsign/sitstamp.h \
+ ../include/dcmtk/dcmsign/sitsfs.h
 siautopr.o: siautopr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsign/siautopr.h ../include/dcmtk/dcmsign/sibrsapr.h \
  ../include/dcmtk/dcmsign/sisprof.h ../include/dcmtk/dcmsign/sitypes.h \
@@ -113,7 +184,7 @@ siautopr.o: siautopr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipurpos.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
@@ -121,7 +192,20 @@ siautopr.o: siautopr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
- ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h
 sibrsapr.o: sibrsapr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsign/sibrsapr.h ../include/dcmtk/dcmsign/sisprof.h \
  ../include/dcmtk/dcmsign/sitypes.h \
@@ -158,7 +242,7 @@ sibrsapr.o: sibrsapr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipurpos.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
@@ -202,8 +286,8 @@ sicert.o: sicert.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sirsa.h \
- ../include/dcmtk/dcmsign/sialgo.h ../include/dcmtk/dcmsign/sidsa.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipkey.h \
+ ../include/dcmtk/dcmsign/sialgo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -228,7 +312,10 @@ sicert.o: sicert.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h
 sicertvf.o: sicertvf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsign/sicert.h ../include/dcmtk/dcmsign/sitypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -301,7 +388,7 @@ sicreapr.o: sicreapr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipurpos.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
@@ -309,45 +396,20 @@ sicreapr.o: sicreapr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
- ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h
-sidsa.o: sidsa.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/sidsa.h ../include/dcmtk/dcmsign/sialgo.h \
- ../include/dcmtk/dcmsign/sitypes.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
- ../../ofstd/include/dcmtk/ofstd/ofcast.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
- ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../oflog/include/dcmtk/oflog/oflog.h \
- ../../oflog/include/dcmtk/oflog/logger.h \
- ../../oflog/include/dcmtk/oflog/config.h \
- ../../oflog/include/dcmtk/oflog/config/defines.h \
- ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
- ../../oflog/include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../oflog/include/dcmtk/oflog/tstring.h \
- ../../oflog/include/dcmtk/oflog/tchar.h \
- ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
- ../../oflog/include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../../oflog/include/dcmtk/oflog/layout.h \
- ../../oflog/include/dcmtk/oflog/streams.h \
- ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
- ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
- ../../oflog/include/dcmtk/oflog/spi/filter.h \
- ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
- ../../oflog/include/dcmtk/oflog/spi/logfact.h \
- ../../oflog/include/dcmtk/oflog/logmacro.h \
- ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
- ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sicert.h \
- ../include/dcmtk/dcmsign/siprivat.h
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h
 simaccon.o: simaccon.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsign/simaccon.h ../include/dcmtk/dcmsign/sitypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -413,8 +475,8 @@ simaccon.o: simaccon.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcwcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcfcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h
-simd5.o: simd5.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/simd5.h ../include/dcmtk/dcmsign/simac.h \
+simdmac.o: simdmac.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/simdmac.h ../include/dcmtk/dcmsign/simac.h \
  ../include/dcmtk/dcmsign/sitypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
@@ -488,92 +550,15 @@ sinullpr.o: sinullpr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipurpos.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h
-siprivat.o: siprivat.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/siprivat.h ../include/dcmtk/dcmsign/sitypes.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
- ../../ofstd/include/dcmtk/ofstd/ofcast.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
- ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../oflog/include/dcmtk/oflog/oflog.h \
- ../../oflog/include/dcmtk/oflog/logger.h \
- ../../oflog/include/dcmtk/oflog/config.h \
- ../../oflog/include/dcmtk/oflog/config/defines.h \
- ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
- ../../oflog/include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../oflog/include/dcmtk/oflog/tstring.h \
- ../../oflog/include/dcmtk/oflog/tchar.h \
- ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
- ../../oflog/include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../../oflog/include/dcmtk/oflog/layout.h \
- ../../oflog/include/dcmtk/oflog/streams.h \
- ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
- ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
- ../../oflog/include/dcmtk/oflog/spi/filter.h \
- ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
- ../../oflog/include/dcmtk/oflog/spi/logfact.h \
- ../../oflog/include/dcmtk/oflog/logmacro.h \
- ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
- ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sirsa.h \
- ../include/dcmtk/dcmsign/sialgo.h ../include/dcmtk/dcmsign/sidsa.h \
- ../include/dcmtk/dcmsign/sicert.h
-siripemd.o: siripemd.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/siripemd.h ../include/dcmtk/dcmsign/simac.h \
- ../include/dcmtk/dcmsign/sitypes.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
- ../../ofstd/include/dcmtk/ofstd/ofcast.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
- ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../oflog/include/dcmtk/oflog/oflog.h \
- ../../oflog/include/dcmtk/oflog/logger.h \
- ../../oflog/include/dcmtk/oflog/config.h \
- ../../oflog/include/dcmtk/oflog/config/defines.h \
- ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
- ../../oflog/include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../oflog/include/dcmtk/oflog/tstring.h \
- ../../oflog/include/dcmtk/oflog/tchar.h \
- ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
- ../../oflog/include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../../oflog/include/dcmtk/oflog/layout.h \
- ../../oflog/include/dcmtk/oflog/streams.h \
- ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
- ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
- ../../oflog/include/dcmtk/oflog/spi/filter.h \
- ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
- ../../oflog/include/dcmtk/oflog/spi/logfact.h \
- ../../oflog/include/dcmtk/oflog/logmacro.h \
- ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
- ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h
-sirsa.o: sirsa.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/sirsa.h ../include/dcmtk/dcmsign/sialgo.h \
+sipkey.o: sipkey.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/sipkey.h ../include/dcmtk/dcmsign/sialgo.h \
  ../include/dcmtk/dcmsign/sitypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
@@ -610,9 +595,8 @@ sirsa.o: sirsa.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sicert.h \
  ../include/dcmtk/dcmsign/siprivat.h
-sisha1.o: sisha1.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/sisha1.h ../include/dcmtk/dcmsign/simac.h \
- ../include/dcmtk/dcmsign/sitypes.h \
+siprivat.o: siprivat.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/siprivat.h ../include/dcmtk/dcmsign/sitypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
@@ -646,18 +630,17 @@ sisha1.o: sisha1.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h
-sisha256.o: sisha256.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/sisha256.h ../include/dcmtk/dcmsign/simac.h \
- ../include/dcmtk/dcmsign/sitypes.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipkey.h \
+ ../include/dcmtk/dcmsign/sialgo.h ../include/dcmtk/dcmsign/sicert.h
+sipurpos.o: sipurpos.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/sipurpos.h ../include/dcmtk/dcmsign/sidefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmsign/sitypes.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -685,87 +668,27 @@ sisha256.o: sisha256.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h
-sisha384.o: sisha384.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/sisha384.h ../include/dcmtk/dcmsign/simac.h \
- ../include/dcmtk/dcmsign/sitypes.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
- ../../ofstd/include/dcmtk/ofstd/ofcast.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
- ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../oflog/include/dcmtk/oflog/oflog.h \
- ../../oflog/include/dcmtk/oflog/logger.h \
- ../../oflog/include/dcmtk/oflog/config.h \
- ../../oflog/include/dcmtk/oflog/config/defines.h \
- ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
- ../../oflog/include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../oflog/include/dcmtk/oflog/tstring.h \
- ../../oflog/include/dcmtk/oflog/tchar.h \
- ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
- ../../oflog/include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../../oflog/include/dcmtk/oflog/layout.h \
- ../../oflog/include/dcmtk/oflog/streams.h \
- ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
- ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
- ../../oflog/include/dcmtk/oflog/spi/filter.h \
- ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
- ../../oflog/include/dcmtk/oflog/spi/logfact.h \
- ../../oflog/include/dcmtk/oflog/logmacro.h \
- ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
- ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h
-sisha512.o: sisha512.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmsign/sisha512.h ../include/dcmtk/dcmsign/simac.h \
- ../include/dcmtk/dcmsign/sitypes.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
- ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
- ../../ofstd/include/dcmtk/ofstd/ofcast.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
- ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../oflog/include/dcmtk/oflog/oflog.h \
- ../../oflog/include/dcmtk/oflog/logger.h \
- ../../oflog/include/dcmtk/oflog/config.h \
- ../../oflog/include/dcmtk/oflog/config/defines.h \
- ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
- ../../oflog/include/dcmtk/oflog/loglevel.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../oflog/include/dcmtk/oflog/tstring.h \
- ../../oflog/include/dcmtk/oflog/tchar.h \
- ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
- ../../oflog/include/dcmtk/oflog/appender.h \
- ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../../oflog/include/dcmtk/oflog/layout.h \
- ../../oflog/include/dcmtk/oflog/streams.h \
- ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
- ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
- ../../oflog/include/dcmtk/oflog/spi/filter.h \
- ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
- ../../oflog/include/dcmtk/oflog/spi/logfact.h \
- ../../oflog/include/dcmtk/oflog/logmacro.h \
- ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
- ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h
 sisprof.o: sisprof.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsign/sisprof.h ../include/dcmtk/dcmsign/sitypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -801,7 +724,7 @@ sisprof.o: sisprof.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmsign/sidefine.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipurpos.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
@@ -824,7 +747,250 @@ sisprof.o: sisprof.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
- ../include/dcmtk/dcmsign/simac.h ../include/dcmtk/dcmsign/sialgo.h
+ ../include/dcmtk/dcmsign/simac.h ../include/dcmtk/dcmsign/sialgo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+sisrpr.o: sisrpr.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/sisrpr.h ../include/dcmtk/dcmsign/sibrsapr.h \
+ ../include/dcmtk/dcmsign/sisprof.h ../include/dcmtk/dcmsign/sitypes.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipurpos.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h
+sisrvpr.o: sisrvpr.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/sisrvpr.h ../include/dcmtk/dcmsign/sisrpr.h \
+ ../include/dcmtk/dcmsign/sibrsapr.h ../include/dcmtk/dcmsign/sisprof.h \
+ ../include/dcmtk/dcmsign/sitypes.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../include/dcmtk/dcmsign/sidefine.h ../include/dcmtk/dcmsign/sipurpos.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h
+sitsfs.o: sitsfs.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/sitsfs.h ../include/dcmtk/dcmsign/sitstamp.h \
+ ../include/dcmtk/dcmsign/sitypes.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../include/dcmtk/dcmsign/sidefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+sitstamp.o: sitstamp.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/dcmsign/sitstamp.h ../include/dcmtk/dcmsign/sitypes.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../include/dcmtk/dcmsign/sidefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../include/dcmtk/dcmsign/simdmac.h ../include/dcmtk/dcmsign/simac.h \
+ ../include/dcmtk/dcmsign/sicert.h ../include/dcmtk/dcmsign/sicertvf.h \
+ ../include/dcmtk/dcmsign/dcsignat.h ../include/dcmtk/dcmsign/sipurpos.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h
 sitypes.o: sitypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmsign/sitypes.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \

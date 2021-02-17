@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -103,8 +103,11 @@ DiImage::DiImage(const DiDocument *docu,
         if (Document->getValue(DCM_FrameTime, ds))
         {
             if (ds <= 0)
-                DCMIMGLE_WARN("invalid value for 'FrameTime' (" << ds << ") ... ignoring");
-            else
+            {
+                /* there are rare cases, where a frame time of 0 makes sense */
+                if ((ds < 0) || (NumberOfFrames > 1))
+                    DCMIMGLE_WARN("invalid value for 'FrameTime' (" << ds << ") ... ignoring");
+            } else
                 FrameTime = ds;
         }
         FirstFrame = (docu->getFrameStart() < NumberOfFrames) ? docu->getFrameStart() : NumberOfFrames - 1;

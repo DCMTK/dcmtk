@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -124,53 +124,119 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
  * General Status Codes.
  */
 #define STATUS_Success  0x0000
-#define STATUS_Pending  0xff00
+#define STATUS_Pending  0xff00  // deprecated, will be removed in a future version
 
-#define DICOM_PENDING_STATUS(status)  (((status) & 0xff00) == 0xff00)
-#define DICOM_WARNING_STATUS(status) ((((status) & 0xf000) == 0xb000) || ((status) == 0x0107) || ((status) == 0x0116))
+/*
+ * Status Classes (see DICOM PS3.7 Annex C).
+ */
+#define DICOM_SUCCESS_STATUS(status)  ((status) == 0x0000)
+#define DICOM_FAILURE_STATUS(status)  ((((status) & 0xf000) == 0xa000) || (((status) & 0xf000) == 0xc000) || ((((status) & 0xff00) == 0x0100) && ((status) != 0x0107) && ((status) != 0x0116)) || (((status) & 0xff00) == 0x0200))
+#define DICOM_WARNING_STATUS(status)  ((((status) & 0xf000) == 0xb000) || ((status) == 0x0001) || ((status) == 0x0107) || ((status) == 0x0116))
+#define DICOM_CANCEL_STATUS(status)   ((status) == 0xfe00)
+#define DICOM_PENDING_STATUS(status)  (((status) == 0xff00) || ((status) == 0xff01))
+#define DICOM_STANDARD_STATUS(status) (((status) == 0x0000) || ((status) == 0x0001) || (((status) & 0xff00) == 0x0100) || (((status) & 0xff00) == 0x0200) || (((status) & 0xf000) == 0xa000) || (((status) & 0xf000) == 0xb000) || (((status) & 0xf000) == 0xc000) || ((status) == 0xfe00) || ((status) == 0xff00) || ((status) == 0xff01))
 
 /*
  * Service Class Specific Status Codes.
- * NOTE: some codes are only significant in the high byte
- * or high nibble (4 bits).
+ * NOTE: some codes are only significant in the high byte or high nibble (4 bits).
  */
-/* Storage Specific Codes*/
-#define STATUS_STORE_Refused_OutOfResources             /* high byte */ 0xa700
+
+/* General C-ECHO Codes */
+#define STATUS_ECHO_Success                                             0x0000
+#define STATUS_ECHO_Refused_SOPClassNotSupported                        0x0122
+#define STATUS_ECHO_DuplicateInvocation                                 0x0210
+#define STATUS_ECHO_UnrecognizedOperation                               0x0211
+#define STATUS_ECHO_MistypedArgument                                    0x0212
+
+/* General C-STORE Codes */
+#define STATUS_STORE_Success                                            0x0000
 #define STATUS_STORE_Refused_SOPClassNotSupported                       0x0122
+#define STATUS_STORE_Refused_NotAuthorized                              0x0124
+#define STATUS_STORE_InvalidSOPClass                                    0x0117
+#define STATUS_STORE_DuplicateInvocation                                0x0210
+#define STATUS_STORE_UnrecognizedOperation                              0x0211
+#define STATUS_STORE_MistypedArgument                                   0x0212
+/* Service Class Specific C-STORE Codes (Storage) */
+#define STATUS_STORE_Refused_OutOfResources             /* high byte */ 0xa700
 #define STATUS_STORE_Error_DataSetDoesNotMatchSOPClass  /* high byte */ 0xa900
 #define STATUS_STORE_Error_CannotUnderstand           /* high nibble */ 0xc000
 #define STATUS_STORE_Warning_CoercionOfDataElements                     0xb000
 #define STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass                0xb007
 #define STATUS_STORE_Warning_ElementsDiscarded                          0xb006
 
-/* Find Specific Codes */
-#define STATUS_FIND_Refused_OutOfResources                              0xa700
+/* General C-FIND Codes */
+#define STATUS_FIND_Success                                             0x0000
 #define STATUS_FIND_Refused_SOPClassNotSupported                        0x0122
-#define STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass               0xa900
+#define STATUS_FIND_Cancel                                              0xfe00
+/* Service Class Specific C-FIND Codes */
+/* (Query/Retrieve, Modality Worklist Management, Relevant Patient Information Query) */
+#define STATUS_FIND_Success_MatchingIsComplete                          0x0000
+#define STATUS_FIND_Refused_OutOfResources                              0xa700
+#define STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass               0xa900  // deprecated, will be removed in a future version
+#define STATUS_FIND_Error_DataSetDoesNotMatchSOPClass                   0xa900
 #define STATUS_FIND_Failed_UnableToProcess            /* high nibble */ 0xc000
+#define STATUS_FIND_Failed_MoreThanOneMatchFound                        0xc100
+#define STATUS_FIND_Failed_UnableToSupportRequestedTemplate             0xc200
 #define STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest         0xfe00
+#define STATUS_FIND_Pending_MatchesAreContinuing                        0xff00
 #define STATUS_FIND_Pending_WarningUnsupportedOptionalKeys              0xff01
 
-/* Move Specific Codes */
+/* General C-MOVE Codes */
+#define STATUS_MOVE_Success                                             0x0000
+#define STATUS_MOVE_Refused_SOPClassNotSupported                        0x0122
+#define STATUS_MOVE_Refused_NotAuthorized                               0x0124
+#define STATUS_MOVE_Cancel                                              0xfe00
+#define STATUS_MOVE_DuplicateInvocation                                 0x0210
+#define STATUS_MOVE_UnrecognizedOperation                               0x0211
+#define STATUS_MOVE_MistypedArgument                                    0x0212
+/* Service Class Specific C-MOVE Codes */
+/* (Query/Retrieve, Composite Instance Root Retrieve) */
+#define STATUS_MOVE_Success_SubOperationsCompleteNoFailures             0x0000
 #define STATUS_MOVE_Refused_OutOfResourcesNumberOfMatches               0xa701
 #define STATUS_MOVE_Refused_OutOfResourcesSubOperations                 0xa702
-#define STATUS_MOVE_Failed_SOPClassNotSupported                         0x0122
-#define STATUS_MOVE_Failed_MoveDestinationUnknown                       0xa801
-#define STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass               0xa900
+#define STATUS_MOVE_Refused_MoveDestinationUnknown                      0xa801
+#define STATUS_MOVE_Failed_SOPClassNotSupported                         0x0122  // deprecated, will be removed in a future version
+#define STATUS_MOVE_Failed_MoveDestinationUnknown                       0xa801  // deprecated, will be removed in a future version
+#define STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass               0xa900  // deprecated, will be removed in a future version
+#define STATUS_MOVE_Error_DataSetDoesNotMatchSOPClass                   0xa900
+#define STATUS_MOVE_Failed_NoneOfTheFramesWereFoundInSOPInstance        0xaa00
+#define STATUS_MOVE_Failed_UnableToCreateNewObjectForThisSOPClass       0xaa01
+#define STATUS_MOVE_Failed_UnableToExtractFrames                        0xaa02
+#define STATUS_MOVE_Failed_TimeBasedRequestForNonTimeBasedSOPInstance   0xaa03
+#define STATUS_MOVE_Failed_InvalidRequest                               0xaa04
 #define STATUS_MOVE_Failed_UnableToProcess            /* high nibble */ 0xc000
 #define STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication 0xfe00
 #define STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures      0xb000
+#define STATUS_MOVE_Pending_SubOperationsAreContinuing                  0xff00
 
-/* Get Specific Codes */
+/* General C-GET Codes */
+#define STATUS_GET_Success                                              0x0000
+#define STATUS_GET_Refused_SOPClassNotSupported                         0x0122
+#define STATUS_GET_Cancel                                               0xfe00
+#define STATUS_GET_DuplicateInvocation                                  0x0210
+#define STATUS_GET_UnrecognizedOperation                                0x0211
+#define STATUS_GET_MistypedArgument                                     0x0212
+/* Service Class Specific C-GET Codes */
+/* (Query/Retrieve, Composite Instance Root Retrieve and others) */
+#define STATUS_GET_Success_SubOperationsCompleteNoFailures              0x0000
 #define STATUS_GET_Refused_OutOfResourcesNumberOfMatches                0xa701
 #define STATUS_GET_Refused_OutOfResourcesSubOperations                  0xa702
-#define STATUS_GET_Failed_SOPClassNotSupported                          0x0122
-#define STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass                0xa900
+#define STATUS_GET_Failed_SOPClassNotSupported                          0x0122  // deprecated, will be removed in a future version
+#define STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass                0xa900  // deprecated, will be removed in a future version
+#define STATUS_GET_Error_DataSetDoesNotMatchSOPClass                    0xa900
+#define STATUS_GET_Failed_NoneOfTheFramesWereFoundInSOPInstance         0xaa00
+#define STATUS_GET_Failed_UnableToCreateNewObjectForThisSOPClass        0xaa01
+#define STATUS_GET_Failed_UnableToExtractFrames                         0xaa02
+#define STATUS_GET_Failed_TimeBasedRequestForNonTimeBasedSOPInstance    0xaa03
+#define STATUS_GET_Failed_InvalidRequest                                0xaa04
 #define STATUS_GET_Failed_UnableToProcess             /* high nibble */ 0xc000
 #define STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication  0xfe00
 #define STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures       0xb000
+#define STATUS_GET_Pending_SubOperationsAreContinuing                   0xff00
 
-/* DIMSE-N Specific Codes */
+/* General DIMSE-N Codes */
+#define STATUS_N_Success                                                0x0000
+#define STATUS_N_Refused_NotAuthorized                                  0x0124
 #define STATUS_N_Cancel                                                 0xfe00
 #define STATUS_N_AttributeListError                                     0x0107
 #define STATUS_N_SOPClassNotSupported                                   0x0122
@@ -180,32 +246,66 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 #define STATUS_N_InvalidArgumentValue                                   0x0115
 #define STATUS_N_InvalidAttributeValue                                  0x0106
 #define STATUS_N_AttributeValueOutOfRange                               0x0116
-#define STATUS_N_InvalidObjectInstance                                  0x0117
+#define STATUS_N_InvalidObjectInstance                                  0x0117  // deprecated, will be removed in a future version
+#define STATUS_N_InvalidSOPInstance                                     0x0117
 #define STATUS_N_MissingAttribute                                       0x0120
 #define STATUS_N_MissingAttributeValue                                  0x0121
 #define STATUS_N_MistypedArgument                                       0x0212
+#define STATUS_N_NoSuchAction                                           0x0123
 #define STATUS_N_NoSuchArgument                                         0x0114
 #define STATUS_N_NoSuchAttribute                                        0x0105
 #define STATUS_N_NoSuchEventType                                        0x0113
-#define STATUS_N_NoSuchObjectInstance                                   0x0112
+#define STATUS_N_NoSuchObjectInstance                                   0x0112  // deprecated, will be removed in a future version
+#define STATUS_N_NoSuchSOPInstance                                      0x0112
 #define STATUS_N_NoSuchSOPClass                                         0x0118
 #define STATUS_N_ProcessingFailure                                      0x0110
 #define STATUS_N_ResourceLimitation                                     0x0213
 #define STATUS_N_UnrecognizedOperation                                  0x0211
-#define STATUS_N_NoSuchAction                                           0x0123
+/* the following Codes are used by multiple Services */
+#define STATUS_N_Warning_RequestedOptionalAttributesNotSupported        0x0001
 
-/* Print Management Service Class Specific Codes */
+/* Service Class Specific DIMSE-N Codes */
+/* (Print Management) */
 #define STATUS_N_PRINT_BFS_Warn_MemoryAllocation                        0xb600
 #define STATUS_N_PRINT_BFS_Warn_NoSessionPrinting                       0xb601
 #define STATUS_N_PRINT_BFS_Warn_EmptyPage                               0xb602
 #define STATUS_N_PRINT_BFB_Warn_EmptyPage                               0xb603
+#define STATUS_N_PRINT_BFS_BFB_IB_Warn_ImageDemagnified                 0xb604
+#define STATUS_N_PRINT_BFS_BFB_IB_Warn_ImageCropped                     0xb609
+#define STATUS_N_PRINT_BFS_BFB_IB_Warn_ImageDecimated                   0xb60a
 #define STATUS_N_PRINT_BFS_Fail_NoFilmBox                               0xc600
 #define STATUS_N_PRINT_BFS_Fail_PrintQueueFull                          0xc601
-#define STATUS_N_PRINT_BSB_Fail_PrintQueueFull                          0xc602
+#define STATUS_N_PRINT_BFB_Fail_PrintQueueFull                          0xc602
 #define STATUS_N_PRINT_BFS_BFB_Fail_ImageSize                           0xc603
-#define STATUS_N_PRINT_BFS_BFB_Fail_PositionCollision                   0xc604
+#define STATUS_N_PRINT_BFS_BFB_Fail_PositionCollision                   0xc604  // retired, see DICOM PS3.4
+#define STATUS_N_PRINT_BFS_BFB_Fail_CombinedImageSize                   0xc613
+#define STATUS_N_PRINT_IB_Warn_MinMaxDensity                            0xb605
 #define STATUS_N_PRINT_IB_Fail_InsufficientMemory                       0xc605
 #define STATUS_N_PRINT_IB_Fail_MoreThanOneVOILUT                        0xc606
+/* (Modality Performed Procedure Step Retrieve) */
+#define STATUS_N_MPPS_Warning_RequestedOptionalAttributesNotSupported   0x0001
+/* (Application Event Logging) */
+#define STATUS_N_LOG_Failure_ProceduralLoggingNotAvailable              0xc101
+#define STATUS_N_LOG_Failure_EventInformationDoesNotMatchTemplate       0xc102
+#define STATUS_N_LOG_Failure_CannotMatchEventToCurrentStudy             0xc103
+#define STATUS_N_LOG_Failure_IDsInconsistentInMatchingCurrentStudy      0xc104
+#define STATUS_N_LOG_Warning_SynchronizationFrameOfReferenceDoesNotMatch 0xb101
+#define STATUS_N_LOG_Warning_StudyInstanceUIDCoercion                   0xb102
+#define STATUS_N_LOG_Warning_IDsInconsistentInMatchingCurrentStudy      0xb104
+/* (Media Creation Management) */
+#define STATUS_N_MEDIA_Failed_MediaCreationActionAlreadyReceived        0xa510
+#define STATUS_N_MEDIA_Failed_MediaCreationRequestAlreadyCompleted      0xc201
+#define STATUS_N_MEDIA_Failed_MediaCreationRequestAlreadyInProgress     0xc202
+#define STATUS_N_MEDIA_Failed_CancellationDenied                        0xc203
+#define STATUS_N_MEDIA_Warning_RequestedOptionalAttributesNotSupported  0x0001
+
+// --- TODO (DIMSE-N) ---
+
+// the following Services use different DIMSE Status Code meanings for
+// each SOP Class, including standard Codes such as 0x0000 (Success):
+
+/* (Unified Procedure Step) */
+/* (RT Machine Verification) */
 
 
 /*

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, OFFIS e.V.
+ *  Copyright (C) 2014-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -138,10 +138,8 @@ struct OFremove_volatile { typedef T type; };
 template<typename T>
 struct OFremove_extent { typedef T type; };
 
-#ifdef HAVE_CXX_BOOL
 template<>
 struct OFis_unsigned<bool> : OFtrue_type {};
-#endif
 
 #ifndef C_CHAR_UNSIGNED
 template<>

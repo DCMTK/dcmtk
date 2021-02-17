@@ -119,7 +119,7 @@ Win32ConsoleAppender::write_handle (void * outvoid, tchar const * s,
     size_t str_len)
 {
     HANDLE out = OFstatic_cast(HANDLE, outvoid);
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
     STD_NAMESPACE wstring wstr (s, str_len);
     STD_NAMESPACE string str (helpers::tostring (wstr));
     str_len = str.size ();

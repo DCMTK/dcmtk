@@ -2,6 +2,7 @@
 *.o
 *.so
 *.a
+build
 
 # Ignore all Makefiles except the top-level one
 Makefile

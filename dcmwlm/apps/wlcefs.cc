@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -133,9 +133,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--keep-char-set",       "-csk",    "return character set provided in file");
     cmd->addSubGroup("other processing options:");
       cmd->addOption("--no-sq-expansion",     "-nse",    "disable expansion of empty sequences in C-FIND\nrequest messages");
-      cmd->addOption("--request-file-path",   "-rfp", 1, "[p]ath: string", "path to store request files to");
-      cmd->addOption("--request-file-format", "-rff", 1, "[f]ormat: string (default: #t.dump)", "request file name format");
-
 
   cmd->addGroup("network options:");
     cmd->addSubGroup("preferred network transfer syntaxes:");
@@ -192,6 +189,11 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd->addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
 
+  cmd->addGroup("output options:");
+    cmd->addSubGroup("general:");
+      cmd->addOption("--request-file-path",   "-rfp", 1, "[p]ath: string", "path to store request files to");
+      cmd->addOption("--request-file-format", "-rff", 1, "[f]ormat: string (default: #t.dump)", "request file name format");
+
   // Evaluate command line.
   prepareCmdLineArgs( argc, argv, applicationName );
   if( app->parseCommandLine( *cmd, argc, argv ) )
@@ -223,6 +225,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
     OFLog::configureFromCommandLine(*cmd, *app);
 
+    // general options
 #if defined(HAVE_FORK) || defined(_WIN32)
     cmd->beginOptionBlock();
     if (cmd->findOption("--single-process")) opt_singleProcess = OFTrue;
@@ -233,19 +236,15 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 #endif
 #endif
 
+    // input options
     if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
-    if( cmd->findOption("--request-file-path") ) app->checkValue(cmd->getValue(opt_rfPath));
-    if( cmd->findOption("--request-file-format") )
-    {
-        app->checkDependence("--request-file-format", "--request-file-path", !opt_rfPath.empty());
-        app->checkValue(cmd->getValue(opt_rfFormat));
-    }
 
     cmd->beginOptionBlock();
     if( cmd->findOption("--enable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFTrue;
     if( cmd->findOption("--disable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFFalse;
     cmd->endOptionBlock();
 
+    // processing options
     cmd->beginOptionBlock();
     if( cmd->findOption("--return-no-char-set") ) opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
     if( cmd->findOption("--return-iso-ir-100") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
@@ -254,6 +253,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
     if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
 
+    // network options
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
     if( cmd->findOption("--prefer-little") ) opt_networkTransferSyntax = EXS_LittleEndianExplicit;
@@ -316,6 +316,14 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--sleep-during") ) app->checkValue(cmd->getValueAndCheckMin(opt_sleepDuringFind, 0));
     if( cmd->findOption("--max-pdu") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
     if( cmd->findOption("--disable-host-lookup") ) dcmDisableGethostbyaddr.set(OFTrue);
+
+    // output options
+    if( cmd->findOption("--request-file-path") ) app->checkValue(cmd->getValue(opt_rfPath));
+    if( cmd->findOption("--request-file-format") )
+    {
+        app->checkDependence("--request-file-format", "--request-file-path", !opt_rfPath.empty());
+        app->checkValue(cmd->getValue(opt_rfFormat));
+    }
   }
 
   // dump application information

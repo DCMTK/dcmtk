@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2019, OFFIS e.V.
+ *  Copyright (C) 2003-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -125,8 +125,8 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
      *  deep search is performed.
      ** @param  cursor    cursor pointing to the node where to start from
      *  @param  name      name of the node (XML element) to be searched for
-     *  @param  required  flag specifying whether the node is required or not.  If the node
-     *                    is required to be present an error message is reported.
+     *  @param  required  flag specifying whether the node is required or not.  If the node is
+     *                    required to be present, an error message is reported if necessary.
      ** @return cursor pointing to the named node if successful, invalid cursor otherwise
      */
     DSRXMLCursor getNamedNode(const DSRXMLCursor &cursor,
@@ -138,8 +138,8 @@ class DCMTK_DCMSR_EXPORT DSRXMLDocument
      *  one, i.e. no deep search is performed.
      ** @param  cursor    cursor pointing to the parent of the node where to start from
      *  @param  name      name of the node (XML element) to be searched for
-     *  @param  required  flag specifying whether the node is required or not.  If the node
-     *                    is required to be present an error message is reported.
+     *  @param  required  flag specifying whether the node is required or not.  If the node is
+     *                    required to be present, an error message is reported if necessary.
      ** @return cursor pointing to the named node if successful, invalid cursor otherwise
      */
     DSRXMLCursor getNamedChildNode(const DSRXMLCursor &cursor,

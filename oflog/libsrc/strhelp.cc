@@ -52,7 +52,7 @@ tstring const empty_str;
 // Global Methods
 //////////////////////////////////////////////////////////////////////////////
 
-#if defined (UNICODE) && defined (DCMTK_LOG4CPLUS_ENABLE_GLOBAL_C_STRING_STREAM_INSERTER)
+#if defined (DCMTK_OFLOG_UNICODE) && defined (DCMTK_LOG4CPLUS_ENABLE_GLOBAL_C_STRING_STREAM_INSERTER)
 
 log4cplus::tostream& 
 operator <<(log4cplus::tostream& stream, const char* str)
@@ -171,7 +171,7 @@ struct toupper_func
     operator () (tchar ch) const
     {
         return STD_NAMESPACE char_traits<tchar>::to_char_type (
-#ifdef UNICODE
+#ifdef DCMTK_OFLOG_UNICODE
             STD_NAMESPACE towupper
 #else
             toupper
@@ -187,7 +187,7 @@ struct tolower_func
     operator () (tchar ch) const
     {
         return STD_NAMESPACE char_traits<tchar>::to_char_type (
-#ifdef UNICODE
+#ifdef DCMTK_OFLOG_UNICODE
             STD_NAMESPACE towlower
 #else
             tolower

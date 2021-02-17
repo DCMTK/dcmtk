@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -280,20 +280,6 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      */
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
-
-    /** write object in JSON format.
-     *  @tparam Format the formatter class, e.g. DcmJsonFormatPretty.
-     *    Will be deduced automatically.
-     *  @param out output stream to which the JSON document is written
-     *  @param format used to format and customize the output
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    template<typename Format>
-    OFCondition writeJson(STD_NAMESPACE ostream &out,
-                          Format format)
-    {
-        return writeJson(out, OFstatic_cast(DcmJsonFormat&, format));
-    }
 
     /** load object from a DICOM file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,9 +37,14 @@ OFBool SiNullProfile::isAllowableAlgorithmType(E_KeyType keyType) const
   return OFTrue;
 }
 
-OFBool SiNullProfile::attributeRequired(const DcmTagKey& /* key */) const
+OFBool SiNullProfile::attributeRequiredIfPresent(const DcmTagKey& /* key */) const
 {
   return OFFalse;
+}
+
+OFBool SiNullProfile::checkRequiredAttributeList(DcmAttributeTag& /* tagList */) const
+{
+  return OFTrue;
 }
 
 OFBool SiNullProfile::attributeForbidden(const DcmTagKey& /* key */) const
@@ -52,6 +57,17 @@ OFBool SiNullProfile::isAllowableTransferSyntax(E_TransferSyntax xfer) const
   if ((xfer == EXS_LittleEndianImplicit)||(xfer == EXS_BigEndianExplicit)) return OFFalse;
   return OFTrue;
 }
+
+OFCondition SiNullProfile::inspectSignatureDataset(DcmItem & /* item */)
+{
+  return EC_Normal;
+}
+
+OFBool SiNullProfile::mainDatasetRequired() const
+{
+  return OFFalse;
+}
+
 
 #else /* WITH_OPENSSL */
 

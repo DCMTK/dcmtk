@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -159,7 +159,7 @@ class DCMTK_DCMDATA_EXPORT DcmAttributeTag
      *  @param format used to format and customize the output
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeJson(STD_NAMESPACE ostream &out,
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                           DcmJsonFormat &format);
 
     /** get particular tag value

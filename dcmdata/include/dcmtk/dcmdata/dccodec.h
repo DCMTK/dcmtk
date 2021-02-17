@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -92,6 +92,10 @@ public:
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
+   *  @param removeOldRep boolean flag that should be set to false before this method call
+   *    and will be set to true if the codec modifies the DICOM dataset such
+   *    that the pixel data of the original representation may not be usable
+   *    anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition decode(
@@ -99,7 +103,8 @@ public:
     DcmPixelSequence * pixSeq,
     DcmPolymorphOBOW& uncompressedPixelData,
     const DcmCodecParameter * cp,
-    const DcmStack& objStack) const = 0;
+    const DcmStack & objStack,
+    OFBool& removeOldRep) const = 0;
 
   /** decompresses a single frame from the given pixel sequence and
    *  stores the result in the given buffer.
@@ -149,6 +154,10 @@ public:
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
+   *  @param removeOldRep boolean flag that should be set to false before this method call
+   *    and will be set to true if the codec modifies the DICOM dataset such
+   *    that the pixel data of the original representation may not be usable
+   *    anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encode(
@@ -157,7 +166,8 @@ public:
     const DcmRepresentationParameter * toRepParam,
     DcmPixelSequence * & pixSeq,
     const DcmCodecParameter *cp,
-    DcmStack & objStack) const = 0;
+    DcmStack & objStack,
+    OFBool& removeOldRep) const = 0;
 
   /** transcodes (re-compresses) the given compressed DICOM image and stores
    *  the result in the given toPixSeq element.
@@ -171,6 +181,10 @@ public:
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
+   *  @param removeOldRep boolean flag that should be set to false before this method call
+   *    and will be set to true if the codec modifies the DICOM dataset such
+   *    that the pixel data of the original representation may not be usable
+   *    anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encode(
@@ -180,7 +194,8 @@ public:
     const DcmRepresentationParameter * toRepParam,
     DcmPixelSequence * & toPixSeq,
     const DcmCodecParameter * cp,
-    DcmStack & objStack) const = 0;
+    DcmStack & objStack,
+    OFBool& removeOldRep) const = 0;
 
   /** checks if this codec is able to convert from the
    *  given current transfer syntax to the given new
@@ -345,6 +360,10 @@ public:
    *  @param uncompressedPixelData uncompressed pixel data stored in this element
    *  @param pixelStack stack pointing to the location of the pixel data
    *    element in the current dataset.
+   *  @param removeOldRep boolean flag that should be set to false before this method call
+   *    and will be set to true if the codec modifies the DICOM dataset such
+   *    that the pixel data of the original representation may not be usable
+   *    anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   static OFCondition decode(
@@ -352,7 +371,8 @@ public:
     const DcmRepresentationParameter * fromParam,
     DcmPixelSequence * fromPixSeq,
     DcmPolymorphOBOW& uncompressedPixelData,
-    DcmStack & pixelStack);
+    DcmStack & pixelStack,
+    OFBool& removeOldRep);
 
   /** looks for a codec that is able to decode from the given transfer syntax
    *  and calls the decodeFrame() method of the codec.  A read lock on the list of
@@ -405,6 +425,10 @@ public:
    *    allocated on heap) returned in this parameter upon success.
    *  @param pixelStack stack pointing to the location of the pixel data
    *    element in the current dataset.
+   *  @param removeOldRep boolean flag that should be set to false before this method call
+   *    and will be set to true if the codec modifies the DICOM dataset such
+   *    that the pixel data of the original representation may not be usable
+   *    anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   static OFCondition encode(
@@ -414,7 +438,8 @@ public:
     const E_TransferSyntax toRepType,
     const DcmRepresentationParameter * toRepParam,
     DcmPixelSequence * & pixSeq,
-    DcmStack & pixelStack);
+    DcmStack & pixelStack,
+    OFBool& removeOldRep);
 
   /** looks for a codec that is able to transcode (re-compresses)
    *  from the given transfer syntax to the given transfer syntax
@@ -431,6 +456,10 @@ public:
    *    allocated on heap) returned in this parameter upon success.
    *  @param pixelStack stack pointing to the location of the pixel data
    *    element in the current dataset.
+   *  @param removeOldRep boolean flag that should be set to false before this method call
+   *    and will be set to true if the codec modifies the DICOM dataset such
+   *    that the pixel data of the original representation may not be usable
+   *    anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   static OFCondition encode(
@@ -440,7 +469,8 @@ public:
     const E_TransferSyntax toRepType,
     const DcmRepresentationParameter * toRepParam,
     DcmPixelSequence * & toPixSeq,
-    DcmStack & pixelStack);
+    DcmStack & pixelStack,
+    OFBool& removeOldRep);
 
   /** looks for a codec that claims to be able to convert
    *  between the given transfer syntaxes.

@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:47:54 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:20 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20190817)
+ *  (type: extensible, version: 20201116)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -40,6 +40,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
      */
     enum EnumType
     {
+        /// (C000591008,MSH,"^18^Fluorine flortaucipir")
+        _18_FluorineFlortaucipir,
         /// (126752,DCM,"28H1 ^89^Zr")
         _28H1_89Zr,
         /// (126713,DCM,"2FA F^18^")
@@ -112,6 +114,10 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         DfFKPEG3_89Zr,
         /// (126747,DCM,"DN30 ^89^Zr")
         DN30_89Zr,
+        /// (126765,DCM,"DPA-713 ^11^C")
+        DPA713_11C,
+        /// (126766,DCM,"DPA-714 ^18^F")
+        DPA714_18F,
         /// (126519,DCM,"E4G10 ^89^Zr")
         E4G10_89Zr,
         /// (126732,DCM,"Ecromeximab ^89^Zr")
@@ -130,7 +136,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Florbetaben_F18,
         /// (456995000,SCT,"Florbetapir F^18^")
         Florbetapir_F18,
-        /// (C4547429,UMLS,"Flortaucipir F^18^")
+        /// (C000591008,MSH,"Flortaucipir F^18^")
         Flortaucipir_F18,
         /// (126503,DCM,"Flubatine F^18^")
         Flubatine_F18,
@@ -230,6 +236,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         PinatuzumabVedotin_89Zr,
         /// (126500,DCM,"Pittsburgh compound B C^11^")
         PittsburghCompoundB_C11,
+        /// (C1609883,UMLS,"PK11195 ^11^C")
+        PK11195_11C,
         /// (126726,DCM,"Polatuzumab vedotin ^89^Zr")
         PolatuzumabVedotin_89Zr,
         /// (126758,DCM,"PSMA-1007 F^18^")

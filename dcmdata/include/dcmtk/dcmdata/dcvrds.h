@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2016, OFFIS e.V.
+ *  Copyright (C) 1994-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -127,6 +127,30 @@ class DCMTK_DCMDATA_EXPORT DcmDecimalString
     virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
+
+    /** put particular float value at a specific position. Precision (number of digits
+     *  in fractional part) is 6. However, trailing zeroes from fractional part will be removed
+     *  in every case.
+     *  @param val the floating point value to put
+     *  @param pos index where to put the value (0..vm-1)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putFloat64(const Float64 val,
+                                   const unsigned long pos = 0);
+
+    /** put particular float value at a specific position, using a particular
+     *  precision (number of digits in fractional part).
+     *  @param val the floating point value to put
+     *  @param pos index where to put the value (0..vm-1)
+     *  @param prec precision to be used, i.e. maximum number of fractional digits.
+     *         Value should be 0 < prec < 15 (positive val) or 0 < prec < 14 (negative).
+     *  @param cutTrailZeroes If OFTrue, any trailing non-significant zeroes are removed (from fraction).
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putFloat64Prec(const Float64 val,
+                                       const unsigned long pos = 0,
+                                       const Uint8 prec = 6,
+                                       const OFBool cutTrailZeroes = OFTrue);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written

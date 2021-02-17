@@ -46,6 +46,15 @@ DCMTK_BUILD_IN_PROGRESS
     define this macro yourself since this is done automatically by the build
     system.
 
+DCMTK_UNDEF_SANITIZER
+  Affected: all modules
+  Type of modification: Toolkit customization
+  Explanation: When compiling with the GCC undefined behavior sanitizer
+    (-fsanitize=undefined), this macro must be defined to disable certain code
+    in config/tests/arith.cc that would otherwise trigger a runtime error to be
+    raised by the sanitizer and thus prevent the CMake configure phase from
+    completing.
+
 DCMTK_ENABLE_UNSAFE_VSNPRINTF
   Affected: ofstd
   Type of modification: Activates feature
@@ -85,6 +94,17 @@ DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
     within a single thread.  In that case, before ending a thread,
     dcmtk::log4cplus::threadCleanup() should be called by the user code in
     order to clean-up oflog's thread local storage.
+
+DCMTK_MERGE_STDERR_TO_STDOUT
+  Affected: dcmdata
+  Type of modification: Activates feature
+  Explanation: DCMTK releases up to 3.6.6 redirected the stderr stream to
+    stdout on Windows to make it easier to pipe the output of the command
+    line tools to "more".  With the introduction of the ability to write
+    DICOM files to stdout, this feature has been disabled as debug output
+    will otherwise get mixed into the DICOM file.  The old behaviour can be
+    re-activated by compiling with this macro.  In this case, DICOM files
+    should never be written to stdout as this will be unreliable.
 
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
@@ -190,6 +210,18 @@ ENABLE_BUILTIN_DICTIONARY
     loaded on startup, is populated with known DICOM tags.  Otherwise, the
     builtin dictionary stays empty.  For further information about dictionary
     configuration read dcmdata/docs/datadict.txt.
+
+ENABLE_DCMJPLS_INTERLEAVE_NONE
+  Affected: dcmjpls
+  Type of modification: Enables feature
+  Explanation: Re-enables the option for uninterleaved encoding
+    (--interleave-none) in the JPEG-LS encoder on command line and library
+    level. This option was removed after DCMTK 3.6.5 since it may in certain
+    cases (color image with BitsStored > 12) create compressed images that
+    are correct but cannot be decoded by the JPEG-LS library due to a known
+    bug (DCMTK issue #892). The option will be re-enabled permanently once
+    DCMTK has been ported to CharLS 2.x, another branch of the JPEG-LS
+    library that requires a C++14 compiler, however.
 
 ENABLE_EXTERNAL_DICTIONARY
   Affected: dcmdata
@@ -332,6 +364,9 @@ SITE_UID_ROOT
     namespace should compile DCMTK with SITE_UID_ROOT defined to their own
     UID root.  Please make sure that the resulting UIDs do not exceed the
     64 characters limit!
+    DCMTK may add a maximum of 44 characters to the UID root when
+    generating UIDs. Therefore, the root must not be longer than 20
+    characters in order to avoid UID truncation.
 
 STARVIEW
   Affected: dcmimgle, dcmimage

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,10 +37,12 @@
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
-#include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcistrms.h"    /* for class DcmStdinStream */
+#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcmtk/dcmdata/dcostrms.h"    /* for class DcmStdoutStream */
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 
 
@@ -343,21 +345,7 @@ OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream &out,
 OFCondition DcmDataset::writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format)
 {
-    // write dataset content
-    if (!elementList->empty())
-    {
-        elementList->seek(ELP_first);
-        OFCondition status = EC_Normal;
-        // write content of all children
-        status = elementList->get()->writeJson(out, format);
-        while (status.good() && elementList->seek(ELP_next))
-        {
-            out << "," << format.newline();
-            status = elementList->get()->writeJson(out, format);
-        }
-        return status;
-    }
-    return EC_Normal;
+    return writeJsonExt(out, format, OFFalse, OFFalse); // omit braces
 }
 
 
@@ -661,23 +649,50 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
     /* check parameters first */
     if (!fileName.isEmpty())
     {
-        /* open file for input */
-        DcmInputFileStream fileStream(fileName);
-
-        /* check stream status */
-        l_error = fileStream.status();
-
-        if (l_error.good())
+        if (fileName.isStandardStream())
         {
+            /* use stdin stream */
+            DcmStdinStream inStream;
+
             /* clear this object */
             l_error = clear();
             if (l_error.good())
             {
-                /* read data from file */
+                /* initialize transfer */
                 transferInit();
-                l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+
+                do
+                {
+                  /* fill the buffer from stdin */
+                  inStream.fillBuffer();
+                  /* and read the buffer content into the DICOM dataset */
+                  l_error = readUntilTag(inStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                } while (l_error == EC_StreamNotifyClient); /* repeat until we're at the end of the stream, or an error occurs */
+
+                /* end transfer */
                 transferEnd();
             }
+
+        } else {
+            /* open file for input */
+            DcmInputFileStream fileStream(fileName);
+
+            /* check stream status */
+            l_error = fileStream.status();
+
+            if (l_error.good())
+            {
+                /* clear this object */
+                l_error = clear();
+                if (l_error.good())
+                {
+                    /* read data from file */
+                    transferInit();
+                    l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+                    transferEnd();
+                }
+            }
+
         }
     }
     return l_error;
@@ -697,18 +712,27 @@ OFCondition DcmDataset::saveFile(const OFFilename &fileName,
     if (!fileName.isEmpty())
     {
         DcmWriteCache wcache;
-        /* open file for output */
-        DcmOutputFileStream fileStream(fileName);
+        DcmOutputStream *fileStream;
+
+        if (fileName.isStandardStream())
+        {
+            /* use stdout stream */
+            fileStream = new DcmStdoutStream(fileName);
+        } else {
+            /* open file for output */
+            fileStream = new DcmOutputFileStream(fileName);
+        }
 
         /* check stream status */
-        l_error = fileStream.status();
+        l_error = fileStream->status();
         if (l_error.good())
         {
             /* write data to file */
             transferInit();
-            l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
+            l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
             transferEnd();
         }
+        delete fileStream;
     }
     return l_error;
 }

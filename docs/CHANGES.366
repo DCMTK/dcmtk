@@ -1,0 +1,2782 @@
+
+Release 3.6.6 (Public Minor Release - 2021-01-14)
+
+**** Changes from 2021.01.14 (onken)
+
+- Updated release date in INSTALL file and for autoconf.
+  Affects: INSTALL
+           public/config/configure
+           public/config/configure.in
+
+- Final changes for Release 3.6.6.
+  Affects: ANNOUNCE
+           CMake/dcmtkPrepare.cmake
+           CREDITS
+           docs/CHANGES.366
+           doxygen/manpages/man1/cda2dcm.1
+           doxygen/manpages/man1/dcm2json.1
+           doxygen/manpages/man1/dcm2pdf.1
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcjpeg.1
+           doxygen/manpages/man1/dcmcjpls.1
+           doxygen/manpages/man1/dcmconv.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dcmdjpeg.1
+           doxygen/manpages/man1/dcmdjpls.1
+           doxygen/manpages/man1/dcmdrle.1
+           doxygen/manpages/man1/dcmdspfn.1
+           doxygen/manpages/man1/dcmdump.1
+           doxygen/manpages/man1/dcmftest.1
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmicmp.1
+           doxygen/manpages/man1/dcmj2pnm.1
+           doxygen/manpages/man1/dcml2pnm.1
+           doxygen/manpages/man1/dcmmkcrv.1
+           doxygen/manpages/man1/dcmmkdir.1
+           doxygen/manpages/man1/dcmmklut.1
+           doxygen/manpages/man1/dcmodify.1
+           doxygen/manpages/man1/dcmp2pgm.1
+           doxygen/manpages/man1/dcmprscp.1
+           doxygen/manpages/man1/dcmprscu.1
+           doxygen/manpages/man1/dcmpschk.1
+           doxygen/manpages/man1/dcmpsmk.1
+           doxygen/manpages/man1/dcmpsprt.1
+           doxygen/manpages/man1/dcmpsrcv.1
+           doxygen/manpages/man1/dcmpssnd.1
+           doxygen/manpages/man1/dcmqridx.1
+           doxygen/manpages/man1/dcmqrscp.1
+           doxygen/manpages/man1/dcmqrti.1
+           doxygen/manpages/man1/dcmquant.1
+           doxygen/manpages/man1/dcmrecv.1
+           doxygen/manpages/man1/dcmscale.1
+           doxygen/manpages/man1/dcmsend.1
+           doxygen/manpages/man1/dcmsign.1
+           doxygen/manpages/man1/dcod2lum.1
+           doxygen/manpages/man1/dconvlum.1
+           doxygen/manpages/man1/drtdump.1
+           doxygen/manpages/man1/dsr2html.1
+           doxygen/manpages/man1/dsr2xml.1
+           doxygen/manpages/man1/dsrdump.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/echoscu.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/getscu.1
+           doxygen/manpages/man1/img2dcm.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/pdf2dcm.1
+           doxygen/manpages/man1/stl2dcm.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           doxygen/manpages/man1/termscu.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+
+**** Changes from 2021.01.07 (onken)
+
+- Updated ANNOUNCE for Release 3.6.6
+  Affects: ANNOUNCE
+
+- Prepared source tree for DCMTK release 3.6.6.
+  Affects: ANNOUNCE
+           CMake/dcmtkPrepare.cmake
+           COPYRIGHT
+           CREDITS
+           INSTALL
+           VERSION
+           config/configure
+           config/configure.in
+           docs/CHANGES.366
+           doxygen/manpages/man1/cda2dcm.1
+           doxygen/manpages/man1/dcm2json.1
+           doxygen/manpages/man1/dcm2pdf.1
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcjpeg.1
+           doxygen/manpages/man1/dcmcjpls.1
+           doxygen/manpages/man1/dcmconv.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dcmdjpeg.1
+           doxygen/manpages/man1/dcmdjpls.1
+           doxygen/manpages/man1/dcmdrle.1
+           doxygen/manpages/man1/dcmdspfn.1
+           doxygen/manpages/man1/dcmdump.1
+           doxygen/manpages/man1/dcmftest.1
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmicmp.1
+           doxygen/manpages/man1/dcmj2pnm.1
+           doxygen/manpages/man1/dcml2pnm.1
+           doxygen/manpages/man1/dcmmkcrv.1
+           doxygen/manpages/man1/dcmmkdir.1
+           doxygen/manpages/man1/dcmmklut.1
+           doxygen/manpages/man1/dcmodify.1
+           doxygen/manpages/man1/dcmp2pgm.1
+           doxygen/manpages/man1/dcmprscp.1
+           doxygen/manpages/man1/dcmprscu.1
+           doxygen/manpages/man1/dcmpschk.1
+           doxygen/manpages/man1/dcmpsmk.1
+           doxygen/manpages/man1/dcmpsprt.1
+           doxygen/manpages/man1/dcmpsrcv.1
+           doxygen/manpages/man1/dcmpssnd.1
+           doxygen/manpages/man1/dcmqridx.1
+           doxygen/manpages/man1/dcmqrscp.1
+           doxygen/manpages/man1/dcmqrti.1
+           doxygen/manpages/man1/dcmquant.1
+           doxygen/manpages/man1/dcmrecv.1
+           doxygen/manpages/man1/dcmscale.1
+           doxygen/manpages/man1/dcmsend.1
+           doxygen/manpages/man1/dcmsign.1
+           doxygen/manpages/man1/dcod2lum.1
+           doxygen/manpages/man1/dconvlum.1
+           doxygen/manpages/man1/drtdump.1
+           doxygen/manpages/man1/dsr2html.1
+           doxygen/manpages/man1/dsr2xml.1
+           doxygen/manpages/man1/dsrdump.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/echoscu.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/getscu.1
+           doxygen/manpages/man1/img2dcm.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/pdf2dcm.1
+           doxygen/manpages/man1/stl2dcm.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           doxygen/manpages/man1/termscu.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+**** Changes from 2020.12.29 (eichelberg)
+
+- Minor bug fixes in dcmpsprt application.
+  The --img-request-size option now works correctly when the target printer
+  is not explicitly specified with --printer. Furthermore, the --overlay
+  option now correctly processes PBM files with no whitespace between digits.
+  Affects: dcmpstat/apps/dcmpsprt.cc
+
+- Fixed annotation layout.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 2020.12.27 (eichelberg)
+
+- Fixed socket handling in dcmpsrcv.
+  Fixed the handling of the accepted socket in the parent process when running
+  dcmpsrcv on a Posix platform. The parent process did not properly close the
+  socket, causing the transport connection to stay open after an A-ABORT, which
+  in turn led to a long timeout in storescu.
+  Affects: dcmpstat/apps/dcmpsrcv.cc
+
+**** Changes from 2020.12.15 (riesmeier)
+
+- Fixed wrong calculation of sigmoid VOI function.
+  Fixed possibly wrong output of sigmoid VOI LUT function, e.g. when
+  processing an image with a photometric interpretation of MONOCHROME1
+  (i.e. inverse). The original formula in the DICOM standard was incorrect
+  and has been fixed only recently with CP-1880.
+  Please note that the issue was only present when no presentation LUT or
+  display calibration was enabled (case #6 and #8 of the monochrome "VOI
+  SIGMOID" rendering algorithm).
+  Thanks to Robert Mulcahey <rob@asteris.com> for the report and suggested fix.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+
+- Introduced local constant "lowvalue" for typecast.
+  This is just a preparatory step for the subsequent commit.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+
+**** Changes from 2020.12.07 (eichelberg)
+
+- Fixed bug in dcmscale:
+  Fixed bug in dcmscale where a pointer was not checked for NULL.
+  This could cause a segmentation fault specifically if DCMTK was compiled
+  with DCMTK_ENABLE_STL and the source image contained an empty
+  DerivationDescription attribute.
+  Affects: dcmimage/apps/dcmscale.cc
+
+**** Changes from 2020.11.27 (riesmeier)
+
+- Added missing DCMTK module "dcmect".
+  Affects: README
+           README.md
+
+**** Changes from 2020.11.25 (riesmeier)
+
+- Added definition of new Storage SOP Class UID:
+  Updated list of Storage SOP Class UIDs known to the DCMTK based on DICOM
+  2020e. This includes the Final Text version of Supplement 221 (Dermoscopy).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/etc/dcmqrprf.cfg
+
+- Updated Context Group classes for DICOM 2020e:
+  Updated automatically generated Context Group classes for the 2020e edition
+  of the DICOM standard. All supported classes were updated, even though there
+  were no changes to most of them.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated code definitions for DICOM 2020e:
+  Updated automatically generated code definitions for coding schemes "DCM",
+  "NCIt" and "UMLS".
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+           dcmsr/include/dcmtk/dcmsr/codes/umls.h
+
+**** Changes from 2020.11.24 (riesmeier)
+
+- Updated data dictionary for DICOM 2020e:
+  Updated data dictionary for the latest edition of the DICOM standard,
+  which has been released only recently.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2020.11.23 (riesmeier)
+
+- Removed superfluous code line:
+  Removed superfluous code line that could lead to namespace clashes with
+  other libraries, e.g. Qt.
+  Thanks to Adrian Schmidt-Foehre <A.Schmidt-Foehre@mint-medical.de> for
+  the report.
+  Affects: dcmseg/include/dcmtk/dcmseg/segtypes.h
+
+**** Changes from 2020.11.17 (eichelberg)
+
+- Fixed minor Sun Studio compiler warnings.
+  Affects: dcmect/tests/t_huge_concat.cc
+           dcmect/tests/t_roundtrip.cc
+
+- Added typecast required due to commit #09e11a591:
+  Added another typecast to logger call required due to the changes
+  introduced with commit #09e11a591.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+**** Changes from 2020.11.16 (eichelberg)
+
+- Fixed memory leak:
+  Fixed memory leak in SiCertificateVerifier::addUntrustedCertificateFile().
+  Affects: dcmsign/libsrc/sicertvf.cc
+
+- Added typecast required due to commit #09e11a591:
+  Added typecast to logger call required due to the changes introduced
+  with commit #09e11a591.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+**** Changes from 2020.11.13 (eichelberg)
+
+- Properly quote special characters in person names:
+  Properly quote special characters in person names when converting DICOM
+  to XML using the native model (dcm2xml -nat).
+  This closes DCMTK issue #939.
+  Affects: dcmdata/libsrc/dcvrpn.cc
+
+- Declared finite state machine variables as volatile:
+  Declared the DICOM upper layer finite state machine variables as volatile.
+  Needed by SunPro Studio compilers when optimizing with level -xO3 or higher.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Disabled atof unit test related to underflow:
+  Disabled atof unit test that tests how underflow is handled since this
+  test incorrectly fails on some platforms that support denormalized
+  floating point numbers.
+  Affects: ofstd/tests/tatof.cc
+
+**** Changes from 2020.11.13 (riesmeier)
+
+- Remove unwanted files created by Doxygen:
+  Remove unwanted files created by Doxygen when calling "make man"
+  (Autoconf). This also makes sure that these files are not installed
+  when calling "make install".
+  Affects: doxygen/Makefile.in
+
+- Updated latest tested CMake version:
+  Updated information on latest CMake version that has been tested to "3.18.4".
+  Affects: CMake/dcmtkPrepare.cmake
+
+**** Changes from 2020.11.12 (riesmeier)
+
+- Renamed libcharls also for Autoconf build system:
+  Renamed libcharls (to libdcmtkcharls) also for the Autoconf build system.
+  See commit 46b4b4c, which made this change for the CMake build system.
+  Affects: dcmjpls/apps/Makefile.in
+           dcmjpls/libcharls/Makefile.in
+           dcmnet/apps/Makefile.in
+
+**** Changes from 2020.11.11 (eichelberg)
+
+- First draft of ANNOUNCE file for DCMTK 3.6.6.
+  Affects: ANNOUNCE
+
+- Updated DIMSE compatibility flag.
+  Affects: dcmnet/include/dcmtk/dcmnet/dul.h
+
+**** Changes from 2020.11.10 (eichelberg)
+
+- Renamed libcharls to libdcmtkcharls:
+  Renamed the CharLS JPEG-LS library that is built into DCMTK from
+  "charls" to "dcmtkcharls" to avoid a naming conflict with another
+  installation of the CharLS library when building shared libraries.
+  Thanks to Mathieu Malaterre <malat@debian.org> for the suggestion
+  and the patch.
+  Affects: dcmjpls/apps/CMakeLists.txt
+           dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libcharls/intrface.h
+           dcmjpls/libsrc/CMakeLists.txt
+
+**** Changes from 2020.11.03 (riesmeier)
+
+- Fixed issue with placeholders (--exec-on-eostudy):
+  Fixed issue with placeholders not being populated for the --exec-on-eostudy
+  option when receiving the first batch of images.
+  This issue was apparently introduced with commit 26441a226, when fixing
+  another issue regarding the use of --exec-on-eostudy together with --fork.
+  Thanks to Andreas Keizers <an-kei@web.de> for reporting this issue.
+  This closes DCMTK Bug #880.
+  Affects: dcmnet/apps/storescp.cc
+
+**** Changes from 2020.10.29 (riesmeier)
+
+- Output debug message on UN conversion:
+  Output debug message when VR of data element is reverted from "UN" to the
+  real value representation, e.g. when calling dcmdump or dcmconv with option
+  --convert-un.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+**** Changes from 2020.10.20 (riesmeier)
+
+- Replaced "http" by "https".
+  Affects: README.md
+
+**** Changes from 2020.10.17 (riesmeier)
+
+- Fixed typo introduced with previous commit.
+  Affects: dcmnet/docs/dcmrecv.man
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmtls/docs/certstor.txt
+           dcmtls/libsrc/tlsopt.cc
+
+**** Changes from 2020.10.16 (eichelberg)
+
+- Fixed inconsistencies in man page and help text.
+  Affects: dcmnet/docs/dcmrecv.man
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmtls/docs/certstor.txt
+           dcmtls/libsrc/tlsopt.cc
+
+**** Changes from 2020.10.13 (riesmeier)
+
+- Increased buffer size for use of sprintf():
+  Increased buffer size for use of sprintf() in order to avoid possible buffer
+  overflow reported by gcc 10.2.0 with option -Wformat-overflow, which is enabled
+  by default on Ubuntu 20.04 Linux.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 2020.10.07 (eichelberg)
+
+- Disable Fiber Local Storage on MinGW:
+  Disable the use of Fiber Local Storage functions on MinGW, where these
+  are not supported. Use Thread Local Storage instead.
+  Affects: oflog/include/dcmtk/oflog/thread/impl/tls.h
+
+**** Changes from 2020.10.06 (eichelberg)
+
+- Fixed incorrect static cast:
+  Fixed static cast that can be incorrect when compressed pixel data are handled.
+  Error reported by the gcc address sanitizer (-fsanitize=address).
+  Affects: dcmdata/libsrc/dcsequen.cc
+
+- Added quotes for two variables in DCMTKTargets.cmake:
+  The values of DCMTK_CMAKE_CXX_COMPILER and DCMTK_CMAKE_INSTALL_PREFIX
+  are now quoted in DCMTKTargets.cmake, in order to avoid CMake warnings
+  that are issued when the file is included and the path names contain
+  space characters (which is the default on Windows).
+  Affects: CMake/DCMTKConfig.cmake.in
+
+**** Changes from 2020.10.05 (onken)
+
+- Fixed optionality of Image Type atribute:
+  Thanks to Sergey Razuvaev <Sergey.Razuvaev@waveaccess.ru> for the
+  report.
+  Affects: dcmiod/libsrc/modgeneralimage.cc
+
+**** Changes from 2020.10.01 (schlamelcher)
+
+- Harmonized documentation of calcElementLength():
+  The documentation of calcElementLength() is now the same for DcmObject and all
+  derived classes, so you will always get all the information about how the
+  function might behave in any case, no matter where you look.
+  This closes issue #857.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+
+**** Changes from 2020.09.28 (riesmeier)
+
+- Updated Context Group classes for DICOM 2020d:
+  Updated automatically generated Context Group classes for the 2020d edition
+  of the DICOM standard. All supported classes were updated, even though there
+  were no changes to most of them.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated code definitions for DICOM 2020d:
+  Updated automatically generated code definitions for coding scheme "DCM".
+  For the coding scheme "NCIt" and "UMLS", there were no changes.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+           dcmsr/include/dcmtk/dcmsr/codes/umls.h
+
+- Updated data dictionary for DICOM 2020d:
+  Updated data dictionary for the latest edition of the DICOM standard.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2020.09.25 (riesmeier)
+
+- Added reference to further documentation (HTML):
+  Added reference to further documentation on "Certification Authority (CA)
+  Certificate Management in DCMTK" (file "dcmtls/docs/certstor.txt").
+  Affects: dcmtls/docs/certstor.txt
+           dcmtls/docs/dcmtls.dox
+
+**** Changes from 2020.09.22 (riesmeier)
+
+- Added new well-known Frame of Reference UIDs:
+  Added well-known Frame of Reference UIDs from CP-2002 (Add to well known
+  brain atlas frames of reference).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+**** Changes from 2020.09.17 (riesmeier)
+
+- Updated latest tested CMake version:
+  Updated information on latest CMake version that has been tested to "3.18.2".
+  Affects: CMake/dcmtkPrepare.cmake
+
+**** Changes from 2020.09.17 (onken)
+
+- Fixed access to Depths Of Scan Field attribute:
+  Thanks to Sergey Razuvaev <Sergey.Razuvaev@waveaccess.ru> for the report
+  and suggested fix.
+  Affects: dcmiod/include/dcmtk/dcmiod/modenhusimage.h
+           dcmiod/libsrc/modenhusimage.cc
+
+**** Changes from 2020.09.13 (eichelberg)
+
+- Fixed use-after-free error in worklist SCP:
+  Fixed use-after-free error in WlmActivityManager::RemoveProcessFromTable
+  reported by the gcc address sanitizer (-fsanitize=address).
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
+- Fixed out-of-bound read in parseSCUSCPRole():
+  Fixed an out-of-bounds read access that could be caused by a malformed
+  A-ASSOCIATE packet.
+  Thanks to Matthias Gierlings <matthias.gierlings@ruhr-uni-bochum.de>
+  for the bug report.
+  This closes DCMTK issue #942.
+  Affects: dcmnet/libsrc/dulparse.cc
+
+**** Changes from 2020.09.11 (eichelberg)
+
+- Clean-up of dcmsign exit codes (cont'd).
+  Added:   dcmsign/include/dcmtk/dcmsign/siexit.h
+
+**** Changes from 2020.09.11 (riesmeier)
+
+- Extended range of application-specific errors:
+  Extended range of application-specific / user-defined errors. Now, the
+  exit codes 120 to 127 also belong to this group.
+  Affects: ofstd/include/dcmtk/ofstd/ofexit.h
+
+- Fixed line indentation.
+  Affects: config/docs/macros.txt
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+
+**** Changes from 2020.09.11 (eichelberg)
+
+- Fixed typo.
+  Affects: config/docs/macros.txt
+           config/tests/arith.cc
+
+- Added new compile time macro DCMTK_UNDEF_SANIZITER:
+  Added new compile time macro DCMTK_UNDEF_SANIZITER that allows DCMTK to
+  be compiled with the gcc undefined behavior sanitizer (-fsanitize=undefined)
+  without the need to manually modify config/tests/arith.cc.
+  Affects: config/docs/macros.txt
+           config/tests/arith.cc
+
+- Clean-up of dcmsign exit codes:
+  Changed declaration file and values of dcmsign exit codes for better
+  consistency with the overall toolkit.
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/dcsighlp.cc
+
+**** Changes from 2020.09.11 (riesmeier)
+
+- Added comments and check options in right order.
+  Affects: dcmwlm/apps/wlcefs.cc
+
+- Removed empty line.
+  Affects: dcmwlm/docs/wlmscpfs.man
+
+**** Changes from 2020.09.11 (onken)
+
+- Moved 2 options from processing to output section:
+  The following options are now in section "output" rather than
+  "processing":
+    -rfp  --request-file-path  [p]ath: string
+            path to store request files to
+    -rff  --request-file-format  [f]ormat: string (default: #t.dump)
+            request file name format
+  Affects: dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/wlmscpfs.man
+
+**** Changes from 2020.09.09 (riesmeier)
+
+- Fixed wrong use of doxygen markup in manpage.
+  Affects: dcmdata/docs/dcm2json.man
+
+**** Changes from 2020.09.08 (riesmeier)
+
+- Fixed wrong variable being read:
+  Fixed wrong variable being read in IODEnhUSImageModule::read().
+  Thanks to Sergey Razuvaev <Sergey.Razuvaev@waveaccess.ru> for the report
+  and suggested fix.
+  Affects: dcmiod/libsrc/modenhusimage.cc
+
+- Fixed duplicate value of an error code:
+  With the previous commit, the existing dcmdata error code 55 was reused.
+  Affects: dcmdata/libsrc/dcerror.cc
+
+**** Changes from 2020.09.08 (eichelberg)
+
+- Fixed JSON InlineBinary pixel data encoding:
+  Implemented a new method DcmPixelData::writeJson() that properly handles
+  the InlineBinary JSON encoding of DICOM pixel data, which is not supported
+  in the DICOM JSON model for encapsulated (compressed) images. Instead of
+  silently writing an empty pixel data element, we now report an error.
+  Together with various previous commits, this closes DCMTK issue #881.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcpixel.cc
+
+- Minor fixes to dcm2json man page and help output.
+  Affects: dcmdata/apps/dcm2json.cc
+           dcmdata/docs/dcm2json.man
+
+**** Changes from 2020.09.03 (eichelberg)
+
+- Fix compilation on platforms where isinf is a macro:
+  Fix compilation on platforms such as OpenIndiana with STL where
+  isinf() and isnan() are defined as macros.
+  Affects: dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+
+**** Changes from 2020.09.02 (eichelberg)
+
+- Further improvements and fixes to dcm2json:
+  For the DS, IS, SV, and UV value representation, the decision to encode
+  as JSON number or string is now made for each value, not the entire
+  attribute. Furthermore, InlineBinary is now always encoded in little
+  endian byte order.
+  Affects: dcmdata/libsrc/dcjson.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrod.cc
+           dcmdata/libsrc/dcvrof.cc
+           dcmdata/libsrc/dcvrol.cc
+           dcmdata/libsrc/dcvrov.cc
+           dcmdata/libsrc/dcvrsv.cc
+           dcmdata/libsrc/dcvruv.cc
+
+**** Changes from 2020.09.02 (riesmeier)
+
+- Improved documentation of option --grayscale:
+  Thanks to GitHub user "malaterre" for the hint and the original patch.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpls/docs/dcml2pnm.man
+
+- Added structure to documented "exit codes":
+  Added typical structure of DCMTK's command line tools to the documented
+  "exit code" of dcm2json. Also added missing exit codes to the manpage.
+  Affects: dcmdata/docs/dcm2json.man
+
+- Fixed wrong capitalization of the acronym "JSON".
+  Affects: dcmdata/apps/dcm2json.cc
+           dcmdata/docs/dcm2json.man
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dcjson.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+
+**** Changes from 2020.09.01 (eichelberg)
+
+- Various enhancements to dcm2json:
+  The dcm2json tool now returns well-defined error codes when terminating.
+  Furthermore, the handling of DICOM FL/FD elements with values that are
+  infinity or not a number can now be defined by a command line option.
+  Affects: dcmdata/apps/dcm2json.cc
+           dcmdata/docs/dcm2json.man
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dcjson.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfd.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfl.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+
+**** Changes from 2020.08.31 (eichelberg)
+
+- Fixed Json control char escaping in PN VR:
+  dcm2json now properly escapes control characters, quotation marks etc.
+  in Person Names when converting DICOM to Json.
+  Thanks to DCMTK forum user Shaeto for the bug report.
+  This closes the Json related part of DCMTK issue #939.
+  Affects: dcmdata/libsrc/dcvrpn.cc
+
+**** Changes from 2020.08.24 (riesmeier)
+
+- Added support for new Waveform Storage SOP Classes:
+  Added support for new Waveform Storage SOP Classes, introduced with
+  Supplement 217 (Neurophysiology Waveforms), to the DICOMDIR generation
+  code and to the Structured Reporting module "dcmsr".
+  Affects: dcmdata/libsrc/dcddirif.cc
+           dcmsr/include/dcmtk/dcmsr/dsrwavvl.h
+           dcmsr/libsrc/dsrwavvl.cc
+
+- Updated reference to current standard edition:
+  Updated reference to the current edition of the DICOM standard (2020c).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrimgvl.h
+           dcmsr/libsrc/dsrimgvl.cc
+
+**** Changes from 2020.08.10 (riesmeier)
+
+- Removed superfluous call of empty() method:
+  Removed superfluous call of OFVector<>::empty() method in destructor. This
+  makes the message "warning C4834: discarding return value of function with
+  'nodiscard' attribute" reported by VisualStudio 2019 disappear.
+  Affects: dcmjpls/libcharls/header.cc
+
+**** Changes from 2020.08.06 (riesmeier)
+
+- Enhanced documentation of --recognize-aspect.
+  Affects: dcmimage/apps/dcmscale.cc
+           dcmimage/docs/dcmscale.man
+
+**** Changes from 2020.08.05 (riesmeier)
+
+- Added "Software" field to created TIFF images:
+  Added "Software" field to created TIFF images and changed first letter
+  of "Image Description" to upper case in order to be more consistent
+  with meta information of created PNG images.
+  Thanks to GitHub user "malaterre" for the original patch.
+  Affects: dcmimage/libsrc/dipitiff.cc
+
+**** Changes from 2020.08.03 (riesmeier)
+
+- Enhanced documentation of --recognize-aspect:
+  Enhanced documentation of the --recognize-aspect option, i.e. make clear that
+  it is only evaluated when actually scaling an image.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the hint.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpls/docs/dcml2pnm.man
+
+**** Changes from 2020.07.31 (riesmeier)
+
+- Output debug information when changing the VR:
+  Output debug information to the logger when changing the VR to UN (or OB)
+  because the maximum value that can be stored in a 16-bit length field is
+  exceeded.
+  See CP-1066 and commit bb022b4 for further details.
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcobject.cc
+
+- Added basic support for leap second:
+  Now, a time value with 60 seconds is accepted (not only for 23:59:60).
+  However, calculations bases on such a time value might be incorrect.
+  Background: the DICOM standard explicitly allows TM and DT values to
+  store a value of "60" for the "SS" (seconds) component.
+  Affects: ofstd/include/dcmtk/ofstd/ofdatime.h
+           ofstd/include/dcmtk/ofstd/oftime.h
+           ofstd/libsrc/oftime.cc
+           ofstd/tests/tofdatim.cc
+
+**** Changes from 2020.07.29 (riesmeier)
+
+- Removed superfluous code line:
+  Removed superfluos code line to get rid of a warning reported by Visual
+  Studio 2019: "warning C4834: discarding return value of function with
+  'nodiscard' attribute".
+  Affects: dcmiod/libsrc/iodmacro.cc
+
+**** Changes from 2020.07.28 (riesmeier)
+
+- Updated copyright date (where applicable):
+  Updated copyright date (where applicable) and added separator lines to the
+  text to better distinguish the individual sections.
+  Affects: COPYRIGHT
+
+**** Changes from 2020.07.27 (riesmeier)
+
+- Added explicit typecast to keep VS 2019 quiet:
+  Added explicit typecast to integer variable in order to keep VisualStudio
+  2019 quiet.
+  Affects: dcmdata/libsrc/dcencdoc.cc
+
+- Made use of OFswap() in class OFFilename:
+  Made use of OFswap() instead of a local variable when swapping the value
+  of two member variables, in this case the internal representation of a
+  filename.
+  Affects: ofstd/libsrc/offile.cc
+
+- Enhanced support for OFpath filenames:
+  Enhanced support for passing an OFpath instance to the OFFilename class.
+  Now, the optional "convert" parameter is handled in the same way as for
+  other input types (such as char* or OFString).
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+           ofstd/libsrc/offile.cc
+
+- Fixed wrong position of a remark.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
+**** Changes from 2020.07.17 (riesmeier)
+
+- Fixed issue with invalid length of user item:
+  Fixed issue with an invalid value in the item-length field of the Maximum
+  Length Sub-Item Structure (A-ASSOCIATE-RQ). In case of a malformed
+  association request, the non-existent test on the item-length value could
+  result in a crash (segmentation fault).
+  Now, the value in the item-length field of this sub-item type (51h) is
+  checked (similar to the check for the other sub-items).
+  Thanks to Maria Nedyak <mashanedyak@gmail.com> for the bug report as well
+  as the test data and script that allowed for reproducing this issue.
+  Affects: dcmnet/libsrc/dulparse.cc
+
+**** Changes from 2020.07.16 (riesmeier)
+
+- Various fixes to API documentation.
+  Affects: dcmnet/libsrc/dulparse.cc
+
+**** Changes from 2020.07.10 (riesmeier)
+
+- Fixed outdated reference to default option:
+  Option --write-file is no longer the default in section "output file format".
+  Affects: dcmdata/docs/dcmconv.man
+
+- Removed obsolete lines from code example.
+  Affects: dcmjpeg/docs/dcmjpeg.dox
+           dcmjpls/docs/dcmjpls.dox
+
+- Minor fixes to manpage:
+  Fixed doxygen markup and typos. Also made sure that always the long version
+  of an option is used when referring to a command line option in the text.
+  Affects: dcmdata/docs/cda2dcm.man
+           dcmdata/docs/img2dcm.man
+           dcmdata/docs/pdf2dcm.man
+           dcmdata/docs/stl2dcm.man
+
+**** Changes from 2020.07.09 (arizpegomez)
+
+- Improved documentation of --key option:
+  Improved and unified the documentation of the --key option for the apps in
+  dcmdata.
+  This closes DCMTK issue #889.
+  Affects: .gitignore
+           dcmdata/docs/cda2dcm.man
+           dcmdata/docs/img2dcm.man
+           dcmdata/docs/pdf2dcm.man
+           dcmdata/docs/stl2dcm.man
+
+**** Changes from 2020.07.09 (onken)
+
+- New default to always re-create meta header:
+  The default behavior of DCMTK when writing DICOM files was to re-use
+  existing meta header information. This can lead to problems if essential
+  information in the dataset (like SOP Instance UID) changes without
+  explicitly enforcing those changes in the meta header, too.
+  By always re-creating the complete meta header it is ensured that all
+  its attributes are up-to-date and complete.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmnet/apps/movescu.cc
+
+**** Changes from 2020.07.09 (schlamelcher)
+
+- Allow overriding support library search behaviour:
+  Added two new CMake cache variables to control the way DCMTK looks for
+  support libraries on Windows:
+    DCMTK_USE_FIND_PACKAGE: defaults to FALSE on Windows except MinGW
+    DCMTK_SUPPORT_LIBRARIES_DIR: defaults to parent of main source directory
+  On all other platforms, find_package() will be used as before, ignoring any
+  potential user choice of this setting.
+  Affects: CMake/3rdparty.cmake
+
+**** Changes from 2020.07.08 (riesmeier)
+
+- Updated mapping of Body Part Examined to codes:
+  Updated mapping of the Defined Terms for Body Part Examined (0018,0015) to
+  associated CID 4031 (Common Anatomic Regions) codes based on PS3.16 Table
+  L-1 (2020c edition of the DICOM standard).
+  Affects: dcmsr/libcmr/cid4031e.cc
+
+- Updated Context Group classes for DICOM 2020c:
+  Updated automatically generated Context Group classes for the 2020c edition
+  of the DICOM standard. All supported classes were updated, even though there
+  were no changes to most of them.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated code definitions for DICOM 2020c:
+  Updated automatically generated code definitions for coding scheme "DCM".
+  For the coding scheme "NCIt" and "UMLS", there were no changes.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+           dcmsr/include/dcmtk/dcmsr/codes/umls.h
+
+- Updated data dictionary for DICOM 2020c:
+  Updated data dictionary for the latest edition of the DICOM standard.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2020.07.07 (eichelberg)
+
+- Fixed various issues in the Json output routines:
+  Fixed various issues in the Json output routines and the dcm2json tool:
+  - dcm2json -f now prints enclosing braces for the dataset, as it should.
+  - Fixed pretty formatting for sequences containing an empty item.
+  - Group length elements now omitted in Json output.
+  - Fixed output of IS/DS arrays larger than 4 Kbytes
+  - Now removing '+' characters, which are permitted in IS and DS values
+    in DICOM, but not in Json
+  - IS and DS attributes containing illegal values are now printed as string.
+  - UV and SV attributes are now printed as string if any value is
+    outside the range supported by Javascript, i.e. plus/minus 2^53-1.
+  Affects: dcmdata/apps/dcm2json.cc
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcvrat.h
+           dcmdata/include/dcmtk/dcmdata/dcvris.h
+           dcmdata/include/dcmtk/dcmdata/dcvrpn.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsv.h
+           dcmdata/include/dcmtk/dcmdata/dcvruv.h
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcjson.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrsv.cc
+           dcmdata/libsrc/dcvruv.cc
+
+**** Changes from 2020.06.30 (riesmeier)
+
+- Fixed issue with attribute tag in JSON output:
+  According to PS3.18 Section F.2.2, the "name of each attribute object"
+  is "The eight character uppercase hexadecimal representation of a DICOM
+  Tag". Before, the group number was output with lowercase characters.
+  Thanks to DCMTK forum user "Shaeto" for the report.
+  Affects: dcmdata/libsrc/dcelem.cc
+
+- Check for data dictionary when needed for a test:
+  Made sure that all regression tests also work if no data dictionary is
+  loaded or report the test case as "failed" with an appropriate message
+  (if it does not work without data dictionary).
+  This closes DCMTK Bug #915.
+  Affects: dcmdata/tests/tdict.cc
+           dcmdata/tests/tfilter.cc
+           dcmdata/tests/tparser.cc
+           dcmdata/tests/tpath.cc
+           dcmdata/tests/tpread.cc
+           dcmdata/tests/tvrcomp.cc
+           dcmdata/tests/tvrdatim.cc
+           dcmdata/tests/tvrds.cc
+           dcmfg/tests/t_concatenation_loader.cc
+           dcmfg/tests/t_ct_acquisition_details.cc
+           dcmfg/tests/t_ct_acquisition_type.cc
+           dcmfg/tests/t_ct_image_frame_type.cc
+           dcmfg/tests/t_ct_position.cc
+           dcmfg/tests/t_ct_table_dynamics.cc
+           dcmfg/tests/t_deriv_image.cc
+           dcmfg/tests/t_frame_content.cc
+           dcmfg/tests/t_irradiation_event_identification.cc
+           dcmiod/tests/tcodes.cc
+           dcmnet/tests/tdump.cc
+           dcmseg/tests/troundtrip.cc
+           dcmsr/tests/tsrcmr.cc
+           dcmsr/tests/tsrcodvl.cc
+
+**** Changes from 2020.06.29 (riesmeier)
+
+- Reworked check on invalid Completion Flag (RDSR):
+  Reworked check on invalid value for Completion Flag (0040,a491) encountered
+  when reading or writing an X-Ray Radiation Dose Structured Report (RDSR).
+  However, the behavior (i.e. the output of a warning message to the logger)
+  should be identical to the previous implementation.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+**** Changes from 2020.06.26 (riesmeier)
+
+- Added support for new Storage SOP Classes:
+  Added definition of new Storage SOP Class UIDs from Supplement 199 (Second
+  Generation Radiotherapy - RT Radiation Records) and Supplement 217
+  (Neurophysiology Waveforms).
+  This commit also adds support for the various networking tools and for
+  generating a DICOMDIR referencing objects of the underlying IODs.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/etc/dcmqrprf.cfg
+
+- Updated data dictionary for Supplement 199 + 217:
+  Updated data dictionary for recently approved changes to the DICOM standard,
+  i.e. Final Text of Supplement 199 (Second Generation Radiotherapy - RT
+  Radiation Records) and Supplement 217 (Neurophysiology Waveforms).
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2020.06.23 (riesmeier)
+
+- Output error message on missing sequence element:
+  Output error message on missing Verifying Observer Sequence element when
+  checking a DICOM file of the type "SR DOCUMENT" to be added to a DICOMDIR.
+  Previously, the file was rejected (e.g. by dcmgpdir or dcmmkdir) but the
+  reason was not given.
+  Thanks to DCMTK forum user "ruben.cruz" for the report and sample file.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+**** Changes from 2020.06.03 (riesmeier)
+
+- Added missing VRs to API documentation:
+  Added missing (mainly newer) VRs to API documentation of findAndGetXXX(),
+  putAndInsertXXX() and insertEmptyElement() methods.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+
+**** Changes from 2020.06.02 (riesmeier)
+
+- Clarified API documentation (in case of error).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrxmld.h
+
+**** Changes from 2020.05.27 (eichelberg)
+
+- Fixed bug in handling of pixel data representations:
+  Compression and decompression codecs that may modify the DICOM dataset such
+  that the pixel data before the coding process is not consistent anymore with
+  the DICOM dataset after the coding (e.g. because planar configuration or
+  photometric interpretation may have changed) now remove the previous
+  in-memory pixel data representation.
+  Unfortunately this requires an API change in DcmCodec::encode() and
+  DcmCodec::decode() that must be implemented by all image compression codecs.
+  Thanks to Peter Klotz <peter.klotz@ith-icoserve.com> for the bug report.
+  This closes DCMTK issue #845.
+  Affects: dcmdata/include/dcmtk/dcmdata/dccodec.h
+           dcmdata/include/dcmtk/dcmdata/dcrleccd.h
+           dcmdata/include/dcmtk/dcmdata/dcrlecce.h
+           dcmdata/libsrc/dccodec.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmjpeg/include/dcmtk/dcmjpeg/djcodecd.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djcodece.h
+           dcmjpeg/libsrc/djcodecd.cc
+           dcmjpeg/libsrc/djcodece.cc
+           dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+
+**** Changes from 2020.05.26 (riesmeier)
+
+- Fixed issue with parsing invalid meta info:
+  Fixed issue with an error being ignored (not propagated to the caller)
+  when parsing a DICOM file with an invalid meta information header.
+  Thanks to Maria Samoylova <mashanedyak@gmail.com> for the report and the
+  sample file.
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcmetinf.cc
+
+- Fixed name of SOP classes from Supplement 202:
+  Removed suffix "SOPClass" from the name of the SOP Classes introduced only
+  recently with Supplement 202 (Real-Time Video). The names are now consistent
+  with the official "UID Name" in DICOM PS3.6.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Added support for new SR IOD from Supplement 202:
+  Added full support for the new Rendition Selection Document IOD introduced
+  with Supplement 202. Please note that the associated Rendition Selection
+  Document Real-Time Communication SOP Class is not a Storage SOP Class, so
+  instances of this class are not meant to be stored as files or transferred
+  over the network using the Storage Service Class.
+  Closes DCMTK Feature #926.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrrsdcc.h
+           dcmsr/libsrc/dsrrsdcc.cc
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrtypes.cc
+
+**** Changes from 2020.05.25 (onken)
+
+- Fixed doxygen and formatting.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/libsrc/dcpath.cc
+
+- Fixed bug that caused known private tag to be inserted with VR UN:
+  Thanks to forum user CStarkey for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/libsrc/dcpath.cc
+
+**** Changes from 2020.05.22 (riesmeier)
+
+- Generalized support for Key Object Documents (KO):
+  Added more general support for SR IODs that contain the Key Object Document
+  Modules (on Series and Document level). This is needed since the Rendition
+  Selection Document IOD also contains these modules.
+  This is only a preparatory step for implementing support for this SR IOD
+  introduced with Supplement 202 (Real-Time Video).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+**** Changes from 2020.05.22 (eichelberg)
+
+- Changed declaration of tls_init_cleanup_func_type:
+  Changed declaration of tls_init_cleanup_func_type when compiling on
+  Win32. Required on Visual Studio 2010 when compiling with
+  DCMTK_LOG4CPLUS_AVOID_WIN32_FLS defined, which is needed to generate
+  binaries that run on Windows XP.
+  Thanks to Martin Czarnowski <czarnowski@examion.com> for the report.
+  Affects: oflog/include/dcmtk/oflog/thread/impl/tls.h
+
+**** Changes from 2020.05.19 (riesmeier)
+
+- Report an error if putElementContent() fails:
+  Report an error to the logger if putElementContent() fails, e.g. if the
+  element value to be set is invalid.
+  Affects: dcmdata/apps/xml2dcm.cc
+
+- Fixed documentation on "bulk data" in manpage:
+  Fixed documentation on the encoding of "bulk data" in the manpage of dcm2json.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the hint.
+  This closes DCMTK Bug #928.
+  Affects: dcmdata/docs/dcm2json.man
+
+**** Changes from 2020.05.18 (eichelberg)
+
+- Fixed comment.
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Fixed HUGE_VAL constant used.
+  Affects: ofstd/libsrc/ofstd.cc
+
+**** Changes from 2020.05.18 (riesmeier)
+
+- Added log output on data read from file:
+  Added log output (on both INFO and DEBUG level) when data is read from a
+  binary file, e.g. for the Pixel Data element.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+
+**** Changes from 2020.05.18 (eichelberg)
+
+- Documented ENABLE_EXTERNAL_DICTIONARY macro.
+  Affects: config/docs/macros.txt
+
+**** Changes from 2020.05.13 (eichelberg)
+
+- Removed JPEG-LS option for uninterleaved encoding:
+  Removed the option for uninterleaved encoding (--interleave-none) from
+  the JPEG-LS encoder on command line and library level since this option
+  may in certain cases (color image with BitsStored > 12) create
+  compressed images that are correct but cannot be decoded by the JPEG-LS
+  library due to a known bug (DCMTK issue #892). The option can be
+  re-enabled by defining the macro ENABLE_DCMJPLS_INTERLEAVE_NONE at
+  compilation time. It will be re-enabled permanently once DCMTK has been
+  ported to CharLS 2.x, another branch of the JPEG-LS library that
+  requires a C++14 compiler, however.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/docs/dcmcjpls.man
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/libsrc/djcodece.cc
+
+**** Changes from 2020.05.04 (riesmeier)
+
+- Added UID definition of UPS Query SOP Class:
+  Added UID definition of Unified Procedure Step - Query SOP Class introduced
+  with CP-1907.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+- Added new attributes to checkMetaHeaderValue():
+  Added new attributes to DcmFileFormat::checkMetaHeaderValue() that were
+  introduced only recently with CP-1895 (i.e. SourcePresentationAddress,
+  SendingPresentationAddress and ReceivingPresentationAddress). Please note,
+  however, that this method is currently never called for these attributes.
+  Affects: dcmdata/libsrc/dcfilefo.cc
+
+**** Changes from 2020.05.01 (eichelberg)
+
+- Added alternative service provision API to DcmSCP:
+  Added alternative service provision interface to class DcmSCP that can
+  be used instead of DcmSCP::listen(). The alternative interface uses two
+  separate calls, where the first one, openListenPort(), opens the TCP
+  port and executes listen(3), and the second one, acceptAssociations(),
+  runs the service provision code just as listen() does. The alternative
+  interface allows incoming network connections to be placed on the listen
+  backlog while the caller performs other work (such as a Storage
+  Commitment SCU sending out an N-ACTION-RQ) and to be accepted and
+  handled once acceptAssociations() is run.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+**** Changes from 2020.04.24 (eichelberg)
+
+- Added text describing the maximum UID root length.
+  Affects: config/docs/macros.txt
+
+- Fixed compiler warning in VS 2008/2010 build.
+  Affects: dcmfg/include/dcmtk/dcmfg/concatenationloader.h
+           dcmfg/libsrc/concatenationloader.cc
+           dcmfg/tests/t_concatenation_loader.cc
+
+**** Changes from 2020.04.22 (eichelberg)
+
+- Fixed memory leak in DcmFindSCU::performQuery():
+  Fixed memory leak in DcmFindSCU::performQuery() caused by an
+  T_ASC_Association structure not being deleted when association
+  negotiation has failed.
+  Thanks to Matthias Gierlings <matthias.gierlings@ruhr-uni-bochum.de>
+  for the bug report.
+  Affects: dcmnet/libsrc/dfindscu.cc
+
+**** Changes from 2020.04.17 (riesmeier)
+
+- Use DIMSE-C message specific status codes:
+  Use DIMSE Status Codes that are specific to the respective message type,
+  e.g. C-FIND, C-GET, C-MOVE and C-STORE, where appropriate.
+  This closes DCMTK Conformance #598.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/libsrc/dimfind.cc
+           dcmnet/libsrc/dimget.cc
+           dcmnet/libsrc/dimmove.cc
+           dcmnet/libsrc/dimstore.cc
+           dcmnet/tests/tscusession.cc
+
+- Added comment on "convert" parameter (Windows):
+  Added missing comment to the API documentation of the constructor that the
+  "convert" parameter only works on Windows systems.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
+**** Changes from 2020.04.11 (eichelberg)
+
+- Fixed warnings on Sun Studio 12.6:
+  Renamed two methods to avoid warnings on Sun Studio 12.6.
+  Affects: dcmsign/include/dcmtk/dcmsign/sitsfs.h
+           dcmsign/libsrc/dcsighlp.cc
+           dcmsign/libsrc/sitsfs.cc
+
+**** Changes from 2020.04.10 (eichelberg)
+
+- Fixed dcmtls unit tests:
+  Fixed dcmtls unit tests in cases where OpenSSL support is disabled.
+  This also fixes the linker error related to libwrap on NetBSD.
+  Affects: dcmtls/tests/tests.cc
+           dcmtls/tests/tscuscptls.cc
+
+- Cleanup of the TLS support for DcmSCP and DcmSCPPool.
+  Affects: dcmnet/apps/dcmrecv.cc
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scpcfg.cc
+           dcmnet/libsrc/scppool.cc
+
+**** Changes from 2020.04.09 (riesmeier)
+
+- Fixed various issues with new TLS support:
+  Made sure that the tool compiles without OpenSSL and when configured with
+  GNU Autioconf. Also fixed various other (minor) issues.
+  Affects: dcmnet/apps/Makefile.in
+           dcmnet/apps/dcmrecv.cc
+
+**** Changes from 2020.04.09 (eichelberg)
+
+- Replaced strncpy() with OFStandard::strlcpy():
+  Replaced code that used strncpy() and manually managed the trailing zero
+  byte with calls to OFStandard::strlcpy(). This fixes a couple of warnings
+  reported by gcc -Wstringop-truncation.
+  Affects: dcmnet/libsrc/assoc.cc
+
+- Fixed minor warnings:
+  Fixed minor warnings reported by gcc -Wshadow.
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
+- Added TLS support to dcmrecv:
+  Added TLS support to the DcmSCP based dcmrecv command line tool.
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/dcmrecv.cc
+           dcmnet/docs/dcmrecv.man
+
+- Added TLS support to DcmSCP and DcmSCPPool:
+  Added support for Transport Layer Security functionality to the DcmSCP
+  and DcmSCPPool classes.
+  Thanks to Michel Amat (github user amatm) and Damien Lerat for the
+  implementation and pull request.
+  Added:   dcmtls/tests/CMakeLists.txt
+           dcmtls/tests/tests.cc
+           dcmtls/tests/tscuscptls.cc
+  Affects: dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scpcfg.cc
+           dcmnet/libsrc/scppool.cc
+           dcmtls/CMakeLists.txt
+
+**** Changes from 2020.04.07 (eichelberg)
+
+- Fixed Derivation Code Sequence creation:
+  The dcmjpeg encoder does not anymore create a derivation code sequence
+  when lossless compression is performed.
+  Thanks to Markus Sabin <Markus.Sabin@soft-gate.de> for the bug report
+  and patch.
+  This closes DCMTK issue #924.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
+**** Changes from 2020.04.06 (onken)
+
+- Try to fix VS 2008/2010 build.
+  Affects: dcmfg/libsrc/concatenationloader.cc
+
+**** Changes from 2020.04.03 (arizpegomez)
+
+- Added Encapsulated Document Length (CP 1851):
+  Included optional attribute Encapsulated Document Length to dcencdoc.cc
+  This closed DCMTK Conformance #877.
+  Affects: dcmdata/libsrc/dcencdoc.cc
+
+- Line spacing minor changes.
+  Affects: dcmdata/libsrc/dcencdoc.cc
+
+**** Changes from 2020.04.01 (riesmeier)
+
+- Updated and revised DIMSE Status Code definitions:
+  Updated and completely revised DIMSE Status Code definitions. Now, the
+  definitions and also the log output are consistent with the current
+  edition of the DICOM standard. Some Service Class specific DIMSE-N
+  Status Codes that are not needed for the DCMTK are still missing and
+  will be added in a future commit.
+  This closes DCMTK Conformance #803 and partly closes Conformance #598.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/tests/tdimse.cc
+
+**** Changes from 2020.03.25 (riesmeier)
+
+- Added missing VRs "OL" and "OV" to documentation.
+  Affects: dcmdata/docs/dcm2json.man
+
+- Added missing VR "OL" to documentation.
+  Affects: dcmdata/docs/dcm2xml.man
+
+**** Changes from 2020.03.19 (riesmeier)
+
+- Fixed two typos in API documentation:
+  Thanks to GitHub user "Raphexion" (Niklas Johansson) for the patch.
+  Affects: dcmpstat/include/dcmtk/dcmpstat/dvpstx.h
+
+**** Changes from 2020.03.15 (eichelberg)
+
+- Various fixes to the dcmqrscp.cfg parser:
+  Thanks to Jake Cobb <Jake.Cobb@varian.com> for the bug report and patch.
+  Affects: dcmqrdb/libsrc/dcmqrcnf.cc
+
+- Fixed compilation with LibreSSL on OpenBSD 6.6.
+  Affects: dcmsign/libsrc/sitstamp.cc
+
+**** Changes from 2020.03.06 (riesmeier)
+
+- Added new file missing for previous commit.
+  Added:   dcmnet/tests/tdimse.cc
+  Affects: dcmnet/tests/tdump.cc
+
+- Added macros for further DIMSE Status Classes:
+  Added further macros to check for certain DIMSE Status Classes (e.g.
+  failure). Also added macro that checks whether a DIMSE Status Code is
+  valid, i.e. within the range defined by the DICOM standard (see PS3.7
+  Annext C).
+  Furthermore, all these new (and old) macros are tested in a new test case.
+  This partly closes DCMTK Conformance #803.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/tests/CMakeLists.txt
+           dcmnet/tests/Makefile.in
+           dcmnet/tests/tdump.cc
+           dcmnet/tests/tests.cc
+
+- Fixed definition of DICOM_PENDING_STATUS macro:
+  According to DICOM PS3.7 Annex C, the "Pending" Status Class is defined as
+  Status Code "FF00 and FF01" (and not as "FFxx").
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+
+- Added missing code to DICOM_WARNING_STATUS macro:
+  Added missing DIMSE Status Code "0001" to the DICOM_WARNING_STATUS macro
+  (see PS3.7 Annex C).
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+
+**** Changes from 2020.03.05 (riesmeier)
+
+- Fixed issues with previous commit:
+  Instead of "@DCMTK_CMAKE_BUILD_TYPE@" "@CMAKE_BUILD_TYPE@" should be used.
+  Also fixed typo in CMake variable name ("DCMTK_CMAKE_INSTALL_INLCUDEDIR")
+  and added missing "DCMTK_CMAKE_INSTALL_SYSCONFDIR".
+  Affects: CMake/DCMTKConfig.cmake.in
+
+**** Changes from 2020.03.03 (onken)
+
+- Export more build options to DCMTKConfig.cmake.
+  Affects: CMake/DCMTKConfig.cmake.in
+
+**** Changes from 2020.03.02 (eichelberg)
+
+- DCMTK now compiles when UNICODE/_UNICODE is defined:
+  DCMTK will now successfully compile when the UNICODE and _UNICODE macros
+  are defined on Windows. We now explicitly call the Windows API functions
+  that are not remapped to wide-char versions depending on the presence of
+  the UNICODE defines.
+  This closes DCMTK issue #425.
+  Affects: INSTALL
+           dcmdata/libsrc/dcencdoc.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/libsrc/dul.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/libsrc/dviface.cc
+           oflog/include/dcmtk/oflog/clogger.h
+           oflog/include/dcmtk/oflog/config.h
+           oflog/include/dcmtk/oflog/configrt.h
+           oflog/include/dcmtk/oflog/fstreams.h
+           oflog/include/dcmtk/oflog/helpers/property.h
+           oflog/include/dcmtk/oflog/socketap.h
+           oflog/include/dcmtk/oflog/streams.h
+           oflog/include/dcmtk/oflog/tchar.h
+           oflog/include/dcmtk/oflog/tstring.h
+           oflog/libsrc/config.cc
+           oflog/libsrc/env.cc
+           oflog/libsrc/fileap.cc
+           oflog/libsrc/fileinfo.cc
+           oflog/libsrc/globinit.cc
+           oflog/libsrc/log4judp.cc
+           oflog/libsrc/ntelogap.cc
+           oflog/libsrc/property.cc
+           oflog/libsrc/snprintf.cc
+           oflog/libsrc/sockbuff.cc
+           oflog/libsrc/socketap.cc
+           oflog/libsrc/strhelp.cc
+           oflog/libsrc/timehelp.cc
+           oflog/libsrc/winconap.cc
+           oflog/libsrc/windebap.cc
+           oflog/libsrc/winsock.cc
+           ofstd/include/dcmtk/ofstd/ofxml.h
+           ofstd/libsrc/ofstd.cc
+           ofstd/libsrc/oftempf.cc
+           ofstd/tests/tests.cc
+           ofstd/tests/txml.cc
+
+**** Changes from 2020.02.26 (eichelberg)
+
+- Fixed previous commit, which was incomplete.
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbf.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h
+
+- Fixed inconsistent forward declaration:
+  Fixed declaration of DcmQueryRetrieveCharacterSetOptions, which was declared
+  as a class in one place and as a struct in another place.
+  Thanks to Waldo Valenzuela <waldo.valenzuela@artorg.unibe.ch> for the bug report.
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h
+
+**** Changes from 2020.02.25 (eichelberg)
+
+- Improved CMake options for the WIN32 build model:
+  When compiling on windows, two CMake options can now be used to control the
+  Win32 build model (multithreaded or multithreaded DLL). When
+  DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS is ON, the build model can be selected
+  by setting DCMTK_COMPILE_WIN32_MULTITHREADED_DLL (ON for multithreaded DLL,
+  OFF for multithreaded). When DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS is OFF,
+  the DCMTK_COMPILE_WIN32_MULTITHREADED_DLL option is ignored and CMake's
+  default compiler options are used.
+  This closes DCMTK issue #903.
+  Affects: CMake/DCMTKConfig.cmake.in
+           CMake/dcmtkPrepare.cmake
+           INSTALL
+
+**** Changes from 2020.02.24 (riesmeier)
+
+- Added option --socket-timeout to findscu:
+  Added option --socket-timeout to findscu (as already done for e.g. storescu
+  or echoscu). Also changed the way default values of command line options are
+  specified (now using the same approach as for other similar tools).
+  This partly closed DCMTK Feature #711.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/docs/findscu.man
+
+**** Changes from 2020.02.21 (eichelberg)
+
+- Increased buffer size to fix gcc 9.2 warning.
+  Affects: dcmsign/libsrc/dcsighlp.cc
+
+**** Changes from 2020.02.18 (riesmeier)
+
+- Removed escaping of "\" in Doxygen documentation.
+  Affects: dcmdata/docs/dcm2xml.man
+           dcmdata/docs/xml2dcm.man
+
+- Added new VRs UV, SV and OV to the documentation:
+  Also fixed other minor issues in the documentation of this tool.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/docs/dump2dcm.man
+
+**** Changes from 2020.02.14 (riesmeier)
+
+- Added support for new Storage SOP Classes:
+  Added definition of new Storage SOP Class UIDs from Supplement 176 (Second
+  Generation Radiotherapy - Tomotherapeutic and Robotic-Arm Treatment
+  Modalities) and Supplement 208 (DICOM Encapsulation of OBJ Models for 3D
+  Manufacturing and Virtual Reality).
+  This commit also adds support for the various networking tools and for
+  generating a DICOMDIR referencing objects of the underlying IODs.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/etc/dcmqrprf.cfg
+
+- Added new well-known Frame of Reference UID:
+  Added well-known Frame of Reference UID from Supplement 176 (Second Generation
+  Radiotherapy - Tomotherapeutic and Robotic-Arm Treatment Modalities).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+**** Changes from 2020.02.13 (riesmeier)
+
+- Fixed issue with order of include directories:
+  Fixed issue with order of include directories when working with CMake on
+  a system where the DCMTK libraries and header files are already installed
+  in the same directory as one of the external support libraries (e.g. zlib
+  or libiconv in "/usr/local").
+  Thanks to Steve Pieper <pieper@isomics.com> for the original report and
+  the in-depth analysis.
+  Affects: CMakeLists.txt
+
+**** Changes from 2020.02.07 (riesmeier)
+
+- Output error reason to logger:
+  Always output the reason (e.g. called function) for an error to the logger,
+  not only the value of the OFCondition variable.
+  Also removed redundant information in case of "bad override key/path".
+  Affects: dcmnet/libsrc/dfindscu.cc
+
+**** Changes from 2020.02.04 (riesmeier)
+
+- Updated Context Group classes for DICOM 2020a:
+  Updated automatically generated Context Group classes for the 2020a edition
+  of the DICOM standard. All supported classes were updated, even though there
+  were no changes to most of them.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated code definitions for DICOM 2020a:
+  Updated automatically generated code definitions for coding scheme "DCM"
+  and "NCIt". For the coding scheme "UMLS", there were no changes.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+           dcmsr/include/dcmtk/dcmsr/codes/umls.h
+
+**** Changes from 2020.01.31 (riesmeier)
+
+- Updated data dictionary for DICOM 2020a:
+  Updated data dictionary for the latest edition of the DICOM standard.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+- Made use of new internal VR "px" for pixel data:
+  Now using the new internal VR "px" for the standard Pixel Data attribute
+  (7fe0,0010) as well as for the private attribute (7fe1,1060), which is
+  created by GE Vivid S70 ultrasound systems in a non-standard conformant
+  manner (also for compressed pixel data, i.e. in encapsulated format).
+  Thanks to Marcel Claus <Marcel.Claus@med.uni-jena.de> for the report and
+  for providing sample objects of the GE Vivid S70.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/data/private.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+- Introduced new internal VR "px" for pixel data:
+  Introduced new internal value representation "px" that can be used for pixel
+  data, both uncompressed (OB or OW) and compressed (pixel sequence). This new
+  type allows for treating other attributes than (7fe0,0010) in the same way as
+  the Pixel Data attribute, by simply specifying the tag in the data dictionary.
+  In a subsequent commit, this new feature will be used for the standard Pixel
+  Data attribute but also for private ones.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcvrpobw.cc
+           dcmdata/tests/telemlen.cc
+           dcmdata/tests/tests.cc
+           dcmpstat/libsrc/dvpscu.cc
+
+**** Changes from 2020.01.24 (onken)
+
+- Enhanced documentation.
+  Affects: dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+
+**** Changes from 2020.01.23 (riesmeier)
+
+- Added SOP class UIDs from Supplement 202:
+  Added definition of four new SOP class UIDs introduced with Supplement 202
+  (Real-Time Video).
+  This closed DCMTK Conformance #898.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+- Added transfer syntax UIDs from Supplement 202:
+  Added definition of transfer syntax UIDs from Supplement 202 (Real-Time
+  Video). The class DcmXfer has not been extended accordingly since the
+  three new transfer syntaxes (2 for video and 1 for audio) are only used
+  for the new "DICOM-RTV" service and not for encoding a DICOM dataset.
+  This partly closed DCMTK Conformance #898.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+**** Changes from 2020.01.22 (onken)
+
+- Fixed typo in INSTALL file:
+  Thanks to GitHub user "iboB" for the report and fix.
+  Affects: INSTALL
+
+**** Changes from 2020.01.17 (riesmeier)
+
+- Fixed inappropriate warning on invalid frame time:
+  There are rare cases, where a frame time of 0 make sense, e.g. if the Cine
+  Module is required for single frame images (see PS3.3 Section C.7.6.6.1.2).
+  Affects: dcmimgle/libsrc/diimage.cc
+
+**** Changes from 2020.01.08 (riesmeier)
+
+- Various fixes to formatting and documentation:
+  Various fixes to source code formatting and Doxygen documentation of the
+  manpage (e.g. missing command line options and missing Doxygen markup).
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+
+**** Changes from 2020.01.07 (eichelberg)
+
+- Added --convert-un option to dcmsign.
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+
+**** Changes from 2020.01.06 (onken)
+
+- Use typedef instead of #define for OFBool.
+  Affects: ofstd/include/dcmtk/ofstd/oftypes.h
+
+**** Changes from 2020.01.05 (riesmeier)
+
+- Made sure appropriate data dictionary is used:
+  Made sure that an appropriate DICOM data dictionary is used when performing
+  the test cases using "make check" (GNU Autoconf).
+  Affects: dcmiod/tests/Makefile.in
+
+- Increased buffer size for use of sprintf():
+  Increased buffer size for use of sprintf() in order to avoid possible buffer
+  overflow reported by gcc 9.2.1 with option -Wformat-overflow, which is enabled
+  by default on Ubuntu 19.10 Linux.
+  Affects: dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvsighdl.cc
+
+- Minor fixes to source code formatting:
+  Fixed source code formatting (for reasons of consistency with the rest
+  of the file).
+  Affects: dcmnet/apps/storescp.cc
+
+**** Changes from 2020.01.05 (eichelberg)
+
+- Fixed bug in the parsing of UN VR sequences:
+  Added command line option --convert-un to storescp and fixed a bug in the
+  parser that caused parse errors when receiving a large sequence element with
+  explicit length and UN value representation, while --convert-un is active.
+  Thanks to Jesper Bojesen <jbojesen@vitalimages.com> for the bug report and fix.
+  This closes DCMTK issue #888.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
+**** Changes from 2020.01.02 (riesmeier)
+
+- Made sure appropriate data dictionary is used:
+  Made sure that an appropriate DICOM data dictionary is used when performing
+  the test cases using "make check" (GNU Autoconf).
+  Affects: dcmect/tests/Makefile.in
+           dcmfg/tests/Makefile.in
+           dcmseg/tests/Makefile.in
+
+**** Changes from 2020.01.02 (onken)
+
+- Force OFBool mapping to system bool type:
+  Drops support for systems that do not natively support the bool type.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/confmod
+           config/include/dcmtk/config/osconfig.h.in
+           ofstd/include/dcmtk/ofstd/oflimits.h
+           ofstd/include/dcmtk/ofstd/oftraits.h
+           ofstd/include/dcmtk/ofstd/oftypes.h
+           ofstd/libsrc/Makefile.dep
+
+- Renamed method for consistency.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcvrds.cc
+
+- Updated autoconf dependencies.
+  Affects: dcmiod/tests/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/tests/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+
+- Use consistent C-FIND/GET/MOVE status codes:
+  DcmSCU now uses status code strings that have already been defined in
+  dimdump.cc in order to use consistent status strings throughout the
+  toolkit.
+  Refactored C-FIND/GET/MOVE default session handling in DcmSCU to benefit
+  from common code.
+  Added (simple, for now) test for C-FIND/MOVE session handling.
+  Added:   dcmnet/tests/tscusession.cc
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/scu.cc
+           dcmnet/tests/CMakeLists.txt
+           dcmnet/tests/Makefile.in
+           dcmnet/tests/tests.cc
+
+**** Changes from 2019.12.31 (eichelberg)
+
+- Fixed minor bug.
+  Affects: dcmsign/libsrc/dcsignat.cc
+
+**** Changes from 2019.12.30 (eichelberg)
+
+- Added support for OpenSSL without Elliptic Curves:
+  Added support for OpenSSL libraries compiled without support for Elliptic
+  Curves. Needed for compiling DCMTK with the OpenSSL library shipped with
+  Solaris 11.3.
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/sicert.cc
+           dcmsign/libsrc/siecdsa.cc
+           dcmsign/libsrc/siprivat.cc
+           dcmsign/libsrc/sitypes.cc
+
+**** Changes from 2019.12.30 (onken)
+
+- Fixed tag type for long code value support:
+  Make sure Code Value, Long Code Value and URN Code Value are all of type
+  1C now. Fixes CP 1031 support introduced in recent commit a7ca3a60.
+  Affects: dcmiod/libsrc/iodmacro.cc
+
+- Minor formatting enhancements.
+  Affects: dcmiod/include/dcmtk/dcmiod/modusfor.h
+           dcmiod/libsrc/iodutil.cc
+           dcmiod/libsrc/modfloatingpointimagepixel.cc
+
+- Added support for long code values (CP 1301).
+  Added:   dcmiod/tests/tcodes.cc
+  Affects: dcmiod/include/dcmtk/dcmiod/iodmacro.h
+           dcmiod/libsrc/iodmacro.cc
+           dcmiod/tests/CMakeLists.txt
+           dcmiod/tests/Makefile.in
+           dcmiod/tests/tests.cc
+
+- Fixed compiler warnings (VS 2019).
+  Affects: dcmect/tests/t_huge_concat.cc
+           dcmect/tests/t_roundtrip.cc
+           dcmseg/tests/troundtrip.cc
+
+**** Changes from 2019.12.29 (eichelberg)
+
+- Compatibility fixes for OpenSSL 1.0.1:
+  The revised dcmsign module now also compiles and works with OpenSSL 1.0.1,
+  the oldest OpenSSL version still supported in DCMTK. This required a rewrite
+  of the date/time comparison code since ASN1_TIME_diff() is not available
+  in OpenSSL 1.0.1.
+  Affects: dcmsign/include/dcmtk/dcmsign/sicert.h
+           dcmsign/libsrc/sicert.cc
+           dcmsign/libsrc/sitstamp.cc
+
+**** Changes from 2019.12.28 (eichelberg)
+
+- Fixed some minor warnings reported by VS2019.
+  Affects: dcmsign/libsrc/sitstamp.cc
+
+- Compatibility fixes for OpenSSL 1.0.2 and MSVC.
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/dcsighlp.cc
+           dcmsign/libsrc/dcsignat.cc
+           dcmsign/libsrc/sicert.cc
+           dcmsign/libsrc/siecdsa.cc
+           dcmsign/libsrc/sitstamp.cc
+
+**** Changes from 2019.12.27 (eichelberg)
+
+- Major revision of dcmsign module:
+  This commit completes a major revision of the dcmsign module, which adds the
+  following features:
+  - support for Elliptic Curve (ECDSA) signatures,
+  - support for the DICOM SR RSA Digital Signature Profile,
+  - support for CRLs in hashed certificate directories,
+  - verify chain of trust for signer certificates during signature verification,
+  - support for the verification of trusted timestamps,
+  - limited support for the creation of trusted timestamps: a timestamp
+    query can be generated during the signature process, but no support for the
+    network protocols defined in RFC 3161 is implemented yet,
+  - many bug fixes, improved error handling and logging.
+  Affects: dcmsign/docs/dcmsign.dox
+
+- Various improvements to dcmsign module:
+  Signature creation now fails with an error message if one of the tags
+  specified with --tag or --tag-file are not present in the dataset to
+  be signed. Furthermore, the digital signature purpose code is now printed
+  during signature verification. The 64kByte size limit for --tag-file
+  has been removed.
+  Affects: dcmsign/docs/dcmsign.man
+           dcmsign/include/dcmtk/dcmsign/dcsignat.h
+           dcmsign/libsrc/dcsighlp.cc
+           dcmsign/libsrc/dcsignat.cc
+
+- Improved timestamp verification code:
+  The timestamp verification code now performs additional consistency
+  checks (for example whether the timestamp was created before the start
+  of validity of the TSA certificate). Furthermore, a valid certified
+  timestamp can now extend the "lifetime" of a signature where the
+  signer certificate has expired, if the timestamp is still valid.
+  Affects: dcmsign/include/dcmtk/dcmsign/sicertvf.h
+           dcmsign/include/dcmtk/dcmsign/sitstamp.h
+           dcmsign/libsrc/dcsighlp.cc
+           dcmsign/libsrc/sicertvf.cc
+           dcmsign/libsrc/sitstamp.cc
+
+- Improved handling of CRLs and unsignable attributes:
+  Improved implementation of certificate revocation lists, which can now
+  also be stored in a hashed certificate directory. Improved handling and
+  error reporting related to unsignable attributes (such as group lengths
+  or UN attributes) present during signature creation of verification.
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmsign/include/dcmtk/dcmsign/sicertvf.h
+           dcmsign/include/dcmtk/dcmsign/simaccon.h
+           dcmsign/include/dcmtk/dcmsign/sisprof.h
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/dcsignat.cc
+           dcmsign/libsrc/sicertvf.cc
+           dcmsign/libsrc/simaccon.cc
+           dcmsign/libsrc/sisprof.cc
+           dcmsign/libsrc/sitypes.cc
+
+- Check unconditional attributes in signature profiles:
+  Signature verification now checks whether all attributes unconditionally
+  required to be signed are included in the signature when verifying
+  signatures against a signature profile.
+  Affects: dcmsign/include/dcmtk/dcmsign/siautopr.h
+           dcmsign/include/dcmtk/dcmsign/sibrsapr.h
+           dcmsign/include/dcmtk/dcmsign/sicreapr.h
+           dcmsign/include/dcmtk/dcmsign/sinullpr.h
+           dcmsign/include/dcmtk/dcmsign/sisprof.h
+           dcmsign/include/dcmtk/dcmsign/sisrpr.h
+           dcmsign/include/dcmtk/dcmsign/sisrvpr.h
+           dcmsign/libsrc/dcsighlp.cc
+           dcmsign/libsrc/dcsignat.cc
+           dcmsign/libsrc/siautopr.cc
+           dcmsign/libsrc/sibrsapr.cc
+           dcmsign/libsrc/sicreapr.cc
+           dcmsign/libsrc/sinullpr.cc
+           dcmsign/libsrc/sisprof.cc
+           dcmsign/libsrc/sisrpr.cc
+           dcmsign/libsrc/sisrvpr.cc
+
+- Fixed bug affecting multiple nested signatures:
+  Fixed bug that caused digital signatures embedded in a sequence item to be
+  included in the bitstream of another sequence (e.g. on main dataset level)
+  that signed the sequence containing this sequence item. In this case the
+  bitstream generated for the signature creation or verification was
+  not DICOM compliant.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Check if cert was valid during signature creation:
+  When verifying signatures, dcmsign now checks whether the signature datetime
+  is within the validity period of the signer certificate.
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmsign/include/dcmtk/dcmsign/dcsignat.h
+           dcmsign/include/dcmtk/dcmsign/sicert.h
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/dcsignat.cc
+           dcmsign/libsrc/sicert.cc
+           dcmsign/libsrc/sitypes.cc
+
+- Print error message when signature is incomplete:
+  dcmsign now prints an error message when any of the required attributes of
+  the MACParametersSequence or the DigitalSignaturesSequence are absent,
+  empty or invalid, instead of silently ignoring such invalid signatures.
+  Affects: dcmsign/include/dcmtk/dcmsign/dcsignat.h
+           dcmsign/libsrc/dcsignat.cc
+           dcmsign/libsrc/sicert.cc
+
+- Fixed warnings reported by gcc -Wshadow.
+  Affects: dcmqrdb/libsrc/dcmqrdbi.cc
+
+- Print warning to logger when encountering weak key:
+  Print a warning to the logger when a weak key (RSA/DSA < 1024 bits or
+  ECDSA < 256 bits) is encountered in a certificate during signature
+  creation or verification.
+  Affects: dcmsign/include/dcmtk/dcmsign/sicert.h
+           dcmsign/libsrc/dcsighlp.cc
+           dcmsign/libsrc/dcsignat.cc
+           dcmsign/libsrc/sicert.cc
+
+- Correctly print EC curve bits.
+  Affects: dcmpstat/libsrc/dvsighdl.cc
+
+- Implemented well-defined exit codes for dcmsign.
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmsign/libsrc/dcsighlp.cc
+
+- Fixed memory leak in class SiCertificate.
+  Affects: dcmsign/libsrc/sicert.cc
+
+- Revised signature verification code:
+  Revised the signature verification code, which now checks the validity of the
+  signer's certificate by checking the chain of trust. Furthermore, the user can
+  now verify if any of the signatures present are a valid creator, authorization
+  or SR RSA signature. Also implemented support for adding certified timestamps
+  from a RFC 3161 Timestamp Response (TSR) file. When verifying a signature,
+  certified timestamps will now also be discovered and verified.
+  Added:   dcmsign/include/dcmtk/dcmsign/sitsfs.h
+           dcmsign/libsrc/sitsfs.cc
+           dcmsign/libsrc/sitstamp.cc
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbf.h
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmsign/include/dcmtk/dcmsign/dcsighlp.h
+           dcmsign/include/dcmtk/dcmsign/dcsignat.h
+           dcmsign/include/dcmtk/dcmsign/siautopr.h
+           dcmsign/include/dcmtk/dcmsign/sibrsapr.h
+           dcmsign/include/dcmtk/dcmsign/sicert.h
+           dcmsign/include/dcmtk/dcmsign/sicertvf.h
+           dcmsign/include/dcmtk/dcmsign/sicreapr.h
+           dcmsign/include/dcmtk/dcmsign/sinullpr.h
+           dcmsign/include/dcmtk/dcmsign/sisprof.h
+           dcmsign/include/dcmtk/dcmsign/sisrpr.h
+           dcmsign/include/dcmtk/dcmsign/sitstamp.h
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsign/libsrc/Makefile.in
+           dcmsign/libsrc/dcsighlp.cc
+           dcmsign/libsrc/dcsignat.cc
+           dcmsign/libsrc/siautopr.cc
+           dcmsign/libsrc/sibrsapr.cc
+           dcmsign/libsrc/sicert.cc
+           dcmsign/libsrc/sicertvf.cc
+           dcmsign/libsrc/sicreapr.cc
+           dcmsign/libsrc/sinullpr.cc
+           dcmsign/libsrc/sipurpos.cc
+           dcmsign/libsrc/sisrpr.cc
+           dcmsign/libsrc/sisrvpr.cc
+           dcmsign/libsrc/sitypes.cc
+
+- Fixed DER sequence length computation.
+  Affects: dcmsign/libsrc/dcsignat.cc
+
+- return non-zero when signature verification fails:
+  The dcmsign command line tool now returns a non-zero return code when one
+  or more of the signatures in a file have failed signature verification.
+  Affects: dcmsign/libsrc/dcsighlp.cc
+
+- Added support for SR RSA Digital Signature Profile:
+  Added support for the Structured Reporting RSA Digital Signature Profile
+  and the Digital Signature Purpose Code Sequence. Updated all signature
+  profile classes to include all required attributes as defined in DICOM 2019c.
+  Added:   dcmsign/include/dcmtk/dcmsign/dcsighlp.h
+           dcmsign/include/dcmtk/dcmsign/sipurpos.h
+           dcmsign/include/dcmtk/dcmsign/sisrpr.h
+           dcmsign/include/dcmtk/dcmsign/sisrvpr.h
+           dcmsign/libsrc/dcsighlp.cc
+           dcmsign/libsrc/sipurpos.cc
+           dcmsign/libsrc/sisrpr.cc
+           dcmsign/libsrc/sisrvpr.cc
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmsign/include/dcmtk/dcmsign/dcsignat.h
+           dcmsign/include/dcmtk/dcmsign/sialgo.h
+           dcmsign/include/dcmtk/dcmsign/siautopr.h
+           dcmsign/include/dcmtk/dcmsign/sibrsapr.h
+           dcmsign/include/dcmtk/dcmsign/sicert.h
+           dcmsign/include/dcmtk/dcmsign/sicertvf.h
+           dcmsign/include/dcmtk/dcmsign/sicreapr.h
+           dcmsign/include/dcmtk/dcmsign/sidsa.h
+           dcmsign/include/dcmtk/dcmsign/siecdsa.h
+           dcmsign/include/dcmtk/dcmsign/simac.h
+           dcmsign/include/dcmtk/dcmsign/simaccon.h
+           dcmsign/include/dcmtk/dcmsign/simd5.h
+           dcmsign/include/dcmtk/dcmsign/sinullpr.h
+           dcmsign/include/dcmtk/dcmsign/siprivat.h
+           dcmsign/include/dcmtk/dcmsign/siripemd.h
+           dcmsign/include/dcmtk/dcmsign/sirsa.h
+           dcmsign/include/dcmtk/dcmsign/sisha1.h
+           dcmsign/include/dcmtk/dcmsign/sisprof.h
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsign/libsrc/Makefile.in
+           dcmsign/libsrc/dcsignat.cc
+           dcmsign/libsrc/siautopr.cc
+           dcmsign/libsrc/sibrsapr.cc
+           dcmsign/libsrc/sicreapr.cc
+           dcmsign/libsrc/sinullpr.cc
+           dcmsign/libsrc/sisprof.cc
+           dcmsign/libsrc/sitypes.cc
+
+- Fix verification of odd-length DSA/ECDSA signatures.
+  Affects: dcmsign/libsrc/dcsignat.cc
+
+- Added initial support for ECDSA signatures.
+  Added:   dcmsign/include/dcmtk/dcmsign/siecdsa.h
+           dcmsign/libsrc/siecdsa.cc
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/include/dcmtk/dcmsign/sicert.h
+           dcmsign/include/dcmtk/dcmsign/sitypes.h
+           dcmsign/libsrc/CMakeLists.txt
+           dcmsign/libsrc/Makefile.in
+           dcmsign/libsrc/sicert.cc
+           dcmsign/libsrc/siprivat.cc
+
+**** Changes from 2019.12.20 (eichelberg)
+
+- Forward trusted certificates to DcmTLSTransportLayer:
+  Class DcmTLSSCU did not trusted certificate files and directories set with
+  DcmTLSSCU::addTrustedCertFile() and DcmTLSSCU::addTrustedCertDir() to the
+  underlying DcmTLSTransportLayer instance. This fix was developed by
+  Michael Onken already in 2017, but apparently never committed.
+  Affects: dcmtls/libsrc/tlsscu.cc
+
+**** Changes from 2019.12.17 (onken)
+
+- Fixed compiler warning (shadowed variable).
+  Affects: dcmseg/tests/troundtrip.cc
+
+**** Changes from 2019.12.12 (onken)
+
+- Fix OFtuple-based compile error in VS 2008/2010:
+  Try to fix OFtuple-based compile error in VS 2008/2010, and address
+  compiler warning in SunPro Studio 12.6 about possible NULL pointer
+  reference.
+  Affects: dcmect/tests/t_huge_concat.cc
+           dcmfg/libsrc/concatenationloader.cc
+
+**** Changes from 2019.12.11 (riesmeier)
+
+- Fixed warning reported by gcc (-Wsign-compare).
+  Affects: ofstd/tests/tmap.cc
+
+**** Changes from 2019.12.11 (onken)
+
+- Fixed more compiler warnings.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+           dcmfg/libsrc/concatenationloader.cc
+           dcmseg/libsrc/segdoc.cc
+           dcmtract/libsrc/trctrack.cc
+
+- Fixed compiler warning.
+  Affects: dcmfg/libsrc/fgbase.cc
+
+- Fixed/completed doxygen documentation.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrds.h
+           dcmpmap/include/dcmtk/dcmpmap/dpmparametricmapiod.h
+           dcmtract/include/dcmtk/dcmtract/trcmeasurement.h
+           dcmtract/include/dcmtk/dcmtract/trcmodtractresults.h
+           dcmtract/include/dcmtk/dcmtract/trcstatistic.h
+           dcmtract/include/dcmtk/dcmtract/trctrack.h
+           dcmtract/include/dcmtk/dcmtract/trctrackset.h
+
+- Removed accidentially commited configure file.
+  Removed: configure
+
+- Use constants instead of magic numbers.
+  Affects: dcmfg/include/dcmtk/dcmfg/concatenationcreator.h
+           dcmfg/libsrc/concatenationcreator.cc
+
+- Fixed data types and compiler warnings:
+  Fixed data types used in Concatenation code (e.g. maximum number of
+  frames per instance, maximum number of concatenation instances).
+  Fixed compiler warnings, especially those from integer conversions.
+  Adapted documentation where necessary.
+  Affects: dcmect/libsrc/enhanced_ct.cc
+           dcmfg/include/dcmtk/dcmfg/concatenationcreator.h
+           dcmfg/include/dcmtk/dcmfg/concatenationloader.h
+           dcmfg/include/dcmtk/dcmfg/fgctadditionalxraysource.h
+           dcmfg/include/dcmtk/dcmfg/fgfracon.h
+           dcmfg/include/dcmtk/dcmfg/fgimagedatatype.h
+           dcmfg/include/dcmtk/dcmfg/fgpixmsr.h
+           dcmfg/libsrc/concatenationcreator.cc
+           dcmfg/libsrc/concatenationloader.cc
+           dcmfg/libsrc/fgbase.cc
+           dcmfg/libsrc/fgctadditionalxraysource.cc
+           dcmfg/libsrc/fgfracon.cc
+           dcmfg/libsrc/fgimagedatatype.cc
+           dcmfg/libsrc/fgpixmsr.cc
+           dcmiod/include/dcmtk/dcmiod/iodcontentitemmacro.h
+           dcmiod/include/dcmtk/dcmiod/modfloatingpointimagepixel.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixel.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixelbase.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h
+           dcmiod/include/dcmtk/dcmiod/modusfor.h
+           dcmiod/libsrc/iodcontentitemmacro.cc
+           dcmiod/libsrc/iodutil.cc
+           dcmiod/libsrc/modfloatingpointimagepixel.cc
+           dcmiod/libsrc/modimagepixel.cc
+           dcmiod/libsrc/modimagepixelbase.cc
+           dcmiod/libsrc/modusfor.cc
+           ofstd/include/dcmtk/ofstd/oftest.h
+
+- Fix recusion (call base class version instead).
+  Affects: dcmect/include/dcmtk/dcmect/enhanced_ct.h
+
+- Fixed nested angle brackets and other formatting:
+  Fixed nested closing angle brackets ("> >") for templates that require a
+  space in C++03.
+  Made formatting more consistent.
+  Affects: dcmect/include/dcmtk/dcmect/enhanced_ct.h
+           dcmect/libsrc/enhanced_ct.cc
+           dcmect/tests/t_huge_concat.cc
+           dcmect/tests/t_roundtrip.cc
+           dcmfg/include/dcmtk/dcmfg/concatenationloader.h
+           dcmfg/libsrc/fgderimg.cc
+           dcmiod/include/dcmtk/dcmiod/iodimage.h
+           dcmiod/include/dcmtk/dcmiod/iodutil.h
+           dcmiod/libsrc/iodcommn.cc
+           dcmiod/libsrc/iodcontentitemmacro.cc
+           dcmiod/libsrc/iodmacro.cc
+           dcmiod/libsrc/iodreferences.cc
+           dcmiod/libsrc/iodrules.cc
+           dcmiod/libsrc/iodutil.cc
+           dcmiod/libsrc/modacquisitioncontext.cc
+           dcmiod/libsrc/modbase.cc
+           dcmiod/libsrc/modcommoninstanceref.cc
+           dcmiod/libsrc/modenhequipment.cc
+           dcmiod/libsrc/modenhusimage.cc
+           dcmiod/libsrc/modenhusseries.cc
+           dcmiod/libsrc/modequipment.cc
+           dcmiod/libsrc/modfloatingpointimagepixel.cc
+           dcmiod/libsrc/modfor.cc
+           dcmiod/libsrc/modgeneralimage.cc
+           dcmiod/libsrc/modgeneralseries.cc
+           dcmiod/libsrc/modgeneralstudy.cc
+           dcmiod/libsrc/modhelp.cc
+           dcmiod/libsrc/modimagepixel.cc
+           dcmiod/libsrc/modimagepixelbase.cc
+           dcmiod/libsrc/modmultiframedimension.cc
+           dcmiod/libsrc/modmultiframefg.cc
+           dcmiod/libsrc/modpatient.cc
+           dcmiod/libsrc/modpatientstudy.cc
+           dcmiod/libsrc/modsegmentationseries.cc
+           dcmiod/libsrc/modsopcommon.cc
+           dcmiod/libsrc/modsynchronization.cc
+           dcmiod/libsrc/modusfor.cc
+           dcmiod/tests/timagepixel.cc
+           dcmseg/include/dcmtk/dcmseg/segdoc.h
+           dcmseg/libsrc/segdoc.cc
+           dcmseg/libsrc/segtypes.cc
+           dcmseg/tests/tconcat_binary.cc
+
+**** Changes from 2019.12.10 (onken)
+
+- New module dcmect for working with Enhanced CT:
+  Added new DCMTK module dcmect which facilitates creation, loading,
+  (partly) modification and storing Enhanced CT objects.
+  Also included is a general Concatenation API that allows to create and
+  re-assemble Concatenations from given DICOM datasets. The related
+  classes are called ConcatenationCreator and ConcatentionLoader and are
+  part of the dcmfg module. Right now, only uncompressed ("unencapsulated")
+  pixel data is supported.
+  The existing Segmentation API (dcmseg) as well as the new Enhanced CT API
+  (dcmect) both support writing and reading Concatenations via dedicated
+  methods.
+  Acknowledgement: Thanks to GE Aviation for sponsoring this feature.
+  Added:   configure
+           dcmect/CMakeLists.txt
+           dcmect/Makefile.in
+           dcmect/configure
+           dcmect/data/Makefile.in
+           dcmect/docs/Makefile.in
+           dcmect/docs/dcmect.dox
+           dcmect/etc/Makefile.in
+           dcmect/include/CMakeLists.txt
+           dcmect/include/Makefile.in
+           dcmect/include/dcmtk/dcmect/def.h
+           dcmect/include/dcmtk/dcmect/enhanced_ct.h
+           dcmect/include/dcmtk/dcmect/types.h
+           dcmect/libsrc/CMakeLists.txt
+           dcmect/libsrc/Makefile.dep
+           dcmect/libsrc/Makefile.in
+           dcmect/libsrc/enhanced_ct.cc
+           dcmect/libsrc/types.cc
+           dcmect/tests/CMakeLists.txt
+           dcmect/tests/Makefile.dep
+           dcmect/tests/Makefile.in
+           dcmect/tests/t_huge_concat.cc
+           dcmect/tests/t_roundtrip.cc
+           dcmect/tests/tests.cc
+           dcmfg/include/dcmtk/dcmfg/concatenationcreator.h
+           dcmfg/include/dcmtk/dcmfg/concatenationloader.h
+           dcmfg/include/dcmtk/dcmfg/fgctacquisitiondetails.h
+           dcmfg/include/dcmtk/dcmfg/fgctacquisitiontype.h
+           dcmfg/include/dcmtk/dcmfg/fgctadditionalxraysource.h
+           dcmfg/include/dcmtk/dcmfg/fgctexposure.h
+           dcmfg/include/dcmtk/dcmfg/fgctgeometry.h
+           dcmfg/include/dcmtk/dcmfg/fgctimageframetype.h
+           dcmfg/include/dcmtk/dcmfg/fgctposition.h
+           dcmfg/include/dcmtk/dcmfg/fgctreconstruction.h
+           dcmfg/include/dcmtk/dcmfg/fgcttabledynamics.h
+           dcmfg/include/dcmtk/dcmfg/fgctxraydetails.h
+           dcmfg/include/dcmtk/dcmfg/fgirradiationeventid.h
+           dcmfg/include/dcmtk/dcmfg/fgtemporalposition.h
+           dcmfg/libsrc/concatenationcreator.cc
+           dcmfg/libsrc/concatenationloader.cc
+           dcmfg/libsrc/fgctacquisitiondetails.cc
+           dcmfg/libsrc/fgctacquisitiontype.cc
+           dcmfg/libsrc/fgctadditionalxraysource.cc
+           dcmfg/libsrc/fgctexposure.cc
+           dcmfg/libsrc/fgctgeometry.cc
+           dcmfg/libsrc/fgctimageframetype.cc
+           dcmfg/libsrc/fgctposition.cc
+           dcmfg/libsrc/fgctreconstruction.cc
+           dcmfg/libsrc/fgcttabledynamics.cc
+           dcmfg/libsrc/fgctxraydetails.cc
+           dcmfg/libsrc/fgirradiationeventid.cc
+           dcmfg/libsrc/fgtemporalposition.cc
+           dcmfg/tests/t_concatenation_creator.cc
+           dcmfg/tests/t_concatenation_loader.cc
+           dcmfg/tests/t_ct_acquisition_details.cc
+           dcmfg/tests/t_ct_acquisition_type.cc
+           dcmfg/tests/t_ct_image_frame_type.cc
+           dcmfg/tests/t_ct_position.cc
+           dcmfg/tests/t_ct_table_dynamics.cc
+           dcmfg/tests/t_irradiation_event_identification.cc
+           dcmseg/tests/tconcat_binary.cc
+           dcmseg/tests/troundtrip.cc
+  Affects: CMakeLists.txt
+           Makefile
+           config/modules
+           config/tests/stack.cc
+           dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcvrds.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/tests.cc
+           dcmdata/tests/tvrds.cc
+           dcmfg/include/dcmtk/dcmfg/fg.h
+           dcmfg/include/dcmtk/dcmfg/fgbase.h
+           dcmfg/include/dcmtk/dcmfg/fgdefine.h
+           dcmfg/include/dcmtk/dcmfg/fgderimg.h
+           dcmfg/include/dcmtk/dcmfg/fgfact.h
+           dcmfg/include/dcmtk/dcmfg/fgfracon.h
+           dcmfg/include/dcmtk/dcmfg/fgframeanatomy.h
+           dcmfg/include/dcmtk/dcmfg/fgframevoilut.h
+           dcmfg/include/dcmtk/dcmfg/fgimagedatatype.h
+           dcmfg/include/dcmtk/dcmfg/fginterface.h
+           dcmfg/include/dcmtk/dcmfg/fgparametricmapframetype.h
+           dcmfg/include/dcmtk/dcmfg/fgpixeltransform.h
+           dcmfg/include/dcmtk/dcmfg/fgpixmsr.h
+           dcmfg/include/dcmtk/dcmfg/fgplanor.h
+           dcmfg/include/dcmtk/dcmfg/fgplanorvol.h
+           dcmfg/include/dcmtk/dcmfg/fgplanpo.h
+           dcmfg/include/dcmtk/dcmfg/fgplanposvol.h
+           dcmfg/include/dcmtk/dcmfg/fgrealworldvaluemapping.h
+           dcmfg/include/dcmtk/dcmfg/fgseg.h
+           dcmfg/include/dcmtk/dcmfg/fgtypes.h
+           dcmfg/include/dcmtk/dcmfg/fgusimagedescription.h
+           dcmfg/include/dcmtk/dcmfg/stack.h
+           dcmfg/include/dcmtk/dcmfg/stackinterface.h
+           dcmfg/libsrc/CMakeLists.txt
+           dcmfg/libsrc/Makefile.dep
+           dcmfg/libsrc/Makefile.in
+           dcmfg/libsrc/fg.cc
+           dcmfg/libsrc/fgbase.cc
+           dcmfg/libsrc/fgderimg.cc
+           dcmfg/libsrc/fgfact.cc
+           dcmfg/libsrc/fgfracon.cc
+           dcmfg/libsrc/fgframeanatomy.cc
+           dcmfg/libsrc/fgframevoilut.cc
+           dcmfg/libsrc/fgimagedatatype.cc
+           dcmfg/libsrc/fginterface.cc
+           dcmfg/libsrc/fgparametricmapframetype.cc
+           dcmfg/libsrc/fgpixeltransform.cc
+           dcmfg/libsrc/fgpixmsr.cc
+           dcmfg/libsrc/fgplanor.cc
+           dcmfg/libsrc/fgplanorvol.cc
+           dcmfg/libsrc/fgplanpo.cc
+           dcmfg/libsrc/fgplanposvol.cc
+           dcmfg/libsrc/fgrealworldvaluemapping.cc
+           dcmfg/libsrc/fgseg.cc
+           dcmfg/libsrc/fgtypes.cc
+           dcmfg/libsrc/fgusimagedescription.cc
+           dcmfg/libsrc/stack.cc
+           dcmfg/libsrc/stackinterface.cc
+           dcmfg/tests/CMakeLists.txt
+           dcmfg/tests/Makefile.dep
+           dcmfg/tests/Makefile.in
+           dcmfg/tests/t_deriv_image.cc
+           dcmfg/tests/t_frame_content.cc
+           dcmfg/tests/tests.cc
+           dcmiod/include/dcmtk/dcmiod/cielabutil.h
+           dcmiod/include/dcmtk/dcmiod/iodcommn.h
+           dcmiod/include/dcmtk/dcmiod/iodcontentitemmacro.h
+           dcmiod/include/dcmtk/dcmiod/ioddef.h
+           dcmiod/include/dcmtk/dcmiod/iodimage.h
+           dcmiod/include/dcmtk/dcmiod/iodmacro.h
+           dcmiod/include/dcmtk/dcmiod/iodreferences.h
+           dcmiod/include/dcmtk/dcmiod/iodrules.h
+           dcmiod/include/dcmtk/dcmiod/iodtypes.h
+           dcmiod/include/dcmtk/dcmiod/iodutil.h
+           dcmiod/include/dcmtk/dcmiod/modacquisitioncontext.h
+           dcmiod/include/dcmtk/dcmiod/modbase.h
+           dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h
+           dcmiod/include/dcmtk/dcmiod/modenhequipment.h
+           dcmiod/include/dcmtk/dcmiod/modenhusimage.h
+           dcmiod/include/dcmtk/dcmiod/modenhusseries.h
+           dcmiod/include/dcmtk/dcmiod/modequipment.h
+           dcmiod/include/dcmtk/dcmiod/modfloatingpointimagepixel.h
+           dcmiod/include/dcmtk/dcmiod/modfor.h
+           dcmiod/include/dcmtk/dcmiod/modgeneralimage.h
+           dcmiod/include/dcmtk/dcmiod/modgeneralseries.h
+           dcmiod/include/dcmtk/dcmiod/modgeneralstudy.h
+           dcmiod/include/dcmtk/dcmiod/modhelp.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixel.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixelbase.h
+           dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h
+           dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h
+           dcmiod/include/dcmtk/dcmiod/modmultiframefg.h
+           dcmiod/include/dcmtk/dcmiod/modpatient.h
+           dcmiod/include/dcmtk/dcmiod/modpatientstudy.h
+           dcmiod/include/dcmtk/dcmiod/modsegmentationseries.h
+           dcmiod/include/dcmtk/dcmiod/modsopcommon.h
+           dcmiod/include/dcmtk/dcmiod/modsynchronisation.h
+           dcmiod/include/dcmtk/dcmiod/modusfor.h
+           dcmiod/libsrc/Makefile.dep
+           dcmiod/libsrc/cielabutil.cc
+           dcmiod/libsrc/iodcommn.cc
+           dcmiod/libsrc/iodcontentitemmacro.cc
+           dcmiod/libsrc/iodmacro.cc
+           dcmiod/libsrc/iodreferences.cc
+           dcmiod/libsrc/iodrules.cc
+           dcmiod/libsrc/iodtypes.cc
+           dcmiod/libsrc/iodutil.cc
+           dcmiod/libsrc/modacquisitioncontext.cc
+           dcmiod/libsrc/modbase.cc
+           dcmiod/libsrc/modcommoninstanceref.cc
+           dcmiod/libsrc/modenhequipment.cc
+           dcmiod/libsrc/modenhusimage.cc
+           dcmiod/libsrc/modenhusseries.cc
+           dcmiod/libsrc/modequipment.cc
+           dcmiod/libsrc/modfloatingpointimagepixel.cc
+           dcmiod/libsrc/modfor.cc
+           dcmiod/libsrc/modgeneralimage.cc
+           dcmiod/libsrc/modgeneralseries.cc
+           dcmiod/libsrc/modgeneralstudy.cc
+           dcmiod/libsrc/modhelp.cc
+           dcmiod/libsrc/modimagepixel.cc
+           dcmiod/libsrc/modimagepixelbase.cc
+           dcmiod/libsrc/modmultiframedimension.cc
+           dcmiod/libsrc/modmultiframefg.cc
+           dcmiod/libsrc/modpatient.cc
+           dcmiod/libsrc/modpatientstudy.cc
+           dcmiod/libsrc/modsegmentationseries.cc
+           dcmiod/libsrc/modsopcommon.cc
+           dcmiod/libsrc/modsynchronization.cc
+           dcmiod/libsrc/modusfor.cc
+           dcmiod/tests/Makefile.dep
+           dcmiod/tests/tcielabutil.cc
+           dcmiod/tests/timagepixel.cc
+           dcmpmap/libsrc/Makefile.dep
+           dcmpmap/libsrc/dpmparametricmapiod.cc
+           dcmseg/include/dcmtk/dcmseg/segdef.h
+           dcmseg/include/dcmtk/dcmseg/segdoc.h
+           dcmseg/include/dcmtk/dcmseg/segment.h
+           dcmseg/include/dcmtk/dcmseg/segtypes.h
+           dcmseg/include/dcmtk/dcmseg/segutils.h
+           dcmseg/libsrc/Makefile.dep
+           dcmseg/libsrc/segdoc.cc
+           dcmseg/libsrc/segment.cc
+           dcmseg/libsrc/segtypes.cc
+           dcmseg/libsrc/segutils.cc
+           dcmseg/tests/CMakeLists.txt
+           dcmseg/tests/Makefile.dep
+           dcmseg/tests/Makefile.in
+           dcmseg/tests/tests.cc
+           dcmseg/tests/tutils.cc
+           dcmtract/libsrc/Makefile.dep
+           doxygen/htmldocs.dox
+           ofstd/include/dcmtk/ofstd/ofmap.h
+           ofstd/tests/tmap.cc
+
+**** Changes from 2019.12.10 (schlamelcher)
+
+- Fixed various typos and whitespace errors:
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the suggested patch.
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/data/SC.dump
+           dcmdata/data/VLP.dump
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/libsrc/dcswap.cc
+           dcmimage/include/dcmtk/dcmimage/diqthash.h
+           dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dimfind.cc
+           dcmnet/libsrc/dimget.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmrt/include/dcmtk/dcmrt/drmdose.h
+           dcmsign/include/dcmtk/dcmsign/dcsignat.h
+           dcmwlm/libsrc/wldsfs.cc
+           docs/CHANGES.320
+           docs/CHANGES.342
+           docs/CHANGES.350
+           docs/CHANGES.352
+           docs/CHANGES.360
+           docs/CHANGES.362
+           docs/CHANGES.363
+           oflog/include/dcmtk/oflog/helpers/queue.h
+           oflog/libsrc/filter.cc
+           oflog/libsrc/timehelp.cc
+
+**** Changes from 2019.11.28 (riesmeier)
+
+- Do not install "dummy" CHANGES file:
+  Do not install the "dummy" CHANGES file from the main directory of the
+  source tree since it does not contain any useful information (after the
+  DCMTK has been installed).
+  Affects: CHANGES
+           CMakeLists.txt
+           Makefile
+           config/rootconf
+
+**** Changes from 2019.11.26 (riesmeier)
+
+- Added new option --limit-output to findscu:
+  Added new option to findscu and the underlying C++ classes that allows for
+  specifying the maximum number of responses written to file. Limiting the
+  number of responses written to file might be useful e.g. if the C-FIND-CANCEL
+  request does not prevent the SCP from sending further C-FIND-RSP messages.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/docs/findscu.man
+           dcmnet/include/dcmtk/dcmnet/dfindscu.h
+           dcmnet/libsrc/dfindscu.cc
+
+**** Changes from 2019.11.20 (riesmeier)
+
+- Updated Context Group classes for DICOM 2019e:
+  Updated automatically generated Context Group classes for the 2019e edition
+  of the DICOM standard. All supported classes were updated, even though there
+  were not changes to all of them.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated code definitions for DICOM 2019e:
+  Updated automatically generated code definitions for coding scheme "DCM"
+  and "UMLS". For the coding scheme "NCIt", there were no changes.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+           dcmsr/include/dcmtk/dcmsr/codes/umls.h
+
+**** Changes from 2019.11.19 (riesmeier)
+
+- Updated data dictionary for DICOM 2019e:
+  Updated data dictionary for the latest edition of the DICOM standard.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+
+**** Changes from 2019.11.19 (onken)
+
+- Clarified documentation for dcmodify:
+  Thanks to forum user "JustSomeGuy" for the report.
+  Affects: dcmdata/docs/dcmodify.man
+
+**** Changes from 2019.11.15 (riesmeier)
+
+- Implemented support for CP-1913 (FT):
+  Implemented support for CP-1913 "Coding Scheme Version requires Coding Scheme
+  Designator to be present", i.e. enhanced the checks in DSRCodedEntryValue.
+  Also added a new test case that explicitly checks for this combination.
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/tests/tsrcodvl.cc
+
+- Implemented support for CP-1893 (FT):
+  Implemented support for CP-1893 "Fix inconsistent Relationship Content
+  Constraints (SR IODs from Supplement 164)", i.e. removed Target Value Type
+  "TIME" from Relationship Content Constraints for Planned Imaging Agent
+  Administration SR IOD and Performed Imaging Agent Administration SR IOD.
+  Affects: dcmsr/libsrc/dsrpficc.cc
+           dcmsr/libsrc/dsrplicc.cc
+
+**** Changes from 2019.11.08 (riesmeier)
+
+- Fixed possible issue with getFullOverlayData():
+  Fixed issue with getFullOverlayData() that could cause a crash (segmentation
+  fault) when processing an overlay plane with an origin other than (0,0).
+  Note that the dcm2pnm/dcmj2pnm/dcml2pnm command line tool does not use this
+  method and is, therefore, not affected by this issue.
+  This closes DCMTK Bug #911.
+  Thanks to Bartosz Bialoskorski <bartoszbialoskorski@gmail.com> for the report
+  and the sample DICOM file.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diovpln.h
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+**** Changes from 2019.10.31 (riesmeier)
+
+- Updated Context Group classes for DICOM 2019d:
+  Updated automatically generated Context Group classes for the 2019d edition
+  of the DICOM standard. All supported classes were updated, even though there
+  were not changes to all of them.
+  Affects: dcmsr/include/dcmtk/dcmsr/cmr/cid100.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10013.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid10033.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid11.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid244.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid29.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4020.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid4031.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid42.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid6147.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7021.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7181.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7445.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7452.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7453.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7464.h
+           dcmsr/include/dcmtk/dcmsr/cmr/cid7469.h
+           dcmsr/libcmr/cid100.cc
+           dcmsr/libcmr/cid10013.cc
+           dcmsr/libcmr/cid10033.cc
+           dcmsr/libcmr/cid11.cc
+           dcmsr/libcmr/cid244.cc
+           dcmsr/libcmr/cid29.cc
+           dcmsr/libcmr/cid4020.cc
+           dcmsr/libcmr/cid4021.cc
+           dcmsr/libcmr/cid4031.cc
+           dcmsr/libcmr/cid42.cc
+           dcmsr/libcmr/cid6147.cc
+           dcmsr/libcmr/cid7021.cc
+           dcmsr/libcmr/cid7181.cc
+           dcmsr/libcmr/cid7445.cc
+           dcmsr/libcmr/cid7452.cc
+           dcmsr/libcmr/cid7453.cc
+           dcmsr/libcmr/cid7464.cc
+           dcmsr/libcmr/cid7469.cc
+
+- Updated code definitions for DICOM 2019d:
+  Updated automatically generated code definitions for coding scheme "DCM"
+  and "NCIt". For the coding scheme "UMLS", there were no changes.
+  Affects: dcmsr/include/dcmtk/dcmsr/codes/dcm.h
+           dcmsr/include/dcmtk/dcmsr/codes/ncit.h
+
+- Updated data dictionary for DICOM 2019d:
+  Updated data dictionary for the latest edition of the DICOM standard.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictbi.cc
+           dcmrt/libsrc/drtrbs4.cc
+           dcmrt/libsrc/drtrbs8.cc
+
+**** Changes from 2019.10.29 (riesmeier)
+
+- Enhanced performance of getting a sequence item:
+  Significantly enhanced performance of getting an item from the end of a
+  DcmSequenceOfItems or DcmPixelSequence instance. These enhancements are
+  based on an improved version of the DcmList::seek_to() method.
+  Affects: dcmdata/libsrc/dclist.cc
+           dcmdata/tests/tsequen.cc
+
+- Enhanced performance of inserting sequence items:
+  Significantly enhanced the performance of inserting items at the end of a
+  DcmSequenceOfItems or DcmPixelSequence instance. These enhancements are
+  based on a smarter use of the underlying DcmList class.
+  Adding 99,999 items to a pixel sequence now only takes a fraction of a
+  second compared to a very large number of seconds (as it was before).
+  Also clarified that the item-related helper methods in the DcmItem class,
+  such as findAndGetSequenceItem(), cannot be used with an instance of the
+  DcmPixelItem class (since this class is not derived from DcmItem).
+  Added:   dcmdata/tests/tsequen.cc
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/tests/CMakeLists.txt
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tests.cc
+
+- Fixed typos and other minor issues.
+  Affects: INSTALL
+           ofstd/libsrc/ofstring.cc
+
+**** Changes from 2019.10.29 (schlamelcher)
+
+- Updated version information for 3.6.5+ development:
+  Updated version information marking the start of DCMTK development post minor
+  release 3.6.5.
+  Moved official ANNOUNCE file of the DCMTK release 3.6.5 to the "docs"
+  subfolder and replaced the main ANNOUNCE file with a "dummy".
+  Added:   docs/ANNOUNCE.365
+  Affects: ANNOUNCE
+           CMake/dcmtkPrepare.cmake
+           VERSION
+           config/configure
+           config/configure.in

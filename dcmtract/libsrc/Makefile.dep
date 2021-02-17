@@ -9,15 +9,17 @@ trcmeasurement.o: trcmeasurement.cc \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -43,29 +45,26 @@ trcmeasurement.o: trcmeasurement.cc \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
- ../../ofstd/include/dcmtk/ofstd/ofdate.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
- ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../include/dcmtk/dcmtract/trcmeasurement.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
@@ -126,7 +125,9 @@ trcmeasurement.o: trcmeasurement.cc \
 trcmodtractresults.o: trcmodtractresults.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
@@ -134,14 +135,13 @@ trcmodtractresults.o: trcmodtractresults.cc \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -167,29 +167,27 @@ trcmodtractresults.o: trcmodtractresults.cc \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
- ../../ofstd/include/dcmtk/ofstd/ofdate.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
- ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../include/dcmtk/dcmtract/trcmodtractresults.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
@@ -262,15 +260,17 @@ trcstatistic.o: trcstatistic.cc \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -296,29 +296,26 @@ trcstatistic.o: trcstatistic.cc \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
- ../../ofstd/include/dcmtk/ofstd/ofdate.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
- ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../include/dcmtk/dcmtract/trcstatistic.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
@@ -386,15 +383,17 @@ trctrack.o: trctrack.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -420,29 +419,26 @@ trctrack.o: trctrack.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
- ../../ofstd/include/dcmtk/ofstd/ofdate.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
- ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../include/dcmtk/dcmtract/trctrack.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../include/dcmtk/dcmtract/trctypes.h \
@@ -462,14 +458,16 @@ trctrackset.o: trctrackset.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -493,29 +491,26 @@ trctrackset.o: trctrackset.cc \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
- ../../ofstd/include/dcmtk/ofstd/ofdate.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
- ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../include/dcmtk/dcmtract/trctrackset.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
@@ -587,15 +582,17 @@ trctractographyresults.o: trctractographyresults.cc \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -621,29 +618,26 @@ trctractographyresults.o: trctractographyresults.cc \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
- ../../ofstd/include/dcmtk/ofstd/ofdate.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
- ../../dcmiod/include/dcmtk/dcmiod/cielabutil.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
@@ -698,19 +692,19 @@ trctractographyresults.o: trctractographyresults.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrov.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodreferences.h \
  ../include/dcmtk/dcmtract/trctractographyresults.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodcommn.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modequipment.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modfor.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modgeneralseries.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modgeneralstudy.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpatientstudy.h \
  ../../ofstd/include/dcmtk/ofstd/ofoption.h \
  ../../ofstd/include/dcmtk/ofstd/ofalign.h \
- ../../dcmiod/include/dcmtk/dcmiod/modgeneralstudy.h \
- ../../dcmiod/include/dcmtk/dcmiod/modequipment.h \
- ../../dcmiod/include/dcmtk/dcmiod/modgeneralseries.h \
- ../../dcmiod/include/dcmtk/dcmiod/modfor.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsopcommon.h \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
  ../include/dcmtk/dcmtract/trctypes.h ../include/dcmtk/dcmtract/trcdef.h \

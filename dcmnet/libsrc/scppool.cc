@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2014, OFFIS e.V.
+ *  Copyright (C) 2012-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 
 #include "dcmtk/dcmnet/scppool.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmtls/tlslayer.h"
 
 // ----------------------------------------------------------------------------
 
@@ -64,6 +65,15 @@ OFCondition DcmBaseSCPPool::listen()
   if( cond.bad() )
     return cond;
 
+  if (m_cfg.transportLayerEnabled())
+  {
+    cond = ASC_setTransportLayer(network, m_cfg.getTransportLayer(), 0 /* Do not take over ownership */);
+    if (cond.bad())
+    {
+        DCMNET_ERROR("DcmBaseSCPPool: Error setting secured transport layer: " << cond.text());
+    }
+  }
+
   /* As long as all is fine (or we have been to busy handling last connection request) keep listening */
   while ( m_runMode == LISTEN && ( cond.good() || (cond == NET_EC_SCPBusy) ) )
   {
@@ -71,8 +81,10 @@ OFCondition DcmBaseSCPPool::listen()
     cond = EC_Normal;
     // Every incoming connection is handled in a new association object
     T_ASC_Association *assoc = NULL;
+    OFBool useSecureLayer = m_cfg.transportLayerEnabled();
+
     // Listen to a socket for timeout seconds for an association request, accepts TCP connection.
-    cond = ASC_receiveAssociation( network, &assoc, m_cfg.getMaxReceivePDULength(), NULL, NULL, OFFalse,
+    cond = ASC_receiveAssociation( network, &assoc, m_cfg.getMaxReceivePDULength(), NULL, NULL, useSecureLayer,
         m_cfg.getConnectionBlockingMode(), OFstatic_cast(int, m_cfg.getConnectionTimeout()) );
 
     /* If we have a connection request, try to find/create a worker to handle it */

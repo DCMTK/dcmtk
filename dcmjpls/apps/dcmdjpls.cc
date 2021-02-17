@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2019, OFFIS e.V.
+ *  Copyright (C) 2007-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
   OFCmdUnsignedInt opt_filepad = 0;
   OFCmdUnsignedInt opt_itempad = 0;
   E_FileReadMode opt_readMode = ERM_autoDetect;
-  E_FileWriteMode opt_writeMode = EWM_fileformat;
+  E_FileWriteMode opt_writeMode = EWM_createNewMeta;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
   OFBool opt_forceSingleFragmentPerFrame = OFFalse;
 
@@ -212,7 +212,7 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
+      if (cmd.findOption("--write-file")) opt_writeMode = EWM_createNewMeta;
       if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
@@ -314,10 +314,6 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
     }
 
     OFLOG_INFO(dcmdjplsLogger, "creating output file " << opt_ofname);
-
-    // update file meta information with new SOP Instance UID
-    if (opt_uidcreation && (opt_writeMode == EWM_fileformat))
-        opt_writeMode = EWM_updateMeta;
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,

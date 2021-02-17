@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,13 +19,11 @@
  *
  */
 
-
 #ifndef IODDEF_H
 #define IODDEF_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofdefine.h"
-
 
 // Make sure DLL exports work for this module
 
@@ -34,6 +32,5 @@
 #else
 #define DCMTK_DCMIOD_EXPORT DCMTK_DECL_IMPORT
 #endif
-
 
 #endif // IODDEF_H

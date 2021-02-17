@@ -194,7 +194,7 @@ Release 3.5.0 (Public Release - 2001-06-14)
            dcmdata/libsrc/dcuid.cc
            dcmdata/libsrc/dicom.dic
 
-- Fixed memory leak that occured when parsing of a sequence failed.
+- Fixed memory leak that occurred when parsing of a sequence failed.
   Thanks to Harald Breitner <hbreitner@hectec.de> for the bug report and fix.
   Affects: dcmdata/libsrc/dcsequen.cc
 

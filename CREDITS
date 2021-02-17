@@ -16,6 +16,9 @@ Epilepsieforschung: The Gesellschaft fuer Epilepsieforschung e.V. (Bielefeld,
   Germany) supported the DCMTK by sponsoring the initial development of the
   tool "dcmrecv" and the underlying class "DcmStorageSCP".
 
+GE Aviation: GE Aviation supported DCMTK by sponsoring the development of the
+  dcmect library and basic concatenation support in dcmfg.
+
 ICSMED: From 2006 to 2012, the work on the DCMTK was supported by employees of
   the ICSMED AG (Oldenburg, Germany), a spin-off from the OFFIS institute.
 
@@ -58,4 +61,4 @@ YXLON: The work on the initial version of the DICONDE data dictionary was
 Please note that this list does not claim to be exhaustive.  Just send us an
 email if you think that you or your company/organization should also be listed.
 
-DCMTK Team, 2017-04-20
+DCMTK Team, 2021-01-14

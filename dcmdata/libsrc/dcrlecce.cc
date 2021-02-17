@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,7 +71,8 @@ OFCondition DcmRLECodecEncoder::decode(
     DcmPixelSequence * /* pixSeq */,
     DcmPolymorphOBOW& /* uncompressedPixelData */,
     const DcmCodecParameter * /* cp */,
-    const DcmStack& /* objStack */) const
+    const DcmStack& /* objStack */,
+    OFBool& /* removeOldRep */ ) const
 {
   // we are an encoder only
   return EC_IllegalCall;
@@ -101,7 +102,8 @@ OFCondition DcmRLECodecEncoder::encode(
     const DcmRepresentationParameter * /* toRepParam */,
     DcmPixelSequence * & /* toPixSeq */,
     const DcmCodecParameter * /* cp */,
-    DcmStack & /* objStack */) const
+    DcmStack& /* objStack */,
+    OFBool& /* removeOldRep */ ) const
 {
   // we don't support re-coding for now.
   return EC_IllegalCall;
@@ -114,7 +116,8 @@ OFCondition DcmRLECodecEncoder::encode(
     const DcmRepresentationParameter * /* toRepParam */ ,
     DcmPixelSequence * & pixSeq,
     const DcmCodecParameter *cp,
-    DcmStack & objStack) const
+    DcmStack& objStack,
+    OFBool& /* removeOldRep */ ) const
 {
   OFCondition result = EC_Normal;
 

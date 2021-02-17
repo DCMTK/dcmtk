@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2019, OFFIS e.V.
+ *  Copyright (C) 2007-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,8 +81,16 @@ OFCondition DJLSDecoderBase::decode(
     DcmPixelSequence * pixSeq,
     DcmPolymorphOBOW& uncompressedPixelData,
     const DcmCodecParameter * cp,
-    const DcmStack& objStack) const
+    const DcmStack& objStack,
+    OFBool& removeOldRep) const
 {
+
+  // this codec may modify the DICOM header such that the previous pixel
+  // representation is not valid anymore, e.g. in the case of color images
+  // where the planar configuration can change. Indicate this to the caller
+  // to trigger removal.
+  removeOldRep = OFTrue;
+
   // retrieve pointer to dataset from parameter stack
   DcmStack localStack(objStack);
   (void)localStack.pop();  // pop pixel data element from stack
@@ -470,7 +478,8 @@ OFCondition DJLSDecoderBase::encode(
     const DcmRepresentationParameter * /* toRepParam */,
     DcmPixelSequence * & /* pixSeq */,
     const DcmCodecParameter * /* cp */,
-    DcmStack & /* objStack */) const
+    DcmStack & /* objStack */,
+    OFBool& /* removeOldRep */) const
 {
   // we are a decoder only
   return EC_IllegalCall;
@@ -484,7 +493,8 @@ OFCondition DJLSDecoderBase::encode(
     const DcmRepresentationParameter * /* toRepParam */,
     DcmPixelSequence * & /* toPixSeq */,
     const DcmCodecParameter * /* cp */,
-    DcmStack & /* objStack */) const
+    DcmStack & /* objStack */,
+    OFBool& /* removeOldRep */) const
 {
   // we don't support re-coding for now.
   return EC_IllegalCall;

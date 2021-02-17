@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2018, OFFIS e.V.
+ *  Copyright (C) 1993-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 #define INCLUDE_CCTYPE
 #define INCLUDE_CSTDARG
 #define INCLUDE_CSTRING
+#define INCLUDE_CLIMITS
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/ofstd/ofmap.h"
@@ -75,7 +76,7 @@ OFBool DcmQueryRetrieveCharacterSetOptions::parseOptions(const char* mnemonic, c
 {
     struct RAIIFree
     {
-        RAIIFree(char* ptr) : ptr(ptr) {}
+        RAIIFree(char* p) : ptr(p) {}
         ~RAIIFree() {free(ptr);}
         char* ptr;
     };
@@ -601,13 +602,13 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
       CNF_Config.AEEntries[noOfAEEntries - 1].StorageArea = parsevalues(&lineptr);
       CNF_Config.AEEntries[noOfAEEntries - 1].Access = parsevalues(&lineptr);
       CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota = parseQuota(&lineptr);
-      if ((CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxStudies == 0) ||
-         (CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxBytesPerStudy == 0))
-         error = 1;
-      else
-      {
-        CNF_Config.AEEntries[noOfAEEntries - 1].Peers = parsePeers(&lineptr, &CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers);
-        if (!CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers) error = 1;
+      CNF_Config.AEEntries[noOfAEEntries - 1].Peers = parsePeers(&lineptr, &CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers);
+
+      // check the validity of the storage quota and peers values before continuing
+      if (CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxStudies == 0 ||
+         CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxBytesPerStudy == 0 || 
+         CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers == 0) {
+          error = 1;
       }
    }
 
@@ -651,6 +652,12 @@ DcmQueryRetrieveConfigPeer *DcmQueryRetrieveConfig::parsePeers(char **valuehandl
    char *valueptr = *valuehandle;
 
    helpvalue = parsevalues(valuehandle);
+
+   if (!helpvalue) {
+      *peers = 0; // indicates error to caller
+      return NULL;
+   }
+
    if (!strcmp("ANY", helpvalue)) {     /* keyword ANY used */
       free(helpvalue);
       *peers = -1;
@@ -854,6 +861,11 @@ long DcmQueryRetrieveConfig::quota (const char *value)
    else return(-1L);
 
    number = atoi(value);
+
+   // check for overflow
+   if (number > 0 && factor > LONG_MAX / number)
+     return LONG_MAX;
+
    return(number * factor);
 }
 

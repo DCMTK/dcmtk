@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -37,7 +37,7 @@ class DCMTK_DCMTRACT_EXPORT TrcTrack
 
 public:
 
-  // Allow read/write functions in DcmIODUtil to access class internals
+  /// Allow read/write functions in DcmIODUtil to access class internals
   friend class DcmIODUtil;
 
   /** Create TrcTrack object from required data
@@ -115,6 +115,7 @@ public:
   virtual size_t getTrackData(const Float32*& data) const;
 
   /** Get Number of data points
+   *  @return The number of data points
    */
   virtual size_t getNumDataPoints();
 

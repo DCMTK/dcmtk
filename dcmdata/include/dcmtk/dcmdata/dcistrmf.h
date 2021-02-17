@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,7 +25,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcistrma.h"
-
 
 /** producer class that reads data from a plain file.
  */
@@ -327,6 +326,5 @@ private:
   /// handler for temporary file
   DcmTempFileHandler *fileHandler_;
 };
-
 
 #endif

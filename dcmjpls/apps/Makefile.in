@@ -44,7 +44,7 @@ dcmjplslib = -ldcmjpls
 
 libcharlsdir = $(dcmjplsdir)
 libcharlslibdir = -L$(dcmjplsdir)/libcharls
-libcharlslib = -lcharls
+libcharlslib = -ldcmtkcharls
 
 LOCALINCLUDES = $(dcmjplsinc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjplslibdir) $(libcharlslibdir) $(dcmimagelibdir) \

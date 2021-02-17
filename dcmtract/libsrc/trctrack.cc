@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -73,6 +73,7 @@ void TrcTrack::resetRules()
 
 OFCondition TrcTrack::check(const OFBool quiet)
 {
+  OFCondition result;
   // Report errors but ignore them
   IODComponent::check(quiet);
   const Float32* data = NULL;
@@ -84,27 +85,26 @@ OFCondition TrcTrack::check(const OFBool quiet)
     {
       if (count % 3 == 0)
       {
-        return EC_Normal;
+        result = EC_Normal;
       }
       else
       {
         DCMTRACT_ERROR("Point Coordinates Data must have x,y,z coordinates for every point but has length: " << count);
-        return IOD_EC_InvalidElementValue;
+        result = IOD_EC_InvalidElementValue;
       }
     }
     else
     {
       DCMTRACT_ERROR("Point Coordinates Data empty");
-      return IOD_EC_InvalidElementValue;
+      result = IOD_EC_InvalidElementValue;
     }
   }
   else
   {
     DCMTRACT_ERROR("Point Coordinates Data element missing");
-    return IOD_EC_MissingAttribute;
+    result = IOD_EC_MissingAttribute;
   }
-  // should never get here
-  return EC_Normal;
+  return result;
 }
 
 
@@ -278,6 +278,7 @@ OFCondition TrcTrack::setTrackData(const Float32* trackDataPoints,
 OFCondition TrcTrack::setRecommendedDisplayCIELabValues(const Uint16* colors,
                                                         const size_t numColors)
 {
+  OFCondition result;
   if ( (numColors == 0) && (colors == NULL))
   {
     m_Item->findAndDeleteElement(DCM_RecommendedDisplayCIELabValue);
@@ -296,8 +297,6 @@ OFCondition TrcTrack::setRecommendedDisplayCIELabValues(const Uint16* colors,
   {
     return m_Item->putAndInsertUint16Array(DCM_RecommendedDisplayCIELabValueList, colors, OFstatic_cast(unsigned long, numColors * 3));
   }
-  // should never get here
-  return TRC_EC_InvalidColorInformation;
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Andreas Barth
  *
- *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
+ *  Purpose: create a DICOM FileFormat or DataSet from an ASCII-dump
  *
  */
 
@@ -34,8 +34,8 @@
  *        two characters.  If the VR can determined from the tag, this part
  *        of a line is optional.
  * Value: There are several rules for writing values:
- *        1. US, SS, SL, UL, FD, FL, OD, OF and OL are written as decimal
- *           strings that can be read by scanf().
+ *        1. US, SS, UL, SL, UV, SV, FD, FL, OD, OF, OL and OV are written as
+ *           decimal strings that can be read by scanf().
  *        2. AT is written as '(gggg,eeee)' with additional spaces stripped
  *           off automatically and gggg and eeee being decimal strings that
  *           can be read by scanf().
@@ -455,6 +455,8 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         ec = EC_IllegalCall;
     if (ec.good())
     {
+        OFLOG_INFO(dump2dcmLogger, "reading " << len << " bytes from binary data file: " << filename);
+        OFLOG_DEBUG(dump2dcmLogger, "  and storing it in the element " << elem->getTag());
         /* read binary file into the buffer */
         if (fread(buf, 1, len, f) != len)
         {
@@ -505,7 +507,7 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
            (tagkey != DCM_LUTData || (vr != EVR_US && vr != EVR_SS && vr != EVR_OW)) &&
            (tagkey != DCM_PixelData || (vr != EVR_OB && vr != EVR_OW && vr != EVR_pixelSQ)) &&
            (tagvr != EVR_xs || (vr != EVR_US && vr != EVR_SS)) &&
-           (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)) &&
+           ((tagvr != EVR_ox && tagvr != EVR_px) || (vr != EVR_OB && vr != EVR_OW)) &&
            (tagvr != EVR_na || vr != EVR_pixelItem))
         {
             OFLOG_WARN(dump2dcmLogger, "Tag " << tag << " with wrong VR '"

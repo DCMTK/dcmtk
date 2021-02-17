@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -554,31 +554,73 @@ OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
 
 // ********************************
 
-
 OFCondition DcmItem::writeJson(STD_NAMESPACE ostream &out,
                                DcmJsonFormat &format)
 {
+    return writeJsonExt(out, format, OFTrue, OFFalse);
+}
+
+// ********************************
+
+OFCondition DcmItem::writeJsonExt(STD_NAMESPACE ostream &out,
+                               DcmJsonFormat &format,
+                                OFBool printBraces,
+                                OFBool printNewline)
+{
+    size_t num_printed = 0;
+    OFBool first = OFTrue;
+    DcmObject *elem = NULL;
+    OFCondition status = EC_Normal;
+
     if (!elementList->empty())
     {
-        // write content of all children
-        out << "{" << format.newline();
+        // iterate through all elements in this item
         elementList->seek(ELP_first);
-        OFCondition status = EC_Normal;
-        status = elementList->get()->writeJson(out, format);
-        while (status.good() && elementList->seek(ELP_next))
+        do
         {
-            out << "," << format.newline();
-            status = elementList->get()->writeJson(out, format);
+            // get next item
+            elem = elementList->get();
+
+            // check if this is a group length, and if so, ignore
+            if (elem->getTag().getElement() != 0)
+            {
+              // if this is the first element to be printed, print opening braces if needed
+              if (first && printBraces) out << "{" << format.newline();
+
+              // if this is not the first element to be printed, start with a comma
+              if (!first) out << "," << format.newline();
+
+              // print element
+              status = elem->writeJson(out, format);
+              first = OFFalse;
+              num_printed++;
+            }
         }
-        out << format.newline() << format.indent() << "}";
-        return status;
+        while (status.good() && elementList->seek(ELP_next));
+
+        // print closing braces if and only if there were opening braces
+        if (num_printed > 0 && printBraces)
+        {
+            out << format.newline() << format.indent() << "}";
+            if (printNewline) out << format.newline();
+        }
     }
-    else
+
+    // if no element was printed (item empty or only group list elements)
+    if (num_printed == 0)
     {
-        out << "{}" << format.newline();
+        if (printBraces)
+        {
+            // print empty braces if requested
+            out << "{}";
+            if (printNewline) out << format.newline();
+        }
     }
-    return EC_Normal;
+
+    return status;
+
 }
+
 
 // ********************************
 
@@ -1610,7 +1652,7 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
           do
           {
             dO = elementList->get();
-            if (dO->transferState() != ERW_ready)
+            if (dO->isSignable() && dO->transferState() != ERW_ready)
               errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype, wcache);
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
@@ -3447,6 +3489,11 @@ OFCondition DcmItem::putAndInsertUint8Array(const DcmTag& tag,
             } else
                 elem = new DcmPolymorphOBOW(tag);
             break;
+        case EVR_px:
+            elem = new DcmPixelData(tag);
+            if (elem != NULL)
+                elem->setVR(EVR_OB);
+            break;
         case EVR_UNKNOWN:
             /* Unknown VR, e.g. tag not found in data dictionary */
             status = EC_UnknownVR;
@@ -3538,10 +3585,15 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
             if (tag == DCM_PixelData)
             {
                 elem = new DcmPixelData(tag);
-                if (elem != NULL) elem->setVR(EVR_OW);
-            }
-            else
+                if (elem != NULL)
+                    elem->setVR(EVR_OW);
+            } else
                 elem = new DcmPolymorphOBOW(tag);
+            break;
+        case EVR_px:
+            elem = new DcmPixelData(tag);
+            if (elem != NULL)
+                elem->setVR(EVR_OW);
             break;
         case EVR_xs:
             /* special handling */
@@ -3858,6 +3910,9 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
     DcmElement *elem = NULL;
     switch(tag.getEVR())
     {
+        case EVR_DS:
+            elem = new DcmDecimalString(tag);
+            break;
         case EVR_FD:
             elem = new DcmFloatingPointDouble(tag);
             break;
@@ -4441,6 +4496,8 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
          */
         if (newTag.getEVR() != EVR_UNKNOWN)
         {
+            DCMDATA_DEBUG("DcmItem::newDicomElement() reverted VR of element " << tag
+                << " from 'UN' to '" << newTag.getVRName() << "'");
             tag.setVR(newTag.getVR());
             evr = tag.getEVR();
             readAsUN = OFTrue;
@@ -4557,7 +4614,7 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
 
         // sequences and items:
         case EVR_SQ :
-            newElement = new DcmSequenceOfItems(tag, length);
+            newElement = new DcmSequenceOfItems(tag, length, readAsUN);
             break;
         case EVR_na :
             if (tag.getXTag() == DCM_Item)
@@ -4585,6 +4642,10 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                  * application handle it.
                  */
                 newElement = new DcmOtherByteOtherWord(tag, length);
+            break;
+
+        case EVR_px :
+            newElement = new DcmPixelData(tag, length);
             break;
 
         // This case should only occur if we encounter an element with an invalid
@@ -4639,7 +4700,21 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                     }
                 }
             }
-            else
+            else if (tag.isPrivate())
+            {
+                // look up VR in private data dictionary
+                DcmTag newTag(tag.getXTag(), tag.getPrivateCreator());
+                // special handling for private pixel data (compressed or uncompressed)
+                if (newTag.getEVR() == EVR_px)
+                {
+                    DCMDATA_WARN("Found private element " << tag << " with VR " << tag.getVRName()
+                        << " and undefined length, reading a pixel sequence according to data dictionary");
+                    newElement = new DcmPixelData(tag, length);
+                }
+            }
+            // no element has been created yet and no error reported
+            if ((newElement == NULL) && l_error.good())
+            {
                 if (length == DCM_UndefinedLength)
                 {
                     // The attribute is OB or OW but is encoded with undefined
@@ -4658,17 +4733,17 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                             OFCondition tempcond = EC_UndefinedLengthOBOW;
                             DCMDATA_WARN("DcmItem: Parse error in " << tag << ": " << tempcond.text());
                             newElement = new DcmSequenceOfItems(tag, length);
-                        }
-                        else
-                        {
+                        } else {
                             // bail out with an error
                             l_error = EC_UndefinedLengthOBOW;
                             DCMDATA_ERROR("DcmItem: Parse error in " << tag << ": " << l_error.text());
                         }
                     }
                 } else {
+                    // default case
                     newElement = new DcmOtherByteOtherWord(tag, length);
                 }
+            }
             break;
 
         // read unknown types as byte string:

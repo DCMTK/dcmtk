@@ -79,7 +79,11 @@ void
 Win32DebugAppender::append(const spi::InternalLoggingEvent& event)
 {
     const tchar * s = formatEvent (event).c_str();
+#if defined (DCMTK_OFLOG_UNICODE)
     ::OutputDebugString(s);
+#else
+    ::OutputDebugStringA(s);
+#endif
 }
 
 

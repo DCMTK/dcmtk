@@ -5,7 +5,7 @@ Unless otherwise specified, the DCMTK software package has the following
 copyright:
 
 /*
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.
  *
  *  This software and supporting documentation were developed by
@@ -47,6 +47,8 @@ copyright:
 Please note that some DCMTK modules, especially those that are not part
 of the free toolkit, are covered by a separate license which can be found
 in the COPYRIGHT file in the corresponding module directory.
+
+---------------------------------------------------------------------------
 
 Some portions of the DCMTK software package are derived from earlier
 versions of this software with the following copyright, and can be
@@ -99,6 +101,8 @@ identified by the following copyright notice located in each source file:
  *
  */
 
+---------------------------------------------------------------------------
+
 Some other parts of this software within the dcmtk/dcmnet sub-package
 related to the DICOM Upper Layer Protocol are derived from software
 developed for the RSNA'93 DICOM demonstration and kindly made available
@@ -137,6 +141,8 @@ source file:
  *  supporting documentation) must include the three paragraphs of
  *  the copyright notice.
  */
+
+---------------------------------------------------------------------------
 
 The dcmjpeg sub-package includes an adapted version of the Independent
 JPEG Group Toolkit Version 6b, which is contained in dcmjpeg/libijg8,
@@ -181,6 +187,8 @@ Group Toolkit is located in dcmjpeg/docs/ijg_readme.txt.
  *  assumed by the product vendor.
  */
 
+---------------------------------------------------------------------------
+
 The code for the interpolatePixel() image scaling algorithm in module
 dcmimgle has been derived from code written by Jef Poskanzer for the
 "Extended Portable Bitmap Toolkit" (pbmplus10dec91) which has the
@@ -197,6 +205,8 @@ following copyright:
  * implied warranty.
  */
 
+---------------------------------------------------------------------------
+
 The color quantization code in module dcmimage (dcmquant and the related
 classes) has been derived from code written by Jef Poskanzer for the
 NetPBM toolkit which has the following copyright:
@@ -211,6 +221,8 @@ NetPBM toolkit which has the following copyright:
  * documentation.  This software is provided "as is" without express or
  * implied warranty.
  */
+
+---------------------------------------------------------------------------
 
 The code for the OFStandard::strlcpy and OFStandard::strlcat helper
 functions in ofstd/libsrc/ofstd.cc has been derived from the BSD
@@ -243,6 +255,8 @@ following copyright notice:
  *  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+---------------------------------------------------------------------------
 
 The code for the OFStandard::atof helper function in ofstd/libsrc/ofstd.cc
 has been derived from an implementation which carries the following
@@ -277,6 +291,8 @@ copyright notice:
  *  WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+---------------------------------------------------------------------------
+
 The "Base64" encoder/decoder in ofstd/libsrc/ofstd.cc has been derived
 from an implementation which carries the following copyright notice:
 
@@ -286,6 +302,8 @@ from an implementation which carries the following copyright notice:
  *  This code may be freely used for any purpose, either personal or commercial,
  *  provided the authors copyright notice remains intact.
  */
+
+---------------------------------------------------------------------------
 
 The oflog sub-package is based on the log4cplus library which is covered by
 the following two copyright notices (for details see oflog/docs/LICENSE):
@@ -337,6 +355,8 @@ the following two copyright notices (for details see oflog/docs/LICENSE):
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+---------------------------------------------------------------------------
+
 The dcmjpls sub-package is based on the CharLS library, which is contained
 in dcmjpls/libcharls. This toolkit is covered by the following copyright:
 
@@ -371,6 +391,8 @@ in dcmjpls/libcharls. This toolkit is covered by the following copyright:
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+---------------------------------------------------------------------------
 
 The file ofstd/include/dcmtk/ofstd/oftest.h is heavily based on quicktest.h
 from the quicktest project, which is covered by the following copyright:
@@ -431,7 +453,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
----
+---------------------------------------------------------------------------
 
 The files ofstd/include/dcmtk/ofstd/ofxml.h and ofstd/libsrc/ofxml.cc are
 derived from the XMLparser library, which is covered by the following
@@ -473,12 +495,14 @@ copyright:
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+---------------------------------------------------------------------------
+
 The dcmrt sub-package is covered by the following copyright:
 
 ---------------------------------------------------------------------------
 
 Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
-Copyright (C) 2013-2019, J. Riesmeier, Oldenburg, Germany
+Copyright (C) 2013-2021, J. Riesmeier, Oldenburg, Germany
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -507,11 +531,13 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
+---------------------------------------------------------------------------
+
 Parts of the dcmsr sub-package are covered by the following copyright:
 
 ---------------------------------------------------------------------------
 
-Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -582,6 +608,8 @@ such as compression, encryption, or support for certain image formats.
 For binary libraries and executables statically linked against these
 external libraries, the following additional copyright notices /
 licenses apply:
+
+---------------------------------------------------------------------------
 
 When compiled with libiconv support:
 

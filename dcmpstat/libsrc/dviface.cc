@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2236,7 +2236,7 @@ OFCondition DVInterface::sendIOD(const char * targetID,
 
   // initialize startup info
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
@@ -2246,9 +2246,9 @@ OFCondition DVInterface::sendIOD(const char * targetID,
       studyUID, seriesUID);
   else sprintf(commandline, "%s %s %s %s", sender_application, configPath.c_str(), targetID, studyUID);
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
   {
     return EC_Normal;
@@ -2298,15 +2298,15 @@ OFCondition DVInterface::startReceiver()
     // Windows version - call CreateProcess()
     // initialize startup info
     PROCESS_INFORMATION procinfo;
-    STARTUPINFO sinfo;
+    STARTUPINFOA sinfo;
     OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
     sinfo.cb = sizeof(sinfo);
     char commandline[4096];
     sprintf(commandline, "%s %s %s", receiver_application, configPath.c_str(), getTargetID(i, DVPSE_receiver));
 #ifdef DEBUG
-    if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+    if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-    if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+    if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
       // continue loop
@@ -2353,15 +2353,15 @@ OFCondition DVInterface::terminateReceiver()
   // Windows version - call CreateProcess()
   // initialize startup info
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
   sprintf(commandline, "%s %s %s", receiver_application, configPath.c_str(), "--terminate");
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
   {
     // continue loop
@@ -2426,7 +2426,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
   // Windows version - call CreateProcess()
   // initialize startup info
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
@@ -2442,9 +2442,9 @@ OFCondition DVInterface::startQueryRetrieveServer()
   }
 
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
   {
     return EC_Normal;
@@ -2972,6 +2972,7 @@ OFCondition DVInterface::saveStoredPrint(
       if (prependDateTime)
       {
         OFDateTime::getCurrentDateTime().getISOFormattedDateTime(text, OFFalse /*showSeconds*/);
+        text += " ";
       }
       if (prependPrinterName)
       {
@@ -3387,7 +3388,7 @@ OFCondition DVInterface::startPrintSpooler()
   const char *printer = NULL;
   unsigned long sleepingTime = getSpoolerSleep();
   if (sleepingTime==0) sleepingTime=1; // default
-  char sleepStr[20];
+  char sleepStr[30];
   sprintf(sleepStr, "%lu", sleepingTime);
   OFBool detailedLog = getDetailedLog();
 
@@ -3432,7 +3433,7 @@ OFCondition DVInterface::startPrintSpooler()
     // Windows version - call CreateProcess()
     // initialize startup info
     PROCESS_INFORMATION procinfo;
-    STARTUPINFO sinfo;
+    STARTUPINFOA sinfo;
     OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
     sinfo.cb = sizeof(sinfo);
     char commandline[4096];
@@ -3445,9 +3446,9 @@ OFCondition DVInterface::startPrintSpooler()
         printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
     }
 #ifdef DEBUG
-    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
       DCMPSTAT_ERROR("Unable to execute '" << spooler_application << "'");
@@ -3567,7 +3568,7 @@ OFCondition DVInterface::startPrintServer()
     // Windows version - call CreateProcess()
     // initialize startup info
     PROCESS_INFORMATION procinfo;
-    STARTUPINFO sinfo;
+    STARTUPINFOA sinfo;
     OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
     sinfo.cb = sizeof(sinfo);
     char commandline[4096];
@@ -3578,9 +3579,9 @@ OFCondition DVInterface::startPrintServer()
       sprintf(commandline, "%s --logfile --printer %s --config %s", application, printer, configPath.c_str());
     }
 #ifdef DEBUG
-    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
       DCMPSTAT_ERROR("Unable to execute '" << application << "'");
@@ -3830,7 +3831,7 @@ OFCondition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
   OFCondition result = EC_Normal;
   DcmDataset dset;
   DcmElement *delem = NULL;
-  char buf[20];
+  char buf[30];
 
   if ((EC_Normal==result)&&(printerMediumType.size() > 0))
   {
@@ -3922,15 +3923,15 @@ OFCondition DVInterface::startExternalApplication(const char *application, const
 
   // initialize startup info
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
   sprintf(commandline, "%s %s", application, filename);
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+  if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
   {
     return EC_Normal;

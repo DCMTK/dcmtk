@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,6 +59,7 @@
 #include "dcmtk/dcmsr/dsrprdcc.h"
 #include "dcmtk/dcmsr/dsrpficc.h"
 #include "dcmtk/dcmsr/dsrplicc.h"
+#include "dcmtk/dcmsr/dsrrsdcc.h"
 
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
@@ -320,30 +321,32 @@ makeOFConditionConst(SR_EC_CannotProcessIncludedTemplates,      OFM_dcmsr, 34, O
 const size_t EM_EnhancedEquipment = 1 << 0;
 const size_t EM_Timezone          = 1 << 1;
 const size_t EM_Synchronization   = 1 << 2;
+const size_t EM_KeyObjectDocument = 1 << 3;
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
-    {DSRTypes::DT_invalid,                               "",                                               0,                                         "",   "invalid document type"},
-    {DSRTypes::DT_BasicTextSR,                           UID_BasicTextSRStorage,                           0,                                         "SR", "Basic Text SR"},
-    {DSRTypes::DT_EnhancedSR,                            UID_EnhancedSRStorage,                            0,                                         "SR", "Enhanced SR"},
-    {DSRTypes::DT_ComprehensiveSR,                       UID_ComprehensiveSRStorage,                       0,                                         "SR", "Comprehensive SR"},
-    {DSRTypes::DT_KeyObjectSelectionDocument,            UID_KeyObjectSelectionDocumentStorage,            0,                                         "KO", "Key Object Selection Document"},
-    {DSRTypes::DT_MammographyCadSR,                      UID_MammographyCADSRStorage,                      0,                                         "SR", "Mammography CAD SR"},
-    {DSRTypes::DT_ChestCadSR,                            UID_ChestCADSRStorage,                            0,                                         "SR", "Chest CAD SR"},
-    {DSRTypes::DT_ColonCadSR,                            UID_ColonCADSRStorage,                            EM_EnhancedEquipment,                      "SR", "Colon CAD SR"},
-    {DSRTypes::DT_ProcedureLog,                          UID_ProcedureLogStorage,                          EM_Synchronization,                        "SR", "Procedure Log"},
-    {DSRTypes::DT_XRayRadiationDoseSR,                   UID_XRayRadiationDoseSRStorage,                   EM_EnhancedEquipment,                      "SR", "X-Ray Radiation Dose SR"},
-    {DSRTypes::DT_SpectaclePrescriptionReport,           UID_SpectaclePrescriptionReportStorage,           EM_EnhancedEquipment,                      "SR", "Spectacle Prescription Report"},
-    {DSRTypes::DT_MacularGridThicknessAndVolumeReport,   UID_MacularGridThicknessAndVolumeReportStorage,   EM_EnhancedEquipment,                      "SR", "Macular Grid Thickness and Volume Report"},
-    {DSRTypes::DT_ImplantationPlanSRDocument,            UID_ImplantationPlanSRDocumentStorage,            EM_EnhancedEquipment,                      "SR", "Implantation Plan SR Document"},
-    {DSRTypes::DT_Comprehensive3DSR,                     UID_Comprehensive3DSRStorage,                     0,                                         "SR", "Comprehensive 3D SR"},
-    {DSRTypes::DT_RadiopharmaceuticalRadiationDoseSR,    UID_RadiopharmaceuticalRadiationDoseSRStorage,    EM_EnhancedEquipment,                      "SR", "Radiopharmaceutical Radiation Dose SR"},
-    {DSRTypes::DT_ExtensibleSR,                          UID_ExtensibleSRStorage,                          EM_EnhancedEquipment,                      "SR", "Extensible SR"},
-    {DSRTypes::DT_AcquisitionContextSR,                  UID_AcquisitionContextSRStorage,                  EM_EnhancedEquipment,                      "SR", "Acquisition Context SR"},
-    {DSRTypes::DT_SimplifiedAdultEchoSR,                 UID_SimplifiedAdultEchoSRStorage,                 EM_EnhancedEquipment | EM_Timezone,        "SR", "Simplified Adult Echo SR"},
-    {DSRTypes::DT_PatientRadiationDoseSR,                UID_PatientRadiationDoseSRStorage,                EM_EnhancedEquipment,                      "SR", "Patient Radiation Dose SR"},
-    {DSRTypes::DT_PerformedImagingAgentAdministrationSR, UID_PerformedImagingAgentAdministrationSRStorage, EM_EnhancedEquipment | EM_Synchronization, "SR", "Performed Imaging Agent Administration SR"},
-    {DSRTypes::DT_PlannedImagingAgentAdministrationSR,   UID_PlannedImagingAgentAdministrationSRStorage,   EM_EnhancedEquipment,                      "SR", "Planned Imaging Agent Administration SR"}
+    {DSRTypes::DT_invalid,                               "",                                                  0,                                                                "",   "invalid document type"},
+    {DSRTypes::DT_BasicTextSR,                           UID_BasicTextSRStorage,                              0,                                                                "SR", "Basic Text SR"},
+    {DSRTypes::DT_EnhancedSR,                            UID_EnhancedSRStorage,                               0,                                                                "SR", "Enhanced SR"},
+    {DSRTypes::DT_ComprehensiveSR,                       UID_ComprehensiveSRStorage,                          0,                                                                "SR", "Comprehensive SR"},
+    {DSRTypes::DT_KeyObjectSelectionDocument,            UID_KeyObjectSelectionDocumentStorage,               EM_KeyObjectDocument,                                             "KO", "Key Object Selection Document"},
+    {DSRTypes::DT_MammographyCadSR,                      UID_MammographyCADSRStorage,                         0,                                                                "SR", "Mammography CAD SR"},
+    {DSRTypes::DT_ChestCadSR,                            UID_ChestCADSRStorage,                               0,                                                                "SR", "Chest CAD SR"},
+    {DSRTypes::DT_ColonCadSR,                            UID_ColonCADSRStorage,                               EM_EnhancedEquipment,                                             "SR", "Colon CAD SR"},
+    {DSRTypes::DT_ProcedureLog,                          UID_ProcedureLogStorage,                             EM_Synchronization,                                               "SR", "Procedure Log"},
+    {DSRTypes::DT_XRayRadiationDoseSR,                   UID_XRayRadiationDoseSRStorage,                      EM_EnhancedEquipment,                                             "SR", "X-Ray Radiation Dose SR"},
+    {DSRTypes::DT_SpectaclePrescriptionReport,           UID_SpectaclePrescriptionReportStorage,              EM_EnhancedEquipment,                                             "SR", "Spectacle Prescription Report"},
+    {DSRTypes::DT_MacularGridThicknessAndVolumeReport,   UID_MacularGridThicknessAndVolumeReportStorage,      EM_EnhancedEquipment,                                             "SR", "Macular Grid Thickness and Volume Report"},
+    {DSRTypes::DT_ImplantationPlanSRDocument,            UID_ImplantationPlanSRDocumentStorage,               EM_EnhancedEquipment,                                             "SR", "Implantation Plan SR Document"},
+    {DSRTypes::DT_Comprehensive3DSR,                     UID_Comprehensive3DSRStorage,                        0,                                                                "SR", "Comprehensive 3D SR"},
+    {DSRTypes::DT_RadiopharmaceuticalRadiationDoseSR,    UID_RadiopharmaceuticalRadiationDoseSRStorage,       EM_EnhancedEquipment,                                             "SR", "Radiopharmaceutical Radiation Dose SR"},
+    {DSRTypes::DT_ExtensibleSR,                          UID_ExtensibleSRStorage,                             EM_EnhancedEquipment,                                             "SR", "Extensible SR"},
+    {DSRTypes::DT_AcquisitionContextSR,                  UID_AcquisitionContextSRStorage,                     EM_EnhancedEquipment,                                             "SR", "Acquisition Context SR"},
+    {DSRTypes::DT_SimplifiedAdultEchoSR,                 UID_SimplifiedAdultEchoSRStorage,                    EM_EnhancedEquipment | EM_Timezone,                               "SR", "Simplified Adult Echo SR"},
+    {DSRTypes::DT_PatientRadiationDoseSR,                UID_PatientRadiationDoseSRStorage,                   EM_EnhancedEquipment,                                             "SR", "Patient Radiation Dose SR"},
+    {DSRTypes::DT_PerformedImagingAgentAdministrationSR, UID_PerformedImagingAgentAdministrationSRStorage,    EM_EnhancedEquipment | EM_Synchronization,                        "SR", "Performed Imaging Agent Administration SR"},
+    {DSRTypes::DT_PlannedImagingAgentAdministrationSR,   UID_PlannedImagingAgentAdministrationSRStorage,      EM_EnhancedEquipment,                                             "SR", "Planned Imaging Agent Administration SR"},
+    {DSRTypes::DT_RenditionSelectionDocument,            UID_RenditionSelectionDocumentRealTimeCommunication, EM_EnhancedEquipment | EM_Synchronization | EM_KeyObjectDocument, "KO", "Rendition Selection Document"}
 };
 
 
@@ -581,6 +584,36 @@ OFBool DSRTypes::requiresSynchronizationModule(const E_DocumentType documentType
     while ((iterator->Type != DT_last) && (iterator->Type != documentType))
         iterator++;
     return (iterator->ExtendedModules & EM_Synchronization) > 0;
+}
+
+
+OFBool DSRTypes::usesSRDocumentSeriesModule(const E_DocumentType documentType)
+{
+    /* SR Document Series Module and Key Object Document Series Module are mutually exclusive */
+    return !usesKeyObjectDocumentSeriesModule(documentType);
+}
+
+
+OFBool DSRTypes::usesKeyObjectDocumentSeriesModule(const E_DocumentType documentType)
+{
+    /* Key Object Document Series Module is used if (and only if) Key Object Document Module is used */
+    return usesKeyObjectDocumentModule(documentType);
+}
+
+
+OFBool DSRTypes::usesSRDocumentGeneralModule(const E_DocumentType documentType)
+{
+    /* SR Document Module and Key Object Document Module are mutually exclusive */
+    return !usesKeyObjectDocumentModule(documentType);
+}
+
+
+OFBool DSRTypes::usesKeyObjectDocumentModule(const E_DocumentType documentType)
+{
+    const S_DocumentTypeNameMap *iterator = DocumentTypeNameMap;
+    while ((iterator->Type != DT_last) && (iterator->Type != documentType))
+        iterator++;
+    return (iterator->ExtendedModules & EM_KeyObjectDocument) > 0;
 }
 
 
@@ -1518,6 +1551,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             break;
         case DT_PlannedImagingAgentAdministrationSR:
             checker = new DSRPlannedImagingAgentAdministrationSRConstraintChecker();
+            break;
+        case DT_RenditionSelectionDocument:
+            checker = new DSRRenditionSelectionDocumentConstraintChecker();
             break;
         case DT_invalid:
             /* nothing to do */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -209,6 +209,7 @@ OFCondition DVPSCurve::read(DcmItem &dset, Uint8 group)
     case EVR_OB:
     case EVR_OW:
     case EVR_ox:
+    case EVR_px:
     case EVR_US:
 
       if (EC_Normal == d_curveData->getUint8Array(pui8))

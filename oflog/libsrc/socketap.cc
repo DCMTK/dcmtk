@@ -276,7 +276,7 @@ convertToBuffer(SocketBuffer & buffer,
     const tstring& serverName)
 {
     buffer.appendByte(DCMTK_LOG4CPLUS_MESSAGE_VERSION);
-#ifndef UNICODE
+#ifndef DCMTK_OFLOG_UNICODE
     buffer.appendByte(1);
 #else
     buffer.appendByte(2);

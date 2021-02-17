@@ -777,17 +777,6 @@ if(NOT DEFINED C_CHAR_UNSIGNED)
   endif()
 endif()
 
-DCMTK_TRY_COMPILE(HAVE_CXX_BOOL "C++ type bool exists"
-    "// Minimal test for existence of 'bool' type.
-void TestBool(bool) {}
-
-int main()
-{
-  TestBool(false);
-  TestBool(true);
-  return 0;
-}")
-
 # Check for thread type
 if(HAVE_WINDOWS_H)
   set(HAVE_INT_TYPE_PTHREAD_T 1)

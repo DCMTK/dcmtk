@@ -1,4 +1,4 @@
-.TH "dcmcjpls" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpls" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpls \- Encode DICOM file to JPEG-LS transfer syntax
@@ -159,13 +159,6 @@ JPEG-LS interleave:
   # This flag forces sample-interleaved mode for the resulting image.
   # In sample-interleave mode each pixel's components are encoded before
   # the next pixel is encoded.
-
-  +in  --interleave-none
-         force uninterleaved JPEG-LS images
-
-  # This flag forces uninterleaved mode for the resulting image.
-  # In this mode, each of the image's components are completely encoded
-  # before the next component is handled.
 
   +iv  --interleave-default
          use the fastest possible interleave mode
@@ -345,4 +338,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdjpls\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2009-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2009-2021 e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

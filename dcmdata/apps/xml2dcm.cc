@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2019, OFFIS e.V.
+ *  Copyright (C) 2003-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -224,7 +224,7 @@ static OFCondition createNewElement(xmlNodePtr current,
             if ((tagEVR != dcmEVR) && (dcmEVR != EVR_UNKNOWN) && (tagEVR != EVR_UNKNOWN) &&
                 ((dcmTagKey != DCM_LUTData) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS) && (dcmEVR != EVR_OW))) &&
                 ((tagEVR != EVR_xs) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS))) &&
-                ((tagEVR != EVR_ox) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
+                (((tagEVR != EVR_ox) && (tagEVR != EVR_px)) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
             {
                 OFLOG_WARN(xml2dcmLogger, "tag " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
                     << "), correct is " << dcmTag.getVR().getVRName());
@@ -309,6 +309,8 @@ static OFCondition putElementContent(xmlNodePtr current,
                         result = element->createUint8Array(OFstatic_cast(Uint32, buflen), buf);
                     if (result.good())
                     {
+                        OFLOG_INFO(xml2dcmLogger, "reading " << fileSize << " bytes from binary data file: " << filename);
+                        OFLOG_DEBUG(xml2dcmLogger, "  and storing it in the element " << element->getTag());
                         /* read binary file into the buffer */
                         if (fread(buf, 1, OFstatic_cast(size_t, fileSize), f) != fileSize)
                         {
@@ -339,6 +341,8 @@ static OFCondition putElementContent(xmlNodePtr current,
                 /* set the value of the newly created element */
                 result = element->putString(OFreinterpret_cast(char *, elemVal));
             }
+            if (result.bad())
+                OFLOG_ERROR(xml2dcmLogger, "cannot put content to element " << element->getTag() << ": " << result.text());
         }
         /* free allocated memory */
         xmlFree(elemVal);

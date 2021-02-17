@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,8 +23,8 @@
 #define MODSYNCHRONIZATION_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofoption.h"
 #include "dcmtk/dcmiod/modbase.h"
+#include "dcmtk/ofstd/ofoption.h"
 
 /** Class representing the Synchronization Module:
  *
@@ -41,15 +41,13 @@ class DCMTK_DCMIOD_EXPORT IODSynchronizationModule : public IODModule
 {
 
 public:
-
     /** Constructor
      *  @param  item The item to be used for data storage. If NULL, the
      *          class creates an empty data container.
      *  @param  rules The rule set for this class. If NULL, the class creates
      *          one from scratch and adds its values.
      */
-    IODSynchronizationModule(OFshared_ptr<DcmItem> item,
-                             OFshared_ptr<IODRules> rules);
+    IODSynchronizationModule(OFshared_ptr<DcmItem> item, OFshared_ptr<IODRules> rules);
 
     /** Constructor
      */
@@ -69,32 +67,29 @@ public:
     virtual OFString getName() const;
 
     /** Get Synchronization Frame of Reference UID
-    *  @param  value Reference to variable in which the value should be stored
-    *  @param  pos Index of the value to get (0..vm-1), -1 for all components
-    *  @return EC_Normal if successful, an error code otherwise
+     *  @param  value Reference to variable in which the value should be stored
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getSynchronizationFrameOfReferenceUID(OFString& value,
-                                                              const signed long pos = 0) const;
+    virtual OFCondition getSynchronizationFrameOfReferenceUID(OFString& value, const signed long pos = 0) const;
 
     /** Get Synchronization Trigger
-    *  @param  value Reference to variable in which the value should be stored
-    *  @param  pos Index of the value to get (0..vm-1), -1 for all components
-    *  @return EC_Normal if successful, an error code otherwise
+     *  @param  value Reference to variable in which the value should be stored
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getSynchronizationTrigger(OFString& value,
-                                                  const signed long pos = 0) const;
+    virtual OFCondition getSynchronizationTrigger(OFString& value, const signed long pos = 0) const;
 
     /** Get Trigger Source or Type
-    *  @param  value Reference to variable in which the value should be stored
-    *  @param  pos Index of the value to get (0..vm-1), -1 for all components
-    *  @return EC_Normal if successful, an error code otherwise
+     *  @param  value Reference to variable in which the value should be stored
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getTriggerSourceOrType(OFString& value,
-                                               const signed long pos = 0) const;
+    virtual OFCondition getTriggerSourceOrType(OFString& value, const signed long pos = 0) const;
 
     /** Get Synchronization Channel
-    *  @param  value Reference to variable in which the value should be stored
-    *  @return EC_Normal if successful, an error code otherwise
+     *  @param  value Reference to variable in which the value should be stored
+     *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getSynchronizationChannel(OFVector<Uint16>& value) const;
 
@@ -103,32 +98,28 @@ public:
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getAcquisitionTimeSynchronized(OFString& value,
-                                                       const signed long pos = 0) const;
+    virtual OFCondition getAcquisitionTimeSynchronized(OFString& value, const signed long pos = 0) const;
 
     /** Get Time Source
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getTimeSource(OFString& value,
-                                      const signed long pos = 0) const;
+    virtual OFCondition getTimeSource(OFString& value, const signed long pos = 0) const;
 
     /** Get Time Distribution Protocol
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getTimeDistributionProtocol(OFString& value,
-                                                    const signed long pos = 0) const;
+    virtual OFCondition getTimeDistributionProtocol(OFString& value, const signed long pos = 0) const;
 
     /** Get NTP Source Address
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getNTPSourceAddress(OFString& value,
-                                            const signed long pos = 0) const;
+    virtual OFCondition getNTPSourceAddress(OFString& value, const signed long pos = 0) const;
 
     /** Set Synchronization Frame of Reference UID
      *  @param  value Value to be set
@@ -136,8 +127,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setSynchronizationFrameofReferenceUID(const OFString &value,
-                                                              const OFBool checkValue = OFTrue);
+    virtual OFCondition setSynchronizationFrameofReferenceUID(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Synchronization Trigger
      *  @param  value Value to be set
@@ -145,8 +135,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setSynchronizationTrigger(const OFString &value,
-                                                  const OFBool checkValue = OFTrue);
+    virtual OFCondition setSynchronizationTrigger(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Trigger Source or Type
      *  @param  value Value to be set
@@ -154,8 +143,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setTriggerSourceOrType(const OFString &value,
-                                               const OFBool checkValue = OFTrue);
+    virtual OFCondition setTriggerSourceOrType(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Synchronization Channel
      *  @param  value Value to be set
@@ -163,7 +151,7 @@ public:
      *          with other setter functions).
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setSynchronizationChannel(const OFPair<Uint16, Uint16> &value,
+    virtual OFCondition setSynchronizationChannel(const OFPair<Uint16, Uint16>& value,
                                                   const OFBool checkValue = OFTrue);
 
     /** Set Acquisition Time Synchronized
@@ -172,8 +160,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setAcquisitionTimeSynchronized(const OFString &value,
-                                                       const OFBool checkValue = OFTrue);
+    virtual OFCondition setAcquisitionTimeSynchronized(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Time Source
      *  @param  value Value to be set
@@ -181,8 +168,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setTimeSource(const OFString &value,
-                                      const OFBool checkValue = OFTrue);
+    virtual OFCondition setTimeSource(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Time Distribution Protocol
      *  @param  value Value to be set
@@ -190,8 +176,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setTimeDistributionProtocol(const OFString &value,
-                                                    const OFBool checkValue = OFTrue);
+    virtual OFCondition setTimeDistributionProtocol(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set NTP Source Address
      *  @param  value Value to be set
@@ -199,37 +184,33 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setNTPSourceAddress(const OFString &value,
-                                            const OFBool checkValue = OFTrue);
+    virtual OFCondition setNTPSourceAddress(const OFString& value, const OFBool checkValue = OFTrue);
 
 protected:
+    /** Check whether given string is a valid value for attribute
+     *  Acquisition Time Synchronized
+     *  @param  value The value to check
+     *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
+     */
+    virtual OFBool isValidAcquisitionTimeSynchronized(const OFString& value);
 
-  /** Check whether given string is a valid value for attribute
-   *  Acquisition Time Synchronized
-   *  @param  value The value to check
-   *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
-   */
-  virtual OFBool isValidAcquisitionTimeSynchronized(const OFString& value);
+    /** Check whether given string is a valid value for attribute
+     *  Time Distribution Protocol
+     *  @param  value The value to check
+     *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
+     */
+    virtual OFBool isValidTimeDistributionProtocol(const OFString& value);
 
-  /** Check whether given string is a valid value for attribute
-   *  Time Distribution Protocol
-   *  @param  value The value to check
-   *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
-   */
-  virtual OFBool isValidTimeDistributionProtocol(const OFString& value);
-
-  /** Check whether given string is a valid value for attribute
-   *  Synchronization Trigger
-   *  @param  value The value to check
-   *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
-   */
-  virtual OFBool isValidSynchronizationTrigger(const OFString& value);
+    /** Check whether given string is a valid value for attribute
+     *  Synchronization Trigger
+     *  @param  value The value to check
+     *  @return OFTrue if value is valid for this attribute, OFFalse otherwise
+     */
+    virtual OFBool isValidSynchronizationTrigger(const OFString& value);
 
 private:
-
     /// Module name "SynchronizationModule"
     static const OFString m_ModuleName;
-
 };
 
 #endif // MODSYNCHRONIZATION_H

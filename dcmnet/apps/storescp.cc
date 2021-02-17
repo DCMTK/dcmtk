@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -150,11 +150,8 @@ OFBool             opt_promiscuous = OFFalse;
 OFBool             opt_correctUIDPadding = OFFalse;
 OFBool             opt_inetd_mode = OFFalse;
 OFString           callingAETitle;                    // calling application entity title will be stored here
-OFString           lastCallingAETitle;
 OFString           calledAETitle;                     // called application entity title will be stored here
-OFString           lastCalledAETitle;
 OFString           callingPresentationAddress;        // remote hostname or IP address will be stored here
-OFString           lastCallingPresentationAddress;
 const char *       opt_respondingAETitle = APPLICATIONTITLE;
 static OFString    opt_outputDirectory = ".";         // default: output directory equals "."
 E_SortStudyMode    opt_sortStudyMode = ESM_None;      // default: no sorting
@@ -346,6 +343,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-off",            "-p",      "no padding (default)");
       cmd.addOption("--padding-create",         "+p",   2, "[f]ile-pad [i]tem-pad: integer",
                                                            "align file on multiple of f bytes and items\non multiple of i bytes");
+    cmd.addSubGroup("handling of defined length UN elements:");
+      cmd.addOption("--retain-un",              "-uc",     "retain elements as UN (default)");
+      cmd.addOption("--convert-un",             "+uc",     "convert to real VR if known");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated/same):");
       cmd.addOption("--compression-level",      "+cl",  1, "[l]evel: integer (default: 6)",
@@ -357,7 +357,6 @@ int main(int argc, char *argv[])
       cmd.addOption("--sort-on-study-uid",      "-su",  1, "[p]refix: string",
                                                            "sort studies using prefix p and the Study\nInstance UID");
       cmd.addOption("--sort-on-patientname",    "-sp",     "sort studies using the Patient's Name and\na timestamp");
-
     cmd.addSubGroup("filename generation:");
       cmd.addOption("--default-filenames",      "-uf",     "generate filename from instance UID (default)");
       cmd.addOption("--unique-filenames",       "+uf",     "generate unique filenames");
@@ -790,6 +789,11 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
       opt_paddingType = EPD_withPadding;
     }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--retain-un")) dcmEnableUnknownVRConversion.set(OFFalse);
+    if (cmd.findOption("--convert-un")) dcmEnableUnknownVRConversion.set(OFTrue);
     cmd.endOptionBlock();
 
 #ifdef WITH_ZLIB
@@ -1456,10 +1460,6 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
 #endif
 
-  // store previous values for later use
-  lastCallingAETitle = callingAETitle;
-  lastCalledAETitle = calledAETitle;
-  lastCallingPresentationAddress = callingPresentationAddress;
   // store calling and called aetitle in global variables to enable
   // the --exec options using them. Enclose in quotation marks because
   // aetitles may contain space characters.
@@ -2355,13 +2355,13 @@ static void executeOnEndOfStudy()
   cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName );
 
   // perform substitution for placeholder #a
-  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingAETitle : lastCallingAETitle );
+  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingAETitle );
 
   // perform substitution for placeholder #c
-  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? calledAETitle : lastCalledAETitle );
+  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledAETitle );
 
   // perform substitution for placeholder #r
-  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingPresentationAddress : lastCallingPresentationAddress );
+  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress );
 
   // Execute command in a new process
   executeCommand( cmd );
@@ -2433,13 +2433,13 @@ static void executeCommand( const OFString &cmd )
   }
 #else
   PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
+  STARTUPINFOA sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
 
   // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
   // called function because in such a case the execution of batch-files is not going to work.)
-  if( !CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
+  if( !CreateProcessA(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
     OFLOG_ERROR(storescpLogger, "cannot execute command '" << cmd << "'");
 
   if (opt_execSync)

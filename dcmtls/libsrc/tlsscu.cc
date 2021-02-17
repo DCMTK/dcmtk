@@ -92,6 +92,22 @@ OFCondition DcmTLSSCU::initNetwork()
     return EC_IllegalCall; // TODO: need to find better error code
   }
 
+  /* Add trusted certificates from files and directories
+   */
+  OFListIterator(OFString) certFile = m_trustedCertFiles.begin();
+  while (certFile != m_trustedCertFiles.end())
+  {
+    if (TCS_ok != m_tLayer->addTrustedCertificateFile( (*certFile).c_str(), m_certKeyFileFormat))
+      DCMNET_WARN("Unable to load certificate file '" << *certFile << "', ignoring");
+    certFile++;
+  }
+  OFListIterator(OFString) certDir = m_trustedCertDirs.begin();
+  while (certDir != m_trustedCertDirs.end())
+  {
+    if (TCS_ok != m_tLayer->addTrustedCertificateDir( (*certDir).c_str(), m_certKeyFileFormat))
+      DCMNET_WARN("Unable to load certificates from directory '" << *certDir<< "', ignoring");
+  }
+
   /* If authentication of both sides (and not only encryption) is desired,
    * handle all associated parameters
    */

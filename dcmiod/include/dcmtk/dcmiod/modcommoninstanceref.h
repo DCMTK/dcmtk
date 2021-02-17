@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,14 +23,13 @@
 #define MODCOMMONINSTANCEREF_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmiod/iodrules.h"
-#include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmiod/iodreferences.h"
-
+#include "dcmtk/dcmiod/iodrules.h"
+#include "dcmtk/dcmiod/modbase.h"
+#include "dcmtk/ofstd/ofmem.h"
+#include "dcmtk/ofstd/ofvector.h"
 
 /** Class representing the Common Instance Reference Module:
  *
@@ -50,102 +49,96 @@ class DCMTK_DCMIOD_EXPORT IODCommonInstanceReferenceModule : public IODModule
 {
 
 public:
+    // Forward declaration (class defined later in this file)
+    class StudiesOtherInstancesItem;
 
-  // Forward declaration (class defined later in this file)
-  class StudiesOtherInstancesItem;
+    /** Constructor
+     *  @param  item The item to be used for data storage. If NULL, the
+     *          class creates an empty data container.
+     *  @param  rules The rule set for this class. If NULL, the class creates
+     *          one from scratch and adds its values.
+     */
+    IODCommonInstanceReferenceModule(OFshared_ptr<DcmItem> item, OFshared_ptr<IODRules> rules);
 
-  /** Constructor
-   *  @param  item The item to be used for data storage. If NULL, the
-   *          class creates an empty data container.
-   *  @param  rules The rule set for this class. If NULL, the class creates
-   *          one from scratch and adds its values.
-   */
-  IODCommonInstanceReferenceModule(OFshared_ptr<DcmItem> item,
-                                   OFshared_ptr<IODRules> rules);
+    /** Constructor
+     */
+    IODCommonInstanceReferenceModule();
 
-  /** Constructor
-   */
-  IODCommonInstanceReferenceModule();
+    /** Clears all data belonging to this module (rules are kept)
+     */
+    virtual void clearData();
 
-  /** Clears all data belonging to this module (rules are kept)
-   */
-  virtual void clearData();
+    /** Destructor
+     */
+    virtual ~IODCommonInstanceReferenceModule();
 
-  /** Destructor
-   */
-  virtual ~IODCommonInstanceReferenceModule();
+    /** Add references
+     *  @param  references The references to be added
+     *  @param  studyInstanceUID The Study Instance UID of "this" object instance.
+     *          It's used to decide whether the provided instances (with their
+     *          own Study Instance UIDs) will go into the Referenced Series Sequence
+     *          or into the Studies Containing Other Referenced Instances Sequence.
+     *          If it is left empty, then the method tries to find "this" instances
+     *          Study Instance UID in the internal item container which may be shared
+     *          with other modules and thus may already provide the Study Instance
+     *          UID (e.g. via General Study Module).
+     *  @param  clearOldData Delete any old references if OFTrue, otherwise keep them
+     *  @result EC_Normal if successful, error otherwise
+     */
+    virtual size_t addReferences(const IODReferences& references,
+                                 const OFString& studyInstanceUID = "",
+                                 const OFBool clearOldData        = OFTrue);
 
-  /** Add references
-   *  @param  references The references to be added
-   *  @param  studyInstanceUID The Study Instance UID of "this" object instance.
-   *          It's used to decide whether the provided instances (with their
-   *          own Study Instance UIDs) will go into the Referenced Series Sequence
-   *          or into the Studies Containing Other Referenced Instances Sequence.
-   *          If it is left empty, then the method tries to find "this" instances
-   *          Study Instance UID in the internal item container which may be shared
-   *          with other modules and thus may already provide the Study Instance
-   *          UID (e.g. via General Study Module).
-   *  @param  clearOldData Delete any old references if OFTrue, otherwise keep them
-   *  @result EC_Normal if successful, error otherwise
-   */
-  virtual size_t addReferences(const IODReferences& references,
-                               const OFString& studyInstanceUID = "",
-                               const OFBool clearOldData = OFTrue);
+    /** Read data of this module from given source item
+     *  @param  source The item to read from
+     *  @param  clearOldData If OFTrue, old data is cleared before reading, otherwise
+     *          it is overwriten/amended.
+     *  @result EC_Normal if successful, error otherwise
+     */
+    virtual OFCondition read(DcmItem& source, const OFBool clearOldData = OFTrue);
 
-  /** Read data of this module from given source item
-   *  @param  source The item to read from
-   *  @param  clearOldData If OFTrue, old data is cleared before reading, otherwise
-   *          it is overwriten/amended.
-   *  @result EC_Normal if successful, error otherwise
-   */
-  virtual OFCondition read(DcmItem& source,
-                           const OFBool clearOldData = OFTrue);
+    /** Write data of this module into given destination item
+     *  @param  destination The item to write to
+     *  @result EC_Normal if successful, error otherwise
+     */
+    virtual OFCondition write(DcmItem& destination);
 
-  /** Write data of this module into given destination item
-   *  @param  destination The item to write to
-   *  @result EC_Normal if successful, error otherwise
-   */
-  virtual OFCondition write(DcmItem& destination);
+    /** Resets rules to their original values
+     */
+    virtual void resetRules();
 
-  /** Resets rules to their original values
-   */
-  virtual void resetRules();
+    /** Get name of module ("CommonInstanceReferenceModule")
+     *  @return Name of the module ("CommonInstanceReferenceModule")
+     */
+    virtual OFString getName() const;
 
-  /** Get name of module ("CommonInstanceReferenceModule")
-   *  @return Name of the module ("CommonInstanceReferenceModule")
-   */
-  virtual OFString getName() const;
+    /** Return reference to list of Referenced Series items
+     *  @return Reference to list of Reference Series Items
+     */
+    OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>& getReferencedSeriesItems();
 
-  /** Return reference to list of Referenced Series items
-   *  @return Reference to list of Reference Series Items
-   */
-  OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>& getReferencedSeriesItems();
-
-  /** Return reference to content of Studies Containing Other Referenced Instances Sequence
-   *  @return Reference to content of Studies Containing Other Referenced Instances Sequence
-   */
-  OFVector<StudiesOtherInstancesItem*>& getStudiesContainingOtherReferences();
+    /** Return reference to content of Studies Containing Other Referenced Instances Sequence
+     *  @return Reference to content of Studies Containing Other Referenced Instances Sequence
+     */
+    OFVector<StudiesOtherInstancesItem*>& getStudiesContainingOtherReferences();
 
 protected:
-
-  virtual OFCondition addSeriesReference(
-    OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>& container,
-    const IODReference& ref);
+    virtual OFCondition
+    addSeriesReference(OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*>& container,
+                       const IODReference& ref);
 
 private:
+    void freeMemory();
 
-  void freeMemory();
+    /// Vector with all items of the Referenced Series Sequence
+    OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*> m_ReferenceSeriesItems;
 
-  /// Vector with all items of the Referenced Series Sequence
-  OFVector<IODSeriesAndInstanceReferenceMacro::ReferencedSeriesItem*> m_ReferenceSeriesItems;
+    /// Name of this component ("CommonInstanceReferenceModule")
+    static const OFString m_ComponentName;
 
-  /// Name of this component ("CommonInstanceReferenceModule")
-  static const OFString m_ComponentName;
-
-  /// Items of Studies Containing Other Referenced Instances Sequence
-  OFVector<StudiesOtherInstancesItem*> m_StudiesContainingOtherReferencedInstancesSequence;
+    /// Items of Studies Containing Other Referenced Instances Sequence
+    OFVector<StudiesOtherInstancesItem*> m_StudiesContainingOtherReferencedInstancesSequence;
 };
-
 
 /** Class representing items from the Studies Containing Other Referenced Instances Sequence,
  *  as used within the Common Instance Reference Module
@@ -159,86 +152,77 @@ class DCMTK_DCMIOD_EXPORT IODCommonInstanceReferenceModule::StudiesOtherInstance
 {
 
 public:
+    /** Constructor
+     *  @param  item The item to be used for data storage. If NULL, the
+     *          class creates an empty data container.
+     *  @param  rules The rule set for this class. If NULL, the class creates
+     *          one from scratch and adds its values.
+     *  @param  parent The parent of the IOD component (NULL if none or unknown)
+     */
+    StudiesOtherInstancesItem(OFshared_ptr<DcmItem> item, OFshared_ptr<IODRules> rules, IODComponent* parent = NULL);
 
-  /** Constructor
-   *  @param  item The item to be used for data storage. If NULL, the
-   *          class creates an empty data container.
-   *  @param  rules The rule set for this class. If NULL, the class creates
-   *          one from scratch and adds its values.
-   *  @param  parent The parent of the IOD component (NULL if none or unknown)
-   */
-  StudiesOtherInstancesItem(OFshared_ptr<DcmItem> item,
-                            OFshared_ptr<IODRules> rules,
-                            IODComponent* parent = NULL);
+    /** Constructor
+     *  @param  parent The parent component of this module, might be NULL
+     */
+    StudiesOtherInstancesItem(IODComponent* parent = NULL);
 
-  /** Constructor
-   *  @param  parent The parent component of this module, might be NULL
-   */
-  StudiesOtherInstancesItem(IODComponent* parent = NULL);
+    /** Destructor
+     */
+    virtual ~StudiesOtherInstancesItem();
 
-  /** Destructor
-   */
-  virtual ~StudiesOtherInstancesItem();
+    /** Clear (removes) all attributes handled by the modules of this component.
+     *  Rules are not reset.
+     */
+    virtual void clearData();
 
-  /** Clear (removes) all attributes handled by the modules of this component.
-   *  Rules are not reset.
-   */
-  virtual void clearData();
+    /** Read data from source item into this module
+     *  @param  source The item to read from
+     *  @param  clearOldData If OFTrue, old data is cleared first, otherwise it is
+     *          overwritten/amended
+     *  @result EC_Normal if successful, error otherwise
+     */
+    virtual OFCondition read(DcmItem& source, const OFBool clearOldData = OFTrue);
 
-  /** Read data from source item into this module
-   *  @param  source The item to read from
-   *  @param  clearOldData If OFTrue, old data is cleared first, otherwise it is
-   *          overwritten/amended
-   *  @result EC_Normal if successful, error otherwise
-   */
-  virtual OFCondition read(DcmItem& source,
-                           const OFBool clearOldData = OFTrue);
+    /** Write this module's data into given destination item
+     *  @param  destination Item to write to
+     *  @result EC_Normal if successful, error otherwise
+     */
+    virtual OFCondition write(DcmItem& destination);
 
-  /** Write this module's data into given destination item
-   *  @param  destination Item to write to
-   *  @result EC_Normal if successful, error otherwise
-   */
-  virtual OFCondition write(DcmItem& destination);
+    /** Resets rules to their original values
+     */
+    virtual void resetRules();
 
-  /** Resets rules to their original values
-   */
-  virtual void resetRules();
+    /** Get name of module ("StudiesContainingOtherReferencedInstancesSequence")
+     *  @return Name of the module ("StudiesContainingOtherReferencedInstancesSequence")
+     */
+    virtual OFString getName() const;
 
-  /** Get name of module ("StudiesContainingOtherReferencedInstancesSequence")
-   *  @return Name of the module ("StudiesContainingOtherReferencedInstancesSequence")
-   */
-  virtual OFString getName() const;
+    /** Get Study Instance UID
+     *  @param  value Reference to variable in which the value should be stored
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getStudyInstanceUID(OFString& value, const signed long pos = 0) const;
 
-  /** Get Study Instance UID
-   *  @param  value Reference to variable in which the value should be stored
-   *  @param  pos Index of the value to get (0..vm-1), -1 for all components
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition getStudyInstanceUID(OFString &value,
-                                          const signed long pos = 0) const;
+    /** Set Study Instance UID
+     *  @param  value Value to be set (single value only) or "" for no value
+     *  @param  checkValue Check 'value' for conformance with VR (PN) and VM (1) if enabled
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setStudyInstanceUID(const OFString& value, const OFBool checkValue = OFTrue);
 
-  /** Set Study Instance UID
-   *  @param  value Value to be set (single value only) or "" for no value
-   *  @param  checkValue Check 'value' for conformance with VR (PN) and VM (1) if enabled
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition setStudyInstanceUID(const OFString& value,
-                                          const OFBool checkValue = OFTrue);
-
-
-  /** Get Series And Instance Reference Macro
-  *  @return Reference to the Series And Instance Reference Macro structure
-  */
-  virtual IODSeriesAndInstanceReferenceMacro& getReferencedSeriesAndInstanceReferences();
+    /** Get Series And Instance Reference Macro
+     *  @return Reference to the Series And Instance Reference Macro structure
+     */
+    virtual IODSeriesAndInstanceReferenceMacro& getReferencedSeriesAndInstanceReferences();
 
 private:
+    /// The name of this component ("StudiesContainingOtherReferencedInstancesSequence")
+    static const OFString m_ComponentName;
 
-  /// The name of this component ("StudiesContainingOtherReferencedInstancesSequence")
-  static const OFString m_ComponentName;
-
-  /// The Series and Instance Reference Macro used in this item
-  IODSeriesAndInstanceReferenceMacro m_ReferencedSeriesAndInstance;
+    /// The Series and Instance Reference Macro used in this item
+    IODSeriesAndInstanceReferenceMacro m_ReferencedSeriesAndInstance;
 };
-
 
 #endif // MODCOMMONINSTANCEREF_H

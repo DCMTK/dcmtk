@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -464,18 +464,18 @@ Uint32 DcmObject::getTagAndLengthSize(const E_TransferSyntax oxfer) const
 
     if (oxferSyn.isExplicitVR())
     {
-       /* map "UN" to "OB" if generation of "UN" is disabled */
-       DcmVR outvr(getTag().getVR().getValidEVR());
+        /* map "UN" to "OB" if generation of "UN" is disabled */
+        DcmVR outvr(getTag().getVR().getValidEVR());
 
-       if (Length > 0xffff || outvr.usesExtendedLengthEncoding())
-       {
-         // we are either using extended length encoding or the
-         // element length is > 64k (i.e. we have to convert to OB/UN).
-         // In any case we need a 12-byte header field.
-         // This is also the case for any object with undefined length,
-         // so we don't need to check that as a special case.
-          return 12;
-       }
+        if (Length > 0xffff || outvr.usesExtendedLengthEncoding())
+        {
+            /* We are either using extended length encoding or the */
+            /* element length is > 64k (i.e. we have to convert to OB/UN). */
+            /* In any case we need a 12-byte header field. */
+            /* This is also the case for any object with undefined length, */
+            /* so we don't need to check that as a special case. */
+            return 12;
+        }
     }
     return 8;
 }
@@ -535,10 +535,13 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
 
             if (Length > 0xffff && (!myvr.usesExtendedLengthEncoding()))
             {
-              // Attribute length is larger than 64 kBytes.
-              // We need to encode this as UN (or OB, if generation of UN is disabled
-              if (dcmEnableUnknownVRGeneration.get()) vr = EVR_UN; else vr = EVR_OB;
-              myvr.setVR(vr);
+                /* Attribute length is larger than 64 kBytes. */
+                /* We need to encode this as UN (or OB, if generation of UN is disabled */
+                if (dcmEnableUnknownVRGeneration.get()) vr = EVR_UN; else vr = EVR_OB;
+                myvr.setVR(vr);
+                /* output debug information to the logger */
+                DCMDATA_DEBUG("DcmObject::writeTagAndLength() Length of element " << Tag
+                    << " exceeds maximum of 16-bit length field, changing VR to " << myvr.getVRName());
             }
 
             /* get name of data type */

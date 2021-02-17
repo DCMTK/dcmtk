@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2017-2018, OFFIS e.V.
+*  Copyright (C) 2017-2020, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -200,6 +200,7 @@ public:
      */
     inline DcmJsonFormat(const OFBool printMetaInfo)
     : printMetaheaderInformation(printMetaInfo)
+    , enableJsonExtension(OFFalse)
     {
 
     }
@@ -313,6 +314,21 @@ public:
      */
     virtual void printNextArrayElementPrefix(STD_NAMESPACE ostream &out);
 
+    /** return the flag indicating whether extended JSON number encoding is enabled.
+     */
+    virtual OFBool getJsonExtensionEnabled() const
+    {
+      return enableJsonExtension;
+    }
+
+    /** set the flag indicating whether extended JSON number encoding is enabled.
+     *  @param enabled new value of the flag
+     */
+    virtual void setJsonExtensionEnabled(OFBool enabled)
+    {
+      enableJsonExtension = enabled;
+    }
+
     /** Option that defines if metaheader information should be printed.
      */
     const OFBool printMetaheaderInformation;
@@ -330,6 +346,16 @@ protected:
     /** Used for decreasing the indention level.
      */
     virtual void decreaseIndention() = 0;
+
+private:
+
+    /** Option that defines if the inofficial JSON extension should be
+     *  permitted under which decimal numbers may have the values "-inf",
+     *  "inf" or "nan". Default is OFFalse, in which case such values
+     *  will lead to an error code being returned instead.
+     */
+    OFBool enableJsonExtension;
+
 };
 
 
@@ -339,7 +365,7 @@ protected:
 class DCMTK_DCMDATA_EXPORT DcmJsonFormatPretty : public DcmJsonFormat
 {
 private:
-    /** Variable for the indentenlevel of DcmJsonFormat
+    /** Variable for the indention level of DcmJsonFormat
      */
     unsigned m_IndentionLevel;
 

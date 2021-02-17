@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -121,6 +121,12 @@ public:
    *  is closed. Abstract method.
    */
   virtual void close() = 0;
+
+  /** Closes the transport connection directly. If a secure connection
+   *  is used, a closure alert is NOT sent before the connection
+   *  is closed. Abstract method.
+   */
+  virtual void closeTransportConnection() = 0;
 
   /** returns the size in bytes of the peer certificate of a secure connection.
    *  May return 0 if connection is transparent TCP/IP.
@@ -306,6 +312,12 @@ public:
    *  is closed.
    */
   virtual void close();
+
+  /** Closes the transport connection directly. If a secure connection
+   *  is used, a closure alert is NOT sent before the connection
+   *  is closed.
+   */
+  virtual void closeTransportConnection();
 
   /** returns the size in bytes of the peer certificate of a secure connection.
    *  May return 0 if connection is transparent TCP/IP.

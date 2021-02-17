@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:48:11 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:33 by J. Riesmeier
  *
  */
 
@@ -303,6 +303,9 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(Water, DSRBasicCodedEntry("11713004", "SCT", "Water")));
         Codes->insert(OFMake_pair(WaterFraction, DSRBasicCodedEntry("129103", "DCM", "Water fraction")));
         Codes->insert(OFMake_pair(RelativeLinearStoppingPower, DSRBasicCodedEntry("130086", "DCM", "Relative Linear Stopping Power")));
+        Codes->insert(OFMake_pair(ClassActivation, DSRBasicCodedEntry("130402", "DCM", "Class activation")));
+        Codes->insert(OFMake_pair(GradientWeightedClassActivation, DSRBasicCodedEntry("130403", "DCM", "Gradient-weighted class activation")));
+        Codes->insert(OFMake_pair(Saliency, DSRBasicCodedEntry("130404", "DCM", "Saliency")));
         Codes->insert(OFMake_pair(Length, DSRBasicCodedEntry("410668003", "SCT", "Length")));
         Codes->insert(OFMake_pair(PathLength, DSRBasicCodedEntry("121211", "DCM", "Path length")));
         Codes->insert(OFMake_pair(Distance, DSRBasicCodedEntry("121206", "DCM", "Distance")));
@@ -319,6 +322,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
         Codes->insert(OFMake_pair(Circumference, DSRBasicCodedEntry("74551000", "SCT", "Circumference")));
         Codes->insert(OFMake_pair(DiameterOfCircumscribedCircle, DSRBasicCodedEntry("131192006", "SCT", "Diameter of circumscribed circle")));
         Codes->insert(OFMake_pair(Height, DSRBasicCodedEntry("121207", "DCM", "Height")));
+        Codes->insert(OFMake_pair(LineSegmentLength, DSRBasicCodedEntry("121227", "DCM", "Line segment length")));
         Codes->insert(OFMake_pair(Maximum3DDiameterOfAMesh, DSRBasicCodedEntry("L0JK", "IBSI", "Maximum 3D Diameter of a Mesh")));
         Codes->insert(OFMake_pair(MajorAxisIn3DLength, DSRBasicCodedEntry("TDIC", "IBSI", "Major Axis in 3D Length")));
         Codes->insert(OFMake_pair(MinorAxisIn3DLength, DSRBasicCodedEntry("P9VJ", "IBSI", "Minor Axis in 3D Length")));

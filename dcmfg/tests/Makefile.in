@@ -22,9 +22,21 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 LOCALLIBS = -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd $(ZLIBLIBS) \
 	$(CHARCONVLIBS) $(MATHLIBS)
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
-	-I$(dcmdatadir)/include -I$(dcmioddir)/include \
+	-I$(dcmdatadir)/include -I$(dcmioddir)/include
 
-test_objs = tests.o t_deriv_image.o t_frame_content.o
+test_objs = t_concatenation_creator.o \
+	t_concatenation_loader.o \
+	t_ct_acquisition_details.o \
+	t_ct_acquisition_type.o \
+	t_ct_image_frame_type.o \
+	t_ct_position.o \
+	t_ct_table_dynamics.o \
+	t_deriv_image.o \
+	t_frame_content.o \
+	t_irradiation_event_identification.o \
+	tests.o
+
+
 objs = $(test_objs)
 progs = tests
 
@@ -36,10 +48,10 @@ tests: $(test_objs)
 
 
 check: tests
-	./tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
 
 
 install: all

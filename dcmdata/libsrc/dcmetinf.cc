@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -380,8 +380,12 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
                 l_error = (OFstatic_cast(DcmUnsignedLong *, elementList->get()))->getUint32(headerLen);
                 DCMDATA_TRACE("DcmMetaInfo::readGroupLength() Group Length of File Meta Header = " << headerLen + bytesRead);
             } else {
-                l_error = EC_CorruptedData;
                 DCMDATA_WARN("DcmMetaInfo: No Group Length available in Meta Information Header");
+                /* missing group length could be ignored (if no other error occurred) */
+                if (l_error == EC_StreamNotifyClient)
+                    l_error = EC_InvalidStream;
+                else if (l_error != EC_InvalidStream)
+                    l_error = EC_CorruptedData;
             }
         }
     }

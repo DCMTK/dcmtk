@@ -665,11 +665,11 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   // assign path to a local variable
   OFString lockname = dfPath;
 
-  // if the given path does not show a PATH_SEPERATOR at the end, append one
+  // if the given path does not show a PATH_SEPARATOR at the end, append one
   if( !lockname.empty() && lockname[lockname.length()-1] != PATH_SEPARATOR )
     lockname += PATH_SEPARATOR;
 
-  // append calledApplicationEntityTitle, another PATH_SEPERATOR,
+  // append calledApplicationEntityTitle, another PATH_SEPARATOR,
   // and LOCKFILENAME to the given path (and separator)
   lockname += calledApplicationEntityTitle;
   lockname += PATH_SEPARATOR;

@@ -387,7 +387,7 @@ Release 3.2 (Public Release - 1997.06.02)
 
 - Added improved error/warning messages and backup of existing DICOMDIR
   file (the backup file has the suffix .BAK and is removed if the new
-  DICOMDIR file is sucessfully created).
+  DICOMDIR file is successfully created).
   Affects: dcmdata/apps/dcmgpdir.cc
 
 - Fixed bug related to renaming of temporary files accross file system

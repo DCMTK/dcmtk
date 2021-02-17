@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,10 +27,18 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcfilter.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 
 OFTEST( dcmdata_attribute_filter )
 {
+    // make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     DcmAttributeFilter ct_filter( DCM_SOPClassUID, UID_CTImageStorage );
     DcmItem item;
 
@@ -45,9 +53,9 @@ OFTEST( dcmdata_attribute_filter )
     // test iterator (array) based range
     const char* filter_range[3] =
     {
-       UID_ComputedRadiographyImageStorage,
-       UID_CTImageStorage,
-       UID_MRImageStorage
+        UID_ComputedRadiographyImageStorage,
+        UID_CTImageStorage,
+        UID_MRImageStorage
     };
 
     // create filter from range (iterators)

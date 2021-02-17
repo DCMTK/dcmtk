@@ -38,11 +38,11 @@
 #endif
 
 
-#ifdef UNICODE
+#ifdef DCMTK_OFLOG_UNICODE
 #  define DCMTK_LOG4CPLUS_TEXT2(STRING) L##STRING
 #else
 #  define DCMTK_LOG4CPLUS_TEXT2(STRING) STRING
-#endif // UNICODE
+#endif // DCMTK_OFLOG_UNICODE
 #define DCMTK_LOG4CPLUS_TEXT(STRING) DCMTK_LOG4CPLUS_TEXT2(STRING)
 
 
@@ -51,7 +51,7 @@ namespace dcmtk
 namespace log4cplus
 {
 
-#if defined (UNICODE)
+#if defined (DCMTK_OFLOG_UNICODE)
 typedef wchar_t tchar;
 
 #else

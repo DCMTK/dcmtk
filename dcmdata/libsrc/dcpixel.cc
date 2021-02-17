@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2019, OFFIS e.V.
+ *  Copyright (C) 1997-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
+#include "dcmtk/dcmdata/dcjson.h"
 
 //
 // class DcmRepresentationEntry
@@ -89,7 +90,8 @@ DcmPixelData::DcmPixelData(
 {
     repListEnd = repList.end();
     current = original = repListEnd;
-    if (getTag().getEVR() == EVR_ox) setTagVR(EVR_OW);
+    if ((getTag().getEVR() == EVR_ox) || (getTag().getEVR() == EVR_px))
+        setTagVR(EVR_OW);
     unencapsulatedVR = getTag().getEVR();
     recalcVR();
 }
@@ -441,13 +443,20 @@ DcmPixelData::decode(
     DcmStack & pixelStack)
 {
     if (existUnencapsulated) return EC_Normal;
-    OFCondition l_error = DcmCodecList::decode(fromType, fromParam, fromPixSeq, *this, pixelStack);
+    OFBool removeOldPixelRepresentation = OFFalse;
+    OFCondition l_error = DcmCodecList::decode(fromType, fromParam, fromPixSeq, *this, pixelStack, removeOldPixelRepresentation);
     if (l_error.good())
     {
         existUnencapsulated = OFTrue;
         current = repListEnd;
         setVR(EVR_OW);
         recalcVR();
+
+        // the codec has indicated that the image pixel module has been modified
+        // in a way that may affect the validity of the old representation of pixel data.
+        // Thus, we cannot just switch back to the old representation.
+        // Thus, remove old representation(s).
+        if (removeOldPixelRepresentation) removeAllButCurrentRepresentations();
     }
     else
     {
@@ -472,10 +481,11 @@ DcmPixelData::encode(
     if (toType.isEncapsulated())
     {
        DcmPixelSequence * toPixSeq = NULL;
+       OFBool removeOldPixelRepresentation = OFFalse;
        if (fromType.isEncapsulated())
        {
          l_error = DcmCodecList::encode(fromType.getXfer(), fromParam, fromPixSeq,
-                   toType.getXfer(), toParam, toPixSeq, pixelStack);
+                   toType.getXfer(), toParam, toPixSeq, pixelStack, removeOldPixelRepresentation);
        }
        else
        {
@@ -485,7 +495,7 @@ DcmPixelData::encode(
          if (l_error == EC_Normal)
          {
            l_error = DcmCodecList::encode(fromType.getXfer(), pixelData, length,
-                     toType.getXfer(), toParam, toPixSeq, pixelStack);
+                     toType.getXfer(), toParam, toPixSeq, pixelStack, removeOldPixelRepresentation);
          }
        }
 
@@ -494,6 +504,11 @@ DcmPixelData::encode(
            current = insertRepresentationEntry(
              new DcmRepresentationEntry(toType.getXfer(), toParam, toPixSeq));
            recalcVR();
+           // the codec has indicated that the image pixel module has been modified
+           // in a way that may affect the validity of the old representation of pixel data.
+           // Thus, we cannot just switch back to the old representation, but have
+           // to actually decode in this case. Thus, remove old representation(s).
+           if (removeOldPixelRepresentation) removeAllButCurrentRepresentations();
        } else delete toPixSeq;
 
        // if it was possible to convert one encapsulated syntax into
@@ -1269,4 +1284,67 @@ OFBool DcmPixelData::writeUnencapsulated(const E_TransferSyntax xfer)
     }
 
     return existUnencapsulated && isNested();
+}
+
+
+OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
+                                             DcmJsonFormat &format)
+{
+
+    // check if we have an empty uncompressed value field.
+    // We never encode that as BulkDataURI.
+    OFBool emptyValue = OFFalse;
+    if ((current == repListEnd) && existUnencapsulated && (getLengthField() == 0))
+    {
+      emptyValue = OFTrue;
+    }
+
+    // now check if the pixel data will be written as
+    // BulkDataURI, which is possible for both uncompressed
+    // and encapsulated pixel data.
+    OFString value;
+    if ((! emptyValue) && format.asBulkDataURI(getTag(), value))
+    {
+        /* write JSON Opener */
+        writeJsonOpener(out, format);
+
+        /* return defined BulkDataURI */
+        format.printBulkDataURIPrefix(out);
+        DcmJsonFormat::printString(out, value);
+
+        /* write JSON Closer */
+        writeJsonCloser(out, format);
+        return EC_Normal;
+    }
+
+    // No bulk data URI, we're supposed to write as InlineBinary.
+    // This is only defined for uncompressed data, not for any of the
+    // encapsulated encodings.
+
+    // check the current pixel data representation
+    if ((current == repListEnd) && existUnencapsulated)
+    {
+      // current pixel data representation is uncompressed (and available).
+
+      /* write JSON Opener */
+      writeJsonOpener(out, format);
+
+      /* for an empty value field, we do not need to do anything */
+      if (getLengthField() > 0)
+      {
+         /* encode binary data as Base64 */
+         format.printInlineBinaryPrefix(out);
+         out << "\"";
+         /* adjust byte order to little endian */
+         Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+         OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
+         out << "\"";
+      }
+      /* write JSON Closer */
+      writeJsonCloser(out, format);
+      return EC_Normal;
+    }
+
+    // pixel data is encapsulated, return error
+    return EC_CannotWriteJsonInlineBinary;
 }

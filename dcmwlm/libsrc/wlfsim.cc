@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -671,8 +671,8 @@ OFBool WlmFileSystemInteractionManager::IsUniversalMatch( DcmSequenceOfItems& qu
       {
         const OFPair<DcmTagKey,OFBool>& key = *it;
 #endif
-        DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, normalizeWildCards && key.second ) )
+        DcmElement* query_elem = OFnullptr;
+        if( pQueryItem->findAndGetElement( key.first, query_elem, OFFalse ).good() && query_elem && !query_elem->isUniversalMatch( normalize, normalizeWildCards && key.second ) )
           return OFFalse;
       }
 
@@ -685,10 +685,10 @@ OFBool WlmFileSystemInteractionManager::IsUniversalMatch( DcmSequenceOfItems& qu
       {
         const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
 #endif
-        DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, normalizeWildCards ) )
+        DcmElement* query_elem = OFnullptr;
+        if( pQueryItem->findAndGetElement( combinedKey.first, query_elem, OFFalse ).good() && query_elem && !query_elem->isUniversalMatch( normalize, normalizeWildCards ) )
           return OFFalse;
-        else if( pQueryItem->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, normalizeWildCards ) )
+        else if( pQueryItem->findAndGetElement( combinedKey.second, query_elem, OFFalse ).good() && query_elem && !query_elem->isUniversalMatch( normalize, normalizeWildCards ) )
           return OFFalse;
       }
 
@@ -702,8 +702,8 @@ OFBool WlmFileSystemInteractionManager::IsUniversalMatch( DcmSequenceOfItems& qu
       {
         const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
 #endif
-        DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !IsUniversalMatch( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second, normalize, normalizeWildCards ) )
+        DcmElement* query_elem = OFnullptr;
+        if( pQueryItem->findAndGetElement( sequenceKey.first, query_elem, OFFalse ).good() && query_elem && query_elem->ident() == EVR_SQ && !IsUniversalMatch( OFstatic_cast( DcmSequenceOfItems&, *query_elem ), sequenceKey.second, normalize, normalizeWildCards ) )
           return OFFalse;
       }
   }

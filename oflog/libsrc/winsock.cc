@@ -235,9 +235,15 @@ connectSocket(const tstring& hostn, unsigned short port, bool udp, SocketState& 
     {
         insock.sin_family = AF_INET;
         INT insock_size = OFstatic_cast(int, sizeof (insock));
+#if defined (DCMTK_OFLOG_UNICODE)
         INT ret = WSAStringToAddress (OFconst_cast(LPTSTR, hostn.c_str ()),
             AF_INET, 0, OFreinterpret_cast(struct sockaddr *, &insock),
             &insock_size);
+#else
+        INT ret = WSAStringToAddressA (OFconst_cast(LPSTR, hostn.c_str ()),
+            AF_INET, 0, OFreinterpret_cast(struct sockaddr *, &insock),
+            &insock_size);
+#endif
         if (ret == SOCKET_ERROR || insock_size != sizeof (insock)) 
         {
             state = bad_address;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2018, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -191,8 +191,8 @@ OFBool OFTime::isTimeValid(const unsigned int hour,
                            const double second,
                            const double timeZone)
 {
-    /* check whether given time is valid */
-    return (hour < 24) && (minute < 60) && (second >= 0) && (second < 60) && (timeZone >= -12) && (timeZone <= 14);
+    /* check whether given time is valid (also support leap second) */
+    return (hour < 24) && (minute < 60) && (second >= 0) && (second <= 60) && (timeZone >= -12) && (timeZone <= 14);
 }
 
 
@@ -287,7 +287,7 @@ OFBool OFTime::setTimeInSeconds(const double seconds,
                                 const OFBool normalize)
 {
     OFBool status = OFFalse;
-    /* only change if the new time is valid */
+    /* only change if the new time is valid (leap second is not supported!) */
     if (normalize || ((seconds >= 0) && (seconds < 86400)))
     {
         /* first normalize the value first to the valid range of [0.0,86400.0[ */

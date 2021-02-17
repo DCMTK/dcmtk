@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -138,7 +138,8 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_US, "US", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
     { EVR_UT, "UT", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 4294967294U },
     { EVR_UV, "UV", &noDelimiters, sizeof(Uint64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 8, 8 },
-    { EVR_ox, "ox", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294U },
+    { EVR_ox, "ox", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_UNDEFINEDLENGTH, 0, 4294967294U },
+    { EVR_px, "px", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_UNDEFINEDLENGTH, 0, 4294967294U },
     { EVR_xs, "xs", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
     { EVR_lt, "lt", &noDelimiters, sizeof(Uint16), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294U },
     { EVR_na, "na", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD, 0, 0 },
@@ -283,6 +284,7 @@ DcmVR::getValidEVR() const
                 evr = EVR_OW;
                 break;
             case EVR_ox:
+            case EVR_px:
             case EVR_pixelSQ:
                 evr = EVR_OB;
                 break;
@@ -477,16 +479,17 @@ DcmVR::isEquivalent(const DcmVR& avr) const
     switch (vr)
     {
       case EVR_ox:
+      case EVR_px:
           result = (evr == EVR_OB || evr == EVR_OW);
           break;
       case EVR_lt:
           result = (evr == EVR_OW || evr == EVR_US || evr == EVR_SS);
           break;
       case EVR_OB:
-          result = (evr == EVR_ox);
+          result = (evr == EVR_ox || evr == EVR_px);
           break;
       case EVR_OW:
-          result = (evr == EVR_ox || evr == EVR_lt);
+          result = (evr == EVR_ox || evr == EVR_px || evr == EVR_lt);
           break;
       case EVR_up:
           result = (evr == EVR_UL);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2017, OFFIS e.V.
+ *  Copyright (C) 2012-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,8 @@
 #include "dcmtk/dcmnet/dcasccfg.h"  /* For holding association cfg file infos */
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/ofstd/ofmem.h"      /* For OFshared_ptr */
+
+class DcmTransportLayer;
 
 /** Class that encapsulates an SCP configuration that is needed in order to
  *  configure the service negotiation behavior (presentation contexts, AE
@@ -296,6 +298,23 @@ public:
    */
   OFBool getProgressNotificationMode() const;
 
+  /** Returns true if an external transport layer (e.g. TLS) is enabled,
+   *  false if the default, transparent layer is used.
+   *  @return true if an external transport layer is enabled
+   */
+  OFBool transportLayerEnabled() const;
+
+  /** Returns pointer to the transport layer object in use
+   *  @return pointer to the transport layer object in use, may be NULL.
+   */
+  DcmTransportLayer * getTransportLayer() const;
+
+  /** set an explicit transport layer (e.g. for TLS communication) to use
+   *  @param tlayer [in] The transport layer object.
+   *                     This function does not take ownership of tlayer.
+   */
+  void setTransportLayer(DcmTransportLayer *tlayer);
+
   /** Dump presentation contexts to given output stream, useful for debugging.
    *  @param out [out] The output stream
    *  @param profileName [in] The profile to dump. If empty (default), the currently
@@ -393,6 +412,10 @@ protected:
 
   /// Progress notification mode (default: OFTrue)
   OFBool m_progressNotificationMode;
+
+  /// The transport layer in use for communication (e.g. for TLS). 
+  /// Default is NULL for the normal TCP layer.
+  DcmTransportLayer *m_tLayer; /// Doesn't have ownership
 };
 
 /** Enables sharing configurations by multiple DcmSCPs.

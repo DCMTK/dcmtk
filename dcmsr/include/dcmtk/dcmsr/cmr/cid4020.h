@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4020_PETRadionuclide
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:47:52 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:19 by J. Riesmeier
  *
  */
 

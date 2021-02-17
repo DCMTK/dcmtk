@@ -472,6 +472,12 @@ BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4
 GeneralAudioWaveformStorage                          1.2.840.10008.5.1.4.1.1.9.4.2
 ArterialPulseWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.5.1
 RespiratoryWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.6.1
+MultichannelRespiratoryWaveformStorage               1.2.840.10008.5.1.4.1.1.9.6.2
+RoutineScalpElectroencephalogramWaveformStorage      1.2.840.10008.5.1.4.1.1.9.7.1
+ElectromyogramWaveformStorage                        1.2.840.10008.5.1.4.1.1.9.7.2
+ElectrooculogramWaveformStorage                      1.2.840.10008.5.1.4.1.1.9.7.3
+SleepElectroencephalogramWaveformStorage             1.2.840.10008.5.1.4.1.1.9.7.4
+BodyPositionWaveformStorage                          1.2.840.10008.5.1.4.1.1.9.8.1
 RETIRED_StandaloneModalityLUTStorage                 1.2.840.10008.5.1.4.1.1.10
 RETIRED_StandaloneVOILUTStorage                      1.2.840.10008.5.1.4.1.1.11
 GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
@@ -526,6 +532,7 @@ WideFieldOphthalmicPhotogr.3DCoordinatesImageStorage 1.2.840.10008.5.1.4.1.1.77.
 OphthalmicOpticalCoherenceTomogr.EnFaceImageStorage  1.2.840.10008.5.1.4.1.1.77.1.5.7
 OphthalmicOpticalCoh.Tomogr.BscanVolumeAnalysisStor. 1.2.840.10008.5.1.4.1.1.77.1.5.8
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
+DermoscopicPhotographyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.7
 RETIRED_VLMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
 AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2
@@ -565,12 +572,15 @@ ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 EncapsulatedSTLStorage                               1.2.840.10008.5.1.4.1.1.104.3
+EncapsulatedOBJStorage                               1.2.840.10008.5.1.4.1.1.104.4
+EncapsulatedMTLStorage                               1.2.840.10008.5.1.4.1.1.104.5
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
 LegacyConvertedEnhancedPETImageStorage               1.2.840.10008.5.1.4.1.1.128.1
 RETIRED_StandalonePETCurveStorage                    1.2.840.10008.5.1.4.1.1.129
 EnhancedPETImageStorage                              1.2.840.10008.5.1.4.1.1.130
 BasicStructuredDisplayStorage                        1.2.840.10008.5.1.4.1.1.131
 CTPerformedProcedureProtocolStorage                  1.2.840.10008.5.1.4.1.1.200.2
+XAPerformedProcedureProtocolStorage                  1.2.840.10008.5.1.4.1.1.200.8
 RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
 RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
 RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
@@ -584,6 +594,13 @@ RTPhysicianIntentStorage                             1.2.840.10008.5.1.4.1.1.481
 RTSegmentAnnotationStorage                           1.2.840.10008.5.1.4.1.1.481.11
 RTRadiationSetStorage                                1.2.840.10008.5.1.4.1.1.481.12
 CArmPhotonElectronRadiationStorage                   1.2.840.10008.5.1.4.1.1.481.13
+TomotherapeuticRadiationStorage                      1.2.840.10008.5.1.4.1.1.481.14
+RoboticArmRadiationStorage                           1.2.840.10008.5.1.4.1.1.481.15
+RTRadiationRecordSetStorage                          1.2.840.10008.5.1.4.1.1.481.16
+RTRadiationSalvageRecordStorage                      1.2.840.10008.5.1.4.1.1.481.17
+TomotherapeuticRadiationRecordStorage                1.2.840.10008.5.1.4.1.1.481.18
+CArmPhotonElectronRadiationRecordStorage             1.2.840.10008.5.1.4.1.1.481.19
+RoboticRadiationRecordStorage                        1.2.840.10008.5.1.4.1.1.481.20
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
@@ -765,6 +782,6 @@ It is an error if no data dictionary can be loaded.
 
 \section movescu_copyright COPYRIGHT
 
-Copyright (C) 1994-2019 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

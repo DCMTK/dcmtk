@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -220,6 +220,9 @@ enum DcmEVR
 
     /// OB or OW depending on context
     EVR_ox,
+
+    /// OB or OW, interpreted as pixel data (compressed or uncompressed)
+    EVR_px,
 
     /// SS or US depending on context
     EVR_xs,

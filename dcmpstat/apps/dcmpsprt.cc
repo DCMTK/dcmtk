@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2019, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -73,24 +73,26 @@ static int addOverlay(const char *filename,
                 input >> ysize;
                 if ((xpos + xsize <= width) && (ypos + ysize <= height))
                 {
-                    unsigned int value;
                     Uint16 *p = pixel + (ypos * width) + xpos;
                     for (unsigned long ys = 0; ys < ysize; ys++)
                     {
                         for (unsigned long xs = 0; xs < xsize; xs++)
                         {
                             while (input.get(c) && !isdigit(OFstatic_cast(unsigned char, c)));  // skip non-numeric chars
-                            input.putback(c);
-                            input >> value;
-                            if (value)
-                                *p = gray;
+                            if (!isdigit(OFstatic_cast(unsigned char, c)))
+                            {
+                              OFLOG_ERROR(dcmpsprtLogger, "syntax error in PBM file '" << filename << "'");
+                              return 0;
+                            }
+                            if (c != '0')
+                                *p = OFstatic_cast(Uint16, gray);
                             p++;
                         }
                         p += (width - xsize);
                     }
                     return 1;
                 } else
-                    OFLOG_ERROR(dcmpsprtLogger, "invalid position for overlay PBM file '" << filename);
+                    OFLOG_ERROR(dcmpsprtLogger, "invalid position for overlay PBM file '" << filename << "'");
             } else
                 OFLOG_ERROR(dcmpsprtLogger, "overlay PBM file '" << filename << "' has no magic number P1");
         } else
@@ -145,8 +147,8 @@ int main(int argc, char *argv[])
     OFBool                    opt_annotationIllumination = OFTrue;
     const char *              opt_annotationString = NULL;
 
-    OFCmdUnsignedInt          opt_illumination = (OFCmdUnsignedInt)-1;
-    OFCmdUnsignedInt          opt_reflection = (OFCmdUnsignedInt)-1;
+    OFCmdUnsignedInt          opt_illumination = OFstatic_cast(OFCmdUnsignedInt, -1);
+    OFCmdUnsignedInt          opt_reflection = OFstatic_cast(OFCmdUnsignedInt, -1);
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Read DICOM images and presentation states and render print job", rcsid);
     OFCommandLine cmd;
@@ -445,7 +447,7 @@ int main(int argc, char *argv[])
     /* dump printer characteristics if requested */
     const char *currentPrinter = dvi.getCurrentPrinter();
 
-    if ((opt_img_request_size) && (!dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
+    if ((opt_img_request_size) && (!dvi.getTargetPrinterSupportsRequestedImageSize(currentPrinter)))
       OFLOG_WARN(dcmpsprtLogger, "printer does not support requested image size");
 
     if (EC_Normal != dvi.getPrintHandler().setImageDisplayFormat(opt_columns, opt_rows))
@@ -475,9 +477,9 @@ int main(int argc, char *argv[])
       OFLOG_WARN(dcmpsprtLogger, "cannot set trim, ignoring.");
     if (EC_Normal != dvi.getPrintHandler().setRequestedDecimateCropBehaviour(opt_decimate))
       OFLOG_WARN(dcmpsprtLogger, "cannot set requested decimate/crop behaviour, ignoring.");
-    if ((opt_illumination != (OFCmdUnsignedInt)-1)&&(EC_Normal != dvi.getPrintHandler().setPrintIllumination((Uint16)opt_illumination)))
+    if ((opt_illumination != OFstatic_cast(OFCmdUnsignedInt, -1))&&(EC_Normal != dvi.getPrintHandler().setPrintIllumination(OFstatic_cast(Uint16, opt_illumination))))
       OFLOG_WARN(dcmpsprtLogger, "cannot set illumination to '" << opt_illumination << "', ignoring.");
-    if ((opt_reflection != (OFCmdUnsignedInt)-1)&&(EC_Normal != dvi.getPrintHandler().setPrintReflectedAmbientLight((Uint16)opt_reflection)))
+    if ((opt_reflection != OFstatic_cast(OFCmdUnsignedInt, -1))&&(EC_Normal != dvi.getPrintHandler().setPrintReflectedAmbientLight(OFstatic_cast(Uint16, opt_reflection))))
       OFLOG_WARN(dcmpsprtLogger, "cannot set reflected ambient light to '" << opt_reflection << "', ignoring.");
 
     if ((opt_copies > 0)&&(EC_Normal != dvi.setPrinterNumberOfCopies(opt_copies)))
@@ -645,7 +647,7 @@ int main(int argc, char *argv[])
       {
         // no need to do this manually if we are spooling - spoolPrintJob() will do this anyway.
         OFLOG_WARN(dcmpsprtLogger, "writing DICOM stored print object to database.");
-        if (EC_Normal != dvi.saveStoredPrint(dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
+        if (EC_Normal != dvi.saveStoredPrint(dvi.getTargetPrinterSupportsRequestedImageSize(currentPrinter)))
         {
           OFLOG_ERROR(dcmpsprtLogger, "error during creation of DICOM stored print object");
         }

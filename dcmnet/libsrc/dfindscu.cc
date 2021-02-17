@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -77,10 +77,12 @@ DcmFindSCUDefaultCallback::DcmFindSCUDefaultCallback(
     DcmFindSCUExtractMode extractResponses,
     int cancelAfterNResponses,
     const char *outputDirectory,
-    STD_NAMESPACE ofstream *outputStream)
+    STD_NAMESPACE ofstream *outputStream,
+    const unsigned int limitOutput)
 : DcmFindSCUCallback()
 , extractResponses_(extractResponses)
 , cancelAfterNResponses_(cancelAfterNResponses)
+, limitOutput_(limitOutput)
 , outputDirectory_(OFSTRING_GUARD(outputDirectory))
 , outputStream_(outputStream)
 {
@@ -112,57 +114,70 @@ void DcmFindSCUDefaultCallback::callback(
     } else {
         DCMNET_INFO("Received Find Response " << responseCount << " (" << DU_cfindStatusString(rsp->DimseStatus) << ")");
     }
-
-    /* should we extract the response dataset to a DICOM file? */
-    if (extractResponses_ == FEM_dicomFile)
+    /* should we extract the response dataset to file? */
+    if (extractResponses_ != FEM_none)
     {
-        OFString outputFilename;
-        char rspIdsFileName[32];
-        sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
-        OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
-        DCMNET_INFO("Writing response dataset to file: " << outputFilename);
-        DcmFindSCU::writeToFile(outputFilename.c_str(), responseIdentifiers);
-    }
-    /* ... or to an XML file? */
-    else if (extractResponses_ == FEM_xmlFile)
-    {
-        OFString outputFilename;
-        char rspIdsFileName[32];
-        sprintf(rspIdsFileName, "rsp%04d.xml", responseCount);
-        OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
-        DCMNET_INFO("Writing response dataset to file: " << outputFilename);
-        DcmFindSCU::writeToXMLFile(outputFilename.c_str(), responseIdentifiers);
-    }
-    /* ... or all responses to a single XML file? */
-    else if (extractResponses_ == FEM_singleXMLFile)
-    {
-        if (outputStream_ != NULL)
+        /* check for upper limit of extracted responses */
+        if ((limitOutput_ > 0) && (OFstatic_cast(unsigned int, responseCount) > limitOutput_))
         {
-            OFCondition cond = EC_Normal;
-            size_t writeFlags = 0;
-            DCMNET_DEBUG("Writing response dataset to XML file");
-            /* expect that (0008,0005) is set if extended characters are used */
-            if (responseIdentifiers->tagExistsWithValue(DCM_SpecificCharacterSet))
+            /* output warning message on first response after limit has been reached */
+            if (OFstatic_cast(unsigned int, responseCount) == limitOutput_ + 1)
+                DCMNET_INFO("Maximum number of responses already written to file ... not writing this and all following responses to file");
+            else
+                DCMNET_DEBUG("Maximum number of responses already written to file ... not writing this response to file");
+        } else {
+            /* should we extract the response dataset to a DICOM file? */
+            if (extractResponses_ == FEM_dicomFile)
             {
-#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-                DCMNET_DEBUG("Converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
-                cond = responseIdentifiers->convertToUTF8();
-#else
-                if (responseIdentifiers->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
-                {
-                    DCMNET_WARN("No support for character set conversion available ... quoting non-ASCII characters");
-                    /* make sure that non-ASCII characters are quoted appropriately */
-                    writeFlags |= DCMTypes::XF_convertNonASCII;
-                } else {
-                    DCMNET_DEBUG("No support for character set conversion available");
-                }
-#endif
+                OFString outputFilename;
+                char rspIdsFileName[32];
+                sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
+                OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
+                DCMNET_INFO("Writing response dataset to file: " << outputFilename);
+                DcmFindSCU::writeToFile(outputFilename.c_str(), responseIdentifiers);
             }
-            /* write response dataset to XML file */
-            if (cond.good())
-                cond = responseIdentifiers->writeXML(*outputStream_, writeFlags);
-            if (cond.bad())
-                DCMNET_ERROR("Writing XML file: " << cond.text());
+            /* ... or to an XML file? */
+            else if (extractResponses_ == FEM_xmlFile)
+            {
+                OFString outputFilename;
+                char rspIdsFileName[32];
+                sprintf(rspIdsFileName, "rsp%04d.xml", responseCount);
+                OFStandard::combineDirAndFilename(outputFilename, outputDirectory_, rspIdsFileName, OFTrue /*allowEmptyDirName*/);
+                DCMNET_INFO("Writing response dataset to file: " << outputFilename);
+                DcmFindSCU::writeToXMLFile(outputFilename.c_str(), responseIdentifiers);
+            }
+            /* ... or all responses to a single XML file? */
+            else if (extractResponses_ == FEM_singleXMLFile)
+            {
+                if (outputStream_ != NULL)
+                {
+                    OFCondition cond = EC_Normal;
+                    size_t writeFlags = 0;
+                    DCMNET_DEBUG("Writing response dataset to XML file");
+                    /* expect that (0008,0005) is set if extended characters are used */
+                    if (responseIdentifiers->tagExistsWithValue(DCM_SpecificCharacterSet))
+                    {
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+                        DCMNET_DEBUG("Converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
+                        cond = responseIdentifiers->convertToUTF8();
+#else
+                        if (responseIdentifiers->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
+                        {
+                            DCMNET_WARN("No support for character set conversion available ... quoting non-ASCII characters");
+                            /* make sure that non-ASCII characters are quoted appropriately */
+                            writeFlags |= DCMTypes::XF_convertNonASCII;
+                        } else {
+                            DCMNET_DEBUG("No support for character set conversion available");
+                        }
+#endif
+                    }
+                    /* write response dataset to XML file */
+                    if (cond.good())
+                        cond = responseIdentifiers->writeXML(*outputStream_, writeFlags);
+                    if (cond.bad())
+                        DCMNET_ERROR("Writing XML file: " << cond.text());
+                }
+            }
         }
     }
 
@@ -184,13 +199,20 @@ void DcmFindSCUDefaultCallback::callback(
 
 
 DcmFindSCU::DcmFindSCU()
-: net_(NULL)
+: net_(NULL),
+  outputResponseLimit_(0)
 {
 }
 
 DcmFindSCU::~DcmFindSCU()
 {
     dropNetwork();
+}
+
+OFCondition DcmFindSCU::setOutputResponseLimit(const unsigned int limit)
+{
+    outputResponseLimit_ = limit;
+    return EC_Normal;
 }
 
 OFCondition DcmFindSCU::initializeNetwork(int acse_timeout)
@@ -250,7 +272,11 @@ OFCondition DcmFindSCU::performQuery(
 
     /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
     OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        DCMNET_ERROR("Creating Association Parameters Failed: " << DimseCondition::dump(temp_str, cond));
+        return cond;
+    }
 
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values to be set here are "FINDSCU" and "ANY-SCP". */
@@ -260,7 +286,12 @@ OFCondition DcmFindSCU::performQuery(
     /* structure. The default is an insecure connection; where OpenSSL is  */
     /* available the user is able to request an encrypted,secure connection. */
     cond = ASC_setTransportLayerType(params, secureConnection);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        DCMNET_ERROR("Setting Transport Layer Type Failed: " << DimseCondition::dump(temp_str, cond));
+        (void) ASC_destroyAssociationParameters(&params);
+        return cond;
+    }
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
@@ -270,7 +301,12 @@ OFCondition DcmFindSCU::performQuery(
     /* Set the presentation contexts which will be negotiated */
     /* when the network connection will be established */
     cond = addPresentationContext(params, abstractSyntax, preferredTransferSyntax);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        DCMNET_ERROR("Adding Presentation Contexts Failed: " << DimseCondition::dump(temp_str, cond));
+        (void) ASC_destroyAssociationParameters(&params);
+        return cond;
+    }
 
     /* dump presentation contexts if required */
     DCMNET_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
@@ -283,14 +319,17 @@ OFCondition DcmFindSCU::performQuery(
 
     if (cond.bad())
     {
-        if (cond == DUL_ASSOCIATIONREJECTED) {
+        if (cond == DUL_ASSOCIATIONREJECTED)
+        {
             T_ASC_RejectParameters rej;
             ASC_getRejectParameters(params, &rej);
 
             DCMNET_ERROR("Association Rejected:" << OFendl << ASC_printRejectParameters(temp_str, &rej));
+            (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
             return cond;
         } else {
             DCMNET_ERROR("Association Request Failed: " << DimseCondition::dump(temp_str, cond));
+            (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
             return cond;
         }
     }
@@ -300,8 +339,10 @@ OFCondition DcmFindSCU::performQuery(
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
-    if (ASC_countAcceptedPresentationContexts(params) == 0) {
+    if (ASC_countAcceptedPresentationContexts(params) == 0)
+    {
         DCMNET_ERROR("No Acceptable Presentation Contexts");
+        (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
         return NET_EC_NoAcceptablePresentationContexts;
     }
 
@@ -362,6 +403,7 @@ OFCondition DcmFindSCU::performQuery(
             cond = ASC_abortAssociation(assoc);
             if (cond.bad()) {
                 DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
+                (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
                 return cond;
             }
         } else {
@@ -371,6 +413,7 @@ OFCondition DcmFindSCU::performQuery(
             if (cond.bad())
             {
                 DCMNET_ERROR("Association Release Failed: " << DimseCondition::dump(temp_str, cond));
+                (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
                 return cond;
             }
         }
@@ -382,20 +425,20 @@ OFCondition DcmFindSCU::performQuery(
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
+            (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
             return cond;
         }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
         DCMNET_INFO("Peer Aborted Association");
-    }
-    else
-    {
+    } else {
         DCMNET_ERROR("Find SCU Failed: " << DimseCondition::dump(temp_str, cond));
         DCMNET_INFO("Aborting Association");
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
             DCMNET_ERROR("Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
+            (void) ASC_destroyAssociation(&assoc); // this also destroys the T_ASC_Parameters structure
             return cond;
         }
     }
@@ -404,7 +447,9 @@ OFCondition DcmFindSCU::performQuery(
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad())
-        DCMNET_ERROR(DimseCondition::dump(temp_str, cond));
+    {
+        DCMNET_ERROR("Destroying Association Failed: " << DimseCondition::dump(temp_str, cond));
+    }
     return cond;
 }
 
@@ -648,7 +693,7 @@ OFCondition DcmFindSCU::findSCU(
         cond = proc.applyPathWithValue(dset, *path);
         if (cond.bad())
         {
-            DCMNET_ERROR("Bad override key/path: " << *path << ": " << cond.text());
+            DCMNET_ERROR("Bad override key/path: " << *path);
             return cond;
         }
         path++;
@@ -658,7 +703,7 @@ OFCondition DcmFindSCU::findSCU(
     presId = ASC_findAcceptedPresentationContextID(assoc, abstractSyntax);
 
     if (presId == 0) {
-        DCMNET_ERROR("No presentation context");
+        DCMNET_ERROR("No Presentation Context");
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
@@ -672,7 +717,7 @@ OFCondition DcmFindSCU::findSCU(
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 
     /* prepare the callback data */
-    DcmFindSCUDefaultCallback defaultCallback(extractResponses, cancelAfterNResponses, outputDirectory, outputStream);
+    DcmFindSCUDefaultCallback defaultCallback(extractResponses, cancelAfterNResponses, outputDirectory, outputStream, outputResponseLimit_);
     if (callback == NULL) callback = &defaultCallback;
     callback->setAssociation(assoc);
     callback->setPresentationContextID(presId);

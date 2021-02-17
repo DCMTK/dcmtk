@@ -189,7 +189,13 @@ static void divide_by_zero()
     //       away or emit compile-time errors.
     volatile T t0 = 1;
     volatile T t1 = 0;
+#ifndef DCMTK_UNDEF_SANITIZER
+    // disable this line when compiling with gcc -fsanitize=undefined
+    // by defining DCMTK_UNDEF_SANITIZER because otherwise this
+    // program will be aborted with a runtime error, thus preventing
+    // CMake from creating the makefiles / project files.
     t0 /= t1;
+#endif
 }
 
 // gathers and prints information for integer types
@@ -353,9 +359,14 @@ static void provoke_snan()
     // we assign a signaling NaN to another float variable
     // and convert it to a quiet NaN.
     volatile T t = guess<T>::snan();
-    // Other compilers will trigger only if we use
-    // arithmetics.
+    // Other compilers will trigger only if we use arithmetics.
+#ifndef DCMTK_UNDEF_SANITIZER
+    // disable this line when compiling with gcc -fsanitize=undefined
+    // by defining DCMTK_UNDEF_SANITIZER because otherwise this
+    // program will be aborted with a runtime error, thus preventing
+    // CMake from creating the makefiles / project files.
     ++t;
+#endif
 }
 
 template<typename T>

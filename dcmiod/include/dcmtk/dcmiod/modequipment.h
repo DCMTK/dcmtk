@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, Open Connections GmbH
+ *  Copyright (C) 2015-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -42,47 +42,50 @@ class DCMTK_DCMIOD_EXPORT IODGeneralEquipmentModule : public IODModule
 {
 
 public:
-
     /** Convenient struct containing commonly used equipment information
      *  (for use by external code)
      */
     struct DCMTK_DCMIOD_EXPORT EquipmentInfo
     {
 
-      /** Default Constructor
-       */
-      EquipmentInfo() :
-        m_Manufacturer(),
-        m_ManufacturerModelName(),
-        m_DeviceSerialNumber(),
-        m_SoftwareVersions() {}
+        /** Default Constructor
+         */
+        EquipmentInfo()
+            : m_Manufacturer()
+            , m_ManufacturerModelName()
+            , m_DeviceSerialNumber()
+            , m_SoftwareVersions()
+        {
+        }
 
-      /** Convenience Constructor setting commonly used values
-       *  @param manufacturer Manufacturer
-       *  @param manufacturerModelName Manufacturer's model name
-       *  @param deviceSerialNumber Serial number
-       *  @param softwareVersions Software versions
-       */
-      EquipmentInfo(const OFString& manufacturer,
-                    const OFString& manufacturerModelName,
-                    const OFString& deviceSerialNumber,
-                    const OFString& softwareVersions) :
-        m_Manufacturer(manufacturer),
-        m_ManufacturerModelName(manufacturerModelName),
-        m_DeviceSerialNumber(deviceSerialNumber),
-        m_SoftwareVersions(softwareVersions) {}
+        /** Convenience Constructor setting commonly used values
+         *  @param manufacturer Manufacturer
+         *  @param manufacturerModelName Manufacturer's model name
+         *  @param deviceSerialNumber Serial number
+         *  @param softwareVersions Software versions
+         */
+        EquipmentInfo(const OFString& manufacturer,
+                      const OFString& manufacturerModelName,
+                      const OFString& deviceSerialNumber,
+                      const OFString& softwareVersions)
+            : m_Manufacturer(manufacturer)
+            , m_ManufacturerModelName(manufacturerModelName)
+            , m_DeviceSerialNumber(deviceSerialNumber)
+            , m_SoftwareVersions(softwareVersions)
+        {
+        }
 
-      /// Manufacturer (VM 1)
-      OFString m_Manufacturer;
+        /// Manufacturer (VM 1)
+        OFString m_Manufacturer;
 
-      /// Manufacturer's Model Name (VM 1)
-      OFString m_ManufacturerModelName;
+        /// Manufacturer's Model Name (VM 1)
+        OFString m_ManufacturerModelName;
 
-      /// Device Serial Number (VM 1)
-      OFString m_DeviceSerialNumber;
+        /// Device Serial Number (VM 1)
+        OFString m_DeviceSerialNumber;
 
-      /// Software Version(s) (VM 1-n)
-      OFString m_SoftwareVersions;
+        /// Software Version(s) (VM 1-n)
+        OFString m_SoftwareVersions;
     };
 
     /** Constructor
@@ -91,8 +94,7 @@ public:
      *  @param  rules The rule set for this class. If NULL, the class creates
      *          one from scratch and adds its values.
      */
-    IODGeneralEquipmentModule(OFshared_ptr<DcmItem> item,
-                              OFshared_ptr<IODRules> rules);
+    IODGeneralEquipmentModule(OFshared_ptr<DcmItem> item, OFshared_ptr<IODRules> rules);
 
     /** Constructor
      */
@@ -103,7 +105,7 @@ public:
     virtual ~IODGeneralEquipmentModule();
 
     /** Resets rules to their original values
-    */
+     */
     virtual void resetRules();
 
     /** Get name of module
@@ -116,63 +118,55 @@ public:
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getManufacturer(OFString &value,
-                                        const signed long pos = 0) const;
+    virtual OFCondition getManufacturer(OFString& value, const signed long pos = 0) const;
 
     /** Get Institution Name
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getInstitutionName(OFString &value,
-                                           const signed long pos = 0) const;
+    virtual OFCondition getInstitutionName(OFString& value, const signed long pos = 0) const;
 
     /** Get Institution Address
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getInstitutionAddress(OFString &value,
-                                              const signed long pos = 0) const;
+    virtual OFCondition getInstitutionAddress(OFString& value, const signed long pos = 0) const;
 
     /** Get Station Name
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getStationName(OFString &value,
-                                       const signed long pos = 0) const;
+    virtual OFCondition getStationName(OFString& value, const signed long pos = 0) const;
 
     /** Get Institutional Department Name
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getInstitutionalDepartmentName(OFString &value,
-                                                       const signed long pos = 0) const;
+    virtual OFCondition getInstitutionalDepartmentName(OFString& value, const signed long pos = 0) const;
     /** Get Manufacturer's Model Name
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getManufacturerModelName(OFString &value,
-                                                 const signed long pos = 0) const;
+    virtual OFCondition getManufacturerModelName(OFString& value, const signed long pos = 0) const;
 
     /** Get Device Serial Number
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getDeviceSerialNumber(OFString &value,
-                                              const signed long pos = 0) const;
+    virtual OFCondition getDeviceSerialNumber(OFString& value, const signed long pos = 0) const;
 
     /** Get Software Version(s)
      *  @param  value Reference to variable in which the value should be stored
      *  @param  pos Index of the value to get (0..vm-1), -1 for all components
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getSoftwareVersions(OFString &value,
-                                            const signed long pos = 0) const;
+    virtual OFCondition getSoftwareVersions(OFString& value, const signed long pos = 0) const;
 
     /** Set Manufacturer
      *  @param  value Value to be set (single value only) or "" for no value
@@ -180,8 +174,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setManufacturer(const OFString &value,
-                                        const OFBool checkValue = OFTrue);
+    virtual OFCondition setManufacturer(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Institution Name
      *  @param  value Value to be set (single value only) or "" for no value
@@ -189,8 +182,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setInstitutionName(const OFString &value,
-                                           const OFBool checkValue = OFTrue);
+    virtual OFCondition setInstitutionName(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Institution Address
      *  @param  value Value to be set (single value only) or "" for no value
@@ -198,8 +190,7 @@ public:
      *          with other setter functions).
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setInstitutionAddress(const OFString &value,
-                                              const OFBool checkValue = OFTrue);
+    virtual OFCondition setInstitutionAddress(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Station Name
      *  @param  value Value to be set (single value only) or "" for no value
@@ -207,8 +198,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setStationName(const OFString &value,
-                                       const OFBool checkValue = OFTrue);
+    virtual OFCondition setStationName(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Institutional Department Name
      *  @param  value Value to be set (single value only) or "" for no value
@@ -216,8 +206,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setInstutionalDepartmentName(const OFString &value,
-                                                     const OFBool checkValue = OFTrue);
+    virtual OFCondition setInstutionalDepartmentName(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Manufacturer's Model Name
      *  @param  value Value to be set (single value only) or "" for no value
@@ -225,8 +214,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setManufacturerModelName(const OFString &value,
-                                                 const OFBool checkValue = OFTrue);
+    virtual OFCondition setManufacturerModelName(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Device Serial Number
      *  @param  value Value to be set (single value only) or "" for no value
@@ -234,8 +222,7 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setDeviceSerialNumber(const OFString &value,
-                                              const OFBool checkValue = OFTrue);
+    virtual OFCondition setDeviceSerialNumber(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Software Version(s)
      *  @param  value Value to be set (possibly multi-valued) or "" for no value
@@ -243,14 +230,11 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setSoftwareVersions(const OFString &value,
-                                            const OFBool checkValue = OFTrue);
+    virtual OFCondition setSoftwareVersions(const OFString& value, const OFBool checkValue = OFTrue);
 
 private:
-
     /// Name of the module ("GeneralEquipmentModule")
     OFString m_ModuleName;
 };
-
 
 #endif // MODEQUIPMENT_H

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2019, OFFIS e.V.
+ *  Copyright (C) 2007-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,7 +108,8 @@ OFCondition DJLSEncoderBase::decode(
     DcmPixelSequence * /* pixSeq */,
     DcmPolymorphOBOW& /* uncompressedPixelData */,
     const DcmCodecParameter * /* cp */,
-    const DcmStack& /* objStack */) const
+    const DcmStack& /* objStack */,
+    OFBool& /* removeOldRep */ ) const
 {
   // we are an encoder only
   return EC_IllegalCall;
@@ -138,7 +139,8 @@ OFCondition DJLSEncoderBase::encode(
     const DcmRepresentationParameter * /* toRepParam */,
     DcmPixelSequence * & /* toPixSeq */,
     const DcmCodecParameter * /* cp */,
-    DcmStack & /* objStack */) const
+    DcmStack& /* objStack */,
+    OFBool& /* removeOldRep */ ) const
 {
   // we don't support re-coding for now.
   return EC_IllegalCall;
@@ -150,10 +152,16 @@ OFCondition DJLSEncoderBase::encode(
     const DcmRepresentationParameter * toRepParam,
     DcmPixelSequence * & pixSeq,
     const DcmCodecParameter *cp,
-    DcmStack & objStack) const
+    DcmStack& objStack,
+    OFBool& removeOldRep) const
 {
   OFCondition result = EC_Normal;
   DJLSRepresentationParameter defRep;
+
+  // this codec may modify the DICOM header such that the previous pixel
+  // representation is not valid anymore. Indicate this to the caller
+  // to trigger removal.
+  removeOldRep = OFTrue;
 
   // retrieve pointer to dataset from parameter stack
   DcmStack localStack(objStack);
@@ -685,14 +693,20 @@ OFCondition DJLSEncoderBase::compressRawFrame(
     case DJLSCodecParameter::interleaveLine:
       jls_params.ilv = ILV_LINE;
       break;
+#ifdef ENABLE_DCMJPLS_INTERLEAVE_NONE
     case DJLSCodecParameter::interleaveNone:
       jls_params.ilv = ILV_NONE;
       break;
+#endif
     case DJLSCodecParameter::interleaveDefault:
     default:
       // In default mode we just never convert the image to another
       // interleave-mode. Instead, we use what is already there.
+#ifdef ENABLE_DCMJPLS_INTERLEAVE_NONE
       jls_params.ilv = ilv;
+#else
+      jls_params.ilv = (ilv == ILV_NONE ? ILV_LINE : ilv);
+#endif
       break;
   }
 
@@ -1099,9 +1113,11 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
     case DJLSCodecParameter::interleaveLine:
       jls_params.ilv = ILV_LINE;
       break;
+#ifdef ENABLE_DCMJPLS_INTERLEAVE_NONE
     case DJLSCodecParameter::interleaveNone:
       jls_params.ilv = ILV_NONE;
       break;
+#endif
     case DJLSCodecParameter::interleaveDefault:
     default:
       // Default for the cooked encoder is always ILV_LINE
@@ -1117,6 +1133,8 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
   Uint8 *frameBuffer = NULL;
   Uint8 *framePointer = buffer;
+
+#ifdef ENABLE_DCMJPLS_INTERLEAVE_NONE
   // Do we have to convert the image to color-by-plane now?
   if (jls_params.ilv == ILV_NONE && jls_params.components != 1)
   {
@@ -1126,6 +1144,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
     framePointer = frameBuffer;
     result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitspersample);
   }
+#endif
 
   size_t compressed_buffer_size = buffer_size + 1024;
   BYTE *compressed_buffer = new BYTE[compressed_buffer_size];

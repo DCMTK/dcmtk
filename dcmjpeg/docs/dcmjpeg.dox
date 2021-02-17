@@ -39,11 +39,6 @@ if (fileformat.loadFile("test.dcm").good())
   if (dataset->chooseRepresentation(EXS_JPEGProcess14SV1, &params).good() &&
       dataset->canWriteXfer(EXS_JPEGProcess14SV1))
   {
-    // force the meta-header UIDs to be re-generated when storing the file
-    // since the UIDs in the data set may have changed
-    delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-    delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-
     // store in lossless JPEG format
     fileformat.saveFile("test_jpeg.dcm", EXS_JPEGProcess14SV1);
   }

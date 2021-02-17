@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2017, OFFIS e.V.
+ *  Copyright (C) 2002-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,9 +23,19 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcostrmf.h"
 #include "dcmtk/dcmdata/dcerror.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>
+#endif
+END_EXTERN_C
 
 
 DcmFileConsumer::DcmFileConsumer(const OFFilename &filename)
@@ -142,3 +152,4 @@ DcmOutputFileStream::~DcmOutputFileStream()
   }
 #endif
 }
+

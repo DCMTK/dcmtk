@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:47:44 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:12 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 29 - Acquisition Modality.
- *  (type: extensible, version: 20190327)
+ *  (type: extensible, version: 20201115)
  */
 class DCMTK_CMR_EXPORT CID29_AcquisitionModality
   : public DSRContextGroup
@@ -42,26 +42,34 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
     {
         /// (AR,DCM,"Autorefraction")
         Autorefraction,
-        /// (BDUS,DCM,"Ultrasound Bone Densitometry")
-        UltrasoundBoneDensitometry,
         /// (BI,DCM,"Biomagnetic Imaging")
         BiomagneticImaging,
         /// (BMD,DCM,"Bone Mineral Densitometry")
         BoneMineralDensitometry,
+        /// (EPS,DCM,"Cardiac Electrophysiology")
+        CardiacElectrophysiology,
         /// (CR,DCM,"Computed Radiography")
         ComputedRadiography,
         /// (CT,DCM,"Computed Tomography")
         ComputedTomography,
+        /// (DMS,DCM,"Dermoscopy")
+        Dermoscopy,
         /// (DG,DCM,"Diaphanography")
         Diaphanography,
         /// (DX,DCM,"Digital Radiography")
         DigitalRadiography,
         /// (ECG,DCM,"Electrocardiography")
         Electrocardiography,
-        /// (EPS,DCM,"Cardiac Electrophysiology")
-        CardiacElectrophysiology,
+        /// (EEG,DCM,"Electroencephalography")
+        Electroencephalography,
+        /// (EMG,DCM,"Electromyography")
+        Electromyography,
+        /// (EOG,DCM,"Electrooculography")
+        Electrooculography,
         /// (ES,DCM,"Endoscopy")
         Endoscopy,
+        /// (XC,DCM,"External-camera Photography")
+        ExternalCameraPhotography,
         /// (GM,DCM,"General Microscopy")
         GeneralMicroscopy,
         /// (HD,DCM,"Hemodynamic Waveform")
@@ -74,24 +82,22 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         IntravascularUltrasound,
         /// (KER,DCM,"Keratometry")
         Keratometry,
-        /// (LEN,DCM,"Lensometry")
-        Lensometry,
         /// (LS,DCM,"Laser Scan")
         LaserScan,
-        /// (MG,DCM,"Mammography")
-        Mammography,
+        /// (LEN,DCM,"Lensometry")
+        Lensometry,
         /// (MR,DCM,"Magnetic Resonance")
         MagneticResonance,
+        /// (MG,DCM,"Mammography")
+        Mammography,
         /// (NM,DCM,"Nuclear Medicine")
         NuclearMedicine,
         /// (OAM,DCM,"Ophthalmic Axial Measurements")
         OphthalmicAxialMeasurements,
-        /// (OCT,DCM,"Optical Coherence Tomography")
-        OpticalCoherenceTomography,
-        /// (OP,DCM,"Ophthalmic Photography")
-        OphthalmicPhotography,
         /// (OPM,DCM,"Ophthalmic Mapping")
         OphthalmicMapping,
+        /// (OP,DCM,"Ophthalmic Photography")
+        OphthalmicPhotography,
         /// (OPT,DCM,"Ophthalmic Tomography")
         OphthalmicTomography,
         /// (OPTBSV,DCM,"Ophthalmic Tomography B-scan Volume Analysis")
@@ -100,18 +106,22 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         OphthalmicTomographyEnFace,
         /// (OPV,DCM,"Ophthalmic Visual Field")
         OphthalmicVisualField,
+        /// (OCT,DCM,"Optical Coherence Tomography")
+        OpticalCoherenceTomography,
         /// (OSS,DCM,"Optical Surface Scanner")
         OpticalSurfaceScanner,
-        /// (PT,DCM,"Positron emission tomography")
-        PositronEmissionTomography,
         /// (PX,DCM,"Panoramic X-Ray")
         PanoramicXRay,
-        /// (RESP,DCM,"Respiratory Waveform")
-        RespiratoryWaveform,
+        /// (POS,DCM,"Position Sensor")
+        PositionSensor,
+        /// (PT,DCM,"Positron emission tomography")
+        PositronEmissionTomography,
         /// (RF,DCM,"Radiofluoroscopy")
         Radiofluoroscopy,
         /// (RG,DCM,"Radiographic imaging")
         RadiographicImaging,
+        /// (RESP,DCM,"Respiratory Waveform")
+        RespiratoryWaveform,
         /// (RTIMAGE,DCM,"RT Image")
         RTImage,
         /// (SM,DCM,"Slide Microscopy")
@@ -122,12 +132,12 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         Thermography,
         /// (US,DCM,"Ultrasound")
         Ultrasound,
+        /// (BDUS,DCM,"Ultrasound Bone Densitometry")
+        UltrasoundBoneDensitometry,
         /// (VA,DCM,"Visual Acuity")
         VisualAcuity,
         /// (XA,DCM,"X-Ray Angiography")
-        XRayAngiography,
-        /// (XC,DCM,"External-camera Photography")
-        ExternalCameraPhotography
+        XRayAngiography
     };
 
     /** (default) constructor

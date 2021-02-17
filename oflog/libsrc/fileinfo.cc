@@ -48,8 +48,14 @@ getFileInfo (FileInfo * fi, tstring const & name)
 {
 #if defined (_WIN32)
     struct _stat fileStatus;
+
+#if defined (DCMTK_OFLOG_UNICODE)
     if (_tstat (name.c_str (), &fileStatus) == -1)
         return -1;
+#else
+    if (_stat (name.c_str (), &fileStatus) == -1)
+        return -1;
+#endif
     
     fi->mtime = helpers::Time (fileStatus.st_mtime);
     fi->is_link = false;

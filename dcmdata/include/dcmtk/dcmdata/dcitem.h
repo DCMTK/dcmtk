@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -175,21 +175,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    /** calculate the length of this DICOM element when encoded with the
-     *  given transfer syntax and the given encoding type for sequences.
-     *  For elements, the length includes the length of the tag, length field,
-     *  VR field and the value itself, for items and sequences it returns
-     *  the length of the complete item or sequence including delimitation tags
-     *  if applicable.
-     *  If length encoding is set to be explicit and the total item size is
-     *  larger than the available 32-bit length field, then undefined length
-     *  is returned. If "dcmWriteOversizedSeqsAndItemsImplicit" is disabled,
-     *  also the internal DcmObject errorFlag is set to EC_SeqOrItemContentOverflow
-     *  in case the item content (excluding tag header etc.) is already too
-     *  large.
-     *  @param xfer transfer syntax for length calculation
-     *  @param enctype sequence encoding type for length calculation
-     *  @return length of DICOM element
+    /** @copydoc DcmObject::calcElementLength()
      */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
@@ -300,6 +286,19 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
+
+    /** write object in JSON format and control whether the output
+     *  is encapsulated in braces
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @param printBraces true if output should be encapsulated in braces
+     *  @param printNewline true if a newline should be printed after a closing brace
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJsonExt(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format,
+                                  OFBool printBraces,
+                                  OFBool printNewline);
 
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream
@@ -560,7 +559,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *                        will be handled.
      *  @param padlen         The length up to which the dataset shall be padded,
      *                        if padding is desired.
-     *  @param subPadlen      For sequences (ie sub elements), the length up to
+     *  @param subPadlen      For sequences (i.e. sub elements), the length up to
      *                        which item shall be padded, if padding is desired.
      *  @param instanceLength Number of extra bytes added to the item/dataset
      *                        length used when computing the padding; this
@@ -660,7 +659,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** find element and get value as a C++ string (only one component).
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OW, PN, SH, SL, SS, ST, TM, UC, UI, UL, UR, US, UT.
+     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  Since the getOFString() routine is called internally the resulting string is normalized, i.e.
      *  leading and/or trailing spaces are removed according to the associated value representation,
      *  or the element value is converted to a character string (for non-string VRs) - see documentation
@@ -681,7 +680,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** find element and get value as a C++ string (all components).
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OW, PN, SH, SL, SS, ST, TM, UC, UI, UL, UR, US, UT.
+     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  Since the getOFStringArray() routine is called internally the resulting string is normalized,
      *  i.e. leading and/or trailing spaces are removed according to the associated value representation
      *  or the element values are converted to character strings (for non-string VRs) - see documentation
@@ -1058,7 +1057,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OW, PN, SH, SL, SS, ST, TM, UC, UI, UL, UR, US, UT.
+     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value string value to be set for the new element (might be empty or NULL)
      *  @param replaceOld flag indicating whether to replace an existing element or not
@@ -1070,7 +1069,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OW, PN, SH, SL, SS, ST, TM, UC, UI, UL, UR, US, UT.
+     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  Please note that since the length of the string has to be specified explicitly, the string
      *  can contain more than one NULL byte.
      *  @param tag DICOM tag specifying the attribute to be created
@@ -1085,8 +1084,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UC, UI,
-     *  UR, UT.
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
+     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be empty)
      *  @param replaceOld flag indicating whether to replace an existing element or not
@@ -1232,7 +1231,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                          const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: FD, OD.
+     *  Applicable to the following VRs: DS, FD, OD
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1276,7 +1275,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** create a new element (with no value) and insert it into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OW, PN, SH, SL, SQ, SS, ST, TM, UC, UI, UL, UR, US, UT.
+     *  OL, OV, OW, PN, SH, SL, SQ, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.

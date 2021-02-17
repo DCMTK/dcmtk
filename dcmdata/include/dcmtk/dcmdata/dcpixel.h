@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -341,10 +341,7 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
 
-    /** returns length of representation conforming to the
-     *  transfer syntax with tag, vr, ... It does not create a
-     *  representation. If no conforming representation exists an
-     *  error code is set and 0 returned.
+    /** @copydoc DcmObject::calcElementLength()
      */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
@@ -399,6 +396,14 @@ public:
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
+
+    /** write object in JSON format to a stream
+     *  @param out output stream to which the JSON document is written
+     *  @param format used to format and customize the output
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
+                                  DcmJsonFormat &format);
 
     /** special write method for creation of digital signatures
      *  @param outStream DICOM output stream

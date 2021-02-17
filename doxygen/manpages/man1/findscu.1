@@ -1,4 +1,4 @@
-.TH "findscu" 1 "Mon Oct 28 2019" "Version 3.6.5" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -124,6 +124,9 @@ other network options:
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
 
+  -ts   --socket-timeout  [s]econds: integer (default: 60)
+          timeout for network socket (0 for none)
+
   -ta   --acse-timeout  [s]econds: integer (default: 30)
           timeout for ACSE messages
 
@@ -178,10 +181,10 @@ key and certificate file format:
 
 certification authority:
 
-  +cf   --add-cert-file  [c]ertificate filename: string
+  +cf   --add-cert-file  [f]ilename: string
           add certificate file to list of certificates
 
-  +cd   --add-cert-dir  [c]ertificate directory: string
+  +cd   --add-cert-dir  [d]irectory: string
           add certificates in d to list of certificates
 
 security profile:
@@ -265,6 +268,10 @@ C-FIND responses:
 
   -Xs   --extract-xml-single  [f]ilename: string
           extract all responses to given XML file f
+
+  -Xlo  --limit-output  [n]umber: integer
+          limit number of responses extracted to file to n
+          (default: unlimited)
 .fi
 .PP
 .SH "NOTES"
@@ -371,4 +378,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2019 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2021 e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

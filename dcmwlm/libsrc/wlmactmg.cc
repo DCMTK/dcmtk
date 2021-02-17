@@ -910,7 +910,7 @@ void WlmActivityManager::RemoveProcessFromTable( int pid )
     // if process can be found, delete it from list and free memory
     if ( ps->processId == pid )
     {
-      processTable.remove(*it);
+      processTable.erase(it);
       delete ps;
       return;
     }

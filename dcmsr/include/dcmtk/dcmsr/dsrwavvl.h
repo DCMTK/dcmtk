@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -216,7 +216,7 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
     /** check the specified SOP class UID for validity.
      *  This method further specializes the checks performed in the base class
      *  DSRCompositeReferenceValue.  All waveform SOP classes that are defined
-     *  in DICOM PS 3.6-2017e are allowed.
+     *  in DICOM PS 3.6-2020c are allowed.
      ** @param  sopClassUID  SOP class UID to be checked
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */

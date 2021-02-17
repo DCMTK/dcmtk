@@ -309,27 +309,27 @@ tlsscu.o: tlsscu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrov.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
- ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcasccff.h \
  ../../dcmnet/include/dcmtk/dcmnet/dndefine.h \
- ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcasccfg.h \
+ ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
+ ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
  ../../dcmnet/include/dcmtk/dcmnet/lst.h \
  ../../dcmnet/include/dcmtk/dcmnet/dul.h \
  ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
  ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
- ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
- ../../dcmnet/include/dcmtk/dcmnet/dcasccff.h \
- ../../dcmnet/include/dcmtk/dcmnet/dcasccfg.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccftsmp.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccfuidh.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccfpcmp.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccfrsmp.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccfenmp.h \
  ../../dcmnet/include/dcmtk/dcmnet/dccfprmp.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
  ../include/dcmtk/dcmtls/tlstrans.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \

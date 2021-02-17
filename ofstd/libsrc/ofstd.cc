@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2019, OFFIS e.V.
+ *  Copyright (C) 2001-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -471,7 +471,7 @@ OFBool OFStandard::fileExists(const OFFilename &fileName)
             fileAttr = GetFileAttributesW(fileName.getWideCharPointer());
         else
 #endif
-            fileAttr = GetFileAttributes(fileName.getCharPointer());
+            fileAttr = GetFileAttributesA(fileName.getCharPointer());
         if (fileAttr != 0xffffffff)
         {
             /* check file type (not a directory?) */
@@ -501,7 +501,7 @@ OFBool OFStandard::dirExists(const OFFilename &dirName)
             fileAttr = GetFileAttributesW(dirName.getWideCharPointer());
         else
 #endif
-            fileAttr = GetFileAttributes(dirName.getCharPointer());
+            fileAttr = GetFileAttributesA(dirName.getCharPointer());
         if (fileAttr != 0xffffffff)
         {
             /* check file type (is a directory?) */
@@ -1875,6 +1875,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     int expSign = 0;
     double fraction;
     int exponent = 0; // Exponent read from "EX" field.
+    int old_exponent = 0;
     const char *pExp; // Temporarily holds location of exponent in string.
 
     /* Exponent that derives from the fractional part.  Under normal
@@ -2000,8 +2001,24 @@ double OFStandard::atof(const char *s, OFBool *success)
         }
         while (isdigit(OFstatic_cast(unsigned char, *p)))
         {
+            old_exponent = exponent;
             exponent = exponent * 10 + (*p - '0');
             ++p;
+            if (exponent < old_exponent)
+            {
+              // overflow of the exponent. We cannot represent this number in an integer
+              // and also not in a double, where the exponent must not be larger than 308.
+              if (expSign)
+              {
+                // negative exponent. return 0 and leave success flag set to false
+                return 0.0;
+              }
+              else
+              {
+                // positive exponent. return plus/minus HUGE_VAL, depending on the sign bit
+                if (sign) return -HUGE_VAL; else return HUGE_VAL;
+              }
+            }
         }
     }
 

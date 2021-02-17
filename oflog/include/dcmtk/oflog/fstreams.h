@@ -46,7 +46,7 @@ typedef STD_NAMESPACE basic_ifstream<tchar> tifstream;
 //! \def DCMTK_LOG4CPLUS_FSTREAM_PREFERED_FILE_NAME(X)
 //! \brief Expands into expression that picks the right type for
 //! STD_NAMESPACE fstream file name parameter.
-#if defined (DCMTK_LOG4CPLUS_FSTREAM_ACCEPTS_WCHAR_T) && defined (UNICODE)
+#if defined (DCMTK_LOG4CPLUS_FSTREAM_ACCEPTS_WCHAR_T) && defined (DCMTK_OFLOG_UNICODE)
 #  define DCMTK_LOG4CPLUS_FSTREAM_PREFERED_FILE_NAME(X) (X)
 #else
 #  define DCMTK_LOG4CPLUS_FSTREAM_PREFERED_FILE_NAME(X) (DCMTK_LOG4CPLUS_TSTRING_TO_STRING(X))

@@ -1,6 +1,6 @@
     /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2019, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -47,7 +47,7 @@ class DCMTK_DCMTRACT_EXPORT TrcTrackSet
 
 public:
 
-  // Allow read/write functions in DcmIODUtil to access class internals
+  /// Allow read/write functions in DcmIODUtil to access class internals
   friend class DcmIODUtil;
 
   /** Create TrcTrackSet object by proving required data
@@ -314,6 +314,7 @@ public:
    *  @param  value The statistical value
    *  @param  statistic Returns the created statistic, if successful. NULL
    *          otherwise
+   *  @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition addTrackSetStatistic(const CodeSequenceMacro& typeCode,
                                            const CodeSequenceMacro& typeModifierCode,

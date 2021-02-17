@@ -10,7 +10,7 @@
 #include "dcmtk/ofstd/ofstd.h"    /* for size_t */
 #include "dcmtk/ofstd/ofdefine.h" /* for DCMTK_DECL_EXPORT */
 
-#ifdef charls_EXPORTS
+#ifdef dcmtkcharls_EXPORTS
 #define DCMTK_CHARLS_EXPORT DCMTK_DECL_EXPORT
 #else
 #define DCMTK_CHARLS_EXPORT DCMTK_DECL_IMPORT

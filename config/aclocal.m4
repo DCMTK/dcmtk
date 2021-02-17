@@ -1182,35 +1182,6 @@ else
 fi
 ])
 
-
-dnl AC_CHECK_CXX_BOOL checks if bool is a built-in C++ type
-dnl   (which is not the case on older compilers).
-
-dnl AC_CHECK_CXX_BOOL(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
-AC_DEFUN(AC_CHECK_CXX_BOOL,
-[AC_MSG_CHECKING([if bool is built-in type])
-AH_TEMPLATE([HAVE_CXX_BOOL], [Define if bool is a built-in type.])
-AC_CACHE_VAL(ac_cv_have_cxx_bool,
-[AC_TRY_COMPILE([],[
-bool b1 = true;
-bool b2 = false;
-],
-eval "ac_cv_have_cxx_bool=yes",
-eval "ac_cv_have_cxx_bool=no")])
-if eval "test \"`echo $ac_cv_have_cxx_bool`\" = yes"; then
-  AC_MSG_RESULT(yes)
-changequote(, )dnl
-  ac_tr_prototype=HAVE_CXX_BOOL
-changequote([, ])dnl
-  AC_DEFINE_UNQUOTED($ac_tr_prototype)
-  ifelse([$1], , :, [$1])
-else
-  AC_MSG_RESULT(no)
-  ifelse([$2], , , [$2])
-fi
-])
-
-
 dnl AC_CHECK_CXX_VOLATILE checks if volatile is a built-in C++ keyword
 dnl   (which is not the case on older compilers).
 

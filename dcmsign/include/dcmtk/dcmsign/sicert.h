@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,28 +24,37 @@
 #define SICERT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmsign/sitypes.h"
 
 #ifdef WITH_OPENSSL
 
+#include "dcmtk/dcmsign/sitypes.h"
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 
 class DcmItem;
 class SiAlgorithm;
+class OFDateTime;
 struct x509_st;
+struct asn1_string_st;
 typedef struct x509_st X509;
+typedef struct asn1_string_st ASN1_STRING;
+typedef struct asn1_string_st ASN1_GENERALIZEDTIME;
 
 /** a class representing X.509 public key certificates.
  *  @remark this class is only available if DCMTK is compiled with
  *  OpenSSL support enabled.
  */
 class DCMTK_DCMSIGN_EXPORT SiCertificate
-{    
+{
 public:
 
   /// default constructor
   SiCertificate();
-  
+
+  /** constructor
+   *  @param cert pointer to OpenSSL X509 object. Ownership is transferred to the SiCertificate instance
+   */
+  SiCertificate(X509 *cert);
+
   ///destructor
   virtual ~SiCertificate();
 
@@ -69,11 +78,11 @@ public:
    *  @return dcmdata OFCondition status code
    */
   OFCondition write(DcmItem& item);
-  
+
   /** returns the type of public key stored in this certificate
    */
   E_KeyType getKeyType();
-  
+
   /** creates an SiAlgorithm object for the public key contained in this certificate.
    *  If no certificate loaded or operation fails, returns NULL.
    *  New SiAlgorithm object must be deleted by caller.
@@ -124,10 +133,71 @@ public:
    */
   long getCertKeyBits();
 
-  /** returns a pointer to the raw certificate structure or NULL if no 
+  /** returns the name of the elliptic curve used in the certificate.
+   *  @return NULL if the certificate is not of elliptic curve type,
+   *    "unnamed curve" if the curve name has not been stored in the certificate,
+   *    or the short name of the elliptic curve if available.
+   */
+  const char *getCertCurveName();
+
+  /** checks if the length of the public key in the certificate is too short
+   *  and must be considered weak. Currently, an RSA or DSA key with less than
+   *  1024 bits and an ECDSA key with less than 256 bits are considered weak.
+   *  @return OFTrue if key is weak, OFFalse otherwise.
+   */
+  OFBool isWeakKey();
+
+  /** checks if the length of the public key in the certificate is too short
+   *  and must be considered weak, and if so, prints a warning to the logger.
+   */
+  void checkForWeakKey();
+
+  /** returns a pointer to the raw certificate structure or NULL if no
    *  certificate present. Should not be called by users of this library.
    */
   X509 *getRawCertificate();
+
+  /** returns true if the certificate expires before the given date.
+   *  @param date a string in the format YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ
+   *    (where Z represents the letter 'Z', meaning time zone UTC+0)
+   *  @return OFTrue if certificate expires before the given date,
+   *    or if the given date is invalid; OFFalse otherwise.
+   */
+  OFBool isCertExpiredAt(OFString& date);
+
+  /** returns true if the certificate is expired.
+   *  @return OFTrue if certificate is expired, OFFalse otherwise
+   */
+  OFBool isCertExpiredNow() const;
+
+  /** returns true if the certificate is not yet valid at the given date.
+   *  @param date a string in the format YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ
+   *    (where Z represents the letter 'Z', meaning time zone UTC+0)
+   *  @return OFTrue if certificate is not yet valid at the given date,
+   *    or if the given date is invalid; OFFalse otherwise.
+   */
+  OFBool isCertNotYetValidAt(OFString& date);
+
+  /** returns true if the certificate is not yet valid.
+   *  @return OFTrue if certificate is not yet valid, OFFalse otherwise
+   */
+  OFBool isCertNotYetValidNow() const;
+
+  /** this helper function converts a datetime in ASN1_GENERALIZEDTIME
+   *  format to OFDateTime.
+   *  @param d datetime in ASN1_GENERALIZEDTIME format
+   *  @param dt dt datetime stored in this parameter upon success
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  static OFCondition convertGeneralizedTime(const ASN1_GENERALIZEDTIME *d, OFDateTime& dt);
+
+  /** this helper function converts a datetime in ASN1_TIME format
+   *  (which is in fact an alias for ASN1_STRING) to OFDateTime.
+   *  @param d datetime in ASN1_TIME format
+   *  @param dt dt datetime stored in this parameter upon success
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  static OFCondition convertASN1Time(const ASN1_STRING *d, OFDateTime& dt);
 
 private:
 

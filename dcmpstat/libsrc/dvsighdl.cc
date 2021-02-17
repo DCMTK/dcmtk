@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,7 +33,7 @@
 #include "dcmtk/dcmsign/sitypes.h"
 #include "dcmtk/dcmsign/sinullpr.h"
 #include "dcmtk/dcmsign/siprivat.h"
-#include "dcmtk/dcmsign/siripemd.h"
+#include "dcmtk/dcmsign/simdmac.h"
 
 #include "dcmtk/ofstd/ofstream.h"
 
@@ -151,7 +151,7 @@ void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, STD_NAMESPA
   unsigned long sqCard=0;
   const char *tagname = NULL;
   unsigned long m=0;
-  char buf[20];
+  char buf[30];
   OFBool printed = OFFalse;
   
   if (stack.card() > 2)
@@ -333,6 +333,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
           cert->getCertValidityNotAfter(aString);
           os << aString.c_str() << htmlEndl
              << htmlLine4 << "Public key" << htmlNext;
+          const char *ecname = NULL;
           switch (cert->getKeyType())
           {
             case EKT_RSA:
@@ -340,6 +341,17 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
               break;
             case EKT_DSA:
               os << "DSA, " << cert->getCertKeyBits() << " bits" << htmlEndl;
+              break;
+            case EKT_EC:
+              ecname = cert->getCertCurveName();
+              if (ecname)
+              {
+                os << "EC, curve " << ecname << ", " << cert->getCertKeyBits() << " bits";
+              }
+              else
+              {
+                os << "EC, " << cert->getCertKeyBits() << " bits";
+              }
               break;
             case EKT_DH:
               os << "DH, " << cert->getCertKeyBits() << " bits" << htmlEndl;
@@ -813,7 +825,7 @@ OFCondition DVSignatureHandler::createSignature(
   if (! key.matchesCertificate(cert)) return EC_IllegalCall; // private key does not match certificate
 
   DcmSignature signer;
-  SiRIPEMD160 mac;
+  SiMDMAC mac(EMT_RIPEMD160);
   SiNullProfile nullProfile;
   DVSignatureHandlerSignatureProfile mainProfile(attributesNotToSignInMainDataset);
   

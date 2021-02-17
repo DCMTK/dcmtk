@@ -25,7 +25,7 @@ LOCALLIBS = -ldcmseg -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd $(ZLIBLIBS) \
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include \
 
-test_objs = tests.o tutils.o
+test_objs = tconcat_binary.o tests.o troundtrip.o tutils.o
 objs = $(test_objs)
 progs = tests
 
@@ -37,10 +37,10 @@ tests: $(test_objs)
 
 
 check: tests
-	./tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
 
 
 install: all

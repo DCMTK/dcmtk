@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,6 +84,13 @@ static void check_frame_content_fg(FGFrameContent& fg)
 
 OFTEST(dcmfg_frame_content)
 {
+    // Make sure data dictionary is loaded
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     OFString fg_dump;
     init_template(fg_dump);
 
@@ -119,7 +126,8 @@ OFTEST(dcmfg_frame_content)
     dest_item.clear();
     result = fg_for_read.write(dest_item);
     OFCHECK(result.good());
-    if (result.bad()) return;
+    if (result.bad())
+        return;
     dest_item.print(out);
     OFCHECK(out.str() == fg_dump.c_str());
 
@@ -131,7 +139,8 @@ OFTEST(dcmfg_frame_content)
     // Test clone() method
     FGFrameContent* clone = OFstatic_cast(FGFrameContent*, fg.clone());
     OFCHECK(clone != NULL);
-    if (clone == NULL) return;
+    if (clone == NULL)
+        return;
     OFCHECK(clone->compare(fg) == 0);
     delete clone;
 }

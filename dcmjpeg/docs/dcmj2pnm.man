@@ -127,7 +127,7 @@ flipping:
 scaling:
 
   +a    --recognize-aspect
-          recognize pixel aspect ratio (default)
+          recognize pixel aspect ratio when scaling (default)
 
   -a    --ignore-aspect
           ignore pixel aspect ratio when scaling
@@ -397,7 +397,7 @@ JPEG format:
 other transformations:
 
   +G    --grayscale
-          convert to grayscale if necessary
+          convert color image to grayscale (monochrome)
 
   +P    --change-polarity
           change polarity (invert pixel output)
@@ -574,6 +574,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmj2pnm_copyright COPYRIGHT
 
-Copyright (C) 2001-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

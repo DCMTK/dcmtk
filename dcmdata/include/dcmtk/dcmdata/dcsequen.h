@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -207,21 +207,7 @@ public:
                              const Uint32 subPadlen = 0,
                              Uint32 instanceLength = 0);
 
-    /** calculate the length of this DICOM element when encoded with the
-     *  given transfer syntax and the given encoding type for sequences.
-     *  For elements, the length includes the length of the tag, length field,
-     *  VR field and the value itself, for items and sequences it returns
-     *  the length of the complete item or sequence including delimitation tags
-     *  if applicable.
-     *  If length encoding is set to be explicit and the total sequence size is
-     *  larger than the available 32-bit length field, then undefined length
-     *  is returned. If "dcmWriteOversizedSeqsAndItemsUndefined" is disabled,
-     *  also the internal DcmObject errorFlag is set to EC_SeqOrItemContentOverflow
-     *  in case the sequence content (excluding tag header etc.) is already too
-     *  large.
-     *  @param xfer transfer syntax for length calculation
-     *  @param enctype sequence encoding type for length calculation
-     *  @return length of DICOM element
+    /** @copydoc DcmObject::calcElementLength()
      */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);

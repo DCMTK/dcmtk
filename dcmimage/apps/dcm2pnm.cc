@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt    opt_frameCount = 1;               /* default: one frame */
     OFBool              opt_useFrameNumber = OFFalse;     /* default: use frame counter */
     OFBool              opt_multiFrame = OFFalse;         /* default: no multiframes */
-    int                 opt_convertToGrayscale = 0;       /* default: color or grayscale */
+    int                 opt_convertToGrayscale = 0;       /* default: no conversion */
     int                 opt_changePolarity = 0;           /* default: normal polarity */
     int                 opt_useAspectRatio = 1;           /* default: use aspect ratio for scaling */
     OFCmdUnsignedInt    opt_useInterpolation = 1;         /* default: use interpolation method '1' for scaling */
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
 
      cmd.addSubGroup("frame selection:");
       cmd.addOption("--frame",              "+F",   1, "[n]umber: integer",
-                                                        "select specified frame (default: 1)");
+                                                       "select specified frame (default: 1)");
       cmd.addOption("--frame-range",        "+Fr",  2, "[n]umber [c]ount: integer",
                                                        "select c frames beginning with frame n");
       cmd.addOption("--all-frames",         "+Fa",     "select all frames");
@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--flip-both-axes",     "+Lhv",    "flip image horizontally and vertically");
 
      cmd.addSubGroup("scaling:");
-      cmd.addOption("--recognize-aspect",   "+a",      "recognize pixel aspect ratio (default)");
+      cmd.addOption("--recognize-aspect",   "+a",      "recognize pixel aspect ratio when scaling (def.)");
       cmd.addOption("--ignore-aspect",      "-a",      "ignore pixel aspect ratio when scaling");
       cmd.addOption("--interpolate",        "+i",   1, "[n]umber of algorithm: integer",
                                                        "use interpolation when scaling (1..4, def: 1)");
@@ -371,7 +371,7 @@ int main(int argc, char *argv[])
 #endif
 
      cmd.addSubGroup("other transformations:");
-      cmd.addOption("--grayscale",          "+G",      "convert to grayscale if necessary");
+      cmd.addOption("--grayscale",          "+G",      "convert color image to grayscale (monochrome)");
       cmd.addOption("--change-polarity",    "+P",      "change polarity (invert pixel output)");
       cmd.addOption("--clip-region",        "+C",   4, "[l]eft [t]op [w]idth [h]eight: integer",
                                                        "clip image region (l, t, w, h)");
@@ -1101,7 +1101,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        /* convert to grayscale if necessary */
+        /* convert to grayscale if image is not monochrome */
         if ((opt_convertToGrayscale) && (!di->isMonochrome()))
         {
              OFLOG_INFO(dcm2pnmLogger, "converting image to grayscale");

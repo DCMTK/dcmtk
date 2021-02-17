@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurements
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:48:11 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:33 by J. Riesmeier
  *
  */
 
@@ -348,6 +348,12 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         WaterFraction,
         /// (130086,DCM,"Relative Linear Stopping Power"), included from CID 7180
         RelativeLinearStoppingPower,
+        /// (130402,DCM,"Class activation"), included from CID 217
+        ClassActivation,
+        /// (130403,DCM,"Gradient-weighted class activation"), included from CID 217
+        GradientWeightedClassActivation,
+        /// (130404,DCM,"Saliency"), included from CID 217
+        Saliency,
         /// (410668003,SCT,"Length"), included from CID 7470
         Length,
         /// (121211,DCM,"Path length"), included from CID 7470
@@ -380,6 +386,8 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurements
         DiameterOfCircumscribedCircle,
         /// (121207,DCM,"Height"), included from CID 7470
         Height,
+        /// (121227,DCM,"Line segment length"), included from CID 7470
+        LineSegmentLength,
         /// (L0JK,IBSI,"Maximum 3D Diameter of a Mesh"), included from CID 7470
         Maximum3DDiameterOfAMesh,
         /// (TDIC,IBSI,"Major Axis in 3D Length"), included from CID 7470

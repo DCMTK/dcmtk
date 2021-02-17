@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2019b
- *  File created on 2019-04-26 16:52:49 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 20:47:05 by J. Riesmeier
  *
  */
 
@@ -74,6 +74,7 @@
 #define CODE_UMLS_Fluoroetanidazole_F18                                    DSRBasicCodedEntry("C1541539", "UMLS", "Fluoroetanidazole F^18^")
 #define CODE_UMLS_CommercialProduct                                        DSRBasicCodedEntry("C1547887", "UMLS", "Commercial product")
 #define CODE_UMLS_Antihypoglycemic                                         DSRBasicCodedEntry("C1579431", "UMLS", "Antihypoglycemic")
+#define CODE_UMLS_PK11195_11C                                              DSRBasicCodedEntry("C1609883", "UMLS", "PK11195 ^11^C")
 #define CODE_UMLS_Unscheduled                                              DSRBasicCodedEntry("C1699701", "UMLS", "Unscheduled")
 #define CODE_UMLS_Nadir                                                    DSRBasicCodedEntry("C1708760", "UMLS", "Nadir")
 #define CODE_UMLS_MedicalPhysicist                                         DSRBasicCodedEntry("C1708969", "UMLS", "Medical Physicist")
@@ -96,7 +97,6 @@
 #define CODE_UMLS_THK5351_F18                                              DSRBasicCodedEntry("C4279748", "UMLS", "THK5351 F^18^")
 #define CODE_UMLS_MK6240_F18                                               DSRBasicCodedEntry("C4506764", "UMLS", "MK-6240 F^18^")
 #define CODE_UMLS_UCBJ_C11                                                 DSRBasicCodedEntry("C4506788", "UMLS", "UCB-J C^11^")
-#define CODE_UMLS_Flortaucipir_F18                                         DSRBasicCodedEntry("C4547429", "UMLS", "Flortaucipir F^18^")
 #define CODE_UMLS_THK5317_F18                                              DSRBasicCodedEntry("C4550127", "UMLS", "THK5317 F^18^")
 
 #endif

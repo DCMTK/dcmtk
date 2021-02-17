@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -27,6 +27,7 @@
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 #include "dcmtk/dcmsr/dsrcodvl.h"
 
@@ -39,6 +40,7 @@ OFTEST(dcmsr_validCompleteOrEmptyCode)
     const DSRCodedEntryValue code3("a little too long\\with VM>1", "99TEST", "some invalid test code", DSRTypes::CVT_Short, OFFalse /*check*/);
     const DSRCodedEntryValue code4("", "", "");
     const DSRCodedEntryValue code5("urn:0817", "" /* empty coding scheme designator */, "some other code");
+    const DSRCodedEntryValue code6("urn:0817", "" /* empty coding scheme designator */, "1.0" /* non-empty coding scheme version */, "some other code", DSRTypes::CVT_URN, OFFalse /*check*/);
     /* then, perform some tests with these codes */
     OFCHECK(code1.isValid());
     OFCHECK(code1.isComplete());
@@ -55,6 +57,9 @@ OFTEST(dcmsr_validCompleteOrEmptyCode)
     OFCHECK(code5.isValid());
     OFCHECK(code5.isComplete());
     OFCHECK(!code5.isEmpty());
+    OFCHECK(!code6.isValid());
+    OFCHECK(code6.isComplete());
+    OFCHECK(!code6.isEmpty());
 }
 
 
@@ -99,6 +104,13 @@ OFTEST(dcmsr_determineCodeValueType)
 
 OFTEST(dcmsr_writeCodeSequence)
 {
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
     DcmDataset dataset;
     /* first, try the standard case (short code value) */
     DSRCodedEntryValue codedEntry("121206", "DCM", "Distance", DSRTypes::CVT_Short);

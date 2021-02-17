@@ -133,10 +133,10 @@ key and certificate file format:
 
 certification authority:
 
-  +cf   --add-cert-file  [c]ertificate filename: string
+  +cf   --add-cert-file  [f]ilename: string
           add certificate file to list of certificates
 
-  +cd   --add-cert-dir  [c]ertificate directory: string
+  +cd   --add-cert-dir  [d]irectory: string
           add certificates in d to list of certificates
 
 security profile:
@@ -294,6 +294,6 @@ It is an error if no data dictionary can be loaded.
 
 \section echoscu_copyright COPYRIGHT
 
-Copyright (C) 1994-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

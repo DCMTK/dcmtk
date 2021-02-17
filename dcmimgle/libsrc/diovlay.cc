@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -576,7 +576,7 @@ void *DiOverlay::getFullPlaneData(const unsigned long frame,
         {
             width = op->getWidth();
             height = op->getHeight();
-            return op->getData(frame, 0, 0, width, height, bits, fore, back);
+            return op->getData(frame, 0, 0, width, height, bits, fore, back, OFFalse /*useOrigin*/);
         }
     }
     return NULL;

@@ -9,6 +9,7 @@ external OpenSSL library.
 
 The main interface classes are:
 \li \b DcmSignature
+\li \b DcmSignatureHelper
 \li \b SiSecurityProfile
 \li \b SiCertificate
 \li \b SiPrivateKey
@@ -27,33 +28,30 @@ The following example shows how to verify all signatures in a DICOM file:
 DcmFileFormat fileformat;
 if (fileformat.loadFile("test.dcm").good())
 {
-  int counter = 0;          // counts the signatures in the DICOM file
-  int corrupt_counter = 0;  // counts signatures that failed verification
-
-  DcmDataset *dataset = fileformat.getDataset();
-  DcmStack stack;           // stores current location within file
-  DcmSignature signer;      // signature handler
-  DcmItem *sigItem = DcmSignature::findFirstSignatureItem(*dataset, stack);
-  while (sigItem) // browse through items that contain digital signatures
+  // Load a root Certification Authority certificate from "ca_cert.pem"
+  // and declare it as trusted. All certificates issued by this CA will
+  // be considered trustworthy (if within their validity time).
+  SiCertificateVerifier certVerifier;
+  if (certVerifier.addTrustedCertificateFile("ca_cert.pem",
+    X509_FILETYPE_PEM).bad())
   {
-    signer.attach(sigItem); // each item may contain multiple signatures
-    for (unsigned long l=0; l < signer.numberOfSignatures(); ++l)
-    {
-      if (signer.selectSignature(l).good())
-      {
-        ++counter;
-        if (signer.verifyCurrent().bad())  // verify signature
-            corrupt_counter++;
-      }
-    }
-    signer.detach();
-    sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
+    cerr << "unable to load CA certificate" << endl;
+    return;
   }
-  if (counter == 0)
-      cerr << "no signatures found in dataset." << endl;
+
+  // Verify all signatures in the dataset, and verify the signer
+  // certificate against the root CA defined above.
+  // Fail if no signature is present in the dataset, but do not require
+  // any specific DICOM signature profile. Verify a secure timestamp
+  // if present, but do not fail signature verification if no timestamp
+  // is there.
+  int result = DcmSignatureHelper::do_verify(fileformat.getDataset(),
+    certVerifier, ESVP_requireSignature, ETVP_verifyTSIfPresent);
+
+  if (result == 0)
+    std::cerr << "signature(s) found and successfully verified" << endl;
   else
-      cerr << counter << " signatures verified in dataset, "
-           << corrupt_counter << " corrupted." << endl;
+    std::cerr << "signature absent or verification failed"  << endl;
 }
 \endcode
 
@@ -63,10 +61,19 @@ The following example shows how to sign a DICOM file:
 DcmFileFormat fileformat;
 if (fileformat.loadFile("test.dcm").good())
 {
+  // dataset to be signed
   DcmDataset *dataset = fileformat.getDataset();
-  SiCreatorProfile profile;  // select the "RSA Creator Profile"
+
+  // select transfer syntax in which digital signature will be created
+  E_TransferSyntax xfer = dataset->getOriginalXfer();
+
+  // use Little Endian Explicit for uncompressed files
+  if ((xfer == EXS_LittleEndianImplicit) ||
+      (xfer == EXS_BigEndianExplicit))
+     xfer = EXS_LittleEndianExplicit;
+
+  SiCreatorProfile profile;  // use the "RSA Creator Profile"
   SiRIPEMD160 mac;           // use RIPEMD160 as MAC algorithm
-  DcmSignature signer;       // signature handler
   SiCertificate cert;        // our certificate
   if (cert.loadCertificate("certificate.pem", X509_FILETYPE_PEM).bad())
   {
@@ -79,11 +86,21 @@ if (fileformat.loadFile("test.dcm").good())
     cerr << "unable to load private key" << endl;
     return;
   }
-  signer.attach(dataset); // connect handler to data set
-  if (signer.createSignature(key, cert, mac, profile).good())
-  {
-    fileformat.saveFile("test_signed.dcm");  // write back
-  }
+
+  // list of attributes to be signed. It can remain empty here
+  // since we're using the RSA Creator Profile to determine the
+  // list of attributes that needs to be signed
+  DcmAttributeTag tags;
+
+  // now create the signature
+  int result = DcmSignatureHelper::do_sign(dataset,
+    key, cert, &mac, &profile, &tags, xfer, NULL,
+    SiSignaturePurpose::ESP_none, NULL);
+
+   if (result == 0)
+     std::cerr << "signature successfully created" << endl;
+   else
+     std::cerr << "signature creation failed"  << endl;
 }
 \endcode
 

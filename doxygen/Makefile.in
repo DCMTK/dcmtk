@@ -31,6 +31,7 @@ man:
 	    manpages.cfg > manpages.tmp
 	$(DOXYGEN) manpages.tmp
 	rm -f manpages/man1/*.man.1
+	rm -f manpages/man1/_*_.1
 	./patchman.sh
 
 text:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2020, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1176,7 +1176,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
             {
                 /* Return error code if we are are not ignoring parsing errors */
                 if (!dcmIgnoreParsingErrors.get())
-                    errorFlag = EC_StreamNotifyClient;
+                    errorFlag = EC_StreamNotifyClient; // should we rather return EC_InvalidStream?
                 /* In any case, make sure that calling the load value routine on this
                  * element will fail later. For that, create the stream factory that
                  * the load routine will use. Otherwise it would not realize
@@ -1304,15 +1304,15 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
 
     if ((elemLength) > 0xffff && (! myvalidvr.usesExtendedLengthEncoding()) && outXfer.isExplicitVR())
     {
-      /* special case: we are writing in explicit VR, the VR of this
-       * element uses a 2-byte length encoding, but the element length is
-       * too large for a 2-byte length field. We need to write this element
-       * as VR=UN (or VR=OB if the generation of UN is disabled).
-       * In this method, the variable "vr" is only used to determine the
-       * output byte order, which is always the same for OB and UN.
-       * Therefore, we do not need to distinguish between these two.
-       */
-       vr = EVR_UN;
+        /* special case: we are writing in explicit VR, the VR of this
+         * element uses a 2-byte length encoding, but the element length is
+         * too large for a 2-byte length field. We need to write this element
+         * as VR=UN (or VR=OB if the generation of UN is disabled).
+         * In this method, the variable "vr" is only used to determine the
+         * output byte order, which is always the same for OB and UN.
+         * Therefore, we do not need to distinguish between these two.
+         */
+        vr = EVR_UN;
     }
 
     /* In case the transfer state is not initialized, this is an illegal call */
@@ -1661,7 +1661,7 @@ void DcmElement::writeJsonOpener(STD_NAMESPACE ostream &out,
     /* write attribute tag */
     out << ++format.indent() << "\""
         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-        << STD_NAMESPACE setw(4) << tag.getGTag();
+        << STD_NAMESPACE setw(4) << STD_NAMESPACE uppercase << tag.getGTag();
     /* write "ggggeeee" (no comma, upper case!) */
     /* for private element numbers, zero out 2 first element digits */
     /* or output full element number "eeee" */

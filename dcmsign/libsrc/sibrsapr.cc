@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2019, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,8 +35,13 @@ OFBool SiBaseRSAProfile::isAllowableMACType(E_MACType macType) const
     case EMT_RIPEMD160:
     case EMT_SHA1:
     case EMT_MD5:
+    // support for the SHA2 hash algorithms was added in DICOM CP 1059.
+    case EMT_SHA256:
+    case EMT_SHA384:
+    case EMT_SHA512:
       result = OFTrue;
       break;
+
     default:
       /* nothing */
       break;
@@ -59,9 +64,14 @@ OFBool SiBaseRSAProfile::isAllowableAlgorithmType(E_KeyType keyType) const
   return result;
 }
 
-OFBool SiBaseRSAProfile::attributeRequired(const DcmTagKey& /* key */) const
+OFBool SiBaseRSAProfile::attributeRequiredIfPresent(const DcmTagKey& /* key */) const
 {
   return OFFalse;
+}
+
+OFBool SiBaseRSAProfile::checkRequiredAttributeList(DcmAttributeTag& /* tagList */) const
+{
+  return OFTrue;
 }
 
 OFBool SiBaseRSAProfile::attributeForbidden(const DcmTagKey& /* key */) const
@@ -73,6 +83,16 @@ OFBool SiBaseRSAProfile::isAllowableTransferSyntax(E_TransferSyntax xfer) const
 {
   if ((xfer == EXS_LittleEndianImplicit)||(xfer == EXS_BigEndianExplicit)) return OFFalse;
   return OFTrue;
+}
+
+OFCondition SiBaseRSAProfile::inspectSignatureDataset(DcmItem & /* item */)
+{
+  return EC_Normal;
+}
+
+OFBool SiBaseRSAProfile::mainDatasetRequired() const
+{
+  return OFFalse;
 }
 
 #else /* WITH_OPENSSL */

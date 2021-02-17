@@ -826,30 +826,34 @@ OFCondition I2DJpegSource::skipVariable()
 
 OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncoding) const
 {
+  OFCondition result;
   DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Checking whether JPEG encoding is supported");
   DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Encoding: " << jpegMarkerToString(jpegEncoding));
   switch (jpegEncoding)
   {
     case E_JPGMARKER_SOF0: // Baseline
-      return EC_Normal;
+      result = EC_Normal;
+      break;
     case E_JPGMARKER_SOF1: // Extended sequential
       if (!m_disableExtSeqTs)
-        return EC_Normal;
+        result = EC_Normal;
       else
-        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to convert: Extended sequential JPEG coding found but support disabled");
+        result = makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to convert: Extended sequential JPEG coding found but support disabled");
+      break;
     case E_JPGMARKER_SOF2: // Progressive
       if (!m_disableProgrTs)
-        return EC_Normal;
+        result = EC_Normal;
       else
-        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to convert: Progressive JPEG coding found but disabled");
+        result = makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to convert: Progressive JPEG coding found but disabled");
+      break;
     // SOF3: Lossless, SOF5-7: Hierarchical (differential), SOF9-15: Arithmetic coding, all other
     default:
       OFString errMsg("JPEG data with encoding: '");
       errMsg += jpegMarkerToString(jpegEncoding);
       errMsg += "' not supported";
-      return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+      result = makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
   }
-  return EC_Normal;
+  return result;
 }
 
 

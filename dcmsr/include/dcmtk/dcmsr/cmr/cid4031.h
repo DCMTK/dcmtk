@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4031_CommonAnatomicRegions
  *
- *  Generated automatically from DICOM PS 3.16-2019d
- *  File created on 2019-10-31 16:47:56 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021a
+ *  File created on 2021-02-03 21:06:22 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4031 - Common Anatomic Regions.
- *  (type: extensible, version: 20170914)
+ *  (type: extensible, version: 20210120)
  */
 class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
   : public DSRContextGroup
@@ -40,9 +40,9 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
      */
     enum EnumType
     {
-        /// (113345001,SCT,"Abdomen")
+        /// (818981001,SCT,"Abdomen")
         Abdomen,
-        /// (416949008,SCT,"Abdomen and Pelvis")
+        /// (818982008,SCT,"Abdomen and Pelvis")
         AbdomenAndPelvis,
         /// (85856004,SCT,"Acromioclavicular joint")
         AcromioclavicularJoint,
@@ -54,6 +54,8 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         ApexOfLung,
         /// (28273000,SCT,"Bile duct")
         BileDuct,
+        /// (34707002,SCT,"Biliary tract")
+        BiliaryTract,
         /// (89837001,SCT,"Bladder")
         Bladder,
         /// (72001000,SCT,"Bone of lower limb")
@@ -70,7 +72,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         CervicalSpine,
         /// (297171002,SCT,"Cervico-thoracic spine")
         CervicoThoracicSpine,
-        /// (51185008,SCT,"Chest")
+        /// (816094009,SCT,"Chest")
         Chest,
         /// (416550000,SCT,"Chest and Abdomen")
         ChestAndAbdomen,
@@ -82,6 +84,8 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         Coccyx,
         /// (71854001,SCT,"Colon")
         Colon,
+        /// (79741001,SCT,"Common bile duct")
+        CommonBileDuct,
         /// (38848004,SCT,"Duodenum")
         Duodenum,
         /// (16953009,SCT,"Elbow joint")
@@ -120,7 +124,9 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         HeadAndNeck,
         /// (80891009,SCT,"Heart")
         Heart,
-        /// (29836001,SCT,"Hip joint")
+        /// (29836001,SCT,"Hip")
+        Hip,
+        /// (24136001,SCT,"Hip Joint")
         HipJoint,
         /// (85050009,SCT,"Humerus")
         Humerus,
@@ -140,6 +146,8 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         LargeIntestine,
         /// (4596009,SCT,"Larynx")
         Larynx,
+        /// (303270005,SCT,"Liver and biliary structure")
+        LiverAndBiliaryStructure,
         /// (30021000,SCT,"Lower leg")
         LowerLeg,
         /// (61685007,SCT,"Lower limb")
@@ -174,6 +182,10 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         OpticCanal,
         /// (363654007,SCT,"Orbital structure")
         OrbitalStructure,
+        /// (15776009,SCT,"Pancreas")
+        Pancreas,
+        /// (69930009,SCT,"Pancreatic duct")
+        PancreaticDuct,
         /// (110621006,SCT,"Pancreatic duct and bile duct systems")
         PancreaticDuctAndBileDuctSystems,
         /// (2095001,SCT,"Paranasal sinus")
@@ -182,7 +194,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         ParotidGland,
         /// (64234005,SCT,"Patella")
         Patella,
-        /// (12921003,SCT,"Pelvis")
+        /// (816092008,SCT,"Pelvis")
         Pelvis,
         /// (416631005,SCT,"Pelvis and lower extremities")
         PelvisAndLowerExtremities,
@@ -194,6 +206,8 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
         Rectum,
         /// (113197003,SCT,"Rib")
         Rib,
+        /// (297174005,SCT,"Sacro-coccygeal Spine")
+        SacroCoccygealSpine,
         /// (39723000,SCT,"Sacroiliac joint")
         SacroiliacJoint,
         /// (54735007,SCT,"Sacrum")
