@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -1210,7 +1210,7 @@ OFCondition DcmSegmentation::getTotalBytesRequired(const Uint16& rows,
     if (m_SegmentationType == DcmSegTypes::ST_BINARY)
     {
         // check whether the 1-bit pixels exactly fit into bytes
-        remainder = (OFstatic_cast(size_t, rows) * cols) % 8;
+        remainder = bytesRequired % 8;
         // number of bytes that work on an exact fit
         bytesRequired = bytesRequired / 8;
         // add one byte if we have a remainder
