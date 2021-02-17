@@ -54,8 +54,40 @@ set(DCMTK_PACKAGE_VERSION_SUFFIX "+")
 #set(DCMTK_PACKAGE_BUGREPORT "bugs@dcmtk.org")
 #set(DCMTK_PACKAGE_URL "http://www.dcmtk.org/")
 
-# Shared library version information
-SET(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCMTK_ABI_VERSION}")
+option(DCMTK_LINK_STATIC "Statically link all libraries and tools with the runtime and third party libraries." OFF)
+# Modify linker flags and libraries for static builds if enabled by the user
+if(DCMTK_LINK_STATIC)
+    set(CMAKE_EXE_LINKER_FLAGS "-static")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    # remove "-Wl,-Bdynamic"
+    list(REMOVE_ITEM CMAKE_EXE_LINK_DYNAMIC_C_FLAGS "-Wl,-Bdynamic")
+    list(REMOVE_ITEM CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS "-Wl,-Bdynamic")
+    # remove -fPIC
+    list(REMOVE_ITEM CMAKE_SHARED_LIBRARY_C_FLAGS "-fPIC")
+    list(REMOVE_ITEM CMAKE_SHARED_LIBRARY_CXX_FLAGS "-fPIC")
+    # remove -rdynamic
+    list(REMOVE_ITEM CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "-rdynamic")
+    list(REMOVE_ITEM CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "-rdynamic")
+    # not sure about this one, maybe static libraries don't need it:
+    set(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSION}")
+    # extra libraries required when linking statically, should possibly be
+    # enhanced by using find_package() at some point
+    set(ICU_EXTRA_LIBS_STATIC "dl")
+    set(LIBXML2_EXTRA_LIBS_STATIC "lzma" "z")
+    set(OPENJPEG_EXTRA_LIBS_STATIC "pthread")
+    set(OPENSSL_EXTRA_LIBS_STATIC "dl")
+    set(TIFF_EXTRA_LIBS_STATIC "lzma" "jbig")
+    set(WRAP_EXTRA_LIBS_STATIC "nsl")
+else()
+    # Shared library version information
+    set(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCMTK_ABI_VERSION}")
+    set(ICU_EXTRA_LIBS_STATIC)
+    set(LIBXML2_EXTRA_LIBS_STATIC)
+    set(OPENJPEG_EXTRA_LIBS_STATIC)
+    set(OPENSSL_EXTRA_LIBS_STATIC)
+    set(TIFF_EXTRA_LIBS_STATIC)
+    set(WRAP_EXTRA_LIBS_STATIC)
+endif()
 
 # Gather information about the employed CMake version's behavior
 set(DCMTK_CMAKE_HAS_CXX_STANDARD FALSE)
