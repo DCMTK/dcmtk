@@ -247,6 +247,16 @@ certification authority:
   +cd   --add-cert-dir  [d]irectory: string
           add certificates in d to list of certificates
 
+  +crl  --add-crl-file  [f]ilename: string
+          add certificate revocation list file
+          (implies --enable-crl-vfy)
+
+  +crv  --enable-crl-vfy
+          enable leaf CRL verification
+
+  +cra  --enable-crl-all
+          enable full chain CRL verification
+
 security profile:
 
   +px   --profile-bcp195

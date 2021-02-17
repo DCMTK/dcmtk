@@ -217,6 +217,27 @@ enum DcmTLSCipherMAC
 };
 
 
+/** This enum describes the verification approach
+ *  for certificate revocation lists (CRL)
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
+ */
+enum DcmTLSCRLVerification
+{
+  /// Certificates are not checked against a CRL
+  TCR_noCRL,
+
+  /// Check chain leaf certificate against its CRL.
+  /// An error occurs if a suitable CRL cannot be found.
+  TCR_checkLeafCRL,
+
+  /// Check the entire certificate chain against their CRLs.
+  /// An error occurs if any required CRL cannot be found.
+  TCR_checkAllCRL
+
+};
+
+
 /** This helper class manages the list of TLS ciphersuites supported by DCMTK,
  *  translates DcmTLSSecurityProfile enums into the corresponding sets of
  *  ciphersuites, and permits translation between the official TLS ciphersuite

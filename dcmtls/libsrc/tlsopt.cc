@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2020, OFFIS e.V.
+ *  Copyright (C) 2017-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -87,6 +87,10 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
                                                        "add certificate file to list of certificates");
       cmd.addOption("--add-cert-dir",       "+cd",  1, "[d]irectory: string",
                                                        "add certificates in d to list of certificates");
+      cmd.addOption("--add-crl-file",       "+crl", 1, "[f]ilename: string",
+                                                       "add certificate revocation list file\n(implies --enable-crl-vfy)");
+      cmd.addOption("--enable-crl-vfy",     "+crv",    "enable leaf CRL verification");
+      cmd.addOption("--enable-crl-all",     "+cra",    "enable full chain CRL verification");
     cmd.addSubGroup("security profile:");
       cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile (default)");
       cmd.addOption("--profile-bcp195-nd",  "+py",     "Non-downgrading BCP 195 TLS Profile");
@@ -273,8 +277,23 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
     // later in DcmTLSOptions::createTransportLayer().
     if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
       app.checkDependence("--add-cert-file", tlsopts, opt_secureConnection);
+    if (cmd.findOption("--add-ucert-file", 0, OFCommandLine::FOM_First))
+      app.checkDependence("--add-ucert-file", tlsopts, opt_secureConnection);
     if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
       app.checkDependence("--add-cert-dir", tlsopts, opt_secureConnection);
+    if (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_First))
+      app.checkDependence("--add-crl-file", tlsopts, opt_secureConnection);
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--enable-crl-vfy", 0, OFCommandLine::FOM_First))
+      app.checkDependence("--enable-crl-vfy", tlsopts, opt_secureConnection);
+    if (cmd.findOption("--enable-crl-all", 0, OFCommandLine::FOM_First))
+    {
+      app.checkDependence("--enable-crl-all", tlsopts, opt_secureConnection);
+      app.checkConflict("--enable-crl-all", "--enable-crl-vfy", cmd.findOption("--enable-crl-vfy", 0, OFCommandLine::FOM_First));
+    }
+    cmd.endOptionBlock();
+
     if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
     {
       app.checkDependence("--cipher", tlsopts, opt_secureConnection);
@@ -292,6 +311,8 @@ OFCondition DcmTLSOptions::createTransportLayer(
 {
 
 #ifdef WITH_OPENSSL
+    DcmTLSCRLVerification crlmode = TCR_noCRL;
+
     if (opt_secureConnection)
     {
       delete tLayer;
@@ -323,6 +344,25 @@ OFCondition DcmTLSOptions::createTransportLayer(
           }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
+
+      if (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_First))
+      {
+        const char *current = NULL;
+        do
+        {
+          app.checkValue(cmd.getValue(current));
+          if (TCS_ok != tLayer->addCertificateRevocationList(current, opt_keyFileFormat))
+          {
+              DCMTLS_WARN("unable to load CRL file '" << current << "', ignoring");
+          }
+          crlmode = TCR_checkLeafCRL;
+        } while (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_Next));
+      }
+
+      // set CRL verification mode
+      if (cmd.findOption( "--enable-crl-vfy" )) crlmode = TCR_checkLeafCRL;
+      if (cmd.findOption( "--enable-crl-all" )) crlmode = TCR_checkAllCRL;
+      tLayer->setCRLverification(crlmode);
 
       if (opt_doAuthenticate)
       {

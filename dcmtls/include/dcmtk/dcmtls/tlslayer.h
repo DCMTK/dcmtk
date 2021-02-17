@@ -222,6 +222,22 @@ public:
    */
   DcmTransportLayerStatus addTrustedCertificateDir(const char *pathName, DcmKeyFileFormat fileType);
 
+  /** loads a certificate revocation list (CRL) in X.509 format from a file and
+   *  adds it to the pool of trusted certificates and CRLs.
+   *  @param fileName path to the CRL file
+   *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
+   *  @return SI_EC_Normal if successful, an error code otherwise
+   */
+  DcmTransportLayerStatus addCertificateRevocationList(const char *fileName, DcmKeyFileFormat fileType);
+
+  /** set the verification mode for certificate revocation lists.
+   *  When enabled, a CRL is expected to be present either for the leaf
+   *  certificate, or for the entire certificate chain,
+   *  and certificate verification will fail if no CRL is found.
+   *  @param crlmode CRL verification mode
+   */
+  DcmTransportLayerStatus setCRLverification(DcmTLSCRLVerification crlmode);
+
   /** loads certificates from a file and adds them to the pool of trusted client
    *  certificates.
    *  @param fileName path to the certificate file

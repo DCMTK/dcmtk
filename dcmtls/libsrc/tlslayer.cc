@@ -353,10 +353,10 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
         DCMTLS_ERROR("unable to configure the TLS layer to select ciphersuites by server preference.");
       }
     }
-
   } /* transportLayerContext != NULL */
 }
 
+// move constructor
 DcmTLSTransportLayer::DcmTLSTransportLayer(OFrvalue_ref(DcmTLSTransportLayer) rhs)
 : DcmTransportLayer(OFrvalue_ref_upcast(DcmTransportLayer, rhs))
 , transportLayerContext(rhs.transportLayerContext)
@@ -366,6 +366,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(OFrvalue_ref(DcmTLSTransportLayer) rh
   OFrvalue_access(rhs).transportLayerContext = NULL;
 }
 
+// move assignment
 DcmTLSTransportLayer& DcmTLSTransportLayer::operator=(OFrvalue_ref(DcmTLSTransportLayer) rhs)
 {
   if (this != &rhs)
@@ -459,9 +460,6 @@ OFBool DcmTLSTransportLayer::setTempDHParameters(const char *filename)
   }
   return OFFalse;
 }
-
-
-
 
 void DcmTLSTransportLayer::setPrivateKeyPasswd(const char *thePasswd)
 {
@@ -575,11 +573,13 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCertificateFile(const char *fil
 {
   if (transportLayerContext)
   {
+    // we load the first certificate from the file and check the key length
+    // and hash key against RFC 7525 recommendations.
     int result = 0;
     X509 *certificate = loadCertificateFile(fileName, fileType);
     if (certificate)
     {
-      // TODO: Check if the certificate is RSA, and if so, if the public key is >= 2048 bits
+      // Check if the certificate is RSA, and if so, if the public key is >= 2048 bits
       int bits = getRSAKeySize(certificate);
       if ((bits > 0) && (bits < 2048))
       {
@@ -592,8 +592,21 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCertificateFile(const char *fil
         DCMTLS_WARN("Certificate hash key not SHA-256: RFC 7525 recommends the use of SHA-256 for RSA certificates, but certificate file '"
           << fileName << "' uses '" << hash << "'.");
       }
-      result = SSL_CTX_use_certificate(transportLayerContext, certificate); // copies certificate into context
+
+      if (fileType == DCF_Filetype_PEM)
+      {
+        // This will load the file again, this time processing multiple certificates
+        // that might be present, establishing a full certificate chain.
+        // This function only works with PEM files.
+        result = SSL_CTX_use_certificate_chain_file(transportLayerContext, fileName);
+      }
+      else
+      {
+        // copy certificate into the SSL context
+        result = SSL_CTX_use_certificate(transportLayerContext, certificate);
+      }
       X509_free(certificate);
+
     } else result = -1;
 
     if (result <= 0)
@@ -621,6 +634,32 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addVerificationFlags(unsigned long
   return parameter && X509_VERIFY_PARAM_set_flags(parameter,flags) ? TCS_ok : TCS_unspecifiedError;
 }
 
+DcmTransportLayerStatus DcmTLSTransportLayer::setCRLverification(DcmTLSCRLVerification crlmode)
+{
+  X509_VERIFY_PARAM* const parameter = DCMTK_SSL_CTX_get0_param(transportLayerContext);
+  if (parameter)
+  {
+    unsigned long flags = X509_VERIFY_PARAM_get_flags(parameter);
+    switch (crlmode)
+    {
+      case TCR_noCRL:
+        flags &= ~X509_V_FLAG_CRL_CHECK;
+        flags &= ~X509_V_FLAG_CRL_CHECK_ALL;
+        break;
+      case TCR_checkLeafCRL:
+        flags |= X509_V_FLAG_CRL_CHECK;
+        flags &= ~X509_V_FLAG_CRL_CHECK_ALL;
+        break;
+      case TCR_checkAllCRL:
+        flags |= X509_V_FLAG_CRL_CHECK;
+        flags |= X509_V_FLAG_CRL_CHECK_ALL;
+        break;
+    }
+    return X509_VERIFY_PARAM_set_flags(parameter,flags) ? TCS_ok : TCS_unspecifiedError;
+  }
+  return TCS_illegalCall;
+}
+
 DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateFile(const char *fileName, DcmKeyFileFormat fileType)
 {
   if (transportLayerContext)
@@ -640,6 +679,12 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateFile(const ch
     }
   } else return TCS_illegalCall;
   return TCS_ok;
+}
+
+DcmTransportLayerStatus DcmTLSTransportLayer::addCertificateRevocationList(const char *fileName, DcmKeyFileFormat fileType)
+{
+  // OpenSSL uses the same X509_LOOKUP_load_file() function for both certificates and CRLs
+  return addTrustedCertificateFile(fileName, fileType);
 }
 
 DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const char *pathName, DcmKeyFileFormat fileType)
