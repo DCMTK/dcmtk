@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -153,23 +153,28 @@ void DcmFindSCUDefaultCallback::callback(
                 {
                     OFCondition cond = EC_Normal;
                     size_t writeFlags = 0;
+                    OFString csetString;
                     DCMNET_DEBUG("Writing response dataset to XML file");
                     /* expect that (0008,0005) is set if extended characters are used */
-                    if (responseIdentifiers->tagExistsWithValue(DCM_SpecificCharacterSet))
+                    if (responseIdentifiers->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
                     {
-#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-                        DCMNET_DEBUG("Converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
-                        cond = responseIdentifiers->convertToUTF8();
-#else
-                        if (responseIdentifiers->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
+                        /* for ASCII and UTF-8, there is no need to convert the character strings */
+                        if (!csetString.empty() && (csetString != "ISO_IR 192"))
                         {
-                            DCMNET_WARN("No support for character set conversion available ... quoting non-ASCII characters");
-                            /* make sure that non-ASCII characters are quoted appropriately */
-                            writeFlags |= DCMTypes::XF_convertNonASCII;
-                        } else {
-                            DCMNET_DEBUG("No support for character set conversion available");
-                        }
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+                            DCMNET_DEBUG("Converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
+                            cond = responseIdentifiers->convertToUTF8();
+#else
+                            if (responseIdentifiers->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
+                            {
+                                DCMNET_WARN("No support for character set conversion available ... quoting non-ASCII characters");
+                                /* make sure that non-ASCII characters are quoted appropriately */
+                                writeFlags |= DCMTypes::XF_convertNonASCII;
+                            } else {
+                                DCMNET_DEBUG("No support for character set conversion available");
+                            }
 #endif
+                        }
                     }
                     /* write response dataset to XML file */
                     if (cond.good())
