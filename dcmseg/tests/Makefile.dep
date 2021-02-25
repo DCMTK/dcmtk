@@ -121,13 +121,6 @@ tconcat_binary.o: tconcat_binary.cc \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../ofstd/include/dcmtk/ofstd/oftuple.h \
- ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
- ../../ofstd/include/dcmtk/ofstd/diag/push.def \
- ../../ofstd/include/dcmtk/ofstd/diag/mmtag.def \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefrd.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuple.h \
- ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../include/dcmtk/dcmseg/segdoc.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgfracon.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgbase.h \
@@ -155,8 +148,11 @@ tconcat_binary.o: tconcat_binary.cc \
  ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
  ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
  ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
@@ -342,13 +338,6 @@ troundtrip.o: troundtrip.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
- ../../ofstd/include/dcmtk/ofstd/oftuple.h \
- ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
- ../../ofstd/include/dcmtk/ofstd/diag/push.def \
- ../../ofstd/include/dcmtk/ofstd/diag/mmtag.def \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefrd.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuple.h \
- ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmfg/include/dcmtk/dcmfg/fgfracon.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgbase.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgtypes.h \
@@ -375,8 +364,11 @@ troundtrip.o: troundtrip.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
  ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
  ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,12 +24,6 @@
 #include "dcmtk/ofstd/offname.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofstd.h"        /* for OFString::myrand_r */
-
-#define INCLUDE_CERRNO
-#define INCLUDE_CSTRING
-#define INCLUDE_CTIME
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H

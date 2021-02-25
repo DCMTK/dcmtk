@@ -26,9 +26,6 @@
 
 #ifdef WITH_OPENSSL
 
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
-
 BEGIN_EXTERN_C
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN

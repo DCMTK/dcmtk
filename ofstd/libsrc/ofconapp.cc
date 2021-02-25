@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2018, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,9 +28,8 @@
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
 
-#define INCLUDE_LOCALE
-#include "dcmtk/ofstd/ofstdinc.h"     /* for setlocale() */
-#endif // WITH_LIBICONV
+#include <locale>
+#endif // DCMTK_ENABLE_CHARSET_CONVERSION
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN

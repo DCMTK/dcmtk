@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2019, OFFIS e.V.
+ *  Copyright (C) 2011-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -117,13 +117,9 @@
                      // to have "MessageBoxA" to display error messages for openFileHelper
 #endif
 
-// DCMTK: we want to use our own standard include wrappers
-#define INCLUDE_CMEMORY
-#define INCLUDE_CASSERT
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cstdio>
+#include <cstring>
+#include <cassert>
 
 // DCMTK: workaround for SunPro not defining these C functions in the global namespace
 #ifdef __sun

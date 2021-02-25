@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,9 +27,10 @@
 
 #include "dcmtk/dcmimgle/diutils.h"
 
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
+// #define INCLUDE_CMATH
+// #include "dcmtk/ofstd/ofstdinc.h"
 
+#include <cmath>
 
 /*--------------------*
  *  global variables  *

@@ -5,9 +5,6 @@
 #ifndef CHARLS_ENCODERSTRATEGY
 #define CHARLS_ENCODERSTRATEGY
 
-#define INCLUDE_NEW
-#include "dcmtk/ofstd/ofstdinc.h"
-
 #include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "procline.h"

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2001-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,9 +24,6 @@
 #define DIPLUGIN_H
 
 #include "dcmtk/config/osconfig.h"
-
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*------------------------*

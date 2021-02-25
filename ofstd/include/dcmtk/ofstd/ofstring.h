@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,12 +49,7 @@
 ** Declare our own string class
 */
 
-#define INCLUDE_CASSERT
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDLIB
-#define INCLUDE_LIBC
-#define INCLUDE_UNISTD
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cassert>
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/oftypes.h"

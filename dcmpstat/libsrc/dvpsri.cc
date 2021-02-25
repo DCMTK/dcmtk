@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,10 +25,6 @@
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmpstat/dvpsri.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"   /* for constants and macros */
-
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /* --------------- class DVPSReferencedImage --------------- */
 

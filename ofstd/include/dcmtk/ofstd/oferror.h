@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, OFFIS e.V.
+ *  Copyright (C) 2017-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,8 +37,6 @@ inline const OFerror_category& OFgeneric_category() { return STD_NAMESPACE gener
 
 #else // fallback implementations
 
-#define INCLUDE_CERRNO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofstring.h"
 

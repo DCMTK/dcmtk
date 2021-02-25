@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Pascal Getreuer, Open Connections GmbH
+ *  Copyright (C) 2016-2021, Pascal Getreuer, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,9 +23,9 @@
 #define CIELABUTIL_H
 
 #include "dcmtk/config/osconfig.h"
-#define INCLUDE_CMATH // for pow() function
 #include "dcmtk/dcmiod/ioddef.h"
-#include "dcmtk/ofstd/ofstdinc.h"
+
+#include <cmath>
 
 /** Class supporting color space conversions from and to CIELab. In some IODs
  *  DICOM stores CIELab color values which must often be converted to RGB for

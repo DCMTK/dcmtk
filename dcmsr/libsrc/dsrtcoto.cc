@@ -29,9 +29,6 @@
 #include "dcmtk/dcmdata/dcvrds.h"
 
 #include "dcmtk/ofstd/ofstd.h"
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 template<>
 const Float64& DSRgetEmptyItem<Float64>()

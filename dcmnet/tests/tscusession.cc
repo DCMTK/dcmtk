@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, OFFIS e.V.
+ *  Copyright (C) 2019-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,12 +22,12 @@
 
 #ifdef WITH_THREADS
 
-#define INCLUDE_CMATH
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/scu.h"
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/oftimer.h"
+
+#include <cmath>
 
 static Uint8 NUM_DIMSE_REQUESTS = 5;
 

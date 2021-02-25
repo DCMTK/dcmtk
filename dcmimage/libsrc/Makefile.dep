@@ -4,9 +4,9 @@ dcmicmph.o: dcmicmph.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -809,7 +809,8 @@ dipitiff.o: dipitiff.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
  ../include/dcmtk/dcmimage/dipitiff.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
- ../include/dcmtk/dcmimage/dicdefin.h
+ ../include/dcmtk/dcmimage/dicdefin.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 diqtctab.o: diqtctab.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimage/diqtctab.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -900,11 +901,11 @@ diqtfs.o: diqtfs.cc ../../config/include/dcmtk/config/osconfig.h \
 diqthash.o: diqthash.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimage/diqthash.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../include/dcmtk/dcmimage/diqtpix.h ../include/dcmtk/dcmimage/diqttype.h \
  ../include/dcmtk/dcmimage/dicdefin.h \
@@ -991,7 +992,6 @@ diqthitl.o: diqthitl.cc ../../config/include/dcmtk/config/osconfig.h \
 diqtpbox.o: diqtpbox.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../include/dcmtk/dcmimage/diqtpbox.h \
- ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/dcmimage/dicdefin.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h

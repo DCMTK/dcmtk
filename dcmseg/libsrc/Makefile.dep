@@ -131,13 +131,6 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
  ../include/dcmtk/dcmseg/segdoc.h \
  ../../dcmfg/include/dcmtk/dcmfg/concatenationloader.h \
- ../../ofstd/include/dcmtk/ofstd/oftuple.h \
- ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
- ../../ofstd/include/dcmtk/ofstd/diag/push.def \
- ../../ofstd/include/dcmtk/ofstd/diag/mmtag.def \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefrd.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuple.h \
- ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmfg/include/dcmtk/dcmfg/fginterface.h \
  ../../dcmfg/include/dcmtk/dcmfg/fg.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodimage.h \
@@ -159,8 +152,11 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
  ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
  ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
@@ -291,13 +287,6 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgdefine.h \
  ../../dcmfg/include/dcmtk/dcmfg/concatenationloader.h \
- ../../ofstd/include/dcmtk/ofstd/oftuple.h \
- ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
- ../../ofstd/include/dcmtk/ofstd/diag/push.def \
- ../../ofstd/include/dcmtk/ofstd/diag/mmtag.def \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefrd.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuple.h \
- ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmfg/include/dcmtk/dcmfg/fgfracon.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgbase.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgtypes.h \
@@ -324,8 +313,11 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
  ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
  ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \

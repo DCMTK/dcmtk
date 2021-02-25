@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, OFFIS e.V.
+ *  Copyright (C) 2019-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,8 +24,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
+
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/oftimer.h"
 #include "dcmtk/oflog/consap.h"
@@ -34,6 +33,8 @@
 #include "dcmtk/dcmnet/scppool.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmtls/tlsscu.h"
+
+#include <cmath>
 
 #ifdef WITH_THREADS
 

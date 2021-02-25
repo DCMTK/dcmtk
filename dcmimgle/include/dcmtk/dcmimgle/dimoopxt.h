@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2020, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,8 +40,7 @@
 #include "dimcopxt.h"
 #endif
 
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cmath>
 
 
 /*---------------------*

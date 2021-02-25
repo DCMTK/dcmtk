@@ -1644,11 +1644,7 @@ AC_DEFUN([AC_STDIO_NAMESPACE],
   AC_LANG_SAVE
   AC_LANG_CPLUSPLUS
   AC_TRY_COMPILE([
-#ifdef USE_STD_CXX_INCLUDES
 #include <cstdio>
-#else
-#include <stdio.h>
-#endif
 ],[FILE *f = ::fopen("name", "r");],
   ac_cv_stdio_namespace_is_std=no, ac_cv_stdio_namespace_is_std=yes)
   AC_LANG_RESTORE

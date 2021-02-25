@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2020, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,10 +56,6 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofthread.h"
-
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /** Singleton class which provides thread-safe access to the standard console
  *  output and error streams. Allows multiple threads to concurrently create

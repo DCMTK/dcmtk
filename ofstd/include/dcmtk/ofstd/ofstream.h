@@ -25,8 +25,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#ifdef USE_STD_CXX_INCLUDES
-
 #include <iostream>
 #ifdef HAVE_IOS
 #include <ios>
@@ -50,31 +48,7 @@
  * If user code still relies on namespace std to be included, compile with
  * macro USING_STD_NAMESPACE defined.
  */
-#ifdef USING_STD_NAMESPACE
-namespace std { }
-using namespace std;
-#endif
-
-#else /* USE_STD_CXX_INCLUDES */
-
-#include <iostream.h>
-#include <fstream.h>
-// For old STREAMS library: preference for strstream
-#if defined(HAVE_STRSTREA_H) || defined(HAVE_STRSTREAM_H)
-#ifdef HAVE_STRSTREA_H
-#include <strstrea.h>
-#else
-#include <strstream.h>
-#endif
-#elif defined(HAVE_SSTREAM_H)
-#include <sstream.h>
-#define USE_STRINGSTREAM
-#else
-#error DCMTK needs stringstream or strstream type
-#endif
-#include <iomanip.h>
-
-#endif /* USE_STD_CXX_INCLUDES */
+#include "dcmtk/ofstd/ofstdinc.h"
 
 // define STD_NAMESPACE to std:: if the standard namespace exists
 #ifndef STD_NAMESPACE

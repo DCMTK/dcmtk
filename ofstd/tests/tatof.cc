@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2020, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,9 +27,7 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
-
+#include <cmath>
 
 struct ValuePair
 {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmqrdb/dcmqropt.h"
-
-#define INCLUDE_CSTDARG
-#include "dcmtk/ofstd/ofstdinc.h"
 
 makeOFConditionConst(QR_EC_IndexDatabaseError, OFM_dcmqrdb, 1, OF_error, "Index database error");
 makeOFConditionConst(QR_EC_InvalidPeer,        OFM_dcmqrdb, 2, OF_error, "Invalid peer for move operation");

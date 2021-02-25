@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2019, OFFIS e.V.
+ *  Copyright (C) 2014-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,10 +82,9 @@ struct OFnumeric_limits<double> : std::numeric_limits<double>
 
 #else // fallback implementations entirely without using the native STL
 
-#define INCLUDE_CLIMITS
-#define INCLUDE_CFLOAT
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <climits>
+#include <cfloat>
+#include <cmath>
 
 /** Enumeration constants of type OFfloat_round_style indicate the rounding style
  *  used by floating-point arithmetics whenever a result of an expression is stored

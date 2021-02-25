@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2020, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,10 +23,6 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcistrms.h"
 #include "dcmtk/dcmdata/dcerror.h"
-
-#define INCLUDE_CSTDIO
-#define INCLUDE_CERRNO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H

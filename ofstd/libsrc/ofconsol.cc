@@ -23,10 +23,13 @@
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofthread.h"
 
-#define INCLUDE_CASSERT
-#define INCLUDE_CSTDIO
-#define INCLUDE_UNISTD
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cassert>
+#ifdef HAVE_UNISTD_H
+BEGIN_EXTERN_C
+#include <unistd.h>
+END_EXTERN_C
+#endif
+
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H

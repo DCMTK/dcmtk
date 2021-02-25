@@ -26,9 +26,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#define INCLUDE_CCTYPE
-#include "dcmtk/ofstd/ofstdinc.h"
-
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmpstat/dviface.h"
 #include "dcmtk/dcmpstat/dvpssp.h"

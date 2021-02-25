@@ -65,7 +65,8 @@ tests.o: tests.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/ofcond.h \
  ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
- ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h \
+ ../include/dcmtk/ofstd/ofxml.h
 tfilsys.o: tfilsys.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \

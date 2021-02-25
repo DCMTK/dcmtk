@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2014, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,12 +23,10 @@
 #ifndef DIQTPBOX_H
 #define DIQTPBOX_H
 
-
 #include "dcmtk/config/osconfig.h"
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CASSERT
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cstdlib>
+#include <cassert>
 
 #include "dcmtk/dcmimage/dicdefin.h"
 

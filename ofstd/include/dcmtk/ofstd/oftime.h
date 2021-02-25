@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2020, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,9 +24,6 @@
 #define OFTIME_H
 
 #include "dcmtk/config/osconfig.h"
-
-#define INCLUDE_CTIME
-#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H

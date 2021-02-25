@@ -854,64 +854,22 @@ dnl -------------------------------------------------------
 dnl Checks for the usage of standard C++ headers.
 dnl -------------------------------------------------------
 
-AC_MSG_CHECKING(whether to use C++ standard includes)
-ac_use_std_includes="auto"
-AC_ARG_ENABLE(std-includes,
-[  --enable-std-includes   use C++ ANSI standard includes (default: auto)
-  --disable-std-includes  use old C++ includes ],
-[ case "$enableval" in
-  yes)
-   ac_use_std_includes="yes"
-   ;;
+AC_CHECK_STD_NAMESPACE
+AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
+AC_CHECK_IOS_NOCREATE(std::ios, fstream)
+AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
+  [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
+AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
+  [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
 
-  *)
-    ac_use_std_includes="no"
-    ;;
-  esac ]
-)
 
-if test "$ac_cv_header_fstream" = "yes" -a "$ac_cv_header_iostream" = "yes" -a "$ac_cv_header_iomanip" = "yes"; then
-   ac_have_std_includes="yes"
-else
-   ac_have_std_includes="no"
-fi
-
-if test "$ac_cv_header_fstream_h" = "yes" -a "$ac_cv_header_iostream_h" = "yes" -a "$ac_cv_header_iomanip_h" = "yes"; then
-   ac_have_old_includes="yes"
-else
-   ac_have_old_includes="no"
-fi
-
-if test "$ac_use_std_includes" = "yes"; then
-   AC_MSG_RESULT(yes)
-   AC_DEFINE(USE_STD_CXX_INCLUDES, , [Define if ANSI standard C++ includes are used.])
-elif test "$ac_use_std_includes" = "no"; then
-   AC_MSG_RESULT(no)
-elif test "$ac_have_std_includes" = "yes"; then
-   AC_MSG_RESULT(yes)
-   AC_DEFINE(USE_STD_CXX_INCLUDES, , [Define if ANSI standard C++ includes are used.])
-   ac_use_std_includes="yes"
-else
-   AC_MSG_RESULT(no)
-   ac_use_std_includes="no"
-fi
-
-if test "$ac_use_std_includes" = "yes"; then
-   AC_CHECK_STD_NAMESPACE
-   AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
-   AC_CHECK_IOS_NOCREATE(std::ios, fstream)
-   AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
-     [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
-   AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
-     [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
-else
-   AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream.h)
-   AC_CHECK_IOS_NOCREATE(ios, fstream.h)
-   AC_CHECK_COMPILES(std::vfprintf, stdarg.h stdio.h,
-     [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
-   AC_CHECK_COMPILES(std::vsnprintf, stdarg.h stdio.h,
-     [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
-fi
+AC_CHECK_STD_NAMESPACE
+AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
+AC_CHECK_IOS_NOCREATE(std::ios, fstream)
+AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
+  [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
+AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
+  [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
 
 AC_CHECK_CLASS_TEMPLATE
 AC_CHECK_STATIC_TEMPLATE_METHOD

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,9 +25,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oftypes.h"
-
-#define INCLUDE_CSTDDEF               /* For NULL */
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #define STARTING_SIZE 8
 

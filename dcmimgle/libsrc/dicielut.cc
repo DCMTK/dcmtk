@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2016, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,9 +24,7 @@
 
 #include "dcmtk/dcmimgle/dicielut.h"
 
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
-
+#include <cmath>
 
 /*----------------*
  *  constructors  *

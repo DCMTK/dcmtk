@@ -32,13 +32,6 @@
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/ofstd/ofvector.h"
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CTIME
-#define INCLUDE_CERRNO
-#define INCLUDE_CSIGNAL
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/oftimer.h"
 
 BEGIN_EXTERN_C

@@ -29,10 +29,6 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/dcmdata/dcdefine.h"
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_UNISTD
-#include "dcmtk/ofstd/ofstdinc.h"
-
 // include this file in doxygen documentation
 
 /** @file dcuid.h

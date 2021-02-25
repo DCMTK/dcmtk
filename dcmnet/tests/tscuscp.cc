@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2017-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,14 +23,12 @@
 
 #ifdef WITH_THREADS
 
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/oftimer.h"
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/scu.h"
 
-
+#include <cmath>
 
 static OFLogger t_scuscp_logger= OFLog::getLogger("dcmtk.test.tscuscp");
 

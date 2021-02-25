@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,9 +27,6 @@
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/oftypes.h"
 
-#define INCLUDE_CSTDDEF
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/dcmdata/dcobject.h"
 
 /// index indicating "end of list"

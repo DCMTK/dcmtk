@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,9 +29,6 @@
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
-
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
 
 /* --------------- class DVPSDisplayedArea --------------- */
 

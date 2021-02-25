@@ -36,11 +36,6 @@
 
 #ifdef HAVE_EMPTY_ARGC_ARGV
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
-
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -77,10 +72,10 @@ void prepareCmdLineArgs(int& argc, char* argv[],
 
 #else // HAVE_EMPTY_ARGC_ARGV
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
+// #define INCLUDE_CSTDLIB
+// #define INCLUDE_CSTDIO
+// #define INCLUDE_CSTRING
+// #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_IO_H
 #include <io.h>

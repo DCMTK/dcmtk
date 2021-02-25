@@ -4,9 +4,6 @@
 #ifndef CHARLS_STREAMS
 #define CHARLS_STREAMS
 
-#define INCLUDE_NEW
-#include "dcmtk/ofstd/ofstdinc.h"
-
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "util.h"

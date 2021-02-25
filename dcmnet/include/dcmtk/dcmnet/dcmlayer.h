@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,8 +28,6 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofstring.h"
 
-#define INCLUDE_UNISTD
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofutil.h"
 
 #include "dcmtk/dcmnet/dndefine.h"

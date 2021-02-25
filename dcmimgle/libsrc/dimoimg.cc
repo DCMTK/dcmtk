@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019 OFFIS e.V.
+ *  Copyright (C) 1996-2021 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,11 +36,6 @@
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/dcmimgle/diregbas.h"
-
-#define INCLUDE_CMATH
-#define INCLUDE_CINTTYPES
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /*---------------------*
  *  const definitions  *

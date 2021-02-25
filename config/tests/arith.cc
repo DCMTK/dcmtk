@@ -23,10 +23,6 @@
 //       although it is part of configure testing itself.
 //       Therefore, ensure osconfig.h has already been generated
 //       before this program is used.
-#define INCLUDE_CLIMITS
-#define INCLUDE_CMATH
-#define INCLUDE_CSETJMP
-#define INCLUDE_CSIGNAL
 #include "../math.cc"
 
 #ifdef HAVE_FENV_H

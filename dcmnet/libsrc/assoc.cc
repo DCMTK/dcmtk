@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -98,13 +98,6 @@
 
 #include "dcmtk/dcmnet/assoc.h"       /* always include the module header */
 #include "dcmtk/dcmnet/diutil.h"
-
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDARG
-#define INCLUDE_CERRNO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>

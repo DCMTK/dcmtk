@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2020, OFFIS e.V.
+ *  Copyright (C) 2001-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,9 +47,7 @@
 // dcmimgle includes
 #include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
 
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
-
+#include <cmath>
 
 DJCodecEncoder::DJCodecEncoder()
 : DcmCodec()

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,11 +78,6 @@
 
 // if defined, use createValueFromTempFile() for large binary data files
 //#define EXPERIMENTAL_READ_FROM_FILE
-
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CCTYPE
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>

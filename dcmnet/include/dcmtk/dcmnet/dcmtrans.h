@@ -30,9 +30,6 @@
 #include "dcmtk/ofstd/ofstream.h"     /* for ostream */
 #include "dcmtk/dcmnet/dcmlayer.h"    /* for DcmTransportLayerStatus */
 
-#define INCLUDE_UNISTD
-#include "dcmtk/ofstd/ofstdinc.h"
-
 // include this file in doxygen documentation
 
 /** @file dcmtrans.h

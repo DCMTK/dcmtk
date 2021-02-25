@@ -28,6 +28,8 @@
 
 #include "dcmtk/ofstd/ofdefine.h"     /* We need DCMTK_DECL_EXPORT/_IMPORT */
 
+#include "dcmtk/ofstd/ofstdinc.h"
+
 #ifdef oflog_EXPORTS
 #  define DCMTK_INSIDE_LOG4CPLUS
 #endif

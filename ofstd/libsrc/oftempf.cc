@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2015, OFFIS e.V.
+ *  Copyright (C) 2011-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,10 +24,6 @@
 #include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/offname.h"
 #include "dcmtk/ofstd/ofstd.h"
-
-#define INCLUDE_CERRNO
-#define INCLUDE_CTIME
-#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_IO_H

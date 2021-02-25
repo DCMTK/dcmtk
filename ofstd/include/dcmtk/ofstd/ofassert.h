@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,9 +25,6 @@
 #define OFASSERT_H
 
 #include "dcmtk/config/osconfig.h"
-
-#define INCLUDE_CASSERT
-#include "dcmtk/ofstd/ofstdinc.h"
 
 /** @file ofassert.h
  *  Including run time and compile time assertion features and implementing

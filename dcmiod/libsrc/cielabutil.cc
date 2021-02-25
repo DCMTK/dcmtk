@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2019, Pascal Getreuer, Open Connections GmbH
+ *  Copyright (C) 2005-2021, Pascal Getreuer, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -20,8 +20,6 @@
  */
 #include "dcmtk/dcmiod/cielabutil.h"
 #include "dcmtk/config/osconfig.h"
-#define INCLUDE_CMATH // for pow() function
-#include "dcmtk/ofstd/ofstdinc.h"
 
 // workaround for SunPro not defining these C functions in the global namespace
 #ifdef __sun

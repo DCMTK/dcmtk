@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2020, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,10 +30,6 @@
 #include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary */
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/ofstd/ofstd.h"
-
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 typedef OFList<DcmRLEEncoder *> DcmRLEEncoderList;
 typedef OFListIterator(DcmRLEEncoder *) DcmRLEEncoderListIterator;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2013, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,9 +25,6 @@
 
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmFindUIDFromName() */
 #include "dcmtk/dcmdata/dcxfer.h"   /* for gLocalByteOrder */
-
-#define INCLUDE_CSTRING             /* for strcmp() */
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #define SymbolicUID_LocalEndianExplicit    "LocalEndianExplicit"
 #define SymbolicUID_OppositeEndianExplicit "OppositeEndianExplicit"

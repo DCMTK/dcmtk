@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2020, OFFIS e.V.
+ *  Copyright (C) 2001-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -101,14 +101,8 @@
 #include "dcmtk/ofstd/ofsockad.h"
 #include "dcmtk/ofstd/ofvector.h"
 
-#define INCLUDE_CMATH
-#define INCLUDE_CFLOAT
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDIO
-#define INCLUDE_CCTYPE
-#define INCLUDE_UNISTD
-#include "dcmtk/ofstd/ofstdinc.h"
-
+#include <cstdio>
+#include <cmath>
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H

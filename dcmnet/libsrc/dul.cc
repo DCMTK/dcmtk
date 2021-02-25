@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -79,14 +79,6 @@
 
 #include "dcmtk/dcmnet/diutil.h"
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CERRNO
-#define INCLUDE_CSIGNAL
-#define INCLUDE_CTIME
-#include "dcmtk/ofstd/ofstdinc.h"
-
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -109,29 +101,20 @@ BEGIN_EXTERN_C
 #endif
 #ifdef WITH_TCPWRAPPER
 #include <tcpd.h>               /* for hosts_ctl */
-
-BEGIN_EXTERN_C
 int dcmtk_hosts_access(struct request_info *req);
-END_EXTERN_C
 #endif
-#ifdef HAVE_SIGNAL_H
-// On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
-#include <signal.h>
-#endif
-END_EXTERN_C
-
-BEGIN_EXTERN_C
 /* declare extern "C" typedef for signal handler function pointer */
 #ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-typedef void (*mySIG_TYP)(...);
+typedef void(*mySIG_TYP)(...);
 #else
-typedef void (*mySIG_TYP)(int);
+typedef void(*mySIG_TYP)(int);
 #endif
 END_EXTERN_C
 
 #ifdef DCMTK_HAVE_POLL
 #include <poll.h>
 #endif
+
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmnet/dcompat.h"

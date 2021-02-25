@@ -29,13 +29,8 @@
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofstd.h"      /* for class OFStandard */
 
-#define INCLUDE_UNISTD
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDARG
-#define INCLUDE_CERRNO
-//#define INCLUDE_CWCHAR    /* not yet implemented in "ofstdinc.h" */
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cstdio>
+#include <cstdlib>
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H

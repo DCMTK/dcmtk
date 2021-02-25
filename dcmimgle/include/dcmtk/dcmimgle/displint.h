@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,10 +25,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcast.h"
-
-#define INCLUDE_CSTDDEF               /* For NULL */
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /*--------------------*
  *  macro definition  *

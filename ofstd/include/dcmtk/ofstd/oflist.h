@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2019, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -77,9 +77,10 @@
 #include <iterator>
 #endif
 
-#define INCLUDE_CASSERT
-#define INCLUDE_CSTDDEF
-#include "dcmtk/ofstd/ofstdinc.h"
+// #define INCLUDE_CASSERT
+// #define INCLUDE_CSTDDEF
+// #include "dcmtk/ofstd/ofstdinc.h"
+#include <cassert>
 
 #define OFLIST_TYPENAME
 

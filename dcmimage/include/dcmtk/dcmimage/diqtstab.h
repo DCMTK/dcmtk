@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2014, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,15 +23,11 @@
 #ifndef DIQTSTAB_H
 #define DIQTSTAB_H
 
-
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/dcmimage/diqttype.h"  /* for DcmQuantComponent */
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CASSERT
-#include "dcmtk/ofstd/ofstdinc.h"
-
+#include <cassert>
 
 /** this is a helper class used for temporarily reducing the image bit depth
  *  during calculation of an image histogram.  An object of this class

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#define INCLUDE_CLIMITS
-#define INCLUDE_CASSERT
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cstring>
+#include <cassert>
+
 #include "dcmtk/ofstd/offilsys.h"
 
 #ifdef _WIN32

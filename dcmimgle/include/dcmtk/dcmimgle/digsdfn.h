@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2014, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,10 +26,6 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmimgle/didispfn.h"
-
-#define INCLUDE_CSTDDEF               /* For NULL */
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /*---------------------*
  *  class declaration  *

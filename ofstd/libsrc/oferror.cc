@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, OFFIS e.V.
+ *  Copyright (C) 2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,8 +26,6 @@
 // Only provide the implementation if the STL one is not used
 #if !defined(HAVE_STL_SYSTEM_ERROR) || !defined(HAVE_STL_STRING)
 
-#define INCLUDE_CERRNO
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/oferror.h"
 #include "dcmtk/ofstd/ofdiag.h"

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2019, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,11 +28,6 @@
 #include "dcmtk/dcmimgle/dicrvfit.h"
 #include "dcmtk/dcmimgle/didislut.h"
 #include "dcmtk/ofstd/ofstream.h"
-
-#define INCLUDE_CCTYPE
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /*----------------------------*
  *  constant initializations  *

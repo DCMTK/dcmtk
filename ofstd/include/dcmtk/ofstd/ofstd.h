@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,13 +33,16 @@
 #include "dcmtk/ofstd/oflimits.h"   /* for OFnumeric_limits<T>::max() */
 #include "dcmtk/ofstd/oferror.h"
 
-#define INCLUDE_CASSERT
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDARG
-#define INCLUDE_UNISTD
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cassert>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
+#ifdef HAVE_UNISTD_H
+BEGIN_EXTERN_C
+#include <unistd.h>
+END_EXTERN_C
+#endif
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H

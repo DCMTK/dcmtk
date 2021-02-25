@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,10 +24,6 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcvrat.h"
 #include "dcmtk/dcmdata/dcjson.h"
-
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
 
 // ********************************
 

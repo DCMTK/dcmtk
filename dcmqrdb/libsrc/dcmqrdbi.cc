@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2019, OFFIS e.V.
+ *  Copyright (C) 1993-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,9 +34,6 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#define INCLUDE_CCTYPE
-#define INCLUDE_CSTDARG
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"

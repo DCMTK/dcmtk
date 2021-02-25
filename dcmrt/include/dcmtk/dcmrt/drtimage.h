@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTImageIOD
@@ -82,6 +82,7 @@
 #include "dcmtk/dcmrt/seq/drtudis.h"   // for UDISequence
 #include "dcmtk/dcmrt/seq/drtvls.h"    // for VOILUTSequence
 
+#include <cmath>
 
 /** Interface class for RTImageIOD
  *  @note Because of its many member variables, an instance of this class requires quite

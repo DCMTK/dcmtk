@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2020, OFFIS e.V.
+ *  Copyright (C) 2011-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -138,9 +138,8 @@
 // DCMTK: we need this header file at the beginning of each file
 #include "dcmtk/config/osconfig.h"
 
-// DCMTK: we want to use our own standard include wrappers
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cstdlib>
+
 #include "dcmtk/ofstd/ofdefine.h"
 
 // DCMTK: The XML parser is compiled in wide char (UTF-16) mode if and only if this macro is defined.

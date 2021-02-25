@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2020, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,9 +26,6 @@
 
 #include "dcmtk/dcmsign/simdmac.h"
 #include "dcmtk/dcmdata/dcerror.h"
-
-#define INCLUDE_CSTDLIB
-#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #include <openssl/evp.h>

@@ -663,14 +663,6 @@ Known limitations of DCMTK on the Windows platform.
 
 1. The dcmqrscp tool cannot spark multiple processes.  Every association must
    be handled completely before a new association is possible.
-2. Visual C++ contains two different implementations of I/O streams which
-   should never be mixed within one application because this may cause
-   application errors that are hard to find.  The old, now deprecated
-   implementation uses the traditional cfront header files <iostream.h> etc.
-   The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
-   DCMTK can be configured to use either of the two interfaces.  This behavior
-   can be changed in "config/include/dcmtk/config/osconfig.h" in the build
-   directory where the symbol USE_STD_CXX_INCLUDES is declared.
 
 
 Unix with CMake

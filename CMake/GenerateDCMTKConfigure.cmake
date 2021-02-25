@@ -106,13 +106,6 @@ else()
   set(DCMTK_ENABLE_CHARSET_CONVERSION OFF)
 endif()
 
-# Standard C++ headers (currently hard-coded)
-#if(VTK_USE_ANSI_STDLIB)
-  set(USE_STD_CXX_INCLUDES 1)
-#else()
-#  set(USE_STD_CXX_INCLUDES "")
-#endif()
-
 # Configure file
 
 # Windows being windows, it lies about its processor type to 32 bit binaries
@@ -636,11 +629,11 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS(setsockopt "${HEADERS}" HAVE_PROTOTYPE_SETSOCKOPT)
   CHECK_FUNCTIONWITHHEADER_EXISTS(socket "${HEADERS}" HAVE_PROTOTYPE_SOCKET)
   CHECK_FUNCTIONWITHHEADER_EXISTS(listen "${HEADERS}" HAVE_PROTOTYPE_LISTEN)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(_vsnprintf_s "${HEADERS}" HAVE__VSNPRINTF_S)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(vfprintf_s "${HEADERS}" HAVE_VFPRINTF_S)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(vprintf "${HEADERS}" HAVE_VPRINTF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(vsnprintf "${HEADERS}" HAVE_VSNPRINTF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(vsprintf_s "${HEADERS}" HAVE_VSPRINTF_S)
+  CHECK_FUNCTIONWITHHEADER_EXISTS(_vsnprintf_s "${CXXHEADERS}" HAVE__VSNPRINTF_S)
+  CHECK_FUNCTIONWITHHEADER_EXISTS(vfprintf_s "${CXXHEADERS}" HAVE_VFPRINTF_S)
+  CHECK_FUNCTIONWITHHEADER_EXISTS(vprintf "${CXXHEADERS}" HAVE_VPRINTF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS(vsnprintf "${CXXHEADERS}" HAVE_VSNPRINTF)
+  CHECK_FUNCTIONWITHHEADER_EXISTS(vsprintf_s "${CXXHEADERS}" HAVE_VSPRINTF_S)
   CHECK_FUNCTIONWITHHEADER_EXISTS(std::vfprintf "${CXXHEADERS}" HAVE_PROTOTYPE_STD__VFPRINTF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(std::vsnprintf "${CXXHEADERS}" HAVE_PROTOTYPE_STD__VSNPRINTF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(_stricmp "${HEADERS}" HAVE_PROTOTYPE__STRICMP)
@@ -692,12 +685,12 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS("char16_t definition" "${HEADERS}" HAVE_CHAR16_T)
 
   # File access stuff
-  CHECK_FUNCTIONWITHHEADER_EXISTS("fpos64_t definition" "${HEADERS}" HAVE_FPOS64_T)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("off64_t definition" "${HEADERS}" HAVE_OFF64_T)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("fpos64_t definition" "${CXXHEADERS}" HAVE_FPOS64_T)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("off64_t definition" "${CXXHEADERS}" HAVE_OFF64_T)
   # Check if the POSIX functions are available (even on Windows). They are preferred
   # to the Microsoft specific functions on compilers like MinGW.
-  CHECK_FUNCTIONWITHHEADER_EXISTS("popen" "${HEADERS}" HAVE_POPEN)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("pclose" "${HEADERS}" HAVE_PCLOSE)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("popen" "${CXXHEADERS}" HAVE_POPEN)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("pclose" "${CXXHEADERS}" HAVE_PCLOSE)
 
   # Signal handling functions
   CHECK_FUNCTIONWITHHEADER_EXISTS("sigjmp_buf definition" "setjmp.h" HAVE_SIGJMP_BUF)
@@ -967,13 +960,7 @@ function(DCMTK_CHECK_ENABLE_LFS)
     message(STATUS "${MESSAGE}")
     # determine size of fpos_t (for the strange LFS implementation on Windows)
     set(CMAKE_EXTRA_INCLUDE_FILES)
-    if(HAVE_STDIO_H)
-      # prefer stdio.h so that is not in namespace std
-      set(CMAKE_EXTRA_INCLUDE_FILES "stdio.h")
-    elseif(HAVE_CSTDIO)
-      # use cstdio as the fallback
-      set(CMAKE_EXTRA_INCLUDE_FILES "cstdio")
-    endif()
+    set(CMAKE_EXTRA_INCLUDE_FILES "cstdio")
     CHECK_TYPE_SIZE("fpos_t" SIZEOF_FPOS_T)
     # assume sizeof off_t to be correct, will be removed if below tests fail
     set(SIZEOF_OFF_T 8)

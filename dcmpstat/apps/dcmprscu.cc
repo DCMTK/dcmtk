@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2020, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmnet/dcompat.h"     /* compatibility code, needs to be included before dirent.h */
-
-#define INCLUDE_CCTYPE
-#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 /* This #if code is suggested by the gnu autoconf documentation */

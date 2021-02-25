@@ -1103,9 +1103,6 @@ typedef unsigned short ushort;
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME
 
-/* Define if ANSI standard C++ includes are used. */
-#undef USE_STD_CXX_INCLUDES
-
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
 # undef _ALL_SOURCE

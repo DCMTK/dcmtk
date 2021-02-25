@@ -167,10 +167,6 @@ t_huge_concat.o: t_huge_concat.cc \
  ../../dcmfg/include/dcmtk/dcmfg/concatenationloader.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
- ../../ofstd/include/dcmtk/ofstd/oftuple.h \
- ../../ofstd/include/dcmtk/ofstd/diag/mmtag.def \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefrd.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuple.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgctacquisitiondetails.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgctacquisitiontype.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgctadditionalxraysource.h \
@@ -361,10 +357,6 @@ t_roundtrip.o: t_roundtrip.cc \
  ../../dcmfg/include/dcmtk/dcmfg/concatenationloader.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatutl.h \
- ../../ofstd/include/dcmtk/ofstd/oftuple.h \
- ../../ofstd/include/dcmtk/ofstd/diag/mmtag.def \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefrd.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuple.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgctacquisitiondetails.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgctacquisitiontype.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgctadditionalxraysource.h \

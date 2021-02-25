@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2020, OFFIS e.V.
+ *  Copyright (C) 2008-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,9 +24,6 @@
 
 #include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/dcmdata/dcsequen.h"
-
-#define INCLUDE_CINTTYPES
-#include "dcmtk/ofstd/ofstdinc.h"
 
 /*******************************************************************/
 /*              Implementation of class DcmPath                    */

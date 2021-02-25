@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2020, OFFIS e.V.
+ *  Copyright (C) 2007-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,9 +28,6 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/offile.h"      /* for class OFFile */
 #include "dcmtk/ofstd/ofbmanip.h"
-
-#define INCLUDE_CMATH
-#include "dcmtk/ofstd/ofstdinc.h"
 
 // dcmdata includes
 #include "dcmtk/dcmdata/dcdatset.h"  /* for class DcmDataset */

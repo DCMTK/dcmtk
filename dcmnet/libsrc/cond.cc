@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,8 +23,8 @@
 #include "dcmtk/dcmnet/cond.h"
 #include "dcmtk/ofstd/ofstream.h"
 
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
+// #define INCLUDE_CSTDIO
+// #include "dcmtk/ofstd/ofstdinc.h"
 
 makeOFConditionConst(ASC_BADPRESENTATIONCONTEXTID,      OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID,      OF_error, "ASC Bad presentation context ID");
 makeOFConditionConst(ASC_MISSINGTRANSFERSYNTAX,         OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,         OF_error, "ASC Missing transfer syntax");

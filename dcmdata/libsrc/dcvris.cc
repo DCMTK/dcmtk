@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,11 +24,6 @@
 #include "dcmtk/dcmdata/dcvris.h"
 #include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/ofstd/ofstring.h"
-
-#define INCLUDE_CSTDIO
-#define INCLUDE_CINTTYPES
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 #define MAX_IS_LENGTH 12
 

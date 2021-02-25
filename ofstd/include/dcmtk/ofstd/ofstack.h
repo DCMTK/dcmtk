@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,9 +38,7 @@
 #define OFStack std::stack
 #else
 
-#define INCLUDE_CASSERT
-#define INCLUDE_CSTDDEF
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cassert>
 
 #ifndef HAVE_CLASS_TEMPLATE
 #error Your C++ compiler cannot handle class templates:

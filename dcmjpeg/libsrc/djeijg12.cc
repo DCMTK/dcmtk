@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,10 +24,7 @@
 #include "dcmtk/dcmjpeg/djcparam.h"
 #include "dcmtk/dcmdata/dcerror.h"
 
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSETJMP
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <csetjmp>
 
 // These two macros are re-defined in the IJG header files.
 // We undefine them here and hope that IJG's configure has
@@ -54,11 +51,9 @@ BEGIN_EXTERN_C
 #undef const
 #endif
 
-#ifdef USE_STD_CXX_INCLUDES
 // Solaris defines longjmp() in namespace std, other compilers don't...
 namespace std { }
 using namespace std;
-#endif
 
 // private error handler struct
 struct DJEIJG12ErrorStruct

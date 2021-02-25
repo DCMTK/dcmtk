@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -28,9 +28,6 @@
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/ofmap.h"
 #include "dcmtk/ofstd/ofstring.h"
-
-#define INCLUDE_OSTREAM // for debugging
-#include "dcmtk/ofstd/ofstdinc.h"
 
 class DcmItem;
 class DcmTagKey;

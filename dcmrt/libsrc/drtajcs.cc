@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTAssigningJurisdictionCodeSequence
@@ -15,6 +15,8 @@
 #include "dcmtk/config/osconfig.h"     // make sure OS specific configuration is included first
 
 #include "dcmtk/dcmrt/seq/drtajcs.h"
+
+#include <cmath>
 
 
 // --- item class ---

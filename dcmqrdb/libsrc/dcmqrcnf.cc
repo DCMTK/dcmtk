@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2020, OFFIS e.V.
+ *  Copyright (C) 1993-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,16 +23,11 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmqrdb/dcmqrcnf.h"
 
-/* includes */
-#define INCLUDE_CSTDIO
-#define INCLUDE_CCTYPE
-#define INCLUDE_CSTDARG
-#define INCLUDE_CSTRING
-#define INCLUDE_CLIMITS
-#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/ofstd/ofmap.h"
 #include "dcmtk/ofstd/ofchrenc.h"
+
+#include <climits>
 
 OFLogger DCM_dcmqrdbLogger = OFLog::getLogger("dcmtk.dcmqrdb");
 

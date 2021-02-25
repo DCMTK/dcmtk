@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2014, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,10 +30,6 @@
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmimgle/diobjcou.h"
 #include "dcmtk/ofstd/ofstring.h"
-
-#define INCLUDE_CSTDDEF
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /*------------------------*
  *  forward declarations  *

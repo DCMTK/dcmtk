@@ -27,11 +27,6 @@
 #include "dcmtk/ofstd/ofmath.h"
 #include "dcmtk/dcmdata/dcjson.h"
 
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
-
-
 // ********************************
 
 DcmFloatingPointDouble::DcmFloatingPointDouble(const DcmTag &tag)

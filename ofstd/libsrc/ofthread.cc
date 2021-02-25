@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,11 +27,6 @@
 
 /* if WITH_THREADS is undefined, we don't even attempt to implement a thread interface. */
 #ifdef WITH_THREADS
-
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTRING
-#define INCLUDE_CERRNO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 

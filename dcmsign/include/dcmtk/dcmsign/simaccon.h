@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,9 +31,6 @@
 #include "dcmtk/dcmdata/dcostrmb.h"  /* for DcmOutputBufferStream */
 #include "dcmtk/dcmdata/dcxfer.h"    /* for E_TransferSyntax */
 #include "dcmtk/dcmdata/dcdeftag.h"
-
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 class SiMAC;
 class DcmItem;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2020, OFFIS e.V.
+ *  Copyright (C) 2016-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,13 +22,10 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcjson.h"
-
-#define INCLUDE_CASSERT
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
-
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofstring.h"
+
+#include <cassert>
 
 void DcmJsonFormat::escapeControlCharacters(STD_NAMESPACE ostream &out, const OFString &value)
 {

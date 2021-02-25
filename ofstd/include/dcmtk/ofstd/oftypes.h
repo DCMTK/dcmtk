@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2019, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,6 +32,8 @@
 /** @file oftypes.h
  *  @brief Definition of standard types used throughout the toolkit
  */
+
+#include "dcmtk/ofstd/ofstdinc.h"
 
 // use native types if C++11 is supported
 #ifdef HAVE_CXX11
@@ -68,11 +70,10 @@ inline std::ostream& operator<<( std::ostream& o, OFnullptr_t /* unused */ )
 
 #else // fallback definitions
 
-#define INCLUDE_OSTREAM
-#define INCLUDE_CSTDINT
-#define INCLUDE_CSTDDEF
-#define INCLUDE_CINTTYPES
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cstdint>
+#include <cstddef>
+#include <cinttypes>
+#include "dcmtk/ofstd/ofstream.h"
 
 typedef signed char     Sint8;
 typedef unsigned char   Uint8;

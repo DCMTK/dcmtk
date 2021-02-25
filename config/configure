@@ -722,7 +722,6 @@ enable_option_checking
 enable_debug
 enable_threads
 enable_lfs
-enable_std_includes
 enable_private_tags
 enable_external_dict
 enable_builtin_dict
@@ -1404,8 +1403,6 @@ Optional Features:
   --disable-threads       compile without MT support
   --enable-lfs=TYPE       compile with LFS support (lfs/lfs64/auto=default)
   --disable-lfs           compile without LFS support
-  --enable-std-includes   use C++ ANSI standard includes (default: auto)
-  --disable-std-includes  use old C++ includes
   --enable-private-tags   enable private tag dictionary
   --disable-private-tags  don't enable private tag dictionary (default)
   --enable-external-dict  enable loading of external dictionary (default)
@@ -13012,60 +13009,7 @@ fi
 
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to use C++ standard includes" >&5
-$as_echo_n "checking whether to use C++ standard includes... " >&6; }
-ac_use_std_includes="auto"
-# Check whether --enable-std-includes was given.
-if test "${enable_std_includes+set}" = set; then :
-  enableval=$enable_std_includes;  case "$enableval" in
-  yes)
-   ac_use_std_includes="yes"
-   ;;
-
-  *)
-    ac_use_std_includes="no"
-    ;;
-  esac
-
-fi
-
-
-if test "$ac_cv_header_fstream" = "yes" -a "$ac_cv_header_iostream" = "yes" -a "$ac_cv_header_iomanip" = "yes"; then
-   ac_have_std_includes="yes"
-else
-   ac_have_std_includes="no"
-fi
-
-if test "$ac_cv_header_fstream_h" = "yes" -a "$ac_cv_header_iostream_h" = "yes" -a "$ac_cv_header_iomanip_h" = "yes"; then
-   ac_have_old_includes="yes"
-else
-   ac_have_old_includes="no"
-fi
-
-if test "$ac_use_std_includes" = "yes"; then
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-$as_echo "#define USE_STD_CXX_INCLUDES /**/" >>confdefs.h
-
-elif test "$ac_use_std_includes" = "no"; then
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-elif test "$ac_have_std_includes" = "yes"; then
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-$as_echo "#define USE_STD_CXX_INCLUDES /**/" >>confdefs.h
-
-   ac_use_std_includes="yes"
-else
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-   ac_use_std_includes="no"
-fi
-
-if test "$ac_use_std_includes" = "yes"; then
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for C++ standard namespace" >&5
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for C++ standard namespace" >&5
 $as_echo_n "checking for C++ standard namespace... " >&6; }
 
 if ${ac_cv_check_std_namespace+:} false; then :
@@ -13073,7 +13017,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13076 "configure"
+#line 13020 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13233,7 +13177,7 @@ $as_echo "no" >&6; }
 fi
 unset ac_cv_declaration
 
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for std::vfprintf (in cstdarg cstdio)" >&5
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for std::vfprintf (in cstdarg cstdio)" >&5
 $as_echo_n "checking for std::vfprintf (in cstdarg cstdio)... " >&6; }
 
 ac_includes=""
@@ -13281,7 +13225,7 @@ else
 $as_echo "no" >&6; }
 fi
 
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for std::vsnprintf (in cstdarg cstdio)" >&5
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for std::vsnprintf (in cstdarg cstdio)" >&5
 $as_echo_n "checking for std::vsnprintf (in cstdarg cstdio)... " >&6; }
 
 ac_includes=""
@@ -13329,15 +13273,75 @@ else
 $as_echo "no" >&6; }
 fi
 
-else
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking declaration for std::ios_base::openmode (in iostream.h)" >&5
-$as_echo_n "checking declaration for std::ios_base::openmode (in iostream.h)... " >&6; }
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for C++ standard namespace" >&5
+$as_echo_n "checking for C++ standard namespace... " >&6; }
+
+if ${ac_cv_check_std_namespace+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
+cat > conftest.$ac_ext <<EOF
+#line 13286 "configure"
+#include "confdefs.h"
+
+#include <iostream>
+using namespace std;
+
+int main() {
+
+  cout << "Hello World" << endl;
+
+; return 0; }
+EOF
+if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_link_o\""; } >&5
+  (eval $ac_link_o) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+    rm -rf conftest*
+    eval "ac_cv_check_std_namespace=yes"
+  else
+    echo "configure: failed link was:" >&5
+    cat conftest.$ac_ext >&5
+      rm -rf conftest*
+      eval "ac_cv_check_std_namespace=no"
+      fi
+else
+  echo "configure: failed compile was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_check_std_namespace=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_check_std_namespace'`\" = yes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  ac_tr_std_namespace=HAVE_STD_NAMESPACE
+  cat >>confdefs.h <<_ACEOF
+#define $ac_tr_std_namespace 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking declaration for std::ios_base::openmode (in iostream)" >&5
+$as_echo_n "checking declaration for std::ios_base::openmode (in iostream)... " >&6; }
 
 ac_includes=""
 
 ac_cpp_includes=""
-for ac_header in iostream.h
+for ac_header in iostream
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -13395,8 +13399,8 @@ fi
 unset ac_cv_declaration
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking declaration of ios::nocreate (in fstream.h)" >&5
-$as_echo_n "checking declaration of ios::nocreate (in fstream.h)... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking declaration of ios::nocreate (in fstream)" >&5
+$as_echo_n "checking declaration of ios::nocreate (in fstream)... " >&6; }
 
 ac_cv_declaration=ac_cv_declaration_ios_nocreate
 if eval \${$ac_cv_declaration+:} false; then :
@@ -13405,14 +13409,14 @@ else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-#include <fstream.h>
+#include <fstream>
 
 int
 main ()
 {
 namespace std { }
 using namespace std;
-ifstream file("name", ios::nocreate)
+ifstream file("name", std::ios::nocreate)
   ;
   return 0;
 }
@@ -13439,11 +13443,11 @@ $as_echo "no" >&6; }
 fi
 unset ac_cv_declaration
 
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for std::vfprintf (in stdarg.h stdio.h)" >&5
-$as_echo_n "checking for std::vfprintf (in stdarg.h stdio.h)... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for std::vfprintf (in cstdarg cstdio)" >&5
+$as_echo_n "checking for std::vfprintf (in cstdarg cstdio)... " >&6; }
 
 ac_includes=""
-for ac_header in stdarg.h stdio.h
+for ac_header in cstdarg cstdio
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -13487,11 +13491,11 @@ else
 $as_echo "no" >&6; }
 fi
 
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for std::vsnprintf (in stdarg.h stdio.h)" >&5
-$as_echo_n "checking for std::vsnprintf (in stdarg.h stdio.h)... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for std::vsnprintf (in cstdarg cstdio)" >&5
+$as_echo_n "checking for std::vsnprintf (in cstdarg cstdio)... " >&6; }
 
 ac_includes=""
-for ac_header in stdarg.h stdio.h
+for ac_header in cstdarg cstdio
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -13535,7 +13539,6 @@ else
 $as_echo "no" >&6; }
 fi
 
-fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for C++ class template" >&5
 $as_echo_n "checking for C++ class template... " >&6; }
@@ -13545,7 +13548,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13548 "configure"
+#line 13551 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13617,7 +13620,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13620 "configure"
+#line 13623 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13689,7 +13692,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13692 "configure"
+#line 13695 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13896,11 +13899,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-#ifdef USE_STD_CXX_INCLUDES
 #include <cstdio>
-#else
-#include <stdio.h>
-#endif
 
 int
 main ()

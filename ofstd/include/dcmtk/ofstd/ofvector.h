@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2018, OFFIS e.V.
+ *  Copyright (C) 2010-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,9 +41,8 @@
 
 #else
 
-#define INCLUDE_CASSERT          /* for assert() */
-#define INCLUDE_CSTDLIB          /* for NULL */
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cassert>
+
 #include "dcmtk/ofstd/oftypes.h" /* for OFBool */
 
 /** this is a resizable array. You can add and remove elements after it was

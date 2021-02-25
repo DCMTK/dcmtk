@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2020, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,9 +30,6 @@
 #include "dcmtk/dcmsign/sitypes.h"
 #include "dcmtk/dcmdata/dcxfer.h"    /* for E_TransferSyntax */
 #include "dcmtk/dcmsign/sipurpos.h"  /* for E_SignaturePurposeType */
-
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 class DcmAttributeTag;
 class DcmDateTime;

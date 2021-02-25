@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,9 +46,7 @@
 #include "dcmtk/dcmpstat/dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
-#define INCLUDE_CMATH
-#define INCLUDE_CTIME
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cmath>
 
 #define DIMSE_STATUS_OK(status) (((status) == 0) || DICOM_WARNING_STATUS(status))
 #define DIMSE_STATUS_BAD(status) (((status) != 0) && !(DICOM_WARNING_STATUS(status)))

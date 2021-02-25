@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2019, OFFIS e.V.
+ *  Copyright (C) 2011-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,9 +26,6 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofdiag.h"
 #include "dcmtk/ofstd/ofconsol.h"
-
-#define INCLUDE_CERRNO
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2010, OFFIS e.V.
+ *  Copyright (C) 1993-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,9 +23,7 @@
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmdata/dcdatset.h"    /* for class DcmDataset */
 
-#define INCLUDE_CSTDDEF
-#include "dcmtk/ofstd/ofstdinc.h"
-
+#include <cmath>
 
 DcmQueryRetrieveDatabaseStatus::DcmQueryRetrieveDatabaseStatus(Uint16 s)
 : status_(s)

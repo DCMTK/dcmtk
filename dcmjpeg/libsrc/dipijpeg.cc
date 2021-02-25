@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,9 +25,7 @@
 #include "dcmtk/dcmimgle/diimage.h"
 #include "dcmtk/dcmjpeg/dipijpeg.h"
 
-#define INCLUDE_CSETJMP
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <csetjmp>
 
 BEGIN_EXTERN_C
 #define boolean ijg_boolean
@@ -42,11 +40,9 @@ BEGIN_EXTERN_C
 #undef const
 #endif
 
-#ifdef USE_STD_CXX_INCLUDES
 // Solaris defines longjmp() in namespace std, other compilers don't...
 namespace std { }
 using namespace std;
-#endif
 
 // private error handler struct
 struct DIEIJG8ErrorStruct

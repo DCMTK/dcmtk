@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2019, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,9 +27,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofdefine.h"
 
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDINT
-#include "dcmtk/ofstd/ofstdinc.h"
+#include <cstring>
 
 /*---------------------*
  *  class declaration  *

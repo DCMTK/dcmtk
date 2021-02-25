@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2020, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,10 +31,6 @@
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/ofstd/ofstd.h"
-
-#define INCLUDE_CSTRING
-#include "dcmtk/ofstd/ofstdinc.h"
-
 
 /*----------------*
  *  constructors  *

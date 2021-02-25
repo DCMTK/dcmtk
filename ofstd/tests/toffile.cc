@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2018, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,11 +29,6 @@
 
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
-
-#define INCLUDE_CTIME
-#define INCLUDE_CSTDLIB
-#define INCLUDE_IOSTREAM
-#include "dcmtk/ofstd/ofstdinc.h"
 
 // size of block (Uint32 values, not bytes): 1 MByte
 #define BLOCKSIZE 0x40000

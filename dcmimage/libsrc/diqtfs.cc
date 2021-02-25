@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2014, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,9 +23,6 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmimage/diqtfs.h"
 #include "dcmtk/ofstd/ofstd.h"       /* for OFStandard::myrand_r */
-
-#define INCLUDE_CTIME
-#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #include <sys/types.h> // needed for time()

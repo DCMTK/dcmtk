@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,9 +36,6 @@
 #include "dcmtk/dcmimgle/diregbas.h"
 #include "dcmtk/dcmimgle/diplugin.h"
 #include "dcmtk/dcmdata/dcdicent.h"  /* needed by MSVC5 */
-
-#define INCLUDE_CCTYPE
-#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifndef FILENAME_MAX
 #define FILENAME_MAX 255

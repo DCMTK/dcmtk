@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2019, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,9 +37,6 @@
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofstd.h"
-
-#define INCLUDE_CCTYPE
-#include "dcmtk/ofstd/ofstdinc.h"
 
 static const char* verify_string(const char *s)
 {
