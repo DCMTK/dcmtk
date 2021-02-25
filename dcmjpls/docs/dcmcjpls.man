@@ -183,7 +183,6 @@ JPEG-LS padding of odd-length bitstreams:
   # end of image segment marker, i.e. FF D9 00. This is not DICOM conformant
   # but required for interoperability with the HP LOCO reference implementation,
   # which does not support extended JPEG-LS bitstreams.
-
 \endverbatim
 
 \subsection dcmcjpls_enc_pix_data_encoding_opt encapsulated pixel data encoding options
@@ -388,6 +387,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmcjpls_copyright COPYRIGHT
 
-Copyright (C) 2009-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2009-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
