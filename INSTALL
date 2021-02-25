@@ -893,8 +893,6 @@ options are:
   --disable-threads       compile without MT support
   --enable-lfs=TYPE       compile with LFS support (lfs/lfs64/auto=default)
   --disable-lfs           compile without LFS support
-  --enable-std-includes   use C++ ANSI standard includes
-  --disable-std-includes  use old C++ includes
   --enable-private-tags   enable private tag dictionary
   --disable-private-tags  don't enable private tag dictionary (default)
   --enable-external-dict  enable loading of external dictionary (default)
@@ -980,4 +978,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher, P. Arizpe Gomez
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2021-01-14 (Onken)
+Last revised: 2021-02-25 (Riesmeier)
