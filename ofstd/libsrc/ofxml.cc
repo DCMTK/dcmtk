@@ -120,6 +120,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cassert>
+#include "dcmtk/ofstd/ofstdinc.h"
 
 // DCMTK: workaround for SunPro not defining these C functions in the global namespace
 #ifdef __sun

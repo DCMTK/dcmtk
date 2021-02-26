@@ -23,6 +23,7 @@
 
 #include <cstring>
 #include <cassert>
+#include <climits>
 
 #include "dcmtk/ofstd/offilsys.h"
 
