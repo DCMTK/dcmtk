@@ -969,6 +969,142 @@ X509 *DcmTLSTransportLayer::loadCertificateFile(const char *fileName, DcmKeyFile
   return result;
 }
 
+DcmTransportLayerStatus DcmTLSTransportLayer::verifyClientCertificate(const char *fileName, DcmKeyFileFormat fileType)
+{
+  DcmTransportLayerStatus result = TCS_illegalCall;
+  if (transportLayerContext && fileName)
+  {
+    X509_STORE *trustStore = SSL_CTX_get_cert_store(transportLayerContext);
+    if (trustStore)
+    {
+
+      // for some reason, the SSL context and the X509_STORE within that
+      // context have different X509_VERIFY_PARAM parameter sets, in particular
+      // they have different verification flags. We copy the flags from the
+      // SSL context to the X509_STORE and restore the original value
+      // after certificate verification.
+      X509_VERIFY_PARAM *vparam_ssl = DCMTK_SSL_CTX_get0_param(transportLayerContext);
+      X509_VERIFY_PARAM *vparam_store = X509_STORE_get0_param(trustStore);
+      unsigned long ssl_vparam_flags = 0;
+      unsigned long store_vparam_flags = 0;
+      if (vparam_ssl) ssl_vparam_flags = X509_VERIFY_PARAM_get_flags(vparam_ssl);
+      if (vparam_store)
+      {
+        store_vparam_flags = X509_VERIFY_PARAM_get_flags(vparam_store);
+        X509_VERIFY_PARAM_set_flags(vparam_store, ssl_vparam_flags);
+      }
+
+      X509_STORE_CTX *storeCtx = X509_STORE_CTX_new();
+      if (storeCtx)
+      {
+        // we have a trust store and a context object for certificate verification.
+        // Now let's load the client certificate chain
+        X509 *clientCert = NULL;
+        STACK_OF(X509) *chain = sk_X509_new(NULL);
+        BIO *in=BIO_new_file(fileName, "rb");
+        if (in)
+        {
+          if (fileType == DCF_Filetype_ASN1)
+          {
+            clientCert = d2i_X509_bio(in,NULL);
+            if (clientCert == NULL)
+            {
+              result = TCS_tlsError;
+              DCMTLS_ERROR("Not a DER certificate file: '" << fileName << "'");
+            }
+          }
+          else if (fileType == DCF_Filetype_PEM)
+          {
+            clientCert = PEM_read_bio_X509(in, NULL, NULL, NULL);
+            if (clientCert == NULL)
+            {
+              result = TCS_tlsError;
+              DCMTLS_ERROR("Not a PEM certificate file: '" << fileName << "'");
+            }
+            // in a PEM file, a certificate chain may follow after the client certificate.
+            X509 *chainCert = NULL;
+            while (NULL != (chainCert = PEM_read_bio_X509(in, NULL, NULL, NULL)))
+            {
+              sk_X509_push(chain, chainCert);
+            }
+          }
+          BIO_free(in);
+        }
+        else
+        {
+          DCMTLS_ERROR("Cannot open certificate file '" << fileName << "'");
+        }
+
+        if (clientCert)
+        {
+          // no more "TCS_illegalCall"; now the result defaults to TCS_tlsError
+          result = TCS_tlsError;
+          if (X509_STORE_CTX_init(storeCtx, trustStore, clientCert, chain))
+          {
+            if (X509_verify_cert(storeCtx))
+            {
+              result = TCS_ok;
+            }
+            else
+            {
+              int errorCode = X509_STORE_CTX_get_error(storeCtx);
+              DCMTLS_ERROR("certificate verification failed: " << X509_verify_cert_error_string(errorCode));
+            }
+          }
+          else
+          {
+            DCMTLS_ERROR("certificate store context initialization failed");
+          }
+          X509_free(clientCert);
+        }
+
+        X509_STORE_CTX_free(storeCtx);
+        sk_X509_pop_free(chain, X509_free);
+      }
+
+      // restore original value of X509 store flags
+      if (vparam_store)
+      {
+        X509_VERIFY_PARAM_set_flags(vparam_store, store_vparam_flags);
+      }
+
+    }
+  }
+  return result;
+}
+
+DcmTransportLayerStatus DcmTLSTransportLayer::isRootCertificate(const char *fileName, DcmKeyFileFormat fileType)
+{
+  DcmTransportLayerStatus result = TCS_illegalCall;
+  if (fileName)
+  {
+    X509_STORE *trustStore = X509_STORE_new();
+    X509_STORE_CTX *storeCtx = X509_STORE_CTX_new();
+    if (trustStore && storeCtx)
+    {
+      // we have a trust store and a context object for certificate verification.
+      // Now let's load the client certificate
+      X509 *clientCert = loadCertificateFile(fileName, fileType);
+      if (clientCert == NULL)
+      {
+        DCMTLS_ERROR("Cannot read certificate file '" << fileName << "'");
+      }
+      else
+      {
+        result = TCS_tlsError;
+        if (X509_STORE_add_cert(trustStore, clientCert) &&
+            X509_STORE_CTX_init(storeCtx, trustStore, clientCert, NULL) &&
+            X509_verify_cert(storeCtx)) result = TCS_ok;
+      }
+      X509_free(clientCert);
+    }
+    if (storeCtx) X509_STORE_CTX_free(storeCtx);
+    if (trustStore) X509_STORE_free(trustStore);
+  }
+  return result;
+}
+
+
 void DcmTLSTransportLayer::initializeOpenSSL()
 {
   // the call to SSL_library_init was not needed in OpenSSL versions prior to 0.9.8,

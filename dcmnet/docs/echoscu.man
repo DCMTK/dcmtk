@@ -196,6 +196,21 @@ peer authentication:
 
   -ic   --ignore-peer-cert
           don't verify peer certificate
+
+offline certificate verification:
+
+  +vc   --verify-cert  [c]ertificate file: string
+          verify certificate against CA settings
+
+          # Load a client certificate and check whether it would be accepted
+          # when received during a TLS handshake. Print result and exit.
+
+  +rc   --is-root-cert  [c]ertificate file: string
+          check if certificate is self-signed root CA
+
+          # Load a client certificate and check whether it is a valid,
+          # self-signed root CA certificate. Print result and exit.
+
 \endverbatim
 
 \section echoscu_notes NOTES

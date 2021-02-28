@@ -256,6 +256,23 @@ public:
    */
   DcmTransportLayerStatus addVerificationFlags(unsigned long flags);
 
+  /** loads a certificate or certificate chain from a file and checks whether
+   *  it can be verified against the current settings of the trust store.
+   *  @param fileName path to the certificate file
+   *  @param fileType, must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
+   *  @return TCS_ok if verification succeeded, an error code otherwise
+   */
+  DcmTransportLayerStatus verifyClientCertificate(const char *fileName, DcmKeyFileFormat fileType);
+
+  /** loads a certificate file and checks whether it is a
+   *  valid (e.g. non-expired), self-signed root certificate that
+   *  can be verified against itself
+   *  @param fileName path to the certificate file
+   *  @param fileType, must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
+   *  @return TCS_ok if certificate is a root certificate, an error code otherwise
+   */
+  static DcmTransportLayerStatus isRootCertificate(const char *fileName, DcmKeyFileFormat fileType);
+
   /** replace the current list of ciphersuites by the list of ciphersuites
    *  for the given profile.
    *  @param profile TLS Security Profile

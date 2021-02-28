@@ -472,3 +472,20 @@ OFCondition DcmTLSOptions::writeRandomSeed()
 #endif
     return EC_Normal;
 }
+
+DcmTransportLayerStatus DcmTLSOptions::verifyClientCertificate(const char *fileName)
+{
+#ifdef WITH_OPENSSL
+  if (tLayer) return tLayer->verifyClientCertificate(fileName, opt_keyFileFormat);
+#endif
+  return TCS_illegalCall;
+}
+
+DcmTransportLayerStatus DcmTLSOptions::isRootCertificate(const char *fileName)
+{
+#ifdef WITH_OPENSSL
+  return DcmTLSTransportLayer::isRootCertificate(fileName, opt_keyFileFormat);
+#else
+  return TCS_illegalCall;
+#endif
+}
