@@ -290,13 +290,13 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
     initLogs();
 
     /// Init scp tls layer
-    DcmTransportLayerStatus result;
+    OFCondition result;
     DcmTLSTransportLayer scpTlsLayer(NET_ACCEPTOR, NULL, OFTrue);
     scpTlsLayer.setPrivateKeyPasswd(PRIVATE_KEY_PWD);
     result = scpTlsLayer.setPrivateKeyFile(PRIVATE_KEY_FILENAME, DCF_Filetype_PEM);
-    OFCHECK(result == TCS_ok);
+    OFCHECK(result.good());
     result = scpTlsLayer.setCertificateFile(PUBLIC_SELFSIGNED_CERT_FILENAME, DCF_Filetype_PEM);
-    OFCHECK(result == TCS_ok);
+    OFCHECK(result.good());
     OFCHECK(scpTlsLayer.checkPrivateKeyMatchesCertificate());
     scpTlsLayer.setCertificateVerification(DCV_ignoreCertificate);
 
@@ -358,13 +358,13 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
     initLogs();
 
     /// Init scp tls layer
-    DcmTransportLayerStatus result;
+    OFCondition result;
     DcmTLSTransportLayer scpTlsLayer(NET_ACCEPTOR, NULL, OFTrue);
     scpTlsLayer.setPrivateKeyPasswd(PRIVATE_KEY_PWD);
     result = scpTlsLayer.setPrivateKeyFile(PRIVATE_KEY_FILENAME, DCF_Filetype_PEM);
-    OFCHECK(result == TCS_ok);
+    OFCHECK(result.good());
     result = scpTlsLayer.setCertificateFile(PUBLIC_SELFSIGNED_CERT_FILENAME, DCF_Filetype_PEM);
-    OFCHECK(result == TCS_ok);
+    OFCHECK(result.good());
     OFCHECK(scpTlsLayer.checkPrivateKeyMatchesCertificate());
     scpTlsLayer.setCertificateVerification(DCV_ignoreCertificate);
 

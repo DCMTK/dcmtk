@@ -23,6 +23,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmtls/tlslayer.h"
 #include "dcmtk/dcmtls/tlsdefin.h"
+#include "dcmtk/dcmtls/tlscond.h"
 
 #ifdef WITH_OPENSSL
 
@@ -36,6 +37,7 @@ BEGIN_EXTERN_C
 #include <openssl/rand.h>
 #include <openssl/err.h>
 #include <openssl/dh.h>
+#include <openssl/x509_vfy.h>
 END_EXTERN_C
 
 #include "dcmtk/dcmtls/tlslayer.h"
@@ -45,7 +47,7 @@ END_EXTERN_C
 #ifdef HAVE_SSL_CTX_GET0_PARAM
 #define DCMTK_SSL_CTX_get0_param SSL_CTX_get0_param
 #else
-#define DCMTK_SSL_CTX_get0_param(A) A->param;
+#define DCMTK_SSL_CTX_get0_param(A) (A)->param;
 #endif
 
 #if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
@@ -56,6 +58,7 @@ END_EXTERN_C
 #define SSL_CTX_get_cert_store(ctx) (ctx)->cert_store
 #define EVP_PKEY_base_id(key) EVP_PKEY_type((key)->type)
 #define DH_bits(dh) BN_num_bits((dh)->p)
+#define X509_STORE_get0_param(A) (A)->param;
 #endif
 
 extern "C" int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
@@ -264,7 +267,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
 
    if (transportLayerContext == NULL)
    {
-      const char *result = ERR_reason_error_string(ERR_peek_error());
+      const char *result = ERR_reason_error_string(ERR_get_error());
       if (result == NULL) result = "unknown error in SSL_CTX_new()";
       DCMTLS_ERROR("unable to create TLS transport layer: " << result);
    }
@@ -507,7 +510,7 @@ void DcmTLSTransportLayer::setCertificateVerification(DcmCertificateVerification
   return;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::activateCipherSuites()
+OFCondition DcmTLSTransportLayer::activateCipherSuites()
 {
   OFString cslist;
   ciphersuites.getListOfCipherSuitesForOpenSSL(cslist, (role != NET_REQUESTOR));
@@ -515,9 +518,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::activateCipherSuites()
   {
     if (!SSL_CTX_set_cipher_list(transportLayerContext, cslist.c_str()))
     {
-      const char *err = ERR_reason_error_string(ERR_peek_error());
-      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-      return TCS_tlsError;
+      return convertOpenSSLError(ERR_get_error(), OFTrue);
     }
 
     SSL_CTX_set_options(transportLayerContext, ciphersuites.getTLSOptions());
@@ -531,23 +532,21 @@ DcmTransportLayerStatus DcmTLSTransportLayer::activateCipherSuites()
       SSL_CTX_set_max_proto_version(transportLayerContext, TLS1_2_VERSION);
     }
 #endif
-  } else return TCS_illegalCall;
+  } else return EC_IllegalCall;
 
-  return TCS_ok;
+  return EC_Normal;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::setCipherSuites(const char *suites)
+OFCondition DcmTLSTransportLayer::setCipherSuites(const char *suites)
 {
   if (transportLayerContext && suites)
   {
     if (!SSL_CTX_set_cipher_list(transportLayerContext, suites))
     {
-      const char *err = ERR_reason_error_string(ERR_peek_error());
-      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-      return TCS_tlsError;
+      return convertOpenSSLError(ERR_get_error(), OFTrue);
     }
-  } else return TCS_illegalCall;
-  return TCS_ok;
+  } else return EC_IllegalCall;
+  return EC_Normal;
 }
 
 DcmTLSTransportLayer::~DcmTLSTransportLayer()
@@ -555,21 +554,19 @@ DcmTLSTransportLayer::~DcmTLSTransportLayer()
   clear();
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::setPrivateKeyFile(const char *fileName, DcmKeyFileFormat fileType)
+OFCondition DcmTLSTransportLayer::setPrivateKeyFile(const char *fileName, DcmKeyFileFormat fileType)
 {
   if (transportLayerContext)
   {
     if (0 >= SSL_CTX_use_PrivateKey_file(transportLayerContext, fileName, lookupOpenSSLCertificateFormat(fileType)))
     {
-      const char *err = ERR_reason_error_string(ERR_peek_error());
-      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-      return TCS_tlsError;
+      return convertOpenSSLError(ERR_get_error(), OFTrue);
     }
-  } else return TCS_illegalCall;
-  return TCS_ok;
+  } else return EC_IllegalCall;
+  return EC_Normal;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::setCertificateFile(const char *fileName, DcmKeyFileFormat fileType)
+OFCondition DcmTLSTransportLayer::setCertificateFile(const char *fileName, DcmKeyFileFormat fileType)
 {
   if (transportLayerContext)
   {
@@ -611,12 +608,10 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCertificateFile(const char *fil
 
     if (result <= 0)
     {
-      const char *err = ERR_reason_error_string(ERR_peek_error());
-      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-      return TCS_tlsError;
+      return convertOpenSSLError(ERR_get_error(), OFTrue);
     }
-  } else return TCS_illegalCall;
-  return TCS_ok;
+  } else return EC_IllegalCall;
+  return EC_Normal;
 }
 
 OFBool DcmTLSTransportLayer::checkPrivateKeyMatchesCertificate()
@@ -628,13 +623,13 @@ OFBool DcmTLSTransportLayer::checkPrivateKeyMatchesCertificate()
   return OFFalse;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::addVerificationFlags(unsigned long flags)
+OFCondition DcmTLSTransportLayer::addVerificationFlags(unsigned long flags)
 {
   X509_VERIFY_PARAM* const parameter = DCMTK_SSL_CTX_get0_param(transportLayerContext);
-  return parameter && X509_VERIFY_PARAM_set_flags(parameter,flags) ? TCS_ok : TCS_unspecifiedError;
+  return parameter && X509_VERIFY_PARAM_set_flags(parameter,flags) ? EC_Normal : DCMTLS_EC_FailedToSetVerificationMode;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::setCRLverification(DcmTLSCRLVerification crlmode)
+OFCondition DcmTLSTransportLayer::setCRLverification(DcmTLSCRLVerification crlmode)
 {
   X509_VERIFY_PARAM* const parameter = DCMTK_SSL_CTX_get0_param(transportLayerContext);
   if (parameter)
@@ -655,60 +650,52 @@ DcmTransportLayerStatus DcmTLSTransportLayer::setCRLverification(DcmTLSCRLVerifi
         flags |= X509_V_FLAG_CRL_CHECK_ALL;
         break;
     }
-    return X509_VERIFY_PARAM_set_flags(parameter,flags) ? TCS_ok : TCS_unspecifiedError;
+    return X509_VERIFY_PARAM_set_flags(parameter,flags) ? EC_Normal : DCMTLS_EC_FailedToSetVerificationMode;
   }
-  return TCS_illegalCall;
+  return EC_IllegalCall;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateFile(const char *fileName, DcmKeyFileFormat fileType)
+OFCondition DcmTLSTransportLayer::addTrustedCertificateFile(const char *fileName, DcmKeyFileFormat fileType)
 {
   if (transportLayerContext)
   {
     X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(SSL_CTX_get_cert_store(transportLayerContext), X509_LOOKUP_file());
     if (x509_lookup == NULL)
     {
-      const char *err = ERR_reason_error_string(ERR_peek_error());
-      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-      return TCS_tlsError;
+      return convertOpenSSLError(ERR_get_error(), OFTrue);
     }
     if (! X509_LOOKUP_load_file(x509_lookup, fileName, lookupOpenSSLCertificateFormat(fileType)))
     {
-      const char *err = ERR_reason_error_string(ERR_peek_error());
-      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-      return TCS_tlsError;
+      return convertOpenSSLError(ERR_get_error(), OFTrue);
     }
-  } else return TCS_illegalCall;
-  return TCS_ok;
+  } else return EC_IllegalCall;
+  return EC_Normal;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::addCertificateRevocationList(const char *fileName, DcmKeyFileFormat fileType)
+OFCondition DcmTLSTransportLayer::addCertificateRevocationList(const char *fileName, DcmKeyFileFormat fileType)
 {
   // OpenSSL uses the same X509_LOOKUP_load_file() function for both certificates and CRLs
   return addTrustedCertificateFile(fileName, fileType);
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const char *pathName, DcmKeyFileFormat fileType)
+OFCondition DcmTLSTransportLayer::addTrustedCertificateDir(const char *pathName, DcmKeyFileFormat fileType)
 {
   if (transportLayerContext)
   {
     X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(SSL_CTX_get_cert_store(transportLayerContext), X509_LOOKUP_hash_dir());
     if (x509_lookup == NULL)
     {
-      const char *err = ERR_reason_error_string(ERR_peek_error());
-      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-      return TCS_tlsError;
+      return convertOpenSSLError(ERR_get_error(), OFTrue);
     }
     if (! X509_LOOKUP_add_dir(x509_lookup, pathName, lookupOpenSSLCertificateFormat(fileType)))
     {
-      const char *err = ERR_reason_error_string(ERR_peek_error());
-      if (err) DCMTLS_ERROR("OpenSSL error: " << err);
-      return TCS_tlsError;
+      return convertOpenSSLError(ERR_get_error(), OFTrue);
     }
-  } else return TCS_illegalCall;
-  return TCS_ok;
+  } else return EC_IllegalCall;
+  return EC_Normal;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedClientCertificateFile(const char *fileName)
+OFCondition DcmTLSTransportLayer::addTrustedClientCertificateFile(const char *fileName)
 {
   if (transportLayerContext)
   {
@@ -725,8 +712,8 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedClientCertificateFile(co
     }
     sk_X509_NAME_pop_free(newCaNames,X509_NAME_free);
     SSL_CTX_set_client_CA_list(transportLayerContext,caNames);
-  } else return TCS_illegalCall;
-  return TCS_ok;
+  } else return EC_IllegalCall;
+  return EC_Normal;
 }
 
 DcmTransportConnection *DcmTLSTransportLayer::createConnection(DcmNativeSocketType openSocket, OFBool useSecureLayer)
@@ -866,7 +853,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
   }
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::setTLSProfile(DcmTLSSecurityProfile profile)
+OFCondition DcmTLSTransportLayer::setTLSProfile(DcmTLSSecurityProfile profile)
 {
   return ciphersuites.setTLSProfile(profile);
 }
@@ -876,7 +863,7 @@ void DcmTLSTransportLayer::clearTLSProfile()
   ciphersuites.clearTLSProfile();
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::addCipherSuite(const char *suite)
+OFCondition DcmTLSTransportLayer::addCipherSuite(const char *suite)
 {
   return ciphersuites.addCipherSuite(suite);
 }
@@ -969,9 +956,9 @@ X509 *DcmTLSTransportLayer::loadCertificateFile(const char *fileName, DcmKeyFile
   return result;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::verifyClientCertificate(const char *fileName, DcmKeyFileFormat fileType)
+OFCondition DcmTLSTransportLayer::verifyClientCertificate(const char *fileName, DcmKeyFileFormat fileType)
 {
-  DcmTransportLayerStatus result = TCS_illegalCall;
+  OFCondition result = EC_IllegalCall;
   if (transportLayerContext && fileName)
   {
     X509_STORE *trustStore = SSL_CTX_get_cert_store(transportLayerContext);
@@ -1009,7 +996,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::verifyClientCertificate(const char
             clientCert = d2i_X509_bio(in,NULL);
             if (clientCert == NULL)
             {
-              result = TCS_tlsError;
+              result = DCMTLS_EC_FailedToLoadCertificate(fileName);
               DCMTLS_ERROR("Not a DER certificate file: '" << fileName << "'");
             }
           }
@@ -1018,7 +1005,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::verifyClientCertificate(const char
             clientCert = PEM_read_bio_X509(in, NULL, NULL, NULL);
             if (clientCert == NULL)
             {
-              result = TCS_tlsError;
+              result = DCMTLS_EC_FailedToLoadCertificate(fileName);
               DCMTLS_ERROR("Not a PEM certificate file: '" << fileName << "'");
             }
             // in a PEM file, a certificate chain may follow after the client certificate.
@@ -1032,27 +1019,25 @@ DcmTransportLayerStatus DcmTLSTransportLayer::verifyClientCertificate(const char
         }
         else
         {
+          result = DCMTLS_EC_FailedToLoadCertificate(fileName);
           DCMTLS_ERROR("Cannot open certificate file '" << fileName << "'");
         }
-
         if (clientCert)
         {
-          // no more "TCS_illegalCall"; now the result defaults to TCS_tlsError
-          result = TCS_tlsError;
           if (X509_STORE_CTX_init(storeCtx, trustStore, clientCert, chain))
           {
             if (X509_verify_cert(storeCtx))
             {
-              result = TCS_ok;
+              result = EC_Normal;
             }
             else
             {
-              int errorCode = X509_STORE_CTX_get_error(storeCtx);
-              DCMTLS_ERROR("certificate verification failed: " << X509_verify_cert_error_string(errorCode));
+              result = convertOpenSSLX509VerificationError(X509_STORE_CTX_get_error(storeCtx), OFTrue);
             }
           }
           else
           {
+            result = DCMTLS_EC_CertStoreCtxInitFailed;
             DCMTLS_ERROR("certificate store context initialization failed");
           }
           X509_free(clientCert);
@@ -1073,9 +1058,9 @@ DcmTransportLayerStatus DcmTLSTransportLayer::verifyClientCertificate(const char
   return result;
 }
 
-DcmTransportLayerStatus DcmTLSTransportLayer::isRootCertificate(const char *fileName, DcmKeyFileFormat fileType)
+OFCondition DcmTLSTransportLayer::isRootCertificate(const char *fileName, DcmKeyFileFormat fileType)
 {
-  DcmTransportLayerStatus result = TCS_illegalCall;
+  OFCondition result = EC_IllegalCall;
   if (fileName)
   {
     X509_STORE *trustStore = X509_STORE_new();
@@ -1087,14 +1072,19 @@ DcmTransportLayerStatus DcmTLSTransportLayer::isRootCertificate(const char *file
       X509 *clientCert = loadCertificateFile(fileName, fileType);
       if (clientCert == NULL)
       {
+        result = DCMTLS_EC_FailedToLoadCertificate(fileName);
         DCMTLS_ERROR("Cannot read certificate file '" << fileName << "'");
       }
       else
       {
-        result = TCS_tlsError;
-        if (X509_STORE_add_cert(trustStore, clientCert) &&
-            X509_STORE_CTX_init(storeCtx, trustStore, clientCert, NULL) &&
-            X509_verify_cert(storeCtx)) result = TCS_ok;
+        if (X509_STORE_add_cert(trustStore, clientCert))
+        {
+          if (X509_STORE_CTX_init(storeCtx, trustStore, clientCert, NULL))
+          {
+            if (X509_verify_cert(storeCtx)) result = EC_Normal;
+              else result = convertOpenSSLX509VerificationError(X509_STORE_CTX_get_error(storeCtx), OFFalse);
+          } else result = DCMTLS_EC_CertStoreCtxInitFailed;
+        } else result = DCMTLS_EC_FailedToLoadCertificate(fileName);;
       }
       X509_free(clientCert);
     }
@@ -1104,6 +1094,56 @@ DcmTransportLayerStatus DcmTLSTransportLayer::isRootCertificate(const char *file
   return result;
 }
 
+OFCondition DcmTLSTransportLayer::convertOpenSSLError(unsigned long errorCode, OFBool logAsError)
+{
+    if (errorCode == 0) return EC_Normal;
+
+    const char *err = ERR_reason_error_string(errorCode);
+    if (err == NULL) err = "OpenSSL error";
+
+    // we generate special error codes for SSL errors
+    if (ERR_LIB_SSL == ERR_GET_LIB(errorCode))
+    {
+
+      OFOStringStream os;
+      os << "TLS error: " << err;
+
+      OFCondition cond;
+      OFSTRINGSTREAM_GETSTR( os, c )
+      if (logAsError) DCMTLS_ERROR(c);
+      cond = makeOFCondition(OFM_dcmtls, DCMTLS_EC_SSL_Offset + ERR_GET_REASON(errorCode), OF_error,  c);
+      OFSTRINGSTREAM_FREESTR( c )
+
+      return cond;
+    }
+    else
+    {
+      if (logAsError) DCMTLS_ERROR("OpenSSL error " << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << errorCode << ": " << err);
+
+      // we return a generic OpenSSL error for all other OpenSSL sublibraries
+      return DCMTLS_EC_GenericOpenSSLError(errorCode);
+    }
+}
+
+OFCondition DcmTLSTransportLayer::convertOpenSSLX509VerificationError(int errorCode, OFBool logAsError)
+{
+    if (errorCode == 0) return EC_Normal;
+
+    // check if this is a known error code, map to "unspecified error" otherwise and print a warning
+    if (errorCode > DCMTLS_EC_X509Verify_Max)
+    {
+      DCMTLS_WARN("Unsupported OpenSSL X.509 verification error code " << errorCode << "; mapped to DCMTLS_EC_X509VerifyUnspecified.");
+      errorCode = X509_V_ERR_UNSPECIFIED;
+    }
+
+    // retrieve error string
+    const char *err = X509_verify_cert_error_string(errorCode);
+    if (err == NULL) err = "unspecified error.";
+
+    if (logAsError) DCMTLS_ERROR("certificate verification failed: " << err);
+
+    return makeOFCondition(OFM_dcmtls, DCMTLS_EC_X509Verify_Offset + errorCode, OF_error,  err);
+}
 
 void DcmTLSTransportLayer::initializeOpenSSL()
 {

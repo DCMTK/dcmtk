@@ -2063,15 +2063,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
       return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
 
-    DcmTransportLayerStatus tcsStatus;
-    if (TCS_ok != (tcsStatus = (*association)->connection->serverSideHandshake()))
-    {
-      OFString msg = "DUL secure transport layer: ";
-      msg += (*association)->connection->errorString(tcsStatus);
-      return makeDcmnetCondition(DULC_TLSERROR, OF_error, msg.c_str());
-    }
-
-    return EC_Normal;
+    return (*association)->connection->serverSideHandshake();
 }
 
 

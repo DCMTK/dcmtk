@@ -2513,15 +2513,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif
         }
 
-       DcmTransportLayerStatus tcsStatus;
-       if (TCS_ok != (tcsStatus = (*association)->connection->clientSideHandshake()))
-       {
-         DCMNET_ERROR("TLS client handshake failed");
-         OFString msg = "DUL secure transport layer: ";
-         msg += (*association)->connection->errorString(tcsStatus);
-         return makeDcmnetCondition(DULC_TLSERROR, OF_error, msg.c_str());
-       }
-       return EC_Normal;
+        return (*association)->connection->clientSideHandshake();
     }
 }
 

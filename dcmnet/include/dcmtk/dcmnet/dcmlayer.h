@@ -37,33 +37,6 @@
  *  @brief type definitions and classes for transport connections
  */
 
-/** this enum represents the result of a transport layer operation
- *  which may be a transparent TCP/IP or a secure TLS operation.
- */
-enum DcmTransportLayerStatus
-{
-  /** successful operation
-   */
-  TCS_ok,
-
-  /** operation cannot be performed because transport connection
-   *  object was not allocated.
-   */
-  TCS_noConnection,
-
-  /** operation failed due to an error within the TLS protocol layer
-   */
-  TCS_tlsError,
-
-  /** operation failed because an illegal parameter was passed
-   */
-  TCS_illegalCall,
-
-  /** unspecified error
-   */
-  TCS_unspecifiedError
-};
-
 class DcmTransportConnection;
 
 /** factory class which creates transport layer connections.

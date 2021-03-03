@@ -323,8 +323,8 @@ main(int argc, char *argv[])
         const char *cert_filename = NULL;
         app.checkValue( cmd.getValue( cert_filename ) );
 
-        DcmTransportLayerStatus certStatus = tlsOptions.verifyClientCertificate(cert_filename);
-        if (certStatus == TCS_ok)
+        cond = tlsOptions.verifyClientCertificate(cert_filename);
+        if (cond.good())
         {
           COUT << "Verification of certificate '" << cert_filename << "' passed." << OFendl;
           return EXITCODE_NO_ERROR;
@@ -341,8 +341,8 @@ main(int argc, char *argv[])
         const char *cert_filename = NULL;
         app.checkValue( cmd.getValue( cert_filename ) );
 
-        DcmTransportLayerStatus certStatus = tlsOptions.isRootCertificate(cert_filename);
-        if (certStatus == TCS_ok)
+        cond = tlsOptions.isRootCertificate(cert_filename);
+        if (cond.good())
         {
           COUT << "Certificate '" << cert_filename << "' is a valid, self-signed root CA." << OFendl;
           return EXITCODE_NO_ERROR;

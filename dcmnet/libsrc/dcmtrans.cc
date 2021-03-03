@@ -312,19 +312,19 @@ DcmTCPConnection::~DcmTCPConnection()
   close();
 }
 
-DcmTransportLayerStatus DcmTCPConnection::serverSideHandshake()
+OFCondition DcmTCPConnection::serverSideHandshake()
 {
-  return TCS_ok;
+  return EC_Normal;
 }
 
-DcmTransportLayerStatus DcmTCPConnection::clientSideHandshake()
+OFCondition DcmTCPConnection::clientSideHandshake()
 {
-  return TCS_ok;
+  return EC_Normal;
 }
 
-DcmTransportLayerStatus DcmTCPConnection::renegotiate(const char * /* newSuite */ )
+OFCondition DcmTCPConnection::renegotiate(const char * /* newSuite */ )
 {
-  return TCS_ok;
+  return EC_Normal;
 }
 
 ssize_t DcmTCPConnection::read(void *buf, size_t nbyte)
@@ -402,7 +402,7 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
       t.tv_usec = 0;
 
 #ifdef DCMTK_HAVE_POLL
-  struct pollfd pfd[] = 
+  struct pollfd pfd[] =
   {
     { getSocket(), POLLIN, 0 }
   };
@@ -461,27 +461,3 @@ OFString& DcmTCPConnection::dumpConnectionParameters(OFString& str)
   str = "Transport connection: TCP/IP, unencrypted.";
   return str;
 }
-
-const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
-{
-  switch (code)
-  {
-    case TCS_ok:
-      return "no error";
-      /* break; */
-    case TCS_noConnection:
-      return "no secure connection in place";
-      /* break; */
-    case TCS_tlsError:
-      return "TLS error";
-      /* break; */
-    case TCS_illegalCall:
-      return "illegal call";
-      /* break; */
-    case TCS_unspecifiedError:
-      return "unspecified error";
-      /* break; */
-  }
-  return "unknown error code";
-}
-

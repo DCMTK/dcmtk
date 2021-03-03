@@ -35,12 +35,12 @@ DcmTLSTransportLayer::initializeOpenSSL(); // initialize OpenSSL library
 DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(
   NET_REQUESTOR, "random.dat");
 
-if (TCS_ok != tLayer->setPrivateKeyFile("privkey.pem", SSL_FILETYPE_PEM))
+if (tLayer->setPrivateKeyFile("privkey.pem", SSL_FILETYPE_PEM).bad())
 {
   cerr << "unable to load private key" << endl;
   return;
 }
-if (TCS_ok != tLayer->setCertificateFile("certificate.pem", SSL_FILETYPE_PEM))
+if (tLayer->setCertificateFile("certificate.pem", SSL_FILETYPE_PEM).bad())
 {
   cerr << "unable to load certificate" << endl;
   return;

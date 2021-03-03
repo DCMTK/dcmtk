@@ -59,24 +59,24 @@ public:
   /** performs server side handshake on established socket.
    *  This function is used to establish a secure transport connection
    *  over the established TCP connection.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus serverSideHandshake();
+  virtual OFCondition serverSideHandshake();
 
   /** performs client side handshake on established socket.
    *  This function is used to establish a secure transport connection
    *  over the established TCP connection.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus clientSideHandshake();
+  virtual OFCondition clientSideHandshake();
 
   /** performs a re-negotiation of the connection with different
    *  connection parameters. Used to change the parameters of the
    *  secure transport connection.
    *  @param newSuite string identifying the ciphersuite to be negotiated.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus renegotiate(const char *newSuite);
+  virtual OFCondition renegotiate(const char *newSuite);
 
   /** attempts to read nbyte bytes from the transport connection and
    *  writes them into the given buffer.
@@ -138,12 +138,6 @@ public:
    */
   virtual OFString& dumpConnectionParameters(OFString& str);
 
-  /** returns an error string for a given error code.
-   *  @param code error code
-   *  @return description for error code
-   */
-  virtual const char *errorString(DcmTransportLayerStatus code);
-
 private:
 
   /// private undefined copy constructor
@@ -158,8 +152,6 @@ private:
   /// pointer to the TLS connection structure used by the OpenSSL library
   SSL *tlsConnection;
 
-  /// last error code returned by the OpenSSL library
-  unsigned long lastError;
 };
 
 #endif /* WITH_OPENSSL */

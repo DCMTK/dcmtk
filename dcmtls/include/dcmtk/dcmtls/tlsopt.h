@@ -113,17 +113,17 @@ public:
     /** loads a certificate or certificate chain from a file and checks whether
      *  it can be verified against the current settings of the trust store.
      *  @param fileName path to the certificate file
-     *  @return TCS_ok if verification succeeded, an error code otherwise
+     *  @return EC_Normal if verification succeeded, an error code otherwise
      */
-    DcmTransportLayerStatus verifyClientCertificate(const char *fileName);
+    OFCondition verifyClientCertificate(const char *fileName);
 
     /** loads a certificate file and checks whether it is a
      *  valid (e.g. non-expired), self-signed root certificate that
      *  can be verified against itself
      *  @param fileName path to the certificate file
-     *  @return TCS_ok if certificate is a root certificate, an error code otherwise
+     *  @return EC_Normal if certificate is a root certificate, an error code otherwise
      */
-    DcmTransportLayerStatus isRootCertificate(const char *fileName);
+    OFCondition isRootCertificate(const char *fileName);
 
     /** checks if the command line option --list-ciphers was given.
      *  In this case the list of supported TLS ciphersuites should be
