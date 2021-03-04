@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CMR_SRNumericMeasurementValueWithUnits
@@ -56,10 +56,10 @@ class CMR_SRNumericMeasurementValueWithUnits
                                            const OFBool check = OFTrue);
 
     /** constructor
-     ** @param  valueQualifier  code representing the numeric value qualifier.  Used to
-     *                          specify the reason for the absence of the measured value
-     *                          sequence, i.e. why the numeric value and measurement unit
-     *                          are empty.
+     ** @param  valueQualifier  code representing the numeric value qualifier (mandatory).
+     *                          Used to specify the reason for the absence of the measured
+     *                          value sequence, i.e. why the numeric value and measurement
+     *                          unit are empty.
      *  @param  check           if enabled, check value for validity before setting it.
      *                          See corresponding setValue() method for details.
      */
@@ -69,10 +69,7 @@ class CMR_SRNumericMeasurementValueWithUnits
     /** constructor
      ** @param  numericValue     numeric value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
-     *  @param  valueQualifier   code representing the numeric value qualifier (optional).
-     *                           Can also be used to specify the reason for the absence of
-     *                           the measured value sequence (where 'numericValue' and
-     *                           'measurementUnit' are stored).
+     *  @param  valueQualifier   code representing the numeric value qualifier (optional)
      *  @param  check            if enabled, check values for validity before setting them.
      *                           See corresponding setValue() method for details.
      */
@@ -126,10 +123,8 @@ class CMR_SRNumericMeasurementValueWithUnits
      *  needed.
      ** @param  numericValue     numeric value to be set (VR=DS, mandatory)
      *  @param  measurementUnit  measurement unit to be set (mandatory)
-     *  @param  valueQualifier   numeric value qualifier to be set (optional).  Can also be
-     *                           used to specify the reason for the absence of the measured
-     *                           value sequence (where 'numericValue' and 'measurementUnit'
-     *                           are stored).  Use an empty code to remove the current value.
+     *  @param  valueQualifier   numeric value qualifier to be set (optional).
+     *                           Use an empty code to remove the current value.
      *  @param  check            if enabled, check values for validity before setting them.
      *                           See checkXXX() methods for details.
      ** @return status, EC_Normal if successful, an error code otherwise

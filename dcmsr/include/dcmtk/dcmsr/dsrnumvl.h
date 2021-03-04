@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,10 +62,10 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
                                const OFBool check = OFTrue);
 
     /** constructor
-     ** @param  valueQualifier  code representing the numeric value qualifier.  Used to
-     *                          specify the reason for the absence of the measured value
-     *                          sequence, i.e. why the numeric value and measurement unit
-     *                          are empty.
+     ** @param  valueQualifier  code representing the numeric value qualifier (mandatory).
+     *                          Used to specify the reason for the absence of the measured
+     *                          value sequence, i.e. why the numeric value and measurement
+     *                          unit are empty.
      *  @param  check           if enabled, check value for validity before setting it.
      *                          See corresponding setValue() method for details.
      */
@@ -75,10 +75,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
     /** constructor
      ** @param  numericValue     numeric value (VR=DS, mandatory)
      *  @param  measurementUnit  code representing the units of measurement (mandatory)
-     *  @param  valueQualifier   code representing the numeric value qualifier (optional).
-     *                           Can also be used to specify the reason for the absence of
-     *                           the measured value sequence (where 'numericValue' and
-     *                           'measurementUnit' are stored).
+     *  @param  valueQualifier   code representing the numeric value qualifier (optional)
      *  @param  check            if enabled, check values for validity before setting them.
      *                           See corresponding setValue() method for details.
      */
@@ -196,7 +193,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
 
     /** write measured value sequence and numeric value qualifier code sequence to dataset.
      *  The measured value sequence is always written (might be empty, though).  The numeric
-     *  value qualifier code sequence is optional and, therefore, only written if non-empty.
+     *  value qualifier code sequence is conditional and, therefore, only written if non-empty.
      ** @param  dataset  DICOM dataset to which the sequences should be written
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -206,7 +203,8 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
      *  @param  annexStream  output stream to which the HTML/XHTML document annex is written
      *  @param  annexNumber  reference to the variable where the current annex number is stored.
-     *                       Value is increased automatically by 1 after a new entry has been added.
+     *                       Value is increased automatically by 1 after a new entry has been
+     *                       added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -245,7 +243,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
         return MeasurementUnit;
     }
 
-    /** get numeric value qualifier (optional)
+    /** get numeric value qualifier (conditional)
      ** @return reference to current numeric value qualifier code (might be invalid or empty)
      */
     inline const DSRCodedEntryValue &getNumericValueQualifier() const
@@ -259,8 +257,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      */
     OFCondition getMeasurementUnit(DSRCodedEntryValue &measurementUnit) const;
 
-    /** get copy of numeric value qualifier (optional).
-     *  Can be used to specify the reason for the absence of the measured value sequence.
+    /** get copy of numeric value qualifier (conditional)
      ** @param  valueQualifier  reference to variable in which the code should be stored
      ** @return always returns EC_Normal
      */
@@ -316,8 +313,8 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
     /** set empty numeric value and measurement unit with a numeric value qualifier.
      *  Before setting the value, it is usually checked.  If the value is invalid, the
      *  current numeric measurement value is not replaced and remains unchanged.
-     ** @param  valueQualifier  numeric value qualifier to be set.  Used to specify the
-     *                          reason for the absence of the measured value sequence,
+     ** @param  valueQualifier  numeric value qualifier to be set.  Shall be used to specify
+     *                          the reason for the absence of the measured value sequence,
      *                          i.e. why the numeric value and measurement unit are empty.
      *  @param  check           if enabled, check value for validity before setting it.
      *                          See checkNumericValueQualifier() method for details.
@@ -335,10 +332,8 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      *  needed.
      ** @param  numericValue     numeric value to be set (VR=DS, mandatory)
      *  @param  measurementUnit  measurement unit to be set (mandatory)
-     *  @param  valueQualifier   numeric value qualifier to be set (optional).  Can also be
-     *                           used to specify the reason for the absence of the measured
-     *                           value sequence (where 'numericValue' and 'measurementUnit'
-     *                           are stored).  Use an empty code to remove the current value.
+     *  @param  valueQualifier   numeric value qualifier to be set (optional).
+     *                           Use an empty code to remove the current value.
      *  @param  check            if enabled, check values for validity before setting them.
      *                           See checkXXX() methods for details.
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -410,12 +405,12 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
                                    const OFBool check = OFTrue);
 
     /** set numeric value qualifier.
-     *  This optional code specifies the qualification of the Numeric Value in the Measured
+     *  This conditional code specifies the qualification of the Numeric Value in the Measured
      *  Value Sequence, or the reason for the absence of the Measured Value Sequence Item.
      *  Before setting the code, it is usually checked.  If the code is invalid the current
      *  code is not replaced and remains unchanged.
-     ** @param  valueQualifier  numeric value qualifier to be set (optional).  Use an empty
-     *                          code to remove the current value.
+     ** @param  valueQualifier  numeric value qualifier to be set (conditional).
+     *                          Use an empty code to remove the current value.
      *  @param  check           if enabled, check value for validity before setting it.
      *                          See checkNumericValueQualifier() method for details.
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -539,7 +534,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
     OFString               NumericValue;
     /// Measurement Unit (type 1 within a type 2 sequence)
     DSRCodedEntryValue     MeasurementUnit;
-    /// Numeric Value Qualifier (type 3)
+    /// Numeric Value Qualifier (type 1C)
     DSRCodedEntryValue     ValueQualifier;
     /// Floating Point Value (VR=FD, type 1C)
     DcmFloatingPointDouble FloatingPointValue;

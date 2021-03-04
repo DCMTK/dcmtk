@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -163,7 +163,7 @@ OFBool DSRNumericMeasurementValue::isEmpty() const
 
 OFBool DSRNumericMeasurementValue::isComplete() const
 {
-    /* officially, the NumericValueQualifierCodeSequence is optional (type 3) */
+    /* the NumericValueQualifierCodeSequence is conditional (type 1C) */
     return (!NumericValue.empty() && MeasurementUnit.isComplete()) || ValueQualifier.isComplete();
 }
 
@@ -215,7 +215,7 @@ OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
             result = EC_Normal;
         if (result.good())
         {
-            /* get "qualifier" element (optional, do not report if absent or erroneous) */
+            /* get "qualifier" element (conditional, do not report if absent or erroneous) */
             ValueQualifier.readXML(doc, doc.getNamedNode(cursor, "qualifier", OFFalse /*required*/), flags);
         }
         if (!isValid())
@@ -340,8 +340,8 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
     }
     if (result.good())
     {
-        /* read NumericValueQualifierCodeSequence (optional) */
-        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "3" /*type*/, flags);
+        /* read NumericValueQualifierCodeSequence (conditional) */
+        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "1C" /*type*/, flags);
     }
     return result;
 }
@@ -379,7 +379,7 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset) const
     }
     if (result.good())
     {
-        /* write NumericValueQualifierCodeSequence (optional) */
+        /* write NumericValueQualifierCodeSequence (conditional) */
         if (!ValueQualifier.isEmpty())
             ValueQualifier.writeSequence(dataset, DCM_NumericValueQualifierCodeSequence);
     }
@@ -550,6 +550,12 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
     } else {
         /* make sure that both values are either empty or non-empty */
         if (numericValue.empty() != measurementUnit.isEmpty())
+            result = EC_IllegalParameter;
+    }
+    if (result.good())
+    {
+        /* make sure that at least one of the two values is non-empty */
+        if (numericValue.empty() && valueQualifier.isEmpty())
             result = EC_IllegalParameter;
     }
     if (result.good())
@@ -730,20 +736,33 @@ OFCondition DSRNumericMeasurementValue::checkRationalRepresentation(const Sint32
 
 OFCondition DSRNumericMeasurementValue::checkCurrentValue() const
 {
-    OFCondition result = checkNumericValue(NumericValue);
-    if (result.good())
-        result = checkMeasurementUnit(MeasurementUnit);
-    if (result.good())
-        result = checkNumericValueQualifier(ValueQualifier);
-    if (result.good())
+    OFCondition result = EC_Normal;
+    /* numeric value is empty (i.e. unknown) */
+    if (NumericValue.empty())
     {
-        Sint32 numeratorValue;
-        Uint32 denominatorValue;
-        result = getRationalRepresentation(numeratorValue, denominatorValue);
+        /* numeric value qualifier should not be empty */
+        if (ValueQualifier.isEmpty())
+            result = SR_EC_InvalidValue;
+        else
+            result = checkNumericValueQualifier(ValueQualifier);
+        /* tbc: should additional representations be absent? */
+    } else {
+        /* numeric value is not empty */
+        result = checkNumericValue(NumericValue);
         if (result.good())
-            result = checkRationalRepresentation(numeratorValue, denominatorValue);
-        else if (result == SR_EC_RepresentationNotAvailable)
-            result = EC_Normal;
+            result = checkMeasurementUnit(MeasurementUnit);
+        if (result.good())
+            result = checkNumericValueQualifier(ValueQualifier);
+        if (result.good())
+        {
+            Sint32 numeratorValue;
+            Uint32 denominatorValue;
+            result = getRationalRepresentation(numeratorValue, denominatorValue);
+            if (result.good())
+                result = checkRationalRepresentation(numeratorValue, denominatorValue);
+            else if (result == SR_EC_RepresentationNotAvailable)
+                result = EC_Normal;
+        }
     }
     return result;
 }
