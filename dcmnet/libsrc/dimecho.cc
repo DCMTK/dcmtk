@@ -86,12 +86,6 @@
 #include "dcmtk/dcmnet/dimse.h"     /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
-
 
 OFCondition
 DIMSE_echoUser(
@@ -118,8 +112,8 @@ DIMSE_echoUser(
         return makeDcmnetCondition(DIMSEC_NOVALIDPRESENTATIONCONTEXTID, OF_error, buf);
     }
 
-    bzero((char*)&req, sizeof(req));
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&req, 0, sizeof(req));
+    memset((char*)&rsp, 0, sizeof(rsp));
 
     req.CommandField = DIMSE_C_ECHO_RQ;
     req.msg.CEchoRQ.MessageID = msgId;
@@ -160,7 +154,7 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 {
     T_DIMSE_Message rsp;
 
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&rsp, 0, sizeof(rsp));
 
     rsp.CommandField = DIMSE_C_ECHO_RSP;
     rsp.msg.CEchoRSP.MessageIDBeingRespondedTo = req->MessageID;

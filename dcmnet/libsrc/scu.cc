@@ -27,11 +27,6 @@
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/ofstd/ofmem.h" /* for OFunique_ptr */
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
 
 #ifdef WITH_ZLIB
 #include <zlib.h> /* for zlibVersion() */
@@ -607,7 +602,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
     /* Now, assemble DIMSE message */
     T_DIMSE_Message msg;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&msg, sizeof(msg));
+    memset((char*)&msg, 0, sizeof(msg));
     T_DIMSE_C_EchoRQ* req = &(msg.msg.CEchoRQ);
     // Set type of message
     msg.CommandField = DIMSE_C_ECHO_RQ;
@@ -639,7 +634,7 @@ OFCondition DcmSCU::sendECHORequest(const T_ASC_PresentationContextID presID)
     /* Receive response */
     T_DIMSE_Message rsp;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&rsp, 0, sizeof(rsp));
 
     DcmDataset* statusDetail = NULL;
     cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
@@ -701,7 +696,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     DcmDataset* statusDetail         = NULL;
     T_DIMSE_Message msg;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&msg, sizeof(msg));
+    memset((char*)&msg, 0, sizeof(msg));
     T_DIMSE_C_StoreRQ* req = &(msg.msg.CStoreRQ);
 
     // Set type of message
@@ -840,7 +835,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     /* Receive response */
     T_DIMSE_Message rsp;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&rsp, 0, sizeof(rsp));
     cond = receiveDIMSECommand(&pcid, &rsp, &statusDetail, NULL /* not interested in the command set */);
     if (cond.bad())
     {
@@ -902,7 +897,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     T_ASC_PresentationContextID pcid = presID;
     T_DIMSE_Message msg;
     // make sure everything is zeroed (especially options)
-    bzero((char*)&msg, sizeof(msg));
+    memset((char*)&msg, 0, sizeof(msg));
     DcmDataset* statusDetail = NULL;
     T_DIMSE_C_MoveRQ* req    = &(msg.msg.CMoveRQ);
     // Set type of message
@@ -946,7 +941,7 @@ OFCondition DcmSCU::sendMOVERequest(const T_ASC_PresentationContextID presID,
     {
         T_DIMSE_Message rsp;
         // Make sure everything is zeroed, especially options
-        bzero((char*)&rsp, sizeof(rsp));
+        memset((char*)&rsp, 0, sizeof(rsp));
         statusDetail = NULL;
 
         // Receive command set
@@ -1070,7 +1065,7 @@ OFCondition DcmSCU::sendCGETRequest(const T_ASC_PresentationContextID presID,
     T_ASC_PresentationContextID pcid = presID;
     T_DIMSE_Message msg;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&msg, sizeof(msg));
+    memset((char*)&msg, 0, sizeof(msg));
     T_DIMSE_C_GetRQ* req = &(msg.msg.CGetRQ);
     // Set type of message
     msg.CommandField = DIMSE_C_GET_RQ;
@@ -1124,7 +1119,7 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presI
     {
         T_DIMSE_Message rsp;
         // Make sure everything is zeroed (especially options)
-        bzero((char*)&rsp, sizeof(rsp));
+        memset((char*)&rsp, 0, sizeof(rsp));
 
         DcmDataset* statusDetail         = NULL;
         T_ASC_PresentationContextID pcid = 0;
@@ -1379,7 +1374,7 @@ DcmSCU::sendSTOREResponse(T_ASC_PresentationContextID presID, Uint16 status, con
     // Send back response
     T_DIMSE_Message response;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
     T_DIMSE_C_StoreRSP& storeRsp       = response.msg.CStoreRSP;
     response.CommandField              = DIMSE_C_STORE_RSP;
     storeRsp.MessageIDBeingRespondedTo = request.MessageID;
@@ -1476,7 +1471,7 @@ DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID, DcmDataset* qu
     T_ASC_PresentationContextID pcid = presID;
     T_DIMSE_Message msg;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&msg, sizeof(msg));
+    memset((char*)&msg, 0, sizeof(msg));
 
     DcmDataset* statusDetail = NULL;
     T_DIMSE_C_FindRQ* req    = &(msg.msg.CFindRQ);
@@ -1519,7 +1514,7 @@ DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID, DcmDataset* qu
     {
         T_DIMSE_Message rsp;
         // Make sure everything is zeroed (especially options)
-        bzero((char*)&rsp, sizeof(rsp));
+        memset((char*)&rsp, 0, sizeof(rsp));
 
         statusDetail = NULL;
 
@@ -1627,7 +1622,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
     T_ASC_PresentationContextID pcid = presID;
     T_DIMSE_Message msg;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&msg, sizeof(msg));
+    memset((char*)&msg, 0, sizeof(msg));
     T_DIMSE_C_CancelRQ* req = &(msg.msg.CCancelRQ);
     // Set type of message
     msg.CommandField = DIMSE_C_CANCEL_RQ;
@@ -1693,7 +1688,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
     T_ASC_PresentationContextID pcid = presID;
     T_DIMSE_Message request;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&request, sizeof(request));
+    memset((char*)&request, 0, sizeof(request));
     T_DIMSE_N_ActionRQ& actionReq = request.msg.NActionRQ;
     DcmDataset* statusDetail      = NULL;
 
@@ -1734,7 +1729,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
 
     // Receive response
     T_DIMSE_Message response;
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
     cond = receiveDIMSECommand(&pcid, &response, &statusDetail, NULL /* commandSet */);
     if (cond.bad())
     {
@@ -1828,7 +1823,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     T_ASC_PresentationContextID pcid = presID;
     T_DIMSE_Message request;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&request, sizeof(request));
+    memset((char*)&request, 0, sizeof(request));
 
     T_DIMSE_N_EventReportRQ& eventReportReq = request.msg.NEventReportRQ;
     DcmDataset* statusDetail                = NULL;
@@ -1873,7 +1868,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     // Receive response
     T_DIMSE_Message response;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
 
     cond = receiveDIMSECommand(&pcid, &response, &statusDetail, NULL /* commandSet */);
     if (cond.bad())
@@ -1958,7 +1953,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset*& reqDataset, Uint16& ev
     T_ASC_PresentationContextID presIDdset;
     T_DIMSE_Message request;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&request, sizeof(request));
+    memset((char*)&request, 0, sizeof(request));
     T_DIMSE_N_EventReportRQ& eventReportReq = request.msg.NEventReportRQ;
     DcmDataset* dataset                     = NULL;
     DcmDataset* statusDetail                = NULL;
@@ -2044,7 +2039,7 @@ OFCondition DcmSCU::handleEVENTREPORTRequest(DcmDataset*& reqDataset, Uint16& ev
     // Send back response
     T_DIMSE_Message response;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
 
     T_DIMSE_N_EventReportRSP& eventReportRsp = response.msg.NEventReportRSP;
     response.CommandField                    = DIMSE_N_EVENT_REPORT_RSP;
@@ -2177,7 +2172,7 @@ OFCondition DcmSCU::sendDIMSEMessage(const T_ASC_PresentationContextID presID,
     delete m_openDIMSERequest;
     m_openDIMSERequest = new T_DIMSE_Message;
     // Make sure everyhting is zeroed (especially options)
-    bzero((char*)&m_openDIMSERequest, sizeof(m_openDimseRequest));
+    memset((char*)&m_openDIMSERequest, 0, sizeof(m_openDimseRequest));
     memcpy((char*)m_openDIMSERequest, msg, sizeof(*m_openDIMSERequest));
   }
 #endif

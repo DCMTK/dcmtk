@@ -86,12 +86,6 @@
 #include <fcntl.h>
 #endif
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
-
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"       /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
@@ -170,8 +164,8 @@ DIMSE_moveUser(
 
     if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
 
-    bzero((char*)&req, sizeof(req));
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&req, 0, sizeof(req));
+    memset((char*)&rsp, 0, sizeof(rsp));
 
     req.CommandField = DIMSE_C_MOVE_RQ;
     request->DataSetType = DIMSE_DATASET_PRESENT;
@@ -215,7 +209,7 @@ DIMSE_moveUser(
             continue;    /* continue with main loop */
         }
 
-        bzero((char*)&rsp, sizeof(rsp));
+        memset((char*)&rsp, 0, sizeof(rsp));
 
         cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, &rsp, statusDetail);
         if (cond != EC_Normal) {
@@ -308,7 +302,7 @@ DIMSE_sendMoveResponse(
     T_DIMSE_Message rsp;
     unsigned int opts;
 
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&rsp, 0, sizeof(rsp));
     rsp.CommandField = DIMSE_C_MOVE_RSP;
     rsp.msg.CMoveRSP = *response;
     /* copy over stuff from request */
@@ -388,7 +382,7 @@ DIMSE_moveProvider(
         if (presIdData != presIdCmd) {
           cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
         } else {
-            bzero((char*)&rsp, sizeof(rsp));
+            memset((char*)&rsp, 0, sizeof(rsp));
             rsp.DimseStatus = STATUS_MOVE_Pending_SubOperationsAreContinuing;   /* assume */
 
             while (cond == EC_Normal && rsp.DimseStatus == STATUS_MOVE_Pending_SubOperationsAreContinuing && normal) {

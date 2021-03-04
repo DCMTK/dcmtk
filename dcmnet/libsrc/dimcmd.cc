@@ -85,12 +85,6 @@
 #include <fcntl.h>
 #endif
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
-
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcelem.h"
@@ -1880,7 +1874,7 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
     }
 
     /* initialize msg structure */
-    bzero((char*)msg, sizeof(*msg));
+    memset((char*)msg, 0, sizeof(*msg));
     msg->CommandField = (T_DIMSE_Command)cmd;
 
     /* depending on the command, parse the rest of obj */

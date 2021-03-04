@@ -25,9 +25,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h> /* for bzero() on Solaris */
-#endif
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstd.h"
@@ -1374,7 +1371,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
 #endif
 
   /* prepare the transmission of data */
-  bzero(OFreinterpret_cast(char *, &req), sizeof(req));
+  memset(OFreinterpret_cast(char *, &req), 0, sizeof(req));
   req.MessageID = msgId;
   OFStandard::strlcpy(req.AffectedSOPClassUID, sopClass, sizeof(req.AffectedSOPClassUID));
   OFStandard::strlcpy(req.AffectedSOPInstanceUID, sopInstance, sizeof(req.AffectedSOPInstanceUID));

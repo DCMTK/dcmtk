@@ -85,12 +85,6 @@
 #include <fcntl.h>
 #endif
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
-
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"		/* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
@@ -100,7 +94,7 @@ DIMSE_sendCancelRequest(T_ASC_Association * assoc,
 	T_ASC_PresentationContextID presId, DIC_US msgId)
 {
     T_DIMSE_Message req;
-    bzero((char*)&req, sizeof(req));
+    memset((char*)&req, 0, sizeof(req));
 
     req.CommandField = DIMSE_C_CANCEL_RQ;
     req.msg.CCancelRQ.MessageIDBeingRespondedTo = msgId;

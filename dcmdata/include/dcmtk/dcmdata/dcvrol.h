@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, OFFIS e.V.
+ *  Copyright (C) 2016-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -122,7 +122,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherLong
                                   DcmJsonFormat &format);
 
     /** create an empty Uint32 array of given number of double-words and set it.
-     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  All array elements are initialized with a value of 0 (using 'memset').
      *  @param numDoubleWords number of double-words (32 bit) to be created
      *  @param doubleWords stores the pointer to the resulting Uint32 array
      *    (set to NULL in case of error)

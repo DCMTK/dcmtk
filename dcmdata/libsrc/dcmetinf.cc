@@ -22,9 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-// #define INCLUDE_CSTDLIB
-// #define INCLUDE_CSTRING
-// #include "dcmtk/ofstd/ofstdinc.h"
+#include <cstring>                    /* for memset() */
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstd.h"
@@ -237,7 +235,7 @@ OFCondition DcmMetaInfo::writeJson(STD_NAMESPACE ostream &out,
 
 void DcmMetaInfo::setPreamble()
 {
-    memzero(filePreamble, sizeof(filePreamble));
+    memset(filePreamble, 0, sizeof(filePreamble));
     preambleUsed = OFFalse;
 }
 

@@ -34,30 +34,6 @@
 #define DCMTK_OFSTD_EXPORT DCMTK_DECL_IMPORT
 #endif
 
-
-#ifdef HAVE_BZERO
-#ifndef HAVE_PROTOTYPE_BZERO
-BEGIN_EXTERN_C
-extern void bzero(char* s, int len);
-END_EXTERN_C
-#endif
-#endif
-
-
-/* memzero */
-#ifdef HAVE_MEMSET
-#  undef memzero
-#  define memzero(d, n) memset((d), 0, (n))
-#  define HAVE_MEMZERO /* This makes using this easier */
-#else
-#  ifdef HAVE_BZERO
-#    undef memzero
-// some platforms, e.g. OSF1, require the first parameter to be char *.
-#    define memzero(d, n) bzero(OFstatic_cast(char *, d), (n))
-#    define HAVE_MEMZERO /* This makes using this easier */
-#  endif
-#endif
-
 /* memcpy */
 #ifndef HAVE_MEMCPY
 #  ifdef HAVE_BCOPY

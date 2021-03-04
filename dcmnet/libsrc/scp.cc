@@ -26,12 +26,6 @@
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmtls/tlslayer.h"
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
-
 // ----------------------------------------------------------------------------
 
 DcmSCP::DcmSCP()
@@ -859,7 +853,7 @@ OFCondition DcmSCP::sendSTOREResponse(const T_ASC_PresentationContextID presID,
     // Send back response
     T_DIMSE_Message response;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
     T_DIMSE_C_StoreRSP& storeRsp       = response.msg.CStoreRSP;
     response.CommandField              = DIMSE_C_STORE_RSP;
     storeRsp.MessageIDBeingRespondedTo = messageID;
@@ -974,7 +968,7 @@ OFCondition DcmSCP::sendFINDResponse(const T_ASC_PresentationContextID presID,
     // Send back response
     T_DIMSE_Message response;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
     T_DIMSE_C_FindRSP& findRsp        = response.msg.CFindRSP;
     response.CommandField             = DIMSE_C_FIND_RSP;
     findRsp.MessageIDBeingRespondedTo = messageID;
@@ -1096,7 +1090,7 @@ OFCondition DcmSCP::sendMOVEResponse(const T_ASC_PresentationContextID presID,
     // Send back response
     T_DIMSE_Message response;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
     T_DIMSE_C_MoveRSP& moveRsp        = response.msg.CMoveRSP;
     response.CommandField             = DIMSE_C_MOVE_RSP;
     moveRsp.MessageIDBeingRespondedTo = messageID;
@@ -1218,7 +1212,7 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
     // Send back response
     T_DIMSE_Message response;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
     T_DIMSE_N_ActionRSP& actionRsp      = response.msg.NActionRSP;
     response.CommandField               = DIMSE_N_ACTION_RSP;
     actionRsp.MessageIDBeingRespondedTo = messageID;
@@ -1318,7 +1312,7 @@ OFCondition DcmSCP::handleEVENTREPORTRequest(T_DIMSE_N_EventReportRQ& reqMessage
     // Send back response
     T_DIMSE_Message response;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&response, sizeof(response));
+    memset((char*)&response, 0, sizeof(response));
     T_DIMSE_N_EventReportRSP& eventReportRsp = response.msg.NEventReportRSP;
     response.CommandField                    = DIMSE_N_EVENT_REPORT_RSP;
     eventReportRsp.MessageIDBeingRespondedTo = reqMessage.MessageID;
@@ -1373,7 +1367,7 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     T_ASC_PresentationContextID pcid = presID;
     T_DIMSE_Message request;
     // Make sure everything is zeroed (especially options)
-    bzero((char*)&request, sizeof(request));
+    memset((char*)&request, 0, sizeof(request));
     T_DIMSE_N_EventReportRQ& eventReportReq = request.msg.NEventReportRQ;
     DcmDataset* statusDetail                = NULL;
 

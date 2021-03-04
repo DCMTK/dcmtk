@@ -32,9 +32,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h> /* for bzero() on Solaris */
-#endif
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstd.h"
@@ -723,7 +720,7 @@ static OFCondition DB_GetTagKeyAttr (DcmTagKey tag, DB_KEY_TYPE *keyAttr)
 
 static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
 {
-    bzero( (char*)dst, sizeof (DB_SmallDcmElmt));
+    memset( (char*)dst, 0, sizeof (DB_SmallDcmElmt));
     dst -> XTag = src -> XTag;
     dst -> ValueLength = src -> ValueLength;
 
@@ -731,7 +728,7 @@ static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
         dst -> PValueField = NULL;
     else {
         dst -> PValueField = (char *)malloc ((int) src -> ValueLength+1);
-        bzero(dst->PValueField, (size_t)(src->ValueLength+1));
+        memset(dst->PValueField, 0, (size_t)(src->ValueLength+1));
         if (dst->PValueField != NULL) {
             memcpy (dst -> PValueField,  src -> PValueField,
                 (size_t) src -> ValueLength);
@@ -2670,7 +2667,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     /**** Initialize an IdxRecord
     ***/
 
-    bzero((char*)&idxRec, sizeof(idxRec));
+    memset((char*)&idxRec, 0, sizeof(idxRec));
 
     DB_IdxInitRecord (&idxRec, 0) ;
 
@@ -2833,7 +2830,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
       return (QR_EC_IndexDatabaseError) ;
     }
 
-    bzero((char *)pStudyDesc, SIZEOF_STUDYDESC);
+    memset((char *)pStudyDesc, 0, SIZEOF_STUDYDESC);
     DB_GetStudyDesc(pStudyDesc) ;
 
     stat(imageFileName, &stat_buf) ;

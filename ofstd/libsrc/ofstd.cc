@@ -103,6 +103,7 @@
 
 #include <cstdio>
 #include <cmath>
+#include <cstring>       /* for memset() */
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
@@ -2732,7 +2733,7 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
   // This is the preferred implementation, being thread-safe and protocol independent.
 
   struct sockaddr_storage sas; // this type is large enough to hold all supported protocol specific sockaddr structs
-  memzero(&sas, sizeof(sas));
+  memset(&sas, 0, sizeof(sas));
 
   // a DNS name must be shorter than 256 characters, so this should be enough
   char hostname[512];

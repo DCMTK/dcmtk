@@ -300,7 +300,7 @@ int gethostname(char* name, int namelen)
     struct utsname uts;
     int rc;
 
-    bzero(&uts, sizeof(uts));
+    memset(&uts, 0, sizeof(uts));
     rc = utsname(&uts);
     if (rc >= 0) {
 	strncpy(name, uts.nodename, namelen);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, OFFIS e.V.
+ *  Copyright (C) 2017-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,7 +23,7 @@
 #define OFSOCKAD_H
 
 #include "dcmtk/config/osconfig.h" // make sure OS specific configuration is included first
-#include "dcmtk/ofstd/ofdefine.h"  // for memzero()
+#include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofstream.h"
 
 BEGIN_EXTERN_C
@@ -44,6 +44,8 @@ END_EXTERN_C
 #include <ws2tcpip.h> /* for socklen_t */
 #endif
 
+#include <cstring> // for memset()
+
 /* forward declarations */
 struct sockaddr;
 struct sockaddr_in;
@@ -63,8 +65,8 @@ public:
   /// Destructor
   ~OFSockAddr() { }
 
-  /// initialize address storage object with memzero
-  void clear() { memzero(&sa, sizeof(sa)); }
+  /// initialize address storage object with memset
+  void clear() { memset(&sa, 0, sizeof(sa)); }
 
   /** access socket address storage object as struct sockaddr (opaque address)
    *  @return address storage object as struct sockaddr *.

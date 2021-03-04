@@ -28,12 +28,6 @@
 #include <fcntl.h>
 #endif
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
-
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"              /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
@@ -104,8 +98,8 @@ DIMSE_getUser(
 
     if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
 
-    bzero((char*)&req, sizeof(req));
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&req, 0, sizeof(req));
+    memset((char*)&rsp, 0, sizeof(rsp));
 
     req.CommandField = DIMSE_C_GET_RQ;
     request->DataSetType = DIMSE_DATASET_PRESENT;
@@ -157,7 +151,7 @@ DIMSE_getUser(
             /* break; */ // never reached after continue statement
         }
 
-        bzero((char*)&rsp, sizeof(rsp));
+        memset((char*)&rsp, 0, sizeof(rsp));
 
         cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID,
                 &rsp, statusDetail);
@@ -233,7 +227,7 @@ DIMSE_sendGetResponse(T_ASC_Association * assoc,
     T_DIMSE_Message rsp;
     unsigned int opts;
 
-    bzero((char*)&rsp, sizeof(rsp));
+    memset((char*)&rsp, 0, sizeof(rsp));
     rsp.CommandField = DIMSE_C_GET_RSP;
     rsp.msg.CGetRSP = *response;
     /* copy over stuff from request */
@@ -314,7 +308,7 @@ DIMSE_getProvider(
         }
         else
         {
-            bzero((char*)&rsp, sizeof(rsp));
+            memset((char*)&rsp, 0, sizeof(rsp));
             rsp.DimseStatus = STATUS_GET_Pending_SubOperationsAreContinuing;   /* assume */
 
             while (cond == EC_Normal && rsp.DimseStatus == STATUS_GET_Pending_SubOperationsAreContinuing && normal)

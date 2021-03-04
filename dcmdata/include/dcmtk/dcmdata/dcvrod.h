@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2019, OFFIS e.V.
+ *  Copyright (C) 2013-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -120,7 +120,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherDouble
                                   DcmJsonFormat &format);
 
     /** create an empty Float64 array of given number of double values and set it.
-     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  All array elements are initialized with a value of 0 (using 'memset').
      *  @param numDoubles number of double values (64 bit) to be created
      *  @param doubleVals stores the pointer to the resulting Float64 array
      *    (set to NULL in case of error)

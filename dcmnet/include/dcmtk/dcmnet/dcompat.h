@@ -80,7 +80,6 @@
 #define DCOMPAT_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofbmanip.h"    /* for bzero workaround */
 #include "dcmtk/dcmnet/dndefine.h"
 
 #ifdef HAVE_WINDOWS_H
@@ -171,12 +170,6 @@ END_EXTERN_C
 DCMTK_DCMNET_EXPORT int dcmtk_flock(int fd, int operation);
 
 #endif /* !HAVE_FLOCK */
-#endif
-
-#ifndef HAVE_BZERO
-#ifndef bzero
-#define bzero(p,len) memset((void*)(p), 0, (len));
-#endif
 #endif
 
 #ifndef HAVE_PROTOTYPE_GETHOSTNAME

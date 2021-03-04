@@ -23,7 +23,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcitem.h"
-#include "dcmtk/ofstd/ofdefine.h"     /* for memzero() */
 #include "dcmtk/dcmdata/dcdeftag.h"   /* for name constants */
 #include "dcmtk/dcmdata/dcistrma.h"   /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcobject.h"
@@ -73,6 +72,8 @@
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofstd.h"
+
+#include <cstring>                    /* for memset() */
 
 // ********************************
 
@@ -958,7 +959,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
 
                 /* create an array of a corresponding size and set the array fields */
                 Uint8 * padBytes = new Uint8[padding];
-                memzero(padBytes, size_t(padding));
+                memset(padBytes, 0, size_t(padding));
 
                 /* set information in the above created padding element (size and actual value) */
                 paddingEl->putUint8Array(padBytes, padding);

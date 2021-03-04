@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -280,7 +280,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
                                        const unsigned long numWords);
 
     /** create an empty Uint8 array of given number of bytes and set it.
-     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  All array elements are initialized with a value of 0 (using 'memset').
      *  This method is only applicable to non-OW data, e.g. OB.
      *  @param numBytes number of bytes (8 bit) to be created
      *  @param bytes stores the pointer to the resulting buffer
@@ -290,7 +290,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
                                          Uint8 *&bytes);
 
     /** create an empty Uint16 array of given number of words and set it.
-     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  All array elements are initialized with a value of 0 (using 'memset').
      *  This method is only applicable to OW data.
      *  @param numWords number of words (16 bit) to be created
      *  @param words stores the pointer to the resulting buffer

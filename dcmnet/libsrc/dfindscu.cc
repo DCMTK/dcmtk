@@ -32,12 +32,6 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstream.h"
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
-
 /* ---------------- static functions ---------------- */
 
 #define OFFIS_CONSOLE_APPLICATION "findscu"
@@ -716,7 +710,7 @@ OFCondition DcmFindSCU::findSCU(
     int n = repeatCount;
 
     /* prepare C-FIND-RQ message */
-    bzero(OFreinterpret_cast(char*, &req), sizeof(req));
+    memset(OFreinterpret_cast(char*, &req), 0, sizeof(req));
     OFStandard::strlcpy(req.AffectedSOPClassUID, abstractSyntax, sizeof(req.AffectedSOPClassUID));
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_MEDIUM;

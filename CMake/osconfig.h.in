@@ -86,9 +86,6 @@
 /* Define to 1 if you have the `bind' function. */
 #cmakedefine HAVE_BIND @HAVE_BIND@
 
-/* Define to 1 if you have the `bzero' function. */
-#cmakedefine HAVE_BZERO @HAVE_BZERO@
-
 /* Define if your C++ compiler can work with class templates */
 #define HAVE_CLASS_TEMPLATE 1
 
@@ -413,10 +410,6 @@
 
 /* Define if your system has a prototype for bind in sys/types.h sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_BIND @HAVE_PROTOTYPE_BIND@
-
-/* Define if your system has a prototype for bzero in string.h strings.h
-   libc.h unistd.h stdlib.h */
-#cmakedefine HAVE_PROTOTYPE_BZERO @HAVE_PROTOTYPE_BZERO@
 
 /* Define if your system has a prototype for connect in sys/types.h
    sys/socket.h */

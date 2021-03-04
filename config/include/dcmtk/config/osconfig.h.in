@@ -124,9 +124,6 @@
 /* Define to 1 if you have the `bind' function. */
 #undef HAVE_BIND
 
-/* Define to 1 if you have the `bzero' function. */
-#undef HAVE_BZERO
-
 /* Define to 1 if the system has the type `char16_t'. */
 #undef HAVE_CHAR16_T
 
@@ -585,10 +582,6 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for bind in sys/types.h sys/socket.h.
    */
 #undef HAVE_PROTOTYPE_BIND
-
-/* Define if your system has a prototype for bzero in string.h strings.h
-   libc.h unistd.h stdlib.h. */
-#undef HAVE_PROTOTYPE_BZERO
 
 /* Define if your system has a prototype for connect in sys/types.h
    sys/socket.h. */

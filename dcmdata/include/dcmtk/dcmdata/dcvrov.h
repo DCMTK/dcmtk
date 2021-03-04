@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -122,7 +122,7 @@ class DCMTK_DCMDATA_EXPORT DcmOther64bitVeryLong
                                   DcmJsonFormat &format);
 
     /** create an empty Uint64 array of given number of quad-words and set it.
-     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  All array elements are initialized with a value of 0 (using 'memset').
      *  @param numQuadWords number of quad-words (64 bit) to be created
      *  @param quadWords stores the pointer to the resulting Uint64 array
      *    (set to NULL in case of error)

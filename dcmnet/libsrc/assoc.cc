@@ -112,12 +112,6 @@
 #include <poll.h>
 #endif
 
-#ifdef HAVE_STRINGS_H
-BEGIN_EXTERN_C
-#include <strings.h> /* for bzero() on Solaris */
-END_EXTERN_C
-#endif
-
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/cond.h"
 #include "dcmtk/dcmdata/dcuid.h"
@@ -283,7 +277,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 
     *params = (T_ASC_Parameters *) malloc(sizeof(**params));
     if (*params == NULL) return EC_MemoryExhausted;
-    bzero((char*)*params, sizeof(**params));
+    memset((char*)*params, 0, sizeof(**params));
 
     OFStandard::strlcpy((*params)->ourImplementationClassUID,
             OFFIS_IMPLEMENTATION_CLASS_UID,
@@ -742,7 +736,7 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
     int count = 0;
 
     /* make the presentation context structure clean */
-    bzero((char*)presentationContext, sizeof(*presentationContext));
+    memset((char*)presentationContext, 0, sizeof(*presentationContext));
 
     if (params->DULparams.requestedPresentationContext == NULL)
     {
@@ -1752,7 +1746,7 @@ ASC_receiveAssociation(T_ASC_Network * network,
         ASC_destroyAssociationParameters(&params);
         return EC_MemoryExhausted;
     }
-    bzero((char*)*assoc, sizeof(**assoc));
+    memset((char*)*assoc, 0, sizeof(**assoc));
 
     (*assoc)->params = params;
     (*assoc)->nextMsgID = 1;
@@ -1889,7 +1883,7 @@ ASC_requestAssociation(T_ASC_Network * network,
 
     *assoc = (T_ASC_Association *) malloc(sizeof(**assoc));
     if (*assoc == NULL) return EC_MemoryExhausted;
-    bzero((char*)*assoc, sizeof(**assoc));
+    memset((char*)*assoc, 0, sizeof(**assoc));
 
     (*assoc)->params = params;
     (*assoc)->nextMsgID = 1;

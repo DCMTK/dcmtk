@@ -153,14 +153,7 @@ class OFBitmanipTemplate
     static void zeroMem(T *dest,
                         const size_t count)
     {
-#ifdef HAVE_MEMZERO
-        memzero(dest, count * sizeof(T));
-#else
-        size_t i;
-        T *q = dest;
-        for (i = count; i != 0; --i)
-            *q++ = 0;
-#endif
+        memset(dest, 0, count * sizeof(T));
     }
 };
 

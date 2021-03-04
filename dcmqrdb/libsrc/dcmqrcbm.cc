@@ -37,9 +37,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
 #endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>     /* for bzero() on Solaris */
-#endif
 END_EXTERN_C
 
 
@@ -396,9 +393,9 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
     char subImgFileName[MAXPATHLEN + 1];    /* sub-operation image file */
 
     /* clear out strings */
-    bzero(subImgFileName, sizeof(subImgFileName));
-    bzero(subImgSOPClass, sizeof(subImgSOPClass));
-    bzero(subImgSOPInstance, sizeof(subImgSOPInstance));
+    memset(subImgFileName, 0, sizeof(subImgFileName));
+    memset(subImgSOPClass, 0, sizeof(subImgSOPClass));
+    memset(subImgSOPInstance,0, sizeof(subImgSOPInstance));
 
     /* get DB response */
     dbcond = dbHandle.nextMoveResponse(
@@ -427,9 +424,9 @@ void DcmQueryRetrieveMoveContext::failAllSubOperations(DcmQueryRetrieveDatabaseS
     char subImgFileName[MAXPATHLEN + 1];    /* sub-operation image file */
 
     /* clear out strings */
-    bzero(subImgFileName, sizeof(subImgFileName));
-    bzero(subImgSOPClass, sizeof(subImgSOPClass));
-    bzero(subImgSOPInstance, sizeof(subImgSOPInstance));
+    memset(subImgFileName, 0, sizeof(subImgFileName));
+    memset(subImgSOPClass, 0, sizeof(subImgSOPClass));
+    memset(subImgSOPInstance, 0, sizeof(subImgSOPInstance));
 
     while (dbStatus->status() == STATUS_Pending) {
         /* get DB response */

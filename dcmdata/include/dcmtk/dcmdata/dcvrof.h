@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2019, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -120,7 +120,7 @@ class DCMTK_DCMDATA_EXPORT DcmOtherFloat
                                   DcmJsonFormat &format);
 
     /** create an empty Float32 array of given number of float values and set it.
-     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  All array elements are initialized with a value of 0 (using 'memset').
      *  @param numFloats number of float values (32 bit) to be created
      *  @param floatVals stores the pointer to the resulting Float32 array
      *    (set to NULL in case of error)

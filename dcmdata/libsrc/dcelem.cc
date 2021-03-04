@@ -39,6 +39,8 @@
 #include "dcmtk/dcmdata/vrscan.h"
 #include "dcmtk/dcmdata/dcpath.h"
 
+#include <cstring>                      /* for memset() */
+
 #define SWAPBUFFER_SIZE 16  /* sufficient for all DICOM VRs as per the 2007 edition */
 
 //
@@ -1126,7 +1128,7 @@ OFCondition DcmElement::createEmptyValue(const Uint32 length)
 
         // initialize <length> bytes (which may be odd), not Length (which is always even)
         if (fValue)
-            memzero(fValue, size_t(length));
+            memset(fValue, 0, size_t(length));
         else
             errorFlag = EC_MemoryExhausted;
     }
