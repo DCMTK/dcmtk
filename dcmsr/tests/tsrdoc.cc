@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -26,6 +26,36 @@
 #include "dcmtk/ofstd/oftest.h"
 
 #include "dcmtk/dcmsr/dsrdoc.h"
+
+
+OFTEST(dcmsr_setAndGetPatientData)
+{
+    DSRDocument doc;
+    OFString value;
+    /* check whether the values are set correctly */
+    OFCHECK(doc.setPatientName("Dow^John").good());
+    OFCHECK(doc.getPatientName(value).good());
+    OFCHECK_EQUAL(value, "Dow^John");
+    OFCHECK(doc.setPatientBirthDate("19600707").good());
+    OFCHECK(doc.getPatientBirthDate(value).good());
+    OFCHECK_EQUAL(value, "19600707");
+    OFCHECK(doc.setPatientID("0815").good());
+    OFCHECK(doc.getPatientID(value).good());
+    OFCHECK_EQUAL(value, "0815");
+    OFCHECK(doc.setIssuerOfPatientID("The Assigning Authority").good());
+    OFCHECK(doc.getIssuerOfPatientID(value).good());
+    OFCHECK_EQUAL(value, "The Assigning Authority");
+    OFCHECK(doc.setPatientSex("M").good());
+    OFCHECK(doc.getPatientSex(value).good());
+    OFCHECK_EQUAL(value, "M");
+    /* also check some recently introduced attributes */
+    OFCHECK(doc.setPatientSize("1.88").good());
+    OFCHECK(doc.getPatientSize(value).good());
+    OFCHECK_EQUAL(value, "1.88");
+    OFCHECK(doc.setPatientWeight("80").good());
+    OFCHECK(doc.getPatientWeight(value).good());
+    OFCHECK_EQUAL(value, "80");
+}
 
 
 OFTEST(dcmsr_setSpecificCharacterSet)

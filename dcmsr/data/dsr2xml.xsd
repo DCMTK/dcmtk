@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2019, OFFIS e.V. and J. Riesmeier
+      Copyright (C) 2003-2021, OFFIS e.V. and J. Riesmeier
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -91,6 +91,9 @@
         </xsd:complexType>
       </xsd:element>
       <xsd:element name="sex" type="dsr:Sex" minOccurs="0"/>
+      <!-- strictly speaking, Patient's Size and Weight belong to the Study IE -->
+      <xsd:element name="size" type="dsr:DecimalString" minOccurs="0"/>
+      <xsd:element name="weight" type="dsr:DecimalString" minOccurs="0"/>
     </xsd:sequence>
   </xsd:complexType>
 

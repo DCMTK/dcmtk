@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2020, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,6 +82,8 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     IssuerOfPatientID(DCM_IssuerOfPatientID),
     PatientBirthDate(DCM_PatientBirthDate),
     PatientSex(DCM_PatientSex),
+    PatientSize(DCM_PatientSize),
+    PatientWeight(DCM_PatientWeight),
     Manufacturer(DCM_Manufacturer),
     ManufacturerModelName(DCM_ManufacturerModelName),
     DeviceSerialNumber(DCM_DeviceSerialNumber),
@@ -154,6 +156,8 @@ void DSRDocument::clear()
     IssuerOfPatientID.clear();
     PatientBirthDate.clear();
     PatientSex.clear();
+    PatientSize.clear();
+    PatientWeight.clear();
     Manufacturer.clear();
     ManufacturerModelName.clear();
     DeviceSerialNumber.clear();
@@ -630,6 +634,9 @@ OFCondition DSRDocument::readStudyData(DcmItem &dataset,
     getAndCheckElementFromDataset(dataset, StudyID, "1", "2", "GeneralStudyModule");
     getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
     getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", "GeneralStudyModule");
+    // --- Patient Study Module ---
+    getAndCheckElementFromDataset(dataset, PatientSize, "1", "3", "PatientStudyModule");
+    getAndCheckElementFromDataset(dataset, PatientWeight, "1", "3", "PatientStudyModule");
     /* also read data from Patient Module */
     return readPatientData(dataset, flags);
 }
@@ -686,6 +693,10 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmLongString(IssuerOfPatientID), "1", "3", "PatientModule");
         addElementToDataset(result, dataset, new DcmDate(PatientBirthDate), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmCodeString(PatientSex), "1", "2", "PatientModule");
+
+        // --- Patient Study Module ---
+        addElementToDataset(result, dataset, new DcmDecimalString(PatientSize), "1", "3", "PatientStudyModule");
+        addElementToDataset(result, dataset, new DcmDecimalString(PatientWeight), "1", "3", "PatientStudyModule");
 
         if (requiresEnhancedEquipmentModule(getDocumentType()))
         {
@@ -967,7 +978,10 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
             }
             else if (doc.getElementFromNodeContent(cursor, PatientID, "id").bad() &&
                      doc.getElementFromNodeContent(cursor, IssuerOfPatientID, "issuer").bad() &&
-                     doc.getElementFromNodeContent(cursor, PatientSex, "sex").bad())
+                     doc.getElementFromNodeContent(cursor, PatientSex, "sex").bad() &&
+                     /* strictly speaking, Patient's Size and Weight belong to the Study IE */
+                     doc.getElementFromNodeContent(cursor, PatientSize, "size").bad() &&
+                     doc.getElementFromNodeContent(cursor, PatientWeight, "weight").bad())
             {
                 doc.printUnexpectedNodeWarning(cursor);
             }
@@ -1363,6 +1377,9 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
             stream << "</birthday>" << OFendl;
         }
         writeStringFromElementToXML(stream, PatientSex, "sex", (flags & XF_writeEmptyTags) > 0);
+        /* strictly speaking, Patient's Size and Weight belong to the Study IE */
+        writeStringFromElementToXML(stream, PatientSize, "size", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, PatientWeight, "weight", (flags & XF_writeEmptyTags) > 0);
         stream << "</patient>" << OFendl;
 
         stream << "<study uid=\"" << getMarkupStringFromElement(StudyInstanceUID, tmpString) << "\">" << OFendl;
@@ -2285,6 +2302,20 @@ OFCondition DSRDocument::getPatientSex(OFString &value,
 }
 
 
+OFCondition DSRDocument::getPatientSize(OFString &value,
+                                        const signed long pos) const
+{
+    return getStringValueFromElement(PatientSize, value, pos);
+}
+
+
+OFCondition DSRDocument::getPatientWeight(OFString &value,
+                                          const signed long pos) const
+{
+    return getStringValueFromElement(PatientWeight, value, pos);
+}
+
+
 OFCondition DSRDocument::getReferringPhysicianName(OFString &value,
                                                    const signed long pos) const
 {
@@ -2535,6 +2566,26 @@ OFCondition DSRDocument::setPatientSex(const OFString &value,
 }
 
 
+OFCondition DSRDocument::setPatientSize(const OFString &value,
+                                        const OFBool check)
+{
+    OFCondition result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PatientSize.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DSRDocument::setPatientWeight(const OFString &value,
+                                          const OFBool check)
+{
+    OFCondition result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PatientWeight.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DSRDocument::setReferringPhysicianName(const OFString &value,
                                                    const OFBool check)
 {
@@ -2777,7 +2828,10 @@ void DSRDocument::createNewStudy()
     StudyID.clear();
     AccessionNumber.clear();
     StudyDescription.clear();
-    /* also creates new study (since UID is empty) and SOP instance */
+    /* also need to clear the attributes from the Patient Study Module */
+    PatientSize.clear();
+    PatientWeight.clear();
+    /* the following method also creates new a study (since UID is empty) and SOP instance */
     createNewSeries();
 }
 

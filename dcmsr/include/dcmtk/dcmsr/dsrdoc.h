@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2020, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,6 +34,7 @@
 
 #include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrds.h"
 #include "dcmtk/dcmdata/dcvris.h"
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrpn.h"
@@ -139,10 +140,10 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition readPatientData(DcmItem &dataset,
                                         const size_t flags = 0);
 
-    /** read study data from DICOM dataset. Also reads patient data.
-     *  The list of data elements that are read can be found under "Patient Module" and
-     *  "General Study Module" in the member variable section of this class.  Other data
-     *  is not changed, so be careful when using this method.
+    /** read study data from DICOM dataset.  Also reads patient data.
+     *  The list of data elements that are read can be found under "Patient Module", "General
+     *  Study Module" and "Patient Study Module" in the member variable section of this class.
+     *  Other data is not changed, so be careful when using this method.
      *  @param  dataset  reference to DICOM dataset from which the data should be read
      *  @param  flags    optional flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -523,6 +524,22 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition getPatientSex(OFString &value,
                                       const signed long pos = 0) const;
 
+    /** get patient's size
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getPatientSize(OFString &value,
+                                       const signed long pos = 0) const;
+
+    /** get patient's weight
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getPatientWeight(OFString &value,
+                                         const signed long pos = 0) const;
+
     /** get referring physician's name
      ** @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -783,6 +800,22 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition setPatientSex(const OFString &value,
                                       const OFBool check = OFTrue);
 
+    /** set patient's size
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setPatientSize(const OFString &value,
+                                       const OFBool check = OFTrue);
+
+    /** set patient's weight
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setPatientWeight(const OFString &value,
+                                         const OFBool check = OFTrue);
+
     /** set referring physician's name
      ** @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (PN) and VM (1) if enabled
@@ -981,7 +1014,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *  After generating a new study instance UID the method createNewSeries() is called,
      *  i.e. also a new series instance UID and SOP instance UID are generated.  This is
      *  a requirement of the DICOM standard.  All other study-related attributes are
-     *  cleared.
+     *  cleared (including the attributes from the Patient Study Module).
      */
     virtual void createNewStudy();
 
@@ -1360,6 +1393,13 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     DcmDate             PatientBirthDate;
     /// Patient's Sex: (CS, 1, 2)
     DcmCodeString       PatientSex;
+
+    // --- Patient Study Module (U) ---
+
+    /// Patient's Size: (DS, 1, 3)
+    DcmDecimalString    PatientSize;
+    /// Patient's Weight: (DS, 1, 3)
+    DcmDecimalString    PatientWeight;
 
     // --- General Equipment Module (M) ---
 

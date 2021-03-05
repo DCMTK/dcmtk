@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2019, OFFIS e.V.
+ *  Copyright (C) 2012-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -65,6 +65,7 @@ OFTEST_REGISTER(dcmsr_extractDocSubTree_1);
 OFTEST_REGISTER(dcmsr_extractDocSubTree_2);
 OFTEST_REGISTER(dcmsr_extractAndInsertDocSubTree_1);
 OFTEST_REGISTER(dcmsr_extractAndInsertDocSubTree_2);
+OFTEST_REGISTER(dcmsr_setAndGetPatientData);
 OFTEST_REGISTER(dcmsr_setSpecificCharacterSet);
 OFTEST_REGISTER(dcmsr_changeDocumentType_1);
 OFTEST_REGISTER(dcmsr_changeDocumentType_2);
