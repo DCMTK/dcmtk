@@ -64,7 +64,7 @@ void DcmStdinStream::fillBuffer()
   size_t numBytes = fread(buf_, 1, DCMSTDINSTREAMBUFSIZE, stdin);
 
   // make the buffer available to the buffer producer
-  producer_.setBuffer(buf_, numBytes);
+  producer_.setBuffer(buf_, OFstatic_cast(offile_off_t, numBytes));
 
   // check if we are at the end of stream, and if so, notify the buffer producer
   if (feof(stdin)) producer_.setEos();

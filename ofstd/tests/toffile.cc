@@ -227,7 +227,7 @@ static OFBool seekFile(OFFile &file)
     if (1 == file.fread(&v, sizeof(Uint32), 1))
     {
       // successfully read value. Now check if the value is correct.
-      expected = (OFstatic_cast(offile_off_t, FILESIZE) * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32);
+      expected = OFstatic_cast(offile_off_t, (OFstatic_cast(offile_off_t, FILESIZE) * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32));
       if (v != OFstatic_cast(Uint32, expected))
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << block

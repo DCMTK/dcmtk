@@ -866,7 +866,7 @@ public:
       storeLastError();
       return -1;
     }
-    return pos;
+    return OFstatic_cast(offile_off_t, pos);
 #else
 #ifdef HAVE_FSEEKO
 #ifdef EXPLICIT_LFS_64

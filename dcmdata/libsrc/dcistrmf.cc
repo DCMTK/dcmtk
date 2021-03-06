@@ -93,7 +93,7 @@ offile_off_t DcmFileProducer::read(void *buf, offile_off_t buflen)
   offile_off_t result = 0;
   if (status_.good() && file_.open() && buf && buflen)
   {
-    result = file_.fread(buf, 1, OFstatic_cast(size_t, buflen));
+    result = OFstatic_cast(offile_off_t, file_.fread(buf, 1, OFstatic_cast(size_t, buflen)));
   }
   return result;
 }

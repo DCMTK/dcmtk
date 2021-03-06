@@ -1846,7 +1846,7 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
       partialvalue = OFstatic_cast(Uint32, valueWidth - partialoffset);
 
       // we need to read a single data element into the swap buffer
-      if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, valueWidth)))
+      if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, OFstatic_cast(offile_off_t, valueWidth))))
           return EC_InvalidStream;
 
       // swap to desired byte order. fByteOrder contains the byte order in file.
@@ -1921,7 +1921,7 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
       }
 
       // we need to read a single data element into the swap buffer
-      if (partialBytesToRead != OFstatic_cast(size_t, readStream->read(swapBuffer, partialBytesToRead)))
+      if (partialBytesToRead != OFstatic_cast(size_t, readStream->read(swapBuffer, OFstatic_cast(offile_off_t, partialBytesToRead))))
           return EC_InvalidStream;
 
       if (appendDuplicateByte)

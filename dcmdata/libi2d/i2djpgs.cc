@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2019, OFFIS e.V.
+ *  Copyright (C) 2007-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -436,19 +436,19 @@ OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
   if (bytePosJFIF != 0)
   {
     // read from SOI to JFIF
-    result = jpegFile.fread (currBufferPos, 1, 2);
+    result = OFstatic_cast(offile_off_t, jpegFile.fread (currBufferPos, 1, 2));
     if (result != 2)
       return EC_IllegalCall;
     currBufferPos += 2;
     // read from end of JFIF to end of file
     jpegFile.fseek(bytePosAfterJFIF - 1, SEEK_SET); // -1 because offsets start with 0
-    result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, filesize - bytePosAfterJFIF + 1));
+    result = OFstatic_cast(offile_off_t, jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, filesize - bytePosAfterJFIF + 1)));
     if (result != filesize - bytePosAfterJFIF + 1)
       return EC_IllegalCall;
   }
   else // otherwise copy everything starting with SOI marker
   {
-    result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, filesize));
+    result = OFstatic_cast(offile_off_t, jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, filesize)));
     if (result != filesize)
       return EC_IllegalCall;
   }

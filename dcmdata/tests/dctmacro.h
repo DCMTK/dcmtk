@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,7 +72,7 @@
 static inline OFCondition readDataset(DcmDataset& dset, const Uint8* buffer, size_t length, E_TransferSyntax ts)
 {
     DcmInputBufferStream stream;
-    stream.setBuffer(buffer, length);
+    stream.setBuffer(buffer, OFstatic_cast(offile_off_t, length));
     stream.setEos();
 
     dset.clear();
@@ -103,7 +103,7 @@ static inline OFCondition readDatasetTwice(DcmDataset& dset, const Uint8* buffer
 
     // Write the dataset into a temporary buffer
     OFVector<Uint8> writeBuffer(length * 2);
-    DcmOutputBufferStream out(&writeBuffer[0], writeBuffer.size());
+    DcmOutputBufferStream out(&writeBuffer[0], OFstatic_cast(offile_off_t, writeBuffer.size()));
     dset.transferInit();
     cond = dset.write(out, ts1, encType, NULL);
     dset.transferEnd();
