@@ -28,6 +28,7 @@
 #include <climits>
 #include <csignal>
 #include <csetjmp>
+#include <iostream>
 
 #include "dcmtk/ofstd/oftypes.h"
 
