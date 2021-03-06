@@ -71,8 +71,13 @@ inline std::ostream& operator<<( std::ostream& o, OFnullptr_t /* unused */ )
 #else // fallback definitions
 
 #include <cstddef>
+BEGIN_EXTERN_C
 #include <stdint.h>
+#ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
+#endif
+END_EXTERN_C
+
 #include "dcmtk/ofstd/ofstream.h"
 
 typedef signed char     Sint8;
