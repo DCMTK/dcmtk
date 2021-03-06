@@ -31,6 +31,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cerrno>
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
