@@ -28,6 +28,12 @@
 #include <fcntl.h>
 #endif
 
+#ifdef HAVE_STRINGS_H
+BEGIN_EXTERN_C
+#include <strings.h> /* for bzero() on Solaris */
+END_EXTERN_C
+#endif
+
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"              /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"

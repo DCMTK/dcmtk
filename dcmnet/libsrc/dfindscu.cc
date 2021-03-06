@@ -32,6 +32,12 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstream.h"
 
+#ifdef HAVE_STRINGS_H
+BEGIN_EXTERN_C
+#include <strings.h> /* for bzero() on Solaris */
+END_EXTERN_C
+#endif
+
 /* ---------------- static functions ---------------- */
 
 #define OFFIS_CONSOLE_APPLICATION "findscu"

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2019, OFFIS e.V.
+ *  Copyright (C) 2008-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,12 @@
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/ofstd/ofmem.h" /* for OFunique_ptr */
+
+#ifdef HAVE_STRINGS_H
+BEGIN_EXTERN_C
+#include <strings.h> /* for bzero() on Solaris */
+END_EXTERN_C
+#endif
 
 #ifdef WITH_ZLIB
 #include <zlib.h> /* for zlibVersion() */

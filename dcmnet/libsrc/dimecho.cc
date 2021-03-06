@@ -86,6 +86,12 @@
 #include "dcmtk/dcmnet/dimse.h"     /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
 
+#ifdef HAVE_STRINGS_H
+BEGIN_EXTERN_C
+#include <strings.h> /* for bzero() on Solaris */
+END_EXTERN_C
+#endif
+
 
 OFCondition
 DIMSE_echoUser(
