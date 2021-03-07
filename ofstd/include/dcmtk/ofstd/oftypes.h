@@ -72,7 +72,9 @@ inline std::ostream& operator<<( std::ostream& o, OFnullptr_t /* unused */ )
 
 #include <cstddef>
 BEGIN_EXTERN_C
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif
