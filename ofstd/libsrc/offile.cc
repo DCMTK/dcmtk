@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2020, OFFIS e.V.
+ *  Copyright (C) 2011-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/ofstd/offile.h"
 #include "dcmtk/ofstd/offilsys.h"
 #include "dcmtk/ofstd/ofutil.h"
+#include <cerrno>
 
 #ifdef HAVE_WINDOWS_H
 #include "dcmtk/ofstd/ofchrenc.h"   /* for class OFCharacterEncoding */

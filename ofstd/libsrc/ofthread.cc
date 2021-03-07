@@ -71,6 +71,7 @@ extern "C" {
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstring.h"
+#include <cerrno>
 
 // The Posix interfaces are not always correctly declared as volatile,
 // so we need a two-step cast from our internal representation

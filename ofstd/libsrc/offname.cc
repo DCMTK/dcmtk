@@ -24,6 +24,7 @@
 #include "dcmtk/ofstd/offname.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofstd.h"        /* for OFString::myrand_r */
+#include <cerrno>
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
