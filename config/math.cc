@@ -31,6 +31,7 @@
 #include <iostream>
 
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
