@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2020, OFFIS e.V.
+ *  Copyright (C) 2009-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,12 @@
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmtls/tlslayer.h"
+
+#ifdef HAVE_STRINGS_H
+BEGIN_EXTERN_C
+#include <strings.h> /* for bzero() on Solaris */
+END_EXTERN_C
+#endif
 
 // ----------------------------------------------------------------------------
 

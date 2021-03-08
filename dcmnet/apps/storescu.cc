@@ -25,6 +25,9 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h> /* for bzero() on Solaris */
+#endif
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstd.h"

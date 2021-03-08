@@ -20,6 +20,7 @@
  */
 #include "dcmtk/dcmiod/cielabutil.h"
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofstdinc.h" /* for STD_NAMESPACE */
 
 // workaround for SunPro not defining these C functions in the global namespace
 #ifdef __sun
