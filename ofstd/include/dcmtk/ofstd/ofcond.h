@@ -28,8 +28,8 @@
 #include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofcast.h"
-
 #include <cstring>
+#include <cstdlib>                  /* for free() */
 
 // include this file in doxygen documentation
 
