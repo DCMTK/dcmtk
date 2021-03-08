@@ -84,6 +84,7 @@ dsr2html.o: dsr2html.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
@@ -111,7 +112,6 @@ dsr2html.o: dsr2html.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
@@ -224,6 +224,7 @@ dsr2xml.o: dsr2xml.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
@@ -251,7 +252,6 @@ dsr2xml.o: dsr2xml.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
@@ -364,6 +364,7 @@ dsrdump.o: dsrdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
@@ -391,7 +392,6 @@ dsrdump.o: dsrdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
@@ -504,6 +504,7 @@ xml2dsr.o: xml2dsr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
@@ -531,7 +532,6 @@ xml2dsr.o: xml2dsr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \

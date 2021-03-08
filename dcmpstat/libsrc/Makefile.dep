@@ -360,9 +360,9 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbs.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
- ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h
 dvpsab.o: dvpsab.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
@@ -2418,7 +2418,6 @@ dvpsmsg.o: dvpsmsg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
- ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
  ../../dcmnet/include/dcmtk/dcmnet/dntypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofsockad.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \

@@ -1263,6 +1263,7 @@ dsrdoc.o: dsrdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \

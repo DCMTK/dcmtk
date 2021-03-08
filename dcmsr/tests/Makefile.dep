@@ -85,6 +85,7 @@ mkreport.o: mkreport.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
@@ -113,7 +114,6 @@ mkreport.o: mkreport.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrur.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
@@ -280,6 +280,7 @@ tsrcmr.o: tsrcmr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
@@ -483,6 +484,7 @@ tsrdoc.o: tsrdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
@@ -582,6 +584,7 @@ tsrdoctr.o: tsrdoctr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
@@ -809,6 +812,7 @@ tsrtpl.o: tsrtpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \

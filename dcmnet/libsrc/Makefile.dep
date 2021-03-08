@@ -60,8 +60,7 @@ assoc.o: assoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmnet/dimse.h ../include/dcmtk/dcmnet/dcmtrans.h \
- ../include/dcmtk/dcmnet/dcmlayer.h
+ ../include/dcmtk/dcmnet/dimse.h ../include/dcmtk/dcmnet/dcmtrans.h
 cond.o: cond.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmnet/cond.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
@@ -364,12 +363,12 @@ dcmlayer.o: dcmlayer.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../include/dcmtk/dcmnet/dndefine.h ../include/dcmtk/dcmnet/dntypes.h \
  ../include/dcmtk/dcmnet/dcmtrans.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h
 dcmtrans.o: dcmtrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmnet/dcmtrans.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
@@ -377,16 +376,13 @@ dcmtrans.o: dcmtrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../include/dcmtk/dcmnet/dcmlayer.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
- ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../include/dcmtk/dcmnet/dndefine.h ../include/dcmtk/dcmnet/dntypes.h \
  ../include/dcmtk/dcmnet/dcompat.h ../include/dcmtk/dcmnet/diutil.h \
  ../include/dcmtk/dcmnet/dicom.h ../include/dcmtk/dcmnet/cond.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
- ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -401,6 +397,9 @@ dcmtrans.o: dcmtrans.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../oflog/include/dcmtk/oflog/layout.h \
  ../../oflog/include/dcmtk/oflog/streams.h \
  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
@@ -1726,8 +1725,7 @@ dulextra.o: dulextra.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmnet/dul.h ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../include/dcmtk/dcmnet/extneg.h ../include/dcmtk/dcmnet/dcuserid.h \
  ../include/dcmtk/dcmnet/dntypes.h dulstruc.h dulpriv.h \
- ../include/dcmtk/dcmnet/dcmtrans.h ../include/dcmtk/dcmnet/dcmlayer.h \
- ../include/dcmtk/dcmnet/diutil.h \
+ ../include/dcmtk/dcmnet/dcmtrans.h ../include/dcmtk/dcmnet/diutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
