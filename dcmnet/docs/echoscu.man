@@ -199,13 +199,13 @@ peer authentication:
 
 offline certificate verification:
 
-  +vc   --verify-cert  [c]ertificate file: string
+  +vc   --verify-cert  [f]ilename: string
           verify certificate against CA settings
 
           # Load a client certificate and check whether it would be accepted
           # when received during a TLS handshake. Print result and exit.
 
-  +rc   --is-root-cert  [c]ertificate file: string
+  +rc   --is-root-cert  [f]ilename: string
           check if certificate is self-signed root CA
 
           # Load a client certificate and check whether it is a valid,
@@ -284,6 +284,7 @@ EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 \subsection echoscu_exit_codes_input_file_errors input file errors
 \verbatim
 EXITCODE_CANNOT_READ_INPUT_FILE          20 (*)
+EXITCODE_INVALID_INPUT_FILE              22
 \endverbatim
 
 \subsection echoscu_exit_codes_output_file_errors output file errors

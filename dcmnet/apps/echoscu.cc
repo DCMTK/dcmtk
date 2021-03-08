@@ -191,8 +191,8 @@ main(int argc, char *argv[])
 
 #ifdef WITH_OPENSSL
     cmd.addSubGroup("offline certificate verification:");
-      cmd.addOption("--verify-cert",   "+vc",   1, "[c]ertificate file: string", "verify certificate against CA settings", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--is-root-cert",  "+rc",   1, "[c]ertificate file: string", "check if certificate is self-signed root CA", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--verify-cert",   "+vc",   1, "[f]ilename: string", "verify certificate against CA settings", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--is-root-cert",  "+rc",   1, "[f]ilename: string", "check if certificate is self-signed root CA", OFCommandLine::AF_Exclusive);
 #endif
 
     /* evaluate command line */

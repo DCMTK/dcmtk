@@ -277,8 +277,6 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
     // later in DcmTLSOptions::createTransportLayer().
     if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
       app.checkDependence("--add-cert-file", tlsopts, opt_secureConnection);
-    if (cmd.findOption("--add-ucert-file", 0, OFCommandLine::FOM_First))
-      app.checkDependence("--add-ucert-file", tlsopts, opt_secureConnection);
     if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
       app.checkDependence("--add-cert-dir", tlsopts, opt_secureConnection);
     if (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_First))
