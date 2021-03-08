@@ -210,7 +210,6 @@ offline certificate verification:
 
           # Load a client certificate and check whether it is a valid,
           # self-signed root CA certificate. Print result and exit.
-
 \endverbatim
 
 \section echoscu_notes NOTES
