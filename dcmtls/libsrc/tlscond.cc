@@ -46,9 +46,9 @@ makeOFConditionConst( DCMTLS_EC_TLSAcceptOperationDidNotComplete,     OFM_dcmtls
 makeOFConditionConst( DCMTLS_EC_TLSAsyncOperationDidNotComplete,      OFM_dcmtls, 17, OF_error, "TLS operation did not complete because an asynchronous engine is still processing data (SSL_ERROR_WANT_ASYNC)" );
 makeOFConditionConst( DCMTLS_EC_TLSAsyncJobCouldNotBeStarted,         OFM_dcmtls, 18, OF_error, "TLS asynchronous job could not be started (SSL_ERROR_WANT_ASYNC_JOB)" );
 makeOFConditionConst( DCMTLS_EC_TLSClientHelloCallbackNeeded,         OFM_dcmtls, 19, OF_error, "TLS client hello callback needed (SSL_ERROR_WANT_CLIENT_HELLO_CB)" );
-makeOFConditionConst( DCMTLS_EC_OtherSSLError,                        OFM_dcmtls, 20, OF_error, "other TLS error (unknown SSL_ERROR code)" );
-makeOFConditionConst( DCMTLS_EC_FailedToSetVerificationMode,          OFM_dcmtls, 21, OF_error, "setting of the X.509 verification mode failed" );
-makeOFConditionConst( DCMTLS_EC_CertStoreCtxInitFailed,               OFM_dcmtls, 22, OF_error, "certificate store context initialization failed" );
+makeOFConditionConst( DCMTLS_EC_OtherSSLError,                        OFM_dcmtls, 20, OF_error, "Other TLS error (unknown SSL_ERROR code)" );
+makeOFConditionConst( DCMTLS_EC_FailedToSetVerificationMode,          OFM_dcmtls, 21, OF_error, "Setting of the X.509 verification mode failed" );
+makeOFConditionConst( DCMTLS_EC_CertStoreCtxInitFailed,               OFM_dcmtls, 22, OF_error, "Certificate store context initialization failed" );
 makeOFConditionConst( DCMTLS_EC_OpenSSLIOError,                       OFM_dcmtls, 23, OF_error, "OpenSSL I/O error (SSL_ERROR_SYSCALL)" );
 
 // implementation of specializable error codes
