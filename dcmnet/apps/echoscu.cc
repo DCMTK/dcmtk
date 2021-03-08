@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -128,7 +128,7 @@ main(int argc, char *argv[])
   OFOStringStream optStream;
   int result = EXITCODE_NO_ERROR;
 
-  const char *     opt_peer                = NULL;
+  const char *     opt_peer                = "localhost";
   OFCmdUnsignedInt opt_port                = 104;
   const char *     opt_peerTitle           = PEERAPPLICATIONTITLE;
   const char *     opt_ourTitle            = APPLICATIONTITLE;
@@ -141,7 +141,6 @@ main(int argc, char *argv[])
   int              opt_acse_timeout        = 30;
   OFCmdSignedInt   opt_socket_timeout      = 60;
   DcmTLSOptions    tlsOptions(NET_REQUESTOR);
-
   T_ASC_Network *net;
   T_ASC_Parameters *params;
   DIC_NODENAME peerHost;
@@ -196,6 +195,12 @@ main(int argc, char *argv[])
     // add TLS specific command line options if (and only if) we are compiling with OpenSSL
     tlsOptions.addTLSCommandlineOptions(cmd);
 
+#ifdef WITH_OPENSSL
+    cmd.addSubGroup("offline certificate verification:");
+      cmd.addOption("--verify-cert",   "+vc",   1, "[c]ertificate file: string", "verify certificate against CA settings", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--is-root-cert",  "+rc",   1, "[c]ertificate file: string", "check if certificate is self-signed root CA", OFCommandLine::AF_Exclusive);
+#endif
+
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv))
@@ -230,8 +235,18 @@ main(int argc, char *argv[])
 
       /* command line parameters */
 
+#ifdef WITH_OPENSSL
+      // special handling for the exclusive options that can only be evaluated
+      // once all other options have been processed
+      if ((! cmd.findOption("--verify-cert")) && (! cmd.findOption("--is-root-cert")))
+      {
+        cmd.getParam(1, opt_peer);
+        app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
+      }
+#else
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
+#endif
 
       OFLog::configureFromCommandLine(cmd, app);
 
@@ -307,6 +322,45 @@ main(int argc, char *argv[])
         OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);
     }
+
+#ifdef WITH_OPENSSL
+    if (cmd.findOption( "--verify-cert" ))
+    {
+        const char *cert_filename = NULL;
+        app.checkValue( cmd.getValue( cert_filename ) );
+
+        cond = tlsOptions.verifyClientCertificate(cert_filename);
+        if (cond.good())
+        {
+          COUT << "Verification of certificate '" << cert_filename << "' passed." << OFendl;
+          return EXITCODE_NO_ERROR;
+        }
+        else
+        {
+          COUT << "Verification of certificate '" << cert_filename << "' failed." << OFendl;
+          return EXITCODE_INVALID_INPUT_FILE;
+        }
+    }
+
+    if (cmd.findOption( "--is-root-cert" ))
+    {
+        const char *cert_filename = NULL;
+        app.checkValue( cmd.getValue( cert_filename ) );
+
+        cond = tlsOptions.isRootCertificate(cert_filename);
+        if (cond.good())
+        {
+          COUT << "Certificate '" << cert_filename << "' is a valid, self-signed root CA." << OFendl;
+          return EXITCODE_NO_ERROR;
+        }
+        else
+        {
+          COUT << "Certificate '" << cert_filename << "' is not a valid, self-signed root CA." << OFendl;
+          return EXITCODE_INVALID_INPUT_FILE;
+        }
+    }
+
+#endif
 
 #ifdef PRIVATE_ECHOSCU_CODE
     PRIVATE_ECHOSCU_CODE

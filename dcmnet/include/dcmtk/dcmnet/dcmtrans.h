@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,13 +25,14 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 #include "dcmtk/ofstd/ofglobal.h"     /* for OFGlobal */
 #include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
 #include "dcmtk/ofstd/ofstream.h"     /* for ostream */
-#include "dcmtk/dcmnet/dcmlayer.h"    /* for DcmTransportLayerStatus */
-
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/dcmnet/dndefine.h"    /* for DCMTK_DCMNET_EXPORT */
+#include "dcmtk/dcmnet/dntypes.h"     /* for DcmNativeSocketType */
 
 // include this file in doxygen documentation
 
@@ -81,24 +82,24 @@ public:
   /** performs server side handshake on established socket.
    *  This function is used to establish a secure transport connection
    *  over the established TCP connection. Abstract method.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus serverSideHandshake() = 0;
+  virtual OFCondition serverSideHandshake() = 0;
 
   /** performs client side handshake on established socket.
    *  This function is used to establish a secure transport connection
    *  over the established TCP connection. Abstract method.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus clientSideHandshake() = 0;
+  virtual OFCondition clientSideHandshake() = 0;
 
   /** performs a re-negotiation of the connection with different
    *  connection parameters. Used to change the parameters of the
    *  secure transport connection. Abstract method.
    *  @param newSuite string identifying the ciphersuite to be negotiated.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus renegotiate(const char *newSuite) = 0;
+  virtual OFCondition renegotiate(const char *newSuite) = 0;
 
   /** attempts to read nbyte bytes from the transport connection and
    *  writes them into the given buffer. Abstract method.
@@ -121,6 +122,12 @@ public:
    *  is closed. Abstract method.
    */
   virtual void close() = 0;
+
+  /** Closes the transport connection directly. If a secure connection
+   *  is used, a closure alert is NOT sent before the connection
+   *  is closed. Abstract method.
+   */
+  virtual void closeTransportConnection() = 0;
 
   /** returns the size in bytes of the peer certificate of a secure connection.
    *  May return 0 if connection is transparent TCP/IP.
@@ -162,12 +169,6 @@ public:
    *  @deprecated Please use the other dumpConnectionParameters() function instead!
    */
   void dumpConnectionParameters(STD_NAMESPACE ostream& out);
-
-  /** returns an error string for a given error code.
-   *  @param code error code
-   *  @return description for error code
-   */
-  virtual const char *errorString(DcmTransportLayerStatus code) = 0;
 
   /** indicates which of the specified transport connections is ready for
    *  reading. If none of the specified transport connections is ready
@@ -266,24 +267,24 @@ public:
   /** performs server side handshake on established socket.
    *  This function is used to establish a secure transport connection
    *  over the established TCP connection.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus serverSideHandshake();
+  virtual OFCondition serverSideHandshake();
 
   /** performs client side handshake on established socket.
    *  This function is used to establish a secure transport connection
    *  over the established TCP connection.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus clientSideHandshake();
+  virtual OFCondition clientSideHandshake();
 
   /** performs a re-negotiation of the connection with different
    *  connection parameters. Used to change the parameters of the
    *  secure transport connection.
    *  @param newSuite string identifying the ciphersuite to be negotiated.
-   *  @return TCS_ok if successful, an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
    */
-  virtual DcmTransportLayerStatus renegotiate(const char *newSuite);
+  virtual OFCondition renegotiate(const char *newSuite);
 
   /** attempts to read nbyte bytes from the transport connection and
    *  writes them into the given buffer.
@@ -306,6 +307,12 @@ public:
    *  is closed.
    */
   virtual void close();
+
+  /** Closes the transport connection directly. If a secure connection
+   *  is used, a closure alert is NOT sent before the connection
+   *  is closed.
+   */
+  virtual void closeTransportConnection();
 
   /** returns the size in bytes of the peer certificate of a secure connection.
    *  May return 0 if connection is transparent TCP/IP.
@@ -339,12 +346,6 @@ public:
    *  @return reference to string
    */
   virtual OFString& dumpConnectionParameters(OFString& str);
-
-  /** returns an error string for a given error code.
-   *  @param code error code
-   *  @return description for error code
-   */
-  virtual const char *errorString(DcmTransportLayerStatus code);
 
 private:
 

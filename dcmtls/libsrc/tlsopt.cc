@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2019, OFFIS e.V.
+ *  Copyright (C) 2017-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -83,10 +83,14 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       cmd.addOption("--pem-keys",           "-pem",    "read keys and certificates as PEM file (default)");
       cmd.addOption("--der-keys",           "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
-      cmd.addOption("--add-cert-file",      "+cf",  1, "[c]ertificate filename: string",
+      cmd.addOption("--add-cert-file",      "+cf",  1, "[f]ilename: string",
                                                        "add certificate file to list of certificates");
-      cmd.addOption("--add-cert-dir",       "+cd",  1, "[c]ertificate directory: string",
+      cmd.addOption("--add-cert-dir",       "+cd",  1, "[d]irectory: string",
                                                        "add certificates in d to list of certificates");
+      cmd.addOption("--add-crl-file",       "+crl", 1, "[f]ilename: string",
+                                                       "add certificate revocation list file\n(implies --enable-crl-vfy)");
+      cmd.addOption("--enable-crl-vfy",     "+crv",    "enable leaf CRL verification");
+      cmd.addOption("--enable-crl-all",     "+cra",    "enable full chain CRL verification");
     cmd.addSubGroup("security profile:");
       cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile (default)");
       cmd.addOption("--profile-bcp195-nd",  "+py",     "Non-downgrading BCP 195 TLS Profile");
@@ -273,8 +277,23 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
     // later in DcmTLSOptions::createTransportLayer().
     if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
       app.checkDependence("--add-cert-file", tlsopts, opt_secureConnection);
+    if (cmd.findOption("--add-ucert-file", 0, OFCommandLine::FOM_First))
+      app.checkDependence("--add-ucert-file", tlsopts, opt_secureConnection);
     if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
       app.checkDependence("--add-cert-dir", tlsopts, opt_secureConnection);
+    if (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_First))
+      app.checkDependence("--add-crl-file", tlsopts, opt_secureConnection);
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--enable-crl-vfy", 0, OFCommandLine::FOM_First))
+      app.checkDependence("--enable-crl-vfy", tlsopts, opt_secureConnection);
+    if (cmd.findOption("--enable-crl-all", 0, OFCommandLine::FOM_First))
+    {
+      app.checkDependence("--enable-crl-all", tlsopts, opt_secureConnection);
+      app.checkConflict("--enable-crl-all", "--enable-crl-vfy", cmd.findOption("--enable-crl-vfy", 0, OFCommandLine::FOM_First));
+    }
+    cmd.endOptionBlock();
+
     if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
     {
       app.checkDependence("--cipher", tlsopts, opt_secureConnection);
@@ -292,6 +311,8 @@ OFCondition DcmTLSOptions::createTransportLayer(
 {
 
 #ifdef WITH_OPENSSL
+    DcmTLSCRLVerification crlmode = TCR_noCRL;
+
     if (opt_secureConnection)
     {
       delete tLayer;
@@ -304,7 +325,7 @@ OFCondition DcmTLSOptions::createTransportLayer(
         do
         {
           app.checkValue(cmd.getValue(current));
-          if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
+          if (tLayer->addTrustedCertificateFile(current, opt_keyFileFormat).bad())
           {
               DCMTLS_WARN("unable to load certificate file '" << current << "', ignoring");
           }
@@ -317,30 +338,56 @@ OFCondition DcmTLSOptions::createTransportLayer(
         do
         {
           app.checkValue(cmd.getValue(current));
-          if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+          if (tLayer->addTrustedCertificateDir(current, opt_keyFileFormat).bad())
           {
             DCMTLS_WARN("unable to load certificates from directory '" << current << "', ignoring");
           }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
 
+      if (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_First))
+      {
+        const char *current = NULL;
+        do
+        {
+          app.checkValue(cmd.getValue(current));
+          if (tLayer->addCertificateRevocationList(current, opt_keyFileFormat).bad())
+          {
+              DCMTLS_WARN("unable to load CRL file '" << current << "', ignoring");
+          }
+          crlmode = TCR_checkLeafCRL;
+        } while (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_Next));
+      }
+
+      // set CRL verification mode
+      if (cmd.findOption( "--enable-crl-vfy" )) crlmode = TCR_checkLeafCRL;
+      if (cmd.findOption( "--enable-crl-all" )) crlmode = TCR_checkAllCRL;
+      tLayer->setCRLverification(crlmode);
+
+      OFCondition cond;
       if (opt_doAuthenticate)
       {
         if (opt_passwd)
            tLayer->setPrivateKeyPasswd(opt_passwd);
            else tLayer->setPrivateKeyPasswdFromConsole();
 
-        if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
-           return DCMTLS_EC_FailedToLoadPrivateKey( opt_privateKeyFile );
-        if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
-           return DCMTLS_EC_FailedToLoadCertificate( opt_certificateFile );
+        cond = tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat);
+
+        // replace the low-level error message with an easier to understand one
+        if (cond.bad()) return DCMTLS_EC_FailedToLoadPrivateKey( opt_privateKeyFile );
+
+        cond = tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat);
+
+        // replace the low-level error message with an easier to understand one
+        if (cond.bad()) DCMTLS_EC_FailedToLoadCertificate( opt_certificateFile );
+
         if (! tLayer->checkPrivateKeyMatchesCertificate())
            return DCMTLS_EC_MismatchedPrivateKeyAndCertificate( opt_privateKeyFile, opt_certificateFile );
       }
 
       // set TLS profile
-      if (TCS_ok != tLayer->setTLSProfile(opt_tlsProfile))
-         return DCMTLS_EC_FailedToSetCiphersuites;
+      cond =  tLayer->setTLSProfile(opt_tlsProfile);
+      if (cond.bad()) return cond;
 
       // add additional ciphersuites
       if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
@@ -349,13 +396,13 @@ OFCondition DcmTLSOptions::createTransportLayer(
         do
         {
           app.checkValue(cmd.getValue(current));
-          if (TCS_ok != tLayer->addCipherSuite(current))
-             return DCMTLS_EC_UnknownCiphersuite( current );
+          cond = tLayer->addCipherSuite(current);
+          if (cond.bad()) return cond;
         } while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
       }
 
-      if (TCS_ok != tLayer->activateCipherSuites())
-         return DCMTLS_EC_FailedToSetCiphersuites;
+      cond = tLayer->activateCipherSuites();
+      if (cond.bad()) return cond;
 
       // Loading of DH parameters should happen after the call to setTLSProfile()
       // because otherwise we cannot check profile specific restrictions
@@ -366,14 +413,14 @@ OFCondition DcmTLSOptions::createTransportLayer(
 
       if (net)
       {
-        OFCondition cond = ASC_setTransportLayer(net, tLayer, 0);
+        cond = ASC_setTransportLayer(net, tLayer, 0);
         if (cond.bad()) return cond;
       }
 
       if (params)
       {
-        OFCondition cond2 = ASC_setTransportLayerType(params, opt_secureConnection);
-        if (cond2.bad()) return cond2;
+        cond = ASC_setTransportLayerType(params, opt_secureConnection);
+        if (cond.bad()) return cond;
       }
     }
 
@@ -427,8 +474,25 @@ OFCondition DcmTLSOptions::writeRandomSeed()
             if( ! tLayer->writeRandomSeed( opt_writeSeedFile ) )
                 return DCMTLS_EC_FailedToWriteRandomSeedFile( opt_writeSeedFile );
         }
-        else return DCMTLS_EC_FailedToWriteRandomSeedFile;
+        else return DCMTLS_EC_FailedToWriteRandomSeedFile( opt_writeSeedFile );
     }
 #endif
     return EC_Normal;
+}
+
+OFCondition DcmTLSOptions::verifyClientCertificate(const char *fileName)
+{
+#ifdef WITH_OPENSSL
+  if (tLayer) return tLayer->verifyClientCertificate(fileName, opt_keyFileFormat);
+#endif
+  return EC_IllegalCall;
+}
+
+OFCondition DcmTLSOptions::isRootCertificate(const char *fileName)
+{
+#ifdef WITH_OPENSSL
+  return DcmTLSTransportLayer::isRootCertificate(fileName, opt_keyFileFormat);
+#else
+  return EC_IllegalCall;
+#endif
 }

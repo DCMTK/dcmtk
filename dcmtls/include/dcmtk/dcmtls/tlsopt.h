@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2019, OFFIS e.V.
+ *  Copyright (C) 2017-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -109,6 +109,21 @@ public:
      *  @return pointer to transport layer object, may be NULL.
      */
     DcmTransportLayer *getTransportLayer();
+
+    /** loads a certificate or certificate chain from a file and checks whether
+     *  it can be verified against the current settings of the trust store.
+     *  @param fileName path to the certificate file
+     *  @return EC_Normal if verification succeeded, an error code otherwise
+     */
+    OFCondition verifyClientCertificate(const char *fileName);
+
+    /** loads a certificate file and checks whether it is a
+     *  valid (e.g. non-expired), self-signed root certificate that
+     *  can be verified against itself
+     *  @param fileName path to the certificate file
+     *  @return EC_Normal if certificate is a root certificate, an error code otherwise
+     */
+    OFCondition isRootCertificate(const char *fileName);
 
     /** checks if the command line option --list-ciphers was given.
      *  In this case the list of supported TLS ciphersuites should be

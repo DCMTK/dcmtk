@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2019, OFFIS e.V.
+ *  Copyright (C) 2010-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,7 @@
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlsscu.h"
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
+#include "dcmtk/dcmtls/tlscond.h"   /* for error constants */
 
 BEGIN_EXTERN_C
 #include <openssl/ssl.h>
@@ -92,6 +93,22 @@ OFCondition DcmTLSSCU::initNetwork()
     return EC_IllegalCall; // TODO: need to find better error code
   }
 
+  /* Add trusted certificates from files and directories
+   */
+  OFListIterator(OFString) certFile = m_trustedCertFiles.begin();
+  while (certFile != m_trustedCertFiles.end())
+  {
+    if (m_tLayer->addTrustedCertificateFile( (*certFile).c_str(), m_certKeyFileFormat).bad())
+      DCMNET_WARN("Unable to load certificate file '" << *certFile << "', ignoring");
+    certFile++;
+  }
+  OFListIterator(OFString) certDir = m_trustedCertDirs.begin();
+  while (certDir != m_trustedCertDirs.end())
+  {
+    if (m_tLayer->addTrustedCertificateDir( (*certDir).c_str(), m_certKeyFileFormat).bad())
+      DCMNET_WARN("Unable to load certificates from directory '" << *certDir<< "', ignoring");
+  }
+
   /* If authentication of both sides (and not only encryption) is desired,
    * handle all associated parameters
    */
@@ -101,22 +118,22 @@ OFCondition DcmTLSSCU::initNetwork()
     if (m_passwd) m_tLayer->setPrivateKeyPasswd(m_passwd);
 
     // Set file that contains the private key
-    if ( cond.good() && (TCS_ok != m_tLayer->setPrivateKeyFile(m_privateKeyFile.c_str(), m_privateKeyFileFormat)) )
+    if (cond.good()) cond = m_tLayer->setPrivateKeyFile(m_privateKeyFile.c_str(), m_privateKeyFileFormat);
+    if (cond.bad())
     {
       DCMTLS_ERROR("Unable to create TLS transport layer for SCP: Unable to load private TLS key from file " << m_privateKeyFile);
-      cond = EC_IllegalCall; // TODO: need to find better error code
     }
     // Set file that contains host certificate
-    if ( cond.good() && (TCS_ok != m_tLayer->setCertificateFile(m_certificateFile.c_str(), m_certKeyFileFormat)) )
+    if (cond.good()) cond = m_tLayer->setCertificateFile(m_certificateFile.c_str(), m_certKeyFileFormat);
+    if (cond.bad())
     {
       DCMTLS_ERROR("Unable to load SCP certificate from file " << m_certificateFile);
-      cond = EC_IllegalCall; // TODO: need to find better error code
     }
     // Set whether private key fits with certificate
     if (! m_tLayer->checkPrivateKeyMatchesCertificate() && cond.good())
     {
       DCMTLS_ERROR("Private key from file " << m_privateKeyFile << " and certificate from file " << m_certificateFile << " do not match");
-      cond = EC_IllegalCall; // TODO: need to find better error code
+      cond = DCMTLS_EC_MismatchedPrivateKeyAndCertificate( m_privateKeyFile.c_str(), m_certificateFile.c_str() );
     }
   }
 
@@ -233,20 +250,20 @@ void DcmTLSSCU::disableAuthentication()
   m_doAuthenticate = OFFalse;
 }
 
-DcmTransportLayerStatus DcmTLSSCU::addCipherSuite(const OFString& suite)
+OFCondition DcmTLSSCU::addCipherSuite(const OFString& suite)
 {
   if (m_tLayer)
      return m_tLayer->addCipherSuite(suite.c_str());
-     else return TCS_illegalCall;
+     else return EC_IllegalCall;
 }
 
-DcmTransportLayerStatus DcmTLSSCU::setTLSProfile(DcmTLSSecurityProfile profile)
+OFCondition DcmTLSSCU::setTLSProfile(DcmTLSSecurityProfile profile)
 {
   if (m_tLayer)
   {
     m_tLayer->setTLSProfile(profile);
-    return TCS_ok;
-  } else return TCS_illegalCall;
+    return EC_Normal;
+  } else return EC_IllegalCall;
 }
 
 void DcmTLSSCU::setReadSeedFile(const OFString& seedFile)

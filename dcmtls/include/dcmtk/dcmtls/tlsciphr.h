@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2019, OFFIS e.V.
+ *  Copyright (C) 2018-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,11 +27,11 @@
 
 #ifdef WITH_OPENSSL
 
+#include "dcmtk/ofstd/ofcond.h"       /* for class OFCondition */
 #include "dcmtk/ofstd/ofstring.h"     /* for class OFString */
 #include "dcmtk/ofstd/ofstream.h"     /* for class ostream */
 #include "dcmtk/ofstd/ofvector.h"     /* for class OFVector */
 #include "dcmtk/dcmtls/tlsdefin.h"    /* for DCMTK_DCMTLS_EXPORT */
-#include "dcmtk/dcmnet/dcmlayer.h"    /* for DcmTransportLayerStatus */
 
 // include this file in doxygen documentation
 
@@ -217,6 +217,27 @@ enum DcmTLSCipherMAC
 };
 
 
+/** This enum describes the verification approach
+ *  for certificate revocation lists (CRL)
+ *  @remark this enum is only available if DCMTK is compiled with
+ *  OpenSSL support enabled.
+ */
+enum DcmTLSCRLVerification
+{
+  /// Certificates are not checked against a CRL
+  TCR_noCRL,
+
+  /// Check chain leaf certificate against its CRL.
+  /// An error occurs if a suitable CRL cannot be found.
+  TCR_checkLeafCRL,
+
+  /// Check the entire certificate chain against their CRLs.
+  /// An error occurs if any required CRL cannot be found.
+  TCR_checkAllCRL
+
+};
+
+
 /** This helper class manages the list of TLS ciphersuites supported by DCMTK,
  *  translates DcmTLSSecurityProfile enums into the corresponding sets of
  *  ciphersuites, and permits translation between the official TLS ciphersuite
@@ -241,9 +262,9 @@ public:
   /** replace the current list of ciphersuites by the list of ciphersuites
    *  for the given profile.
    *  @param profile TLS Security Profile
-   *  @return TCS_ok if successful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise
    */
-  DcmTransportLayerStatus setTLSProfile(DcmTLSSecurityProfile profile);
+  OFCondition setTLSProfile(DcmTLSSecurityProfile profile);
 
   /** return the currently selected TLS profile
    *  @return currently selected TLS profile
@@ -262,9 +283,9 @@ public:
    *  It is the responsibility of the user to ensure that the added ciphersuite
    *  does not break the rules of the selected profile. Use with care!
    *  @param suite TLS ciphersuite name, in the official TLS name form.
-   *  @return TCS_ok if successful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise
    */
-  DcmTransportLayerStatus addCipherSuite(const char *suite);
+  OFCondition addCipherSuite(const char *suite);
 
   /** returns a string in OpenSSL syntax that contains the currently defined
    *  list of TLS ciphersuites.
@@ -402,9 +423,9 @@ private:
 
   /** add ciphersuite by name, print error if unsupported
    *  @param name ciphersuite name in RFC 2246 form
-   *  @return TCS_ok if successful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise
    */
-  DcmTransportLayerStatus addRequiredCipherSuite(const char *name);
+  OFCondition addRequiredCipherSuite(const char *name);
 
   /** add 3DES ciphersuite, print warning if unsupported
    */
@@ -417,7 +438,7 @@ private:
   DcmTLSSecurityProfile currentProfile;
 
   /// indicator whether TLS 1.3 is enabled or disabled for the current profile
-   OFBool tls13_enabled;
+  OFBool tls13_enabled;
 
   /** an array of booleans indicating which ciphersuites known to DCMTK are
    *  actually supported by the OpenSSL library we are using.

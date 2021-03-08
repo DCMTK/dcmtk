@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2019, OFFIS e.V.
+ *  Copyright (C) 2010-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -114,18 +114,18 @@ public:
   /** replace the current list of ciphersuites by the list of ciphersuites
    *  for the given profile. Caller must ensure that initNetwork() is executed before this call.
    *  @param profile TLS Security Profile
-   *  @return TCS_ok if successful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise
    */
-  virtual DcmTransportLayerStatus setTLSProfile(DcmTLSSecurityProfile profile);
+  virtual OFCondition setTLSProfile(DcmTLSSecurityProfile profile);
 
   /** adds a ciphersuite to the list of ciphersuites for TLS negotiation.
    *  Caller must ensure that initNetwork() is executed before this call.
    *  It is the responsibility of the user to ensure that the added ciphersuite
    *  does not break the rules of the selected profile. Use with care!
    *  @param suite TLS ciphersuite name, in the official TLS name form.
-   *  @return TCS_ok if successful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise
    */
-  virtual DcmTransportLayerStatus addCipherSuite(const OFString& suite);
+  virtual OFCondition addCipherSuite(const OFString& suite);
 
   /** Set file to be used as random seed for initializing the Pseudo Random
    *  Number Generator (PRNG)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2019, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -547,7 +547,7 @@ static OFCondition storeSCP(
     dcmtk_flock(lockfd, LOCK_EX);
 #endif
 
-    /* we must still retrieve the data set even if some error has occured */
+    /* we must still retrieve the data set even if some error has occurred */
     StoreContext context(dbhandle, status, imageFileName, &dcmff, opt_correctUIDPadding);
 
     if (opt_bitpreserving)
@@ -1140,20 +1140,20 @@ int main(int argc, char *argv[])
         OFLOG_WARN(dcmpsrcvLogger, "unknown TLS profile '" << profileName << "', ignoring");
       }
 
-      if (TCS_ok != tLayer->setTLSProfile(tlsProfile))
+      if (tLayer->setTLSProfile(tlsProfile).bad())
       {
         OFLOG_FATAL(dcmpsrcvLogger, "unable to select the TLS security profile");
         return 1;
       }
 
       // activate cipher suites
-      if (TCS_ok != tLayer->activateCipherSuites())
+      if (tLayer->activateCipherSuites().bad())
       {
         OFLOG_FATAL(dcmpsrcvLogger, "unable to activate the selected list of TLS ciphersuites");
         return 1;
       }
 
-      if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
+      if (tlsCACertificateFolder && (tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat).bad()))
       {
         OFLOG_WARN(dcmpsrcvLogger, "unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring");
       }
@@ -1163,12 +1163,12 @@ int main(int argc, char *argv[])
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
-      if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
+      if (tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat).bad())
       {
         OFLOG_FATAL(dcmpsrcvLogger, "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'");
         return 1;
       }
-      if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
+      if (tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat).bad())
       {
         OFLOG_FATAL(dcmpsrcvLogger, "unable to load certificate from '" << tlsCertificateFile << "'");
         return 1;
@@ -1315,8 +1315,8 @@ int main(int argc, char *argv[])
               dropAssociation(&assoc);
             } else if (pid > 0)
             {
-              /* parent process */
-              assoc = NULL;
+              /* we're the parent process, close accepted socket and continue */
+              dropAssociation(&assoc);
             } else {
               /* child process */
 
@@ -1349,15 +1349,15 @@ int main(int argc, char *argv[])
             // initialize startup info
             const char *receiver_application = dvi.getReceiverName();
             PROCESS_INFORMATION procinfo;
-            STARTUPINFO sinfo;
+            STARTUPINFOA sinfo;
             OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
             sinfo.cb = sizeof(sinfo);
             char commandline[4096];
             sprintf(commandline, "%s %s %s", receiver_application, opt_cfgName, opt_cfgID);
 #ifdef DEBUG
-            if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+            if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-            if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+            if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
             {
 #ifdef WITH_OPENSSL
