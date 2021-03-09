@@ -40,6 +40,7 @@ END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofbmanip.h"       /* for OFBitmanipTemplate */
 #include "dcmtk/ofstd/ofdatime.h"
 #include "dcmtk/dcmnet/dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcmtk/dcmnet/dimse.h"
