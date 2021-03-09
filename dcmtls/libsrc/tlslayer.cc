@@ -40,6 +40,10 @@ BEGIN_EXTERN_C
 #include <openssl/x509_vfy.h>
 END_EXTERN_C
 
+#ifndef X509_V_ERR_UNSPECIFIED
+#define X509_V_ERR_UNSPECIFIED 1
+#endif
+
 #include "dcmtk/dcmtls/tlslayer.h"
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmnet/dicom.h"
