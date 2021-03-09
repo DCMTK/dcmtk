@@ -24,11 +24,13 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmtls/tlscond.h"
 
+#ifdef WITH_OPENSSL
 BEGIN_EXTERN_C
 #include <openssl/x509_vfy.h>
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 END_EXTERN_C
+#endif
 
 // instantiation of pure generic error codes
 
@@ -169,11 +171,16 @@ DcmTLSECGenericOpenSSLError::DcmTLSECGenericOpenSSLError()
 
 OFCondition DcmTLSECGenericOpenSSLError::operator()(unsigned long errorCode) const
 {
+#ifdef WITH_OPENSSL
     const char *ls = ERR_lib_error_string(errorCode);
     if (ls == NULL) ls = "unknown library";
 
     const char *rs = ERR_reason_error_string(errorCode);
     if (rs == NULL) rs = "unknown error";
+#else
+    const char *ls = "unknown library";
+    const char *rs = "unknown error";
+#endif
 
     OFOStringStream os;
     os << theText << " "
@@ -196,8 +203,208 @@ const DcmTLSECMismatchedPrivateKeyAndCertificateConst DCMTLS_EC_MismatchedPrivat
 const DcmTLSECFailedToWriteRandomSeedFileConst DCMTLS_EC_FailedToWriteRandomSeedFile;
 const DcmTLSECGenericOpenSSLError DCMTLS_EC_GenericOpenSSLError;
 
-// define those constants that may be missing if a pre-3.0 version
-// of OpenSSL is used.
+// define all constants that may be missing.
+
+// the following defines are present in OpenSSL 1.0.1
+
+#ifndef X509_V_ERR_UNSPECIFIED
+#define X509_V_ERR_UNSPECIFIED                          1
+#endif
+#ifndef X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT
+#define X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT            2
+#endif
+#ifndef X509_V_ERR_UNABLE_TO_GET_CRL
+#define X509_V_ERR_UNABLE_TO_GET_CRL                    3
+#endif
+#ifndef X509_V_ERR_UNABLE_TO_DECRYPT_CERT_SIGNATURE
+#define X509_V_ERR_UNABLE_TO_DECRYPT_CERT_SIGNATURE     4
+#endif
+#ifndef X509_V_ERR_UNABLE_TO_DECRYPT_CRL_SIGNATURE
+#define X509_V_ERR_UNABLE_TO_DECRYPT_CRL_SIGNATURE      5
+#endif
+#ifndef X509_V_ERR_UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY
+#define X509_V_ERR_UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY   6
+#endif
+#ifndef X509_V_ERR_CERT_SIGNATURE_FAILURE
+#define X509_V_ERR_CERT_SIGNATURE_FAILURE               7
+#endif
+#ifndef X509_V_ERR_CRL_SIGNATURE_FAILURE
+#define X509_V_ERR_CRL_SIGNATURE_FAILURE                8
+#endif
+#ifndef X509_V_ERR_CERT_NOT_YET_VALID
+#define X509_V_ERR_CERT_NOT_YET_VALID                   9
+#endif
+#ifndef X509_V_ERR_CERT_HAS_EXPIRED
+#define X509_V_ERR_CERT_HAS_EXPIRED                     10
+#endif
+#ifndef X509_V_ERR_CRL_NOT_YET_VALID
+#define X509_V_ERR_CRL_NOT_YET_VALID                    11
+#endif
+#ifndef X509_V_ERR_CRL_HAS_EXPIRED
+#define X509_V_ERR_CRL_HAS_EXPIRED                      12
+#endif
+#ifndef X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD
+#define X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD       13
+#endif
+#ifndef X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD
+#define X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD        14
+#endif
+#ifndef X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD
+#define X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD       15
+#endif
+#ifndef X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD
+#define X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD       16
+#endif
+#ifndef X509_V_ERR_OUT_OF_MEM
+#define X509_V_ERR_OUT_OF_MEM                           17
+#endif
+#ifndef X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT
+#define X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT          18
+#endif
+#ifndef X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN
+#define X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN            19
+#endif
+#ifndef X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY
+#define X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY    20
+#endif
+#ifndef X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE
+#define X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE      21
+#endif
+#ifndef X509_V_ERR_CERT_CHAIN_TOO_LONG
+#define X509_V_ERR_CERT_CHAIN_TOO_LONG                  22
+#endif
+#ifndef X509_V_ERR_CERT_REVOKED
+#define X509_V_ERR_CERT_REVOKED                         23
+#endif
+#ifndef X509_V_ERR_INVALID_CA
+#define X509_V_ERR_INVALID_CA                           24
+#endif
+#ifndef X509_V_ERR_PATH_LENGTH_EXCEEDED
+#define X509_V_ERR_PATH_LENGTH_EXCEEDED                 25
+#endif
+#ifndef X509_V_ERR_INVALID_PURPOSE
+#define X509_V_ERR_INVALID_PURPOSE                      26
+#endif
+#ifndef X509_V_ERR_CERT_UNTRUSTED
+#define X509_V_ERR_CERT_UNTRUSTED                       27
+#endif
+#ifndef X509_V_ERR_CERT_REJECTED
+#define X509_V_ERR_CERT_REJECTED                        28
+#endif
+#ifndef X509_V_ERR_SUBJECT_ISSUER_MISMATCH
+#define X509_V_ERR_SUBJECT_ISSUER_MISMATCH              29
+#endif
+#ifndef X509_V_ERR_AKID_SKID_MISMATCH
+#define X509_V_ERR_AKID_SKID_MISMATCH                   30
+#endif
+#ifndef X509_V_ERR_AKID_ISSUER_SERIAL_MISMATCH
+#define X509_V_ERR_AKID_ISSUER_SERIAL_MISMATCH          31
+#endif
+#ifndef X509_V_ERR_KEYUSAGE_NO_CERTSIGN
+#define X509_V_ERR_KEYUSAGE_NO_CERTSIGN                 32
+#endif
+#ifndef X509_V_ERR_UNABLE_TO_GET_CRL_ISSUER
+#define X509_V_ERR_UNABLE_TO_GET_CRL_ISSUER             33
+#endif
+#ifndef X509_V_ERR_UNHANDLED_CRITICAL_EXTENSION
+#define X509_V_ERR_UNHANDLED_CRITICAL_EXTENSION         34
+#endif
+#ifndef X509_V_ERR_KEYUSAGE_NO_CRL_SIGN
+#define X509_V_ERR_KEYUSAGE_NO_CRL_SIGN                 35
+#endif
+#ifndef X509_V_ERR_UNHANDLED_CRITICAL_CRL_EXTENSION
+#define X509_V_ERR_UNHANDLED_CRITICAL_CRL_EXTENSION     36
+#endif
+#ifndef X509_V_ERR_INVALID_NON_CA
+#define X509_V_ERR_INVALID_NON_CA                       37
+#endif
+#ifndef X509_V_ERR_PROXY_PATH_LENGTH_EXCEEDED
+#define X509_V_ERR_PROXY_PATH_LENGTH_EXCEEDED           38
+#endif
+#ifndef X509_V_ERR_KEYUSAGE_NO_DIGITAL_SIGNATURE
+#define X509_V_ERR_KEYUSAGE_NO_DIGITAL_SIGNATURE        39
+#endif
+#ifndef X509_V_ERR_PROXY_CERTIFICATES_NOT_ALLOWED
+#define X509_V_ERR_PROXY_CERTIFICATES_NOT_ALLOWED       40
+#endif
+#ifndef X509_V_ERR_INVALID_EXTENSION
+#define X509_V_ERR_INVALID_EXTENSION                    41
+#endif
+#ifndef X509_V_ERR_INVALID_POLICY_EXTENSION
+#define X509_V_ERR_INVALID_POLICY_EXTENSION             42
+#endif
+#ifndef X509_V_ERR_NO_EXPLICIT_POLICY
+#define X509_V_ERR_NO_EXPLICIT_POLICY                   43
+#endif
+#ifndef X509_V_ERR_DIFFERENT_CRL_SCOPE
+#define X509_V_ERR_DIFFERENT_CRL_SCOPE                  44
+#endif
+#ifndef X509_V_ERR_UNSUPPORTED_EXTENSION_FEATURE
+#define X509_V_ERR_UNSUPPORTED_EXTENSION_FEATURE        45
+#endif
+#ifndef X509_V_ERR_UNNESTED_RESOURCE
+#define X509_V_ERR_UNNESTED_RESOURCE                    46
+#endif
+#ifndef X509_V_ERR_PERMITTED_VIOLATION
+#define X509_V_ERR_PERMITTED_VIOLATION                  47
+#endif
+#ifndef X509_V_ERR_EXCLUDED_VIOLATION
+#define X509_V_ERR_EXCLUDED_VIOLATION                   48
+#endif
+#ifndef X509_V_ERR_SUBTREE_MINMAX
+#define X509_V_ERR_SUBTREE_MINMAX                       49
+#endif
+#ifndef X509_V_ERR_APPLICATION_VERIFICATION
+#define X509_V_ERR_APPLICATION_VERIFICATION             50
+#endif
+#ifndef X509_V_ERR_UNSUPPORTED_CONSTRAINT_TYPE
+#define X509_V_ERR_UNSUPPORTED_CONSTRAINT_TYPE          51
+#endif
+#ifndef X509_V_ERR_UNSUPPORTED_CONSTRAINT_SYNTAX
+#define X509_V_ERR_UNSUPPORTED_CONSTRAINT_SYNTAX        52
+#endif
+#ifndef X509_V_ERR_UNSUPPORTED_NAME_SYNTAX
+#define X509_V_ERR_UNSUPPORTED_NAME_SYNTAX              53
+#endif
+#ifndef X509_V_ERR_CRL_PATH_VALIDATION_ERROR
+#define X509_V_ERR_CRL_PATH_VALIDATION_ERROR            54
+#endif
+#ifndef X509_V_ERR_SUITE_B_INVALID_VERSION
+#define X509_V_ERR_SUITE_B_INVALID_VERSION              56
+#endif
+#ifndef X509_V_ERR_SUITE_B_INVALID_ALGORITHM
+#define X509_V_ERR_SUITE_B_INVALID_ALGORITHM            57
+#endif
+#ifndef X509_V_ERR_SUITE_B_INVALID_CURVE
+#define X509_V_ERR_SUITE_B_INVALID_CURVE                58
+#endif
+#ifndef X509_V_ERR_SUITE_B_INVALID_SIGNATURE_ALGORITHM
+#define X509_V_ERR_SUITE_B_INVALID_SIGNATURE_ALGORITHM  59
+#endif
+#ifndef X509_V_ERR_SUITE_B_LOS_NOT_ALLOWED
+#define X509_V_ERR_SUITE_B_LOS_NOT_ALLOWED              60
+#endif
+#ifndef X509_V_ERR_SUITE_B_CANNOT_SIGN_P_384_WITH_P_256
+#define X509_V_ERR_SUITE_B_CANNOT_SIGN_P_384_WITH_P_256 61
+#endif
+#ifndef X509_V_ERR_HOSTNAME_MISMATCH
+#define X509_V_ERR_HOSTNAME_MISMATCH                    62
+#endif
+#ifndef X509_V_ERR_EMAIL_MISMATCH
+#define X509_V_ERR_EMAIL_MISMATCH                       63
+#endif
+#ifndef X509_V_ERR_IP_ADDRESS_MISMATCH
+#define X509_V_ERR_IP_ADDRESS_MISMATCH                  64
+#endif
+#ifndef X509_V_ERR_INVALID_CALL
+#define X509_V_ERR_INVALID_CALL                         65
+#endif
+#ifndef X509_V_ERR_STORE_LOOKUP
+#define X509_V_ERR_STORE_LOOKUP                         66
+#endif
+#ifndef X509_V_ERR_PROXY_SUBJECT_NAME_VIOLATION
+#define X509_V_ERR_PROXY_SUBJECT_NAME_VIOLATION         67
+#endif
 
 // the following defines were added in OpenSSL 1.0.2
 
@@ -448,8 +655,926 @@ makeOFConditionConst( DCMTLS_EC_X509VerifyCACertMissingKeyUsage,           OFM_d
 makeOFConditionConst( DCMTLS_EC_X509VerifyExtensionsRequireVersion3,       OFM_dcmtls, DCMTLS_EC_X509Verify_Offset + X509_V_ERR_EXTENSIONS_REQUIRE_VERSION_3,         OF_error, "X.509 certificate verification error - Using cert extension requires at least X509v3" );
 makeOFConditionConst( DCMTLS_EC_X509VerifyECKeyExplicitParams,             OFM_dcmtls, DCMTLS_EC_X509Verify_Offset + X509_V_ERR_EC_KEY_EXPLICIT_PARAMS,               OF_error, "X.509 certificate verification error - Certificate public key has explicit ECC parameters" );
 
-// define those constants that may be missing if a pre-3.0 version
-// of OpenSSL is used.
+// the following defines are present in OpenSSL 1.0.1
+
+#ifndef SSL_R_APP_DATA_IN_HANDSHAKE
+#define SSL_R_APP_DATA_IN_HANDSHAKE                      100
+#endif
+#ifndef SSL_R_ATTEMPT_TO_REUSE_SESSION_IN_DIFFERENT_CONTEXT
+#define SSL_R_ATTEMPT_TO_REUSE_SESSION_IN_DIFFERENT_CONTEXT 272
+#endif
+#ifndef SSL_R_BAD_ALERT_RECORD
+#define SSL_R_BAD_ALERT_RECORD                           101
+#endif
+#ifndef SSL_R_BAD_AUTHENTICATION_TYPE
+#define SSL_R_BAD_AUTHENTICATION_TYPE                    102
+#endif
+#ifndef SSL_R_BAD_CHANGE_CIPHER_SPEC
+#define SSL_R_BAD_CHANGE_CIPHER_SPEC                     103
+#endif
+#ifndef SSL_R_BAD_CHECKSUM
+#define SSL_R_BAD_CHECKSUM                               104
+#endif
+#ifndef SSL_R_BAD_DATA_RETURNED_BY_CALLBACK
+#define SSL_R_BAD_DATA_RETURNED_BY_CALLBACK              106
+#endif
+#ifndef SSL_R_BAD_DECOMPRESSION
+#define SSL_R_BAD_DECOMPRESSION                          107
+#endif
+#ifndef SSL_R_BAD_DH_G_LENGTH
+#define SSL_R_BAD_DH_G_LENGTH                            108
+#endif
+#ifndef SSL_R_BAD_DH_G_VALUE
+#define SSL_R_BAD_DH_G_VALUE                             375
+#endif
+#ifndef SSL_R_BAD_DH_PUB_KEY_LENGTH
+#define SSL_R_BAD_DH_PUB_KEY_LENGTH                      109
+#endif
+#ifndef SSL_R_BAD_DH_PUB_KEY_VALUE
+#define SSL_R_BAD_DH_PUB_KEY_VALUE                       393
+#endif
+#ifndef SSL_R_BAD_DH_P_LENGTH
+#define SSL_R_BAD_DH_P_LENGTH                            110
+#endif
+#ifndef SSL_R_BAD_DH_P_VALUE
+#define SSL_R_BAD_DH_P_VALUE                             395
+#endif
+#ifndef SSL_R_BAD_DIGEST_LENGTH
+#define SSL_R_BAD_DIGEST_LENGTH                          111
+#endif
+#ifndef SSL_R_BAD_DSA_SIGNATURE
+#define SSL_R_BAD_DSA_SIGNATURE                          112
+#endif
+#ifndef SSL_R_BAD_ECC_CERT
+#define SSL_R_BAD_ECC_CERT                               304
+#endif
+#ifndef SSL_R_BAD_ECDSA_SIGNATURE
+#define SSL_R_BAD_ECDSA_SIGNATURE                        305
+#endif
+#ifndef SSL_R_BAD_ECPOINT
+#define SSL_R_BAD_ECPOINT                                306
+#endif
+#ifndef SSL_R_BAD_HANDSHAKE_LENGTH
+#define SSL_R_BAD_HANDSHAKE_LENGTH                       332
+#endif
+#ifndef SSL_R_BAD_HELLO_REQUEST
+#define SSL_R_BAD_HELLO_REQUEST                          105
+#endif
+#ifndef SSL_R_BAD_LENGTH
+#define SSL_R_BAD_LENGTH                                 271
+#endif
+#ifndef SSL_R_BAD_MAC_DECODE
+#define SSL_R_BAD_MAC_DECODE                             113
+#endif
+#ifndef SSL_R_BAD_MAC_LENGTH
+#define SSL_R_BAD_MAC_LENGTH                             333
+#endif
+#ifndef SSL_R_BAD_MESSAGE_TYPE
+#define SSL_R_BAD_MESSAGE_TYPE                           114
+#endif
+#ifndef SSL_R_BAD_PACKET_LENGTH
+#define SSL_R_BAD_PACKET_LENGTH                          115
+#endif
+#ifndef SSL_R_BAD_PROTOCOL_VERSION_NUMBER
+#define SSL_R_BAD_PROTOCOL_VERSION_NUMBER                116
+#endif
+#ifndef SSL_R_BAD_PSK_IDENTITY_HINT_LENGTH
+#define SSL_R_BAD_PSK_IDENTITY_HINT_LENGTH               316
+#endif
+#ifndef SSL_R_BAD_RESPONSE_ARGUMENT
+#define SSL_R_BAD_RESPONSE_ARGUMENT                      117
+#endif
+#ifndef SSL_R_BAD_RSA_DECRYPT
+#define SSL_R_BAD_RSA_DECRYPT                            118
+#endif
+#ifndef SSL_R_BAD_RSA_ENCRYPT
+#define SSL_R_BAD_RSA_ENCRYPT                            119
+#endif
+#ifndef SSL_R_BAD_RSA_E_LENGTH
+#define SSL_R_BAD_RSA_E_LENGTH                           120
+#endif
+#ifndef SSL_R_BAD_RSA_MODULUS_LENGTH
+#define SSL_R_BAD_RSA_MODULUS_LENGTH                     121
+#endif
+#ifndef SSL_R_BAD_RSA_SIGNATURE
+#define SSL_R_BAD_RSA_SIGNATURE                          122
+#endif
+#ifndef SSL_R_BAD_SIGNATURE
+#define SSL_R_BAD_SIGNATURE                              123
+#endif
+#ifndef SSL_R_BAD_SRP_A_LENGTH
+#define SSL_R_BAD_SRP_A_LENGTH                           347
+#endif
+#ifndef SSL_R_BAD_SRP_B_LENGTH
+#define SSL_R_BAD_SRP_B_LENGTH                           348
+#endif
+#ifndef SSL_R_BAD_SRP_G_LENGTH
+#define SSL_R_BAD_SRP_G_LENGTH                           349
+#endif
+#ifndef SSL_R_BAD_SRP_N_LENGTH
+#define SSL_R_BAD_SRP_N_LENGTH                           350
+#endif
+#ifndef SSL_R_BAD_SRP_PARAMETERS
+#define SSL_R_BAD_SRP_PARAMETERS                         371
+#endif
+#ifndef SSL_R_BAD_SRP_S_LENGTH
+#define SSL_R_BAD_SRP_S_LENGTH                           351
+#endif
+#ifndef SSL_R_BAD_SRTP_MKI_VALUE
+#define SSL_R_BAD_SRTP_MKI_VALUE                         352
+#endif
+#ifndef SSL_R_BAD_SRTP_PROTECTION_PROFILE_LIST
+#define SSL_R_BAD_SRTP_PROTECTION_PROFILE_LIST           353
+#endif
+#ifndef SSL_R_BAD_SSL_FILETYPE
+#define SSL_R_BAD_SSL_FILETYPE                           124
+#endif
+#ifndef SSL_R_BAD_SSL_SESSION_ID_LENGTH
+#define SSL_R_BAD_SSL_SESSION_ID_LENGTH                  125
+#endif
+#ifndef SSL_R_BAD_STATE
+#define SSL_R_BAD_STATE                                  126
+#endif
+#ifndef SSL_R_BAD_WRITE_RETRY
+#define SSL_R_BAD_WRITE_RETRY                            127
+#endif
+#ifndef SSL_R_BIO_NOT_SET
+#define SSL_R_BIO_NOT_SET                                128
+#endif
+#ifndef SSL_R_BLOCK_CIPHER_PAD_IS_WRONG
+#define SSL_R_BLOCK_CIPHER_PAD_IS_WRONG                  129
+#endif
+#ifndef SSL_R_BN_LIB
+#define SSL_R_BN_LIB                                     130
+#endif
+#ifndef SSL_R_CA_DN_LENGTH_MISMATCH
+#define SSL_R_CA_DN_LENGTH_MISMATCH                      131
+#endif
+#ifndef SSL_R_CA_DN_TOO_LONG
+#define SSL_R_CA_DN_TOO_LONG                             132
+#endif
+#ifndef SSL_R_CCS_RECEIVED_EARLY
+#define SSL_R_CCS_RECEIVED_EARLY                         133
+#endif
+#ifndef SSL_R_CERTIFICATE_VERIFY_FAILED
+#define SSL_R_CERTIFICATE_VERIFY_FAILED                  134
+#endif
+#ifndef SSL_R_CERT_LENGTH_MISMATCH
+#define SSL_R_CERT_LENGTH_MISMATCH                       135
+#endif
+#ifndef SSL_R_CHALLENGE_IS_DIFFERENT
+#define SSL_R_CHALLENGE_IS_DIFFERENT                     136
+#endif
+#ifndef SSL_R_CIPHER_CODE_WRONG_LENGTH
+#define SSL_R_CIPHER_CODE_WRONG_LENGTH                   137
+#endif
+#ifndef SSL_R_CIPHER_OR_HASH_UNAVAILABLE
+#define SSL_R_CIPHER_OR_HASH_UNAVAILABLE                 138
+#endif
+#ifndef SSL_R_CIPHER_TABLE_SRC_ERROR
+#define SSL_R_CIPHER_TABLE_SRC_ERROR                     139
+#endif
+#ifndef SSL_R_CLIENTHELLO_TLSEXT
+#define SSL_R_CLIENTHELLO_TLSEXT                         226
+#endif
+#ifndef SSL_R_COMPRESSED_LENGTH_TOO_LONG
+#define SSL_R_COMPRESSED_LENGTH_TOO_LONG                 140
+#endif
+#ifndef SSL_R_COMPRESSION_DISABLED
+#define SSL_R_COMPRESSION_DISABLED                       343
+#endif
+#ifndef SSL_R_COMPRESSION_FAILURE
+#define SSL_R_COMPRESSION_FAILURE                        141
+#endif
+#ifndef SSL_R_COMPRESSION_ID_NOT_WITHIN_PRIVATE_RANGE
+#define SSL_R_COMPRESSION_ID_NOT_WITHIN_PRIVATE_RANGE    307
+#endif
+#ifndef SSL_R_COMPRESSION_LIBRARY_ERROR
+#define SSL_R_COMPRESSION_LIBRARY_ERROR                  142
+#endif
+#ifndef SSL_R_CONNECTION_ID_IS_DIFFERENT
+#define SSL_R_CONNECTION_ID_IS_DIFFERENT                 143
+#endif
+#ifndef SSL_R_CONNECTION_TYPE_NOT_SET
+#define SSL_R_CONNECTION_TYPE_NOT_SET                    144
+#endif
+#ifndef SSL_R_COOKIE_MISMATCH
+#define SSL_R_COOKIE_MISMATCH                            308
+#endif
+#ifndef SSL_R_DATA_BETWEEN_CCS_AND_FINISHED
+#define SSL_R_DATA_BETWEEN_CCS_AND_FINISHED              145
+#endif
+#ifndef SSL_R_DATA_LENGTH_TOO_LONG
+#define SSL_R_DATA_LENGTH_TOO_LONG                       146
+#endif
+#ifndef SSL_R_DECRYPTION_FAILED
+#define SSL_R_DECRYPTION_FAILED                          147
+#endif
+#ifndef SSL_R_DECRYPTION_FAILED_OR_BAD_RECORD_MAC
+#define SSL_R_DECRYPTION_FAILED_OR_BAD_RECORD_MAC        281
+#endif
+#ifndef SSL_R_DH_KEY_TOO_SMALL
+#define SSL_R_DH_KEY_TOO_SMALL                           372
+#endif
+#ifndef SSL_R_DH_PUBLIC_VALUE_LENGTH_IS_WRONG
+#define SSL_R_DH_PUBLIC_VALUE_LENGTH_IS_WRONG            148
+#endif
+#ifndef SSL_R_DIGEST_CHECK_FAILED
+#define SSL_R_DIGEST_CHECK_FAILED                        149
+#endif
+#ifndef SSL_R_DTLS_MESSAGE_TOO_BIG
+#define SSL_R_DTLS_MESSAGE_TOO_BIG                       334
+#endif
+#ifndef SSL_R_DUPLICATE_COMPRESSION_ID
+#define SSL_R_DUPLICATE_COMPRESSION_ID                   309
+#endif
+#ifndef SSL_R_ECC_CERT_NOT_FOR_KEY_AGREEMENT
+#define SSL_R_ECC_CERT_NOT_FOR_KEY_AGREEMENT             317
+#endif
+#ifndef SSL_R_ECC_CERT_NOT_FOR_SIGNING
+#define SSL_R_ECC_CERT_NOT_FOR_SIGNING                   318
+#endif
+#ifndef SSL_R_ECC_CERT_SHOULD_HAVE_RSA_SIGNATURE
+#define SSL_R_ECC_CERT_SHOULD_HAVE_RSA_SIGNATURE         322
+#endif
+#ifndef SSL_R_ECC_CERT_SHOULD_HAVE_SHA1_SIGNATURE
+#define SSL_R_ECC_CERT_SHOULD_HAVE_SHA1_SIGNATURE        323
+#endif
+#ifndef SSL_R_ECGROUP_TOO_LARGE_FOR_CIPHER
+#define SSL_R_ECGROUP_TOO_LARGE_FOR_CIPHER               310
+#endif
+#ifndef SSL_R_EMPTY_SRTP_PROTECTION_PROFILE_LIST
+#define SSL_R_EMPTY_SRTP_PROTECTION_PROFILE_LIST         354
+#endif
+#ifndef SSL_R_ENCRYPTED_LENGTH_TOO_LONG
+#define SSL_R_ENCRYPTED_LENGTH_TOO_LONG                  150
+#endif
+#ifndef SSL_R_ERROR_GENERATING_TMP_RSA_KEY
+#define SSL_R_ERROR_GENERATING_TMP_RSA_KEY               282
+#endif
+#ifndef SSL_R_ERROR_IN_RECEIVED_CIPHER_LIST
+#define SSL_R_ERROR_IN_RECEIVED_CIPHER_LIST              151
+#endif
+#ifndef SSL_R_EXCESSIVE_MESSAGE_SIZE
+#define SSL_R_EXCESSIVE_MESSAGE_SIZE                     152
+#endif
+#ifndef SSL_R_EXTRA_DATA_IN_MESSAGE
+#define SSL_R_EXTRA_DATA_IN_MESSAGE                      153
+#endif
+#ifndef SSL_R_GOT_A_FIN_BEFORE_A_CCS
+#define SSL_R_GOT_A_FIN_BEFORE_A_CCS                     154
+#endif
+#ifndef SSL_R_GOT_NEXT_PROTO_BEFORE_A_CCS
+#define SSL_R_GOT_NEXT_PROTO_BEFORE_A_CCS                355
+#endif
+#ifndef SSL_R_GOT_NEXT_PROTO_WITHOUT_EXTENSION
+#define SSL_R_GOT_NEXT_PROTO_WITHOUT_EXTENSION           356
+#endif
+#ifndef SSL_R_HTTPS_PROXY_REQUEST
+#define SSL_R_HTTPS_PROXY_REQUEST                        155
+#endif
+#ifndef SSL_R_HTTP_REQUEST
+#define SSL_R_HTTP_REQUEST                               156
+#endif
+#ifndef SSL_R_ILLEGAL_PADDING
+#define SSL_R_ILLEGAL_PADDING                            283
+#endif
+#ifndef SSL_R_INAPPROPRIATE_FALLBACK
+#define SSL_R_INAPPROPRIATE_FALLBACK                     373
+#endif
+#ifndef SSL_R_INCONSISTENT_COMPRESSION
+#define SSL_R_INCONSISTENT_COMPRESSION                   340
+#endif
+#ifndef SSL_R_INVALID_CHALLENGE_LENGTH
+#define SSL_R_INVALID_CHALLENGE_LENGTH                   158
+#endif
+#ifndef SSL_R_INVALID_COMMAND
+#define SSL_R_INVALID_COMMAND                            280
+#endif
+#ifndef SSL_R_INVALID_COMPRESSION_ALGORITHM
+#define SSL_R_INVALID_COMPRESSION_ALGORITHM              341
+#endif
+#ifndef SSL_R_INVALID_PURPOSE
+#define SSL_R_INVALID_PURPOSE                            278
+#endif
+#ifndef SSL_R_INVALID_SRP_USERNAME
+#define SSL_R_INVALID_SRP_USERNAME                       357
+#endif
+#ifndef SSL_R_INVALID_STATUS_RESPONSE
+#define SSL_R_INVALID_STATUS_RESPONSE                    328
+#endif
+#ifndef SSL_R_INVALID_TICKET_KEYS_LENGTH
+#define SSL_R_INVALID_TICKET_KEYS_LENGTH                 325
+#endif
+#ifndef SSL_R_INVALID_TRUST
+#define SSL_R_INVALID_TRUST                              279
+#endif
+#ifndef SSL_R_KEY_ARG_TOO_LONG
+#define SSL_R_KEY_ARG_TOO_LONG                           284
+#endif
+#ifndef SSL_R_KRB5
+#define SSL_R_KRB5                                       285
+#endif
+#ifndef SSL_R_KRB5_C_CC_PRINC
+#define SSL_R_KRB5_C_CC_PRINC                            286
+#endif
+#ifndef SSL_R_KRB5_C_GET_CRED
+#define SSL_R_KRB5_C_GET_CRED                            287
+#endif
+#ifndef SSL_R_KRB5_C_INIT
+#define SSL_R_KRB5_C_INIT                                288
+#endif
+#ifndef SSL_R_KRB5_C_MK_REQ
+#define SSL_R_KRB5_C_MK_REQ                              289
+#endif
+#ifndef SSL_R_KRB5_S_BAD_TICKET
+#define SSL_R_KRB5_S_BAD_TICKET                          290
+#endif
+#ifndef SSL_R_KRB5_S_INIT
+#define SSL_R_KRB5_S_INIT                                291
+#endif
+#ifndef SSL_R_KRB5_S_RD_REQ
+#define SSL_R_KRB5_S_RD_REQ                              292
+#endif
+#ifndef SSL_R_KRB5_S_TKT_EXPIRED
+#define SSL_R_KRB5_S_TKT_EXPIRED                         293
+#endif
+#ifndef SSL_R_KRB5_S_TKT_NYV
+#define SSL_R_KRB5_S_TKT_NYV                             294
+#endif
+#ifndef SSL_R_KRB5_S_TKT_SKEW
+#define SSL_R_KRB5_S_TKT_SKEW                            295
+#endif
+#ifndef SSL_R_LENGTH_MISMATCH
+#define SSL_R_LENGTH_MISMATCH                            159
+#endif
+#ifndef SSL_R_LENGTH_TOO_SHORT
+#define SSL_R_LENGTH_TOO_SHORT                           160
+#endif
+#ifndef SSL_R_LIBRARY_BUG
+#define SSL_R_LIBRARY_BUG                                274
+#endif
+#ifndef SSL_R_LIBRARY_HAS_NO_CIPHERS
+#define SSL_R_LIBRARY_HAS_NO_CIPHERS                     161
+#endif
+#ifndef SSL_R_MESSAGE_TOO_LONG
+#define SSL_R_MESSAGE_TOO_LONG                           296
+#endif
+#ifndef SSL_R_MISSING_DH_DSA_CERT
+#define SSL_R_MISSING_DH_DSA_CERT                        162
+#endif
+#ifndef SSL_R_MISSING_DH_KEY
+#define SSL_R_MISSING_DH_KEY                             163
+#endif
+#ifndef SSL_R_MISSING_DH_RSA_CERT
+#define SSL_R_MISSING_DH_RSA_CERT                        164
+#endif
+#ifndef SSL_R_MISSING_DSA_SIGNING_CERT
+#define SSL_R_MISSING_DSA_SIGNING_CERT                   165
+#endif
+#ifndef SSL_R_MISSING_EXPORT_TMP_DH_KEY
+#define SSL_R_MISSING_EXPORT_TMP_DH_KEY                  166
+#endif
+#ifndef SSL_R_MISSING_EXPORT_TMP_RSA_KEY
+#define SSL_R_MISSING_EXPORT_TMP_RSA_KEY                 167
+#endif
+#ifndef SSL_R_MISSING_RSA_CERTIFICATE
+#define SSL_R_MISSING_RSA_CERTIFICATE                    168
+#endif
+#ifndef SSL_R_MISSING_RSA_ENCRYPTING_CERT
+#define SSL_R_MISSING_RSA_ENCRYPTING_CERT                169
+#endif
+#ifndef SSL_R_MISSING_RSA_SIGNING_CERT
+#define SSL_R_MISSING_RSA_SIGNING_CERT                   170
+#endif
+#ifndef SSL_R_MISSING_SRP_PARAM
+#define SSL_R_MISSING_SRP_PARAM                          358
+#endif
+#ifndef SSL_R_MISSING_TMP_DH_KEY
+#define SSL_R_MISSING_TMP_DH_KEY                         171
+#endif
+#ifndef SSL_R_MISSING_TMP_ECDH_KEY
+#define SSL_R_MISSING_TMP_ECDH_KEY                       311
+#endif
+#ifndef SSL_R_MISSING_TMP_RSA_KEY
+#define SSL_R_MISSING_TMP_RSA_KEY                        172
+#endif
+#ifndef SSL_R_MISSING_TMP_RSA_PKEY
+#define SSL_R_MISSING_TMP_RSA_PKEY                       173
+#endif
+#ifndef SSL_R_MISSING_VERIFY_MESSAGE
+#define SSL_R_MISSING_VERIFY_MESSAGE                     174
+#endif
+#ifndef SSL_R_MULTIPLE_SGC_RESTARTS
+#define SSL_R_MULTIPLE_SGC_RESTARTS                      346
+#endif
+#ifndef SSL_R_NON_SSLV2_INITIAL_PACKET
+#define SSL_R_NON_SSLV2_INITIAL_PACKET                   175
+#endif
+#ifndef SSL_R_NO_CERTIFICATES_RETURNED
+#define SSL_R_NO_CERTIFICATES_RETURNED                   176
+#endif
+#ifndef SSL_R_NO_CERTIFICATE_ASSIGNED
+#define SSL_R_NO_CERTIFICATE_ASSIGNED                    177
+#endif
+#ifndef SSL_R_NO_CERTIFICATE_RETURNED
+#define SSL_R_NO_CERTIFICATE_RETURNED                    178
+#endif
+#ifndef SSL_R_NO_CERTIFICATE_SET
+#define SSL_R_NO_CERTIFICATE_SET                         179
+#endif
+#ifndef SSL_R_NO_CERTIFICATE_SPECIFIED
+#define SSL_R_NO_CERTIFICATE_SPECIFIED                   180
+#endif
+#ifndef SSL_R_NO_CIPHERS_AVAILABLE
+#define SSL_R_NO_CIPHERS_AVAILABLE                       181
+#endif
+#ifndef SSL_R_NO_CIPHERS_PASSED
+#define SSL_R_NO_CIPHERS_PASSED                          182
+#endif
+#ifndef SSL_R_NO_CIPHERS_SPECIFIED
+#define SSL_R_NO_CIPHERS_SPECIFIED                       183
+#endif
+#ifndef SSL_R_NO_CIPHER_LIST
+#define SSL_R_NO_CIPHER_LIST                             184
+#endif
+#ifndef SSL_R_NO_CIPHER_MATCH
+#define SSL_R_NO_CIPHER_MATCH                            185
+#endif
+#ifndef SSL_R_NO_CLIENT_CERT_METHOD
+#define SSL_R_NO_CLIENT_CERT_METHOD                      331
+#endif
+#ifndef SSL_R_NO_CLIENT_CERT_RECEIVED
+#define SSL_R_NO_CLIENT_CERT_RECEIVED                    186
+#endif
+#ifndef SSL_R_NO_COMPRESSION_SPECIFIED
+#define SSL_R_NO_COMPRESSION_SPECIFIED                   187
+#endif
+#ifndef SSL_R_NO_GOST_CERTIFICATE_SENT_BY_PEER
+#define SSL_R_NO_GOST_CERTIFICATE_SENT_BY_PEER           330
+#endif
+#ifndef SSL_R_NO_METHOD_SPECIFIED
+#define SSL_R_NO_METHOD_SPECIFIED                        188
+#endif
+#ifndef SSL_R_NO_PRIVATEKEY
+#define SSL_R_NO_PRIVATEKEY                              189
+#endif
+#ifndef SSL_R_NO_PRIVATE_KEY_ASSIGNED
+#define SSL_R_NO_PRIVATE_KEY_ASSIGNED                    190
+#endif
+#ifndef SSL_R_NO_PROTOCOLS_AVAILABLE
+#define SSL_R_NO_PROTOCOLS_AVAILABLE                     191
+#endif
+#ifndef SSL_R_NO_PUBLICKEY
+#define SSL_R_NO_PUBLICKEY                               192
+#endif
+#ifndef SSL_R_NO_RENEGOTIATION
+#define SSL_R_NO_RENEGOTIATION                           339
+#endif
+#ifndef SSL_R_NO_REQUIRED_DIGEST
+#define SSL_R_NO_REQUIRED_DIGEST                         324
+#endif
+#ifndef SSL_R_NO_SHARED_CIPHER
+#define SSL_R_NO_SHARED_CIPHER                           193
+#endif
+#ifndef SSL_R_NO_SRTP_PROFILES
+#define SSL_R_NO_SRTP_PROFILES                           359
+#endif
+#ifndef SSL_R_NO_VERIFY_CALLBACK
+#define SSL_R_NO_VERIFY_CALLBACK                         194
+#endif
+#ifndef SSL_R_NULL_SSL_CTX
+#define SSL_R_NULL_SSL_CTX                               195
+#endif
+#ifndef SSL_R_NULL_SSL_METHOD_PASSED
+#define SSL_R_NULL_SSL_METHOD_PASSED                     196
+#endif
+#ifndef SSL_R_OLD_SESSION_CIPHER_NOT_RETURNED
+#define SSL_R_OLD_SESSION_CIPHER_NOT_RETURNED            197
+#endif
+#ifndef SSL_R_OLD_SESSION_COMPRESSION_ALGORITHM_NOT_RETURNED
+#define SSL_R_OLD_SESSION_COMPRESSION_ALGORITHM_NOT_RETURNED 344
+#endif
+#ifndef SSL_R_ONLY_TLS_ALLOWED_IN_FIPS_MODE
+#define SSL_R_ONLY_TLS_ALLOWED_IN_FIPS_MODE              297
+#endif
+#ifndef SSL_R_OPAQUE_PRF_INPUT_TOO_LONG
+#define SSL_R_OPAQUE_PRF_INPUT_TOO_LONG                  327
+#endif
+#ifndef SSL_R_PACKET_LENGTH_TOO_LONG
+#define SSL_R_PACKET_LENGTH_TOO_LONG                     198
+#endif
+#ifndef SSL_R_PARSE_TLSEXT
+#define SSL_R_PARSE_TLSEXT                               227
+#endif
+#ifndef SSL_R_PATH_TOO_LONG
+#define SSL_R_PATH_TOO_LONG                              270
+#endif
+#ifndef SSL_R_PEER_DID_NOT_RETURN_A_CERTIFICATE
+#define SSL_R_PEER_DID_NOT_RETURN_A_CERTIFICATE          199
+#endif
+#ifndef SSL_R_PEER_ERROR
+#define SSL_R_PEER_ERROR                                 200
+#endif
+#ifndef SSL_R_PEER_ERROR_CERTIFICATE
+#define SSL_R_PEER_ERROR_CERTIFICATE                     201
+#endif
+#ifndef SSL_R_PEER_ERROR_NO_CERTIFICATE
+#define SSL_R_PEER_ERROR_NO_CERTIFICATE                  202
+#endif
+#ifndef SSL_R_PEER_ERROR_NO_CIPHER
+#define SSL_R_PEER_ERROR_NO_CIPHER                       203
+#endif
+#ifndef SSL_R_PEER_ERROR_UNSUPPORTED_CERTIFICATE_TYPE
+#define SSL_R_PEER_ERROR_UNSUPPORTED_CERTIFICATE_TYPE    204
+#endif
+#ifndef SSL_R_PRE_MAC_LENGTH_TOO_LONG
+#define SSL_R_PRE_MAC_LENGTH_TOO_LONG                    205
+#endif
+#ifndef SSL_R_PROBLEMS_MAPPING_CIPHER_FUNCTIONS
+#define SSL_R_PROBLEMS_MAPPING_CIPHER_FUNCTIONS          206
+#endif
+#ifndef SSL_R_PROTOCOL_IS_SHUTDOWN
+#define SSL_R_PROTOCOL_IS_SHUTDOWN                       207
+#endif
+#ifndef SSL_R_PSK_IDENTITY_NOT_FOUND
+#define SSL_R_PSK_IDENTITY_NOT_FOUND                     223
+#endif
+#ifndef SSL_R_PSK_NO_CLIENT_CB
+#define SSL_R_PSK_NO_CLIENT_CB                           224
+#endif
+#ifndef SSL_R_PSK_NO_SERVER_CB
+#define SSL_R_PSK_NO_SERVER_CB                           225
+#endif
+#ifndef SSL_R_PUBLIC_KEY_ENCRYPT_ERROR
+#define SSL_R_PUBLIC_KEY_ENCRYPT_ERROR                   208
+#endif
+#ifndef SSL_R_PUBLIC_KEY_IS_NOT_RSA
+#define SSL_R_PUBLIC_KEY_IS_NOT_RSA                      209
+#endif
+#ifndef SSL_R_PUBLIC_KEY_NOT_RSA
+#define SSL_R_PUBLIC_KEY_NOT_RSA                         210
+#endif
+#ifndef SSL_R_READ_BIO_NOT_SET
+#define SSL_R_READ_BIO_NOT_SET                           211
+#endif
+#ifndef SSL_R_READ_TIMEOUT_EXPIRED
+#define SSL_R_READ_TIMEOUT_EXPIRED                       312
+#endif
+#ifndef SSL_R_READ_WRONG_PACKET_TYPE
+#define SSL_R_READ_WRONG_PACKET_TYPE                     212
+#endif
+#ifndef SSL_R_RECORD_LENGTH_MISMATCH
+#define SSL_R_RECORD_LENGTH_MISMATCH                     213
+#endif
+#ifndef SSL_R_RECORD_TOO_LARGE
+#define SSL_R_RECORD_TOO_LARGE                           214
+#endif
+#ifndef SSL_R_RECORD_TOO_SMALL
+#define SSL_R_RECORD_TOO_SMALL                           298
+#endif
+#ifndef SSL_R_RENEGOTIATE_EXT_TOO_LONG
+#define SSL_R_RENEGOTIATE_EXT_TOO_LONG                   335
+#endif
+#ifndef SSL_R_RENEGOTIATION_ENCODING_ERR
+#define SSL_R_RENEGOTIATION_ENCODING_ERR                 336
+#endif
+#ifndef SSL_R_RENEGOTIATION_MISMATCH
+#define SSL_R_RENEGOTIATION_MISMATCH                     337
+#endif
+#ifndef SSL_R_REQUIRED_CIPHER_MISSING
+#define SSL_R_REQUIRED_CIPHER_MISSING                    215
+#endif
+#ifndef SSL_R_REQUIRED_COMPRESSSION_ALGORITHM_MISSING
+#define SSL_R_REQUIRED_COMPRESSSION_ALGORITHM_MISSING    342
+#endif
+#ifndef SSL_R_REUSE_CERT_LENGTH_NOT_ZERO
+#define SSL_R_REUSE_CERT_LENGTH_NOT_ZERO                 216
+#endif
+#ifndef SSL_R_REUSE_CERT_TYPE_NOT_ZERO
+#define SSL_R_REUSE_CERT_TYPE_NOT_ZERO                   217
+#endif
+#ifndef SSL_R_REUSE_CIPHER_LIST_NOT_ZERO
+#define SSL_R_REUSE_CIPHER_LIST_NOT_ZERO                 218
+#endif
+#ifndef SSL_R_SCSV_RECEIVED_WHEN_RENEGOTIATING
+#define SSL_R_SCSV_RECEIVED_WHEN_RENEGOTIATING           345
+#endif
+#ifndef SSL_R_SERVERHELLO_TLSEXT
+#define SSL_R_SERVERHELLO_TLSEXT                         275
+#endif
+#ifndef SSL_R_SESSION_ID_CONTEXT_UNINITIALIZED
+#define SSL_R_SESSION_ID_CONTEXT_UNINITIALIZED           277
+#endif
+#ifndef SSL_R_SHORT_READ
+#define SSL_R_SHORT_READ                                 219
+#endif
+#ifndef SSL_R_SIGNATURE_ALGORITHMS_ERROR
+#define SSL_R_SIGNATURE_ALGORITHMS_ERROR                 360
+#endif
+#ifndef SSL_R_SIGNATURE_FOR_NON_SIGNING_CERTIFICATE
+#define SSL_R_SIGNATURE_FOR_NON_SIGNING_CERTIFICATE      220
+#endif
+#ifndef SSL_R_SRP_A_CALC
+#define SSL_R_SRP_A_CALC                                 361
+#endif
+#ifndef SSL_R_SRTP_COULD_NOT_ALLOCATE_PROFILES
+#define SSL_R_SRTP_COULD_NOT_ALLOCATE_PROFILES           362
+#endif
+#ifndef SSL_R_SRTP_PROTECTION_PROFILE_LIST_TOO_LONG
+#define SSL_R_SRTP_PROTECTION_PROFILE_LIST_TOO_LONG      363
+#endif
+#ifndef SSL_R_SRTP_UNKNOWN_PROTECTION_PROFILE
+#define SSL_R_SRTP_UNKNOWN_PROTECTION_PROFILE            364
+#endif
+#ifndef SSL_R_SSL23_DOING_SESSION_ID_REUSE
+#define SSL_R_SSL23_DOING_SESSION_ID_REUSE               221
+#endif
+#ifndef SSL_R_SSL2_CONNECTION_ID_TOO_LONG
+#define SSL_R_SSL2_CONNECTION_ID_TOO_LONG                299
+#endif
+#ifndef SSL_R_SSL3_EXT_INVALID_ECPOINTFORMAT
+#define SSL_R_SSL3_EXT_INVALID_ECPOINTFORMAT             321
+#endif
+#ifndef SSL_R_SSL3_EXT_INVALID_SERVERNAME
+#define SSL_R_SSL3_EXT_INVALID_SERVERNAME                319
+#endif
+#ifndef SSL_R_SSL3_EXT_INVALID_SERVERNAME_TYPE
+#define SSL_R_SSL3_EXT_INVALID_SERVERNAME_TYPE           320
+#endif
+#ifndef SSL_R_SSL3_SESSION_ID_TOO_LONG
+#define SSL_R_SSL3_SESSION_ID_TOO_LONG                   300
+#endif
+#ifndef SSL_R_SSL3_SESSION_ID_TOO_SHORT
+#define SSL_R_SSL3_SESSION_ID_TOO_SHORT                  222
+#endif
+#ifndef SSL_R_SSLV3_ALERT_BAD_CERTIFICATE
+#define SSL_R_SSLV3_ALERT_BAD_CERTIFICATE                1042
+#endif
+#ifndef SSL_R_SSLV3_ALERT_BAD_RECORD_MAC
+#define SSL_R_SSLV3_ALERT_BAD_RECORD_MAC                 1020
+#endif
+#ifndef SSL_R_SSLV3_ALERT_CERTIFICATE_EXPIRED
+#define SSL_R_SSLV3_ALERT_CERTIFICATE_EXPIRED            1045
+#endif
+#ifndef SSL_R_SSLV3_ALERT_CERTIFICATE_REVOKED
+#define SSL_R_SSLV3_ALERT_CERTIFICATE_REVOKED            1044
+#endif
+#ifndef SSL_R_SSLV3_ALERT_CERTIFICATE_UNKNOWN
+#define SSL_R_SSLV3_ALERT_CERTIFICATE_UNKNOWN            1046
+#endif
+#ifndef SSL_R_SSLV3_ALERT_DECOMPRESSION_FAILURE
+#define SSL_R_SSLV3_ALERT_DECOMPRESSION_FAILURE          1030
+#endif
+#ifndef SSL_R_SSLV3_ALERT_HANDSHAKE_FAILURE
+#define SSL_R_SSLV3_ALERT_HANDSHAKE_FAILURE              1040
+#endif
+#ifndef SSL_R_SSLV3_ALERT_ILLEGAL_PARAMETER
+#define SSL_R_SSLV3_ALERT_ILLEGAL_PARAMETER              1047
+#endif
+#ifndef SSL_R_SSLV3_ALERT_NO_CERTIFICATE
+#define SSL_R_SSLV3_ALERT_NO_CERTIFICATE                 1041
+#endif
+#ifndef SSL_R_SSLV3_ALERT_UNEXPECTED_MESSAGE
+#define SSL_R_SSLV3_ALERT_UNEXPECTED_MESSAGE             1010
+#endif
+#ifndef SSL_R_SSLV3_ALERT_UNSUPPORTED_CERTIFICATE
+#define SSL_R_SSLV3_ALERT_UNSUPPORTED_CERTIFICATE        1043
+#endif
+#ifndef SSL_R_SSL_CTX_HAS_NO_DEFAULT_SSL_VERSION
+#define SSL_R_SSL_CTX_HAS_NO_DEFAULT_SSL_VERSION         228
+#endif
+#ifndef SSL_R_SSL_HANDSHAKE_FAILURE
+#define SSL_R_SSL_HANDSHAKE_FAILURE                      229
+#endif
+#ifndef SSL_R_SSL_LIBRARY_HAS_NO_CIPHERS
+#define SSL_R_SSL_LIBRARY_HAS_NO_CIPHERS                 230
+#endif
+#ifndef SSL_R_SSL_SESSION_ID_CALLBACK_FAILED
+#define SSL_R_SSL_SESSION_ID_CALLBACK_FAILED             301
+#endif
+#ifndef SSL_R_SSL_SESSION_ID_CONFLICT
+#define SSL_R_SSL_SESSION_ID_CONFLICT                    302
+#endif
+#ifndef SSL_R_SSL_SESSION_ID_CONTEXT_TOO_LONG
+#define SSL_R_SSL_SESSION_ID_CONTEXT_TOO_LONG            273
+#endif
+#ifndef SSL_R_SSL_SESSION_ID_HAS_BAD_LENGTH
+#define SSL_R_SSL_SESSION_ID_HAS_BAD_LENGTH              303
+#endif
+#ifndef SSL_R_SSL_SESSION_ID_IS_DIFFERENT
+#define SSL_R_SSL_SESSION_ID_IS_DIFFERENT                231
+#endif
+#ifndef SSL_R_TLSV1_ALERT_ACCESS_DENIED
+#define SSL_R_TLSV1_ALERT_ACCESS_DENIED                  1049
+#endif
+#ifndef SSL_R_TLSV1_ALERT_DECODE_ERROR
+#define SSL_R_TLSV1_ALERT_DECODE_ERROR                   1050
+#endif
+#ifndef SSL_R_TLSV1_ALERT_DECRYPTION_FAILED
+#define SSL_R_TLSV1_ALERT_DECRYPTION_FAILED              1021
+#endif
+#ifndef SSL_R_TLSV1_ALERT_DECRYPT_ERROR
+#define SSL_R_TLSV1_ALERT_DECRYPT_ERROR                  1051
+#endif
+#ifndef SSL_R_TLSV1_ALERT_EXPORT_RESTRICTION
+#define SSL_R_TLSV1_ALERT_EXPORT_RESTRICTION             1060
+#endif
+#ifndef SSL_R_TLSV1_ALERT_INAPPROPRIATE_FALLBACK
+#define SSL_R_TLSV1_ALERT_INAPPROPRIATE_FALLBACK         1086
+#endif
+#ifndef SSL_R_TLSV1_ALERT_INSUFFICIENT_SECURITY
+#define SSL_R_TLSV1_ALERT_INSUFFICIENT_SECURITY          1071
+#endif
+#ifndef SSL_R_TLSV1_ALERT_INTERNAL_ERROR
+#define SSL_R_TLSV1_ALERT_INTERNAL_ERROR                 1080
+#endif
+#ifndef SSL_R_TLSV1_ALERT_NO_RENEGOTIATION
+#define SSL_R_TLSV1_ALERT_NO_RENEGOTIATION               1100
+#endif
+#ifndef SSL_R_TLSV1_ALERT_PROTOCOL_VERSION
+#define SSL_R_TLSV1_ALERT_PROTOCOL_VERSION               1070
+#endif
+#ifndef SSL_R_TLSV1_ALERT_RECORD_OVERFLOW
+#define SSL_R_TLSV1_ALERT_RECORD_OVERFLOW                1022
+#endif
+#ifndef SSL_R_TLSV1_ALERT_UNKNOWN_CA
+#define SSL_R_TLSV1_ALERT_UNKNOWN_CA                     1048
+#endif
+#ifndef SSL_R_TLSV1_ALERT_USER_CANCELLED
+#define SSL_R_TLSV1_ALERT_USER_CANCELLED                 1090
+#endif
+#ifndef SSL_R_TLSV1_BAD_CERTIFICATE_HASH_VALUE
+#define SSL_R_TLSV1_BAD_CERTIFICATE_HASH_VALUE           1114
+#endif
+#ifndef SSL_R_TLSV1_BAD_CERTIFICATE_STATUS_RESPONSE
+#define SSL_R_TLSV1_BAD_CERTIFICATE_STATUS_RESPONSE      1113
+#endif
+#ifndef SSL_R_TLSV1_CERTIFICATE_UNOBTAINABLE
+#define SSL_R_TLSV1_CERTIFICATE_UNOBTAINABLE             1111
+#endif
+#ifndef SSL_R_TLSV1_UNRECOGNIZED_NAME
+#define SSL_R_TLSV1_UNRECOGNIZED_NAME                    1112
+#endif
+#ifndef SSL_R_TLSV1_UNSUPPORTED_EXTENSION
+#define SSL_R_TLSV1_UNSUPPORTED_EXTENSION                1110
+#endif
+#ifndef SSL_R_TLS_CLIENT_CERT_REQ_WITH_ANON_CIPHER
+#define SSL_R_TLS_CLIENT_CERT_REQ_WITH_ANON_CIPHER       232
+#endif
+#ifndef SSL_R_TLS_HEARTBEAT_PEER_DOESNT_ACCEPT
+#define SSL_R_TLS_HEARTBEAT_PEER_DOESNT_ACCEPT           365
+#endif
+#ifndef SSL_R_TLS_HEARTBEAT_PENDING
+#define SSL_R_TLS_HEARTBEAT_PENDING                      366
+#endif
+#ifndef SSL_R_TLS_ILLEGAL_EXPORTER_LABEL
+#define SSL_R_TLS_ILLEGAL_EXPORTER_LABEL                 367
+#endif
+#ifndef SSL_R_TLS_INVALID_ECPOINTFORMAT_LIST
+#define SSL_R_TLS_INVALID_ECPOINTFORMAT_LIST             157
+#endif
+#ifndef SSL_R_TLS_PEER_DID_NOT_RESPOND_WITH_CERTIFICATE_LIST
+#define SSL_R_TLS_PEER_DID_NOT_RESPOND_WITH_CERTIFICATE_LIST 233
+#endif
+#ifndef SSL_R_TLS_RSA_ENCRYPTED_VALUE_LENGTH_IS_WRONG
+#define SSL_R_TLS_RSA_ENCRYPTED_VALUE_LENGTH_IS_WRONG    234
+#endif
+#ifndef SSL_R_TRIED_TO_USE_UNSUPPORTED_CIPHER
+#define SSL_R_TRIED_TO_USE_UNSUPPORTED_CIPHER            235
+#endif
+#ifndef SSL_R_UNABLE_TO_DECODE_DH_CERTS
+#define SSL_R_UNABLE_TO_DECODE_DH_CERTS                  236
+#endif
+#ifndef SSL_R_UNABLE_TO_DECODE_ECDH_CERTS
+#define SSL_R_UNABLE_TO_DECODE_ECDH_CERTS                313
+#endif
+#ifndef SSL_R_UNABLE_TO_EXTRACT_PUBLIC_KEY
+#define SSL_R_UNABLE_TO_EXTRACT_PUBLIC_KEY               237
+#endif
+#ifndef SSL_R_UNABLE_TO_FIND_DH_PARAMETERS
+#define SSL_R_UNABLE_TO_FIND_DH_PARAMETERS               238
+#endif
+#ifndef SSL_R_UNABLE_TO_FIND_ECDH_PARAMETERS
+#define SSL_R_UNABLE_TO_FIND_ECDH_PARAMETERS             314
+#endif
+#ifndef SSL_R_UNABLE_TO_FIND_PUBLIC_KEY_PARAMETERS
+#define SSL_R_UNABLE_TO_FIND_PUBLIC_KEY_PARAMETERS       239
+#endif
+#ifndef SSL_R_UNABLE_TO_FIND_SSL_METHOD
+#define SSL_R_UNABLE_TO_FIND_SSL_METHOD                  240
+#endif
+#ifndef SSL_R_UNABLE_TO_LOAD_SSL2_MD5_ROUTINES
+#define SSL_R_UNABLE_TO_LOAD_SSL2_MD5_ROUTINES           241
+#endif
+#ifndef SSL_R_UNABLE_TO_LOAD_SSL3_MD5_ROUTINES
+#define SSL_R_UNABLE_TO_LOAD_SSL3_MD5_ROUTINES           242
+#endif
+#ifndef SSL_R_UNABLE_TO_LOAD_SSL3_SHA1_ROUTINES
+#define SSL_R_UNABLE_TO_LOAD_SSL3_SHA1_ROUTINES          243
+#endif
+#ifndef SSL_R_UNEXPECTED_MESSAGE
+#define SSL_R_UNEXPECTED_MESSAGE                         244
+#endif
+#ifndef SSL_R_UNEXPECTED_RECORD
+#define SSL_R_UNEXPECTED_RECORD                          245
+#endif
+#ifndef SSL_R_UNINITIALIZED
+#define SSL_R_UNINITIALIZED                              276
+#endif
+#ifndef SSL_R_UNKNOWN_ALERT_TYPE
+#define SSL_R_UNKNOWN_ALERT_TYPE                         246
+#endif
+#ifndef SSL_R_UNKNOWN_CERTIFICATE_TYPE
+#define SSL_R_UNKNOWN_CERTIFICATE_TYPE                   247
+#endif
+#ifndef SSL_R_UNKNOWN_CIPHER_RETURNED
+#define SSL_R_UNKNOWN_CIPHER_RETURNED                    248
+#endif
+#ifndef SSL_R_UNKNOWN_CIPHER_TYPE
+#define SSL_R_UNKNOWN_CIPHER_TYPE                        249
+#endif
+#ifndef SSL_R_UNKNOWN_DIGEST
+#define SSL_R_UNKNOWN_DIGEST                             368
+#endif
+#ifndef SSL_R_UNKNOWN_KEY_EXCHANGE_TYPE
+#define SSL_R_UNKNOWN_KEY_EXCHANGE_TYPE                  250
+#endif
+#ifndef SSL_R_UNKNOWN_PKEY_TYPE
+#define SSL_R_UNKNOWN_PKEY_TYPE                          251
+#endif
+#ifndef SSL_R_UNKNOWN_PROTOCOL
+#define SSL_R_UNKNOWN_PROTOCOL                           252
+#endif
+#ifndef SSL_R_UNKNOWN_REMOTE_ERROR_TYPE
+#define SSL_R_UNKNOWN_REMOTE_ERROR_TYPE                  253
+#endif
+#ifndef SSL_R_UNKNOWN_SSL_VERSION
+#define SSL_R_UNKNOWN_SSL_VERSION                        254
+#endif
+#ifndef SSL_R_UNKNOWN_STATE
+#define SSL_R_UNKNOWN_STATE                              255
+#endif
+#ifndef SSL_R_UNSAFE_LEGACY_RENEGOTIATION_DISABLED
+#define SSL_R_UNSAFE_LEGACY_RENEGOTIATION_DISABLED       338
+#endif
+#ifndef SSL_R_UNSUPPORTED_CIPHER
+#define SSL_R_UNSUPPORTED_CIPHER                         256
+#endif
+#ifndef SSL_R_UNSUPPORTED_COMPRESSION_ALGORITHM
+#define SSL_R_UNSUPPORTED_COMPRESSION_ALGORITHM          257
+#endif
+#ifndef SSL_R_UNSUPPORTED_DIGEST_TYPE
+#define SSL_R_UNSUPPORTED_DIGEST_TYPE                    326
+#endif
+#ifndef SSL_R_UNSUPPORTED_ELLIPTIC_CURVE
+#define SSL_R_UNSUPPORTED_ELLIPTIC_CURVE                 315
+#endif
+#ifndef SSL_R_UNSUPPORTED_PROTOCOL
+#define SSL_R_UNSUPPORTED_PROTOCOL                       258
+#endif
+#ifndef SSL_R_UNSUPPORTED_SSL_VERSION
+#define SSL_R_UNSUPPORTED_SSL_VERSION                    259
+#endif
+#ifndef SSL_R_UNSUPPORTED_STATUS_TYPE
+#define SSL_R_UNSUPPORTED_STATUS_TYPE                    329
+#endif
+#ifndef SSL_R_USE_SRTP_NOT_NEGOTIATED
+#define SSL_R_USE_SRTP_NOT_NEGOTIATED                    369
+#endif
+#ifndef SSL_R_WRITE_BIO_NOT_SET
+#define SSL_R_WRITE_BIO_NOT_SET                          260
+#endif
+#ifndef SSL_R_WRONG_CIPHER_RETURNED
+#define SSL_R_WRONG_CIPHER_RETURNED                      261
+#endif
+#ifndef SSL_R_WRONG_MESSAGE_TYPE
+#define SSL_R_WRONG_MESSAGE_TYPE                         262
+#endif
+#ifndef SSL_R_WRONG_NUMBER_OF_KEY_BITS
+#define SSL_R_WRONG_NUMBER_OF_KEY_BITS                   263
+#endif
+#ifndef SSL_R_WRONG_SIGNATURE_LENGTH
+#define SSL_R_WRONG_SIGNATURE_LENGTH                     264
+#endif
+#ifndef SSL_R_WRONG_SIGNATURE_SIZE
+#define SSL_R_WRONG_SIGNATURE_SIZE                       265
+#endif
+#ifndef SSL_R_WRONG_SIGNATURE_TYPE
+#define SSL_R_WRONG_SIGNATURE_TYPE                       370
+#endif
+#ifndef SSL_R_WRONG_SSL_VERSION
+#define SSL_R_WRONG_SSL_VERSION                          266
+#endif
+#ifndef SSL_R_WRONG_VERSION_NUMBER
+#define SSL_R_WRONG_VERSION_NUMBER                       267
+#endif
+#ifndef SSL_R_X509_LIB
+#define SSL_R_X509_LIB                                   268
+#endif
+#ifndef SSL_R_X509_VERIFICATION_SETUP_PROBLEMS
+#define SSL_R_X509_VERIFICATION_SETUP_PROBLEMS           269
+#endif
 
 // the following defines were added in OpenSSL 1.0.2
 
