@@ -92,7 +92,7 @@ static OFCondition convertSSLError(int sslError)
     case SSL_ERROR_WANT_ACCEPT:
       return DCMTLS_EC_TLSAcceptOperationDidNotComplete;
       break;
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
     // SSL_ERROR_WANT_ASYNC and SSL_ERROR_WANT_ASYNC_JOB are defined starting with OpenSSL 1.1.0
     case SSL_ERROR_WANT_ASYNC:
       return DCMTLS_EC_TLSAsyncOperationDidNotComplete;
@@ -101,7 +101,7 @@ static OFCondition convertSSLError(int sslError)
       return DCMTLS_EC_TLSAsyncJobCouldNotBeStarted;
       break;
 #endif
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
     // SSL_ERROR_WANT_CLIENT_HELLO_CB is defined starting with OpenSSL 1.1.1
     case SSL_ERROR_WANT_CLIENT_HELLO_CB:
       return DCMTLS_EC_TLSClientHelloCallbackNeeded;
