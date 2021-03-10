@@ -45,6 +45,9 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcmatch.h"
+#include <ctime>
+
+using namespace std;
 
 /* ========================= static data ========================= */
 

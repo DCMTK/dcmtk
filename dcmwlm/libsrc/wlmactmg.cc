@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,6 +43,9 @@
 #include "dcmtk/dcmdata/dcdicent.h"  // needed by MSVC5 with STL
 #include "dcmtk/oflog/internal/env.h"
 #include "dcmtk/dcmwlm/wlmactmg.h"
+#include <ctime>
+
+using namespace std;
 
 
 // ----------------------------------------------------------------------------

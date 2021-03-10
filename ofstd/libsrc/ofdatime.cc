@@ -22,14 +22,16 @@
 
 #include "dcmtk/config/osconfig.h"
 
-BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
+BEGIN_EXTERN_C
 #include <sys/types.h>    /* for struct time_t */
-#endif
 END_EXTERN_C
+#endif
 
 #include "dcmtk/ofstd/ofdatime.h"
+#include <ctime>
 
+using namespace std;
 
 /*------------------*
  *  implementation  *

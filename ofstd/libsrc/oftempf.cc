@@ -24,6 +24,9 @@
 #include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/offname.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include <ctime>
+
+using namespace std;
 
 BEGIN_EXTERN_C
 #ifdef HAVE_IO_H

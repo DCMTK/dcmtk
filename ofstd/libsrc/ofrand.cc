@@ -24,6 +24,9 @@
 #include "dcmtk/ofstd/ofrand.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include <ctime>
+
+using namespace std;
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H

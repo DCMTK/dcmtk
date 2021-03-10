@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2019, OFFIS e.V.
+ *  Copyright (C) 2011-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,7 +28,9 @@
 #include "dcmtk/dcmdata/dcdatutl.h"
 #include "dcmtk/dcmnet/dstorscu.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include <ctime>
 
+using namespace std;
 
 // these are private DIMSE status codes of the class "pending"
 #define STATUS_STORE_Pending_NoPresentationContext 0xffff

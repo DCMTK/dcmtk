@@ -22,6 +22,10 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#include <ctime>
+
+using namespace std;
+
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>     /* for struct timeval on Linux */

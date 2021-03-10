@@ -22,6 +22,9 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofdate.h"
+#include <ctime>
+
+using namespace std;
 
 /*------------------*
  *  implementation  *
