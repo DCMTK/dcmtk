@@ -328,7 +328,7 @@ DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stre
  *  on Unix platforms are based on errno and strerror/strerror_r, but may be based
  *  on other mechanisms on platforms where errno does not exist.
  */
-class OFFile
+class DCMTK_OFSTD_EXPORT OFFile
 {
 public:
   /// default constructor, creates an object that is not associated with any file.
