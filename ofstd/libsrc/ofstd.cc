@@ -92,6 +92,15 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef __SUNPRO_CC
+BEGIN_EXTERN_C
+// SunPro declares vsnprintf() only in <stdio.h>, not in <cstdio>.
+#include <stdio.h>
+END_EXTERN_C
+#else
+#include <cstdio>
+#endif
+
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/offile.h"
@@ -101,7 +110,6 @@
 #include "dcmtk/ofstd/ofsockad.h"
 #include "dcmtk/ofstd/ofvector.h"
 
-#include <cstdio>
 #include <cmath>
 #include <cstring>       /* for memset() */
 
