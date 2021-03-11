@@ -1,16 +1,16 @@
 // -*- C++ -*-
 //  Copyright (C) 2010, Vaclav Haisman. All rights reserved.
-//  
+//
 //  Redistribution and use in source and binary forms, with or without modifica-
 //  tion, are permitted provided that the following conditions are met:
-//  
+//
 //  1. Redistributions of  source code must  retain the above copyright  notice,
 //     this list of conditions and the following disclaimer.
-//  
+//
 //  2. Redistributions in binary form must reproduce the above copyright notice,
 //     this list of conditions and the following disclaimer in the documentation
 //     and/or other materials provided with the distribution.
-//  
+//
 //  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
 //  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
 //  FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
@@ -63,7 +63,7 @@ MutexImplBase::~MutexImplBase ()
 
 DCMTK_LOG4CPLUS_INLINE_EXPORT
 Mutex::Mutex (Mutex::Type t)
-    : mtx (DCMTK_LOG4CPLUS_THREADED (new impl::Mutex (t)) + 0)
+    : mtx (DCMTK_LOG4CPLUS_THREADED (new impl::Mutex (t) + 0))
 { }
 
 
@@ -106,7 +106,7 @@ SemaphoreImplBase::~SemaphoreImplBase ()
 DCMTK_LOG4CPLUS_INLINE_EXPORT
 Semaphore::Semaphore (unsigned DCMTK_LOG4CPLUS_THREADED (max),
     unsigned DCMTK_LOG4CPLUS_THREADED (initial))
-    : sem (DCMTK_LOG4CPLUS_THREADED (new impl::Semaphore (max, initial)) + 0)
+    : sem (DCMTK_LOG4CPLUS_THREADED (new impl::Semaphore (max, initial) + 0))
 { }
 
 
@@ -148,7 +148,7 @@ FairMutexImplBase::~FairMutexImplBase ()
 
 DCMTK_LOG4CPLUS_INLINE_EXPORT
 FairMutex::FairMutex ()
-    : mtx (DCMTK_LOG4CPLUS_THREADED (new impl::FairMutex) + 0)
+    : mtx (DCMTK_LOG4CPLUS_THREADED (new impl::FairMutex+ 0 ))
 { }
 
 
@@ -190,7 +190,7 @@ ManualResetEventImplBase::~ManualResetEventImplBase ()
 
 DCMTK_LOG4CPLUS_INLINE_EXPORT
 ManualResetEvent::ManualResetEvent (bool DCMTK_LOG4CPLUS_THREADED (sig))
-    : ev (DCMTK_LOG4CPLUS_THREADED (new impl::ManualResetEvent (sig)) + 0)
+    : ev (DCMTK_LOG4CPLUS_THREADED (new impl::ManualResetEvent (sig) + 0))
 { }
 
 
@@ -252,7 +252,7 @@ SharedMutexImplBase::~SharedMutexImplBase ()
 
 DCMTK_LOG4CPLUS_INLINE_EXPORT
 SharedMutex::SharedMutex ()
-    : sm (DCMTK_LOG4CPLUS_THREADED (new impl::SharedMutex) + 0)
+    : sm (DCMTK_LOG4CPLUS_THREADED (new impl::SharedMutex + 0))
 { }
 
 
@@ -293,7 +293,7 @@ SharedMutex::wrunlock () const
 }
 
 
-} } // namespace log4cplus { namespace thread { 
+} } // namespace log4cplus { namespace thread {
 } // end namespace dcmtk
 
 #endif // DCMTK_LOG4CPLUS_ENABLE_SYNCPRIMS_PUB_IMPL
