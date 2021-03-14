@@ -26,6 +26,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofdefine.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 #include <cstring>
 

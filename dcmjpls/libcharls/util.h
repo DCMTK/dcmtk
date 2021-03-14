@@ -7,6 +7,7 @@
 #define CHARLS_UTIL
 
 #include <cstddef>
+#include "dcmtk/ofstd/oftypes.h"
 
 #include "pubtypes.h"
 
