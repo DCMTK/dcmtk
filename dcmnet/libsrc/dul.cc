@@ -525,7 +525,7 @@ DUL_RequestAssociation(
          */
         OFCondition cond2 = PRV_StateMachine(network, association, TRANS_CONN_CLOSED, (*association)->protocolState, NULL);
         destroyAssociationKey(association);
-        return makeDcmnetSubCondition(DULC_REQUESTASSOCIATIONFAILED, OF_error, "Failed to establish association", DimseCondition::push(cond2, cond));
+        return cond;
     }
     cond = PRV_StateMachine(network, association,
       TRANS_CONN_CONFIRM_LOCAL_USER, (*association)->protocolState, params);
