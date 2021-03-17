@@ -2269,7 +2269,7 @@ XMLSTR XMLNode::createXMLString(int nFormat, int *pnSize) const
     if (!dropWhiteSpace) nFormat=0;
     nFormat = nFormat ? 0 : -1;
     cbStr = CreateXMLStringR(d, 0, nFormat);
-    // Alllocate memory for the XML string + the NULL terminator and
+    // Allocate memory for the XML string + the NULL terminator and
     // create the recursively XML string.
     lpszResult=OFreinterpret_cast(XMLSTR, malloc((cbStr+1)*sizeof(XMLCHAR)));
     CreateXMLStringR(d, lpszResult, nFormat);

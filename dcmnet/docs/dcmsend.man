@@ -305,10 +305,10 @@ enforced, i.e. no possibly illegal presentation context will be proposed but
 the corresponding SOP instance will be rejected (if needed).  Please note,
 however, that the size of the decompressed pixel data is not checked.
 
-Please note, however, that the default transfer syntax for "Lossless JPEG
-Compression", "Lossy JPEG Compression" and so on are not always proposed as
-also required by the DICOM standard.  The same limitation applies to other
-compression schemes.  See DICOM PS 3.5 section 10 for details.
+The default transfer syntax for "Lossless JPEG Compression", "Lossy JPEG
+Compression" and so on are not always proposed as also required by the DICOM
+standard.  The same limitation applies to other compression schemes.  See DICOM
+PS 3.5 section 10 for details.
 
 \section dcmsend_logging LOGGING
 
@@ -409,6 +409,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmsend_copyright COPYRIGHT
 
-Copyright (C) 2011-2018 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2011-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
