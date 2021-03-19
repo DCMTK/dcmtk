@@ -94,6 +94,7 @@ OFTEST_REGISTER(dcmdata_elementParent);
 OFTEST_REGISTER(dcmdata_sequenceInsert);
 OFTEST_REGISTER(dcmdata_pixelSequenceInsert);
 OFTEST_REGISTER(dcmdata_findAndGetSequenceItem);
+OFTEST_REGISTER(dcmdata_findAndGetUint16Array);
 OFTEST_REGISTER(dcmdata_parser_missingDelimitationItems);
 OFTEST_REGISTER(dcmdata_parser_missingSequenceDelimitationItem_1);
 OFTEST_REGISTER(dcmdata_parser_missingSequenceDelimitationItem_2);

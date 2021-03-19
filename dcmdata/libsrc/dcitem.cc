@@ -2554,8 +2554,12 @@ OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
     if (count != NULL)
     {
         if (status.good())
+        {
             *count = elem->getNumberOfValues();
-        else
+            /* AT uses two 16-bit integers per value */
+            if (elem->ident() == EVR_AT)
+                *count *= 2;
+        } else
             *count = 0;
     }
     /* reset value */
