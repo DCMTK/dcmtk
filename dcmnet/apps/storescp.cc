@@ -34,6 +34,8 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include <cerrno>
+
 #ifdef HAVE_WINDOWS_H
 #include <direct.h>      /* for _mkdir() */
 #endif
@@ -1865,24 +1867,31 @@ storeSCPCallback(
           // create subdirectoryPathAndName (string with full path to new subdirectory)
           OFStandard::combineDirAndFilename(subdirectoryPathAndName, OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName), subdirectoryName);
 
-          // check if the subdirectory already exists
-          // if it already exists dump a warning
-          if( OFStandard::dirExists(subdirectoryPathAndName) )
-            OFLOG_WARN(storescpLogger, "subdirectory for study already exists: " << subdirectoryPathAndName);
-          else
-          {
-            // if it does not exist create it
-            OFLOG_INFO(storescpLogger, "creating new subdirectory for study: " << subdirectoryPathAndName);
+          // create the subdirectory and then check errno, in order to avoid a "time of check to time of use" (TOC-TOU) race condition.
 #ifdef HAVE_WINDOWS_H
-            if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
+          int mkdirStatus = _mkdir( subdirectoryPathAndName.c_str() );
 #else
-            if( mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
+          int mkdirStatus = mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO );
 #endif
+
+          if( mkdirStatus == -1 )
+          {
+            if (errno == EEXIST)
+            {
+              // If the subdirectory already exists, then re-use it. It might have been created by another
+              // process receiving images in parallel.
+              OFLOG_INFO(storescpLogger, "using existing subdirectory for study: " << subdirectoryPathAndName);
+            }
+            else
             {
               OFLOG_ERROR(storescpLogger, "could not create subdirectory for study: " << subdirectoryPathAndName);
               rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
               return;
             }
+          }
+          else
+          {
+            OFLOG_INFO(storescpLogger, "created new subdirectory for study: " << subdirectoryPathAndName);
             // all objects of a study have been received, so a new subdirectory is started.
             // ->timename counter can be reset, because the next filename can't cause a duplicate.
             // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
