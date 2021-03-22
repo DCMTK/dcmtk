@@ -47,9 +47,9 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcuid.h"     /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcostrmz.h"  /* for dcmZlibCompressionLevel */
 #include "dcmtk/dcmtls/tlsopt.h"     /* for DcmTLSOptions */
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
 
-using namespace std;
 
 #ifdef ON_THE_FLY_COMPRESSION
 #include "dcmtk/dcmjpeg/djdecode.h"  /* for JPEG decoders */

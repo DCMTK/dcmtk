@@ -23,7 +23,7 @@
 #include "dcmtk/dcmjpeg/djdijg8.h"
 #include "dcmtk/dcmjpeg/djcparam.h"
 #include "dcmtk/dcmdata/dcerror.h"
-
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <csetjmp>
 
 // These two macros are re-defined in the IJG header files.
@@ -48,8 +48,8 @@ BEGIN_EXTERN_C
 #endif
 
 // Solaris defines longjmp() in namespace std, other compilers don't...
-namespace std { }
-using namespace std;
+using STD_NAMESPACE longjmp;
+using STD_NAMESPACE jmp_buf;
 
 // private error handler struct
 struct DJDIJG8ErrorStruct

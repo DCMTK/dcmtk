@@ -100,6 +100,7 @@ END_EXTERN_C
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/lst.h"
 #include "dcmtk/dcmnet/cond.h"
@@ -116,7 +117,6 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr */
 #include <ctime>
 
-using namespace std;
 
 /* At least Solaris doesn't define this */
 #ifndef INADDR_NONE

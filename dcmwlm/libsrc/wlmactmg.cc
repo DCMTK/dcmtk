@@ -43,9 +43,9 @@
 #include "dcmtk/dcmdata/dcdicent.h"  // needed by MSVC5 with STL
 #include "dcmtk/oflog/internal/env.h"
 #include "dcmtk/dcmwlm/wlmactmg.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
 
-using namespace std;
 
 
 // ----------------------------------------------------------------------------

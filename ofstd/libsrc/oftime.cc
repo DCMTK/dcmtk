@@ -21,10 +21,9 @@
 
 
 #include "dcmtk/config/osconfig.h"
-
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
 
-using namespace std;
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H

@@ -29,9 +29,9 @@
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmqrdb/dcmqropt.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
 
-using namespace std;
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H

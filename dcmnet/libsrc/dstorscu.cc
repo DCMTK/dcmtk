@@ -28,9 +28,9 @@
 #include "dcmtk/dcmdata/dcdatutl.h"
 #include "dcmtk/dcmnet/dstorscu.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
 
-using namespace std;
 
 // these are private DIMSE status codes of the class "pending"
 #define STATUS_STORE_Pending_NoPresentationContext 0xffff

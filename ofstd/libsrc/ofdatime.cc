@@ -29,9 +29,9 @@ END_EXTERN_C
 #endif
 
 #include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
 
-using namespace std;
 
 /*------------------*
  *  implementation  *

@@ -104,6 +104,7 @@
 #endif
 // DCMTK: we need this header file at the beginning of each file
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 // DCMTK: we need the correct header file (was "xmlParser.h")
 #include "dcmtk/ofstd/ofxml.h"
@@ -120,9 +121,23 @@
 #include <cstdio>
 #include <cstring>
 #include <cassert>
+#include <cstdlib>
 #include "dcmtk/ofstd/ofstdinc.h"
 
-using namespace std;
+using STD_NAMESPACE free;
+using STD_NAMESPACE malloc;
+using STD_NAMESPACE FILE;
+using STD_NAMESPACE fopen;
+using STD_NAMESPACE atoi;
+using STD_NAMESPACE fread;
+using STD_NAMESPACE atof;
+using STD_NAMESPACE fclose;
+using STD_NAMESPACE fprintf;
+using STD_NAMESPACE realloc;
+using STD_NAMESPACE atol;
+using STD_NAMESPACE fwrite;
+using STD_NAMESPACE fseek;
+using STD_NAMESPACE ftell;
 
 #ifdef HAVE_STRINGS_H
 BEGIN_EXTERN_C

@@ -24,9 +24,9 @@
 
 #include "dcmtk/dcmnet/dstorscp.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
 
-using namespace std;
 
 // constant definitions
 

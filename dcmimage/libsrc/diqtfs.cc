@@ -23,9 +23,9 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmimage/diqtfs.h"
 #include "dcmtk/ofstd/ofstd.h"       /* for OFStandard::myrand_r */
+#include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
 
-using namespace std;
 
 BEGIN_EXTERN_C
 #include <sys/types.h> // needed for time()
