@@ -120,7 +120,7 @@ if(DCMTK_USE_FIND_PACKAGE)
 
   # Find libsndfile
   if(DCMTK_WITH_SNDFILE)
-    find_package(Sndfile QUIET)
+    find_package(SNDFILE QUIET)
     if(NOT SNDFILE_LIBS)
       message(STATUS "Warning: SNDFILE support will be disabled because libsndfile was not found.")
       set(WITH_SNDFILE "")
@@ -136,7 +136,7 @@ if(DCMTK_USE_FIND_PACKAGE)
   # Find libiconv
   if(DCMTK_WITH_ICONV)
     find_package(Iconv QUIET)
-    find_package(Charset QUIET)
+    find_package(LIBCHARSET QUIET)
     if(ICONV_FOUND)
         if(NOT Iconv_IS_BUILT_IN)
             set(LIBICONV_FOUND ${ICONV_FOUND})
@@ -165,7 +165,7 @@ if(DCMTK_USE_FIND_PACKAGE)
 
   # Find libwrap
   if(DCMTK_WITH_WRAP)
-    find_package(Wrap QUIET)
+    find_package(WRAP QUIET)
     if(NOT WRAP_FOUND)
       message(STATUS "Warning: WRAP support will be disabled because libwrap was not found.")
       set(WITH_TCPWRAPPER "")
