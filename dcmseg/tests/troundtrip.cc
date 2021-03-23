@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, OFFIS e.V.
+ *  Copyright (C) 2019-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -285,6 +285,7 @@ static void checkConcatenationInstance(size_t numInstance, DcmSegmentation* srcI
 {
     DcmSegmentation* concat = NULL;
     OFCHECK(DcmSegmentation::loadDataset(*concatInstance, concat).good());
+    if (concat == NULL) return; // loadDataset() failed, we cannot continue
     size_t numFrames;
     numFrames = concat->getNumberOfFrames();
     OFCHECK(numFrames == 1);
@@ -327,7 +328,7 @@ static void checkConcatenationInstance(size_t numInstance, DcmSegmentation* srcI
             && (cShared == concat->getFunctionalGroups().getShared()->end()));
     DcmSequenceOfItems* cPerFrame = NULL;
     OFCHECK(concatInstance->findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, cPerFrame).good());
-    OFCHECK(cPerFrame->card() == 1);
+    OFCHECK(cPerFrame && (cPerFrame->card() == 1));
 
     OFBool perFrame = OFFalse;
     FGBase* fg      = concat->getFunctionalGroups().get(0, DcmFGTypes::EFG_FRAMECONTENT, perFrame);
