@@ -36,7 +36,7 @@
 #include <ieeefp.h>
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__aarch64__)
 // For controlling floating point exceptions on OS X.
 #include <xmmintrin.h>
 #endif
@@ -336,7 +336,7 @@ static void provoke_snan()
 #ifdef HAVE_WINDOWS_H
     _clearfp();
     _controlfp( _controlfp(0,0) & ~_EM_INVALID, _MCW_EM );
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && !defined(__aarch64__)
     _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() & ~_MM_MASK_INVALID );
 #elif defined(HAVE_FENV_H) && defined(HAVE_PROTOTYPE_FEENABLEEXCEPT)
     feenableexcept( FE_INVALID );
@@ -378,7 +378,7 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
     _controlfp( _controlfp(0,0) | _EM_INVALID, _MCW_EM );
 #elif defined(HAVE_FENV_H)
     feclearexcept( FE_INVALID );
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__aarch64__)
     _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() | _MM_MASK_INVALID );
 #elif defined(HAVE_FENV_H) && defined(HAVE_PROTOTYPE_FEENABLEEXCEPT)
     fedisableexcept( FE_INVALID );
