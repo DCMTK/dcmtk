@@ -15,8 +15,10 @@
 # DCMTKConfig.cmake will contain options used to build this DCMTK package
 
 if(COMMAND CMAKE_POLICY)
-    # suppresses error related to the following export statement
-    cmake_policy(SET CMP0103 OLD)
+    if (POLICY CMP0103)
+        # suppresses error related to the following export statement
+        cmake_policy(SET CMP0103 OLD)
+    endif()
 endif()
 
 # Get and store all executable targets to DCMTKTargets.cmake within build's main dir
