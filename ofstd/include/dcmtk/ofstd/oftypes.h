@@ -27,6 +27,10 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofdefine.h"
 
+// some C++ implementations only define printf format macros like PRIu32
+// when this macro is defined before <inttypes.h> or <cinttypes> are included.
+#define __STDC_FORMAT_MACROS 1
+
 // include this file in doxygen documentation
 
 /** @file oftypes.h
