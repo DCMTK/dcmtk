@@ -3,3 +3,4 @@ DCMTK_ADD_LIBRARY(dcmnet assoc cond dcasccff dcasccfg dccfenmp dccfpcmp dccfprmp
 
 DCMTK_TARGET_LINK_MODULES(dcmnet ofstd oflog dcmdata)
 DCMTK_TARGET_LINK_LIBRARIES(dcmnet ${WRAP_LIBS})
+set_property(TARGET dcmnet PROPERTY OUTPUT_NAME "dcmnet${DCMTK_TLS_LIBRARY_POSTFIX}")

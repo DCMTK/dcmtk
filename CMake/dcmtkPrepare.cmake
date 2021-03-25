@@ -108,6 +108,7 @@ option(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
 option(BUILD_SINGLE_SHARED_LIBRARY "Build a single DCMTK library." OFF)
 mark_as_advanced(BUILD_SINGLE_SHARED_LIBRARY)
 set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Library postfix for debug builds. Usually left blank.")
+set(DCMTK_TLS_LIBRARY_POSTFIX "" CACHE STRING "Postfix for libraries that change their ABI when using OpenSSL.")
 # add our CMake modules to the module path, but prefer the ones from CMake.
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_ROOT}/Modules" "${CMAKE_CURRENT_SOURCE_DIR}/${DCMTK_CMAKE_INCLUDE}/CMake/")
 if(BUILD_SINGLE_SHARED_LIBRARY)
@@ -177,6 +178,7 @@ mark_as_advanced(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 mark_as_advanced(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
 mark_as_advanced(DCMTK_GENERATE_DOXYGEN_TAGFILE)
 mark_as_advanced(DCMTK_WITH_OPENJPEG) # only needed by DCMJP2K module
+mark_as_advanced(DCMTK_TLS_LIBRARY_POSTFIX)
 
 if(NOT WIN32)
   # support for wide char file I/O functions is currently Windows-specific
