@@ -44,6 +44,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <ostream>
+#include <cinttypes>
 
 #define OFTypename typename
 #define OFlonglong long long
