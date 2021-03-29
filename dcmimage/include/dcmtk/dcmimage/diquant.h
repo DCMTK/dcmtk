@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2011, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: class DcmQuantFloydSteinberg
+ *  Purpose: class DcmQuant
  *
  */
 
@@ -24,10 +24,10 @@
 #define DIQUANT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/ofcond.h"    /* for OFCondition */
-#include "dcmtk/dcmdata/dctypes.h"   /* for Uint32 etc. */
+#include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
+#include "dcmtk/dcmdata/dctypes.h"    /* for Uint32 etc. */
 #include "dcmtk/dcmimage/diqttype.h"  /* for enums */
-#include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
+#include "dcmtk/ofstd/ofstring.h"     /* for class OFString */
 
 
 class DicomImage;
