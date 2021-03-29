@@ -210,6 +210,23 @@ and enables support automatically if present.  By default, DCMTK checks the
 standard paths on Unix platforms.  For Windows platforms, check the discussion
 on CMake below.
 
+Known Issues
+------------
+
+The ABI of various DCMTK libraries changes when DCMTK is build with/without
+OpenSSL. This may result in hard to debug bugs e.g. when using the command line
+tools that depend on at least one of those libraries while mixing a non OpenSSL
+build with an OpenSSL enabled build of DCMTK (for example when installing an
+OpenSSL enabled DCMTK on top of a DCMTK installation without OpenSSL support).
+We have introduced a CMake variable called DCMTK_TLS_LIBRARY_POSTFIX as a
+workaround. If you plan on mixing OpenSSL and non OpenSSL enabled builds (or
+can't be sure that your builds wont be mixed by somebody else), we suggest
+setting DCMTK_TLS_LIBRARY_POSTFIX to some different string for the different
+builds (e.g. an empty string for the non OpenSSL build and "-openssl" for the
+other). This way, all affected libraries will be named including the chosen
+postfix, effectively preventing the unintended mixing and, therefore,
+preventing the bugs.
+
 
 ZLIB SUPPORT
 ============
