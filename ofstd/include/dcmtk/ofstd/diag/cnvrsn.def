@@ -1,6 +1,7 @@
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wconversion"
-#elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(4,6,0)
+/* The next line is equivalent to #elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(4,6,0) */
+#elif ( defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) )
 #pragma GCC diagnostic ignored "-Wconversion"
 #elif defined(_MSC_VER)
 #pragma warning(disable: 4244)
