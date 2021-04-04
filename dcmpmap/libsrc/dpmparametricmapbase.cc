@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -222,8 +222,16 @@ IODSOPCommonModule& DPMParametricMapBase::getIODSOPCommonModule()
   return DPMParametricMapBase::IODImage::getSOPCommon();
 }
 
-
+#ifdef __SUNPRO_CC
+// the SunPro compiler would complain that the DCMTK_DCMPMAP_EXPORT attribute cannot be applied
+// to an explicit template instantiation.
+template DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODImagePixelModule<Uint16>));
+template DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODImagePixelModule<Sint16>));
+template DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODFloatingPointImagePixelModule));
+template DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODDoubleFloatingPointImagePixelModule));
+#else
 template DCMTK_DCMPMAP_EXPORT DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODImagePixelModule<Uint16>));
 template DCMTK_DCMPMAP_EXPORT DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODImagePixelModule<Sint16>));
 template DCMTK_DCMPMAP_EXPORT DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODFloatingPointImagePixelModule));
 template DCMTK_DCMPMAP_EXPORT DPMParametricMapBase::DPMParametricMapBase(OFin_place_type_t(IODDoubleFloatingPointImagePixelModule));
+#endif

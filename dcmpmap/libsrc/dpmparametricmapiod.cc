@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -1017,6 +1017,25 @@ template class DPMParametricMapIOD::Frames<Sint16>;
 template class DPMParametricMapIOD::Frames<Float32>;
 template class DPMParametricMapIOD::Frames<Float64>;
 
+#ifdef __SUNPRO_CC
+// the SunPro compiler would complain that the DCMTK_DCMPMAP_EXPORT attribute cannot be applied
+// to an explicit template instantiation.
+
+// Helper macro to not to write the same thing multiple times
+#define INSTANTIATE_CREATE(T) template OFvariant<OFCondition,DPMParametricMapIOD>\
+DPMParametricMapIOD::create<T >(const OFString& modality,\
+                                const OFString& seriesNumber,\
+                                const OFString& instanceNumber,\
+                                const Uint16 rows,\
+                                const Uint16 columns,\
+                                const IODEnhGeneralEquipmentModule::EquipmentInfo& equipmentInfo,\
+                                const ContentIdentificationMacro& contentIdentification,\
+                                const OFString& imageFlavor,\
+                                const OFString& derivedPixelContrast,\
+                                const DPMTypes::ContentQualification& contentQualification)
+
+#else
+
 // Helper macro to not to write the same thing multiple times
 #define INSTANTIATE_CREATE(T) template DCMTK_DCMPMAP_EXPORT OFvariant<OFCondition,DPMParametricMapIOD>\
 DPMParametricMapIOD::create<T >(const OFString& modality,\
@@ -1029,6 +1048,8 @@ DPMParametricMapIOD::create<T >(const OFString& modality,\
                                 const OFString& imageFlavor,\
                                 const OFString& derivedPixelContrast,\
                                 const DPMTypes::ContentQualification& contentQualification)
+
+#endif
 
 // Instantiate all four permitted create() methods
 INSTANTIATE_CREATE(IODImagePixelModule<Uint16>);
