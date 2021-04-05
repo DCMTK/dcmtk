@@ -1,6 +1,6 @@
 # declare executables
 foreach(PROGRAM dsr2html dsr2xml dsrdump xml2dsr)
-  DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
+  DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM}.cc)
 endforeach()
 
 # make sure executables are linked to the corresponding libraries

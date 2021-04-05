@@ -3,7 +3,7 @@ include_directories("${dcmjpeg_SOURCE_DIR}/include" "${ofstd_SOURCE_DIR}/include
 
 # declare executables
 foreach(PROGRAM dcmcjpeg dcmdjpeg dcmj2pnm dcmmkdir)
-  DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
+  DCMTK_ADD_EXECUTABLE(${PROGRAM} ${PROGRAM}.cc)
 endforeach()
 
 # make sure executables are linked to the corresponding libraries

@@ -1,8 +1,27 @@
 # create library from source files
-DCMTK_ADD_LIBRARY(
-  dcmdsig dcsighlp dcsignat siautopr sibrsapr sicert sicertvf sicreapr
-  simaccon sinullpr siprivat sipurpos sipkey simdmac sisprof sisrpr
-  sisrvpr sitstamp sitypes sitsfs)
+set(dcmdsig_src 
+  dcsighlp.cc
+  dcsignat.cc
+  siautopr.cc
+  sibrsapr.cc
+  sicert.cc
+  sicertvf.cc
+  sicreapr.cc
+  simaccon.cc
+  sinullpr.cc
+  siprivat.cc
+  sipurpos.cc
+  sipkey.cc
+  simdmac.cc
+  sisprof.cc
+  sisrpr.cc
+  sisrvpr.cc
+  sitstamp.cc
+  sitypes.cc
+  sitsfs.cc
+)
+
+DCMTK_ADD_LIBRARY(dcmdsig ${dcmdsig_src})
 
 DCMTK_TARGET_LINK_MODULES(dcmdsig ofstd dcmdata)
 DCMTK_TARGET_LINK_LIBRARIES(dcmdsig ${OPENSSL_LIBS})

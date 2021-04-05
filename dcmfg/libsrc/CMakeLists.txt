@@ -1,40 +1,42 @@
 # create library from source files
-DCMTK_ADD_LIBRARY(dcmfg
-  concatenationcreator
-  concatenationloader
-  fg
-  fgbase
-  fgctacquisitiondetails
-  fgctacquisitiontype
-  fgctadditionalxraysource
-  fgctexposure
-  fgctgeometry
-  fgctimageframetype
-  fgctposition
-  fgctreconstruction
-  fgcttabledynamics
-  fgctxraydetails
-  fgderimg
-  fgfact
-  fgfracon
-  fgframeanatomy
-  fgframevoilut
-  fgpixeltransform
-  fgimagedatatype
-  fginterface
-  fgirradiationeventid
-  fgpixmsr
-  fgparametricmapframetype
-  fgplanor
-  fgplanorvol
-  fgplanpo
-  fgplanposvol
-  fgrealworldvaluemapping
-  fgseg
-  fgtemporalposition
-  fgusimagedescription
-  fgtypes
-  stack
-  stackinterface)
+set(dcmfg_src
+    concatenationcreator.cc
+    concatenationloader.cc
+    fgbase.cc
+    fg.cc
+    fgctacquisitiondetails.cc
+    fgctacquisitiontype.cc
+    fgctadditionalxraysource.cc
+    fgctexposure.cc
+    fgctgeometry.cc
+    fgctimageframetype.cc
+    fgctposition.cc
+    fgctreconstruction.cc
+    fgcttabledynamics.cc
+    fgctxraydetails.cc
+    fgderimg.cc
+    fgfact.cc
+    fgfracon.cc
+    fgframeanatomy.cc
+    fgframevoilut.cc
+    fgimagedatatype.cc
+    fginterface.cc
+    fgirradiationeventid.cc
+    fgparametricmapframetype.cc
+    fgpixeltransform.cc
+    fgpixmsr.cc
+    fgplanor.cc
+    fgplanorvol.cc
+    fgplanpo.cc
+    fgplanposvol.cc
+    fgrealworldvaluemapping.cc
+    fgseg.cc
+    fgtemporalposition.cc
+    fgtypes.cc
+    fgusimagedescription.cc
+    stack.cc
+    stackinterface.cc
+)
+DCMTK_ADD_LIBRARY(dcmfg ${dcmfg_src} )
 
 DCMTK_TARGET_LINK_MODULES(dcmfg dcmiod dcmdata ofstd oflog)
