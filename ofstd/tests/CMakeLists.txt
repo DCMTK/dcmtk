@@ -1,5 +1,33 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(ofstd_tests tests tatof terror tmap tvec tfilsys tftoa tthread tbase64 tstring tstrutl tlist tstack tofdatim tofstd tmarkup tchrenc txml tuuid toffile tmem toption ttuple tlimits tvariant)
+set(ofstd_tests_src
+  tatof.cc
+  tbase64.cc
+  tchrenc.cc
+  terror.cc
+  tests.cc
+  tfilsys.cc
+  tftoa.cc
+  tlimits.cc
+  tlist.cc
+  tmap.cc
+  tmarkup.cc
+  tmem.cc
+  tofdatim.cc
+  toffile.cc
+  tofstd.cc
+  toption.cc
+  tstack.cc
+  tstring.cc
+  tstrutl.cc
+  tthread.cc
+  ttuple.cc
+  tuuid.cc
+  tvariant.cc
+  tvec.cc
+  txml.cc
+)
+
+DCMTK_ADD_EXECUTABLE(ofstd_tests ${ofstd_tests_src} )
 
 # make sure executables are linked to the corresponding libraries
 DCMTK_TARGET_LINK_MODULES(ofstd_tests ofstd)

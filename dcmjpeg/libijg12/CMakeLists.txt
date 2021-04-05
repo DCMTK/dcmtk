@@ -1,2 +1,72 @@
 # create library from source files
-DCMTK_ADD_LIBRARY(ijg12 jaricom jcapimin jcapistd jcarith jccoefct jccolor jcdctmgr jcdiffct jchuff jcinit jclhuff jclossls jclossy jcmainct jcmarker jcmaster jcodec jcomapi jcparam jcphuff jcpred jcprepct jcsample jcscale jcshuff jctrans jdapimin jdapistd jdarith jdatadst jdatasrc jdcoefct jdcolor jddctmgr jddiffct jdhuff jdinput jdlhuff jdlossls jdlossy jdmainct jdmarker jdmaster jdmerge jdphuff jdpostct jdpred jdsample jdscale jdshuff jdtrans jerror jfdctflt jfdctfst jfdctint jidctflt jidctfst jidctint jidctred jmemmgr jmemnobs jquant1 jquant2 jutils)
+set(ijg12_src
+    jaricom.c
+    jcapimin.c
+    jcapistd.c
+    jcarith.c
+    jccoefct.c
+    jccolor.c
+    jcdctmgr.c
+    jcdiffct.c
+    jchuff12.h
+    jchuff.c
+    jcinit.c
+    jclhuff.c
+    jclossls.c
+    jclossy.c
+    jcmainct.c
+    jcmarker.c
+    jcmaster.c
+    jcodec.c
+    jcomapi.c
+    jconfig12.h
+    jcparam.c
+    jcphuff.c
+    jcpred.c
+    jcprepct.c
+    jcsample.c
+    jcscale.c
+    jcshuff.c
+    jctrans.c
+    jdapimin.c
+    jdapistd.c
+    jdarith.c
+    jdatadst.c
+    jdatasrc.c
+    jdcoefct.c
+    jdcolor.c
+    jdct12.h
+    jddctmgr.c
+    jddiffct.c
+    jdhuff.c
+    jdinput.c
+    jdlhuff.c
+    jdlossls.c
+    jdlossy.c
+    jdmainct.c
+    jdmarker.c
+    jdmaster.c
+    jdmerge.c
+    jdphuff.c
+    jdpostct.c
+    jdpred.c
+    jdsample.c
+    jdscale.c
+    jdshuff.c
+    jdtrans.c
+    jerror.c
+    jfdctflt.c
+    jfdctfst.c
+    jfdctint.c
+    jidctflt.c
+    jidctfst.c
+    jidctint.c
+    jidctred.c
+    jmemmgr.c
+    jmemnobs.c
+    jquant1.c
+    jquant2.c
+    jutils.c
+)
+
+DCMTK_ADD_LIBRARY(ijg12 ${ijg12_src} )

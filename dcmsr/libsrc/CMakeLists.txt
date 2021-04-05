@@ -1,5 +1,83 @@
 # create library from source files
-DCMTK_ADD_LIBRARY(dcmsr dsrcitem dsrcodtn dsrcodvl dsrcomtn dsrcomvl dsrcontn dsrcsidl dsrdattn dsrdncsr dsrdnflt dsrdoc dsrdocst dsrdoctn dsrdoctr dsrdtitn dsrimgfr dsrimgse dsrimgtn dsrimgvl dsritcsr dsrnumtn dsrnumvl dsrpnmtn dsrposcn dsrrefin dsrreftn dsrscogr dsrsc3gr dsrscotn dsrsc3tn dsrscovl dsrsc3vl dsrsoprf dsrstrvl dsrtcodt dsrtcosp dsrtcotn dsrtcoto dsrtcovl dsrtextn dsrtimtn dsrtpltn dsrtree dsrtypes dsruidtn dsrwavch dsrwavtn dsrwavvl dsrxmlc dsrxmld dsriodcc dsrbascc dsrenhcc dsrcomcc dsrkeycc dsrmamcc dsrchecc dsrcolcc dsrprocc dsrxrdcc dsrspecc dsrmaccc dsrimpcc dsrc3dcc dsrrrdcc dsracqcc dsrsaecc dsrprdcc dsrpficc dsrplicc dsrrsdcc dsrctpl dsrrtpl dsrstpl dsrctxgr)
+set(dcmsr_src
+    dsracqcc.cc
+    dsrbascc.cc
+    dsrc3dcc.cc
+    dsrchecc.cc
+    dsrcitem.cc
+    dsrcodtn.cc
+    dsrcodvl.cc
+    dsrcolcc.cc
+    dsrcomcc.cc
+    dsrcomtn.cc
+    dsrcomvl.cc
+    dsrcontn.cc
+    dsrcsidl.cc
+    dsrctpl.cc
+    dsrctxgr.cc
+    dsrdattn.cc
+    dsrdncsr.cc
+    dsrdnflt.cc
+    dsrdoc.cc
+    dsrdocst.cc
+    dsrdoctn.cc
+    dsrdoctr.cc
+    dsrdtitn.cc
+    dsrenhcc.cc
+    dsrimgfr.cc
+    dsrimgse.cc
+    dsrimgtn.cc
+    dsrimgvl.cc
+    dsrimpcc.cc
+    dsriodcc.cc
+    dsritcsr.cc
+    dsrkeycc.cc
+    dsrmaccc.cc
+    dsrmamcc.cc
+    dsrnumtn.cc
+    dsrnumvl.cc
+    dsrpficc.cc
+    dsrplicc.cc
+    dsrpnmtn.cc
+    dsrposcn.cc
+    dsrprdcc.cc
+    dsrprocc.cc
+    dsrrefin.cc
+    dsrreftn.cc
+    dsrrrdcc.cc
+    dsrrsdcc.cc
+    dsrrtpl.cc
+    dsrsaecc.cc
+    dsrsc3gr.cc
+    dsrsc3tn.cc
+    dsrsc3vl.cc
+    dsrscogr.cc
+    dsrscotn.cc
+    dsrscovl.cc
+    dsrsoprf.cc
+    dsrspecc.cc
+    dsrstpl.cc
+    dsrstrvl.cc
+    dsrtcodt.cc
+    dsrtcosp.cc
+    dsrtcotn.cc
+    dsrtcoto.cc
+    dsrtcovl.cc
+    dsrtextn.cc
+    dsrtimtn.cc
+    dsrtpltn.cc
+    dsrtree.cc
+    dsrtypes.cc
+    dsruidtn.cc
+    dsrwavch.cc
+    dsrwavtn.cc
+    dsrwavvl.cc
+    dsrxmlc.cc
+    dsrxmld.cc
+    dsrxrdcc.cc
+)
+
+DCMTK_ADD_LIBRARY(dcmsr ${dcmsr_src} )
 
 DCMTK_TARGET_LINK_MODULES(dcmsr ofstd oflog dcmdata dcmimgle dcmimage)
 DCMTK_TARGET_LINK_LIBRARIES(dcmsr ${LIBXML_LIBS})
