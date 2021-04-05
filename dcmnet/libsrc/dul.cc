@@ -1940,7 +1940,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
      */
 
 #ifdef DONT_DISABLE_NAGLE_ALGORITHM
+#ifdef _MSC_VER
+#pragma message("The macro DONT_DISABLE_NAGLE_ALGORITHM is not supported anymore. See 'macros.txt' for details.")
+#else
 #warning The macro DONT_DISABLE_NAGLE_ALGORITHM is not supported anymore. See "macros.txt" for details.
+#endif
 #endif
 
 #ifdef DISABLE_NAGLE_ALGORITHM

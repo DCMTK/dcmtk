@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2020, OFFIS e.V.
+ *  Copyright (C) 2018-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -274,7 +274,11 @@ int DcmEncapsulatedDocument::getCDAData(
         OFLogger &appLogger)
 {
 #ifdef _XMLWIDECHAR
+#ifdef _MSC_VER
+#pragma message("DCMTK compiled with 'wide char XML parser'. cda2dcm will be unable to read and encapsulate CDA documents.")
+#else
 #warning "DCMTK compiled with 'wide char XML parser'. cda2dcm will be unable to read and encapsulate CDA documents."
+#endif
   OFLOG_ERROR(appLogger, "DCMTK compiled with \"wide char XML parser\". Cannot parse CDA data because of incompatible API.");
   return 99;
 #else

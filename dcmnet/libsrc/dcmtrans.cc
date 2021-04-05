@@ -68,9 +68,15 @@ DcmTransportConnection::DcmTransportConnection(DcmNativeSocketType openSocket)
 {
   if (theSocket >= 0)
   {
+
 #ifdef DISABLE_SEND_TIMEOUT
+#ifdef _MSC_VER
+#pragma message("Warning: The macro DISABLE_SEND_TIMEOUT is not supported anymore. See 'macros.txt' for details.")
+#else
 #warning The macro DISABLE_SEND_TIMEOUT is not supported anymore. See "macros.txt" for details.
 #endif
+#endif
+
     /* get global timeout for the send() function */
     const Sint32 sendTimeout = dcmSocketSendTimeout.get();
     if (sendTimeout >= 0)
@@ -98,8 +104,13 @@ DcmTransportConnection::DcmTransportConnection(DcmNativeSocketType openSocket)
       }
     }
 #ifdef DISABLE_RECV_TIMEOUT
+#ifdef _MSC_VER
+#pragma message("Warning: The macro DISABLE_RECV_TIMEOUT is not supported anymore. See 'macros.txt' for details.")
+#else
 #warning The macro DISABLE_RECV_TIMEOUT is not supported anymore. See "macros.txt" for details.
 #endif
+#endif
+
     /* get global timeout for the recv() function */
     const Sint32 recvTimeout = dcmSocketReceiveTimeout.get();
     if (recvTimeout >= 0)
