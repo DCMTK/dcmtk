@@ -172,15 +172,16 @@ OFCondition DJCodecEncoder::encode(
         // YCbCr color image
         result = encodeColorImage(OFTrue, OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
         break;
-      case EPI_Unknown:
-        // unknown color model - bail out
-        result = EJ_UnsupportedPhotometricInterpretation;
-        break;
       case EPI_Missing:
         // photometric interpretation missing. If ACR-NEMA compatibility is activated, we treat this as MONOCHOME2, otherwise we report an error
         if (djcp->getAcrNemaCompatibility())
             result = encodeMonochromeImage(OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
             else result = EJ_UnsupportedPhotometricInterpretation;
+        break;
+      case EPI_Unknown:
+      default:
+        // unknown color model - bail out
+        result = EJ_UnsupportedPhotometricInterpretation;
         break;
     }
 
