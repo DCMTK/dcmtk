@@ -121,6 +121,14 @@ output transfer syntax:
   +td  --write-xfer-deflated
          write with deflated explicit VR little endian TS
 
+error handling:
+
+  -E   --stop-on-error
+         do not write if document is invalid (default)
+
+  +E   --ignore-errors
+         attempt to write even if document is invalid
+
 post-1993 value representations:
 
   +u   --enable-new-vr
@@ -342,6 +350,6 @@ It is an error if no data dictionary can be loaded.
 
 \section xml2dcm_copyright COPYRIGHT
 
-Copyright (C) 2003-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

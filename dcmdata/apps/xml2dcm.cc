@@ -193,7 +193,7 @@ static OFCondition createNewElement(xmlNodePtr current,
         /* make sure that "tag" attribute exists */
         if (elemTag == NULL)
         {
-            OFLOG_WARN(xml2dcmLogger, "missing 'tag' attribute, ignoring node");
+            OFLOG_WARN(xml2dcmLogger, "missing 'tag' attribute for node '" << current->name << "'");
             result = EC_InvalidTag;
         }
         /* determine group and element number from "tag" */
@@ -223,7 +223,7 @@ static OFCondition createNewElement(xmlNodePtr current,
                 ((tagEVR != EVR_xs) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS))) &&
                 (((tagEVR != EVR_ox) && (tagEVR != EVR_px)) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
             {
-                OFLOG_WARN(xml2dcmLogger, "tag " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
+                OFLOG_WARN(xml2dcmLogger, "element " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
                     << "), correct is " << dcmTag.getVR().getVRName());
             }
             if (dcmEVR != EVR_UNKNOWN)
@@ -231,7 +231,7 @@ static OFCondition createNewElement(xmlNodePtr current,
             /* create DICOM element */
             result = DcmItem::newDicomElementWithVR(newElem, dcmTag);
         } else {
-            OFLOG_WARN(xml2dcmLogger, "invalid 'tag' attribute (" << elemTag << "), ignoring node");
+            OFLOG_WARN(xml2dcmLogger, "invalid 'tag' attribute (" << elemTag << ") for node '" << current->name << "'");
             result = EC_InvalidTag;
         }
         if (result.bad())
@@ -251,7 +251,7 @@ static OFCondition createNewElement(xmlNodePtr current,
 static OFCondition putElementContent(xmlNodePtr current,
                                      DcmElement *element)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_Normal;
     /* check whether node and element are valid */
     if ((current != NULL) && (element != NULL))
     {
@@ -261,7 +261,10 @@ static OFCondition putElementContent(xmlNodePtr current,
         xmlChar *attrVal = xmlGetProp(current, OFreinterpret_cast(const xmlChar *, "binary"));
         /* check whether node content is present */
         if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "hidden")) == 0)
+        {
             OFLOG_WARN(xml2dcmLogger, "content of node " << element->getTag() << " is 'hidden', empty element inserted");
+            result = EC_MissingValue;
+        }
         /* check whether node content is base64 encoded */
         else if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "base64")) == 0)
         {
@@ -311,7 +314,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                         /* read binary file into the buffer */
                         if (fread(buf, 1, OFstatic_cast(size_t, fileSize), f) != fileSize)
                         {
-                            OFLOG_ERROR(xml2dcmLogger, "error reading binary data file: " << filename << ": " << OFStandard::getLastSystemErrorCode().message());
+                            OFLOG_WARN(xml2dcmLogger, "cannot read binary data file: " << filename << ": " << OFStandard::getLastSystemErrorCode().message());
                             result = EC_CorruptedData;
                         }
                         else if (dcmEVR == EVR_OW)
@@ -322,11 +325,11 @@ static OFCondition putElementContent(xmlNodePtr current,
                     }
                     fclose(f);
                 } else {
-                    OFLOG_ERROR(xml2dcmLogger, "cannot open binary data file: " << filename);
+                    OFLOG_WARN(xml2dcmLogger, "cannot open binary data file: " << filename);
                     result = EC_InvalidTag;
                 }
             } else
-                OFLOG_ERROR(xml2dcmLogger, "filename for element " << element->getTag() << " is missing, empty element inserted");
+                OFLOG_WARN(xml2dcmLogger, "filename for element " << element->getTag() << " is missing, empty element inserted");
         } else {
             OFString dicomVal;
             /* convert character set from UTF-8 (for specific VRs only) */
@@ -339,12 +342,13 @@ static OFCondition putElementContent(xmlNodePtr current,
                 result = element->putString(OFreinterpret_cast(char *, elemVal));
             }
             if (result.bad())
-                OFLOG_ERROR(xml2dcmLogger, "cannot put content to element " << element->getTag() << ": " << result.text());
+                OFLOG_WARN(xml2dcmLogger, "cannot put content to element " << element->getTag() << ": " << result.text());
         }
         /* free allocated memory */
         xmlFree(elemVal);
         xmlFree(attrVal);
-    }
+    } else
+        result = EC_IllegalCall;
     return result;
 }
 
@@ -387,7 +391,7 @@ static OFCondition parseElement(DcmItem *dataset,
             else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 138")) == 0)
                 encString = "ISO-8859-8";
             else if (xmlStrlen(elemVal) > 0)
-                OFLOG_ERROR(xml2dcmLogger, "character set '" << elemVal << "' not supported");
+                OFLOG_WARN(xml2dcmLogger, "character set '" << elemVal << "' not supported");
             if (encString != NULL)
             {
                 /* find appropriate encoding handler */
@@ -413,14 +417,16 @@ static OFCondition parseElement(DcmItem *dataset,
 // forward declaration
 static OFCondition parseDataSet(DcmItem *dataset,
                                 xmlNodePtr current,
-                                E_TransferSyntax xfer);
+                                E_TransferSyntax xfer,
+                                const OFBool stopOnError);
 
 
 static OFCondition parseSequence(DcmSequenceOfItems *sequence,
                                  xmlNodePtr current,
-                                 E_TransferSyntax xfer)
+                                 E_TransferSyntax xfer,
+                                 const OFBool stopOnError)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_Normal;
     if (sequence != NULL)
     {
         /* ignore blank (empty or whitespace only) nodes */
@@ -437,23 +443,39 @@ static OFCondition parseSequence(DcmSequenceOfItems *sequence,
                 {
                     sequence->insert(newItem);
                     /* proceed parsing the item content */
-                    parseDataSet(newItem, current->xmlChildrenNode, xfer);
+                    result = parseDataSet(newItem, current->xmlChildrenNode, xfer, stopOnError);
+                    if (result.bad())
+                        OFLOG_WARN(xml2dcmLogger, "cannot parse invalid item: " << result.text());
                 }
             } else if (!xmlIsBlankNode(current))
                 OFLOG_WARN(xml2dcmLogger, "unexpected node '" << current->name << "', 'item' expected, skipping");
+            /* check for errors */
+            if (result.bad())
+            {
+                if  (stopOnError)
+                {
+                    /* exit the loop and return with an error */
+                    break;
+                } else {
+                    OFLOG_DEBUG(xml2dcmLogger, "ignoring error as requested by the user");
+                    /* ignore the error */
+                    result = EC_Normal;
+                }
+            }
             /* proceed with next node */
             current = current->next;
         }
-        result = EC_Normal;
-    }
+    } else
+        result = EC_IllegalCall;
     return result;
 }
 
 
 static OFCondition parsePixelSequence(DcmPixelSequence *sequence,
-                                      xmlNodePtr current)
+                                      xmlNodePtr current,
+                                      const OFBool stopOnError)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_Normal;
     if (sequence != NULL)
     {
         /* ignore blank (empty or whitespace only) nodes */
@@ -470,22 +492,38 @@ static OFCondition parsePixelSequence(DcmPixelSequence *sequence,
                 {
                     sequence->insert(newItem);
                     /* put pixel data into the item */
-                    putElementContent(current, newItem);
+                    result = putElementContent(current, newItem);
+                    if (result.bad())
+                        OFLOG_WARN(xml2dcmLogger, "cannot parse invalid pixel-item: " << result.text());
                 }
             } else if (!xmlIsBlankNode(current))
                 OFLOG_WARN(xml2dcmLogger, "unexpected node '" << current->name << "', 'pixel-item' expected, skipping");
+            /* check for errors */
+            if (result.bad())
+            {
+                if  (stopOnError)
+                {
+                    /* exit the loop and return with an error */
+                    break;
+                } else {
+                    OFLOG_DEBUG(xml2dcmLogger, "ignoring error as requested by the user");
+                    /* ignore the error */
+                    result = EC_Normal;
+                }
+            }
             /* proceed with next node */
             current = current->next;
         }
-        result = EC_Normal;
-    }
+    } else
+        result = EC_IllegalCall;
     return result;
 }
 
 
 static OFCondition parseMetaHeader(DcmMetaInfo *metainfo,
                                    xmlNodePtr current,
-                                   const OFBool parse)
+                                   const OFBool parse,
+                                   const OFBool stopOnError)
 {
     /* check for valid node and correct name */
     OFCondition result = checkNode(current, "meta-header");
@@ -497,9 +535,22 @@ static OFCondition parseMetaHeader(DcmMetaInfo *metainfo,
         {
             /* ignore non-element nodes */
             if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "element")) == 0)
-                parseElement(metainfo, current);
+                result = parseElement(metainfo, current);
             else if (!xmlIsBlankNode(current))
                 OFLOG_WARN(xml2dcmLogger, "unexpected node '" << current->name << "', 'element' expected, skipping");
+            /* check for errors */
+            if (result.bad())
+            {
+                if  (stopOnError)
+                {
+                    /* exit the loop and return with an error */
+                    break;
+                } else {
+                    OFLOG_DEBUG(xml2dcmLogger, "ignoring error as requested by the user");
+                    /* ignore the error */
+                    result = EC_Normal;
+                }
+            }
             /* proceed with next node */
             current = current->next;
         }
@@ -510,7 +561,8 @@ static OFCondition parseMetaHeader(DcmMetaInfo *metainfo,
 
 static OFCondition parseDataSet(DcmItem *dataset,
                                 xmlNodePtr current,
-                                E_TransferSyntax xfer)
+                                E_TransferSyntax xfer,
+                                const OFBool stopOnError)
 {
     OFCondition result = EC_Normal;
     /* ignore blank (empty or whitespace only) nodes */
@@ -520,7 +572,7 @@ static OFCondition parseDataSet(DcmItem *dataset,
     {
         /* ignore non-element/sequence nodes */
         if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "element")) == 0)
-            parseElement(dataset, current);
+            result = parseElement(dataset, current);
         else if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "sequence")) == 0)
         {
             DcmElement *newElem = NULL;
@@ -542,14 +594,14 @@ static OFCondition parseDataSet(DcmItem *dataset,
                             {
                                 /* ... insert it into the dataset and proceed with the pixel items */
                                 OFstatic_cast(DcmPixelData *, newElem)->putOriginalRepresentation(xfer, NULL, sequence);
-                                parsePixelSequence(sequence, current->xmlChildrenNode);
+                                result = parsePixelSequence(sequence, current->xmlChildrenNode, stopOnError);
                             } else
                                 OFLOG_WARN(xml2dcmLogger, "wrong VR for 'sequence' element with pixel data, ignoring child nodes");
                         }
                     } else {
                         /* proceed parsing the items of the sequence */
                         if (newElem->ident() == EVR_SQ)
-                            parseSequence(OFstatic_cast(DcmSequenceOfItems *, newElem), current->xmlChildrenNode, xfer);
+                            result = parseSequence(OFstatic_cast(DcmSequenceOfItems *, newElem), current->xmlChildrenNode, xfer, stopOnError);
                         else
                             OFLOG_WARN(xml2dcmLogger, "wrong VR for 'sequence' element, ignoring child nodes");
                     }
@@ -560,6 +612,19 @@ static OFCondition parseDataSet(DcmItem *dataset,
             }
         } else if (!xmlIsBlankNode(current))
             OFLOG_WARN(xml2dcmLogger, "unexpected node '" << current->name << "', skipping");
+        /* check for errors */
+        if (result.bad())
+        {
+            if  (stopOnError)
+            {
+                /* exit the loop and return with an error */
+                break;
+            } else {
+                OFLOG_DEBUG(xml2dcmLogger, "ignoring error as requested by the user");
+                /* ignore the error */
+                result = EC_Normal;
+            }
+        }
         /* proceed with next node */
         current = current->next;
     }
@@ -596,7 +661,8 @@ static OFCondition readXmlFile(const char *ifname,
                                E_TransferSyntax &xfer,
                                const OFBool metaInfo,
                                const OFBool checkNamespace,
-                               const OFBool validateDocument)
+                               const OFBool validateDocument,
+                               const OFBool stopOnError)
 {
     OFCondition result = EC_Normal;
     xfer = EXS_Unknown;
@@ -634,20 +700,20 @@ static OFCondition readXmlFile(const char *ifname,
                             OFLOG_INFO(xml2dcmLogger, "parsing meta-header ...");
                         else
                             OFLOG_INFO(xml2dcmLogger, "skipping meta-header ...");
-
                         current = current->xmlChildrenNode;
                         /* ignore blank (empty or whitespace only) nodes */
                         while ((current != NULL) && xmlIsBlankNode(current))
                             current = current->next;
                         /* parse/skip "meta-header" */
-                        result = parseMetaHeader(fileformat.getMetaInfo(), current, metaInfo /*parse*/);
+                        result = parseMetaHeader(fileformat.getMetaInfo(), current, metaInfo /*parse*/, stopOnError);
                         if (result.good())
                         {
                             current = current->next;
                             /* ignore blank (empty or whitespace only) nodes */
                             while ((current != NULL) && xmlIsBlankNode(current))
                                 current = current->next;
-                        }
+                        } else
+                            OFLOG_ERROR(xml2dcmLogger, "cannot parse invalid meta-header");
                     }
                     /* there should always be a "data-set" node */
                     if (result.good())
@@ -657,24 +723,31 @@ static OFCondition readXmlFile(const char *ifname,
                         result = checkNode(current, "data-set");
                         if (result.good())
                         {
-                            DcmDataset *dataset = fileformat.getDataset();
                             /* determine stored transfer syntax */
                             xmlChar *xferUID = xmlGetProp(current, OFreinterpret_cast(const xmlChar *, "xfer"));
                             if (xferUID != NULL)
                                 xfer = DcmXfer(OFreinterpret_cast(char *, xferUID)).getXfer();
-                            result = parseDataSet(dataset, current->xmlChildrenNode, xfer);
+                            result = parseDataSet(fileformat.getDataset(), current->xmlChildrenNode, xfer, stopOnError);
                             /* free allocated memory */
                             xmlFree(xferUID);
+                            if (result.bad())
+                                OFLOG_ERROR(xml2dcmLogger, "cannot parse invalid data-set");
                         }
                     }
-                    if (result.bad() && xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+                    if (result.bad())
                     {
-                        /* dump XML document for debugging purposes */
-                        xmlChar *str;
-                        int size;
-                        xmlDocDumpFormatMemory(doc, &str, &size, 1);
-                        OFLOG_DEBUG(xmlLogger, str);
-                        xmlFree(str);
+                        if (xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+                        {
+                            OFLOG_DEBUG(xmlLogger, "--- libxml dump ---------");
+                            /* dump XML document for debugging purposes */
+                            xmlChar *str;
+                            int size;
+                            xmlDocDumpFormatMemory(doc, &str, &size, 1);
+                            OFLOG_DEBUG(xmlLogger, str);
+                            xmlFree(str);
+                            OFLOG_DEBUG(xmlLogger, "-------------------------");
+                        }
+                        OFLOG_ERROR(xml2dcmLogger, "cannot read invalid document: " << ifname);
                     }
                 } else {
                     OFLOG_ERROR(xml2dcmLogger, "document has wrong type, dcmtk namespace not found");
@@ -706,6 +779,7 @@ int main(int argc, char *argv[])
     OFBool opt_validate = OFFalse;
     OFBool opt_generateUIDs = OFFalse;
     OFBool opt_overwriteUIDs = OFFalse;
+    OFBool opt_stopOnErrors = OFTrue;
     E_TransferSyntax opt_xfer = EXS_Unknown;
     E_EncodingType opt_enctype = EET_ExplicitLength;
     E_GrpLenEncoding opt_glenc = EGL_recalcGL;
@@ -755,6 +829,9 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
         cmd.addOption("--write-xfer-deflated", "+td",    "write with deflated expl. VR little endian TS");
 #endif
+      cmd.addSubGroup("error handling:");
+        cmd.addOption("--stop-on-error",       "-E",     "do not write if document is invalid (default)");
+        cmd.addOption("--ignore-errors",       "+E",     "attempt to write even if document is invalid");
       cmd.addSubGroup("post-1993 value representations:");
         cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
         cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
@@ -868,6 +945,11 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
+        if (cmd.findOption("--stop-on-error")) opt_stopOnErrors = OFTrue;
+        if (cmd.findOption("--ignore-errors")) opt_stopOnErrors = OFFalse;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
         if (cmd.findOption("--enable-new-vr"))
             dcmEnableGenerationOfNewVRs();
         if (cmd.findOption("--disable-new-vr"))
@@ -938,6 +1020,9 @@ int main(int argc, char *argv[])
     xmlSubstituteEntitiesDefault(0);
     /* add line number to debug messages */
     xmlLineNumbersDefault(1);
+    /* enable node indenting for tree output */
+    xmlIndentTreeOutput = 1;
+    xmlKeepBlanksDefault(0);
     /* enable libxml warnings and error messages */
     xmlGetWarningsDefaultValue = 1;
     xmlSetGenericErrorFunc(&tmpErrorString, errorFunction);
@@ -966,7 +1051,7 @@ int main(int argc, char *argv[])
         E_TransferSyntax xfer;
         OFLOG_INFO(xml2dcmLogger, "reading XML input file: " << opt_ifname);
         /* read XML file and feed data into DICOM fileformat */
-        result = readXmlFile(opt_ifname, fileformat, xfer, opt_metaInfo, opt_namespace, opt_validate);
+        result = readXmlFile(opt_ifname, fileformat, xfer, opt_metaInfo, opt_namespace, opt_validate, opt_stopOnErrors);
         if (result.good())
         {
             DcmDataset *dataset = fileformat.getDataset();
@@ -1000,7 +1085,7 @@ int main(int argc, char *argv[])
                 /* check whether pixel data is compressed */
                 if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).isEncapsulated())
                 {
-                    OFLOG_ERROR(xml2dcmLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
+                    OFLOG_WARN(xml2dcmLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
                     opt_writeMode = EWM_fileformat;
                 }
                 /* write DICOM file */
