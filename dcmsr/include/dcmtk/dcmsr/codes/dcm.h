@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2021a
- *  File created on 2021-02-03 20:46:59 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021b
+ *  File created on 2021-03-30 10:07:19 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4388
-// - retired: 199
+// total number of codes: 4442
+// - retired: 200
 // - no name: 27
 // - not unique: 17
 
@@ -4193,10 +4193,10 @@
 #define CODE_DCM_SyringeAttached                                           DSRBasicCodedEntry("130163", "DCM", "Syringe attached")
 #define CODE_DCM_SyringeDetached                                           DSRBasicCodedEntry("130164", "DCM", "Syringe detached")
 #define CODE_DCM_TotalKeepVeinOpenVolumeAdministered                       DSRBasicCodedEntry("130165", "DCM", "Total Keep Vein Open Volume Administered")
-#define CODE_DCM_AutomaticAdministrationPhase                              DSRBasicCodedEntry("130168", "DCM", "Automatic Administration Phase")
-#define CODE_DCM_AutomaticProgrammedHoldPhase                              DSRBasicCodedEntry("130169", "DCM", "Automatic Programmed Hold Phase")
-#define CODE_DCM_AutomaticWithManualHoldPhase                              DSRBasicCodedEntry("130170", "DCM", "Automatic with Manual Hold Phase")
-#define CODE_DCM_AutomaticWithManualInjectPhase                            DSRBasicCodedEntry("130171", "DCM", "Automatic with Manual Inject Phase")
+#define CODE_DCM_AutomaticProgrammedAdministrationPhase                    DSRBasicCodedEntry("130168", "DCM", "Automatic Programmed Administration Phase")
+#define CODE_DCM_AutomaticProgrammedDelayPhase                             DSRBasicCodedEntry("130169", "DCM", "Automatic Programmed Delay Phase")
+#define CODE_DCM_RETIRED_AutomaticWithManualHoldPhase                      DSRBasicCodedEntry("130170", "DCM", "Automatic with Manual Hold Phase")
+#define CODE_DCM_AutomatedManualInjectPhase                                DSRBasicCodedEntry("130171", "DCM", "Automated Manual Inject Phase")
 #define CODE_DCM_ManuallyTriggeredInjectionInformation                     DSRBasicCodedEntry("130172", "DCM", "Manually Triggered Injection Information")
 #define CODE_DCM_AutomatedAdministration                                   DSRBasicCodedEntry("130173", "DCM", "Automated Administration")
 #define CODE_DCM_ManualAdministration                                      DSRBasicCodedEntry("130174", "DCM", "Manual Administration")
@@ -4280,6 +4280,13 @@
 #define CODE_DCM_ContrastReactionProphylacticAgent                         DSRBasicCodedEntry("130259", "DCM", "Contrast Reaction Prophylactic Agent")
 #define CODE_DCM_ImagingAgentAdministrationPerformedPhaseUID               DSRBasicCodedEntry("130261", "DCM", "Imaging Agent Administration Performed Phase UID")
 #define CODE_DCM_ReferencedImagingAgentAdministrationPhaseUID              DSRBasicCodedEntry("130262", "DCM", "Referenced Imaging Agent Administration Phase UID")
+#define CODE_DCM_AutomaticProgrammedWaitPhase                              DSRBasicCodedEntry("130263", "DCM", "Automatic Programmed Wait Phase")
+#define CODE_DCM_ImagingAgentAdministrationInjectorPhaseIdentifier         DSRBasicCodedEntry("130264", "DCM", "Imaging Agent Administration Injector Phase Identifier")
+#define CODE_DCM_ImagingAgentAdministrationPhaseWithManualHold             DSRBasicCodedEntry("130265", "DCM", "Imaging Agent Administration Phase with Manual Hold")
+#define CODE_DCM_ProgrammedHoldStarted                                     DSRBasicCodedEntry("130266", "DCM", "Programmed hold started")
+#define CODE_DCM_ManualHoldStarted                                         DSRBasicCodedEntry("130267", "DCM", "Manual hold started")
+#define CODE_DCM_ManualResumeFromHold                                      DSRBasicCodedEntry("130268", "DCM", "Manual resume from hold")
+#define CODE_DCM_TerminatedHoldDueToTimeout                                DSRBasicCodedEntry("130269", "DCM", "Terminated hold due to timeout")
 #define CODE_DCM_Median                                                    DSRBasicCodedEntry("130290", "DCM", "Median")
 #define CODE_DCM_SkinOfParaspinalAreaOfTheNeck                             DSRBasicCodedEntry("130300", "DCM", "Skin of paraspinal area of the neck")
 #define CODE_DCM_SkinOfParaspinalAreaOfTheSuperiorBack                     DSRBasicCodedEntry("130301", "DCM", "Skin of paraspinal area of the superior back")
@@ -4436,5 +4443,52 @@
 #define CODE_DCM_RegionInSpace                                             DSRBasicCodedEntry("130488", "DCM", "Region in Space")
 #define CODE_DCM_ReferencedRegionOfInterestIdentifier                      DSRBasicCodedEntry("130489", "DCM", "Referenced Region of Interest Identifier")
 #define CODE_DCM_Centerline                                                DSRBasicCodedEntry("130490", "DCM", "Centerline")
+#define CODE_DCM_StimulationMode                                           DSRBasicCodedEntry("130491", "DCM", "Stimulation Mode")
+#define CODE_DCM_StimulusSamplePosition                                    DSRBasicCodedEntry("130492", "DCM", "Stimulus Sample Position")
+#define CODE_DCM_StimulusTimeOffset                                        DSRBasicCodedEntry("130493", "DCM", "Stimulus Time Offset")
+#define CODE_DCM_NumberOfStimulusEvents                                    DSRBasicCodedEntry("130494", "DCM", "Number of Stimulus Events")
+#define CODE_DCM_FrequencyOfStimulusEvents                                 DSRBasicCodedEntry("130495", "DCM", "Frequency of Stimulus Events")
+#define CODE_DCM_AccumulatedDoseData                                       DSRBasicCodedEntry("130500", "DCM", "Accumulated Dose Data")
+#define CODE_DCM_IrradiationEventSummaryData                               DSRBasicCodedEntry("130501", "DCM", "Irradiation Event Summary Data")
+#define CODE_DCM_ReferencePointDosimetry                                   DSRBasicCodedEntry("130502", "DCM", "Reference Point Dosimetry")
+#define CODE_DCM_IsRejectedAcquisition                                     DSRBasicCodedEntry("130503", "DCM", "Is Rejected Acquisition")
+#define CODE_DCM_ReasonForRejectingAcquisition                             DSRBasicCodedEntry("130504", "DCM", "Reason for Rejecting Acquisition")
+#define CODE_DCM_IrradiationDetails                                        DSRBasicCodedEntry("130505", "DCM", "Irradiation Details")
+#define CODE_DCM_RDSRFrameOfReferenceOrigin                                DSRBasicCodedEntry("130506", "DCM", "RDSR Frame of Reference Origin")
+#define CODE_DCM_RDSRFrameOfReferenceDescription                           DSRBasicCodedEntry("130507", "DCM", "RDSR Frame of Reference Description")
+#define CODE_DCM_RadiationSourceCharacteristics                            DSRBasicCodedEntry("130508", "DCM", "Radiation Source Characteristics")
+#define CODE_DCM_XRayFilterThickness                                       DSRBasicCodedEntry("130509", "DCM", "X-Ray Filter Thickness")
+#define CODE_DCM_ReportedValueType                                         DSRBasicCodedEntry("130510", "DCM", "Reported Value Type")
+#define CODE_DCM_RadiationTechnique                                        DSRBasicCodedEntry("130511", "DCM", "Radiation Technique")
+#define CODE_DCM_Filtration                                                DSRBasicCodedEntry("130512", "DCM", "Filtration")
+#define CODE_DCM_Attenuators                                               DSRBasicCodedEntry("130513", "DCM", "Attenuators")
+#define CODE_DCM_RadiationOutput                                           DSRBasicCodedEntry("130514", "DCM", "Radiation Output")
+#define CODE_DCM_AirKermaAtOutputMeasurementPoint                          DSRBasicCodedEntry("130515", "DCM", "Air Kerma at Output Measurement Point")
+#define CODE_DCM_RadiationFieldArea                                        DSRBasicCodedEntry("130516", "DCM", "Radiation Field Area")
+#define CODE_DCM_RadiationFieldOutline                                     DSRBasicCodedEntry("130517", "DCM", "Radiation Field Outline")
+#define CODE_DCM_ValueTiming                                               DSRBasicCodedEntry("130518", "DCM", "Value Timing")
+#define CODE_DCM_XRaySourceReferenceCoordinateSystem                       DSRBasicCodedEntry("130519", "DCM", "X-Ray Source Reference Coordinate System")
+#define CODE_DCM_TransformationMatrix                                      DSRBasicCodedEntry("130520", "DCM", "Transformation Matrix")
+#define CODE_DCM_CenterOfRotation                                          DSRBasicCodedEntry("130521", "DCM", "Center of Rotation")
+#define CODE_DCM_RotationPlaneNormalPoint                                  DSRBasicCodedEntry("130522", "DCM", "Rotation Plane Normal Point")
+#define CODE_DCM_RotationAngle                                             DSRBasicCodedEntry("130523", "DCM", "Rotation Angle")
+#define CODE_DCM_BeamPosition                                              DSRBasicCodedEntry("130524", "DCM", "Beam Position")
+#define CODE_DCM_OutputMeasurementPointPosition                            DSRBasicCodedEntry("130525", "DCM", "Output Measurement Point Position")
+#define CODE_DCM_ReferencePointPosition                                    DSRBasicCodedEntry("130526", "DCM", "Reference Point Position")
+#define CODE_DCM_IdentificationOfTheAttenuator                             DSRBasicCodedEntry("130527", "DCM", "Identification of the Attenuator")
+#define CODE_DCM_AttenuatorPosition                                        DSRBasicCodedEntry("130528", "DCM", "Attenuator Position")
+#define CODE_DCM_PatientAttenuationCharacteristics                         DSRBasicCodedEntry("130529", "DCM", "Patient Attenuation Characteristics")
+#define CODE_DCM_ProcedureCharacteristics                                  DSRBasicCodedEntry("130530", "DCM", "Procedure Characteristics")
+#define CODE_DCM_AttenuatorCharacteristics                                 DSRBasicCodedEntry("130531", "DCM", "Attenuator Characteristics")
+#define CODE_DCM_DurationOfTimePeriod                                      DSRBasicCodedEntry("130532", "DCM", "Duration of Time Period")
+#define CODE_DCM_BeginningOfTimePeriod                                     DSRBasicCodedEntry("130533", "DCM", "Beginning of Time Period")
+#define CODE_DCM_EndOfTimePeriod                                           DSRBasicCodedEntry("130534", "DCM", "End of Time Period")
+#define CODE_DCM_MiddleOfTimePeriod                                        DSRBasicCodedEntry("130535", "DCM", "Middle of Time Period")
+#define CODE_DCM_RoomOrigin                                                DSRBasicCodedEntry("130536", "DCM", "Room Origin")
+#define CODE_DCM_EquipmentOrigin                                           DSRBasicCodedEntry("130537", "DCM", "Equipment Origin")
+#define CODE_DCM_PatientSupportOrigin                                      DSRBasicCodedEntry("130538", "DCM", "Patient Support Origin")
+#define CODE_DCM_IsocenterOrigin                                           DSRBasicCodedEntry("130539", "DCM", "Isocenter Origin")
+#define CODE_DCM_PatientCoordinateSystemOrigin                             DSRBasicCodedEntry("130540", "DCM", "Patient Coordinate System Origin")
+#define CODE_DCM_10cmDosimetryPhantom                                      DSRBasicCodedEntry("130541", "DCM", "10 cm Dosimetry Phantom")
 
 #endif

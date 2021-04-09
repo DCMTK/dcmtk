@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2021a
- *  File created on 2021-02-03 20:47:05 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021b
+ *  File created on 2021-03-30 10:07:22 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 50
+// total number of codes: 51
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -61,6 +61,7 @@
 #define CODE_UMLS_Thermography                                             DSRBasicCodedEntry("C0039810", "UMLS", "Thermography")
 #define CODE_UMLS_Alphaxalone                                              DSRBasicCodedEntry("C0051482", "UMLS", "Alphaxalone")
 #define CODE_UMLS_Fluanisone                                               DSRBasicCodedEntry("C0060473", "UMLS", "Fluanisone")
+#define CODE_UMLS_KevlarAramidFiber                                        DSRBasicCodedEntry("C0064329", "UMLS", "Kevlar Aramid Fiber")
 #define CODE_UMLS_HeatLamp                                                 DSRBasicCodedEntry("C0181514", "UMLS", "Heat lamp")
 #define CODE_UMLS_UnknownPrimaryNeoplasiaSite                              DSRBasicCodedEntry("C0221297", "UMLS", "unknown primary neoplasia site")
 #define CODE_UMLS_RestrictedDiet                                           DSRBasicCodedEntry("C0425422", "UMLS", "Restricted diet")
