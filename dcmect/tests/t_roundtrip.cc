@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, OFFIS e.V.
+ *  Copyright (C) 2019-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -807,7 +807,7 @@ static void prepareExpectedDump()
         += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP
         += "        (0018,9323) CS [WEIRD]                                  #   6, 1 ExposureModulationType\n";
-    EXPECTED_DUMP += "        (0018,9324) FD 0.2                                      #   8, 1 EstimatedDoseSaving\n";
+    EXPECTED_DUMP += "        (0018,9324) FD 0.2                                      #   8, 1 RETIRED_EstimatedDoseSaving\n";
     EXPECTED_DUMP += "        (0018,9328) FD 0.4                                      #   8, 1 ExposureTimeInms\n";
     EXPECTED_DUMP += "        (0018,9330) FD 0.7                                      #   8, 1 XRayTubeCurrentInmA\n";
     EXPECTED_DUMP += "        (0018,9332) FD 0.3                                      #   8, 1 ExposureInmAs\n";
