@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2021-02-01 15:02:16
+**   Date: 2021-03-30 09:39:44
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2021-02-01 15:02:16"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2021-03-30 09:39:44"
 
 
 /*
@@ -1319,7 +1319,7 @@
 #define DCM_CTExposureSequence                   DcmTagKey(0x0018, 0x9321)
 #define DCM_ReconstructionPixelSpacing           DcmTagKey(0x0018, 0x9322)
 #define DCM_ExposureModulationType               DcmTagKey(0x0018, 0x9323)
-#define DCM_EstimatedDoseSaving                  DcmTagKey(0x0018, 0x9324)
+#define DCM_RETIRED_EstimatedDoseSaving          DcmTagKey(0x0018, 0x9324)
 #define DCM_CTXRayDetailsSequence                DcmTagKey(0x0018, 0x9325)
 #define DCM_CTPositionSequence                   DcmTagKey(0x0018, 0x9326)
 #define DCM_TablePosition                        DcmTagKey(0x0018, 0x9327)

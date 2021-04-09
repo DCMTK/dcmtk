@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2021-02-01 15:02:17
+**   Date: 2021-03-30 09:39:57
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -6631,7 +6631,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x9324, 0x0018, 0x9324,
-      EVR_FD, "EstimatedDoseSaving", 1, 1, "DICOM",
+      EVR_FD, "RETIRED_EstimatedDoseSaving", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x9325, 0x0018, 0x9325,

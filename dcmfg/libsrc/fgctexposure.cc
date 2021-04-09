@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -34,7 +34,7 @@ FGCTExposure::FGCTExposureItem::FGCTExposureItem()
     , m_XRayTubeCurrentInMa(DCM_XRayTubeCurrentInmA)
     , m_ExposureInMas(DCM_ExposureInmAs)
     , m_ExposureModulationType(DCM_ExposureModulationType)
-    , m_EstimatedDoseSaving(DCM_EstimatedDoseSaving)
+    , m_EstimatedDoseSaving(DCM_RETIRED_EstimatedDoseSaving)
     , m_CTDIVol(DCM_CTDIvol)
     , m_CTDIPhantomTypeCodeSequence()
     , m_WaterEquivalentDiameter(DCM_WaterEquivalentDiameter)

@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2021a and PS 3.7-2021a.
-# File created on 2021-02-01 14:58:43 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2021b and PS 3.7-2021b.
+# File created on 2021-03-30 09:36:52 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -1249,7 +1249,6 @@
 (0018,9321)	SQ	CTExposureSequence	1	DICOM
 (0018,9322)	FD	ReconstructionPixelSpacing	2	DICOM
 (0018,9323)	CS	ExposureModulationType	1-n	DICOM
-(0018,9324)	FD	EstimatedDoseSaving	1	DICOM
 (0018,9325)	SQ	CTXRayDetailsSequence	1	DICOM
 (0018,9326)	SQ	CTPositionSequence	1	DICOM
 (0018,9327)	FD	TablePosition	1	DICOM
@@ -4585,6 +4584,7 @@
 (0018,9166)	CS	RETIRED_BulkMotionStatus	1	DICOM/retired
 (0018,9195)	FD	RETIRED_ChemicalShiftMinimumIntegrationLimitInHz	1	DICOM/retired
 (0018,9196)	FD	RETIRED_ChemicalShiftMaximumIntegrationLimitInHz	1	DICOM/retired
+(0018,9324)	FD	RETIRED_EstimatedDoseSaving	1	DICOM/retired
 (0020,0014)	IS	RETIRED_IsotopeNumber	1	DICOM/retired
 (0020,0015)	IS	RETIRED_PhaseNumber	1	DICOM/retired
 (0020,0016)	IS	RETIRED_IntervalNumber	1	DICOM/retired
