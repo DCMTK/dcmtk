@@ -263,7 +263,9 @@ static OFCondition putElementContent(xmlNodePtr current,
         if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "hidden")) == 0)
         {
             OFLOG_WARN(xml2dcmLogger, "content of node " << element->getTag() << " is 'hidden', empty element inserted");
-            result = EC_MissingValue;
+            /* return an error unless the element is part of the file meta information */
+            if (element->getGTag() != 0x0002)
+                result = EC_MissingValue;
         }
         /* check whether node content is base64 encoded */
         else if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "base64")) == 0)
