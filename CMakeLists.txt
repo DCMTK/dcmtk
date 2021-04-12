@@ -148,3 +148,47 @@ else()
     "${DCMTK_RUN_CTEST_SCRIPT}" ESCAPE_QUOTES @ONLY
   )
 endif()
+
+# Generate pkgconfig
+if(DCMTK_WITH_OPENSSL)
+	set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libssl")
+endif()
+
+if(DCMTK_WITH_LIBXML)
+	set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libxml-2.0")
+endif()
+
+if(DCMTK_WITH_LIBPNG)
+	set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libpng16")
+endif()
+
+if(DCMTK_WITH_ZLIB)
+	set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} zlib")
+endif()
+
+if(DCMTK_WITH_SNDFILE)
+	set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} sndfile")
+endif()
+
+if(DCMTK_WITH_OPENJPEG)
+	set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libjpeg")
+endif()
+
+if(DCMTK_WITH_ICU)
+	set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} icu-uc")
+endif()
+
+get_property(DCMTK_LIBRARY_TARGETS GLOBAL PROPERTY DCMTK_LIBRARY_TARGETS)
+foreach(T ${DCMTK_LIBRARY_TARGETS})
+	set(PKGCONF_LIBS "${PKGCONF_LIBS} -l${T}")
+endforeach()
+
+configure_file(
+	${DCMTK_SOURCE_DIR}/dcmtk.pc.in
+	${DCMTK_BINARY_DIR}/dcmtk.pc
+	@ONLY
+)
+
+install(FILES "${DCMTK_BINARY_DIR}/dcmtk.pc"
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
