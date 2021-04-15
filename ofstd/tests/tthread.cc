@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,10 +36,10 @@
 } while (0)
 
 static OFMutex *mutex=NULL;
-static int mtx_var=0;
-static int mtx_cond1=0;
-static int mtx_cond2=0;
-static int mtx_cond3=0;
+static volatile int mtx_var=0;
+static volatile int mtx_cond1=0;
+static volatile int mtx_cond2=0;
+static volatile int mtx_cond3=0;
 static const int wait_timeout = 100;
 
 
@@ -83,6 +83,9 @@ static void mutex_test()
   OFString errmsg;
   mutex = new OFMutex();
   if ((!mutex)||(! mutex->initialized())) BAILOUT("creation of mutex failed");
+  OFMutex memory_barrier;
+  if (! memory_barrier.initialized()) BAILOUT("creation of mutex failed");
+
   int condition = mutex->trylock();
   if (condition)
   {
@@ -100,10 +103,17 @@ static void mutex_test()
   if (0 != t2.start()) BAILOUT("unable to create thread, mutex test failed");
 
   OFStandard::milliSleep(wait_timeout); // since I've got the mutex, nobody should write to mtx_var
+  memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+  memory_barrier.unlock();
   if (mtx_var != -1) BAILOUT("mutex test failed");
 
   int i=0;
-  while ((i++<5) && (!mtx_cond1)) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && (!mtx_cond1))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
   if (!mtx_cond1) BAILOUT("mutex trylock test failed");
 
   if (0 != (condition = mutex->unlock()))
@@ -113,7 +123,12 @@ static void mutex_test()
     BAILOUT(errmsg);
   }
 
-  while ((i++<5) && ((!mtx_cond2)||(!mtx_cond3))) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && ((!mtx_cond2)||(!mtx_cond3)))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
   if ((!mtx_cond2) || (!mtx_cond3)) BAILOUT("mutex lock/unlock test failed");
 
   if (0 != t1.join()) BAILOUT("unable to join thread, mutex test failed");
@@ -123,10 +138,10 @@ static void mutex_test()
 }
 
 static OFSemaphore *semaphore=NULL;
-static int sem_cond1=0;
-static int sem_cond2=0;
-static int sem_cond3=0;
-static int sem_cond4=0;
+static volatile int sem_cond1=0;
+static volatile int sem_cond2=0;
+static volatile int sem_cond3=0;
+static volatile int sem_cond4=0;
 
 class SemaT1: public OFThread
 {
@@ -187,11 +202,19 @@ static void semaphore_test()
     BAILOUT(errmsg);
   }
 
+  OFMutex memory_barrier;
+  if (! memory_barrier.initialized()) BAILOUT("creation of mutex failed");
+
   SemaT1 t1;
   if (0 != t1.start()) BAILOUT("unable to create thread, semaphore test failed");
 
   int i=0;
-  while ((i++<5) && (!sem_cond1)) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && (!sem_cond1))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
   if (!sem_cond1) BAILOUT("semaphore lock/unlock test failed");
 
   SemaT2 t2;
@@ -202,7 +225,13 @@ static void semaphore_test()
   mutex->unlock();
 
   i=0;
-  while ((i++<5) && ((!sem_cond2)||(!sem_cond3)||(!sem_cond4))) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && ((!sem_cond2)||(!sem_cond3)||(!sem_cond4)))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
+
   if ((!mtx_cond2) || (!mtx_cond3) || (!sem_cond4)) BAILOUT("semaphore lock/unlock test failed");
 
   if (0 != t1.join()) BAILOUT("unable to join thread, semaphore test failed");
@@ -214,13 +243,13 @@ static void semaphore_test()
 
 static OFReadWriteLock *rwlock=NULL;
 static OFMutex *mutex2=NULL;
-static int rw_cond1=0;
-static int rw_cond2=0;
-static int rw_cond3=0;
-static int rw_cond4=0;
-static int rw_cond5=0;
-static int rw_cond6=0;
-static int rw_cond7=0;
+static volatile int rw_cond1=0;
+static volatile int rw_cond2=0;
+static volatile int rw_cond3=0;
+static volatile int rw_cond4=0;
+static volatile int rw_cond5=0;
+static volatile int rw_cond6=0;
+static volatile int rw_cond7=0;
 
 class RWLockT2: public OFThread
 {
@@ -298,12 +327,20 @@ static void rwlock_test()
     BAILOUT(errmsg);
   }
 
+  OFMutex memory_barrier;
+  if (! memory_barrier.initialized()) BAILOUT("creation of mutex failed");
+
   RWLockT2 t2;
   RWLockT1 t1(t2);
   if (0 != t1.start()) BAILOUT("unable to create thread, read/write lock/unlock test failed");
 
   int i=0;
-  while ((i++<5) && ((!rw_cond1)||(!rw_cond5))) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && ((!rw_cond1)||(!rw_cond5)))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
 
   if ((!rw_cond1)||(!rw_cond5)) BAILOUT("read/write lock/unlock test failed");
   condition = rwlock->rdunlock();
@@ -314,12 +351,20 @@ static void rwlock_test()
     BAILOUT(errmsg);
   }
   OFStandard::milliSleep(wait_timeout);
+  memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+  memory_barrier.unlock();
   if (rw_cond6) BAILOUT("read/write lock/unlock test failed");
 
   mutex->unlock();
 
   i=0;
-  while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
+
   if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) BAILOUT("read/write lock/unlock test failed");
 
   if (0 != t1.join()) BAILOUT("unable to join thread, read/write lock/unlock test failed");
@@ -422,12 +467,20 @@ static void rwlocker_test()
     BAILOUT(errmsg);
   }
 
+  OFMutex memory_barrier;
+  if (! memory_barrier.initialized()) BAILOUT("creation of mutex failed");
+
   RWLockerT2 t2;
   RWLockerT1 t1(t2);
   if (0 != t1.start()) BAILOUT("unable to create thread, read/write lock test failed");
 
   int i=0;
-  while ((i++<5) && ((!rw_cond1)||(!rw_cond5))) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && ((!rw_cond1)||(!rw_cond5)))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
 
   if ((!rw_cond1)||(!rw_cond5)) BAILOUT("read/write lock test failed");
   condition = rwlockLocker.unlock();
@@ -438,12 +491,20 @@ static void rwlocker_test()
     BAILOUT(errmsg);
   }
   OFStandard::milliSleep(wait_timeout);
+  memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+  memory_barrier.unlock();
   if (rw_cond6) BAILOUT("read/write lock test failed");
 
   mutex->unlock();
 
   i=0;
-  while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
+
   if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) BAILOUT("read/write lock test failed");
 
   if (0 != t1.join()) BAILOUT("unable to join thread, read/write lock test failed");
@@ -456,10 +517,10 @@ static void rwlocker_test()
 
 
 static OFThreadSpecificData *tsdata=NULL;
-static int tsd_cond1=0;
-static int tsd_cond2=0;
-static int tsd_cond3=0;
-static int tsd_cond4=0;
+static volatile int tsd_cond1=0;
+static volatile int tsd_cond2=0;
+static volatile int tsd_cond3=0;
+static volatile int tsd_cond4=0;
 
 class TSDataT1: public OFThread
 {
@@ -532,6 +593,9 @@ static void tsdata_test()
     BAILOUT(errmsg);
   }
 
+  OFMutex memory_barrier;
+  if (! memory_barrier.initialized()) BAILOUT("creation of mutex failed");
+
   TSDataT1 t1;
   if (0 != t1.start()) BAILOUT("unable to create thread, thread specific data test failed");
 
@@ -540,7 +604,12 @@ static void tsdata_test()
 
 
   int i=0;
-  while ((i++<5) && ((!tsd_cond1)||(!tsd_cond2))) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && ((!tsd_cond1)||(!tsd_cond2)))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
 
   if ((!tsd_cond1)||(!tsd_cond2)) BAILOUT("thread specific data write test failed");
 
@@ -560,7 +629,13 @@ static void tsdata_test()
   }
 
   i=0;
-  while ((i++<5) && ((!tsd_cond3)||(!tsd_cond4))) OFStandard::milliSleep(wait_timeout);
+  while ((i++<10) && ((!tsd_cond3)||(!tsd_cond4)))
+  {
+    memory_barrier.lock(); // locking the mutex acts as a (inefficient, but portable) memory barrier
+    memory_barrier.unlock();
+    OFStandard::milliSleep(wait_timeout);
+  }
+
   if ((!tsd_cond3)||(!tsd_cond4)) BAILOUT("thread specific data read test failed");
 
   if (0 != t1.join()) BAILOUT("unable to create thread, thread specific data test failed");
