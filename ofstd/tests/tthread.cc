@@ -232,7 +232,7 @@ static void semaphore_test()
     OFStandard::milliSleep(wait_timeout);
   }
 
-  if ((!mtx_cond2) || (!mtx_cond3) || (!sem_cond4)) BAILOUT("semaphore lock/unlock test failed");
+  if ((!sem_cond2) || (!sem_cond3) || (!sem_cond4)) BAILOUT("semaphore lock/unlock test failed");
 
   if (0 != t1.join()) BAILOUT("unable to join thread, semaphore test failed");
   if (0 != t2.join()) BAILOUT("unable to join thread, semaphore test failed");
