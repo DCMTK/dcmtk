@@ -73,7 +73,8 @@ struct TestSCP: DcmSCP, OFThread
         DcmSCP(),
         m_listen_result(EC_NotYetImplemented), // value indicating "not set"
         m_set_stop_after_assoc(OFFalse),
-        m_set_stop_after_timeout(OFFalse)
+        m_set_stop_after_timeout(OFFalse),
+        m_is_running(OFFalse)
     {
     }
 
@@ -84,6 +85,7 @@ struct TestSCP: DcmSCP, OFThread
         m_listen_result = EC_NotYetImplemented;
         m_set_stop_after_assoc = OFFalse;
         m_set_stop_after_timeout = OFFalse;
+        m_is_running = OFFalse;
     }
 
     /** Overwrite method from DcmSCP in order to test feature to stop after current
@@ -110,12 +112,16 @@ struct TestSCP: DcmSCP, OFThread
     OFBool m_set_stop_after_assoc;
     /// If set, the SCP should stop after TCP timeout occurred in non-blocking mode
     OFBool m_set_stop_after_timeout;
+    /// indicates whether the thread is currently running
+    volatile OFBool m_is_running;
 
     /** Method called by OFThread to start SCP operation. Starts listen() loop of DcmSCP.
     */
     virtual void run()
     {
+        m_is_running = OFTrue;
         m_listen_result = listen();
+        m_is_running = OFFalse;
     }
 
 };
@@ -320,6 +326,10 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
 
     // Ensure server is up and listening
     force_sleep(1);
+    OFMutex memory_barrier;
+    memory_barrier.lock();
+    memory_barrier.unlock();
+    OFCHECK(scp.m_is_running);
 
     // Configure SCU and run it against SCP
     DcmTLSSCU scu;
