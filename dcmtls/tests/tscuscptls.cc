@@ -38,6 +38,11 @@
 
 #ifdef WITH_THREADS
 
+#define BAILOUT(msg) do { \
+    OFCHECK_FAIL(msg); \
+    return; \
+} while (0)
+
 /** Method that ensures that the current thread is actually sleeping for the
  *  defined number of seconds (at least).
  *  The problem with the regular sleep() function called from OFStandard::sleep
@@ -130,11 +135,22 @@ struct TestSCP: DcmSCP, OFThread
 
 struct TestPool : DcmSCPPool<>, OFThread
 {
-    OFCondition result;
+    OFCondition m_listen_result;
+    volatile OFBool m_is_running;
+
+    TestPool()
+    : DcmSCPPool<>()
+    , OFThread()
+    , m_listen_result(EC_NotYetImplemented)
+    , m_is_running(OFFalse)
+    { }
+
 protected:
     void run()
     {
-        result = listen();
+        m_is_running = OFTrue;
+        m_listen_result = listen();
+        m_is_running = OFFalse;
     }
 };
 
@@ -325,11 +341,16 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
     scp.start();
 
     // Ensure server is up and listening
-    force_sleep(1);
+    int i = 0;
     OFMutex memory_barrier;
-    memory_barrier.lock();
-    memory_barrier.unlock();
-    OFCHECK(scp.m_is_running);
+    while ((i < 5) && (! scp.m_is_running))
+    {
+      force_sleep(1);
+      memory_barrier.lock();
+      memory_barrier.unlock();
+      ++i;
+    }
+    if (! scp.m_is_running) BAILOUT("Start of the SCP thread failed: " << scp.m_listen_result.text());
 
     // Configure SCU and run it against SCP
     DcmTLSSCU scu;
@@ -397,7 +418,16 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
     pool.start();
 
     // Ensure server is up and listening
-    force_sleep(1);
+    int i = 0;
+    OFMutex memory_barrier;
+    while ((i < 5) && (! pool.m_is_running))
+    {
+      force_sleep(1);
+      memory_barrier.lock();
+      memory_barrier.unlock();
+      ++i;
+    }
+    if (! pool.m_is_running) BAILOUT("Start of the SCP thread ppol failed: " << pool.m_listen_result.text());
 
     OFVector<TestTLSSCU*> scus(20);
     OFVector<DcmTLSTransportLayer*> scuTlsLayers;
