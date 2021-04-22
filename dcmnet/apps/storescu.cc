@@ -860,8 +860,8 @@ int main(int argc, char *argv[])
       cond = ASC_abortAssociation(assoc);
       if (cond.bad()) {
         OFLOG_ERROR(storescuLogger, "Association Abort Failed: " << DimseCondition::dump(temp_str, cond));
-        return 1;
       }
+      return 1;
     }
 
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
@@ -891,7 +891,7 @@ int main(int argc, char *argv[])
     if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered) {
       if (lastStatusCode == STATUS_Success) {
         // there must have been some kind of general network error
-        exitCode = 0xff;
+        exitCode = 10;
       } else {
         exitCode = (lastStatusCode >> 8); // only the least significant byte is relevant as exit code
       }
