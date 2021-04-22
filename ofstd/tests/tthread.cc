@@ -177,6 +177,11 @@ public:
         if (0== semaphore->post()) sem_cond4=1;
       }
     }
+    else
+    {
+        sem_cond3 = 1; // acquired semaphore
+        if (0== semaphore->post()) sem_cond4=1;
+    }
   }
 };
 
