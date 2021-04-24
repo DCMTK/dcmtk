@@ -40,7 +40,7 @@ DcmTLSOptions::DcmTLSOptions(T_ASC_NetworkRole networkRole)
 , opt_privateKeyFile( OFnullptr )
 , opt_certificateFile( OFnullptr )
 , opt_passwd( OFnullptr )
-, opt_tlsProfile( TSP_Profile_BCP195 ) // default: BCP 195 profile
+, opt_tlsProfile( TSP_Profile_BCP195_ND ) // default: BCP 195 ND profile
 , opt_readSeedFile( OFnullptr )
 , opt_writeSeedFile( OFnullptr )
 , opt_certVerification( DCV_requireCertificate )
@@ -92,8 +92,8 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       cmd.addOption("--enable-crl-vfy",     "+crv",    "enable leaf CRL verification");
       cmd.addOption("--enable-crl-all",     "+cra",    "enable full chain CRL verification");
     cmd.addSubGroup("security profile:");
-      cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile (default)");
-      cmd.addOption("--profile-bcp195-nd",  "+py",     "Non-downgrading BCP 195 TLS Profile");
+      cmd.addOption("--profile-bcp195-nd",  "+py",     "Non-downgrading BCP 195 TLS Profile (default)");
+      cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile");
       cmd.addOption("--profile-bcp195-ex",  "+pz",     "Extended BCP 195 TLS Profile");
       if (csh.cipher3DESsupported())
       {

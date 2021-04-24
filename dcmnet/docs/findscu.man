@@ -202,11 +202,11 @@ certification authority:
 
 security profile:
 
-  +px   --profile-bcp195
-          BCP 195 TLS Profile (default)
-
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile
+          Non-downgrading BCP 195 TLS Profile (default)
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile
 
   +pz   --profile-bcp195-ex
           Extended BCP 195 TLS Profile

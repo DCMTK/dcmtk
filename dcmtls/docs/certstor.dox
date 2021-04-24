@@ -45,7 +45,7 @@ intermediate CA are used with TLS. The DER format only supports a
 single certificate per file.
 
 In many cases, the private key is stored in encrypted form
-and a password is needed to decrypt the private key file. 
+and a password is needed to decrypt the private key file.
 In this case the following options are provided:
 
 \verbatim
@@ -65,11 +65,11 @@ The DICOM standard defines a number of security profiles for the use
 of the DICOM network protocol over TLS. DCMTK supports the following profiles:
 
 \verbatim
-  +px   --profile-bcp195
-          BCP 195 TLS Profile (default)
-
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile
+          Non-downgrading BCP 195 TLS Profile (default)
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile
 
   +pz   --profile-bcp195-ex
           Extended BCP 195 TLS Profile
@@ -85,15 +85,17 @@ of the DICOM network protocol over TLS. DCMTK supports the following profiles:
           (retired, was used in IHE ATNA)
 \endverbatim
 
-The BCP 195 TLS Profile, which is selected by default, will try to
-negotiate cryptographic algorithms that are currently considered secure,
-but provides backward compatibility to older applications implementing
-the retired AES or Basic TLS profile. 
+The Non-downgrading BCP 195 TLS Profile, which is selected by default,
+is currently the most secure choice, as older protocol versions and
+cipher suites are explicitly disabled. It does not support backward
+compatibility with the older profiles. It uses either TLS version 1.2
+or 1.3 and will default to TLS 1.3 when possible.
 
-The Non-downgrading BCP 195 TLS Profile is currently the most secure
-choice, as older protocol versions and cipher suites are explicitly disabled.
-It does not support backward compatibility with the older profiles.
-It uses either TLS version 1.2 or 1.3 and will default to TLS 1.3 when possible.
+The BCP 195 TLS Profile, which was the default up to DCMTK 3.6.6, will
+try to negotiate cryptographic algorithms that are currently considered
+secure, but provides backward compatibility to older applications
+implementing the retired AES or Basic TLS profile. This profile is no
+longer compliant with BCP 195 as amended by RFC 8996 (2021).
 
 The Extended BCP 195 TLS Profile is similar to the Non-downgrading BCP 195 TLS Profile,
 but uses a more restricted selection of cipher suites and is restricted to
@@ -115,8 +117,8 @@ was defined in older versions of the IHE Audit Trail and Node Authentication
 profile. It uses an unencrypted communication with cryptographic checksums.
 This profile should be avoided.
 
-It should be noted that support for the Basic TLS profile will only be 
-available when the OpenSSL library has been compiled such that support 
+It should be noted that support for the Basic TLS profile will only be
+available when the OpenSSL library has been compiled such that support
 for Triple DES is enabled, which is not the default anymore.
 
 The list of TLS ciphersuites offered during the TLS handshake can be
@@ -138,10 +140,10 @@ following option:
 \section dcmtls_certstore_peer_authentication Peer authentication
 
 By default, the TLS implementation in dcmtls will require both client
-and server to provide a certificate as proof of identity, and will 
+and server to provide a certificate as proof of identity, and will
 verify the validity and trustworthyness of the certificate. This
 process has several steps:
-\li The TLS handshake will require a proof that the application 
+\li The TLS handshake will require a proof that the application
     has access to the private key belonging to the public key encoded
     in the certificate
 \li The digital signature in the certificate will be verified
@@ -241,7 +243,7 @@ period).
 In many cases, the system certificates are not directly signed by a root
 CA (that is, a CA using a self-signed certificate), but by an intermediate CA.
 The certificate of the intermediate CA will be signed by the root CA (or another
-level of intermediate CA). 
+level of intermediate CA).
 
 In the TLS handshare, an application can provide more than one certificate:
 it can provide its certificate, followed by the certificates of any
@@ -300,7 +302,7 @@ The \c \--enable-crl-vfy option will enable a look-up of the CRL of
 the leaf CA, i.e. only a single CRL will be checked in order
 to determine whether or not the peer's system certificate is revoked.
 The \c \--enable-crl-all option will enable a look-up of all CRLs
-up to the root CA, which will also cover the case where an 
+up to the root CA, which will also cover the case where an
 intermediate CA certificate has been revoked.
 
 Once CRL verification has been enabled, certificate verification
