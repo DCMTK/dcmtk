@@ -1084,6 +1084,24 @@ typedef unsigned long ulong;
 /* Define if the compiler supports static_assert */
 #cmakedefine HAVE_STATIC_ASSERT @HAVE_STATIC_ASSERT@
 
+/* Define if the compiler supports [[deprecated]] */
+#cmakedefine HAVE_CXX14_DEPRECATED_ATTRIBUTE @HAVE_CXX14_DEPRECATED_ATTRIBUTE@
+
+/* Define if the compiler supports [[deprecated("message")]] */
+#cmakedefine HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG @HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG@
+
+/* Define if the compiler supports __attribute__((deprecated)) */
+#cmakedefine HAVE_ATTRIBUTE_DEPRECATED @HAVE_ATTRIBUTE_DEPRECATED@
+
+/* Define if the compiler supports __attribute__((deprecated("message"))) */
+#cmakedefine HAVE_ATTRIBUTE_DEPRECATED_MSG @HAVE_ATTRIBUTE_DEPRECATED_MSG@
+
+/* Define if the compiler supports __declspec(deprecated) */
+#cmakedefine HAVE_DECLSPEC_DEPRECATED @HAVE_DECLSPEC_DEPRECATED@
+
+/* Define if the compiler supports __declspec(deprecated("message")) */
+#cmakedefine HAVE_DECLSPEC_DEPRECATED_MSG @HAVE_DECLSPEC_DEPRECATED_MSG@
+
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #cmakedefine HAVE_PROTOTYPE_STD__VFPRINTF @HAVE_PROTOTYPE_STD__VFPRINTF@
 

@@ -1247,6 +1247,13 @@ int main()
     return 0;
 }")
 
+DCMTK_TRY_COMPILE(HAVE_CXX14_DEPRECATED_ATTRIBUTE "the compiler supports [[deprecated]]" "[[deprecated]] int main(){return 0;}")
+DCMTK_TRY_COMPILE(HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG "the compiler supports [[deprecated(\"message\")]]" "[[deprecated(\"message\")]] int main(){return 0;}")
+DCMTK_TRY_COMPILE(HAVE_ATTRIBUTE_DEPRECATED "the compiler supports __attribute__((deprecated))" "__attribute__((deprecated)) int main(){return 0;}")
+DCMTK_TRY_COMPILE(HAVE_ATTRIBUTE_DEPRECATED_MSG "the compiler supports __attribute__((deprecated(\"message\")))" "__attribute__((deprecated(\"message\"))) int main(){return 0;}")
+DCMTK_TRY_COMPILE(HAVE_DECLSPEC_DEPRECATED "the compiler supports __declspec(deprecated)" "__declspec(deprecated) int main(){return 0;}")
+DCMTK_TRY_COMPILE(HAVE_DECLSPEC_DEPRECATED_MSG "the compiler supports __declspec(deprecated(\"message\"))" "__declspec(deprecated(\"message\")) int main(){return 0;}")
+
 function(DCMTK_CHECK_ITERATOR_CATEGORY CATEGORY)
     if(HAVE_ITERATOR_HEADER)
         string(TOUPPER "${CATEGORY}" CAT)
