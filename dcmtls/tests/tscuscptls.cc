@@ -17,7 +17,7 @@
  *
  *  Purpose: TLS test for classes DcmSCP and DcmSCPPool
  *
- *  Note: This test will fail after 2029-02-25 due to certificate expiry. 
+ *  Note: This test will fail after 2029-02-25 due to certificate expiry.
  *        The keys embedded in this file should be replaced then (see below).
  *
  */
@@ -27,6 +27,7 @@
 
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/oftimer.h"
+#include "dcmtk/ofstd/ofrand.h"
 #include "dcmtk/oflog/consap.h"
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/scu.h"
@@ -323,9 +324,9 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
     scpTlsLayer.setCertificateVerification(DCV_ignoreCertificate);
 
     /// Init and run Scp server with tls
+    OFRandom rnd;
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    config.setPort(11112);
     config.setAETitle("ACCEPTOR");
     config.setACSETimeout(30);
     config.setConnectionTimeout(1);
@@ -338,18 +339,23 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
     OFCHECK(config.addPresentationContext(UID_VerificationSOPClass, xfers, ASC_SC_ROLE_SCP).good());
 
     config.setTransportLayer(&scpTlsLayer);
-    scp.start();
 
     // Ensure server is up and listening
     int i = 0;
+    Uint16 port_number = 0;
     OFMutex memory_barrier;
-    while ((i < 5) && (! scp.m_is_running))
+    do
     {
-      force_sleep(1);
+      // generate a random port number between 61440 (0xF000) and 65535
+      port_number = 0xF000 + (rnd.getRND16() & 0xFFF);
+      config.setPort(port_number);
+      scp.start();
+      force_sleep(2); // wait 2 seconds for the SCP process to start
       memory_barrier.lock();
       memory_barrier.unlock();
-      ++i;
     }
+    while ((i++ < 5) && (! scp.m_is_running)); // try up to 5 port numbers before giving up
+
     if (! scp.m_is_running) BAILOUT("Start of the SCP thread failed: " << scp.m_listen_result.text());
 
     // Configure SCU and run it against SCP
@@ -361,7 +367,7 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
     scu.setPeerAETitle("ACCEPTOR");
     scu.setAETitle("REQUESTOR");
     scu.setPeerHostName("localhost");
-    scu.setPeerPort(11112);
+    scu.setPeerPort(port_number);
 
     scu.enableAuthentication(PRIVATE_KEY_FILENAME, PUBLIC_SELFSIGNED_CERT_FILENAME, PRIVATE_KEY_PWD, DCF_Filetype_PEM, DCF_Filetype_PEM);
     scu.setPeerCertVerification(DCV_ignoreCertificate);
@@ -400,9 +406,9 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
     scpTlsLayer.setCertificateVerification(DCV_ignoreCertificate);
 
     /// Init and run Scp server with tls
+    OFRandom rnd;
     TestPool pool;
     DcmSCPConfig& config = pool.getConfig();
-    config.setPort(11112);
     config.setAETitle("ACCEPTOR");
     config.setACSETimeout(30);
     config.setConnectionTimeout(1);
@@ -415,18 +421,22 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
     OFCHECK(config.addPresentationContext(UID_VerificationSOPClass, xfers, ASC_SC_ROLE_DEFAULT).good());
     config.setTransportLayer(&scpTlsLayer);
     pool.setMaxThreads(20);
-    pool.start();
 
     // Ensure server is up and listening
     int i = 0;
+    Uint16 port_number = 0;
     OFMutex memory_barrier;
-    while ((i < 5) && (! pool.m_is_running))
+    do
     {
-      force_sleep(1);
+      // generate a random port number between 61440 (0xF000) and 65535
+      port_number = 0xF000 + (rnd.getRND16() & 0xFFF);
+      config.setPort(port_number);
+      pool.start();
+      force_sleep(2); // wait 2 seconds for the SCP process to start
       memory_barrier.lock();
       memory_barrier.unlock();
-      ++i;
     }
+    while ((i++ < 5) && (! pool.m_is_running)); // try up to 5 port numbers before giving up
     if (! pool.m_is_running) BAILOUT("Start of the SCP thread ppol failed: " << pool.m_listen_result.text());
 
     OFVector<TestTLSSCU*> scus(20);
@@ -441,7 +451,7 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
         (*it1)->setPeerAETitle("ACCEPTOR");
         (*it1)->setAETitle("REQUESTOR");
         (*it1)->setPeerHostName("localhost");
-        (*it1)->setPeerPort(11112);
+        (*it1)->setPeerPort(port_number);
         (*it1)->enableAuthentication(PRIVATE_KEY_FILENAME, PUBLIC_SELFSIGNED_CERT_FILENAME, PRIVATE_KEY_PWD, DCF_Filetype_PEM, DCF_Filetype_PEM);
         (*it1)->setPeerCertVerification(DCV_ignoreCertificate);
 
