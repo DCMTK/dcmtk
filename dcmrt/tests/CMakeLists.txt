@@ -1,6 +1,6 @@
 # declare executables
 DCMTK_ADD_EXECUTABLE(drttest drttest)
-DCMTK_ADD_EXECUTABLE(dcmrt_tests tests tsearch)
+DCMTK_ADD_EXECUTABLE(dcmrt_tests tests tsearch tcontour)
 
 # make sure executables are linked to the corresponding libraries
 DCMTK_TARGET_LINK_MODULES(drttest dcmrt dcmdata oflog ofstd)

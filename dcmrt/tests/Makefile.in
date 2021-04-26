@@ -23,7 +23,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmdatadir)/libsrc 
 LOCALLIBS = -ldcmrt -ldcmimgle -ldcmdata -loflog -lofstd \
 	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-test_objs = tests.o tsearch.o
+test_objs = tests.o tsearch.o tcontour.o
 objs = drttest.o $(test_objs)
 progs = drttest tests
 
@@ -40,10 +40,10 @@ install: all
 
 
 check: tests
-	./tests
+	DCMDICTPATH=../data/dicom.dic ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMDICTPATH=../data/dicom.dic ./tests -x
 
 
 clean:
