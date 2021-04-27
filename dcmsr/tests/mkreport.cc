@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -185,7 +185,8 @@ int main(int argc, char *argv[])
                             OFString filename = "report";
                             filename += array[i];
                             filename += ".dcm";
-                            fileformat->saveFile(filename.c_str(), EXS_LittleEndianExplicit);
+                            if (fileformat->saveFile(filename, EXS_LittleEndianExplicit).bad())
+                                CERR << "ERROR: could not save dataset to file '" << filename << "'" << OFendl;
                         } else
                             CERR << "ERROR: could not write SR document into dataset" << OFendl;
                     }
