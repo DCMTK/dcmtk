@@ -41,6 +41,11 @@ DcmStdinStream::DcmStdinStream()
 , producer_()
 , buf_(new unsigned char[DCMSTDINSTREAMBUFSIZE])
 {
+#ifdef _WIN32
+    // Set "stdin" to binary mode
+    int result = setmode(fileno(stdin), O_BINARY);
+    if (result == -1) DCMDATA_ERROR("Failed to switch stdin to binary mode");
+#endif
 }
 
 DcmStdinStream::~DcmStdinStream()
