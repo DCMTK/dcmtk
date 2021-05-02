@@ -617,13 +617,21 @@ OFFilename &OFStandard::getDirNameFromPath(OFFilename &result,
     {
         const char *strValue = pathName.getCharPointer();
         const char *strPos = strrchr(strValue, PATH_SEPARATOR);
+
         /* path separator found? */
-        if (strPos == NULL)
+        if (strPos == NULL && (PATH_SEPARATOR != '/'))
         {
-            if (assumeDirName)
-                result = pathName;
-            else
-                result.clear();
+            /* silently accept forward slash as alternative path separator. Windows meanwhile supports this. */
+            strPos = strrchr(strValue, '/');
+            if (strPos == NULL)
+            {
+                /* no path separator found */
+                if (assumeDirName)
+                    result = pathName;
+                else
+                    result.clear();
+            } else
+                result.set(OFString(strValue, strPos - strValue));
         } else
             result.set(OFString(strValue, strPos - strValue));
     }
