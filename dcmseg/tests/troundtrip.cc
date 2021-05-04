@@ -31,6 +31,7 @@
 #include "dcmtk/dcmfg/fgplanpo.h"
 #include "dcmtk/dcmfg/fgseg.h"
 #include "dcmtk/dcmiod/iodmacro.h"
+#include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/ofstrutl.h"
 #include "dcmtk/ofstd/oftempf.h"
@@ -407,7 +408,11 @@ static void prepareExpectedDump()
 {
     EXPECTED_DUMP = "\n";
     EXPECTED_DUMP += "# Dicom-Data-Set\n";
-    EXPECTED_DUMP += "# Used TransferSyntax: Little Endian Explicit\n";
+    // DcmDataset.print() produces dumps in local endianess, so make sure the dump reflects the current machine
+    if (gLocalByteOrder == EBO_LittleEndian)
+        EXPECTED_DUMP += "# Used TransferSyntax: Little Endian Explicit\n";
+    else
+        EXPECTED_DUMP += "# Used TransferSyntax: Big Endian Explicit\n";
     EXPECTED_DUMP += "(0008,0008) CS [DERIVED\\PRIMARY]                        #  16, 2 ImageType\n";
     EXPECTED_DUMP += "(0008,0016) UI =SegmentationStorage                     #  28, 1 SOPClassUID\n";
     EXPECTED_DUMP
