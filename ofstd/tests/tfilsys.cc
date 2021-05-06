@@ -79,6 +79,11 @@ OFTEST(ofstd_filesystem)
     OFCHECK_EQUAL( ( OFpath( "test" ) / "..bla" ).extension(), ".bla" );
     OFCHECK_EQUAL( ( OFpath( "test" ) / ".." ).extension(), "" );
     OFCHECK_EQUAL( ( OFpath( "test" ) / "..." ).extension(), "." );
+    // separator conversion
+    OFCHECK_EQUAL( OFpath( "path/to/file" ), expected );
+    OFCHECK_EQUAL( OFpath( OFpath( expected ).native() ), expected );
+    OFCHECK_EQUAL( ( OFpath( "path/to/file", OFpath::generic_format ) ), expected );
+    OFCHECK_EQUAL( ( OFpath( OFpath( expected ).native(), OFpath::native_format ) ), expected );
     // self append
     OFpath p( OFString( "my" ) + OFpath::preferred_separator + "path" );
     expected = OFString( "my" )

@@ -52,6 +52,28 @@ class OFdirectory_iterator;
 class DCMTK_OFSTD_EXPORT OFpath
 {
 public:
+    /** Determines how string representations of pathnames are interpreted by
+     *  the constructors of OFpath.
+     *  @note Since native_format and generic_format are the same on Unix like
+     *    systems, using auto_format will have no effect on them, i.e. the path
+     *    is expected to use slash ('/') as the separator on Unix like systems.
+     */
+    enum format
+    {
+        /** Native pathname format.
+         */
+        native_format,
+
+        /** Generic pathname format.
+         */
+        generic_format,
+
+        /** Implementation-defined pathname format, auto-detected where
+         *  possible.
+         */
+        auto_format
+    };
+
     /** The path separator used in the native path syntax, i.e.\ '\' on Windows
      *  and '/' everywhere else.
      */
@@ -79,25 +101,21 @@ public:
 
     /** Construct an OFpath from a const char*.
      *  @param cstr a plain old C character string.
+     *  @param fmt specifies how cstr is to be interpreted, e.g. what character
+     *    to expect as the separator or whether to auto detect it.
      *  @warning This constructor does not exists in the real
      *    std::filesystem::path, where various character strings (e.g. char*
      *    and wchar_t*) are handled uniformly by one of the template
      *    constructors.
-     *  @note Automatic path conversion (e.g. replacing all '/' with '\' on
-     *    Windows) is currently not available, which is why this constructor
-     *    lacks the second parameter "format" and instead always expects
-     *    the argument to be given in the native format.
      */
-    OFpath( const char* const cstr );
+    OFpath( const char* const cstr, format fmt = auto_format );
 
     /** Constructs an OFpath from an OFString.
      *  @param string an OFString.
-     *  @note Automatic path conversion (e.g. replacing all '/' with '\' on
-     *    Windows) is currently not available, which is why this constructor
-     *    lacks the second parameter "format" and instead always expects
-     *    the argument to be given in the native format.
+     *  @param fmt specifies how the string is to be interpreted, e.g. what
+     *    character to expect as the separator or whether to auto detect it.
      */
-    OFpath( const OFString& string );
+    OFpath( const OFString& string, format fmt = auto_format );
 
     /** Copy-assign another OFpath to this one.
      *  Effectively: this->native() = rhs.native().
@@ -211,6 +229,10 @@ private:
     size_t findRootName() const;
     size_t findFilename() const;
     size_t findExtension() const;
+#ifdef _WIN32
+    // helper function to convert the separator to the native one
+    void convertSeparator(format fmt);
+#endif
     // the actual native string, who would have guessed
     OFString m_NativeString;
 #endif
