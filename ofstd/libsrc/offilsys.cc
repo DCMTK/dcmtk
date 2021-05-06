@@ -101,7 +101,7 @@ void OFpath::convertSeparator( format fmt )
         pos = m_NativeString.find( '/' );
         if( pos == OFString_npos )
             return;
-        break:
+        break;
     }
     m_NativeString[pos] = preferred_separator;
     for( pos = m_NativeString.find( '/', pos + 1 ); pos != OFString_npos; pos = m_NativeString.find( '/', pos + 1 ) )
