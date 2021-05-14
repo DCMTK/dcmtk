@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2020, Open Connections GmbH
+ *  Copyright (C) 2015-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -1671,10 +1671,10 @@ OFString HL7HierarchicDesignatorMacro::getName() const
 void HL7HierarchicDesignatorMacro::resetRules()
 {
     // parameters are tag, VM, type. Overwrite old rules if any.
-    m_Rules->addRule(new IODRule(DCM_UniversalEntityID, "1", "1C", "getName()", DcmIODTypes::IE_UNDEFINED), OFTrue);
-    m_Rules->addRule(new IODRule(DCM_LocalNamespaceEntityID, "1", "1C", "getName()", DcmIODTypes::IE_UNDEFINED),
+    m_Rules->addRule(new IODRule(DCM_UniversalEntityID, "1", "1C", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue);
+    m_Rules->addRule(new IODRule(DCM_LocalNamespaceEntityID, "1", "1C", getName(), DcmIODTypes::IE_UNDEFINED),
                      OFTrue);
-    m_Rules->addRule(new IODRule(DCM_UniversalEntityIDType, "1", "1C", "getName()", DcmIODTypes::IE_UNDEFINED), OFTrue);
+    m_Rules->addRule(new IODRule(DCM_UniversalEntityIDType, "1", "1C", getName(), DcmIODTypes::IE_UNDEFINED), OFTrue);
 }
 
 OFCondition HL7HierarchicDesignatorMacro::setLocalNamespaceEntityID(const OFString& value, const OFBool checkValue)
@@ -1693,7 +1693,7 @@ OFCondition HL7HierarchicDesignatorMacro::setUniversalEntityIDType(const OFStrin
 {
     OFCondition result = (checkValue) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
-        result = m_Item->putAndInsertOFStringArray(DCM_UniversalEntityID, value);
+        result = m_Item->putAndInsertOFStringArray(DCM_UniversalEntityIDType, value);
     return result;
 }
 
