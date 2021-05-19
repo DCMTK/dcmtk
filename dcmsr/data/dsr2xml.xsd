@@ -729,6 +729,7 @@
       <xsd:enumeration value="Colon CAD SR"/>
       <xsd:enumeration value="Procedure Log"/>
       <xsd:enumeration value="X-Ray Radiation Dose SR"/>
+      <xsd:enumeration value="Enhanced X-Ray Radiation Dose SR"/>
       <xsd:enumeration value="Spectacle Prescription Report"/>
       <xsd:enumeration value="Macular Grid Thickness and Volume Report"/>
       <xsd:enumeration value="Implantation Plan SR Document"/>

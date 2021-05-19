@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2020, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -521,6 +521,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_ProcedureLog,
         /// DICOM IOD: X-Ray Radiation Dose SR
         DT_XRayRadiationDoseSR,
+        /// DICOM IOD: Enhanced X-Ray Radiation Dose SR (not yet implemented)
+        DT_EnhancedXRayRadiationDoseSR,
         /// DICOM IOD: Spectacle Prescription Report
         DT_SpectaclePrescriptionReport,
         /// DICOM IOD: Macular Grid Thickness and Volume Report
