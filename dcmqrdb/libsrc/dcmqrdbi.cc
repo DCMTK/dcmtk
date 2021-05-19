@@ -2741,6 +2741,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
                    (strcmp(SOPClassUID, UID_ChestCADSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_ColonCADSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_XRayRadiationDoseSRStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_EnhancedXRayRadiationDoseSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_SpectaclePrescriptionReportStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_ImplantationPlanSRDocumentStorage) == 0) ||
