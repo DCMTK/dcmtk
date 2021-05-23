@@ -1998,9 +1998,16 @@ int DVInterface::deleteImageFile(const char *filename)
 {
     if ((filename != NULL) && (pHandle != NULL))
     {
-        const char *pos;
-        if (((pos = strrchr(filename, OFstatic_cast(int, PATH_SEPARATOR))) == NULL) ||   // check whether image file resides in index.dat directory
-            (strncmp(filename, pHandle->getStorageArea(), pos - filename) == 0))
+        const char *pos = strrchr(filename, OFstatic_cast(int, PATH_SEPARATOR));
+#ifdef _WIN32
+        // Windows accepts both backslash and forward slash as path separators.
+        const char *pos2 = strrchr(filename, OFstatic_cast(int, '/'));
+
+        // if pos2 points to a character closer to the end of the string, use this instead of strPos
+        if ((pos == NULL) || ((pos2 != NULL) && (pos2 > pos))) pos = pos2;
+#endif
+        // check whether image file resides in index.dat directory
+        if ((pos == NULL) || (strncmp(filename, pHandle->getStorageArea(), pos - filename) == 0))
         {
 //            DB_deleteImageFile((/*const */char *)filename);
             if (unlink(filename) == 0)

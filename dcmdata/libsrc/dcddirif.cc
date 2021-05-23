@@ -79,7 +79,12 @@ static int componentCount(const OFString &filename,
     int count = (length > 0) ? 1 : 0;
     for (size_t i = 0; i < length; i++)
     {
+#ifdef _WIN32
+        // Windows accepts both backslash and forward slash as path separators.
+        if ((filename.at(i) == separator) || (filename.at(i) == '/'))
+#else
         if (filename.at(i) == separator)
+#endif
             count++;
     }
     return count;
@@ -98,6 +103,11 @@ static OFBool isComponentTooLarge(const OFString &filename,
     {
         size_t pos1 = 0;
         size_t pos2 = filename.find(separator);
+#ifdef _WIN32
+        // Windows accepts both backslash and forward slash as path separators.
+        size_t pos3 = filename.find('/');
+        if ((pos2 == OFString_npos) || ((pos3 != OFString_npos) && (pos3 < pos2))) pos2 = pos3;
+#endif
         while (pos2 != OFString_npos)
         {
             /* check whether component length is within limit */
@@ -108,6 +118,10 @@ static OFBool isComponentTooLarge(const OFString &filename,
             }
             pos1 = pos2 + 1;
             pos2 = filename.find(separator, pos1);
+#ifdef _WIN32
+            pos3 = filename.find('/', pos1);
+            if ((pos2 == OFString_npos) || ((pos3 != OFString_npos) && (pos3 < pos2))) pos2 = pos3;
+#endif
         }
         if (!result)
         {
@@ -139,6 +153,10 @@ static OFBool locateInvalidFilenameChars(const OFString &filename,
     {
         c = filename.at(i);
         if ((c == '_') || isdigit(c) || (c == separator) ||
+#ifdef _WIN32
+            /* Windows accepts both backslash and forward slash as path separators. */
+            (c == '/') ||
+#endif
             (isalpha(c) && (isupper(c) || (islower(c) && mapFilenames))))
         {
             /* all ok */
@@ -166,7 +184,12 @@ static OFString &hostToDicomFilename(const OFString &hostFilename,
     for (size_t i = 0; i < length; i++)
     {
         const unsigned char c = hostFilename.at(i);
+#ifdef _WIN32
+        // Windows accepts both backslash and forward slash as path separators.
+        if ((c == PATH_SEPARATOR) || (c == '/'))
+#else
         if (c == PATH_SEPARATOR)
+#endif
         {
             /* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */
             dicomFilename += '\\';
@@ -1381,6 +1404,10 @@ OFBool DicomDirInterface::isFilenameValid(const OFFilename &filename,
         size_t invalidChar = 0;
         /* check whether the file name path is ok and in local format */
         if ((fname[0] == PATH_SEPARATOR) /* absolute path? */ ||
+#ifdef _WIN32
+            /* Windows accepts both backslash and forward slash as path separators. */
+            (fname[0] == '/') ||
+#endif
             locateInvalidFilenameChars(fname, invalidChar, MapFilenamesMode))
         {
             DCMDATA_ERROR("invalid character(s) in filename: " << fname << OFendl

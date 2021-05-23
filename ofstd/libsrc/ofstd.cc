@@ -597,6 +597,13 @@ OFFilename &OFStandard::getDirNameFromPath(OFFilename &result,
     {
         const wchar_t *strValue = pathName.getWideCharPointer();
         const wchar_t *strPos = wcsrchr(strValue, L'\\' /* WIDE_PATH_SEPARATOR */);
+
+        // Windows accepts both backslash and forward slash as path separators.
+        const wchar_t *strPos2 = wcsrchr(strValue, L'/');
+
+        // if strPos2 points to a character closer to the end of the string, use this instead of strPos
+        if ((strPos == NULL) || ((strPos2 != NULL) && (strPos2 > strPos))) strPos = strPos2;
+
         /* path separator found? */
         if (strPos == NULL)
         {
@@ -618,11 +625,13 @@ OFFilename &OFStandard::getDirNameFromPath(OFFilename &result,
         const char *strValue = pathName.getCharPointer();
         const char *strPos = strrchr(strValue, PATH_SEPARATOR);
 
-        /* silently accept forward slash as alternative path separator. Windows meanwhile supports this. */
-        if (strPos == NULL && (PATH_SEPARATOR != '/'))
-        {
-            strPos = strrchr(strValue, '/');
-        }
+#ifdef _WIN32
+        // Windows accepts both backslash and forward slash as path separators.
+        const char *strPos2 = strrchr(strValue, '/');
+
+        // if strPos2 points to a character closer to the end of the string, use this instead of strPos
+        if ((strPos == NULL) || ((strPos2 != NULL) && (strPos2 > strPos))) strPos = strPos2;
+#endif
 
         /* path separator found? */
         if (strPos == NULL)
@@ -661,6 +670,13 @@ OFFilename &OFStandard::getFilenameFromPath(OFFilename &result,
     {
         const wchar_t *strValue = pathName.getWideCharPointer();
         const wchar_t *strPos = wcsrchr(strValue, L'\\' /* WIDE_PATH_SEPARATOR */);
+
+        // Windows accepts both backslash and forward slash as path separators.
+        const wchar_t *strPos2 = wcsrchr(strValue, L'/');
+
+        // if strPos2 points to a character closer to the end of the string, use this instead of strPos
+        if ((strPos == NULL) || ((strPos2 != NULL) && (strPos2 > strPos))) strPos = strPos2;
+
         /* path separator found? */
         if (strPos == NULL)
         {
@@ -680,6 +696,15 @@ OFFilename &OFStandard::getFilenameFromPath(OFFilename &result,
     {
         const char *strValue = pathName.getCharPointer();
         const char *strPos = strrchr(strValue, PATH_SEPARATOR);
+
+#ifdef _WIN32
+        // Windows accepts both backslash and forward slash as path separators.
+        const char *strPos2 = strrchr(strValue, '/');
+
+        // if strPos2 points to a character closer to the end of the string, use this instead of strPos
+        if ((strPos == NULL) || ((strPos2 != NULL) && (strPos2 > strPos))) strPos = strPos2;
+#endif
+
         /* path separator found? */
         if (strPos == NULL)
         {
@@ -719,7 +744,9 @@ OFFilename &OFStandard::normalizeDirName(OFFilename &result,
     {
         const wchar_t *strValue = dirName.getWideCharPointer();
         size_t strLength = (strValue == NULL) ? 0 : wcslen(strValue);
-        while ((strLength > 1) && (strValue[strLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */))
+        // Windows accepts both backslash and forward slash as path separators.
+        while ((strLength > 1) && ((strValue[strLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */) ||
+              (strValue[strLength - 1] == L'/' )))
             --strLength;
         /* avoid "." as a directory name, use empty string instead */
         if (allowEmptyDirName && ((strLength == 0) || ((strLength == 1) && (strValue[0] == L'.'))))
@@ -741,8 +768,15 @@ OFFilename &OFStandard::normalizeDirName(OFFilename &result,
     {
         const char *strValue = dirName.getCharPointer();
         size_t strLength = (strValue == NULL) ? 0 : strlen(strValue);
+#ifdef _WIN32
+        // Windows accepts both backslash and forward slash as path separators.
+        while ((strLength > 1) && ((strValue[strLength - 1] == PATH_SEPARATOR) || 
+              (strValue[strLength - 1] == '/' )))
+            --strLength;
+#else
         while ((strLength > 1) && (strValue[strLength - 1] == PATH_SEPARATOR))
             --strLength;
+#endif
         /* avoid "." as a directory name, use empty string instead */
         if (allowEmptyDirName && ((strLength == 0) || ((strLength == 1) && (strValue[0] == '.'))))
             result.clear();
@@ -786,7 +820,8 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
         size_t strLength = (strValue == NULL) ? 0 : wcslen(strValue);
         /* check whether 'fileName' contains absolute path */
         /* (this check also covers UNC syntax, e.g. "\\server\...") */
-        if ((strLength > 0) && (strValue[0] == L'\\' /* WIDE_PATH_SEPARATOR */))
+        // Windows accepts both backslash and forward slash as path separators.
+        if ((strLength > 0) && ((strValue[0] == L'\\' /* WIDE_PATH_SEPARATOR */) || (strValue[0] == L'/')))
         {
             result.set(strValue, OFTrue /*convert*/);
             return result;
@@ -798,7 +833,8 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
             const wchar_t c = strValue[0];
             if (((c >= L'A') && (c <= L'Z')) || ((c >= L'a') && (c <= L'z')))
             {
-                if ((strValue[1] == L':') && (strValue[2] == L'\\' /* WIDE_PATH_SEPARATOR */))
+                // Windows accepts both backslash and forward slash as path separators.
+                if ((strValue[1] == L':') && ((strValue[2] == L'\\' /* WIDE_PATH_SEPARATOR */))||(strValue[2] == L'/'))
                 {
                     result.set(strValue, OFTrue /*convert*/);
                     return result;
@@ -827,7 +863,8 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
                 wchar_t *tmpString = new wchar_t[strLength + resLength + 1 + 1];
                 wcscpy(tmpString, resValue);
                 /* add path separator (if required) ... */
-                if (resValue[resLength - 1] != L'\\' /* WIDE_PATH_SEPARATOR */)
+                // Windows accepts both backslash and forward slash as path separators.
+                if ((resValue[resLength - 1] != L'\\' /* WIDE_PATH_SEPARATOR */) && (resValue[resLength - 1] != L'/'))
                 {
                     tmpString[resLength] = L'\\' /* WIDE_PATH_SEPARATOR */;
                     tmpString[resLength + 1] = L'\0';
@@ -846,7 +883,12 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
         size_t strLength = (strValue == NULL) ? 0 : strlen(strValue);
         /* check whether 'fileName' contains absolute path */
         /* (this check also covers UNC syntax, e.g. "\\server\...") */
+#ifdef _WIN32
+        // Windows accepts both backslash and forward slash as path separators.
+        if ((strLength > 0) && ((strValue[0] == PATH_SEPARATOR) || (strValue[0] == '/')))
+#else
         if ((strLength > 0) && (strValue[0] == PATH_SEPARATOR))
+#endif
         {
             result.set(strValue);
             return result;
@@ -858,7 +900,7 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
             const char c = strValue[0];
             if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')))
             {
-                if ((strValue[1] == ':') && (strValue[2] == '\\'))
+                if ((strValue[1] == ':') && ((strValue[2] == '\\') || (strValue[2] == '/')))
                 {
                     result.set(strValue);
                     return result;
@@ -881,7 +923,12 @@ OFFilename &OFStandard::combineDirAndFilename(OFFilename &result,
                 char *tmpString = new char[buflen];
                 OFStandard::strlcpy(tmpString, resValue, buflen);
                 /* add path separator (if required) ... */
+#ifdef _WIN32
+                // Windows accepts both backslash and forward slash as path separators.
+                if ((resValue[resLength - 1] != PATH_SEPARATOR) && (resValue[resLength - 1] != '/'))
+#else
                 if (resValue[resLength - 1] != PATH_SEPARATOR)
+#endif
                 {
                     tmpString[resLength] = PATH_SEPARATOR;
                     tmpString[resLength + 1] = '\0';
@@ -934,7 +981,7 @@ OFCondition OFStandard::removeRootDirFromPathname(OFFilename &result,
                 /* remove root dir prefix from path name */
                 wcscpy(tmpString, pathValue + rootLength);
                 /* remove leading path separator (if present) */
-                if (!allowLeadingPathSeparator && (tmpString[0] == PATH_SEPARATOR))
+                if (!allowLeadingPathSeparator && ((tmpString[0] == PATH_SEPARATOR) || (tmpString[0] == '/')))
                     result.set(tmpString + 1, OFTrue /*convert*/);
                 else
                     result.set(tmpString, OFTrue /*convert*/);
@@ -974,7 +1021,12 @@ OFCondition OFStandard::removeRootDirFromPathname(OFFilename &result,
                 /* remove root dir prefix from path name */
                 OFStandard::strlcpy(tmpString, pathValue + rootLength, buflen);
                 /* remove leading path separator (if present) */
+#ifdef _WIN32
+                // Windows accepts both backslash and forward slash as path separators.
+                if (!allowLeadingPathSeparator && ((tmpString[0] == PATH_SEPARATOR) || (tmpString[0] == '/')))
+#else
                 if (!allowLeadingPathSeparator && (tmpString[0] == PATH_SEPARATOR))
+#endif
                     result.set(tmpString + 1);
                 else
                     result.set(tmpString);
@@ -1242,12 +1294,22 @@ OFCondition OFStandard::createDirectory(const OFFilename &dirName,
             size_t rootLength = (rootValue == NULL) ? 0 : wcslen(rootValue);
             /* check for absolute path containing Windows drive name, e. g. "c:\",
              * is not required since the root directory should always exist */
+#ifdef _WIN32
+            // Windows accepts both backslash and forward slash as path separators.
+            if ((dirLength > 1) && ((dirValue[dirLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */) || (dirValue[dirLength - 1] == L'/')))
+#else
             if ((dirLength > 1) && (dirValue[dirLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */))
+#endif
             {
                 /* ignore trailing path separator */
                 --dirLength;
             }
+#ifdef _WIN32
+            // Windows accepts both backslash and forward slash as path separators.
+            if ((rootLength > 1) && ((rootValue[rootLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */) || (rootValue[rootLength - 1] == L'/')))
+#else
             if ((rootLength > 1) && (rootValue[rootLength - 1] == L'\\' /* WIDE_PATH_SEPARATOR */))
+#endif
             {
                 /* ignore trailing path separator */
                 --rootLength;
@@ -1271,7 +1333,13 @@ OFCondition OFStandard::createDirectory(const OFFilename &dirName,
                 /* search for next path separator */
                 do {
                     ++pos;
+#ifdef _WIN32
+                // Windows accepts both backslash and forward slash as path separators.
+                } while ((dirValue[pos] != L'\\' /* WIDE_PATH_SEPARATOR */) && (dirValue[pos] != L'/') && (dirValue[pos] != '\0'));
+#else
                 } while ((dirValue[pos] != L'\\' /* WIDE_PATH_SEPARATOR */) && (dirValue[pos] != L'\0'));
+#endif
+
                 /* get name of current directory component */
                 wchar_t *subDir = new wchar_t[pos + 1];
                 wcsncpy(subDir, dirValue, pos /*num*/);
@@ -1303,12 +1371,22 @@ OFCondition OFStandard::createDirectory(const OFFilename &dirName,
             size_t rootLength = (rootValue == NULL) ? 0 : strlen(rootValue);
             /* check for absolute path containing Windows drive name, e. g. "c:\",
              * is not required since the root directory should always exist */
+#ifdef _WIN32
+            // Windows accepts both backslash and forward slash as path separators.
+            if ((dirLength > 1) && ((dirValue[dirLength - 1] == PATH_SEPARATOR) || (dirValue[dirLength - 1] == '/')))
+#else
             if ((dirLength > 1) && (dirValue[dirLength - 1] == PATH_SEPARATOR))
+#endif
             {
                 /* ignore trailing path separator */
                 --dirLength;
             }
+#ifdef _WIN32
+            // Windows accepts both backslash and forward slash as path separators.
+            if ((rootLength > 1) && ((rootValue[rootLength - 1] == PATH_SEPARATOR) || (rootValue[rootLength - 1] == '/')))
+#else
             if ((rootLength > 1) && (rootValue[rootLength - 1] == PATH_SEPARATOR))
+#endif
             {
                 /* ignore trailing path separator */
                 --rootLength;
@@ -1332,7 +1410,12 @@ OFCondition OFStandard::createDirectory(const OFFilename &dirName,
                 /* search for next path separator */
                 do {
                     ++pos;
+#ifdef _WIN32
+                // Windows accepts both backslash and forward slash as path separators.
+                } while ((dirValue[pos] != PATH_SEPARATOR) && (dirValue[pos] != '/') && (dirValue[pos] != '\0'));
+#else
                 } while ((dirValue[pos] != PATH_SEPARATOR) && (dirValue[pos] != '\0'));
+#endif
                 /* get name of current directory component */
                 char *subDir = new char[pos + 1];
                 strlcpy(subDir, dirValue, pos + 1 /*size*/);

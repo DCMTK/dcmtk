@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2018, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,6 +52,11 @@ static void checkPathHandling(const OFString& input, const OFString& normalized,
     OFString slashFile;
     slashFile = PATH_SEPARATOR;
     slashFile += "file";
+#ifdef _WIN32
+    OFString slashFile2;
+    slashFile2 = '/';
+    slashFile2 += "file";
+#endif
 
     OFStandard::normalizeDirName(result, input);
     OFCHECK_EQUAL(result, normalized);
@@ -61,6 +66,12 @@ static void checkPathHandling(const OFString& input, const OFString& normalized,
 
     OFStandard::combineDirAndFilename(result, input, PATH_SEPARATOR + file);
     OFCHECK_EQUAL(result, slashFile);
+
+#ifdef _WIN32
+    OFStandard::combineDirAndFilename(result, input, '/' + file);
+    OFCHECK_EQUAL(result, slashFile2);
+#endif
+
 }
 
 OFTEST(ofstd_testPaths_1)
@@ -167,6 +178,84 @@ OFTEST(ofstd_testPaths_1)
     // hidden files/directories start with a "." (on Unix systems)
     OFStandard::combineDirAndFilename(result, "", ".hidden", OFTrue /*allowEmptyDirName*/);
     OFCHECK_EQUAL(result, ".hidden");
+
+#ifdef _WIN32
+    // now some special cases for Windows, where both slash and backslash are
+    // supported as path separators
+    pathSeparator = '/';
+    sourceRoot = ".." + pathSeparator + "..";
+
+    normalized = sourceRoot;
+    input = normalized + pathSeparator;
+    combined = normalized + PATH_SEPARATOR + "file";
+
+    checkExists(input, OFTrue, OFFalse, OFTrue);
+    checkPathHandling(input, normalized, combined);
+
+    // Trailing slashes shouldn't matter
+    input += pathSeparator + pathSeparator + pathSeparator;
+
+    checkExists(input, OFTrue, OFFalse, OFTrue);
+    checkPathHandling(input, normalized, combined);
+
+    // Now check a non-existent file
+    normalized = sourceRoot + pathSeparator + "does_not_exist";
+    input = normalized;
+    combined = input + PATH_SEPARATOR + "file";
+
+    checkExists(input, OFFalse, OFFalse, OFFalse);
+    checkPathHandling(input, normalized, combined);
+
+    // Check the working dir handling
+    input = normalized = ".";
+    combined = ".";
+    combined += PATH_SEPARATOR;
+    combined += "file";
+
+    checkExists(input, OFTrue, OFFalse, OFTrue);
+    checkPathHandling(input, normalized, combined);
+
+    // Check what happens to "///"
+    normalized = pathSeparator;
+    input = pathSeparator + pathSeparator + pathSeparator;
+    combined = normalized + "file";
+
+    // No checkExists() since Windows doesn't have "/"
+    checkPathHandling(input, normalized, combined);
+
+    // Now come some special tests for combineDirAndFilename
+    input = pathSeparator + pathSeparator + "caesar" + pathSeparator + "share";
+    OFStandard::combineDirAndFilename(result, input, "file");
+    OFCHECK_EQUAL(result, input + PATH_SEPARATOR + "file");
+
+    OFStandard::combineDirAndFilename(result, input, pathSeparator + "file");
+    OFCHECK_EQUAL(result, pathSeparator + "file");
+
+    combined = ".";
+    combined += PATH_SEPARATOR;
+    combined += "file";
+    OFStandard::combineDirAndFilename(result, "", "file");
+    OFCHECK_EQUAL(result, combined);
+
+    OFStandard::combineDirAndFilename(result, "", "file", OFTrue /*allowEmptyDirName*/);
+    OFCHECK_EQUAL(result, "file");
+
+    OFStandard::combineDirAndFilename(result, "", ".");
+    OFCHECK_EQUAL(result, ".");
+
+    OFStandard::combineDirAndFilename(result, "..", ".");
+    OFCHECK_EQUAL(result, "..");
+
+    OFStandard::combineDirAndFilename(result, "", "");
+    OFCHECK_EQUAL(result, ".");
+
+    OFStandard::combineDirAndFilename(result, "", "", OFTrue /*allowEmptyDirName*/);
+    OFCHECK_EQUAL(result, "");
+
+    // hidden files/directories start with a "." (on Unix systems)
+    OFStandard::combineDirAndFilename(result, "", ".hidden", OFTrue /*allowEmptyDirName*/);
+    OFCHECK_EQUAL(result, ".hidden");
+#endif
 }
 
 OFTEST(ofstd_testPaths_2)
@@ -185,6 +274,18 @@ OFTEST(ofstd_testPaths_2)
     OFCHECK_EQUAL(result, "dirname");
     OFStandard::getDirNameFromPath(result, "dirname", OFFalse /*assumeDirName*/);
     OFCHECK_EQUAL(result, "");
+#ifdef _WIN32
+    // on Windows, we also check paths containing '/' as a path separator,
+    // as well as mixed paths containing both separators
+    OFStandard::getDirNameFromPath(result, "dirname/filename");
+    OFCHECK_EQUAL(result, "dirname");
+    OFStandard::getDirNameFromPath(result, "dirname/dirname" + pathSeparator +"filename");
+    OFCHECK_EQUAL(result, "dirname/dirname");
+    OFStandard::getDirNameFromPath(result, "dirname" + pathSeparator + "dirname/filename");
+    OFCHECK_EQUAL(result, "dirname" + pathSeparator + "dirname");
+    OFStandard::getDirNameFromPath(result, "/dirname/");
+    OFCHECK_EQUAL(result, "/dirname");
+#endif
 
     // Check getFilenameFromPath()
     OFStandard::getFilenameFromPath(result, "dirname" + pathSeparator + "filename");
