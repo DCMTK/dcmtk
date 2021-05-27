@@ -405,6 +405,7 @@ if(WIN32)   # special handling for Windows systems
             -D_SCL_SECURE_NO_DEPRECATE
             )
         endif()
+        # Enable various warnings
       endif()
     endif()
   endif()
@@ -501,6 +502,30 @@ define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS
   FULL_DOCS "The list of C++ standards since C++11 that DCMTK currently has configuration tests for. "
 )
 set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS 11 14 17)
+
+#-----------------------------------------------------------------------------
+# Enable various warnings by default
+#-----------------------------------------------------------------------------
+
+# fallback implementation of add_compile_options()
+if(CMAKE_MAJOR_VERSION LESS 3 AND NOT CMAKE_VERSION VERSION_EQUAL 2.8.12)
+  function(add_compile_options)
+    foreach(OPTION ${ARGN})
+        foreach(FLAG C CXX)
+            string(FIND "${CMAKE_${FLAG}_FLAGS}" "${OPTION}" IDX)
+            if(IDX EQUAL -1)
+                set("CMAKE_${FLAG}_FLAGS" "${CMAKE_${FLAG}_FLAGS} ${OPTION}" PARENT_SCOPE)
+            endif()
+        endforeach()
+    endforeach()
+  endfunction()
+endif()
+
+if(MSVC)
+    add_compile_options("/W4")
+else(NOT BORLAND)
+    add_compile_options("-Wall")
+endif()
 
 #-----------------------------------------------------------------------------
 # Third party libraries
