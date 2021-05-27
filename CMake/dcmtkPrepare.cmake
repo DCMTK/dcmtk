@@ -523,7 +523,7 @@ endif()
 
 if(MSVC)
     add_compile_options("/W4")
-else(NOT BORLAND)
+elseif(NOT BORLAND)
     add_compile_options("-Wall")
 endif()
 
