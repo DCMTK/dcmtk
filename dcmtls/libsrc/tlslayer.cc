@@ -47,6 +47,7 @@ END_EXTERN_C
 #include "dcmtk/dcmtls/tlslayer.h"
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/ofstd/ofrand.h"
 
 #ifdef HAVE_SSL_CTX_GET0_PARAM
 #define DCMTK_SSL_CTX_get0_param SSL_CTX_get0_param
@@ -280,6 +281,17 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
      // create default set of DH parameters
      if (!setBuiltInDHParameters())
        DCMTLS_ERROR("unable to create Diffie-Hellman parameters.");
+
+     // set a random 32-bit number as TLS session ID
+     OFRandom rnd;
+     Uint32 session_id = rnd.getRND32();
+     if (0 == SSL_CTX_set_session_id_context(transportLayerContext, OFreinterpret_cast(const unsigned char *, &session_id), sizeof(session_id)))
+     {
+       DCMTLS_ERROR("unable to set TLS session ID context.");
+     }
+
+     // disable session caching (and, thus, session re-use)
+     SSL_CTX_set_session_cache_mode(transportLayerContext, SSL_SESS_CACHE_OFF);
 
      // create Elliptic Curve DH parameters
 #ifndef OPENSSL_NO_ECDH
