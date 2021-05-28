@@ -522,6 +522,13 @@ if(CMAKE_MAJOR_VERSION LESS 3 AND NOT CMAKE_VERSION VERSION_EQUAL 2.8.12)
 endif()
 
 if(MSVC)
+    # This code removes existing warning flags to prevent MSVC warning D9025.
+    # Remove it once our minimum CMake version is >= 3.15, since those newer
+    # CMake versions no longer add those flags by default.
+    foreach(FLAG C CXX)
+        string(REGEX REPLACE "[ \t\r\n]+/[wW][0-9]" "" "CMAKE_${FLAG}_FLAGS" "${CMAKE_${FLAG}_FLAGS}")
+        string(REGEX REPLACE "/[wW][0-9][ \t\r\n]*" "" "CMAKE_${FLAG}_FLAGS" "${CMAKE_${FLAG}_FLAGS}")
+    endforeach()
     add_compile_options("/W4")
 elseif(NOT BORLAND)
     add_compile_options("-Wall")
