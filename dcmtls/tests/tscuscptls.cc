@@ -24,7 +24,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/oftimer.h"
 #include "dcmtk/ofstd/ofrand.h"
@@ -34,10 +33,10 @@
 #include "dcmtk/dcmnet/scppool.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmtls/tlsscu.h"
-
 #include <cmath>
 
 #ifdef WITH_THREADS
+#ifdef WITH_OPENSSL
 
 #define BAILOUT(msg) do { \
     OFCHECK_FAIL(msg); \
@@ -156,8 +155,6 @@ protected:
 };
 
 // -------------- End of class TestPool -------------------------
-
-#ifdef WITH_OPENSSL
 
 struct TestTLSSCU : DcmTLSSCU, OFThread
 {

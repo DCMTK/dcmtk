@@ -284,20 +284,19 @@ LockFile::lock () const
 
 void LockFile::unlock () const
 {
-    LogLog & loglog = getLogLog ();
-    int ret = 0;
-
 #if defined (DCMTK_LOG4CPLUS_USE_WIN32_LOCKFILEEX)
+    LogLog & loglog = getLogLog ();
     HANDLE fh = get_os_HANDLE (data->fd, loglog);
 
-    ret = UnlockFile(fh, 0, 0, (STD_NAMESPACE numeric_limits<DWORD>::max) (),
+    int ret = UnlockFile(fh, 0, 0, (STD_NAMESPACE numeric_limits<DWORD>::max) (),
         (STD_NAMESPACE numeric_limits<DWORD>::max) ());
     if (! ret)
         loglog.error (tstring (DCMTK_LOG4CPLUS_TEXT ("UnlockFile() failed: "))
             + convertIntegerToString (GetLastError ()), true);
 
 #elif defined (DCMTK_LOG4CPLUS_USE_WIN32_LOCKING)
-    ret = _locking (data->fd, _LK_UNLCK, (STD_NAMESPACE numeric_limits<long>::max) ());
+    LogLog & loglog = getLogLog ();
+    int ret = _locking (data->fd, _LK_UNLCK, (STD_NAMESPACE numeric_limits<long>::max) ());
     if (ret != 0)
         loglog.error (tstring (DCMTK_LOG4CPLUS_TEXT ("_locking() failed: "))
             + convertIntegerToString (errno), true);
@@ -306,24 +305,27 @@ void LockFile::unlock () const
     close ();
 
 #elif defined (DCMTK_LOG4CPLUS_USE_SETLKW)
+    LogLog & loglog = getLogLog ();
     struct flock fl;
     fl.l_type = F_UNLCK;
     fl.l_whence = SEEK_SET;
     fl.l_start = 0;
     fl.l_len = 0;
-    ret = fcntl (data->fd, F_SETLKW, &fl);
+    int ret = fcntl (data->fd, F_SETLKW, &fl);
     if (ret != 0)
         loglog.error (tstring (DCMTK_LOG4CPLUS_TEXT("fcntl(F_SETLKW) failed: "))
             + convertIntegerToString (errno), true);
 
 #elif defined (DCMTK_LOG4CPLUS_USE_LOCKF)
-    ret = lockf (data->fd, F_ULOCK, 0);
+    LogLog & loglog = getLogLog ();
+    int ret = lockf (data->fd, F_ULOCK, 0);
     if (ret != 0)
         loglog.error (tstring (DCMTK_LOG4CPLUS_TEXT("lockf() failed: "))
             + convertIntegerToString (errno), true);
 
 #elif defined (DCMTK_LOG4CPLUS_USE_FLOCK)
-    ret = flock (data->fd, LOCK_UN);
+    LogLog & loglog = getLogLog ();
+    int ret = flock (data->fd, LOCK_UN);
     if (ret != 0)
         loglog.error (tstring (DCMTK_LOG4CPLUS_TEXT("flock() failed: "))
             + convertIntegerToString (errno), true);
