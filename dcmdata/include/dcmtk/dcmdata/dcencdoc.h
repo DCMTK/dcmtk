@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2019, OFFIS e.V.
+ *  Copyright (C) 2018-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,7 +30,7 @@
 #include "dcmtk/dcmdata/dcfilefo.h"   /* for class DcmFileFormat */
 #include "dcmtk/ofstd/ofcmdln.h"      /* for OFCmdUnsignedInt */
 
-class XMLNode;
+struct XMLNode;
 class OFCommandLine;
 class OFConsoleApplication;
 class OFLogger;

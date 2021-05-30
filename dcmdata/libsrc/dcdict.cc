@@ -146,7 +146,7 @@ stripWhitespace(char* s)
     unsigned char *t;
     unsigned char *p;
     t=p=OFreinterpret_cast(unsigned char *, s);
-    while ((c = *t++)) if (!isspace(c)) *p++ = c;
+    while ((c = *t++) != '\0') if (!isspace(c)) *p++ = c;
     *p = '\0';
   }
 }
@@ -174,7 +174,7 @@ stripLeadingWhitespace(char* s)
     unsigned char *p;
     t=p=OFreinterpret_cast(unsigned char *, s);
     while (isspace(*t)) t++;
-    while ((c = *t++)) *p++ = c;
+    while ((c = *t++) != '\0') *p++ = c;
     *p = '\0';
   }
 }
