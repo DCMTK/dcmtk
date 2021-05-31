@@ -25,6 +25,11 @@
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmnet/dimse.h"
 
+// disable warning C4127: conditional expression is constant
+// since the conditional expressions are intentional here.
+#if defined(_MSC_VER)
+#pragma warning(disable: 4127)
+#endif
 
 OFTEST(dcmnet_dimseStatusClass)
 {

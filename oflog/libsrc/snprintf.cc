@@ -46,12 +46,15 @@ namespace log4cplus { namespace helpers {
 
 size_t const START_BUF_SIZE = 512;
 
+#if defined (DCMTK_LOG4CPLUS_USE_POOR_MANS_SNPRINTF)
+
 #if defined (_WIN32)
 char const NULL_FILE[] = "NUL";
 #else
 char const NULL_FILE[] = "/dev/null";
 #endif
 
+#endif
 
 namespace
 {

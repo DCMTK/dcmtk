@@ -36,7 +36,7 @@
 #define OFstatic_assert static_assert
 #else // HAVE_STATIC_ASSERT
 template<OFBool>
-class OFstatic_assert_t;
+struct OFstatic_assert_t;
 template<>
 struct OFstatic_assert_t<OFTrue> { OFstatic_assert_t( const char* = OFnullptr ) {} };
 #define OFstatic_assert( E, M ) OFstatic_assert_t<E>(M);
