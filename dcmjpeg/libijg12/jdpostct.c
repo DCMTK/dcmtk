@@ -161,6 +161,8 @@ post_process_prepass (j_decompress_ptr cinfo,
               JSAMPARRAY output_buf, JDIMENSION *out_row_ctr,
               JDIMENSION out_rows_avail)
 {
+  (void) output_buf;
+  (void) out_rows_avail;
   my_post_ptr post = (my_post_ptr) cinfo->post;
   JDIMENSION old_next_row, num_rows;
 
@@ -205,6 +207,10 @@ post_process_2pass (j_decompress_ptr cinfo,
             JSAMPARRAY output_buf, JDIMENSION *out_row_ctr,
             JDIMENSION out_rows_avail)
 {
+  (void) input_buf;
+  (void) in_row_group_ctr;
+  (void) in_row_groups_avail;
+
   my_post_ptr post = (my_post_ptr) cinfo->post;
   JDIMENSION num_rows, max_rows;
 

@@ -267,6 +267,7 @@ start_pass_coef (j_compress_ptr cinfo, J_BUF_MODE pass_mode)
 METHODDEF(boolean)
 compress_output (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 {
+  (void)input_buf;
   j_lossy_c_ptr lossyc = (j_lossy_c_ptr) cinfo->codec;
   c_coef_ptr coef = (c_coef_ptr) lossyc->coef_private;
   JDIMENSION MCU_col_num;   /* index of current MCU within row */
@@ -362,7 +363,7 @@ transencode_coef_controller (j_compress_ptr cinfo,
   coef = (c_coef_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
                 SIZEOF(c_coef_controller));
-  lossyc->coef_private = (struct jpeg_c_coef_controller *) coef;
+  lossyc->coef_private = (void *) coef;
 
   /* Save pointer to virtual arrays */
   coef->whole_image = coef_arrays;

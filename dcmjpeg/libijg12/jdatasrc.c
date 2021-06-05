@@ -168,6 +168,7 @@ skip_input_data (j_decompress_ptr cinfo, long num_bytes)
 METHODDEF(void)
 term_source (j_decompress_ptr cinfo)
 {
+  (void)cinfo;
   /* no work necessary here */
 }
 

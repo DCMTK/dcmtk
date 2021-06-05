@@ -35,7 +35,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 
-DcmStdoutConsumer::DcmStdoutConsumer(const OFFilename &filename)
+DcmStdoutConsumer::DcmStdoutConsumer(const OFFilename & /* filename */)
 : DcmConsumer()
 , file_()
 , status_(EC_Normal)

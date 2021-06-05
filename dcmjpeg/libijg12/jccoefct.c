@@ -343,6 +343,7 @@ compress_first_pass (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 METHODDEF(boolean)
 compress_output (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 {
+  (void)input_buf;
   j_lossy_c_ptr lossyc = (j_lossy_c_ptr) cinfo->codec;
   c_coef_ptr coef = (c_coef_ptr) lossyc->coef_private;
   JDIMENSION MCU_col_num;   /* index of current MCU within row */
@@ -414,7 +415,7 @@ jinit_c_coef_controller (j_compress_ptr cinfo, boolean need_full_buffer)
   coef = (c_coef_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
                 SIZEOF(c_coef_controller));
-  lossyc->coef_private = (struct jpeg_c_coef_controller *) coef;
+  lossyc->coef_private = (void *) coef;
   lossyc->coef_start_pass = start_pass_coef;
 
   /* Create the coefficient buffer. */

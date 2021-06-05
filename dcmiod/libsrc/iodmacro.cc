@@ -64,7 +64,7 @@ CodeSequenceMacro::CodeSequenceMacro(const OFString& codeValue,
     set(codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion);
 }
 
-OFCondition CodeSequenceMacro::check(const bool quiet)
+OFCondition CodeSequenceMacro::check(const bool /* quiet */)
 {
     OFString val;
     getCodeValue(val);

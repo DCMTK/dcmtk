@@ -74,6 +74,7 @@ typedef my_downsampler * my_downsample_ptr;
 METHODDEF(void)
 start_pass_downsample (j_compress_ptr cinfo)
 {
+  (void)cinfo;
   /* no work for now */
 }
 

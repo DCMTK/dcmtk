@@ -823,7 +823,6 @@ public:
    */
   offile_off_t ftell()
   {
-    offile_off_t result;
 #ifdef _WIN32
     // Windows does not have a 64-bit ftell, and _telli64 cannot be used
     // because it operates on file descriptors and ignores FILE buffers.
@@ -837,6 +836,7 @@ public:
     }
     return OFstatic_cast(offile_off_t, pos);
 #else
+    offile_off_t result;
 #ifdef HAVE_FSEEKO
 #ifdef EXPLICIT_LFS_64
     result = :: ftello64(file_);
@@ -846,9 +846,9 @@ public:
 #else
     result = STDIO_NAMESPACE ftell(file_);
 #endif
-#endif
     if (result < 0) storeLastError();
     return result;
+#endif
   }
 
   /** alternate interface equivalent to ftell, storing the current value of the

@@ -251,6 +251,8 @@ output_value (j_decompress_ptr cinfo, int ci, int j, int maxj)
    * (Forcing the upper and lower values to the limits ensures that
    * dithering can't produce a color outside the selected gamut.)
    */
+  (void) cinfo;
+  (void) ci;
   return (int) (((IJG_INT32) j * MAXJSAMPLE + maxj/2) / maxj);
 }
 
@@ -260,6 +262,8 @@ largest_input_value (j_decompress_ptr cinfo, int ci, int j, int maxj)
 /* Return largest input value that should map to j'th output value */
 /* Must have largest(j=0) >= 0, and largest(j=maxj) >= MAXJSAMPLE */
 {
+  (void) cinfo;
+  (void) ci;
   /* Breakpoints are halfway between values returned by output_value */
   return (int) (((IJG_INT32) (2*j + 1) * MAXJSAMPLE + maxj) / (2*maxj));
 }
@@ -740,6 +744,7 @@ alloc_fs_workspace (j_decompress_ptr cinfo)
 METHODDEF(void)
 start_pass_1_quant (j_decompress_ptr cinfo, boolean is_pre_scan)
 {
+  (void) is_pre_scan;
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
   size_t arraysize;
   int i;
@@ -797,6 +802,7 @@ start_pass_1_quant (j_decompress_ptr cinfo, boolean is_pre_scan)
 METHODDEF(void)
 finish_pass_1_quant (j_decompress_ptr cinfo)
 {
+  (void) cinfo;
   /* no work in 1-pass case */
 }
 

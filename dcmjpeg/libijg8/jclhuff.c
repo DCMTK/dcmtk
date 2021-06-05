@@ -569,6 +569,7 @@ finish_pass_gather (j_compress_ptr cinfo)
 METHODDEF(boolean)
 need_optimization_pass (j_compress_ptr cinfo)
 {
+  (void)cinfo;
   return TRUE;
 }
 
@@ -587,7 +588,7 @@ jinit_lhuff_encoder (j_compress_ptr cinfo)
   entropy = (lhuff_entropy_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
                 SIZEOF(lhuff_entropy_encoder));
-  losslsc->entropy_private = (struct jpeg_entropy_encoder *) entropy;
+  losslsc->entropy_private = (void *) entropy;
   losslsc->pub.entropy_start_pass = start_pass_huff;
   losslsc->pub.need_optimization_pass = need_optimization_pass;
 

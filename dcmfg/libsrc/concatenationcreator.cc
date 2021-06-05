@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -97,7 +97,7 @@ OFCondition ConcatenationCreator::setCfgInput(DcmItem* srcDataset, OFBool transf
 
 OFCondition ConcatenationCreator::setCfgInput(DcmItem* srcDataset,
                                               Uint8* pixelData,
-                                              size_t pixelDataLength,
+                                              size_t /* pixelDataLength */,
                                               OFBool transferOwnership)
 {
     // Check input parameters

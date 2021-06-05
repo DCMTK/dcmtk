@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -183,7 +183,7 @@ OFCondition FGCTAcquisitionType::setAcquisitionType(const OFString& value, const
     return result;
 }
 
-OFCondition FGCTAcquisitionType::setTubeAngle(const Float64& value, const OFBool checkValue)
+OFCondition FGCTAcquisitionType::setTubeAngle(const Float64& value, const OFBool /* checkValue */)
 {
     return m_TubeAngle.putFloat64(value);
 }

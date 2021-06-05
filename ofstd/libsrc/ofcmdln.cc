@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1160,9 +1160,15 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
 #ifdef DCMTK_USE_WCHAR_T
 
 // Windows-specific version with wide character strings (UTF-16)
+#ifdef DEBUG
 OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argValue,
                                                              const OFString &strValue,
                                                              OFList<OFString> &argList)
+#else
+OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argValue,
+                                                             const OFString & /* strValue */,
+                                                             OFList<OFString> &argList)
+#endif
 {
     E_ParseStatus result = PS_NoArguments;
     /* check for command file parameter (syntax: "@filename") */

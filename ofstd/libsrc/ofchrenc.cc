@@ -373,8 +373,9 @@ class OFCharacterEncoding::Implementation
         // different encoding flags and only has a (varying) fixed functionality
         // that we detect with a configuration test.
         return flags == DCMTK_FIXED_ICONV_CONVERSION_FLAGS;
-#endif
+#else
         return OFFalse;
+#endif
     }
 
     unsigned getConversionFlags() const
@@ -401,8 +402,9 @@ class OFCharacterEncoding::Implementation
         // different encoding flags and only has a (varying) fixed functionality
         // that we detect with a configuration test.
         return DCMTK_FIXED_ICONV_CONVERSION_FLAGS;
-#endif
+#else
         return 0;
+#endif
     }
 
     OFBool setConversionFlags(const unsigned flags)
@@ -448,8 +450,9 @@ class OFCharacterEncoding::Implementation
         // different encoding flags and only has a (varying) fixed functionality
         // that we detect with a configuration test.
         return flags == DCMTK_FIXED_ICONV_CONVERSION_FLAGS;
-#endif
+#else
         return OFFalse;
+#endif
     }
 
 

@@ -224,6 +224,7 @@ emit_dac (j_compress_ptr cinfo)
 /* Since the useful info is so small, we want to emit all the tables in */
 /* one DAC marker.  Therefore this routine does its own scan of the table. */
 {
+  (void)cinfo;
 #ifdef C_ARITH_CODING_SUPPORTED
   char dc_in_use[NUM_ARITH_TBLS];
   char ac_in_use[NUM_ARITH_TBLS];

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -289,14 +289,13 @@ OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setKVP(const
     return result;
 }
 
-OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setKVP(const Float64 value, const OFBool checkValue)
+OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setKVP(const Float64 value, const OFBool /* checkValue */)
 {
-    (void)checkValue;
     return m_KVP.putFloat64(value);
 }
 
 OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setXRayTubeCurrentInmA(const Float64 value,
-                                                                                           const OFBool checkValue)
+                                                                                           const OFBool /* checkValue */)
 {
     return m_XRayTubeCurrentInmA.putFloat64(value);
 }
@@ -311,7 +310,7 @@ OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setDataColle
 }
 
 OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setDataCollectionDiameter(const Float64 value,
-                                                                                              const OFBool checkValue)
+                                                                                              const OFBool /* checkValue */)
 {
     return m_DataCollectionDiameter.putFloat64(value);
 }
@@ -350,13 +349,13 @@ OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setFilterMat
 }
 
 OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setExposureInmAs(const Float64 value,
-                                                                                     const OFBool checkValue)
+                                                                                     const OFBool /* checkValue */)
 {
     return m_ExposureInmAs.putFloat64(value);
 }
 
 OFCondition FGCTAdditionalXRaySource::FGCTAdditionalXRaySourceItem::setEnergyWeightingFactor(const Float32 value,
-                                                                                             const OFBool checkValue)
+                                                                                             const OFBool /* checkValue */)
 {
     return m_EnergyWeightingFactor.putFloat32(value);
 }

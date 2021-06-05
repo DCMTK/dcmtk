@@ -75,11 +75,14 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 static xmlCharEncodingHandlerPtr EncodingHandler = NULL;
 
 // This function is also used in dcmsr, try to stay in sync!
+#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
 extern "C" void errorFunction(void * ctx, const char *msg, ...)
 {
-#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
     // Classic C requires us to declare variables at the beginning of the function.
     OFString &buffer = *OFstatic_cast(OFString*, ctx);
+#else
+extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
+{
 #endif
 
     if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))

@@ -833,7 +833,7 @@ jinit_phuff_encoder (j_compress_ptr cinfo)
   entropy = (phuff_entropy_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
                 SIZEOF(phuff_entropy_encoder));
-  lossyc->entropy_private = (struct jpeg_entropy_encoder *) entropy;
+  lossyc->entropy_private = (void *) entropy;
   lossyc->pub.entropy_start_pass = start_pass_phuff;
   lossyc->pub.need_optimization_pass = need_optimization_pass;
 

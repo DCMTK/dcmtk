@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -229,19 +229,19 @@ OFCondition FGCTTableDynamics::FGCTTableDynamicsItem::getTableFeedPerRotation(Fl
 
 // --- set() functionality ---
 
-OFCondition FGCTTableDynamics::FGCTTableDynamicsItem::setTableSpeed(const Float64& value, const OFBool checkValue)
+OFCondition FGCTTableDynamics::FGCTTableDynamicsItem::setTableSpeed(const Float64& value, const OFBool /* checkValue */)
 {
     return m_TableSpeed.putFloat64(value);
 }
 
 OFCondition FGCTTableDynamics::FGCTTableDynamicsItem::setTableFeedPerRotation(const Float64& value,
-                                                                              const OFBool checkValue)
+                                                                              const OFBool /* checkValue */)
 {
     return m_TableFeedPerRotation.putFloat64(value);
 }
 
 OFCondition FGCTTableDynamics::FGCTTableDynamicsItem::setSpiralPitchFactor(const Float64& value,
-                                                                           const OFBool checkValue)
+                                                                           const OFBool /* checkValue */)
 {
     return m_SpiralPitchFactor.putFloat64(value);
 }

@@ -353,7 +353,7 @@ jinit_forward_dct (j_compress_ptr cinfo)
   fdct = (fdct_ptr)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				SIZEOF(fdct_controller));
-  lossyc->fdct_private = (struct jpeg_forward_dct *) fdct;
+  lossyc->fdct_private = (void *) fdct;
   lossyc->fdct_start_pass = start_pass_fdctmgr;
 
   switch (cinfo->dct_method) {

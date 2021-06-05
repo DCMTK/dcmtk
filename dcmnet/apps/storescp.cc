@@ -2425,8 +2425,13 @@ static void executeCommand( const OFString &cmd )
 #endif
 }
 
-
+#ifdef HAVE_WAITPID
 static void cleanChildren(pid_t pid, OFBool synch)
+#elif defined(HAVE_WAIT3)
+static void cleanChildren(pid_t /* pid */, OFBool synch)
+#else
+static void cleanChildren(pid_t /* pid */, OFBool /* synch */)
+#endif
   /*
    * This function removes child processes that have terminated,
    * i.e. converted to zombies. Should be called now and then.

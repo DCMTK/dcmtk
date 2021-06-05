@@ -67,6 +67,7 @@ noscale(j_decompress_ptr cinfo,
 	const JDIFFROW diff_buf, JSAMPROW output_buf,
 	JDIMENSION width)
 {
+  (void)cinfo;
   unsigned int xindex;
 
   for (xindex = 0; xindex < width; xindex++)

@@ -1115,7 +1115,6 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_quit(int arg, const char * /*cmdbuf*/
     TI_detachAssociation(OFFalse);
     printf("Good Bye, Auf Wiedersehen, Au Revoir\n");
     exit(0);
-    return OFTrue;
 }
 
 OFBool DcmQueryRetrieveTelnetInitiator::TI_actualizeStudies()

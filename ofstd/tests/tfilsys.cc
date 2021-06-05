@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,11 @@
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/oftraits.h"
 #include "dcmtk/ofstd/ofassert.h"
+
+#ifdef __GNUC__
+// suppress warning about "p /= p" lines, which are intentional for this test case.
+#pragma GCC diagnostic ignored "-Wself-assign-overloaded"
+#endif
 
 OFTEST(ofstd_filesystem)
 {

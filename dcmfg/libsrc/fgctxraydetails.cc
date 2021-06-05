@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -342,7 +342,7 @@ OFCondition FGCTXRayDetails::FGCTXRayDetailsItem::setFilterMaterial(const OFStri
 }
 
 OFCondition FGCTXRayDetails::FGCTXRayDetailsItem::setCalciumScoringMassFactorPatient(const Float32 value,
-                                                                                     const bool checkValue)
+                                                                                     const bool /* checkValue */)
 {
     return m_CalciumScoringMassFactorPatient.putFloat32(value);
 }
@@ -353,7 +353,7 @@ OFCondition FGCTXRayDetails::FGCTXRayDetailsItem::setCalciumScoringMassFactorDev
     return DcmIODUtil::setFloat32ValuesOnElement(m_CalciumScoringMassFactorDevice, values, "1-n", checkValues);
 }
 
-OFCondition FGCTXRayDetails::FGCTXRayDetailsItem::setEnergyWeightingFactor(const Float32 value, const bool checkValue)
+OFCondition FGCTXRayDetails::FGCTXRayDetailsItem::setEnergyWeightingFactor(const Float32 value, const bool /* checkValue */)
 {
     return m_EnergyWeightingFactor.putFloat32(value);
 }

@@ -34,6 +34,7 @@ METHODDEF(void)
 noscale(j_compress_ptr cinfo,
 	JSAMPROW input_buf, JSAMPROW output_buf, JDIMENSION width)
 {
+  (void)cinfo;
   MEMCOPY(output_buf, input_buf, width * SIZEOF(JSAMPLE));
   return;
 }

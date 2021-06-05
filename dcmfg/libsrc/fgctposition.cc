@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -152,7 +152,7 @@ OFCondition FGCTPosition::getReconstructionTargetCenterPatient(OFVector<Float64>
 
 // --- set() functionality ---
 
-OFCondition FGCTPosition::setTablePosition(const Float64 value, const OFBool checkValue)
+OFCondition FGCTPosition::setTablePosition(const Float64 value, const OFBool /* checkValue */)
 {
     return m_TablePosition.putFloat64(value);
 }

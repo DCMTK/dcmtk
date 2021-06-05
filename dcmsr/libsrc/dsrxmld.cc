@@ -33,7 +33,11 @@
 #endif /* LIBXML_SCHEMAS_ENABLED */
 
 // This function is also used in xml2dcm, try to stay in sync!
+#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
 extern "C" void errorFunction(void * ctx, const char *msg, ...)
+#else
+extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
+#endif
 {
     OFLogger xmlLogger = OFLog::getLogger("dcmtk.dcmsr.libxml");
 

@@ -302,6 +302,7 @@ compress_first_pass (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 METHODDEF(boolean)
 compress_output (j_compress_ptr cinfo, JSAMPIMAGE input_buf)
 {
+  (void)input_buf;
   j_lossless_c_ptr losslsc = (j_lossless_c_ptr) cinfo->codec;
   c_diff_ptr diff = (c_diff_ptr) losslsc->diff_private;
   /* JDIMENSION MCU_col_num; */ /* index of current MCU within row */
