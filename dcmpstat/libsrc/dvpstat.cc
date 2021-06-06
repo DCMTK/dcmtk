@@ -1546,8 +1546,8 @@ void DVPresentationState::renderPixelData(OFBool display)
     /* remove all external overlays that are not active as overlay or bitmap shutter */
     for (unsigned int remgroup=0x6000; remgroup <= 0x601F; remgroup += 2)
     {
-      if ((remgroup != bitmapShutterGroup)&&((! overlayList.haveOverlayGroup(remgroup))||
-          (NULL == activationLayerList.getActivationLayer(remgroup))))
+      if ((remgroup != bitmapShutterGroup)&&((! overlayList.haveOverlayGroup(OFstatic_cast(Uint16, remgroup)))||
+          (NULL == activationLayerList.getActivationLayer(OFstatic_cast(Uint16, remgroup)))))
       {
          currentImage->removeOverlay(remgroup); // ignore return value.
       }

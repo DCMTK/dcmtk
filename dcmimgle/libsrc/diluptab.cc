@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -289,7 +289,7 @@ void DiLookupTable::checkBits(const Uint16 bits,
     if ((descripMode == ELM_IgnoreValue) || (bits < MIN_TABLE_ENTRY_SIZE) || (bits > MAX_TABLE_ENTRY_SIZE))
     {
         /* check whether correct bit depth can be determined automatically */
-        Bits = (MaxValue > 0) ? DicomImageClass::tobits(MaxValue, 0) : bits;
+        Bits = (MaxValue > 0) ? OFstatic_cast(Uint16, DicomImageClass::tobits(MaxValue, 0)) : bits;
         /* check bit depth (again) for valid range */
         if (Bits < MIN_TABLE_ENTRY_SIZE)
             Bits = MIN_TABLE_ENTRY_SIZE;
@@ -468,7 +468,7 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
     if (Valid)
     {
         const Uint32 count = DicomImageClass::maxval(Bits, 0);
-        const Uint16 bits = DicomImageClass::tobits(Count + FirstEntry);
+        const Uint16 bits = OFstatic_cast(Uint16, DicomImageClass::tobits(Count + FirstEntry));
         Uint16 *data = new Uint16[count];
         Uint8 *valid = new Uint8[count];
         if ((data != NULL) && (valid != NULL))

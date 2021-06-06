@@ -174,7 +174,7 @@ addOverrideKey(OFConsoleApplication& app, const char *s)
       if (eqPos != OFString_npos)
         valStr = toParse.substr(eqPos+1,toParse.length());
     }
-    DcmTag tag(g,e);
+    DcmTag tag(OFstatic_cast(Uint16, g), OFstatic_cast(Uint16, e));
     if (tag.error() != EC_Normal) {
         sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
         app.printError(msg2);

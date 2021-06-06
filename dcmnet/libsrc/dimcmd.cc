@@ -476,7 +476,7 @@ parseCommonRSP(DcmDataset *obj, Uint16 *command,
 static OFCondition
 buildCEchoRQ(T_DIMSE_C_EchoRQ * e, DcmDataset * obj)
 {
-    OFCondition cond = buildCommonRQ(obj, DIMSE_C_ECHO_RQ, e->MessageID, e->DataSetType); RET(cond);
+    OFCondition cond = buildCommonRQ(obj, DIMSE_C_ECHO_RQ, e->MessageID, OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
     cond = addString(obj, DCM_AffectedSOPClassUID, e->AffectedSOPClassUID, OFFalse); RET(cond);
 
     return cond;
@@ -516,7 +516,7 @@ buildCEchoRSP(T_DIMSE_C_EchoRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_C_ECHO_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_ECHO_AFFECTEDSOPCLASSUID) {
@@ -564,7 +564,7 @@ static OFCondition
 buildCStoreRQ(T_DIMSE_C_StoreRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_C_STORE_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
 
     /* build other mandatory items */
     cond = addString(obj, DCM_AffectedSOPClassUID,
@@ -572,7 +572,7 @@ buildCStoreRQ(T_DIMSE_C_StoreRQ * e, DcmDataset * obj)
     cond = addString(obj, DCM_AffectedSOPInstanceUID,
         e->AffectedSOPInstanceUID, OFFalse); RET(cond);
     cond = addUS(obj, DCM_Priority,
-        e->Priority); RET(cond);
+        OFstatic_cast(Uint16, e->Priority)); RET(cond);
 
     /* build optional items */
     if (e->opts & O_STORE_MOVEORIGINATORAETITLE) {
@@ -639,7 +639,7 @@ buildCStoreRSP(T_DIMSE_C_StoreRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_C_STORE_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_STORE_AFFECTEDSOPCLASSUID) {
@@ -704,13 +704,13 @@ buildCFindRQ(T_DIMSE_C_FindRQ * e, DcmDataset * obj)
 {
 
     OFCondition cond = buildCommonRQ(obj, DIMSE_C_FIND_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
 
     /* build other mandatory items */
     cond = addString(obj, DCM_AffectedSOPClassUID,
         e->AffectedSOPClassUID, OFFalse); RET(cond);
     cond = addUS(obj, DCM_Priority,
-        e->Priority); RET(cond);
+        OFstatic_cast(Uint16, e->Priority)); RET(cond);
 
     return cond;
 }
@@ -753,7 +753,7 @@ buildCFindRSP(T_DIMSE_C_FindRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_C_FIND_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_FIND_AFFECTEDSOPCLASSUID) {
@@ -801,13 +801,13 @@ static OFCondition
 buildCGetRQ(T_DIMSE_C_GetRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_C_GET_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
 
     /* build other mandatory items */
     cond = addString(obj, DCM_AffectedSOPClassUID,
         e->AffectedSOPClassUID, OFFalse); RET(cond);
     cond = addUS(obj, DCM_Priority,
-        e->Priority); RET(cond);
+        OFstatic_cast(Uint16, e->Priority)); RET(cond);
 
     return cond;
 }
@@ -850,7 +850,7 @@ buildCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_C_GET_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_GET_AFFECTEDSOPCLASSUID) {
@@ -930,12 +930,12 @@ static OFCondition
 buildCMoveRQ(T_DIMSE_C_MoveRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_C_MOVE_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
 
     /* build other mandatory items */
     cond = addString(obj, DCM_AffectedSOPClassUID,
         e->AffectedSOPClassUID, OFFalse); RET(cond);
-    cond = addUS(obj, DCM_Priority, e->Priority); RET(cond);
+    cond = addUS(obj, DCM_Priority, OFstatic_cast(Uint16, e->Priority)); RET(cond);
     cond = addString(obj, DCM_MoveDestination, e->MoveDestination, OFFalse); RET(cond);
 
     return cond;
@@ -981,7 +981,7 @@ buildCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_C_MOVE_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_MOVE_AFFECTEDSOPCLASSUID) {
@@ -1063,7 +1063,7 @@ buildCCancelRQ(T_DIMSE_C_CancelRQ * e, DcmDataset * obj)
     OFCondition cond = addUS(obj, DCM_CommandField, DIMSE_C_CANCEL_RQ); RET(cond);
     cond = addUS(obj, DCM_MessageIDBeingRespondedTo,
         e->MessageIDBeingRespondedTo); RET(cond);
-    cond = addUS(obj, DCM_CommandDataSetType, e->DataSetType); RET(cond);
+    cond = addUS(obj, DCM_CommandDataSetType, OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
 
     return EC_Normal;
 }
@@ -1102,7 +1102,7 @@ static OFCondition
 buildNEventReportRQ(T_DIMSE_N_EventReportRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_N_EVENT_REPORT_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+       OFstatic_cast(Uint16,  e->DataSetType)); RET(cond);
     cond = addString(obj, DCM_AffectedSOPClassUID,
         e->AffectedSOPClassUID, OFFalse); RET(cond);
     cond = addString(obj, DCM_AffectedSOPInstanceUID,
@@ -1151,7 +1151,7 @@ buildNEventReportRSP(T_DIMSE_N_EventReportRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_N_EVENT_REPORT_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NEVENTREPORT_AFFECTEDSOPCLASSUID) {
@@ -1214,7 +1214,7 @@ static OFCondition
 buildNGetRQ(T_DIMSE_N_GetRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_N_GET_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
     cond = addString(obj, DCM_RequestedSOPClassUID,
         e->RequestedSOPClassUID, OFFalse); RET(cond);
     cond = addString(obj, DCM_RequestedSOPInstanceUID,
@@ -1267,7 +1267,7 @@ static OFCondition
 buildNGetRSP(T_DIMSE_N_GetRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_N_GET_RSP, e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NGET_AFFECTEDSOPCLASSUID) {
@@ -1323,7 +1323,7 @@ static OFCondition
 buildNSetRQ(T_DIMSE_N_SetRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_N_SET_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
     cond = addString(obj, DCM_RequestedSOPClassUID,
         e->RequestedSOPClassUID, OFFalse); RET(cond);
     cond = addString(obj, DCM_RequestedSOPInstanceUID,
@@ -1366,7 +1366,7 @@ static OFCondition
 buildNSetRSP(T_DIMSE_N_SetRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_N_SET_RSP, e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NSET_AFFECTEDSOPCLASSUID) {
@@ -1422,7 +1422,7 @@ static OFCondition
 buildNActionRQ(T_DIMSE_N_ActionRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_N_ACTION_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
     cond = addString(obj, DCM_RequestedSOPClassUID,
         e->RequestedSOPClassUID, OFFalse); RET(cond);
     cond = addString(obj, DCM_RequestedSOPInstanceUID,
@@ -1471,7 +1471,7 @@ buildNActionRSP(T_DIMSE_N_ActionRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_N_ACTION_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NACTION_AFFECTEDSOPCLASSUID) {
@@ -1534,7 +1534,7 @@ static OFCondition
 buildNCreateRQ(T_DIMSE_N_CreateRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_N_CREATE_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
     cond = addString(obj, DCM_AffectedSOPClassUID,
         e->AffectedSOPClassUID, OFFalse); RET(cond);
     /* build optional items */
@@ -1586,7 +1586,7 @@ buildNCreateRSP(T_DIMSE_N_CreateRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_N_CREATE_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NCREATE_AFFECTEDSOPCLASSUID) {
@@ -1642,7 +1642,7 @@ static OFCondition
 buildNDeleteRQ(T_DIMSE_N_DeleteRQ * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRQ(obj, DIMSE_N_DELETE_RQ, e->MessageID,
-        e->DataSetType); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType)); RET(cond);
     cond = addString(obj, DCM_RequestedSOPClassUID,
         e->RequestedSOPClassUID, OFFalse); RET(cond);
     cond = addString(obj, DCM_RequestedSOPInstanceUID,
@@ -1686,7 +1686,7 @@ buildNDeleteRSP(T_DIMSE_N_DeleteRSP * e, DcmDataset * obj)
 {
     OFCondition cond = buildCommonRSP(obj, DIMSE_N_DELETE_RSP,
         e->MessageIDBeingRespondedTo,
-        e->DataSetType, e->DimseStatus); RET(cond);
+        OFstatic_cast(Uint16, e->DataSetType), e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NDELETE_AFFECTEDSOPCLASSUID) {

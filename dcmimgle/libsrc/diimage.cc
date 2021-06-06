@@ -409,9 +409,9 @@ DiImage::DiImage(const DiImage *image,
     Columns(image->Columns),
     PixelWidth(image->PixelWidth),
     PixelHeight(image->PixelHeight),
-    BitsAllocated(alloc),
-    BitsStored(stored),
-    HighBit(stored - 1),
+    BitsAllocated(OFstatic_cast(const Uint16, alloc)),
+    BitsStored(OFstatic_cast(const Uint16, stored)),
+    HighBit(OFstatic_cast(const Uint16, (stored - 1))),
     BitsPerSample(image->BitsPerSample),
     SamplesPerPixel(image->SamplesPerPixel),
     Polarity(image->Polarity),
@@ -764,8 +764,8 @@ int DiImage::writeFrameToDataset(DcmItem &dataset,
             dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
         else
             dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
-        dataset.putAndInsertUint16(DCM_BitsStored, bitsStored);
-        dataset.putAndInsertUint16(DCM_HighBit, bitsStored - 1);
+        dataset.putAndInsertUint16(DCM_BitsStored, OFstatic_cast(const Uint16, bitsStored));
+        dataset.putAndInsertUint16(DCM_HighBit, OFstatic_cast(Uint16, bitsStored - 1));
         dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
         /* handle VOI transformations */
         if (dataset.tagExists(DCM_WindowCenter) ||
@@ -822,7 +822,7 @@ int DiImage::writeBMP(FILE *stream,
             infoHeader.biWidth = Columns;
             infoHeader.biHeight = Rows;
             infoHeader.biPlanes = 1;
-            infoHeader.biBitCount = bits;
+            infoHeader.biBitCount = OFstatic_cast(const Uint16, bits);
             infoHeader.biCompression = 0;
             infoHeader.biSizeImage = 0;
             infoHeader.biXPelsPerMeter = 0;

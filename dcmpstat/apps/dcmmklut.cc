@@ -565,8 +565,8 @@ static OFCondition createLUT(const unsigned int numberOfBits,
         if (descriptor)
         {
             if (EC_Normal==result) result = descriptor->putUint16(numEntries16, 0);
-            if (EC_Normal==result) result = descriptor->putUint16((Uint16)firstMapped, 1);
-            if (EC_Normal==result) result = descriptor->putUint16(numberOfBits, 2);
+            if (EC_Normal==result) result = descriptor->putUint16(OFstatic_cast(Uint16, firstMapped), 1);
+            if (EC_Normal==result) result = descriptor->putUint16(OFstatic_cast(Uint16, numberOfBits), 2);
             if (EC_Normal==result) result = item.insert(descriptor, OFTrue /*replaceOld*/);
         } else
             return EC_MemoryExhausted;

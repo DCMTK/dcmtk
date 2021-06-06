@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -498,7 +498,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
     // value into an unsigned integer and set it correspondingly in the element variable)
     if( tag == DCM_PregnancyStatus )
     {
-      Uint16 uintValue = atoi( value );
+      Uint16 uintValue = OFstatic_cast(Uint16, atoi( value ));
       cond = element->putUint16( uintValue );
     }
     else

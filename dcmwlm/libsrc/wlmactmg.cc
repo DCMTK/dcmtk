@@ -1177,7 +1177,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   }
 
   // Set response status
-  response->DimseStatus = dbstatus;
+  response->DimseStatus = OFstatic_cast(DIC_US, dbstatus);
 
   // Delete status detail information if there is some
   if( *statusDetail != NULL )

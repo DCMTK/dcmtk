@@ -307,7 +307,7 @@ static OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params, i
 
     for (int i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
         cond = ASC_addPresentationContext(
-            params, pid, dcmLongSCUStorageSOPClassUIDs[i],
+            params, OFstatic_cast(T_ASC_PresentationContextID, pid), dcmLongSCUStorageSOPClassUIDs[i],
             transferSyntaxes, transferSyntaxCount);
         pid += 2;       /* only odd presentation context id's */
     }

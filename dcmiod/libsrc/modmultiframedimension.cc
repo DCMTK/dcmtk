@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, Open Connections GmbH
+ *  Copyright (C) 2015-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -540,7 +540,7 @@ OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setFunctionalGroup
         return EC_InternalError;
 
     OFCondition result;
-    Uint16* attrTagArray;
+    Uint16* attrTagArray = NULL;
     result = elem->putTagVal(value);
     if (result.good())
         result = elem->getUint16Array(attrTagArray);
@@ -572,7 +572,7 @@ OFCondition IODMultiframeDimensionModule::DimensionIndexItem::setDimensionIndexP
         return EC_InternalError;
 
     OFCondition result;
-    Uint16* attrTagArray;
+    Uint16* attrTagArray = NULL;
     result = elem->putTagVal(value);
     if (result.good())
         result = elem->getUint16Array(attrTagArray);

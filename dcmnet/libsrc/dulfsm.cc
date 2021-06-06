@@ -2260,7 +2260,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
           return makeDcmnetCondition(DULC_UNKNOWNHOST, OF_error, buf2);
         }
     }
-    server.setPort(OFstatic_cast(unsigned short, htons(port)));
+    server.setPort(OFstatic_cast(unsigned short, htons(OFstatic_cast(unsigned short, port))));
 
     // get global connection timeout
     Sint32 connectTimeout = dcmConnectionTimeout.get();

@@ -5884,7 +5884,8 @@ OFBool DicomDirInterface::compareSequenceAttributes(DcmItem *dataset,
     /* check parameters first */
     if ((dataset != NULL) && (record != NULL))
     {
-        DcmSequenceOfItems *seq1, *seq2;
+        DcmSequenceOfItems *seq1 = NULL;
+        DcmSequenceOfItems *seq2 = NULL;
         /* compare sequence value from dataset and record */
         if (record->findAndGetSequence(key, seq1).good() &&
             dataset->findAndGetSequence(key, seq2).good())

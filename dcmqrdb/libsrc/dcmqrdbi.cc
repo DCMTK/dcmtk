@@ -2284,7 +2284,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     OFStandard::strlcpy(SOPInstanceUID, (char *) idxRec. SOPInstanceUID, SOPInstanceUIDSize) ;
     OFStandard::strlcpy(imageFileName, (char *) idxRec. filename, imageFileNameSize) ;
 
-    *numberOfRemainingSubOperations = --handle_->NumberRemainOperations ;
+    *numberOfRemainingSubOperations = OFstatic_cast(unsigned short, (--handle_->NumberRemainOperations));
 
     nextlist = handle_->moveCounterList->next ;
     free (handle_->moveCounterList) ;
@@ -2715,7 +2715,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     }
 
     /* InstanceStatus */
-    idxRec.hstat = (isNew) ? DVIF_objectIsNew : DVIF_objectIsNotNew;
+    idxRec.hstat = OFstatic_cast(char, ((isNew) ? DVIF_objectIsNew : DVIF_objectIsNotNew));
 
     /* InstanceDescription */
     OFBool useDescrTag = OFTrue;

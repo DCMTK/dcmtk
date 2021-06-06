@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (c) 2010-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (c) 2010-2021, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Test read and write methods of DICOM RT classes
@@ -199,13 +199,16 @@ static OFCondition dumpRTImage(STD_NAMESPACE ostream &out,
                 appendToString(outString, tmpString, "" /*prefix*/, " mm" /*suffix*/);
             out << "Radiation Machine     : " << outString << OFendl;
         }
-        Uint16 rows, columns;
+        Uint16 rows = 0;
+        Uint16 columns = 0;
         if (rtObject.getRows(rows).good() &&
             rtObject.getColumns(columns).good())
         {
             out << "Image Resolution      : " << columns << " x " << rows << OFendl;
         }
-        Uint16 bitsAllocated, bitsStored, highBit;
+        Uint16 bitsAllocated = 0;
+        Uint16 bitsStored = 0;
+        Uint16 highBit = 0;
         if (rtObject.getBitsAllocated(bitsAllocated).good() &&
             rtObject.getBitsStored(bitsStored).good() &&
             rtObject.getHighBit(highBit).good())

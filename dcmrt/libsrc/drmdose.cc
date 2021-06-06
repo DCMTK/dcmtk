@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2015, OFFIS e.V.
+ *  Copyright (C) 2012-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,7 +68,7 @@ protected:
     {
         unsignedT result;
         if (pixelData_.getPartialValue(&result, OFstatic_cast(Uint32, pixelNumber * sizeof(unsignedT)), OFstatic_cast(Uint32, sizeof(unsignedT))).bad())
-            return -1;
+            return OFstatic_cast(unsignedT, (-1));
         return result;
     }
 
@@ -148,7 +148,7 @@ double DRTDose::getDose(unsigned int x, unsigned int y, unsigned int frame) cons
 OFCondition DRTDose::getDose(double &result, unsigned int x, unsigned int y, unsigned int frame) const
 {
     double gridScaling;
-    double dose;
+    double dose = 0.0;
     OFCondition cond = getDoseGridScaling(gridScaling);
     if (cond.good())
         cond = getUnscaledDose(dose, x, y, frame);
@@ -170,9 +170,10 @@ double DRTDose::getUnscaledDose(unsigned int x, unsigned int y, unsigned int fra
 static OFCondition getImageParameters(const DRTDose& dose, Uint32& frames, Uint16& rows, Uint16& columns, Uint16& bitsAllocated, Uint16& pixelRep)
 {
     OFCondition cond = EC_Normal;
-    Sint32 tmp;
-    Uint16 bitsStored, highBit;
-
+    Sint32 tmp = 0;
+    Uint16 bitsStored = 0;
+    Uint16 highBit = 0;
+ 
     // tbd: Would be nice to know which getter failed
     if (cond.good())
         cond = dose.getNumberOfFrames(tmp);
@@ -249,7 +250,7 @@ OFCondition DRTDose::getDoseImage(OFVector<double> &result, unsigned int frame) 
     Uint32 frames;
     Uint32 offset, length;
     Uint16 rows, columns, bitsAllocated, pixelRep;
-    double doseGridScaling;
+    double doseGridScaling = 0.0;
     OFCondition cond = EC_Normal;
 
     result.clear();

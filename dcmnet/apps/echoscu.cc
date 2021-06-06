@@ -374,8 +374,8 @@ main(int argc, char *argv[])
     int presentationContextID = 1; /* odd byte value 1, 3, 5, .. 255 */
     for (unsigned long ii=0; ii<opt_numPresentationCtx; ii++)
     {
-        cond = ASC_addPresentationContext(params, presentationContextID, UID_VerificationSOPClass,
-                 transferSyntaxes, OFstatic_cast(int, opt_numXferSyntaxes));
+        cond = ASC_addPresentationContext(params, OFstatic_cast(T_ASC_PresentationContextID, presentationContextID), 
+                 UID_VerificationSOPClass, transferSyntaxes, OFstatic_cast(int, opt_numXferSyntaxes));
         presentationContextID += 2;
         if (cond.bad())
         {

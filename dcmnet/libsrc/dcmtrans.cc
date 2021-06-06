@@ -372,7 +372,7 @@ void DcmTCPConnection::closeTransportConnection()
     (void) ::close(getSocket());
 #endif
   /* forget about this socket (now closed) */
-    setSocket(-1);
+    setSocket(OFstatic_cast(DcmNativeSocketType, (-1)));
   }
 }
 

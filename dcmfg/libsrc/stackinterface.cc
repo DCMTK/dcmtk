@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -63,7 +63,7 @@ OFCondition FGStackInterface::read(FGInterface& fgSource)
         if (fracon != NULL)
         {
             OFString stackID;
-            Uint32 inStackPos;
+            Uint32 inStackPos = 0;
             // Check whether stack ID is actually present and get value
             if ((fracon->getStackID(stackID).good()) && (fracon->getInStackPositionNumber(inStackPos).good()))
             {

@@ -1931,7 +1931,7 @@ int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int
                 *(p++) = OFstatic_cast(Uint16, (DiGSDFunction::getJNDIndex(la + l0 *
                     pow(OFstatic_cast(double, 10), -(dmin + OFstatic_cast(double, i) * density))) - jmin) * factor);
             }
-            PresLutData = new DiLookupTable(data, count, bits);
+            PresLutData = new DiLookupTable(data, count, OFstatic_cast(const Uint16, bits));
             return (PresLutData != NULL) && (PresLutData->isValid());
         }
     }
@@ -2058,8 +2058,8 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
                     dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count * 2 /*double-words*/);
                     break;
             }
-            dataset.putAndInsertUint16(DCM_BitsStored, bits);
-            dataset.putAndInsertUint16(DCM_HighBit, bits - 1);
+            dataset.putAndInsertUint16(DCM_BitsStored, OFstatic_cast(Uint16, bits));
+            dataset.putAndInsertUint16(DCM_HighBit, OFstatic_cast(Uint16, (bits - 1)));
             /* update other DICOM attributes */
             updateImagePixelModuleAttributes(dataset);
             result = 1;

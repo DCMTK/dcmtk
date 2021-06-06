@@ -200,12 +200,12 @@ void DicomImage::Init()
             if (cstr != NULL)
             {
                 char *q = cstr;
-                unsigned char c;
+                char c;
                 for (const char *p = str; *p != 0; p++)    // remove invalid chars
                 {
-                    c = OFstatic_cast(unsigned char, *p);
+                    c = *p;
                     if (isalpha(c))
-                        *(q++) = toupper(c);
+                        *(q++) = OFstatic_cast(char, toupper(c));
                     else if (isdigit(c))
                         *(q++) = c;
                 }

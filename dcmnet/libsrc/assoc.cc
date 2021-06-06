@@ -797,7 +797,7 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
         transfer = (DUL_TRANSFERSYNTAX*) LST_Next(l);
     }
 
-    presentationContext->transferSyntaxCount = count;
+    presentationContext->transferSyntaxCount = OFstatic_cast(unsigned char, count);
 
     return EC_Normal;
 }
@@ -904,7 +904,7 @@ ASC_refusePresentationContext(
     if (proposedContext == NULL) return ASC_BADPRESENTATIONCONTEXTID;
 
     /* we want to mark this proposed context as being refused */
-    proposedContext->result = resultReason;
+    proposedContext->result = OFstatic_cast(unsigned char, resultReason);
 
     acceptedContext = findPresentationContextID(
                               params->DULparams.acceptedPresentationContext,
@@ -912,7 +912,7 @@ ASC_refusePresentationContext(
 
     if (acceptedContext != NULL) {
         /* it is already in the list, mark it as refused */
-        acceptedContext->result = resultReason;
+        acceptedContext->result = OFstatic_cast(unsigned char, resultReason);
         OFStandard::strlcpy(acceptedContext->abstractSyntax,
                proposedContext->abstractSyntax, sizeof(acceptedContext->abstractSyntax));
         /* we must send back a transfer syntax even though this
@@ -936,7 +936,7 @@ ASC_refusePresentationContext(
         cond = DUL_MakePresentationCtx(
             &acceptedContext,
             DUL_SC_ROLE_DEFAULT, DUL_SC_ROLE_DEFAULT,
-            presentationContextID, resultReason,
+            presentationContextID, OFstatic_cast(unsigned char, resultReason),
             proposedContext->abstractSyntax,
             UID_LittleEndianImplicitTransferSyntax, NULL);
         if (cond.bad()) return cond;
@@ -995,7 +995,7 @@ ASC_findAcceptedPresentationContext(
     presentationContext->proposedRole = dulRole2ascRole(pc->proposedSCRole);
     presentationContext->acceptedRole = dulRole2ascRole(pc->acceptedSCRole);
 
-    presentationContext->transferSyntaxCount = count;
+    presentationContext->transferSyntaxCount = OFstatic_cast(unsigned char, count);
     OFStandard::strlcpy(presentationContext->acceptedTransferSyntax, pc->acceptedTransferSyntax, sizeof(DIC_UI));
 
     return EC_Normal;

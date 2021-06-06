@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -495,7 +495,9 @@ int DiOverlay::addPlane(const unsigned int group,
                 ++(Data->Count);
             else if (status == 2)                                              // group number already exists
                 delete Data->Planes[plane];
-            Data->Planes[plane] = new DiOverlayPlane(group, left_pos, top_pos, columns, rows, data, label, description, mode);
+            Data->Planes[plane] = new DiOverlayPlane(group, OFstatic_cast(const Sint16, left_pos), 
+                OFstatic_cast(const Sint16, top_pos), OFstatic_cast(const Uint16, columns), 
+                OFstatic_cast(const Uint16, rows), data, label, description, mode);
             if (checkPlane(plane, 0))
             {
                 if (Data->Planes[plane]->getNumberOfFrames() > Frames)         // set maximum number of frames
@@ -576,7 +578,7 @@ void *DiOverlay::getFullPlaneData(const unsigned long frame,
         {
             width = op->getWidth();
             height = op->getHeight();
-            return op->getData(frame, 0, 0, width, height, bits, fore, back, OFFalse /*useOrigin*/);
+            return op->getData(frame, 0, 0, OFstatic_cast(Uint16, width), OFstatic_cast(Uint16, height), bits, fore, back, OFFalse /*useOrigin*/);
         }
     }
     return NULL;

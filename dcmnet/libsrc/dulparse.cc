@@ -805,7 +805,7 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 
     int remain = (int)(*length - (buf - bufStart));
 
-    extNeg->serviceClassAppInfoLength = remain;
+    extNeg->serviceClassAppInfoLength = OFstatic_cast(unsigned short, remain);
     extNeg->serviceClassAppInfo = new unsigned char[remain];
     for (int i=0; i<remain; i++) {
         extNeg->serviceClassAppInfo[i] = *buf++;

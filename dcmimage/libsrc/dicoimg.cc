@@ -582,7 +582,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
 #endif
                 dataset.putAndInsertString(DCM_NumberOfFrames, numBuf);
                 dataset.putAndInsertUint16(DCM_SamplesPerPixel, 3);
-                dataset.putAndInsertUint16(DCM_PlanarConfiguration, planarConfig);
+                dataset.putAndInsertUint16(DCM_PlanarConfiguration, OFstatic_cast(const Uint16, planarConfig));
                 /* set pixel encoding and data */
                 switch (InterData->getRepresentation())
                 {
@@ -611,8 +611,8 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
                         dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
                         break;
                 }
-                dataset.putAndInsertUint16(DCM_BitsStored, BitsPerSample);
-                dataset.putAndInsertUint16(DCM_HighBit, BitsPerSample - 1);
+                dataset.putAndInsertUint16(DCM_BitsStored, OFstatic_cast(Uint16, BitsPerSample));
+                dataset.putAndInsertUint16(DCM_HighBit, OFstatic_cast(Uint16, (BitsPerSample - 1)));
                 /* update other DICOM attributes */
                 updateImagePixelModuleAttributes(dataset);
                 result = 1;

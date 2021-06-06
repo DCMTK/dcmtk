@@ -698,7 +698,7 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 
     for (i = 0; i < numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
         cond = ASC_addPresentationContext(
-            params, pid, dcmLongSCUStorageSOPClassUIDs[i],
+            params, OFstatic_cast(T_ASC_PresentationContextID, pid), dcmLongSCUStorageSOPClassUIDs[i],
             transferSyntaxes, numTransferSyntaxes);
         pid += 2;   /* only odd presentation context id's */
     }

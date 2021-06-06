@@ -1790,8 +1790,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
              * '"\my\dir\"' but instead ends up as '"\my\dir\\"' (single quotes for
              *  demonstration purposes). Make sure nobody passes a zero length string.
              */
-            size_t len = strlen(command_argv[i]);
-            if ((len > 0) && (command_argv[i][len - 1] == '\\'))
+            size_t len2 = strlen(command_argv[i]);
+            if ((len2 > 0) && (command_argv[i][len2 - 1] == '\\'))
             {
 	            cmdLine += "\\";
             }
@@ -2225,7 +2225,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
       /* Name socket using wildcards */
       server.sin_family = AF_INET;
       server.sin_addr.s_addr = INADDR_ANY;
-      server.sin_port = (unsigned short) htons((*key)->networkSpecific.TCP.port);
+      server.sin_port = (unsigned short) htons(OFstatic_cast(u_short, ((*key)->networkSpecific.TCP.port)));
       if (bind(sock, (struct sockaddr *) & server, sizeof(server)))
       {
         OFString msg = "TCP Initialization Error: ";
