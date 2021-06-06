@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2017, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
 
 #include "dcmtk/dcmimgle/dimopxt.h"
 #include "dcmtk/dcmimgle/diinpx.h"
@@ -86,6 +87,9 @@ class DiMonoInputPixelTemplate
 
  private:
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
+
     /** initialize optimization LUT
      *
      ** @param  lut   reference to storage area for lookup table
@@ -108,6 +112,8 @@ class DiMonoInputPixelTemplate
         }
         return result;
     }
+
+#include DCMTK_DIAGNOSTIC_POP
 
     /** perform modality LUT transform
      *

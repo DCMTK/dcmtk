@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2019, OFFIS e.V.
+ *  Copyright (C) 2011-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,7 +80,7 @@ static void applyOverrideKeys(DcmDataset *dataset);
 int
 main(int argc, char *argv[])
 {
-  const char *opt_peer;
+  const char *opt_peer = NULL;
   OFCmdUnsignedInt opt_port = 104;;
   const char *opt_peerTitle = PEERAPPLICATIONTITLE;
   const char *opt_ourTitle = APPLICATIONTITLE;

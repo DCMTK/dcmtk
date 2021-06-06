@@ -29,6 +29,7 @@
 #include "jinclude8.h"
 #include "jpeglib8.h"
 #include "jmemsys8.h"       /* import the system-dependent declarations */
+#include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
 
 #ifndef NO_GETENV
 #ifndef HAVE_STDLIB_H       /* <stdlib.h> should declare getenv() */
@@ -1071,6 +1072,7 @@ self_destruct (j_common_ptr cinfo)
   jpeg_mem_term(cinfo);     /* system-dependent cleanup */
 }
 
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 
 /*
  * Memory manager initialization.
@@ -1172,3 +1174,4 @@ jinit_memory_mgr (j_common_ptr cinfo)
 #endif
 
 }
+

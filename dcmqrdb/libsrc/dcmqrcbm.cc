@@ -289,7 +289,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     DIC_NODENAME dstHostName;
     DIC_NODENAME dstHostNamePlusPort;
     int dstPortNumber;
-    T_ASC_Parameters *params;
+    T_ASC_Parameters *params = NULL;
     OFString temp_str;
 
     OFStandard::strlcpy(dstAETitle, request->MoveDestination, DIC_AE_LEN + 1);

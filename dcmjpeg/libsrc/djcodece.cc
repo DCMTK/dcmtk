@@ -490,7 +490,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
   {
     DcmItem *datsetItem = OFreinterpret_cast(DcmItem*, dataset);
     double compressionRatio = 0.0;
-    const Uint16* pixelData;
+    const Uint16* pixelData = NULL;
     size_t length = 0;
     Uint16 bitsAllocated = 0;
     Uint16 bitsStored = 0;
@@ -507,7 +507,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     OFBool planConfSwitched = OFFalse; // true if planar configuration was toggled
     DcmOffsetList offsetList;
     OFString photometricInterpretation;
-    DcmElement *dummyElem;
+    DcmElement *dummyElem = NULL;
 
     // get relevant attributes for encoding from dataset
     result = datsetItem->findAndGetUint16(DCM_BitsStored, bitsStored);

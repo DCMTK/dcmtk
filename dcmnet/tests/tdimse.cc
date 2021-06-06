@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2020, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2020-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,12 +24,8 @@
 
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmnet/dimse.h"
-
-// disable warning C4127: conditional expression is constant
-// since the conditional expressions are intentional here.
-#if defined(_MSC_VER)
-#pragma warning(disable: 4127)
-#endif
+#include "dcmtk/ofstd/ofdiag.h"
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 
 OFTEST(dcmnet_dimseStatusClass)
 {

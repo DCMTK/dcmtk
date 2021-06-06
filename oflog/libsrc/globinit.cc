@@ -352,8 +352,7 @@ ptd_cleanup_func_win32(void * /* arg */ )
     threadCleanup();
 }
 
-#endif
-
+#else
 
 //! Thread local storage clean up function for POSIX threads.
 static
@@ -400,6 +399,8 @@ ptd_cleanup_func (void * arg)
 
     threadCleanup ();
 }
+
+#endif
 
 
 static

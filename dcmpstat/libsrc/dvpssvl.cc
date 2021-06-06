@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2018, OFFIS e.V.
+ *  Copyright (C) 1999-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -285,7 +285,8 @@ OFCondition DVPSSoftcopyVOI_PList::createFromImage(
     if (haveWindow && ((voiActivation==DVPSV_preferVOIWindow)||(! haveLUT)))
     {
       // create VOI window
-      Float64 wc, ww;
+      Float64 wc = 0.0;
+      Float64 ww = 0.0;
       char *wexp = NULL;
       result = windowCenter.getFloat64(wc,0);
       if (EC_Normal==result) result = windowWidth.getFloat64(ww,0);

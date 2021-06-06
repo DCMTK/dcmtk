@@ -1080,7 +1080,8 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
   signed long firstMapped = 0;
   if (haveActiveVOIWindow())    // use active VOI window to specify the LUT descriptor
   {
-    double ww, wc;
+    double ww = 0.0;
+    double wc = 0.0;
     if ((getCurrentWindowWidth(ww) == EC_Normal) && (getCurrentWindowCenter(wc) == EC_Normal))
     {
       if (ww <= 65536)

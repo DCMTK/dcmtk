@@ -216,7 +216,7 @@ int
 main(int argc, char *argv[])
 {
   T_ASC_Parameters *params = NULL;
-  const char *opt_peer;
+  const char *opt_peer = NULL;
   OFCmdUnsignedInt opt_port = 104;
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc = NULL;

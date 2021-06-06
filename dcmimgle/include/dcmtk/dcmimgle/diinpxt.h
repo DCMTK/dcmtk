@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
 
 #include "dcmtk/dcmimgle/diinpx.h"
 #include "dcmtk/dcmimgle/didocu.h"
@@ -173,6 +174,9 @@ class DiInputPixelTemplate
 #endif
     }
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
+
     /** determine minimum and maximum pixel value
      *
      ** @return status, true if successful, false otherwise
@@ -283,6 +287,8 @@ class DiInputPixelTemplate
         }
         return 0;
     }
+
+#include DCMTK_DIAGNOSTIC_POP
 
     /** get pixel representation
      *

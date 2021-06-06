@@ -26,6 +26,9 @@
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofrand.h"
+#include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
+
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"

@@ -123,6 +123,30 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_PERFORMANCE_WARNING <unspecified>
 
+/*! @brief A macro to disable warnings about a conditional expression being constant
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @remarks The warning indicates that a conditional expression will always yield
+ *    the same result. In C++17, the "if constexpr" statement should be used in this case,
+ *    but DCMTK does not (yet) expect a fully C++17 compliant compiler.
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING <unspecified>
+
+/*! @brief A macro to disable warnings about a self-assignment of a variable
+ *  using an overloaded operator.
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_SELF_ASSIGN_OVERLOADED_WARNING <unspecified>
+
+/*! @brief A macro to disable warnings about an assignment within a conditional expression
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @remarks The warning indicates that an assignment takes place within a
+ *    conditional expression, which might indicate that "=" was used erroneously instead of "==".
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_ASSIGNMENT_IN_COND_EXPRESSION_WARNING <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -135,6 +159,9 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_SHADOW "dcmtk/ofstd/diag/shadow.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_NO_SUITABLE_DEFINITION_FOR_TEMPLATE_INSTANTIATION "dcmtk/ofstd/diag/nsdfti.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_PERFORMANCE_WARNING "dcmtk/ofstd/diag/vsprfw.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING "dcmtk/ofstd/diag/constexp.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_SELF_ASSIGN_OVERLOADED_WARNING "dcmtk/ofstd/diag/slfassov.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_ASSIGNMENT_IN_COND_EXPRESSION_WARNING "dcmtk/ofstd/diag/asincond.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

@@ -7,16 +7,13 @@
 
 #include "dcmtk/ofstd/ofmap.h"   /* For OFPair */
 #include "dcmtk/ofstd/oftypes.h" /* For OFTypename */
+#include "dcmtk/ofstd/ofdiag.h"
 
 #include "lokuptbl.h"
 
 // This file contains the code for handling a "scan". Usually an image is encoded as a single scan. 
 
-
-#ifdef _MSC_VER
-#pragma warning (disable: 4127)
-#endif
-
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 
 extern CTable decodingTables[16];
 extern OFVector<signed char> rgquant8Ll;

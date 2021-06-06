@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt      opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
     E_TransferSyntax      opt_networkTransferSyntax = EXS_Unknown;
     const char *          opt_ourTitle = APPLICATIONTITLE;
-    const char *          opt_peer;
+    const char *          opt_peer = NULL;
     const char *          opt_peerTitle = PEERAPPLICATIONTITLE;
     OFCmdUnsignedInt      opt_port = 104;
     OFCmdUnsignedInt      opt_repeatCount = 1;

@@ -1508,7 +1508,7 @@ DIMSE_receiveDataSetInMemory(
     DcmDataset *dset = NULL;
     DUL_PDV pdv;
     T_ASC_PresentationContextID pid = 0;
-    E_TransferSyntax xferSyntax;
+    E_TransferSyntax xferSyntax = EXS_Unknown;
     OFBool last = OFFalse;
     DIC_UL pdvCount = 0;
     DIC_UL bytesRead = 0;

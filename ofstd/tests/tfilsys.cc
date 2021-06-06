@@ -29,11 +29,11 @@
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/oftraits.h"
 #include "dcmtk/ofstd/ofassert.h"
+#include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
 
-#ifdef __GNUC__
 // suppress warning about "p /= p" lines, which are intentional for this test case.
-#pragma GCC diagnostic ignored "-Wself-assign-overloaded"
-#endif
+#include DCMTK_DIAGNOSTIC_IGNORE_SELF_ASSIGN_OVERLOADED_WARNING
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 
 OFTEST(ofstd_filesystem)
 {

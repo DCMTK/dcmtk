@@ -31,6 +31,9 @@
 #include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary() */
 #include "dcmtk/dcmdata/dcdeftag.h"  /* for tag constants */
 #include "dcmtk/dcmdata/dcuid.h"     /* for OFFIS_DCMTK_VERSION */
+#include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
+
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 
 /* ------------------------------------------------------------ */
 

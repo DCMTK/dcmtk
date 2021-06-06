@@ -457,7 +457,8 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData)
 {
     OFCondition result;
 
-    Uint16 rows, cols;
+    Uint16 rows = 0;
+    Uint16 cols = 0;
     if (getImagePixel().getRows(rows).good() && getImagePixel().getColumns(cols).good())
     {
         DcmIODTypes::Frame* frame = NULL;

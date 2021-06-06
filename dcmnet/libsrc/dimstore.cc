@@ -174,6 +174,10 @@ DIMSE_storeUser(
     DIMSE_PrivateUserContext callbackCtx;
     DIMSE_ProgressCallback privCallback = NULL;
     T_DIMSE_StoreProgress progress;
+    progress.state = DIMSE_StoreBegin;
+    progress.callbackCount = 0;
+    progress.progressBytes = 0;
+    progress.totalBytes = 0;
 
     /* if there is no image file or no data set, no data can be sent */
     if (imageFileName == NULL && imageDataSet == NULL) return DIMSE_NULLKEY;

@@ -384,7 +384,7 @@ static OFCondition spoolJobList(
  */
 static OFBool readValuePair(FILE *infile, OFString& key, OFString& value)
 {
-  int c;
+  int c = 0;
   int mode = 0;
   key.clear();
   value.clear();
