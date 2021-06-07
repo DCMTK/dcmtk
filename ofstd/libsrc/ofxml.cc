@@ -105,6 +105,7 @@
 // DCMTK: we need this header file at the beginning of each file
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 // DCMTK: we need the correct header file (was "xmlParser.h")
 #include "dcmtk/ofstd/ofxml.h"
@@ -144,6 +145,10 @@ BEGIN_EXTERN_C
 #include <strings.h>
 END_EXTERN_C
 #endif
+
+// The code in this class ensures that raw access to 'struct XMLNode'
+// is safe. Therefore it is safe to suppress this warning.
+#include DCMTK_DIAGNOSTIC_IGNORE_CLASS_MEMACCESS_WARNING
 
 XMLCSTR XMLNode::getVersion() { return _CXML("v2.44"); }
 void freeXMLString(XMLSTR t){if(t)free(t);}
@@ -789,7 +794,7 @@ XMLSTR ToXMLStringTool::toXMLUnSafe(XMLSTR dest,XMLCSTR source)
     XMLSTR dd=dest;
     XMLCHAR ch;
     XMLCharacterEntity *entity;
-    while ((ch=*source))
+    while ((ch=*source) != 0)
     {
         entity=XMLEntities;
         do
@@ -848,7 +853,7 @@ int ToXMLStringTool::lengthXMLString(XMLCSTR source)
     int r=0;
     XMLCharacterEntity *entity;
     XMLCHAR ch;
-    while ((ch=*source))
+    while ((ch=*source) != 0)
     {
         entity=XMLEntities;
         do
@@ -1063,7 +1068,7 @@ static NextToken GetNextToken(XML *pXML, int *pcbToken, enum XMLTokenTypeTag *pT
             nFoundMatch = FALSE;
 
             // Search through the string to find a matching quote
-            while((ch = getNextChar(pXML)))
+            while((ch = getNextChar(pXML)) != 0)
             {
                 if (ch==chTemp) { nFoundMatch = TRUE; break; }
                 if (ch==_CXML('<')) break;
@@ -1168,7 +1173,7 @@ static NextToken GetNextToken(XML *pXML, int *pcbToken, enum XMLTokenTypeTag *pT
         {
             // Indicate we are dealing with text
             *pType = eTokenText;
-            while((ch = getNextChar(pXML)))
+            while((ch = getNextChar(pXML)) != 0)
             {
                 if XML_isSPACECHAR(ch)
                 {

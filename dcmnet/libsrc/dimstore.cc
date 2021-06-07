@@ -402,6 +402,12 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     DcmDataset *statusDetail = NULL;
     T_DIMSE_StoreProgress progress;
 
+    /* initialize progress struct */
+    progress.state = DIMSE_StoreBegin;
+    progress.callbackCount = 1;
+    progress.progressBytes = 0;
+    progress.totalBytes = 0;
+
     /* initialize the C-STORE-RSP message variable */
     memset((char*)&response, 0, sizeof(response));
     response.DimseStatus = STATUS_STORE_Success;      /* assume */
@@ -418,9 +424,6 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
         /* only if caller requires */
         privCallback = privateProviderCallback; /* function defined above */
         callbackCtx.callbackData = callbackData;
-        progress.state = DIMSE_StoreBegin;
-        progress.callbackCount = 1;
-        progress.progressBytes = 0;
         progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
         callbackCtx.progress = &progress;
         callbackCtx.request = request;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,7 +33,7 @@ DiDisplayLUT::DiDisplayLUT(const unsigned long count,
                            const Uint16 max,
                            const double amb,
                            const double illum)
-  : DiBaseLUT(count, DicomImageClass::tobits(max, 0)),
+  : DiBaseLUT(count, OFstatic_cast(Uint16, DicomImageClass::tobits(max, 0))),
     AmbientLight((amb > 0) ? amb : 0),
     Illumination((illum > 0) ? illum : 0)
 {

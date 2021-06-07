@@ -239,7 +239,7 @@ OFCondition DcmDateTime::getOFDateTimeFromString(const char *dicomDateTime,
         return EC_IllegalParameter;
     unsigned int month = 1;
     unsigned int day = 1;
-    double timeZone;
+    double timeZone = 0.0;
     // check for/extract time zone
     if (dicomDateTimeSize >= 9 && DcmTime::getTimeZoneFromString(dicomDateTime + dicomDateTimeSize - 5, 5, timeZone).good())
         dicomDateTimeSize -= 5;

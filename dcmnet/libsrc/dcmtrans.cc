@@ -363,7 +363,7 @@ void DcmTCPConnection::close()
 
 void DcmTCPConnection::closeTransportConnection()
 {
-  if (getSocket() != -1)
+  if (getSocket() != OFstatic_cast(DcmNativeSocketType, (-1)))
   {
 #ifdef HAVE_WINSOCK_H
     (void) shutdown(getSocket(), 1 /* SD_SEND */);

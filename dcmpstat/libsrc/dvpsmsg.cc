@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -288,7 +288,7 @@ void DVPSIPCClient::requestConnection()
 #endif
   OFSockAddr server;
   OFStandard::getAddressByHostname("localhost", server);
-  server.setPort(OFstatic_cast(unsigned short, htons(port)));
+  server.setPort(OFstatic_cast(unsigned short, htons(OFstatic_cast(unsigned short, port))));
 
   if (connect(s, server.getSockaddr(), server.size()) < 0)
   {

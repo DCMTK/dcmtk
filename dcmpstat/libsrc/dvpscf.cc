@@ -176,7 +176,7 @@ static Uint32 countValues(const char *str)
     Uint32 result = 0;
     if (*str) result++;
     char c;
-    while ((c = *str++)) if (c == '\\') result++;
+    while ((c = *str++) != '\0') if (c == '\\') result++;
     return result;
   }
   return 0;

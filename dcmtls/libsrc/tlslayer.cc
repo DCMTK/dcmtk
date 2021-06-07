@@ -24,6 +24,7 @@
 #include "dcmtk/dcmtls/tlslayer.h"
 #include "dcmtk/dcmtls/tlsdefin.h"
 #include "dcmtk/dcmtls/tlscond.h"
+#include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
 
 #ifdef WITH_OPENSSL
 
@@ -214,6 +215,10 @@ DcmTLSTransportLayer::DcmTLSTransportLayer()
 , role(NET_ACCEPTORREQUESTOR)
 {
 }
+
+// Depending on the OpenSSL version used, SSL_CTX_set_tmp_ecdh() will
+// cause this warning to be issued. In any case, this can safely be ignored.
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 
 DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const char *randFile, OFBool initOpenSSL)
 : DcmTransportLayer()

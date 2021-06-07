@@ -1,0 +1,8 @@
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wclass-memaccess"
+/* The next line is equivalent to #elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(8,0,0) */
+#elif ( defined(__GNUC__) && (__GNUC__ >= 8 ) )
+#pragma GCC diagnostic ignored "-Wclass-memaccess"
+#elif defined(_MSC_VER)
+/* no such warning in MSVC */
+#endif

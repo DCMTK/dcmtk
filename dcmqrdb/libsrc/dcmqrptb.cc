@@ -106,6 +106,7 @@ DcmQueryRetrieveProcessSlot::DcmQueryRetrieveProcessSlot(
 
 OFBool DcmQueryRetrieveProcessSlot::isProcessWithWriteAccess(const char *calledAETitle) const
 {
+  (void) startTime_;
   return (hasStorageAbility_ && calledAETitle && calledAETitle_ == calledAETitle);
 }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,7 +60,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
     DefaultMode(EMO_Graphic),
     Label(),
     Description(),
-    GroupNumber(group),
+    GroupNumber(OFstatic_cast(Uint16, group)),
     Valid(0),
     Visible(0),
     BitPos(0),
@@ -77,7 +77,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         /* determine first frame to be processed */
         FirstFrame = docu->getFrameStart();
         /* specify overlay group number */
-        DcmTagKey tag(group, DCM_OverlayRows.getElement() /* dummy */);
+        DcmTagKey tag(OFstatic_cast(Uint16, group), DCM_OverlayRows.getElement() /* dummy */);
         /* get descriptive data */
         tag.setElement(DCM_OverlayLabel.getElement());
         docu->getValue(tag, Label);
@@ -229,7 +229,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     DefaultMode(mode),
     Label(),
     Description(),
-    GroupNumber(group),
+    GroupNumber(OFstatic_cast(Uint16, group)),
     Valid(0),
     Visible((mode == EMO_BitmapShutter) ? 1 : 0),
     BitPos(0),
@@ -279,7 +279,7 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
     Rows(rows),
     Columns(columns),
     BitsAllocated(16),
-    BitPosition(bit),
+    BitPosition(OFstatic_cast(Uint16, bit)),
     Foreground(plane->Foreground),
     Threshold(plane->Threshold),
     PValue(0),
