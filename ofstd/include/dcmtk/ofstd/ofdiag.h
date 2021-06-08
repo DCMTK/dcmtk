@@ -150,13 +150,22 @@
 /*! @brief A macro to disable warnings about raw memory access to class structures
  *  @note The macro may only be used in conjunction with <i>#include</i>!
  *  @remarks The warning indicates that the destination of a call to a raw memory
- *    function such as memset or memcpy is an object of class type, and when writing 
- *    into such an object might bypass the class non-trivial or deleted constructor 
- *    or copy assignment, violate const-correctness or encapsulation, or corrupt 
- *    virtual table pointers. 
+ *    function such as memset or memcpy is an object of class type, and when writing
+ *    into such an object might bypass the class non-trivial or deleted constructor
+ *    or copy assignment, violate const-correctness or encapsulation, or corrupt
+ *    virtual table pointers.
  *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_CLASS_MEMACCESS_WARNING <unspecified>
+
+/*! @brief A macro to disable warnings about pessimizing use of std::move().
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @remarks The warning indicates that moving a local object in a return
+ *    statement prevents copy elision and thus causes less efficient code
+ *    to be generated.
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_PESSIMIZING_MOVE_WARNING <unspecified>
 
 #else // DOXYGEN
 
@@ -173,7 +182,8 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING "dcmtk/ofstd/diag/constexp.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_SELF_ASSIGN_OVERLOADED_WARNING "dcmtk/ofstd/diag/slfassov.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_ASSIGNMENT_IN_COND_EXPRESSION_WARNING "dcmtk/ofstd/diag/asincond.def"
-#define DCMTK_DIAGNOSTIC_IGNORE_CLASS_MEMACCESS_WARNING  "dcmtk/ofstd/diag/memacces.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_CLASS_MEMACCESS_WARNING "dcmtk/ofstd/diag/memacces.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_PESSIMIZING_MOVE_WARNING "dcmtk/ofstd/diag/pessmove.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

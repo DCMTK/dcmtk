@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2012, OFFIS e.V.
+ *  Copyright (C) 2003-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -162,9 +162,10 @@ OFCondition DcmExtendedNegotiationMap::add(
   OFMap<OFString, DcmExtendedNegotiationList*>::iterator it = map_.find(skey);
 
   DcmExtendedNegotiationList * const *value = NULL;
+  DcmExtendedNegotiationList *newentry = NULL;
   if (it == map_.end())
   {
-    DcmExtendedNegotiationList *newentry = new DcmExtendedNegotiationList();
+    newentry = new DcmExtendedNegotiationList();
     map_.insert(OFPair<OFString, DcmExtendedNegotiationList*>(skey, newentry));
     value = &newentry;
   }

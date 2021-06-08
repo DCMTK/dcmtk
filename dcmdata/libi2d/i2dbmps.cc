@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2017, OFFIS e.V.
+ *  Copyright (C) 2009-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -201,7 +201,7 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
 
   // Check if we got a valid value here which fits into a Uint16
   // (height < 0 can happen because -(INT_MIN) == INT_MIN).
-  if (tmp_height <= 0 || tmp_height > UINT16_MAX)
+  if (tmp_height <= 0 || tmp_height > OFstatic_cast(Sint32, UINT16_MAX))
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported BMP file - height too large or zero");
 
   if (tmp_width < 0) /* Width also can be signed, but no semantic */
@@ -209,7 +209,7 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
     tmp_width = -tmp_width;
   }
   width = OFstatic_cast(Uint16, tmp_width);
-  if (tmp_width <= 0 || tmp_width > UINT16_MAX)
+  if (tmp_width <= 0 || tmp_width > OFstatic_cast(Sint32, UINT16_MAX))
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported BMP file - width too large or zero");
 
   /* Some older standards used this, always 1 for BMP (number of planes) */

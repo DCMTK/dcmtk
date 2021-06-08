@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2013, OFFIS e.V.
+ *  Copyright (C) 2012-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,8 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofmem.h"
+#include "dcmtk/ofstd/ofdiag.h"
+#include DCMTK_DIAGNOSTIC_IGNORE_PESSIMIZING_MOVE_WARNING
 
 OFrvalue<OFunique_ptr<int> > testMove()
 {
