@@ -44,7 +44,7 @@ HierarchyLocker::HierarchyLocker(Hierarchy& _h)
     h.initializeLoggerList(loggerList);
 
     // Lock all of the Hierarchy's Loggers' mutexs
-    LoggerList::iterator it;
+    LoggerList::iterator it = loggerList.begin();;
     try
     {
         for (it = loggerList.begin(); it != loggerList.end(); ++it)

@@ -1163,7 +1163,7 @@ OFCondition DcmTLSTransportLayer::convertOpenSSLX509VerificationError(int errorC
 
     if (logAsError) DCMTLS_ERROR("certificate verification failed: " << err);
 
-    return makeOFCondition(OFM_dcmtls, DCMTLS_EC_X509Verify_Offset + errorCode, OF_error,  err);
+    return makeOFCondition(OFM_dcmtls, OFstatic_cast(Uint16, DCMTLS_EC_X509Verify_Offset + errorCode), OF_error,  err);
 }
 
 void DcmTLSTransportLayer::initializeOpenSSL()

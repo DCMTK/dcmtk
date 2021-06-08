@@ -837,6 +837,7 @@ public:
         if (!query->elem.ValueLength)
             return OFTrue;
 
+        (void)findRequestConverter;
         OFString buffer;
         const char* pQuery = query->elem.PValueField;
         const char* pQueryEnd = pQuery + query->elem.ValueLength;

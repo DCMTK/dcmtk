@@ -689,8 +689,9 @@ OFCondition OFCharacterEncoding::setConversionFlags(const unsigned flags)
             "Conversion flags not supported by the underlying implementation");
     }
     return EC_NoEncodingSelected;
-#endif
+#else
     return EC_NoEncodingLibrary;
+#endif
 }
 
 
