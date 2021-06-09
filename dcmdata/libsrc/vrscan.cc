@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2018, OFFIS e.V.
+ *  Copyright (C) 2010-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,11 +26,15 @@
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofstd.h"        /* For OFString::strerror() */
 #include "dcmtk/dcmdata/dctypes.h"    /* For DCMDATA_WARN() */
+#include "dcmtk/ofstd/ofdiag.h"
 
 BEGIN_EXTERN_C
 #include "vrscani.h"
 #include "vrscanl.h"
 END_EXTERN_C
+
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_OBJECT_DESTRUCTION_WARNING
 
 int vrscan::scan(const OFString& vr, const char* const value, const size_t size)
 {
@@ -73,6 +77,8 @@ int vrscan::scan(const OFString& vr, const char* const value, const size_t size)
 
     return result;
 }
+
+#include DCMTK_DIAGNOSTIC_POP
 
 int vrscan::scan(const OFString& vr, const OFString& value)
 {

@@ -24,6 +24,7 @@
 #include "dcmtk/dcmjpeg/djcparam.h"
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include <csetjmp>
 
 // These two macros are re-defined in the IJG header files.
@@ -51,6 +52,9 @@ BEGIN_EXTERN_C
 using STD_NAMESPACE longjmp;
 using STD_NAMESPACE jmp_buf;
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_DECLSPEC_PADDING_WARNING
+
 // private error handler struct
 struct DJDIJG16ErrorStruct
 {
@@ -63,6 +67,8 @@ struct DJDIJG16ErrorStruct
   // pointer to this
   DJDecompressIJG16Bit *instance;
 };
+
+#include DCMTK_DIAGNOSTIC_POP
 
 // private source manager struct
 struct DJDIJG16SourceManagerStruct
@@ -197,6 +203,8 @@ DJDecompressIJG16Bit::~DJDecompressIJG16Bit()
   cleanup();
 }
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_OBJECT_DESTRUCTION_WARNING
 
 OFCondition DJDecompressIJG16Bit::init()
 {
@@ -446,6 +454,8 @@ OFCondition DJDecompressIJG16Bit::decode(
 
   return EC_Normal;
 }
+
+#include DCMTK_DIAGNOSTIC_POP
 
 void DJDecompressIJG16Bit::emitMessage(int msg_level) const
 {

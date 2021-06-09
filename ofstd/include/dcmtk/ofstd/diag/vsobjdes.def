@@ -1,0 +1,4 @@
+// Clang and GCC don't seem to have such a warning
+#ifdef _MSC_VER
+#pragma warning(disable: 4611)
+#endif

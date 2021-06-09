@@ -2,7 +2,7 @@
 #pragma clang diagnostic ignored "-Wpessimizing-move"
 /* The next line is equivalent to #elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(9,0,0) */
 #elif ( defined(__GNUC__) && (__GNUC__ >= 9 ) )
-#pragma GCC diagnostic ignored "-Wno-pessimizing-move"
+#pragma GCC diagnostic ignored "-Wpessimizing-move"
 #elif defined(_MSC_VER)
 /* no such warning in MSVC */
 #endif

@@ -404,6 +404,8 @@ if(WIN32)   # special handling for Windows systems
             -D_CRT_VCCLRIT_NO_DEPRECATE
             -D_SCL_SECURE_NO_DEPRECATE
             )
+          # suppress linker warning LNK4099 about missing .pdb files when compiling in debug mode
+          set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4099")
         endif()
         # Enable various warnings
       endif()

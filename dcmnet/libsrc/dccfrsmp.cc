@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2017, OFFIS e.V.
+ *  Copyright (C) 2003-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -123,10 +123,11 @@ OFCondition DcmRoleSelectionMap::add(
   DcmRoleSelectionList * const *value = NULL;
   OFString skey(key);
   OFMap<OFString, DcmRoleSelectionList*>::iterator it = map_.find(skey);
+  DcmRoleSelectionList *newentry = NULL;
 
   if (it == map_.end())
   {
-    DcmRoleSelectionList *newentry = new DcmRoleSelectionList();
+    newentry = new DcmRoleSelectionList();
     map_.insert(OFPair<OFString, DcmRoleSelectionList*>(skey, newentry));
     value = &newentry;
   }

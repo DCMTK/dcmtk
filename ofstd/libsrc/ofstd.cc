@@ -109,6 +109,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofmath.h"
 #include "dcmtk/ofstd/ofsockad.h"
 #include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 #include <cmath>
 #include <cstring>       /* for memset() */
@@ -3229,6 +3230,8 @@ OFerror_code OFStandard::getLastNetworkErrorCode()
     return OFerror_code( errno, OFsystem_category() );
 #endif
 }
+
+#include DCMTK_DIAGNOSTIC_IGNORE_STRICT_ALIASING_WARNING
 
 // black magic:
 // The C++ standard says that std::in_place should not be called as a function,

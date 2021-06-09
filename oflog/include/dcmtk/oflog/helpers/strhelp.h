@@ -103,9 +103,6 @@ namespace log4cplus {
                 // integer overflow of an signed type is undefined behavior :(
                 // This code is based upon http://www.fefe.de/intof.html
 
-                // True if intType is unsigned
-                const OFBool isUnsigned = (OFstatic_cast(intType, -1) < 0) ? OFFalse : OFTrue;
-
                 // If intType is a signed type, halfMaxSigned is intType_MAX / 2
                 const intType halfMaxSigned = OFstatic_cast(intType, 1) << (sizeof(intType) * 8 - 2);
 
@@ -116,7 +113,7 @@ namespace log4cplus {
                 const intType minSigned = OFstatic_cast(intType, -1) - maxSigned;
 
                 // This is the minimum value that intType can represent;
-                const intType minVal = isUnsigned ? 0 : minSigned;
+                const intType minVal = (OFstatic_cast(intType, -1) < 0) ? minSigned : 0;
 
                 //if (value == (STD_NAMESPACE numeric_limits<intType>::min) ())
                 if (value == minVal)

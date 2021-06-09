@@ -167,6 +167,34 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_PESSIMIZING_MOVE_WARNING <unspecified>
 
+/*! @brief A macro to disable warnings about code that breaks strict
+ *  aliasing rules
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @remarks The warning indicates that certain code constructs will
+ *    break strict aliasing rules, such as dereferencing a type-punned pointer.
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_STRICT_ALIASING_WARNING <unspecified>
+
+/*! @brief A macro to disable Visual Studio warnings about structure
+ *    padding due to __declspec(align).
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @remarks The warning indicates that a certain structure has been
+ *    padded at the end because of a __declspec(align) declaration.
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_DECLSPEC_PADDING_WARNING <unspecified>
+
+/*! @brief A macro to disable Visual Studio warnings about non-portability
+ *    of the interaction between a function like setjmp and C++ object destruction
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @remarks The warning indicates that on some platforms, functions
+ *    that include 'catch' may not support C++ object semantics of
+ *    destruction when out of scope.
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_OBJECT_DESTRUCTION_WARNING <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -184,6 +212,9 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_ASSIGNMENT_IN_COND_EXPRESSION_WARNING "dcmtk/ofstd/diag/asincond.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_CLASS_MEMACCESS_WARNING "dcmtk/ofstd/diag/memacces.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_PESSIMIZING_MOVE_WARNING "dcmtk/ofstd/diag/pessmove.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_STRICT_ALIASING_WARNING "dcmtk/ofstd/diag/stralias.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_DECLSPEC_PADDING_WARNING "dcmtk/ofstd/diag/vsdeclpd.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_OBJECT_DESTRUCTION_WARNING "dcmtk/ofstd/diag/vsobjdes.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

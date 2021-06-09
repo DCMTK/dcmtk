@@ -24,6 +24,7 @@
 #include "dcmtk/dcmjpeg/djcparam.h"
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include <csetjmp>
 
 // These two macros are re-defined in the IJG header files.
@@ -55,6 +56,10 @@ BEGIN_EXTERN_C
 using STD_NAMESPACE longjmp;
 using STD_NAMESPACE jmp_buf;
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_DECLSPEC_PADDING_WARNING
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_DECLSPEC_PADDING_WARNING
+
 // private error handler struct
 struct DJEIJG16ErrorStruct
 {
@@ -67,6 +72,8 @@ struct DJEIJG16ErrorStruct
   // pointer to this
   DJCompressIJG16Bit *instance;
 };
+
+#include DCMTK_DIAGNOSTIC_POP
 
 // callback forward declarations
 void DJEIJG16ErrorExit(j_common_ptr);
@@ -175,6 +182,9 @@ OFCondition DJCompressIJG16Bit::encode(
 {
   return EC_IllegalCall;
 }
+
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_OBJECT_DESTRUCTION_WARNING
 
 OFCondition DJCompressIJG16Bit::encode(
   Uint16 columns,
@@ -318,6 +328,8 @@ OFCondition DJCompressIJG16Bit::encode(
 
   return EC_Normal;
 }
+
+#include DCMTK_DIAGNOSTIC_POP
 
 void DJCompressIJG16Bit::initDestination(jpeg_compress_struct *cinfo)
 {
