@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -192,22 +192,22 @@ public:
 protected:
 
     /// less-than operation comparing only group numbers
-    int groupLT(const DcmTagKey& key) const;
+    inline int groupLT(const DcmTagKey& key) const;
 
     /// greater-than operation comparing only group numbers
-    int groupGT(const DcmTagKey& key) const;
+    inline int groupGT(const DcmTagKey& key) const;
 
     /// comparison operation comparing only group numbers
-    int groupEQ(const DcmTagKey& key) const;
+    inline int groupEQ(const DcmTagKey& key) const;
 
     /// less-than operation comparing only element numbers
-    int elementLT(const DcmTagKey& key) const;
+    inline int elementLT(const DcmTagKey& key) const;
 
     /// greater-than operation comparing only element numbers
-    int elementGT(const DcmTagKey& key) const;
+    inline int elementGT(const DcmTagKey& key) const;
 
     /// comparison operation comparing only element numbers
-    int elementEQ(const DcmTagKey& key) const;
+    inline int elementEQ(const DcmTagKey& key) const;
 
 private:
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -167,7 +167,7 @@ void DcmSegUtils::debugDumpBin(Uint8* buffer, size_t length, const char* what)
 
 OFString DcmSegUtils::debugByte2Bin(Uint8 b)
 {
-    OFString result("", 8);
+    OFString result("00000000");
     for (int i = 7; i >= 0; i--)
     {
         result[i] = (b & 1) + '0';

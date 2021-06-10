@@ -33,8 +33,8 @@ void DcmTLSOptions::printLibraryVersion()
 #endif // WITH_OPENSSL
 }
 
-DcmTLSOptions::DcmTLSOptions(T_ASC_NetworkRole networkRole)
 #ifdef WITH_OPENSSL
+DcmTLSOptions::DcmTLSOptions(T_ASC_NetworkRole networkRole)
 : opt_keyFileFormat( DCF_Filetype_PEM )
 , opt_doAuthenticate( OFFalse )
 , opt_privateKeyFile( OFnullptr )
@@ -48,6 +48,8 @@ DcmTLSOptions::DcmTLSOptions(T_ASC_NetworkRole networkRole)
 , opt_secureConnection( OFFalse ) // default: no secure connection
 , opt_networkRole( networkRole )
 , tLayer( OFnullptr )
+#else
+DcmTLSOptions::DcmTLSOptions(T_ASC_NetworkRole /* networkRole */)
 #endif
 {
 }
@@ -59,9 +61,9 @@ DcmTLSOptions::~DcmTLSOptions()
 #endif
 }
 
+#ifdef WITH_OPENSSL
 void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
 {
-#ifdef WITH_OPENSSL
   DcmTLSCiphersuiteHandler csh;
 
   cmd.addGroup("transport layer security (TLS) options:");
@@ -131,13 +133,16 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
         cmd.addOption("--verify-peer-cert", "-vc",     "verify peer certificate if present");
       }
       cmd.addOption("--ignore-peer-cert",   "-ic",     "don't verify peer certificate");
-
-#endif // WITH_OPENSSL
 }
+#else
+void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& /* cmd */)
+{
+}
+#endif // WITH_OPENSSL
 
+#ifdef WITH_OPENSSL
 void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd)
 {
-#ifdef WITH_OPENSSL
     DcmTLSCiphersuiteHandler csh;
 
     const char *tlsopts = (opt_networkRole == NET_REQUESTOR ?
@@ -297,18 +302,20 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
       app.checkDependence("--cipher", tlsopts, opt_secureConnection);
       app.checkConflict("--cipher", "--profile-bcp195-ex", (opt_tlsProfile == TSP_Profile_BCP195_Extended));
     }
-
-#endif
 }
+#else
+void DcmTLSOptions::parseArguments(OFConsoleApplication& /* app */, OFCommandLine& /* cmd */)
+{
+}
+#endif
 
+#ifdef WITH_OPENSSL
 OFCondition DcmTLSOptions::createTransportLayer(
       T_ASC_Network *net,
       T_ASC_Parameters *params,
       OFConsoleApplication& app,
       OFCommandLine& cmd)
 {
-
-#ifdef WITH_OPENSSL
     DcmTLSCRLVerification crlmode = TCR_noCRL;
 
     if (opt_secureConnection)
@@ -421,28 +428,45 @@ OFCondition DcmTLSOptions::createTransportLayer(
         if (cond.bad()) return cond;
       }
     }
-
-#endif // WITH_OPENSSL
     return EC_Normal;
 }
+#else
+OFCondition DcmTLSOptions::createTransportLayer(
+      T_ASC_Network * /* net */,
+      T_ASC_Parameters * /* params */,
+      OFConsoleApplication& /* app */,
+      OFCommandLine& /* cmd */)
+{
+    return EC_Normal;
+}
+#endif
 
+#ifdef WITH_OPENSSL
 OFBool DcmTLSOptions::listOfCiphersRequested(OFCommandLine& cmd)
 {
-#ifdef WITH_OPENSSL
   if (cmd.findOption("--list-ciphers")) return OFTrue;
-#endif
   return OFFalse;
 }
+#else
+OFBool DcmTLSOptions::listOfCiphersRequested(OFCommandLine& /* cmd */)
+{
+  return OFFalse;
+}
+#endif
 
+#ifdef WITH_OPENSSL
 void DcmTLSOptions::printSupportedCiphersuites(OFConsoleApplication& app, STD_NAMESPACE ostream& os)
 {
-#ifdef WITH_OPENSSL
   DcmTLSCiphersuiteHandler csh;
   app.printHeader(OFTrue /*print host identifier*/);
   os << OFendl << "Supported TLS ciphersuites are:" << OFendl;
   csh.printSupportedCiphersuites(os);
-#endif
 }
+#else
+void DcmTLSOptions::printSupportedCiphersuites(OFConsoleApplication& /* app */, STD_NAMESPACE ostream& /* os */)
+{
+}
+#endif
 
 OFBool DcmTLSOptions::secureConnectionRequested() const
 {

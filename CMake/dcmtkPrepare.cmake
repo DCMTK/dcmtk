@@ -406,6 +406,7 @@ if(WIN32)   # special handling for Windows systems
             )
           # suppress linker warning LNK4099 about missing .pdb files when compiling in debug mode
           set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4099")
+          set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /ignore:4099")
         endif()
         # Enable various warnings
       endif()
@@ -532,8 +533,15 @@ if(MSVC)
         string(REGEX REPLACE "/[wW][0-9][ \t\r\n]*" "" "CMAKE_${FLAG}_FLAGS" "${CMAKE_${FLAG}_FLAGS}")
     endforeach()
     add_compile_options("/W4")
-elseif(NOT BORLAND)
-    add_compile_options("-Wall")
+else()
+    # Add -Wall to the compiler flags if we are compiling with gcc or Clang.
+    if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+        (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
+        (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
+        (CMAKE_CXX_COMPILER_ID STREQUAL "ARMClang") OR
+        (CMAKE_CXX_COMPILER_ID STREQUAL "XLClang"))
+        add_compile_options("-Wall")
+    endif()
 endif()
 
 #-----------------------------------------------------------------------------

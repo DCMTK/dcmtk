@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2020, OFFIS e.V.
+ *  Copyright (C) 2009-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -102,8 +102,8 @@ struct DCMTK_DCMNET_EXPORT DcmPresentationContextInfo
     DcmPresentationContextInfo()
         : presentationContextID(0)
         , abstractSyntax()
-        , proposedSCRole(0)
-        , acceptedSCRole(0)
+        , proposedSCRole(DUL_SC_ROLE_NONE)
+        , acceptedSCRole(DUL_SC_ROLE_NONE)
         , acceptedTransferSyntax()
     {
     }
@@ -113,9 +113,9 @@ struct DCMTK_DCMNET_EXPORT DcmPresentationContextInfo
     /// Abstract Syntax name (UID) as proposed by SCU
     OFString abstractSyntax;
     /// SCP role as proposed from SCU
-    Uint8 proposedSCRole;
+    DUL_SC_ROLE proposedSCRole;
     /// Role accepted by SCP for this Presentation Context
-    Uint8 acceptedSCRole;
+    DUL_SC_ROLE acceptedSCRole;
     /// Transfer Syntax accepted for this Presentation Context (UID)
     OFString acceptedTransferSyntax;
     // Fields "reserved" and "result" not included from DUL_PRESENTATIONCONTEXT
