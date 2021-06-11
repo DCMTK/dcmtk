@@ -1023,7 +1023,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
     static OFTypename OFenable_if
     <
         OFnumeric_limits<T>::is_integer && ( Count > 1 ) &&
-             OFnumeric_limits<T>::digits10 >= Count,
+             OFstatic_cast(size_t, OFnumeric_limits<T>::digits10) >= Count,
         T
     >::type extractDigits(const char* string)
     {

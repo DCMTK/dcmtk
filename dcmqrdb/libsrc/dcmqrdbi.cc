@@ -1577,7 +1577,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                 DcmDataset      **findResponseIdentifiers,
                 DcmQueryRetrieveDatabaseStatus  *status,
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
                 const DcmQueryRetrieveCharacterSetOptions& characterSetOptions)
+#else
+                const DcmQueryRetrieveCharacterSetOptions& /* characterSetOptions */)
+#endif
 {
 
     DB_ElementList      *plist = NULL;

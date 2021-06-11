@@ -502,19 +502,27 @@ OFCondition DcmTLSOptions::writeRandomSeed()
     return EC_Normal;
 }
 
+#ifdef WITH_OPENSSL
 OFCondition DcmTLSOptions::verifyClientCertificate(const char *fileName)
 {
-#ifdef WITH_OPENSSL
   if (tLayer) return tLayer->verifyClientCertificate(fileName, opt_keyFileFormat);
-#endif
   return EC_IllegalCall;
 }
+#else
+OFCondition DcmTLSOptions::verifyClientCertificate(const char * /* fileName */)
+{
+  return EC_IllegalCall;
+}
+#endif
 
+#ifdef WITH_OPENSSL
 OFCondition DcmTLSOptions::isRootCertificate(const char *fileName)
 {
-#ifdef WITH_OPENSSL
   return DcmTLSTransportLayer::isRootCertificate(fileName, opt_keyFileFormat);
-#else
-  return EC_IllegalCall;
-#endif
 }
+#else
+OFCondition DcmTLSOptions::isRootCertificate(const char * /* fileName */)
+{
+  return EC_IllegalCall;
+}
+#endif
