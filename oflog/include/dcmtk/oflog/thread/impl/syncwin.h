@@ -256,12 +256,7 @@ ManualResetEvent::timed_wait (unsigned long msec) const
 
     default:
         DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::timed_wait");
-#ifndef _MSC_VER
-        // Silence warnings about not returning any value from function
-        // returning bool, unless we are using  MSVC, which would issue
-        // a warning about unreachable code.
-        return false;
-#endif
+        return false; // Silence warnings
     }
 }
 

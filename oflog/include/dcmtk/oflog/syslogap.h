@@ -67,6 +67,7 @@ namespace log4cplus
      * \note Messages sent to remote syslog using UDP are conforming
      * to RFC5424.
      */
+
     class DCMTK_LOG4CPLUS_EXPORT SysLogAppender : public Appender {
     public:
       // Ctors
@@ -93,11 +94,12 @@ namespace log4cplus
 
       // Data
         tstring ident;
-        int facility;
 
         typedef void (SysLogAppender:: * AppendFuncType) (
             const spi::InternalLoggingEvent&);
         AppendFuncType appendFunc;
+
+        int facility;
 
         tstring host;
         int port;
