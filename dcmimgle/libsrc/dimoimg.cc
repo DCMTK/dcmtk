@@ -534,36 +534,6 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
 
 
 /*
- *   this implementation is necessary to avoid linker errors on NeXTSTEP (gcc 2.5.8)
- */
-
-DiMonoImage::DiMonoImage(const DiMonoImage &)
-  : DiImage(NULL),
-    WindowCenter(0),
-    WindowWidth(0),
-    WindowCount(0),
-    VoiLutCount(0),
-    ValidWindow(0),
-    VoiExplanation(),
-    VoiLutFunction(EFV_Default),
-    PresLutShape(ESP_Default),
-    MinDensity(Default_MinDensity),
-    MaxDensity(Default_MaxDensity),
-    Reflection(Default_Reflection),
-    Illumination(Default_Illumination),
-    VoiLutData(NULL),
-    PresLutData(NULL),
-    InterData(NULL),
-    DisplayFunction(NULL),
-    OutputData(NULL),
-    OverlayData(NULL)
-{
-    DCMIMGLE_FATAL("using unimplemented copy constructor in class DiMonoImage ... aborting");
-    abort();
-}
-
-
-/*
  *   createMonoOutputImage
  */
 
