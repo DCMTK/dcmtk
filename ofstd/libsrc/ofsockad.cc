@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, OFFIS e.V.
+ *  Copyright (C) 2017-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,26 +23,9 @@
 #include "dcmtk/ofstd/ofsockad.h"
 #include "dcmtk/ofstd/ofstream.h"
 
-BEGIN_EXTERN_C
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-END_EXTERN_C
-
-#ifdef HAVE_WINDOWS_H
-#include <winsock2.h>
-#include <ws2tcpip.h>    /* for struct sockaddr_in6 */
-#endif
-
 socklen_t OFSockAddr::size() const
 {
-  switch (sa.ss_family)
+  switch (getFamily())
   {
     case AF_INET:
       return sizeof(struct sockaddr_in);
@@ -57,7 +40,7 @@ void OFSockAddr::setPort(unsigned short port)
 {
   struct sockaddr_in *si = NULL;
   struct sockaddr_in6 *si6 = NULL;
-  switch (sa.ss_family)
+  switch (getFamily())
   {
       case AF_INET:
         si = getSockaddr_in();

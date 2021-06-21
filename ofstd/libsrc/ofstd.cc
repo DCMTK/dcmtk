@@ -2830,9 +2830,7 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
   // We have getaddrinfo(). In this case we also presume that we have
   // getnameinfo(), since both functions were introduced together.
   // This is the preferred implementation, being thread-safe and protocol independent.
-
-  struct sockaddr_storage sas; // this type is large enough to hold all supported protocol specific sockaddr structs
-  memset(&sas, 0, sizeof(sas));
+  OFSockAddr sas;
 
   // a DNS name must be shorter than 256 characters, so this should be enough
   char hostname[512];
@@ -2841,14 +2839,14 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
   if (type == AF_INET)
   {
     if (len != sizeof(struct in_addr)) return result; // invalid address length
-    struct sockaddr_in *sa4 = OFreinterpret_cast(sockaddr_in *, &sas);
+    struct sockaddr_in *sa4 = sas.getSockaddr_in();
     sa4->sin_family = AF_INET;
     memcpy(&sa4->sin_addr, addr, len);
   }
   else if (type == AF_INET6)
   {
     if (len != sizeof(struct in6_addr)) return result; // invalid address length
-    struct sockaddr_in6 *sa6 = OFreinterpret_cast(sockaddr_in6 *, &sas);
+    struct sockaddr_in6 *sa6 = sas.getSockaddr_in6();
     sa6->sin6_family = AF_INET6;
     memcpy(&sa6->sin6_addr, addr, len);
   }
@@ -2856,10 +2854,10 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
 
   int err = EAI_AGAIN;
   int rep = DCMTK_MAX_EAI_AGAIN_REPETITIONS;
-  struct sockaddr *sa = OFreinterpret_cast(struct sockaddr *, &sas);
+  struct sockaddr *sa = sas.getSockaddr();
 
   // perform reverse DNS lookup. Repeat while we receive temporary failures.
-  while ((EAI_AGAIN == err) && (rep-- > 0)) err = getnameinfo(sa, sizeof(sas), hostname, 512, NULL, 0, 0);
+  while ((EAI_AGAIN == err) && (rep-- > 0)) err = getnameinfo(sa, sizeof(struct sockaddr_storage), hostname, 512, NULL, 0, 0);
   if ((err == 0) && (hostname[0] != '\0')) result = hostname;
 
 #elif defined(HAVE_GETHOSTBYADDR_R)
