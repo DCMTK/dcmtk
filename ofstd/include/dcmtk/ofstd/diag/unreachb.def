@@ -1,0 +1,4 @@
+// For now we only define a MSVC pragma
+#ifdef _MSC_VER
+#pragma warning(disable: 4702)
+#endif

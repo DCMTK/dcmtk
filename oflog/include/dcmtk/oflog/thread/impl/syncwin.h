@@ -30,6 +30,7 @@
 
 #include <stdexcept>
 
+#include "dcmtk/ofstd/ofdiag.h"
 
 namespace dcmtk {
 namespace log4cplus { namespace thread { namespace impl {
@@ -240,6 +241,8 @@ ManualResetEvent::wait () const
         DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::wait");
 }
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_UNREACHABLE_CODE_WARNING
 
 inline
 bool
@@ -256,9 +259,15 @@ ManualResetEvent::timed_wait (unsigned long msec) const
 
     default:
         DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEvent::timed_wait");
-        return false; // Silence warnings
+        /* Without the following line, MSVC warns that not all code paths return a value.
+         * With the following line, MSVC warns about unreachable code. Great.
+         * We keep the line in the code and suppress the unreachable code warning using a pragma.
+         */
+        return false;
     }
 }
+
+#include DCMTK_DIAGNOSTIC_POP
 
 
 inline

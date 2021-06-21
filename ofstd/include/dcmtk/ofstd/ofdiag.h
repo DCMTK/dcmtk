@@ -195,6 +195,12 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_OBJECT_DESTRUCTION_WARNING <unspecified>
 
+/*! @brief A macro to disable warnings about unreachable code
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_UNREACHABLE_CODE_WARNING <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -215,6 +221,7 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_STRICT_ALIASING_WARNING "dcmtk/ofstd/diag/stralias.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_DECLSPEC_PADDING_WARNING "dcmtk/ofstd/diag/vsdeclpd.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_OBJECT_DESTRUCTION_WARNING "dcmtk/ofstd/diag/vsobjdes.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_UNREACHABLE_CODE_WARNING "dcmtk/ofstd/diag/unreachb.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\
