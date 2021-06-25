@@ -167,12 +167,15 @@ OFCondition DJLSDecoderBase::decode(
   OFBool done = OFFalse;
   OFBool forceSingleFragmentPerFrame = djcp->getForceSingleFragmentPerFrame();
 
+  OFBool isLossless = true;
   while (result.good() && !done)
   {
       DCMJPLS_DEBUG("JPEG-LS decoder processes frame " << (currentFrame+1));
 
+      OFBool isFrameLossless;
       result = decodeFrame(pixSeq, djcp, dataset, currentFrame, currentItem, pixeldata8, frameSize,
-          imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
+          imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample, isFrameLossless);
+      isLossless = isLossless && isFrameLossless;
 
       // check if we should enforce "one fragment per frame" while
       // decompressing a multi-frame image even if stream suspension occurs
@@ -215,7 +218,7 @@ OFCondition DJLSDecoderBase::decode(
     }
 
     // set Lossy Image Compression to "01" (see DICOM part 3, C.7.6.1.1.5)
-    if (result.good() && (supportedTransferSyntax() == EXS_JPEGLSLossy)) result = ditem->putAndInsertString(DCM_LossyImageCompression, "01");
+    if (result.good() && (supportedTransferSyntax() == EXS_JPEGLSLossy) && !isLossless) result = ditem->putAndInsertString(DCM_LossyImageCompression, "01");
 
   }
 
@@ -232,7 +235,8 @@ OFCondition DJLSDecoderBase::decodeFrame(
     Uint32& currentItem,
     void * buffer,
     Uint32 bufSize,
-    OFString& decompressedColorModel) const
+    OFString& decompressedColorModel,
+    OFBool& isFrameLossless) const
 {
   OFCondition result = EC_Normal;
 
@@ -288,7 +292,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
     // We got all the data we need from the dataset, let's start decoding
     DCMJPLS_DEBUG("Starting to decode frame " << frameNo << " with fragment " << currentItem);
     result = decodeFrame(fromPixSeq, djcp, dataset, frameNo, currentItem, buffer, bufSize,
-        imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
+        imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample, isFrameLossless);
   }
 
   if (result.good())
@@ -312,7 +316,8 @@ OFCondition DJLSDecoderBase::decodeFrame(
     Uint16 imageColumns,
     Uint16 imageRows,
     Uint16 imageSamplesPerPixel,
-    Uint16 bytesPerSample)
+    Uint16 bytesPerSample,
+    OFBool& isFrameLossless)
 {
   DcmPixelItem *pixItem = NULL;
   Uint8 * jlsData = NULL;
@@ -414,6 +419,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
       else if (params.components != imageSamplesPerPixel) result = EC_JLSImageDataMismatch;
       else if ((bytesPerSample == 1) && (params.bitspersample > 8)) result = EC_JLSImageDataMismatch;
       else if ((bytesPerSample == 2) && (params.bitspersample <= 8)) result = EC_JLSImageDataMismatch;
+      isFrameLossless = params.allowedlossyerror == 0;
     }
 
     if (!result.good())

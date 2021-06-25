@@ -1214,11 +1214,12 @@ OFCondition DcmPixelData::getUncompressedFrame(
     }
     else
     {
+      OFBool isFrameLossless;
       // we only have a compressed version of the pixel data.
       // Identify a codec for decompressing the frame.
       result = DcmCodecList::decodeFrame(
         (*original)->repType, (*original)->repParam, (*original)->pixSeq,
-        dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel);
+        dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel, isFrameLossless);
     }
     return result;
 }

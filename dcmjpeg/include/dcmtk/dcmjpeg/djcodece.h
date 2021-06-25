@@ -102,6 +102,9 @@ public:
    *  @param decompressedColorModel upon successful return, the color model
    *    of the decompressed image (which may be different from the one used
    *    in the compressed images) is returned in this parameter.
+   *  @param isFrameLossless upon successful return, the lossless attribute
+   *    of the decompressed image (which may be different from the one used
+   *    in the transfer syntax) is returned in this parameter.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition decodeFrame(
@@ -113,7 +116,8 @@ public:
     Uint32& startFragment,
     void *buffer,
     Uint32 bufSize,
-    OFString& decompressedColorModel) const;
+    OFString& decompressedColorModel,
+    OFBool& isFrameLossless) const;
 
   /** compresses the given uncompressed DICOM image and stores
    *  the result in the given pixSeq element.

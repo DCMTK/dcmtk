@@ -408,7 +408,8 @@ OFCondition DJCodecDecoder::decodeFrame(
     Uint32& startFragment,
     void *buffer,
     Uint32 bufSize,
-    OFString& decompressedColorModel) const
+    OFString& decompressedColorModel,
+    OFBool& isFrameLossless) const
 {
 
   OFCondition result = EC_Normal;
@@ -645,9 +646,10 @@ OFCondition DJCodecDecoder::determineDecompressedColorModel(
       if (buffer != NULL)
       {
         DCMJPEG_DEBUG("decompressing first frame to determine the decompressed color model");
+        OFBool isFrameLossless;
         // simple approach: decode first frame in order to determine the uncompressed color model
         result = decodeFrame(fromParam, fromPixSeq, cp, dataset, 0 /* frameNo */, startFragment,
-          OFstatic_cast(void *, buffer), bufSize, decompressedColorModel);
+          OFstatic_cast(void *, buffer), bufSize, decompressedColorModel, isFrameLossless);
       } else
         result = EC_MemoryExhausted;
       delete[] buffer;

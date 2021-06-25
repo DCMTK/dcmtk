@@ -447,9 +447,11 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     Uint32& startFragment,
     void *buffer,
     Uint32 bufSize,
-    OFString& decompressedColorModel) const
+    OFString& decompressedColorModel,
+    OFBool& isFrameLossless) const
 {
     OFCondition result = EC_Normal;
+    isFrameLossless = true;
 
     // assume we can cast the codec parameter to what we need
     const DcmRLECodecParameter *djcp = OFstatic_cast(const DcmRLECodecParameter *, cp);

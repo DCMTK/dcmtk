@@ -475,7 +475,8 @@ OFCondition DcmCodecList::decodeFrame(
   Uint32& startFragment,
   void *buffer,
   Uint32 bufSize,
-  OFString& decompressedColorModel)
+  OFString& decompressedColorModel,
+  OFBool& isFrameLossless)
 {
 #ifdef WITH_THREADS
   if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
@@ -496,7 +497,7 @@ OFCondition DcmCodecList::decodeFrame(
       if ((*first)->codec->canChangeCoding(fromXfer, EXS_LittleEndianExplicit))
       {
         result = (*first)->codec->decodeFrame(fromParam, fromPixSeq, (*first)->codecParameter,
-                 dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel);
+                 dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel, isFrameLossless);
         first = last;
       } else ++first;
     }

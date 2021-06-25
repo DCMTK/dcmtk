@@ -122,7 +122,8 @@ OFCondition DJLSEncoderBase::decodeFrame(
     Uint32& /* startFragment */ ,
     void * /* buffer */ ,
     Uint32 /* bufSize */ ,
-    OFString& /* decompressedColorModel */ ) const
+    OFString& /* decompressedColorModel */ ,
+    OFBool& /* isFrameLossless */ ) const
 {
   // we are an encoder only
   return EC_IllegalCall;
