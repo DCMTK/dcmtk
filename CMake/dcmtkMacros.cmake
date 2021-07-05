@@ -90,16 +90,24 @@ macro(DCMTK_ADD_LIBRARY LIBRARY)
         set_target_properties(${LIBRARY}${DCMTK_LIBRARY_SUFFIX} PROPERTIES COMPILE_DEFINITIONS "${LIBRARY}_EXPORTS")
     endif()
 
+    get_filename_component(DCMTK_ADD_LIBRARY_PARENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" PATH)
+    target_include_directories(${LIBRARY}${DCMTK_LIBRARY_SUFFIX} PUBLIC
+      $<BUILD_INTERFACE:${DCMTK_ADD_LIBRARY_PARENT_DIR}/include>
+      $<INSTALL_INTERFACE:include>
+    )
+
     if(NOT BUILD_SINGLE_SHARED_LIBRARY)
         # Remember export target for writing it to build tree later
         set_property(GLOBAL APPEND PROPERTY DCMTK_LIBRARY_TARGETS ${LIBRARY}${DCMTK_LIBRARY_SUFFIX})
+        target_link_libraries(DCMTK INTERFACE ${LIBRARY}${DCMTK_LIBRARY_SUFFIX})
 
         # Declare installation files
         install(TARGETS ${LIBRARY}${DCMTK_LIBRARY_SUFFIX}
           EXPORT DCMTKTargets
           RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT bin
           LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT shlib
-          ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT lib)
+          ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT lib
+        )
     endif()
 endmacro()
 
@@ -186,3 +194,52 @@ function(DCMTK_UPPER_BOUND LIST COMP VAR)
   endforeach()
   set("${VAR}" ${N} PARENT_SCOPE)
 endfunction()
+
+function(DCMTK_CREATE_INSTALL_EXPORTS)
+    # DCMTKTargets.cmake will contain list of executables and libraries produced
+    # DCMTKConfigVersion.cmake will contain DCMTK version information
+    # DCMTKConfig.cmake will contain options used to build DCMTK
+    #
+    # All three files are created within the build tree's main directory (handled in
+    # CMake/GenerateCMakeExports.cmake, and are installed to locations (OS-specific
+    # under the main install dir (handled directly below).
+
+    # Only create fully-fledged CMake export files if we have the related commands
+    include("${DCMTK_MACROS_DIR}/CheckCMakeCommandExists.cmake")
+    include(CMakePackageConfigHelpers OPTIONAL)
+    CHECK_CMAKE_COMMAND_EXISTS("CONFIGURE_PACKAGE_CONFIG_FILE")
+    CHECK_CMAKE_COMMAND_EXISTS("WRITE_BASIC_PACKAGE_VERSION_FILE")
+
+    if(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
+
+      # Create and configure CMake export files
+      include("${DCMTK_MACROS_DIR}/GenerateCMakeExports.cmake")
+
+      # ${DCMTK_INSTALL_CONFIG} and ${DCMTK_CONFIG_VERSION} are
+      # defined within CMake/GenerateCMakeExports.cmake.
+      # Install DCMTKTargets.cmake to install tree
+      install(EXPORT DCMTKTargets FILE DCMTKTargets.cmake NAMESPACE DCMTK::
+              DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
+
+      # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
+      install(FILES "${DCMTK_INSTALL_CONFIG}" "${DCMTK_CONFIG_VERSION}"
+              DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
+
+    else()
+
+      # Warning that we use old "configure_file" command
+      message(STATUS "Warning: Using old configure_file() mechanism to produce DCMTKConfig.cmake")
+
+      # Actually configure file
+      configure_file("${DCMTK_MACROS_DIR}/DCMTKConfig.old_cmake.in"
+                     "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" @ONLY)
+
+      # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
+      install(FILES "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" "${DCMTK_BINARY_DIR}/DCMTKConfigVersion.cmake"
+              DESTINATION "${DCMTK_INSTALL_CMKDIR}"
+              COMPONENT cmake)
+
+    endif()
+endfunction()
+
+set(DCMTK_MACROS_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "")

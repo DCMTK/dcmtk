@@ -35,6 +35,14 @@ set(DCMTK_MODULES ofstd oflog dcmdata dcmimgle
   dcmseg dcmtract dcmpmap dcmect
   CACHE STRING "List of modules that should be built.")
 
+# Provide an interface target to elegantly include the config directory
+add_library(config INTERFACE)
+target_include_directories(config INTERFACE
+  $<BUILD_INTERFACE:${DCMTK_BINARY_DIR}/config/include>
+  $<INSTALL_INTERFACE:include>
+)
+install(TARGETS config EXPORT DCMTKTargets)
+
 # Include directories
 set(DCMTK_INCLUDE_DIR "${DCMTK_BINARY_DIR}/config/include")
 foreach(inc ${DCMTK_MODULES})
@@ -115,50 +123,9 @@ install(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_DOCDIR}"
 #-----------------------------------------------------------------------------
 # Create an install configuration files for external projects
 #-----------------------------------------------------------------------------
-#
-# DCMTKTargets.cmake will contain list of executables and libraries produced
-# DCMTKConfigVersion.cmake will contain DCMTK version information
-# DCMTKConfig.cmake will contain options used to build DCMTK
-#
-# All three files are created within the build tree's main directory (handled in
-# CMake/GenerateCMakeExports.cmake, and are installed to locations (OS-specific
-# under the main install dir (handled directly below).
 
-# Only create fully-fledged CMake export files if we have the related commands
-include(CMake/CheckCMakeCommandExists.cmake)
-include(CMakePackageConfigHelpers OPTIONAL)
-CHECK_CMAKE_COMMAND_EXISTS("CONFIGURE_PACKAGE_CONFIG_FILE")
-CHECK_CMAKE_COMMAND_EXISTS("WRITE_BASIC_PACKAGE_VERSION_FILE")
-
-if(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
-
-  # Create and configure CMake export files
-  include(CMake/GenerateCMakeExports.cmake)
-
-  # ${DCMTK_INSTALL_CONFIG} and ${DCMTK_CONFIG_VERSION} are
-  # defined within CMake/GenerateCMakeExports.cmake.
-  # Install DCMTKTargets.cmake to install tree
-  install(EXPORT DCMTKTargets FILE DCMTKTargets.cmake
-          DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
-
-  # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
-  install(FILES "${DCMTK_INSTALL_CONFIG}" "${DCMTK_CONFIG_VERSION}"
-          DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
-
-else()
-
-  # Warning that we use old "configure_file" command
-  message(STATUS "Warning: Using old configure_file() mechanism to produce DCMTKConfig.cmake")
-
-  # Actually configure file
-  configure_file("${DCMTK_SOURCE_DIR}/CMake/DCMTKConfig.old_cmake.in"
-                 "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" @ONLY)
-
-  # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
-  install(FILES "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" "${DCMTK_BINARY_DIR}/DCMTKConfigVersion.cmake"
-          DESTINATION "${DCMTK_INSTALL_CMKDIR}"
-          COMPONENT cmake)
-
+if(NOT DCMTK_NO_EXPORT)
+    dcmtk_create_install_exports()
 endif()
 
 #-----------------------------------------------------------------------------

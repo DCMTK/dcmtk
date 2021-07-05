@@ -16,6 +16,7 @@ if(BUILD_SINGLE_SHARED_LIBRARY)
 
   # Export target for build tree
   set_property(GLOBAL APPEND PROPERTY DCMTK_LIBRARY_TARGETS dcmtk)
+  target_link_libraries(DCMTK INTERFACE dcmtk)
 
   # Declare installation files. Also export libs and executables to DCMTKTargets.cmake.
   install(TARGETS dcmtk
