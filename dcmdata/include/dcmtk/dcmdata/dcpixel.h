@@ -443,6 +443,8 @@ public:
      *  it is created (if possible).
      *  if repParam is zero, a representation is chosen or created that
      *  is equal to the default representation parameters
+     *  @deprecated The direct call of this method by user code is deprecated.
+     *    Use DcmDataset::chooseRepresentation() instead.
      */
     OFCondition chooseRepresentation(
         const E_TransferSyntax repType,
