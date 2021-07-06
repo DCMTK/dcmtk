@@ -31,22 +31,14 @@ The DCMTK software can be compiled under a native Microsoft Windows environment
 The current (minor) release successfully compiles on the following operating
 system / hardware / compiler combinations:
 
-   Windows 7       / Intel x86    / Microsoft Visual C++ 2010 Express (VS 10)
    Windows 7       / Intel x86    / Microsoft Visual C++ 2015 Community (VS 14)
-   Windows 7       / amd64|x86_64 / Microsoft Visual C++ 2010 Express (VS 10)
    Windows 7       / amd64|x86_64 / Microsoft Visual C++ 2015 Community (VS 14)
-   Windows 10      / Intel x86    / Microsoft Visual C++ 2008 Express (VS 9)
-   Windows 10      / Intel x86    / Microsoft Visual C++ 2010 Express (VS 10)
-   Windows 10      / Intel x86    / Microsoft Visual C++ 2012 Express (VS 11)
-   Windows 10      / Intel x86    / Microsoft Visual C++ 2013 Express (VS 12)
    Windows 10      / Intel x86    / Microsoft Visual C++ 2015 Community (VS 14)
    Windows 10      / Intel x86    / Microsoft Visual C++ 2017 Community (VS 15)
    Windows 10      / Intel x86    / Microsoft Visual C++ 2019 Community (VS 16)
    Windows 10      / Intel x86    / MinGW gcc 9.2.0 (i686-w64-mingw32)
    Windows 10      / Intel x86    / MinGW gcc 10.2.0 (i686-w64-mingw32)
    Windows 10      / Intel x86    / MinGW Clang 10.0.1 (i686-w64-mingw32)
-   Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2012 Express (VS 11)
-   Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2013 Express (VS 12)
    Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2015 Community (VS 14)
    Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2017 Community (VS 15)
    Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2019 Community (VS 16)
@@ -110,6 +102,18 @@ that is being regularly tested.
 
 Other Platforms
 ---------------
+
+The previous minor release DCMTK 3.6.6 was also tested on the following
+platforms that may still work, but were not tested again for this minor release:
+
+   Windows 7       / Intel x86    / Microsoft Visual C++ 2010 Express (VS 10)
+   Windows 7       / amd64|x86_64 / Microsoft Visual C++ 2010 Express (VS 10)
+   Windows 10      / Intel x86    / Microsoft Visual C++ 2008 Express (VS 9)
+   Windows 10      / Intel x86    / Microsoft Visual C++ 2010 Express (VS 10)
+   Windows 10      / Intel x86    / Microsoft Visual C++ 2012 Express (VS 11)
+   Windows 10      / Intel x86    / Microsoft Visual C++ 2013 Express (VS 12)
+   Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2012 Express (VS 11)
+   Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2013 Express (VS 12)
 
 The previous minor release DCMTK 3.6.5 was also tested on the following
 platforms that may still work, but were not tested again for this minor release:
