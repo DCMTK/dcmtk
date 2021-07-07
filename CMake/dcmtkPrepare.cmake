@@ -7,11 +7,6 @@ if(DEFINED DCMTK_CONFIGURATION_DONE)
 endif()
 set(DCMTK_CONFIGURATION_DONE true)
 
-# Latest CMake version tested
-if(CMAKE_BACKWARDS_COMPATIBILITY GREATER 3.19.6)
-  set(CMAKE_BACKWARDS_COMPATIBILITY 3.19.6 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-endif()
-
 # CMAKE_BUILD_TYPE is set to value "Release" if none is specified by the
 # selected build file generator. For those generators that support multiple
 # configuration types (e.g. Debug, Release), CMAKE_CONFIGURATION_TYPES holds
