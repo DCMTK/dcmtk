@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1501_MeasurementGroup
@@ -78,9 +78,8 @@ class DCMTK_CMR_EXPORT TID1501_MeasurementGroup
 
     /** check whether the current internal state is valid.
      *  That means, whether the base class is valid and whether all mandatory content
-     *  items and included templates are valid (present), i.e. hasMeasurementGroup(),
-     *  hasTrackingIdentifier(), hasTrackingUniqueIdentifier() and hasMeasurements()
-     *  return true.
+     *  items and included templates are valid (present), i.e. hasMeasurementGroup()
+     *  and hasMeasurements() return true.
      ** @return OFTrue if valid, OFFalse otherwise
      */
     OFBool isValid() const;
@@ -99,21 +98,22 @@ class DCMTK_CMR_EXPORT TID1501_MeasurementGroup
     OFBool hasMeasurementGroup(const OFBool checkChildren = OFFalse) const;
 
     /** check whether the 'Tracking Identifier' content item (TID 1501 - Row 2) is
-     *  present.  This content item is mandatory, i.e. should be present with a value.
+     *  present.  This content item is optional, i.e. might be absent.
      ** @return OFTrue if the tracking identifier is present, OFFalse otherwise
      */
     OFBool hasTrackingIdentifier() const;
 
     /** check whether the 'Tracking Unique Identifier' content item (TID 1501 - Row 3) is
-     *  present.  This content item is mandatory, i.e. should be present with a value.
+     *  present.  This content item is optional, i.e. might be absent.
      ** @return OFTrue if the tracking unique identifier is present, OFFalse otherwise
      */
     OFBool hasTrackingUniqueIdentifier() const;
 
     /** check whether there is an included 'Measurement' template (TID 1501 - Row 10) in
-     *  this measurement template.  Initially, this mandatory sub-template is created and
-     *  included by the constructor of this class.  After clear() has been called, the
-     *  content item has to be recreated, which is done automatically when needed.
+     *  this measurement template.  Initially, the mandatory sub-template TID 300 is
+     *  created and included by the constructor of this class.  After clear() has been
+     *  called, the content item has to be recreated, which is done automatically when
+     *  needed.
      ** @param  checkChildren  flag, which is enabled by default, indicating whether to
      *                         check for any children, i.e.\ whether the respective
      *                         sub-template has any content (child nodes).  If OFFalse,

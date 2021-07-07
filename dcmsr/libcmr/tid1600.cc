@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1600_ImageLibrary
@@ -96,7 +96,7 @@ OFBool TID1600_ImageLibrary::hasImageLibraryGroup() const
 OFCondition TID1600_ImageLibrary::createNewImageLibrary()
 {
     clear();
-    /* TID 1600 (Image Library) Row 1 */
+    /* TID 1600 (Image Library) Row 1 ff. */
     return createImageLibrary();
 }
 

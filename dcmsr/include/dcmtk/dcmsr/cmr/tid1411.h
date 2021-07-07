@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1411_VolumetricROIMeasurements
@@ -82,8 +82,7 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     /** check whether the current internal state is valid.
      *  That means, whether the base class is valid and whether all mandatory content
      *  items and included templates are valid (present), i.e. hasMeasurementGroup(),
-     *  hasTrackingIdentifier(), hasTrackingUniqueIdentifier(), hasReferencedSegment(),
-     *  hasSourceSeriesForSegmentation() and hasROIMeasurements() return true.
+     *  hasReferencedSegment() and hasSourceSeriesForSegmentation() return true.
      ** @return OFTrue if valid, OFFalse otherwise
      */
     OFBool isValid() const;
@@ -102,13 +101,13 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     OFBool hasMeasurementGroup(const OFBool checkChildren = OFFalse) const;
 
     /** check whether the 'Tracking Identifier' content item (TID 1411 - Row 2) is
-     *  present.  This content item is mandatory, i.e. should be present with a value.
+     *  present.  This content item is optional, i.e. might be absent.
      ** @return OFTrue if the tracking identifier is present, OFFalse otherwise
      */
     OFBool hasTrackingIdentifier() const;
 
     /** check whether the 'Tracking Unique Identifier' content item (TID 1411 - Row 3) is
-     *  present.  This content item is mandatory, i.e. should be present with a value.
+     *  present.  This content item is optional, i.e. might be absent.
      ** @return OFTrue if the tracking unique identifier is present, OFFalse otherwise
      */
     OFBool hasTrackingUniqueIdentifier() const;
@@ -127,10 +126,10 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     OFBool hasSourceSeriesForSegmentation() const;
 
     /** check whether there is an included 'ROI Measurements' template (TID 1411 -
-     *  Row 15) in this measurement template.  Initially, this mandatory sub-template
-     *  is created and included by the constructor of this class.  After clear() has
-     *  been called, the content item has to be recreated, which is done automatically
-     *  when needed.
+     *  Row 15) in this measurement template.  Initially, the optional sub-template
+     *  TID 1419 is created and included by the constructor of this class.  After clear()
+     *  has been called, the content item has to be recreated, which is done
+     *  automatically when needed.
      ** @param  checkChildren  flag, which is enabled by default, indicating whether to
      *                         check for any children, i.e.\ whether the respective
      *                         sub-template has any content (child nodes).  If OFFalse,
@@ -141,7 +140,8 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
 
     /** get current measurement value of this measurement group as defined by TID 1419
      *  (ROI Measurements), i.e.\ the current instance of TID 1411 - Row 15.
-     *  This included template is mandatory, i.e. should be present and not be empty.
+     *  This included template is optional, i.e. might be empty and, therefore, does not
+     *  contribute any content items to the tree.
      *  Further instances can be added by calling addMeasurement().
      ** @return reference to internally managed SR template (current instance)
      */

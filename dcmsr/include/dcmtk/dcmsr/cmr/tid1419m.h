@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1419_ROIMeasurements_Measurement
@@ -102,7 +102,7 @@ class DCMTK_CMR_EXPORT TID1419_ROIMeasurements_Measurement
     }
 
     /** create a new measurement.
-     *  Clear the entire measurement and create the mandatory (and other supported) content
+     *  Clear the entire measurement and create the mandatory and other supported content
      *  items of this template, i.e.\ TID 1419 - Row 5 and 20.
      ** @param  conceptName   coded entry specifying the concept name of the measurement
      *                        (e.g.\ from the given context group 'T_Measurement')

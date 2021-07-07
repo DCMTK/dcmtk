@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1500_MeasurementReport
@@ -105,20 +105,31 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 
     /** check whether the current internal state is valid.
      *  That means, check whether the base class is valid, the mandatory included
-     *  templates TID 1204, 1001 and 1600 are valid, and whether hasProcedureReported()
-     *  as well as hasImagingMeasurements() or hasQualitativeEvaluations() return true.
-     *  In addition, each of the included templates TID 1411 and 1501 should either be
-     *  empty or valid.
+     *  template TID 1001 is valid, and whether hasImagingMeasurements() or
+     *  hasQualitativeEvaluations() return true.  In addition, each of the included
+     *  templates TID 1204, 1411, 1501 and 1600 should either be empty or valid.
      ** @return OFTrue if valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
 
     /** check whether there are any 'Procedure reported' content items (TID 1500 - Row 4)
-     *  in this measurement report.  This content item is mandatory, i.e. one or more
-     *  instances of the associated content item should be present.
+     *  in this measurement report.  This content item is optional, i.e. might be absent.
      ** @return OFTrue if at least one procedure reported is present, OFFalse otherwise
      */
     OFBool hasProcedureReported() const;
+
+    /** check whether there is an included 'Image Library' template (TID 1500 - Row 8)
+     *  in this measurement report.  Initially, the optional sub-template TID 1600 is
+     *  created (without content items) and included by the constructor of this class.
+     *  After clear() has been called or no document title is passed to the constructor,
+     *  it can be created again by calling createNewMeasurementReport().
+     ** @param  checkChildren  optional flag indicating whether to also check for any
+     *                         children, i.e.\ whether the respective sub-template has
+     *                         any content (child nodes).  By default, the presence of
+     *                         the "included template" content item is checked only.
+     ** @return OFTrue if image library is present, OFFalse otherwise
+     */
+    OFBool hasImageLibrary(const OFBool checkChildren = OFFalse) const;
 
     /** check whether there is an 'Imaging Measurements' content item (TID 1500 - Row 6)
      *  in this measurement report.  Initially, this conditional content item is created
@@ -126,18 +137,18 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
      *  title is passed to the constructor, it can be created again by calling
      *  createNewMeasurementReport().
      ** @param  checkChildren  optional flag indicating whether to also check for any
-     *                         children, i.e.\ whether the respective content item has
-     *                         child nodes.  By default, the presence of the higher-level
-     *                         CONTAINER is checked only.
+     *                         children, i.e.\ whether the respective sub-template has
+     *                         any content (child nodes).  By default, the presence of
+     *                         the "included template" content item is checked only.
      ** @return OFTrue if imaging measurements are present, OFFalse otherwise
      */
     OFBool hasImagingMeasurements(const OFBool checkChildren = OFFalse) const;
 
     /** check whether there is an included 'Volumetric ROI Measurements' template
-     *  (TID 1500 - Row 8) in this measurement report.  Initially, this optional
-     *  sub-template is created and included by the constructor of this class.  After
-     *  clear() has been called or no document title is passed to the constructor, it
-     *  can be created again by calling createNewMeasurementReport().
+     *  (TID 1500 - Row 8) in this measurement report.  Initially, the optional
+     *  sub-template TID 1511 is created and included by the constructor of this class
+     *  After clear() has been called or no document title is passed to the constructor,
+     *  it can be created again by calling createNewMeasurementReport().
      ** @param  checkChildren  optional flag indicating whether to also check for any
      *                         children, i.e.\ whether the respective sub-template has
      *                         any content (child nodes).  By default, the presence of
@@ -147,10 +158,10 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
     OFBool hasVolumetricROIMeasurements(const OFBool checkChildren = OFFalse) const;
 
     /** check whether there is an included 'Measurement Group' template (TID 1500 -
-     *  Row 9) in this measurement report.  Initially, this optional sub-template is
-     *  created and included by the constructor of this class.  After clear() has been
-     *  called or no document title is passed to the constructor, it can be created again
-     *  by calling createNewMeasurementReport().
+     *  Row 9) in this measurement report.  Initially, the optional sub-template TID
+     *  1501 is created and included by the constructor of this class.  After clear() has
+     *  been called or no document title is passed to the constructor, it can be created
+     *  again by calling createNewMeasurementReport().
      ** @param  checkChildren  optional flag indicating whether to also check for any
      *                         children, i.e.\ whether the respective sub-template has
      *                         any content (child nodes).  By default, the presence of
@@ -170,7 +181,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
     OFBool hasQualitativeEvaluations(const OFBool checkChildren = OFFalse) const;
 
     /** get language of this report as defined by TID 1204 (Language of Content Item and
-     *  Descendants).  This included template is mandatory, i.e. should not be empty.
+     *  Descendants).  This included template is optional, i.e. might be empty and,
+     *  therefore, does not contribute any content items to the tree.
      ** @return reference to internally managed SR template
      */
     inline TID1204_LanguageOfContentItemAndDescendants &getLanguage() const
@@ -188,7 +200,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
     }
 
     /** get image library of this report as defined by TID 1600 (Image Library).
-     *  This included template is mandatory, i.e. should not be empty.
+     *  This included template is optional, i.e. might be empty and, therefore, does not
+     *  contribute any content items to the tree.
      ** @return reference to internally managed SR template
      */
     inline TID1600_ImageLibrary &getImageLibrary() const
@@ -198,7 +211,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 
     /** get volumetric ROI measurements of this report as defined by TID 1411 (Volumetric
      *  ROI Measurements), i.e.\ the current instance of TID 1500 - Row 8.
-     *  This included template is optional, i.e. might be empty (but not absent).
+     *  This included template is optional, i.e. might be empty and, therefore, does not
+     *  add any content items to the tree.
      *  Further instances can be added by calling addVolumetricROIMeasurements().
      ** @return reference to internally managed SR template (current instance)
      */
@@ -209,7 +223,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 
     /** get individual measurements of this report as defined by TID 1501 (Measurement
      *  Group), i.e.\ the current instance of TID 1500 - Row 9.
-     *  This included template is optional, i.e. might be empty (but not absent).
+     *  This included template is optional, i.e. might be empty and, therefore, does not
+     *  contribute any content items to the tree.
      *  Further instances can be added by calling addIndividualMeasurements().
      ** @return reference to internally managed SR template (current instance)
      */
@@ -225,7 +240,7 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
     OFCondition getDocumentTitle(DSRCodedEntryValue &titleCode);
 
     /** create a new measurement report.
-     *  Clear the report and create the mandatory (and other supported) content items of
+     *  Clear the report and create the mandatory and other supported content items of
      *  this template, i.e.\ TID 1500 - Row 1 to 6 and 8 to 9.
      ** @param  title  document title to be set (from CID 7021 - Measurement Report
      *                 Document Titles), i.e.\ the concept name of the root node
@@ -311,7 +326,7 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
 
   protected:
 
-    /** create the mandatory (and other supported) content items of this template,
+    /** create the mandatory and other supported content items of this template,
      *  i.e.\ TID 1500 - Row 1 to 6 and 8.  It is expected that the tree is currently
      *  empty.
      ** @param  title  coded entry that specifies the document title to be set

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1500_MeasurementReport
@@ -32,11 +32,12 @@
 #define MEASUREMENT_REPORT               0
 #define OBSERVATION_CONTEXT              1
 #define LAST_PROCEDURE_REPORTED          2
-#define IMAGING_MEASUREMENTS             3
-#define LAST_VOLUMETRIC_ROI_MEASUREMENTS 4
-#define LAST_MEASUREMENT_GROUP           5
-#define QUALITATIVE_EVALUATIONS          6
-#define NUMBER_OF_LIST_ENTRIES           7
+#define IMAGE_LIBRARY                    3
+#define IMAGING_MEASUREMENTS             4
+#define LAST_VOLUMETRIC_ROI_MEASUREMENTS 5
+#define LAST_MEASUREMENT_GROUP           6
+#define QUALITATIVE_EVALUATIONS          7
+#define NUMBER_OF_LIST_ENTRIES           8
 
 // general information on TID 1500 (Measurement Report)
 #define TEMPLATE_NUMBER      "1500"
@@ -51,9 +52,9 @@ TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementRe
   : DSRRootTemplate(DT_EnhancedSR, TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID),
     Language(new TID1204_LanguageOfContentItemAndDescendants()),
     ObservationContext(new TID1001_ObservationContext()),
-    ImageLibrary(new TID1600_ImageLibrary()),
-    VolumetricROIMeasurements(new TID1411_Measurements()),
-    MeasurementGroup(new TID1501_Measurements())
+    ImageLibrary(new TID1600_ImageLibrary(OFFalse /*createLibrary*/)),
+    VolumetricROIMeasurements(new TID1411_Measurements(OFFalse /*createGroup*/)),
+    MeasurementGroup(new TID1501_Measurements(OFFalse /*createGroup*/))
 {
     setExtensible(TEMPLATE_TYPE);
     setOrderSignificant(TEMPLATE_ORDER);
@@ -80,8 +81,10 @@ OFBool TID1500_MeasurementReport::isValid() const
 {
     /* check whether base class is valid and all required content items are present */
     return DSRRootTemplate::isValid() &&
-        Language->isValid() && ObservationContext->isValid() && ImageLibrary->isValid() &&
-        hasProcedureReported() && (hasImagingMeasurements() || hasQualitativeEvaluations()) &&
+        ObservationContext->isValid() &&
+        (hasImagingMeasurements() || hasQualitativeEvaluations()) &&
+        (Language->isEmpty() || Language->isValid()) &&
+        (ImageLibrary->isEmpty() || ImageLibrary->isValid()) &&
         (VolumetricROIMeasurements->isEmpty() || VolumetricROIMeasurements->isValid()) &&
         (MeasurementGroup->isEmpty() || MeasurementGroup->isValid());
 }
@@ -91,6 +94,32 @@ OFBool TID1500_MeasurementReport::hasProcedureReported() const
 {
     /* check for content item at TID 1500 (Measurement Report) Row 4 */
     return (getEntryFromNodeList(LAST_PROCEDURE_REPORTED) > 0);
+}
+
+
+OFBool TID1500_MeasurementReport::hasImageLibrary(const OFBool checkChildren) const
+{
+    OFBool result = OFFalse;
+    /* need to check for child nodes? */
+    if (checkChildren)
+    {
+        DSRDocumentTreeNodeCursor cursor(getRoot());
+        /* go to content item at TID 1500 (Measurement Report) Row 5 */
+        if (gotoEntryFromNodeList(cursor, IMAGE_LIBRARY) > 0)
+        {
+            /* check whether "included TID 1600 template" is non-empty */
+            if (cursor.isValid() && (cursor.getNode()->getValueType() == VT_includedTemplate))
+            {
+                const DSRSubTemplate *subTempl = OFstatic_cast(const DSRIncludedTemplateTreeNode *, cursor.getNode())->getValue().get();
+                if (subTempl != NULL)
+                    result = !subTempl->isEmpty() && subTempl->compareTemplateIdentication("1600", "DCMR");
+            }
+        }
+    } else {
+        /* check for content item at TID 1500 (Measurement Report) Row 5 */
+        result = (getEntryFromNodeList(IMAGE_LIBRARY) > 0);
+    }
+    return result;
 }
 
 
@@ -249,7 +278,7 @@ OFCondition TID1500_MeasurementReport::createNewMeasurementReport(const CID7021_
                                                                   const OFBool check)
 {
     clear();
-    /* TID 1500 (Measurement Report) Row 1 */
+    /* TID 1500 (Measurement Report) Row 1 ff. */
     return createMeasurementReport(title, check);
 }
 
@@ -296,7 +325,7 @@ OFCondition TID1500_MeasurementReport::addVolumetricROIMeasurements(const OFBool
         if (!checkEmpty || !VolumetricROIMeasurements->isEmpty())
         {
             /* create new instance of TID 1411 (Volumetric ROI Measurements) */
-            TID1411_Measurements *subTempl = new TID1411_Measurements();
+            TID1411_Measurements *subTempl = new TID1411_Measurements(OFFalse /*createGroup*/);
             if (subTempl != NULL)
             {
                 /* store (shared) reference to new instance */
@@ -325,7 +354,7 @@ OFCondition TID1500_MeasurementReport::addIndividualMeasurements(const OFBool ch
         if (!checkEmpty || !MeasurementGroup->isEmpty())
         {
             /* create new instance of TID 1501 (Measurement Group) */
-            TID1501_Measurements *subTempl = new TID1501_Measurements();
+            TID1501_Measurements *subTempl = new TID1501_Measurements(OFFalse /*createGroup*/);
             if (subTempl != NULL)
             {
                 /* store (shared) reference to new instance */
@@ -419,6 +448,7 @@ OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_Mea
             /* TID 1500 (Measurement Report) Row 5 */
             CHECK_RESULT(includeTemplate(ImageLibrary, AM_afterCurrent, RT_contains));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 5"));
+            GOOD_RESULT(storeEntryInNodeList(IMAGE_LIBRARY, getNodeID()));
             /* TID 1500 (Measurement Report) Row 6 */
             CHECK_RESULT(addContentItem(RT_contains, VT_Container, CODE_DCM_ImagingMeasurements));
             CHECK_RESULT(getCurrentContentItem().setAnnotationText("TID 1500 - Row 6"));

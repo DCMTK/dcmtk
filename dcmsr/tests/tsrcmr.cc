@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -297,9 +297,12 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     /* set details on the observation context */
     OFCHECK(report.getObservationContext().addPersonObserver("Doe^Jane", "Some Organization").good());
     /* create new image library (only needed after clear) */
+    OFCHECK(report.hasImageLibrary(OFFalse /*checkChildren*/));
+    OFCHECK(!report.hasImageLibrary(OFTrue /*checkChildren*/));
     OFCHECK(report.getImageLibrary().createNewImageLibrary().good());
+    OFCHECK(report.hasImageLibrary(OFFalse /*checkChildren*/));
+    OFCHECK(report.hasImageLibrary(OFTrue /*checkChildren*/));
     /* set two values for "procedure reported" */
-    OFCHECK(!report.isValid());
     OFCHECK(!report.hasProcedureReported());
     OFCHECK(report.addProcedureReported(CMR_CID100::PETWholeBody).good());
     OFCHECK(report.addProcedureReported(DSRCodedEntryValue("4711", "99TEST", "Some other test code")).good());
@@ -358,7 +361,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(volMeasurements.setRealWorldValueMap(dataset).good());
     OFCHECK(volMeasurements.addFindingSite(CODE_SCT_AorticArch).good());
     OFCHECK(volMeasurements.setMeasurementMethod(DSRCodedEntryValue(CODE_DCM_SUVBodyWeightCalculationMethod)).good());
-    OFCHECK(!volMeasurements.isValid());
+    OFCHECK(volMeasurements.isValid());
     /* add two measurement values */
     const CMR_TID1411_in_TID1500::MeasurementValue numVal1("99", CMR_CID7181::StandardizedUptakeValueBodyWeight);
     const CMR_TID1411_in_TID1500::MeasurementValue numVal2(CMR_CID42::MeasurementFailure);
@@ -411,7 +414,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     } else
         OFCHECK_FAIL("could create expanded tree");
 
-    /* try to insert the root template into a document */
+    /* try to insert the root template into an SR document */
     DSRDocument doc;
     OFCHECK(!doc.isValid());
     OFCHECK_EQUAL(doc.getDocumentType(), DSRTypes::DT_BasicTextSR);
@@ -428,6 +431,56 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     {
         report.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
                            DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printLongSOPClassName);
+    }
+}
+
+
+OFTEST(dcmsr_TID1500_MeasurementReport_minimal)
+{
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
+    /* create a minimal TID 1500 report (to test changes introduced by CP-1998) */
+    TID1500_MeasurementReport report(CMR_CID7021::ImagingMeasurementReport);
+    /* set details on the observation context */
+    OFCHECK(report.getObservationContext().addPersonObserver("Doe^Jane", "Some Organization").good());
+    /* and add a single qualitative evaluation */
+    OFCHECK(report.addQualitativeEvaluation(DSRBasicCodedEntry("4711", "99TEST", "Some other test code"), "very good").good());
+
+    /* perform some checks */
+    OFCHECK(report.isValid());
+    OFCHECK(!report.hasProcedureReported());
+    OFCHECK(report.hasImageLibrary(OFFalse /*checkChildren*/));
+    OFCHECK(!report.hasImageLibrary(OFTrue/*checkChildren*/));
+    OFCHECK(report.hasImagingMeasurements(OFFalse /*checkChildren*/));
+    OFCHECK(!report.hasImagingMeasurements(OFTrue /*checkChildren*/));
+    OFCHECK(!report.hasVolumetricROIMeasurements(OFTrue /*checkChildren*/));
+    OFCHECK(!report.hasIndividualMeasurements(OFTrue /*checkChildren*/));
+    OFCHECK(report.hasQualitativeEvaluations(OFTrue /*checkChildren*/));
+
+    /* try to insert the root template into an SR document */
+    DSRDocument doc;
+    OFCHECK(doc.setTreeFromRootTemplate(report, OFTrue /*expandTree*/).good());
+    OFCHECK(doc.isValid());
+
+    /* remove empty "Imaging Measurements" (TID 1500 - Row 6) CONTAINER */
+    OFCHECK_EQUAL(doc.getTree().countNodes(), 7);
+    OFCHECK(doc.getTree().gotoNamedChildNode(CODE_DCM_ImagingMeasurements) > 0);
+    OFCHECK(doc.getTree().removeCurrentContentItem() > 0);
+    OFCHECK_EQUAL(doc.getTree().countNodes(), 6);
+
+    /* output content of both the tree and the SR document (in debug mode only) */
+    if (DCM_dcmsrCmrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        report.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
+                           DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printLongSOPClassName);
+        COUT << "---" << OFendl;
+        doc.print(COUT, DSRTypes::PF_printTemplateIdentification | DSRTypes::PF_printAllCodes | DSRTypes::PF_printSOPInstanceUID |
+                        DSRTypes::PF_printNodeID | DSRTypes::PF_printAnnotation | DSRTypes::PF_printLongSOPClassName);
     }
 }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1501_MeasurementGroup
@@ -80,8 +80,7 @@ OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::isValid() const
 {
     /* check whether base class is valid and all required content items are present */
     return DSRSubTemplate::isValid() &&
-        hasMeasurementGroup() && hasTrackingIdentifier() && hasTrackingUniqueIdentifier() &&
-        hasMeasurements(OFTrue /*checkChildren*/);
+        hasMeasurementGroup() && hasMeasurements(OFTrue /*checkChildren*/);
 }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1411_VolumetricROIMeasurements
@@ -83,8 +83,7 @@ OFBool TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::isValid() const
 {
     /* check whether base class is valid and all required content items are present */
     return DSRSubTemplate::isValid() &&
-        hasMeasurementGroup() && hasTrackingIdentifier() && hasTrackingUniqueIdentifier() &&
-        hasReferencedSegment() && hasSourceSeriesForSegmentation() && hasMeasurements(OFTrue /*checkChildren*/);
+        hasMeasurementGroup() && hasReferencedSegment() && hasSourceSeriesForSegmentation();
 }
 
 
@@ -147,7 +146,7 @@ OFBool TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::hasMeasurements(const 
     if (checkChildren)
     {
         DSRDocumentTreeNodeCursor cursor(getRoot());
-        /* go to content item at TID 1411 (Volumetric ROI Measurements) Row 13 */
+        /* go to content item at TID 1411 (Volumetric ROI Measurements) Row 15 */
         if (gotoEntryFromNodeList(cursor, LAST_MEASUREMENT) > 0)
         {
             /* check whether any of the "included TID 1419 templates" is non-empty */
