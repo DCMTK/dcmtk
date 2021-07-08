@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2020, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -167,7 +167,11 @@ OFCondition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
     OFCondition result = DSRCompositeReferenceValue::readItem(dataset, flags);
     /* read ReferencedWaveformChannels (conditional) */
     if (result.good())
+    {
         ChannelList.read(dataset, flags);
+        /* check data and report warnings if any */
+        checkCurrentValue(OFTrue /*reportWarnings*/);
+    }
     return result;
 }
 
@@ -181,6 +185,8 @@ OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset) const
     {
         if (!ChannelList.isEmpty())
             result = ChannelList.write(dataset);
+        /* check data and report warnings if any */
+        checkCurrentValue(OFTrue /*reportWarnings*/);
     }
     return result;
 }
@@ -256,12 +262,16 @@ OFBool DSRWaveformReferenceValue::appliesToChannel(const Uint16 multiplexGroupNu
 }
 
 
-OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
+// helper macro to avoid annoying check of boolean flag
+#define REPORT_WARNING(msg) { if (reportWarnings) DCMSR_WARN(msg); }
+
+OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID,
+                                                        const OFBool reportWarnings) const
 {
     OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
     if (result.good())
     {
-        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2020c) */
+        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2021c) */
         if ((sopClassUID != UID_TwelveLeadECGWaveformStorage) &&
             (sopClassUID != UID_GeneralECGWaveformStorage) &&
             (sopClassUID != UID_AmbulatoryECGWaveformStorage) &&
@@ -278,6 +288,7 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
             (sopClassUID != UID_SleepElectroencephalogramWaveformStorage) &&
             (sopClassUID != UID_BodyPositionWaveformStorage))
         {
+            REPORT_WARNING("Invalid or unknown waveform SOP class referenced from WAVEFORM content item")
             result = SR_EC_InvalidValue;
         }
     }

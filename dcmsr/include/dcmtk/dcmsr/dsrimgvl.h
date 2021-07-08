@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2020, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -442,27 +442,33 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      *  This method further specializes the checks performed in the base class
      *  DSRCompositeReferenceValue.  All image and segmentation SOP classes that
      *  are defined in DICOM PS 3.6-2020c are allowed.
-     ** @param  sopClassUID  SOP class UID to be checked
+     ** @param  sopClassUID     SOP class UID to be checked
+     *  @param  reportWarnings  if enabled, report warning messages to the logger
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFCondition checkSOPClassUID(const OFString &sopClassUID) const;
+    virtual OFCondition checkSOPClassUID(const OFString &sopClassUID,
+                                         const OFBool reportWarnings = OFFalse) const;
 
     /** check the given reference to a presentation state object for validity.
      *  The reference is "valid" if both UIDs are empty or both are not empty and
      *  SOP class UID refers to a softcopy presentation state object (see
      *  DSRTypes::E_PresentationStateType for a list of supported SOP classes).
      ** @param  referenceValue  value to be checked
+     *  @param  reportWarnings  if enabled, report warning messages to the logger
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFCondition checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const;
+    virtual OFCondition checkPresentationState(const DSRCompositeReferenceValue &referenceValue,
+                                               const OFBool reportWarnings = OFFalse) const;
 
     /** check the given reference to a real world value mapping object for validity.
      *  The reference is "valid" if both UIDs are empty or both are not empty and
      *  SOP class UID refers to the "Real World Value Mapping Storage SOP Class".
      ** @param  referenceValue  value to be checked
+     *  @param  reportWarnings  if enabled, report warning messages to the logger
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFCondition checkRealWorldValueMapping(const DSRCompositeReferenceValue &referenceValue) const;
+    virtual OFCondition checkRealWorldValueMapping(const DSRCompositeReferenceValue &referenceValue,
+                                                   const OFBool reportWarnings = OFFalse) const;
 
     /** check the given list of frame and segment numbers for validity.
      *  Either both lists have to be empty or only one of them has to be non-empty,
@@ -472,8 +478,7 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      ** @param  sopClassUID     SOP class UID of the image object to be checked
      *  @param  frameList       list of referenced frame numbers to be checked
      *  @param  segmentList     list of referenced segment numbers to be checked
-     *  @param  reportWarnings  if enabled, report a warning message on each deviation
-     *                          from an expected value to the logger
+     *  @param  reportWarnings  if enabled, report a warning message to the logger
      ** @return status, EC_Normal if checked data is valid, an error code otherwise
      */
     OFCondition checkListData(const OFString &sopClassUID,
@@ -484,9 +489,11 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     /** check the currently stored image reference value for validity.
      *  See above checkXXX() methods and DSRCompositeReferenceValue::checkCurrentValue()
      *  for details.
+     ** @param  reportWarnings  if enabled, report a warning message on each deviation
+     *                          from an expected value to the logger
      ** @return status, EC_Normal if current value is valid, an error code otherwise
      */
-    OFCondition checkCurrentValue() const;
+    OFCondition checkCurrentValue(const OFBool reportWarnings = OFFalse) const;
 
 
   private:

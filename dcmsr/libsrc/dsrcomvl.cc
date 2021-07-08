@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -413,7 +413,8 @@ OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(DcmItem &dataset,
 }
 
 
-OFCondition DSRCompositeReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
+OFCondition DSRCompositeReferenceValue::checkSOPClassUID(const OFString &sopClassUID,
+                                                         const OFBool /*reportWarnings*/) const
 {
     OFCondition result = sopClassUID.empty() ? SR_EC_InvalidValue : EC_Normal;
     if (result.good())
@@ -422,7 +423,8 @@ OFCondition DSRCompositeReferenceValue::checkSOPClassUID(const OFString &sopClas
 }
 
 
-OFCondition DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) const
+OFCondition DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID,
+                                                            const OFBool /*reportWarnings*/) const
 {
     OFCondition result = sopInstanceUID.empty() ? SR_EC_InvalidValue : EC_Normal;
     if (result.good())
@@ -431,10 +433,10 @@ OFCondition DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopI
 }
 
 
-OFCondition DSRCompositeReferenceValue::checkCurrentValue() const
+OFCondition DSRCompositeReferenceValue::checkCurrentValue(const OFBool reportWarnings) const
 {
-    OFCondition result = checkSOPClassUID(SOPClassUID);
+    OFCondition result = checkSOPClassUID(SOPClassUID, reportWarnings);
     if (result.good())
-        result = checkSOPInstanceUID(SOPInstanceUID);
+        result = checkSOPInstanceUID(SOPInstanceUID, reportWarnings);
     return result;
 }

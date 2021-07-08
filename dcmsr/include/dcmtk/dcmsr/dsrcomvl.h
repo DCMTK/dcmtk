@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -363,25 +363,31 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      *  The only checks performed are that the UID is non-empty and that it conforms to the
      *  corresponding VR (UI) and VM (1).  Derived classes should overwrite this method for
      *  more specific tests (e.g. allowing only particular SOP classes).
-     ** @param  sopClassUID   SOP class UID to be checked
+     ** @param  sopClassUID     SOP class UID to be checked
+     *  @param  reportWarnings  if enabled, report warning messages to the logger
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFCondition checkSOPClassUID(const OFString &sopClassUID) const;
+    virtual OFCondition checkSOPClassUID(const OFString &sopClassUID,
+                                         const OFBool reportWarnings = OFFalse) const;
 
     /** check the specified SOP instance UID for validity.
      *  The only checks performed are that the UID is non-empty and that it conforms to the
      *  corresponding VR (UI) and VM (1).  Derived classes should overwrite this method for
      *  more specific tests.
-     *  @param  sopInstanceUID  SOP instance UID to be checked
+     ** @param  sopInstanceUID  SOP instance UID to be checked
+     *  @param  reportWarnings  if enabled, report warning messages to the logger
      ** @return status, EC_Normal if value is valid, an error code otherwise
      */
-    virtual OFCondition checkSOPInstanceUID(const OFString &sopInstanceUID) const;
+    virtual OFCondition checkSOPInstanceUID(const OFString &sopInstanceUID,
+                                            const OFBool reportWarnings = OFFalse) const;
 
     /** check the currently stored reference value for validity.
      *  See above checkXXX() methods for details.
+     ** @param  reportWarnings  if enabled, report a warning message on each deviation
+     *                          from an expected value to the logger
      ** @return status, EC_Normal if current value is valid, an error code otherwise
      */
-    OFCondition checkCurrentValue() const;
+    OFCondition checkCurrentValue(const OFBool reportWarnings = OFFalse) const;
 
     /// reference SOP class UID (VR=UI, type 1)
     OFString SOPClassUID;
