@@ -86,6 +86,11 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
                  (targetValueType == VT_Date) || (targetValueType == VT_Time) || (targetValueType == VT_PName) ||
                  (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite);
     }
+    /* new row introduced with CP-2084 */
+    else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
+    {
+        result = (targetValueType == VT_Container);
+    }
     /* row 3 of the table */
     else if ((relationshipType == RT_hasAcqContext) && !byReference && (sourceValueType == VT_Image))
     {

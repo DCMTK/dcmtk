@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -77,22 +77,22 @@ OFBool DSRSimplifiedAdultEchoSRConstraintChecker::checkContentRelationship(const
         /* row 1 of the table */
         if ((relationshipType == RT_contains) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+            result = (targetValueType == VT_Text)    || (targetValueType == VT_Code)   || (targetValueType == VT_Num)   ||
                     (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
                     (targetValueType == VT_Container);
         }
         /* row 2 of the table */
-        else if ((relationshipType == RT_hasObsContext) &&
-            ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
+        else if ((relationshipType == RT_hasObsContext) && ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) ||
+            (sourceValueType == VT_Num) || (sourceValueType == VT_Container) /* see CP-2084 */))
         {
-            result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+            result = (targetValueType == VT_Text)    || (targetValueType == VT_Code)   || (targetValueType == VT_Num)   ||
                     (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
                     (targetValueType == VT_Composite);
         }
         /* row 3 of the table */
         else if ((relationshipType == RT_hasAcqContext) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+            result = (targetValueType == VT_Text)    || (targetValueType == VT_Code)   || (targetValueType == VT_Num)   ||
                     (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
                     (targetValueType == VT_Container);
         }
@@ -105,7 +105,7 @@ OFBool DSRSimplifiedAdultEchoSRConstraintChecker::checkContentRelationship(const
         else if ((relationshipType == RT_hasProperties) &&
             ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
         {
-            result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+            result = (targetValueType == VT_Text)    || (targetValueType == VT_Code)   || (targetValueType == VT_Num)   ||
                     (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
                     (targetValueType == VT_Container);
         }
@@ -113,9 +113,9 @@ OFBool DSRSimplifiedAdultEchoSRConstraintChecker::checkContentRelationship(const
         else if ((relationshipType == RT_inferredFrom) &&
             ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
         {
-            result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+            result = (targetValueType == VT_Text)    || (targetValueType == VT_Code)   || (targetValueType == VT_Num)       ||
                     (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef) || (targetValueType == VT_Container) ||
-                    (targetValueType == VT_Image) || (targetValueType == VT_SCoord) || (targetValueType == VT_Waveform) ||
+                    (targetValueType == VT_Image)    || (targetValueType == VT_SCoord) || (targetValueType == VT_Waveform)  ||
                     (targetValueType == VT_TCoord);
         }
         /* row 7 of the table */

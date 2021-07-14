@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2016, OFFIS e.V.
+ *  Copyright (C) 2005-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,8 +84,8 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
         /* row 2 of the table */
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)      || (targetValueType == VT_DateTime) ||
-                     (targetValueType == VT_UIDRef) || (targetValueType == VT_PName);
+            result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)  || (targetValueType == VT_DateTime) ||
+                     (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) || (targetValueType == VT_Container) /* see CP-2084 */;
         }
         /* row 3 of the table */
         else if ((relationshipType == RT_hasObsContext) &&
@@ -116,7 +116,7 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef)    || (targetValueType == VT_PName) ||
                      (targetValueType == VT_Image)    || (targetValueType == VT_Composite) || (targetValueType == VT_Container);
         }
-        /* row 7 of the table - introduced with CP-1076 */
+        /* row 7 of the table */
         else if ((relationshipType == RT_hasProperties) && (sourceValueType == VT_PName))
         {
             result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_DateTime) ||

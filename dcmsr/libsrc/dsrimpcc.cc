@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2015, OFFIS e.V.
+ *  Copyright (C) 2010-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -77,16 +77,16 @@ OFBool DSRImplantationPlanSRDocumentConstraintChecker::checkContentRelationship(
         /* row 1 of the table */
         if ((relationshipType == RT_contains) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+            result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)      || (targetValueType == VT_Num)   ||
                      (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite) || (targetValueType == VT_Image) ||
                      (targetValueType == VT_Container);
         }
         /* row 2 of the table */
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
-                     (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
-                     (targetValueType == VT_Composite);
+            result = (targetValueType == VT_Text)      || (targetValueType == VT_Code)   || (targetValueType == VT_Num)   ||
+                     (targetValueType == VT_Date)      || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) ||
+                     (targetValueType == VT_Composite) || (targetValueType == VT_Container) /* see CP-2084 */;
         }
         /* row 3 of the table */
         else if (relationshipType == RT_hasConceptMod)
@@ -95,7 +95,7 @@ OFBool DSRImplantationPlanSRDocumentConstraintChecker::checkContentRelationship(
         }
         /* row 4 of the table */
         else if ((relationshipType == RT_hasProperties) &&
-            ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num) ||
+            ((sourceValueType == VT_Text) || (sourceValueType == VT_Code)   || (sourceValueType == VT_Num) ||
             (sourceValueType == VT_Image) || (sourceValueType == VT_UIDRef) || (sourceValueType == VT_Composite)))
         {
             result = (targetValueType == VT_Composite);

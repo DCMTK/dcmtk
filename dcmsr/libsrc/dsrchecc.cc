@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,9 +81,14 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
     else if ((relationshipType == RT_hasObsContext) && !byReference && ((sourceValueType == VT_Container) ||
         (sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
-        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
-                 (targetValueType == VT_Date) || (targetValueType == VT_Time) || (targetValueType == VT_PName) ||
+        result = (targetValueType == VT_Text)   || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+                 (targetValueType == VT_Date)   || (targetValueType == VT_Time) || (targetValueType == VT_PName) ||
                  (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite);
+    }
+    /* new row introduced with CP-2084 */
+    else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
+    {
+        result = (targetValueType == VT_Container);
     }
     /* row 3 of the table */
     else if ((relationshipType == RT_hasAcqContext) && !byReference &&
@@ -103,17 +108,17 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
         ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
         /* by-reference allowed */
-        result = (targetValueType == VT_Container) || (targetValueType == VT_Text) || (targetValueType == VT_Code) ||
-                 (targetValueType == VT_Num) || (targetValueType == VT_Date) || (targetValueType == VT_Image) ||
-                 (targetValueType == VT_Waveform) || (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) ||
+        result = (targetValueType == VT_Container) || (targetValueType == VT_Text)   || (targetValueType == VT_Code) ||
+                 (targetValueType == VT_Num)       || (targetValueType == VT_Date)   || (targetValueType == VT_Image) ||
+                 (targetValueType == VT_Waveform)  || (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) ||
                  (targetValueType == VT_UIDRef);
     }
     /* row 6 of the table */
     else if ((relationshipType == RT_inferredFrom) && ((sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
         /* by-reference allowed */
-        result = (targetValueType == VT_Code) || (targetValueType == VT_Num) || (targetValueType == VT_Image) ||
-                 (targetValueType == VT_Waveform) || (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) ||
+        result = (targetValueType == VT_Code)      || (targetValueType == VT_Num)    || (targetValueType == VT_Image) ||
+                 (targetValueType == VT_Waveform)  || (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) ||
                  (targetValueType == VT_Container) || (targetValueType == VT_Text);
     }
     /* row 7 of the table */

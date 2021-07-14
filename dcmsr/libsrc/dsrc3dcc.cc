@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2021, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -74,11 +74,11 @@ OFBool DSRComprehensive3DSRConstraintChecker::checkContentRelationship(const E_V
     /* row 1 of the table */
     if ((relationshipType == RT_contains) && (sourceValueType == VT_Container))
     {
-        result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)      || (targetValueType == VT_Num)       ||
-                 (targetValueType == VT_DateTime) || (targetValueType == VT_Date)      || (targetValueType == VT_Time)      ||
-                 (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName)     || (targetValueType == VT_SCoord)    ||
-                 (targetValueType == VT_SCoord3D) || (targetValueType == VT_TCoord)    || (targetValueType == VT_Composite) ||
-                 (targetValueType == VT_Image)    || (targetValueType == VT_Waveform)  ||
+        result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)     || (targetValueType == VT_Num)       ||
+                 (targetValueType == VT_DateTime) || (targetValueType == VT_Date)     || (targetValueType == VT_Time)      ||
+                 (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName)    || (targetValueType == VT_SCoord)    ||
+                 (targetValueType == VT_SCoord3D) || (targetValueType == VT_TCoord)   || (targetValueType == VT_Composite) ||
+                 (targetValueType == VT_Image)    || (targetValueType == VT_Waveform) ||
                  ((targetValueType == VT_Container) && !byReference /* only by-value */);
     }
     /* row 2 of the table */
@@ -88,6 +88,11 @@ OFBool DSRComprehensive3DSRConstraintChecker::checkContentRelationship(const E_V
         result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)  || (targetValueType == VT_Num)  ||
                  (targetValueType == VT_DateTime) || (targetValueType == VT_Date)  || (targetValueType == VT_Time) ||
                  (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName) || (targetValueType == VT_Composite);
+    }
+    /* new row introduced with CP-2084 */
+    else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
+    {
+        result = (targetValueType == VT_Container);
     }
     /* row 3 of the table */
     else if ((relationshipType == RT_hasAcqContext) && ((sourceValueType == VT_Container) || (sourceValueType == VT_Image) ||

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2016, OFFIS e.V.
+ *  Copyright (C) 2003-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,9 +85,9 @@ OFBool DSRBasicTextSRConstraintChecker::checkContentRelationship(const E_ValueTy
         /* row 2 of the table */
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Text)  || (targetValueType == VT_Code) || (targetValueType == VT_DateTime) ||
-                     (targetValueType == VT_Date)  || (targetValueType == VT_Time) || (targetValueType == VT_UIDRef)   ||
-                     (targetValueType == VT_PName) || (targetValueType == VT_Composite);
+            result = (targetValueType == VT_Text)  || (targetValueType == VT_Code)      || (targetValueType == VT_DateTime) ||
+                     (targetValueType == VT_Date)  || (targetValueType == VT_Time)      || (targetValueType == VT_UIDRef)   ||
+                     (targetValueType == VT_PName) || (targetValueType == VT_Composite) || (targetValueType == VT_Container) /* see CP-2084 */;
         }
         /* row 3 of the table */
         else if ((relationshipType == RT_hasAcqContext) && ((sourceValueType == VT_Container) ||
@@ -110,7 +110,7 @@ OFBool DSRBasicTextSRConstraintChecker::checkContentRelationship(const E_ValueTy
                      (targetValueType == VT_PName) || (targetValueType == VT_Image) || (targetValueType == VT_Waveform) ||
                      (targetValueType == VT_Composite);
         }
-        /* row 6 of the table - introduced with CP-1076 */
+        /* row 6 of the table */
         else if ((relationshipType == RT_hasProperties) && (sourceValueType == VT_PName))
         {
             result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_DateTime) ||
