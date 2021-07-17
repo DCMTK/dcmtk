@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -175,6 +175,10 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElemLengthExceeds32BitFiel
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonNumber;
 /// Cannot write compressed pixel data JSON InlineBinary
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonInlineBinary;
+/// XML parse error
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLParseError;
+/// XML validation failure
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLValidationFailure;
 
 //@}
 

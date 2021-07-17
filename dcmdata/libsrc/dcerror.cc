@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,6 +79,8 @@ makeOFConditionConst(EC_PixelDataExplLengthIllegal,      OFM_dcmdata, 53, OF_err
 makeOFConditionConst(EC_ElemLengthExceeds32BitField,     OFM_dcmdata, 54, OF_error, "Length of element value exceeds maximum of 32-bit length field" );
 makeOFConditionConst(EC_CannotWriteJsonNumber,           OFM_dcmdata, 55, OF_error, "Cannot write 'nan' or 'inf' as JSON number" );
 makeOFConditionConst(EC_CannotWriteJsonInlineBinary,     OFM_dcmdata, 56, OF_error, "JSON InlineBinary encoding not supported for compressed pixel data" );
+makeOFConditionConst(EC_XMLParseError,                   OFM_dcmdata, 57, OF_error, "XML parse error" );
+makeOFConditionConst(EC_XMLValidationFailure,            OFM_dcmdata, 58, OF_error, "XML validation failure" );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;
