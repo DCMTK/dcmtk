@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2019, OFFIS e.V.
+ *  Copyright (C) 2002-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -534,11 +534,16 @@ int main(int argc, char *argv[])
 #endif
             if (result == 0)
             {
-                /* if second parameter is present, it is treated as the output filename ("stdout" otherwise) */
+                /* if second parameter is present, it is treated as the output filename,
+                 * unless it is "-". If the name is absent or equal to "-", write to stdout */
+                const char *ofname = NULL;
                 if (cmd.getParamCount() == 2)
                 {
-                    const char *ofname = NULL;
                     cmd.getParam(2, ofname);
+                }
+
+                if (ofname && (strcmp(ofname, "-") != 0))
+                {
                     STD_NAMESPACE ofstream stream(ofname);
                     if (stream.good())
                     {
