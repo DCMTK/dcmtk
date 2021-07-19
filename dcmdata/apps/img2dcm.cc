@@ -110,6 +110,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--disable-ext",         "-de",     "disable support for extended sequential JPEG");
       cmd.addOption("--insist-on-jfif",      "-jf",     "insist on JFIF header");
       cmd.addOption("--keep-appn",           "-ka",     "keep APPn sections (except JFIF)");
+      cmd.addOption("--remove-com",          "-rc",     "remove COM segment");
 
   cmd.addGroup("processing options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("attribute checking:");
@@ -367,6 +368,8 @@ static OFCondition startConversion(OFCommandLine& cmd,
       jpgSource->setInsistOnJFIF(OFTrue);
     if ( cmd.findOption("--keep-appn") )
       jpgSource->setKeepAPPn(OFTrue);
+    if ( cmd.findOption("--remove-com") )
+      jpgSource->setKeepCOM(OFFalse);
   }
   inputPlug->setImageFile(pixDataFile);
 
