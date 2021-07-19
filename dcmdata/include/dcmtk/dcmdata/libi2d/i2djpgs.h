@@ -172,6 +172,13 @@ public:
    */
   void setKeepAPPn(const OFBool enabled);
 
+  /**  If enabled, COM marker is also copied to the output file.
+   *   Default: true
+   *   @param enabled - [in] OFTrue: copy COM, OFFalse: cut off COM segment
+   *   @return none
+   */
+  void setKeepCOM(const OFBool enabled);
+
   /** Returns a string representation of a JPEG marker code.
    *  @param marker - [in] The marker to be converted
    *  @return A string representation of the marker
@@ -344,6 +351,10 @@ protected:
   /// the SOFn marker (which is relevant for extracting width/height and so on.
   /// Default: false
   OFBool m_keepAPPn;
+
+  /// If true, COM segment is also copied to the output file.
+  /// Default: true
+  OFBool m_keepCOM;
 
   /// After reading pixel data, this denotes whether the source
   /// data is already lossy compressed

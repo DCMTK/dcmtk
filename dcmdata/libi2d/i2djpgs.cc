@@ -27,7 +27,7 @@
 
 I2DJpegSource::I2DJpegSource() : m_jpegFileMap(), jpegFile(),
   m_disableProgrTs(OFFalse), m_disableExtSeqTs(OFFalse), m_insistOnJFIF(OFFalse),
-  m_keepAPPn(OFFalse), m_lossyCompressed(OFTrue)
+  m_keepAPPn(OFFalse), m_keepCOM(OFTrue), m_lossyCompressed(OFTrue)
 {
   DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Plugin instantiated");
 }
@@ -74,6 +74,12 @@ void I2DJpegSource::setInsistOnJFIF(const OFBool enabled)
 void I2DJpegSource::setKeepAPPn(const OFBool enabled)
 {
   m_keepAPPn = enabled;
+}
+
+
+void I2DJpegSource::setKeepCOM(const OFBool enabled)
+{
+  m_keepCOM = enabled;
 }
 
 
@@ -503,6 +509,24 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
         return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
       }
       // remember pos and length of APP data so we don't need a second "scan" for that
+      appPosAndLengths.push_back( (*entry)->bytePos - 1 ); // -1 for FF of marker
+      appPosAndLengths.push_back( length );
+      // add length of marker value to total APP size
+      totalAPPSize += length;
+      // add the marker length itself to total APP size
+      totalAPPSize += 2;
+    }
+    else if ( !m_keepCOM && marker == E_JPGMARKER_COM)
+    {
+      DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Skipping segment COM");
+      jpegFile.fseek((*entry)->bytePos - jpegFile.ftell(), SEEK_CUR);
+      int result = read2Bytes( length);
+      if (result == EOF)
+      {
+        jpegFile.fclose();
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+      }
+      // remember pos and length of COM data so we don't need a second "scan" for that
       appPosAndLengths.push_back( (*entry)->bytePos - 1 ); // -1 for FF of marker
       appPosAndLengths.push_back( length );
       // add length of marker value to total APP size
