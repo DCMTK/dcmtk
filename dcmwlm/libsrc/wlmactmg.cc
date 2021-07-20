@@ -860,7 +860,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   if( opt_sleepAfterFind > 0 )
   {
     DCMWLM_INFO("Sleeping (after find): " << opt_sleepAfterFind << " secs");
-    OFStandard::sleep( (unsigned int)opt_sleepAfterFind );
+    OFStandard::forceSleep( (unsigned int)opt_sleepAfterFind );
   }
 
   // return result
@@ -1134,7 +1134,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
     if (opt_sleepBeforeFindReq > 0)
     {
       DCMWLM_INFO("SLEEPING (before evaluating find request): " << opt_sleepBeforeFindReq << " secs");
-      OFStandard::sleep((unsigned int)opt_sleepBeforeFindReq);
+      OFStandard::forceSleep((unsigned int)opt_sleepBeforeFindReq);
     }
 
     // Determine the records that match the search mask. After this call, the
@@ -1151,7 +1151,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   if( opt_sleepDuringFind > 0 )
   {
     DCMWLM_INFO("SLEEPING (during find): " << opt_sleepDuringFind << " secs");
-    OFStandard::sleep((unsigned int)opt_sleepDuringFind);
+    OFStandard::forceSleep((unsigned int)opt_sleepDuringFind);
   }
 
   // If we encountered a C-CANCEL-RQ and if we have pending

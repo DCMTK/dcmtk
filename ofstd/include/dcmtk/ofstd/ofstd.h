@@ -1154,6 +1154,17 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static OFerror_code getLastNetworkErrorCode();
 
+   /** Method that ensures that the current thread is actually sleeping for the
+    *  defined number of seconds (at least).
+    *  The problem with the regular sleep() function called from
+    *  OFStandard::sleep is that it might be interrupted by signals or a
+    *  network timeout (depending on the operating system). This methods
+    *  re-executes OFStandard's sleep method until the desired number of
+    *  seconds have elapsed.
+    *  @param seconds The number of seconds to sleep (at least)
+    */
+    static void forceSleep(Uint32 seconds);
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy

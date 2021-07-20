@@ -110,6 +110,8 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofsockad.h"
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofdiag.h"
+#include "dcmtk/ofstd/oftimer.h"
+
 
 #include <cmath>
 #include <cstring>       /* for memset() */
@@ -2767,6 +2769,7 @@ void OFStandard::milliSleep(unsigned int millisecs)
 #endif
 }
 
+
 long OFStandard::getProcessID()
 {
 #ifdef _WIN32
@@ -3227,6 +3230,19 @@ OFerror_code OFStandard::getLastNetworkErrorCode()
 #else
     return OFerror_code( errno, OFsystem_category() );
 #endif
+}
+
+
+void OFStandard::forceSleep(Uint32 seconds)
+{
+    OFTimer timer;
+    double elapsed = timer.getDiff();
+    while (elapsed < (double)seconds)
+    {
+        // Use ceiling since otherwise we could wait too short
+        OFStandard::sleep(OFstatic_cast(unsigned int, ceil(seconds-elapsed)));
+        elapsed = timer.getDiff();
+    }
 }
 
 #include DCMTK_DIAGNOSTIC_IGNORE_STRICT_ALIASING_WARNING
