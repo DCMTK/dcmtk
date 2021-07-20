@@ -95,6 +95,10 @@ JPEG format:
 
   -ka   --keep-appn
           keep APPn sections (except JFIF)
+
+  -rc   --remove-com
+          remove COM segment
+
 \endverbatim
 
 \subsection img2dcm_processing_options processing options
@@ -499,6 +503,6 @@ images
 
 \section img2dcm_copyright COPYRIGHT
 
-Copyright (C) 2007-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
