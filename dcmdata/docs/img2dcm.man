@@ -98,7 +98,6 @@ JPEG format:
 
   -rc   --remove-com
           remove COM segment
-
 \endverbatim
 
 \subsection img2dcm_processing_options processing options
