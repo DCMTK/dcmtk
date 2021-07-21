@@ -225,12 +225,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
 
   Uint32 tLength = 0;
   char* tPixelData = NULL;
-  // Keep all APPx info (however, JFIF is always removed)
-  if (m_keepAPPn)
-    cond = copyJPEGStream(tPixelData, tLength);
-  // Cut off all APPx information from JPEG and get raw JPEG bit stream into memory
-  else
-    cond = extractRawJPEGStream(tPixelData, tLength);
+  cond = extractRawJPEGStream(tPixelData, tLength);
   if (cond.bad())
   {
     closeFile();
@@ -473,12 +468,12 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
 
   /* Calculate length of total stream as found in the file
    * Therefore, look at byte positions from SOI and EOI marker and
-   * and exclude all APPn markers in calculation
+   * and exclude all APPn markers and COM markers in calculation
    */
 
   offile_off_t bytePosSOI = 0;
   offile_off_t bytePosEOI = 0;
-  offile_off_t totalAPPSize = 0;
+  offile_off_t totalSkipSize = 0;
   OFList<offile_off_t> appPosAndLengths;
 
   OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
@@ -498,7 +493,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
       // No need to subtract / add bytes
       break;
     }
-    else if (marker >= E_JPGMARKER_APP0 && marker <= E_JPGMARKER_APP15)
+    else if (!m_keepAPPn && (marker >= E_JPGMARKER_APP0 && marker <= E_JPGMARKER_APP15))
     {
       DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Skipping application segment APP" << (marker - E_JPGMARKER_APP0));
       jpegFile.fseek((*entry)->bytePos - jpegFile.ftell(), SEEK_CUR);
@@ -512,9 +507,9 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
       appPosAndLengths.push_back( (*entry)->bytePos - 1 ); // -1 for FF of marker
       appPosAndLengths.push_back( length );
       // add length of marker value to total APP size
-      totalAPPSize += length;
+      totalSkipSize += length;
       // add the marker length itself to total APP size
-      totalAPPSize += 2;
+      totalSkipSize += 2;
     }
     else if ( !m_keepCOM && marker == E_JPGMARKER_COM)
     {
@@ -530,9 +525,9 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
       appPosAndLengths.push_back( (*entry)->bytePos - 1 ); // -1 for FF of marker
       appPosAndLengths.push_back( length );
       // add length of marker value to total APP size
-      totalAPPSize += length;
+      totalSkipSize += length;
       // add the marker length itself to total APP size
-      totalAPPSize += 2;
+      totalSkipSize += 2;
     }
     // Advance to next segment
     entry++;
@@ -541,7 +536,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
   if ( (entry == m_jpegFileMap.end()) || (bytePosSOI == 0) || (bytePosEOI == 0)) // at least end marker was not found
     return EC_IllegalCall;
 
-  offile_off_t rawStreamSize = bytePosEOI - bytePosSOI - totalAPPSize;
+  offile_off_t rawStreamSize = bytePosEOI - bytePosSOI - totalSkipSize;
   // Start position n and endpos. m results in a total amount of m-n+1 bytes
   rawStreamSize++;
 
@@ -650,11 +645,6 @@ OFCondition I2DJpegSource::createJPEGFileMap()
       else if (marker == E_JPGMARKER_EOI)
       {
         // End of file reached
-        cond = EC_Normal;
-        break;
-      }
-      else if ( isSOFMarker(marker) && m_keepAPPn )
-      {
         cond = EC_Normal;
         break;
       }
