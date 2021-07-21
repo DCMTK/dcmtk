@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2017, OFFIS e.V.
+ *  Copyright (C) 2007-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,17 +29,26 @@
 #include "dcmtk/dcmdata/dcuid.h"     /* for SITE_SERIES_UID_ROOT */
 #include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
 #include "dcmtk/dcmdata/dcpath.h"    /* for override keys */
+#include "dcmtk/dcmdata/xml2dcm.h"   /* for DcmXMLParseHelper */
 
 OFLogger DCM_dcmdataLibi2dLogger = OFLog::getLogger("dcmtk.dcmdata.libi2d");
 
 
-Image2Dcm::Image2Dcm() : m_overrideKeys(), m_templateFile(""),
-  m_readStudyLevel(OFFalse), m_readSeriesLevel(OFFalse), m_studySeriesFile(),
-  m_incInstNoFromFile(OFFalse), m_disableAttribChecks(OFFalse),
-  m_inventMissingType2Attribs(OFTrue), m_inventMissingType1Attribs(OFFalse),
-  m_insertLatin1(OFTrue)
+Image2Dcm::Image2Dcm()
+: m_overrideKeys()
+, m_templateFile("")
+, m_templateFileIsXML(OFFalse)
+, m_XMLvalidation(OFFalse)
+, m_XMLnamespaceCheck(OFFalse)
+, m_readStudyLevel(OFFalse)
+, m_readSeriesLevel(OFFalse)
+, m_studySeriesFile()
+, m_incInstNoFromFile(OFFalse)
+, m_disableAttribChecks(OFFalse)
+, m_inventMissingType2Attribs(OFTrue)
+, m_inventMissingType1Attribs(OFFalse)
+, m_insertLatin1(OFTrue)
 {
-
 }
 
 
@@ -61,9 +70,24 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
   if (!m_templateFile.empty())
   {
     DcmFileFormat dcmff;
+
+#ifdef WITH_LIBXML
+    if (m_templateFileIsXML)
+    {
+      DcmXMLParseHelper parser;
+      E_TransferSyntax xfer;
+      cond = parser.readXmlFile(m_templateFile.c_str(), dcmff, xfer, OFFalse /* ignore metaheader */, m_XMLnamespaceCheck, m_XMLvalidation, OFTrue /* stop on errors */);
+    }
+    else
+    {
+      cond = dcmff.loadFile(m_templateFile.c_str());
+    }
+#else
     cond = dcmff.loadFile(m_templateFile.c_str());
+#endif
     if (cond.bad())
       return cond;
+
     // remove problematic attributes from dataset
     cleanupTemplate(dcmff.getDataset());
     // copy from input file
@@ -104,7 +128,8 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
   generateUIDs(tempDataset.get());
 
   // Read and insert pixel data
-  cond = readAndInsertPixelData(inputPlug, tempDataset.get(), proposedTS);
+  double compressionRatio = 1.0;
+  cond = readAndInsertPixelData(inputPlug, tempDataset.get(), proposedTS, compressionRatio);
   if (cond.bad())
   {
     return cond;
@@ -119,6 +144,12 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
       cond = tempDataset->putAndInsertOFStringArray(DCM_LossyImageCompression, "01");
       if (cond.good() && !comprMethod.empty())
         cond = tempDataset->putAndInsertOFStringArray(DCM_LossyImageCompressionMethod, comprMethod);
+      if (cond.good())
+      {
+        char buf[64];
+        OFStandard::ftoa(buf, sizeof(buf), compressionRatio, OFStandard::ftoa_uppercase, 0, 5);
+        cond = tempDataset->putAndInsertOFStringArray(DCM_LossyImageCompressionRatio, buf);
+      }
       if (cond.bad()) return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write attribute Lossy Image Compression and/or Lossy Image Compression Method to result dataset");
     }
   }
@@ -316,6 +347,17 @@ OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
     value.clear();
   }
 
+  // We need to copy Instance Number if we are supposed to increase it
+  if (m_incInstNoFromFile)
+  {
+    cond = srcDset->findAndGetOFString(DCM_InstanceNumber, value);
+    if (cond.bad())
+      value = "1";
+    cond = targetDset->putAndInsertOFStringArray(DCM_InstanceNumber, value);
+    if (cond.bad())
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Instance Number to file");
+  }
+
   return EC_Normal;
 }
 
@@ -461,9 +503,11 @@ OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset,
 }
 
 
-OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
-                                              DcmDataset* dset,
-                                              E_TransferSyntax& outputTS)
+OFCondition Image2Dcm::readAndInsertPixelData(
+  I2DImgSource* imgSource,
+  DcmDataset* dset,
+  E_TransferSyntax& outputTS,
+  double& compressionRatio)
 {
   Uint16 samplesPerPixel, rows, cols, bitsAlloc, bitsStored, highBit, pixelRepr, planConf;
   Uint16 pixAspectH =1; Uint16 pixAspectV = 1;
@@ -478,6 +522,12 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
 
   if (cond.bad())
     return cond;
+
+  // compute compression ratio
+  compressionRatio = 1.0;
+  double uncompressedSize = cols * rows;
+  uncompressedSize = uncompressedSize * bitsStored * samplesPerPixel / 8.0;
+  if (length > 0) compressionRatio = uncompressedSize / length;
 
   DcmXfer transport(outputTS);
   if (transport.isEncapsulated())
@@ -618,6 +668,23 @@ void Image2Dcm::setTemplateFile(const OFString& file)
   m_templateFile = file;
 }
 
+
+void Image2Dcm::setTemplateFileIsXML(OFBool isXML)
+{
+  m_templateFileIsXML = isXML;
+}
+
+
+void Image2Dcm::setXMLvalidation(OFBool enabled)
+{
+  m_XMLvalidation = enabled;
+}
+
+
+void Image2Dcm::setXMLnamespaceCheck(OFBool enabled)
+{
+  m_XMLnamespaceCheck = enabled;
+}
 
 
 void Image2Dcm::setIncrementInstanceNumber(OFBool incInstNo)

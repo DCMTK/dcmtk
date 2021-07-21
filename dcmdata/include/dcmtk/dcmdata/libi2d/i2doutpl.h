@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2017, OFFIS e.V.
+ *  Copyright (C) 2001-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,10 +24,9 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/oflog/oflog.h"
-#include "dcmtk/dcmdata/dcdatset.h"
-#include "dcmtk/dcmdata/dcelem.h"
+#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmdata/libi2d/i2define.h"
-
 
 extern DCMTK_I2D_EXPORT OFLogger DCM_dcmdataLibi2dLogger;
 
@@ -38,6 +37,8 @@ extern DCMTK_I2D_EXPORT OFLogger DCM_dcmdataLibi2dLogger;
 #define DCMDATA_LIBI2D_ERROR(msg) OFLOG_ERROR(DCM_dcmdataLibi2dLogger, msg)
 #define DCMDATA_LIBI2D_FATAL(msg) OFLOG_FATAL(DCM_dcmdataLibi2dLogger, msg)
 
+class DcmDataset;
+class DcmTagKey;
 
 class DCMTK_I2D_EXPORT I2DOutputPlug
 {
@@ -47,9 +48,7 @@ public:
   /** Constructor, initializes member variables
    *  @return none
    */
-  I2DOutputPlug() : m_doAttribChecking(OFTrue), m_inventMissingType2Attribs(OFTrue),
-                    m_inventMissingType1Attribs(OFTrue)
-  {};
+  I2DOutputPlug();
 
   /** Virtual function that returns a short name of the plugin.
    *  @return The name of the plugin
@@ -78,7 +77,7 @@ public:
   /** Destructor
    *  @return none
    */
-  virtual ~I2DOutputPlug() {};
+  virtual ~I2DOutputPlug();
 
   /** Enable/Disable basic validity checks for output dataset
    *  @param doChecks - [in] OFTrue enables checking, OFFalse turns it off.
@@ -92,14 +91,18 @@ public:
    */
   virtual void setValidityChecking(OFBool doChecks,
                                    OFBool insertMissingType2 = OFTrue,
-                                   OFBool inventMissingType1 = OFTrue)
-  {
-    m_doAttribChecking = doChecks;
-    m_inventMissingType2Attribs = insertMissingType2;
-    m_inventMissingType1Attribs = inventMissingType1;
-  };
+                                   OFBool inventMissingType1 = OFTrue);
 
 protected:
+
+  /** Checks whether a given tag exists in a dataset and is non-empty,
+   *  otherwise returns an error string.
+   *  @param key - [in] The tag to be checked/inserted
+   *  @param targetDset - [in/out] The dataset to search (and insert) in
+   *  @return Error string, which is empty if no error occurs.
+   */
+  virtual OFString checkType1Attrib(const DcmTagKey& key,
+                                    DcmDataset* targetDset) const;
 
   /** Checks whether a given tag exists in a dataset and provides a non-empty
    *  value. If not, the tag is inserted (if enabled) and a default value is
@@ -111,50 +114,22 @@ protected:
    */
   virtual OFString checkAndInventType1Attrib(const DcmTagKey& key,
                                              DcmDataset* targetDset,
-                                             const OFString& defaultValue ="") const
-  {
-    OFBool exists = targetDset->tagExists(key);
-    if (!exists && !m_inventMissingType1Attribs)
-    {
-      OFString err = "I2DOutputPlug: Missing type 1 attribute: "; err += DcmTag(key).getTagName(); err += "\n";
-      return err;
-    }
-    DcmElement *elem;
-    OFCondition cond = targetDset->findAndGetElement(key, elem);
-    if (cond.bad() || !elem || (elem->getLength() == 0))
-    {
-      if (!m_inventMissingType1Attribs)
-      {
-        OFString err;
-        err += "I2DOutputPlug: Empty value for type 1 attribute: ";
-        err += DcmTag(key).getTagName();
-        err += "\n";
-        return err;
-      }
-      //holds element to insert in item
-      elem = NULL;
-      DcmTag tag(key); OFBool wasError = OFFalse;
-      //if dicom element could be created, insert in to item and modify to value
-      if ( DcmItem::newDicomElement(elem, tag).good())
-      {
-          if (targetDset->insert(elem, OFTrue).good())
-          {
-            if (elem->putString(defaultValue.c_str()).good())
-            {
-              DCMDATA_LIBI2D_DEBUG("I2DOutputPlug: Inserting missing type 1 attribute: " << tag.getTagName() << " with value " << defaultValue);
-            } else wasError = OFTrue;
-          } else wasError = OFTrue;
-      } else wasError = OFTrue;
-      if (wasError)
-      {
-        OFString err = "Unable to insert type 1 attribute ";
-        err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
-        return err;
-      }
-    }
-    return "";
-  };
+                                             const OFString& defaultValue ="") const;
 
+  /** Checks whether a given code sequence exists in a dataset and contains
+   *  an item with the required attributes. If not, the sequence is inserted
+   *  (if enabled) and default values are inserted.
+   *  @param key - [in] The code sequence tag to be checked/inserted
+   *  @param targetDset - [in/out] The dataset to search (and insert) in
+   *  @param defaultValue - [in] The default value to set
+   *  @return Error string, which is empty if no error occurs.
+   */
+  virtual OFString checkAndInventType1CodeSQ(
+    const DcmTagKey& key,
+    DcmDataset* targetDset,
+    const OFString& codeValue,
+    const OFString& codeMeaning,
+    const OFString& codingSchemeDesignator) const;
 
   /** Checks whether a given tag exists in a dataset (can be empty)
    *  If not, the tag is inserted (if enabled) with empty value.
@@ -164,46 +139,7 @@ protected:
    */
   virtual OFString checkAndInventType2Attrib(const DcmTagKey& key,
                                              DcmDataset* targetDset,
-                                             const OFString& defaultValue ="") const
-  {
-    OFString err;
-    OFBool exists = targetDset->tagExists(key);
-    if (!exists)
-    {
-      if (m_inventMissingType2Attribs)
-      {
-        //holds element to insert in item
-        DcmElement *elem = NULL;
-        DcmTag tag(key); OFBool wasError = OFFalse;
-        //if dicom element could be created, insert in to item and modify to value
-        if ( DcmItem::newDicomElement(elem, tag).good())
-        {
-          if (targetDset->insert(elem, OFTrue).good())
-          {
-            OFCondition result;
-            if (!defaultValue.empty()) // only insert value if not empty(e. g. empty type 2 sequences)
-            {
-              result = elem->putString(defaultValue.c_str());
-            }
-            if (result.good())
-            {
-              DCMDATA_LIBI2D_DEBUG("I2DOutputPlug: Inserting missing type 2 attribute: " << tag.getTagName() << " with value " << (defaultValue.empty() ? "<empty>" : defaultValue));
-            } else wasError = OFTrue;
-          } else wasError = OFTrue;
-        } else wasError = OFTrue;
-        if (wasError)
-        {
-          err += "Unable to insert type 2 attribute "; err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
-        }
-      }
-      else
-      {
-        err = "Image2Dcm: Missing type 2 attribute: "; err += DcmTag(key).getTagName(); err += "\n";
-        return err;
-      }
-    }
-    return err;
-  };
+                                             const OFString& defaultValue ="") const;
 
   /// if enabled, some simple attribute checking is performed
   /// default: enabled (OFTrue)

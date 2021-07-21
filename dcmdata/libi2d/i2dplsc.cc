@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2010, OFFIS e.V.
+ *  Copyright (C) 2001-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,7 @@
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 #include "dcmtk/dcmdata/dcdeftag.h"        /* for DCM_ defines */
 #include "dcmtk/dcmdata/dcuid.h"           /* for UID_ defines */
+#include "dcmtk/dcmdata/dcdatset.h"
 
 
 I2DOutputPlugSC::I2DOutputPlugSC()

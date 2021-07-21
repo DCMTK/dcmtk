@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2019, OFFIS e.V.
+ *  Copyright (C) 2001-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,12 +54,31 @@ public:
                       DcmDataset*& resultDset,
                       E_TransferSyntax& proposedTS);
 
-  /** Sets a DICOM file that should serve as a template for the resulting
+  /** Sets a file that should serve as a template for the resulting
     * DICOM object. Only the dataset of the given file is imported.
-    * @param file - [in] The filename of the template DICOM file
+    * @param file - [in] The filename of the template file,
+    *   which is either in DICOM or XML format.
     * @return none
     */
   void setTemplateFile(const OFString& file);
+
+  /** Sets the format of the template file.
+    * @param isXML - [in] true for XML, false for DICOM format
+    * @return none
+    */
+  void setTemplateFileIsXML(OFBool isXML);
+
+  /** activates or deactivates XML validation
+    * @param enabled - [in] true to enable validation
+    * @return none
+    */
+  void setXMLvalidation(OFBool enabled);
+
+  /** activates or deactivates an XML namespace check
+    * @param enabled - [in] true to enable namespace check
+    * @return none
+    */
+  void setXMLnamespaceCheck(OFBool enabled);
 
   /** Set file from which patient/study/series data should be imported from.
    *  @param file - [in] The DICOM file to read from
@@ -159,11 +178,14 @@ protected:
    *  @param imageSource - [in] The input plugin that actually reads the pixel data
    *  @param dset - [out] The dataset to export the pixel data attributes to
    *  @param outputTS - [out] The proposed transfex syntax of the dataset
+   *  @param compressionRatio - [out] compression ratio of the pixel data, 1.0 for uncompressed
    *  @return EC_Normal, if successful, error otherwise
    */
-  OFCondition readAndInsertPixelData( I2DImgSource* imageSource,
-                                      DcmDataset* dset,
-                                      E_TransferSyntax& outputTS);
+  OFCondition readAndInsertPixelData(
+    I2DImgSource* imageSource,
+    DcmDataset* dset,
+    E_TransferSyntax& outputTS,
+    double& compressionRatio);
 
   /** Do some completeness / validity checks. Should be called when
    *  dataset is completed and is about to be saved.
@@ -227,10 +249,19 @@ private:
   /// (and are not checked by the isValid() function)
   OFList<OFString> m_overrideKeys;
 
-  /// If not empty, the DICOM file specified in this variable is used
+  /// If not empty, the DICOM or XML file specified in this variable is used
   /// as a base for the DICOM image file to be created, ie. all attributes
   /// are taken over from this template file
   OFString m_templateFile;
+
+  /// if true, the template file is in XML format, otherwise DICOM
+  OFBool m_templateFileIsXML;
+
+  /// if true, an XML validation will be performed while parsing
+  OFBool m_XMLvalidation;
+
+  /// if true, an XML namespace check will be performed while parsing
+  OFBool m_XMLnamespaceCheck;
 
   /// If true, patient and study data is read from file
   OFBool m_readStudyLevel;

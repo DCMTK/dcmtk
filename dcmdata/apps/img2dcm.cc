@@ -32,6 +32,8 @@
 #include "dcmtk/dcmdata/libi2d/i2dplsc.h"
 #include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
 #include "dcmtk/dcmdata/libi2d/i2dplnsc.h"
+#include "dcmtk/dcmdata/libi2d/i2dplop.h"
+#include "dcmtk/dcmdata/xml2dcm.h"
 
 #define OFFIS_CONSOLE_APPLICATION "img2dcm"
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -41,20 +43,40 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 
 static OFLogger img2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
-static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
-                                           Image2Dcm& converter)
+static OFCondition evaluateFromFileOptions(
+  OFConsoleApplication& app,
+  OFCommandLine& cmd,
+  Image2Dcm& converter)
 {
   OFCondition cond;
+  OFBool dataset_from = OFFalse;
+
   // Parse command line options dealing with DICOM file import
   if ( cmd.findOption("--dataset-from") )
   {
+    dataset_from = OFTrue;
     OFString tempStr;
     OFCommandLine::E_ValueStatus valStatus;
     valStatus = cmd.getValue(tempStr);
     if (valStatus != OFCommandLine::VS_Normal)
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to read value of --dataset-from option");
     converter.setTemplateFile(tempStr);
+    converter.setTemplateFileIsXML(OFFalse);
   }
+
+#ifdef WITH_LIBXML
+  if ( cmd.findOption("--dataset-from-xml") )
+  {
+    app.checkConflict("--dataset-from-xml", "--dataset-from", dataset_from);
+    OFString tempStr;
+    OFCommandLine::E_ValueStatus valStatus;
+    valStatus = cmd.getValue(tempStr);
+    if (valStatus != OFCommandLine::VS_Normal)
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to read value of --dataset-from option");
+    converter.setTemplateFile(tempStr);
+    converter.setTemplateFileIsXML(OFTrue);
+  }
+#endif
 
   if (cmd.findOption("--study-from"))
   {
@@ -99,7 +121,10 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string", "supported formats: JPEG (default), BMP");
       cmd.addOption("--dataset-from",        "-df",  1, "[f]ilename: string",
                                                         "use dataset from DICOM file f");
-
+#ifdef WITH_LIBXML
+      cmd.addOption("--dataset-from-xml",    "-dx",  1, "[f]ilename: string",
+                                                        "use dataset from XML file f");
+#endif
       cmd.addOption("--study-from",          "-stf", 1, "[f]ilename: string",
                                                         "read patient/study from DICOM file f");
       cmd.addOption("--series-from",         "-sef", 1, "[f]ilename: string",
@@ -111,6 +136,11 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--insist-on-jfif",      "-jf",     "insist on JFIF header");
       cmd.addOption("--keep-appn",           "-ka",     "keep APPn sections (except JFIF)");
       cmd.addOption("--remove-com",          "-rc",     "remove COM segment");
+#ifdef WITH_LIBXML
+    cmd.addSubGroup("XML validation:");
+      cmd.addOption("--validate-document",   "+Vd",    "validate XML document against DTD");
+      cmd.addOption("--check-namespace",     "+Vn",    "check XML namespace in document root");
+#endif
 
   cmd.addGroup("processing options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("attribute checking:");
@@ -132,6 +162,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--sec-capture",         "-sc",     "write Secondary Capture SOP class (default)");
       cmd.addOption("--new-sc",              "-nsc",    "write new Secondary Capture SOP classes");
       cmd.addOption("--vl-photo",            "-vlp",    "write Visible Light Photographic SOP class");
+      cmd.addOption("--oph-photo",           "-oph",    "write Ophthalmic Photography SOP class");
 
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",          "+F",      "write file format (default)");
@@ -150,25 +181,10 @@ static void addCmdLineOptions(OFCommandLine& cmd)
 }
 
 
-static OFCondition startConversion(OFCommandLine& cmd,
-                                   int argc,
-                                   char *argv[])
+static OFCondition startConversion(
+  OFConsoleApplication& app,
+  OFCommandLine& cmd)
 {
-  // Parse command line and exclusive options
-  prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert standard image formats into DICOM format", rcsid);
-  if (app.parseCommandLine(cmd, argc, argv))
-  {
-    /* check exclusive options first */
-    if (cmd.hasExclusiveOption())
-    {
-      if (cmd.findOption("--version"))
-      {
-        app.printHeader(OFTrue /*print host identifier*/);
-        exit(0);
-      }
-    }
-  }
 
   /* print resource identifier */
   OFLOG_DEBUG(img2dcmLogger, rcsid << OFendl);
@@ -245,16 +261,25 @@ static OFCondition startConversion(OFCommandLine& cmd,
   }
   OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Instantiated input plugin: " << inputPlug->inputFormat());
 
- // Find out which plugin to use
+ // Find out which output plugin to use
   cmd.beginOptionBlock();
   if (cmd.findOption("--sec-capture"))
+  {
     outPlug = new I2DOutputPlugSC();
+  }
+  if (cmd.findOption("--new-sc"))
+  {
+    outPlug = new I2DOutputPlugNewSC();
+  }
   if (cmd.findOption("--vl-photo"))
   {
     outPlug = new I2DOutputPlugVLP();
   }
-  if (cmd.findOption("--new-sc"))
-    outPlug = new I2DOutputPlugNewSC();
+  if (cmd.findOption("--oph-photo"))
+  {
+    outPlug = new I2DOutputPlugOphthalmicPhotography();
+  }
+
   cmd.endOptionBlock();
   if (!outPlug) // default is the old Secondary Capture object
     outPlug = new I2DOutputPlugSC();
@@ -341,9 +366,25 @@ static OFCondition startConversion(OFCommandLine& cmd,
   i2d.setValidityChecking(doChecks, insertType2, inventType1);
   outPlug->setValidityChecking(doChecks, insertType2, inventType1);
 
+#ifdef WITH_LIBXML
+  // evaluate XML parsing options
+  if (cmd.findOption("--validate-document"))
+  {
+    app.checkDependence("--validate-document", "--dataset-from-xml", cmd.findOption("--dataset-from-xml"));
+    i2d.setXMLvalidation(OFTrue);
+  } else i2d.setXMLvalidation(OFFalse);
+
+  if (cmd.findOption("--check-namespace"))
+  {
+    app.checkDependence("--check-namespace", "--dataset-from-xml", cmd.findOption("--dataset-from-xml"));
+    i2d.setXMLnamespaceCheck(OFTrue);
+  }
+  else i2d.setXMLnamespaceCheck(OFFalse);
+#endif
+
   // evaluate --xxx-from options and transfer syntax options
   OFCondition cond;
-  cond = evaluateFromFileOptions(cmd, i2d);
+  cond = evaluateFromFileOptions(app, cmd, i2d);
   if (cond.bad())
   {
     delete outPlug; outPlug = NULL;
@@ -403,21 +444,55 @@ static OFCondition startConversion(OFCommandLine& cmd,
 
 int main(int argc, char *argv[])
 {
-
-  // variables for command line
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert image file to DICOM", rcsid);
+  // Parse command line and exclusive options
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert standard image formats into DICOM format", rcsid);
   OFCommandLine cmd;
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   addCmdLineOptions(cmd);
 
-  OFCondition cond = startConversion(cmd, argc, argv);
+  prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+  if (app.parseCommandLine(cmd, argc, argv))
+  {
+    /* check exclusive options first */
+    if (cmd.hasExclusiveOption())
+    {
+      if (cmd.findOption("--version"))
+      {
+        app.printHeader(OFTrue /*print host identifier*/);
+
+#ifdef WITH_LIBXML
+        COUT << OFendl << "External libraries used:" << OFendl;
+        COUT << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
+#if defined(LIBXML_ICONV_ENABLED) && defined(LIBXML_ZLIB_ENABLED)
+       COUT << "  with built-in LIBICONV and ZLIB support" << OFendl;
+#elif defined(LIBXML_ICONV_ENABLED)
+        COUT << "  with built-in LIBICONV support" << OFendl;
+#elif defined(LIBXML_ZLIB_ENABLED)
+       COUT << "  with built-in ZLIB support" << OFendl;
+#endif
+#endif
+        exit(0);
+      }
+    }
+  }
+
+#ifdef WITH_LIBXML
+  DcmXMLParseHelper::initLibrary(); // initialize XML parser
+#endif
+
+  int result = 0;
+  OFCondition cond = startConversion(app, cmd);
   if (cond.bad())
   {
     OFLOG_FATAL(img2dcmLogger, "Error converting file: " << cond.text());
-    return 1;
+    result = 1;
   }
 
-  return 0;
+#ifdef WITH_LIBXML
+    DcmXMLParseHelper::cleanupLibrary(); // clean up XML library before quitting
+#endif
+
+  return result;
 }
