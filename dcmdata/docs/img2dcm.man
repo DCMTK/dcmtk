@@ -106,6 +106,7 @@ XML validation:
 
   +Vd   --validate-document
           validate XML document against DTD
+
   +Vn   --check-namespace
           check XML namespace in document root
 \endverbatim
