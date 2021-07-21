@@ -98,6 +98,14 @@ extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
 #endif
 }
 
+
+static OFBool xmlIsBlankNodeOrComment(const xmlNode *node)
+{
+  if (xmlIsBlankNode(node)) return OFTrue;
+  return (0 == xmlStrcmp(node->name, OFreinterpret_cast(const xmlChar *, "comment")));
+}
+
+
 DcmXMLParseHelper::DcmXMLParseHelper()
 : EncodingHandler(NULL)
 {
@@ -439,7 +447,7 @@ OFCondition DcmXMLParseHelper::parseSequence(
     if (sequence != NULL)
     {
         /* ignore blank (empty or whitespace only) nodes */
-        while ((current != NULL) && xmlIsBlankNode(current))
+        while ((current != NULL) && xmlIsBlankNodeOrComment(current))
             current = current->next;
         while (current != NULL)
         {
@@ -456,7 +464,7 @@ OFCondition DcmXMLParseHelper::parseSequence(
                     if (result.bad())
                         DCMDATA_WARN("cannot parse invalid item: " << result.text());
                 }
-            } else if (!xmlIsBlankNode(current))
+            } else if (!xmlIsBlankNodeOrComment(current))
                 DCMDATA_WARN("unexpected node '" << current->name << "', 'item' expected, skipping");
             /* check for errors */
             if (result.bad())
@@ -489,7 +497,7 @@ OFCondition DcmXMLParseHelper::parsePixelSequence(
     if (sequence != NULL)
     {
         /* ignore blank (empty or whitespace only) nodes */
-        while ((current != NULL) && xmlIsBlankNode(current))
+        while ((current != NULL) && xmlIsBlankNodeOrComment(current))
             current = current->next;
         while (current != NULL)
         {
@@ -506,7 +514,7 @@ OFCondition DcmXMLParseHelper::parsePixelSequence(
                     if (result.bad())
                         DCMDATA_WARN("cannot parse invalid pixel-item: " << result.text());
                 }
-            } else if (!xmlIsBlankNode(current))
+            } else if (!xmlIsBlankNodeOrComment(current))
                 DCMDATA_WARN("unexpected node '" << current->name << "', 'pixel-item' expected, skipping");
             /* check for errors */
             if (result.bad())
@@ -547,7 +555,7 @@ OFCondition DcmXMLParseHelper::parseMetaHeader(
             /* ignore non-element nodes */
             if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "element")) == 0)
                 result = parseElement(metainfo, current);
-            else if (!xmlIsBlankNode(current))
+            else if (!xmlIsBlankNodeOrComment(current))
                 DCMDATA_WARN("unexpected node '" << current->name << "', 'element' expected, skipping");
             /* check for errors */
             if (result.bad())
@@ -578,7 +586,7 @@ OFCondition DcmXMLParseHelper::parseDataSet(
 {
     OFCondition result = EC_Normal;
     /* ignore blank (empty or whitespace only) nodes */
-    while ((current != NULL) && xmlIsBlankNode(current))
+    while ((current != NULL) && xmlIsBlankNodeOrComment(current))
         current = current->next;
     while (current != NULL)
     {
@@ -622,7 +630,7 @@ OFCondition DcmXMLParseHelper::parseDataSet(
                     delete newElem;
                 }
             }
-        } else if (!xmlIsBlankNode(current))
+        } else if (!xmlIsBlankNodeOrComment(current))
             DCMDATA_WARN("unexpected node '" << current->name << "', skipping");
         /* check for errors */
         if (result.bad())
@@ -715,7 +723,7 @@ OFCondition DcmXMLParseHelper::readXmlFile(
                             DCMDATA_INFO("skipping meta-header ...");
                         current = current->xmlChildrenNode;
                         /* ignore blank (empty or whitespace only) nodes */
-                        while ((current != NULL) && xmlIsBlankNode(current))
+                        while ((current != NULL) && xmlIsBlankNodeOrComment(current))
                             current = current->next;
                         /* parse/skip "meta-header" */
                         result = parseMetaHeader(fileformat.getMetaInfo(), current, metaInfo /*parse*/, stopOnError);
@@ -723,7 +731,7 @@ OFCondition DcmXMLParseHelper::readXmlFile(
                         {
                             current = current->next;
                             /* ignore blank (empty or whitespace only) nodes */
-                            while ((current != NULL) && xmlIsBlankNode(current))
+                            while ((current != NULL) && xmlIsBlankNodeOrComment(current))
                                 current = current->next;
                         } else
                             DCMDATA_ERROR("cannot parse invalid meta-header");
