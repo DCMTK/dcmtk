@@ -57,7 +57,7 @@ dcm2xml: dcm2xml.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 xml2dcm: xml2dcm.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(XMLLIBS) $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(LIBS)
 
 dcmodify: dcmodify.o mdfconen.o mdfdsman.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o mdfconen.o mdfdsman.o $(LOCALLIBS) $(LIBS)
@@ -75,7 +75,7 @@ dcm2pdf: dcm2pdf.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 img2dcm: img2dcm.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LIBI2D) $(XMLLIBS) $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LIBI2D) $(LOCALLIBS) $(XMLLIBS) $(LIBS)
 
 dcm2json: dcm2json.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
