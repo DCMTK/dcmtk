@@ -457,9 +457,9 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData, Uint32& pixLen
 
     // Allocate buffer for raw JPEG data
     // Only up to 2^32-2 bytes can be stored in one pixel data fragment in DICOM
-    if ((filesize < 0) ||
-        ((filesize >> 32) > 0) ||
-        (OFstatic_cast(Uint32, filesize) > (OFstatic_cast(Uint32, 4294967294UL))))
+    if ((rawStreamSize < 0) ||
+        ((rawStreamSize >> 32) > 0) ||
+        (OFstatic_cast(Uint32, rawStreamSize) > (OFstatic_cast(Uint32, 4294967294UL))))
     {
         DCMDATA_LIBI2D_ERROR(
             "I2DJpegSource: Raw JPEG stream length longer than 2^32 bytes (or larger than size_t capacity), aborting");
