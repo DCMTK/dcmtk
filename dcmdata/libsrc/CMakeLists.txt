@@ -15,7 +15,7 @@ DCMTK_ADD_LIBRARY(dcmdata
   dcvrur dcvrus dcvrut dcvruv dcwcache dcxfer vrscan vrscanl dcistrms dcostrms xml2dcm)
 
 DCMTK_TARGET_LINK_MODULES(dcmdata ofstd oflog)
-DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS})
+DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS} ${LIBXML_LIBS})
 
 # Various dictionary-related commands
 set(DICOMDIC   "${dcmdata_SOURCE_DIR}/data/dicom.dic")

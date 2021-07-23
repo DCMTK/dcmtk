@@ -69,7 +69,7 @@ class DcmFileFormat;
 /** Helper class that provides methods for parsing an XML document in the format
  *  produced by dcm2xml into a DICOM dataset.
  */
-class DcmXMLParseHelper
+class DCMTK_DCMDATA_EXPORT DcmXMLParseHelper
 {
 public:
   /// constructor;
