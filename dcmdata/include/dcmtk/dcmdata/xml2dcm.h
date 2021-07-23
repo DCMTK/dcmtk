@@ -83,7 +83,7 @@ public:
    */
   static void initLibrary();
 
-  /** cleanup internal memory used by the XML parser library. 
+  /** cleanup internal memory used by the XML parser library.
    *  This function should be called once before the application
    *  terminates. It is not re-entrant.
    */
@@ -100,7 +100,7 @@ public:
    *  @param stopOnError if true, stop parsing and return an error code upon encountering a parse error,
    *    otherwise ignore parse errors and continue
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition readXmlFile(
     const char *ifname,
     DcmFileFormat &fileformat,
@@ -116,7 +116,7 @@ private:
    *  @param fromString input string
    *  @param toString output string
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFBool convertUtf8ToCharset(
     const xmlChar *fromString,
     OFString &toString);
@@ -125,7 +125,7 @@ private:
    *  @param current pointer to current XML node
    *  @param name expected name of the current XML node
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition checkNode(
     xmlNodePtr current,
     const char *name);
@@ -134,7 +134,7 @@ private:
    *  @param current pointer to current XML node
    *  @param newElem
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition createNewElement(
     xmlNodePtr current,
     DcmElement *&newElem);
@@ -143,7 +143,7 @@ private:
    *  @param current pointer to current XML node
    *  @param element attribute value stored in this element
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition putElementContent(
     xmlNodePtr current,
     DcmElement *element);
@@ -152,7 +152,7 @@ private:
    *  @param dataset
    *  @param current pointer to current XML node
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition parseElement(
     DcmItem *dataset,
     xmlNodePtr current);
@@ -164,7 +164,7 @@ private:
    *  @param stopOnError if true, stop parsing and return an error code upon encountering a parse error,
    *    otherwise ignore parse errors and continue
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition parseSequence(
     DcmSequenceOfItems *sequence,
     xmlNodePtr current,
@@ -177,7 +177,7 @@ private:
    *  @param stopOnError if true, stop parsing and return an error code upon encountering a parse error,
    *    otherwise ignore parse errors and continue
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition parsePixelSequence(
     DcmPixelSequence *sequence,
     xmlNodePtr current,
@@ -190,7 +190,7 @@ private:
    *  @param stopOnError if true, stop parsing and return an error code upon encountering a parse error,
    *    otherwise ignore parse errors and continue
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition parseMetaHeader(
     DcmMetaInfo *metainfo,
     xmlNodePtr current,
@@ -204,7 +204,7 @@ private:
    *  @param stopOnError if true, stop parsing and return an error code upon encountering a parse error,
    *    otherwise ignore parse errors and continue
    *  @return EC_Normal upon success, an error code otherwise
-   */   
+   */
   OFCondition parseDataSet(
     DcmItem *dataset,
     xmlNodePtr current,
@@ -214,7 +214,7 @@ private:
   /** validate the given XML document and print error output if the validation fails
    *  @param doc pointer to XML document
    *  @return EC_Normal upon successful validation, an error code otherwise
-   */   
+   */
   OFCondition validateXmlDocument(xmlDocPtr doc);
 
   /// stores pointer to character encoding handler
