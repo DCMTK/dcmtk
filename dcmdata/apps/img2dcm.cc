@@ -44,17 +44,25 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 static OFLogger img2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static OFCondition evaluateFromFileOptions(
+#ifdef WITH_LIBXML
   OFConsoleApplication& app,
+#else
+  OFConsoleApplication& /* app */,
+#endif
   OFCommandLine& cmd,
   Image2Dcm& converter)
 {
   OFCondition cond;
+#ifdef WITH_LIBXML
   OFBool dataset_from = OFFalse;
+#endif
 
   // Parse command line options dealing with DICOM file import
   if ( cmd.findOption("--dataset-from") )
   {
+#ifdef WITH_LIBXML
     dataset_from = OFTrue;
+#endif
     OFString tempStr;
     OFCommandLine::E_ValueStatus valStatus;
     valStatus = cmd.getValue(tempStr);
