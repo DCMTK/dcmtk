@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2021-03-30 09:39:57
+**   Date: 2021-08-02 08:53:32
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -3342,6 +3342,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "CalibrationNotes", 1, 1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0014, 0x3100, 0x0014, 0x3100,
+      EVR_LT, "LinearityCorrectionTechnique", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x3101, 0x0014, 0x3101,
+      EVR_LT, "BeamHardeningCorrectionTechnique", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0014, 0x4002, 0x0014, 0x4002,
       EVR_SQ, "PulserEquipmentSequence", 1, 1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -3663,15 +3671,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x40a0, 0x0014, 0x40a0,
-      EVR_LO, "ImageQualityIndicatorType", 1, 1, "DICOM/DICONDE",
+      EVR_LO, "ImageQualityIndicatorType", 1, -1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x40a1, 0x0014, 0x40a1,
-      EVR_LO, "ImageQualityIndicatorMaterial", 1, 1, "DICOM/DICONDE",
+      EVR_LO, "ImageQualityIndicatorMaterial", 1, -1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x40a2, 0x0014, 0x40a2,
-      EVR_LO, "ImageQualityIndicatorSize", 1, 1, "DICOM/DICONDE",
+      EVR_LO, "ImageQualityIndicatorSize", 1, -1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x5002, 0x0014, 0x5002,
@@ -22434,6 +22442,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_OF, "VectorCoordinateData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0066, 0x0022, 0x0066, 0x0022,
+      EVR_OD, "DoublePointCoordinatesData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0066, 0x0023, 0x0066, 0x0023,
       EVR_OW, "RETIRED_TrianglePointIndexList", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -22896,6 +22908,70 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0068, 0x7005, 0x0068, 0x7005,
       EVR_UR, "RelativeURIReferenceWithinEncapsulatedDocument", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0001, 0x006a, 0x0001,
+      EVR_CS, "AnnotationCoordinateType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0002, 0x006a, 0x0002,
+      EVR_SQ, "AnnotationGroupSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0003, 0x006a, 0x0003,
+      EVR_UI, "AnnotationGroupUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0005, 0x006a, 0x0005,
+      EVR_LO, "AnnotationGroupLabel", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0006, 0x006a, 0x0006,
+      EVR_UT, "AnnotationGroupDescription", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0007, 0x006a, 0x0007,
+      EVR_CS, "AnnotationGroupGenerationType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0008, 0x006a, 0x0008,
+      EVR_SQ, "AnnotationGroupAlgorithmIdentificationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0009, 0x006a, 0x0009,
+      EVR_SQ, "AnnotationPropertyCategoryCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x000a, 0x006a, 0x000a,
+      EVR_SQ, "AnnotationPropertyTypeCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x000b, 0x006a, 0x000b,
+      EVR_SQ, "AnnotationPropertyTypeModifierCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x000c, 0x006a, 0x000c,
+      EVR_UL, "NumberOfAnnotations", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x000d, 0x006a, 0x000d,
+      EVR_CS, "AnnotationAppliesToAllOpticalPaths", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x000e, 0x006a, 0x000e,
+      EVR_SH, "ReferencedOpticalPathIdentifier", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x000f, 0x006a, 0x000f,
+      EVR_CS, "AnnotationAppliesToAllZPlanes", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0010, 0x006a, 0x0010,
+      EVR_FD, "CommonZCoordinateValue", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x006a, 0x0011, 0x006a, 0x0011,
+      EVR_OL, "AnnotationIndexList", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0070, 0x0001, 0x0070, 0x0001,
@@ -27962,6 +28038,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x02a0, 0x300a, 0x02a0,
       EVR_DS, "SourceApplicatorStepSize", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x02a1, 0x300a, 0x02a1,
+      EVR_IS, "ApplicatorShapeReferencedROINumber", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x02a2, 0x300a, 0x02a2,

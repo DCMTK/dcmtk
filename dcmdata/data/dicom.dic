@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2021b and PS 3.7-2021b.
-# File created on 2021-03-30 09:36:52 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2021c and PS 3.7-2021c.
+# File created on 2021-08-02 08:51:25 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -462,6 +462,8 @@
 (0014,3077)	TM	TimeOfGainCalibration	1	DICOM/DICONDE
 (0014,3080)	OB	BadPixelImage	1	DICOM/DICONDE
 (0014,3099)	LT	CalibrationNotes	1	DICOM/DICONDE
+(0014,3100)	LT	LinearityCorrectionTechnique	1	DICOM/DICONDE
+(0014,3101)	LT	BeamHardeningCorrectionTechnique	1	DICOM/DICONDE
 (0014,4002)	SQ	PulserEquipmentSequence	1	DICOM/DICONDE
 (0014,4004)	CS	PulserType	1	DICOM/DICONDE
 (0014,4006)	LT	PulserNotes	1	DICOM/DICONDE
@@ -542,9 +544,9 @@
 (0014,409C)	DS	TranslationRateX	1	DICOM/DICONDE
 (0014,409D)	DS	TranslationRateY	1	DICOM/DICONDE
 (0014,409F)	DS	ChannelOverlap	1	DICOM/DICONDE
-(0014,40A0)	LO	ImageQualityIndicatorType	1	DICOM/DICONDE
-(0014,40A1)	LO	ImageQualityIndicatorMaterial	1	DICOM/DICONDE
-(0014,40A2)	LO	ImageQualityIndicatorSize	1	DICOM/DICONDE
+(0014,40A0)	LO	ImageQualityIndicatorType	1-n	DICOM/DICONDE
+(0014,40A1)	LO	ImageQualityIndicatorMaterial	1-n	DICOM/DICONDE
+(0014,40A2)	LO	ImageQualityIndicatorSize	1-n	DICOM/DICONDE
 (0014,5002)	IS	LINACEnergy	1	DICOM/DICONDE
 (0014,5004)	IS	LINACOutput	1	DICOM/DICONDE
 (0014,5100)	US	ActiveAperture	1	DICOM/DICONDE
@@ -2732,6 +2734,7 @@
 (0066,001F)	US	VectorDimensionality	1	DICOM
 (0066,0020)	FL	VectorAccuracy	1-n	DICOM
 (0066,0021)	OF	VectorCoordinateData	1	DICOM
+(0066,0022)	OD	DoublePointCoordinatesData	1	DICOM
 (0066,0026)	SQ	TriangleStripSequence	1	DICOM
 (0066,0027)	SQ	TriangleFanSequence	1	DICOM
 (0066,0028)	SQ	LineSequence	1	DICOM
@@ -2844,6 +2847,22 @@
 (0068,7003)	SQ	ModelUsageCodeSequence	1	DICOM
 (0068,7004)	UI	ModelGroupUID	1	DICOM
 (0068,7005)	UR	RelativeURIReferenceWithinEncapsulatedDocument	1	DICOM
+(006A,0001)	CS	AnnotationCoordinateType	1	DICOM
+(006A,0002)	SQ	AnnotationGroupSequence	1	DICOM
+(006A,0003)	UI	AnnotationGroupUID	1	DICOM
+(006A,0005)	LO	AnnotationGroupLabel	1	DICOM
+(006A,0006)	UT	AnnotationGroupDescription	1	DICOM
+(006A,0007)	CS	AnnotationGroupGenerationType	1	DICOM
+(006A,0008)	SQ	AnnotationGroupAlgorithmIdentificationSequence	1	DICOM
+(006A,0009)	SQ	AnnotationPropertyCategoryCodeSequence	1	DICOM
+(006A,000A)	SQ	AnnotationPropertyTypeCodeSequence	1	DICOM
+(006A,000B)	SQ	AnnotationPropertyTypeModifierCodeSequence	1	DICOM
+(006A,000C)	UL	NumberOfAnnotations	1	DICOM
+(006A,000D)	CS	AnnotationAppliesToAllOpticalPaths	1	DICOM
+(006A,000E)	SH	ReferencedOpticalPathIdentifier	1-n	DICOM
+(006A,000F)	CS	AnnotationAppliesToAllZPlanes	1	DICOM
+(006A,0010)	FD	CommonZCoordinateValue	1-n	DICOM
+(006A,0011)	OL	AnnotationIndexList	1	DICOM
 (0070,0001)	SQ	GraphicAnnotationSequence	1	DICOM
 (0070,0002)	CS	GraphicLayer	1	DICOM
 (0070,0003)	CS	BoundingBoxAnnotationUnits	1	DICOM
@@ -3875,6 +3894,7 @@
 (300A,029C)	DS	SourceApplicatorWallNominalThickness	1	DICOM
 (300A,029E)	DS	SourceApplicatorWallNominalTransmission	1	DICOM
 (300A,02A0)	DS	SourceApplicatorStepSize	1	DICOM
+(300A,02A1)	IS	ApplicatorShapeReferencedROINumber	1	DICOM
 (300A,02A2)	IS	TransferTubeNumber	1	DICOM
 (300A,02A4)	DS	TransferTubeLength	1	DICOM
 (300A,02B0)	SQ	ChannelShieldSequence	1	DICOM

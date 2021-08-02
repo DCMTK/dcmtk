@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2021-03-30 09:39:44
+**   Date: 2021-08-02 08:53:32
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2021-03-30 09:39:44"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2021-08-02 08:53:32"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4850
+** Number of entries: 4870
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -504,6 +504,8 @@
 #define DCM_TimeOfGainCalibration                DcmTagKey(0x0014, 0x3077)
 #define DCM_BadPixelImage                        DcmTagKey(0x0014, 0x3080)
 #define DCM_CalibrationNotes                     DcmTagKey(0x0014, 0x3099)
+#define DCM_LinearityCorrectionTechnique         DcmTagKey(0x0014, 0x3100)
+#define DCM_BeamHardeningCorrectionTechnique     DcmTagKey(0x0014, 0x3101)
 #define DCM_PulserEquipmentSequence              DcmTagKey(0x0014, 0x4002)
 #define DCM_PulserType                           DcmTagKey(0x0014, 0x4004)
 #define DCM_PulserNotes                          DcmTagKey(0x0014, 0x4006)
@@ -3027,6 +3029,7 @@
 #define DCM_VectorDimensionality                 DcmTagKey(0x0066, 0x001f)
 #define DCM_VectorAccuracy                       DcmTagKey(0x0066, 0x0020)
 #define DCM_VectorCoordinateData                 DcmTagKey(0x0066, 0x0021)
+#define DCM_DoublePointCoordinatesData           DcmTagKey(0x0066, 0x0022)
 #define DCM_RETIRED_TrianglePointIndexList       DcmTagKey(0x0066, 0x0023)
 #define DCM_RETIRED_EdgePointIndexList           DcmTagKey(0x0066, 0x0024)
 #define DCM_RETIRED_VertexPointIndexList         DcmTagKey(0x0066, 0x0025)
@@ -3143,6 +3146,22 @@
 #define DCM_ModelUsageCodeSequence               DcmTagKey(0x0068, 0x7003)
 #define DCM_ModelGroupUID                        DcmTagKey(0x0068, 0x7004)
 #define DCM_RelativeURIReferenceWithinEncapsulatedDocument DcmTagKey(0x0068, 0x7005)
+#define DCM_AnnotationCoordinateType             DcmTagKey(0x006a, 0x0001)
+#define DCM_AnnotationGroupSequence              DcmTagKey(0x006a, 0x0002)
+#define DCM_AnnotationGroupUID                   DcmTagKey(0x006a, 0x0003)
+#define DCM_AnnotationGroupLabel                 DcmTagKey(0x006a, 0x0005)
+#define DCM_AnnotationGroupDescription           DcmTagKey(0x006a, 0x0006)
+#define DCM_AnnotationGroupGenerationType        DcmTagKey(0x006a, 0x0007)
+#define DCM_AnnotationGroupAlgorithmIdentificationSequence DcmTagKey(0x006a, 0x0008)
+#define DCM_AnnotationPropertyCategoryCodeSequence DcmTagKey(0x006a, 0x0009)
+#define DCM_AnnotationPropertyTypeCodeSequence   DcmTagKey(0x006a, 0x000a)
+#define DCM_AnnotationPropertyTypeModifierCodeSequence DcmTagKey(0x006a, 0x000b)
+#define DCM_NumberOfAnnotations                  DcmTagKey(0x006a, 0x000c)
+#define DCM_AnnotationAppliesToAllOpticalPaths   DcmTagKey(0x006a, 0x000d)
+#define DCM_ReferencedOpticalPathIdentifier      DcmTagKey(0x006a, 0x000e)
+#define DCM_AnnotationAppliesToAllZPlanes        DcmTagKey(0x006a, 0x000f)
+#define DCM_CommonZCoordinateValue               DcmTagKey(0x006a, 0x0010)
+#define DCM_AnnotationIndexList                  DcmTagKey(0x006a, 0x0011)
 #define DCM_GraphicAnnotationSequence            DcmTagKey(0x0070, 0x0001)
 #define DCM_GraphicLayer                         DcmTagKey(0x0070, 0x0002)
 #define DCM_BoundingBoxAnnotationUnits           DcmTagKey(0x0070, 0x0003)
@@ -4242,6 +4261,7 @@
 #define DCM_SourceApplicatorWallNominalThickness DcmTagKey(0x300a, 0x029c)
 #define DCM_SourceApplicatorWallNominalTransmission DcmTagKey(0x300a, 0x029e)
 #define DCM_SourceApplicatorStepSize             DcmTagKey(0x300a, 0x02a0)
+#define DCM_ApplicatorShapeReferencedROINumber   DcmTagKey(0x300a, 0x02a1)
 #define DCM_TransferTubeNumber                   DcmTagKey(0x300a, 0x02a2)
 #define DCM_TransferTubeLength                   DcmTagKey(0x300a, 0x02a4)
 #define DCM_ChannelShieldSequence                DcmTagKey(0x300a, 0x02b0)
