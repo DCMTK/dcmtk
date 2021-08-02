@@ -859,6 +859,7 @@ PlannedImagingAgentAdministrationSRStorage           1.2.840.10008.5.1.4.1.1.88.
 PerformedImagingAgentAdministrationSRStorage         1.2.840.10008.5.1.4.1.1.88.75
 EnhancedXRayRadiationDoseSRStorage                   1.2.840.10008.5.1.4.1.1.88.76
 ContentAssessmentResultsStorage                      1.2.840.10008.5.1.4.1.1.90.1
+MicroscopyBulkSimpleAnnotationsStorage               1.2.840.10008.5.1.4.1.1.91.1​
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 EncapsulatedSTLStorage                               1.2.840.10008.5.1.4.1.1.104.3
