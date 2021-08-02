@@ -621,6 +621,7 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
         // Check that all pixels are set to their original source instances frame number (starting from 1)
         for (size_t pix = 0; pix < NUM_PIXELS_PER_FRAME; pix++)
         {
+            // We need to swap the 16 bit value if the test runs on big endian platforms
             swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, &frame[pix], 2, sizeof(Uint16));
             OFCHECK(frame[pix] == numInstance + 1);
         }
