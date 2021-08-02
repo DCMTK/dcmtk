@@ -29,6 +29,8 @@
 #include "dcmtk/dcmect/enhanced_ct.h"
 
 #include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcswap.h"
+
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/concatenationloader.h"
 #include "dcmtk/dcmfg/fgctacquisitiondetails.h"
@@ -619,6 +621,7 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
         // Check that all pixels are set to their original source instances frame number (starting from 1)
         for (size_t pix = 0; pix < NUM_PIXELS_PER_FRAME; pix++)
         {
+            swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, &frame[pix], 2, sizeof(Uint16));
             OFCHECK(frame[pix] == numInstance + 1);
         }
         delete concat;
