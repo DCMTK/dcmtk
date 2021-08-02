@@ -646,6 +646,12 @@ OFString DicomDirInterface::recordTypeToName(const E_DirRecType recordType)
         case ERT_Assessment:
             recordName = "Assessment";
             break;
+        case ERT_Radiotherapy:
+            recordName = "Radiotherapy";
+            break;
+        case ERT_Annotation:
+            recordName = "Annotation";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -821,6 +827,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     {
         result = ERT_Radiotherapy;
     }
+    else if (compare(sopClass, UID_MicroscopyBulkSimpleAnnotationsStorage))
+        result = ERT_Annotation;
     return result;
 }
 
@@ -1010,6 +1018,7 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_Tract:
             case ERT_Assessment:
             case ERT_Radiotherapy:
+            case ERT_Annotation:
                 /* try to insert based on InstanceNumber */
                 result = insertWithISCriterion(parent, child, DCM_InstanceNumber);
                 break;
@@ -1725,7 +1734,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_StereometricRelationshipStorage) ||
                                 compare(mediaSOPClassUID, UID_ColorPaletteStorage) ||
                                 compare(mediaSOPClassUID, UID_TractographyResultsStorage) ||
-                                compare(mediaSOPClassUID, UID_ContentAssessmentResultsStorage);
+                                compare(mediaSOPClassUID, UID_ContentAssessmentResultsStorage) ||
+                                compare(mediaSOPClassUID, UID_MicroscopyBulkSimpleAnnotationsStorage);
                     }
                     /* the following SOP classes have been retired with previous editions of the DICOM standard */
                     if (!found && RetiredSOPClassSupport)
@@ -2747,6 +2757,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 case ERT_Surface:
                 case ERT_Measurement:
                 case ERT_Tract:
+                case ERT_Annotation:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
                         result = EC_MissingAttribute;
                     if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
@@ -3026,6 +3037,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_Tract:
             case ERT_Assessment:
             case ERT_Radiotherapy:
+            case ERT_Annotation:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -4189,7 +4201,7 @@ DcmDirectoryRecord *DicomDirInterface::buildTractRecord(DcmDirectoryRecord *reco
                                                         const OFString &referencedFileID,
                                                         const OFFilename &sourceFilename)
 {
-    /* create new surface record */
+    /* create new tract record */
     if (record == NULL)
         record = new DcmDirectoryRecord(ERT_Tract, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
@@ -4223,7 +4235,7 @@ DcmDirectoryRecord *DicomDirInterface::buildAssessmentRecord(DcmDirectoryRecord 
                                                              const OFString &referencedFileID,
                                                              const OFFilename &sourceFilename)
 {
-    /* create new surface record */
+    /* create new assessment record */
     if (record == NULL)
         record = new DcmDirectoryRecord(ERT_Assessment, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
@@ -4254,7 +4266,7 @@ DcmDirectoryRecord *DicomDirInterface::buildRadiotherapyRecord(DcmDirectoryRecor
                                                                const OFString &referencedFileID,
                                                                const OFFilename &sourceFilename)
 {
-    /* create new surface record */
+    /* create new radiotherapy record */
     if (record == NULL)
         record = new DcmDirectoryRecord(ERT_Radiotherapy, referencedFileID.c_str(), sourceFilename, fileformat);
     if (record != NULL)
@@ -4277,6 +4289,39 @@ DcmDirectoryRecord *DicomDirInterface::buildRadiotherapyRecord(DcmDirectoryRecor
         }
     } else
         printRecordErrorMessage(EC_MemoryExhausted, ERT_Radiotherapy, "create");
+    return record;
+}
+
+
+DcmDirectoryRecord *DicomDirInterface::buildAnnotationRecord(DcmDirectoryRecord *record,
+                                                             DcmFileFormat *fileformat,
+                                                             const OFString &referencedFileID,
+                                                             const OFFilename &sourceFilename)
+{
+    /* create new annotation record */
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Annotation, referencedFileID.c_str(), sourceFilename, fileformat);
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            DcmDataset *dataset = fileformat->getDataset();
+            /* copy attribute values from dataset to annotation record */
+            copyElementType1(dataset, DCM_InstanceNumber, record, sourceFilename);
+            copyElementType1(dataset, DCM_ContentDate, record, sourceFilename);
+            copyElementType1(dataset, DCM_ContentTime, record, sourceFilename);
+            copyElementType1(dataset, DCM_ContentLabel, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentDescription, record, sourceFilename);
+            copyElementType2(dataset, DCM_ContentCreatorName, record, sourceFilename);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Annotation, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Annotation, "create");
     return record;
 }
 
@@ -4716,6 +4761,9 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                     break;
                 case ERT_Radiotherapy:
                     record = buildRadiotherapyRecord(record, fileformat, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Annotation:
+                    record = buildAnnotationRecord(record, fileformat, referencedFileID, sourceFilename);
                     break;
                 default:
                     /* it can only be an image */

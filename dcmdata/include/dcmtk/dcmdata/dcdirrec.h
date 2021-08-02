@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -128,7 +128,9 @@ typedef enum {
     /// assessment
     ERT_Assessment = 47,
     /// radiotherapy
-    ERT_Radiotherapy = 48
+    ERT_Radiotherapy = 48,
+    /// annotation
+    ERT_Annotation = 49
 } E_DirRecType;
 
 
