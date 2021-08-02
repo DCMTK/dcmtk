@@ -5,8 +5,8 @@
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2021b
- *  File created on 2021-03-30 10:07:23 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021c
+ *  File created on 2021-08-02 09:46:30 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 42
+// total number of codes: 49
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -48,13 +48,17 @@
 // The "cleaned camel-case version of the code meaning" is an attempt to map the free text
 // description of the code meaning to a compiler-friendly but still human-readable representation.
 
+#define CODE_NCIt_IndexLesion                                              DSRBasicCodedEntry("C110961", "NCIt", "Index lesion")
 #define CODE_NCIt_EnhancingLesion                                          DSRBasicCodedEntry("C113842", "NCIt", "Enhancing Lesion")
 #define CODE_NCIt_RANO                                                     DSRBasicCodedEntry("C114879", "NCIt", "RANO")
 #define CODE_NCIt_DCFPyL_F18                                               DSRBasicCodedEntry("C116352", "NCIt", "DCFPyL F^18^")
 #define CODE_NCIt_Technetium99mTrofolastat                                 DSRBasicCodedEntry("C116887", "NCIt", "Technetium^99m Trofolastat")
 #define CODE_NCIt_PSMA11_Ga68                                              DSRBasicCodedEntry("C118961", "NCIt", "PSMA-11 Ga^68^")
 #define CODE_NCIt_Sarcosine_C11                                            DSRBasicCodedEntry("C122684", "NCIt", "Sarcosine C^11^")
+#define CODE_NCIt_IrreversibleElectroporation                              DSRBasicCodedEntry("C131483", "NCIt", "Irreversible electroporation")
+#define CODE_NCIt_4Kscore                                                  DSRBasicCodedEntry("C142184", "NCIt", "4Kscore")
 #define CODE_NCIt_SoftTissueSarcoma_excludingRhabdomyosarcoma              DSRBasicCodedEntry("C148457", "NCIt", "Soft tissue sarcoma, excluding rhabdomyosarcoma")
+#define CODE_NCIt_Cryoablation                                             DSRBasicCodedEntry("C15215", "NCIt", "Cryoablation")
 #define CODE_NCIt_166Holmium                                               DSRBasicCodedEntry("C1943", "NCIt", "^166^Holmium")
 #define CODE_NCIt_MouseMammaryFatPad                                       DSRBasicCodedEntry("C22550", "NCIt", "Mouse mammary fat pad")
 #define CODE_NCIt_Middle                                                   DSRBasicCodedEntry("C25569", "NCIt", "Middle")
@@ -70,10 +74,12 @@
 #define CODE_NCIt_NativeHawaiianOrOtherPacificIslander                     DSRBasicCodedEntry("C41219", "NCIt", "Native Hawaiian or other Pacific Islander")
 #define CODE_NCIt_AdverseEvent                                             DSRBasicCodedEntry("C41331", "NCIt", "Adverse Event")
 #define CODE_NCIt_TemperatureSensorDeviceComponent                         DSRBasicCodedEntry("C50304", "NCIt", "Temperature sensor device component")
+#define CODE_NCIt_Experience                                               DSRBasicCodedEntry("C54627", "NCIt", "Experience")
 #define CODE_NCIt_Reviewer                                                 DSRBasicCodedEntry("C54634", "NCIt", "Reviewer")
 #define CODE_NCIt_Ion                                                      DSRBasicCodedEntry("C597", "NCIt", "Ion")
 #define CODE_NCIt_AdLibitum                                                DSRBasicCodedEntry("C64636", "NCIt", "ad libitum")
 #define CODE_NCIt_ActivitySession                                          DSRBasicCodedEntry("C67447", "NCIt", "Activity Session")
+#define CODE_NCIt_FocusedUltrasoundAblation                                DSRBasicCodedEntry("C68681", "NCIt", "Focused ultrasound ablation")
 #define CODE_NCIt_UnitConversionFactor                                     DSRBasicCodedEntry("C70774", "NCIt", "Unit Conversion Factor")
 #define CODE_NCIt_MedicalProductExpirationDate                             DSRBasicCodedEntry("C70854", "NCIt", "Medical Product Expiration Date")
 #define CODE_NCIt_CardiotonicAgent                                         DSRBasicCodedEntry("C78322", "NCIt", "Cardiotonic agent")
@@ -86,6 +92,7 @@
 #define CODE_NCIt_LightCycle                                               DSRBasicCodedEntry("C90419", "NCIt", "Light cycle")
 #define CODE_NCIt_WaterDelivery                                            DSRBasicCodedEntry("C90486", "NCIt", "Water delivery")
 #define CODE_NCIt_Dosimetrist                                              DSRBasicCodedEntry("C93176", "NCIt", "Dosimetrist")
+#define CODE_NCIt_Abnormality                                              DSRBasicCodedEntry("C9440", "NCIt", "Abnormality")
 #define CODE_NCIt_ReferenceRegion                                          DSRBasicCodedEntry("C94970", "NCIt", "Reference Region")
 #define CODE_NCIt_DCFBC_F18                                                DSRBasicCodedEntry("C96234", "NCIt", "DCFBC F^18^")
 #define CODE_NCIt_Adjudicator                                              DSRBasicCodedEntry("C96561", "NCIt", "Adjudicator")

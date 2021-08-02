@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2021b
- *  File created on 2021-03-30 10:07:19 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021c
+ *  File created on 2021-08-02 09:46:27 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4442
+// total number of codes: 4510
 // - retired: 200
 // - no name: 27
 // - not unique: 17
@@ -48,6 +48,7 @@
 // The "cleaned camel-case version of the code meaning" is an attempt to map the free text
 // description of the code meaning to a compiler-friendly but still human-readable representation.
 
+#define CODE_DCM_Annotation                                                DSRBasicCodedEntry("ANN", "DCM", "Annotation")
 #define CODE_DCM_Autorefraction                                            DSRBasicCodedEntry("AR", "DCM", "Autorefraction")
 #define CODE_DCM_Archive                                                   DSRBasicCodedEntry("ARCHIVE", "DCM", "Archive")
 #define CODE_DCM_RETIRED_Angioscopy                                        DSRBasicCodedEntry("AS", "DCM", "Angioscopy")
@@ -1544,7 +1545,7 @@
 #define CODE_DCM_Coalescent                                                DSRBasicCodedEntry("112157", "DCM", "Coalescent")
 #define CODE_DCM_Lobar                                                     DSRBasicCodedEntry("112158", "DCM", "Lobar")
 #define CODE_DCM_HyperAcute                                                DSRBasicCodedEntry("112159", "DCM", "Hyper-acute")
-#define CODE_DCM_Homogeneous_uniformOpacity                                DSRBasicCodedEntry("112160", "DCM", "Homogeneous (uniform opacity)")
+#define CODE_DCM_Homogeneous                                               DSRBasicCodedEntry("112160", "DCM", "Homogeneous")
 #define CODE_DCM_Inhomogeneous                                             DSRBasicCodedEntry("112161", "DCM", "Inhomogeneous")
 #define CODE_DCM_Target                                                    DSRBasicCodedEntry("112162", "DCM", "Target")
 #define CODE_DCM_Fibrocalcific                                             DSRBasicCodedEntry("112163", "DCM", "Fibrocalcific")
@@ -4490,5 +4491,72 @@
 #define CODE_DCM_IsocenterOrigin                                           DSRBasicCodedEntry("130539", "DCM", "Isocenter Origin")
 #define CODE_DCM_PatientCoordinateSystemOrigin                             DSRBasicCodedEntry("130540", "DCM", "Patient Coordinate System Origin")
 #define CODE_DCM_10cmDosimetryPhantom                                      DSRBasicCodedEntry("130541", "DCM", "10 cm Dosimetry Phantom")
+#define CODE_DCM_MagneticFieldStrength                                     DSRBasicCodedEntry("130542", "DCM", "Magnetic field strength")
+#define CODE_DCM_EndorectalCoilUsed                                        DSRBasicCodedEntry("130543", "DCM", "Endorectal coil used")
+#define CODE_DCM_EndorectalCoilType                                        DSRBasicCodedEntry("130544", "DCM", "Endorectal coil type")
+#define CODE_DCM_InflatableEndorectalCoilFillSubstance                     DSRBasicCodedEntry("130545", "DCM", "Inflatable endorectal coil fill substance")
+#define CODE_DCM_CrossSectionalScanPlaneOrientation                        DSRBasicCodedEntry("130546", "DCM", "Cross-sectional scan plane orientation")
+#define CODE_DCM_DynamicContrastEnhancedTemporalResolution                 DSRBasicCodedEntry("130547", "DCM", "Dynamic contrast-enhanced temporal resolution")
+#define CODE_DCM_GenitourinaryHistory                                      DSRBasicCodedEntry("130548", "DCM", "Genitourinary History")
+#define CODE_DCM_ImagingStudyQuality                                       DSRBasicCodedEntry("130549", "DCM", "Imaging Study Quality")
+#define CODE_DCM_ImagingSeriesQuality                                      DSRBasicCodedEntry("130550", "DCM", "Imaging Series Quality")
+#define CODE_DCM_ReportingSystem                                           DSRBasicCodedEntry("130551", "DCM", "Reporting system")
+#define CODE_DCM_ProstateMRIRelevantProcedureInformation                   DSRBasicCodedEntry("130552", "DCM", "Prostate MRI relevant procedure information")
+#define CODE_DCM_ProstateImagingFindings                                   DSRBasicCodedEntry("130553", "DCM", "Prostate Imaging Findings")
+#define CODE_DCM_OverallProstateFinding                                    DSRBasicCodedEntry("130554", "DCM", "Overall Prostate Finding")
+#define CODE_DCM_LocalizedProstateFinding                                  DSRBasicCodedEntry("130555", "DCM", "Localized Prostate Finding")
+#define CODE_DCM_ProstateRelationalMeasurements                            DSRBasicCodedEntry("130556", "DCM", "Prostate relational measurements")
+#define CODE_DCM_DistanceFromNeurovascularBundle                           DSRBasicCodedEntry("130557", "DCM", "Distance from neurovascular bundle")
+#define CODE_DCM_LesionCapsularContactLength                               DSRBasicCodedEntry("130558", "DCM", "Lesion capsular contact length")
+#define CODE_DCM_ExtraProstaticFinding                                     DSRBasicCodedEntry("130559", "DCM", "Extra-prostatic Finding")
+#define CODE_DCM_PIRADSLocalizedAbnormalityAssessment                      DSRBasicCodedEntry("130560", "DCM", "PI-RADS Localized Abnormality Assessment")
+#define CODE_DCM_PIRADST2WILesionAssessment                                DSRBasicCodedEntry("130561", "DCM", "PI-RADS T2WI Lesion Assessment")
+#define CODE_DCM_PIRADSDWILesionAssessment                                 DSRBasicCodedEntry("130562", "DCM", "PI-RADS DWI Lesion Assessment")
+#define CODE_DCM_PIRADSDCELesionAssessment                                 DSRBasicCodedEntry("130563", "DCM", "PI-RADS DCE Lesion Assessment")
+#define CODE_DCM_PIRADSV2dot0                                              DSRBasicCodedEntry("130564", "DCM", "PI-RADS v2.0")
+#define CODE_DCM_PIRADSV2dot1                                              DSRBasicCodedEntry("130565", "DCM", "PI-RADS v2.1")
+#define CODE_DCM_DiffusionWeightedAcquisitionHighestBValueImage            DSRBasicCodedEntry("130566", "DCM", "Diffusion-weighted Acquisition Highest b-value image")
+#define CODE_DCM_DynamicContrastEnhancedAcquisition                        DSRBasicCodedEntry("130567", "DCM", "Dynamic Contrast-Enhanced Acquisition")
+#define CODE_DCM_DynamicContrastEnhancedAcquisitionSubtractionImage        DSRBasicCodedEntry("130568", "DCM", "Dynamic Contrast-Enhanced Acquisition Subtraction image")
+#define CODE_DCM_UtricleCyst                                               DSRBasicCodedEntry("130569", "DCM", "Utricle cyst")
+#define CODE_DCM_ProtocolNotFollowed                                       DSRBasicCodedEntry("130570", "DCM", "Protocol not followed")
+#define CODE_DCM_CoilPlacementConcern                                      DSRBasicCodedEntry("130571", "DCM", "Coil placement concern")
+#define CODE_DCM_CoilSelectionConcern                                      DSRBasicCodedEntry("130572", "DCM", "Coil selection concern")
+#define CODE_DCM_StudyPerformedDidNotMatchRequest                          DSRBasicCodedEntry("130573", "DCM", "Study performed did not match request")
+#define CODE_DCM_IncompleteStudy                                           DSRBasicCodedEntry("130574", "DCM", "Incomplete study")
+#define CODE_DCM_SuboptimalPatientPreparation                              DSRBasicCodedEntry("130575", "DCM", "Suboptimal patient preparation")
+#define CODE_DCM_AnatomyCoverageIncomplete                                 DSRBasicCodedEntry("130576", "DCM", "Anatomy coverage incomplete")
+#define CODE_DCM_PoorFOVSelection                                          DSRBasicCodedEntry("130577", "DCM", "Poor FOV selection")
+#define CODE_DCM_PoorSNR                                                   DSRBasicCodedEntry("130578", "DCM", "Poor SNR")
+#define CODE_DCM_PoorContrastTiming                                        DSRBasicCodedEntry("130579", "DCM", "Poor contrast timing")
+#define CODE_DCM_InadequateContrastEnhancement                             DSRBasicCodedEntry("130580", "DCM", "Inadequate contrast enhancement")
+#define CODE_DCM_SubtractionImageMissing                                   DSRBasicCodedEntry("130581", "DCM", "Subtraction image missing")
+#define CODE_DCM_UnwantedSubtractionImages                                 DSRBasicCodedEntry("130582", "DCM", "Unwanted subtraction images")
+#define CODE_DCM_ExpectedBValueIsMissing                                   DSRBasicCodedEntry("130583", "DCM", "Expected b-value is missing")
+#define CODE_DCM_SevereDistortionInTheAreaOfInterest                       DSRBasicCodedEntry("130584", "DCM", "Severe distortion in the area of interest")
+#define CODE_DCM_ExpectedADCMapIsMissing                                   DSRBasicCodedEntry("130585", "DCM", "Expected ADC map is missing")
+#define CODE_DCM_DistortionArtifactInTheAreaOfInterest                     DSRBasicCodedEntry("130586", "DCM", "Distortion artifact in the area of interest")
+#define CODE_DCM_NoFamilyHistoryOfProstateCancer                           DSRBasicCodedEntry("130587", "DCM", "No family history of prostate cancer")
+#define CODE_DCM_PreBiopsyLocalizationOfProstateLesion                     DSRBasicCodedEntry("130588", "DCM", "Pre-biopsy localization of prostate lesion")
+#define CODE_DCM_ActiveSurveillanceOfProstateCancer                        DSRBasicCodedEntry("130589", "DCM", "Active surveillance of prostate cancer")
+#define CODE_DCM_AssessChange                                              DSRBasicCodedEntry("130590", "DCM", "Assess change")
+#define CODE_DCM_FocalAbnormality                                          DSRBasicCodedEntry("130591", "DCM", "Focal abnormality")
+#define CODE_DCM_NonFocalAbnormality                                       DSRBasicCodedEntry("130592", "DCM", "Non-focal abnormality")
+#define CODE_DCM_PartiallyEncapsulated                                     DSRBasicCodedEntry("130593", "DCM", "Partially encapsulated")
+#define CODE_DCM_CompletelyEncapsulated                                    DSRBasicCodedEntry("130594", "DCM", "Completely encapsulated")
+#define CODE_DCM_ADCHyperintense                                           DSRBasicCodedEntry("130595", "DCM", "ADC Hyperintense")
+#define CODE_DCM_ADCHypointense                                            DSRBasicCodedEntry("130596", "DCM", "ADC Hypointense")
+#define CODE_DCM_PersistentDelayedPhase_Type1Curve                         DSRBasicCodedEntry("130597", "DCM", "Persistent delayed phase: Type 1 curve")
+#define CODE_DCM_PlateauDelayedPhase_Type2Curve                            DSRBasicCodedEntry("130598", "DCM", "Plateau delayed phase: Type 2 curve")
+#define CODE_DCM_WashoutDelayedPhase_Type3Curve                            DSRBasicCodedEntry("130599", "DCM", "Washout delayed phase: Type 3 curve")
+#define CODE_DCM_PositiveDCE                                               DSRBasicCodedEntry("130600", "DCM", "Positive DCE")
+#define CODE_DCM_NegativeDCE                                               DSRBasicCodedEntry("130601", "DCM", "Negative DCE")
+#define CODE_DCM_EarlyContrastEnhancement                                  DSRBasicCodedEntry("130602", "DCM", "Early Contrast Enhancement")
+#define CODE_DCM_DiffuseContrastEnhancement                                DSRBasicCodedEntry("130603", "DCM", "Diffuse Contrast Enhancement")
+#define CODE_DCM_FocalContrastEnhancement                                  DSRBasicCodedEntry("130604", "DCM", "Focal Contrast Enhancement")
+#define CODE_DCM_Perfluorocarbon                                           DSRBasicCodedEntry("130605", "DCM", "Perfluorocarbon")
+#define CODE_DCM_ESUR2012ProstateMRIAcquisitionRequirements                DSRBasicCodedEntry("130606", "DCM", "ESUR 2012 prostate MRI acquisition requirements")
+#define CODE_DCM_PIRADS2dot0ProstateMRIAcquisitionRequirements             DSRBasicCodedEntry("130607", "DCM", "PI-RADS 2.0 prostate MRI acquisition requirements")
+#define CODE_DCM_PIRADS2dot1ProstateMRIAcquisitionRequirements             DSRBasicCodedEntry("130608", "DCM", "PI-RADS 2.1 prostate MRI acquisition requirements")
 
 #endif
