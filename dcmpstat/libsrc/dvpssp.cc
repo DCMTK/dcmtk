@@ -1429,6 +1429,12 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmSession(
   // add illumination and reflection, and presentation LUT reference if necessary.
   if ((printHandler.printerSupportsPresentationLUT()) && plutInSession) result = addPresentationLUTReference(dset);
 
+  if (result.good() && (specificCharacterSet.getLength() > 0))
+  {
+    DcmElement *delem=NULL;
+    ADD_TO_DATASET(DcmCodeString, specificCharacterSet)
+  }
+
   if (result==EC_Normal)
   {
     OFCondition cond = printHandler.createRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID, &dset, status, attributeListOut);
