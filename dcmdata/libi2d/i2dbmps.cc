@@ -100,8 +100,9 @@ OFCondition I2DBmpSource::readPixelData(Uint16& rows,
     return cond;
   }
 
+  OFBool isMonochrome = OFFalse;
   Uint32 *palette = NULL;
-  cond = readColorPalette(colors, palette);
+  cond = readColorPalette(colors, isMonochrome, palette);
   if (cond.bad())
   {
     closeFile();
@@ -115,7 +116,7 @@ OFCondition I2DBmpSource::readPixelData(Uint16& rows,
   /* ...and read the "real" image data */
   char *data;
   Uint32 data_length;
-  cond = readBitmapData(width, height, bpp, isTopDown, colors, palette, data, data_length);
+  cond = readBitmapData(width, height, bpp, isTopDown, isMonochrome, colors, palette, data, data_length);
 
   if (palette)
     delete[] palette;
@@ -130,12 +131,19 @@ OFCondition I2DBmpSource::readPixelData(Uint16& rows,
 
   rows = height;
   cols = width;
-  samplesPerPixel = 3;    /* 24 bpp */
-
+  if (isMonochrome)
+  {
+    samplesPerPixel = 1;
+    photoMetrInt = "MONOCHROME2";
+  }
+  else
+  {
+    samplesPerPixel = 3;    /* 24 bpp */
+    photoMetrInt = "RGB";
+  }
   bitsAlloc = 8;
   bitsStored = 8;
   highBit = 7;
-  photoMetrInt = "RGB";
   planConf = 0;           /* For each pixel we save rgb in that order */
   pixData = data;
   length = data_length;
@@ -278,8 +286,10 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
 }
 
 
-OFCondition I2DBmpSource::readColorPalette(Uint16 colors,
-                                           Uint32*& palette)
+OFCondition I2DBmpSource::readColorPalette(
+  Uint16 colors,
+  OFBool& isMonochrome,
+  Uint32*& palette)
 {
   if (colors == 0)
     // Nothing to do;
@@ -289,11 +299,13 @@ OFCondition I2DBmpSource::readColorPalette(Uint16 colors,
     // BMPs can not have more than 256 color table entries
     return EC_IllegalCall;
 
+  isMonochrome = OFTrue;
+  Uint8 r, g, b;
+
   // Read the color palette
   palette = new Uint32[colors];
+  Uint32 tmp;
   for (int i = 0; i < colors; i++) {
-    Uint32 tmp;
-
     // Each item is 32-bit BGRx entry, this function reads that data
     if (readDWord(tmp) != 0) {
       delete[] palette;
@@ -303,20 +315,28 @@ OFCondition I2DBmpSource::readColorPalette(Uint16 colors,
 
     // Converting this BGRx into RGB is done elsewhere
     palette[i] = tmp;
+
+    // check if the value is grayscale, set monochrome flag to false otherwise
+    r = OFstatic_cast(Uint8, tmp >> 16);
+    g = OFstatic_cast(Uint8, tmp >>  8);
+    b = OFstatic_cast(Uint8, tmp >>  0);
+    if ((r != g) || (r != b)) isMonochrome = OFFalse;
   }
 
   return EC_Normal;
 }
 
 
-OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
-                                         const Uint16 height,
-                                         const Uint16 bpp,
-                                         const OFBool isTopDown,
-                                         const Uint16 colors,
-                                         const Uint32* palette,
-                                         char*& pixData,
-                                         Uint32& length)
+OFCondition I2DBmpSource::readBitmapData(
+  const Uint16 width,
+  const Uint16 height,
+  const Uint16 bpp,
+  const OFBool isTopDown,
+  const OFBool isMonochrome,
+  const Uint16 colors,
+  const Uint32* palette,
+  char*& pixData,
+  Uint32& length)
 {
   /* row_length = width * bits_per_pixel / 8 bits_per_byte.
      row_length must be rounded *up* to a 4-byte boundary:
@@ -328,6 +348,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
   Uint32 y;
   OFBool positive_direction;
   Uint32 max;
+  Uint16 samplesPerPixel = isMonochrome ? 1 : 3;
 
   // "palette" may only be NULL if colors is 0 and vice versa
   if ((palette == NULL) != (colors == 0))
@@ -352,7 +373,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
     max = 0;
   }
 
-  length = width * height * 3;
+  length = width * height * samplesPerPixel;
 
   DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Starting to read bitmap data");
 
@@ -372,7 +393,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
     /* Calculate posData for this line, it is the index of the first byte for
      * this line. ( -1 because we start at index 1, but C at index 0)
      */
-    Uint32 posData = (y - 1) * width * 3;
+    Uint32 posData = (y - 1) * width * samplesPerPixel;
 
     if (bmpFile.fread(row_data, 1, row_length) < row_length)
     {
@@ -387,7 +408,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
       case 1:
       case 4:
       case 8:
-        cond = parseIndexedColorRow(row_data, width, bpp, colors, palette, &pixData[posData]);
+        cond = parseIndexedColorRow(row_data, width, bpp, colors, palette, isMonochrome, &pixData[posData]);
         break;
       case 16:
         cond = parse16BppRow(row_data, width, &pixData[posData]);
@@ -486,12 +507,14 @@ OFCondition I2DBmpSource::parse16BppRow(const Uint8 *row,
 }
 
 
-OFCondition I2DBmpSource::parseIndexedColorRow(const Uint8 *row,
-                                               const Uint16 width,
-                                               const int bpp,
-                                               const Uint16 colors,
-                                               const Uint32* palette,
-                                               char *pixData /*out*/) const
+OFCondition I2DBmpSource::parseIndexedColorRow(
+  const Uint8 *row,
+  const Uint16 width,
+  const int bpp,
+  const Uint16 colors,
+  const Uint32* palette,
+  const OFBool isMonochrome,
+  char *pixData /*out*/) const
 {
   // data that is still left from reading the last pixel
   Uint8 data = 0;
@@ -528,10 +551,16 @@ OFCondition I2DBmpSource::parseIndexedColorRow(const Uint8 *row,
     // And save it in the resulting image, this implicitly converts the BGR we
     // got from the color table into RGB.
     pixData[pos]     = OFstatic_cast(Uint8, pixel >> 16);
-    pixData[pos + 1] = OFstatic_cast(Uint8, pixel >>  8);
-    pixData[pos + 2] = OFstatic_cast(Uint8, pixel >>  0);
-
-    pos += 3;
+    if (isMonochrome)
+    {
+      pos++;
+    }
+    else
+    {
+      pixData[pos + 1] = OFstatic_cast(Uint8, pixel >>  8);
+      pixData[pos + 2] = OFstatic_cast(Uint8, pixel >>  0);
+      pos += 3;
+    }
   }
   return EC_Normal;
 }
