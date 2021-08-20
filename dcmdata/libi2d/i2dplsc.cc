@@ -33,10 +33,17 @@ I2DOutputPlugSC::I2DOutputPlugSC()
   DCMDATA_LIBI2D_DEBUG("I2DOutputPlugSC: Output plugin for Secondary Capture initialized");
 }
 
+
+I2DOutputPlugSC::~I2DOutputPlugSC()
+{
+}
+
+
 OFString I2DOutputPlugSC::ident()
 {
   return "Secondary Capture Image SOP Class";
 }
+
 
 void I2DOutputPlugSC::supportedSOPClassUIDs(OFList<OFString>& suppSOPs)
 {
@@ -68,6 +75,15 @@ OFString I2DOutputPlugSC::isValid(DcmDataset& dataset) const
 }
 
 
-I2DOutputPlugSC::~I2DOutputPlugSC()
+OFBool I2DOutputPlugSC::supportsMultiframe() const
 {
+  return OFFalse;
+}
+
+
+OFCondition I2DOutputPlugSC::insertMultiFrameAttributes(
+  DcmDataset* /* targetDataset */,
+  size_t /* numberOfFrames */) const
+{
+  return EC_Normal;
 }

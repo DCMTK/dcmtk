@@ -202,15 +202,19 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     rows            = height;
     cols            = width;
     samplesPerPixel = spp;
+    bitsStored      = bps;
     bitsAlloc       = bps;
-    // Some output formats do not allow 12 bit at all, so it is more safe to
-    // use 16 bit for Bits Allocated (and therefore for Bits Stored, see below)
+
+    // When BitsStored = 12, we use BitsAllocated = 16
     if (bitsAlloc == 12)
     {
         bitsAlloc = 16;
     }
-    bitsStored = bitsAlloc;
-    highBit    = OFstatic_cast(Uint16, bitsStored - 1);
+
+    // HighBit is always BitsStored - 1.
+    highBit = bitsStored;
+    highBit--;
+
     if (samplesPerPixel == 1)
         photoMetrInt = "MONOCHROME2";
     else if (samplesPerPixel == 3)

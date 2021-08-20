@@ -41,6 +41,12 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 #define SHORTCOL 4
 #define LONGCOL 21
 
+enum InputFormat
+{
+  InputFormatJPEG,
+  InputFormatBMP
+};
+
 static OFLogger img2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static OFCondition evaluateFromFileOptions(
@@ -116,7 +122,7 @@ static OFCondition evaluateFromFileOptions(
 
 static void addCmdLineOptions(OFCommandLine& cmd)
 {
-  cmd.addParam("imgfile-in",  "image input filename");
+  cmd.addParam("imgfile-in",  "image input filename", OFCmdParam::PM_MultiMandatory);
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
@@ -158,9 +164,9 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--no-type2-insert",     "-i2",     "do not insert missing type 2 attributes \n(only with --do-checks)");
       cmd.addOption("--invent-type1",        "+i1",     "invent missing type 1 attributes (default)\n(only with --do-checks)");
       cmd.addOption("--no-type1-invent",     "-i1",     "do not invent missing type 1 attributes\n(only with --do-checks)");
-    cmd.addSubGroup("character set:");
-      cmd.addOption("--latin1",              "+l1",     "set latin-1 as standard character set (default)");
-      cmd.addOption("--no-latin1",           "-l1",     "keep 7-bit ASCII as standard character set");
+    cmd.addSubGroup("character set conversion of study/series file:");
+      cmd.addOption("--transliterate",       "-Ct",    "try to approximate characters that cannot be\nrepresented through similar looking characters");
+      cmd.addOption("--discard-illegal",     "-Cd",    "discard characters that cannot be represented\nin destination character set");
     cmd.addSubGroup("other processing options:");
       cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
                                                         "add further attribute");
@@ -186,6 +192,19 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--padding-off",         "-p",      "no padding (implicit if --write-dataset)");
       cmd.addOption("--padding-create",      "+p",   2, "[f]ile-pad [i]tem-pad: integer",
                                                         "align file on multiple of f bytes\nand items on multiple of i bytes");
+}
+
+
+static I2DImgSource *createInputPlugin(InputFormat ifrm)
+{
+  switch (ifrm)
+  {
+    case InputFormatBMP:
+      return new I2DBmpSource();
+    case InputFormatJPEG:
+    default:
+      return new I2DJpegSource();
+  }
 }
 
 
@@ -219,54 +238,45 @@ static OFCondition startConversion(
   OFList<OFString> overrideKeys;
   // The transfer syntax proposed to be written by output plugin
   E_TransferSyntax writeXfer;
+  // the input file format
+  InputFormat inForm = InputFormatJPEG;
 
   // Parse rest of command line options
   OFLog::configureFromCommandLine(cmd, app);
 
-  OFString pixDataFile, outputFile, tempStr;
-  cmd.getParam(1, tempStr);
-
-  if (tempStr.empty())
+  // create list of input files
+  OFString paramValue;
+  OFString outputFile;
+  OFList<OFString> inputFiles;
+  const int paramCount = cmd.getParamCount();
+  for (int i = 1; i < paramCount; i++)
   {
-    OFLOG_ERROR(img2dcmLogger, "No image input filename specified");
-    return EC_IllegalCall;
+    cmd.getParam(i, paramValue);
+    inputFiles.push_back(paramValue);
   }
-  else
-    pixDataFile = tempStr;
 
-  cmd.getParam(2, tempStr);
-  if (tempStr.empty())
-  {
-    OFLOG_ERROR(img2dcmLogger, "No DICOM output filename specified");
-    return EC_IllegalCall;
-  }
-  else
-    outputFile = tempStr;
+  // get output filename
+  cmd.getParam(paramCount, outputFile);
 
+  OFString tempStr;
   if (cmd.findOption("--input-format"))
   {
     app.checkValue(cmd.getValue(tempStr));
     if (tempStr == "JPEG")
     {
-      inputPlug = new I2DJpegSource();
+      inForm = InputFormatJPEG;
     }
     else if (tempStr == "BMP")
     {
-      inputPlug = new I2DBmpSource();
+      inForm = InputFormatBMP;
     }
     else
     {
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "No plugin for selected input format available");
     }
-    if (!inputPlug)
-    {
-      return EC_MemoryExhausted;
-    }
   }
-  else // default is JPEG
-  {
-    inputPlug = new I2DJpegSource();
-  }
+
+  inputPlug = createInputPlugin(inForm);
   OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Instantiated input plugin: " << inputPlug->inputFormat());
 
  // Find out which output plugin to use
@@ -293,6 +303,17 @@ static OFCondition startConversion(
     outPlug = new I2DOutputPlugSC();
   if (outPlug == NULL) return EC_MemoryExhausted;
   OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Instantiated output plugin: " << outPlug->ident());
+
+  if (inputFiles.size() > 1)
+  {
+    // check if the output format supports multiframe
+    if (! outPlug->supportsMultiframe())
+    {
+      OFLOG_ERROR(img2dcmLogger, outPlug->ident() << " does not support multiframe images");
+      delete outPlug;
+      return EC_SOPClassMismatch;
+    }
+  }
 
   cmd.beginOptionBlock();
   if (cmd.findOption("--write-file"))    writeMode = EWM_fileformat;
@@ -337,15 +358,16 @@ static OFCondition startConversion(
   }
   i2d.setOverrideKeys(overrideKeys);
 
-  // Test for ISO Latin 1 option
-  OFBool insertLatin1 = OFTrue;
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--latin1"))
-    insertLatin1 = OFTrue;
-  if (cmd.findOption("--no-latin1"))
-    insertLatin1 = OFFalse;
-  cmd.endOptionBlock();
-  i2d.setISOLatin1(insertLatin1);
+  size_t conversionFlags = 0;
+  if (cmd.findOption("--transliterate"))
+  {
+    conversionFlags |= DCMTypes::CF_transliterate;
+  }
+  if (cmd.findOption("--discard-illegal"))
+  {
+    conversionFlags |= DCMTypes::CF_discardIllegal;
+  }
+  i2d.setConversionFlags(conversionFlags);
 
   // evaluate validity checking options
   OFBool insertType2 = OFTrue;
@@ -420,7 +442,6 @@ static OFCondition startConversion(
     if ( cmd.findOption("--remove-com") )
       jpgSource->setKeepCOM(OFFalse);
   }
-  inputPlug->setImageFile(pixDataFile);
 
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
@@ -431,14 +452,36 @@ static OFCondition startConversion(
 
   DcmDataset *resultObject = NULL;
   OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Starting image conversion");
-  cond = i2d.convert(inputPlug, outPlug, resultObject, writeXfer);
+
+  OFListIterator(OFString) if_iter = inputFiles.begin();
+  OFListIterator(OFString) if_last = inputFiles.end();
+
+  inputPlug->setImageFile(*if_iter++); // we are guaranteed to have at least one input file
+  cond = i2d.convertFirstFrame(inputPlug, outPlug, inputFiles.size(), resultObject, writeXfer);
+  size_t frameNum = 1;
+
+  // iterate over all extra input filenames
+  while (cond.good() && (if_iter != if_last))
+  {
+    // create a new input format plugin for each file to be processed
+    delete inputPlug;
+    inputPlug = createInputPlugin(inForm);
+    inputPlug->setImageFile(*if_iter++);
+    cond = i2d.convertNextFrame(inputPlug, ++frameNum, resultObject);
+  }
+
+  // update offset table if image type is encapsulated
+  if (cond.good()) cond = i2d.updateOffsetTable();
+
+  // update attributes related to lossy compression
+  if (cond.good()) cond = i2d.updateLossyCompressionInfo(inputPlug, inputFiles.size(), resultObject);
 
   // Save
   if (cond.good())
   {
     OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Saving output DICOM to file " << outputFile);
     DcmFileFormat dcmff(resultObject);
-    cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc,  grpLengthEnc, padEnc, OFstatic_cast(Uint32, filepad), OFstatic_cast(Uint32, itempad), writeMode);
+    cond = dcmff.saveFile(outputFile, writeXfer, lengthEnc,  grpLengthEnc, padEnc, OFstatic_cast(Uint32, filepad), OFstatic_cast(Uint32, itempad), writeMode);
   }
 
   // Cleanup and return

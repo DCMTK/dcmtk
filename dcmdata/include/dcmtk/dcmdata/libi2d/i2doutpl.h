@@ -37,6 +37,9 @@ extern DCMTK_I2D_EXPORT OFLogger DCM_dcmdataLibi2dLogger;
 #define DCMDATA_LIBI2D_ERROR(msg) OFLOG_ERROR(DCM_dcmdataLibi2dLogger, msg)
 #define DCMDATA_LIBI2D_FATAL(msg) OFLOG_FATAL(DCM_dcmdataLibi2dLogger, msg)
 
+/// default value for the FrameTime attribute when creating multiframe images
+#define DCMTK_I2D_Default_Frame_Time 1000
+
 class DcmDataset;
 class DcmTagKey;
 
@@ -46,26 +49,29 @@ class DCMTK_I2D_EXPORT I2DOutputPlug
 public:
 
   /** Constructor, initializes member variables
-   *  @return none
    */
   I2DOutputPlug();
+
+  /** Destructor
+   */
+  virtual ~I2DOutputPlug();
 
   /** Virtual function that returns a short name of the plugin.
    *  @return The name of the plugin
    */
-  virtual OFString ident() =0;
+  virtual OFString ident() = 0;
 
   /** Virtual function that returns the Storage SOP class UID, the plugin writes.
    *  @param suppSOPs - [out] List containing supported output SOP classes
    *  @return String containing the Storage SOP class UID
    */
-  virtual void supportedSOPClassUIDs(OFList<OFString>& suppSOPs) =0;
+  virtual void supportedSOPClassUIDs(OFList<OFString>& suppSOPs) = 0;
 
   /** Outputs SOP class specific information into dataset
    * @param dataset - [in/out] Dataset to write to
    * @return EC_Normal if successful, error otherwise
    */
-  virtual OFCondition convert(DcmDataset &dataset) const =0;
+  virtual OFCondition convert(DcmDataset &dataset) const = 0;
 
   /** Do some completeness / validity checks. Should be called when
    *  dataset is completed and is about to be saved.
@@ -74,10 +80,20 @@ public:
    */
   virtual OFString isValid(DcmDataset& dataset) const = 0;
 
-  /** Destructor
-   *  @return none
+  /** check if the output format supported by this plugin can write
+   *  multi-frame images.
+   *  @return true if multiframe is supported, false otherwise
    */
-  virtual ~I2DOutputPlug();
+  virtual OFBool supportsMultiframe() const = 0;
+
+  /** Add multiframe specific attributes
+   *  @param datset pointer to DICOM dataset, must not be NULL
+   *  @param numberOfFrames number of frames in this dataset
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition insertMultiFrameAttributes(
+    DcmDataset* targetDataset,
+    size_t numberOfFrames) const = 0;
 
   /** Enable/Disable basic validity checks for output dataset
    *  @param doChecks - [in] OFTrue enables checking, OFFalse turns it off.

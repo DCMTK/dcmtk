@@ -32,10 +32,17 @@ I2DOutputPlugVLP::I2DOutputPlugVLP()
   DCMDATA_LIBI2D_DEBUG("I2DOutputPlugVLP: Output plugin for VLP initialized");
 }
 
+
+I2DOutputPlugVLP::~I2DOutputPlugVLP()
+{
+}
+
+
 OFString I2DOutputPlugVLP::ident()
 {
   return "Visible Light Photographic Image SOP Class";
 }
+
 
 void I2DOutputPlugVLP::supportedSOPClassUIDs(OFList<OFString>& suppSOPs)
 {
@@ -46,7 +53,47 @@ void I2DOutputPlugVLP::supportedSOPClassUIDs(OFList<OFString>& suppSOPs)
 OFCondition I2DOutputPlugVLP::convert(DcmDataset &dataset) const
 {
   DCMDATA_LIBI2D_DEBUG("I2DOutputPlugVLP: Inserting VLP specific attributes");
-  OFCondition cond;
+  OFCondition cond; Uint16 u16 = 0; OFString str;
+
+  cond = dataset.findAndGetUint16(DCM_BitsAllocated, u16);
+  if (cond.bad() || (u16 != 8))
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Bits Allocated does not fit SOP class");
+
+  cond = dataset.findAndGetUint16(DCM_BitsStored, u16);
+  if (cond.bad() || (u16 != 8))
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Bits Stored does not fit SOP class");
+
+  cond = dataset.findAndGetUint16(DCM_HighBit, u16);
+  if (cond.bad() || (u16 != 7))
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: High Bit does not fit SOP class");
+
+  cond = dataset.findAndGetUint16(DCM_PixelRepresentation, u16);
+  if (cond.bad() || (u16 != 0))
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Pixel Representation does not fit SOP class");
+
+  cond = dataset.findAndGetOFStringArray(DCM_PhotometricInterpretation, str);
+  if (cond.bad())
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Photometric interpretation not set for Pixel Data");
+
+  if (str == "MONOCHROME2")
+  {
+    cond = dataset.findAndGetUint16(DCM_SamplesPerPixel, u16);
+    if (cond.bad() || (u16 != 1))
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Samples Per Pixel does not fit SOP class");
+  }
+  else if ((str == "YBR_FULL_422") || (str == "RGB"))
+  {
+    cond = dataset.findAndGetUint16(DCM_SamplesPerPixel, u16);
+    if (cond.bad() || (u16 != 3))
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Samples Per Pixel does not fit SOP class");
+
+    cond = dataset.findAndGetUint16(DCM_PlanarConfiguration, u16);
+    if (cond.bad() || (u16 != 0))
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Planar Configuration does not fit SOP class");
+  }
+  else
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Photometric interpretation does not fit SOP class");
+
   cond = dataset.putAndInsertOFStringArray(DCM_SOPClassUID, UID_VLPhotographicImageStorage);
   if (cond.bad())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to insert SOP class into dataset");
@@ -81,6 +128,15 @@ OFString I2DOutputPlugVLP::isValid(DcmDataset& dataset) const
 }
 
 
-I2DOutputPlugVLP::~I2DOutputPlugVLP()
+OFBool I2DOutputPlugVLP::supportsMultiframe() const
 {
+  return OFFalse;
+}
+
+
+OFCondition I2DOutputPlugVLP::insertMultiFrameAttributes(
+  DcmDataset* /* targetDataset */,
+  size_t /* numberOfFrames */) const
+{
+  return EC_Normal;
 }

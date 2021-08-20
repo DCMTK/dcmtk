@@ -31,9 +31,12 @@ class DCMTK_I2D_EXPORT I2DOutputPlugOphthalmicPhotography : public I2DOutputPlug
 public:
 
   /** Constructor, initializes member variables with standard values
-   *  @return none
    */
   I2DOutputPlugOphthalmicPhotography();
+
+  /** Virtual Destructor, clean up memory
+   */
+  virtual ~I2DOutputPlugOphthalmicPhotography();
 
   /** Virtual function that returns a short name of the plugin.
    *  @return The name of the plugin
@@ -61,10 +64,20 @@ public:
    */
   virtual OFString isValid(DcmDataset& dataset) const;
 
-  /** Virtual Destructor, clean up memory
-   *  @return none
+  /** check if the output format supported by this plugin can write
+   *  multi-frame images.
+   *  @return true if multiframe is supported, false otherwise
    */
-  virtual ~I2DOutputPlugOphthalmicPhotography();
+  virtual OFBool supportsMultiframe() const;
+
+  /** Add multiframe specific attributes
+   *  @param datset pointer to DICOM dataset, must not be NULL
+   *  @param numberOfFrames number of frames in this dataset
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition insertMultiFrameAttributes(
+    DcmDataset* targetDataset,
+    size_t numberOfFrames) const;
 
 private:
 
@@ -79,12 +92,6 @@ private:
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition handle16BitImage(DcmDataset *dataset) const;
-
-  /** Add multiframe specific attributes
-   *  @param datset pointer to DICOM dataset, must not be NULL
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition insertMultiFrameAttribs(DcmDataset* targetDataset) const;
 
 };
 

@@ -26,6 +26,9 @@
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 #include "dcmtk/dcmdata/libi2d/i2dimgs.h"
 #include "dcmtk/dcmdata/dcpixel.h"
+#include "dcmtk/dcmdata/dcofsetl.h"
+
+class DcmPixelItem;
 
 class DCMTK_I2D_EXPORT Image2Dcm
 {
@@ -33,26 +36,62 @@ class DCMTK_I2D_EXPORT Image2Dcm
 public:
 
   /** Constructor, initializes command line options
-   *  @return none
    */
   Image2Dcm();
+
+  /** Destructor, frees plugin memory
+   */
+  ~Image2Dcm();
 
   /** Start the conversion. Needs a fully configured input plugin
    *  and a fully configured output plugin to operate. Returns
    *  a dataset with the resulting DICOM object.
    *  @param inputPlug - [in] The input plugin to read pixel data
    *  @param outPlug - [in] The output plugin for specific SOP class output
+   *  @param numberOfFrames - [in] The number of frames to be written
    *  @param resultDset - [out] The DICOM object resulting from the conversion
    *         The dataset is allocated in this method and must be freed by the
    *         caller.
    *  @param proposedTS - [out] The proposed transfer syntax (needed e. g.
    *                            by JPEG input plugin)
-   *  @return EC_Normal, if successfull, error otherwise
+   *  @return EC_Normal, if successful, error otherwise
    */
-  OFCondition convert(I2DImgSource *inputPlug,
-                      I2DOutputPlug *outPlug,
-                      DcmDataset*& resultDset,
-                      E_TransferSyntax& proposedTS);
+  OFCondition convertFirstFrame(
+    I2DImgSource *inputPlug,
+    I2DOutputPlug *outPlug,
+    size_t numberOfFrames,
+    DcmDataset*& resultDset,
+    E_TransferSyntax& proposedTS);
+
+
+  /** Start the conversion. Needs a fully configured input plugin
+   *  to operate. Updates the pixel data element created by convertFirstFrame().
+   *  @param inputPlug - [in] The input plugin to read pixel data
+   *  @param frameNumber - [in] The number of the current frame, must be larger than 1
+   *    and smaller or equal to the numberOfFrames value passed to convertFirstFrame().
+   *  @param dset - [in/out] The DICOM object resulting from the conversion
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  OFCondition convertNextFrame(
+    I2DImgSource *inputPlug,
+    size_t frameNumber,
+    DcmDataset *dset);
+
+  /** Update the offset table in the case of an encapsulated image
+   */
+  OFCondition updateOffsetTable();
+
+  /** Finalizes the conversion after the last call to convertNextFrame()
+   *  by writing the attributes related to lossy image compression.
+   *  @param inputPlug - [in] The input plugin to read pixel data
+   *  @param numberOfFrames - [in] The number of frames to be written
+   *  @param dset - [in/out] The DICOM object resulting from the conversion
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  OFCondition updateLossyCompressionInfo(
+    I2DImgSource *inputPlug,
+    size_t numberOfFrames,
+    DcmDataset *dset);
 
   /** Sets a file that should serve as a template for the resulting
     * DICOM object. Only the dataset of the given file is imported.
@@ -100,17 +139,12 @@ public:
    */
   void setIncrementInstanceNumber(OFBool incInstNo);
 
-  /** Enables/disables autotmatic insertion of the value "ISO_IR100" as
-    * a value for the Specific Character Set attribute. If disabled,
-    * no value is inserted for Specifific Character Set but instead
-    * must be provided by other means (see setTemplateFile(), setSeriesFrom(),
-    * setStudyFrom(), setOverrideKeys()). The insertion is applied after
-    * loading the (optional) template file; the value might be overwritten
-    * by the value copied by setStudy/Series/OverrideKeys.
-    * @param insertLatin1 - [in] Enable/disable insertion of Iso Latin 1
-    * @return none;
-    */
-  void setISOLatin1(OFBool insertLatin1);
+  /** Sets the conversion flags for character set conversion of
+   *  the study/series file
+   * @param conversionFlags - [in] conversion flags
+   * @return none;
+   */
+  void setConversionFlags(size_t conversionFlags);
 
   /** Specifies some attributes that should be inserted after conversion.
    *  They will override any identical attributes already existing in the
@@ -138,11 +172,6 @@ public:
   void setValidityChecking(OFBool doChecks,
                            OFBool insertMissingType2 = OFTrue,
                            OFBool inventMissingType1 = OFTrue);
-
-  /** Destructor, frees plugin memory
-   *  @return none
-   */
-  ~Image2Dcm();
 
 protected:
 
@@ -176,16 +205,31 @@ protected:
   /** Reads pixel data and corresponding attributes like rows etc. from image
    *  file and inserts them into dataset.
    *  @param imageSource - [in] The input plugin that actually reads the pixel data
+   *  @param numberOfFrames - [in] The number of frames to be written
    *  @param dset - [out] The dataset to export the pixel data attributes to
    *  @param outputTS - [out] The proposed transfex syntax of the dataset
    *  @param compressionRatio - [out] compression ratio of the pixel data, 1.0 for uncompressed
    *  @return EC_Normal, if successful, error otherwise
    */
-  OFCondition readAndInsertPixelData(
+  OFCondition readAndInsertPixelDataFirstFrame(
     I2DImgSource* imageSource,
+    size_t numberOfFrames,
     DcmDataset* dset,
     E_TransferSyntax& outputTS,
     double& compressionRatio);
+
+  /** Reads pixel data and corresponding attributes like rows etc. from image
+   *  file and inserts them into dataset as an additional frame.
+   *  @param imageSource - [in] The input plugin that actually reads the pixel data
+   *  @param frameNumber - [in] The number of the current frame, must be larger than 1
+   *    and smaller or equal to the numberOfFrames value passed to convertFirstFrame().
+   *  @param dset - [in/out] The DICOM object resulting from the conversion
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  OFCondition readAndInsertPixelDataNextFrame(
+    I2DImgSource* imageSource,
+    size_t frameNumber,
+    DcmDataset* dset);
 
   /** Do some completeness / validity checks. Should be called when
    *  dataset is completed and is about to be saved.
@@ -203,7 +247,7 @@ protected:
    /** Inserts "ISO_IR100" in the attribute "Specific Character Set".
     *  Overwrites any existing value.
     *  @param outputDset - [out] The dataset to write to
-    *  @return EC_Normal if insertion is successfull, error code otherwise
+    *  @return EC_Normal if insertion is successful, error code otherwise
     */
    OFCondition insertLatin1(DcmDataset *outputDset);
 
@@ -231,17 +275,27 @@ protected:
 
 private:
 
-  /** Correctly inserts encapsulated pixel data.
+  /** Inserts encapsulated pixel data for the first frame
    *  @param dset [in] - The dataset to which we should add this.
    *  @param pixData [in] - The data to add.
    *  @param length [in] - The length of pixData.
    *  @param outputTS [in] - The output transfer syntax to be used
-   *  @return EC_Normal, if successfull, error otherwise.
+   *  @return EC_Normal, if successful, error otherwise.
    */
-  OFCondition insertEncapsulatedPixelData(DcmDataset* dset,
-                                          char *pixData,
-                                          Uint32 length,
-                                          const E_TransferSyntax& outputTS) const;
+  OFCondition insertEncapsulatedPixelDataFirstFrame(
+    DcmDataset* dset,
+    char *pixData,
+    Uint32 length,
+    E_TransferSyntax outputTS);
+
+  /** Inserts encapsulated pixel data for another frame
+   *  @param pixData [in] - The data to add.
+   *  @param length [in] - The length of pixData.
+   *  @return EC_Normal, if successful, error otherwise.
+   */
+  OFCondition insertEncapsulatedPixelDataNextFrame(
+    char *pixData,
+    Uint32 length);
 
   /* Attributes for writing DICOM dataset */
 
@@ -291,6 +345,60 @@ private:
   /// for attribute "Specific Character Set". Insertion takes place after
   /// loading (optional) template file.
   OFBool m_insertLatin1;
+
+  /// number of rows
+  Uint16 m_rows;
+
+  /// number of columns
+  Uint16 m_cols;
+
+  /// samples per pixel
+  Uint16 m_samplesPerPixel;
+
+  /// bits allocated
+  Uint16 m_bitsAllocated;
+
+  /// bits stored
+  Uint16 m_bitsStored;
+
+  /// high bit
+  Uint16 m_highBit;
+
+  /// pixel representation
+  Uint16 m_pixelRepresentation;
+
+  /// planar configuration
+  Uint16 m_planarConfiguration;
+
+  /// pixel aspect ratio, horizontal
+  Uint16 m_pixelAspectRatioH;
+
+  /// pixel aspect ratio, vertical
+  Uint16 m_pixelAspectRatioV;
+
+  /// frame length in bytes
+  Uint32 m_frameLength;
+
+  /// photometric interpretation
+  OFString m_photometricInterpretation;
+
+  /// compression ratio per frame accumulated in this variable
+  double m_compressionRatio;
+
+  /// flags for character set conversion
+  size_t m_conversionFlags;
+
+  /// buffer into which uncompressed pixel data is written
+  char *m_output_buffer;
+
+  /// offset list object used for the creation of encapsulated datasets
+  DcmOffsetList m_offsetList;
+
+  /// pixel sequence object used for the creation of encapsulated datasets
+  DcmPixelSequence *m_pixelSequence;
+
+  /// offset table object used for the creation of encapsulated datasets
+  DcmPixelItem *m_offsetTable;
 };
 
 #endif // I2D_H

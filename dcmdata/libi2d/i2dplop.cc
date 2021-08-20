@@ -69,7 +69,6 @@ OFCondition I2DOutputPlugOphthalmicPhotography::convert(DcmDataset &dataset) con
   else
     cond = makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Bits Allocated needs a value of 8 or 16 for conversion");
 
-  cond = insertMultiFrameAttribs(&dataset);
   return cond;
 }
 
@@ -126,19 +125,6 @@ OFString I2DOutputPlugOphthalmicPhotography::isValid(DcmDataset& dataset) const
   err += checkAndInventType2Attrib(DCM_DetectorType, &dataset);
 
   return err;
-}
-
-
-OFCondition I2DOutputPlugOphthalmicPhotography::insertMultiFrameAttribs(DcmDataset* targetDataset) const
-{
-  if (!targetDataset)
-    return EC_IllegalParameter;
-
-  // We only support single-frame objects so far
-  OFCondition cond = targetDataset->putAndInsertOFStringArray(DCM_NumberOfFrames, "1");
-  if (cond.good()) cond = targetDataset->putAndInsertOFStringArray(DCM_FrameTime, "0");
-  if (cond.good()) cond = targetDataset->putAndInsertTagKey(DCM_FrameIncrementPointer, DCM_FrameTime);
-  return cond;
 }
 
 
@@ -285,3 +271,27 @@ OFCondition I2DOutputPlugOphthalmicPhotography::handle16BitImage(DcmDataset *dat
   return cond;
 }
 
+
+OFBool I2DOutputPlugOphthalmicPhotography::supportsMultiframe() const
+{
+  return OFTrue;
+}
+
+
+OFCondition I2DOutputPlugOphthalmicPhotography::insertMultiFrameAttributes(
+  DcmDataset* targetDataset,
+  size_t numberOfFrames) const
+{
+  if ((!targetDataset) || (numberOfFrames == 0))
+    return EC_IllegalParameter;
+
+  char numFrames[30];
+  char frameTime[30];
+  size_t fTime = (numberOfFrames > 1) ? DCMTK_I2D_Default_Frame_Time : 0;
+  OFStandard::snprintf(numFrames, 30, "%lu", numberOfFrames);
+  OFStandard::snprintf(frameTime, 30, "%lu", fTime);
+  OFCondition cond = targetDataset->putAndInsertOFStringArray(DCM_NumberOfFrames, numFrames);
+  if (cond.good()) cond = targetDataset->putAndInsertOFStringArray(DCM_FrameTime, frameTime);
+  if (cond.good()) cond = targetDataset->putAndInsertTagKey(DCM_FrameIncrementPointer, DCM_FrameTime);
+  return cond;
+}
