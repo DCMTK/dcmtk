@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
 ################################################################################
@@ -21,6 +21,17 @@
 <file-format xmlns="http://dicom.offis.de/dcmtk">
 <meta-header xfer="1.2.840.10008.1.2.1" name="Little Endian Explicit"></meta-header>
 <data-set xfer="1.2.840.10008.1.2.1" name="Little Endian Explicit">
+
+  <!-- ===================================================================
+       The following attribute MUST be present and populated if any
+       specific character set is used. In order to prevent conversion
+       errors, the encoding of the XML file (specified in the first line)
+       and the DICOM encoding (specified here) should refer to the same
+       character set, at least for UTF-8 and Latin-1, the character sets
+       internally supported by the XML parser.
+       =================================================================== -->
+
+  <element tag="00008,0005" vr="CS" vm="1" name="SpecificCharacterSet">ISO_IR 100</element>
 
   <!-- ===================================================================
        The following attributes are Type 1 and MUST be populated to
@@ -73,7 +84,7 @@
   <element tag="0008,0050" vr="SH" vm="0" name="AccessionNumber">987654321</element>
   <element tag="0008,0070" vr="LO" vm="1" name="Manufacturer">Sample Manufacturer</element>
   <element tag="0008,0090" vr="PN" vm="0" name="ReferringPhysicianName">Smith^John</element>
-  <element tag="0010,0010" vr="PN" vm="1" name="PatientName">Doe^John</element>
+  <element tag="0010,0010" vr="PN" vm="1" name="PatientName">Müller^André</element>
   <element tag="0010,0020" vr="LO" vm="1" name="PatientID">12345678</element>
   <element tag="0010,0030" vr="DA" vm="1" name="PatientBirthDate">19500101</element>
   <element tag="0010,0040" vr="CS" vm="1" name="PatientSex">M</element>
