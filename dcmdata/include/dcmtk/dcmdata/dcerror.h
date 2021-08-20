@@ -179,6 +179,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonInlineBinar
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLParseError;
 /// XML validation failure
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLValidationFailure;
+/// SOP class mismatch
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SOPClassMismatch;
 
 //@}
 

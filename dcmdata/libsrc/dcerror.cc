@@ -81,6 +81,7 @@ makeOFConditionConst(EC_CannotWriteJsonNumber,           OFM_dcmdata, 55, OF_err
 makeOFConditionConst(EC_CannotWriteJsonInlineBinary,     OFM_dcmdata, 56, OF_error, "JSON InlineBinary encoding not supported for compressed pixel data" );
 makeOFConditionConst(EC_XMLParseError,                   OFM_dcmdata, 57, OF_error, "XML parse error" );
 makeOFConditionConst(EC_XMLValidationFailure,            OFM_dcmdata, 58, OF_error, "XML validation failure" );
+makeOFConditionConst(EC_SOPClassMismatch,                OFM_dcmdata, 59, OF_error, "SOP class mismatch" );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;
