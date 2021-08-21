@@ -467,7 +467,7 @@ static OFCondition startConversion(
     delete inputPlug;
     inputPlug = createInputPlugin(inForm);
     inputPlug->setImageFile(*if_iter++);
-    cond = i2d.convertNextFrame(inputPlug, ++frameNum, resultObject);
+    cond = i2d.convertNextFrame(inputPlug, ++frameNum);
   }
 
   // update offset table if image type is encapsulated

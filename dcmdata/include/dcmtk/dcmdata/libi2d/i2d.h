@@ -69,13 +69,11 @@ public:
    *  @param inputPlug - [in] The input plugin to read pixel data
    *  @param frameNumber - [in] The number of the current frame, must be larger than 1
    *    and smaller or equal to the numberOfFrames value passed to convertFirstFrame().
-   *  @param dset - [in/out] The DICOM object resulting from the conversion
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition convertNextFrame(
     I2DImgSource *inputPlug,
-    size_t frameNumber,
-    DcmDataset *dset);
+    size_t frameNumber);
 
   /** Update the offset table in the case of an encapsulated image
    */
@@ -223,13 +221,11 @@ protected:
    *  @param imageSource - [in] The input plugin that actually reads the pixel data
    *  @param frameNumber - [in] The number of the current frame, must be larger than 1
    *    and smaller or equal to the numberOfFrames value passed to convertFirstFrame().
-   *  @param dset - [in/out] The DICOM object resulting from the conversion
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition readAndInsertPixelDataNextFrame(
     I2DImgSource* imageSource,
-    size_t frameNumber,
-    DcmDataset* dset);
+    size_t frameNumber);
 
   /** Do some completeness / validity checks. Should be called when
    *  dataset is completed and is about to be saved.

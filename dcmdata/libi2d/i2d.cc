@@ -203,7 +203,7 @@ OFCondition Image2Dcm::updateLossyCompressionInfo(
     if (srcIsLossy)
     {
       double compressionRatio = m_compressionRatio;
-      if (numberOfFrames > 0) compressionRatio = m_compressionRatio / numberOfFrames;
+      if (numberOfFrames > 0) compressionRatio = m_compressionRatio / OFstatic_cast(double, numberOfFrames);
       cond = dset->putAndInsertOFStringArray(DCM_LossyImageCompression, "01");
       if (cond.good() && !comprMethod.empty())
         cond = dset->putAndInsertOFStringArray(DCM_LossyImageCompressionMethod, comprMethod);
@@ -223,16 +223,15 @@ OFCondition Image2Dcm::updateLossyCompressionInfo(
 
 OFCondition Image2Dcm::convertNextFrame(
   I2DImgSource *inputPlug,
-  size_t frameNumber,
-  DcmDataset *dset)
+  size_t frameNumber)
 {
-  if (!inputPlug || !dset || (frameNumber < 2))
+  if (!inputPlug || (frameNumber < 2))
     return EC_IllegalParameter;
 
   DCMDATA_LIBI2D_DEBUG("Image2Dcm: Starting conversion of file: " << inputPlug->getImageFile());
 
   // Read and insert pixel data
-  return readAndInsertPixelDataNextFrame(inputPlug, frameNumber, dset);
+  return readAndInsertPixelDataNextFrame(inputPlug, frameNumber);
 }
 
 
@@ -632,9 +631,10 @@ OFCondition Image2Dcm::readAndInsertPixelDataFirstFrame(
       return cond;
     }
 
-    Uint16 *array = NULL;
     DCMDATA_LIBI2D_DEBUG("Image2Dcm: frame size=" << m_frameLength << ", number of frames=" << numberOfFrames << ", length of pixel data array=" << ((m_frameLength * numberOfFrames + 1)/2)*2);
-    cond = pixelData->createUint16Array((m_frameLength * numberOfFrames + 1)/2, array);
+    Uint16 *array = NULL;
+    size_t arraySize = (m_frameLength * numberOfFrames + 1)/2;
+    cond = pixelData->createUint16Array(OFstatic_cast(Uint32, arraySize), array);
     if (cond.bad())
     {
       delete[] pixData;
@@ -699,8 +699,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataFirstFrame(
 
 OFCondition Image2Dcm::readAndInsertPixelDataNextFrame(
   I2DImgSource* imageSource,
-  size_t frameNumber,
-  DcmDataset* dset)
+  size_t frameNumber)
 {
 
   Uint16 next_pixelAspectRatioH = 1;
