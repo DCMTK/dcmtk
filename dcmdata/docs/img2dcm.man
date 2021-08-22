@@ -9,7 +9,7 @@
 \section img2dcm_synopsis SYNOPSIS
 
 \verbatim
-img2dcm [options] imgfile-in dcmfile-out
+img2dcm [options] imgfile-in... dcmfile-out
 \endverbatim
 
 \section img2dcm_description DESCRIPTION
@@ -24,9 +24,9 @@ dataset.
 
 \section img2dcm_parameters PARAMETERS
 \verbatim
-imgfile-in... image file(s) to be imported
+imgfile-in   image input filename
 
-dcmfile-out   DICOM output file
+dcmfile-out  DICOM output filename
 \endverbatim
 
 \section img2dcm_options OPTIONS
@@ -311,7 +311,7 @@ Rows, Columns etc.) are not copied but replaced by \b img2dcm during conversion.
 
 When an input template is loaded using \e --dataset-from or \e --dataset-from-xml,
 the specific character set of that template is used for the generated DICOM file.
-If the \e --study-from or \e --series-from options are used additionally, 
+If the \e --study-from or \e --series-from options are used additionally,
 img2dcm will try to convert the character set of these attributes to that
 of the template, and will report an error if that is not possible.
 If the \e --study-from or \e --series-from options are used without a template,
@@ -384,7 +384,7 @@ such data. JFIF information is \b always removed by \b img2dcm.
 \b img2dcm supports BMP as input format. However, so far only the most common
 BMP images are supported.  In particular, BMP images which use bit fields or
 run length encoding will be rejected. Such images are uncommon. Input images
-will either be converted into a DICOM image with RGB color model and a bit 
+will either be converted into a DICOM image with RGB color model and a bit
 depth of 24, or into an image with MONOCHROME2 color model an 8 bits per pixel.
 There are no specific options for fine-tuning BMP format conversion.
 

@@ -152,8 +152,8 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--remove-com",          "-rc",     "remove COM segment");
 #ifdef WITH_LIBXML
     cmd.addSubGroup("XML validation:");
-      cmd.addOption("--validate-document",   "+Vd",    "validate XML document against DTD");
-      cmd.addOption("--check-namespace",     "+Vn",    "check XML namespace in document root");
+      cmd.addOption("--validate-document",   "+Vd",     "validate XML document against DTD");
+      cmd.addOption("--check-namespace",     "+Vn",     "check XML namespace in document root");
 #endif
 
   cmd.addGroup("processing options:", LONGCOL, SHORTCOL + 2);
@@ -165,8 +165,8 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--invent-type1",        "+i1",     "invent missing type 1 attributes (default)\n(only with --do-checks)");
       cmd.addOption("--no-type1-invent",     "-i1",     "do not invent missing type 1 attributes\n(only with --do-checks)");
     cmd.addSubGroup("character set conversion of study/series file:");
-      cmd.addOption("--transliterate",       "-Ct",    "try to approximate characters that cannot be\nrepresented through similar looking characters");
-      cmd.addOption("--discard-illegal",     "-Cd",    "discard characters that cannot be represented\nin destination character set");
+      cmd.addOption("--transliterate",       "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters");
+      cmd.addOption("--discard-illegal",     "-Cd",     "discard characters that cannot be represented\nin destination character set");
     cmd.addSubGroup("other processing options:");
       cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
                                                         "add further attribute");
@@ -360,13 +360,9 @@ static OFCondition startConversion(
 
   size_t conversionFlags = 0;
   if (cmd.findOption("--transliterate"))
-  {
     conversionFlags |= DCMTypes::CF_transliterate;
-  }
   if (cmd.findOption("--discard-illegal"))
-  {
     conversionFlags |= DCMTypes::CF_discardIllegal;
-  }
   i2d.setConversionFlags(conversionFlags);
 
   // evaluate validity checking options
