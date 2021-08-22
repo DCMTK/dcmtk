@@ -713,7 +713,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataNextFrame(
   Uint16 next_pixelRepresentation = 0;
   Uint16 next_planarConfiguration = 0;
   Uint32 next_frameLength = 0;
-  OFString next_photometricInterpretation = 0;
+  OFString next_photometricInterpretation;
 
   char *pixData = NULL;
   E_TransferSyntax outputTS;
