@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1059,7 +1059,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
      *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
-     *  @param value string value to be set for the new element (might be empty or NULL)
+     *  @param value string value to be set for the new element (might be empty or NULL).  The format
+     *    of the string value is specified by the putString() method of the corresponding VR class.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -1073,7 +1074,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  Please note that since the length of the string has to be specified explicitly, the string
      *  can contain more than one NULL byte.
      *  @param tag DICOM tag specifying the attribute to be created
-     *  @param value string value to be set for the new element (might be empty or NULL)
+     *  @param value string value to be set for the new element (might be empty or NULL).  The format
+     *    of the string value is specified by the putString() method of the corresponding VR class.
      *  @param length length of the string (number of characters without the trailing NULL byte)
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
@@ -1087,7 +1089,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
      *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
-     *  @param value value to be set for the new element (might be empty)
+     *  @param value string value to be set for the new element (might be empty).  The format of the
+     *    string value is specified by the putOFStringArray() method of the corresponding VR class.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
