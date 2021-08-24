@@ -1058,6 +1058,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
      *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
+     *  @note For AT VR the string format is "(1234,5678)".
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value string value to be set for the new element (might be empty or NULL)
      *  @param replaceOld flag indicating whether to replace an existing element or not
@@ -1072,6 +1073,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  Please note that since the length of the string has to be specified explicitly, the string
      *  can contain more than one NULL byte.
+     *  @note For AT VR the string format is "(1234,5678)".
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value string value to be set for the new element (might be empty or NULL)
      *  @param length length of the string (number of characters without the trailing NULL byte)
@@ -1086,6 +1088,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
      *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
+     *  @note For AT VR the string format is "(1234,5678)".
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be empty)
      *  @param replaceOld flag indicating whether to replace an existing element or not
