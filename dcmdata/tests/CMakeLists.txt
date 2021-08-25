@@ -1,5 +1,33 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(dcmdata_tests tests tpread ti2dbmp tchval tpath tvrdatim telemlen tparser tdict tvrds tvrfd tvrpn tvrui tvrol tvrov tvrsv tvruv tstrval tspchrs tparent tfilter tvrcomp tmatch tnewdcme tgenuid tsequen titem)
+DCMTK_ADD_EXECUTABLE(dcmdata_tests
+  tchval.cc
+  tdict.cc
+  telemlen.cc
+  tests.cc
+  tfilter.cc
+  tgenuid.cc
+  ti2dbmp.cc
+  titem.cc
+  tmatch.cc
+  tnewdcme.cc
+  tparent.cc
+  tparser.cc
+  tpath.cc
+  tpread.cc
+  tsequen.cc
+  tspchrs.cc
+  tstrval.cc
+  tvrcomp.cc
+  tvrdatim.cc
+  tvrds.cc
+  tvrfd.cc
+  tvrol.cc
+  tvrov.cc
+  tvrpn.cc
+  tvrsv.cc
+  tvrui.cc
+  tvruv.cc
+)
 
 # make sure executables are linked to the corresponding libraries
 DCMTK_TARGET_LINK_MODULES(dcmdata_tests i2d dcmdata oflog ofstd)

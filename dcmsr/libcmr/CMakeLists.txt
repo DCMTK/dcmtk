@@ -1,4 +1,44 @@
 # create library from source files
-DCMTK_ADD_LIBRARY(cmr init logger srnumvl tid300 tid1001 tid1204 tid1411 tid1419m tid1500 tid1501 tid15def tid1600 tid4019 cid11 cid29 cid29e cid42 cid100 cid244 cid244e cid247 cid4020 cid4021 cid4031 cid4031e cid5000 cid5001 cid6147 cid7021 cid7181 cid7445 cid7452 cid7453 cid7464 cid7469 cid10013 cid10013e cid10033 cid10033e)
+DCMTK_ADD_LIBRARY(cmr
+  cid100.cc
+  cid10013.cc
+  cid10013e.cc
+  cid10033.cc
+  cid10033e.cc
+  cid11.cc
+  cid244.cc
+  cid244e.cc
+  cid247.cc
+  cid29.cc
+  cid29e.cc
+  cid4020.cc
+  cid4021.cc
+  cid4031.cc
+  cid4031e.cc
+  cid42.cc
+  cid5000.cc
+  cid5001.cc
+  cid6147.cc
+  cid7021.cc
+  cid7181.cc
+  cid7445.cc
+  cid7452.cc
+  cid7453.cc
+  cid7464.cc
+  cid7469.cc
+  init.cc
+  logger.cc
+  srnumvl.cc
+  tid1001.cc
+  tid1204.cc
+  tid1411.cc
+  tid1419m.cc
+  tid1500.cc
+  tid1501.cc
+  tid15def.cc
+  tid1600.cc
+  tid300.cc
+  tid4019.cc
+)
 
 DCMTK_TARGET_LINK_MODULES(cmr dcmsr)

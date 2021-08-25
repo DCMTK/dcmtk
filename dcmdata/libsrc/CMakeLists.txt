@@ -4,15 +4,99 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories(${LIBXML_INCDIR})
 
 DCMTK_ADD_LIBRARY(dcmdata
-  cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcdatutl dcddirif dcdicdir dcdicent
-  dcdict dcdictbi dcdirrec dcelem dcencdoc dcerror dcfilefo dcfilter dchashdi dcistrma
-  dcistrmb dcistrmf dcistrmz dcitem dcjson dclist dcmatch dcmetinf dcobject dcostrma
-  dcostrmb dcostrmf dcostrmz dcpath dcpcache dcpixel dcpixseq dcpxitem dcrleccd
-  dcrlecce dcrlecp dcrledrg dcrleerg dcrlerp dcsequen dcspchrs dcstack dcswap dctag
-  dctagkey dctypes dcuid dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt
-  dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrod dcvrof dcvrol dcvrov dcvrpn
-  dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrsv dcvrtm dcvruc dcvrui dcvrul dcvrulup
-  dcvrur dcvrus dcvrut dcvruv dcwcache dcxfer vrscan vrscanl dcistrms dcostrms xml2dcm)
+  cmdlnarg.cc
+  dcbytstr.cc
+  dcchrstr.cc
+  dccodec.cc
+  dcdatset.cc
+  dcdatutl.cc
+  dcddirif.cc
+  dcdicdir.cc
+  dcdicent.cc
+  dcdict.cc
+  dcdictbi.cc
+  dcdirrec.cc
+  dcelem.cc
+  dcencdoc.cc
+  dcerror.cc
+  dcfilefo.cc
+  dcfilter.cc
+  dchashdi.cc
+  dcistrma.cc
+  dcistrmb.cc
+  dcistrmf.cc
+  dcistrms.cc
+  dcistrmz.cc
+  dcitem.cc
+  dcjson.cc
+  dclist.cc
+  dcmatch.cc
+  dcmetinf.cc
+  dcobject.cc
+  dcostrma.cc
+  dcostrmb.cc
+  dcostrmf.cc
+  dcostrms.cc
+  dcostrmz.cc
+  dcpath.cc
+  dcpcache.cc
+  dcpixel.cc
+  dcpixseq.cc
+  dcpxitem.cc
+  dcrleccd.cc
+  dcrlecce.cc
+  dcrlecp.cc
+  dcrledrg.cc
+  dcrleerg.cc
+  dcrlerp.cc
+  dcsequen.cc
+  dcspchrs.cc
+  dcstack.cc
+  dcswap.cc
+  dctag.cc
+  dctagkey.cc
+  dctypes.cc
+  dcuid.cc
+  dcvr.cc
+  dcvrae.cc
+  dcvras.cc
+  dcvrat.cc
+  dcvrcs.cc
+  dcvrda.cc
+  dcvrds.cc
+  dcvrdt.cc
+  dcvrfd.cc
+  dcvrfl.cc
+  dcvris.cc
+  dcvrlo.cc
+  dcvrlt.cc
+  dcvrobow.cc
+  dcvrod.cc
+  dcvrof.cc
+  dcvrol.cc
+  dcvrov.cc
+  dcvrpn.cc
+  dcvrpobw.cc
+  dcvrsh.cc
+  dcvrsl.cc
+  dcvrss.cc
+  dcvrst.cc
+  dcvrsv.cc
+  dcvrtm.cc
+  dcvruc.cc
+  dcvrui.cc
+  dcvrul.cc
+  dcvrulup.cc
+  dcvrur.cc
+  dcvrus.cc
+  dcvrut.cc
+  dcvruv.cc
+  dcwcache.cc
+  dcxfer.cc
+  vrscan.cc
+  vrscanl.c
+  xml2dcm.cc
+)
 
 DCMTK_TARGET_LINK_MODULES(dcmdata ofstd oflog)
 DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS} ${LIBXML_LIBS})
@@ -24,8 +108,26 @@ set(DICTIONARIES "${DICOMDIC}" "${PRIVATEDIC}")
 
 if(BUILD_APPS)
   # don't use DCMTK_ADD_EXECUTABLE() since we don't want to install the files
-  add_executable(mkdictbi EXCLUDE_FROM_ALL mkdictbi dctagkey dcdicent dcdict dcvr dchashdi cmdlnarg dctypes)
-  add_executable(mkdeftag EXCLUDE_FROM_ALL mkdeftag dctagkey dcdicent dcdict dcvr dchashdi cmdlnarg dctypes)
+  add_executable(mkdictbi EXCLUDE_FROM_ALL
+    cmdlnarg.cc
+    dcdicent.cc
+    dcdict.cc
+    dchashdi.cc
+    dctagkey.cc
+    dctypes.cc
+    dcvr.cc
+    mkdictbi.cc
+  )
+  add_executable(mkdeftag EXCLUDE_FROM_ALL
+    cmdlnarg.cc
+    dcdicent.cc
+    dcdict.cc
+    dchashdi.cc
+    dctagkey.cc
+    dctypes.cc
+    dcvr.cc
+    mkdeftag.cc
+  )
   # workaround for Visual Studio to disable dll storage specifiers when linking directly into the executable.
   # this is needed since the built-in dictionary code is created by the tools below and thus those tools
   # statically link the few required dcmdata source files instead of linking to dcmdata as a whole.

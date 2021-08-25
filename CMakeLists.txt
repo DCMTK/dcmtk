@@ -15,12 +15,6 @@ else()
 endif()
 cmake_policy(VERSION "${DCMTK_CMAKE_POLICY_VERSION}")
 
-if (POLICY CMP0115)
-    # suppress warnings about missing filename extensions caused by policy
-    # CMP0115, introduced with CMake 3.20
-    cmake_policy(SET CMP0115 OLD)
-endif()
-
 # Declare project
 project(DCMTK)
 
