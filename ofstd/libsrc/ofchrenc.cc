@@ -297,6 +297,9 @@ class OFCharacterEncoding::Implementation
 #ifdef WITH_LIBICONV
 #include <localcharset.h>
 #endif
+#ifdef __GLIBC__
+#include <langinfo.h> // nl_langinfo / CODESET
+#endif
 
 #define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(iconv_t, -1)
 #define CONVERSION_ERROR       OFstatic_cast(size_t, -1)
@@ -354,6 +357,11 @@ class OFCharacterEncoding::Implementation
         // basically, the function below should always return a non-empty string
         // but older versions of libiconv might return NULL in certain cases
         return OFSTRING_GUARD(::locale_charset());
+#elif defined(__GLIBC__)
+        const char *oldlocale = setlocale(LC_ALL, "");
+        const char *codeset = nl_langinfo (CODESET);
+        setlocale(LC_ALL, oldlocale);
+        return OFSTRING_GUARD(codeset);
 #else
         return OFString();
 #endif
