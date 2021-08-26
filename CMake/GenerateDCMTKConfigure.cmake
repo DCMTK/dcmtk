@@ -370,6 +370,10 @@ endif()
 
   set(HEADERS)
 
+  if(HAVE_IEEEFP_H)
+    set(HEADERS ${HEADERS} ieeefp.h)
+  endif()
+
   if(HAVE_IO_H)
     set(HEADERS ${HEADERS} io.h)
   endif()
@@ -666,6 +670,7 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS(nanosleep "${HEADERS}" HAVE_PROTOTYPE_NANOSLEEP)
   CHECK_FUNCTIONWITHHEADER_EXISTS("&passwd::pw_gecos" "${HEADERS}" HAVE_PASSWD_GECOS)
   CHECK_FUNCTIONWITHHEADER_EXISTS("TryAcquireSRWLockShared((PSRWLOCK)0)" "${HEADERS}" HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED)
+  CHECK_FUNCTIONWITHHEADER_EXISTS("fp_except_t definition" "${HEADERS}" HAVE_DECLARATION_FP_EXCEPT_T)
 
   # Check for some type definitions needed by JasPer and defines them if necessary
   # Even if not functions but types are looked for, the script works fine.

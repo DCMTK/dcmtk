@@ -415,6 +415,10 @@ else()   # ... for non-Windows systems
   elseif(CMAKE_SYSTEM_NAME MATCHES "NetBSD")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_NETBSD_SOURCE -D_DEFAULT_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_NETBSD_SOURCE -D_DEFAULT_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L")
+  # Compiler flags for DragonFly BSD
+  elseif(CMAKE_SYSTEM_NAME MATCHES "DragonFly")
+    # On DragonFly BSD, we don't set any of the feature macros because they are not needed and
+    # actually cause problems such as strlcpy() not being declared in <cstring>.
   # Solaris, FreeBSD and newer versions of OpenBSD fail with these flags
   elseif(NOT CMAKE_SYSTEM_NAME MATCHES "SunOS" AND NOT CMAKE_SYSTEM_NAME MATCHES "FreeBSD" AND (NOT CMAKE_SYSTEM_NAME MATCHES "OpenBSD" OR CMAKE_SYSTEM_VERSION VERSION_LESS 4))
     # Compiler flags for all other non-Windows systems

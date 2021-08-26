@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2019, OFFIS e.V.
+ *  Copyright (C) 2014-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -342,7 +342,11 @@ static void provoke_snan()
     feenableexcept( FE_INVALID );
 #elif defined(HAVE_IEEEFP_H) && !defined(__CYGWIN__)
     // Cygwin unfortunately seems to have <ieeefp.h> but no implementation of fgetmask/fpsetmask
+#ifdef HAVE_DECLARATION_FP_EXCEPT_T
+    fp_except_t cw = fpgetmask();
+#else
     fp_except cw = fpgetmask();
+#endif
 
 #ifdef FP_X_DX
     // on some systems, the devide-by-zero flag is called FP_X_DX
@@ -384,7 +388,11 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
     fedisableexcept( FE_INVALID );
 #elif defined(HAVE_IEEEFP_H) && !defined(__CYGWIN__)
     // Cygwin unfortunately seems to have <ieeefp.h> but no implementation of fgetmask/fpsetmask
+#ifdef HAVE_DECLARATION_FP_EXCEPT_T
+    fp_except_t cw = fpgetmask();
+#else
     fp_except cw = fpgetmask();
+#endif
 
 #ifdef FP_X_DX
     // on some systems, the devide-by-zero flag is called FP_X_DX

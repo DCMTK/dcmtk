@@ -107,6 +107,9 @@
 /* Define if "const" is supported by the C compiler */
 #define HAVE_C_CONST 1
 
+/* Define if your system has a declaration for fp_except_t in ieeefp.h */
+#cmakedefine HAVE_DECLARATION_FP_EXCEPT_T @HAVE_DECLARATION_FP_EXCEPT_T@
+
 /* Define if your system has a declaration for socklen_t in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_DECLARATION_SOCKLEN_T @HAVE_DECLARATION_SOCKLEN_T@
