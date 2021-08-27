@@ -33,6 +33,10 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofstream.h"
 
+#ifdef HAVE_IEEEFP_H
+#include <ieeefp.h>
+#endif
+
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
