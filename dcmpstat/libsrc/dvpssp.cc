@@ -1381,8 +1381,15 @@ OFCondition DVPSStoredPrint::addPresentationLUTReference(DcmItem& dset)
   DcmElement *delem=NULL;
   OFCondition result = EC_Normal;
 
-  ADD_TO_DATASET(DcmUnsignedShort, illumination)
-  ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
+  if (illumination.getLength() > 0)
+  {
+    ADD_TO_DATASET(DcmUnsignedShort, illumination)
+  }
+
+  if (reflectedAmbientLight.getLength() > 0)
+  {
+    ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
+  }
 
   if (presentationLUTInstanceUID.size() > 0)
   {
