@@ -664,7 +664,7 @@ constructSubItem(char *name, unsigned char type,
     if (strlen(name) < 1 || strlen(name) > 64)
     {
         char buf[1024];
-        sprintf(buf,"Illegal service parameter: %s", name);
+        OFStandard::snprintf(buf, 1024, "Illegal service parameter: %s", name);
         return makeDcmnetCondition(DULC_ILLEGALSERVICEPARAMETER, OF_error, buf);
     }
     subItem->type = type;
@@ -1136,7 +1136,7 @@ constructSCUSCPSubItem(char *name, unsigned char type, unsigned char scuRole,
     if (strlen(name) < 1 || strlen(name) > 64)
     {
         char buf[1024];
-        sprintf(buf,"Illegal service parameter: %s", name);
+        OFStandard::snprintf(buf, 1024, "Illegal service parameter: %s", name);
         return makeDcmnetCondition(DULC_ILLEGALSERVICEPARAMETER, OF_error, buf);
     }
 
