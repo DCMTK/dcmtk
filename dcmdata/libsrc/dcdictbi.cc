@@ -13,7 +13,7 @@
 */
 
 #include "dcmtk/dcmdata/dcdict.h"
-#ifdef ENABLE_BUILTIN_DICTIONARY
+#if DCM_DICT_DEFAULT == DCM_DICT_DEFAULT_USE_BUILTIN
 #include "dcmtk/dcmdata/dcdicent.h"
 
 struct DBI_SimpleEntry {
@@ -31245,7 +31245,7 @@ DcmDataDictionary::loadBuiltinDictionary()
 }
 
 
-#else // WITH_BUILTIN_DICTIONARY
+#else // DCM_DICT_DEFAULT == DCM_DICT_DEFAULT_USE_BUILTIN
 void
 DcmDataDictionary::loadBuiltinDictionary()
 {
@@ -31253,10 +31253,11 @@ DcmDataDictionary::loadBuiltinDictionary()
  ** Empty Stub.
  **
  ** We don't want a populated built-in data dictionary. In order to enable it,
- ** define WITH_BUILTIN_DICTIONARY. To re-create the builtin dictionary from
- ** a textfile like dicom.dic, use dcmdata/libsrc/mkdictbi.
+ ** define DCM_DICT_DEFAULT == DCM_DICT_DEFAULT_USE_BUILTIN (1).
+ ** To re-create the builtin dictionary from a textfile like dicom.dic,
+ ** use dcmdata/libsrc/mkdictbi.
 */
 }
 
-#endif // WITH_BUILTIN_DICTIONARY
+#endif // DCM_DICT_DEFAULT == DCM_DICT_DEFAULT_USE_BUILTIN
 

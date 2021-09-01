@@ -3,18 +3,21 @@ DICOM DATA DICTIONARY IN DCMTK
 -----------------------------------------------------------------------------
 
 In DICOM, the Data Dictionary (part 6 of the DICOM standard) stores for all
-tags their respective VR, VM, attribute name and other information.  This
+attribute tags their respective VR, VM, name and other information.  This
 information must also be made available in DCMTK.  This is accomplished
 through a global data dictionary class.
 
 The global data dictionary is loaded within a C++ constructor into the global
 DcmDataDictionary class instance called dcmDataDict once it is accessed for
-the first time from the code.  The dictionary content is populated by three
-different approaches:  Either the content (tags, VR, ...) can be compiled
-into the dictionary code, or the dictionary is filled by loading a text file
-on startup from a pre-defined file path (also called an "external" data
-dictionary).  Lastly, DCMTK will load one or more additional external
-dictionaries from the path set in the environment variable DCMDICTPATH, if set.
+the first time from the code.  The initial dictionary content is populated by
+two different approaches:
+
+1. builtin: The content (tags, VR, ...) is compiled into the dictionary code.
+2. external: The dictionary is filled by loading a default text file on
+   startup from a pre-defined file path.
+
+It is also possible to not load any default dictionary on startup at all
+(option "disable" or setting "none", see below).
 
 The built-in approach offers the advantage that a binary will not have to
 load any information from a separate file, which may get lost or used in an
@@ -27,11 +30,14 @@ Mac OS X, etc.) while a built-in dictionary is used on Windows systems.  How
 these defaults can be changed or how both approaches can even be combined is
 further explained below.
 
+There is also an option to evaluate the environment variable DCMDICTPATH and
+to read dictionaries defined therein, see below for details.
+
 -----------------------------------------------------------------------------
 DICTIONARY DEFAULT: AUTOCONF ON POSIX SYSTEMS
 -----------------------------------------------------------------------------
 
-By default on a Posix system the global data dictionary will attempt to load
+By default, on a Posix system the global data dictionary will attempt to load
 the data dictionary from an external file.  The location is pre-configured
 to $DCMTK_DAT_DIR/dicom.dic where $DCMTK_DAT_DIR is DCMTK's data installation
 directory chosen using configure's --datadir option (default value: /dcmtk).
@@ -44,64 +50,44 @@ thus is available to the dictionary code that includes osconfig.h.
 DICTIONARY DEFAULT: CMAKE ON WINDOWS AND POSIX SYSTEMS
 -----------------------------------------------------------------------------
 
-On Windows, the default behavior is to compile a fully-populated DICOM
-dictionary as global data dictionary into the dcmdata library.  Thus, it is
-not required to load an external data dictionary from a file.  However,
-usage of external dictionaries is still possible on Windows by setting the
-environment variable DCMDICTPATH accordingly (see further details below).
+On Windows, the default behavior is to compile a fully-populated built-in data
+dictionary as a global data dictionary into the dcmdata library.  Thus, it is
+not required to load an external data dictionary from a file.
 
-On Posix systems, the default setting is to load the data dictionary from an
-external file (as described in the above section on Autoconf).
+On Posix systems, the default setting when using CMake is to load the data
+dictionary from an external file (as described in the above section on
+Autoconf).
 
 -----------------------------------------------------------------------------
 CHANGING DICTIONARY DEFAULTS
 -----------------------------------------------------------------------------
 
 Autoconf as well as CMake provide options to change their default dictionary
-behavior.  For Autoconf, configure offers the options:
+behavior.  For Autoconf, there are two different options.  The first one is:
 
-  --enable-external-dict    enable loading of external dictionary (default)
-  --disable-external-dict   don't load external dictionary
-  --enable-builtin-dict     enable loading of built-in dictionary (default)
-  --disable-builtin-dict    don't load built-in dictionary
+  --enable-default-dict=TYPE
 
-They can be used to toggle both dictionaries on and off: If the external
-dictionary is turned off, it is not tried to load it from any default
-location.
+Possible values for TYPE are:
 
-When building with CMake, the related options are called
+  "external": Compile with external default dictionary
+  "builtin" : Compile with built-in default dictionary
 
-  - DCMTK_ENABLE_EXTERNAL_DICTIONARY
-  - DCMTK_ENABLE_BUILTIN_DICTIONARY
+With the second option, the default dictionary can be disabled:
 
------------------------------------------------------------------------------
-DICTIONARY LOAD ORDER AND USING MULTIPLE DICTIONARIES
------------------------------------------------------------------------------
+  --disable-default-dict
 
-The built-in dictionary, if enabled, is always loaded first on startup,
-followed by any external dictionary.  Data dictionary entries loaded later in
-the load sequence override entries loaded earlier.
+When building with CMake, the related option is:
 
-Note that most of the time (no matter whether using Autoconf or CMake) it
-makes sense to enable only the built-in dictionary or only the external
-dictionary.  If both external and built-in version are enabled, the global
-data dictionary is populated first with the compiled-in data, and afterwards
-the external dictionary is loaded.  If the latter is the one shipped with
-DCMTK (dicom.dic) then the external dictionary provides no extra information
-since it contains exactly the same data as the built-in one but only takes
-time for loading.  Thus it only makes sense to enable both options if the
-external dictionary is modified to include (only) additional information not
-available in the built-in dictionary.
+  - DCMTK_DEFAULT_DICT
 
-If the user disables both options, no dictionary will be loaded by default
-on startup.  However, a dictionary can be defined using the DCMDICTPATH
-environment variable (see below).  If DCMDICTPATH is used, the default
-external dictionary will not be loaded at all.
+Possible values for this option are:
 
-Application programs should check that a data dictionary has been loaded
-before using the functionality of the dcmdata library.  The absence of
-a data dictionary is likely to cause unexpected behavior (e.g. unknown
-attributes will be encoded using VR=UN).
+  "external": Compile with external default dictionary
+  "builtin" : Compile with built-in default dictionary
+  "none"    : Compile without any default dictionary (same as "disable")
+
+That means, both Autoconf and CMake provide the same functionality.  On Posix
+systems "external" is the default value, while on Windows it is "builtin".
 
 -----------------------------------------------------------------------------
 CUSTOM EXTERNAL DICTIONARIES THROUGH ENVIRONMENT VARIABLE "DCMDICTPATH"
@@ -109,23 +95,26 @@ CUSTOM EXTERNAL DICTIONARIES THROUGH ENVIRONMENT VARIABLE "DCMDICTPATH"
 
 Sometimes it makes sense to change the dictionary that should be loaded
 without recompiling the source code.  This can be done either by modifying
-the dicom.dic that is already loaded, or, by specifying a different location
-in an environment variable that is evaluated on DCMTK startup.  That
-environment variable is called "DCMDICTPATH" and is considered on Windows
-and Posix platforms.  If DCMDICTPATH is not set, the behavior described in
-the sections above takes place (built-in and/or external dictionary from
-default path is loaded).
+the dicom.dic that is already loaded (if using 'external' standard dictionary)
+or by specifying a different location in an environment variable that is
+evaluated on DCMTK startup.  This environment variable is called "DCMDICTPATH"
+and can be used on Windows and Posix systems.
 
+If DCMDICTPATH is not set, the behavior described in the sections above takes
+place (built-in or external dictionary from default path is loaded).
 Otherwise, the file provided in the environment variable DCMDICTPATH is loaded
-and any default external dictionary is ignored (!).  However, note that the
-built-in dictionary (if configured) will be always loaded.
+and any default external dictionary is ignored (!).  Note, however, that the
+built-in dictionary (if configured) is always loaded.
 
 In order to set DCMDICTPATH on Unix, the csh shell command
 
   setenv DCMDICTPATH $HOME/dicom.dic
 
 would cause all applications using the dcmdata library to load the data
-dictionary dicom.dic from the users home directory.
+dictionary dicom.dic from the user's home directory.  When using the bash,
+the command is:
+
+  export DCMDICTPATH=$HOME/dicom.dic
 
 For Windows, the call
 
@@ -134,19 +123,70 @@ For Windows, the call
 will cause all applications using the dcmdata library to load the data
 dictionary dicom.dic from the main directory on drive C.
 
+It is possible to completely disable the evaluation of DCMDICTPATH (e.g. for
+security reasons).  The related configure options controlling this behavior
+are the following:
+
+  --enable-dcmdictpath (default)
+  --disable-dcmdictpath
+
+When building with CMake, the related option is:
+
+  - DCMTK_USE_DCMDICTPATH (on/off, default: on)
+
+By default, DCMDICTPATH evaluation is enabled on both on Windows and Posix
+systems.
+
+-----------------------------------------------------------------------------
+DICTIONARY LOAD ORDER AND USING MULTIPLE DICTIONARIES
+-----------------------------------------------------------------------------
+
+The load behavior is slightly different for built-in and external default
+dictionaries:
+
+If the built-in dictionary is enabled, it will be loaded first on startup.
+DCMTK then checks whether DCMDICTPATH should be evaluated (see above) and, if
+it is set and provides a non-empty value, DCMTK will load all additional
+dictionaries on top of the built-in default dictionary.
+
+If instead the external default dictionary is enabled and DCMDICTPATH
+evaluation is turned off, the external default dictionary will be loaded.
+
+However, if DCMDICTPATH evaluation is enabled and the environment variable
+provides a (non-empty) value, DCMTK will load the dictionary denoted by
+DCMDICTPATH and will not load the external default dictionary at all.
+
+It is not possible to enable both external and built-in default dictionary at
+the same time.
+
+If the user decides to use no default dictionary at all by defining
+(DCMTK_DEFAULT_DICT=none), it is still possible to define a dictionary by
+using the DCMDICTPATH mechanism.  If DCMTK_USE_DCMDICTPATH is turned off
+as well, no dictionary is loaded on startup and the user must populate
+the dictionary using his own code during runtime.
+
+Application programs should check that a data dictionary has been loaded
+before using the functionality of the dcmdata library.  The absence of
+a data dictionary is likely to cause unexpected behavior (e.g. unknown
+attributes will be encoded using VR=UN).
+
 -----------------------------------------------------------------------------
 USING MORE THAN ONE EXTERNAL DICTIONARY
 -----------------------------------------------------------------------------
 
 The DCMDICTPATH environment variable can even refer to several data
 dictionaries separated by colons (":") on Unix systems, or semicolons (";")
-on Windows systems.  Thus the Unix csh command:
+on Windows systems.  Thus the Unix csh command
 
   setenv DCMDICTPATH /usr/local/share/dcmtk/dicom.dic:$HOME/dicom.dic
 
 would cause all applications using the dcmdata library to first load the
 default data dictionary and subsequently load the data dictionary dicom.dic
-from the user's home directory.  On Windows systems, an example would be:
+from the user's home directory.  When using the bash, the command would be:
+
+  export DCMDICTPATH=/usr/local/share/dcmtk/dicom.dic:$HOME/dicom.dic
+
+On Windows systems, the command would be:
 
   set DCMDICTPATH=c:\dcmtk-install\share\dcmtk\dicom.dic;c:\dicom.dic
 
@@ -161,51 +201,55 @@ An example DICOM data dictionary can be found in dcmdata/data/dicom.dic,
 which is also installed (using Autoconf or CMake) and used as the default
 external dictionary (if external default dictionary is enabled).
 
-The example data dictionary is is meant to be complete and includes all
-standard and retired tags from part 6 of the DICOM standard (see the header of
+The example data dictionary is meant to be complete and includes all standard
+and retired attributes from part 6 of the DICOM standard (see the header of
 the file where the implemented version of the standard plus all supplements
 and CPs are listed).  Also contained, since they are included in part 6, are
 the official DICONDE (Digital Imaging and Communication in Nondestructive
-Evaluation) and DICOS (Digital Imaging and Communications in Security) tags.
+Evaluation) and DICOS (Digital Imaging and Communications in Security)
+attributes.
 
 Another example dictionary included is the dcmdata/data/private.dic, which
 includes all private tag information known to DCMTK developers and partly
 taken over from other DICOM toolkits and various other sources like DICOM
-Conformance Statements.  There is no guarantee that the tag information
-contained is valid or even complete.  By default, this dictionary is not
-taken into account.  It can be enabled to load on startup as an extra
-external dictionary using Autoconf's configure option "--enable-private-tags"
-and in CMake using the option "DCMTK_ENABLE_PRIVATE_TAGS".  Enabling will
-result in private.dic being added to the DCM_DICT_DEFAULT_PATH, which lists
-those external dictionaries to be loaded on startup (see above).  Note that
-the private tag option is only considered for external dictionaries if
-external dictionaries are not turned off.
+Conformance Statements.  There is no guarantee that the information contained
+is valid or even complete.  By default, this dictionary is not taken into
+account.  It can be enabled to load on startup as an extra external dictionary
+using Autoconf's configure option --enable-private-tags and in CMake using the
+option DCMTK_ENABLE_PRIVATE_TAGS.  Enabling will result in private.dic being
+added to the DCM_DICT_DEFAULT_PATH, which lists those external dictionaries to
+be loaded on startup (see above).  Note that the private tag option is only
+considered for external dictionaries if external dictionaries are not disabled.
 
 DCMTK also includes two predefined built-in dictionaries, one fully populated
-containing the information from DCMTK's dicom.dic file, and one that is empty.
-Both are defined in dcdictbi.cc and the one to be used is selected by the
-built-in dictionary build options (see above).
+containing the information from DCMTK's dicom.dic file (and possibly from the
+private.dic file if enabled, see next paragraph), and one that is empty.  Both
+are defined in dcdictbi.cc and the one to be used is selected by the dictionary
+build options (see above).
 
 The code for a useful built-in data dictionary can be regenerated at any time
 by the mkdictbi program (dcmdata/libsrc/mkdictbi).  The dcmdata library
 Makefiles (for Autoconf dcmdata/libsrc/Makefile.in, and for CMake
-dcmdata/libsrc/CMakeLists.txt) include a target (updatebuiltindict) for this
-purpose.  After regenerating dcdictbi.cc, rebuilding the libdcmdata.a library
-and relinking all your applications will ensure that the built-in data
-dictionary is used.
+dcmdata/libsrc/CMakeLists.txt) provide a target (updatebuiltindict) for this
+purpose.  After regenerating dcdictbi.cc, rebuilding the dcmdata library and
+relinking all applications will ensure that the built-in data dictionary is
+used.  This dictionary contains all definitions from the dicom.dic and
+private.dic file.  Please note, however, that the latter is only available if
+support for private tags has been enabled during DCMTK configuration and thus
+ENABLE_PRIVATE_TAGS is defined in osconfig.h.
 
 -----------------------------------------------------------------------------
 TAG NAME CONSTANTS FOR USE IN APPLICATIONS
 -----------------------------------------------------------------------------
 
 The include file dcmdata/include/dcmtk/dcmdata/dcdeftag.h can be generated
-from a data dictionary by the program mkdeftag.  The include file defines tag
-names for use in application programs.  The names are generated from the names
-specified in the data dictionary.  Duplicate names in the data dictionary will
-result in compiler warnings due to duplicate #define's when compiling code
-that includes the dcdeftag.h header file.  Thus, when adding new entries to
-the data dictionary, care should be taken to ensure that attribute names are
-not duplicated for distinct tags.
+from a data dictionary by the program mkdeftag.  The include file defines
+attribute tag names for use in application programs.  The names are generated
+from the official keywords specified in the data dictionary.  Duplicate names
+in the data dictionary will result in compiler warnings due to duplicate
+#define's when compiling code that includes the dcdeftag.h header file.
+Thus, when adding new entries to the data dictionary, care should be taken to
+ensure that attribute names are not duplicated for distinct tags.
 
 The dcmdata library Makefiles (for Autoconf dcmdata/libsrc/Makefile.in and for
 CMake dcmdata/libsrc/CMakeLists.txt) include a target (updatedeftag) that
@@ -220,4 +264,4 @@ subsequently fail to compile.
 
 DCMTK Development Team, Oldenburg, Germany
 
-Last revised: 2018-09-04 (Onken).
+Last revised: 2021-08-31 (Riesmeier).

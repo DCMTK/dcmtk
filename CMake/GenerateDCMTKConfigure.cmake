@@ -5,26 +5,27 @@ else()
   set(CMAKE_TRY_COMPILE_CONFIGURATION "Release")
 endif()
 
-# Compiled-in dictionary support
-if(DCMTK_ENABLE_BUILTIN_DICTIONARY)
-  set(ENABLE_BUILTIN_DICTIONARY 1)
-  message(STATUS "Info: DCMTK will compile with built-in (compiled-in) dictionary")
+# Select between built-in, external or no default dictionary support
+if(DCMTK_DEFAULT_DICT STREQUAL "builtin")
+  message(STATUS "Info: DCMTK will compile with built-in (compiled-in) default dictionary")
+  set(DCM_DICT_DEFAULT 1)
   # No extra variable needed since its only evaluated in CMake files
+elseif(DCMTK_DEFAULT_DICT STREQUAL "external")
+  message(STATUS "Info: DCMTK will compile with external default dictionary")
+  set(DCM_DICT_DEFAULT 2)
 else()
-  set(ENABLE_BUILTIN_DICTIONARY "")
-  message(STATUS "Info: DCMTK will compile without built-in (compiled-in) dictionary")
-  # No extra variable needed since its only evaluated in CMake files
+  message(STATUS "Info: DCMTK will compile without any default dictionary")
+  set(DCM_DICT_DEFAULT 0)
 endif()
 
-# External dictionary support
-if(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
-  set(ENABLE_EXTERNAL_DICTIONARY 1)
-  message(STATUS "Info: DCMTK will try to load external dictionary from default path on startup")
+# Evaluation of DCMDICTPATH environment variable
+if(DCMTK_USE_DCMDICTPATH)
+  set(DCM_DICT_USE_DCMDICTPATH 1)
+  message(STATUS "Info: DCMTK will load dictionaries defined by DCMDICTPATH environment variable")
 else()
-  set(ENABLE_EXTERNAL_DICTIONARY "")
-  message(STATUS "Info: DCMTK will not try to load external dictionary from default path on startup")
+  set(DCM_DICT_USE_DCMDICTPATH "")
+  message(WARNING "Info: DCMTK will not load dictionaries defined by DCMDICTPATH environment variable")
 endif()
-
 
 # Private tags
 if(DCMTK_ENABLE_PRIVATE_TAGS)
@@ -126,7 +127,7 @@ if(WIN32 AND NOT CYGWIN)
   set(PATH_SEPARATOR "\\\\")
   set(ENVIRONMENT_PATH_SEPARATOR ";")
   # Set dictionary path to the data dir inside install main dir (prefix)
-  if(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
+  if(DCMTK_DEFAULT_DICT STREQUAL "external")
     set(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}\\\\${CMAKE_INSTALL_DATADIR}\\\\dcmtk\\\\dicom.dic")
     # If private dictionary should be utilized, add it to default dictionary path.
     if(ENABLE_PRIVATE_TAGS)
@@ -147,7 +148,7 @@ else()
   set(PATH_SEPARATOR "/")
   set(ENVIRONMENT_PATH_SEPARATOR ":")
   # Set dictionary path to the data dir inside install main dir (prefix).
-  if(DCMTK_ENABLE_EXTERNAL_DICTIONARY)
+  if(DCMTK_DEFAULT_DICT STREQUAL "external")
     set(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk/dicom.dic")
     # If private dictionary should be utilized, add it to default dictionary path.
     if(ENABLE_PRIVATE_TAGS)

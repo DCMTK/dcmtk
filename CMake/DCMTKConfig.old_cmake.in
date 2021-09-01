@@ -31,8 +31,13 @@ set(DCMTK_WITH_OPENJPEG @DCMTK_WITH_OPENJPEG@)
 SET(DCMTK_WITH_DOXYGEN @DCMTK_WITH_DOXYGEN@)
 
 # Dictionary-related
-SET(DCMTK_ENABLE_BUILTIN_DICTIONARY @DCMTK_ENABLE_BUILTIN_DICTIONARY@)
-SET(DCMTK_ENABLE_EXTERNAL_DICTIONARY @DCMTK_ENABLE_EXTERNAL_DICTIONARY@)
+
+# Define the type of standard dictionary that we want to use:
+#   0 - Do not load any default dictionary on startup
+#   1 - Load builtin dictionary on startup
+#   2 - Load external (i.e. file-based) dictionary on startup
+SET(DCM_DICT_DEFAULT @DCM_DICT_DEFAULT@)
+SET(DCM_DICT_USE_DCMDICTPATH @DCM_DICT_USE_DCMDICTPATH@)
 SET(DCMTK_ENABLE_PRIVATE_TAGS @DCMTK_ENABLE_PRIVATE_TAGS@)
 
 # Compiler / standard library features

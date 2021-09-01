@@ -66,22 +66,23 @@
 /* Define if iconv_open() accepts "" as an argument */
 #undef DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING
 
+/* Define the type of default dictionary that we want to use: Do not load any
+   default dictionary on startup (0), load builtin dictionary on startup (1),
+   or load external (i.e. file-based) dictionary on startup (2). */
+#undef DCM_DICT_DEFAULT
+
 /* Define the default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
+
+/* Define whether dictionaries defined through DCMDICTPATH environment
+   variable should be loaded. */
+#undef DCM_DICT_USE_DCMDICTPATH
 
 /* Define the default directory where configuration files reside. */
 #undef DEFAULT_CONFIGURATION_DIR
 
 /* Define the default directory where support data files reside. */
 #undef DEFAULT_SUPPORT_DATA_DIR
-
-/* Define if we are compiling with built-in (compiled-in) dictionary enabled.
-   */
-#undef ENABLE_BUILTIN_DICTIONARY
-
-/* Define if we are compiling for loading external dictionary from default
-   path. */
-#undef ENABLE_EXTERNAL_DICTIONARY
 
 /* Define if we are compiling for enabling external private tag dictionary. */
 #undef ENABLE_PRIVATE_TAGS
@@ -181,7 +182,7 @@
 #undef HAVE_DECLARATION_SOCKLEN_T
 
 /* Define if your system has a declaration for std::ios_base::openmode in
-   iostream.h. */
+   iostream. */
 #undef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE
 
 /* Define if your system has a declaration for struct utimbuf in sys/types.h
@@ -667,12 +668,12 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for std::isnan in cmath. */
 #undef HAVE_PROTOTYPE_STD__ISNAN
 
-/* Define if your system has a prototype for std::vfprintf in stdarg.h
-   stdio.h. */
+/* Define if your system has a prototype for std::vfprintf in cstdarg cstdio.
+   */
 #undef HAVE_PROTOTYPE_STD__VFPRINTF
 
-/* Define if your system has a prototype for std::vsnprintf in stdarg.h
-   stdio.h. */
+/* Define if your system has a prototype for std::vsnprintf in cstdarg cstdio.
+   */
 #undef HAVE_PROTOTYPE_STD__VSNPRINTF
 
 /* Define if your system has a prototype for strcasecmp in string.h. */

@@ -53,11 +53,15 @@
 /* Define the default data dictionary path for the dcmdata library package */
 #define DCM_DICT_DEFAULT_PATH "@DCM_DICT_DEFAULT_PATH@"
 
-/* Define if we want a populated builtin dictionary */
-#cmakedefine ENABLE_BUILTIN_DICTIONARY "@ENABLE_BUILTIN_DICTIONARY@"
+/* Define the type of standard dictionary that we want to use:
+   0 - Do not load any default dictionary on startup
+   1 - Load builtin dictionary on startup
+   2 - Load external (i.e. file-based) dictionary on startup
+*/
+#define DCM_DICT_DEFAULT @DCM_DICT_DEFAULT@
 
-/* Define if we want load external dictionaries */
-#cmakedefine ENABLE_EXTERNAL_DICTIONARY "@ENABLE_EXTERNAL_DICTIONARY@"
+/* Define whether dictionaries defined through DCMDICTPATH variable should be loaded */
+#cmakedefine DCM_DICT_USE_DCMDICTPATH @DCM_DICT_USE_DCMDICTPATH@
 
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR '@ENVIRONMENT_PATH_SEPARATOR@'

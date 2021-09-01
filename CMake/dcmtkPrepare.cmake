@@ -152,22 +152,25 @@ DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TUPLE "Enable use of STL tuple.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_SYSTEM_ERROR "Enable use of STL system_error.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_CXX11 "Enable use of native C++11 features (eg. move semantics).")
 
-# Built-in (compiled-in) dictionary enabled on Windows per default, otherwise
-# disabled. Loading of external dictionary via run-time is, per default,
-# configured the the opposite way since most users won't be interested in using
-# the external default dictionary if it is already compiled in.
+# On Windows, the built-in dictionary is default, on Unix the external one.
+# It is not possible to use both, built-in plus external default dictionary.
 if(WIN32 OR MINGW)
-  option(DCMTK_ENABLE_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary." ON)
-  option(DCMTK_ENABLE_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup." ON)
+  set(DCMTK_DEFAULT_DICT "builtin" CACHE STRING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
 else() # built-in dictionary turned off on Unix per default
-  option(DCMTK_ENABLE_BUILTIN_DICTIONARY "Configure DCMTK with compiled-in data dictionary." OFF)
-  option(DCMTK_ENABLE_EXTERNAL_DICTIONARY "Configure DCMTK to load external dictionary from default path on startup." ON)
+  set(DCMTK_DEFAULT_DICT "external" CACHE STRING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
 endif()
-if (NOT DCMTK_ENABLE_EXTERNAL_DICTIONARY AND NOT DCMTK_ENABLE_BUILTIN_DICTIONARY)
-  message(WARNING "Either external or built-in dictionary should be enabled, otherwise dictionary must be loaded manually on startup!")
+set_property(CACHE DCMTK_DEFAULT_DICT PROPERTY STRINGS builtin external none)
+if (DCMTK_DEFAULT_DICT EQUAL "none")
+  message(WARNING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
 endif()
 
+# Per default, we allow users to load user-defined dictionaries pointed to via
+# environment variable DCMDICTPATH.
+option(DCMTK_USE_DCMDICTPATH "Enable reading dictionary that is defined through DCMDICTPATH environment variable." ON)
+
+
 # Mark various settings as "advanced"
+mark_as_advanced(DCMTK_USE_DCMDICTPATH)
 mark_as_advanced(CMAKE_DEBUG_POSTFIX)
 mark_as_advanced(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 mark_as_advanced(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK

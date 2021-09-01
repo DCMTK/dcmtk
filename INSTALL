@@ -751,8 +751,9 @@ variables are:
       Default: OFF.
     - CMAKE_BUILD_TYPE: Debug or Release build, default: Release.
     - CMAKE_INSTALL_PREFIX: Installation prefix, default: /usr/local.
-    - DCMTK_ENABLE_BUILTIN_DICTIONARY: Activate the built-in DICOM data
-      dictionary? Default: ON on Windows, OFF on Linux/Posix.
+    - DCMTK_DEFAULT_DICT: Activate the builtin, external or no DICOM data
+      dictionary on DCMTK startup? Default: builtin on Windows, external on
+      Linux/Posix.
     - DCMTK_ENABLE_CXX11: Assume the compiler is C++11 compliant. Default: OFF.
     - DCMTK_ENABLE_STL: Replace DCMTK's OFString, OFList, OFVector etc. by
       the STL classes std::string, std::list, std::vector etc. Default: OFF.
@@ -914,12 +915,11 @@ options are:
   --disable-threads       compile without MT support
   --enable-lfs=TYPE       compile with LFS support (lfs/lfs64/auto=default)
   --disable-lfs           compile without LFS support
+  --enable-default-dict=TYPE  enable default dictionary and specify type
+                          (external=default/builtin)
+  --disable-default-dict  disable default dictionary
   --enable-private-tags   enable private tag dictionary
   --disable-private-tags  don't enable private tag dictionary (default)
-  --enable-external-dict  enable loading of external dictionary (default)
-  --disable-external-dict don't load external dictionary
-  --enable-builtin-dict   enable loading of built-in dictionary
-  --disable-builtin-dict  don't load built-in dictionary (default)
   --disable-rpath         do not hardcode runtime library paths
   --enable-charconv=TYPE  enable character set conversion support
                           (libiconv/libicu/stdlibc/auto=default)
@@ -999,4 +999,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher, P. Arizpe Gomez
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2021-02-25 (Riesmeier)
+Last revised: 2021-08-31 (Riesmeier)

@@ -722,9 +722,9 @@ enable_option_checking
 enable_debug
 enable_threads
 enable_lfs
+enable_default_dict
+enable_dcmdictpath
 enable_private_tags
-enable_external_dict
-enable_builtin_dict
 enable_rpath
 with_opensslinc
 with_openssl
@@ -1403,12 +1403,14 @@ Optional Features:
   --disable-threads       compile without MT support
   --enable-lfs=TYPE       compile with LFS support (lfs/lfs64/auto=default)
   --disable-lfs           compile without LFS support
+  --enable-default-dict=TYPE
+                          enable default dictionary and specify type
+                          (external=default/builtin)
+  --disable-default-dict  disable default dictionary
+  --enable-dcmdictpath    enable DCMDICTPATH environment variable (default)
+  --disable-dcmdictpath   disable DCMDICTPATH environment variable
   --enable-private-tags   enable private tag dictionary
   --disable-private-tags  don't enable private tag dictionary (default)
-  --enable-external-dict  enable loading of external dictionary (default)
-  --disable-external-dict don't load external dictionary
-  --enable-builtin-dict   enable loading of built-in dictionary
-  --disable-builtin-dict  don't load built-in dictionary (default)
   --disable-rpath         do not hardcode runtime library paths
   --enable-charconv=TYPE  enable character set conversion support
                           (libiconv/libicu/stdlibc/auto=default)
@@ -12954,7 +12956,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12957 "configure"
+#line 12959 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13220,7 +13222,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13223 "configure"
+#line 13225 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13485,7 +13487,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13488 "configure"
+#line 13490 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13557,7 +13559,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13560 "configure"
+#line 13562 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13629,7 +13631,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13632 "configure"
+#line 13634 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13869,6 +13871,75 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable default dictionary" >&5
+$as_echo_n "checking whether to enable default dictionary... " >&6; }
+# Check whether --enable-default-dict was given.
+if test "${enable_default_dict+set}" = set; then :
+  enableval=$enable_default_dict;  case "$enableval" in
+  external|yes)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=external" >&5
+$as_echo "yes, type=external" >&6; }
+
+$as_echo "#define DCM_DICT_DEFAULT 2" >>confdefs.h
+
+    ;;
+  builtin)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=builtin" >&5
+$as_echo "yes, type=builtin" >&6; }
+
+$as_echo "#define DCM_DICT_DEFAULT 1" >>confdefs.h
+
+    ;;
+  no)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+$as_echo "#define DCM_DICT_DEFAULT 0" >>confdefs.h
+
+    ;;
+  esac
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define DCM_DICT_DEFAULT 2" >>confdefs.h
+
+
+fi
+
+
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to evaluate DCMDICTPATH environment variable" >&5
+$as_echo_n "checking whether to evaluate DCMDICTPATH environment variable... " >&6; }
+# Check whether --enable-dcmdictpath was given.
+if test "${enable_dcmdictpath+set}" = set; then :
+  enableval=$enable_dcmdictpath;  case "$enableval" in
+  yes)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define DCM_DICT_USE_DCMDICTPATH 1" >>confdefs.h
+
+    ;;
+  *)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    ;;
+  esac
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define DCM_DICT_USE_DCMDICTPATH 1" >>confdefs.h
+
+
+fi
+
+
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable private tag dictionary" >&5
 $as_echo_n "checking whether to enable private tag dictionary... " >&6; }
 # Check whether --enable-private-tags was given.
@@ -13878,7 +13949,7 @@ if test "${enable_private_tags+set}" = set; then :
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
-$as_echo "#define ENABLE_PRIVATE_TAGS /**/" >>confdefs.h
+$as_echo "#define ENABLE_PRIVATE_TAGS 1" >>confdefs.h
 
 
 cat >>confdefs.h <<_ACEOF
@@ -13897,63 +13968,6 @@ $as_echo "no" >&6; }
 
 fi
 
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable loading external dictionary from default path" >&5
-$as_echo_n "checking whether to enable loading external dictionary from default path... " >&6; }
-# Check whether --enable-external-dict was given.
-if test "${enable_external_dict+set}" = set; then :
-  enableval=$enable_external_dict;  case "$enableval" in
-  yes)
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-$as_echo "#define ENABLE_EXTERNAL_DICTIONARY /**/" >>confdefs.h
-
-    ;;
-  *)
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-cat >>confdefs.h <<_ACEOF
-#define DCM_DICT_DEFAULT_PATH ""
-_ACEOF
-
-    ;;
-  esac
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-$as_echo "#define ENABLE_EXTERNAL_DICTIONARY /**/" >>confdefs.h
-
-
-fi
-
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable built-in dictionary loading" >&5
-$as_echo_n "checking whether to enable built-in dictionary loading... " >&6; }
-# Check whether --enable-builtin-dict was given.
-if test "${enable_builtin_dict+set}" = set; then :
-  enableval=$enable_builtin_dict;  case "$enableval" in
-  yes)
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-$as_echo "#define ENABLE_BUILTIN_DICTIONARY /**/" >>confdefs.h
-
-    ;;
-  *)
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    ;;
-  esac
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-fi
 
 
 

@@ -23,7 +23,7 @@ AC_SUBST(PACKAGE_DATE)
 
 dnl -------------------------------------------------------
 dnl Identify the host platform we're compiling for,
-dnl using config.guess and config.sub.
+dnl using config.guess and config.sub
 dnl -------------------------------------------------------
 
 AC_CANONICAL_HOST
@@ -196,19 +196,19 @@ AC_AIX
 AC_ISC_POSIX
 AC_SYS_LONG_FILE_NAMES
 
-dnl -------------------------------------------------------
+dnl ----------------------------------------------------------
 dnl Perform some tests with the C compiler, needed for dcmjpeg
-dnl -------------------------------------------------------
+dnl ----------------------------------------------------------
 
 AC_MY_C_INLINE
 AC_MY_C_CONST
 AC_MY_C_CHAR_UNSIGNED
 AC_MY_C_RIGHTSHIFT_UNSIGNED
 
-dnl -------------------------------------------------------
+dnl --------------------------------------------------------
 dnl Check some typedefs versus definitions in <sys/types.h>,
 dnl needed for JasPer support
-dnl -------------------------------------------------------
+dnl --------------------------------------------------------
 
 AC_TYPEDEF(uchar, unsigned char)
 AC_TYPEDEF(ushort, unsigned short)
@@ -237,7 +237,7 @@ AC_CHECK_TYPES(char16_t)
 AC_CHECK_TYPES([sigjmp_buf], [], [], [[#include <setjmp.h>]])
 
 dnl -------------------------------------------------------
-dnl Checks for libc library functions.
+dnl Check for libc library functions
 dnl -------------------------------------------------------
 
 AC_FUNC_MEMCMP
@@ -273,7 +273,7 @@ AC_FUNC_FSEEKO
 
 
 dnl -------------------------------------------------------
-dnl Checks for libcs library functions needed by oflog
+dnl Check for libcs library functions needed by oflog
 dnl -------------------------------------------------------
 
 AC_DEFUN([TYPE_SOCKLEN_T],
@@ -301,7 +301,7 @@ AC_COMPILE_IFELSE(
   [AC_DEFINE([HAVE_ENAMETOOLONG], , [Define if your system provides ENAMETOOLONG errno value.])])
 
 dnl -------------------------------------------------------
-dnl Checks for libm library functions.
+dnl Check for libm library functions
 dnl -------------------------------------------------------
 
 SAVELIBS="$LIBS"
@@ -416,7 +416,7 @@ AC_ARG_ENABLE(lfs,
 )
 
 dnl -------------------------------------------------------
-dnl Checks for libraries.
+dnl Check for libraries
 dnl -------------------------------------------------------
 
 AC_CHECK_GXXLIB
@@ -472,7 +472,7 @@ LIBS="$LIBS -lnetapi32"
 ])
 
 dnl -------------------------------------------------------
-dnl Checks for header files.
+dnl Check for header files
 dnl -------------------------------------------------------
 
 AC_HEADER_STDC
@@ -564,10 +564,10 @@ if test $ac_cv_header_libc_h = yes ; then
   fi
 fi
 
-dnl -------------------------------------------------------
+dnl --------------------------------------------------------
 dnl Tests for pointer vs. integer types
 dnl These tests REQUIRE as a prerequisite AC_CXX_STATIC_CAST
-dnl -------------------------------------------------------
+dnl --------------------------------------------------------
 
 if test $ac_cv_header_pthread_h = yes ; then
   AC_CHECK_POINTER_TYPE(pthread_t, pthread.h)
@@ -767,9 +767,9 @@ if test $LFSSUPPORT = auto -o $LFSSUPPORT = lfs; then
   MY_AC_SYS_LARGEFILE
 fi
 
-dnl -------------------------------------------------------
-dnl Checks for typedefs, structures, and compiler characteristics.
-dnl -------------------------------------------------------
+dnl ------------------------------------------------------------
+dnl Check for typedefs, structures, and compiler characteristics
+dnl ------------------------------------------------------------
 
 AC_TYPEDEF(size_t, unsigned)
 AC_TYPEDEF(ssize_t, long)
@@ -788,7 +788,7 @@ AC_MY_SYMBOL_EXISTS([__PRETTY_FUNCTION__])
 AC_MY_SYMBOL_EXISTS([__func__])
 
 dnl -------------------------------------------------------
-dnl Checks for prototypes
+dnl Check for prototypes
 dnl -------------------------------------------------------
 dnl
 dnl The following AC_CHECK_* macros _must_ have corresponding entries in
@@ -850,7 +850,7 @@ fi
 
 
 dnl -------------------------------------------------------
-dnl Checks for the usage of standard C++ headers.
+dnl Check for the usage of standard C++ headers
 dnl -------------------------------------------------------
 
 AC_CHECK_STD_NAMESPACE
@@ -878,6 +878,70 @@ AC_CHECK_CXX_VOLATILE
 AC_CXX_TYPENAME
 AC_STDIO_NAMESPACE
 
+
+dnl -------------------------------------------------------
+dnl Check whether to load a default dictionary
+dnl -------------------------------------------------------
+
+AC_MSG_CHECKING(whether to enable default dictionary)
+AC_ARG_ENABLE(default-dict,
+[  --enable-default-dict=TYPE
+                          enable default dictionary and specify type
+                          (external=default/builtin)
+  --disable-default-dict  disable default dictionary],
+[ case "$enableval" in
+  external|yes)
+    AC_MSG_RESULT([yes, type=external])
+    AC_DEFINE(DCM_DICT_DEFAULT, 2, [Define the type of default dictionary that we want to use: \
+       Do not load any default dictionary on startup (0), \
+       load builtin dictionary on startup (1), or \
+       load external (i.e. file-based) dictionary on startup (2).])
+    ;;
+  builtin)
+    AC_MSG_RESULT([yes, type=builtin])
+    AC_DEFINE(DCM_DICT_DEFAULT, 1, [Define the type of default dictionary that we want to use: \
+       Do not load any default dictionary on startup (0), \
+       load builtin dictionary on startup (1), or \
+       load external (i.e. file-based) dictionary on startup (2).])
+    ;;
+  no)
+    AC_MSG_RESULT(no)
+    AC_DEFINE(DCM_DICT_DEFAULT, 0, [Define the type of default dictionary that we want to use: \
+       Do not load any default dictionary on startup (0), \
+       load builtin dictionary on startup (1), or \
+       load external (i.e. file-based) dictionary on startup (2).])
+    ;;
+  esac ],
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(DCM_DICT_DEFAULT, 2, [Define the type of default dictionary that we want to use: \
+       Do not load any default dictionary on startup (0), \
+       load builtin dictionary on startup (1), or \
+       load external (i.e. file-based) dictionary on startup (2).])
+)
+
+
+dnl ----------------------------------------------------------
+dnl Check whether to evaluate DCMDICTPATH environment variable
+dnl ----------------------------------------------------------
+
+AC_MSG_CHECKING(whether to evaluate DCMDICTPATH environment variable)
+AC_ARG_ENABLE(dcmdictpath,
+[  --enable-dcmdictpath    enable DCMDICTPATH environment variable (default)
+  --disable-dcmdictpath   disable DCMDICTPATH environment variable],
+[ case "$enableval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(DCM_DICT_USE_DCMDICTPATH, 1, [Define whether dictionaries defined through DCMDICTPATH environment variable should be loaded.])
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(DCM_DICT_USE_DCMDICTPATH, 1, [Define whether dictionaries defined through DCMDICTPATH environment variable should be loaded.])
+)
+
+
 dnl -------------------------------------------------------
 dnl Check for Private Tag support
 dnl -------------------------------------------------------
@@ -889,7 +953,7 @@ AC_ARG_ENABLE(private-tags,
 [ case "$enableval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(ENABLE_PRIVATE_TAGS, , [Define if we are compiling for enabling external private tag dictionary.])
+    AC_DEFINE(ENABLE_PRIVATE_TAGS, 1, [Define if we are compiling for enabling external private tag dictionary.])
     AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic:${DATA_DIR}/private.dic", [Define the default data dictionary path for the dcmdata library package.])
     ;;
   *)
@@ -899,48 +963,6 @@ AC_ARG_ENABLE(private-tags,
   AC_MSG_RESULT(no)
 )
 
-dnl -------------------------------------------------------
-dnl Check for External Dictionary support
-dnl -------------------------------------------------------
-
-AC_MSG_CHECKING(whether to enable loading external dictionary from default path)
-AC_ARG_ENABLE(external-dict,
-[  --enable-external-dict  enable loading of external dictionary (default)
-  --disable-external-dict don't load external dictionary],
-[ case "$enableval" in
-  yes)
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(ENABLE_EXTERNAL_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
-    ;;
-  *)
-    AC_MSG_RESULT(no)
-    dnl Reset default path so the dictionary is not loaded automatically on startup
-    AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "", [Define the default data dictionary path for the dcmdata library package.])
-    ;;
-  esac ],
-  AC_MSG_RESULT(yes)
-  AC_DEFINE(ENABLE_EXTERNAL_DICTIONARY, , [Define if we are compiling for loading external dictionary from default path.])
-)
-
-dnl -------------------------------------------------------
-dnl Check for Built-in (compiled-in) Dictionary support
-dnl -------------------------------------------------------
-
-AC_MSG_CHECKING(whether to enable built-in dictionary loading)
-AC_ARG_ENABLE(builtin-dict,
-[  --enable-builtin-dict   enable loading of built-in dictionary
-  --disable-builtin-dict  don't load built-in dictionary (default)],
-[ case "$enableval" in
-  yes)
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(ENABLE_BUILTIN_DICTIONARY, , [Define if we are compiling with built-in (compiled-in) dictionary enabled.])
-    ;;
-  *)
-    AC_MSG_RESULT(no)
-    ;;
-  esac ],
-  AC_MSG_RESULT(no)
-)
 
 dnl -------------------------------------------------------
 dnl Check for OpenSSL support
@@ -987,9 +1009,9 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
 AC_CHECK_SSL_CTX_GET0_PARAM
 AC_CHECK_RAND_EGD
 
-dnl -------------------------------------------------------
+dnl ---------------------------------------------------------------
 dnl Check for libjpeg, which is needed by libtiff on some platforms
-dnl -------------------------------------------------------
+dnl ---------------------------------------------------------------
 
 JPEGLIBS=""
 AC_CHECK_LIB(jpeg, jpeg_set_defaults,[
@@ -1350,7 +1372,7 @@ AS_HELP_STRING([--without-libicu], [don't include libicu support])],
 AC_MSG_RESULT($WITH_LIBICU)
 
 dnl -------------------------------------------------------
-dnl character set conversion support
+dnl Check for character set conversion support
 dnl -------------------------------------------------------
 
 AH_VERBATIM([DCMTK_CHARSET_CONVERSION_CONSTANTS], [/* character set conversion constants. */
@@ -1494,7 +1516,7 @@ AC_MSG_RESULT($ac_enable_cxx11)
 
 
 dnl -------------------------------------------------------
-dnl Enable/disable STL support.
+dnl Enable/disable STL support
 dnl -------------------------------------------------------
 
 ac_enable_stl="no"
@@ -1826,7 +1848,7 @@ CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
 
 dnl -------------------------------------------------------
-dnl Special Definitions for output
+dnl Special definitions for output
 dnl -------------------------------------------------------
 AC_SUBST(CXXFLAGS)
 AC_SUBST(OPENSSLLIBS)
