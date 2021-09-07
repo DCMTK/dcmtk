@@ -99,7 +99,7 @@ extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
 }
 
 
-static OFBool xmlIsBlankNodeOrComment(const xmlNode *node)
+static OFBool xmlIsBlankNodeOrComment(xmlNode *node)
 {
   if (xmlIsBlankNode(node)) return OFTrue;
   return (0 == xmlStrcmp(node->name, OFreinterpret_cast(const xmlChar *, "comment")));
