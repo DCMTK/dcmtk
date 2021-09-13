@@ -5,8 +5,8 @@
  *
  *  Source file for class CID100_QuantitativeDiagnosticImagingProcedures
  *
- *  Generated automatically from DICOM PS 3.16-2021a
- *  File created on 2021-02-03 21:06:15 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021d
+ *  File created on 2021-09-13 09:26:30 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 100 (Quantitative Diagnostic Imaging Procedures)
 #define CONTEXT_GROUP_NUMBER  "100"
-#define CONTEXT_GROUP_VERSION "20190817"
+#define CONTEXT_GROUP_VERSION "20210905"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.998"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -152,7 +152,7 @@ CID100_QuantitativeDiagnosticImagingProcedures::CodeList &CID100_QuantitativeDia
         Codes->insert(OFMake_pair(ImagingProcedure, DSRBasicCodedEntry("363679005", "SCT", "Imaging procedure")));
         Codes->insert(OFMake_pair(MagneticResonanceImagingGuidance, DSRBasicCodedEntry("258177008", "SCT", "Magnetic resonance imaging guidance")));
         Codes->insert(OFMake_pair(MultiparametricMRI, DSRBasicCodedEntry("126020", "DCM", "Multiparametric MRI")));
-        Codes->insert(OFMake_pair(MultiparametricMRIOfProstate, DSRBasicCodedEntry("126021", "DCM", "Multiparametric MRI of prostate")));
+        Codes->insert(OFMake_pair(MultiparametricMRIOfProstate, DSRBasicCodedEntry("719178004", "SCT", "Multiparametric MRI of prostate")));
         Codes->insert(OFMake_pair(MultiparametricMRIOfWholeBody, DSRBasicCodedEntry("126022", "DCM", "Multiparametric MRI of whole body")));
         Codes->insert(OFMake_pair(DynamicMagneticResonanceImagingOfKnee, DSRBasicCodedEntry("433139009", "SCT", "Dynamic magnetic resonance imaging of knee")));
         Codes->insert(OFMake_pair(DynamicMagneticResonanceImagingOfPelvis, DSRBasicCodedEntry("446315002", "SCT", "Dynamic magnetic resonance imaging of pelvis")));

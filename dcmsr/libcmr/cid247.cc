@@ -5,8 +5,8 @@
  *
  *  Source file for class CID247_LateralityLeftRightOnly
  *
- *  Generated automatically from DICOM PS 3.16-2021b
- *  File created on 2021-03-30 10:12:43 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021d
+ *  File created on 2021-09-13 09:26:31 by J. Riesmeier
  *
  */
 

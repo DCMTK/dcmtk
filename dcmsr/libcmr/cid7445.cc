@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7445_DeviceParticipatingRoles
  *
- *  Generated automatically from DICOM PS 3.16-2021a
- *  File created on 2021-02-03 21:06:27 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021d
+ *  File created on 2021-09-13 09:26:36 by J. Riesmeier
  *
  */
 
