@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2021c
- *  File created on 2021-08-02 09:46:27 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021d
+ *  File created on 2021-09-13 08:24:34 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4510
-// - retired: 200
+// total number of codes: 4560
+// - retired: 201
 // - no name: 27
 // - not unique: 17
 
@@ -1170,6 +1170,7 @@
 #define CODE_DCM_EntranceExposureAtRP                                      DSRBasicCodedEntry("111636", "DCM", "Entrance Exposure at RP")
 #define CODE_DCM_AccumulatedAverageGlandularDose                           DSRBasicCodedEntry("111637", "DCM", "Accumulated Average Glandular Dose")
 #define CODE_DCM_PatientEquivalentThickness                                DSRBasicCodedEntry("111638", "DCM", "Patient Equivalent Thickness")
+#define CODE_DCM_VirtualGrid                                               DSRBasicCodedEntry("111640", "DCM", "Virtual grid")
 #define CODE_DCM_FixedGrid                                                 DSRBasicCodedEntry("111641", "DCM", "Fixed grid")
 #define CODE_DCM_FocusedGrid                                               DSRBasicCodedEntry("111642", "DCM", "Focused grid")
 #define CODE_DCM_ReciprocatingGrid                                         DSRBasicCodedEntry("111643", "DCM", "Reciprocating grid")
@@ -3258,7 +3259,7 @@
 #define CODE_DCM_ImagingMeasurements                                       DSRBasicCodedEntry("126010", "DCM", "Imaging Measurements")
 #define CODE_DCM_DerivedImagingMeasurements                                DSRBasicCodedEntry("126011", "DCM", "Derived Imaging Measurements")
 #define CODE_DCM_MultiparametricMRI                                        DSRBasicCodedEntry("126020", "DCM", "Multiparametric MRI")
-#define CODE_DCM_MultiparametricMRIOfProstate                              DSRBasicCodedEntry("126021", "DCM", "Multiparametric MRI of prostate")
+#define CODE_DCM_RETIRED_MultiparametricMRIOfProstate                      DSRBasicCodedEntry("126021", "DCM", "Multiparametric MRI of prostate")
 #define CODE_DCM_MultiparametricMRIOfWholeBody                             DSRBasicCodedEntry("126022", "DCM", "Multiparametric MRI of whole body")
 #define CODE_DCM_LWHMethodForVolumeOfEllipsoid                             DSRBasicCodedEntry("126029", "DCM", "LWH method for volume of ellipsoid")
 #define CODE_DCM_SumOfSegmentedVoxelMethodForVolume                        DSRBasicCodedEntry("126030", "DCM", "Sum of segmented voxel method for volume")
@@ -4558,5 +4559,54 @@
 #define CODE_DCM_ESUR2012ProstateMRIAcquisitionRequirements                DSRBasicCodedEntry("130606", "DCM", "ESUR 2012 prostate MRI acquisition requirements")
 #define CODE_DCM_PIRADS2dot0ProstateMRIAcquisitionRequirements             DSRBasicCodedEntry("130607", "DCM", "PI-RADS 2.0 prostate MRI acquisition requirements")
 #define CODE_DCM_PIRADS2dot1ProstateMRIAcquisitionRequirements             DSRBasicCodedEntry("130608", "DCM", "PI-RADS 2.1 prostate MRI acquisition requirements")
+#define CODE_DCM_2DShearWaveElastography                                   DSRBasicCodedEntry("130609", "DCM", "2D Shear Wave Elastography")
+#define CODE_DCM_3DShearWaveElastography                                   DSRBasicCodedEntry("130610", "DCM", "3D Shear Wave Elastography")
+#define CODE_DCM_ShearWaveSpeed                                            DSRBasicCodedEntry("130611", "DCM", "Shear Wave Speed")
+#define CODE_DCM_ShearWaveDispersionSlope                                  DSRBasicCodedEntry("130612", "DCM", "Shear Wave Dispersion Slope")
+#define CODE_DCM_ROIDepth                                                  DSRBasicCodedEntry("130613", "DCM", "ROI Depth")
+#define CODE_DCM_InterquartileRangeOfPopulation                            DSRBasicCodedEntry("130614", "DCM", "Interquartile Range of population")
+#define CODE_DCM_InterquartileRangeToMedianRatioOfPopulation               DSRBasicCodedEntry("130615", "DCM", "Interquartile Range to Median Ratio of population")
+#define CODE_DCM_PointShearWaveElastography                                DSRBasicCodedEntry("130616", "DCM", "Point Shear Wave Elastography")
+#define CODE_DCM_LeftVentricleApicalAnteroseptalSegment                    DSRBasicCodedEntry("130620", "DCM", "left ventricle apical anteroseptal segment")
+#define CODE_DCM_LeftVentricleApicalInferoseptalSegment                    DSRBasicCodedEntry("130621", "DCM", "left ventricle apical inferoseptal segment")
+#define CODE_DCM_LeftVentricleApicalInferolateralSegment                   DSRBasicCodedEntry("130622", "DCM", "left ventricle apical inferolateral segment")
+#define CODE_DCM_LeftVentricleApicalAnterolateralSegment                   DSRBasicCodedEntry("130623", "DCM", "left ventricle apical anterolateral segment")
+#define CODE_DCM_IsocentricSetupMethod                                     DSRBasicCodedEntry("130630", "DCM", "Isocentric Setup Method")
+#define CODE_DCM_ControlledSSDSetupMethod                                  DSRBasicCodedEntry("130631", "DCM", "Controlled SSD Setup Method")
+#define CODE_DCM_TBISetupMethod                                            DSRBasicCodedEntry("130632", "DCM", "TBI Setup Method")
+#define CODE_DCM_StereotacticSetupMethod                                   DSRBasicCodedEntry("130633", "DCM", "Stereotactic Setup Method")
+#define CODE_DCM_SkinAppositionSetupMethod                                 DSRBasicCodedEntry("130634", "DCM", "Skin Apposition Setup Method")
+#define CODE_DCM_OcularGazeSetupMethod                                     DSRBasicCodedEntry("130635", "DCM", "Ocular Gaze Setup Method")
+#define CODE_DCM_PatientShieldingProcedure                                 DSRBasicCodedEntry("130636", "DCM", "Patient Shielding Procedure")
+#define CODE_DCM_PatientFixationProcedure                                  DSRBasicCodedEntry("130637", "DCM", "Patient Fixation Procedure")
+#define CODE_DCM_PatientAlignmentProcedure                                 DSRBasicCodedEntry("130638", "DCM", "Patient Alignment Procedure")
+#define CODE_DCM_PatientMotionManagementSetupProcedure                     DSRBasicCodedEntry("130639", "DCM", "Patient Motion Management Setup Procedure")
+#define CODE_DCM_CavityRadiationShield                                     DSRBasicCodedEntry("130640", "DCM", "Cavity radiation shield")
+#define CODE_DCM_IndependentRadiationShield                                DSRBasicCodedEntry("130641", "DCM", "Independent radiation shield")
+#define CODE_DCM_OpticalDistanceMeter                                      DSRBasicCodedEntry("130642", "DCM", "Optical Distance Meter")
+#define CODE_DCM_MechanicalPointer                                         DSRBasicCodedEntry("130643", "DCM", "Mechanical Pointer")
+#define CODE_DCM_RadiofrequencyTransponder                                 DSRBasicCodedEntry("130644", "DCM", "Radiofrequency Transponder")
+#define CODE_DCM_InfraredMarker                                            DSRBasicCodedEntry("130645", "DCM", "Infrared Marker")
+#define CODE_DCM_RadioactiveMarker                                         DSRBasicCodedEntry("130646", "DCM", "Radioactive Marker")
+#define CODE_DCM_ThermalImager                                             DSRBasicCodedEntry("130647", "DCM", "Thermal Imager")
+#define CODE_DCM_CombinedStructuredLightThermalImager                      DSRBasicCodedEntry("130648", "DCM", "Combined Structured Light/Thermal Imager")
+#define CODE_DCM_OcularFixationLight                                       DSRBasicCodedEntry("130649", "DCM", "Ocular Fixation Light")
+#define CODE_DCM_CoachingDevice                                            DSRBasicCodedEntry("130650", "DCM", "Coaching Device")
+#define CODE_DCM_PatientDistractionDevice                                  DSRBasicCodedEntry("130651", "DCM", "Patient Distraction Device")
+#define CODE_DCM_CollisionChecks                                           DSRBasicCodedEntry("130652", "DCM", "Collision checks")
+#define CODE_DCM_BreastBridge                                              DSRBasicCodedEntry("130653", "DCM", "Breast Bridge")
+#define CODE_DCM_AbdominalCompressionBelt                                  DSRBasicCodedEntry("130654", "DCM", "Abdominal Compression Belt")
+#define CODE_DCM_AbdominalCompressionArch                                  DSRBasicCodedEntry("130655", "DCM", "Abdominal Compression Arch")
+#define CODE_DCM_HeadFixationBoard                                         DSRBasicCodedEntry("130656", "DCM", "Head Fixation Board")
+#define CODE_DCM_CouchIndexLabel                                           DSRBasicCodedEntry("130657", "DCM", "Couch Index Label")
+#define CODE_DCM_FixationDeviceAngle                                       DSRBasicCodedEntry("130658", "DCM", "Fixation Device Angle")
+#define CODE_DCM_AbdominalCompressionPlatePositionNumber                   DSRBasicCodedEntry("130659", "DCM", "Abdominal Compression Plate Position Number")
+#define CODE_DCM_AbdominalCompressionBeltLength                            DSRBasicCodedEntry("130660", "DCM", "Abdominal Compression Belt Length")
+#define CODE_DCM_AbdominalCompressionBeltPressure                          DSRBasicCodedEntry("130661", "DCM", "Abdominal Compression Belt Pressure")
+#define CODE_DCM_ReferencedPatientAlignmentReference                       DSRBasicCodedEntry("130662", "DCM", "Referenced Patient Alignment Reference")
+#define CODE_DCM_RTRadiationPreviouslyDelivered                            DSRBasicCodedEntry("130663", "DCM", "RT Radiation previously delivered")
+#define CODE_DCM_TreatmentUnnecessary                                      DSRBasicCodedEntry("130664", "DCM", "Treatment unnecessary")
+#define CODE_DCM_TreatmentExceedsPatientTolerance                          DSRBasicCodedEntry("130665", "DCM", "Treatment exceeds patient tolerance")
+#define CODE_DCM_RadiotherapyFiducial                                      DSRBasicCodedEntry("130666", "DCM", "Radiotherapy Fiducial")
 
 #endif
