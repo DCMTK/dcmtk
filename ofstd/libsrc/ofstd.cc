@@ -226,7 +226,7 @@ size_t OFStandard::my_strlcpy(char *dst, const char *src, size_t siz)
   {
      if (siz != 0)
         *d = '\0'; /* NUL-terminate dst */
-     while (*s++) /* do_nothing */ ;
+     while (*s++) /* do nothing */ ;
   }
 
   return(s - src - 1);    /* count does not include NUL */
@@ -773,7 +773,7 @@ OFFilename &OFStandard::normalizeDirName(OFFilename &result,
         size_t strLength = (strValue == NULL) ? 0 : strlen(strValue);
 #ifdef _WIN32
         // Windows accepts both backslash and forward slash as path separators.
-        while ((strLength > 1) && ((strValue[strLength - 1] == PATH_SEPARATOR) || 
+        while ((strLength > 1) && ((strValue[strLength - 1] == PATH_SEPARATOR) ||
               (strValue[strLength - 1] == '/' )))
             --strLength;
 #else
@@ -3237,10 +3237,10 @@ void OFStandard::forceSleep(Uint32 seconds)
 {
     OFTimer timer;
     double elapsed = timer.getDiff();
-    while (elapsed < (double)seconds)
+    while (elapsed < OFstatic_cast(double, seconds))
     {
         // Use ceiling since otherwise we could wait too short
-        OFStandard::sleep(OFstatic_cast(unsigned int, ceil(seconds-elapsed)));
+        OFStandard::sleep(OFstatic_cast(unsigned int, ceil(seconds - elapsed)));
         elapsed = timer.getDiff();
     }
 }
