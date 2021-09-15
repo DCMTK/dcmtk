@@ -171,7 +171,8 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s, size_t bufsize)
             s[0] = '\0';
         } else {
             ec =  elem->getString(aString);
-            OFStandard::strlcpy(s, aString, bufsize);
+            if (ec == EC_Normal)
+                OFStandard::strlcpy(s, aString, bufsize);
         }
     }
     return (ec == EC_Normal);
