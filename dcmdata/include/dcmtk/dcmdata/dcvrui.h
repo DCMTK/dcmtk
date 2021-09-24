@@ -96,8 +96,8 @@ class DCMTK_DCMDATA_EXPORT DcmUniqueIdentifier
 
     /** print element to a stream.
      *  The output format of the value is a backslash separated sequence of string
-     *  components. In case of a single component the UID number is mapped to the
-     *  corresponding UID name (using "dcmFindNameOfUID()") if available. A "=" is
+     *  components. In case of a single component, the UID number is mapped to the
+     *  corresponding UID name (using dcmFindNameOfUID()) if available. A "=" is
      *  used as a prefix to distinguish the UID name from the UID number.
      *  NB: This mapping of UID names only works for single-valued strings.
      *  @param out output stream
@@ -123,9 +123,9 @@ class DCMTK_DCMDATA_EXPORT DcmUniqueIdentifier
                                     OFBool normalize = OFTrue);
 
     /** set element value from the given character string.
-     *  If the string starts with a "=" the subsequent characters are interpreted as a
-     *  UID name and mapped to the corresponding UID number (using "dcmFindUIDFromName()")
-     *  if possible. Otherwise the leading "=" is removed.
+     *  If the string starts with a "=", the subsequent characters are interpreted as a
+     *  UID name and mapped to the corresponding UID number (using dcmFindUIDFromName())
+     *  if possible. Otherwise, an error (EC_UnknownUIDName) is returned.
      *  NB: This mapping of UID names only works for single-valued input strings.
      *  @param stringVal input character string (possibly multi-valued)
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -133,9 +133,9 @@ class DCMTK_DCMDATA_EXPORT DcmUniqueIdentifier
     virtual OFCondition putString(const char *stringVal);
 
     /** set element value from the given character string.
-     *  If the string starts with a "=" the subsequent characters are interpreted as a
-     *  UID name and mapped to the corresponding UID number (using "dcmFindUIDFromName()")
-     *  if possible. Otherwise the leading "=" is removed.
+     *  If the string starts with a "=", the subsequent characters are interpreted as a
+     *  UID name and mapped to the corresponding UID number (using dcmFindUIDFromName())
+     *  if possible. Otherwise, an error (EC_UnknownUIDName) is returned.
      *  NB: This mapping of UID names only works for single-valued input strings.
      *  The length of the string has to be specified explicitly. The string can, therefore,
      *  also contain more than one NULL byte.

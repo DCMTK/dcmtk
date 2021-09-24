@@ -181,6 +181,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLParseError;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLValidationFailure;
 /// SOP class mismatch
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SOPClassMismatch;
+/// Unknown UID name: No mapping to UID value defined
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownUIDName;
 
 //@}
 

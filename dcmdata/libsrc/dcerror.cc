@@ -82,6 +82,7 @@ makeOFConditionConst(EC_CannotWriteJsonInlineBinary,     OFM_dcmdata, 56, OF_err
 makeOFConditionConst(EC_XMLParseError,                   OFM_dcmdata, 57, OF_error, "XML parse error" );
 makeOFConditionConst(EC_XMLValidationFailure,            OFM_dcmdata, 58, OF_error, "XML validation failure" );
 makeOFConditionConst(EC_SOPClassMismatch,                OFM_dcmdata, 59, OF_error, "SOP class mismatch" );
+makeOFConditionConst(EC_UnknownUIDName,                  OFM_dcmdata, 60, OF_error, "Unknown UID name: No mapping to UID value defined" );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;
