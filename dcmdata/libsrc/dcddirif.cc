@@ -1249,32 +1249,40 @@ OFCondition DicomDirInterface::createNewDicomDir(const E_ApplicationProfile prof
                                                  const OFString &filesetID)
 {
     OFCondition result = EC_IllegalParameter;
-    if (!filename.isEmpty() && checkFilesetID(filesetID))
+    /* check parameters */
+    if (!filename.isEmpty())
     {
-        FilesetUpdateMode = OFFalse;
-        /* first remove any existing DICOMDIR from memory */
-        cleanup();
-        /* then create a backup if a DICOMDIR file already exists */
-        if (OFStandard::fileExists(filename))
+        /* remove leading and trailing spaces */
+        OFString normalizedFilesetID(filesetID);
+        normalizeString(normalizedFilesetID, OFFalse /*multiPart*/, OFTrue /*leading*/, OFTrue /*trailing*/);
+        /* check for invalid characters and maximum length */
+        if (checkFilesetID(normalizedFilesetID))
         {
-            if (BackupMode)
-                createDicomDirBackup(filename);
-            /* and delete it because otherwise DcmDicomDir will parse it
-               and try to append to existing records */
-            OFStandard::deleteFile(filename);
-        }
-        /* select new application profile */
-        result = selectApplicationProfile(profile);
-        if (result.good())
-        {
-            DCMDATA_INFO("creating DICOMDIR file using " << getProfileName(ApplicationProfile)
-                << " profile: " << filename);
-            /* finally, create a new DICOMDIR object */
-            DicomDir = new DcmDicomDir(filename, filesetID.c_str());
-            if (DicomDir != NULL)
-                result = DicomDir->error();
-            else
-                result = EC_MemoryExhausted;
+            FilesetUpdateMode = OFFalse;
+            /* first remove any existing DICOMDIR from memory */
+            cleanup();
+            /* then create a backup if a DICOMDIR file already exists */
+            if (OFStandard::fileExists(filename))
+            {
+                if (BackupMode)
+                    createDicomDirBackup(filename);
+                /* and delete it because otherwise DcmDicomDir will parse it
+                and try to append to existing records */
+                OFStandard::deleteFile(filename);
+            }
+            /* select new application profile */
+            result = selectApplicationProfile(profile);
+            if (result.good())
+            {
+                DCMDATA_INFO("creating DICOMDIR file using " << getProfileName(ApplicationProfile)
+                    << " profile: " << filename);
+                /* finally, create a new DICOMDIR object */
+                DicomDir = new DcmDicomDir(filename, normalizedFilesetID.c_str());
+                if (DicomDir != NULL)
+                    result = DicomDir->error();
+                else
+                    result = EC_MemoryExhausted;
+            }
         }
     }
     return result;
@@ -5538,7 +5546,8 @@ OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
     {
         size_t invalidChar = 0;
         /* are the characters ok? */
-        if (!DcmCodeString::checkVR(filesetID, &invalidChar, OFFalse /*checkLength*/))
+        if (!DcmCodeString::checkVR(filesetID, &invalidChar, OFFalse /*checkLength*/) ||
+            ((invalidChar = filesetID.find_first_of(' ')) != OFString_npos) /* spaces not allowed */)
         {
             /* create error message */
             DCMDATA_ERROR("invalid character(s) in file-set ID: " << filesetID << OFendl
