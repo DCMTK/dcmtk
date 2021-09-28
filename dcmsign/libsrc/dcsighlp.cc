@@ -851,7 +851,7 @@ void DcmSignatureHelper::printSignatureDetails(DcmSignature& sig, DcmStack& stac
       DCMSIGN_INFO("      Validity                : not before " << aString);
       cert->getCertValidityNotAfter(aString);
       DCMSIGN_INFO("      Validity                : not after " << aString);
-      const char *ecname = NULL;
+      OFString ecname;
       switch (cert->getKeyType())
       {
         case EKT_RSA:
@@ -862,7 +862,7 @@ void DcmSignatureHelper::printSignatureDetails(DcmSignature& sig, DcmStack& stac
           break;
         case EKT_EC:
           ecname = cert->getCertCurveName();
-          if (ecname)
+          if (ecname.length() > 0)
           {
             DCMSIGN_INFO("      Public key              : EC, curve " << ecname << ", " << cert->getCertKeyBits() << " bits");
           }

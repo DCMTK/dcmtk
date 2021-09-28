@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -134,11 +134,11 @@ public:
   long getCertKeyBits();
 
   /** returns the name of the elliptic curve used in the certificate.
-   *  @return NULL if the certificate is not of elliptic curve type,
+   *  @return empty string if the certificate is not of elliptic curve type,
    *    "unnamed curve" if the curve name has not been stored in the certificate,
    *    or the short name of the elliptic curve if available.
    */
-  const char *getCertCurveName();
+  OFString getCertCurveName();
 
   /** checks if the length of the public key in the certificate is too short
    *  and must be considered weak. Currently, an RSA or DSA key with less than
