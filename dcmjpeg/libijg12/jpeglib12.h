@@ -779,15 +779,6 @@ struct jpeg_source_mgr {
 typedef struct jvirt_sarray_control * jvirt_sarray_ptr;
 typedef struct jvirt_barray_control * jvirt_barray_ptr;
 
-
-#ifdef C_LOSSLESS_SUPPORTED
-#define NEED_DARRAY
-#else
-#ifdef D_LOSSLESS_SUPPORTED
-#define NEED_DARRAY
-#endif
-#endif
-
 struct jpeg_memory_mgr {
   /* Method pointers */
   JMETHOD(void *, alloc_small, (j_common_ptr cinfo, int pool_id,
@@ -800,11 +791,9 @@ struct jpeg_memory_mgr {
   JMETHOD(JBLOCKARRAY, alloc_barray, (j_common_ptr cinfo, int pool_id,
 				      JDIMENSION blocksperrow,
 				      JDIMENSION numrows));
-#ifdef NEED_DARRAY
   JMETHOD(JDIFFARRAY, alloc_darray, (j_common_ptr cinfo, int pool_id,
 				     JDIMENSION diffsperrow,
 				     JDIMENSION numrows));
-#endif
   JMETHOD(jvirt_sarray_ptr, request_virt_sarray, (j_common_ptr cinfo,
 						  int pool_id,
 						  boolean pre_zero,

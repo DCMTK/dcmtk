@@ -484,8 +484,6 @@ alloc_barray (j_common_ptr cinfo, int pool_id,
 }
 
 
-#ifdef NEED_DARRAY
-
 /*
  * Creation of 2-D difference arrays.
  * This is essentially the same as the code for sample arrays, above.
@@ -532,8 +530,6 @@ alloc_darray (j_common_ptr cinfo, int pool_id,
 
   return result;
 }
-
-#endif
 
 
 /*
@@ -1123,9 +1119,7 @@ jinit_memory_mgr (j_common_ptr cinfo)
   mem->pub.alloc_large = alloc_large;
   mem->pub.alloc_sarray = alloc_sarray;
   mem->pub.alloc_barray = alloc_barray;
-#ifdef NEED_DARRAY
   mem->pub.alloc_darray = alloc_darray;
-#endif
   mem->pub.request_virt_sarray = request_virt_sarray;
   mem->pub.request_virt_barray = request_virt_barray;
   mem->pub.realize_virt_arrays = realize_virt_arrays;
