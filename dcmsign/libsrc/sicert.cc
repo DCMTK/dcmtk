@@ -409,7 +409,7 @@ long SiCertificate::getCertKeyBits()
 
 OFString SiCertificate::getCertCurveName()
 {
-  OFString result = NULL;
+  OFString result;
 #ifndef OPENSSL_NO_EC
   if (x509)
   {
