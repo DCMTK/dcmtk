@@ -132,7 +132,7 @@ enum DcmTLSCipherKeyExchange
   /// Static RSA key exchange
   TKE_RSA,
 
-  /// Elliptic Curve Diffie–Hellman
+  /// Elliptic Curve Diffie-Hellman
   TKE_ECDH,
 
   /// Fixed ECDH with ECDSA-signed certificates
@@ -141,7 +141,7 @@ enum DcmTLSCipherKeyExchange
   /// Fixed ECDH with RSA signatures
   TKE_ECDH_RSA,
 
-  /// Diffie–Hellman key exchange
+  /// Diffie-Hellman key exchange
   TKE_DH
 
 };
@@ -157,7 +157,7 @@ enum DcmTLSCipherAuthentication
   /// Digital Signature Standard
   TCA_DSS,
 
-  /// Elliptic Curve Diffie–Hellman
+  /// Elliptic Curve Diffie-Hellman
   TCA_ECDH,
 
   /// Elliptic Curve Digital Signature Algorithm

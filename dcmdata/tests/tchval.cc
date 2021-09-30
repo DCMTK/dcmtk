@@ -177,7 +177,7 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "PN-12", DcmPersonName::checkStringValue("A^B^C^D^E=F^G^H^I^J=K^L^M^N^O") )
   /* The almighty DICOM standard says:
    *   Any component group may be absent, including the first component group.
-   *   In this case, the person name may start with one or more “=” delimiters.
+   *   In this case, the person name may start with one or more "=" delimiters.
    */
   CHECK_GOOD( "PN-13", DcmPersonName::checkStringValue("==Test") )
   CHECK_GOOD( "PN-14", DcmPersonName::checkStringValue("Test==") )

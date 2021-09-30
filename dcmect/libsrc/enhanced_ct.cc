@@ -480,7 +480,7 @@ OFCondition EctEnhancedCT::loadDataset(DcmDataset& dataset, EctEnhancedCT*& ct)
         else
         {
             DCMECT_ERROR("Invalid SOP Class: "
-                         << sopClass << ", only Enhanced CT Image Storage (1.2.840.10008.5.1.4.1.1.2.1​) supported");
+                         << sopClass << ", only Enhanced CT Image Storage (1.2.840.10008.5.1.4.1.1.2.1) supported");
             return ECT_InvalidSOPClass;
         }
     }

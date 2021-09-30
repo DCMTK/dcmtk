@@ -215,7 +215,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_MacularGridThicknessAndVolumeReportStorage,          "MacularGridThicknessAndVolumeReportStorage" },
     { UID_MammographyCADSRStorage,                             "MammographyCADSRStorage" },
     { UID_MediaStorageDirectoryStorage,                        "MediaStorageDirectoryStorage" },
-    { UID_MicroscopyBulkSimpleAnnotationsStorage,              "MicroscopyBulkSimple​AnnotationsStorage​" },
+    { UID_MicroscopyBulkSimpleAnnotationsStorage,              "MicroscopyBulkSimpleAnnotationsStorage" },
     { UID_MRImageStorage,                                      "MRImageStorage" },
     { UID_MRSpectroscopyStorage,                               "MRSpectroscopyStorage" },
     { UID_MultichannelRespiratoryWaveformStorage,              "MultichannelRespiratoryWaveformStorage" },
