@@ -1632,7 +1632,7 @@
 #define CODE_DCM_Generic3DPlanning                                         DSRBasicCodedEntry("112341", "DCM", "Generic 3D Planning")
 #define CODE_DCM_GenericPlanningForHipReplacement                          DSRBasicCodedEntry("112342", "DCM", "Generic Planning for Hip Replacement")
 #define CODE_DCM_GenericPlanningForKneeReplacement                         DSRBasicCodedEntry("112343", "DCM", "Generic Planning for Knee Replacement")
-#define CODE_DCM_MuellerMethodPlanningForHipReplacement                    DSRBasicCodedEntry("112344", "DCM", "Müller Method Planning for Hip Replacement")
+#define CODE_DCM_MuellerMethodPlanningForHipReplacement                    DSRBasicCodedEntry("112344", "DCM", "Mueller Method Planning for Hip Replacement")
 #define CODE_DCM_ImplantationPlan                                          DSRBasicCodedEntry("112345", "DCM", "Implantation Plan")
 #define CODE_DCM_SelectedImplantComponent                                  DSRBasicCodedEntry("112346", "DCM", "Selected Implant Component")
 #define CODE_DCM_ComponentID                                               DSRBasicCodedEntry("112347", "DCM", "Component ID")
