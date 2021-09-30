@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, Open Connections GmbH
+ *  Copyright (C) 2019-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -445,7 +445,7 @@ OFCondition ConcatenationLoader::insertDestinationAttributes()
         char buf[100];
         dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
         uid = buf;
-        DCMFG_WARN("SOP Instance UID of Concatentation Source (0020,0242)​ not set, created new SOP Instance UID "
+        DCMFG_WARN("SOP Instance UID of Concatentation Source (0020,0242) not set, created new SOP Instance UID "
                    << uid);
     }
     OFCondition result = m_Result->putAndInsertOFStringArray(DCM_SOPInstanceUID, uid);

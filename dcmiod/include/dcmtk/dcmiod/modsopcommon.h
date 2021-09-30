@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2021, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -177,8 +177,8 @@ public:
 
     /**  Set Timezone Offset From UTC
      *   @param  value Value to be set (single value only) or "" for no value.
-     *   Encoded as an ASCII string in the format “&ZZXX”. The components of this
-     *   string, from left to right, are & = “+” or “-”, and ZZ = Hours and
+     *   Encoded as an ASCII string in the format "&ZZXX". The components of this
+     *   string, from left to right, are & = "+" or "-", and ZZ = Hours and
      *   XX = Minutes of offset.
      *   @param  checkValue Check 'value' for conformance with VR (SH) and VM (1) if enabled
      *   @return EC_Normal if successful, an error code otherwise
