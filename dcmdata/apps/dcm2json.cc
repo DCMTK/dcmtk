@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2016-2020, OFFIS e.V.
+*  Copyright (C) 2016-2021, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -239,8 +239,24 @@ int main(int argc, char *argv[])
             OFString csetString;
             if (dset->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
             {
-                if (csetString.compare("ISO_IR 192") != 0 && csetString.compare("ISO_IR 6") != 0)
+                if (csetString.compare("ISO_IR 6") == 0)
                 {
+                    /* SpecificCharacterSet indicates ASCII without extended characters.
+                     * If this is true, no conversion is necessary. Check for extended characters.
+                     */
+                    if (dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
+                    {
+                        OFLOG_FATAL(dcm2jsonLogger, "dataset contains extended characters but SpecificCharacterSet (0008,0005) is 'ISO_IR 6'");
+                        result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
+                    }
+                }
+                else if (csetString.compare("ISO_IR 192") == 0)
+                {
+                    /* DICOM dataset is already in UTF-8, no conversion necessary */
+                }
+                else
+                {
+                    /* we have a character set other than ASCII or UTF-8. Perform conversion. */
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
                     /* convert all DICOM strings to UTF-8 */
                     OFLOG_INFO(dcm2jsonLogger, "converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
@@ -256,6 +272,16 @@ int main(int argc, char *argv[])
 #endif
                 }
             }
+            else
+            {
+              /* SpecificCharacterSet not present */
+              if (dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
+              {
+                  OFLOG_FATAL(dcm2jsonLogger, "dataset contains extended characters but no SpecificCharacterSet (0008,0005)");
+                  result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
+              }
+            }
+
             if (result == 0)
             {
                 /* if second parameter is present, it is treated as the output filename ("stdout" otherwise) */
