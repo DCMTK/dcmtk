@@ -125,7 +125,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmnet/dul.h"
-#include "dulstruc.h"
+#include "dcmtk/dcmnet/dulstruc.h"
 #include "dulpriv.h"
 #include "dulfsm.h"
 #include "dcmtk/dcmnet/dcmtrans.h"

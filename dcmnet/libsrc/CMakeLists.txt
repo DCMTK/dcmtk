@@ -35,6 +35,7 @@ DCMTK_ADD_LIBRARY(dcmnet
   dulpres.cc
   dwrap.c
   extneg.cc
+  helpers.cc
   lst.cc
   scp.cc
   scpcfg.cc

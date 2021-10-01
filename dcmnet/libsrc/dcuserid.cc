@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,7 +23,7 @@
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dcuserid.h"
 #include "dcmtk/dcmnet/dul.h"
-#include "dulstruc.h"
+#include "dcmtk/dcmnet/dulstruc.h"
 
 /* ************************************************************************* */
 /*       Implementation of class UserIdentityNegotiationSubItem              */

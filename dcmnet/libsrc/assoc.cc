@@ -118,6 +118,7 @@
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmnet/dcmtrans.h"
+#include "dcmtk/dcmnet/helpers.h"
 
 /*
 ** Constant Definitions
@@ -336,25 +337,6 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     return EC_Normal;
 }
 
-static void
-destroyPresentationContextList(LST_HEAD ** lst)
-{
-    DUL_PRESENTATIONCONTEXT *pc;
-    DUL_TRANSFERSYNTAX *ts;
-
-    if ((lst == NULL) || (*lst == NULL))
-        return;
-    while ((pc = (DUL_PRESENTATIONCONTEXT*) LST_Dequeue(lst)) != NULL) {
-        if (pc->proposedTransferSyntax != NULL) {
-            while ((ts = (DUL_TRANSFERSYNTAX*) LST_Dequeue(&pc->proposedTransferSyntax)) != NULL) {
-                free(ts);
-            }
-            LST_Destroy(&pc->proposedTransferSyntax);
-        }
-        free(pc);
-    }
-    LST_Destroy(lst);
-}
 
 OFCondition
 ASC_destroyAssociationParameters(T_ASC_Parameters ** params)
@@ -1699,8 +1681,7 @@ ASC_destroyAssociation(T_ASC_Association ** association)
     }
 
     if ((*association)->params != NULL) {
-        cond = ASC_destroyAssociationParameters(&(*association)->params);
-        if (cond.bad()) return cond;
+        ASC_destroyAssociationParameters(&(*association)->params);
     }
 
     if ((*association)->sendPDVBuffer != NULL)

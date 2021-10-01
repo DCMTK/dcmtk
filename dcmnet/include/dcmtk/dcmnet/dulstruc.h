@@ -71,6 +71,11 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/extneg.h"
 #include "dcmtk/dcmnet/dcuserid.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/dntypes.h"
+#include "dcmtk/dcmnet/dul.h"
+#include "dcmtk/dcmnet/lst.h"
+
 
 class DcmTransportConnection;
 class DcmTransportLayer;
@@ -289,6 +294,9 @@ typedef struct dul_datapdu {
     unsigned long length;
     DUL_PRESENTATIONDATAVALUE presentationDataValue;
 }   DUL_DATAPDU;
+
+
+
 
 #define DUL_PROTOCOL      (unsigned short) 0x01
 
