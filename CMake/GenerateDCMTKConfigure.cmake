@@ -723,6 +723,13 @@ endif()
 
 # Tests that require a try-compile
 
+# We are using DCMTK_NO_TRY_RUN to disable the try_run parts, and only do the compile part.
+# To prevent the CMake Warning: Manually-specified variables were not used by the project:
+# we need to ignore it else
+if(DEFINED DCMTK_NO_TRY_RUN)
+  set(DCMTK_NO_TRY_RUN DDCMTK_NO_TRY_RUN CACHE INTERNAL "Disable compile try as part of config")
+endif()
+
 if(HAVE_MATH_H)
   if(HAVE_LIBC_H)
     # checks if <libc.h> and <math.h> cause a problem if libc.h is included extern "C"
@@ -762,22 +769,27 @@ int main()
   endif()
 endif()
 
-
-if(NOT DEFINED C_CHAR_UNSIGNED)
-  message(STATUS "Checking signedness of char")
-  DCMTK_TRY_RUN(C_CHAR_SIGNED C_CHAR_SIGNED_COMPILED "${CMAKE_BINARY_DIR}/CMakeTmp/Char"
-          "${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cc"
-          COMPILE_OUTPUT_VARIABLE C_CHAR_SIGNED_COMPILE_OUTPUT)
-  if(C_CHAR_SIGNED_COMPILED)
-    if(C_CHAR_SIGNED)
-      message(STATUS "Checking signedness of char -- signed")
-      set(C_CHAR_UNSIGNED 0 CACHE INTERNAL "Whether char is unsigned.")
+if(NOT DEFINED DCMTK_NO_TRY_RUN)
+  if(NOT DEFINED C_CHAR_UNSIGNED)
+    message(STATUS "Checking signedness of char")
+    DCMTK_TRY_RUN(C_CHAR_SIGNED C_CHAR_SIGNED_COMPILED "${CMAKE_BINARY_DIR}/CMakeTmp/Char"
+            "${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cc"
+            COMPILE_OUTPUT_VARIABLE C_CHAR_SIGNED_COMPILE_OUTPUT)
+    if(C_CHAR_SIGNED_COMPILED)
+      if(C_CHAR_SIGNED)
+        message(STATUS "Checking signedness of char -- signed")
+        set(C_CHAR_UNSIGNED 0 CACHE INTERNAL "Whether char is unsigned.")
+      else()
+        message(STATUS "Checking signedness of char -- unsigned")
+        set(C_CHAR_UNSIGNED 1 CACHE INTERNAL "Whether char is unsigned.")
+      endif()
     else()
-      message(STATUS "Checking signedness of char -- unsigned")
-      set(C_CHAR_UNSIGNED 1 CACHE INTERNAL "Whether char is unsigned.")
+      message(STATUS "Checking signedness of char -- failed")
     endif()
-  else()
-    message(STATUS "Checking signedness of char -- failed")
+  endif()
+else()
+  if(NOT DEFINED C_CHAR_UNSIGNED)
+     message(FATAL_ERROR "When using DCMTK_NO_TRY_RUN, set C_CHAR_USIGNED")
   endif()
 endif()
 
@@ -1299,23 +1311,32 @@ function(ANALYZE_ICONV_FLAGS)
                 COMPILE_DEFINITIONS "-DLIBICONV_SECOND_ARGUMENT_CONST=${LIBICONV_SECOND_ARGUMENT_CONST}"
             )
         endif()
-        DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT
-            "${CMAKE_BINARY_DIR}/CMakeTmp/Iconv"
-            "${DCMTK_SOURCE_DIR}/config/tests/iconv.cc"
-            ${EXTRA_ARGS}
-            COMPILE_OUTPUT_VARIABLE CERR
-            RUN_OUTPUT_VARIABLE OUTPUT
-        )
-        if(COMPILE_RESULT)
-            set(DCMTK_ICONV_FLAGS_ANALYZED TRUE CACHE INTERNAL "")
-            if(RUN_RESULT EQUAL 0)
-                message(STATUS "${TEXT} - ${OUTPUT}")
-                set(DCMTK_FIXED_ICONV_CONVERSION_FLAGS "${OUTPUT}" CACHE INTERNAL "")
-            else()
-                message(STATUS "${TEXT} - unknown")
-            endif()
+        if(NOT DEFINED DCMTK_NO_TRY_RUN)
+          DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT
+              "${CMAKE_BINARY_DIR}/CMakeTmp/Iconv"
+              "${DCMTK_SOURCE_DIR}/config/tests/iconv.cc"
+              ${EXTRA_ARGS}
+              COMPILE_OUTPUT_VARIABLE CERR
+              RUN_OUTPUT_VARIABLE OUTPUT
+          )
+          if(COMPILE_RESULT)
+              set(DCMTK_ICONV_FLAGS_ANALYZED TRUE CACHE INTERNAL "")
+              if(RUN_RESULT EQUAL 0)
+                  message(STATUS "${TEXT} - ${OUTPUT}")
+                  set(DCMTK_FIXED_ICONV_CONVERSION_FLAGS "${OUTPUT}" CACHE INTERNAL "")
+              else()
+                  message(STATUS "${TEXT} - unknown")
+              endif()
+          else()
+              message(FATAL_ERROR "${CERR}")
+          endif()
         else()
-            message(FATAL_ERROR "${CERR}")
+          if(NOT DEFINED DCMTK_ICONV_FLAGS_ANALYZED)
+            message(FATAL_ERROR "When using DCMTK_NO_TRY_RUN, set DCMTK_ICONV_FLAGS_ANALYZED")
+          endif()
+          if(NOT DEFINED DCMTK_FIXED_ICONV_CONVERSION_FLAGS)
+            message(FATAL_ERROR "When using DCMTK_NO_TRY_RUN, set DCMTK_FIXED_ICONV_CONVERSION_FLAGS")
+          endif()
         endif()
     endif()
 endfunction()
@@ -1329,21 +1350,27 @@ function(ANALYZE_STDLIBC_ICONV_DEFAULT_ENCODING)
         set(TEXT "Checking whether iconv_open() accepts \"\" as an argument")
         message(STATUS "${TEXT}")
         set(EXTRA_ARGS)
-        DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT
-            "${CMAKE_BINARY_DIR}/CMakeTmp/lciconv"
-            "${DCMTK_SOURCE_DIR}/config/tests/lciconv.cc"
-            COMPILE_OUTPUT_VARIABLE CERR
-        )
-        if(COMPILE_RESULT)
-            if(RUN_RESULT EQUAL 0)
-                message(STATUS "${TEXT} - yes")
-                set(DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING 1 CACHE INTERNAL "")
-            else()
-                message(STATUS "${TEXT} - no")
-                set(DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING CACHE INTERNAL "")
-            endif()
+        if(NOT DEFINED DCMTK_NO_TRY_RUN)
+          DCMTK_TRY_RUN(RUN_RESULT COMPILE_RESULT
+              "${CMAKE_BINARY_DIR}/CMakeTmp/lciconv"
+              "${DCMTK_SOURCE_DIR}/config/tests/lciconv.cc"
+              COMPILE_OUTPUT_VARIABLE CERR
+          )
+          if(COMPILE_RESULT)
+              if(RUN_RESULT EQUAL 0)
+                  message(STATUS "${TEXT} - yes")
+                  set(DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING 1 CACHE INTERNAL "")
+              else()
+                  message(STATUS "${TEXT} - no")
+                  set(DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING CACHE INTERNAL "")
+              endif()
+          else()
+              message(FATAL_ERROR "${CERR}")
+          endif()
         else()
-            message(FATAL_ERROR "${CERR}")
+          if(NOT DEFINED DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING)
+            message(FATAL_ERROR "When using DCMTK_NO_TRY_RUN, set DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING")
+          endif()
         endif()
     endif()
 endfunction()
@@ -1379,28 +1406,32 @@ function(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
         set(ARITH_H_FILE "${ANDROID_TEMPORARY_FILES_LOCATION}/arith.h")
       endif()
     endif()
-    DCMTK_TRY_RUN(
-      RESULT COMPILED
-      "${DCMTK_BINARY_DIR}/CMakeTmp/Arith"
-      "${DCMTK_SOURCE_DIR}/config/tests/arith.cc"
-      COMPILE_DEFINITIONS -I"${DCMTK_BINARY_DIR}/config/include" -I"${DCMTK_SOURCE_DIR}/ofstd/include" -I"${DCMTK_SOURCE_DIR}/ofstd/libsrc"
-      RUN_OUTPUT_VARIABLE OUTPUT
-      COMPILE_OUTPUT_VARIABLE CERR
-      ARGS "\\\"${ARITH_H_FILE}\\\""
-    )
-    if(COMPILED)
-      if(NOT RESULT)
-        message(STATUS "${OUTPUT}")
-        if(CMAKE_CROSSCOMPILING)
-          if(ANDROID)
-            DCMTK_ANDROID_PULL(DCMTK_ANDROID_EMULATOR_INSTANCE "${ARITH_H_FILE}" DESTINATION "${ARITH_H_DESTINATION}")
+    if(NOT DEFINED DCMTK_NO_TRY_RUN)
+      DCMTK_TRY_RUN(
+        RESULT COMPILED
+        "${DCMTK_BINARY_DIR}/CMakeTmp/Arith"
+        "${DCMTK_SOURCE_DIR}/config/tests/arith.cc"
+        COMPILE_DEFINITIONS -I"${DCMTK_BINARY_DIR}/config/include" -I"${DCMTK_SOURCE_DIR}/ofstd/include" -I"${DCMTK_SOURCE_DIR}/ofstd/libsrc"
+        RUN_OUTPUT_VARIABLE OUTPUT
+        COMPILE_OUTPUT_VARIABLE CERR
+        ARGS "\\\"${ARITH_H_FILE}\\\""
+      )
+      if(COMPILED)
+        if(NOT RESULT)
+          message(STATUS "${OUTPUT}")
+          if(CMAKE_CROSSCOMPILING)
+            if(ANDROID)
+              DCMTK_ANDROID_PULL(DCMTK_ANDROID_EMULATOR_INSTANCE "${ARITH_H_FILE}" DESTINATION "${ARITH_H_DESTINATION}")
+            endif()
           endif()
+        else()
+          message(FATAL_ERROR "${OUTPUT}")
         endif()
       else()
-        message(FATAL_ERROR "${OUTPUT}")
+        message(FATAL_ERROR "${CERR}")
       endif()
     else()
-      message(FATAL_ERROR "${CERR}")
+      message("Be sure to copy arith.h to ${ARITH_H_FILE} before build")
     endif()
   endif() # file needs update
 endfunction()
