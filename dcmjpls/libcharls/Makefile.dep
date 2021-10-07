@@ -1,28 +1,28 @@
-header.o: header.cc config.h util.h pubtypes.h header.h \
- ../../ofstd/include/dcmtk/ofstd/ofmem.h \
- ../../config/include/dcmtk/config/osconfig.h \
- ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+header.o: header.cc config.h util.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h pubtypes.h header.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h streams.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h decodstr.h procline.h \
  clrtrans.h encodstr.h
-intrface.o: intrface.cc config.h util.h pubtypes.h intrface.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../config/include/dcmtk/config/osconfig.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
+intrface.o: intrface.cc config.h util.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h pubtypes.h intrface.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -34,20 +34,25 @@ intrface.o: intrface.cc config.h util.h pubtypes.h intrface.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h streams.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h
-jpegls.o: jpegls.cc config.h util.h pubtypes.h streams.h \
- ../../ofstd/include/dcmtk/ofstd/ofvector.h \
- ../../config/include/dcmtk/config/osconfig.h \
+jpegls.o: jpegls.cc config.h util.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
- ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h pubtypes.h streams.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h header.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
  ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h decodstr.h \
  procline.h clrtrans.h encodstr.h context.h ctxtrmod.h lokuptbl.h \
- lltraits.h deftrait.h scan.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/memacces.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def lltraits.h deftrait.h \
+ scan.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def

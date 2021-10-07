@@ -355,9 +355,9 @@ timagepixel.o: timagepixel.cc \
  ../include/dcmtk/dcmiod/modimagepixelvariant.h \
  ../include/dcmtk/dcmiod/modimagepixelbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
- ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../../ofstd/include/dcmtk/ofstd/diag/push.def \
  ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
  ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \

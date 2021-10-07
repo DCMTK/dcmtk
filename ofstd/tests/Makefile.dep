@@ -83,7 +83,9 @@ tfilsys.o: tfilsys.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/offilsys.h ../include/dcmtk/ofstd/ofmem.h \
  ../include/dcmtk/ofstd/ofutil.h \
  ../include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../include/dcmtk/ofstd/ofvector.h ../include/dcmtk/ofstd/ofassert.h
+ ../include/dcmtk/ofstd/ofvector.h ../include/dcmtk/ofstd/ofassert.h \
+ ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/slfassov.def \
+ ../include/dcmtk/ofstd/diag/constexp.def
 tftoa.o: tftoa.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
@@ -170,7 +172,8 @@ tmem.o: tmem.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h \
  ../include/dcmtk/ofstd/ofmem.h ../include/dcmtk/ofstd/ofutil.h \
- ../include/dcmtk/ofstd/variadic/tuplefwd.h
+ ../include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/pessmove.def
 tofdatim.o: tofdatim.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofdate.h ../include/dcmtk/ofstd/ofstring.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
@@ -196,6 +199,7 @@ toffile.o: toffile.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofconsol.h \
  ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofrand.h \
+ ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/constexp.def \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/ofcmdln.h ../include/dcmtk/ofstd/ofexbl.h \
  ../include/dcmtk/ofstd/ofexit.h
@@ -302,7 +306,9 @@ ttuple.o: ttuple.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/diag/mmtag.def \
  ../include/dcmtk/ofstd/variadic/tuplefrd.h \
  ../include/dcmtk/ofstd/variadic/tuple.h \
- ../include/dcmtk/ofstd/diag/pop.def
+ ../include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/ofstd/diag/constexp.def \
+ ../include/dcmtk/ofstd/diag/cnvrsn.def
 tuuid.o: tuuid.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
@@ -330,12 +336,12 @@ tvariant.o: tvariant.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oflimits.h \
  ../../config/include/dcmtk/config/arith.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h \
- ../include/dcmtk/ofstd/ofvriant.h \
+ ../include/dcmtk/ofstd/ofvriant.h ../include/dcmtk/ofstd/ofdiag.h \
  ../include/dcmtk/ofstd/variadic/variant.h \
  ../include/dcmtk/ofstd/variadic/helpers.h \
  ../include/dcmtk/ofstd/ofalign.h ../include/dcmtk/ofstd/ofutil.h \
  ../include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/diag/push.def \
  ../include/dcmtk/ofstd/diag/cnvrsn.def \
  ../include/dcmtk/ofstd/diag/vsprfw.def \
  ../include/dcmtk/ofstd/diag/pop.def

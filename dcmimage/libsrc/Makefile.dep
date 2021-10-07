@@ -743,7 +743,11 @@ dipipng.o: dipipng.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimage/dipipng.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
  ../include/dcmtk/dcmimage/dicdefin.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsobjdes.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def
 dipitiff.o: dipitiff.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -878,7 +882,9 @@ diqtctab.o: diqtctab.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def
 diqtfs.o: diqtfs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimage/diqtfs.h ../include/dcmtk/dcmimage/diqtpix.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -994,7 +1000,8 @@ diqtpbox.o: diqtpbox.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimage/diqtpbox.h \
  ../include/dcmtk/dcmimage/dicdefin.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 diquant.o: diquant.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimage/diquant.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \

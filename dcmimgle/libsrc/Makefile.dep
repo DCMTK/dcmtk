@@ -232,10 +232,10 @@ didispfn.o: didispfn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
- ../include/dcmtk/dcmimgle/didispfn.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../include/dcmtk/dcmimgle/didispfn.h \
  ../include/dcmtk/dcmimgle/didefine.h \
  ../include/dcmtk/dcmimgle/displint.h \
  ../include/dcmtk/dcmimgle/dicrvfit.h \
@@ -532,11 +532,15 @@ diimage.o: diimage.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../include/dcmtk/dcmimgle/diinpx.h ../include/dcmtk/dcmimgle/didocu.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmimgle/dipxrept.h
+ ../include/dcmtk/dcmimgle/dipxrept.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def
 diinpx.o: diinpx.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimgle/diinpx.h ../include/dcmtk/dcmimgle/diutils.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -835,9 +839,14 @@ dimoimg.o: dimoimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimgle/dimo2img.h \
  ../include/dcmtk/dcmimgle/dimoipxt.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../include/dcmtk/dcmimgle/dimopxt.h ../include/dcmtk/dcmimgle/dipxrept.h \
- ../include/dcmtk/dcmimgle/diinpx.h ../include/dcmtk/dcmimgle/dimocpt.h \
- ../include/dcmtk/dcmimgle/dimosct.h ../include/dcmtk/dcmimgle/discalet.h \
+ ../include/dcmtk/dcmimgle/diinpx.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmimgle/dimocpt.h ../include/dcmtk/dcmimgle/dimosct.h \
+ ../include/dcmtk/dcmimgle/discalet.h \
  ../include/dcmtk/dcmimgle/ditranst.h ../include/dcmtk/dcmimgle/dimoflt.h \
  ../include/dcmtk/dcmimgle/diflipt.h ../include/dcmtk/dcmimgle/dimorot.h \
  ../include/dcmtk/dcmimgle/dirotat.h ../include/dcmtk/dcmimgle/dimoopxt.h \
@@ -915,8 +924,13 @@ dimoimg3.o: dimoimg3.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimgle/didispfn.h \
  ../include/dcmtk/dcmimgle/dimoipxt.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../include/dcmtk/dcmimgle/dimopxt.h ../include/dcmtk/dcmimgle/dipxrept.h \
- ../include/dcmtk/dcmimgle/diinpx.h ../include/dcmtk/dcmimgle/dimoopxt.h \
+ ../include/dcmtk/dcmimgle/diinpx.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmimgle/dimoopxt.h \
  ../include/dcmtk/dcmimgle/didislut.h
 dimoimg4.o: dimoimg4.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimgle/dimoimg.h \
@@ -985,8 +999,13 @@ dimoimg4.o: dimoimg4.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimgle/didispfn.h \
  ../include/dcmtk/dcmimgle/dimoipxt.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../include/dcmtk/dcmimgle/dimopxt.h ../include/dcmtk/dcmimgle/dipxrept.h \
- ../include/dcmtk/dcmimgle/diinpx.h ../include/dcmtk/dcmimgle/dimoopxt.h \
+ ../include/dcmtk/dcmimgle/diinpx.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmimgle/dimoopxt.h \
  ../include/dcmtk/dcmimgle/didislut.h
 dimoimg5.o: dimoimg5.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimgle/dimoimg.h \
@@ -1055,8 +1074,13 @@ dimoimg5.o: dimoimg5.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimgle/didispfn.h \
  ../include/dcmtk/dcmimgle/dimoipxt.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../include/dcmtk/dcmimgle/dimopxt.h ../include/dcmtk/dcmimgle/dipxrept.h \
- ../include/dcmtk/dcmimgle/diinpx.h ../include/dcmtk/dcmimgle/dimoopxt.h \
+ ../include/dcmtk/dcmimgle/diinpx.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmimgle/dimoopxt.h \
  ../include/dcmtk/dcmimgle/didislut.h
 dimomod.o: dimomod.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \

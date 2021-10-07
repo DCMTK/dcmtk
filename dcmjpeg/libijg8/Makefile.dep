@@ -204,7 +204,8 @@ jidctred.o: jidctred.c jinclude8.h jconfig8.h \
 jmemmgr.o: jmemmgr.c jinclude8.h jconfig8.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib8.h jmorecfg8.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint8.h jerror8.h \
- jmemsys8.h
+ jmemsys8.h ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def
 jmemnobs.o: jmemnobs.c jinclude8.h jconfig8.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib8.h jmorecfg8.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint8.h jerror8.h \

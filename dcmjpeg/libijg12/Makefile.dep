@@ -211,7 +211,8 @@ jidctred.o: jidctred.c jinclude12.h jconfig12.h \
 jmemmgr.o: jmemmgr.c jinclude12.h jconfig12.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib12.h jmorecfg12.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint12.h jerror12.h \
- jmemsys12.h
+ jmemsys12.h ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/constexp.def
 jmemnobs.o: jmemnobs.c jinclude12.h jconfig12.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib12.h jmorecfg12.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint12.h jerror12.h \
