@@ -1,20 +1,6 @@
 # Minimum CMake version required
 cmake_minimum_required(VERSION 3.0.0...3.13.2 FATAL_ERROR)
 
-# As of 2018-12-26 DCMTK has been validated to build with CMake 3.13.2 policies.
-set(DCMTK_MAX_CMAKE_POLICY_VERSION 3.13.2)
-
-# Set and use the newest CMake policies that are validated to work
-# (VERSION_LESS comparison is only defined for CMake 3 and newer)
-if(CMAKE_MAJOR_VERSION LESS 3)
-    set(DCMTK_CMAKE_POLICY_VERSION "${CMAKE_VERSION}")
-elseif(CMAKE_VERSION VERSION_LESS DCMTK_MAX_CMAKE_POLICY_VERSION)
-    set(DCMTK_CMAKE_POLICY_VERSION "${CMAKE_VERSION}")
-else()
-    set(DCMTK_CMAKE_POLICY_VERSION "${DCMTK_MAX_CMAKE_POLICY_VERSION}")
-endif()
-cmake_policy(VERSION "${DCMTK_CMAKE_POLICY_VERSION}")
-
 # Declare project
 project(DCMTK)
 
