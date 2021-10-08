@@ -18,13 +18,20 @@ else()
   set(DCM_DICT_DEFAULT 0)
 endif()
 
+# Evaluation of old DCMDICTPATH environment variable
+if(DEFINED DCMTK_ENABLE_BUILTIN_DICTIONARY)
+  message(WARNING "Usage of DCMTK_ENABLE_BUILTIN_DICTIONARY has been deprecated, see DCMTK_DEFAULT_DICT")
+endif()
+if(DEFINED DCMTK_ENABLE_EXTERNAL_DICTIONARY)
+  message(WARNING "Usage of DCMTK_ENABLE_EXTERNAL_DICTIONARY has been deprecated, see DCMTK_USE_DCMDICTPATH")
+endif()
 # Evaluation of DCMDICTPATH environment variable
 if(DCMTK_USE_DCMDICTPATH)
   set(DCM_DICT_USE_DCMDICTPATH 1)
   message(STATUS "Info: DCMTK will load dictionaries defined by DCMDICTPATH environment variable")
 else()
   set(DCM_DICT_USE_DCMDICTPATH "")
-  message(WARNING "Info: DCMTK will not load dictionaries defined by DCMDICTPATH environment variable")
+  message(STATUS "Warn: DCMTK will not load dictionaries defined by DCMDICTPATH environment variable")
 endif()
 
 # Private tags
