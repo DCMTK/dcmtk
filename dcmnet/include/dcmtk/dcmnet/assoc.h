@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -764,5 +764,6 @@ ASC_role2String(const T_ASC_SC_ROLE role);
 DCMTK_DCMNET_EXPORT DUL_SC_ROLE
 ascRole2dulRole(const T_ASC_SC_ROLE role);
 
-
+DCMTK_DCMNET_EXPORT void
+destroyDULParamPresentationContextList(LST_HEAD ** lst);
 #endif

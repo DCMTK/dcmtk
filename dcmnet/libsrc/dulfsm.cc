@@ -1013,7 +1013,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 
         }
 
-        destroyPresentationContextList(&assoc.presentationContextList);
+        destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
         destroyUserInformationLists(&assoc.userInfo);
         service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
         (*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
@@ -1230,7 +1230,7 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
                assoc.userInfo.implementationVersionName.data, 16 + 1);
         (*association)->associationState = DUL_ASSOC_ESTABLISHED;
 
-        destroyPresentationContextList(&assoc.presentationContextList);
+        destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
         destroyUserInformationLists(&assoc.userInfo);
 
         /* If this PDU is ok with us */
@@ -2587,7 +2587,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
       }
     }
 
-    destroyPresentationContextList(&associateRequest.presentationContextList);
+    destroyAssociatePDUPresentationContextList(&associateRequest.presentationContextList);
     destroyUserInformationLists(&associateRequest.userInfo);
     if (cond.bad())
         return cond;
@@ -2670,7 +2670,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
       }
     }
 
-    destroyPresentationContextList(&associateReply.presentationContextList);
+    destroyAssociatePDUPresentationContextList(&associateReply.presentationContextList);
     destroyUserInformationLists(&associateReply.userInfo);
 
     if (cond.bad()) return cond;

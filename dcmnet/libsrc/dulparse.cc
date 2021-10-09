@@ -98,6 +98,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
                 unsigned long *length, unsigned long availData);
 static void trim_trailing_spaces(char *s);
 
+
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
             unsigned long *length, unsigned long availData);
@@ -290,7 +291,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     }
     if (cond.bad())
     {
-      destroyPresentationContextList(&assoc->presentationContextList);
+      destroyAssociatePDUPresentationContextList(&assoc->presentationContextList);
       destroyUserInformationLists(&assoc->userInfo);
     }
     return cond;

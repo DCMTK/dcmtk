@@ -24,9 +24,8 @@
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmnet/dulstruc.h"
 
-
 void
-destroyPresentationContextList(LST_HEAD ** l)
+destroyAssociatePDUPresentationContextList(LST_HEAD ** l)
 {
     PRV_PRESENTATIONCONTEXTITEM
     * prvCtx;
@@ -49,6 +48,7 @@ destroyPresentationContextList(LST_HEAD ** l)
     }
     LST_Destroy(l);
 }
+
 
 void
 destroyUserInformationLists(DUL_USERINFO * userInfo)
