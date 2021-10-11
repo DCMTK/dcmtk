@@ -51,7 +51,7 @@
 /* --------------- class DVPSFilmSession --------------- */
 
 DVPSFilmSession::DVPSFilmSession(Uint16 illumin, Uint16 reflection)
-: sopInstanceUID(NULL)
+: sopInstanceUID()
 , numberOfCopies(DCM_NumberOfCopies)
 , printPriority(DCM_PrintPriority)
 , mediumType(DCM_MediumType)
