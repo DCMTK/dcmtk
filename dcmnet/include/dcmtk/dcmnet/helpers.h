@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef DCMHET_HELPERS_H
-#define DCMHET_HELPERS_H
+#ifndef DCMNET_HELPERS_H
+#define DCMNET_HELPERS_H
 
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmnet/dulstruc.h"
@@ -29,14 +29,14 @@ struct T_ASC_Parameters;
 class LST_HEAD;
 
 /** Destroys presentationContextList as used in dul_associatepdu
- *  @param pcList The presentation context list to free
+ *  @param pcList The presentation context list to free (must not be NULL)
  */
 void
 destroyAssociatePDUPresentationContextList(LST_HEAD ** pcList);
 
 
-/** Destroys DUL_USERINFO as used in dul_associatepdu
- *  @param userInfo The presentation context list to free
+/** Destroys userInfo as used in dul_associatepdu
+ *  @param userInfo The user information lists to free (must not be NULL)
  */
 void
 destroyUserInformationLists(DUL_USERINFO * userInfo);

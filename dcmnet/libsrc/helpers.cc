@@ -25,17 +25,17 @@
 #include "dcmtk/dcmnet/dulstruc.h"
 
 void
-destroyAssociatePDUPresentationContextList(LST_HEAD ** l)
+destroyAssociatePDUPresentationContextList(LST_HEAD ** pcList)
 {
     PRV_PRESENTATIONCONTEXTITEM
-    * prvCtx;
+        * prvCtx;
     DUL_SUBITEM
         * subItem;
 
-    if (*l == NULL)
+    if (*pcList == NULL)
         return;
 
-    prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Dequeue(l);
+    prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Dequeue(pcList);
     while (prvCtx != NULL) {
         subItem = (DUL_SUBITEM*)LST_Dequeue(&prvCtx->transferSyntaxList);
         while (subItem != NULL) {
@@ -44,9 +44,9 @@ destroyAssociatePDUPresentationContextList(LST_HEAD ** l)
         }
         LST_Destroy(&prvCtx->transferSyntaxList);
         free(prvCtx);
-        prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Dequeue(l);
+        prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Dequeue(pcList);
     }
-    LST_Destroy(l);
+    LST_Destroy(pcList);
 }
 
 
@@ -54,7 +54,7 @@ void
 destroyUserInformationLists(DUL_USERINFO * userInfo)
 {
     PRV_SCUSCPROLE
-    * role;
+        * role;
 
     role = (PRV_SCUSCPROLE*)LST_Dequeue(&userInfo->SCUSCPRoleList);
     while (role != NULL) {
@@ -64,8 +64,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
     LST_Destroy(&userInfo->SCUSCPRoleList);
 
     /* extended negotiation */
-    delete userInfo->extNegList; userInfo->extNegList = NULL;
+    delete userInfo->extNegList;
+    userInfo->extNegList = NULL;
 
     /* user identity negotiation */
-    delete userInfo->usrIdent; userInfo->usrIdent = NULL;
+    delete userInfo->usrIdent;
+    userInfo->usrIdent = NULL;
 }
