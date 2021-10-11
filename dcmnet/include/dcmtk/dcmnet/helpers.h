@@ -28,15 +28,15 @@
 struct T_ASC_Parameters;
 class LST_HEAD;
 
-/** Destroys presentationContextList as defined in dul_associatepdu
- *  @param l The presentation context list to free
+/** Destroys presentationContextList as used in dul_associatepdu
+ *  @param pcList The presentation context list to free
  */
 void
 destroyAssociatePDUPresentationContextList(LST_HEAD ** pcList);
 
 
-/** Destroys presentationContextList as defined in dul_associatepdu
- *  @param l The presentation context list to free
+/** Destroys DUL_USERINFO as used in dul_associatepdu
+ *  @param userInfo The presentation context list to free
  */
 void
 destroyUserInformationLists(DUL_USERINFO * userInfo);
