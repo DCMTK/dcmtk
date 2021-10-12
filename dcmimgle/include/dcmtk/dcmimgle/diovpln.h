@@ -553,11 +553,11 @@ inline int DiOverlayPlane::getNextBit()
 {
     int result;
     if (BitsAllocated == 16)                                        // optimization
-        result = OFstatic_cast(int, *(Ptr++) & (1 << BitPosition));
+        result = *(Ptr++) & (1 << BitPosition);
     else
     {
         Ptr = StartPtr + (BitPos >> 4);                             // div 16
-        result = OFstatic_cast(int, *Ptr & (1 << (BitPos & 0xf)));  // mod 16
+        result = *Ptr & (1 << (BitPos & 0xf));                      // mod 16
         BitPos += BitsAllocated;                                    // next bit
     }
     return result;
