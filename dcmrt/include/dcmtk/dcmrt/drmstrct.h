@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,8 +31,8 @@
  * provides several helper functions on top of DRTStructureSet.
  *
  * @note These functions hopefully simplify working with DRTStructureSetIOD.
- * This is a work in progress, please propose any improvements which would make
- * working with this class easier for you and that your consider useful.
+ *   This is a work in progress, please propose any improvements which would make
+ *   working with this class easier for you and that you consider useful.
  */
 class DCMTK_DCMRT_EXPORT DRTStructureSet : public DRTStructureSetIOD
 {
@@ -57,7 +57,7 @@ public:
      */
     DRTReferencedFrameOfReferenceSequence::Item& getFrameOfReference(const OFString& uid);
 
-    /** find a region of interest by its roi number.
+    /** find a region of interest by its ROI number.
      *  @param roiNumber the ROI to find.
      *  @return the item representing the region of interest or the
      *          EmptyDefaultItem of the DRTStructureSetROISequence.

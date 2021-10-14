@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012, OFFIS e.V.
+ *  Copyright (C) 2012-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,8 +31,8 @@
  * provides several helper functions on top of DRTPlanIOD.
  *
  * @note These functions hopefully simplify working with DRTPlanIOD. This is a
- * work in progress, please propose any improvements which would make working
- * with this class easier for you and that your consider useful.
+ *   work in progress, please propose any improvements which would make working
+ *   with this class easier for you and that you consider useful.
  */
 class DCMTK_DCMRT_EXPORT DRTPlan : public DRTPlanIOD {
 public:
