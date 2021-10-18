@@ -166,10 +166,55 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
             (*output) << "Code page: " << GetOEMCP() << " (OEM) / " << GetACP() << " (ANSI)" << OFendl;
         }
 #endif
+        /* output details on DCMTK's build options */
+        (*output) << "Build options:";
 #ifdef DEBUG
         /* indicate that debug code is present */
-        (*output) << OFendl << "Compiled with DEBUG defined, i.e. with debug code" << OFendl;
+        (*output) << " debug";
 #endif
+#ifdef ofstd_EXPORTS
+        /* indicate that shared library support is enabled */
+        (*output) << " shared";
+#endif
+#ifdef HAVE_CXX11
+        /* indicate that C++11 is used */
+        (*output) << " cxx11";
+#endif
+#ifdef HAVE_STL
+        /* indicate that the C++ STL is used */
+        (*output) << " stl";
+#endif
+#ifdef WITH_THREADS
+        /* indicate that MT support is enabled */
+        (*output) << " threads";
+#endif
+#ifdef DCMTK_ENABLE_LFS
+        /* indicate that LFS support is enabled */
+        (*output) << " lfs";
+#endif
+#if DCM_DICT_DEFAULT == 1
+        /* indicate that the builtin data dictionary is enabled */
+        (*output) << " builtin-dict";
+#elif DCM_DICT_DEFAULT == 2
+        /* indicate that the external data dictionary is enabled */
+        (*output) << " extern-dict";
+#endif
+#ifdef DCM_DICT_USE_DCMDICTPATH
+        /* indicate that the DCMDICTPATH environment variable is checked */
+        (*output) << " dcmdictpath";
+#elif DCM_DICT_DEFAULT == 0
+        /* indicate that no data dictionary is available */
+        (*output) << " no-dict";
+#endif
+#ifdef ENABLE_PRIVATE_TAGS
+        /* indicate that private tag dictionary is enabled */
+        (*output) << " private-tags";
+#endif
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+        /* indicate that character set conversion is enabled */
+        (*output) << " char-conv";
+#endif
+        (*output) << OFendl;
     }
     /* release output stream */
     if (stdError)
