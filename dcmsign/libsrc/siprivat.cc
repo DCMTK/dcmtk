@@ -34,7 +34,7 @@ BEGIN_EXTERN_C
 #include <openssl/pem.h>
 END_EXTERN_C
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#ifndef HAVE_OPENSSL_EVP_PKEY_ID
 #define EVP_PKEY_id(key) key->type
 #endif
 

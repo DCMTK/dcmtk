@@ -34,7 +34,7 @@ BEGIN_EXTERN_C
 #include <openssl/opensslv.h>
 END_EXTERN_C
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+#ifndef HAVE_OPENSSL_NEW_EVP_MD_CTX
 struct env_md_ctx_st;
 typedef struct env_md_ctx_st EVP_MD_CTX;
 #else

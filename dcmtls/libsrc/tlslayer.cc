@@ -56,14 +56,23 @@ END_EXTERN_C
 #define DCMTK_SSL_CTX_get0_param(A) (A)->param;
 #endif
 
-#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
+#ifndef HAVE_OPENSSL_X509_GET_SIGNATURE_NID
 #define X509_get_signature_nid(x509) OBJ_obj2nid((x509)->sig_alg->algorithm)
 #endif
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+#ifndef HAVE_OPENSSL_SSL_CTX_GET_CERT_STORE
 #define SSL_CTX_get_cert_store(ctx) (ctx)->cert_store
+#endif
+
+#ifndef HAVE_OPENSSL_EVP_PKEY_BASE_ID
 #define EVP_PKEY_base_id(key) EVP_PKEY_type((key)->type)
+#endif
+
+#ifndef HAVE_OPENSSL_DH_BITS
 #define DH_bits(dh) BN_num_bits((dh)->p)
+#endif
+
+#ifndef HAVE_OPENSSL_X509_STORE_GET0_PARAM
 #define X509_STORE_get0_param(A) (A)->param;
 #endif
 
@@ -97,7 +106,7 @@ OFBool DcmTLSTransportLayer::setBuiltInDHParameters()
   BIO *bio = BIO_new_mem_buf(dh2048_p, sizeof(dh2048_p));
   if (bio)
   {
-#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#ifdef HAVE_OPENSSL_SSL_CTX_SET0_TMP_DH_PKEY
     EVP_PKEY *dhparams = PEM_read_bio_Parameters(bio,NULL);
     BIO_free(bio);
     if (dhparams)
@@ -149,7 +158,7 @@ int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int /* rwflag */,
 
 // The TLS Supported Elliptic Curves extension (RFC 4492) is only supported in OpenSSL 1.0.2 and newer.
 // When compiling with OpenSSL 1.0.1, we are not using computeEllipticCurveList().
-#if OPENSSL_VERSION_NUMBER >= 0x10002000L && !defined(LIBRESSL_VERSION_NUMBER)
+#ifdef HAVE_OPENSSL_SSL_CTX_SET1_CURVES
 
 /** determine the list of elliptic curves supported by the OpenSSL library
  *  for use with the TLS elliptic curve extension.
@@ -179,7 +188,7 @@ static void computeEllipticCurveList(OFVector<int>& ecvector)
   };
 
   // create  a SSL context object
-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+#ifndef HAVE_OPENSSL_TLS_METHOD
    SSL_CTX *ctx = SSL_CTX_new(SSLv23_method());
    if (ctx) SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2|SSL_OP_NO_SSLv3);
 #else
@@ -204,7 +213,7 @@ static void computeEllipticCurveList(OFVector<int>& ecvector)
   }
 }
 
-#endif
+#endif /* HAVE_OPENSSL_SSL_CTX_SET1_CURVES */
 
 
 DcmTLSTransportLayer::DcmTLSTransportLayer()
@@ -230,7 +239,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
    if (initOpenSSL) initializeOpenSSL();
    if (randFile) seedPRNG(randFile);
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+#ifndef HAVE_OPENSSL_TLS_METHOD
    // on versions of OpenSSL older than 1.1.0, we use the
    // SSLv23 methods and not the TLSv1 methods because the latter
    // only accept TLS 1.0 and prevent the negotiation of newer
@@ -300,7 +309,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
 
      // create Elliptic Curve DH parameters
 #ifndef OPENSSL_NO_ECDH
-#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
+#ifndef HAVE_OPENSSL_SSL_CTX_SET_ECDH_AUTO
      // we create ECDH parameters for the NIST P-256 (secp256r1) curve
      // as recommended by BCP 195.
      EC_KEY  *ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
@@ -317,13 +326,13 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
     {
       DCMTLS_ERROR("unable to create Elliptic-Curve Diffie-Hellman parameters.");
     }
-#endif /* OPENSSL_VERSION_NUMBER < 0x10002000L */
+#endif /* HAVE_OPENSSL_SSL_CTX_SET_ECDH_AUTO */
 #endif /* OPENSSL_NO_ECDH */
 
     // set default certificate verification strategy
     setCertificateVerification(DCV_requireCertificate);
 
-#if OPENSSL_VERSION_NUMBER >= 0x10002000L && !defined(LIBRESSL_VERSION_NUMBER)
+#if HAVE_OPENSSL_SSL_CTX_SET1_CURVES
     // The TLS 1.2 Signature Algorithms extension is only supported in OpenSSL 1.0.2 and newer.
 
     if (networkRole != NET_ACCEPTOR)
@@ -334,7 +343,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
       // support for SHA-384 and SHA-512.
 
       const int slist[] = {NID_sha256, EVP_PKEY_RSA,     NID_sha384, EVP_PKEY_RSA,     NID_sha512, EVP_PKEY_RSA,
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L
+#ifdef HAVE_OPENSSL_EVP_PKEY_RSA_PSS
                            // Connections between a client and a server that both use OpenSSL 1.1.1
                            // will fail unless RSA-PSS is also offered as a signature algorithm.
                            NID_sha256, EVP_PKEY_RSA_PSS, NID_sha384, EVP_PKEY_RSA_PSS, NID_sha512, EVP_PKEY_RSA_PSS,
@@ -363,7 +372,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
         DCMTLS_ERROR("unable to configure the TLS Supported Elliptic Curves extension.");
       }
     }
-#endif /* OPENSSL_VERSION_NUMBER >= 0x10002000L */
+#endif /* HAVE_OPENSSL_SSL_CTX_SET1_CURVES */
 
     if (NET_REQUESTOR != networkRole)
     {
@@ -432,7 +441,7 @@ OFBool DcmTLSTransportLayer::setTempDHParameters(const char *filename)
   BIO *bio = BIO_new_file(filename,"r");
   if (bio)
   {
-#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#ifdef HAVE_OPENSSL_SSL_CTX_SET0_TMP_DH_PKEY
     EVP_PKEY *dh = PEM_read_bio_Parameters(bio,NULL);
     BIO_free(bio);
     if (dh)
@@ -544,7 +553,7 @@ OFCondition DcmTLSTransportLayer::activateCipherSuites()
 
     SSL_CTX_set_options(transportLayerContext, ciphersuites.getTLSOptions());
 
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+#ifdef HAVE_OPENSSL_SSL_CTX_SET_MAX_PROTO_VERSION
     // when compiling with OpenSSL 1.1.1 or newer, set the maximum supported
     // TLS protocol version to TLS 1.2 if required (i.e. for the historic
     // security profiles, which would otherwise show unexpected behaviour).
