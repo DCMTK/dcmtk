@@ -60,7 +60,7 @@ END_EXTERN_C
 
 /* static helper methods */
 
-#ifdef HAVE_OPENSSL_OSSL_PROVIDER_LOAD
+#ifdef HAVE_PROTOTYPE_OSSL_PROVIDER_LOAD
 static OSSL_PROVIDER *legacyProvider = NULL;
 static OSSL_PROVIDER *defaultProvider = NULL;
 #endif
@@ -70,7 +70,7 @@ void DcmSignature::initializeLibrary()
   SSL_library_init();
   SSL_load_error_strings();
   OpenSSL_add_all_algorithms();
-#ifdef HAVE_OPENSSL_OSSL_PROVIDER_LOAD
+#ifdef HAVE_PROTOTYPE_OSSL_PROVIDER_LOAD
   // load the legacy provider, which is needed for RIPEMD160
   if (legacyProvider == NULL) legacyProvider = OSSL_PROVIDER_load(NULL, "legacy");
   // explicitly also load the default provider
@@ -80,7 +80,7 @@ void DcmSignature::initializeLibrary()
 
 void DcmSignature::cleanupLibrary()
 {
-#ifdef HAVE_OPENSSL_OSSL_PROVIDER_LOAD
+#ifdef HAVE_PROTOTYPE_OSSL_PROVIDER_LOAD
   if (legacyProvider)
   {
     OSSL_PROVIDER_unload(legacyProvider);
