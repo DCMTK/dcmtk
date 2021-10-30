@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2018, OFFIS e.V.
+ *  Copyright (C) 1993-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -447,11 +447,25 @@ void DcmQueryRetrieveSCP::refuseAnyStorageContexts(T_ASC_Association * assoc)
 {
     int i;
     T_ASC_PresentationContextID pid;
+    T_ASC_PresentationContext ctx;
 
     for (i = 0; i < numberOfDcmAllStorageSOPClassUIDs; i++) {
         do {
-          pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
-          if (pid != 0) ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
+            pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
+            if (pid != 0) {
+                if (ASC_findAcceptedPresentationContext(assoc->params, pid, &ctx).bad() ||
+                    ctx.acceptedRole != ASC_SC_ROLE_SCP) {
+                    // pid refers to a storage presentation context in which the client is not
+                    // exclusively acting as SCP (i.e. receiver of images).
+                    // Reject this presentation context to enforce the "read-only" nature
+                    // of the storage area.
+                    ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
+                }
+                else {
+                    // for the current SOP class, role negotiation is active. Skip to the next one.
+                    pid = 0;
+                }
+            }
         } while (pid != 0); // repeat as long as we find presentation contexts for this SOP class - there might be multiple ones.
     }
 }
