@@ -5,6 +5,7 @@ include_directories(${LIBXML_INCDIR})
 DCMTK_ADD_LIBRARY(i2d
   i2d.cc
   i2dplvlp.cc
+  i2djutil.cc
   i2djpgs.cc
   i2dbmps.cc
   i2dplsc.cc
