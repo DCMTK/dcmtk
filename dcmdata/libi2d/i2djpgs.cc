@@ -527,7 +527,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData, Uint32& pixLen
 
 OFCondition I2DJpegSource::createJPEGFileMap()
 {
-    DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examing JPEG file and creating map of JPEG markers");
+    DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examining JPEG file and creating map of JPEG markers");
     // clear any old data
     clearMap();
     E_JPGMARKER marker;
