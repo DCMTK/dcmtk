@@ -823,7 +823,9 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_RTRadiationSalvageRecordStorage) ||
              compare(sopClass, UID_TomotherapeuticRadiationRecordStorage) ||
              compare(sopClass, UID_CArmPhotonElectronRadiationRecordStorage) ||
-             compare(sopClass, UID_RoboticRadiationRecordStorage))
+             compare(sopClass, UID_RoboticRadiationRecordStorage) ||
+             compare(sopClass, UID_RTRadiationSetDeliveryInstructionStorage) ||
+             compare(sopClass, UID_RTTreatmentPreparationStorage))
     {
         result = ERT_Radiotherapy;
     }

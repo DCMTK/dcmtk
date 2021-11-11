@@ -603,6 +603,8 @@ RTRadiationSalvageRecordStorage                      1.2.840.10008.5.1.4.1.1.481
 TomotherapeuticRadiationRecordStorage                1.2.840.10008.5.1.4.1.1.481.18
 CArmPhotonElectronRadiationRecordStorage             1.2.840.10008.5.1.4.1.1.481.19
 RoboticRadiationRecordStorage                        1.2.840.10008.5.1.4.1.1.481.20
+RTRadiationSetDeliveryInstructionStorage             1.2.840.10008.5.1.4.1.1.481.21
+RTTreatmentPreparationStorage                        1.2.840.10008.5.1.4.1.1.481.22
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
