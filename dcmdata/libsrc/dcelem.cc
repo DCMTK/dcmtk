@@ -1813,14 +1813,21 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
     // initialize the cache with new stream
     if (!readStream)
     {
+      // create input stream object
       readStream = fLoadValue->create();
 
       // check that read stream is non-NULL
       if (readStream == NULL) return EC_InvalidStream;
 
       // check that stream status is OK
-      if (readStream->status().bad()) return readStream->status();
+      if (readStream->status().bad())
+      {
+        OFCondition result = readStream->status();
+        delete readStream;
+        return result;
+      }
 
+      // readStream will be deleted when the cache is deleted
       cache->init(readStream, this);
     }
 
