@@ -40,15 +40,15 @@ BEGIN_EXTERN_C
 #include <openssl/err.h>
 END_EXTERN_C
 
-#ifndef HAVE_PROTOTYPE_X509_GET0_NOTBEFORE
+#ifndef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTBEFORE
 #define X509_get0_notBefore(x) X509_get_notBefore(x)
 #endif
 
-#ifndef HAVE_PROTOTYPE_X509_GET0_NOTAFTER
+#ifndef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTAFTER
 #define X509_get0_notAfter(x) X509_get_notAfter(x)
 #endif
 
-#ifndef HAVE_PROTOTYPE_EVP_PKEY_ID
+#ifndef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_ID
 #define EVP_PKEY_id(key) key->type
 #endif
 
@@ -418,7 +418,7 @@ OFString SiCertificate::getCertCurveName()
     if (pkey && EVP_PKEY_type(EVP_PKEY_id(pkey)) == EVP_PKEY_EC)
     {
       // we have an elliptic curve.
-#ifdef HAVE_PROTOTYPE_EVP_PKEY_GET_GROUP_NAME
+#ifdef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET_GROUP_NAME
       /* code for OpenSSL 3.0 and newer */
       char groupname[100];
       groupname[0] = '\0';
@@ -426,7 +426,7 @@ OFString SiCertificate::getCertCurveName()
       result = groupname;
 #else
       /* code for older OpenSSL versions */
-#ifndef HAVE_PROTOTYPE_EVP_PKEY_GET0_EC_KEY
+#ifndef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET0_EC_KEY
       EC_KEY *eckey = EVP_PKEY_get1_EC_KEY(pkey);
 #else
       const EC_KEY *eckey = EVP_PKEY_get0_EC_KEY(pkey);
@@ -445,11 +445,11 @@ OFString SiCertificate::getCertCurveName()
           }
           else result = "unnamed curve";
         }
-#ifndef HAVE_PROTOTYPE_EVP_PKEY_GET0_EC_KEY
+#ifndef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET0_EC_KEY
         EC_KEY_free(eckey);
 #endif
       }
-#endif /* HAVE_PROTOTYPE_EVP_PKEY_GET_GROUP_NAME */
+#endif /* HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET_GROUP_NAME */
 
       EVP_PKEY_free(pkey);
     }

@@ -93,21 +93,21 @@ static OFCondition convertSSLError(int sslError)
       return DCMTLS_EC_TLSAcceptOperationDidNotComplete;
       break;
 
-#ifdef HAVE_PROTOTYPE_SSL_ERROR_WANT_ASYNC
+#ifdef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC
     // SSL_ERROR_WANT_ASYNC is defined starting with OpenSSL 1.1.0
     case SSL_ERROR_WANT_ASYNC:
       return DCMTLS_EC_TLSAsyncOperationDidNotComplete;
       break;
 #endif
 
-#ifdef HAVE_PROTOTYPE_SSL_ERROR_WANT_ASYNC_JOB
+#ifdef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC_JOB
     // SSL_ERROR_WANT_ASYNC_JOB is defined starting with OpenSSL 1.1.0
     case SSL_ERROR_WANT_ASYNC_JOB:
       return DCMTLS_EC_TLSAsyncJobCouldNotBeStarted;
       break;
 #endif
 
-#if HAVE_PROTOTYPE_SSL_ERROR_WANT_CLIENT_HELLO_CB
+#if HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_CLIENT_HELLO_CB
     // SSL_ERROR_WANT_CLIENT_HELLO_CB is defined starting with OpenSSL 1.1.1
     case SSL_ERROR_WANT_CLIENT_HELLO_CB:
       return DCMTLS_EC_TLSClientHelloCallbackNeeded;

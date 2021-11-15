@@ -43,43 +43,43 @@ BEGIN_EXTERN_C
 #include <openssl/x509.h>
 END_EXTERN_C
 
-#ifndef HAVE_PROTOTYPE_X509_GET0_NOTBEFORE
+#ifndef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTBEFORE
 #define X509_get0_notBefore(x) X509_get_notBefore(x)
 #endif
 
-#ifndef HAVE_PROTOTYPE_X509_GET0_NOTAFTER
+#ifndef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTAFTER
 #define X509_get0_notAfter(x) X509_get_notAfter(x)
 #endif
 
-#ifndef HAVE_PROTOTYPE_TS_STATUS_INFO_GET0_STATUS
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_STATUS
 #define TS_STATUS_INFO_get0_status(x) (x)->status
 #endif
 
-#ifndef HAVE_PROTOTYPE_TS_STATUS_INFO_GET0_TEXT
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_TEXT
 #define TS_STATUS_INFO_get0_text(x) (x)->text
 #endif
 
-#ifndef HAVE_PROTOTYPE_TS_STATUS_INFO_GET0_FAILURE_INFO
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_FAILURE_INFO
 #define TS_STATUS_INFO_get0_failure_info(x) (x)->failure_info
 #endif
 
-#ifndef HAVE_PROTOTYPE_TS_VERIFY_CTS_SET_CERTS
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTS_SET_CERTS
 #define TS_VERIFY_CTS_set_certs(x,y) ((x)->certs = (y))
 #endif
 
-#ifndef HAVE_PROTOTYPE_TS_VERIFY_CTX_SET_DATA
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_DATA
 #define TS_VERIFY_CTX_set_data(x,y) ((x)->data = (y))
 #endif
 
-#ifndef HAVE_PROTOTYPE_TS_VERIFY_CTX_SET_FLAGS
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_FLAGS
 #define TS_VERIFY_CTX_set_flags(x,y) ((x)->flags = (y))
 #endif
 
-#ifndef HAVE_PROTOTYPE_TS_VERIFY_CTX_SET_STORE
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_STORE
 #define TS_VERIFY_CTX_set_store(x,y) ((x)->store = (y))
 #endif
 
-#ifndef HAVE_PROTOTYPE_ASN1_STRING_GET0_DATA
+#ifndef HAVE_OPENSSL_PROTOTYPE_ASN1_STRING_GET0_DATA
 #define ASN1_STRING_get0_data(x) ASN1_STRING_data((asn1_string_st*)x)
 #endif
 

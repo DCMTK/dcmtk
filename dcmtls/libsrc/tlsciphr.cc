@@ -33,7 +33,7 @@ BEGIN_EXTERN_C
 #include <openssl/tls1.h>
 END_EXTERN_C
 
-#ifndef HAVE_PROTOTYPE_SSL_CTX_GET_CIPHERS
+#ifndef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET_CIPHERS
 #define SSL_CTX_get_ciphers(ctx) (ctx)->cipher_list
 #endif
 
@@ -127,7 +127,7 @@ static const DcmCipherSuiteList globalCipherSuiteList[] =
     {"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",       TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_SHA384,        TPV_TLSv12, TKE_ECDH,       TCA_ECDSA,  TCE_AES,      TCM_SHA384, 256, 256},
     {"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",         TLS1_TXT_ECDHE_RSA_WITH_AES_256_SHA384,          TPV_TLSv12, TKE_ECDH,       TCA_RSA,    TCE_AES,      TCM_SHA384, 256, 256},
 
-#ifdef HAVE_PROTOTYPE_TLS_CHACHA20_POLY1305_CIPHERSUITES
+#ifdef HAVE_OPENSSL_PROTOTYPE_TLS_CHACHA20_POLY1305_CIPHERSUITES
     /* OpenSSL 1.1.0 supports the ChaCha20-Poly1305 ciphersuites defined in RFC 7905 */
     {"TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256", TLS1_TXT_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,     TPV_TLSv12, TKE_ECDH,       TCA_ECDSA,  TCE_ChaCha20, TCM_AEAD,   256, 256},
     {"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",   TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305,       TPV_TLSv12, TKE_ECDH,       TCA_RSA,    TCE_ChaCha20, TCM_AEAD,   256, 256},
@@ -142,7 +142,7 @@ static const DcmCipherSuiteList globalCipherSuiteList[] =
     {"TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA",         TLS1_TXT_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA,      TPV_SSLv3,  TKE_DH,         TCA_RSA,    TCE_Camellia, TCM_SHA1,   256, 256},
     {"TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",           TLS1_TXT_DHE_DSS_WITH_AES_256_SHA256,            TPV_TLSv12, TKE_DH,         TCA_DSS,    TCE_AES,      TCM_SHA256, 256, 256},
     {"TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",           TLS1_TXT_DHE_RSA_WITH_AES_256_SHA256,            TPV_TLSv12, TKE_DH,         TCA_RSA,    TCE_AES,      TCM_SHA256, 256, 256},
-#ifdef HAVE_PROTOTYPE_TLS_CHACHA20_POLY1305_CIPHERSUITES
+#ifdef HAVE_OPENSSL_PROTOTYPE_TLS_CHACHA20_POLY1305_CIPHERSUITES
     /* OpenSSL 1.1.0 supports the ChaCha20-Poly1305 ciphersuites defined in RFC 7905 */
     {"TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256",     TLS1_TXT_DHE_RSA_WITH_CHACHA20_POLY1305,         TPV_TLSv12, TKE_DH,         TCA_RSA,    TCE_ChaCha20, TCM_AEAD,   256, 256},
 #endif
@@ -175,7 +175,7 @@ void DcmTLSCiphersuiteHandler::determineSupportedCiphers()
   size_t numEntries = GLOBAL_NUM_CIPHERSUITES;
   for (size_t i = 0; i < numEntries; i++) ciphersuiteSupported[i] = OFFalse;
 
-#ifndef HAVE_PROTOTYPE_TLS_METHOD
+#ifndef HAVE_OPENSSL_PROTOTYPE_TLS_METHOD
   SSL_CTX *ctx = SSL_CTX_new(SSLv23_method());
 #else
   SSL_CTX *ctx = SSL_CTX_new(TLS_method());
@@ -577,7 +577,7 @@ OFBool DcmTLSCiphersuiteHandler::isTLS13Enabled() const
 long DcmTLSCiphersuiteHandler::getTLSOptions() const
 {
   long result = 0;
-#ifndef HAVE_PROTOTYPE_TLS_METHOD
+#ifndef HAVE_OPENSSL_PROTOTYPE_TLS_METHOD
   // When compiling with OpenSSL 1.1.0, SSL support is disabled in DcmTLSTransportLayer anyway.
   // For older OpenSSL versions we explicitly disable them here.
   result |= SSL_OP_NO_SSLv2;

@@ -34,7 +34,7 @@ BEGIN_EXTERN_C
 #include <openssl/opensslv.h>
 END_EXTERN_C
 
-#ifndef HAVE_OPENSSL_NEW_EVP_MD_CTX
+#ifndef HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX
 struct env_md_ctx_st;
 typedef struct env_md_ctx_st EVP_MD_CTX;
 #else
