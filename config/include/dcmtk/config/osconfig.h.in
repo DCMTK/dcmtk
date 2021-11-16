@@ -168,7 +168,7 @@
 /* Define to 1 if you have the `cuserid' function. */
 #undef HAVE_CUSERID
 
-/* define if the compiler supports basic C++11 syntax */
+/* Define if the compiler supports basic C++11 syntax. */
 #undef HAVE_CXX11
 
 /* Define if volatile is a known keyword. */

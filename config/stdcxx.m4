@@ -134,8 +134,8 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
     AC_MSG_NOTICE([No compiler with C++$1 support was found])
   else
     HAVE_CXX$1=1
-    AC_DEFINE(HAVE_CXX$1,1,
-              [define if the compiler supports basic C++$1 syntax])
+    AC_DEFINE(HAVE_CXX$1, 1,
+              [Define if the compiler supports basic C++$1 syntax.])
   fi
   AC_SUBST(HAVE_CXX$1)
 ])

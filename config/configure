@@ -2844,6 +2844,7 @@ ac_config_headers="$ac_config_headers include/dcmtk/config/osconfig.h"
 
 
 
+
 PACKAGE_VERSION_NUMBER=366
 PACKAGE_VERSION_SUFFIX="+"
 PACKAGE_DATE="DEV"
@@ -12778,7 +12779,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12781 "configure"
+#line 12782 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13029,7 +13030,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13032 "configure"
+#line 13033 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13279,7 +13280,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13282 "configure"
+#line 13283 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13348,7 +13349,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13351 "configure"
+#line 13352 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13417,7 +13418,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13420 "configure"
+#line 13421 "configure"
 #include "confdefs.h"
 
 template <class T>
