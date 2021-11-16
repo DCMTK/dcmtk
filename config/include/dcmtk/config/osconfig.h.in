@@ -4,7 +4,7 @@
 #define OSCONFIG_H
 
 /*
-** Define enclosures for include files with C linkage (mostly system headers)
+** Define enclosures for include files with C linkage (mostly system headers).
 */
 #ifdef __cplusplus
 #define BEGIN_EXTERN_C extern "C" {
@@ -33,10 +33,10 @@
 #undef C_CHAR_UNSIGNED
 
 /* Define to the inline keyword supported by the C compiler, if any, or to the
-   empty string */
+   empty string. */
 #undef C_INLINE
 
-/* Define if >> is unsigned on the C compiler */
+/* Define if >> is unsigned on the C compiler. */
 #undef C_RIGHTSHIFT_UNSIGNED
 
 /* character set conversion constants. */
@@ -51,10 +51,10 @@
 /* Define to select character set conversion implementation. */
 #undef DCMTK_ENABLE_CHARSET_CONVERSION
 
-/* Select LFS mode (defined above) that shall be used or don't define it */
+/* Select LFS mode (defined above) that shall be used or don't define it. */
 #undef DCMTK_ENABLE_LFS
 
-/* Try to define the iconv behavior as conversion flags */
+/* Try to define the iconv behavior as conversion flags. */
 #undef DCMTK_FIXED_ICONV_CONVERSION_FLAGS
 
 /* Define if your system has a usable <poll.h>. */
@@ -63,7 +63,7 @@
 /* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 
-/* Define if iconv_open() accepts "" as an argument */
+/* Define if iconv_open() accepts "" as an argument. */
 #undef DCMTK_STDLIBC_ICONV_HAS_DEFAULT_ENCODING
 
 /* Define the type of default dictionary that we want to use: Do not load any
@@ -129,7 +129,7 @@
 #undef HAVE_CHAR16_T
 
 /* Define if your system declares the return type of strerror_r as char *
-   instead of int */
+   instead of int. */
 #undef HAVE_CHARP_STRERROR_R
 
 /* Define if your C++ compiler can work with class templates. */
@@ -171,7 +171,7 @@
 /* define if the compiler supports basic C++11 syntax */
 #undef HAVE_CXX11
 
-/* Define if volatile is a known keyword */
+/* Define if volatile is a known keyword. */
 #undef HAVE_CXX_VOLATILE
 
 /* Define if "const" is supported by the C compiler. */
@@ -375,7 +375,7 @@
 /* Define to 1 if you have the <iostream.h> header file. */
 #undef HAVE_IOSTREAM_H
 
-/* Define if your system defines ios::nocreate in iostream.h */
+/* Define if your system defines ios::nocreate in iostream.h. */
 #undef HAVE_IOS_NOCREATE
 
 /* Define to 1 if you have the <io.h> header file. */
@@ -495,7 +495,7 @@
 /* Define to 1 if you have the <new.h> header file. */
 #undef HAVE_NEW_H
 
-/* Define if the compiler supports operator delete (std::nothrow.) */
+/* Define if the compiler supports operator delete (std::nothrow). */
 #undef HAVE_NOTHROW_DELETE
 
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
@@ -561,6 +561,169 @@ typedef unsigned short ushort;
    arguments. */
 #undef HAVE_OLD_READDIR_R
 
+/* Define to 1 if you have the <openssl/asn1.h> header file. */
+#undef HAVE_OPENSSL_ASN1_H
+
+/* Define if OpenSSL provides the new typedef EVP_MD_CTX defined as struct
+   evp_md_ctx_st. */
+#undef HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX
+
+/* Define to 1 if you have the <openssl/dh.h> header file. */
+#undef HAVE_OPENSSL_DH_H
+
+/* Define to 1 if you have the <openssl/evp.h> header file. */
+#undef HAVE_OPENSSL_EVP_H
+
+/* Define if OpenSSL provides a prototype for ASN1_STRING_get0_data in
+   <openssl/asn1.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_ASN1_STRING_GET0_DATA
+
+/* Define if OpenSSL provides a prototype for DH_bits in <openssl/dh.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_DH_BITS
+
+/* Define if OpenSSL provides a prototype for EVP_PKEY_base_id in
+   <openssl/evp.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_BASE_ID
+
+/* Define if OpenSSL provides a prototype for EVP_PKEY_get0_EC_KEY in
+   <openssl/evp.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET0_EC_KEY
+
+/* Define if OpenSSL provides a prototype for EVP_PKEY_get_group_name in
+   <openssl/evp.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET_GROUP_NAME
+
+/* Define if OpenSSL provides a prototype for EVP_PKEY_id in <openssl/evp.h>.
+   */
+#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_ID
+
+/* Define if OpenSSL provides a prototype for EVP_PKEY_RSA_PSS in
+   <openssl/evp.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_RSA_PSS
+
+/* Define if OpenSSL provides a prototype for OSSL_PROVIDER_load in
+   <openssl/provider.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_OSSL_PROVIDER_LOAD
+
+/* Define if OpenSSL provides a prototype for RAND_egd in <openssl/rand.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_RAND_EGD
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_get0_param in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET0_PARAM
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_get_cert_store in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET_CERT_STORE
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_get_ciphers in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET_CIPHERS
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_set0_tmp_dh_pkey in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET0_TMP_DH_PKEY
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_set1_curves in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET1_CURVES
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_set1_sigalgs in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET1_SIGALGS
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_set_ecdh_auto in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_ECDH_AUTO
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_set_max_proto_version in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_MAX_PROTO_VERSION
+
+/* Define if OpenSSL provides a prototype for SSL_CTX_set_security_level in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_SECURITY_LEVEL
+
+/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_ASYNC in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC
+
+/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_ASYNC_JOB in
+   <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC_JOB
+
+/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_CLIENT_HELLO_CB
+   in <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_CLIENT_HELLO_CB
+
+/* Define if OpenSSL provides a prototype for
+   TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305 in <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305
+
+/* Define if OpenSSL provides a prototype for TLS_method in <openssl/ssl.h>.
+   */
+#undef HAVE_OPENSSL_PROTOTYPE_TLS_METHOD
+
+/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_failure_info
+   in <openssl/ts.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_FAILURE_INFO
+
+/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_status in
+   <openssl/ts.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_STATUS
+
+/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_text in
+   <openssl/ts.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_TEXT
+
+/* Define if OpenSSL provides a prototype for TS_VERIFY_CTS_set_certs in
+   <openssl/ts.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTS_SET_CERTS
+
+/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_data in
+   <openssl/ts.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_DATA
+
+/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_flags in
+   <openssl/ts.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_FLAGS
+
+/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_store in
+   <openssl/ts.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_STORE
+
+/* Define if OpenSSL provides a prototype for X509_get0_notAfter in
+   <openssl/x509.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTAFTER
+
+/* Define if OpenSSL provides a prototype for X509_get0_notBefore in
+   <openssl/x509.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTBEFORE
+
+/* Define if OpenSSL provides a prototype for X509_get_signature_nid in
+   <openssl/x509.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_X509_GET_SIGNATURE_NID
+
+/* Define if OpenSSL provides a prototype for X509_STORE_get0_param in
+   <openssl/x509.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_X509_STORE_GET0_PARAM
+
+/* Define to 1 if you have the <openssl/provider.h> header file. */
+#undef HAVE_OPENSSL_PROVIDER_H
+
+/* Define to 1 if you have the <openssl/ssl.h> header file. */
+#undef HAVE_OPENSSL_SSL_H
+
+/* Define to 1 if you have the <openssl/ts.h> header file. */
+#undef HAVE_OPENSSL_TS_H
+
+/* Define if OpenSSL provides the X509_ALGOR_get0() function that expects a
+   const pointer as first parameter. */
+#undef HAVE_OPENSSL_X509_ALGOR_GET0_CONST_PARAM
+
+/* Define to 1 if you have the <openssl/x509.h> header file. */
+#undef HAVE_OPENSSL_X509_H
+
 /* Define if the output iterator category is supported. */
 #undef HAVE_OUTPUT_ITERATOR_CATEGORY
 
@@ -570,7 +733,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `pclose' function. */
 #undef HAVE_PCLOSE
 
-/* Define if pthread_t is a pointer type on your system */
+/* Define if pthread_t is a pointer type on your system. */
 #undef HAVE_POINTER_TYPE_PTHREAD_T
 
 /* Define to 1 if you have the `popen' function. */
@@ -715,9 +878,6 @@ typedef unsigned short ushort;
 /* Define if the random_access iterator category is supported. */
 #undef HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY
 
-/* Define if OpenSSL provides the RAND_egd function. */
-#undef HAVE_RAND_EGD
-
 /* Define to 1 if you have the `readdir_r' function. */
 #undef HAVE_READDIR_R
 
@@ -754,9 +914,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
 
-/* Define if OpenSSL provides the SSL_CTX_get0_param function. */
-#undef HAVE_SSL_CTX_GET0_PARAM
-
 /* Define to 1 if you have the <sstream> header file. */
 #undef HAVE_SSTREAM
 
@@ -766,7 +923,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `stat' function. */
 #undef HAVE_STAT
 
-/* Define if the compiler supports static_assert */
+/* Define if the compiler supports static_assert. */
 #undef HAVE_STATIC_ASSERT
 
 /* Define if the compiler supports static_cast<>. */
@@ -958,7 +1115,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `tmpnam' function. */
 #undef HAVE_TMPNAM
 
-/* Define if the compiler recognizes typename. */
+/* Define if typename is a known keyword. */
 #undef HAVE_TYPENAME
 
 /* Define to 1 if the system has the type `uint64_t'. */
@@ -985,7 +1142,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <utime.h> header file. */
 #undef HAVE_UTIME_H
 
-/* Define if variable-length arrays are supported in C */
+/* Define if variable-length arrays are supported in C. */
 #undef HAVE_VLA
 
 /* Define to 1 if you have the `vprintf' function. */
@@ -1022,7 +1179,7 @@ typedef unsigned short ushort;
 /* Define if the compiler supports __func__. */
 #undef HAVE___func___MACRO
 
-/* Define if libc.h should be treated as a C++ header */
+/* Define if libc.h should be treated as a C++ header. */
 #undef INCLUDE_LIBC_H_AS_CXX
 
 /* Define if <math.h> fails if included extern "C". */
@@ -1091,7 +1248,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
-/* Namespace for ANSI C functions in standard C++ headers */
+/* Namespace for ANSI C functions in standard C++ headers. */
 #undef STDIO_NAMESPACE
 
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
@@ -1158,7 +1315,7 @@ typedef unsigned short ushort;
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
-/* Define to enable LFS64 (explicit large file support) if available */
+/* Define to enable LFS64 (explicit large file support) if available. */
 #undef _LARGEFILE64_SOURCE
 
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
