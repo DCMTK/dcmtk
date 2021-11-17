@@ -994,7 +994,7 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
     ;;
   esac ],
 [ SAVELIBS="$LIBS"
-  LIBS="$LIBS $OPENSSLLIBS -lssl -lcrypto"
+  LIBS="$LIBS -lssl -lcrypto $OPENSSLLIBS"
   AC_TRY_LINK([#include <openssl/ssl.h>], [(void) TLSv1_method()],
     [
       AC_TRY_COMPILE([#include <openssl/ssl.h>], [
