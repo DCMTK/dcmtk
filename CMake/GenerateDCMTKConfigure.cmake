@@ -762,19 +762,21 @@ endif()
 
 if(NOT DEFINED C_CHAR_UNSIGNED)
   message(STATUS "Checking signedness of char")
-  DCMTK_TRY_RUN(C_CHAR_SIGNED C_CHAR_SIGNED_COMPILED "${CMAKE_BINARY_DIR}/CMakeTmp/Char"
-          "${DCMTK_SOURCE_DIR}/CMake/dcmtkTestCharSignedness.cc"
-          COMPILE_OUTPUT_VARIABLE C_CHAR_SIGNED_COMPILE_OUTPUT)
+  DCMTK_TRY_COMPILE(C_CHAR_SIGNED_COMPILED "char is signed"
+	  "// Fail compile for unsigned char.
+int main()
+{
+  unsigned char uc = 255;
+  char *unused_array[(*reinterpret_cast<char*>(&uc) < 0)?1:-1];
+  return 0;
+}
+")
   if(C_CHAR_SIGNED_COMPILED)
-    if(C_CHAR_SIGNED)
-      message(STATUS "Checking signedness of char -- signed")
-      set(C_CHAR_UNSIGNED 0 CACHE INTERNAL "Whether char is unsigned.")
-    else()
-      message(STATUS "Checking signedness of char -- unsigned")
-      set(C_CHAR_UNSIGNED 1 CACHE INTERNAL "Whether char is unsigned.")
-    endif()
+    message(STATUS "Checking signedness of char -- signed")
+    set(C_CHAR_UNSIGNED 0 CACHE INTERNAL "Whether char is unsigned.")
   else()
-    message(STATUS "Checking signedness of char -- failed")
+    message(STATUS "Checking signedness of char -- unsigned")
+    set(C_CHAR_UNSIGNED 1 CACHE INTERNAL "Whether char is unsigned.")
   endif()
 endif()
 
