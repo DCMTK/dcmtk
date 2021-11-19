@@ -19,49 +19,34 @@
  *
  */
 
-#include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/dcmdata/libi2d/i2djpglss.h"
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 
-I2DJpegSource::I2DJpegSource()
-    : m_jpegUtil(false)
+I2DJpegLsSource::I2DJpegLsSource()
+    : m_jpegUtil(true)
     , m_lossyCompressed(OFTrue)
 {
-    DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Plugin instantiated");
+    DCMDATA_LIBI2D_DEBUG("I2DJpegLsSource: Plugin instantiated");
 }
 
-OFString I2DJpegSource::inputFormat() const
+OFString I2DJpegLsSource::inputFormat() const
 {
-    return "JPEG";
+    return "JPEG-LS";
 }
 
-void I2DJpegSource::setExtSeqSupport(const OFBool enabled)
-{
-    m_jpegUtil.setExtSeqSupport(enabled);
-}
-
-void I2DJpegSource::setProgrSupport(const OFBool enabled)
-{
-    m_jpegUtil.setProgrSupport(enabled);
-}
-
-void I2DJpegSource::setInsistOnJFIF(const OFBool enabled)
-{
-    m_jpegUtil.setInsistOnJFIF(enabled);
-}
-
-void I2DJpegSource::setKeepAPPn(const OFBool enabled)
+void I2DJpegLsSource::setKeepAPPn(const OFBool enabled)
 {
     m_jpegUtil.setKeepAPPn(enabled);
 }
 
-void I2DJpegSource::setKeepCOM(const OFBool enabled)
+void I2DJpegLsSource::setKeepCOM(const OFBool enabled)
 {
     m_jpegUtil.setKeepCOM(enabled);
 }
 
-OFCondition I2DJpegSource::readPixelData(Uint16& rows,
+OFCondition I2DJpegLsSource::readPixelData(Uint16& rows,
                                          Uint16& cols,
                                          Uint16& samplesPerPixel,
                                          OFString& photoMetrInt,
@@ -81,12 +66,12 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     pixAspectV, pixData, length, ts);
 }
 
-OFCondition I2DJpegSource::getLossyComprInfo(OFBool& srcEncodingLossy, OFString& srcLossyComprMethod) const
+OFCondition I2DJpegLsSource::getLossyComprInfo(OFBool& srcEncodingLossy, OFString& srcLossyComprMethod) const
 {
     if (m_lossyCompressed)
     {
         srcEncodingLossy    = OFTrue;
-        srcLossyComprMethod = "ISO_10918_1"; // Defined term for JPEG Lossy Compression
+        srcLossyComprMethod = "ISO_14495_1"; // Defined term for JPEG-LS Lossy Compression
     }
     else
     {
@@ -97,7 +82,7 @@ OFCondition I2DJpegSource::getLossyComprInfo(OFBool& srcEncodingLossy, OFString&
 }
 
 // close file and free dynamically allocated memory
-I2DJpegSource::~I2DJpegSource()
+I2DJpegLsSource::~I2DJpegLsSource()
 {
     DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Closing JPEG file and cleaning up memory");
 }

@@ -7,6 +7,7 @@ DCMTK_ADD_LIBRARY(i2d
   i2dplvlp.cc
   i2djutil.cc
   i2djpgs.cc
+  i2djpglss.cc
   i2dbmps.cc
   i2dplsc.cc
   i2dplnsc.cc

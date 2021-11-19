@@ -123,7 +123,7 @@ public:
     /** Constructor, initializes member variables
      *  @return none
      */
-    I2DJpegUtil();
+    I2DJpegUtil(bool useJPEGLS);
 
     /** Extracts the raw JPEG pixel data stream from a JPEG file and returns some
      *  further information about this pixel data. Raw means here that all APP
@@ -205,7 +205,7 @@ public:
      *  @param marker - [in] The marker to be converted
      *  @return A string representation of the marker
      */
-    static OFString jpegMarkerToString(const E_JPGMARKER& marker);
+    static OFString jpegMarkerToString(const E_JPGMARKER& marker, OFBool useJPEGLS);
 
     /** Destructor, frees some memory.
      *  @return none
@@ -252,6 +252,9 @@ protected:
                                       Uint16& samplesPerPixel,
                                       Uint16& bitsPerSample);
 
+    OFCondition getSOSImageParameters(const JPEGFileMapEntry& entry,
+                                      Uint8& nearLossless);
+
     /** Get JPEG parameters as found at given JFIF marker of the JPEG image.
      *  @param entry - [in] This specifies the marker and the byte position of the
      *                      JFIF marker
@@ -276,7 +279,7 @@ protected:
      *  @param jpegEncoding - [in] Image marker that should be tested
      *  @return EC_Normal, marker is supported, error otherwise
      */
-    static E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding);
+    static E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding, OFBool const useJPEGLS, Uint8 const nearLossless = 0);
 
     /** Returns true if marker is one of the RST0 to RST7 markers
      *  @param jpegEncoding - [in] Image marker that should be tested
@@ -288,7 +291,7 @@ protected:
      *  @param jpegEncoding - [in] Image marker that should be tested
      *  @return OFTrue, if marker is SOF0 to SOF15, OFFalse otherwise
      */
-    static OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding);
+    static OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding, OFBool const useJPEGLS);
 
     /** Extract raw JPEG stream (i.e. without APPn markers) from JPEG file.
      *  @param pixelData - [out] The resulting JPEG stream
@@ -362,6 +365,7 @@ protected:
     /// Default: true
     OFBool m_keepCOM;
 
+    OFBool m_useJPEGLS;
 };
 
 #endif // I2DJUTIL_H
