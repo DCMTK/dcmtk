@@ -28,6 +28,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/libi2d/i2d.h"
 #include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/dcmdata/libi2d/i2djpglss.h"
 #include "dcmtk/dcmdata/libi2d/i2dbmps.h"
 #include "dcmtk/dcmdata/libi2d/i2dplsc.h"
 #include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
@@ -44,6 +45,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 enum InputFormat
 {
   InputFormatJPEG,
+  InputFormatJPEGLS,
   InputFormatBMP
 };
 
@@ -132,7 +134,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
 
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("general:");
-      cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string", "supported formats: JPEG (default), BMP");
+      cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string", "supported formats: JPEG (default), JPEG-LS, BMP");
       cmd.addOption("--dataset-from",        "-df",  1, "[f]ilename: string",
                                                         "use dataset from DICOM file f");
 #ifdef WITH_LIBXML
@@ -201,6 +203,8 @@ static I2DImgSource *createInputPlugin(InputFormat ifrm)
   {
     case InputFormatBMP:
       return new I2DBmpSource();
+    case InputFormatJPEGLS:
+      return new I2DJpegLsSource();
     case InputFormatJPEG:
     default:
       return new I2DJpegSource();
@@ -265,6 +269,10 @@ static OFCondition startConversion(
     if (tempStr == "JPEG")
     {
       inForm = InputFormatJPEG;
+    }
+    else if (tempStr == "JPEG-LS")
+    {
+      inForm = InputFormatJPEGLS;
     }
     else if (tempStr == "BMP")
     {
@@ -418,7 +426,7 @@ static OFCondition startConversion(
     return cond;
   }
 
-  if (inputPlug->inputFormat() == "JPEG")
+  if (inputPlug->inputFormat() == "JPEG" || inputPlug->inputFormat() == "JPEG-LS")
   {
     I2DJpegSource *jpgSource = OFstatic_cast(I2DJpegSource*, inputPlug);
     if (!jpgSource)
