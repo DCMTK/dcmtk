@@ -4,8 +4,8 @@
  includedir="${prefix}/include/"
 
  Name: DCMTK
- Description: DICOM ToolKit (DCMTK)
- URL: http://dcmtk.org
+ Description: DICOM Toolkit (DCMTK)
+ URL: https://dcmtk.org
  Version: @DCMTK_MAJOR_VERSION@.@DCMTK_MINOR_VERSION@.@DCMTK_BUILD_VERSION@
  Requires: @PKGCONF_REQ_PUB@
  Requires.private: @PKGCONF_REQ_PRIV@
