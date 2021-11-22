@@ -299,7 +299,7 @@ template<class T> class DSRListOfItems
     OFCondition removeItem(const size_t idx)
     {
         OFCondition result = EC_IllegalParameter;
-        OFLIST_TYPENAME OFListIterator(T) iterator = ItemList.begin();
+        OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
         if (gotoItemPos(idx, iterator))
         {
             ItemList.erase(iterator);
