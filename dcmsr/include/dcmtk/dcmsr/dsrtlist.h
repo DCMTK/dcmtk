@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2021, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -282,7 +282,7 @@ template<class T> class DSRListOfItems
             ItemList.push_back(item);
             result = EC_Normal;
         } else {
-            OFLIST_TYPENAME OFListIterator(T) iterator = ItemList.begin();
+            OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
             if (gotoItemPos(idx, iterator))
             {
                 ItemList.insert(iterator, 1, item);
@@ -299,7 +299,7 @@ template<class T> class DSRListOfItems
     OFCondition removeItem(const size_t idx)
     {
         OFCondition result = EC_IllegalParameter;
-        OFLIST_TYPENAME OFListIterator(T) iterator = ItemList.begin();
+        OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
         if (gotoItemPos(idx, iterator))
         {
             ItemList.erase(iterator);
