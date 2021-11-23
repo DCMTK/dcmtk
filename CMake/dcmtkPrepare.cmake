@@ -178,11 +178,17 @@ DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_CXX11 "Enable use of native C++11 features (
 
 # On Windows, the built-in dictionary is default, on Unix the external one.
 # It is not possible to use both, built-in plus external default dictionary.
-if(WIN32 OR MINGW)
-  set(DCMTK_DEFAULT_DICT "builtin" CACHE STRING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
-else() # built-in dictionary turned off on Unix per default
-  set(DCMTK_DEFAULT_DICT "external" CACHE STRING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
+if(NOT DEFINED DCMTK_DEFAULT_DICT)
+  if(WIN32 OR MINGW)
+    set(DCMTK_DEFAULT_DICT_DEFAULT "builtin")
+  else() # built-in dictionary turned off on Unix per default
+    set(DCMTK_DEFAULT_DICT_DEFAULT "external")
+  endif()
+else()
+  # prefer user specified one:
+  set(DCMTK_DEFAULT_DICT_DEFAULT "${DCMTK_DEFAULT_DICT}")
 endif()
+set(DCMTK_DEFAULT_DICT "${DCMTK_DEFAULT_DICT_DEFAULT}" CACHE STRING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
 set_property(CACHE DCMTK_DEFAULT_DICT PROPERTY STRINGS builtin external none)
 if (DCMTK_DEFAULT_DICT EQUAL "none")
   message(WARNING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
