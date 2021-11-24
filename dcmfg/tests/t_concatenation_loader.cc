@@ -114,8 +114,8 @@ static void prepare_scan_dump()
 {
     SCAN_DUMP += "Concatenation UID*           : 1.3.6.1.4.1.5962.1.7.70.2.1.1166562673.14401\n";
     SCAN_DUMP += "  SOP Class UID*             : 1.2.840.10008.5.1.4.1.1.2.1\n";
-    SCAN_DUMP += "  Concatentation Source UID* : \n";
-    SCAN_DUMP += "  Concatentation Source File : \n";
+    SCAN_DUMP += "  Concatenation Source UID* : \n";
+    SCAN_DUMP += "  Concatenation Source File : \n";
     SCAN_DUMP += "  Number of Frames (computed): 60\n";
     SCAN_DUMP += "  In-conc. Total Number      : 6\n";
     SCAN_DUMP += "  Patient ID                 : 0070\n";
@@ -152,8 +152,8 @@ static void prepare_scan_dump()
     SCAN_DUMP += "--------------------------------------------------------------\n";
     SCAN_DUMP += "Concatenation UID*           : 1.3.6.1.4.1.5962.1.7.70.2.2.1166562673.14401\n";
     SCAN_DUMP += "  SOP Class UID*             : 1.2.840.10008.5.1.4.1.1.2.1\n";
-    SCAN_DUMP += "  Concatentation Source UID* : \n";
-    SCAN_DUMP += "  Concatentation Source File : \n";
+    SCAN_DUMP += "  Concatenation Source UID* : \n";
+    SCAN_DUMP += "  Concatenation Source File : \n";
     SCAN_DUMP += "  Number of Frames (computed): 30\n";
     SCAN_DUMP += "  In-conc. Total Number      : 3\n";
     SCAN_DUMP += "  Patient ID                 : 0070\n";
@@ -178,8 +178,8 @@ static void prepare_scan_dump()
     SCAN_DUMP += "--------------------------------------------------------------\n";
     SCAN_DUMP += "Concatenation UID*           : 1.3.6.1.4.1.5962.1.7.70.2.3.1166562673.14401\n";
     SCAN_DUMP += "  SOP Class UID*             : 1.2.840.10008.5.1.4.1.1.2.1\n";
-    SCAN_DUMP += "  Concatentation Source UID* : \n";
-    SCAN_DUMP += "  Concatentation Source File : \n";
+    SCAN_DUMP += "  Concatenation Source UID* : \n";
+    SCAN_DUMP += "  Concatenation Source File : \n";
     SCAN_DUMP += "  Number of Frames (computed): 30\n";
     SCAN_DUMP += "  In-conc. Total Number      : 3\n";
     SCAN_DUMP += "  Patient ID                 : 0070\n";

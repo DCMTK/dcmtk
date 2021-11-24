@@ -246,7 +246,7 @@ size_t ConcatenationCreator::getNumInstances()
         OFCondition result = configureCommon();
         if (result.bad())
         {
-            DCMFG_ERROR("Unable to compute number of instances for Concatenation, maybe input not intialized?)");
+            DCMFG_ERROR("Unable to compute number of instances for Concatenation, maybe input not initialized?)");
             return 0;
         }
     }

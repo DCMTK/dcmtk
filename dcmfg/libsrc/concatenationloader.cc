@@ -445,7 +445,7 @@ OFCondition ConcatenationLoader::insertDestinationAttributes()
         char buf[100];
         dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
         uid = buf;
-        DCMFG_WARN("SOP Instance UID of Concatentation Source (0020,0242) not set, created new SOP Instance UID "
+        DCMFG_WARN("SOP Instance UID of Concatenation Source (0020,0242) not set, created new SOP Instance UID "
                    << uid);
     }
     OFCondition result = m_Result->putAndInsertOFStringArray(DCM_SOPInstanceUID, uid);
@@ -551,8 +551,8 @@ void ConcatenationLoader::Info::print(OFStringStream& out)
 {
     out << "Concatenation UID*           : " << m_ConcatenationUID << OFendl;
     out << "  SOP Class UID*             : " << m_SOPClassUID << OFendl;
-    out << "  Concatentation Source UID* : " << m_SourceUID << OFendl;
-    out << "  Concatentation Source File : " << m_FileConatenationSource << OFendl;
+    out << "  Concatenation Source UID* : " << m_SourceUID << OFendl;
+    out << "  Concatenation Source File : " << m_FileConatenationSource << OFendl;
     out << "  Number of Frames (computed): " << m_NumTotalFrames << OFendl;
     out << "  In-conc. Total Number      : " << m_inConcatTotalNumber << OFendl;
     out << "  Patient ID                 : " << m_PatientID << OFendl;
