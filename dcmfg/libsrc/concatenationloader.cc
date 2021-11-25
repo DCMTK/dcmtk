@@ -551,8 +551,8 @@ void ConcatenationLoader::Info::print(OFStringStream& out)
 {
     out << "Concatenation UID*           : " << m_ConcatenationUID << OFendl;
     out << "  SOP Class UID*             : " << m_SOPClassUID << OFendl;
-    out << "  Concatenation Source UID* : " << m_SourceUID << OFendl;
-    out << "  Concatenation Source File : " << m_FileConatenationSource << OFendl;
+    out << "  Concatenation Source UID*  : " << m_SourceUID << OFendl;
+    out << "  Concatenation Source File  : " << m_FileConatenationSource << OFendl;
     out << "  Number of Frames (computed): " << m_NumTotalFrames << OFendl;
     out << "  In-conc. Total Number      : " << m_inConcatTotalNumber << OFendl;
     out << "  Patient ID                 : " << m_PatientID << OFendl;
