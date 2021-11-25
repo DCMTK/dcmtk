@@ -148,7 +148,7 @@ lossless JPEG codec selection:
   +tl   --true-lossless
           true lossless codec (default)
 
-  # This option selects an encoder, that guarantees truely lossless
+  # This option selects an encoder, that guarantees truly lossless
   # image compression. See NOTES for further information.
 
   +pl   --pseudo-lossless

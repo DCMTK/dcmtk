@@ -19,7 +19,7 @@ a grayscale softcopy presentation state object into a monochrome bitmap
 with 8 bits/pixel.  The bitmap is stored either as "Portable Gray Map" (PGM)
 or as a DICOM secondary capture image object.  If no presentation state is
 read from file, a default presentation state is created.  The utility allows
-to read a configuration file of the Softcopy Presentation State Viewer upon
+one to read a configuration file of the Softcopy Presentation State Viewer upon
 startup.  In this case, the settings from the configuration file affecting
 the rendering of the presentation state are used, e.g. a correction of the
 gray scale range according to Barten's model (DICOM part 14) can be

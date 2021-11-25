@@ -263,7 +263,7 @@ within the given directory.  By default, the format is \<timestamp\>.dump where
 This should work as a default for most applications that would like to use
 request files and want to ensure unique file names.  If it is desired to change
 this naming scheme, the option \e --request-file-format can be used.  It
-permits to specify the file naming pattern used by \e --request-file-path.
+permits one to specify the file naming pattern used by \e --request-file-path.
 
 For flexibility, the following placeholders can be used in the pattern provided
 for \e --request-file-format:

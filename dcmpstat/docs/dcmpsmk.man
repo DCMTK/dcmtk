@@ -17,7 +17,7 @@ dcmpsmk [options] dcmfile-in dcmfile-out
 The \b dcmpsmk utility reads a DICOM image file and creates a grayscale
 softcopy presentation state object according to Supplement 33.  The
 presentation state object is written back to file.  A number of command line
-options allow to specify how certain constructs that might be present in
+options allow one to specify how certain constructs that might be present in
 the image file should be referenced or activated in the presentation state.
 The newly created presentation state references the source image and
 contains values that should allow for a "reasonable" display of the image

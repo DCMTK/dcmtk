@@ -306,7 +306,7 @@ int main(int argc, char *argv[])
     /* add additional image references to pstate */
     if (cmd.getParamCount() > 2)
     {
-        OFLOG_INFO(dcmpsmkLogger, "adding additonal image reference(s)");
+        OFLOG_INFO(dcmpsmkLogger, "adding additional image reference(s)");
         const int count = cmd.getParamCount();
         for (int i = 2; i < count; i++)
         {
