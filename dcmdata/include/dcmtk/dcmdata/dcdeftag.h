@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2021-09-13 08:18:06
+**   Date: 2021-11-25 18:21:56
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2021-09-13 08:18:06"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2021-11-25 18:21:56"
 
 
 /*
@@ -2661,7 +2661,7 @@
 #define DCM_RETIRED_LanguageCodeSequenceTrial    DcmTagKey(0x0040, 0xa744)
 #define DCM_TabulatedValuesSequence              DcmTagKey(0x0040, 0xa801)
 #define DCM_NumberOfTableRows                    DcmTagKey(0x0040, 0xa802)
-#define DCM_NumbeOfTableColumns                  DcmTagKey(0x0040, 0xa803)
+#define DCM_NumberOfTableColumns                 DcmTagKey(0x0040, 0xa803)
 #define DCM_TableRowNumber                       DcmTagKey(0x0040, 0xa804)
 #define DCM_TableColumnNumber                    DcmTagKey(0x0040, 0xa805)
 #define DCM_TableRowDefinitionSequence           DcmTagKey(0x0040, 0xa806)
@@ -4573,7 +4573,7 @@
 #define DCM_ReferencedTreatmentPositionGroupUID  DcmTagKey(0x300a, 0x0785)
 #define DCM_RadiationOrderIndex                  DcmTagKey(0x300a, 0x0786)
 #define DCM_OmittedRadiationSequence             DcmTagKey(0x300a, 0x0787)
-#define DCM_ReasonforOmissionCodeSequence        DcmTagKey(0x300a, 0x0788)
+#define DCM_ReasonForOmissionCodeSequence        DcmTagKey(0x300a, 0x0788)
 #define DCM_RTDeliveryStartPatientPositionSequence DcmTagKey(0x300a, 0x0789)
 #define DCM_RTTreatmentPreparationPatientPositionSequence DcmTagKey(0x300a, 0x078a)
 #define DCM_ReferencedRTTreatmentPreparationSequence DcmTagKey(0x300a, 0x078b)

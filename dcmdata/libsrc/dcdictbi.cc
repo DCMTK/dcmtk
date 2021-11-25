@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2021-09-13 08:18:07
+**   Date: 2021-11-25 18:21:57
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -19939,7 +19939,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0xa803, 0x0040, 0xa803,
-      EVR_UL, "NumbeOfTableColumns", 1, 1, "DICOM",
+      EVR_UL, "NumberOfTableColumns", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0xa804, 0x0040, 0xa804,
@@ -22255,7 +22255,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0062, 0x0009, 0x0062, 0x0009,
-      EVR_LO, "SegmentAlgorithmName", 1, 1, "DICOM",
+      EVR_LO, "SegmentAlgorithmName", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0062, 0x000a, 0x0062, 0x000a,
@@ -29289,7 +29289,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0788, 0x300a, 0x0788,
-      EVR_SQ, "ReasonforOmissionCodeSequence", 1, 1, "DICOM",
+      EVR_SQ, "ReasonForOmissionCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0789, 0x300a, 0x0789,
