@@ -1023,10 +1023,12 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     DcmTag unresSeqTag(DCM_DirectoryRecordSequence);
     DcmSequenceOfItems localUnresRecs(unresSeqTag);
 
-    // insert Media Stored SOP Class UID
+    // insert Media Storage SOP Class UID
     insertMediaSOPUID(metainfo);
 
-    getDirFileFormat().validateMetaInfo(outxfer);
+    // add missing information such as Media Storage SOP Instance UID,
+    // but do not overwrite the value of Media Storage SOP Class UID
+    getDirFileFormat().validateMetaInfo(outxfer, EWM_fileformat);
 
     {
         // it is important that the cache object is destroyed before the file is renamed!
