@@ -73,8 +73,11 @@ void DcmSignature::initializeLibrary()
 #ifdef HAVE_OPENSSL_PROTOTYPE_OSSL_PROVIDER_LOAD
   // load the legacy provider, which is needed for RIPEMD160
   if (legacyProvider == NULL) legacyProvider = OSSL_PROVIDER_load(NULL, "legacy");
+  if (legacyProvider == NULL) DCMSIGN_ERROR("Unable to load the OpenSSL Legacy Provider, RIPEMD160 and MD5 not available");
+
   // explicitly also load the default provider
   if (defaultProvider == NULL) defaultProvider = OSSL_PROVIDER_load(NULL, "default");
+  if (defaultProvider == NULL) DCMSIGN_ERROR("Unable to load the OpenSSL Default Provider");
 #endif
 }
 
