@@ -680,7 +680,7 @@ Uint32 DcmIODUtil::limitMaxFrames(const size_t numFramesPresent, const OFString&
         DCMIOD_WARN(warning);
         return 2147483647;
     }
-    return OFstatic_cast(Uint16, numFramesPresent);
+    return OFstatic_cast(Uint32, numFramesPresent);
 }
 
 OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
