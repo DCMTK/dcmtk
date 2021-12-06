@@ -5,9 +5,9 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2021d
- *  File created on 2021-09-13 08:24:34 by J. Riesmeier
- *  Last modified on 2021-09-30 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2021e
+ *  File created on 2021-11-24 09:19:23 by J. Riesmeier
+ *  Last modified on 2021-12-06 by J. Riesmeier
  *
  */
 
@@ -35,7 +35,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4560
+// total number of codes: 4617
 // - retired: 201
 // - no name: 27
 // - not unique: 17
@@ -4609,5 +4609,62 @@
 #define CODE_DCM_TreatmentUnnecessary                                      DSRBasicCodedEntry("130664", "DCM", "Treatment unnecessary")
 #define CODE_DCM_TreatmentExceedsPatientTolerance                          DSRBasicCodedEntry("130665", "DCM", "Treatment exceeds patient tolerance")
 #define CODE_DCM_RadiotherapyFiducial                                      DSRBasicCodedEntry("130666", "DCM", "Radiotherapy Fiducial")
+#define CODE_DCM_LongitudinalLagrangianStrain                              DSRBasicCodedEntry("130670", "DCM", "Longitudinal Lagrangian Strain")
+#define CODE_DCM_PeakLongitudinalLagrangianStrain                          DSRBasicCodedEntry("130671", "DCM", "Peak Longitudinal Lagrangian Strain")
+#define CODE_DCM_TimeToPeakLongitudinalLagrangianStrain                    DSRBasicCodedEntry("130672", "DCM", "Time to Peak Longitudinal Lagrangian Strain")
+#define CODE_DCM_MechanicalDispersion                                      DSRBasicCodedEntry("130673", "DCM", "Mechanical Dispersion")
+#define CODE_DCM_LongitudinalLagrangianStrainRate                          DSRBasicCodedEntry("130674", "DCM", "Longitudinal Lagrangian Strain Rate")
+#define CODE_DCM_RadialLagrangianStrain                                    DSRBasicCodedEntry("130675", "DCM", "Radial Lagrangian Strain")
+#define CODE_DCM_RadialLagrangianStrainRate                                DSRBasicCodedEntry("130676", "DCM", "Radial Lagrangian Strain Rate")
+#define CODE_DCM_CircumferentialLagrangianStrain                           DSRBasicCodedEntry("130677", "DCM", "Circumferential Lagrangian Strain")
+#define CODE_DCM_CircumferentialLagrangianStrainRate                       DSRBasicCodedEntry("130678", "DCM", "Circumferential Lagrangian Strain Rate")
+#define CODE_DCM_2DSpeckleTracking                                         DSRBasicCodedEntry("130679", "DCM", "2D Speckle Tracking")
+#define CODE_DCM_3DSpeckleTracking                                         DSRBasicCodedEntry("130680", "DCM", "3D Speckle Tracking")
+#define CODE_DCM_ApicalFourChamberRVFocused                                DSRBasicCodedEntry("130681", "DCM", "Apical four chamber RV Focused")
+#define CODE_DCM_ApicalFourChamberRVModified                               DSRBasicCodedEntry("130682", "DCM", "Apical four chamber RV Modified")
+#define CODE_DCM_EndocardialMethod                                         DSRBasicCodedEntry("130683", "DCM", "Endocardial Method")
+#define CODE_DCM_EpicardialMethod                                          DSRBasicCodedEntry("130684", "DCM", "Epicardial Method")
+#define CODE_DCM_MyocardialMidlayerMethod                                  DSRBasicCodedEntry("130685", "DCM", "Myocardial Midlayer Method")
+#define CODE_DCM_LVEndSystolicGLSMultiviewMean_Endocardial                 DSRBasicCodedEntry("130686", "DCM", "LV End-systolic GLS Multiview Mean (Endocardial)")
+#define CODE_DCM_LVEndSystolicGLS4CH_Endocardial                           DSRBasicCodedEntry("130687", "DCM", "LV End-systolic GLS 4CH (Endocardial)")
+#define CODE_DCM_LVEndSystolicGLS2CH_Endocardial                           DSRBasicCodedEntry("130688", "DCM", "LV End-systolic GLS 2CH (Endocardial)")
+#define CODE_DCM_LVEndSystolicGLSALAX_Endocardial                          DSRBasicCodedEntry("130689", "DCM", "LV End-systolic GLS ALAX (Endocardial)")
+#define CODE_DCM_LVPeakSystolicGLSMultiviewMean_Endocardial                DSRBasicCodedEntry("130690", "DCM", "LV Peak Systolic GLS Multiview Mean (Endocardial)")
+#define CODE_DCM_LVPeakSystolicGLS4CH_Endocardial                          DSRBasicCodedEntry("130691", "DCM", "LV Peak Systolic GLS 4CH (Endocardial)")
+#define CODE_DCM_LVPeakSystolicGLS2CH_Endocardial                          DSRBasicCodedEntry("130692", "DCM", "LV Peak Systolic GLS 2CH (Endocardial)")
+#define CODE_DCM_LVPeakSystolicGLSALAX_Endocardial                         DSRBasicCodedEntry("130693", "DCM", "LV Peak Systolic GLS ALAX (Endocardial)")
+#define CODE_DCM_LVPeakGLSMultiviewMean_Endocardial                        DSRBasicCodedEntry("130694", "DCM", "LV Peak GLS Multiview Mean (Endocardial)")
+#define CODE_DCM_LVPeakGLS4CH_Endocardial                                  DSRBasicCodedEntry("130695", "DCM", "LV Peak GLS 4CH (Endocardial)")
+#define CODE_DCM_LVPeakGLS2CH_Endocardial                                  DSRBasicCodedEntry("130696", "DCM", "LV Peak GLS 2CH (Endocardial)")
+#define CODE_DCM_LVPeakGLSALAX_Endocardial                                 DSRBasicCodedEntry("130697", "DCM", "LV Peak GLS ALAX (Endocardial)")
+#define CODE_DCM_LVEndSystolicMechanicalDispersion                         DSRBasicCodedEntry("130698", "DCM", "LV End-systolic Mechanical Dispersion")
+#define CODE_DCM_MitralValveClosure                                        DSRBasicCodedEntry("130699", "DCM", "Mitral Valve Closure")
+#define CODE_DCM_MitralValveOpening                                        DSRBasicCodedEntry("130700", "DCM", "Mitral Valve Opening")
+#define CODE_DCM_AorticValveClosure                                        DSRBasicCodedEntry("130701", "DCM", "Aortic Valve Closure")
+#define CODE_DCM_AorticValveOpening                                        DSRBasicCodedEntry("130702", "DCM", "Aortic Valve Opening")
+#define CODE_DCM_Fp9                                                       DSRBasicCodedEntry("130710", "DCM", "Fp9")
+#define CODE_DCM_Fp10                                                      DSRBasicCodedEntry("130711", "DCM", "Fp10")
+#define CODE_DCM_AF9                                                       DSRBasicCodedEntry("130712", "DCM", "AF9")
+#define CODE_DCM_AF10                                                      DSRBasicCodedEntry("130713", "DCM", "AF10")
+#define CODE_DCM_PO9                                                       DSRBasicCodedEntry("130714", "DCM", "PO9")
+#define CODE_DCM_PO10                                                      DSRBasicCodedEntry("130715", "DCM", "PO10")
+#define CODE_DCM_O9                                                        DSRBasicCodedEntry("130716", "DCM", "O9")
+#define CODE_DCM_O10                                                       DSRBasicCodedEntry("130717", "DCM", "O10")
+#define CODE_DCM_CoronaryArteryDiseaseAssessment                           DSRBasicCodedEntry("130720", "DCM", "Coronary Artery Disease Assessment")
+#define CODE_DCM_OronaryArteryDiseaseAssessmentModifier                    DSRBasicCodedEntry("130721", "DCM", "oronary Artery Disease Assessment Modifier")
+#define CODE_DCM_CoronaryArteryDiseaseStenosisAssessmentModifier           DSRBasicCodedEntry("130722", "DCM", "Coronary Artery Disease Stenosis Assessment Modifier")
+#define CODE_DCM_0_DocumentedAbsenceOfCAD                                  DSRBasicCodedEntry("130723", "DCM", "0 - Documented absence of CAD")
+#define CODE_DCM_1_MinimalNonObstructiveCAD                                DSRBasicCodedEntry("130724", "DCM", "1 - Minimal non-obstructive CAD")
+#define CODE_DCM_2_MildNonObstructiveCAD                                   DSRBasicCodedEntry("130725", "DCM", "2 - Mild non-obstructive CAD")
+#define CODE_DCM_3_ModerateStenosis                                        DSRBasicCodedEntry("130726", "DCM", "3 - Moderate stenosis")
+#define CODE_DCM_4_SevereStenosis                                          DSRBasicCodedEntry("130727", "DCM", "4 - Severe stenosis")
+#define CODE_DCM_4A_SevereStenosis                                         DSRBasicCodedEntry("130728", "DCM", "4A - Severe stenosis")
+#define CODE_DCM_4B_SevereStenosis                                         DSRBasicCodedEntry("130729", "DCM", "4B - Severe stenosis")
+#define CODE_DCM_5_TotalCoronaryOcclusion                                  DSRBasicCodedEntry("130730", "DCM", "5 - Total coronary occlusion")
+#define CODE_DCM_N_NonDiagnosticStudy                                      DSRBasicCodedEntry("130731", "DCM", "N - Non-diagnostic study")
+#define CODE_DCM_N_NonDiagnosticSegments                                   DSRBasicCodedEntry("130732", "DCM", "N - Non-diagnostic segments")
+#define CODE_DCM_S_Stent                                                   DSRBasicCodedEntry("130733", "DCM", "S - Stent")
+#define CODE_DCM_G_Graft                                                   DSRBasicCodedEntry("130734", "DCM", "G - Graft")
+#define CODE_DCM_V_VulnerablePlaque                                        DSRBasicCodedEntry("130735", "DCM", "V - Vulnerable plaque")
 
 #endif
