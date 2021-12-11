@@ -449,14 +449,57 @@ ASC_getRejectParameters(T_ASC_Parameters * params,
 {
     int reason;
     if (rejectParameters) {
-        rejectParameters->result =
-            (T_ASC_RejectParametersResult) params->DULparams.result;
-        rejectParameters->source =
-            (T_ASC_RejectParametersSource) params->DULparams.resultSource;
+
+        switch (params->DULparams.result)
+        {
+          case ASC_RESULT_REJECTEDPERMANENT:
+          case ASC_RESULT_REJECTEDTRANSIENT:
+            rejectParameters->result =
+              (T_ASC_RejectParametersResult) params->DULparams.result;
+            break;
+          default:
+            DCMNET_ERROR("Received invalid A-ASSOCIATE-RJ reject result 0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+              << STD_NAMESPACE setw(4) << params->DULparams.result << ", using default.");
+            rejectParameters->result = ASC_RESULT_REJECTEDPERMANENT;
+            break;
+        }
+
+        switch (params->DULparams.resultSource)
+        {
+          case ASC_SOURCE_SERVICEUSER:
+          case ASC_SOURCE_SERVICEPROVIDER_ACSE_RELATED:
+          case ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED:
+            rejectParameters->source =
+                (T_ASC_RejectParametersSource) params->DULparams.resultSource;
+            break;
+          default:
+            DCMNET_ERROR("Received invalid A-ASSOCIATE-RJ reject source 0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+              << STD_NAMESPACE setw(4) << params->DULparams.resultSource << ", using default.");
+            rejectParameters->source = ASC_SOURCE_SERVICEUSER;
+            break;
+        }
 
         reason = params->DULparams.diagnostic |
             ((params->DULparams.resultSource & 0xff) << 8);
-        rejectParameters->reason = (T_ASC_RejectParametersReason) reason;
+
+        switch (reason)
+        {
+          case ASC_REASON_SU_NOREASON:
+          case ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED:
+          case ASC_REASON_SU_CALLINGAETITLENOTRECOGNIZED:
+          case ASC_REASON_SU_CALLEDAETITLENOTRECOGNIZED:
+          case ASC_REASON_SP_ACSE_NOREASON:
+          case ASC_REASON_SP_ACSE_PROTOCOLVERSIONNOTSUPPORTED:
+          case ASC_REASON_SP_PRES_TEMPORARYCONGESTION:
+          case ASC_REASON_SP_PRES_LOCALLIMITEXCEEDED:
+            rejectParameters->reason = (T_ASC_RejectParametersReason) reason;
+            break;
+          default:
+            DCMNET_ERROR("Received invalid A-ASSOCIATE-RJ reject reason 0x" << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+              << STD_NAMESPACE setw(4) << reason << ", using default.");
+            rejectParameters->reason = ASC_REASON_SU_NOREASON;
+            break;
+        }
     }
     return EC_Normal;
 }
