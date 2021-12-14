@@ -428,11 +428,15 @@ OFCondition DJLSDecoderBase::decodeFrame(
 
       if (result.good() && imageSamplesPerPixel == 3)
       {
+        if (params.colorTransform != 0)
+        {
+          DCMJPLS_WARN("Colour Transformation " << params.colorTransform << " is a HP/JPEG-LS extension.");
+	}
         if (imagePlanarConfiguration == 1 && params.ilv != ILV_NONE)
         {
           // The dataset says this should be planarConfiguration == 1, but
           // it isn't -> convert it.
-          DCMJPLS_WARN("different planar configuration in JPEG stream, converting to \"1\"");
+          DCMJPLS_WARN("different planar configuration in JPEG-LS bitstream, converting to \"1\"");
           if (bytesPerSample == 1)
             result = createPlanarConfiguration1Byte(OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
           else
