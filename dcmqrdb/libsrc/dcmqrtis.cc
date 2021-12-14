@@ -1684,6 +1684,7 @@ void DcmQueryRetrieveTelnetInitiator::TI_userInput()
 {
     char cmdBuf[1024];  /* can't have lines longer than this */
     int arg;
+    memset(cmdBuf, 0, 1024);
 
     /* make the first database current */
     currentdb = 0;
