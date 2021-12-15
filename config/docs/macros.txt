@@ -7,6 +7,10 @@ a number of compile time flags (macros), which are explained below.
 Most of these macros enable experimental or rarely needed features
 in DCMTK, others disable certain functions.  So please, use with care!
 
+For CMake users, one simply need to add a new definition in the CXXFLAGS, eg:
+
+    CXXFLAGS=-DENABLE_DCMJPLS_INTERLEAVE_NONE && cmake [...] /path/to/dcmtk
+
 ALLOW_ILLUMINATION_OVERRIDE
   Affected: dcmprscu
   Type of modification: Activates experimental or rarely used feature
