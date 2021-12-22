@@ -957,7 +957,9 @@ OFCondition DcmPresentationState::createFromImage(
   if (result==EC_Normal) result = seriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
   if (result==EC_Normal) result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid));
   if (result==EC_Normal) result = seriesNumber.putString(DEFAULT_seriesNumber);
-  if (result==EC_Normal) result = specificCharacterSet.putString(DEFAULT_specificCharacterSet);
+
+  /* If no other character set is specified by the image, we use ISO_IR 100 as the default */
+  if ((result==EC_Normal) && (specificCharacterSet.getLength() == 0)) result = specificCharacterSet.putString(DEFAULT_specificCharacterSet);
 
   if (result==EC_Normal)
   {

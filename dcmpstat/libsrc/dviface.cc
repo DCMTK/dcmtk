@@ -2726,6 +2726,8 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_InstanceCreationDate, aString.c_str());
       DVPSHelper::currentTime(aString);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_InstanceCreationTime, aString.c_str());
+      const char *specificCharSet = pState->getCharsetString();
+      if (status.good() && specificCharSet) status = DVPSHelper::putStringValue(dataset, DCM_SpecificCharacterSet, specificCharSet);
 
       // Hardcopy Grayscale Image Module
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
