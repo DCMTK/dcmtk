@@ -431,7 +431,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
         if (params.colorTransform != 0)
         {
           DCMJPLS_WARN("Color Transformation " << params.colorTransform << " is a non-standard HP/JPEG-LS extension.");
-	}
+        }
         if (imagePlanarConfiguration == 1 && params.ilv != ILV_NONE)
         {
           // The dataset says this should be planarConfiguration == 1, but
