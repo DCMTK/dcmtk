@@ -3680,6 +3680,19 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
         /* we actually did receive data or an error occurred */
         do
         {
+#if 0
+            /* the original patch submitted for DCMTK issue #1006 contains a sleep statement here
+             * that should actually not be necessary. We're leaving it in the code for now
+             * with this comment. If your code (in non-blocking mode, on Windows) works if
+             * and only if this gets enabled, please let us know: <bugs@dcmtk.org> */
+#ifdef HAVE_WINSOCK_H
+            if (OFStandard::getLastNetworkErrorCode().value() == WSAEWOULDBLOCK)
+            {
+                Sleep(1);
+            }
+#endif
+#endif
+
             /* if DUL_NOBLOCK is specified as a blocking option, we only want to wait a certain
              * time for receiving data over the network. If no data was received during that time,
              * DUL_READTIMEOUT shall be returned. Note that if DUL_BLOCK is specified the application
@@ -3698,7 +3711,11 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
             /* data has become available, now call read(). */
             bytesRead = connection->read((char*)b, size_t(l));
 
-        } while (bytesRead == -1 && OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR);
+        } while ((bytesRead == -1 && OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR)
+#ifdef HAVE_WINSOCK_H
+                 || (bytesRead == -1 && (OFStandard::getLastNetworkErrorCode().value() == WSAEWOULDBLOCK))
+#endif
+                 );
 
         /* if we actually received data, move the buffer pointer to its own end, update the variable */
         /* that determines the end of the first loop, and update the reference parameter return variable */
