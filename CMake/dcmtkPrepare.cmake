@@ -65,21 +65,45 @@ if(DCMTK_LINK_STATIC)
     list(REMOVE_ITEM CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "-rdynamic")
     # not sure about this one, maybe static libraries don't need it:
     set(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSION}")
-    # extra libraries required when linking statically, should possibly be
-    # enhanced by using find_package() at some point
-    set(ICU_EXTRA_LIBS_STATIC "dl")
-    set(LIBXML2_EXTRA_LIBS_STATIC "lzma" "z")
-    set(OPENJPEG_EXTRA_LIBS_STATIC "pthread")
-    set(OPENSSL_EXTRA_LIBS_STATIC "dl")
-    set(TIFF_EXTRA_LIBS_STATIC "lzma" "jbig")
-    set(WRAP_EXTRA_LIBS_STATIC "nsl")
 else()
     # Shared library version information
     set(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCMTK_ABI_VERSION}")
+endif()
+
+option(DCMTK_PORTABLE_LINUX_BINARIES "Create ELF binaries while statically linking all third party libraries and libstdc++." OFF)
+if(DCMTK_PORTABLE_LINUX_BINARIES)
+    if (DCMTK_LINK_STATIC)
+        message(FATAL_ERROR "Options DCMTK_LINK_STATIC and DCMTK_PORTABLE_LINUX_BINARIES are mutually exclusive.")
+    endif()
+    # only use static versions of third party libraries
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+
+    # When using gcc and clang, use the static version of libgcc/libstdc++.
+    if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+        (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
+        (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
+        (CMAKE_CXX_COMPILER_ID STREQUAL "ARMClang") OR
+        (CMAKE_CXX_COMPILER_ID STREQUAL "XLClang"))
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+    endif()
+endif()
+
+# Define additional library dependencies for statically linking the third-party libraries.
+# This should possibly be enhanced by using find_package() at some point
+if (DCMTK_LINK_STATIC OR DCMTK_PORTABLE_LINUX_BINARIES)
+    set(ICU_EXTRA_LIBS_STATIC "dl")
+    set(LIBXML2_EXTRA_LIBS_STATIC "lzma" "z" "icuuc")
+    set(OPENJPEG_EXTRA_LIBS_STATIC "pthread")
+    set(OPENSSL_EXTRA_LIBS_STATIC "dl")
+    set(SNDFILE_EXTRA_LIBS_STATIC "ogg" "vorbis" "vorbisenc" "opus" "FLAC")
+    set(TIFF_EXTRA_LIBS_STATIC "webp" "zstd" "lzma" "jbig" "jpeg" "deflate" "z")
+    set(WRAP_EXTRA_LIBS_STATIC "nsl")
+else()
     set(ICU_EXTRA_LIBS_STATIC)
     set(LIBXML2_EXTRA_LIBS_STATIC)
     set(OPENJPEG_EXTRA_LIBS_STATIC)
     set(OPENSSL_EXTRA_LIBS_STATIC)
+    set(SNDFILE_EXTRA_LIBS_STATIC)
     set(TIFF_EXTRA_LIBS_STATIC)
     set(WRAP_EXTRA_LIBS_STATIC)
 endif()
