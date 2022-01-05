@@ -855,8 +855,6 @@ In this case, CMake expects all test results that are normally achieved by
 executing certain test programs to be provided by the user on the command line.
 In detail, these are the variables that need to be provided:
 
-  - C_CHAR_UNSIGNED: TRUE if the "char" type in C is unsigned, FALSE if signed
-
   The following variables are only used when compiling with libiconv support
   and can otherwise be set to default values:
   - DCMTK_ICONV_FLAGS_ANALYZED: should always be set to TRUE
