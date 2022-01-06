@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -675,6 +675,7 @@ OFString DcmIODUtil::createUID(const Uint8 level)
 
 Uint32 DcmIODUtil::limitMaxFrames(const size_t numFramesPresent, const OFString& warning)
 {
+    // limit to 2^31-1 since this is the Number of Frames attribute's VR IS' maximum value
     if (numFramesPresent > 2147483647)
     {
         DCMIOD_WARN(warning);

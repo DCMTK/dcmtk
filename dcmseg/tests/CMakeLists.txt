@@ -1,5 +1,6 @@
 # declare executables
 DCMTK_ADD_EXECUTABLE(dcmseg_tests
+  tbigdim.cc
   tests.cc
   tutils.cc
   troundtrip.cc

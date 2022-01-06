@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -338,6 +338,17 @@ public:
                                         const OFString& fgPrivateCreator,
                                         const OFString& privateCreator);
 
+    /** Enable or disable calling of the checkDimensions() routine when writing the module.
+     *  Checking can be very time-consuming if many frames are present. Default is OFTrue.
+     *  @param  doCheck If enabled, checkDimensions() is called when writing.
+     */
+    virtual void setCheckOnWrite(const OFBool doCheck);
+
+    /** Returns whether checkDimensions() routine is called when writing the module.
+     *  @returns OFTrue if calling of checkDimensions() is enabled when writing, OFFalse otherwise.
+     */
+    virtual OFBool getCheckOnWrite();
+
 protected:
     /** Go over Dimension Index Pointers and extract Dimension Organization UIDs for
      *  Dimension Organization Sequence.
@@ -353,6 +364,11 @@ private:
 
     /// Vector with all items of the Dimension Organization Sequence
     OFVector<DimensionOrganizationItem*> m_DimensionOrganizationSequence;
+
+    /// If enabled, dimension structures are checked when writing the module.
+    /// This can be very time-consuming if many frames are present. Default is
+    /// OFTrue.
+    OFBool m_CheckOnWrite;
 };
 
 #endif // MODMULTIFRAMEDIMENSION_H

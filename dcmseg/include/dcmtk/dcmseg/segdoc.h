@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -47,7 +47,7 @@ class FGDerivationImage;
 
 /** Class representing an object of the "Segmentation SOP Class".
  */
-class DCMTK_DCMSEG_EXPORT DcmSegmentation : public DcmIODImage<IODImagePixelModule<Uint8> >
+class DCMTK_DCMSEG_EXPORT DcmSegmentation : public DcmIODImage<IODImagePixelModule<Uint8>>
 {
 
 public:
@@ -130,6 +130,23 @@ public:
      */
     virtual OFBool getCheckFGOnWrite();
 
+    /** If enabled, dimensions are checked before actual writing.
+     *  This can be very time-consuming if many frames are present.
+     *  Disabling should only be done if the user knows that the functional groups
+     *  are valid, wants to to adapt the functional groups manually after calling
+     *   write() or knows what he's doing otherwise.<br>
+     *  Per default, checking is enabled.
+     *  @param  doCheck If OFTrue, checking will be performed. If OFFalse,
+     *          no checks are performed.
+     */
+    virtual void setCheckDimensionsOnWrite(const OFBool doCheck);
+
+    /** Returns whether dimensions are checked before actual
+     *  writing is performed in the write() method.
+     *  @return OFTrue if checking is performed, OFFalse otherwise
+     */
+    virtual OFBool getCheckDimensionsOnWrite();
+
     // -------------------- creation ---------------------
 
     /** Factory method to create a binary segmentation object from the minimal
@@ -195,7 +212,10 @@ public:
 
     /** Get number of frames, based on the number of items in the shared
      *  functional functional groups sequence (i.e.\ the attribute Number of
-     *  Frames) is not trusted).
+     *  Frames) is not trusted). Note that this returns the numbers of frames
+     *  present in memory. In practice (i.e. for writing later on), the number
+     *  of frames must not exceed 2^31-1 (maximum value of Number of Frames
+     *  attribute, enforced by writing routines).
      *  @return The number of frames handled by this object
      */
     size_t getNumberOfFrames();
@@ -218,7 +238,9 @@ public:
         return this->m_SegmentationFractionalType;
     }
 
-    /** Get the Number of Segments
+    /** Get the Number of Segments. Note that this returns the numbers of Segments
+     *  present in memory. In practice, the number of segments must not exceed
+     *  2^16-1 (enforced by writing routines).
      *  @return The number of segments handled by this object
      */
     size_t getNumberOfSegments();
@@ -266,14 +288,14 @@ public:
      *  @param  segmentNumber The logical segment number
      *  @return The segment if segment number is valid, NULL otherwise
      */
-    virtual DcmSegment* getSegment(const unsigned int segmentNumber);
+    virtual DcmSegment* getSegment(const size_t segmentNumber);
 
     /** Get logical segment number by providing a pointer to a given segment
      *  @param  segment The segment to find the logical segment number for
      *  @param  segmentNumber The segment number. 0 if segment could not be found.
      *  @return OFTrue if segment could be found, OFFalse otherwise.
      */
-    virtual OFBool getSegmentNumber(const DcmSegment* segment, unsigned int& segmentNumber);
+    virtual OFBool getSegmentNumber(const DcmSegment* segment, size_t& segmentNumber);
 
     /** Reference to the Performed Procedure Step that led to the creation of this
      *  segmentation object. This is required if this object is created in an MPPS
@@ -466,11 +488,9 @@ protected:
 
     /** Write fractional frames to given pixel data buffer
      *  @param  pixData The filled pixel data buffer returned by the method
-     *  @param  numFrames The number of frames to write
-     *  @param  pixDataLength The length of buffer in pixData (in bytes) returned by this method.
      *  @return EC_Normal if writing was successful, error otherwise
      */
-    virtual OFCondition writeFractionalFrames(Uint8* pixData, Uint32 numFrames, const size_t pixDataLength);
+    OFCondition writeFractionalFrames(Uint8* pixData);
 
     /** Write binary frames to given given pixel data buffer
      *  @param  pixData The filled pixel data buffer returned by the method
@@ -524,16 +544,16 @@ protected:
      *  @param  colorModel The color model used
      *  @return EC_Normal if reading/checking was successful, error otherwise
      */
-    virtual OFCondition getAndCheckImagePixelAttributes(DcmItem& dataset,
-                                                        Uint16& allocated,
-                                                        Uint16& stored,
-                                                        Uint16& high,
-                                                        Uint16& spp,
-                                                        Uint16& pixelRep,
-                                                        Uint16& rows,
-                                                        Uint16& cols,
-                                                        Uint16& numberOfFrames,
-                                                        OFString& colorModel);
+    OFCondition getAndCheckImagePixelAttributes(DcmItem& dataset,
+                                                Uint16& allocated,
+                                                Uint16& stored,
+                                                Uint16& high,
+                                                Uint16& spp,
+                                                Uint16& pixelRep,
+                                                Uint16& rows,
+                                                Uint16& cols,
+                                                Uint32& numberOfFrames,
+                                                OFString& colorModel);
 
     /** This is the counterpart to the extractFrames() function. It takes a number
      *  of frames that are in binary segmentation format (i.e. "bit-packed") and
@@ -628,7 +648,7 @@ private:
      *  @result OFTrue if length is valid, OFFalse otherwise
      */
     OFBool
-    checkPixDataLength(DcmElement* pixelData, const Uint16 rows, const Uint16 cols, const Uint16& numberOfFrames);
+    checkPixDataLength(DcmElement* pixelData, const Uint16 rows, const Uint16 cols, const Uint32& numberOfFrames);
 
     /** Loads file
      *  @param  dcmff The file format to load into
@@ -667,7 +687,7 @@ private:
      */
     OFCondition readSegmentationType(DcmItem& item);
 
-    /** Decompress the given dataset
+    /** Decompress the given dataset, if compressed in Deflated or RLE transfer syntax.
      *  @param  dset The dataset to be decompressed
      *  @return EC_Normal if decompression worked (or dataset has already been
      *  decompressed), IOD_EC_CannotDecompress otherwise

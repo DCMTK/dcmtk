@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2020, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -55,7 +55,12 @@ extern DCMTK_DCMSEG_EXPORT OFLogger DCM_dcmsegLogger;
  *  using an unsigned 16 Bit Integer within "Segment Number" starting with 1.
  *  Thus maximally 65535 segments can be stored.
  */
-const Uint32 DCM_SEG_MAX_SEGMENTS = 65535;
+const Uint16 DCM_SEG_MAX_SEGMENTS = 65535; // 2^16-1
+
+/** Number of frames for Segmentation objects is limited (besides others) by
+ *  the Number of Frames attribute which permits values up to a maximum of 2^31-1.
+ */
+const Uint32 DCM_SEG_MAX_FRAMES = 2147483647; // 2^31-1
 
 /** @name Specific error conditions for module dcmseg
  *  These error codes can be used in addition to the general purpose
@@ -73,6 +78,8 @@ extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_UnknownSegmentationType;
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_InvalidValue;
 /// error: not enough data
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_NotEnoughData;
+/// error: to many frames
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_MaxFramesReached;
 
 /** General purpose class hiding global functions, constants and types in the
  *  segmentation context from the global namespace.

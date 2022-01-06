@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -163,12 +163,21 @@ void DcmSegment::initIODRules()
 
 // -------------- getters --------------------
 
-unsigned int DcmSegment::getSegmentNumber()
+Uint16 DcmSegment::getSegmentNumber()
 {
-    unsigned int value = 0;
+    Uint16 value = 0;
     if (m_SegmentationDoc != NULL)
     {
-        m_SegmentationDoc->getSegmentNumber(this, value);
+        size_t big = 0;
+        m_SegmentationDoc->getSegmentNumber(this, big);
+        if (big <= DCM_SEG_MAX_SEGMENTS)
+        {
+            value = OFstatic_cast(Uint16, big);
+        }
+        else
+        {
+            DCMSEG_ERROR("More segments (" << big << ") defined than permitted (" << DCM_SEG_MAX_SEGMENTS << ")");
+        }
     }
     return value;
 }

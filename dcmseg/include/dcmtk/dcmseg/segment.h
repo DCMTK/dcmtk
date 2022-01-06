@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -97,7 +97,7 @@ public:
     /** Get Segment Number
      *  @return The Segment number
      */
-    virtual unsigned int getSegmentNumber();
+    virtual Uint16 getSegmentNumber();
 
     /** Get Segment Label
      *  @param  value Reference to variable in which the value should be stored
