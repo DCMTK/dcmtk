@@ -258,7 +258,7 @@ static void checkCreatedObject(DcmDataset& dset)
     OFCHECK(dset.findAndGetElement(DCM_PixelData, elem).good());
     if (elem != OFnullptr)
     {
-        size_t count = 0;
+        unsigned long count = 0;
         const Uint8* pixData = NULL;
         OFCHECK(dset.findAndGetUint8Array(DCM_PixelData, pixData, &count).good());
         OFCHECK(count == NUM_FRAMES * NUM_PIXELS_PER_FRAME);
