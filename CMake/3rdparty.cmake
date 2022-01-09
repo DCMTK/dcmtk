@@ -129,7 +129,7 @@ if(DCMTK_USE_FIND_PACKAGE)
       message(STATUS "Info: DCMTK SNDFILE support will be enabled")
       set(WITH_SNDFILE 1)
       include_directories(${SNDFILE_INCLUDE_DIRS})
-      set(SNDFILE_LIBS ${SNDFILE_LIBRARIES}  ${SNDFILE_EXTRA_LIBS_STATIC})
+      set(SNDFILE_LIBS ${SNDFILE_LIBRARIES} ${SNDFILE_EXTRA_LIBS_STATIC})
     endif()
   endif()
 
