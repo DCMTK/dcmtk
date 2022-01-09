@@ -78,7 +78,7 @@ extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_UnknownSegmentationType;
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_InvalidValue;
 /// error: not enough data
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_NotEnoughData;
-/// error: to many frames
+/// error: too many frames
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_MaxFramesReached;
 
 /** General purpose class hiding global functions, constants and types in the
