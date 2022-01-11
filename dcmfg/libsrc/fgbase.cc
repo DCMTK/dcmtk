@@ -237,7 +237,8 @@ FGBase* FGUnknown::clone() const
     FGUnknown* copy = new FGUnknown(this->m_seqStartTag);
     if (copy)
     {
-        *(copy->m_fgSequence) = *(this->m_fgSequence);
+        if (this->m_fgSequence != NULL)
+            *(copy->m_fgSequence) = *(this->m_fgSequence);
     }
     return copy;
 }

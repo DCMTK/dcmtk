@@ -195,8 +195,10 @@ static void addFrames(DcmSegmentation* seg)
     {
         for (Uint32 frameNo = 1; frameNo <= NUM_FRAMES; frameNo++)
         {
-            if (frameNo <= DCM_SEG_MAX_FRAMES)
-                OFCHECK(fg->setFrameAcquisitionNumber(frameNo).good());
+            // Frame Acqusition Number is set to the current frame number. Since attribute is 16 bits
+            // only (but optional), this is only done as long as frame number is within 16 bit range.
+            if (frameNo <= DCM_SEG_MAX_SEGMENTS)
+                OFCHECK(fg->setFrameAcquisitionNumber(OFstatic_cast(Uint16, frameNo)).good());
             OFCHECK(fg->setFrameReferenceDateTime("20190816092557").good());
             OFCHECK(fg->setFrameAcquisitionDateTime("20190816092557").good());
             OFCHECK(fg->setFrameAcquisitionDuration(0.001).good());

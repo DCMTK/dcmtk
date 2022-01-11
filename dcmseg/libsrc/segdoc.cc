@@ -819,9 +819,9 @@ OFCondition DcmSegmentation::readFrames(DcmItem& dataset)
 {
     OFCondition result;
     Uint16 allocated, stored, high, spp, pixelRep, rows, cols;
-    Uint32 numberOfFrames;
-    allocated = stored = high = spp = rows = cols = numberOfFrames = 0;
-    pixelRep                                                       = 2; // invalid value for this attribute
+    Uint32 numberOfFrames = 0;
+    allocated = stored = high = spp = rows = cols = 0;
+    pixelRep                                      = 2; // invalid value for this attribute
     OFString colorModel;
 
     /* check the typical image pixel attributes and get correct(ed) values */
