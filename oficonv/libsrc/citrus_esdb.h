@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_esdb.h,v 1.1 2003/06/25 09:51:32 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,29 +27,31 @@
 #ifndef _CITRUS_ESDB_H_
 #define _CITRUS_ESDB_H_
 
+#include "dcmtk/config/osconfig.h"
 #include "citrus_types.h"
+#include <stdbool.h>
 
 struct _citrus_esdb_charset {
-	_citrus_csid_t			 ec_csid;
-	char				*ec_csname;
+    _citrus_csid_t           ec_csid;
+    char                *ec_csname;
 };
 
 struct _citrus_esdb {
-	char				*db_encname;
-	void				*db_variable;
-	size_t				 db_len_variable;
-	int				 db_num_charsets;
-	struct	_citrus_esdb_charset	*db_charsets;
-	int				 db_use_invalid;
-	_citrus_wc_t			 db_invalid;
+    char                *db_encname;
+    void                *db_variable;
+    size_t               db_len_variable;
+    int              db_num_charsets;
+    struct  _citrus_esdb_charset    *db_charsets;
+    int              db_use_invalid;
+    _citrus_wc_t             db_invalid;
 };
 
-__BEGIN_DECLS
-const char	*_citrus_esdb_alias(const char *, char *, size_t);
-int		 _citrus_esdb_open(struct _citrus_esdb *, const char *);
-void		 _citrus_esdb_close(struct _citrus_esdb *);
-void		 _citrus_esdb_free_list(char **, size_t);
-int		 _citrus_esdb_get_list(char ***, size_t *, bool);
-__END_DECLS
+BEGIN_EXTERN_C
+const char  *_citrus_esdb_alias(const char *, char *, size_t);
+int      _citrus_esdb_open(struct _citrus_esdb *, const char *);
+void         _citrus_esdb_close(struct _citrus_esdb *);
+void         _citrus_esdb_free_list(char **, size_t);
+int      _citrus_esdb_get_list(char ***, size_t *, bool);
+END_EXTERN_C
 
 #endif

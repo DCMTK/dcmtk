@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_hash.c,v 1.3 2008/02/09 14:56:20 junyoung Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,25 +24,28 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
-#include <sys/types.h>
+#include "dcmtk/config/osconfig.h"
+#include "citrus_hash.h"
 
-#include <assert.h>
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+
 #include <stdio.h>
 #include <string.h>
 
 #include "citrus_namespace.h"
 #include "citrus_types.h"
 #include "citrus_region.h"
-#include "citrus_hash.h"
 #include "citrus_db_hash.h"
 
 int
 _citrus_string_hash_func(const char *key, int hashsize)
 {
-	struct _region r;
+    struct _region r;
 
-	_region_init(&r, __DECONST(void *, key), strlen(key));
+    _region_init(&r, __DECONST(void *, key), strlen(key));
 
-	return ((int)(_db_hash_std(&r) % (uint32_t)hashsize));
+    return ((int)(_db_hash_std(&r) % (uint32_t)hashsize));
 }

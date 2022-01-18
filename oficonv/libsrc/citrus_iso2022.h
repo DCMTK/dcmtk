@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/*	$NetBSD: citrus_iso2022.h,v 1.2 2003/06/25 09:51:44 tshiozak Exp $	*/
-
 /*-
  * Copyright (c)2002 Citrus Project,
  * All rights reserved.
@@ -30,8 +27,11 @@
 #ifndef _CITRUS_ISO2022_H_
 #define _CITRUS_ISO2022_H_
 
-__BEGIN_DECLS
+#include "dcmtk/config/osconfig.h"
+#include "citrus_stdenc_local.h"
+
+BEGIN_EXTERN_C
 _CITRUS_STDENC_GETOPS_FUNC(ISO2022);
-__END_DECLS
+END_EXTERN_C
 
 #endif

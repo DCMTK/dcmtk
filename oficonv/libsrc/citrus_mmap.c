@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_mmap.c,v 1.3 2005/01/19 00:52:37 mycroft Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,67 +24,76 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "dcmtk/config/osconfig.h"
+#include "citrus_mmap.h"
 
-#include <assert.h>
+#include <sys/mman.h>
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+
 #include <errno.h>
-#include <fcntl.h>
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>  /* for O_RDONLY, O_CLOEXEC */
+#endif
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 
 #include "citrus_namespace.h"
 #include "citrus_region.h"
-#include "citrus_mmap.h"
 
 int
 _citrus_map_file(struct _citrus_region * __restrict r,
     const char * __restrict path)
 {
-	struct stat st;
-	void *head;
-	int fd, ret;
+    struct stat st;
+    void *head;
+    int fd, ret;
 
-	ret = 0;
+    ret = 0;
 
-	_region_init(r, NULL, 0);
+    _region_init(r, NULL, 0);
 
-	if ((fd = open(path, O_RDONLY | O_CLOEXEC)) == -1)
-		return (errno);
+    fprintf(stderr, "_citrus_map_file: open file '%s'\n", path);
+    if ((fd = open(path, O_RDONLY | O_CLOEXEC)) == -1)
+        return (errno);
 
-	if (fstat(fd, &st)  == -1) {
-		ret = errno;
-		goto error;
-	}
-	if (!S_ISREG(st.st_mode)) {
-		ret = EOPNOTSUPP;
-		goto error;
-	}
+    if (fstat(fd, &st)  == -1) {
+        ret = errno;
+        goto error;
+    }
+    if (!S_ISREG(st.st_mode)) {
+        ret = EOPNOTSUPP;
+        goto error;
+    }
 
-	head = mmap(NULL, (size_t)st.st_size, PROT_READ, MAP_FILE|MAP_PRIVATE,
-	    fd, (off_t)0);
-	if (head == MAP_FAILED) {
-		ret = errno;
-		goto error;
-	}
-	_region_init(r, head, (size_t)st.st_size);
+    head = mmap(NULL, (size_t)st.st_size, PROT_READ, MAP_FILE|MAP_PRIVATE,
+        fd, (off_t)0);
+    if (head == MAP_FAILED) {
+        ret = errno;
+        goto error;
+    }
+    _region_init(r, head, (size_t)st.st_size);
 
 error:
-	(void)close(fd);
-	return (ret);
+    (void)close(fd);
+    return (ret);
 }
 
 void
 _citrus_unmap_file(struct _citrus_region *r)
 {
 
-	if (_region_head(r) != NULL) {
-		(void)munmap(_region_head(r), _region_size(r));
-		_region_init(r, NULL, 0);
-	}
+    if (_region_head(r) != NULL) {
+        (void)munmap(_region_head(r), _region_size(r));
+        _region_init(r, NULL, 0);
+    }
 }

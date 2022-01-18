@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_zw.h,v 1.1 2006/11/22 23:38:27 tnozaki Exp $ */
-
 /*-
  * Copyright (c)2004,2006 Citrus Project,
  * All rights reserved.
@@ -30,8 +27,11 @@
 #ifndef _CITRUS_ZW_H_
 #define _CITRUS_ZW_H_
 
-__BEGIN_DECLS
+#include "dcmtk/config/osconfig.h"
+#include "citrus_stdenc_local.h"
+
+BEGIN_EXTERN_C
 _CITRUS_STDENC_GETOPS_FUNC(ZW);
-__END_DECLS
+END_EXTERN_C
 
 #endif

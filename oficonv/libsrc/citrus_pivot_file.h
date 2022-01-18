@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_pivot_file.h,v 1.1 2003/06/25 09:51:39 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,7 +27,7 @@
 #ifndef _CITRUS_PIVOT_FILE_H_
 #define _CITRUS_PIVOT_FILE_H_
 
-#define _CITRUS_PIVOT_MAGIC	"CSPIVOT\0"
-#define _CITRUS_PIVOT_SUB_MAGIC	"CSPIVSUB"
+#define _CITRUS_PIVOT_MAGIC "CSPIVOT\0"
+#define _CITRUS_PIVOT_SUB_MAGIC "CSPIVSUB"
 
 #endif

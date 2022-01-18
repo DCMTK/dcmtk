@@ -1,5 +1,5 @@
 # create library from source files
-DCMTK_ADD_LIBRARY(oficonv 
+DCMTK_ADD_LIBRARY(oficonv
     citrus_bcs.c
     citrus_bcs_strtol.c
     citrus_bcs_strtoul.c
@@ -43,6 +43,8 @@ DCMTK_ADD_LIBRARY(oficonv
     citrus_viqr.c
     citrus_zw.c
     iconv.c
+    strlcpy.c
+    strcasestr.c
 )
 
 DCMTK_TARGET_LINK_LIBRARIES(oficonv ${WIN32_STD_LIBRARIES})

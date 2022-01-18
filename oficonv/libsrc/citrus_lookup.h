@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_lookup.h,v 1.2 2004/07/21 14:16:34 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,35 +27,37 @@
 #ifndef _CITRUS_LOOKUP_H_
 #define _CITRUS_LOOKUP_H_
 
-#define _CITRUS_LOOKUP_CASE_SENSITIVE	0
-#define _CITRUS_LOOKUP_CASE_IGNORE	1
+#include "dcmtk/config/osconfig.h"
+#include <stddef.h>
+#include "citrus_namespace.h"
+
+#define _CITRUS_LOOKUP_CASE_SENSITIVE   0
+#define _CITRUS_LOOKUP_CASE_IGNORE  1
 
 struct _citrus_lookup;
-__BEGIN_DECLS
-char		*_citrus_lookup_simple(const char *, const char *, char *,
-		    size_t, int);
-int		 _citrus_lookup_seq_open(struct _citrus_lookup **,
-		    const char *, int);
-void		 _citrus_lookup_seq_rewind(struct _citrus_lookup *);
-int		 _citrus_lookup_seq_next(struct _citrus_lookup *,
-			    struct _region *, struct _region *);
-int		 _citrus_lookup_seq_lookup(struct _citrus_lookup *,
-		    const char *, struct _region *);
-int		 _citrus_lookup_get_number_of_entries(struct _citrus_lookup *);
-void		 _citrus_lookup_seq_close(struct _citrus_lookup *);
-__END_DECLS
+struct _region;
+
+BEGIN_EXTERN_C
+char *_citrus_lookup_simple(const char *, const char *, char *, size_t, int);
+int _citrus_lookup_seq_open(struct _citrus_lookup **, const char *, int);
+void _citrus_lookup_seq_rewind(struct _citrus_lookup *);
+int _citrus_lookup_seq_next(struct _citrus_lookup *, struct _region *, struct _region *);
+int _citrus_lookup_seq_lookup(struct _citrus_lookup *, const char *, struct _region *);
+int _citrus_lookup_get_number_of_entries(struct _citrus_lookup *);
+void _citrus_lookup_seq_close(struct _citrus_lookup *);
+END_EXTERN_C
 
 static __inline const char *
 _citrus_lookup_alias(const char *path, const char *key, char *buf, size_t n,
     int ignore_case)
 {
-	const char *ret;
+    const char *ret;
 
-	ret = _citrus_lookup_simple(path, key, buf, n, ignore_case);
-	if (ret == NULL)
-		ret = key;
+    ret = _citrus_lookup_simple(path, key, buf, n, ignore_case);
+    if (ret == NULL)
+        ret = key;
 
-	return (ret);
+    return (ret);
 }
 
 #endif

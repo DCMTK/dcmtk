@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_none.c,v 1.18 2008/06/14 16:01:07 tnozaki Exp $ */
-
 /*-
  * Copyright (c) 2002 Citrus Project,
  * Copyright (c) 2010 Gabor Kovesdan <gabor@FreeBSD.org>,
@@ -28,17 +25,17 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
-#include <sys/types.h>
+#include "dcmtk/config/osconfig.h"
+#include "citrus_none.h"
 
-#include <assert.h>
-#include <errno.h>
-
-/* BEGIN DCMTK modifications */
-// #include <iconv.h>
 #include "dcmtk/oficonv/iconv.h"
-/* END DCMTK modifications */
 
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+
+#include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,14 +45,13 @@
 #include "citrus_namespace.h"
 #include "citrus_types.h"
 #include "citrus_module.h"
-#include "citrus_none.h"
 #include "citrus_stdenc.h"
 
 _CITRUS_STDENC_DECLS(NONE);
 _CITRUS_STDENC_DEF_OPS(NONE);
 struct _citrus_stdenc_traits _citrus_NONE_stdenc_traits = {
-	0,	/* et_state_size */
-	1,	/* mb_cur_max */
+    0,  /* et_state_size */
+    1,  /* mb_cur_max */
 };
 
 static int
@@ -64,12 +60,12 @@ _citrus_NONE_stdenc_init(struct _citrus_stdenc * __restrict ce,
     struct _citrus_stdenc_traits * __restrict et)
 {
 
-	et->et_state_size = 0;
-	et->et_mb_cur_max = 1;
+    et->et_state_size = 0;
+    et->et_mb_cur_max = 1;
 
-	ce->ce_closure = NULL;
+    ce->ce_closure = NULL;
 
-	return (0);
+    return (0);
 }
 
 static void
@@ -83,7 +79,7 @@ _citrus_NONE_stdenc_init_state(struct _citrus_stdenc * __restrict ce __unused,
     void * __restrict ps __unused)
 {
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -92,19 +88,19 @@ _citrus_NONE_stdenc_mbtocs(struct _citrus_stdenc * __restrict ce __unused,
     void *ps __unused, size_t *nresult, struct iconv_hooks *hooks)
 {
 
-	if (n < 1) {
-		*nresult = (size_t)-2;
-		return (0);
-	}
+    if (n < 1) {
+        *nresult = (size_t)-2;
+        return (0);
+    }
 
-	*csid = 0;
-	*idx = (_index_t)(unsigned char)*(*s)++;
-	*nresult = *idx == 0 ? 0 : 1;
+    *csid = 0;
+    *idx = (_index_t)(unsigned char)*(*s)++;
+    *nresult = *idx == 0 ? 0 : 1;
 
-	if ((hooks != NULL) && (hooks->uc_hook != NULL))
-		hooks->uc_hook((unsigned int)*idx, hooks->data);
+    if ((hooks != NULL) && (hooks->uc_hook != NULL))
+        hooks->uc_hook((unsigned int)*idx, hooks->data);
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -113,53 +109,53 @@ _citrus_NONE_stdenc_cstomb(struct _citrus_stdenc * __restrict ce __unused,
     size_t *nresult, struct iconv_hooks *hooks __unused)
 {
 
-	if (csid == _CITRUS_CSID_INVALID) {
-		*nresult = 0;
-		return (0);
-	}
-	if (csid != 0)
-		return (EILSEQ);
+    if (csid == _CITRUS_CSID_INVALID) {
+        *nresult = 0;
+        return (0);
+    }
+    if (csid != 0)
+        return (EILSEQ);
 
-	if ((idx & 0x000000FF) == idx) {
-		if (n < 1) {
-			*nresult = (size_t)-1;
-			return (E2BIG);
-		}
-		*s = (char)idx;
-		*nresult = 1;
-	} else if ((idx & 0x0000FFFF) == idx) {
-		if (n < 2) {
-			*nresult = (size_t)-1;
-			return (E2BIG);
-		}
-		s[0] = (char)idx;
-		/* XXX: might be endian dependent */
-		s[1] = (char)(idx >> 8);
-		*nresult = 2;
-	} else if ((idx & 0x00FFFFFF) == idx) {
-		if (n < 3) {
-			*nresult = (size_t)-1;
-			return (E2BIG);
-		}
-		s[0] = (char)idx;
-		/* XXX: might be endian dependent */
-		s[1] = (char)(idx >> 8);
-		s[2] = (char)(idx >> 16);
-		*nresult = 3;
-	} else {
-		if (n < 3) {
-			*nresult = (size_t)-1;
-			return (E2BIG);
-		}
-		s[0] = (char)idx;
-		/* XXX: might be endian dependent */
-		s[1] = (char)(idx >> 8);
-		s[2] = (char)(idx >> 16);
-		s[3] = (char)(idx >> 24);
-		*nresult = 4;
-	}
-		
-	return (0);
+    if ((idx & 0x000000FF) == idx) {
+        if (n < 1) {
+            *nresult = (size_t)-1;
+            return (E2BIG);
+        }
+        *s = (char)idx;
+        *nresult = 1;
+    } else if ((idx & 0x0000FFFF) == idx) {
+        if (n < 2) {
+            *nresult = (size_t)-1;
+            return (E2BIG);
+        }
+        s[0] = (char)idx;
+        /* XXX: might be endian dependent */
+        s[1] = (char)(idx >> 8);
+        *nresult = 2;
+    } else if ((idx & 0x00FFFFFF) == idx) {
+        if (n < 3) {
+            *nresult = (size_t)-1;
+            return (E2BIG);
+        }
+        s[0] = (char)idx;
+        /* XXX: might be endian dependent */
+        s[1] = (char)(idx >> 8);
+        s[2] = (char)(idx >> 16);
+        *nresult = 3;
+    } else {
+        if (n < 3) {
+            *nresult = (size_t)-1;
+            return (E2BIG);
+        }
+        s[0] = (char)idx;
+        /* XXX: might be endian dependent */
+        s[1] = (char)(idx >> 8);
+        s[2] = (char)(idx >> 16);
+        s[3] = (char)(idx >> 24);
+        *nresult = 4;
+    }
+
+    return (0);
 }
 
 static int
@@ -169,24 +165,24 @@ _citrus_NONE_stdenc_mbtowc(struct _citrus_stdenc * __restrict ce __unused,
     struct iconv_hooks *hooks)
 {
 
-	if (s == NULL) {
-		*nresult = 0;
-		return (0);
-	}
-	if (n == 0) {
-		*nresult = (size_t)-2;
-		return (0);
-	}
+    if (s == NULL) {
+        *nresult = 0;
+        return (0);
+    }
+    if (n == 0) {
+        *nresult = (size_t)-2;
+        return (0);
+    }
 
-	if (pwc != NULL)
-		*pwc = (_wc_t)(unsigned char) **s;
+    if (pwc != NULL)
+        *pwc = (_wc_t)(unsigned char) **s;
 
-	*nresult = *s == '\0' ? 0 : 1;
+    *nresult = **s == '\0' ? 0 : 1;
 
-	if ((hooks != NULL) && (hooks->wc_hook != NULL))
-		hooks->wc_hook(*pwc, hooks->data);
+    if ((hooks != NULL) && (hooks->wc_hook != NULL))
+        hooks->wc_hook(*pwc, hooks->data);
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -196,20 +192,20 @@ _citrus_NONE_stdenc_wctomb(struct _citrus_stdenc * __restrict ce __unused,
     struct iconv_hooks *hooks __unused)
 {
 
-	if ((wc & ~0xFFU) != 0) {
-		*nresult = (size_t)-1;
-		return (EILSEQ);
-	}
-	if (n == 0) {
-		*nresult = (size_t)-1;
-		return (E2BIG);
-	}
+    if ((wc & ~0xFFU) != 0) {
+        *nresult = (size_t)-1;
+        return (EILSEQ);
+    }
+    if (n == 0) {
+        *nresult = (size_t)-1;
+        return (E2BIG);
+    }
 
-	*nresult = 1;
-	if (s != NULL && n > 0)
-		*s = (char)wc;
+    *nresult = 1;
+    if (s != NULL && n > 0)
+        *s = (char)wc;
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -218,9 +214,9 @@ _citrus_NONE_stdenc_put_state_reset(struct _citrus_stdenc * __restrict ce __unus
     void * __restrict pspriv __unused, size_t * __restrict nresult)
 {
 
-	*nresult = 0;
+    *nresult = 0;
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -228,15 +224,15 @@ _citrus_NONE_stdenc_get_state_desc(struct _stdenc * __restrict ce __unused,
     void * __restrict ps __unused, int id,
     struct _stdenc_state_desc * __restrict d)
 {
-	int ret = 0;
+    int ret = 0;
 
-	switch (id) {
-	case _STDENC_SDID_GENERIC:
-		d->u.generic.state = _STDENC_SDGEN_INITIAL;
-		break;
-	default:
-		ret = EOPNOTSUPP;
-	}
+    switch (id) {
+    case _STDENC_SDID_GENERIC:
+        d->u.generic.state = _STDENC_SDGEN_INITIAL;
+        break;
+    default:
+        ret = EOPNOTSUPP;
+    }
 
-	return (ret);
+    return (ret);
 }

@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_types.h,v 1.3 2003/10/27 00:12:42 lukem Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,7 +24,10 @@
  * SUCH DAMAGE.
  */
 
+#include "dcmtk/config/osconfig.h"
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
 /* BEGIN DCMTK modifications */
 #include <stdint.h>
@@ -37,9 +37,9 @@
 #ifndef _CITRUS_TYPES_H_
 #define _CITRUS_TYPES_H_
 
-typedef uint32_t		_citrus_wc_t;
-typedef uint32_t		_citrus_index_t;
-typedef uint32_t		_citrus_csid_t;
-#define _CITRUS_CSID_INVALID	((_citrus_csid_t)-1)
+typedef uint32_t        _citrus_wc_t;
+typedef uint32_t        _citrus_index_t;
+typedef uint32_t        _citrus_csid_t;
+#define _CITRUS_CSID_INVALID    ((_citrus_csid_t)-1)
 
 #endif

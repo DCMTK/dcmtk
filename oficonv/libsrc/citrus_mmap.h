@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_mmap.h,v 1.1 2003/06/25 09:51:38 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -31,10 +28,13 @@
 #ifndef _CITRUS_MMAP_H_
 #define _CITRUS_MMAP_H_
 
-__BEGIN_DECLS
-int	 _citrus_map_file(struct _citrus_region * __restrict,
-	    const char * __restrict);
-void	 _citrus_unmap_file(struct _citrus_region *);
-__END_DECLS
+#include "dcmtk/config/osconfig.h"
+struct _citrus_region;
+
+BEGIN_EXTERN_C
+int  _citrus_map_file(struct _citrus_region * __restrict,
+        const char * __restrict);
+void     _citrus_unmap_file(struct _citrus_region *);
+END_EXTERN_C
 
 #endif

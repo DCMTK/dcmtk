@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_aliasname_local.h,v 1.2 2009/01/11 02:46:24 christos Exp $ */
-
 /*-
  * Copyright (c)2008 Citrus Project,
  * All rights reserved.
@@ -30,20 +27,25 @@
 #ifndef _CITRUS_ALIASNAME_LOCAL_H_
 #define _CITRUS_ALIASNAME_LOCAL_H_
 
+#include "dcmtk/config/osconfig.h"
+#include <stddef.h>
+#include "citrus_namespace.h"
+#include "citrus_lookup.h"
+
 static __inline const char *
 __unaliasname(const char *dbname, const char *alias,
     void *buf, size_t bufsize)
 {
 
-	return (_lookup_simple(dbname, alias,
-	    buf, bufsize, _LOOKUP_CASE_SENSITIVE));
+    return (_lookup_simple(dbname, alias,
+        buf, bufsize, _LOOKUP_CASE_SENSITIVE));
 }
 
 static __inline int
 __isforcemapping(const char *name)
 {
 
-	return (_bcs_strcasecmp("/force", name));
+    return (_bcs_strcasecmp("/force", name));
 }
 
 #endif /*_CITRUS_ALIASNAME_LOCAL_H_*/

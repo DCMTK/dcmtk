@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/*	$NetBSD: citrus_iconv_none.c,v 1.2 2003/07/01 09:42:16 tshiozak Exp $	*/
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,10 +24,12 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
+#include "dcmtk/config/osconfig.h"
+#include "citrus_iconv_none.h"
+
 #include <sys/queue.h>
 
-#include <assert.h>
+
 #include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -40,7 +39,6 @@
 #include "citrus_module.h"
 #include "citrus_hash.h"
 #include "citrus_iconv.h"
-#include "citrus_iconv_none.h"
 
 /* ---------------------------------------------------------------------- */
 
@@ -54,10 +52,10 @@ int
 _citrus_iconv_none_iconv_getops(struct _citrus_iconv_ops *ops)
 {
 
-	memcpy(ops, &_citrus_iconv_none_iconv_ops,
-	       sizeof(_citrus_iconv_none_iconv_ops));
+    memcpy(ops, &_citrus_iconv_none_iconv_ops,
+           sizeof(_citrus_iconv_none_iconv_ops));
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -67,8 +65,8 @@ _citrus_iconv_none_iconv_init_shared(
     const char * __restrict in __unused, const char * __restrict out __unused)
 {
 
-	ci->ci_closure = NULL;
-	return (0);
+    ci->ci_closure = NULL;
+    return (0);
 }
 
 static void
@@ -83,8 +81,8 @@ static int
 _citrus_iconv_none_iconv_init_context(struct _citrus_iconv *cv)
 {
 
-	cv->cv_closure = NULL;
-	return (0);
+    cv->cv_closure = NULL;
+    return (0);
 }
 
 static void
@@ -101,27 +99,27 @@ _citrus_iconv_none_iconv_convert(struct _citrus_iconv * __restrict ci __unused,
     char * __restrict * __restrict out, size_t * __restrict outbytes,
     uint32_t flags __unused, size_t * __restrict invalids)
 {
-	size_t len;
-	int e2big;
+    size_t len;
+    int e2big;
 
-	if ((in == NULL) || (out == NULL) || (inbytes == NULL))
-		return (0);
-	if ((*in == NULL) || (*out == NULL) || (*inbytes == 0) || (*outbytes == 0))
-		return (0);
-	len = *inbytes;
-	e2big = 0;
-	if (*outbytes<len) {
-		e2big = 1;
-		len = *outbytes;
-	}
-	memcpy(*out, *in, len);
-	in += len;
-	*inbytes -= len;
-	out += len;
-	*outbytes -= len;
-	*invalids = 0;
-	if (e2big)
-		return (E2BIG);
+    if ((in == NULL) || (out == NULL) || (inbytes == NULL))
+        return (0);
+    if ((*in == NULL) || (*out == NULL) || (*inbytes == 0) || (*outbytes == 0))
+        return (0);
+    len = *inbytes;
+    e2big = 0;
+    if (*outbytes<len) {
+        e2big = 1;
+        len = *outbytes;
+    }
+    memcpy(*out, *in, len);
+    in += len;
+    *inbytes -= len;
+    out += len;
+    *outbytes -= len;
+    *invalids = 0;
+    if (e2big)
+        return (E2BIG);
 
-	return (0);
+    return (0);
 }

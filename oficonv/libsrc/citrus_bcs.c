@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_bcs.c,v 1.5 2005/05/14 17:55:42 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,13 +24,12 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
+#include "dcmtk/config/osconfig.h"
+#include "citrus_bcs.h"
 
-#include <assert.h>
 #include <stdlib.h>
 
 #include "citrus_namespace.h"
-#include "citrus_bcs.h"
 
 /*
  * case insensitive comparison between two C strings.
@@ -42,16 +38,16 @@ int
 _citrus_bcs_strcasecmp(const char * __restrict str1,
     const char * __restrict str2)
 {
-	int c1, c2;
+    int c1, c2;
 
-	c1 = c2 = 1;
+    c1 = c2 = 1;
 
-	while (c1 && c2 && c1 == c2) {
-		c1 = _bcs_toupper(*str1++);
-		c2 = _bcs_toupper(*str2++);
-	}
+    while (c1 && c2 && c1 == c2) {
+        c1 = _bcs_toupper(*str1++);
+        c2 = _bcs_toupper(*str2++);
+    }
 
-	return ((c1 == c2) ? 0 : ((c1 > c2) ? 1 : -1));
+    return ((c1 == c2) ? 0 : ((c1 > c2) ? 1 : -1));
 }
 
 /*
@@ -61,17 +57,17 @@ int
 _citrus_bcs_strncasecmp(const char * __restrict str1,
     const char * __restrict str2, size_t sz)
 {
-	int c1, c2;
+    int c1, c2;
 
-	c1 = c2 = 1;
+    c1 = c2 = 1;
 
-	while (c1 && c2 && c1 == c2 && sz != 0) {
-		c1 = _bcs_toupper(*str1++);
-		c2 = _bcs_toupper(*str2++);
-		sz--;
-	}
+    while (c1 && c2 && c1 == c2 && sz != 0) {
+        c1 = _bcs_toupper(*str1++);
+        c2 = _bcs_toupper(*str2++);
+        sz--;
+    }
 
-	return ((c1 == c2) ? 0 : ((c1 > c2) ? 1 : -1));
+    return ((c1 == c2) ? 0 : ((c1 > c2) ? 1 : -1));
 }
 
 /*
@@ -81,10 +77,10 @@ const char *
 _citrus_bcs_skip_ws(const char *p)
 {
 
-	while (*p && _bcs_isspace(*p))
-		p++;
+    while (*p && _bcs_isspace(*p))
+        p++;
 
-	return (p);
+    return (p);
 }
 
 /*
@@ -94,10 +90,10 @@ const char *
 _citrus_bcs_skip_nonws(const char *p)
 {
 
-	while (*p && !_bcs_isspace(*p))
-		p++;
+    while (*p && !_bcs_isspace(*p))
+        p++;
 
-	return (p);
+    return (p);
 }
 
 /*
@@ -107,12 +103,12 @@ const char *
 _citrus_bcs_skip_ws_len(const char * __restrict p, size_t * __restrict len)
 {
 
-	while (*p && *len > 0 && _bcs_isspace(*p)) {
-		p++;
-		(*len)--;
-	}
+    while (*p && *len > 0 && _bcs_isspace(*p)) {
+        p++;
+        (*len)--;
+    }
 
-	return (p);
+    return (p);
 }
 
 /*
@@ -122,12 +118,12 @@ const char *
 _citrus_bcs_skip_nonws_len(const char * __restrict p, size_t * __restrict len)
 {
 
-	while (*p && *len > 0 && !_bcs_isspace(*p)) {
-		p++;
-		(*len)--;
-	}
+    while (*p && *len > 0 && !_bcs_isspace(*p)) {
+        p++;
+        (*len)--;
+    }
 
-	return (p);
+    return (p);
 }
 
 /*
@@ -137,8 +133,8 @@ void
 _citrus_bcs_trunc_rws_len(const char * __restrict p, size_t * __restrict len)
 {
 
-	while (*len > 0 && _bcs_isspace(p[*len - 1]))
-		(*len)--;
+    while (*len > 0 && _bcs_isspace(p[*len - 1]))
+        (*len)--;
 }
 
 /*
@@ -148,10 +144,10 @@ void
 _citrus_bcs_convert_to_lower(char *s)
 {
 
-	while (*s) {
-		*s = _bcs_tolower(*s);
-		s++;
-	}
+    while (*s) {
+        *s = _bcs_tolower(*s);
+        s++;
+    }
 }
 
 /*
@@ -161,8 +157,8 @@ void
 _citrus_bcs_convert_to_upper(char *s)
 {
 
-	while (*s) {
-		*s = _bcs_toupper(*s);
-		s++;
-	}
+    while (*s) {
+        *s = _bcs_toupper(*s);
+        s++;
+    }
 }

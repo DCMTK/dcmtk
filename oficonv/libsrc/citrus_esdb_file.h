@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_esdb_file.h,v 1.1 2003/06/25 09:51:32 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,15 +27,15 @@
 #ifndef _CITRUS_ESDB_FILE_H_
 #define _CITRUS_ESDB_FILE_H_
 
-#define _CITRUS_ESDB_MAGIC	"ESDB\0\0\0\0"
+#define _CITRUS_ESDB_MAGIC  "ESDB\0\0\0\0"
 
-#define _CITRUS_ESDB_SYM_VERSION	"version"
-#define _CITRUS_ESDB_SYM_ENCODING	"encoding"
-#define _CITRUS_ESDB_SYM_VARIABLE	"variable"
-#define _CITRUS_ESDB_SYM_NUM_CHARSETS	"num_charsets"
-#define _CITRUS_ESDB_SYM_INVALID	"invalid"
-#define _CITRUS_ESDB_SYM_CSNAME_PREFIX	"csname_"
-#define _CITRUS_ESDB_SYM_CSID_PREFIX	"csid_"
+#define _CITRUS_ESDB_SYM_VERSION    "version"
+#define _CITRUS_ESDB_SYM_ENCODING   "encoding"
+#define _CITRUS_ESDB_SYM_VARIABLE   "variable"
+#define _CITRUS_ESDB_SYM_NUM_CHARSETS   "num_charsets"
+#define _CITRUS_ESDB_SYM_INVALID    "invalid"
+#define _CITRUS_ESDB_SYM_CSNAME_PREFIX  "csname_"
+#define _CITRUS_ESDB_SYM_CSID_PREFIX    "csid_"
 
 #define _CITRUS_ESDB_VERSION 0x00000001
 

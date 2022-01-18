@@ -1,6 +1,3 @@
-/*	$FreeBSD$	*/
-/*	$NetBSD: iconv.h,v 1.6 2005/02/03 04:39:32 perry Exp $	*/
-
 /*-
  * Copyright (c) 2003 Citrus Project,
  * Copyright (c) 2009, 2010 Gabor Kovesdan <gabor@FreeBSD.org>
@@ -29,133 +26,215 @@
  *
  */
 
-#ifndef _ICONV_H_
-#define _ICONV_H_
+#ifndef OFICONV_H
+#define OFICONV_H
 
 #include <sys/cdefs.h>
 #include <sys/types.h>
-
 #include <wchar.h>
-
 #include <sys/cdefs.h>
 #include <sys/types.h>
 
-/* BEGIN DCMTK modifications */
-// #include <_libiconv_compat.h>
 #define __LIBICONV_COMPAT
-/* END DCMTK modifications */
 
 #ifdef __LIBICONV_COMPAT
-#define libiconv_open		iconv_open
-#define libiconv_close		iconv_close
-#define libiconv		iconv
-#define libiconv_t		iconv_t
+#define libiconv_open  iconv_open
+#define libiconv_close iconv_close
+#define libiconv       iconv
+#define libiconv_t     iconv_t
 #endif
+
 #ifdef __cplusplus
-typedef	bool	__iconv_bool;
+typedef bool __iconv_bool;
 #elif __STDC_VERSION__ >= 199901L
-typedef	_Bool	__iconv_bool;
+typedef _Bool __iconv_bool;
 #else
-typedef	int	__iconv_bool;
+typedef int __iconv_bool;
 #endif
 
 struct __tag_iconv_t;
-typedef	struct __tag_iconv_t	*iconv_t;
+typedef struct __tag_iconv_t *iconv_t;
 
 __BEGIN_DECLS
-iconv_t	iconv_open(const char *, const char *);
-size_t	iconv(iconv_t, const char ** __restrict,
-	      size_t * __restrict, char ** __restrict,
-	      size_t * __restrict);
-int	iconv_close(iconv_t);
+
+/**
+ * open a converter from the codeset srcname to the codeset dstname and 
+ * returns its descriptor. The arguments srcname and dstname accept "" and 
+ * "char", which refer to the current locale encoding. 
+ */
+iconv_t OFiconv_open(const char *, const char *);
+
+/**
+ *  convert the string in the buffer *src of length *srcleft bytes and 
+ *  stores the converted string in the buffer *dst of size *dstleft bytes. 
+ *  After calling iconv(), the values pointed to by src, srcleft, dst, and 
+ *  dstleft are updated as follows: 
+ *  
+ *  *src: Pointer to the byte just after the last character fetched.
+ *  *srcleft: Number of remaining bytes in the source buffer.
+ *  *dst: Pointer to the byte just after the last character stored.
+ *  *dstleft: Number of remainder bytes in the destination buffer.
+ *  
+ *  If the string pointed to by *src contains a byte sequence which is not a 
+ *  valid character in the source codeset, the conversion stops just after 
+ *  the last successful conversion. If the output buffer is too small to 
+ *  store the converted character, the conversion also stops in the same 
+ *  way. In these cases, the values pointed to by src, srcleft, dst, and 
+ *  dstleft are updated to the state just after the last successful 
+ *  conversion. 
+ *  
+ *  If the string pointed to by *src contains a character which is valid 
+ *  under the source codeset but can not be converted to the destination 
+ *  codeset, the character is replaced by an “invalid character” which 
+ *  depends on the destination codeset, e.g., ‘?’, and the conversion is 
+ *  continued. iconv() returns the number of such “invalid conversions”. 
+ */
+size_t OFiconv(iconv_t cd, const char ** __restrict src, size_t * __restrict srcleft, char ** __restrict dst, size_t * __restrict dstleft);
+
+/**
+ * close the specified converter cd
+ */
+int OFiconv_close(iconv_t cd);
+
 /*
  * non-portable interfaces for iconv
  */
-int	__iconv_get_list(char ***, size_t *, __iconv_bool);
-void	__iconv_free_list(char **, size_t);
-size_t	__iconv(iconv_t, const char **, size_t *, char **,
-		     size_t *, __uint32_t, size_t *);
-#define __ICONV_F_HIDE_INVALID	0x0001
+
+/** 
+ * obtain a list of character encodings that are supported by the OFiconv() 
+ * call. The list of the encoding names will be stored in names and the 
+ * number of the entries is stored in count. If the paired variable is 
+ * true, the list will be arranged into canonical/alias name pairs. 
+ */
+int OF__iconv_get_list(char ***, size_t *, __iconv_bool);
+
+/**
+ * free the allocated memory during the call of OF__iconv_get_list().
+ */
+void OF__iconv_free_list(char **, size_t);
+
+/**
+ * The OF__iconv() function works just like iconv() but if iconv() fails, 
+ * the invalid character count is lost there. This is a not bug, rather a 
+ * limitation of IEEE Std 1003.1-2008 (POSIX.1), so __iconv() is 
+ * provided as an alternative but non-standard interface. It also has a 
+ * flags argument, where currently the following flags can be passed: 
+ * 
+ * __ICONV_F_HIDE_INVALID
+ *     Skip invalid characters, instead of returning with an error. 
+ */
+size_t  OF__iconv(iconv_t, const char **, size_t *, char **, size_t *, __uint32_t, size_t *);
+
+#define __ICONV_F_HIDE_INVALID  0x0001
 
 /*
  * GNU interfaces for iconv
  */
-/* BEGIN DCMTK modifications */
-// #ifdef __LIBICONV_COMPAT
-// #define libiconv_open_into		iconv_open_into
-// #define libiconvctl			iconvctl
-// #define libiconvlist			iconvlist
-// #define libiconv_set_relocation_prefix	iconv_set_relocation_prefix
-// #endif
-/* END DCMTK modifications */
 
 /* We have iconvctl() */
-#define _ICONV_VERSION	0x0108
+#define _ICONV_VERSION  0x0108
 extern int _iconv_version;
 
-#ifdef __LIBICONV_COMPAT
-#define _libiconv_version		_iconv_version
-#define _LIBICONV_VERSION		_ICONV_VERSION
-#endif
+#define _libiconv_version       _iconv_version
+#define _LIBICONV_VERSION       _ICONV_VERSION
 
 typedef struct {
-	void	*spaceholder[64];
+    void *spaceholder[64];
 } iconv_allocation_t;
 
-int	 iconv_open_into(const char *, const char *, iconv_allocation_t *);
-void	 iconv_set_relocation_prefix(const char *orig_prefix,
-	     const char *curr_prefix);
+
+/**
+ * create a conversion descriptor on a preallocated space. The  
+ * iconv_allocation_t is used as a spaceholder type when allocating such  
+ * space. The dstname and srcname arguments are the same as in the case of  
+ * iconv_open(). The ptr argument is a pointer of iconv_allocation_t to the  
+ * preallocated space.  
+ */
+int OFiconv_open_into(const char *, const char *, iconv_allocation_t *);
 
 /*
- * iconvctl() request macros
+ * OFiconvctl() request macros
  */
-#define ICONV_TRIVIALP		0
-#define	ICONV_GET_TRANSLITERATE	1
-#define	ICONV_SET_TRANSLITERATE	2
-#define ICONV_GET_DISCARD_ILSEQ	3
-#define ICONV_SET_DISCARD_ILSEQ	4
-#define ICONV_SET_HOOKS		5
-#define ICONV_SET_FALLBACKS	6
+
+/*
+ * the argument is an int * variable, which is set to 1 if the 
+ * encoding is trivial one, i.e. the input and output encodings are the 
+ * same. Otherwise, the variable will be 0. 
+ */
+#define ICONV_TRIVIALP      0
+
+/*
+ * Determines if transliteration is enabled. The answer is stored in 
+ * argument, which is of int *. It will be set to 1 if this feature is 
+ * enabled or set to 0 otherwise. 
+ */
+#define ICONV_GET_TRANSLITERATE 1
+
+/*
+ * Enables transliteration if argument, which is of int * set to 1 or 
+ * disables it if argument is set to 0. 
+ */
+#define ICONV_SET_TRANSLITERATE 2
+
+/*
+ * Determines if illegal sequences are discarded or not. The answer is 
+ * stored in argument, which is of int *. It will be set to 1 if this 
+ * feature is enabled or set to 0 otherwise. 
+ */
+#define ICONV_GET_DISCARD_ILSEQ 3
+
+/*
+ * Sets whether illegal sequences are discarded or not. argument, which is 
+ * of int * set to 1 or disables it if argument is set to 0. 
+ */
+#define ICONV_SET_DISCARD_ILSEQ 4
+
+/*
+ * Sets callback functions, which will be called back after successful 
+ * conversions. The callback functions are stored in a struct iconv_hooks 
+ * variable, which is passed to iconvctl via argument by its address. 
+ */
+#define ICONV_SET_HOOKS     5
+
+/*
+ * Currently unsupported, will always return an error 
+ */
+#define ICONV_SET_FALLBACKS 6
 
 typedef void (*iconv_unicode_char_hook) (unsigned int mbr, void *data);
 typedef void (*iconv_wide_char_hook) (wchar_t wc, void *data);
 
 struct iconv_hooks {
-	iconv_unicode_char_hook		 uc_hook;
-	iconv_wide_char_hook		 wc_hook;
-	void				*data;
+    iconv_unicode_char_hook uc_hook;
+    iconv_wide_char_hook    wc_hook;
+    void                   *data;
 };
 
-/*
- * Fallbacks aren't supported but type definitions are provided for
- * source compatibility.
+/**
+ * The iconvlist() function obtains a list of character encodings that are 
+ * supported by the OFiconv() call. The do_one() callback function will be 
+ * called, where the count argument will be set to the number of the 
+ * encoding names found, the names argument will be the list of the 
+ * supported encoding names and the arg argument will be the arg argument 
+ * of the iconvlist() function. This argument can be used to interchange 
+ * custom data between the caller of iconvlist() and the callback function. 
+ * If an error occurs, names will be NULL when calling do_one(). 
  */
-typedef void (*iconv_unicode_mb_to_uc_fallback) (const char*,
-		size_t, void (*write_replacement) (const unsigned int *,
-		size_t, void*),	void*, void*);
-typedef void (*iconv_unicode_uc_to_mb_fallback) (unsigned int,
-		void (*write_replacement) (const char *, size_t, void*),
-		void*, void*);
-typedef void (*iconv_wchar_mb_to_wc_fallback) (const char*, size_t,
-		void (*write_replacement) (const wchar_t *, size_t, void*),
-		void*, void*);
-typedef void (*iconv_wchar_wc_to_mb_fallback) (wchar_t,
-		void (*write_replacement) (const char *, size_t, void*),
-		void*, void*);
+void OFiconvlist(int (*do_one) (unsigned int, const char * const *, void *), void *);
 
-struct iconv_fallbacks {
-	iconv_unicode_mb_to_uc_fallback	 mb_to_uc_fallback;
-	iconv_unicode_uc_to_mb_fallback  uc_to_mb_fallback;
-	iconv_wchar_mb_to_wc_fallback	 mb_to_wc_fallback;
-	iconv_wchar_wc_to_mb_fallback	 wc_to_mb_fallback;
-	void				*data;
-};
+/**
+ * resolve the character encoding name specified by the name argument 
+ * to its canonical form. 
+ */
+const char  *OFiconv_canonicalize(const char *);
 
+/**
+ *  This function can retrieve or set specific conversion setting from the 
+ *  cd conversion descriptor. The request parameter specifies the operation 
+ *  to accomplish and argument is an operation-specific argument. 
+ */
+int OFiconvctl(iconv_t cd, int request, void *argument);
 
-void		 iconvlist(int (*do_one) (unsigned int, const char * const *,
-		    void *), void *);
-const char	*iconv_canonicalize(const char *);
-int		 iconvctl(iconv_t, int, void *);
 __END_DECLS
 
-#endif /* !_ICONV_H_ */
+#endif /* !OFICONV_H */

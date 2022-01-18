@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_pivot_factory.h,v 1.1 2003/06/25 09:51:39 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,8 +27,11 @@
 #ifndef _CITRUS_PIVOT_FACTORY_H_
 #define _CITRUS_PIVOT_FACTORY_H_
 
-__BEGIN_DECLS
-int	 _citrus_pivot_factory_convert(FILE *, FILE *);
-__END_DECLS
+#include "dcmtk/config/osconfig.h"
+#include <stdio.h>
+
+BEGIN_EXTERN_C
+int  _citrus_pivot_factory_convert(FILE *, FILE *);
+END_EXTERN_C
 
 #endif

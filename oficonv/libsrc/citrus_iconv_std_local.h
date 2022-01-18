@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/*	$NetBSD: citrus_iconv_std_local.h,v 1.2 2003/07/01 09:42:16 tshiozak Exp $	*/
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,23 +27,28 @@
 #ifndef _CITRUS_ICONV_STD_LOCAL_H_
 #define _CITRUS_ICONV_STD_LOCAL_H_
 
+#include "dcmtk/config/osconfig.h"
+#include <sys/queue.h>
+#include "citrus_types.h"
+#include "citrus_csmapper.h"
+
 /*
  * encoding
  */
 struct _citrus_iconv_std_encoding {
-	struct _citrus_stdenc	*se_handle;
-	void			*se_ps;
-	void			*se_pssaved;
+    struct _citrus_stdenc   *se_handle;
+    void            *se_ps;
+    void            *se_pssaved;
 };
 
 /*
  * dst
  */
 struct _citrus_iconv_std_dst {
-	TAILQ_ENTRY(_citrus_iconv_std_dst)	 sd_entry;
-	struct _citrus_csmapper			*sd_mapper;
-	_citrus_csid_t				 sd_csid;
-	unsigned long				 sd_norm;
+    TAILQ_ENTRY(_citrus_iconv_std_dst)   sd_entry;
+    struct _citrus_csmapper         *sd_mapper;
+    _citrus_csid_t               sd_csid;
+    unsigned long                sd_norm;
 };
 TAILQ_HEAD(_citrus_iconv_std_dst_list, _citrus_iconv_std_dst);
 
@@ -54,9 +56,9 @@ TAILQ_HEAD(_citrus_iconv_std_dst_list, _citrus_iconv_std_dst);
  * src
  */
 struct _citrus_iconv_std_src {
-	TAILQ_ENTRY(_citrus_iconv_std_src)	 ss_entry;
-	struct _citrus_iconv_std_dst_list	 ss_dsts;
-	_citrus_csid_t				 ss_csid;
+    TAILQ_ENTRY(_citrus_iconv_std_src)   ss_entry;
+    struct _citrus_iconv_std_dst_list    ss_dsts;
+    _citrus_csid_t               ss_csid;
 };
 TAILQ_HEAD(_citrus_iconv_std_src_list, _citrus_iconv_std_src);
 
@@ -64,19 +66,19 @@ TAILQ_HEAD(_citrus_iconv_std_src_list, _citrus_iconv_std_src);
  * iconv_std handle
  */
 struct _citrus_iconv_std_shared {
-	struct _citrus_stdenc			*is_dst_encoding;
-	struct _citrus_stdenc			*is_src_encoding;
-	struct _citrus_iconv_std_src_list	 is_srcs;
-	_citrus_wc_t				 is_invalid;
-	int					 is_use_invalid;
+    struct _citrus_stdenc           *is_dst_encoding;
+    struct _citrus_stdenc           *is_src_encoding;
+    struct _citrus_iconv_std_src_list    is_srcs;
+    _citrus_wc_t                 is_invalid;
+    int                  is_use_invalid;
 };
 
 /*
  * iconv_std context
  */
 struct _citrus_iconv_std_context {
-	struct _citrus_iconv_std_encoding	 sc_dst_encoding;
-	struct _citrus_iconv_std_encoding	 sc_src_encoding;
+    struct _citrus_iconv_std_encoding    sc_dst_encoding;
+    struct _citrus_iconv_std_encoding    sc_src_encoding;
 };
 
 #endif

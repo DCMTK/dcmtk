@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_db_hash.c,v 1.5 2008/02/09 14:56:20 junyoung Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,10 +24,14 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
-#include <sys/types.h>
+#include "dcmtk/config/osconfig.h"
+#include "citrus_db_hash.h"
 
-#include <assert.h>
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+
 #include <stdio.h>
 #include <string.h>
 
@@ -38,27 +39,26 @@
 #include "citrus_types.h"
 #include "citrus_bcs.h"
 #include "citrus_region.h"
-#include "citrus_db_hash.h"
 
 uint32_t
 _citrus_db_hash_std(struct _region *r)
 {
-	const uint8_t *p;
-	uint32_t hash, tmp;
-	size_t i;
+    const uint8_t *p;
+    uint32_t hash, tmp;
+    size_t i;
 
-	hash = 0;
-	p = _region_head(r);
+    hash = 0;
+    p = _region_head(r);
 
-	for (i = _region_size(r); i > 0; i--) {
-		hash <<= 4;
-		hash += _bcs_tolower(*p);
-		tmp = hash & 0xF0000000;
-		if (tmp != 0) {
-			hash ^= tmp;
-			hash ^= tmp >> 24;
-		}
-		p++;
-	}
-	return (hash);
+    for (i = _region_size(r); i > 0; i--) {
+        hash <<= 4;
+        hash += _bcs_tolower(*p);
+        tmp = hash & 0xF0000000;
+        if (tmp != 0) {
+            hash ^= tmp;
+            hash ^= tmp >> 24;
+        }
+        p++;
+    }
+    return (hash);
 }

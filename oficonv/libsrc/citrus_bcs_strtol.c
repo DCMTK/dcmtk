@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_bcs_strtol.c,v 1.2 2009/01/11 02:46:24 christos Exp $ */
-
 /*-
  * Copyright (c) 2005 The DragonFly Project.  All rights reserved.
  * Copyright (c) 2003, 2008 Citrus Project,
@@ -28,9 +25,11 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
+#include "dcmtk/config/osconfig.h"
 
-#include <assert.h>
+
+
+
 #include <errno.h>
 #include <limits.h>
 #include <stdint.h>
@@ -39,19 +38,19 @@
 #include "citrus_namespace.h"
 #include "citrus_bcs.h"
 
-#define	_FUNCNAME	_bcs_strtol
-#define	__INT		long int
+#define _FUNCNAME   _bcs_strtol
+#define __INT       long int
 
 #undef isspace
-#define isspace(c)	_bcs_isspace(c)
+#define isspace(c)  _bcs_isspace(c)
 
 #undef isdigit
-#define isdigit(c)	_bcs_isdigit(c)
+#define isdigit(c)  _bcs_isdigit(c)
 
 #undef isalpha
-#define isalpha(c)	_bcs_isalpha(c)
+#define isalpha(c)  _bcs_isalpha(c)
 
 #undef isupper
-#define isupper(c)	_bcs_isupper(c)
+#define isupper(c)  _bcs_isupper(c)
 
 #include "_strtol.h"

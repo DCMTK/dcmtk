@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_stdenc_template.h,v 1.4 2008/02/09 14:56:20 junyoung Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,10 +24,8 @@
  * SUCH DAMAGE.
  */
 
-/* BEGIN DCMTK modifications */
-// #include <iconv.h>
+#include "dcmtk/config/osconfig.h"
 #include "dcmtk/oficonv/iconv.h"
-/* END DCMTK modifications */
 
 /*
  * CAUTION: THIS IS NOT STANDALONE FILE
@@ -46,9 +41,9 @@
 #undef _TO_EI
 #undef _CE_TO_EI
 #undef _TO_STATE
-#define _TO_EI(_cl_)	((_ENCODING_INFO*)(_cl_))
-#define _CE_TO_EI(_ce_)	(_TO_EI((_ce_)->ce_closure))
-#define _TO_STATE(_ps_)	((_ENCODING_STATE*)(_ps_))
+#define _TO_EI(_cl_)    ((_ENCODING_INFO*)(_cl_))
+#define _CE_TO_EI(_ce_) (_TO_EI((_ce_)->ce_closure))
+#define _TO_STATE(_ps_) ((_ENCODING_STATE*)(_ps_))
 
 /* ----------------------------------------------------------------------
  * templates for public functions
@@ -59,9 +54,9 @@ _FUNCNAME(stdenc_getops)(struct _citrus_stdenc_ops *ops,
     size_t lenops __unused)
 {
 
-	memcpy(ops, &_FUNCNAME(stdenc_ops), sizeof(_FUNCNAME(stdenc_ops)));
+    memcpy(ops, &_FUNCNAME(stdenc_ops), sizeof(_FUNCNAME(stdenc_ops)));
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -69,37 +64,37 @@ _FUNCNAME(stdenc_init)(struct _citrus_stdenc * __restrict ce,
     const void * __restrict var, size_t lenvar,
     struct _citrus_stdenc_traits * __restrict et)
 {
-	_ENCODING_INFO *ei;
-	int ret;
+    _ENCODING_INFO *ei;
+    int ret;
 
-	ei = NULL;
-	if (sizeof(_ENCODING_INFO) > 0) {
-		ei = calloc(1, sizeof(_ENCODING_INFO));
-		if (ei == NULL)
-			return (errno);
-	}
+    ei = NULL;
+    if (sizeof(_ENCODING_INFO) > 0) {
+        ei = calloc(1, sizeof(_ENCODING_INFO));
+        if (ei == NULL)
+            return (errno);
+    }
 
-	ret = _FUNCNAME(encoding_module_init)(ei, var, lenvar);
-	if (ret) {
-		free((void *)ei);
-		return (ret);
-	}
+    ret = _FUNCNAME(encoding_module_init)(ei, var, lenvar);
+    if (ret) {
+        free((void *)ei);
+        return (ret);
+    }
 
-	ce->ce_closure = ei;
-	et->et_state_size = sizeof(_ENCODING_STATE);
-	et->et_mb_cur_max = _ENCODING_MB_CUR_MAX(_CE_TO_EI(ce));
+    ce->ce_closure = ei;
+    et->et_state_size = sizeof(_ENCODING_STATE);
+    et->et_mb_cur_max = _ENCODING_MB_CUR_MAX(_CE_TO_EI(ce));
 
-	return (0);
+    return (0);
 }
 
 static void
 _FUNCNAME(stdenc_uninit)(struct _citrus_stdenc * __restrict ce)
 {
 
-	if (ce) {
-		_FUNCNAME(encoding_module_uninit)(_CE_TO_EI(ce));
-		free(ce->ce_closure);
-	}
+    if (ce) {
+        _FUNCNAME(encoding_module_uninit)(_CE_TO_EI(ce));
+        free(ce->ce_closure);
+    }
 }
 
 static int
@@ -107,9 +102,9 @@ _FUNCNAME(stdenc_init_state)(struct _citrus_stdenc * __restrict ce,
     void * __restrict ps)
 {
 
-	_FUNCNAME(init_state)(_CE_TO_EI(ce), _TO_STATE(ps));
+    _FUNCNAME(init_state)(_CE_TO_EI(ce), _TO_STATE(ps));
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -118,18 +113,20 @@ _FUNCNAME(stdenc_mbtocs)(struct _citrus_stdenc * __restrict ce,
     const char ** __restrict s, size_t n, void * __restrict ps,
     size_t * __restrict nresult, struct iconv_hooks *hooks)
 {
-	wchar_t wc;
-	int ret;
+    wchar_t wc;
+    int ret;
 
-	ret = _FUNCNAME(mbrtowc_priv)(_CE_TO_EI(ce), &wc, s, n,
-	    _TO_STATE(ps), nresult);
+    wc = ret = 0;
 
-	if ((ret == 0) && *nresult != (size_t)-2)
-		ret = _FUNCNAME(stdenc_wctocs)(_CE_TO_EI(ce), csid, idx, wc);
+    ret = _FUNCNAME(mbrtowc_priv)(_CE_TO_EI(ce), &wc, s, n,
+        _TO_STATE(ps), nresult);
 
-	if ((ret == 0) && (hooks != NULL) && (hooks->uc_hook != NULL))
-		hooks->uc_hook((unsigned int)*idx, hooks->data);
-	return (ret);
+    if ((ret == 0) && *nresult != (size_t)-2)
+        ret = _FUNCNAME(stdenc_wctocs)(_CE_TO_EI(ce), csid, idx, wc);
+
+    if ((ret == 0) && (hooks != NULL) && (hooks->uc_hook != NULL))
+        hooks->uc_hook((unsigned int)*idx, hooks->data);
+    return (ret);
 }
 
 static int
@@ -138,18 +135,18 @@ _FUNCNAME(stdenc_cstomb)(struct _citrus_stdenc * __restrict ce,
     void * __restrict ps, size_t * __restrict nresult,
     struct iconv_hooks *hooks __unused)
 {
-	wchar_t wc;
-	int ret;
+    wchar_t wc;
+    int ret;
 
-	wc = ret = 0;
+    wc = ret = 0;
 
-	if (csid != _CITRUS_CSID_INVALID)
-		ret = _FUNCNAME(stdenc_cstowc)(_CE_TO_EI(ce), &wc, csid, idx);
+    if (csid != _CITRUS_CSID_INVALID)
+        ret = _FUNCNAME(stdenc_cstowc)(_CE_TO_EI(ce), &wc, csid, idx);
 
-	if (ret == 0)
-		ret = _FUNCNAME(wcrtomb_priv)(_CE_TO_EI(ce), s, n, wc,
-		    _TO_STATE(ps), nresult);
-	return (ret);
+    if (ret == 0)
+        ret = _FUNCNAME(wcrtomb_priv)(_CE_TO_EI(ce), s, n, wc,
+            _TO_STATE(ps), nresult);
+    return (ret);
 }
 
 static int
@@ -158,13 +155,13 @@ _FUNCNAME(stdenc_mbtowc)(struct _citrus_stdenc * __restrict ce,
     void * __restrict ps, size_t * __restrict nresult,
     struct iconv_hooks *hooks)
 {
-	int ret;
+    int ret;
 
-	ret = _FUNCNAME(mbrtowc_priv)(_CE_TO_EI(ce), wc, s, n,
-	    _TO_STATE(ps), nresult);
-	if ((ret == 0) && (hooks != NULL) && (hooks->wc_hook != NULL))
-		hooks->wc_hook(*wc, hooks->data);
-	return (ret);
+    ret = _FUNCNAME(mbrtowc_priv)(_CE_TO_EI(ce), (wchar_t * __restrict ) wc, s, n,
+        _TO_STATE(ps), nresult);
+    if ((ret == 0) && (hooks != NULL) && (hooks->wc_hook != NULL))
+        hooks->wc_hook(*wc, hooks->data);
+    return (ret);
 }
 
 static int
@@ -172,11 +169,11 @@ _FUNCNAME(stdenc_wctomb)(struct _citrus_stdenc * __restrict ce,
     char * __restrict s, size_t n, _citrus_wc_t wc, void * __restrict ps,
     size_t * __restrict nresult, struct iconv_hooks *hooks __unused)
 {
-	int ret;
+    int ret;
 
-	ret = _FUNCNAME(wcrtomb_priv)(_CE_TO_EI(ce), s, n, wc, _TO_STATE(ps),
-	    nresult);
-	return (ret);
+    ret = _FUNCNAME(wcrtomb_priv)(_CE_TO_EI(ce), s, n, wc, _TO_STATE(ps),
+        nresult);
+    return (ret);
 }
 
 static int
@@ -186,11 +183,11 @@ _FUNCNAME(stdenc_put_state_reset)(struct _citrus_stdenc * __restrict ce __unused
 {
 
 #if _ENCODING_IS_STATE_DEPENDENT
-	return ((_FUNCNAME(put_state_reset)(_CE_TO_EI(ce), s, n, _TO_STATE(ps),
-	    nresult)));
+    return ((_FUNCNAME(put_state_reset)(_CE_TO_EI(ce), s, n, _TO_STATE(ps),
+        nresult)));
 #else
-	*nresult = 0;
-	return (0);
+    *nresult = 0;
+    return (0);
 #endif
 }
 
@@ -199,16 +196,16 @@ _FUNCNAME(stdenc_get_state_desc)(struct _citrus_stdenc * __restrict ce,
     void * __restrict ps, int id,
     struct _citrus_stdenc_state_desc * __restrict d)
 {
-	int ret;
+    int ret;
 
-	switch (id) {
-	case _STDENC_SDID_GENERIC:
-		ret = _FUNCNAME(stdenc_get_state_desc_generic)(
-		    _CE_TO_EI(ce), _TO_STATE(ps), &d->u.generic.state);
-		break;
-	default:
-		ret = EOPNOTSUPP;
-	}
+    switch (id) {
+    case _STDENC_SDID_GENERIC:
+        ret = _FUNCNAME(stdenc_get_state_desc_generic)(
+            _CE_TO_EI(ce), _TO_STATE(ps), &d->u.generic.state);
+        break;
+    default:
+        ret = EOPNOTSUPP;
+    }
 
-	return (ret);
+    return (ret);
 }

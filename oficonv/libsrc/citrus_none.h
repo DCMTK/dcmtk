@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_none.h,v 1.3 2003/06/25 09:51:38 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2002 Citrus Project,
  * All rights reserved.
@@ -30,7 +27,9 @@
 #ifndef _CITRUS_NONE_H_
 #define _CITRUS_NONE_H_
 
-extern struct _citrus_stdenc_ops	 _citrus_NONE_stdenc_ops;
-extern struct _citrus_stdenc_traits	 _citrus_NONE_stdenc_traits;
+#include "dcmtk/config/osconfig.h"
+
+extern struct _citrus_stdenc_ops     _citrus_NONE_stdenc_ops;
+extern struct _citrus_stdenc_traits  _citrus_NONE_stdenc_traits;
 
 #endif

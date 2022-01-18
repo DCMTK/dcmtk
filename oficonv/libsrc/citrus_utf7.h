@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/*	$NetBSD: citrus_utf7.h,v 1.1 2005/03/05 18:05:15 tnozaki Exp $	*/
-
 /*-
  * Copyright (c)2004,2005 Citrus Project,
  * All rights reserved.
@@ -30,8 +27,11 @@
 #ifndef _CITRUS_UTF7_H_
 #define _CITRUS_UTF7_H_
 
-__BEGIN_DECLS
+#include "dcmtk/config/osconfig.h"
+#include "citrus_stdenc_local.h"
+
+BEGIN_EXTERN_C
 _CITRUS_STDENC_GETOPS_FUNC(UTF7);
-__END_DECLS
+END_EXTERN_C
 
 #endif

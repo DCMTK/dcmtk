@@ -1,4 +1,3 @@
-/* $FreeBSD$ */
 /*-
  * Copyright (C) 2010 Gabor Kovesdan <gabor@FreeBSD.org>
  * All rights reserved.
@@ -25,9 +24,13 @@
  * SUCH DAMAGE.
  */
 
-#include <pthread.h>
+#include "dcmtk/config/osconfig.h"
 
-#define WLOCK(lock)	if (__isthreaded)		\
-			    pthread_rwlock_wrlock(lock);
-#define UNLOCK(lock)	if (__isthreaded)		\
-			    pthread_rwlock_unlock(lock);
+#ifdef HAVE_PTHREAD_H
+#include <pthread.h>
+#endif
+
+#define WLOCK(lock) if (__isthreaded)       \
+                pthread_rwlock_wrlock(lock);
+#define UNLOCK(lock)    if (__isthreaded)       \
+                pthread_rwlock_unlock(lock);

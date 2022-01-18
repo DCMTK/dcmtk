@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_db_hash.h,v 1.2 2008/02/09 14:56:20 junyoung Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,8 +27,13 @@
 #ifndef _CITRUS_DB_HASH_H_
 #define _CITRUS_DB_HASH_H_
 
-__BEGIN_DECLS
-uint32_t	 _citrus_db_hash_std(struct _citrus_region *);
-__END_DECLS
+#include "dcmtk/config/osconfig.h"
+#include <inttypes.h>
+
+struct _citrus_region;
+
+BEGIN_EXTERN_C
+uint32_t     _citrus_db_hash_std(struct _citrus_region *);
+END_EXTERN_C
 
 #endif

@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/*	$NetBSD: citrus_mapper_none.c,v 1.2 2003/06/27 17:53:31 tshiozak Exp $	*/
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,10 +24,12 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
+#include "dcmtk/config/osconfig.h"
+#include "citrus_mapper_none.h"
+
 #include <sys/queue.h>
 
-#include <assert.h>
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +39,6 @@
 #include "citrus_module.h"
 #include "citrus_hash.h"
 #include "citrus_mapper.h"
-#include "citrus_mapper_none.h"
 
 /* ---------------------------------------------------------------------- */
 
@@ -54,10 +52,10 @@ int
 _citrus_mapper_none_mapper_getops(struct _citrus_mapper_ops *ops)
 {
 
-	memcpy(ops, &_citrus_mapper_none_mapper_ops,
-	    sizeof(_citrus_mapper_none_mapper_ops));
+    memcpy(ops, &_citrus_mapper_none_mapper_ops,
+        sizeof(_citrus_mapper_none_mapper_ops));
 
-	return (0);
+    return (0);
 }
 
 static int
@@ -68,14 +66,14 @@ _citrus_mapper_none_mapper_init(struct _citrus_mapper_area *__restrict ma __unus
     struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
 {
 
-	if (lenmt < sizeof(*mt))
-		return (EINVAL);
+    if (lenmt < sizeof(*mt))
+        return (EINVAL);
 
-	cm->cm_closure = NULL;
-	mt->mt_src_max = mt->mt_dst_max = 1;	/* 1:1 converter */
-	mt->mt_state_size = 0;			/* stateless */
+    cm->cm_closure = NULL;
+    mt->mt_src_max = mt->mt_dst_max = 1;    /* 1:1 converter */
+    mt->mt_state_size = 0;          /* stateless */
 
-	return (0);
+    return (0);
 }
 
 static void
@@ -92,8 +90,8 @@ _citrus_mapper_none_mapper_convert(struct _citrus_mapper * __restrict cm __unuse
     void * __restrict ps __unused)
 {
 
-	*dst = src;
-	return (_CITRUS_MAPPER_CONVERT_SUCCESS);
+    *dst = src;
+    return (_CITRUS_MAPPER_CONVERT_SUCCESS);
 }
 
 static void

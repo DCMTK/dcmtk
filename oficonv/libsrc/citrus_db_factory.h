@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_db_factory.h,v 1.3 2008/02/09 14:56:20 junyoung Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,28 +27,33 @@
 #ifndef _CITRUS_DB_FACTORY_H_
 #define _CITRUS_DB_FACTORY_H_
 
+#include "dcmtk/config/osconfig.h"
+#include <stdint.h>
+#include <stddef.h>
+
+struct _citrus_region;
 struct _citrus_db_factory;
 typedef uint32_t (*_citrus_db_hash_func_t)(struct _citrus_region *);
 
-__BEGIN_DECLS
-int	 _citrus_db_factory_create(struct _citrus_db_factory **,
-	    _citrus_db_hash_func_t, void *);
-void	 _citrus_db_factory_free(struct _citrus_db_factory *);
-int	 _citrus_db_factory_add(struct _citrus_db_factory *,
-	    struct _citrus_region *, int, struct _citrus_region *, int);
-int	 _citrus_db_factory_add_by_string(struct _citrus_db_factory *,
-	    const char *, struct _citrus_region *, int);
-int	 _citrus_db_factory_add8_by_string(struct _citrus_db_factory *,
-	    const char *, uint8_t);
-int	 _citrus_db_factory_add16_by_string(struct _citrus_db_factory *,
-	    const char *, uint16_t);
-int	 _citrus_db_factory_add32_by_string(struct _citrus_db_factory *,
-	    const char *, uint32_t);
-int	 _citrus_db_factory_add_string_by_string(struct _citrus_db_factory *,
-	    const char *, const char *);
-size_t	 _citrus_db_factory_calc_size(struct _citrus_db_factory *);
-int	 _citrus_db_factory_serialize(struct _citrus_db_factory *,
-	    const char *, struct _citrus_region *);
-__END_DECLS
+BEGIN_EXTERN_C
+int  _citrus_db_factory_create(struct _citrus_db_factory **,
+        _citrus_db_hash_func_t, void *);
+void     _citrus_db_factory_free(struct _citrus_db_factory *);
+int  _citrus_db_factory_add(struct _citrus_db_factory *,
+        struct _citrus_region *, int, struct _citrus_region *, int);
+int  _citrus_db_factory_add_by_string(struct _citrus_db_factory *,
+        const char *, struct _citrus_region *, int);
+int  _citrus_db_factory_add8_by_string(struct _citrus_db_factory *,
+        const char *, uint8_t);
+int  _citrus_db_factory_add16_by_string(struct _citrus_db_factory *,
+        const char *, uint16_t);
+int  _citrus_db_factory_add32_by_string(struct _citrus_db_factory *,
+        const char *, uint32_t);
+int  _citrus_db_factory_add_string_by_string(struct _citrus_db_factory *,
+        const char *, const char *);
+size_t   _citrus_db_factory_calc_size(struct _citrus_db_factory *);
+int  _citrus_db_factory_serialize(struct _citrus_db_factory *,
+        const char *, struct _citrus_region *);
+END_EXTERN_C
 
 #endif

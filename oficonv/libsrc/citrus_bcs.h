@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_bcs.h,v 1.6 2009/01/11 02:46:24 christos Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,24 +24,30 @@
  * SUCH DAMAGE.
  */
 
+#include "dcmtk/config/osconfig.h"
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
 /* BEGIN DCMTK modifications */
 #include <stdint.h>
 #include <limits.h>
 #include <stdbool.h>
-#define __INT_MAX INT_MAX
-#define __INT_MIN INT_MIN
 #define __DECONST(type, var)    ((type)(uintptr_t)(const void *)(var))
 #define __unused        __attribute__((__unused__))
 #define __packed        __attribute__((__packed__))
-#define __restrict      
+// the "restrict" type qualifier was introduced in C99.
+#define __restrict      restrict
 #ifndef EFTYPE
 #define EFTYPE EINVAL
 #endif
-#define _PATH_CSMAPPER  "/usr/share/i18n/csmapper"
-#define _PATH_ESDB      "/usr/share/i18n/esdb"
-#define _PATH_I18NMODULE "/usr/lib/i18n"
+
+/* The original path to the citrus libiconv files is /usr/share/i18n,
+ * we use DCMTK's DEFAULT_SUPPORT_DATA_DIR instead. */
+
+#define _PATH_CSMAPPER DEFAULT_SUPPORT_DATA_DIR "csmapper"
+#define _PATH_ESDB DEFAULT_SUPPORT_DATA_DIR "esdb"
+
 #define __isthreaded 1
 #ifndef CHAR_MAX
 #error Need to define CHAR_MAX
@@ -54,6 +57,7 @@
 #endif
 #ifndef LITTLE_ENDIAN
 #define LITTLE_ENDIAN  1234    /* LSB first: i386, vax */
+
 #endif
 
 #ifndef BYTE_ORDER
@@ -133,36 +137,36 @@ static __inline uint8_t
 _citrus_bcs_toupper(uint8_t c)
 {
 
-	return (_citrus_bcs_islower(c) ? (c - 'a' + 'A') : c);
+    return (_citrus_bcs_islower(c) ? (c - 'a' + 'A') : c);
 }
 
 static __inline uint8_t
 _citrus_bcs_tolower(uint8_t c)
 {
 
-	return (_citrus_bcs_isupper(c) ? (c - 'A' + 'a') : c);
+    return (_citrus_bcs_isupper(c) ? (c - 'A' + 'a') : c);
 }
 
-__BEGIN_DECLS
-int		 _citrus_bcs_strcasecmp(const char * __restrict,
-		    const char * __restrict);
-int		 _citrus_bcs_strncasecmp(const char * __restrict,
-		    const char * __restrict, size_t);
-const char	*_citrus_bcs_skip_ws(const char * __restrict);
-const char	*_citrus_bcs_skip_nonws(const char * __restrict);
-const char	*_citrus_bcs_skip_ws_len(const char * __restrict,
-		    size_t * __restrict);
-const char	*_citrus_bcs_skip_nonws_len(const char * __restrict,
-		    size_t * __restrict);
-void		 _citrus_bcs_trunc_rws_len(const char * __restrict,
-		    size_t * __restrict);
-void		 _citrus_bcs_convert_to_lower(char *);
-void		 _citrus_bcs_convert_to_upper(char *);
+BEGIN_EXTERN_C
+int      _citrus_bcs_strcasecmp(const char * __restrict,
+            const char * __restrict);
+int      _citrus_bcs_strncasecmp(const char * __restrict,
+            const char * __restrict, size_t);
+const char  *_citrus_bcs_skip_ws(const char * __restrict);
+const char  *_citrus_bcs_skip_nonws(const char * __restrict);
+const char  *_citrus_bcs_skip_ws_len(const char * __restrict,
+            size_t * __restrict);
+const char  *_citrus_bcs_skip_nonws_len(const char * __restrict,
+            size_t * __restrict);
+void         _citrus_bcs_trunc_rws_len(const char * __restrict,
+            size_t * __restrict);
+void         _citrus_bcs_convert_to_lower(char *);
+void         _citrus_bcs_convert_to_upper(char *);
 
-long int	 _citrus_bcs_strtol(const char * __restrict,
-		    char ** __restrict, int);
-unsigned long	 _citrus_bcs_strtoul(const char * __restrict,
-		    char ** __restrict, int);
-__END_DECLS
+long int     _citrus_bcs_strtol(const char * __restrict,
+            char ** __restrict, int);
+unsigned long    _citrus_bcs_strtoul(const char * __restrict,
+            char ** __restrict, int);
+END_EXTERN_C
 
 #endif

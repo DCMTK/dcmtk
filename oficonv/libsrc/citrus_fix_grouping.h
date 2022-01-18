@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_fix_grouping.h,v 1.2 2009/01/11 02:46:24 christos Exp $ */
-
 /*-
  * Copyright (c)2008 Citrus Project,
  * All rights reserved.
@@ -30,24 +27,27 @@
 #ifndef _CITRUS_FIX_GROUPING_H_
 #define _CITRUS_FIX_GROUPING_H_
 
-#define _CITRUS_LC_GROUPING_VALUE_MIN		0
-#define _CITRUS_LC_GROUPING_VALUE_MAX		126
-#define _CITRUS_LC_GROUPING_VALUE_NO_FUTHER	127
+#include "dcmtk/config/osconfig.h"
+#include <limits.h>
+
+#define _CITRUS_LC_GROUPING_VALUE_MIN       0
+#define _CITRUS_LC_GROUPING_VALUE_MAX       126
+#define _CITRUS_LC_GROUPING_VALUE_NO_FUTHER 127
 
 #if CHAR_MAX != _CITRUS_LC_GROUPING_VALUE_NO_FUTHER
 static __inline void
 _citrus_fixup_char_max_md(char *grouping)
 {
-	char *p;
+    char *p;
 
-	for (p = grouping; *p != '\0'; ++p)
-		if (*p == _CITRUS_LC_GROUPING_VALUE_NO_FUTHER)
-			*p = (char)CHAR_MAX;
+    for (p = grouping; *p != '\0'; ++p)
+        if (*p == _CITRUS_LC_GROUPING_VALUE_NO_FUTHER)
+            *p = (char)CHAR_MAX;
 }
 #define _CITRUS_FIXUP_CHAR_MAX_MD(grouping) \
     _citrus_fixup_char_max_md(__DECONST(void *, grouping))
 #else
-#define _CITRUS_FIXUP_CHAR_MAX_MD(grouping)	/* nothing to do */
+#define _CITRUS_FIXUP_CHAR_MAX_MD(grouping) /* nothing to do */
 #endif
 
 #endif /*_CITRUS_FIX_GROUPING_H_*/

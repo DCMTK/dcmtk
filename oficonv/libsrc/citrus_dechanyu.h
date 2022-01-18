@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_dechanyu.h,v 1.1 2007/04/01 18:52:32 tnozaki Exp $ */
-
 /*-
  * Copyright (c)2006 Citrus Project,
  * All rights reserved.
@@ -30,8 +27,11 @@
 #ifndef _CITRUS_DECHANYU_H_
 #define _CITRUS_DECHANYU_H_
 
-__BEGIN_DECLS
+#include "dcmtk/config/osconfig.h"
+#include "citrus_stdenc_local.h"
+
+BEGIN_EXTERN_C
 _CITRUS_STDENC_GETOPS_FUNC(DECHanyu);
-__END_DECLS
+END_EXTERN_C
 
 #endif

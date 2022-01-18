@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_lookup_file.h,v 1.1 2003/06/25 09:51:36 tshiozak Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,6 +27,6 @@
 #ifndef _CITRUS_LOOKUP_FILE_H_
 #define _CITRUS_LOOKUP_FILE_H_
 
-#define _CITRUS_LOOKUP_MAGIC	"LOOKUP\0\0"
+#define _CITRUS_LOOKUP_MAGIC    "LOOKUP\0\0"
 
 #endif

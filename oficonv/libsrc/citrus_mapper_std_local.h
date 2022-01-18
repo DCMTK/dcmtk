@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/*	$NetBSD: citrus_mapper_std_local.h,v 1.3 2006/09/09 14:35:17 tnozaki Exp $	*/
-
 /*-
  * Copyright (c)2003, 2006 Citrus Project,
  * All rights reserved.
@@ -30,42 +27,47 @@
 #ifndef _CITRUS_MAPPER_STD_LOCAL_H_
 #define _CITRUS_MAPPER_STD_LOCAL_H_
 
+#include "dcmtk/config/osconfig.h"
+#include "citrus_types.h"
+#include "citrus_region.h"
+#include "citrus_namespace.h"
+
 typedef uint32_t (*_citrus_mapper_std_getvalfunc_t)(const void *, uint32_t);
 
 struct _citrus_mapper_std_linear_zone {
-	_citrus_index_t		begin;
-	_citrus_index_t		end;
-	_citrus_index_t		width;
+    _citrus_index_t     begin;
+    _citrus_index_t     end;
+    _citrus_index_t     width;
 };
 struct _citrus_mapper_std_rowcol {
-	struct _citrus_region	rc_table;
-	size_t			rc_src_rowcol_len;
-	struct _citrus_mapper_std_linear_zone
-				*rc_src_rowcol;
-	_citrus_index_t		rc_src_rowcol_bits;
-	_citrus_index_t		rc_src_rowcol_mask;
-	_citrus_index_t		rc_dst_invalid;
-	_citrus_index_t		rc_dst_unit_bits;
-	int			rc_oob_mode;
-	_citrus_index_t		rc_dst_ilseq;
+    struct _citrus_region   rc_table;
+    size_t          rc_src_rowcol_len;
+    struct _citrus_mapper_std_linear_zone
+                *rc_src_rowcol;
+    _citrus_index_t     rc_src_rowcol_bits;
+    _citrus_index_t     rc_src_rowcol_mask;
+    _citrus_index_t     rc_dst_invalid;
+    _citrus_index_t     rc_dst_unit_bits;
+    int         rc_oob_mode;
+    _citrus_index_t     rc_dst_ilseq;
 };
 
 struct _citrus_mapper_std;
 
 typedef int (*_citrus_mapper_std_convert_t)(
-	struct _citrus_mapper_std *__restrict,
-	_index_t *__restrict, _index_t, void *__restrict);
+    struct _citrus_mapper_std *__restrict,
+    _index_t *__restrict, _index_t, void *__restrict);
 typedef void (*_citrus_mapper_std_uninit_t)(struct _citrus_mapper_std *);
 
 struct _citrus_mapper_std {
-	struct _citrus_region		ms_file;
-	struct _citrus_db		*ms_db;
-	_citrus_mapper_std_convert_t	ms_convert;
-	_citrus_mapper_std_uninit_t	ms_uninit;
-	union {
-		struct _citrus_mapper_std_rowcol	rowcol;
-	} u;
-#define ms_rowcol	u.rowcol
+    struct _citrus_region       ms_file;
+    struct _citrus_db       *ms_db;
+    _citrus_mapper_std_convert_t    ms_convert;
+    _citrus_mapper_std_uninit_t ms_uninit;
+    union {
+        struct _citrus_mapper_std_rowcol    rowcol;
+    } u;
+#define ms_rowcol   u.rowcol
 };
 
 #endif

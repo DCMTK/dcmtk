@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/*	$NetBSD: citrus_iconv_std.h,v 1.1 2003/06/25 09:51:44 tshiozak Exp $	*/
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,7 +27,10 @@
 #ifndef _CITRUS_ICONV_STD_H_
 #define _CITRUS_ICONV_STD_H_
 
+#include "dcmtk/config/osconfig.h"
 #include "citrus_iconv_std_local.h"
+#include "citrus_iconv_local.h"
+#include "citrus_mapper_local.h"
 
 _CITRUS_ICONV_GETOPS_FUNC(iconv_std);
 

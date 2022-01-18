@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_iconv.c,v 1.7 2008/07/25 14:05:25 christos Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -27,25 +24,29 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
+#include "dcmtk/config/osconfig.h"
+#include "citrus_iconv.h"
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 #include <sys/queue.h>
 
-#include <assert.h>
+
+#ifdef HAVE_DIRENT_H
 #include <dirent.h>
+#endif
 #include <errno.h>
-/* BEGIN DCMTK modifications */
-// #include <iconv.h>
 #include "dcmtk/oficonv/iconv.h"
-/* END DCMTK modifications */
 #include <langinfo.h>
 #include <limits.h>
-#include <paths.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 
 #include "citrus_namespace.h"
 #include "citrus_bcs.h"
@@ -57,55 +58,55 @@
 #include "citrus_lock.h"
 #include "citrus_lookup.h"
 #include "citrus_hash.h"
-#include "citrus_iconv.h"
+#include "strlcpy.h"
 
-#define _CITRUS_ICONV_DIR	"iconv.dir"
-#define _CITRUS_ICONV_ALIAS	"iconv.alias"
+#define _CITRUS_ICONV_DIR   "iconv.dir"
+#define _CITRUS_ICONV_ALIAS "iconv.alias"
 
 #define CI_HASH_SIZE 101
-#define CI_INITIAL_MAX_REUSE	5
-#define CI_ENV_MAX_REUSE	"ICONV_MAX_REUSE"
+#define CI_INITIAL_MAX_REUSE    5
+#define CI_ENV_MAX_REUSE    "ICONV_MAX_REUSE"
 
-static bool			 isinit = false;
-static int			 shared_max_reuse, shared_num_unused;
+static bool          isinit = false;
+static int           shared_max_reuse, shared_num_unused;
 static _CITRUS_HASH_HEAD(, _citrus_iconv_shared, CI_HASH_SIZE) shared_pool;
 static TAILQ_HEAD(, _citrus_iconv_shared) shared_unused;
 
-static pthread_rwlock_t		 ci_lock = PTHREAD_RWLOCK_INITIALIZER;
+static pthread_rwlock_t      ci_lock = PTHREAD_RWLOCK_INITIALIZER;
 
 static __inline void
 init_cache(void)
 {
 
-	WLOCK(&ci_lock);
-	if (!isinit) {
-		_CITRUS_HASH_INIT(&shared_pool, CI_HASH_SIZE);
-		TAILQ_INIT(&shared_unused);
-		shared_max_reuse = -1;
-		if (!issetugid() && getenv(CI_ENV_MAX_REUSE))
-			shared_max_reuse = atoi(getenv(CI_ENV_MAX_REUSE));
-		if (shared_max_reuse < 0)
-			shared_max_reuse = CI_INITIAL_MAX_REUSE;
-		isinit = true;
-	}
-	UNLOCK(&ci_lock);
+    WLOCK(&ci_lock);
+    if (!isinit) {
+        _CITRUS_HASH_INIT(&shared_pool, CI_HASH_SIZE);
+        TAILQ_INIT(&shared_unused);
+        shared_max_reuse = -1;
+        if (getenv(CI_ENV_MAX_REUSE))
+            shared_max_reuse = atoi(getenv(CI_ENV_MAX_REUSE));
+        if (shared_max_reuse < 0)
+            shared_max_reuse = CI_INITIAL_MAX_REUSE;
+        isinit = true;
+    }
+    UNLOCK(&ci_lock);
 }
 
 static __inline void
 close_shared(struct _citrus_iconv_shared *ci)
 {
 
-	if (ci) {
-		if (ci->ci_module) {
-			if (ci->ci_ops) {
-				if (ci->ci_closure)
-					(*ci->ci_ops->io_uninit_shared)(ci);
-				free(ci->ci_ops);
-			}
-			_citrus_unload_module(ci->ci_module);
-		}
-		free(ci);
-	}
+    if (ci) {
+        if (ci->ci_module) {
+            if (ci->ci_ops) {
+                if (ci->ci_closure)
+                    (*ci->ci_ops->io_uninit_shared)(ci);
+                free(ci->ci_ops);
+            }
+            _citrus_unload_module(ci->ci_module);
+        }
+        free(ci);
+    }
 }
 
 static __inline int
@@ -113,86 +114,86 @@ open_shared(struct _citrus_iconv_shared * __restrict * __restrict rci,
     const char * __restrict convname, const char * __restrict src,
     const char * __restrict dst)
 {
-	struct _citrus_iconv_shared *ci;
-	_citrus_iconv_getops_t getops;
-	const char *module;
-	size_t len_convname;
-	int ret;
+    struct _citrus_iconv_shared *ci;
+    _citrus_iconv_getops_t getops;
+    const char *module;
+    size_t len_convname;
+    int ret;
 
 #ifdef INCOMPATIBLE_WITH_GNU_ICONV
-	/*
-	 * Sadly, the gnu tools expect iconv to actually parse the
-	 * byte stream and don't allow for a pass-through when
-	 * the (src,dest) encodings are the same.
-	 * See gettext-0.18.3+ NEWS:
-	 *   msgfmt now checks PO file headers more strictly with less
-	 *   false-positives.
-	 * NetBSD don't do this either.
-	 */
-	module = (strcmp(src, dst) != 0) ? "iconv_std" : "iconv_none";
+    /*
+     * Sadly, the gnu tools expect iconv to actually parse the
+     * byte stream and don't allow for a pass-through when
+     * the (src,dest) encodings are the same.
+     * See gettext-0.18.3+ NEWS:
+     *   msgfmt now checks PO file headers more strictly with less
+     *   false-positives.
+     * NetBSD don't do this either.
+     */
+    module = (strcmp(src, dst) != 0) ? "iconv_std" : "iconv_none";
 #else
-	module = "iconv_std";
+    module = "iconv_std";
 #endif
 
-	/* initialize iconv handle */
-	len_convname = strlen(convname);
-	ci = malloc(sizeof(*ci) + len_convname + 1);
-	if (!ci) {
-		ret = errno;
-		goto err;
-	}
-	ci->ci_module = NULL;
-	ci->ci_ops = NULL;
-	ci->ci_closure = NULL;
-	ci->ci_convname = (void *)&ci[1];
-	memcpy(ci->ci_convname, convname, len_convname + 1);
+    /* initialize iconv handle */
+    len_convname = strlen(convname);
+    ci = malloc(sizeof(*ci) + len_convname + 1);
+    if (!ci) {
+        ret = errno;
+        goto err;
+    }
+    ci->ci_module = NULL;
+    ci->ci_ops = NULL;
+    ci->ci_closure = NULL;
+    ci->ci_convname = (void *)&ci[1];
+    memcpy(ci->ci_convname, convname, len_convname + 1);
 
-	/* load module */
-	ret = _citrus_load_module(&ci->ci_module, module);
-	if (ret)
-		goto err;
+    /* load module */
+    ret = _citrus_load_module(&ci->ci_module, module);
+    if (ret)
+        goto err;
 
-	/* get operators */
-	getops = (_citrus_iconv_getops_t)_citrus_find_getops(ci->ci_module,
-	    module, "iconv");
-	if (!getops) {
-		ret = EOPNOTSUPP;
-		goto err;
-	}
-	ci->ci_ops = malloc(sizeof(*ci->ci_ops));
-	if (!ci->ci_ops) {
-		ret = errno;
-		goto err;
-	}
-	ret = (*getops)(ci->ci_ops);
-	if (ret)
-		goto err;
+    /* get operators */
+    getops = (_citrus_iconv_getops_t)_citrus_find_getops(ci->ci_module,
+        module, "iconv");
+    if (!getops) {
+        ret = EOPNOTSUPP;
+        goto err;
+    }
+    ci->ci_ops = malloc(sizeof(*ci->ci_ops));
+    if (!ci->ci_ops) {
+        ret = errno;
+        goto err;
+    }
+    ret = (*getops)(ci->ci_ops);
+    if (ret)
+        goto err;
 
-	if (ci->ci_ops->io_init_shared == NULL ||
-	    ci->ci_ops->io_uninit_shared == NULL ||
-	    ci->ci_ops->io_init_context == NULL ||
-	    ci->ci_ops->io_uninit_context == NULL ||
-	    ci->ci_ops->io_convert == NULL)
-		goto err;
+    if (ci->ci_ops->io_init_shared == NULL ||
+        ci->ci_ops->io_uninit_shared == NULL ||
+        ci->ci_ops->io_init_context == NULL ||
+        ci->ci_ops->io_uninit_context == NULL ||
+        ci->ci_ops->io_convert == NULL)
+        goto err;
 
-	/* initialize the converter */
-	ret = (*ci->ci_ops->io_init_shared)(ci, src, dst);
-	if (ret)
-		goto err;
+    /* initialize the converter */
+    ret = (*ci->ci_ops->io_init_shared)(ci, src, dst);
+    if (ret)
+        goto err;
 
-	*rci = ci;
+    *rci = ci;
 
-	return (0);
+    return (0);
 err:
-	close_shared(ci);
-	return (ret);
+    close_shared(ci);
+    return (ret);
 }
 
 static __inline int
 hash_func(const char *key)
 {
 
-	return (_string_hash_func(key, CI_HASH_SIZE));
+    return (_string_hash_func(key, CI_HASH_SIZE));
 }
 
 static __inline int
@@ -200,154 +201,176 @@ match_func(struct _citrus_iconv_shared * __restrict ci,
     const char * __restrict key)
 {
 
-	return (strcmp(ci->ci_convname, key));
+    return (strcmp(ci->ci_convname, key));
 }
 
 static int
 get_shared(struct _citrus_iconv_shared * __restrict * __restrict rci,
     const char *src, const char *dst)
 {
-	struct _citrus_iconv_shared * ci;
-	char convname[PATH_MAX];
-	int hashval, ret = 0;
+    struct _citrus_iconv_shared * ci;
+    char convname[PATH_MAX];
+    int hashval, ret = 0;
 
-	snprintf(convname, sizeof(convname), "%s/%s", src, dst);
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-truncation"
+#elif ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+#endif
 
-	WLOCK(&ci_lock);
+    snprintf(convname, sizeof(convname), "%s/%s", src, dst);
 
-	/* lookup alread existing entry */
-	hashval = hash_func(convname);
-	_CITRUS_HASH_SEARCH(&shared_pool, ci, ci_hash_entry, match_func,
-	    convname, hashval);
-	if (ci != NULL) {
-		/* found */
-		if (ci->ci_used_count == 0) {
-			TAILQ_REMOVE(&shared_unused, ci, ci_tailq_entry);
-			shared_num_unused--;
-		}
-		ci->ci_used_count++;
-		*rci = ci;
-		goto quit;
-	}
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
+#pragma GCC diagnostic pop
+#endif
 
-	/* create new entry */
-	ret = open_shared(&ci, convname, src, dst);
-	if (ret)
-		goto quit;
+    WLOCK(&ci_lock);
 
-	_CITRUS_HASH_INSERT(&shared_pool, ci, ci_hash_entry, hashval);
-	ci->ci_used_count = 1;
-	*rci = ci;
+    /* lookup alread existing entry */
+    hashval = hash_func(convname);
+    _CITRUS_HASH_SEARCH(&shared_pool, ci, ci_hash_entry, match_func,
+        convname, hashval);
+    if (ci != NULL) {
+        /* found */
+        if (ci->ci_used_count == 0) {
+            TAILQ_REMOVE(&shared_unused, ci, ci_tailq_entry);
+            shared_num_unused--;
+        }
+        ci->ci_used_count++;
+        *rci = ci;
+        goto quit;
+    }
+
+    /* create new entry */
+    ret = open_shared(&ci, convname, src, dst);
+    if (ret)
+        goto quit;
+
+    _CITRUS_HASH_INSERT(&shared_pool, ci, ci_hash_entry, hashval);
+    ci->ci_used_count = 1;
+    *rci = ci;
 
 quit:
-	UNLOCK(&ci_lock);
+    UNLOCK(&ci_lock);
 
-	return (ret);
+    return (ret);
 }
 
 static void
 release_shared(struct _citrus_iconv_shared * __restrict ci)
 {
 
-	WLOCK(&ci_lock);
-	ci->ci_used_count--;
-	if (ci->ci_used_count == 0) {
-		/* put it into unused list */
-		shared_num_unused++;
-		TAILQ_INSERT_TAIL(&shared_unused, ci, ci_tailq_entry);
-		/* flood out */
-		while (shared_num_unused > shared_max_reuse) {
-			ci = TAILQ_FIRST(&shared_unused);
-			TAILQ_REMOVE(&shared_unused, ci, ci_tailq_entry);
-			_CITRUS_HASH_REMOVE(ci, ci_hash_entry);
-			shared_num_unused--;
-			close_shared(ci);
-		}
-	}
+    WLOCK(&ci_lock);
+    ci->ci_used_count--;
+    if (ci->ci_used_count == 0) {
+        /* put it into unused list */
+        shared_num_unused++;
+        TAILQ_INSERT_TAIL(&shared_unused, ci, ci_tailq_entry);
+        /* flood out */
+        while (shared_num_unused > shared_max_reuse) {
+            ci = TAILQ_FIRST(&shared_unused);
+            TAILQ_REMOVE(&shared_unused, ci, ci_tailq_entry);
+            _CITRUS_HASH_REMOVE(ci, ci_hash_entry);
+            shared_num_unused--;
+            close_shared(ci);
+        }
+    }
 
-	UNLOCK(&ci_lock);
+    UNLOCK(&ci_lock);
 }
 
 /*
  * _citrus_iconv_open:
- *	open a converter for the specified in/out codes.
+ *  open a converter for the specified in/out codes.
  */
 int
 _citrus_iconv_open(struct _citrus_iconv * __restrict * __restrict rcv,
     const char * __restrict src, const char * __restrict dst)
 {
-	struct _citrus_iconv *cv = NULL;
-	struct _citrus_iconv_shared *ci = NULL;
-	char realdst[PATH_MAX], realsrc[PATH_MAX];
-	char buf[PATH_MAX], path[PATH_MAX];
-	int ret;
+struct _citrus_iconv *cv = NULL;
+    struct _citrus_iconv_shared *ci = NULL;
+    char realdst[PATH_MAX], realsrc[PATH_MAX];
+#ifdef _PATH_ICONV
+    char buf[PATH_MAX], path[PATH_MAX];
+#endif
+    int ret;
 
-	init_cache();
+    init_cache();
 
-	/* GNU behaviour, using locale encoding if "" or "char" is specified */
-	if ((strcmp(src, "") == 0) || (strcmp(src, "char") == 0))
-		src = nl_langinfo(CODESET);
-	if ((strcmp(dst, "") == 0) || (strcmp(dst, "char") == 0))
-		dst = nl_langinfo(CODESET);
+    /* GNU behaviour, using locale encoding if "" or "char" is specified */
+    if ((strcmp(src, "") == 0) || (strcmp(src, "char") == 0))
+        src = nl_langinfo(CODESET);
+    if ((strcmp(dst, "") == 0) || (strcmp(dst, "char") == 0))
+        dst = nl_langinfo(CODESET);
 
-	/* resolve codeset name aliases */
-	strlcpy(realsrc, _lookup_alias(path, src, buf, (size_t)PATH_MAX,
-	    _LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
-	strlcpy(realdst, _lookup_alias(path, dst, buf, (size_t)PATH_MAX,
-	    _LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
+    /* resolve codeset name aliases */
+#ifdef _PATH_ICONV
+    snprintf(path, sizeof(path), "%s/%s", _PATH_ICONV, _CITRUS_ICONV_ALIAS);
+    strlcpy(realsrc, _lookup_alias(path, src, buf, (size_t)PATH_MAX,
+        _LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
+    strlcpy(realdst, _lookup_alias(path, dst, buf, (size_t)PATH_MAX,
+        _LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
+#else
+    strlcpy(realsrc, src, (size_t)PATH_MAX);
+    strlcpy(realdst, dst, (size_t)PATH_MAX);
+#endif
 
-	/* sanity check */
-	if (strchr(realsrc, '/') != NULL || strchr(realdst, '/'))
-		return (EINVAL);
+    /* sanity check */
+    if (strchr(realsrc, '/') != NULL || strchr(realdst, '/'))
+        return (EINVAL);
 
-	/* get shared record */
-	ret = get_shared(&ci, realsrc, realdst);
-	if (ret)
-		return (ret);
+    /* get shared record */
+    ret = get_shared(&ci, realsrc, realdst);
+    if (ret)
+        return (ret);
 
-	/* create/init context */
-	if (*rcv == NULL) {
-		cv = malloc(sizeof(*cv));
-		if (cv == NULL) {
-			ret = errno;
-			release_shared(ci);
-			return (ret);
-		}
-		*rcv = cv;
-	}
-	(*rcv)->cv_shared = ci;
-	ret = (*ci->ci_ops->io_init_context)(*rcv);
-	if (ret) {
-		release_shared(ci);
-		free(cv);
-		return (ret);
-	}
-	return (0);
+    /* create/init context */
+    if (*rcv == NULL) {
+        cv = malloc(sizeof(*cv));
+        if (cv == NULL) {
+            ret = errno;
+            release_shared(ci);
+            return (ret);
+        }
+        *rcv = cv;
+    }
+    (*rcv)->cv_shared = ci;
+    ret = (*ci->ci_ops->io_init_context)(*rcv);
+    if (ret) {
+        release_shared(ci);
+        free(cv);
+        return (ret);
+    }
+    return (0);
 }
 
 /*
  * _citrus_iconv_close:
- *	close the specified converter.
+ *  close the specified converter.
  */
 void
 _citrus_iconv_close(struct _citrus_iconv *cv)
 {
 
-	if (cv) {
-		(*cv->cv_shared->ci_ops->io_uninit_context)(cv);
-		release_shared(cv->cv_shared);
-		free(cv);
-	}
+    if (cv) {
+        (*cv->cv_shared->ci_ops->io_uninit_context)(cv);
+        release_shared(cv->cv_shared);
+        free(cv);
+    }
 }
 
 const char
 *_citrus_iconv_canonicalize(const char *name)
 {
-	char *buf;
+    char *buf;
 
-	if ((buf = malloc((size_t)PATH_MAX)) == NULL)
-		return (NULL);
-	memset((void *)buf, 0, (size_t)PATH_MAX);
-	_citrus_esdb_alias(name, buf, (size_t)PATH_MAX);
-	return (buf);
+    if ((buf = malloc((size_t)PATH_MAX)) == NULL)
+        return (NULL);
+    memset((void *)buf, 0, (size_t)PATH_MAX);
+    _citrus_esdb_alias(name, buf, (size_t)PATH_MAX);
+    return (buf);
 }

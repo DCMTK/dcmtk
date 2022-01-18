@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/* $NetBSD: citrus_csmapper.h,v 1.2 2008/02/09 14:56:20 junyoung Exp $ */
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,19 +27,24 @@
 #ifndef _CITRUS_CSMAPPER_H_
 #define _CITRUS_CSMAPPER_H
 
-#define _citrus_csmapper		_citrus_mapper
-#define _citrus_csmapper_close		_citrus_mapper_close
-#define _citrus_csmapper_convert	_citrus_mapper_convert
-#define _citrus_csmapper_init_state	_citrus_mapper_init_state
-#define _citrus_csmapper_get_state_size	_citrus_mapper_get_state_size
-#define _citrus_csmapper_get_src_max	_citrus_mapper_get_src_max
-#define _citrus_csmapper_get_dst_max	_citrus_mapper_get_dst_max
+#include "dcmtk/config/osconfig.h"
+#include <stdint.h>
 
-#define _CITRUS_CSMAPPER_F_PREVENT_PIVOT	0x00000001
-__BEGIN_DECLS
-int	 _citrus_csmapper_open(struct _citrus_csmapper *__restrict *__restrict,
-	    const char *__restrict, const char *__restrict, uint32_t,
-	    unsigned long *);
-__END_DECLS
+#define _citrus_csmapper        _citrus_mapper
+#define _citrus_csmapper_close      _citrus_mapper_close
+#define _citrus_csmapper_convert    _citrus_mapper_convert
+#define _citrus_csmapper_init_state _citrus_mapper_init_state
+#define _citrus_csmapper_get_state_size _citrus_mapper_get_state_size
+#define _citrus_csmapper_get_src_max    _citrus_mapper_get_src_max
+#define _citrus_csmapper_get_dst_max    _citrus_mapper_get_dst_max
+
+struct _citrus_csmapper;
+
+#define _CITRUS_CSMAPPER_F_PREVENT_PIVOT    0x00000001
+BEGIN_EXTERN_C
+int  _citrus_csmapper_open(struct _citrus_csmapper *__restrict *__restrict,
+        const char *__restrict, const char *__restrict, uint32_t,
+        unsigned long *);
+END_EXTERN_C
 
 #endif

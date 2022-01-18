@@ -1,6 +1,3 @@
-/* $FreeBSD$ */
-/*	$NetBSD: citrus_mapper_serial.h,v 1.1 2003/06/25 09:51:46 tshiozak Exp $	*/
-
 /*-
  * Copyright (c)2003 Citrus Project,
  * All rights reserved.
@@ -30,9 +27,12 @@
 #ifndef _CITRUS_MAPPER_SERIAL_H_
 #define _CITRUS_MAPPER_SERIAL_H_
 
-__BEGIN_DECLS
+#include "dcmtk/config/osconfig.h"
+#include "citrus_mapper_local.h"
+
+BEGIN_EXTERN_C
 _CITRUS_MAPPER_GETOPS_FUNC(mapper_serial);
 _CITRUS_MAPPER_GETOPS_FUNC(mapper_parallel);
-__END_DECLS
+END_EXTERN_C
 
 #endif
