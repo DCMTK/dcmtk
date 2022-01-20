@@ -29,20 +29,12 @@
 #ifndef OFICONV_H
 #define OFICONV_H
 
-#include <sys/cdefs.h>
-#include <sys/types.h>
-#include <wchar.h>
-#include <sys/cdefs.h>
-#include <sys/types.h>
+#include "dcmtk/config/osconfig.h"
 
-#define __LIBICONV_COMPAT
-
-#ifdef __LIBICONV_COMPAT
-#define libiconv_open  iconv_open
-#define libiconv_close iconv_close
-#define libiconv       iconv
-#define libiconv_t     iconv_t
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #endif
+#include <wchar.h>
 
 #ifdef __cplusplus
 typedef bool __iconv_bool;
@@ -55,39 +47,39 @@ typedef int __iconv_bool;
 struct __tag_iconv_t;
 typedef struct __tag_iconv_t *iconv_t;
 
-__BEGIN_DECLS
+BEGIN_EXTERN_C
 
 /**
- * open a converter from the codeset srcname to the codeset dstname and 
- * returns its descriptor. The arguments srcname and dstname accept "" and 
- * "char", which refer to the current locale encoding. 
+ * open a converter from the codeset srcname to the codeset dstname and
+ * returns its descriptor. The arguments srcname and dstname accept "" and
+ * "char", which refer to the current locale encoding.
  */
 iconv_t OFiconv_open(const char *, const char *);
 
 /**
- *  convert the string in the buffer *src of length *srcleft bytes and 
- *  stores the converted string in the buffer *dst of size *dstleft bytes. 
- *  After calling iconv(), the values pointed to by src, srcleft, dst, and 
- *  dstleft are updated as follows: 
- *  
+ *  convert the string in the buffer *src of length *srcleft bytes and
+ *  stores the converted string in the buffer *dst of size *dstleft bytes.
+ *  After calling iconv(), the values pointed to by src, srcleft, dst, and
+ *  dstleft are updated as follows:
+ *
  *  *src: Pointer to the byte just after the last character fetched.
  *  *srcleft: Number of remaining bytes in the source buffer.
  *  *dst: Pointer to the byte just after the last character stored.
  *  *dstleft: Number of remainder bytes in the destination buffer.
- *  
- *  If the string pointed to by *src contains a byte sequence which is not a 
- *  valid character in the source codeset, the conversion stops just after 
- *  the last successful conversion. If the output buffer is too small to 
- *  store the converted character, the conversion also stops in the same 
- *  way. In these cases, the values pointed to by src, srcleft, dst, and 
- *  dstleft are updated to the state just after the last successful 
- *  conversion. 
- *  
- *  If the string pointed to by *src contains a character which is valid 
- *  under the source codeset but can not be converted to the destination 
- *  codeset, the character is replaced by an “invalid character” which 
- *  depends on the destination codeset, e.g., ‘?’, and the conversion is 
- *  continued. iconv() returns the number of such “invalid conversions”. 
+ *
+ *  If the string pointed to by *src contains a byte sequence which is not a
+ *  valid character in the source codeset, the conversion stops just after
+ *  the last successful conversion. If the output buffer is too small to
+ *  store the converted character, the conversion also stops in the same
+ *  way. In these cases, the values pointed to by src, srcleft, dst, and
+ *  dstleft are updated to the state just after the last successful
+ *  conversion.
+ *
+ *  If the string pointed to by *src contains a character which is valid
+ *  under the source codeset but can not be converted to the destination
+ *  codeset, the character is replaced by an “invalid character” which
+ *  depends on the destination codeset, e.g., ‘?’, and the conversion is
+ *  continued. iconv() returns the number of such “invalid conversions”.
  */
 size_t OFiconv(iconv_t cd, const char ** __restrict src, size_t * __restrict srcleft, char ** __restrict dst, size_t * __restrict dstleft);
 
@@ -100,11 +92,11 @@ int OFiconv_close(iconv_t cd);
  * non-portable interfaces for iconv
  */
 
-/** 
- * obtain a list of character encodings that are supported by the OFiconv() 
- * call. The list of the encoding names will be stored in names and the 
- * number of the entries is stored in count. If the paired variable is 
- * true, the list will be arranged into canonical/alias name pairs. 
+/**
+ * obtain a list of character encodings that are supported by the OFiconv()
+ * call. The list of the encoding names will be stored in names and the
+ * number of the entries is stored in count. If the paired variable is
+ * true, the list will be arranged into canonical/alias name pairs.
  */
 int OF__iconv_get_list(char ***, size_t *, __iconv_bool);
 
@@ -114,14 +106,14 @@ int OF__iconv_get_list(char ***, size_t *, __iconv_bool);
 void OF__iconv_free_list(char **, size_t);
 
 /**
- * The OF__iconv() function works just like iconv() but if iconv() fails, 
- * the invalid character count is lost there. This is a not bug, rather a 
- * limitation of IEEE Std 1003.1-2008 (POSIX.1), so __iconv() is 
- * provided as an alternative but non-standard interface. It also has a 
- * flags argument, where currently the following flags can be passed: 
- * 
+ * The OF__iconv() function works just like iconv() but if iconv() fails,
+ * the invalid character count is lost there. This is a not bug, rather a
+ * limitation of IEEE Std 1003.1-2008 (POSIX.1), so __iconv() is
+ * provided as an alternative but non-standard interface. It also has a
+ * flags argument, where currently the following flags can be passed:
+ *
  * __ICONV_F_HIDE_INVALID
- *     Skip invalid characters, instead of returning with an error. 
+ *     Skip invalid characters, instead of returning with an error.
  */
 size_t  OF__iconv(iconv_t, const char **, size_t *, char **, size_t *, __uint32_t, size_t *);
 
@@ -144,11 +136,11 @@ typedef struct {
 
 
 /**
- * create a conversion descriptor on a preallocated space. The  
- * iconv_allocation_t is used as a spaceholder type when allocating such  
- * space. The dstname and srcname arguments are the same as in the case of  
- * iconv_open(). The ptr argument is a pointer of iconv_allocation_t to the  
- * preallocated space.  
+ * create a conversion descriptor on a preallocated space. The
+ * iconv_allocation_t is used as a spaceholder type when allocating such
+ * space. The dstname and srcname arguments are the same as in the case of
+ * iconv_open(). The ptr argument is a pointer of iconv_allocation_t to the
+ * preallocated space.
  */
 int OFiconv_open_into(const char *, const char *, iconv_allocation_t *);
 
@@ -157,49 +149,49 @@ int OFiconv_open_into(const char *, const char *, iconv_allocation_t *);
  */
 
 /*
- * the argument is an int * variable, which is set to 1 if the 
- * encoding is trivial one, i.e. the input and output encodings are the 
- * same. Otherwise, the variable will be 0. 
+ * the argument is an int * variable, which is set to 1 if the
+ * encoding is trivial one, i.e. the input and output encodings are the
+ * same. Otherwise, the variable will be 0.
  */
-#define ICONV_TRIVIALP      0
+#define ICONV_TRIVIALP          0
 
 /*
- * Determines if transliteration is enabled. The answer is stored in 
- * argument, which is of int *. It will be set to 1 if this feature is 
- * enabled or set to 0 otherwise. 
+ * Determines if transliteration is enabled. The answer is stored in
+ * argument, which is of int *. It will be set to 1 if this feature is
+ * enabled or set to 0 otherwise.
  */
 #define ICONV_GET_TRANSLITERATE 1
 
 /*
- * Enables transliteration if argument, which is of int * set to 1 or 
- * disables it if argument is set to 0. 
+ * Enables transliteration if argument, which is of int * set to 1 or
+ * disables it if argument is set to 0.
  */
 #define ICONV_SET_TRANSLITERATE 2
 
 /*
- * Determines if illegal sequences are discarded or not. The answer is 
- * stored in argument, which is of int *. It will be set to 1 if this 
- * feature is enabled or set to 0 otherwise. 
+ * Determines if illegal sequences are discarded or not. The answer is
+ * stored in argument, which is of int *. It will be set to 1 if this
+ * feature is enabled or set to 0 otherwise.
  */
 #define ICONV_GET_DISCARD_ILSEQ 3
 
 /*
- * Sets whether illegal sequences are discarded or not. argument, which is 
- * of int * set to 1 or disables it if argument is set to 0. 
+ * Sets whether illegal sequences are discarded or not. argument, which is
+ * of int * set to 1 or disables it if argument is set to 0.
  */
 #define ICONV_SET_DISCARD_ILSEQ 4
 
 /*
- * Sets callback functions, which will be called back after successful 
- * conversions. The callback functions are stored in a struct iconv_hooks 
- * variable, which is passed to iconvctl via argument by its address. 
+ * Sets callback functions, which will be called back after successful
+ * conversions. The callback functions are stored in a struct iconv_hooks
+ * variable, which is passed to iconvctl via argument by its address.
  */
-#define ICONV_SET_HOOKS     5
+#define ICONV_SET_HOOKS         5
 
 /*
- * Currently unsupported, will always return an error 
+ * Currently unsupported, will always return an error
  */
-#define ICONV_SET_FALLBACKS 6
+#define ICONV_SET_FALLBACKS     6
 
 typedef void (*iconv_unicode_char_hook) (unsigned int mbr, void *data);
 typedef void (*iconv_wide_char_hook) (wchar_t wc, void *data);
@@ -211,30 +203,30 @@ struct iconv_hooks {
 };
 
 /**
- * The iconvlist() function obtains a list of character encodings that are 
- * supported by the OFiconv() call. The do_one() callback function will be 
- * called, where the count argument will be set to the number of the 
- * encoding names found, the names argument will be the list of the 
- * supported encoding names and the arg argument will be the arg argument 
- * of the iconvlist() function. This argument can be used to interchange 
- * custom data between the caller of iconvlist() and the callback function. 
- * If an error occurs, names will be NULL when calling do_one(). 
+ * The iconvlist() function obtains a list of character encodings that are
+ * supported by the OFiconv() call. The do_one() callback function will be
+ * called, where the count argument will be set to the number of the
+ * encoding names found, the names argument will be the list of the
+ * supported encoding names and the arg argument will be the arg argument
+ * of the iconvlist() function. This argument can be used to interchange
+ * custom data between the caller of iconvlist() and the callback function.
+ * If an error occurs, names will be NULL when calling do_one().
  */
 void OFiconvlist(int (*do_one) (unsigned int, const char * const *, void *), void *);
 
 /**
- * resolve the character encoding name specified by the name argument 
- * to its canonical form. 
+ * resolve the character encoding name specified by the name argument
+ * to its canonical form.
  */
 const char  *OFiconv_canonicalize(const char *);
 
 /**
- *  This function can retrieve or set specific conversion setting from the 
- *  cd conversion descriptor. The request parameter specifies the operation 
- *  to accomplish and argument is an operation-specific argument. 
+ *  This function can retrieve or set specific conversion setting from the
+ *  cd conversion descriptor. The request parameter specifies the operation
+ *  to accomplish and argument is an operation-specific argument.
  */
 int OFiconvctl(iconv_t cd, int request, void *argument);
 
-__END_DECLS
+END_EXTERN_C
 
 #endif /* !OFICONV_H */

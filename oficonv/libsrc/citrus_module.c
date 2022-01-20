@@ -150,7 +150,9 @@ _citrus_find_getops(_citrus_module_t handle, const char *modname,
 int
 _citrus_load_module(_citrus_module_t *rhandle, const char *encname)
 {
-    fprintf(stderr, "_citrus_load_module: '%s'\n", encname);
+#ifdef DEBUG
+    /* fprintf(stderr, "_citrus_load_module: '%s'\n", encname); */
+#endif
     if (strcmp(encname, "iconv_std") == 0) *rhandle = (_citrus_module_t) &_citrus_iconv_std_iconv_getops;
     else if (strcmp(encname, "iconv_none") == 0) *rhandle = (_citrus_module_t) &_citrus_iconv_none_iconv_getops;
     else if (strcmp(encname, "UTF8") == 0) *rhandle = (_citrus_module_t) &_citrus_UTF8_stdenc_getops;

@@ -62,10 +62,13 @@ _citrus_map_file(struct _citrus_region * __restrict r,
 
     _region_init(r, NULL, 0);
 
-    fprintf(stderr, "_citrus_map_file: open file '%s'\n", path);
     if ((fd = open(path, O_RDONLY | O_CLOEXEC)) == -1)
+    {
+#ifdef DEBUG
+        /* fprintf(stderr, "Cannot open file '%s'\n", path); */
+#endif
         return (errno);
-
+    }
     if (fstat(fd, &st)  == -1) {
         ret = errno;
         goto error;
@@ -75,8 +78,7 @@ _citrus_map_file(struct _citrus_region * __restrict r,
         goto error;
     }
 
-    head = mmap(NULL, (size_t)st.st_size, PROT_READ, MAP_FILE|MAP_PRIVATE,
-        fd, (off_t)0);
+    head = mmap(NULL, (size_t)st.st_size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, (off_t)0);
     if (head == MAP_FAILED) {
         ret = errno;
         goto error;
