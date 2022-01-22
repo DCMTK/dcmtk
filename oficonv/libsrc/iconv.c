@@ -40,6 +40,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <langinfo.h>
 
 #include "citrus_types.h"
 #include "citrus_module.h"
@@ -307,4 +308,9 @@ OFiconvctl(iconv_t cd, int request, void *argument)
         errno = EINVAL;
         return (-1);
     }
+}
+
+const char *OFlocale_charset()
+{
+  return nl_langinfo(CODESET);
 }

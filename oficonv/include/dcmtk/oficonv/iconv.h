@@ -227,6 +227,13 @@ const char  *OFiconv_canonicalize(const char *);
  */
 int OFiconvctl(iconv_t cd, int request, void *argument);
 
+/**
+ *  Determine the current locale's character encoding, and canonicalize it.
+ *  The result must not be freed; it is statically allocated.
+ *  If the canonical name cannot be determined, the result is a non-canonical name.
+ */
+const char *OFlocale_charset();
+
 END_EXTERN_C
 
 #endif /* !OFICONV_H */
