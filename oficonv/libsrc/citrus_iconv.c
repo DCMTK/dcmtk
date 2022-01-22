@@ -48,7 +48,6 @@
 #include <unistd.h>
 #endif
 
-#include "citrus_namespace.h"
 #include "citrus_bcs.h"
 #include "citrus_esdb.h"
 #include "citrus_region.h"
@@ -193,7 +192,7 @@ static __inline int
 hash_func(const char *key)
 {
 
-    return (_string_hash_func(key, CI_HASH_SIZE));
+    return (_citrus_string_hash_func(key, CI_HASH_SIZE));
 }
 
 static __inline int
@@ -310,10 +309,10 @@ struct _citrus_iconv *cv = NULL;
     /* resolve codeset name aliases */
 #ifdef _PATH_ICONV
     snprintf(path, sizeof(path), "%s/%s", _PATH_ICONV, _CITRUS_ICONV_ALIAS);
-    strlcpy(realsrc, _lookup_alias(path, src, buf, (size_t)PATH_MAX,
-        _LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
-    strlcpy(realdst, _lookup_alias(path, dst, buf, (size_t)PATH_MAX,
-        _LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
+    strlcpy(realsrc, _citrus_lookup_alias(path, src, buf, (size_t)PATH_MAX,
+        _CITRUS_LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
+    strlcpy(realdst, _citrus_lookup_alias(path, dst, buf, (size_t)PATH_MAX,
+        _CITRUS_LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
 #else
     strlcpy(realsrc, src, (size_t)PATH_MAX);
     strlcpy(realdst, dst, (size_t)PATH_MAX);

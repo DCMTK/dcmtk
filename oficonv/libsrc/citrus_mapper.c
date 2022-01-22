@@ -42,12 +42,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 #include "citrus_types.h"
 #include "citrus_region.h"
 #include "citrus_lock.h"
 #include "citrus_memstream.h"
-#include "citrus_bcs.h"
 #include "citrus_mmap.h"
 #include "citrus_module.h"
 #include "citrus_hash.h"
@@ -130,8 +129,8 @@ static int
 lookup_mapper_entry(const char *dir, const char *mapname, void *linebuf,
     size_t linebufsize, const char **module, const char **variable)
 {
-    struct _region r;
-    struct _memstream ms;
+    struct _citrus_region r;
+    struct _citrus_memory_stream ms;
     const char *cp, *cq;
     char *p;
     char path[PATH_MAX];
@@ -142,14 +141,14 @@ lookup_mapper_entry(const char *dir, const char *mapname, void *linebuf,
     snprintf(path, (size_t)PATH_MAX, "%s/%s", dir, _CITRUS_MAPPER_DIR);
 
     /* open read stream */
-    ret = _map_file(&r, path);
+    ret = _citrus_map_file(&r, path);
     if (ret)
         return (ret);
 
-    _memstream_bind(&ms, &r);
+    _citrus_memory_stream_bind(&ms, &r);
 
     /* search the line matching to the map name */
-    cp = _memstream_matchline(&ms, mapname, &len, 0);
+    cp = _citrus_memory_stream_matchline(&ms, mapname, &len, 0);
     if (!cp) {
         ret = ENOENT;
         goto quit;
@@ -162,19 +161,19 @@ lookup_mapper_entry(const char *dir, const char *mapname, void *linebuf,
     p = linebuf;
     /* get module name */
     *module = p;
-    cq = _bcs_skip_nonws_len(cp, &len);
+    cq = _citrus_bcs_skip_nonws_len(cp, &len);
     strlcpy(p, cp, (size_t)(cq - cp + 1));
     p += cq - cp + 1;
 
     /* get variable */
     *variable = p;
-    cp = _bcs_skip_ws_len(cq, &len);
+    cp = _citrus_bcs_skip_ws_len(cq, &len);
     strlcpy(p, cp, len + 1);
 
     ret = 0;
 
 quit:
-    _unmap_file(&r);
+    _citrus_unmap_file(&r);
     return (ret);
 }
 
@@ -292,7 +291,7 @@ static __inline int
 hash_func(const char *key)
 {
 
-    return (_string_hash_func(key, CM_HASH_SIZE));
+    return (_citrus_string_hash_func(key, CM_HASH_SIZE));
 }
 
 /*
@@ -350,7 +349,7 @@ _citrus_mapper_open(struct _citrus_mapper_area *__restrict ma,
     cm->cm_key = strdup(mapname);
     if (cm->cm_key == NULL) {
         ret = errno;
-        _mapper_close(cm);
+        _citrus_mapper_close(cm);
         goto quit;
     }
 

@@ -35,22 +35,21 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "citrus_namespace.h"
 #include "citrus_bcs.h"
 
-#define _FUNCNAME   _bcs_strtoul
+#define _FUNCNAME   _citrus_bcs_strtoul
 #define __UINT      unsigned long int
 
 #undef isspace
-#define isspace(c)  _bcs_isspace(c)
+#define isspace(c)  _citrus_bcs_isspace(c)
 
 #undef isdigit
-#define isdigit(c)  _bcs_isdigit(c)
+#define isdigit(c)  _citrus_bcs_isdigit(c)
 
 #undef isalpha
-#define isalpha(c)  _bcs_isalpha(c)
+#define isalpha(c)  _citrus_bcs_isalpha(c)
 
 #undef isupper
-#define isupper(c)  _bcs_isupper(c)
+#define isupper(c)  _citrus_bcs_isupper(c)
 
 #include "_strtoul.h"

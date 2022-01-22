@@ -199,7 +199,7 @@ _FUNCNAME(stdenc_get_state_desc)(struct _citrus_stdenc * __restrict ce,
     int ret;
 
     switch (id) {
-    case _STDENC_SDID_GENERIC:
+    case _CITRUS_STDENC_SDID_GENERIC:
         ret = _FUNCNAME(stdenc_get_state_desc_generic)(
             _CE_TO_EI(ce), _TO_STATE(ps), &d->u.generic.state);
         break;

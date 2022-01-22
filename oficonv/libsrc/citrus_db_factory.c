@@ -41,7 +41,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 #include "citrus_region.h"
 #include "citrus_db_file.h"
 
@@ -49,9 +49,9 @@ struct _citrus_db_factory_entry {
     STAILQ_ENTRY(_citrus_db_factory_entry)   de_entry;
     struct _citrus_db_factory_entry     *de_next;
     uint32_t                 de_hashvalue;
-    struct _region               de_key;
+    struct _citrus_region               de_key;
     int                  de_key_free;
-    struct _region               de_data;
+    struct _citrus_region               de_data;
     int                  de_data_free;
     int                 de_idx;
 };
@@ -95,9 +95,9 @@ _citrus_db_factory_free(struct _citrus_db_factory *df)
     while ((de = STAILQ_FIRST(&df->df_entries)) != NULL) {
         STAILQ_REMOVE_HEAD(&df->df_entries, de_entry);
         if (de->de_key_free)
-            free(_region_head(&de->de_key));
+            free(_citrus_region_head(&de->de_key));
         if (de->de_data_free)
-            free(_region_head(&de->de_data));
+            free(_citrus_region_head(&de->de_data));
         free(de);
     }
     free(df);
@@ -110,8 +110,8 @@ ceilto(size_t sz)
 }
 
 int
-_citrus_db_factory_add(struct _citrus_db_factory *df, struct _region *key,
-    int keyfree, struct _region *data, int datafree)
+_citrus_db_factory_add(struct _citrus_db_factory *df, struct _citrus_region *key,
+    int keyfree, struct _citrus_region *data, int datafree)
 {
     struct _citrus_db_factory_entry *de;
 
@@ -127,8 +127,8 @@ _citrus_db_factory_add(struct _citrus_db_factory *df, struct _region *key,
     de->de_idx = -1;
 
     STAILQ_INSERT_TAIL(&df->df_entries, de, de_entry);
-    df->df_total_key_size += _region_size(key);
-    df->df_total_data_size += ceilto(_region_size(data));
+    df->df_total_key_size += _citrus_region_size(key);
+    df->df_total_data_size += ceilto(_citrus_region_size(data));
     df->df_num_entries++;
 
     return (0);
@@ -139,13 +139,13 @@ int
 _citrus_db_factory_add_by_string(struct _citrus_db_factory *df,
     const char *key, struct _citrus_region *data, int datafree)
 {
-    struct _region r;
+    struct _citrus_region r;
     char *tmp;
 
     tmp = strdup(key);
     if (tmp == NULL)
         return (errno);
-    _region_init(&r, tmp, strlen(key));
+    _citrus_region_init(&r, tmp, strlen(key));
     return _citrus_db_factory_add(df, &r, 1, data, datafree);
 }
 
@@ -153,14 +153,14 @@ int
 _citrus_db_factory_add8_by_string(struct _citrus_db_factory *df,
     const char *key, uint8_t val)
 {
-    struct _region r;
+    struct _citrus_region r;
     uint8_t *p;
 
     p = malloc(sizeof(*p));
     if (p == NULL)
         return (errno);
     *p = val;
-    _region_init(&r, p, 1);
+    _citrus_region_init(&r, p, 1);
     return (_citrus_db_factory_add_by_string(df, key, &r, 1));
 }
 
@@ -168,14 +168,14 @@ int
 _citrus_db_factory_add16_by_string(struct _citrus_db_factory *df,
     const char *key, uint16_t val)
 {
-    struct _region r;
+    struct _citrus_region r;
     uint16_t *p;
 
     p = malloc(sizeof(*p));
     if (p == NULL)
         return (errno);
     *p = htons(val);
-    _region_init(&r, p, 2);
+    _citrus_region_init(&r, p, 2);
     return (_citrus_db_factory_add_by_string(df, key, &r, 1));
 }
 
@@ -183,14 +183,14 @@ int
 _citrus_db_factory_add32_by_string(struct _citrus_db_factory *df,
     const char *key, uint32_t val)
 {
-    struct _region r;
+    struct _citrus_region r;
     uint32_t *p;
 
     p = malloc(sizeof(*p));
     if (p == NULL)
         return (errno);
     *p = htonl(val);
-    _region_init(&r, p, 4);
+    _citrus_region_init(&r, p, 4);
     return (_citrus_db_factory_add_by_string(df, key, &r, 1));
 }
 
@@ -199,12 +199,12 @@ _citrus_db_factory_add_string_by_string(struct _citrus_db_factory *df,
     const char *key, const char *data)
 {
     char *p;
-    struct _region r;
+    struct _citrus_region r;
 
     p = strdup(data);
     if (p == NULL)
         return (errno);
-    _region_init(&r, p, strlen(p) + 1);
+    _citrus_region_init(&r, p, strlen(p) + 1);
     return (_citrus_db_factory_add_by_string(df, key, &r, 1));
 }
 
@@ -222,33 +222,33 @@ _citrus_db_factory_calc_size(struct _citrus_db_factory *df)
 }
 
 static __inline void
-put8(struct _region *r, size_t *rofs, uint8_t val)
+put8(struct _citrus_region *r, size_t *rofs, uint8_t val)
 {
 
-    *(uint8_t *)_region_offset(r, *rofs) = val;
+    *(uint8_t *)_citrus_region_offset(r, *rofs) = val;
     *rofs += 1;
 }
 
 static __inline void
-put16(struct _region *r, size_t *rofs, uint16_t val)
+put16(struct _citrus_region *r, size_t *rofs, uint16_t val)
 {
 
     val = htons(val);
-    memcpy(_region_offset(r, *rofs), &val, 2);
+    memcpy(_citrus_region_offset(r, *rofs), &val, 2);
     *rofs += 2;
 }
 
 static __inline void
-put32(struct _region *r, size_t *rofs, uint32_t val)
+put32(struct _citrus_region *r, size_t *rofs, uint32_t val)
 {
 
     val = htonl(val);
-    memcpy(_region_offset(r, *rofs), &val, 4);
+    memcpy(_citrus_region_offset(r, *rofs), &val, 4);
     *rofs += 4;
 }
 
 static __inline void
-putpad(struct _region *r, size_t *rofs)
+putpad(struct _citrus_region *r, size_t *rofs)
 {
     size_t i;
 
@@ -257,7 +257,7 @@ putpad(struct _region *r, size_t *rofs)
 }
 
 static __inline void
-dump_header(struct _region *r, const char *magic, size_t *rofs,
+dump_header(struct _citrus_region *r, const char *magic, size_t *rofs,
     size_t num_entries)
 {
 
@@ -269,7 +269,7 @@ dump_header(struct _region *r, const char *magic, size_t *rofs,
 
 int
 _citrus_db_factory_serialize(struct _citrus_db_factory *df, const char *magic,
-    struct _region *r)
+    struct _citrus_region *r)
 {
     struct _citrus_db_factory_entry *de, **depp, *det;
     size_t dataofs, i, keyofs, nextofs, ofs;
@@ -331,15 +331,15 @@ _citrus_db_factory_serialize(struct _citrus_db_factory *df, const char *magic,
         put32(r, &ofs, de->de_hashvalue);
         put32(r, &ofs, nextofs);
         put32(r, &ofs, keyofs);
-        put32(r, &ofs, _region_size(&de->de_key));
+        put32(r, &ofs, _citrus_region_size(&de->de_key));
         put32(r, &ofs, dataofs);
-        put32(r, &ofs, _region_size(&de->de_data));
-        memcpy(_region_offset(r, keyofs),
-            _region_head(&de->de_key), _region_size(&de->de_key));
-        keyofs += _region_size(&de->de_key);
-        memcpy(_region_offset(r, dataofs),
-            _region_head(&de->de_data), _region_size(&de->de_data));
-        dataofs += _region_size(&de->de_data);
+        put32(r, &ofs, _citrus_region_size(&de->de_data));
+        memcpy(_citrus_region_offset(r, keyofs),
+            _citrus_region_head(&de->de_key), _citrus_region_size(&de->de_key));
+        keyofs += _citrus_region_size(&de->de_key);
+        memcpy(_citrus_region_offset(r, dataofs),
+            _citrus_region_head(&de->de_data), _citrus_region_size(&de->de_data));
+        dataofs += _citrus_region_size(&de->de_data);
         putpad(r, &dataofs);
     }
     putpad(r, &ofs);

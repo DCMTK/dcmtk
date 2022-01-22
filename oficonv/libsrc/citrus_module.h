@@ -33,7 +33,7 @@
 #define MATCH(x, act)                       \
 do {                                \
     if (lenvar >= (sizeof(#x)-1) &&             \
-        _bcs_strncasecmp(p, #x, sizeof(#x)-1) == 0) {   \
+        _citrus_bcs_strncasecmp(p, #x, sizeof(#x)-1) == 0) {   \
         act;                        \
         lenvar -= sizeof(#x)-1;             \
         p += sizeof(#x)-1;              \

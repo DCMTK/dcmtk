@@ -29,7 +29,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include <stddef.h>
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 #include "citrus_lookup.h"
 
 static __inline const char *
@@ -37,15 +37,15 @@ __unaliasname(const char *dbname, const char *alias,
     void *buf, size_t bufsize)
 {
 
-    return (_lookup_simple(dbname, alias,
-        buf, bufsize, _LOOKUP_CASE_SENSITIVE));
+    return (_citrus_lookup_simple(dbname, alias,
+        buf, bufsize, _CITRUS_LOOKUP_CASE_SENSITIVE));
 }
 
 static __inline int
 __isforcemapping(const char *name)
 {
 
-    return (_bcs_strcasecmp("/force", name));
+    return (_citrus_bcs_strcasecmp("/force", name));
 }
 
 #endif /*_CITRUS_ALIASNAME_LOCAL_H_*/

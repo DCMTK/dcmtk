@@ -34,9 +34,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
-#include "citrus_region.h"
 #include "citrus_bcs.h"
+#include "citrus_region.h"
 #include "citrus_db_factory.h"
 #include "citrus_db_hash.h"
 #include "citrus_lookup_file.h"
@@ -54,43 +53,43 @@ convert_line(struct _citrus_db_factory *df, const char *line, size_t len)
         len = p - line;
 
     /* key */
-    line = _bcs_skip_ws_len(line, &len);
+    line = _citrus_bcs_skip_ws_len(line, &len);
     if (len == 0)
         return (0);
-    p = _bcs_skip_nonws_len(line, &len);
+    p = _citrus_bcs_skip_nonws_len(line, &len);
     if (p == line)
         return (0);
     snprintf(key, sizeof(key), "%.*s", (int)(p-line), line);
-    _bcs_convert_to_lower(key);
+    _citrus_bcs_convert_to_lower(key);
 
     /* data */
-    line = _bcs_skip_ws_len(p, &len);
-    _bcs_trunc_rws_len(line, &len);
+    line = _citrus_bcs_skip_ws_len(p, &len);
+    _citrus_bcs_trunc_rws_len(line, &len);
     snprintf(data, sizeof(data), "%.*s", (int)len, line);
 
-    return (_db_factory_addstr_by_s(df, key, data));
+    return (_citrus_db_factory_add_string_by_string(df, key, data));
 }
 
 static int
-dump_db(struct _citrus_db_factory *df, struct _region *r)
+dump_db(struct _citrus_db_factory *df, struct _citrus_region *r)
 {
     void *ptr;
     size_t size;
 
-    size = _db_factory_calc_size(df);
+    size = _citrus_db_factory_calc_size(df);
     ptr = malloc(size);
     if (ptr == NULL)
         return (errno);
-    _region_init(r, ptr, size);
+    _citrus_region_init(r, ptr, size);
 
-    return (_db_factory_serialize(df, _CITRUS_LOOKUP_MAGIC, r));
+    return (_citrus_db_factory_serialize(df, _CITRUS_LOOKUP_MAGIC, r));
 }
 
 int
 _citrus_lookup_factory_convert(FILE *out, FILE *in)
 {
     struct _citrus_db_factory *df;
-    struct _region r;
+    struct _citrus_region r;
     char *line;
     int ret;
 #ifdef HAVE_FGETLN
@@ -99,30 +98,30 @@ _citrus_lookup_factory_convert(FILE *out, FILE *in)
     char buf[1024];
 #endif
 
-    ret = _db_factory_create(&df, &_db_hash_std, NULL);
+    ret = _citrus_db_factory_create(&df, &_citrus_db_hash_std, NULL);
     if (ret)
         return (ret);
 
 #ifdef HAVE_FGETLN
     while ((line = fgetln(in, &size)) != NULL)
         if ((ret = convert_line(df, line, size))) {
-            _db_factory_free(df);
+            _citrus_db_factory_free(df);
             return (ret);
         }
 #else
     while ((line = fgets(buf, 1024, in)) != NULL)
         if ((ret = convert_line(df, line, strlen(line)))) {
-            _db_factory_free(df);
+            _citrus_db_factory_free(df);
             return (ret);
         }
 #endif
 
     ret = dump_db(df, &r);
-    _db_factory_free(df);
+    _citrus_db_factory_free(df);
     if (ret)
         return (ret);
 
-    if (fwrite(_region_head(&r), _region_size(&r), 1, out) != 1)
+    if (fwrite(_citrus_region_head(&r), _citrus_region_size(&r), 1, out) != 1)
         return (errno);
 
     return (0);

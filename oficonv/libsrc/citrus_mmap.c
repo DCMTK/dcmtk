@@ -47,7 +47,7 @@
 #include <unistd.h>
 #endif
 
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 #include "citrus_region.h"
 
 int
@@ -60,7 +60,7 @@ _citrus_map_file(struct _citrus_region * __restrict r,
 
     ret = 0;
 
-    _region_init(r, NULL, 0);
+    _citrus_region_init(r, NULL, 0);
 
     if ((fd = open(path, O_RDONLY | O_CLOEXEC)) == -1)
     {
@@ -83,7 +83,7 @@ _citrus_map_file(struct _citrus_region * __restrict r,
         ret = errno;
         goto error;
     }
-    _region_init(r, head, (size_t)st.st_size);
+    _citrus_region_init(r, head, (size_t)st.st_size);
 
 error:
     (void)close(fd);
@@ -94,8 +94,8 @@ void
 _citrus_unmap_file(struct _citrus_region *r)
 {
 
-    if (_region_head(r) != NULL) {
-        (void)munmap(_region_head(r), _region_size(r));
-        _region_init(r, NULL, 0);
+    if (_citrus_region_head(r) != NULL) {
+        (void)munmap(_citrus_region_head(r), _citrus_region_size(r));
+        _citrus_region_init(r, NULL, 0);
     }
 }

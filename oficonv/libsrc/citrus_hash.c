@@ -35,7 +35,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 #include "citrus_types.h"
 #include "citrus_region.h"
 #include "citrus_db_hash.h"
@@ -43,9 +43,9 @@
 int
 _citrus_string_hash_func(const char *key, int hashsize)
 {
-    struct _region r;
+    struct _citrus_region r;
 
-    _region_init(&r, __DECONST(void *, key), strlen(key));
+    _citrus_region_init(&r, __DECONST(void *, key), strlen(key));
 
-    return ((int)(_db_hash_std(&r) % (uint32_t)hashsize));
+    return ((int)(_citrus_db_hash_std(&r) % (uint32_t)hashsize));
 }

@@ -28,7 +28,7 @@
 #define _CITRUS_MAPPER_H_
 
 #include "dcmtk/config/osconfig.h"
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 
 struct _citrus_mapper_area;
 struct _citrus_mapper;

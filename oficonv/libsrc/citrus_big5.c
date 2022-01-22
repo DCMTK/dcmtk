@@ -74,10 +74,9 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 #include "citrus_prop.h"
 #include "citrus_types.h"
-#include "citrus_bcs.h"
 #include "citrus_module.h"
 #include "citrus_stdenc.h"
 
@@ -243,7 +242,7 @@ _citrus_BIG5_encoding_module_init(_BIG5EncodingInfo * __restrict ei,
     TAILQ_INIT(&ei->excludes);
 
     if (lenvar > 0 && var != NULL) {
-        s = _bcs_skip_ws_len((const char *)var, &lenvar);
+        s = _citrus_bcs_skip_ws_len((const char *)var, &lenvar);
         if (lenvar > 0 && *s != '\0') {
             err = _citrus_prop_parse_variable(
                 root_hints, (void *)ei, s, lenvar);
@@ -406,12 +405,12 @@ err:
 static __inline int
 /*ARGSUSED*/
 _citrus_BIG5_stdenc_wctocs(_BIG5EncodingInfo * __restrict ei __unused,
-    _csid_t * __restrict csid,
-    _index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid,
+    _citrus_index_t * __restrict idx, wchar_t wc)
 {
 
     *csid = (wc < 0x100) ? 0 : 1;
-    *idx = (_index_t)wc;
+    *idx = (_citrus_index_t)wc;
 
     return (0);
 }
@@ -420,7 +419,7 @@ static __inline int
 /*ARGSUSED*/
 _citrus_BIG5_stdenc_cstowc(_BIG5EncodingInfo * __restrict ei __unused,
     wchar_t * __restrict wc,
-    _csid_t csid, _index_t idx)
+    _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     switch (csid) {
@@ -442,8 +441,8 @@ _citrus_BIG5_stdenc_get_state_desc_generic(_BIG5EncodingInfo * __restrict ei __u
     int * __restrict rstate)
 {
 
-    *rstate = (psenc->chlen == 0) ? _STDENC_SDGEN_INITIAL :
-        _STDENC_SDGEN_INCOMPLETE_CHAR;
+    *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
+        _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
 }
 

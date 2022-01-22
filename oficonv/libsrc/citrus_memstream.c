@@ -31,9 +31,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
-#include "citrus_region.h"
 #include "citrus_bcs.h"
+#include "citrus_region.h"
 
 const char *
 _citrus_memory_stream_getln(struct _citrus_memory_stream * __restrict ms,
@@ -43,14 +42,14 @@ _citrus_memory_stream_getln(struct _citrus_memory_stream * __restrict ms,
     size_t ret;
     int i;
 
-    if (ms->ms_pos>=_region_size(&ms->ms_region))
+    if (ms->ms_pos>=_citrus_region_size(&ms->ms_region))
         return (NULL);
 
-    h = p = (uint8_t *)_region_offset(&ms->ms_region, ms->ms_pos);
+    h = p = (uint8_t *)_citrus_region_offset(&ms->ms_region, ms->ms_pos);
     ret = 0;
-    for (i = _region_size(&ms->ms_region) - ms->ms_pos; i > 0; i--) {
+    for (i = _citrus_region_size(&ms->ms_region) - ms->ms_pos; i > 0; i--) {
         ret++;
-        if (_bcs_iseol(*p))
+        if (_citrus_bcs_iseol(*p))
             break;
         p++;
     }
@@ -81,26 +80,26 @@ _citrus_memory_stream_matchline(struct _citrus_memory_stream * __restrict ms,
             len = q - p;
         }
         /* ignore trailing white space and newline */
-        _bcs_trunc_rws_len(p, &len);
+        _citrus_bcs_trunc_rws_len(p, &len);
         if (len == 0)
             continue; /* ignore null line */
 
         /* skip white spaces at the head of the line */
-        p = _bcs_skip_ws_len(p, &len);
-        q = _bcs_skip_nonws_len(p, &len);
+        p = _citrus_bcs_skip_ws_len(p, &len);
+        q = _citrus_bcs_skip_nonws_len(p, &len);
 
         if ((size_t)(q - p) == keylen) {
             if (iscasesensitive) {
                 if (memcmp(key, p, keylen) == 0)
                     break; /* match */
             } else {
-                if (_bcs_strncasecmp(key, p, keylen) == 0)
+                if (_citrus_bcs_strncasecmp(key, p, keylen) == 0)
                     break; /* match */
             }
         }
     }
 
-    p = _bcs_skip_ws_len(q, &len);
+    p = _citrus_bcs_skip_ws_len(q, &len);
     *rlen = len;
 
     return (p);
@@ -113,19 +112,19 @@ _citrus_memory_stream_chr(struct _citrus_memory_stream *ms,
     void *chr, *head;
     size_t sz;
 
-    if (ms->ms_pos >= _region_size(&ms->ms_region))
+    if (ms->ms_pos >= _citrus_region_size(&ms->ms_region))
         return (NULL);
 
-    head = _region_offset(&ms->ms_region, ms->ms_pos);
-    chr = memchr(head, ch, _memstream_remainder(ms));
+    head = _citrus_region_offset(&ms->ms_region, ms->ms_pos);
+    chr = memchr(head, ch, _citrus_memory_stream_remainder(ms));
     if (chr == NULL) {
-        _region_init(r, head, _memstream_remainder(ms));
-        ms->ms_pos = _region_size(&ms->ms_region);
+        _citrus_region_init(r, head, _citrus_memory_stream_remainder(ms));
+        ms->ms_pos = _citrus_region_size(&ms->ms_region);
         return (NULL);
     }
     sz = (char *)chr - (char *)head;
 
-    _region_init(r, head, sz);
+    _citrus_region_init(r, head, sz);
     ms->ms_pos += sz + 1;
 
     return (chr);
@@ -136,9 +135,9 @@ _citrus_memory_stream_skip_ws(struct _citrus_memory_stream *ms)
 {
     int ch;
 
-    while ((ch = _memstream_peek(ms)) != EOF) {
-        if (!_bcs_isspace(ch))
+    while ((ch = _citrus_memory_stream_peek(ms)) != EOF) {
+        if (!_citrus_bcs_isspace(ch))
             break;
-        _memstream_getc(ms);
+        _citrus_memory_stream_getc(ms);
     }
 }

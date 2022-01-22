@@ -42,9 +42,8 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "citrus_namespace.h"
-#include "citrus_types.h"
 #include "citrus_bcs.h"
+#include "citrus_types.h"
 #include "citrus_module.h"
 #include "citrus_stdenc.h"
 
@@ -426,11 +425,11 @@ _citrus_HZ_stdenc_get_state_desc_generic(_HZEncodingInfo * __restrict ei,
         return (EINVAL);
     *rstate = (psenc->chlen == 0)
         ? ((psenc->inuse == INIT0(ei))
-            ? _STDENC_SDGEN_INITIAL
-            : _STDENC_SDGEN_STABLE)
+            ? _CITRUS_STDENC_SDGEN_INITIAL
+            : _CITRUS_STDENC_SDGEN_STABLE)
         : ((psenc->ch[0] == ESCAPE_CHAR)
-            ? _STDENC_SDGEN_INCOMPLETE_SHIFT
-            : _STDENC_SDGEN_INCOMPLETE_CHAR);
+            ? _CITRUS_STDENC_SDGEN_INCOMPLETE_SHIFT
+            : _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR);
 
     return (0);
 }
@@ -438,7 +437,7 @@ _citrus_HZ_stdenc_get_state_desc_generic(_HZEncodingInfo * __restrict ei,
 static __inline int
 /*ARGSUSED*/
 _citrus_HZ_stdenc_wctocs(_HZEncodingInfo * __restrict ei __unused,
-    _csid_t * __restrict csid, _index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
 {
     int bit;
 
@@ -448,14 +447,14 @@ _citrus_HZ_stdenc_wctocs(_HZEncodingInfo * __restrict ei __unused,
     } else
         bit = 0x0;
     if ((uint32_t)wc <= 0x7F) {
-        *csid = (_csid_t)bit;
-        *idx = (_index_t)wc;
+        *csid = (_citrus_csid_t)bit;
+        *idx = (_citrus_index_t)wc;
     } else if ((uint32_t)wc <= 0x7F7F) {
-        *csid = (_csid_t)(bit | 0x8000);
-        *idx = (_index_t)wc;
+        *csid = (_citrus_csid_t)(bit | 0x8000);
+        *idx = (_citrus_index_t)wc;
     } else {
-        *csid = (_index_t)(wc & ~0x00FFFF7F);
-        *idx = (_csid_t)(wc & 0x00FFFF7F);
+        *csid = (_citrus_index_t)(wc & ~0x00FFFF7F);
+        *idx = (_citrus_csid_t)(wc & 0x00FFFF7F);
     }
 
     return (0);
@@ -464,7 +463,7 @@ _citrus_HZ_stdenc_wctocs(_HZEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_HZ_stdenc_cstowc(_HZEncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _csid_t csid, _index_t idx)
+    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     *wc = (wchar_t)idx;
@@ -548,14 +547,14 @@ release:
         return (EINVAL);
     }
     graphic->escape = escape;
-    if (_bcs_strncasecmp("ASCII", s, 5) == 0) {
+    if (_citrus_bcs_strncasecmp("ASCII", s, 5) == 0) {
         if (s[5] != '\0')
             return (EINVAL);
         graphic->charset = ASCII;
         graphic->length = 1;
         ei->ascii = graphic;
         return (0);
-    } else if (_bcs_strncasecmp("GB2312", s, 6) == 0) {
+    } else if (_citrus_bcs_strncasecmp("GB2312", s, 6) == 0) {
         if (s[6] != '\0')
             return (EINVAL);
         graphic->charset = GB2312;

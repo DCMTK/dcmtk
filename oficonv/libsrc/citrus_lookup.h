@@ -29,20 +29,20 @@
 
 #include "dcmtk/config/osconfig.h"
 #include <stddef.h>
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 
 #define _CITRUS_LOOKUP_CASE_SENSITIVE   0
 #define _CITRUS_LOOKUP_CASE_IGNORE  1
 
 struct _citrus_lookup;
-struct _region;
+struct _citrus_region;
 
 BEGIN_EXTERN_C
 char *_citrus_lookup_simple(const char *, const char *, char *, size_t, int);
 int _citrus_lookup_seq_open(struct _citrus_lookup **, const char *, int);
 void _citrus_lookup_seq_rewind(struct _citrus_lookup *);
-int _citrus_lookup_seq_next(struct _citrus_lookup *, struct _region *, struct _region *);
-int _citrus_lookup_seq_lookup(struct _citrus_lookup *, const char *, struct _region *);
+int _citrus_lookup_seq_next(struct _citrus_lookup *, struct _citrus_region *, struct _citrus_region *);
+int _citrus_lookup_seq_lookup(struct _citrus_lookup *, const char *, struct _citrus_region *);
 int _citrus_lookup_get_number_of_entries(struct _citrus_lookup *);
 void _citrus_lookup_seq_close(struct _citrus_lookup *);
 END_EXTERN_C

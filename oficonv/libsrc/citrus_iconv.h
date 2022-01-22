@@ -28,7 +28,7 @@
 #define _CITRUS_ICONV_H_
 
 #include "dcmtk/config/osconfig.h"
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 
 struct _citrus_iconv_shared;
 struct _citrus_iconv_ops;

@@ -42,7 +42,7 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 #include "citrus_types.h"
 #include "citrus_module.h"
 #include "citrus_stdenc.h"
@@ -1228,7 +1228,7 @@ _citrus_ISO2022_wcrtomb_priv(_ISO2022EncodingInfo * __restrict ei,
 static __inline int
 /*ARGSUSED*/
 _citrus_ISO2022_stdenc_wctocs(_ISO2022EncodingInfo * __restrict ei __unused,
-    _csid_t * __restrict csid, _index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
 {
     wchar_t m, nm;
 
@@ -1245,8 +1245,8 @@ _citrus_ISO2022_stdenc_wctocs(_ISO2022EncodingInfo * __restrict ei __unused,
         /* ^2 mark */
         m |= 0x00007F00;
     }
-    *csid = (_csid_t)m;
-    *idx  = (_index_t)nm;
+    *csid = (_citrus_csid_t)m;
+    *idx  = (_citrus_index_t)nm;
 
     return (0);
 }
@@ -1254,7 +1254,7 @@ _citrus_ISO2022_stdenc_wctocs(_ISO2022EncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_ISO2022_stdenc_cstowc(_ISO2022EncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _csid_t csid, _index_t idx)
+    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     *wc = (wchar_t)(csid & 0x7F808080) | (wchar_t)idx;
@@ -1270,11 +1270,11 @@ _citrus_ISO2022_stdenc_get_state_desc_generic(_ISO2022EncodingInfo * __restrict 
 
     if (psenc->chlen == 0) {
         /* XXX: it should distinguish initial and stable. */
-        *rstate = _STDENC_SDGEN_STABLE;
+        *rstate = _CITRUS_STDENC_SDGEN_STABLE;
     } else
         *rstate = (psenc->ch[0] == '\033') ?
-            _STDENC_SDGEN_INCOMPLETE_SHIFT :
-            _STDENC_SDGEN_INCOMPLETE_CHAR;
+            _CITRUS_STDENC_SDGEN_INCOMPLETE_SHIFT :
+            _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
 }
 

@@ -34,9 +34,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
-#include "citrus_region.h"
 #include "citrus_bcs.h"
+#include "citrus_region.h"
 #include "citrus_db_factory.h"
 #include "citrus_db_hash.h"
 #include "citrus_pivot_file.h"
@@ -55,7 +54,7 @@ find_src(struct src_head *sh, struct src_entry **rse, const char *name)
     struct src_entry *se;
 
     STAILQ_FOREACH(se, sh, se_entry) {
-        if (_bcs_strcasecmp(se->se_name, name) == 0) {
+        if (_citrus_bcs_strcasecmp(se->se_name, name) == 0) {
             *rse = se;
             return (0);
         }
@@ -69,7 +68,7 @@ find_src(struct src_head *sh, struct src_entry **rse, const char *name)
         free(se);
         return (ret);
     }
-    ret = _db_factory_create(&se->se_df, &_db_hash_std, NULL);
+    ret = _citrus_db_factory_create(&se->se_df, &_citrus_db_hash_std, NULL);
     if (ret) {
         free(se->se_name);
         free(se);
@@ -88,7 +87,7 @@ free_src(struct src_head *sh)
 
     while ((se = STAILQ_FIRST(sh)) != NULL) {
         STAILQ_REMOVE_HEAD(sh, se_entry);
-        _db_factory_free(se->se_df);
+        _citrus_db_factory_free(se->se_df);
         free(se->se_name);
         free(se);
     }
@@ -114,26 +113,26 @@ convert_line(struct src_head *sh, const char *line, size_t len)
         len = p - line;
 
     /* key1 */
-    line = _bcs_skip_ws_len(line, &len);
+    line = _citrus_bcs_skip_ws_len(line, &len);
     if (len == 0)
         return (0);
-    p = _bcs_skip_nonws_len(line, &len);
+    p = _citrus_bcs_skip_nonws_len(line, &len);
     if (p == line)
         return (0);
     snprintf(key1, sizeof(key1), "%.*s", (int)(p - line), line);
 
     /* key2 */
-    line = _bcs_skip_ws_len(p, &len);
+    line = _citrus_bcs_skip_ws_len(p, &len);
     if (len == 0)
         return (0);
-    p = _bcs_skip_nonws_len(line, &len);
+    p = _citrus_bcs_skip_nonws_len(line, &len);
     if (p == line)
         return (0);
     snprintf(key2, sizeof(key2), "%.*s", (int)(p - line), line);
 
     /* data */
-    line = _bcs_skip_ws_len(p, &len);
-    _bcs_trunc_rws_len(line, &len);
+    line = _citrus_bcs_skip_ws_len(p, &len);
+    _citrus_bcs_trunc_rws_len(line, &len);
     snprintf(data, sizeof(data), "%.*s", (int)len, line);
     val = strtoul(data, &ep, 0);
     if (*ep != '\0')
@@ -144,50 +143,50 @@ convert_line(struct src_head *sh, const char *line, size_t len)
     if (ret)
         return (ret);
 
-    return (_db_factory_add32_by_s(se->se_df, key2, val));
+    return (_citrus_db_factory_add32_by_string(se->se_df, key2, val));
 }
 
 static int
-dump_db(struct src_head *sh, struct _region *r)
+dump_db(struct src_head *sh, struct _citrus_region *r)
 {
-    struct _db_factory *df;
+    struct _citrus_db_factory *df;
     struct src_entry *se;
-    struct _region subr;
+    struct _citrus_region subr;
     void *ptr;
     size_t size;
     int ret;
 
-    ret = _db_factory_create(&df, &_db_hash_std, NULL);
+    ret = _citrus_db_factory_create(&df, &_citrus_db_hash_std, NULL);
     if (ret)
         return (ret);
 
     STAILQ_FOREACH(se, sh, se_entry) {
-        size = _db_factory_calc_size(se->se_df);
+        size = _citrus_db_factory_calc_size(se->se_df);
         ptr = malloc(size);
         if (ptr == NULL)
             goto quit;
-        _region_init(&subr, ptr, size);
-        ret = _db_factory_serialize(se->se_df, _CITRUS_PIVOT_SUB_MAGIC,
+        _citrus_region_init(&subr, ptr, size);
+        ret = _citrus_db_factory_serialize(se->se_df, _CITRUS_PIVOT_SUB_MAGIC,
             &subr);
         if (ret)
             goto quit;
-        ret = _db_factory_add_by_s(df, se->se_name, &subr, 1);
+        ret = _citrus_db_factory_add_by_string(df, se->se_name, &subr, 1);
         if (ret)
             goto quit;
     }
 
-    size = _db_factory_calc_size(df);
+    size = _citrus_db_factory_calc_size(df);
     ptr = malloc(size);
     if (ptr == NULL)
         goto quit;
-    _region_init(r, ptr, size);
+    _citrus_region_init(r, ptr, size);
 
-    ret = _db_factory_serialize(df, _CITRUS_PIVOT_MAGIC, r);
+    ret = _citrus_db_factory_serialize(df, _CITRUS_PIVOT_MAGIC, r);
     ptr = NULL;
 
 quit:
     free(ptr);
-    _db_factory_free(df);
+    _citrus_db_factory_free(df);
     return (ret);
 }
 
@@ -195,7 +194,7 @@ int
 _citrus_pivot_factory_convert(FILE *out, FILE *in)
 {
     struct src_head sh;
-    struct _region r;
+    struct _citrus_region r;
     char *line;
     int ret;
 #ifdef HAVE_FGETLN
@@ -225,7 +224,7 @@ _citrus_pivot_factory_convert(FILE *out, FILE *in)
     if (ret)
         return (ret);
 
-    if (fwrite(_region_head(&r), _region_size(&r), 1, out) != 1)
+    if (fwrite(_citrus_region_head(&r), _citrus_region_size(&r), 1, out) != 1)
         return (errno);
 
     return (0);

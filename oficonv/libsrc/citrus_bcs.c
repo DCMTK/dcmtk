@@ -29,8 +29,6 @@
 
 #include <stdlib.h>
 
-#include "citrus_namespace.h"
-
 /*
  * case insensitive comparison between two C strings.
  */
@@ -43,8 +41,8 @@ _citrus_bcs_strcasecmp(const char * __restrict str1,
     c1 = c2 = 1;
 
     while (c1 && c2 && c1 == c2) {
-        c1 = _bcs_toupper(*str1++);
-        c2 = _bcs_toupper(*str2++);
+        c1 = _citrus_bcs_toupper(*str1++);
+        c2 = _citrus_bcs_toupper(*str2++);
     }
 
     return ((c1 == c2) ? 0 : ((c1 > c2) ? 1 : -1));
@@ -62,8 +60,8 @@ _citrus_bcs_strncasecmp(const char * __restrict str1,
     c1 = c2 = 1;
 
     while (c1 && c2 && c1 == c2 && sz != 0) {
-        c1 = _bcs_toupper(*str1++);
-        c2 = _bcs_toupper(*str2++);
+        c1 = _citrus_bcs_toupper(*str1++);
+        c2 = _citrus_bcs_toupper(*str2++);
         sz--;
     }
 
@@ -77,7 +75,7 @@ const char *
 _citrus_bcs_skip_ws(const char *p)
 {
 
-    while (*p && _bcs_isspace(*p))
+    while (*p && _citrus_bcs_isspace(*p))
         p++;
 
     return (p);
@@ -90,7 +88,7 @@ const char *
 _citrus_bcs_skip_nonws(const char *p)
 {
 
-    while (*p && !_bcs_isspace(*p))
+    while (*p && !_citrus_bcs_isspace(*p))
         p++;
 
     return (p);
@@ -103,7 +101,7 @@ const char *
 _citrus_bcs_skip_ws_len(const char * __restrict p, size_t * __restrict len)
 {
 
-    while (*p && *len > 0 && _bcs_isspace(*p)) {
+    while (*p && *len > 0 && _citrus_bcs_isspace(*p)) {
         p++;
         (*len)--;
     }
@@ -118,7 +116,7 @@ const char *
 _citrus_bcs_skip_nonws_len(const char * __restrict p, size_t * __restrict len)
 {
 
-    while (*p && *len > 0 && !_bcs_isspace(*p)) {
+    while (*p && *len > 0 && !_citrus_bcs_isspace(*p)) {
         p++;
         (*len)--;
     }
@@ -133,7 +131,7 @@ void
 _citrus_bcs_trunc_rws_len(const char * __restrict p, size_t * __restrict len)
 {
 
-    while (*len > 0 && _bcs_isspace(p[*len - 1]))
+    while (*len > 0 && _citrus_bcs_isspace(p[*len - 1]))
         (*len)--;
 }
 
@@ -145,7 +143,7 @@ _citrus_bcs_convert_to_lower(char *s)
 {
 
     while (*s) {
-        *s = _bcs_tolower(*s);
+        *s = _citrus_bcs_tolower(*s);
         s++;
     }
 }
@@ -158,7 +156,7 @@ _citrus_bcs_convert_to_upper(char *s)
 {
 
     while (*s) {
-        *s = _bcs_toupper(*s);
+        *s = _citrus_bcs_toupper(*s);
         s++;
     }
 }

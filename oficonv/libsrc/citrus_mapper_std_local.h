@@ -30,7 +30,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_types.h"
 #include "citrus_region.h"
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 
 typedef uint32_t (*_citrus_mapper_std_getvalfunc_t)(const void *, uint32_t);
 
@@ -56,7 +56,7 @@ struct _citrus_mapper_std;
 
 typedef int (*_citrus_mapper_std_convert_t)(
     struct _citrus_mapper_std *__restrict,
-    _index_t *__restrict, _index_t, void *__restrict);
+    _citrus_index_t *__restrict, _citrus_index_t, void *__restrict);
 typedef void (*_citrus_mapper_std_uninit_t)(struct _citrus_mapper_std *);
 
 struct _citrus_mapper_std {

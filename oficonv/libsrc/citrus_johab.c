@@ -42,9 +42,8 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "citrus_namespace.h"
-#include "citrus_types.h"
 #include "citrus_bcs.h"
+#include "citrus_types.h"
 #include "citrus_module.h"
 #include "citrus_stdenc.h"
 
@@ -239,19 +238,19 @@ ilseq:
 static __inline int
 /*ARGSUSED*/
 _citrus_JOHAB_stdenc_wctocs(_JOHABEncodingInfo * __restrict ei __unused,
-    _csid_t * __restrict csid, _index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
 {
     int m, l, linear, t;
 
     /* XXX assume wchar_t as int */
     if ((uint32_t)wc <= 0x7F) {
-        *idx = (_index_t)wc;
+        *idx = (_citrus_index_t)wc;
         *csid = 0;
     } else if ((uint32_t)wc <= 0xFFFF) {
         l = (wc >> 8) & 0xFF;
         t = wc & 0xFF;
         if (ishangul(l, t) || isuda(l, t)) {
-            *idx = (_index_t)wc;
+            *idx = (_citrus_index_t)wc;
             *csid = 1;
         } else {
             if (l >= 0xD9 && l <= 0xDE) {
@@ -271,7 +270,7 @@ _citrus_JOHAB_stdenc_wctocs(_JOHABEncodingInfo * __restrict ei __unused,
                 return (EILSEQ);
             l = (linear / 94) + m;
             t = (linear % 94) + 0x21;
-            *idx = (_index_t)((l << 8) | t);
+            *idx = (_citrus_index_t)((l << 8) | t);
             *csid = 2;
         }
     } else
@@ -282,7 +281,7 @@ _citrus_JOHAB_stdenc_wctocs(_JOHABEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_JOHAB_stdenc_cstowc(_JOHABEncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _csid_t csid, _index_t idx)
+    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     int m, n, l, linear, t;
 
@@ -319,8 +318,8 @@ _citrus_JOHAB_stdenc_get_state_desc_generic(_JOHABEncodingInfo * __restrict ei _
     _JOHABState * __restrict psenc, int * __restrict rstate)
 {
 
-    *rstate = (psenc->chlen == 0) ? _STDENC_SDGEN_INITIAL :
-        _STDENC_SDGEN_INCOMPLETE_CHAR;
+    *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
+        _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
 }
 

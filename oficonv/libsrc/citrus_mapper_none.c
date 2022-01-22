@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
+#include "citrus_bcs.h"
 #include "citrus_types.h"
 #include "citrus_module.h"
 #include "citrus_hash.h"

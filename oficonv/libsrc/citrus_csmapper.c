@@ -40,9 +40,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
-#include "citrus_types.h"
 #include "citrus_bcs.h"
+#include "citrus_types.h"
 #include "citrus_region.h"
 #include "citrus_lock.h"
 #include "citrus_memstream.h"
@@ -67,13 +66,13 @@ static pthread_rwlock_t         ma_lock = PTHREAD_RWLOCK_INITIALIZER;
 /* ---------------------------------------------------------------------- */
 
 static int
-get32(struct _region *r, uint32_t *rval)
+get32(struct _citrus_region *r, uint32_t *rval)
 {
 
-    if (_region_size(r) != 4)
+    if (_citrus_region_size(r) != 4)
         return (EFTYPE);
 
-    memcpy(rval, _region_head(r), (size_t)4);
+    memcpy(rval, _citrus_region_head(r), (size_t)4);
     *rval = be32toh(*rval);
 
     return (0);
@@ -82,13 +81,13 @@ get32(struct _region *r, uint32_t *rval)
 static int
 open_subdb(struct _citrus_db **subdb, struct _citrus_db *db, const char *src)
 {
-    struct _region r;
+    struct _citrus_region r;
     int ret;
 
-    ret = _db_lookup_by_s(db, src, &r, NULL);
+    ret = _citrus_db_lookup_by_string(db, src, &r, NULL);
     if (ret)
         return (ret);
-    ret = _db_open(subdb, &r, _CITRUS_PIVOT_SUB_MAGIC, _db_hash_std, NULL);
+    ret = _citrus_db_open(subdb, &r, _CITRUS_PIVOT_SUB_MAGIC, _citrus_db_hash_std, NULL);
     if (ret)
         return (ret);
 
@@ -102,30 +101,30 @@ find_best_pivot_pvdb(const char *src, const char *dst, char *pivot,
     size_t pvlen, unsigned long *rnorm)
 {
     struct _citrus_db *db1, *db2, *db3;
-    struct _region fr, r1, r2;
+    struct _citrus_region fr, r1, r2;
     char buf[LINE_MAX];
     uint32_t val32;
     unsigned long norm;
     int i, num, ret;
 
-    ret = _map_file(&fr, CS_PIVOT ".pvdb");
+    ret = _citrus_map_file(&fr, CS_PIVOT ".pvdb");
     if (ret) {
         if (ret == ENOENT)
             ret = NO_SUCH_FILE;
         return (ret);
     }
-    ret = _db_open(&db1, &fr, _CITRUS_PIVOT_MAGIC, _db_hash_std, NULL);
+    ret = _citrus_db_open(&db1, &fr, _CITRUS_PIVOT_MAGIC, _citrus_db_hash_std, NULL);
     if (ret)
         goto quit1;
     ret = open_subdb(&db2, db1, src);
     if (ret)
         goto quit2;
 
-    num = _db_get_num_entries(db2);
+    num = _citrus_db_get_number_of_entries(db2);
     *rnorm = ULONG_MAX;
     for (i = 0; i < num; i++) {
         /* iterate each pivot */
-        ret = _db_get_entry(db2, i, &r1, &r2);
+        ret = _citrus_db_get_entry(db2, i, &r1, &r2);
         if (ret)
             goto quit3;
         /* r1:pivot name, r2:norm among src and pivot */
@@ -134,12 +133,12 @@ find_best_pivot_pvdb(const char *src, const char *dst, char *pivot,
             goto quit3;
         norm = val32;
         snprintf(buf, sizeof(buf), "%.*s",
-             (int)_region_size(&r1), (char *)_region_head(&r1));
+             (int)_citrus_region_size(&r1), (char *)_citrus_region_head(&r1));
         /* buf: pivot name */
         ret = open_subdb(&db3, db1, buf);
         if (ret)
             goto quit3;
-        if (_db_lookup_by_s(db3, dst, &r2, NULL) != 0)
+        if (_citrus_db_lookup_by_string(db3, dst, &r2, NULL) != 0)
             goto quit4;
         /* r2: norm among pivot and dst */
         ret = get32(&r2, &val32);
@@ -152,16 +151,16 @@ find_best_pivot_pvdb(const char *src, const char *dst, char *pivot,
             strlcpy(pivot, buf, pvlen);
         }
 quit4:
-        _db_close(db3);
+        _citrus_db_close(db3);
         if (ret)
             goto quit3;
     }
 quit3:
-    _db_close(db2);
+    _citrus_db_close(db2);
 quit2:
-    _db_close(db1);
+    _citrus_db_close(db1);
 quit1:
-    _unmap_file(&fr);
+    _citrus_unmap_file(&fr);
     if (ret)
         return (ret);
 
@@ -183,30 +182,30 @@ struct parse_arg {
 };
 
 static int
-parse_line(struct parse_arg *pa, struct _region *r)
+parse_line(struct parse_arg *pa, struct _citrus_region *r)
 {
     struct zone z1, z2;
     char buf[20];
     size_t len;
 
-    len = _region_size(r);
-    z1.begin = _bcs_skip_ws_len(_region_head(r), &len);
+    len = _citrus_region_size(r);
+    z1.begin = _citrus_bcs_skip_ws_len(_citrus_region_head(r), &len);
     if (len == 0)
         return (EFTYPE);
-    z1.end = _bcs_skip_nonws_len(z1.begin, &len);
+    z1.end = _citrus_bcs_skip_nonws_len(z1.begin, &len);
     if (len == 0)
         return (EFTYPE);
-    z2.begin = _bcs_skip_ws_len(z1.end, &len);
+    z2.begin = _citrus_bcs_skip_ws_len(z1.end, &len);
     if (len == 0)
         return (EFTYPE);
-    z2.end = _bcs_skip_nonws_len(z2.begin, &len);
+    z2.end = _citrus_bcs_skip_nonws_len(z2.begin, &len);
 
     /* z1 : dst name, z2 : norm */
     snprintf(pa->dst, sizeof(pa->dst),
         "%.*s", (int)(z1.end-z1.begin), z1.begin);
     snprintf(buf, sizeof(buf),
         "%.*s", (int)(z2.end-z2.begin), z2.begin);
-    pa->norm = _bcs_strtoul(buf, NULL, 0);
+    pa->norm = _citrus_bcs_strtoul(buf, NULL, 0);
 
     return (0);
 }
@@ -214,16 +213,16 @@ parse_line(struct parse_arg *pa, struct _region *r)
 static int
 find_dst(struct parse_arg *pasrc, const char *dst)
 {
-    struct _lookup *cl;
+    struct _citrus_lookup *cl;
     struct parse_arg padst;
-    struct _region data;
+    struct _citrus_region data;
     int ret;
 
-    ret = _lookup_seq_open(&cl, CS_PIVOT, _LOOKUP_CASE_IGNORE);
+    ret = _citrus_lookup_seq_open(&cl, CS_PIVOT, _CITRUS_LOOKUP_CASE_IGNORE);
     if (ret)
         return (ret);
 
-    ret = _lookup_seq_lookup(cl, pasrc->dst, &data);
+    ret = _citrus_lookup_seq_lookup(cl, pasrc->dst, &data);
     while (ret == 0) {
         ret = parse_line(&padst, &data);
         if (ret)
@@ -232,9 +231,9 @@ find_dst(struct parse_arg *pasrc, const char *dst)
             pasrc->norm += padst.norm;
             break;
         }
-        ret = _lookup_seq_next(cl, NULL, &data);
+        ret = _citrus_lookup_seq_next(cl, NULL, &data);
     }
-    _lookup_seq_close(cl);
+    _citrus_lookup_seq_close(cl);
 
     return (ret);
 }
@@ -243,21 +242,21 @@ static int
 find_best_pivot_lookup(const char *src, const char *dst, char *pivot,
     size_t pvlen, unsigned long *rnorm)
 {
-    struct _lookup *cl;
-    struct _region data;
+    struct _citrus_lookup *cl;
+    struct _citrus_region data;
     struct parse_arg pa;
     char pivot_min[PATH_MAX];
     unsigned long norm_min;
     int ret;
 
-    ret = _lookup_seq_open(&cl, CS_PIVOT, _LOOKUP_CASE_IGNORE);
+    ret = _citrus_lookup_seq_open(&cl, CS_PIVOT, _CITRUS_LOOKUP_CASE_IGNORE);
     if (ret)
         return (ret);
 
     norm_min = ULONG_MAX;
 
     /* find pivot code */
-    ret = _lookup_seq_lookup(cl, src, &data);
+    ret = _citrus_lookup_seq_lookup(cl, src, &data);
     while (ret == 0) {
         ret = parse_line(&pa, &data);
         if (ret)
@@ -269,9 +268,9 @@ find_best_pivot_lookup(const char *src, const char *dst, char *pivot,
             norm_min = pa.norm;
             strlcpy(pivot_min, pa.dst, sizeof(pivot_min));
         }
-        ret = _lookup_seq_next(cl, NULL, &data);
+        ret = _citrus_lookup_seq_next(cl, NULL, &data);
     }
-    _lookup_seq_close(cl);
+    _citrus_lookup_seq_close(cl);
 
     if (ret != ENOENT)
         return (ret);
@@ -320,7 +319,7 @@ open_serial_mapper(struct _citrus_mapper_area *__restrict ma,
 #pragma GCC diagnostic pop
 #endif
 
-    return (_mapper_open_direct(ma, rcm, "mapper_serial", buf));
+    return (_citrus_mapper_open_direct(ma, rcm, "mapper_serial", buf));
 }
 
 static struct _citrus_csmapper *csm_none = NULL;
@@ -337,10 +336,10 @@ get_none(struct _citrus_mapper_area *__restrict ma,
         goto quit;
     }
 
-    ret = _mapper_open_direct(ma, &csm_none, "mapper_none", "");
+    ret = _citrus_mapper_open_direct(ma, &csm_none, "mapper_none", "");
     if (ret)
         goto quit;
-    _mapper_set_persistent(csm_none);
+    _citrus_mapper_set_persistent(csm_none);
 
     *rcsm = csm_none;
     ret = 0;
@@ -365,10 +364,10 @@ _citrus_csmapper_open(struct _citrus_csmapper * __restrict * __restrict rcsm,
     if (ret)
         return (ret);
 
-    realsrc = _lookup_alias(CS_ALIAS, src, buf1, sizeof(buf1),
-        _LOOKUP_CASE_IGNORE);
-    realdst = _lookup_alias(CS_ALIAS, dst, buf2, sizeof(buf2),
-        _LOOKUP_CASE_IGNORE);
+    realsrc = _citrus_lookup_alias(CS_ALIAS, src, buf1, sizeof(buf1),
+        _CITRUS_LOOKUP_CASE_IGNORE);
+    realdst = _citrus_lookup_alias(CS_ALIAS, dst, buf2, sizeof(buf2),
+        _CITRUS_LOOKUP_CASE_IGNORE);
     if (!strcmp(realsrc, realdst)) {
         ret = get_none(maparea, rcsm);
         if (ret == 0 && rnorm != NULL)
@@ -378,13 +377,13 @@ _citrus_csmapper_open(struct _citrus_csmapper * __restrict * __restrict rcsm,
 
     snprintf(key, sizeof(key), "%s/%s", realsrc, realdst);
 
-    ret = _mapper_open(maparea, rcsm, key);
+    ret = _citrus_mapper_open(maparea, rcsm, key);
     if (ret == 0) {
         if (rnorm != NULL)
             *rnorm = 0;
         return (0);
     }
-    if (ret != ENOENT || (flags & _CSMAPPER_F_PREVENT_PIVOT)!=0)
+    if (ret != ENOENT || (flags & _CITRUS_CSMAPPER_F_PREVENT_PIVOT)!=0)
         return (ret);
 
     ret = find_best_pivot(realsrc, realdst, pivot, sizeof(pivot), &norm);

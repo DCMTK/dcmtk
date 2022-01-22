@@ -37,9 +37,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
-#include "citrus_types.h"
 #include "citrus_bcs.h"
+#include "citrus_types.h"
 #include "citrus_region.h"
 #include "citrus_mmap.h"
 #include "citrus_module.h"
@@ -73,11 +72,11 @@ _citrus_mapper_std_mapper_getops(struct _citrus_mapper_ops *ops)
 static int
 /*ARGSUSED*/
 rowcol_convert(struct _citrus_mapper_std * __restrict ms,
-    _index_t * __restrict dst, _index_t src, void * __restrict ps __unused)
+    _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps __unused)
 {
     struct _citrus_mapper_std_linear_zone *lz;
     struct _citrus_mapper_std_rowcol *rc;
-    _index_t idx = 0, n;
+    _citrus_index_t idx = 0, n;
     size_t i;
     uint32_t conv;
 
@@ -92,39 +91,39 @@ rowcol_convert(struct _citrus_mapper_std * __restrict ms,
             switch (rc->rc_oob_mode) {
             case _CITRUS_MAPPER_STD_OOB_NONIDENTICAL:
                 *dst = rc->rc_dst_invalid;
-                return (_MAPPER_CONVERT_NONIDENTICAL);
+                return (_CITRUS_MAPPER_CONVERT_NONIDENTICAL);
             case _CITRUS_MAPPER_STD_OOB_ILSEQ:
-                return (_MAPPER_CONVERT_ILSEQ);
+                return (_CITRUS_MAPPER_CONVERT_ILSEQ);
             default:
-                return (_MAPPER_CONVERT_FATAL);
+                return (_CITRUS_MAPPER_CONVERT_FATAL);
             }
         }
         idx = idx * lz->width + n - lz->begin;
     }
     switch (rc->rc_dst_unit_bits) {
     case 8:
-        conv = _region_peek8(&rc->rc_table, idx);
+        conv = _citrus_region_peek8(&rc->rc_table, idx);
         break;
     case 16:
-        conv = be16toh(_region_peek16(&rc->rc_table, idx*2));
+        conv = be16toh(_citrus_region_peek16(&rc->rc_table, idx*2));
         break;
     case 32:
-        conv = be32toh(_region_peek32(&rc->rc_table, idx*4));
+        conv = be32toh(_citrus_region_peek32(&rc->rc_table, idx*4));
         break;
     default:
-        return (_MAPPER_CONVERT_FATAL);
+        return (_CITRUS_MAPPER_CONVERT_FATAL);
     }
 
     if (conv == rc->rc_dst_invalid) {
         *dst = rc->rc_dst_invalid;
-        return (_MAPPER_CONVERT_NONIDENTICAL);
+        return (_CITRUS_MAPPER_CONVERT_NONIDENTICAL);
     }
     if (conv == rc->rc_dst_ilseq)
-        return (_MAPPER_CONVERT_ILSEQ);
+        return (_CITRUS_MAPPER_CONVERT_ILSEQ);
 
     *dst = conv;
 
-    return (_MAPPER_CONVERT_SUCCESS);
+    return (_CITRUS_MAPPER_CONVERT_SUCCESS);
 }
 
 static __inline int
@@ -144,14 +143,14 @@ set_linear_zone(struct _citrus_mapper_std_linear_zone *lz,
 
 static __inline int
 rowcol_parse_variable_compat(struct _citrus_mapper_std_rowcol *rc,
-    struct _region *r)
+    struct _citrus_region *r)
 {
     const struct _citrus_mapper_std_rowcol_info_compat_x *rcx;
     struct _citrus_mapper_std_linear_zone *lz;
     uint32_t m, n;
     int ret;
 
-    rcx = _region_head(r);
+    rcx = _citrus_region_head(r);
 
     rc->rc_dst_invalid = be32toh(rcx->rcx_dst_invalid);
     rc->rc_dst_unit_bits = be32toh(rcx->rcx_dst_unit_bits);
@@ -183,7 +182,7 @@ rowcol_parse_variable_compat(struct _citrus_mapper_std_rowcol *rc,
 
 static __inline int
 rowcol_parse_variable(struct _citrus_mapper_std_rowcol *rc,
-    struct _region *r)
+    struct _citrus_region *r)
 {
     const struct _citrus_mapper_std_rowcol_info_x *rcx;
     struct _citrus_mapper_std_linear_zone *lz;
@@ -191,7 +190,7 @@ rowcol_parse_variable(struct _citrus_mapper_std_rowcol *rc,
     uint32_t m, n;
     int ret;
 
-    rcx = _region_head(r);
+    rcx = _citrus_region_head(r);
 
     rc->rc_dst_invalid = be32toh(rcx->rcx_dst_invalid);
     rc->rc_dst_unit_bits = be32toh(rcx->rcx_dst_unit_bits);
@@ -238,7 +237,7 @@ rowcol_init(struct _citrus_mapper_std *ms)
     struct _citrus_mapper_std_linear_zone *lz;
     struct _citrus_mapper_std_rowcol *rc;
     const struct _citrus_mapper_std_rowcol_ext_ilseq_info_x *eix;
-    struct _region r;
+    struct _citrus_region r;
     uint64_t table_size;
     size_t i;
     int ret;
@@ -248,7 +247,7 @@ rowcol_init(struct _citrus_mapper_std *ms)
     rc = &ms->ms_rowcol;
 
     /* get table region */
-    ret = _db_lookup_by_s(ms->ms_db, _CITRUS_MAPPER_STD_SYM_TABLE,
+    ret = _citrus_db_lookup_by_string(ms->ms_db, _CITRUS_MAPPER_STD_SYM_TABLE,
         &rc->rc_table, NULL);
     if (ret) {
         if (ret == ENOENT)
@@ -257,13 +256,13 @@ rowcol_init(struct _citrus_mapper_std *ms)
     }
 
     /* get table information */
-    ret = _db_lookup_by_s(ms->ms_db, _CITRUS_MAPPER_STD_SYM_INFO, &r, NULL);
+    ret = _citrus_db_lookup_by_string(ms->ms_db, _CITRUS_MAPPER_STD_SYM_INFO, &r, NULL);
     if (ret) {
         if (ret == ENOENT)
             ret = EFTYPE;
         return (ret);
     }
-    switch (_region_size(&r)) {
+    switch (_citrus_region_size(&r)) {
     case _CITRUS_MAPPER_STD_ROWCOL_INFO_COMPAT_SIZE:
         ret = rowcol_parse_variable_compat(rc, &r);
         break;
@@ -288,14 +287,14 @@ rowcol_init(struct _citrus_mapper_std *ms)
     /* ilseq extension */
     rc->rc_oob_mode = _CITRUS_MAPPER_STD_OOB_NONIDENTICAL;
     rc->rc_dst_ilseq = rc->rc_dst_invalid;
-    ret = _db_lookup_by_s(ms->ms_db,
+    ret = _citrus_db_lookup_by_string(ms->ms_db,
         _CITRUS_MAPPER_STD_SYM_ROWCOL_EXT_ILSEQ, &r, NULL);
     if (ret && ret != ENOENT)
         return (ret);
-    if (_region_size(&r) < sizeof(*eix))
+    if (_citrus_region_size(&r) < sizeof(*eix))
         return (EFTYPE);
     if (ret == 0) {
-        eix = _region_head(&r);
+        eix = _citrus_region_head(&r);
         rc->rc_oob_mode = be32toh(eix->eix_oob_mode);
         rc->rc_dst_ilseq = be32toh(eix->eix_dst_ilseq);
     }
@@ -311,7 +310,7 @@ rowcol_init(struct _citrus_mapper_std *ms)
     table_size *= rc->rc_dst_unit_bits/8;
 
     if (table_size > UINT32_MAX ||
-        _region_size(&rc->rc_table) < table_size)
+        _citrus_region_size(&rc->rc_table) < table_size)
         return (EFTYPE);
 
     return (0);
@@ -356,17 +355,17 @@ _citrus_mapper_std_mapper_init(struct _citrus_mapper_area *__restrict ma __unuse
     /* open mapper file */
     snprintf(path, sizeof(path), "%s/%.*s", curdir, (int)lenvar,
         (const char *)var);
-    ret = _map_file(&ms->ms_file, path);
+    ret = _citrus_map_file(&ms->ms_file, path);
     if (ret)
         goto err1;
 
-    ret = _db_open(&ms->ms_db, &ms->ms_file, _CITRUS_MAPPER_STD_MAGIC,
-        &_db_hash_std, NULL);
+    ret = _citrus_db_open(&ms->ms_db, &ms->ms_file, _CITRUS_MAPPER_STD_MAGIC,
+        &_citrus_db_hash_std, NULL);
     if (ret)
         goto err2;
 
     /* get mapper type */
-    ret = _db_lookupstr_by_s(ms->ms_db, _CITRUS_MAPPER_STD_SYM_TYPE,
+    ret = _citrus_db_lookup_string_by_string(ms->ms_db, _CITRUS_MAPPER_STD_SYM_TYPE,
         &type, NULL);
     if (ret) {
         if (ret == ENOENT)
@@ -374,7 +373,7 @@ _citrus_mapper_std_mapper_init(struct _citrus_mapper_area *__restrict ma __unuse
         goto err3;
     }
     for (id = 0; id < NUM_OF_TYPES; id++)
-        if (_bcs_strcasecmp(type, types[id].t_name) == 0)
+        if (_citrus_bcs_strcasecmp(type, types[id].t_name) == 0)
             break;
 
     if (id == NUM_OF_TYPES)
@@ -390,9 +389,9 @@ _citrus_mapper_std_mapper_init(struct _citrus_mapper_area *__restrict ma __unuse
     return (0);
 
 err3:
-    _db_close(ms->ms_db);
+    _citrus_db_close(ms->ms_db);
 err2:
-    _unmap_file(&ms->ms_file);
+    _citrus_unmap_file(&ms->ms_file);
 err1:
     free(ms);
 err0:
@@ -408,8 +407,8 @@ _citrus_mapper_std_mapper_uninit(struct _citrus_mapper *cm)
     ms = cm->cm_closure;
     if (ms->ms_uninit)
         (*ms->ms_uninit)(ms);
-    _db_close(ms->ms_db);
-    _unmap_file(&ms->ms_file);
+    _citrus_db_close(ms->ms_db);
+    _citrus_unmap_file(&ms->ms_file);
     free(ms);
 }
 
@@ -423,7 +422,7 @@ _citrus_mapper_std_mapper_init_state(void)
 static int
 /*ARGSUSED*/
 _citrus_mapper_std_mapper_convert(struct _citrus_mapper * __restrict cm,
-    _index_t * __restrict dst, _index_t src, void * __restrict ps)
+    _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps)
 {
     struct _citrus_mapper_std *ms;
 

@@ -36,9 +36,8 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "citrus_namespace.h"
-#include "citrus_types.h"
 #include "citrus_bcs.h"
+#include "citrus_types.h"
 #include "citrus_module.h"
 #include "citrus_stdenc.h"
 
@@ -335,11 +334,11 @@ e2big:
 /*ARGSUSED*/
 static int
 _citrus_UES_stdenc_wctocs(_UESEncodingInfo * __restrict ei __unused,
-    _csid_t * __restrict csid, _index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
 {
 
     *csid = 0;
-    *idx = (_index_t)wc;
+    *idx = (_citrus_index_t)wc;
 
     return (0);
 }
@@ -347,7 +346,7 @@ _citrus_UES_stdenc_wctocs(_UESEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_UES_stdenc_cstowc(_UESEncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _csid_t csid, _index_t idx)
+    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     if (csid != 0)
@@ -363,8 +362,8 @@ _citrus_UES_stdenc_get_state_desc_generic(_UESEncodingInfo * __restrict ei __unu
     _UESState * __restrict psenc, int * __restrict rstate)
 {
 
-    *rstate = (psenc->chlen == 0) ? _STDENC_SDGEN_INITIAL :
-        _STDENC_SDGEN_INCOMPLETE_CHAR;
+    *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
+        _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
 }
 
@@ -386,7 +385,7 @@ _citrus_UES_encoding_module_init(_UESEncodingInfo * __restrict ei,
     p = var;
     memset((void *)ei, 0, sizeof(*ei));
     while (lenvar > 0) {
-        switch (_bcs_toupper(*p)) {
+        switch (_citrus_bcs_toupper(*p)) {
         case 'C':
             MATCH(C99, ei->mode |= MODE_C99);
             break;

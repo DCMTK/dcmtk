@@ -34,9 +34,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
-#include "citrus_types.h"
 #include "citrus_bcs.h"
+#include "citrus_types.h"
 #include "citrus_module.h"
 #include "citrus_region.h"
 #include "citrus_memstream.h"
@@ -93,7 +92,7 @@ _citrus_mapper_zone_mapper_getops(struct _citrus_mapper_ops *ops)
 #define T_IMM   0x101
 
 static int
-get_imm(struct _memstream *ms, struct _parse_state *ps)
+get_imm(struct _citrus_memory_stream *ms, struct _parse_state *ps)
 {
     int c, i, sign = 0;
     char buf[BUFSIZE + 1];
@@ -101,18 +100,18 @@ get_imm(struct _memstream *ms, struct _parse_state *ps)
 
     for (i = 0; i < BUFSIZE; i++) {
 retry:
-        c = _memstream_peek(ms);
+        c = _citrus_memory_stream_peek(ms);
         if (i == 0) {
             if (sign == 0 && (c == '+' || c == '-')) {
                 sign = c;
-                _memstream_getc(ms);
+                _citrus_memory_stream_getc(ms);
                 goto retry;
-            } else if (!_bcs_isdigit(c))
+            } else if (!_citrus_bcs_isdigit(c))
                 break;
-        } else if (!_bcs_isxdigit(c))
+        } else if (!_citrus_bcs_isxdigit(c))
             if (!(i == 1 && c == 'x'))
                 break;
-        buf[i] = _memstream_getc(ms);
+        buf[i] = _citrus_memory_stream_getc(ms);
     }
     buf[i] = '\0';
     ps->ps_u_imm = strtoul(buf, &p, 0);
@@ -124,16 +123,16 @@ retry:
 }
 
 static int
-get_tok(struct _memstream *ms, struct _parse_state *ps)
+get_tok(struct _citrus_memory_stream *ms, struct _parse_state *ps)
 {
     int c;
 
 loop:
-    c = _memstream_peek(ms);
+    c = _citrus_memory_stream_peek(ms);
     if (c == 0x00)
         return (EOF);
-    if (_bcs_isspace(c)) {
-        _memstream_getc(ms);
+    if (_citrus_bcs_isspace(c)) {
+        _citrus_memory_stream_getc(ms);
         goto loop;
     }
 
@@ -143,7 +142,7 @@ loop:
         case ':':
         case '-':
         case '/':
-            _memstream_getc(ms);
+            _citrus_memory_stream_getc(ms);
             return (c);
         case '0':
         case '1':
@@ -161,7 +160,7 @@ loop:
     case S_OFFSET:
         switch (c) {
         case '/':
-            _memstream_getc(ms);
+            _citrus_memory_stream_getc(ms);
             return (c);
         case '+':
         case '-':
@@ -183,7 +182,7 @@ loop:
 }
 
 static int
-parse_zone(struct _memstream *ms, struct _parse_state *ps, struct _zone *z)
+parse_zone(struct _citrus_memory_stream *ms, struct _parse_state *ps, struct _zone *z)
 {
 
     if (get_tok(ms, ps) != T_IMM)
@@ -227,7 +226,7 @@ check_rowcol(struct _zone *z, int32_t ofs, uint32_t maxval)
 }
 
 static int
-parse_var(struct _citrus_mapper_zone *mz, struct _memstream *ms)
+parse_var(struct _citrus_mapper_zone *mz, struct _citrus_memory_stream *ms)
 {
     struct _parse_state ps;
     uint32_t colmax, rowmax;
@@ -300,8 +299,8 @@ _citrus_mapper_zone_mapper_init(struct _citrus_mapper_area *__restrict ma __unus
     struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
 {
     struct _citrus_mapper_zone *mz;
-    struct _memstream ms;
-    struct _region r;
+    struct _citrus_memory_stream ms;
+    struct _citrus_region r;
 
     if (lenmt < sizeof(*mt))
         return (EINVAL);
@@ -316,8 +315,8 @@ _citrus_mapper_zone_mapper_init(struct _citrus_mapper_area *__restrict ma __unus
     mz->mz_row_offset = 0;
     mz->mz_col_offset = 0;
 
-    _region_init(&r, __DECONST(void *, var), lenvar);
-    _memstream_bind(&ms, &r);
+    _citrus_region_init(&r, __DECONST(void *, var), lenvar);
+    _citrus_memory_stream_bind(&ms, &r);
     if (parse_var(mz, &ms)) {
         free(mz);
         return (EINVAL);

@@ -109,7 +109,6 @@
 
 #define I18NMODULE_MAJOR    4
 
-#include "citrus_namespace.h"
 #include "citrus_bcs.h"
 
 #include "citrus_iconv_local.h"

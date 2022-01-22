@@ -35,24 +35,23 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "citrus_namespace.h"
-#include "citrus_types.h"
 #include "citrus_bcs.h"
+#include "citrus_types.h"
 #include "citrus_region.h"
 
 uint32_t
-_citrus_db_hash_std(struct _region *r)
+_citrus_db_hash_std(struct _citrus_region *r)
 {
     const uint8_t *p;
     uint32_t hash, tmp;
     size_t i;
 
     hash = 0;
-    p = _region_head(r);
+    p = _citrus_region_head(r);
 
-    for (i = _region_size(r); i > 0; i--) {
+    for (i = _citrus_region_size(r); i > 0; i--) {
         hash <<= 4;
-        hash += _bcs_tolower(*p);
+        hash += _citrus_bcs_tolower(*p);
         tmp = hash & 0xF0000000;
         if (tmp != 0) {
             hash ^= tmp;

@@ -41,9 +41,8 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "citrus_namespace.h"
-#include "citrus_types.h"
 #include "citrus_bcs.h"
+#include "citrus_types.h"
 #include "citrus_module.h"
 #include "citrus_stdenc.h"
 
@@ -305,29 +304,29 @@ err:
 static __inline int
 /*ARGSUSED*/
 _citrus_GBK2K_stdenc_wctocs(_GBK2KEncodingInfo * __restrict ei __unused,
-    _csid_t * __restrict csid, _index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
 {
     uint8_t ch, cl;
 
     if ((uint32_t)wc < 0x80) {
         /* ISO646 */
         *csid = 0;
-        *idx = (_index_t)wc;
+        *idx = (_citrus_index_t)wc;
     } else if ((uint32_t)wc >= 0x10000) {
         /* GBKUCS : XXX */
         *csid = 3;
-        *idx = (_index_t)wc;
+        *idx = (_citrus_index_t)wc;
     } else {
         ch = (uint8_t)(wc >> 8);
         cl = (uint8_t)wc;
         if (ch >= 0xA1 && cl >= 0xA1) {
             /* EUC G1 */
             *csid = 1;
-            *idx = (_index_t)wc & 0x7F7FU;
+            *idx = (_citrus_index_t)wc & 0x7F7FU;
         } else {
             /* extended area (0x8140-) */
             *csid = 2;
-            *idx = (_index_t)wc;
+            *idx = (_citrus_index_t)wc;
         }
     }
 
@@ -337,7 +336,7 @@ _citrus_GBK2K_stdenc_wctocs(_GBK2KEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_GBK2K_stdenc_cstowc(_GBK2KEncodingInfo * __restrict ei,
-    wchar_t * __restrict wc, _csid_t csid, _index_t idx)
+    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     switch (csid) {
@@ -372,8 +371,8 @@ _citrus_GBK2K_stdenc_get_state_desc_generic(_GBK2KEncodingInfo * __restrict ei _
     _GBK2KState * __restrict psenc, int * __restrict rstate)
 {
 
-    *rstate = (psenc->chlen == 0) ? _STDENC_SDGEN_INITIAL :
-        _STDENC_SDGEN_INCOMPLETE_CHAR;
+    *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
+        _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
 }
 
@@ -388,7 +387,7 @@ _citrus_GBK2K_encoding_module_init(_GBK2KEncodingInfo * __restrict ei,
     memset((void *)ei, 0, sizeof(*ei));
     ei->mb_cur_max = 4;
     while (lenvar > 0) {
-        switch (_bcs_tolower(*p)) {
+        switch (_citrus_bcs_tolower(*p)) {
         case '2':
             MATCH("2byte", ei->mb_cur_max = 2);
             break;

@@ -72,7 +72,6 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "citrus_namespace.h"
 #include "citrus_bcs.h"
 #include "citrus_types.h"
 #include "citrus_module.h"
@@ -137,7 +136,7 @@ _citrus_EUC_parse_variable(_EUCEncodingInfo *ei, const void *var,
 
     ei->mb_cur_max = 1;
     for (x = 0; x < 4; ++x) {
-        ei->count[x] = (int)_bcs_strtol(v, (char **)&e, 0);
+        ei->count[x] = (int)_citrus_bcs_strtol(v, (char **)&e, 0);
         if (v == e || !(v = e) || ei->count[x] < 1 || ei->count[x] > 4) {
             return (EFTYPE);
         }
@@ -145,14 +144,14 @@ _citrus_EUC_parse_variable(_EUCEncodingInfo *ei, const void *var,
             ei->mb_cur_max = ei->count[x];
         while (*v == ' ' || *v == '\t')
             ++v;
-        ei->bits[x] = (int)_bcs_strtol(v, (char **)&e, 0);
+        ei->bits[x] = (int)_citrus_bcs_strtol(v, (char **)&e, 0);
         if (v == e || !(v = e)) {
             return (EFTYPE);
         }
         while (*v == ' ' || *v == '\t')
             ++v;
     }
-    ei->mask = (int)_bcs_strtol(v, (char **)&e, 0);
+    ei->mask = (int)_citrus_bcs_strtol(v, (char **)&e, 0);
     if (v == e || !(v = e)) {
         return (EFTYPE);
     }
@@ -321,7 +320,7 @@ err:
 static __inline int
 /*ARGSUSED*/
 _citrus_EUC_stdenc_wctocs(_EUCEncodingInfo * __restrict ei,
-    _csid_t * __restrict csid, _index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
 {
     wchar_t m, nm;
 
@@ -337,7 +336,7 @@ _citrus_EUC_stdenc_wctocs(_EUCEncodingInfo * __restrict ei,
 static __inline int
 /*ARGSUSED*/
 _citrus_EUC_stdenc_cstowc(_EUCEncodingInfo * __restrict ei,
-    wchar_t * __restrict wc, _csid_t csid, _index_t idx)
+    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     if ((csid & ~ei->mask) != 0 || (idx & ei->mask) != 0)
@@ -354,8 +353,8 @@ _citrus_EUC_stdenc_get_state_desc_generic(_EUCEncodingInfo * __restrict ei __unu
     _EUCState * __restrict psenc, int * __restrict rstate)
 {
 
-    *rstate = (psenc->chlen == 0) ? _STDENC_SDGEN_INITIAL :
-        _STDENC_SDGEN_INCOMPLETE_CHAR;
+    *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
+        _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
 }
 
