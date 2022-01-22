@@ -30,14 +30,6 @@
 #include "dcmtk/config/osconfig.h"
 #include <stdint.h>
 
-#define _citrus_csmapper        _citrus_mapper
-#define _citrus_csmapper_close      _citrus_mapper_close
-#define _citrus_csmapper_convert    _citrus_mapper_convert
-#define _citrus_csmapper_init_state _citrus_mapper_init_state
-#define _citrus_csmapper_get_state_size _citrus_mapper_get_state_size
-#define _citrus_csmapper_get_src_max    _citrus_mapper_get_src_max
-#define _citrus_csmapper_get_dst_max    _citrus_mapper_get_dst_max
-
 struct _citrus_csmapper;
 
 #define _CITRUS_CSMAPPER_F_PREVENT_PIVOT    0x00000001

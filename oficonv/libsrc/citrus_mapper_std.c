@@ -328,7 +328,7 @@ static const struct {
 static int
 /*ARGSUSED*/
 _citrus_mapper_std_mapper_init(struct _citrus_mapper_area *__restrict ma __unused,
-    struct _citrus_mapper * __restrict cm, const char * __restrict curdir,
+    struct _citrus_csmapper * __restrict cm, const char * __restrict curdir,
     const void * __restrict var, size_t lenvar,
     struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
 {
@@ -400,7 +400,7 @@ err0:
 
 static void
 /*ARGSUSED*/
-_citrus_mapper_std_mapper_uninit(struct _citrus_mapper *cm)
+_citrus_mapper_std_mapper_uninit(struct _citrus_csmapper *cm)
 {
     struct _citrus_mapper_std *ms;
 
@@ -421,7 +421,7 @@ _citrus_mapper_std_mapper_init_state(void)
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_std_mapper_convert(struct _citrus_mapper * __restrict cm,
+_citrus_mapper_std_mapper_convert(struct _citrus_csmapper * __restrict cm,
     _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps)
 {
     struct _citrus_mapper_std *ms;

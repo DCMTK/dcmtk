@@ -57,7 +57,7 @@ _CITRUS_MAPPER_DEF_OPS(mapper_serial);
 #define _citrus_mapper_parallel_mapper_init_state   \
     _citrus_mapper_serial_mapper_init_state
 static int  _citrus_mapper_parallel_mapper_convert(
-            struct _citrus_mapper * __restrict, _citrus_index_t * __restrict,
+            struct _citrus_csmapper * __restrict, _citrus_index_t * __restrict,
             _citrus_index_t, void * __restrict);
 _CITRUS_MAPPER_DEF_OPS(mapper_parallel);
 #undef _citrus_mapper_parallel_mapper_init
@@ -69,7 +69,7 @@ _CITRUS_MAPPER_DEF_OPS(mapper_parallel);
 
 struct maplink {
     STAILQ_ENTRY(maplink)    ml_entry;
-    struct _citrus_mapper   *ml_mapper;
+    struct _citrus_csmapper   *ml_mapper;
 };
 STAILQ_HEAD(maplist, maplink);
 
@@ -104,7 +104,7 @@ uninit(struct _citrus_mapper_serial *sr)
 
     while ((ml = STAILQ_FIRST(&sr->sr_mappers)) != NULL) {
         STAILQ_REMOVE_HEAD(&sr->sr_mappers, ml_entry);
-        _citrus_mapper_close(ml->ml_mapper);
+        _citrus_csmapper_close(ml->ml_mapper);
         free(ml);
     }
 }
@@ -140,9 +140,9 @@ parse_var(struct _citrus_mapper_area *__restrict ma,
             return (ret);
         }
         /* support only 1:1 and stateless converter */
-        if (_citrus_mapper_get_src_max(ml->ml_mapper) != 1 ||
-            _citrus_mapper_get_dst_max(ml->ml_mapper) != 1 ||
-            _citrus_mapper_get_state_size(ml->ml_mapper) != 0) {
+        if (_citrus_csmapper_get_src_max(ml->ml_mapper) != 1 ||
+            _citrus_csmapper_get_dst_max(ml->ml_mapper) != 1 ||
+            _citrus_csmapper_get_state_size(ml->ml_mapper) != 0) {
             free(ml);
             return (EINVAL);
         }
@@ -154,7 +154,7 @@ parse_var(struct _citrus_mapper_area *__restrict ma,
 static int
 /*ARGSUSED*/
 _citrus_mapper_serial_mapper_init(struct _citrus_mapper_area *__restrict ma __unused,
-    struct _citrus_mapper * __restrict cm, const char * __restrict dir __unused,
+    struct _citrus_csmapper * __restrict cm, const char * __restrict dir __unused,
     const void * __restrict var, size_t lenvar,
     struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
 {
@@ -185,7 +185,7 @@ _citrus_mapper_serial_mapper_init(struct _citrus_mapper_area *__restrict ma __un
 
 static void
 /*ARGSUSED*/
-_citrus_mapper_serial_mapper_uninit(struct _citrus_mapper *cm)
+_citrus_mapper_serial_mapper_uninit(struct _citrus_csmapper *cm)
 {
 
     if (cm && cm->cm_closure) {
@@ -196,7 +196,7 @@ _citrus_mapper_serial_mapper_uninit(struct _citrus_mapper *cm)
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_serial_mapper_convert(struct _citrus_mapper * __restrict cm,
+_citrus_mapper_serial_mapper_convert(struct _citrus_csmapper * __restrict cm,
     _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps __unused)
 {
     struct _citrus_mapper_serial *sr;
@@ -205,7 +205,7 @@ _citrus_mapper_serial_mapper_convert(struct _citrus_mapper * __restrict cm,
 
     sr = cm->cm_closure;
     STAILQ_FOREACH(ml, &sr->sr_mappers, ml_entry) {
-        ret = _citrus_mapper_convert(ml->ml_mapper, &src, src, NULL);
+        ret = _citrus_csmapper_convert(ml->ml_mapper, &src, src, NULL);
         if (ret != _CITRUS_MAPPER_CONVERT_SUCCESS)
             return (ret);
     }
@@ -215,7 +215,7 @@ _citrus_mapper_serial_mapper_convert(struct _citrus_mapper * __restrict cm,
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_parallel_mapper_convert(struct _citrus_mapper * __restrict cm,
+_citrus_mapper_parallel_mapper_convert(struct _citrus_csmapper * __restrict cm,
     _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps __unused)
 {
     struct _citrus_mapper_serial *sr;
@@ -225,7 +225,7 @@ _citrus_mapper_parallel_mapper_convert(struct _citrus_mapper * __restrict cm,
 
     sr = cm->cm_closure;
     STAILQ_FOREACH(ml, &sr->sr_mappers, ml_entry) {
-        ret = _citrus_mapper_convert(ml->ml_mapper, &tmp, src, NULL);
+        ret = _citrus_csmapper_convert(ml->ml_mapper, &tmp, src, NULL);
         if (ret == _CITRUS_MAPPER_CONVERT_SUCCESS) {
             *dst = tmp;
             return (_CITRUS_MAPPER_CONVERT_SUCCESS);

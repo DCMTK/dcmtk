@@ -298,7 +298,7 @@ find_best_pivot(const char *src, const char *dst, char *pivot, size_t pvlen,
 
 static __inline int
 open_serial_mapper(struct _citrus_mapper_area *__restrict ma,
-    struct _citrus_mapper * __restrict * __restrict rcm,
+    struct _citrus_csmapper * __restrict * __restrict rcm,
     const char *src, const char *pivot, const char *dst)
 {
     char buf[PATH_MAX];

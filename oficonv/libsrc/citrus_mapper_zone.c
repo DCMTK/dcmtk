@@ -294,7 +294,7 @@ parse_var(struct _citrus_mapper_zone *mz, struct _citrus_memory_stream *ms)
 static int
 /*ARGSUSED*/
 _citrus_mapper_zone_mapper_init(struct _citrus_mapper_area *__restrict ma __unused,
-    struct _citrus_mapper * __restrict cm, const char * __restrict dir __unused,
+    struct _citrus_csmapper * __restrict cm, const char * __restrict dir __unused,
     const void * __restrict var, size_t lenvar,
     struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
 {
@@ -330,14 +330,14 @@ _citrus_mapper_zone_mapper_init(struct _citrus_mapper_area *__restrict ma __unus
 
 static void
 /*ARGSUSED*/
-_citrus_mapper_zone_mapper_uninit(struct _citrus_mapper *cm __unused)
+_citrus_mapper_zone_mapper_uninit(struct _citrus_csmapper *cm __unused)
 {
 
 }
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_zone_mapper_convert(struct _citrus_mapper * __restrict cm,
+_citrus_mapper_zone_mapper_convert(struct _citrus_csmapper * __restrict cm,
     _citrus_index_t * __restrict dst, _citrus_index_t src,
     void * __restrict ps __unused)
 {

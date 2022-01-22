@@ -61,7 +61,7 @@ _citrus_mapper_none_mapper_getops(struct _citrus_mapper_ops *ops)
 static int
 /*ARGSUSED*/
 _citrus_mapper_none_mapper_init(struct _citrus_mapper_area *__restrict ma __unused,
-    struct _citrus_mapper * __restrict cm, const char * __restrict dir __unused,
+    struct _citrus_csmapper * __restrict cm, const char * __restrict dir __unused,
     const void * __restrict var __unused, size_t lenvar __unused,
     struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
 {
@@ -78,14 +78,14 @@ _citrus_mapper_none_mapper_init(struct _citrus_mapper_area *__restrict ma __unus
 
 static void
 /*ARGSUSED*/
-_citrus_mapper_none_mapper_uninit(struct _citrus_mapper *cm __unused)
+_citrus_mapper_none_mapper_uninit(struct _citrus_csmapper *cm __unused)
 {
 
 }
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_none_mapper_convert(struct _citrus_mapper * __restrict cm __unused,
+_citrus_mapper_none_mapper_convert(struct _citrus_csmapper * __restrict cm __unused,
     _citrus_index_t * __restrict dst, _citrus_index_t src,
     void * __restrict ps __unused)
 {
