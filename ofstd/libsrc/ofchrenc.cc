@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2021, OFFIS e.V.
+ *  Copyright (C) 2011-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -291,12 +291,30 @@ class OFCharacterEncoding::Implementation
 };
 
 #elif DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV ||\
+ DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV ||\
  DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV
+
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+
+#include "dcmtk/oficonv/iconv.h"
+#define LIBICONV_SECOND_ARGUMENT_CONST
+#define iconv_open OFiconv_open
+#define iconv_close OFiconv_close
+#define iconv OFiconv
+#define iconvctl OFiconvctl
+#define locale_charset OFlocale_charset
+#define WITH_LIBICONV
+
+#else /* DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV */
 
 #include <iconv.h>
 #ifdef WITH_LIBICONV
 #include <localcharset.h>
 #endif
+
+#endif /* DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV */
+
+
 
 #define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(iconv_t, -1)
 #define CONVERSION_ERROR       OFstatic_cast(size_t, -1)
@@ -329,7 +347,9 @@ class OFCharacterEncoding::Implementation
 
     static OFString getVersionString()
     {
-#ifdef WITH_LIBICONV
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+        return "DCMTK " PACKAGE_VERSION " oficonv";
+#elif defined(WITH_LIBICONV)
         OFString versionStr = "LIBICONV, Version ";
         char buf[10];
         // extract major and minor version number
@@ -361,12 +381,16 @@ class OFCharacterEncoding::Implementation
 
     static OFBool supportsConversionFlags(const unsigned flags)
     {
-#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
-        return flags == AbortTranscodingOnIllegalSequence
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+        return flags == TransliterateIllegalSequences
+            || flags == (DiscardIllegalSequences | TransliterateIllegalSequences)
+            ;
+#elif defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
+        return  flags == AbortTranscodingOnIllegalSequence
             || flags == DiscardIllegalSequences
             || flags == TransliterateIllegalSequences
             || flags == (DiscardIllegalSequences | TransliterateIllegalSequences)
-        ;
+            ;
 #elif defined DCMTK_FIXED_ICONV_CONVERSION_FLAGS
         // the iconvctl function is implemented only in newer versions of the
         // GNU libiconv and not in other iconv implementations. For instance,
