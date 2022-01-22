@@ -24,19 +24,30 @@
  * SUCH DAMAGE.
  */
 
+#ifndef _CITRUS_BCS_H_
+#define _CITRUS_BCS_H_
+
 #include "dcmtk/config/osconfig.h"
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 
-/* BEGIN DCMTK modifications */
 #include <stdint.h>
 #include <limits.h>
 #include <stdbool.h>
+
 #define __DECONST(type, var)    ((type)(uintptr_t)(const void *)(var))
-#define __unused        __attribute__((__unused__))
-#define __packed        __attribute__((__packed__))
-// the "restrict" type qualifier was introduced in C99.
+
+#ifdef __GNUC__
+#define __unused __attribute__((__unused__))
+#define __packed __attribute__((__packed__))
+#else
+#define __unused
+#define __packed
+#endif
+
+/* the "restrict" type qualifier was introduced in C99. */
 #define __restrict      restrict
 #ifndef EFTYPE
 #define EFTYPE EINVAL
@@ -49,19 +60,20 @@
 #define _PATH_ESDB DEFAULT_SUPPORT_DATA_DIR "esdb"
 
 #define __isthreaded 1
+
 #ifndef CHAR_MAX
 #error Need to define CHAR_MAX
 #endif
+
 #ifndef BIG_ENDIAN
 #define BIG_ENDIAN 4321    /* MSB first: 68000, ibm, net */
 #endif
 #ifndef LITTLE_ENDIAN
 #define LITTLE_ENDIAN  1234    /* LSB first: i386, vax */
-
 #endif
 
 #ifndef BYTE_ORDER
-    // Detect with GCC macro.
+    /* Detect with GCC macro. */
 #   if defined(__BYTE_ORDER__)
 #       if (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
 #           define BYTE_ORDER LITTLE_ENDIAN
@@ -70,7 +82,7 @@
 #       else
 #           error "Unknown machine byteorder endianness detected. User needs to define BYTE_ORDER."
 #       endif
-    // Detect with GLIBC's endian.h.
+     /* Detect with GLIBC's endian.h. */
 #   elif defined(__GLIBC__)
 #       include <endian.h>
 #       if (__BYTE_ORDER == __LITTLE_ENDIAN)
@@ -80,12 +92,12 @@
 #       else
 #           error "Unknown machine byteorder endianness detected. User needs to define BYTE_ORDER."
 #       endif
-    // Detect with _LITTLE_ENDIAN and _BIG_ENDIAN macro.
+     /* Detect with _LITTLE_ENDIAN and _BIG_ENDIAN macro. */
 #   elif defined(_LITTLE_ENDIAN) && !defined(_BIG_ENDIAN)
 #       define BYTE_ORDER LITTLE_ENDIAN
 #   elif defined(_BIG_ENDIAN) && !defined(_LITTLE_ENDIAN)
 #       define BYTE_ORDER BIG_ENDIAN
-    // Detect with architecture macros.
+     /* Detect with architecture macros. */
 #   elif defined(__sparc) || defined(__sparc__) || defined(_POWER) || defined(__powerpc__) || defined(__ppc__) || defined(__hpux) || defined(__hppa) || defined(_MIPSEB) || defined(_POWER) || defined(__s390__)
 #       define BYTE_ORDER BIG_ENDIAN
 #   elif defined(__i386__) || defined(__alpha__) || defined(__ia64) || defined(__ia64__) || defined(_M_IX86) || defined(_M_IA64) || defined(_M_ALPHA) || defined(__amd64) || defined(__amd64__) || defined(_M_AMD64) || defined(__x86_64) || defined(__x86_64__) || defined(_M_X64) || defined(__bfin__)
@@ -96,11 +108,6 @@
 #       error "Unknown machine byteorder endianness detected. User needs to define BYTE_ORDER."
 #   endif
 #endif
-
-/* END DCMTK modifications */
-
-#ifndef _CITRUS_BCS_H_
-#define _CITRUS_BCS_H_
 
 /*
  * predicate/conversion for basic character set.
@@ -119,15 +126,13 @@ static __inline int _citrus_bcs_##_name_(uint8_t c) { return (_cond_); }
  */
 _CITRUS_BCS_PRED(isblank, c == ' ' || c == '\t')
 _CITRUS_BCS_PRED(iseol, c == '\n' || c == '\r')
-_CITRUS_BCS_PRED(isspace, _citrus_bcs_isblank(c) || _citrus_bcs_iseol(c) ||
-    c == '\f' || c == '\v')
+_CITRUS_BCS_PRED(isspace, _citrus_bcs_isblank(c) || _citrus_bcs_iseol(c) || c == '\f' || c == '\v')
 _CITRUS_BCS_PRED(isdigit, c >= '0' && c <= '9')
 _CITRUS_BCS_PRED(isupper, c >= 'A' && c <= 'Z')
 _CITRUS_BCS_PRED(islower, c >= 'a' && c <= 'z')
 _CITRUS_BCS_PRED(isalpha, _citrus_bcs_isupper(c) || _citrus_bcs_islower(c))
 _CITRUS_BCS_PRED(isalnum, _citrus_bcs_isdigit(c) || _citrus_bcs_isalpha(c))
-_CITRUS_BCS_PRED(isxdigit, _citrus_bcs_isdigit(c) ||
-    (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
+_CITRUS_BCS_PRED(isxdigit, _citrus_bcs_isdigit(c) || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
 
 /*
  * transliterate between uppercase and lowercase.
@@ -148,25 +153,17 @@ _citrus_bcs_tolower(uint8_t c)
 }
 
 BEGIN_EXTERN_C
-int      _citrus_bcs_strcasecmp(const char * __restrict,
-            const char * __restrict);
-int      _citrus_bcs_strncasecmp(const char * __restrict,
-            const char * __restrict, size_t);
-const char  *_citrus_bcs_skip_ws(const char * __restrict);
-const char  *_citrus_bcs_skip_nonws(const char * __restrict);
-const char  *_citrus_bcs_skip_ws_len(const char * __restrict,
-            size_t * __restrict);
-const char  *_citrus_bcs_skip_nonws_len(const char * __restrict,
-            size_t * __restrict);
-void         _citrus_bcs_trunc_rws_len(const char * __restrict,
-            size_t * __restrict);
-void         _citrus_bcs_convert_to_lower(char *);
-void         _citrus_bcs_convert_to_upper(char *);
-
-long int     _citrus_bcs_strtol(const char * __restrict,
-            char ** __restrict, int);
-unsigned long    _citrus_bcs_strtoul(const char * __restrict,
-            char ** __restrict, int);
+int _citrus_bcs_strcasecmp(const char * __restrict, const char * __restrict);
+int _citrus_bcs_strncasecmp(const char * __restrict, const char * __restrict, size_t);
+const char *_citrus_bcs_skip_ws(const char * __restrict);
+const char *_citrus_bcs_skip_nonws(const char * __restrict);
+const char *_citrus_bcs_skip_ws_len(const char * __restrict, size_t * __restrict);
+const char *_citrus_bcs_skip_nonws_len(const char * __restrict, size_t * __restrict);
+void _citrus_bcs_trunc_rws_len(const char * __restrict, size_t * __restrict);
+void _citrus_bcs_convert_to_lower(char *);
+void _citrus_bcs_convert_to_upper(char *);
+long int _citrus_bcs_strtol(const char * __restrict, char ** __restrict, int);
+unsigned long _citrus_bcs_strtoul(const char * __restrict, char ** __restrict, int);
 END_EXTERN_C
 
 #endif

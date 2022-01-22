@@ -24,22 +24,26 @@
  * SUCH DAMAGE.
  */
 
+#ifndef _CITRUS_TYPES_H_
+#define _CITRUS_TYPES_H_
+
 #include "dcmtk/config/osconfig.h"
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-
-/* BEGIN DCMTK modifications */
 #include <stdint.h>
-#define __unused        __attribute__((__unused__))
-/* END DCMTK modifications */
 
-#ifndef _CITRUS_TYPES_H_
-#define _CITRUS_TYPES_H_
+#ifdef __GNUC__
+#define __unused __attribute__((__unused__))
+#else
+#define __unused
+#endif
 
 typedef uint32_t        _citrus_wc_t;
 typedef uint32_t        _citrus_index_t;
 typedef uint32_t        _citrus_csid_t;
+
 #define _CITRUS_CSID_INVALID    ((_citrus_csid_t)-1)
 
 #endif
