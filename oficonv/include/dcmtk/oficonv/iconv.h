@@ -81,7 +81,7 @@ iconv_t OFiconv_open(const char *, const char *);
  *  depends on the destination codeset, e.g., ‘?’, and the conversion is
  *  continued. iconv() returns the number of such “invalid conversions”.
  */
-size_t OFiconv(iconv_t cd, const char ** __restrict src, size_t * __restrict srcleft, char ** __restrict dst, size_t * __restrict dstleft);
+size_t OFiconv(iconv_t cd, char ** __restrict src, size_t * __restrict srcleft, char ** __restrict dst, size_t * __restrict dstleft);
 
 /**
  * close the specified converter cd
@@ -115,7 +115,7 @@ void OF__iconv_free_list(char **, size_t);
  * __ICONV_F_HIDE_INVALID
  *     Skip invalid characters, instead of returning with an error.
  */
-size_t  OF__iconv(iconv_t, const char **, size_t *, char **, size_t *, __uint32_t, size_t *);
+size_t  OF__iconv(iconv_t, char **, size_t *, char **, size_t *, __uint32_t, size_t *);
 
 #define __ICONV_F_HIDE_INVALID  0x0001
 
@@ -192,6 +192,23 @@ int OFiconv_open_into(const char *, const char *, iconv_allocation_t *);
  * Currently unsupported, will always return an error
  */
 #define ICONV_SET_FALLBACKS     6
+
+/*
+ * Determines if a character in the input buffer that is valid, but for
+ * which an identical character does not exist in the target codeset
+ * returns EILSEQ or not. The answer is stored in argument, which is of
+ * int *. It will be set to 1 if this feature is enabled or set to 0 otherwise.
+ */
+#define ICONV_GET_ILSEQ_INVALID 128
+
+/*
+ * Sets whether a character in the input buffer that is valid, but for
+ * which an identical character does not exist in the target codeset
+ * returns EILSEQ or not. If argument, which is of int * is set to 1 it
+ * will be enabled, and if argument is set to 0 it will be disabled.
+ */
+
+#define ICONV_SET_ILSEQ_INVALID 129
 
 typedef void (*iconv_unicode_char_hook) (unsigned int mbr, void *data);
 typedef void (*iconv_wide_char_hook) (wchar_t wc, void *data);

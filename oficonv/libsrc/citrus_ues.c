@@ -71,24 +71,6 @@ _citrus_UES_init_state(_UESEncodingInfo * __restrict ei __unused,
     psenc->chlen = 0;
 }
 
-static __inline void
-/*ARGSUSED*/
-_citrus_UES_pack_state(_UESEncodingInfo * __restrict ei __unused,
-    void *__restrict pspriv, const _UESState * __restrict psenc)
-{
-
-    memcpy(pspriv, (const void *)psenc, sizeof(*psenc));
-}
-
-static __inline void
-/*ARGSUSED*/
-_citrus_UES_unpack_state(_UESEncodingInfo * __restrict ei __unused,
-    _UESState * __restrict psenc, const void * __restrict pspriv)
-{
-
-    memcpy((void *)psenc, pspriv, sizeof(*psenc));
-}
-
 static __inline int
 to_int(int ch)
 {
@@ -179,10 +161,10 @@ is_basic(wchar_t wc)
 
 static int
 _citrus_UES_mbrtowc_priv(_UESEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, const char ** __restrict s, size_t n,
+    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
     _UESState * __restrict psenc, size_t * __restrict nresult)
 {
-    const char *s0;
+    char *s0;
     int ch, head, num, tail;
     wchar_t hi, wc;
 

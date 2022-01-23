@@ -98,8 +98,10 @@ _citrus_stdenc_open(struct _citrus_stdenc * __restrict * __restrict rce,
         ce->ce_ops->eo_cstomb == NULL ||
         ce->ce_ops->eo_mbtowc == NULL ||
         ce->ce_ops->eo_wctomb == NULL ||
-        ce->ce_ops->eo_get_state_desc == NULL)
-        goto bad;
+        ce->ce_ops->eo_get_state_desc == NULL) {
+            ret = EINVAL;
+            goto bad;
+    }
 
     /* allocate traits */
     ce->ce_traits = malloc(sizeof(*ce->ce_traits));

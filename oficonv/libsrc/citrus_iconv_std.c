@@ -101,7 +101,7 @@ init_encoding_state(struct _citrus_iconv_std_encoding *se)
 
 static __inline int
 mbtocsx(struct _citrus_iconv_std_encoding *se,
-    _citrus_csid_t *csid, _citrus_index_t *idx, const char **s, size_t n, size_t *nresult,
+    _citrus_csid_t *csid, _citrus_index_t *idx, char **s, size_t n, size_t *nresult,
     struct iconv_hooks *hooks)
 {
 
@@ -458,7 +458,7 @@ _citrus_iconv_std_iconv_uninit_context(struct _citrus_iconv *cv)
 
 static int
 _citrus_iconv_std_iconv_convert(struct _citrus_iconv * __restrict cv,
-    const char * __restrict * __restrict in, size_t * __restrict inbytes,
+    char * __restrict * __restrict in, size_t * __restrict inbytes,
     char * __restrict * __restrict out, size_t * __restrict outbytes,
     uint32_t flags, size_t * __restrict invalids)
 {
@@ -466,7 +466,7 @@ _citrus_iconv_std_iconv_convert(struct _citrus_iconv * __restrict cv,
     struct _citrus_iconv_std_context *sc = cv->cv_closure;
     _citrus_csid_t csid;
     _citrus_index_t idx;
-    const char *tmpin;
+    char *tmpin;
     size_t inval, szrin, szrout;
     int ret, state = 0;
 
@@ -540,6 +540,16 @@ _citrus_iconv_std_iconv_convert(struct _citrus_iconv * __restrict cv,
         ret = do_conv(is, &csid, &idx);
         if (ret) {
             if (ret == E_NO_CORRESPONDING_CHAR) {
+                /*
+                 * GNU iconv returns EILSEQ when no
+                 * corresponding character in the output.
+                 * Some software depends on this behavior
+                 * though this is against POSIX specification.
+                 */
+                if (cv->cv_shared->ci_ilseq_invalid != 0) {
+                        ret = EILSEQ;
+                        goto err;
+                }
                 inval++;
                 szrout = 0;
                 if ((((flags & _CITRUS_ICONV_F_HIDE_INVALID) == 0) &&

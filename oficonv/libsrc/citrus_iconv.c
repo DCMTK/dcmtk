@@ -172,8 +172,10 @@ open_shared(struct _citrus_iconv_shared * __restrict * __restrict rci,
         ci->ci_ops->io_uninit_shared == NULL ||
         ci->ci_ops->io_init_context == NULL ||
         ci->ci_ops->io_uninit_context == NULL ||
-        ci->ci_ops->io_convert == NULL)
-        goto err;
+        ci->ci_ops->io_convert == NULL) {
+            ret = EINVAL;
+            goto err;
+    }
 
     /* initialize the converter */
     ret = (*ci->ci_ops->io_init_shared)(ci, src, dst);
@@ -367,9 +369,8 @@ const char
 {
     char *buf;
 
-    if ((buf = malloc((size_t)PATH_MAX)) == NULL)
+    if ((buf = calloc((size_t)PATH_MAX, sizeof(*buf))) == NULL)
         return (NULL);
-    memset((void *)buf, 0, (size_t)PATH_MAX);
     _citrus_esdb_alias(name, buf, (size_t)PATH_MAX);
     return (buf);
 }

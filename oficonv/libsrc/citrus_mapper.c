@@ -246,8 +246,10 @@ mapper_open(struct _citrus_mapper_area *__restrict ma,
     if (!cm->cm_ops->mo_init ||
         !cm->cm_ops->mo_uninit ||
         !cm->cm_ops->mo_convert ||
-        !cm->cm_ops->mo_init_state)
-        goto err;
+        !cm->cm_ops->mo_init_state) {
+            ret = EINVAL;
+            goto err;
+    }
 
     /* allocate traits structure */
     cm->cm_traits = malloc(sizeof(*cm->cm_traits));
@@ -383,7 +385,9 @@ _citrus_csmapper_close(struct _citrus_csmapper *cm)
             _CITRUS_HASH_REMOVE(cm, cm_entry);
             free(cm->cm_key);
         }
+        UNLOCK(&cm_lock);
         mapper_close(cm);
+        return;
 quit:
         UNLOCK(&cm_lock);
     }

@@ -155,7 +155,7 @@ rowcol_parse_variable_compat(struct _citrus_mapper_std_rowcol *rc,
     rc->rc_dst_invalid = be32toh(rcx->rcx_dst_invalid);
     rc->rc_dst_unit_bits = be32toh(rcx->rcx_dst_unit_bits);
     m = be32toh(rcx->rcx_src_col_bits);
-    n = 1 << (m - 1);
+    n = 1U << (m - 1);
     n |= n - 1;
     rc->rc_src_rowcol_bits = m;
     rc->rc_src_rowcol_mask = n;
@@ -170,8 +170,11 @@ rowcol_parse_variable_compat(struct _citrus_mapper_std_rowcol *rc,
     n = be32toh(rcx->rcx_src_row_end);
     if (m + n > 0) {
         ret = set_linear_zone(lz, m, n);
-        if (ret != 0)
+        if (ret != 0) {
+            free(rc->rc_src_rowcol);
+            rc->rc_src_rowcol = NULL;
             return (ret);
+        }
         ++rc->rc_src_rowcol_len, ++lz;
     }
     m = be32toh(rcx->rcx_src_col_begin);

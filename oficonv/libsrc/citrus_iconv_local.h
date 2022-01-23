@@ -53,7 +53,7 @@ static void  _citrus_##_m_##_iconv_uninit_shared            \
             (struct _citrus_iconv_shared *);            \
 static int   _citrus_##_m_##_iconv_convert              \
             (struct _citrus_iconv * __restrict,         \
-            const char * __restrict * __restrict,       \
+            char * __restrict * __restrict,       \
             size_t * __restrict,                \
             char * __restrict * __restrict,         \
             size_t * __restrict outbytes,           \
@@ -82,34 +82,35 @@ typedef void (*_citrus_iconv_uninit_shared_t)
     (struct _citrus_iconv_shared *);
 typedef int (*_citrus_iconv_convert_t)
     (struct _citrus_iconv * __restrict,
-    const char *__restrict* __restrict, size_t * __restrict,
+    char *__restrict* __restrict, size_t * __restrict,
     char * __restrict * __restrict, size_t * __restrict, uint32_t,
     size_t * __restrict);
 typedef int (*_citrus_iconv_init_context_t)(struct _citrus_iconv *);
 typedef void (*_citrus_iconv_uninit_context_t)(struct _citrus_iconv *);
 
 struct _citrus_iconv_ops {
-    _citrus_iconv_init_shared_t io_init_shared;
+    _citrus_iconv_init_shared_t     io_init_shared;
     _citrus_iconv_uninit_shared_t   io_uninit_shared;
     _citrus_iconv_init_context_t    io_init_context;
     _citrus_iconv_uninit_context_t  io_uninit_context;
-    _citrus_iconv_convert_t     io_convert;
+    _citrus_iconv_convert_t         io_convert;
 };
 
 struct _citrus_iconv_shared {
-    struct _citrus_iconv_ops            *ci_ops;
-    void                        *ci_closure;
-    _CITRUS_HASH_ENTRY(_citrus_iconv_shared)     ci_hash_entry;
-    TAILQ_ENTRY(_citrus_iconv_shared)        ci_tailq_entry;
-    _citrus_module_t                 ci_module;
-    unsigned int                     ci_used_count;
-    char                        *ci_convname;
-    bool                         ci_discard_ilseq;
-    struct iconv_hooks              *ci_hooks;
+    struct _citrus_iconv_ops                 *ci_ops;
+    void                                     *ci_closure;
+    _CITRUS_HASH_ENTRY(_citrus_iconv_shared)  ci_hash_entry;
+    TAILQ_ENTRY(_citrus_iconv_shared)         ci_tailq_entry;
+    _citrus_module_t                          ci_module;
+    unsigned int                              ci_used_count;
+    char                                     *ci_convname;
+    bool                                      ci_discard_ilseq;
+    struct iconv_hooks                       *ci_hooks;
+    bool                                      ci_ilseq_invalid;
 };
 
 struct _citrus_iconv {
-    struct _citrus_iconv_shared         *cv_shared;
+    struct _citrus_iconv_shared *cv_shared;
     void                        *cv_closure;
 };
 

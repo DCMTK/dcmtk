@@ -229,31 +229,13 @@ _citrus_VIQR_init_state(_VIQREncodingInfo * __restrict ei __unused,
     psenc->chlen = 0;
 }
 
-static __inline void
-/*ARGSUSED*/
-_citrus_VIQR_pack_state(_VIQREncodingInfo * __restrict ei __unused,
-    void *__restrict pspriv, const _VIQRState * __restrict psenc)
-{
-
-    memcpy(pspriv, (const void *)psenc, sizeof(*psenc));
-}
-
-static __inline void
-/*ARGSUSED*/
-_citrus_VIQR_unpack_state(_VIQREncodingInfo * __restrict ei __unused,
-    _VIQRState * __restrict psenc, const void * __restrict pspriv)
-{
-
-    memcpy((void *)psenc, pspriv, sizeof(*psenc));
-}
-
 static int
 _citrus_VIQR_mbrtowc_priv(_VIQREncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, const char ** __restrict s, size_t n,
+    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
     _VIQRState * __restrict psenc, size_t * __restrict nresult)
 {
     mnemonic_t *m, *m0;
-    const char *s0;
+    char *s0;
     wchar_t wc;
     ssize_t i;
     int ch, escape;
@@ -430,7 +412,6 @@ static int
 _citrus_VIQR_encoding_module_init(_VIQREncodingInfo * __restrict ei,
     const void * __restrict var __unused, size_t lenvar __unused)
 {
-    const mnemonic_def_t *p;
     const char *s;
     size_t i, n;
     int errnum;
@@ -439,32 +420,35 @@ _citrus_VIQR_encoding_module_init(_VIQREncodingInfo * __restrict ei,
     ei->invalid = (wchar_t)-1;
     ei->mroot = mnemonic_create(NULL, '\0', ei->invalid);
     if (ei->mroot == NULL)
-        return (ENOMEM);
+            return (ENOMEM);
     for (i = 0; i < sizeof(mnemonic_rfc1456) / sizeof(const char *); ++i) {
-        s = mnemonic_rfc1456[i];
-        if (s == NULL)
-            continue;
-        n = strlen(s);
-        if (ei->mb_cur_max < n)
-            ei->mb_cur_max = n;
-        errnum = mnemonic_append_child(ei->mroot,
-            s, (wchar_t)i, ei->invalid);
-        if (errnum != 0) {
-            _citrus_VIQR_encoding_module_uninit(ei);
-            return (errnum);
-        }
+            s = mnemonic_rfc1456[i];
+            if (s == NULL)
+                    continue;
+            n = strlen(s);
+            if (ei->mb_cur_max < n)
+                    ei->mb_cur_max = n;
+            errnum = mnemonic_append_child(ei->mroot,
+                s, (wchar_t)i, ei->invalid);
+            if (errnum != 0) {
+                    _citrus_VIQR_encoding_module_uninit(ei);
+                    return (errnum);
+            }
     }
-    for (i = 0; i < mnemonic_ext_size; ++i) {
-        p = &mnemonic_ext[i];
-        n = strlen(p->name);
-        if (ei->mb_cur_max < n)
-            ei->mb_cur_max = n;
-        errnum = mnemonic_append_child(ei->mroot,
-            p->name, p->value, ei->invalid);
-        if (errnum != 0) {
-            _citrus_VIQR_encoding_module_uninit(ei);
-            return (errnum);
-        }
+    /* a + 1 < b + 1 here to silence gcc warning about unsigned < 0. */
+    for (i = 0; i + 1 < mnemonic_ext_size + 1; ++i) {
+            const mnemonic_def_t *p;
+
+            p = &mnemonic_ext[i];
+            n = strlen(p->name);
+            if (ei->mb_cur_max < n)
+                    ei->mb_cur_max = n;
+            errnum = mnemonic_append_child(ei->mroot,
+                p->name, p->value, ei->invalid);
+            if (errnum != 0) {
+                    _citrus_VIQR_encoding_module_uninit(ei);
+                    return (errnum);
+            }
     }
 
     return (0);

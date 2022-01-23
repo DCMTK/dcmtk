@@ -25,7 +25,7 @@
  */
 
 #ifndef _CITRUS_CSMAPPER_H_
-#define _CITRUS_CSMAPPER_H
+#define _CITRUS_CSMAPPER_H_
 
 #include "dcmtk/config/osconfig.h"
 #include <stdint.h>

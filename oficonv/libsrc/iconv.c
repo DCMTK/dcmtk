@@ -89,6 +89,7 @@ _iconv_open(const char *out, const char *in, struct _citrus_iconv *handle)
     }
 
     handle->cv_shared->ci_discard_ilseq = strcasestr(out, "//IGNORE");
+    handle->cv_shared->ci_ilseq_invalid = false;
     handle->cv_shared->ci_hooks = NULL;
 
     return ((iconv_t)(void *)handle);
@@ -125,7 +126,7 @@ OFiconv_close(iconv_t handle)
 }
 
 size_t
-OFiconv(iconv_t handle, const char **in, size_t *szin, char **out, size_t *szout)
+OFiconv(iconv_t handle, char **in, size_t *szin, char **out, size_t *szout)
 {
     size_t ret;
     int err;
@@ -146,7 +147,7 @@ OFiconv(iconv_t handle, const char **in, size_t *szin, char **out, size_t *szout
 }
 
 size_t
-OF__iconv(iconv_t handle, const char **in, size_t *szin, char **out,
+OF__iconv(iconv_t handle, char **in, size_t *szin, char **out,
     size_t *szout, uint32_t flags, size_t *invalids)
 {
     size_t ret;
@@ -212,43 +213,51 @@ OFiconvlist(int (*do_one) (unsigned int, const char * const *,
     const char * const *np;
     char *curitem, *curkey, *slashpos;
     size_t sz;
-    unsigned int i, j;
+    unsigned int i, j, n;
 
     i = 0;
+    names = NULL;
 
-    if (OF__iconv_get_list(&list, &sz, true))
+    if (OF__iconv_get_list(&list, &sz, true)) {
         list = NULL;
+        goto out;
+    }
     qsort((void *)list, sz, sizeof(char *), qsort_helper);
     while (i < sz) {
         j = 0;
         slashpos = strchr(list[i], '/');
-        curkey = (char *)malloc(slashpos - list[i] + 2);
-        names = (char **)malloc(sz * sizeof(char *));
-        if ((curkey == NULL) || (names == NULL)) {
-            OF__iconv_free_list(list, sz);
-            return;
-        }
-        strlcpy(curkey, list[i], slashpos - list[i] + 1);
-        names[j++] = strdup(curkey);
+        names = malloc(sz * sizeof(char *));
+        if (names == NULL)
+            goto out;
+        curkey = strndup(list[i], slashpos - list[i]);
+        if (curkey == NULL)
+            goto out;
+        names[j++] = curkey;
         for (; (i < sz) && (memcmp(curkey, list[i], strlen(curkey)) == 0); i++) {
             slashpos = strchr(list[i], '/');
-            curitem = (char *)malloc(strlen(slashpos) + 1);
-            if (curitem == NULL) {
-                OF__iconv_free_list(list, sz);
-                return;
-            }
-            strlcpy(curitem, &slashpos[1], strlen(slashpos) + 1);
-            if (strcmp(curkey, curitem) == 0) {
+            if (strcmp(curkey, &slashpos[1]) == 0)
                 continue;
-            }
-            names[j++] = strdup(curitem);
+            curitem = strdup(&slashpos[1]);
+            if (curitem == NULL)
+                goto out;
+            names[j++] = curitem;
         }
         np = (const char * const *)names;
         do_one(j, np, data);
+        for (n = 0; n < j; n++)
+            free(names[n]);
         free(names);
+        names = NULL;
     }
 
-    OF__iconv_free_list(list, sz);
+out:
+    if (names != NULL) {
+        for (n = 0; n < j; n++)
+            free(names[n]);
+        free(names);
+    }
+    if (list != NULL)
+        OF__iconv_free_list(list, sz);
 }
 
 __inline const char
@@ -264,8 +273,9 @@ OFiconvctl(iconv_t cd, int request, void *argument)
     struct _citrus_iconv *cv;
     struct iconv_hooks *hooks;
     const char *convname;
-    char src[PATH_MAX], *dst;
+    char *dst;
     int *i;
+    size_t srclen;
 
     cv = (struct _citrus_iconv *)(void *)cd;
     hooks = (struct iconv_hooks *)argument;
@@ -280,12 +290,9 @@ OFiconvctl(iconv_t cd, int request, void *argument)
     case ICONV_TRIVIALP:
         convname = cv->cv_shared->ci_convname;
         dst = strchr(convname, '/');
-
-        strlcpy(src, convname, dst - convname + 1);
+        srclen = dst - convname;
         dst++;
-        if ((convname == NULL) || (src == NULL) || (dst == NULL))
-            return (-1);
-        *i = strcmp(src, dst) == 0 ? 1 : 0;
+        *i = (srclen == strlen(dst)) && !memcmp(convname, dst, srclen);
         return (0);
     case ICONV_GET_TRANSLITERATE:
         *i = 1;
@@ -304,6 +311,12 @@ OFiconvctl(iconv_t cd, int request, void *argument)
     case ICONV_SET_FALLBACKS:
         errno = EOPNOTSUPP;
         return (-1);
+    case ICONV_GET_ILSEQ_INVALID:
+        *i = cv->cv_shared->ci_ilseq_invalid ? 1 : 0;
+        return (0);
+    case ICONV_SET_ILSEQ_INVALID:
+        cv->cv_shared->ci_ilseq_invalid = *i;
+        return (0);
     default:
         errno = EINVAL;
         return (-1);

@@ -70,7 +70,7 @@ static const char *xdigit = "0123456789ABCDEF";
 #define _CITRUS_PROP_READ_UINT_COMMON(_func_, _type_, _max_)        \
 static int                              \
 _citrus_prop_read_##_func_##_common(struct _citrus_memory_stream * __restrict ms,  \
-    _type_ * __restrict result, int base)               \
+    _type_ * __restrict result, int base, int neg)               \
 {                                   \
     _type_ acc, cutoff;                     \
     int ch, cutlim, n;                      \
@@ -90,7 +90,7 @@ _citrus_prop_read_##_func_##_common(struct _citrus_memory_stream * __restrict ms
         acc += n;                       \
     }                               \
     _citrus_memory_stream_ungetc(ms, ch);                  \
-    *result = acc;                          \
+    *result = neg ? -acc : acc;                          \
     return (0);                         \
 }
 _CITRUS_PROP_READ_UINT_COMMON(chr, int, UCHAR_MAX)
@@ -102,14 +102,14 @@ static int                          \
 _citrus_prop_read_##_func_(struct _citrus_memory_stream * __restrict ms,   \
     _citrus_prop_object_t * __restrict obj)         \
 {                               \
-    int base, ch /* , neg */;                   \
+    int base, ch, neg;                   \
                                 \
     _citrus_memory_stream_skip_ws(ms);                 \
     ch = _citrus_memory_stream_getc(ms);               \
-    /* neg = 0; */                      \
+    neg = 0;                      \
     switch (ch) {                       \
     case '-':                       \
-        /* neg = 1; */                  \
+        neg = 1;                  \
     case '+':                       \
         ch = _citrus_memory_stream_getc(ms);           \
     }                           \
@@ -130,7 +130,7 @@ _citrus_prop_read_##_func_(struct _citrus_memory_stream * __restrict ms,   \
         return (EINVAL);                \
     _citrus_memory_stream_ungetc(ms, ch);              \
     return (_citrus_prop_read_##_func_##_common     \
-        (ms, &obj->u._func_, base));            \
+        (ms, &obj->u._func_, base, neg));            \
 }
 _CITRUS_PROP_READ_INT(chr, int)
 _CITRUS_PROP_READ_INT(num, uint64_t)
@@ -176,7 +176,7 @@ _citrus_prop_read_character_common(struct _citrus_memory_stream * __restrict ms,
             base -= 8;
             /*FALLTHROUGH*/
         case 'x':
-            return (_citrus_prop_read_chr_common(ms, result, base));
+            return (_citrus_prop_read_chr_common(ms, result, base, 0));
             /*NOTREACHED*/
         default:
             /* unknown escape */
@@ -286,8 +286,11 @@ done:
         }
         _citrus_memory_stream_ungetc(ms, ch);
         errnum = _citrus_prop_read_character_common(ms, &ch);
-        if (errnum != 0)
+
+        if (errnum != 0) {
+            free(s);
             return (errnum);
+        }
         s[n] = ch;
         ++n, --m;
     }
@@ -332,7 +335,7 @@ name_found:
 
 static int
 _citrus_prop_parse_element(struct _citrus_memory_stream * __restrict ms,
-    const _citrus_prop_hint_t * __restrict hints, void ** __restrict context)
+    const _citrus_prop_hint_t * __restrict hints, void * __restrict context)
 {
     int ch, errnum;
 #define _CITRUS_PROP_HINT_NAME_LEN_MAX  255
@@ -428,8 +431,7 @@ _citrus_prop_parse_variable(const _citrus_prop_hint_t * __restrict hints,
         if (ch == EOF || ch == '\0')
             break;
         _citrus_memory_stream_ungetc(&ms, ch);
-        errnum = _citrus_prop_parse_element(
-            &ms, hints, (void ** __restrict)context);
+        errnum = _citrus_prop_parse_element(&ms, hints, context);
         if (errnum != 0)
             return (errnum);
     }

@@ -139,6 +139,7 @@ find_best_pivot_pvdb(const char *src, const char *dst, char *pivot,
         if (ret)
             goto quit3;
         if (_citrus_db_lookup_by_string(db3, dst, &r2, NULL) != 0)
+            /* don't break the loop, test all src/dst pairs. */
             goto quit4;
         /* r2: norm among pivot and dst */
         ret = get32(&r2, &val32);

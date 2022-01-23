@@ -85,30 +85,12 @@ _citrus_ZW_init_state(_ZWEncodingInfo * __restrict ei __unused,
     psenc->charset = NONE;
 }
 
-static __inline void
-/*ARGSUSED*/
-_citrus_ZW_pack_state(_ZWEncodingInfo * __restrict ei __unused,
-    void *__restrict pspriv, const _ZWState * __restrict psenc)
-{
-
-    memcpy(pspriv, (const void *)psenc, sizeof(*psenc));
-}
-
-static __inline void
-/*ARGSUSED*/
-_citrus_ZW_unpack_state(_ZWEncodingInfo * __restrict ei __unused,
-    _ZWState * __restrict psenc, const void * __restrict pspriv)
-{
-
-    memcpy((void *)psenc, pspriv, sizeof(*psenc));
-}
-
 static int
 _citrus_ZW_mbrtowc_priv(_ZWEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, const char **__restrict s, size_t n,
+    wchar_t * __restrict pwc, char **__restrict s, size_t n,
     _ZWState * __restrict psenc, size_t * __restrict nresult)
 {
-    const char *s0;
+    char *s0;
     wchar_t  wc;
     int ch, len;
 

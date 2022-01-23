@@ -152,33 +152,15 @@ _citrus_HZ_init_state(_HZEncodingInfo * __restrict ei,
     psenc->inuse = INIT0(ei);
 }
 
-static __inline void
-/*ARGSUSED*/
-_citrus_HZ_pack_state(_HZEncodingInfo * __restrict ei __unused,
-    void *__restrict pspriv, const _HZState * __restrict psenc)
-{
-
-    memcpy(pspriv, (const void *)psenc, sizeof(*psenc));
-}
-
-static __inline void
-/*ARGSUSED*/
-_citrus_HZ_unpack_state(_HZEncodingInfo * __restrict ei __unused,
-    _HZState * __restrict psenc, const void * __restrict pspriv)
-{
-
-    memcpy((void *)psenc, pspriv, sizeof(*psenc));
-}
-
 static int
 _citrus_HZ_mbrtowc_priv(_HZEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, const char ** __restrict s, size_t n,
+    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
     _HZState * __restrict psenc, size_t * __restrict nresult)
 {
     escape_t *candidate, *init;
     graphic_t *graphic;
     const range_t *range;
-    const char *s0;
+    char *s0;
     wchar_t wc;
     int bit, ch, head, len, tail;
 
@@ -502,12 +484,12 @@ _citrus_HZ_encoding_module_uninit(_HZEncodingInfo *ei)
 }
 
 static int
-_citrus_HZ_parse_char(void **context, const char *name __unused, const char *s)
+_citrus_HZ_parse_char(void *context, const char *name __unused, const char *s)
 {
     escape_t *escape;
     void **p;
 
-    p = (void **)*context;
+    p = (void **)context;
     escape = (escape_t *)p[0];
     if (escape->ch != '\0')
         return (EINVAL);
@@ -519,20 +501,19 @@ _citrus_HZ_parse_char(void **context, const char *name __unused, const char *s)
 }
 
 static int
-_citrus_HZ_parse_graphic(void **context, const char *name, const char *s)
+_citrus_HZ_parse_graphic(void *context, const char *name, const char *s)
 {
     _HZEncodingInfo *ei;
     escape_t *escape;
     graphic_t *graphic;
     void **p;
 
-    p = (void **)*context;
+    p = (void **)context;
     escape = (escape_t *)p[0];
     ei = (_HZEncodingInfo *)p[1];
-    graphic = malloc(sizeof(*graphic));
+    graphic = calloc(1, sizeof(*graphic));
     if (graphic == NULL)
         return (ENOMEM);
-    memset(graphic, 0, sizeof(*graphic));
     if (strcmp("GL", name) == 0) {
         if (GL(escape) != NULL)
             goto release;
@@ -588,17 +569,16 @@ _CITRUS_PROP_HINT_END
 };
 
 static int
-_citrus_HZ_parse_escape(void **context, const char *name, const char *s)
+_citrus_HZ_parse_escape(void *context, const char *name, const char *s)
 {
     _HZEncodingInfo *ei;
     escape_t *escape;
     void *p[2];
 
-    ei = (_HZEncodingInfo *)*context;
-    escape = malloc(sizeof(*escape));
+    ei = (_HZEncodingInfo *)context;
+    escape = calloc(1, sizeof(*escape));
     if (escape == NULL)
         return (EINVAL);
-    memset(escape, 0, sizeof(*escape));
     if (strcmp("0", name) == 0) {
         escape->set = E0SET(ei);
         TAILQ_INSERT_TAIL(E0SET(ei), escape, entry);

@@ -297,7 +297,7 @@ class OFCharacterEncoding::Implementation
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
 
 #include "dcmtk/oficonv/iconv.h"
-#define LIBICONV_SECOND_ARGUMENT_CONST
+#undef LIBICONV_SECOND_ARGUMENT_CONST
 #define iconv_open OFiconv_open
 #define iconv_close OFiconv_close
 #define iconv OFiconv

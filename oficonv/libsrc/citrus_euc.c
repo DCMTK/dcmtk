@@ -168,31 +168,13 @@ _citrus_EUC_init_state(_EUCEncodingInfo *ei __unused, _EUCState *s)
     memset(s, 0, sizeof(*s));
 }
 
-static __inline void
-/*ARGSUSED*/
-_citrus_EUC_pack_state(_EUCEncodingInfo *ei __unused, void *pspriv,
-    const _EUCState *s)
-{
-
-    memcpy(pspriv, (const void *)s, sizeof(*s));
-}
-
-static __inline void
-/*ARGSUSED*/
-_citrus_EUC_unpack_state(_EUCEncodingInfo *ei __unused, _EUCState *s,
-    const void *pspriv)
-{
-
-    memcpy((void *)s, pspriv, sizeof(*s));
-}
-
 static int
-_citrus_EUC_mbrtowc_priv(_EUCEncodingInfo *ei, wchar_t *pwc, const char **s,
+_citrus_EUC_mbrtowc_priv(_EUCEncodingInfo *ei, wchar_t *pwc, char **s,
     size_t n, _EUCState *psenc, size_t *nresult)
 {
     wchar_t wchar;
     int c, chlenbak, cs, len;
-    const char *s0, *s1 = NULL;
+    char *s0, *s1 = NULL;
 
     s0 = *s;
 

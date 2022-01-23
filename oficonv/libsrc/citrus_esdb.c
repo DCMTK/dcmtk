@@ -289,6 +289,8 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
 
     /* get alias entries */
     while ((ret = _citrus_lookup_seq_next(cla, &key, &data)) == 0) {
+#if 0
+        /* this code fragment is disabled in FreeBSD */
         if (sorted)
             snprintf(buf, sizeof(buf), "%.*s/%.*s",
                 (int)_citrus_region_size(&data),
@@ -296,6 +298,7 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
                 (int)_citrus_region_size(&key),
                 (const char *)_citrus_region_head(&key));
         else
+#endif
             snprintf(buf, sizeof(buf), "%.*s/%.*s",
                 (int)_citrus_region_size(&data),
                 (const char *)_citrus_region_head(&data),
@@ -326,7 +329,7 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
                 (int)_citrus_region_size(&data),
                 (const char *)_citrus_region_head(&data));
             if ((p = strchr(buf1, '/')) != NULL)
-                memcpy(buf1, p + 1, strlen(p) - 1);
+                memmove(buf1, p + 1, strlen(p) - 1);
             if ((p = strstr(buf1, ".esdb")) != NULL)
                 *p = '\0';
 
@@ -369,7 +372,7 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
     ret = 0;
     /* XXX: why reallocing the list space posteriorly?
         shouldn't be done earlier? */
-    q = realloc(list, num * sizeof(char *));
+    q = reallocarray(list, num, sizeof(char *));
     if (!q) {
         ret = ENOMEM;
         goto quit3;

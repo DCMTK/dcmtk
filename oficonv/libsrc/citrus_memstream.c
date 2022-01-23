@@ -39,8 +39,7 @@ _citrus_memory_stream_getln(struct _citrus_memory_stream * __restrict ms,
     size_t * __restrict rlen)
 {
     const uint8_t *h, *p;
-    size_t ret;
-    int i;
+    size_t i, ret;
 
     if (ms->ms_pos>=_citrus_region_size(&ms->ms_region))
         return (NULL);

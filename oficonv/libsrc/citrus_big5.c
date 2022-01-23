@@ -169,7 +169,7 @@ _citrus_BIG5_check_excludes(_BIG5EncodingInfo *ei, wint_t c)
 }
 
 static int
-_citrus_BIG5_fill_rowcol(void ** __restrict ctx, const char * __restrict s,
+_citrus_BIG5_fill_rowcol(void * __restrict ctx, const char * __restrict s,
     uint64_t start, uint64_t end)
 {
     _BIG5EncodingInfo *ei;
@@ -188,7 +188,7 @@ _citrus_BIG5_fill_rowcol(void ** __restrict ctx, const char * __restrict s,
 
 static int
 /*ARGSUSED*/
-_citrus_BIG5_fill_excludes(void ** __restrict ctx,
+_citrus_BIG5_fill_excludes(void * __restrict ctx,
     const char * __restrict s __unused, uint64_t start, uint64_t end)
 {
     _BIG5EncodingInfo *ei;
@@ -234,7 +234,6 @@ static int
 _citrus_BIG5_encoding_module_init(_BIG5EncodingInfo * __restrict ei,
     const void * __restrict var, size_t lenvar)
 {
-    void *ctx = (void *)ei;
     const char *s;
     int err;
 
@@ -256,9 +255,9 @@ _citrus_BIG5_encoding_module_init(_BIG5EncodingInfo * __restrict ei,
     }
 
     /* fallback Big5-1984, for backward compatibility. */
-    _citrus_BIG5_fill_rowcol((void **)&ctx, "row", 0xA1, 0xFE);
-    _citrus_BIG5_fill_rowcol((void **)&ctx, "col", 0x40, 0x7E);
-    _citrus_BIG5_fill_rowcol((void **)&ctx, "col", 0xA1, 0xFE);
+    _citrus_BIG5_fill_rowcol(ei, "row", 0xA1, 0xFE);
+    _citrus_BIG5_fill_rowcol(ei, "col", 0x40, 0x7E);
+    _citrus_BIG5_fill_rowcol(ei, "col", 0xA1, 0xFE);
 
     return (0);
 }
@@ -267,12 +266,12 @@ static int
 /*ARGSUSED*/
 _citrus_BIG5_mbrtowc_priv(_BIG5EncodingInfo * __restrict ei,
     wchar_t * __restrict pwc,
-    const char ** __restrict s, size_t n,
+    char ** __restrict s, size_t n,
     _BIG5State * __restrict psenc,
     size_t * __restrict nresult)
 {
     wchar_t wchar;
-    const char *s0;
+    char *s0;
     int c, chlenbak;
 
     s0 = *s;
@@ -356,7 +355,7 @@ _citrus_BIG5_wcrtomb_priv(_BIG5EncodingInfo * __restrict ei,
     size_t n, wchar_t wc, _BIG5State * __restrict psenc __unused,
     size_t * __restrict nresult)
 {
-    unsigned char l;
+    size_t l;
     int ret;
 
     /* check invalid sequence */
