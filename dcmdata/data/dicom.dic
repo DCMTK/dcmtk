@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2021, OFFIS e.V.
+#  Copyright (C) 1994-2022, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2021e and PS 3.7-2021e.
-# File created on 2021-11-24 09:20:47 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2022a and PS 3.7-2022a.
+# File created on 2022-01-26 12:45:15 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -872,6 +872,7 @@
 (0018,1200)	DA	DateOfLastCalibration	1-n	DICOM
 (0018,1201)	TM	TimeOfLastCalibration	1-n	DICOM
 (0018,1202)	DT	DateTimeOfLastCalibration	1	DICOM
+(0018,1203)	DT	CalibrationDateTime	1	DICOM
 (0018,1210)	SH	ConvolutionKernel	1-n	DICOM
 (0018,1242)	IS	ActualFrameDuration	1	DICOM
 (0018,1243)	IS	CountRate	1	DICOM
@@ -2083,6 +2084,7 @@
 (0032,1034)	SQ	RequestingServiceCodeSequence	1	DICOM
 (0032,1060)	LO	RequestedProcedureDescription	1	DICOM
 (0032,1064)	SQ	RequestedProcedureCodeSequence	1	DICOM
+(0032,1065)	SQ	RequestedLateralityCodeSequence	1	DICOM
 (0032,1066)	UT	ReasonForVisit	1	DICOM
 (0032,1067)	SQ	ReasonForVisitCodeSequence	1	DICOM
 (0032,1070)	LO	RequestedContrastAgent	1	DICOM
@@ -3582,6 +3584,7 @@
 (3008,00B0)	SQ	RecordedWedgeSequence	1	DICOM
 (3008,00C0)	SQ	RecordedCompensatorSequence	1	DICOM
 (3008,00D0)	SQ	RecordedBlockSequence	1	DICOM
+(3008,00D1)	SQ	RecordedBlockSlabSequence	1	DICOM
 (3008,00E0)	SQ	TreatmentSummaryMeasuredDoseReferenceSequence	1	DICOM
 (3008,00F0)	SQ	RecordedSnoutSequence	1	DICOM
 (3008,00F2)	SQ	RecordedRangeShifterSequence	1	DICOM
@@ -3628,7 +3631,6 @@
 (300A,0007)	TM	RTPlanTime	1	DICOM
 (300A,0009)	LO	TreatmentProtocols	1-n	DICOM
 (300A,000A)	CS	PlanIntent	1	DICOM
-(300A,000B)	LO	TreatmentSites	1-n	DICOM
 (300A,000C)	CS	RTPlanGeometry	1	DICOM
 (300A,000E)	ST	PrescriptionDescription	1	DICOM
 (300A,0010)	SQ	DoseReferenceSequence	1	DICOM
@@ -4258,6 +4260,21 @@
 (300C,0111)	SQ	OmittedBeamTaskSequence	1	DICOM
 (300C,0112)	CS	ReasonForOmission	1	DICOM
 (300C,0113)	LO	ReasonForOmissionDescription	1	DICOM
+(300C,0114)	SQ	PrescriptionOverviewSequence	1	DICOM
+(300C,0115)	FL	TotalPrescriptionDose	1	DICOM
+(300C,0116)	SQ	PlanOverviewSequence	1	DICOM
+(300C,0117)	US	PlanOverviewIndex	1	DICOM
+(300C,0118)	US	ReferencedPlanOverviewIndex	1	DICOM
+(300C,0119)	US	NumberOfFractionsIncluded	1	DICOM
+(300C,0120)	SQ	DoseCalibrationConditionsSequence	1	DICOM
+(300C,0121)	FD	AbsorbedDoseToMetersetRatio	1	DICOM
+(300C,0122)	FD	DelineatedRadiationFieldSize	2	DICOM
+(300C,0123)	CS	DoseCalibrationConditionsVerifiedFlag	1	DICOM
+(300C,0124)	FD	CalibrationReferencePointDepth	1	DICOM
+(300C,0125)	SQ	GatingBeamHoldTransitionSequence	1	DICOM
+(300C,0126)	CS	BeamHoldTransition	1	DICOM
+(300C,0127)	DT	BeamHoldTransitionDateTime	1	DICOM
+(300C,0128)	SQ	BeamHoldOriginatingDeviceSequence	1	DICOM
 (300E,0002)	CS	ApprovalStatus	1	DICOM
 (300E,0004)	DA	ReviewDate	1	DICOM
 (300E,0005)	TM	ReviewTime	1	DICOM
@@ -4923,6 +4940,7 @@
 (3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	DICOM/retired
 (3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	DICOM/retired
 (3006,00C4)	CS	RETIRED_FrameOfReferenceTransformationType	1	DICOM/retired
+(300A,000B)	LO	RETIRED_TreatmentSites	1-n	DICOM/retired
 (300A,0082)	DS	RETIRED_BeamDoseSpecificationPoint	3	DICOM/retired
 (300A,008D)	FL	RETIRED_AverageBeamDosePointDepth	1	DICOM/retired
 (300A,008E)	FL	RETIRED_AverageBeamDosePointEquivalentDepth	1	DICOM/retired

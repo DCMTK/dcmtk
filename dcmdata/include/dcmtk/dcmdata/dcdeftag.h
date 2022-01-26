@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2021-11-25 18:21:56
+**   Date: 2022-01-26 12:58:28
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2021-11-25 18:21:56"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2022-01-26 12:58:28"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4897
+** Number of entries: 4915
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -925,6 +925,7 @@
 #define DCM_DateOfLastCalibration                DcmTagKey(0x0018, 0x1200)
 #define DCM_TimeOfLastCalibration                DcmTagKey(0x0018, 0x1201)
 #define DCM_DateTimeOfLastCalibration            DcmTagKey(0x0018, 0x1202)
+#define DCM_CalibrationDateTime                  DcmTagKey(0x0018, 0x1203)
 #define DCM_ConvolutionKernel                    DcmTagKey(0x0018, 0x1210)
 #define DCM_RETIRED_UpperLowerPixelValues        DcmTagKey(0x0018, 0x1240)
 #define DCM_ActualFrameDuration                  DcmTagKey(0x0018, 0x1242)
@@ -2271,6 +2272,7 @@
 #define DCM_RETIRED_StudyComponentStatusID       DcmTagKey(0x0032, 0x1055)
 #define DCM_RequestedProcedureDescription        DcmTagKey(0x0032, 0x1060)
 #define DCM_RequestedProcedureCodeSequence       DcmTagKey(0x0032, 0x1064)
+#define DCM_RequestedLateralityCodeSequence      DcmTagKey(0x0032, 0x1065)
 #define DCM_ReasonForVisit                       DcmTagKey(0x0032, 0x1066)
 #define DCM_ReasonForVisitCodeSequence           DcmTagKey(0x0032, 0x1067)
 #define DCM_RequestedContrastAgent               DcmTagKey(0x0032, 0x1070)
@@ -3948,6 +3950,7 @@
 #define DCM_RecordedWedgeSequence                DcmTagKey(0x3008, 0x00b0)
 #define DCM_RecordedCompensatorSequence          DcmTagKey(0x3008, 0x00c0)
 #define DCM_RecordedBlockSequence                DcmTagKey(0x3008, 0x00d0)
+#define DCM_RecordedBlockSlabSequence            DcmTagKey(0x3008, 0x00d1)
 #define DCM_TreatmentSummaryMeasuredDoseReferenceSequence DcmTagKey(0x3008, 0x00e0)
 #define DCM_RecordedSnoutSequence                DcmTagKey(0x3008, 0x00f0)
 #define DCM_RecordedRangeShifterSequence         DcmTagKey(0x3008, 0x00f2)
@@ -3994,7 +3997,7 @@
 #define DCM_RTPlanTime                           DcmTagKey(0x300a, 0x0007)
 #define DCM_TreatmentProtocols                   DcmTagKey(0x300a, 0x0009)
 #define DCM_PlanIntent                           DcmTagKey(0x300a, 0x000a)
-#define DCM_TreatmentSites                       DcmTagKey(0x300a, 0x000b)
+#define DCM_RETIRED_TreatmentSites               DcmTagKey(0x300a, 0x000b)
 #define DCM_RTPlanGeometry                       DcmTagKey(0x300a, 0x000c)
 #define DCM_PrescriptionDescription              DcmTagKey(0x300a, 0x000e)
 #define DCM_DoseReferenceSequence                DcmTagKey(0x300a, 0x0010)
@@ -4630,6 +4633,21 @@
 #define DCM_OmittedBeamTaskSequence              DcmTagKey(0x300c, 0x0111)
 #define DCM_ReasonForOmission                    DcmTagKey(0x300c, 0x0112)
 #define DCM_ReasonForOmissionDescription         DcmTagKey(0x300c, 0x0113)
+#define DCM_PrescriptionOverviewSequence         DcmTagKey(0x300c, 0x0114)
+#define DCM_TotalPrescriptionDose                DcmTagKey(0x300c, 0x0115)
+#define DCM_PlanOverviewSequence                 DcmTagKey(0x300c, 0x0116)
+#define DCM_PlanOverviewIndex                    DcmTagKey(0x300c, 0x0117)
+#define DCM_ReferencedPlanOverviewIndex          DcmTagKey(0x300c, 0x0118)
+#define DCM_NumberOfFractionsIncluded            DcmTagKey(0x300c, 0x0119)
+#define DCM_DoseCalibrationConditionsSequence    DcmTagKey(0x300c, 0x0120)
+#define DCM_AbsorbedDoseToMetersetRatio          DcmTagKey(0x300c, 0x0121)
+#define DCM_DelineatedRadiationFieldSize         DcmTagKey(0x300c, 0x0122)
+#define DCM_DoseCalibrationConditionsVerifiedFlag DcmTagKey(0x300c, 0x0123)
+#define DCM_CalibrationReferencePointDepth       DcmTagKey(0x300c, 0x0124)
+#define DCM_GatingBeamHoldTransitionSequence     DcmTagKey(0x300c, 0x0125)
+#define DCM_BeamHoldTransition                   DcmTagKey(0x300c, 0x0126)
+#define DCM_BeamHoldTransitionDateTime           DcmTagKey(0x300c, 0x0127)
+#define DCM_BeamHoldOriginatingDeviceSequence    DcmTagKey(0x300c, 0x0128)
 #define DCM_ApprovalStatus                       DcmTagKey(0x300e, 0x0002)
 #define DCM_ReviewDate                           DcmTagKey(0x300e, 0x0004)
 #define DCM_ReviewTime                           DcmTagKey(0x300e, 0x0005)
