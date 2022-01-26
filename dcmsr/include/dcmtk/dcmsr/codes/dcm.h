@@ -1,13 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2021e
- *  File created on 2021-11-24 09:19:23 by J. Riesmeier
- *  Last modified on 2021-12-06 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022a
+ *  File created on 2022-01-26 13:19:00 by J. Riesmeier
  *
  */
 
@@ -35,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4617
+// total number of codes: 4626
 // - retired: 201
 // - no name: 27
 // - not unique: 17
@@ -811,8 +810,8 @@
 #define CODE_DCM_PartiallySucceeded                                        DSRBasicCodedEntry("111223", "DCM", "Partially Succeeded")
 #define CODE_DCM_Failed                                                    DSRBasicCodedEntry("111224", "DCM", "Failed")
 #define CODE_DCM_NotAttempted                                              DSRBasicCodedEntry("111225", "DCM", "Not Attempted")
-#define CODE_DCM_IndividualImpressionRecommendationAnalysis                DSRBasicCodedEntry("111233", "DCM", "Individual Impression / Recommendation Analysis")
-#define CODE_DCM_OverallImpressionRecommendationAnalysis                   DSRBasicCodedEntry("111234", "DCM", "Overall Impression / Recommendation Analysis")
+#define CODE_DCM_IndividualImpressionRecommendationAnalysis                DSRBasicCodedEntry("111233", "DCM", "Individual Impression/Recommendation Analysis")
+#define CODE_DCM_OverallImpressionRecommendationAnalysis                   DSRBasicCodedEntry("111234", "DCM", "Overall Impression/Recommendation Analysis")
 #define CODE_DCM_Unusable_QualityRendersImageUnusable                      DSRBasicCodedEntry("111235", "DCM", "Unusable - Quality renders image unusable")
 #define CODE_DCM_Usable_DoesNotMeetTheQualityControlStandard               DSRBasicCodedEntry("111236", "DCM", "Usable - Does not meet the quality control standard")
 #define CODE_DCM_Usable_MeetsTheQualityControlStandard                     DSRBasicCodedEntry("111237", "DCM", "Usable - Meets the quality control standard")
@@ -4666,5 +4665,14 @@
 #define CODE_DCM_S_Stent                                                   DSRBasicCodedEntry("130733", "DCM", "S - Stent")
 #define CODE_DCM_G_Graft                                                   DSRBasicCodedEntry("130734", "DCM", "G - Graft")
 #define CODE_DCM_V_VulnerablePlaque                                        DSRBasicCodedEntry("130735", "DCM", "V - Vulnerable plaque")
+#define CODE_DCM_TitaniumAlloy_TitaniumMolybdenum15Zirconium5Aluminium3    DSRBasicCodedEntry("130736", "DCM", "Titanium alloy (Titanium Molybdenum-15 Zirconium-5 Aluminium-3)")
+#define CODE_DCM_RTSegmentMaterial                                         DSRBasicCodedEntry("130737", "DCM", "RT Segment Material")
+#define CODE_DCM_DoseLimitInterlock                                        DSRBasicCodedEntry("130738", "DCM", "Dose Limit Interlock")
+#define CODE_DCM_ClearanceInterlock                                        DSRBasicCodedEntry("130739", "DCM", "Clearance Interlock")
+#define CODE_DCM_MachineClearanceInterlock                                 DSRBasicCodedEntry("130740", "DCM", "Machine Clearance Interlock")
+#define CODE_DCM_PatientClearanceInterlock                                 DSRBasicCodedEntry("130741", "DCM", "Patient Clearance Interlock")
+#define CODE_DCM_AccessoryClearanceInterlock                               DSRBasicCodedEntry("130742", "DCM", "Accessory Clearance Interlock")
+#define CODE_DCM_OutOfToleranceInterlock                                   DSRBasicCodedEntry("130743", "DCM", "Out of Tolerance Interlock")
+#define CODE_DCM_InterlockResolved                                         DSRBasicCodedEntry("130744", "DCM", "Interlock Resolved")
 
 #endif
