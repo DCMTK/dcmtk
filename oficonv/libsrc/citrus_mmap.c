@@ -61,12 +61,12 @@ _citrus_map_file(struct _citrus_region * __restrict r,
     ret = 0;
 
     _citrus_region_init(r, NULL, 0);
+#ifdef DEBUG
+        fprintf(stderr, "_citrus_map_file '%s'\n", path);
+#endif
 
     if ((fd = open(path, O_RDONLY | O_CLOEXEC)) == -1)
     {
-#ifdef DEBUG
-        /* fprintf(stderr, "Cannot open file '%s'\n", path); */
-#endif
         return (errno);
     }
     if (fstat(fd, &st)  == -1) {
