@@ -24,4 +24,4 @@
 #define BUILD_DCM2PNM_AS_DCMJ2PNM
 
 // include full implementation of "dcm2pnm"
-#include "../../dcmimage/apps/dcm2pnm.cc"
+#include "./dcm2pnm.cc"

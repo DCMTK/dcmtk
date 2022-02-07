@@ -1,27 +1,34 @@
+
 #
 #	Makefile for dcmjpeg/tests
 #
 
-@SET_MAKE@
-
 SHELL = /bin/sh
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-configdir = @top_srcdir@/@configdir@
+srcdir = .
+top_srcdir = ..
+configdir = ../../config
 
-include $(configdir)/@common_makefile@
+include $(configdir)/Makefile.def
 
+ofstddir = $(top_srcdir)/../ofstd
+oflogdir = $(top_srcdir)/../oflog
+dcmdatadir = $(top_srcdir)/../dcmdata
+dcmtlsdir = $(top_srcdir)/../dcmtls
 
-all:
+LOCALINCLUDES = -I$(top_srcdir)/include -I../../oflog/include -I../../dcmdata/include -I../../config/include -I../../ofstd/include 
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc $(compr_libdirs)
+LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(ICONVLIBS)
 
+all: dcmjpeg_test
+
+dcmjpeg_test:
+	$(CXX) $(CXXFLAGS) $(LOCALINCLUDES) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) dcmjpeg.cc tests.cc $(LOCALLIBS) $(LIBS) -o dcmjpeg_test
 check:
-
-check-exhaustive:
 
 install:
 
 clean:
-	rm -f $(TRASH)
+	rm -f $(TRASH)  dcmjpeg_test
 
 distclean:
 	rm -f $(DISTTRASH)
