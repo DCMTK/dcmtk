@@ -149,7 +149,12 @@ OFTEST(ofstd_OFCharacterEncoding_4)
         {
             OFCHECK(charEnc.setConversionFlags(OFCharacterEncoding::TransliterateIllegalSequences).good());
             OFCHECK(charEnc.convertString("J\366rg", resultStr).good());
+
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+            OFCHECK_EQUAL(resultStr, "J?rg");
+#else
             OFCHECK_EQUAL(resultStr, "J\"org");
+#endif
         }
     }
 }
@@ -166,7 +171,11 @@ OFTEST(ofstd_OFCharacterEncoding_5)
         {
             OFCHECK(charEnc.setConversionFlags(OFCharacterEncoding::TransliterateIllegalSequences).good());
             OFCHECK(charEnc.convertString("J\366rg", resultStr).good());
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+            OFCHECK_EQUAL(resultStr, "J?rg");
+#else
             OFCHECK_EQUAL(resultStr, "J\"org");
+#endif
         }
         if (OFCharacterEncoding::supportsConversionFlags(OFCharacterEncoding::DiscardIllegalSequences))
         {
