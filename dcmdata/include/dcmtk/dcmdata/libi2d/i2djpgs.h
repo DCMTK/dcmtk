@@ -224,7 +224,7 @@ public:
      *  @param marker - [in] The marker to be converted
      *  @return A string representation of the marker
      */
-    static OFString jpegMarkerToString(const E_JPGMARKER& marker);
+    static OFString jpegMarkerToString(const E_JPGMARKER& marker, const OFBool isJPEGLS);
 
     /** Destructor, frees some memory.
      *  @return none
@@ -271,6 +271,9 @@ protected:
                                       Uint16& samplesPerPixel,
                                       Uint16& bitsPerSample);
 
+    OFCondition getSOSImageParameters(const JPEGFileMapEntry& entry,
+                                      Uint8& nearLossless);
+
     /** Get JPEG parameters as found at given JFIF marker of the JPEG image.
      *  @param entry - [in] This specifies the marker and the byte position of the
      *                      JFIF marker
@@ -295,7 +298,7 @@ protected:
      *  @param jpegEncoding - [in] Image marker that should be tested
      *  @return EC_Normal, marker is supported, error otherwise
      */
-    static E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding);
+    static E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding, OFBool const useJPEGLS, Uint8 const nearLossless);
 
     /** Returns true if marker is one of the RST0 to RST7 markers
      *  @param jpegEncoding - [in] Image marker that should be tested
@@ -307,7 +310,7 @@ protected:
      *  @param jpegEncoding - [in] Image marker that should be tested
      *  @return OFTrue, if marker is SOF0 to SOF15, OFFalse otherwise
      */
-    static OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding);
+    static OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding, const OFBool isJPEGLS);
 
     /** Extract raw JPEG stream (i.e. without APPn markers) from JPEG file.
      *  @param pixelData - [out] The resulting JPEG stream
@@ -384,6 +387,10 @@ protected:
     /// After reading pixel data, this denotes whether the source
     /// data is already lossy compressed
     OFBool m_lossyCompressed;
+
+    /// After reading pixel data, this denotes whether the source
+    /// data is JPEG-LS (ITU 87)
+    OFBool m_isJPEGLS;
 };
 
 #endif // I2DJPGS_H

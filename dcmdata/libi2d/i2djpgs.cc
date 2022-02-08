@@ -33,6 +33,7 @@ I2DJpegSource::I2DJpegSource()
     , m_keepAPPn(OFFalse)
     , m_keepCOM(OFTrue)
     , m_lossyCompressed(OFTrue)
+    , m_isJPEGLS(OFFalse)
 {
     DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Plugin instantiated");
 }
@@ -113,12 +114,39 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
         return cond;
     }
 
+    // for JPEG-LS retrieve SOS (nearLossless value)
+    Uint8 nearLossless = 0;
+    if( m_isJPEGLS )
+    {
+    OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
+    while (entry != m_jpegFileMap.end())
+    {
+        if ((*entry)->marker == E_JPGMARKER_SOS)
+        {
+            break;
+        }
+        entry++;
+    }
+    if (entry == m_jpegFileMap.end())
+    {
+        closeFile();
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "No image data found in JPEG file");
+    }
+    cond = getSOSImageParameters(**entry, nearLossless);
+    if (cond.bad())
+    {
+        closeFile();
+        return cond;
+    }
+    m_lossyCompressed = nearLossless;
+    }
+
     // Check for image data in file (look for SOF marker)
     E_JPGMARKER jpegEncoding;
     OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
     while (entry != m_jpegFileMap.end())
     {
-        if (isSOFMarker((*entry)->marker))
+        if (isSOFMarker((*entry)->marker, m_isJPEGLS))
         {
             jpegEncoding = OFstatic_cast(E_JPGMARKER, (*entry)->marker);
             break;
@@ -140,7 +168,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     }
 
     // Get transfer syntax associated with the given JPEG encoding
-    ts = associatedTS(jpegEncoding);
+    ts = associatedTS(jpegEncoding, m_isJPEGLS, nearLossless);
 
     // Extract width, height, samples per pixel, bits per sample
     Uint16 width, height, spp, bps;
@@ -218,7 +246,12 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     if (samplesPerPixel == 1)
         photoMetrInt = "MONOCHROME2";
     else if (samplesPerPixel == 3)
-        photoMetrInt = "YBR_FULL_422";
+    {
+        if (m_isJPEGLS)
+          photoMetrInt = nearLossless ? "YBR_FULL" : "RGB";
+        else
+          photoMetrInt = "YBR_FULL_422";
+    }
     else
         return makeOFCondition(OFM_dcmdata, 18, OF_error, "For JPEG data, Samples per Pixel must be 1 or 3");
     // Planar Configuration and Pixel Representation is always 0 for JPEG data
@@ -243,7 +276,10 @@ OFCondition I2DJpegSource::getLossyComprInfo(OFBool& srcEncodingLossy, OFString&
     if (m_lossyCompressed)
     {
         srcEncodingLossy    = OFTrue;
-        srcLossyComprMethod = "ISO_10918_1"; // Defined term for JPEG Lossy Compression
+        if (m_isJPEGLS)
+          srcLossyComprMethod = "ISO_14495_1"; // Defined term for JPEG-LS Lossy Compression
+        else
+          srcLossyComprMethod = "ISO_10918_1"; // Defined term for JPEG Lossy Compression
     }
     else
     {
@@ -260,7 +296,7 @@ OFCondition I2DJpegSource::getSOFImageParameters(const JPEGFileMapEntry& entry,
                                                  Uint16& bitsPerSample)
 {
     DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examining JPEG SOF image parameters");
-    if ((entry.marker < E_JPGMARKER_SOF0) || (entry.marker > E_JPGMARKER_SOF15))
+    if (!isSOFMarker(entry.marker, m_isJPEGLS))
         return EC_IllegalCall;
     Uint16 length;
     Uint16 image_height, image_width;
@@ -305,6 +341,48 @@ OFCondition I2DJpegSource::getSOFImageParameters(const JPEGFileMapEntry& entry,
 
     if (length != OFstatic_cast(unsigned int, 8 + num_components * 3))
         return makeOFCondition(OFM_dcmdata, 18, OF_error, "Bogus SOF marker length");
+
+    return EC_Normal;
+}
+
+OFCondition I2DJpegSource::getSOSImageParameters(const JPEGFileMapEntry& entry,
+                                                 Uint8& nearLossless)
+{
+    DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examining JPEG SOS image parameters");
+    if (entry.marker != E_JPGMARKER_SOS)
+        return EC_IllegalCall;
+    Uint16 length;
+    Uint8 component_count_in_scan;
+    Uint8 near_lossless;
+    int result;
+
+    // seek to the given SOFn marker
+
+    jpegFile.fseek(entry.bytePos, SEEK_SET);
+    result = read2Bytes(length); /* usual parameter length count */
+    if (result == EOF)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+
+    // read values
+
+    result = read1Byte(component_count_in_scan);
+    if (result == EOF)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+
+    jpegFile.fseek(2 * component_count_in_scan, SEEK_CUR);
+
+    result = read1Byte(near_lossless);
+    if (result == EOF)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+
+    nearLossless = near_lossless;
+
+    DCMDATA_LIBI2D_DEBUG("I2DJpegLsSource: Dumping JPEG SOS image parameters:");
+    DCMDATA_LIBI2D_DEBUG("I2DJpegLsSource:   nComponentsPerScan: " << OFstatic_cast(unsigned int, component_count_in_scan));
+    DCMDATA_LIBI2D_DEBUG("I2DJpegLsSource:   Near Lossless: " << OFstatic_cast(unsigned int, near_lossless));
+
+    if (length != OFstatic_cast(unsigned int, 6 + component_count_in_scan * 2))
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Bogus SOS marker length");
 
     return EC_Normal;
 }
@@ -564,6 +642,11 @@ OFCondition I2DJpegSource::createJPEGFileMap()
                 // FIXME: reset this to OFFalse after the next marker?
                 lastWasSOSMarker = OFTrue;
             }
+            else if (marker == E_JPGMARKER_JPGN7)
+            {
+                lastWasSOSMarker = OFTrue;
+		m_isJPEGLS = OFTrue;
+            }
             else if (marker == E_JPGMARKER_EOI)
             {
                 // End of file reached
@@ -583,13 +666,15 @@ OFBool I2DJpegSource::isRSTMarker(const E_JPGMARKER& marker)
     return ((marker >= E_JPGMARKER_RST0) && (marker <= E_JPGMARKER_RST7));
 }
 
-OFBool I2DJpegSource::isSOFMarker(const E_JPGMARKER& marker)
+OFBool I2DJpegSource::isSOFMarker(const E_JPGMARKER& marker, const OFBool isJPEGLS)
 {
+    if(isJPEGLS)
+      return marker == E_JPGMARKER_JPGN7; // SOF55
     return ((marker >= E_JPGMARKER_SOF0) && (marker <= E_JPGMARKER_SOF15) && (marker != E_JPGMARKER_DHT)
             && (marker != E_JPGMARKER_DAC));
 }
 
-OFString I2DJpegSource::jpegMarkerToString(const E_JPGMARKER& marker)
+OFString I2DJpegSource::jpegMarkerToString(const E_JPGMARKER& marker, const OFBool isJPEGLS)
 {
     switch (marker)
     {
@@ -685,6 +770,8 @@ OFString I2DJpegSource::jpegMarkerToString(const E_JPGMARKER& marker)
             }
             if ((marker >= E_JPGMARKER_JPGN0) && (marker <= E_JPGMARKER_JPGN13))
             {
+                if(marker == E_JPGMARKER_JPGN7 && isJPEGLS)
+                  return "SOF55: Start of Frame (JLS)";
                 return "JPGn: JPEG extension";
                 break;
             }
@@ -740,6 +827,8 @@ OFCondition I2DJpegSource::nextMarker(const OFBool& lastWasSOSMarker, E_JPGMARKE
     Uint8 c;
     int discarded_bytes = 0;
     int oneByte;
+    OFBool isEscapeSequence;
+    const OFBool isJPEGLS = m_isJPEGLS; // local context
 
     do
     {
@@ -765,7 +854,10 @@ OFCondition I2DJpegSource::nextMarker(const OFBool& lastWasSOSMarker, E_JPGMARKE
             if (oneByte == EOF)
                 return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
         } while (c == 0xFF);
-    } while (lastWasSOSMarker && c == 0x00);
+        isEscapeSequence = c == 0x00;
+        if( isJPEGLS )
+          isEscapeSequence = c >= 0x00 && c <= 0x7f;
+    } while (lastWasSOSMarker && isEscapeSequence);
 
     if (discarded_bytes != 0)
     {
@@ -826,7 +918,21 @@ OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncodi
 {
     OFCondition result;
     DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Checking whether JPEG encoding is supported");
-    DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Encoding: " << jpegMarkerToString(jpegEncoding));
+    DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Encoding: " << jpegMarkerToString(jpegEncoding, m_isJPEGLS));
+    if(m_isJPEGLS)
+    switch (jpegEncoding)
+    {
+        case E_JPGMARKER_JPGN7: //
+            result = EC_Normal;
+            break;
+        // SOF3: Lossless, SOF5-7: Hierarchical (differential), SOF9-15: Arithmetic coding, all other
+        default:
+            OFString errMsg("JPEG data with encoding: '");
+            errMsg += jpegMarkerToString(jpegEncoding, m_isJPEGLS);
+            errMsg += "' not supported";
+            result = makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+    }
+    else
     switch (jpegEncoding)
     {
         case E_JPGMARKER_SOF0: // Baseline
@@ -852,15 +958,24 @@ OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncodi
         // SOF3: Lossless, SOF5-7: Hierarchical (differential), SOF9-15: Arithmetic coding, all other
         default:
             OFString errMsg("JPEG data with encoding: '");
-            errMsg += jpegMarkerToString(jpegEncoding);
+            errMsg += jpegMarkerToString(jpegEncoding, m_isJPEGLS);
             errMsg += "' not supported";
             result = makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
     }
     return result;
 }
 
-E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding)
+E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding, OFBool const isJPEGLS, Uint8 const nearLossless)
 {
+    if(isJPEGLS)
+    switch (jpegEncoding)
+    {
+        case E_JPGMARKER_JPGN7: // SOF55
+            return nearLossless == 0 ? EXS_JPEGLSLossless : EXS_JPEGLSLossy;
+        default:
+            return EXS_Unknown;
+    }
+    else
     switch (jpegEncoding)
     {
         case E_JPGMARKER_SOF0: // Baseline
@@ -891,7 +1006,7 @@ void I2DJpegSource::debugDumpJPEGFileMap() const
                              << STD_NAMESPACE setfill('0')
                              /* need to cast bytePos to unsigned long to keep VC6 happy */
                              << OFstatic_cast(unsigned long, (*it)->bytePos)
-                             << " | Marker: " << jpegMarkerToString((*it)->marker));
+                             << " | Marker: " << jpegMarkerToString((*it)->marker, m_isJPEGLS));
         it++;
     }
 }
