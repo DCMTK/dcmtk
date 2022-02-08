@@ -5,7 +5,7 @@ We would like to thank the following individuals, companies and organizations
 (in alphabetical order) for supporting the development and maintenance of the
 Open Source DICOM Toolkit DCMTK:
 
-Carl Zeiss Meditec: The preparation and publication of the DCMTK 3.6.2 release 
+Carl Zeiss Meditec: The preparation and publication of the DCMTK 3.6.2 release
   as well as several extensions in wlmscpfs and dcmqrscp were supported by
   funding from Carl Zeiss Meditec AG (Muenchen, Germany).
 
@@ -43,9 +43,9 @@ QIICR: The work on various DCMTK modules was supported in part by funding from
   Cancer Research (ITCR) initiative to the Quantitative Image Informatics for
   Cancer Research (QIICR) project, award U24 CA180918.
 
-Segmed: The support for reading DICOM files or datasets from stdin and
-  writing DICOM files or datasets to stdout was contributed by 
-  Jasper den Otter <jasper@segmed.ai> and W. Adam Koszek <wkoszek@segmed.ai>.
+Segmed: The support for reading DICOM files or datasets from stdin and writing
+  DICOM files or datasets to stdout was contributed by Jasper den Otter and
+  W. Adam Koszek of Segmed, Inc. (Palo Alto, CA, United States).
 
 SlicerDMRI: The work on DCMTK Tractography modules was supported in part by
   funding from the National Institutes of Health National Institute of
