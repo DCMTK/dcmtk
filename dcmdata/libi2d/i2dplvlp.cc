@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -73,7 +73,7 @@ OFCondition I2DOutputPlugVLP::convert(DcmDataset &dataset) const
 
   cond = dataset.findAndGetOFStringArray(DCM_PhotometricInterpretation, str);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Photometric interpretation not set for Pixel Data");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Photometric Interpretation not set for Pixel Data");
 
   if (str == "MONOCHROME2")
   {
@@ -92,7 +92,7 @@ OFCondition I2DOutputPlugVLP::convert(DcmDataset &dataset) const
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Planar Configuration does not fit SOP class");
   }
   else
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Photometric interpretation does not fit SOP class");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugVLP: Photometric Interpretation does not fit SOP class");
 
   cond = dataset.putAndInsertOFStringArray(DCM_SOPClassUID, UID_VLPhotographicImageStorage);
   if (cond.bad())

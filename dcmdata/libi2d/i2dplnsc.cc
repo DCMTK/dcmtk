@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -103,7 +103,7 @@ OFCondition I2DOutputPlugNewSC::handle1BitSC(DcmDataset *dataset) const
   OFCondition cond; Uint16 u16 = 0; OFString str;
   cond = dataset->findAndGetOFStringArray(DCM_PhotometricInterpretation, str);
   if (cond.bad() || (str != "MONOCHROME2"))
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugNewSC: Photometric interpretation does not fit SOP class");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugNewSC: Photometric Interpretation does not fit SOP class");
 
   cond = dataset->findAndGetUint16(DCM_SamplesPerPixel, u16);
   if (cond.bad() || (u16 != 1))
@@ -134,7 +134,7 @@ OFCondition I2DOutputPlugNewSC::handle8BitSC(DcmDataset *dataset) const
   OFCondition cond; Uint16 u16 = 0; OFString str;
   cond = dataset->findAndGetOFStringArray(DCM_PhotometricInterpretation, str);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugNewSC: Photometric interpretation not set for Pixel Data");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugNewSC: Photometric Interpretation not set for Pixel Data");
   if (str == "MONOCHROME2") // Mult-Frame Grayscale Byte SC Image
   {
     cond = dataset->findAndGetUint16(DCM_SamplesPerPixel, u16);
@@ -189,7 +189,7 @@ OFCondition I2DOutputPlugNewSC::handle8BitSC(DcmDataset *dataset) const
       cond = dataset->putAndInsertOFStringArray(DCM_SOPClassUID, UID_MultiframeTrueColorSecondaryCaptureImageStorage);
   }
   else
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugNewSC: Photometric interpretation does not fit SOP class");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugNewSC: Photometric Interpretation does not fit SOP class");
 
   return cond;
 }
@@ -203,7 +203,7 @@ OFCondition I2DOutputPlugNewSC::handle16BitSC(DcmDataset *dataset) const
   OFCondition cond; Uint16 u16 = 0; OFString str;
   cond = dataset->findAndGetOFStringArray(DCM_PhotometricInterpretation, str);
   if (cond.bad() || (str != "MONOCHROME2"))
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugNewSC: Photometric interpretation does not fit SOP class");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugNewSC: Photometric Interpretation does not fit SOP class");
 
   cond = dataset->findAndGetUint16(DCM_SamplesPerPixel, u16);
   if (cond.bad() || (u16 != 1))

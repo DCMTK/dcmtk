@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -136,7 +136,7 @@ OFCondition I2DOutputPlugOphthalmicPhotography::handle8BitImage(DcmDataset *data
   OFCondition cond; Uint16 u16 = 0; OFString str;
   cond = dataset->findAndGetOFStringArray(DCM_PhotometricInterpretation, str);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Photometric interpretation not set for Pixel Data");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Photometric Interpretation not set for Pixel Data");
 
   if (str == "MONOCHROME2")
   {
@@ -184,7 +184,7 @@ OFCondition I2DOutputPlugOphthalmicPhotography::handle8BitImage(DcmDataset *data
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Planar Configuration does not fit SOP class");
   }
   else
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Photometric interpretation does not fit SOP class");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Photometric Interpretation does not fit SOP class");
 
   // Insert SOP Class UID
   if (cond.good())
@@ -209,7 +209,7 @@ OFCondition I2DOutputPlugOphthalmicPhotography::handle16BitImage(DcmDataset *dat
   OFCondition cond; Uint16 u16 = 0; OFString str;
   cond = dataset->findAndGetOFStringArray(DCM_PhotometricInterpretation, str);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Photometric interpretation not set for Pixel Data");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Photometric Interpretation not set for Pixel Data");
   if (str == "MONOCHROME2")
   {
     cond = dataset->findAndGetUint16(DCM_SamplesPerPixel, u16);
@@ -255,7 +255,7 @@ OFCondition I2DOutputPlugOphthalmicPhotography::handle16BitImage(DcmDataset *dat
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Planar Configuration does not fit SOP class");
   }
   else
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Photometric interpretation does not fit SOP class");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DOutputPlugOphthalmicPhotography: Photometric Interpretation does not fit SOP class");
 
   // Insert SOP Class UID
   if (cond.good())
