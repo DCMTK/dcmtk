@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -826,6 +826,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_ICBMSingleSubjectMRIFrameOfReference                   "1.2.840.10008.1.4.2.2"
 #define UID_IEC61217FixedCoordinateSystemFrameOfReference          "1.2.840.10008.1.4.3.1"
 #define UID_StandardRoboticCoordinateSystemFrameOfReference        "1.2.840.10008.1.4.3.2"
+#define UID_IEC61217TableTopCoordinateSystemFrameOfReference       "1.2.840.10008.1.4.3.3"
 #define UID_SRI24FrameOfReference                                  "1.2.840.10008.1.4.4.1"
 #define UID_Colin27FrameOfReference                                "1.2.840.10008.1.4.5.1"
 #define UID_LPBA40AIRFrameOfReference                              "1.2.840.10008.1.4.6.1"

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -215,7 +215,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_MacularGridThicknessAndVolumeReportStorage,          "MacularGridThicknessAndVolumeReportStorage" },
     { UID_MammographyCADSRStorage,                             "MammographyCADSRStorage" },
     { UID_MediaStorageDirectoryStorage,                        "MediaStorageDirectoryStorage" },
-    { UID_MicroscopyBulkSimpleAnnotationsStorage,              "MicroscopyBulkSimple​AnnotationsStorage​" },
+    { UID_MicroscopyBulkSimpleAnnotationsStorage,              "MicroscopyBulkSimpleAnnotationsStorage" },
     { UID_MRImageStorage,                                      "MRImageStorage" },
     { UID_MRSpectroscopyStorage,                               "MRSpectroscopyStorage" },
     { UID_MultichannelRespiratoryWaveformStorage,              "MultichannelRespiratoryWaveformStorage" },
@@ -540,6 +540,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_ICBM452T1FrameOfReference,                           "ICBM452T1FrameOfReference" },
     { UID_ICBMSingleSubjectMRIFrameOfReference,                "ICBMSingleSubjectMRIFrameOfReference" },
     { UID_IEC61217FixedCoordinateSystemFrameOfReference,       "IEC61217FixedCoordinateSystemFrameOfReference" },
+    { UID_IEC61217TableTopCoordinateSystemFrameOfReference,    "IEC61217TableTopCoordinateSystemFrameOfReference" },
     { UID_SPM2AVG152PDFrameOfReference,                        "SPM2AVG152PDFrameOfReference" },
     { UID_SPM2AVG152T1FrameOfReference,                        "SPM2AVG152T1FrameOfReference" },
     { UID_SPM2AVG152T2FrameOfReference,                        "SPM2AVG152T2FrameOfReference" },
