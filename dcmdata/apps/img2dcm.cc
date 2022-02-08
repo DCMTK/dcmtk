@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2021, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -176,7 +176,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--sec-capture",         "-sc",     "write Secondary Capture SOP class (default)");
       cmd.addOption("--new-sc",              "-nsc",    "write new Secondary Capture SOP classes");
       cmd.addOption("--vl-photo",            "-vlp",    "write Visible Light Photographic SOP class");
-      cmd.addOption("--oph-photo",           "-oph",    "write Ophthalmic Photography SOP class");
+      cmd.addOption("--oph-photo",           "-oph",    "write Ophthalmic Photography SOP classes");
 
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",          "+F",      "write file format (default)");

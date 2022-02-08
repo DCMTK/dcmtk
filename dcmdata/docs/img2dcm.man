@@ -162,7 +162,7 @@ target SOP class:
           write Visible Light Photographic SOP class (default)
 
   -oph  --oph-photo
-          write Ophthalmic Photography SOP class
+          write Ophthalmic Photography SOP classes
 
 output file format:
 
@@ -298,7 +298,7 @@ DICOM. Example:
   dump2dcm SC.dump SC.dcm
 \endverbatim
 
-For Ophthalmic Photography, XML templates are provided
+For Ophthalmic Photography images, XML templates are provided
 (see sample file \e OP_template_utf_8.xml and \e OP_template_latin_1.xml).
 
 It is possible to use any DICOM file as a template. Please note that the
@@ -529,10 +529,10 @@ It is an error if no data dictionary can be loaded.
 \section img2dcm_files FILES
 
 <em>\<datadir\>/SC.dump</em> - Sample dump file for Secondary Capture images
-\n<em>\<datadir\>/VLP.dump</em> - Sample dump file for Visible Light Photographic
-images
-\n<em>\<datadir\>/OP_template.xml</em> - Sample dump file for Ophthalmic Photography
-images
+\n<em>\<datadir\>/VLP.dump</em> - Sample dump file for Visible Light
+Photographic images
+\n<em>\<datadir\>/OP_template.xml</em> - Sample XML template for Ophthalmic
+Photography images
 
 \section img2dcm_see_also SEE ALSO
 
@@ -541,6 +541,6 @@ images
 
 \section img2dcm_copyright COPYRIGHT
 
-Copyright (C) 2007-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
