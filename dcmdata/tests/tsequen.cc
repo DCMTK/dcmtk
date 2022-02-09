@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2019-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -64,7 +64,7 @@ OFTEST(dcmdata_pixelSequenceInsert)
     unsigned long counter = 0;
     for (unsigned long i = 0; i < NUMBER_OF_ITEMS; ++i)
     {
-        if (pixelSequence.insert(new DcmPixelItem(DcmTag(DCM_Item, EVR_OB))).good())
+        if (pixelSequence.insert(new DcmPixelItem(DCM_PixelItemTag)).good())
             ++counter;
     }
     /* check whether that worked (for-loop shouldn't take too long) */
