@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2021, OFFIS e.V.
+ *  Copyright (C) 1993-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1119,6 +1119,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
                     DCMQRDB_DEBUG("Non Unique Key found (level " << level << ")");
                     return QR_EC_IndexDatabaseError ;
                 }
+                else if (plist->elem.ValueLength == 0) {
+                    DCMQRDB_DEBUG("Unique Key value is empty (level " << level << ")");
+                    return QR_EC_IndexDatabaseError ;
+                }
                 else if (uniqueKeyFound) {
                     DCMQRDB_DEBUG("More than one Unique Key found (level " << level << ")");
                     return QR_EC_IndexDatabaseError ;
@@ -1940,6 +1944,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
                 DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
                 if (XTagType != UNIQUE_KEY) {
                     DCMQRDB_DEBUG("Non Unique Key found (level " << level << ")");
+                    return QR_EC_IndexDatabaseError ;
+                }
+                else if (plist->elem.ValueLength == 0) {
+                    DCMQRDB_DEBUG("Unique Key value is empty (level " << level << ")");
                     return QR_EC_IndexDatabaseError ;
                 }
                 else if (uniqueKeyFound) {
