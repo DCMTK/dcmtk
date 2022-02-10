@@ -1942,6 +1942,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
                     DCMQRDB_DEBUG("Non Unique Key found (level " << level << ")");
                     return QR_EC_IndexDatabaseError ;
                 }
+                else if (plist->elem.ValueLength == 0) {
+		    DCMQRDB_DEBUG("Unique Key value is empty (level " << level << ")");
+                    return QR_EC_IndexDatabaseError ;
+		}
                 else if (uniqueKeyFound) {
                     DCMQRDB_DEBUG("More than one Unique Key found (level " << level << ")");
                     return QR_EC_IndexDatabaseError ;
