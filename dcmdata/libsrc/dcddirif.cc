@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2568,7 +2568,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     result = EC_MissingAttribute;
             }
             /* StudyDescription is type 2 in DICOMDIR and type 3 in images.
-               We can create an empty attribute in the directory
+               We can create an empty attribute in the directory.
              */
             /* StudyInstanceUID is type 1 in DICOMDIR and images */
             if (!checkExistsWithValue(dataset, DCM_StudyInstanceUID, filename))
@@ -2579,10 +2579,11 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 if (!checkExistsWithValue(dataset, DCM_StudyID, filename))
                     result = EC_MissingAttribute;
             }
-            /* AccessionNumber is type 2 in DICOMDIR and type 3 in images
-               We can create an empty attribute in the directory
+            /* AccessionNumber is type 2 in DICOMDIR and type 3 in images.
+               We can create an empty attribute in the directory.
             */
-            /* Modality is type 1 in DICOMDIR and type 1 in images */
+            /* Modality is type 1 in DICOMDIR and type 1 in images
+             * (apart from SC Equipment Module where it is type 3) */
             if (!checkExistsWithValue(dataset, DCM_Modality, filename))
                 result = EC_MissingAttribute;
             /* SeriesInstanceUID is type 1 in DICOMDIR and type 1 in images */
