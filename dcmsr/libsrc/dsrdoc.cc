@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -3123,8 +3123,6 @@ void DSRDocument::updateAttributes(const OFBool updateAll,
             InstanceCreationDate.putOFStringArray(currentDate(tmpString));
             /* set instance creation time to current time (HHMMSS) */
             InstanceCreationTime.putOFStringArray(currentTime(tmpString));
-            /* set instance creator UID to identify instances that have been created by this toolkit */
-            InstanceCreatorUID.putString(OFFIS_INSTANCE_CREATOR_UID);
         }
         /* create new study instance UID if required */
         if (StudyInstanceUID.isEmpty())
