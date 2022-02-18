@@ -26,6 +26,7 @@
 
 OFTEST_REGISTER(oficonv_open);
 
+// conversion of the supported single-byte character sets to UTF-8
 OFTEST_REGISTER(oficonv_iso8859_1_to_utf8);
 OFTEST_REGISTER(oficonv_iso8859_2_to_utf8);
 OFTEST_REGISTER(oficonv_iso8859_3_to_utf8);
@@ -39,6 +40,7 @@ OFTEST_REGISTER(oficonv_iso8859_11_to_utf8);
 OFTEST_REGISTER(oficonv_tis_620_to_utf8);
 OFTEST_REGISTER(oficonv_shift_jis_to_utf8);
 
+// conversion of UTF-8 to the supported single-byte character sets, only using characters that can be mapped
 OFTEST_REGISTER(oficonv_utf8_to_iso8859_1);
 OFTEST_REGISTER(oficonv_utf8_to_iso8859_2);
 OFTEST_REGISTER(oficonv_utf8_to_iso8859_3);
@@ -52,7 +54,12 @@ OFTEST_REGISTER(oficonv_utf8_to_iso8859_11);
 OFTEST_REGISTER(oficonv_utf8_to_tis_620);
 OFTEST_REGISTER(oficonv_utf8_to_shift_jis);
 
+// conversion of the supported single-byte character sets to ASCII
 OFTEST_REGISTER(oficonv_iso8859_to_ascii);
+
+// conversion of EUR-KR (KS X 1001) to UTF-8 and back
+OFTEST_REGISTER(oficonv_eur_kr_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_eur_kr);
 
 
 OFTEST_MAIN("oficonv")
