@@ -1121,10 +1121,10 @@ OFCondition DSRDocument::readXMLInstanceData(const DSRXMLDocument &doc,
                 /* Instance Creator UID */
                 doc.getElementFromAttribute(cursor, InstanceCreatorUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
                 /* Instance Creation Date */
-                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "date"), tmpString);
+                DSRDateTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "date", OFFalse /*required*/), tmpString);
                 InstanceCreationDate.putOFStringArray(tmpString);
                 /* Instance Creation Time */
-                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "time"), tmpString);
+                DSRTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedChildNode(cursor, "time", OFFalse /*required*/), tmpString);
                 InstanceCreationTime.putOFStringArray(tmpString);
             }
             else if (doc.getElementFromNodeContent(cursor, InstanceNumber, "number").bad())
