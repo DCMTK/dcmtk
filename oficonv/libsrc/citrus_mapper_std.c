@@ -27,8 +27,11 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_mapper_std.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
-
+#else
+#include "oficonv_queue.h"
+#endif
 
 #include <errno.h>
 #include <limits.h>
@@ -79,6 +82,7 @@ rowcol_convert(struct _citrus_mapper_std * __restrict ms,
     _citrus_index_t idx = 0, n;
     size_t i;
     uint32_t conv;
+    (void) ps;
 
     /* ps may be unused */
     rc = &ms->ms_rowcol;
@@ -339,6 +343,7 @@ _citrus_mapper_std_mapper_init(struct _citrus_mapper_area *__restrict ma __unuse
     char path[PATH_MAX];
     const char *type;
     int id, ret;
+    (void) ma;
 
     /* set traits */
     if (lenmt < sizeof(*mt)) {

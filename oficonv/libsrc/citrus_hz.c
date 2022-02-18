@@ -28,11 +28,14 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_hz.h"
 
-#include <sys/queue.h>
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-
+#ifdef HAVE_SYS_QUEUE_H
+#include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
 #include <errno.h>
 #include <limits.h>
@@ -50,7 +53,7 @@
 #include "citrus_prop.h"
 
 /*
- * wchar_t mapping:
+ * _citrus_wc_t mapping:
  *
  * CTRL/ASCII   00000000 00000000 00000000 gxxxxxxx
  * GB2312   00000000 00000000 0xxxxxxx gxxxxxxx
@@ -154,14 +157,14 @@ _citrus_HZ_init_state(_HZEncodingInfo * __restrict ei,
 
 static int
 _citrus_HZ_mbrtowc_priv(_HZEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
+    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
     _HZState * __restrict psenc, size_t * __restrict nresult)
 {
     escape_t *candidate, *init;
     graphic_t *graphic;
     const range_t *range;
     char *s0;
-    wchar_t wc;
+    _citrus_wc_t wc;
     int bit, ch, head, len, tail;
 
     if (*s == NULL) {
@@ -173,7 +176,7 @@ _citrus_HZ_mbrtowc_priv(_HZEncodingInfo * __restrict ei,
     if (psenc->chlen < 0 || psenc->inuse == NULL)
         return (EINVAL);
 
-    wc = (wchar_t)0;
+    wc = (_citrus_wc_t)0;
     bit = head = tail = 0;
     graphic = NULL;
     for (len = 0; len <= MB_LEN_MAX;) {
@@ -191,7 +194,7 @@ _citrus_HZ_mbrtowc_priv(_HZEncodingInfo * __restrict ei,
             if ((ch & ~0x80) <= 0x1F) {
                 if (psenc->inuse != INIT0(ei))
                     break;
-                wc = (wchar_t)ch;
+                wc = (_citrus_wc_t)ch;
                 goto done;
             }
             if (ch & 0x80) {
@@ -276,7 +279,7 @@ done:
 
 static int
 _citrus_HZ_wcrtomb_priv(_HZEncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, wchar_t wc,
+    char * __restrict s, size_t n, _citrus_wc_t wc,
     _HZState * __restrict psenc, size_t * __restrict nresult)
 {
     escape_t *candidate, *init;
@@ -343,13 +346,13 @@ _citrus_HZ_wcrtomb_priv(_HZEncodingInfo * __restrict ei,
                 return (E2BIG);
             n -= 2;
             psenc->ch[psenc->chlen++] = ESCAPE_CHAR;
-            psenc->ch[psenc->chlen++] = ESC(init);
+            psenc->ch[psenc->chlen++] = (char) ESC(init);
         }
         if (n < 2)
             return (E2BIG);
         n -= 2;
         psenc->ch[psenc->chlen++] = ESCAPE_CHAR;
-        psenc->ch[psenc->chlen++] = ESC(candidate);
+        psenc->ch[psenc->chlen++] = (char) ESC(candidate);
         psenc->inuse = candidate;
     }
     if (n < len)
@@ -358,7 +361,7 @@ _citrus_HZ_wcrtomb_priv(_HZEncodingInfo * __restrict ei,
         ch = (wc >> (len * 8)) & 0xFF;
         if (range->start > ch || range->end < ch)
             goto ilseq;
-        psenc->ch[psenc->chlen++] = ch | bit;
+        psenc->ch[psenc->chlen++] = (char) (ch | bit);
     }
     memcpy(s, psenc->ch, psenc->chlen);
     *nresult = psenc->chlen;
@@ -386,7 +389,7 @@ _citrus_HZ_put_state_reset(_HZEncodingInfo * __restrict ei,
             return (E2BIG);
         n -= 2;
         psenc->ch[psenc->chlen++] = ESCAPE_CHAR;
-        psenc->ch[psenc->chlen++] = ESC(candidate);
+        psenc->ch[psenc->chlen++] = (char) ESC(candidate);
     }
     if (n < 1)
         return (E2BIG);
@@ -419,9 +422,10 @@ _citrus_HZ_stdenc_get_state_desc_generic(_HZEncodingInfo * __restrict ei,
 static __inline int
 /*ARGSUSED*/
 _citrus_HZ_stdenc_wctocs(_HZEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
     int bit;
+    (void) ei;
 
     if (wc & 0x80) {
         bit = 0x80;
@@ -445,20 +449,21 @@ _citrus_HZ_stdenc_wctocs(_HZEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_HZ_stdenc_cstowc(_HZEncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
+    (void) ei;
 
-    *wc = (wchar_t)idx;
+    *wc = (_citrus_wc_t)idx;
     switch (csid) {
     case 0x80:
     case 0x8080:
-        *wc |= (wchar_t)0x80;
+        *wc |= (_citrus_wc_t)0x80;
         /*FALLTHROUGH*/
     case 0x0:
     case 0x8000:
         break;
     default:
-        *wc |= (wchar_t)csid;
+        *wc |= (_citrus_wc_t)csid;
     }
 
     return (0);
@@ -488,6 +493,7 @@ _citrus_HZ_parse_char(void *context, const char *name __unused, const char *s)
 {
     escape_t *escape;
     void **p;
+    (void) name;
 
     p = (void **)context;
     escape = (escape_t *)p[0];

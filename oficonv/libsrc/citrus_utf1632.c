@@ -89,17 +89,17 @@ static __inline void
 _citrus_UTF1632_init_state(_UTF1632EncodingInfo *ei __unused,
     _UTF1632State *s)
 {
-
+    (void) ei;
     memset(s, 0, sizeof(*s));
 }
 
 static int
-_citrus_UTF1632_mbrtowc_priv(_UTF1632EncodingInfo *ei, wchar_t *pwc,
+_citrus_UTF1632_mbrtowc_priv(_UTF1632EncodingInfo *ei, _citrus_wc_t *pwc,
     char **s, size_t n, _UTF1632State *psenc, size_t *nresult)
 {
     char *s0;
     size_t result;
-    wchar_t wc = L'\0';
+    _citrus_wc_t wc = L'\0';
     int chlenbak, endian, needlen;
 
     s0 = *s;
@@ -161,11 +161,11 @@ refetch:
             switch (endian) {
             case _ENDIAN_LITTLE:
                 wc = (psenc->ch[0] |
-                    ((wchar_t)psenc->ch[1] << 8));
+                    ((_citrus_wc_t)psenc->ch[1] << 8));
                 break;
             case _ENDIAN_BIG:
                 wc = (psenc->ch[1] |
-                    ((wchar_t)psenc->ch[0] << 8));
+                    ((_citrus_wc_t)psenc->ch[0] << 8));
                 break;
             default:
                 goto ilseq;
@@ -184,13 +184,13 @@ refetch:
                 if (psenc->ch[3] < 0xDC || psenc->ch[3] > 0xDF)
                     goto ilseq;
                 wc |= psenc->ch[2];
-                wc |= (wchar_t)(psenc->ch[3] & 3) << 8;
+                wc |= (_citrus_wc_t)(psenc->ch[3] & 3) << 8;
                 break;
             case _ENDIAN_BIG:
                 if (psenc->ch[2]<0xDC || psenc->ch[2]>0xDF)
                     goto ilseq;
                 wc |= psenc->ch[3];
-                wc |= (wchar_t)(psenc->ch[2] & 3) << 8;
+                wc |= (_citrus_wc_t)(psenc->ch[2] & 3) << 8;
                 break;
             default:
                 goto ilseq;
@@ -202,15 +202,15 @@ refetch:
         switch (endian) {
         case _ENDIAN_LITTLE:
             wc = (psenc->ch[0] |
-                ((wchar_t)psenc->ch[1] << 8) |
-                ((wchar_t)psenc->ch[2] << 16) |
-                ((wchar_t)psenc->ch[3] << 24));
+                ((_citrus_wc_t)psenc->ch[1] << 8) |
+                ((_citrus_wc_t)psenc->ch[2] << 16) |
+                ((_citrus_wc_t)psenc->ch[3] << 24));
             break;
         case _ENDIAN_BIG:
             wc = (psenc->ch[3] |
-                ((wchar_t)psenc->ch[2] << 8) |
-                ((wchar_t)psenc->ch[1] << 16) |
-                ((wchar_t)psenc->ch[0] << 24));
+                ((_citrus_wc_t)psenc->ch[2] << 8) |
+                ((_citrus_wc_t)psenc->ch[1] << 16) |
+                ((_citrus_wc_t)psenc->ch[0] << 24));
             break;
         default:
             goto ilseq;
@@ -241,9 +241,9 @@ restart:
 
 static int
 _citrus_UTF1632_wcrtomb_priv(_UTF1632EncodingInfo *ei, char *s, size_t n,
-    wchar_t wc, _UTF1632State *psenc, size_t *nresult)
+    _citrus_wc_t wc, _UTF1632State *psenc, size_t *nresult)
 {
-    wchar_t wc2;
+    _citrus_wc_t wc2;
     static const char _bom[4] = {
         0x00, 0x00, 0xFE, 0xFF,
     };
@@ -289,12 +289,12 @@ _citrus_UTF1632_wcrtomb_priv(_UTF1632EncodingInfo *ei, char *s, size_t n,
 surrogate:
         switch (psenc->current_endian) {
         case _ENDIAN_BIG:
-            s[1] = wc;
-            s[0] = (wc >>= 8);
+            s[1] = (char) wc;
+            s[0] = (char) (wc >>= 8);
             break;
         case _ENDIAN_LITTLE:
-            s[0] = wc;
-            s[1] = (wc >>= 8);
+            s[0] = (char) wc;
+            s[1] = (char) (wc >>= 8);
             break;
         }
         if (wc2 != 0) {
@@ -312,16 +312,16 @@ surrogate:
         cnt += 4;
         switch (psenc->current_endian) {
         case _ENDIAN_BIG:
-            s[3] = wc;
-            s[2] = (wc >>= 8);
-            s[1] = (wc >>= 8);
-            s[0] = (wc >>= 8);
+            s[3] = (char) wc;
+            s[2] = (char) (wc >>= 8);
+            s[1] = (char) (wc >>= 8);
+            s[0] = (char) (wc >>= 8);
             break;
         case _ENDIAN_LITTLE:
-            s[0] = wc;
-            s[1] = (wc >>= 8);
-            s[2] = (wc >>= 8);
-            s[3] = (wc >>= 8);
+            s[0] = (char) wc;
+            s[1] = (char) (wc >>= 8);
+            s[2] = (char) (wc >>= 8);
+            s[3] = (char) (wc >>= 8);
             break;
         }
     }
@@ -401,7 +401,7 @@ static void
 /*ARGSUSED*/
 _citrus_UTF1632_encoding_module_uninit(_UTF1632EncodingInfo *ei __unused)
 {
-
+    (void) ei;
 }
 
 static __inline int
@@ -409,7 +409,7 @@ static __inline int
 _citrus_UTF1632_stdenc_wctocs(_UTF1632EncodingInfo * __restrict ei __unused,
      _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
-
+    (void) ei;
     *csid = 0;
     *idx = (_citrus_index_t)wc;
 
@@ -419,13 +419,14 @@ _citrus_UTF1632_stdenc_wctocs(_UTF1632EncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_UTF1632_stdenc_cstowc(_UTF1632EncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
+    (void) ei;
 
     if (csid != 0)
         return (EILSEQ);
 
-    *wc = (wchar_t)idx;
+    *wc = (_citrus_wc_t)idx;
 
     return (0);
 }
@@ -435,6 +436,7 @@ static __inline int
 _citrus_UTF1632_stdenc_get_state_desc_generic(_UTF1632EncodingInfo * __restrict ei __unused,
     _UTF1632State * __restrict psenc, int * __restrict rstate)
 {
+    (void) ei;
 
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
         _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;

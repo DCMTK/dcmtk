@@ -27,7 +27,12 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_pivot_factory.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
+
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>

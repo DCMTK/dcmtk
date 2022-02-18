@@ -54,7 +54,7 @@
 
 
 /*
- * wchar_t mappings:
+ * _citrus_wc_t mappings:
  * ASCII (ESC ( B)      00000000 00000000 00000000 0xxxxxxx
  * iso-8859-1 (ESC , A)     00000000 00000000 00000000 1xxxxxxx
  * 94 charset (ESC ( F)     0fffffff 00000000 00000000 0xxxxxxx
@@ -134,51 +134,51 @@ typedef struct {
     (!((_ps_)->flags & _ISO2022STATE_FLAG_INITIALIZED))
 
 
-#define _ISO2022INVALID (wchar_t)-1
+#define _ISO2022INVALID (_citrus_wc_t)-1
 
-static __inline bool isc0(__uint8_t x)
+static __inline bool isc0(uint8_t x)
 {
 
     return ((x & 0x1f) == x);
 }
 
-static __inline bool isc1(__uint8_t x)
+static __inline bool isc1(uint8_t x)
 {
 
     return (0x80 <= x && x <= 0x9f);
 }
 
-static __inline bool iscntl(__uint8_t x)
+static __inline bool iscntl(uint8_t x)
 {
 
     return (isc0(x) || isc1(x) || x == 0x7f);
 }
 
-static __inline bool is94(__uint8_t x)
+static __inline bool is94(uint8_t x)
 {
 
     return (0x21 <= x && x <= 0x7e);
 }
 
-static __inline bool is96(__uint8_t x)
+static __inline bool is96(uint8_t x)
 {
 
     return (0x20 <= x && x <= 0x7f);
 }
 
-static __inline bool isecma(__uint8_t x)
+static __inline bool isecma(uint8_t x)
 {
 
     return (0x30 <= x && x <= 0x7f);
 }
 
-static __inline bool isinterm(__uint8_t x)
+static __inline bool isinterm(uint8_t x)
 {
 
     return (0x20 <= x && x <= 0x2f);
 }
 
-static __inline bool isthree(__uint8_t x)
+static __inline bool isthree(uint8_t x)
 {
 
     return (0x60 <= x && x <= 0x6f);
@@ -258,8 +258,8 @@ get_recommend(_ISO2022EncodingInfo * __restrict ei,
     if (!ei->recommend[i])
         ei->recommend[i] = malloc(sizeof(_ISO2022Charset));
     else {
-        p = reallocarray(ei->recommend[i], ei->recommendsize[i] + 1,
-            sizeof(_ISO2022Charset));
+        p = realloc(ei->recommend[i], (ei->recommendsize[i] + 1) * sizeof(_ISO2022Charset));
+
         if (!p)
             return (_PARSEFAIL);
         ei->recommend[i] = p;
@@ -361,6 +361,7 @@ _citrus_ISO2022_parse_variable(_ISO2022EncodingInfo * __restrict ei,
     char buf[20];
     size_t len;
     int i, ret;
+    (void) lenvar;
 
     /*
      * parse VARIABLE section.
@@ -456,7 +457,7 @@ static void
 /*ARGSUSED*/
 _citrus_ISO2022_encoding_module_uninit(_ISO2022EncodingInfo *ei __unused)
 {
-
+    (void) ei;
 }
 
 #define ESC '\033'
@@ -548,17 +549,18 @@ seqmatch(const char * __restrict s, size_t n,
     }
 
 terminate:
-    return (p - sp->chars);
+    return (int) (p - sp->chars);
 }
 
-static wchar_t
+static _citrus_wc_t
 _ISO2022_sgetwchar(_ISO2022EncodingInfo * __restrict ei __unused,
     char * __restrict string, size_t n, char ** __restrict result,
     _ISO2022State * __restrict psenc)
 {
     const struct seqtable *sp;
-    wchar_t wchar = 0;
+    _citrus_wc_t wchar = 0;
     int i, cur, nmatch;
+    (void) ei;
 
     while (1) {
         /* SI/SO */
@@ -615,7 +617,7 @@ _ISO2022_sgetwchar(_ISO2022EncodingInfo * __restrict ei __unused,
                     return (_ISO2022INVALID);
                 }
             }
-            psenc->g[i].type = sp->type;
+            psenc->g[i].type = (unsigned char) sp->type;
             psenc->g[i].final = '\0';
             psenc->g[i].interm = '\0';
             psenc->g[i].vers = '\0';
@@ -822,12 +824,13 @@ asis:
 
 static int
 _citrus_ISO2022_mbrtowc_priv(_ISO2022EncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, char ** __restrict s,
+    _citrus_wc_t * __restrict pwc, char ** __restrict s,
     size_t n, _ISO2022State * __restrict psenc, size_t * __restrict nresult)
 {
     char *p, *result, *s0;
-    wchar_t wchar;
-    int c, chlenbak;
+    _citrus_wc_t wchar;
+    int chlenbak;
+    size_t c;
 
     if (*s == NULL) {
         _citrus_ISO2022_init_state(ei, psenc);
@@ -836,7 +839,7 @@ _citrus_ISO2022_mbrtowc_priv(_ISO2022EncodingInfo * __restrict ei,
     }
     s0 = *s;
     c = 0;
-    chlenbak = psenc->chlen;
+    chlenbak = (int) psenc->chlen;
 
     /*
      * if we have something in buffer, use that.
@@ -985,7 +988,7 @@ recommendation(_ISO2022EncodingInfo * __restrict ei,
 }
 
 static int
-_ISO2022_sputwchar(_ISO2022EncodingInfo * __restrict ei, wchar_t wc,
+_ISO2022_sputwchar(_ISO2022EncodingInfo * __restrict ei, _citrus_wc_t wc,
     char * __restrict string, size_t n, char ** __restrict result,
     _ISO2022State * __restrict psenc, size_t * __restrict nresult)
 {
@@ -1181,7 +1184,7 @@ _citrus_ISO2022_put_state_reset(_ISO2022EncodingInfo * __restrict ei,
 
 static int
 _citrus_ISO2022_wcrtomb_priv(_ISO2022EncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, wchar_t wc,
+    char * __restrict s, size_t n, _citrus_wc_t wc,
     _ISO2022State * __restrict psenc, size_t * __restrict nresult)
 {
     char *result;
@@ -1211,9 +1214,10 @@ _citrus_ISO2022_wcrtomb_priv(_ISO2022EncodingInfo * __restrict ei,
 static __inline int
 /*ARGSUSED*/
 _citrus_ISO2022_stdenc_wctocs(_ISO2022EncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
-    wchar_t m, nm;
+    _citrus_wc_t m, nm;
+    (void) ei;
 
     m = wc & 0x7FFF8080;
     nm = wc & 0x007F7F7F;
@@ -1237,10 +1241,11 @@ _citrus_ISO2022_stdenc_wctocs(_ISO2022EncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_ISO2022_stdenc_cstowc(_ISO2022EncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
+    (void) ei;
 
-    *wc = (wchar_t)(csid & 0x7F808080) | (wchar_t)idx;
+    *wc = (_citrus_wc_t)(csid & 0x7F808080) | (_citrus_wc_t)idx;
 
     return (0);
 }
@@ -1250,6 +1255,7 @@ static __inline int
 _citrus_ISO2022_stdenc_get_state_desc_generic(_ISO2022EncodingInfo * __restrict ei __unused,
     _ISO2022State * __restrict psenc, int * __restrict rstate)
 {
+    (void) ei;
 
     if (psenc->chlen == 0) {
         /* XXX: it should distinguish initial and stable. */

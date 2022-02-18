@@ -35,6 +35,7 @@
 #include <sys/types.h>
 #endif
 #include <wchar.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 typedef bool __iconv_bool;
@@ -46,6 +47,8 @@ typedef int __iconv_bool;
 
 struct __tag_iconv_t;
 typedef struct __tag_iconv_t *iconv_t;
+
+typedef uint32_t        _citrus_wc_t;
 
 BEGIN_EXTERN_C
 
@@ -117,7 +120,7 @@ void OF__iconv_free_list(char **names, size_t  count);
  *      Skip invalid characters, instead of returning with an error.
  *
  */
-size_t  OF__iconv(iconv_t cd, char **src, size_t *srcleft, char **dst, size_t *dstleft, __uint32_t flags, size_t *invalids);
+size_t  OF__iconv(iconv_t cd, char **src, size_t *srcleft, char **dst, size_t *dstleft, uint32_t flags, size_t *invalids);
 
 #define __ICONV_F_HIDE_INVALID  0x0001
 
@@ -212,7 +215,7 @@ int OFiconv_open_into(const char *dstname, const char *srcname, iconv_allocation
 #define ICONV_SET_ILSEQ_INVALID 129
 
 typedef void (*iconv_unicode_char_hook) (unsigned int mbr, void *data);
-typedef void (*iconv_wide_char_hook) (wchar_t wc, void *data);
+typedef void (*iconv_wide_char_hook) (_citrus_wc_t wc, void *data);
 
 struct iconv_hooks {
     iconv_unicode_char_hook uc_hook;
@@ -245,8 +248,13 @@ int OFiconvctl(iconv_t cd, int request, void *argument);
 /** Determine the current locale's character encoding, and canonicalize it.
  *  The result must not be freed; it is statically allocated.
  *  If the canonical name cannot be determined, the result is a non-canonical name.
+ *  @param buf buffer of at least 20 characters to which the current encoding
+ *    is written on Windows
+ *  @param bufsize length of buffer buf, in bytes
+ *  @return current locale's character encoding
+ *    (on Windows, this is the current output code page)
  */
-const char *OFlocale_charset();
+const char *OFlocale_charset(char *buf, size_t bufsize);
 
 END_EXTERN_C
 

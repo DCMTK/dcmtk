@@ -28,19 +28,28 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/oficonv/iconv.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 
-
 #include <errno.h>
-
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+
+#ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
+#endif
+
+#include <locale.h>
 
 #include "citrus_types.h"
 #include "citrus_module.h"
@@ -51,6 +60,21 @@
 #include "strcasestr.h"
 
 #define ISBADF(_h_) (!(_h_) || (_h_) == (iconv_t)-1)
+
+char *my_strndup(const char *str, size_t chars)
+{
+    char *buffer;
+    size_t n;
+
+    buffer = (char *) malloc(chars +1);
+    if (buffer)
+    {
+        for (n = 0; ((n < chars) && (str[n] != 0)) ; n++) buffer[n] = str[n];
+        buffer[n] = 0;
+    }
+
+    return buffer;
+}
 
 int _iconv_version = _ICONV_VERSION;
 
@@ -72,7 +96,7 @@ _iconv_open(const char *out, const char *in, struct _citrus_iconv *handle)
      */
     out_slashes = strstr(out, "//");
     if (out_slashes != NULL) {
-        out_noslashes = strndup(out, out_slashes - out);
+        out_noslashes = my_strndup(out, out_slashes - out);
         if (out_noslashes == NULL) {
             errno = ENOMEM;
             return ((iconv_t)-1);
@@ -126,7 +150,7 @@ OFiconv_close(iconv_t handle)
 }
 
 size_t
-OFiconv(iconv_t handle, char **in, size_t *szin, char **out, size_t *szout)
+OFiconv(iconv_t handle, char ** __restrict in, size_t * __restrict szin, char ** __restrict out, size_t * __restrict szout)
 {
     size_t ret;
     int err;
@@ -171,7 +195,7 @@ OF__iconv(iconv_t handle, char **in, size_t *szin, char **out,
 }
 
 int
-OF__iconv_get_list(char ***rlist, size_t *rsz, bool sorted)
+OF__iconv_get_list(char ***rlist, size_t *rsz, __iconv_bool sorted)
 {
     int ret;
 
@@ -216,6 +240,7 @@ OFiconvlist(int (*do_one) (unsigned int, const char * const *,
     unsigned int i, j, n;
 
     i = 0;
+    j = 0;
     names = NULL;
 
     if (OF__iconv_get_list(&list, &sz, true)) {
@@ -229,7 +254,7 @@ OFiconvlist(int (*do_one) (unsigned int, const char * const *,
         names = malloc(sz * sizeof(char *));
         if (names == NULL)
             goto out;
-        curkey = strndup(list[i], slashpos - list[i]);
+        curkey = my_strndup(list[i], slashpos - list[i]);
         if (curkey == NULL)
             goto out;
         names[j++] = curkey;
@@ -323,7 +348,13 @@ OFiconvctl(iconv_t cd, int request, void *argument)
     }
 }
 
-const char *OFlocale_charset()
+const char *OFlocale_charset(char *buf, size_t buflen)
 {
+#ifdef HAVE_WINDOWS_H
+  snprintf(buf, buflen, "%lu", (unsigned long) GetConsoleOutputCP());
+  return buf;
+#else
+  (void) buf;
   return nl_langinfo(CODESET);
+#endif
 }

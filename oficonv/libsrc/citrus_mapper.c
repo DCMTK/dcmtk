@@ -33,7 +33,12 @@
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
+
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
 
 #include <errno.h>
@@ -57,7 +62,11 @@
 #define CM_HASH_SIZE 101
 #define REFCOUNT_PERSISTENT -1
 
-static pthread_rwlock_t     cm_lock = PTHREAD_RWLOCK_INITIALIZER;
+#ifdef HAVE_WINDOWS_H
+static SRWLOCK cm_lock = SRWLOCK_INIT;
+#else
+static pthread_rwlock_t cm_lock = PTHREAD_RWLOCK_INITIALIZER;
+#endif
 
 struct _citrus_mapper_area {
     _CITRUS_HASH_HEAD(, _citrus_csmapper, CM_HASH_SIZE)    ma_cache;

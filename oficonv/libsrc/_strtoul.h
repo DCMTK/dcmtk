@@ -116,8 +116,20 @@ _FUNCNAME(const char *nptr, char **endptr, int base)
             acc += i;
         }
     }
+
+/* suppress MSVC 'unary minus operator applied to unsigned type' warning  */
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4146)
+#endif
+
     if (neg && any > 0)
         acc = -acc;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
     if (endptr != NULL)
         /* LINTED interface specification */
         *endptr = __DECONST(void *, any ? s - 1 : nptr);

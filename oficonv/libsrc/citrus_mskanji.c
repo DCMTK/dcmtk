@@ -124,6 +124,7 @@ static __inline void
 _citrus_MSKanji_init_state(_MSKanjiEncodingInfo * __restrict ei __unused,
     _MSKanjiState * __restrict s)
 {
+    (void) ei;
 
     s->chlen = 0;
 }
@@ -131,11 +132,11 @@ _citrus_MSKanji_init_state(_MSKanjiEncodingInfo * __restrict ei __unused,
 static int
 /*ARGSUSED*/
 _citrus_MSKanji_mbrtowc_priv(_MSKanjiEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
+    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
     _MSKanjiState * __restrict psenc, size_t * __restrict nresult)
 {
     char *s0;
-    wchar_t wchar;
+    _citrus_wc_t wchar;
     int chlenbak, len;
 
     s0 = *s;
@@ -210,10 +211,12 @@ restart:
 
 static int
 _citrus_MSKanji_wcrtomb_priv(_MSKanjiEncodingInfo * __restrict ei __unused,
-    char * __restrict s, size_t n, wchar_t wc,
+    char * __restrict s, size_t n, _citrus_wc_t wc,
     _MSKanjiState * __restrict psenc __unused, size_t * __restrict nresult)
 {
     int ret;
+    (void) ei;
+    (void) psenc;
 
     /* check invalid sequence */
     if (wc & ~0xffff) {
@@ -261,7 +264,7 @@ err:
 static __inline int
 /*ARGSUSED*/
 _citrus_MSKanji_stdenc_wctocs(_MSKanjiEncodingInfo * __restrict ei,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
     _citrus_index_t col, row;
     int offset;
@@ -344,7 +347,7 @@ _citrus_MSKanji_stdenc_wctocs(_MSKanjiEncodingInfo * __restrict ei,
 static __inline int
 /*ARGSUSED*/
 _citrus_MSKanji_stdenc_cstowc(_MSKanjiEncodingInfo * __restrict ei,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     uint32_t col, row;
     int offset;
@@ -354,13 +357,13 @@ _citrus_MSKanji_stdenc_cstowc(_MSKanjiEncodingInfo * __restrict ei,
         /* ISO-646 */
         if (idx >= 0x80)
             return (EILSEQ);
-        *wc = (wchar_t)idx;
+        *wc = (_citrus_wc_t)idx;
         break;
     case 1:
         /* kana */
         if (idx >= 0x80)
             return (EILSEQ);
-        *wc = (wchar_t)idx + 0x80;
+        *wc = (_citrus_wc_t)idx + 0x80;
         break;
     case 3:
         if ((ei->mode & MODE_JIS2004) == 0)
@@ -395,7 +398,7 @@ _citrus_MSKanji_stdenc_cstowc(_MSKanjiEncodingInfo * __restrict ei,
         } else
             col += 0x9F;
         row = row / 2 + offset;
-        *wc = ((wchar_t)row << 8) | col;
+        *wc = ((_citrus_wc_t)row << 8) | col;
         break;
     default:
         return (EILSEQ);
@@ -409,6 +412,7 @@ static __inline int
 _citrus_MSKanji_stdenc_get_state_desc_generic(_MSKanjiEncodingInfo * __restrict ei __unused,
     _MSKanjiState * __restrict psenc, int * __restrict rstate)
 {
+    (void) ei;
 
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
         _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
@@ -440,7 +444,7 @@ _citrus_MSKanji_encoding_module_init(_MSKanjiEncodingInfo *  __restrict ei,
 static void
 _citrus_MSKanji_encoding_module_uninit(_MSKanjiEncodingInfo *ei __unused)
 {
-
+    (void) ei;
 }
 
 /* ----------------------------------------------------------------------

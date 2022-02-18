@@ -30,7 +30,11 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
@@ -254,7 +258,7 @@ dump_header(struct _citrus_region *r, const char *magic, size_t *rofs,
 
     while (*rofs<_CITRUS_DB_MAGIC_SIZE)
         put8(r, rofs, *magic++);
-    put32(r, rofs, num_entries);
+    put32(r, rofs, (uint32_t) num_entries);
     put32(r, rofs, _CITRUS_DB_HEADER_SIZE);
 }
 
@@ -318,11 +322,11 @@ _citrus_db_factory_serialize(struct _citrus_db_factory *df, const char *magic,
                 de->de_next->de_idx * _CITRUS_DB_ENTRY_SIZE;
         }
         put32(r, &ofs, de->de_hashvalue);
-        put32(r, &ofs, nextofs);
-        put32(r, &ofs, keyofs);
-        put32(r, &ofs, _citrus_region_size(&de->de_key));
-        put32(r, &ofs, dataofs);
-        put32(r, &ofs, _citrus_region_size(&de->de_data));
+        put32(r, &ofs, (uint32_t) nextofs);
+        put32(r, &ofs, (uint32_t) keyofs);
+        put32(r, &ofs, (uint32_t) _citrus_region_size(&de->de_key));
+        put32(r, &ofs, (uint32_t) dataofs);
+        put32(r, &ofs, (uint32_t) _citrus_region_size(&de->de_data));
         memcpy(_citrus_region_offset(r, keyofs),
             _citrus_region_head(&de->de_key), _citrus_region_size(&de->de_key));
         keyofs += _citrus_region_size(&de->de_key);

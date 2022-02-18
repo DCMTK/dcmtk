@@ -30,15 +30,24 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
+#include <locale.h>
 
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
 #endif
 #include <errno.h>
 #include "dcmtk/oficonv/iconv.h"
+
+#ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
+#endif
+
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -71,7 +80,11 @@ static int           shared_max_reuse, shared_num_unused;
 static _CITRUS_HASH_HEAD(, _citrus_iconv_shared, CI_HASH_SIZE) shared_pool;
 static TAILQ_HEAD(, _citrus_iconv_shared) shared_unused;
 
-static pthread_rwlock_t      ci_lock = PTHREAD_RWLOCK_INITIALIZER;
+#ifdef HAVE_WINDOWS_H
+static SRWLOCK ci_lock = SRWLOCK_INIT;
+#else
+static pthread_rwlock_t ci_lock = PTHREAD_RWLOCK_INITIALIZER;
+#endif
 
 static __inline void
 init_cache(void)
@@ -301,12 +314,24 @@ struct _citrus_iconv *cv = NULL;
     int ret;
 
     init_cache();
+#ifdef HAVE_WINDOWS_H
+    char current_codepage[20];
+    sprintf(current_codepage, "%lu", (unsigned long) GetConsoleOutputCP());
+#endif
 
     /* GNU behaviour, using locale encoding if "" or "char" is specified */
     if ((strcmp(src, "") == 0) || (strcmp(src, "char") == 0))
+#ifdef HAVE_WINDOWS_H
+        src = current_codepage;
+#else
         src = nl_langinfo(CODESET);
+#endif
     if ((strcmp(dst, "") == 0) || (strcmp(dst, "char") == 0))
+#ifdef HAVE_WINDOWS_H
+        dst = current_codepage;
+#else
         dst = nl_langinfo(CODESET);
+#endif
 
     /* resolve codeset name aliases */
 #ifdef _PATH_ICONV

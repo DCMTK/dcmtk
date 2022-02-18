@@ -372,7 +372,8 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
     ret = 0;
     /* XXX: why reallocing the list space posteriorly?
         shouldn't be done earlier? */
-    q = reallocarray(list, num, sizeof(char *));
+    q = realloc(list, num * sizeof(char *));
+
     if (!q) {
         ret = ENOMEM;
         goto quit3;

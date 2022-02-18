@@ -28,7 +28,13 @@
 #define _CITRUS_ICONV_STD_LOCAL_H_
 
 #include "dcmtk/config/osconfig.h"
+
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
+
 #include "citrus_types.h"
 #include "citrus_csmapper.h"
 

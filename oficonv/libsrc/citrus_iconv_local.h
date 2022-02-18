@@ -31,7 +31,13 @@
 #include "dcmtk/oficonv/iconv.h"
 #include <stdbool.h>
 #include <stdint.h>
+
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
+
 #include "citrus_hash.h"
 #include "citrus_types.h"
 #include "citrus_module.h"

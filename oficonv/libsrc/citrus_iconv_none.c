@@ -27,7 +27,11 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_iconv_none.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
 
 #include <errno.h>
@@ -64,7 +68,8 @@ _citrus_iconv_none_iconv_init_shared(
     struct _citrus_iconv_shared * __restrict ci,
     const char * __restrict in __unused, const char * __restrict out __unused)
 {
-
+    (void) in;
+    (void) out;
     ci->ci_closure = NULL;
     return (0);
 }
@@ -73,7 +78,7 @@ static void
 /*ARGSUSED*/
 _citrus_iconv_none_iconv_uninit_shared(struct _citrus_iconv_shared *ci __unused)
 {
-
+    (void) ci;
 }
 
 static int
@@ -89,7 +94,7 @@ static void
 /*ARGSUSED*/
 _citrus_iconv_none_iconv_uninit_context(struct _citrus_iconv *cv __unused)
 {
-
+    (void) cv;
 }
 
 static int
@@ -101,6 +106,8 @@ _citrus_iconv_none_iconv_convert(struct _citrus_iconv * __restrict ci __unused,
 {
     size_t len;
     int e2big;
+    (void) ci;
+    (void) flags;
 
     if ((in == NULL) || (out == NULL) || (inbytes == NULL))
         return (0);

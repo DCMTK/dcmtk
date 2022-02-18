@@ -59,7 +59,12 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_big5.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -118,7 +123,7 @@ static __inline void
 _citrus_BIG5_init_state(_BIG5EncodingInfo * __restrict ei __unused,
     _BIG5State * __restrict s)
 {
-
+    (void) ei;
     memset(s, 0, sizeof(*s));
 }
 
@@ -128,7 +133,7 @@ _citrus_BIG5_pack_state(_BIG5EncodingInfo * __restrict ei __unused,
     void * __restrict pspriv,
     const _BIG5State * __restrict s)
 {
-
+    (void) ei;
     memcpy(pspriv, (const void *)s, sizeof(*s));
 }
 
@@ -138,7 +143,7 @@ _citrus_BIG5_unpack_state(_BIG5EncodingInfo * __restrict ei __unused,
     _BIG5State * __restrict s,
     const void * __restrict pspriv)
 {
-
+    (void) ei;
     memcpy((void *)s, pspriv, sizeof(*s));
 }
 
@@ -194,6 +199,7 @@ _citrus_BIG5_fill_excludes(void * __restrict ctx,
     _BIG5EncodingInfo *ei;
     _BIG5Exclude *exclude;
 
+    (void) s;
     if (start > 0xFFFF || end > 0xFFFF)
         return (EINVAL);
     ei = (_BIG5EncodingInfo *)ctx;
@@ -265,12 +271,12 @@ _citrus_BIG5_encoding_module_init(_BIG5EncodingInfo * __restrict ei,
 static int
 /*ARGSUSED*/
 _citrus_BIG5_mbrtowc_priv(_BIG5EncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc,
+    _citrus_wc_t * __restrict pwc,
     char ** __restrict s, size_t n,
     _BIG5State * __restrict psenc,
     size_t * __restrict nresult)
 {
-    wchar_t wchar;
+    _citrus_wc_t wchar;
     char *s0;
     int c, chlenbak;
 
@@ -352,11 +358,12 @@ static int
 /*ARGSUSED*/
 _citrus_BIG5_wcrtomb_priv(_BIG5EncodingInfo * __restrict ei,
     char * __restrict s,
-    size_t n, wchar_t wc, _BIG5State * __restrict psenc __unused,
+    size_t n, _citrus_wc_t wc, _BIG5State * __restrict psenc __unused,
     size_t * __restrict nresult)
 {
     size_t l;
     int ret;
+    (void) psenc;
 
     /* check invalid sequence */
     if (wc & ~0xffff ||
@@ -405,9 +412,9 @@ static __inline int
 /*ARGSUSED*/
 _citrus_BIG5_stdenc_wctocs(_BIG5EncodingInfo * __restrict ei __unused,
     _citrus_csid_t * __restrict csid,
-    _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
-
+    (void) ei;
     *csid = (wc < 0x100) ? 0 : 1;
     *idx = (_citrus_index_t)wc;
 
@@ -417,14 +424,14 @@ _citrus_BIG5_stdenc_wctocs(_BIG5EncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_BIG5_stdenc_cstowc(_BIG5EncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc,
+    _citrus_wc_t * __restrict wc,
     _citrus_csid_t csid, _citrus_index_t idx)
 {
-
+    (void) ei;
     switch (csid) {
     case 0:
     case 1:
-        *wc = (wchar_t)idx;
+        *wc = (_citrus_wc_t)idx;
         break;
     default:
         return (EILSEQ);
@@ -439,7 +446,7 @@ _citrus_BIG5_stdenc_get_state_desc_generic(_BIG5EncodingInfo * __restrict ei __u
     _BIG5State * __restrict psenc,
     int * __restrict rstate)
 {
-
+    (void) ei;
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
         _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);

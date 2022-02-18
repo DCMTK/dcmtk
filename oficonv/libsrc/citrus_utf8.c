@@ -128,7 +128,7 @@ typedef void *_UTF8EncodingInfo;
 #define _STATE_NEEDS_EXPLICIT_INIT(_ps_)    0
 
 static size_t
-_UTF8_findlen(wchar_t v)
+_UTF8_findlen(_citrus_wc_t v)
 {
     size_t i;
     uint32_t c;
@@ -138,11 +138,11 @@ _UTF8_findlen(wchar_t v)
         if (c >= _UTF8_range[i] && c < _UTF8_range[i + 1])
             return (i);
 
-    return (-1);    /*out of range*/
+    return ((size_t) -1);    /*out of range*/
 }
 
 static __inline bool
-_UTF8_surrogate(wchar_t wc)
+_UTF8_surrogate(_citrus_wc_t wc)
 {
 
     return (wc >= 0xd800 && wc <= 0xdfff);
@@ -152,16 +152,16 @@ static __inline void
 /*ARGSUSED*/
 _citrus_UTF8_init_state(_UTF8EncodingInfo *ei __unused, _UTF8State *s)
 {
-
+    (void) ei;
     s->chlen = 0;
 }
 
 static int
-_citrus_UTF8_mbrtowc_priv(_UTF8EncodingInfo *ei, wchar_t *pwc, char **s,
+_citrus_UTF8_mbrtowc_priv(_UTF8EncodingInfo *ei, _citrus_wc_t *pwc, char **s,
     size_t n, _UTF8State *psenc, size_t *nresult)
 {
     char *s0;
-    wchar_t wchar;
+    _citrus_wc_t wchar;
     int i;
     uint8_t c;
 
@@ -222,12 +222,14 @@ restart:
 
 static int
 _citrus_UTF8_wcrtomb_priv(_UTF8EncodingInfo *ei __unused, char *s, size_t n,
-    wchar_t wc, _UTF8State *psenc __unused, size_t *nresult)
+    _citrus_wc_t wc, _UTF8State *psenc __unused, size_t *nresult)
 {
-    wchar_t c;
-    size_t cnt;
-    int i, ret;
+    _citrus_wc_t c;
+    size_t cnt, i;
+    int ret;
 
+    (void) ei;
+    (void) psenc;
     if (_UTF8_surrogate(wc)) {
         ret = EILSEQ;
         goto err;
@@ -250,7 +252,7 @@ _citrus_UTF8_wcrtomb_priv(_UTF8EncodingInfo *ei __unused, char *s, size_t n,
             s[i] = 0x80 | (c & 0x3f);
             c >>= 6;
         }
-        s[0] = c;
+        s[0] = (char) c;
         if (cnt == 1)
             s[0] &= 0x7f;
         else {
@@ -271,8 +273,9 @@ static __inline int
 /*ARGSUSED*/
 _citrus_UTF8_stdenc_wctocs(_UTF8EncodingInfo * __restrict ei __unused,
     _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx,
-    wchar_t wc)
+    _citrus_wc_t wc)
 {
+    (void) ei;
 
     *csid = 0;
     *idx = (_citrus_index_t)wc;
@@ -283,13 +286,14 @@ _citrus_UTF8_stdenc_wctocs(_UTF8EncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_UTF8_stdenc_cstowc(_UTF8EncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
+    (void) ei;
 
     if (csid != 0)
         return (EILSEQ);
 
-    *wc = (wchar_t)idx;
+    *wc = (_citrus_wc_t)idx;
 
     return (0);
 }
@@ -299,7 +303,7 @@ static __inline int
 _citrus_UTF8_stdenc_get_state_desc_generic(_UTF8EncodingInfo * __restrict ei __unused,
     _UTF8State * __restrict psenc, int * __restrict rstate)
 {
-
+    (void) ei;
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
         _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
@@ -310,6 +314,9 @@ static int
 _citrus_UTF8_encoding_module_init(_UTF8EncodingInfo * __restrict ei __unused,
     const void * __restrict var __unused, size_t lenvar __unused)
 {
+    (void) ei;
+    (void) var;
+    (void) lenvar;
 
     return (0);
 }
@@ -318,7 +325,7 @@ static void
 /*ARGSUSED*/
 _citrus_UTF8_encoding_module_uninit(_UTF8EncodingInfo *ei __unused)
 {
-
+    (void) ei;
 }
 
 /* ----------------------------------------------------------------------

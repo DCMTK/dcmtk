@@ -75,7 +75,7 @@ static __inline void
 _citrus_GBK2K_init_state(_GBK2KEncodingInfo * __restrict ei __unused,
     _GBK2KState * __restrict s)
 {
-
+    (void) ei;
     memset(s, 0, sizeof(*s));
 }
 
@@ -111,7 +111,7 @@ _mb_surrogate(int c)
 }
 
 static __inline int
-_mb_count(wchar_t v)
+_mb_count(_citrus_wc_t v)
 {
     uint32_t c;
 
@@ -124,15 +124,15 @@ _mb_count(wchar_t v)
 }
 
 #define _PSENC      (psenc->ch[psenc->chlen - 1])
-#define _PUSH_PSENC(c)  (psenc->ch[psenc->chlen++] = (c))
+#define _PUSH_PSENC(c)  (psenc->ch[psenc->chlen++] = (char)(c))
 
 static int
 _citrus_GBK2K_mbrtowc_priv(_GBK2KEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
+    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
     _GBK2KState * __restrict psenc, size_t * __restrict nresult)
 {
     char *s0, *s1;
-    wchar_t wc;
+    _citrus_wc_t wc;
     int chlenbak, len;
 
     s0 = *s;
@@ -228,7 +228,7 @@ ilseq:
 
 static int
 _citrus_GBK2K_wcrtomb_priv(_GBK2KEncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, wchar_t wc, _GBK2KState * __restrict psenc,
+    char * __restrict s, size_t n, _citrus_wc_t wc, _GBK2KState * __restrict psenc,
     size_t * __restrict nresult)
 {
     size_t len;
@@ -286,9 +286,10 @@ err:
 static __inline int
 /*ARGSUSED*/
 _citrus_GBK2K_stdenc_wctocs(_GBK2KEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
     uint8_t ch, cl;
+    (void) ei;
 
     if ((uint32_t)wc < 0x80) {
         /* ISO646 */
@@ -318,27 +319,27 @@ _citrus_GBK2K_stdenc_wctocs(_GBK2KEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_GBK2K_stdenc_cstowc(_GBK2KEncodingInfo * __restrict ei,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     switch (csid) {
     case 0:
         /* ISO646 */
-        *wc = (wchar_t)idx;
+        *wc = (_citrus_wc_t)idx;
         break;
     case 1:
         /* EUC G1 */
-        *wc = (wchar_t)idx | 0x8080U;
+        *wc = (_citrus_wc_t)idx | 0x8080U;
         break;
     case 2:
         /* extended area */
-        *wc = (wchar_t)idx;
+        *wc = (_citrus_wc_t)idx;
         break;
     case 3:
         /* GBKUCS : XXX */
         if (ei->mb_cur_max != 4)
             return (EINVAL);
-        *wc = (wchar_t)idx;
+        *wc = (_citrus_wc_t)idx;
         break;
     default:
         return (EILSEQ);
@@ -352,7 +353,7 @@ static __inline int
 _citrus_GBK2K_stdenc_get_state_desc_generic(_GBK2KEncodingInfo * __restrict ei __unused,
     _GBK2KState * __restrict psenc, int * __restrict rstate)
 {
-
+    (void) ei;
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
         _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
@@ -385,7 +386,7 @@ static void
 /*ARGSUSED*/
 _citrus_GBK2K_encoding_module_uninit(_GBK2KEncodingInfo *ei __unused)
 {
-
+    (void) ei;
 }
 
 /* ----------------------------------------------------------------------

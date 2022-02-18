@@ -79,7 +79,7 @@ static __inline void
 _citrus_UTF7_init_state(_UTF7EncodingInfo * __restrict ei __unused,
     _UTF7State * __restrict s)
 {
-
+    (void) ei;
     memset((void *)s, 0, sizeof(*s));
 }
 
@@ -216,7 +216,7 @@ ilseq:
 
 static int
 _citrus_UTF7_mbrtowc_priv(_UTF7EncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
+    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
     _UTF7State * __restrict psenc, size_t * __restrict nresult)
 {
     uint32_t u32;
@@ -260,7 +260,7 @@ _citrus_UTF7_mbrtowc_priv(_UTF7EncodingInfo * __restrict ei,
     siz += nr;
 done:
     if (pwc != NULL)
-        *pwc = (wchar_t)u32;
+        *pwc = (_citrus_wc_t)u32;
     if (u32 == (uint32_t)0) {
         *nresult = (size_t)0;
         _citrus_UTF7_init_state(ei, psenc);
@@ -276,6 +276,8 @@ _citrus_UTF7_utf16tomb(_UTF7EncodingInfo * __restrict ei,
     _UTF7State * __restrict psenc, size_t * __restrict nresult)
 {
     int bits, i;
+
+    (void) n;
 
     if (psenc->chlen != 0 || psenc->bits > BASE64_BIT)
         return (EINVAL);
@@ -321,7 +323,7 @@ _citrus_UTF7_utf16tomb(_UTF7EncodingInfo * __restrict ei,
 
 static int
 _citrus_UTF7_wcrtomb_priv(_UTF7EncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, wchar_t wchar,
+    char * __restrict s, size_t n, _citrus_wc_t wchar,
     _UTF7State * __restrict psenc, size_t * __restrict nresult)
 {
     uint32_t u32;
@@ -335,7 +337,7 @@ _citrus_UTF7_wcrtomb_priv(_UTF7EncodingInfo * __restrict ei,
         len = 1;
     } else if (u32 <= UTF32_MAX) {
         u32 -= SRG_BASE;
-        u16[0] = (u32 >> 10) + HISRG_MIN;
+        u16[0] = (uint16_t) ((u32 >> 10) + HISRG_MIN);
         u16[1] = ((uint16_t)(u32 & UINT32_C(0x3ff))) + LOSRG_MIN;
         len = 2;
     } else {
@@ -363,6 +365,7 @@ _citrus_UTF7_put_state_reset(_UTF7EncodingInfo * __restrict ei __unused,
     size_t * __restrict nresult)
 {
     int bits, pos;
+    (void) ei;
 
     if (psenc->chlen != 0 || psenc->bits > BASE64_BIT)
         return (EINVAL);
@@ -396,8 +399,9 @@ _citrus_UTF7_put_state_reset(_UTF7EncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_UTF7_stdenc_wctocs(_UTF7EncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
+    (void) ei;
 
     *csid = 0;
     *idx = (_citrus_index_t)wc;
@@ -408,12 +412,13 @@ _citrus_UTF7_stdenc_wctocs(_UTF7EncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_UTF7_stdenc_cstowc(_UTF7EncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
+    (void) ei;
 
     if (csid != 0)
         return (EILSEQ);
-    *wc = (wchar_t)idx;
+    *wc = (_citrus_wc_t)idx;
 
     return (0);
 }
@@ -423,6 +428,7 @@ static __inline int
 _citrus_UTF7_stdenc_get_state_desc_generic(_UTF7EncodingInfo * __restrict ei __unused,
     _UTF7State * __restrict psenc, int * __restrict rstate)
 {
+    (void) ei;
 
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
         _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
@@ -433,6 +439,7 @@ static void
 /*ARGSUSED*/
 _citrus_UTF7_encoding_module_uninit(_UTF7EncodingInfo *ei __unused)
 {
+    (void) ei;
 
     /* ei seems to be unused */
 }
@@ -443,6 +450,8 @@ _citrus_UTF7_encoding_module_init(_UTF7EncodingInfo * __restrict ei,
     const void * __restrict var __unused, size_t lenvar __unused)
 {
     const char *s;
+    (void) var;
+    (void) lenvar;
 
     memset(ei, 0, sizeof(*ei));
 

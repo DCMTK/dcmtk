@@ -28,7 +28,11 @@
 #define _CITRUS_HASH_H_
 
 #include "dcmtk/config/osconfig.h"
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
 #define _CITRUS_HASH_ENTRY(type) LIST_ENTRY(type)
 #define _CITRUS_HASH_HEAD(headname, type, hashsize) \

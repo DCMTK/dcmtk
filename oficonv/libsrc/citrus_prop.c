@@ -81,8 +81,8 @@ _citrus_prop_read_##_func_##_common(struct _citrus_memory_stream * __restrict ms
     cutlim = _max_ % base;                      \
     for (;;) {                          \
         ch = _citrus_memory_stream_getc(ms);               \
-        p = strchr(xdigit, _citrus_bcs_toupper(ch));           \
-        if (p == NULL || (n = (p - xdigit)) >= base)        \
+        p = strchr(xdigit, _citrus_bcs_toupper((uint8_t)ch));           \
+        if (p == NULL || (n = (int)(p - xdigit)) >= base)        \
             break;                      \
         if (acc > cutoff || (acc == cutoff && n > cutlim))  \
             break;                      \
@@ -94,7 +94,19 @@ _citrus_prop_read_##_func_##_common(struct _citrus_memory_stream * __restrict ms
     return (0);                         \
 }
 _CITRUS_PROP_READ_UINT_COMMON(chr, int, UCHAR_MAX)
+
+/* suppress MSVC 'unary minus operator applied to unsigned type' warning  */
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4146)
+#endif
+
 _CITRUS_PROP_READ_UINT_COMMON(num, uint64_t, UINT64_MAX)
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #undef _CITRUS_PROP_READ_UINT_COMMON
 
 #define _CITRUS_PROP_READ_INT(_func_, _type_)           \
@@ -119,14 +131,14 @@ _citrus_prop_read_##_func_(struct _citrus_memory_stream * __restrict ms,   \
         ch = _citrus_memory_stream_getc(ms);           \
         if (ch == 'x' || ch == 'X') {           \
             ch = _citrus_memory_stream_getc(ms);       \
-            if (_citrus_bcs_isxdigit(ch) == 0) {       \
+            if (_citrus_bcs_isxdigit((uint8_t)ch) == 0) {       \
                 _citrus_memory_stream_ungetc(ms, ch);  \
                 obj->u._func_ = 0;      \
                 return (0);         \
             }                   \
             base += 8;              \
         }                       \
-    } else if (_citrus_bcs_isdigit(ch) == 0)           \
+    } else if (_citrus_bcs_isdigit((uint8_t)ch) == 0)           \
         return (EINVAL);                \
     _citrus_memory_stream_ungetc(ms, ch);              \
     return (_citrus_prop_read_##_func_##_common     \
@@ -214,20 +226,20 @@ _citrus_prop_read_bool(struct _citrus_memory_stream * __restrict ms,
 {
 
     _citrus_memory_stream_skip_ws(ms);
-    switch (_citrus_bcs_tolower(_citrus_memory_stream_getc(ms))) {
+    switch (_citrus_bcs_tolower((uint8_t) _citrus_memory_stream_getc(ms))) {
     case 't':
-        if (_citrus_bcs_tolower(_citrus_memory_stream_getc(ms)) == 'r' &&
-            _citrus_bcs_tolower(_citrus_memory_stream_getc(ms)) == 'u' &&
-            _citrus_bcs_tolower(_citrus_memory_stream_getc(ms)) == 'e') {
+        if (_citrus_bcs_tolower((uint8_t) _citrus_memory_stream_getc(ms)) == 'r' &&
+            _citrus_bcs_tolower((uint8_t) _citrus_memory_stream_getc(ms)) == 'u' &&
+            _citrus_bcs_tolower((uint8_t) _citrus_memory_stream_getc(ms)) == 'e') {
             obj->u.boolean = true;
             return (0);
         }
         break;
     case 'f':
-        if (_citrus_bcs_tolower(_citrus_memory_stream_getc(ms)) == 'a' &&
-            _citrus_bcs_tolower(_citrus_memory_stream_getc(ms)) == 'l' &&
-            _citrus_bcs_tolower(_citrus_memory_stream_getc(ms)) == 's' &&
-            _citrus_bcs_tolower(_citrus_memory_stream_getc(ms)) == 'e') {
+        if (_citrus_bcs_tolower((uint8_t) _citrus_memory_stream_getc(ms)) == 'a' &&
+            _citrus_bcs_tolower((uint8_t) _citrus_memory_stream_getc(ms)) == 'l' &&
+            _citrus_bcs_tolower((uint8_t) _citrus_memory_stream_getc(ms)) == 's' &&
+            _citrus_bcs_tolower((uint8_t) _citrus_memory_stream_getc(ms)) == 'e') {
             obj->u.boolean = false;
             return (0);
         }
@@ -262,7 +274,7 @@ _citrus_prop_read_str(struct _citrus_memory_stream * __restrict ms,
     case '\"': case '\'':
         break;
     default:
-        s[n] = quot;
+        s[n] = (char)quot;
         ++n, --m;
         quot = EOF;
     }
@@ -278,7 +290,7 @@ _citrus_prop_read_str(struct _citrus_memory_stream * __restrict ms,
         }
         ch = _citrus_memory_stream_getc(ms);
         if (quot == ch || (quot == EOF &&
-            (ch == ';' || _citrus_bcs_isspace(ch)))) {
+            (ch == ';' || _citrus_bcs_isspace((uint8_t)ch)))) {
 done:
             s[n] = '\0';
             obj->u.str = (const char *)s;
@@ -291,11 +303,12 @@ done:
             free(s);
             return (errnum);
         }
-        s[n] = ch;
+        s[n] = (char)ch;
         ++n, --m;
     }
-    free(s);
-    return (EINVAL);
+    /* this code can never be reached */
+    // free(s);
+    //return (EINVAL);
 #undef _CITRUS_PROP_STR_BUFSIZ
 }
 
@@ -318,12 +331,12 @@ _citrus_prop_read_symbol(struct _citrus_memory_stream * __restrict ms,
 
     for (m = 0; m < n; ++m) {
         ch = _citrus_memory_stream_getc(ms);
-        if (ch != '_' && _citrus_bcs_isalnum(ch) == 0)
+        if (ch != '_' && _citrus_bcs_isalnum((uint8_t)ch) == 0)
             goto name_found;
-        s[m] = ch;
+        s[m] = (char)ch;
     }
     ch = _citrus_memory_stream_getc(ms);
-    if (ch == '_' || _citrus_bcs_isalnum(ch) != 0)
+    if (ch == '_' || _citrus_bcs_isalnum((uint8_t)ch) != 0)
         return (EINVAL);
 
 name_found:

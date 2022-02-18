@@ -31,7 +31,11 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
 
 #include <errno.h>
@@ -57,7 +61,11 @@
 
 static struct _citrus_mapper_area   *maparea = NULL;
 
-static pthread_rwlock_t         ma_lock = PTHREAD_RWLOCK_INITIALIZER;
+#ifdef HAVE_WINDOWS_H
+static SRWLOCK ma_lock = SRWLOCK_INIT;
+#else
+static pthread_rwlock_t ma_lock = PTHREAD_RWLOCK_INITIALIZER;
+#endif
 
 #define CS_ALIAS    _PATH_CSMAPPER "/charset.alias"
 #define CS_PIVOT    _PATH_CSMAPPER "/charset.pivot"

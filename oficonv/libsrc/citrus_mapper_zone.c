@@ -27,7 +27,11 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_mapper_zone.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
 #include <errno.h>
 #include <stdio.h>
@@ -106,12 +110,12 @@ retry:
                 sign = c;
                 _citrus_memory_stream_getc(ms);
                 goto retry;
-            } else if (!_citrus_bcs_isdigit(c))
+            } else if (!_citrus_bcs_isdigit((uint8_t)c))
                 break;
-        } else if (!_citrus_bcs_isxdigit(c))
+        } else if (!_citrus_bcs_isxdigit((uint8_t)c))
             if (!(i == 1 && c == 'x'))
                 break;
-        buf[i] = _citrus_memory_stream_getc(ms);
+        buf[i] = (char) _citrus_memory_stream_getc(ms);
     }
     buf[i] = '\0';
     ps->ps_u_imm = strtoul(buf, &p, 0);
@@ -131,7 +135,7 @@ loop:
     c = _citrus_memory_stream_peek(ms);
     if (c == 0x00)
         return (EOF);
-    if (_citrus_bcs_isspace(c)) {
+    if (_citrus_bcs_isspace((uint8_t)c)) {
         _citrus_memory_stream_getc(ms);
         goto loop;
     }
@@ -301,6 +305,8 @@ _citrus_mapper_zone_mapper_init(struct _citrus_mapper_area *__restrict ma __unus
     struct _citrus_mapper_zone *mz;
     struct _citrus_memory_stream ms;
     struct _citrus_region r;
+    (void) ma;
+    (void) dir;
 
     if (lenmt < sizeof(*mt))
         return (EINVAL);
@@ -332,7 +338,7 @@ static void
 /*ARGSUSED*/
 _citrus_mapper_zone_mapper_uninit(struct _citrus_csmapper *cm __unused)
 {
-
+    (void) cm;
 }
 
 static int
@@ -343,6 +349,7 @@ _citrus_mapper_zone_mapper_convert(struct _citrus_csmapper * __restrict cm,
 {
     struct _citrus_mapper_zone *mz = cm->cm_closure;
     uint32_t col, row;
+    (void) ps;
 
     if (mz->mz_col_bits == 32) {
         col = src;

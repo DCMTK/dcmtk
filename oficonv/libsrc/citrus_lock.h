@@ -30,7 +30,18 @@
 #include <pthread.h>
 #endif
 
-#define WLOCK(lock) if (__isthreaded)       \
-                pthread_rwlock_wrlock(lock);
-#define UNLOCK(lock)    if (__isthreaded)       \
-                pthread_rwlock_unlock(lock);
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+
+#ifdef HAVE_WINDOWS_H
+
+#define WLOCK(lock)  if (__isthreaded) AcquireSRWLockExclusive(lock);
+#define UNLOCK(lock) if (__isthreaded) ReleaseSRWLockExclusive(lock);
+
+#else
+
+#define WLOCK(lock)  if (__isthreaded) pthread_rwlock_wrlock(lock);
+#define UNLOCK(lock) if (__isthreaded) pthread_rwlock_unlock(lock);
+
+#endif

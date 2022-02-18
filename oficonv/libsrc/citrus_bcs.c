@@ -72,7 +72,7 @@ _citrus_bcs_strncasecmp(const char * __restrict str1,
  * skip white space characters.
  */
 const char *
-_citrus_bcs_skip_ws(const char *p)
+_citrus_bcs_skip_ws(const char * __restrict p)
 {
 
     while (*p && _citrus_bcs_isspace(*p))
@@ -85,7 +85,7 @@ _citrus_bcs_skip_ws(const char *p)
  * skip non white space characters.
  */
 const char *
-_citrus_bcs_skip_nonws(const char *p)
+_citrus_bcs_skip_nonws(const char * __restrict p)
 {
 
     while (*p && !_citrus_bcs_isspace(*p))

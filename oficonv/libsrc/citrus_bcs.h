@@ -32,6 +32,9 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
 
 #include <stdint.h>
 #include <limits.h>
@@ -47,8 +50,15 @@
 #define __packed
 #endif
 
-/* the "restrict" type qualifier was introduced in C99. */
-#define __restrict      restrict
+/* the "restrict" type qualifier was introduced in C99. MSVC has __restrict instead. */
+#ifdef _MSC_VER
+#define __restrict __restrict
+#define LINE_MAX 2048
+#define PATH_MAX MAX_PATH
+#else
+#define __restrict restrict
+#endif
+
 #ifndef EFTYPE
 #define EFTYPE EINVAL
 #endif
@@ -109,6 +119,22 @@
 #   endif
 #endif
 
+#if BYTE_ORDER == LITTLE_ENDIAN
+#ifndef be16toh
+#  define be16toh(x) ((uint16_t) ((((x) >> 8) & 0xff) | (((x) & 0xff) << 8)))
+#endif
+#ifndef be32toh
+#  define be32toh(x) ((((x) & 0xff000000u) >> 24) | (((x) & 0x00ff0000u) >> 8) | (((x) & 0x0000ff00u) << 8) | (((x) & 0x000000ffu) << 24))
+#endif
+#else
+#ifndef be16toh
+#  define be16toh(x) ((uint32_t)(x))
+#endif
+#ifndef be32toh
+#  define be32toh(x) ((uint16_t)(x))
+#endif
+#endif
+
 /*
  * predicate/conversion for basic character set.
  *
@@ -162,8 +188,8 @@ const char *_citrus_bcs_skip_nonws_len(const char * __restrict, size_t * __restr
 void _citrus_bcs_trunc_rws_len(const char * __restrict, size_t * __restrict);
 void _citrus_bcs_convert_to_lower(char *);
 void _citrus_bcs_convert_to_upper(char *);
-long int _citrus_bcs_strtol(const char * __restrict, char ** __restrict, int);
-unsigned long _citrus_bcs_strtoul(const char * __restrict, char ** __restrict, int);
+long int _citrus_bcs_strtol(const char * , char ** , int);
+unsigned long _citrus_bcs_strtoul(const char * , char ** , int);
 END_EXTERN_C
 
 #endif

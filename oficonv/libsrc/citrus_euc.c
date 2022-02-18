@@ -88,8 +88,8 @@ typedef struct {
 } _EUCState;
 
 typedef struct {
-    wchar_t      bits[4];
-    wchar_t      mask;
+    _citrus_wc_t      bits[4];
+    _citrus_wc_t      mask;
     unsigned     count[4];
     unsigned     mb_cur_max;
 } _EUCEncodingInfo;
@@ -124,6 +124,7 @@ _citrus_EUC_parse_variable(_EUCEncodingInfo *ei, const void *var,
     char *e;
     const char *v;
     int x;
+    (void) lenvar;
 
     /* parse variable string */
     if (!var)
@@ -164,15 +165,15 @@ static __inline void
 /*ARGSUSED*/
 _citrus_EUC_init_state(_EUCEncodingInfo *ei __unused, _EUCState *s)
 {
-
+    (void) ei;
     memset(s, 0, sizeof(*s));
 }
 
 static int
-_citrus_EUC_mbrtowc_priv(_EUCEncodingInfo *ei, wchar_t *pwc, char **s,
+_citrus_EUC_mbrtowc_priv(_EUCEncodingInfo *ei, _citrus_wc_t *pwc, char **s,
     size_t n, _EUCState *psenc, size_t *nresult)
 {
-    wchar_t wchar;
+    _citrus_wc_t wchar;
     int c, chlenbak, cs, len;
     char *s0, *s1 = NULL;
 
@@ -253,14 +254,15 @@ restart:
 }
 
 static int
-_citrus_EUC_wcrtomb_priv(_EUCEncodingInfo *ei, char *s, size_t n, wchar_t wc,
+_citrus_EUC_wcrtomb_priv(_EUCEncodingInfo *ei, char *s, size_t n, _citrus_wc_t wc,
     _EUCState *psenc __unused, size_t *nresult)
 {
-    wchar_t m, nm;
+    _citrus_wc_t m, nm;
     unsigned int cs;
     int ret;
-    short i;
+    int i;
 
+    (void) psenc;
     m = wc & ei->mask;
     nm = wc & ~m;
 
@@ -289,7 +291,7 @@ _citrus_EUC_wcrtomb_priv(_EUCEncodingInfo *ei, char *s, size_t n, wchar_t wc,
     }
 
     while (i-- > 0)
-        *s++ = ((nm >> (i << 3)) & 0xff) | m;
+        *s++ = (char)(((nm >> (i << 3)) & 0xff) | m);
 
     *nresult = (size_t)ei->count[cs];
     return (0);
@@ -302,9 +304,9 @@ err:
 static __inline int
 /*ARGSUSED*/
 _citrus_EUC_stdenc_wctocs(_EUCEncodingInfo * __restrict ei,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
-    wchar_t m, nm;
+    _citrus_wc_t m, nm;
 
     m = wc & ei->mask;
     nm = wc & ~m;
@@ -318,13 +320,13 @@ _citrus_EUC_stdenc_wctocs(_EUCEncodingInfo * __restrict ei,
 static __inline int
 /*ARGSUSED*/
 _citrus_EUC_stdenc_cstowc(_EUCEncodingInfo * __restrict ei,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     if ((csid & ~ei->mask) != 0 || (idx & ei->mask) != 0)
         return (EINVAL);
 
-    *wc = (wchar_t)csid | (wchar_t)idx;
+    *wc = (_citrus_wc_t)csid | (_citrus_wc_t)idx;
 
     return (0);
 }
@@ -335,6 +337,7 @@ _citrus_EUC_stdenc_get_state_desc_generic(_EUCEncodingInfo * __restrict ei __unu
     _EUCState * __restrict psenc, int * __restrict rstate)
 {
 
+    (void) ei;
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
         _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
     return (0);
@@ -353,7 +356,7 @@ static void
 /*ARGSUSED*/
 _citrus_EUC_encoding_module_uninit(_EUCEncodingInfo * __restrict ei __unused)
 {
-
+    (void) ei;
 }
 
 /* ----------------------------------------------------------------------

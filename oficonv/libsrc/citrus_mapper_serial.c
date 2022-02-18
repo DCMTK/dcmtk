@@ -27,8 +27,11 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_mapper_serial.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
-
+#else
+#include "oficonv_queue.h"
+#endif
 
 #include <errno.h>
 #include <limits.h>
@@ -161,6 +164,8 @@ _citrus_mapper_serial_mapper_init(struct _citrus_mapper_area *__restrict ma __un
     struct _citrus_mapper_serial *sr;
     struct _citrus_memory_stream ms;
     struct _citrus_region r;
+    (void) ma;
+    (void) dir;
 
     if (lenmt < sizeof(*mt))
         return (EINVAL);
@@ -202,6 +207,7 @@ _citrus_mapper_serial_mapper_convert(struct _citrus_csmapper * __restrict cm,
     struct _citrus_mapper_serial *sr;
     struct maplink *ml;
     int ret;
+    (void) ps;
 
     sr = cm->cm_closure;
     STAILQ_FOREACH(ml, &sr->sr_mappers, ml_entry) {
@@ -222,6 +228,7 @@ _citrus_mapper_parallel_mapper_convert(struct _citrus_csmapper * __restrict cm,
     struct maplink *ml;
     _citrus_index_t tmp;
     int ret;
+    (void) ps;
 
     sr = cm->cm_closure;
     STAILQ_FOREACH(ml, &sr->sr_mappers, ml_entry) {

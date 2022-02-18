@@ -67,7 +67,7 @@ static __inline void
 _citrus_UES_init_state(_UESEncodingInfo * __restrict ei __unused,
     _UESState * __restrict psenc)
 {
-
+    (void) ei;
     psenc->chlen = 0;
 }
 
@@ -97,7 +97,7 @@ to_int(int ch)
 static const char *xdig = "0123456789abcdef";
 
 static __inline int
-to_str(char *s, wchar_t wc, int bit)
+to_str(char *s, _citrus_wc_t wc, int bit)
 {
     char *p;
 
@@ -116,25 +116,25 @@ to_str(char *s, wchar_t wc, int bit)
     do {
         *p++ = xdig[(wc >> (bit -= 4)) & 0xF];
     } while (bit > 0);
-    return (p - s);
+    return (int) (p - s);
 }
 
 static __inline bool
-is_hi_surrogate(wchar_t wc)
+is_hi_surrogate(_citrus_wc_t wc)
 {
 
     return (wc >= 0xD800 && wc <= 0xDBFF);
 }
 
 static __inline bool
-is_lo_surrogate(wchar_t wc)
+is_lo_surrogate(_citrus_wc_t wc)
 {
 
     return (wc >= 0xDC00 && wc <= 0xDFFF);
 }
 
-static __inline wchar_t
-surrogate_to_ucs(wchar_t hi, wchar_t lo)
+static __inline _citrus_wc_t
+surrogate_to_ucs(_citrus_wc_t hi, _citrus_wc_t lo)
 {
 
     hi -= 0xD800;
@@ -143,7 +143,7 @@ surrogate_to_ucs(wchar_t hi, wchar_t lo)
 }
 
 static __inline void
-ucs_to_surrogate(wchar_t wc, wchar_t * __restrict hi, wchar_t * __restrict lo)
+ucs_to_surrogate(_citrus_wc_t wc, _citrus_wc_t * __restrict hi, _citrus_wc_t * __restrict lo)
 {
 
     wc -= 0x10000;
@@ -152,7 +152,7 @@ ucs_to_surrogate(wchar_t wc, wchar_t * __restrict hi, wchar_t * __restrict lo)
 }
 
 static __inline bool
-is_basic(wchar_t wc)
+is_basic(_citrus_wc_t wc)
 {
 
     return ((uint32_t)wc <= 0x9F && wc != 0x24 && wc != 0x40 &&
@@ -161,12 +161,12 @@ is_basic(wchar_t wc)
 
 static int
 _citrus_UES_mbrtowc_priv(_UESEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
+    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
     _UESState * __restrict psenc, size_t * __restrict nresult)
 {
     char *s0;
     int ch, head, num, tail;
-    wchar_t hi, wc;
+    _citrus_wc_t hi, wc;
 
     if (*s == NULL) {
         _citrus_UES_init_state(ei, psenc);
@@ -175,11 +175,11 @@ _citrus_UES_mbrtowc_priv(_UESEncodingInfo * __restrict ei,
     }
     s0 = *s;
 
-    hi = (wchar_t)0;
+    hi = (_citrus_wc_t)0;
     tail = 0;
 
 surrogate:
-    wc = (wchar_t)0;
+    wc = (_citrus_wc_t)0;
     head = tail;
     if (psenc->chlen == head) {
         if (n-- < 1)
@@ -230,7 +230,7 @@ restart:
     case 0:
         break;
     case 6:
-        if (hi != (wchar_t)0)
+        if (hi != (_citrus_wc_t)0)
             break;
         if ((ei->mode & MODE_C99) == 0) {
             if (is_hi_surrogate(wc) != 0) {
@@ -259,7 +259,7 @@ restart:
     head = psenc->chlen;
     if (--head > 0)
         memmove(&psenc->ch[0], &psenc->ch[1], head);
-    wc = (wchar_t)ch;
+    wc = (_citrus_wc_t)ch;
 done:
     psenc->chlen = head;
     if (pwc != NULL)
@@ -272,10 +272,10 @@ done:
 
 static int
 _citrus_UES_wcrtomb_priv(_UESEncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, wchar_t wc,
+    char * __restrict s, size_t n, _citrus_wc_t wc,
     _UESState * __restrict psenc, size_t * __restrict nresult)
 {
-    wchar_t hi, lo;
+    _citrus_wc_t hi, lo;
 
     if (psenc->chlen != 0)
         return (EINVAL);
@@ -316,8 +316,9 @@ e2big:
 /*ARGSUSED*/
 static int
 _citrus_UES_stdenc_wctocs(_UESEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
+    (void) ei;
 
     *csid = 0;
     *idx = (_citrus_index_t)wc;
@@ -328,12 +329,13 @@ _citrus_UES_stdenc_wctocs(_UESEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_UES_stdenc_cstowc(_UESEncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
+    (void) ei;
 
     if (csid != 0)
         return (EILSEQ);
-    *wc = (wchar_t)idx;
+    *wc = (_citrus_wc_t)idx;
 
     return (0);
 }
@@ -343,6 +345,7 @@ static __inline int
 _citrus_UES_stdenc_get_state_desc_generic(_UESEncodingInfo * __restrict ei __unused,
     _UESState * __restrict psenc, int * __restrict rstate)
 {
+    (void) ei;
 
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
         _CITRUS_STDENC_SDGEN_INCOMPLETE_CHAR;
@@ -353,6 +356,7 @@ static void
 /*ARGSUSED*/
 _citrus_UES_encoding_module_uninit(_UESEncodingInfo *ei __unused)
 {
+    (void) ei;
 
     /* ei seems to be unused */
 }

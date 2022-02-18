@@ -53,10 +53,10 @@ int
 _FUNCNAME(stdenc_getops)(struct _citrus_stdenc_ops *ops,
     size_t lenops __unused)
 {
-
+    (void) lenops;
     memcpy(ops, &_FUNCNAME(stdenc_ops), sizeof(_FUNCNAME(stdenc_ops)));
 
-    return (0);
+    return 0;
 }
 
 static int
@@ -68,11 +68,22 @@ _FUNCNAME(stdenc_init)(struct _citrus_stdenc * __restrict ce,
     int ret;
 
     ei = NULL;
+
+/* suppress MSVC 'expression is constant' warning  */
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4127)
+#endif
+
     if (sizeof(_ENCODING_INFO) > 0) {
         ei = calloc(1, sizeof(_ENCODING_INFO));
         if (ei == NULL)
             return (errno);
     }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
     ret = _FUNCNAME(encoding_module_init)(ei, var, lenvar);
     if (ret) {
@@ -88,9 +99,8 @@ _FUNCNAME(stdenc_init)(struct _citrus_stdenc * __restrict ce,
 }
 
 static void
-_FUNCNAME(stdenc_uninit)(struct _citrus_stdenc * __restrict ce)
+_FUNCNAME(stdenc_uninit)(struct _citrus_stdenc * ce)
 {
-
     if (ce) {
         _FUNCNAME(encoding_module_uninit)(_CE_TO_EI(ce));
         free(ce->ce_closure);
@@ -113,7 +123,7 @@ _FUNCNAME(stdenc_mbtocs)(struct _citrus_stdenc * __restrict ce,
     char ** __restrict s, size_t n, void * __restrict ps,
     size_t * __restrict nresult, struct iconv_hooks *hooks)
 {
-    wchar_t wc;
+    _citrus_wc_t wc;
     int ret;
 
     wc = ret = 0;
@@ -135,9 +145,10 @@ _FUNCNAME(stdenc_cstomb)(struct _citrus_stdenc * __restrict ce,
     void * __restrict ps, size_t * __restrict nresult,
     struct iconv_hooks *hooks __unused)
 {
-    wchar_t wc;
+    _citrus_wc_t wc;
     int ret;
 
+    (void) hooks;
     wc = ret = 0;
 
     if (csid != _CITRUS_CSID_INVALID)
@@ -157,7 +168,7 @@ _FUNCNAME(stdenc_mbtowc)(struct _citrus_stdenc * __restrict ce,
 {
     int ret;
 
-    ret = _FUNCNAME(mbrtowc_priv)(_CE_TO_EI(ce), (wchar_t * __restrict ) wc, s, n,
+    ret = _FUNCNAME(mbrtowc_priv)(_CE_TO_EI(ce), (_citrus_wc_t * __restrict ) wc, s, n,
         _TO_STATE(ps), nresult);
     if ((ret == 0) && (hooks != NULL) && (hooks->wc_hook != NULL))
         hooks->wc_hook(*wc, hooks->data);
@@ -170,7 +181,7 @@ _FUNCNAME(stdenc_wctomb)(struct _citrus_stdenc * __restrict ce,
     size_t * __restrict nresult, struct iconv_hooks *hooks __unused)
 {
     int ret;
-
+    (void) hooks;
     ret = _FUNCNAME(wcrtomb_priv)(_CE_TO_EI(ce), s, n, wc, _TO_STATE(ps),
         nresult);
     return (ret);
@@ -181,11 +192,14 @@ _FUNCNAME(stdenc_put_state_reset)(struct _citrus_stdenc * __restrict ce __unused
     char * __restrict s __unused, size_t n __unused,
     void * __restrict ps __unused, size_t * __restrict nresult)
 {
-
 #if _ENCODING_IS_STATE_DEPENDENT
     return ((_FUNCNAME(put_state_reset)(_CE_TO_EI(ce), s, n, _TO_STATE(ps),
         nresult)));
 #else
+    (void) ce;
+    (void) s;
+    (void) n;
+    (void) ps;
     *nresult = 0;
     return (0);
 #endif

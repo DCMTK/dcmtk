@@ -27,7 +27,11 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_iconv_std.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "oficonv_queue.h"
+#endif
 
 
 #include <errno.h>

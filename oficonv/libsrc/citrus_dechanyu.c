@@ -31,6 +31,9 @@
 #include <sys/types.h>
 #endif
 
+#ifndef __CONCAT
+#define __CONCAT(x,y) x ## y
+#endif
 
 #include <errno.h>
 #include <limits.h>
@@ -74,7 +77,7 @@ static __inline void
 _citrus_DECHanyu_init_state(_DECHanyuEncodingInfo * __restrict ei __unused,
     _DECHanyuState * __restrict psenc)
 {
-
+    (void) ei;
     psenc->chlen = 0;
 }
 
@@ -83,7 +86,7 @@ static __inline void
 _citrus_DECHanyu_pack_state(_DECHanyuEncodingInfo * __restrict ei __unused,
     void * __restrict pspriv, const _DECHanyuState * __restrict psenc)
 {
-
+    (void) ei;
     memcpy(pspriv, (const void *)psenc, sizeof(*psenc));
 }
 
@@ -93,7 +96,7 @@ _citrus_DECHanyu_unpack_state(_DECHanyuEncodingInfo * __restrict ei __unused,
     _DECHanyuState * __restrict psenc,
     const void * __restrict pspriv)
 {
-
+    (void) ei;
     memcpy((void *)psenc, pspriv, sizeof(*psenc));
 }
 
@@ -101,8 +104,8 @@ static void
 /*ARGSUSED*/
 _citrus_DECHanyu_encoding_module_uninit(_DECHanyuEncodingInfo *ei __unused)
 {
-
     /* ei may be null */
+    (void) ei;
 }
 
 static int
@@ -110,8 +113,10 @@ static int
 _citrus_DECHanyu_encoding_module_init(_DECHanyuEncodingInfo * __restrict ei __unused,
     const void * __restrict var __unused, size_t lenvar __unused)
 {
-
     /* ei may be null */
+    (void) ei;
+    (void) var;
+    (void) lenvar;
     return (0);
 }
 
@@ -163,11 +168,11 @@ is_94charset(int c)
 static int
 /*ARGSUSED*/
 _citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, char ** __restrict s, size_t n,
+    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
     _DECHanyuState * __restrict psenc, size_t * __restrict nresult)
 {
     char *s0;
-    wchar_t wc;
+    _citrus_wc_t wc;
     int ch;
 
     if (*s == NULL) {
@@ -177,7 +182,7 @@ _citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * __restrict ei,
     }
     s0 = *s;
 
-    wc = (wchar_t)0;
+    wc = (_citrus_wc_t)0;
     switch (psenc->chlen) {
     case 0:
         if (n-- < 1)
@@ -185,14 +190,14 @@ _citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * __restrict ei,
         ch = *s0++ & 0xFF;
         if (is_singlebyte(ch)) {
             if (pwc != NULL)
-                *pwc = (wchar_t)ch;
+                *pwc = (_citrus_wc_t)ch;
             *nresult = (size_t)((ch == 0) ? 0 : 1);
             *s = s0;
             return (0);
         }
         if (!is_leadbyte(ch))
             goto ilseq;
-        psenc->ch[psenc->chlen++] = ch;
+        psenc->ch[psenc->chlen++] = (char) ch;
         break;
     case 1:
         ch = psenc->ch[0] & 0xFF;
@@ -204,7 +209,7 @@ _citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * __restrict ei,
         if (is_hanyu1(ch)) {
             ch = psenc->ch[1] & 0xFF;
             if (is_hanyu2(ch)) {
-                wc |= (wchar_t)HANYUBIT;
+                wc |= (_citrus_wc_t)HANYUBIT;
                 break;
             }
         }
@@ -221,14 +226,14 @@ _citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * __restrict ei,
             ch = *s0++ & 0xFF;
             if (!is_hanyu2(ch))
                 goto ilseq;
-            psenc->ch[psenc->chlen++] = ch;
-            wc |= (wchar_t)HANYUBIT;
+            psenc->ch[psenc->chlen++] = (char) ch;
+            wc |= (_citrus_wc_t)HANYUBIT;
             if (n-- < 1)
                 goto restart;
             ch = *s0++ & 0xFF;
             if (!is_leadbyte(ch))
                 goto ilseq;
-            psenc->ch[psenc->chlen++] = ch;
+            psenc->ch[psenc->chlen++] = (char) ch;
         }
         break;
     case 2:
@@ -237,7 +242,7 @@ _citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * __restrict ei,
         ch = *s0++ & 0xFF;
         if (!is_leadbyte(ch))
             goto ilseq;
-        psenc->ch[psenc->chlen++] = ch;
+        psenc->ch[psenc->chlen++] = (char) ch;
         break;
     case 3:
         ch = psenc->ch[2] & 0xFF;
@@ -246,11 +251,11 @@ _citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * __restrict ei,
     }
     if (n-- < 1)
         goto restart;
-    wc |= (wchar_t)(ch << 8);
+    wc |= (_citrus_wc_t)(ch << 8);
     ch = *s0++ & 0xFF;
     if (!is_trailbyte(ch))
         goto ilseq;
-    wc |= (wchar_t)ch;
+    wc |= (_citrus_wc_t)ch;
     if (pwc != NULL)
         *pwc = wc;
     *nresult = (size_t)(s0 - *s);
@@ -272,20 +277,21 @@ ilseq:
 static int
 /*ARGSUSED*/
 _citrus_DECHanyu_wcrtomb_priv(_DECHanyuEncodingInfo * __restrict ei __unused,
-    char * __restrict s, size_t n, wchar_t wc,
+    char * __restrict s, size_t n, _citrus_wc_t wc,
     _DECHanyuState * __restrict psenc, size_t * __restrict nresult)
 {
     int ch;
+    (void) ei;
 
     if (psenc->chlen != 0)
         return (EINVAL);
 
-    /* XXX: assume wchar_t as int */
+    /* XXX: assume _citrus_wc_t as int */
     if ((uint32_t)wc <= 0x7F) {
         ch = wc & 0xFF;
     } else {
         if ((uint32_t)wc > 0xFFFF) {
-            if ((wc & ~0xFFFF) != (wchar_t)HANYUBIT)
+            if ((wc & ~0xFFFF) != (_citrus_wc_t)HANYUBIT)
                 goto ilseq;
             psenc->ch[psenc->chlen++] = (wc >> 24) & 0xFF;
             psenc->ch[psenc->chlen++] = (wc >> 16) & 0xFF;
@@ -294,12 +300,12 @@ _citrus_DECHanyu_wcrtomb_priv(_DECHanyuEncodingInfo * __restrict ei __unused,
         ch = (wc >> 8) & 0xFF;
         if (!is_leadbyte(ch))
             goto ilseq;
-        psenc->ch[psenc->chlen++] = ch;
+        psenc->ch[psenc->chlen++] = (char) ch;
         ch = wc & 0xFF;
         if (!is_trailbyte(ch))
             goto ilseq;
     }
-    psenc->ch[psenc->chlen++] = ch;
+    psenc->ch[psenc->chlen++] = (char) ch;
     if (n < psenc->chlen) {
         *nresult = (size_t)-1;
         return (E2BIG);
@@ -318,17 +324,18 @@ ilseq:
 static __inline int
 /*ARGSUSED*/
 _citrus_DECHanyu_stdenc_wctocs(_DECHanyuEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
-    wchar_t mask;
+    _citrus_wc_t mask;
     int plane;
+    (void) ei;
 
     plane = 0;
     mask = 0x7F;
-    /* XXX: assume wchar_t as int */
+    /* XXX: assume _citrus_wc_t as int */
     if ((uint32_t)wc > 0x7F) {
         if ((uint32_t)wc > 0xFFFF) {
-            if ((wc & ~0xFFFF) != (wchar_t)HANYUBIT)
+            if ((wc & ~0xFFFF) != (_citrus_wc_t)HANYUBIT)
                 return (EILSEQ);
             plane += 2;
         }
@@ -347,8 +354,9 @@ _citrus_DECHanyu_stdenc_wctocs(_DECHanyuEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_DECHanyu_stdenc_cstowc(_DECHanyuEncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
+    (void) ei;
 
     if (csid == 0) {
         if (idx > 0x7F)
@@ -365,7 +373,7 @@ _citrus_DECHanyu_stdenc_cstowc(_DECHanyuEncodingInfo * __restrict ei __unused,
             idx |= HANYUBIT;
     } else
         return (EILSEQ);
-    *wc = (wchar_t)idx;
+    *wc = (_citrus_wc_t)idx;
     return (0);
 }
 
@@ -375,6 +383,7 @@ _citrus_DECHanyu_stdenc_get_state_desc_generic(
     _DECHanyuEncodingInfo * __restrict ei __unused,
     _DECHanyuState * __restrict psenc, int * __restrict rstate)
 {
+    (void) ei;
 
     *rstate = (psenc->chlen == 0)
         ? _CITRUS_STDENC_SDGEN_INITIAL

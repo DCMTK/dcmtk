@@ -27,8 +27,11 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_mapper_none.h"
 
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
-
+#else
+#include "oficonv_queue.h"
+#endif
 
 #include <errno.h>
 #include <stdlib.h>
@@ -65,6 +68,10 @@ _citrus_mapper_none_mapper_init(struct _citrus_mapper_area *__restrict ma __unus
     const void * __restrict var __unused, size_t lenvar __unused,
     struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
 {
+    (void) ma;
+    (void) dir;
+    (void) var;
+    (void) lenvar;
 
     if (lenmt < sizeof(*mt))
         return (EINVAL);
@@ -80,7 +87,7 @@ static void
 /*ARGSUSED*/
 _citrus_mapper_none_mapper_uninit(struct _citrus_csmapper *cm __unused)
 {
-
+    (void) cm;
 }
 
 static int
@@ -89,6 +96,8 @@ _citrus_mapper_none_mapper_convert(struct _citrus_csmapper * __restrict cm __unu
     _citrus_index_t * __restrict dst, _citrus_index_t src,
     void * __restrict ps __unused)
 {
+    (void) cm;
+    (void) ps;
 
     *dst = src;
     return (_CITRUS_MAPPER_CONVERT_SUCCESS);

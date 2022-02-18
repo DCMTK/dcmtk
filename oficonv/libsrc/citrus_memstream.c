@@ -135,7 +135,7 @@ _citrus_memory_stream_skip_ws(struct _citrus_memory_stream *ms)
     int ch;
 
     while ((ch = _citrus_memory_stream_peek(ms)) != EOF) {
-        if (!_citrus_bcs_isspace(ch))
+        if (!_citrus_bcs_isspace((uint8_t)ch))
             break;
         _citrus_memory_stream_getc(ms);
     }

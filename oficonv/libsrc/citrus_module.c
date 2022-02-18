@@ -143,6 +143,8 @@ void *
 _citrus_find_getops(_citrus_module_t handle, const char *modname,
     const char *ifname)
 {
+    (void) modname;
+    (void) ifname;
     return (void *) handle;
 }
 
@@ -185,4 +187,5 @@ _citrus_load_module(_citrus_module_t *rhandle, const char *encname)
 void
 _citrus_unload_module(_citrus_module_t handle)
 {
+    (void) handle;
 }

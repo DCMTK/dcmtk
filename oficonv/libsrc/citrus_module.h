@@ -29,6 +29,7 @@
 #define _CITRUS_MODULE_H_
 
 #include "dcmtk/config/osconfig.h"
+#include "citrus_bcs.h"
 
 #define MATCH(x, act)                       \
 do {                                \
@@ -40,14 +41,13 @@ do {                                \
     }                           \
 } while (0)
 
+struct _citrus_module_rec;
 typedef struct _citrus_module_rec *_citrus_module_t;
 
 BEGIN_EXTERN_C
-void    *_citrus_find_getops(_citrus_module_t __restrict,
-        const char * __restrict, const char * __restrict);
-int  _citrus_load_module(_citrus_module_t * __restrict,
-        const char * __restrict);
-void     _citrus_unload_module(_citrus_module_t);
+void * _citrus_find_getops(_citrus_module_t , const char * __restrict, const char * __restrict);
+int _citrus_load_module(_citrus_module_t * __restrict, const char * __restrict);
+void _citrus_unload_module(_citrus_module_t);
 END_EXTERN_C
 
 #endif

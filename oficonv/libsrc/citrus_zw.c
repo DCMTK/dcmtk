@@ -80,18 +80,18 @@ static __inline void
 _citrus_ZW_init_state(_ZWEncodingInfo * __restrict ei __unused,
     _ZWState * __restrict psenc)
 {
-
+    (void) ei;
     psenc->chlen = 0;
     psenc->charset = NONE;
 }
 
 static int
 _citrus_ZW_mbrtowc_priv(_ZWEncodingInfo * __restrict ei,
-    wchar_t * __restrict pwc, char **__restrict s, size_t n,
+    _citrus_wc_t * __restrict pwc, char **__restrict s, size_t n,
     _ZWState * __restrict psenc, size_t * __restrict nresult)
 {
     char *s0;
-    wchar_t  wc;
+    _citrus_wc_t  wc;
     int ch, len;
 
     if (*s == NULL) {
@@ -112,7 +112,7 @@ do {                    \
     ch = (unsigned char)*s0++;  \
     if (len++ > MB_LEN_MAX || ch > 0x7F)\
         goto ilseq;     \
-    psenc->ch[psenc->chlen++] = ch; \
+    psenc->ch[psenc->chlen++] = (char) ch; \
 } while (/*CONSTCOND*/0)
 
 loop:
@@ -134,7 +134,7 @@ loop:
         ch = (unsigned char)psenc->ch[0];
         if (ch > 0x7F)
             goto ilseq;
-        wc = (wchar_t)ch;
+        wc = (_citrus_wc_t)ch;
         psenc->chlen = 0;
         break;
     case NONE:
@@ -145,7 +145,7 @@ loop:
         if (ch != 'z') {
             if (ch != '\n' && ch != '\0')
                 psenc->charset = ASCII;
-            wc = (wchar_t)ch;
+            wc = (_citrus_wc_t)ch;
             psenc->chlen = 0;
             break;
         }
@@ -171,7 +171,7 @@ loop:
             ch = (unsigned char)psenc->ch[0];
             if (ch == '\0') {
                 psenc->charset = NONE;
-                wc = (wchar_t)ch;
+                wc = (_citrus_wc_t)ch;
                 psenc->chlen = 0;
                 break;
             } else if (ch == '\n') {
@@ -184,18 +184,18 @@ loop:
             STORE;
             if (psenc->ch[0] == ' ') {
                 ch = (unsigned char)psenc->ch[1];
-                wc = (wchar_t)ch;
+                wc = (_citrus_wc_t)ch;
                 psenc->chlen = 0;
                 break;
             } else if (psenc->ch[0] == '#') {
                 ch = (unsigned char)psenc->ch[1];
                 if (ch == '\n') {
                     psenc->charset = NONE;
-                    wc = (wchar_t)ch;
+                    wc = (_citrus_wc_t)ch;
                     psenc->chlen = 0;
                     break;
                 } else if (ch == ' ') {
-                    wc = (wchar_t)ch;
+                    wc = (_citrus_wc_t)ch;
                     psenc->chlen = 0;
                     break;
                 }
@@ -203,14 +203,14 @@ loop:
             ch = (unsigned char)psenc->ch[0];
             if (ch < 0x21 || ch > 0x7E)
                 goto ilseq;
-            wc = (wchar_t)(ch << 8);
+            wc = (_citrus_wc_t)(ch << 8);
             ch = (unsigned char)psenc->ch[1];
             if (ch < 0x21 || ch > 0x7E) {
 ilseq:
                 *nresult = (size_t)-1;
                 return (EILSEQ);
             }
-            wc |= (wchar_t)ch;
+            wc |= (_citrus_wc_t)ch;
             psenc->chlen = 0;
             break;
         default:
@@ -232,10 +232,11 @@ ilseq:
 static int
 /*ARGSUSED*/
 _citrus_ZW_wcrtomb_priv(_ZWEncodingInfo * __restrict ei __unused,
-    char *__restrict s, size_t n, wchar_t wc,
+    char *__restrict s, size_t n, _citrus_wc_t wc,
     _ZWState * __restrict psenc, size_t * __restrict nresult)
 {
     int ch;
+    (void) ei;
 
     if (psenc->chlen != 0)
         return (EINVAL);
@@ -244,7 +245,7 @@ _citrus_ZW_wcrtomb_priv(_ZWEncodingInfo * __restrict ei __unused,
         switch (psenc->charset) {
         case NONE:
             if (ch == '\0' || ch == '\n')
-                psenc->ch[psenc->chlen++] = ch;
+                psenc->ch[psenc->chlen++] = (char) ch;
             else {
                 if (n < 4)
                     return (E2BIG);
@@ -252,7 +253,7 @@ _citrus_ZW_wcrtomb_priv(_ZWEncodingInfo * __restrict ei __unused,
                 psenc->ch[psenc->chlen++] = 'z';
                 psenc->ch[psenc->chlen++] = 'W';
                 psenc->ch[psenc->chlen++] = ' ';
-                psenc->ch[psenc->chlen++] = ch;
+                psenc->ch[psenc->chlen++] = (char) ch;
                 psenc->charset = GB2312;
             }
             break;
@@ -270,7 +271,7 @@ _citrus_ZW_wcrtomb_priv(_ZWEncodingInfo * __restrict ei __unused,
                 psenc->charset = NONE;
             } else {
                 psenc->ch[psenc->chlen++] = ' ';
-                psenc->ch[psenc->chlen++] = ch;
+                psenc->ch[psenc->chlen++] = (char) ch;
             }
             break;
         default:
@@ -293,11 +294,11 @@ _citrus_ZW_wcrtomb_priv(_ZWEncodingInfo * __restrict ei __unused,
             ch = (wc >> 8) & 0xFF;
             if (ch < 0x21 || ch > 0x7E)
                 goto ilseq;
-            psenc->ch[psenc->chlen++] = ch;
+            psenc->ch[psenc->chlen++] = (char) ch;
             ch = wc & 0xFF;
             if (ch < 0x21 || ch > 0x7E)
                 goto ilseq;
-            psenc->ch[psenc->chlen++] = ch;
+            psenc->ch[psenc->chlen++] = (char) ch;
             break;
         default:
             return (EINVAL);
@@ -320,6 +321,7 @@ _citrus_ZW_put_state_reset(_ZWEncodingInfo * __restrict ei __unused,
     char * __restrict s, size_t n, _ZWState * __restrict psenc,
     size_t * __restrict nresult)
 {
+    (void) ei;
 
     if (psenc->chlen != 0)
         return (EINVAL);
@@ -349,6 +351,7 @@ static __inline int
 _citrus_ZW_stdenc_get_state_desc_generic(_ZWEncodingInfo * __restrict ei __unused,
     _ZWState * __restrict psenc, int * __restrict rstate)
 {
+    (void) ei;
 
     switch (psenc->charset) {
     case NONE:
@@ -385,10 +388,11 @@ _citrus_ZW_stdenc_get_state_desc_generic(_ZWEncodingInfo * __restrict ei __unuse
 static __inline int
 /*ARGSUSED*/
 _citrus_ZW_stdenc_wctocs(_ZWEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, wchar_t wc)
+    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
 {
+    (void) ei;
 
-    *csid = (_citrus_csid_t)(wc <= (wchar_t)0x7FU) ? 0 : 1;
+    *csid = (_citrus_csid_t)(wc <= (_citrus_wc_t)0x7FU) ? 0 : 1;
     *idx = (_citrus_index_t)wc;
 
     return (0);
@@ -397,8 +401,9 @@ _citrus_ZW_stdenc_wctocs(_ZWEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_ZW_stdenc_cstowc(_ZWEncodingInfo * __restrict ei __unused,
-    wchar_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
+    (void) ei;
 
     switch (csid) {
     case 0: case 1:
@@ -406,7 +411,7 @@ _citrus_ZW_stdenc_cstowc(_ZWEncodingInfo * __restrict ei __unused,
     default:
         return (EINVAL);
     }
-    *wc = (wchar_t)idx;
+    *wc = (_citrus_wc_t)idx;
 
     return (0);
 }
@@ -415,7 +420,7 @@ static void
 /*ARGSUSED*/
 _citrus_ZW_encoding_module_uninit(_ZWEncodingInfo *ei __unused)
 {
-
+    (void) ei;
 }
 
 static int
@@ -423,6 +428,9 @@ static int
 _citrus_ZW_encoding_module_init(_ZWEncodingInfo * __restrict ei __unused,
     const void *__restrict var __unused, size_t lenvar __unused)
 {
+    (void) ei;
+    (void) var;
+    (void) lenvar;
 
     return (0);
 }

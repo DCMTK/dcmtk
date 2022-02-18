@@ -27,7 +27,9 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_mmap.h"
 
+#ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
+#endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -49,6 +51,11 @@
 
 #include "citrus_bcs.h"
 #include "citrus_region.h"
+#include "windows_mmap.h"
+
+#ifndef S_ISREG
+#define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+#endif
 
 int
 _citrus_map_file(struct _citrus_region * __restrict r,
@@ -62,10 +69,14 @@ _citrus_map_file(struct _citrus_region * __restrict r,
 
     _citrus_region_init(r, NULL, 0);
 #ifdef DEBUG
-        fprintf(stderr, "_citrus_map_file '%s'\n", path);
+//        fprintf(stderr, "_citrus_map_file '%s'\n", path);
 #endif
 
+#ifdef O_CLOEXEC
     if ((fd = open(path, O_RDONLY | O_CLOEXEC)) == -1)
+#else
+    if ((fd = open(path, O_RDONLY)) == -1)
+#endif
     {
         return (errno);
     }
@@ -78,7 +89,11 @@ _citrus_map_file(struct _citrus_region * __restrict r,
         goto error;
     }
 
+#ifdef MAP_FILE
     head = mmap(NULL, (size_t)st.st_size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, (off_t)0);
+#else
+    head = mmap(NULL, (size_t)st.st_size, PROT_READ, MAP_PRIVATE, fd, (off_t)0);
+#endif
     if (head == MAP_FAILED) {
         ret = errno;
         goto error;
