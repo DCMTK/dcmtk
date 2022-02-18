@@ -37,17 +37,17 @@ struct _citrus_mapper_traits;
 
 BEGIN_EXTERN_C
 int  _citrus_mapper_create_area(
-        struct _citrus_mapper_area *__restrict *__restrict,
-        const char *__restrict);
-int  _citrus_mapper_open(struct _citrus_mapper_area *__restrict,
-        struct _citrus_csmapper *__restrict *__restrict,
-        const char *__restrict);
+        struct _citrus_mapper_area * *,
+        const char *);
+int  _citrus_mapper_open(struct _citrus_mapper_area *,
+        struct _citrus_csmapper * *,
+        const char *);
 int  _citrus_mapper_open_direct(
-        struct _citrus_mapper_area *__restrict,
-        struct _citrus_csmapper *__restrict *__restrict,
-        const char *__restrict, const char *__restrict);
+        struct _citrus_mapper_area *,
+        struct _citrus_csmapper * *,
+        const char *, const char *);
 void     _citrus_csmapper_close(struct _citrus_csmapper *);
-void     _citrus_mapper_set_persistent(struct _citrus_csmapper * __restrict);
+void     _citrus_mapper_set_persistent(struct _citrus_csmapper * );
 END_EXTERN_C
 
 #include "citrus_mapper_local.h"
@@ -76,9 +76,9 @@ END_EXTERN_C
  *
  */
 static __inline int
-_citrus_csmapper_convert(struct _citrus_csmapper * __restrict cm,
-    _citrus_index_t * __restrict dst, _citrus_index_t src,
-    void * __restrict ps)
+_citrus_csmapper_convert(struct _citrus_csmapper * cm,
+    _citrus_index_t * dst, _citrus_index_t src,
+    void * ps)
 {
 
     return ((*cm->cm_ops->mo_convert)(cm, dst, src, ps));
@@ -89,7 +89,7 @@ _citrus_csmapper_convert(struct _citrus_csmapper * __restrict cm,
  *  initialize the state.
  */
 static __inline void
-_citrus_csmapper_init_state(struct _citrus_csmapper * __restrict cm)
+_citrus_csmapper_init_state(struct _citrus_csmapper * cm)
 {
 
     (*cm->cm_ops->mo_init_state)();
@@ -100,7 +100,7 @@ _citrus_csmapper_init_state(struct _citrus_csmapper * __restrict cm)
  *  get the size of state storage.
  */
 static __inline size_t
-_citrus_csmapper_get_state_size(struct _citrus_csmapper * __restrict cm)
+_citrus_csmapper_get_state_size(struct _citrus_csmapper * cm)
 {
 
     return (cm->cm_traits->mt_state_size);
@@ -111,7 +111,7 @@ _citrus_csmapper_get_state_size(struct _citrus_csmapper * __restrict cm)
  *  get the maximum number of suspended sources.
  */
 static __inline size_t
-_citrus_csmapper_get_src_max(struct _citrus_csmapper * __restrict cm)
+_citrus_csmapper_get_src_max(struct _citrus_csmapper * cm)
 {
 
     return (cm->cm_traits->mt_src_max);
@@ -122,7 +122,7 @@ _citrus_csmapper_get_src_max(struct _citrus_csmapper * __restrict cm)
  *  get the maximum number of suspended destinations.
  */
 static __inline size_t
-_citrus_csmapper_get_dst_max(struct _citrus_csmapper * __restrict cm)
+_citrus_csmapper_get_dst_max(struct _citrus_csmapper * cm)
 {
 
     return (cm->cm_traits->mt_dst_max);

@@ -86,7 +86,7 @@ typedef struct {
 
 static __inline void
 /*ARGSUSED*/
-_citrus_UTF1632_init_state(_UTF1632EncodingInfo *ei __unused,
+_citrus_UTF1632_init_state(_UTF1632EncodingInfo *ei ,
     _UTF1632State *s)
 {
     (void) ei;
@@ -338,8 +338,8 @@ e2big:
 }
 
 static void
-parse_variable(_UTF1632EncodingInfo * __restrict ei,
-    const void * __restrict var, size_t lenvar)
+parse_variable(_UTF1632EncodingInfo * ei,
+    const void * var, size_t lenvar)
 {
     const char *p;
 
@@ -378,8 +378,8 @@ parse_variable(_UTF1632EncodingInfo * __restrict ei,
 
 static int
 /*ARGSUSED*/
-_citrus_UTF1632_encoding_module_init(_UTF1632EncodingInfo * __restrict ei,
-    const void * __restrict var, size_t lenvar)
+_citrus_UTF1632_encoding_module_init(_UTF1632EncodingInfo * ei,
+    const void * var, size_t lenvar)
 {
 
     memset((void *)ei, 0, sizeof(*ei));
@@ -399,15 +399,15 @@ _citrus_UTF1632_encoding_module_init(_UTF1632EncodingInfo * __restrict ei,
 
 static void
 /*ARGSUSED*/
-_citrus_UTF1632_encoding_module_uninit(_UTF1632EncodingInfo *ei __unused)
+_citrus_UTF1632_encoding_module_uninit(_UTF1632EncodingInfo *ei )
 {
     (void) ei;
 }
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF1632_stdenc_wctocs(_UTF1632EncodingInfo * __restrict ei __unused,
-     _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_UTF1632_stdenc_wctocs(_UTF1632EncodingInfo * ei ,
+     _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     (void) ei;
     *csid = 0;
@@ -418,8 +418,8 @@ _citrus_UTF1632_stdenc_wctocs(_UTF1632EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF1632_stdenc_cstowc(_UTF1632EncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_UTF1632_stdenc_cstowc(_UTF1632EncodingInfo * ei ,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
 
@@ -433,8 +433,8 @@ _citrus_UTF1632_stdenc_cstowc(_UTF1632EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF1632_stdenc_get_state_desc_generic(_UTF1632EncodingInfo * __restrict ei __unused,
-    _UTF1632State * __restrict psenc, int * __restrict rstate)
+_citrus_UTF1632_stdenc_get_state_desc_generic(_UTF1632EncodingInfo * ei ,
+    _UTF1632State * psenc, int * rstate)
 {
     (void) ei;
 

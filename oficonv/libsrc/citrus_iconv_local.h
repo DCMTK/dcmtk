@@ -53,17 +53,17 @@ struct _citrus_iconv;
 
 #define _CITRUS_ICONV_DECLS(_m_)                    \
 static int   _citrus_##_m_##_iconv_init_shared          \
-            (struct _citrus_iconv_shared * __restrict,      \
-            const char * __restrict, const char * __restrict);  \
+            (struct _citrus_iconv_shared * ,      \
+            const char * , const char * );  \
 static void  _citrus_##_m_##_iconv_uninit_shared            \
             (struct _citrus_iconv_shared *);            \
 static int   _citrus_##_m_##_iconv_convert              \
-            (struct _citrus_iconv * __restrict,         \
-            char * __restrict * __restrict,       \
-            size_t * __restrict,                \
-            char * __restrict * __restrict,         \
-            size_t * __restrict outbytes,           \
-            uint32_t, size_t * __restrict);         \
+            (struct _citrus_iconv * ,         \
+            char * * ,       \
+            size_t * ,                \
+            char * * ,         \
+            size_t * outbytes,           \
+            uint32_t, size_t * );         \
 static int   _citrus_##_m_##_iconv_init_context         \
             (struct _citrus_iconv *);               \
 static void  _citrus_##_m_##_iconv_uninit_context           \
@@ -82,15 +82,15 @@ struct _citrus_iconv_ops _citrus_##_m_##_iconv_ops = {          \
 
 typedef _CITRUS_ICONV_GETOPS_FUNC_BASE((*_citrus_iconv_getops_t));
 typedef int (*_citrus_iconv_init_shared_t)
-    (struct _citrus_iconv_shared * __restrict,
-    const char * __restrict, const char * __restrict);
+    (struct _citrus_iconv_shared * ,
+    const char * , const char * );
 typedef void (*_citrus_iconv_uninit_shared_t)
     (struct _citrus_iconv_shared *);
 typedef int (*_citrus_iconv_convert_t)
-    (struct _citrus_iconv * __restrict,
-    char *__restrict* __restrict, size_t * __restrict,
-    char * __restrict * __restrict, size_t * __restrict, uint32_t,
-    size_t * __restrict);
+    (struct _citrus_iconv * ,
+    char ** , size_t * ,
+    char * * , size_t * , uint32_t,
+    size_t * );
 typedef int (*_citrus_iconv_init_context_t)(struct _citrus_iconv *);
 typedef void (*_citrus_iconv_uninit_context_t)(struct _citrus_iconv *);
 

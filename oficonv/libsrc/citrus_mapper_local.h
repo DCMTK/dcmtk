@@ -41,17 +41,17 @@ _CITRUS_MAPPER_GETOPS_FUNC_BASE(_citrus_##_n_##_mapper_getops)
 
 #define _CITRUS_MAPPER_DECLS(_m_)                   \
 static int   _citrus_##_m_##_mapper_init                \
-            (struct _citrus_mapper_area *__restrict,        \
-            struct _citrus_csmapper * __restrict,         \
-            const char * __restrict, const void * __restrict,   \
-            size_t, struct _citrus_mapper_traits * __restrict,  \
+            (struct _citrus_mapper_area *,        \
+            struct _citrus_csmapper * ,         \
+            const char * , const void * ,   \
+            size_t, struct _citrus_mapper_traits * ,  \
             size_t);                        \
 static void  _citrus_##_m_##_mapper_uninit(             \
             struct _citrus_csmapper *);               \
 static int   _citrus_##_m_##_mapper_convert             \
-            (struct _citrus_csmapper * __restrict,        \
-            _citrus_index_t * __restrict, _citrus_index_t,  \
-            void * __restrict);                 \
+            (struct _citrus_csmapper * ,        \
+            _citrus_index_t * , _citrus_index_t,  \
+            void * );                 \
 static void  _citrus_##_m_##_mapper_init_state          \
             (void);
 
@@ -71,13 +71,13 @@ struct _citrus_mapper_traits;
 
 typedef _CITRUS_MAPPER_GETOPS_FUNC_BASE((*_citrus_mapper_getops_t));
 typedef int (*_citrus_mapper_init_t)(
-    struct _citrus_mapper_area *__restrict,
-    struct _citrus_csmapper *__restrict, const char *__restrict,
-    const void *__restrict, size_t,
-    struct _citrus_mapper_traits * __restrict, size_t);
+    struct _citrus_mapper_area *,
+    struct _citrus_csmapper *, const char *,
+    const void *, size_t,
+    struct _citrus_mapper_traits * , size_t);
 typedef void (*_citrus_mapper_uninit_t)(struct _citrus_csmapper *);
-typedef int (*_citrus_mapper_convert_t)(struct _citrus_csmapper * __restrict,
-    _citrus_index_t * __restrict, _citrus_index_t, void * __restrict);
+typedef int (*_citrus_mapper_convert_t)(struct _citrus_csmapper * ,
+    _citrus_index_t * , _citrus_index_t, void * );
 typedef void (*_citrus_mapper_init_state_t)(void);
 
 struct _citrus_mapper_ops {

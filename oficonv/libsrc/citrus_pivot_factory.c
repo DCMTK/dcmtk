@@ -218,10 +218,13 @@ _citrus_pivot_factory_convert(FILE *out, FILE *in)
         }
 #else
     while ((line = fgets(buf, 1024, in)) != NULL)
-        if ((ret = convert_line(&sh, line, strlen(line)))) {
+    {
+        ret = convert_line(&sh, line, strlen(line));
+        if (ret) {
             free_src(&sh);
             return (ret);
         }
+    }
 #endif
 
     ret = dump_db(&sh, &r);

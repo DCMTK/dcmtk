@@ -69,8 +69,8 @@ static const char *xdigit = "0123456789ABCDEF";
 
 #define _CITRUS_PROP_READ_UINT_COMMON(_func_, _type_, _max_)        \
 static int                              \
-_citrus_prop_read_##_func_##_common(struct _citrus_memory_stream * __restrict ms,  \
-    _type_ * __restrict result, int base, int neg)               \
+_citrus_prop_read_##_func_##_common(struct _citrus_memory_stream * ms,  \
+    _type_ * result, int base, int neg)               \
 {                                   \
     _type_ acc, cutoff;                     \
     int ch, cutlim, n;                      \
@@ -111,8 +111,8 @@ _CITRUS_PROP_READ_UINT_COMMON(num, uint64_t, UINT64_MAX)
 
 #define _CITRUS_PROP_READ_INT(_func_, _type_)           \
 static int                          \
-_citrus_prop_read_##_func_(struct _citrus_memory_stream * __restrict ms,   \
-    _citrus_prop_object_t * __restrict obj)         \
+_citrus_prop_read_##_func_(struct _citrus_memory_stream * ms,   \
+    _citrus_prop_object_t * obj)         \
 {                               \
     int base, ch, neg;                   \
                                 \
@@ -149,8 +149,8 @@ _CITRUS_PROP_READ_INT(num, uint64_t)
 #undef _CITRUS_PROP_READ_INT
 
 static int
-_citrus_prop_read_character_common(struct _citrus_memory_stream * __restrict ms,
-    int * __restrict result)
+_citrus_prop_read_character_common(struct _citrus_memory_stream * ms,
+    int * result)
 {
     int base, ch;
 
@@ -199,8 +199,8 @@ _citrus_prop_read_character_common(struct _citrus_memory_stream * __restrict ms,
 }
 
 static int
-_citrus_prop_read_character(struct _citrus_memory_stream * __restrict ms,
-    _citrus_prop_object_t * __restrict obj)
+_citrus_prop_read_character(struct _citrus_memory_stream * ms,
+    _citrus_prop_object_t * obj)
 {
     int ch, errnum;
 
@@ -221,8 +221,8 @@ _citrus_prop_read_character(struct _citrus_memory_stream * __restrict ms,
 }
 
 static int
-_citrus_prop_read_bool(struct _citrus_memory_stream * __restrict ms,
-    _citrus_prop_object_t * __restrict obj)
+_citrus_prop_read_bool(struct _citrus_memory_stream * ms,
+    _citrus_prop_object_t * obj)
 {
 
     _citrus_memory_stream_skip_ws(ms);
@@ -248,8 +248,8 @@ _citrus_prop_read_bool(struct _citrus_memory_stream * __restrict ms,
 }
 
 static int
-_citrus_prop_read_str(struct _citrus_memory_stream * __restrict ms,
-    _citrus_prop_object_t * __restrict obj)
+_citrus_prop_read_str(struct _citrus_memory_stream * ms,
+    _citrus_prop_object_t * obj)
 {
     int ch, errnum, quot;
     char *s, *t;
@@ -312,8 +312,8 @@ done:
 #undef _CITRUS_PROP_STR_BUFSIZ
 }
 
-typedef int (*_citrus_prop_read_type_t)(struct _citrus_memory_stream * __restrict,
-    _citrus_prop_object_t * __restrict);
+typedef int (*_citrus_prop_read_type_t)(struct _citrus_memory_stream * ,
+    _citrus_prop_object_t * );
 
 static const _citrus_prop_read_type_t readers[] = {
     _citrus_prop_read_bool,
@@ -323,8 +323,8 @@ static const _citrus_prop_read_type_t readers[] = {
 };
 
 static __inline int
-_citrus_prop_read_symbol(struct _citrus_memory_stream * __restrict ms,
-    char * __restrict s, size_t n)
+_citrus_prop_read_symbol(struct _citrus_memory_stream * ms,
+    char * s, size_t n)
 {
     int ch;
     size_t m;
@@ -347,8 +347,8 @@ name_found:
 }
 
 static int
-_citrus_prop_parse_element(struct _citrus_memory_stream * __restrict ms,
-    const _citrus_prop_hint_t * __restrict hints, void * __restrict context)
+_citrus_prop_parse_element(struct _citrus_memory_stream * ms,
+    const _citrus_prop_hint_t * hints, void * context)
 {
     int ch, errnum;
 #define _CITRUS_PROP_HINT_NAME_LEN_MAX  255
@@ -431,8 +431,8 @@ do {                            \
 }
 
 int
-_citrus_prop_parse_variable(const _citrus_prop_hint_t * __restrict hints,
-    void * __restrict context, const void *var, size_t lenvar)
+_citrus_prop_parse_variable(const _citrus_prop_hint_t * hints,
+    void * context, const void *var, size_t lenvar)
 {
     struct _citrus_memory_stream ms;
     int ch, errnum;

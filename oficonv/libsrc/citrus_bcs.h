@@ -43,20 +43,14 @@
 #define __DECONST(type, var)    ((type)(uintptr_t)(const void *)(var))
 
 #ifdef __GNUC__
-#define __unused __attribute__((__unused__))
 #define __packed __attribute__((__packed__))
 #else
-#define __unused
 #define __packed
 #endif
 
-/* the "restrict" type qualifier was introduced in C99. MSVC has __restrict instead. */
 #ifdef _MSC_VER
-#define __restrict __restrict
 #define LINE_MAX 2048
 #define PATH_MAX MAX_PATH
-#else
-#define __restrict restrict
 #endif
 
 #ifndef EFTYPE
@@ -179,13 +173,13 @@ _citrus_bcs_tolower(uint8_t c)
 }
 
 BEGIN_EXTERN_C
-int _citrus_bcs_strcasecmp(const char * __restrict, const char * __restrict);
-int _citrus_bcs_strncasecmp(const char * __restrict, const char * __restrict, size_t);
-const char *_citrus_bcs_skip_ws(const char * __restrict);
-const char *_citrus_bcs_skip_nonws(const char * __restrict);
-const char *_citrus_bcs_skip_ws_len(const char * __restrict, size_t * __restrict);
-const char *_citrus_bcs_skip_nonws_len(const char * __restrict, size_t * __restrict);
-void _citrus_bcs_trunc_rws_len(const char * __restrict, size_t * __restrict);
+int _citrus_bcs_strcasecmp(const char * , const char * );
+int _citrus_bcs_strncasecmp(const char * , const char * , size_t);
+const char *_citrus_bcs_skip_ws(const char * );
+const char *_citrus_bcs_skip_nonws(const char * );
+const char *_citrus_bcs_skip_ws_len(const char * , size_t * );
+const char *_citrus_bcs_skip_nonws_len(const char * , size_t * );
+void _citrus_bcs_trunc_rws_len(const char * , size_t * );
 void _citrus_bcs_convert_to_lower(char *);
 void _citrus_bcs_convert_to_upper(char *);
 long int _citrus_bcs_strtol(const char * , char ** , int);

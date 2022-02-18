@@ -86,7 +86,7 @@ iconv_t OFiconv_open(const char *dstname, const char *srcname);
  *   depends on the destination codeset, e.g., ‘?’, and the conversion is
  *   continued. iconv() returns the number of such “invalid conversions”.
  */
-size_t OFiconv(iconv_t cd, char ** __restrict src, size_t * __restrict srcleft, char ** __restrict dst, size_t * __restrict dstleft);
+size_t OFiconv(iconv_t cd, char ** src, size_t * srcleft, char ** dst, size_t * dstleft);
 
 /** close the specified converter cd
  *

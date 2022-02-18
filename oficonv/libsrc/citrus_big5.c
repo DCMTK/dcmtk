@@ -120,8 +120,8 @@ typedef struct {
 
 static __inline void
 /*ARGSUSED*/
-_citrus_BIG5_init_state(_BIG5EncodingInfo * __restrict ei __unused,
-    _BIG5State * __restrict s)
+_citrus_BIG5_init_state(_BIG5EncodingInfo * ei ,
+    _BIG5State * s)
 {
     (void) ei;
     memset(s, 0, sizeof(*s));
@@ -129,9 +129,9 @@ _citrus_BIG5_init_state(_BIG5EncodingInfo * __restrict ei __unused,
 
 static __inline void
 /*ARGSUSED*/
-_citrus_BIG5_pack_state(_BIG5EncodingInfo * __restrict ei __unused,
-    void * __restrict pspriv,
-    const _BIG5State * __restrict s)
+_citrus_BIG5_pack_state(_BIG5EncodingInfo * ei ,
+    void * pspriv,
+    const _BIG5State * s)
 {
     (void) ei;
     memcpy(pspriv, (const void *)s, sizeof(*s));
@@ -139,9 +139,9 @@ _citrus_BIG5_pack_state(_BIG5EncodingInfo * __restrict ei __unused,
 
 static __inline void
 /*ARGSUSED*/
-_citrus_BIG5_unpack_state(_BIG5EncodingInfo * __restrict ei __unused,
-    _BIG5State * __restrict s,
-    const void * __restrict pspriv)
+_citrus_BIG5_unpack_state(_BIG5EncodingInfo * ei ,
+    _BIG5State * s,
+    const void * pspriv)
 {
     (void) ei;
     memcpy((void *)s, pspriv, sizeof(*s));
@@ -174,7 +174,7 @@ _citrus_BIG5_check_excludes(_BIG5EncodingInfo *ei, wint_t c)
 }
 
 static int
-_citrus_BIG5_fill_rowcol(void * __restrict ctx, const char * __restrict s,
+_citrus_BIG5_fill_rowcol(void * ctx, const char * s,
     uint64_t start, uint64_t end)
 {
     _BIG5EncodingInfo *ei;
@@ -193,8 +193,8 @@ _citrus_BIG5_fill_rowcol(void * __restrict ctx, const char * __restrict s,
 
 static int
 /*ARGSUSED*/
-_citrus_BIG5_fill_excludes(void * __restrict ctx,
-    const char * __restrict s __unused, uint64_t start, uint64_t end)
+_citrus_BIG5_fill_excludes(void * ctx,
+    const char * s , uint64_t start, uint64_t end)
 {
     _BIG5EncodingInfo *ei;
     _BIG5Exclude *exclude;
@@ -237,8 +237,8 @@ _citrus_BIG5_encoding_module_uninit(_BIG5EncodingInfo *ei)
 
 static int
 /*ARGSUSED*/
-_citrus_BIG5_encoding_module_init(_BIG5EncodingInfo * __restrict ei,
-    const void * __restrict var, size_t lenvar)
+_citrus_BIG5_encoding_module_init(_BIG5EncodingInfo * ei,
+    const void * var, size_t lenvar)
 {
     const char *s;
     int err;
@@ -270,11 +270,11 @@ _citrus_BIG5_encoding_module_init(_BIG5EncodingInfo * __restrict ei,
 
 static int
 /*ARGSUSED*/
-_citrus_BIG5_mbrtowc_priv(_BIG5EncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc,
-    char ** __restrict s, size_t n,
-    _BIG5State * __restrict psenc,
-    size_t * __restrict nresult)
+_citrus_BIG5_mbrtowc_priv(_BIG5EncodingInfo * ei,
+    _citrus_wc_t * pwc,
+    char ** s, size_t n,
+    _BIG5State * psenc,
+    size_t * nresult)
 {
     _citrus_wc_t wchar;
     char *s0;
@@ -356,10 +356,10 @@ restart:
 
 static int
 /*ARGSUSED*/
-_citrus_BIG5_wcrtomb_priv(_BIG5EncodingInfo * __restrict ei,
-    char * __restrict s,
-    size_t n, _citrus_wc_t wc, _BIG5State * __restrict psenc __unused,
-    size_t * __restrict nresult)
+_citrus_BIG5_wcrtomb_priv(_BIG5EncodingInfo * ei,
+    char * s,
+    size_t n, _citrus_wc_t wc, _BIG5State * psenc ,
+    size_t * nresult)
 {
     size_t l;
     int ret;
@@ -410,9 +410,9 @@ err:
 
 static __inline int
 /*ARGSUSED*/
-_citrus_BIG5_stdenc_wctocs(_BIG5EncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid,
-    _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_BIG5_stdenc_wctocs(_BIG5EncodingInfo * ei ,
+    _citrus_csid_t * csid,
+    _citrus_index_t * idx, _citrus_wc_t wc)
 {
     (void) ei;
     *csid = (wc < 0x100) ? 0 : 1;
@@ -423,8 +423,8 @@ _citrus_BIG5_stdenc_wctocs(_BIG5EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_BIG5_stdenc_cstowc(_BIG5EncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc,
+_citrus_BIG5_stdenc_cstowc(_BIG5EncodingInfo * ei ,
+    _citrus_wc_t * wc,
     _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
@@ -442,9 +442,9 @@ _citrus_BIG5_stdenc_cstowc(_BIG5EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_BIG5_stdenc_get_state_desc_generic(_BIG5EncodingInfo * __restrict ei __unused,
-    _BIG5State * __restrict psenc,
-    int * __restrict rstate)
+_citrus_BIG5_stdenc_get_state_desc_generic(_BIG5EncodingInfo * ei ,
+    _BIG5State * psenc,
+    int * rstate)
 {
     (void) ei;
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :

@@ -231,17 +231,17 @@ typedef struct {
 
 static __inline void
 /*ARGSUSED*/
-_citrus_VIQR_init_state(_VIQREncodingInfo * __restrict ei __unused,
-    _VIQRState * __restrict psenc)
+_citrus_VIQR_init_state(_VIQREncodingInfo * ei ,
+    _VIQRState * psenc)
 {
     (void) ei;
     psenc->chlen = 0;
 }
 
 static int
-_citrus_VIQR_mbrtowc_priv(_VIQREncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
-    _VIQRState * __restrict psenc, size_t * __restrict nresult)
+_citrus_VIQR_mbrtowc_priv(_VIQREncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s, size_t n,
+    _VIQRState * psenc, size_t * nresult)
 {
     mnemonic_t *m, *m0;
     char *s0;
@@ -301,9 +301,9 @@ _citrus_VIQR_mbrtowc_priv(_VIQREncodingInfo * __restrict ei,
 }
 
 static int
-_citrus_VIQR_wcrtomb_priv(_VIQREncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, _citrus_wc_t wc,
-    _VIQRState * __restrict psenc, size_t * __restrict nresult)
+_citrus_VIQR_wcrtomb_priv(_VIQREncodingInfo * ei,
+    char * s, size_t n, _citrus_wc_t wc,
+    _VIQRState * psenc, size_t * nresult)
 {
     mnemonic_t *m;
     const char *p;
@@ -371,9 +371,9 @@ e2big:
 
 static int
 /* ARGSUSED */
-_citrus_VIQR_put_state_reset(_VIQREncodingInfo * __restrict ei __unused,
-    char * __restrict s __unused, size_t n __unused,
-    _VIQRState * __restrict psenc, size_t * __restrict nresult)
+_citrus_VIQR_put_state_reset(_VIQREncodingInfo * ei ,
+    char * s , size_t n ,
+    _VIQRState * psenc, size_t * nresult)
 {
     (void) ei;
     (void) s;
@@ -392,8 +392,8 @@ _citrus_VIQR_put_state_reset(_VIQREncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_VIQR_stdenc_wctocs(_VIQREncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_VIQR_stdenc_wctocs(_VIQREncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     (void) ei;
     *csid = 0;
@@ -404,8 +404,8 @@ _citrus_VIQR_stdenc_wctocs(_VIQREncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_VIQR_stdenc_cstowc(_VIQREncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict pwc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_VIQR_stdenc_cstowc(_VIQREncodingInfo * ei ,
+    _citrus_wc_t * pwc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
     if (csid != 0)
@@ -424,8 +424,8 @@ _citrus_VIQR_encoding_module_uninit(_VIQREncodingInfo *ei)
 
 static int
 /*ARGSUSED*/
-_citrus_VIQR_encoding_module_init(_VIQREncodingInfo * __restrict ei,
-    const void * __restrict var __unused, size_t lenvar __unused)
+_citrus_VIQR_encoding_module_init(_VIQREncodingInfo * ei,
+    const void * var , size_t lenvar )
 {
     const char *s;
     size_t i, n;
@@ -475,8 +475,8 @@ _citrus_VIQR_encoding_module_init(_VIQREncodingInfo * __restrict ei,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_VIQR_stdenc_get_state_desc_generic(_VIQREncodingInfo * __restrict ei __unused,
-    _VIQRState * __restrict psenc, int * __restrict rstate)
+_citrus_VIQR_stdenc_get_state_desc_generic(_VIQREncodingInfo * ei ,
+    _VIQRState * psenc, int * rstate)
 {
     (void) ei;
     *rstate = (psenc->chlen == 0) ?

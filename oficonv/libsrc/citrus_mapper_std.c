@@ -74,8 +74,8 @@ _citrus_mapper_std_mapper_getops(struct _citrus_mapper_ops *ops)
 
 static int
 /*ARGSUSED*/
-rowcol_convert(struct _citrus_mapper_std * __restrict ms,
-    _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps __unused)
+rowcol_convert(struct _citrus_mapper_std * ms,
+    _citrus_index_t * dst, _citrus_index_t src, void * ps )
 {
     struct _citrus_mapper_std_linear_zone *lz;
     struct _citrus_mapper_std_rowcol *rc;
@@ -334,10 +334,10 @@ static const struct {
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_std_mapper_init(struct _citrus_mapper_area *__restrict ma __unused,
-    struct _citrus_csmapper * __restrict cm, const char * __restrict curdir,
-    const void * __restrict var, size_t lenvar,
-    struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
+_citrus_mapper_std_mapper_init(struct _citrus_mapper_area * ma ,
+    struct _citrus_csmapper * cm, const char * curdir,
+    const void * var, size_t lenvar,
+    struct _citrus_mapper_traits * mt, size_t lenmt)
 {
     struct _citrus_mapper_std *ms;
     char path[PATH_MAX];
@@ -429,8 +429,8 @@ _citrus_mapper_std_mapper_init_state(void)
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_std_mapper_convert(struct _citrus_csmapper * __restrict cm,
-    _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps)
+_citrus_mapper_std_mapper_convert(struct _citrus_csmapper * cm,
+    _citrus_index_t * dst, _citrus_index_t src, void * ps)
 {
     struct _citrus_mapper_std *ms;
 

@@ -128,8 +128,8 @@ _citrus_EUCTW_count(int cs)
 
 static __inline void
 /*ARGSUSED*/
-_citrus_EUCTW_init_state(_EUCTWEncodingInfo * __restrict ei __unused,
-    _EUCTWState * __restrict s)
+_citrus_EUCTW_init_state(_EUCTWEncodingInfo * ei ,
+    _EUCTWState * s)
 {
     (void) ei;
     memset(s, 0, sizeof(*s));
@@ -137,8 +137,8 @@ _citrus_EUCTW_init_state(_EUCTWEncodingInfo * __restrict ei __unused,
 
 static int
 /*ARGSUSED*/
-_citrus_EUCTW_encoding_module_init(_EUCTWEncodingInfo * __restrict ei,
-    const void * __restrict var __unused, size_t lenvar __unused)
+_citrus_EUCTW_encoding_module_init(_EUCTWEncodingInfo * ei,
+    const void * var , size_t lenvar )
 {
     (void) var;
     (void) lenvar;
@@ -149,15 +149,15 @@ _citrus_EUCTW_encoding_module_init(_EUCTWEncodingInfo * __restrict ei,
 
 static void
 /*ARGSUSED*/
-_citrus_EUCTW_encoding_module_uninit(_EUCTWEncodingInfo *ei __unused)
+_citrus_EUCTW_encoding_module_uninit(_EUCTWEncodingInfo *ei )
 {
     (void) ei;
 }
 
 static int
-_citrus_EUCTW_mbrtowc_priv(_EUCTWEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char ** __restrict s,
-    size_t n, _EUCTWState * __restrict psenc, size_t * __restrict nresult)
+_citrus_EUCTW_mbrtowc_priv(_EUCTWEncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s,
+    size_t n, _EUCTWState * psenc, size_t * nresult)
 {
     char *s0;
     _citrus_wc_t wchar;
@@ -247,9 +247,9 @@ restart:
 }
 
 static int
-_citrus_EUCTW_wcrtomb_priv(_EUCTWEncodingInfo * __restrict ei __unused,
-    char * __restrict s, size_t n, _citrus_wc_t wc,
-    _EUCTWState * __restrict psenc __unused, size_t * __restrict nresult)
+_citrus_EUCTW_wcrtomb_priv(_EUCTWEncodingInfo * ei ,
+    char * s, size_t n, _citrus_wc_t wc,
+    _EUCTWState * psenc , size_t * nresult)
 {
     _citrus_wc_t cs, v;
     int clen, i, ret;
@@ -311,8 +311,8 @@ err:
 
 static __inline int
 /*ARGSUSED*/
-_citrus_EUCTW_stdenc_wctocs(_EUCTWEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_EUCTW_stdenc_wctocs(_EUCTWEncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     (void) ei;
 
@@ -324,8 +324,8 @@ _citrus_EUCTW_stdenc_wctocs(_EUCTWEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_EUCTW_stdenc_cstowc(_EUCTWEncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_EUCTW_stdenc_cstowc(_EUCTWEncodingInfo * ei ,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
 
@@ -344,8 +344,8 @@ _citrus_EUCTW_stdenc_cstowc(_EUCTWEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_EUCTW_stdenc_get_state_desc_generic(_EUCTWEncodingInfo * __restrict ei __unused,
-    _EUCTWState * __restrict psenc, int * __restrict rstate)
+_citrus_EUCTW_stdenc_get_state_desc_generic(_EUCTWEncodingInfo * ei ,
+    _EUCTWState * psenc, int * rstate)
 {
     (void) ei;
 

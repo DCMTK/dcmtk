@@ -42,11 +42,11 @@ struct _citrus_memory_stream {
 
 BEGIN_EXTERN_C
 const char  *_citrus_memory_stream_getln(
-            struct _citrus_memory_stream * __restrict,
-            size_t * __restrict);
+            struct _citrus_memory_stream * ,
+            size_t * );
 const char  *_citrus_memory_stream_matchline(
-            struct _citrus_memory_stream * __restrict,
-            const char * __restrict, size_t * __restrict, int);
+            struct _citrus_memory_stream * ,
+            const char * , size_t * , int);
 void        *_citrus_memory_stream_chr(struct _citrus_memory_stream *,
             struct _citrus_region *, char);
 void        _citrus_memory_stream_skip_ws(struct _citrus_memory_stream *);
@@ -60,8 +60,8 @@ _citrus_memory_stream_iseof(struct _citrus_memory_stream *ms)
 }
 
 static __inline void
-_citrus_memory_stream_bind(struct _citrus_memory_stream * __restrict ms,
-    const struct _citrus_region * __restrict r)
+_citrus_memory_stream_bind(struct _citrus_memory_stream * ms,
+    const struct _citrus_region * r)
 {
 
     ms->ms_region = *r;
@@ -69,7 +69,7 @@ _citrus_memory_stream_bind(struct _citrus_memory_stream * __restrict ms,
 }
 
 static __inline void
-_citrus_memory_stream_bind_ptr(struct _citrus_memory_stream * __restrict ms,
+_citrus_memory_stream_bind_ptr(struct _citrus_memory_stream * ms,
     void *ptr, size_t sz)
 {
     struct _citrus_region r;

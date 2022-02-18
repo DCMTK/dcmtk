@@ -122,9 +122,9 @@ close_shared(struct _citrus_iconv_shared *ci)
 }
 
 static __inline int
-open_shared(struct _citrus_iconv_shared * __restrict * __restrict rci,
-    const char * __restrict convname, const char * __restrict src,
-    const char * __restrict dst)
+open_shared(struct _citrus_iconv_shared * * rci,
+    const char * convname, const char * src,
+    const char * dst)
 {
     struct _citrus_iconv_shared *ci;
     _citrus_iconv_getops_t getops;
@@ -211,15 +211,15 @@ hash_func(const char *key)
 }
 
 static __inline int
-match_func(struct _citrus_iconv_shared * __restrict ci,
-    const char * __restrict key)
+match_func(struct _citrus_iconv_shared * ci,
+    const char * key)
 {
 
     return (strcmp(ci->ci_convname, key));
 }
 
 static int
-get_shared(struct _citrus_iconv_shared * __restrict * __restrict rci,
+get_shared(struct _citrus_iconv_shared * * rci,
     const char *src, const char *dst)
 {
     struct _citrus_iconv_shared * ci;
@@ -275,7 +275,7 @@ quit:
 }
 
 static void
-release_shared(struct _citrus_iconv_shared * __restrict ci)
+release_shared(struct _citrus_iconv_shared * ci)
 {
 
     WLOCK(&ci_lock);
@@ -302,8 +302,8 @@ release_shared(struct _citrus_iconv_shared * __restrict ci)
  *  open a converter for the specified in/out codes.
  */
 int
-_citrus_iconv_open(struct _citrus_iconv * __restrict * __restrict rcv,
-    const char * __restrict src, const char * __restrict dst)
+_citrus_iconv_open(struct _citrus_iconv * * rcv,
+    const char * src, const char * dst)
 {
 struct _citrus_iconv *cv = NULL;
     struct _citrus_iconv_shared *ci = NULL;

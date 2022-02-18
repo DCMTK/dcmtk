@@ -58,8 +58,8 @@
 #endif
 
 int
-_citrus_map_file(struct _citrus_region * __restrict r,
-    const char * __restrict path)
+_citrus_map_file(struct _citrus_region * r,
+    const char * path)
 {
     struct stat st;
     void *head;

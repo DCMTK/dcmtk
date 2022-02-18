@@ -35,8 +35,8 @@ struct _citrus_iconv_ops;
 struct _citrus_iconv;
 
 BEGIN_EXTERN_C
-int      _citrus_iconv_open(struct _citrus_iconv * __restrict * __restrict,
-            const char * __restrict, const char * __restrict);
+int      _citrus_iconv_open(struct _citrus_iconv * * ,
+            const char * , const char * );
 void         _citrus_iconv_close(struct _citrus_iconv *);
 const char  *_citrus_iconv_canonicalize(const char *);
 END_EXTERN_C
@@ -51,10 +51,10 @@ END_EXTERN_C
  *  convert a string.
  */
 static __inline int
-_citrus_iconv_convert(struct _citrus_iconv * __restrict cv,
-    char * __restrict * __restrict in, size_t * __restrict inbytes,
-    char * __restrict * __restrict out, size_t * __restrict outbytes,
-    uint32_t flags, size_t * __restrict nresults)
+_citrus_iconv_convert(struct _citrus_iconv * cv,
+    char * * in, size_t * inbytes,
+    char * * out, size_t * outbytes,
+    uint32_t flags, size_t * nresults)
 {
 
     return (*cv->cv_shared->ci_ops->io_convert)(cv, in, inbytes, out,

@@ -80,8 +80,8 @@ struct _citrus_mapper_area {
 
 int
 _citrus_mapper_create_area(
-    struct _citrus_mapper_area *__restrict *__restrict rma,
-    const char *__restrict area)
+    struct _citrus_mapper_area * * rma,
+    const char * area)
 {
     struct _citrus_mapper_area *ma;
     struct stat st;
@@ -210,10 +210,10 @@ mapper_close(struct _citrus_csmapper *cm)
  *  simply open a mapper. (without handling hash)
  */
 static int
-mapper_open(struct _citrus_mapper_area *__restrict ma,
-    struct _citrus_csmapper * __restrict * __restrict rcm,
-    const char * __restrict module,
-    const char * __restrict variable)
+mapper_open(struct _citrus_mapper_area * ma,
+    struct _citrus_csmapper * * rcm,
+    const char * module,
+    const char * variable)
 {
     struct _citrus_csmapper *cm;
     _citrus_mapper_getops_t getops;
@@ -287,9 +287,9 @@ err:
  *  open a mapper.
  */
 int
-_citrus_mapper_open_direct(struct _citrus_mapper_area *__restrict ma,
-    struct _citrus_csmapper * __restrict * __restrict rcm,
-    const char * __restrict module, const char * __restrict variable)
+_citrus_mapper_open_direct(struct _citrus_mapper_area * ma,
+    struct _citrus_csmapper * * rcm,
+    const char * module, const char * variable)
 {
 
     return (mapper_open(ma, rcm, module, variable));
@@ -320,9 +320,9 @@ match_func(struct _citrus_csmapper *cm, const char *key)
  *  open a mapper with looking up "mapper.dir".
  */
 int
-_citrus_mapper_open(struct _citrus_mapper_area *__restrict ma,
-    struct _citrus_csmapper * __restrict * __restrict rcm,
-    const char * __restrict mapname)
+_citrus_mapper_open(struct _citrus_mapper_area * ma,
+    struct _citrus_csmapper * * rcm,
+    const char * mapname)
 {
     struct _citrus_csmapper *cm;
     char linebuf[PATH_MAX];
@@ -407,7 +407,7 @@ quit:
  *  set persistent count.
  */
 void
-_citrus_mapper_set_persistent(struct _citrus_csmapper * __restrict cm)
+_citrus_mapper_set_persistent(struct _citrus_csmapper * cm)
 {
 
     WLOCK(&cm_lock);

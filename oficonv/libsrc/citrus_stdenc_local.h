@@ -50,44 +50,44 @@ typedef _CITRUS_STDENC_GETOPS_FUNC_BASE((*_citrus_stdenc_getops_t));
 
 #define _CITRUS_STDENC_DECLS(_e_)                                   \
 static int   _citrus_##_e_##_stdenc_init                            \
-            (struct _citrus_stdenc * __restrict,                    \
-            const void * __restrict, size_t,                        \
-            struct _citrus_stdenc_traits * __restrict);             \
+            (struct _citrus_stdenc * ,                    \
+            const void * , size_t,                        \
+            struct _citrus_stdenc_traits * );             \
 static void  _citrus_##_e_##_stdenc_uninit(struct _citrus_stdenc *);\
 static int   _citrus_##_e_##_stdenc_init_state                      \
-            (struct _citrus_stdenc * __restrict,                    \
-            void * __restrict);                                     \
+            (struct _citrus_stdenc * ,                    \
+            void * );                                     \
 static int   _citrus_##_e_##_stdenc_mbtocs                          \
-            (struct _citrus_stdenc * __restrict,                    \
-            _citrus_csid_t * __restrict,                            \
-            _citrus_index_t * __restrict,                           \
-            char ** __restrict, size_t,                       \
-            void * __restrict, size_t * __restrict,                 \
+            (struct _citrus_stdenc * ,                    \
+            _citrus_csid_t * ,                            \
+            _citrus_index_t * ,                           \
+            char ** , size_t,                       \
+            void * , size_t * ,                 \
             struct iconv_hooks *);                                  \
 static int   _citrus_##_e_##_stdenc_cstomb                          \
-            (struct _citrus_stdenc * __restrict,                    \
-            char * __restrict, size_t, _citrus_csid_t,              \
-            _citrus_index_t, void * __restrict,                     \
-            size_t * __restrict, struct iconv_hooks *);             \
+            (struct _citrus_stdenc * ,                    \
+            char * , size_t, _citrus_csid_t,              \
+            _citrus_index_t, void * ,                     \
+            size_t * , struct iconv_hooks *);             \
 static int   _citrus_##_e_##_stdenc_mbtowc                          \
-            (struct _citrus_stdenc * __restrict,                    \
-            _citrus_wc_t * __restrict,                              \
-            char ** __restrict, size_t,                       \
-            void * __restrict, size_t * __restrict,                 \
+            (struct _citrus_stdenc * ,                    \
+            _citrus_wc_t * ,                              \
+            char ** , size_t,                       \
+            void * , size_t * ,                 \
             struct iconv_hooks *);                                  \
 static int   _citrus_##_e_##_stdenc_wctomb                          \
-            (struct _citrus_stdenc * __restrict,                    \
-            char * __restrict, size_t, _citrus_wc_t,                \
-            void * __restrict, size_t * __restrict,                 \
+            (struct _citrus_stdenc * ,                    \
+            char * , size_t, _citrus_wc_t,                \
+            void * , size_t * ,                 \
             struct iconv_hooks *);                                  \
 static int   _citrus_##_e_##_stdenc_put_state_reset                 \
-            (struct _citrus_stdenc * __restrict,                    \
-            char * __restrict, size_t, void * __restrict,           \
-            size_t * __restrict);                                   \
+            (struct _citrus_stdenc * ,                    \
+            char * , size_t, void * ,           \
+            size_t * );                                   \
 static int   _citrus_##_e_##_stdenc_get_state_desc                  \
-            (struct _citrus_stdenc * __restrict,                    \
-            void * __restrict, int,                                 \
-            struct _citrus_stdenc_state_desc * __restrict)
+            (struct _citrus_stdenc * ,                    \
+            void * , int,                                 \
+            struct _citrus_stdenc_state_desc * )
 
 #define _CITRUS_STDENC_DEF_OPS(_e_)                                 \
 extern struct _citrus_stdenc_ops _citrus_##_e_##_stdenc_ops;        \
@@ -104,23 +104,23 @@ struct _citrus_stdenc_ops _citrus_##_e_##_stdenc_ops = {            \
 }
 
 typedef int (*_citrus_stdenc_init_t)
-    (struct _citrus_stdenc * __reatrict, const void * __restrict , size_t, struct _citrus_stdenc_traits * __restrict);
+    (struct _citrus_stdenc * __reatrict, const void * , size_t, struct _citrus_stdenc_traits * );
 typedef void (*_citrus_stdenc_uninit_t)
-    (struct _citrus_stdenc * __restrict);
+    (struct _citrus_stdenc * );
 typedef int (*_citrus_stdenc_init_state_t)
-    (struct _citrus_stdenc * __restrict, void * __restrict);
+    (struct _citrus_stdenc * , void * );
 typedef int (*_citrus_stdenc_mbtocs_t)
-    (struct _citrus_stdenc * __restrict, _citrus_csid_t * __restrict, _citrus_index_t * __restrict, char ** __restrict, size_t, void * __restrict, size_t * __restrict, struct iconv_hooks *);
+    (struct _citrus_stdenc * , _citrus_csid_t * , _citrus_index_t * , char ** , size_t, void * , size_t * , struct iconv_hooks *);
 typedef int (*_citrus_stdenc_cstomb_t)
-    (struct _citrus_stdenc *__restrict, char * __restrict, size_t, _citrus_csid_t, _citrus_index_t, void * __restrict, size_t * __restrict, struct iconv_hooks *);
+    (struct _citrus_stdenc *, char * , size_t, _citrus_csid_t, _citrus_index_t, void * , size_t * , struct iconv_hooks *);
 typedef int (*_citrus_stdenc_mbtowc_t)
-    (struct _citrus_stdenc * __restrict, _citrus_wc_t * __restrict, char ** __restrict, size_t, void * __restrict, size_t * __restrict, struct iconv_hooks *);
+    (struct _citrus_stdenc * , _citrus_wc_t * , char ** , size_t, void * , size_t * , struct iconv_hooks *);
 typedef int (*_citrus_stdenc_wctomb_t)
-    (struct _citrus_stdenc *__restrict, char * __restrict, size_t, _citrus_wc_t, void * __restrict, size_t * __restrict, struct iconv_hooks *);
+    (struct _citrus_stdenc *, char * , size_t, _citrus_wc_t, void * , size_t * , struct iconv_hooks *);
 typedef int (*_citrus_stdenc_put_state_reset_t)
-    (struct _citrus_stdenc *__restrict, char * __restrict, size_t, void * __restrict, size_t * __restrict);
+    (struct _citrus_stdenc *, char * , size_t, void * , size_t * );
 typedef int (*_citrus_stdenc_get_state_desc_t)
-    (struct _citrus_stdenc * __restrict, void * __restrict, int, struct _citrus_stdenc_state_desc * __restrict);
+    (struct _citrus_stdenc * , void * , int, struct _citrus_stdenc_state_desc * );
 
 struct _citrus_stdenc_ops {
     _citrus_stdenc_init_t       eo_init;

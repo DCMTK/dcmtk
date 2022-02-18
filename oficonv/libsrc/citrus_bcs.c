@@ -33,8 +33,8 @@
  * case insensitive comparison between two C strings.
  */
 int
-_citrus_bcs_strcasecmp(const char * __restrict str1,
-    const char * __restrict str2)
+_citrus_bcs_strcasecmp(const char * str1,
+    const char * str2)
 {
     int c1, c2;
 
@@ -52,8 +52,8 @@ _citrus_bcs_strcasecmp(const char * __restrict str1,
  * case insensitive comparison between two C strings with limitation of length.
  */
 int
-_citrus_bcs_strncasecmp(const char * __restrict str1,
-    const char * __restrict str2, size_t sz)
+_citrus_bcs_strncasecmp(const char * str1,
+    const char * str2, size_t sz)
 {
     int c1, c2;
 
@@ -72,7 +72,7 @@ _citrus_bcs_strncasecmp(const char * __restrict str1,
  * skip white space characters.
  */
 const char *
-_citrus_bcs_skip_ws(const char * __restrict p)
+_citrus_bcs_skip_ws(const char * p)
 {
 
     while (*p && _citrus_bcs_isspace(*p))
@@ -85,7 +85,7 @@ _citrus_bcs_skip_ws(const char * __restrict p)
  * skip non white space characters.
  */
 const char *
-_citrus_bcs_skip_nonws(const char * __restrict p)
+_citrus_bcs_skip_nonws(const char * p)
 {
 
     while (*p && !_citrus_bcs_isspace(*p))
@@ -98,7 +98,7 @@ _citrus_bcs_skip_nonws(const char * __restrict p)
  * skip white space characters with limitation of length.
  */
 const char *
-_citrus_bcs_skip_ws_len(const char * __restrict p, size_t * __restrict len)
+_citrus_bcs_skip_ws_len(const char * p, size_t * len)
 {
 
     while (*len > 0 && *p && _citrus_bcs_isspace(*p)) {
@@ -113,7 +113,7 @@ _citrus_bcs_skip_ws_len(const char * __restrict p, size_t * __restrict len)
  * skip non white space characters with limitation of length.
  */
 const char *
-_citrus_bcs_skip_nonws_len(const char * __restrict p, size_t * __restrict len)
+_citrus_bcs_skip_nonws_len(const char * p, size_t * len)
 {
 
     while (*len > 0 && *p && !_citrus_bcs_isspace(*p)) {
@@ -128,7 +128,7 @@ _citrus_bcs_skip_nonws_len(const char * __restrict p, size_t * __restrict len)
  * truncate trailing white space characters.
  */
 void
-_citrus_bcs_trunc_rws_len(const char * __restrict p, size_t * __restrict len)
+_citrus_bcs_trunc_rws_len(const char * p, size_t * len)
 {
 
     while (*len > 0 && _citrus_bcs_isspace(p[*len - 1]))

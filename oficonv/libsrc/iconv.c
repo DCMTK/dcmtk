@@ -150,7 +150,7 @@ OFiconv_close(iconv_t handle)
 }
 
 size_t
-OFiconv(iconv_t handle, char ** __restrict in, size_t * __restrict szin, char ** __restrict out, size_t * __restrict szout)
+OFiconv(iconv_t handle, char ** in, size_t * szin, char ** out, size_t * szout)
 {
     size_t ret;
     int err;

@@ -43,7 +43,7 @@ typedef struct _citrus_prop_hint_t _citrus_prop_hint_t;
 
 #define _CITRUS_PROP_CB0_T(_func_, _type_) \
 typedef int (*_citrus_prop_##_func_##_cb_func_t) \
-    (void * __restrict, const char *, _type_); \
+    (void * , const char *, _type_); \
 typedef struct { \
     _citrus_prop_##_func_##_cb_func_t func; \
 } _citrus_prop_##_func_##_cb_t;
@@ -53,7 +53,7 @@ _CITRUS_PROP_CB0_T(str, const char *)
 
 #define _CITRUS_PROP_CB1_T(_func_, _type_) \
 typedef int (*_citrus_prop_##_func_##_cb_func_t) \
-    (void * __restrict, const char *, _type_, _type_); \
+    (void * , const char *, _type_, _type_); \
 typedef struct { \
     _citrus_prop_##_func_##_cb_func_t func; \
 } _citrus_prop_##_func_##_cb_t;
@@ -86,8 +86,8 @@ struct _citrus_prop_hint_t {
     { .name = NULL }
 
 BEGIN_EXTERN_C
-int  _citrus_prop_parse_variable(const _citrus_prop_hint_t * __restrict,
-        void * __restrict, const void *, size_t);
+int  _citrus_prop_parse_variable(const _citrus_prop_hint_t * ,
+        void * , const void *, size_t);
 END_EXTERN_C
 
 #endif /* !_CITRUS_PROP_H_ */

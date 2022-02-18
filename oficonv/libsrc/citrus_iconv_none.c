@@ -65,8 +65,8 @@ _citrus_iconv_none_iconv_getops(struct _citrus_iconv_ops *ops)
 static int
 /*ARGSUSED*/
 _citrus_iconv_none_iconv_init_shared(
-    struct _citrus_iconv_shared * __restrict ci,
-    const char * __restrict in __unused, const char * __restrict out __unused)
+    struct _citrus_iconv_shared * ci,
+    const char * in , const char * out )
 {
     (void) in;
     (void) out;
@@ -76,7 +76,7 @@ _citrus_iconv_none_iconv_init_shared(
 
 static void
 /*ARGSUSED*/
-_citrus_iconv_none_iconv_uninit_shared(struct _citrus_iconv_shared *ci __unused)
+_citrus_iconv_none_iconv_uninit_shared(struct _citrus_iconv_shared *ci )
 {
     (void) ci;
 }
@@ -92,17 +92,17 @@ _citrus_iconv_none_iconv_init_context(struct _citrus_iconv *cv)
 
 static void
 /*ARGSUSED*/
-_citrus_iconv_none_iconv_uninit_context(struct _citrus_iconv *cv __unused)
+_citrus_iconv_none_iconv_uninit_context(struct _citrus_iconv *cv )
 {
     (void) cv;
 }
 
 static int
 /*ARGSUSED*/
-_citrus_iconv_none_iconv_convert(struct _citrus_iconv * __restrict ci __unused,
-    char * __restrict * __restrict in, size_t * __restrict inbytes,
-    char * __restrict * __restrict out, size_t * __restrict outbytes,
-    uint32_t flags __unused, size_t * __restrict invalids)
+_citrus_iconv_none_iconv_convert(struct _citrus_iconv * ci ,
+    char * * in, size_t * inbytes,
+    char * * out, size_t * outbytes,
+    uint32_t flags , size_t * invalids)
 {
     size_t len;
     int e2big;

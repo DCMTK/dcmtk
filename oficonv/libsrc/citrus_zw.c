@@ -77,8 +77,8 @@ typedef struct {
 
 static __inline void
 /*ARGSUSED*/
-_citrus_ZW_init_state(_ZWEncodingInfo * __restrict ei __unused,
-    _ZWState * __restrict psenc)
+_citrus_ZW_init_state(_ZWEncodingInfo * ei ,
+    _ZWState * psenc)
 {
     (void) ei;
     psenc->chlen = 0;
@@ -86,9 +86,9 @@ _citrus_ZW_init_state(_ZWEncodingInfo * __restrict ei __unused,
 }
 
 static int
-_citrus_ZW_mbrtowc_priv(_ZWEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char **__restrict s, size_t n,
-    _ZWState * __restrict psenc, size_t * __restrict nresult)
+_citrus_ZW_mbrtowc_priv(_ZWEncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s, size_t n,
+    _ZWState * psenc, size_t * nresult)
 {
     char *s0;
     _citrus_wc_t  wc;
@@ -231,9 +231,9 @@ ilseq:
 
 static int
 /*ARGSUSED*/
-_citrus_ZW_wcrtomb_priv(_ZWEncodingInfo * __restrict ei __unused,
-    char *__restrict s, size_t n, _citrus_wc_t wc,
-    _ZWState * __restrict psenc, size_t * __restrict nresult)
+_citrus_ZW_wcrtomb_priv(_ZWEncodingInfo * ei ,
+    char * s, size_t n, _citrus_wc_t wc,
+    _ZWState * psenc, size_t * nresult)
 {
     int ch;
     (void) ei;
@@ -317,9 +317,9 @@ ilseq:
 
 static int
 /*ARGSUSED*/
-_citrus_ZW_put_state_reset(_ZWEncodingInfo * __restrict ei __unused,
-    char * __restrict s, size_t n, _ZWState * __restrict psenc,
-    size_t * __restrict nresult)
+_citrus_ZW_put_state_reset(_ZWEncodingInfo * ei ,
+    char * s, size_t n, _ZWState * psenc,
+    size_t * nresult)
 {
     (void) ei;
 
@@ -348,8 +348,8 @@ _citrus_ZW_put_state_reset(_ZWEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_ZW_stdenc_get_state_desc_generic(_ZWEncodingInfo * __restrict ei __unused,
-    _ZWState * __restrict psenc, int * __restrict rstate)
+_citrus_ZW_stdenc_get_state_desc_generic(_ZWEncodingInfo * ei ,
+    _ZWState * psenc, int * rstate)
 {
     (void) ei;
 
@@ -387,8 +387,8 @@ _citrus_ZW_stdenc_get_state_desc_generic(_ZWEncodingInfo * __restrict ei __unuse
 
 static __inline int
 /*ARGSUSED*/
-_citrus_ZW_stdenc_wctocs(_ZWEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_ZW_stdenc_wctocs(_ZWEncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     (void) ei;
 
@@ -400,8 +400,8 @@ _citrus_ZW_stdenc_wctocs(_ZWEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_ZW_stdenc_cstowc(_ZWEncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_ZW_stdenc_cstowc(_ZWEncodingInfo * ei ,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
 
@@ -418,15 +418,15 @@ _citrus_ZW_stdenc_cstowc(_ZWEncodingInfo * __restrict ei __unused,
 
 static void
 /*ARGSUSED*/
-_citrus_ZW_encoding_module_uninit(_ZWEncodingInfo *ei __unused)
+_citrus_ZW_encoding_module_uninit(_ZWEncodingInfo *ei )
 {
     (void) ei;
 }
 
 static int
 /*ARGSUSED*/
-_citrus_ZW_encoding_module_init(_ZWEncodingInfo * __restrict ei __unused,
-    const void *__restrict var __unused, size_t lenvar __unused)
+_citrus_ZW_encoding_module_init(_ZWEncodingInfo * ei ,
+    const void * var , size_t lenvar )
 {
     (void) ei;
     (void) var;

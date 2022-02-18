@@ -117,9 +117,15 @@ _citrus_EUC_cs(unsigned int c)
     return ((c & 0x80) ? c == _SS3 ? 3 : c == _SS2 ? 2 : 1 : 0);
 }
 
+/* suppress MSVC 'assignment within conditional expression' warning  */
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4706)
+#endif
+
 static __inline int
 _citrus_EUC_parse_variable(_EUCEncodingInfo *ei, const void *var,
-    size_t lenvar __unused)
+    size_t lenvar )
 {
     char *e;
     const char *v;
@@ -160,10 +166,13 @@ _citrus_EUC_parse_variable(_EUCEncodingInfo *ei, const void *var,
     return (0);
 }
 
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 static __inline void
 /*ARGSUSED*/
-_citrus_EUC_init_state(_EUCEncodingInfo *ei __unused, _EUCState *s)
+_citrus_EUC_init_state(_EUCEncodingInfo *ei , _EUCState *s)
 {
     (void) ei;
     memset(s, 0, sizeof(*s));
@@ -255,7 +264,7 @@ restart:
 
 static int
 _citrus_EUC_wcrtomb_priv(_EUCEncodingInfo *ei, char *s, size_t n, _citrus_wc_t wc,
-    _EUCState *psenc __unused, size_t *nresult)
+    _EUCState *psenc , size_t *nresult)
 {
     _citrus_wc_t m, nm;
     unsigned int cs;
@@ -303,8 +312,8 @@ err:
 
 static __inline int
 /*ARGSUSED*/
-_citrus_EUC_stdenc_wctocs(_EUCEncodingInfo * __restrict ei,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_EUC_stdenc_wctocs(_EUCEncodingInfo * ei,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     _citrus_wc_t m, nm;
 
@@ -319,8 +328,8 @@ _citrus_EUC_stdenc_wctocs(_EUCEncodingInfo * __restrict ei,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_EUC_stdenc_cstowc(_EUCEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_EUC_stdenc_cstowc(_EUCEncodingInfo * ei,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     if ((csid & ~ei->mask) != 0 || (idx & ei->mask) != 0)
@@ -333,8 +342,8 @@ _citrus_EUC_stdenc_cstowc(_EUCEncodingInfo * __restrict ei,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_EUC_stdenc_get_state_desc_generic(_EUCEncodingInfo * __restrict ei __unused,
-    _EUCState * __restrict psenc, int * __restrict rstate)
+_citrus_EUC_stdenc_get_state_desc_generic(_EUCEncodingInfo * ei ,
+    _EUCState * psenc, int * rstate)
 {
 
     (void) ei;
@@ -345,8 +354,8 @@ _citrus_EUC_stdenc_get_state_desc_generic(_EUCEncodingInfo * __restrict ei __unu
 
 static int
 /*ARGSUSED*/
-_citrus_EUC_encoding_module_init(_EUCEncodingInfo * __restrict ei,
-    const void * __restrict var, size_t lenvar)
+_citrus_EUC_encoding_module_init(_EUCEncodingInfo * ei,
+    const void * var, size_t lenvar)
 {
 
     return (_citrus_EUC_parse_variable(ei, var, lenvar));
@@ -354,7 +363,7 @@ _citrus_EUC_encoding_module_init(_EUCEncodingInfo * __restrict ei,
 
 static void
 /*ARGSUSED*/
-_citrus_EUC_encoding_module_uninit(_EUCEncodingInfo * __restrict ei __unused)
+_citrus_EUC_encoding_module_uninit(_EUCEncodingInfo * ei )
 {
     (void) ei;
 }

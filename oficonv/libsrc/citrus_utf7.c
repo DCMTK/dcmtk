@@ -76,8 +76,8 @@ typedef struct {
 
 static __inline void
 /*ARGSUSED*/
-_citrus_UTF7_init_state(_UTF7EncodingInfo * __restrict ei __unused,
-    _UTF7State * __restrict s)
+_citrus_UTF7_init_state(_UTF7EncodingInfo * ei ,
+    _UTF7State * s)
 {
     (void) ei;
     memset((void *)s, 0, sizeof(*s));
@@ -126,9 +126,9 @@ static const char spaces[] = " \t\r\n";
 #define LOSRG_MAX   UINT16_C(0xdfff)
 
 static int
-_citrus_UTF7_mbtoutf16(_UTF7EncodingInfo * __restrict ei,
-    uint16_t * __restrict u16, char ** __restrict s, size_t n,
-    _UTF7State * __restrict psenc, size_t * __restrict nresult)
+_citrus_UTF7_mbtoutf16(_UTF7EncodingInfo * ei,
+    uint16_t * u16, char ** s, size_t n,
+    _UTF7State * psenc, size_t * nresult)
 {
     char *s0;
     int done, i, len;
@@ -215,9 +215,9 @@ ilseq:
 }
 
 static int
-_citrus_UTF7_mbrtowc_priv(_UTF7EncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
-    _UTF7State * __restrict psenc, size_t * __restrict nresult)
+_citrus_UTF7_mbrtowc_priv(_UTF7EncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s, size_t n,
+    _UTF7State * psenc, size_t * nresult)
 {
     uint32_t u32;
     uint16_t hi, lo;
@@ -271,9 +271,9 @@ done:
 }
 
 static int
-_citrus_UTF7_utf16tomb(_UTF7EncodingInfo * __restrict ei,
-    char * __restrict s, size_t n __unused, uint16_t u16,
-    _UTF7State * __restrict psenc, size_t * __restrict nresult)
+_citrus_UTF7_utf16tomb(_UTF7EncodingInfo * ei,
+    char * s, size_t n , uint16_t u16,
+    _UTF7State * psenc, size_t * nresult)
 {
     int bits, i;
 
@@ -322,9 +322,9 @@ _citrus_UTF7_utf16tomb(_UTF7EncodingInfo * __restrict ei,
 }
 
 static int
-_citrus_UTF7_wcrtomb_priv(_UTF7EncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, _citrus_wc_t wchar,
-    _UTF7State * __restrict psenc, size_t * __restrict nresult)
+_citrus_UTF7_wcrtomb_priv(_UTF7EncodingInfo * ei,
+    char * s, size_t n, _citrus_wc_t wchar,
+    _UTF7State * psenc, size_t * nresult)
 {
     uint32_t u32;
     uint16_t u16[2];
@@ -360,9 +360,9 @@ _citrus_UTF7_wcrtomb_priv(_UTF7EncodingInfo * __restrict ei,
 
 static int
 /* ARGSUSED */
-_citrus_UTF7_put_state_reset(_UTF7EncodingInfo * __restrict ei __unused,
-    char * __restrict s, size_t n, _UTF7State * __restrict psenc,
-    size_t * __restrict nresult)
+_citrus_UTF7_put_state_reset(_UTF7EncodingInfo * ei ,
+    char * s, size_t n, _UTF7State * psenc,
+    size_t * nresult)
 {
     int bits, pos;
     (void) ei;
@@ -398,8 +398,8 @@ _citrus_UTF7_put_state_reset(_UTF7EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF7_stdenc_wctocs(_UTF7EncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_UTF7_stdenc_wctocs(_UTF7EncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     (void) ei;
 
@@ -411,8 +411,8 @@ _citrus_UTF7_stdenc_wctocs(_UTF7EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF7_stdenc_cstowc(_UTF7EncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_UTF7_stdenc_cstowc(_UTF7EncodingInfo * ei ,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
 
@@ -425,8 +425,8 @@ _citrus_UTF7_stdenc_cstowc(_UTF7EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF7_stdenc_get_state_desc_generic(_UTF7EncodingInfo * __restrict ei __unused,
-    _UTF7State * __restrict psenc, int * __restrict rstate)
+_citrus_UTF7_stdenc_get_state_desc_generic(_UTF7EncodingInfo * ei ,
+    _UTF7State * psenc, int * rstate)
 {
     (void) ei;
 
@@ -437,7 +437,7 @@ _citrus_UTF7_stdenc_get_state_desc_generic(_UTF7EncodingInfo * __restrict ei __u
 
 static void
 /*ARGSUSED*/
-_citrus_UTF7_encoding_module_uninit(_UTF7EncodingInfo *ei __unused)
+_citrus_UTF7_encoding_module_uninit(_UTF7EncodingInfo *ei )
 {
     (void) ei;
 
@@ -446,8 +446,8 @@ _citrus_UTF7_encoding_module_uninit(_UTF7EncodingInfo *ei __unused)
 
 static int
 /*ARGSUSED*/
-_citrus_UTF7_encoding_module_init(_UTF7EncodingInfo * __restrict ei,
-    const void * __restrict var __unused, size_t lenvar __unused)
+_citrus_UTF7_encoding_module_init(_UTF7EncodingInfo * ei,
+    const void * var , size_t lenvar )
 {
     const char *s;
     (void) var;

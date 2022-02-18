@@ -306,8 +306,8 @@ find_best_pivot(const char *src, const char *dst, char *pivot, size_t pvlen,
 }
 
 static __inline int
-open_serial_mapper(struct _citrus_mapper_area *__restrict ma,
-    struct _citrus_csmapper * __restrict * __restrict rcm,
+open_serial_mapper(struct _citrus_mapper_area * ma,
+    struct _citrus_csmapper * * rcm,
     const char *src, const char *pivot, const char *dst)
 {
     char buf[PATH_MAX];
@@ -333,8 +333,8 @@ open_serial_mapper(struct _citrus_mapper_area *__restrict ma,
 
 static struct _citrus_csmapper *csm_none = NULL;
 static int
-get_none(struct _citrus_mapper_area *__restrict ma,
-    struct _citrus_csmapper *__restrict *__restrict rcsm)
+get_none(struct _citrus_mapper_area * ma,
+    struct _citrus_csmapper * * rcsm)
 {
     int ret;
 
@@ -358,8 +358,8 @@ quit:
 }
 
 int
-_citrus_csmapper_open(struct _citrus_csmapper * __restrict * __restrict rcsm,
-    const char * __restrict src, const char * __restrict dst, uint32_t flags,
+_citrus_csmapper_open(struct _citrus_csmapper * * rcsm,
+    const char * src, const char * dst, uint32_t flags,
     unsigned long *rnorm)
 {
     const char *realsrc, *realdst;

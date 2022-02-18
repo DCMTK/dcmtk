@@ -73,8 +73,8 @@ typedef struct {
 
 static __inline void
 /*ARGSUSED*/
-_citrus_JOHAB_init_state(_JOHABEncodingInfo * __restrict ei __unused,
-    _JOHABState * __restrict psenc)
+_citrus_JOHAB_init_state(_JOHABEncodingInfo * ei ,
+    _JOHABState * psenc)
 {
     (void) ei;
 
@@ -83,8 +83,8 @@ _citrus_JOHAB_init_state(_JOHABEncodingInfo * __restrict ei __unused,
 
 static __inline void
 /*ARGSUSED*/
-_citrus_JOHAB_pack_state(_JOHABEncodingInfo * __restrict ei __unused,
-    void * __restrict pspriv, const _JOHABState * __restrict psenc)
+_citrus_JOHAB_pack_state(_JOHABEncodingInfo * ei ,
+    void * pspriv, const _JOHABState * psenc)
 {
     (void) ei;
 
@@ -93,8 +93,8 @@ _citrus_JOHAB_pack_state(_JOHABEncodingInfo * __restrict ei __unused,
 
 static __inline void
 /*ARGSUSED*/
-_citrus_JOHAB_unpack_state(_JOHABEncodingInfo * __restrict ei __unused,
-    _JOHABState * __restrict psenc, const void * __restrict pspriv)
+_citrus_JOHAB_unpack_state(_JOHABEncodingInfo * ei ,
+    _JOHABState * psenc, const void * pspriv)
 {
     (void) ei;
 
@@ -103,7 +103,7 @@ _citrus_JOHAB_unpack_state(_JOHABEncodingInfo * __restrict ei __unused,
 
 static void
 /*ARGSUSED*/
-_citrus_JOHAB_encoding_module_uninit(_JOHABEncodingInfo *ei __unused)
+_citrus_JOHAB_encoding_module_uninit(_JOHABEncodingInfo *ei )
 {
     (void) ei;
 
@@ -112,8 +112,8 @@ _citrus_JOHAB_encoding_module_uninit(_JOHABEncodingInfo *ei __unused)
 
 static int
 /*ARGSUSED*/
-_citrus_JOHAB_encoding_module_init(_JOHABEncodingInfo * __restrict ei __unused,
-    const void * __restrict var __unused, size_t lenvar __unused)
+_citrus_JOHAB_encoding_module_init(_JOHABEncodingInfo * ei ,
+    const void * var , size_t lenvar )
 {
     (void) ei;
     (void) var;
@@ -149,9 +149,9 @@ ishanja(int l, int t)
 
 static int
 /*ARGSUSED*/
-_citrus_JOHAB_mbrtowc_priv(_JOHABEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
-    _JOHABState * __restrict psenc, size_t * __restrict nresult)
+_citrus_JOHAB_mbrtowc_priv(_JOHABEncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s, size_t n,
+    _JOHABState * psenc, size_t * nresult)
 {
     char *s0;
     int l, t;
@@ -205,9 +205,9 @@ restart:
 
 static int
 /*ARGSUSED*/
-_citrus_JOHAB_wcrtomb_priv(_JOHABEncodingInfo * __restrict ei __unused,
-    char * __restrict s, size_t n, _citrus_wc_t wc,
-    _JOHABState * __restrict psenc, size_t * __restrict nresult)
+_citrus_JOHAB_wcrtomb_priv(_JOHABEncodingInfo * ei ,
+    char * s, size_t n, _citrus_wc_t wc,
+    _JOHABState * psenc, size_t * nresult)
 {
     int l, t;
     (void) ei;
@@ -245,8 +245,8 @@ ilseq:
 
 static __inline int
 /*ARGSUSED*/
-_citrus_JOHAB_stdenc_wctocs(_JOHABEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_JOHAB_stdenc_wctocs(_JOHABEncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     int m, l, linear, t;
     (void) ei;
@@ -289,8 +289,8 @@ _citrus_JOHAB_stdenc_wctocs(_JOHABEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_JOHAB_stdenc_cstowc(_JOHABEncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_JOHAB_stdenc_cstowc(_JOHABEncodingInfo * ei ,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     int m, n, l, linear, t;
     (void) ei;
@@ -324,8 +324,8 @@ _citrus_JOHAB_stdenc_cstowc(_JOHABEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_JOHAB_stdenc_get_state_desc_generic(_JOHABEncodingInfo * __restrict ei __unused,
-    _JOHABState * __restrict psenc, int * __restrict rstate)
+_citrus_JOHAB_stdenc_get_state_desc_generic(_JOHABEncodingInfo * ei ,
+    _JOHABState * psenc, int * rstate)
 {
     (void) ei;
 

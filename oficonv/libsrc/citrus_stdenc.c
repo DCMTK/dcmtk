@@ -44,8 +44,8 @@ struct _citrus_stdenc _citrus_stdenc_default = {
 };
 
 int
-_citrus_stdenc_open(struct _citrus_stdenc * __restrict * __restrict rce,
-    char const * __restrict encname, const void * __restrict variable,
+_citrus_stdenc_open(struct _citrus_stdenc * * rce,
+    char const * encname, const void * variable,
     size_t lenvar)
 {
     struct _citrus_stdenc *ce;

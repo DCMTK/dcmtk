@@ -74,8 +74,8 @@ typedef struct {
 
 static __inline void
 /*ARGSUSED*/
-_citrus_DECHanyu_init_state(_DECHanyuEncodingInfo * __restrict ei __unused,
-    _DECHanyuState * __restrict psenc)
+_citrus_DECHanyu_init_state(_DECHanyuEncodingInfo * ei ,
+    _DECHanyuState * psenc)
 {
     (void) ei;
     psenc->chlen = 0;
@@ -83,8 +83,8 @@ _citrus_DECHanyu_init_state(_DECHanyuEncodingInfo * __restrict ei __unused,
 
 static __inline void
 /*ARGSUSED*/
-_citrus_DECHanyu_pack_state(_DECHanyuEncodingInfo * __restrict ei __unused,
-    void * __restrict pspriv, const _DECHanyuState * __restrict psenc)
+_citrus_DECHanyu_pack_state(_DECHanyuEncodingInfo * ei ,
+    void * pspriv, const _DECHanyuState * psenc)
 {
     (void) ei;
     memcpy(pspriv, (const void *)psenc, sizeof(*psenc));
@@ -92,9 +92,9 @@ _citrus_DECHanyu_pack_state(_DECHanyuEncodingInfo * __restrict ei __unused,
 
 static __inline void
 /*ARGSUSED*/
-_citrus_DECHanyu_unpack_state(_DECHanyuEncodingInfo * __restrict ei __unused,
-    _DECHanyuState * __restrict psenc,
-    const void * __restrict pspriv)
+_citrus_DECHanyu_unpack_state(_DECHanyuEncodingInfo * ei ,
+    _DECHanyuState * psenc,
+    const void * pspriv)
 {
     (void) ei;
     memcpy((void *)psenc, pspriv, sizeof(*psenc));
@@ -102,7 +102,7 @@ _citrus_DECHanyu_unpack_state(_DECHanyuEncodingInfo * __restrict ei __unused,
 
 static void
 /*ARGSUSED*/
-_citrus_DECHanyu_encoding_module_uninit(_DECHanyuEncodingInfo *ei __unused)
+_citrus_DECHanyu_encoding_module_uninit(_DECHanyuEncodingInfo *ei )
 {
     /* ei may be null */
     (void) ei;
@@ -110,8 +110,8 @@ _citrus_DECHanyu_encoding_module_uninit(_DECHanyuEncodingInfo *ei __unused)
 
 static int
 /*ARGSUSED*/
-_citrus_DECHanyu_encoding_module_init(_DECHanyuEncodingInfo * __restrict ei __unused,
-    const void * __restrict var __unused, size_t lenvar __unused)
+_citrus_DECHanyu_encoding_module_init(_DECHanyuEncodingInfo * ei ,
+    const void * var , size_t lenvar )
 {
     /* ei may be null */
     (void) ei;
@@ -167,9 +167,9 @@ is_94charset(int c)
 
 static int
 /*ARGSUSED*/
-_citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
-    _DECHanyuState * __restrict psenc, size_t * __restrict nresult)
+_citrus_DECHanyu_mbrtowc_priv(_DECHanyuEncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s, size_t n,
+    _DECHanyuState * psenc, size_t * nresult)
 {
     char *s0;
     _citrus_wc_t wc;
@@ -276,9 +276,9 @@ ilseq:
 
 static int
 /*ARGSUSED*/
-_citrus_DECHanyu_wcrtomb_priv(_DECHanyuEncodingInfo * __restrict ei __unused,
-    char * __restrict s, size_t n, _citrus_wc_t wc,
-    _DECHanyuState * __restrict psenc, size_t * __restrict nresult)
+_citrus_DECHanyu_wcrtomb_priv(_DECHanyuEncodingInfo * ei ,
+    char * s, size_t n, _citrus_wc_t wc,
+    _DECHanyuState * psenc, size_t * nresult)
 {
     int ch;
     (void) ei;
@@ -323,8 +323,8 @@ ilseq:
 
 static __inline int
 /*ARGSUSED*/
-_citrus_DECHanyu_stdenc_wctocs(_DECHanyuEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_DECHanyu_stdenc_wctocs(_DECHanyuEncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     _citrus_wc_t mask;
     int plane;
@@ -353,8 +353,8 @@ _citrus_DECHanyu_stdenc_wctocs(_DECHanyuEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_DECHanyu_stdenc_cstowc(_DECHanyuEncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_DECHanyu_stdenc_cstowc(_DECHanyuEncodingInfo * ei ,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
 
@@ -380,8 +380,8 @@ _citrus_DECHanyu_stdenc_cstowc(_DECHanyuEncodingInfo * __restrict ei __unused,
 static __inline int
 /*ARGSUSED*/
 _citrus_DECHanyu_stdenc_get_state_desc_generic(
-    _DECHanyuEncodingInfo * __restrict ei __unused,
-    _DECHanyuState * __restrict psenc, int * __restrict rstate)
+    _DECHanyuEncodingInfo * ei ,
+    _DECHanyuState * psenc, int * rstate)
 {
     (void) ei;
 

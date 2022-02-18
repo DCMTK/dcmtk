@@ -350,7 +350,7 @@ do_conv(const struct _citrus_iconv_std_shared *is,
 static int
 /*ARGSUSED*/
 _citrus_iconv_std_iconv_init_shared(struct _citrus_iconv_shared *ci,
-    const char * __restrict src, const char * __restrict dst)
+    const char * src, const char * dst)
 {
     struct _citrus_esdb esdbdst, esdbsrc;
     struct _citrus_iconv_std_shared *is;
@@ -461,10 +461,10 @@ _citrus_iconv_std_iconv_uninit_context(struct _citrus_iconv *cv)
 }
 
 static int
-_citrus_iconv_std_iconv_convert(struct _citrus_iconv * __restrict cv,
-    char * __restrict * __restrict in, size_t * __restrict inbytes,
-    char * __restrict * __restrict out, size_t * __restrict outbytes,
-    uint32_t flags, size_t * __restrict invalids)
+_citrus_iconv_std_iconv_convert(struct _citrus_iconv * cv,
+    char * * in, size_t * inbytes,
+    char * * out, size_t * outbytes,
+    uint32_t flags, size_t * invalids)
 {
     const struct _citrus_iconv_std_shared *is = cv->cv_shared->ci_closure;
     struct _citrus_iconv_std_context *sc = cv->cv_closure;

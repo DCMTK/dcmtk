@@ -72,8 +72,8 @@ typedef struct {
 
 static __inline void
 /*ARGSUSED*/
-_citrus_GBK2K_init_state(_GBK2KEncodingInfo * __restrict ei __unused,
-    _GBK2KState * __restrict s)
+_citrus_GBK2K_init_state(_GBK2KEncodingInfo * ei ,
+    _GBK2KState * s)
 {
     (void) ei;
     memset(s, 0, sizeof(*s));
@@ -127,9 +127,9 @@ _mb_count(_citrus_wc_t v)
 #define _PUSH_PSENC(c)  (psenc->ch[psenc->chlen++] = (char)(c))
 
 static int
-_citrus_GBK2K_mbrtowc_priv(_GBK2KEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
-    _GBK2KState * __restrict psenc, size_t * __restrict nresult)
+_citrus_GBK2K_mbrtowc_priv(_GBK2KEncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s, size_t n,
+    _GBK2KState * psenc, size_t * nresult)
 {
     char *s0, *s1;
     _citrus_wc_t wc;
@@ -227,9 +227,9 @@ ilseq:
 }
 
 static int
-_citrus_GBK2K_wcrtomb_priv(_GBK2KEncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, _citrus_wc_t wc, _GBK2KState * __restrict psenc,
-    size_t * __restrict nresult)
+_citrus_GBK2K_wcrtomb_priv(_GBK2KEncodingInfo * ei,
+    char * s, size_t n, _citrus_wc_t wc, _GBK2KState * psenc,
+    size_t * nresult)
 {
     size_t len;
     int ret;
@@ -285,8 +285,8 @@ err:
 
 static __inline int
 /*ARGSUSED*/
-_citrus_GBK2K_stdenc_wctocs(_GBK2KEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_GBK2K_stdenc_wctocs(_GBK2KEncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     uint8_t ch, cl;
     (void) ei;
@@ -318,8 +318,8 @@ _citrus_GBK2K_stdenc_wctocs(_GBK2KEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_GBK2K_stdenc_cstowc(_GBK2KEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_GBK2K_stdenc_cstowc(_GBK2KEncodingInfo * ei,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
 
     switch (csid) {
@@ -350,8 +350,8 @@ _citrus_GBK2K_stdenc_cstowc(_GBK2KEncodingInfo * __restrict ei,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_GBK2K_stdenc_get_state_desc_generic(_GBK2KEncodingInfo * __restrict ei __unused,
-    _GBK2KState * __restrict psenc, int * __restrict rstate)
+_citrus_GBK2K_stdenc_get_state_desc_generic(_GBK2KEncodingInfo * ei ,
+    _GBK2KState * psenc, int * rstate)
 {
     (void) ei;
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
@@ -361,8 +361,8 @@ _citrus_GBK2K_stdenc_get_state_desc_generic(_GBK2KEncodingInfo * __restrict ei _
 
 static int
 /*ARGSUSED*/
-_citrus_GBK2K_encoding_module_init(_GBK2KEncodingInfo * __restrict ei,
-    const void * __restrict var, size_t lenvar)
+_citrus_GBK2K_encoding_module_init(_GBK2KEncodingInfo * ei,
+    const void * var, size_t lenvar)
 {
     const char *p;
 
@@ -384,7 +384,7 @@ _citrus_GBK2K_encoding_module_init(_GBK2KEncodingInfo * __restrict ei,
 
 static void
 /*ARGSUSED*/
-_citrus_GBK2K_encoding_module_uninit(_GBK2KEncodingInfo *ei __unused)
+_citrus_GBK2K_encoding_module_uninit(_GBK2KEncodingInfo *ei )
 {
     (void) ei;
 }

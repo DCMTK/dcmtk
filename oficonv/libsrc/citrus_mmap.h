@@ -32,8 +32,8 @@
 struct _citrus_region;
 
 BEGIN_EXTERN_C
-int  _citrus_map_file(struct _citrus_region * __restrict,
-        const char * __restrict);
+int  _citrus_map_file(struct _citrus_region * ,
+        const char * );
 void     _citrus_unmap_file(struct _citrus_region *);
 END_EXTERN_C
 

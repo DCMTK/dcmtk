@@ -110,10 +110,13 @@ _citrus_lookup_factory_convert(FILE *out, FILE *in)
         }
 #else
     while ((line = fgets(buf, 1024, in)) != NULL)
-        if ((ret = convert_line(df, line, strlen(line)))) {
+    {
+        ret = convert_line(df, line, strlen(line));
+        if (ret) {
             _citrus_db_factory_free(df);
             return (ret);
         }
+    }
 #endif
 
     ret = dump_db(df, &r);

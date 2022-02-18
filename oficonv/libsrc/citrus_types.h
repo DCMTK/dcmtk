@@ -34,12 +34,6 @@
 #endif
 #include <stdint.h>
 
-#ifdef __GNUC__
-#define __unused __attribute__((__unused__))
-#else
-#define __unused
-#endif
-
 typedef uint32_t        _citrus_wc_t;
 typedef uint32_t        _citrus_index_t;
 typedef uint32_t        _citrus_csid_t;

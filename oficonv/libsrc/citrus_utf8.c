@@ -150,7 +150,7 @@ _UTF8_surrogate(_citrus_wc_t wc)
 
 static __inline void
 /*ARGSUSED*/
-_citrus_UTF8_init_state(_UTF8EncodingInfo *ei __unused, _UTF8State *s)
+_citrus_UTF8_init_state(_UTF8EncodingInfo *ei , _UTF8State *s)
 {
     (void) ei;
     s->chlen = 0;
@@ -221,8 +221,8 @@ restart:
 }
 
 static int
-_citrus_UTF8_wcrtomb_priv(_UTF8EncodingInfo *ei __unused, char *s, size_t n,
-    _citrus_wc_t wc, _UTF8State *psenc __unused, size_t *nresult)
+_citrus_UTF8_wcrtomb_priv(_UTF8EncodingInfo *ei , char *s, size_t n,
+    _citrus_wc_t wc, _UTF8State *psenc , size_t *nresult)
 {
     _citrus_wc_t c;
     size_t cnt, i;
@@ -271,8 +271,8 @@ err:
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF8_stdenc_wctocs(_UTF8EncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx,
+_citrus_UTF8_stdenc_wctocs(_UTF8EncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx,
     _citrus_wc_t wc)
 {
     (void) ei;
@@ -285,8 +285,8 @@ _citrus_UTF8_stdenc_wctocs(_UTF8EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF8_stdenc_cstowc(_UTF8EncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_UTF8_stdenc_cstowc(_UTF8EncodingInfo * ei ,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
 
@@ -300,8 +300,8 @@ _citrus_UTF8_stdenc_cstowc(_UTF8EncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_UTF8_stdenc_get_state_desc_generic(_UTF8EncodingInfo * __restrict ei __unused,
-    _UTF8State * __restrict psenc, int * __restrict rstate)
+_citrus_UTF8_stdenc_get_state_desc_generic(_UTF8EncodingInfo * ei ,
+    _UTF8State * psenc, int * rstate)
 {
     (void) ei;
     *rstate = (psenc->chlen == 0) ? _CITRUS_STDENC_SDGEN_INITIAL :
@@ -311,8 +311,8 @@ _citrus_UTF8_stdenc_get_state_desc_generic(_UTF8EncodingInfo * __restrict ei __u
 
 static int
 /*ARGSUSED*/
-_citrus_UTF8_encoding_module_init(_UTF8EncodingInfo * __restrict ei __unused,
-    const void * __restrict var __unused, size_t lenvar __unused)
+_citrus_UTF8_encoding_module_init(_UTF8EncodingInfo * ei ,
+    const void * var , size_t lenvar )
 {
     (void) ei;
     (void) var;
@@ -323,7 +323,7 @@ _citrus_UTF8_encoding_module_init(_UTF8EncodingInfo * __restrict ei __unused,
 
 static void
 /*ARGSUSED*/
-_citrus_UTF8_encoding_module_uninit(_UTF8EncodingInfo *ei __unused)
+_citrus_UTF8_encoding_module_uninit(_UTF8EncodingInfo *ei )
 {
     (void) ei;
 }

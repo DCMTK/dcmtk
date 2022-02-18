@@ -121,8 +121,8 @@ _mskanji2(int c)
 
 static __inline void
 /*ARGSUSED*/
-_citrus_MSKanji_init_state(_MSKanjiEncodingInfo * __restrict ei __unused,
-    _MSKanjiState * __restrict s)
+_citrus_MSKanji_init_state(_MSKanjiEncodingInfo * ei ,
+    _MSKanjiState * s)
 {
     (void) ei;
 
@@ -131,9 +131,9 @@ _citrus_MSKanji_init_state(_MSKanjiEncodingInfo * __restrict ei __unused,
 
 static int
 /*ARGSUSED*/
-_citrus_MSKanji_mbrtowc_priv(_MSKanjiEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
-    _MSKanjiState * __restrict psenc, size_t * __restrict nresult)
+_citrus_MSKanji_mbrtowc_priv(_MSKanjiEncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s, size_t n,
+    _MSKanjiState * psenc, size_t * nresult)
 {
     char *s0;
     _citrus_wc_t wchar;
@@ -210,9 +210,9 @@ restart:
 
 
 static int
-_citrus_MSKanji_wcrtomb_priv(_MSKanjiEncodingInfo * __restrict ei __unused,
-    char * __restrict s, size_t n, _citrus_wc_t wc,
-    _MSKanjiState * __restrict psenc __unused, size_t * __restrict nresult)
+_citrus_MSKanji_wcrtomb_priv(_MSKanjiEncodingInfo * ei ,
+    char * s, size_t n, _citrus_wc_t wc,
+    _MSKanjiState * psenc , size_t * nresult)
 {
     int ret;
     (void) ei;
@@ -263,8 +263,8 @@ err:
 
 static __inline int
 /*ARGSUSED*/
-_citrus_MSKanji_stdenc_wctocs(_MSKanjiEncodingInfo * __restrict ei,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_MSKanji_stdenc_wctocs(_MSKanjiEncodingInfo * ei,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     _citrus_index_t col, row;
     int offset;
@@ -346,8 +346,8 @@ _citrus_MSKanji_stdenc_wctocs(_MSKanjiEncodingInfo * __restrict ei,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_MSKanji_stdenc_cstowc(_MSKanjiEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_MSKanji_stdenc_cstowc(_MSKanjiEncodingInfo * ei,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     uint32_t col, row;
     int offset;
@@ -409,8 +409,8 @@ _citrus_MSKanji_stdenc_cstowc(_MSKanjiEncodingInfo * __restrict ei,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_MSKanji_stdenc_get_state_desc_generic(_MSKanjiEncodingInfo * __restrict ei __unused,
-    _MSKanjiState * __restrict psenc, int * __restrict rstate)
+_citrus_MSKanji_stdenc_get_state_desc_generic(_MSKanjiEncodingInfo * ei ,
+    _MSKanjiState * psenc, int * rstate)
 {
     (void) ei;
 
@@ -421,8 +421,8 @@ _citrus_MSKanji_stdenc_get_state_desc_generic(_MSKanjiEncodingInfo * __restrict 
 
 static int
 /*ARGSUSED*/
-_citrus_MSKanji_encoding_module_init(_MSKanjiEncodingInfo *  __restrict ei,
-    const void * __restrict var, size_t lenvar)
+_citrus_MSKanji_encoding_module_init(_MSKanjiEncodingInfo *  ei,
+    const void * var, size_t lenvar)
 {
     const char *p;
 
@@ -442,7 +442,7 @@ _citrus_MSKanji_encoding_module_init(_MSKanjiEncodingInfo *  __restrict ei,
 }
 
 static void
-_citrus_MSKanji_encoding_module_uninit(_MSKanjiEncodingInfo *ei __unused)
+_citrus_MSKanji_encoding_module_uninit(_MSKanjiEncodingInfo *ei )
 {
     (void) ei;
 }

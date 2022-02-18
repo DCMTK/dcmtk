@@ -60,8 +60,8 @@ _CITRUS_MAPPER_DEF_OPS(mapper_serial);
 #define _citrus_mapper_parallel_mapper_init_state   \
     _citrus_mapper_serial_mapper_init_state
 static int  _citrus_mapper_parallel_mapper_convert(
-            struct _citrus_csmapper * __restrict, _citrus_index_t * __restrict,
-            _citrus_index_t, void * __restrict);
+            struct _citrus_csmapper * , _citrus_index_t * ,
+            _citrus_index_t, void * );
 _CITRUS_MAPPER_DEF_OPS(mapper_parallel);
 #undef _citrus_mapper_parallel_mapper_init
 #undef _citrus_mapper_parallel_mapper_uninit
@@ -113,7 +113,7 @@ uninit(struct _citrus_mapper_serial *sr)
 }
 
 static int
-parse_var(struct _citrus_mapper_area *__restrict ma,
+parse_var(struct _citrus_mapper_area * ma,
     struct _citrus_mapper_serial *sr, struct _citrus_memory_stream *ms)
 {
     struct _citrus_region r;
@@ -156,10 +156,10 @@ parse_var(struct _citrus_mapper_area *__restrict ma,
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_serial_mapper_init(struct _citrus_mapper_area *__restrict ma __unused,
-    struct _citrus_csmapper * __restrict cm, const char * __restrict dir __unused,
-    const void * __restrict var, size_t lenvar,
-    struct _citrus_mapper_traits * __restrict mt, size_t lenmt)
+_citrus_mapper_serial_mapper_init(struct _citrus_mapper_area * ma ,
+    struct _citrus_csmapper * cm, const char * dir ,
+    const void * var, size_t lenvar,
+    struct _citrus_mapper_traits * mt, size_t lenmt)
 {
     struct _citrus_mapper_serial *sr;
     struct _citrus_memory_stream ms;
@@ -201,8 +201,8 @@ _citrus_mapper_serial_mapper_uninit(struct _citrus_csmapper *cm)
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_serial_mapper_convert(struct _citrus_csmapper * __restrict cm,
-    _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps __unused)
+_citrus_mapper_serial_mapper_convert(struct _citrus_csmapper * cm,
+    _citrus_index_t * dst, _citrus_index_t src, void * ps )
 {
     struct _citrus_mapper_serial *sr;
     struct maplink *ml;
@@ -221,8 +221,8 @@ _citrus_mapper_serial_mapper_convert(struct _citrus_csmapper * __restrict cm,
 
 static int
 /*ARGSUSED*/
-_citrus_mapper_parallel_mapper_convert(struct _citrus_csmapper * __restrict cm,
-    _citrus_index_t * __restrict dst, _citrus_index_t src, void * __restrict ps __unused)
+_citrus_mapper_parallel_mapper_convert(struct _citrus_csmapper * cm,
+    _citrus_index_t * dst, _citrus_index_t src, void * ps )
 {
     struct _citrus_mapper_serial *sr;
     struct maplink *ml;

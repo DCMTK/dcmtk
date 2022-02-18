@@ -147,8 +147,8 @@ typedef struct {
 #define _STATE_NEEDS_EXPLICIT_INIT(_ps_)    ((_ps_)->inuse == NULL)
 
 static __inline void
-_citrus_HZ_init_state(_HZEncodingInfo * __restrict ei,
-    _HZState * __restrict psenc)
+_citrus_HZ_init_state(_HZEncodingInfo * ei,
+    _HZState * psenc)
 {
 
     psenc->chlen = 0;
@@ -156,9 +156,9 @@ _citrus_HZ_init_state(_HZEncodingInfo * __restrict ei,
 }
 
 static int
-_citrus_HZ_mbrtowc_priv(_HZEncodingInfo * __restrict ei,
-    _citrus_wc_t * __restrict pwc, char ** __restrict s, size_t n,
-    _HZState * __restrict psenc, size_t * __restrict nresult)
+_citrus_HZ_mbrtowc_priv(_HZEncodingInfo * ei,
+    _citrus_wc_t * pwc, char ** s, size_t n,
+    _HZState * psenc, size_t * nresult)
 {
     escape_t *candidate, *init;
     graphic_t *graphic;
@@ -278,9 +278,9 @@ done:
 }
 
 static int
-_citrus_HZ_wcrtomb_priv(_HZEncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, _citrus_wc_t wc,
-    _HZState * __restrict psenc, size_t * __restrict nresult)
+_citrus_HZ_wcrtomb_priv(_HZEncodingInfo * ei,
+    char * s, size_t n, _citrus_wc_t wc,
+    _HZState * psenc, size_t * nresult)
 {
     escape_t *candidate, *init;
     graphic_t *graphic;
@@ -375,9 +375,9 @@ ilseq:
 }
 
 static __inline int
-_citrus_HZ_put_state_reset(_HZEncodingInfo * __restrict ei,
-    char * __restrict s, size_t n, _HZState * __restrict psenc,
-    size_t * __restrict nresult)
+_citrus_HZ_put_state_reset(_HZEncodingInfo * ei,
+    char * s, size_t n, _HZState * psenc,
+    size_t * nresult)
 {
     escape_t *candidate;
 
@@ -402,8 +402,8 @@ _citrus_HZ_put_state_reset(_HZEncodingInfo * __restrict ei,
 }
 
 static __inline int
-_citrus_HZ_stdenc_get_state_desc_generic(_HZEncodingInfo * __restrict ei,
-    _HZState * __restrict psenc, int * __restrict rstate)
+_citrus_HZ_stdenc_get_state_desc_generic(_HZEncodingInfo * ei,
+    _HZState * psenc, int * rstate)
 {
 
     if (psenc->chlen < 0 || psenc->inuse == NULL)
@@ -421,8 +421,8 @@ _citrus_HZ_stdenc_get_state_desc_generic(_HZEncodingInfo * __restrict ei,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_HZ_stdenc_wctocs(_HZEncodingInfo * __restrict ei __unused,
-    _citrus_csid_t * __restrict csid, _citrus_index_t * __restrict idx, _citrus_wc_t wc)
+_citrus_HZ_stdenc_wctocs(_HZEncodingInfo * ei ,
+    _citrus_csid_t * csid, _citrus_index_t * idx, _citrus_wc_t wc)
 {
     int bit;
     (void) ei;
@@ -448,8 +448,8 @@ _citrus_HZ_stdenc_wctocs(_HZEncodingInfo * __restrict ei __unused,
 
 static __inline int
 /*ARGSUSED*/
-_citrus_HZ_stdenc_cstowc(_HZEncodingInfo * __restrict ei __unused,
-    _citrus_wc_t * __restrict wc, _citrus_csid_t csid, _citrus_index_t idx)
+_citrus_HZ_stdenc_cstowc(_HZEncodingInfo * ei ,
+    _citrus_wc_t * wc, _citrus_csid_t csid, _citrus_index_t idx)
 {
     (void) ei;
 
@@ -489,7 +489,7 @@ _citrus_HZ_encoding_module_uninit(_HZEncodingInfo *ei)
 }
 
 static int
-_citrus_HZ_parse_char(void *context, const char *name __unused, const char *s)
+_citrus_HZ_parse_char(void *context, const char *name , const char *s)
 {
     escape_t *escape;
     void **p;
@@ -608,8 +608,8 @@ _CITRUS_PROP_HINT_END
 };
 
 static int
-_citrus_HZ_encoding_module_init(_HZEncodingInfo * __restrict ei,
-    const void * __restrict var, size_t lenvar)
+_citrus_HZ_encoding_module_init(_HZEncodingInfo * ei,
+    const void * var, size_t lenvar)
 {
     int errnum;
 

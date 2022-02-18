@@ -35,8 +35,8 @@
 #include "citrus_region.h"
 
 const char *
-_citrus_memory_stream_getln(struct _citrus_memory_stream * __restrict ms,
-    size_t * __restrict rlen)
+_citrus_memory_stream_getln(struct _citrus_memory_stream * ms,
+    size_t * rlen)
 {
     const uint8_t *h, *p;
     size_t i, ret;
@@ -61,8 +61,8 @@ _citrus_memory_stream_getln(struct _citrus_memory_stream * __restrict ms,
 #define T_COMM  '#'
 
 const char *
-_citrus_memory_stream_matchline(struct _citrus_memory_stream * __restrict ms,
-    const char * __restrict key, size_t * __restrict rlen, int iscasesensitive)
+_citrus_memory_stream_matchline(struct _citrus_memory_stream * ms,
+    const char * key, size_t * rlen, int iscasesensitive)
 {
     const char *p, *q;
     size_t keylen, len;
