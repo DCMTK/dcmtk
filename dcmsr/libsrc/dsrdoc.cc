@@ -816,8 +816,8 @@ OFCondition DSRDocument::readXML(const OFString &filename,
                 {
                     OFString sopClassUID;
                     getSOPClassUID(sopClassUID);
-                    /* create new document of specified type (also checks for support) */
-                    result = createNewDocument(sopClassUIDToDocumentType(sopClassUID));
+                    /* change document type (also checks for support) */
+                    result = changeDocumentType(sopClassUIDToDocumentType(sopClassUID));
                     if (result.good())
                     {
                         /* proceed with document header */
