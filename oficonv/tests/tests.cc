@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -57,9 +57,24 @@ OFTEST_REGISTER(oficonv_utf8_to_shift_jis);
 // conversion of the supported single-byte character sets to ASCII
 OFTEST_REGISTER(oficonv_iso8859_to_ascii);
 
-// conversion of EUR-KR (KS X 1001) to UTF-8 and back
-OFTEST_REGISTER(oficonv_eur_kr_to_utf8);
-OFTEST_REGISTER(oficonv_utf8_to_eur_kr);
+// conversion between different ISO 8859 character sets
+OFTEST_REGISTER(oficonv_iso8859_to_iso8859);
 
+// conversion of EUR-KR (KS X 1001) to UTF-8 and back
+OFTEST_REGISTER(oficonv_euc_kr_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_euc_kr);
+OFTEST_REGISTER(oficonv_ascii_to_euc_kr);
+
+// conversion of EUC-CN (GB2312) to UTF-8 and back
+OFTEST_REGISTER(oficonv_gb2312_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_gb2312);
+
+// conversion of the GB2312 subset of GBK to UTF-8 and back
+OFTEST_REGISTER(oficonv_gbk_2312_subset_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_gbk_2312_subset);
+
+// conversion of the full GBK character set to UTF-8 and back
+OFTEST_REGISTER(oficonv_gbk_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_gbk);
 
 OFTEST_MAIN("oficonv")
