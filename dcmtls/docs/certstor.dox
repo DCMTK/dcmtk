@@ -6,14 +6,13 @@
 
 The TLS protocol requires that a server (that is, an application that accepts
 incoming TLS network connections) \b must identify itself cryptographically
-using a certificate and a private key, whereas a client (an application
-that initiates outgoing TLS network connections) \b may identify itself
-using a certificate and a private key, or may remain anonymous.
+using a certificate and a private key, whereas a client (an application that
+initiates outgoing TLS network connections) \b may identify itself using a
+certificate and a private key, or may remain anonymous.
 
-All DCMTK tools that support TLS encrypted network connections
-offer command line options for selecting unencrypted network
-communication, TLS with certificates, or (in the case of client
-applications) TLS in anonymous mode:
+All DCMTK tools that support TLS encrypted network connections offer command
+line options for selecting unencrypted network communication, TLS with
+certificates, or (in the case of client applications) TLS in anonymous mode:
 
 \verbatim
   -tls  --disable-tls
@@ -26,10 +25,11 @@ applications) TLS in anonymous mode:
           use secure TLS connection without certificate
 \endverbatim
 
-Two different file formats are supported for certificates, private
-keys and other cryptographic material: The text-based PEM ("Privacy Enhanced Mail") format,
-which is the default, and binary ASN.1 files in DER encoding ("Distinguished Encoding Rules").
-The file format can be selected through the following options:
+Two different file formats are supported for certificates, private keys and
+other cryptographic material: The text-based PEM ("Privacy Enhanced Mail")
+format, which is the default, and binary ASN.1 files in DER encoding
+("Distinguished Encoding Rules"). The file format can be selected through the
+following options:
 
 \verbatim
   -pem  --pem-keys
@@ -39,14 +39,13 @@ The file format can be selected through the following options:
           read keys and certificates as DER file
 \endverbatim
 
-Note that the PEM format supports multiple certificates in a single
-file, which is an important feature when certificates issued by an
-intermediate CA are used with TLS. The DER format only supports a
-single certificate per file.
+Note that the PEM format supports multiple certificates in a single file, which
+is an important feature when certificates issued by an intermediate CA are used
+with TLS. The DER format only supports a single certificate per file.
 
-In many cases, the private key is stored in encrypted form
-and a password is needed to decrypt the private key file.
-In this case the following options are provided:
+In many cases, the private key is stored in encrypted form and a password is
+needed to decrypt the private key file. In this case the following options are
+provided:
 
 \verbatim
   +ps   --std-passwd
@@ -61,8 +60,8 @@ In this case the following options are provided:
 
 \section dcmtls_certstore_security_profiles Security profiles
 
-The DICOM standard defines a number of security profiles for the use
-of the DICOM network protocol over TLS. DCMTK supports the following profiles:
+The DICOM standard defines a number of security profiles for the use of the
+DICOM network protocol over TLS. DCMTK supports the following profiles:
 
 \verbatim
   +py   --profile-bcp195-nd
@@ -85,26 +84,26 @@ of the DICOM network protocol over TLS. DCMTK supports the following profiles:
           (retired, was used in IHE ATNA)
 \endverbatim
 
-The Non-downgrading BCP 195 TLS Profile, which is selected by default,
-is currently the most secure choice, as older protocol versions and
-cipher suites are explicitly disabled. It does not support backward
-compatibility with the older profiles. It uses either TLS version 1.2
-or 1.3 and will default to TLS 1.3 when possible.
+The Non-downgrading BCP 195 TLS Profile, which is selected by default, is
+currently the most secure choice, as older protocol versions and cipher suites
+are explicitly disabled. It does not support backward compatibility with the
+older profiles. It uses either TLS version 1.2 or 1.3 and will default to TLS
+1.3 when possible.
 
-The BCP 195 TLS Profile, which was the default up to DCMTK 3.6.6, will
-try to negotiate cryptographic algorithms that are currently considered
-secure, but provides backward compatibility to older applications
-implementing the retired AES or Basic TLS profile. This profile is no
-longer compliant with BCP 195 as amended by RFC 8996 (2021).
+The BCP 195 TLS Profile, which was the default up to DCMTK 3.6.6, will try to
+negotiate cryptographic algorithms that are currently considered secure, but
+provides backward compatibility to older applications implementing the retired
+AES or Basic TLS profile. This profile is no longer compliant with BCP 195 as
+amended by RFC 8996 (2021).
 
-The Extended BCP 195 TLS Profile is similar to the Non-downgrading BCP 195 TLS Profile,
-but uses a more restricted selection of cipher suites and is restricted to
-TLS version 1.2.
+The Extended BCP 195 TLS Profile is similar to the Non-downgrading BCP 195 TLS
+Profile, but uses a more restricted selection of cipher suites and is restricted
+to TLS version 1.2.
 
-The AES TLS Secure Transport Connection Profile uses AES encryption
-and TLS version 1.0 and newer and has been retired from the DICOM standard.
-It should only be used where backward compatibility with devices implementing
-this profile is required.
+The AES TLS Secure Transport Connection Profile uses AES encryption and TLS
+version 1.0 and newer and has been retired from the DICOM standard. It should
+only be used where backward compatibility with devices implementing this profile
+is required.
 
 The Basic TLS Secure Transport Connection Profile uses Triple DES encryption
 and TLS version 1.0 and newer and has also been retired from the DICOM standard.
@@ -112,25 +111,24 @@ It should only be used where backward compatibility with devices implementing
 this profile is required, in particular since the effective key length of 112
 bits is not sufficiently secure against brute force attacks anymore.
 
-Authenticated unencrypted communication finally is a retired profile that
-was defined in older versions of the IHE Audit Trail and Node Authentication
+Authenticated unencrypted communication finally is a retired profile that was
+defined in older versions of the IHE Audit Trail and Node Authentication
 profile. It uses an unencrypted communication with cryptographic checksums.
 This profile should be avoided.
 
-It should be noted that support for the Basic TLS profile will only be
-available when the OpenSSL library has been compiled such that support
-for Triple DES is enabled, which is not the default anymore.
+It should be noted that support for the Basic TLS profile will only be available
+when the OpenSSL library has been compiled such that support for Triple DES is
+enabled, which is not the default anymore.
 
-The list of TLS ciphersuites offered during the TLS handshake can be
-extended using the following option:
+The list of TLS ciphersuites offered during the TLS handshake can be extended
+using the following option:
 
 \verbatim
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
 \endverbatim
 
-The list of supported ciphersuites can be printed using the
-following option:
+The list of supported ciphersuites can be printed using the following option:
 
 \verbatim
   +cc   --list-ciphers
@@ -139,23 +137,22 @@ following option:
 
 \section dcmtls_certstore_peer_authentication Peer authentication
 
-By default, the TLS implementation in dcmtls will require both client
-and server to provide a certificate as proof of identity, and will
-verify the validity and trustworthyness of the certificate. This
-process has several steps:
-\li The TLS handshake will require a proof that the application
-    has access to the private key belonging to the public key encoded
-    in the certificate
-\li The digital signature in the certificate will be verified
-\li The validity period of the certificate will be checked
-\li It will be checked whether the certificate was issued by
-    a trusted Certification Authority (CA) (see \ref dcmtls_certstore_certification_authority).
-\li Depending on the command line options, the Certificate
-    Revocation Lists (CRLs) of all CAs up to the root CA
-    may be checked to see if any certificate in the certificate
-    chain has been revoked (see \ref dcmtls_certstore_crl).
+By default, the TLS implementation in dcmtls will require both client and server
+to provide a certificate as proof of identity, and will verify the validity and
+trustworthiness of the certificate. This process has several steps:
 
-This behaviour can be modified with the following command line options:
+\li The TLS handshake will require a proof that the application has access to
+    the private key belonging to the public key encoded in the certificate.
+\li The digital signature in the certificate will be verified.
+\li The validity period of the certificate will be checked.
+\li It will be checked whether the certificate was issued by a trusted
+    Certification Authority (CA) (see \ref dcmtls_certstore_certification_authority).
+\li Depending on the command line options, the Certificate Revocation Lists
+    (CRLs) of all CAs up to the root CA may be checked to see if any certificate
+    in the certificate chain has been revoked (see \ref dcmtls_certstore_crl).
+
+This behavior can be modified with the following command line options:
+
 \verbatim
   -rc   --require-peer-cert
           verify peer certificate, fail if absent (default)
@@ -167,12 +164,12 @@ This behaviour can be modified with the following command line options:
           don't verify peer certificate
 \endverbatim
 
-The first option will cause the connection to fail if the peer does not
-present a certificate (i.e. is working in anonymous mode) or if the
-certificate cannot be fully verified. The second option will perform
-a certificate verification if a certificate is present, but will also
-accept anonymous connections. The third option does not perform any
-certificate verification and also accepts anonymous connections.
+The first option will cause the connection to fail if the peer does not present
+a certificate (i.e. is working in anonymous mode) or if the certificate cannot
+be fully verified. The second option will perform a certificate verification if
+a certificate is present, but will also accept anonymous connections. The third
+option does not perform any certificate verification and also accepts anonymous
+connections.
 
 It should be noted that the latter two modes are susceptible to
 man-in-the-middle attacks and should thus be avoided.
@@ -182,14 +179,14 @@ since TLS servers will always present a certificate.
 
 \section dcmtls_certstore_certification_authority Certification authority
 
-All tools in DCMTK that support TLS encrypted network connections
-need to have a list of trusted root certificates (i.e. self-signed certificates)
-that are used in the verification of the peer certificate when
-establishing the TLS connection.
+All tools in DCMTK that support TLS encrypted network connections need to have
+a list of trusted root certificates (i.e. self-signed certificates) that are
+used in the verification of the peer certificate when establishing the TLS
+connection.
 
-There are two ways of managing this list of trusted certificates:
-file-based and directory-based. The command line tools in DCMTK
-offer the following command line options for this purpose:
+There are two ways of managing this list of trusted certificates: file-based and
+directory-based. The command line tools in DCMTK offer the following command
+line options for this purpose:
 
 \verbatim
   certification authority:
@@ -200,86 +197,83 @@ offer the following command line options for this purpose:
             add certificates in d to list of certificates
 \endverbatim
 
-\subsection dcmtls_certstore_certification_authority_file File based management of trusted root certificates
+\subsection dcmtls_certstore_certification_authority_file File-based management of trusted root certificates
 
-The file-based option loads a file and adds all the certificates or CRLs
-present in that file into the pool of trusted certificates. File format
-is ASCII text containing concatenated PEM certificates and CRLs,
-unless ASN.1 DER format has been selected.
+The file-based option loads a file and adds all the certificates or CRLs present
+in that file into the pool of trusted certificates. File format is ASCII text
+containing concatenated PEM certificates and CRLs, unless ASN.1 DER format has
+been selected.
 
-\subsection dcmtls_certstore_certification_authority_dir Directory based management of trusted root certificates
+\subsection dcmtls_certstore_certification_authority_dir Directory-based management of trusted root certificates
 
-The directory-based option specifies a directory containing certificates
-and CRLs. These certificates and CRLs are loaded on demand, and cached
-in memory once they are loaded.
+The directory-based option specifies a directory containing certificates and
+CRLs. These certificates and CRLs are loaded on demand, and cached in memory
+once they are loaded.
 
-The directory should contain one certificate or CRL per file in PEM
-format, with a file name of the form hash.N for a certificate, or
-hash.rN for a CRL. The hash is computed from the subject name (for
-certificates) or the issuer name (for CRLs). The hash value can be
-obtained by calling the openssl command line tool:
+The directory should contain one certificate or CRL per file in PEM format, with
+a file name of the form hash.N for a certificate, or hash.rN for a CRL. The hash
+is computed from the subject name (for certificates) or the issuer name (for
+CRLs). The hash value can be obtained by calling the openssl command line tool:
 
 \verbatim
   openssl x509 -hash -noout -in <infile.pem>
 \endverbatim
 
-where <infile.pem> should be replaced by the filename of the certificate
-or CRL.
+where <infile.pem> should be replaced by the filename of the certificate or CRL.
 
 The .N or .rN suffix is a sequence number that starts at zero, and is
-incremented consecutively for each certificate or CRL with the same hash
-value. Gaps in the sequence numbers are not supported, it is assumed
-that there are no more objects with the same hash beyond the first
-missing number in the sequence.
+incremented consecutively for each certificate or CRL with the same hash value.
+Gaps in the sequence numbers are not supported, it is assumed that there are no
+more objects with the same hash beyond the first missing number in the sequence.
 
 Sequence numbers make it possible for the directory to contain multiple
-certificates with same subject name hash value. For example, it is
-possible to have in the store several certificates with same subject or
-several CRLs with same issuer (and, for example, different validity
-period).
+certificates with same subject name hash value. For example, it is possible to
+have in the store several certificates with same subject or several CRLs with
+same issuer (and, for example, different validity period).
 
 \subsection dcmtls_certstore_certification_authority_intermed Intermediate CAs
 
-In many cases, the system certificates are not directly signed by a root
-CA (that is, a CA using a self-signed certificate), but by an intermediate CA.
-The certificate of the intermediate CA will be signed by the root CA (or another
+In many cases, the system certificates are not directly signed by a root CA
+(that is, a CA using a self-signed certificate), but by an intermediate CA. The
+certificate of the intermediate CA will be signed by the root CA (or another
 level of intermediate CA).
 
-In the TLS handshare, an application can provide more than one certificate:
-it can provide its certificate, followed by the certificates of any
-intermediate CAs up to and optionally including the root CA certificate.
+In the TLS handshake, an application can provide more than one certificate: it
+can provide its certificate, followed by the certificates of any intermediate
+CAs up to and optionally including the root CA certificate.
 
-DCMTK tools will provide such intermediate certificates during the TLS
-handshake if they are present in the same file as the system certificate,
-which is provided as the second parameter of the \c \--enable-tls option.
-This requires the use of the PEM format, since DER does not support
-multiple certificates in one file.
+DCMTK tools will provide such intermediate certificates during the TLS handshake
+if they are present in the same file as the system certificate, which is
+provided as the second parameter of the \c \--enable-tls option. This requires
+the use of the PEM format, since DER does not support multiple certificates in
+one file.
 
-The PEM format allows the certificates to simply be concatenated
-in a text file, starting with the system certificate, followed by
-intermediate CA certificates and optionally the root CA certificate.
-On Linux/Posix systems, such as file may be created as follows:
+The PEM format allows the certificates to simply be concatenated in a text file,
+starting with the system certificate, followed by intermediate CA certificates
+and optionally the root CA certificate. On Linux/Posix systems, such a file may
+be created as follows:
+
 \verbatim
   cat system_cert.pem intermediate_ca.pem root_ca.pem > fullchain.pem
 \endverbatim
 
-Users using LetsEncrypt certificates will notice that LetsEncrypt
-automatically provides a "fullchain.pem" file containing such a
-certificate chain.
+Users using LetsEncrypt certificates will notice that LetsEncrypt automatically
+provides a "fullchain.pem" file containing such a certificate chain.
 
 The certificates defined as trustworthy using \c \--add-cert-file or
-\c \--add-cert-dir can only be root CA certificates. It is not possible
-to add intermediate CA certificates to the "trust store".
+\c \--add-cert-dir can only be root CA certificates. It is not possible to add
+intermediate CA certificates to the "trust store".
 
 \section dcmtls_certstore_crl Certificate revocation lists
 
-The last, optional step in certificate verification is the look-up
-of the certificate revocation lists (CRLs) to check whether any certificate
-in the certificate chain has been revoked. CRLs cannot be transmitted
-in the TLS handshake, they must be pre-configured, and it should be noted
-that CRLs also have a limited validity period, defined in the file.
+The last, optional step in certificate verification is the look-up of the
+certificate revocation lists (CRLs) to check whether any certificate in the
+certificate chain has been revoked. CRLs cannot be transmitted in the TLS
+handshake, they must be pre-configured, and it should be noted that CRLs also
+have a limited validity period, defined in the file.
 
 The following CRL options are available starting with DCMTK 3.6.7:
+
 \verbatim
   +crl  --add-crl-file  [f]ilename: string
           add certificate revocation list file
@@ -292,20 +286,19 @@ The following CRL options are available starting with DCMTK 3.6.7:
           enable full chain CRL verification
 \endverbatim
 
-The \c \--add-crl-file option will load a CRL file that can be used
-for CRL look-up. This option can be specified more than once.
-Alternatively, CRL files can be located in the CA directory
-specified with \c \--add-cert-dir. See \ref dcmtls_certstore_certification_authority_dir
-for a discussion of how CRL files must be named in this case.
+The \c \--add-crl-file option will load a CRL file that can be used for CRL
+look-up. This option can be specified more than once. Alternatively, CRL files
+can be located in the CA directory specified with \c \--add-cert-dir. See
+\ref dcmtls_certstore_certification_authority_dir for a discussion of how CRL
+files must be named in this case.
 
-The \c \--enable-crl-vfy option will enable a look-up of the CRL of
-the leaf CA, i.e. only a single CRL will be checked in order
-to determine whether or not the peer's system certificate is revoked.
-The \c \--enable-crl-all option will enable a look-up of all CRLs
-up to the root CA, which will also cover the case where an
-intermediate CA certificate has been revoked.
+The \c \--enable-crl-vfy option will enable a look-up of the CRL of the leaf CA,
+i.e. only a single CRL will be checked in order to determine whether or not the
+peer's system certificate is revoked. The \c \--enable-crl-all option will
+enable a look-up of all CRLs up to the root CA, which will also cover the case
+where an intermediate CA certificate has been revoked.
 
-Once CRL verification has been enabled, certificate verification
-will fail if one of the required CRLs is absent.
+Once CRL verification has been enabled, certificate verification will fail if
+one of the required CRLs is absent.
 
 */
