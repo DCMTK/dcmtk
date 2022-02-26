@@ -5,6 +5,6 @@ project(oficonv)
 include_directories("${oficonv_SOURCE_DIR}/include")
 
 # recurse into subdirectories
-foreach(SUBDIR libsrc include tests)
+foreach(SUBDIR apps datasrc libsrc include tests)
   add_subdirectory(${SUBDIR})
 endforeach()
