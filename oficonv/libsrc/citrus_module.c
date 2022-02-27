@@ -131,6 +131,7 @@
 #include "citrus_utf8.h"
 #include "citrus_viqr.h"
 #include "citrus_zw.h"
+#include "citrus_jisx0208.h"
 
 #include "citrus_mapper_local.h"
 #include "citrus_mapper_none.h"
@@ -164,6 +165,7 @@ _citrus_load_module(_citrus_module_t *rhandle, const char *encname)
     else if (strcmp(encname, "GBK2K") == 0) *rhandle = (_citrus_module_t) &_citrus_GBK2K_stdenc_getops;
     else if (strcmp(encname, "HZ") == 0) *rhandle = (_citrus_module_t) &_citrus_HZ_stdenc_getops;
     else if (strcmp(encname, "ISO2022") == 0) *rhandle = (_citrus_module_t) &_citrus_ISO2022_stdenc_getops;
+    else if (strcmp(encname, "JISX0208") == 0) *rhandle = (_citrus_module_t) &_citrus_JISX0208_stdenc_getops;
     else if (strcmp(encname, "JOHAB") == 0) *rhandle = (_citrus_module_t) &_citrus_JOHAB_stdenc_getops;
     else if (strcmp(encname, "MSKanji") == 0) *rhandle = (_citrus_module_t) &_citrus_MSKanji_stdenc_getops;
     else if (strcmp(encname, "UES") == 0) *rhandle = (_citrus_module_t) &_citrus_UES_stdenc_getops;

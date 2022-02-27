@@ -19,6 +19,7 @@ DCMTK_ADD_LIBRARY(oficonv
     citrus_iconv_none.c
     citrus_iconv_std.c
     citrus_iso2022.c
+    citrus_jisx0208.c
     citrus_johab.c
     citrus_lookup.c
     citrus_lookup_factory.c

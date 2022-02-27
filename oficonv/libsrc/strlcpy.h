@@ -19,7 +19,10 @@
 #ifndef HAVE_STRLCPY
 
 #include <stddef.h>
+
+BEGIN_EXTERN_C
 size_t strlcpy(char *dst, const char *src, size_t siz);
+END_EXTERN_C
 
 #endif /* HAVE_STRLCPY */
 
