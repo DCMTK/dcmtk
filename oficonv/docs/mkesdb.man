@@ -1,0 +1,51 @@
+/*!
+\if MANPAGES
+\page mkesdb Create encoding scheme database (esdb) files for oficonv
+\else
+\page mkesdb mkesdb: Create encoding scheme database (esdb) files for oficonv
+\endif
+
+\section mkesdb_synopsis SYNOPSIS
+
+\verbatim
+mkesdb [-d] [-m] [-o outfile] infile
+\endverbatim
+
+\section mkesdb_description DESCRIPTION
+
+The \b mkesdb utility generates a conversion catalog for the oficonv library.
+The generated data includes a list of supported encodings and their most
+important characteristics, such as the decoder module to use.
+
+\section mkesdb_parameters PARAMETERS
+
+\verbatim
+infile   input file (from oficonv/datasrc/esdb) to be converted
+\endverbatim
+
+\section mkesdb_options OPTIONS
+
+\subsection mkesdb_general_options general options
+\verbatim
+  -d    debug mode, print debug information
+
+  -m    process directory catalog or alias file, 
+        instead of an encoding description
+
+  -o    [f]ilename: string
+        store output in file f
+\endverbatim
+
+\section mkesdb_exit_status EXIT STATUS
+
+The mkesdb utility exits 0 on success, and >0 if an error occurs.
+
+\section mkesdb_see_also SEE ALSO
+
+<b>mkcsmapper</b>(1)
+
+\section mkesdb_copyright COPYRIGHT
+
+This man page is derived from the FreeBSD mkesdb man page, Copyright (C) 2009 Gabor Kovesdan <gabor@FreeBSD.org>
+
+*/
