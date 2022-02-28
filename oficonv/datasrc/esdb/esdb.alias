@@ -497,6 +497,13 @@ csshiftjis                      Shift_JIS
 ms_kanji                        Shift_JIS
 sjis                            Shift_JIS
 shift_jisx0213                  Shift_JIS-2004
+iso-ir-159                      JISX0212
+jis_x0212                       JISX0212
+jis_x0212-1990                  JISX0212
+jis_x0212:1990                  JISX0212
+jis0212                         JISX0212
+jis0212-1990                    JISX0212
+x0212                           JISX0212
 
 # UTF
 csunicode11utf7                 UTF-7

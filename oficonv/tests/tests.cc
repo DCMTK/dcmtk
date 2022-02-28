@@ -81,5 +81,8 @@ OFTEST_REGISTER(oficonv_utf8_to_gbk);
 OFTEST_REGISTER(oficonv_jis_x0208_to_utf8);
 OFTEST_REGISTER(oficonv_utf8_to_jis_x0208);
 
+// conversion of JIS X0208 to UTF-8 and back
+OFTEST_REGISTER(oficonv_jis_x0212_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_jis_x0212);
 
 OFTEST_MAIN("oficonv")

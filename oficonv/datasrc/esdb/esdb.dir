@@ -155,6 +155,7 @@ ISO-IR-165                      MISC/ISO-IR-165.esdb
 JAVA                            MISC/JAVA.esdb
 JISX0201-KANA                   MISC/JISX0201-KANA.esdb
 JISX0208:1990                   MISC/JISX0208@1990.esdb
+JISX0212                        MISC/JISX0212.esdb
 Shift_JIS                       MISC/Shift_JIS.esdb
 Shift_JIS-2004                  MISC/Shift_JIS-2004.esdb
 

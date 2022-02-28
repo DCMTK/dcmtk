@@ -543,6 +543,7 @@ ADD_CUSTOM_TARGET(
       COMMAND  $<TARGET_FILE:mkesdb> -o \"${oficonv_SOURCE_DIR}/data/esdb/MISC/JISX0208@1990.esdb\"  \"${oficonv_SOURCE_DIR}/datasrc/esdb/MISC/JISX0208@1990.src\"
       COMMAND  $<TARGET_FILE:mkesdb> -o \"${oficonv_SOURCE_DIR}/data/esdb/MISC/Shift_JIS.esdb\"      \"${oficonv_SOURCE_DIR}/datasrc/esdb/MISC/Shift_JIS.src\"
       COMMAND  $<TARGET_FILE:mkesdb> -o \"${oficonv_SOURCE_DIR}/data/esdb/MISC/Shift_JIS-2004.esdb\" \"${oficonv_SOURCE_DIR}/datasrc/esdb/MISC/Shift_JIS-2004.src\"
+      COMMAND  $<TARGET_FILE:mkesdb> -o \"${oficonv_SOURCE_DIR}/data/esdb/MISC/JISX0212.esdb\"       \"${oficonv_SOURCE_DIR}/datasrc/esdb/MISC/JISX0212.src\"
 
       # create those UTF source files that are generated from a common template
       # replace "UTF-mod" in the template, write to temporary file
