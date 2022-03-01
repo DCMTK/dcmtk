@@ -77,6 +77,18 @@ OFTEST_REGISTER(oficonv_utf8_to_gbk_2312_subset);
 OFTEST_REGISTER(oficonv_gbk_to_utf8);
 OFTEST_REGISTER(oficonv_utf8_to_gbk);
 
+// conversion of the GB2312 subset of GB18030 to UTF-8 and back
+OFTEST_REGISTER(oficonv_gb18030_2312_subset_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_gb18030_2312_subset);
+
+// conversion of the GBK subset of GB18030 to UTF-8 and back
+OFTEST_REGISTER(oficonv_gb18030_gbk_subset_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_gb18030_gbk_subset);
+
+// conversion of 4-byte GB18030 sequences to UTF-8 and back
+OFTEST_REGISTER(oficonv_gb18030_to_utf8);
+OFTEST_REGISTER(oficonv_utf8_to_gb18030);
+
 // conversion of JIS X0208 to UTF-8 and back
 OFTEST_REGISTER(oficonv_jis_x0208_to_utf8);
 OFTEST_REGISTER(oficonv_utf8_to_jis_x0208);
