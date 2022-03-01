@@ -258,13 +258,12 @@ ADD_CUSTOM_TARGET(
       COMMAND  ${CMAKE_COMMAND} -E copy    \"${oficonv_SOURCE_DIR}/datasrc/csmapper/ISO646/ISO646-US%UCS.646\"         \"${oficonv_SOURCE_DIR}/data/csmapper/ISO646/ISO646-US%UCS.646\"
       COMMAND  ${CMAKE_COMMAND} -E copy    \"${oficonv_SOURCE_DIR}/datasrc/csmapper/ISO646/ISO646-YU%UCS.646\"         \"${oficonv_SOURCE_DIR}/data/csmapper/ISO646/ISO646-YU%UCS.646\"
 
-      # copy the text version of mapper.dir and charset.pivot
+      # copy the text version of mapper.dir
       COMMAND  ${CMAKE_COMMAND} -E copy    \"${oficonv_SOURCE_DIR}/datasrc/csmapper/mapper.dir\"                       \"${oficonv_SOURCE_DIR}/data/csmapper/mapper.dir\"
-      COMMAND  ${CMAKE_COMMAND} -E copy    \"${oficonv_SOURCE_DIR}/datasrc/csmapper/charset.pivot\"                    \"${oficonv_SOURCE_DIR}/data/csmapper/charset.pivot\"
 
       # create the binary versions of mapper.dir and charset.pivot
       COMMAND $<TARGET_FILE:mkcsmapper> -m -o \"${oficonv_SOURCE_DIR}/data/csmapper/mapper.dir.db\"                    \"${oficonv_SOURCE_DIR}/data/csmapper/mapper.dir\"
-      COMMAND $<TARGET_FILE:mkcsmapper> -p -o \"${oficonv_SOURCE_DIR}/data/csmapper/charset.pivot.pvdb\"               \"${oficonv_SOURCE_DIR}/data/csmapper/charset.pivot\"
+      COMMAND $<TARGET_FILE:mkcsmapper> -p -o \"${oficonv_SOURCE_DIR}/data/csmapper/charset.pivot.pvdb\"               \"${oficonv_SOURCE_DIR}/datasrc/csmapper/charset.pivot\"
 
       # create those CP source files that are generated from a common template
       COMMAND  ${CMAKE_COMMAND} "-DINFILE=\"${oficonv_SOURCE_DIR}/datasrc/esdb/CP/CP.src\"" "-DOUTFILE=\"${oficonv_BINARY_DIR}/datasrc/CP037.src\""   "-DREGEX=CPx" "-DREPLACE=CP037"   -P \"${oficonv_SOURCE_DIR}/datasrc/replace.cmake\"
@@ -591,13 +590,9 @@ ADD_CUSTOM_TARGET(
       COMMAND  $<TARGET_FILE:mkesdb> -o \"${oficonv_SOURCE_DIR}/data/esdb/UTF/UTF-7.esdb\"            \"${oficonv_BINARY_DIR}/datasrc/UTF-7.src\"
       COMMAND  $<TARGET_FILE:mkesdb> -o \"${oficonv_SOURCE_DIR}/data/esdb/UTF/UTF-8.esdb\"            \"${oficonv_BINARY_DIR}/datasrc/UTF-8.src\"
 
-      # copy the text version of esdb.dir and esdb.alias
-      COMMAND  ${CMAKE_COMMAND} -E copy    \"${oficonv_SOURCE_DIR}/datasrc/esdb/esdb.dir\"                       \"${oficonv_SOURCE_DIR}/data/esdb/esdb.dir\"
-      COMMAND  ${CMAKE_COMMAND} -E copy    \"${oficonv_SOURCE_DIR}/datasrc/esdb/esdb.alias\"                    \"${oficonv_SOURCE_DIR}/data/esdb/esdb.alias\"
-
       # create the binary versions of esdb.dir and esdb.alias
-      COMMAND $<TARGET_FILE:mkesdb> -m -o \"${oficonv_SOURCE_DIR}/data/esdb/esdb.dir.db\"                    \"${oficonv_SOURCE_DIR}/data/esdb/esdb.dir\"
-      COMMAND $<TARGET_FILE:mkesdb> -m -o \"${oficonv_SOURCE_DIR}/data/esdb/esdb.alias.db\"               \"${oficonv_SOURCE_DIR}/data/esdb/esdb.alias\"
+      COMMAND $<TARGET_FILE:mkesdb> -m -o \"${oficonv_SOURCE_DIR}/data/esdb/esdb.dir.db\"                    \"${oficonv_SOURCE_DIR}/datasrc/esdb/esdb.dir\"
+      COMMAND $<TARGET_FILE:mkesdb> -m -o \"${oficonv_SOURCE_DIR}/data/esdb/esdb.alias.db\"               \"${oficonv_SOURCE_DIR}/datasrc/esdb/esdb.alias\"
 
       COMMENT "Creating oficonv data files from source"
  )
