@@ -117,7 +117,7 @@ public:
    *  The overlay data is copied into the presentation state, i.e. the DICOM dataset
    *  can be deleted after execution of this method.
    *  @param overlayIOD the DICOM dataset from which the overlay is to be read
-   *  @groupInItem the repeating group 0x6000..0x61F (even) of the overlay to be read
+   *  @param groupInItem the repeating group 0x6000..0x61F (even) of the overlay to be read
    *  @param newGroup repeating group number 0x6000-0x601F (even) to be used for
    *    the overlay in the presentation state.
    *  @return EC_Normal upon success, an error code otherwise.

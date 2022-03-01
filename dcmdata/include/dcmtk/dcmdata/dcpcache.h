@@ -97,6 +97,7 @@ public:
    *  If the object points to a private creator element,
    *  the tag key and creator code are added to the cache.
    *  Otherwise, the cache remains unmodified.
+   *  @param dobj the given object
    */
   void updateCache(DcmObject *dobj);
 

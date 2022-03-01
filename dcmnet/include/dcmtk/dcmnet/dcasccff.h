@@ -51,7 +51,7 @@ private:
 
   /** parses the transfer syntax lists in the config file.
    *  @param cfg association configuration object to initialize
-   *  @param filename name of config file
+   *  @param config filename name of config file
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition parseTransferSyntaxes(
@@ -60,7 +60,7 @@ private:
 
   /** parses the presentation context lists in the config file.
    *  @param cfg association configuration object to initialize
-   *  @param filename name of config file
+   *  @param config filename name of config file
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition parsePresentationContexts(
@@ -69,7 +69,7 @@ private:
 
   /** parses the role selection lists in the config file.
    *  @param cfg association configuration object to initialize
-   *  @param filename name of config file
+   *  @param config filename name of config file
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition parseRoleSelectionItems(
@@ -78,7 +78,7 @@ private:
 
   /** parses the extended negotiation lists in the config file.
    *  @param cfg association configuration object to initialize
-   *  @param filename name of config file
+   *  @param config filename name of config file
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition parseExtendedNegotiationItems(
@@ -87,7 +87,7 @@ private:
 
   /** parses the association configuration profile lists in the config file.
    *  @param cfg association configuration object to initialize
-   *  @param filename name of config file
+   *  @param config filename name of config file
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition parseProfiles(

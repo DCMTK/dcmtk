@@ -436,7 +436,7 @@ public:
      *  argument.
      *  @tparam T the type of the argument, will be deduced automatically.
      *  @param t an object of type `T` that will be converted to one of the alternatives.
-     *  @precondition There must be at least one alternative that can be constructed from
+     *  @remark There must be at least one alternative that can be constructed from
      *    the given parameter `t` and there must be exactly one such alternative that
      *    takes precedence over the others.
      *  @attention t will be perfectly forwarded if C++11 support is available, i.e. the

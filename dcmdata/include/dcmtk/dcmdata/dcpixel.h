@@ -210,17 +210,29 @@ private:
      *  if such an entry is found or EC_RepresentationNotFound. The pixSeq
      *  attribute in findEntry can be NULL, it is not needed for the find
      *  operation!
+     *  @param findEntry the entry to find
+     *  @param result the found entry
+     *  @return EC_Normal if entry is found, EC_RepresentationNotFound otherwise.
      */
     OFCondition findRepresentationEntry(
         const DcmRepresentationEntry & findEntry,
         DcmRepresentationListIterator & result);
 
     /** insert or replace a representation entry in the list
+     *  @param repEntry the DcmRepresentationEntry to be inserted
+     *  @return the inserted entry
      */
     DcmRepresentationListIterator insertRepresentationEntry(
         DcmRepresentationEntry * repEntry);
 
     /** decode representation to unencapsulated format
+     *  @param fromType transfer syntax to decode from
+     *  @param fromParam representation parameter of current compressed
+     *    representation, may be NULL.
+     *  @param fromPixSeq compressed pixel sequence
+     *  @param pixelStack stack pointing to the location of the pixel data
+     *    element in the current dataset.
+     *  @return EC_Normal if successful, an error code otherwise.
      */
     OFCondition decode(
         const DcmXfer & fromType,
@@ -229,6 +241,15 @@ private:
         DcmStack & pixelStack);
 
     /** encode to encapsulated format
+     *  @param fromType current transfer syntax of the compressed image
+     *  @param fromParam current representation parameter of compressed data, may be NULL
+     *  @param fromPixSeq compressed pixel sequence
+     *  @param toType transfer syntax to compress to
+     *  @param toParam representation parameter describing the desired
+     *    new compressed representation (e.g. JPEG quality)
+     *  @param pixelStack stack pointing to the location of the pixel data
+     *    element in the current dataset.
+     *  @return EC_Normal if successful, an error code otherwise.
      */
     OFCondition encode(
         const DcmXfer & fromType,
@@ -337,6 +358,7 @@ public:
     /** tests if it is possible to write a specific representation
      *  Only existing representations are considered, since this
      *  method does not create a representation.
+     *  @param newXfer the syntax to be checked
      */
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
@@ -346,7 +368,10 @@ public:
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
-    /** returns length of representation value field conforming to
+    /** returns length of representation conforming to the transfer syntax
+     *  @param xfer the transfer syntax
+     *  @param enctype the encoding type
+     *  @return returns length of representation value field conforming to
      *  given transfer syntax. It does not create a representation.
      *  If no conforming representation exists, an error code is set
      *  and 0 returned.
@@ -382,6 +407,11 @@ public:
      *  It does not create a representation. If no conforming
      *  representation exists,  an error code is returned.
      *  The written representation is the new current representation
+     *  @param outStream the output stream
+     *  @param oxfer the transfer syntax that should be used
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @param pointer to write cache object, may be NULL
+     *  @return EC_Normal on success, the error otherwise
      */
     virtual OFCondition write(
       DcmOutputStream &outStream,
@@ -434,42 +464,55 @@ public:
     virtual void transferEnd();
 
     /** test if it is possible to choose the representation in the parameters
+     * @param repType the representation type
+     * @param repParam the representation parameters
      */
     OFBool canChooseRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam);
 
-    /** choose a specific representation. if representation does not exist
-     *  it is created (if possible).
-     *  if repParam is zero, a representation is chosen or created that
-     *  is equal to the default representation parameters
+    /** choose a specific representation.
+     *  @remarks if representation does not exist it is created (if possible).
+     *    if repParam is zero, a representation is chosen or created that
+     *    is equal to the default representation parameters
      *  @deprecated The direct call of this method by user code is deprecated.
      *    Use DcmDataset::chooseRepresentation() instead.
+     *  @repType the representation type
+     *  @repParam the representation parameters
+     *  @stack the object stack
      */
     OFCondition chooseRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam,
         DcmStack & stack);
 
-    /** Inserts an original encapsulated representation. current and original
-     *  representations are changed, all old representations are deleted
+    /** Inserts an original encapsulated representation.
+     *  @remarks current and original representations are changed,
+     *  all old representations are deleted
+     *  @param repType the representation type
+     *  @param repParam the representation parameters
+     *  @param pixSeq the pixel sequence
      */
     void putOriginalRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam,
         DcmPixelSequence * pixSeq);
 
-    /**insert an original unencapsulated
-     *  representation. current and original representations are changed,
+    /** insert an original unencapsulated representation.
+     *  @remarks current and original representations are changed,
      *  all old representations are deleted. The array data is copied.
+     *  @param byteValue used to check for corrupted data
+     *  @param length the length of the element to put
      */
     virtual OFCondition putUint8Array(
         const Uint8 * byteValue,
         const unsigned long length);
 
-    /** insert an original unencapsulated
-     *  representation. current and original representations are changed,
+    /** insert an original unencapsulated representation.
+     *  @remarks current and original representations are changed,
      *  all old representations are deleted. The array data is copied.
+     *  @param wordValue new attribute value
+     *  @param length number of values in array vals
      */
     virtual OFCondition putUint16Array(
         const Uint16 * wordValue,
@@ -516,6 +559,9 @@ public:
     /** get a specific existing Representation, creates no representation
      *  if repParam is NULL, then the representation conforming to the default
      *  representationParameters (defined with the codec) is returned.
+     *  @param repType the transfer syntax
+     *  @param repParam representation parameters
+     *  @param pixSeq the found representation
      */
     OFCondition getEncapsulatedRepresentation(
         const E_TransferSyntax repType,
@@ -524,6 +570,8 @@ public:
 
     /** returns the representation identification (key) consisting of
      *  representation type and parameter of the original representation
+     *  @param repType the transfer syntax
+     *  @param the representations parameters
      */
     void getOriginalRepresentationKey(
         E_TransferSyntax & repType,
@@ -531,25 +579,34 @@ public:
 
     /** returns the representation identification (key) consisting of
      *  representation type and parameter of the current representation
+     *  @param repType the transfer Syntax
+     *  @param repParam the DcmRepresentationParameter
      */
     void getCurrentRepresentationKey(
         E_TransferSyntax & repType,
         const DcmRepresentationParameter * & repParam);
 
-    /** sets the representation identification parameter of the current
-     *  representation
+    /** sets the representation identification parameter of the current representation
+     * @param repParam the representation Parameter
+     * @return EC_Normal on success, EC_RepresentationNotFound if the representation was not found
      */
     OFCondition setCurrentRepresentationParameter(
         const DcmRepresentationParameter * repParam);
 
-    /** returns if a specific conforming  representation exists.
+    /** checks if a specific conforming representation exists.
+     * @param repType the representation Type
+     * @param repParam the representation Parameter
+     * @return OFTrue if a specific conforming representation exists, OFFalse otherwise
      */
     OFBool hasRepresentation(
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam = NULL);
 
-    /** delete a representation. It is not possible to delete the
-     *  original representation with this method
+    /** deletes a representation.
+     * @remark It is not possible to delete the original representation with this method
+     * @param repType the representation Type
+     * @param repParam the representation Parameter
+     * @return EC_NORMAL on success, the error otherwise
      */
     OFCondition removeRepresentation(
         const E_TransferSyntax repType,
@@ -567,6 +624,9 @@ public:
     /** delete original representation and set new original representation.
      *  If the new representation does not exist, the original one is not
      *  deleted and an error code returns
+     *  @param repType the representation type
+     *  @param repParam the representation parameter
+     *  @return EC_Normal on success, the error code otherwise
      */
     OFCondition removeOriginalRepresentation(
         const E_TransferSyntax repType,

@@ -115,7 +115,7 @@ public:
   OFCondition setGraphicType(DVPSGraphicType gtype);
 
   /** sets the graphic filled status for the graphic object
-   *  @param isFilled OFTrue if graphic is filled, OFFalse otherwise.
+   *  @param filled OFTrue if graphic is filled, OFFalse otherwise.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition setFilled(OFBool filled);

@@ -452,9 +452,13 @@ class DCMTK_DCMWLM_EXPORT WlmDataSource
     virtual void SetDatabaseType( WlmDatabaseType /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
-       *  @param int The value to set.
+       *  @param value The value to set.
        */
-    virtual void SetSerialNumber( const int /*value*/ ) {}
+#ifdef DOXYGEN
+    virtual void SetSerialNumber( const int value ) { }
+#else
+    virtual void SetSerialNumber( const int /* value */ ) { }
+#endif
 
       /** Set value in a member variable in a derived class.
        *  @param int The value to set.

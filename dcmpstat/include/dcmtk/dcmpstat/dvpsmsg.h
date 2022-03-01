@@ -65,7 +65,7 @@ public:
   void addStringToPayload(const char *str);
 
   /** adds an integer into the message payload.
-   *  @param value to write
+   *  @param i value to write
    */
   void addIntToPayload(Uint32 i);
 
@@ -176,53 +176,53 @@ public:
   virtual ~DVPSIPCClient();
 
   /** sends ApplicationTerminates notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    */
   void notifyApplicationTerminates(Uint32 status);
 
   /** sends ReceivedUnencryptedDICOMConnection notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
   void notifyReceivedUnencryptedDICOMConnection(Uint32 status, const char *txt);
 
   /** sends ReceivedEncryptedDICOMConnection notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
   void notifyReceivedEncryptedDICOMConnection(Uint32 status, const char *txt);
 
   /** sends ConnectionClosed notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    */
   void notifyConnectionClosed(Uint32 status);
 
   /** sends ConnectionAborted notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
   void notifyConnectionAborted(Uint32 status, const char *txt);
 
   /** sends RequestedUnencryptedDICOMConnection notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
   void notifyRequestedUnencryptedDICOMConnection(Uint32 status, const char *txt);
 
   /** sends RequestedEncryptedDICOMConnection notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of notification for server
    */
   void notifyRequestedEncryptedDICOMConnection(Uint32 status, const char *txt);
 
   /** sends ReceivedDICOMObject notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of DICOM object
    */
   void notifyReceivedDICOMObject(Uint32 status, const char *txt);
 
   /** sends SentDICOMObject notification to server.
-   *  @param Uint32 message status, see constants defined in DVPSIPCMessage
+   *  @param status Uint32 message status, see constants defined in DVPSIPCMessage
    *  @param txt textual description of DICOM object
    */
   void notifySentDICOMObject(Uint32 status, const char *txt);

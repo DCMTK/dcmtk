@@ -90,7 +90,9 @@ public:
         const char* vers, OFBool doCopyStrings,
         const char* pcreator);
 
-    /// copy constructor
+    /** copy constructor
+     * @param e the entry to copy
+     */
     DcmDictEntry(const DcmDictEntry& e);
 
     /// destructor
@@ -259,7 +261,9 @@ public:
         return groupRangeRestriction;
     }
 
-    /// sets group range restriction
+    /** sets group range restriction
+     * @param rr the new range restriction
+     */
     void setGroupRangeRestriction(DcmDictRangeRestriction rr)
     {
         groupRangeRestriction = rr;
@@ -271,7 +275,9 @@ public:
         return elementRangeRestriction;
     }
 
-    /// sets element range restriction
+    /** sets element range restriction
+    * @param rr the new range restriction
+    */
     void setElementRangeRestriction(DcmDictRangeRestriction rr)
     {
         elementRangeRestriction = rr;
@@ -353,7 +359,11 @@ public:
             );
     }
 
-    /// friend operator<<
+    /** friend operator<<
+     * @param s the ostream to append upon
+     * @param e the dictionary entry
+     * @return the appended on ostream
+     */
     friend DCMTK_DCMDATA_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmDictEntry& e);
 
 private:

@@ -59,7 +59,7 @@ public:
     }
 
     /** set DIMSE status
-     *  param s new status
+     *  @param s new status
      */
     void setStatus(DIC_US s) { status = s; }
 

@@ -122,6 +122,7 @@ public:
     DcmObject* top() const;
 
     /** returns n-th element from stack without removing it.
+     *  @param number the number of the element
      *  @return n-th element from stack
      */
     DcmObject* elem(const unsigned long number) const;

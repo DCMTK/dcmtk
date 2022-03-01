@@ -246,6 +246,11 @@ public:
    *  Instead of maintaining a global condition stack (which is difficult
    *  in multi-threaded applications), the error text of the sub-condition
    *  is appended to the newly created condition.
+   *  @param aModule the module for the condition
+   *  @param aCode the code for the condition
+   *  @param aStatus the status for the condition
+   *  @param aText the error text
+   *  @param subCondition the sub-condition
    */
   static OFCondition push(
     unsigned short aModule,
@@ -259,6 +264,8 @@ public:
    *  Instead of maintaining a global condition stack (which is difficult
    *  in multi-threaded applications), the error text of the sub-condition
    *  is appended to the newly created condition.
+   *  @param newCondition the condition
+   *  @param subCondition the sub-condition
    */
   static OFCondition push(
     OFCondition newCondition,

@@ -177,7 +177,9 @@ private:
     /// private undefined copy constructor 
     DcmList &operator=(const DcmList &);
 
-    /// private undefined copy assignment operator 
+    /** private undefined copy assignment operator
+     * @param newList documented to avoid doxygen warnings
+     */
     DcmList(const DcmList &newList);
 };
 

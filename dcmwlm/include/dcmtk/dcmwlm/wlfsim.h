@@ -151,7 +151,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  @param normalize Normalize each attribute value before the check. Defaults to OFTrue, which
        *    means the value will be normalized as appropriate for the given VR, e.g. ignoring spaces
        *    used as padding.
-       *  @param normalizeWildCards. Whether to interpret a query only consisting of wild cards as
+       *  @param normalizeWildCards Whether to interpret a query only consisting of wild cards as
        *    an universal match. Defaults to OFTrue, which means wild cards will be normalized if an
        *    attribute's VR supports it and it is allowed for the attribute (as defined by the matchingKeys
        *    argument). Set to OFFalse to force strict interpretation instead.
@@ -192,7 +192,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        */
     OFCondition ConnectToFileSystem( const OFString& dfPathv );
 
-      /** Disconnects from the worklist file system database..
+      /** Disconnects from the worklist file system database.
        *  @return Indicates if the connection was disconnected successfully.
        */
     OFCondition DisconnectFromFileSystem();

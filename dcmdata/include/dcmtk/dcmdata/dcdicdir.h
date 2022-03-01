@@ -100,12 +100,14 @@ public:
     virtual DcmSequenceOfItems& getMRDRSequence();
 
     /** look up directory record for the given referenced file ID (not OS file path)
+     *  @param filename the file to take the id from
      *  @return directory record if found, NULL otherwise
      */
     virtual DcmDirectoryRecord* matchFilename( const char *filename );
 
     /** look up MRDR for the given referenced file ID (not OS file path).
      *  If there is none yet, create one.
+     *  @param filename the file to take the id from
      *  @return MRDR for given referenced file ID
      */
     virtual DcmDirectoryRecord* matchOrCreateMRDR( const char *filename );
@@ -189,7 +191,9 @@ public:
     /// private undefined copy assignment operator
     DcmDicomDir &operator=(const DcmDicomDir &);
 
-    /// private undefined copy constructor
+    /** private undefined copy constructor
+     * @param newDir documented to avoid doxygen warnings
+     */
     DcmDicomDir( const DcmDicomDir &newDir );
 
     /// condition flag

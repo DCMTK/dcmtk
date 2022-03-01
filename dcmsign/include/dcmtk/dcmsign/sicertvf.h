@@ -52,7 +52,7 @@ public:
 
   /** loads a certificate from a file and adds it to the pool of trusted certificates.
    *  @param fileName path to the certificate file
-   *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
+   *  @param fileType file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
    *  @return SI_EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition addTrustedCertificateFile(const char *fileName, int fileType);
@@ -69,8 +69,8 @@ public:
 
   /** loads all files as certificates from the specified directory and adds them
    *  to the pool of trusted certificates.
-   *  @param fileName path to the directory containing certificate files
-   *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
+   *  @param pathName path to the directory containing certificate files
+   *  @param fileType file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
    *  @return SI_EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition addTrustedCertificateDir(const char *pathName, int fileType);
@@ -78,7 +78,7 @@ public:
   /** loads a certificate revocation list (CRL) in X.509 format from a file and
    *  adds it to the pool of trusted certificates and CRLs.
    *  @param fileName path to the CRL file
-   *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
+   *  @param fileType file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
    *  @return SI_EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition addCertificateRevocationList(const char *fileName, int fileType);

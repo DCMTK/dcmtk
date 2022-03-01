@@ -92,10 +92,14 @@ public:
   
 private:
 
-  /// private undefined copy constructor
+  /** private undefined copy constructor
+   * @param arg documented to avoid doxygen warnings
+   */
   DcmFileCache(const DcmFileCache& arg);
 
-  /// private undefined copy assignment operator
+  /** private undefined copy assignment operator
+   * @param arg the cache to copy
+   */
   DcmFileCache& operator=(const DcmFileCache& arg);
 
   /// input stream, may be NULL

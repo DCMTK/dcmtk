@@ -339,7 +339,7 @@ public:
   /** modifies the PRNG by adding random data from the given buffer
    *  to the PRNG state.
    *  @param buf pointer to buffer containing random data
-   *  @bufSize number of bytes in buffer
+   *  @param bufSize number of bytes in buffer
    */
   void addPRNGseed(void *buf, size_t bufSize);
 
@@ -414,7 +414,7 @@ public:
 
   /** load an X.509 certificate from file.
    *  @param fileName path to the certificate file
-   *  @param fileType, must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
+   *  @param fileType must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
    *  @return pointer to X509 object if successful, NULL otherwise.
    *    The X509 object must be freed by the caller.
    */

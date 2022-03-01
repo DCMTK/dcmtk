@@ -193,7 +193,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        *  @param opt_blockModev                      Specifies the blocking mode for DIMSE operations
        *  @param opt_dimse_timeoutv                  Specifies the timeout for DIMSE operations
        *  @param opt_acse_timeoutv                   Specifies the timeout for ACSE operations
-       *  @param opt_forkedChildv                    Indicates, whether this process was "forked" from a parent process, default: false
+       *  @param opt_forkedChild                     Indicates, whether this process was "forked" from a parent process, default: false
        *  @param argcv                               Number of commandline arguments given
        *  @param argvv                               Complete command line
        */

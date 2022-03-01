@@ -128,6 +128,7 @@ public:
     /** checks if the command line option --list-ciphers was given.
      *  In this case the list of supported TLS ciphersuites should be
      *  printed to stdout and the application should terminate.
+     *  @param cmd the command line that was used
      *  @return true if --list-ciphers option was found, false otherwise.
      */
     static OFBool listOfCiphersRequested(OFCommandLine& cmd);

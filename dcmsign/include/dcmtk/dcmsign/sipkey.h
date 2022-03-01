@@ -46,7 +46,7 @@ class DCMTK_DCMSIGN_EXPORT SiPKEY : public SiAlgorithm
 public:
 
   /** constructor
-   *  @param pointer to public or private key
+   *  @param key pointer to public or private key
    *  @param owned if true, ownership of the key is transferred to the SiPKEY instance
    */
   SiPKEY(EVP_PKEY *key, OFBool owned);

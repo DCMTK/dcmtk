@@ -59,7 +59,7 @@ private:
    *  @param ratio image compression ratio. This is not the "quality factor"
    *    but the real effective ratio between compressed and uncompressed image,
    *    i. e. 30 means a 30:1 lossy compression.
-   *  @param imageComments image comments returned in this
+   *  @param derivationDescription derivation description returned in this
    *    parameter which is initially empty
    */
   virtual void createDerivationDescription(

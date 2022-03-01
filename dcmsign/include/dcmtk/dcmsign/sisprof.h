@@ -58,7 +58,7 @@ public:
   virtual OFBool isAllowableMACType(E_MACType macType) const = 0;
 
   /** checks whether the given MAC object can be used with this security profile.
-   *  @param macType object to be checked
+   *  @param mac macType object to be checked
    *  @return true if object is allowable for this profile, false otherwise.
    */
   virtual OFBool isAllowableMAC(const SiMAC& mac) const;

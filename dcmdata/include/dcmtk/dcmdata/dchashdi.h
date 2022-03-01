@@ -130,21 +130,29 @@ public:
       : dict(NULL), hindex(0), iterating(OFFalse), iter()
         { init(d, atEnd); }
 
-    /// copy constructor
+    /** copy constructor
+     * @param i the iterator to copy
+     */
     DcmHashDictIterator(const DcmHashDictIterator& i)
       : dict(i.dict), hindex(i.hindex), iterating(i.iterating), iter(i.iter)
         { }
 
-    /// copy assignment operator
+    /** copy assignment operator
+     * @param i the Iterator to copy and assign
+     */
     DcmHashDictIterator& operator=(const DcmHashDictIterator& i)
         { dict = i.dict; hindex = i.hindex;
           iterating = i.iterating; iter = i.iter; return *this; }
 
-    /// comparison equality
+    /** comparison equality
+     * @param x the iterator to compare against
+     */
     OFBool operator==(const DcmHashDictIterator& x) const
         { return iterating ? x.iterating && (hindex == x.hindex) && (iter == x.iter) : !x.iterating; }
 
-    /// comparison non-equality
+    /** comparison non-equality
+     * @param x the iterator to compare against
+     */
     OFBool operator!=(const DcmHashDictIterator& x) const
         { return !(*this == x); }
 
@@ -238,7 +246,9 @@ public:
     DcmHashDictIterator end() const
         { DcmHashDictIterator iter(this, OFTrue); return iter; }
 
-    /// prints some information about hash table bucket utilization
+    /** prints some information about hash table bucket utilization
+     * @param out the stream to print into
+     */
     STD_NAMESPACE ostream& loadSummary(STD_NAMESPACE ostream& out);
 
 private:

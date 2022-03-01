@@ -138,6 +138,13 @@ class DiHSVPixelTemplate
     }
 
     /** convert a single HSV value to RGB
+     *  @param red the red part of the RGB value
+     *  @param green the green part of the RGB value
+     *  @param blue the blue part of the RGB value
+     *  @param hue the hue part of the HSV value
+     *  @param saturation the saturation part of the HSV value
+     *  @param value the value part of the HSV value
+     *  @param the maximal value of any rgb value
      */
     void convertValue(T2 &red,
                       T2 &green,

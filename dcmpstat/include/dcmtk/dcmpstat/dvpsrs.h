@@ -99,7 +99,7 @@ public:
   /** remove image reference from this series reference if present.
    *  If an image reference with a SOP instance UID corresponding to the
    *  passed UID is found, it is removed from this series reference.
-   *  @param uid a pointer to the image SOP instance UID.
+   *  @param sopinstanceuid a pointer to the image SOP instance UID.
    */
   void removeImageReference(const char *sopinstanceuid);
 

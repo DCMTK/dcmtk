@@ -268,6 +268,13 @@ class DiYBRPixelTemplate
     }
 
     /** convert a single YCbCr value to RGB
+     *  @param red the red part of the RGB value
+     *  @param green the green part of the RGB value
+     *  @param blue the blue part of the RGB value
+     *  @param y the luma part of the YCbCr value
+     *  @param cb the blue-difference part of the YCbCr value
+     *  @param cr the red-difference part of the YCbCr value
+     *  @param maxvalue the maximum value of the RGB parts
      */
     inline void convertValue(T2 &red, T2 &green, T2 &blue, const T2 y, const T2 cb, const T2 cr, const T2 maxvalue)
     {

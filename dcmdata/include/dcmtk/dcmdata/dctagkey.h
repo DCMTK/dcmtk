@@ -191,23 +191,35 @@ public:
 
 protected:
 
-    /// less-than operation comparing only group numbers
-    inline int groupLT(const DcmTagKey& key) const;
+    /** less-than operation comparing only group numbers
+     * @param key the object to compare to
+     */
+    int groupLT(const DcmTagKey& key) const;
 
-    /// greater-than operation comparing only group numbers
-    inline int groupGT(const DcmTagKey& key) const;
+    /** greater-than operation comparing only group numbers
+     * @param key the object to compare to
+     */
+    int groupGT(const DcmTagKey& key) const;
 
-    /// comparison operation comparing only group numbers
-    inline int groupEQ(const DcmTagKey& key) const;
+    /** comparison operation comparing only group numbers
+     * @param key the object to compare to
+     */
+    int groupEQ(const DcmTagKey& key) const;
 
-    /// less-than operation comparing only element numbers
-    inline int elementLT(const DcmTagKey& key) const;
+    /** less-than operation comparing only element numbers
+     * @param key the object to compare to
+     */
+    int elementLT(const DcmTagKey& key) const;
 
-    /// greater-than operation comparing only element numbers
-    inline int elementGT(const DcmTagKey& key) const;
+    /** greater-than operation comparing only element numbers
+     * @param key the object to compare to
+     */
+    int elementGT(const DcmTagKey& key) const;
 
-    /// comparison operation comparing only element numbers
-    inline int elementEQ(const DcmTagKey& key) const;
+    /** comparison operation comparing only element numbers
+     * @param key the object to compare to
+     */
+    int elementEQ(const DcmTagKey& key) const;
 
 private:
 

@@ -48,13 +48,17 @@ public:
     const unsigned char *data,
     Uint32 length);
 
-  /// copy constructor
+  /** copy constructor
+   * @param arg the item to copy
+   */
   DcmExtendedNegotiationItem(const DcmExtendedNegotiationItem& arg);
  
   /// destructor
   ~DcmExtendedNegotiationItem();
 
-  /// assignment operator
+  /** assignment operator
+  * @param arg the item to assign
+  */
   DcmExtendedNegotiationItem& operator=(const DcmExtendedNegotiationItem& arg);
 
   /** checks if the given argument matches the abstract syntax UID
@@ -135,10 +139,14 @@ public:
   /// destructor
   ~DcmExtendedNegotiationMap();
 
-  /// Copy constructor, performs deep copy
+  /** Copy constructor, performs deep copy
+   * @param arg the map to copy
+   */
   DcmExtendedNegotiationMap(const DcmExtendedNegotiationMap& arg);
 
-  /// Copy assignment operator, performs deep copy
+  /** Copy assignment operator, performs deep copy
+   * @param arg the map to assign
+   */
   DcmExtendedNegotiationMap& operator=(const DcmExtendedNegotiationMap& arg);
 
   /** Resets DcmExtendedNegotiationMap and frees any allocated memory

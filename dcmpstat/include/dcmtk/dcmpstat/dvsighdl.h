@@ -138,7 +138,7 @@ public:
    *    separately.  If main dataset is to be signed, it must be included in this stack.
    *  @param attributesNotToSignInMainDataset list of attribute tags that should be
    *    omitted from the signature on the main dataset level
-   *  @param usedID user ID in configuration file, must not be NULL
+   *  @param userID user ID in configuration file, must not be NULL
    *  @param passwd passwd password for private key, may be NULL
    *  @return EC_Normal if successful, an error code otherwise.
    */

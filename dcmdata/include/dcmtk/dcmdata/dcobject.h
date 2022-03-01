@@ -409,7 +409,14 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *  @param vr value representation
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
+#ifdef DOXYGEN
+    virtual OFCondition setVR(DcmEVR vr)
+#else
+    virtual OFCondition setVR(DcmEVR /* vr */)
+#endif
+    {
+      return EC_IllegalCall;
+    }
 
     /** get value multiplicity of this object.
      *  Please note that depending on the Value Representation (VR), subclasses

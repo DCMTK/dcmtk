@@ -58,7 +58,7 @@ class DCMTK_DCMPSTAT_EXPORT DVInterface: public DVConfiguration
     *     If a non-existing filename (or NULL) is passed, an empty configuration file
     *     is assumed.
     *  @param useLog (optional) flag specifying whether a general log file should be used
-    *     (config entry GENERAL\APPLICATION\LOGFILE).
+    *     (config entry GENERAL\\APPLICATION\\LOGFILE).
     */
     DVInterface(const char *config_file = NULL, OFBool useLog = OFFalse);
 
@@ -1690,12 +1690,18 @@ private:
     void clearIndexCache();
 
     /** clears specified index record (and makes pos invalid)
+     *  @param record the index record to clear
+     *  @param recpos the position
      */
     void clearIndexRecord(IdxRecord &record,
                           int &recpos);
 
     /** reads specified index record (comparing pos with oldpos to avoid redundant
      *  loading)
+     *  @param pos the position
+     *  @param record the index record
+     *  @param oldpos the old position
+     *  @return OFTrue on success, OFFalse otherwise
      */
     OFBool readIndexRecord(const int pos,
                            IdxRecord &record,
@@ -1707,28 +1713,46 @@ private:
     void updateStatusCache();
 
     /** returns pointer to study struct specified by given UIDs or to current study
+     *  @param studyUID the UID of the study
+     *  @param seriesUID the UID of the series
+     *  @return pointer to study struct specified by given UIDs or to current study or NULL
      */
     DVStudyCache::ItemStruct *getStudyStruct(const char *studyUID = NULL,
                                              const char *seriesUID = NULL);
 
     /** returns pointer to series struct specified by given UIDs or to current series
+     *  @param studyUID the UID of the study
+     *  @param seriesUID the UID of the series
+     *  @param instanceUID the UID of the instance
+     *  @return pointer to series struct specified by given UIDs or to current series or NULL
      */
     DVSeriesCache::ItemStruct *getSeriesStruct(const char *studyUID = NULL,
                                                const char *seriesUID = NULL,
                                                const char *instanceUID = NULL);
 
     /** returns pointer to instance struct specified by given UIDs or to current instance
+     *  @param studyUID the UID of the study
+     *  @param seriesUID the UID of the series
+     *  @param instanceUID the UID of the instance
+     *  @return pointer to instance struct specified by given UIDs or to current instance or NULL
      */
     DVInstanceCache::ItemStruct *getInstanceStruct(const char *studyUID = NULL,
                                                    const char *seriesUID = NULL,
                                                    const char *instanceUID = NULL);
 
     /** returns index of specified study within study description record
+     *  @param study the study description records to search in
+     *  @param uid the id of the study
+     *  @return the study index if found, -1 otherwise
      */
     int findStudyIdx(StudyDescRecord *study,
                      const char *uid);
 
     /** conditionally deletes given image file (only if file resides in index.dat directory)
+     *  @param filename the path to the file
+     *  @return 0: given filename is invalid
+     *          1: image file has been deleted
+     *          2: image file has not been deleted
      */
     int deleteImageFile(const char *filename);
 
@@ -1739,6 +1763,8 @@ private:
 
     /** modifies the review flag for one instance in the database (see method with three UID
      *  parameters)
+     *  @param idx index
+     *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition instanceReviewed(int pos);
 

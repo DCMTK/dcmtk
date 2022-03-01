@@ -42,13 +42,15 @@ namespace log4cplus {
     namespace helpers {
 
         /**
-         * Returns <code>s</code> in upper case.
+         * @param s the value to be converted into uppercase
+         * @returns <code>s</code> in upper case.
          */
         DCMTK_LOG4CPLUS_EXPORT log4cplus::tstring toUpper(const log4cplus::tstring& s);
 
 
         /**
-         * Returns <code>s</code> in lower case.
+         * @param s the value to be converted into lowercase
+         * @returns <code>s</code> in upper case.
          */
         DCMTK_LOG4CPLUS_EXPORT log4cplus::tstring toLower(const log4cplus::tstring& s);
 
@@ -65,6 +67,11 @@ namespace log4cplus {
          *   list<tstring> tokens;
          *   tokenize(s, '.', back_insert_iterator<list<string> >(tokens));
          * </pre>
+         * @param s the string to be tokenized
+         * @param c the delimiter to be used to tokenized
+         * @param result the resulting tokens
+         * @param collapseTokens when false, multiple adjacent delimiters
+         * will result in zero length tokens.
          */
         template <class StringType>
         inline

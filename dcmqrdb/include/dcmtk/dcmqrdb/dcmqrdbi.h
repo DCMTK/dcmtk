@@ -258,6 +258,7 @@ public:
 
   /** enable/disable the DB quota system (default: enabled) which causes images
    *  to be deleted if certain boundaries (number of studies, bytes per study) are exceeded.
+   *  @param enable weather to disable/enable
    */
   void enableQuotaSystem(OFBool enable);
 

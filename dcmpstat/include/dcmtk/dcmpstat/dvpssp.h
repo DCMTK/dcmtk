@@ -119,7 +119,7 @@ class DCMTK_DCMPSTAT_EXPORT DVPSStoredPrint
    */
   OFCondition setPrinterName(const char *name);
 
-  /** sets the image display format to 'STANDARD\columns,rows'.
+  /** sets the image display format to 'STANDARD\\columns,rows'.
    *  The caller must make sure that the column and row values are
    *  valid for the selected printer.
    *  @param columns number of columns
@@ -232,7 +232,7 @@ class DCMTK_DCMPSTAT_EXPORT DVPSStoredPrint
    *  are reset to default. For all registered images, magnification, smoothing type
    *  and configuration information are also set back to default.
    *  @param name name of the new printer (optional)
-   *  @param aetitle of the new printer (optional)
+   *  @param destinationAE aetitle of the new printer (optional)
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition newPrinter(const char *name = NULL, const char *destinationAE = NULL); // short cut, delete all optional settings

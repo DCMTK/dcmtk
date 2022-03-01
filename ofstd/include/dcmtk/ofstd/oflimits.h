@@ -152,7 +152,7 @@ struct OFnumeric_limits
      */
     static const OFBool is_specialized;
 
-    /** <kbd>OFTrue for all signed arithmetic types <i>T</i> and
+    /** <kbd>OFTrue</kbd> for all signed arithmetic types <i>T</i> and
      *  <kbd>OFFalse</kbd> for the unsigned types.
      *  <h3>C++11 standard definitions used:</h3>
      *  T                       | %is_signed

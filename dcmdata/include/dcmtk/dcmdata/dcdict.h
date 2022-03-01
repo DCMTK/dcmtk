@@ -189,11 +189,13 @@ private:
     OFBool loadSkeletonDictionary();
 
     /** looks up the given directory entry in the two dictionaries.
+     *  @param entry the entry to look up
      *  @return pointer to entry if found, NULL otherwise
      */
     const DcmDictEntry* findEntry(const DcmDictEntry& entry) const;
 
     /** deletes the given entry from either dictionary
+     * @param entry the entry to delete
      */
     void deleteEntry(const DcmDictEntry& entry);
 

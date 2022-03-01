@@ -123,8 +123,14 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @param enctype sequence encoding type for length calculation
      *  @return value length of DICOM element
      */
-    virtual Uint32 getLength(const E_TransferSyntax /*xfer*/ = EXS_LittleEndianImplicit,
-                             const E_EncodingType /*enctype*/ = EET_UndefinedLength)
+
+#ifdef DOXYGEN
+    virtual Uint32 getLength(const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
+                             const E_EncodingType enctype = EET_UndefinedLength)
+#else
+    virtual Uint32 getLength(const E_TransferSyntax /* xfer */ = EXS_LittleEndianImplicit,
+                             const E_EncodingType /* enctype */ = EET_UndefinedLength)
+#endif
     {
         return getLengthField();
     }

@@ -92,7 +92,7 @@ public:
 
   /** adds the given graphic object to
    *  the list of graphic objects managed by this object.
-   *  @param text graphic object to be inserted.
+   *  @param graphic text graphic object to be inserted.
    */
   void addGraphicObject(DVPSGraphicObject *graphic);
 

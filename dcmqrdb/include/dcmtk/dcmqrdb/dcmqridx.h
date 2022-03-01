@@ -161,9 +161,13 @@ public:
     DB_SerializedTagKey XTag ;
 
 private:
-    /// private undefined copy constructor
+    /** private undefined copy constructor
+     * @param copy documented to avoid doxygen warning
+     */
     DB_SmallDcmElmt(const DB_SmallDcmElmt& copy);
-    /// private undefined copy assignment operator
+    /** private undefined copy assignment operator
+     * @param copy documented to avoid doxygen warning
+     */
     DB_SmallDcmElmt& operator=(const DB_SmallDcmElmt& copy);
 };
 
@@ -187,9 +191,13 @@ struct DCMTK_DCMQRDB_EXPORT DB_ElementList
     OFoptional<OFString> utf8Value ;
 
 private:
-    /// private undefined copy constructor
+    /** private undefined copy constructor
+     * @param copy documented to avoid doxygen warning
+     */
     DB_ElementList(const DB_ElementList& copy);
-    /// private undefined copy assignment operator
+    /** private undefined copy assignment operator
+     * @param copy documented to avoid doxygen warning
+     */
     DB_ElementList& operator=(const DB_ElementList& copy);
 };
 

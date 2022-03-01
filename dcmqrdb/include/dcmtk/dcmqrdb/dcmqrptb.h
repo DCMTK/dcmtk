@@ -75,6 +75,7 @@ public:
    *  given aetitle. Used to enforce an ad-hoc rule that allows only
    *  one parallel association to negotiate storage presentation contexts
    *  for each storage area (aetitle)
+   *  @param calledAETitle the given aetitle
    */
   OFBool haveProcessWithWriteAccess(const char *calledAETitle) const;
 

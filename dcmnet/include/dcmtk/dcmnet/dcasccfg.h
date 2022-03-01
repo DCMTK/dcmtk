@@ -58,10 +58,14 @@ public:
   /// destructor
   ~DcmAssociationConfiguration();
 
-  /// Copy constructor, performs deep copy
+  /** Copy constructor, performs deep copy
+   * @param arg the DcmAC to copy
+   */
   DcmAssociationConfiguration(const DcmAssociationConfiguration& arg);
 
-  /// Copy assignment operator, performs deep copy
+  /** Copy assignment operator, performs deep copy
+   * @param arg the DcmAC to copy
+   */
   DcmAssociationConfiguration& operator=(const DcmAssociationConfiguration& arg);
 
   /// Reset configuration.
@@ -69,7 +73,7 @@ public:
 
   /** this method prepares a T_ASC_Parameters structure according to the settings
    *  of a profile maintained by this object. It is used by an association initiator.
-   *  @param symbolic profile name, must not be NULL
+   *  @param profile symbolic profile name, must not be NULL
    *  @param params T_ASC_Parameters structure to be filled
    *  @return EC_Normal if successful, an error code otherwise
    */
@@ -79,7 +83,7 @@ public:
 
   /** this method evaluates an incoming association request according to the settings
    *  of a profile maintained by this object. It is used by an association acceptor.
-   *  @param symbolic profile name, must not be NULL
+   *  @param profile symbolic profile name, must not be NULL
    *  @param assoc T_ASC_Association structure to be evaluated
    *  @return EC_Normal if successful, an error code otherwise
    */

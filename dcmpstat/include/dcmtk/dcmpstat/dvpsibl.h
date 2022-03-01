@@ -256,13 +256,13 @@ public:
    */
   const char *getImageConfigurationInformation(size_t idx);
 
-  /** gets the current SOP Instance UID for the given registered image box..
+  /** gets the current SOP Instance UID for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @return SOP Instance UID, may be NULL.
    */
   const char *getSOPInstanceUID(size_t idx);
 
-  /** gets the referenced Presentation LUT SOP Instance UID for the given registered image box..
+  /** gets the referenced Presentation LUT SOP Instance UID for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @return SOP Instance UID, may be NULL.
    */

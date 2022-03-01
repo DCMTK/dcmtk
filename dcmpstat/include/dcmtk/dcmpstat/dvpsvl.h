@@ -77,7 +77,7 @@ public:
 
   /** assigns the contents of this VOI LUT to the
    *  references passed as parameters.
-   *  @param reference to the Softcopy VOI in which the LUT is stored.
+   *  @param voi reference to the Softcopy VOI in which the LUT is stored.
    */
   OFCondition assign(DVPSSoftcopyVOI& voi);
 

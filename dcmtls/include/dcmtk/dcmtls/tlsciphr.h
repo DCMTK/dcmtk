@@ -340,7 +340,7 @@ public:
   static size_t lookupCiphersuite(const char *tlsCipherSuiteName);
 
   /** looks up the index of the given ciphersuite by OpenSSL name
-   *  @param tlsCipherSuiteName ciphersuite name in the form used by OpenSSL
+   *  @param opensslCipherSuiteName ciphersuite name in the form used by OpenSSL
    *  @returns index into list of ciphersuites, DcmTLSCiphersuiteHandler::unknownCipherSuiteIndex if ciphersuite unknown
    */
   static size_t lookupCiphersuiteByOpenSSLName(const char *opensslCipherSuiteName);
@@ -401,6 +401,7 @@ public:
   static size_t getCipherSuiteEffectiveKeySize(size_t idx);
 
   /** look up the name of the given security profile
+   *  @param profile the given security profile
    *  @return name of security profile, never NULL.
    */
   static const char *lookupProfileName(DcmTLSSecurityProfile profile);
