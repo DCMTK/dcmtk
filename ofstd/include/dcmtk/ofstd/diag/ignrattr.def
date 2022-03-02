@@ -1,0 +1,10 @@
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wignored-attributes"
+#elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(6,0,0)
+#pragma GCC diagnostic ignored "-Wignored-attributes"
+
+// Visual Studio does not seem to have such a warning yet,
+// uncomment and replace ? when it does:
+//#elif DCMTK_DIAGNOSTIC_MIN_MSC_VER(????)
+//#pragma warning(disable: ????)
+#endif

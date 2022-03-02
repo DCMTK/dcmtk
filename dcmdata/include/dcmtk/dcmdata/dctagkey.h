@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include "dcmtk/dcmdata/dcdefine.h"
 
 /*
@@ -356,6 +357,9 @@ DcmTagKey::hash() const
 
 /* Comparisons */
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_ATTRIBUTE_REDECLARATION
+
 inline int
 DcmTagKey::groupLT(const DcmTagKey& key) const
 {
@@ -427,5 +431,7 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 {
     return (*this > key) || (*this == key);
 }
+
+#include DCMTK_DIAGNOSTIC_POP
 
 #endif
