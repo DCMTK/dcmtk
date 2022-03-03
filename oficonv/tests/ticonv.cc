@@ -581,6 +581,12 @@ OFTEST(oficonv_iso8859_11_to_utf8)
   convert_iso8859_to_utf8("ISO-IR-166", iso8859_11_char_a0_to_ff, sizeof(iso8859_11_char_a0_to_ff), iso8859_11_to_utf8_a0_to_ff, sizeof(iso8859_11_to_utf8_a0_to_ff));
 }
 
+// Conversion from ISO_IR 203 (Latin-9) to ISO_IR 192 (Unicode)
+OFTEST(oficonv_iso8859_15_to_utf8)
+{
+  convert_iso8859_to_utf8("ISO-8859-15", char_a0_to_ff, sizeof(char_a0_to_ff), iso8859_15_to_utf8_a0_to_ff, sizeof(iso8859_15_to_utf8_a0_to_ff));
+}
+
 // Conversion from TIS-620 (Thai) to ISO_IR 192 (Unicode)
 // For all pratical purposes, TIS-620 is identical to ISO-IR-166 (ISO 8859-11)
 OFTEST(oficonv_tis_620_to_utf8)
@@ -643,6 +649,11 @@ OFTEST(oficonv_utf8_to_iso8859_9)
 OFTEST(oficonv_utf8_to_iso8859_11)
 {
   convert_utf8_to_iso8859("ISO-IR-166", iso8859_11_char_a0_to_ff, sizeof(iso8859_11_char_a0_to_ff), iso8859_11_to_utf8_a0_to_ff, sizeof(iso8859_11_to_utf8_a0_to_ff));
+}
+
+OFTEST(oficonv_utf8_to_iso8859_15)
+{
+  convert_utf8_to_iso8859("ISO-8859-15", char_a0_to_ff, sizeof(char_a0_to_ff), iso8859_15_to_utf8_a0_to_ff, sizeof(iso8859_15_to_utf8_a0_to_ff));
 }
 
 OFTEST(oficonv_utf8_to_tis_620)

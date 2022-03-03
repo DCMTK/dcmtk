@@ -37,6 +37,7 @@ OFTEST_REGISTER(oficonv_iso8859_7_to_utf8);
 OFTEST_REGISTER(oficonv_iso8859_8_to_utf8);
 OFTEST_REGISTER(oficonv_iso8859_9_to_utf8);
 OFTEST_REGISTER(oficonv_iso8859_11_to_utf8);
+OFTEST_REGISTER(oficonv_iso8859_15_to_utf8);
 OFTEST_REGISTER(oficonv_tis_620_to_utf8);
 OFTEST_REGISTER(oficonv_shift_jis_to_utf8);
 
@@ -51,6 +52,7 @@ OFTEST_REGISTER(oficonv_utf8_to_iso8859_7);
 OFTEST_REGISTER(oficonv_utf8_to_iso8859_8);
 OFTEST_REGISTER(oficonv_utf8_to_iso8859_9);
 OFTEST_REGISTER(oficonv_utf8_to_iso8859_11);
+OFTEST_REGISTER(oficonv_utf8_to_iso8859_15);
 OFTEST_REGISTER(oficonv_utf8_to_tis_620);
 OFTEST_REGISTER(oficonv_utf8_to_shift_jis);
 
