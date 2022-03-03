@@ -623,4 +623,12 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
 
 }
 
+OFTEST(dcmnet_scu_sendNCREATERequest_returns_not_implemented)
+{
+    DcmSCU scu;
+    Uint16 rspStatusCode = 0;
+    OFCondition result = scu.sendNCREATERequest(1, "", nullptr, rspStatusCode);
+    OFCHECK(result.code() == EC_NotYetImplemented.theCode);
+}
+
 #endif // WITH_THREADS

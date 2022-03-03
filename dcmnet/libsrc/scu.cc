@@ -2080,6 +2080,15 @@ Uint16 DcmSCU::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ& /*eventReportReq
     return STATUS_Success;
 }
 
+OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
+                                       const OFString& affectedSopInstanceUID,
+                                       DcmDataset* reqDataset,
+                                       DcmDataset*& createdInstance,
+                                       Uint16& rspStatusCode)
+{
+    return EC_NotYetImplemented;
+}
+
 OFCondition
 DcmSCU::handleSessionResponseDefault(const Uint16 dimseStatus, const OFString& message, OFBool& waitForNextResponse)
 {

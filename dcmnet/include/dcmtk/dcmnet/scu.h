@@ -553,6 +553,25 @@ public:
      */
     virtual OFCondition handleEVENTREPORTRequest(DcmDataset*& reqDataset, Uint16& eventTypeID, const int timeout = 0);
 
+    /** This function sends N-CREATE request and receives the corresponding response.
+     *  If successful, ownership of the created instance is handed over to the caller.
+     *  @param presID                   [in]  The ID of the presentation context to be used for sending
+     *                                        the request message. Should not be 0.
+     *  @param affectedSopInstanceUID   [in]  The affected SOP Instance UID
+     *  @param eventTypeID              [in]  The event type ID to be used
+     *  @param reqDataset               [in]  The request dataset to be sent
+     *  @param createdInstance          [out] Optional pointer to the instance that was created
+     *  @param rspStatusCode            [out] The response status code received. 0 means success,
+     *                                        others can be found in the DICOM standard.
+     *  @return EC_Normal if request could be issued and response was received successfully,
+     *          an error code otherwise
+     */
+    virtual OFCondition sendNCREATERequest(const T_ASC_PresentationContextID presID,
+                                           const OFString& affectedSopInstanceUID,
+                                           DcmDataset* reqDataset,
+                                           DcmDataset*& createdInstance,
+                                           Uint16& rspStatusCode);
+
     /** Function handling a single C-GET, C-FIND or C-MOVE Response, used by
      *  handleCGETResponse(), handleFINDResponse() and handleMOVEResponse().
      *  It prints a message to the logger (warning, error or debug level related
