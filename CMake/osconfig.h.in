@@ -105,6 +105,9 @@
 /* Define to 1 if you have the `cuserid' function. */
 #cmakedefine HAVE_CUSERID @HAVE_CUSERID@
 
+/* Define to 1 if you have the `fgetln' function. */
+#cmakedefine HAVE_FGETLN @HAVE_FGETLN@
+
 /* Define if volatile is a known keyword */
 #define HAVE_CXX_VOLATILE 1
 
@@ -516,6 +519,9 @@
 
 /* Define if your system has a prototype for strcasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRCASECMP @HAVE_PROTOTYPE_STRCASECMP@
+
+/* Define if your system has a prototype for strcasestr in string.h */
+#cmakedefine HAVE_PROTOTYPE_STRCASESTR @HAVE_PROTOTYPE_STRCASESTR@
 
 /* Define if your system has a prototype for strncasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRNCASECMP @HAVE_PROTOTYPE_STRNCASECMP@
