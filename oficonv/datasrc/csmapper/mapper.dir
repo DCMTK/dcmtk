@@ -331,6 +331,12 @@ ISO-8859-11:GR/ISO-8859-11      mapper_zone     0x00 - 0x7F : +0x80
 ISO-8859-11/ISO-8859-11:GR      mapper_zone     0x80 - 0xFF : -0x80
 ISO-8859-11:GR/UCS              mapper_serial   ISO-8859-11:GR/ISO-8859-11,ISO-8859-11/UCS
 UCS/ISO-8859-11:GR              mapper_serial   UCS/ISO-8859-11,ISO-8859-11/ISO-8859-11:GR
+ISO-8859-15/UCS                 mapper_std      ISO-8859/ISO-8859-15%UCS.mps
+UCS/ISO-8859-15                 mapper_std      ISO-8859/UCS%ISO-8859-15.mps
+ISO-8859-15:GR/ISO-8859-15      mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-15/ISO-8859-15:GR      mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-15:GR/UCS              mapper_serial   ISO-8859-15:GR/ISO-8859-15,ISO-8859-15/UCS
+UCS/ISO-8859-15:GR              mapper_serial   UCS/ISO-8859-15,ISO-8859-15/ISO-8859-15:GR
 
 # JIS
 

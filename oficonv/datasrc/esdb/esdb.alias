@@ -393,6 +393,14 @@ tis620                          ISO-8859-11
 tis620.2529-1                   ISO-8859-11
 tis620.2533-0                   ISO-8859-11
 tis620-0                        ISO-8859-11
+cp923                           ISO-8859-15
+ibm923                          ISO-8859-15
+iso_8859-15                     ISO-8859-15
+iso_8859-15:1998                ISO-8859-15
+iso-ir-203                      ISO-8859-15
+iso8859-15                      ISO-8859-15
+l9                              ISO-8859-15
+latin9                          ISO-8859-15
 
 # ISO646
 iso_646.basic:1983              ISO646-BASIC:1983
