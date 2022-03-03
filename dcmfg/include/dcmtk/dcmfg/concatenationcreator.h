@@ -200,9 +200,8 @@ private:
     /// as configured by the user using setCfgFramesPerInstance(). Default is 25.
     Uint32 m_cfgNumFramesPerInstance;
 
-    /// Number of bytes used for each frame (same in source instance and concatenation instances).
-    /// Default is 25. Can be set by setCfgFramesPerInstance().
-    size_t m_numBytesFrame;
+    /// Number of bits used for each frame (same in source instance and concatenation instances).
+    size_t m_numBitsFrame;
 
     /// Pointer to source dataset; will be modified during conversion (but content is restored
     /// before the call to this class returns).

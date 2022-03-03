@@ -716,7 +716,10 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
             return EC_MemoryExhausted;
         }
         memcpy(frame->pixData, readPos, frame->length);
-        // If we have been copying too much, i.e the first bits of the frame
+        // ---------------------------------------------------------
+        // Remove bits in first byte from former frame if necessary:
+        // ---------------------------------------------------------
+        // If we have been copying too much, i.e the first bits of this frame
         // actually belong to the former frame, shift the whole frame this amount
         // of bits to the left in order to shift the superfluous bits out, i.e.
         // make frame start at byte boundary.
@@ -724,9 +727,12 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
         {
             DcmIODUtil::alignFrameOnByteBoundary(frame->pixData, frame->length, 8 - bitShift);
         }
+        // -------------------------------------------------------
+        // Mask out (set 0) bits of last byte if not used by frame
+        // -------------------------------------------------------
         // Adapt last byte by masking out unused bits (i.e. those belonging to next frame).
         // A reader should ignore those unused bits anyway.
-        frame->pixData[frame->length - 1] = (frame->pixData[frame->length - 1] << (overlapBits)) >> (overlapBits);
+        frame->pixData[frame->length - 1] = OFstatic_cast(unsigned char, (frame->pixData[frame->length - 1] << (overlapBits))) >> (overlapBits);
         // Store frame
         results.push_back(frame);
         // Compute the bitshift created by this frame
@@ -736,6 +742,7 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
         // that was partially read. Otherwise skip to the next full byte.
         if (bitShift > 0)
         {
+
             readPos = readPos + frame->length - 1;
         }
         else

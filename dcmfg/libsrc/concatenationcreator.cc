@@ -21,13 +21,14 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/fgtypes.h"
-#include "dcmtk/ofstd/ofstd.h"
+
 
 // Maximum number of instances that make up a Concatenation
 const Uint16 ConcatenationCreator::m_MAX_INSTANCES_PER_CONCATENATION = 65535;
@@ -44,7 +45,7 @@ ConcatenationCreator::ConcatenationCreator()
     : m_configured(OFFalse)
     , m_cfgTransferOwnership(OFFalse)
     , m_cfgNumFramesPerInstance(25)
-    , m_numBytesFrame(0)
+    , m_numBitsFrame(0)
     , m_srcDataset(OFnullptr)
     , m_srcSOPInstanceUID()
     , m_srcPixelData(OFnullptr)
@@ -164,7 +165,7 @@ OFCondition ConcatenationCreator::writeNextInstance(DcmItem& dstDataset)
     }
 
     Uint8* dstData = NULL;
-    size_t numTotalBytesInstance = m_numBytesFrame * numFramesThisInstance;
+    size_t numTotalBytesInstance = (m_numBitsFrame * numFramesThisInstance) / 8;
     // Cast is safe, checked in configureCommon()
     dstPixelData->createUint8Array(OFstatic_cast(Uint32, numTotalBytesInstance), dstData);
     if (!dstData)
@@ -172,7 +173,8 @@ OFCondition ConcatenationCreator::writeNextInstance(DcmItem& dstDataset)
         return EC_MemoryExhausted;
     }
     dstPixelData->setVR(m_VRPixelData);
-    memcpy(dstData, &(m_srcPixelData[m_numBytesFrame * m_currentSrcFrame]), numTotalBytesInstance);
+    size_t srcPos = (m_numBitsFrame * m_currentSrcFrame) / 8;
+    memcpy(dstData, &m_srcPixelData[srcPos], numTotalBytesInstance);
     result = dstDataset.insert(dstPixelData.release());
     if (result.good())
     {
@@ -399,6 +401,39 @@ OFCondition ConcatenationCreator::configureCommon()
     if (m_srcNumFrames < m_dstNumFramesPerInstance)
         return FG_EC_NotEnoughFrames;
 
+    // Check pixel data length correct, i.e. whether there is a sufficient amount of data available
+    Uint16 bitsAlloc, rows, cols;
+    bitsAlloc = rows = cols = 0;
+    m_srcDataset->findAndGetUint16(DCM_BitsAllocated, bitsAlloc);
+    m_srcDataset->findAndGetUint16(DCM_Rows, rows);
+    m_srcDataset->findAndGetUint16(DCM_Columns, cols);
+    if ((rows == 0) || (cols == 0))
+        return FG_EC_PixelDataDimensionsInvalid;
+    // 8, 16 bit and 1 bit (relevant for Segmentation objects) are supported
+    if ((bitsAlloc != 16) && (bitsAlloc != 8) && (bitsAlloc != 1))
+        return FG_EC_PixelDataDimensionsInvalid;
+
+    // Compute number of bits per frame
+    m_numBitsFrame = rows * cols * bitsAlloc;
+
+    // If Bits Allocated is 1 (i.e. not 8 or 16), the last byte of the frame can only be
+    // partly occupied with bits. Since we work with bytewise memcpy later, make sure that
+    // number of bytes per instance (number of frames per instance multiplied by the number
+    // of bytes per frame) is dividable by 8. If not, increase number of frames per instance
+    // so that number of bytes per instance is dividable by 8.
+    if ((m_numBitsFrame * m_dstNumFramesPerInstance ) % 8 != 0)
+    {
+        size_t newDstNumFramesPerInstance = ((m_dstNumFramesPerInstance / 8) + 1) * 8;
+        // if we finally have more destination frames per instance than we have in the source image,
+        // just write a single concatenation instance containing all frames from source image
+        if (newDstNumFramesPerInstance > m_srcNumFrames)
+        {
+            newDstNumFramesPerInstance = m_srcNumFrames;
+        }
+        DCMFG_INFO("Adapting Number of Frames per Instance from " << m_dstNumFramesPerInstance << " to " << newDstNumFramesPerInstance);
+        m_dstNumFramesPerInstance = newDstNumFramesPerInstance;
+    }
+
     // Remember number of instances to be produced
     Uint32 u32 = m_srcNumFrames / m_dstNumFramesPerInstance;
     m_dstNumFramesLastInstance = m_srcNumFrames % m_dstNumFramesPerInstance;
@@ -413,14 +448,6 @@ OFCondition ConcatenationCreator::configureCommon()
     }
     m_dstNumInstances = OFstatic_cast(Uint16, u32); // safe now
 
-    // Check whether pixel data for one instance stays below 4 GB
-    size_t numTotalBytesInstance = m_numBytesFrame * m_dstNumFramesPerInstance;
-    if (numTotalBytesInstance > m_MAX_PIXEL_DATA_LENGTH)
-    {
-        DCMFG_ERROR("Uncompressed pixel data must not exceed " << m_MAX_PIXEL_DATA_LENGTH << "bytes per concatenation instance");
-        return FG_EC_PixelDataDimensionsInvalid;
-    }
-
     // Check whether number of items in per-frame functional groups is identical to Number of Frames attribute
     if (m_srcNumFrames != m_srcPerFrameFG->card())
     {
@@ -428,28 +455,15 @@ OFCondition ConcatenationCreator::configureCommon()
         return FG_EC_NotEnoughFrames;
     }
 
-    // Check pixel data length correct, i.e. whether there is a sufficient amount of data available
-    Uint16 bitsAlloc, rows, cols;
-    bitsAlloc = rows = cols = 0;
-    m_srcDataset->findAndGetUint16(DCM_BitsAllocated, bitsAlloc);
-    m_srcDataset->findAndGetUint16(DCM_Rows, rows);
-    m_srcDataset->findAndGetUint16(DCM_Columns, cols);
-    if ((rows == 0) || (cols == 0))
-        return FG_EC_PixelDataDimensionsInvalid;
-    // 8, 16 bit and 1 bit (relevant for Segmentation objects) are supported
-    if ((bitsAlloc != 16) && (bitsAlloc != 8) && (bitsAlloc != 1))
-        return FG_EC_PixelDataDimensionsInvalid;
-    if ((bitsAlloc == 1) && (m_dstNumFramesPerInstance % 8 != 0) && (m_dstNumFramesPerInstance * rows * cols % 8 != 0))
+
+    // Check whether pixel data for one instance stays below 4 GB
+    size_t numTotalBytesInstance = (m_numBitsFrame * m_dstNumFramesPerInstance) / 8;
+    if (numTotalBytesInstance > m_MAX_PIXEL_DATA_LENGTH)
     {
-        DCMFG_ERROR("Can only handle frames per instance (or rows*cols*frames per instance) dividable by 8 for binary "
-                    "segmentations");
-        return EC_InvalidValue;
+        DCMFG_ERROR("Uncompressed pixel data must not exceed " << m_MAX_PIXEL_DATA_LENGTH << "bytes per concatenation instance");
+        return FG_EC_PixelDataDimensionsInvalid;
     }
-    m_numBytesFrame = rows * cols * bitsAlloc / 8;
-    // In case of 1 bit allocated, tiny images might result in 0 bytes
-    // calculated, so round to 1 byte minimum
-    if (m_numBytesFrame == 0)
-        m_numBytesFrame = 1;
+
     if (bitsAlloc <= 8) // 1 or 8 bit
     {
         m_VRPixelData = EVR_OB;
