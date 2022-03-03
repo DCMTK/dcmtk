@@ -43,9 +43,10 @@ DCMTK_ADD_LIBRARY(oficonv
     citrus_utf8.c
     citrus_viqr.c
     citrus_zw.c
-    iconv.c
-    strlcpy.c
-    strcasestr.c
+    oficonv_iconv.c
+    oficonv_logger.c
+    oficonv_strlcpy.c
+    oficonv_strcasestr.c
 )
 
 DCMTK_TARGET_LINK_LIBRARIES(oficonv ${WIN32_STD_LIBRARIES})

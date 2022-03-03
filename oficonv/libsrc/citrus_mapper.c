@@ -55,7 +55,7 @@
 #include "citrus_mmap.h"
 #include "citrus_module.h"
 #include "citrus_hash.h"
-#include "strlcpy.h"
+#include "oficonv_strlcpy.h"
 
 #define _CITRUS_MAPPER_DIR  "mapper.dir"
 

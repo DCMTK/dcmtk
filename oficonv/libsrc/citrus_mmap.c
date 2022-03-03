@@ -26,6 +26,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "citrus_mmap.h"
+#include "oficonv_logger.h"
 
 #ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
@@ -68,9 +69,6 @@ _citrus_map_file(struct _citrus_region * r,
     ret = 0;
 
     _citrus_region_init(r, NULL, 0);
-#ifdef DEBUG
-//        fprintf(stderr, "_citrus_map_file '%s'\n", path);
-#endif
 
 #ifdef O_CLOEXEC
     if ((fd = open(path, O_RDONLY | O_CLOEXEC)) == -1)
@@ -78,14 +76,17 @@ _citrus_map_file(struct _citrus_region * r,
     if ((fd = open(path, O_RDONLY)) == -1)
 #endif
     {
+        oficonv_log(3 /* warning */, "Failed to open oficonv data file '", path, "', check environment variable DCMICONVPATH");
         return (errno);
     }
     if (fstat(fd, &st)  == -1) {
         ret = errno;
+        oficonv_log(3 /* warning */, "Failed to open oficonv data file '", path, "', check environment variable DCMICONVPATH");
         goto error;
     }
     if (!S_ISREG(st.st_mode)) {
         ret = EOPNOTSUPP;
+        oficonv_log(3 /* warning */, "Failed to open oficonv data file '", path, "', check environment variable DCMICONVPATH");
         goto error;
     }
 
@@ -99,6 +100,7 @@ _citrus_map_file(struct _citrus_region * r,
         goto error;
     }
     _citrus_region_init(r, head, (size_t)st.st_size);
+    oficonv_log(1 /* debug */, "Opened oficonv data file '", path, "'");
 
 error:
     (void)close(fd);

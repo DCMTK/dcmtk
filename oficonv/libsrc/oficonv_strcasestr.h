@@ -37,10 +37,10 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#ifndef HAVE_STRCASESTR
+#ifndef HAVE_PROTOTYPE_STRCASESTR
 
 BEGIN_EXTERN_C
 char *strcasestr(const char *s, const char *find);
 END_EXTERN_C
 
-#endif /* HAVE_STRCASESTR */
+#endif /* HAVE_PROTOTYPE_STRCASESTR */

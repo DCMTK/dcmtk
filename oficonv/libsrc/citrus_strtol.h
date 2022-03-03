@@ -52,15 +52,11 @@ _FUNCNAME(const char *nptr, char **endptr, int base)
 
     /* check base value */
     if (base && (base < 2 || base > 36)) {
-#if !defined(_KERNEL) && !defined(_STANDALONE)
         errno = EINVAL;
         if (endptr != NULL)
             /* LINTED interface specification */
             *endptr = __DECONST(void *, nptr);
         return (0);
-#else
-        panic("%s: invalid base %d", __func__, base);
-#endif
     }
 
     /*
@@ -130,13 +126,8 @@ _FUNCNAME(const char *nptr, char **endptr, int base)
         if (neg) {
             if (acc < cutoff || (acc == cutoff && i > cutlim)) {
                 acc = INT_MIN;
-#if !defined(_KERNEL) && !defined(_STANDALONE)
                 any = -1;
                 errno = ERANGE;
-#else
-                any = 0;
-                break;
-#endif
             } else {
                 any = 1;
                 acc *= base;
@@ -145,13 +136,8 @@ _FUNCNAME(const char *nptr, char **endptr, int base)
         } else {
             if (acc > cutoff || (acc == cutoff && i > cutlim)) {
                 acc = INT_MAX;
-#if !defined(_KERNEL) && !defined(_STANDALONE)
                 any = -1;
                 errno = ERANGE;
-#else
-                any = 0;
-                break;
-#endif
             } else {
                 any = 1;
                 acc *= base;

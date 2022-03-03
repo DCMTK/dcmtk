@@ -15,7 +15,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#include "strlcpy.h"
+#include "oficonv_strlcpy.h"
 
 #ifndef HAVE_STRLCPY
 

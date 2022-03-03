@@ -569,7 +569,7 @@ char *yytext;
 #include <stdlib.h>
 #include <string.h>
 #include "citrus_bcs.h"
-#include "strlcpy.h"
+#include "oficonv_strlcpy.h"
 #include "mkcsmapper_ldef.h"
 #include "mkcsmapper_bison.h"
 

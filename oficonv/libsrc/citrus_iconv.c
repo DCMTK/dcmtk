@@ -66,7 +66,7 @@
 #include "citrus_lock.h"
 #include "citrus_lookup.h"
 #include "citrus_hash.h"
-#include "strlcpy.h"
+#include "oficonv_strlcpy.h"
 
 #define _CITRUS_ICONV_DIR   "iconv.dir"
 #define _CITRUS_ICONV_ALIAS "iconv.alias"
@@ -132,18 +132,18 @@ open_shared(struct _citrus_iconv_shared * * rci,
     size_t len_convname;
     int ret;
 
+#define INCOMPATIBLE_WITH_GNU_ICONV
 #ifdef INCOMPATIBLE_WITH_GNU_ICONV
+    /* 
+     * Use a pass-through when the (src,dest) encodings are the same.
+     */
+    module = (strcmp(src, dst) != 0) ? "iconv_std" : "iconv_none";
+#else
     /*
      * Sadly, the gnu tools expect iconv to actually parse the
      * byte stream and don't allow for a pass-through when
      * the (src,dest) encodings are the same.
-     * See gettext-0.18.3+ NEWS:
-     *   msgfmt now checks PO file headers more strictly with less
-     *   false-positives.
-     * NetBSD don't do this either.
      */
-    module = (strcmp(src, dst) != 0) ? "iconv_std" : "iconv_none";
-#else
     module = "iconv_std";
 #endif
 
@@ -308,15 +308,12 @@ _citrus_iconv_open(struct _citrus_iconv * * rcv,
 struct _citrus_iconv *cv = NULL;
     struct _citrus_iconv_shared *ci = NULL;
     char realdst[PATH_MAX], realsrc[PATH_MAX];
-#ifdef _PATH_ICONV
-    char buf[PATH_MAX], path[PATH_MAX];
-#endif
     int ret;
 
     init_cache();
 #ifdef HAVE_WINDOWS_H
     char current_codepage[20];
-    sprintf(current_codepage, "%lu", (unsigned long) GetConsoleOutputCP());
+    snprintf(current_codepage, sizeof(current_codepage), "%lu", (unsigned long) GetConsoleOutputCP());
 #endif
 
     /* GNU behaviour, using locale encoding if "" or "char" is specified */
@@ -334,16 +331,8 @@ struct _citrus_iconv *cv = NULL;
 #endif
 
     /* resolve codeset name aliases */
-#ifdef _PATH_ICONV
-    snprintf(path, sizeof(path), "%s/%s", _PATH_ICONV, _CITRUS_ICONV_ALIAS);
-    strlcpy(realsrc, _citrus_lookup_alias(path, src, buf, (size_t)PATH_MAX,
-        _CITRUS_LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
-    strlcpy(realdst, _citrus_lookup_alias(path, dst, buf, (size_t)PATH_MAX,
-        _CITRUS_LOOKUP_CASE_IGNORE), (size_t)PATH_MAX);
-#else
     strlcpy(realsrc, src, (size_t)PATH_MAX);
     strlcpy(realdst, dst, (size_t)PATH_MAX);
-#endif
 
     /* sanity check */
     if (strchr(realsrc, '/') != NULL || strchr(realdst, '/'))

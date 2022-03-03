@@ -256,6 +256,30 @@ int OFiconvctl(iconv_t cd, int request, void *argument);
  */
 const char *OFlocale_charset(char *buf, size_t bufsize);
 
+/** logger callback function pointer type
+ *  @param level log level, 0=trace, 1=debug, 2=info, 3=warn, 4=error, 5=fatal
+ *  @param text1 first part of the string to be logged, must not be NULL
+ *  @param text2 second part of the string to be logged, must not be NULL
+ *  @param text3 third part of the string to be logged, must not be NULL
+ */
+typedef void (*oficonv_logger_callback_t)(int level, const char *text1, const char *text2, const char *text3);
+
+/** set the logger callback to be used by the oficonv module.
+ *  This function is thread UNSAFE.
+ *  @param callback pointer to callback function, NULL for direct logging to stderr
+ */
+void set_oficonv_logger_callback(oficonv_logger_callback_t callback);
+
+/** get the current logger callback used by the oficonv module
+ *  @return pointer to logger function, may be NULL
+ */
+oficonv_logger_callback_t get_oficonv_logger_callback();
+
+/** set the log level to be used as long as direct logging to stderr is active
+ *  @param level log level (default: 3=warn)
+ */
+void set_oficonv_log_level(int level);
+
 END_EXTERN_C
 
 #endif /* !OFICONV_H */

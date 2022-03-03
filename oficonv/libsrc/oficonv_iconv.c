@@ -56,8 +56,8 @@
 #include "citrus_esdb.h"
 #include "citrus_hash.h"
 #include "citrus_iconv.h"
-#include "strlcpy.h"
-#include "strcasestr.h"
+#include "oficonv_strlcpy.h"
+#include "oficonv_strcasestr.h"
 
 #define ISBADF(_h_) (!(_h_) || (_h_) == (iconv_t)-1)
 

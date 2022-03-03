@@ -57,7 +57,7 @@
 #include "citrus_db.h"
 #include "citrus_db_hash.h"
 #include "citrus_lookup.h"
-#include "strlcpy.h"
+#include "oficonv_strlcpy.h"
 
 static struct _citrus_mapper_area   *maparea = NULL;
 
@@ -363,7 +363,10 @@ _citrus_csmapper_open(struct _citrus_csmapper * * rcsm,
     unsigned long *rnorm)
 {
     const char *realsrc, *realdst;
-    char buf1[PATH_MAX], buf2[PATH_MAX], key[PATH_MAX], pivot[PATH_MAX];
+#ifdef DCMTK_USE_OFICONV_CHARSET_ALIAS_FILE
+    char buf1[PATH_MAX], buf2[PATH_MAX];
+#endif
+    char key[PATH_MAX], pivot[PATH_MAX];
     unsigned long norm;
     int ret;
 
@@ -373,10 +376,15 @@ _citrus_csmapper_open(struct _citrus_csmapper * * rcsm,
     if (ret)
         return (ret);
 
-    realsrc = _citrus_lookup_alias(CS_ALIAS, src, buf1, sizeof(buf1),
-        _CITRUS_LOOKUP_CASE_IGNORE);
-    realdst = _citrus_lookup_alias(CS_ALIAS, dst, buf2, sizeof(buf2),
-        _CITRUS_LOOKUP_CASE_IGNORE);
+#ifdef DCMTK_USE_OFICONV_CHARSET_ALIAS_FILE
+    // Look up alias names in csmapper/charset.alias.db or csmapper/charset.alias
+    realsrc = _citrus_lookup_alias(CS_ALIAS, src, buf1, sizeof(buf1), _CITRUS_LOOKUP_CASE_IGNORE);
+    realdst = _citrus_lookup_alias(CS_ALIAS, dst, buf2, sizeof(buf2), _CITRUS_LOOKUP_CASE_IGNORE);
+#else
+    // Don't use the alias files csmapper/charset.alias.db or csmapper/charset.alias
+    realsrc = src;
+    realdst = dst;
+#endif
     if (!strcmp(realsrc, realdst)) {
         ret = get_none(maparea, rcsm);
         if (ret == 0 && rnorm != NULL)

@@ -52,4 +52,4 @@
 #undef isupper
 #define isupper(c)  _citrus_bcs_isupper(c)
 
-#include "_strtol.h"
+#include "citrus_strtol.h"

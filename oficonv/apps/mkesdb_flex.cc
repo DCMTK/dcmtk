@@ -544,7 +544,7 @@ char *yytext;
 
 #include "mkesdb_ldef.h"
 #include "mkesdb_bison.h"
-#include "strlcpy.h"
+#include "oficonv_strlcpy.h"
 
 #define YY_DECL int yylex(void)
 

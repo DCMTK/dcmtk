@@ -25,29 +25,19 @@
 
 // Memory mapped file - Implementation of mmap() for Windows
 // Dan Jackson, 2014 
-// - 'MMAP_CLEANUP' changes to clean up otherwise leaked handles from CreateFileMapping()
+// - changes to clean up otherwise leaked handles from CreateFileMapping()
 // - 'sysconf(_SC_PAGE_SIZE)' implementation
 // Original author: Mike Frysinger <vapier@gentoo.org>, placed into the public domain.
 
-// References:
-//   CreateFileMapping: http://msdn.microsoft.com/en-us/library/aa366537(VS.85).aspx
-//   CloseHandle:       http://msdn.microsoft.com/en-us/library/ms724211(VS.85).aspx
-//   MapViewOfFile:     http://msdn.microsoft.com/en-us/library/aa366761(VS.85).aspx
-//   UnmapViewOfFile:   http://msdn.microsoft.com/en-us/library/aa366882(VS.85).aspx
-
-
 // This file does nothing if not on Windows
 #ifdef _WIN32
-#ifndef MMAP_WIN32_C		// Designed to be included for local static versions
-#define MMAP_WIN32_C
-
-#define MMAP_CLEANUP		// Dan
+#ifndef WINDOWS_MMAP_H
+#define WINDOWS_MMAP_H
 
 #include <io.h>
 #include <windows.h>
 #include <sys/types.h>
 
-#ifdef MMAP_CLEANUP
 struct mmap_cleanup_tag;
 typedef struct mmap_cleanup_tag
 {
@@ -56,7 +46,6 @@ typedef struct mmap_cleanup_tag
 	struct mmap_cleanup_tag *next;
 } mmap_cleanup_t;
 static mmap_cleanup_t *mmap_cleanup = NULL;
-#endif
 
 
 #define PROT_READ     0x1
@@ -134,7 +123,6 @@ static void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t
 		CloseHandle(h);
 		ret = MAP_FAILED;
 	}
-#ifdef MMAP_CLEANUP
 	else
 	{
 		// Add a tracking element (to the start of our list)
@@ -147,7 +135,6 @@ static void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t
 			mmap_cleanup = mc;
 		}
 	}
-#endif
 	return ret;
 }
 
@@ -155,7 +142,6 @@ static void munmap(void *addr, size_t length)
 {
     (void) length;
 	UnmapViewOfFile(addr);
-#ifdef MMAP_CLEANUP
 	// Look up through the tracking elements to close the handle
 	mmap_cleanup_t **prevPtr = &mmap_cleanup;
 	mmap_cleanup_t *mc;
@@ -168,9 +154,6 @@ static void munmap(void *addr, size_t length)
 			break;
 		}
 	}
-#else
-	// ruh-ro, we leaked handle from CreateFileMapping() ...
-#endif
 }
 
 #define _SC_PAGE_SIZE			1
@@ -201,5 +184,5 @@ static long sysconf(int name)
 	}
 }
 
-#endif	// MMAP_WIN32_C
+#endif	// WINDOWS_MMAP_H
 #endif	// _WIN32
