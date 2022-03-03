@@ -1,6 +1,8 @@
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wignored-attributes"
-#elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(6,0,0)
+
+/* The next line is equivalent to #elif DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(6,0,0) */
+#elif ( defined(__GNUC__) && (__GNUC__ >= 6 ) )
 #pragma GCC diagnostic ignored "-Wignored-attributes"
 
 // Visual Studio does not seem to have such a warning yet,
