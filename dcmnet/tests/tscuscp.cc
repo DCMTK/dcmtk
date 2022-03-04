@@ -842,7 +842,7 @@ struct NCREATEFixture
     T_ASC_PresentationContextID presID;
 };
 
-OFTEST(dcmnet_scu_sendNCREATERequest_fails_when_optional_createdinstance_is_null)
+OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_null)
 {
     NCREATEFixture fixture;
 
