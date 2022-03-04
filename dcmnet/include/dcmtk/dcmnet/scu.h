@@ -558,7 +558,6 @@ public:
      *  @param presID                   [in]  The ID of the presentation context to be used for sending
      *                                        the request message. Should not be 0.
      *  @param affectedSopInstanceUID   [in]  The affected SOP Instance UID
-     *  @param eventTypeID              [in]  The event type ID to be used
      *  @param reqDataset               [in]  The request dataset to be sent
      *  @param createdInstance          [out] Optional pointer to the instance that was created
      *  @param rspStatusCode            [out] The response status code received. 0 means success,
