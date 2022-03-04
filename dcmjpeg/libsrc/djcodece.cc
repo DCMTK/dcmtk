@@ -1294,7 +1294,6 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     delete dataset->remove(DCM_ModalityLUTSequence);
     delete dataset->remove(DCM_RescaleIntercept);
     delete dataset->remove(DCM_RescaleSlope);
-    delete dataset->remove(DCM_RescaleType);
 
     // update Modality LUT Module and Pixel Intensity Relationship
     if (windowType == 0)
@@ -1303,6 +1302,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
       {
         // XA Mode: set Pixel Intensity Relationship to "DISP", no Modality LUT
         if (result.good()) result = dataset->putAndInsertString(DCM_PixelIntensityRelationship, "DISP");
+        delete dataset->remove(DCM_RescaleType);
       }
       /* else if we had a modality LUT before, a LUT is inserted again.
          or if specific rescale slope/intercept has been computed, use that in image
@@ -1316,13 +1316,15 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         if (result.good()) result = dataset->putAndInsertString(DCM_RescaleSlope, buf);
         if (result.good())
         {
-          if (mode_CT) result = dataset->putAndInsertString(DCM_RescaleType, "HU"); // Hounsfield units
-          else result =         dataset->putAndInsertString(DCM_RescaleType, "US"); // unspecified
+          // keep the old value of RescaleType for CT, set "US" (unspecified) otherwise
+          if (! mode_CT) dataset->putAndInsertString(DCM_RescaleType, "US");
         }
       }
     }
     else
     {
+      delete dataset->remove(DCM_RescaleType);
+
       // if we had found a Modality LUT Transformation, create a identity LUT transformation
       if (foundModalityLUT)
       {
