@@ -431,7 +431,7 @@ OFCondition ConcatenationCreator::configureCommon()
             newDstNumFramesPerInstance = m_srcNumFrames;
         }
         DCMFG_INFO("Adapting Number of Frames per Instance from " << m_dstNumFramesPerInstance << " to " << newDstNumFramesPerInstance);
-        m_dstNumFramesPerInstance = newDstNumFramesPerInstance;
+        m_dstNumFramesPerInstance = OFstatic_cast(Uint32, newDstNumFramesPerInstance);
     }
 
     // Remember number of instances to be produced
