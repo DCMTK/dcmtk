@@ -28,6 +28,7 @@
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/scu.h"
 
+
 #include <cmath>
 
 static OFLogger t_scuscp_logger= OFLog::getLogger("dcmtk.test.tscuscp");
@@ -623,12 +624,223 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
 
 }
 
-OFTEST(dcmnet_scu_sendNCREATERequest_returns_not_implemented)
+/** Test utility class that helps starting and stopping the server in a safe manner */
+class TestScu : public DcmSCU
 {
-    DcmSCU scu;
+public:
+    TestScu()
+    {
+        setPeerAETitle("TEST SCU");
+        setPeerHostName("localhost");
+        setPeerPort(11112);
+        setACSETimeout(static_cast<Uint32>(-1));
+
+        OFList<OFString> xfers;
+        xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+
+        OFCHECK(addPresentationContext(UID_VerificationSOPClass, xfers).good());
+    }
+
+    void Connect()
+    {
+        OFCHECK(initNetwork().good());
+        OFCHECK(negotiateAssociation().good());
+    }
+
+    OFCondition Ping()
+    {
+        return sendECHORequest(1);
+    }
+};
+
+
+/** Test SCP that supports N-CREATE requests */
+struct ScpFixture : TestSCP
+{
+    ScpFixture()
+        : TestSCP(), m_running(OFTrue), m_stop_on_next_echo(OFFalse)
+    {
+        DcmSCPConfig& config = getConfig();
+        config.setAETitle("ACCEPTOR");
+        config.setConnectionBlockingMode(DUL_NOBLOCK);
+        config.setConnectionTimeout(4);
+        config.setAlwaysAcceptDefaultRole(OFTrue);
+        configure_scp_for_echo(config);
+        start();
+
+        // make sure server is up
+        TestScu().Ping();
+    }
+
+    void Stop()
+    {
+        m_running = OFFalse;
+        m_stop_on_next_echo = OFTrue;
+        scu_sends_echo("ACCEPTOR");
+        join();
+    }
+
+    ~ScpFixture()
+    {
+        if (m_running)
+            Stop();
+    }
+
+    /** Overloads base class to add support for additional commands. */
+    OFCondition handleIncomingCommand(T_DIMSE_Message* incomingMsg, const DcmPresentationContextInfo& presInfo) /* override */
+    {
+        if (incomingMsg->CommandField == DIMSE_N_CREATE_RQ)
+            return OnNCREATERequest(incomingMsg->msg.NCreateRQ, presInfo.presentationContextID);
+
+        if (incomingMsg->CommandField == DIMSE_C_ECHO_RQ)
+            m_set_stop_after_assoc = m_stop_on_next_echo; // Adds support for stopping the SCP on next Echo request
+
+        return DcmSCP::handleIncomingCommand(incomingMsg, presInfo);
+    }
+
+    /** Called when client sends an N-CREATE request */
+    OFCondition OnNCREATERequest(T_DIMSE_N_CreateRQ& createRq, const T_ASC_PresentationContextID presID)
+    {
+        DcmFileFormat format; // For conveniently cleaning up on scope exit
+        DcmDataset* attrList = format.getDataset(); // N-CREATE attribute list
+
+        OFString affectedSOPClassUID;
+        OFString affectedSOPInstanceUID;
+        OFCondition result = ReceiveNCREATERequest(createRq, presID, attrList, affectedSOPClassUID, affectedSOPInstanceUID);
+        if (result.bad())
+            return result;
+
+        unsigned short responseStatus = STATUS_N_Success;
+
+        if (affectedSOPInstanceUID.empty())
+            responseStatus = STATUS_N_InvalidAttributeValue;
+
+        // Create a response dataset and populate it with the requested N-CREATE attributes
+        DcmDataset respDataset = *attrList;
+
+        result = respDataset.putAndInsertOFStringArray(DCM_SOPClassUID, affectedSOPClassUID);
+        if (result.good())
+            result = respDataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, affectedSOPInstanceUID);
+
+        if (result.bad())
+            responseStatus = STATUS_N_ProcessingFailure;
+
+        // Add dataset to the managed SOP instances.
+        m_managedSopInstances.insert(OFMake_pair(affectedSOPInstanceUID, respDataset));
+
+        return SendNCREATEResponse(presID, createRq.MessageID, affectedSOPClassUID, affectedSOPInstanceUID, &respDataset, responseStatus);
+    }
+
+    OFCondition ReceiveNCREATERequest(T_DIMSE_N_CreateRQ& reqMessage,
+        DUL_PRESENTATIONCONTEXTID presID,
+        DcmDataset*& attrList,
+        OFString& affectedSOPClassUID,
+        OFString& affectedSOPInstanceUID)
+    {
+        T_ASC_PresentationContextID presIDdset;
+        OFString tempStr;
+
+        // Check if dataset is announced correctly
+        if (reqMessage.DataSetType == DIMSE_DATASET_NULL) {
+            return DIMSE_BADMESSAGE;
+        }
+
+        DcmDataset* dataset = OFnullptr;
+        OFCondition cond = receiveDIMSEDataset(&presIDdset, &dataset);
+
+        if (cond.bad()) {
+            delete dataset;
+            return DIMSE_BADDATA;
+        }
+
+        if (presIDdset != presID) {
+            delete dataset;
+            return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID,
+                OF_error,
+                "DIMSE: Presentation Contexts of Command and Data Set differ");
+        }
+
+        attrList = dataset;
+        affectedSOPClassUID    = reqMessage.AffectedSOPClassUID;
+        affectedSOPInstanceUID = reqMessage.AffectedSOPInstanceUID;
+
+        return cond;
+    }
+
+    OFCondition SendNCREATEResponse(const T_ASC_PresentationContextID presID,
+        const Uint16 messageID,
+        const OFString& affectedSOPClassUID,
+        const OFString& affectedSOPInstanceUID,
+        DcmDataset* rspDataset,
+        const Uint16 rspStatusCode)
+    {
+        OFCondition cond;
+
+        // Send back response
+        T_DIMSE_Message response = {};
+        T_DIMSE_N_CreateRSP& createResponse         = response.msg.NCreateRSP;
+        response.CommandField                       = DIMSE_N_CREATE_RSP;
+        createResponse.MessageIDBeingRespondedTo    = messageID;
+        createResponse.DimseStatus                  = rspStatusCode;
+
+        //  Set (optional) fields
+        createResponse.opts = O_NCREATE_AFFECTEDSOPCLASSUID | O_NCREATE_AFFECTEDSOPINSTANCEUID;
+        OFStandard::strlcpy(createResponse.AffectedSOPClassUID, affectedSOPClassUID.c_str(), sizeof(createResponse.AffectedSOPClassUID));
+        OFStandard::strlcpy(createResponse.AffectedSOPInstanceUID, affectedSOPInstanceUID.c_str(), sizeof(createResponse.AffectedSOPInstanceUID));
+
+        if (rspDataset)
+            createResponse.DataSetType = DIMSE_DATASET_PRESENT;
+        else
+            createResponse.DataSetType = DIMSE_DATASET_NULL;
+
+        // Send response message with dataset back to SCU
+        return sendDIMSEMessage(presID, &response, rspDataset);
+    }
+
+    OFMap<OFString, DcmDataset> m_managedSopInstances;
+    bool m_running;
+    bool m_stop_on_next_echo;
+};
+
+
+
+OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted)
+{
+    ScpFixture scpFixture;
+
+    TestScu scu;
+    scu.Connect();
+
+    // The client is responsible for determining the SOP instance UID
+    const OFString affectedSopInstanceUid = "2.2.2.2";
+
+    // Create a dataset. It can't be empty, so use arbitrary content
+    DcmDataset reqDataset;
+    reqDataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "3.3.3.3");
+
+    T_ASC_PresentationContextID presID = scu.findAnyPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
+
+    DcmFileFormat fileformat;
+    DcmDataset* createdInstance = fileformat.getDataset();
+
     Uint16 rspStatusCode = 0;
-    OFCondition result = scu.sendNCREATERequest(1, "", nullptr, rspStatusCode);
-    OFCHECK(result.code() == EC_NotYetImplemented.theCode);
+    OFCondition result = scu.sendNCREATERequest(presID, affectedSopInstanceUid, &reqDataset, createdInstance, rspStatusCode);
+    OFCHECK(result.good());
+    OFCHECK(rspStatusCode == STATUS_N_Success);
+
+    OFString receivedSopInstanceUid;
+    OFCHECK(createdInstance->findAndGetOFString(DCM_SOPInstanceUID, receivedSopInstanceUid).good());
+    OFCHECK(receivedSopInstanceUid == affectedSopInstanceUid);
+
+    scu.releaseAssociation();
+
+    // Stop SCP to make sure all requests completes
+    scpFixture.Stop();
+
+    // Inspect data received by server
+    OFMap<OFString, DcmDataset> instances = scpFixture.m_managedSopInstances;
+    OFCHECK(instances.find(affectedSopInstanceUid) != instances.end());
+
 }
 
 #endif // WITH_THREADS

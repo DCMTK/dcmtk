@@ -2086,7 +2086,58 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
                                        DcmDataset*& createdInstance,
                                        Uint16& rspStatusCode)
 {
-    return EC_NotYetImplemented;
+
+    // Do some basic validity checks
+    if (!isConnected())
+        return DIMSE_ILLEGALASSOCIATION;
+
+    if (affectedSopInstanceUID.empty() || (reqDataset == OFnullptr))
+        return DIMSE_NULLKEY;
+
+    // Determine SOP Class from presentation context
+    OFString abstractSyntax, transferSyntax;
+    findPresentationContext(presID, abstractSyntax, transferSyntax);
+    if (abstractSyntax.empty() || transferSyntax.empty())
+        return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+
+    T_DIMSE_Message request = {};
+    request.CommandField        = DIMSE_N_CREATE_RQ;
+    T_DIMSE_N_CreateRQ& rqmsg   = request.msg.NCreateRQ;
+    rqmsg.MessageID             = nextMessageID();
+    rqmsg.DataSetType           = DIMSE_DATASET_PRESENT;
+    rqmsg.opts                  = O_NCREATE_AFFECTEDSOPINSTANCEUID;
+
+    OFStandard::strlcpy(rqmsg.AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(rqmsg.AffectedSOPClassUID));
+    OFStandard::strlcpy(rqmsg.AffectedSOPInstanceUID, affectedSopInstanceUID.c_str(), sizeof(rqmsg.AffectedSOPInstanceUID));
+
+    OFCondition result = sendDIMSEMessage(presID, &request, reqDataset);
+    if (result.bad())
+        return result;
+
+    T_DIMSE_Message response = {};
+    DcmDataset* statusDetail = OFnullptr;
+
+    T_ASC_PresentationContextID pcid = presID;
+    result = receiveDIMSECommand(&pcid, &response, &statusDetail, OFnullptr /* commandSet */);
+    if (result.bad() || pcid != presID) {
+        delete statusDetail;
+        return result;
+    }
+
+    // If requested, we need to receive the dataset containing the received instance
+    if (createdInstance)
+    {
+        DcmDataset* respDataset = OFnullptr;
+        result = receiveDIMSEDataset(&pcid, &respDataset);
+        if (result.bad() || presID != pcid)
+        {
+            delete respDataset;
+            return result;
+        }
+        createdInstance = respDataset;
+    }
+
+    return EC_Normal;
 }
 
 OFCondition

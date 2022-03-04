@@ -38,7 +38,7 @@ OFTEST_REGISTER(dcmnet_scp_no_stop_wo_request_block);
 OFTEST_REGISTER(dcmnet_scp_no_term_notify_without_association);
 OFTEST_REGISTER(dcmnet_scp_role_selection);
 OFTEST_REGISTER(dcmnet_scu_session_handler);
-OFTEST_REGISTER(dcmnet_scu_sendNCREATERequest_returns_not_implemented);
+OFTEST_REGISTER(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted);
 #endif // WITH_THREADS
 
 OFTEST_MAIN("dcmnet")
