@@ -726,8 +726,14 @@ struct TestSCPWithNCreateSupport : TestSCP
         if (result.bad())
             responseStatus = STATUS_N_ProcessingFailure;
 
-        // Add dataset to the managed SOP instances.
-        m_managedSopInstances.insert(OFMake_pair(affectedSOPInstanceUID, respDataset));
+        if (m_managedSopInstances.find(affectedSOPInstanceUID) != m_managedSopInstances.end()) {
+            responseStatus = STATUS_N_DuplicateSOPInstance;
+        }
+        else {
+            // Add dataset to the managed SOP instances.
+            m_managedSopInstances.insert(OFMake_pair(affectedSOPInstanceUID, respDataset));
+        }
+
 
         return SendNCREATEResponse(presID, createRq.MessageID, affectedSOPClassUID, affectedSOPInstanceUID, &respDataset, responseStatus);
     }
@@ -836,6 +842,26 @@ struct NCREATEFixture
     T_ASC_PresentationContextID presID;
 };
 
+OFTEST(dcmnet_scu_sendNCREATERequest_fails_when_optional_createdinstance_is_null)
+{
+    NCREATEFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    DcmDataset* createdInstance = OFnullptr;
+    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presID, fixture.affectedSopInstanceUid, &fixture.reqDataset, createdInstance, rspStatusCode);
+    OFCHECK(result.good());
+    OFCHECK(rspStatusCode == STATUS_N_Success);
+}
+
+OFTEST(dcmnet_scu_sendNCREATERequest_fails_when_affectedsopinstance_is_empty)
+{
+    NCREATEFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presID, "", &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK(result.bad());
+}
+
 OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted)
 {
     NCREATEFixture fixture;
@@ -852,5 +878,20 @@ OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accep
     OFMap<OFString, DcmDataset> instances = fixture.StopAndGetReceivedData();
     OFCHECK(instances.find(fixture.affectedSopInstanceUid) != instances.end());
 }
+
+OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatuscode_from_scp_when_scp_sets_error_status)
+{
+    NCREATEFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presID, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK(result.good());
+
+    // Provoke duplicate SOP instance error
+    result = fixture.scu.sendNCREATERequest(fixture.presID, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK(result.good());
+    OFCHECK(rspStatusCode == STATUS_N_DuplicateSOPInstance);
+}
+
 
 #endif // WITH_THREADS
