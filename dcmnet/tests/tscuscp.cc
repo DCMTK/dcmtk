@@ -200,10 +200,11 @@ void scu_sends_echo(
   const OFString& called_ae_title,
   const OFBool expect_assoc_reject = OFFalse,
   const OFBool do_release = OFTrue,
-  const int secs_after_echo = 0)
+  const int secs_after_echo = 0,
+  const int sec_before_echo = 2)
 {
     // make sure server is up
-    OFStandard::forceSleep(2);
+    OFStandard::forceSleep(sec_before_echo);
     DcmSCU scu;
     scu.setAETitle("TEST_SCU");
     scu.setPeerAETitle(called_ae_title);
@@ -676,7 +677,7 @@ struct TestSCPWithNCreateSupport : TestSCP
     {
         m_running = OFFalse;
         m_stop_on_next_echo = OFTrue;
-        scu_sends_echo("ACCEPTOR");
+        scu_sends_echo("ACCEPTOR", false, true, 0, 0);
         join();
     }
 
@@ -814,6 +815,17 @@ struct NCREATEFixture
         presID = scu.findAnyPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
     }
 
+    OFMap<OFString, DcmDataset> StopAndGetReceivedData()
+    {
+        scu.releaseAssociation();
+
+        // Stop SCP to make sure all requests completes
+        scp.Stop();
+
+        // Inspect data received by server
+        return scp.m_managedSopInstances;
+    }
+
     TestSCPWithNCreateSupport scp;
     TestScu scu;
 
@@ -822,7 +834,6 @@ struct NCREATEFixture
     DcmFileFormat fileformat;
     DcmDataset* createdInstance;
     T_ASC_PresentationContextID presID;
-   
 };
 
 OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted)
@@ -838,13 +849,7 @@ OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accep
     OFCHECK(fixture.createdInstance->findAndGetOFString(DCM_SOPInstanceUID, receivedSopInstanceUid).good());
     OFCHECK(receivedSopInstanceUid == fixture.affectedSopInstanceUid);
 
-    fixture.scu.releaseAssociation();
-
-    // Stop SCP to make sure all requests completes
-    fixture.scp.Stop();
-
-    // Inspect data received by server
-    OFMap<OFString, DcmDataset> instances = fixture.scp.m_managedSopInstances;
+    OFMap<OFString, DcmDataset> instances = fixture.StopAndGetReceivedData();
     OFCHECK(instances.find(fixture.affectedSopInstanceUid) != instances.end());
 }
 
