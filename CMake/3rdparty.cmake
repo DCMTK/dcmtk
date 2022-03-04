@@ -180,7 +180,14 @@ if(DCMTK_USE_FIND_PACKAGE)
 
   # Find OpenJPEG
   if(DCMTK_WITH_OPENJPEG)
-    find_package(OpenJPEG QUIET PATH_SUFFIXES "openjpeg-2.4.0" "openjpeg-2.3.1" "openjpeg-2.3.0")
+    if(DCMTK_USE_OWN_FINDOPENJPEG_MODULE)
+      # PREPEND and POP_FRONT can only be used since version 3.15.so we use more compatible commands.
+      list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/${DCMTK_CMAKE_INCLUDE}/CMake/")
+      find_package(OpenJPEG QUIET MODULE)
+      list(REMOVE_AT CMAKE_MODULE_PATH 0)
+    else()
+      find_package(OpenJPEG QUIET PATH_SUFFIXES "openjpeg-2.4.0" "openjpeg-2.3.1" "openjpeg-2.3.0")
+    endif()
     if(NOT OPENJPEG_FOUND)
       message(STATUS "Warning: OpenJPEG support will be disabled because the OpenJPEG library was not found.")
       set(WITH_OPENJPEG "")
