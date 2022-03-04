@@ -655,9 +655,9 @@ public:
 
 
 /** Test SCP that supports N-CREATE requests */
-struct ScpFixture : TestSCP
+struct TestSCPWithNCreateSupport : TestSCP
 {
-    ScpFixture()
+    TestSCPWithNCreateSupport()
         : TestSCP(), m_running(OFTrue), m_stop_on_next_echo(OFFalse)
     {
         DcmSCPConfig& config = getConfig();
@@ -680,7 +680,7 @@ struct ScpFixture : TestSCP
         join();
     }
 
-    ~ScpFixture()
+    ~TestSCPWithNCreateSupport()
     {
         if (m_running)
             Stop();
@@ -806,7 +806,7 @@ struct ScpFixture : TestSCP
 
 OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted)
 {
-    ScpFixture scpFixture;
+    TestSCPWithNCreateSupport scp;
 
     TestScu scu;
     scu.Connect();
@@ -835,10 +835,10 @@ OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accep
     scu.releaseAssociation();
 
     // Stop SCP to make sure all requests completes
-    scpFixture.Stop();
+    scp.Stop();
 
     // Inspect data received by server
-    OFMap<OFString, DcmDataset> instances = scpFixture.m_managedSopInstances;
+    OFMap<OFString, DcmDataset> instances = scp.m_managedSopInstances;
     OFCHECK(instances.find(affectedSopInstanceUid) != instances.end());
 
 }
