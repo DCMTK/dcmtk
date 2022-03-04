@@ -2107,6 +2107,8 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
     rqmsg.DataSetType           = DIMSE_DATASET_PRESENT;
     rqmsg.opts                  = O_NCREATE_AFFECTEDSOPINSTANCEUID;
 
+    // TODO: Is it always right to assign abstract syntax to AffectedSOPClassUID, or are there scenarios
+    //       where the client should provide an AffectedSOPClassUID that is different from the abstract syntax?
     OFStandard::strlcpy(rqmsg.AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(rqmsg.AffectedSOPClassUID));
     OFStandard::strlcpy(rqmsg.AffectedSOPInstanceUID, affectedSopInstanceUID.c_str(), sizeof(rqmsg.AffectedSOPInstanceUID));
 
