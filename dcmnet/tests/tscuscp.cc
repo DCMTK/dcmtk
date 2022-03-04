@@ -802,45 +802,50 @@ struct TestSCPWithNCreateSupport : TestSCP
     bool m_stop_on_next_echo;
 };
 
+struct NCREATEFixture
+{
+    NCREATEFixture()
+    {
+        // The client is responsible for determining the SOP instance UID
+        affectedSopInstanceUid = "2.2.2.2";
+        reqDataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "3.3.3.3");
+        createdInstance = fileformat.getDataset();
+        scu.Connect();
+        presID = scu.findAnyPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
+    }
 
+    TestSCPWithNCreateSupport scp;
+    TestScu scu;
+
+    OFString affectedSopInstanceUid;
+    DcmDataset reqDataset;
+    DcmFileFormat fileformat;
+    DcmDataset* createdInstance;
+    T_ASC_PresentationContextID presID;
+   
+};
 
 OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted)
 {
-    TestSCPWithNCreateSupport scp;
-
-    TestScu scu;
-    scu.Connect();
-
-    // The client is responsible for determining the SOP instance UID
-    const OFString affectedSopInstanceUid = "2.2.2.2";
-
-    // Create a dataset. It can't be empty, so use arbitrary content
-    DcmDataset reqDataset;
-    reqDataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "3.3.3.3");
-
-    T_ASC_PresentationContextID presID = scu.findAnyPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
-
-    DcmFileFormat fileformat;
-    DcmDataset* createdInstance = fileformat.getDataset();
+    NCREATEFixture fixture;
 
     Uint16 rspStatusCode = 0;
-    OFCondition result = scu.sendNCREATERequest(presID, affectedSopInstanceUid, &reqDataset, createdInstance, rspStatusCode);
+    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presID, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
     OFCHECK(result.good());
     OFCHECK(rspStatusCode == STATUS_N_Success);
 
     OFString receivedSopInstanceUid;
-    OFCHECK(createdInstance->findAndGetOFString(DCM_SOPInstanceUID, receivedSopInstanceUid).good());
-    OFCHECK(receivedSopInstanceUid == affectedSopInstanceUid);
+    OFCHECK(fixture.createdInstance->findAndGetOFString(DCM_SOPInstanceUID, receivedSopInstanceUid).good());
+    OFCHECK(receivedSopInstanceUid == fixture.affectedSopInstanceUid);
 
-    scu.releaseAssociation();
+    fixture.scu.releaseAssociation();
 
     // Stop SCP to make sure all requests completes
-    scp.Stop();
+    fixture.scp.Stop();
 
     // Inspect data received by server
-    OFMap<OFString, DcmDataset> instances = scp.m_managedSopInstances;
-    OFCHECK(instances.find(affectedSopInstanceUid) != instances.end());
-
+    OFMap<OFString, DcmDataset> instances = fixture.scp.m_managedSopInstances;
+    OFCHECK(instances.find(fixture.affectedSopInstanceUid) != instances.end());
 }
 
 #endif // WITH_THREADS
