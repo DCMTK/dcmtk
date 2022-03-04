@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2019, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -229,6 +229,14 @@ protected:
      *  @return OFTrue if tag could be found, else OFFalse
      */
     OFBool isTagInDictionary(const DcmTagKey &search_key);
+
+    /** Make user user is not trying to replace encapsulated Pixel Data element value.
+     *  This is currently not implemented since there is no direct / obvious way to insert
+     *  raw data into the pixel sequence structure managed by the DcmPixelData class.
+     *  @param elem The potential Pixel Data element to be checked
+     *  @return EC_Normal if modification is possible, error code otherwise
+     */
+    OFCondition checkPixelDataInsertion(DcmElement* elem);
 
 private:
 

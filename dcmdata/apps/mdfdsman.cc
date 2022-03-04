@@ -359,6 +359,8 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
         DcmElement* elem = OFstatic_cast(DcmElement*, lastElement->m_obj);
         if (elem == NULL)
             return EC_IllegalCall;
+        // Check if pixel data insertion can be performed (and report error if result.bad())
+        result = checkPixelDataInsertion(elem);
         result = startModify(elem, value);
         if (result.bad())
             return result;
@@ -433,30 +435,35 @@ OFCondition MdfDatasetManager::modifyOrInsertFromFile(OFString tag_path,
         DcmElement* elem = OFstatic_cast(DcmElement*, lastElement->m_obj);
         if (elem == NULL)
             return EC_IllegalCall;
-        // check whether VR is "unknown"
-        DcmEVR vr = elem->getTag().getEVR();
-        if (ignore_un_modifies && ((vr == EVR_UN) || (vr == EVR_UNKNOWN) || (vr == EVR_UNKNOWN2B)))
-        {
-            OFLOG_WARN(mdfdsmanLogger, "will not write value to attribute having VR=UN: " << elem->getTag());
-            return EC_Normal;
-        }
-        // create stream object for binary file
-        DcmInputFileStream fileStream(filename.c_str());
-        result = fileStream.status();
+        // Check if pixel data insertion can be performed (and report error if result.bad())
+        result = checkPixelDataInsertion(elem);
         if (result.good())
         {
-            const size_t fileLen = OFStandard::getFileSize(filename);
-            if (fileLen & 1)
-                return makeOFCondition(
-                    OFM_dcmdata, 22, OF_error, "Cannot insert/modify value with odd length from file!");
-            // read element value from binary file (requires even length)
-            result = elem->createValueFromTempFile(
-                fileStream.newFactory(), OFstatic_cast(Uint32, fileLen), EBO_LittleEndian);
+            // check whether VR is "unknown"
+            DcmEVR vr = elem->getTag().getEVR();
+            if (ignore_un_modifies && ((vr == EVR_UN) || (vr == EVR_UNKNOWN) || (vr == EVR_UNKNOWN2B)))
+            {
+                OFLOG_WARN(mdfdsmanLogger, "will not write value to attribute having VR=UN: " << elem->getTag());
+                return EC_Normal;
+            }
+            // create stream object for binary file
+            DcmInputFileStream fileStream(filename.c_str());
+            result = fileStream.status();
+            if (result.good())
+            {
+                const size_t fileLen = OFStandard::getFileSize(filename);
+                if (fileLen & 1)
+                    return makeOFCondition(
+                        OFM_dcmdata, 22, OF_error, "Cannot insert/modify value with odd length from file!");
+                // read element value from binary file (requires even length)
+                result = elem->createValueFromTempFile(
+                    fileStream.newFactory(), OFstatic_cast(Uint32, fileLen), EBO_LittleEndian);
+            }
+            if (result.bad())
+                return result;
+            if (update_metaheader)
+                deleteRelatedMetaheaderTag(elem->getTag());
         }
-        if (result.bad())
-            return result;
-        if (update_metaheader)
-            deleteRelatedMetaheaderTag(elem->getTag());
         resultPath++;
     }
     return EC_Normal;
@@ -737,6 +744,32 @@ void MdfDatasetManager::setModifyUNValues(OFBool modifyUNValues)
 {
     ignore_un_modifies = !modifyUNValues;
 }
+
+OFCondition MdfDatasetManager::checkPixelDataInsertion(DcmElement* elem)
+{
+    if (elem->ident() == EVR_PixelData)
+    {
+        DcmPixelData* pix = OFstatic_cast(DcmPixelData*, elem);
+        if (pix)
+        {
+            E_TransferSyntax ts = EXS_Unknown;
+            const DcmRepresentationParameter* dontCare = NULL;
+            pix->getCurrentRepresentationKey(ts, dontCare);
+            DcmXfer xfer(ts);
+            if (xfer.isEncapsulated())
+            {
+                OFLOG_ERROR(mdfdsmanLogger, "Cannot replace encapsulated Pixel Data (not implemented)");
+                return EC_IllegalParameter;
+            }
+        }
+        else
+        {
+            OFLOG_WARN(mdfdsmanLogger, "Unexpected error while casting Pixel Data element, trying to ignore");
+        }
+    }
+    return EC_Normal;
+}
+
 
 MdfDatasetManager::~MdfDatasetManager()
 {
