@@ -94,7 +94,10 @@ void do_conversion(iconv_t id, unsigned char *src, size_t srcsize, unsigned char
     }
   }
 
-  // COUT << output << OFendl;
+#if 0
+  // This prints the converted output to stdout, which may be useful for debugging purposes
+  COUT << output << OFendl;
+#endif
 }
 
 /* convert all printable characters of an ISO 8859 character set to UTF-8 and compare against a reference.
@@ -375,6 +378,11 @@ void check_euc_ascii_characters(const char *charset)
 // character sets and checks whether valid conversion contexts are returned.
 OFTEST(oficonv_open)
 {
+#ifdef DEBUG
+  // set log level to 1 in order to print debug information about opened iconv data files
+  set_oficonv_log_level(1);
+#endif
+
   iconv_t invalid_id = OFreinterpret_cast(iconv_t, -1);
   iconv_t id;
 
