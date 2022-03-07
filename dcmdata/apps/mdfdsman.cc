@@ -361,7 +361,10 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
             return EC_IllegalCall;
         // Check if pixel data insertion can be performed (and report error if result.bad())
         result = checkPixelDataInsertion(elem);
-        result = startModify(elem, value);
+        if (result.good())
+        {
+            result = startModify(elem, value);
+        }
         if (result.bad())
             return result;
         if (update_metaheader)
