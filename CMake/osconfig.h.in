@@ -132,6 +132,9 @@
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.*/
 #cmakedefine HAVE_DIRENT_H @HAVE_DIRENT_H@
 
+/* Define to 1 if you have the <err.h> header file. */
+#cmakedefine HAVE_ERR_H @HAVE_ERR_H@
+
 /* Define to 1 if you have the `_doprnt' function. */
 #cmakedefine HAVE_DOPRNT @HAVE_DOPRNT@
 
