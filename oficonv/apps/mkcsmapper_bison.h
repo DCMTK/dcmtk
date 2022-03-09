@@ -77,9 +77,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 100 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 237 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
 
-	u_int32_t	 i_value;
+	uint32_t	 i_value;
 	char		*s_value;
 	linear_zone_t	 lz_value;
 

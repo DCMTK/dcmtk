@@ -31,18 +31,158 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "dcmtk/oficonv/queue.h"
+#endif
 
 #include <assert.h>
-#include <err.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdarg.h>
+
+#ifdef _MSC_VER
+/* suppress warnings about unreachable (generated) code on MSVC */
+#pragma warning(disable: 4702)
+#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#else
+
+#define BADCH   (int)'?'
+#define BADARG  (int)':'
+static char EMSG[] = "";
+
+int     opterr = 1,             /* if error message should be printed */
+        optind = 1,             /* index into parent argv vector */
+        optopt,                 /* character checked for validity */
+        optreset;               /* reset getopt */
+char    *optarg;                /* argument associated with option */
+
+int getopt(int nargc, char * const nargv[], const char *ostr)
+{
+        static char *place = EMSG;              /* option letter processing */
+        char *oli;                              /* option letter list index */
+
+        if (optreset || *place == 0) {          /* update scanning pointer */
+                optreset = 0;
+                place = nargv[optind];
+                if (optind >= nargc || *place++ != '-') {
+                        /* Argument is absent or is not an option */
+                        place = EMSG;
+                        return (-1);
+                }
+                optopt = *place++;
+                if (optopt == '-' && *place == 0) {
+                        /* "--" => end of options */
+                        ++optind;
+                        place = EMSG;
+                        return (-1);
+                }
+                if (optopt == 0) {
+                        /* Solitary '-', treat as a '-' option
+                           if the program (eg su) is looking for it. */
+                        place = EMSG;
+                        if (strchr(ostr, '-') == NULL)
+                                return (-1);
+                        optopt = '-';
+                }
+        } else
+                optopt = *place++;
+
+        /* See if option letter is one the caller wanted... */
+        if (optopt == ':' || (oli = (char *)strchr(ostr, optopt)) == NULL) {
+                if (*place == 0)
+                        ++optind;
+                if (opterr && *ostr != ':')
+                        (void)fprintf(stderr,
+                            "mkesdb: illegal option -- %c\n", optopt);
+                return (BADCH);
+        }
+
+        /* Does this option need an argument? */
+        if (oli[1] != ':') {
+                /* don't need argument */
+                optarg = NULL;
+                if (*place == 0)
+                        ++optind;
+        } else {
+                /* Option-argument is either the rest of this argument or the
+                   entire next argument. */
+                if (*place)
+                        optarg = place;
+                else if (oli[2] == ':')
+                        /*
+                         * GNU Extension, for optional arguments if the rest of
+                         * the argument is empty, we return NULL
+                         */
+                        optarg = NULL;
+                else if (nargc > ++optind)
+                        optarg = nargv[optind];
+                else {
+                        /* option-argument absent */
+                        place = EMSG;
+                        if (*ostr == ':')
+                                return (BADARG);
+                        if (opterr)
+                                (void)fprintf(stderr,
+                                    "mkesdb: option requires an argument -- %c\n", optopt);
+                        return (BADCH);
+                }
+                place = EMSG;
+                ++optind;
+        }
+        return (optopt);                        /* return option letter */
+}
+
 #endif
+
+#ifdef HAVE_ERR_H
+#include <err.h>
+#else
+
+static void verrx(int eval, const char *fmt, va_list ap)
+{
+    fprintf(stderr, "mkcsmapper: ");
+    if (fmt != NULL) vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    exit(eval);
+}
+
+static void errx(int eval, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    verrx(eval, fmt, ap);
+    /* va_end(ap); */
+}
+
+static void verrc(int eval, int code, const char *fmt, va_list ap)
+{
+    fprintf(stderr, "mkcsmapper: ");
+    if (fmt != NULL) {
+            vfprintf(stderr, fmt, ap);
+            fprintf(stderr, ": ");
+    }
+    fprintf(stderr, "%s\n", strerror(code));
+    exit(eval);
+}
+
+static void err(int eval, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    verrc(eval, errno, fmt, ap);
+    /* va_end(ap); */
+}
+
+#endif /* HAVE_ERR_H */
 
 #include "citrus_types.h"
 #include "citrus_region.h"
@@ -57,16 +197,16 @@ extern FILE			*yyin;
 
 static struct named_csid_list	 named_csids;
 static char			*encoding, *name, *output = NULL, *variable;
-static u_int32_t		 invalid;
+static uint32_t		 invalid;
 static int			 debug = 0, num_csids = 0, use_invalid = 0;
 
 static void	 dump_file(void);
-static void	 register_named_csid(char *, u_int32_t);
-static void	 set_invalid(u_int32_t);
+static void	 register_named_csid(char *, uint32_t);
+static void	 set_invalid(uint32_t);
 static void	 set_prop_string(const char *, char **, char **);
 %}
 %union {
-	u_int32_t	i_value;
+	uint32_t	i_value;
 	char		*s_value;
 }
 
@@ -226,7 +366,7 @@ set_prop_string(const char *res, char **store, char **data)
 }
 
 static void
-set_invalid(u_int32_t inv)
+set_invalid(uint32_t inv)
 {
 
 	invalid = inv;
@@ -234,7 +374,7 @@ set_invalid(u_int32_t inv)
 }
 
 static void
-register_named_csid(char *sym, u_int32_t val)
+register_named_csid(char *sym, uint32_t val)
 {
 	struct named_csid *csid;
 

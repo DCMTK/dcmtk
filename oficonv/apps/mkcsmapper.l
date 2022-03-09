@@ -28,6 +28,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"
+#include "mkcsmapper_ldef.h"
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
@@ -36,7 +37,6 @@
 #include <string.h>
 #include "citrus_bcs.h"
 #include "oficonv_strlcpy.h"
-#include "mkcsmapper_ldef.h"
 #include "mkcsmapper_bison.h"
 
 #define YY_DECL int yylex(void)
@@ -45,6 +45,8 @@ int linenumber = 1;
 %}
 %option	noinput
 %option	nounput
+%option never-interactive
+%option	nounistd
 
 %x	COMMENT
 

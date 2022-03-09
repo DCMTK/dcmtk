@@ -29,6 +29,22 @@
  * SUCH DAMAGE.
  */
 
+/* remove macro definitions made by flex to avoid warnings because these
+ * also defined in <stdint.h>.
+ */
+#undef INT8_MIN
+#undef INT16_MIN
+#undef INT32_MIN
+#undef INT8_MAX
+#undef INT16_MAX
+#undef INT32_MAX
+#undef UINT8_MAX
+#undef UINT16_MAX
+#undef UINT32_MAX
+#undef SIZE_MAX
+
+#include <stdint.h>
+
 extern int	 linenumber;
 extern int	 yyerror(const char *);
 extern int	 yylex(void);
@@ -36,6 +52,6 @@ extern int	 yylex(void);
 struct named_csid {
 	STAILQ_ENTRY(named_csid)	 ci_entry;
 	char				*ci_symbol;
-	u_int32_t			 ci_csid;
+	uint32_t			 ci_csid;
 };
 STAILQ_HEAD(named_csid_list, named_csid);

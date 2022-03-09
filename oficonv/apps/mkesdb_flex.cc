@@ -531,9 +531,13 @@ char *yytext;
  */
 
 #include "dcmtk/config/osconfig.h"
-#include <sys/cdefs.h>
-#include <sys/queue.h>
 #include <sys/types.h>
+
+#ifdef HAVE_SYS_QUEUE_H
+#include <sys/queue.h>
+#else
+#include "dcmtk/oficonv/queue.h"
+#endif
 
 #include <assert.h>
 #include <errno.h>
@@ -549,10 +553,11 @@ char *yytext;
 #define YY_DECL int yylex(void)
 
 int linenumber = 1;
-#line 553 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_flex.cc"
+#line 557 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_flex.cc"
 #define YY_NO_INPUT 1
+#define YY_NO_UNISTD_H 1
 
-#line 556 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_flex.cc"
+#line 561 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_flex.cc"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -768,10 +773,10 @@ YY_DECL
 		}
 
 	{
-#line 55 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 61 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 
 
-#line 775 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_flex.cc"
+#line 780 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_flex.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -804,16 +809,12 @@ yy_match:
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 152 );
+		while ( yy_current_state != 80 );
+		yy_cp = (yy_last_accepting_cpos);
+		yy_current_state = (yy_last_accepting_state);
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
-		if ( yy_act == 0 )
-			{ /* have to back up */
-			yy_cp = (yy_last_accepting_cpos);
-			yy_current_state = (yy_last_accepting_state);
-			yy_act = yy_accept[yy_current_state];
-			}
 
 		YY_DO_BEFORE_ACTION;
 
@@ -830,38 +831,38 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 57 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 63 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 58 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 64 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { linenumber++; return (R_LN); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 60 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 66 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { BEGIN COMMENT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 61 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 67 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { BEGIN 0; }
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 62 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 68 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { linenumber++; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 63 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 69 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 64 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 70 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 {
 		yyerror("unexpected file end (unterminated comment)\n");
 		exit(1);
@@ -869,7 +870,7 @@ case YY_STATE_EOF(COMMENT):
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 69 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 75 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 {
 		yylval.i_value = strtoul(yytext, NULL, 0);
 		return (L_IMM);
@@ -877,32 +878,32 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 74 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 80 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { return (R_NAME); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 75 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 81 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { return (R_ENCODING); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 76 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 82 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { return (R_VARIABLE); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 77 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 83 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { return (R_DEFCSID); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 78 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 84 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 { return (R_INVALID); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 80 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 86 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 {
 		size_t len;
 
@@ -914,7 +915,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 88 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 94 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 {
 		yylval.s_value = strdup(yytext);
 		return (L_STRING);
@@ -922,10 +923,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 93 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 99 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 ECHO;
 	YY_BREAK
-#line 929 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_flex.cc"
+#line 930 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_flex.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -992,7 +993,8 @@ case YY_STATE_EOF(INITIAL):
 
 			else
 				{
-				yy_cp = (yy_c_buf_p);
+				yy_cp = (yy_last_accepting_cpos);
+				yy_current_state = (yy_last_accepting_state);
 				goto yy_find_action;
 				}
 			}
@@ -1470,7 +1472,7 @@ static void yy_load_buffer_state  (void)
         b->yy_bs_column = 0;
     }
 
-        b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+        b->yy_is_interactive = 0;
     
 	errno = oerrno;
 }
@@ -1893,7 +1895,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 93 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
+#line 99 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.l"
 
 
 #ifndef yywrap

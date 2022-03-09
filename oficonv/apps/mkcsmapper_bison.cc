@@ -102,18 +102,155 @@
 #include <sys/types.h>
 #endif
 #include <assert.h>
-#include <err.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
+
+#ifdef _MSC_VER
+/* suppress warnings about unreachable (generated) code on MSVC */
+#pragma warning(disable: 4702)
+#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#else
+
+#define BADCH   (int)'?'
+#define BADARG  (int)':'
+static char EMSG[] = "";
+
+int     opterr = 1,             /* if error message should be printed */
+        optind = 1,             /* index into parent argv vector */
+        optopt,                 /* character checked for validity */
+        optreset;               /* reset getopt */
+char    *optarg;                /* argument associated with option */
+
+int getopt(int nargc, char * const nargv[], const char *ostr)
+{
+        static char *place = EMSG;              /* option letter processing */
+        char *oli;                              /* option letter list index */
+
+        if (optreset || *place == 0) {          /* update scanning pointer */
+                optreset = 0;
+                place = nargv[optind];
+                if (optind >= nargc || *place++ != '-') {
+                        /* Argument is absent or is not an option */
+                        place = EMSG;
+                        return (-1);
+                }
+                optopt = *place++;
+                if (optopt == '-' && *place == 0) {
+                        /* "--" => end of options */
+                        ++optind;
+                        place = EMSG;
+                        return (-1);
+                }
+                if (optopt == 0) {
+                        /* Solitary '-', treat as a '-' option
+                           if the program (eg su) is looking for it. */
+                        place = EMSG;
+                        if (strchr(ostr, '-') == NULL)
+                                return (-1);
+                        optopt = '-';
+                }
+        } else
+                optopt = *place++;
+
+        /* See if option letter is one the caller wanted... */
+        if (optopt == ':' || (oli = (char *)strchr(ostr, optopt)) == NULL) {
+                if (*place == 0)
+                        ++optind;
+                if (opterr && *ostr != ':')
+                        (void)fprintf(stderr,
+                            "mkcsmapper: illegal option -- %c\n", optopt);
+                return (BADCH);
+        }
+
+        /* Does this option need an argument? */
+        if (oli[1] != ':') {
+                /* don't need argument */
+                optarg = NULL;
+                if (*place == 0)
+                        ++optind;
+        } else {
+                /* Option-argument is either the rest of this argument or the
+                   entire next argument. */
+                if (*place)
+                        optarg = place;
+                else if (oli[2] == ':')
+                        /*
+                         * GNU Extension, for optional arguments if the rest of
+                         * the argument is empty, we return NULL
+                         */
+                        optarg = NULL;
+                else if (nargc > ++optind)
+                        optarg = nargv[optind];
+                else {
+                        /* option-argument absent */
+                        place = EMSG;
+                        if (*ostr == ':')
+                                return (BADARG);
+                        if (opterr)
+                                (void)fprintf(stderr,
+                                    "mkcsmapper: option requires an argument -- %c\n", optopt);
+                        return (BADCH);
+                }
+                place = EMSG;
+                ++optind;
+        }
+        return (optopt);                        /* return option letter */
+}
+
 #endif
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
+
+#ifdef HAVE_ERR_H
+#include <err.h>
+#else
+
+static void verrx(int eval, const char *fmt, va_list ap)
+{
+    fprintf(stderr, "mkcsmapper: ");
+    if (fmt != NULL) vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    exit(eval);
+}
+
+static void errx(int eval, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    verrx(eval, fmt, ap);
+    /* va_end(ap); */
+}
+
+static void verrc(int eval, int code, const char *fmt, va_list ap)
+{
+    fprintf(stderr, "mkcsmapper: ");
+    if (fmt != NULL) {
+            vfprintf(stderr, fmt, ap);
+            fprintf(stderr, ": ");
+    }
+    fprintf(stderr, "%s\n", strerror(code));
+    exit(eval);
+}
+
+static void err(int eval, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    verrc(eval, errno, fmt, ap);
+    /* va_end(ap); */
+}
+
+#endif /* HAVE_ERR_H */
+
 
 #include "mkcsmapper_ldef.h"
 #include "citrus_types.h"
@@ -134,12 +271,12 @@ static char		*output = NULL;
 static void		*table = NULL;
 static size_t		 rowcol_len = 0;
 static size_t		 table_size;
-static u_int32_t	 done_flag = 0;
-static u_int32_t	 dst_ilseq, dst_invalid, dst_unit_bits, oob_mode;
-static u_int32_t	 rowcol_bits = 0, rowcol_mask = 0;
-static u_int32_t	 src_next;
+static uint32_t	 done_flag = 0;
+static uint32_t	 dst_ilseq, dst_invalid, dst_unit_bits, oob_mode;
+static uint32_t	 rowcol_bits = 0, rowcol_mask = 0;
+static uint32_t	 src_next;
 static int		 map_type;
-static void		 (*putfunc)(void *, size_t, u_int32_t) = NULL;
+static void		 (*putfunc)(void *, size_t, uint32_t) = NULL;
 
 #define DF_TYPE			0x00000001
 #define DF_NAME			0x00000002
@@ -153,20 +290,20 @@ static void	dump_file(void);
 static void	setup_map(void);
 static void	set_type(int);
 static void	set_name(char *);
-static void	set_src_zone(u_int32_t);
-static void	set_dst_invalid(u_int32_t);
-static void	set_dst_ilseq(u_int32_t);
-static void	set_dst_unit_bits(u_int32_t);
-static void	set_oob_mode(u_int32_t);
-static int	check_src(u_int32_t, u_int32_t);
-static void	store(const linear_zone_t *, u_int32_t, int);
-static void	put8(void *, size_t, u_int32_t);
-static void	put16(void *, size_t, u_int32_t);
-static void	put32(void *, size_t, u_int32_t);
-static void	set_range(u_int32_t, u_int32_t);
-static void	set_src(linear_zone_t *, u_int32_t, u_int32_t);
+static void	set_src_zone(uint32_t);
+static void	set_dst_invalid(uint32_t);
+static void	set_dst_ilseq(uint32_t);
+static void	set_dst_unit_bits(uint32_t);
+static void	set_oob_mode(uint32_t);
+static int	check_src(uint32_t, uint32_t);
+static void	store(const linear_zone_t *, uint32_t, int);
+static void	put8(void *, size_t, uint32_t);
+static void	put16(void *, size_t, uint32_t);
+static void	put32(void *, size_t, uint32_t);
+static void	set_range(uint32_t, uint32_t);
+static void	set_src(linear_zone_t *, uint32_t, uint32_t);
 
-#line 170 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 307 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -616,13 +753,13 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
-       0,   119,   119,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   132,   133,   134,   135,   137,   138,   140,   141,
-     144,   148,   149,   150,   151,   153,   154,   156,   157,   159,
-     160,   162,   164,   166,   170,   174,   180,   183,   187,   191,
-     195,   196
+       0,   256,   256,   259,   260,   261,   262,   263,   264,   265,
+     266,   267,   269,   270,   271,   272,   274,   275,   277,   278,
+     281,   285,   286,   287,   288,   290,   291,   293,   294,   296,
+     297,   299,   301,   303,   307,   311,   317,   320,   324,   328,
+     332,   333
 };
 #endif
 
@@ -1238,169 +1375,169 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* file: property mapping lns  */
-#line 120 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 257 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 { dump_file(); }
-#line 1244 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1381 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 12: /* name: R_NAME L_STRING  */
-#line 132 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 269 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                   { set_name((yyvsp[0].s_value)); (yyvsp[0].s_value) = NULL; }
-#line 1250 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1387 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 13: /* type: R_TYPE types  */
-#line 133 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 270 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                { set_type((yyvsp[0].i_value)); }
-#line 1256 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1393 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 14: /* types: R_ROWCOL  */
-#line 134 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 271 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                            { (yyval.i_value) = R_ROWCOL; }
-#line 1262 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1399 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 15: /* range: L_IMM '-' L_IMM  */
-#line 135 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 272 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                   { set_range((yyvsp[-2].i_value), (yyvsp[0].i_value)); }
-#line 1268 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1405 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 18: /* src_zone: R_SRC_ZONE zone  */
-#line 140 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 277 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                   { set_src_zone((yyvsp[0].i_value)); }
-#line 1274 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1411 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 19: /* zone: range  */
-#line 141 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 278 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                         {
 			(yyval.i_value) = 32;
 		}
-#line 1282 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1419 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 20: /* zone: range '/' range '/' ranges L_IMM  */
-#line 144 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 281 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                                    {
 			(yyval.i_value) = (yyvsp[0].i_value);
 		}
-#line 1290 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1427 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 21: /* dst_invalid: R_DST_INVALID L_IMM  */
-#line 148 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 285 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                       { set_dst_invalid((yyvsp[0].i_value)); }
-#line 1296 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1433 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 22: /* dst_ilseq: R_DST_ILSEQ L_IMM  */
-#line 149 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 286 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                     { set_dst_ilseq((yyvsp[0].i_value)); }
-#line 1302 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1439 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 23: /* dst_unit_bits: R_DST_UNIT_BITS L_IMM  */
-#line 150 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 287 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                         { set_dst_unit_bits((yyvsp[0].i_value)); }
-#line 1308 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1445 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 24: /* oob_mode: R_OOB_MODE oob_mode_sel  */
-#line 151 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 288 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                           { set_oob_mode((yyvsp[0].i_value)); }
-#line 1314 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1451 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 25: /* oob_mode_sel: R_INVALID  */
-#line 153 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 290 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                             { (yyval.i_value) = _CITRUS_MAPPER_STD_OOB_NONIDENTICAL; }
-#line 1320 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1457 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 26: /* oob_mode_sel: R_ILSEQ  */
-#line 154 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 291 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                           { (yyval.i_value) = _CITRUS_MAPPER_STD_OOB_ILSEQ; }
-#line 1326 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1463 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 28: /* begin_map: R_BEGIN_MAP lns  */
-#line 157 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 294 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                   { setup_map(); }
-#line 1332 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1469 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 31: /* map_elem: src '=' dst  */
-#line 163 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 300 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 { store(&(yyvsp[-2].lz_value), (yyvsp[0].i_value), 0); }
-#line 1338 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1475 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 32: /* map_elem: src '=' L_IMM '-'  */
-#line 165 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 302 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 { store(&(yyvsp[-3].lz_value), (yyvsp[-1].i_value), 1); }
-#line 1344 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1481 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 33: /* dst: L_IMM  */
-#line 167 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 304 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			(yyval.i_value) = (yyvsp[0].i_value);
 		}
-#line 1352 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1489 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 34: /* dst: R_INVALID  */
-#line 171 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 308 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			(yyval.i_value) = dst_invalid;
 		}
-#line 1360 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1497 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 35: /* dst: R_ILSEQ  */
-#line 175 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 312 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			(yyval.i_value) = dst_ilseq;
 		}
-#line 1368 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1505 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 36: /* src: %empty  */
-#line 180 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 317 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			set_src(&(yyval.lz_value), src_next, src_next);
 		}
-#line 1376 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1513 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 37: /* src: L_IMM  */
-#line 184 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 321 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			set_src(&(yyval.lz_value), (yyvsp[0].i_value), (yyvsp[0].i_value));
 		}
-#line 1384 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1521 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 38: /* src: L_IMM '-' L_IMM  */
-#line 188 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 325 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			set_src(&(yyval.lz_value), (yyvsp[-2].i_value), (yyvsp[0].i_value));
 		}
-#line 1392 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1529 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 39: /* src: '-' L_IMM  */
-#line 192 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 329 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			set_src(&(yyval.lz_value), src_next, (yyvsp[0].i_value));
 		}
-#line 1400 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1537 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
 
-#line 1404 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1541 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
 
       default: break;
     }
@@ -1594,7 +1731,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 198 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 335 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
 
 
 static void
@@ -1613,26 +1750,26 @@ yyerror(const char *s)
 }
 
 void
-put8(void *ptr, size_t ofs, u_int32_t val)
+put8(void *ptr, size_t ofs, uint32_t val)
 {
 
-	*((u_int8_t *)ptr + ofs) = val;
+	*((uint8_t *)ptr + ofs) = (uint8_t) val;
 }
 
 void
-put16(void *ptr, size_t ofs, u_int32_t val)
+put16(void *ptr, size_t ofs, uint32_t val)
 {
 
-	u_int16_t oval = htons(val);
-	memcpy((u_int16_t *)ptr + ofs, &oval, 2);
+	uint16_t oval = htons((uint16_t)val);
+	memcpy((uint16_t *)ptr + ofs, &oval, 2);
 }
 
 void
-put32(void *ptr, size_t ofs, u_int32_t val)
+put32(void *ptr, size_t ofs, uint32_t val)
 {
 
-	u_int32_t oval = htonl(val);
-	memcpy((u_int32_t *)ptr + ofs, &oval, 4);
+	uint32_t oval = htonl(val);
+	memcpy((uint32_t *)ptr + ofs, &oval, 4);
 }
 
 static void
@@ -1722,7 +1859,7 @@ create_rowcol_info(struct _citrus_region *r)
 		put32(ptr, ofs, rowcol[i].end); ofs++;
 	}
 	put32(ptr, ofs, dst_unit_bits); ofs++;
-	put32(ptr, ofs, len); ofs++;
+	put32(ptr, ofs, (uint32_t)len); ofs++;
 
 	_citrus_region_init(r, ptr, ofs * 4);
 }
@@ -1839,7 +1976,7 @@ set_name(char *str)
 }
 
 static void
-set_src_zone(u_int32_t val)
+set_src_zone(uint32_t val)
 {
 	linear_zone_t *p;
 	size_t i;
@@ -1874,7 +2011,7 @@ bad:
 }
 
 static void
-set_dst_invalid(u_int32_t val)
+set_dst_invalid(uint32_t val)
 {
 
 	if (done_flag & DF_DST_INVALID) {
@@ -1888,7 +2025,7 @@ set_dst_invalid(u_int32_t val)
 }
 
 static void
-set_dst_ilseq(u_int32_t val)
+set_dst_ilseq(uint32_t val)
 {
 
 	if (done_flag & DF_DST_ILSEQ) {
@@ -1902,7 +2039,7 @@ set_dst_ilseq(u_int32_t val)
 }
 
 static void
-set_oob_mode(u_int32_t val)
+set_oob_mode(uint32_t val)
 {
 
 	if (done_flag & DF_OOB_MODE) {
@@ -1916,7 +2053,7 @@ set_oob_mode(u_int32_t val)
 }
 
 static void
-set_dst_unit_bits(u_int32_t val)
+set_dst_unit_bits(uint32_t val)
 {
 
 	if (done_flag & DF_DST_UNIT_BITS) {
@@ -1944,11 +2081,11 @@ set_dst_unit_bits(u_int32_t val)
 }
 
 static int
-check_src(u_int32_t begin, u_int32_t end)
+check_src(uint32_t begin, uint32_t end)
 {
 	linear_zone_t *p;
 	size_t i;
-	u_int32_t m, n;
+	uint32_t m, n;
 
 	if (begin > end)
 		return (1);
@@ -1974,11 +2111,11 @@ check_src(u_int32_t begin, u_int32_t end)
 }
 
 static void
-store(const linear_zone_t *lz, u_int32_t dst, int inc)
+store(const linear_zone_t *lz, uint32_t dst, int inc)
 {
 	linear_zone_t *p;
 	size_t i, ofs;
-	u_int32_t n;
+	uint32_t n;
 
 	ofs = 0;
 	for (i = rowcol_len * rowcol_bits, p = &rowcol[0]; i > 0; ++p) {
@@ -1995,7 +2132,7 @@ store(const linear_zone_t *lz, u_int32_t dst, int inc)
 }
 
 static void
-set_range(u_int32_t begin, u_int32_t end)
+set_range(uint32_t begin, uint32_t end)
 {
 	linear_zone_t *p;
 
@@ -2015,7 +2152,7 @@ bad:
 }
 
 static void
-set_src(linear_zone_t *lz, u_int32_t begin, u_int32_t end)
+set_src(linear_zone_t *lz, uint32_t begin, uint32_t end)
 {
 
 	if (check_src(begin, end) != 0)

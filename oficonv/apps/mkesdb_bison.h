@@ -70,9 +70,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 68 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
+#line 208 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
 
-	u_int32_t	i_value;
+	uint32_t	i_value;
 	char		*s_value;
 
 #line 79 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.h"

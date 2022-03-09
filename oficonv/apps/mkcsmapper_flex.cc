@@ -562,6 +562,7 @@ char *yytext;
  */
 
 #include "dcmtk/config/osconfig.h"
+#include "mkcsmapper_ldef.h"
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
@@ -570,7 +571,6 @@ char *yytext;
 #include <string.h>
 #include "citrus_bcs.h"
 #include "oficonv_strlcpy.h"
-#include "mkcsmapper_ldef.h"
 #include "mkcsmapper_bison.h"
 
 #define YY_DECL int yylex(void)
@@ -578,8 +578,9 @@ char *yytext;
 int linenumber = 1;
 #line 580 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_flex.cc"
 #define YY_NO_INPUT 1
+#define YY_NO_UNISTD_H 1
 
-#line 583 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_flex.cc"
+#line 584 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_flex.cc"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -795,10 +796,10 @@ YY_DECL
 		}
 
 	{
-#line 51 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 53 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 
 
-#line 802 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_flex.cc"
+#line 803 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_flex.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -831,16 +832,12 @@ yy_match:
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 203 );
+		while ( yy_current_state != 127 );
+		yy_cp = (yy_last_accepting_cpos);
+		yy_current_state = (yy_last_accepting_state);
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
-		if ( yy_act == 0 )
-			{ /* have to back up */
-			yy_cp = (yy_last_accepting_cpos);
-			yy_current_state = (yy_last_accepting_state);
-			yy_act = yy_accept[yy_current_state];
-			}
 
 		YY_DO_BEFORE_ACTION;
 
@@ -857,38 +854,38 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 53 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 55 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 54 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 56 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { linenumber++; return (R_LN); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 56 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 58 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { BEGIN COMMENT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 57 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 59 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { BEGIN 0; }
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 58 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 60 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { linenumber++; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 59 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 61 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 60 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 62 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 {
 		yyerror("unexpected file end (unterminated comment)\n");
 		exit(1);
@@ -896,12 +893,12 @@ case YY_STATE_EOF(COMMENT):
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 65 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 67 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return ((int)yytext[0]); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 67 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 69 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 {
 		yylval.i_value = strtoul(yytext, NULL, 0);
 		return (L_IMM);
@@ -909,67 +906,67 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 72 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 74 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_TYPE); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 73 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 75 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_NAME); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 74 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 76 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_SRC_ZONE); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 75 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 77 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_DST_INVALID); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 76 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 78 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_DST_ILSEQ); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 77 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 79 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_DST_UNIT_BITS); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 78 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 80 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_BEGIN_MAP); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 79 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 81 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_END_MAP); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 80 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 82 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_INVALID); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 81 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 83 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_ILSEQ); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 82 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 84 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_OOB_MODE); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 83 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 85 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 { return (R_ROWCOL); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 85 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 87 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 {
 		size_t len;
 
@@ -981,7 +978,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 93 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 95 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 {
 		yylval.s_value = strdup(yytext);
 		return (L_STRING);
@@ -989,10 +986,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 98 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 100 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 ECHO;
 	YY_BREAK
-#line 996 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_flex.cc"
+#line 993 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_flex.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1059,7 +1056,8 @@ case YY_STATE_EOF(INITIAL):
 
 			else
 				{
-				yy_cp = (yy_c_buf_p);
+				yy_cp = (yy_last_accepting_cpos);
+				yy_current_state = (yy_last_accepting_state);
 				goto yy_find_action;
 				}
 			}
@@ -1537,7 +1535,7 @@ static void yy_load_buffer_state  (void)
         b->yy_bs_column = 0;
     }
 
-        b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+        b->yy_is_interactive = 0;
     
 	errno = oerrno;
 }
@@ -1960,7 +1958,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 98 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
+#line 100 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.l"
 
 
 #ifndef yywrap

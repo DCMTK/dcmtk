@@ -101,18 +101,158 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
+#else
+#include "dcmtk/oficonv/queue.h"
+#endif
 
 #include <assert.h>
-#include <err.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdarg.h>
+
+#ifdef _MSC_VER
+/* suppress warnings about unreachable (generated) code on MSVC */
+#pragma warning(disable: 4702)
+#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#else
+
+#define BADCH   (int)'?'
+#define BADARG  (int)':'
+static char EMSG[] = "";
+
+int     opterr = 1,             /* if error message should be printed */
+        optind = 1,             /* index into parent argv vector */
+        optopt,                 /* character checked for validity */
+        optreset;               /* reset getopt */
+char    *optarg;                /* argument associated with option */
+
+int getopt(int nargc, char * const nargv[], const char *ostr)
+{
+        static char *place = EMSG;              /* option letter processing */
+        char *oli;                              /* option letter list index */
+
+        if (optreset || *place == 0) {          /* update scanning pointer */
+                optreset = 0;
+                place = nargv[optind];
+                if (optind >= nargc || *place++ != '-') {
+                        /* Argument is absent or is not an option */
+                        place = EMSG;
+                        return (-1);
+                }
+                optopt = *place++;
+                if (optopt == '-' && *place == 0) {
+                        /* "--" => end of options */
+                        ++optind;
+                        place = EMSG;
+                        return (-1);
+                }
+                if (optopt == 0) {
+                        /* Solitary '-', treat as a '-' option
+                           if the program (eg su) is looking for it. */
+                        place = EMSG;
+                        if (strchr(ostr, '-') == NULL)
+                                return (-1);
+                        optopt = '-';
+                }
+        } else
+                optopt = *place++;
+
+        /* See if option letter is one the caller wanted... */
+        if (optopt == ':' || (oli = (char *)strchr(ostr, optopt)) == NULL) {
+                if (*place == 0)
+                        ++optind;
+                if (opterr && *ostr != ':')
+                        (void)fprintf(stderr,
+                            "mkesdb: illegal option -- %c\n", optopt);
+                return (BADCH);
+        }
+
+        /* Does this option need an argument? */
+        if (oli[1] != ':') {
+                /* don't need argument */
+                optarg = NULL;
+                if (*place == 0)
+                        ++optind;
+        } else {
+                /* Option-argument is either the rest of this argument or the
+                   entire next argument. */
+                if (*place)
+                        optarg = place;
+                else if (oli[2] == ':')
+                        /*
+                         * GNU Extension, for optional arguments if the rest of
+                         * the argument is empty, we return NULL
+                         */
+                        optarg = NULL;
+                else if (nargc > ++optind)
+                        optarg = nargv[optind];
+                else {
+                        /* option-argument absent */
+                        place = EMSG;
+                        if (*ostr == ':')
+                                return (BADARG);
+                        if (opterr)
+                                (void)fprintf(stderr,
+                                    "mkesdb: option requires an argument -- %c\n", optopt);
+                        return (BADCH);
+                }
+                place = EMSG;
+                ++optind;
+        }
+        return (optopt);                        /* return option letter */
+}
+
 #endif
+
+#ifdef HAVE_ERR_H
+#include <err.h>
+#else
+
+static void verrx(int eval, const char *fmt, va_list ap)
+{
+    fprintf(stderr, "mkcsmapper: ");
+    if (fmt != NULL) vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    exit(eval);
+}
+
+static void errx(int eval, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    verrx(eval, fmt, ap);
+    /* va_end(ap); */
+}
+
+static void verrc(int eval, int code, const char *fmt, va_list ap)
+{
+    fprintf(stderr, "mkcsmapper: ");
+    if (fmt != NULL) {
+            vfprintf(stderr, fmt, ap);
+            fprintf(stderr, ": ");
+    }
+    fprintf(stderr, "%s\n", strerror(code));
+    exit(eval);
+}
+
+static void err(int eval, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    verrc(eval, errno, fmt, ap);
+    /* va_end(ap); */
+}
+
+#endif /* HAVE_ERR_H */
 
 #include "citrus_types.h"
 #include "citrus_region.h"
@@ -127,15 +267,15 @@ extern FILE			*yyin;
 
 static struct named_csid_list	 named_csids;
 static char			*encoding, *name, *output = NULL, *variable;
-static u_int32_t		 invalid;
+static uint32_t		 invalid;
 static int			 debug = 0, num_csids = 0, use_invalid = 0;
 
 static void	 dump_file(void);
-static void	 register_named_csid(char *, u_int32_t);
-static void	 set_invalid(u_int32_t);
+static void	 register_named_csid(char *, uint32_t);
+static void	 set_invalid(uint32_t);
 static void	 set_prop_string(const char *, char **, char **);
 
-#line 139 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
+#line 279 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -560,10 +700,10 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    80,    80,    83,    84,    85,    86,    87,    88,    89,
-      91,    96,   100,   104,   109
+       0,   220,   220,   223,   224,   225,   226,   227,   228,   229,
+     231,   236,   240,   244,   249
 };
 #endif
 
@@ -1148,54 +1288,54 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* file: property  */
-#line 81 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
+#line 221 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
                 { dump_file(); }
-#line 1154 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
+#line 1294 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
     break;
 
   case 10: /* name: R_NAME L_STRING  */
-#line 92 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
+#line 232 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
                 {
 			set_prop_string("NAME", &name, &(yyvsp[0].s_value));
 		}
-#line 1162 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
+#line 1302 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
     break;
 
   case 11: /* encoding: R_ENCODING L_STRING  */
-#line 97 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
+#line 237 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
                 {
 			set_prop_string("ENCODING", &encoding, &(yyvsp[0].s_value));
 		}
-#line 1170 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
+#line 1310 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
     break;
 
   case 12: /* variable: R_VARIABLE L_STRING  */
-#line 101 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
+#line 241 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
                 {
 			set_prop_string("VARIABLE", &variable, &(yyvsp[0].s_value));
 		}
-#line 1178 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
+#line 1318 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
     break;
 
   case 13: /* defcsid: R_DEFCSID L_STRING L_IMM  */
-#line 105 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
+#line 245 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
                 {
 			register_named_csid((yyvsp[-1].s_value), (yyvsp[0].i_value));
 			(yyvsp[-1].s_value) = NULL;
 		}
-#line 1187 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
+#line 1327 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
     break;
 
   case 14: /* invalid: R_INVALID L_IMM  */
-#line 110 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
+#line 250 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
                 {
 			set_invalid((yyvsp[0].i_value));
 		}
-#line 1195 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
+#line 1335 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
     break;
 
 
-#line 1199 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
+#line 1339 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb_bison.cc"
 
       default: break;
     }
@@ -1389,7 +1529,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 113 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
+#line 253 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkesdb.y"
 
 
 int
@@ -1506,7 +1646,7 @@ set_prop_string(const char *res, char **store, char **data)
 }
 
 static void
-set_invalid(u_int32_t inv)
+set_invalid(uint32_t inv)
 {
 
 	invalid = inv;
@@ -1514,7 +1654,7 @@ set_invalid(u_int32_t inv)
 }
 
 static void
-register_named_csid(char *sym, u_int32_t val)
+register_named_csid(char *sym, uint32_t val)
 {
 	struct named_csid *csid;
 

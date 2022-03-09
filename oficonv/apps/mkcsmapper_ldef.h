@@ -29,12 +29,27 @@
  * SUCH DAMAGE.
  */
 
+/* remove macro definitions made by flex to avoid warnings because these
+ * also defined in <stdint.h>.
+ */
+#undef INT8_MIN
+#undef INT16_MIN
+#undef INT32_MIN
+#undef INT8_MAX
+#undef INT16_MAX
+#undef INT32_MAX
+#undef UINT8_MAX
+#undef UINT16_MAX
+#undef UINT32_MAX
+#undef SIZE_MAX
+
 #include <sys/types.h>
+#include <stdint.h>
 
 typedef struct {
-	u_int32_t	 begin;
-	u_int32_t	 end;
-	u_int32_t	 width;
+	uint32_t	 begin;
+	uint32_t	 end;
+	uint32_t	 width;
 } linear_zone_t;
 
 extern int	 debug;

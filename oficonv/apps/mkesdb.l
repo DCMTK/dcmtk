@@ -28,9 +28,13 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#include <sys/cdefs.h>
-#include <sys/queue.h>
 #include <sys/types.h>
+
+#ifdef HAVE_SYS_QUEUE_H
+#include <sys/queue.h>
+#else
+#include "dcmtk/oficonv/queue.h"
+#endif
 
 #include <assert.h>
 #include <errno.h>
@@ -49,6 +53,8 @@ int linenumber = 1;
 %}
 %option	noinput
 %option	nounput
+%option never-interactive
+%option	nounistd
 
 %x	COMMENT
 
