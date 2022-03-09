@@ -31,7 +31,7 @@
 #ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
 #else
-#include "oficonv_queue.h"
+#include "dcmtk/oficonv/queue.h"
 #endif
 
 #define _CITRUS_HASH_ENTRY(type) LIST_ENTRY(type)

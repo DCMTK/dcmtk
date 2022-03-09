@@ -33,7 +33,7 @@
 #ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
 #else
-#include "oficonv_queue.h"
+#include "dcmtk/oficonv/queue.h"
 #endif
 
 #ifdef HAVE_ARPA_INET_H

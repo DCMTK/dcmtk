@@ -35,7 +35,7 @@
 #ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
 #else
-#include "oficonv_queue.h"
+#include "dcmtk/oficonv/queue.h"
 #endif
 
 #include "citrus_hash.h"
