@@ -294,7 +294,7 @@ void convert_euc_to_utf8(const char *charset, unsigned char prefix, unsigned cha
 
   // Expand input buffer by prefixing each byte with the given prefix byte, converting single bytes to double bytes
   // This assumes that all characters in the input buffer use the same prefix byte, i.e. belong to the same row.
-  unsigned char buf[srcsize * 2];
+  unsigned char *buf = new unsigned char[srcsize * 2];
   unsigned char *srcptr = src;
   unsigned char *bufptr = buf;
   for (size_t i = 0; i < srcsize; ++i)
@@ -310,6 +310,7 @@ void convert_euc_to_utf8(const char *charset, unsigned char prefix, unsigned cha
 
     OFiconv_close(id);
   }
+  delete[] buf;
 }
 
 /* convert a UTF-8 string into a two-byte EUC sequence and compare against a reference
@@ -330,7 +331,7 @@ void convert_utf8_to_euc(const char *charset, unsigned char prefix, unsigned cha
 
   // Expand input buffer by prefixing each byte with the given prefix byte, converting single bytes to double bytes
   // This assumes that all characters in the input buffer use the same prefix byte, i.e. belong to the same row.
-  unsigned char refbuf[refsize * 2];
+  unsigned char *refbuf = new unsigned char[refsize * 2];
   unsigned char *refptr = reference;
   unsigned char *bufptr = refbuf;
   for (size_t i = 0; i < refsize; ++i)
@@ -346,6 +347,7 @@ void convert_utf8_to_euc(const char *charset, unsigned char prefix, unsigned cha
 
     OFiconv_close(id);
   }
+  delete[] refbuf;
 }
 
 /* Check that the conversion from ASCII to an EUC encoding and back is an identity operation.
@@ -387,7 +389,7 @@ OFTEST(oficonv_open)
   iconv_t id;
 
   // ASCII to ASCII
-  OFCHECK(invalid_id != (id = OFiconv_open("", "ASCII")));
+  OFCHECK(invalid_id != (id = OFiconv_open("ASCII", "ASCII")));
   if (id != invalid_id) OFiconv_close(id);
 
   // To some charset from UTF-8
