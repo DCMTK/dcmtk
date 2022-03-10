@@ -286,7 +286,7 @@ out:
 }
 
 __inline const char
-*iconv_canonicalize(const char *name)
+*OFiconv_canonicalize(const char *name)
 {
 
     return (_citrus_iconv_canonicalize(name));
