@@ -47,8 +47,7 @@ typedef int __iconv_bool;
 
 struct __tag_iconv_t;
 typedef struct __tag_iconv_t *iconv_t;
-
-typedef uint32_t        _citrus_wc_t;
+typedef uint32_t _citrus_wc_t;
 
 BEGIN_EXTERN_C
 
@@ -85,47 +84,63 @@ iconv_t OFiconv_open(const char *dstname, const char *srcname);
  *   codeset, the character is replaced by an “invalid character” which
  *   depends on the destination codeset, e.g., ‘?’, and the conversion is
  *   continued. iconv() returns the number of such “invalid conversions”.
+ *
+ *   @param cd conversion descriptor returned by OFiconv_open()
+ *   @param src address of pointer to first byte in source buffer
+ *   @param srcleft address of variable containing the number of bytes left in the source buffer
+ *   @param src address of pointer to first byte in destination buffer
+ *   @param srcleft address of variable containing the number of bytes left in the destination buffer
+ *   @return number of characters converted to "invalid character" upon success,
+ *     or (size_t)(-1) in case of error, in which case errno is set
  */
 size_t OFiconv(iconv_t cd, char ** src, size_t * srcleft, char ** dst, size_t * dstleft);
 
 /** close the specified converter cd
- *
+ *  @param cd converter ID returned by OFiconv_open()
  */
 int OFiconv_close(iconv_t cd);
 
 /*
- * non-portable interfaces for iconv
+ * BSD specific interfaces for iconv
  */
 
 /** obtain a list of character encodings that are supported by the OFiconv()
  *  call. The list of the encoding names will be stored in names and the
- *  number of the entries is stored in count. If the paired variable is
- *  true, the list will be arranged into canonical/alias name pairs.
- *
+ *  number of the entries is stored in count.
+ *  @param names address of char pointer array returned in this parameter
+ *  @param count number of entries in char pointer array returned in this parameter
+ *  @param paired if true, the list will be arranged into canonical/alias name pairs.
+ *  @return 0 upon successful completion, in which case names and count will be populated. Otherwise, -1 is returned and errno is set to indicate the error.
  */
 int OF__iconv_get_list(char ***names, size_t * count, __iconv_bool paired);
 
-/**
- * free the allocated memory during the call of OF__iconv_get_list().
+/** free the allocated memory during the call of OF__iconv_get_list().
+ *  @param names address of char pointer array created by OF__iconv_get_list()
+ *  @param count number of entries in char pointer array
  */
 void OF__iconv_free_list(char **names, size_t  count);
 
+#define __ICONV_F_HIDE_INVALID  0x0001
+
 /** The OF__iconv() function works just like iconv() but if iconv() fails,
  *  the invalid character count is lost there. This is a not bug, rather a
- *  limitation of IEEE Std 1003.1-2008 (POSIX.1), so __iconv() is
- *  provided as an alternative but non-standard interface. It also has a
- *  flags argument, where currently the following flags can be passed:
- *
- *  __ICONV_F_HIDE_INVALID
- *      Skip invalid characters, instead of returning with an error.
- *
+ *  limitation of IEEE Std 1003.1-2008 (POSIX.1), so OF__iconv() is
+ *  provided as an alternative but non-standard interface.
+ *   @param cd conversion descriptor returned by OFiconv_open()
+ *   @param src address of pointer to first byte in source buffer
+ *   @param srcleft address of variable containing the number of bytes left in the source buffer
+ *   @param src address of pointer to first byte in destination buffer
+ *   @param srcleft address of variable containing the number of bytes left in the destination buffer
+ *   @param flags conversion flags. Currently only zero (default) or __ICONV_F_HIDE_INVALID can be passed.
+ *     If __ICONV_F_HIDE_INVALID is passed, invalid characters are skipped instead of returning with an error.
+ *   @param invalids address of variable in which the number of conversions to "invalid character" is returned upon success or failure
+ *   @return number of characters converted to "invalid character" upon success,
+ *     or (size_t)(-1) in case of error, in which case errno is set
  */
 size_t  OF__iconv(iconv_t cd, char **src, size_t *srcleft, char **dst, size_t *dstleft, uint32_t flags, size_t *invalids);
 
-#define __ICONV_F_HIDE_INVALID  0x0001
-
 /*
- * GNU interfaces for iconv
+ * GNU libiconv interfaces for iconv
  */
 
 /* We have iconvctl() */
