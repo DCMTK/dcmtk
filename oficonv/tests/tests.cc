@@ -99,4 +99,9 @@ OFTEST_REGISTER(oficonv_utf8_to_jis_x0208);
 OFTEST_REGISTER(oficonv_jis_x0212_to_utf8);
 OFTEST_REGISTER(oficonv_utf8_to_jis_x0212);
 
+OFTEST_REGISTER(oficonv_canonicalize);
+OFTEST_REGISTER(oficonv_get_list);
+OFTEST_REGISTER(oficonvlist);
+
+
 OFTEST_MAIN("oficonv")

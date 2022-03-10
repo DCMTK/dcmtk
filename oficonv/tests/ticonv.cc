@@ -24,6 +24,7 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/oficonv/iconv.h"
 
 #include "tables_gb18030.h"
@@ -39,12 +40,8 @@
 /*
 TO DO:
 - test cases for other oficonv functions
-  - OF__iconv_get_list()
-  - OF__iconv_free_list()
   - OF__iconv()
   - OFiconv_open_into()
-  - OFiconvlist()
-  - OFiconv_canonicalize()
   - OFiconvctl()
   - OFlocale_charset()
 */
@@ -2282,4 +2279,123 @@ OFTEST(oficonv_utf8_to_jis_x0212)
   convert_utf8_to_euc("JIS_X0212", 0x6b, jis_x0212_row_16_to_76, sizeof(jis_x0212_row_16_to_76), jis_x0212_row_75_converted_to_utf8, sizeof(jis_x0212_row_75_converted_to_utf8));
   convert_utf8_to_euc("JIS_X0212", 0x6c, jis_x0212_row_16_to_76, sizeof(jis_x0212_row_16_to_76), jis_x0212_row_76_converted_to_utf8, sizeof(jis_x0212_row_76_converted_to_utf8));
   convert_utf8_to_euc("JIS_X0212", 0x6d, jis_x0212_row_77, sizeof(jis_x0212_row_77),             jis_x0212_row_77_converted_to_utf8, sizeof(jis_x0212_row_77_converted_to_utf8));
+}
+
+
+OFTEST(oficonv_canonicalize)
+{
+  const char *c;
+
+  // these are the canonical names we expect as result
+  OFString latin1("ISO-8859-1");
+  OFString euc_cn("EUC-CN");
+  OFString euc_kr("EUC-KR");
+  OFString latin2("ISO-8859-2");
+  OFString latin3("ISO-8859-3");
+  OFString latin4("ISO-8859-4");
+  OFString cyrillic("ISO-8859-5");
+  OFString arabic("ISO-8859-6");
+  OFString greek("ISO-8859-7");
+  OFString hebrew("ISO-8859-8");
+  OFString latin5("ISO-8859-9");
+  OFString thai("ISO-8859-11");
+  OFString latin9("ISO-8859-15");
+  OFString ascii("ISO646-US");
+  OFString jisx0201("JISX0201-KANA");
+  OFString jisx0208("JISX0208:1990");
+  OFString shift_jis("Shift_JIS");
+  OFString jisx0212("JISX0212");
+  OFString utf8("UTF-8");
+  OFString utf16("UTF-16");
+
+  // exercise all synonyms for ISO-8859-1 as defined in oficonv/datasrc/esdb/esdb.alias,
+  // with mixed uppercase/lowercase spellings
+  c = OFiconv_canonicalize("cp819");            OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("csisolatin1");      OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("ibm819");           OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("iso_8859-1");       OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("iso_8859-1:1987");  OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("iso-ir-100");       OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("iso8859-1");        OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("l1");               OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("latin1");           OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("CP819");            OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("CSISOLATIN1");      OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("IBM819");           OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("ISO_8859-1");       OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("ISO_8859-1:1987");  OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("ISO-IR-100");       OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("ISO8859-1");        OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("L1");               OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("LATIN1");           OFCHECK(c && latin1 == c);
+  c = OFiconv_canonicalize("cSiSoLaTiN1");      OFCHECK(c && latin1 == c);
+
+  // exercise at least one synonym for each supported character set
+  c = OFiconv_canonicalize("gb2312");           OFCHECK(c && euc_cn == c);
+  c = OFiconv_canonicalize("iso-ir-149");       OFCHECK(c && euc_kr == c);
+  c = OFiconv_canonicalize("iso-ir-101");       OFCHECK(c && latin2 == c);
+  c = OFiconv_canonicalize("latin3");           OFCHECK(c && latin3 == c);
+  c = OFiconv_canonicalize("iso_8859-4");       OFCHECK(c && latin4 == c);
+  c = OFiconv_canonicalize("cyrillic");         OFCHECK(c && cyrillic == c);
+  c = OFiconv_canonicalize("arabic");           OFCHECK(c && arabic == c);
+  c = OFiconv_canonicalize("greek");            OFCHECK(c && greek == c);
+  c = OFiconv_canonicalize("hebrew");           OFCHECK(c && hebrew == c);
+  c = OFiconv_canonicalize("iso-ir-148");       OFCHECK(c && latin5 == c);
+  c = OFiconv_canonicalize("tis-620");          OFCHECK(c && thai == c);
+  c = OFiconv_canonicalize("iso-ir-203");       OFCHECK(c && latin9 == c);
+  c = OFiconv_canonicalize("ascii");            OFCHECK(c && ascii == c);
+  c = OFiconv_canonicalize("jis_x0201");        OFCHECK(c && jisx0201 == c);
+  c = OFiconv_canonicalize("jis0208");          OFCHECK(c && jisx0208 == c);
+  c = OFiconv_canonicalize("ms_kanji");         OFCHECK(c && shift_jis == c);
+  c = OFiconv_canonicalize("jis_x0212");        OFCHECK(c && jisx0212 == c);
+  c = OFiconv_canonicalize("utf8");             OFCHECK(c && utf8 == c);
+  c = OFiconv_canonicalize("unicode");          OFCHECK(c && utf16 == c);
+}
+
+OFTEST(oficonv_get_list)
+{
+  char **names = NULL;
+  size_t count = 0;
+
+  // call OF__iconv_get_list with false as third parameter
+  int result = OF__iconv_get_list(&names, &count, false);
+  OFCHECK(result == 0 && count > 0);
+  for (size_t i=0; i < count; i++)
+  {
+    OFCHECK(names[i] != NULL);
+  }
+  OF__iconv_free_list(names, count);
+
+  names = NULL;
+  count = 0;
+
+  // call OF__iconv_get_list with true as third parameter
+  result = OF__iconv_get_list(&names, &count, true);
+  OFCHECK(result == 0 && count > 0);
+  for (size_t i=0; i < count; i++)
+  {
+    OFCHECK(names[i] != NULL);
+  }
+  OF__iconv_free_list(names, count);
+}
+
+
+BEGIN_EXTERN_C
+int OFiconvlist_callback(unsigned int count, const char * const *names, void *arg);
+END_EXTERN_C
+
+static int OFiconvlist_callback_var = 0;
+int OFiconvlist_callback(unsigned int count, const char * const *names, void *arg)
+{
+    OFCHECK(count > 0 && names != NULL && arg == &OFiconvlist_callback_var);
+    for (size_t i=0; i < count; i++)
+    {
+      OFCHECK(names[i] != NULL);
+    }
+    return 0;
+}
+
+OFTEST(oficonvlist)
+{
+  OFiconvlist(OFiconvlist_callback, &OFiconvlist_callback_var);
 }
