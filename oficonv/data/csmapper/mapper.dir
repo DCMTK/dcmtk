@@ -1,0 +1,192 @@
+
+# CP
+
+CP936EXT/UCS                    mapper_std      CP/CP936EXT%UCS.mps
+UCS/CP936EXT                    mapper_std      CP/UCS%CP936EXT.mps
+
+# GB
+
+GB2312/UCS		mapper_std	GB/GB2312%UCS.mps
+GB2312GBK/UCS		mapper_std	GB/GB2312GBK%UCS.mps
+GB2312EXT/UCS		mapper_std	GB/GB2312EXT%UCS.mps
+GB2312UDA1/UCS		mapper_std	GB/GB2312UDA1%UCS.mps
+GB2312UDA2/UCS		mapper_std	GB/GB2312UDA2%UCS.mps
+GBKEXT/UCS		mapper_std	GB/GBKEXT%UCS.mps
+GBKUDA/UCS		mapper_std	GB/GBKUDA%UCS.mps
+GB18030/UCS:BMP		mapper_std	GB/GB18030%UCS@BMP.mps
+GB2312:CP936/UCS	mapper_parallel	GB2312EXT/UCS,GB2312GBK/UCS
+GB2312:GBK/UCS		mapper_parallel	GB2312UDA1/UCS,GB2312:CP936/UCS
+GB2312:GB18030/UCS	mapper_parallel	GB2312UDA2/UCS,GB2312:GBK/UCS
+GBK/UCS			mapper_parallel	GBKEXT/UCS,CP936EXT/UCS
+GBK:GB18030/UCS		mapper_parallel	GBKUDA/UCS,GBK/UCS
+GBKUCS/UCS		mapper_parallel	GB18030/UCS:BMP
+UCS/GB2312		mapper_std	GB/UCS%GB2312.mps
+UCS/GB2312EXT		mapper_std	GB/UCS%GB2312EXT.mps
+UCS/GB2312UDA1		mapper_std	GB/UCS%GB2312UDA1.mps
+UCS/GB2312UDA2		mapper_std	GB/UCS%GB2312UDA2.mps
+UCS/GBKEXT		mapper_std	GB/UCS%GBKEXT.mps
+UCS/GBKUDA		mapper_std	GB/UCS%GBKUDA.mps
+UCS:BMP/GB18030		mapper_std	GB/UCS@BMP%GB18030.mps
+UCS/GB2312GBK		mapper_parallel	UCS/GBKEXT,UCS/GB2312
+UCS/GB2312:CP936	mapper_parallel	UCS/GB2312GBK,UCS/GB2312EXT
+UCS/GB2312:GBK		mapper_parallel	UCS/GB2312:CP936,UCS/GB2312UDA1
+UCS/GB2312:GB18030	mapper_parallel	UCS/GB2312:GBK,UCS/GB2312UDA2
+UCS/GBK			mapper_parallel	UCS/GBKEXT,UCS/CP936EXT
+UCS/GBK:GB18030		mapper_parallel	UCS/GBK,UCS/GBKUDA
+UCS/GBKUCS		mapper_parallel	UCS:BMP/GB18030
+
+# ISO646
+
+ISO646-BASIC:1983/UCS           mapper_646                      ISO646/ISO646-BASIC@1983%UCS.646
+UCS/ISO646-BASIC:1983           mapper_646                      !ISO646/ISO646-BASIC@1983%UCS.646
+ISO646-IRV:1983/UCS             mapper_646                      ISO646/ISO646-IRV@1983%UCS.646
+UCS/ISO646-IRV:1983             mapper_646                      !ISO646/ISO646-IRV@1983%UCS.646
+ISO646-GB/UCS                   mapper_646                      ISO646/ISO646-GB%UCS.646
+UCS/ISO646-GB                   mapper_646                      !ISO646/ISO646-GB%UCS.646
+ISO646-US/UCS                   mapper_646                      ISO646/ISO646-US%UCS.646
+UCS/ISO646-US                   mapper_646                      !ISO646/ISO646-US%UCS.646
+ISO646-SE/UCS                   mapper_646                      ISO646/ISO646-SE%UCS.646
+UCS/ISO646-SE                   mapper_646                      !ISO646/ISO646-SE%UCS.646
+ISO646-SE2/UCS                  mapper_646                      ISO646/ISO646-SE2%UCS.646
+UCS/ISO646-SE2                  mapper_646                      !ISO646/ISO646-SE2%UCS.646
+ISO646-JP/UCS                   mapper_646                      ISO646/ISO646-JP%UCS.646
+UCS/ISO646-JP                   mapper_646                      !ISO646/ISO646-JP%UCS.646
+ISO646-IT/UCS                   mapper_646                      ISO646/ISO646-IT%UCS.646
+UCS/ISO646-IT                   mapper_646                      !ISO646/ISO646-IT%UCS.646
+ISO646-PT/UCS                   mapper_646                      ISO646/ISO646-PT%UCS.646
+UCS/ISO646-PT                   mapper_646                      !ISO646/ISO646-PT%UCS.646
+ISO646-ES/UCS                   mapper_646                      ISO646/ISO646-ES%UCS.646
+UCS/ISO646-ES                   mapper_646                      !ISO646/ISO646-ES%UCS.646
+ISO646-DE/UCS                   mapper_646                      ISO646/ISO646-DE%UCS.646
+UCS/ISO646-DE                   mapper_646                      !ISO646/ISO646-DE%UCS.646
+ISO646-FR1/UCS                  mapper_646                      ISO646/ISO646-FR1%UCS.646
+UCS/ISO646-FR1                  mapper_646                      !ISO646/ISO646-FR1%UCS.646
+ISO646-CN/UCS                   mapper_646                      ISO646/ISO646-CN%UCS.646
+UCS/ISO646-CN                   mapper_646                      !ISO646/ISO646-CN%UCS.646
+ISO646-NO/UCS                   mapper_646                      ISO646/ISO646-NO%UCS.646
+UCS/ISO646-NO                   mapper_646                      !ISO646/ISO646-NO%UCS.646
+ISO646-NO2/UCS                  mapper_646                      ISO646/ISO646-NO2%UCS.646
+UCS/ISO646-NO2                  mapper_646                      !ISO646/ISO646-NO2%UCS.646
+ISO646-FR/UCS                   mapper_646                      ISO646/ISO646-FR%UCS.646
+UCS/ISO646-FR                   mapper_646                      !ISO646/ISO646-FR%UCS.646
+ISO646-PT2/UCS                  mapper_646                      ISO646/ISO646-PT2%UCS.646
+UCS/ISO646-PT2                  mapper_646                      !ISO646/ISO646-PT2%UCS.646
+ISO646-ES2/UCS                  mapper_646                      ISO646/ISO646-ES2%UCS.646
+UCS/ISO646-ES2                  mapper_646                      !ISO646/ISO646-ES2%UCS.646
+ISO646-HU/UCS                   mapper_646                      ISO646/ISO646-HU%UCS.646
+UCS/ISO646-HU                   mapper_646                      !ISO646/ISO646-HU%UCS.646
+ISO646-JP-OCR-B/UCS             mapper_646                      ISO646/ISO646-JP-OCR-B%UCS.646
+UCS/ISO646-JP-OCR-B             mapper_646                      !ISO646/ISO646-JP-OCR-B%UCS.646
+ISO646-CA/UCS                   mapper_646                      ISO646/ISO646-CA%UCS.646
+UCS/ISO646-CA                   mapper_646                      !ISO646/ISO646-CA%UCS.646
+ISO646-CA2/UCS                  mapper_646                      ISO646/ISO646-CA2%UCS.646
+UCS/ISO646-CA2                  mapper_646                      !ISO646/ISO646-CA2%UCS.646
+ISO646-YU/UCS                   mapper_646                      ISO646/ISO646-YU%UCS.646
+UCS/ISO646-YU                   mapper_646                      !ISO646/ISO646-YU%UCS.646
+ISO646-CU/UCS                   mapper_646                      ISO646/ISO646-CU%UCS.646
+UCS/ISO646-CU                   mapper_646                      !ISO646/ISO646-CU%UCS.646
+ISO646-DK/UCS                   mapper_646                      ISO646/ISO646-DK%UCS.646
+UCS/ISO646-DK                   mapper_646                      !ISO646/ISO646-DK%UCS.646
+ISO646-KR/UCS                   mapper_646                      ISO646/ISO646-KR%UCS.646
+UCS/ISO646-KR                   mapper_646                      !ISO646/ISO646-KR%UCS.646
+
+# ISO-8859
+
+ISO-8859-1/UCS                  mapper_none     
+UCS/ISO-8859-1                  mapper_zone     0x00-0xFF
+ISO-8859-1/UCS                  mapper_std      ISO-8859/ISO-8859-1%UCS.mps
+UCS/ISO-8859-1                  mapper_std      ISO-8859/UCS%ISO-8859-1.mps
+ISO-8859-1:GR/ISO-8859-1        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-1/ISO-8859-1:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-1:GR/UCS               mapper_serial   ISO-8859-1:GR/ISO-8859-1,ISO-8859-1/UCS
+UCS/ISO-8859-1:GR               mapper_serial   UCS/ISO-8859-1,ISO-8859-1/ISO-8859-1:GR
+ISO-8859-2/UCS                  mapper_std      ISO-8859/ISO-8859-2%UCS.mps
+UCS/ISO-8859-2                  mapper_std      ISO-8859/UCS%ISO-8859-2.mps
+ISO-8859-2:GR/ISO-8859-2        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-2/ISO-8859-2:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-2:GR/UCS               mapper_serial   ISO-8859-2:GR/ISO-8859-2,ISO-8859-2/UCS
+UCS/ISO-8859-2:GR               mapper_serial   UCS/ISO-8859-2,ISO-8859-2/ISO-8859-2:GR
+ISO-8859-3/UCS                  mapper_std      ISO-8859/ISO-8859-3%UCS.mps
+UCS/ISO-8859-3                  mapper_std      ISO-8859/UCS%ISO-8859-3.mps
+ISO-8859-3:GR/ISO-8859-3        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-3/ISO-8859-3:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-3:GR/UCS               mapper_serial   ISO-8859-3:GR/ISO-8859-3,ISO-8859-3/UCS
+UCS/ISO-8859-3:GR               mapper_serial   UCS/ISO-8859-3,ISO-8859-3/ISO-8859-3:GR
+ISO-8859-4/UCS                  mapper_std      ISO-8859/ISO-8859-4%UCS.mps
+UCS/ISO-8859-4                  mapper_std      ISO-8859/UCS%ISO-8859-4.mps
+ISO-8859-4:GR/ISO-8859-4        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-4/ISO-8859-4:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-4:GR/UCS               mapper_serial   ISO-8859-4:GR/ISO-8859-4,ISO-8859-4/UCS
+UCS/ISO-8859-4:GR               mapper_serial   UCS/ISO-8859-4,ISO-8859-4/ISO-8859-4:GR
+ISO-8859-5/UCS                  mapper_std      ISO-8859/ISO-8859-5%UCS.mps
+UCS/ISO-8859-5                  mapper_std      ISO-8859/UCS%ISO-8859-5.mps
+ISO-8859-5:GR/ISO-8859-5        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-5/ISO-8859-5:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-5:GR/UCS               mapper_serial   ISO-8859-5:GR/ISO-8859-5,ISO-8859-5/UCS
+UCS/ISO-8859-5:GR               mapper_serial   UCS/ISO-8859-5,ISO-8859-5/ISO-8859-5:GR
+ISO-8859-6/UCS                  mapper_std      ISO-8859/ISO-8859-6%UCS.mps
+UCS/ISO-8859-6                  mapper_std      ISO-8859/UCS%ISO-8859-6.mps
+ISO-8859-6:GR/ISO-8859-6        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-6/ISO-8859-6:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-6:GR/UCS               mapper_serial   ISO-8859-6:GR/ISO-8859-6,ISO-8859-6/UCS
+UCS/ISO-8859-6:GR               mapper_serial   UCS/ISO-8859-6,ISO-8859-6/ISO-8859-6:GR
+ISO-8859-7/UCS                  mapper_std      ISO-8859/ISO-8859-7%UCS.mps
+UCS/ISO-8859-7                  mapper_std      ISO-8859/UCS%ISO-8859-7.mps
+ISO-8859-7:GR/ISO-8859-7        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-7/ISO-8859-7:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-7:GR/UCS               mapper_serial   ISO-8859-7:GR/ISO-8859-7,ISO-8859-7/UCS
+UCS/ISO-8859-7:GR               mapper_serial   UCS/ISO-8859-7,ISO-8859-7/ISO-8859-7:GR
+ISO-8859-8/UCS                  mapper_std      ISO-8859/ISO-8859-8%UCS.mps
+UCS/ISO-8859-8                  mapper_std      ISO-8859/UCS%ISO-8859-8.mps
+ISO-8859-8:GR/ISO-8859-8        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-8/ISO-8859-8:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-8:GR/UCS               mapper_serial   ISO-8859-8:GR/ISO-8859-8,ISO-8859-8/UCS
+UCS/ISO-8859-8:GR               mapper_serial   UCS/ISO-8859-8,ISO-8859-8/ISO-8859-8:GR
+ISO-8859-9/UCS                  mapper_std      ISO-8859/ISO-8859-9%UCS.mps
+UCS/ISO-8859-9                  mapper_std      ISO-8859/UCS%ISO-8859-9.mps
+ISO-8859-9:GR/ISO-8859-9        mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-9/ISO-8859-9:GR        mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-9:GR/UCS               mapper_serial   ISO-8859-9:GR/ISO-8859-9,ISO-8859-9/UCS
+UCS/ISO-8859-9:GR               mapper_serial   UCS/ISO-8859-9,ISO-8859-9/ISO-8859-9:GR
+ISO-8859-11/UCS                 mapper_std      ISO-8859/ISO-8859-11%UCS.mps
+UCS/ISO-8859-11                 mapper_std      ISO-8859/UCS%ISO-8859-11.mps
+ISO-8859-11:GR/ISO-8859-11      mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-11/ISO-8859-11:GR      mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-11:GR/UCS              mapper_serial   ISO-8859-11:GR/ISO-8859-11,ISO-8859-11/UCS
+UCS/ISO-8859-11:GR              mapper_serial   UCS/ISO-8859-11,ISO-8859-11/ISO-8859-11:GR
+ISO-8859-15/UCS                 mapper_std      ISO-8859/ISO-8859-15%UCS.mps
+UCS/ISO-8859-15                 mapper_std      ISO-8859/UCS%ISO-8859-15.mps
+ISO-8859-15:GR/ISO-8859-15      mapper_zone     0x00 - 0x7F : +0x80
+ISO-8859-15/ISO-8859-15:GR      mapper_zone     0x80 - 0xFF : -0x80
+ISO-8859-15:GR/UCS              mapper_serial   ISO-8859-15:GR/ISO-8859-15,ISO-8859-15/UCS
+UCS/ISO-8859-15:GR              mapper_serial   UCS/ISO-8859-15,ISO-8859-15/ISO-8859-15:GR
+
+# JIS
+
+JISX0201-KANA/UCS		mapper_std	JIS/JISX0201-KANA%UCS.mps
+JISX0208:1990/UCS		mapper_std	JIS/JISX0208@1990%UCS.mps
+JISX0212/UCS			mapper_std	JIS/JISX0212%UCS.mps
+UCS/JISX0201-KANA		mapper_std	JIS/UCS%JISX0201-KANA.mps
+UCS/JISX0208:1990		mapper_std	JIS/UCS%JISX0208@1990.mps
+UCS/JISX0212			mapper_std	JIS/UCS%JISX0212.mps
+
+# KS
+
+KSC5601HANGUL/UCS		mapper_std	KS/KSC5601HANGUL%UCS.mps
+KSC5601HANJA/UCS		mapper_std	KS/KSC5601HANJA%UCS.mps
+KSC5601/UCS			mapper_parallel	KSC5601HANGUL/UCS,KSC5601HANJA/UCS
+UCS/KSC5601HANGUL		mapper_std	KS/UCS%KSC5601HANGUL.mps
+UCS/KSC5601HANJA		mapper_std	KS/UCS%KSC5601HANJA.mps
+UCS/KSC5601			mapper_parallel	UCS/KSC5601HANGUL,UCS/KSC5601HANJA
+
+# Supplementary Multilingual Plane
+UCS:SMP/UCS	mapper_zone	0x0000-0xFFFF:+0x010000
+UCS/UCS:SMP	mapper_zone	0x010000-0x01FFFF:-0x010000
+
+# Supplementary Ideographic Plane
+UCS:SIP/UCS	mapper_zone	0x0000-0xFFFF:+0x020000
+UCS/UCS:SIP	mapper_zone	0x020000-0x02FFFF:-0x020000
+
+# Supplementary Special-purpose Plane
+UCS:SSP/UCS	mapper_zone	0x0000-0xFFFF:+0x0E0000
+UCS/UCS:SSP	mapper_zone	0x0E0000-0x0EFFFF:-0x0E0000
