@@ -370,8 +370,8 @@ class OFCharacterEncoding::Implementation
     static OFString getLocaleEncoding()
     {
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
-        char buf[20];
-        return OFSTRING_GUARD(::OFlocale_charset(buf, sizeof(buf)));
+        iconv_locale_allocation_t buf;
+        return OFSTRING_GUARD(::OFlocale_charset(&buf));
 #elif defined(WITH_LIBICONV)
         // basically, the function below should always return a non-empty string
         // but older versions of libiconv might return NULL in certain cases
