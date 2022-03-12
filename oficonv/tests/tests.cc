@@ -40,6 +40,7 @@ OFTEST_REGISTER(oficonv_iso8859_11_to_utf8);
 OFTEST_REGISTER(oficonv_iso8859_15_to_utf8);
 OFTEST_REGISTER(oficonv_tis_620_to_utf8);
 OFTEST_REGISTER(oficonv_shift_jis_to_utf8);
+OFTEST_REGISTER(oficonv_jis_x0201_to_ascii);
 
 // conversion of UTF-8 to the supported single-byte character sets, only using characters that can be mapped
 OFTEST_REGISTER(oficonv_utf8_to_iso8859_1);
@@ -99,9 +100,11 @@ OFTEST_REGISTER(oficonv_utf8_to_jis_x0208);
 OFTEST_REGISTER(oficonv_jis_x0212_to_utf8);
 OFTEST_REGISTER(oficonv_utf8_to_jis_x0212);
 
+// test other functions of dcmtk/oficonv/iconv.h
 OFTEST_REGISTER(oficonv_canonicalize);
 OFTEST_REGISTER(oficonv_get_list);
 OFTEST_REGISTER(oficonvlist);
-
+OFTEST_REGISTER(oficonv_open_into);
+OFTEST_REGISTER(oflocale_charset);
 
 OFTEST_MAIN("oficonv")

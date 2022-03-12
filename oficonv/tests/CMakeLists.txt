@@ -1,7 +1,12 @@
 # declare executables
 DCMTK_ADD_EXECUTABLE(oficonv_tests
   tests.cc
+  oficonv_tests.cc
   ticonv.cc
+  ticonv_iso8859.cc
+  ticonv_chinese.cc
+  ticonv_japanese.cc
+  ticonv_korean.cc
 )
 
 # make sure executables are linked to the corresponding libraries
