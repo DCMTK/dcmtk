@@ -378,6 +378,16 @@ _citrus_iconv_close(struct _citrus_iconv *cv)
     }
 }
 
+void
+_citrus_iconv_close_nofree(struct _citrus_iconv *cv)
+{
+
+    if (cv) {
+        (*cv->cv_shared->ci_ops->io_uninit_context)(cv);
+        release_shared(cv->cv_shared);
+    }
+}
+
 const char
 *_citrus_iconv_canonicalize(const char *name)
 {

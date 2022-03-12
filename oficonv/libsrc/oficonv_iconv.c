@@ -136,6 +136,23 @@ OFiconv_open_into(const char *out, const char *in, iconv_allocation_t *ptr)
 }
 
 int
+OFiconv_close_in(iconv_allocation_t *ptr)
+{
+    struct _citrus_iconv *handle;
+
+    handle = (struct _citrus_iconv *)ptr;
+
+    if (ISBADF((iconv_t)handle)) {
+        errno = EBADF;
+        return (-1);
+    }
+
+    _citrus_iconv_close_nofree(handle);
+
+    return (0);
+}
+
+int
 OFiconv_close(iconv_t handle)
 {
 
@@ -348,10 +365,10 @@ OFiconvctl(iconv_t cd, int request, void *argument)
     }
 }
 
-const char *OFlocale_charset(char *buf, size_t buflen)
+const char *OFlocale_charset(iconv_locale_allocation_t *buf)
 {
 #ifdef HAVE_WINDOWS_H
-  snprintf(buf, buflen, "%lu", (unsigned long) GetConsoleOutputCP());
+  snprintf(&buf[0], sizeof(iconv_locale_allocation_t), "%lu", (unsigned long) GetConsoleOutputCP());
   return buf;
 #else
   (void) buf;

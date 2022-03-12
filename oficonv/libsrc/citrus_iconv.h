@@ -38,6 +38,7 @@ BEGIN_EXTERN_C
 int      _citrus_iconv_open(struct _citrus_iconv * * ,
             const char * , const char * );
 void         _citrus_iconv_close(struct _citrus_iconv *);
+void         _citrus_iconv_close_nofree(struct _citrus_iconv *);
 const char  *_citrus_iconv_canonicalize(const char *);
 END_EXTERN_C
 
