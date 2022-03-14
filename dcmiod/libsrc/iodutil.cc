@@ -706,6 +706,10 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
     // Loop over each frame and copy it to Frame structures
     for (size_t f = 0; f < numFrames; f++)
     {
+        if ( (f == (numFrames -1)) && (f == 1071) )
+        {
+            // std::cout << "last frame in instance " << std::endl;
+        }
         // Create frame with correct length and copy 1:1 from pixel data
         DcmIODTypes::Frame* frame = new DcmIODTypes::Frame();
         frame->length             = frameLengthBytes;
@@ -732,7 +736,7 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
         // -------------------------------------------------------
         // Adapt last byte by masking out unused bits (i.e. those belonging to next frame).
         // A reader should ignore those unused bits anyway.
-        frame->pixData[frame->length - 1] = OFstatic_cast(unsigned char, (frame->pixData[frame->length - 1] << (overlapBits))) >> (overlapBits);
+        frame->pixData[frame->length - 1] = OFstatic_cast(unsigned char, (frame->pixData[frame->length - 1] << overlapBits)) >> overlapBits;
         // Store frame
         results.push_back(frame);
         // Compute the bitshift created by this frame
@@ -763,12 +767,12 @@ void DcmIODUtil::alignFrameOnByteBoundary(Uint8* buf, size_t bufLen, Uint8 numBi
     for (size_t x = 0; x < bufLen - 1; x++)
     {
         // Shift current byte
-        buf[x] = buf[x] >> numBits;
+        buf[x] = OFstatic_cast(unsigned char, buf[x]) >> numBits;
         // isolate portion of next byte that must be shifted into current byte
         Uint8 next = (buf[x + 1] << (8 - numBits));
         // Take over portion from next byte
         buf[x] |= next;
     }
     // Shift last byte manually
-    buf[bufLen - 1] >>= numBits;
+    buf[bufLen - 1] = OFstatic_cast(unsigned char, buf[bufLen - 1]) >> numBits;
 }

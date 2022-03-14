@@ -1448,7 +1448,7 @@ void DcmSegmentation::concatFrames(OFVector<DcmIODTypes::Frame*> frames, Uint8* 
         // previous frame; mask out those bits not belonging to previous frame.
         // This will potentially create some empty bits on the left of the byte,
         // that the current frame can use to store the its own first bits.
-        firstByte = (writePos[0] << freeBits) >> freeBits;
+        firstByte = OFstatic_cast(unsigned char, (writePos[0] << freeBits)) >> freeBits;
         memcpy(writePos, (*frame)->pixData, (*frame)->length);
         // If the previous frame left over some unused bits, shift the current frame
         // that number of bits to the left, and restore the original bits of the
@@ -1478,6 +1478,6 @@ void DcmSegmentation::concatFrames(OFVector<DcmIODTypes::Frame*> frames, Uint8* 
     // last byte. Fill them with zeros (though not required by the standard).
     if (freeBits > 0)
     {
-        *writePos = (*writePos >> freeBits) << freeBits;
+        *writePos = (OFstatic_cast(unsigned char, *writePos) >> freeBits) << freeBits;
     }
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, Open Connections GmbH
+//  *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -130,7 +130,7 @@ void DcmSegUtils::alignFrameOnBitPosition(Uint8* buf, const size_t bufLen, const
 {
     if (numBits > 7)
     {
-        DCMSEG_ERROR("Invalid input data: shiftFrameBitsLeft() can only shift 0-7 bits");
+        DCMSEG_ERROR("Invalid input data: alignFrameOnBitPosition() can only shift 0-7 bits");
         return;
     }
     Uint8 carryOver = 0;
@@ -146,7 +146,7 @@ void DcmSegUtils::alignFrameOnBitPosition(Uint8* buf, const size_t bufLen, const
         buf[x] |= carryOver;
         // Compute carry over bits for next byte to be handled, i.e. those bits at the left that will be
         // overwritten in the next byte
-        carryOver = current >> (8 - numBits);
+        carryOver = OFstatic_cast(unsigned char, current) >> (8 - numBits);
     }
 }
 
@@ -172,7 +172,7 @@ OFString DcmSegUtils::debugByte2Bin(Uint8 b)
     {
         result[i] = (b & 1) + '0';
 
-        b >>= 1;
+        b = OFstatic_cast(unsigned char, b) >> 1;
     }
     return result;
 }

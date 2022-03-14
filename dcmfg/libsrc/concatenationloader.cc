@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, Open Connections GmbH
+ *  Copyright (C) 2019-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -303,7 +303,6 @@ OFCondition ConcatenationLoader::prepareTemplate(ConcatenationLoader::Info& firs
             result = m_Result->putAndInsertOFStringArray(DCM_SOPInstanceUID, srcUID);
         if (result.good())
         {
-            result = extractFrames(*m_Result, firstInstance, firstInstance.m_Files.front().m_NumberOfFrames);
             m_Result->findAndDeleteElement(DCM_PixelData);
         }
     }
@@ -330,8 +329,8 @@ OFCondition ConcatenationLoader::extractFrames(DcmItem& item, Info& info, const 
     OFCondition result   = item.findAndGetUint8Array(DCM_PixelData, pixData);
     if (result.good() && pixData)
     {
-        size_t bytes_per_frame = 0;
-        result                 = computeBytesPerFrame(info.m_Rows, info.m_Cols, info.m_BitsAlloc, bytes_per_frame);
+        size_t bytesPerFrame = 0;
+        result                 = computeBytesPerFrame(info.m_Rows, info.m_Cols, info.m_BitsAlloc, bytesPerFrame);
         if (result.good())
         {
             const Uint8* ptr = pixData;
@@ -340,7 +339,7 @@ OFCondition ConcatenationLoader::extractFrames(DcmItem& item, Info& info, const 
                 DcmIODTypes::Frame* frame = new DcmIODTypes::Frame();
                 if (frame)
                 {
-                    frame->length  = bytes_per_frame;
+                    frame->length  = bytesPerFrame;
                     frame->pixData = new Uint8[frame->length];
                     if (frame->pixData)
                     {
