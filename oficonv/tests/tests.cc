@@ -105,6 +105,8 @@ OFTEST_REGISTER(oficonv_canonicalize);
 OFTEST_REGISTER(oficonv_get_list);
 OFTEST_REGISTER(oficonvlist);
 OFTEST_REGISTER(oficonv_open_into);
+OFTEST_REGISTER(oficonv__iconv);
 OFTEST_REGISTER(oflocale_charset);
+
 
 OFTEST_MAIN("oficonv")

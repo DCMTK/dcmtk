@@ -27,6 +27,7 @@
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/oficonv/iconv.h"
 #include "oficonv_tests.h"
+#include "tables_error.h"
 
 // This test only exercises OFiconv_open() for various pairs of
 // character sets and checks whether valid conversion contexts are returned.
@@ -310,5 +311,130 @@ OFTEST(oflocale_charset)
   iconv_locale_allocation_t buf;
   const char *lc = OFlocale_charset(&buf);
   OFCHECK(lc != NULL);
+}
+
+#define MAXLEN 4096
+
+OFTEST(oficonv__iconv)
+{
+  iconv_t invalid_id = OFreinterpret_cast(iconv_t, -1);
+  iconv_t id;
+
+  OFCHECK(invalid_id != (id = OFiconv_open("ISO-8859-1", "UTF-8")));
+  if (id != invalid_id)
+  {
+    // first part of the test case: test how OFiconv handles an input string containing an illegal byte sequence
+    char output[MAXLEN];
+    char *src_ptr = OFreinterpret_cast(char *, OF__iconv_test_sequence);
+    size_t src_len = sizeof(OF__iconv_test_sequence);
+    char *dst_ptr = output;
+    size_t dst_len = MAXLEN;
+    memset(output, 0, MAXLEN);
+
+    // perform the conversion
+    int result = OFiconv(id, &src_ptr, &src_len, &dst_ptr, &dst_len);
+
+    // since the source sequence contains an illegal byte sequence, this call should have failed
+    OFCHECK(result == -1);
+
+    // including the illegal byte sequence, there should be 20 bytes left in the source buffer
+    OFCHECK(src_len == 20);
+
+    // compare the output against a reference
+    size_t refsize = sizeof(test_sequence_converted_to_latin_1);
+    if ((MAXLEN - dst_len) != refsize)
+    {
+      OFOStringStream str;
+      str << "OFiconv output does not have expected size, expected " << refsize << " bytes and found " << (MAXLEN - dst_len) << "." << OFStringStream_ends;
+      OFSTRINGSTREAM_GETSTR(str, c_str)
+      OFCHECK_FAIL(c_str);
+      OFSTRINGSTREAM_FREESTR(c_str)
+    }
+    else
+    {
+      if (0 != memcmp(test_sequence_converted_to_latin_1, output, refsize))
+      {
+        OFCHECK_FAIL("OFiconv output does not match expected string.");
+      }
+    }
+
+    // second part of the test case: test how OF__iconv handles an input string containing an illegal byte sequence
+    src_ptr = OFreinterpret_cast(char *, OF__iconv_test_sequence);
+    src_len = sizeof(OF__iconv_test_sequence);
+    dst_ptr = output;
+    dst_len = MAXLEN;
+    memset(output, 0, MAXLEN);
+    size_t invalids = 0;
+
+    // perform the conversion
+    size_t OF__iconv_result = OF__iconv(id, &src_ptr, &src_len, &dst_ptr, &dst_len, 0, &invalids);
+
+    // since the source sequence contains an illegal byte sequence, this call should have failed
+    OFCHECK(OF__iconv_result == (size_t)-1);
+
+    // including the illegal byte sequence, there should be 20 bytes left in the source buffer
+    OFCHECK(src_len == 20);
+
+    // four characters should have been converted to the invalids character symbol because no mapping to Latin-1 exists
+    OFCHECK(invalids == 4);
+
+    // compare the output against a reference
+    if ((MAXLEN - dst_len) != refsize)
+    {
+      OFOStringStream str;
+      str << "OFiconv output does not have expected size, expected " << refsize << " bytes and found " << (MAXLEN - dst_len) << "." << OFStringStream_ends;
+      OFSTRINGSTREAM_GETSTR(str, c_str)
+      OFCHECK_FAIL(c_str);
+      OFSTRINGSTREAM_FREESTR(c_str)
+    }
+    else
+    {
+      if (0 != memcmp(test_sequence_converted_to_latin_1, output, refsize))
+      {
+        OFCHECK_FAIL("OFiconv output does not match expected string.");
+      }
+    }
+
+    // third part of the test case: test how OF__iconv handles an input string containing an illegal byte sequence when __ICONV_F_HIDE_INVALID is passed
+    src_ptr = OFreinterpret_cast(char *, OF__iconv_test_sequence);
+    src_len = sizeof(OF__iconv_test_sequence);
+    dst_ptr = output;
+    dst_len = MAXLEN;
+    memset(output, 0, MAXLEN);
+    invalids = 0;
+
+    // perform the conversion
+    OF__iconv_result = OF__iconv(id, &src_ptr, &src_len, &dst_ptr, &dst_len, __ICONV_F_HIDE_INVALID, &invalids);
+
+    // since the source sequence contains an illegal byte sequence, this call should have failed
+    OFCHECK(OF__iconv_result == (size_t)-1);
+
+    // including the illegal byte sequence, there should be 20 bytes left in the source buffer
+    OFCHECK(src_len == 20);
+
+    // four characters should have been converted to the invalids character symbol because no mapping to Latin-1 exists
+    OFCHECK(invalids == 4);
+
+    // compare the output against a reference
+    refsize = sizeof(test_sequence_converted_to_latin_1_invalids_hidden);
+    if ((MAXLEN - dst_len) != refsize)
+    {
+      OFOStringStream str;
+      str << "OFiconv output does not have expected size, expected " << refsize << " bytes and found " << (MAXLEN - dst_len) << "." << OFStringStream_ends;
+      OFSTRINGSTREAM_GETSTR(str, c_str)
+      OFCHECK_FAIL(c_str);
+      OFSTRINGSTREAM_FREESTR(c_str)
+    }
+    else
+    {
+      if (0 != memcmp(test_sequence_converted_to_latin_1_invalids_hidden, output, refsize))
+      {
+        OFCHECK_FAIL("OFiconv output does not match expected string.");
+      }
+    }
+
+    // all done.
+    OFiconv_close(id);
+  }
 }
 
