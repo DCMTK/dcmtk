@@ -706,10 +706,6 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
     // Loop over each frame and copy it to Frame structures
     for (size_t f = 0; f < numFrames; f++)
     {
-        if ( (f == (numFrames -1)) && (f == 1071) )
-        {
-            // std::cout << "last frame in instance " << std::endl;
-        }
         // Create frame with correct length and copy 1:1 from pixel data
         DcmIODTypes::Frame* frame = new DcmIODTypes::Frame();
         frame->length             = frameLengthBytes;
