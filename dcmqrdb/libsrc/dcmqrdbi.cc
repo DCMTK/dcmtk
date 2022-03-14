@@ -1130,6 +1130,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
                 else
                     uniqueKeyFound = OFTrue ;
             }
+            if (! uniqueKeyFound) {
+                DCMQRDB_DEBUG("No Unique Key found (level " << level << ")");
+                return QR_EC_IndexDatabaseError ;
+            }
         }
 
         /**** If current level is the QueryLevel
