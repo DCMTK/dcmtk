@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, OFFIS e.V.
+ *  Copyright (C) 2019-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -491,7 +491,7 @@ static void prepare_dset_dump()
     DSET_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem)               #   0, 0 SequenceDelimitationItem\n";
     DSET_DUMP += "  (fffe,e00d) na (ItemDelimitationItem)                   #   0, 0 ItemDelimitationItem\n";
     DSET_DUMP += "(fffe,e0dd) na (SequenceDelimitationItem)               #   0, 0 SequenceDelimitationItem\n";
-    DSET_DUMP += "(5200,9230) SQ (Sequence with undefined length #=60)    # u/l, 1 PerFrameFunctionalGroupsSequence\n";
+    DSET_DUMP += "(5200,9230) SQ (Sequence with explicit length #=60)     #   0, 1 PerFrameFunctionalGroupsSequence\n";
     DSET_DUMP += "  (fffe,e000) na (Item with undefined length #=4)         # u/l, 1 Item\n";
     DSET_DUMP += "    (0018,9326) SQ (Sequence with undefined length #=1)     # u/l, 1 CTPositionSequence\n";
     DSET_DUMP += "      (fffe,e000) na (Item with undefined length #=3)         # u/l, 1 Item\n";
@@ -3132,7 +3132,7 @@ static void prepare_dset_dump()
     DSET_DUMP += "      (fffe,e00d) na (ItemDelimitationItem)                   #   0, 0 ItemDelimitationItem\n";
     DSET_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem)               #   0, 0 SequenceDelimitationItem\n";
     DSET_DUMP += "  (fffe,e00d) na (ItemDelimitationItem)                   #   0, 0 ItemDelimitationItem\n";
-    DSET_DUMP += "(fffe,e0dd) na (SequenceDelimitationItem)               #   0, 0 SequenceDelimitationItem\n";
+    DSET_DUMP += "(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
 }
 
 void check_dump(const OFString& expected, const OFString& output)

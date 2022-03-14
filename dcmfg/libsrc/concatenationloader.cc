@@ -242,7 +242,6 @@ ConcatenationLoader::load(const OFString& concatenationUID, DcmDataset* dataset,
             if (result.good())
             {
                 OFListIterator(ConcatenationLoader::Info::Instance) inst = c->m_Files.begin();
-                inst++; // first instance already handled
                 while (result.good() && (inst != c->m_Files.end()))
                 {
                     DcmFileFormat dcmff;
@@ -301,6 +300,15 @@ OFCondition ConcatenationLoader::prepareTemplate(ConcatenationLoader::Info& firs
             result = deleteConcatAttributes(*m_Result);
         if (result.good())
             result = m_Result->putAndInsertOFStringArray(DCM_SOPInstanceUID, srcUID);
+        if (result.good())
+        {
+            // Clear Per-Frame Functional Groups Sequence
+            result = m_Result->findAndDeleteElement(DCM_PerFrameFunctionalGroupsSequence);
+            if (result.good())
+            {
+                result = m_Result->insertEmptyElement(DCM_PerFrameFunctionalGroupsSequence);
+            }
+        }
         if (result.good())
         {
             m_Result->findAndDeleteElement(DCM_PixelData);
