@@ -6,6 +6,7 @@
 
 set(ENV{WINEPREFIX} "@DCMTK_WINEPREFIX@")
 set(ENV{DCMDICTPATH} "@DCMDICTPATH@")
+set(ENV{DCMICONVPATH} "@DCMICONVPATH@")
 set(WINE_WINE_PROGRAM "@WINE_WINE_PROGRAM@")
 
 # spawn the winserver using 'cmd /C call' -> effectively NOP

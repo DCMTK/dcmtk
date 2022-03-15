@@ -112,6 +112,8 @@ endif()
 # Configure files needed for running the unit tests and cleanup
 #-----------------------------------------------------------------------------
 
+set(DCMICONVPATH "${DCMTK_ICONV_DATAFILES}")
+
 if(CMAKE_CROSSCOMPILING)
   if(WIN32)
     string(REPLACE ";" "${ENVIRONMENT_PATH_SEPARATOR}" DCMDICTPATH "${DCMTK_DICOM_DICTIONARIES}")

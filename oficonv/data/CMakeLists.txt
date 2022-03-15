@@ -1,3 +1,11 @@
+
+# add path to the data files to a CMake variable for being used by the unit tests
+
+set(DCMTK_ICONV_DATAFILES
+  "${CMAKE_CURRENT_SOURCE_DIR}"
+  CACHE INTERNAL "paths to the oficonv data files"
+)
+
 # declare installation files
 
 install(FILES 
