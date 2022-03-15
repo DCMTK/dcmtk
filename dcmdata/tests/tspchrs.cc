@@ -210,7 +210,11 @@ OFTEST(dcmdata_specificCharacterSet_4)
         {
             OFCHECK(converter.setConversionFlags(OFCharacterEncoding::TransliterateIllegalSequences).good());
             OFCHECK(converter.convertString("J\366rg", resultStr).good());
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+            OFCHECK_EQUAL(resultStr, "J?rg");
+#else
             OFCHECK_EQUAL(resultStr, "J\"org");
+#endif
         }
     } else {
         // in case there is no libiconv, report a warning but do not fail
