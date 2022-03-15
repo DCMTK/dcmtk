@@ -27,7 +27,7 @@
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/oficonv/iconv.h"
 #include "oficonv_tests.h"
-#include "tables_error.h"
+#include "tables_invalids.h"
 
 // This test only exercises OFiconv_open() for various pairs of
 // character sets and checks whether valid conversion contexts are returned.
@@ -438,3 +438,138 @@ OFTEST(oficonv__iconv)
   }
 }
 
+OFTEST(oficonvctl)
+{
+  iconv_t invalid_id = OFreinterpret_cast(iconv_t, -1);
+  iconv_t id1, id2, id3;
+  OFCHECK(invalid_id != (id1 = OFiconv_open("ISO-8859-1", "UTF-8")));
+  OFCHECK(invalid_id != (id2 = OFiconv_open("UTF-8", "UTF-8")));
+  OFCHECK(invalid_id != (id3 = OFiconv_open("UTF-16", "UTF-8")));
+  char output[MAXLEN];
+  char *src_ptr = OFreinterpret_cast(char *, OFiconvctl_test_sequence);
+  size_t src_len = sizeof(OFiconvctl_test_sequence);
+  char *dst_ptr = output;
+  size_t dst_len = MAXLEN;
+  memset(output, 0, MAXLEN);
+
+  if ((id1 != invalid_id) && (id1 != invalid_id) && (id1 != invalid_id))
+  {
+    // Test 1: ICONV_TRIVIALP
+    int intvar = -1;
+    // a conversion from UTF-8 to ISO-8859-1 is not trivial
+    OFCHECK(0 == OFiconvctl(id1, ICONV_TRIVIALP, &intvar) && 0 == intvar);
+    intvar = -1;
+    // a conversion from UTF-8 to UTF-8 is trivial
+    OFCHECK(0 == OFiconvctl(id2, ICONV_TRIVIALP, &intvar) && 1 == intvar);
+    intvar = -1;
+    // a conversion from UTF-8 to UTF-16 is not trivial, although both are Unicode
+    OFCHECK(0 == OFiconvctl(id3, ICONV_TRIVIALP, &intvar) && 0 == intvar);
+
+    // Test 2: ICONV_GET_TRANSLITERATE
+    // In this implementation, transliteration is always "on" and cannot be disabled
+    intvar = -1;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_GET_TRANSLITERATE, &intvar) && 1 == intvar);
+
+    // Test 3: ICONV_SET_TRANSLITERATE
+    // In this implementation, transliteration is always "on" and cannot be disabled
+
+    // enable transliteration, this should work
+    intvar = 1;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_SET_TRANSLITERATE, &intvar));
+
+    // disable transliteration, this should fail
+    intvar = 0;
+    OFCHECK(-1 == OFiconvctl(id1, ICONV_SET_TRANSLITERATE, &intvar));
+
+    // after the previous operation, transliteration, should still be "on"
+    intvar = -1;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_GET_TRANSLITERATE, &intvar) && 1 == intvar);
+
+    // Test 4: ICONV_GET_DISCARD_ILSEQ
+    // By default, this feature is off
+    intvar = -1;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_GET_DISCARD_ILSEQ, &intvar) && 0 == intvar);
+
+    // Test 5: ICONV_SET_DISCARD_ILSEQ
+    // first part of the test case: do not discard illegal sequences
+    intvar = 0;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_SET_DISCARD_ILSEQ, &intvar));
+
+    // perform the conversion. Four characters should be converted to 'invalid'
+    OFCHECK(4 == OFiconv(id1, &src_ptr, &src_len, &dst_ptr, &dst_len));
+    OFCHECK(src_len == 0);
+
+    // compare the output against a reference
+    size_t refsize = sizeof(test_sequence_converted_to_latin_1);
+    if ((MAXLEN - dst_len) != refsize)
+    {
+      OFOStringStream str;
+      str << "OFiconv output does not have expected size, expected " << refsize << " bytes and found " << (MAXLEN - dst_len) << "." << OFStringStream_ends;
+      OFSTRINGSTREAM_GETSTR(str, c_str)
+      OFCHECK_FAIL(c_str);
+      OFSTRINGSTREAM_FREESTR(c_str)
+    }
+    else
+    {
+      if (0 != memcmp(test_sequence_converted_to_latin_1, output, refsize))
+      {
+        OFCHECK_FAIL("OFiconv output does not match expected string.");
+      }
+    }
+
+    // second part of the test case: do discard illegal sequences
+    intvar = 1;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_SET_DISCARD_ILSEQ, &intvar));
+
+    src_ptr = OFreinterpret_cast(char *, OFiconvctl_test_sequence);
+    src_len = sizeof(OFiconvctl_test_sequence);
+    dst_ptr = output;
+    dst_len = MAXLEN;
+    memset(output, 0, MAXLEN);
+
+    // perform the conversion. Four characters should be converted to 'invalid'
+    OFCHECK(4 == OFiconv(id1, &src_ptr, &src_len, &dst_ptr, &dst_len));
+    OFCHECK(src_len == 0);
+
+    // compare the output against a reference
+    refsize = sizeof(test_sequence_converted_to_latin_1_invalids_hidden);
+    if ((MAXLEN - dst_len) != refsize)
+    {
+      OFOStringStream str;
+      str << "OFiconv output does not have expected size, expected " << refsize << " bytes and found " << (MAXLEN - dst_len) << "." << OFStringStream_ends;
+      OFSTRINGSTREAM_GETSTR(str, c_str)
+      OFCHECK_FAIL(c_str);
+      OFSTRINGSTREAM_FREESTR(c_str)
+    }
+    else
+    {
+      if (0 != memcmp(test_sequence_converted_to_latin_1_invalids_hidden, output, refsize))
+      {
+        OFCHECK_FAIL("OFiconv output does not match expected string.");
+      }
+    }
+
+    // return the conversion descriptor to its original state: do not discard illegal sequences
+    intvar = 0;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_SET_DISCARD_ILSEQ, &intvar));
+
+    // Test 6: ICONV_SET_HOOKS
+#warning "ICONV_SET_HOOKS test missing"
+
+    // Test 7: ICONV_SET_FALLBACKS
+    // in GNU libiconv, this call expects a pointer to struct iconv_fallbacks as parameter.
+    // This implementation, however, does not support this function and always returns an error.
+    // Just in case someone tries this with GNU libiconv, pass a buffer that is large enough
+    memset(output, 0, MAXLEN);
+    OFCHECK(-1 == OFiconvctl(id1, ICONV_SET_FALLBACKS, &output));
+
+    // Test 8: ICONV_GET_ILSEQ_INVALID
+    // By default, this feature is off
+    intvar = -1;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_GET_DISCARD_ILSEQ, &intvar) && 0 == intvar);
+
+    // Test 9: ICONV_SET_ILSEQ_INVALID
+#warning "ICONV_SET_ILSEQ_INVALID test missing"
+
+  }
+}
