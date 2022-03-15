@@ -438,6 +438,26 @@ OFTEST(oficonv__iconv)
   }
 }
 
+BEGIN_EXTERN_C
+void test_unicode_char_hook(unsigned int mbr, void *data);
+void test_wide_char_hook(_citrus_wc_t wc, void *data);
+END_EXTERN_C
+
+size_t unicode_char_counter = 0;
+size_t wide_char_counter = 0;
+
+void test_unicode_char_hook(unsigned int mbr, void *data)
+{
+  OFCHECK(data == &unicode_char_counter);
+  unicode_char_counter++;
+}
+
+void test_wide_char_hook(_citrus_wc_t wc, void *data)
+{
+  OFCHECK(data == &unicode_char_counter);
+  wide_char_counter++;
+}
+
 OFTEST(oficonvctl)
 {
   iconv_t invalid_id = OFreinterpret_cast(iconv_t, -1);
@@ -445,6 +465,7 @@ OFTEST(oficonvctl)
   OFCHECK(invalid_id != (id1 = OFiconv_open("ISO-8859-1", "UTF-8")));
   OFCHECK(invalid_id != (id2 = OFiconv_open("UTF-8", "UTF-8")));
   OFCHECK(invalid_id != (id3 = OFiconv_open("UTF-16", "UTF-8")));
+
   char output[MAXLEN];
   char *src_ptr = OFreinterpret_cast(char *, OFiconvctl_test_sequence);
   size_t src_len = sizeof(OFiconvctl_test_sequence);
@@ -554,7 +575,26 @@ OFTEST(oficonvctl)
     OFCHECK(0 == OFiconvctl(id1, ICONV_SET_DISCARD_ILSEQ, &intvar));
 
     // Test 6: ICONV_SET_HOOKS
-#warning "ICONV_SET_HOOKS test missing"
+    struct iconv_hooks hooks;
+    hooks.uc_hook = test_unicode_char_hook;
+    hooks.wc_hook = test_wide_char_hook;
+    hooks.data = &unicode_char_counter;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_SET_HOOKS, &hooks));
+
+    src_ptr = OFreinterpret_cast(char *, OFiconvctl_test_sequence);
+    src_len = sizeof(OFiconvctl_test_sequence);
+    dst_ptr = output;
+    dst_len = MAXLEN;
+    memset(output, 0, MAXLEN);
+
+    // perform a conversion from UTF-8 to Latin-1.
+    // The Unicode callback should be called for each of the 36 Unicode characters in question
+    // Note: We don't have a test case for the wide char hook - there seems to be
+    // no character set used by DICOM that would trigger this callback.
+    OFCHECK(4 == OFiconv(id1, &src_ptr, &src_len, &dst_ptr, &dst_len));
+    OFCHECK(src_len == 0);
+    OFCHECK(unicode_char_counter == 36);
+    OFCHECK(wide_char_counter == 0);
 
     // Test 7: ICONV_SET_FALLBACKS
     // in GNU libiconv, this call expects a pointer to struct iconv_fallbacks as parameter.
@@ -569,7 +609,42 @@ OFTEST(oficonvctl)
     OFCHECK(0 == OFiconvctl(id1, ICONV_GET_DISCARD_ILSEQ, &intvar) && 0 == intvar);
 
     // Test 9: ICONV_SET_ILSEQ_INVALID
-#warning "ICONV_SET_ILSEQ_INVALID test missing"
+    intvar = 1;
+    OFCHECK(0 == OFiconvctl(id1, ICONV_SET_ILSEQ_INVALID, &intvar));
 
+    src_ptr = OFreinterpret_cast(char *, OFiconvctl_test_sequence);
+    src_len = sizeof(OFiconvctl_test_sequence);
+    dst_ptr = output;
+    dst_len = MAXLEN;
+    memset(output, 0, MAXLEN);
+
+    // perform the conversion. This should fail at the first Japanese character
+    OFCHECK((size_t)-1 == OFiconv(id1, &src_ptr, &src_len, &dst_ptr, &dst_len));
+
+    // there should be 28 bytes left in the source buffer
+    OFCHECK(src_len == 28);
+
+    // compare the output against a reference
+    refsize = sizeof(test_sequence_converted_to_latin_1_invalids_stopped);
+    if ((MAXLEN - dst_len) != refsize)
+    {
+      OFOStringStream str;
+      str << "OFiconv output does not have expected size, expected " << refsize << " bytes and found " << (MAXLEN - dst_len) << "." << OFStringStream_ends;
+      OFSTRINGSTREAM_GETSTR(str, c_str)
+      OFCHECK_FAIL(c_str);
+      OFSTRINGSTREAM_FREESTR(c_str)
+    }
+    else
+    {
+      if (0 != memcmp(test_sequence_converted_to_latin_1_invalids_stopped, output, refsize))
+      {
+        OFCHECK_FAIL("OFiconv output does not match expected string.");
+      }
+    }
+
+    // finally, release the conversion descriptors
+    OFiconv_close(id1);
+    OFiconv_close(id2);
+    OFiconv_close(id3);
   }
 }

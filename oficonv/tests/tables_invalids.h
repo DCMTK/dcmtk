@@ -67,6 +67,13 @@ unsigned char test_sequence_converted_to_latin_1_invalids_hidden[] = {
   // conversion stops here because of the illegal UTF-8 sequence
 };
 
+unsigned char test_sequence_converted_to_latin_1_invalids_stopped[] = {
+  // 16 printable Latin-1 characters
+  0xcf, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde,
+
+  // conversion stops here because of the Japanese letters that cannot be mapped to Latin-1
+};
+
 unsigned char OFiconvctl_test_sequence[] = {
   // some ISO Latin 1 characters, these can be converted
   0xc3, 0x8f, 0xc3, 0x90, 0xc3, 0x91, 0xc3, 0x92, 0xc3, 0x93, 0xc3, 0x94,
