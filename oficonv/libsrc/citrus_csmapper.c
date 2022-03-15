@@ -67,11 +67,19 @@ static SRWLOCK ma_lock = SRWLOCK_INIT;
 static pthread_rwlock_t ma_lock = PTHREAD_RWLOCK_INITIALIZER;
 #endif
 
-#define CS_ALIAS    _PATH_CSMAPPER "/charset.alias"
-#define CS_PIVOT    _PATH_CSMAPPER "/charset.pivot"
-
+#define CS_ALIAS_FILENAME "charset.alias"
+#define CS_PIVOT_FILENAME "charset.pivot"
 
 /* ---------------------------------------------------------------------- */
+
+/* write the full path to the CSMAPPER directory and the given filename (which may be NULL)
+ * to the path_out buffer, which is expected to be PATH_MAX in size.
+ */
+static void getCSMapperPath(char *path_out, size_t path_size, const char *filename)
+{
+    get_data_path(path_out, path_size, OFICONV_CSMAPPER_DIR, filename);
+}
+
 
 static int
 get32(struct _citrus_region *r, uint32_t *rval)
@@ -111,11 +119,13 @@ find_best_pivot_pvdb(const char *src, const char *dst, char *pivot,
     struct _citrus_db *db1, *db2, *db3;
     struct _citrus_region fr, r1, r2;
     char buf[LINE_MAX];
+    char mapper_path[PATH_MAX];
     uint32_t val32;
     unsigned long norm;
     int i, num, ret;
 
-    ret = _citrus_map_file(&fr, CS_PIVOT ".pvdb");
+    getCSMapperPath(mapper_path, sizeof(mapper_path), CS_PIVOT_FILENAME ".pvdb");
+    ret = _citrus_map_file(&fr, mapper_path);
     if (ret) {
         if (ret == ENOENT)
             ret = NO_SUCH_FILE;
@@ -226,8 +236,10 @@ find_dst(struct parse_arg *pasrc, const char *dst)
     struct parse_arg padst;
     struct _citrus_region data;
     int ret;
+    char mapper_path[PATH_MAX];
 
-    ret = _citrus_lookup_seq_open(&cl, CS_PIVOT, _CITRUS_LOOKUP_CASE_IGNORE);
+    getCSMapperPath(mapper_path, sizeof(mapper_path), CS_PIVOT_FILENAME);
+    ret = _citrus_lookup_seq_open(&cl, mapper_path, _CITRUS_LOOKUP_CASE_IGNORE);
     if (ret)
         return (ret);
 
@@ -257,8 +269,10 @@ find_best_pivot_lookup(const char *src, const char *dst, char *pivot,
     char pivot_min[PATH_MAX];
     unsigned long norm_min;
     int ret;
+    char mapper_path[PATH_MAX];
 
-    ret = _citrus_lookup_seq_open(&cl, CS_PIVOT, _CITRUS_LOOKUP_CASE_IGNORE);
+    getCSMapperPath(mapper_path, sizeof(mapper_path), CS_PIVOT_FILENAME);
+    ret = _citrus_lookup_seq_open(&cl, mapper_path, _CITRUS_LOOKUP_CASE_IGNORE);
     if (ret)
         return (ret);
 
@@ -365,21 +379,24 @@ _citrus_csmapper_open(struct _citrus_csmapper * * rcsm,
     const char *realsrc, *realdst;
 #ifdef DCMTK_USE_OFICONV_CHARSET_ALIAS_FILE
     char buf1[PATH_MAX], buf2[PATH_MAX];
+    char alias_path[PATH_MAX];
 #endif
     char key[PATH_MAX], pivot[PATH_MAX];
+    char mapper_path[PATH_MAX];
     unsigned long norm;
     int ret;
-
     norm = 0;
 
-    ret = _citrus_mapper_create_area(&maparea, _PATH_CSMAPPER);
+    getCSMapperPath(mapper_path, sizeof(mapper_path), NULL);
+    ret = _citrus_mapper_create_area(&maparea, mapper_path);
     if (ret)
         return (ret);
 
 #ifdef DCMTK_USE_OFICONV_CHARSET_ALIAS_FILE
     // Look up alias names in csmapper/charset.alias.db or csmapper/charset.alias
-    realsrc = _citrus_lookup_alias(CS_ALIAS, src, buf1, sizeof(buf1), _CITRUS_LOOKUP_CASE_IGNORE);
-    realdst = _citrus_lookup_alias(CS_ALIAS, dst, buf2, sizeof(buf2), _CITRUS_LOOKUP_CASE_IGNORE);
+    getCSMapperPath(alias_path, sizeof(alias_path), CS_ALIAS_FILENAME);
+    realsrc = _citrus_lookup_alias(alias_path, src, buf1, sizeof(buf1), _CITRUS_LOOKUP_CASE_IGNORE);
+    realdst = _citrus_lookup_alias(alias_path, dst, buf2, sizeof(buf2), _CITRUS_LOOKUP_CASE_IGNORE);
 #else
     // Don't use the alias files csmapper/charset.alias.db or csmapper/charset.alias
     realsrc = src;

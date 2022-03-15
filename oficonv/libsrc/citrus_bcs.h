@@ -60,7 +60,10 @@
 /* The original path to the citrus libiconv files is /usr/share/i18n,
  * we use DCMTK's DEFAULT_SUPPORT_DATA_DIR instead. */
 
-#define _PATH_CSMAPPER DEFAULT_SUPPORT_DATA_DIR "csmapper"
+#define OFICONV_PATH_VARIABLE "DCMICONVPATH"
+#define OFICONV_CSMAPPER_DIR "csmapper"
+#define OFICONV_ESDB_DIR "esdb"
+
 #define _PATH_ESDB DEFAULT_SUPPORT_DATA_DIR "esdb"
 
 #define __isthreaded 1
@@ -184,6 +187,16 @@ void _citrus_bcs_convert_to_lower(char *);
 void _citrus_bcs_convert_to_upper(char *);
 long int _citrus_bcs_strtol(const char * , char ** , int);
 unsigned long _citrus_bcs_strtoul(const char * , char ** , int);
+
+/** return path to data file or data directory. This function checks the value
+ *  of the environment variable DCMICONVPATH and uses it as the base path, if present,
+ *  and the hard-coded DEFAULT_SUPPORT_DATA_DIR otherwise.
+ *  @param path_out full path to data file returned in this buffer
+ *  @param size of buffer, should be MAX_PATH or larger
+ *  @param dirname name of the data directory, e.g. "esdb" or "csmapper"
+ *  @param filename name of the data file, may be NULL, in which case the name of the data directory is returned
+ */
+void get_data_path(char *path_out, size_t path_size, const char *dirname, const char *filename);
 END_EXTERN_C
 
 #endif

@@ -28,6 +28,8 @@
 #include "citrus_bcs.h"
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 /*
  * case insensitive comparison between two C strings.
@@ -159,4 +161,45 @@ _citrus_bcs_convert_to_upper(char *s)
         *s = _citrus_bcs_toupper(*s);
         s++;
     }
+}
+
+/*
+ * compute path to data file
+ */
+void get_data_path(char *path_out, size_t path_size, const char *dirname, const char *filename)
+{
+    const char *env;
+    const char *separator1;
+    const char *separator2;
+    size_t len;
+    char sep[3];
+
+    // create a string containing the path separator
+    snprintf(sep, sizeof(sep), "%c", PATH_SEPARATOR);
+
+    // retrieve the DCMICONVPATH environment variable
+    env = getenv(OFICONV_PATH_VARIABLE);
+
+    // if the environment variable is not set, use DEFAULT_SUPPORT_DATA_DIR instead
+    if (env == NULL) env = DEFAULT_SUPPORT_DATA_DIR;
+
+    len = strlen(env);
+    if (len == 0) separator1 = ""; // empty path, don't add path separator
+    else
+    {
+        if ((env[len-1] == PATH_SEPARATOR)||(env[len-1] == '/'))
+            separator1 = ""; // path already ends with path separator
+            else separator1 = sep; // add path separator
+    }
+
+    // use non-empty separator 2 only if filename is present and non-empty
+    if (filename && (strlen(filename) > 0))
+        separator2 = sep;
+        else separator2 = "";
+
+    // replace NULL filename with empty filename
+    if (filename == NULL) filename = "";
+
+    // finally print full path
+    snprintf(path_out, path_size, "%s%s%s%s%s", env, separator1, dirname, separator2, filename);
 }

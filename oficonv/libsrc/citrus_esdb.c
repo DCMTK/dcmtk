@@ -52,6 +52,15 @@
 #define ESDB_DIR    "esdb.dir"
 #define ESDB_ALIAS  "esdb.alias"
 
+/* write the full path to the ESDB directory and the given filename (which may be NULL)
+ * to the path_out buffer, which is expected to be PATH_MAX in size.
+ */
+static void getESDBPath(char *path_out, size_t path_size, const char *filename)
+{
+    get_data_path(path_out, path_size, OFICONV_ESDB_DIR, filename);
+}
+
+
 /*
  * _citrus_esdb_alias:
  *  resolve encoding scheme name aliases.
@@ -59,9 +68,9 @@
 const char *
 _citrus_esdb_alias(const char *esname, char *buf, size_t bufsize)
 {
-
-    return (_citrus_lookup_alias(_PATH_ESDB "/" ESDB_ALIAS, esname, buf, bufsize,
-        _CITRUS_LOOKUP_CASE_IGNORE));
+    char esdb_path[PATH_MAX];
+    getESDBPath(esdb_path, sizeof(esdb_path), ESDB_ALIAS);
+    return (_citrus_lookup_alias(esdb_path, esname, buf, bufsize, _CITRUS_LOOKUP_CASE_IGNORE));
 }
 
 
@@ -194,18 +203,18 @@ _citrus_esdb_open(struct _citrus_esdb *db, const char *esname)
     char buf1[PATH_MAX], buf2[PATH_MAX], path[PATH_MAX];
     int ret;
 
-    snprintf(path, sizeof(path), "%s/%s", _PATH_ESDB, ESDB_ALIAS);
+    getESDBPath(path, sizeof(path), ESDB_ALIAS);
     realname = _citrus_lookup_alias(path, esname, buf1, sizeof(buf1),
         _CITRUS_LOOKUP_CASE_IGNORE);
 
-    snprintf(path, sizeof(path), "%s/%s", _PATH_ESDB, ESDB_DIR);
+    getESDBPath(path, sizeof(path), ESDB_DIR);
     encfile = _citrus_lookup_simple(path, realname, buf2, sizeof(buf2),
         _CITRUS_LOOKUP_CASE_IGNORE);
     if (encfile == NULL)
         return (ENOENT);
 
     /* open file */
-    snprintf(path, sizeof(path), "%s/%s", _PATH_ESDB, encfile);
+    getESDBPath(path, sizeof(path), encfile);
     ret = _citrus_map_file(&fr, path);
     if (ret)
         return (ret);
@@ -260,16 +269,17 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
     char buf[PATH_MAX];
     size_t num;
     int ret;
+    char esdb_path[PATH_MAX];
 
     num = 0;
 
-    ret = _citrus_lookup_seq_open(&cla, _PATH_ESDB "/" ESDB_ALIAS,
-        _CITRUS_LOOKUP_CASE_IGNORE);
+    getESDBPath(esdb_path, sizeof(esdb_path), ESDB_ALIAS);
+    ret = _citrus_lookup_seq_open(&cla, esdb_path, _CITRUS_LOOKUP_CASE_IGNORE);
     if (ret)
         goto quit0;
 
-    ret = _citrus_lookup_seq_open(&cld, _PATH_ESDB "/" ESDB_DIR,
-        _CITRUS_LOOKUP_CASE_IGNORE);
+    getESDBPath(esdb_path, sizeof(esdb_path), ESDB_DIR);
+    ret = _citrus_lookup_seq_open(&cld, esdb_path, _CITRUS_LOOKUP_CASE_IGNORE);
     if (ret)
         goto quit1;
 
