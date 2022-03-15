@@ -55,6 +55,15 @@ DCMTK_UNDEF_SANITIZER
     raised by the sanitizer and thus prevent the CMake configure phase from
     completing.
 
+DCMTK_ENABLE_STRICT_HUFFMAN_TABLE_CHECK
+  Affected: dcmjpeg
+  Type of modification: Activates feature
+  Explanation: DCMTK releases up to 3.6.6 contained a relatively strict
+    check for the validity of Huffman tables for DC components in the JPEG
+    decoder. At least one JPEG implementation produces valid JPEG images that
+    fail this test (see DCMTK issue #1018). The test has, therefore,
+    been disabled. This macro re-enables the old behaviour.
+
 DCMTK_ENABLE_UNSAFE_VSNPRINTF
   Affected: ofstd
   Type of modification: Activates feature
