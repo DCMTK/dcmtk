@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -151,13 +151,4 @@ OFCondition DcmLongString::writeJson(STD_NAMESPACE ostream &out,
     DcmElement::writeJsonCloser(out, format);
     /* always report success */
     return EC_Normal;
-}
-
-
-// ********************************
-
-
-const OFString& DcmLongString::getDelimiterChars() const
-{
-    return DcmVR(EVR_LO).getDelimiterChars();
 }

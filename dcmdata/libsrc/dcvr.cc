@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -127,7 +127,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_ST, "ST", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_ISAFFECTEDBYCHARSET | DCMVR_PROP_ISLENGTHINCHAR, 0, 1024 },
     { EVR_SV, "SV", &noDelimiters, sizeof(Sint64), DCMVR_PROP_EXTENDEDLENGTHENCODING, 8, 8 },
     { EVR_TM, "TM", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 16 },
-    { EVR_UC, "UC", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 4294967294U },
+    { EVR_UC, "UC", &bsDelimiter, sizeof(char), DCMVR_PROP_ISASTRING | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_ISAFFECTEDBYCHARSET, 0, 4294967294U },
     { EVR_UI, "UI", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING, 0, 64 },
     { EVR_UL, "UL", &noDelimiters, sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
     { EVR_UR, "UR", &noDelimiters, sizeof(char), DCMVR_PROP_ISASTRING|DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, 4294967294U },
@@ -142,27 +142,19 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_up, "up", &noDelimiters, sizeof(Uint32), DCMVR_PROP_NONSTANDARD, 4, 4 },
 
     /* unique prefixes have been "invented" for the following internal VRs */
-    { EVR_item, "it_EVR_item", &noDelimiters, 0,
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_metainfo, "mi_EVR_metainfo", &noDelimiters, 0,
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_dataset, "ds_EVR_dataset", &noDelimiters, 0,
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_fileFormat, "ff_EVR_fileFormat", &noDelimiters, 0,
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_dicomDir, "dd_EVR_dicomDir", &noDelimiters, 0,
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_dirRecord, "dr_EVR_dirRecord", &noDelimiters, 0,
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
+    { EVR_item, "it_EVR_item", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
+    { EVR_metainfo, "mi_EVR_metainfo", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
+    { EVR_dataset, "ds_EVR_dataset", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
+    { EVR_fileFormat, "ff_EVR_fileFormat", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
+    { EVR_dicomDir, "dd_EVR_dicomDir", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
+    { EVR_dirRecord, "dr_EVR_dirRecord", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
 
-    { EVR_pixelSQ, "ps_EVR_pixelSQ", &noDelimiters, sizeof(Uint8),
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+    { EVR_pixelSQ, "ps_EVR_pixelSQ", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
     /* Moved from internal use to non standard only: necessary to distinguish from "normal" OB */
-    { EVR_pixelItem, "pi", &noDelimiters, sizeof(Uint8),
-      DCMVR_PROP_NONSTANDARD, 0, DCM_UndefinedLength },
+    { EVR_pixelItem, "pi", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD, 0, DCM_UndefinedLength },
 
-    { EVR_UNKNOWN, "??", &noDelimiters, sizeof(Uint8), /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_UNDEFINEDLENGTH, 0, DCM_UndefinedLength },
+    /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
+    { EVR_UNKNOWN, "??", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL | DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_UNDEFINEDLENGTH, 0, DCM_UndefinedLength },
 
     /* Unknown Value Representation */
     { EVR_UN, "UN", &noDelimiters, sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING | DCMVR_PROP_UNDEFINEDLENGTH, 0, 4294967294U },
@@ -172,8 +164,8 @@ static const DcmVREntry DcmVRDict[] = {
     /* Overlay Data - only used in ident() */
     { EVR_OverlayData, "OverlayData", &noDelimiters, 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
-    { EVR_UNKNOWN2B, "??", &noDelimiters, sizeof(Uint8), /* illegal VRs, we assume no extended length coding */
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+    /* illegal VRs, we assume no extended length coding */
+    { EVR_UNKNOWN2B, "??", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
 };
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -740,13 +740,4 @@ OFCondition DcmPersonName::checkStringValue(const OFString &value,
         }
     }
     return result;
-}
-
-
-// ********************************
-
-
-const OFString& DcmPersonName::getDelimiterChars() const
-{
-    return DcmVR(EVR_PN).getDelimiterChars();
 }

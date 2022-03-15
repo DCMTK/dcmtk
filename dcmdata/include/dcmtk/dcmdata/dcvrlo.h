@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -118,7 +118,6 @@ class DCMTK_DCMDATA_EXPORT DcmLongString
     virtual OFCondition writeJson(STD_NAMESPACE ostream &out,
                                   DcmJsonFormat &format);
 
-
     /* --- static helper functions --- */
 
     /** check whether given string value conforms to the VR "LO" (Long String)
@@ -135,12 +134,6 @@ class DCMTK_DCMDATA_EXPORT DcmLongString
     static OFCondition checkStringValue(const OFString &value,
                                         const OFString &vm = "1-n",
                                         const OFString &charset = "");
-
-protected:
-
-    /** @copydoc DcmCharString::getDelimiterChars()
-     */
-    virtual const OFString& getDelimiterChars() const;
 };
 
 

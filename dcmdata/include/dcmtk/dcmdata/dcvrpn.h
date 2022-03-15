@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -302,12 +302,6 @@ class DCMTK_DCMDATA_EXPORT DcmPersonName
     static OFCondition checkStringValue(const OFString &value,
                                         const OFString &vm = "1-n",
                                         const OFString &charset = "");
-
-protected:
-
-    /** @copydoc DcmCharString::getDelimiterChars()
-     */
-    virtual const OFString& getDelimiterChars() const;
 
 private:
 
