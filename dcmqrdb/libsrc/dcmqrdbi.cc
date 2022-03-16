@@ -1451,7 +1451,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 
     if (!qrLevelFound) {
         /* The Query/Retrieve Level is missing */
-        status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
+        status->setStatus(STATUS_FIND_Error_DataSetDoesNotMatchSOPClass);
         DCMQRDB_WARN("DB_startFindRequest(): missing Query/Retrieve Level");
         handle_->idxCounter = -1 ;
         DB_FreeElementList (handle_->findRequestList) ;
@@ -1485,9 +1485,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
             DB_FreeElementList (handle_->findRequestList) ;
             handle_->findRequestList = NULL ;
 #ifdef DEBUG
-            DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList");
+            DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_FIND_Error_DataSetDoesNotMatchSOPClass - Invalid RequestList");
 #endif
-            status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
+            status->setStatus(STATUS_FIND_Error_DataSetDoesNotMatchSOPClass);
             return (cond) ;
         }
     }
@@ -2039,7 +2039,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 #endif
 
     else {
-        status->setStatus(STATUS_MOVE_Failed_SOPClassNotSupported);
+        status->setStatus(STATUS_MOVE_Refused_SOPClassNotSupported);
         return (QR_EC_IndexDatabaseError) ;
     }
 
@@ -2134,7 +2134,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
     if (!qrLevelFound) {
         /* The Query/Retrieve Level is missing */
-        status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
+        status->setStatus(STATUS_MOVE_Error_DataSetDoesNotMatchSOPClass);
         DCMQRDB_WARN("DB_startMoveRequest(): missing Query/Retrieve Level");
         handle_->idxCounter = -1 ;
         DB_FreeElementList (handle_->findRequestList) ;
@@ -2169,9 +2169,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
             DB_FreeElementList (handle_->findRequestList) ;
             handle_->findRequestList = NULL ;
 #ifdef DEBUG
-            DCMQRDB_DEBUG("DB_startMoveRequest () : STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList");
+            DCMQRDB_DEBUG("DB_startMoveRequest () : STATUS_MOVE_Error_DataSetDoesNotMatchSOPClass - Invalid RequestList");
 #endif
-            status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
+            status->setStatus(STATUS_MOVE_Error_DataSetDoesNotMatchSOPClass);
             return (cond) ;
         }
     }

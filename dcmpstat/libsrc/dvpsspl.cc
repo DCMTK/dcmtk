@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -113,7 +113,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxSet(
   } else {
     // film box does not exist or wrong instance UID
     DCMPSTAT_WARN("cannot update film box, object not found.");
-    rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
+    rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchSOPInstance;
   }
 }
 
@@ -142,7 +142,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
     DcmFileFormat imageFile;
     DcmDataset *imageDataset = imageFile.getDataset();
 
-    if (newib->printSCPSet(cfg, cfgname, rqDataset, rsp, rspDataset, *imageDataset, 
+    if (newib->printSCPSet(cfg, cfgname, rqDataset, rsp, rspDataset, *imageDataset,
         sp->getReferencedPresentationLUTAlignment(), presentationLUTnegotiated))
     {
       if (EC_Normal == sp->writeHardcopyImageAttributes(*imageDataset))
@@ -174,7 +174,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
   } else {
     // image box does not exist or wrong instance UID
     DCMPSTAT_WARN("cannot update basic grayscale image box, object not found.");
-    rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
+    rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchSOPInstance;
   }
 }
 
@@ -224,7 +224,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
   } else {
     // film box does not exist or wrong instance UID
     DCMPSTAT_WARN("cannot print film box, object not found.");
-    rsp.msg.NActionRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
+    rsp.msg.NActionRSP.DimseStatus = STATUS_N_NoSuchSOPInstance;
   }
 }
 
@@ -293,7 +293,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxDelete(T_DIMSE_Message& rq, T_DI
   } else {
     // film box does not exist or wrong instance UID
     DCMPSTAT_WARN("cannot delete film box with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
-    rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
+    rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchSOPInstance;
   }
 }
 
@@ -329,12 +329,12 @@ OFBool DVPSStoredPrint_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAli
 {
   OFBool result = OFTrue;
   OFListConstIterator(DVPSStoredPrint *) first = list_.begin();
-  OFListConstIterator(DVPSStoredPrint *) last = list_.end();  
+  OFListConstIterator(DVPSStoredPrint *) last = list_.end();
   while (first != last)
   {
     result = result && (*first)->matchesPresentationLUT(align);
     ++first;
-  }  
+  }
   return result;
 }
 
@@ -345,7 +345,7 @@ void DVPSStoredPrint_PList::overridePresentationLUTSettings(
       DVPSPrintPresentationLUTAlignment newAlignment)
 {
   OFListIterator(DVPSStoredPrint *) first = list_.begin();
-  OFListIterator(DVPSStoredPrint *) last = list_.end();  
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   while (first != last)
   {
     (*first)->overridePresentationLUTSettings(newIllumination, newReflectedAmbientLight, newReferencedPLUT, newAlignment);

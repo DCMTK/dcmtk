@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2010, OFFIS e.V.
+ *  Copyright (C) 1999-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,7 +42,7 @@ DVPSPresentationLUT_PList::DVPSPresentationLUT_PList(const DVPSPresentationLUT_P
   OFListConstIterator(DVPSPresentationLUT *) first = arg.list_.begin();
   OFListConstIterator(DVPSPresentationLUT *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -58,7 +58,7 @@ void DVPSPresentationLUT_PList::clear()
   OFListIterator(DVPSPresentationLUT *) first = list_.begin();
   OFListIterator(DVPSPresentationLUT *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -71,7 +71,7 @@ OFCondition DVPSPresentationLUT_PList::read(DcmItem &dset)
   DVPSPresentationLUT *newLUT = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   if (EC_Normal == dset.search(DCM_RETIRED_PresentationLUTContentSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
@@ -89,8 +89,8 @@ OFCondition DVPSPresentationLUT_PList::read(DcmItem &dset)
         } else result = EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -101,7 +101,7 @@ OFCondition DVPSPresentationLUT_PList::write(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
+
   dseq = new DcmSequenceOfItems(DCM_RETIRED_PresentationLUTContentSequence);
   if (dseq)
   {
@@ -141,8 +141,8 @@ void DVPSPresentationLUT_PList::cleanup(const char *filmBox, DVPSImageBoxContent
       delete (*first);
       first = list_.erase(first);
     }
-  }	
-  return; 
+  }
+  return;
 }
 
 DVPSPresentationLUT *DVPSPresentationLUT_PList::findPresentationLUT(const char *instanceUID)
@@ -164,14 +164,14 @@ DVPSPresentationLUT *DVPSPresentationLUT_PList::findPresentationLUT(const char *
 const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *newLUT, OFBool inversePLUT)
 {
   if (newLUT == NULL) return NULL;
-  
-  DiLookupTable *diLUT = NULL;
-  const char *result = NULL;  
 
-  // 'INVERSE' LUT shape is undefined for Print and has already 
+  DiLookupTable *diLUT = NULL;
+  const char *result = NULL;
+
+  // 'INVERSE' LUT shape is undefined for Print and has already
   // been rendered into the bitmap at this stage.
   DVPSPresentationLUTType lutType = newLUT->getType();
-  if (lutType == DVPSP_inverse) lutType = DVPSP_identity; 
+  if (lutType == DVPSP_inverse) lutType = DVPSP_identity;
 
   DVPSPresentationLUT *myLUT = newLUT->clone();
   if (myLUT)
@@ -180,7 +180,7 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
     if (myLUT->getType() == DVPSP_inverse) myLUT->setType(DVPSP_identity);
     if (lutType == DVPSP_table)
     {
-      if (inversePLUT) myLUT->invert();  	 
+      if (inversePLUT) myLUT->invert();
       diLUT = myLUT->createDiLookupTable();
     }
   } else return NULL;
@@ -194,10 +194,10 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
     {
       if (lutType == DVPSP_table)
       {
-   	if ((*first)->compareDiLookupTable(diLUT))
-      	{
-      	  result = (*first)->getSOPInstanceUID(); 
-      	  break;
+        if ((*first)->compareDiLookupTable(diLUT))
+        {
+          result = (*first)->getSOPInstanceUID();
+          break;
         }
       } else {
         result = (*first)->getSOPInstanceUID();
@@ -207,13 +207,13 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
     ++first;
   }
   delete diLUT;
-  
+
   if (result)
   {
     delete myLUT;
     return result;
   }
-    
+
   // no match, store new LUT
   char uid[100];
   dcmGenerateUniqueIdentifier(uid);
@@ -232,7 +232,7 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
   OFBool found = OFFalse;
   OFString theUID(rq.msg.NDeleteRQ.RequestedSOPInstanceUID);
   while ((first != last) && (!found))
-  {     
+  {
     if (theUID == (*first)->getSOPInstanceUID()) found = OFTrue;
     else ++first;
   }
@@ -244,6 +244,6 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
   } else {
     // presentation LUT does not exist or wrong instance UID
     DCMPSTAT_WARN("cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist.");
-    rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
+    rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchSOPInstance;
   }
 }
