@@ -302,7 +302,7 @@ out:
         OF__iconv_free_list(list, sz);
 }
 
-__inline const char
+const char
 *OFiconv_canonicalize(const char *name)
 {
 
@@ -368,8 +368,8 @@ OFiconvctl(iconv_t cd, int request, void *argument)
 const char *OFlocale_charset(iconv_locale_allocation_t *buf)
 {
 #ifdef HAVE_WINDOWS_H
-  snprintf(&buf[0], sizeof(iconv_locale_allocation_t), "%lu", (unsigned long) GetConsoleOutputCP());
-  return buf;
+  snprintf((char *)buf, sizeof(iconv_locale_allocation_t), "%lu", (unsigned long) GetConsoleOutputCP());
+  return (const char *)buf;
 #else
   (void) buf;
   return nl_langinfo(CODESET);
