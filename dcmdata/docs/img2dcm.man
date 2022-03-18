@@ -153,13 +153,13 @@ other processing options:
 target SOP class:
 
   -sc   --sec-capture
-          write Secondary Capture SOP class
+          write Secondary Capture SOP class (default)
 
   -nsc  --new-sc
           write new Secondary Capture SOP classes
 
   -vlp  --vl-photo
-          write Visible Light Photographic SOP class (default)
+          write Visible Light Photographic SOP class
 
   -oph  --oph-photo
           write Ophthalmic Photography SOP classes
