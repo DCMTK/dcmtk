@@ -132,7 +132,8 @@ static void addCmdLineOptions(OFCommandLine& cmd)
 
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("general:");
-      cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string", "supported formats: JPEG (default), BMP");
+      cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string",
+                                                        "supported formats: JPEG (default), BMP");
       cmd.addOption("--dataset-from",        "-df",  1, "[f]ilename: string",
                                                         "use dataset from DICOM file f");
 #ifdef WITH_LIBXML
