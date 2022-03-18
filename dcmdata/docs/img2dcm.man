@@ -377,7 +377,9 @@ stream. However, if you want to keep other APPn markers than JFIF (e. g.
 EXIF information) inside the DICOM stream, the option \e --keep-appn
 does the trick. It should also be slightly faster than cutting off APPn
 information, because it is not necessary to scan the whole JPEG stream for
-such data. JFIF information is \b always removed by \b img2dcm.
+such data. JFIF information is \b always removed by \b img2dcm. Using this
+option, pay attention that APP2 marker will be retained, however \b img2dcm
+does not create an equivalent ICC Profile (0028,2000) attribute.
 
 \subsubsection img2dcm_bmp_input_plugin BMP Input Plugin
 
