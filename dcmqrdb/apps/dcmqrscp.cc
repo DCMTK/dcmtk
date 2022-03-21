@@ -83,7 +83,6 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 #define APPLICATIONTITLE "DCMQRSCP"
 
-const char *opt_configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrscp.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
@@ -107,6 +106,8 @@ static void mangleAssociationProfileKey(OFString& key)
 int
 main(int argc, char *argv[])
 {
+  OFString opt_configFileName = OFStandard::getDefaultConfigurationDir();
+  opt_configFileName += "dcmqrscp.cfg";
   OFCondition cond = EC_Normal;
   OFCmdUnsignedInt overridePort = 0;
   OFCmdUnsignedInt overrideMaxPDU = 0;
@@ -134,7 +135,7 @@ main(int argc, char *argv[])
     cmd.addOption("--version",                             "print version information and exit", OFCommandLine::AF_Exclusive);
     OFLog::addOptions(cmd);
 
-    if (strlen(opt_configFileName) > 16)
+    if (opt_configFileName.length() > 16)
     {
         OFString opt5 = "use specific configuration file\n(default: ";
         opt5 += opt_configFileName;
@@ -774,7 +775,7 @@ main(int argc, char *argv[])
     OFLOG_DEBUG(dcmqrscpLogger, rcsid << OFendl);
 
     /* read config file */
-    if (access(opt_configFileName, R_OK) < 0) {
+    if (access(opt_configFileName.c_str(), R_OK) < 0) {
       OFLOG_FATAL(dcmqrscpLogger, "cannot access " << opt_configFileName << ": "
         << OFStandard::getLastSystemErrorCode().message());
       return 10;
@@ -782,7 +783,7 @@ main(int argc, char *argv[])
 
     DcmQueryRetrieveConfig config;
 
-    if (!config.init(opt_configFileName)) {
+    if (!config.init(opt_configFileName.c_str())) {
       OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
       return 10;
     }

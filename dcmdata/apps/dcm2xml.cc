@@ -310,7 +310,8 @@ int main(int argc, char *argv[])
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     OFCmdUnsignedInt opt_maxReadLength = 4096; // default is 4 KB
-    const char *opt_dtdFilename = DEFAULT_SUPPORT_DATA_DIR DOCUMENT_TYPE_DEFINITION_FILE;
+    OFString opt_dtdFilename = OFStandard::getDefaultSupportDataDir();
+    opt_dtdFilename += DOCUMENT_TYPE_DEFINITION_FILE;
     OFString optStr;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);

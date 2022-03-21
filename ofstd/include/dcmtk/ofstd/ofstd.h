@@ -1181,6 +1181,20 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static void sanitizeFilename(char *fname);
 
+    /** retrieve the name of the default directory for support data.
+     *  On Windows, this method resolves environment variables such as %PROGRAMDATA% in the path,
+     *  on Posix platforms it just returns DEFAULT_SUPPORT_DATA_DIR.
+     *  @return name of the default directory for support data
+     */
+    static OFString getDefaultSupportDataDir();
+
+    /** retrieve the name of the default directory for configuration files.
+     *  On Windows, this method resolves environment variables such as %PROGRAMDATA% in the path,
+     *  on Posix platforms it just returns DEFAULT_CONFIGURATION_DIR.
+     *  @return name of the default directory for configuration files
+     */
+    static OFString getDefaultConfigurationDir();
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy

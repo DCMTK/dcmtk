@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -604,6 +604,10 @@ DcmDataDictionary::loadExternalDictionaries()
 #endif
     }
 
+#ifdef HAVE_WINDOWS_H
+    char buf[MAX_PATH+1];
+#endif
+
     /* if any mechanism for external dictionary (environment or default external)
      * is actually provided it, parse env and load all dictionaries specified therein.
      */
@@ -616,6 +620,11 @@ DcmDataDictionary::loadExternalDictionaries()
         }
 
         if (sepCnt == 0) {
+#ifdef HAVE_WINDOWS_H
+            memset(buf, 0, sizeof(buf));
+            (void) ExpandEnvironmentStringsA(env, buf, sizeof(buf));
+            env = buf;
+#endif
             if (!loadDictionary(env, OFTrue)) {
                 return OFFalse;
             }
@@ -629,9 +638,18 @@ DcmDataDictionary::loadExternalDictionaries()
 
             for (int ii = 0; ii < ndicts; ii++) {
                 if ((dictArray[ii] != NULL) && (strlen(dictArray[ii]) > 0)) {
+#ifdef HAVE_WINDOWS_H
+                    memset(buf, 0, sizeof(buf));
+                    (void) ExpandEnvironmentStringsA(dictArray[ii], buf, sizeof(buf));
+                    env = buf;
+                    if (!loadDictionary(buf, OFTrue)) {
+                        loadFailed = OFTrue;
+                    }
+#else
                     if (!loadDictionary(dictArray[ii], OFTrue)) {
                         loadFailed = OFTrue;
                     }
+#endif
                 }
                 free(dictArray[ii]);
             }

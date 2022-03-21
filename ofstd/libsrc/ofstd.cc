@@ -3281,6 +3281,32 @@ void OFStandard::sanitizeFilename(char *fname)
 }
 
 
+OFString OFStandard::getDefaultSupportDataDir()
+{
+#ifdef HAVE_WINDOWS_H
+  char buf[PATH_MAX+1];
+  memset(buf, 0, sizeof(buf));
+  (void) ExpandEnvironmentStringsA(DEFAULT_SUPPORT_DATA_DIR, buf, sizeof(buf));
+  return buf;
+#else
+  return DEFAULT_SUPPORT_DATA_DIR;
+#endif
+}
+
+
+OFString OFStandard::getDefaultConfigurationDir()
+{
+#ifdef HAVE_WINDOWS_H
+  char buf[PATH_MAX+1];
+  memset(buf, 0, sizeof(buf));
+  (void) ExpandEnvironmentStringsA(DEFAULT_CONFIGURATION_DIR, buf, sizeof(buf));
+  return buf;
+#else
+  return DEFAULT_CONFIGURATION_DIR;
+#endif
+}
+
+
 #include DCMTK_DIAGNOSTIC_IGNORE_STRICT_ALIASING_WARNING
 
 // black magic:

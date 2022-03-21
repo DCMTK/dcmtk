@@ -72,10 +72,10 @@ extern "C" void TI_signalHandler(int)
 
 int main( int argc, char *argv[] )
 {
-
   const char *remoteDBTitles[ MAXREMOTEDBTITLES ];
   int remoteDBTitlesCount = 0;
-  const char *configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrscp.cfg";
+  OFString configFileName = OFStandard::getDefaultConfigurationDir();
+  configFileName += "dcmqrscp.cfg";
   E_TransferSyntax networkTransferSyntax = EXS_Unknown;
   int opt_acse_timeout = 30;
 
@@ -104,7 +104,7 @@ int main( int argc, char *argv[] )
     cmd.addOption( "--version",                              "print version information and exit", OFCommandLine::AF_Exclusive );
     OFLog::addOptions(cmd);
 
-    if (strlen(configFileName) > 21)
+    if (configFileName.length() > 21)
     {
         OFString opt0 = "use specific configuration file\n(default: ";
         opt0 += configFileName;
@@ -230,10 +230,10 @@ int main( int argc, char *argv[] )
   OFLOG_DEBUG(dcmqrtiLogger, rcsid << OFendl);
 
   // in case accessing the configuration file for reading is successful
-  if( access( configFileName, R_OK ) != -1 )
+  if( access( configFileName.c_str(), R_OK ) != -1 )
   {
     // in case reading values from configuration file is successful
-    if( config.init( configFileName ) == 1 )
+    if( config.init( configFileName.c_str() ) == 1 )
     {
       // dump information
       if (dcmqrtiLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
@@ -272,7 +272,7 @@ int main( int argc, char *argv[] )
           for( j=0 ; j<n ; j++ )
           {
             if( config.peerForAETitle( aeTitleList[j], &peerName, &portNumber ) )
-              conf.addPeerName(peerName, configFileName);
+              conf.addPeerName(peerName, configFileName.c_str());
           }
 
           // free memory
@@ -285,7 +285,7 @@ int main( int argc, char *argv[] )
           // in case peer is a symbolic name and can be interpreted as a vendor name, add the
           // corresponding host names are known for for this vendor to the conf structure
           for( j=0 ; j<n ; j++ )
-            conf.addPeerName(vendorHosts[j], configFileName);
+            conf.addPeerName(vendorHosts[j], configFileName.c_str());
 
           // free memory
           if( vendorHosts )
@@ -296,7 +296,7 @@ int main( int argc, char *argv[] )
         {
           // in case peer is not a symbolic name but the name of a
           // specific host, add this host name to the conf structure
-          conf.addPeerName(currentPeer, configFileName);
+          conf.addPeerName(currentPeer, configFileName.c_str());
         }
       }
 
@@ -305,7 +305,7 @@ int main( int argc, char *argv[] )
       conf.activateFirstPeer();
 
       // load up configuration info
-      conf.createConfigEntries(configFileName, remoteDBTitlesCount, remoteDBTitles);
+      conf.createConfigEntries(configFileName.c_str(), remoteDBTitlesCount, remoteDBTitles);
 
       // only go ahead in case there is at least one database we know of
       if( conf.getdbCount() > 0 )
