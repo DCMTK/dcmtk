@@ -181,6 +181,7 @@ JMESSAGE(JTRC_UNKNOWN_LOSSLESS_IDS,
 	 "Unrecognized component IDs %d %d %d, assuming RGB")
 JMESSAGE(JTRC_UNKNOWN_LOSSY_IDS,
 	 "Unrecognized component IDs %d %d %d, assuming YCbCr")
+JMESSAGE(JTRC_UNOPT_HUFF_TABLE, "Symbol %d indicate un-optimized Huffman table")
 JMESSAGE(JTRC_XMS_CLOSE, "Freed XMS handle %u")
 JMESSAGE(JTRC_XMS_OPEN, "Obtained XMS handle %u")
 JMESSAGE(JWRN_ADOBE_XFORM, "Unknown Adobe color transform code %d")

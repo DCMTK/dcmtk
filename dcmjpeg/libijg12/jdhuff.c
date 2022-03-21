@@ -28,14 +28,11 @@ jpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
 {
   JHUFF_TBL *htbl;
   d_derived_tbl *dtbl;
-  int p, i, l, si;
+  int p, i, l, si, numsymbols;
   int lookbits, ctr;
   char huffsize[257];
   unsigned int huffcode[257];
   unsigned int code;
-#ifdef DCMTK_ENABLE_STRICT_HUFFMAN_TABLE_CHECK
-  int numsymbols;
-#endif
 
   /* Note that huffsize[] and huffcode[] are filled in code-length order,
    * paralleling the order of the symbols themselves in htbl->huffval[].
@@ -68,9 +65,7 @@ jpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
       huffsize[p++] = (char) l;
   }
   huffsize[p] = 0;
-#ifdef DCMTK_ENABLE_STRICT_HUFFMAN_TABLE_CHECK
   numsymbols = p;
-#endif
 
   /* Figure C.2: generate the codes themselves */
   /* We also validate that the counts represent a legal Huffman code tree. */
@@ -133,7 +128,6 @@ jpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
     }
   }
 
-#ifdef DCMTK_ENABLE_STRICT_HUFFMAN_TABLE_CHECK
   /* Validate symbols as being reasonable.
    * For AC tables, we make no check, but accept all byte values 0..255.
    * For DC tables, we require the symbols to be in range 0..16.
@@ -144,10 +138,13 @@ jpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
     for (i = 0; i < numsymbols; i++) {
       int sym = htbl->huffval[i];
       if (sym < 0 || sym > 16)
+#ifdef DCMTK_ENABLE_STRICT_HUFFMAN_TABLE_CHECK
     ERREXIT(cinfo, JERR_BAD_HUFF_TABLE);
+#else
+    TRACEMS1(cinfo, 1, JTRC_UNOPT_HUFF_TABLE, sym);
+#endif
     }
   }
-#endif
 }
 
 
