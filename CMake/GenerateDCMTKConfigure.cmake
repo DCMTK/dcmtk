@@ -152,8 +152,8 @@ if(WIN32 AND NOT CYGWIN)
     set(DCM_DICT_DEFAULT_PATH "")
   endif()
   # Set default directory for configuration and support data.
-  set(DCMTK_DEFAULT_CONFIGURATION_DIR "")
-  set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "")
+  set(DCMTK_DEFAULT_CONFIGURATION_DIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\etc\\\\")
+  set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\share\\\\")
 else()
   # Set DCMTK_PREFIX needed within some code.
   set(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
@@ -162,17 +162,17 @@ else()
   set(ENVIRONMENT_PATH_SEPARATOR ":")
   # Set dictionary path to the data dir inside install main dir (prefix).
   if(DCMTK_DEFAULT_DICT STREQUAL "external")
-    set(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk/dicom.dic")
+    set(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/dicom.dic")
     # If private dictionary should be utilized, add it to default dictionary path.
     if(ENABLE_PRIVATE_TAGS)
-      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk/private.dic")
+      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/private.dic")
     endif()
   else()
     set(DCM_DICT_DEFAULT_PATH "")
   endif()
   # Set default directory for configuration and support data.
-  set(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}/dcmtk/")
-  set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk/")
+  set(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/")
+  set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/")
 endif()
 
 # Check the sizes of various types
@@ -1559,4 +1559,3 @@ DCMTK_TEST_ENABLE_STL_FEATURE("system_error" "syserr")
 if(CMAKE_CROSSCOMPILING)
   set(DCMTK_CROSS_COMPILING ${CMAKE_CROSSCOMPILING})
 endif()
-
