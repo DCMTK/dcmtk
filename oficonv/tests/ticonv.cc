@@ -446,13 +446,13 @@ END_EXTERN_C
 size_t unicode_char_counter = 0;
 size_t wide_char_counter = 0;
 
-void test_unicode_char_hook(unsigned int mbr, void *data)
+void test_unicode_char_hook(unsigned int /* mbr */ , void *data)
 {
   OFCHECK(data == &unicode_char_counter);
   unicode_char_counter++;
 }
 
-void test_wide_char_hook(_citrus_wc_t wc, void *data)
+void test_wide_char_hook(_citrus_wc_t /* wc */, void *data)
 {
   OFCHECK(data == &unicode_char_counter);
   wide_char_counter++;

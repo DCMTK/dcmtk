@@ -173,6 +173,10 @@ void get_data_path(char *path_out, size_t path_size, const char *dirname, const 
     const char *separator2;
     size_t len;
     char sep[3];
+#ifdef HAVE_WINDOWS_H
+    char buf[PATH_MAX+1];
+    memset(buf, 0, sizeof(buf));
+#endif
 
     // create a string containing the path separator
     snprintf(sep, sizeof(sep), "%c", PATH_SEPARATOR);
@@ -182,6 +186,11 @@ void get_data_path(char *path_out, size_t path_size, const char *dirname, const 
 
     // if the environment variable is not set, use DEFAULT_SUPPORT_DATA_DIR instead
     if (env == NULL) env = DEFAULT_SUPPORT_DATA_DIR;
+
+#ifdef HAVE_WINDOWS_H
+    (void) ExpandEnvironmentStringsA(env, buf, sizeof(buf));
+    env = buf;
+#endif
 
     len = strlen(env);
     if (len == 0) separator1 = ""; // empty path, don't add path separator

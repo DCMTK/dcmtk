@@ -63,9 +63,6 @@
 #define OFICONV_PATH_VARIABLE "DCMICONVPATH"
 #define OFICONV_CSMAPPER_DIR "csmapper"
 #define OFICONV_ESDB_DIR "esdb"
-
-#define _PATH_ESDB DEFAULT_SUPPORT_DATA_DIR "esdb"
-
 #define __isthreaded 1
 
 #ifndef CHAR_MAX
