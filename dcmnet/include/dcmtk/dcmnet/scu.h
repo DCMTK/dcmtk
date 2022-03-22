@@ -563,7 +563,8 @@ public:
      *  @param rspStatusCode            [out] The response status code received. 0 means success,
      *                                        others can be found in the DICOM standard.
      *  @return EC_Normal if request could be issued and response was received successfully,
-     *          an error code otherwise
+     *          an error code otherwise. If a code different from EC_Normal is returned, other
+     *          output like rspStatusCode may be invalid.
      */
     virtual OFCondition sendNCREATERequest(const T_ASC_PresentationContextID presID,
                                            const OFString& affectedSopInstanceUID,

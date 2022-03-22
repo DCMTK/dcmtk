@@ -2107,8 +2107,6 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
     rqmsg.DataSetType           = DIMSE_DATASET_PRESENT;
     rqmsg.opts                  = O_NCREATE_AFFECTEDSOPINSTANCEUID;
 
-    // TODO: Is it always right to assign abstract syntax to AffectedSOPClassUID, or are there scenarios
-    //       where the client should provide an AffectedSOPClassUID that is different from the abstract syntax?
     OFStandard::strlcpy(rqmsg.AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(rqmsg.AffectedSOPClassUID));
     OFStandard::strlcpy(rqmsg.AffectedSOPInstanceUID, affectedSopInstanceUID.c_str(), sizeof(rqmsg.AffectedSOPInstanceUID));
 
@@ -2132,7 +2130,9 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
         return result;
     }
 
-    T_DIMSE_Message response = {};
+    T_DIMSE_Message response;
+    // Make sure everything is zeroed (especially options)
+    memset((char*)&response, 0, sizeof(response));
     DcmDataset* statusDetail = OFnullptr;
 
     T_ASC_PresentationContextID pcid = presID;
@@ -2185,7 +2185,7 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
     }
 
     // If requested, we need to receive the dataset containing the received instance
-    if (createdInstance)
+    if (response.msg.NCreateRSP.DataSetType == DIMSE_DATASET_PRESENT)
     {
         DcmDataset* respDataset = OFnullptr;
         result = receiveDIMSEDataset(&pcid, &respDataset);
@@ -2205,8 +2205,17 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
                 OF_error,
                 "DIMSE: Presentation Contexts of Command and Data Set differ");
         }
-
-        createdInstance = respDataset;
+        // Provide user with copy of result dataset if desired
+        if (createdInstance)
+        {
+            createdInstance = respDataset;
+        }
+        else
+        {
+            // Otherwise, ignore it but print a debug message to the logger
+            delete respDataset;
+            DCMNET_DEBUG("Ignoring dataset attached to N-CREATE-RSP");
+        }
     }
 
     return EC_Normal;
