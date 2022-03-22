@@ -2138,8 +2138,8 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
     T_ASC_PresentationContextID pcid = presID;
     result = receiveDIMSECommand(&pcid, &response, &statusDetail, OFnullptr /* commandSet */);
 
-    rspStatusCode = response.msg.NCreateRSP.DimseStatus; // TODO: Is this the right place to assign the status?
-                                                         //       It looks like DimseStatus can contain valid status even if cond is bad.
+    rspStatusCode = response.msg.NCreateRSP.DimseStatus;
+
     if (result.bad())
     {
         delete statusDetail;
