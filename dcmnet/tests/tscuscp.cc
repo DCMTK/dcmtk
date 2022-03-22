@@ -648,6 +648,9 @@ struct TestSCPWithNCreateSupport : TestSCP
         if (incomingMsg->CommandField == DIMSE_N_CREATE_RQ)
             return OnNCREATERequest(incomingMsg->msg.NCreateRQ, presInfo.presentationContextID);
 
+        if (incomingMsg->CommandField == DIMSE_N_SET_RQ)
+            return OnNSETRequest(incomingMsg->msg.NSetRQ, presInfo.presentationContextID);
+
         return DcmSCP::handleIncomingCommand(incomingMsg, presInfo);
     }
 
@@ -753,6 +756,116 @@ struct TestSCPWithNCreateSupport : TestSCP
 
         // Send response message with dataset back to SCU
         return sendDIMSEMessage(presID, &response, rspDataset);
+    }
+
+    /** Called when client sends an N-SET request */
+    OFCondition OnNSETRequest(T_DIMSE_N_SetRQ& setRq, const T_ASC_PresentationContextID presID)
+    {
+        DcmDataset* modificationList = NULL;
+
+        OFString requestedSOPClassUid;
+        OFString requestedSOPInstanceUid;
+        OFCondition result = ReceiveNSETRequest(setRq, presID, modificationList, requestedSOPClassUid, requestedSOPInstanceUid);
+        if (result.bad())
+            return result;
+
+        unsigned short responseStatus = STATUS_N_Success;
+
+        if (requestedSOPInstanceUid.empty())
+            responseStatus = STATUS_N_InvalidAttributeValue;
+
+        // Attempt to find a matching managed instance and update it with the modified values
+        DcmDataset* attributeList = NULL;
+        const OFMap<OFString, DcmDataset>::iterator instanceIt = m_managedSopInstances.find(requestedSOPInstanceUid);
+        if (instanceIt == m_managedSopInstances.end()) {
+            responseStatus = STATUS_N_InvalidSOPInstance;
+        }
+        else {
+            UpdateDataset(*modificationList, instanceIt->second);
+            attributeList = &instanceIt->second;
+        }
+
+        result = SendNSETResponse(presID, setRq.MessageID, requestedSOPClassUid, requestedSOPInstanceUid, attributeList, responseStatus);
+        delete modificationList;
+        return result;
+    }
+
+    OFCondition ReceiveNSETRequest(T_DIMSE_N_SetRQ& reqMessage,
+                                   DUL_PRESENTATIONCONTEXTID presID,
+                                   DcmDataset*& attrList,
+                                   OFString& requestedSOPClassUID,
+                                   OFString& requestedSOPInstanceUID)
+    {
+        T_ASC_PresentationContextID presIDdset;
+
+        // Check if dataset is announced correctly
+        if (reqMessage.DataSetType == DIMSE_DATASET_NULL) {
+            return DIMSE_BADMESSAGE;
+        }
+
+        DcmDataset* dataset = OFnullptr;
+        OFCondition cond = receiveDIMSEDataset(&presIDdset, &dataset);
+
+        if (cond.bad()) {
+            delete dataset;
+            return DIMSE_BADDATA;
+        }
+
+        if (presIDdset != presID) {
+            delete dataset;
+            return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID,
+                OF_error,
+                "DIMSE: Presentation Contexts of Command and Data Set differ");
+        }
+
+        attrList = dataset;
+        requestedSOPClassUID = reqMessage.RequestedSOPClassUID;
+        requestedSOPInstanceUID = reqMessage.RequestedSOPInstanceUID;
+
+        return cond;
+    }
+
+    OFCondition SendNSETResponse(const T_ASC_PresentationContextID presID,
+        const Uint16 messageID,
+        const OFString& affectedSOPClassUID,
+        const OFString& affectedSOPInstanceUID,
+        DcmDataset* rspDataset,
+        const Uint16 rspStatusCode)
+    {
+        OFCondition cond;
+
+        // Send back response
+        T_DIMSE_Message response = {};
+        T_DIMSE_N_SetRSP& setResponse           = response.msg.NSetRSP;
+        response.CommandField                   = DIMSE_N_SET_RSP;
+        setResponse.MessageIDBeingRespondedTo   = messageID;
+        setResponse.DimseStatus                 = rspStatusCode;
+
+        // Set (optional) fields
+        setResponse.opts = O_NSET_AFFECTEDSOPCLASSUID | O_NSET_AFFECTEDSOPINSTANCEUID;
+        OFStandard::strlcpy(setResponse.AffectedSOPClassUID, affectedSOPClassUID.c_str(), sizeof(setResponse.AffectedSOPClassUID));
+        OFStandard::strlcpy(setResponse.AffectedSOPInstanceUID, affectedSOPInstanceUID.c_str(), sizeof(setResponse.AffectedSOPInstanceUID));
+
+        if (rspDataset)
+            setResponse.DataSetType = DIMSE_DATASET_PRESENT;
+        else
+            setResponse.DataSetType = DIMSE_DATASET_NULL;
+
+        // Send response message with dataset back to SCU
+        return sendDIMSEMessage(presID, &response, rspDataset);
+    }
+
+    /** Replaces or inserts values in destination dataset with values from source dataset */
+    OFCondition UpdateDataset(DcmDataset& src, DcmDataset& dest)
+    {
+        const unsigned long N = src.getNumberOfValues();
+        for (unsigned long i = 0; i < N; ++i) {
+            const DcmElement* elem = src.getElement(i);
+            OFCondition result = dest.insert(dynamic_cast<DcmElement*>(elem->clone()), /*replace*/ true);
+            if (result.bad())
+                return result;
+        }
+        return EC_Normal;
     }
 
     OFMap<OFString, DcmDataset> m_managedSopInstances;
@@ -873,5 +986,94 @@ OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatuscode_from_s
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
 }
 
+struct NSETFixture : NCREATEFixture
+{
+    NSETFixture()
+        : modifiedAttributes(OFnullptr)
+    {
+        // Creates an instance that will be managed by the SCP
+        Uint16 rspStatusCode = 0;
+        OFCondition result = mppsSCU.sendNCREATERequest(presIDMpps, affectedSopInstanceUid, &reqDataset, createdInstance, rspStatusCode);
+        OFCHECK(result.good());
+        OFCHECK(rspStatusCode == STATUS_N_Success);
+
+        // In this test, the N-SET modification is to add modality to the message
+        OFCHECK(modificationList.putAndInsertOFStringArray(DCM_Modality, "US").good());
+    }
+
+    ~NSETFixture()
+    {
+        delete modifiedAttributes;
+    }
+
+    DcmDataset modificationList;
+    DcmDataset* modifiedAttributes;
+};
+
+OFTEST(dcmnet_scu_sendNSETRequest_fails_when_requestedsopinstance_is_empty)
+{
+    NSETFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    DcmDataset* modifiedAttributes = OFnullptr;
+    OFCondition result = fixture.mppsSCU.sendNSETRequest(fixture.presIDMpps, "", &fixture.modificationList, modifiedAttributes, rspStatusCode);
+    OFCHECK(result.bad());
+
+    fixture.scp.m_set_stop_after_assoc = OFTrue;
+    OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
+}
+
+OFTEST(dcmnet_scu_sendNSETRequest_succeeds_and_modifies_instance_when_scp_has_instance)
+{
+    NSETFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+
+    // Use the affected SOP Instance UID from the N-CREATE request as requested SOP Instance UID for the N-SET request
+    OFCondition result = fixture.mppsSCU.sendNSETRequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.modificationList, fixture.modifiedAttributes, rspStatusCode);
+    OFCHECK(result.good());
+
+    {
+        // Inspect the attribute list received from the server to check that the modality was set by the N-SET request
+        OFString modifiedModality;
+        OFCHECK(fixture.modifiedAttributes->findAndGetOFString(DCM_Modality, modifiedModality).good());
+        OFCHECK(modifiedModality == "US");
+
+        // And check that we updated the right instance
+        OFString modifiedSopInstanceUid;
+        OFCHECK(fixture.modifiedAttributes->findAndGetOFString(DCM_SOPInstanceUID, modifiedSopInstanceUid).good());
+        OFCHECK(modifiedSopInstanceUid == fixture.affectedSopInstanceUid);
+    }
+
+    {
+        OFString modifiedModality;
+
+        // Make sure we did not cheat, and inspect also the managed SCP intance directly
+        OFMap<OFString, DcmDataset> instances = fixture.scp.m_managedSopInstances;
+        const OFMap<OFString, DcmDataset>::iterator instanceIt = instances.find(fixture.affectedSopInstanceUid);
+
+        OFCHECK(instanceIt->second.findAndGetOFString(DCM_Modality, modifiedModality).good());
+        OFCHECK(modifiedModality == "US");
+    }
+
+    fixture.scp.m_set_stop_after_assoc = OFTrue;
+    OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
+}
+
+OFTEST(dcmnet_scu_sendNSETRequest_succeeds_and_sets_responsestatuscode_from_scp_when_scp_sets_error_status)
+{
+    NSETFixture fixture;
+
+    // In this test, the N-SET modification is to add modality to the message
+    OFCHECK(fixture.modificationList.putAndInsertOFStringArray(DCM_Modality, "US").good());
+
+    Uint16 rspStatusCode = 0;
+    OFCondition result = fixture.mppsSCU.sendNSETRequest(fixture.presIDMpps, "1.2.3.4", &fixture.modificationList, fixture.modifiedAttributes, rspStatusCode);
+    OFCHECK(result.good());
+    OFCHECK(rspStatusCode == STATUS_N_InvalidSOPInstance);
+
+    fixture.scp.m_set_stop_after_assoc = OFTrue;
+    OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
+}
 
 #endif // WITH_THREADS
