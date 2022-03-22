@@ -572,6 +572,26 @@ public:
                                            DcmDataset*& createdInstance,
                                            Uint16& rspStatusCode);
 
+    /** This function sends N-SET request and receives the corresponding response.
+     *  @param presID                   [in]  The ID of the presentation context to be used for sending
+     *                                        the request message. Should not be 0.
+     *  @param requestedSopInstanceUID  [in]  The requested SOP Instance UID
+     *  @param modificationList         [in]  Request dataset with attribute identifiers and values that
+     *                                        should be replaced
+     *  @param attributeList            [out] Optional pointer to response attribute list that was
+     *                                        used to replace specified attributes
+     *  @param rspStatusCode            [out] The response status code received. 0 means success,
+     *                                        others can be found in the DICOM standard.
+     *  @return EC_Normal if request could be issued and response was received successfully,
+     *          an error code otherwise. If a code different from EC_Normal is returned, other
+     *          output like rspStatusCode may be invalid.
+     */
+    virtual OFCondition sendNSETRequest(const T_ASC_PresentationContextID presID,
+                                        const OFString& requestedSopInstanceUID,
+                                        DcmDataset* modificationList,
+                                        DcmDataset*& attributeList,
+                                        Uint16& rspStatusCode);
+
     /** Function handling a single C-GET, C-FIND or C-MOVE Response, used by
      *  handleCGETResponse(), handleFINDResponse() and handleMOVEResponse().
      *  It prints a message to the logger (warning, error or debug level related
