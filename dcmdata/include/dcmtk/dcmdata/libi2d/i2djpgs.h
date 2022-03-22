@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2021, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -116,7 +116,8 @@ struct DCMTK_I2D_EXPORT JPEGFileMapEntry
 };
 
 /** This is a I2DImgSource implementation that can parse JPEG files and convert
- *  them into DICOM images.
+ *  them into DICOM images. This includes files using the original JPEG encoding
+ *  (ITU-T Recommendation T.81) and JPEG-LS encoding (ITU-T Recommendation T.87).
  */
 class DCMTK_I2D_EXPORT I2DJpegSource : public I2DImgSource
 {
@@ -271,6 +272,13 @@ protected:
                                       Uint16& samplesPerPixel,
                                       Uint16& bitsPerSample);
 
+    /** Get image parameters as found at given SOF marker of the JPEG image.
+     *  Used for JPEG-LS codec.
+     *  @param entry - [in] Related SOS marker (E_JPGMARKER_SOS)
+     *  @param nearLossless - [out] Returns whether image is encoded in lossless (0)
+     *                              or near-lossless (>0) mode
+     *  @return EC_Normal, if successful, error otherwise
+     */
     OFCondition getSOSImageParameters(const JPEGFileMapEntry& entry,
                                       Uint8& nearLossless);
 
@@ -389,7 +397,7 @@ protected:
     OFBool m_lossyCompressed;
 
     /// After reading pixel data, this denotes whether the source
-    /// data is JPEG-LS (ITU 87)
+    /// data is JPEG-LS (ITU 87) or original JPEG (ITU 81)
     OFBool m_isJPEGLS;
 };
 

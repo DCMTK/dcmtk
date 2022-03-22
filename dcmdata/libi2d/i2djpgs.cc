@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2021, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -118,27 +118,27 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     Uint8 nearLossless = 0;
     if( m_isJPEGLS )
     {
-    OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
-    while (entry != m_jpegFileMap.end())
-    {
-        if ((*entry)->marker == E_JPGMARKER_SOS)
+        OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
+        while (entry != m_jpegFileMap.end())
         {
-            break;
+            if ((*entry)->marker == E_JPGMARKER_SOS)
+            {
+                break;
+            }
+            entry++;
         }
-        entry++;
-    }
-    if (entry == m_jpegFileMap.end())
-    {
-        closeFile();
-        return makeOFCondition(OFM_dcmdata, 18, OF_error, "No image data found in JPEG file");
-    }
-    cond = getSOSImageParameters(**entry, nearLossless);
-    if (cond.bad())
-    {
-        closeFile();
-        return cond;
-    }
-    m_lossyCompressed = nearLossless;
+        if (entry == m_jpegFileMap.end())
+        {
+            closeFile();
+            return makeOFCondition(OFM_dcmdata, 18, OF_error, "No image data found in JPEG file");
+        }
+        cond = getSOSImageParameters(**entry, nearLossless);
+        if (cond.bad())
+        {
+            closeFile();
+            return cond;
+        }
+        m_lossyCompressed = nearLossless;
     }
 
     // Check for image data in file (look for SOF marker)
@@ -645,7 +645,7 @@ OFCondition I2DJpegSource::createJPEGFileMap()
             else if (marker == E_JPGMARKER_JPGN7)
             {
                 lastWasSOSMarker = OFTrue;
-		m_isJPEGLS = OFTrue;
+		        m_isJPEGLS = OFTrue;
             }
             else if (marker == E_JPGMARKER_EOI)
             {
@@ -827,7 +827,7 @@ OFCondition I2DJpegSource::nextMarker(const OFBool& lastWasSOSMarker, E_JPGMARKE
     Uint8 c;
     int discarded_bytes = 0;
     int oneByte;
-    OFBool isEscapeSequence;
+    OFBool isEscapeSequence; // used in the context of JPEG-LS
     const OFBool isJPEGLS = m_isJPEGLS; // local context
 
     do
@@ -920,47 +920,51 @@ OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncodi
     DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Checking whether JPEG encoding is supported");
     DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Encoding: " << jpegMarkerToString(jpegEncoding, m_isJPEGLS));
     if(m_isJPEGLS)
-    switch (jpegEncoding)
     {
-        case E_JPGMARKER_JPGN7: //
-            result = EC_Normal;
-            break;
-        // SOF3: Lossless, SOF5-7: Hierarchical (differential), SOF9-15: Arithmetic coding, all other
-        default:
-            OFString errMsg("JPEG data with encoding: '");
-            errMsg += jpegMarkerToString(jpegEncoding, m_isJPEGLS);
-            errMsg += "' not supported";
-            result = makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+        switch (jpegEncoding)
+        {
+            case E_JPGMARKER_JPGN7: //
+                result = EC_Normal;
+                break;
+            // SOF3: Lossless, SOF5-7: Hierarchical (differential), SOF9-15: Arithmetic coding, all other
+            default:
+                OFString errMsg("JPEG data with encoding: '");
+                errMsg += jpegMarkerToString(jpegEncoding, m_isJPEGLS);
+                errMsg += "' not supported";
+                result = makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+        }
     }
     else
-    switch (jpegEncoding)
     {
-        case E_JPGMARKER_SOF0: // Baseline
-            result = EC_Normal;
-            break;
-        case E_JPGMARKER_SOF1: // Extended sequential
-            if (!m_disableExtSeqTs)
+        switch (jpegEncoding)
+        {
+            case E_JPGMARKER_SOF0: // Baseline
                 result = EC_Normal;
-            else
-                result
-                    = makeOFCondition(OFM_dcmdata,
-                                      18,
-                                      OF_error,
-                                      "Unable to convert: Extended sequential JPEG coding found but support disabled");
-            break;
-        case E_JPGMARKER_SOF2: // Progressive
-            if (!m_disableProgrTs)
-                result = EC_Normal;
-            else
-                result = makeOFCondition(
-                    OFM_dcmdata, 18, OF_error, "Unable to convert: Progressive JPEG coding found but disabled");
-            break;
-        // SOF3: Lossless, SOF5-7: Hierarchical (differential), SOF9-15: Arithmetic coding, all other
-        default:
-            OFString errMsg("JPEG data with encoding: '");
-            errMsg += jpegMarkerToString(jpegEncoding, m_isJPEGLS);
-            errMsg += "' not supported";
-            result = makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+                break;
+            case E_JPGMARKER_SOF1: // Extended sequential
+                if (!m_disableExtSeqTs)
+                    result = EC_Normal;
+                else
+                    result
+                        = makeOFCondition(OFM_dcmdata,
+                                        18,
+                                        OF_error,
+                                        "Unable to convert: Extended sequential JPEG coding found but support disabled");
+                break;
+            case E_JPGMARKER_SOF2: // Progressive
+                if (!m_disableProgrTs)
+                    result = EC_Normal;
+                else
+                    result = makeOFCondition(
+                        OFM_dcmdata, 18, OF_error, "Unable to convert: Progressive JPEG coding found but disabled");
+                break;
+            // SOF3: Lossless, SOF5-7: Hierarchical (differential), SOF9-15: Arithmetic coding, all other
+            default:
+                OFString errMsg("JPEG data with encoding: '");
+                errMsg += jpegMarkerToString(jpegEncoding, m_isJPEGLS);
+                errMsg += "' not supported";
+                result = makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+        }
     }
     return result;
 }
@@ -968,24 +972,28 @@ OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncodi
 E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding, OFBool const isJPEGLS, Uint8 const nearLossless)
 {
     if(isJPEGLS)
-    switch (jpegEncoding)
     {
-        case E_JPGMARKER_JPGN7: // SOF55
-            return nearLossless == 0 ? EXS_JPEGLSLossless : EXS_JPEGLSLossy;
-        default:
-            return EXS_Unknown;
+        switch (jpegEncoding)
+        {
+            case E_JPGMARKER_JPGN7: // SOF55
+                return nearLossless == 0 ? EXS_JPEGLSLossless : EXS_JPEGLSLossy;
+            default:
+                return EXS_Unknown;
+        }
     }
     else
-    switch (jpegEncoding)
     {
-        case E_JPGMARKER_SOF0: // Baseline
-            return EXS_JPEGProcess1;
-        case E_JPGMARKER_SOF1: // Extended Sequential
-            return EXS_JPEGProcess2_4;
-        case E_JPGMARKER_SOF2: // Progressive
-            return EXS_JPEGProcess10_12;
-        default:
-            return EXS_Unknown;
+        switch (jpegEncoding)
+        {
+            case E_JPGMARKER_SOF0: // Baseline
+                return EXS_JPEGProcess1;
+            case E_JPGMARKER_SOF1: // Extended Sequential
+                return EXS_JPEGProcess2_4;
+            case E_JPGMARKER_SOF2: // Progressive
+                return EXS_JPEGProcess10_12;
+            default:
+                return EXS_Unknown;
+        }
     }
 }
 
