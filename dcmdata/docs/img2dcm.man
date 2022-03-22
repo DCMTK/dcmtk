@@ -218,7 +218,7 @@ order:
     As an exception, the SOP Instance UID is not copied by this option.
     Also image related data like Rows, Columns etc. is exchanged during
     conversion. Note that \b img2dcm does not check any other attribute
-    values for validity, e. g. it does not look into sequences to adapt any
+    values for validity, e.g. it does not look into sequences to adapt any
     attributes to the new object (referenced images etc.). Therefore, it is
     recommended to use the templates in the data directory for (old) SC and
     VLP objects. See also section "Input Templates".
@@ -332,12 +332,12 @@ as input.
 \subsubsection img2dcm_jpeg_input_plugin JPEG Input Plugin
 
 For JPEG, the original JPEG from the source file is not decoded but extracted
-and slightly transformed (e. g. JFIF header is cut off) to allow fast
-conversion of even big JPEG files without the need of decoding and re-encoding.
-The JPEG plugin chooses the necessary output transfer syntax automatically
-depending on the actual encoding of the data inside the JPEG file. Therefore,
-the following Transfer Syntaxes (and their corresponding JPEG encodings) are
-used by the JPEG plugin:
+and slightly transformed (e.g. JFIF header is cut off) to allow fast conversion
+of even big JPEG files without the need of decoding and re-encoding. The JPEG
+plugin chooses the necessary output transfer syntax automatically depending on
+the actual encoding of the data inside the JPEG file. Therefore, the following
+Transfer Syntaxes (and their corresponding JPEG encodings) are used by the JPEG
+plugin:
 
 \li JPEG Coding Process 1
     Baseline, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8 Bit
@@ -373,13 +373,13 @@ other APPn) data into the DICOM object's internal JPEG stream is allowed or
 not. However, the most reliable approach is to cut those markers and their
 information off the JPEG stream. This approach is also taken by the \b img2dcm
 application. By default, all APPn markers are cut off from the original JPEG
-stream. However, if you want to keep other APPn markers than JFIF (e. g.
-EXIF information) inside the DICOM stream, the option \e --keep-appn
-does the trick. It should also be slightly faster than cutting off APPn
-information, because it is not necessary to scan the whole JPEG stream for
-such data. JFIF information is \b always removed by \b img2dcm. Using this
-option, pay attention that APP2 marker will be retained, however \b img2dcm
-does not create an equivalent ICC Profile (0028,2000) attribute.
+stream. However, if you want to keep other APPn markers than JFIF (e.g. EXIF
+information) inside the DICOM stream, the option \e --keep-appn does the trick.
+It should also be slightly faster than cutting off APPn information, because it
+is not necessary to scan the whole JPEG stream for such data. As stated before,
+JFIF information is always removed by \b img2dcm. However, when using this
+option, the APP2 marker is retained, but \b img2dcm does not create an
+equivalent ICC Profile (0028,2000) attribute.
 
 \subsubsection img2dcm_bmp_input_plugin BMP Input Plugin
 
@@ -395,11 +395,11 @@ There are no specific options for fine-tuning BMP format conversion.
 The desired output SOP Class can be selected on the command line. Currently,
 export plugins for the Secondary Capture Image SOP class (default, option
 \e -sc), the Multiframe Secondary Capture Image SOP classes (option \e -nsc),
-Visible Light Photographic Image SOP class (option \e -vl),
-and the Ophthalmic Photography Image SOP Classes (option \e -oph) are available.
-Please note that the first one is deprecated according to the DICOM standard
-but is selected as a default because it is widely supported. Future versions
-of \b img2dcm might provide further output plugins for other SOP Classes.
+Visible Light Photographic Image SOP class (option \e -vl), and the Ophthalmic
+Photography Image SOP Classes (option \e -oph) are available. Please note that
+the first one is deprecated according to the DICOM standard but is selected as
+a default because it is widely supported. Future versions of \b img2dcm might
+provide further output plugins for other SOP Classes.
 
 For the new Secondary Capture SOP classes, it is not possible to specify which
 specific SOP class should be used for output. That is because these new SOP
@@ -448,7 +448,7 @@ img2dcm image.jpg out.dcm --no-checks
 <br>Same as 1), but does not perform any attribute checking and no type 1 and
 type 2 attribute insertion! So in this case, an invalid DICOM object would be
 generated. This can be interesting if the output file is not meant to be
-completed but will undergo further transformations, e. g. adding attributes
+completed but will undergo further transformations, e.g. adding attributes
 using \b dcmodify. Only use option \e --no-checks if you know what you are
 doing!
 </li>
