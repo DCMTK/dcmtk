@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,7 +74,12 @@ OFTEST(ofstd_OFCharacterEncoding_1)
             OFCHECK(charEnc.selectEncoding("ASCII", "UTF-8").good());
         }
         checkConversionFlags(OFCharacterEncoding::AbortTranscodingOnIllegalSequence);
+#if DCMTK_ENABLE_CHARSET_CONVERSION != DCMTK_CHARSET_CONVERSION_OFICONV
+        // in oficonv, OFCharacterEncoding::DiscardIllegalSequences and
+        // OFCharacterEncoding::TransliterateIllegalSequences | OFCharacterEncoding::DiscardIllegalSequences
+        // is the same and cannot be distinguished in the getConversionFlags() result.
         checkConversionFlags(OFCharacterEncoding::DiscardIllegalSequences);
+#endif
         checkConversionFlags(OFCharacterEncoding::TransliterateIllegalSequences);
         checkConversionFlags(OFCharacterEncoding::TransliterateIllegalSequences
                              | OFCharacterEncoding::DiscardIllegalSequences);

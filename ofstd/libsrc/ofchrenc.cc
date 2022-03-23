@@ -335,6 +335,11 @@ class OFCharacterEncoding::Implementation
             createErrnoCondition(result, "Cannot open character encoding: ", EC_CODE_CannotOpenEncoding);
             return OFnullptr;
         }
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+        // GNU libiconv does not perform transliteration by default. We emulate this when using oficonv.
+        int flag1 = 1;
+        (void) ::iconvctl(descriptor, ICONV_SET_ILSEQ_INVALID, &flag1);
+#endif
         if (Implementation* pImplementation = new Implementation(descriptor))
         {
             result = EC_Normal;
@@ -383,11 +388,7 @@ class OFCharacterEncoding::Implementation
 
     static OFBool supportsConversionFlags(const unsigned flags)
     {
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
-        return flags == TransliterateIllegalSequences
-            || flags == (DiscardIllegalSequences | TransliterateIllegalSequences)
-            ;
-#elif defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
+#if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
         return  flags == AbortTranscodingOnIllegalSequence
             || flags == DiscardIllegalSequences
             || flags == TransliterateIllegalSequences
@@ -410,10 +411,17 @@ class OFCharacterEncoding::Implementation
 #if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
         unsigned result = 0;
         int flag;
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+        if (::iconvctl(ConversionDescriptor, ICONV_GET_ILSEQ_INVALID, &flag))
+            return 0;
+        if (flag == 0)
+            result |= TransliterateIllegalSequences;
+#else
         if (::iconvctl(ConversionDescriptor, ICONV_GET_TRANSLITERATE, &flag))
             return 0;
         if (flag)
             result |= TransliterateIllegalSequences;
+#endif
         if (::iconvctl(ConversionDescriptor, ICONV_GET_DISCARD_ILSEQ, &flag))
             return 0;
         if (flag)
@@ -437,35 +445,61 @@ class OFCharacterEncoding::Implementation
     OFBool setConversionFlags(const unsigned flags)
     {
 #if defined(WITH_LIBICONV) && _LIBICONV_VERSION >= 0x0108
-        int flag = 0;
+        int flag0 = 0;
+        int flag1 = 1;
         switch (flags)
         {
             case AbortTranscodingOnIllegalSequence:
-                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag0))
                     return OFFalse;
-                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_ILSEQ_INVALID, &flag1))
                     return OFFalse;
+#else
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag0))
+                    return OFFalse;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag0))
+                    return OFFalse;
+#endif
                 return OFTrue;
             case DiscardIllegalSequences:
-                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag1))
                     return OFFalse;
-                flag = 1;
-                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_ILSEQ_INVALID, &flag0))
                     return OFFalse;
+#else
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag1))
+                    return OFFalse;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag0))
+                    return OFFalse;
+#endif
                 return OFTrue;
             case TransliterateIllegalSequences:
-                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag0))
                     return OFFalse;
-                flag = 1;
-                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_ILSEQ_INVALID, &flag0))
                     return OFFalse;
+#else
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag0))
+                    return OFFalse;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag1))
+                    return OFFalse;
+#endif
                 return OFTrue;
             case (TransliterateIllegalSequences | DiscardIllegalSequences):
-                flag = 1;
-                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag))
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag1))
                     return OFFalse;
-                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag))
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_ILSEQ_INVALID, &flag0))
                     return OFFalse;
+#else
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_DISCARD_ILSEQ, &flag1))
+                    return OFFalse;
+                if (::iconvctl(ConversionDescriptor, ICONV_SET_TRANSLITERATE, &flag1))
+                    return OFFalse;
+#endif
                 return OFTrue;
             default:
                 return OFFalse;
