@@ -282,6 +282,14 @@ protected:
     OFCondition getSOSImageParameters(const JPEGFileMapEntry& entry,
                                       Uint8& nearLossless);
 
+    /** Get color transform as found at given APP8 marker of the JPEG image.
+     *  Used for JPEG-LS codec.
+     *  @param entry - [in] Related APP8 marker (E_JPGMARKER_APP8)
+     *  @param xform - [out] Returns the color transform
+     *  @return EC_Normal, if successful, error otherwise
+     */
+    OFCondition getAPP8ImageParameters(const JPEGFileMapEntry& entry, Uint8& xform);
+
     /** Get JPEG parameters as found at given JFIF marker of the JPEG image.
      *  @param entry - [in] This specifies the marker and the byte position of the
      *                      JFIF marker

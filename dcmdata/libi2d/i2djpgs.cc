@@ -119,26 +119,51 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     if( m_isJPEGLS )
     {
         OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
+        OFListIterator(JPEGFileMapEntry*) entrySos = m_jpegFileMap.end();
+        OFListIterator(JPEGFileMapEntry*) entryApp8 = m_jpegFileMap.end();
         while (entry != m_jpegFileMap.end())
         {
             if ((*entry)->marker == E_JPGMARKER_SOS)
             {
-                break;
+                if( entrySos == m_jpegFileMap.end() )
+                  entrySos = entry;
+            }
+            else if ((*entry)->marker == E_JPGMARKER_APP8)
+            {
+                if( entryApp8 == m_jpegFileMap.end() )
+                  entryApp8 = entry;
             }
             entry++;
         }
-        if (entry == m_jpegFileMap.end())
+        if (entrySos == m_jpegFileMap.end())
         {
             closeFile();
-            return makeOFCondition(OFM_dcmdata, 18, OF_error, "No image data found in JPEG file");
+            return makeOFCondition(OFM_dcmdata, 18, OF_error, "No start-of-scan marker found in JPEG-LS file");
         }
-        cond = getSOSImageParameters(**entry, nearLossless);
+        cond = getSOSImageParameters(**entrySos, nearLossless);
         if (cond.bad())
         {
             closeFile();
             return cond;
         }
         m_lossyCompressed = nearLossless;
+
+        // APP8 marker was found, check if this is one of the accepted HP transform ones
+        if (entryApp8 != m_jpegFileMap.end())
+        {
+            Uint8 xform = 0;
+            cond = getAPP8ImageParameters(**entryApp8, xform);
+            if (cond.bad())
+            {
+                closeFile();
+                return cond;
+            }
+            if(xform != 0)
+            {
+                closeFile();
+                return makeOFCondition(OFM_dcmdata, 18, OF_error, "APP8 marker contained invalid color transform.");
+            }
+        }
     }
 
     // Check for image data in file (look for SOF marker)
@@ -248,7 +273,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     else if (samplesPerPixel == 3)
     {
         if (m_isJPEGLS)
-          photoMetrInt = nearLossless ? "YBR_FULL" : "RGB";
+          photoMetrInt = "RGB";
         else
           photoMetrInt = "YBR_FULL_422";
     }
@@ -383,6 +408,43 @@ OFCondition I2DJpegSource::getSOSImageParameters(const JPEGFileMapEntry& entry,
 
     if (length != OFstatic_cast(unsigned int, 6 + component_count_in_scan * 2))
         return makeOFCondition(OFM_dcmdata, 18, OF_error, "Bogus SOS marker length");
+
+    return EC_Normal;
+}
+
+OFCondition I2DJpegSource::getAPP8ImageParameters(const JPEGFileMapEntry& entry, Uint8& xform)
+{
+    DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examining JPEG APP8 parameters");
+    if (entry.marker != E_JPGMARKER_APP8)
+        return EC_IllegalCall;
+    Uint16 length;
+    Uint8 mrfx[4];
+    int result;
+
+    // seek to the given SOFn marker
+
+    jpegFile.fseek(entry.bytePos, SEEK_SET);
+    result = read2Bytes(length); /* usual parameter length count */
+    if (result == EOF)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+
+    if(length != 7)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "APP8 marker found. Only handle 'mrfx'");
+
+    // read values
+    for(int i = 0; i < 4; ++i )
+    {
+      result = read1Byte(mrfx[i]);
+      if (result == EOF)
+          return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+    }
+
+    if(memcmp(mrfx,"mrfx", 4) != 0)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "APP8 marker found. Only handle 'mrfx'");
+
+    result = read1Byte(xform);
+    if (result == EOF)
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
 
     return EC_Normal;
 }
