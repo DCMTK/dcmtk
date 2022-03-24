@@ -47,6 +47,8 @@ DCMTK_ADD_LIBRARY(oficonv
     oficonv_logger.c
     oficonv_strlcpy.c
     oficonv_strcasestr.c
+    data_esdb.c
+    data_csmapper.c
 )
 
 DCMTK_TARGET_LINK_LIBRARIES(oficonv ${WIN32_STD_LIBRARIES})

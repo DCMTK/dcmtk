@@ -87,6 +87,7 @@ _citrus_mapper_create_area(
     struct stat st;
     char path[PATH_MAX];
     int ret;
+    size_t len;
 
     WLOCK(&cm_lock);
 
@@ -97,9 +98,11 @@ _citrus_mapper_create_area(
 
     snprintf(path, (size_t)PATH_MAX, "%s/%s", area, _CITRUS_MAPPER_DIR);
 
-    ret = stat(path, &st);
-    if (ret)
-        goto quit;
+    if (NULL == lookup_builtin_data_file(path, &len)) {
+        ret = stat(path, &st);
+        if (ret)
+            goto quit;
+    }
 
     ma = malloc(sizeof(*ma));
     if (ma == NULL) {

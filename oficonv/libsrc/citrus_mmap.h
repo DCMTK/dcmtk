@@ -29,12 +29,14 @@
 #define _CITRUS_MMAP_H_
 
 #include "dcmtk/config/osconfig.h"
+#include <stddef.h>
+
 struct _citrus_region;
 
 BEGIN_EXTERN_C
-int  _citrus_map_file(struct _citrus_region * ,
-        const char * );
-void     _citrus_unmap_file(struct _citrus_region *);
+int  _citrus_map_file(struct _citrus_region *, const char *);
+void _citrus_unmap_file(struct _citrus_region *);
+void *lookup_builtin_data_file(const char *path, size_t *len);
 END_EXTERN_C
 
 #endif

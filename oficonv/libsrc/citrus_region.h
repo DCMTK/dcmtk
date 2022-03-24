@@ -31,6 +31,7 @@
 #include "dcmtk/config/osconfig.h"
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -40,14 +41,27 @@
 struct _citrus_region {
     void    *r_head;
     size_t   r_size;
+    bool isfile;
 };
 
 static __inline void
 _citrus_region_init(struct _citrus_region *r, void *h, size_t sz)
 {
-
     r->r_head = h;
     r->r_size = sz;
+    r->isfile = 0;
+}
+
+static __inline void
+_citrus_set_is_file(struct _citrus_region *r)
+{
+    r->isfile = true;
+}
+
+static __inline bool
+_citrus_is_file(struct _citrus_region *r)
+{
+   return (r->isfile);
 }
 
 static __inline void *
@@ -103,6 +117,7 @@ _citrus_region_peek32(const struct _citrus_region *r, size_t pos)
     return (val);
 }
 
+#if 0
 static __inline int
 _citrus_region_get_subregion(struct _citrus_region *subr,
     const struct _citrus_region *r, size_t ofs, size_t sz)
@@ -113,5 +128,6 @@ _citrus_region_get_subregion(struct _citrus_region *subr,
     _citrus_region_init(subr, _citrus_region_offset(r, ofs), sz);
     return (0);
 }
+#endif
 
 #endif
