@@ -62,7 +62,7 @@ _citrus_prop_object_uninit(_citrus_prop_object_t *obj)
 {
 
     if (obj->type == _CITRUS_PROP_STR)
-        free(__DECONST(void *, obj->u.str));
+        free(CITRUS_DECONST(void *, obj->u.str));
 }
 
 static const char *xdigit = "0123456789ABCDEF";
@@ -437,7 +437,7 @@ _citrus_prop_parse_variable(const _citrus_prop_hint_t * hints,
     struct _citrus_memory_stream ms;
     int ch, errnum;
 
-    _citrus_memory_stream_bind_ptr(&ms, __DECONST(void *, var), lenvar);
+    _citrus_memory_stream_bind_ptr(&ms, CITRUS_DECONST(void *, var), lenvar);
     for (;;) {
         _citrus_memory_stream_skip_ws(&ms);
         ch = _citrus_memory_stream_getc(&ms);

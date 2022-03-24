@@ -343,10 +343,7 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
             if ((p = strstr(buf1, ".esdb")) != NULL)
                 *p = '\0';
 
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wformat-truncation"
-#elif ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
+#if ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-truncation"
 #endif
@@ -355,9 +352,7 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
                 (int)_citrus_region_size(&key),
                 (const char *)_citrus_region_head(&key));
 
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#elif ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
+#if ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
 #pragma GCC diagnostic pop
 #endif
 

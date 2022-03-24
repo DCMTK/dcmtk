@@ -45,7 +45,7 @@ _citrus_string_hash_func(const char *key, int hashsize)
 {
     struct _citrus_region r;
 
-    _citrus_region_init(&r, __DECONST(void *, key), strlen(key));
+    _citrus_region_init(&r, CITRUS_DECONST(void *, key), strlen(key));
 
     return ((int)(_citrus_db_hash_std(&r) % (uint32_t)hashsize));
 }

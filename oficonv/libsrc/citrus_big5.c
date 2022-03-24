@@ -127,6 +127,7 @@ _citrus_BIG5_init_state(_BIG5EncodingInfo * ei ,
     memset(s, 0, sizeof(*s));
 }
 
+#if 0
 static __inline void
 /*ARGSUSED*/
 _citrus_BIG5_pack_state(_BIG5EncodingInfo * ei ,
@@ -146,6 +147,7 @@ _citrus_BIG5_unpack_state(_BIG5EncodingInfo * ei ,
     (void) ei;
     memcpy((void *)s, pspriv, sizeof(*s));
 }
+#endif
 
 static __inline int
 _citrus_BIG5_check(_BIG5EncodingInfo *ei, unsigned int c)

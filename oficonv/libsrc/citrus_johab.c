@@ -81,6 +81,7 @@ _citrus_JOHAB_init_state(_JOHABEncodingInfo * ei ,
     psenc->chlen = 0;
 }
 
+#if 0
 static __inline void
 /*ARGSUSED*/
 _citrus_JOHAB_pack_state(_JOHABEncodingInfo * ei ,
@@ -100,6 +101,7 @@ _citrus_JOHAB_unpack_state(_JOHABEncodingInfo * ei ,
 
     memcpy((void *)psenc, pspriv, sizeof(*psenc));
 }
+#endif
 
 static void
 /*ARGSUSED*/

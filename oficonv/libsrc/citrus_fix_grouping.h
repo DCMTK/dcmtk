@@ -45,7 +45,7 @@ _citrus_fixup_char_max_md(char *grouping)
             *p = (char)CHAR_MAX;
 }
 #define _CITRUS_FIXUP_CHAR_MAX_MD(grouping) \
-    _citrus_fixup_char_max_md(__DECONST(void *, grouping))
+    _citrus_fixup_char_max_md(CITRUS_DECONST(void *, grouping))
 #else
 #define _CITRUS_FIXUP_CHAR_MAX_MD(grouping) /* nothing to do */
 #endif

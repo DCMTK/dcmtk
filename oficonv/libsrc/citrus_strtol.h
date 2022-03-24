@@ -55,7 +55,7 @@ _FUNCNAME(const char *nptr, char **endptr, int base)
         errno = EINVAL;
         if (endptr != NULL)
             /* LINTED interface specification */
-            *endptr = __DECONST(void *, nptr);
+            *endptr = CITRUS_DECONST(void *, nptr);
         return (0);
     }
 
@@ -147,6 +147,6 @@ _FUNCNAME(const char *nptr, char **endptr, int base)
     }
     if (endptr != NULL)
         /* LINTED interface specification */
-        *endptr = __DECONST(void *, any ? s - 1 : nptr);
+        *endptr = CITRUS_DECONST(void *, any ? s - 1 : nptr);
     return(acc);
 }

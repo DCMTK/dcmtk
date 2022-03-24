@@ -81,6 +81,7 @@ _citrus_DECHanyu_init_state(_DECHanyuEncodingInfo * ei ,
     psenc->chlen = 0;
 }
 
+#if 0
 static __inline void
 /*ARGSUSED*/
 _citrus_DECHanyu_pack_state(_DECHanyuEncodingInfo * ei ,
@@ -99,6 +100,7 @@ _citrus_DECHanyu_unpack_state(_DECHanyuEncodingInfo * ei ,
     (void) ei;
     memcpy((void *)psenc, pspriv, sizeof(*psenc));
 }
+#endif
 
 static void
 /*ARGSUSED*/

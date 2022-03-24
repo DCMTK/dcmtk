@@ -226,19 +226,14 @@ get_shared(struct _citrus_iconv_shared * * rci,
     char convname[PATH_MAX];
     int hashval, ret = 0;
 
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wformat-truncation"
-#elif ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
+#if ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-truncation"
 #endif
 
     snprintf(convname, sizeof(convname), "%s/%s", src, dst);
 
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#elif ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
+#if ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
 #pragma GCC diagnostic pop
 #endif
 

@@ -36,12 +36,12 @@
 
 #ifdef HAVE_WINDOWS_H
 
-#define WLOCK(lock)  if (__isthreaded) AcquireSRWLockExclusive(lock);
-#define UNLOCK(lock) if (__isthreaded) ReleaseSRWLockExclusive(lock);
+#define WLOCK(lock)  if (CITRUS_isthreaded) AcquireSRWLockExclusive(lock);
+#define UNLOCK(lock) if (CITRUS_isthreaded) ReleaseSRWLockExclusive(lock);
 
 #else
 
-#define WLOCK(lock)  if (__isthreaded) pthread_rwlock_wrlock(lock);
-#define UNLOCK(lock) if (__isthreaded) pthread_rwlock_unlock(lock);
+#define WLOCK(lock)  if (CITRUS_isthreaded) pthread_rwlock_wrlock(lock);
+#define UNLOCK(lock) if (CITRUS_isthreaded) pthread_rwlock_unlock(lock);
 
 #endif

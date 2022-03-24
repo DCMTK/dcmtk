@@ -123,7 +123,7 @@ retry:
             break;
         }
         snprintf(buf, sizeof(buf), "%.*s", (int)len, p);
-        pp = __DECONST(void *, p);
+        pp = CITRUS_DECONST(void *, p);
         m6->m6_map[i] = strtoul(buf, (char **)&pp, 0);
         p = _citrus_bcs_skip_ws(buf);
         if (*p != T_COMM && !*p) {
@@ -180,7 +180,7 @@ _citrus_mapper_646_mapper_init(struct _citrus_mapper_area * ma ,
     if (m6 == NULL)
         return (errno);
 
-    _citrus_region_init(&r, __DECONST(void *, var), lenvar);
+    _citrus_region_init(&r, CITRUS_DECONST(void *, var), lenvar);
     _citrus_memory_stream_bind(&ms, &r);
     ret = parse_var(m6, &ms, dir);
     if (ret) {

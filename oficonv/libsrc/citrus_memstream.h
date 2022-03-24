@@ -222,7 +222,7 @@ _citrus_memory_stream_getln_region(struct _citrus_memory_stream *ms,
 
     ptr = _citrus_memory_stream_getln(ms, &sz);
     if (ptr)
-        _citrus_region_init(r, __DECONST(void *, ptr), sz);
+        _citrus_region_init(r, CITRUS_DECONST(void *, ptr), sz);
 
     return (ptr == NULL);
 }

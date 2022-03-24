@@ -40,7 +40,7 @@
 #include <limits.h>
 #include <stdbool.h>
 
-#define __DECONST(type, var)    ((type)(uintptr_t)(const void *)(var))
+#define CITRUS_DECONST(type, var)    ((type)(uintptr_t)(const void *)(var))
 
 #ifdef __GNUC__
 #define __packed __attribute__((__packed__))
@@ -63,7 +63,7 @@
 #define OFICONV_PATH_VARIABLE "DCMICONVPATH"
 #define OFICONV_CSMAPPER_DIR "csmapper"
 #define OFICONV_ESDB_DIR "esdb"
-#define __isthreaded 1
+#define CITRUS_isthreaded 1
 
 #ifndef CHAR_MAX
 #error Need to define CHAR_MAX

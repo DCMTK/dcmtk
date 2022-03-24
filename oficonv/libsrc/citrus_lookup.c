@@ -200,10 +200,10 @@ retry:
 
     /* found a entry */
     if (key)
-        _citrus_region_init(key, __DECONST(void *, p), (size_t)(q - p));
+        _citrus_region_init(key, CITRUS_DECONST(void *, p), (size_t)(q - p));
     p = _citrus_bcs_skip_ws_len(q, &len);
     if (data)
-        _citrus_region_init(data, len ? __DECONST(void *, p) : NULL, len);
+        _citrus_region_init(data, len ? CITRUS_DECONST(void *, p) : NULL, len);
 
     return (0);
 }
@@ -238,7 +238,7 @@ seq_lookup_plain(struct _citrus_lookup *cl, const char *key,
     if (p == NULL)
         return (ENOENT);
     if (data)
-        _citrus_region_init(data, __DECONST(void *, p), len);
+        _citrus_region_init(data, CITRUS_DECONST(void *, p), len);
 
     return (0);
 }

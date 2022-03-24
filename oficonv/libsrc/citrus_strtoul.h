@@ -132,6 +132,6 @@ _FUNCNAME(const char *nptr, char **endptr, int base)
 
     if (endptr != NULL)
         /* LINTED interface specification */
-        *endptr = __DECONST(void *, any ? s - 1 : nptr);
+        *endptr = CITRUS_DECONST(void *, any ? s - 1 : nptr);
     return (acc);
 }

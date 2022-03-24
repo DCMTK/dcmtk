@@ -181,7 +181,7 @@ _citrus_db_lookup_by_string(struct _citrus_db *db, const char *key,
 {
     struct _citrus_region r;
 
-    _citrus_region_init(&r, __DECONST(void *, key), strlen(key));
+    _citrus_region_init(&r, CITRUS_DECONST(void *, key), strlen(key));
 
     return (_citrus_db_lookup(db, &r, data, dl));
 }
