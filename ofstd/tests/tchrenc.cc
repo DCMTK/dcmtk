@@ -61,6 +61,7 @@ OFTEST(ofstd_OFCharacterEncoding_1)
         OFCHECK_EQUAL(resultStr, OFString(" \0 ", 3));
         OFCHECK(charEnc.selectEncoding("ASCII", "DCMTK").bad());
         OFCHECK(charEnc.selectEncoding("DCMTK", "ASCII").bad());
+#if DCMTK_ENABLE_CHARSET_CONVERSION != DCMTK_CHARSET_CONVERSION_OFICONV
         // some implementations of iconv_open() in the C standard library do
         // not understand the "" argument
         if (OFCharacterEncoding::hasDefaultEncoding())
@@ -70,6 +71,7 @@ OFTEST(ofstd_OFCharacterEncoding_1)
             OFCHECK(charEnc.selectEncoding("ASCII", charEnc.getLocaleEncoding()).good());
         }
         else
+#endif
         {
             OFCHECK(charEnc.selectEncoding("ASCII", "UTF-8").good());
         }

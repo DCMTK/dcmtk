@@ -3284,7 +3284,7 @@ void OFStandard::sanitizeFilename(char *fname)
 OFString OFStandard::getDefaultSupportDataDir()
 {
 #ifdef HAVE_WINDOWS_H
-  char buf[PATH_MAX+1];
+  char buf[MAX_PATH+1];
   memset(buf, 0, sizeof(buf));
   (void) ExpandEnvironmentStringsA(DEFAULT_SUPPORT_DATA_DIR, buf, sizeof(buf));
   return buf;
@@ -3297,7 +3297,7 @@ OFString OFStandard::getDefaultSupportDataDir()
 OFString OFStandard::getDefaultConfigurationDir()
 {
 #ifdef HAVE_WINDOWS_H
-  char buf[PATH_MAX+1];
+  char buf[MAX_PATH+1];
   memset(buf, 0, sizeof(buf));
   (void) ExpandEnvironmentStringsA(DEFAULT_CONFIGURATION_DIR, buf, sizeof(buf));
   return buf;
