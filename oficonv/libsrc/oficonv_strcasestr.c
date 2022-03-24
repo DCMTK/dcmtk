@@ -69,4 +69,8 @@ char *strcasestr(const char *s, const char *find)
     return ((char *)s);
 }
 
+#else
+
+int oficonv_strcasestr_c_dummy_to_keep_linker_from_moaning = 0;
+
 #endif

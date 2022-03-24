@@ -52,5 +52,9 @@ size_t strlcpy(char *dst, const char *src, size_t siz)
 
   return(s - src - 1);    /* count does not include NUL */
 }
-#endif /* HAVE_STRLCPY */
 
+#else
+
+int oficonv_strlcpy_c_dummy_to_keep_linker_from_moaning = 0;
+
+#endif /* HAVE_STRLCPY */

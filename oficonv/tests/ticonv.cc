@@ -332,10 +332,10 @@ OFTEST(oficonv__iconv)
     memset(output, 0, MAXLEN);
 
     // perform the conversion
-    int result = OFiconv(id, &src_ptr, &src_len, &dst_ptr, &dst_len);
+    size_t result = OFiconv(id, &src_ptr, &src_len, &dst_ptr, &dst_len);
 
     // since the source sequence contains an illegal byte sequence, this call should have failed
-    OFCHECK(result == -1);
+    OFCHECK(result == OFstatic_cast(size_t, -1));
 
     // including the illegal byte sequence, there should be 20 bytes left in the source buffer
     OFCHECK(src_len == 20);
