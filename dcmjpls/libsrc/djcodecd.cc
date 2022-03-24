@@ -336,12 +336,16 @@ OFCondition DJLSDecoderBase::decodeFrame(
 
   if (imageSamplesPerPixel > 1)
   {
+    // get planar configuration from dataset
+    imagePlanarConfiguration = 2; // invalid value
+    dataset->findAndGetUint16(DCM_PlanarConfiguration, imagePlanarConfiguration);
+    if(imagePlanarConfiguration == 1)
+    {
+      DCMJPLS_WARN("CP-1843 enforce Planar Configuration to be \"0\".");
+    }
     switch (cp->getPlanarConfiguration())
     {
       case EJLSPC_restore:
-        // get planar configuration from dataset
-        imagePlanarConfiguration = 2; // invalid value
-        dataset->findAndGetUint16(DCM_PlanarConfiguration, imagePlanarConfiguration);
         // determine auto default if not found or invalid
         if (imagePlanarConfiguration > 1)
           imagePlanarConfiguration = determinePlanarConfiguration(imageSopClass, imagePhotometricInterpretation);
@@ -436,7 +440,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
         {
           // The dataset says this should be planarConfiguration == 1, but
           // it isn't -> convert it.
-          DCMJPLS_WARN("different planar configuration in JPEG-LS bitstream, converting to \"1\"");
+          DCMJPLS_INFO("different planar configuration in JPEG-LS bitstream, converting to \"1\"");
           if (bytesPerSample == 1)
             result = createPlanarConfiguration1Byte(OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
           else
@@ -446,7 +450,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
         {
           // The dataset says this should be planarConfiguration == 0, but
           // it isn't -> convert it.
-          DCMJPLS_WARN("different planar configuration in JPEG stream, converting to \"0\"");
+          DCMJPLS_INFO("different planar configuration in JPEG-LS bitstream, converting to \"0\"");
           if (bytesPerSample == 1)
             result = createPlanarConfiguration0Byte(OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
           else
