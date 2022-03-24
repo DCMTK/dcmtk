@@ -180,7 +180,7 @@ OFCondition DJLSDecoderBase::decode(
       {
         // frame is incomplete. Nevertheless skip to next frame.
         // This permits decompression of faulty multi-frame images.
-        DCMJPLS_WARN("JPEG-LS bitstream invalid or incomplete, ignoring (but image is likely to be incomplete).");
+        DCMJPLS_WARN("JPEG-LS bitstream invalid or incomplete, ignoring (but image is likely to be incomplete)");
         result = EC_Normal;
       }
 
@@ -286,7 +286,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
   if (result.good())
   {
     // We got all the data we need from the dataset, let's start decoding
-    DCMJPLS_DEBUG("Starting to decode frame " << frameNo << " with fragment " << currentItem);
+    DCMJPLS_DEBUG("starting to decode frame " << frameNo << " with fragment " << currentItem);
     result = decodeFrame(fromPixSeq, djcp, dataset, frameNo, currentItem, buffer, bufSize,
         imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
   }

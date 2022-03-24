@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2021, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -298,7 +298,7 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
     {
       OFLOG_FATAL(dcmdjplsLogger, error.text() << ": decompressing file: " <<  opt_ifname);
       if (error == EC_CannotChangeRepresentation)
-        OFLOG_FATAL(dcmdjplsLogger, "Input transfer syntax " << original_xfer.getXferName() << " not supported");
+        OFLOG_FATAL(dcmdjplsLogger, "input transfer syntax " << original_xfer.getXferName() << " not supported");
       return 1;
     }
 
