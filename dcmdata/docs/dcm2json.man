@@ -213,7 +213,7 @@ the following (see DICOM Part 18 Section F for details):
         ]
     },
     "00100030": {
-        "vr": "DT",
+        "vr": "DA",
         "Value": [
             "19670701"
         ]
@@ -401,6 +401,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2json_copyright COPYRIGHT
 
-Copyright (C) 2016-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
