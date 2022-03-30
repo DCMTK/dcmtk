@@ -731,6 +731,9 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                 errorFlag = metaInfo->read(inStream, EXS_Unknown, glenc, maxReadLength);
             }
 
+            // bail out if the meta-header is still incomplete or an error occured
+            if (errorFlag.bad()) return errorFlag;
+
             // determine xfer from tag (0002,0010) in the meta header
             newxfer = lookForXfer(metaInfo);
             if ((FileReadMode == ERM_fileOnly) || (FileReadMode == ERM_metaOnly))

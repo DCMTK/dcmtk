@@ -1458,7 +1458,11 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
                 /* tag and length (and possibly VR) information as well as maybe some data */
                 /* data value information. We need to continue reading the data value */
                 /* information for this particular element. */
-                errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
+                DcmObject *dO = elementList->get();
+                if (dO)
+                  errorFlag = dO->read(inStream, xfer, glenc, maxReadLength);
+                  else errorFlag = EC_InternalError; // should never happen
+
                 /* if reading was successful, we read the entire information */
                 /* for this element; hence lastElementComplete is true */
                 if (errorFlag.good())
