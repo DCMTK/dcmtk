@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,7 +23,32 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmpstat/dvpsgl.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/dcmiod/cielabutil.h"
 
+/* static helper functions */
+
+static void DICOM_RGB_to_Lab(Uint16& L, Uint16& a, Uint16& b, Uint16 R, Uint16 G, Uint16 B)
+{
+  double dL, da, db;
+  double dR = OFstatic_cast(double, R) / 65535.0;
+  double dG = OFstatic_cast(double, G) / 65535.0;
+  double dB = OFstatic_cast(double, B) / 65535.0;
+
+  IODCIELabUtil::rgb2DicomLab(dL, da, db, dR, dG, dB);
+
+  L = OFstatic_cast(Uint16, dL);
+  a = OFstatic_cast(Uint16, da);
+  b = OFstatic_cast(Uint16, db);
+}
+
+static void DICOM_Lab_to_RGB(Uint16& R, Uint16& G, Uint16& B, Uint16 L, Uint16 a, Uint16 b)
+{
+  double dR, dG, dB;
+  IODCIELabUtil::dicomLab2RGB(dR, dG, dB, L, a, b);
+  R = OFstatic_cast(Uint16, dR * 65535.0);
+  G = OFstatic_cast(Uint16, dG * 65535.0);
+  B = OFstatic_cast(Uint16, dB * 65535.0);
+}
 
 /* --------------- class DVPSGraphicLayer --------------- */
 
@@ -31,7 +56,7 @@ DVPSGraphicLayer::DVPSGraphicLayer()
 : graphicLayer(DCM_GraphicLayer)
 , graphicLayerOrder(DCM_GraphicLayerOrder)
 , graphicLayerRecommendedDisplayGrayscaleValue(DCM_GraphicLayerRecommendedDisplayGrayscaleValue)
-, graphicLayerRecommendedDisplayRGBValue(DCM_RETIRED_GraphicLayerRecommendedDisplayRGBValue)
+, graphicLayerRecommendedDisplayCIELabValue(DCM_GraphicLayerRecommendedDisplayCIELabValue)
 , graphicLayerDescription(DCM_GraphicLayerDescription)
 {
 }
@@ -40,7 +65,7 @@ DVPSGraphicLayer::DVPSGraphicLayer(const DVPSGraphicLayer& copy)
 : graphicLayer(copy.graphicLayer)
 , graphicLayerOrder(copy.graphicLayerOrder)
 , graphicLayerRecommendedDisplayGrayscaleValue(copy.graphicLayerRecommendedDisplayGrayscaleValue)
-, graphicLayerRecommendedDisplayRGBValue(copy.graphicLayerRecommendedDisplayRGBValue)
+, graphicLayerRecommendedDisplayCIELabValue(copy.graphicLayerRecommendedDisplayCIELabValue)
 , graphicLayerDescription(copy.graphicLayerDescription)
 {
 }
@@ -53,13 +78,15 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
   DcmStack stack;
+  DcmUnsignedShort graphicLayerRecommendedDisplayRGBValue(DCM_RETIRED_GraphicLayerRecommendedDisplayRGBValue);
 
   READ_FROM_DATASET(DcmCodeString, EVR_CS, graphicLayer)
   READ_FROM_DATASET(DcmIntegerString, EVR_IS, graphicLayerOrder)
   READ_FROM_DATASET(DcmUnsignedShort, EVR_US, graphicLayerRecommendedDisplayGrayscaleValue)
   READ_FROM_DATASET(DcmUnsignedShort, EVR_US, graphicLayerRecommendedDisplayRGBValue)
+  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, graphicLayerRecommendedDisplayCIELabValue)
   READ_FROM_DATASET(DcmLongString, EVR_LO, graphicLayerDescription)
-  
+
   /* Now perform basic sanity checks */
 
   if (graphicLayer.getLength() == 0)
@@ -72,7 +99,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     result=EC_IllegalCall;
     DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayer VM != 1");
   }
- 
+
   if (graphicLayerOrder.getLength() == 0)
   {
     result=EC_IllegalCall;
@@ -90,6 +117,12 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1");
   }
 
+  if ((graphicLayerRecommendedDisplayCIELabValue.getVM()>0)&&(graphicLayerRecommendedDisplayCIELabValue.getVM() != 3))
+  {
+    result=EC_IllegalCall;
+    DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayCIELabValue VM != 3");
+  }
+
   if ((graphicLayerRecommendedDisplayRGBValue.getVM()>0)&&(graphicLayerRecommendedDisplayRGBValue.getVM() != 3))
   {
     result=EC_IllegalCall;
@@ -102,6 +135,23 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     DCMPSTAT_WARN("presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1");
   }
 
+  if ((result.good() && (graphicLayerRecommendedDisplayCIELabValue.getVM() == 0) && (graphicLayerRecommendedDisplayRGBValue.getVM() == 3)))
+  {
+    // convert RGB to L*a*b*
+    Uint16 L, a, b, rr, gg, bb;
+    graphicLayerRecommendedDisplayCIELabValue.clear();
+    result = graphicLayerRecommendedDisplayRGBValue.getUint16(rr,0);
+    if (result.good()) result = graphicLayerRecommendedDisplayCIELabValue.getUint16(gg,1);
+    if (result.good()) result = graphicLayerRecommendedDisplayCIELabValue.getUint16(bb,2);
+    if (result.good())
+    {
+      DICOM_RGB_to_Lab(L, a, b, rr, gg, bb);
+      graphicLayerRecommendedDisplayCIELabValue.putUint16(L,0);
+      graphicLayerRecommendedDisplayCIELabValue.putUint16(a,1);
+      graphicLayerRecommendedDisplayCIELabValue.putUint16(b,2);
+    }
+  }
+
   return result;
 }
 
@@ -109,11 +159,11 @@ OFCondition DVPSGraphicLayer::write(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
-  
+
   ADD_TO_DATASET(DcmCodeString, graphicLayer)
   ADD_TO_DATASET(DcmIntegerString, graphicLayerOrder)
   if (graphicLayerRecommendedDisplayGrayscaleValue.getLength() >0) { ADD_TO_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayGrayscaleValue) }
-  if (graphicLayerRecommendedDisplayRGBValue.getLength() >0) { ADD_TO_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayRGBValue) }
+  if (graphicLayerRecommendedDisplayCIELabValue.getLength() >0) { ADD_TO_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayCIELabValue) }
   if (graphicLayerDescription.getLength() >0) { ADD_TO_DATASET(DcmLongString, graphicLayerDescription) }
 
   return result;
@@ -155,10 +205,22 @@ void DVPSGraphicLayer::setGLRecommendedDisplayValueGray(Uint16 gray)
 
 void DVPSGraphicLayer::setGLRecommendedDisplayValueRGB(Uint16 r, Uint16 g, Uint16 b)
 {
-  graphicLayerRecommendedDisplayRGBValue.clear();
-  graphicLayerRecommendedDisplayRGBValue.putUint16(r,0);
-  graphicLayerRecommendedDisplayRGBValue.putUint16(g,1);
-  graphicLayerRecommendedDisplayRGBValue.putUint16(b,2);
+  // convert RGB to L*a*b*
+  graphicLayerRecommendedDisplayCIELabValue.clear();
+  Uint16 LL, aa, bb;
+  DICOM_RGB_to_Lab(LL, aa, bb, r, g, b);
+  graphicLayerRecommendedDisplayCIELabValue.putUint16(LL,0);
+  graphicLayerRecommendedDisplayCIELabValue.putUint16(aa,1);
+  graphicLayerRecommendedDisplayCIELabValue.putUint16(bb,2);
+  return;
+}
+
+void DVPSGraphicLayer::setGLRecommendedDisplayValueCIELab(Uint16 L, Uint16 a, Uint16 b)
+{
+  graphicLayerRecommendedDisplayCIELabValue.clear();
+  graphicLayerRecommendedDisplayCIELabValue.putUint16(L,0);
+  graphicLayerRecommendedDisplayCIELabValue.putUint16(a,1);
+  graphicLayerRecommendedDisplayCIELabValue.putUint16(b,2);
   return;
 }
 
@@ -178,7 +240,7 @@ Sint32 DVPSGraphicLayer::getGLOrder()
 OFBool DVPSGraphicLayer::haveGLRecommendedDisplayValue()
 {
   if ((graphicLayerRecommendedDisplayGrayscaleValue.getVM() == 1) ||
-      (graphicLayerRecommendedDisplayRGBValue.getVM() == 3))
+      (graphicLayerRecommendedDisplayCIELabValue.getVM() == 3))
   return OFTrue; else return OFFalse;
 }
 
@@ -191,18 +253,47 @@ OFCondition DVPSGraphicLayer::getGLRecommendedDisplayValueGray(Uint16& gray)
     Uint16 gr=0;
     result = graphicLayerRecommendedDisplayGrayscaleValue.getUint16(gr,0);
     if (result==EC_Normal) gray = gr;
-  } else if (graphicLayerRecommendedDisplayRGBValue.getVM() == 3)
+  }
+  else if (graphicLayerRecommendedDisplayCIELabValue.getVM() == 3)
   {
-    Uint16 r=0;
-    Uint16 g=0;
-    Uint16 b=0;
-    result = graphicLayerRecommendedDisplayRGBValue.getUint16(r,0);
-    if (EC_Normal==result) result = graphicLayerRecommendedDisplayRGBValue.getUint16(g,1);
-    if (EC_Normal==result) result = graphicLayerRecommendedDisplayRGBValue.getUint16(b,2);
+    Uint16 gr=0;
+    result = graphicLayerRecommendedDisplayCIELabValue.getUint16(gr,0);
+    if (result==EC_Normal) gray = gr; // the L* component of CIELAB is the gray value
+  }
+  else result=EC_IllegalCall;
+  return result;
+}
+
+OFCondition DVPSGraphicLayer::getGLRecommendedDisplayValueCIELab(Uint16& L, Uint16& a, Uint16& b)
+{
+  L = 0;
+  a = 0;
+  b = 0;
+  OFCondition result = EC_Normal;
+  if (graphicLayerRecommendedDisplayCIELabValue.getVM()==3)
+  {
+    Uint16 LL=0;
+    Uint16 aa=0;
+    Uint16 bb=0;
+    result = graphicLayerRecommendedDisplayCIELabValue.getUint16(LL,0);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayCIELabValue.getUint16(aa,1);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayCIELabValue.getUint16(bb,2);
     if (result==EC_Normal)
     {
-      double dg = 0.299*(double)r + 0.587*(double)g +0.114*(double)b;
-      gray = (Uint16) dg;
+      L = LL;
+      a = aa;
+      b = bb;
+    }
+  }
+  else if (graphicLayerRecommendedDisplayGrayscaleValue.getVM() == 1)
+  {
+    Uint16 gr=0;
+    result = graphicLayerRecommendedDisplayGrayscaleValue.getUint16(gr,0);
+    if (result==EC_Normal)
+    {
+      L = gr;
+      a = 0;
+      b = 0;
     }
   } else result=EC_IllegalCall;
   return result;
@@ -214,26 +305,24 @@ OFCondition DVPSGraphicLayer::getGLRecommendedDisplayValueRGB(Uint16& r, Uint16&
   g = 0;
   b = 0;
   OFCondition result = EC_Normal;
-  if (graphicLayerRecommendedDisplayRGBValue.getVM()==3)
+  if (graphicLayerRecommendedDisplayCIELabValue.getVM()==3)
   {
-    Uint16 rr=0;
-    Uint16 gg=0;
+    Uint16 LL=0;
+    Uint16 aa=0;
     Uint16 bb=0;
-    result = graphicLayerRecommendedDisplayRGBValue.getUint16(rr,0);
-    if (EC_Normal==result) result = graphicLayerRecommendedDisplayRGBValue.getUint16(gg,1);
-    if (EC_Normal==result) result = graphicLayerRecommendedDisplayRGBValue.getUint16(bb,2);
+    result = graphicLayerRecommendedDisplayCIELabValue.getUint16(LL,0);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayCIELabValue.getUint16(aa,1);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayCIELabValue.getUint16(bb,2);
     if (result==EC_Normal)
     {
-      r = rr;
-      g = gg;
-      b = bb;
+      DICOM_Lab_to_RGB(r, g, b, LL, aa, bb);
     }
   }
   else if (graphicLayerRecommendedDisplayGrayscaleValue.getVM() == 1)
   {
     Uint16 gr=0;
     result = graphicLayerRecommendedDisplayGrayscaleValue.getUint16(gr,0);
-    if (result==EC_Normal) 
+    if (result==EC_Normal)
     {
       r = gr;
       g = gr;
@@ -243,9 +332,9 @@ OFCondition DVPSGraphicLayer::getGLRecommendedDisplayValueRGB(Uint16& r, Uint16&
   return result;
 }
 
-void DVPSGraphicLayer::removeRecommendedDisplayValue(OFBool rgb, OFBool monochrome)
+void DVPSGraphicLayer::removeRecommendedDisplayValue(OFBool cielab, OFBool monochrome)
 {
-  if (rgb) graphicLayerRecommendedDisplayRGBValue.clear();
+  if (cielab) graphicLayerRecommendedDisplayCIELabValue.clear();
   if (monochrome) graphicLayerRecommendedDisplayGrayscaleValue.clear();
   return;
 }

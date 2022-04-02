@@ -47,5 +47,5 @@ DCMTK_ADD_LIBRARY(dcmpstat
   dvsighdl.cc
 )
 
-DCMTK_TARGET_LINK_MODULES(dcmpstat ofstd oflog dcmdata dcmimgle dcmimage dcmnet dcmdsig dcmtls dcmsr dcmqrdb)
+DCMTK_TARGET_LINK_MODULES(dcmpstat ofstd oflog dcmdata dcmiod dcmimgle dcmimage dcmnet dcmdsig dcmtls dcmsr dcmqrdb)
 set_property(TARGET dcmpstat PROPERTY OUTPUT_NAME "dcmpstat${DCMTK_TLS_LIBRARY_POSTFIX}")
