@@ -28,12 +28,13 @@
 #define _CITRUS_DB_HASH_H_
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/oficonv/oidefine.h"
 #include <inttypes.h>
 
 struct _citrus_region;
 
 BEGIN_EXTERN_C
-uint32_t     _citrus_db_hash_std(struct _citrus_region *);
+DCMTK_OFICONV_EXPORT uint32_t _citrus_db_hash_std(struct _citrus_region *);
 END_EXTERN_C
 
 #endif

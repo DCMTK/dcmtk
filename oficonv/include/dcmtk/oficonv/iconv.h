@@ -30,6 +30,7 @@
 #define OFICONV_H
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/oficonv/oidefine.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -59,7 +60,7 @@ BEGIN_EXTERN_C
  *  @return a freshly allocated conversion descriptor.
  *    In case of error, errno is set and the function returns (iconv_t)(-1).
  */
-iconv_t OFiconv_open(const char *dstname, const char *srcname);
+DCMTK_OFICONV_EXPORT iconv_t OFiconv_open(const char *dstname, const char *srcname);
 
 /**  convert the string in the buffer *src of length *srcleft bytes and
  *   stores the converted string in the buffer *dst of size *dstleft bytes.
@@ -93,13 +94,13 @@ iconv_t OFiconv_open(const char *dstname, const char *srcname);
  *   @return number of characters converted to "invalid character" upon success,
  *     or (size_t)(-1) in case of error, in which case errno is set
  */
-size_t OFiconv(iconv_t cd, char ** src, size_t * srcleft, char ** dst, size_t * dstleft);
+DCMTK_OFICONV_EXPORT size_t OFiconv(iconv_t cd, char ** src, size_t * srcleft, char ** dst, size_t * dstleft);
 
 /** close the specified converter cd
  *  @param cd converter ID returned by OFiconv_open()
  *  @return 0 if successful, -1 otherwise, in which case errno is set
  */
-int OFiconv_close(iconv_t cd);
+DCMTK_OFICONV_EXPORT int OFiconv_close(iconv_t cd);
 
 /*
  * BSD specific interfaces for iconv
@@ -113,13 +114,13 @@ int OFiconv_close(iconv_t cd);
  *  @param paired if true, the list will be arranged into canonical/alias name pairs.
  *  @return 0 if successful, -1 otherwise, in which case errno is set
  */
-int OF__iconv_get_list(char ***names, size_t * count, __iconv_bool paired);
+DCMTK_OFICONV_EXPORT int OF__iconv_get_list(char ***names, size_t * count, __iconv_bool paired);
 
 /** free the allocated memory during the call of OF__iconv_get_list().
  *  @param names address of char pointer array created by OF__iconv_get_list()
  *  @param count number of entries in char pointer array
  */
-void OF__iconv_free_list(char **names, size_t  count);
+DCMTK_OFICONV_EXPORT void OF__iconv_free_list(char **names, size_t  count);
 
 #define __ICONV_F_HIDE_INVALID  0x0001
 
@@ -138,7 +139,7 @@ void OF__iconv_free_list(char **names, size_t  count);
  *   @return number of characters converted to "invalid character" upon success,
  *     or (size_t)(-1) in case of error, in which case errno is set
  */
-size_t  OF__iconv(iconv_t cd, char **src, size_t *srcleft, char **dst, size_t *dstleft, uint32_t flags, size_t *invalids);
+DCMTK_OFICONV_EXPORT size_t OF__iconv(iconv_t cd, char **src, size_t *srcleft, char **dst, size_t *dstleft, uint32_t flags, size_t *invalids);
 
 /*
  * GNU libiconv interfaces for iconv
@@ -174,13 +175,13 @@ typedef struct {
  *    using OFiconv_close_in(), not with OFiconv_close().
  *  @return 0 if successful, -1 otherwise, in which case errno is set
  */
-int OFiconv_open_into(const char *dstname, const char *srcname, iconv_allocation_t *ptr);
+DCMTK_OFICONV_EXPORT int OFiconv_open_into(const char *dstname, const char *srcname, iconv_allocation_t *ptr);
 
 /** close the converter cd allocated in ptr
  *  @param ptr pointer to conversion descriptor created with OFiconv_open_into()
  *  @return 0 if successful, -1 otherwise, in which case errno is set
  */
-int OFiconv_close_in(iconv_allocation_t *ptr);
+DCMTK_OFICONV_EXPORT int OFiconv_close_in(iconv_allocation_t *ptr);
 
 /*
  * OFiconvctl() request macros
@@ -271,14 +272,14 @@ struct iconv_hooks {
  *  @param do_one callback function
  *  @param arg opaque pointer that will be passed to the callback function
  */
-void OFiconvlist(int (*do_one) (unsigned int count, const char * const *names, void *arg), void *arg);
+DCMTK_OFICONV_EXPORT void OFiconvlist(int (*do_one) (unsigned int count, const char * const *names, void *arg), void *arg);
 
 /** resolve the character encoding name specified by the name argument
  *  to its canonical form.
  *  @param name encoding name
  *  @return canonical encoding name, NULL if unknown
  */
-const char  *OFiconv_canonicalize(const char *name);
+DCMTK_OFICONV_EXPORT const char *OFiconv_canonicalize(const char *name);
 
 /** This function can retrieve or set specific conversion setting from the
  *  cd conversion descriptor. The request parameter specifies the operation
@@ -288,7 +289,7 @@ const char  *OFiconv_canonicalize(const char *name);
  *  @param argument pointer to data for the the requested operation, see description of request macros
  *  @return 0 if successful, -1 otherwise, in which case errno is set
  */
-int OFiconvctl(iconv_t cd, int request, void *argument);
+DCMTK_OFICONV_EXPORT int OFiconvctl(iconv_t cd, int request, void *argument);
 
 /// space holder type for OFlocale_charset().
 typedef struct {
@@ -301,7 +302,7 @@ typedef struct {
  *  @param buf buffer to which the current encoding is written on Windows
  *  @return current locale's character encoding (on Windows, this is the current output code page)
  */
-const char *OFlocale_charset(iconv_locale_allocation_t *buf);
+DCMTK_OFICONV_EXPORT const char *OFlocale_charset(iconv_locale_allocation_t *buf);
 
 /** logger callback function pointer type
  *  @param level log level, 0=trace, 1=debug, 2=info, 3=warn, 4=error, 5=fatal
@@ -315,17 +316,17 @@ typedef void (*oficonv_logger_callback_t)(int level, const char *text1, const ch
  *  This function is thread UNSAFE.
  *  @param callback pointer to callback function, NULL for direct logging to stderr
  */
-void set_oficonv_logger_callback(oficonv_logger_callback_t callback);
+DCMTK_OFICONV_EXPORT void set_oficonv_logger_callback(oficonv_logger_callback_t callback);
 
 /** get the current logger callback used by the oficonv module
  *  @return pointer to logger function, may be NULL
  */
-oficonv_logger_callback_t get_oficonv_logger_callback();
+DCMTK_OFICONV_EXPORT oficonv_logger_callback_t get_oficonv_logger_callback();
 
 /** set the log level to be used as long as direct logging to stderr is active
  *  @param level log level, 0=trace, 1=debug, 2=info, 3=warn, 4=error, 5=fatal (default: 3=warn)
  */
-void set_oficonv_log_level(int level);
+DCMTK_OFICONV_EXPORT void set_oficonv_log_level(int level);
 
 END_EXTERN_C
 

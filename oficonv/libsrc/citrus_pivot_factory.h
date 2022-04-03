@@ -28,10 +28,11 @@
 #define _CITRUS_PIVOT_FACTORY_H_
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/oficonv/oidefine.h"
 #include <stdio.h>
 
 BEGIN_EXTERN_C
-int  _citrus_pivot_factory_convert(FILE *, FILE *);
+DCMTK_OFICONV_EXPORT int _citrus_pivot_factory_convert(FILE *, FILE *);
 END_EXTERN_C
 
 #endif

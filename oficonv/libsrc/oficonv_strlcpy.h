@@ -18,10 +18,11 @@
 
 #ifndef HAVE_STRLCPY
 
+#include "dcmtk/oficonv/oidefine.h"
 #include <stddef.h>
 
 BEGIN_EXTERN_C
-size_t strlcpy(char *dst, const char *src, size_t siz);
+DCMTK_OFICONV_EXPORT size_t strlcpy(char *dst, const char *src, size_t siz);
 END_EXTERN_C
 
 #endif /* HAVE_STRLCPY */
