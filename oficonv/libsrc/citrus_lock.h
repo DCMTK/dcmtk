@@ -24,24 +24,40 @@
  * SUCH DAMAGE.
  */
 
+#ifndef CITRUS_LOCK_H
+#define CITRUS_LOCK_H
+
 #include "dcmtk/config/osconfig.h"
 
-#ifdef HAVE_PTHREAD_H
-#include <pthread.h>
-#endif
+#ifdef WITH_THREADS
 
 #ifdef HAVE_WINDOWS_H
+
 #include <windows.h>
-#endif
+#define WLOCK(lock)  AcquireSRWLockExclusive(lock);
+#define UNLOCK(lock) ReleaseSRWLockExclusive(lock);
 
-#ifdef HAVE_WINDOWS_H
+#else /* HAVE_WINDOWS_H */
 
-#define WLOCK(lock)  if (CITRUS_isthreaded) AcquireSRWLockExclusive(lock);
-#define UNLOCK(lock) if (CITRUS_isthreaded) ReleaseSRWLockExclusive(lock);
+#ifdef HAVE_PTHREAD_H
 
-#else
-
+#include <pthread.h>
 #define WLOCK(lock)  if (CITRUS_isthreaded) pthread_rwlock_wrlock(lock);
 #define UNLOCK(lock) if (CITRUS_isthreaded) pthread_rwlock_unlock(lock);
 
-#endif
+#else /* HAVE_PTHREAD_H */
+
+#error Threads are enabled but no read/write lock function was found for module oficonv
+
+#endif /* HAVE_PTHREAD_H */
+
+#endif /* HAVE_WINDOWS_H */
+
+#else /* WITH_THREADS */
+
+#define WLOCK(lock)  /* nothing */ ;
+#define UNLOCK(lock) /* nothing */ ;
+
+#endif /* WITH_THREADS */
+
+#endif /* CITRUS_LOCK_H */

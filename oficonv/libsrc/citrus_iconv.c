@@ -80,10 +80,12 @@ static int           shared_max_reuse, shared_num_unused;
 static _CITRUS_HASH_HEAD(, _citrus_iconv_shared, CI_HASH_SIZE) shared_pool;
 static TAILQ_HEAD(, _citrus_iconv_shared) shared_unused;
 
+#ifdef WITH_THREADS
 #ifdef HAVE_WINDOWS_H
 static SRWLOCK ci_lock = SRWLOCK_INIT;
-#else
+#elif defined(HAVE_PTHREAD_H)
 static pthread_rwlock_t ci_lock = PTHREAD_RWLOCK_INITIALIZER;
+#endif
 #endif
 
 static __inline void

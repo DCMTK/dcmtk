@@ -61,10 +61,12 @@
 
 static struct _citrus_mapper_area   *maparea = NULL;
 
+#ifdef WITH_THREADS
 #ifdef HAVE_WINDOWS_H
 static SRWLOCK ma_lock = SRWLOCK_INIT;
-#else
+#elif defined(HAVE_PTHREAD_H)
 static pthread_rwlock_t ma_lock = PTHREAD_RWLOCK_INITIALIZER;
+#endif
 #endif
 
 #define CS_ALIAS_FILENAME "charset.alias"

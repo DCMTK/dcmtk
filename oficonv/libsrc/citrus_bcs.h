@@ -63,7 +63,6 @@
 #define OFICONV_PATH_VARIABLE "DCMICONVPATH"
 #define OFICONV_CSMAPPER_DIR "csmapper"
 #define OFICONV_ESDB_DIR "esdb"
-#define CITRUS_isthreaded 1
 
 #ifndef CHAR_MAX
 #error Need to define CHAR_MAX

@@ -62,10 +62,12 @@
 #define CM_HASH_SIZE 101
 #define REFCOUNT_PERSISTENT -1
 
+#ifdef WITH_THREADS
 #ifdef HAVE_WINDOWS_H
 static SRWLOCK cm_lock = SRWLOCK_INIT;
-#else
+#elif defined(HAVE_PTHREAD_H)
 static pthread_rwlock_t cm_lock = PTHREAD_RWLOCK_INITIALIZER;
+#endif
 #endif
 
 struct _citrus_mapper_area {
