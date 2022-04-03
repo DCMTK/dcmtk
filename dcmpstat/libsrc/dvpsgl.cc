@@ -141,8 +141,8 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     Uint16 L, a, b, rr, gg, bb;
     graphicLayerRecommendedDisplayCIELabValue.clear();
     result = graphicLayerRecommendedDisplayRGBValue.getUint16(rr,0);
-    if (result.good()) result = graphicLayerRecommendedDisplayCIELabValue.getUint16(gg,1);
-    if (result.good()) result = graphicLayerRecommendedDisplayCIELabValue.getUint16(bb,2);
+    if (result.good()) result = graphicLayerRecommendedDisplayRGBValue.getUint16(gg,1);
+    if (result.good()) result = graphicLayerRecommendedDisplayRGBValue.getUint16(bb,2);
     if (result.good())
     {
       DICOM_RGB_to_Lab(L, a, b, rr, gg, bb);
