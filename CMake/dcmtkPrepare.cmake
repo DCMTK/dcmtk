@@ -223,6 +223,18 @@ endif()
 # environment variable DCMDICTPATH.
 option(DCMTK_USE_DCMDICTPATH "Enable reading dictionary that is defined through DCMDICTPATH environment variable." ON)
 
+# Declare the option DCMTK_ENABLE_BUILTIN_OFICONV_DATA, which by default is ON when
+# we are compiling shared libraries.
+if (BUILD_SHARED_LIBS)
+  option(DCMTK_ENABLE_BUILTIN_OFICONV_DATA "Embed oficonv data files into oficonv library" ON)
+else()
+  option(DCMTK_ENABLE_BUILTIN_OFICONV_DATA "Embed oficonv data files into oficonv library" OFF)
+endif()
+
+# evaluate the option DCMTK_ENABLE_BUILTIN_OFICONV_DATA
+if (DCMTK_ENABLE_BUILTIN_OFICONV_DATA)
+  add_definitions(-DDCMTK_ENABLE_BUILTIN_OFICONV_DATA)
+endif()
 
 # Mark various settings as "advanced"
 mark_as_advanced(DCMTK_USE_DCMDICTPATH)
