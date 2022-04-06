@@ -42,8 +42,8 @@
 #ifdef HAVE_PTHREAD_H
 
 #include <pthread.h>
-#define WLOCK(lock)  if (CITRUS_isthreaded) pthread_rwlock_wrlock(lock);
-#define UNLOCK(lock) if (CITRUS_isthreaded) pthread_rwlock_unlock(lock);
+#define WLOCK(lock)  pthread_rwlock_wrlock(lock);
+#define UNLOCK(lock) pthread_rwlock_unlock(lock);
 
 #else /* HAVE_PTHREAD_H */
 
