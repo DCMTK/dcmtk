@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -813,6 +813,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         CS_Hebrew,
         /// ISO-IR 148: Latin alphabet No. 5
         CS_Latin5,
+        /// ISO-IR 203: Latin alphabet No. 9
+        CS_Latin9,
         /// ISO-IR 166: Thai
         CS_Thai,
         /// ISO-IR 13/87: Japanese (Katakana/Romaji/Kanji)

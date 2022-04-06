@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -345,6 +345,8 @@ int main(int argc, char *argv[])
                     opt_defaultCharset = "ISO_IR 110";
                 else if (charset == "latin-5")
                     opt_defaultCharset = "ISO_IR 148";
+                else if (charset == "latin-9")
+                    opt_defaultCharset = "ISO_IR 203";
                 else if (charset == "cyrillic")
                     opt_defaultCharset = "ISO_IR 144";
                 else if (charset == "arabic")

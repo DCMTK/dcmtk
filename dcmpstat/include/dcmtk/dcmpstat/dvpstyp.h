@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -220,6 +220,9 @@ enum DVPScharacterSet
   /** ISO-IR 148: Latin alphabet No. 5
    */
   DVPSC_latin5,
+  /** ISO-IR 203: Latin alphabet No. 9
+   */
+  DVPSC_latin9,
   /** ISO-IR 144: Cyrillic
    */
   DVPSC_cyrillic,

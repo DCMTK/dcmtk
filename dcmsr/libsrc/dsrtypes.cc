@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -483,6 +483,7 @@ static const S_CharacterSetNameMap CharacterSetNameMap[] =
     {DSRTypes::CS_Greek,          "ISO_IR 126",                     "ISO-8859-7",  "ISO-8859-7"},
     {DSRTypes::CS_Hebrew,         "ISO_IR 138",                     "ISO-8859-8",  "ISO-8859-8"},
     {DSRTypes::CS_Latin5,         "ISO_IR 148",                     "ISO-8859-9",  "ISO-8859-9"},
+    {DSRTypes::CS_Latin9,         "ISO_IR 203",                     "ISO-8859-15", "ISO-8859-15"},
     {DSRTypes::CS_Thai,           "ISO_IR 166",                     "TIS-620",     "TIS-620"},
     {DSRTypes::CS_Japanese,       "ISO 2022 IR 13\\ISO 2022 IR 87", "ISO-2022-JP", "ISO-2022-JP"},
     {DSRTypes::CS_Korean,         "ISO 2022 IR 6\\ISO 2022 IR 149", "ISO-2022-KR", "ISO-2022-KR"},

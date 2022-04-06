@@ -1470,6 +1470,7 @@ OFBool DicomDirInterface::isCharsetValid(const char *charset)
                  (strcmp(charset, "ISO_IR 126") == 0) ||
                  (strcmp(charset, "ISO_IR 138") == 0) ||
                  (strcmp(charset, "ISO_IR 148") == 0) ||
+                 (strcmp(charset, "ISO_IR 203") == 0) ||
                  (strcmp(charset, "ISO_IR 166") == 0) ||
                  (strcmp(charset, "ISO_IR 13")  == 0) ||
                  (strcmp(charset, "ISO_IR 192") == 0);

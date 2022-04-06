@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2017, OFFIS e.V.
+ *  Copyright (C) 2011-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,6 +44,7 @@ OFTEST(dcmdata_specificCharacterSet_1)
         OFCHECK(converter.selectCharacterSet("ISO_IR 126").good());
         OFCHECK(converter.selectCharacterSet("ISO_IR 138").good());
         OFCHECK(converter.selectCharacterSet("ISO_IR 148").good());
+        OFCHECK(converter.selectCharacterSet("ISO_IR 203").good());
         OFCHECK(converter.selectCharacterSet("ISO_IR 13 ").good());
         OFCHECK(converter.selectCharacterSet("ISO_IR 166").good());
         OFCHECK(converter.selectCharacterSet("ISO_IR 192").good());
@@ -60,6 +61,7 @@ OFTEST(dcmdata_specificCharacterSet_1)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 126").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 138").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 148").good());
+        OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 203").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13 ").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 166").good());
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV

@@ -265,7 +265,7 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
     /** check whether given charset identifier is valid.
      *  Valid character sets are (see DICOM PS3.3 for details): ISO_IR 100, ISO_IR 101,
      *  ISO_IR 109, ISO_IR 110, ISO_IR 144, ISO_IR 127, ISO_IR 126, ISO_IR 138, ISO_IR 148,
-     *  ISO_IR 166, ISO_IR 13, ISO_IR 192.
+     *  ISO_IR 166, ISO_IR 13, ISO_IR 192, ISO_IR 203.
      *  @param charset character set identifier to be checked
      *  @return OFTrue if charset is valid, OFFalse otherwise
      */

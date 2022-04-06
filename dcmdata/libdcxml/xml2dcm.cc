@@ -404,8 +404,6 @@ OFCondition DcmXMLParseHelper::parseElement(
                 encString = "ISO-8859-3";
             else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 110")) == 0)
                 encString = "ISO-8859-4";
-            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 148")) == 0)
-                encString = "ISO-8859-9";
             else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 144")) == 0)
                 encString = "ISO-8859-5";
             else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 127")) == 0)
@@ -414,6 +412,10 @@ OFCondition DcmXMLParseHelper::parseElement(
                 encString = "ISO-8859-7";
             else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 138")) == 0)
                 encString = "ISO-8859-8";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 148")) == 0)
+                encString = "ISO-8859-9";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 203")) == 0)
+                encString = "ISO-8859-15";
             else if (xmlStrlen(elemVal) > 0)
                 DCMDATA_WARN("character set '" << elemVal << "' not supported");
             if (encString != NULL)
