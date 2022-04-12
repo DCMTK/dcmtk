@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2022-01-26 12:58:28
+**   Date: 2022-04-12 12:43:36
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2022-01-26 12:58:28"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2022-04-12 12:43:36"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4915
+** Number of entries: 4919
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -123,7 +123,9 @@
 #define DCM_InstanceCreatorUID                   DcmTagKey(0x0008, 0x0014)
 #define DCM_InstanceCoercionDateTime             DcmTagKey(0x0008, 0x0015)
 #define DCM_SOPClassUID                          DcmTagKey(0x0008, 0x0016)
+#define DCM_AcquisitionUID                       DcmTagKey(0x0008, 0x0017)
 #define DCM_SOPInstanceUID                       DcmTagKey(0x0008, 0x0018)
+#define DCM_PyramidUID                           DcmTagKey(0x0008, 0x0019)
 #define DCM_RelatedGeneralSOPClassUID            DcmTagKey(0x0008, 0x001a)
 #define DCM_OriginalSpecializedSOPClassUID       DcmTagKey(0x0008, 0x001b)
 #define DCM_StudyDate                            DcmTagKey(0x0008, 0x0020)
@@ -234,6 +236,7 @@
 #define DCM_OperatorIdentificationSequence       DcmTagKey(0x0008, 0x1072)
 #define DCM_AdmittingDiagnosesDescription        DcmTagKey(0x0008, 0x1080)
 #define DCM_AdmittingDiagnosesCodeSequence       DcmTagKey(0x0008, 0x1084)
+#define DCM_PyramidDescription                   DcmTagKey(0x0008, 0x1088)
 #define DCM_ManufacturerModelName                DcmTagKey(0x0008, 0x1090)
 #define DCM_RETIRED_ReferencedResultsSequence    DcmTagKey(0x0008, 0x1100)
 #define DCM_ReferencedStudySequence              DcmTagKey(0x0008, 0x1110)
@@ -1621,6 +1624,7 @@
 #define DCM_RETIRED_OverlayNumber                DcmTagKey(0x0020, 0x0022)
 #define DCM_RETIRED_CurveNumber                  DcmTagKey(0x0020, 0x0024)
 #define DCM_RETIRED_LUTNumber                    DcmTagKey(0x0020, 0x0026)
+#define DCM_PyramidLabel                         DcmTagKey(0x0020, 0x0027)
 #define DCM_RETIRED_ImagePosition                DcmTagKey(0x0020, 0x0030)
 #define DCM_ImagePositionPatient                 DcmTagKey(0x0020, 0x0032)
 #define DCM_RETIRED_ImageOrientation             DcmTagKey(0x0020, 0x0035)
@@ -3771,8 +3775,8 @@
 #define DCM_RETIRED_AnnotationContentSequence    DcmTagKey(0x2130, 0x0050)
 #define DCM_RETIRED_ImageOverlayBoxContentSequence DcmTagKey(0x2130, 0x0060)
 #define DCM_RETIRED_PresentationLUTContentSequence DcmTagKey(0x2130, 0x0080)
-#define DCM_RETIRED_ProposedStudySequence        DcmTagKey(0x2130, 0x00a0)
-#define DCM_RETIRED_OriginalImageSequence        DcmTagKey(0x2130, 0x00c0)
+#define DCM_ProposedStudySequence                DcmTagKey(0x2130, 0x00a0)
+#define DCM_OriginalImageSequence                DcmTagKey(0x2130, 0x00c0)
 #define DCM_LabelUsingInformationExtractedFromInstances DcmTagKey(0x2200, 0x0001)
 #define DCM_LabelText                            DcmTagKey(0x2200, 0x0002)
 #define DCM_LabelStyleSelection                  DcmTagKey(0x2200, 0x0003)

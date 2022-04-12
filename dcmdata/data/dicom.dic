@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2022a and PS 3.7-2022a.
-# File created on 2022-01-26 12:45:15 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2022b and PS 3.7-2022b.
+# File created on 2022-04-11 09:58:24 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -117,7 +117,9 @@
 (0008,0014)	UI	InstanceCreatorUID	1	DICOM
 (0008,0015)	DT	InstanceCoercionDateTime	1	DICOM
 (0008,0016)	UI	SOPClassUID	1	DICOM
+(0008,0017)	UI	AcquisitionUID	1	DICOM
 (0008,0018)	UI	SOPInstanceUID	1	DICOM
+(0008,0019)	UI	PyramidUID	1	DICOM
 (0008,001A)	UI	RelatedGeneralSOPClassUID	1-n	DICOM
 (0008,001B)	UI	OriginalSpecializedSOPClassUID	1	DICOM
 (0008,0020)	DA	StudyDate	1	DICOM
@@ -220,6 +222,7 @@
 (0008,1072)	SQ	OperatorIdentificationSequence	1	DICOM
 (0008,1080)	LO	AdmittingDiagnosesDescription	1-n	DICOM
 (0008,1084)	SQ	AdmittingDiagnosesCodeSequence	1	DICOM
+(0008,1088)	LO	PyramidDescription	1	DICOM
 (0008,1090)	LO	ManufacturerModelName	1	DICOM
 (0008,1110)	SQ	ReferencedStudySequence	1	DICOM
 (0008,1111)	SQ	ReferencedPerformedProcedureStepSequence	1	DICOM
@@ -1542,6 +1545,7 @@
 (0020,0013)	IS	InstanceNumber	1	DICOM
 (0020,0019)	IS	ItemNumber	1	DICOM
 (0020,0020)	CS	PatientOrientation	2	DICOM
+(0020,0027)	LO	PyramidLabel	1	DICOM
 (0020,0032)	DS	ImagePositionPatient	3	DICOM
 (0020,0037)	DS	ImageOrientationPatient	6	DICOM
 (0020,0052)	UI	FrameOfReferenceUID	1	DICOM
@@ -3414,6 +3418,8 @@
 (2110,0010)	CS	PrinterStatus	1	DICOM
 (2110,0020)	CS	PrinterStatusInfo	1	DICOM
 (2110,0030)	LO	PrinterName	1	DICOM
+(2130,00A0)	SQ	ProposedStudySequence	1	DICOM
+(2130,00C0)	SQ	OriginalImageSequence	1	DICOM
 (2200,0001)	CS	LabelUsingInformationExtractedFromInstances	1	DICOM
 (2200,0002)	UT	LabelText	1	DICOM
 (2200,0003)	CS	LabelStyleSelection	1	DICOM
@@ -4931,8 +4937,6 @@
 (2130,0050)	SQ	RETIRED_AnnotationContentSequence	1	DICOM/retired
 (2130,0060)	SQ	RETIRED_ImageOverlayBoxContentSequence	1	DICOM/retired
 (2130,0080)	SQ	RETIRED_PresentationLUTContentSequence	1	DICOM/retired
-(2130,00A0)	SQ	RETIRED_ProposedStudySequence	1	DICOM/retired
-(2130,00C0)	SQ	RETIRED_OriginalImageSequence	1	DICOM/retired
 (3006,0044)	DS	RETIRED_ContourSlabThickness	1	DICOM/retired
 (3006,0045)	DS	RETIRED_ContourOffsetVector	3	DICOM/retired
 (3006,0049)	IS	RETIRED_AttachedContours	1-n	DICOM/retired

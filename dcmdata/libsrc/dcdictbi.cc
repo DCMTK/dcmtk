@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2022-01-26 12:58:28
+**   Date: 2022-04-12 12:43:37
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -468,8 +468,16 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UI, "SOPClassUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0008, 0x0017, 0x0008, 0x0017,
+      EVR_UI, "AcquisitionUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0008, 0x0018, 0x0008, 0x0018,
       EVR_UI, "SOPInstanceUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0019, 0x0008, 0x0019,
+      EVR_UI, "PyramidUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x001a, 0x0008, 0x001a,
@@ -910,6 +918,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x1084, 0x0008, 0x1084,
       EVR_SQ, "AdmittingDiagnosesCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x1088, 0x0008, 0x1088,
+      EVR_LO, "PyramidDescription", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1090, 0x0008, 0x1090,
@@ -12090,6 +12102,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0020, 0x0026, 0x0020, 0x0026,
       EVR_IS, "RETIRED_LUTNumber", 1, 1, "DICOM/retired",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x0027, 0x0020, 0x0027,
+      EVR_LO, "PyramidLabel", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x0030, 0x0020, 0x0030,
@@ -26081,11 +26097,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x2130, 0x00a0, 0x2130, 0x00a0,
-      EVR_SQ, "RETIRED_ProposedStudySequence", 1, 1, "DICOM/retired",
+      EVR_SQ, "ProposedStudySequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x2130, 0x00c0, 0x2130, 0x00c0,
-      EVR_SQ, "RETIRED_OriginalImageSequence", 1, 1, "DICOM/retired",
+      EVR_SQ, "OriginalImageSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x2200, 0x0001, 0x2200, 0x0001,
