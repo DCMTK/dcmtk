@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2022a
- *  File created on 2022-01-26 13:19:00 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022b
+ *  File created on 2022-04-11 09:59:28 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4626
+// total number of codes: 4632
 // - retired: 201
 // - no name: 27
 // - not unique: 17
@@ -4674,5 +4674,11 @@
 #define CODE_DCM_AccessoryClearanceInterlock                               DSRBasicCodedEntry("130742", "DCM", "Accessory Clearance Interlock")
 #define CODE_DCM_OutOfToleranceInterlock                                   DSRBasicCodedEntry("130743", "DCM", "Out of Tolerance Interlock")
 #define CODE_DCM_InterlockResolved                                         DSRBasicCodedEntry("130744", "DCM", "Interlock Resolved")
+#define CODE_DCM_CTDoseLengthProductSubTotal                               DSRBasicCodedEntry("130745", "DCM", "CT Dose Length Product Sub-Total")
+#define CODE_DCM_RTRegistrationMark                                        DSRBasicCodedEntry("130746", "DCM", "RT Registration Mark")
+#define CODE_DCM_IsodoseVolume                                             DSRBasicCodedEntry("130747", "DCM", "Isodose Volume")
+#define CODE_DCM_RadiotherapyDoseRegion                                    DSRBasicCodedEntry("130748", "DCM", "Radiotherapy Dose Region")
+#define CODE_DCM_QualityControlMaterialImage                               DSRBasicCodedEntry("130750", "DCM", "Quality control material image")
+#define CODE_DCM_TissueNotOfInterest                                       DSRBasicCodedEntry("130751", "DCM", "Tissue not of interest")
 
 #endif
