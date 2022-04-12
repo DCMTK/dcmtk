@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID244_Laterality
  *
- *  Generated automatically from DICOM PS 3.16-2021d
- *  File created on 2021-09-13 09:26:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022b
+ *  File created on 2022-04-12 13:01:11 by J. Riesmeier
  *
  */
 

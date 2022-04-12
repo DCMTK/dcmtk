@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2021d
- *  File created on 2021-09-13 09:26:33 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022b
+ *  File created on 2022-04-12 13:01:13 by J. Riesmeier
  *
  */
 
@@ -149,7 +149,6 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         /* create a new code list (should never fail) */
         Codes = new CodeList();
         /* and initialize it by adding the coded entries */
-        Codes->insert(OFMake_pair(_18_FluorineFlortaucipir, DSRBasicCodedEntry("C000591008", "MSH", "^18^Fluorine flortaucipir")));
         Codes->insert(OFMake_pair(_28H1_89Zr, DSRBasicCodedEntry("126752", "DCM", "28H1 ^89^Zr")));
         Codes->insert(OFMake_pair(_2FA_F18, DSRBasicCodedEntry("126713", "DCM", "2FA F^18^")));
         Codes->insert(OFMake_pair(_7D12_89Zr, DSRBasicCodedEntry("126751", "DCM", "7D12 ^89^Zr")));

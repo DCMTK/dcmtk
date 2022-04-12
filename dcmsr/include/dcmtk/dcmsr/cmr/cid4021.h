@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2021d
- *  File created on 2021-09-13 09:26:33 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022b
+ *  File created on 2022-04-12 13:01:13 by J. Riesmeier
  *
  */
 
@@ -40,8 +40,6 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
      */
     enum EnumType
     {
-        /// (C000591008,MSH,"^18^Fluorine flortaucipir")
-        _18_FluorineFlortaucipir,
         /// (126752,DCM,"28H1 ^89^Zr")
         _28H1_89Zr,
         /// (126713,DCM,"2FA F^18^")
