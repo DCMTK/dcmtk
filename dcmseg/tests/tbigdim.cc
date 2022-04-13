@@ -20,10 +20,12 @@
  */
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/dcmseg/segtypes.h" /* for DCMSEG_DEBUG */
 
+#ifdef HAVE_STL_MAP
 #include "dcmtk/dcmseg/segdoc.h"
 #include "dcmtk/dcmseg/segment.h"
-#include "dcmtk/ofstd/oftest.h"
 
 #include "dcmtk/dcmfg/fgfracon.h"
 #include "dcmtk/dcmfg/fgpixmsr.h"
@@ -74,28 +76,37 @@ OFTEST_FLAGS(dcmseg_bigdim, EF_Slow)
     // Write to dataset and compare its dump with expected result
     DcmFileFormat dcmff;
     DcmDataset* ds = dcmff.getDataset();
+    seg->setCheckDimensionsOnWrite(OFFalse);
+    seg->setCheckFGOnWrite(OFFalse);
+    std::cout << "Writing file via DcmSegmentation." << std::endl;
     OFCondition result = seg->writeDataset(*ds);
     OFCHECK(result.good());
+    std::cout << "Writing file via DcmSegmentation: Done." << std::endl;
 
     // Save to disk, and re-load to test import
     OFTempFile tf;
     OFString temp_fn = tf.getFilename();
     OFCHECK(!temp_fn.empty());
     OFCHECK(dcmff.saveFile(temp_fn.c_str(), EXS_LittleEndianExplicit).good());
+    std::cout << "Saved file via DcmFileFormat." << std::endl;
 
     // Read object from dataset into DcmSegmentation object, write again to dataset and
     // check whether object after writing is identical to object after writing.
     // the same expected result
     delete seg;
     seg = NULL;
+    std::cout << "Loading file." << std::endl;
     DcmSegmentation::loadFile(temp_fn, seg).good();
     OFCHECK(seg != OFnullptr);
     if (seg)
     {
+        std::cout << "File loaded." << std::endl;
         DcmDataset dset;
         seg->setCheckDimensionsOnWrite(OFFalse);
         seg->setCheckFGOnWrite(OFFalse);
+        std::cout << "Writing Dataset." << std::endl;
         OFCHECK(seg->writeDataset(dset).good());
+        std::cout << "Checking created object." << std::endl;
         checkCreatedObject(dset);
         delete seg;
     }
@@ -291,3 +302,12 @@ static void checkCreatedObject(DcmDataset& dset)
         }
     }
 }
+#else
+
+// Dummy version of the test case. Needed to prevent ctest test failure.
+OFTEST(dcmseg_bigdim)
+{
+    DCMSEG_DEBUG("Will not run dcmseg_bigdim test: std::map support (HAVE_STL_MAP) must be defined to complete the test in acceptable time");
+}
+
+#endif // HAVE_STL_MAP
