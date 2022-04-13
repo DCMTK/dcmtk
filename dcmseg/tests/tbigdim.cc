@@ -78,35 +78,28 @@ OFTEST_FLAGS(dcmseg_bigdim, EF_Slow)
     DcmDataset* ds = dcmff.getDataset();
     seg->setCheckDimensionsOnWrite(OFFalse);
     seg->setCheckFGOnWrite(OFFalse);
-    std::cout << "Writing file via DcmSegmentation." << std::endl;
     OFCondition result = seg->writeDataset(*ds);
     OFCHECK(result.good());
-    std::cout << "Writing file via DcmSegmentation: Done." << std::endl;
 
     // Save to disk, and re-load to test import
     OFTempFile tf;
     OFString temp_fn = tf.getFilename();
     OFCHECK(!temp_fn.empty());
     OFCHECK(dcmff.saveFile(temp_fn.c_str(), EXS_LittleEndianExplicit).good());
-    std::cout << "Saved file via DcmFileFormat." << std::endl;
 
     // Read object from dataset into DcmSegmentation object, write again to dataset and
     // check whether object after writing is identical to object after writing.
     // the same expected result
     delete seg;
     seg = NULL;
-    std::cout << "Loading file." << std::endl;
     DcmSegmentation::loadFile(temp_fn, seg).good();
     OFCHECK(seg != OFnullptr);
     if (seg)
     {
-        std::cout << "File loaded." << std::endl;
         DcmDataset dset;
         seg->setCheckDimensionsOnWrite(OFFalse);
         seg->setCheckFGOnWrite(OFFalse);
-        std::cout << "Writing Dataset." << std::endl;
         OFCHECK(seg->writeDataset(dset).good());
-        std::cout << "Checking created object." << std::endl;
         checkCreatedObject(dset);
         delete seg;
     }
