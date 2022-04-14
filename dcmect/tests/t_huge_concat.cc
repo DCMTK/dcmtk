@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, OFFIS e.V.
+ *  Copyright (C) 2019-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -272,7 +272,6 @@ static void addSharedFGs(EctEnhancedCT* ct)
         OFCHECK(exp_item->setCTDIVol(0.1).good());
         CodeSequenceMacro* phantom_item = new CodeSequenceMacro("113682", "DCM", "ACR Accreditation Phantom - CT");
         exp_item->getCTDIPhantomTypeCodeSequence().push_back(phantom_item);
-        OFCHECK(exp_item->setEstimatedDoseSaving(0.2).good());
         OFCHECK(exp_item->setExposureInMas(0.3).good());
         OFCHECK(exp_item->setExposureModulationType("WEIRD").good());
         OFCHECK(exp_item->setExposureTimeInMs(0.4).good());
@@ -734,8 +733,7 @@ static void prepareExpectedDump()
     EXPECTED_DUMP += "        (0018,1130) DS [50]                                     #   2, 1 TableHeight\n";
     EXPECTED_DUMP += "        (0018,1140) CS [CW]                                     #   2, 1 RotationDirection\n";
     EXPECTED_DUMP += "        (0018,9305) FD 5                                        #   8, 1 RevolutionTime\n";
-    EXPECTED_DUMP
-        += "        (0018,9306) FD 1                                        #   8, 1 SingleCollimationWidth\n";
+    EXPECTED_DUMP += "        (0018,9306) FD 1                                        #   8, 1 SingleCollimationWidth\n";
     EXPECTED_DUMP += "        (0018,9307) FD 10                                       #   8, 1 TotalCollimationWidth\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
@@ -748,62 +746,44 @@ static void prepareExpectedDump()
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0018,9312) SQ (Sequence with explicit length #=1)      #   0, 1 CTGeometrySequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=2)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0018,1110) DS [0.5]                                    #   4, 1 DistanceSourceToDetector\n";
-    EXPECTED_DUMP += "        (0018,9335) FD 5                                        #   8, 1 "
-                     "DistanceSourceToDataCollectionCenter\n";
+    EXPECTED_DUMP += "        (0018,1110) DS [0.5]                                    #   4, 1 DistanceSourceToDetector\n";
+    EXPECTED_DUMP += "        (0018,9335) FD 5                                        #   8, 1 DistanceSourceToDataCollectionCenter\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0018,9314) SQ (Sequence with explicit length #=1)      #   0, 1 CTReconstructionSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=7)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0018,1100) DS [100]                                    #   4, 1 ReconstructionDiameter\n";
+    EXPECTED_DUMP += "        (0018,1100) DS [100]                                    #   4, 1 ReconstructionDiameter\n";
     EXPECTED_DUMP += "        (0018,1210) SH [DUMMY]                                  #   6, 1 ConvolutionKernel\n";
-    EXPECTED_DUMP
-        += "        (0018,9315) CS [ALGO]                                   #   4, 1 ReconstructionAlgorithm\n";
-    EXPECTED_DUMP
-        += "        (0018,9316) CS [DUMMYGROUP]                             #  10, 1 ConvolutionKernelGroup\n";
+    EXPECTED_DUMP += "        (0018,9315) CS [ALGO]                                   #   4, 1 ReconstructionAlgorithm\n";
+    EXPECTED_DUMP += "        (0018,9316) CS [DUMMYGROUP]                             #  10, 1 ConvolutionKernelGroup\n";
     EXPECTED_DUMP += "        (0018,9319) FD 90                                       #   8, 1 ReconstructionAngle\n";
     EXPECTED_DUMP += "        (0018,9320) SH [FILTER]                                 #   6, 1 ImageFilter\n";
-    EXPECTED_DUMP
-        += "        (0018,9322) FD 0.1\\0.1                                  #  16, 2 ReconstructionPixelSpacing\n";
+    EXPECTED_DUMP += "        (0018,9322) FD 0.1\\0.1                                  #  16, 2 ReconstructionPixelSpacing\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0018,9321) SQ (Sequence with explicit length #=1)      #   0, 1 CTExposureSequence\n";
-    EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=10)         #   0, 1 Item\n";
-    EXPECTED_DUMP += "        (0018,115e) DS [0.5]                                    #   4, 1 "
-                     "ImageAndFluoroscopyAreaDoseProduct\n";
-    EXPECTED_DUMP
-        += "        (0018,1271) FD 0.6                                      #   8, 1 WaterEquivalentDiameter\n";
-    EXPECTED_DUMP += "        (0018,1272) SQ (Sequence with explicit length #=1)      #   0, 1 "
-                     "WaterEquivalentDiameterCalculationMethodCodeSequence\n";
+    EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=9)          #   0, 1 Item\n";
+    EXPECTED_DUMP += "        (0018,115e) DS [0.5]                                    #   4, 1 ImageAndFluoroscopyAreaDoseProduct\n";
+    EXPECTED_DUMP += "        (0018,1271) FD 0.6                                      #   8, 1 WaterEquivalentDiameter\n";
+    EXPECTED_DUMP += "        (0018,1272) SQ (Sequence with explicit length #=1)      #   0, 1 WaterEquivalentDiameterCalculationMethodCodeSequence\n";
     EXPECTED_DUMP += "          (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
     EXPECTED_DUMP += "            (0008,0100) SH [113987]                                 #   6, 1 CodeValue\n";
-    EXPECTED_DUMP
-        += "            (0008,0102) SH [DCM]                                    #   4, 1 CodingSchemeDesignator\n";
+    EXPECTED_DUMP += "            (0008,0102) SH [DCM]                                    #   4, 1 CodingSchemeDesignator\n";
     EXPECTED_DUMP += "            (0008,0104) LO [AAPM 220]                               #   8, 1 CodeMeaning\n";
-    EXPECTED_DUMP
-        += "          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
-    EXPECTED_DUMP
-        += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    EXPECTED_DUMP
-        += "        (0018,9323) CS [WEIRD]                                  #   6, 1 ExposureModulationType\n";
-    EXPECTED_DUMP += "        (0018,9324) FD 0.2                                      #   8, 1 EstimatedDoseSaving\n";
+    EXPECTED_DUMP += "          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
+    EXPECTED_DUMP += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
+    EXPECTED_DUMP += "        (0018,9323) CS [WEIRD]                                  #   6, 1 ExposureModulationType\n";
     EXPECTED_DUMP += "        (0018,9328) FD 0.4                                      #   8, 1 ExposureTimeInms\n";
     EXPECTED_DUMP += "        (0018,9330) FD 0.7                                      #   8, 1 XRayTubeCurrentInmA\n";
     EXPECTED_DUMP += "        (0018,9332) FD 0.3                                      #   8, 1 ExposureInmAs\n";
     EXPECTED_DUMP += "        (0018,9345) FD 0.1                                      #   8, 1 CTDIvol\n";
-    EXPECTED_DUMP
-        += "        (0018,9346) SQ (Sequence with explicit length #=1)      #   0, 1 CTDIPhantomTypeCodeSequence\n";
+    EXPECTED_DUMP += "        (0018,9346) SQ (Sequence with explicit length #=1)      #   0, 1 CTDIPhantomTypeCodeSequence\n";
     EXPECTED_DUMP += "          (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
     EXPECTED_DUMP += "            (0008,0100) SH [113682]                                 #   6, 1 CodeValue\n";
-    EXPECTED_DUMP
-        += "            (0008,0102) SH [DCM]                                    #   4, 1 CodingSchemeDesignator\n";
+    EXPECTED_DUMP += "            (0008,0102) SH [DCM]                                    #   4, 1 CodingSchemeDesignator\n";
     EXPECTED_DUMP += "            (0008,0104) LO [ACR Accreditation Phantom - CT]         #  30, 1 CodeMeaning\n";
-    EXPECTED_DUMP
-        += "          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
-    EXPECTED_DUMP
-        += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
+    EXPECTED_DUMP += "          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
+    EXPECTED_DUMP += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0018,9325) SQ (Sequence with explicit length #=1)      #   0, 1 CTXRayDetailsSequence\n";
@@ -812,19 +792,15 @@ static void prepareExpectedDump()
     EXPECTED_DUMP += "        (0018,1160) SH [FILTER_TYPE]                            #  12, 1 FilterType\n";
     EXPECTED_DUMP += "        (0018,1190) DS [4.4\\4.4\\4.4\\4.4]                        #  16, 4 FocalSpots\n";
     EXPECTED_DUMP += "        (0018,7050) CS [FILTER_MATERIAL]                        #  16, 1 FilterMaterial\n";
-    EXPECTED_DUMP
-        += "        (0018,9351) FL 2                                        #   4, 1 CalciumScoringMassFactorPatient\n";
-    EXPECTED_DUMP += "        (0018,9352) FL 1\\1\\1                                    #  12, 3 "
-                     "CalciumScoringMassFactorDevice\n";
+    EXPECTED_DUMP += "        (0018,9351) FL 2                                        #   4, 1 CalciumScoringMassFactorPatient\n";
+    EXPECTED_DUMP += "        (0018,9352) FL 1\\1\\1                                    #  12, 3 CalciumScoringMassFactorDevice\n";
     EXPECTED_DUMP += "        (0018,9353) FL 3                                        #   4, 1 EnergyWeightingFactor\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0018,9326) SQ (Sequence with explicit length #=1)      #   0, 1 CTPositionSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0018,9313) FD 2\\2\\2                                    #  24, 3 DataCollectionCenterPatient\n";
-    EXPECTED_DUMP += "        (0018,9318) FD 1\\1\\1                                    #  24, 3 "
-                     "ReconstructionTargetCenterPatient\n";
+    EXPECTED_DUMP += "        (0018,9313) FD 2\\2\\2                                    #  24, 3 DataCollectionCenterPatient\n";
+    EXPECTED_DUMP += "        (0018,9318) FD 1\\1\\1                                    #  24, 3 ReconstructionTargetCenterPatient\n";
     EXPECTED_DUMP += "        (0018,9327) FD 100                                      #   8, 1 TablePosition\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
@@ -833,16 +809,13 @@ static void prepareExpectedDump()
     EXPECTED_DUMP += "        (0008,9007) CS [ORIGINAL\\PRIMARY\\VOLUME\\MAXIMUM]        #  32, 4 FrameType\n";
     EXPECTED_DUMP += "        (0008,9205) CS [MONOCHROME]                             #  10, 1 PixelPresentation\n";
     EXPECTED_DUMP += "        (0008,9206) CS [VOLUME]                                 #   6, 1 VolumetricProperties\n";
-    EXPECTED_DUMP
-        += "        (0008,9207) CS [VOLUME_RENDER]                          #  14, 1 VolumeBasedCalculationTechnique\n";
+    EXPECTED_DUMP += "        (0008,9207) CS [VOLUME_RENDER]                          #  14, 1 VolumeBasedCalculationTechnique\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    EXPECTED_DUMP
-        += "    (0018,9360) SQ (Sequence with explicit length #=1)      #   0, 1 CTAdditionalXRaySourceSequence\n";
+    EXPECTED_DUMP += "    (0018,9360) SQ (Sequence with explicit length #=1)      #   0, 1 CTAdditionalXRaySourceSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=8)          #   0, 1 Item\n";
     EXPECTED_DUMP += "        (0018,0060) DS [5]                                      #   2, 1 KVP\n";
-    EXPECTED_DUMP
-        += "        (0018,0090) DS [1]                                      #   2, 1 DataCollectionDiameter\n";
+    EXPECTED_DUMP += "        (0018,0090) DS [1]                                      #   2, 1 DataCollectionDiameter\n";
     EXPECTED_DUMP += "        (0018,1160) SH [FILTER_TYPE]                            #  12, 1 FilterType\n";
     EXPECTED_DUMP += "        (0018,1190) DS [4.4\\4.4\\4.4\\4.4]                        #  16, 4 FocalSpots\n";
     EXPECTED_DUMP += "        (0018,7050) CS [FILTER_MATERIAL]                        #  16, 1 FilterMaterial\n";
@@ -854,42 +827,34 @@ static void prepareExpectedDump()
     EXPECTED_DUMP += "    (0018,9477) SQ (Sequence with explicit length #=1)      #   0, 1 "
                      "IrradiationEventIdentificationSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0008,3010) UI [2.25.30853892236613436472911970638347155062] #  44, 1 IrradiationEventUID\n";
+    EXPECTED_DUMP += "        (0008,3010) UI [2.25.30853892236613436472911970638347155062] #  44, 1 IrradiationEventUID\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0020,9071) SQ (Sequence with explicit length #=1)      #   0, 1 FrameAnatomySequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=2)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0008,2218) SQ (Sequence with explicit length #=1)      #   0, 1 AnatomicRegionSequence\n";
+    EXPECTED_DUMP += "        (0008,2218) SQ (Sequence with explicit length #=1)      #   0, 1 AnatomicRegionSequence\n";
     EXPECTED_DUMP += "          (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
     EXPECTED_DUMP += "            (0008,0100) SH [12738006]                               #   8, 1 CodeValue\n";
-    EXPECTED_DUMP
-        += "            (0008,0102) SH [SCT]                                    #   4, 1 CodingSchemeDesignator\n";
+    EXPECTED_DUMP += "            (0008,0102) SH [SCT]                                    #   4, 1 CodingSchemeDesignator\n";
     EXPECTED_DUMP += "            (0008,0104) LO [Brain]                                  #   6, 1 CodeMeaning\n";
-    EXPECTED_DUMP
-        += "          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
-    EXPECTED_DUMP
-        += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
+    EXPECTED_DUMP += "          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
+    EXPECTED_DUMP += "        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "        (0020,9072) CS [B]                                      #   2, 1 FrameLaterality\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0020,9113) SQ (Sequence with explicit length #=1)      #   0, 1 PlanePositionSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0020,0032) DS [0.0\\0.0\\0.0]                            #  12, 3 ImagePositionPatient\n";
+    EXPECTED_DUMP += "        (0020,0032) DS [0.0\\0.0\\0.0]                            #  12, 3 ImagePositionPatient\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0020,9116) SQ (Sequence with explicit length #=1)      #   0, 1 PlaneOrientationSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0020,0037) DS [1.0\\0.0\\0.0\\0.0\\1.0\\0.0]                #  24, 6 ImageOrientationPatient\n";
+    EXPECTED_DUMP += "        (0020,0037) DS [1.0\\0.0\\0.0\\0.0\\1.0\\0.0]                #  24, 6 ImageOrientationPatient\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0020,9310) SQ (Sequence with explicit length #=1)      #   0, 1 TemporalPositionSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0020,930d) FD 1                                        #   8, 1 TemporalPositionTimeOffset\n";
+    EXPECTED_DUMP += "        (0020,930d) FD 1                                        #   8, 1 TemporalPositionTimeOffset\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "    (0028,9110) SQ (Sequence with explicit length #=1)      #   0, 1 PixelMeasuresSequence\n";
@@ -903,12 +868,10 @@ static void prepareExpectedDump()
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
     EXPECTED_DUMP += "        (0028,1050) DS [1000]                                   #   4, 1 WindowCenter\n";
     EXPECTED_DUMP += "        (0028,1051) DS [2000]                                   #   4, 1 WindowWidth\n";
-    EXPECTED_DUMP
-        += "        (0028,1055) LO [BRAIN]                                  #   6, 1 WindowCenterWidthExplanation\n";
+    EXPECTED_DUMP += "        (0028,1055) LO [BRAIN]                                  #   6, 1 WindowCenterWidthExplanation\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    EXPECTED_DUMP
-        += "    (0028,9145) SQ (Sequence with explicit length #=1)      #   0, 1 PixelValueTransformationSequence\n";
+    EXPECTED_DUMP += "    (0028,9145) SQ (Sequence with explicit length #=1)      #   0, 1 PixelValueTransformationSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=3)          #   0, 1 Item\n";
     EXPECTED_DUMP += "        (0028,1052) DS [0]                                      #   2, 1 RescaleIntercept\n";
     EXPECTED_DUMP += "        (0028,1053) DS [1]                                      #   2, 1 RescaleSlope\n";
@@ -917,28 +880,22 @@ static void prepareExpectedDump()
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    EXPECTED_DUMP
-        += "(5200,9230) SQ (Sequence with explicit length #=1)      #   0, 1 PerFrameFunctionalGroupsSequence\n";
+    EXPECTED_DUMP += "(5200,9230) SQ (Sequence with explicit length #=1)      #   0, 1 PerFrameFunctionalGroupsSequence\n";
     EXPECTED_DUMP += "  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n";
     EXPECTED_DUMP += "    (0020,9111) SQ (Sequence with explicit length #=1)      #   0, 1 FrameContentSequence\n";
     EXPECTED_DUMP += "      (fffe,e000) na (Item with explicit length #=7)          #   0, 1 Item\n";
-    EXPECTED_DUMP
-        += "        (0018,9074) DT [20190816092557]                         #  14, 1 FrameAcquisitionDateTime\n";
-    EXPECTED_DUMP
-        += "        (0018,9151) DT [20190816092557]                         #  14, 1 FrameReferenceDateTime\n";
-    EXPECTED_DUMP
-        += "        (0018,9220) FD 0.001                                    #   8, 1 FrameAcquisitionDuration\n";
+    EXPECTED_DUMP += "        (0018,9074) DT [20190816092557]                         #  14, 1 FrameAcquisitionDateTime\n";
+    EXPECTED_DUMP += "        (0018,9151) DT [20190816092557]                         #  14, 1 FrameReferenceDateTime\n";
+    EXPECTED_DUMP += "        (0018,9220) FD 0.001                                    #   8, 1 FrameAcquisitionDuration\n";
     EXPECTED_DUMP += "        (0020,9056) SH [1]                                      #   2, 1 StackID\n";
     EXPECTED_DUMP += "        (0020,9057) UL 1                                        #   4, 1 InStackPositionNumber\n";
-    EXPECTED_DUMP
-        += "        (0020,9156) US 1                                        #   2, 1 FrameAcquisitionNumber\n";
+    EXPECTED_DUMP += "        (0020,9156) US 1                                        #   2, 1 FrameAcquisitionNumber\n";
     EXPECTED_DUMP += "        (0020,9157) UL 1\\1                                      #   8, 2 DimensionIndexValues\n";
     EXPECTED_DUMP += "      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n";
     EXPECTED_DUMP += "(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
-    EXPECTED_DUMP += "(7fe0,0010) OW 0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001... # "
-                     "32000000, 1 PixelData\n";
+    EXPECTED_DUMP += "(7fe0,0010) OW 0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001\\0001... # 32000000, 1 PixelData\n";
     OFStringStream ss;
     ss << NUM_ROWS;
     OFString numRows(ss.str().c_str());
