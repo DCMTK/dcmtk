@@ -1,4 +1,4 @@
-.TH "xml2dcm" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "xml2dcm" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 xml2dcm \- Convert XML document to DICOM file or data set
@@ -118,6 +118,14 @@ output transfer syntax:
 
   +td  --write-xfer-deflated
          write with deflated explicit VR little endian TS
+
+error handling:
+
+  -E   --stop-on-error
+         do not write if document is invalid (default)
+
+  +E   --ignore-errors
+         attempt to write even if document is invalid
 
 post-1993 value representations:
 
@@ -275,4 +283,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2021 e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2003-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

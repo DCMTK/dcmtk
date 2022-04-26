@@ -1,4 +1,4 @@
-.TH "echoscu" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "echoscu" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 echoscu \- DICOM verification (C-ECHO) SCU
@@ -137,13 +137,23 @@ certification authority:
   +cd   --add-cert-dir  [d]irectory: string
           add certificates in d to list of certificates
 
+  +crl  --add-crl-file  [f]ilename: string
+          add certificate revocation list file
+          (implies --enable-crl-vfy)
+
+  +crv  --enable-crl-vfy
+          enable leaf CRL verification
+
+  +cra  --enable-crl-all
+          enable full chain CRL verification
+
 security profile:
 
-  +px   --profile-bcp195
-          BCP 195 TLS Profile (default)
-
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile
+          Non-downgrading BCP 195 TLS Profile (default)
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile
 
   +pz   --profile-bcp195-ex
           Extended BCP 195 TLS Profile
@@ -184,6 +194,20 @@ peer authentication:
 
   -ic   --ignore-peer-cert
           don't verify peer certificate
+
+offline certificate verification:
+
+  +vc   --verify-cert  [f]ilename: string
+          verify certificate against CA settings
+
+          # Load a client certificate and check whether it would be accepted
+          # when received during a TLS handshake. Print result and exit.
+
+  +rc   --is-root-cert  [f]ilename: string
+          check if certificate is self-signed root CA
+
+          # Load a client certificate and check whether it is a valid,
+          # self-signed root CA certificate. Print result and exit.
 .fi
 .PP
 .SH "NOTES"
@@ -230,6 +254,7 @@ EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 .PP
 .nf
 EXITCODE_CANNOT_READ_INPUT_FILE          20 (*)
+EXITCODE_INVALID_INPUT_FILE              22
 .fi
 .PP
 .SS "output file errors"
@@ -254,4 +279,4 @@ The \fBechoscu\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2021 e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

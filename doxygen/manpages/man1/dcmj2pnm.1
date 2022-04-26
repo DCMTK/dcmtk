@@ -1,4 +1,4 @@
-.TH "dcmj2pnm" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmj2pnm" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmj2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF, JPEG or BMP
@@ -475,7 +475,7 @@ The following preferred interpolation algorithms can be selected using the \fI--
 .IP "\(bu" 2
 4 = magnification algorithm with bicubic interpolation from Eduard Stanescu
 .PP
-The \fI--write-tiff\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibtiff\fP TIFF library\&. The availability of the TIFF compression options depends on the \fBlibtiff\fP configuration\&. In particular, the patented LZW algorithm may not be available\&.
+The \fI--write-tiff\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibtiff\fP TIFF library\&. The availability of the TIFF compression options depends on the \fBlibtiff\fP configuration\&.
 .PP
 The \fI--write-png\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibpng\fP PNG library\&. Option \fI--interlace\fP enables progressive image view while loading the PNG file\&. Only a few applications take care of the meta info (TEXT) in a PNG file\&.
 .SH "TRANSFER SYNTAXES"
@@ -530,4 +530,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1), \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2021 e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

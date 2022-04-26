@@ -206,6 +206,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2pdf_copyright COPYRIGHT
 
-Copyright (C) 2007-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

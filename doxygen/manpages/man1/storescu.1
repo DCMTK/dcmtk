@@ -1,4 +1,4 @@
-.TH "storescu" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescu \- DICOM storage (C-STORE) SCU
@@ -327,13 +327,23 @@ certification authority:
   +cd   --add-cert-dir  [d]irectory: string
           add certificates in d to list of certificates
 
+  +crl  --add-crl-file  [f]ilename: string
+          add certificate revocation list file
+          (implies --enable-crl-vfy)
+
+  +crv  --enable-crl-vfy
+          enable leaf CRL verification
+
+  +cra  --enable-crl-all
+          enable full chain CRL verification
+
 security profile:
 
-  +px   --profile-bcp195
-          BCP 195 TLS Profile (default)
-
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile
+          Non-downgrading BCP 195 TLS Profile (default)
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile
 
   +pz   --profile-bcp195-ex
           Extended BCP 195 TLS Profile
@@ -513,4 +523,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2021 e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

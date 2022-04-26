@@ -1,4 +1,4 @@
-.TH "dcmcjpls" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpls" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpls \- Encode DICOM file to JPEG-LS transfer syntax
@@ -180,7 +180,8 @@ JPEG-LS padding of odd-length bitstreams:
   # Pad odd-length JPEG-LS bitstreams by writing a zero byte after the
   # end of image segment marker, i.e. FF D9 00. This is not DICOM conformant
   # but required for interoperability with the HP LOCO reference implementation,
-  # which does not support extended JPEG-LS bitstreams..fi
+  # which does not support extended JPEG-LS bitstreams.
+.fi
 .PP
 .SS "encapsulated pixel data encoding options"
 .PP
@@ -232,7 +233,7 @@ SOP Instance UID:
   +ud  --uid-default
          assign new UID if lossy compression (default)
 
-  # Assigns a new SOP instance UID if the compression is lossy JPEG.
+  # Assigns a new SOP instance UID if the compression is lossy JPEG-LS.
 
   +ua  --uid-always
          always assign new UID
@@ -338,4 +339,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdjpls\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2009-2021 e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2009-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

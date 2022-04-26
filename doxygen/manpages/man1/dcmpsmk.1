@@ -1,4 +1,4 @@
-.TH "dcmpsmk" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmpsmk" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmpsmk \- Create DICOM grayscale softcopy presentation state
@@ -12,7 +12,7 @@ dcmpsmk [options] dcmfile-in dcmfile-out
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmpsmk\fP utility reads a DICOM image file and creates a grayscale softcopy presentation state object according to Supplement 33\&. The presentation state object is written back to file\&. A number of command line options allow to specify how certain constructs that might be present in the image file should be referenced or activated in the presentation state\&. The newly created presentation state references the source image and contains values that should allow for a 'reasonable' display of the image when rendered under control of the presentation state\&.
+The \fBdcmpsmk\fP utility reads a DICOM image file and creates a grayscale softcopy presentation state object according to Supplement 33\&. The presentation state object is written back to file\&. A number of command line options allow one to specify how certain constructs that might be present in the image file should be referenced or activated in the presentation state\&. The newly created presentation state references the source image and contains values that should allow for a 'reasonable' display of the image when rendered under control of the presentation state\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -197,4 +197,4 @@ The \fBdcmpsmk\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1998-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

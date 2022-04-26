@@ -312,6 +312,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmpsprt_copyright COPYRIGHT
 
-Copyright (C) 1999-2014 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

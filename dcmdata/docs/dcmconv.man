@@ -387,6 +387,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmconv_copyright COPYRIGHT
 
-Copyright (C) 1994-2020 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

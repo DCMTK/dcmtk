@@ -1,4 +1,4 @@
-.TH "dcmprscp" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmprscp" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmprscp \- DICOM basic grayscale print management SCP
@@ -14,7 +14,7 @@ dcmprscp [options]
 .PP
 The \fBdcmprscp\fP utility implements the DICOM Basic Grayscale Print Management Service Class as SCP\&. It also supports the optional Presentation LUT SOP Class\&. The utility is intended for use within the DICOMscope viewer\&.
 .PP
-The \fBdcmprscp\fP utility accepts print jobs from a remote Print SCU\&. It does not create real hardcopies but stores print jobs in the local DICOMscope database as a set of Stored Print objects (one per page) and Hardcopy Grayscale images (one per film box N-SET)\&. The DICOMscope application allows to load a Stored Print object created by \fBdcmprscp\fP and to render a screen preview of the hardcopy\&. The \fBdcmprscp\fP utility reads the characteristics of the printer to be emulated from the configuration file\&.
+The \fBdcmprscp\fP utility accepts print jobs from a remote Print SCU\&. It does not create real hardcopies but stores print jobs in the local DICOMscope database as a set of Stored Print objects (one per page) and Hardcopy Grayscale images (one per film box N-SET)\&. The DICOMscope application allows one to load a Stored Print object created by \fBdcmprscp\fP and to render a screen preview of the hardcopy\&. The \fBdcmprscp\fP utility reads the characteristics of the printer to be emulated from the configuration file\&.
 .SH "OPTIONS"
 .PP
 .SS "general options"
@@ -90,4 +90,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmprscu\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1999-2014 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1999-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

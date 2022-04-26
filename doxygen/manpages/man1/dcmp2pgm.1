@@ -1,4 +1,4 @@
-.TH "dcmp2pgm" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmp2pgm" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmp2pgm \- Read DICOM image and presentation state and render bitmap
@@ -12,7 +12,7 @@ dcmp2pgm [options] dcmimage-in [bitmap-out]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmp2pgm\fP utility renders a monochrome DICOM image under the control of a grayscale softcopy presentation state object into a monochrome bitmap with 8 bits/pixel\&. The bitmap is stored either as 'Portable Gray Map' (PGM) or as a DICOM secondary capture image object\&. If no presentation state is read from file, a default presentation state is created\&. The utility allows to read a configuration file of the Softcopy Presentation State Viewer upon startup\&. In this case, the settings from the configuration file affecting the rendering of the presentation state are used, e\&.g\&. a correction of the gray scale range according to Barten's model (DICOM part 14) can be performed if the characteristic curve of the display system is available and defined in the configuration file\&.
+The \fBdcmp2pgm\fP utility renders a monochrome DICOM image under the control of a grayscale softcopy presentation state object into a monochrome bitmap with 8 bits/pixel\&. The bitmap is stored either as 'Portable Gray Map' (PGM) or as a DICOM secondary capture image object\&. If no presentation state is read from file, a default presentation state is created\&. The utility allows one to read a configuration file of the Softcopy Presentation State Viewer upon startup\&. In this case, the settings from the configuration file affecting the rendering of the presentation state are used, e\&.g\&. a correction of the gray scale range according to Barten's model (DICOM part 14) can be performed if the characteristic curve of the display system is available and defined in the configuration file\&.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -111,4 +111,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fI<etcdir>/dcmpstat\&.cfg\fP - sample configuration file
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2017 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1998-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

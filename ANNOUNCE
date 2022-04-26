@@ -1,28 +1,170 @@
--------------------------------------------------------------------------------
-  Since this is a development version of the DCMTK, there is no public
-  announcement.  This file will be updated for the next official release.
--------------------------------------------------------------------------------
-
-
 ANNOUNCEMENT
 
-Version X.Y.Z of the OFFIS DCMTK (DICOM ToolKit) software is now available for
+Version 3.6.7 of the OFFIS DCMTK (DICOM toolkit) software is now available for
 public release.  This release includes the following main changes over the
 previous version 3.6.6:
 
-  [...]
+- DCMTK 3.6.7 builds correctly on older and up-to-date versions of GNU gcc
+  (4.8.5 to 10.2.0) Clang (3.4.2 to 13.0.0), Apple Clang 11.0.0, and Microsoft
+  Visual Studio (2010 to 2022).
+
+- Tested with the following operating systems/environments:
+  - Android on arm64
+  - Cygwin on x86_64
+  - FreeBSD on x86_64
+  - Linux on x86_64 and x86
+  - MacOS X on x86_64
+  - NetBSD on x86_64
+  - OpenBSD on x86_64
+  - OpenIndiana on x86
+  - Windows (including MinGW and Cygwin) on x86_64 and x86
+
+  For a complete list of tested systems and compilers, see the INSTALL file.
+
+- Updated data dictionary, SOP classes, well-known frame of references,
+  transfer syntaxes [*], code definitions, supported context group classes,
+  and directory record types for DICOM standard release 2022b.
+
+  [*] Support for the Encapsulated Uncompressed Explicit VR Little Endian
+      Transfer Syntax (introduced with CP-2083) is still missing.
+
+- Added support for creating multi-frame images and instances of the Ophthalmic
+  Photography SOP Classes to img2dcm.  This tool now also allows for importing
+  a DICOM dataset from XML file.
+
+- Added typical error handling options to xml2dcm, i.e. as known from other
+  tools such as dump2dcm.
+
+- All command line tools that read or write DICOM files now support reading
+  DICOM files/datasets from stdin and writing DICOM files/datasets to stdout.
+  Support of stdin and stdout is also available for the underlying classes.
+
+- All command line tools now output more build options with --version.
+
+- Further enhanced DICOM Structured Reporting (SR) module "dcmsr":
+
+  - Added the Enhanced X-Ray Radiation Dose SR IOD / SOP Class introduced with
+    Supplement 214 to the list of known (but not yet supported) document types
+    in the dcmsr module.  Full support for this IOD and SOP Class will follow
+    in a future release, as this requires the new Value Type "TABLE".
+
+  - Added support for the optional attributes Patient's Size and Patient's
+    Weight from the Patient Study Module.
+
+  - Added support for Context Group CID 247 "Laterality Left-Right Only".
+
+  - Implemented support for CP-2023, CP-2053 and CP-2084, i.e. changes to the
+    IOD-specific Relationship Content Constraints and regarding missing numeric
+    measurement value.
+
+  - Also implemented support for CP-1789 and CP-1998 to the submodule "cmr".
+    Both CPs relax requirements for the presence of content items or included
+    templates in TID 1500 "Measurement Report".
+
+- Moved xml2dcm functionality into a class to facilitate its use in programs.
+  This also means that dcmdata now depends on libxml2 (if support enabled).
+
+- Modified DicomImage's rendering of overlay planes for multi-frame images
+  by implementing support for CP-1974 "Overlay usage with Multi-frame Image
+  unclear".
+
+- Fixed issue in module "dcmseg" that caused the maximum number of frames in
+  segmentation objects to be limited to 65,535.
+
+- Implemented various changes to the module "dcmtls":
+
+  - Added functions for offline certificate verification.
+
+  - Added support for intermediate CAs and CRLs.
+
+  - Explicitly set a 32-bit random number as TLS session ID and disable TLS
+    session caching in OpenSSL.
+
+  - Changed the default security profile from the BCP 195 TLS profile to the
+    Non-downgrading BCP 195 TLS Profile.
+
+  - Revised error handling: Replaced the DcmTransportLayerStatus enumeration
+    by proper OFCondition error codes.
+
+- Improved support of the OpenSSL library:
+
+  - Added support for OpenSSL 3.0.x.
+
+  - Introduced a set of new configure tests for the various functions, header
+    files and macros that have changed between different OpenSSL versions and
+    require special handling in DCMTK.  This approach replaces the conditional
+    compilation based on version numbers.
+
+  - Introduced a new advanced CMake variable that allows for adding a custom
+    postfix to all file names of all libraries that change their ABI when
+    linking against OpenSSL.
+
+- Harmonized the configure options for using DICOM data dictionaries, both
+  the built-in and external ones.
+
+- CMake-related enhancements and other changes:
+
+  - Added CMake option that helps with the generation of binary executables
+    that run on different distributions.
+
+  - Introduced a CMake option for static linking.
+
+  - Added support for the PkgConfig package.
+
+  - Enhanced support for cross-compiling.
+
+  - Changed minimum required CMake version to 3.0.0.
+
+  - Enabled various compiler warnings by default.
+
+- Removed macro USE_STD_CXX_INCLUDES which allowed to include old C headers
+  instead of using their respective counterpart coming with C++.
+
+- Fixed various issues that occurred after the official 3.6.6 release.
+  See CHANGES file for details.
 
 Many people have contributed to this new release of DCMTK, appearing here in
 alphabetical order.  Thank you very much for your support!
 
-  [...]
+  Jinsheng Ba <bajinsheng@u.nus.edu>
+  Sharon Brizinov <sharon.b@claroty.com> and Noam Moshe
+  Daniel Calvo <dcalvo@fitec.org.br>
+  Tai Chi Minh Ralph Eastwood <raea@ambu.com>
+  Matthias Gierlings <matthias.gierlings@ruhr-uni-bochum.de>
+  Daniel Grieger <Daniel.Grieger@ith-icoserve.com>
+  Helmut Grohne <helmut@subdivi.de>
+  Igor Kostyukov <Igor.Kostyukov@waveaccess.ru>
+  W. Adam Koszek <wkoszek@segmed.ai>
+  Jason Lambert <lambert@dosisoft.fr>
+  Par Lidberg <Par.Lidberg@elekta.com>
+  Mathieu Malaterre <mathieu.malaterre@gmail.com>
+  Abdallah Maouche <abdallahmaouche98@gmail.com>
+  Gilles Mevel <gilles.mevel@groupe-nehs.com>
+  Jasper den Otter <jasper@segmed.ai>
+  Alex Reinking <alex_reinking@berkeley.edu>
+  Claus Stovgaard <clst@ambu.com>
+  Waldo Valenzuela <waldo.valenzuela@hotmail.com>
+  Christian Wetzel <wetzel@phoenix-pacs.de>
+
+  DCMTK forum users "alciregi", "alciregi", "Shaeto", "st80rules",
+  "upnorth173", "wrenashe"
+
+  GitHub users "gsmethells", "kayarre", "malaterre", "Staars"
 
 Members of the DCMTK Team who have worked on this release are:
 
-  [...]
+  Marco Eichelberg <eichelberg@offis.de>
+  Michael Onken <onken@open-connections.de>
+  Joerg Riesmeier <dicom@jriesmeier.com>
+  Jan Schlamelcher <schlamelcher@offis.de>
+
+Student associates:
+
+  Marcel Baumann <marcel.baumann@uni-oldenburg.de>
+  Nikolas Goldhammer <dicom@offis.de>
 
 The DCMTK software can be downloaded via:
 
   https://dicom.offis.de/dcmtk or https://www.dcmtk.org/
 
-OFFIS e.V., Oldenburg, Germany, 2021-01-25
+OFFIS e.V., Oldenburg, Germany, 2022-04-22

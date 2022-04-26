@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "Thu Jan 14 2021" "Version 3.6.6" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -221,7 +221,7 @@ ss are the current seconds and
 ffffff is the fraction of the current second
 .PP
 .PP
-This should work as a default for most applications that would like to use request files and want to ensure unique file names\&. If it is desired to change this naming scheme, the option \fI--request-file-format\fP can be used\&. It permits to specify the file naming pattern used by \fI--request-file-path\fP\&.
+This should work as a default for most applications that would like to use request files and want to ensure unique file names\&. If it is desired to change this naming scheme, the option \fI--request-file-format\fP can be used\&. It permits one to specify the file naming pattern used by \fI--request-file-path\fP\&.
 .PP
 For flexibility, the following placeholders can be used in the pattern provided for \fI--request-file-format\fP:
 .PP
@@ -419,4 +419,4 @@ The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2021 e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

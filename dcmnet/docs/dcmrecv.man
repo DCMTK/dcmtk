@@ -458,6 +458,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmrecv_copyright COPYRIGHT
 
-Copyright (C) 2013-2021 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2013-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
