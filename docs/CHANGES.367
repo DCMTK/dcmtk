@@ -766,7 +766,8 @@ Release 3.6.7 (Public Minor Release - 2022-04-22)
 
 **** Changes from 2022.01.04 (eichelberg)
 
-- Fixed issue with defragmentTCP() in non-blocking mode on Windows, where the WSAEWOULDBLOCK return code was not properly handled in the past:
+- Fixed issue with defragmentTCP() in non-blocking mode on Windows, where the
+  WSAEWOULDBLOCK return code was not properly handled in the past.
   Thanks to DCMTK forum user "wrenashe".
   This closes DCMTK issue #1006.
   Affects: dcmnet/libsrc/dulfsm.cc
@@ -1769,7 +1770,9 @@ Release 3.6.7 (Public Minor Release - 2022-04-22)
 
 **** Changes from 2021.07.06 (eichelberg)
 
-- Fixed issue that caused duplicate calls to the DicomImage constructor to fail when a compressed image is loadad and the result of DcmDataset::getCurrentXfer() is passed as the second parameter:
+- Fixed issue that caused duplicate calls to the DicomImage constructor to fail
+  when a compressed image is loadad and the result of
+  DcmDataset::getCurrentXfer() is passed as the second parameter.
   This closes DCMTK issue #984.
   Thanks to Daniel Grieger <Daniel.Grieger@ith-icoserve.com> for the bug report.
   Affects: dcmdata/include/dcmtk/dcmdata/dcpixel.h
