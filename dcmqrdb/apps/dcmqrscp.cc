@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2021, OFFIS e.V.
+ *  Copyright (C) 1993-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -547,7 +547,7 @@ main(int argc, char *argv[])
         app.checkValue(cmd.getValue(options.outgoingProfile));
 
         // read configuration file
-        cond = DcmAssociationConfigurationFile::initialize(asccfg, options.associationConfigFile.c_str());
+        cond = DcmAssociationConfigurationFile::initialize(asccfg, options.associationConfigFile.c_str(), OFFalse);
         if (cond.bad())
         {
           OFLOG_FATAL(dcmqrscpLogger, "cannot read association config file: " << cond.text());
@@ -578,6 +578,13 @@ main(int argc, char *argv[])
           OFLOG_FATAL(dcmqrscpLogger, "profile '" << unmangledInProfile << "' is not valid for incoming use, duplicate abstract syntaxes found");
           return 1;
         }
+
+        if (!asccfg.isValidSCUProfile(options.outgoingProfile.c_str()))
+        {
+          OFLOG_FATAL(dcmqrscpLogger, "profile '" << unmangledOutProfile << "' is not valid for outgoing use, too many presentation contexts");
+          return 1;
+        }
+
       }
 
       cmd.beginOptionBlock();

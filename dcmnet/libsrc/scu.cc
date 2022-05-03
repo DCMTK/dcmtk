@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2021, OFFIS e.V.
+ *  Copyright (C) 2008-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -158,7 +158,7 @@ OFCondition DcmSCU::initNetwork()
     if (!m_assocConfigFilename.empty())
     {
         DcmAssociationConfiguration assocConfig;
-        result = DcmAssociationConfigurationFile::initialize(assocConfig, m_assocConfigFilename.c_str());
+        result = DcmAssociationConfigurationFile::initialize(assocConfig, m_assocConfigFilename.c_str(), OFTrue);
         if (result.bad())
         {
             DCMNET_WARN("Unable to parse association configuration file " << m_assocConfigFilename

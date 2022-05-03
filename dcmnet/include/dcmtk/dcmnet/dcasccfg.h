@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2017, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -111,12 +111,15 @@ public:
    *  @param abstractSyntaxUID abstract syntax UID in symbolic or numeric format
    *  @param transferSyntaxKey symbolic key that has been used in a call
    *     to addTransferSyntax() prior to this call.
+   *  @param scuMode true if the configuration is intended for an SCU
+   *   (i.e. the limit of 128 presentation contexts must be preserved), false otherwise
    *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition addPresentationContext(
     const char *key,
     const char *abstractSyntaxUID,
-    const char *transferSyntaxKey);
+    const char *transferSyntaxKey,
+    OFBool scuMode);
 
   /** adds the given abstract syntax UID and role to
    *  the list of SCP/SCU role selection items maintained under the given key.
@@ -194,6 +197,14 @@ public:
    *  @return true if profile is suitable for use by an SCP, false otherwise
    */
   OFBool isValidSCPProfile(const char *key) const;
+
+  /** checks if the profile is suitable for use by an SCU.
+   *  A profile is suitable for use by an SCU if the list of
+   *  presentation contexts appears has not more than 128 entries
+   *  @param key profile name, must not be NULL
+   *  @return true if profile is suitable for use by an SCU, false otherwise
+   */
+  OFBool isValidSCUProfile(const char *key) const;
 
   /** find a list of transfer syntaxes that matches the given list and return
    *  its name. A match is only found if the number of transfer syntaxes is

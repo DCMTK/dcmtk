@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2017, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -130,7 +130,8 @@ const DcmPresentationContextList* DcmPresentationContextMap::getPresentationCont
 OFCondition DcmPresentationContextMap::add(
   const OFString& key,
   const OFString& abstractSyntaxUID,
-  const OFString& transferSyntaxKey)
+  const OFString& transferSyntaxKey,
+  OFBool scuMode)
 {
   if ((key.empty())||(abstractSyntaxUID.empty())||(transferSyntaxKey.empty())) return EC_IllegalCall;
 
@@ -158,8 +159,8 @@ OFCondition DcmPresentationContextMap::add(
   else // use existing value
     value = ((*it).second);
 
-  // make sure list does not get longer than 128 entries
-  if (((value)->size()) > 127)
+  // make sure list does not get longer than 128 entries if we are in SCU mode
+  if (scuMode && ((value)->size()) > 127)
   {
     OFString s("presentation context list too long (> 128 entries): ");
     s += key;

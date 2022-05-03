@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -151,12 +151,15 @@ public:
    *  @param key map key
    *  @param abstractSyntaxUID abstract syntax UID
    *  @param transferSyntaxKey symbolic name of transfer syntax UID list, not checked here.
+   *  @param scuMode true if the configuration is intended for an SCU
+   *   (i.e. the limit of 128 presentation contexts must be preserved), false otherwise
    *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition add(
     const OFString& key,
     const OFString& abstractSyntaxUID,
-    const OFString& transferSyntaxKey);
+    const OFString& transferSyntaxKey,
+    OFBool scuMode);
 
   /** checks if the key is known
    *  @param key key name, must not be NULL

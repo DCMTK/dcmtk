@@ -328,7 +328,7 @@ OFCondition DcmSCPConfig::loadAssociationCfgFile(const OFString &assocFile)
   {
     OFString profileName;
     DCMNET_DEBUG("Loading association configuration file: " << assocFile);
-    result = DcmAssociationConfigurationFile::initialize(m_assocConfig, assocFile.c_str());
+    result = DcmAssociationConfigurationFile::initialize(m_assocConfig, assocFile.c_str(), OFFalse);
     if (result.bad())
     {
       DCMNET_ERROR("Unable to parse association configuration file: " << assocFile << ": " << result.text());
@@ -446,13 +446,13 @@ OFCondition DcmSCPConfig::addPresentationContext(const OFString &abstractSyntax,
     if ( pEntry == NULL)
     {
       // finally add new presentation context to list and profile to configuration
-      if ( result.good() ) result = m_assocConfig.addPresentationContext(DCMSCP_PC_KEY.c_str(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str());
+      if ( result.good() ) result = m_assocConfig.addPresentationContext(DCMSCP_PC_KEY.c_str(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str(), OFFalse);
       if ( result.good() ) result = m_assocConfig.addProfile(profileName.c_str(), DCMSCP_PC_KEY.c_str(), DCMSCP_RO_KEY.c_str());
     }
     else
     {
       // finally, add presentation context to existing profile
-      result = m_assocConfig.addPresentationContext(pEntry->getPresentationContextKey(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str());
+      result = m_assocConfig.addPresentationContext(pEntry->getPresentationContextKey(), abstractSyntax.c_str(), DCMSCP_TS_KEY.c_str(), OFFalse);
     }
   }
   return result;

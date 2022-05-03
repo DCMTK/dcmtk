@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -578,7 +578,7 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValue(opt_profileName));
 
       // read configuration file
-      OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
+      OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile, OFFalse);
       if (cond.bad())
       {
         OFLOG_FATAL(storescpLogger, "cannot read config file: " << cond.text());

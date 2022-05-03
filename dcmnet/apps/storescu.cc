@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -437,7 +437,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(opt_profileName));
 
         // read configuration file. The profile name is checked later.
-        OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
+        OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile, OFTrue);
         if (cond.bad())
         {
           OFLOG_ERROR(storescuLogger, "reading config file: " << cond.text());

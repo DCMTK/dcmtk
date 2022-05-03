@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2021, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,7 +45,8 @@
 
 OFCondition DcmAssociationConfigurationFile::initialize(
   DcmAssociationConfiguration& cfg,
-  const char *filename)
+  const char *filename,
+  OFBool scuMode)
 {
   if (!filename) return EC_IllegalCall;
 
@@ -65,7 +66,7 @@ OFCondition DcmAssociationConfigurationFile::initialize(
   if (result.bad()) return result;
 
   // parse presentation contexts
-  result = parsePresentationContexts(cfg, config);
+  result = parsePresentationContexts(cfg, config, scuMode);
   if (result.bad()) return result;
 
   // parse role selection items
@@ -126,7 +127,8 @@ OFCondition DcmAssociationConfigurationFile::parseTransferSyntaxes(
 
 OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
   DcmAssociationConfiguration& cfg,
-  OFConfigFile& config)
+  OFConfigFile& config,
+  OFBool scuMode)
 {
   config.set_section(2, L2_PRESENTATIONCONTEXTS);
   if (! config.section_valid(2))
@@ -186,7 +188,7 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
         // finally cut abstract syntax name
         abstractSyntaxUID.erase(separator);
 
-        result = cfg.addPresentationContext(key, abstractSyntaxUID.c_str(), transferSyntaxKey.c_str());
+        result = cfg.addPresentationContext(key, abstractSyntaxUID.c_str(), transferSyntaxKey.c_str(), scuMode);
         if (result.bad()) return result;
 
       } else found = OFFalse;
