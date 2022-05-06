@@ -1418,6 +1418,7 @@ OFString DcmSCU::createStorageFilename(DcmDataset* dataset)
     OFString name = dcmSOPClassUIDToModality(sopClassUID.c_str(), "UNKNOWN");
     name += ".";
     name += sopInstanceUID;
+    OFStandard::sanitizeFilename(name);
     OFString returnStr;
     OFStandard::combineDirAndFilename(returnStr, m_storageDir, name, OFTrue);
     return returnStr;

@@ -1853,12 +1853,14 @@ storeSCPCallback(
               if (!subdirectoryName.empty())
                 subdirectoryName += '_';
               subdirectoryName += currentStudyInstanceUID;
+              OFStandard::sanitizeFilename(subdirectoryName);
               break;
             case ESM_PatientName:
               // pattern: "[Patient's Name]_[YYYYMMDD]_[HHMMSSMMM]"
               subdirectoryName = currentPatientName;
               subdirectoryName += '_';
               subdirectoryName += timestamp;
+              OFStandard::sanitizeFilename(subdirectoryName);
               break;
             case ESM_None:
               break;
@@ -2065,9 +2067,11 @@ static OFCondition storeSCP(
     }
     else
     {
-      // don't create new UID, use the study instance UID as found in object
+      // Use the SOP instance UID as found in the C-STORE request message as part of the filename
+      OFString uid = req->AffectedSOPInstanceUID;
+      OFStandard::sanitizeFilename(uid);
       sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
-        req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
+        uid.c_str(), opt_fileNameExtension.c_str());
     }
   }
 

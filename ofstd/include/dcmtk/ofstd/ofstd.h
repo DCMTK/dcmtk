@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1164,6 +1164,22 @@ class DCMTK_OFSTD_EXPORT OFStandard
     *  @param seconds The number of seconds to sleep (at least)
     */
     static void forceSleep(Uint32 seconds);
+
+    /** sanitize a filename (NOT a path name!) by replacing all path
+     *  separators with underscores. This avoids possible path traversal
+     *  vulnerabilities if malformed data read from file or received over
+     *  a network is used as part of a filename.
+     *  @param fname filename to be sanitized
+     */
+    static void sanitizeFilename(OFString& fname);
+
+    /** sanitize a filename (NOT a path name!) by replacing all path
+     *  separators with underscores. This avoids possible path traversal
+     *  vulnerabilities if malformed data read from file or received over
+     *  a network is used as part of a filename.
+     *  @param fname filename to be sanitized
+     */
+    static void sanitizeFilename(char *fname);
 
  private:
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -73,17 +73,22 @@ OFBool OFFilenameCreator::makeFilename(unsigned int &seed, const char *dir, cons
   {
     // create filename
     filename.clear();
-    if (dir)
-    {
-      filename = dir;
-      filename += PATH_SEPARATOR;
-    }
-    if (prefix) filename += prefix;
+    if (prefix) filename = prefix;
     addLongToString(creation_time, filename);
     // on some systems OFrand_r may produce only 16-bit random numbers.
     // To be on the safe side, we use two random numbers for the upper and the lower 16 bits.
     addLongToString((((OFrand_r(seed) & 0xFFFF) << 16) | (OFrand_r(seed) & 0xFFFF)), filename);
     if (postfix) filename += postfix;
+
+    OFStandard::sanitizeFilename(filename);
+
+    if (dir)
+    {
+      OFString dirname = dir;
+      dirname += PATH_SEPARATOR;
+      dirname += filename;
+      filename = dirname;
+    }
 
     // check if filename exists
     stat_result = stat(filename.c_str(), &stat_buf);
