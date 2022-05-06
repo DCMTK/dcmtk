@@ -86,7 +86,7 @@ OFCondition DcmTLSSCU::initNetwork()
   OFCondition cond;
 
   /* First, create TLS layer */
-  m_tLayer = new DcmTLSTransportLayer(NET_REQUESTOR, m_readSeedFile.c_str(), OFTrue /* initialize OpenSSL */);
+  m_tLayer = CreateTransportLayer();
   if (m_tLayer == NULL)
   {
     DCMTLS_ERROR("Unable to create TLS transport layer for SCP, maybe problem with seed file?");
@@ -340,6 +340,11 @@ void DcmTLSSCU::setDHParam(const OFString& dhParam)
 {
   if (!m_tLayer->setTempDHParameters(dhParam.c_str()))
      DCMTLS_WARN("unable to load temporary DH parameter file '" << dhParam << "', ignoring");
+}
+
+DcmTLSTransportLayer* DcmTLSSCU::CreateTransportLayer()
+{
+    return new DcmTLSTransportLayer(NET_REQUESTOR, m_readSeedFile.c_str(), OFTrue /* initialize OpenSSL */);
 }
 
 #else

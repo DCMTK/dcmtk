@@ -483,6 +483,21 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
     pool.join();
 }
 
+struct CustomTLSSCU : DcmTLSSCU
+{
+    virtual DcmTLSTransportLayer* CreateTransportLayer()
+    {
+        return nullptr;
+    }
+};
+
+OFTEST(dcmtls_initNetworkFails_WhenCreateTransportLayerReturnsNull)
+{
+    CustomTLSSCU scu;
+    scu.enableAuthentication("", "");
+    OFCHECK(scu.initNetwork().bad());
+}
+
 #endif // WITH_OPENSSL
 
 #endif // WITH_THREADS

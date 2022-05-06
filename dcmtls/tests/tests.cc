@@ -24,5 +24,6 @@
 
 OFTEST_REGISTER(dcmtls_scp_tls);
 OFTEST_REGISTER(dcmtls_scp_pool_tls);
+OFTEST_REGISTER(dcmtls_initNetworkFails_WhenCreateTransportLayerReturnsNull);
 
 OFTEST_MAIN("dcmtls")

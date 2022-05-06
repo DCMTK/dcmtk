@@ -192,6 +192,16 @@ public:
    */
   virtual OFString getWriteSeedFile() const;
 
+protected:
+  /** Factory function for new TLS transport layer instances.
+   *  This function is used by initNetwork to create the transport layer.
+   *  Override this function to allow custom configuration of TLS, and allow
+   *  configuring the transport layer with certificates from third party
+   *  certificate stores. 
+   *  @return a new TLS transport layer instance or NULL in case of failure
+   */
+  virtual DcmTLSTransportLayer* CreateTransportLayer();
+
 private:
 
   /** Private undefined copy-constructor. Shall never be called.
