@@ -28,6 +28,7 @@
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/scu.h"
 
+
 #include <cmath>
 
 static OFLogger t_scuscp_logger= OFLog::getLogger("dcmtk.test.tscuscp");
@@ -199,10 +200,11 @@ void scu_sends_echo(
   const OFString& called_ae_title,
   const OFBool expect_assoc_reject = OFFalse,
   const OFBool do_release = OFTrue,
-  const int secs_after_echo = 0)
+  const int secs_after_echo = 0,
+  const int sec_before_echo = 2)
 {
     // make sure server is up
-    OFStandard::forceSleep(2);
+    OFStandard::forceSleep(sec_before_echo);
     DcmSCU scu;
     scu.setAETitle("TEST_SCU");
     scu.setPeerAETitle(called_ae_title);
@@ -622,5 +624,274 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
     test_role_selection(ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_DEFAULT, ASC_SC_ROLE_DEFAULT);
 
 }
+
+/** Test utility class that helps starting and stopping the server in a safe manner */
+class TestScu : public DcmSCU
+{
+public:
+    TestScu()
+    {
+        setPeerAETitle("TEST SCU");
+        setPeerHostName("localhost");
+        setPeerPort(11112);
+        setACSETimeout(static_cast<Uint32>(-1));
+
+        OFList<OFString> xfers;
+        xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+
+        OFCHECK(addPresentationContext(UID_VerificationSOPClass, xfers).good());
+    }
+
+    void Connect()
+    {
+        OFCHECK(initNetwork().good());
+        OFCHECK(negotiateAssociation().good());
+    }
+
+    OFCondition Ping()
+    {
+        return sendECHORequest(1);
+    }
+};
+
+
+/** Test SCP that supports N-CREATE requests */
+struct TestSCPWithNCreateSupport : TestSCP
+{
+    TestSCPWithNCreateSupport()
+        : TestSCP(), m_running(OFTrue), m_stop_on_next_echo(OFFalse)
+    {
+        DcmSCPConfig& config = getConfig();
+        config.setAETitle("ACCEPTOR");
+        config.setConnectionBlockingMode(DUL_NOBLOCK);
+        config.setConnectionTimeout(4);
+        config.setAlwaysAcceptDefaultRole(OFTrue);
+        configure_scp_for_echo(config);
+        start();
+
+        // make sure server is up
+        TestScu().Ping();
+    }
+
+    void Stop()
+    {
+        m_running = OFFalse;
+        m_stop_on_next_echo = OFTrue;
+        scu_sends_echo("ACCEPTOR", false, true, 0, 0);
+        join();
+    }
+
+    ~TestSCPWithNCreateSupport()
+    {
+        if (m_running)
+            Stop();
+    }
+
+    /** Overloads base class to add support for additional commands. */
+    OFCondition handleIncomingCommand(T_DIMSE_Message* incomingMsg, const DcmPresentationContextInfo& presInfo) /* override */
+    {
+        if (incomingMsg->CommandField == DIMSE_N_CREATE_RQ)
+            return OnNCREATERequest(incomingMsg->msg.NCreateRQ, presInfo.presentationContextID);
+
+        if (incomingMsg->CommandField == DIMSE_C_ECHO_RQ)
+            m_set_stop_after_assoc = m_stop_on_next_echo; // Adds support for stopping the SCP on next Echo request
+
+        return DcmSCP::handleIncomingCommand(incomingMsg, presInfo);
+    }
+
+    /** Called when client sends an N-CREATE request */
+    OFCondition OnNCREATERequest(T_DIMSE_N_CreateRQ& createRq, const T_ASC_PresentationContextID presID)
+    {
+        DcmFileFormat format; // For conveniently cleaning up on scope exit
+        DcmDataset* attrList = format.getDataset(); // N-CREATE attribute list
+
+        OFString affectedSOPClassUID;
+        OFString affectedSOPInstanceUID;
+        OFCondition result = ReceiveNCREATERequest(createRq, presID, attrList, affectedSOPClassUID, affectedSOPInstanceUID);
+        if (result.bad())
+            return result;
+
+        unsigned short responseStatus = STATUS_N_Success;
+
+        if (affectedSOPInstanceUID.empty())
+            responseStatus = STATUS_N_InvalidAttributeValue;
+
+        // Create a response dataset and populate it with the requested N-CREATE attributes
+        DcmDataset respDataset = *attrList;
+
+        result = respDataset.putAndInsertOFStringArray(DCM_SOPClassUID, affectedSOPClassUID);
+        if (result.good())
+            result = respDataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, affectedSOPInstanceUID);
+
+        if (result.bad())
+            responseStatus = STATUS_N_ProcessingFailure;
+
+        if (m_managedSopInstances.find(affectedSOPInstanceUID) != m_managedSopInstances.end()) {
+            responseStatus = STATUS_N_DuplicateSOPInstance;
+        }
+        else {
+            // Add dataset to the managed SOP instances.
+            m_managedSopInstances.insert(OFMake_pair(affectedSOPInstanceUID, respDataset));
+        }
+
+
+        return SendNCREATEResponse(presID, createRq.MessageID, affectedSOPClassUID, affectedSOPInstanceUID, &respDataset, responseStatus);
+    }
+
+    OFCondition ReceiveNCREATERequest(T_DIMSE_N_CreateRQ& reqMessage,
+        DUL_PRESENTATIONCONTEXTID presID,
+        DcmDataset*& attrList,
+        OFString& affectedSOPClassUID,
+        OFString& affectedSOPInstanceUID)
+    {
+        T_ASC_PresentationContextID presIDdset;
+        OFString tempStr;
+
+        // Check if dataset is announced correctly
+        if (reqMessage.DataSetType == DIMSE_DATASET_NULL) {
+            return DIMSE_BADMESSAGE;
+        }
+
+        DcmDataset* dataset = OFnullptr;
+        OFCondition cond = receiveDIMSEDataset(&presIDdset, &dataset);
+
+        if (cond.bad()) {
+            delete dataset;
+            return DIMSE_BADDATA;
+        }
+
+        if (presIDdset != presID) {
+            delete dataset;
+            return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID,
+                OF_error,
+                "DIMSE: Presentation Contexts of Command and Data Set differ");
+        }
+
+        attrList = dataset;
+        affectedSOPClassUID    = reqMessage.AffectedSOPClassUID;
+        affectedSOPInstanceUID = reqMessage.AffectedSOPInstanceUID;
+
+        return cond;
+    }
+
+    OFCondition SendNCREATEResponse(const T_ASC_PresentationContextID presID,
+        const Uint16 messageID,
+        const OFString& affectedSOPClassUID,
+        const OFString& affectedSOPInstanceUID,
+        DcmDataset* rspDataset,
+        const Uint16 rspStatusCode)
+    {
+        OFCondition cond;
+
+        // Send back response
+        T_DIMSE_Message response = {};
+        T_DIMSE_N_CreateRSP& createResponse         = response.msg.NCreateRSP;
+        response.CommandField                       = DIMSE_N_CREATE_RSP;
+        createResponse.MessageIDBeingRespondedTo    = messageID;
+        createResponse.DimseStatus                  = rspStatusCode;
+
+        //  Set (optional) fields
+        createResponse.opts = O_NCREATE_AFFECTEDSOPCLASSUID | O_NCREATE_AFFECTEDSOPINSTANCEUID;
+        OFStandard::strlcpy(createResponse.AffectedSOPClassUID, affectedSOPClassUID.c_str(), sizeof(createResponse.AffectedSOPClassUID));
+        OFStandard::strlcpy(createResponse.AffectedSOPInstanceUID, affectedSOPInstanceUID.c_str(), sizeof(createResponse.AffectedSOPInstanceUID));
+
+        if (rspDataset)
+            createResponse.DataSetType = DIMSE_DATASET_PRESENT;
+        else
+            createResponse.DataSetType = DIMSE_DATASET_NULL;
+
+        // Send response message with dataset back to SCU
+        return sendDIMSEMessage(presID, &response, rspDataset);
+    }
+
+    OFMap<OFString, DcmDataset> m_managedSopInstances;
+    bool m_running;
+    bool m_stop_on_next_echo;
+};
+
+struct NCREATEFixture
+{
+    NCREATEFixture()
+    {
+        // The client is responsible for determining the SOP instance UID
+        affectedSopInstanceUid = "2.2.2.2";
+        reqDataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "3.3.3.3");
+        createdInstance = fileformat.getDataset();
+        scu.Connect();
+        presID = scu.findAnyPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
+    }
+
+    OFMap<OFString, DcmDataset> StopAndGetReceivedData()
+    {
+        scu.releaseAssociation();
+
+        // Stop SCP to make sure all requests completes
+        scp.Stop();
+
+        // Inspect data received by server
+        return scp.m_managedSopInstances;
+    }
+
+    TestSCPWithNCreateSupport scp;
+    TestScu scu;
+
+    OFString affectedSopInstanceUid;
+    DcmDataset reqDataset;
+    DcmFileFormat fileformat;
+    DcmDataset* createdInstance;
+    T_ASC_PresentationContextID presID;
+};
+
+OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_null)
+{
+    NCREATEFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    DcmDataset* createdInstance = OFnullptr;
+    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presID, fixture.affectedSopInstanceUid, &fixture.reqDataset, createdInstance, rspStatusCode);
+    OFCHECK(result.good());
+    OFCHECK(rspStatusCode == STATUS_N_Success);
+}
+
+OFTEST(dcmnet_scu_sendNCREATERequest_fails_when_affectedsopinstance_is_empty)
+{
+    NCREATEFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presID, "", &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK(result.bad());
+}
+
+OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted)
+{
+    NCREATEFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presID, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK(result.good());
+    OFCHECK(rspStatusCode == STATUS_N_Success);
+
+    OFString receivedSopInstanceUid;
+    OFCHECK(fixture.createdInstance->findAndGetOFString(DCM_SOPInstanceUID, receivedSopInstanceUid).good());
+    OFCHECK(receivedSopInstanceUid == fixture.affectedSopInstanceUid);
+
+    OFMap<OFString, DcmDataset> instances = fixture.StopAndGetReceivedData();
+    OFCHECK(instances.find(fixture.affectedSopInstanceUid) != instances.end());
+}
+
+OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatuscode_from_scp_when_scp_sets_error_status)
+{
+    NCREATEFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presID, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK(result.good());
+
+    // Provoke duplicate SOP instance error
+    result = fixture.scu.sendNCREATERequest(fixture.presID, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK(result.good());
+    OFCHECK(rspStatusCode == STATUS_N_DuplicateSOPInstance);
+}
+
 
 #endif // WITH_THREADS

@@ -2081,6 +2081,149 @@ Uint16 DcmSCU::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ& /*eventReportReq
     return STATUS_Success;
 }
 
+OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
+                                       const OFString& affectedSopInstanceUID,
+                                       DcmDataset* reqDataset,
+                                       DcmDataset*& createdInstance,
+                                       Uint16& rspStatusCode)
+{
+
+    // Do some basic validity checks
+    if (!isConnected())
+        return DIMSE_ILLEGALASSOCIATION;
+
+    if (affectedSopInstanceUID.empty() || (reqDataset == OFnullptr))
+        return DIMSE_NULLKEY;
+
+    // Determine SOP Class from presentation context
+    OFString abstractSyntax, transferSyntax;
+    findPresentationContext(presID, abstractSyntax, transferSyntax);
+    if (abstractSyntax.empty() || transferSyntax.empty())
+        return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+
+    T_DIMSE_Message request;
+    // Make sure everything is zeroed (especially options)
+    memset((char*)&request, 0, sizeof(request));
+    request.CommandField        = DIMSE_N_CREATE_RQ;
+    T_DIMSE_N_CreateRQ& rqmsg   = request.msg.NCreateRQ;
+    rqmsg.MessageID             = nextMessageID();
+    rqmsg.DataSetType           = DIMSE_DATASET_PRESENT;
+    rqmsg.opts                  = O_NCREATE_AFFECTEDSOPINSTANCEUID;
+
+    OFStandard::strlcpy(rqmsg.AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(rqmsg.AffectedSOPClassUID));
+    OFStandard::strlcpy(rqmsg.AffectedSOPInstanceUID, affectedSopInstanceUID.c_str(), sizeof(rqmsg.AffectedSOPInstanceUID));
+
+    OFString tempStr;
+
+    /* Send request */
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        DCMNET_INFO("Sending N-CREATE Request");
+        DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, reqDataset, presID));
+    }
+    else
+    {
+        DCMNET_INFO("Sending N-CREATE Request (MsgID " << rqmsg.MessageID << ")");
+    }
+
+    OFCondition result = sendDIMSEMessage(presID, &request, reqDataset);
+    if (result.bad())
+    {
+        DCMNET_ERROR("Failed sending N-CREATE request: " << DimseCondition::dump(tempStr, result));
+        return result;
+    }
+
+    T_DIMSE_Message response;
+    // Make sure everything is zeroed (especially options)
+    memset((char*)&response, 0, sizeof(response));
+    DcmDataset* statusDetail = OFnullptr;
+
+    T_ASC_PresentationContextID pcid = presID;
+    result = receiveDIMSECommand(&pcid, &response, &statusDetail, OFnullptr /* commandSet */);
+
+    rspStatusCode = response.msg.NCreateRSP.DimseStatus;
+
+    if (result.bad())
+    {
+        delete statusDetail;
+        DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, result));
+        return result;
+    }
+
+    if (response.CommandField == DIMSE_N_CREATE_RSP)
+    {
+        if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+        {
+            DCMNET_INFO("Received N-CREATE Response");
+            DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+        }
+        else
+        {
+            DCMNET_INFO("Received N-CREATE Response (" << DU_cstoreStatusString(rspStatusCode) << ")");
+        }
+    }
+    else
+    {
+        DCMNET_ERROR("Expected N-CREATE response but received DIMSE command 0x"
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+            << OFstatic_cast(unsigned int, response.CommandField));
+        DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, NULL, pcid));
+        delete statusDetail;
+        return DIMSE_BADCOMMANDTYPE;
+    }
+
+    if (statusDetail != OFnullptr)
+    {
+        DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+        delete statusDetail;
+    }
+
+    if (pcid != presID)
+    {
+        DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID) << ") and data set ("
+            << OFstatic_cast(unsigned int, pcid) << ") differ");
+        return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID,
+            OF_error,
+            "DIMSE: Presentation Contexts of Command and Data Set differ");
+    }
+
+    // If requested, we need to receive the dataset containing the received instance
+    if (response.msg.NCreateRSP.DataSetType == DIMSE_DATASET_PRESENT)
+    {
+        DcmDataset* respDataset = OFnullptr;
+        result = receiveDIMSEDataset(&pcid, &respDataset);
+        if (result.bad())
+        {
+            delete respDataset;
+            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, OFnullptr, pcid));
+            return DIMSE_BADDATA;
+        }
+
+        if (presID != pcid)
+        {
+            delete respDataset;
+            DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID) << ") and data set ("
+                << OFstatic_cast(unsigned int, pcid) << ") differ");
+            return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID,
+                OF_error,
+                "DIMSE: Presentation Contexts of Command and Data Set differ");
+        }
+        // Provide user with copy of result dataset if desired
+        if (createdInstance)
+        {
+            createdInstance = respDataset;
+        }
+        else
+        {
+            // Otherwise, ignore it but print a debug message to the logger
+            delete respDataset;
+            DCMNET_DEBUG("Ignoring dataset attached to N-CREATE-RSP");
+        }
+    }
+
+    return EC_Normal;
+}
+
 OFCondition
 DcmSCU::handleSessionResponseDefault(const Uint16 dimseStatus, const OFString& message, OFBool& waitForNextResponse)
 {
