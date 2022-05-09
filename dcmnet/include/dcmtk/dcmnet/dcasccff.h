@@ -41,8 +41,8 @@ public:
    *  contained therein into the association configuration object.
    *  @param cfg association configuration object to initialize
    *  @param filename name of config file
-   *  @param scuMode true if the configuration is intended for an SCU
-   *   (i.e. the limit of 128 presentation contexts must be preserved), false otherwise
+   *  @param scuMode true if the configuration is intended for an SCU (i.e. the
+   *   limit of 128 presentation contexts must be preserved), false otherwise
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition initialize(
@@ -64,8 +64,8 @@ private:
   /** parses the presentation context lists in the config file.
    *  @param cfg association configuration object to initialize
    *  @param config filename name of config file
-   *  @param scuMode true if the configuration is intended for an SCU
-   *   (i.e. the limit of 128 presentation contexts must be preserved), false otherwise
+   *  @param scuMode true if the configuration is intended for an SCU (i.e. the
+   *     limit of 128 presentation contexts must be preserved), false otherwise
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition parsePresentationContexts(

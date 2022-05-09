@@ -160,7 +160,7 @@ OFCondition DcmPresentationContextMap::add(
     value = ((*it).second);
 
   // make sure list does not get longer than 128 entries if we are in SCU mode
-  if (scuMode && ((value)->size()) > 127)
+  if (scuMode && ((value)->size() > 127))
   {
     OFString s("presentation context list too long (> 128 entries): ");
     s += key;
