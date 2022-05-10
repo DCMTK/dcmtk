@@ -52,6 +52,10 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
@@ -150,13 +154,10 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixelbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
- ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
- ../../ofstd/include/dcmtk/ofstd/diag/push.def \
  ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
  ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
- ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
@@ -217,6 +218,10 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
@@ -311,13 +316,10 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixelbase.h \
  ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
- ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/variant.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/helpers.h \
- ../../ofstd/include/dcmtk/ofstd/diag/push.def \
  ../../ofstd/include/dcmtk/ofstd/diag/cnvrsn.def \
  ../../ofstd/include/dcmtk/ofstd/diag/vsprfw.def \
- ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
@@ -379,6 +381,10 @@ segtypes.o: segtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
@@ -500,6 +506,10 @@ segutils.o: segutils.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \

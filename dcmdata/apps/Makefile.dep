@@ -46,15 +46,19 @@ cda2dcm.o: cda2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -133,15 +137,19 @@ dcm2json.o: dcm2json.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -221,15 +229,19 @@ dcm2pdf.o: dcm2pdf.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -309,15 +321,19 @@ dcm2xml.o: dcm2xml.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -397,15 +413,19 @@ dcmconv.o: dcmconv.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -486,15 +506,19 @@ dcmcrle.o: dcmcrle.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -574,15 +598,19 @@ dcmdrle.o: dcmdrle.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -662,15 +690,19 @@ dcmdump.o: dcmdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -750,8 +782,13 @@ dcmftest.o: dcmftest.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../include/dcmtk/dcmdata/dcerror.h ../include/dcmtk/dcmdata/dcxfer.h \
  ../include/dcmtk/dcmdata/dcvr.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
  ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
@@ -806,15 +843,19 @@ dcmgpdir.o: dcmgpdir.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -895,8 +936,13 @@ dcmodify.o: dcmodify.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcpath.h ../include/dcmtk/dcmdata/dcdatset.h \
  ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dcobject.h \
  ../include/dcmtk/dcmdata/dcerror.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h
 dump2dcm.o: dump2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -950,6 +996,10 @@ dump2dcm.o: dump2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../include/dcmtk/dcmdata/dcistrma.h ../include/dcmtk/dcmdata/dcostrma.h \
  ../include/dcmtk/dcmdata/dcuid.h ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
  ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
  ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
@@ -1038,10 +1088,15 @@ img2dcm.o: img2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
  ../include/dcmtk/dcmdata/dcvr.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dchashdi.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcitem.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dchashdi.h \
  ../include/dcmtk/dcmdata/libi2d/i2d.h \
  ../include/dcmtk/dcmdata/libi2d/i2doutpl.h \
  ../include/dcmtk/dcmdata/libi2d/i2define.h \
@@ -1103,6 +1158,10 @@ mdfconen.o: mdfconen.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h mdfdsman.h \
  ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofexit.h ../include/dcmtk/dcmdata/dctk.h \
  ../include/dcmtk/dcmdata/dcswap.h ../include/dcmtk/dcmdata/dcerror.h \
@@ -1142,15 +1201,22 @@ mdfconen.o: mdfconen.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
  ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcistrmz.h
 mdfdsman.o: mdfdsman.cc ../../config/include/dcmtk/config/osconfig.h \
- mdfdsman.h ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../include/dcmtk/dcmdata/dcistrmf.h ../include/dcmtk/dcmdata/dcistrma.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dcdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../config/include/dcmtk/config/arith.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcxfer.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
  ../../oflog/include/dcmtk/oflog/logger.h \
@@ -1165,7 +1231,6 @@ mdfdsman.o: mdfdsman.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/appender.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
  ../../oflog/include/dcmtk/oflog/layout.h \
  ../../oflog/include/dcmtk/oflog/streams.h \
@@ -1177,28 +1242,24 @@ mdfdsman.o: mdfdsman.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../oflog/include/dcmtk/oflog/logmacro.h \
  ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
  ../../oflog/include/dcmtk/oflog/tracelog.h \
- ../include/dcmtk/dcmdata/dcvr.h \
+ ../include/dcmtk/dcmdata/dcdefine.h ../include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
- ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
- ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
- ../../ofstd/include/dcmtk/ofstd/offile.h \
- ../../ofstd/include/dcmtk/ofstd/ofstd.h \
- ../../ofstd/include/dcmtk/ofstd/oflimits.h \
- ../../config/include/dcmtk/config/arith.h \
- ../../ofstd/include/dcmtk/ofstd/oferror.h \
- ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dcswap.h \
- ../include/dcmtk/dcmdata/dcerror.h ../include/dcmtk/dcmdata/dcistrma.h \
- ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dcpath.h ../include/dcmtk/dcmdata/dcdatset.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcerror.h ../include/dcmtk/dcmdata/dctag.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dctk.h \
+ ../include/dcmtk/dcmdata/dcswap.h ../include/dcmtk/dcmdata/dcostrma.h \
+ ../include/dcmtk/dcmdata/dcuid.h ../include/dcmtk/dcmdata/dcdicent.h \
  ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
- ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
- ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
- ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
- ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
- ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcsequen.h \
  ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
@@ -1224,8 +1285,10 @@ mdfdsman.o: mdfdsman.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcvrfl.h ../include/dcmtk/dcmdata/dcvrfd.h \
  ../include/dcmtk/dcmdata/dcvrof.h ../include/dcmtk/dcmdata/dcvrod.h \
  ../include/dcmtk/dcmdata/dcvrol.h ../include/dcmtk/dcmdata/dcvrov.h \
- ../include/dcmtk/dcmdata/cmdlnarg.h ../include/dcmtk/dcmdata/dcpath.h \
- ../include/dcmtk/dcmdata/dcistrmf.h
+ ../include/dcmtk/dcmdata/cmdlnarg.h mdfdsman.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexbl.h \
+ ../../ofstd/include/dcmtk/ofstd/ofconsol.h
 pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dctypes.h \
  ../../oflog/include/dcmtk/oflog/oflog.h \
@@ -1274,15 +1337,19 @@ pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -1361,15 +1428,19 @@ stl2dcm.o: stl2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
@@ -1448,15 +1519,19 @@ xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
- ../include/dcmtk/dcmdata/dctagkey.h ../include/dcmtk/dcmdata/dctag.h \
- ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
- ../include/dcmtk/dcmdata/dcdict.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcstack.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcitem.h \
- ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcdicdir.h \
+ ../include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcdicent.h \
+ ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcobject.h \
+ ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dcelem.h \
+ ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dclist.h \
+ ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcmetinf.h \
+ ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmdata/dcdirrec.h ../include/dcmtk/dcmdata/dcvrulup.h \
  ../include/dcmtk/dcmdata/dcvrul.h ../include/dcmtk/dcmdata/dcpixseq.h \
