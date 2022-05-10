@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2021, OFFIS e.V.
+ *  Copyright (C) 2010-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -107,6 +107,7 @@ OFCondition DcmTLSSCU::initNetwork()
   {
     if (m_tLayer->addTrustedCertificateDir( (*certDir).c_str(), m_certKeyFileFormat).bad())
       DCMNET_WARN("Unable to load certificates from directory '" << *certDir<< "', ignoring");
+    certDir++;
   }
 
   /* If authentication of both sides (and not only encryption) is desired,
