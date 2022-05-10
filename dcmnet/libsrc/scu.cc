@@ -2087,7 +2087,6 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
                                        DcmDataset*& createdInstance,
                                        Uint16& rspStatusCode)
 {
-
     // Do some basic validity checks
     if (!isConnected())
         return DIMSE_ILLEGALASSOCIATION;
@@ -2208,17 +2207,8 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
                 OF_error,
                 "DIMSE: Presentation Contexts of Command and Data Set differ");
         }
-        // Provide user with copy of result dataset if desired
-        if (createdInstance)
-        {
-            createdInstance = respDataset;
-        }
-        else
-        {
-            // Otherwise, ignore it but print a debug message to the logger
-            delete respDataset;
-            DCMNET_DEBUG("Ignoring dataset attached to N-CREATE-RSP");
-        }
+        // Provide user with copy of result dataset
+        createdInstance = respDataset;
     }
 
     return EC_Normal;
