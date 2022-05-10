@@ -407,8 +407,6 @@ if(BUILD_SHARED_LIBS)
     # make sure that it doesn't get confused when a "normal" library turns into
     # an object library. Do this via a suffix.
     set(DCMTK_LIBRARY_SUFFIX _obj)
-    # This uses object libraries which are new in CMake 2.8.8
-    cmake_minimum_required(VERSION 2.8.8)
   endif()
 
   option(USE_COMPILER_HIDDEN_VISIBILITY
