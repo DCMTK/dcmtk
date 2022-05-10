@@ -2068,7 +2068,7 @@ static OFCondition storeSCP(
     else
     {
       // Use the SOP instance UID as found in the C-STORE request message as part of the filename
-      OFString uid = req->AffectedSOPInstanceUID;
+      OFString uid(OFSTRING_GUARD(req->AffectedSOPInstanceUID));
       OFStandard::sanitizeFilename(uid);
       sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
         uid.c_str(), opt_fileNameExtension.c_str());
