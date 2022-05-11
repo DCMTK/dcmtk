@@ -100,19 +100,27 @@ public:
   OFCondition getGLRecommendedDisplayValueGray(Uint16& gray);
 
   /** gets the recommended RGB display value.
-   *  This value is computed either from the CIELAB display value or from the Grayscale display value.
-   *  @param r returns the R component of the recommended display value as unsigned 16-bit P-value
-   *  @param g returns the G component of the recommended display value as unsigned 16-bit P-value
-   *  @param b returns the B component of the recommended display value as unsigned 16-bit P-value
+   *  This value is computed either from the CIELAB display value
+   *  or from the Grayscale display value.
+   *  @param r returns the R component of the recommended display value
+   *    as unsigned 16-bit P-value
+   *  @param g returns the G component of the recommended display value
+   *    as unsigned 16-bit P-value
+   *  @param b returns the B component of the recommended display value
+   *    as unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
   OFCondition getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b);
 
   /** gets the recommended CIELAB display value.
-   *  If no CIELAB display value is present, it is computed from the grayscale display value
-   *  @param L returns the L* component of the recommended display value as unsigned 16-bit value containing a linear mapping of L* (0..100)
-   *  @param a returns the a* component of the recommended display value as unsigned 16-bit value containing a linear mapping of a* (-128..127)
-   *  @param b returns the B* component of the recommended display value as unsigned 16-bit value containing a linear mapping of b* (-128..127)
+   *  If no CIELAB display value is present, it is computed from the
+   *  grayscale display value
+   *  @param L returns the L* component of the recommended display value
+   *    as unsigned 16-bit value containing a linear mapping of L* (0..100)
+   *  @param a returns the a* component of the recommended display value
+   *    as unsigned 16-bit value containing a linear mapping of a* (-128..127)
+   *  @param b returns the b* component of the recommended display value
+   *    as unsigned 16-bit value containing a linear mapping of b* (-128..127)
    *  @return EC_Normal upon success, an error code otherwise
    */
   OFCondition getGLRecommendedDisplayValueCIELab(Uint16& L, Uint16& a, Uint16& b);
@@ -152,9 +160,12 @@ public:
   /** set graphic layer recommended CIELAB display value of this layer.
    *  This method does not affect (set or modify) the recommended grayscale display value
    *  which should be set separately.
-   *  @param L the L* component of the recommended display value as unsigned 16-bit value containing a linear mapping of L* (0..100)
-   *  @param a the a* component of the recommended display value as unsigned 16-bit value containing a linear mapping of a* (-128..127)
-   *  @param b the B* component of the recommended display value as unsigned 16-bit value containing a linear mapping of b* (-128..127)
+   *  @param L the L* component of the recommended display value as unsigned 16-bit value
+   *    containing a linear mapping of L* (0..100)
+   *  @param a the a* component of the recommended display value as unsigned 16-bit value
+   *    containing a linear mapping of a* (-128..127)
+   *  @param b the b* component of the recommended display value as unsigned 16-bit value
+   *    containing a linear mapping of b* (-128..127)
    */
   void setGLRecommendedDisplayValueCIELab(Uint16 L, Uint16 a, Uint16 b);
 
