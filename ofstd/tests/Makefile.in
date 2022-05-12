@@ -43,6 +43,7 @@ install: all
 
 clean:
 	rm -f $(objs) $(progs) $(LOCALTRASH) $(TRASH)
+	rm -rf tehtestdire
 
 distclean:
 	rm -f $(objs) $(progs) $(LOCALTRASH) $(DISTTRASH)
