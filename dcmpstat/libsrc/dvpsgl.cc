@@ -138,7 +138,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
   if ((result.good() && (graphicLayerRecommendedDisplayCIELabValue.getVM() == 0) && (graphicLayerRecommendedDisplayRGBValue.getVM() == 3)))
   {
     // convert RGB to L*a*b*
-    Uint16 L, a, b, rr, gg, bb;
+    Uint16 L, a, b, rr=0, gg=0, bb=0;
     graphicLayerRecommendedDisplayCIELabValue.clear();
     result = graphicLayerRecommendedDisplayRGBValue.getUint16(rr,0);
     if (result.good()) result = graphicLayerRecommendedDisplayRGBValue.getUint16(gg,1);
