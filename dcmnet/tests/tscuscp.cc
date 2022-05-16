@@ -634,7 +634,7 @@ public:
         setPeerAETitle("TEST SCU");
         setPeerHostName("localhost");
         setPeerPort(11112);
-        setACSETimeout(static_cast<Uint32>(-1));
+        setACSETimeout(30);
 
         OFList<OFString> xfers;
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
@@ -672,7 +672,7 @@ struct TestSCPWithNCreateSupport : TestSCP
         DcmSCPConfig& config = getConfig();
         config.setAETitle("ACCEPTOR");
         config.setConnectionBlockingMode(DUL_NOBLOCK);
-        config.setConnectionTimeout(4);
+        config.setConnectionTimeout(30);
         config.setAlwaysAcceptDefaultRole(OFTrue);
         configure_scp_for_echo(config);
         OFList<OFString> xfers;
@@ -700,6 +700,7 @@ struct TestSCPWithNCreateSupport : TestSCP
     {
         if (m_running)
             Stop();
+        OFStandard::forceSleep(2);
     }
 
     /** Overloads base class to add support for additional commands. */
