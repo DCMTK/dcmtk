@@ -1,8 +1,11 @@
 # Minimum CMake version required
 cmake_minimum_required(VERSION 3.0.0...3.23.1 FATAL_ERROR)
 
+# Place MSVC runtime library flags in the default
+# CMAKE_<LANG>_FLAGS_<CONFIG> cache entries and
+# ignore the CMAKE_MSVC_RUNTIME_LIBRARY abstraction
 if (POLICY CMP0091)
-    cmake_policy(SET CMP0091 OLD)
+  cmake_policy(SET CMP0091 OLD)
 endif()
 
 # Declare project
@@ -72,9 +75,9 @@ else()
 endif()
 # Add a target to run the unit tests in exhaustive mode
 add_custom_target("test-exhaustive"
-    COMMAND "${CMAKE_COMMAND}" "-DCONFIG=${DCMTK_CONFIG_GENERATOR_EXPRESSION}" "-P"
-        "${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunExhaustive.cmake"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+  COMMAND "${CMAKE_COMMAND}" "-DCONFIG=${DCMTK_CONFIG_GENERATOR_EXPRESSION}" "-P"
+          "${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunExhaustive.cmake"
+  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
 
 #-----------------------------------------------------------------------------
@@ -109,7 +112,7 @@ install(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_DOCDIR}"
 #-----------------------------------------------------------------------------
 
 if(NOT DCMTK_NO_EXPORT)
-    dcmtk_create_install_exports()
+  dcmtk_create_install_exports()
 endif()
 
 #-----------------------------------------------------------------------------
@@ -134,8 +137,8 @@ if(CMAKE_CROSSCOMPILING)
     get_filename_component(DCMDICTPATH "${DCMDICTPATH}" NAME)
     set(DCMDICTPATH "${ANDROID_TEMPORARY_FILES_LOCATION}/${DCMDICTPATH}")
     foreach(DICTIONARY ${DICTIONARIES})
-        get_filename_component(FILE "${DICTIONARY}" NAME)
-        set(DCMDICTPATH "${DCMDICTPATH}:${ANDROID_TEMPORARY_FILES_LOCATION}/${FILE}")
+      get_filename_component(FILE "${DICTIONARY}" NAME)
+      set(DCMDICTPATH "${DCMDICTPATH}:${ANDROID_TEMPORARY_FILES_LOCATION}/${FILE}")
     endforeach()
     configure_file("${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustomAndroid.cmake.in"
       "${DCMTK_BINARY_DIR}/CTestCustom.cmake" ESCAPE_QUOTES @ONLY
@@ -158,59 +161,59 @@ endif()
 #-----------------------------------------------------------------------------
 
 if(DCMTK_WITH_ICONV)
-    # libiconv does not provide a .pc file
-    set(PKGCONF_LIBS_PRIV "${PKGCONF_LIBS_PRIV} ${Iconv_LIBRARY} ${LIBCHARSET_LIBRARY}")
+  # libiconv does not provide a .pc file
+  set(PKGCONF_LIBS_PRIV "${PKGCONF_LIBS_PRIV} ${Iconv_LIBRARY} ${LIBCHARSET_LIBRARY}")
 endif()
 
 if(DCMTK_WITH_ICU)
-    set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} icu-uc")
+  set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} icu-uc")
 endif()
 
 if(DCMTK_WITH_LIBXML)
-    set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libxml-2.0")
+  set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libxml-2.0")
 endif()
 
 if(DCMTK_WITH_LIBPNG)
-    set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libpng")
+  set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libpng")
 endif()
 
 if(DCMTK_WITH_OPENJPEG)
-    set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libopenjp2")
+  set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libopenjp2")
 endif()
 
 if(DCMTK_WITH_OPENSSL)
-    set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libssl libcrypto")
+  set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libssl libcrypto")
 endif()
 
 if(DCMTK_WITH_SNDFILE)
-    set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} sndfile")
+  set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} sndfile")
 endif()
 
 if(DCMTK_WITH_TIFF)
-    set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libtiff-4")
+  set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} libtiff-4")
 endif()
 
 if(DCMTK_WITH_WRAP)
-    # libwrap does not provide a .pc file
-    set(PKGCONF_LIBS_PRIV "${PKGCONF_LIBS_PRIV} ${WRAP_LIBRARY}")
+  # libwrap does not provide a .pc file
+  set(PKGCONF_LIBS_PRIV "${PKGCONF_LIBS_PRIV} ${WRAP_LIBRARY}")
 endif()
 
 if(DCMTK_WITH_ZLIB)
-    set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} zlib")
+  set(PKGCONF_REQ_PRIV "${PKGCONF_REQ_PRIV} zlib")
 endif()
 
 get_property(DCMTK_LIBRARY_TARGETS GLOBAL PROPERTY DCMTK_LIBRARY_TARGETS)
 
 foreach(T ${DCMTK_LIBRARY_TARGETS})
-    set(PKGCONF_LIBS "${PKGCONF_LIBS} -l${T}")
+  set(PKGCONF_LIBS "${PKGCONF_LIBS} -l${T}")
 endforeach()
 
 configure_file(
-    ${DCMTK_SOURCE_DIR}/CMake/dcmtk.pc.in
-    ${DCMTK_BINARY_DIR}/dcmtk.pc
-    @ONLY
+  ${DCMTK_SOURCE_DIR}/CMake/dcmtk.pc.in
+  ${DCMTK_BINARY_DIR}/dcmtk.pc
+  @ONLY
 )
 
 install(FILES "${DCMTK_BINARY_DIR}/dcmtk.pc"
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
