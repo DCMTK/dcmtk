@@ -4510,5 +4510,3 @@ vrscan.o: vrscan.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/diag/push.def \
  ../../ofstd/include/dcmtk/ofstd/diag/vsobjdes.def \
  ../../ofstd/include/dcmtk/ofstd/diag/pop.def
-xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
- ../include/dcmtk/dcmdata/xml2dcm.h

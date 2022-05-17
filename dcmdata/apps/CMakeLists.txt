@@ -17,3 +17,4 @@ endforeach()
 
 DCMTK_TARGET_LINK_MODULES(dcmftest ofstd)
 DCMTK_TARGET_LINK_MODULES(img2dcm i2d dcmdata)
+DCMTK_TARGET_LINK_MODULES(xml2dcm dcmxml dcmdata oflog ofstd)

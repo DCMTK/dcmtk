@@ -17,9 +17,10 @@ oflogdir = $(top_srcdir)/../oflog
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include
 LIBDIRS = -L$(top_srcdir)/libi2d -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc \
-	-L$(oflogdir)/libsrc
+	-L$(oflogdir)/libsrc -L$(top_srcdir)/libdcxml
 LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 LIBI2D = -li2d
+LIBDCMXML = -ldcmxml
 
 objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
 	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o \
@@ -57,7 +58,7 @@ dcm2xml: dcm2xml.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 xml2dcm: xml2dcm.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LIBDCMXML) $(LOCALLIBS) $(XMLLIBS) $(LIBS)
 
 dcmodify: dcmodify.o mdfconen.o mdfdsman.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o mdfconen.o mdfdsman.o $(LOCALLIBS) $(LIBS)
@@ -75,7 +76,7 @@ dcm2pdf: dcm2pdf.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 img2dcm: img2dcm.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LIBI2D) $(LOCALLIBS) $(XMLLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LIBI2D) $(LIBDCMXML) $(LOCALLIBS) $(XMLLIBS) $(LIBS)
 
 dcm2json: dcm2json.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)

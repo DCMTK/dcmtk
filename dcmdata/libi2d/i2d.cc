@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2021, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,7 +29,7 @@
 #include "dcmtk/dcmdata/dcuid.h"     /* for SITE_SERIES_UID_ROOT */
 #include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
 #include "dcmtk/dcmdata/dcpath.h"    /* for override keys */
-#include "dcmtk/dcmdata/xml2dcm.h"   /* for DcmXMLParseHelper */
+#include "dcmtk/dcmdata/dcmxml/xml2dcm.h"   /* for DcmXMLParseHelper */
 
 OFLogger DCM_dcmdataLibi2dLogger = OFLog::getLogger("dcmtk.dcmdata.libi2d");
 

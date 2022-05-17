@@ -38,6 +38,7 @@ include-all:
 libsrc-all: include-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" all)
 	(cd libi2d && $(MAKE) ARCH="$(ARCH)" all)
+	(cd libdcxml && $(MAKE) ARCH="$(ARCH)" all)
 
 apps-all: libsrc-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" all)
@@ -52,13 +53,13 @@ check: tests-all
 check-exhaustive: tests-all
 	(cd tests && $(MAKE) check-exhaustive)
 
-
 include-install:
 	(cd include && $(MAKE) ARCH="$(ARCH)" install)
 
 libsrc-install: libsrc-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" install-lib)
-	(cd libi2d && $(MAKE) ARCH="$(ARCH)" install-lib)	
+	(cd libi2d && $(MAKE) ARCH="$(ARCH)" install-lib)
+	(cd libdcxml && $(MAKE) ARCH="$(ARCH)" install-lib)
 
 apps-install: apps-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" install)
@@ -76,7 +77,8 @@ etc-install:
 clean:
 	(cd include && $(MAKE) clean)
 	(cd libsrc && $(MAKE) clean)
-	(cd libi2d && $(MAKE) clean)	
+	(cd libi2d && $(MAKE) clean)
+	(cd libdcxml && $(MAKE) clean)
 	(cd apps && $(MAKE) clean)
 	(cd tests && $(MAKE) clean)
 	(cd docs && $(MAKE) clean)
@@ -87,7 +89,8 @@ clean:
 distclean:
 	(cd include && $(MAKE) distclean)
 	(cd libsrc && $(MAKE) distclean)
-	(cd libi2d && $(MAKE) distclean)		
+	(cd libi2d && $(MAKE) distclean)
+	(cd libdcxml && $(MAKE) distclean)
 	(cd apps && $(MAKE) distclean)
 	(cd tests && $(MAKE) distclean)
 	(cd docs && $(MAKE) distclean)
@@ -97,6 +100,7 @@ distclean:
 
 dependencies:
 	(cd libsrc && touch $(DEP) && $(MAKE) dependencies)
-	(cd libi2d && touch $(DEP) && $(MAKE) dependencies)	
+	(cd libi2d && touch $(DEP) && $(MAKE) dependencies)
+	(cd libdcxml && touch $(DEP) && $(MAKE) dependencies)
 	(cd apps && touch $(DEP) && $(MAKE) dependencies)
 	(cd tests && touch $(DEP) && $(MAKE) dependencies)

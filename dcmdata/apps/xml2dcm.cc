@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2021, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,7 +28,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
-#include "dcmtk/dcmdata/xml2dcm.h"
+#include "dcmtk/dcmdata/dcmxml/xml2dcm.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */

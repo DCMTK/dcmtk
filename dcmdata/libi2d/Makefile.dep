@@ -61,7 +61,7 @@ i2d.o: i2d.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcitem.h ../include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcuid.h \
  ../include/dcmtk/dcmdata/dcpixseq.h ../include/dcmtk/dcmdata/dcpath.h \
- ../include/dcmtk/dcmdata/xml2dcm.h
+ ../include/dcmtk/dcmdata/dcmxml/xml2dcm.h
 i2dbmps.o: i2dbmps.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/libi2d/i2dbmps.h \
  ../include/dcmtk/dcmdata/libi2d/i2dimgs.h \

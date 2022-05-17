@@ -1,7 +1,6 @@
 # create library from source files
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
-include_directories(${LIBXML_INCDIR})
 
 DCMTK_ADD_LIBRARY(dcmdata
   cmdlnarg.cc
@@ -95,11 +94,10 @@ DCMTK_ADD_LIBRARY(dcmdata
   dcxfer.cc
   vrscan.cc
   vrscanl.c
-  xml2dcm.cc
 )
 
 DCMTK_TARGET_LINK_MODULES(dcmdata ofstd oflog)
-DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS} ${LIBXML_LIBS})
+DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS})
 
 # Various dictionary-related commands
 set(DICOMDIC   "${dcmdata_SOURCE_DIR}/data/dicom.dic")
