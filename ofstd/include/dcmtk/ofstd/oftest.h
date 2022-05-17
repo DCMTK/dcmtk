@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2019, OFFIS e.V.
+ *  Copyright (C) 2011-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This code is inspired by quicktest.
@@ -121,6 +121,24 @@ public:
             << ": " << message << OFStringStream_ends;
         OFSTRINGSTREAM_GETOFSTRING(oss, str)
         results_.push_back(str);
+    }
+
+    /** Add a new failure to the result set.
+     *  @param file filename for this failure
+     *  @param line line number for this failure
+     *  @param message error description.
+     *  @param errorDetails details of what went wrong
+     */
+    void recordFailure(const OFString& file, unsigned long int line, const OFString& message, const OFString& errorDetails)
+    {
+        OFOStringStream oss;
+        oss << "FAILED test '" << testName_ << "' at " << file << ":" << line
+            << ": " << message;
+        if (!errorDetails.empty())
+            oss << "(details: " << errorDetails;
+        oss << OFStringStream_ends;
+        OFSTRINGSTREAM_GETOFSTRING(oss, str)
+            results_.push_back(str);
     }
 
 private:
@@ -480,6 +498,16 @@ public: \
     do { \
         if (!(condition)) \
             OFTestManager::instance().currentTest().recordFailure(__FILE__, __LINE__, #condition); \
+    } while (0)
+
+ /** Check if a condition is true. Can only be used inside OFTEST().
+  *  @param condition condition to check
+  *  @param errorDetails additional error details (string) provided by caller
+  */
+#define OFCHECK_MSG(condition, errorDetails) \
+    do { \
+        if (!(condition)) \
+            OFTestManager::instance().currentTest().recordFailure(__FILE__, __LINE__, #condition, errorDetails); \
     } while (0)
 
 /** Check if two values are equal. Can only be used inside OFTEST(). Both

@@ -212,21 +212,17 @@ void scu_sends_echo(
     scu.setPeerPort(11112);
     OFList<OFString> xfers;
     xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
-    OFCondition result = scu.addPresentationContext(UID_VerificationSOPClass, xfers);
-    OFCHECK(result.good());
-    result = scu.initNetwork();
-    OFCHECK(result.good());
-    result = scu.negotiateAssociation();
+    OFCondition result;
+    OFCHECK_MSG((result = scu.addPresentationContext(UID_VerificationSOPClass, xfers)).good(), result.text());
+    OFCHECK_MSG((result = scu.initNetwork()).good(), result.text());
+    OFCHECK_MSG((result = scu.negotiateAssociation()).good(), result.text());
     if (!expect_assoc_reject)
     {
-        OFCHECK(result.good());
-        result = scu.sendECHORequest(1);
-        OFCHECK(result.good());
+        OFCHECK_MSG((result = scu.sendECHORequest(1)).good(), result.text());
         OFStandard::forceSleep(secs_after_echo);
         if (do_release)
         {
-            result = scu.releaseAssociation();
-            OFCHECK(result.good());
+            OFCHECK_MSG((result = scu.releaseAssociation()).good(), result.text());
         }
     }
     else
@@ -625,45 +621,7 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
 
 }
 
-/** Test utility class that helps starting and stopping the server in a safe manner */
-class TestScu : public DcmSCU
-{
-public:
-    TestScu()
-    {
-        setPeerAETitle("TEST SCU");
-        setPeerHostName("localhost");
-        setPeerPort(11112);
-        setACSETimeout(30);
-
-        OFList<OFString> xfers;
-        xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
-
-        OFCHECK(addPresentationContext(UID_VerificationSOPClass, xfers).good());
-        OFCHECK(addPresentationContext(UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
-    }
-
-    void Connect()
-    {
-        OFCHECK(initNetwork().good());
-        OFCHECK(negotiateAssociation().good());
-    }
-
-    OFCondition Ping()
-    {
-        T_ASC_PresentationContextID presID= findPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
-        OFCHECK(presID != 0);
-        return sendECHORequest(presID);
-    }
-
-    virtual ~TestScu()
-    {
-        releaseAssociation();
-    }
-};
-
-
-/** Test SCP that supports N-CREATE requests */
+/** Test SCP that supports N-CREATE requests, starts on construction */
 struct TestSCPWithNCreateSupport : TestSCP
 {
     TestSCPWithNCreateSupport()
@@ -672,35 +630,30 @@ struct TestSCPWithNCreateSupport : TestSCP
         DcmSCPConfig& config = getConfig();
         config.setAETitle("ACCEPTOR");
         config.setConnectionBlockingMode(DUL_NOBLOCK);
-        config.setConnectionTimeout(30);
-        config.setAlwaysAcceptDefaultRole(OFTrue);
+        config.setConnectionTimeout(10);
         configure_scp_for_echo(config);
         OFList<OFString> xfers;
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
         OFCHECK(getConfig().addPresentationContext(UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
         start();
-        // Ensure we are really up and listening before TestScu starts
-        OFStandard::forceSleep(1);
-
-        // make sure server is up
-        TestScu testSCU;
-        testSCU.Connect();
-        testSCU.Ping();
     }
 
     void Stop()
     {
         m_running = OFFalse;
         m_stop_on_next_echo = OFTrue;
-        scu_sends_echo("ACCEPTOR", false, true, 0, 0);
-        join();
+        scu_sends_echo("ACCEPTOR", 
+            false /* do not expect assoc reject*/, 
+            true  /* scu should release the association*/, 
+            2     /* seconds to wait before sending ECHO */,
+            2     /* seconds to wait after sending ECHO*/);
+        OFCHECK(join() == 0);
     }
 
     ~TestSCPWithNCreateSupport()
     {
         if (m_running)
             Stop();
-        OFStandard::forceSleep(2);
     }
 
     /** Overloads base class to add support for additional commands. */
@@ -824,22 +777,40 @@ struct TestSCPWithNCreateSupport : TestSCP
     bool m_stop_on_next_echo;
 };
 
+/// Holds basic SCU and SCP data for performing N-CREATE/N-SET tests
 struct NCREATEFixture
 {
+    // Setup basic data and configure SCU
     NCREATEFixture()
     {
         // The client is responsible for determining the SOP instance UID
         affectedSopInstanceUid = "2.2.2.2";
         reqDataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "3.3.3.3");
         createdInstance = NULL;
-        scu.Connect();
-        presIDVerification = scu.findAnyPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
-        presIDMpps = scu.findAnyPresentationContextID(UID_ModalityPerformedProcedureStepSOPClass, UID_LittleEndianImplicitTransferSyntax);
+        mppsSCU.setPeerAETitle("TEST SCU");
+        mppsSCU.setPeerHostName("localhost");
+        mppsSCU.setPeerPort(11112);
+        mppsSCU.setACSETimeout(30);
+
+        OFList<OFString> xfers;
+        xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+        OFCHECK(mppsSCU.addPresentationContext(UID_VerificationSOPClass, xfers).good());
+        OFCHECK(mppsSCU.addPresentationContext(UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+        OFCondition result;
+        OFCHECK_MSG((result = mppsSCU.initNetwork()).good(), result.text());
+        OFCHECK_MSG((result = mppsSCU.negotiateAssociation()).good(), result.text());
+        presIDVerification = mppsSCU.findPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
+        presIDMpps = mppsSCU.findPresentationContextID(UID_ModalityPerformedProcedureStepSOPClass, UID_LittleEndianImplicitTransferSyntax);
+        OFCHECK(presIDVerification != 0);
+        OFCHECK(presIDMpps != 0);
     }
 
+    // Stop server and return data collected from SCP 
     OFMap<OFString, DcmDataset> StopAndGetReceivedData()
     {
-        scu.releaseAssociation();
+        mppsSCU.releaseAssociation();
+        // Wait a few seconds to make sure SCP is ready for next association
+        OFStandard::forceSleep(3);
 
         // Stop SCP to make sure all requests completes
         scp.Stop();
@@ -854,7 +825,7 @@ struct NCREATEFixture
     }
 
     TestSCPWithNCreateSupport scp;
-    TestScu scu;
+    DcmSCU mppsSCU;
 
     OFString affectedSopInstanceUid;
     DcmDataset reqDataset;
@@ -868,8 +839,8 @@ OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_n
     NCREATEFixture fixture;
 
     Uint16 rspStatusCode = 0;
-    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
-    OFCHECK(result.good());
+    OFCondition result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK_MSG(result.good(), result.text());
     OFCHECK(rspStatusCode == STATUS_N_Success);
 }
 
@@ -878,7 +849,7 @@ OFTEST(dcmnet_scu_sendNCREATERequest_fails_when_affectedsopinstance_is_empty)
     NCREATEFixture fixture;
 
     Uint16 rspStatusCode = 0;
-    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presIDMpps, "", &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCondition result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, "", &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
     OFCHECK(result.bad());
 }
 
@@ -887,8 +858,8 @@ OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accep
     NCREATEFixture fixture;
 
     Uint16 rspStatusCode = 0;
-    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
-    OFCHECK(result.good());
+    OFCondition result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK_MSG(result.good(), result.text());
     OFCHECK(rspStatusCode == STATUS_N_Success);
 
     OFString receivedSopInstanceUid;
@@ -904,14 +875,14 @@ OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatuscode_from_s
     NCREATEFixture fixture;
 
     Uint16 rspStatusCode = 0;
-    OFCondition result = fixture.scu.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
-    OFCHECK(result.good());
+    OFCondition result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK_MSG(result.good(), result.text());
 
     // Provoke duplicate SOP instance error
     delete fixture.createdInstance; // clean up old data
     fixture.createdInstance = NULL;
-    result = fixture.scu.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
-    OFCHECK(result.good());
+    result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFCHECK_MSG(result.good(), result.text());
     OFCHECK(rspStatusCode == STATUS_N_DuplicateSOPInstance);
 }
 
