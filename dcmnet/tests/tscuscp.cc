@@ -781,12 +781,16 @@ struct TestSCPWithNCreateSupport : TestSCP
 struct NCREATEFixture
 {
     // Setup basic data and configure SCU
-    NCREATEFixture()
+    NCREATEFixture() :
+        scp(),
+        mppsSCU(),
+        affectedSopInstanceUid("2.2.2.2"),
+        reqDataset(),
+        createdInstance(NULL),
+        presIDVerification(0),
+        presIDMpps(0)
     {
-        // The client is responsible for determining the SOP instance UID
-        affectedSopInstanceUid = "2.2.2.2";
         reqDataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "3.3.3.3");
-        createdInstance = NULL;
         mppsSCU.setPeerAETitle("TEST SCU");
         mppsSCU.setPeerHostName("localhost");
         mppsSCU.setPeerPort(11112);
@@ -796,6 +800,8 @@ struct NCREATEFixture
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
         OFCHECK(mppsSCU.addPresentationContext(UID_VerificationSOPClass, xfers).good());
         OFCHECK(mppsSCU.addPresentationContext(UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+        // Give scp (member) time to start listening
+        OFStandard::forceSleep(5);
         OFCondition result;
         OFCHECK_MSG((result = mppsSCU.initNetwork()).good(), result.text());
         OFCHECK_MSG((result = mppsSCU.negotiateAssociation()).good(), result.text());
@@ -808,9 +814,13 @@ struct NCREATEFixture
     // Stop server and return data collected from SCP 
     OFMap<OFString, DcmDataset> StopAndGetReceivedData()
     {
-        mppsSCU.releaseAssociation();
-        // Wait a few seconds to make sure SCP is ready for next association
-        OFStandard::forceSleep(3);
+        if (mppsSCU.isConnected())
+        {
+            mppsSCU.releaseAssociation();
+            // Wait a few seconds to make sure SCP is ready for next association
+            // that ends SCP loop by sending in a C-ECHO
+            OFStandard::forceSleep(3);
+        }
 
         // Stop SCP to make sure all requests completes
         scp.Stop();
@@ -821,6 +831,10 @@ struct NCREATEFixture
 
     virtual ~NCREATEFixture()
     {
+        if (mppsSCU.isConnected())
+        {
+            mppsSCU.releaseAssociation();
+        }
         delete createdInstance;
     }
 

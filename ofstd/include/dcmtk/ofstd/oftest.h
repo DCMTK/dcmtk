@@ -135,7 +135,7 @@ public:
         oss << "FAILED test '" << testName_ << "' at " << file << ":" << line
             << ": " << message;
         if (!errorDetails.empty())
-            oss << "(details: " << errorDetails;
+            oss << ", details: " << errorDetails;
         oss << OFStringStream_ends;
         OFSTRINGSTREAM_GETOFSTRING(oss, str)
             results_.push_back(str);
