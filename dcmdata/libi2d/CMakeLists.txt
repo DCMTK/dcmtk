@@ -1,3 +1,5 @@
+include_directories(${LIBXML_INCDIR})
+
 # create library from source files
 DCMTK_ADD_LIBRARY(i2d
   i2d.cc

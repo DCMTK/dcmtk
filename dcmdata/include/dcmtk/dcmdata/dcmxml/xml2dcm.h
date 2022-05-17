@@ -29,6 +29,7 @@
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcmxml/dcxmldf.h"
 
 #ifdef __ibmxl__
 // IBM xlC defines __GNUC__ but does not support the GNUC extension
@@ -69,7 +70,7 @@ class DcmFileFormat;
 /** Helper class that provides methods for parsing an XML document in the format
  *  produced by dcm2xml into a DICOM dataset.
  */
-class DCMTK_DCMDATA_EXPORT DcmXMLParseHelper
+class DCMTK_DCMXML_EXPORT DcmXMLParseHelper
 {
 public:
   /// constructor;
