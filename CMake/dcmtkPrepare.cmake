@@ -359,36 +359,48 @@ else()
 endif()
 
 if(WIN32 AND CMAKE_GENERATOR MATCHES "Visual Studio .*")
-  # Evaluate the DCMTK_COMPILE_WIN32_MULTITHREADED_DLL option and adjust
-  # the runtime library setting (/MT or /MD) accordingly
-  set(CompilerFlags
-        CMAKE_CXX_FLAGS
-        CMAKE_CXX_FLAGS_DEBUG
-        CMAKE_CXX_FLAGS_RELEASE
-        CMAKE_CXX_FLAGS_MINSIZEREL
-        CMAKE_CXX_FLAGS_RELWITHDEBINFO
-        CMAKE_C_FLAGS
-        CMAKE_C_FLAGS_DEBUG
-        CMAKE_C_FLAGS_RELEASE
-        CMAKE_C_FLAGS_MINSIZEREL
-        CMAKE_C_FLAGS_RELWITHDEBINFO
-        )
-
-  if(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS OR BUILD_SHARED_LIBS)
+  if (POLICY CMP0091)
+    # CMake 3.15 and newer use CMAKE_MSVC_RUNTIME_LIBRARY to select
+    # the MSVC runtime library
     if(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OR BUILD_SHARED_LIBS)
-      # Convert any /MT or /MTd option to /MD or /MDd
-      foreach(CompilerFlag ${CompilerFlags})
-          string(REPLACE "/MT" "/MD" ${CompilerFlag} "${${CompilerFlag}}")
-          set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
-      endforeach()
+       set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
     else()
-      # Convert any /MD or /MDd option to /MT or /MTd
-      foreach(CompilerFlag ${CompilerFlags})
-          string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-          set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
-      endforeach()
+       set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()
-  endif()
+  else()
+    # CMake 3.14 and older automatically set the MSVC runtime
+    # library to a built-in default.
+    # Evaluate the DCMTK_COMPILE_WIN32_MULTITHREADED_DLL option and adjust
+    # the runtime library setting (/MT or /MD) accordingly
+    set(CompilerFlags
+          CMAKE_CXX_FLAGS
+          CMAKE_CXX_FLAGS_DEBUG
+          CMAKE_CXX_FLAGS_RELEASE
+          CMAKE_CXX_FLAGS_MINSIZEREL
+          CMAKE_CXX_FLAGS_RELWITHDEBINFO
+          CMAKE_C_FLAGS
+          CMAKE_C_FLAGS_DEBUG
+          CMAKE_C_FLAGS_RELEASE
+          CMAKE_C_FLAGS_MINSIZEREL
+          CMAKE_C_FLAGS_RELWITHDEBINFO
+          )
+
+    if(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS OR BUILD_SHARED_LIBS)
+      if(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OR BUILD_SHARED_LIBS)
+        # Convert any /MT or /MTd option to /MD or /MDd
+        foreach(CompilerFlag ${CompilerFlags})
+            string(REPLACE "/MT" "/MD" ${CompilerFlag} "${${CompilerFlag}}")
+            set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
+        endforeach()
+      else()
+        # Convert any /MD or /MDd option to /MT or /MTd
+        foreach(CompilerFlag ${CompilerFlags})
+            string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+            set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
+        endforeach()
+      endif()
+    endif()
+  endif() # Policy CMP0091
 endif()
 
 if(BUILD_SHARED_LIBS)

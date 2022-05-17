@@ -1,13 +1,6 @@
 # Minimum CMake version required
 cmake_minimum_required(VERSION 3.0.0...3.23.1 FATAL_ERROR)
 
-# Place MSVC runtime library flags in the default
-# CMAKE_<LANG>_FLAGS_<CONFIG> cache entries and
-# ignore the CMAKE_MSVC_RUNTIME_LIBRARY abstraction
-if (POLICY CMP0091)
-  cmake_policy(SET CMP0091 OLD)
-endif()
-
 # Declare project
 project(DCMTK)
 
