@@ -48,4 +48,7 @@ DCMTK_ADD_LIBRARY(dcmpstat
 )
 
 DCMTK_TARGET_LINK_MODULES(dcmpstat ofstd oflog dcmdata dcmiod dcmimgle dcmimage dcmnet dcmdsig dcmtls dcmsr dcmqrdb)
-set_property(TARGET dcmpstat PROPERTY OUTPUT_NAME "dcmpstat${DCMTK_TLS_LIBRARY_POSTFIX}")
+
+if (TARGET dcmpstat)
+  set_property(TARGET dcmpstat PROPERTY OUTPUT_NAME "dcmpstat${DCMTK_TLS_LIBRARY_POSTFIX}")
+endif()

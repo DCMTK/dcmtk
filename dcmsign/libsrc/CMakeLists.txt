@@ -23,4 +23,7 @@ DCMTK_ADD_LIBRARY(dcmdsig
 
 DCMTK_TARGET_LINK_MODULES(dcmdsig ofstd dcmdata)
 DCMTK_TARGET_LINK_LIBRARIES(dcmdsig ${OPENSSL_LIBS})
-set_property(TARGET dcmdsig PROPERTY OUTPUT_NAME "dcmdsig${DCMTK_TLS_LIBRARY_POSTFIX}")
+
+if (TARGET dcmdsig)
+  set_property(TARGET dcmdsig PROPERTY OUTPUT_NAME "dcmdsig${DCMTK_TLS_LIBRARY_POSTFIX}")
+endif()

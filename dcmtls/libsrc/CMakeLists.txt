@@ -10,4 +10,7 @@ DCMTK_ADD_LIBRARY(dcmtls
 
 DCMTK_TARGET_LINK_MODULES(dcmtls ofstd dcmdata dcmnet)
 DCMTK_TARGET_LINK_LIBRARIES(dcmtls ${OPENSSL_LIBS})
-set_property(TARGET dcmtls PROPERTY OUTPUT_NAME "dcmtls${DCMTK_TLS_LIBRARY_POSTFIX}")
+
+if (TARGET dcmtls)
+  set_property(TARGET dcmtls PROPERTY OUTPUT_NAME "dcmtls${DCMTK_TLS_LIBRARY_POSTFIX}")
+endif()

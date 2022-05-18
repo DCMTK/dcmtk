@@ -39,12 +39,12 @@
 
 // This function is also used in dcmsr, try to stay in sync!
 #if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
-extern "C" void errorFunction(void * ctx, const char *msg, ...)
+extern "C" void xml2dcm_errorFunction(void * ctx, const char *msg, ...)
 {
     // Classic C requires us to declare variables at the beginning of the function.
     OFString &buffer = *OFstatic_cast(OFString*, ctx);
 #else
-extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
+extern "C" void xml2dcm_errorFunction(void * /* ctx */, const char *msg, ...)
 {
 #endif
 
@@ -122,7 +122,7 @@ void DcmXMLParseHelper::initLibrary()
     /* check for compatible libxml version */
     LIBXML_TEST_VERSION
 
-    /* temporary buffer needed for errorFunction - more detailed explanation there */
+    /* temporary buffer needed for xml2dcm_errorFunction - more detailed explanation there */
     OFString tmpErrorString;
 
     /* initialize the XML library (only required for MT-safety) */
@@ -140,7 +140,7 @@ void DcmXMLParseHelper::initLibrary()
 
     /* enable libxml warnings and error messages */
     xmlGetWarningsDefaultValue = 1;
-    xmlSetGenericErrorFunc(&tmpErrorString, errorFunction);
+    xmlSetGenericErrorFunc(&tmpErrorString, xml2dcm_errorFunction);
 }
 
 
@@ -657,13 +657,13 @@ OFCondition DcmXMLParseHelper::validateXmlDocument(xmlDocPtr doc)
     OFCondition result = EC_Normal;
     DCMDATA_INFO("validating XML document ...");
     xmlGenericError(xmlGenericErrorContext, "--- libxml validating ---\n");
-    /* temporary buffer needed for errorFunction - more detailed explanation there */
+    /* temporary buffer needed for xml2dcm_errorFunction - more detailed explanation there */
     OFString tmpErrorString;
     /* create context for document validation */
     xmlValidCtxt cvp;
     cvp.userData = &tmpErrorString;
-    cvp.error = errorFunction;
-    cvp.warning = errorFunction;
+    cvp.error = xml2dcm_errorFunction;
+    cvp.warning = xml2dcm_errorFunction;
     /* validate the document */
     const int valid = xmlValidateDocument(&cvp, doc);
     xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
