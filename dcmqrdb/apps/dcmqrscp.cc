@@ -58,6 +58,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcostrmz.h"    /* for dcmZlibCompressionLevel */
 #include "dcmtk/ofstd/ofgrp.h"
 #include "dcmtk/ofstd/ofpwd.h"
+#include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
 
 #ifdef WITH_SQL_DATABASE
 #include "dcmtk/dcmqrdbx/dcmqrdbq.h"
@@ -113,8 +114,12 @@ main(int argc, char *argv[])
   OFCmdUnsignedInt overrideMaxPDU = 0;
   DcmQueryRetrieveOptions options;
   DcmAssociationConfiguration asccfg;
+  DcmTLSOptions tlsOptions(NET_ACCEPTORREQUESTOR);
 
   OFStandard::initializeNetwork();
+#ifdef WITH_OPENSSL
+  DcmTLSTransportLayer::initializeOpenSSL();
+#endif
 
   char tempstr[20];
   OFString temp_str;
@@ -283,6 +288,9 @@ main(int argc, char *argv[])
       cmd.addOption("--discard-illegal",        "-Cd",     "discard characters that cannot be represented\nin destination character set");
 #endif
 
+  // add TLS specific command line options if (and only if) we are compiling with OpenSSL
+  tlsOptions.addTLSCommandlineOptions(cmd);
+
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
       cmd.addOption("--normal",                 "-B",      "allow implicit format conversions (default)");
@@ -333,11 +341,13 @@ main(int argc, char *argv[])
         {
           app.printHeader(OFTrue /*print host identifier*/);
           COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER) && !defined(DCMTK_ENABLE_CHARSET_CONVERSION)
+#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER) && !defined(DCMTK_ENABLE_CHARSET_CONVERSION) && !defined(WITH_OPENSSL)
           COUT << " none" << OFendl;
 #else
           COUT << OFendl;
 #endif
+        // print OpenSSL version if (and only if) we are compiling with OpenSSL
+        tlsOptions.printLibraryVersion();
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
@@ -347,6 +357,13 @@ main(int argc, char *argv[])
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
           COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
+          return 0;
+        }
+
+        // check if the command line contains the --list-ciphers option
+        if (tlsOptions.listOfCiphersRequested(cmd))
+        {
+          tlsOptions.printSupportedCiphersuites(app, COUT);
           return 0;
         }
       }
@@ -769,6 +786,9 @@ main(int argc, char *argv[])
         dcmZlibCompressionLevel.set(OFstatic_cast(int, compressionLevel));
       }
 #endif
+
+      // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
+      tlsOptions.parseArguments(app, cmd);
     }
 
     /* print resource identifier */
@@ -862,6 +882,13 @@ main(int argc, char *argv[])
       return 10;
     }
 
+    /* create a secure transport layer if requested and OpenSSL is available */
+    cond = tlsOptions.createTransportLayer(options.net_, NULL, app, cmd);
+    if (cond.bad()) {
+      OFLOG_FATAL(dcmqrscpLogger, DimseCondition::dump(temp_str, cond));
+      return 10;
+    }
+
 #if defined(HAVE_SETUID) && defined(HAVE_GRP_H) && defined(HAVE_PWD_H)
     OFStandard::OFGroup grp;
     OFStandard::OFPasswd pwd;
@@ -904,7 +931,7 @@ main(int argc, char *argv[])
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
 #endif
 
-    DcmQueryRetrieveSCP scp(config, options, factory, asccfg);
+    DcmQueryRetrieveSCP scp(config, options, factory, asccfg, tlsOptions);
     scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
 
     /* loop waiting for associations */
@@ -912,6 +939,15 @@ main(int argc, char *argv[])
     {
       cond = scp.waitForAssociation(options.net_);
       if (!options.singleProcess_) scp.cleanChildren();  /* clean up any child processes */
+
+      /* since dcmqrscp is usually terminated with SIGTERM or the like,
+       * we write back an updated random seed after every association handled.
+       */
+      cond = tlsOptions.writeRandomSeed();
+      if (cond.bad()) {
+          // failure to write back the random seed is a warning, not an error
+          OFLOG_WARN(dcmqrscpLogger, DimseCondition::dump(temp_str, cond));
+      }
     }
 
     cond = ASC_dropNetwork(&options.net_);
