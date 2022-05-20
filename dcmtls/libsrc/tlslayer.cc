@@ -1582,6 +1582,9 @@ OFCondition DcmTLSTransportLayer::convertOpenSSLX509VerificationError(int errorC
 void DcmTLSTransportLayer::initializeOpenSSL()
 {
   // initialize OpenSSL library
+#ifdef HAVE_OPENSSL_INIT_CRYPTO
+  (void) OPENSSL_init_crypto(OPENSSL_INIT_ATFORK, NULL);
+#endif
   SSL_library_init();
   SSL_load_error_strings();
   OpenSSL_add_all_algorithms();
