@@ -2847,6 +2847,15 @@ OFString& DUL_DumpConnectionParameters(OFString& str, DUL_ASSOCIATIONKEY *associ
   return str;
 }
 
+void DUL_setParentProcessMode(DUL_ASSOCIATIONKEY *callerAssociation)
+{
+    PRIVATE_ASSOCIATIONKEY *association = (PRIVATE_ASSOCIATIONKEY *) callerAssociation;
+    if (association->connection)
+    {
+      association->connection->setParentProcessMode();
+    }
+}
+
 // Legacy functions!
 void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
 {

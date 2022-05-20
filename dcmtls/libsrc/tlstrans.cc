@@ -182,7 +182,10 @@ void DcmTLSConnection::close()
 {
   if (tlsConnection != NULL)
   {
-    SSL_shutdown(tlsConnection);
+    // execute SSL_shutdown(), which sends the TLS close_notify alert to the peer,
+    // unless we are the parent process after a fork() operation and this connection
+    // will be handled by the client.
+    if (! isParentProcessMode()) SSL_shutdown(tlsConnection);
     SSL_free(tlsConnection);
     tlsConnection = NULL;
   }

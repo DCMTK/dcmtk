@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -65,6 +65,7 @@ OFGlobal<Sint32> dcmSocketReceiveTimeout(60);
 
 DcmTransportConnection::DcmTransportConnection(DcmNativeSocketType openSocket)
 : theSocket(openSocket)
+, isForkedParent(OFFalse)
 {
   if (theSocket >= 0)
   {
@@ -309,6 +310,16 @@ void DcmTransportConnection::dumpConnectionParameters(STD_NAMESPACE ostream& out
 {
     OFString str;
     out << dumpConnectionParameters(str) << OFendl;
+}
+
+void DcmTransportConnection::setParentProcessMode()
+{
+  isForkedParent = OFTrue;
+}
+
+OFBool DcmTransportConnection::isParentProcessMode() const
+{
+  return isForkedParent;
 }
 
 /* ================================================ */

@@ -2274,3 +2274,8 @@ destroyDULParamPresentationContextList(LST_HEAD ** lst)
     }
     LST_Destroy(lst);
 }
+
+void ASC_setParentProcessMode(T_ASC_Association *association)
+{
+  if (association) DUL_setParentProcessMode(association->DULassociation);
+}

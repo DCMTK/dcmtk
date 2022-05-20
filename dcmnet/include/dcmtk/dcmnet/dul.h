@@ -566,6 +566,12 @@ DCMTK_DCMNET_EXPORT OFCondition DUL_readSocketHandleAsForkedChild();
  */
 DCMTK_DCMNET_EXPORT void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
 
+/** this function sets a flag in the association that the current process
+ *  is the parent process after a fork() operation and that the association
+ *  will be handled by the child process. In the case of TLS connections,
+ *  this prevents the destructor from calling SSL_shutdown().
+ */
+DCMTK_DCMNET_EXPORT void DUL_setParentProcessMode(DUL_ASSOCIATIONKEY *callerAssociation);
 
 /// @deprecated Use OFString& DUL_DumpParams(OFString&, DUL_ASSOCIATESERVICEPARAMETERS) instead.
 OFdeprecated DCMTK_DCMNET_EXPORT void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
