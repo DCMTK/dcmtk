@@ -312,7 +312,8 @@ If this DICOM attribute is missing in the input file, although needed, option
 manually (using one of the DICOM defined terms).  For reasons of backward
 compatibility with previous versions of this tool, the following terms are also
 supported and mapped automatically to the associated DICOM defined terms:
-latin-1, latin-2, latin-3, latin-4, latin-5, cyrillic, arabic, greek, hebrew.
+latin-1, latin-2, latin-3, latin-4, latin-5, latin-9, cyrillic, arabic, greek,
+hebrew.
 
 Multiple character sets using code extension techniques are not supported.  If
 needed, option \e --convert-to-utf8 can be used to convert the DICOM file or
