@@ -37,27 +37,27 @@ BEGIN_EXTERN_C
 /* logger function that forwards oficonv log output to the dcmdata logger */
 static void oficonv_logger_callback(int level, const char *text1, const char *text2, const char *text3)
 {
-  switch(level)
-  {
-    case 0:
-      DCMDATA_TRACE(text1 << text2 << text3);
-      break;
-    case 1:
-      DCMDATA_DEBUG(text1 << text2 << text3);
-      break;
-    case 2:
-      DCMDATA_INFO(text1 << text2 << text3);
-      break;
-    case 3:
-      DCMDATA_WARN(text1 << text2 << text3);
-      break;
-    case 4:
-      DCMDATA_ERROR(text1 << text2 << text3);
-      break;
-    default:
-      DCMDATA_FATAL(text1 << text2 << text3);
-      break;
-  }
+    switch(level)
+    {
+        case 0:
+            DCMDATA_TRACE(text1 << text2 << text3);
+            break;
+        case 1:
+            DCMDATA_DEBUG(text1 << text2 << text3);
+            break;
+        case 2:
+            DCMDATA_INFO(text1 << text2 << text3);
+            break;
+        case 3:
+            DCMDATA_WARN(text1 << text2 << text3);
+            break;
+        case 4:
+            DCMDATA_ERROR(text1 << text2 << text3);
+            break;
+        default:
+            DCMDATA_FATAL(text1 << text2 << text3);
+            break;
+    }
 }
 END_EXTERN_C
 
@@ -304,7 +304,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
         fromEncoding = "ISO-8859-8";
     else if (SourceCharacterSet == "ISO_IR 148")    // Latin alphabet No. 5
         fromEncoding = "ISO-8859-9";
-    else if (SourceCharacterSet == "ISO_IR 203")   // Latin alphabet No. 9
+    else if (SourceCharacterSet == "ISO_IR 203")    // Latin alphabet No. 9
         fromEncoding = "ISO-8859-15";
     else if (SourceCharacterSet == "ISO_IR 13")     // Japanese
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
