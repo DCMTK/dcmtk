@@ -212,6 +212,9 @@
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
+/* Define to 1 if you have the <err.h> header file. */
+#undef HAVE_ERR_H
+
 /* Define if your C++ compiler supports the explicit template specialization
    syntax. */
 #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
@@ -224,6 +227,9 @@
 
 /* Define to 1 if you have the <fenv.h> header file. */
 #undef HAVE_FENV_H
+
+/* Define to 1 if you have the `fgetln' function. */
+#undef HAVE_FGETLN
 
 /* Define to 1 if you have the `finite' function. */
 #undef HAVE_FINITE
@@ -395,6 +401,9 @@
 
 /* Define to 1 if you have the `itoa' function. */
 #undef HAVE_ITOA
+
+/* Define to 1 if you have the <langinfo.h> header file. */
+#undef HAVE_LANGINFO_H
 
 /* Define to 1 if you have the <libc.h> header file. */
 #undef HAVE_LIBC_H
@@ -842,6 +851,9 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for strcasecmp in string.h. */
 #undef HAVE_PROTOTYPE_STRCASECMP
 
+/* Define if your system has a prototype for strcasestr in string.h. */
+#undef HAVE_PROTOTYPE_STRCASESTR
+
 /* Define if your system has a prototype for strerror_r in string.h. */
 #undef HAVE_PROTOTYPE_STRERROR_R
 
@@ -1060,12 +1072,18 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for gettid. */
 #undef HAVE_SYS_GETTID
 
+/* Define to 1 if you have the <sys/mman.h> header file. */
+#undef HAVE_SYS_MMAN_H
+
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
 #undef HAVE_SYS_NDIR_H
 
 /* Define to 1 if you have the <sys/param.h> header file. */
 #undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/queue.h> header file. */
+#undef HAVE_SYS_QUEUE_H
 
 /* Define to 1 if you have the <sys/resource.h> header file. */
 #undef HAVE_SYS_RESOURCE_H

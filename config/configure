@@ -6352,7 +6352,6 @@ fi
 
 
 
-
 for ac_func in ftime gmtime_r localtime_r lstat nanosleep fcntl
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
@@ -6454,6 +6453,128 @@ if ac_fn_c_try_compile "$LINENO"; then :
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+
+for ac_header in err.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "err.h" "ac_cv_header_err_h" "$ac_includes_default"
+if test "x$ac_cv_header_err_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_ERR_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in langinfo.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "langinfo.h" "ac_cv_header_langinfo_h" "$ac_includes_default"
+if test "x$ac_cv_header_langinfo_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LANGINFO_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in sys/mman.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "sys/mman.h" "ac_cv_header_sys_mman_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_mman_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYS_MMAN_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in sys/queue.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "sys/queue.h" "ac_cv_header_sys_queue_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_queue_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYS_QUEUE_H 1
+_ACEOF
+
+fi
+
+done
+
+
+for ac_func in fgetln
+do :
+  ac_fn_c_check_func "$LINENO" "fgetln" "ac_cv_func_fgetln"
+if test "x$ac_cv_func_fgetln" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_FGETLN 1
+_ACEOF
+
+fi
+done
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for strcasestr (in string.h)" >&5
+$as_echo_n "checking prototype for strcasestr (in string.h)... " >&6; }
+
+:
+ac_includes=""
+for ac_header in string.h
+do
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes
+#include<$ac_header>"
+  fi
+done
+tmp_save_1=`echo strcasestr | tr ' :' '__'`
+if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#ifdef __cplusplus
+extern "C" {
+#endif
+$ac_includes
+#ifdef __cplusplus
+}
+#endif
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+dummyStruct strcasestr(dummyStruct);
+
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  eval "ac_cv_prototype_$tmp_save_1=no"
+else
+  eval "ac_cv_prototype_$tmp_save_1=yes"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  $as_echo "#define HAVE_PROTOTYPE_STRCASESTR 1" >>confdefs.h
+
+  :
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
 
 
 SAVELIBS="$LIBS"
@@ -12779,7 +12900,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12782 "configure"
+#line 12903 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13030,7 +13151,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13033 "configure"
+#line 13154 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13280,7 +13401,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13283 "configure"
+#line 13404 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13349,7 +13470,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13352 "configure"
+#line 13473 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13418,7 +13539,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13421 "configure"
+#line 13542 "configure"
 #include "confdefs.h"
 
 template <class T>

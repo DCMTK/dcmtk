@@ -271,9 +271,8 @@ AC_CHECK_FUNCS(popen pclose)
 AC_CHECK_FUNCS(readdir_r)
 AC_FUNC_FSEEKO
 
-
 dnl -------------------------------------------------------
-dnl Check for libcs library functions needed by oflog
+dnl Check for header files and functions needed by oflog
 dnl -------------------------------------------------------
 
 AC_DEFUN([TYPE_SOCKLEN_T],
@@ -299,6 +298,19 @@ AH_TEMPLATE(HAVE_ENAMETOOLONG, [Define if your system provides ENAMETOOLONG errn
 AC_COMPILE_IFELSE(
   [AC_LANG_PROGRAM([#include <errno.h>], [int value = ENAMETOOLONG;])],
   [AC_DEFINE(HAVE_ENAMETOOLONG)])
+
+dnl -------------------------------------------------------
+dnl Check for header files and functions needed by oficonv
+dnl -------------------------------------------------------
+
+AC_CHECK_HEADERS(err.h)
+AC_CHECK_HEADERS(langinfo.h)
+AC_CHECK_HEADERS(sys/mman.h)
+AC_CHECK_HEADERS(sys/queue.h)
+
+AC_CHECK_FUNCS(fgetln)
+
+AC_CHECK_PROTOTYPE(strcasestr, string.h)
 
 dnl -------------------------------------------------------
 dnl Check for libm library functions
