@@ -4,26 +4,31 @@ autoheader
 autoconf
 autoconf confmod.in > confmod
 
-sed -e 's|^datadir=.*|datadir='\''${datarootdir}/dcmtk'\''|' \
-    -e 's|^sysconfdir=.*|sysconfdir='\''${prefix}/etc/dcmtk'\''|' \
-    -e 's|^docdir=.*|docdir='\''${datarootdir}/doc/dcmtk'\''|' \
-    -e 's|^htmldir=.*|htmldir='\''${docdir}/html'\''|' \
-    -e 's|^  --datadir=DIR.*|  --datadir=DIR           read-only arch.-independent data [DATAROOTDIR/dcmtk]|' \
-    -e 's|^  --sysconfdir=DIR.*|  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc/dcmtk]|' \
-    -e 's|^  --docdir=DIR.*|  --docdir=DIR            documentation root [DATAROOTDIR/doc/dcmtk]|' \
-    -e 's|^  --htmldir=DIR.*|  --htmldir=DIR           html documentation [DOCDIR/html]|' \
+# read version number from VERSION file
+version=$(cat ../VERSION)
+
+echo "patching configure files for DCMTK $version"
+
+sed -e "s|^datadir=.*|datadir='\${datarootdir}/dcmtk-$version'|" \
+    -e "s|^sysconfdir=.*|sysconfdir='\${prefix}/etc/dcmtk-$version'|" \
+    -e "s|^docdir=.*|docdir='\${datarootdir}/doc/dcmtk'|" \
+    -e "s|^htmldir=.*|htmldir='\${docdir}/html'|" \
+    -e "s|^  --datadir=DIR.*|  --datadir=DIR           read-only arch.-independent data [DATAROOTDIR/dcmtk-$version]|" \
+    -e "s|^  --sysconfdir=DIR.*|  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc/dcmtk-$version]|" \
+    -e "s|^  --docdir=DIR.*|  --docdir=DIR            documentation root [DATAROOTDIR/doc/dcmtk]|" \
+    -e "s|^  --htmldir=DIR.*|  --htmldir=DIR           html documentation [DOCDIR/html]|" \
     configure > configure.tmp
 mv configure.tmp configure
 chmod a+x configure
 
-sed -e 's|^datadir=.*|datadir='\''${datarootdir}/dcmtk'\''|' \
-    -e 's|^sysconfdir=.*|sysconfdir='\''${prefix}/etc/dcmtk'\''|' \
-    -e 's|^docdir=.*|docdir='\''${datarootdir}/doc/dcmtk'\''|' \
-    -e 's|^htmldir=.*|htmldir='\''${docdir}/html'\''|' \
-    -e 's|^  --datadir=DIR.*|  --datadir=DIR           read-only arch.-independent data [DATAROOTDIR/dcmtk]|' \
-    -e 's|^  --sysconfdir=DIR.*|  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc/dcmtk]|' \
-    -e 's|^  --docdir=DIR.*|  --docdir=DIR            documentation root [DATAROOTDIR/doc/dcmtk]|' \
-    -e 's|^  --htmldir=DIR.*|  --htmldir=DIR           html documentation [DOCDIR/html]|' \
+sed -e "s|^datadir=.*|datadir='\${datarootdir}/dcmtk-$version'|" \
+    -e "s|^sysconfdir=.*|sysconfdir='\${prefix}/etc/dcmtk-$version'|" \
+    -e "s|^docdir=.*|docdir='\${datarootdir}/doc/dcmtk'|" \
+    -e "s|^htmldir=.*|htmldir='\${docdir}/html'|" \
+    -e "s|^  --datadir=DIR.*|  --datadir=DIR           read-only arch.-independent data [DATAROOTDIR/dcmtk-$version]|" \
+    -e "s|^  --sysconfdir=DIR.*|  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc/dcmtk-$version]|" \
+    -e "s|^  --docdir=DIR.*|  --docdir=DIR            documentation root [DATAROOTDIR/doc/dcmtk]|" \
+    -e "s|^  --htmldir=DIR.*|  --htmldir=DIR           html documentation [DOCDIR/html]|" \
     confmod > confmod.tmp
 mv confmod.tmp confmod
 chmod a+x confmod
