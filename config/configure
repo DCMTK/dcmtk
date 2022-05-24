@@ -1413,7 +1413,7 @@ Optional Features:
   --disable-private-tags  don't enable private tag dictionary (default)
   --disable-rpath         do not hardcode runtime library paths
   --enable-charconv=TYPE  enable character set conversion support
-                          (libiconv/libicu/stdlibc/auto=default)
+                          (libiconv/libicu/stdlibc/oficonv=default)
   --disable-charconv      disable character set conversion support
   --enable-cxx11          use C++11
   --disable-cxx11         do not use C++11 (default)
@@ -16977,6 +16977,8 @@ CHARCONVLIBS=""
 
 
 
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking fixed iconv conversion flags" >&5
 $as_echo_n "checking fixed iconv conversion flags... " >&6; }
 if test "$WITH_STDLIBC_ICONV" != "yes"; then
@@ -17053,33 +17055,21 @@ $as_echo_n "checking whether to enable character set conversion support... " >&6
 # Check whether --enable-charconv was given.
 if test "${enable_charconv+set}" = set; then :
   enableval=$enable_charconv;  case "$enableval" in
-  yes|auto)
+  yes)
 
-if test "$WITH_LIBICONV" = "yes"; then
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=libiconv" >&5
-$as_echo "yes, type=libiconv" >&6; }
-    CHARCONVLIBS="$ICONVLIBS"
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICONV"
 
-elif test "$WITH_LIBICU" = "yes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=oficonv" >&5
+$as_echo "yes, type=oficonv" >&6; }
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_OFICONV"
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=libicu" >&5
-$as_echo "yes, type=libicu" >&6; }
-    CHARCONVINCLUDES="$ICUINCLUDES"
-    CHARCONVLIBS="$ICULIBS"
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
 
-elif test "$WITH_STDLIBC_ICONV" = "yes"; then
+    ;;
+  oficonv)
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=stdlibc" >&5
-$as_echo "yes, type=stdlibc" >&6; }
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV"
-
-else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=oficonv" >&5
+$as_echo "yes, type=oficonv" >&6; }
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_OFICONV"
 
     ;;
   libiconv)
@@ -17112,61 +17102,23 @@ $as_echo "no" >&6; }
     ;;
   *)
 
-if test "$WITH_LIBICONV" = "yes"; then
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=libiconv" >&5
-$as_echo "yes, type=libiconv" >&6; }
-    CHARCONVLIBS="$ICONVLIBS"
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICONV"
 
-elif test "$WITH_LIBICU" = "yes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=oficonv" >&5
+$as_echo "yes, type=oficonv" >&6; }
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_OFICONV"
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=libicu" >&5
-$as_echo "yes, type=libicu" >&6; }
-    CHARCONVINCLUDES="$ICUINCLUDES"
-    CHARCONVLIBS="$ICULIBS"
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
-
-elif test "$WITH_STDLIBC_ICONV" = "yes"; then
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=stdlibc" >&5
-$as_echo "yes, type=stdlibc" >&6; }
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV"
-
-else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
 
     ;;
   esac
 else
 
-if test "$WITH_LIBICONV" = "yes"; then
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=libiconv" >&5
-$as_echo "yes, type=libiconv" >&6; }
-    CHARCONVLIBS="$ICONVLIBS"
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICONV"
 
-elif test "$WITH_LIBICU" = "yes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=oficonv" >&5
+$as_echo "yes, type=oficonv" >&6; }
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_OFICONV"
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=libicu" >&5
-$as_echo "yes, type=libicu" >&6; }
-    CHARCONVINCLUDES="$ICUINCLUDES"
-    CHARCONVLIBS="$ICULIBS"
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
-
-elif test "$WITH_STDLIBC_ICONV" = "yes"; then
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, type=stdlibc" >&5
-$as_echo "yes, type=stdlibc" >&6; }
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV"
-
-else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
 
 
 fi

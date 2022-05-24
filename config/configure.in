@@ -1472,6 +1472,7 @@ AH_VERBATIM([DCMTK_CHARSET_CONVERSION_CONSTANTS], [/* character set conversion c
 #define DCMTK_CHARSET_CONVERSION_ICU 1
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
 #define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
+#define DCMTK_CHARSET_CONVERSION_OFICONV 4
 
 /* LFS mode constants. */
 #define DCMTK_LFS 1
@@ -1479,6 +1480,12 @@ AH_VERBATIM([DCMTK_CHARSET_CONVERSION_CONSTANTS], [/* character set conversion c
 
 CHARCONVINCLUDES=""
 CHARCONVLIBS=""
+
+AC_DEFUN([AC_CHOOSE_CHARSET_OFICONV],
+[
+    AC_MSG_RESULT([yes, type=oficonv])
+    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_OFICONV"
+])
 
 AC_DEFUN([AC_CHOOSE_CHARSET_LIBICONV],
 [
@@ -1503,15 +1510,19 @@ AC_DEFUN([AC_CHOOSE_CHARSET_STDLIBC_ICONV],
 
 AC_DEFUN([AC_CHOOSE_CHARSET_IMPL],
 [
-if test "$WITH_LIBICONV" = "yes"; then
-    AC_CHOOSE_CHARSET_LIBICONV()
-elif test "$WITH_LIBICU" = "yes"; then
-    AC_CHOOSE_CHARSET_LIBICU()
-elif test "$WITH_STDLIBC_ICONV" = "yes"; then
-    AC_CHOOSE_CHARSET_STDLIBC_ICONV()
-else
-    AC_MSG_RESULT(no)
-fi
+dnl disabled automatic detection, now always choose "oficonv" as a default
+dnl
+dnl if test "$WITH_LIBICONV" = "yes"; then
+dnl     AC_CHOOSE_CHARSET_LIBICONV()
+dnl elif test "$WITH_LIBICU" = "yes"; then
+dnl     AC_CHOOSE_CHARSET_LIBICU()
+dnl elif test "$WITH_STDLIBC_ICONV" = "yes"; then
+dnl     AC_CHOOSE_CHARSET_STDLIBC_ICONV()
+dnl else
+dnl     AC_MSG_RESULT(no)
+dnl fi
+
+  AC_CHOOSE_CHARSET_OFICONV()
 ])
 
 AC_MSG_CHECKING(fixed iconv conversion flags)
@@ -1546,11 +1557,14 @@ fi
 AC_MSG_CHECKING(whether to enable character set conversion support)
 AC_ARG_ENABLE(charconv,
 [  --enable-charconv=TYPE  enable character set conversion support
-                          (libiconv/libicu/stdlibc/auto=default)
+                          (libiconv/libicu/stdlibc/oficonv=default)
   --disable-charconv      disable character set conversion support],
 [ case "$enableval" in
-  yes|auto)
+  yes)
     AC_CHOOSE_CHARSET_IMPL()
+    ;;
+  oficonv)
+    AC_CHOOSE_CHARSET_OFICONV()
     ;;
   libiconv)
     AC_CHOOSE_CHARSET_LIBICONV()
