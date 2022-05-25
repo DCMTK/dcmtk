@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1501_MeasurementGroup
@@ -19,11 +19,11 @@
 
 #include "dcmtk/dcmsr/cmr/define.h"
 #include "dcmtk/dcmsr/cmr/tid300.h"
+#include "dcmtk/dcmsr/cmr/cid218e.h"
 #include "dcmtk/dcmsr/cmr/cid244e.h"
 #include "dcmtk/dcmsr/cmr/cid6147.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
-#include "dcmtk/dcmsr/cmr/cid7469.h"
 
 
 // include this file in doxygen documentation
@@ -59,7 +59,7 @@ class DCMTK_CMR_EXPORT TID1501_MeasurementGroup
     // type definitions
     typedef CMR_SRNumericMeasurementValueWithUnits<T_Units> MeasurementValue;
 
-    typedef ::TID300_Measurement<CID7469_GenericIntensityAndSizeMeasurements,
+    typedef ::TID300_Measurement<CID218e_QuantitativeImageFeatures,
                                  CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                  CID6147_ResponseCriteria,
                                  CID7464_GeneralRegionOfInterestMeasurementModifiers>

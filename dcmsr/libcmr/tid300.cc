@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID300_Measurement
@@ -14,10 +14,10 @@
 
 #include "dcmtk/dcmsr/cmr/tid300.h"
 #include "dcmtk/dcmsr/cmr/tid15def.h"
+#include "dcmtk/dcmsr/cmr/cid218e.h"
 #include "dcmtk/dcmsr/cmr/cid6147.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
-#include "dcmtk/dcmsr/cmr/cid7469.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
 #include "dcmtk/dcmsr/codes/sct.h"
@@ -548,7 +548,7 @@ OFCondition TID300_Measurement<T1, T2, T3, T4>::addOrReplaceContentItem(const si
 
 
 // explicit template instantiation (needed for use in TID 1501)
-template class TID300_Measurement<CID7469_GenericIntensityAndSizeMeasurements,
+template class TID300_Measurement<CID218e_QuantitativeImageFeatures,
                                   CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                   CID6147_ResponseCriteria,
                                   CID7464_GeneralRegionOfInterestMeasurementModifiers>;

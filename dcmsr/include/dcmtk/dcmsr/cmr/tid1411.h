@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1411_VolumetricROIMeasurements
@@ -20,10 +20,10 @@
 #include "dcmtk/dcmsr/cmr/define.h"
 #include "dcmtk/dcmsr/cmr/srnumvlu.h"
 #include "dcmtk/dcmsr/cmr/tid1419m.h"
+#include "dcmtk/dcmsr/cmr/cid218e.h"
 #include "dcmtk/dcmsr/cmr/cid6147.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
-#include "dcmtk/dcmsr/cmr/cid7469.h"
 
 
 // include this file in doxygen documentation
@@ -62,7 +62,7 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     typedef CMR_SRNumericMeasurementValueWithUnits<T_Units> MeasurementValue;
 
 
-    typedef TID1419_ROIMeasurements_Measurement<CID7469_GenericIntensityAndSizeMeasurements,
+    typedef TID1419_ROIMeasurements_Measurement<CID218e_QuantitativeImageFeatures,
                                                 CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                                 CID6147_ResponseCriteria,
                                                 CID7464_GeneralRegionOfInterestMeasurementModifiers>

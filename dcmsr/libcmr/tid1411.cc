@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1411_VolumetricROIMeasurements
@@ -735,7 +735,7 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::addOrReplaceConte
 
 
 // explicit template instantiation (needed for use in TID 1500)
-template class TID1411_VolumetricROIMeasurements<CID7469_GenericIntensityAndSizeMeasurements,
+template class TID1411_VolumetricROIMeasurements<CID218e_QuantitativeImageFeatures,
                                                  CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                                  CID6147_ResponseCriteria,
                                                  CID7464_GeneralRegionOfInterestMeasurementModifiers>;

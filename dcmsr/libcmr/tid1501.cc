@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1501_MeasurementGroup
@@ -592,7 +592,7 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addOrReplaceContentItem(co
 
 
 // explicit template instantiation (needed for use in TID 1500)
-template class TID1501_MeasurementGroup<CID7469_GenericIntensityAndSizeMeasurements,
+template class TID1501_MeasurementGroup<CID218e_QuantitativeImageFeatures,
                                         CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                         CID6147_ResponseCriteria,
                                         CID7464_GeneralRegionOfInterestMeasurementModifiers>;

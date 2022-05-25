@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1500_MeasurementReport
@@ -25,11 +25,11 @@
 #include "dcmtk/dcmsr/cmr/tid1501.h"
 #include "dcmtk/dcmsr/cmr/tid1600.h"
 #include "dcmtk/dcmsr/cmr/cid100.h"
+#include "dcmtk/dcmsr/cmr/cid218e.h"
 #include "dcmtk/dcmsr/cmr/cid6147.h"
 #include "dcmtk/dcmsr/cmr/cid7021.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
-#include "dcmtk/dcmsr/cmr/cid7469.h"
 
 
 // include this file in doxygen documentation
@@ -76,13 +76,13 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
   public:
 
     // type definitions
-    typedef TID1411_VolumetricROIMeasurements<CID7469_GenericIntensityAndSizeMeasurements,
+    typedef TID1411_VolumetricROIMeasurements<CID218e_QuantitativeImageFeatures,
                                               CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                               CID6147_ResponseCriteria,
                                               CID7464_GeneralRegionOfInterestMeasurementModifiers>
             TID1411_Measurements;
 
-    typedef TID1501_MeasurementGroup<CID7469_GenericIntensityAndSizeMeasurements,
+    typedef TID1501_MeasurementGroup<CID218e_QuantitativeImageFeatures,
                                      CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                      CID6147_ResponseCriteria,
                                      CID7464_GeneralRegionOfInterestMeasurementModifiers>

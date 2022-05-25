@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CMR_ContentMappingResource
@@ -38,7 +38,9 @@ class DCMTK_CMR_EXPORT CMR_ContentMappingResource
      *  - CID29_AcquisitionModality
      *  - CID42_NumericValueQualifier
      *  - CID100_QuantitativeDiagnosticImagingProcedures
+     *  - CID218_QuantitativeImageFeatures
      *  - CID244_Laterality
+     *  - CID247_LateralityLeftRightOnly
      *  - CID4020_PETRadionuclide
      *  - CID4021_PETRadiopharmaceutical
      *  - CID4031_CommonAnatomicRegions
@@ -52,6 +54,7 @@ class DCMTK_CMR_EXPORT CMR_ContentMappingResource
      *  - CID7453_PerformingRoles
      *  - CID7464_GeneralRegionOfInterestMeasurementModifiers
      *  - CID7469_GenericIntensityAndSizeMeasurements
+     *  - CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements
      *  - CID10013_CTAcquisitionType
      *  - CID10033_CTReconstructionAlgorithm
      *

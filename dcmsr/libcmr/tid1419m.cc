@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1419_ROIMeasurements_Measurement
@@ -14,10 +14,10 @@
 
 #include "dcmtk/dcmsr/cmr/tid1419m.h"
 #include "dcmtk/dcmsr/cmr/tid15def.h"
+#include "dcmtk/dcmsr/cmr/cid218e.h"
 #include "dcmtk/dcmsr/cmr/cid6147.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
-#include "dcmtk/dcmsr/cmr/cid7469.h"
 #include "dcmtk/dcmsr/cmr/logger.h"
 #include "dcmtk/dcmsr/codes/dcm.h"
 #include "dcmtk/dcmsr/codes/sct.h"
@@ -476,7 +476,7 @@ OFCondition TID1419_ROIMeasurements_Measurement<T1, T2, T3, T4>::addOrReplaceCon
 
 
 // explicit template instantiation (needed for use in TID 1411)
-template class TID1419_ROIMeasurements_Measurement<CID7469_GenericIntensityAndSizeMeasurements,
+template class TID1419_ROIMeasurements_Measurement<CID218e_QuantitativeImageFeatures,
                                                    CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                                    CID6147_ResponseCriteria,
                                                    CID7464_GeneralRegionOfInterestMeasurementModifiers>;

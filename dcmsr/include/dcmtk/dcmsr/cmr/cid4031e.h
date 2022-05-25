@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID4031_CommonAnatomicRegions_Enhanced
+ *  Header file for class CID4031e_CommonAnatomicRegions
  *
  *  Author: Joerg Riesmeier
  *

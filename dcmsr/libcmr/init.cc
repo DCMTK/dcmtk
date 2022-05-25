@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CMR_ContentMappingResource
@@ -18,7 +18,9 @@
 #include "dcmtk/dcmsr/cmr/cid29.h"
 #include "dcmtk/dcmsr/cmr/cid42.h"
 #include "dcmtk/dcmsr/cmr/cid100.h"
+#include "dcmtk/dcmsr/cmr/cid218.h"
 #include "dcmtk/dcmsr/cmr/cid244.h"
+#include "dcmtk/dcmsr/cmr/cid247.h"
 #include "dcmtk/dcmsr/cmr/cid4020.h"
 #include "dcmtk/dcmsr/cmr/cid4021.h"
 #include "dcmtk/dcmsr/cmr/cid4031.h"
@@ -32,6 +34,7 @@
 #include "dcmtk/dcmsr/cmr/cid7453.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
 #include "dcmtk/dcmsr/cmr/cid7469.h"
+#include "dcmtk/dcmsr/cmr/cid7551.h"
 #include "dcmtk/dcmsr/cmr/cid10013.h"
 #include "dcmtk/dcmsr/cmr/cid10033.h"
 
@@ -47,7 +50,9 @@ void CMR_ContentMappingResource::initializeAllContextGroups()
     CID29_AcquisitionModality::initialize();
     CID42_NumericValueQualifier::initialize();
     CID100_QuantitativeDiagnosticImagingProcedures::initialize();
+    CID218_QuantitativeImageFeatures::initialize();
     CID244_Laterality::initialize();
+    CID247_LateralityLeftRightOnly::initialize();
     CID4020_PETRadionuclide::initialize();
     CID4021_PETRadiopharmaceutical::initialize();
     CID4031_CommonAnatomicRegions::initialize();
@@ -60,6 +65,7 @@ void CMR_ContentMappingResource::initializeAllContextGroups()
     CID7452_OrganizationalRoles::initialize();
     CID7453_PerformingRoles::initialize();
     CID7464_GeneralRegionOfInterestMeasurementModifiers::initialize();
+    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::initialize();
     CID7469_GenericIntensityAndSizeMeasurements::initialize();
     CID10013_CTAcquisitionType::initialize();
     CID10033_CTReconstructionAlgorithm::initialize();
@@ -73,7 +79,9 @@ void CMR_ContentMappingResource::cleanupAllContextGroups()
     CID29_AcquisitionModality::cleanup();
     CID42_NumericValueQualifier::cleanup();
     CID100_QuantitativeDiagnosticImagingProcedures::cleanup();
+    CID218_QuantitativeImageFeatures::cleanup();
     CID244_Laterality::cleanup();
+    CID247_LateralityLeftRightOnly::cleanup();
     CID4020_PETRadionuclide::cleanup();
     CID4021_PETRadiopharmaceutical::cleanup();
     CID4031_CommonAnatomicRegions::cleanup();
@@ -87,6 +95,7 @@ void CMR_ContentMappingResource::cleanupAllContextGroups()
     CID7453_PerformingRoles::cleanup();
     CID7464_GeneralRegionOfInterestMeasurementModifiers::cleanup();
     CID7469_GenericIntensityAndSizeMeasurements::cleanup();
+    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::cleanup();
     CID10013_CTAcquisitionType::cleanup();
     CID10033_CTReconstructionAlgorithm::cleanup();
 }
