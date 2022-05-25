@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -69,7 +69,7 @@ DSRBasicCodedEntry::DSRBasicCodedEntry(const OFString &codeValue,
 // implementation of class DSRCodedEntryValue
 
 DSRCodedEntryValue::DSRCodedEntryValue()
-  : CodeValueType(DSRTypes::CVT_auto),
+  : CodeValueType(DSRTypes::CVT_Short /* should not be "auto" */),
     CodeValue(),
     CodingSchemeDesignator(),
     CodingSchemeVersion(),
@@ -81,6 +81,7 @@ DSRCodedEntryValue::DSRCodedEntryValue()
     ContextGroupLocalVersion(),
     ContextGroupExtensionCreatorUID()
 {
+    /* empty coded entry */
 }
 
 
