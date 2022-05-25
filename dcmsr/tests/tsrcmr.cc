@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -44,6 +44,7 @@
 #include "dcmtk/dcmsr/cmr/cid4031e.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7445.h"
+#include "dcmtk/dcmsr/cmr/cid7551.h"
 #include "dcmtk/dcmsr/cmr/cid10013e.h"
 #include "dcmtk/dcmsr/cmr/cid10033e.h"
 #include "dcmtk/dcmsr/cmr/tid1001.h"
@@ -515,10 +516,10 @@ OFTEST(dcmsr_TID1501_MeasurementGroup)
     OFCHECK(measurement.addFindingSite(DSRBasicCodedEntry("EFGH.2", "99TEST", "Finding Site 2"), CID244e_Laterality(), DSRBasicCodedEntry("EFGH.2-1", "99TEST", "Finding Site 2 Modifier")).good());
     OFCHECK(measurement.setEquivalentMeaningOfConceptName("blabla").good());
     OFCHECK(measurement.addDerivationParameter(CODE_DCM_Derivation, CMR_SRNumericMeasurementValue("1.5", CODE_UCUM_Centimeter)).good());
-    OFCHECK(measurement.addImage(CODE_DCM_SourceImageForImageProcessingOperation, DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4")).good());
+    OFCHECK(measurement.addImage(DSRCodedEntryValue(CODE_DCM_SourceImageForImageProcessingOperation), DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4")).good());
     DSRSpatialCoordinatesValue spatialCoord(DSRTypes::GT_Point);
     spatialCoord.getGraphicDataList().addItem(100, 200);
-    OFCHECK(measurement.addSpatialCoordinates(CODE_DCM_SourceImageForImageProcessingOperation, spatialCoord, DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4")).good());
+    OFCHECK(measurement.addSpatialCoordinates(CMR_CID7551::ApproximateSpatialLocation, spatialCoord, DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4")).good());
     OFCHECK(group.addQualitativeEvaluation(CODE_DCM_Conclusion, "it's ok").good());
     OFCHECK_EQUAL(group.countNodes(OFTrue /*searchIntoSubTemplates*/), 21);
     /* add extra content items (TID 1501 is extensible) */

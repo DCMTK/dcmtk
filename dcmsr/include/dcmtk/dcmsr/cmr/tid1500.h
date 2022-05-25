@@ -30,6 +30,7 @@
 #include "dcmtk/dcmsr/cmr/cid7021.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
+#include "dcmtk/dcmsr/cmr/cid7551.h"
 
 
 // include this file in doxygen documentation
@@ -85,7 +86,8 @@ class DCMTK_CMR_EXPORT TID1500_MeasurementReport
     typedef TID1501_MeasurementGroup<CID218e_QuantitativeImageFeatures,
                                      CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                      CID6147_ResponseCriteria,
-                                     CID7464_GeneralRegionOfInterestMeasurementModifiers>
+                                     CID7464_GeneralRegionOfInterestMeasurementModifiers,
+                                     CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements>
             TID1501_Measurements;
 
     /** (default) constructor.

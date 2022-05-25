@@ -24,6 +24,7 @@
 #include "dcmtk/dcmsr/cmr/cid6147.h"
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 #include "dcmtk/dcmsr/cmr/cid7464.h"
+#include "dcmtk/dcmsr/cmr/cid7551.h"
 
 
 // include this file in doxygen documentation
@@ -44,12 +45,14 @@
  *  @tparam  T_Units        units of the numeric measurement values (context group)
  *  @tparam  T_Method       methods used for measuring the values (context group)
  *  @tparam  T_Derivation   methods of deriving or calculating the values (context group)
+ *  @tparam  T_Purpose      purpose of reference for the source of measurement (context group)
  *  @note Please note that this template class requires explicit instantiation for those
  *        combinations of the template parameters that are actually used.  This is
  *        because the implementation is "hidden" in a separate source file, which has
  *        some advantages over the usual header-only approach.
  */
-template<typename T_Measurement, typename T_Units, typename T_Method, typename T_Derivation>
+template<typename T_Measurement, typename T_Units, typename T_Method, typename T_Derivation,
+    typename T_Purpose>
 class DCMTK_CMR_EXPORT TID1501_MeasurementGroup
   : public DSRSubTemplate
 {
@@ -62,7 +65,8 @@ class DCMTK_CMR_EXPORT TID1501_MeasurementGroup
     typedef ::TID300_Measurement<CID218e_QuantitativeImageFeatures,
                                  CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                  CID6147_ResponseCriteria,
-                                 CID7464_GeneralRegionOfInterestMeasurementModifiers>
+                                 CID7464_GeneralRegionOfInterestMeasurementModifiers,
+                                 CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements>
             TID300_Measurement;
 
     /** (default) constructor

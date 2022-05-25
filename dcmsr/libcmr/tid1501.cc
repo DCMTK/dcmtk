@@ -52,8 +52,8 @@
 #define TEMPLATE_ORDER       OFFalse  /* non-significant */
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-TID1501_MeasurementGroup<T1, T2, T3, T4>::TID1501_MeasurementGroup(const OFBool createGroup)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::TID1501_MeasurementGroup(const OFBool createGroup)
   : DSRSubTemplate(TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID),
     Measurement(new TID300_Measurement())
 {
@@ -67,16 +67,16 @@ TID1501_MeasurementGroup<T1, T2, T3, T4>::TID1501_MeasurementGroup(const OFBool 
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-void TID1501_MeasurementGroup<T1, T2, T3, T4>::clear()
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+void TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::clear()
 {
     DSRSubTemplate::clear();
     Measurement->clear();
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::isValid() const
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFBool TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::isValid() const
 {
     /* check whether base class is valid and all required content items are present */
     return DSRSubTemplate::isValid() &&
@@ -84,8 +84,8 @@ OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::isValid() const
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::hasMeasurementGroup(const OFBool checkChildren) const
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFBool TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::hasMeasurementGroup(const OFBool checkChildren) const
 {
     OFBool result = OFFalse;
     /* need to check for child nodes? */
@@ -103,24 +103,24 @@ OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::hasMeasurementGroup(const OFBoo
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::hasTrackingIdentifier() const
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFBool TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::hasTrackingIdentifier() const
 {
     /* check for content item at TID 1501 (Measurement Group) Row 2 */
     return (getEntryFromNodeList(TRACKING_IDENTIFIER) > 0);
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::hasTrackingUniqueIdentifier() const
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFBool TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::hasTrackingUniqueIdentifier() const
 {
     /* check for content item at TID 1501 (Measurement Group) Row 3 */
     return (getEntryFromNodeList(TRACKING_UNIQUE_IDENTIFIER) > 0);
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::hasMeasurements(const OFBool checkChildren) const
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFBool TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::hasMeasurements(const OFBool checkChildren) const
 {
     OFBool result = OFFalse;
     /* need to check for child nodes? */
@@ -160,9 +160,9 @@ OFBool TID1501_MeasurementGroup<T1, T2, T3, T4>::hasMeasurements(const OFBool ch
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setActivitySession(const OFString &session,
-                                                                         const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::setActivitySession(const OFString &session,
+                                                                             const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* basic check of parameter */
@@ -180,9 +180,9 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setActivitySession(const O
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setTrackingIdentifier(const OFString &trackingID,
-                                                                            const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::setTrackingIdentifier(const OFString &trackingID,
+                                                                                const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* basic check of parameter */
@@ -200,9 +200,9 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setTrackingIdentifier(cons
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setTrackingUniqueIdentifier(const OFString &trackingUID,
-                                                                                  const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::setTrackingUniqueIdentifier(const OFString &trackingUID,
+                                                                                      const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* basic check of parameter */
@@ -220,9 +220,9 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setTrackingUniqueIdentifie
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setFinding(const DSRCodedEntryValue &finding,
-                                                                 const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::setFinding(const DSRCodedEntryValue &finding,
+                                                                     const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* basic check of parameter */
@@ -240,9 +240,9 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setFinding(const DSRCodedE
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setTimePoint(const OFString &timePoint,
-                                                                   const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::setTimePoint(const OFString &timePoint,
+                                                                       const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* basic check of parameter */
@@ -260,9 +260,9 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setTimePoint(const OFStrin
 }
 
 
-template<typename T1, typename T2, typename T_Method, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T_Method, T4>::setMeasurementMethod(const T_Method &method,
-                                                                                 const OFBool check)
+template<typename T1, typename T2, typename T_Method, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T_Method, T4, T5>::setMeasurementMethod(const T_Method &method,
+                                                                                     const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* basic check of parameter */
@@ -280,11 +280,11 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T_Method, T4>::setMeasurementMethod
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addFindingSite(const DSRCodedEntryValue &site,
-                                                                     const CID244e_Laterality &laterality,
-                                                                     const DSRCodedEntryValue &siteModifier,
-                                                                     const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::addFindingSite(const DSRCodedEntryValue &site,
+                                                                         const CID244e_Laterality &laterality,
+                                                                         const DSRCodedEntryValue &siteModifier,
+                                                                         const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* basic check of mandatory parameter */
@@ -349,9 +349,9 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addFindingSite(const DSRCo
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setRealWorldValueMap(const DSRCompositeReferenceValue &valueMap,
-                                                                           const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::setRealWorldValueMap(const DSRCompositeReferenceValue &valueMap,
+                                                                               const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* basic check of parameter */
@@ -379,9 +379,9 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setRealWorldValueMap(const
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setRealWorldValueMap(DcmItem &dataset,
-                                                                           const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::setRealWorldValueMap(DcmItem &dataset,
+                                                                               const OFBool check)
 {
     DSRCompositeReferenceValue valueMap;
     /* first, create the referenced composite object */
@@ -392,11 +392,11 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::setRealWorldValueMap(DcmIt
 }
 
 
-template<typename T_Measurement, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T_Measurement, T2, T3, T4>::addMeasurement(const T_Measurement &conceptName,
-                                                                                const MeasurementValue &numericValue,
-                                                                                const OFBool checkEmpty,
-                                                                                const OFBool checkValue)
+template<typename T_Measurement, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T_Measurement, T2, T3, T4, T5>::addMeasurement(const T_Measurement &conceptName,
+                                                                                    const MeasurementValue &numericValue,
+                                                                                    const OFBool checkEmpty,
+                                                                                    const OFBool checkValue)
 {
     OFCondition result = EC_Normal;
     /* basic check of mandatory parameters */
@@ -437,10 +437,10 @@ OFCondition TID1501_MeasurementGroup<T_Measurement, T2, T3, T4>::addMeasurement(
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
-                                                                               const DSRCodedEntryValue &codeValue,
-                                                                               const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                                                                   const DSRCodedEntryValue &codeValue,
+                                                                                   const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* make sure that the parameters are non-empty */
@@ -471,10 +471,10 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addQualitativeEvaluation(c
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
-                                                                               const OFString &stringValue,
-                                                                               const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::addQualitativeEvaluation(const DSRCodedEntryValue &conceptName,
+                                                                                   const OFString &stringValue,
+                                                                                   const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* make sure that the parameters are non-empty */
@@ -507,8 +507,8 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addQualitativeEvaluation(c
 
 // protected methods
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::createMeasurementGroup()
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::createMeasurementGroup()
 {
     OFCondition result = SR_EC_InvalidTemplateStructure;
     /* reassure that the tree is definitely empty */
@@ -529,13 +529,13 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::createMeasurementGroup()
 }
 
 
-template<typename T1, typename T2, typename T3, typename T4>
-OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addOrReplaceContentItem(const size_t nodePos,
-                                                                              const E_RelationshipType relationshipType,
-                                                                              const E_ValueType valueType,
-                                                                              const DSRCodedEntryValue &conceptName,
-                                                                              const OFString &annotationText,
-                                                                              const OFBool check)
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4, T5>::addOrReplaceContentItem(const size_t nodePos,
+                                                                                  const E_RelationshipType relationshipType,
+                                                                                  const E_ValueType valueType,
+                                                                                  const DSRCodedEntryValue &conceptName,
+                                                                                  const OFString &annotationText,
+                                                                                  const OFBool check)
 {
     OFCondition result = EC_Normal;
     /* check concept name and coded entry value */
@@ -595,4 +595,5 @@ OFCondition TID1501_MeasurementGroup<T1, T2, T3, T4>::addOrReplaceContentItem(co
 template class TID1501_MeasurementGroup<CID218e_QuantitativeImageFeatures,
                                         CID7181_AbstractMultiDimensionalImageModelComponentUnits,
                                         CID6147_ResponseCriteria,
-                                        CID7464_GeneralRegionOfInterestMeasurementModifiers>;
+                                        CID7464_GeneralRegionOfInterestMeasurementModifiers,
+                                        CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements>;
