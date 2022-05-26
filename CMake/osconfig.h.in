@@ -1134,7 +1134,7 @@ typedef unsigned long ulong;
 #cmakedefine HAVE_CXX11 @HAVE_CXX11@
 
 #if defined(HAVE_CXX11) && defined(__cplusplus) && __cplusplus < 201103L
-#error\
+#error \
 DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
 #endif
 
@@ -1142,7 +1142,7 @@ DCMTK was configured to use C++11 features, but your compiler does not or was no
 #cmakedefine HAVE_CXX14 @HAVE_CXX14@
 
 #if defined(HAVE_CXX14) && defined(__cplusplus) && __cplusplus < 201402L
-#error\
+#error \
 DCMTK was configured to use C++14 features, but your compiler does not or was not configured to provide them.
 #endif
 
@@ -1150,7 +1150,7 @@ DCMTK was configured to use C++14 features, but your compiler does not or was no
 #cmakedefine HAVE_CXX17 @HAVE_CXX17@
 
 #if defined(HAVE_CXX17) && defined(__cplusplus) && __cplusplus < 201703L
-#error\
+#error \
 DCMTK was configured to use C++17 features, but your compiler does not or was not configured to provide them.
 #endif
 

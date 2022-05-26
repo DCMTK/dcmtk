@@ -103,7 +103,7 @@ AH_TOP([#ifndef OSCONFIG_H
 #endif])
 
 AH_BOTTOM([#if defined(HAVE_CXX11) && defined(__cplusplus) && __cplusplus < 201103L
-#error\
+#error \
 DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
 #endif
 
