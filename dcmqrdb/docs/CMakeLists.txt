@@ -1,2 +1,2 @@
 # declare installation files
-install(FILES dcmqrcnf.txt dcmqrset.txt DESTINATION "${CMAKE_INSTALL_DOCDIR}" COMPONENT doc)
+install(FILES dcmqrcnf.txt dcmqrset.txt DESTINATION "${DCMTK_DEFAULT_DOC_DIR}" COMPONENT doc)

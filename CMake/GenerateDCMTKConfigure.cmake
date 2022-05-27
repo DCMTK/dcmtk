@@ -139,18 +139,6 @@ if(WIN32 AND NOT CYGWIN)
   # Set path and multiple path separator being used in dictionary code etc.
   set(PATH_SEPARATOR "\\\\")
   set(ENVIRONMENT_PATH_SEPARATOR ";")
-  # Set dictionary path to the data dir inside install main dir (prefix)
-  if(DCMTK_DEFAULT_DICT STREQUAL "external")
-    set(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}\\\\${CMAKE_INSTALL_DATADIR}\\\\dcmtk\\\\dicom.dic")
-    # If private dictionary should be utilized, add it to default dictionary path.
-    if(ENABLE_PRIVATE_TAGS)
-      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH};${DCMTK_PREFIX}\\\\${CMAKE_INSTALL_DATADIR}\\\\dcmtk\\\\private.dic")
-    endif()
-     # Again, for Windows strip all / from path and replace it with \\.
-    string(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
-  else()
-    set(DCM_DICT_DEFAULT_PATH "")
-  endif()
   # Set default directory for configuration and support data.
   if (NOT DEFINED DCMTK_DEFAULT_CONFIGURATION_DIR)
     set(DCMTK_DEFAULT_CONFIGURATION_DIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\etc\\\\")
@@ -158,28 +146,48 @@ if(WIN32 AND NOT CYGWIN)
   if (NOT DEFINED DCMTK_DEFAULT_SUPPORT_DATA_DIR)
     set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\share\\\\")
   endif()
+  if (NOT DEFINED DCMTK_DEFAULT_DOC_DIR)
+    set(DCMTK_DEFAULT_DOC_DIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\doc\\\\")
+  endif()
+  # Set dictionary path to the data dir inside install main dir (prefix)
+  if(DCMTK_DEFAULT_DICT STREQUAL "external")
+    set(DCM_DICT_DEFAULT_PATH "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}dicom.dic")
+    # If private dictionary should be utilized, add it to default dictionary path.
+    if(ENABLE_PRIVATE_TAGS)
+      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH};${DCMTK_DEFAULT_SUPPORT_DATA_DIR}private.dic")
+    endif()
+     # Again, for Windows strip all / from path and replace it with \\.
+    string(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
+  else()
+    set(DCM_DICT_DEFAULT_PATH "")
+  endif()
 else()
   # Set DCMTK_PREFIX needed within some code.
   set(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
   # Set path and multiple path separator being used in dictionary code etc.
   set(PATH_SEPARATOR "/")
   set(ENVIRONMENT_PATH_SEPARATOR ":")
-  # Set dictionary path to the data dir inside install main dir (prefix).
-  if(DCMTK_DEFAULT_DICT STREQUAL "external")
-    set(DCM_DICT_DEFAULT_PATH "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/dicom.dic")
-    # If private dictionary should be utilized, add it to default dictionary path.
-    if(ENABLE_PRIVATE_TAGS)
-      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/private.dic")
-    endif()
-  else()
-    set(DCM_DICT_DEFAULT_PATH "")
-  endif()
+
   # Set default directory for configuration and support data.
   if (NOT DEFINED DCMTK_DEFAULT_CONFIGURATION_DIR)
     set(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/")
   endif()
   if (NOT DEFINED DCMTK_DEFAULT_SUPPORT_DATA_DIR)
     set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/")
+  endif()
+  if (NOT DEFINED DCMTK_DEFAULT_DOC_DIR)
+    set(DCMTK_DEFAULT_DOC_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_DOCDIR}-${DCMTK_PACKAGE_VERSION}/")
+  endif()
+
+  # Set dictionary path to the data dir inside install main dir (prefix).
+  if(DCMTK_DEFAULT_DICT STREQUAL "external")
+    set(DCM_DICT_DEFAULT_PATH "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/dicom.dic")
+    # If private dictionary should be utilized, add it to default dictionary path.
+    if(ENABLE_PRIVATE_TAGS)
+      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/private.dic")
+    endif()
+  else()
+    set(DCM_DICT_DEFAULT_PATH "")
   endif()
 endif()
 

@@ -8,20 +8,20 @@ set(DCMTK_ICONV_DATAFILES
 
 # declare installation files
 
-install(FILES 
+install(FILES
     "csmapper/charset.pivot.pvdb"
     "csmapper/mapper.dir"
     "csmapper/mapper.dir.db"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/csmapper" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/csmapper"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "csmapper/CP/CP936EXT%UCS.mps"
     "csmapper/CP/UCS%CP936EXT.mps"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/csmapper/CP" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/csmapper/CP"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "csmapper/GB/GB18030%UCS@BMP.mps"
     "csmapper/GB/GB2312%UCS.mps"
     "csmapper/GB/GB2312EXT%UCS.mps"
@@ -37,10 +37,10 @@ install(FILES
     "csmapper/GB/UCS%GBKEXT.mps"
     "csmapper/GB/UCS%GBKUDA.mps"
     "csmapper/GB/UCS@BMP%GB18030.mps"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/csmapper/GB" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/csmapper/GB"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "csmapper/ISO-8859/ISO-8859-11%UCS.mps"
     "csmapper/ISO-8859/ISO-8859-15%UCS.mps"
     "csmapper/ISO-8859/ISO-8859-2%UCS.mps"
@@ -61,52 +61,52 @@ install(FILES
     "csmapper/ISO-8859/UCS%ISO-8859-7.mps"
     "csmapper/ISO-8859/UCS%ISO-8859-8.mps"
     "csmapper/ISO-8859/UCS%ISO-8859-9.mps"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/csmapper/ISO-8859" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/csmapper/ISO-8859"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "csmapper/ISO646/ISO646-JP%UCS.646"
     "csmapper/ISO646/ISO646-US%UCS.646"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/csmapper/ISO646" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/csmapper/ISO646"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "csmapper/JIS/JISX0201-KANA%UCS.mps"
     "csmapper/JIS/JISX0208@1990%UCS.mps"
     "csmapper/JIS/JISX0212%UCS.mps"
     "csmapper/JIS/UCS%JISX0201-KANA.mps"
     "csmapper/JIS/UCS%JISX0208@1990.mps"
     "csmapper/JIS/UCS%JISX0212.mps"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/csmapper/JIS" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/csmapper/JIS"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "csmapper/KS/KSC5601HANGUL%UCS.mps"
     "csmapper/KS/KSC5601HANJA%UCS.mps"
     "csmapper/KS/UCS%KSC5601HANGUL.mps"
     "csmapper/KS/UCS%KSC5601HANJA.mps"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/csmapper/KS" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/csmapper/KS"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "esdb/esdb.alias.db"
     "esdb/esdb.dir.db"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/esdb" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/esdb"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "esdb/EUC/EUC-CN.esdb"
     "esdb/EUC/EUC-KR.esdb"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/esdb/EUC" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/esdb/EUC"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "esdb/GB/GB18030.esdb"
     "esdb/GB/GBK.esdb"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/esdb/GB" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/esdb/GB"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "esdb/ISO-8859/ISO-8859-1.esdb"
     "esdb/ISO-8859/ISO-8859-11.esdb"
     "esdb/ISO-8859/ISO-8859-15.esdb"
@@ -118,23 +118,23 @@ install(FILES
     "esdb/ISO-8859/ISO-8859-7.esdb"
     "esdb/ISO-8859/ISO-8859-8.esdb"
     "esdb/ISO-8859/ISO-8859-9.esdb"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/esdb/ISO-8859" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/esdb/ISO-8859"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "esdb/ISO646/ISO646-US.esdb"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/esdb/ISO646" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/esdb/ISO646"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "esdb/MISC/JISX0201-KANA.esdb"
     "esdb/MISC/JISX0208@1990.esdb"
     "esdb/MISC/JISX0212.esdb"
     "esdb/MISC/Shift_JIS.esdb"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/esdb/MISC" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/esdb/MISC"
   COMPONENT data)
 
-install(FILES 
+install(FILES
     "esdb/UTF/UTF-16-INTERNAL.esdb"
     "esdb/UTF/UTF-16-SWAPPED.esdb"
     "esdb/UTF/UTF-16.esdb"
@@ -146,6 +146,6 @@ install(FILES
     "esdb/UTF/UTF-32BE.esdb"
     "esdb/UTF/UTF-32LE.esdb"
     "esdb/UTF/UTF-8.esdb"
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/dcmtk/esdb/UTF" 
+  DESTINATION "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/esdb/UTF"
   COMPONENT data)
 

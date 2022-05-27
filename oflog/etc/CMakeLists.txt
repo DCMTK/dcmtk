@@ -1,2 +1,2 @@
 # declare installation files
-install(FILES logger.cfg filelog.cfg DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/dcmtk" COMPONENT etc)
+install(FILES logger.cfg filelog.cfg DESTINATION "${DCMTK_DEFAULT_CONFIGURATION_DIR}" COMPONENT etc)
